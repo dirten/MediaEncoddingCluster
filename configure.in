@@ -1,0 +1,24 @@
+AC_INIT(configure.in)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(bruteripper, 0.1)
+
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+
+
+AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard is "/usr/local")],
+	    FFMPEG_CFLAGS="-I$withval/include/ffmpeg"
+	    FFMPEG_LD="-L$withval -lavformat -lavcodec"
+	    FFMPEG_PATH="$withval")
+
+AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is "/usr/local")],
+	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-1.1"
+	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
+	    AMQ_PATH="$withval")
+	    
+	    
+CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS $AMQ_CFLAGS "
+LDFLAGS="$LDFLAGS $FFMPEG_LD $AMQ_LD -luuid -lpthread"
+AC_OUTPUT(Makefile src/Makefile)
