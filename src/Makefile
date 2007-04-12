@@ -84,14 +84,14 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run aclocal-1.9
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run tar
+AMTAR = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -123,7 +123,7 @@ LIBS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jhoelscher/bripper/bruteripper-0.1/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run makeinfo
 OBJEXT = o
 PACKAGE = bruteripper
 PACKAGE_BUGREPORT = 
@@ -168,7 +168,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/jhoelscher/bripper/bruteripper-0.1/install-sh
+install_sh = /home/jhoelscher/svn/bruteripper/bruteripper/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -205,9 +205,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/Makefile
+	  $(AUTOMAKE) --gnu  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
