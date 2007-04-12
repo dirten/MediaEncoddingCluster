@@ -1,3 +1,7 @@
+/***************************************************************************
+ *   Copyright (C) 2007 by Jan Hoelscher                                   *
+ *   jan.hoelscher@esblab.com                                              *
+ ***************************************************************************/
 #include "framesender.h"
 
 using namespace activemq::core;

@@ -1,3 +1,7 @@
+/***************************************************************************
+ *   Copyright (C) 2007 by Jan Hoelscher                                   *
+ *   jan.hoelscher@esblab.com                                              *
+ ***************************************************************************/
 
 
 #ifdef HAVE_CONFIG_H
@@ -11,7 +15,9 @@
 #include <avformat.h>
 
 #include <stdio.h>
-#include "framesender.h"
+//#include "framesender.h"
+#include "FrameContainer.h"
+#include "FrameHive.h"
 using namespace std;
 
 
@@ -39,7 +45,7 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
         // Work on the current packet until we have decoded all of it
     while(bytesRemaining > 0)
     {
-     cout << "Laenge : "<< strlen((const char *) rawData) << endl;
+//     cout << "Laenge : "<< strlen((const char *) rawData) << endl;
 
             // Decode the next chunk of data
       bytesDecoded=avcodec_decode_video(pCodecCtx, pFrame,
@@ -76,7 +82,8 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
     } while(packet.stream_index!=videoStream);
 
     bytesRemaining=packet.size;
-    cout << "Packet size: "<<packet.data;
+
+//    cout << "Packet size: "<<packet.size<<endl;
     rawData=packet.data;
   }
 
@@ -180,7 +187,8 @@ int main(int argc, char *argv[])
   av_register_all();
 
     
-  argv[1]="/media/video/Sledge Hammer/Sledge_Staffel1_episode1.avi";
+//  argv[1]="/media/video/Sledge Hammer/Sledge_Staffel1_episode1.avi";
+  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
   // Open video file
   if(av_open_input_file(&pFormatCtx, argv[1], NULL, 0, NULL)!=0){
     cout << "Konnte Datei " << argv[1] << " nicht oeffnen" <<endl;
@@ -257,26 +265,30 @@ int main(int argc, char *argv[])
   
    // Read frames and save first five frames to disk
   i=0;
-  FrameSender *sender=new FrameSender();
-  sender->run();
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<50)
+  FrameContainer *container=new FrameContainer("/tmp/frame.container");
+  FrameHive *hive=new FrameHive("test.db");
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<5000)
   {
-    /*
+    
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
-    */
+    
     cout << "\rProcessing Frame :"<< i;
         // Save the frame to disk
     ++i;
 //    if(i<=5)
-    cout << "Laenge : "<< strlen((const char *) pFrame->data[0]) << endl;
-  //  SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
-    sender->send((const char *)pFrame->data[0]);
-//    SaveFrame(pFrame, pCodecCtx->width, pCodecCtx->height, i);
+//    cout << "Laenge : "<< strlen((const char *) pFrame->data[0]) << endl;
+////  SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
+//    sender->send((const char *)pFrame->data[0]);
+//    container->putFrame(pFrameRGB,pCodecCtx);
+//    container->putFrame3(pFrameRGB,pCodecCtx);
+    container->putFrame3(pFrameRGB,pCodecCtx);
+//      hive->putFrame(pFrameRGB,pCodecCtx);
+//    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
   cout << endl;
+    delete container;
     // Free the RGB image
-    delete sender;
   delete [] buffer;
   av_free(pFrameRGB);
 
