@@ -188,7 +188,8 @@ int main(int argc, char *argv[])
 
     
 //  argv[1]="/media/video/Sledge Hammer/Sledge_Staffel1_episode1.avi";
-  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
+//  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
+  argv[1]="/media/video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
   // Open video file
   if(av_open_input_file(&pFormatCtx, argv[1], NULL, 0, NULL)!=0){
     cout << "Konnte Datei " << argv[1] << " nicht oeffnen" <<endl;
@@ -265,15 +266,18 @@ int main(int argc, char *argv[])
   
    // Read frames and save first five frames to disk
   i=0;
-  FrameContainer *container=new FrameContainer("/tmp/frame.container");
+//  FrameContainer *container=new FrameContainer("/tmp/frame.container");
+//  FrameContainer *container=new FrameContainer("/media/video/test");
+  FrameContainer *container=new FrameContainer("/tmp/test.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<5000)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<100)
   {
     
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
-    
-    cout << "\rProcessing Frame :"<< i;
+    if(i%10==0){
+	cerr << "\rProcessing Frame :"<< i;
+    }
         // Save the frame to disk
     ++i;
 //    if(i<=5)
@@ -282,10 +286,11 @@ int main(int argc, char *argv[])
 //    sender->send((const char *)pFrame->data[0]);
 //    container->putFrame(pFrameRGB,pCodecCtx);
 //    container->putFrame3(pFrameRGB,pCodecCtx);
-    container->putFrame3(pFrameRGB,pCodecCtx);
+    container->putFrame(pFrameRGB,pCodecCtx);
 //      hive->putFrame(pFrameRGB,pCodecCtx);
 //    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
+	cerr << "\rProcessing Frame :"<< i;
   cout << endl;
     delete container;
     // Free the RGB image

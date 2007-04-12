@@ -40,7 +40,7 @@ void FrameContainer::putFrame4(AVFrame * frame, AVCodecContext *codecCtx ){
 /***************************************************************************/
 void FrameContainer::putFrame3(AVFrame * frame, AVCodecContext *codecCtx ){
     unsigned char * data=new unsigned char[512*256*3];
-//    bzero(data, 512*256*3);
+    bzero(data, 512*256*3);
 //    FrameCompressor *compressor=new FrameCompressor();
     int filelen=compressor->deflateFrame(frame, data);
 //    cout << "Data:"<<(string((const char*)data).length())<<endl;

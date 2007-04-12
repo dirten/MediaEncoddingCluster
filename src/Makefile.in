@@ -37,7 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = bruteripper$(EXEEXT) zpipe$(EXEEXT)
+bin_PROGRAMS = framesender$(EXEEXT) zpipe$(EXEEXT)
 subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -51,11 +51,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_bruteripper_OBJECTS = bruteripper.$(OBJEXT) \
+am_framesender_OBJECTS = bruteripper.$(OBJEXT) \
 	FrameContainer.$(OBJEXT) FrameHive.$(OBJEXT) \
 	FrameCompressor.$(OBJEXT) minilzo.$(OBJEXT)
-bruteripper_OBJECTS = $(am_bruteripper_OBJECTS)
-bruteripper_LDADD = $(LDADD)
+framesender_OBJECTS = $(am_framesender_OBJECTS)
+framesender_LDADD = $(LDADD)
 am_zpipe_OBJECTS = zpipe.$(OBJEXT)
 zpipe_OBJECTS = $(am_zpipe_OBJECTS)
 zpipe_LDADD = $(LDADD)
@@ -78,8 +78,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(bruteripper_SOURCES) $(zpipe_SOURCES)
-DIST_SOURCES = $(bruteripper_SOURCES) $(zpipe_SOURCES)
+SOURCES = $(framesender_SOURCES) $(zpipe_SOURCES)
+DIST_SOURCES = $(framesender_SOURCES) $(zpipe_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -133,7 +133,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -182,7 +181,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 #bin_PROGRAMS = zpipe
-bruteripper_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
+framesender_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
 zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
@@ -205,9 +204,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/Makefile
+	  $(AUTOMAKE) --foreign  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -253,9 +252,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-bruteripper$(EXEEXT): $(bruteripper_OBJECTS) $(bruteripper_DEPENDENCIES) 
-	@rm -f bruteripper$(EXEEXT)
-	$(CXXLINK) $(bruteripper_LDFLAGS) $(bruteripper_OBJECTS) $(bruteripper_LDADD) $(LIBS)
+framesender$(EXEEXT): $(framesender_OBJECTS) $(framesender_DEPENDENCIES) 
+	@rm -f framesender$(EXEEXT)
+	$(CXXLINK) $(framesender_LDFLAGS) $(framesender_OBJECTS) $(framesender_LDADD) $(LIBS)
 zpipe$(EXEEXT): $(zpipe_OBJECTS) $(zpipe_DEPENDENCIES) 
 	@rm -f zpipe$(EXEEXT)
 	$(LINK) $(zpipe_LDFLAGS) $(zpipe_OBJECTS) $(zpipe_LDADD) $(LIBS)

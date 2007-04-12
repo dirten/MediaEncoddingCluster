@@ -2,9 +2,9 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-bin_PROGRAMS = bruteripper zpipe
+bin_PROGRAMS = framesender zpipe
 #bin_PROGRAMS = zpipe
-bruteripper_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
+framesender_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
 zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure

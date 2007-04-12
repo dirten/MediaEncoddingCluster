@@ -37,20 +37,31 @@ FrameHive::~FrameHive(){
 void FrameHive::putFrame( AVFrame * frame, AVCodecContext *codecCtx ){
 //    rc = sqlite3_exec(db, "insert into test(id, data) values (?,?)", callback, 0, &zErrMsg);
     string data="";//(const char * )frame->data[0];
-    for(int y=0; y<codecCtx->height; y++){
+
+    int height=codecCtx->height;
+    int width=codecCtx->width;
+    int bufSize=width*height*3;    
+
+    unsigned char * buffer = new unsigned char[bufSize];
+    for(int y=0; y<height; y++){
+      memcpy(buffer+(frame->linesize[0]*y),frame->data[0]+(y*frame->linesize[0]),width*3);
+    }
+//    for(int y=0; y<codecCtx->height; y++){
 //	string tmp=(const char * )frame->data[0];
 //	strcpy(tmp,frame->data[0],codecCtx->width*3);
 //	string tmp=
-	data+=(const char *)frame->data[0]+y*frame->linesize[0];
-    }
+//	data+=(const char *)frame->data[0]+y*frame->linesize[0];
+//    }
 //	fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFile);
 
-    sqlite3_bind_text( pStmt, 1, data.c_str(),data.size(), SQLITE_STATIC );
-    sqlite3_step(pStmt);
+//    sqlite3_bind_text( pStmt, 1, (char*)buffer,bufSize, SQLITE_STATIC );
+    sqlite3_bind_blob( pStmt, 1, (char*)buffer,bufSize, SQLITE_STATIC );
+    rc=sqlite3_step(pStmt);
     rc = sqlite3_reset(pStmt);
     if( rc!=SQLITE_OK ){
       fprintf(stderr, "SQL error: %s\n", zErrMsg);
       sqlite3_free(zErrMsg);
     }
+    delete buffer;
 }
 

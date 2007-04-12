@@ -37,7 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
-bin_PROGRAMS = bruteripper$(EXEEXT) zpipe$(EXEEXT)
+bin_PROGRAMS = framesender$(EXEEXT) zpipe$(EXEEXT)
 subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -51,11 +51,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_bruteripper_OBJECTS = bruteripper.$(OBJEXT) \
+am_framesender_OBJECTS = bruteripper.$(OBJEXT) \
 	FrameContainer.$(OBJEXT) FrameHive.$(OBJEXT) \
 	FrameCompressor.$(OBJEXT) minilzo.$(OBJEXT)
-bruteripper_OBJECTS = $(am_bruteripper_OBJECTS)
-bruteripper_LDADD = $(LDADD)
+framesender_OBJECTS = $(am_framesender_OBJECTS)
+framesender_LDADD = $(LDADD)
 am_zpipe_OBJECTS = zpipe.$(OBJEXT)
 zpipe_OBJECTS = $(am_zpipe_OBJECTS)
 zpipe_LDADD = $(LDADD)
@@ -78,26 +78,26 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(bruteripper_SOURCES) $(zpipe_SOURCES)
-DIST_SOURCES = $(bruteripper_SOURCES) $(zpipe_SOURCES)
+SOURCES = $(framesender_SOURCES) $(zpipe_SOURCES)
+DIST_SOURCES = $(framesender_SOURCES) $(zpipe_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run aclocal-1.9
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run tar
+AMTAR = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS
+CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -111,19 +111,19 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = grep -E
 EXEEXT = 
-F77 = f95
-FFLAGS = -g -O2
+F77 = 
+FFLAGS = 
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS =  -L/home/jhoelscher/bripper/ffmpeg-install/lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz
+LDFLAGS =  -L/home/jhoelscher/ffmpeg-install//lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jhoelscher/svn/bruteripper/bruteripper/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run makeinfo
 OBJEXT = o
 PACKAGE = bruteripper
 PACKAGE_BUGREPORT = 
@@ -133,7 +133,6 @@ PACKAGE_TARNAME =
 PACKAGE_VERSION = 
 PATH_SEPARATOR = :
 RANLIB = ranlib
-SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
@@ -141,7 +140,7 @@ VERSION = 0.1
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
-ac_ct_F77 = f95
+ac_ct_F77 = 
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = strip
 am__fastdepCC_FALSE = #
@@ -168,7 +167,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/jhoelscher/svn/bruteripper/bruteripper/install-sh
+install_sh = /home/jhoelscher/MediaEncodingCluster/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -182,7 +181,7 @@ sharedstatedir = ${prefix}/com
 sysconfdir = ${prefix}/etc
 target_alias = 
 #bin_PROGRAMS = zpipe
-bruteripper_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
+framesender_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
 zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
@@ -205,9 +204,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/Makefile
+	  $(AUTOMAKE) --foreign  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -253,9 +252,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-bruteripper$(EXEEXT): $(bruteripper_OBJECTS) $(bruteripper_DEPENDENCIES) 
-	@rm -f bruteripper$(EXEEXT)
-	$(CXXLINK) $(bruteripper_LDFLAGS) $(bruteripper_OBJECTS) $(bruteripper_LDADD) $(LIBS)
+framesender$(EXEEXT): $(framesender_OBJECTS) $(framesender_DEPENDENCIES) 
+	@rm -f framesender$(EXEEXT)
+	$(CXXLINK) $(framesender_LDFLAGS) $(framesender_OBJECTS) $(framesender_LDADD) $(LIBS)
 zpipe$(EXEEXT): $(zpipe_OBJECTS) $(zpipe_DEPENDENCIES) 
 	@rm -f zpipe$(EXEEXT)
 	$(LINK) $(zpipe_LDFLAGS) $(zpipe_OBJECTS) $(zpipe_LDADD) $(LIBS)
