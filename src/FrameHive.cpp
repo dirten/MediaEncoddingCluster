@@ -90,7 +90,7 @@ void FrameHive::putFrame( AVFrame * frame, AVCodecContext *codecCtx ){
 
 /*****************************************************************************/
 void FrameHive::putFrameHive( AVFrame * frame, AVCodecContext *codecCtx ){
-    if(false){
+    if(COMPRESSED){
 	unsigned char * data=new unsigned char[512*256*3];
         int filelen=compressor->deflateFrame(frame, data);
         fwrite(data, 1, filelen, pFileHive);
