@@ -3,11 +3,11 @@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SUBDIRS = config framehive
-bin_PROGRAMS = framesender framereceiver zpipe
+bin_PROGRAMS = framesender framereceiver
 #bin_PROGRAMS = zpipe
-framesender_SOURCES = bruteripper.cpp FrameContainer.cpp
+framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
-zpipe_SOURCES = zpipe.c
+#zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src/config \
@@ -17,7 +17,7 @@ INCLUDES=   -I$(top_srcdir)/src/config \
 # the library search path.
 framesender_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
-zpipe_LDFLAGS = $(all_libraries) 
+#zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS=*.h
 
 framesender_LDADD=$(top_srcdir)/src/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 

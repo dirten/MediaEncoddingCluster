@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 //#include "framesender.h"
-#include "FrameContainer.h"
+//#include "FrameContainer.h"
 #include "FrameHive.h"
 #include "config.h"
 using namespace std;
@@ -262,9 +262,9 @@ int main(int argc, char *argv[])
   i=0;
 //  FrameContainer *container=new FrameContainer("/tmp/frame.container");
 //  FrameContainer *container=new FrameContainer("/media/video/test");
-  FrameContainer *container=new FrameContainer("/tmp/frame.container");
+//  FrameContainer *container=new FrameContainer("/tmp/frame.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<55300)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<500)
   {
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
   }
 	cerr << "\rProcessing Frame :"<< i;
   cout << endl;
-    delete container;
+//    delete container;
     // Free the RGB image
   delete [] buffer;
   av_free(pFrameRGB);

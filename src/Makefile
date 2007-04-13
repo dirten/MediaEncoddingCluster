@@ -37,8 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
-bin_PROGRAMS = framesender$(EXEEXT) framereceiver$(EXEEXT) \
-	zpipe$(EXEEXT)
+bin_PROGRAMS = framesender$(EXEEXT) framereceiver$(EXEEXT)
 subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -54,25 +53,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_framereceiver_OBJECTS = FrameReceiver.$(OBJEXT)
 framereceiver_OBJECTS = $(am_framereceiver_OBJECTS)
 framereceiver_LDADD = $(LDADD)
-am_framesender_OBJECTS = bruteripper.$(OBJEXT) \
-	FrameContainer.$(OBJEXT)
+am_framesender_OBJECTS = bruteripper.$(OBJEXT)
 framesender_OBJECTS = $(am_framesender_OBJECTS)
 framesender_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la \
 	$(top_srcdir)/src/framehive/libframehive.la
-am_zpipe_OBJECTS = zpipe.$(OBJEXT)
-zpipe_OBJECTS = $(am_zpipe_OBJECTS)
-zpipe_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
@@ -81,10 +68,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
-	$(zpipe_SOURCES)
-DIST_SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
-	$(zpipe_SOURCES)
+SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES)
+DIST_SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -109,7 +94,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS
+CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -Wdeclaration-after-statement -D_LARGEFILE_SOURCE -D_GNU_SOURCE
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -129,7 +114,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS =  -L/home/jhoelscher/ffmpeg-install//lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
+LDFLAGS =  -L/home/jhoelscher/ffmpeg-install/lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -186,7 +171,7 @@ localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 mkdir_p = mkdir -p --
 oldincludedir = /usr/include
-prefix = /usr/local
+prefix = /home/jhoelscher/MediaEncodingCluster-install
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -199,9 +184,9 @@ target_alias =
 # ***************************************************************************/
 SUBDIRS = config framehive
 #bin_PROGRAMS = zpipe
-framesender_SOURCES = bruteripper.cpp FrameContainer.cpp
+framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
-zpipe_SOURCES = zpipe.c
+#zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src/config \
@@ -212,13 +197,13 @@ INCLUDES = -I$(top_srcdir)/src/config \
 # the library search path.
 framesender_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
-zpipe_LDFLAGS = $(all_libraries) 
+#zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS = *.h
 framesender_LDADD = $(top_srcdir)/src/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
 all: all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .o .obj
+.SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -282,9 +267,6 @@ framereceiver$(EXEEXT): $(framereceiver_OBJECTS) $(framereceiver_DEPENDENCIES)
 framesender$(EXEEXT): $(framesender_OBJECTS) $(framesender_DEPENDENCIES) 
 	@rm -f framesender$(EXEEXT)
 	$(CXXLINK) $(framesender_LDFLAGS) $(framesender_OBJECTS) $(framesender_LDADD) $(LIBS)
-zpipe$(EXEEXT): $(zpipe_OBJECTS) $(zpipe_DEPENDENCIES) 
-	@rm -f zpipe$(EXEEXT)
-	$(LINK) $(zpipe_LDFLAGS) $(zpipe_OBJECTS) $(zpipe_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -292,31 +274,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/FrameContainer.Po
 include ./$(DEPDIR)/FrameReceiver.Po
 include ./$(DEPDIR)/bruteripper.Po
-include ./$(DEPDIR)/zpipe.Po
-
-.c.o:
-	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(COMPILE) -c $<
-
-.c.obj:
-	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
-	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-#	source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LTCOMPILE) -c -o $@ $<
 
 .cpp.o:
 	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

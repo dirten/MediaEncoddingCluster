@@ -44,9 +44,9 @@ EsbConfig::EsbConfig(char*filename, bool exiting)
 {
 //  cout << "try loading configuration from "<< filename << endl;
   FILE * fp;
-//  char buffer[255];
-  char * buffer=new char[255];
-  memset(buffer,0,sizeof(buffer));
+  char buffer[255];
+//  char * buffer=new char[255];
+//  memset(buffer,0,255);
   if((fp = fopen(filename,"r"))==NULL)
   {
     cout << "Configurationfile not found !!!!" <<endl;
@@ -55,12 +55,13 @@ EsbConfig::EsbConfig(char*filename, bool exiting)
       exit(0);
     }
   }
-  printf("Configuration Loaded from %s", filename);
+  printf("Configuration Loaded from %s\n", filename);
   while (fgets(buffer,255,fp) != NULL)
   {
+    printf("Buffer:%s", buffer);
     parseLine(buffer);
   }
-  delete buffer;
+//  delete buffer;
 }
 EsbConfig::EsbConfig(sockaddr_in serveraddr)
 {}
@@ -94,10 +95,11 @@ void parseLine(char*line)
         short max_copy=length-seperator-1;
         char *val=new char[max_copy];
         bzero(key,sizeof(key));
-        bzero(val,sizeof(val));
-        memcpy(key,line,seperator);
-        memcpy(val,line+(seperator+1),max_copy);
+        memset(val,0,max_copy);
+        strncpy(key,line,seperator);
+        strncpy(val,line+(seperator+1),max_copy);
         config_map[key]=val;
+	printf("Key:%s\tValue:%s\n", key, val);
       }
     }
   }

@@ -5,6 +5,8 @@
  *
  * See the COPYING file for the terms of usage and distribution.
  */
+#ifndef ESBCONFIG_H
+#define ESBCONFIG_H
 #include <sys/socket.h>
 #include <netinet/in.h>
 class EsbConfig{
@@ -17,3 +19,4 @@ class EsbConfig{
 	~EsbConfig();
 	
 };
+#endif

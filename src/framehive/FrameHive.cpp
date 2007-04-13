@@ -26,8 +26,8 @@ FrameHive::FrameHive(string dbname){
 	this->frameCounter=0;
 	this->pathCounter=0;
 	this->pfad="/tmp/frame.container";
-	this->pFileHive=fopen("/tmp/frame.container/hive.data", "wb");
         this->compressor=new FrameCompressor();
+	this->pFileHive=fopen("/tmp/frame.container/hive.data", "wb");
         
     rc = sqlite3_open(dbname.c_str(), &db);
     if( rc ){
@@ -39,7 +39,7 @@ FrameHive::FrameHive(string dbname){
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
 
 
-
+    if(EsbConfig::getConfig("mysql")=="true"){
     mysql = mysql_init(NULL);
     if(mysql == NULL) {
 	fprintf(stderr, " Initialisierung fehlgeschlagen\n");
@@ -66,7 +66,7 @@ FrameHive::FrameHive(string dbname){
     stmt=mysql_stmt_init(mysql);
 //    string sql="insert into test(data) values (?)";
     rc=mysql_stmt_prepare(stmt,sql.c_str(), sql.length());
-
+    }
 
 //
 }

@@ -11,6 +11,7 @@
 #include <mysql/mysql.h>
 #include <sys/stat.h>
 #include "FrameCompressor.h"
+#include "config.h"
 #define FRAMEHIVE_H
 #define COMPRESSED false
 using namespace std;
