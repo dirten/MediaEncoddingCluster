@@ -55,10 +55,10 @@ am_framereceiver_OBJECTS = FrameReceiver.$(OBJEXT)
 framereceiver_OBJECTS = $(am_framereceiver_OBJECTS)
 framereceiver_LDADD = $(LDADD)
 am_framesender_OBJECTS = bruteripper.$(OBJEXT) \
-	FrameContainer.$(OBJEXT) FrameHive.$(OBJEXT) \
-	FrameCompressor.$(OBJEXT) minilzo.$(OBJEXT)
+	FrameContainer.$(OBJEXT)
 framesender_OBJECTS = $(am_framesender_OBJECTS)
-framesender_LDADD = $(LDADD)
+framesender_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la \
+	$(top_srcdir)/src/framehive/libframehive.la
 am_zpipe_OBJECTS = zpipe.$(OBJEXT)
 zpipe_OBJECTS = $(am_zpipe_OBJECTS)
 zpipe_LDADD = $(LDADD)
@@ -145,7 +145,6 @@ PACKAGE_TARNAME =
 PACKAGE_VERSION = 
 PATH_SEPARATOR = :
 RANLIB = ranlib
-SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
@@ -198,20 +197,24 @@ target_alias =
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = config
+SUBDIRS = config framehive
 #bin_PROGRAMS = zpipe
-framesender_SOURCES = bruteripper.cpp FrameContainer.cpp FrameHive.cpp FrameCompressor.cpp minilzo.c
+framesender_SOURCES = bruteripper.cpp FrameContainer.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
 zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
-INCLUDES = -I$(top_srcdir)/src/config $(all_includes) 
+INCLUDES = -I$(top_srcdir)/src/config \
+	    -I$(top_srcdir)/src/framehive \
+	    $(all_includes) 
+
 
 # the library search path.
-framesender_LDFLAGS = $(all_libraries) $(top_srcdir)/src/config/libconfig.la 
+framesender_LDFLAGS = $(all_libraries) 
+#$(top_srcdir)/src/config/libconfig.la 
 zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS = *.h
-frameserver_LDADD = $(top_srcdir)/src/config/libconfig.la 
+framesender_LDADD = $(top_srcdir)/src/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
 all: all-recursive
 
 .SUFFIXES:
@@ -289,12 +292,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/FrameCompressor.Po
 include ./$(DEPDIR)/FrameContainer.Po
-include ./$(DEPDIR)/FrameHive.Po
 include ./$(DEPDIR)/FrameReceiver.Po
 include ./$(DEPDIR)/bruteripper.Po
-include ./$(DEPDIR)/minilzo.Po
 include ./$(DEPDIR)/zpipe.Po
 
 .c.o:
