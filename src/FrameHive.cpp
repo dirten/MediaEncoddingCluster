@@ -55,7 +55,7 @@ void FrameHive::putFrame( AVFrame * frame, AVCodecContext *codecCtx ){
 //	fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFile);
 
 //    sqlite3_bind_text( pStmt, 1, (char*)buffer,bufSize, SQLITE_STATIC );
-    sqlite3_bind_blob( pStmt, 1, (char*)buffer,bufSize, SQLITE_STATIC );
+    sqlite3_bind_blob( pStmt, 1, (char*)buffer,bufSize, SQLITE_TRANSIENT);
     rc=sqlite3_step(pStmt);
     rc = sqlite3_reset(pStmt);
     if( rc!=SQLITE_OK ){
