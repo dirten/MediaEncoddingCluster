@@ -13,9 +13,10 @@ zpipe_SOURCES = zpipe.c
 INCLUDES= -I$(top_srcdir)/src/config $(all_includes) 
 
 # the library search path.
-framesender_LDFLAGS = $(all_libraries) $(top_srcdir)/src/config/libconfig.la 
+framesender_LDFLAGS = $(all_libraries) 
+#$(top_srcdir)/src/config/libconfig.la 
 zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS=*.h
 
-frameserver_LDADD=$(top_srcdir)/src/config/libconfig.la 
+framesender_LDADD=$(top_srcdir)/src/config/libconfig.la 
 
