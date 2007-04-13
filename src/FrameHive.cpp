@@ -82,24 +82,24 @@ FrameHive::~FrameHive(){
 
 /*****************************************************************************/
 void FrameHive::putFrame( AVFrame * frame, AVCodecContext *codecCtx ){
-    this->putFrameHive(frame, codecCtx);
+//    this->putFrameHive(frame, codecCtx);
 //    this->putFrameSQLite(frame, codecCtx);
 //    this->putFrameMySQL(frame, codecCtx);
-//    this->putFrameFS(frame, codecCtx);
+    this->putFrameFS(frame, codecCtx);
 }
 
 /*****************************************************************************/
 void FrameHive::putFrameHive( AVFrame * frame, AVCodecContext *codecCtx ){
-/*
-    unsigned char * data=new unsigned char[512*256*3];
-    int filelen=compressor->deflateFrame(frame, data);
-    fwrite(data, 1, filelen, pFileHive);
-    delete data;
-    */
-
-  for(int y=0; y<codecCtx->height; y++)
-    fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFileHive);
-
+    if(false){
+	unsigned char * data=new unsigned char[512*256*3];
+        int filelen=compressor->deflateFrame(frame, data);
+        fwrite(data, 1, filelen, pFileHive);
+        delete data;
+    }else{
+	for(int y=0; y<codecCtx->height; y++)
+	    fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFileHive);
+	fflush(pFileHive);
+    }
 }
 void FrameHive::putFrameMySQL( AVFrame * frame, AVCodecContext *codecCtx ){
 

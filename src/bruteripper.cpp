@@ -55,10 +55,11 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
      
 
             // Was there an error?
+    
       if(bytesDecoded < 0)
       {
         fprintf(stderr, "Error while decoding frame\n");
-        return true;
+//        return true;
       }
 
       bytesRemaining-=bytesDecoded;
@@ -263,7 +264,7 @@ int main(int argc, char *argv[])
 //  FrameContainer *container=new FrameContainer("/media/video/test");
   FrameContainer *container=new FrameContainer("/tmp/frame.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<100000)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<55300)
   {
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
