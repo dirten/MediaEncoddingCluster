@@ -49,6 +49,7 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
 //     cout << "Laenge : "<< strlen((const char *) rawData) << endl;
 
             // Decode the next chunk of data
+      
       bytesDecoded=avcodec_decode_video(pCodecCtx, pFrame,
                                         &frameFinished, rawData, bytesRemaining);
      
@@ -57,7 +58,7 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
       if(bytesDecoded < 0)
       {
         fprintf(stderr, "Error while decoding frame\n");
-        return false;
+        return true;
       }
 
       bytesRemaining-=bytesDecoded;
@@ -188,7 +189,6 @@ int main(int argc, char *argv[])
     cout << "Konnte Datei " << argv[1] << " nicht oeffnen" <<endl;
     return -1; // Couldn't open file
   }
-
     // Retrieve stream information
   if(av_find_stream_info(pFormatCtx)<0){
     cout << "Konnte StreamInfo von " << argv[1] << " nicht ermitteln" <<endl;
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
-  
+//    av_seek_frame(pFormatCtx,videoStream,17000,AVSEEK_FLAG_ANY);  
   if(videoStream==-1)
     return -1; // Didn't find a video stream
 
@@ -263,11 +263,11 @@ int main(int argc, char *argv[])
 //  FrameContainer *container=new FrameContainer("/media/video/test");
   FrameContainer *container=new FrameContainer("/tmp/frame.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<100)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<100000)
   {
-    
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
+    
     if(i%10==0){
 	cerr << "\rProcessing Frame :"<< i;
     }

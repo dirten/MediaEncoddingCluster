@@ -1,3 +1,6 @@
+#ifndef FRAMECOMPRESSOR_H
+#define  FRAMECOMPRESSOR_H
+
 #include "minilzo.h"
 #include <stdio.h>
 #include <avformat.h>
@@ -12,6 +15,7 @@
 #define IN_LEN      (128*1024ul)
 #endif
 #define OUT_LEN     (IN_LEN + IN_LEN / 16 + 64 + 3)
+
 using namespace std;
 class FrameCompressor{
     private:
@@ -25,4 +29,4 @@ class FrameCompressor{
 	FrameCompressor();    
 	~FrameCompressor();    
 };
-
+#endif

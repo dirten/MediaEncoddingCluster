@@ -48,7 +48,7 @@ int FrameCompressor::deflateFrame(AVFrame * in, unsigned char * out){
 //    out=buffer;
 
     int r = lzo1x_1_compress(buffer,in_len,out,&out_len,wrkmem);
-//    delete buffer;
+    delete buffer;
     return out_len;
 //    printf("EingabeGröße:%d\t AusgabeGröße:%d\n",in_len, out_len);
 }

@@ -4,10 +4,13 @@
  ***************************************************************************/
 
 #ifndef FRAMEHIVE_H
+#define _FILE_OFFSET_BITS 64  /* enable large file support  */
 #include <avformat.h>
 #include <iostream>
 #include <sqlite3.h>
-
+#include <mysql/mysql.h>
+#include <sys/stat.h>
+#include "FrameCompressor.h"
 #define FRAMEHIVE_H
 using namespace std;
 class FrameHive {
@@ -17,6 +20,14 @@ class FrameHive {
 	AVFrame * getFrame();
 	~FrameHive();
     private:
-    
+	void putFrameSQLite( AVFrame * frame, AVCodecContext *codexCtx );
+	void putFrameMySQL( AVFrame * frame, AVCodecContext *codexCtx );
+	void putFrameFS( AVFrame * frame, AVCodecContext *codexCtx );    
+	void putFrameHive( AVFrame * frame, AVCodecContext *codexCtx );    
+	int frameCounter;
+	int pathCounter;
+	string pfad;
+	FrameCompressor *compressor;
+	FILE *pFileHive;
 };
 #endif 
