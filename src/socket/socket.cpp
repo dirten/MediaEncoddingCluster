@@ -52,7 +52,7 @@ bool Socket::send(unsigned char *in){
     int rest=sizeof((struct SocketData)data);
     cout << "StructSize"<<sizeof((struct SocketData)data)<<endl;
     while(rest>0){
-//	int byte=write(this->connectFd,&data,sizeof((struct SocketData)data));
+	int byte=write(this->connectFd,&data,sizeof((struct SocketData)data));
 //	int byte=fwrite(&data,1,10,this->connectFd);
 //	offset+=byte;
 	rest-=byte;
