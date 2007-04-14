@@ -81,14 +81,14 @@ ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run aclocal-1.9
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run tar
+AMTAR = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -120,7 +120,7 @@ LIBS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jhoelscher/test/MediaEncodingCluster/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run makeinfo
 OBJEXT = o
 PACKAGE = bruteripper
 PACKAGE_BUGREPORT = 
@@ -164,7 +164,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/jhoelscher/test/MediaEncodingCluster/install-sh
+install_sh = /home/jhoelscher/MediaEncodingCluster/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -182,7 +182,7 @@ target_alias =
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = config framehive
+SUBDIRS = config socket hivecontrol framehive
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp

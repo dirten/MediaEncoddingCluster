@@ -21,4 +21,4 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 	    
 CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -Wdeclaration-after-statement -D_LARGEFILE_SOURCE -D_GNU_SOURCE"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-AC_OUTPUT(Makefile src/Makefile src/config/Makefile src/framehive/Makefile)
+AC_OUTPUT(Makefile src/Makefile src/config/Makefile src/framehive/Makefile src/socket/Makefile src/hivecontrol/Makefile test/Makefile)

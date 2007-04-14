@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = config framehive
+SUBDIRS = config socket hivecontrol framehive
 bin_PROGRAMS = framesender framereceiver
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
