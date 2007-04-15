@@ -58,7 +58,7 @@ class server{
 */
 	    new EsbConfig("test.cfg");
 	    Socket *socket=new Socket();
-	    socket->setHostname("localhost");
+//	    socket->setHostname("localhost");
 	    socket->setPort(10000);
 	    socket->Listen();
 	for(;;){
@@ -66,7 +66,10 @@ class server{
 	    socket->Accept();
 	    cout<<"conection accepted"<<endl;
 //	    string s="bla fasel";
-	    socket->write((unsigned char *)buffer, filesize);
+	    SocketData * data=new SocketData();
+	    data->data=buffer;
+	    data->data_length=filesize;
+	    socket->write(data);
 	    cout<<"sendet"<<endl;
 	}
     }

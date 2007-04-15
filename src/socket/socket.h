@@ -17,6 +17,7 @@ struct Socket_t{
     char * hostname;
     int port;
 };
+
 struct SocketData{
     char *data;
     int data_length;
@@ -33,9 +34,11 @@ class Socket{
     public:
 			Socket(int);
 			Socket();
+			Socket(char * hostname, int portnumber);
 			~Socket();
 	bool 		write(const unsigned char*, int );
-	SocketData    *	Recv();
+	bool 		write(SocketData* );
+	SocketData    *	read();
 	void 		setHostname(char*);
 	void 		setPort(int);
 	char 	      * getHostname();

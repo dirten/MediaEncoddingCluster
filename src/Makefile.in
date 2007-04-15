@@ -182,7 +182,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = config socket hivecontrol framehive
+SUBDIRS = config socket hivecontrol framehive org
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp

@@ -24,6 +24,14 @@ Socket::Socket(){
     bzero(&socketaddr,sizeof(socketaddr));    
 }
 
+Socket::Socket(char * hostname, int portnumber){
+    this->hostname=hostname;
+    this->port=portnumber;
+    this->socketFd=0;
+    this->connectFd=0;
+    bzero(&socketaddr,sizeof(socketaddr));    
+}
+
 /******************************************************************************/
 void Socket::setHostname(char*name){
     this->hostname=name;
@@ -45,12 +53,17 @@ int Socket::getPort(){
 }
 
 /******************************************************************************/
+bool Socket::write(SocketData * data){
+    this->write((unsigned char *)data->data, data->data_length);
+}
+
+/******************************************************************************/
 bool Socket::write(const unsigned char * buffer, int len){
     int remaining=len;
     int sendOpts = SOCKET_NOSIGNAL;
     char * length=new char[64];
     sprintf(length,"%d", len);
-    int wri=send(this->connectFd,length,64,sendOpts);
+    int wri=::send(this->connectFd,length,64,sendOpts);
     while(remaining>0){
 	int bytes=::send(this->connectFd,buffer,remaining,sendOpts);
 	buffer+=bytes;
@@ -60,11 +73,10 @@ bool Socket::write(const unsigned char * buffer, int len){
 }
 
 /******************************************************************************/
-SocketData* Socket::Recv(){
+SocketData* Socket::read(){
     char*bytes_str=new char[64];
-    read(this->connectFd,bytes_str,64);
+    ::read(this->connectFd,bytes_str,64);
     int bytes=atoi(bytes_str);
-    cout<<"try to recv "<<bytes<<" bytes"<<endl;
     int counter=0;
     char recvBuffer[8192];
     int offset=0;
@@ -74,13 +86,12 @@ SocketData* Socket::Recv(){
     char*frame=new char[bytes];
     while(all<bytes){
 	int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
-	counter=read(this->socketFd,recvBuffer,maxrecv);
+	counter=::read(this->socketFd,recvBuffer,maxrecv);
 	if(counter<0)return false;
 	memcpy(frame+offset,recvBuffer,counter);
 	offset+=counter;
 	rest-=counter;
 	all+=counter;
-	cout<<counter<<" received"<<endl;
     }
     SocketData * packet=new SocketData();
     packet->data=frame;
@@ -112,7 +123,6 @@ int Socket::Accept(){
     sockaddr_in client;
     socklen_t clilen=0;
     bzero(&client, sizeof(client));
-//    cout<<"listening on port:"<<port<<endl;
     connectFd=accept(socketFd,(struct sockaddr*)&client,&clilen);
     if(connectFd<0){
 	close(connectFd);

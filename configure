@@ -19572,7 +19572,7 @@ fi;
 
 CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -Wdeclaration-after-statement -D_LARGEFILE_SOURCE -D_GNU_SOURCE"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-                                                                      ac_config_files="$ac_config_files Makefile src/Makefile src/config/Makefile src/framehive/Makefile src/socket/Makefile src/hivecontrol/Makefile test/Makefile"
+                                                                                                    ac_config_files="$ac_config_files Makefile src/Makefile src/config/Makefile src/framehive/Makefile src/socket/Makefile src/hivecontrol/Makefile test/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -20162,6 +20162,9 @@ do
   "src/socket/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/socket/Makefile" ;;
   "src/hivecontrol/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hivecontrol/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+  "src/org/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/Makefile" ;;
+  "src/org/esb/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/Makefile" ;;
+  "src/org/esb/lang/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/lang/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
