@@ -148,19 +148,29 @@ void FrameHive::putFrameFS( AVFrame * frame, AVCodecContext *codecCtx ){
 	sprintf(newPfad, "%s/%d",pfad.c_str(), this->pathCounter);
 	mkdir(newPfad,0755);
     }
-  sprintf(szFilename, "%s/%d/frame%d.data.ppm",pfad.c_str(),pathCounter, ++frameCounter);
+  sprintf(szFilename, "%s/%d/frame%d.fstream.ppm",pfad.c_str(),pathCounter, ++frameCounter);
 //  cout <<szFilename<<endl;
-  pFile=fopen(szFilename, "wb");
 
-
+  pFile=fopen(szFilename, "w+b");
   if(pFile==NULL)
     return;
-
   fprintf(pFile, "P6\n%d %d\n255\n", codecCtx->width, codecCtx->height);
   for(y=0; y<codecCtx->height; y++)
     fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFile);
   fclose(pFile);
-
+  
+/*
+    string header="P6\n";
+    header+="512 256";
+//    header+="\n";
+//    header+="256";
+    header+="\n";
+    header+="255\n";
+    fstream file(szFilename, ios::out|ios::binary);
+    file.write(header.c_str(), header.size());
+    file.write((const char*)frame->data[0], (codecCtx->width*codecCtx->width*3));
+    file.close();
+*/    
 }
 
 /*****************************************************************************/

@@ -4,9 +4,22 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+
+#if defined( __APPLE__ )
+#define SOCKET_NOSIGNAL SO_NOSIGPIPE
+#elif defined( unix ) && !defined( __CYGWIN__ ) && !defined( sun )
+#define SOCKET_NOSIGNAL MSG_NOSIGNAL
+#else
+#define SOCKET_NOSIGNAL 0
+#endif
+
 struct Socket_t{
     char * hostname;
     int port;
+};
+struct SocketData{
+    char *data;
+    int data_length;
 };
 
 class Socket{
@@ -21,8 +34,8 @@ class Socket{
 			Socket(int);
 			Socket();
 			~Socket();
-	bool 		send(unsigned char*);
-	char          *	Recv();
+	bool 		write(const unsigned char*, int );
+	SocketData    *	Recv();
 	void 		setHostname(char*);
 	void 		setPort(int);
 	char 	      * getHostname();

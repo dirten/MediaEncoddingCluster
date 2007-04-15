@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include "FrameCompressor.h"
 #include "config.h"
+#include <fstream>
 #define FRAMEHIVE_H
 #define COMPRESSED false
 using namespace std;

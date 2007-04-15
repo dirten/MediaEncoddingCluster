@@ -2,7 +2,6 @@
 #include "socket.h"
 #include "config.h"
 using namespace std;
-
 Socket::Socket(int sock){
     this->connectFd=sock;
     Socket();
@@ -31,37 +30,20 @@ int Socket::getPort(){
     return port;
 }
 
-struct SocketData{
-    unsigned char*data;
-    int data_length;
-}data;
-bool Socket::send(unsigned char *in){
-//    cout<<"Socket::send(char*in)"<<endl;
-//    cout<<connectFd<<endl;
-    int width=0, height=0;
-//    data.data=new unsigned char[100];
-    memcpy(&data,"test",4);
-//    width=atoi(EsbConfig::getConfig("width"));
-//    height=atoi(EsbConfig::getConfig("height"));
-//    char*bytes=new char[64];
-//    sprintf(bytes,"%d",(width*height*3));
-//    int rest=width*height*3;
-//    int offset=0, byte=0;
-//    int wri=write(this->connectFd,bytes,64);
-//    cout<<"writed length of "<<bytes<<endl;
-    int rest=sizeof((struct SocketData)data);
-    cout << "StructSize"<<sizeof((struct SocketData)data)<<endl;
-    while(rest>0){
-	int byte=write(this->connectFd,&data,sizeof((struct SocketData)data));
-//	int byte=fwrite(&data,1,10,this->connectFd);
-//	offset+=byte;
-	rest-=byte;
-	cout<<"sended "<<byte<<" bytes"<<endl;
+bool Socket::write(const unsigned char * buffer, int len){
+    int remaining=len;
+    int sendOpts = SOCKET_NOSIGNAL;
+    char * length=new char[64];
+    sprintf(length,"%d", len);
+    int wri=send(this->connectFd,length,64,sendOpts);
+    while(remaining>0){
+	int bytes=::send(this->connectFd,buffer,remaining,sendOpts);
+	buffer+=bytes;
+	remaining-=bytes;
     }
-    cout<<"frame sendet"<<endl;
     return true;
 }
-char* Socket::Recv(){
+SocketData* Socket::Recv(){
     char*bytes_str=new char[64];
     read(this->connectFd,bytes_str,64);
     int bytes=atoi(bytes_str);
@@ -83,8 +65,10 @@ char* Socket::Recv(){
 	all+=counter;
 	cout<<counter<<" received"<<endl;
     }
-    cout<<"received "<<strlen(frame)<<" bytes"<<endl;
-    return frame;
+    SocketData * packet=new SocketData();
+    packet->data=frame;
+    packet->data_length=all;
+    return packet;
 }
 
 void Socket::init(){
