@@ -2,14 +2,20 @@
 #include "socket.h"
 #include "config.h"
 using namespace std;
+
+/******************************************************************************/
 Socket::Socket(int sock){
     this->connectFd=sock;
     Socket();
-//    cout<<"socket"<<sock<<endl;
-}
-Socket::~Socket(){
 }
 
+/******************************************************************************/
+Socket::~Socket(){
+    this->Close();
+}
+
+
+/******************************************************************************/
 Socket::Socket(){
     this->hostname="localhost";
     this->port=0;
@@ -17,19 +23,28 @@ Socket::Socket(){
     this->connectFd=0;
     bzero(&socketaddr,sizeof(socketaddr));    
 }
+
+/******************************************************************************/
 void Socket::setHostname(char*name){
     this->hostname=name;
 }
+
+/******************************************************************************/
 void Socket::setPort(int p){
     this->port=p;
 }
+
+/******************************************************************************/
 char * Socket::getHostname(){
     return this->hostname;
 }
+
+/******************************************************************************/
 int Socket::getPort(){
     return port;
 }
 
+/******************************************************************************/
 bool Socket::write(const unsigned char * buffer, int len){
     int remaining=len;
     int sendOpts = SOCKET_NOSIGNAL;
@@ -43,6 +58,8 @@ bool Socket::write(const unsigned char * buffer, int len){
     }
     return true;
 }
+
+/******************************************************************************/
 SocketData* Socket::Recv(){
     char*bytes_str=new char[64];
     read(this->connectFd,bytes_str,64);
@@ -71,12 +88,15 @@ SocketData* Socket::Recv(){
     return packet;
 }
 
+/******************************************************************************/
 void Socket::init(){
     socketFd=socket(AF_INET,SOCK_STREAM,0);
     socketaddr.sin_family=AF_INET;
     socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
     socketaddr.sin_port=htons(this->port);
 }
+
+/******************************************************************************/
 void Socket::Listen(){
     this->init();
     if(bind(socketFd,(struct sockaddr*)&socketaddr, sizeof(socketaddr))<0){
@@ -86,6 +106,8 @@ void Socket::Listen(){
     }
     listen(socketFd,1024);
 }
+
+/******************************************************************************/
 int Socket::Accept(){
     sockaddr_in client;
     socklen_t clilen=0;
@@ -100,6 +122,7 @@ int Socket::Accept(){
     return connectFd;
 }
 
+/******************************************************************************/
 void Socket::Connect(){
     this->init();
     inet_pton(AF_INET,hostname,&socketaddr.sin_addr);
@@ -107,6 +130,7 @@ void Socket::Connect(){
     connectFd=socketFd;    
 }
 
+/******************************************************************************/
 void Socket::Close(){
     close(socketFd);
     close(connectFd);
