@@ -24,6 +24,7 @@ Socket::Socket(){
     bzero(&socketaddr,sizeof(socketaddr));    
 }
 
+/******************************************************************************/
 Socket::Socket(char * hostname, int portnumber){
     this->hostname=hostname;
     this->port=portnumber;
