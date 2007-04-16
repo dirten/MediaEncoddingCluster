@@ -11,7 +11,7 @@
 #include <mysql/mysql.h>
 #include <sys/stat.h>
 #include "FrameCompressor.h"
-#include "config.h"
+#include "org/esb/config/config.h"
 #include <fstream>
 #define FRAMEHIVE_H
 #define COMPRESSED false

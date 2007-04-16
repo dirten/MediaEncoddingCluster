@@ -9,5 +9,5 @@ SOURCES = FrameHive.cpp FrameCompressor.cpp minilzo.c
 libframehive_la_SOURCES = $(SOURCES)
 libframehive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
 # set the include path found by configure
-INCLUDES=   -I$(top_srcdir)/src/config \
+INCLUDES=   -I$(top_srcdir)/src \
 	    $(all_includes) 

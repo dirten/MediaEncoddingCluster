@@ -1,5 +1,5 @@
 #include "FrameHive.h"
-
+using namespace org::esb::config;
 /*****************************************************************************/
 MYSQL *mysql;
 MYSQL_STMT *stmt;
@@ -39,7 +39,7 @@ FrameHive::FrameHive(string dbname){
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
 
 
-    if(EsbConfig::getConfig("mysql")=="true"){
+    if(Config::getConfig("mysql")=="true"){
     mysql = mysql_init(NULL);
     if(mysql == NULL) {
 	fprintf(stderr, " Initialisierung fehlgeschlagen\n");

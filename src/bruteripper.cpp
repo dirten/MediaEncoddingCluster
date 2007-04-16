@@ -18,9 +18,9 @@
 //#include "framesender.h"
 //#include "FrameContainer.h"
 #include "FrameHive.h"
-#include "config.h"
+#include "org/esb/config/config.h"
 using namespace std;
-
+using namespace org::esb::config;
 
 bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx, 
                   int videoStream, AVFrame *pFrame)
@@ -136,7 +136,7 @@ void SaveFrame(AVFrame *pFrame, int width, int height, int iFrame)
 
 int main(int argc, char *argv[])
 {
-    EsbConfig *config=new EsbConfig("cluster.cfg");
+    Config::init("cluster.cfg");
 
 
     //============================================================
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     
 //  argv[1]="/media/video/Sledge Hammer/Sledge_Staffel1_episode1.avi";
 //  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
-    string path=string(EsbConfig::getConfig("src.path"));
+    string path=string(Config::getConfig("src.path"));
     path+="/";
     path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
     argv[1]=(char*)path.c_str();
