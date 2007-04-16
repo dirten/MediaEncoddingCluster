@@ -19,7 +19,7 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 	    AMQ_PATH="$withval")
 	    
 	    
-CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -Wdeclaration-after-statement -D_LARGEFILE_SOURCE -D_GNU_SOURCE"
+CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
 AC_OUTPUT(
     Makefile 
@@ -32,4 +32,5 @@ AC_OUTPUT(
     src/org/Makefile
     src/org/esb/Makefile
     src/org/esb/lang/Makefile
+    src/org/esb/socket/Makefile
     )
