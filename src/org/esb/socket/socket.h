@@ -38,8 +38,8 @@ class Socket{
 			Socket();
 			Socket(char * hostname, int portnumber);
 			~Socket();
-	void 		write(const unsigned char*, int );
-	void 		write(SocketData* );
+	int 		write(const unsigned char*, int );
+	int 		write(SocketData* );
 	SocketData    *	read();
 	void 		setHostname(char*);
 	void 		setPort(int);

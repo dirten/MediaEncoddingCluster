@@ -12,7 +12,7 @@ using namespace org::esb::config;
 class server{
     public:
 	server(){
-	    
+	    /*    
 	    fstream FileBin("/tmp/frame.container/1/frame210.data.ppm",ios::in|ios::out|ios::binary);
 	    FileBin.seekg(0,ios::end);
 	    unsigned long filesize=streamoff(FileBin.tellg());
@@ -22,7 +22,7 @@ class server{
 	    FileBin.read(buffer, filesize);
 //	    cout <<"Buffer:"<< buffer << endl;
 	    printf("FileSize:%d->%d", strlen(buffer), filesize);
-	    
+	    */
 
 /*
 //	    FILE * f=fopen("/tmp/frame.container/1/frame1.data.ppm","r+b");
@@ -69,10 +69,33 @@ class server{
 	    socket->Accept();
 	    cout<<"conection accepted"<<endl;
 //	    string s="bla fasel";
-	    SocketData * data=new SocketData();
-	    data->data=buffer;
-	    data->data_length=filesize;
-	    socket->write(data);
+
+
+	    for(int a=0;true;a++){
+		char * filename=new char[200];
+		int dir=a/1000;
+		sprintf(filename,"/tmp/frame.container/%d/frame%d.data.ppm", dir+1,(a)+1);
+//		printf("%s\n", filename);
+		fstream FileBin(filename,ios::in|ios::out|ios::binary);
+		if(!FileBin){
+		    break;
+		}
+	        FileBin.seekg(0,ios::end);
+		unsigned long filesize=streamoff(FileBin.tellg());
+	        FileBin.seekg(0,ios::beg);
+	        string strBuffer="";
+	        char buffer[filesize];
+	        FileBin.read(buffer, filesize);
+//		    cout <<"Buffer:"<< buffer << endl;
+//	        printf("FileSize:%d->%d", strlen(buffer), filesize);
+		SocketData * data=new SocketData();
+		data->data=buffer;
+		data->data_length=filesize;
+		if(socket->write(data)<0){
+		    cout << "Break"<<endl;
+		    break;
+		}
+	    }
 	    cout<<"sendet"<<endl;
 	}
     }

@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
        identically 1. */
     c->time_base.den = STREAM_FRAME_RATE;
     c->time_base.num = 1;
-    c->gop_size = 1; /* emit one intra frame every twelve frames at most */
+    c->gop_size = 40; /* emit one intra frame every twelve frames at most */
     c->pix_fmt = STREAM_PIX_FMT;
     if (c->codec_id == CODEC_ID_MPEG2VIDEO) {
         /* just for testing, we also add B frames */
@@ -119,22 +119,28 @@ int main(int argc, char *argv[]){
 //    }
 
     Socket *so1=new Socket();
+	so1->setPort(10000);
+	so1->Connect();
+        int video_outbuf_size, ret;
+        uint8_t *video_outbuf;
 //    cout << "Hostname"<<so1->getHostname()<<endl;
 //    so1->setHostname("localhost");
-    so1->setPort(10000);
-    so1->Connect();
-    SocketData * r=so1->read();
+    for(int b=0;b< 5000;b++){
+//	printf("new Frame %d\n", b);
+//	fflush(stdout);	
+	SocketData * r=so1->read();
 
-    memcpy(tmp_picture->data[0],r->data,r->data_length);
+//	printf("Data Arrived\n");
 
-    img_convert((AVPicture *)picture, c->pix_fmt,
-                (AVPicture *)tmp_picture, PIX_FMT_RGB24,
-                c->width, c->height);
+	memcpy(tmp_picture->data[0],r->data,r->data_length);
+//	printf("memcpy solved\n");
+	img_convert((AVPicture *)picture, c->pix_fmt,
+    	    	    (AVPicture *)tmp_picture, PIX_FMT_RGB24,
+            	    c->width, c->height);
 
+//	printf("Image Converted\n");
 
         /* encode the image */
-        uint8_t *video_outbuf;
-        int video_outbuf_size, ret;
 	video_outbuf = NULL;
 	if (!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
         /* allocate output buffer */
@@ -162,6 +168,7 @@ int main(int argc, char *argv[]){
         } else {
             ret = 0;
         }
+    }
     avcodec_close(st->codec);
 //    av_free(picture->data[0]);
     av_free(picture);

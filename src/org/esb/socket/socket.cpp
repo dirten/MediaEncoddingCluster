@@ -55,22 +55,28 @@ int Socket::getPort(){
 }
 
 /******************************************************************************/
-void Socket::write(SocketData * data){
-    this->write((unsigned char *)data->data, data->data_length);
+int Socket::write(SocketData * data){
+    return this->write((unsigned char *)data->data, data->data_length);
 }
 
 /******************************************************************************/
-void Socket::write(const unsigned char * buffer, int len){
-    int remaining=len;
+int Socket::write(const unsigned char * buffer, int len){
+    int remaining=len, byteCounter=0;;
     int sendOpts = SOCKET_NOSIGNAL;
     char * length=new char[64];
     sprintf(length,"%d", len);
     ::send(this->connectFd,length,64,sendOpts);
     while(remaining>0){
 	int bytes=::send(this->connectFd,buffer,remaining,sendOpts);
+//	cout << "Bytes Sendet:"<<bytes<<endl;
+	byteCounter+=bytes;
+	if(bytes<0){
+	    return bytes;
+	}
 	buffer+=bytes;
 	remaining-=bytes;
     }
+    return byteCounter;
 }
 
 /******************************************************************************/
