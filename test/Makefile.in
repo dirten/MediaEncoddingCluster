@@ -68,7 +68,8 @@ test_config_DEPENDENCIES =  \
 	$(top_srcdir)/src/org/esb/config/libconfig.la
 am_test_dvdread_OBJECTS = test_dvdread.$(OBJEXT)
 test_dvdread_OBJECTS = $(am_test_dvdread_OBJECTS)
-test_dvdread_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la
+test_dvdread_DEPENDENCIES =  \
+	$(top_srcdir)/src/org/esb/config/libconfig.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -212,7 +213,7 @@ server_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
 			$(top_srcdir)/src/org/esb/socket/libsocket.la \
 			-lpthread 
 
-test_dvdread_LDADD = $(top_srcdir)/src/config/libconfig.la
+test_dvdread_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
 test_config_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
 INCLUDES = \
         -I$(top_srcdir)/src/config \

@@ -53,7 +53,7 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libsocket_la_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la
+libsocket_la_LIBADD =
 am_libsocket_la_OBJECTS = socket.lo
 libsocket_la_OBJECTS = $(am_libsocket_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -177,8 +177,9 @@ MICRO_VERSION = 1
 lib_LTLIBRARIES = libsocket.la
 libsocket_la_SOURCES = socket.cpp 
 libsocket_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
-libsocket_la_LIBADD = $(top_srcdir)/src/config/libconfig.la
-INCLUDES = -I$(top_srcdir)/src/config
+
+#libsocket_la_LIBADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la
+INCLUDES = -I$(top_srcdir)/src
 all: all-am
 
 .SUFFIXES:

@@ -1,8 +1,9 @@
 #include <iostream>
 #include "socket.h"
-#include "config.h"
+//#include "org/esb/config/config.h"
 using namespace std;
 using namespace org::esb::socket;
+//using namespace org::esb::config;
 /******************************************************************************/
 Socket::Socket(int sock){
     this->connectFd=sock;

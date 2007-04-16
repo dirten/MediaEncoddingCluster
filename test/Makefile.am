@@ -28,7 +28,7 @@ server_LDADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la \
 			$(top_srcdir)/src/org/esb/socket/libsocket.la \
 			-lpthread 
 
-test_dvdread_LDADD		=	$(top_srcdir)/src/config/libconfig.la
+test_dvdread_LDADD		=	$(top_srcdir)/src/org/esb/config/libconfig.la
 
 test_config_LDADD		=	$(top_srcdir)/src/org/esb/config/libconfig.la
 

@@ -1,14 +1,14 @@
 //#include <dvdread/dvd_reader.h>
 #include <iostream>
-#include "config.h"
+#include "org/esb/config/config.h"
 
 using namespace std;
-
+using namespace org::esb::config;
 size_t getMegaBytes(size_t);
 int main(int argc, char**argv){
     int blocks_to_read=1;
-    new EsbConfig("/home/jhoelscher/bruteripper-0.2/config.rc");
-    char * sourcedir=EsbConfig::getConfig("sourcedir");
+    Config::init("/home/jhoelscher/bruteripper-0.2/config.rc");
+    char * sourcedir=Config::getConfig("sourcedir");
     cout << "opening sourcedir:"<< sourcedir << endl;
 /*    dvd_reader_t*dvd= DVDOpen(sourcedir);
     DVDInit();    
