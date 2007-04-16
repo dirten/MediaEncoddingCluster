@@ -7,7 +7,7 @@
 #define STREAM_PIX_FMT PIX_FMT_YUV420P /* default pix_fmt */
 
 AVFrame *picture, *tmp_picture;
-
+using namespace org::esb::socket;
 
 static AVFrame *alloc_picture(int pix_fmt, int width, int height)
 {
@@ -16,11 +16,15 @@ static AVFrame *alloc_picture(int pix_fmt, int width, int height)
     int size;
 
     picture = avcodec_alloc_frame();
-    if (!picture)
+    if (!picture){
+	printf("Fehler bei alloc_picture");
+//	cout << "Fehler bei alloc_picture"<<endl;
         return NULL;
+    }
     size = avpicture_get_size(pix_fmt, width, height);
     picture_buf = (uint8_t*)malloc(size);
     if (!picture_buf) {
+	printf("Fehler bei alloc_picture");
         av_free(picture);
         return NULL;
     }
@@ -46,8 +50,8 @@ int main(int argc, char *argv[]){
     /* put sample parameters */
     c->bit_rate = 4000000;
     /* resolution must be a multiple of two */
-    c->width = 352;
-    c->height = 288;
+    c->width = 512;
+    c->height = 256;
     /* time base: this is the fundamental unit of time (in seconds) in terms
        of which frame timestamps are represented. for fixed-fps content,
        timebase should be 1/framerate and timestamp increments should be
@@ -105,16 +109,82 @@ int main(int argc, char *argv[]){
         }
     }
     av_write_header(oc);
-
-        if (c->pix_fmt != PIX_FMT_YUV420P) {
-            /* as we only generate a YUV420P picture, we must convert it
-               to the codec pixel format if needed */
-//            fill_yuv_image(tmp_picture, frame_count, c->width, c->height);
-            img_convert((AVPicture *)picture, c->pix_fmt,
-                        (AVPicture *)tmp_picture, PIX_FMT_YUV420P,
-                        c->width, c->height);
-        } else {
-//            fill_yuv_image(picture, frame_count, c->width, c->height);
+    tmp_picture = NULL;
+//    if (c->pix_fmt != PIX_FMT_YUV420P) {
+        tmp_picture = alloc_picture(PIX_FMT_RGB24, c->width, c->height);
+        if (!tmp_picture) {
+            fprintf(stderr, "Could not allocate temporary picture\n");
+            exit(1);
         }
+//    }
+
+    Socket *so1=new Socket();
+//    cout << "Hostname"<<so1->getHostname()<<endl;
+//    so1->setHostname("localhost");
+    so1->setPort(10000);
+    so1->Connect();
+    SocketData * r=so1->read();
+
+    memcpy(tmp_picture->data[0],r->data,r->data_length);
+
+    img_convert((AVPicture *)picture, c->pix_fmt,
+                (AVPicture *)tmp_picture, PIX_FMT_RGB24,
+                c->width, c->height);
+
+
+        /* encode the image */
+        uint8_t *video_outbuf;
+        int video_outbuf_size, ret;
+	video_outbuf = NULL;
+	if (!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
+        /* allocate output buffer */
+        /* XXX: API change will be done */
+    	    video_outbuf_size = 200000;
+    	    video_outbuf = (uint8_t*)malloc(video_outbuf_size);
+	}
+
+        int out_size = avcodec_encode_video(c, video_outbuf, video_outbuf_size, picture);
+	
+        /* if zero size, it means the image was buffered */
+	
+        if (out_size > 0) {
+            AVPacket pkt;
+            av_init_packet(&pkt);
+
+            pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
+            if(c->coded_frame->key_frame)
+                pkt.flags |= PKT_FLAG_KEY;
+            pkt.stream_index= st->index;
+            pkt.data= video_outbuf;
+            pkt.size= out_size;
+
+            ret = av_write_frame(oc, &pkt);
+        } else {
+            ret = 0;
+        }
+    avcodec_close(st->codec);
+//    av_free(picture->data[0]);
+    av_free(picture);
+    if (tmp_picture) {
+        av_free(tmp_picture->data[0]);
+        av_free(tmp_picture);
+    }
+    av_free(video_outbuf);
+    av_write_trailer(oc);
+
+    /* free the streams */
+    /*
+    for(int i = 0; i < oc->nb_streams; i++) {
+        av_freep(&oc->streams[i]->codec);
+        av_freep(&oc->streams[i]);
+    }
+*/
+    if (!(fmt->flags & AVFMT_NOFILE)) {
+        /* close the output file */
+        url_fclose(&oc->pb);
+    }
+
+    /* free the stream */
+    av_free(oc);
 
 }

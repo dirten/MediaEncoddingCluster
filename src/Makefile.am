@@ -21,4 +21,5 @@ framesender_LDFLAGS = $(all_libraries)
 noinst_HEADERS=*.h
 
 framesender_LDADD=$(top_srcdir)/src/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
+framereceiver_LDADD=$(top_srcdir)/src/org/esb/socket/libsocket.la 
 

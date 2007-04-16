@@ -52,7 +52,8 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_framereceiver_OBJECTS = FrameReceiver.$(OBJEXT)
 framereceiver_OBJECTS = $(am_framereceiver_OBJECTS)
-framereceiver_LDADD = $(LDADD)
+framereceiver_DEPENDENCIES =  \
+	$(top_srcdir)/src/org/esb/socket/libsocket.la
 am_framesender_OBJECTS = bruteripper.$(OBJEXT)
 framesender_OBJECTS = $(am_framesender_OBJECTS)
 framesender_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la \
@@ -201,6 +202,7 @@ framesender_LDFLAGS = $(all_libraries)
 #zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS = *.h
 framesender_LDADD = $(top_srcdir)/src/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
+framereceiver_LDADD = $(top_srcdir)/src/org/esb/socket/libsocket.la 
 all: all-recursive
 
 .SUFFIXES:
