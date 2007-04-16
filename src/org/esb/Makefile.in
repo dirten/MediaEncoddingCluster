@@ -157,7 +157,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = lang socket
+SUBDIRS = lang config socket 
 all: all-recursive
 
 .SUFFIXES:

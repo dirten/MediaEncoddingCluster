@@ -1,16 +1,19 @@
 
 #include <iostream>
-#include "config.h"
-#include "socket.h"
+//#include "config.h"
+#include "org/esb/socket/socket.h"
+#include "org/esb/config/config.h"
 #include <fcntl.h>
 #include <iostream>
 #include <fstream>
 using namespace std;
+using namespace org::esb::socket;
+using namespace org::esb::config;
 class server{
     public:
 	server(){
 	    
-	    fstream FileBin("/tmp/frame.container/1/frame20.fstream.ppm",ios::in|ios::out|ios::binary);
+	    fstream FileBin("/tmp/frame.container/1/frame210.data.ppm",ios::in|ios::out|ios::binary);
 	    FileBin.seekg(0,ios::end);
 	    unsigned long filesize=streamoff(FileBin.tellg());
 	    FileBin.seekg(0,ios::beg);
@@ -56,7 +59,7 @@ class server{
 	    int filesize=byteCount;
 //	    buffer=bla.c_str();
 */
-	    new EsbConfig("test.cfg");
+	    Config::init("test.cfg");
 	    Socket *socket=new Socket();
 //	    socket->setHostname("localhost");
 	    socket->setPort(10000);

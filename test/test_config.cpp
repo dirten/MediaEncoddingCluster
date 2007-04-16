@@ -9,11 +9,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "config.h"
-
+#include "org/esb/config/config.h"
+using namespace org::esb::config;
 
 int main(int argc, char**argv){
-    new EsbConfig("./config.rc");
-
+    Config::init("./cluster.cfg");
+    cout << "Config:"<<Config::getConfig("src.path")<<endl;;
 }
 

@@ -33,4 +33,5 @@ AC_OUTPUT(
     src/org/esb/Makefile
     src/org/esb/lang/Makefile
     src/org/esb/socket/Makefile
+    src/org/esb/config/Makefile
     )

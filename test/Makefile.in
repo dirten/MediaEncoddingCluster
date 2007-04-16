@@ -53,18 +53,19 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_client_OBJECTS = socket.$(OBJEXT)
 client_OBJECTS = $(am_client_OBJECTS)
-client_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la \
-	$(top_srcdir)/src/socket/libsocket.la
+client_DEPENDENCIES = $(top_srcdir)/src/org/esb/config/libconfig.la \
+	$(top_srcdir)/src/org/esb/socket/libsocket.la
 am_server_OBJECTS = server.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
-server_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la \
-	$(top_srcdir)/src/socket/libsocket.la
+server_DEPENDENCIES = $(top_srcdir)/src/org/esb/config/libconfig.la \
+	$(top_srcdir)/src/org/esb/socket/libsocket.la
 am_test_OBJECTS = test.$(OBJEXT) test2.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_LDADD = $(LDADD)
 am_test_config_OBJECTS = test_config.$(OBJEXT)
 test_config_OBJECTS = $(am_test_config_OBJECTS)
-test_config_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la
+test_config_DEPENDENCIES =  \
+	$(top_srcdir)/src/org/esb/config/libconfig.la
 am_test_dvdread_OBJECTS = test_dvdread.$(OBJEXT)
 test_dvdread_OBJECTS = $(am_test_dvdread_OBJECTS)
 test_dvdread_DEPENDENCIES = $(top_srcdir)/src/config/libconfig.la
@@ -204,17 +205,18 @@ test_SOURCES = test.cpp \
 
 
 #aviclient_LDADD =-laviplay
-client_LDADD = $(top_srcdir)/src/config/libconfig.la \
-			$(top_srcdir)/src/socket/libsocket.la 
+client_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
+			$(top_srcdir)/src/org/esb/socket/libsocket.la 
 
-server_LDADD = $(top_srcdir)/src/config/libconfig.la \
-			$(top_srcdir)/src/socket/libsocket.la \
+server_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
+			$(top_srcdir)/src/org/esb/socket/libsocket.la \
 			-lpthread 
 
 test_dvdread_LDADD = $(top_srcdir)/src/config/libconfig.la
-test_config_LDADD = $(top_srcdir)/src/config/libconfig.la
+test_config_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
 INCLUDES = \
         -I$(top_srcdir)/src/config \
+        -I$(top_srcdir)/src/ \
         -I$(top_srcdir)/src/socket
 
 all: all-am

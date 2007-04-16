@@ -1,13 +1,14 @@
 
 
 #include <iostream>
-#include "socket.h"
+#include "org/esb/socket/socket.h"
 #include <fstream>
 using namespace std;
+using namespace org::esb::socket;
 int main(int argc,char**argv){
 
     Socket *so1=new Socket();
-    cout << "Hostname"<<so1->getHostname()<<endl;
+//    cout << "Hostname"<<so1->getHostname()<<endl;
 //    so1->setHostname("localhost");
     so1->setPort(10000);
     so1->Connect();

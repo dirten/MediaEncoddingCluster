@@ -2,7 +2,7 @@
 #include "socket.h"
 #include "config.h"
 using namespace std;
-
+using namespace org::esb::socket;
 /******************************************************************************/
 Socket::Socket(int sock){
     this->connectFd=sock;
@@ -21,7 +21,7 @@ Socket::Socket(){
     this->port=0;
     this->socketFd=0;
     this->connectFd=0;
-    bzero(&socketaddr,sizeof(socketaddr));    
+    bzero(&this->socketaddr,sizeof(socketaddr));    
 }
 
 /******************************************************************************/
@@ -101,7 +101,7 @@ SocketData* Socket::read(){
 
 /******************************************************************************/
 void Socket::init(){
-    socketFd=socket(AF_INET,SOCK_STREAM,0);
+    socketFd=::socket(AF_INET,SOCK_STREAM,0);
     socketaddr.sin_family=AF_INET;
     socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
     socketaddr.sin_port=htons(this->port);

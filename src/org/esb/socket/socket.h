@@ -12,7 +12,9 @@
 #else
 #define SOCKET_NOSIGNAL 0
 #endif
-
+namespace org{
+namespace esb{
+namespace socket{
 struct Socket_t{
     char * hostname;
     int port;
@@ -48,4 +50,7 @@ class Socket{
 	void		Connect();
 	void		Close();
 };
+}
+}
+}
 #endif
