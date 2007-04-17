@@ -15,6 +15,7 @@ namespace org
       };
 
     }
-  };
+  }
+}
 
 #endif /*ACTIVEMQ_CONCURRENT_RUNNABLE_H_*/

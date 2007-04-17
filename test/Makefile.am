@@ -9,8 +9,10 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 noinst_HEADERS=*.h 
 
-bin_PROGRAMS=server client test test_dvdread test_config
+bin_PROGRAMS=server client test test_dvdread test_config test_thread
 test_dvdread_SOURCES=test_dvdread.cpp 
+
+test_thread_SOURCES=test_thread.cpp 
 
 test_config_SOURCES=test_config.cpp 
 
@@ -26,6 +28,9 @@ client_LDADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la \
 
 server_LDADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la \
 			$(top_srcdir)/src/org/esb/socket/libsocket.la \
+			-lpthread 
+
+test_thread_LDADD=	$(top_srcdir)/src/org/esb/lang/libesb.la \
 			-lpthread 
 
 test_dvdread_LDADD		=	$(top_srcdir)/src/org/esb/config/libconfig.la

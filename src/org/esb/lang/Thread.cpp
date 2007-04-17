@@ -2,18 +2,18 @@
 #include "org/esb/lang/Thread.h"
 #include <errno.h>
 
-#ifdef AMQCPP_USE_PTHREADS
-    #include <errno.h> // EINTR
-extern int errno;
-#else
-    #include <process.h> // _endthreadex
-#endif
+//#ifdef AMQCPP_USE_PTHREADS
+//    #include <errno.h> // EINTR
+//extern int errno;
+//#else
+//    #include <process.h> // _endthreadex
+//#endif
 
 //#include <activemq/exceptions/ActiveMQException.h>
 //#include <activemq/exceptions/RuntimeException.h>
 
-using namespace org::esb::lang;
 using namespace std;
+using namespace org::esb::lang;
 
 ////////////////////////////////////////////////////////////////////////////////
 Thread::Thread()
@@ -45,8 +45,8 @@ void Thread::start() throw ( Exception )
                      "Thread already started");
 
   }
-
 #ifdef AMQCPP_USE_PTHREADS
+//    cout <<"Start"<<endl;
 
   pthread_attr_init (&attributes);
   pthread_attr_setdetachstate (&attributes, PTHREAD_CREATE_JOINABLE);
@@ -139,7 +139,6 @@ Thread::runCallback( void* param )
 {
   // Get the instance.
   Thread* thread = (Thread*)param;
-
   // Invoke run on the task.
   try
   {
@@ -166,5 +165,5 @@ Thread::runCallback( void* param )
   return 0;
 #endif
 }
-}
+
 

@@ -53,10 +53,10 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libtest_la_LIBADD =
-am__objects_1 = Thread.lo
-am_libtest_la_OBJECTS = $(am__objects_1)
-libtest_la_OBJECTS = $(am_libtest_la_OBJECTS)
+libesb_la_LIBADD =
+am__objects_1 = Thread.lo Exception.lo
+am_libesb_la_OBJECTS = $(am__objects_1)
+libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -68,7 +68,7 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libtest_la_SOURCES)
+DIST_SOURCES = $(libesb_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -173,12 +173,12 @@ MINOR_VERSION = 0
 MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
-lib_LTLIBRARIES = libtest.la
-SOURCES = Thread.cpp
+lib_LTLIBRARIES = libesb.la
+SOURCES = Thread.cpp Exception.cpp
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
-libtest_la_SOURCES = $(SOURCES)
-libtest_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
+libesb_la_SOURCES = $(SOURCES)
+libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
 all: all-am
 
 .SUFFIXES:
@@ -239,8 +239,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libtest.la: $(libtest_la_OBJECTS) $(libtest_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libtest_la_LDFLAGS) $(libtest_la_OBJECTS) $(libtest_la_LIBADD) $(LIBS)
+libesb.la: $(libesb_la_OBJECTS) $(libesb_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libesb_la_LDFLAGS) $(libesb_la_OBJECTS) $(libesb_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -248,6 +248,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/Exception.Plo
 include ./$(DEPDIR)/Thread.Plo
 
 .cpp.o:

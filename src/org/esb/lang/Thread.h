@@ -22,20 +22,20 @@
 //#include <stdexcept>
 //#include <assert.h>
 
-#if (defined(__unix__) || defined(unix) || defined(MACOSX) || defined(__APPLE__)) && !defined(USG)
+//#if (defined(__unix__) || defined(unix) || defined(MACOSX) || defined(__APPLE__)) && !defined(USG)
    
 //#ifndef AMQCPP_USE_PTHREADS
-    #define AMQCPP_USE_PTHREADS
+//    #define AMQCPP_USE_PTHREADS
 //#endif
 
-    #include <pthread.h>
-#else
-    #include <windows.h>
-#endif
+//    #include <pthread.h>
+//#else
+//    #include <windows.h>
+//#endif
 #define AMQCPP_USE_PTHREADS
 #include <pthread.h>
-using namespace org::esb::lang;
 using namespace std;
+using namespace org::esb::lang;
 
 namespace org{
 namespace esb{

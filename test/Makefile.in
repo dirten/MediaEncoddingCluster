@@ -38,7 +38,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = server$(EXEEXT) client$(EXEEXT) test$(EXEEXT) \
-	test_dvdread$(EXEEXT) test_config$(EXEEXT)
+	test_dvdread$(EXEEXT) test_config$(EXEEXT) \
+	test_thread$(EXEEXT)
 subdir = test
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -70,6 +71,9 @@ am_test_dvdread_OBJECTS = test_dvdread.$(OBJEXT)
 test_dvdread_OBJECTS = $(am_test_dvdread_OBJECTS)
 test_dvdread_DEPENDENCIES =  \
 	$(top_srcdir)/src/org/esb/config/libconfig.la
+am_test_thread_OBJECTS = test_thread.$(OBJEXT)
+test_thread_OBJECTS = $(am_test_thread_OBJECTS)
+test_thread_DEPENDENCIES = $(top_srcdir)/src/org/esb/lang/libesb.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -82,9 +86,11 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(client_SOURCES) $(server_SOURCES) $(test_SOURCES) \
-	$(test_config_SOURCES) $(test_dvdread_SOURCES)
+	$(test_config_SOURCES) $(test_dvdread_SOURCES) \
+	$(test_thread_SOURCES)
 DIST_SOURCES = $(client_SOURCES) $(server_SOURCES) $(test_SOURCES) \
-	$(test_config_SOURCES) $(test_dvdread_SOURCES)
+	$(test_config_SOURCES) $(test_dvdread_SOURCES) \
+	$(test_thread_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -197,6 +203,7 @@ target_alias = @target_alias@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 noinst_HEADERS = *.h 
 test_dvdread_SOURCES = test_dvdread.cpp 
+test_thread_SOURCES = test_thread.cpp 
 test_config_SOURCES = test_config.cpp 
 client_SOURCES = socket.cpp 
 server_SOURCES = server.cpp 
@@ -210,6 +217,9 @@ client_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
 
 server_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
 			$(top_srcdir)/src/org/esb/socket/libsocket.la \
+			-lpthread 
+
+test_thread_LDADD = $(top_srcdir)/src/org/esb/lang/libesb.la \
 			-lpthread 
 
 test_dvdread_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
@@ -295,6 +305,9 @@ test_config$(EXEEXT): $(test_config_OBJECTS) $(test_config_DEPENDENCIES)
 test_dvdread$(EXEEXT): $(test_dvdread_OBJECTS) $(test_dvdread_DEPENDENCIES) 
 	@rm -f test_dvdread$(EXEEXT)
 	$(CXXLINK) $(test_dvdread_LDFLAGS) $(test_dvdread_OBJECTS) $(test_dvdread_LDADD) $(LIBS)
+test_thread$(EXEEXT): $(test_thread_OBJECTS) $(test_thread_DEPENDENCIES) 
+	@rm -f test_thread$(EXEEXT)
+	$(CXXLINK) $(test_thread_LDFLAGS) $(test_thread_OBJECTS) $(test_thread_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -308,6 +321,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_dvdread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_thread.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
