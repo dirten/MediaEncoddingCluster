@@ -13,21 +13,22 @@
 #include <stdlib.h>
 #include <map>
 using namespace std;
-namespace org{
-    namespace esb{
-	namespace config{
+namespace org
+{
+  namespace esb
+  {
+    namespace config
+    {
 
-	    class Config{
-		public:
-		    static void init(char*filename);
-		    static char * getConfig( char * key);
-//		    static Config * config;
-		private:
-//		    Config(char*);
-//		    ~Config();
-		    static void parseLine(char*);
-	    };
-	}
+      class Config
+      {
+      public:
+        static void init(char*filename);
+        static char * getConfig( char * key);
+      private:
+        static void parseLine(char*);
+      };
     }
+  }
 }
 #endif

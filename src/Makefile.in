@@ -132,7 +132,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -185,7 +184,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hivecontrol framehive
+SUBDIRS = org framehive
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
@@ -200,7 +199,7 @@ INCLUDES = -I$(top_srcdir)/src/framehive \
 framesender_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
-noinst_HEADERS = *.h
+noinst_HEADERS = *.h 
 framesender_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
 framereceiver_LDADD = $(top_srcdir)/src/org/esb/socket/libsocket.la 
 all: all-recursive
@@ -216,9 +215,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/Makefile
+	  $(AUTOMAKE) --gnu  src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

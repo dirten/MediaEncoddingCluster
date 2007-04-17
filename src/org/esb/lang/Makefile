@@ -54,7 +54,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libtest_la_LIBADD =
-am__objects_1 = test.lo
+am__objects_1 = Thread.lo
 am_libtest_la_OBJECTS = $(am__objects_1)
 libtest_la_OBJECTS = $(am_libtest_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -72,20 +72,20 @@ DIST_SOURCES = $(libtest_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run aclocal-1.9
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run tar
+AMTAR = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run automake-1.9
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/home/jhoelscher/bripper/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -99,19 +99,19 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = grep -E
 EXEEXT = 
-F77 = f95
-FFLAGS = -g -O2
+F77 = 
+FFLAGS = 
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS =  -L/home/jhoelscher/bripper/ffmpeg-install//lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
+LDFLAGS =  -L/home/jhoelscher/ffmpeg-install/lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jhoelscher/bripper/MediaEncodingCluster/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jhoelscher/MediaEncodingCluster/missing --run makeinfo
 OBJEXT = o
 PACKAGE = media-encoding-cluster
 PACKAGE_BUGREPORT = 
@@ -121,7 +121,6 @@ PACKAGE_TARNAME =
 PACKAGE_VERSION = 
 PATH_SEPARATOR = :
 RANLIB = ranlib
-SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
@@ -129,7 +128,7 @@ VERSION = 0.1
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
-ac_ct_F77 = f95
+ac_ct_F77 = 
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = strip
 am__fastdepCC_FALSE = #
@@ -156,7 +155,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/jhoelscher/bripper/MediaEncodingCluster/install-sh
+install_sh = /home/jhoelscher/MediaEncodingCluster/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -175,7 +174,9 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libtest.la
-SOURCES = test.cpp
+SOURCES = Thread.cpp
+# set the include path found by configure
+INCLUDES = -I$(top_srcdir)/src
 libtest_la_SOURCES = $(SOURCES)
 libtest_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
 all: all-am
@@ -191,9 +192,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/org/esb/lang/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/org/esb/lang/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/org/esb/lang/Makefile
+	  $(AUTOMAKE) --gnu  src/org/esb/lang/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -247,7 +248,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/test.Plo
+include ./$(DEPDIR)/Thread.Plo
 
 .cpp.o:
 	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

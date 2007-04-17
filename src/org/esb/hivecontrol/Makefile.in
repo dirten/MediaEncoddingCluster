@@ -54,7 +54,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libhivecontrol_la_LIBADD =
-am__objects_1 = hivecontrol.lo
+am__objects_1 = hivecontrol.lo ClientData.lo
 am_libhivecontrol_la_OBJECTS = $(am__objects_1)
 libhivecontrol_la_OBJECTS = $(am_libhivecontrol_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -121,7 +121,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -175,8 +174,8 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libhivecontrol.la
-SOURCES = hivecontrol.cpp
-libhivecontrol_la_SOURCES = $(SOURCES)
+SOURCES = hivecontrol.cpp ClientData.cpp
+libhivecontrol_la_SOURCES = $(SOURCES) 
 libhivecontrol_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src/config \
@@ -195,9 +194,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/org/esb/hivecontrol/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/org/esb/hivecontrol/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/org/esb/hivecontrol/Makefile
+	  $(AUTOMAKE) --gnu  src/org/esb/hivecontrol/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -251,6 +250,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ClientData.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hivecontrol.Plo@am__quote@
 
 .cpp.o:

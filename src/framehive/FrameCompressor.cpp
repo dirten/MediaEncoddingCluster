@@ -24,14 +24,12 @@ FrameCompressor::~FrameCompressor(){
 
 /*****************************************************************/
 unsigned char FrameCompressor::inflate(unsigned char in){
-
-
+  return (unsigned char )NULL;
 }
 
 /*****************************************************************/
 unsigned char FrameCompressor::deflate(unsigned char in){
-
-
+  return (unsigned char )NULL;
 }
 
 int FrameCompressor::deflateFrame(AVFrame * in, unsigned char * out){
@@ -44,10 +42,10 @@ int FrameCompressor::deflateFrame(AVFrame * in, unsigned char * out){
     }
     lzo_uint in_len=bufSize;
     lzo_uint out_len;
-    lzo_uint new_len;
+//    lzo_uint new_len;
 //    out=buffer;
 
-    int r = lzo1x_1_compress(buffer,in_len,out,&out_len,wrkmem);
+    lzo1x_1_compress(buffer,in_len,out,&out_len,wrkmem);
     delete buffer;
     return out_len;
 //    printf("EingabeGröße:%d\t AusgabeGröße:%d\n",in_len, out_len);

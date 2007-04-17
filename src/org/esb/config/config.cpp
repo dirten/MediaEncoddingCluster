@@ -16,8 +16,8 @@ using namespace org::esb::config;
 */
 struct ltstr
 {
-    bool operator() (const char*s1, const char*s2)
-    const{return strcmp(s1,s2)<0;}
+  bool operator() (const char*s1, const char*s2)
+  const{return strcmp(s1,s2)<0;}
 };
 static map<char*,char*,ltstr> config_map;
 
@@ -25,12 +25,14 @@ static map<char*,char*,ltstr> config_map;
 //void parseLine(char*line);
 
 
-void Config::init(char * filename){
-//  cout << "try loading configuration from "<< filename << endl;
+/**
+ * Initialisierung der Konfiguration durch eine Property Datei
+ * @param filename 
+ */
+void Config::init(char * filename)
+{
   FILE * fp;
   char buffer[255];
-//  char * buffer=new char[255];
-//  memset(buffer,0,255);
   if((fp = fopen(filename,"r"))==NULL)
   {
     cout << "Configurationfile not found !!!!" <<endl;
@@ -41,33 +43,17 @@ void Config::init(char * filename){
     printf("Buffer:%s", buffer);
     parseLine(buffer);
   }
-//  delete buffer;
-
-//    Config::config=new Config(filename);
 }
-/**
- * Standard Konstruktor mit uebergabe von Dateiname
- * 
-Config::Config(char*filename)
-{
-  Config(filename);
-}
-*/
-/**
- * Standard Konstruktor mit uebergabe von Dateiname
- * 
- */
-
 
 /**
- * retriven der Konfigurationdaten
+ * ermitteln des Wertes zum Schlüssel
  */
 char * Config::getConfig(char * key)
 {
   return config_map[key];
 }
 /**
-* @todo Ã¼berarbeiten der Config Klasse
+* @todo Überarbeiten der Config Klasse
 * Fehler bei leerzeilen in der Konfiguration
 */
 void Config::parseLine(char*line)
@@ -89,9 +75,9 @@ void Config::parseLine(char*line)
         strncpy(key,line,seperator);
         strncpy(val,line+(seperator+1),max_copy);
         config_map[key]=val;
-	printf("Key:%s\tValue:%s\n", key, val);
+        printf("Key:%s\tValue:%s\n", key, val);
       }
     }
   }
 }
-  
+
