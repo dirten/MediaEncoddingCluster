@@ -28,8 +28,8 @@ AC_OUTPUT(
     test/Makefile
     src/org/Makefile
     src/org/esb/Makefile
-    src/org/esb/lang/Makefile
-    src/org/esb/socket/Makefile
-    src/org/esb/config/Makefile
     src/org/esb/hivecontrol/Makefile
+dnl    src/org/esb/lang/Makefile
+dnl    src/org/esb/socket/Makefile
+dnl    src/org/esb/config/Makefile
     )

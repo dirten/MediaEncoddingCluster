@@ -19,6 +19,6 @@ framesender_LDFLAGS = $(all_libraries)
 #zpipe_LDFLAGS = $(all_libraries) 
 noinst_HEADERS = *.h 
 
-framesender_LDADD=$(top_srcdir)/src/org/esb/config/libconfig.la $(top_srcdir)/src/framehive/libframehive.la 
-framereceiver_LDADD=$(top_srcdir)/src/org/esb/socket/libsocket.la 
+framesender_LDADD=$(top_srcdir)/src/org/esb/libesb.la $(top_srcdir)/src/framehive/libframehive.la 
+framereceiver_LDADD=$(top_srcdir)/src/org/esb/libesb.la 
 

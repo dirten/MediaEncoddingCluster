@@ -179,6 +179,7 @@ SOURCES = Thread.cpp Exception.cpp
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
+EXTRA_DIST = *.h
 all: all-am
 
 .SUFFIXES:

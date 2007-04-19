@@ -23,19 +23,17 @@ test_SOURCES=	test.cpp \
 
 #aviclient_LDADD =-laviplay
 
-client_LDADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la \
-			$(top_srcdir)/src/org/esb/socket/libsocket.la 
+client_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la 
 
-server_LDADD	=	$(top_srcdir)/src/org/esb/config/libconfig.la \
-			$(top_srcdir)/src/org/esb/socket/libsocket.la \
+server_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la \
 			-lpthread 
 
-test_thread_LDADD=	$(top_srcdir)/src/org/esb/lang/libesb.la \
+test_thread_LDADD=	$(top_srcdir)/src/org/esb/libesb.la \
 			-lpthread 
 
-test_dvdread_LDADD		=	$(top_srcdir)/src/org/esb/config/libconfig.la
+test_dvdread_LDADD		=	$(top_srcdir)/src/org/esb/libesb.la
 
-test_config_LDADD		=	$(top_srcdir)/src/org/esb/config/libconfig.la
+test_config_LDADD		=	$(top_srcdir)/src/org/esb/libesb.la
 
 
 INCLUDES = \

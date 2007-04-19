@@ -19,8 +19,8 @@
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Runnable.h"
-//#include <stdexcept>
-//#include <assert.h>
+#include <stdexcept>
+#include <assert.h>
 
 //#if (defined(__unix__) || defined(unix) || defined(MACOSX) || defined(__APPLE__)) && !defined(USG)
    

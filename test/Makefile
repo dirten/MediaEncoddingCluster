@@ -54,26 +54,22 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_client_OBJECTS = socket.$(OBJEXT)
 client_OBJECTS = $(am_client_OBJECTS)
-client_DEPENDENCIES = $(top_srcdir)/src/org/esb/config/libconfig.la \
-	$(top_srcdir)/src/org/esb/socket/libsocket.la
+client_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 am_server_OBJECTS = server.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
-server_DEPENDENCIES = $(top_srcdir)/src/org/esb/config/libconfig.la \
-	$(top_srcdir)/src/org/esb/socket/libsocket.la
+server_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 am_test_OBJECTS = test.$(OBJEXT) test2.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_LDADD = $(LDADD)
 am_test_config_OBJECTS = test_config.$(OBJEXT)
 test_config_OBJECTS = $(am_test_config_OBJECTS)
-test_config_DEPENDENCIES =  \
-	$(top_srcdir)/src/org/esb/config/libconfig.la
+test_config_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 am_test_dvdread_OBJECTS = test_dvdread.$(OBJEXT)
 test_dvdread_OBJECTS = $(am_test_dvdread_OBJECTS)
-test_dvdread_DEPENDENCIES =  \
-	$(top_srcdir)/src/org/esb/config/libconfig.la
+test_dvdread_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 am_test_thread_OBJECTS = test_thread.$(OBJEXT)
 test_thread_OBJECTS = $(am_test_thread_OBJECTS)
-test_thread_DEPENDENCIES = $(top_srcdir)/src/org/esb/lang/libesb.la
+test_thread_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -212,18 +208,15 @@ test_SOURCES = test.cpp \
 
 
 #aviclient_LDADD =-laviplay
-client_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
-			$(top_srcdir)/src/org/esb/socket/libsocket.la 
-
-server_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la \
-			$(top_srcdir)/src/org/esb/socket/libsocket.la \
+client_LDADD = $(top_srcdir)/src/org/esb/libesb.la 
+server_LDADD = $(top_srcdir)/src/org/esb/libesb.la \
 			-lpthread 
 
-test_thread_LDADD = $(top_srcdir)/src/org/esb/lang/libesb.la \
+test_thread_LDADD = $(top_srcdir)/src/org/esb/libesb.la \
 			-lpthread 
 
-test_dvdread_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
-test_config_LDADD = $(top_srcdir)/src/org/esb/config/libconfig.la
+test_dvdread_LDADD = $(top_srcdir)/src/org/esb/libesb.la
+test_config_LDADD = $(top_srcdir)/src/org/esb/libesb.la
 INCLUDES = \
         -I$(top_srcdir)/src/config \
         -I$(top_srcdir)/src/ \
@@ -242,9 +235,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  test/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  test/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  test/Makefile
+	  $(AUTOMAKE) --foreign  test/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
