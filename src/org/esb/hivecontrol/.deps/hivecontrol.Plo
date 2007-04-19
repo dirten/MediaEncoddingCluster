@@ -1,3 +1,0 @@
-hivecontrol.lo hivecontrol.o: hivecontrol.cpp hivecontrol.h
-
-hivecontrol.h:
