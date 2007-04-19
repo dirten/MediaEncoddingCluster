@@ -10,10 +10,15 @@
 //
 //
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringTokenizer.h"
 using namespace org::esb::config;
+using namespace org::esb::util;
 
 int main(int argc, char**argv){
     Config::init("./cluster.cfg");
     cout << "Config:"<<Config::getConfig("src.path")<<endl;;
+
+    StringTokenizer * st=new StringTokenizer("test string"," ");
+    cout << "Tokens:"<<st->countTokens()<<endl;
 }
 

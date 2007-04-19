@@ -55,7 +55,7 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libesb_la_LIBADD =
 am__objects_1 = Thread.lo Exception.lo socket.lo config.lo \
-	StringTokenizer.lo
+	SimpleProperties.lo StringTokenizer.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
 libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -192,6 +192,7 @@ SOURCES = lang/Thread.cpp \
 		lang/Exception.cpp \
 		socket/socket.cpp \
 		config/config.cpp \
+		util/SimpleProperties.cpp \
 		util/StringTokenizer.cpp
 
 
@@ -199,7 +200,7 @@ SOURCES = lang/Thread.cpp \
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
-EXTRA_DIST = lang/*.h
+EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h
 all: all-recursive
 
 .SUFFIXES:
@@ -270,6 +271,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/Exception.Plo
+include ./$(DEPDIR)/SimpleProperties.Plo
 include ./$(DEPDIR)/StringTokenizer.Plo
 include ./$(DEPDIR)/Thread.Plo
 include ./$(DEPDIR)/config.Plo
@@ -323,6 +325,13 @@ config.lo: config/config.cpp
 #	source='config/config.cpp' object='config.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o config.lo `test -f 'config/config.cpp' || echo '$(srcdir)/'`config/config.cpp
+
+SimpleProperties.lo: util/SimpleProperties.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SimpleProperties.lo -MD -MP -MF "$(DEPDIR)/SimpleProperties.Tpo" -c -o SimpleProperties.lo `test -f 'util/SimpleProperties.cpp' || echo '$(srcdir)/'`util/SimpleProperties.cpp; \
+	then mv -f "$(DEPDIR)/SimpleProperties.Tpo" "$(DEPDIR)/SimpleProperties.Plo"; else rm -f "$(DEPDIR)/SimpleProperties.Tpo"; exit 1; fi
+#	source='util/SimpleProperties.cpp' object='SimpleProperties.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleProperties.lo `test -f 'util/SimpleProperties.cpp' || echo '$(srcdir)/'`util/SimpleProperties.cpp
 
 StringTokenizer.lo: util/StringTokenizer.cpp
 	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StringTokenizer.lo -MD -MP -MF "$(DEPDIR)/StringTokenizer.Tpo" -c -o StringTokenizer.lo `test -f 'util/StringTokenizer.cpp' || echo '$(srcdir)/'`util/StringTokenizer.cpp; \
@@ -474,7 +483,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/lang
+	$(mkdir_p) $(distdir)/config $(distdir)/hivecontrol $(distdir)/lang $(distdir)/socket $(distdir)/util
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

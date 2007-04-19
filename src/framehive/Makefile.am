@@ -11,3 +11,5 @@ libframehive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-in
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src \
 	    $(all_includes) 
+
+noinst_HEADERS = *.h 

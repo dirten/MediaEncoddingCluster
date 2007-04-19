@@ -11,24 +11,20 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 
 using namespace std;
 using namespace org::esb::config;
-/**
-* Prototyping
-*/
-struct ltstr
-{
-  bool operator() (const char*s1, const char*s2)
-  const{return strcmp(s1,s2)<0;}
-};
-static map<char*,char*,ltstr> config_map;
-
-
-//void parseLine(char*line);
-
+using namespace org::esb::util;
 
 /**
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
+SimpleProperties * properties=new SimpleProperties();
+
+string trim(string & s, string & drop = *new string(" ")){
+    string r=s.erase(s.find_last_not_of(drop)+1);
+    return r.erase(0,r.find_first_not_of(drop));
+
+}
+
 void Config::init(char * filename)
 {
   FILE * fp;
@@ -40,7 +36,6 @@ void Config::init(char * filename)
   printf("Configuration Loaded from %s\n", filename);
   while (fgets(buffer,255,fp) != NULL)
   {
-    printf("Buffer:%s", buffer);
     parseLine(buffer);
   }
 }
@@ -50,34 +45,19 @@ void Config::init(char * filename)
  */
 char * Config::getConfig(char * key)
 {
-  return config_map[key];
-}
-/**
-* @todo Überarbeiten der Config Klasse
-* Fehler bei leerzeilen in der Konfiguration
-*/
-void Config::parseLine(char*line)
-{
-  if(strncmp(line,"#",1)!=0)
-  {
-    int seperator=0;
-    int length=strcspn(line,"\n");
-    if(length>0)
-    {
-      seperator=strcspn(line,"=");
-      if(seperator>0)
-      {
-        char *key=new char[seperator];
-        short max_copy=length-seperator-1;
-        char *val=new char[max_copy];
-        bzero(key,sizeof(key));
-        memset(val,0,max_copy);
-        strncpy(key,line,seperator);
-        strncpy(val,line+(seperator+1),max_copy);
-        config_map[key]=val;
-        printf("Key:%s\tValue:%s\n", key, val);
-      }
-    }
-  }
+  return (char*)properties->getProperty(key);
 }
 
+void Config::parseLine(const char*line)
+{
+  if(strncmp(line,"#",1)!=0&&strlen(line)>0)
+  {
+    StringTokenizer * st=new StringTokenizer(line,"=");
+    if(st->countTokens()==2){
+	string key=st->nextToken();
+	string val=st->nextToken();
+	properties->setProperty(trim(key),trim(val,*new string("\n")));
+    }
+    delete st;
+  }
+}

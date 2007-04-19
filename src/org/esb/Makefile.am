@@ -15,10 +15,11 @@ SOURCES = 	lang/Thread.cpp \
 		lang/Exception.cpp \
 		socket/socket.cpp \
 		config/config.cpp \
+		util/SimpleProperties.cpp \
 		util/StringTokenizer.cpp
 
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
-EXTRA_DIST=lang/*.h
+EXTRA_DIST=lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h

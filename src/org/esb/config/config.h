@@ -7,12 +7,16 @@
  */
 #ifndef ESBCONFIG_H
 #define ESBCONFIG_H
+#include "org/esb/util/StringTokenizer.h"
+#include "org/esb/util/Properties.h"
+#include "org/esb/util/SimpleProperties.cpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
 #include <stdlib.h>
 #include <map>
 using namespace std;
+using namespace org::esb::util;
 namespace org
 {
   namespace esb
@@ -26,7 +30,8 @@ namespace org
         static void init(char*filename);
         static char * getConfig( char * key);
       private:
-        static void parseLine(char*);
+        static void parseLine(const char*);
+//	static Properties * properties;
       };
     }
   }
