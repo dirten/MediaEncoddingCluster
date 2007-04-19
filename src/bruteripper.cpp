@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     
 //  argv[1]="/media/video/Sledge Hammer/Sledge_Staffel1_episode1.avi";
 //  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
-    string path=string(Config::getConfig("src.path"));
+    string path=string(Config::getProperty("src.path"));
     path+="/";
     path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
     argv[1]=(char*)path.c_str();

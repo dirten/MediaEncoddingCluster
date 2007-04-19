@@ -6,6 +6,9 @@ namespace org
   {
     namespace hive
     {
+	struct ClientData{
+	
+	};
     }
   }
 }

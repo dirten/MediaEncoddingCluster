@@ -16,7 +16,7 @@ using namespace org::esb::util;
 
 int main(int argc, char**argv){
     Config::init("./cluster.cfg");
-    cout << "Config:"<<Config::getConfig("src.path")<<endl;;
+    cout << "Config:"<<Config::getProperty("src.path")<<endl;;
 
     StringTokenizer * st=new StringTokenizer("test string"," ");
     cout << "Tokens:"<<st->countTokens()<<endl;

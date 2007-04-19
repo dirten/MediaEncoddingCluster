@@ -98,7 +98,7 @@ SocketData* Socket::read()
   int counter=0;
   char recvBuffer[8192];
   int offset=0;
-  int rest=bytes;
+  unsigned int rest=bytes;
   int all=0;
 
   char*frame=new char[bytes];

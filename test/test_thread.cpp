@@ -14,8 +14,8 @@ class TestThread : public Runnable{
 
 int main(int argc,char**argv){
 
-    TestThread run;//=new TestThread();
-    Thread thread(&run);    
+    TestThread *run=new TestThread();
+    Thread thread(run);    
     thread.start();
     thread.join();
 }

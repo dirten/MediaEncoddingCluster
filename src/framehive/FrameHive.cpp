@@ -43,7 +43,7 @@ FrameHive::FrameHive(string dbname)
   sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
 
 
-  if(Config::getConfig("mysql")=="true")
+  if(Config::getProperty("mysql")=="true")
   {
     mysql = mysql_init(NULL);
     if(mysql == NULL)

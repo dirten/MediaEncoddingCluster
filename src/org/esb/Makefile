@@ -199,7 +199,7 @@ SOURCES = lang/Thread.cpp \
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
-libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
+libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info $(MICRO_VERSION)
 EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h
 all: all-recursive
 

@@ -43,7 +43,7 @@ void Config::init(char * filename)
 /**
  * ermitteln des Wertes zum Schlüssel
  */
-char * Config::getConfig(char * key)
+char * Config::getProperty(char * key)
 {
   return (char*)properties->getProperty(key);
 }

@@ -8,7 +8,7 @@ size_t getMegaBytes(size_t);
 int main(int argc, char**argv){
     int blocks_to_read=1;
     Config::init("/home/jhoelscher/bruteripper-0.2/config.rc");
-    char * sourcedir=Config::getConfig("sourcedir");
+    char * sourcedir=Config::getProperty("sourcedir");
     cout << "opening sourcedir:"<< sourcedir << endl;
 /*    dvd_reader_t*dvd= DVDOpen(sourcedir);
     DVDInit();    
