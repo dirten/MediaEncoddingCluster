@@ -28,4 +28,4 @@ SOURCES = 	lang/Thread.cpp \
 INCLUDES=-I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-EXTRA_DIST=lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h
+EXTRA_DIST=lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h net/*.h
