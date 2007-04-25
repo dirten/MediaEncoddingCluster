@@ -55,7 +55,8 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libesb_la_LIBADD =
 am__objects_1 = Thread.lo Exception.lo socket.lo config.lo \
-	SimpleProperties.lo StringTokenizer.lo
+	SimpleProperties.lo StringTokenizer.lo ServerSocket.lo \
+	Socket.lo hivecontrol.lo ClientData.lo ClientHandler.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
 libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -93,7 +94,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -113,7 +114,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS =  -L/home/jhoelscher/ffmpeg-install/lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
+LDFLAGS =  -L/home/jhoelscher/ffmpeg-install//lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -188,18 +189,24 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libesb.la
+#libesb_la_LIBADD=hivecontrol/libhivecontrol.a
 SOURCES = lang/Thread.cpp \
 		lang/Exception.cpp \
 		socket/socket.cpp \
 		config/config.cpp \
 		util/SimpleProperties.cpp \
-		util/StringTokenizer.cpp
+		util/StringTokenizer.cpp \
+		net/ServerSocket.cpp \
+		net/Socket.cpp \
+		hivecontrol/hivecontrol.cpp \
+		hivecontrol/ClientData.cpp \
+		hivecontrol/ClientHandler.cpp 
 
 
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
-libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info $(MICRO_VERSION)
+libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h
 all: all-recursive
 
@@ -214,9 +221,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/org/esb/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/org/esb/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  src/org/esb/Makefile
+	  $(AUTOMAKE) --gnu  src/org/esb/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -270,11 +277,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/ClientData.Plo
+include ./$(DEPDIR)/ClientHandler.Plo
 include ./$(DEPDIR)/Exception.Plo
+include ./$(DEPDIR)/ServerSocket.Plo
 include ./$(DEPDIR)/SimpleProperties.Plo
+include ./$(DEPDIR)/Socket.Plo
 include ./$(DEPDIR)/StringTokenizer.Plo
 include ./$(DEPDIR)/Thread.Plo
 include ./$(DEPDIR)/config.Plo
+include ./$(DEPDIR)/hivecontrol.Plo
 include ./$(DEPDIR)/socket.Plo
 
 .cpp.o:
@@ -339,6 +351,41 @@ StringTokenizer.lo: util/StringTokenizer.cpp
 #	source='util/StringTokenizer.cpp' object='StringTokenizer.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringTokenizer.lo `test -f 'util/StringTokenizer.cpp' || echo '$(srcdir)/'`util/StringTokenizer.cpp
+
+ServerSocket.lo: net/ServerSocket.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ServerSocket.lo -MD -MP -MF "$(DEPDIR)/ServerSocket.Tpo" -c -o ServerSocket.lo `test -f 'net/ServerSocket.cpp' || echo '$(srcdir)/'`net/ServerSocket.cpp; \
+	then mv -f "$(DEPDIR)/ServerSocket.Tpo" "$(DEPDIR)/ServerSocket.Plo"; else rm -f "$(DEPDIR)/ServerSocket.Tpo"; exit 1; fi
+#	source='net/ServerSocket.cpp' object='ServerSocket.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ServerSocket.lo `test -f 'net/ServerSocket.cpp' || echo '$(srcdir)/'`net/ServerSocket.cpp
+
+Socket.lo: net/Socket.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Socket.lo -MD -MP -MF "$(DEPDIR)/Socket.Tpo" -c -o Socket.lo `test -f 'net/Socket.cpp' || echo '$(srcdir)/'`net/Socket.cpp; \
+	then mv -f "$(DEPDIR)/Socket.Tpo" "$(DEPDIR)/Socket.Plo"; else rm -f "$(DEPDIR)/Socket.Tpo"; exit 1; fi
+#	source='net/Socket.cpp' object='Socket.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Socket.lo `test -f 'net/Socket.cpp' || echo '$(srcdir)/'`net/Socket.cpp
+
+hivecontrol.lo: hivecontrol/hivecontrol.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hivecontrol.lo -MD -MP -MF "$(DEPDIR)/hivecontrol.Tpo" -c -o hivecontrol.lo `test -f 'hivecontrol/hivecontrol.cpp' || echo '$(srcdir)/'`hivecontrol/hivecontrol.cpp; \
+	then mv -f "$(DEPDIR)/hivecontrol.Tpo" "$(DEPDIR)/hivecontrol.Plo"; else rm -f "$(DEPDIR)/hivecontrol.Tpo"; exit 1; fi
+#	source='hivecontrol/hivecontrol.cpp' object='hivecontrol.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hivecontrol.lo `test -f 'hivecontrol/hivecontrol.cpp' || echo '$(srcdir)/'`hivecontrol/hivecontrol.cpp
+
+ClientData.lo: hivecontrol/ClientData.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ClientData.lo -MD -MP -MF "$(DEPDIR)/ClientData.Tpo" -c -o ClientData.lo `test -f 'hivecontrol/ClientData.cpp' || echo '$(srcdir)/'`hivecontrol/ClientData.cpp; \
+	then mv -f "$(DEPDIR)/ClientData.Tpo" "$(DEPDIR)/ClientData.Plo"; else rm -f "$(DEPDIR)/ClientData.Tpo"; exit 1; fi
+#	source='hivecontrol/ClientData.cpp' object='ClientData.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ClientData.lo `test -f 'hivecontrol/ClientData.cpp' || echo '$(srcdir)/'`hivecontrol/ClientData.cpp
+
+ClientHandler.lo: hivecontrol/ClientHandler.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ClientHandler.lo -MD -MP -MF "$(DEPDIR)/ClientHandler.Tpo" -c -o ClientHandler.lo `test -f 'hivecontrol/ClientHandler.cpp' || echo '$(srcdir)/'`hivecontrol/ClientHandler.cpp; \
+	then mv -f "$(DEPDIR)/ClientHandler.Tpo" "$(DEPDIR)/ClientHandler.Plo"; else rm -f "$(DEPDIR)/ClientHandler.Tpo"; exit 1; fi
+#	source='hivecontrol/ClientHandler.cpp' object='ClientHandler.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ClientHandler.lo `test -f 'hivecontrol/ClientHandler.cpp' || echo '$(srcdir)/'`hivecontrol/ClientHandler.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

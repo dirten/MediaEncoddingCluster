@@ -1,5 +1,5 @@
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef ORG_ESB_NET_SOCKET_H
+#define ORG_ESB_NET_SOCKET_H
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -17,7 +17,7 @@ namespace org
 {
   namespace esb
   {
-    namespace socket
+    namespace net
     {
       struct Socket_t
       {
@@ -53,8 +53,8 @@ namespace org
         void        setPort(int);
         char        * getHostname();
         int         getPort();
-        void        Listen();
-        Socket*     Accept();
+        void        bind();
+        Socket*     accept();
         void        Connect();
         void        Close();
       };

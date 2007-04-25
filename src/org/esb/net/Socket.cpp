@@ -1,7 +1,7 @@
 #include <iostream>
 #include "socket.h"
 using namespace std;
-using namespace org::esb::socket;
+using namespace org::esb::net;
 /******************************************************************************/
 Socket::Socket(int sock)
 {
@@ -128,33 +128,6 @@ void Socket::init()
 }
 
 /******************************************************************************/
-void Socket::Listen()
-{
-  this->init();
-  if(bind(socketFd,(struct sockaddr*)&socketaddr, sizeof(socketaddr))<0)
-  {
-    perror("Bind");
-    close(socketFd);
-    exit(1);
-  }
-  listen(socketFd,1024);
-}
-
-/******************************************************************************/
-Socket* Socket::Accept()
-{
-  sockaddr_in client;
-  socklen_t clilen=0;
-  bzero(&client, sizeof(client));
-  connectFd=accept(socketFd,(struct sockaddr*)&client,&clilen);
-  if(connectFd<0)
-  {
-    close(connectFd);
-    close(socketFd);
-    exit(1);
-  }
-  return this;
-}
 
 /******************************************************************************/
 void Socket::Connect()

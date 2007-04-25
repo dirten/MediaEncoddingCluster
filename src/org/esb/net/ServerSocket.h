@@ -1,9 +1,9 @@
-#ifndef SOCKET_H
-#define SOCKET_H
+#ifndef ORG_ESB_NET_SERVERSOCKET_H
+#define ORG_ESB_NET_SERVERSOCKET_H
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include "org/esb/net/socket.h"
 
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
@@ -12,26 +12,14 @@
 #else
 #define SOCKET_NOSIGNAL 0
 #endif
-//using namespace org::esb::socket;
+using namespace org::esb::net;
 namespace org
 {
   namespace esb
   {
-    namespace socket
+    namespace net
     {
-      struct Socket_t
-      {
-        char * hostname;
-        int port;
-      };
-
-      struct SocketData{
-        char *data;
-        int data_length;
-//	Socket *socket;
-      };
-
-      class Socket
+      class ServerSocket
       {
       private:
         int   port;
@@ -41,24 +29,18 @@ namespace org
         struct sockaddr_in socketaddr;
         void  init();
       public:
-        Socket(int);
-        Socket();
-        Socket(char * hostname, int portnumber);
-        ~Socket();
+        ServerSocket(int);
+        ServerSocket();
+        ~ServerSocket();
 
-        int         write(const unsigned char*, int );
-        int         write(SocketData* );
-        SocketData  * read();
         void        setHostname(char*);
         void        setPort(int);
         char        * getHostname();
         int         getPort();
-        void        Listen();
-        Socket*     Accept();
-        void        Connect();
-        void        Close();
+        void        bind();
+        Socket*     accept();
+        void        close();
       };
-
     }
   }
 }

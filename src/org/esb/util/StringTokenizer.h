@@ -39,9 +39,9 @@ namespace util{
          * Note that if delim is "", this constructor does not throw an 
          * exception. However, trying to invoke other methods on the resulting 
          * StringTokenizer may result in an Exception. 
-         * @param string to tokenize
-         * @param String containing the delimiters
-         * @param boolean indicating if the delimiters are returned as tokens
+         * @param str string to tokenize
+         * @param delim String containing the delimiters
+         * @param returnDelims boolean indicating if the delimiters are returned as tokens
          */
         StringTokenizer( const std::string& str,
                          const std::string& delim = " \t\n\r\f",
@@ -67,7 +67,7 @@ namespace util{
         /**
          * Returns the next token from this string tokenizer.
          * @return string value of next token
-         * @thorws NoSuchElementException
+         * @throws NoSuchElementException
          */
         virtual std::string nextToken(void) 
             throw ( NoSuchElementException );

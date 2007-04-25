@@ -12,7 +12,9 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
-
+namespace org{
+namespace esb{
+namespace config{
 /**
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
@@ -34,6 +36,8 @@ void Config::init(char * filename)
     cout << "Configurationfile not found !!!!" <<endl;
   }
   printf("Configuration Loaded from %s\n", filename);
+//    Config::properties=new SimpleProperties();
+//    properties=new SimpleProperties();
   while (fgets(buffer,255,fp) != NULL)
   {
     parseLine(buffer);
@@ -45,6 +49,7 @@ void Config::init(char * filename)
  */
 char * Config::getProperty(char * key)
 {
+//  return (char*)Config::properties->getProperty(key);
   return (char*)properties->getProperty(key);
 }
 
@@ -56,8 +61,12 @@ void Config::parseLine(const char*line)
     if(st->countTokens()==2){
 	string key=st->nextToken();
 	string val=st->nextToken();
+//	Config::properties->setProperty(trim(key),trim(val,*new string("\n")));
 	properties->setProperty(trim(key),trim(val,*new string("\n")));
     }
     delete st;
   }
 }
+}}}
+
+

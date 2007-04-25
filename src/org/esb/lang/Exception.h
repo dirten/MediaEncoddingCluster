@@ -10,7 +10,7 @@ namespace org{
 namespace esb{
 namespace lang{
 
-    /*
+    /**
      * Base class for all exceptions.
      */
     class Exception : public Throwable

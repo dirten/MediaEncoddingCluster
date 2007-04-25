@@ -5,6 +5,23 @@ using namespace org::esb::util;
 using namespace org::esb::lang;
 
 ////////////////////////////////////////////////////////////////////////////////
+        /**
+         * Constructs a string tokenizer for the specified string. All 
+         * characters in the delim argument are the delimiters for separating 
+         * tokens.
+         *
+         * If the returnDelims flag is true, then the delimiter characters are 
+         * also returned as tokens. Each delimiter is returned as a string of 
+         * length one. If the flag is false, the delimiter characters are 
+         * skipped and only serve as separators between tokens.
+         *
+         * Note that if delim is "", this constructor does not throw an 
+         * exception. However, trying to invoke other methods on the resulting 
+         * StringTokenizer may result in an Exception. 
+         * @param string to tokenize
+         * @param String containing the delimiters
+         * @param boolean indicating if the delimiters are returned as tokens
+         */
 StringTokenizer::StringTokenizer( const std::string& str, 
                                   const std::string& delim, 
                                   bool returnDelims )

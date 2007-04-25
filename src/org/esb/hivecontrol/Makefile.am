@@ -3,11 +3,11 @@ MINOR_VERSION=0
 MICRO_VERSION=1
 
 #noinst_HEADERS=*.h 
-
-lib_LTLIBRARIES = libhivecontrol.la
-SOURCES = hivecontrol.cpp ClientData.cpp
-libhivecontrol_la_SOURCES = $(SOURCES) 
-libhivecontrol_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
+noinst_LIBRARIES=libhivecontrol.a
+#lib_LTLIBRARIES = libhivecontrol.a
+SOURCES = hivecontrol.cpp ClientData.cpp ClientHandler.cpp
+libhivecontrol_a_SOURCES = $(SOURCES) 
+libhivecontrol_a_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info $(MICRO_VERSION)
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src \
 	    $(all_includes) 

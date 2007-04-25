@@ -1,11 +1,13 @@
 #include "hivecontrol.h"
 
-using namespace org::esb::hive;
+//using namespace org::esb::hive;
 using namespace org::esb::config;
 using namespace org::esb::socket;
 using namespace org::esb::lang;
 
-
+namespace org{
+namespace esb{
+namespace hive{
 HiveControl::HiveControl(){
     Config::init("cluster.cfg");
     _stop=false;
@@ -27,5 +29,5 @@ void HiveControl::stop(){
     _stop=true;
 }
 
-
+}}}
 
