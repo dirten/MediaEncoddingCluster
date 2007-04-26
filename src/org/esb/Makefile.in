@@ -207,7 +207,7 @@ SOURCES = lang/Thread.cpp \
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h
+EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h net/*.h
 all: all-recursive
 
 .SUFFIXES:
@@ -530,7 +530,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/config $(distdir)/hivecontrol $(distdir)/lang $(distdir)/socket $(distdir)/util
+	$(mkdir_p) $(distdir)/config $(distdir)/hivecontrol $(distdir)/lang $(distdir)/net $(distdir)/socket $(distdir)/util
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

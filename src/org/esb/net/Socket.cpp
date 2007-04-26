@@ -1,18 +1,18 @@
 #include <iostream>
-#include "socket.h"
+#include "Socket.h"
 using namespace std;
 using namespace org::esb::net;
 /******************************************************************************/
 Socket::Socket(int sock)
 {
   this->connectFd=sock;
-  Socket();
+//  Socket();
 }
 
 /******************************************************************************/
 Socket::~Socket()
 {
-  this->Close();
+  this->close();
 }
 
 
@@ -100,12 +100,12 @@ SocketData* Socket::read()
   int offset=0;
   unsigned int rest=bytes;
   int all=0;
-
   char*frame=new char[bytes];
   while(all<bytes)
   {
     int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
-    counter=::read(this->socketFd,recvBuffer,maxrecv);
+    counter=::read(this->connectFd,recvBuffer,maxrecv);
+    fflush(NULL);
     if(counter<0)return false;
     memcpy(frame+offset,recvBuffer,counter);
     offset+=counter;
@@ -130,17 +130,17 @@ void Socket::init()
 /******************************************************************************/
 
 /******************************************************************************/
-void Socket::Connect()
+void Socket::connect()
 {
   this->init();
   inet_pton(AF_INET,hostname,&socketaddr.sin_addr);
-  connect(socketFd,(struct sockaddr*)&socketaddr,sizeof(socketaddr));
+  ::connect(socketFd,(struct sockaddr*)&socketaddr,sizeof(socketaddr));
   connectFd=socketFd;
 }
 
 /******************************************************************************/
-void Socket::Close()
+void Socket::close()
 {
-  close(socketFd);
-  close(connectFd);
+  ::close(socketFd);
+  ::close(connectFd);
 }

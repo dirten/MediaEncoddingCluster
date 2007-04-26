@@ -9,12 +9,14 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 noinst_HEADERS=*.h 
 
-bin_PROGRAMS=server client test test_dvdread test_config test_thread
+bin_PROGRAMS=server client test test_dvdread test_config test_thread test_server console
 test_dvdread_SOURCES=test_dvdread.cpp 
-
+console_SOURCES=console.cpp
 test_thread_SOURCES=test_thread.cpp 
 
 test_config_SOURCES=test_config.cpp 
+
+test_server_SOURCES=test_server.cpp
 
 client_SOURCES=socket.cpp 
 server_SOURCES=server.cpp 
@@ -23,8 +25,9 @@ test_SOURCES=	test.cpp \
 
 #aviclient_LDADD =-laviplay
 
+test_server_LDADD=	$(top_srcdir)/src/org/esb/libesb.la 
 client_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la 
-
+console_LDADD   =	$(top_srcdir)/src/org/esb/libesb.la 
 server_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la \
 			-lpthread 
 

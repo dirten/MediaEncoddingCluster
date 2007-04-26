@@ -2,12 +2,6 @@
 #include "org/esb/net/ServerSocket.h"
 using namespace std;
 using namespace org::esb::net;
-/******************************************************************************/
-ServerSocket::ServerSocket(int sock)
-{
-  this->connectFd=sock;
-  ServerSocket();
-}
 
 /******************************************************************************/
 ServerSocket::~ServerSocket()
@@ -19,9 +13,14 @@ ServerSocket::~ServerSocket()
 /******************************************************************************/
 ServerSocket::ServerSocket()
 {
+    ServerSocket(0);
+}
+/******************************************************************************/
+ServerSocket::ServerSocket(int port)
+{
   this->hostname="localhost";
-  this->port=0;
-  this->socketFd=0;
+  this->port=port;
+//  this->socketFd=0;
   this->connectFd=0;
   bzero(&this->socketaddr,sizeof(socketaddr));
 }
@@ -87,7 +86,8 @@ Socket* ServerSocket::accept()
     ::close(socketFd);
     //exit(1);
   }
-  return new Socket();
+  cout << "bla" <<endl;
+  return new Socket(connectFd);
 }
 
 /******************************************************************************/

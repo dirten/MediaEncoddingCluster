@@ -55,8 +55,8 @@ namespace org
         int         getPort();
         void        bind();
         Socket*     accept();
-        void        Connect();
-        void        Close();
+        void        connect();
+        void        close();
       };
 
     }
