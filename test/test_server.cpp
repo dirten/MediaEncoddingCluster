@@ -48,8 +48,8 @@ class ProtocolServer:public Runnable{
 //		    error+="\n";
 		    socket->write((unsigned char *)error.c_str(),strlen(error.c_str()));
 		}
-		delete recvData;
-		delete command;
+//		delete recvData;
+//		delete command;
 	    }
 	}
 };

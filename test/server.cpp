@@ -67,6 +67,7 @@ class server{
 	for(;;){
 	    cout<<"Waiting for connection"<<endl;
 	    socket->Accept();
+	    
 	    cout<<"conection accepted"<<endl;
 //	    string s="bla fasel";
 
