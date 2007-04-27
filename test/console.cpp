@@ -8,15 +8,24 @@ using namespace std;
 using namespace org::esb::net;
 int maxline=1000;
 Socket * mysocket;
+
 void catcher(int sig){
     cout << "shutdown" << endl;
     int writes=mysocket->write((unsigned char*)"disconnect",10);
     mysocket->close();
     exit(0);
 }
-
-int main(int argc,char**argv){
+void setCatcher(){
+    signal(SIGABRT, &catcher);
+    signal(SIGTERM, &catcher);
+    signal(SIGQUIT, &catcher);
+    signal(SIGHUP, &catcher);
     signal(SIGINT, &catcher);
+
+}
+int main(int argc,char**argv){
+
+    setCatcher();
     mysocket=new Socket("localhost", 20000);
     mysocket->connect();
     char buffer[maxline];
