@@ -48,7 +48,8 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = listener.$(OBJEXT) proto_dispatcher.$(OBJEXT)
+am__objects_1 = listener.$(OBJEXT) proto_dispatcher.$(OBJEXT) \
+	proto_help.$(OBJEXT)
 am_lsnr_OBJECTS = $(am__objects_1)
 lsnr_OBJECTS = $(am_lsnr_OBJECTS)
 lsnr_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
@@ -63,6 +64,14 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(lsnr_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -169,7 +178,7 @@ target_alias = @target_alias@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SOURCES = listener.cpp \
-	proto_dispatcher.cpp
+	proto_dispatcher.cpp proto_help.cpp proto_help.h
 
 lsnr_SOURCES = $(SOURCES)
 lsnr_LDFLAGS = $(all_libraries) 
@@ -250,6 +259,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/listener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proto_dispatcher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proto_help.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

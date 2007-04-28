@@ -5,7 +5,7 @@ using namespace org::esb::net;
 /******************************************************************************/
 Socket::Socket(int sock)
 {
-  is_closed=false;
+  this->is_closed=false;
   this->socketFd=sock;
 //  Socket();
 }
@@ -23,7 +23,7 @@ Socket::Socket()
   this->hostname="localhost";
   this->port=0;
   this->socketFd=0;
-  bzero(&this->socketaddr,sizeof(socketaddr));
+  bzero(&this->socketaddr,sizeof(this->socketaddr));
 }
 
 /******************************************************************************/
@@ -32,7 +32,7 @@ Socket::Socket(char * hostname, int portnumber)
   this->hostname=hostname;
   this->port=portnumber;
   this->socketFd=0;
-  bzero(&socketaddr,sizeof(socketaddr));
+  bzero(&this->socketaddr,sizeof(this->socketaddr));
 }
 
 /******************************************************************************/
@@ -56,7 +56,7 @@ char * Socket::getHostname()
 /******************************************************************************/
 int Socket::getPort()
 {
-  return port;
+  return this->port;
 }
 
 /******************************************************************************/
@@ -68,8 +68,7 @@ int Socket::write(SocketData * data)
 /******************************************************************************/
 int Socket::write(const unsigned char * buffer, int len)
 {
-  int remaining=len, byteCounter=0;;
-  int sendOpts = SOCKET_NOSIGNAL;
+  int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
   char * length=new char[64];
   sprintf(length,"%d", len);
   if((::send(this->socketFd,length,64,sendOpts))<0){
@@ -97,12 +96,10 @@ SocketData* Socket::read()
   if((::read(this->socketFd,bytes_str,64))<0){
     this->close();
   }
-  int bytes=atoi(bytes_str);
-  int counter=0;
-  char recvBuffer[8192];
-  int offset=0;
+  int bytes=atoi(bytes_str),counter=0,offset=0,all=0;
   unsigned int rest=bytes;
-  int all=0;
+  char recvBuffer[8192];
+  
   char*frame=new char[bytes];
   while(all<bytes)
   {
@@ -127,7 +124,7 @@ SocketData* Socket::read()
 /******************************************************************************/
 void Socket::init()
 {
-  socketFd=::socket(AF_INET,SOCK_STREAM,0);
+  this->socketFd=::socket(AF_INET,SOCK_STREAM,0);
   socketaddr.sin_family=AF_INET;
   socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
   socketaddr.sin_port=htons(this->port);
@@ -139,18 +136,18 @@ void Socket::init()
 void Socket::connect()
 {
   this->init();
-  inet_pton(AF_INET,hostname,&socketaddr.sin_addr);
-  ::connect(socketFd,(struct sockaddr*)&socketaddr,sizeof(socketaddr));
+  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
+  ::connect(this->socketFd,(struct sockaddr*)&this->socketaddr,sizeof(this->socketaddr));
 }
 
 /******************************************************************************/
 void Socket::close()
 {
-  ::close(socketFd);
-  socketFd=0;
+  ::close(this->socketFd);
+  this->socketFd=0;
 }
 /******************************************************************************/
 bool Socket::isClosed()
 {
-    return (socketFd<=0);
+    return (this->socketFd<=0);
 }
