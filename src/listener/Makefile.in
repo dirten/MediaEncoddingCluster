@@ -174,7 +174,9 @@ SOURCES = listener.cpp \
 lsnr_SOURCES = $(SOURCES)
 lsnr_LDFLAGS = $(all_libraries) 
 lsnr_LDADD = $(top_srcdir)/src/org/esb/libesb.la
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_srcdir)/src \
+	        $(all_includes) 
+
 all: all-am
 
 .SUFFIXES:
@@ -448,7 +450,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-binPROGRAMS uninstall-info-am
 
-	    $(all_includes) 
 #noinst_HEADERS = *.h 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

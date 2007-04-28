@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include <errno.h>
 
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
@@ -34,10 +34,10 @@ namespace org
       class Socket
       {
       private:
+        bool is_closed;
         int   port;
         char  * hostname;
         int   socketFd;
-        int   connectFd;
         struct sockaddr_in socketaddr;
         void  init();
       public:

@@ -2,7 +2,7 @@
 
 //using namespace org::esb::hive;
 using namespace org::esb::config;
-using namespace org::esb::socket;
+using namespace org::esb::net;
 using namespace org::esb::lang;
 
 namespace org{
@@ -15,14 +15,16 @@ HiveControl::HiveControl(){
 
 void HiveControl::start(){
     int port=atoi(Config::getProperty("hive.control.port"));
-    Socket *socket=new Socket();
-    socket->setPort(port);
-    socket->Listen();
+    ServerSocket *server_socket=new ServerSocket();
+    server_socket->setPort(port);
+    server_socket->bind();
     for(;_stop;){
-	ClientData *data=(ClientData*)socket->Accept();
+	/*
+	ClientData *data=(ClientData*)socket->accept();
 //	ClientHandler * handler=new ClientHandler(data);
 	Thread *listener=new Thread(new ClientHandler(data));
 	listener->start();
+	*/
     }
 }
 void HiveControl::stop(){

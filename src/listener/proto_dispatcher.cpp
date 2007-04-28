@@ -5,11 +5,8 @@
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
+using namespace org::esb::util;
 
-	const char* trim(string & s, string & drop = *new string(" ")){
-	    string r=s.erase(s.find_last_not_of(drop)+1);
-	    return r.erase(0,r.find_first_not_of(drop)).c_str();
-	}
 	
 	ProtocolServer::~ProtocolServer(){
 	    cout << "Closing socket"<<endl;
@@ -26,7 +23,7 @@ using namespace org::esb::lang;
 		SocketData *recvData=socket->read();
 		cout << "command received "<<endl;
 
-		char* command=(char*)trim(*new string(recvData->data),*new string("\n"));
+		char* command=(char*)StringUtil::trim(*new string(recvData->data),*new string("\n"));
 		
 		cout << "Command : "<<command<<endl;
 		if(strcmp(command, "show version")==0){

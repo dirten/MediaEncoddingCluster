@@ -1,7 +1,7 @@
 #include <iostream>
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
-
+#include "org/esb/util/StringUtil.h"
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;

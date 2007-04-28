@@ -5,7 +5,8 @@ using namespace org::esb::net;
 /******************************************************************************/
 Socket::Socket(int sock)
 {
-  this->connectFd=sock;
+  is_closed=false;
+  this->socketFd=sock;
 //  Socket();
 }
 
@@ -22,7 +23,6 @@ Socket::Socket()
   this->hostname="localhost";
   this->port=0;
   this->socketFd=0;
-  this->connectFd=0;
   bzero(&this->socketaddr,sizeof(socketaddr));
 }
 
@@ -32,7 +32,6 @@ Socket::Socket(char * hostname, int portnumber)
   this->hostname=hostname;
   this->port=portnumber;
   this->socketFd=0;
-  this->connectFd=0;
   bzero(&socketaddr,sizeof(socketaddr));
 }
 
@@ -73,14 +72,16 @@ int Socket::write(const unsigned char * buffer, int len)
   int sendOpts = SOCKET_NOSIGNAL;
   char * length=new char[64];
   sprintf(length,"%d", len);
-  ::send(this->connectFd,length,64,sendOpts);
+  if((::send(this->socketFd,length,64,sendOpts))<0){
+    this->close();
+  }
   while(remaining>0)
   {
-    int bytes=::send(this->connectFd,buffer,remaining,sendOpts);
-    //  cout << "Bytes Sendet:"<<bytes<<endl;
+    int bytes=::send(this->socketFd,buffer,remaining,sendOpts);
     byteCounter+=bytes;
     if(bytes<0)
     {
+      this->close();
       return bytes;
     }
     buffer+=bytes;
@@ -93,7 +94,9 @@ int Socket::write(const unsigned char * buffer, int len)
 SocketData* Socket::read()
 {
   char*bytes_str=new char[64];
-  ::read(this->connectFd,bytes_str,64);
+  if((::read(this->socketFd,bytes_str,64))<0){
+    this->close();
+  }
   int bytes=atoi(bytes_str);
   int counter=0;
   char recvBuffer[8192];
@@ -104,12 +107,9 @@ SocketData* Socket::read()
   while(all<bytes)
   {
     int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
-    counter=::read(this->connectFd,recvBuffer,maxrecv);
-//    fflush(NULL);
+    counter=::read(this->socketFd,recvBuffer,maxrecv);
     /*Connection is dead*/
-    cout <<"ByteCounter"<<counter<<endl;
     if(counter<0){
-	cout <<"ByteCounter"<<counter<<endl;
 	this->close();
 	return false;
     }
@@ -141,18 +141,16 @@ void Socket::connect()
   this->init();
   inet_pton(AF_INET,hostname,&socketaddr.sin_addr);
   ::connect(socketFd,(struct sockaddr*)&socketaddr,sizeof(socketaddr));
-  connectFd=socketFd;
 }
 
 /******************************************************************************/
 void Socket::close()
 {
   ::close(socketFd);
-  ::close(connectFd);
+  socketFd=0;
 }
 /******************************************************************************/
 bool Socket::isClosed()
 {
-    cout << "ConnectFD:"<<connectFd<<endl;
-    return (connectFd<=0);
+    return (socketFd<=0);
 }

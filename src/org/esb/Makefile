@@ -55,8 +55,8 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libesb_la_LIBADD =
 am__objects_1 = Thread.lo Exception.lo config.lo SimpleProperties.lo \
-	StringTokenizer.lo ServerSocket.lo Socket.lo hivecontrol.lo \
-	ClientData.lo ClientHandler.lo
+	StringTokenizer.lo StringUtil.lo ServerSocket.lo Socket.lo \
+	hivecontrol.lo ClientData.lo ClientHandler.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
 libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -195,6 +195,7 @@ SOURCES = lang/Thread.cpp \
 		config/config.cpp \
 		util/SimpleProperties.cpp \
 		util/StringTokenizer.cpp \
+		util/StringUtil.cpp \
 		net/ServerSocket.cpp \
 		net/Socket.cpp \
 		hivecontrol/hivecontrol.cpp \
@@ -283,6 +284,7 @@ include ./$(DEPDIR)/ServerSocket.Plo
 include ./$(DEPDIR)/SimpleProperties.Plo
 include ./$(DEPDIR)/Socket.Plo
 include ./$(DEPDIR)/StringTokenizer.Plo
+include ./$(DEPDIR)/StringUtil.Plo
 include ./$(DEPDIR)/Thread.Plo
 include ./$(DEPDIR)/config.Plo
 include ./$(DEPDIR)/hivecontrol.Plo
@@ -342,6 +344,13 @@ StringTokenizer.lo: util/StringTokenizer.cpp
 #	source='util/StringTokenizer.cpp' object='StringTokenizer.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringTokenizer.lo `test -f 'util/StringTokenizer.cpp' || echo '$(srcdir)/'`util/StringTokenizer.cpp
+
+StringUtil.lo: util/StringUtil.cpp
+	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StringUtil.lo -MD -MP -MF "$(DEPDIR)/StringUtil.Tpo" -c -o StringUtil.lo `test -f 'util/StringUtil.cpp' || echo '$(srcdir)/'`util/StringUtil.cpp; \
+	then mv -f "$(DEPDIR)/StringUtil.Tpo" "$(DEPDIR)/StringUtil.Plo"; else rm -f "$(DEPDIR)/StringUtil.Tpo"; exit 1; fi
+#	source='util/StringUtil.cpp' object='StringUtil.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringUtil.lo `test -f 'util/StringUtil.cpp' || echo '$(srcdir)/'`util/StringUtil.cpp
 
 ServerSocket.lo: net/ServerSocket.cpp
 	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ServerSocket.lo -MD -MP -MF "$(DEPDIR)/ServerSocket.Tpo" -c -o ServerSocket.lo `test -f 'net/ServerSocket.cpp' || echo '$(srcdir)/'`net/ServerSocket.cpp; \

@@ -17,6 +17,7 @@ SOURCES = 	lang/Thread.cpp \
 		config/config.cpp \
 		util/SimpleProperties.cpp \
 		util/StringTokenizer.cpp \
+		util/StringUtil.cpp \
 		net/ServerSocket.cpp \
 		net/Socket.cpp \
 		hivecontrol/hivecontrol.cpp \

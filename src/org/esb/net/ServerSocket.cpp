@@ -20,8 +20,8 @@ ServerSocket::ServerSocket(int port)
 {
   this->hostname="localhost";
   this->port=port;
-//  this->socketFd=0;
-  this->connectFd=0;
+  this->server_socketFd=0;
+  this->client_socketFd=0;
   bzero(&this->socketaddr,sizeof(socketaddr));
 }
 
@@ -54,7 +54,7 @@ int ServerSocket::getPort()
 /******************************************************************************/
 void ServerSocket::init()
 {
-  socketFd=::socket(AF_INET,SOCK_STREAM,0);
+  server_socketFd=::socket(AF_INET,SOCK_STREAM,0);
   socketaddr.sin_family=AF_INET;
   socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
   socketaddr.sin_port=htons(this->port);
@@ -64,13 +64,13 @@ void ServerSocket::init()
 void ServerSocket::bind()
 {
   this->init();
-  if(::bind(socketFd,(struct sockaddr*)&socketaddr, sizeof(socketaddr))<0)
+  if(::bind(server_socketFd,(struct sockaddr*)&socketaddr, sizeof(socketaddr))<0)
   {
     perror("Bind");
-    ::close(socketFd);
+    ::close(server_socketFd);
     exit(1);
   }
-  listen(socketFd,1024);
+  listen(server_socketFd,1024);
 }
 
 /******************************************************************************/
@@ -79,20 +79,17 @@ Socket* ServerSocket::accept()
   sockaddr_in client;
   socklen_t clilen=0;
   bzero(&client, sizeof(client));
-  connectFd=::accept(socketFd,(struct sockaddr*)&client,&clilen);
-  if(connectFd<0)
+  client_socketFd=::accept(server_socketFd,(struct sockaddr*)&client,&clilen);
+  if(client_socketFd<0)
   {
-    ::close(connectFd);
-    ::close(socketFd);
-    //exit(1);
+    this->close();
   }
-  cout << "bla" <<endl;
-  return new Socket(connectFd);
+  return new Socket(client_socketFd);
 }
 
 /******************************************************************************/
 void ServerSocket::close()
 {
-  ::close(socketFd);
-  ::close(connectFd);
+  ::close(server_socketFd);
+  ::close(client_socketFd);
 }

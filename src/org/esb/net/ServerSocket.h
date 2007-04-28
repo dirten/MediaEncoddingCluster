@@ -24,8 +24,8 @@ namespace org
       private:
         int   port;
         char  * hostname;
-        int   socketFd;
-        int   connectFd;
+        int   server_socketFd;
+	int   client_socketFd;
         struct sockaddr_in socketaddr;
         void  init();
       public:
