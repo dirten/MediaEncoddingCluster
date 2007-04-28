@@ -105,8 +105,14 @@ SocketData* Socket::read()
   {
     int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
     counter=::read(this->connectFd,recvBuffer,maxrecv);
-    fflush(NULL);
-    if(counter<0)return false;
+//    fflush(NULL);
+    /*Connection is dead*/
+    cout <<"ByteCounter"<<counter<<endl;
+    if(counter<0){
+	cout <<"ByteCounter"<<counter<<endl;
+	this->close();
+	return false;
+    }
     memcpy(frame+offset,recvBuffer,counter);
     offset+=counter;
     rest-=counter;
@@ -143,4 +149,10 @@ void Socket::close()
 {
   ::close(socketFd);
   ::close(connectFd);
+}
+/******************************************************************************/
+bool Socket::isClosed()
+{
+    cout << "ConnectFD:"<<connectFd<<endl;
+    return (connectFd<=0);
 }

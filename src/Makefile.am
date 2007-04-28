@@ -2,8 +2,8 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org framehive
-bin_PROGRAMS = framesender framereceiver
+SUBDIRS = org listener framehive
+#bin_PROGRAMS = framesender framereceiver
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp

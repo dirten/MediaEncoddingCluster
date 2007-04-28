@@ -13,17 +13,36 @@ AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard
 	    FFMPEG_LD="-L$withval/lib -lavformat -lavcodec"
 	    FFMPEG_PATH="$withval")
 
+CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
+
+
 AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is "/usr/local")],
 	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-1.1"
 	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
 	    AMQ_PATH="$withval")
-	    
+
+
+
+AC_CHECK_HEADERS([avcodec.h avformat.h],
+                [AC_DEFINE([HAVE_AVCODEC_H])],
+                [AC_MSG_ERROR([
+*********************************************************************
+Sorry, no avcodec.h or avformat.h found,
+you need to install ffmpeg Library with development headers from
+http://ffmpeg.mplayerhq.hu
+*********************************************************************
+])])
+
+AC_CHECK_LIB(avcodec, main)
+
+		
 	    
 CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
 AC_OUTPUT(
     Makefile 
     src/Makefile 
+    src/listener/Makefile 
     src/framehive/Makefile 
     test/Makefile
     src/org/Makefile

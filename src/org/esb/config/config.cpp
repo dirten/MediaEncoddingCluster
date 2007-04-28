@@ -49,7 +49,7 @@ void Config::init(char * filename)
  */
 char * Config::getProperty(char * key)
 {
-//  return (char*)Config::properties->getProperty(key);
+//  return (char*)org::esb::config::Config::properties->getProperty(key);
   return (char*)properties->getProperty(key);
 }
 

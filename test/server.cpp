@@ -1,13 +1,13 @@
 
 #include <iostream>
 //#include "config.h"
-#include "org/esb/socket/socket.h"
+#include "org/esb/net/ServerSocket.h"
 #include "org/esb/config/config.h"
 #include <fcntl.h>
 #include <iostream>
 #include <fstream>
 using namespace std;
-using namespace org::esb::socket;
+using namespace org::esb::net;
 using namespace org::esb::config;
 class server{
     public:
@@ -60,13 +60,12 @@ class server{
 //	    buffer=bla.c_str();
 */
 	    Config::init("test.cfg");
-	    Socket *socket=new Socket();
+	    ServerSocket *serverSocket=new ServerSocket(10000);
 //	    socket->setHostname("localhost");
-	    socket->setPort(10000);
-	    socket->Listen();
+	    serverSocket->bind();
 	for(;;){
 	    cout<<"Waiting for connection"<<endl;
-	    socket->Accept();
+	    Socket * socket=serverSocket->accept();
 	    
 	    cout<<"conection accepted"<<endl;
 //	    string s="bla fasel";

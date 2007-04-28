@@ -40,6 +40,4 @@ test_config_LDADD		=	$(top_srcdir)/src/org/esb/libesb.la
 
 
 INCLUDES = \
-        -I$(top_srcdir)/src/config \
-        -I$(top_srcdir)/src/ \
-        -I$(top_srcdir)/src/socket
+        -I$(top_srcdir)/src/

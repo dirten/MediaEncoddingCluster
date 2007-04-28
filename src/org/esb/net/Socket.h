@@ -57,6 +57,7 @@ namespace org
         Socket*     accept();
         void        connect();
         void        close();
+	bool	    isClosed();
       };
 
     }

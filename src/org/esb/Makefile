@@ -54,9 +54,9 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libesb_la_LIBADD =
-am__objects_1 = Thread.lo Exception.lo socket.lo config.lo \
-	SimpleProperties.lo StringTokenizer.lo ServerSocket.lo \
-	Socket.lo hivecontrol.lo ClientData.lo ClientHandler.lo
+am__objects_1 = Thread.lo Exception.lo config.lo SimpleProperties.lo \
+	StringTokenizer.lo ServerSocket.lo Socket.lo hivecontrol.lo \
+	ClientData.lo ClientHandler.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
 libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -94,13 +94,13 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
+CPPFLAGS =  -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -I/home/jhoelscher/ffmpeg-install//include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"media-encoding-cluster\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 
+DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"media-encoding-cluster\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_AVCODEC_H=1 -DHAVE_AVCODEC_H=1 -DHAVE_AVFORMAT_H=1 -DHAVE_AVCODEC_H=1 -DHAVE_LIBAVCODEC=1 
 DEPDIR = .deps
 ECHO = echo
 ECHO_C = 
@@ -116,7 +116,7 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 LDFLAGS =  -L/home/jhoelscher/ffmpeg-install//lib -lavformat -lavcodec -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient
 LIBOBJS = 
-LIBS = 
+LIBS = -lavcodec 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
@@ -192,7 +192,6 @@ lib_LTLIBRARIES = libesb.la
 #libesb_la_LIBADD=hivecontrol/libhivecontrol.a
 SOURCES = lang/Thread.cpp \
 		lang/Exception.cpp \
-		socket/socket.cpp \
 		config/config.cpp \
 		util/SimpleProperties.cpp \
 		util/StringTokenizer.cpp \
@@ -207,7 +206,7 @@ SOURCES = lang/Thread.cpp \
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-EXTRA_DIST = lang/*.h config/*.h socket/*.h util/*.h hivecontrol/*.h net/*.h
+EXTRA_DIST = lang/*.h config/*.h util/*.h hivecontrol/*.h net/*.h
 all: all-recursive
 
 .SUFFIXES:
@@ -221,9 +220,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/org/esb/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/org/esb/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/org/esb/Makefile
+	  $(AUTOMAKE) --foreign  src/org/esb/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -287,7 +286,6 @@ include ./$(DEPDIR)/StringTokenizer.Plo
 include ./$(DEPDIR)/Thread.Plo
 include ./$(DEPDIR)/config.Plo
 include ./$(DEPDIR)/hivecontrol.Plo
-include ./$(DEPDIR)/socket.Plo
 
 .cpp.o:
 	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -323,13 +321,6 @@ Exception.lo: lang/Exception.cpp
 #	source='lang/Exception.cpp' object='Exception.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Exception.lo `test -f 'lang/Exception.cpp' || echo '$(srcdir)/'`lang/Exception.cpp
-
-socket.lo: socket/socket.cpp
-	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT socket.lo -MD -MP -MF "$(DEPDIR)/socket.Tpo" -c -o socket.lo `test -f 'socket/socket.cpp' || echo '$(srcdir)/'`socket/socket.cpp; \
-	then mv -f "$(DEPDIR)/socket.Tpo" "$(DEPDIR)/socket.Plo"; else rm -f "$(DEPDIR)/socket.Tpo"; exit 1; fi
-#	source='socket/socket.cpp' object='socket.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o socket.lo `test -f 'socket/socket.cpp' || echo '$(srcdir)/'`socket/socket.cpp
 
 config.lo: config/config.cpp
 	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT config.lo -MD -MP -MF "$(DEPDIR)/config.Tpo" -c -o config.lo `test -f 'config/config.cpp' || echo '$(srcdir)/'`config/config.cpp; \
@@ -530,7 +521,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/config $(distdir)/hivecontrol $(distdir)/lang $(distdir)/net $(distdir)/socket $(distdir)/util
+	$(mkdir_p) $(distdir)/config $(distdir)/hivecontrol $(distdir)/lang $(distdir)/net $(distdir)/util
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
