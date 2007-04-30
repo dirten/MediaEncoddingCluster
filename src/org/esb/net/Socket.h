@@ -47,8 +47,10 @@ namespace org
         ~Socket();
 
         int         write(const unsigned char*, int );
+        int         write2(const unsigned char*, int );
         int         write(SocketData* );
         SocketData  * read();
+        SocketData  * read2();
         void        setHostname(char*);
         void        setPort(int);
         char        * getHostname();

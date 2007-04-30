@@ -34,7 +34,7 @@ int main(int argc,char**argv){
 	SocketData * data=new SocketData();
 	data->data=buffer;
 	data->data_length=strlen(buffer);
-	cout << "reply:>"<<buffer;
+	cout << "reply:>"<<data->data;
 	int writes=mysocket->write(data);
 	data=mysocket->read();
 	cout << data->data <<endl;

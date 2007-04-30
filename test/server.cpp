@@ -71,11 +71,11 @@ class server{
 //	    string s="bla fasel";
 
 
-	    for(int a=0;true;a++){
+	    for(int a=0;a<1;a++){
 		char * filename=new char[200];
-		int dir=a/1000;
-		sprintf(filename,"/tmp/frame.container/%d/frame%d.data.ppm", dir+1,(a)+1);
-//		printf("%s\n", filename);
+//		int dir=a/1000;
+		sprintf(filename,"/tmp/frame.container/%d/frame%d.fstream.ppm", (a/1000)+1,(a)+1);
+		printf("%s\n", filename);
 		fstream FileBin(filename,ios::in|ios::out|ios::binary);
 		if(!FileBin){
 		    break;
@@ -86,7 +86,7 @@ class server{
 	        string strBuffer="";
 	        char buffer[filesize];
 	        FileBin.read(buffer, filesize);
-//		    cout <<"Buffer:"<< buffer << endl;
+//		cout <<"Buffer:"<< buffer << endl;
 //	        printf("FileSize:%d->%d", strlen(buffer), filesize);
 		SocketData * data=new SocketData();
 		data->data=buffer;
@@ -96,11 +96,12 @@ class server{
 		    break;
 		}
 	    }
-	    cout<<"sendet"<<endl;
+	    cout<<"gesendet"<<endl;
 	}
     }
 };
+
 int main(int argc,char**argv){
-    server * s=new server();
+    new server();
 //    delete s;
 }

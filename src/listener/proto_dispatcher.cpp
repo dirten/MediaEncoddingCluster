@@ -23,10 +23,14 @@ using namespace org::esb::util;
 	void ProtocolServer::run(){
 	    while(!socket->isClosed()){
 
-    		char * protoversion="MediaEncodingCluster ProtocolServer-1.0.0";
-		SocketData *recvData=socket->read();
+//    		char * protoversion="MediaEncodingCluster ProtocolServer-1.0.0";
 
-		char* command=(char*)StringUtil::trim(*new string(recvData->data),*new string("\n"));
+		SocketData *recvData=socket->read();
+		char * data=recvData->data;
+		string s1=data;
+		string s2="\n;";
+		char* command=(char*)StringUtil::trim(s1,s2);
+		cout << "Command : "<<command<<endl;
 		
 		list<ProtoCommand*>::iterator i;
 		for(i=l.begin();i!=l.end();++i){
@@ -36,15 +40,9 @@ using namespace org::esb::util;
 		    cout << "Command responsible"<<endl;
 			tmp->process(command);
 		    }
-
 		}
 		
-		cout << "Command : "<<command<<endl;
-		if(strcmp(command, "show version")==0){
-		    cout << "version Command"<<endl;
-		    socket->write((unsigned char *)protoversion,strlen(protoversion));
-		}
-		else if(strcmp(command, "disconnect")==0){
+		if(strcmp(command, "disconnect")==0){
 		    cout << "disconnect Command"<<endl;
 		    socket->write((unsigned char *)"disconnecting",13);
 		    socket->close();
@@ -56,7 +54,7 @@ using namespace org::esb::util;
 		    socket->write((unsigned char *)error->c_str(),error->length());
 		    delete error;
 		}
-		bzero(command, strlen(command));
+//		bzero(command, strlen(command));
 //		if(command)delete command;
 		delete recvData;
 	    }

@@ -39,7 +39,8 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = server$(EXEEXT) client$(EXEEXT) test$(EXEEXT) \
 	test_dvdread$(EXEEXT) test_config$(EXEEXT) \
-	test_thread$(EXEEXT) test_server$(EXEEXT) console$(EXEEXT)
+	test_thread$(EXEEXT) test_server$(EXEEXT) console$(EXEEXT) \
+	datasize$(EXEEXT)
 subdir = test
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -58,6 +59,9 @@ client_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
 am_console_OBJECTS = console.$(OBJEXT)
 console_OBJECTS = $(am_console_OBJECTS)
 console_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
+am_datasize_OBJECTS = datasize.$(OBJEXT)
+datasize_OBJECTS = $(am_datasize_OBJECTS)
+datasize_LDADD = $(LDADD)
 am_server_OBJECTS = server.$(OBJEXT)
 server_OBJECTS = $(am_server_OBJECTS)
 server_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la
@@ -87,11 +91,13 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(client_SOURCES) $(console_SOURCES) $(server_SOURCES) \
-	$(test_SOURCES) $(test_config_SOURCES) $(test_dvdread_SOURCES) \
-	$(test_server_SOURCES) $(test_thread_SOURCES)
-DIST_SOURCES = $(client_SOURCES) $(console_SOURCES) $(server_SOURCES) \
-	$(test_SOURCES) $(test_config_SOURCES) $(test_dvdread_SOURCES) \
+SOURCES = $(client_SOURCES) $(console_SOURCES) $(datasize_SOURCES) \
+	$(server_SOURCES) $(test_SOURCES) $(test_config_SOURCES) \
+	$(test_dvdread_SOURCES) $(test_server_SOURCES) \
+	$(test_thread_SOURCES)
+DIST_SOURCES = $(client_SOURCES) $(console_SOURCES) \
+	$(datasize_SOURCES) $(server_SOURCES) $(test_SOURCES) \
+	$(test_config_SOURCES) $(test_dvdread_SOURCES) \
 	$(test_server_SOURCES) $(test_thread_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
@@ -204,6 +210,7 @@ target_alias = @target_alias@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 noinst_HEADERS = *.h 
+datasize_SOURCES = datasize.cpp
 test_dvdread_SOURCES = test_dvdread.cpp 
 console_SOURCES = console.cpp
 test_thread_SOURCES = test_thread.cpp 
@@ -297,6 +304,9 @@ client$(EXEEXT): $(client_OBJECTS) $(client_DEPENDENCIES)
 console$(EXEEXT): $(console_OBJECTS) $(console_DEPENDENCIES) 
 	@rm -f console$(EXEEXT)
 	$(CXXLINK) $(console_LDFLAGS) $(console_OBJECTS) $(console_LDADD) $(LIBS)
+datasize$(EXEEXT): $(datasize_OBJECTS) $(datasize_DEPENDENCIES) 
+	@rm -f datasize$(EXEEXT)
+	$(CXXLINK) $(datasize_LDFLAGS) $(datasize_OBJECTS) $(datasize_LDADD) $(LIBS)
 server$(EXEEXT): $(server_OBJECTS) $(server_DEPENDENCIES) 
 	@rm -f server$(EXEEXT)
 	$(CXXLINK) $(server_LDFLAGS) $(server_OBJECTS) $(server_LDADD) $(LIBS)
@@ -323,6 +333,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/console.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datasize.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/socket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test.Po@am__quote@
