@@ -19,11 +19,12 @@ void HiveControl::start(){
     server_socket->setPort(port);
     server_socket->bind();
     for(;_stop;){
+	Socket * data=socket->Accept();
 	/*
 	ClientData *data=(ClientData*)socket->accept();
 //	ClientHandler * handler=new ClientHandler(data);
-	Thread *listener=new Thread(new ClientHandler(data));
-	listener->start();
+//	Thread *listener=new Thread(new ClientHandler(data));
+//	listener->start();
 	*/
     }
 }

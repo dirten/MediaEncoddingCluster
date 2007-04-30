@@ -4,10 +4,12 @@
 namespace org{
 namespace esb{
 namespace hive{
-ClientHandler::ClientHandler(ClientData *){
 
+
+ClientHandler::ClientHandler(){
 
 }
+
 
 void ClientHandler::run(){
 

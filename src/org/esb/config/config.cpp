@@ -29,6 +29,7 @@ string trim(string & s, string & drop = *new string(" ")){
 
 void Config::init(char * filename)
 {
+  properties=new SimpleProperties();
   FILE * fp;
   char buffer[255];
   if((fp = fopen(filename,"r"))==NULL)
