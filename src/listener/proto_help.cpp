@@ -17,6 +17,6 @@ using namespace org::esb::net;
 	    string help="Using help from CommandLine\n";
 	    help+="MediaEncodingCluster ProtocolServer-1.0.0";
 
-	    socket->write((unsigned char *)help.c_str(),help.length());
+     socket->getOutputStream()->write((unsigned char *)help.c_str(),help.length());
 	}
 

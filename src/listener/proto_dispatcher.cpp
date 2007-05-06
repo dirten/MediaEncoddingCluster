@@ -24,10 +24,10 @@ using namespace org::esb::util;
 	    while(!socket->isClosed()){
 
 //    		char * protoversion="MediaEncodingCluster ProtocolServer-1.0.0";
-
-		SocketData *recvData=socket->read();
-		char * data=recvData->data;
-		string s1=data;
+       unsigned char * buffer=new unsigned char[32000];
+       int bytes=socket->getInputStream()->read(buffer, 32000);
+//		char * data=recvData->data;
+       string s1=(char*)buffer;
 		string s2="\n;";
 		char* command=(char*)StringUtil::trim(s1,s2);
 		cout << "Command : "<<command<<endl;
@@ -44,19 +44,19 @@ using namespace org::esb::util;
 		
 		if(strcmp(command, "disconnect")==0){
 		    cout << "disconnect Command"<<endl;
-		    socket->write((unsigned char *)"disconnecting",13);
+      socket->getOutputStream()->write((unsigned char *)"disconnecting",13);
 		    socket->close();
 		    break;
 		}
 		else{
 		    string *error=new string("Unknown Command:");
 		    error->append(command);
-		    socket->write((unsigned char *)error->c_str(),error->length());
+      socket->getOutputStream()->write((unsigned char *)error->c_str(),error->length());
 		    delete error;
 		}
 //		bzero(command, strlen(command));
 //		if(command)delete command;
-		delete recvData;
+//		delete recvData;
 	    }
 	    cout << "Elvis has left the building"<<endl;
 	}

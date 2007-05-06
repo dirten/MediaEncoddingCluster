@@ -1,5 +1,7 @@
 #include <iostream>
 #include "Socket.h"
+#include "SocketInputStream.cpp"
+#include "SocketOutputStream.cpp"
 using namespace std;
 using namespace org::esb::net;
 /******************************************************************************/
@@ -60,131 +62,14 @@ int Socket::getPort()
 }
 
 /******************************************************************************/
-int Socket::write(SocketData * data)
-{
-  return this->write((unsigned char *)data->data, data->data_length);
-}
-
-/******************************************************************************/
-int Socket::write(const unsigned char * buffer, int len)
-{
-  int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
-  while(remaining>0)
-  {
-    int bytes=::send(this->socketFd,buffer,remaining,sendOpts);
-    byteCounter+=bytes;
-    if(bytes<0)
-    {
-      this->close();
-      return bytes;
-    }
-    buffer+=bytes;
-    remaining-=bytes;
-  }
-  return byteCounter;
-}
-
-/******************************************************************************/
-int Socket::write2(const unsigned char * buffer, int len)
-{
-  int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
-  char * length=new char[64];
-  bzero(length,64);
-  sprintf(length,"%d", len);
-  if((::send(this->socketFd,length,64,sendOpts))<0){
-    this->close();
-  }
-  delete length;
-  while(remaining>0)
-  {
-    int bytes=::send(this->socketFd,buffer,remaining,sendOpts);
-    byteCounter+=bytes;
-    if(bytes<0)
-    {
-      this->close();
-      return bytes;
-    }
-    buffer+=bytes;
-    remaining-=bytes;
-  }
-  return byteCounter;
-}
-
-/******************************************************************************/
-SocketData* Socket::read()
-{
-//  unsigned int rest=bytes;
-  int maxrecv=8192;
-  char recvBuffer[maxrecv];
-  
-  char*frame=new char[10000000];
-  int all=0, counter=1, offset=0;
-  while(counter!=0)
-  {
-//    int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
-    counter=::recv(this->socketFd,recvBuffer,maxrecv,MSG_TRUNC);
-    cout << "ReadCounter:"<<counter << endl;
-    /*Connection is dead*/
-    if(counter<0){
-	this->close();
-	return false;
-    }
-    memcpy(frame+offset,recvBuffer,counter);
-    offset+=counter;
-//    rest-=counter;
-    all+=counter;
-  }
-  SocketData * packet=new SocketData();
-//  bzero(&packet->data, all);
-//  memcpy(&packet->data, &frame,all);
-//  delete frame;
-  packet->data=frame;
-  packet->data_length=all;
-  return packet;
-}
-/******************************************************************************/
-SocketData* Socket::read2()
-{
-  char*bytes_str=new char[64];
-  if((::read(this->socketFd,bytes_str,64))<0){
-    this->close();
-  }
-  int bytes=atoi(bytes_str),counter=0,offset=0,all=0;
-  delete bytes_str;
-  unsigned int rest=bytes;
-  char recvBuffer[8192];
-  
-  char*frame=new char[bytes];
-  while(all<bytes)
-  {
-    int maxrecv=rest>sizeof(recvBuffer)?sizeof(recvBuffer):rest;
-    counter=::read(this->socketFd,recvBuffer,maxrecv);
-    /*Connection is dead*/
-    if(counter<0){
-	this->close();
-	return false;
-    }
-    memcpy(frame+offset,recvBuffer,counter);
-    offset+=counter;
-    rest-=counter;
-    all+=counter;
-  }
-  SocketData * packet=new SocketData();
-//  bzero(&packet->data, all);
-//  memcpy(&packet->data, &frame,all);
-//  delete frame;
-  packet->data=frame;
-  packet->data_length=all;
-  return packet;
-}
-
-/******************************************************************************/
 void Socket::init()
 {
   this->socketFd=::socket(AF_INET,SOCK_STREAM,0);
   socketaddr.sin_family=AF_INET;
   socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
   socketaddr.sin_port=htons(this->port);
+  this->inputStream=new SocketInputStream(this);
+  this->outputStream=new SocketOutputStream(this);
 }
 
 /******************************************************************************/
@@ -208,3 +93,20 @@ bool Socket::isClosed()
 {
     return (this->socketFd<=0);
 }
+
+/******************************************************************************/
+InputStream * Socket::getInputStream(){
+  return this->inputStream;
+}
+/******************************************************************************/
+
+OutputStream * Socket::getOutputStream(){
+  return this->outputStream;
+}
+
+/******************************************************************************/
+int Socket::getDescriptor(){
+  return this->socketFd; 
+
+}
+

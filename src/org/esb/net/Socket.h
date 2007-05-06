@@ -4,7 +4,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
-
+#include "org/esb/io/InputStream.h"
+#include "org/esb/io/OutputStream.h"
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
 #elif defined( unix ) && !defined( __CYGWIN__ ) && !defined( sun )
@@ -12,7 +13,7 @@
 #else
 #define SOCKET_NOSIGNAL 0
 #endif
-//using namespace org::esb::socket;
+using namespace org::esb::io;
 namespace org
 {
   namespace esb
@@ -40,17 +41,14 @@ namespace org
         int   socketFd;
         struct sockaddr_in socketaddr;
         void  init();
-      public:
+        InputStream * inputStream;
+        OutputStream * outputStream;
+        public:
         Socket(int);
         Socket();
         Socket(char * hostname, int portnumber);
         ~Socket();
 
-        int         write(const unsigned char*, int );
-        int         write2(const unsigned char*, int );
-        int         write(SocketData* );
-        SocketData  * read();
-        SocketData  * read2();
         void        setHostname(char*);
         void        setPort(int);
         char        * getHostname();
@@ -60,6 +58,9 @@ namespace org
         void        connect();
         void        close();
 	bool	    isClosed();
+ int getDescriptor();
+	InputStream * getInputStream();
+	OutputStream * getOutputStream();
       };
 
     }

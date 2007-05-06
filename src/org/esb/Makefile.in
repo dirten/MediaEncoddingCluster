@@ -57,7 +57,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libesb_la_LIBADD =
 am__objects_1 = Thread.lo Exception.lo config.lo SimpleProperties.lo \
 	StringTokenizer.lo StringUtil.lo ServerSocket.lo Socket.lo \
-	hivecontrol.lo ClientData.lo ClientHandler.lo
+	SocketInputStream.lo SocketOutputStream.lo hivecontrol.lo \
+	ClientData.lo ClientHandler.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
 libesb_la_OBJECTS = $(am_libesb_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -71,6 +72,14 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libesb_la_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
@@ -199,7 +208,11 @@ SOURCES = lang/Thread.cpp \
 		util/StringTokenizer.cpp \
 		util/StringUtil.cpp \
 		net/ServerSocket.cpp \
+		io/InputStream.h \
+		io/OutputStream.h \
 		net/Socket.cpp \
+		net/SocketInputStream.cpp \
+		net/SocketOutputStream.cpp \
 		hivecontrol/hivecontrol.cpp \
 		hivecontrol/ClientData.cpp \
 		hivecontrol/ClientHandler.cpp 
@@ -285,6 +298,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerSocket.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleProperties.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketInputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringTokenizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringUtil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
@@ -367,6 +382,20 @@ Socket.lo: net/Socket.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='net/Socket.cpp' object='Socket.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Socket.lo `test -f 'net/Socket.cpp' || echo '$(srcdir)/'`net/Socket.cpp
+
+SocketInputStream.lo: net/SocketInputStream.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SocketInputStream.lo -MD -MP -MF "$(DEPDIR)/SocketInputStream.Tpo" -c -o SocketInputStream.lo `test -f 'net/SocketInputStream.cpp' || echo '$(srcdir)/'`net/SocketInputStream.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/SocketInputStream.Tpo" "$(DEPDIR)/SocketInputStream.Plo"; else rm -f "$(DEPDIR)/SocketInputStream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='net/SocketInputStream.cpp' object='SocketInputStream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SocketInputStream.lo `test -f 'net/SocketInputStream.cpp' || echo '$(srcdir)/'`net/SocketInputStream.cpp
+
+SocketOutputStream.lo: net/SocketOutputStream.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SocketOutputStream.lo -MD -MP -MF "$(DEPDIR)/SocketOutputStream.Tpo" -c -o SocketOutputStream.lo `test -f 'net/SocketOutputStream.cpp' || echo '$(srcdir)/'`net/SocketOutputStream.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/SocketOutputStream.Tpo" "$(DEPDIR)/SocketOutputStream.Plo"; else rm -f "$(DEPDIR)/SocketOutputStream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='net/SocketOutputStream.cpp' object='SocketOutputStream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SocketOutputStream.lo `test -f 'net/SocketOutputStream.cpp' || echo '$(srcdir)/'`net/SocketOutputStream.cpp
 
 hivecontrol.lo: hivecontrol/hivecontrol.cpp
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hivecontrol.lo -MD -MP -MF "$(DEPDIR)/hivecontrol.Tpo" -c -o hivecontrol.lo `test -f 'hivecontrol/hivecontrol.cpp' || echo '$(srcdir)/'`hivecontrol/hivecontrol.cpp; \

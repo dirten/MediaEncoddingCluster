@@ -1,5 +1,7 @@
 #include <iostream>
 #include "org/esb/net/Socket.h"
+#include "org/esb/io/OutputStream.h"
+#include "org/esb/io/InputStream.h"
 #include <signal.h>
 
 
@@ -28,13 +30,18 @@ int main(int argc,char**argv){
     setCatcher();
     mysocket=new Socket("localhost", 20000);
     mysocket->connect();
+    OutputStream * out=mysocket->getOutputStream();
+    InputStream * in=mysocket->getOutputStream();
     char buffer[maxline];
     cout << "cmd:> ";
+
     for(;fgets(buffer, maxline, stdin);){
 	SocketData * data=new SocketData();
 	data->data=buffer;
 	data->data_length=strlen(buffer);
 	cout << "reply:>"<<data->data;
+	out->write(buffer, strlen(buffer));
+
 	int writes=mysocket->write(data);
 	data=mysocket->read();
 	cout << data->data <<endl;

@@ -19,7 +19,11 @@ SOURCES = 	lang/Thread.cpp \
 		util/StringTokenizer.cpp \
 		util/StringUtil.cpp \
 		net/ServerSocket.cpp \
+		io/InputStream.h \
+		io/OutputStream.h \
 		net/Socket.cpp \
+		net/SocketInputStream.cpp \
+		net/SocketOutputStream.cpp \
 		hivecontrol/hivecontrol.cpp \
 		hivecontrol/ClientData.cpp \
 		hivecontrol/ClientHandler.cpp 
