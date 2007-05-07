@@ -68,8 +68,6 @@ void Socket::init()
   socketaddr.sin_family=AF_INET;
   socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
   socketaddr.sin_port=htons(this->port);
-  this->inputStream=new SocketInputStream(this);
-  this->outputStream=new SocketOutputStream(this);
 }
 
 /******************************************************************************/
@@ -96,11 +94,15 @@ bool Socket::isClosed()
 
 /******************************************************************************/
 InputStream * Socket::getInputStream(){
+  if(this->inputStream==NULL)
+    this->inputStream=new SocketInputStream(this);
   return this->inputStream;
 }
 /******************************************************************************/
 
 OutputStream * Socket::getOutputStream(){
+  if(this->outputStream==NULL)
+    this->outputStream=new SocketOutputStream(this);
   return this->outputStream;
 }
 

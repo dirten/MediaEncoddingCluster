@@ -39,7 +39,7 @@ namespace org
               this->socket->close();
               return false;
             }
-            memcpy(buffer+offset,recvBuffer,counter);
+//            memcpy(buffer+offset,recvBuffer,counter);
             offset+=counter;
             all+=counter;
           }

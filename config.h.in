@@ -1,10 +1,19 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Define to 1 if you have the <avcodec.h> header file. */
+#undef HAVE_AVCODEC_H
+
+/* Define to 1 if you have the <avformat.h> header file. */
+#undef HAVE_AVFORMAT_H
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `avcodec' library (-lavcodec). */
+#undef HAVE_LIBAVCODEC
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

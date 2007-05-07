@@ -269,6 +269,7 @@ int main(int argc, char *argv[])
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
     
+
     if(i%10==0){
 	cerr << "\rProcessing Frame :"<< i;
     }
@@ -282,7 +283,7 @@ int main(int argc, char *argv[])
 //    container->putFrame3(pFrameRGB,pCodecCtx);
 //    container->putFrame(pFrameRGB,pCodecCtx);
 //      hive->putFrame(pFrameRGB,pCodecCtx);
-//    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
+    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
 	cerr << "\rProcessing Frame :"<< i;
   cout << endl;

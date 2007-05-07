@@ -12,23 +12,23 @@ using namespace org::esb::config;
 class server{
     public:
 	server(){
-	    /*    
-	    fstream FileBin("/tmp/frame.container/1/frame210.data.ppm",ios::in|ios::out|ios::binary);
+	        
+	    fstream FileBin("frame210.ppm",ios::in|ios::out|ios::binary);
 	    FileBin.seekg(0,ios::end);
 	    unsigned long filesize=streamoff(FileBin.tellg());
 	    FileBin.seekg(0,ios::beg);
 	    string strBuffer="";
-	    char buffer[filesize];
+	    char * buffer=new char [filesize];
 	    FileBin.read(buffer, filesize);
 //	    cout <<"Buffer:"<< buffer << endl;
-	    printf("FileSize:%d->%d", strlen(buffer), filesize);
-	    */
+	    printf("FileSize:%d->%d", sizeof &buffer, filesize);
+	    
 
 /*
 //	    FILE * f=fopen("/tmp/frame.container/1/frame1.data.ppm","r+b");
 	    int f=open("/tmp/frame.container/1/frame100.fstream.ppm",O_RDONLY);
 	    if(!(f)){
-		cout << "Datei nicht geöffnet"<<endl;
+		cout << "Datei nicht geï¿½fnet"<<endl;
 		return;
 	    }
 	    unsigned char *tmpbuffer=new unsigned char[4000000];
@@ -91,10 +91,7 @@ class server{
 		SocketData * data=new SocketData();
 		data->data=buffer;
 		data->data_length=filesize;
-		if(socket->write(data)<0){
-		    cout << "Break"<<endl;
-		    break;
-		}
+		socket->getOutputStream()->write((const unsigned char*)buffer, filesize);
 	    }
 	    cout<<"gesendet"<<endl;
 	}

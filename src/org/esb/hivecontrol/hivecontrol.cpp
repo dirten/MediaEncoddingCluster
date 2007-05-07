@@ -19,7 +19,7 @@ void HiveControl::start(){
     server_socket->setPort(port);
     server_socket->bind();
     for(;_stop;){
-	Socket * data=socket->Accept();
+//	Socket * data=socket->accept();
 	/*
 	ClientData *data=(ClientData*)socket->accept();
 //	ClientHandler * handler=new ClientHandler(data);

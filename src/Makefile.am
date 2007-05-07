@@ -3,7 +3,7 @@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SUBDIRS = org listener framehive
-#bin_PROGRAMS = framesender framereceiver
+bin_PROGRAMS = framesender 
 #bin_PROGRAMS = zpipe
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp

@@ -8,7 +8,7 @@ namespace io{
 class OutputStream {
     public:
 	virtual void write(const unsigned char * buffer, int length)=0;
- virtual ~OutputStream();
+	~OutputStream(){};
 };
 }}}
 #endif

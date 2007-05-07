@@ -9,7 +9,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 noinst_HEADERS=*.h 
 
-bin_PROGRAMS=server client test test_dvdread test_config test_thread test_server console datasize
+bin_PROGRAMS=server client test test_dvdread test_config test_thread console 
+#datasize
 datasize_SOURCES=datasize.cpp
 
 

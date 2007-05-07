@@ -13,7 +13,7 @@ Socket * mysocket;
 
 void catcher(int sig){
     cout << "shutdown" << endl;
-    int writes=mysocket->write((unsigned char*)"disconnect",10);
+    mysocket->getOutputStream()->write((unsigned char*)"disconnect",10);
     mysocket->close();
     exit(0);
 }
@@ -31,7 +31,7 @@ int main(int argc,char**argv){
     mysocket=new Socket("localhost", 20000);
     mysocket->connect();
     OutputStream * out=mysocket->getOutputStream();
-    InputStream * in=mysocket->getOutputStream();
+    InputStream * in=mysocket->getInputStream();
     char buffer[maxline];
     cout << "cmd:> ";
 
@@ -40,11 +40,12 @@ int main(int argc,char**argv){
 	data->data=buffer;
 	data->data_length=strlen(buffer);
 	cout << "reply:>"<<data->data;
-	out->write(buffer, strlen(buffer));
+	out->write((const unsigned char*)buffer, strlen(buffer));
 
-	int writes=mysocket->write(data);
-	data=mysocket->read();
-	cout << data->data <<endl;
+//	int writes=mysocket->write(data);
+	unsigned char * inbuffer=new unsigned char[1000000];
+	in->read(inbuffer, 1000000);
+	cout << inbuffer <<endl;
 	cout << "cmd:> ";
 	bzero(buffer, sizeof(buffer));
 	delete data;

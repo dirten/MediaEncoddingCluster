@@ -6,7 +6,7 @@
 using namespace std;
 using namespace org::esb::net;
 int main(int argc,char**argv){
-
+/*
     Socket *so1=new Socket("localhost", 10000);
 //    cout << "Hostname"<<so1->getHostname()<<endl;
 //    so1->setHostname("localhost");
@@ -19,4 +19,5 @@ int main(int argc,char**argv){
     file.close();
 //    cout << r->data<<endl;
     so1->close();
+    */
 }
