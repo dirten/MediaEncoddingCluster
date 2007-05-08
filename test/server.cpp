@@ -21,7 +21,8 @@ class server{
 	    char * buffer=new char [filesize];
 	    FileBin.read(buffer, filesize);
 //	    cout <<"Buffer:"<< buffer << endl;
-	    printf("FileSize:%d->%d", sizeof &buffer, filesize);
+        ServerSocket s(20000);
+	    printf("FileSize:%d->%d", sizeof s, filesize);
 	    
 
 /*
