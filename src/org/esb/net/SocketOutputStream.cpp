@@ -17,6 +17,7 @@ class SocketOutputStream:public OutputStream{
 /******************************************************************************/
 	void write(const unsigned char * buffer, int len){
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
+	    cout << "OutputStreamLength"<<len<<endl;
 	    while(remaining>0){
        int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 		byteCounter+=bytes;

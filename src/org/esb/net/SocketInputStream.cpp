@@ -30,15 +30,43 @@ namespace org
           char recvBuffer[maxrecv];
 
           int all=0, counter=1, offset=0;
+	  string internalBuffer;
           while(counter!=0)
           {
-            counter=recv(this->socket->getDescriptor(),recvBuffer,maxrecv,MSG_TRUNC);
+            counter=recv(this->socket->getDescriptor(),recvBuffer,maxrecv,NULL);
             /*If Connection is dead*/
             if(counter<0)
             {
               this->socket->close();
               return false;
             }
+            internalBuffer+=recvBuffer;
+            memcpy(buffer+offset,recvBuffer,counter);
+            offset+=counter;
+            all+=counter;
+          }
+          return all;
+        }
+
+        int read(string * buffer)
+        {
+          int maxrecv=8192;
+          char recvBuffer[maxrecv];
+
+          int all=0, counter=1, offset=0;
+//	  string internalBuffer;
+          while(counter!=0)
+          {
+            counter=recv(this->socket->getDescriptor(),recvBuffer,maxrecv,NULL);
+            /*If Connection is dead*/
+            if(counter<0)
+            {
+              this->socket->close();
+              return false;
+            }
+            if(counter>0){
+        	buffer->append(recvBuffer);
+	    }
 //            memcpy(buffer+offset,recvBuffer,counter);
             offset+=counter;
             all+=counter;
@@ -49,7 +77,11 @@ namespace org
 
         int available()
         {
+
           return 1;
+
+
+
         }
       };
     }
