@@ -19,7 +19,7 @@ class SocketOutputStream:public OutputStream{
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
 	    cout << "OutputStreamLength"<<len<<endl;
 	    while(remaining>0){
-       int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    this->socket->close();

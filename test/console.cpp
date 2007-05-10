@@ -36,18 +36,14 @@ int main(int argc,char**argv){
     cout << "cmd:> ";
 
     for(;fgets(buffer, maxline, stdin);){
-	SocketData * data=new SocketData();
-	data->data=buffer;
-	data->data_length=strlen(buffer);
-	cout << "reply:>"<<data->data;
+	cout << "reply:>"<<buffer;
 	out->write((const unsigned char*)buffer, strlen(buffer));
 
-//	int writes=mysocket->write(data);
-	unsigned char * inbuffer=new unsigned char[1000000];
-	in->read(inbuffer, 1000000);
+	int dataLength=in->available(true);
+	unsigned char * inbuffer=new unsigned char[dataLength];
+	in->read(inbuffer, dataLength);
 	cout << inbuffer <<endl;
 	cout << "cmd:> ";
 	bzero(buffer, sizeof(buffer));
-	delete data;
     }
 }

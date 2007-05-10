@@ -23,14 +23,19 @@ ProtocolServer::ProtocolServer(Socket * socket) {
 void ProtocolServer::run() {
     while(!socket->isClosed()) {
 
-        //          char * protoversion="MediaEncodingCluster ProtocolServer-1.0.0";
-        unsigned char * buffer=new unsigned char[32000];
-        cout << socket << endl;
-        int bytes=socket->getInputStream()->read(buffer, 32000);
-        //      char * data=recvData->data;
-        string s1=(char*)buffer;
-        string s2="\n;";
-        char* command=(char*)StringUtil::trim(s1,s2);
+	int dataLength=socket->getInputStream()->available(true);
+        unsigned char * buffer=new unsigned char[dataLength];
+        int bytes=socket->getInputStream()->read(buffer, dataLength);
+
+
+
+
+//	if(bytes==0)continue;
+
+
+//        string s1=(char*)buffer;
+//        string s2="\n;";
+        char* command=(char*)buffer;//StringUtil::trim(s1,s2);
         cout << "Command : "<<command<<endl;
 
         list<ProtoCommand*>::iterator i;
@@ -47,6 +52,7 @@ void ProtocolServer::run() {
             cout << "disconnect Command"<<endl;
             socket->getOutputStream()->write((unsigned char *)"disconnecting",13);
             socket->close();
+	    delete buffer;
             break;
         } else {
             string *error=new string("Unknown Command:");
@@ -54,6 +60,7 @@ void ProtocolServer::run() {
             socket->getOutputStream()->write((unsigned char *)error->c_str(),error->length());
             delete error;
         }
+	delete buffer;
         //      bzero(command, strlen(command));
         //      if(command)delete command;
         //      delete recvData;
