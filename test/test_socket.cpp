@@ -12,15 +12,16 @@ class Server:public Runnable{
 	    Socket * client;
 	    while((client=server->accept())){
 		cout << "Client arrived"<< endl;
-		int dataLength=client->getInputStream()->available(true);
-		cout << "dataLength"<< dataLength<<endl;
-    
+		while(!client->isClosed()){
+		    int dataLength=client->getInputStream()->available(true);
+		    cout << "dataLength"<< dataLength<<endl;
 		    unsigned char * byte=new unsigned char [dataLength];
 		    cout <<"Bytes Readed:"<< client->getInputStream()->read(byte, dataLength);
-		    for(int a=0;a<10;a++){
+		    for(int a=0;a<dataLength;a++){
 			cout<< "Byte:" << (byte+a)<<endl;
 		    }
 		    delete byte;
+		}
 		    
 	    }
 	    Thread::sleep(1000);
@@ -42,16 +43,20 @@ int main(int argc, char**argv){
     Socket * socket=new Socket("localhost", 2000);
     socket->connect();
     Thread::sleep(1000);
-    const unsigned char * data=(const unsigned char *)"test\0String";
-//    string tmp="test\0String";
-
+    char * data=(char *)"test\0String";
     socket->getOutputStream()->write(data, 11);
+    data=(char *)"test";
+    socket->getOutputStream()->write(data, 4);
+    data=(char *)"kljfgsjkdfgjsdlöjkfgsldjflgjsdljkfglskdflgjsldkjfglskdjfkgsldkfgsdjfsgjdljfgsdkjgdfs";
+    socket->getOutputStream()->write(data, strlen(data));
+    data=(char *)"test";
+    socket->getOutputStream()->write(data, 4);
 //    cout << "\nSenderLength:"<<data<<endl;
 
 
     Thread::sleep(1000);
     socket->close();
-    Thread::sleep(1000);
+//    Thread::sleep(1000);
 
 
     delete server;

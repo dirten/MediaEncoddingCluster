@@ -16,7 +16,6 @@ using namespace org::esb::net;
 	void ProtoHelp::process(char * data){
 	    string help="Using help from CommandLine\n";
 	    help+="MediaEncodingCluster ProtocolServer-1.0.0";
-
-     socket->getOutputStream()->write((unsigned char *)help.c_str(),help.length());
+    	    socket->getOutputStream()->write((char *)help.c_str(),help.length());
 	}
 

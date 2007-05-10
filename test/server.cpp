@@ -21,8 +21,8 @@ class server{
 	    char * buffer=new char [filesize];
 	    FileBin.read(buffer, filesize);
 //	    cout <<"Buffer:"<< buffer << endl;
-        ServerSocket s(20000);
-	    printf("FileSize:%d->%d", sizeof s, filesize);
+    	    ServerSocket s(20000);
+//	    printf("FileSize:%d->%l", sizeof s, filesize);
 	    
 
 /*
@@ -92,7 +92,7 @@ class server{
 		SocketData * data=new SocketData();
 		data->data=buffer;
 		data->data_length=filesize;
-		socket->getOutputStream()->write((const unsigned char*)buffer, filesize);
+		socket->getOutputStream()->write((char*)buffer, filesize);
 	    }
 	    cout<<"gesendet"<<endl;
 	}

@@ -13,10 +13,11 @@ Socket * mysocket;
 
 void catcher(int sig){
     cout << "shutdown" << endl;
-    mysocket->getOutputStream()->write((unsigned char*)"disconnect",10);
+    mysocket->getOutputStream()->write((char*)"disconnect\n",12);
     mysocket->close();
     exit(0);
 }
+
 void setCatcher(){
     signal(SIGABRT, &catcher);
     signal(SIGTERM, &catcher);
@@ -25,6 +26,7 @@ void setCatcher(){
     signal(SIGINT, &catcher);
 
 }
+
 int main(int argc,char**argv){
 
     setCatcher();
@@ -33,17 +35,21 @@ int main(int argc,char**argv){
     OutputStream * out=mysocket->getOutputStream();
     InputStream * in=mysocket->getInputStream();
     char buffer[maxline];
+    bzero(&buffer, maxline);
     cout << "cmd:> ";
 
     for(;fgets(buffer, maxline, stdin);){
-	cout << "reply:>"<<buffer;
-	out->write((const unsigned char*)buffer, strlen(buffer));
+	cout << "reply:>"<<buffer<<":"<<strlen(buffer)<<endl;
+
+	out->write((char*)buffer, strlen(buffer));
+
+	bzero(&buffer, sizeof(buffer));
 
 	int dataLength=in->available(true);
-	unsigned char * inbuffer=new unsigned char[dataLength];
+	unsigned char * inbuffer=new unsigned char[dataLength+1];
 	in->read(inbuffer, dataLength);
 	cout << inbuffer <<endl;
+	delete [] inbuffer;
 	cout << "cmd:> ";
-	bzero(buffer, sizeof(buffer));
     }
 }

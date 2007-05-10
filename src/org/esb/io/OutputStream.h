@@ -7,7 +7,7 @@ namespace esb{
 namespace io{
 class OutputStream {
     public:
-	virtual void write(const unsigned char * buffer, int length)=0;
+	virtual void write(char * buffer, int length)=0;
 	~OutputStream(){};
 };
 }}}

@@ -3,7 +3,7 @@ AM_INIT_AUTOMAKE(media-encoding-cluster, 0.1)
 AM_CONFIG_HEADER(config.h)
 #AC_CONFIG_HEADERS(config.h)
 
-AC_LANG_CPLUSPLUS
+#AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_LIBTOOL
 
@@ -37,7 +37,7 @@ AC_CHECK_LIB(avcodec, main)
 
 		
 	    
-CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient -lc  "
 AC_OUTPUT(
     Makefile 

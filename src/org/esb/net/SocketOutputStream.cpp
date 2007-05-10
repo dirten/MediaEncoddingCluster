@@ -15,11 +15,12 @@ class SocketOutputStream:public OutputStream{
 	}
 
 /******************************************************************************/
-	void write(const unsigned char * buffer, int len){
+	void write(char * buffer, int len){
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
 	    cout << "OutputStreamLength"<<len<<endl;
 	    while(remaining>0){
-    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+//    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+    		int bytes=::write(this->socket->getDescriptor(),buffer,remaining);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    this->socket->close();
@@ -27,7 +28,7 @@ class SocketOutputStream:public OutputStream{
 		buffer+=bytes;
 		remaining-=bytes;
 	    }
-	    
+	    cout << "Gesendet"<<byteCounter<<endl;
 	}
 };
 }}}

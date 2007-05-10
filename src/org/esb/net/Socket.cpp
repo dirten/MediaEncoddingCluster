@@ -109,6 +109,5 @@ OutputStream * Socket::getOutputStream(){
 /******************************************************************************/
 int Socket::getDescriptor(){
   return this->socketFd; 
-
 }
 
