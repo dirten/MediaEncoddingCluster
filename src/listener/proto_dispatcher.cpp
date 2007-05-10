@@ -46,37 +46,37 @@ void ProtocolServer::run() {
 	cout << "Bytes Read:"<< bytes << endl;
 	cout << "Buffer:"<<buffer<<endl;
 
-        char *command=new char[dataLength-2];
-	bzero(command, dataLength-2);
-	memcpy(command, buffer, dataLength-2);
+        char command[dataLength];
+	bzero(command, dataLength);
+	memcpy(command, buffer, dataLength-1);
 
 
-//        cout << "Command : "<<command<<":"<<strlen(command)<<endl;
-	socket->getOutputStream()->write((char*)command,dataLength-2);
-	delete [] buffer;
-	buffer =0 ;
+        cout << "Command : "<<command<<":"<<strlen(command)<<endl;
+//	socket->getOutputStream()->write((char*)command,dataLength-1);
 
-/*	
+	
         list<ProtoCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {
             ProtoCommand * tmp=(ProtoCommand *)*i;
-            if(tmp->isResponsible((char*)buffer)) {
+            if(tmp->isResponsible((char*)command)) {
                 cout << "Command responsible"<<endl;
                 tmp->process((char*)buffer);
 		break;
             }
         }
-*/        
-	/*
+	delete [] buffer;
+	buffer =0 ;
+        
+	
         if(strcmp(command, "disconnect")==0) {
             cout << "disconnect Command"<<endl;
 //            socket->getOutputStream()->write((unsigned char *)"disconnecting",13);
             socket->close();
             break;
-        }*/
+        }
         
-        delete [] command;
-        command=0;
+//        delete [] command;
+//        command=0;
     }
     cout << "Elvis has left the building"<<endl;
 }

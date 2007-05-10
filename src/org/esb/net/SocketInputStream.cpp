@@ -55,7 +55,7 @@ namespace org
 
 	#if defined(FIONREAD)
 	if(isBlocking)
-	    int counter=recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
+	    int counter=recv(this->socket->getDescriptor(),NULL,0,MSG_WAITALL);
         int numBytes = 0;
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
 //	    cout << "Bytes Available:"<<numBytes<<endl;

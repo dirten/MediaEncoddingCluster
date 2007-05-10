@@ -40,16 +40,14 @@ int main(int argc,char**argv){
 
     for(;fgets(buffer, maxline, stdin);){
 	cout << "reply:>"<<buffer<<":"<<strlen(buffer)<<endl;
-
 	out->write((char*)buffer, strlen(buffer));
-
 	bzero(&buffer, sizeof(buffer));
 
 	int dataLength=in->available(true);
-	unsigned char * inbuffer=new unsigned char[dataLength+1];
+	unsigned char inbuffer[dataLength+1];
+	bzero(&inbuffer, dataLength+1);
 	in->read(inbuffer, dataLength);
 	cout << inbuffer <<endl;
-	delete [] inbuffer;
 	cout << "cmd:> ";
     }
 }
