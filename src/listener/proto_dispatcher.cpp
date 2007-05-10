@@ -32,11 +32,12 @@ void ProtocolServer::run() {
 
 //	char  test[]=new char[10];
 
-        unsigned char *buffer=new unsigned char[dataLength+1];
+        unsigned char *buffer=new unsigned char[dataLength];
 
 
 
 	bzero(buffer, dataLength+1);
+	cout << "Buffer alloc:"<<dataLength<<endl;
 	cout << "Buffer before:"<<buffer<<endl;
 	cout << "Buffer length before:"<<strlen((char*)buffer)<<endl;
 
@@ -51,7 +52,7 @@ void ProtocolServer::run() {
 
 
 //        cout << "Command : "<<command<<":"<<strlen(command)<<endl;
-	socket->getOutputStream()->write((char*)command,dataLength-1);
+	socket->getOutputStream()->write((char*)command,dataLength-2);
 	delete [] buffer;
 	buffer =0 ;
 
