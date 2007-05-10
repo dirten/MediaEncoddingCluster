@@ -1,7 +1,7 @@
 #include "org/esb/io/InputStream.h"
 #include "org/esb/net/Socket.h"
 #include <iostream>
-
+#include <sys/ioctl.h>
 using namespace org::esb::io;
 using namespace std;
 
@@ -28,7 +28,6 @@ namespace org
         {
           int maxrecv=8192;
           char recvBuffer[maxrecv];
-
           int all=0, counter=1, offset=0;
 	  string internalBuffer;
           while(counter!=0)
@@ -47,41 +46,21 @@ namespace org
           }
           return all;
         }
-
-        int read(string * buffer)
+        
+        int available(bool isBlocking)
         {
-          int maxrecv=8192;
-          char recvBuffer[maxrecv];
 
-          int all=0, counter=1, offset=0;
-//	  string internalBuffer;
-          while(counter!=0)
-          {
-            counter=recv(this->socket->getDescriptor(),recvBuffer,maxrecv,NULL);
-            /*If Connection is dead*/
-            if(counter<0)
-            {
-              this->socket->close();
-              return false;
-            }
-            if(counter>0){
-        	buffer->append(recvBuffer);
-	    }
-//            memcpy(buffer+offset,recvBuffer,counter);
-            offset+=counter;
-            all+=counter;
-          }
-          return all;
+	#if defined(FIONREAD)
+	if(isBlocking)
+	    int counter=recv(this->socket->getDescriptor(),NULL,0,NULL);
+
+        int numBytes = 0;
+	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
+	    return numBytes;
         }
-
-
-        int available()
-        {
-
+         
+	#endif
           return 1;
-
-
-
         }
       };
     }

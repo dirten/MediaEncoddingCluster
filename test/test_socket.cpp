@@ -12,38 +12,16 @@ class Server:public Runnable{
 	    Socket * client;
 	    while((client=server->accept())){
 		cout << "Client arrived"<< endl;
-		Thread::sleep(1000);
-//		cout << "dataLength"<< client->getInputStream()->available()<<endl;
-	#if defined(FIONREAD)
-
-        int numBytes = 0;
-	    if( ::ioctl (client->getDescriptor(), FIONREAD, &numBytes) != -1 ){
-            cout << "FIONREAD"<<numBytes<<endl;
-        }
-         
-	#endif
-/*
-        std::size_t numBytes = 0;
-	    if( ::ioctl (client->getDescriptor(), FIONREAD, &numBytes) != -1 ){
-            cout << "FIONREAD"<<numBytes<<endl;
-        }
-        cout << "NameMto"<<numBytes<<endl;
-*/
-//		while(client->getInputStream()->available()>0){
-//
-    /*
-		    unsigned char * byte=new unsigned char [10];
-		    string buffer;
-		    cout <<"Bytes Avialable:"<< client->getInputStream()->available();
-		    cout <<"Bytes Readed:"<< client->getInputStream()->read(&buffer);
-		    const char * byte=buffer.data();
+		int dataLength=client->getInputStream()->available(true);
+		cout << "dataLength"<< dataLength<<endl;
+    
+		    unsigned char * byte=new unsigned char [dataLength];
+		    cout <<"Bytes Readed:"<< client->getInputStream()->read(byte, dataLength);
 		    for(int a=0;a<10;a++){
-//			write(0,(byte+a),1);
 			cout<< "Byte:" << (byte+a)<<endl;
 		    }
-		    */
-//		    delete byte;
-//		}
+		    delete byte;
+		    
 	    }
 	    Thread::sleep(1000);
 
@@ -60,13 +38,14 @@ int main(int argc, char**argv){
     Server * server=new Server();
     Thread *serverThread=new Thread(server);
     serverThread->start();
-    Thread::sleep(500);
+    Thread::sleep(1000);
     Socket * socket=new Socket("localhost", 2000);
     socket->connect();
-    const unsigned char * data=(const unsigned char *)"testString";
+    Thread::sleep(1000);
+    const unsigned char * data=(const unsigned char *)"test\0String";
 //    string tmp="test\0String";
 
-    socket->getOutputStream()->write(data, 10);
+    socket->getOutputStream()->write(data, 11);
 //    cout << "\nSenderLength:"<<data<<endl;
 
 
