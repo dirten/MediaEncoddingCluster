@@ -9,9 +9,10 @@ using namespace org::esb::config;
 
 
 int main(int argc,char**argv){
-    Config::init("./cluster.cfg");
-    int port=atoi(Config::getProperty("listener.port"));
-    ServerSocket *server=new ServerSocket(port);
+//    Config::init("./cluster.cfg");
+//    int port=atoi(Config::getProperty("listener.port"));
+
+    ServerSocket *server=new ServerSocket(20000);
     server->bind();
     for(;Socket * clientSocket=server->accept();){
 	Thread * thread=new Thread(new ProtocolServer(clientSocket));

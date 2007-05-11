@@ -16,10 +16,10 @@ class ProtoUnknown : public ProtoCommand{
 	
 	~ProtoUnknown(){}
 	bool isResponsible(char * command){
-	    if(strlen(command)>0){
+	    if(strlen(command)>0&&strcmp(command,"disconnect")!=0){
 		return true;
 	    }
-	    return true;
+	    return false;
 	}
 	void process(char * command){
 	    string error="Unknown Command:";

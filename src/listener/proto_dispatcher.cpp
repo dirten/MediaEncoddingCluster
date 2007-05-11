@@ -4,6 +4,7 @@
 #include "proto_dispatcher.h"
 #include "proto_help.cpp"
 #include "proto_unknown.cpp"
+#include "proto_startup.cpp"
 #include <list>
 using namespace std;
 using namespace org::esb::net;
@@ -13,13 +14,14 @@ using namespace org::esb::util;
 //list<ProtoCommand*>  l;
 ProtocolServer::~ProtocolServer() {
     cout << "Closing socket"<<endl;
-    socket->close();
+//    socket->close();
 }
 
 ProtocolServer::ProtocolServer(Socket * socket) {
     this->socket=socket;
     //      l=new list<ProtoCommand*>();
     l.push_back((ProtoCommand*)new ProtoHelp(socket));
+    l.push_back((ProtoCommand*)new ProtoStartup(socket));
     l.push_back((ProtoCommand*)new ProtoUnknown(socket));
 }
 
@@ -47,37 +49,39 @@ void ProtocolServer::run() {
 	cout << "Bytes Read:"<< bytes << endl;
 	cout << "Buffer:"<<buffer<<endl;
 
-        char command[dataLength];
-	bzero(command, dataLength);
-	memcpy(command, buffer, dataLength-1);
-
-
+	if(bytes<=0)continue;
+        char *command=strtok((char*)buffer,"\n\r");
+	if(command==NULL)continue;
         cout << "Command : "<<command<<":"<<strlen(command)<<endl;
-//	socket->getOutputStream()->write((char*)command,dataLength-1);
 
 	
         list<ProtoCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {
             ProtoCommand * tmp=(ProtoCommand *)*i;
-            if(tmp->isResponsible((char*)command)) {
-                cout << "Command responsible"<<endl;
-                tmp->process((char*)buffer);
+            if(tmp->isResponsible(command)) {
+                cout << "Command responsible:"<<command<<endl;
+                tmp->process(command);
 		break;
             }
         }
-	delete [] buffer;
-	buffer =0 ;
+
         
 	
         if(strcmp(command, "disconnect")==0) {
             cout << "disconnect Command"<<endl;
 //            socket->getOutputStream()->write((unsigned char *)"disconnecting",13);
+//	    delete [] buffer;
+//	    buffer =0 ;
             socket->close();
+//	    delete socket;
             break;
         }
+	delete [] buffer;
+	buffer =0 ;
         
 //        delete [] command;
 //        command=0;
     }
     cout << "Elvis has left the building"<<endl;
+    delete this;
 }

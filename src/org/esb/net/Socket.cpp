@@ -15,7 +15,7 @@ Socket::Socket(int sock)
 /******************************************************************************/
 Socket::~Socket()
 {
-  this->close();
+//  this->close();
 }
 
 
@@ -85,6 +85,7 @@ void Socket::close()
 {
   ::close(this->socketFd);
   this->socketFd=0;
+  delete this;
 }
 /******************************************************************************/
 bool Socket::isClosed()
