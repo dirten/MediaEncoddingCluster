@@ -2,6 +2,7 @@
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
 #include "proto_dispatcher.h"
+#include "proto_help.cpp"
 #include "proto_unknown.cpp"
 #include <list>
 using namespace std;

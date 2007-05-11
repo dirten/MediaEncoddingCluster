@@ -21,7 +21,7 @@ class Server:public Runnable{
 		    unsigned char * byte=new unsigned char [dataLength];
 		    cout <<"Bytes Readed:"<< client->getInputStream()->read(byte, dataLength)<<endl;;
 		    counter+=dataLength;
-		cout <<"Insgesam Empfangen"<<counter<<endl;
+		    cout <<"Insgesamt Empfangen"<<counter<<endl;
 		    /*
 		    for(int a=0;a<dataLength;a++){
 			cout<< "Byte:" << (byte+a)<<endl;
@@ -50,7 +50,8 @@ int main(int argc, char**argv){
     Socket * socket=new Socket("localhost", 2000);
     socket->connect();
     Thread::sleep(1000);
-    fstream FileBin("/tmp/frame.container/1/frame100.fstream.ppm",ios::in|ios::out|ios::binary);
+    fstream FileBin("frame100.ppm",ios::in|ios::out|ios::binary);
+    if(FileBin==NULL)exit(0);
     FileBin.seekg(0,ios::end);
     unsigned long filesize=streamoff(FileBin.tellg());
     FileBin.seekg(0,ios::beg);

@@ -2,7 +2,7 @@
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
 #include "org/esb/util/StringUtil.h"
-#include "proto_help.h"
+#include "proto_command.h"
 #include <list>
 
 using namespace std;

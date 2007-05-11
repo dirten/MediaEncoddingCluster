@@ -3,7 +3,7 @@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SOURCES=listener.cpp \
-	proto_dispatcher.cpp proto_help.cpp proto_help.h
+	proto_dispatcher.cpp proto_help.cpp
 
 bin_PROGRAMS = lsnr
 lsnr_SOURCES = $(SOURCES)
