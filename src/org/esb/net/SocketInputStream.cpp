@@ -19,6 +19,11 @@ namespace org
         Socket * socket;
       public:
         /******************************************************************************/
+        ~SocketInputStream()
+        {
+        
+        }
+        /******************************************************************************/
         SocketInputStream(Socket * socket)
         {
           this->socket=socket;
@@ -28,13 +33,10 @@ namespace org
         int read(unsigned char * buffer, int length)
         {
           int maxrecv=8192;
-//          char recvBuffer[maxrecv];
           int all=0, counter=1, offset=0;
           while(all<length)
           {
-//	    bzero(&recvBuffer,maxrecv);
 	    int readLength=(length-all)<maxrecv?(length-all):maxrecv;
-//            counter=recv(this->socket->getDescriptor(),buffer+offset,readLength,0);
             counter=::read(this->socket->getDescriptor(),buffer+offset,readLength);
             /*If Connection is dead*/
             if(counter<0)
@@ -42,7 +44,6 @@ namespace org
               this->socket->close();
               return false;
             }
-//            memcpy(buffer+offset,recvBuffer,counter);
             offset+=counter;
             all+=counter;
           }
@@ -58,7 +59,6 @@ namespace org
 	    int counter=recv(this->socket->getDescriptor(),NULL,0,MSG_WAITALL);
         int numBytes = 0;
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
-//	    cout << "Bytes Available:"<<numBytes<<endl;
 	    return numBytes;
         }
 	#endif

@@ -18,6 +18,9 @@ class ProtoStartup : public ProtoCommand{
 	    return false;
 	}
 	void process(char * command){
+	
+
+
 	    string error="StartupCommand:";
             error+=command;
             error+="\n";

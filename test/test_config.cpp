@@ -17,8 +17,8 @@ using namespace org::esb::util;
 using namespace org::esb::lang;
 
 int main(int argc, char**argv){
-    unsigned char * tmp=new unsigned char[1024*1024*1024];
-    bzero(tmp,1024*1024*1024);
+//    unsigned char * tmp=new unsigned char[1024*1024*1024];
+//    bzero(tmp,1024*1024*1024);
 //    Thread::sleep(10000);
     Config::init("./cluster.cfg");
     cout << "Config:"<<Config::getProperty("src.path")<<endl;;

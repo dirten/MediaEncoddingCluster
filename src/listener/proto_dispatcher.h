@@ -12,7 +12,7 @@ using namespace org::esb::lang;
 class ProtocolServer:public Runnable{
     private:
 	Socket * socket;
-	list<ProtoCommand*>  l;
+	list<ProtoCommand*> l;
     public:
 	~ProtocolServer();
 	ProtocolServer(Socket * socket);

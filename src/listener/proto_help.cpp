@@ -17,6 +17,7 @@ class ProtoHelp:public ProtoCommand{
 	}
 
 	bool isResponsible(char * command){
+	    cout << command <<":Command"<<endl;
 	    return (strcmp(command,"help")==0);
 	}
 

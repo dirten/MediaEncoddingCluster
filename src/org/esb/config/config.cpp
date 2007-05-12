@@ -29,7 +29,7 @@ string trim(string & s, string & drop = *new string(" ")){
 
 void Config::init(char * filename)
 {
-  properties=new SimpleProperties();
+//  properties=new SimpleProperties();
   FILE * fp;
   char buffer[255];
   if((fp = fopen(filename,"r"))==NULL)
@@ -62,8 +62,10 @@ void Config::parseLine(const char*line)
     if(st->countTokens()==2){
 	string key=st->nextToken();
 	string val=st->nextToken();
+	char *delim="\n";
 //	Config::properties->setProperty(trim(key),trim(val,*new string("\n")));
-	properties->setProperty(trim(key),trim(val,*new string("\n")));
+	properties->setProperty(strtok((char*)key.c_str(),delim),strtok((char*)val.c_str(),delim));
+//	delete [] delim;
     }
     delete st;
   }

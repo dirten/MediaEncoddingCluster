@@ -65,14 +65,6 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(lsnr_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -179,7 +171,8 @@ target_alias = @target_alias@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SOURCES = listener.cpp \
-	proto_dispatcher.cpp proto_help.cpp proto_help.h
+	proto_dispatcher.cpp \
+	proto_help.cpp 
 
 lsnr_SOURCES = $(SOURCES)
 lsnr_LDFLAGS = $(all_libraries) 

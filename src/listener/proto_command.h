@@ -7,8 +7,8 @@ using namespace std;
 class ProtoCommand{
     public:
 	virtual ~ProtoCommand(){};
-	virtual bool isResponsible(char * command){return  false;};
-	virtual void process(char * command){};
+	virtual bool isResponsible(char * command)=0;
+	virtual void process(char * command)=0;
 };
 
 #endif

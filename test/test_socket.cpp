@@ -60,6 +60,7 @@ int main(int argc, char**argv){
     FileBin.read(buffer, filesize);
     socket->getOutputStream()->write(buffer, filesize);
     cout << "file is out"<<endl;
+
     /*
     char * data=(char *)"test\0String";
     socket->getOutputStream()->write(data, 11);

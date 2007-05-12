@@ -7,25 +7,34 @@ using namespace org::esb::net;
 /******************************************************************************/
 Socket::Socket(int sock)
 {
+//  Socket();
   this->is_closed=false;
   this->socketFd=sock;
-//  Socket();
+  this->inputStream=new SocketInputStream(this);
+  this->outputStream=new SocketOutputStream(this);
+
 }
 
 /******************************************************************************/
 Socket::~Socket()
 {
-//  this->close();
+    delete this->inputStream;
+    delete this->outputStream;
 }
 
 
 /******************************************************************************/
 Socket::Socket()
 {
+  cout << "default Constructor from Socket"<<endl;
   this->hostname="localhost";
   this->port=0;
   this->socketFd=0;
   bzero(&this->socketaddr,sizeof(this->socketaddr));
+
+//  this->inputStream=new SocketInputStream(this);
+//  this->outputStream=new SocketOutputStream(this);
+
 }
 
 /******************************************************************************/
@@ -85,7 +94,6 @@ void Socket::close()
 {
   ::close(this->socketFd);
   this->socketFd=0;
-  delete this;
 }
 /******************************************************************************/
 bool Socket::isClosed()
@@ -95,15 +103,11 @@ bool Socket::isClosed()
 
 /******************************************************************************/
 InputStream * Socket::getInputStream(){
-  if(this->inputStream==NULL)
-    this->inputStream=new SocketInputStream(this);
   return this->inputStream;
 }
 /******************************************************************************/
 
 OutputStream * Socket::getOutputStream(){
-  if(this->outputStream==NULL)
-    this->outputStream=new SocketOutputStream(this);
   return this->outputStream;
 }
 

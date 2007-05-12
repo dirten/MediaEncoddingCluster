@@ -10,6 +10,9 @@ class SocketOutputStream:public OutputStream{
 	Socket * socket;
     public:
 /******************************************************************************/
+	~SocketOutputStream(){
+	}
+/******************************************************************************/
 	SocketOutputStream(Socket * socket){
 	    this->socket=socket;
 	}
@@ -17,7 +20,6 @@ class SocketOutputStream:public OutputStream{
 /******************************************************************************/
 	void write(char * buffer, int len){
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
-	    cout << "OutputStreamLength"<<len<<endl;
 	    while(remaining>0){
 //    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
     		int bytes=::write(this->socket->getDescriptor(),buffer,remaining);
@@ -28,7 +30,6 @@ class SocketOutputStream:public OutputStream{
 		buffer+=bytes;
 		remaining-=bytes;
 	    }
-	    cout << "Gesendet"<<byteCounter<<endl;
 	}
 };
 }}}
