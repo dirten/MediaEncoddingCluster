@@ -2,10 +2,10 @@
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
 #include "proto_dispatcher.h"
-#include "proto_help.cpp"
-#include "proto_unknown.cpp"
-#include "proto_startup.cpp"
-#include "proto_disconnect.cpp"
+#include "cmd_help.cpp"
+#include "cmd_unknown.cpp"
+#include "cmd_startup.cpp"
+#include "cmd_disconnect.cpp"
 #include <list>
 using namespace std;
 using namespace org::esb::net;
