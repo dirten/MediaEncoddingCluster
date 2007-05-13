@@ -5,6 +5,7 @@
 #include "cmd_help.cpp"
 #include "cmd_unknown.cpp"
 #include "cmd_startup.cpp"
+#include "cmd_shutdown.cpp"
 #include "cmd_disconnect.cpp"
 #include <list>
 using namespace std;
@@ -27,6 +28,7 @@ ProtocolServer::ProtocolServer(Socket * socket) {
     l.push_back(new ProtoDisconnect(socket));
     l.push_back(new ProtoHelp(socket));
     l.push_back(new ProtoStartup(socket));
+    l.push_back(new ProtoShutdown(socket));
     l.push_back(new ProtoUnknown(socket));
 }
 

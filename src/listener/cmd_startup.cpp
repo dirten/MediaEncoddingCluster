@@ -1,6 +1,6 @@
 #include "proto_command.h"
-
-
+#include "org/esb/lang/Thread.h"
+#include "hivecontrol/hivecontrol.h"
 
 class ProtoStartup : public ProtoCommand{
     private:
@@ -18,13 +18,13 @@ class ProtoStartup : public ProtoCommand{
 	    return false;
 	}
 	void process(char * command){
-	
-
-
-	    string error="StartupCommand:";
+	    string error="Please Wait while Startup";
             error+=command;
             error+="\n";
             socket->getOutputStream()->write((char*)error.c_str(),error.length());
+	    HiveControl::getInstance()->startup();
+	    cout << "Server running"<<endl;
+
 //            delete error;
 	}
 };
