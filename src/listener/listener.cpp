@@ -13,7 +13,7 @@ ServerSocket *server;
 void catcher(int sig){
     cout << "shutdown listener" << endl;
 //    server->close();
-    delete server;
+//    delete server;
     exit(0);
 }
 

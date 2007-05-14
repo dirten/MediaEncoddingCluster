@@ -9,8 +9,8 @@ class HiveControl{
 	HiveControl();
 //	static HiveControl *instance;
 	~HiveControl();
-	void startup(void);
-	void shutdown(void);
+	bool startup(void);
+	bool shutdown(void);
 	static HiveControl* getInstance();
 };
 

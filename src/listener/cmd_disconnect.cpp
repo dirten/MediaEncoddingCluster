@@ -19,10 +19,9 @@ class ProtoDisconnect : public ProtoCommand{
 	    return false;
 	}
 	void process(char * command){
-	    string error="Disconnection:";
+	    string error="Disconnecting:";
             error+="\n";
             socket->getOutputStream()->write((char*)error.c_str(),error.length());
 	    socket->close();
-//            delete error;
 	}
 };

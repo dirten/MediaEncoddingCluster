@@ -19,18 +19,24 @@ using namespace std;
 	return instance;
     }
     
-    void HiveControl::startup(){
+    bool HiveControl::startup(){
+	bool result=false;
 	if(!isRunning){
 	    isRunning=true;
+	    result=true;
 	}else{
 	    cout << "HiveControl Allready started";
 	}
+	return result;
     }
 
-    void HiveControl::shutdown(){
+    bool HiveControl::shutdown(){
+	bool result=false;
 	if(isRunning){
 	    isRunning=false;
+	    result=true;
 	}else{
 	    cout << "HiveControl Allready stopped";
 	}
+	return result;
     }

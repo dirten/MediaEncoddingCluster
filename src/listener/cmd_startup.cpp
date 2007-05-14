@@ -18,13 +18,18 @@ class ProtoStartup : public ProtoCommand{
 	    return false;
 	}
 	void process(char * command){
-	    string error="Please Wait while Startup";
-            error+=command;
-            error+="\n";
-            socket->getOutputStream()->write((char*)error.c_str(),error.length());
-	    HiveControl::getInstance()->startup();
+	    string msg="Please Wait while Startup";
+            msg+=command;
+            msg+="\n";
+            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+	    if(HiveControl::getInstance()->startup()){
+		msg="Server is running";
+        	socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+	    
+	    }else{
+		msg="Error while startup Server";
+        	socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	    
+	    }
 	    cout << "Server running"<<endl;
-
-//            delete error;
 	}
 };

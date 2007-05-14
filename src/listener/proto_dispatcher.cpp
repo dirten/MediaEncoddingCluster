@@ -36,7 +36,7 @@ void ProtocolServer::run() {
     while(!socket->isClosed()) {
 	int dataLength=socket->getInputStream()->available(true);
 	if(dataLength==0){
-	    cout << "0 Byte empfangen"<< endl;
+	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
 	    continue;
 	}
         unsigned char buffer[dataLength];
@@ -44,7 +44,6 @@ void ProtocolServer::run() {
         int bytes=socket->getInputStream()->read(buffer, dataLength);
         char *command=strtok((char*)buffer,"\n\r");
 	if(command==NULL||strlen(command)<=0)continue;
-//        cout << "Command : "<<command<<":"<<strlen(command)<<endl;
         list<ProtoCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {
             ProtoCommand *tmp=(ProtoCommand*)*i;
