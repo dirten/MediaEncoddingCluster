@@ -1,7 +1,8 @@
 #include "hivecontrol.h"
 #include <iostream>
 using namespace std;
-    HiveControl * instance=new HiveControl();
+//    HiveControl * instance=new HiveControl();
+    HiveControl * instance=0;
 
     HiveControl::HiveControl(){
     
