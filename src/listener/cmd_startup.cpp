@@ -1,5 +1,6 @@
 #include "proto_command.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/lang/Exception.h"
 #include "hivecontrol/hivecontrol.h"
 
 class ProtoStartup : public ProtoCommand{
@@ -11,25 +12,30 @@ class ProtoStartup : public ProtoCommand{
 	}
 	
 	~ProtoStartup(){}
-	bool isResponsible(char * command){
+	int isResponsible(char * command){
 	    if(strcmp(command,"startup")==0){
-		return true;
+		return CMD_PROCESS;
+	    }else
+	    if(strcmp(command,"help")==0){
+		return CMD_HELP;
 	    }
-	    return false;
+	    return CMD_NA;
 	}
+
 	void process(char * command){
-	    string msg="Please Wait while Startup";
-            msg+=command;
-            msg+="\n";
+	    string msg="Please wait while HiveControl startup\n";
             socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
-	    if(HiveControl::getInstance()->startup()){
-		msg="Server is running";
-        	socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
-	    
-	    }else{
-		msg="Error while startup Server";
-        	socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	    
+	    try{
+		HiveControl::getInstance()->startup();
+		msg="HiveControl is running\n";
+	    }catch(Exception *ex){
+		msg=ex->getStackTraceString();
 	    }
-	    cout << "Server running"<<endl;
+    	    socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
 	}
+	void printHelp(){
+	    string msg="startup\t\t\t[Startup the server]\n";
+            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
+	}
+
 };

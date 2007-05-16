@@ -29,7 +29,6 @@ namespace org
       public:
         static void init(char*filename);
         static char * getProperty( char * key);
-//	SimpleProperties * properties;
       private:
         static void parseLine(const char*);
       };

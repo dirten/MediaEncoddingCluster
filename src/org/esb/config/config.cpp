@@ -19,7 +19,7 @@ namespace config{
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-SimpleProperties * properties=new SimpleProperties();
+SimpleProperties * properties=0;
 
 string trim(string & s, string & drop = *new string(" ")){
     string r=s.erase(s.find_last_not_of(drop)+1);
@@ -29,7 +29,6 @@ string trim(string & s, string & drop = *new string(" ")){
 
 void Config::init(char * filename)
 {
-//  properties=new SimpleProperties();
   FILE * fp;
   char buffer[255];
   if((fp = fopen(filename,"r"))==NULL)
@@ -37,8 +36,7 @@ void Config::init(char * filename)
     cout << "Configurationfile not found !!!!" <<endl;
   }
   printf("Configuration Loaded from %s\n", filename);
-//    Config::properties=new SimpleProperties();
-//    properties=new SimpleProperties();
+  properties=new SimpleProperties();
   while (fgets(buffer,255,fp) != NULL)
   {
     parseLine(buffer);
@@ -50,7 +48,6 @@ void Config::init(char * filename)
  */
 char * Config::getProperty(char * key)
 {
-//  return (char*)org::esb::config::Config::properties->getProperty(key);
   return (char*)properties->getProperty(key);
 }
 
@@ -63,9 +60,7 @@ void Config::parseLine(const char*line)
 	string key=st->nextToken();
 	string val=st->nextToken();
 	char *delim="\n";
-//	Config::properties->setProperty(trim(key),trim(val,*new string("\n")));
 	properties->setProperty(strtok((char*)key.c_str(),delim),strtok((char*)val.c_str(),delim));
-//	delete [] delim;
     }
     delete st;
   }

@@ -12,8 +12,6 @@ ServerSocket *server;
 
 void catcher(int sig){
     cout << "shutdown listener" << endl;
-//    server->close();
-//    delete server;
     exit(0);
 }
 
@@ -37,5 +35,4 @@ int main(int argc,char**argv){
 	Thread thread(protoServer);
 	thread.start();
     }
-//    delete server;
 }

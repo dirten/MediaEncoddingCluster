@@ -15,11 +15,12 @@ class ProtoUnknown : public ProtoCommand{
 	}
 	
 	~ProtoUnknown(){}
-	bool isResponsible(char * command){
-	    if(strlen(command)>0&&strcmp(command,"disconnect")!=0){
-		return true;
+	int isResponsible(char * command){
+	    if(strlen(command)>0&&strcmp(command,"help")!=0){
+		cout <<"Command Unknown:"<<command<<endl;
+		return CMD_PROCESS;
 	    }
-	    return false;
+	    return CMD_NA;
 	}
 	void process(char * command){
 	    string error="Unknown Command:";

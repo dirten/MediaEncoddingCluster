@@ -1,6 +1,7 @@
 #include <iostream>
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
+#include "proto_command.h"
 #include "proto_dispatcher.h"
 #include "cmd_help.cpp"
 #include "cmd_unknown.cpp"
@@ -8,6 +9,9 @@
 #include "cmd_shutdown.cpp"
 #include "cmd_disconnect.cpp"
 #include <list>
+
+
+
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
@@ -21,15 +25,23 @@ ProtocolServer::~ProtocolServer() {
 	delete tmp;
     }
     l.clear();
+    delete socket;
+    socket=0;
 }
 
 ProtocolServer::ProtocolServer(Socket * socket) {
     this->socket=socket;
-    l.push_back(new ProtoDisconnect(socket));
+    
     l.push_back(new ProtoHelp(socket));
+    l.push_back(new ProtoDisconnect(socket));
     l.push_back(new ProtoStartup(socket));
     l.push_back(new ProtoShutdown(socket));
     l.push_back(new ProtoUnknown(socket));
+    
+    string help="Welcome to the MediaEncodingCluster ProtocolServer-0.0.1\n";
+    help+="Type 'help' for Help\n";
+    help+="--------------------------------------------------------\n";
+    socket->getOutputStream()->write((char *)help.c_str(),help.length());
 }
 
 void ProtocolServer::run() {
@@ -47,15 +59,17 @@ void ProtocolServer::run() {
         list<ProtoCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {
             ProtoCommand *tmp=(ProtoCommand*)*i;
-            if(tmp->isResponsible(command)) {
+            if(tmp->isResponsible(command)==CMD_PROCESS) {
                 tmp->process(command);
 		break;
+            }
+            else
+            if(tmp->isResponsible(command)==CMD_HELP) {
+                tmp->printHelp();
             }
         }
     }
     cout << "Elvis has left the building"<<endl;
-    delete socket;
-    socket=0;
     /*uuuuuaaaaaa schöne scheisse*/
     delete this;
 }

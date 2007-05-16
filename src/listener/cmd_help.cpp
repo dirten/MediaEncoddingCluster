@@ -16,15 +16,18 @@ class ProtoHelp:public ProtoCommand{
 	    this->socket=socket;
 	}
 
-	bool isResponsible(char * command){
+	int isResponsible(char * command){
 	    cout << command <<":Command"<<endl;
-	    return (strcmp(command,"help")==0);
+	    if(strcmp(command,"help")==0)return CMD_HELP;
+	    return CMD_NA;
 	}
 
 	void process(char * data){
-	    string help="Using help from CommandLine\n";
-	    help+="MediaEncodingCluster ProtocolServer-1.0.0";
-    	    socket->getOutputStream()->write((char *)help.c_str(),help.length());
+	}
+	void printHelp(){
+	    string help="List of all Hive Commands\n";
+	    help+="-------------------------\n";
+    	    socket->getOutputStream()->write((char *)help.c_str(),help.length());	
 	}
 };
 #endif

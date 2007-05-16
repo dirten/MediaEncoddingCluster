@@ -2,7 +2,6 @@
 #define ORG_ESB_LANG_EXCEPTION_H
 
 #include <org/esb/lang/Throwable.h>
-//#include <activemq/exceptions/ExceptionDefines.h>
 #include <stdarg.h>
 #include <sstream>
 
