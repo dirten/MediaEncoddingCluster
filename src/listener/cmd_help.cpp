@@ -17,13 +17,13 @@ class ProtoHelp:public ProtoCommand{
 	}
 
 	int isResponsible(char * command){
-	    cout << command <<":Command"<<endl;
 	    if(strcmp(command,"help")==0)return CMD_HELP;
 	    return CMD_NA;
 	}
 
 	void process(char * data){
 	}
+
 	void printHelp(){
 	    string help="List of all Hive Commands\n";
 	    help+="-------------------------\n";

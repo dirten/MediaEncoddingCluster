@@ -55,8 +55,13 @@ namespace org
         {
 
 	#if defined(FIONREAD)
-	if(isBlocking)
+	if(isBlocking){
 	    int counter=recv(this->socket->getDescriptor(),NULL,0,MSG_WAITALL);
+	    if(counter<0){
+		this->socket->close();
+	    }
+	}
+	
         int numBytes = 0;
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
 	    return numBytes;

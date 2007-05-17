@@ -5,6 +5,8 @@
 #include "proto_dispatcher.h"
 #include "cmd_help.cpp"
 #include "cmd_unknown.cpp"
+#include "cmd_status.cpp"
+#include "cmd_show_config.cpp"
 #include "cmd_startup.cpp"
 #include "cmd_shutdown.cpp"
 #include "cmd_disconnect.cpp"
@@ -34,11 +36,13 @@ ProtocolServer::ProtocolServer(Socket * socket) {
     
     l.push_back(new ProtoHelp(socket));
     l.push_back(new ProtoDisconnect(socket));
+    l.push_back(new ProtoStatus(socket));
+    l.push_back(new ProtoShowConfig(socket));
     l.push_back(new ProtoStartup(socket));
     l.push_back(new ProtoShutdown(socket));
     l.push_back(new ProtoUnknown(socket));
     
-    string help="Welcome to the MediaEncodingCluster ProtocolServer-0.0.1\n";
+    string help="\n\nWelcome to the MediaEncodingCluster ProtocolServer-0.0.1\n";
     help+="Type 'help' for Help\n";
     help+="--------------------------------------------------------\n";
     socket->getOutputStream()->write((char *)help.c_str(),help.length());

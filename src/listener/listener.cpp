@@ -24,9 +24,9 @@ void setCatcher(){
 }
 
 int main(int argc,char**argv){
-    setCatcher();
+//    setCatcher();
     Config::init("./cluster.cfg");
-    int port=atoi(Config::getProperty("listener.port"));
+    int port=atoi(Config::getProperty("protocol.listener.port"));
 
     server=new ServerSocket(port);
     server->bind();

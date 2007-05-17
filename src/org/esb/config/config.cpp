@@ -50,6 +50,10 @@ char * Config::getProperty(char * key)
 {
   return (char*)properties->getProperty(key);
 }
+Properties * Config::getProperties()
+{
+  return properties;
+}
 
 void Config::parseLine(const char*line)
 {
