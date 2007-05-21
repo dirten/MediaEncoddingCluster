@@ -10,6 +10,7 @@ Socket::Socket(int sock)
 //  Socket();
   this->is_closed=false;
   this->socketFd=sock;
+
   this->inputStream=new SocketInputStream(this);
   this->outputStream=new SocketOutputStream(this);
 
@@ -32,8 +33,8 @@ Socket::Socket()
   this->socketFd=0;
   bzero(&this->socketaddr,sizeof(this->socketaddr));
 
-//  this->inputStream=new SocketInputStream(this);
-//  this->outputStream=new SocketOutputStream(this);
+  this->inputStream=new SocketInputStream(this);
+  this->outputStream=new SocketOutputStream(this);
 
 }
 
@@ -44,6 +45,9 @@ Socket::Socket(char * hostname, int portnumber)
   this->port=portnumber;
   this->socketFd=0;
   bzero(&this->socketaddr,sizeof(this->socketaddr));
+
+  this->inputStream=new SocketInputStream(this);
+  this->outputStream=new SocketOutputStream(this);
 }
 
 /******************************************************************************/

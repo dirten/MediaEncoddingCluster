@@ -44,11 +44,13 @@ AC_OUTPUT(
     src/Makefile 
     src/listener/Makefile 
     src/framehive/Makefile 
-    src/hivecontrol/Makefile 
+    src/hive.server/Makefile 
+    src/hive.client/Makefile 
     test/Makefile
     src/org/Makefile
     src/org/esb/Makefile
     src/org/esb/hivecontrol/Makefile
+    
 dnl    src/org/esb/lang/Makefile
 dnl    src/org/esb/socket/Makefile
 dnl    src/org/esb/config/Makefile
