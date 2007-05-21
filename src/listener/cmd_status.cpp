@@ -1,7 +1,7 @@
 #include "proto_command.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/lang/Exception.h"
-#include "hivecontrol/hivecontrol.h"
+#include "hive.server/hivecontrol.h"
 
 class ProtoStatus : public ProtoCommand{
     private:

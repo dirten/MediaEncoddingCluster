@@ -34,6 +34,7 @@ void Config::init(char * filename)
   if((fp = fopen(filename,"r"))==NULL)
   {
     cout << "Configurationfile not found !!!!" <<endl;
+    exit(1);
   }
   printf("Configuration Loaded from %s\n", filename);
   properties=new SimpleProperties();

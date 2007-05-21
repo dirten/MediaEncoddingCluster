@@ -13,12 +13,13 @@ class HiveClientHandler: public Runnable{
 	}
 	
 	~HiveClientHandler(){
+	    cout << "closing HiveClientHandler"<<endl;
 	    delete socket;
 	    socket=0;
 	}
 	
 	void run(){
 	    
-	
+	    
 	}
 };
