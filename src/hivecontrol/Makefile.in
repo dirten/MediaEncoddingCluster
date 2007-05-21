@@ -54,10 +54,10 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libhivecontrol_la_LIBADD =
+libhive_la_LIBADD =
 am__objects_1 = hivecontrol.lo
-am_libhivecontrol_la_OBJECTS = $(am__objects_1)
-libhivecontrol_la_OBJECTS = $(am_libhivecontrol_la_OBJECTS)
+am_libhive_la_OBJECTS = $(am__objects_1)
+libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -69,7 +69,7 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libhivecontrol_la_SOURCES)
+DIST_SOURCES = $(libhive_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -175,11 +175,11 @@ MINOR_VERSION = 0
 MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
-lib_LTLIBRARIES = libhivecontrol.la
-SOURCES = hivecontrol.cpp
-libhivecontrol_la_SOURCES = $(SOURCES)
+lib_LTLIBRARIES = libhive.la
+SOURCES = hivecontrol.cpp 
+libhive_la_SOURCES = $(SOURCES)
 #libhivecontrol_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
-libhivecontrol_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src/
 all: all-am
@@ -242,8 +242,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libhivecontrol.la: $(libhivecontrol_la_OBJECTS) $(libhivecontrol_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libhivecontrol_la_LDFLAGS) $(libhivecontrol_la_OBJECTS) $(libhivecontrol_la_LIBADD) $(LIBS)
+libhive.la: $(libhive_la_OBJECTS) $(libhive_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libhive_la_LDFLAGS) $(libhive_la_OBJECTS) $(libhive_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

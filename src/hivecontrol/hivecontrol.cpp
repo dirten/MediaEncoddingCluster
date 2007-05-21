@@ -1,6 +1,8 @@
 #include "hivecontrol.h"
 #include "org/esb/lang/Exception.h"
+#include "org/esb/lang/Thread.h"
 #include "org/esb/util/SimpleProperties.cpp"
+#include "hive.client.listener.cpp"
 #include <iostream>
 
 using namespace std;
@@ -30,7 +32,10 @@ using namespace org::esb::util;
     
     bool HiveControl::startup(){
 	bool result=false;
-	if(strcmp(status->getProperty("running"),"false")==0){
+	if(strcmp(status->getProperty("running"),"false")==0){	    
+	    listener=new HiveListener();
+	    Thread * thread=new Thread(listener);
+	    thread->start();
 	    status->setProperty("running","true");
 	    result=true;
 	}else{
@@ -42,6 +47,7 @@ using namespace org::esb::util;
     bool HiveControl::shutdown(){
 	bool result=false;
 	if(strcmp(status->getProperty("running"),"true")==0){
+	    delete listener;
 	    status->setProperty("running","false");
 	    result=true;
 	}else{

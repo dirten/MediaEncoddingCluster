@@ -73,7 +73,4 @@ void ProtocolServer::run() {
             }
         }
     }
-    cout << "Elvis has left the building"<<endl;
-    /*uuuuuaaaaaa schöne scheisse*/
-    delete this;
 }

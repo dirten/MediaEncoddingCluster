@@ -84,7 +84,7 @@ namespace lang{
          * Constructor
          * @param task the Runnable that this thread manages
          */
-        Thread( Runnable* task );    
+        Thread( Runnable* task );
          
         virtual ~Thread();
    

@@ -12,6 +12,7 @@ class ProtoStartup : public ProtoCommand{
 	}
 	
 	~ProtoStartup(){}
+
 	int isResponsible(char * command){
 	    if(strcmp(command,"startup")==0){
 		return CMD_PROCESS;
@@ -33,6 +34,7 @@ class ProtoStartup : public ProtoCommand{
 	    }
     	    socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
 	}
+
 	void printHelp(){
 	    string msg="startup\t\t\t[Startup the server]\n";
             socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	

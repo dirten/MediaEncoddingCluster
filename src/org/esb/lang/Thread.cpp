@@ -149,6 +149,7 @@ Thread::runCallback( void* param )
     Exception ex(__FILE__, __LINE__, "unhandled exception bubbled up to Thread::run");
     //    ex.printStackTrace();
   }
+  delete thread->task;
 
 #ifdef AMQCPP_USE_PTHREADS
   pthread_attr_destroy( &thread->attributes );

@@ -20,7 +20,7 @@ class ProtoShowConfig:public ProtoCommand{
 
 
 	int isResponsible(char * command){
-	    if(strcmp(command,"show config")==0){
+	    if(strstr(command,"show config")>0){
 		return CMD_PROCESS;
 	    }else
 	    if(strcmp(command,"help")==0){
@@ -30,20 +30,25 @@ class ProtoShowConfig:public ProtoCommand{
 	}
 
 	void process(char * command){
-	    Properties * status=Config::getProperties();
-	    int size=status->toArray().size();
 	    string msg="";
-	    for(int a=0;a<size;a++){
-		msg+=status->toArray()[a].first;
-		msg+="\t=\t";
-		msg+=status->toArray()[a].second;
+	    if(strlen(command+11)>0){
+		msg=Config::getProperty(command+12);
 		msg+="\n";
+	    }else{
+		Properties * status=Config::getProperties();
+		int size=status->toArray().size();
+		for(int a=0;a<size;a++){
+		    msg+=status->toArray()[a].first;
+		    msg+="\t=\t";
+		    msg+=status->toArray()[a].second;
+		    msg+="\n";
+		}
 	    }
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	    
+            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
 	}
 
 	void printHelp(){
-	    string msg="show config\t\t[Shows the Configuration from the server]\n";
+	    string msg="show config [key]\t[Shows the Configuration from the server]\n";
             socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
 	}
 
