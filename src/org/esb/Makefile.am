@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = hivecontrol
+#SUBDIRS = hivecontrol
 
 MAJOR_VERSION=0
 MINOR_VERSION=0

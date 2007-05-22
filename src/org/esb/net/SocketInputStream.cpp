@@ -1,7 +1,16 @@
 #include "org/esb/io/InputStream.h"
 #include "org/esb/net/Socket.h"
 #include <iostream>
-#include <sys/ioctl.h>
+
+#if !defined(WIN32) 
+    #include <sys/select.h>
+    #include <sys/socket.h>
+    #include <sys/ioctl.h>
+#else
+    #include <winsock2.h>
+#endif
+
+
 using namespace org::esb::io;
 using namespace std;
 
@@ -37,7 +46,7 @@ namespace org
           while(all<length)
           {
 	    int readLength=(length-all)<maxrecv?(length-all):maxrecv;
-            counter=::read(this->socket->getDescriptor(),buffer+offset,readLength);
+            counter=::recv(this->socket->getDescriptor(),(char*)buffer+offset,readLength,0);
             /*If Connection is dead*/
             if(counter<0)
             {
@@ -54,9 +63,22 @@ namespace org
         int available(bool isBlocking)
         {
 
+
+	#if defined(WIN32) 
+
+	    unsigned long numBytes = 0;
+
+	    if (::ioctlsocket (this->socket->getDescriptor(), FIONREAD, &numBytes) == SOCKET_ERROR){
+//    		throw SocketException( __FILE__, __LINE__, "ioctlsocket failed" );
+	    }
+
+	    return (std::size_t)numBytes;
+
+	#else // !defined(HAVE_WINSOCK2_H)
+
 	#if defined(FIONREAD)
 	if(isBlocking){
-	    int counter=recv(this->socket->getDescriptor(),NULL,0,MSG_WAITALL);
+	    int counter=recv(this->socket->getDescriptor(),NULL,0,0x100);
 	    if(counter<0){
 		this->socket->close();
 	    }
@@ -66,6 +88,7 @@ namespace org
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
 	    return numBytes;
         }
+	#endif
 	#endif
           return 1;
         }

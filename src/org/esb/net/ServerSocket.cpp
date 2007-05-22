@@ -21,8 +21,7 @@ ServerSocket::ServerSocket(int port)
   this->hostname="localhost";
   this->port=port;
   this->server_socketFd=0;
-//  this->client_socketFd=0;
-  bzero(&this->socketaddr,sizeof(this->socketaddr));
+  memset(&this->socketaddr, 0, sizeof(this->socketaddr));
 }
 
 
@@ -67,7 +66,7 @@ void ServerSocket::bind()
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
     perror("Bind");
-    ::close(server_socketFd);
+    close();
     exit(1);
   }
   listen(server_socketFd,1024);
@@ -78,7 +77,7 @@ Socket* ServerSocket::accept()
 {
   sockaddr_in client;
   socklen_t clilen=0;
-  bzero(&client, sizeof(client));
+  memset(&client, 0, sizeof(client));
   int client_socketFd=::accept(this->server_socketFd,(struct sockaddr*)&client,&clilen);
   if(client_socketFd<0)
   {
@@ -90,6 +89,9 @@ Socket* ServerSocket::accept()
 /******************************************************************************/
 void ServerSocket::close()
 {
-  ::close(this->server_socketFd);
-//  ::close(this->client_socketFd);
+    #if defined(WIN32)
+	::closesocket(server_socketFd);    
+    #else
+	::close(server_socketFd);
+    #endif
 }

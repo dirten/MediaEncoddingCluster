@@ -7,7 +7,7 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-noinst_HEADERS=*.h 
+#noinst_HEADERS=*.h 
 
 bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket
 #datasize
@@ -30,19 +30,19 @@ test_SOURCES=	test.cpp \
 
 #aviclient_LDADD =-laviplay
 
-test_socket_LDADD=	$(top_srcdir)/src/org/esb/libesb.la 
-test_server_LDADD=	$(top_srcdir)/src/org/esb/libesb.la 
-client_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la 
-console_LDADD   =	$(top_srcdir)/src/org/esb/libesb.la 
-server_LDADD	=	$(top_srcdir)/src/org/esb/libesb.la \
+test_socket_LDADD=	../src/org/esb/libesb.la 
+test_server_LDADD=	../src/org/esb/libesb.la 
+client_LDADD	=	../src/org/esb/libesb.la 
+console_LDADD   =	../src/org/esb/libesb.la 
+server_LDADD	=	../src/org/esb/libesb.la \
 			-lpthread 
 
-test_thread_LDADD=	$(top_srcdir)/src/org/esb/libesb.la \
+test_thread_LDADD=	../src/org/esb/libesb.la \
 			-lpthread 
 
-test_dvdread_LDADD		=	$(top_srcdir)/src/org/esb/libesb.la
+test_dvdread_LDADD		=	../src/org/esb/libesb.la
 
-test_config_LDADD		=	$(top_srcdir)/src/org/esb/libesb.la
+test_config_LDADD		=	../src/org/esb/libesb.la
 
 
 INCLUDES = \

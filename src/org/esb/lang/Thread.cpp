@@ -2,19 +2,18 @@
 #include "org/esb/lang/Thread.h"
 #include <errno.h>
 
-//#ifdef AMQCPP_USE_PTHREADS
-//    #include <errno.h> // EINTR
-//extern int errno;
-//#else
-//    #include <process.h> // _endthreadex
-//#endif
+#ifndef WIN32
+    #include <errno.h> 
+extern int errno;
+#else
+    #include <process.h> // _endthreadex
+#endif
 
 //#include <activemq/exceptions/ActiveMQException.h>
 //#include <activemq/exceptions/RuntimeException.h>
 
 using namespace std;
 using namespace org::esb::lang;
-
 ////////////////////////////////////////////////////////////////////////////////
 Thread::Thread()
 {
@@ -45,7 +44,7 @@ void Thread::start() throw ( Exception )
                      "Thread already started");
 
   }
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
 //    cout <<"Start"<<endl;
 
   pthread_attr_init (&attributes);
@@ -89,7 +88,7 @@ void Thread::join() throw( Exception )
   if (!this->joined)
   {
 
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
     pthread_join(this->threadHandle, NULL);
 #else
     WaitForSingleObject (this->threadHandle, INFINITE);
@@ -102,7 +101,7 @@ void Thread::join() throw( Exception )
 ////////////////////////////////////////////////////////////////////////////////
 void Thread::sleep( int millisecs )
 {
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
   struct timespec rec, rem;
   rec.tv_sec = millisecs / 1000;
   rec.tv_nsec = (millisecs % 1000) * 1000000;
@@ -122,7 +121,7 @@ void Thread::sleep( int millisecs )
 ////////////////////////////////////////////////////////////////////////////////
 unsigned long Thread::getId(void)
 {
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
   return (long)(pthread_self());
 #else
   return GetCurrentThreadId();
@@ -130,7 +129,7 @@ unsigned long Thread::getId(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
 void*
 #else
 unsigned int WINAPI
@@ -151,7 +150,7 @@ Thread::runCallback( void* param )
   }
   delete thread->task;
 
-#ifdef AMQCPP_USE_PTHREADS
+#ifndef WIN32
   pthread_attr_destroy( &thread->attributes );
   return NULL;
 #else

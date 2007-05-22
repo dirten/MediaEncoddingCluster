@@ -31,7 +31,7 @@ Socket::Socket()
   this->hostname="localhost";
   this->port=0;
   this->socketFd=0;
-  bzero(&this->socketaddr,sizeof(this->socketaddr));
+  memset(&this->socketaddr, 0, sizeof(this->socketaddr));
 
   this->inputStream=new SocketInputStream(this);
   this->outputStream=new SocketOutputStream(this);
@@ -44,7 +44,7 @@ Socket::Socket(char * hostname, int portnumber)
   this->hostname=hostname;
   this->port=portnumber;
   this->socketFd=0;
-  bzero(&this->socketaddr,sizeof(this->socketaddr));
+  memset(&this->socketaddr, 0, sizeof(this->socketaddr));
 
   this->inputStream=new SocketInputStream(this);
   this->outputStream=new SocketOutputStream(this);
@@ -89,14 +89,20 @@ void Socket::init()
 void Socket::connect()
 {
   this->init();
-  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
+//  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
   ::connect(this->socketFd,(struct sockaddr*)&this->socketaddr,sizeof(this->socketaddr));
 }
 
 /******************************************************************************/
 void Socket::close()
 {
-  ::close(this->socketFd);
+    #if defined(WIN32)
+	::closesocket(this->socketFd);    
+    #else
+	::close(this->socketFd);
+    #endif
+
+ // ::close(this->socketFd);
   this->socketFd=0;
 }
 /******************************************************************************/

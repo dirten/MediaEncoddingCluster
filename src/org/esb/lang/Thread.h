@@ -17,6 +17,12 @@
 #ifndef ORG_ESB_LANG_THREAD_H
 #define ORG_ESB_LANG_THREAD_H
 
+#if defined(WIN32)
+    #include <windows.h>
+#else
+    #include <pthread.h>
+#endif
+
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Runnable.h"
 #include <stdexcept>
@@ -32,8 +38,8 @@
 //#else
 //    #include <windows.h>
 //#endif
-#define AMQCPP_USE_PTHREADS
-#include <pthread.h>
+//#define AMQCPP_USE_PTHREADS
+//#include <pthread.h>
 using namespace std;
 using namespace org::esb::lang;
 
@@ -55,7 +61,7 @@ namespace lang{
          */
         Runnable* task;
       
-        #ifdef AMQCPP_USE_PTHREADS
+        #ifndef WIN32
             pthread_attr_t attributes;
             pthread_t threadHandle;
         #else
@@ -129,7 +135,7 @@ namespace lang{
     private:
    
         // Internal thread handling
-        #ifdef AMQCPP_USE_PTHREADS
+        #ifndef WIN32
             static void* runCallback (void* param);
         #else
             static unsigned int WINAPI runCallback (void* param);

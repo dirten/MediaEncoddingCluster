@@ -22,7 +22,7 @@ class SocketOutputStream:public OutputStream{
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
 	    while(remaining>0){
 //    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
-    		int bytes=::write(this->socket->getDescriptor(),buffer,remaining);
+    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining, 0);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    this->socket->close();

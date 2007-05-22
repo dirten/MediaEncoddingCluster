@@ -10,8 +10,6 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
 #include "org/esb/util/SimpleProperties.cpp"
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <iostream>
 #include <stdlib.h>
 #include <map>

@@ -52,8 +52,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am__objects_1 = listener.$(OBJEXT) proto_dispatcher.$(OBJEXT)
 am_lsnr_OBJECTS = $(am__objects_1)
 lsnr_OBJECTS = $(am_lsnr_OBJECTS)
-lsnr_DEPENDENCIES = $(top_srcdir)/src/org/esb/libesb.la \
-	$(top_srcdir)/src/hive.server/libhive.la
+lsnr_DEPENDENCIES = ../org/esb/libesb.la ../hive.server/libhive.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -176,7 +175,7 @@ SOURCES = listener.cpp \
 
 lsnr_SOURCES = $(SOURCES)
 lsnr_LDFLAGS = $(all_libraries) 
-lsnr_LDADD = $(top_srcdir)/src/org/esb/libesb.la $(top_srcdir)/src/hive.server/libhive.la
+lsnr_LDADD = ../org/esb/libesb.la ../hive.server/libhive.la
 INCLUDES = -I$(top_srcdir)/src \
 	        $(all_includes) 
 

@@ -13,4 +13,4 @@ libframehive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-in
 INCLUDES=   -I$(top_srcdir)/src \
 	    $(all_includes) 
 
-noinst_HEADERS = *.h 
+#noinst_HEADERS = *.h 

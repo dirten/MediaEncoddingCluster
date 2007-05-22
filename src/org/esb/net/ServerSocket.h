@@ -1,8 +1,26 @@
 #ifndef ORG_ESB_NET_SERVERSOCKET_H
 #define ORG_ESB_NET_SERVERSOCKET_H
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
+
+
+#if defined(WIN32) 
+    #include <winsock2.h>
+    #include <ws2tcpip.h> 
+    #include <sys/stat.h>
+    #define stat _stat
+#else
+    #include <unistd.h>
+    #include <netdb.h>
+    #include <fcntl.h>
+    #include <sys/file.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    #include <string.h>
+#endif
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include "org/esb/net/Socket.h"
 
 #if defined( __APPLE__ )
