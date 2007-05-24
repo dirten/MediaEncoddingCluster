@@ -14,7 +14,7 @@ class HiveClientHandler: public Runnable{
     public:
 	HiveClientHandler(Socket * socket){
 	    this->socket=socket;
-	    this->frameReader=new HiveFrameReader();
+	    this->frameReader=new HiveFrameReader("");
 //	    this->listener=listener;
 //	    this->listener->addClient(this);
 	}

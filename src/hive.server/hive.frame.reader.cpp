@@ -1,4 +1,4 @@
-
+#include <avformat.h>
 
 struct Frame{
     int length;
@@ -8,9 +8,14 @@ struct Frame{
 class HiveFrameReader{
     private:
 	int _frameNumber;
+	AVFormatContext *pFormatCtx;
+
     public:
-	HiveFrameReader(){
-	
+	HiveFrameReader(char * filename){
+	    if(av_open_input_file(&pFormatCtx, filename, NULL, 0, NULL)!=0){
+		cout << "Konnte Datei " << filename << " nicht oeffnen" <<endl;
+//		return -1; // Couldn't open file
+	    }
 	}
 	
 	~HiveFrameReader(){

@@ -4,7 +4,7 @@
 #include "org/esb/util/SimpleProperties.cpp"
 #include "hive.client.listener.cpp"
 #include <iostream>
-
+#include "hive.job.h"
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::util;
