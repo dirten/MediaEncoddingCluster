@@ -7,7 +7,7 @@ struct Frame{
 
 class HiveFrameReader{
     private:
-	int _framePointer;
+	int _frameNumber;
     public:
 	HiveFrameReader(){
 	
@@ -18,7 +18,7 @@ class HiveFrameReader{
 	}
 	
 	Frame * getNextFrame(){
-	    return getFrame(++_framePointer);
+	    return getFrame(++_frameNumber);
 	}
 	
 	Frame * getFrame(int number){

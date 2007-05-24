@@ -42,7 +42,7 @@ LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient 
 AC_OUTPUT(
     Makefile 
     src/Makefile 
-    src/listener/Makefile 
+    src/hive.listener/Makefile 
     src/framehive/Makefile 
     src/hive.server/Makefile 
     src/hive.client/Makefile 
