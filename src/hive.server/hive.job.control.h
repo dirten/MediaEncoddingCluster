@@ -1,4 +1,4 @@
-#include "hive.job.cpp"
+#include "hive.job.h"
 class HiveJobControll{
     private:
     

@@ -14,6 +14,7 @@ using namespace org::esb::util;
     HiveControl::HiveControl(){
 	status=new SimpleProperties();
 	status->setProperty("running","false");
+	HiveJob j;
     }
 
     HiveControl::~HiveControl(){
