@@ -1,26 +1,39 @@
 #include "FileInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
+//#include <sys/ioctl.h>
+
+
 using namespace std;
 using namespace org::esb::lang;
 namespace org{
     namespace esb{
 	namespace io{	    
 	    void FileInputStream::open(const char * name){
-		FILE * f=fopen(name,"r+b");
-		if(!f){
-		    throw Exception(__FILE__, __LINE__, "FileInputStream::open - File not Found");
+		file=fopen(name,"r+b");
+		
+		if(!file){
+		    string error="FileInputStream::open - File not Found (";
+		    error+=name;
+		    error+=")";
+		    throw Exception(__FILE__, __LINE__, error.c_str());
 		}
 	    }
 	    void FileInputStream::close(){
-		
+		fclose(file);
 	    }
+	    
 	    int FileInputStream::available(bool isBlocking){
-		return 0;
+		long int currentPosition=ftell(file);
+		fseek (file, 0, SEEK_END);
+		long int filesize= ftell(file);
+		fseek (file, 0, currentPosition);
+	    	return filesize;
 	    }
 
 	    int FileInputStream::read(unsigned char * buffer, int length){
-		return 0;	
+		fgets((char*)buffer, length, file);
+		return length;
 	    }
 	    
 	    FileInputStream::FileInputStream(File * file)throw (Exception){
@@ -29,6 +42,9 @@ namespace org{
 		    throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
 		}
 		open(name);
+	    }
+	    FileInputStream::~FileInputStream(){
+		this->close();
 	    }
 	}
     }
