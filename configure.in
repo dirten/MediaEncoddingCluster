@@ -5,6 +5,7 @@ AM_CONFIG_HEADER(config.h)
 
 #AC_LANG_CPLUSPLUS
 AC_PROG_CXX
+AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
 
 
@@ -49,6 +50,10 @@ AC_OUTPUT(
     test/Makefile
     src/org/Makefile
     src/org/esb/Makefile
+    src/org/esb/lang/Makefile
+    src/org/esb/util/Makefile
+    src/org/esb/io/Makefile
+    src/org/esb/net/Makefile
 dnl    src/org/esb/hivecontrol/Makefile
     
 dnl    src/org/esb/lang/Makefile

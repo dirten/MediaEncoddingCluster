@@ -1,7 +1,8 @@
 #ifndef ORG_ESB_UTIL_STRINGTOKENIZER_H_
 #define ORG_ESB_UTIL_STRINGTOKENIZER_H_
 
-#include <org/esb/lang/NoSuchElementException.h>
+#include <org/esb/lang/Exception.h>
+//#include <org/esb/lang/NoSuchElementException.h>
 #include <string>
 using namespace org::esb::lang;
 namespace org{
@@ -69,8 +70,8 @@ namespace util{
          * @return string value of next token
          * @throws NoSuchElementException
          */
-        virtual std::string nextToken(void) 
-            throw ( NoSuchElementException );
+        virtual std::string nextToken(void) ;
+//            throw ( Exception );
       
         /**
          * Returns the next token in this string tokenizer's string. First, 
@@ -84,8 +85,8 @@ namespace util{
          * @return next string in the token list
          * @throw NoSuchElementException
          */
-        virtual std::string nextToken(const std::string& delim) 
-            throw ( NoSuchElementException );
+        virtual std::string nextToken(const std::string& delim) ;
+//            throw ( Exception );
 
         /**
          * Grab all remaining tokens in the String and return them

@@ -9,11 +9,11 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #noinst_HEADERS=*.h 
 
-bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket
+bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file
 #datasize
 datasize_SOURCES=datasize.cpp
 
-
+test_file_SOURCES=test_file.cpp
 test_dvdread_SOURCES=test_dvdread.cpp 
 console_SOURCES=console.cpp
 test_thread_SOURCES=test_thread.cpp 
@@ -30,6 +30,7 @@ test_SOURCES=	test.cpp \
 
 #aviclient_LDADD =-laviplay
 
+test_file_LDADD=	../src/org/esb/libesb.la 
 test_socket_LDADD=	../src/org/esb/libesb.la 
 test_server_LDADD=	../src/org/esb/libesb.la 
 client_LDADD	=	../src/org/esb/libesb.la 

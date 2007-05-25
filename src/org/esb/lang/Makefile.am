@@ -4,10 +4,10 @@ MICRO_VERSION=1
 
 #noinst_HEADERS=*.h 
 
-lib_LTLIBRARIES = libesb.la
-SOURCES = Thread.cpp Exception.cpp
+lib_LTLIBRARIES = liblang.la
+SOURCES = Thread.cpp Exception.cpp NoSuchElementException.cpp
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
-libesb_la_SOURCES = $(SOURCES)
-libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
+liblang_la_SOURCES = $(SOURCES)
+liblang_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
 EXTRA_DIST=*.h

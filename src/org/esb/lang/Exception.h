@@ -155,7 +155,7 @@ namespace lang{
             return *this;
         }
         
-    protected:
+    
    
         virtual void buildMessage( const char* format, va_list& vargs );
 

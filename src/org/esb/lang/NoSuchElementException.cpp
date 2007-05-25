@@ -20,8 +20,8 @@
 #include <org/esb/lang/Exception.h>
 
 namespace org{
-    namespace esb{
-	namespace lang{
+namespace esb{
+namespace lang{
 
     /*
      * Thrown from an operation that attempts to access some element that does
@@ -40,12 +40,16 @@ namespace org{
          * Conversion Constructor from some other ActiveMQException
          * @param An exception that should become this type of Exception
          */
-        NoSuchElementException( const Exception& ex );
+        NoSuchElementException( const Exception& ex ){
+            *(Exception*)this = ex;
+        }
 
         /**
          * Copy Constructor
          */
-        NoSuchElementException( const NoSuchElementException& ex );
+        NoSuchElementException( const NoSuchElementException& ex ){
+            *(Exception*)this = ex;
+        }
 
         /**
          * Constructor - Initializes the file name and line number where
@@ -58,16 +62,26 @@ namespace org{
          */
         NoSuchElementException( const char* file, 
                                 const int lineNumber,
-                                const char* msg, ... );
+                                const char* msg, ... )
+        {
+            va_list vargs;
+            va_start( vargs, msg );
+            buildMessage( msg, vargs );
+            
+            // Set the first mark for this exception.
+            setMark( file, lineNumber );
+        }
 
         /**
          * Clones this exception.  This is useful for cases where you need
          * to preserve the type of the original exception as well as the message.
          * All subclasses should override.
          */
-        virtual Exception* clone(void) const;
+        virtual Exception* clone(void) const{
+            return new NoSuchElementException(*this);
+        }
 
-        virtual ~NoSuchElementException(void);
+        virtual ~NoSuchElementException(void) {}
 
     };
 

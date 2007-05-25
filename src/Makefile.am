@@ -3,8 +3,14 @@
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
 SUBDIRS = org hive.server hive.client hive.listener framehive
+
+
 bin_PROGRAMS = framesender 
+
+
 #bin_PROGRAMS = zpipe
+
+
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
 #zpipe_SOURCES = zpipe.c

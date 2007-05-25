@@ -84,13 +84,18 @@ bool StringTokenizer::hasMoreTokens(void) const
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string StringTokenizer::nextToken(void)
-   throw ( NoSuchElementException )
+   
 {
     if(pos == string::npos)
     {
-        throw NoSuchElementException(
+//        throw NoSuchElementException(
+
+
+/*
+        throw new Exception(
             __FILE__, __LINE__,
             "StringTokenizer::nextToken - No more Tokens available");
+*/    
     }
 
     if(returnDelims)
@@ -120,15 +125,18 @@ std::string StringTokenizer::nextToken(void)
     }
     else
     {
-        throw NoSuchElementException(
+//        throw NoSuchElementException(
+    /*
+        throw Exception(
             __FILE__, __LINE__,
             "StringTokenizer::nextToken - No more Tokens available");
+            */
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string StringTokenizer::nextToken( const std::string& delim )
-    throw ( NoSuchElementException )
+//    throw ( Exception )
 {
     this->delim = delim;
 
