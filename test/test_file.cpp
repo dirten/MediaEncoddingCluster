@@ -22,6 +22,12 @@ int main(int argc, char**argv){
 	FileInputStream * is1=new FileInputStream(file1);
 	FileInputStream * is2=new FileInputStream(file1);
 	cout <<"size:"<< is1->available() << endl;
+	unsigned char tmp[10];
+//	memset(tmp,1,10);
+	is1->read(tmp, 10);
+	cout <<tmp<<endl;
+	cout <<"size:"<< is1->available() << endl;
+//	delete tmp;
 	delete is1;
 	delete is2;
 //	FileInputStream * is2=new FileInputStream(file2);

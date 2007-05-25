@@ -1,7 +1,6 @@
 #include "FileInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
-//#include <sys/ioctl.h>
 
 
 using namespace std;
@@ -10,8 +9,7 @@ namespace org{
     namespace esb{
 	namespace io{	    
 	    void FileInputStream::open(const char * name){
-		file=fopen(name,"r+b");
-		
+		file=fopen(name,"r+b");		
 		if(!file){
 		    string error="FileInputStream::open - File not Found (";
 		    error+=name;
@@ -28,7 +26,7 @@ namespace org{
 		fseek (file, 0, SEEK_END);
 		long int filesize= ftell(file);
 		fseek (file, 0, currentPosition);
-	    	return filesize;
+	    	return filesize-currentPosition;
 	    }
 
 	    int FileInputStream::read(unsigned char * buffer, int length){
@@ -49,5 +47,3 @@ namespace org{
 	}
     }
 }
-
-
