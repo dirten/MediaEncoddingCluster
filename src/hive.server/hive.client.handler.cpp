@@ -28,12 +28,15 @@ class HiveClientHandler: public Runnable{
 	
 	void run(){
 	    for(int a=0;a<100;a++){
+
 	    Frame * frame=frameReader->getNextFrame();
+//	    cout << "sizeof(frame*):"<<sizeof((Frame*)frame)<<endl;
 	    socket->getOutputStream()->write((char*)frame->data, frame->length);
 	    delete frame;
 	    int size=socket->getInputStream()->available(true);
 	    unsigned char * buffer=new unsigned char[size];
 	    socket->getInputStream()->read(buffer, size);
+	    delete buffer;
 	    }
 	}
 };

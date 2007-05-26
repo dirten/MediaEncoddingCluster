@@ -9,7 +9,7 @@ namespace org{
     namespace esb{
 	namespace io{	    
 	    void FileInputStream::open(const char * name){
-		file=fopen(name,"r+b");		
+		file=fopen(name,"r+b");
 		if(!file){
 		    string error="FileInputStream::open - File not Found (";
 		    error+=name;

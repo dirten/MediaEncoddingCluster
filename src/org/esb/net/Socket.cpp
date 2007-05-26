@@ -91,6 +91,7 @@ void Socket::connect()
   this->init();
 //  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
   ::connect(this->socketFd,(struct sockaddr*)&this->socketaddr,sizeof(this->socketaddr));
+  
 }
 
 /******************************************************************************/
