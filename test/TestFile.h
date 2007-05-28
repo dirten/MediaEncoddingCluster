@@ -1,5 +1,5 @@
-#ifndef TEST_H
-#define TEST_H
+#ifndef TEST_FILE_H
+#define TEST_FILE_H
 #include <cppunit/extensions/HelperMacros.h>
 
 class TestFile: public CppUnit::TestFixture
@@ -10,6 +10,8 @@ class TestFile: public CppUnit::TestFixture
     CPPUNIT_TEST(testExist);
     CPPUNIT_TEST(testIsFile);
     CPPUNIT_TEST(testIsDir);
+    CPPUNIT_TEST(testCanRead);
+    CPPUNIT_TEST(testCanWrite);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -19,6 +21,8 @@ class TestFile: public CppUnit::TestFixture
 	void testExist();
 	void testIsFile();
 	void testIsDir();
+	void testCanRead();
+	void testCanWrite();
 
 };
 

@@ -14,6 +14,15 @@ namespace org{
 		    bool exist();
 		    bool isFile();
 		    bool isDirectory();
+		    bool createNewFile();
+		    bool deleteFile();
+		    long length();
+		    bool mkDir();
+		    bool mkDirs();
+		    bool renameTo(File * dest);
+		    bool setLastModified(long date);
+		    long getLastModified();
+		    bool setReadOnly();
 		private:
 		    const char * _filename;
 	    };

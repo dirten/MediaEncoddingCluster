@@ -17,6 +17,7 @@ namespace org{
 		    throw Exception(__FILE__, __LINE__, error.c_str());
 		}
 	    }
+	    
 	    void FileInputStream::close(){
 		fclose(file);
 	    }
@@ -41,6 +42,7 @@ namespace org{
 		}
 		open(name);
 	    }
+	    
 	    FileInputStream::~FileInputStream(){
 		this->close();
 	    }

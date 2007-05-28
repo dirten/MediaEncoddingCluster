@@ -1,6 +1,6 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
-#include "org/esb/io/FormatInputStream.h"
+#include "org/esb/av/FormatInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
 #include <assert.h>
@@ -11,7 +11,7 @@ int main(int argc, char**argv){
 
     File * file1=new File("frame1.ppm");
     cout << file1->getPath()<<endl;;
-    assert(false);
+//    assert(false);
 //    File * file2=new File("frame1.ppm");
 //    File * file3=new File("frame1.ppm");
 //    File * file4=new File("frame1.ppm");

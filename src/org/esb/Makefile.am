@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = lang util io net 
+SUBDIRS = lang util io net av
 
 MAJOR_VERSION=0
 MINOR_VERSION=0
@@ -33,6 +33,6 @@ SOURCES = 	config/config.cpp
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
-libesb_la_LIBADD = io/libio.la net/libnet.la lang/liblang.la util/libutil.la
+libesb_la_LIBADD = io/libio.la net/libnet.la lang/liblang.la util/libutil.la av/libav.la
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 EXTRA_DIST=lang/*.h io/*.h config/*.h util/*.h hivecontrol/*.h net/*.h

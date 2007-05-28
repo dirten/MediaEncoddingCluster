@@ -1,10 +1,11 @@
-#include "InputStream.h"
-#include "File.h"
+#include "FormatBaseStream.h"
+#include "org/esb/io/InputStream.h"
+#include "org/esb/io/File.h"
 
 namespace org{
     namespace esb{
 	namespace io{
-	    class FormatInputStream: public InputStream{
+	    class FormatInputStream: public FormatBaseStream, public InputStream {
 		public:
 		    FormatInputStream(File * source);
 		    ~FormatInputStream();
@@ -12,7 +13,7 @@ namespace org{
 		    int read(unsigned char * buffer, int length);
 		    void close();
 		private:
-		    static void initialize();
+//		    static void initialize();
 	    };
 	}
     }

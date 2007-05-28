@@ -41,6 +41,7 @@ AC_CHECK_LIB(avcodec, main)
 	    
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient -lc  "
+
 AC_OUTPUT(
     Makefile 
     src/Makefile 
@@ -54,6 +55,7 @@ AC_OUTPUT(
     src/org/esb/lang/Makefile
     src/org/esb/util/Makefile
     src/org/esb/io/Makefile
+    src/org/esb/av/Makefile
     src/org/esb/net/Makefile
 dnl    src/org/esb/hivecontrol/Makefile
     

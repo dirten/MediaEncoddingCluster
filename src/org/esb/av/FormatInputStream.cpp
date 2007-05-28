@@ -6,7 +6,6 @@ using namespace std;
 namespace org{
     namespace esb{
 	namespace io{
-	    bool isInitialized=false;
 	    FormatInputStream::FormatInputStream(File * source){
 		initialize();
 
@@ -28,14 +27,6 @@ namespace org{
 	    void FormatInputStream::close(){
 	    
 	    }
-
-	    void FormatInputStream::initialize(){
-		if(!isInitialized){
-		    cout << "static initializer from FormatInputStream"<<endl;
-		    isInitialized=true;
-		}
-	    }
-
 	}
     }
 }
