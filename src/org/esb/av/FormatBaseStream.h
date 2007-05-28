@@ -6,7 +6,6 @@ namespace org{
 	    class FormatBaseStream {
 		protected:
 		    static void initialize();
-
 	    };
 	}
     }

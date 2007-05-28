@@ -1,4 +1,5 @@
 #include "FormatBaseStream.h"
+#include "avformat.h"
 #include <iostream>
 
 
@@ -9,6 +10,7 @@ namespace org{
 	    void FormatBaseStream::initialize(){
 		if(!isInitialized){
 		    std::cout << "static initializer from FormatBaseStream"<<std::endl;
+		    av_register_all();
 		    isInitialized=true;
 		}
 	    }	

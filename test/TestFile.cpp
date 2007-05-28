@@ -1,9 +1,34 @@
-
-#include "TestFile.h"
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Exception.h"
+#include <cppunit/extensions/HelperMacros.h>
 using namespace org::esb::io;
 using namespace org::esb::lang;
+
+class TestFile: public CppUnit::TestFixture
+{
+
+    CPPUNIT_TEST_SUITE(TestFile);
+    CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testExist);
+    CPPUNIT_TEST(testIsFile);
+    CPPUNIT_TEST(testIsDir);
+    CPPUNIT_TEST(testCanRead);
+    CPPUNIT_TEST(testCanWrite);
+    CPPUNIT_TEST_SUITE_END();
+    
+    public:
+	void setUp();
+	void tearDown();
+	void testConstructor();
+	void testExist();
+	void testIsFile();
+	void testIsDir();
+	void testCanRead();
+	void testCanWrite();
+
+};
+
+
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestFile);

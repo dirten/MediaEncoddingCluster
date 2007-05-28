@@ -1,15 +1,14 @@
 #include "FormatBaseStream.h"
-#include "org/esb/io/InputStream.h"
+#include "org/esb/io/OutputStream.h"
 #include "org/esb/io/File.h"
 #include "avformat.h"
-
 namespace org{
     namespace esb{
 	namespace io{
-	    class FormatInputStream: public FormatBaseStream, public InputStream {
+	    class FormatOutputStream: public FormatBaseStream, public OutputStream {
 		public:
-		    FormatInputStream(File * source);
-		    ~FormatInputStream();
+		    FormatOutputStream(File * source);
+		    ~FormatOutputStream();
 		    int available(bool isBlocking = false);
 		    int read(unsigned char * buffer, int length);
 		    int getStreamCount();
