@@ -3,13 +3,15 @@
 #include "org/esb/io/FormatInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
-
+#include <assert.h>
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::lang;
 int main(int argc, char**argv){
 
     File * file1=new File("frame1.ppm");
+    cout << file1->getPath()<<endl;;
+    assert(false);
 //    File * file2=new File("frame1.ppm");
 //    File * file3=new File("frame1.ppm");
 //    File * file4=new File("frame1.ppm");
@@ -21,6 +23,11 @@ int main(int argc, char**argv){
 	FormatInputStream * fis2=new FormatInputStream(file1);
 	FormatInputStream * fis3=new FormatInputStream(file1);
 	FormatInputStream * fis4=new FormatInputStream(file1);
+
+	delete fis1;
+	delete fis2;
+	delete fis3;
+	delete fis4;
 
 /*
 //    try{

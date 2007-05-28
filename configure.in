@@ -1,6 +1,7 @@
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(media-encoding-cluster, 0.1)
 AM_CONFIG_HEADER(config.h)
+AM_PATH_CPPUNIT(1.10.2)
 #AC_CONFIG_HEADERS(config.h)
 
 #AC_LANG_CPLUSPLUS

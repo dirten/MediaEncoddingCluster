@@ -5,7 +5,7 @@ namespace org{
 	namespace io{
 	    class File{
 		public:
-		    File(char * filename);
+		    File(const char * filename);
 		    File();
 		    ~File();
 		    const char * getPath();
