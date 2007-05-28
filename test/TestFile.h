@@ -2,10 +2,10 @@
 #define TEST_H
 #include <cppunit/extensions/HelperMacros.h>
 
-class TestTest: public CppUnit::TestFixture
+class TestFile: public CppUnit::TestFixture
 {
 
-    CPPUNIT_TEST_SUITE(TestTest);
+    CPPUNIT_TEST_SUITE(TestFile);
     CPPUNIT_TEST(testConstructor);
     CPPUNIT_TEST(testExist);
     CPPUNIT_TEST(testIsFile);

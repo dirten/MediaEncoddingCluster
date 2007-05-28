@@ -10,8 +10,10 @@ int main(){
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
     CppUnit::TextUi::TestRunner runner;
     runner.addTest(suite);
-    runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), cerr));
+    CppUnit::CompilerOutputter *outputter=new CppUnit::CompilerOutputter(&runner.result(), cerr);
+    runner.setOutputter(outputter);
     bool wasSuccess=runner.run();
+//    delete outputter;
     return wasSuccess ? 0:1;
 //    cout << "bla"<<endl;
         
