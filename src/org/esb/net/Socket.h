@@ -27,6 +27,7 @@
 //#include <errno.h>
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
+#include "org/esb/lang/Exception.h"
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
 #elif defined( unix ) && !defined( __CYGWIN__ ) && !defined( sun )
@@ -35,6 +36,7 @@
 #define SOCKET_NOSIGNAL 0
 #endif
 using namespace org::esb::io;
+using namespace org::esb::lang;
 namespace org
 {
   namespace esb
@@ -76,7 +78,7 @@ namespace org
         int         getPort();
         void        bind();
         Socket*     accept();
-        void        connect();
+        void        connect()throw(Exception);
         void        close();
 	bool	    isClosed();
  int getDescriptor();
