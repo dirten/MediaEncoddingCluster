@@ -4,15 +4,15 @@
 #include "avformat.h"
 namespace org{
     namespace esb{
-	namespace io{
-	    class FormatOutputStream: public FormatBaseStream, public OutputStream {
+	namespace av{
+	    class FormatOutputStream: public FormatBaseStream, public org::esb::io::OutputStream {
 		public:
-		    FormatOutputStream(File * source);
+		    FormatOutputStream(org::esb::io::File * source);
 		    ~FormatOutputStream();
-		    int available(bool isBlocking = false);
-		    int read(unsigned char * buffer, int length);
-		    int getStreamCount();
-		    int getStream(int sNumber);
+//		    int available(bool isBlocking = false);
+		    int write(unsigned char * buffer, int length);
+//		    int getStreamCount();
+//		    int getStream(int sNumber);
 		    void close();
 		private:
 		    AVFormatContext formatCtx;

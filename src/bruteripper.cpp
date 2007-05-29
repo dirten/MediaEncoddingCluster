@@ -213,12 +213,17 @@ int main(int argc, char *argv[])
     return -1; // Didn't find a video stream
 
     // Get a pointer to the codec context for the video stream
-  pCodecCtx=pFormatCtx->streams[videoStream]->codec;
   AVStream *str=pFormatCtx->streams[videoStream];
+//  pCodecCtx=pFormatCtx->streams[videoStream]->codec;
+  pCodecCtx=str->codec;
 //  char * text;
 //  sprintf(text,"%5.2f", av_q2d(str->r_frame_rate));
 //  cout << "FrameRate "<< text<< endl;
   cout << "Stream "<<av_q2d(str->r_frame_rate)<< endl;
+  cout << "StreamId "<<videoStream<< endl;
+  cout << "CodecId "<<pCodecCtx->codec_id<< endl;
+  cout << "CodecName "<<pCodecCtx->codec_name<< endl;
+//  pCodecCtx=pFormatCtx->streams[videoStream]->codec;
 //  delete text;
       // Find the decoder for the video stream
   pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
@@ -283,7 +288,7 @@ int main(int argc, char *argv[])
 //    container->putFrame3(pFrameRGB,pCodecCtx);
 //    container->putFrame(pFrameRGB,pCodecCtx);
 //      hive->putFrame(pFrameRGB,pCodecCtx);
-    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
+//    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
 	cerr << "\rProcessing Frame :"<< i;
   cout << endl;

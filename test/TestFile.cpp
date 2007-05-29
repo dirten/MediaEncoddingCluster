@@ -67,7 +67,6 @@ void TestFile::testExist(){
     File * file3=new File("blafasel");
     CPPUNIT_ASSERT(file3->getPath()=="blafasel");
     CPPUNIT_ASSERT(!file3->exist());
-    CPPUNIT_ASSERT(!file3->isFile());
     CPPUNIT_ASSERT(!file3->isDirectory());
     delete file3;
 }
@@ -100,6 +99,10 @@ void TestFile::testCanRead(){
 
 void TestFile::testCanWrite(){
     File * file=new File("/etc/shadow");
+    CPPUNIT_ASSERT(!file->canWrite());
+    delete file;
+
+    file=new File("/etc/passwd");
     CPPUNIT_ASSERT(!file->canWrite());
     delete file;
 

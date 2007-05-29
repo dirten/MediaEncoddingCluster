@@ -6,6 +6,7 @@
 #include <assert.h>
 using namespace std;
 using namespace org::esb::io;
+using namespace org::esb::av;
 using namespace org::esb::lang;
 int main(int argc, char**argv){
 
