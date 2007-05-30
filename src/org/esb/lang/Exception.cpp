@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "org/esb/lang/Exception.h"
-
+#include <execinfo.h>
 
 using namespace org::esb::lang;
 using namespace std;
@@ -60,7 +60,25 @@ void Exception::setMark( const char* file, const int lineNumber ){
 }
 
 const char * Exception::what()const throw(){
-    return "wat denn";
+//void *array[10];
+    string msg= getStackTraceString();
+       size_t size;
+       char **strings;
+       size_t i;
+	const void * return_addr=__builtin_return_address(0);
+	cout <<"Return addr"<<return_addr<<endl;
+       size = backtrace ((void **)this, sizeof(Exception));
+//       size = backtrace ((void **)this, 100);
+       strings = backtrace_symbols ((void *const *)this, size);
+     
+       printf ("Obtained %zd stack frames.\n", size);
+     
+       for (i = 0; i < size; i++)
+          printf ("%s\n", strings[i]);
+     
+       free (strings);
+
+    return msg.c_str();
 }
 
 

@@ -2,6 +2,7 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/lang/Exception.h"
+#include <execinfo.h>
 #include <iostream>
 #include <exception>
 #include <assert.h>
@@ -15,15 +16,36 @@ void my_unexpected(){
 //    exit(1);
 }
 void my_terminate(){
-    cerr << "Terminator"<<endl;
+    cerr << "Terminator"<<__LINE__<<__FILE__<<endl;
     exit(1);
 }
 
+void my_new_handler(){
+    cout << "new Handler"<<endl;
+}
 int main(int argc, char**argv){
     string demo;
-    set_unexpected(my_unexpected);
+
+
+void *array[10];
+       size_t size;
+       char **strings;
+       size_t i;
+     
+       size = backtrace (array, 10);
+       strings = backtrace_symbols (array, size);
+     
+       printf ("Obtained %zd stack frames.\n", size);
+     
+       for (i = 0; i < size; i++)
+          printf ("%s\n", strings[i]);
+     
+       free (strings);
+
+//    set_new_handler(&my_new_handler);
+//    set_unexpected(my_unexpected);
 //    set_terminate(my_terminate);
-    throw Exception();
+//    throw Exception();
 
     /*
     throw "bla";

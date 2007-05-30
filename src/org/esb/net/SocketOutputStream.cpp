@@ -21,8 +21,8 @@ class SocketOutputStream:public OutputStream{
 	void write(char * buffer, int len){
 	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
 	    while(remaining>0){
-//    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
-    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining, 0);
+    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+//    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining, 0);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    this->socket->close();

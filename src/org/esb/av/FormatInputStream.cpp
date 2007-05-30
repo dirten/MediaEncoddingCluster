@@ -1,9 +1,11 @@
 #include "FormatInputStream.h"
 #include "org/esb/io/File.h"
+#include "org/esb/lang/Exception.h"
 #include <iostream>
 using namespace std;
 
 using namespace org::esb::io;
+using namespace org::esb::lang;
 namespace org {
     namespace esb {
         namespace av {
@@ -12,7 +14,8 @@ namespace org {
                 // Open video file                
                 
                 if(av_open_input_file(&formatCtx, _sourceFile->getPath(), NULL, 0, NULL)!=0){
-                    cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" <<endl;
+    		    throw Exception(__FILE__, __LINE__, "FormatInputStream<init> - could not open File");
+//                    cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" <<endl;
                 }
 
                 if(av_find_stream_info(formatCtx)<0){
