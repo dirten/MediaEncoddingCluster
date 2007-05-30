@@ -12,7 +12,8 @@ SOURCES = \
             FormatBaseStream.cpp \
             FormatOutputStream.cpp \
             AVInputStream.cpp \
-            Codec.cpp
+            Codec.cpp \
+            Frame.cpp
             
             
 libav_la_SOURCES = $(SOURCES)

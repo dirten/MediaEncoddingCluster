@@ -1,5 +1,5 @@
 #include "FrameReceiver.h"
-
+#include "org/esb/io/InputStream.h"
 
 //#define STREAM_DURATION   5.0
 #define STREAM_FRAME_RATE 25 /* 25 images/s */
@@ -7,7 +7,8 @@
 #define STREAM_PIX_FMT PIX_FMT_YUV420P /* default pix_fmt */
 
 AVFrame *picture, *tmp_picture;
-using namespace org::esb::socket;
+using namespace org::esb::net;
+using namespace org::esb::io;
 
 static AVFrame *alloc_picture(int pix_fmt, int width, int height)
 {
@@ -120,19 +121,26 @@ int main(int argc, char *argv[]){
 
     Socket *so1=new Socket();
 	so1->setPort(10000);
-	so1->Connect();
+	so1->connect();
         int video_outbuf_size, ret;
         uint8_t *video_outbuf;
 //    cout << "Hostname"<<so1->getHostname()<<endl;
 //    so1->setHostname("localhost");
+
+
+	InputStream * is=so1->getInputStream();
+
     for(int b=0;b< 5000;b++){
 //	printf("new Frame %d\n", b);
 //	fflush(stdout);	
-	SocketData * r=so1->read();
+	int data_size=is->available(true);
+	unsigned char * buffer=new unsigned char[data_size];
+	is->read(buffer, data_size);
+//	SocketData * r=so1->read();
 
 //	printf("Data Arrived\n");
 
-	memcpy(tmp_picture->data[0],r->data,r->data_length);
+	memcpy(tmp_picture->data[0],buffer,data_size);
 //	printf("memcpy solved\n");
 	img_convert((AVPicture *)picture, c->pix_fmt,
     	    	    (AVPicture *)tmp_picture, PIX_FMT_RGB24,

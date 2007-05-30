@@ -1,4 +1,4 @@
-#include "FormatBaseStream.h"
+#include "FrameBaseStream.h"
 #include <iostream>
 
 
@@ -6,9 +6,9 @@ namespace org{
     namespace esb{
 	namespace io{
 	    bool isInitialized=false;
-	    void FormatBaseStream::initialize(){
+	    void FrameBaseStream::initialize(){
 		if(!isInitialized){
-		    std::cout << "static initializer from FormatBaseStream"<<std::endl;
+		    std::cout << "static initializer from FrameBaseStream"<<std::endl;
 		    isInitialized=true;
 		}
 	    }	

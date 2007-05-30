@@ -59,5 +59,9 @@ void Exception::setMark( const char* file, const int lineNumber ){
     //logger.log( stream.str() );    
 }
 
+const char * Exception::what()const throw(){
+    return "wat denn";
+}
+
 
 

@@ -67,7 +67,7 @@ namespace org{
          */
         virtual Exception* clone(void) const;
 
-        virtual ~NoSuchElementException(void);
+        virtual ~NoSuchElementException(void)throw();
 
     };
 

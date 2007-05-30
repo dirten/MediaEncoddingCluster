@@ -1,7 +1,7 @@
-
+//#define import #include
 #include "test_test.h"
-#include "org/esb/io/File.h"
-#include "org/esb/lang/Exception.h"
+#import "org/esb/io/File.h"
+#import "org/esb/lang/Exception.h"
 using namespace org::esb::io;
 using namespace org::esb::lang;
 
@@ -30,7 +30,7 @@ void TestTest::testConstructor(){
 void TestTest::testExist(){
     File * file=new File("test/test_test.cpp");
     CPPUNIT_ASSERT(file->getPath()=="test/test_test.cpp");
-    CPPUNIT_ASSERT(file->exist());
+    CPPUNIT_ASSERT(file->exists());
     delete file;
 }
 

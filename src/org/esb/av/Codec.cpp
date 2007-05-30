@@ -2,9 +2,6 @@
 #include "avformat.h"
 
 
-
-
-
 namespace org{
     namespace esb{
         namespace av{
@@ -19,8 +16,13 @@ namespace org{
             CodecType Codec::getCodecType(){
                 return _codecCtx->codec_type;
             }
+            
             char * Codec::getCodecName(){
                 return _codecCtx->codec_name;
+            }
+
+            int Codec::getCodecId(){
+                return _codecCtx->codec_id;
             }
         }
     }

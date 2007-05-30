@@ -10,7 +10,7 @@
 #noinst_HEADERS=*.h 
 
 check_PROGRAMS = cpp_unit 
-cpp_unit_SOURCES=cpp_unit.cpp test_test.cpp TestFile.cpp TestFormatInputStream.cpp
+cpp_unit_SOURCES=cpp_unit.cpp test_test.cpp TestFile.cpp TestFormatInputStream.cpp TestAVInputStream.cpp
 cpp_unit_CXXFLAGS = $(CPPUNIT_CFLAGS)
 cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la 
 #cpp_unit_LDFLAGS = -ldl

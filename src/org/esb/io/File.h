@@ -10,7 +10,7 @@ public:
                 const char * getPath();
                 bool canRead();
                 bool canWrite();
-                bool exist();
+                bool exists();
                 bool isFile();
                 bool isDirectory();
                 bool createNewFile();

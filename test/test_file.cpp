@@ -3,13 +3,47 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
+#include <exception>
 #include <assert.h>
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::lang;
-int main(int argc, char**argv){
 
+void my_unexpected(){
+    cerr << "Exception is thrown"<<endl;
+//    exit(1);
+}
+void my_terminate(){
+    cerr << "Terminator"<<endl;
+    exit(1);
+}
+
+int main(int argc, char**argv){
+    string demo;
+    set_unexpected(my_unexpected);
+//    set_terminate(my_terminate);
+    throw Exception();
+
+    /*
+    throw "bla";
+//    unexpected();
+    try{    
+        demo.erase(10,10);
+    }catch(Exception &why){
+        why.printStackTrace();
+//        cerr << "Caught exception " << why.what() << endl;
+//        cerr << "We could go on if we wanted" << endl;
+//        cerr << "Although in this demo we'll exit nice" << endl;
+    }*/
+/*    catch(exception &why){
+        cerr << "Caught exception " << why.what() << endl;
+        cerr << "We could go on if we wanted" << endl;
+        cerr << "Although in this demo we'll exit nice" << endl;
+    
+    }
+  */  
+    
     File * file1=new File("frame1.ppm");
     cout << file1->getPath()<<endl;;
 //    assert(false);

@@ -13,6 +13,8 @@ namespace org{
                     Codec(AVCodecContext * codec);
                     CodecType getCodecType();
                     char * getCodecName();
+                    int getCodecId();
+		    
                 private:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;

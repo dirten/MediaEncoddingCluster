@@ -5,7 +5,7 @@
 SUBDIRS = org hive.server hive.client hive.listener framehive
 
 
-bin_PROGRAMS = framesender 
+bin_PROGRAMS = framesender framereceiver
 
 
 #bin_PROGRAMS = zpipe

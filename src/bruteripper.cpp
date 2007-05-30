@@ -213,16 +213,19 @@ int main(int argc, char *argv[])
     return -1; // Didn't find a video stream
 
     // Get a pointer to the codec context for the video stream
-  AVStream *str=pFormatCtx->streams[videoStream];
+  AVStream *str=pFormatCtx->streams[0];
 //  pCodecCtx=pFormatCtx->streams[videoStream]->codec;
   pCodecCtx=str->codec;
 //  char * text;
 //  sprintf(text,"%5.2f", av_q2d(str->r_frame_rate));
 //  cout << "FrameRate "<< text<< endl;
   cout << "Stream "<<av_q2d(str->r_frame_rate)<< endl;
+  cout << "StreamTimeBase "<<av_q2d(str->time_base)<< endl;
+  cout << "StreamDuration "<<str->duration<< endl;
   cout << "StreamId "<<videoStream<< endl;
   cout << "CodecId "<<pCodecCtx->codec_id<< endl;
   cout << "CodecName "<<pCodecCtx->codec_name<< endl;
+//  str=pFormatCtx->streams[videoStream];
 //  pCodecCtx=pFormatCtx->streams[videoStream]->codec;
 //  delete text;
       // Find the decoder for the video stream
@@ -269,7 +272,7 @@ int main(int argc, char *argv[])
 //  FrameContainer *container=new FrameContainer("/media/video/test");
 //  FrameContainer *container=new FrameContainer("/tmp/frame.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<500)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<5)
   {
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);

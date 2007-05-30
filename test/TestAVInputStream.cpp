@@ -7,10 +7,10 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace std;
 
-class TestFormatInputStream: public CppUnit::TestFixture
+class TestAVInputStream: public CppUnit::TestFixture
 {
 
-    CPPUNIT_TEST_SUITE(TestFormatInputStream);
+    CPPUNIT_TEST_SUITE(TestAVInputStream);
     CPPUNIT_TEST(testConstructor);
     CPPUNIT_TEST_SUITE_END();
     
@@ -22,27 +22,32 @@ class TestFormatInputStream: public CppUnit::TestFixture
 	File * file;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
+CPPUNIT_TEST_SUITE_REGISTRATION(TestAVInputStream);
 
 
-void TestFormatInputStream::setUp(){
+void TestAVInputStream::setUp(){
     file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    CPPUNIT_ASSERT(file);
+    CPPUNIT_ASSERT(file->canRead());
 }
 
 
-void TestFormatInputStream::tearDown(){
+void TestAVInputStream::tearDown(){
     delete file;
 
 }
 
 
 
-void TestFormatInputStream::testConstructor(){
-    CPPUNIT_ASSERT(file);
-    CPPUNIT_ASSERT(file->canRead());
+void TestAVInputStream::testConstructor(){
     FormatInputStream *fis=new FormatInputStream(file);
-    FormatInputStream *fis2=new FormatInputStream(file);
-    CPPUNIT_ASSERT(fis->getStreamCount()==2);
+    AVInputStream * avis=fis->getStream(0);
+    CPPUNIT_ASSERT(avis);
+//    cout << "Duration:"<<fis->getFileSize();
+
+//    cout << "Duration:"<<avis->getDuration();
+//    cout << "FrameCount:"<<avis->getNumberFrames();
+//    cout << "TimeBase:"<<avis->getTimeBase();
 /*
     AVInputStream * avis=fis->getStream(1);
     Codec * codec=avis->getCodec();
@@ -50,7 +55,7 @@ void TestFormatInputStream::testConstructor(){
     cout << "CodecName:"<<codec->getCodecName()<<endl;
     delete avis;    
 */
+    delete avis;
     delete fis;
-    delete fis2;
 
 }

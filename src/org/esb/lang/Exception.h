@@ -60,7 +60,7 @@ namespace lang{
             setMark( file, lineNumber );
         }
 
-        virtual ~Exception(){}
+        virtual ~Exception()throw(){}
    
         /**
          * Gets the message for this exception.
@@ -159,6 +159,7 @@ namespace lang{
    
         virtual void buildMessage( const char* format, va_list& vargs );
 
+        virtual const char * what()const throw();
    };
 
 }}}

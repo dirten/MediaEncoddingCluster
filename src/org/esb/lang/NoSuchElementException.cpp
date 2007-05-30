@@ -81,7 +81,7 @@ namespace lang{
             return new NoSuchElementException(*this);
         }
 
-        virtual ~NoSuchElementException(void) {}
+        virtual ~NoSuchElementException(void)throw() {}
 
     };
 

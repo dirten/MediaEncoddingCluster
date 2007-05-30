@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
+#include <exception>
 namespace org{
 namespace esb{
 namespace lang{
@@ -14,11 +14,11 @@ namespace lang{
      * This class represents an error that has occurred in 
      * cms.
      */
-    class Throwable{
+    class Throwable:public std::exception{
         
     public:
         
-        virtual ~Throwable(){}
+        virtual ~Throwable()throw(){}
         
         /**
          * Gets the cause of the error.
@@ -44,6 +44,7 @@ namespace lang{
          */
         virtual void printStackTrace( std::ostream& stream ) const = 0;
         
+        virtual const char * what()const throw()=0;
     };
 
 }}}

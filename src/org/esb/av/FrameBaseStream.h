@@ -1,9 +1,9 @@
-#ifndef ORG_ESB_IO_FORMATBASESTREAM_H
-#define ORG_ESB_IO_FORMATBASESTREAM_H
+#ifndef ORG_ESB_IO_FRAMEBASESTREAM_H
+#define ORG_ESB_IO_FRAMEBASESTREAM_H
 namespace org{
     namespace esb{
 	namespace io{
-	    class FormatBaseStream {
+	    class FrameBaseStream {
 		protected:
 		    static void initialize();
 

@@ -14,6 +14,7 @@ namespace org {
                 if(av_open_input_file(&formatCtx, _sourceFile->getPath(), NULL, 0, NULL)!=0){
                     cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" <<endl;
                 }
+
                 if(av_find_stream_info(formatCtx)<0){
                     cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" <<endl;
                 }
@@ -23,7 +24,7 @@ namespace org {
             }
 
             FormatInputStream::~FormatInputStream() {
-                av_close_input_file(formatCtx);
+		close();
             }
 
             int FormatInputStream::getStreamCount(){
@@ -34,8 +35,11 @@ namespace org {
                 return new AVInputStream(formatCtx->streams[streamIndex]);
             }
 
-            int FormatInputStream::available(bool isBlocking){
-                return 0;
+	    int FormatInputStream::available(bool withBlocking){
+	    
+	    }
+            long FormatInputStream::getFileSize(){
+                return formatCtx->file_size;
             }
 
             int FormatInputStream::read(unsigned char * buffer, int length) {
@@ -43,6 +47,7 @@ namespace org {
             }
 
             void FormatInputStream::close() {
+                av_close_input_file(formatCtx);
             }
         }
     }

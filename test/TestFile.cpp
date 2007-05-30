@@ -56,17 +56,17 @@ void TestFile::testConstructor(){
 void TestFile::testExist(){
     File * file=new File("test/test_test.cpp");
     CPPUNIT_ASSERT(file->getPath()=="test/test_test.cpp");
-    CPPUNIT_ASSERT(file->exist());
+    CPPUNIT_ASSERT(file->exists());
     delete file;
 
     File * file2=new File("/etc/shadow");
     CPPUNIT_ASSERT(file2->getPath()=="/etc/shadow");
-    CPPUNIT_ASSERT(file2->exist());
+    CPPUNIT_ASSERT(file2->exists());
     delete file2;
 
     File * file3=new File("blafasel");
     CPPUNIT_ASSERT(file3->getPath()=="blafasel");
-    CPPUNIT_ASSERT(!file3->exist());
+    CPPUNIT_ASSERT(!file3->exists());
     CPPUNIT_ASSERT(!file3->isDirectory());
     delete file3;
 }
