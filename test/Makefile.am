@@ -10,17 +10,18 @@
 #noinst_HEADERS=*.h 
 
 check_PROGRAMS = cpp_unit 
-cpp_unit_SOURCES=cpp_unit.cpp test_test.cpp TestFile.cpp TestFormatInputStream.cpp TestAVInputStream.cpp
+cpp_unit_SOURCES=cpp_unit.cpp test_test.cpp SimpleTests.cpp
 cpp_unit_CXXFLAGS = $(CPPUNIT_CFLAGS)
 cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la 
 #cpp_unit_LDFLAGS = -ldl
 
 
-bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file
+bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla
 #datasize
 datasize_SOURCES=datasize.cpp
 
 test_file_SOURCES=test_file.cpp
+test_bla_SOURCES=test_bla.cpp
 test_dvdread_SOURCES=test_dvdread.cpp 
 console_SOURCES=console.cpp
 test_thread_SOURCES=test_thread.cpp 
@@ -38,6 +39,7 @@ test_SOURCES=	test.cpp \
 #aviclient_LDADD =-laviplay
 
 test_file_LDADD=	../src/org/esb/libesb.la 
+test_bla_LDADD=	../src/org/esb/libesb.la 
 test_socket_LDADD=	../src/org/esb/libesb.la 
 test_server_LDADD=	../src/org/esb/libesb.la 
 client_LDADD	=	../src/org/esb/libesb.la 

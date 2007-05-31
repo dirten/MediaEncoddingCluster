@@ -65,8 +65,12 @@ void *array[10];
     
     }
   */  
-    
-    File * file1=new File("frame1.ppm");
+    try{
+	File f(NULL);
+    }catch(...){
+	
+    }
+    File * file1=new File("frame1.ppm1");
     cout << file1->getPath()<<endl;;
 //    assert(false);
 //    File * file2=new File("frame1.ppm");

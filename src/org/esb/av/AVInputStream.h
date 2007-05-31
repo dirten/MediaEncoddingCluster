@@ -1,3 +1,5 @@
+#ifndef ORG_ESB_AV_AVINPUTSTREAM_H
+#define ORG_ESB_AV_AVINPUTSTREAM_H
 #include "Codec.h"
 #include "Frame.h"
 #include "avformat.h"
@@ -10,7 +12,7 @@ namespace org{
         namespace av{
             class AVInputStream{
                 public:
-                    AVInputStream(AVStream * stream);
+                    AVInputStream(AVFormatContext * context, int streamIndex);
                     Codec * getCodec();
                     long getDuration();
                     float getTimeBase();
@@ -19,8 +21,14 @@ namespace org{
                     Frame * getFrame(int frameIndex);
                 private:
                     AVStream * _avStream;
+                    AVFormatContext * _formatContext;
+		    AVCodecContext * _codecContext;
+		    AVCodec * _codec;
+                    int _streamIndex;
             };
         }
     }
 }
+
+#endif
 

@@ -24,6 +24,12 @@ namespace org{
             int Codec::getCodecId(){
                 return _codecCtx->codec_id;
             }
+            void Codec::decodeFrame(Frame * frame){
+            
+            }
+            void Codec::encodeFrame(Frame * frame){
+            
+            }
         }
     }
 }

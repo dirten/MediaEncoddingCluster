@@ -9,9 +9,15 @@ namespace esb{
 namespace av{
 class Frame {
     public:
-	Frame(AVPacket * packet);
-	char * getData();
+	Frame(AVPacket * packet, AVCodecContext * codecContext);
+	~Frame();
+	uint8_t * getData();
 	int getSize();
+	AVPacket * getPacket();
+	AVFrame * getFrame();
+    private:
+	AVPacket * _packet;
+	AVFrame * _frame;
 };
 }}}
 #endif

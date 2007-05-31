@@ -1,3 +1,5 @@
+#ifndef ORG_ESB_AV_FORMATINPUTSTREAM_H
+#define ORG_ESB_AV_FORMATINPUTSTREAM_H
 #include "FormatBaseStream.h"
 #include "AVInputStream.h"
 #include "org/esb/io/InputStream.h"
@@ -25,3 +27,6 @@ namespace org{
     	}
     }
 }
+
+#endif
+

@@ -12,12 +12,14 @@ class TestAVInputStream: public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestAVInputStream);
     CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testGetFrame);
     CPPUNIT_TEST_SUITE_END();
     
     public:
 	void setUp();
 	void tearDown();
 	void testConstructor();
+	void testGetFrame();
     private:
 	File * file;
 };
@@ -59,3 +61,22 @@ void TestAVInputStream::testConstructor(){
     delete fis;
 
 }
+
+void TestAVInputStream::testGetFrame(){
+    FormatInputStream *fis=new FormatInputStream(file);    
+    AVInputStream * avis=fis->getStream(0);
+    CPPUNIT_ASSERT(avis);
+    Frame * frame1=avis->getFrame(1702);
+//    Frame * frame1=avis->getNextFrame();
+    CPPUNIT_ASSERT(frame1);
+    cout << "FrameData"<<frame1->getFrame()->linesize[1]<<endl;
+//    cout << "FrameData"<<frame1->getFrame()->data[0]<<endl;
+//    cout << "FrameSize"<<frame1->getSize()<<endl;
+
+//    delete frame1;
+    delete avis;
+    delete fis;
+
+}
+
+
