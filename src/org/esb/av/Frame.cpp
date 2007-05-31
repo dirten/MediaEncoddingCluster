@@ -20,6 +20,7 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
                                         &frameFinished, rawData, bytesRemaining);
      
 	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
+	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
 
             // Was there an error?
     

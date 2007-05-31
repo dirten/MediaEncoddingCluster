@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
     string path=string(Config::getProperty("src.path"));
     path+="/";
     path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
+    path="test.dvd";
     argv[1]=(char*)path.c_str();
 
   // Open video file
@@ -291,7 +292,7 @@ int main(int argc, char *argv[])
 //    container->putFrame3(pFrameRGB,pCodecCtx);
 //    container->putFrame(pFrameRGB,pCodecCtx);
 //      hive->putFrame(pFrameRGB,pCodecCtx);
-//    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
+    SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
 	cerr << "\rProcessing Frame :"<< i;
   cout << endl;

@@ -26,7 +26,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
 
 
 void TestFormatInputStream::setUp(){
-    file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    file=new File("/media/video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 }
 
 

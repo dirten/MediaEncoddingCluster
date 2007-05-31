@@ -6,33 +6,6 @@
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::io;
-/**
- * Creates a <code>FileInputStream</code> by
- * opening a connection to an actual file,
- * the file named by the <code>File</code>
- * object <code>file</code> in the file system.
- * A new <code>FileDescriptor</code> object
- * is created to represent this file connection.
- * <p>
- * First, if there is a security manager,
- * its <code>checkRead</code> method  is called
- * with the path represented by the <code>file</code>
- * argument as its argument.
- * <p>
- * If the named file does not exist, is a directory rather than a regular
- * file, or for some other reason cannot be opened for reading then a
- * <code>FileNotFoundException</code> is thrown.
- *
- * @param      file   the file to be opened for reading.
- * @exception  FileNotFoundException  if the file does not exist,
- *                   is a directory rather than a regular file,
- *                   or for some other reason cannot be opened for
- *                   reading.
- * @exception  SecurityException      if a security manager exists and its
- *               <code>checkRead</code> method denies read access to the file.
- * @see        java.io.File#getPath()
- * @see        java.lang.SecurityManager#checkRead(java.lang.String)
- */
 FileInputStream::FileInputStream(File * file)throw (Exception) {
     const char * name=file!=NULL?file->getPath():NULL;
     if(!name) {
@@ -40,8 +13,6 @@ FileInputStream::FileInputStream(File * file)throw (Exception) {
     }
     open(name);
 }
-
-
 
 /**
  * Opens the specified file for reading.
@@ -71,7 +42,7 @@ int FileInputStream::available(bool isBlocking) {
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {
-    fgets((char*)buffer, length, file);
+    fread((char*)buffer,1, length, file);
     return length;
 }
 

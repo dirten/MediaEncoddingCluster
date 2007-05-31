@@ -65,7 +65,7 @@ const char * Exception::what()const throw(){
        size_t size;
        char **strings;
        size_t i;
-	const void * return_addr=__builtin_return_address(0);
+	const void * return_addr=__builtin_return_address(1);
 	cout <<"Return addr"<<return_addr<<endl;
        size = backtrace ((void **)this, sizeof(Exception));
 //       size = backtrace ((void **)this, 100);

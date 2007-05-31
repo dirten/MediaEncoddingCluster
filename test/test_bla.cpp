@@ -10,13 +10,14 @@ using namespace org::esb::av;
 
 int main(){
 
-    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File *file=new File("test.dvd");
 
-    FormatInputStream *fis=new FormatInputStream(file);    
-    AVInputStream * avis=fis->getStream(0);
-//    Frame * frame1=avis->getFrame(1700);
+    FormatInputStream *fis=new FormatInputStream(file);
+    AVInputStream * avis=fis->getStream(2);
+//    Frame * frame1=avis->getFrame(1);
     Frame * frame1=avis->getNextFrame();
-    cout << "FrameData"<<frame1->getFrame()->linesize[0]<<endl;
+    cout << "FrameData"<<frame1->getFrame()->linesize[1]<<endl;
     cout << "FrameData"<<frame1->getFrame()->data[0]<<endl;
 //    cout << "FrameSize"<<frame1->getSize()<<endl;
 

@@ -101,7 +101,7 @@ public:
 
                 virtual void write(char * buffer){throw Exception(__FILE__,__LINE__,"Not implemented");};
 
-                ~OutputStream() {}
+                virtual ~OutputStream() {}
                 ;
             };
         }

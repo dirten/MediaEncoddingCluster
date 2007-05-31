@@ -8,6 +8,7 @@ MICRO_VERSION=1
 lib_LTLIBRARIES = libav.la
 SOURCES = \
             FrameInputStream.cpp \
+            FrameOutputStream.cpp \
             FormatInputStream.cpp \
             FormatBaseStream.cpp \
             FormatOutputStream.cpp \

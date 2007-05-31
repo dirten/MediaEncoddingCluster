@@ -39,7 +39,7 @@ namespace org {
 
             Frame * AVInputStream::getNextFrame() {
                 AVPacket packet;
-		packet.data=NULL;
+		        packet.data=NULL;
                 do {
                     if(packet.data!=NULL)
                         av_free_packet(&packet);
@@ -51,7 +51,7 @@ namespace org {
 
             Frame * AVInputStream::getFrame(int frameIdx) {
                 av_seek_frame(_formatContext,_streamIndex,frameIdx,AVSEEK_FLAG_ANY);
-		Frame * frame=getNextFrame();
+		        Frame * frame=getNextFrame();
                 return frame;
             }
         }
