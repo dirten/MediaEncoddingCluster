@@ -11,6 +11,7 @@ namespace org {
                 assert(context!=NULL);
                 _formatContext=context;
                 _streamIndex=streamIndex;
+                _avStream=_formatContext->streams[_streamIndex];
 		_codecContext=_formatContext->streams[_streamIndex]->codec;
 		_codec=avcodec_find_decoder(_codecContext->codec_id);
 		if(_codec->capabilities & CODEC_CAP_TRUNCATED){
@@ -29,7 +30,7 @@ namespace org {
                 return _avStream->duration;
             }
 
-            float AVInputStream::getTimeBase() {
+            double AVInputStream::getTimeBase() {
                 return av_q2d(_avStream->time_base);
             }
 

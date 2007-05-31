@@ -15,7 +15,7 @@ namespace org{
                     AVInputStream(AVFormatContext * context, int streamIndex);
                     Codec * getCodec();
                     long getDuration();
-                    float getTimeBase();
+                    double getTimeBase();
                     long getNumberFrames();
                     Frame * getNextFrame();
                     Frame * getFrame(int frameIndex);

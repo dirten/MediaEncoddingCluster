@@ -14,9 +14,11 @@ int main(){
     File *file=new File("test.dvd");
 
     FormatInputStream *fis=new FormatInputStream(file);
-    AVInputStream * avis=fis->getStream(2);
-//    Frame * frame1=avis->getFrame(1);
-    Frame * frame1=avis->getNextFrame();
+    AVInputStream * avis=fis->getStream(0);
+    cout << "TimeBase"<<avis->getTimeBase()<<endl;
+    cout << "dURATION"<<avis->getDuration()<<endl;
+    Frame * frame1=avis->getFrame(1700);
+//    Frame * frame1=avis->getNextFrame();
     cout << "FrameData"<<frame1->getFrame()->linesize[1]<<endl;
     cout << "FrameData"<<frame1->getFrame()->data[0]<<endl;
 //    cout << "FrameSize"<<frame1->getSize()<<endl;
