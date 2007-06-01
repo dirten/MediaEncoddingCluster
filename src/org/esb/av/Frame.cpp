@@ -19,8 +19,8 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
       bytesDecoded=avcodec_decode_video(codecContext, _frame,
                                         &frameFinished, rawData, bytesRemaining);
      
-	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
-	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
+//	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
+//	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
 
             // Was there an error?
     
@@ -48,6 +48,7 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
 
 Frame::~Frame(){
 //    av_free_packet(_packet);
+    av_free(_frame);
 //    delete _packet;
 }
 

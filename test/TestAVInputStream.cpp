@@ -66,8 +66,9 @@ void TestAVInputStream::testConstructor(){
 }
 
 void TestAVInputStream::testGetFrame(){
-    FormatInputStream *fis=new FormatInputStream(file);    
-    AVInputStream * avis=fis->getStream(0);
+    FormatInputStream *fis=new FormatInputStream(file);
+    AVInputStream * avis=new AVInputStream(fis);
+    
     CPPUNIT_ASSERT(avis);
 //    Frame * frame1=avis->getFrame(1700);
     Frame * frame1=avis->getNextFrame();
@@ -84,6 +85,7 @@ void TestAVInputStream::testGetFrame(){
 //    cout << "FrameSize"<<frame1->getSize()<<endl;
 
 //    delete frame1;
+    delete frame1;
     delete avis;
     delete fis;
 

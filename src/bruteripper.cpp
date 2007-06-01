@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
     string path=string(Config::getProperty("src.path"));
     path+="/";
     path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
-    path="test.dvd";
+    path="test.avi";
     argv[1]=(char*)path.c_str();
 
   // Open video file
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 //  FrameContainer *container=new FrameContainer("/media/video/test");
 //  FrameContainer *container=new FrameContainer("/tmp/frame.container");
   FrameHive *hive=new FrameHive("test.db");
-  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<5)
+  while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<15)
   {
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);

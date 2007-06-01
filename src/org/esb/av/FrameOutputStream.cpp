@@ -19,6 +19,7 @@ void FrameOutputStream::writeFrame(Frame * frame){
     write((char*)buffer, size);
 
 }
+
 void FrameOutputStream::write(char * buffer, int length){
     outStream->write(buffer, length);
 }

@@ -26,18 +26,21 @@ namespace org {
 
             }
 
-            FormatInputStream::~FormatInputStream() {
+            AVFormatContext * FormatInputStream::getFormatContext() {
+                return formatCtx;
+            }
+          FormatInputStream::~FormatInputStream() {
 		close();
             }
 
             int FormatInputStream::getStreamCount(){
                 return formatCtx->nb_streams;
             }
-
+/*
             AVInputStream * FormatInputStream::getStream(int streamIndex){
                 return new AVInputStream(formatCtx,streamIndex);
             }
-
+*/
 	    int FormatInputStream::available(bool withBlocking){
 	    
 	    }
