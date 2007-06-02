@@ -275,6 +275,7 @@ int main(int argc, char *argv[])
   FrameHive *hive=new FrameHive("test.db");
   while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<15)
   {
+    cout << "width:"<<pFrame->linesize[0]<<endl;
     img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)pFrame, 
                  pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
     

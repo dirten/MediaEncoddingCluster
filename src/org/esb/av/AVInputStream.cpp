@@ -14,10 +14,10 @@ namespace org {
                 /*nicht schön*/
                 _streamIndex=index;
                 _avStream=_formatContext->streams[_streamIndex];
-                _codecContext=_formatContext->streams[_streamIndex]->codec;
+                _codecContext=_avStream->codec;
                 _codec=avcodec_find_decoder(_codecContext->codec_id);
                 if(_codec->capabilities & CODEC_CAP_TRUNCATED) {
-                    _codecContext->flags|=CODEC_FLAG_TRUNCATED;
+//                    _codecContext->flags|=CODEC_FLAG_TRUNCATED;
                 }
                 if(avcodec_open(_codecContext, _codec)<0) {
                     fprintf(stderr, "avcodec_open failed\n");
@@ -42,7 +42,7 @@ namespace org {
                 _streamIndex=index;
             }
             Codec * AVInputStream::getCodec() {
-                return new Codec(_avStream->codec);
+                return new Codec(_codecContext);
             }
 
             long AVInputStream::getDuration() {
@@ -71,6 +71,20 @@ namespace org {
                     }
                 } while(packet.stream_index!=_streamIndex);
                 return new Frame(&packet, _formatContext->streams[_streamIndex]->codec);
+
+   /*
+                AVPacket *packet=new AVPacket();
+		        packet->data=NULL;
+                do {
+                    if(packet->data!=NULL)
+                        av_free_packet(packet);
+                    if(av_read_packet(_formatContext, packet)<0){
+                        cout << "Fehler:"<<endl;
+                        return NULL;
+                    }
+                } while(packet->stream_index!=_streamIndex);
+                return new Frame(packet, _formatContext->streams[_streamIndex]->codec);
+*/
             }
 
             Frame * AVInputStream::getFrame(int frameIdx) {

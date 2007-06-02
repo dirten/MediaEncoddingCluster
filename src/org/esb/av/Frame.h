@@ -15,7 +15,9 @@ class Frame {
 	int getSize();
 	AVPacket * getPacket();
 	AVFrame * getFrame();
+	void setFrame(AVFrame * frame);
     private:
+    AVCodecContext * _codecContext;
 	AVPacket * _packet;
 	AVFrame * _frame;
 };

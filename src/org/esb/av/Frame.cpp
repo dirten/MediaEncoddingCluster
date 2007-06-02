@@ -1,13 +1,17 @@
 #include "Frame.h"
 #include "avformat.h"
 #include <assert.h>
+#include <iostream>
+using namespace std;
 using namespace org::esb::av;
 Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
+    assert(packet);
     assert(codecContext);
     _packet=packet;
     _frame=avcodec_alloc_frame();
-
+    _codecContext=codecContext;
     int bytesRemaining=_packet->size, frameFinished=0, bytesDecoded=0;
+    cout << "PacketSize:"<<bytesRemaining<<endl;
     uint8_t * rawData=packet->data;
     
     while(bytesRemaining > 0)
@@ -19,8 +23,8 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
       bytesDecoded=avcodec_decode_video(codecContext, _frame,
                                         &frameFinished, rawData, bytesRemaining);
      
-//	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
-//	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
+	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
+	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
 
             // Was there an error?
     
@@ -38,12 +42,7 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
 	break;
 //        return true;
       }
-    }
-
-    
-    
-    
-    
+    }    
 }
 
 Frame::~Frame(){
@@ -67,4 +66,11 @@ int Frame::getSize(){
 }
 AVFrame * Frame::getFrame(){
     return _frame;
+}
+
+void Frame::setFrame(AVFrame * frame){
+//    if(_frame!=NULL)
+//        av_free(_frame);
+    _frame=frame;
+
 }
