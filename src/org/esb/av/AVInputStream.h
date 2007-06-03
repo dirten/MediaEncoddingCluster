@@ -7,7 +7,7 @@
 #include "Codec.h"
 #include "Frame.h"
 #include "avformat.h"
-
+#include "Packet.h"
 
 
 
@@ -16,7 +16,18 @@ namespace org {
         namespace av {
             class AVInputStream {
 public:
-                AVInputStream(FormatInputStream * in, int index=0);
+/**
+* Creates a new <code>AVInputStream</code> instance by using the given
+* FormatInputStream and the StreamIndex from the FormatInputStream.  
+* 
+* 
+*
+* @param   in  FormatInputStream to read from
+* @param   index  StreamIndex to read (default is 0)
+* @throws  NullPointerException
+*          If the <code>in</code> argument is <code>null</code>
+*/
+		AVInputStream(FormatInputStream * in, int index=0);
                 AVInputStream(AVFormatContext * context, int streamIndex);
                 void selectStreamIndex(int index);
                 int getStreamIndex();
@@ -26,6 +37,7 @@ public:
                 double getTimeBase();
                 long getNumberFrames();
                 AVPacket * getNextPacket();
+                Packet * getNextPacket2();
                 Frame * getNextFrame();
                 Frame * getFrame(int frameIndex);
 private:

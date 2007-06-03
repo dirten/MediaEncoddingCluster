@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_AV_FRAME_H
 #define ORG_ESB_AV_FRAME_H
 #include "avformat.h"
-
+//#include "Codec.h"
 
 
 namespace org{
@@ -10,6 +10,7 @@ namespace av{
 class Frame {
     public:
 	Frame(AVPacket * packet, AVCodecContext * codecContext);
+//	Frame(AVPacket * packet, Codec * codec);
 	~Frame();
 	uint8_t * getData();
     int getWidth();
