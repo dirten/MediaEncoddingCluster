@@ -58,8 +58,8 @@ namespace org {
             }
 
             AVPacket * AVInputStream::getNextPacket() {
-                AVPacket packet;
-                packet.data=NULL;
+                AVPacket * packet=new Packet();
+                packet->data=NULL;
                 int i=0;
                 do {
 //                    cout << ++i <<"durchlauf"<<endl;

@@ -22,7 +22,9 @@ int main(){
     while((frame=avis->getNextPacket())!=NULL){
 //        if(frame->getFrame()->key_frame>0){
 //        if(!(frame->flags & PKT_FLAG_KEY)){
+ 
         if(a%10000==0){
+
             cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
         }
         av_free_packet(frame);
