@@ -25,6 +25,7 @@ public:
                 long getDuration();
                 double getTimeBase();
                 long getNumberFrames();
+                AVPacket * getNextPacket();
                 Frame * getNextFrame();
                 Frame * getFrame(int frameIndex);
 private:

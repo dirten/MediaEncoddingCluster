@@ -11,10 +11,34 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(){
+    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    File *file=new File("test.avi");
+    FormatInputStream *fis=new FormatInputStream(file);
+    AVInputStream * avis=new AVInputStream(fis,0);
+    int a=0;
+    int duration=avis->getDuration();
+//  Frame * frame;
+    AVPacket * frame;
+    while((frame=avis->getNextPacket())!=NULL){
+//        if(frame->getFrame()->key_frame>0){
+//        if(!(frame->flags & PKT_FLAG_KEY)){
+        if(a%10000==0){
+            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
+        }
+        av_free_packet(frame);
+//        delete frame;
+        a++;
+    }
+
+}
+int main2(){
 
 //    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     File *file=new File("test.avi");
-
+    if(typeid(file)==typeid(&File(""))){
+        cout << "Type is file"<< endl;
+    }
+    cout << typeid(file).name()<<endl;
     FormatInputStream *fis=new FormatInputStream(file);
 
     AVInputStream * avis=new AVInputStream(fis,0);
@@ -23,11 +47,11 @@ int main(){
 
 
 //    Frame * frame1=avis->getFrame(1700);
-//    avis->getFrame(2550);
+//    avis->getFrame(2540);
     Frame * frame;
     int i=0;
     while((frame=avis->getNextFrame())!=NULL){
-        cerr <<"FrameCounter:"<<i<< "\tFrameWidth"<<frame->getFrame()->linesize[0]<<endl;
+        cerr <<"FrameCounter:"<<i<< "\tFrameWidth"<<frame->getWidth()<< "\tFrameHeight"<<frame->getHeight()<<endl;
         /*
         if(frame->getFrame()->linesize[0]==0||true){
             cout << "Error:"<<frame->getFrame()->error[0]<<endl;
@@ -54,16 +78,15 @@ int main(){
         avpicture_fill((AVPicture *)pFrameRGB, buffer, PIX_FMT_RGB24, cc->width, cc->height);
 
         AVFrame * tmpFrame=frame->getFrame();
+        if(frame->getHeight()==0)continue;
         img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)tmpFrame, cc->pix_fmt, cc->width, cc->height);
-//        frame->setFrame(pFrameRGB);
+        frame->setFrame(pFrameRGB);
         int width=cc->width;
         int height=cc->height;
         cout <<"CCWidth="<<width;
         cout <<"CCHeight="<<height<<endl;
         int size=width*height;
         cout <<"FileSize="<<size<<endl;
-
-        cout <<"LineSize[0]="<<pFrameRGB->linesize[0]<<endl;
         char header[200];
         sprintf(header, "P6\n%d %d\n255\n", width, height);
 

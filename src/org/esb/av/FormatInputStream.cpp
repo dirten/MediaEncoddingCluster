@@ -22,7 +22,7 @@ namespace org {
                     cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" <<endl;
                 }
                 
-//                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
+                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
 
             }
 

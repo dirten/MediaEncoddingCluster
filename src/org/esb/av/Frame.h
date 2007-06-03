@@ -12,6 +12,8 @@ class Frame {
 	Frame(AVPacket * packet, AVCodecContext * codecContext);
 	~Frame();
 	uint8_t * getData();
+    int getWidth();
+    int getHeight();
 	int getSize();
 	AVPacket * getPacket();
 	AVFrame * getFrame();

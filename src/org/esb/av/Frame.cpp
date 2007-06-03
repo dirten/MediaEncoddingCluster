@@ -9,9 +9,21 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
     assert(codecContext);
     _packet=packet;
     _frame=avcodec_alloc_frame();
+
+
+/*
+    _codecContext=avcodec_alloc_context();
+    AVCodec * codec=avcodec_find_decoder(codecContext->codec_id);
+
+    if (avcodec_open(_codecContext, codec) < 0) {
+        fprintf(stderr, "could not open codec\n");
+        exit(1);
+    }
+    */
     _codecContext=codecContext;
+    
     int bytesRemaining=_packet->size, frameFinished=0, bytesDecoded=0;
-    cout << "PacketSize:"<<bytesRemaining<<endl;
+//    cout << "PacketSize:"<<bytesRemaining<<endl;
     uint8_t * rawData=packet->data;
     
     while(bytesRemaining > 0)
@@ -20,17 +32,20 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
 
             // Decode the next chunk of data
       
-      bytesDecoded=avcodec_decode_video(codecContext, _frame,
+      bytesDecoded=avcodec_decode_video(_codecContext, _frame,
                                         &frameFinished, rawData, bytesRemaining);
      
+    /*
 	fprintf(stderr, "%d Bytes decoded\n", bytesDecoded);
-	fprintf(stderr, "frame %d\n", _frame->linesize[0]);
-
+	fprintf(stderr, "frameWidth %d\n", _frame->linesize[0]);
+	fprintf(stderr, "frameHeight %d\n", _frame->linesize[1]);
+    */
             // Was there an error?
     
       if(bytesDecoded < 0)
       {
         fprintf(stderr, "Error while decoding frame\n");
+        break;
 //        return true;
       }
 
@@ -64,8 +79,17 @@ uint8_t * Frame::getData(){
 int Frame::getSize(){
     return _packet->size;
 }
+
 AVFrame * Frame::getFrame(){
     return _frame;
+}
+
+int Frame::getHeight(){
+    return _codecContext->height;
+}
+
+int Frame::getWidth(){
+    return _codecContext->width;
 }
 
 void Frame::setFrame(AVFrame * frame){
