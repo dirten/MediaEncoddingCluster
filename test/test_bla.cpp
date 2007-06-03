@@ -11,24 +11,22 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(){
-    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
-//    File *file=new File("test.avi");
+//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     AVInputStream * avis=new AVInputStream(fis,0);
+    Codec * codec=avis->getCodec();
     int a=0;
     int duration=avis->getDuration();
-//  Frame * frame;
-    AVPacket * frame;
-    while((frame=avis->getNextPacket())!=NULL){
+    Frame * frame;
+    AVPacket * packet;
+    while((packet=avis->getNextPacket())!=NULL){
+	frame=new Frame(packet, codec->getCodecContext());
+        if((packet->flags & PKT_FLAG_KEY)){
 //        if(frame->getFrame()->key_frame>0){
-//        if(!(frame->flags & PKT_FLAG_KEY)){
- 
-        if(a%10000==0){
-
-            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
+//            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
         }
-        av_free_packet(frame);
-//        delete frame;
+        av_free_packet(packet);
         a++;
     }
 

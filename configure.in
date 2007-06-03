@@ -62,4 +62,5 @@ dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/org/esb/lang/Makefile
 dnl    src/org/esb/socket/Makefile
 dnl    src/org/esb/config/Makefile
+dnl    src/org/esb/config/Makefile
     )

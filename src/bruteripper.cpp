@@ -182,7 +182,8 @@ int main(int argc, char *argv[])
 //  argv[1]="/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi";
     string path=string(Config::getProperty("src.path"));
     path+="/";
-    path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
+//    path+="Der Blutige Pfad Gottes - German (DVD-Quali).avi";
+    path+=string(Config::getProperty("src.file"));
     path="test.avi";
     argv[1]=(char*)path.c_str();
 
