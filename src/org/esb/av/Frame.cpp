@@ -62,7 +62,7 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
 
 Frame::~Frame(){
 //    av_free_packet(_packet);
-    av_free(_frame);
+//    av_free(_frame);
 //    delete _packet;
 }
 

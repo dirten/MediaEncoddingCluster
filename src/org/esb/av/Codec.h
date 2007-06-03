@@ -9,7 +9,7 @@ namespace org{
         namespace av{
             class Codec{
                 public:
-                    Codec(const char * codecName);
+                    Codec(const int codecId);
                     Codec(AVCodecContext * codec);
                     CodecType getCodecType();
                     char * getCodecName();

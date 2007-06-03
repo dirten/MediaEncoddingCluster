@@ -21,11 +21,12 @@ int main(){
     Frame * frame;
     AVPacket * packet;
     while((packet=avis->getNextPacket())!=NULL){
-	frame=new Frame(packet, codec->getCodecContext());
-        if((packet->flags & PKT_FLAG_KEY)){
-//        if(frame->getFrame()->key_frame>0){
-//            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
+	    frame=&Frame(packet, codec->getCodecContext());
+//        if((packet->flags & PKT_FLAG_KEY)){
+        if(frame->getFrame()->key_frame>0){
+            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
         }
+//        delete frame;
         av_free_packet(packet);
         a++;
     }

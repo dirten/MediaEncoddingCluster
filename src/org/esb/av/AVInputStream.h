@@ -29,6 +29,7 @@ public:
 */
 		AVInputStream(FormatInputStream * in, int index=0);
                 AVInputStream(AVFormatContext * context, int streamIndex);
+                ~AVInputStream();
                 void selectStreamIndex(int index);
                 int getStreamIndex();
 
@@ -46,6 +47,7 @@ private:
                 AVFormatContext * _formatContext;
                 AVCodecContext * _codecContext;
                 AVCodec * _codec;
+                Codec * _intCodec;
                 int _streamIndex;
             };
         }

@@ -135,7 +135,7 @@ public:
                  * @see     java.io.InputStream#mark(int)
                  * @see     java.io.InputStream#reset()
                  */
-                virtual bool markSupported(int readlimit) {}
+                virtual bool markSupported() {return false;}
                 ;
 
                 /**

@@ -22,6 +22,7 @@ namespace org {
                 if(avcodec_open(_codecContext, _codec)<0) {
                     fprintf(stderr, "avcodec_open failed\n");
                 }
+                _intCodec=new Codec(_codecContext);
             }
 
             AVInputStream::AVInputStream(AVFormatContext * context, int streamIndex) {
@@ -38,11 +39,15 @@ namespace org {
                     fprintf(stderr, "avcodec_open failed\n");
                 }
             }
+            AVInputStream::~AVInputStream(){
+                delete _intCodec;
+                av_free(_codec);
+            }
             void AVInputStream::selectStreamIndex(int index){
                 _streamIndex=index;
             }
             Codec * AVInputStream::getCodec() {
-                return new Codec(_codecContext);
+                return _intCodec;
             }
 
             long AVInputStream::getDuration() {

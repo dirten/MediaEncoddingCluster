@@ -5,7 +5,7 @@
 namespace org{
     namespace esb{
         namespace av{
-            Codec::Codec(const char * name){
+            Codec::Codec(const int codecId){
 
             }
 
