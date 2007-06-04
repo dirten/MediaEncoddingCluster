@@ -30,8 +30,8 @@ namespace org {
                 return formatCtx;
             }
           FormatInputStream::~FormatInputStream() {
-		close();
-            }
+        		close();
+          }
 
             int FormatInputStream::getStreamCount(){
                 return formatCtx->nb_streams;

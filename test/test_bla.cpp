@@ -4,6 +4,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/AVInputStream.h"
 #include "org/esb/av/Frame.h"
+#include "org/esb/av/Packet.h"
 
 
 using namespace std;
@@ -15,22 +16,42 @@ int main(){
     File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     AVInputStream * avis=new AVInputStream(fis,0);
+//    avis->getFrame(1);
     Codec * codec=avis->getCodec();
     int a=0;
     int duration=avis->getDuration();
-    Frame * frame;
-    AVPacket * packet;
-    while((packet=avis->getNextPacket())!=NULL){
-	    frame=&Frame(packet, codec->getCodecContext());
-//        if((packet->flags & PKT_FLAG_KEY)){
+//    Frame * frame;
+//    AVPacket  packet;
+    Packet * packet2;
+    while(a<100){
+        packet2=avis->getNextPacket2();
+ 
+        if((packet2->flags & PKT_FLAG_KEY)){
+            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
+        }
+
+/*
+	    frame=new Frame(&packet, codec->getCodecContext());
+        if((packet->flags & PKT_FLAG_KEY)){
         if(frame->getFrame()->key_frame>0){
             cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
         }
-//        delete frame;
-        av_free_packet(packet);
+        delete frame;
+        */
+//        av_free_packet(packet);
+        /*
+        if(packet){
+            free(packet->data);
+            delete packet;
+        }
+        */
         a++;
+            delete packet2;
     }
-
+//    delete codec;
+    delete avis;
+    delete fis;
+    delete file;
 }
 int main2(){
 

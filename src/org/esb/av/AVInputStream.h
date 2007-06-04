@@ -1,7 +1,8 @@
 #ifndef ORG_ESB_AV_AVINPUTSTREAM_H
 #define ORG_ESB_AV_AVINPUTSTREAM_H
-
+#include "org/esb/io/InputStream.h"
 #include "FormatInputStream.h"
+
 
 
 #include "Codec.h"
@@ -14,7 +15,9 @@
 namespace org {
     namespace esb {
         namespace av {
-            class AVInputStream {
+            class AVInputStream
+            //:public InputStream 
+            {
 public:
 /**
 * Creates a new <code>AVInputStream</code> instance by using the given
@@ -32,12 +35,12 @@ public:
                 ~AVInputStream();
                 void selectStreamIndex(int index);
                 int getStreamIndex();
-
                 Codec * getCodec();
                 long getDuration();
                 double getTimeBase();
                 long getNumberFrames();
-                AVPacket * getNextPacket();
+                Packet * readPacket();
+                AVPacket getNextPacket();
                 Packet * getNextPacket2();
                 Frame * getNextFrame();
                 Frame * getFrame(int frameIndex);

@@ -8,7 +8,8 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
     assert(packet);
     assert(codecContext);
     _packet=packet;
-    _frame=avcodec_alloc_frame();
+//    _frame=avcodec_alloc_frame();
+    _frame=new AVFrame();//avcodec_alloc_frame();
 
 
 /*
@@ -63,6 +64,8 @@ Frame::Frame(AVPacket * packet, AVCodecContext * codecContext){
 Frame::~Frame(){
 //    av_free_packet(_packet);
 //    av_free(_frame);
+    if(_frame)
+        delete _frame;
 //    delete _packet;
 }
 

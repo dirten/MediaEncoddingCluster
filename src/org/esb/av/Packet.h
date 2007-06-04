@@ -6,11 +6,11 @@
 namespace org{
     namespace esb{
 	namespace av{
-	    class Packet: public AVPacket{
+	    class Packet:public AVPacket
+	    {
 		public:
 		    Packet(AVPacket * packet);
 		    ~Packet();
-
 	    };
 	}
     }
