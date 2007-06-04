@@ -36,11 +36,12 @@ namespace org {
             int FormatInputStream::getStreamCount(){
                 return formatCtx->nb_streams;
             }
-/*
-            AVInputStream * FormatInputStream::getStream(int streamIndex){
-                return new AVInputStream(formatCtx,streamIndex);
+
+            InputStream * FormatInputStream::getStream(int streamIndex){
+                selectedStream=streamIndex;
+                return this;
             }
-*/
+
 	    int FormatInputStream::available(bool withBlocking){
 	    
 	    }

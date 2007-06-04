@@ -3,6 +3,7 @@
 #include "Frame.h"
 #include <assert.h>
 #include <iostream>
+#include "introspec.h"
 using namespace std;
 namespace org {
     namespace esb {
@@ -11,33 +12,15 @@ namespace org {
                 _fis=fis;
                 _formatContext=fis->getFormatContext();
 
-                /*nicht schÃ¶n*/
+                /*nicht schön*/
                 _streamIndex=index;
                 _avStream=_formatContext->streams[_streamIndex];
                 _codecContext=_avStream->codec;
                 _codec=avcodec_find_decoder(_codecContext->codec_id);
-                if(_codec->capabilities & CODEC_CAP_TRUNCATED) {
-//                    _codecContext->flags|=CODEC_FLAG_TRUNCATED;
-                }
                 if(avcodec_open(_codecContext, _codec)<0) {
-                    fprintf(stderr, "avcodec_open failed\n");
+                    fprintf(stderr, "avcodec_open failed in AVInputStream\n");
                 }
                 _intCodec=new Codec(_codecContext);
-            }
-
-            AVInputStream::AVInputStream(AVFormatContext * context, int streamIndex) {
-                assert(context!=NULL);
-                _formatContext=context;
-                _streamIndex=streamIndex;
-                _avStream=_formatContext->streams[_streamIndex];
-                _codecContext=_formatContext->streams[_streamIndex]->codec;
-                _codec=avcodec_find_decoder(_codecContext->codec_id);
-                if(_codec->capabilities & CODEC_CAP_TRUNCATED) {
-                    _codecContext->flags|=CODEC_FLAG_TRUNCATED;
-                }
-                if(avcodec_open(_codecContext, _codec)<0) {
-                    fprintf(stderr, "avcodec_open failed\n");
-                }
             }
             AVInputStream::~AVInputStream(){
                 delete _intCodec;
@@ -48,10 +31,6 @@ namespace org {
 //                av_free(_codec);
 //                av_free(_formatContext);
 //                av_free(_codecContext);
-            }
-
-            void AVInputStream::selectStreamIndex(int index){
-                _streamIndex=index;
             }
 
             Codec * AVInputStream::getCodec() {

@@ -11,6 +11,15 @@ namespace org{
 		public:
 		    Packet(AVPacket * packet);
 		    ~Packet();
+            uint8_t * getData();
+            int getSize();
+            int getPts();
+            int getDts();
+            int getFlags();
+            int getStreamIndex();
+            int getDuration();
+            void * getPriv();
+            int64_t getPosition();
 	    };
 	}
     }

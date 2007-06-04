@@ -19,8 +19,9 @@ namespace org{
 	        		long getFileSize();
 		            int read(unsigned char * buffer, int length);
 		            int getStreamCount();
-//        			AVInputStream * getStream(int sNumber);
+        			InputStream * getStream(int sNumber);
 	        		void close();
+                    int selectedStream;
 		        private:
             		org::esb::io::File * _sourceFile;
                 protected:

@@ -5,6 +5,7 @@
 #include "org/esb/av/AVInputStream.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/PacketInputStream.h"
 
 
 using namespace std;
@@ -13,21 +14,34 @@ using namespace org::esb::av;
 
 int main(){
 //    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    PacketInputStream *pis=new PacketInputStream(NULL);
     File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
-    AVInputStream * avis=new AVInputStream(fis,0);
+//    AVInputStream * avis=new AVInputStream(fis,0);
+    PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
+    
+
+
 //    avis->getFrame(1);
-    Codec * codec=avis->getCodec();
+    Codec * codec=pis->getCodec();
+//    Codec * codec=avis->getCodec();
     int a=0;
-    int duration=avis->getDuration();
+    int duration=pis->getDuration();
+//    int duration=avis->getDuration();
 //    Frame * frame;
 //    AVPacket  packet;
-    Packet * packet2;
-    while(a<100){
-        packet2=avis->getNextPacket2();
- 
-        if((packet2->flags & PKT_FLAG_KEY)){
+    Packet * packet=NULL;
+    Frame * frame;
+    while((packet=pis->readPacket())!=NULL&&a<100){
+//        frame=avis->getNextFrame();
+        frame=new Frame(packet, codec->getCodecContext());
+//        delete frame;
+//    while(a<100){
+//        Packet * packet=pis->readPacket();
+        
+        if((packet->flags & PKT_FLAG_KEY)){
             cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
+//            cout << "KeyFrame@"<<a<<"Position"<<packet->getPosition()<<" from "<<duration<<endl;
         }
 
 /*
@@ -46,10 +60,12 @@ int main(){
         }
         */
         a++;
-            delete packet2;
+            delete packet;
     }
 //    delete codec;
-    delete avis;
+    delete packet;
+    delete codec;
+    delete pis;
     delete fis;
     delete file;
 }
