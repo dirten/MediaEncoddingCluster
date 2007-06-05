@@ -13,6 +13,7 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(){
+    cout << LIBAVCODEC_IDENT <<endl;
     File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
 //    File *file=new File("test.avi");
