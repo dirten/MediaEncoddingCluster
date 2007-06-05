@@ -28,13 +28,14 @@ namespace org{
             AVCodecContext * Codec::getCodecContext(){
                 return _codecCtx;
             }
-
+/*
             void Codec::decodeFrame(Frame * frame){
             
             }
             void Codec::encodeFrame(Frame * frame){
             
             }
+*/
         }
     }
 }

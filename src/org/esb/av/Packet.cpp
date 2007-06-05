@@ -4,24 +4,11 @@
 using namespace std;
 using namespace org::esb::av;
 
-
-Packet::Packet(AVPacket *packet){
-    size=packet->size;
-    data=new uint8_t[size];
-    memset(data,0,size);
-    memcpy(data, packet->data, size);
-    pts=packet->pts;
-    dts=packet->dts;
-    flags=packet->flags;
-    stream_index=packet->stream_index;
-    duration=packet->duration;
-    priv=packet->priv;
-    pos=packet->pos;
-}
+Packet::Packet(){/*NOP*/}
 
 Packet::~Packet(){
     if(data)
-        delete []data;
+        av_free(data);
 }
 
 uint8_t * Packet::getData(){return data;}

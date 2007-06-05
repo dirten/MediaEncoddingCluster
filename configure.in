@@ -35,12 +35,14 @@ http://ffmpeg.mplayerhq.hu
 *********************************************************************
 ])])
 
-AC_CHECK_LIB(avcodec, main)
+AC_CHECK_LIB(avcodec, av_free)
+AC_CHECK_LIB(avformat, av_free)
+AC_CHECK_LIB(avutil, av_free)
 
 		
 	    
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
-LDFLAGS="$LDFLAGS -rdynamic $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient -lc  "
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient -lc  "
 
 AC_OUTPUT(
     Makefile 

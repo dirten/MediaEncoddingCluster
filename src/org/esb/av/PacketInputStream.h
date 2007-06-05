@@ -11,9 +11,10 @@ class PacketInputStream: public InputStream{
         ~PacketInputStream();
         Packet * readPacket();
         int read(unsigned char * buffer, int length);
-        int available(bool blocking=false);        
+        int available(bool blocking=false);
         uint64_t getDuration();
         Codec * getCodec();
+        void skip(long packets);
     private:
         AVFormatContext * _formatCtx;
         AVCodecContext * _codecCtx;

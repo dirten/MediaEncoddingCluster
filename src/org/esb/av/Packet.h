@@ -9,7 +9,7 @@ namespace org{
 	    class Packet:public AVPacket
 	    {
 		public:
-		    Packet(AVPacket * packet);
+		    Packet();
 		    ~Packet();
             uint8_t * getData();
             int getSize();

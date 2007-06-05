@@ -71,24 +71,23 @@ namespace org {
             }
 
             Packet * AVInputStream::getNextPacket2() {
-                AVPacket packet;
-                packet.data=NULL;
+                Packet *packet=new Packet();
+                packet->data=NULL;
                 int i=0;
                 do {
 //                    cout << ++i <<"durchlauf"<<endl;
-                    if(packet.data!=NULL)
-                        av_free_packet(&packet);
-                    if(av_read_packet(_formatContext, &packet)<0){
+                    if(packet->data!=NULL)
+                        av_free_packet(packet);
+                    if(av_read_packet(_formatContext, packet)<0){
                         cout <<"Packet read failed"<<endl;
                         return NULL;
                     }
-                } while(packet.stream_index!=_streamIndex);
+                } while(packet->stream_index!=_streamIndex);
 //                Frame * frame=new Frame(&packet, _formatContext->streams[_streamIndex]->codec);
 //                av_free_packet(&packet);                
-                Packet * p=new Packet(&packet);
-                av_free_packet(&packet);
-                return p;
-                
+//                Packet * p=new Packet(&packet);
+//                av_free_packet(&packet);
+                return packet;
             }
             Frame * AVInputStream::getNextFrame() {
                 AVPacket packet;
@@ -103,9 +102,9 @@ namespace org {
                         return NULL;
                     }
                 } while(packet.stream_index!=_streamIndex);
-                Frame * frame=new Frame(&packet, _formatContext->streams[_streamIndex]->codec);
+//                Frame * frame=new Frame(&packet, _formatContext->streams[_streamIndex]->codec);
                 av_free_packet(&packet);                
-                return frame;
+//                return frame;
 
    /*
                 AVPacket *packet=new AVPacket();

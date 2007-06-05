@@ -13,56 +13,45 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(){
-//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
-    File *file=new File("test.avi");
+//    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
-//    AVInputStream * avis=new AVInputStream(fis,0);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
-    
-
-
-//    avis->getFrame(1);
+    pis->skip(155000);
     Codec * codec=pis->getCodec();
-//    Codec * codec=avis->getCodec();
     int a=0;
     int duration=pis->getDuration();
-//    int duration=avis->getDuration();
-//    Frame * frame;
-//    AVPacket  packet;
     Packet * packet=NULL;
     Frame * frame;
-    while((packet=pis->readPacket())!=NULL&&a<100){
-//        frame=avis->getNextFrame();
-        frame=new Frame(packet, codec->getCodecContext());
-//        delete frame;
-//    while(a<100){
-//        Packet * packet=pis->readPacket();
-        
-        if((packet->flags & PKT_FLAG_KEY)){
-            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
-//            cout << "KeyFrame@"<<a<<"Position"<<packet->getPosition()<<" from "<<duration<<endl;
-        }
-
-/*
-	    frame=new Frame(&packet, codec->getCodecContext());
-        if((packet->flags & PKT_FLAG_KEY)){
-        if(frame->getFrame()->key_frame>0){
-            cout << "KeyFrame@"<<a<<" from "<<duration<<endl;
-        }
-        delete frame;
-        */
-//        av_free_packet(packet);
+    while((packet=pis->readPacket())!=NULL/*&&a<100*/){
+        if(a%1000==0)cout <<"A:"<<a<<endl;
+        frame=new Frame(packet, codec);
+        Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
         /*
-        if(packet){
-            free(packet->data);
-            delete packet;
-        }
+//        cout << "FrameSize:"<<frame->getSize()<<endl;
+//        cout << "RGBFrameSize:"<<rgb->getSize()<<endl;
+        
         */
+
+        char filename[32];
+        sprintf(filename,"/tmp/hive/test.%d.ppm",a);
+        FileOutputStream *out=new FileOutputStream(filename);
+        FrameOutputStream *fout=new FrameOutputStream(out);
+
+        char header[200];
+        sprintf(header, "P6\n%d %d\n255\n", rgb->getWidth(), rgb->getHeight());
+        fout->write(header, strlen(header));
+        fout->writeFrame(rgb);
+        delete fout;
+        delete out;
+        
         a++;
-            delete packet;
+        delete rgb;
+        delete frame;
+        delete packet;
     }
-//    delete codec;
+    
     delete packet;
     delete codec;
     delete pis;
@@ -118,7 +107,7 @@ int main2(){
         AVFrame * tmpFrame=frame->getFrame();
         if(frame->getHeight()==0)continue;
         img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24, (AVPicture*)tmpFrame, cc->pix_fmt, cc->width, cc->height);
-        frame->setFrame(pFrameRGB);
+//        frame->setFrame(pFrameRGB);
         int width=cc->width;
         int height=cc->height;
         cout <<"CCWidth="<<width;

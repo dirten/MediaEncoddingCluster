@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_AV_CODEC_H
 #define ORG_ESB_AV_CODEC_H
 #include "avformat.h"
-#include "Frame.h"
+//#include "Frame.h"
 
 
 namespace org{
@@ -15,8 +15,8 @@ namespace org{
                     char * getCodecName();
                     int getCodecId();
                     AVCodecContext * getCodecContext();
-		    void encodeFrame(Frame * frame);
-		    void decodeFrame(Frame * frame);
+//		    void encodeFrame(Frame * frame);
+//		    void decodeFrame(Frame * frame);
                 private:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;
