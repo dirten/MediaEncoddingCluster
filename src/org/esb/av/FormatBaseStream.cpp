@@ -1,5 +1,7 @@
 #include "FormatBaseStream.h"
+extern "C" {
 #include "avformat.h"
+}
 #include <iostream>
 
 

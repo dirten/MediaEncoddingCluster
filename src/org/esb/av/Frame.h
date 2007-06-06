@@ -1,6 +1,8 @@
 #ifndef ORG_ESB_AV_FRAME_H
 #define ORG_ESB_AV_FRAME_H
+extern "C" {
 #include "avformat.h"
+}
 #include "Packet.h"
 #include "Codec.h"
 

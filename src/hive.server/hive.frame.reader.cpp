@@ -1,5 +1,6 @@
+extern "C" {
 #include <avformat.h>
-
+}
 struct Frame{
     int length;
     unsigned char * data;

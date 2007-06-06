@@ -12,7 +12,7 @@ namespace org {
                 _fis=fis;
                 _formatContext=fis->getFormatContext();
 
-                /*nicht schön*/
+                /*nicht schï¿½n*/
                 _streamIndex=index;
                 _avStream=_formatContext->streams[_streamIndex];
                 _codecContext=_avStream->codec;
@@ -52,7 +52,6 @@ namespace org {
             AVPacket AVInputStream::getNextPacket() {
                 AVPacket packet;
                 packet.data=NULL;
-                int i=0;
                 do {
 //                    cout << ++i <<"durchlauf"<<endl;
                     if(packet.data!=NULL){
@@ -73,7 +72,7 @@ namespace org {
             Packet * AVInputStream::getNextPacket2() {
                 Packet *packet=new Packet();
                 packet->data=NULL;
-                int i=0;
+
                 do {
 //                    cout << ++i <<"durchlauf"<<endl;
                     if(packet->data!=NULL)
@@ -92,7 +91,7 @@ namespace org {
             Frame * AVInputStream::getNextFrame() {
                 AVPacket packet;
                 packet.data=NULL;
-                int i=0;
+
                 do {
 //                    cout << ++i <<"durchlauf"<<endl;
                     if(packet.data!=NULL)

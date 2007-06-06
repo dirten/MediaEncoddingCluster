@@ -1,7 +1,8 @@
 #ifndef ORG_ESB_PACKET_H
 #define ORG_ESB_PACKET_H
+extern "C" {
 #include "avformat.h"
-
+}
 
 namespace org{
     namespace esb{

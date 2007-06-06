@@ -34,7 +34,7 @@ PacketInputStream::~PacketInputStream(){
 Packet * PacketInputStream::readPacket(){
     Packet * packet=new Packet();
     packet->data=NULL;
-    int i=0;
+
     do {
         if(packet->data!=NULL)
             av_free_packet(packet);

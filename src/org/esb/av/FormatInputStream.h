@@ -4,8 +4,9 @@
 //#include "AVInputStream.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/File.h"
-
+extern "C" {
 #include "avformat.h"
+}
 using namespace org::esb::io;
 namespace org{
     namespace esb{

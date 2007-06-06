@@ -1,6 +1,8 @@
 #include "Packet.h"
 #include "Frame.h"
+extern "C" {
 #include "avformat.h"
+}
 #include <assert.h>
 #include <iostream>
 using namespace std;
@@ -108,3 +110,5 @@ void Frame::setFrame(AVFrame * frame){
     _frame=frame;
 }
 */
+
+

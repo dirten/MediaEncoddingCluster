@@ -138,7 +138,7 @@ void FrameHive::putFrameMySQL( AVFrame * frame, AVCodecContext *codecCtx )
   bind[0].buffer=buffer;
   bind[0].buffer_length=bufSize;
   //    bind[0].length=bufSize;
-  my_bool code=mysql_stmt_bind_param(stmt,bind);
+  mysql_stmt_bind_param(stmt,bind);
   int rc=mysql_stmt_execute(stmt);
   if(rc!=0)
   {
@@ -152,11 +152,6 @@ void FrameHive::putFrameFS( AVFrame * frame, AVCodecContext *codecCtx )
 {
   FILE *pFile;
   int bufSize=codecCtx->width*3;
-  char buf[bufSize];
-  int bzerror;
-  int     nWritten;
-  unsigned int nBytesIn;
-  unsigned int nBytesOut;
 
   char szFilename[64];
   int  y;

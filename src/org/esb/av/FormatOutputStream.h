@@ -1,7 +1,9 @@
 #include "FormatBaseStream.h"
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/io/File.h"
+extern "C" {
 #include "avformat.h"
+}
 namespace org{
     namespace esb{
 	namespace av{

@@ -10,10 +10,10 @@
 
 #include <iostream>
 #include <cstdlib>
-
+extern "C" {
 #include <avcodec.h>
 #include <avformat.h>
-
+}
 #include <stdio.h>
 //#include "framesender.h"
 //#include "FrameContainer.h"

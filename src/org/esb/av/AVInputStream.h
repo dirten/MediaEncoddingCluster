@@ -7,7 +7,10 @@
 
 #include "Codec.h"
 #include "Frame.h"
+
+extern "C" {
 #include "avformat.h"
+}
 #include "Packet.h"
 
 

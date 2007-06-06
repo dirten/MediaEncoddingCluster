@@ -1,6 +1,7 @@
 #include "Codec.h"
+extern "C" {
 #include "avformat.h"
-
+}
 
 namespace org{
     namespace esb{

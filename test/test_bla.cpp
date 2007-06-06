@@ -63,7 +63,7 @@ int main2(){
 
 //    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     File *file=new File("test.avi");
-    if(typeid(file)==typeid(&File(""))){
+    if(typeid(*file)==typeid(File)){
         cout << "Type is file"<< endl;
     }
     cout << typeid(file).name()<<endl;
@@ -154,3 +154,5 @@ int main2(){
 
 
 }
+
+

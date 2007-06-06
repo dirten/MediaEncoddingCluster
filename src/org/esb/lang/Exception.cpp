@@ -7,7 +7,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
-*	TestBescreibung
+*	
 *
 */
 
@@ -39,9 +39,7 @@ void Exception::buildMessage(const char* format, va_list& vargs)
         // double the size and try again.
         delete [] buffer;
         size *= 2;
-    }
-    
-    //activemq::logger::SimpleLogger logger("com.yadda1");
+    }    
     //logger.log( message );   
 }
 
@@ -54,13 +52,11 @@ void Exception::setMark( const char* file, const int lineNumber ){
     ostringstream stream;
     stream << "\tFILE: " << stackTrace[stackTrace.size()-1].first;
     stream << ", LINE: " << stackTrace[stackTrace.size()-1].second;
-                 
-    //activemq::logger::SimpleLogger logger("com.yadda2");
+
     //logger.log( stream.str() );    
 }
 
 const char * Exception::what()const throw(){
-//void *array[10];
     string msg= getStackTraceString();
        size_t size;
        char **strings;
