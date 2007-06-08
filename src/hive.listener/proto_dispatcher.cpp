@@ -53,10 +53,10 @@ void ProtocolServer::run() {
 	int dataLength=socket->getInputStream()->available(true);
 	if(dataLength==0){
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
-	    continue;
+	    break;
 	}
         unsigned char buffer[dataLength];
-	bzero(buffer, dataLength);
+		bzero(buffer, dataLength);
         int bytes=socket->getInputStream()->read(buffer, dataLength);
         char *command=strtok((char*)buffer,"\n\r");
 	if(command==NULL||strlen(command)<=0)continue;

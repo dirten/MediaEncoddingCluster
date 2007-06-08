@@ -1,4 +1,4 @@
-#include "hivecontrol.h"
+#include "HiveControl.h"
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/SimpleProperties.cpp"

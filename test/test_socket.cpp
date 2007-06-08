@@ -32,16 +32,15 @@ class Server:public Runnable{
 				Frame * tmp=fis->readFrame();
 	
 				cout << "FrameArrived"<<endl;
-//				if(tmp){
 			    FileOutputStream *out2=new FileOutputStream("/tmp/hive/test.1.ppm");
 			    FrameOutputStream *fout2=new FrameOutputStream(out2);
 			    char header[200];
 			    sprintf(header, "P6\n%d %d\n255\n", tmp->getWidth(), tmp->getHeight());
 			    fout2->write(header, strlen(header));
 			    fout2->writeFrame(tmp);
+
 			    delete fout2;
 			    delete out2;
-	//			}
 				delete tmp;
 				delete fis;
 			}catch(Exception &ex){

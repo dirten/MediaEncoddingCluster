@@ -1,22 +1,23 @@
 extern "C" {
 #include <avformat.h>
 }
-struct Frame{
-    int length;
-    unsigned char * data;
-};
+#include "org/esb/io/File.h"
+#include "org/esb/av/Frame.h"
+#include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/PacketInputStream.h"
+
+using namespace org::esb::io;
+using namespace org::esb::av;
 
 class HiveFrameReader{
     private:
 	int _frameNumber;
-	AVFormatContext *pFormatCtx;
 
     public:
 	HiveFrameReader(char * filename){
-	    if(av_open_input_file(&pFormatCtx, filename, NULL, 0, NULL)!=0){
-		cout << "Konnte Datei " << filename << " nicht oeffnen" <<endl;
-//		return -1; // Couldn't open file
-	    }
+		File *file=new File(filename);
+    	FormatInputStream *fis=new FormatInputStream(file);
+    	PacketInputStream *pis=new PacketInputStream(fis->getStream(0));		
 	}
 	
 	~HiveFrameReader(){
@@ -28,10 +29,7 @@ class HiveFrameReader{
 	}
 	
 	Frame * getFrame(int number){
-	    Frame * frame=new Frame();
-	    frame->length=10;
-	    frame->data=new unsigned char[10];
-	    return frame;
+
 	}
 };
 

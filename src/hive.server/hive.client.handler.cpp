@@ -2,21 +2,29 @@
 #define HIVE_CLIENT_HANDLER
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/net/Socket.h"
+#include "org/esb/av/Frame.h"
+#include "org/esb/av/FrameInputStream.h"
+#include "org/esb/av/FrameOutputStream.h"
 #include "hive.frame.reader.cpp"
+
 using namespace org::esb::lang;
 using namespace org::esb::net;
+using namespace org::esb::av;
 
 class HiveClientHandler: public Runnable{
     private:
 	Socket * socket;
 //	HiveListener * listener;
 	HiveFrameReader * frameReader;
+	FrameInputStream * fis;
+	FrameOutputStream * fos;
     public:
 	HiveClientHandler(Socket * socket){
 	    this->socket=socket;
-	    this->frameReader=new HiveFrameReader("");
-//	    this->listener=listener;
-//	    this->listener->addClient(this);
+	    this->frameReader=new HiveFrameReader("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+
+		fos=new FrameOutputStream(socket->getOutputStream());
+		fis=new FrameInputStream(socket->getInputStream());
 	}
 	
 	~HiveClientHandler(){
@@ -30,13 +38,10 @@ class HiveClientHandler: public Runnable{
 	    for(int a=0;a<100;a++){
 
 	    Frame * frame=frameReader->getNextFrame();
-//	    cout << "sizeof(frame*):"<<sizeof((Frame*)frame)<<endl;
-	    socket->getOutputStream()->write((char*)frame->data, frame->length);
+		fos->writeFrame(frame);
 	    delete frame;
-	    int size=socket->getInputStream()->available(true);
-	    unsigned char * buffer=new unsigned char[size];
-	    socket->getInputStream()->read(buffer, size);
-	    delete buffer;
+		frame=fis->readFrame();
+	    delete frame;
 	    }
 	}
 };

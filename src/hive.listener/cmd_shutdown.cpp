@@ -1,6 +1,6 @@
 #include "proto_command.h"
 #include "org/esb/lang/Thread.h"
-#include "hive.server/hivecontrol.h"
+#include "hive.server/HiveControl.h"
 
 class ProtoShutdown : public ProtoCommand{
     private:
