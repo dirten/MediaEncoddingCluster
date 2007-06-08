@@ -12,7 +12,8 @@ namespace esb{
 namespace av{
 class Frame :public AVFrame{
     public:
-	Frame(int format, int width, int height);
+//	Frame(int format, int width, int height);
+	Frame(int format, int width, int height, unsigned char * data);
 	Frame(Frame * source, int format);
 	Frame(Packet * packet, Codec * codec);
 	~Frame();

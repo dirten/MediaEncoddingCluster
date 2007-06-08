@@ -19,10 +19,13 @@ class SocketOutputStream:public OutputStream{
 
 /******************************************************************************/
 	void write(char * buffer, int len){
-	    int remaining=len, byteCounter=0, sendOpts = SOCKET_NOSIGNAL;
+		cout << "SocketOutputStream:"<<endl;
+	    int remaining=len, byteCounter=0, sendOpts = 0;
 	    while(remaining>0){
+			cout << "remaining:"<<remaining<<endl;
     		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 //    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining, 0);
+			cout << "Bytes Send:"<<bytes<<endl;
 		byteCounter+=bytes;
 		if(bytes<0){
 		    this->socket->close();

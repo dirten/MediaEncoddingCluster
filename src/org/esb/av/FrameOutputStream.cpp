@@ -13,6 +13,7 @@ FrameOutputStream::~FrameOutputStream(){
 }
 
 void FrameOutputStream::writeFrame(Frame * frame){
+    write((char*)frame->getFormat(), sizeof(frame->getFormat()));	
     write((char*)frame->getData(), frame->getSize());
 }
 

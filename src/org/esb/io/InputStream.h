@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_IO_INPUTSTREAM
 #define ORG_ESB_IO_INPUTSTREAM
-#include <iostream>
+//#include <iostream>
 
 
 namespace org {

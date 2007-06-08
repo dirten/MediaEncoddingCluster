@@ -26,7 +26,9 @@ int main(){
     Packet * packet=NULL;
     Frame * frame;
     while((packet=pis->readPacket())!=NULL/*&&a<100*/){
-        if(a%1000==0)cout <<"A:"<<a<<endl;
+
+        if(a%100==0)cout <<"A:"<<a<<endl;
+
         frame=new Frame(packet, codec);
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
         /*

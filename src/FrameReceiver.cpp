@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
 	
         if (out_size > 0) {
             AVPacket pkt;
-            av_init_packet(&pkt);
+//            av_init_packet(&pkt);
 
             pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)

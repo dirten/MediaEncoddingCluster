@@ -1,10 +1,12 @@
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/net/ServerSocket.h"
+#include "org/esb/net/Socket.h"
 #include <sys/ioctl.h>
 #include <iostream>
 #include <fstream>
 using namespace std;
+using namespace org::esb::net;
 class Server:public Runnable{
     public:
 	void run(){
@@ -15,6 +17,8 @@ class Server:public Runnable{
 		cout << "Client arrived"<< endl;
 		int counter=0;
 		while(!client->isClosed()){
+//			cout << "bal"<<endl;
+			
 //		    Thread::sleep(10000);
 		    int dataLength=client->getInputStream()->available(true);
 		    cout << "dataLength"<< dataLength<<endl;
@@ -22,6 +26,7 @@ class Server:public Runnable{
 		    cout <<"Bytes Readed:"<< client->getInputStream()->read(byte, dataLength)<<endl;;
 		    counter+=dataLength;
 		    cout <<"Insgesamt Empfangen"<<counter<<endl;
+		    //cout <<"Daten"<<byte<<":"<<endl;
 		    /*
 		    for(int a=0;a<dataLength;a++){
 			cout<< "Byte:" << (byte+a)<<endl;
@@ -47,10 +52,12 @@ int main(int argc, char**argv){
     Thread *serverThread=new Thread(server);
     serverThread->start();
     Thread::sleep(1000);
+
+
     Socket * socket=new Socket("localhost", 2000);
     socket->connect();
-    Thread::sleep(1000);
-    fstream FileBin("frame100.ppm",ios::in|ios::out|ios::binary);
+//    Thread::sleep(1000);
+    fstream FileBin("test.108.ppm",ios::in|ios::out|ios::binary);
     if(FileBin==NULL)exit(0);
     FileBin.seekg(0,ios::end);
     unsigned long filesize=streamoff(FileBin.tellg());
@@ -58,9 +65,11 @@ int main(int argc, char**argv){
     string strBuffer="";
     char * buffer=new char [filesize];
     FileBin.read(buffer, filesize);
+    cout << "strlen(buffer)"<<strlen(buffer)<<endl;
     socket->getOutputStream()->write(buffer, filesize);
     cout << "file is out"<<endl;
 
+ //   socket->getOutputStream()->write("100000", sizeof(int));
     /*
     char * data=(char *)"test\0String";
     socket->getOutputStream()->write(data, 11);
@@ -74,7 +83,7 @@ int main(int argc, char**argv){
 //    cout << "\nSenderLength:"<<data<<endl;
 
 
-    Thread::sleep(5000);
+    Thread::sleep(1000);
     socket->close();
 //    Thread::sleep(1000);
 

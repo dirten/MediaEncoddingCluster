@@ -19,6 +19,7 @@ extern "C" {
 //#include "FrameContainer.h"
 #include "FrameHive.h"
 #include "org/esb/config/config.h"
+
 using namespace std;
 using namespace org::esb::config;
 
@@ -31,7 +32,6 @@ bool GetNextFrame(AVFormatContext *pFormatCtx, AVCodecContext *pCodecCtx,
   static bool     fFirstTime=true;
   int             bytesDecoded;
   int             frameFinished;
-
     // First time we're called, set packet.data to NULL to indicate it
     // doesn't have to be freed
   if(fFirstTime)

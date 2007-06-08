@@ -79,9 +79,10 @@ namespace org
 
 	#if defined(FIONREAD)
 	if(isBlocking){
-	    int counter=recv(this->socket->getDescriptor(),NULL,0,0x100);
+	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
+		cout << "FIONREAD"<<endl;
 	    if(counter<0){
-		this->socket->close();
+			this->socket->close();
 	    }
 	}
 	

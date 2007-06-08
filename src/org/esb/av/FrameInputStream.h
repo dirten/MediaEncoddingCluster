@@ -1,18 +1,22 @@
 #include "org/esb/io/InputStream.h"
 #include "FrameBaseStream.h"
-//#include "org/esb/io/File.h"
+#include "Frame.h"
+
 using namespace org::esb::io;
 
 namespace org{
     namespace esb{
-	    namespace io{
+	    namespace av{
 	        class FrameInputStream:public FrameBaseStream, public InputStream{
 		    public:
 		        FrameInputStream(InputStream * source);
 		        ~FrameInputStream();
 		        int available(bool isBlocking = false);
 		        int read(unsigned char * buffer, int length);
+		        Frame * readFrame();
 		        void close();
+		    private:
+		    	InputStream * _source;
 	        };
 	    }
     }

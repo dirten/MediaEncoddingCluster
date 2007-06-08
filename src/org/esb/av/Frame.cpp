@@ -38,17 +38,28 @@ Frame::Frame(Packet * packet, Codec * codec){
       }
     }    
 }
-
+/*
 Frame::Frame(int format, int width, int height){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
-    /*
+    
     int numBytes=avpicture_get_size(PIX_FMT_RGB24, width,height);
     uint8_t * buffer=new uint8_t[numBytes];
     // Assign appropriate parts of buffer to image planes in pFrameRGB
     avpicture_fill((AVPicture *)this, buffer, format, width, height);
-    
-    */
+}
+*/
+Frame::Frame(int format, int width, int height, unsigned char * data){
+    pts=AV_NOPTS_VALUE;
+    key_frame=1;
+    _width=width;
+    _height=height;
+    _pixFormat=format;
+    int numBytes=avpicture_get_size(format, _width,_height);
+    _buffer=new uint8_t[numBytes];
+	memcpy(_buffer, data, numBytes);
+    avpicture_fill((AVPicture *)this, _buffer, format, _width,_height);
+//    img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
 }
 
 Frame::Frame(Frame * source, int format){
@@ -57,11 +68,10 @@ Frame::Frame(Frame * source, int format){
     _width=source->getWidth();
     _height=source->getHeight();
     _pixFormat=format;
-    int numBytes=avpicture_get_size(format, source->getWidth(),source->getHeight());
+    int numBytes=avpicture_get_size(format, _width,_height);
     _buffer=new uint8_t[numBytes];
     avpicture_fill((AVPicture *)this, _buffer, format, source->getWidth(),source->getHeight());
     img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
-
 }
 
 Frame::~Frame(){
