@@ -13,6 +13,12 @@ FileInputStream::FileInputStream(File * file)throw (Exception) {
     }
     open(name);
 }
+FileInputStream::FileInputStream(const char * name)throw (Exception) {
+    if(!name) {
+        throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
+    }
+    open(name);
+}
 
 /**
  * Opens the specified file for reading.

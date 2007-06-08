@@ -6,6 +6,7 @@
     #include <sys/select.h>
     #include <sys/socket.h>
     #include <sys/ioctl.h>
+    #include <errno.h>
 #else
     #include <winsock2.h>
 #endif
@@ -42,22 +43,22 @@ namespace org
         /******************************************************************************/
         int read(unsigned char * buffer, int length)
         {
-          int maxrecv=8192;
+//          int maxrecv=8192;
           int all=0, counter=1, offset=0;
-          while(all<length)
-          {
-	    int readLength=(length-all)<maxrecv?(length-all):maxrecv;
-            counter=::recv(this->socket->getDescriptor(),(char*)buffer+offset,readLength,0);
-            /*If Connection is dead*/
-            if(counter<0)
-            {
-              this->socket->close();
-              return false;
-            }
-            offset+=counter;
-            all+=counter;
-          }
-          return all;
+//          while(all<length){
+//	    		int readLength=(length-all)<maxrecv?(length-all):maxrecv;
+            	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
+            	/*If Connection is dead*/
+				cout << "error:"<<errno<<"\t strerror"<<strerror(errno)<<"\t counter:"<<counter<<endl;
+            	if(counter==NULL){
+					perror("bla");
+              		this->socket->close();
+              		return -1;
+            	}
+//            	offset+=counter;
+//            	all+=counter;
+//          }
+          return counter;
         }
         
         /******************************************************************************/
@@ -80,7 +81,6 @@ namespace org
 	#if defined(FIONREAD)
 	if(isBlocking){
 	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
-		cout << "FIONREAD"<<endl;
 	    if(counter<0){
 			this->socket->close();
 	    }

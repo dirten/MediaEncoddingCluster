@@ -1,8 +1,22 @@
 #include "FrameOutputStream.h"
 #include "org/esb/io/OutputStream.h"
-
+#include <iostream>
+using namespace std;
 using namespace org::esb::av;
 
+template<typename Target, typename Source>
+     Target lexical_cast(Source source_)
+     {
+       std::stringstream converter;
+       Target result;
+     
+      if(!(converter<<source_ && converter>>result && (converter>>std::ws).eof()))
+        cout <<"lexical_cast failed"<<endl;
+    
+      return result;
+ }
+ 
+ 
 FrameOutputStream::FrameOutputStream(OutputStream * out){
     outStream=out;
 }
@@ -13,7 +27,18 @@ FrameOutputStream::~FrameOutputStream(){
 }
 
 void FrameOutputStream::writeFrame(Frame * frame){
-    write((char*)frame->getFormat(), sizeof(frame->getFormat()));	
+	char format[5];
+	char width[5];
+	char height[5];
+	memset(format,0,5);
+	memset(width,0,5);
+	memset(height,0,5);
+	sprintf(format,"%.4d", frame->getFormat());
+	sprintf(width,"%04d", frame->getWidth());
+	sprintf(height,"%04d", frame->getHeight());
+    write(format, 4);
+    write(width, 4);
+    write(height, 4);
     write((char*)frame->getData(), frame->getSize());
 }
 

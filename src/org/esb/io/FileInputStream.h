@@ -38,6 +38,7 @@ public:
  */
 
                 FileInputStream(File * file)throw (org::esb::lang::Exception);
+                FileInputStream(const char *)throw (org::esb::lang::Exception);
                 ~FileInputStream();
                 int available(bool i=false);
                 int read(unsigned char * buffer, int length);

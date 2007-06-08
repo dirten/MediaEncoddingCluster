@@ -69,7 +69,7 @@ void ServerSocket::bind()
   {
   
     perror("Bind");
-    close();
+//    close();
     throw new Exception(__FILE__, __LINE__, "ServerSocket:bind -" );
 //    exit(1);
   }

@@ -19,6 +19,7 @@ FileOutputStream::FileOutputStream(File * file, bool append){
 }
 
 FileOutputStream::~FileOutputStream(){
+	flush();
     close();
 }
 

@@ -149,6 +149,7 @@ Thread::runCallback( void* param )
     //    ex.printStackTrace();
   }
   delete thread->task;
+  thread->task=0;
 
 #ifndef WIN32
   pthread_attr_destroy( &thread->attributes );
