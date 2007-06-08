@@ -37,7 +37,6 @@ Frame * FrameInputStream::readFrame(){
 		bytes=read((unsigned char*)buffer+counter, remaining);
 		if(bytes<0){
 			cerr << "Fehler beim lesen des Frames"<<endl;
-			break;	
 		}
 		cout << "remaining:"<<remaining<<endl;
 		
