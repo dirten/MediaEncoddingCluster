@@ -143,10 +143,8 @@ Thread::runCallback( void* param )
   {
     thread->task->run();
   }
-  catch( ... )
-  {
-    Exception ex(__FILE__, __LINE__, "unhandled exception bubbled up to Thread::run");
-    //    ex.printStackTrace();
+  catch(Exception &ex){
+  	throw ex;
   }
   delete thread->task;
   thread->task=0;

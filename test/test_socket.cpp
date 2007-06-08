@@ -27,23 +27,26 @@ class Server:public Runnable{
 //			cout << "bal"<<endl;
 
 
-			FrameInputStream * fis=new FrameInputStream(client->getInputStream());
-			Frame * tmp=fis->readFrame();
-
-
-			cout << "FrameArrived"<<endl;
-
-		    FileOutputStream *out2=new FileOutputStream("/tmp/hive/test.1.ppm");
-		    FrameOutputStream *fout2=new FrameOutputStream(out2);
-		    char header[200];
-		    sprintf(header, "P6\n%d %d\n255\n", tmp->getWidth(), tmp->getHeight());
-		    fout2->write(header, strlen(header));
-		    fout2->writeFrame(tmp);
-		    delete fout2;
-		    delete out2;
-
-			delete tmp;
-			delete fis;
+			try{
+				FrameInputStream * fis=new FrameInputStream(client->getInputStream());
+				Frame * tmp=fis->readFrame();
+	
+				cout << "FrameArrived"<<endl;
+//				if(tmp){
+			    FileOutputStream *out2=new FileOutputStream("/tmp/hive/test.1.ppm");
+			    FrameOutputStream *fout2=new FrameOutputStream(out2);
+			    char header[200];
+			    sprintf(header, "P6\n%d %d\n255\n", tmp->getWidth(), tmp->getHeight());
+			    fout2->write(header, strlen(header));
+			    fout2->writeFrame(tmp);
+			    delete fout2;
+			    delete out2;
+	//			}
+				delete tmp;
+				delete fis;
+			}catch(Exception &ex){
+				ex.printStackTrace();
+			}
 			/*
 //		    Thread::sleep(10000);
 		    int dataLength=client->getInputStream()->available(true);
@@ -92,9 +95,10 @@ int main(int argc, char**argv){
 
 	FrameOutputStream * fos=new FrameOutputStream(socket->getOutputStream());
 	fos->writeFrame(fr);
-//	fos->writeFrame(fr);
-//	fos->writeFrame(fr);
+	fos->writeFrame(fr);
+	fos->writeFrame(fr);
 
+    Thread::sleep(5000);
     socket->close();
 
 	delete fr;

@@ -15,7 +15,12 @@ Socket::Socket(int sock)
 
   this->inputStream=new SocketInputStream(this);
   this->outputStream=new SocketOutputStream(this);
-
+	int flags=0;
+	flags=fcntl(sock, F_GETFL,0);
+	
+	if(4|1){
+		cout << "Socket ist in NONBLOCK MOde"<<endl;	
+	}
 }
 
 /******************************************************************************/

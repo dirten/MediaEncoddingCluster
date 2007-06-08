@@ -41,19 +41,20 @@ namespace org
         }
 
         /******************************************************************************/
-        int read(unsigned char * buffer, int length)
+        int read(unsigned char * buffer, int length)throw (org::esb::lang::Exception)
         {
 //          int maxrecv=8192;
           int all=0, counter=1, offset=0;
 //          while(all<length){
 //	    		int readLength=(length-all)<maxrecv?(length-all):maxrecv;
             	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
+//            	counter=::read(this->socket->getDescriptor(),(char*)buffer,length);
             	/*If Connection is dead*/
 				cout << "error:"<<errno<<"\t strerror"<<strerror(errno)<<"\t counter:"<<counter<<endl;
-            	if(counter==NULL){
-					perror("bla");
+            	if(counter<=0){
+//					perror("bla");
               		this->socket->close();
-              		return -1;
+					throw Exception( __FILE__, __LINE__, "socket is unusable");
             	}
 //            	offset+=counter;
 //            	all+=counter;

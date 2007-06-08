@@ -30,13 +30,17 @@ Frame * FrameInputStream::readFrame(){
 	read((unsigned char*)format,4);
 	read((unsigned char*)width,4);
 	read((unsigned char*)height,4);
+	if(atoi(width)==0||atoi(height)==0)return NULL;
 	int size=avpicture_get_size(atoi(format), atoi(width),atoi(height));
 	char buffer[size];
 	int remaining=size, counter=0, bytes=0;
 	while(remaining > 0){
-		bytes=read((unsigned char*)buffer+counter, remaining);
-		if(bytes<0){
+		bytes=0;
+		bytes=this->read((unsigned char*)buffer+counter, remaining);
+		cout << "Bytes:"<<bytes<<endl;
+		if(bytes<=0){
 			cerr << "Fehler beim lesen des Frames"<<endl;
+			return NULL;
 		}
 		cout << "remaining:"<<remaining<<endl;
 		
@@ -49,7 +53,9 @@ Frame * FrameInputStream::readFrame(){
 }
 
 int FrameInputStream::read(unsigned char * buffer, int length){
-	return _source->read(buffer, length);
+	int read=_source->read(buffer, length);
+	cout <<"read:"<<read<<endl;
+	return read;
 }
 
 void FrameInputStream::close(){
