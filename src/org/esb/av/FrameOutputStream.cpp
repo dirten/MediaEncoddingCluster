@@ -33,7 +33,7 @@ void FrameOutputStream::writeFrame(Frame * frame){
 	memset(format,0,5);
 	memset(width,0,5);
 	memset(height,0,5);
-	sprintf(format,"%.4d", frame->getFormat());
+	sprintf(format,"%04d", frame->getFormat());
 	sprintf(width,"%04d", frame->getWidth());
 	sprintf(height,"%04d", frame->getHeight());
     write(format, 4);

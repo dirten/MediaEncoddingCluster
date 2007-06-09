@@ -37,25 +37,18 @@ Frame * FrameInputStream::readFrame(){
 	while(remaining > 0){
 		bytes=0;
 		bytes=this->read((unsigned char*)buffer+counter, remaining);
-		cout << "Bytes:"<<bytes<<endl;
 		if(bytes<=0){
-			cerr << "Fehler beim lesen des Frames"<<endl;
 			return NULL;
-		}
-		cout << "remaining:"<<remaining<<endl;
-		
+		}		
 		remaining-=bytes;
 		counter+=bytes;
 	}
-	cerr << "Bytes Readed="<<counter<<endl;
 	Frame * frame=new Frame(atoi(format), atoi(width), atoi(height), (unsigned char*)buffer);
 	return frame;
 }
 
 int FrameInputStream::read(unsigned char * buffer, int length){
-	int read=_source->read(buffer, length);
-	cout <<"read:"<<read<<endl;
-	return read;
+	return _source->read(buffer, length);
 }
 
 void FrameInputStream::close(){

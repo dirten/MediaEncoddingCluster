@@ -82,7 +82,7 @@ public:
                  *             stream is closed.
                  */
 
-                virtual void write(char * buffer,int offset, int length){throw Exception(__FILE__,__LINE__,"Not implemented");};;
+                virtual void write(char * buffer,int offset, int length){throw Exception(__FILE__,__LINE__,"Not implemented");};
                 /**
                  * Writes the specified byte to this output stream. The general 
                  * contract for <code>write</code> is that one byte is written 

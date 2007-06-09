@@ -13,6 +13,7 @@ SOURCES = \
             FormatBaseStream.cpp \
             FormatOutputStream.cpp \
             PacketInputStream.cpp \
+            PacketOutputStream.cpp \
             Codec.cpp \
             Packet.cpp \
             Frame.cpp
