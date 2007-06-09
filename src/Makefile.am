@@ -2,8 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org 
-#hive.server hive.client hive.listener 
+SUBDIRS = org hive.server hive.client hive.listener 
 #framehive
 
 
@@ -29,4 +28,4 @@ framesender_LDFLAGS = $(all_libraries)
 
 framesender_LDADD=./org/esb/libesb.la ./framehive/libframehive.la 
 framereceiver_LDADD=./org/esb/libesb.la 
-
+EXTRA_DIST=introspec.h 

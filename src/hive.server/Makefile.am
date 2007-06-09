@@ -15,3 +15,4 @@ libhive_la_LIBADD   = ../org/esb/libesb.la $(all_libraries)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src/
+EXTRA_DIST=*.h *.cpp

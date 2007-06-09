@@ -1,9 +1,11 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
+#include "org/esb/io/FileInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/av/PacketInputStream.h"
 
 #include <iostream>
 
@@ -13,24 +15,15 @@ using namespace org::esb::av;
  
 int main(){
 
-	uint64_t tmp;
-
-	memset(&tmp,9,sizeof(uint64_t));
-	
-	cout <<"sizeof:"<<sizeof(long double)<<endl;
 	
 	File file("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     FormatInputStream fis(&file);
     PacketInputStream pis(fis.getStream(0));
-//	pis.skip(155000);
+	pis.skip(155000);
 		
 	Packet * packet;
 	int a=0;
-	while((packet=pis.readPacket())/*&&a==0*/){
-		
-		
-
-
+	while((packet=pis.readPacket())&&a==0){
 	    char filename[32];
         sprintf(filename,"/tmp/hive/test.%d.packet",a);
         FileOutputStream out(filename);
@@ -39,4 +32,18 @@ int main(){
 		delete packet;
 		a++;	
 	}
+
+	delete packet;
+
+
+	FileInputStream fileis("/tmp/hive/test.0.packet");
+	PacketInputStream pis2(&fileis);
+	Packet*rp=pis2.readPacket();
+        FileOutputStream out("/tmp/hive/test.test.packet");
+        PacketOutputStream pout(&out);
+		pout.writePacket(rp);
+
+	delete rp;
+	
+	
 }

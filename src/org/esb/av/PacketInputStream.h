@@ -1,3 +1,5 @@
+#ifndef ORG_ESB_AV_PACKETINPUTSTREAM_H
+#define ORG_ESB_AV_PACKETINPUTSTREAM_H
 #include "org/esb/io/InputStream.h"
 #include "Packet.h"
 #include "Codec.h"
@@ -19,8 +21,11 @@ class PacketInputStream: public InputStream{
         AVFormatContext * _formatCtx;
         AVCodecContext * _codecCtx;
         AVCodec * _codec;
-        
+        Packet * readPacketFromFormatIS();
+        Packet * readPacketFromIS();
         int _streamIndex;
+        int _readFrom;
+        InputStream * _source;
 };
 }}}
-
+#endif

@@ -20,7 +20,7 @@ VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ../..
+top_builddir = ../../../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -36,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src/hive.server
+subdir = src/org/esb/av
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -54,10 +54,13 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libhive_la_DEPENDENCIES = ../org/esb/libesb.la
-am__objects_1 = HiveControl.lo hive.job.control.lo
-am_libhive_la_OBJECTS = $(am__objects_1)
-libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
+libav_la_LIBADD =
+am__objects_1 = FrameInputStream.lo FrameOutputStream.lo \
+	FormatInputStream.lo FormatBaseStream.lo FormatOutputStream.lo \
+	PacketInputStream.lo PacketOutputStream.lo Codec.lo Packet.lo \
+	Frame.lo
+am_libav_la_OBJECTS = $(am__objects_1)
+libav_la_OBJECTS = $(am_libav_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -69,7 +72,7 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libhive_la_SOURCES)
+DIST_SOURCES = $(libav_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -177,18 +180,23 @@ MINOR_VERSION = 0
 MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
-lib_LTLIBRARIES = libhive.la
-SOURCES = HiveControl.cpp \
-		hive.job.control.cpp
+lib_LTLIBRARIES = libav.la
+SOURCES = \
+            FrameInputStream.cpp \
+            FrameOutputStream.cpp \
+            FormatInputStream.cpp \
+            FormatBaseStream.cpp \
+            FormatOutputStream.cpp \
+            PacketInputStream.cpp \
+            PacketOutputStream.cpp \
+            Codec.cpp \
+            Packet.cpp \
+            Frame.cpp
 
-libhive_la_SOURCES = $(SOURCES)
-libhive_la_LIBADD = ../org/esb/libesb.la $(all_libraries) 
-#framereceiver_LDADD=./org/esb/libesb.la
-#libhivecontrol_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info 0:$(MICRO_VERSION):0
-libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libav_la_SOURCES = $(SOURCES)
+libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 # set the include path found by configure
-INCLUDES = -I$(top_srcdir)/src/
-EXTRA_DIST = *.h *.cpp
+INCLUDES = -I$(top_srcdir)/src
 all: all-am
 
 .SUFFIXES:
@@ -202,9 +210,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/hive.server/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/org/esb/av/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/hive.server/Makefile
+	  $(AUTOMAKE) --gnu  src/org/esb/av/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -249,8 +257,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libhive.la: $(libhive_la_OBJECTS) $(libhive_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libhive_la_LDFLAGS) $(libhive_la_OBJECTS) $(libhive_la_LIBADD) $(LIBS)
+libav.la: $(libav_la_OBJECTS) $(libav_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libav_la_LDFLAGS) $(libav_la_OBJECTS) $(libav_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -258,8 +266,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveControl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hive.job.control.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Codec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatBaseStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatInputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatOutputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frame.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameOutputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Packet.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PacketInputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PacketOutputStream.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -462,6 +478,9 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 	tags uninstall uninstall-am uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
+#	    $(all_includes) 
+
+#noinst_HEADERS = *.h 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

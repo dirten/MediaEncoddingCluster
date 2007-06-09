@@ -6,7 +6,9 @@ extern "C" {
 using namespace std;
 using namespace org::esb::av;
 
-Packet::Packet(){/*NOP*/}
+Packet::Packet(){
+	data=0;
+}
 
 Packet::~Packet(){
     if(data)

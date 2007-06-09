@@ -13,4 +13,4 @@ lsnr_LDADD   = ../org/esb/libesb.la ../hive.server/libhive.la $(all_libraries)
 INCLUDES     = -I$(top_srcdir)/src \
 	        $(all_includes) 
 #noinst_HEADERS = *.h 
-
+EXTRA_DIST=*.h *.cpp

@@ -20099,7 +20099,7 @@ fi
 
 
 
-                                                                                                                                            ac_config_files="$ac_config_files Makefile src/Makefile src/hive.listener/Makefile src/framehive/Makefile src/hive.server/Makefile src/hive.client/Makefile test/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile"
+                                                                                                                                            ac_config_files="$ac_config_files Makefile src/Makefile src/hive.listener/Makefile src/hive.server/Makefile src/hive.client/Makefile test/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -20659,7 +20659,6 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "src/hive.listener/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hive.listener/Makefile" ;;
-  "src/framehive/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/framehive/Makefile" ;;
   "src/hive.server/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hive.server/Makefile" ;;
   "src/hive.client/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hive.client/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
@@ -20670,6 +20669,7 @@ do
   "src/org/esb/io/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/io/Makefile" ;;
   "src/org/esb/av/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/av/Makefile" ;;
   "src/org/esb/net/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/net/Makefile" ;;
+  "src/org/esb/hive/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/hive/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

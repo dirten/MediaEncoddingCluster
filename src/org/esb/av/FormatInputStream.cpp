@@ -26,7 +26,7 @@ namespace org {
                     cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" <<endl;
                 }
                 
-                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
+//                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
 
             }
 
@@ -47,7 +47,7 @@ namespace org {
             }
 
 	    int FormatInputStream::available(bool withBlocking){
-	    
+	        return 0;
 	    }
             long FormatInputStream::getFileSize(){
                 return formatCtx->file_size;
