@@ -10,7 +10,6 @@ SOURCES = \
             Command.cpp \
             ProtocolServer.cpp \
             HiveControl.cpp \
-            HiveListener.cpp \
             CommandInputStream.cpp \
             CommandOutputStream.cpp
             

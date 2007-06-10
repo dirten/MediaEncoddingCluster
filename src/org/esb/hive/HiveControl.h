@@ -1,10 +1,13 @@
-#ifndef ORG_ESB_HIVEHIVECONTROL_H
-#define ORG_ESB_HIVEHIVECONTROL_H
+#ifndef ORG_ESB_HIVE_HIVECONTROL_H
+#define ORG_ESB_HIVE_HIVECONTROL_H
 #include "org/esb/util/Properties.h"
 #include "org/esb/lang/Runnable.h"
 
 using namespace org::esb::util;
 using namespace org::esb::lang;
+namespace org{
+	namespace esb{
+		namespace hive{
 class HiveControl{
     private:
 	HiveControl();
@@ -18,7 +21,9 @@ class HiveControl{
 	Properties * getStatus();
 	static HiveControl* getInstance();
 };
-
+		}
+	}
+}
 
 #endif
 

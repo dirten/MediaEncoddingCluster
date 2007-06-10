@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <assert.h>
 using namespace std;
-using namespace org::esb::lang;
+//using namespace org::esb::lang;
 
 namespace org{
 namespace esb{

@@ -8,6 +8,7 @@
 
 /*all Protocols here*/
 #include "protocol/Help.cpp"
+#include "protocol/Kill.cpp"
 #include "protocol/Disconnect.cpp"
 #include "protocol/ShowConfig.cpp"
 #include "protocol/ShutdownHive.cpp"
@@ -25,7 +26,6 @@ using namespace org::esb::util;
 using namespace org::esb::hive;
 
 ProtocolServer::~ProtocolServer() {
-    cout << "Closing ProtocollServer"<<endl;
     list<ProtocolCommand*>::iterator i;
     for(i=l.begin();i!=l.end();++i) {
 	    ProtocolCommand *tmp=(ProtocolCommand*)*i;
@@ -40,6 +40,7 @@ ProtocolServer::ProtocolServer(Socket * socket) {
     this->socket=socket;
     l.push_back(new Help(socket));
     l.push_back(new Disconnect(socket));
+    l.push_back(new Kill(socket));
     l.push_back(new ShowConfig(socket));
     l.push_back(new ShutdownHive(socket));
     l.push_back(new StartupHive(socket));
@@ -61,7 +62,7 @@ void ProtocolServer::run() {
 	}
         unsigned char buffer[dataLength];
 		bzero(buffer, dataLength);
-        int bytes=socket->getInputStream()->read(buffer, dataLength);
+        socket->getInputStream()->read(buffer, dataLength);
         char *command=strtok((char*)buffer,"\n\r");
 	if(command==NULL||strlen(command)<=0)continue;
         list<ProtocolCommand*>::iterator i;
@@ -76,5 +77,9 @@ void ProtocolServer::run() {
                 tmp->printHelp();
             }
         }
+        string line="--------------------------------------------------------\n";
+    	socket->getOutputStream()->write((char *)line.c_str(),line.length());
+        
     }
+    cout <<"Elvis has left the Building"<<endl;
 }

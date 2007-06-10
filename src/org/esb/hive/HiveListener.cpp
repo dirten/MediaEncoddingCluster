@@ -35,6 +35,7 @@ class HiveListener:public Runnable{
 	    server=new ServerSocket(listenerPort);
 	    server->bind();
 	    for(;Socket * clientSocket=server->accept();){
+            clientSocket->close();
             /*
 			HiveClientHandler * client=new HiveClientHandler(clientSocket);
 			this->addClient(client);

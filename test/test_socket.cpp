@@ -22,7 +22,7 @@ class Server:public Runnable{
 	    pserver->bind();
 	    while((client=pserver->accept())){
 		cout << "Client arrived"<< endl;
-		int counter=0;
+//		int counter=0;
 		while(!client->isClosed()){
 //			cout << "bal"<<endl;
 

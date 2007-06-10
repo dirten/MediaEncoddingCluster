@@ -46,7 +46,6 @@ namespace org
           int  counter=1;
             	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
             	/*If Connection is dead*/
-				cout << "error:"<<errno<<"\t strerror"<<strerror(errno)<<"\t counter:"<<counter<<endl;
             	if(counter<=0){
               		this->socket->close();
 					throw Exception( __FILE__, __LINE__, "socket is unusable");

@@ -17,7 +17,7 @@ extern "C" {
 #include <stdio.h>
 //#include "framesender.h"
 //#include "FrameContainer.h"
-#include "FrameHive.h"
+//#include "FrameHive.h"
 #include "org/esb/config/config.h"
 
 using namespace std;
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 //  FrameContainer *container=new FrameContainer("/tmp/frame.container");
 //  FrameContainer *container=new FrameContainer("/media/video/test");
 //  FrameContainer *container=new FrameContainer("/tmp/frame.container");
-  FrameHive *hive=new FrameHive("test.db");
+//  FrameHive *hive=new FrameHive("test.db");
   while(GetNextFrame(pFormatCtx, pCodecCtx, videoStream, pFrame)&&i<15)
   {
     cout << "width:"<<pFrame->linesize[0]<<endl;

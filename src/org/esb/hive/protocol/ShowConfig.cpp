@@ -30,11 +30,16 @@ class ShowConfig:public ProtocolCommand{
 	}
 
 	void process(char * command){
-	    string msg="";
-	    if(strlen(command+11)>0){
-		msg=Config::getProperty(command+12);
+	    string msg="property not found ";
+		msg+=command+12;
 		msg+="\n";
+	    if(strlen(command+11)>0){
+	    	if(Config::getProperties()->hasProperty(command+12)){
+				msg=Config::getProperty(command+12);
+				msg+="\n";
+	    	}
 	    }else{
+        msg.clear();
 		Properties * status=Config::getProperties();
 		int size=status->toArray().size();
 		for(int a=0;a<size;a++){

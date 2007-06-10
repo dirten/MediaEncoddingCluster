@@ -3,6 +3,7 @@
 #include "org/esb/lang/Runnable.h"
 #include <iostream>
 using namespace std;
+using namespace org::esb::lang;
 
 class TestThread : public Runnable{
     public:

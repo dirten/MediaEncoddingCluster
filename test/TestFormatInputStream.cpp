@@ -2,7 +2,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/Codec.h"
-#include "avformat.h"
+//#include "avformat.h"
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace std;
@@ -26,7 +26,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
 
 
 void TestFormatInputStream::setUp(){
-    file=new File("/media/video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    file=new File("/media/video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    file=new File("test.avi");
 }
 
 

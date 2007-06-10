@@ -2,7 +2,7 @@
 
 using namespace org::esb::hive;
 Command::Command(){
-
+    _mode=TEXT_MODE;
 
 }
 

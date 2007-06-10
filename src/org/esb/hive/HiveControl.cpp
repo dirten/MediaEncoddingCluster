@@ -1,4 +1,5 @@
 #include "HiveControl.h"
+#include "HiveListener.cpp"
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/SimpleProperties.cpp"
@@ -7,6 +8,7 @@
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::util;
+using namespace org::esb::hive;
 
     HiveControl * instance=0;
 
@@ -23,7 +25,6 @@ using namespace org::esb::util;
 
     HiveControl* HiveControl::getInstance(){
 	if(instance==0){
-	    cout << "Creating new instance"<<endl;
 	    instance=new HiveControl();
 	}
 	return instance;
@@ -32,13 +33,13 @@ using namespace org::esb::util;
     bool HiveControl::startup(){
 	bool result=false;
 	if(strcmp(status->getProperty("running"),"false")==0){	    
-        /*
+        
 	    listener=new HiveListener();
 	    Thread * thread=new Thread(listener);
 	    thread->start();
 	    status->setProperty("running","true");
 	    result=true;
-        */
+        
 	}else{
 	    throw new Exception( __FILE__, __LINE__,"HiveControl is allready running");
 	}

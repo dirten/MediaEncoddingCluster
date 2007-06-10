@@ -1,5 +1,5 @@
 #include "StringTokenizer.h"
-
+#include "org/esb/lang/Exception.h"
 using namespace std;
 using namespace org::esb::util;
 using namespace org::esb::lang;
@@ -126,12 +126,13 @@ std::string StringTokenizer::nextToken(void)
     else
     {
 //        throw NoSuchElementException(
-    
+    /*
         throw Exception(
             __FILE__, __LINE__,
             "StringTokenizer::nextToken - No more Tokens available");
             
-    }
+    */}
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////

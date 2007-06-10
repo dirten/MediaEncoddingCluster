@@ -36,7 +36,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = framesender$(EXEEXT) framereceiver$(EXEEXT)
+bin_PROGRAMS = framesender$(EXEEXT) framereceiver$(EXEEXT) \
+	hivelsnr$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -56,6 +57,9 @@ am_framesender_OBJECTS = bruteripper.$(OBJEXT)
 framesender_OBJECTS = $(am_framesender_OBJECTS)
 framesender_DEPENDENCIES = ./org/esb/libesb.la \
 	./framehive/libframehive.la
+am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
+hivelsnr_OBJECTS = $(am_hivelsnr_OBJECTS)
+hivelsnr_DEPENDENCIES = ./org/esb/libesb.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -67,8 +71,10 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES)
-DIST_SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES)
+SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
+	$(hivelsnr_SOURCES)
+DIST_SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
+	$(hivelsnr_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -183,23 +189,23 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hive.server hive.client hive.listener 
+SUBDIRS = org 
 
 #bin_PROGRAMS = zpipe
+hivelsnr_SOURCES = Listener.cpp
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
 #zpipe_SOURCES = zpipe.c
 
 # set the include path found by configure
-INCLUDES = -I$(top_srcdir)/src/framehive \
-	    $(all_includes) 
-
+INCLUDES = -I$(top_srcdir)/src
 
 # the library search path.
 framesender_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
+hivelsnr_LDADD = ./org/esb/libesb.la
 framesender_LDADD = ./org/esb/libesb.la ./framehive/libframehive.la 
 framereceiver_LDADD = ./org/esb/libesb.la 
 EXTRA_DIST = introspec.h 
@@ -270,6 +276,9 @@ framereceiver$(EXEEXT): $(framereceiver_OBJECTS) $(framereceiver_DEPENDENCIES)
 framesender$(EXEEXT): $(framesender_OBJECTS) $(framesender_DEPENDENCIES) 
 	@rm -f framesender$(EXEEXT)
 	$(CXXLINK) $(framesender_LDFLAGS) $(framesender_OBJECTS) $(framesender_LDADD) $(LIBS)
+hivelsnr$(EXEEXT): $(hivelsnr_OBJECTS) $(hivelsnr_DEPENDENCIES) 
+	@rm -f hivelsnr$(EXEEXT)
+	$(CXXLINK) $(hivelsnr_LDFLAGS) $(hivelsnr_OBJECTS) $(hivelsnr_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -278,6 +287,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameReceiver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Listener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteripper.Po@am__quote@
 
 .cpp.o:
@@ -584,6 +594,7 @@ uninstall-info: uninstall-info-recursive
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-binPROGRAMS uninstall-info-am
 
+	    $(all_includes) 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

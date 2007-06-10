@@ -1,7 +1,7 @@
 #include "../ProtocolCommand.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/lang/Exception.h"
-#include "hive.server/HiveControl.h"
+#include "../HiveControl.h"
 
 class Status : public ProtocolCommand{
     private:

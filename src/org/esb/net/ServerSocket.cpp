@@ -1,4 +1,5 @@
 #include <iostream>
+#include <errno.h>
 #include "org/esb/net/ServerSocket.h"
 #include "org/esb/lang/Exception.h"
 using namespace std;
@@ -62,16 +63,14 @@ void ServerSocket::init()
 }
 
 /******************************************************************************/
-void ServerSocket::bind()
+void ServerSocket::bind()throw (Exception)
 {
   this->init();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
-  
-    perror("Bind");
-//    close();
-    throw new Exception(__FILE__, __LINE__, "ServerSocket:bind -" );
-//    exit(1);
+    string error="ServerSocket:bind - ";
+    error+=strerror(errno);
+    throw Exception(__FILE__, __LINE__, error.c_str() );
   }
   listen(server_socketFd,1024);
 }

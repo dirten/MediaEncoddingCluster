@@ -1,7 +1,7 @@
 #include "../ProtocolCommand.h"
 #include "org/esb/lang/Thread.h"
-#include "hive.server/HiveControl.h"
-
+#include "../HiveControl.h"
+using namespace org::esb::hive;
 class ShutdownHive : public ProtocolCommand{
     private:
 	Socket * socket;
