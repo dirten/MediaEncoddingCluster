@@ -5,6 +5,9 @@
 #include "org/esb/net/Socket.h"
 #include "org/esb/util/StringUtil.h"
 #include "ProtocolCommand.h"
+#include "Command.h"
+#include "CommandInputStream.h"
+
 //#include "proto_command.h"
 #include <list>
 
@@ -18,6 +21,7 @@ namespace org{
                 private:
             	    Socket * socket;
             	    list<ProtocolCommand*> l;
+                    CommandInputStream * _cis;
                 public:
             	    ~ProtocolServer();
             	    ProtocolServer(Socket * socket);

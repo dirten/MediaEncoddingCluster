@@ -4,6 +4,8 @@
 #include "org/esb/net/Socket.h"
 #include "ProtocolCommand.h"
 #include "ProtocolServer.h"
+#include "Command.h"
+#include "CommandInputStream.h"
 #include <list>
 
 /*all Protocols here*/
@@ -34,10 +36,12 @@ ProtocolServer::~ProtocolServer() {
     l.clear();
     delete socket;
     socket=0;
+    delete _cis;
 }
 
 ProtocolServer::ProtocolServer(Socket * socket) {
     this->socket=socket;
+    _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket));
     l.push_back(new Disconnect(socket));
     l.push_back(new Kill(socket));
@@ -55,6 +59,8 @@ ProtocolServer::ProtocolServer(Socket * socket) {
 
 void ProtocolServer::run() {
     while(!socket->isClosed()) {
+        Command * cmd=_cis->readCommand();
+
 	int dataLength=socket->getInputStream()->available(true);
 	if(dataLength==0){
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;

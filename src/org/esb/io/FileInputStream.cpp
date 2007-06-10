@@ -13,6 +13,7 @@ FileInputStream::FileInputStream(File * file)throw (Exception) {
     }
     open(name);
 }
+
 FileInputStream::FileInputStream(const char * name)throw (Exception) {
     if(!name) {
         throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
@@ -25,7 +26,7 @@ FileInputStream::FileInputStream(const char * name)throw (Exception) {
  * @param name the name of the file
  */
 
-void FileInputStream::open(const char * name) {
+void FileInputStream::open(const char * name)throw (Exception) {
     file=fopen(name,"r+b");
     if(!file) {
         string error="FileInputStream::open - File not Found (";
@@ -48,8 +49,8 @@ int FileInputStream::available(bool isBlocking) {
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {
-    fread((char*)buffer,1, length, file);
-    return length;
+    int read=fread((char*)buffer,1, length, file);
+    return read;
 }
 
 

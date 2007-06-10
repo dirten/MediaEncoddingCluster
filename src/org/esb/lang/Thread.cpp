@@ -20,6 +20,7 @@ Thread::Thread()
   task = this;
   started = false;
   joined = false;
+  _autoDelete=false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ Thread::Thread( Runnable* task )
   this->task = task;
   started = false;
   joined = false;
+  _autoDelete=false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +55,8 @@ void Thread::start() throw ( Exception )
               &this->threadHandle,
               &attributes,
               runCallback,
-	      this);
+              this);
+          
   if (err != 0)
   {
     throw Exception( __FILE__, __LINE__,
@@ -146,8 +149,10 @@ Thread::runCallback( void* param )
   catch(Exception &ex){
   	throw ex;
   }
-  delete thread->task;
-  thread->task=0;
+  if(thread->_autoDelete){
+    delete thread->task;
+    thread->task=0;
+  }
 
 #ifndef WIN32
   pthread_attr_destroy( &thread->attributes );
@@ -165,4 +170,6 @@ Thread::runCallback( void* param )
 #endif
 }
 
-
+void Thread::setAutoDelete(bool autoDelete){
+    _autoDelete=autoDelete;
+}

@@ -1,7 +1,7 @@
-#include <cppunit/extensions/HelperMacros.h>
+//#include <cppunit/extensions/HelperMacros.h>
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
-#include "org/esb/av/Codec.h"
+//#include "org/esb/av/Codec.h"
 //#include "avformat.h"
 using namespace org::esb::io;
 using namespace org::esb::av;

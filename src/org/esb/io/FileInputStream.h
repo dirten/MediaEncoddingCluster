@@ -44,7 +44,7 @@ public:
                 int read(unsigned char * buffer, int length);
                 void close();
 private:
-                void open(const char * name);
+                void open(const char * name)throw(org::esb::lang::Exception);
                 std::FILE * file;
             };
         }

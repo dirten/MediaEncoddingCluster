@@ -11,14 +11,10 @@ namespace org{
 		public:
 		    FormatOutputStream(org::esb::io::File * source);
 		    ~FormatOutputStream();
-//		    int available(bool isBlocking = false);
 		    int write(unsigned char * buffer, int length);
-//		    int getStreamCount();
-//		    int getStream(int sNumber);
 		    void close();
 		private:
-		    AVFormatContext formatCtx;
-//		    static void initialize();
+
 	    };
 	}
     }

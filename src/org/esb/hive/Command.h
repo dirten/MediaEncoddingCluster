@@ -14,10 +14,13 @@ namespace org{
                     const char * getCommand();
                     void setData(const void * data);
                     const void * getData();
+                    void setDataLength(int datalength);
+                    int getDataLength();
                     bool getMode();
                 private:
                     const char * _command;
                     const void * _data;
+                    int _datalength;
                     bool _mode;
 			};
 		}

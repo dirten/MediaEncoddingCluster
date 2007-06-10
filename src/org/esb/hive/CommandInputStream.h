@@ -1,16 +1,22 @@
+#ifndef ORG_ESB_HIVE_COMMANDINPUTSTREAM_H
+#define ORG_ESB_HIVE_COMMANDINPUTSTREAM_H
 #include "org/esb/io/InputStream.h"
-
+#include "Command.h"
 using namespace org::esb::io;
 namespace org{
 namespace esb{
 namespace hive{
 class CommandInputStream : public InputStream{
-
-
-
-
+    public:
+        CommandInputStream(InputStream * is);
+        ~CommandInputStream();
+        int read(unsigned char * buffer,int length);
+        int available(bool isBlocking);
+        Command * readCommand();
+    private:
+        InputStream * _source;
 };
 
 }}}
-
+#endif
 

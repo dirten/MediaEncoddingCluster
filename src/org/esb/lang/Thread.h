@@ -85,7 +85,9 @@ namespace lang{
          * Default implementation of the run method - does nothing.
          */
         virtual void run(){};
-       
+
+        virtual void setAutoDelete(bool autoDelete=false);
+               
     public:
    
         /**
@@ -111,7 +113,8 @@ namespace lang{
         #else
             static unsigned int WINAPI runCallback (void* param);
         #endif
-
+        
+        bool _autoDelete;
     };
 
 }}}
