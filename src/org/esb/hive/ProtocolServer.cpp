@@ -59,7 +59,7 @@ ProtocolServer::ProtocolServer(Socket * socket) {
 
 void ProtocolServer::run() {
     while(!socket->isClosed()) {
-        Command * cmd=_cis->readCommand();
+//        Command * cmd=_cis->readCommand();
 
 	int dataLength=socket->getInputStream()->available(true);
 	if(dataLength==0){

@@ -55,8 +55,7 @@ framereceiver_OBJECTS = $(am_framereceiver_OBJECTS)
 framereceiver_DEPENDENCIES = ./org/esb/libesb.la
 am_framesender_OBJECTS = bruteripper.$(OBJEXT)
 framesender_OBJECTS = $(am_framesender_OBJECTS)
-framesender_DEPENDENCIES = ./org/esb/libesb.la \
-	./framehive/libframehive.la
+framesender_DEPENDENCIES = ./org/esb/libesb.la
 am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
 hivelsnr_OBJECTS = $(am_hivelsnr_OBJECTS)
 hivelsnr_DEPENDENCIES = ./org/esb/libesb.la
@@ -137,6 +136,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -206,7 +206,7 @@ framesender_LDFLAGS = $(all_libraries)
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
 hivelsnr_LDADD = ./org/esb/libesb.la
-framesender_LDADD = ./org/esb/libesb.la ./framehive/libframehive.la 
+framesender_LDADD = ./org/esb/libesb.la 
 framereceiver_LDADD = ./org/esb/libesb.la 
 EXTRA_DIST = introspec.h 
 all: all-recursive

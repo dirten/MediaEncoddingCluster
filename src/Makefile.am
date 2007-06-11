@@ -31,6 +31,6 @@ framesender_LDFLAGS = $(all_libraries)
 hivelsnr_LDADD=./org/esb/libesb.la
 
 
-framesender_LDADD=./org/esb/libesb.la ./framehive/libframehive.la 
+framesender_LDADD=./org/esb/libesb.la 
 framereceiver_LDADD=./org/esb/libesb.la 
 EXTRA_DIST=introspec.h 

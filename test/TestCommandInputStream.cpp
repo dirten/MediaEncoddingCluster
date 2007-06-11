@@ -9,13 +9,13 @@ class TestCommandInputStream: public CppUnit::TestFixture
 {
 
     CPPUNIT_TEST_SUITE(TestCommandInputStream);
-    CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testOverFileInputStream);
     CPPUNIT_TEST_SUITE_END();
     
     public:
 	void setUp();
 	void tearDown();
-	void testConstructor();
+	void testOverFileInputStream();
 };
 
 
@@ -34,10 +34,12 @@ void TestCommandInputStream::tearDown(){
 
 
 
-void TestCommandInputStream::testConstructor(){
+void TestCommandInputStream::testOverFileInputStream(){
     FileInputStream fis("test.command");
     CommandInputStream cis(&fis);
     Command * cmd=cis.readCommand();
-    
-
+    const char * c=cmd->getCommand();
+	CPPUNIT_ASSERT(strcmp("show config",c)==0);
+	delete []c;
+	delete cmd;
 }

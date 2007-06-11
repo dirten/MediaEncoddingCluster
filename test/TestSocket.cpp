@@ -80,10 +80,11 @@ class StreamThread:public Runnable{
                 client->getOutputStream()->write("0123456789\0",11);
                 unsigned char buffer[11];
                 client->getInputStream()->read(buffer,11);
-                cout << "Buffer:"<<buffer<<":"<<endl;
+//                cout << "Buffer:"<<buffer<<":"<<endl;
                 CPPUNIT_ASSERT(strcmp((char *)buffer,"0123456789")==0);
                 delete client;
             }
+            server.close();
         }
 };
 
@@ -99,9 +100,9 @@ void TestSocket::testStream(){
     socket.getInputStream()->read(buffer,11);
     CPPUNIT_ASSERT(strcmp((char *)buffer,"0123456789")==0);
     socket.getOutputStream()->write((char *)buffer,11);
-
-
+    socket.close();
     thread->join();
+//    server->close();
     delete server;
     delete thread;
 }
