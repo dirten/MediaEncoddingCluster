@@ -47,8 +47,8 @@ namespace org
             	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
             	/*If Connection is dead*/
             	if(counter<=0){
-              		this->socket->close();
-					throw Exception( __FILE__, __LINE__, "socket is unusable");
+//              		this->socket->close();
+//					throw Exception( __FILE__, __LINE__, "socket is unusable");
             	}
           return counter;
         }

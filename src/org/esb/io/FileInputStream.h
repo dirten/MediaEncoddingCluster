@@ -46,6 +46,7 @@ public:
 private:
                 void open(const char * name)throw(org::esb::lang::Exception);
                 std::FILE * file;
+                long _filePointer;
             };
         }
     }

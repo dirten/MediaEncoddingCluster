@@ -22,7 +22,7 @@ Socket::~Socket()
 {
     delete this->inputStream;
     delete this->outputStream;
-    close();
+    this->close();
 }
 
 

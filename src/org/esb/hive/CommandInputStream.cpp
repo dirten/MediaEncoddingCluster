@@ -1,7 +1,7 @@
 #include "CommandInputStream.h"
 #include "Command.h"
 #include <iostream>
-
+#include <errno.h>
 using namespace std;
 using namespace org::esb::hive;
 
@@ -17,9 +17,10 @@ CommandInputStream::~CommandInputStream(){
 }
 
 Command * CommandInputStream::readCommand(){
-    unsigned char buffer;
+    char buffer;
 	string b;
-    while(read(&buffer,1)>0){
+    while(available()>0){
+    	this->read((unsigned char *)&buffer,1);
 		b+=buffer;
     }
 	Command * command=new Command();
@@ -27,7 +28,6 @@ Command * CommandInputStream::readCommand(){
 	memset(com,0,b.length()+1);
 	memcpy(com, b.c_str(), b.length());
 	command->setCommand(com);
-	
     return command;
 }
 
@@ -38,5 +38,5 @@ int CommandInputStream::read(unsigned char * buffer, int length){
 
 
 int CommandInputStream::available(bool isBlocking){
-    _source->available(isBlocking);
+    return _source->available(isBlocking);
 }

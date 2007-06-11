@@ -27,13 +27,18 @@ FileInputStream::FileInputStream(const char * name)throw (Exception) {
  */
 
 void FileInputStream::open(const char * name)throw (Exception) {
-    file=fopen(name,"r+b");
+    file=fopen(name,"r+");
     if(!file) {
         string error="FileInputStream::open - File not Found (";
         error+=name;
         error+=")";
         throw Exception(__FILE__, __LINE__, error.c_str());
     }
+    
+    fseek (file, 0, SEEK_END);
+    _filePointer= ftell(file);
+    fseek (file, 0, 0);
+    
 }
 
 void FileInputStream::close() {
@@ -41,15 +46,12 @@ void FileInputStream::close() {
 }
 
 int FileInputStream::available(bool isBlocking) {
-    long int currentPosition=ftell(file);
-    fseek (file, 0, SEEK_END);
-    long int filesize= ftell(file);
-    fseek (file, 0, currentPosition);
-    return filesize-currentPosition;
+	return _filePointer; 
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {
     int read=fread((char*)buffer,1, length, file);
+	_filePointer-=read;
     return read;
 }
 

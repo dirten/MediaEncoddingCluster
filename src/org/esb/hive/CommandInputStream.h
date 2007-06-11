@@ -11,7 +11,7 @@ class CommandInputStream : public InputStream{
         CommandInputStream(InputStream * is);
         ~CommandInputStream();
         int read(unsigned char * buffer,int length);
-        int available(bool isBlocking);
+        int available(bool isBlocking=false);
         Command * readCommand();
     private:
         InputStream * _source;

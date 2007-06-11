@@ -8,7 +8,7 @@ Command::Command(){
 
 
 Command::~Command(){
-
+	delete []_command;
 
 }
 
