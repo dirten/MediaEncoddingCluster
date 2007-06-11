@@ -93,7 +93,7 @@ void TestSocket::testStream(){
     StreamThread * server=new StreamThread();
     Thread * thread=new Thread(server);
     thread->start();
-    Thread::sleep(500);
+    Thread::sleep(100);
     Socket socket("localhost",20001);
     socket.connect();
     unsigned char buffer[11];

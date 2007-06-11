@@ -4,17 +4,6 @@
 using namespace std;
 using namespace org::esb::av;
 
-template<typename Target, typename Source>
-     Target lexical_cast(Source source_)
-     {
-       std::stringstream converter;
-       Target result;
-     
-      if(!(converter<<source_ && converter>>result && (converter>>std::ws).eof()))
-        cout <<"lexical_cast failed"<<endl;
-    
-      return result;
- }
  
  
 FrameOutputStream::FrameOutputStream(OutputStream * out){

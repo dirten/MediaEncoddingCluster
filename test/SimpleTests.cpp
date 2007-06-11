@@ -3,6 +3,6 @@
 #include "TestFormatInputStream.cpp"
 //#include "TestAVInputStream.cpp"
 #include "TestFileOutputStream.cpp"
-#include "TestCommandInputStream.cpp"
+//#include "TestCommandInputStream.cpp"
 //#include "TestSocket.cpp"
 
