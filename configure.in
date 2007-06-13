@@ -23,7 +23,11 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
 	    AMQ_PATH="$withval")
 
-
+# moved up to comply with standard autoconf layout 
+# http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
+AC_CHECK_LIB(avcodec, av_free)
+AC_CHECK_LIB(avformat, av_free)
+AC_CHECK_LIB(avutil, av_free)
 
 AC_CHECK_HEADERS([avcodec.h avformat.h],
                 [AC_DEFINE([HAVE_AVCODEC_H])],
@@ -35,14 +39,18 @@ http://ffmpeg.mplayerhq.hu
 *********************************************************************
 ])])
 
+# check for bzip2 development headers
+AC_CHECK_HEADERS([bzlib.h],
+                [AC_DEFINE([HAVE_BZLIB_H])],
+                [AC_MSG_ERROR([
+*********************************************************************
+Sorry, bzlib.h not found. you need to install bzip2 library with
+development headers.
+*********************************************************************
+])])
+
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-
-AC_CHECK_LIB(avcodec, av_free)
-AC_CHECK_LIB(avformat, av_free)
-AC_CHECK_LIB(avutil, av_free)
-
-
 
 AC_OUTPUT(
     Makefile 
