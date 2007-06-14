@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "org/esb/lang/Exception.h"
+#ifndef WIN32
 #include <execinfo.h>
-
+#endif
 using namespace org::esb::lang;
 using namespace std;
 
@@ -55,7 +56,7 @@ void Exception::setMark( const char* file, const int lineNumber ){
 
     //logger.log( stream.str() );    
 }
-
+#ifndef WIN32
 const char * Exception::what()const throw(){
     string msg= getStackTraceString();
        size_t size;
@@ -76,6 +77,6 @@ const char * Exception::what()const throw(){
 
     return msg.c_str();
 }
-
+#endif
 
 

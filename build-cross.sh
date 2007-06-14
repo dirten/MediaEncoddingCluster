@@ -14,7 +14,8 @@ TARGET=i386-mingw32msvc
 
 # where does it go?
 
-PREFIX=/usr/local/cross-tools
+#PREFIX=/usr/local/cross-tools
+PREFIX=`pwd`/cross-tools
 
 # you probably don't need to change anything from here down
 

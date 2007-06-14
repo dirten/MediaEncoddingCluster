@@ -14,7 +14,8 @@ cpp_unit_SOURCES=cpp_unit.cpp \
                 SimpleTests.cpp \
                 TestSocket.cpp \
                 TestCommandInputStream.cpp \
-                TestFileOutputStream.cpp
+                TestFileOutputStream.cpp 
+#                TestProtocolServer.cpp 
                 
                 
                 
