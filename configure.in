@@ -55,9 +55,6 @@ LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
 AC_OUTPUT(
     Makefile 
     src/Makefile 
-    src/hive.listener/Makefile 
-    src/hive.server/Makefile 
-    src/hive.client/Makefile 
     test/Makefile
     src/org/Makefile
     src/org/esb/Makefile
@@ -69,6 +66,9 @@ AC_OUTPUT(
     src/org/esb/hive/Makefile
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     
+dnl    src/hive.listener/Makefile 
+dnl    src/hive.server/Makefile 
+dnl    src/hive.client/Makefile 
 dnl    src/org/esb/lang/Makefile
 dnl    src/org/esb/socket/Makefile
 dnl    src/org/esb/config/Makefile

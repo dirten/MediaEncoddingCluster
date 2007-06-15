@@ -1,4 +1,4 @@
-//#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 //#include "org/esb/av/Codec.h"

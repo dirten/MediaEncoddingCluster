@@ -44,7 +44,7 @@ namespace lang{
          */
         virtual void printStackTrace( std::ostream& stream ) const = 0;
         
-        virtual const char * what()const throw()=0;
+//        virtual const char * what()const throw()=0;
     };
 
 }}}

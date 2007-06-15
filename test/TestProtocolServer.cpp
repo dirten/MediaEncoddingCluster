@@ -4,21 +4,24 @@
 #include "org/esb/net/Socket.h"
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/config/config.h"
 #include "org/esb/hive/ProtocolServer.h"
 using namespace std;
+using namespace org::esb::config;
 using namespace org::esb::lang;
 using namespace org::esb::io;
 using namespace org::esb::net;
 using namespace org::esb::hive;
-
-class SocketThread:public Runnable{
+int PORT=20001;
+class SocketThread2:public Runnable{
     public:
-	ServerSocket * server;
+	    ServerSocket * server;
         void run(){
-	    server=new ServerSocket(20000);
+        cout << "Waiting for client"<<endl;
+	    server=new ServerSocket(PORT);
 	    server->bind();
 	    if(Socket * clientSocket=server->accept()){
-		cout << "Client here"<<endl;
+		cerr << "Client here"<<endl;
 		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 		Thread thread(protoServer);
 		thread.start();
@@ -34,7 +37,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestProtocolServer);
     CPPUNIT_TEST(testConnect);
-    CPPUNIT_TEST(testShowConfig);
+//    CPPUNIT_TEST(testShowConfig);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -44,7 +47,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 	void tearDown();
 	void testConnect();
 	void testShowConfig();
-	SocketThread * server;
+	SocketThread2 * server;
 	Thread *serverThread;
 
 };
@@ -58,28 +61,38 @@ TestProtocolServer::~TestProtocolServer(){
 }
 
 void TestProtocolServer::setUp(){
-    server=new SocketThread();
+    Config::init("cluster.cfg");
+    cerr << "SetUpStart"<<endl;
+    server=new SocketThread2();
     serverThread=new Thread(server);
     serverThread->start();
-    Thread::sleep(500);
+    cerr << "SetUpEnd"<<endl;
+    Thread::sleep(1500);
 }
 
 
 void TestProtocolServer::tearDown(){
     delete server;
     delete serverThread;
+    Thread::sleep(1500);
 
 }
 
 
 
 void TestProtocolServer::testConnect(){
-    Socket *client=new Socket("localhost",20000);
+    
+    Socket *client=new Socket("localhost",PORT);
+    client->connect();
+    Thread::sleep(1000);
     client->close();
+    delete client;
 }
 
 void TestProtocolServer::testShowConfig(){
-    Socket *client=new Socket("localhost",20000);
+    Socket *client=new Socket("localhost",PORT);
+    client->connect();
     client->close();
+    delete client;
 }
 

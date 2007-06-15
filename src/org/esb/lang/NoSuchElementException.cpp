@@ -17,7 +17,7 @@
 #ifndef ACTIVEMQ_EXCEPTIONS_NOSUCHELEMENTEXCEPTION_H_
 #define ACTIVEMQ_EXCEPTIONS_NOSUCHELEMENTEXCEPTION_H_
 
-#include <org/esb/lang/Exception.h>
+#include "org/esb/lang/Exception.h"
 
 namespace org{
 namespace esb{

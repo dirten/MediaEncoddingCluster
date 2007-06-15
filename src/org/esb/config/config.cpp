@@ -12,9 +12,9 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
-namespace org{
-namespace esb{
-namespace config{
+//namespace org{
+//namespace esb{
+//namespace config{
 /**
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
@@ -70,6 +70,6 @@ void Config::parseLine(const char*line)
     delete st;
   }
 }
-}}}
+//}}}
 
 

@@ -1,4 +1,5 @@
 #include <cppunit/extensions/HelperMacros.h>
+//#include "org/esb/config/config.h"
 #include "org/esb/net/ServerSocket.h"
 #include "org/esb/net/Socket.h"
 #include "org/esb/io/InputStream.h"
@@ -7,6 +8,7 @@
 //#define new new
 
 using namespace std;
+//using namespace org::esb::config;
 using namespace org::esb::io;
 using namespace org::esb::net;
 using namespace org::esb::lang;
@@ -69,6 +71,7 @@ class SimpleConnectThread:public Runnable{
 };
 
 void TestSocket::testSimpleConnect(){
+//    char * port=Config::getProperty("port");
     SimpleConnectThread * server=new SimpleConnectThread();
     Thread * thread=new Thread(server);
     thread->start();
@@ -124,10 +127,12 @@ class UnknownStreamThread:public Runnable{
             if(Socket * client=server.accept()){
 //                cout << "client here"<<endl;
                 InputStream *is=client->getInputStream();
-                unsigned char b;
+                char b;
                 string tmp;
+                Thread::sleep(100);
                 while(is->available()>0){
-                    is->read(&b,1);
+                    is->read((unsigned char *)&b,1);
+//                    cout << b << endl;
                     tmp+=b;
                 }
 //                cout << "alles da:"<<tmp.c_str()<<endl;

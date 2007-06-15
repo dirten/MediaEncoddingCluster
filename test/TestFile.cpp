@@ -1,6 +1,6 @@
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Exception.h"
-//#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/HelperMacros.h>
 using namespace org::esb::io;
 using namespace org::esb::lang;
 
