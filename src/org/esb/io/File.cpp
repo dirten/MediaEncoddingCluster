@@ -61,7 +61,7 @@ bool File::exists() {
  * Tests whether the file denoted by this abstract pathname is a normal
  * file.  A file is <em>normal</em> if it is not a directory and, in
  * addition, satisfies other system-dependent criteria.  Any non-directory
- * file created by a Java application is guaranteed to be a normal file.
+ * file created by an application is guaranteed to be a normal file.
  *
  * @return  <code>true</code> if and only if the file denoted by this
  *          abstract pathname exists <em>and</em> is a normal file;

@@ -12,10 +12,13 @@ using namespace org::esb::lang;
 using namespace org::esb::io;
 using namespace org::esb::net;
 using namespace org::esb::hive;
-int PORT=20001;
+int PORT=20005;
 class SocketThread2:public Runnable{
     public:
-	    ServerSocket * server;
+	ServerSocket * server;
+	~SocketThread2(){
+	    delete server;	
+	}
         void run(){
         cout << "Waiting for client"<<endl;
 	    server=new ServerSocket(PORT);
@@ -25,10 +28,11 @@ class SocketThread2:public Runnable{
 		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 		Thread thread(protoServer);
 		thread.start();
+//		thread.setAutoDelete(true);
+		Thread::sleep(1000);
+//		delete clientSocket;
+		delete protoServer;
 	    }
-
-	    delete server;
-	    Thread::sleep(1000);
         }	
 };
 
@@ -36,7 +40,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 {
 
     CPPUNIT_TEST_SUITE(TestProtocolServer);
-    CPPUNIT_TEST(testConnect);
+//    CPPUNIT_TEST(testConnect);
 //    CPPUNIT_TEST(testShowConfig);
     CPPUNIT_TEST_SUITE_END();
     
@@ -68,14 +72,14 @@ void TestProtocolServer::setUp(){
     serverThread->start();
     cerr << "SetUpEnd"<<endl;
     Thread::sleep(1500);
+
 }
 
 
 void TestProtocolServer::tearDown(){
-    delete server;
     delete serverThread;
+    delete server;
     Thread::sleep(1500);
-
 }
 
 
@@ -84,6 +88,8 @@ void TestProtocolServer::testConnect(){
     
     Socket *client=new Socket("localhost",PORT);
     client->connect();
+    char * cmd="disconnect";
+    client->getOutputStream()->write(cmd, strlen(cmd));
     Thread::sleep(1000);
     client->close();
     delete client;
@@ -92,6 +98,7 @@ void TestProtocolServer::testConnect(){
 void TestProtocolServer::testShowConfig(){
     Socket *client=new Socket("localhost",PORT);
     client->connect();
+    Thread::sleep(1000);
     client->close();
     delete client;
 }

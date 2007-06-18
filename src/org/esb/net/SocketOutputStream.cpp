@@ -25,7 +25,8 @@ class SocketOutputStream:public OutputStream{
 //    		int bytes=::write(this->socket->getDescriptor(),buffer,remaining);
 		byteCounter+=bytes;
 		if(bytes<0){
-		    this->socket->close();
+		    return;
+//		    this->socket->close();
 		}
 		buffer+=bytes;
 		remaining-=bytes;

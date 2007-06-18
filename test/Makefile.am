@@ -12,16 +12,27 @@
 check_PROGRAMS = cpp_unit 
 cpp_unit_SOURCES=cpp_unit.cpp \
                 TestSocket.cpp \
+<<<<<<< .mine
                 TestFile.cpp \
+                TestFormatInputStream.cpp \
+=======
+                TestFile.cpp \
+>>>>>>> .r151
                 TestCommandInputStream.cpp \
+<<<<<<< .mine
+                TestFileOutputStream.cpp \
+                TestProtocolServer.cpp 
+=======
                 TestFormatInputStream.cpp \
                 TestFileOutputStream.cpp \
                 TestProtocolServer.cpp 
+>>>>>>> .r151
                 
                 
                 
 cpp_unit_CXXFLAGS = $(CPPUNIT_CFLAGS)
 cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
+cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
 

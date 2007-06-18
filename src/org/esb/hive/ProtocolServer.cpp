@@ -66,10 +66,11 @@ void ProtocolServer::run() {
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
 	    break;
 	}
-        unsigned char buffer[dataLength];
-		bzero(buffer, dataLength);
+        unsigned char buffer[dataLength+1];
+	memset(buffer,0, dataLength+1);
         socket->getInputStream()->read(buffer, dataLength);
         char *command=strtok((char*)buffer,"\n\r");
+	cout << "Command:"<<command<<endl;
 	if(command==NULL||strlen(command)<=0)continue;
         list<ProtocolCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {

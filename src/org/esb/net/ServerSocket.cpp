@@ -68,6 +68,7 @@ void ServerSocket::bind()throw (Exception)
   this->init();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
+    perror("bind");
     string error="ServerSocket:bind - ";
     error+=strerror(errno);
     throw Exception(__FILE__, __LINE__, error.c_str() );
@@ -84,6 +85,7 @@ Socket* ServerSocket::accept()
   int client_socketFd=::accept(this->server_socketFd,(struct sockaddr*)&client,&clilen);
   if(client_socketFd<0)
   {
+    perror("accept");
     this->close();
   }
   return new Socket(client_socketFd);
