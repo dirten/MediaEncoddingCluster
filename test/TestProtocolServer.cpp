@@ -29,7 +29,7 @@ class SocketThread2:public Runnable{
 		Thread thread(protoServer);
 		thread.start();
 //		thread.setAutoDelete(true);
-		Thread::sleep(1000);
+		Thread::sleep(2000);
 //		delete clientSocket;
 		delete protoServer;
 	    }
@@ -41,7 +41,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestProtocolServer);
 //    CPPUNIT_TEST(testConnect);
-//    CPPUNIT_TEST(testShowConfig);
+    CPPUNIT_TEST(testShowConfig);
     CPPUNIT_TEST_SUITE_END();
     
     public:
