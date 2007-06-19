@@ -5,7 +5,11 @@ namespace org{
 namespace esb{
 namespace io{
 class CharArrayOutputStream: public OutputStream{
-
+    public:
+	CharArrayOutputStream();
+	~CharArrayOutputStream();
+	void write(char * buffer, int length);
+		
 
 
 

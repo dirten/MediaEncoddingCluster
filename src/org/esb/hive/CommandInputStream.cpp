@@ -21,7 +21,7 @@ Command * CommandInputStream::readCommand(){
 	string b;
     while(available()>0){
     	this->read((unsigned char *)&buffer,1);
-		b+=buffer;
+	b+=buffer;
     }
 	Command * command=new Command();
 	char * com=new char[b.length()+1];

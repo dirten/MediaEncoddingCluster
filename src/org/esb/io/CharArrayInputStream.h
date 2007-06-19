@@ -6,9 +6,10 @@ namespace org {
         namespace io {
 class CharArrayInputStream: public InputStream {
 public:
-                CharArrayInputStream(const char * in, long length);
+                CharArrayInputStream(const char * in, int length);
                 ~CharArrayInputStream();
-
+		int available(bool isBlocking=false);
+		int read(unsigned char * buffer, int length);
 private:
                 char * _inPointer;
                 long _length;

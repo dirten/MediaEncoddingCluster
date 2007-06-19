@@ -13,7 +13,10 @@ namespace org{
                 public:
             	    ProtocolCommand(){};
             	    ProtocolCommand(InputStream *is, OutputStream * os){};
-            	    ProtocolCommand(org::esb::net::Socket * socket){};
+/**
+ * @deprecated
+ */
+             	    ProtocolCommand(org::esb::net::Socket * socket){};
             	    virtual ~ProtocolCommand(){};
             	    virtual int isResponsible(char * command)=0;
             	    virtual void process(char * command)=0;

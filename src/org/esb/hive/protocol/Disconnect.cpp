@@ -4,11 +4,14 @@ class Disconnect : public ProtocolCommand{
 
 	Disconnect(Socket * socket){
 	    this->socket=socket;
+    	    this->is=socket->getInputStream();
+    	    this->os=socket->getOutputStream();
 	}
 
 	Disconnect(InputStream * is, OutputStream * os){
-        this->is=is;
-        this->os=os;
+	    this->socket=0;
+    	    this->is=is;
+    	    this->os=os;
 	}
 	
 	~Disconnect(){}
@@ -26,12 +29,13 @@ class Disconnect : public ProtocolCommand{
 	void process(char * command){
 	    string error="Disconnecting:";
             error+="\n";
-            socket->getOutputStream()->write((char*)error.c_str(),error.length());
-	    socket->close();
+            os->write((char*)error.c_str(),error.length());
+	    if(socket)
+		socket->close();
 	}
 
 	void printHelp(){
 	    string msg="disconnect | quit\t[Disconnecting from the server]\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
+            os->write((char*)msg.c_str(),msg.length());	
 	}
 };

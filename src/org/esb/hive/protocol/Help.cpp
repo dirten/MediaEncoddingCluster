@@ -14,8 +14,15 @@ class Help:public ProtocolCommand{
 	~Help(){
 	}
 
+    
 	Help(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
+	}
+	Help(InputStream * is, OutputStream * os){
+	    this->is=is;
+	    this->os=os;
 	}
 
 	int isResponsible(char * command){
@@ -29,7 +36,7 @@ class Help:public ProtocolCommand{
 	void printHelp(){
 	    string help="List of all Hive Commands\n";
 	    help+="-------------------------\n";
-        socket->getOutputStream()->write((char *)help.c_str(),help.length());
+	    os->write((char *)help.c_str(),help.length());
 	}
 };
 #endif

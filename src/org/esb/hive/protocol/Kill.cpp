@@ -15,6 +15,14 @@ class Kill:public ProtocolCommand{
 
 	Kill(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
+	}
+	
+	Kill(InputStream * is, OutputStream * os){
+	    this->socket=0;
+	    this->is=is;
+	    this->os=os;
 	}
 
 	int isResponsible(char * command){
@@ -28,7 +36,8 @@ class Kill:public ProtocolCommand{
 	}
 
 	void process(char * data){
-        raise(SIGINT);
+	    socket->close();
+    	    raise(SIGINT);
 //        exit(0);
 	}
 
