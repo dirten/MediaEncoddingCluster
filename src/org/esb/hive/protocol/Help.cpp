@@ -5,6 +5,7 @@
 
 using namespace org::esb::net;
 using namespace org::esb::hive;
+using namespace std;
 
 class Help:public ProtocolCommand{
     private:

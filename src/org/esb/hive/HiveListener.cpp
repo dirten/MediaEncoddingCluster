@@ -17,7 +17,7 @@ class HiveListener:public Runnable{
 //	list<HiveClientHandler *>_clients;
     public:
 	HiveListener(){
-	    listenerPort=atoi(Config::getProperty("hive.listener.port"));
+//	    listenerPort=atoi(Config::getProperty("hive.listener.port"));
 	}
 
 	~HiveListener(){

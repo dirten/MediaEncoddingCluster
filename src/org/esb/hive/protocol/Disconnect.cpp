@@ -1,17 +1,22 @@
 #include "../ProtocolCommand.h"
 class Disconnect : public ProtocolCommand{
-    private:
-	Socket * socket;
     public:
+
 	Disconnect(Socket * socket){
 	    this->socket=socket;
 	}
+
+	Disconnect(InputStream * is, OutputStream * os){
+        this->is=is;
+        this->os=os;
+	}
 	
 	~Disconnect(){}
+	
 	int isResponsible(char * command){
 	    if(strcmp(command,"disconnect")==0||
 	       strcmp(command,"quit")==0){
-		return CMD_PROCESS;
+		    return CMD_PROCESS;
 	    }else
 	    if(strcmp(command,"help")==0){
 		return CMD_HELP;

@@ -2,7 +2,8 @@
 
 CONFIG_SHELL=/bin/sh
 export CONFIG_SHELL
-PREFIX=`pwd`/cross-tools
+#PREFIX=`pwd`/cross-tools
+PREFIX=/usr/local/cross-tools
 TARGET=i386-mingw32msvc
 PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
 export PATH

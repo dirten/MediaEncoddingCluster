@@ -15,33 +15,35 @@ using namespace org::esb::hive;
 int PORT=20005;
 class SocketThread2:public Runnable{
     public:
-	ServerSocket * server;
+	ServerSocket * serverSocket;
 	~SocketThread2(){
-	    delete server;	
+	    delete serverSocket;	
 	}
         void run(){
         cout << "Waiting for client"<<endl;
-	    server=new ServerSocket(PORT);
-	    server->bind();
-	    if(Socket * clientSocket=server->accept()){
-		cerr << "Client here"<<endl;
-		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-		Thread thread(protoServer);
-		thread.start();
-//		thread.setAutoDelete(true);
-		Thread::sleep(2000);
-//		delete clientSocket;
-		delete protoServer;
+	    serverSocket=new ServerSocket(PORT);
+	    serverSocket->bind();
+	    if(Socket * clientSocket=serverSocket->accept()){
+		    cerr << "Client here"<<endl;
+		    ProtocolServer *protoServer=new ProtocolServer(clientSocket);
+            protoServer->run();
+		    delete protoServer;
+//		    Thread thread(protoServer);
+//		    thread.start();
+//		    thread.setAutoDelete(true);
+//		    Thread::sleep(2000);
+//		    delete clientSocket;
 	    }
-        }	
+    }	
 };
 
 class TestProtocolServer: public CppUnit::TestFixture
 {
 
     CPPUNIT_TEST_SUITE(TestProtocolServer);
+    CPPUNIT_TEST(testSimple);
 //    CPPUNIT_TEST(testConnect);
-    CPPUNIT_TEST(testShowConfig);
+//    CPPUNIT_TEST(testShowConfig);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -50,6 +52,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 	void setUp();
 	void tearDown();
 	void testConnect();
+	void testSimple();
 	void testShowConfig();
 	SocketThread2 * server;
 	Thread *serverThread;
@@ -65,21 +68,22 @@ TestProtocolServer::~TestProtocolServer(){
 }
 
 void TestProtocolServer::setUp(){
-    Config::init("cluster.cfg");
+//    Config::init("cluster.cfg");
+/*    
     cerr << "SetUpStart"<<endl;
     server=new SocketThread2();
     serverThread=new Thread(server);
     serverThread->start();
     cerr << "SetUpEnd"<<endl;
     Thread::sleep(1500);
-
+*/
 }
 
 
 void TestProtocolServer::tearDown(){
-    delete serverThread;
-    delete server;
-    Thread::sleep(1500);
+//    delete serverThread;
+//    delete server;
+//    Thread::sleep(1500);
 }
 
 
@@ -93,6 +97,9 @@ void TestProtocolServer::testConnect(){
     Thread::sleep(1000);
     client->close();
     delete client;
+}
+void TestProtocolServer::testSimple(){
+    
 }
 
 void TestProtocolServer::testShowConfig(){

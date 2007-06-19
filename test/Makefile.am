@@ -11,22 +11,13 @@
 
 check_PROGRAMS = cpp_unit 
 cpp_unit_SOURCES=cpp_unit.cpp \
-                TestSocket.cpp \
-<<<<<<< .mine
                 TestFile.cpp \
                 TestFormatInputStream.cpp \
-=======
-                TestFile.cpp \
->>>>>>> .r151
                 TestCommandInputStream.cpp \
-<<<<<<< .mine
                 TestFileOutputStream.cpp \
-                TestProtocolServer.cpp 
-=======
-                TestFormatInputStream.cpp \
-                TestFileOutputStream.cpp \
-                TestProtocolServer.cpp 
->>>>>>> .r151
+                TestSocket.cpp \
+                TestProtocolServer.cpp \
+                TestProtocolCommands.cpp 
                 
                 
                 
