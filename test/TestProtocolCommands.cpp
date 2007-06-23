@@ -36,21 +36,18 @@ void TestProtocolCommands::tearDown(){
 
 
 void TestProtocolCommands::testHelp(){
-    InputStream * is=new CharArrayInputStream("help", strlen("help"));
-    OutputStream * os=new CharArrayOutputStream();
-    Help help(is, os);
+    CharArrayInputStream is("help", strlen("help"));
+    CharArrayOutputStream os;
+    Help help(&is, &os);
     int r=help.isResponsible("help");
     CPPUNIT_ASSERT_EQUAL(CMD_HELP, r);
-    delete is;
-    delete os;
 }
+
 void TestProtocolCommands::testDisconnect(){
-    InputStream * is=new CharArrayInputStream("help", strlen("help"));
-    OutputStream * os=new CharArrayOutputStream();
-    Disconnect cmd(is, os);
+    CharArrayInputStream is("help", strlen("help"));
+    CharArrayOutputStream os;
+    Disconnect cmd(&is, &os);
     int r=cmd.isResponsible("disconnect");
     CPPUNIT_ASSERT_EQUAL(CMD_PROCESS, r);
     cmd.process("");
-    delete is;
-    delete os;
 }

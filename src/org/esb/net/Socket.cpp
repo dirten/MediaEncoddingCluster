@@ -20,8 +20,6 @@ Socket::Socket(int sock)
 /******************************************************************************/
 Socket::~Socket()
 {
-    delete this->inputStream;
-    delete this->outputStream;
     this->close();
 }
 
@@ -29,7 +27,6 @@ Socket::~Socket()
 /******************************************************************************/
 Socket::Socket()
 {
-  cout << "default Constructor from Socket"<<endl;
   this->hostname="localhost";
   this->port=0;
   this->socketFd=0;
@@ -99,13 +96,22 @@ void Socket::connect() throw (Exception)
 /******************************************************************************/
 void Socket::close()
 {
+    if(this->inputStream!=NULL){
+	delete this->inputStream;
+	this->inputStream=NULL;
+    }
+    if(this->outputStream!=NULL){
+	delete this->outputStream;
+	this->outputStream=NULL;
+    }
+    if(!isClosed()){
+	::shutdown( this->socketFd, SHUT_RDWR );
     #if defined(WIN32)
 	::closesocket(this->socketFd);    
     #else
 	::close(this->socketFd);
     #endif
-
- // ::close(this->socketFd);
+    }
   this->socketFd=0;
 }
 /******************************************************************************/

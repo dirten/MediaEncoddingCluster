@@ -42,6 +42,7 @@ public:
                 ~FileInputStream();
                 int available(bool i=false);
                 int read(unsigned char * buffer, int length);
+                int read(vector<unsigned char>&buffer);
                 void close();
 private:
                 void open(const char * name)throw(org::esb::lang::Exception);

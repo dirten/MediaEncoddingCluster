@@ -5,7 +5,7 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = liblang.la
-SOURCES = Thread.cpp Exception.cpp NoSuchElementException.cpp NullPointerException.cpp
+SOURCES = Byte.cpp String.cpp Thread.cpp Exception.cpp NoSuchElementException.cpp NullPointerException.cpp
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 liblang_la_SOURCES = $(SOURCES)

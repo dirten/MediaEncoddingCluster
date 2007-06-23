@@ -57,6 +57,10 @@ namespace org {
                 return 0;
             }
 
+            int FormatInputStream::read(vector<unsigned char>&buffer) {
+                return 0;
+            }
+
             void FormatInputStream::close() {
                 av_close_input_file(formatCtx);
             }

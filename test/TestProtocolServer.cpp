@@ -60,7 +60,7 @@ class TestProtocolServer: public CppUnit::TestFixture
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestProtocolServer);
+//CPPUNIT_TEST_SUITE_REGISTRATION(TestProtocolServer);
 
 TestProtocolServer::TestProtocolServer(){
 }

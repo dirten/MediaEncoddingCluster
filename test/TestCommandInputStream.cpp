@@ -47,7 +47,7 @@ void TestCommandInputStream::testOverFileInputStream(){
     CommandInputStream * cis=new CommandInputStream(fis);
     Command * cmd=cis->readCommand();
     const char * c=cmd->getCommand();
-	CPPUNIT_ASSERT(strcmp("show config",c)==0);
+    CPPUNIT_ASSERT(strcmp("show config",c)==0);
     delete fis;
     delete cis;
 	delete cmd;
@@ -65,6 +65,7 @@ class SocketThread:public Runnable{
 			    const char * c=cmd->getCommand();
 				CPPUNIT_ASSERT(strcmp("show config",c)==0);
 				delete cmd;
+		client->close();
                 delete client;
             }
             server.close();

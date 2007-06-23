@@ -1,8 +1,10 @@
 #ifndef ORG_ESB_IO_INPUTSTREAM
 #define ORG_ESB_IO_INPUTSTREAM
 //#include <iostream>
-
-
+#include <vector>
+#include "org/esb/lang/Byte.h"
+using namespace std;
+using namespace org::esb::lang;
 namespace org {
     namespace esb {
         namespace io {
@@ -66,6 +68,8 @@ public:
                  * @see        java.io.InputStream#read(byte[], int, int)
                  */
                 virtual int read(unsigned char * buffer, int length)=0;
+                virtual int read(vector<Byte>&bytes){};
+                virtual int read(vector<unsigned char>&buffer)=0;
 
                 /**
                  * Returns the number of bytes that can be read (or skipped over) from

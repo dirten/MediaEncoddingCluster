@@ -127,13 +127,12 @@ class UnknownStreamThread:public Runnable{
             if(Socket * client=server.accept()){
 //                cout << "client here"<<endl;
                 InputStream *is=client->getInputStream();
-                char b;
+                vector<unsigned char>b(1);
                 string tmp;
                 Thread::sleep(100);
                 while(is->available()>0){
-                    is->read((unsigned char *)&b,1);
-//                    cout << b << endl;
-                    tmp+=b;
+                    is->read(b);
+                    tmp+=b[0];
                 }
 //                cout << "alles da:"<<tmp.c_str()<<endl;
                 CPPUNIT_ASSERT(strcmp((const char *)"die ist ein Stream test\nhier kommt noch was",tmp.c_str())==0);

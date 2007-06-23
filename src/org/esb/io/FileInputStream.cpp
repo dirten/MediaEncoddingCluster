@@ -51,7 +51,20 @@ int FileInputStream::available(bool isBlocking) {
 
 int FileInputStream::read(unsigned char * buffer, int length) {
     int read=fread((char*)buffer,1, length, file);
-	_filePointer-=read;
+    _filePointer-=read;
+    return read;
+}
+
+int FileInputStream::read(vector<unsigned char>&buffer) {
+    size_t size=buffer.size();
+    buffer.clear();
+    unsigned char tmp_buffer[size];
+    size_t read=fread((char*)tmp_buffer,1, size, file);
+    for( std::size_t ix = 0; ix < read; ++ix )
+    {
+        buffer.push_back(tmp_buffer[ix]);
+    }
+    _filePointer-=read;
     return read;
 }
 

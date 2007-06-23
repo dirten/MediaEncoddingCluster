@@ -55,8 +55,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 liblang_la_LIBADD =
-am__objects_1 = Thread.lo Exception.lo NoSuchElementException.lo \
-	NullPointerException.lo
+am__objects_1 = Byte.lo String.lo Thread.lo Exception.lo \
+	NoSuchElementException.lo NullPointerException.lo
 am_liblang_la_OBJECTS = $(am__objects_1)
 liblang_la_OBJECTS = $(am_liblang_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -179,7 +179,7 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = liblang.la
-SOURCES = Thread.cpp Exception.cpp NoSuchElementException.cpp NullPointerException.cpp
+SOURCES = Byte.cpp String.cpp Thread.cpp Exception.cpp NoSuchElementException.cpp NullPointerException.cpp
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 liblang_la_SOURCES = $(SOURCES)
@@ -254,9 +254,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Byte.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NoSuchElementException.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NullPointerException.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/String.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
 
 .cpp.o:

@@ -4,6 +4,7 @@
 //#include "AVInputStream.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/File.h"
+#include <vector>
 extern "C" {
 #include "avformat.h"
 }
@@ -19,6 +20,7 @@ namespace org{
     	    		int available(bool isBlocking = false);
 	        		long getFileSize();
 		            int read(unsigned char * buffer, int length);
+		            int read(vector<unsigned char>&buffer);
 		            int getStreamCount();
         			InputStream * getStream(int sNumber);
 	        		void close();
