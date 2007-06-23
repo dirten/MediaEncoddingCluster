@@ -29,8 +29,8 @@ class TestSocket: public CppUnit::TestFixture
 	void tearDown();
 	void testConstructor();
 	void testSimpleConnect();
-    void testStream();
-    void testUnknownStreamLength();
+	void testStream();
+	void testUnknownStreamLength();
 };
 
 
@@ -51,7 +51,6 @@ void TestSocket::tearDown(){
 void TestSocket::testConstructor(){
     ServerSocket server();
     CPPUNIT_ASSERT(server);
-
     Socket client();
     CPPUNIT_ASSERT(client);
 }
@@ -68,6 +67,7 @@ class SimpleConnectThread:public Runnable{
             }
             server.close();
         }
+	~SimpleConnectThread(){}
 };
 
 void TestSocket::testSimpleConnect(){
@@ -102,9 +102,9 @@ class StreamThread:public Runnable{
 };
 
 void TestSocket::testStream(){
-    StreamThread * server=new StreamThread();
-    Thread * thread=new Thread(server);
-    thread->start();
+    StreamThread server;
+    Thread thread(&server);
+    thread.start();
     Thread::sleep(100);
     Socket socket("localhost",20000);
     socket.connect();
@@ -113,10 +113,10 @@ void TestSocket::testStream(){
     CPPUNIT_ASSERT(strcmp((char *)buffer,"0123456789")==0);
     socket.getOutputStream()->write((char *)buffer,11);
     socket.close();
-    thread->join();
+    thread.join();
 //    server->close();
-    delete server;
-    delete thread;
+//    delete server;
+//    delete thread;
 }
 
 class UnknownStreamThread:public Runnable{
@@ -143,9 +143,9 @@ class UnknownStreamThread:public Runnable{
 };
 
 void TestSocket::testUnknownStreamLength(){
-    UnknownStreamThread* server=new UnknownStreamThread();
-    Thread * thread=new Thread(server);
-    thread->start();
+    UnknownStreamThread server;
+    Thread thread(&server);
+    thread.start();
 
 
     Thread::sleep(100);
@@ -155,8 +155,8 @@ void TestSocket::testUnknownStreamLength(){
     socket.getOutputStream()->write((char *)buffer.c_str(),buffer.length());
 //	Thread::sleep(500);
     socket.close();
-    thread->join();
+    thread.join();
 //    server->close();
-    delete server;
-    delete thread;
+//    delete server;
+//    delete thread;
 }

@@ -18,15 +18,17 @@ class SocketOutputStream:public OutputStream{
 	}
 
 /******************************************************************************/
+	void write(vector<unsigned char>&buffer){
+	    write((char*)&buffer[0], buffer.size());
+	}
+/******************************************************************************/
 	void write(char * buffer, int len){
 	    int remaining=len, byteCounter=0, sendOpts = 0;
 	    while(remaining>0){
     		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
-//    		int bytes=::write(this->socket->getDescriptor(),buffer,remaining);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    return;
-//		    this->socket->close();
 		}
 		buffer+=bytes;
 		remaining-=bytes;

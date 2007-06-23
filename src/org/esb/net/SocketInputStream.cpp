@@ -57,19 +57,6 @@ namespace org
         }
         
         /******************************************************************************/
-        int read(vector<Byte>&bytes)throw (org::esb::lang::Exception)
-        {
-	    unsigned char buffer[bytes.size()];
-	    size_t counter=read(buffer, bytes.size());
-            for( std::size_t ix = 0; ix < counter; ++ix )
-            {
-                bytes.push_back(buffer[ix]);
-            }
-	    return counter;
-        }
-        
-        /******************************************************************************/
-        /******************************************************************************/
         int read(unsigned char * buffer, int length)throw (org::esb::lang::Exception)
         {
           int  counter=1;

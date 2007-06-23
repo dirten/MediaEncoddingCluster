@@ -37,7 +37,7 @@ PacketInputStream::~PacketInputStream(){
 Packet * PacketInputStream::readPacket(){
     if(_readFrom==1)
     	return readPacketFromFormatIS();
-   	return readPacketFromIS();
+    return readPacketFromIS();
     
 }
 

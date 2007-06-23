@@ -3,6 +3,7 @@
 #include "File.h"
 #include "OutputStream.h"
 #include <iostream>
+#include <vector>
 namespace org {
     namespace esb {
         namespace io {
@@ -18,6 +19,7 @@ public:
                 void write(const char * buffer);
                 void write(char * buffer, int length);
                 void write(const char * buffer, int offset, int length);
+                void write(vector<unsigned char>&buffer);
 private:
                 FILE * _file;
                 void open(const char * pathname, bool append);

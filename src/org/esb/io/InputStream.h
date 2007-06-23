@@ -68,7 +68,6 @@ public:
                  * @see        java.io.InputStream#read(byte[], int, int)
                  */
                 virtual int read(unsigned char * buffer, int length)=0;
-                virtual int read(vector<Byte>&bytes){};
                 virtual int read(vector<unsigned char>&buffer)=0;
 
                 /**

@@ -16,7 +16,7 @@ class TestCommandInputStream: public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestCommandInputStream);
     CPPUNIT_TEST(testOverFileInputStream);
-    CPPUNIT_TEST(testOverSocketInputStream);
+//    CPPUNIT_TEST(testOverSocketInputStream);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -43,15 +43,14 @@ void TestCommandInputStream::tearDown(){
 
 
 void TestCommandInputStream::testOverFileInputStream(){
-    FileInputStream * fis=new FileInputStream("test.command");
-    CommandInputStream * cis=new CommandInputStream(fis);
-    Command * cmd=cis->readCommand();
-    const char * c=cmd->getCommand();
-    CPPUNIT_ASSERT(strcmp("show config",c)==0);
-    delete fis;
-    delete cis;
-	delete cmd;
+    FileInputStream fis("test.command");
+    CommandInputStream cis(&fis);
+    Command cmd=cis.readCommand();
+    string c=cmd.getCommand();
+    CPPUNIT_ASSERT_EQUAL(string("show config"),c);
+//    delete c;
 }
+
 
 class SocketThread:public Runnable{
     public:
@@ -60,16 +59,18 @@ class SocketThread:public Runnable{
             server.bind();
             if(Socket * client=server.accept()){
                 CPPUNIT_ASSERT(client);
-			    CommandInputStream cis(client->getInputStream());
-			    Command * cmd=cis.readCommand();
-			    const char * c=cmd->getCommand();
-				CPPUNIT_ASSERT(strcmp("show config",c)==0);
-				delete cmd;
+		CommandInputStream cis(client->getInputStream());
+		Command cmd=cis.readCommand();
+		string c=cmd.getCommand();
+//		CPPUNIT_ASSERT(c!=NULL);
+		CPPUNIT_ASSERT_EQUAL(string("show config"),c);
+//				delete cmd;
 		client->close();
                 delete client;
             }
             server.close();
         }
+	~SocketThread(){}
 };
 
 void TestCommandInputStream::testOverSocketInputStream(){

@@ -14,9 +14,10 @@ class CommandInputStream : public InputStream{
         int read(unsigned char * buffer,int length);
         int read(vector<unsigned char>&buffer);
         int available(bool isBlocking=false);
-        Command * readCommand();
+        Command & readCommand();
     private:
         InputStream * _source;
+	Command _command;
 };
 
 }}}

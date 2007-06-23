@@ -63,15 +63,16 @@ void ServerSocket::init()
 }
 
 /******************************************************************************/
-void ServerSocket::bind()throw (Exception)
+void ServerSocket::bind()
 {
   this->init();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
     perror("bind");
+    close();
     string error="ServerSocket:bind - ";
     error+=strerror(errno);
-    throw Exception(__FILE__, __LINE__, error.c_str() );
+//    throw Exception(__FILE__, __LINE__, error.c_str() );
   }
   listen(server_socketFd,1024);
 }
@@ -79,8 +80,9 @@ void ServerSocket::bind()throw (Exception)
 /******************************************************************************/
 Socket* ServerSocket::accept()
 {
+//  if(server_socketFd>0){
   sockaddr_in client;
-  socklen_t clilen=0;
+  socklen_t clilen=sizeof(sockaddr_in);
   memset(&client, 0, sizeof(client));
   int client_socketFd=::accept(this->server_socketFd,(struct sockaddr*)&client,&clilen);
   if(client_socketFd<0)
@@ -94,9 +96,13 @@ Socket* ServerSocket::accept()
 /******************************************************************************/
 void ServerSocket::close()
 {
+    if(server_socketFd>0){
+    ::shutdown( this->server_socketFd, SHUT_RDWR );
     #if defined(WIN32)
 	::closesocket(server_socketFd);    
     #else
 	::close(server_socketFd);
     #endif
+    server_socketFd=-1;
+    }
 }

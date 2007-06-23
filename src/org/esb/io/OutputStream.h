@@ -1,6 +1,8 @@
 #ifndef ORG_ESB_IO_OUTPUTSTREAM
 #define ORG_ESB_IO_OUTPUTSTREAM
 #include "org/esb/lang/Exception.h"
+#include <vector>
+using namespace std;
 using namespace org::esb::lang;
 namespace org {
     namespace esb {
@@ -52,6 +54,7 @@ public:
                  * @see        java.io.OutputStream#write(byte[], int, int)
                  */
                 virtual void write(char * buffer, int length)=0;
+                virtual void write(vector<unsigned char>&buffer)=0;
 
                 /**
                  * Writes <code>len</code> bytes from the specified byte array 

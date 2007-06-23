@@ -35,21 +35,21 @@ void TestFileOutputStream::tearDown(){
 
 void TestFileOutputStream::testSimple(){
 
-    FileOutputStream * out=new FileOutputStream("test.file");
+    FileOutputStream out("test.file");
     char * tmp="bla\ntest";
-    out->write(tmp, strlen(tmp));
-    delete out;
+    out.write(tmp, strlen(tmp));
+    out.close();
 
 
-    FileInputStream * in=new FileInputStream(&File("test.file"));
-    int bytes=in->available();
-
+    FileInputStream in("test.file");
+    int bytes=in.available();
+    cout << "Bytes:"<<bytes<<endl;
     char * buffer=new char[bytes+1];
     memset(buffer,0,bytes+1);
-    in->read((unsigned char *)buffer, bytes);
-    CPPUNIT_ASSERT(strcmp(tmp,buffer)==0);    
+    in.read((unsigned char *)buffer, bytes);
+    cout << "Buffer"<<buffer;
+    CPPUNIT_ASSERT_EQUAL(string(tmp),string(buffer));    
     delete []buffer;
-    delete in;
     
 }
 

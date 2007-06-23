@@ -96,6 +96,7 @@ void Socket::connect() throw (Exception)
 /******************************************************************************/
 void Socket::close()
 {
+    if(!isClosed()){
     if(this->inputStream!=NULL){
 	delete this->inputStream;
 	this->inputStream=NULL;
@@ -112,7 +113,8 @@ void Socket::close()
 	::close(this->socketFd);
     #endif
     }
-  this->socketFd=0;
+  this->socketFd=-1;
+  }
 }
 /******************************************************************************/
 bool Socket::isClosed()

@@ -2,7 +2,8 @@
 #define ORG_ESB_HIVE_COMMAND_H
 #define TEXT_MODE 1
 #define BINARY_MODE 2
-
+#include <string>
+using namespace std;
 namespace org{
 	namespace esb{
 		namespace hive{
@@ -11,14 +12,15 @@ namespace org{
                     Command();
                     ~Command();
                     void setCommand(const char * com);
-                    const char * getCommand();
+                    void setCommand(string & command);
+                    string& getCommand();
                     void setData(const void * data);
                     const void * getData();
                     void setDataLength(int datalength);
                     int getDataLength();
                     bool getMode();
                 private:
-                    const char * _command;
+                    string _command;
                     const void * _data;
                     int _datalength;
                     bool _mode;

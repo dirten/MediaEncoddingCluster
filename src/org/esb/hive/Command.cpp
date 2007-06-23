@@ -8,15 +8,18 @@ Command::Command(){
 
 
 Command::~Command(){
-	delete []_command;
+//	delete []_command;
 
 }
 
 void Command::setCommand(const char * command){
     _command=command;
 }
+void Command::setCommand(string & command){
+    _command=string(command);
+}
 
-const char * Command::getCommand(){
+string & Command::getCommand(){
     return _command;
 }
 
