@@ -12,6 +12,12 @@ class Unknown : public ProtocolCommand{
     public:
 	Unknown(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
+	}
+	Unknown(InputStream * is, OutputStream * os){
+	    this->is=is;
+	    this->os=os;
 	}
 	
 	~Unknown(){}
@@ -26,7 +32,7 @@ class Unknown : public ProtocolCommand{
 	    string error="Unknown Command:";
             error+=command;
             error+="\n";
-            socket->getOutputStream()->write((char*)error.c_str(),error.length());
+            os->write((char*)error.c_str(),error.length());
 //            delete error;
 	}
 };

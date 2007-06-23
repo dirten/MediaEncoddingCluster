@@ -8,6 +8,12 @@ class ShutdownHive : public ProtocolCommand{
     public:
 	ShutdownHive(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
+	}
+	ShutdownHive(InputStream * is, OutputStream * os){
+	    this->is=is;
+	    this->os=os;
 	}
 	
 
@@ -25,19 +31,19 @@ class ShutdownHive : public ProtocolCommand{
 
 	void process(char * command){
 	    string msg="Please wait while stopping HiveControl\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+            os->write((char*)msg.c_str(),msg.length());
 	    try{
 		HiveControl::getInstance()->shutdown();
 		msg="HiveControl shutdown\n";
 	    }catch(Exception *ex){
 		msg=ex->getStackTraceString();
 	    }
-    	    socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+    	    os->write((char*)msg.c_str(),msg.length());
 	}
 
 	void printHelp(){
 	    string msg="shutdown\t\t[Stopps the server]\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
+            os->write((char*)msg.c_str(),msg.length());	
 	}
 
 };

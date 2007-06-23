@@ -1,6 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/PacketInputStream.h"
+#include <iostream>
 //#include "org/esb/av/Codec.h"
 //#include "avformat.h"
 using namespace org::esb::io;
@@ -26,7 +28,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
 
 
 void TestFormatInputStream::setUp(){
-//    file=new File("/media/video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     file=new File("test.avi");
 }
 
@@ -41,17 +42,20 @@ void TestFormatInputStream::tearDown(){
 void TestFormatInputStream::testConstructor(){
     CPPUNIT_ASSERT(file);
     CPPUNIT_ASSERT(file->canRead());
-    FormatInputStream *fis=new FormatInputStream(file);
-    FormatInputStream *fis2=new FormatInputStream(file);
-    CPPUNIT_ASSERT(fis->getStreamCount()==2);
-/*
-    AVInputStream * avis=fis->getStream(1);
-    Codec * codec=avis->getCodec();
-    cout << "CodecType:"<<codec->getCodecType()<<endl;
-    cout << "CodecName:"<<codec->getCodecName()<<endl;
-    delete avis;    
-*/
-    delete fis;
-    delete fis2;
+    FormatInputStream fis(file);
+//    FormatInputStream *fis2=new FormatInputStream(file);
+    CPPUNIT_ASSERT(fis.getStreamCount()==2);
+    PacketInputStream pis(fis.getStream(1));
+    int a=0;
+    while(true){
+	Packet p=pis.readPacket();
+	if(p.data==NULL){
+	    break;
+	}
+	++a;
+//	if(a%100==0)
+//	    cout <<"\r"<< a << "Packet";
+//	cout.flush();
+    }
 
 }

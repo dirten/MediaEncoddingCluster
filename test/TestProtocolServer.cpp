@@ -16,9 +16,11 @@ int PORT=20005;
 class SocketThread2:public Runnable{
     public:
 	ServerSocket * serverSocket;
+
 	~SocketThread2(){
 	    delete serverSocket;	
 	}
+
         void run(){
         cout << "Waiting for client"<<endl;
 	    serverSocket=new ServerSocket(PORT);
@@ -26,8 +28,8 @@ class SocketThread2:public Runnable{
 	    if(Socket * clientSocket=serverSocket->accept()){
 		    cerr << "Client here"<<endl;
 		    ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-            protoServer->run();
-		    delete protoServer;
+        	    protoServer->run();
+//		    delete protoServer;
 //		    Thread thread(protoServer);
 //		    thread.start();
 //		    thread.setAutoDelete(true);
@@ -42,8 +44,8 @@ class TestProtocolServer: public CppUnit::TestFixture
 
     CPPUNIT_TEST_SUITE(TestProtocolServer);
     CPPUNIT_TEST(testSimple);
-//    CPPUNIT_TEST(testConnect);
-//    CPPUNIT_TEST(testShowConfig);
+    CPPUNIT_TEST(testConnect);
+    CPPUNIT_TEST(testShowConfig);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -68,22 +70,22 @@ TestProtocolServer::~TestProtocolServer(){
 }
 
 void TestProtocolServer::setUp(){
-//    Config::init("cluster.cfg");
-/*    
+    Config::init("cluster.cfg");
+    
     cerr << "SetUpStart"<<endl;
     server=new SocketThread2();
     serverThread=new Thread(server);
     serverThread->start();
     cerr << "SetUpEnd"<<endl;
     Thread::sleep(1500);
-*/
+
 }
 
 
 void TestProtocolServer::tearDown(){
-//    delete serverThread;
-//    delete server;
-//    Thread::sleep(1500);
+    delete serverThread;
+    delete server;
+    Thread::sleep(1500);
 }
 
 

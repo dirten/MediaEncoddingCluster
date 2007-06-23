@@ -36,7 +36,7 @@ void Config::init(char * filename)
     cout << "Configurationfile not found !!!!" <<endl;
     exit(1);
   }
-  printf("Configuration Loaded from %s\n", filename);
+//  printf("Configuration Loaded from %s\n", filename);
   properties=new SimpleProperties();
   while (fgets(buffer,255,fp) != NULL)
   {

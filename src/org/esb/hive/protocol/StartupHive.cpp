@@ -9,6 +9,12 @@ class StartupHive : public ProtocolCommand{
     public:
 	StartupHive(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
+	}
+	StartupHive(InputStream * is, OutputStream * os){
+	    this->is=is;
+	    this->os=os;
 	}
 	
 	~StartupHive(){}
@@ -25,19 +31,19 @@ class StartupHive : public ProtocolCommand{
 
 	void process(char * command){
 	    string msg="Please wait while HiveControl startup\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+            os->write((char*)msg.c_str(),msg.length());
 	    try{
 		HiveControl::getInstance()->startup();
 		msg="HiveControl is running\n";
 	    }catch(Exception *ex){
 		msg=ex->getStackTraceString();
 	    }
-    	    socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+    	    os->write((char*)msg.c_str(),msg.length());
 	}
 
 	void printHelp(){
 	    string msg="startup\t\t\t[Startup the server]\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
+            os->write((char*)msg.c_str(),msg.length());	
 	}
 
 };

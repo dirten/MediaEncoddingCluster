@@ -11,8 +11,10 @@ Packet::Packet(){
 }
 
 Packet::~Packet(){
+/*
     if(data)
         av_free(data);
+*/
 }
 
 uint8_t * Packet::getData(){return data;}

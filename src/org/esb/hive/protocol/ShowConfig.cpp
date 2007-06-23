@@ -16,8 +16,13 @@ class ShowConfig:public ProtocolCommand{
 
 	ShowConfig(Socket * socket){
 	    this->socket=socket;
+	    this->is=socket->getInputStream();
+	    this->os=socket->getOutputStream();
 	}
-
+	ShowConfig(InputStream * is, OutputStream * os){
+	    this->is=is;
+	    this->os=os;
+	}
 
 	int isResponsible(char * command){
 	    if(strstr(command,"show config")>0){
@@ -49,12 +54,12 @@ class ShowConfig:public ProtocolCommand{
 		    msg+="\n";
 		}
 	    }
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());
+            os->write((char*)msg.c_str(),msg.length());
 	}
 
 	void printHelp(){
 	    string msg="show config [key]\t[Shows the Configuration from the server]\n";
-            socket->getOutputStream()->write((char*)msg.c_str(),msg.length());	
+            os->write((char*)msg.c_str(),msg.length());	
 	}
 
 };

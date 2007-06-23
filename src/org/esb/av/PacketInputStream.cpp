@@ -31,32 +31,29 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
 PacketInputStream::~PacketInputStream(){
     if(_readFrom==1)
-  		avcodec_close(_codecCtx);
+	avcodec_close(_codecCtx);
 }
 
-Packet * PacketInputStream::readPacket(){
+Packet & PacketInputStream::readPacket(){
     if(_readFrom==1)
     	return readPacketFromFormatIS();
     return readPacketFromIS();
     
 }
 
-Packet * PacketInputStream::readPacketFromFormatIS(){
-    Packet * packet=new Packet();
-    packet->data=NULL;
+Packet & PacketInputStream::readPacketFromFormatIS(){
 
     do {
-        if(packet->data!=NULL)
-            av_free_packet(packet);
-            if(av_read_packet(_formatCtx, packet)<0){
-                delete packet;
-                return NULL;
+        if(_packet.data!=NULL)
+            av_free_packet(&_packet);
+            if(av_read_packet(_formatCtx, &_packet)<0){
+		break;
             }
-        } while(packet->stream_index!=_streamIndex);
-    return packet;
+        } while(_packet.stream_index!=_streamIndex);
+    return _packet;
 }
 
-Packet * PacketInputStream::readPacketFromIS(){
+Packet & PacketInputStream::readPacketFromIS(){
 	char pts[21];
 	char dts[21];
 	char size[11];
@@ -84,21 +81,25 @@ Packet * PacketInputStream::readPacketFromIS(){
 	uint8_t * data=(uint8_t*)malloc(atoi(size));
 	memset(data,0,atoi(size));
 	read((unsigned char *)data,atoi(size));
-	Packet * packet=new Packet();
-	packet->pts=atoi(pts);
-	packet->dts=atoi(dts);
-	packet->size=atoi(size);
-	packet->stream_index=atoi(sIndex);
-	packet->flags=atoi(flags);
-	packet->duration=atoi(duration);
-	packet->pos=atoi(pos);
-	packet->data=data;
+//	Packet * packet=new Packet();
+	_packet.pts=atoi(pts);
+	_packet.dts=atoi(dts);
+	_packet.size=atoi(size);
+	_packet.stream_index=atoi(sIndex);
+	_packet.flags=atoi(flags);
+	_packet.duration=atoi(duration);
+	_packet.pos=atoi(pos);
+	_packet.data=data;
 	
-	return packet;
+	return _packet;
 }
 
 int PacketInputStream::read(unsigned char * buffer, int length){
     return _source->read(buffer, length);
+}
+
+int PacketInputStream::read(vector<unsigned char>&buffer){
+    return _source->read(buffer);
 }
 
 int PacketInputStream::available(bool isBlocking){

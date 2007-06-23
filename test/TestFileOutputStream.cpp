@@ -43,11 +43,9 @@ void TestFileOutputStream::testSimple(){
 
     FileInputStream in("test.file");
     int bytes=in.available();
-    cout << "Bytes:"<<bytes<<endl;
     char * buffer=new char[bytes+1];
     memset(buffer,0,bytes+1);
     in.read((unsigned char *)buffer, bytes);
-    cout << "Buffer"<<buffer;
     CPPUNIT_ASSERT_EQUAL(string(tmp),string(buffer));    
     delete []buffer;
     
