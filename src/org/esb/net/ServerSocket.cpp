@@ -3,69 +3,77 @@
 #include "org/esb/net/ServerSocket.h"
 #include "org/esb/lang/Exception.h"
 using namespace std;
-using namespace org::esb::net;
-using namespace org::esb::lang;
+using namespace
+  org::esb::net;
+using namespace
+  org::esb::lang;
 
 /******************************************************************************/
-ServerSocket::~ServerSocket()
+ServerSocket::~ServerSocket ()
 {
-  this->close();
+  this->close ();
 }
 
 
 /******************************************************************************/
-ServerSocket::ServerSocket()
+ServerSocket::ServerSocket ()
 {
-    ServerSocket(0);
-}
-/******************************************************************************/
-ServerSocket::ServerSocket(int port)
-{
-  this->hostname="localhost";
-  this->port=port;
-  this->server_socketFd=0;
-  memset(&this->socketaddr, 0, sizeof(this->socketaddr));
-}
-
-
-/******************************************************************************/
-void ServerSocket::setHostname(char*name)
-{
-  this->hostname=name;
+  ServerSocket (0);
 }
 
 /******************************************************************************/
-void ServerSocket::setPort(int p)
+ServerSocket::ServerSocket (int port)
 {
-  this->port=p;
+  this->hostname = "localhost";
+  this->port = port;
+  this->server_socketFd = 0;
+  memset (&this->socketaddr, 0, sizeof (this->socketaddr));
+}
+
+
+/******************************************************************************/
+void
+ServerSocket::setHostname (char *name)
+{
+  this->hostname = name;
 }
 
 /******************************************************************************/
-char * ServerSocket::getHostname()
+void
+ServerSocket::setPort (int p)
+{
+  this->port = p;
+}
+
+/******************************************************************************/
+char *
+ServerSocket::getHostname ()
 {
   return this->hostname;
 }
 
 /******************************************************************************/
-int ServerSocket::getPort()
+int
+ServerSocket::getPort ()
 {
   return this->port;
 }
 
 
 /******************************************************************************/
-void ServerSocket::init()
+void
+ServerSocket::init ()
 {
-  this->server_socketFd=::socket(AF_INET,SOCK_STREAM,0);
-  socketaddr.sin_family=AF_INET;
-  socketaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-  socketaddr.sin_port=htons(this->port);
+  this->server_socketFd =::socket (AF_INET, SOCK_STREAM, 0);
+  socketaddr.sin_family = AF_INET;
+  socketaddr.sin_addr.s_addr = htonl (INADDR_ANY);
+  socketaddr.sin_port = htons (this->port);
 }
 
 /******************************************************************************/
 void ServerSocket::bind()
 {
-  this->init();
+  this->init ();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
     perror("bind");
@@ -78,7 +86,8 @@ void ServerSocket::bind()
 }
 
 /******************************************************************************/
-Socket* ServerSocket::accept()
+Socket *
+ServerSocket::accept ()
 {
 //  if(server_socketFd>0){
   sockaddr_in client;
@@ -94,7 +103,8 @@ Socket* ServerSocket::accept()
 }
 
 /******************************************************************************/
-void ServerSocket::close()
+void
+ServerSocket::close ()
 {
     if(server_socketFd>0){
     ::shutdown( this->server_socketFd, SHUT_RDWR );

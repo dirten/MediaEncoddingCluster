@@ -13,6 +13,7 @@ namespace org{
 		        ~FrameInputStream();
 		        int available(bool isBlocking = false);
 		        int read(unsigned char * buffer, int length);
+		        int read(vector<unsigned char>&buffer);
 		        Frame * readFrame();
 		        void close();
 		    private:

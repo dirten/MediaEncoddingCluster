@@ -38,7 +38,7 @@ class ShutdownHive : public ProtocolCommand{
 	    }catch(Exception *ex){
 		msg=ex->getStackTraceString();
 	    }
-    	    os->write((char*)msg.c_str(),msg.length());
+    	os->write((char*)msg.c_str(),msg.length());
 	}
 
 	void printHelp(){

@@ -11,6 +11,7 @@ class CharArrayOutputStream: public OutputStream{
 	~CharArrayOutputStream();
 	void write(char * buffer, int length);
 	void write(vector<unsigned char>&buffer);
-};
+
+      };
 }}}
 #endif

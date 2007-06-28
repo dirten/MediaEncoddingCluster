@@ -11,6 +11,7 @@ namespace org{
 					~PacketOutputStream();
 					void writePacket(Packet * packet);
 					void write(char * buffer, int length);
+					void write(vector<unsigned char>&buffer);
 				private:
 					OutputStream * _target;
 			};

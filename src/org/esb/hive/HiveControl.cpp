@@ -21,6 +21,8 @@ using namespace org::esb::hive;
 	cout<< "delete HiveControl Instance"<<endl;
 	delete status;
 	status=0;
+	delete instance;
+	instance=0;
     }
 
     HiveControl* HiveControl::getInstance(){
@@ -53,7 +55,7 @@ using namespace org::esb::hive;
 	    status->setProperty("running","false");
 	    result=true;
 	}else{
-	    throw new Exception( __FILE__, __LINE__,"HiveControl is not running");
+	    throw Exception( __FILE__, __LINE__,"HiveControl is not running");
 	}
 	return result;
     }

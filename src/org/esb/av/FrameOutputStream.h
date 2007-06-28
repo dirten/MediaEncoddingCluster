@@ -12,6 +12,7 @@ namespace org{
                     ~FrameOutputStream();
                     void writeFrame(Frame * frame);
                     void write(char * buffer, int length);
+                    void write(vector<unsigned char>&buffer);
                 private:
                     OutputStream * outStream;
             };

@@ -47,5 +47,8 @@ void PacketOutputStream::writePacket(Packet * packet){
 void PacketOutputStream::write(char * buffer, int length){
 	_target->write(buffer, length);
 }
+void PacketOutputStream::write(vector<unsigned char>&buffer){
+	_target->write(buffer);
+}
 
 

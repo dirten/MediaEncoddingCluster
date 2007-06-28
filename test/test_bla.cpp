@@ -25,13 +25,14 @@ int main(){
     Codec * codec=pis->getCodec();
     int a=0;
 //    int duration=pis->getDuration();
-    Packet * packet=NULL;
+    Packet packet;
     Frame * frame;
-    while((packet=pis->readPacket())!=NULL&&a<1){
-
+    while(a<1){
+        packet=pis->readPacket();
+        if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
 
-        frame=new Frame(packet, codec);
+        frame=new Frame(&packet, codec);
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
         /*
 //        cout << "FrameSize:"<<frame->getSize()<<endl;
@@ -54,7 +55,7 @@ int main(){
         a++;
         delete rgb;
         delete frame;
-        delete packet;
+//        delete packet;
     }
 	
     FileInputStream * is =new FileInputStream("/tmp/hive/test.0.raw");
@@ -74,7 +75,7 @@ int main(){
 	delete fr;
 	
 	    
-    delete packet;
+//    delete packet;
     delete codec;
     delete pis;
     delete fis;

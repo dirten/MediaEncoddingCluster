@@ -34,3 +34,6 @@ void FrameOutputStream::writeFrame(Frame * frame){
 void FrameOutputStream::write(char * buffer, int length){
     outStream->write(buffer, length);
 }
+void FrameOutputStream::write(vector<unsigned char>&buffer){
+    outStream->write(buffer);
+}

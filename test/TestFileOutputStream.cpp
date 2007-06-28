@@ -60,6 +60,7 @@ void TestFileOutputStream::testSingleByte(){
 
 
     FileInputStream * in=new FileInputStream(&File("test.file"));
+
     char  buffer;
     string read;
     while(in->available()>0){

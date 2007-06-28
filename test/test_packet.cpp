@@ -21,29 +21,31 @@ int main(){
     PacketInputStream pis(fis.getStream(0));
 	pis.skip(155000);
 		
-	Packet * packet;
+	Packet packet;
 	int a=0;
-	while((packet=pis.readPacket())&&a==0){
+	while(a==0){
+	    packet=pis.readPacket();
+	    if(packet.data==NULL)break;
 	    char filename[32];
         sprintf(filename,"/tmp/hive/test.%d.packet",a);
         FileOutputStream out(filename);
         PacketOutputStream pout(&out);
-		pout.writePacket(packet);
-		delete packet;
+		pout.writePacket(&packet);
+//		delete packet;
 		a++;	
 	}
 
-	delete packet;
+//	delete packet;
 
 
 	FileInputStream fileis("/tmp/hive/test.0.packet");
 	PacketInputStream pis2(&fileis);
-	Packet*rp=pis2.readPacket();
+	Packet rp=pis2.readPacket();
         FileOutputStream out("/tmp/hive/test.test.packet");
         PacketOutputStream pout(&out);
-		pout.writePacket(rp);
+		pout.writePacket(&rp);
 
-	delete rp;
+//	delete rp;
 	
 	
 }

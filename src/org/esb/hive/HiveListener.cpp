@@ -32,17 +32,6 @@ class HiveListener:public Runnable{
 	}
 
 	void startListener(){
-	    server=new ServerSocket(listenerPort);
-	    server->bind();
-	    for(;Socket * clientSocket=server->accept();){
-            clientSocket->close();
-            /*
-			HiveClientHandler * client=new HiveClientHandler(clientSocket);
-			this->addClient(client);
-			Thread thread(client);
-			thread.start();
-            */
-	    }
 	}
 /*
 	void addClient(HiveClientHandler * client){

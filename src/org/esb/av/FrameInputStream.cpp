@@ -51,6 +51,10 @@ int FrameInputStream::read(unsigned char * buffer, int length){
 	return _source->read(buffer, length);
 }
 
+int FrameInputStream::read(vector<unsigned char>&buffer){
+	return _source->read(buffer);
+}
+
 void FrameInputStream::close(){
 	
 }

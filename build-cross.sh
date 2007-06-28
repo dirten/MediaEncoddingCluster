@@ -82,8 +82,8 @@ download_files()
 	download_file "$BINUTILS_ARCHIVE" "$MINGW_URL"
 	download_file "$MINGW_ARCHIVE" "$MINGW_URL"
 	download_file "$W32API_ARCHIVE" "$MINGW_URL"
-	download_file "$OPENGL_ARCHIVE" "$SDL_URL"
-	download_file "$DIRECTX_ARCHIVE" "$SDL_URL"
+#	download_file "$OPENGL_ARCHIVE" "$SDL_URL"
+#	download_file "$DIRECTX_ARCHIVE" "$SDL_URL"
 }
 
 install_libs()
