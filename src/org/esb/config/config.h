@@ -26,6 +26,7 @@ namespace org
       {
       public:
         static void init(char*filename);
+        static void close();
         static char * getProperty( char * key);
         static Properties * getProperties();
       private:

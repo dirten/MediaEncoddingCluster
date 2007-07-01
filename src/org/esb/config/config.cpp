@@ -26,6 +26,9 @@ string trim(string & s, string & drop = *new string(" ")){
     return r.erase(0,r.find_first_not_of(drop));
 
 }
+void Config::close(){
+    delete properties;
+}
 
 void Config::init(char * filename)
 {
@@ -42,6 +45,7 @@ void Config::init(char * filename)
   {
     parseLine(buffer);
   }
+  fclose(fp);
 }
 
 /**
@@ -51,6 +55,7 @@ char * Config::getProperty(char * key)
 {
   return (char*)properties->getProperty(key);
 }
+
 Properties * Config::getProperties()
 {
   return properties;

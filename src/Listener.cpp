@@ -15,8 +15,8 @@ int main(){
     server->bind();
     for(;Socket * clientSocket=server->accept();){
 	    ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-		Thread thread(protoServer);
-		thread.start();
+	    Thread thread(protoServer);
+	    thread.start();
     }
 }
 
