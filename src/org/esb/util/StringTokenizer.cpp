@@ -120,8 +120,7 @@ std::string StringTokenizer::nextToken(void)
         // Found a token, count it, if the pos of the next delim is npos
         // then we set length to copy to npos so that all the remianing
         // portion of the string is copied, otherwise we set it to the 
-        return str.substr( lastPos, 
-                           pos == string::npos ? pos : pos-lastPos );
+        return str.substr( lastPos, pos == string::npos ? pos : pos-lastPos );
     }
     else
     {

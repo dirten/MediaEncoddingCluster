@@ -65,14 +65,14 @@ void Config::parseLine(const char*line)
 {
   if(strncmp(line,"#",1)!=0&&strlen(line)>0)
   {
-    StringTokenizer * st=new StringTokenizer(line,"=");
-    if(st->countTokens()==2){
-	string key=st->nextToken();
-	string val=st->nextToken();
+    StringTokenizer st(line,"=");
+    if(st.countTokens()==2){
+	string key=st.nextToken();
+	string val=st.nextToken();
 	char *delim="\n";
 	properties->setProperty(strtok((char*)key.c_str(),delim),strtok((char*)val.c_str(),delim));
     }
-    delete st;
+//    delete st;
   }
 }
 //}}}

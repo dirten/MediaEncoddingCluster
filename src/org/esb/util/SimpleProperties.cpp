@@ -4,11 +4,11 @@
 #include <map>
 #include <string>
 #include <org/esb/util/Properties.h>
+//class LineReader(org::esb::io::InputStream);
 
 namespace org{
 namespace esb{
 namespace util{
-    
     /**
      * Basic implementation of the Properties interface.
      */
@@ -156,6 +156,26 @@ namespace util{
         virtual void clear(){
             properties.clear();
         }
+        
+        virtual void load(org::esb::io::InputStream * is){
+            LineReader lineReader(is);
+            
+        }
+        
+        private:
+            class LineReader{
+            private:
+                org::esb::io::InputStream * _is;
+             public:
+                LineReader(org::esb::io::InputStream * is){
+                    _is=is;
+                }
+                string readLine(){
+                
+            
+                }
+            };
+
     };
     
 }}}
