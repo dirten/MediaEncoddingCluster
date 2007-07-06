@@ -55,6 +55,11 @@ int FileInputStream::read(unsigned char * buffer, int length) {
     return read;
 }
 
+int FileInputStream::read() {
+	read((unsigned char *)&_byte,1);
+    return _byte;
+}
+
 int FileInputStream::read(vector<unsigned char>&buffer) {
     size_t size=buffer.size();
     buffer.clear();

@@ -12,6 +12,7 @@ public:
 		int available(bool isBlocking=false);
 		int read(unsigned char * buffer, int length);
 		int read(vector<unsigned char>&buffer);
+		int read();
 private:
                 char * _inPointer;
                 long _length;

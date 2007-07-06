@@ -15,6 +15,7 @@ class PacketInputStream: public InputStream{
         Packet&readPacket();
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
+        int read();
         int available(bool blocking=false);
         uint64_t getDuration();
         Codec * getCodec();

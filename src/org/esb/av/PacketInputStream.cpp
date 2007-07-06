@@ -98,6 +98,10 @@ int PacketInputStream::read(unsigned char * buffer, int length){
     return _source->read(buffer, length);
 }
 
+int PacketInputStream::read(){
+    return _source->read();
+}
+
 int PacketInputStream::read(vector<unsigned char>&buffer){
     return _source->read(buffer);
 }

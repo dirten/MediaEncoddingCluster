@@ -21,6 +21,7 @@ namespace org{
 	        		long getFileSize();
 		            int read(unsigned char * buffer, int length);
 		            int read(vector<unsigned char>&buffer);
+		            int read();
 		            int getStreamCount();
         			InputStream * getStream(int sNumber);
 	        		void close();

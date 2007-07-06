@@ -17,7 +17,8 @@ cpp_unit_SOURCES=cpp_unit.cpp \
                 TestFileOutputStream.cpp \
                 TestSocket.cpp \
                 TestProtocolServer.cpp \
-                TestProtocolCommands.cpp 
+                TestProtocolCommands.cpp \
+                TestProperties.cpp
                 
                 
                 

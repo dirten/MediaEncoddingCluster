@@ -43,11 +43,13 @@ public:
                 int available(bool i=false);
                 int read(unsigned char * buffer, int length);
                 int read(vector<unsigned char>&buffer);
+                int read();
                 void close();
 private:
                 void open(const char * name)throw(org::esb::lang::Exception);
                 std::FILE * file;
                 long _filePointer;
+                uint8_t _byte;
             };
         }
     }

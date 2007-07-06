@@ -30,6 +30,7 @@ namespace org
       {
       private:
         Socket * socket;
+        uint8_t byte;
       public:
         /******************************************************************************/
         ~SocketInputStream()
@@ -40,6 +41,7 @@ namespace org
         SocketInputStream(Socket * socket)
         {
           this->socket=socket;
+		  byte=-1;
         }
 
         /******************************************************************************/
@@ -54,6 +56,13 @@ namespace org
                 buffer.push_back(tmp_buffer[ix]);
             }
 	    return counter;
+        }
+
+        /******************************************************************************/
+        int read()throw (org::esb::lang::Exception)
+        {
+			read((unsigned char*)&byte,1);
+	    	return byte;
         }
         
         /******************************************************************************/

@@ -53,6 +53,9 @@ namespace org {
                 return formatCtx->file_size;
             }
 
+            int FormatInputStream::read() {
+                return 0;
+            }
             int FormatInputStream::read(unsigned char * buffer, int length) {
                 return 0;
             }

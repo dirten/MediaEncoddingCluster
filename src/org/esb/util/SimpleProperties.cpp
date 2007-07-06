@@ -3,9 +3,11 @@
 
 #include <map>
 #include <string>
+#include <iostream>
 #include <org/esb/util/Properties.h>
+#include <org/esb/util/StringTokenizer.h>
 //class LineReader(org::esb::io::InputStream);
-
+using namespace std;
 namespace org{
 namespace esb{
 namespace util{
@@ -159,23 +161,38 @@ namespace util{
         
         virtual void load(org::esb::io::InputStream * is){
             LineReader lineReader(is);
-            
+            string line=lineReader.readLine();
+
+    		StringTokenizer st(line,"=");
+    		if(st.countTokens()==2){
+				string key=st.nextToken();
+				string val=st.nextToken();
+				setProperty(key, val);
+//            	cout << "Key:"<<key <<"\tVal:"<<val<< endl;
+			}
         }
         
         private:
             class LineReader{
             private:
                 org::esb::io::InputStream * _is;
+                string _line;
              public:
                 LineReader(org::esb::io::InputStream * is){
                     _is=is;
                 }
                 string readLine(){
-                
-            
+                	char c;
+                	while((c=_is->read())){
+                		_line+=c;
+                		if(c=='\n'){
+							_line[_line.size()-1]='\0';
+                			break;
+                		}
+                	}
+                return _line;
                 }
             };
-
     };
     
 }}}

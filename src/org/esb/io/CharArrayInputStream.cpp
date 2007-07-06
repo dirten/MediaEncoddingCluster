@@ -16,6 +16,9 @@ int CharArrayInputStream::available(bool isBlocking){
 int CharArrayInputStream::read(unsigned char * buffer, int length){
     return 0;
 }
+int CharArrayInputStream::read(){
+    return 0;
+}
 
 int CharArrayInputStream::read(vector<unsigned char>&buffer){
     return 0;

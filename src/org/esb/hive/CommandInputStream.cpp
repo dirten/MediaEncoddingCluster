@@ -35,6 +35,10 @@ int CommandInputStream::read(vector<unsigned char>&buffer){
     return _source->read(buffer);
 }
 
+int CommandInputStream::read(){
+    return _source->read();
+}
+
 int CommandInputStream::read(unsigned char * buffer, int length){
     return _source->read(buffer,length);
 }

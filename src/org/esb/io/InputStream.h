@@ -69,6 +69,7 @@ public:
                  */
                 virtual int read(unsigned char * buffer, int length)=0;
                 virtual int read(vector<unsigned char>&buffer)=0;
+                virtual int read()=0;
 
                 /**
                  * Returns the number of bytes that can be read (or skipped over) from
