@@ -88,7 +88,7 @@ void Socket::init()
 void Socket::connect() throw (Exception)
 {
   this->init();
-  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
+//  inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
   ::connect(this->socketFd,(struct sockaddr*)&this->socketaddr,sizeof(this->socketaddr));
   
 }
@@ -106,7 +106,7 @@ void Socket::close()
 	this->outputStream=NULL;
     }
     if(!isClosed()){
-	::shutdown( this->socketFd, SHUT_RDWR );
+//	::shutdown( this->socketFd, SHUT_RDWR );
     #if defined(WIN32)
 	::closesocket(this->socketFd);    
     #else

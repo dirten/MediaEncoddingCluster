@@ -52,26 +52,28 @@ bool File::canRead() {
     //                struct stat attribute=getStat(getPath());
     struct stat attribute;
     if(stat(getPath(), &attribute)==0) {
-
+    #ifndef __MINGW32__
         uid_t uid=getuid();
         gid_t gid=getgid();
         return ((attribute.st_mode&S_IRUSR&&attribute.st_uid==uid)
                 ||(attribute.st_mode&S_IRGRP&&attribute.st_gid==gid)
                 ||attribute.st_mode&S_IROTH);
+    #endif    
     } else {
         return false;
     }
 }
 
 bool File::canWrite() {
-    //                struct stat attribute=getStat(getPath());
     struct stat attribute;
     if(stat(getPath(), &attribute)==0) {
+    #ifndef __MINGW32__
         uid_t uid=getuid();
         gid_t gid=getgid();
         return ((attribute.st_mode&S_IWUSR&&attribute.st_uid==uid)
                 ||(attribute.st_mode&S_IWGRP&&attribute.st_gid==gid)
                 ||attribute.st_mode&S_IWOTH);
+    #endif
     } else {
         return false;
     }

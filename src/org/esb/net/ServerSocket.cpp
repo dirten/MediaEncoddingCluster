@@ -107,7 +107,7 @@ void
 ServerSocket::close ()
 {
     if(server_socketFd>0){
-    ::shutdown( this->server_socketFd, SHUT_RDWR );
+//    ::shutdown( this->server_socketFd, SHUT_RDWR );
     #if defined(WIN32)
 	::closesocket(server_socketFd);    
     #else
