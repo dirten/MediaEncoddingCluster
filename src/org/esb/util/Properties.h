@@ -14,15 +14,18 @@ namespace util{
      * a map of key-value string pairs.
      */
     class Properties{
+    private:
+	std::map< std::string, std::string > properties;
+
     public:
    
-        virtual ~Properties(){}
+        virtual ~Properties();
         
         /**
          * Returns true if the properties object is empty
          * @return true if empty
          */
-        virtual bool isEmpty() const = 0;
+        virtual bool isEmpty() const;
         
         /**
          * Looks up the value for the given property.
@@ -30,7 +33,7 @@ namespace util{
          * @return the value of the property with the given name, if it
          * exists.  If it does not exist, returns NULL.
          */
-        virtual const char* getProperty( const std::string& name ) const = 0;
+        virtual const char* getProperty( const std::string& name ) const ;
       
         /**
          * Looks up the value for the given property.
@@ -42,7 +45,7 @@ namespace util{
          */
         virtual std::string getProperty( 
             const std::string& name, 
-            const std::string& defaultValue ) const = 0;
+            const std::string& defaultValue ) const ;
       
         /**
          * Sets the value for a given property.  If the property already
@@ -52,20 +55,20 @@ namespace util{
          */
         virtual void setProperty( 
             const std::string& name, 
-            const std::string& value ) = 0;
+            const std::string& value ) ;
       
         /**
          * Check to see if the Property exists in the set
          * @param name the name of the property to check
          * @return true if property exists, false otherwise.
          */
-        virtual bool hasProperty( const std::string& name ) const = 0;
+        virtual bool hasProperty( const std::string& name ) const ;
 
         /**
          * Removes the property with the given name.
          * @param name the name of the property to be removed.s
          */
-        virtual void remove( const std::string& name ) = 0;
+        virtual void remove( const std::string& name ) ;
         
         /**
          * Method that serializes the contents of the property map to
@@ -73,24 +76,24 @@ namespace util{
          * @return list of pairs where the first is the name and the second
          * is the value.
          */
-        virtual std::vector< std::pair< std::string, std::string > > toArray() const = 0;
+        virtual std::vector< std::pair< std::string, std::string > > toArray() const ;
       
         /**
          * Copies the contents of the given properties object to this one.
          * @param source The source properties object.
          */
-        virtual void copy( const Properties* source ) = 0;
+        virtual void copy( const Properties* source ) ;
       
         /**
          * Clones this object.
          * @returns a replica of this object.
          */
-        virtual Properties* clone() const = 0;
+        virtual Properties* clone() const ;
       
         /**
          * Clears all properties from the map.
          */
-        virtual void clear() = 0;
+        virtual void clear() ;
         
      /**
      * Reads a property list (key and element pairs) from the input
@@ -244,7 +247,7 @@ namespace util{
      * 		   malformed Unicode escape sequence.
      */
 
-        virtual void load(org::esb::io::InputStream * is) = 0;
+        virtual void load(org::esb::io::InputStream * is) ;
 
    };
    

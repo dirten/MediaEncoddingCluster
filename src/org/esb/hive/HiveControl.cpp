@@ -2,7 +2,7 @@
 #include "HiveListener.cpp"
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Thread.h"
-#include "org/esb/util/SimpleProperties.cpp"
+#include "org/esb/util/Properties.h"
 //#include "hive.client.listener.cpp"
 #include <iostream>
 using namespace std;
@@ -13,7 +13,7 @@ using namespace org::esb::hive;
     HiveControl * instance=0;
 
     HiveControl::HiveControl(){
-	status=new SimpleProperties();
+	status=new Properties();
 	status->setProperty("running","false");
     }
 

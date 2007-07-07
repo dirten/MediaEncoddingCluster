@@ -11,6 +11,7 @@
 /*all Protocols here*/
 #include "protocol/Help.cpp"
 #include "protocol/Kill.cpp"
+#include "protocol/DataHandler.cpp"
 #include "protocol/Disconnect.cpp"
 #include "protocol/ShowConfig.cpp"
 #include "protocol/ShutdownHive.cpp"
@@ -42,7 +43,8 @@ ProtocolServer::~ProtocolServer() {
 ProtocolServer::ProtocolServer(Socket * socket) {
     this->socket=socket;
     _cis=new CommandInputStream(socket->getInputStream());
-    l.push_back(new Help(socket));
+    l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
+    l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
     l.push_back(new Disconnect(socket));
     l.push_back(new Kill(socket));
     l.push_back(new ShowConfig(socket));
@@ -54,10 +56,12 @@ ProtocolServer::ProtocolServer(Socket * socket) {
     string help="\n\nWelcome to the MediaEncodingCluster ProtocolServer-0.0.1\n";
     help+="Type 'help' for Help\n";
     help+="--------------------------------------------------------\n";
-    socket->getOutputStream()->write((char *)help.c_str(),help.length());
+//    socket->getOutputStream()->write((char *)help.c_str(),help.length());
 }
 
 void ProtocolServer::run() {
+
+
     while(!socket->isClosed()) {
 //        Command * cmd=_cis->readCommand();
 
@@ -70,7 +74,7 @@ void ProtocolServer::run() {
 	memset(buffer,0, dataLength+1);
         socket->getInputStream()->read(buffer, dataLength);
         char *command=strtok((char*)buffer,"\n\r");
-	cout << "Command:"<<command<<endl;
+//	cout << "Command:"<<command<<endl;
 	if(command==NULL||strlen(command)<=0)continue;
         list<ProtocolCommand*>::iterator i;
         for(i=l.begin();i!=l.end();++i) {
@@ -84,8 +88,10 @@ void ProtocolServer::run() {
                 tmp->printHelp();
             }
         }
-        string line="--------------------------------------------------------\n";
-    	socket->getOutputStream()->write((char *)line.c_str(),line.length());
+	if(!socket->isClosed()){
+    	    string line="--------------------------------------------------------\n";
+//    	    socket->getOutputStream()->write((char *)line.c_str(),line.length());
+	}
         
     }
     cout <<"Elvis has left the Building"<<endl;

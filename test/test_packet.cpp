@@ -23,7 +23,7 @@ int main(){
 		
 	Packet packet;
 	int a=0;
-	while(a==0){
+	while(a<10){
 	    packet=pis.readPacket();
 	    if(packet.data==NULL)break;
 	    char filename[32];
@@ -43,7 +43,7 @@ int main(){
 	Packet rp=pis2.readPacket();
         FileOutputStream out("/tmp/hive/test.test.packet");
         PacketOutputStream pout(&out);
-		pout.writePacket(&rp);
+	pout.writePacket(&rp);
 
 //	delete rp;
 	

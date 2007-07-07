@@ -1,5 +1,5 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "org/esb/util/SimpleProperties.cpp"
+#include "org/esb/util/Properties.h"
 #include "org/esb/io/FileInputStream.h"
 #include <iostream>
 
@@ -20,9 +20,6 @@ class TestProperties: public CppUnit::TestFixture
 
 };
 
-
-
-
 CPPUNIT_TEST_SUITE_REGISTRATION(TestProperties);
 
 
@@ -39,7 +36,7 @@ void TestProperties::tearDown(){
 }
 void TestProperties::testConstructor(){
 
-	SimpleProperties p;
+	Properties p;
 	
 	FileInputStream is("cluster.cfg");
 	p.load(&is);

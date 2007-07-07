@@ -25,10 +25,10 @@ void FrameOutputStream::writeFrame(Frame * frame){
 	sprintf(format,"%04d", frame->getFormat());
 	sprintf(width,"%04d", frame->getWidth());
 	sprintf(height,"%04d", frame->getHeight());
-    write(format, 4);
-    write(width, 4);
-    write(height, 4);
-    write((char*)frame->getData(), frame->getSize());
+	write(format, 4);
+	write(width, 4);
+	write(height, 4);
+	write((char*)frame->getData(), frame->getSize());
 }
 
 void FrameOutputStream::write(char * buffer, int length){

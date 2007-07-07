@@ -15,6 +15,7 @@ Command::~Command(){
 void Command::setCommand(const char * command){
     _command=command;
 }
+
 void Command::setCommand(string & command){
     _command=string(command);
 }

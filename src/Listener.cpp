@@ -10,7 +10,6 @@ using namespace org::esb::hive;
 int main(){
     Config::init("./cluster.cfg");
     int port=atoi(Config::getProperty("protocol.listener.port"));
-
     ServerSocket * server=new ServerSocket(port);
     server->bind();
     for(;Socket * clientSocket=server->accept();){

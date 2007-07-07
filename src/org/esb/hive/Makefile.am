@@ -2,7 +2,7 @@ MAJOR_VERSION=0
 MINOR_VERSION=0
 MICRO_VERSION=1
 
-
+#SUBDIRS = job
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libhive.la
@@ -11,7 +11,9 @@ SOURCES = \
             ProtocolServer.cpp \
             HiveControl.cpp \
             CommandInputStream.cpp \
-            CommandOutputStream.cpp
+            CommandOutputStream.cpp \
+	    job/Job.cpp \
+	    job/JobHandler.cpp
             
             
             

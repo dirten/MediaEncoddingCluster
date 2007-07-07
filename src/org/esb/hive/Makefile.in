@@ -56,7 +56,8 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libhive_la_LIBADD =
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
-	CommandInputStream.lo CommandOutputStream.lo
+	CommandInputStream.lo CommandOutputStream.lo Job.lo \
+	JobHandler.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -126,7 +127,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -178,6 +178,7 @@ MAJOR_VERSION = 0
 MINOR_VERSION = 0
 MICRO_VERSION = 1
 
+#SUBDIRS = job
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libhive.la
 SOURCES = \
@@ -185,7 +186,9 @@ SOURCES = \
             ProtocolServer.cpp \
             HiveControl.cpp \
             CommandInputStream.cpp \
-            CommandOutputStream.cpp
+            CommandOutputStream.cpp \
+	    job/Job.cpp \
+	    job/JobHandler.cpp
 
 libhive_la_SOURCES = $(SOURCES)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
@@ -264,6 +267,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveControl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Job.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolServer.Plo@am__quote@
 
 .cpp.o:
@@ -286,6 +291,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+Job.lo: job/Job.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Job.lo -MD -MP -MF "$(DEPDIR)/Job.Tpo" -c -o Job.lo `test -f 'job/Job.cpp' || echo '$(srcdir)/'`job/Job.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Job.Tpo" "$(DEPDIR)/Job.Plo"; else rm -f "$(DEPDIR)/Job.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/Job.cpp' object='Job.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Job.lo `test -f 'job/Job.cpp' || echo '$(srcdir)/'`job/Job.cpp
+
+JobHandler.lo: job/JobHandler.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT JobHandler.lo -MD -MP -MF "$(DEPDIR)/JobHandler.Tpo" -c -o JobHandler.lo `test -f 'job/JobHandler.cpp' || echo '$(srcdir)/'`job/JobHandler.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/JobHandler.Tpo" "$(DEPDIR)/JobHandler.Plo"; else rm -f "$(DEPDIR)/JobHandler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/JobHandler.cpp' object='JobHandler.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o JobHandler.lo `test -f 'job/JobHandler.cpp' || echo '$(srcdir)/'`job/JobHandler.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

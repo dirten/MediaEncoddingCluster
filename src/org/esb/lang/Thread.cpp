@@ -144,13 +144,13 @@ Thread::runCallback( void* param )
   // Get the instance.
   Thread* thread = (Thread*)param;
   // Invoke run on the task.
-  try
-  {
+//  try
+//  {
     thread->task->run();
-  }
-  catch(Exception &ex){
-  	throw ex;
-  }
+//  }
+//  catch(Exception &ex){
+//  	throw ex;
+//  }
   if(thread->_autoDelete){
     delete thread->task;
     thread->task=0;

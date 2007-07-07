@@ -6,7 +6,7 @@ CFLAGS=
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libutil.la
-SOURCES = SimpleProperties.cpp StringTokenizer.cpp StringUtil.cpp
+SOURCES = Properties.cpp StringTokenizer.cpp StringUtil.cpp
 libutil_la_SOURCES = $(SOURCES)
 libutil_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 #libutil_LDADD=$(top_srcdir)/src/org/esb/lang/liblang.la  

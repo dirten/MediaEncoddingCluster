@@ -55,7 +55,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libutil_la_LIBADD =
-am__objects_1 = SimpleProperties.lo StringTokenizer.lo StringUtil.lo
+am__objects_1 = Properties.lo StringTokenizer.lo StringUtil.lo
 am_libutil_la_OBJECTS = $(am__objects_1)
 libutil_la_OBJECTS = $(am_libutil_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -125,7 +125,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -179,7 +178,7 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libutil.la
-SOURCES = SimpleProperties.cpp StringTokenizer.cpp StringUtil.cpp
+SOURCES = Properties.cpp StringTokenizer.cpp StringUtil.cpp
 libutil_la_SOURCES = $(SOURCES)
 libutil_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 #libutil_LDADD=$(top_srcdir)/src/org/esb/lang/liblang.la  
@@ -253,7 +252,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleProperties.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Properties.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringTokenizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringUtil.Plo@am__quote@
 

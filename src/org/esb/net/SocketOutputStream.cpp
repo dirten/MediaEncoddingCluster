@@ -23,7 +23,7 @@ class SocketOutputStream:public OutputStream{
 	}
 /******************************************************************************/
 	void write(char * buffer, int len){
-	    int remaining=len, byteCounter=0, sendOpts = 0;
+	    int remaining=len, byteCounter=0, sendOpts = MSG_NOSIGNAL;
 	    while(remaining>0){
     		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 		byteCounter+=bytes;

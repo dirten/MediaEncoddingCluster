@@ -58,7 +58,8 @@ framesender_OBJECTS = $(am_framesender_OBJECTS)
 framesender_DEPENDENCIES = ./org/esb/libesb.la
 am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
 hivelsnr_OBJECTS = $(am_hivelsnr_OBJECTS)
-hivelsnr_DEPENDENCIES = ./org/esb/libesb.la
+hivelsnr_DEPENDENCIES = ./org/esb/libesb.la ./org/esb/io/libio.la \
+	./org/esb/av/libav.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -136,7 +137,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -189,7 +189,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org 
+SUBDIRS = org hive.client
 
 #bin_PROGRAMS = zpipe
 hivelsnr_SOURCES = Listener.cpp
@@ -205,7 +205,7 @@ framesender_LDFLAGS = $(all_libraries)
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
-hivelsnr_LDADD = ./org/esb/libesb.la
+hivelsnr_LDADD = ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la
 framesender_LDADD = ./org/esb/libesb.la 
 framereceiver_LDADD = ./org/esb/libesb.la 
 EXTRA_DIST = introspec.h 

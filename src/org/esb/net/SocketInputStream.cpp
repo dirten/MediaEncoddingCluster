@@ -69,9 +69,10 @@ namespace org
         int read(unsigned char * buffer, int length)throw (org::esb::lang::Exception)
         {
           int  counter=1;
-            	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
+            	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
             	/*If Connection is dead*/
             	if(counter<=0){
+		    cout << "Socket is brocken"<<endl;
 //              		this->socket->close();
 //					throw Exception( __FILE__, __LINE__, "socket is unusable");
             	}

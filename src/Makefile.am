@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org 
+SUBDIRS = org hive.client
 #hive.server hive.client hive.listener 
 #framehive
 
@@ -28,7 +28,7 @@ framesender_LDFLAGS = $(all_libraries)
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
 
-hivelsnr_LDADD=./org/esb/libesb.la
+hivelsnr_LDADD=./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la
 
 
 framesender_LDADD=./org/esb/libesb.la 

@@ -9,7 +9,7 @@
 #define ESBCONFIG_H
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
-#include "org/esb/util/SimpleProperties.cpp"
+//#include "org/esb/util/Properties.h"
 #include <iostream>
 #include <stdlib.h>
 #include <map>

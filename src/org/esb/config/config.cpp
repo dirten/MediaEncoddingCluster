@@ -19,7 +19,7 @@ using namespace org::esb::util;
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-SimpleProperties * properties=0;
+Properties * properties=0;
 
 string trim(string & s, string & drop = *new string(" ")){
     string r=s.erase(s.find_last_not_of(drop)+1);
@@ -40,7 +40,7 @@ void Config::init(char * filename)
     exit(1);
   }
 //  printf("Configuration Loaded from %s\n", filename);
-  properties=new SimpleProperties();
+  properties=new Properties();
   while (fgets(buffer,255,fp) != NULL)
   {
     parseLine(buffer);

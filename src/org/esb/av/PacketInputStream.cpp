@@ -42,7 +42,6 @@ Packet & PacketInputStream::readPacket(){
 }
 
 Packet & PacketInputStream::readPacketFromFormatIS(){
-
     do {
         if(_packet.data!=NULL)
             av_free_packet(&_packet);
@@ -95,6 +94,7 @@ Packet & PacketInputStream::readPacketFromIS(){
 }
 
 int PacketInputStream::read(unsigned char * buffer, int length){
+//    if(_source->available(true))
     return _source->read(buffer, length);
 }
 
