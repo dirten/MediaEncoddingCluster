@@ -18,6 +18,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
         _formatCtx=((FormatInputStream*)is)->getFormatContext();
         _streamIndex=((FormatInputStream*)is)->selectedStream;
         _codecCtx=_formatCtx->streams[_streamIndex]->codec;
+	cout << "BitRate:"<<_codecCtx->bit_rate<<endl;
 	//_codec=_codecCtx->codec;
 	
         _codec=avcodec_find_decoder(_codecCtx->codec_id);
@@ -55,6 +56,7 @@ Packet & PacketInputStream::readPacketFromFormatIS(){
 		break;
             }
         } while(_packet.stream_index!=_streamIndex);
+    cout << "PacketSize:"<<_packet.size<<endl;
     return _packet;
 }
 

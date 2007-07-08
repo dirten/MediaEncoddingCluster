@@ -14,6 +14,8 @@ SOURCES = \
             FormatOutputStream.cpp \
             PacketInputStream.cpp \
             PacketOutputStream.cpp \
+            CodecInputStream.cpp \
+            CodecOutputStream.cpp \
             Codec.cpp \
             Packet.cpp \
             Frame.cpp \

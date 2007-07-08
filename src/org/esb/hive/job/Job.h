@@ -3,6 +3,7 @@
 #include "org/esb/util/Properties.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Codec.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 using namespace org::esb::util;
@@ -24,6 +25,8 @@ class Job{
 	void putFrame(Frame & frame);
 	Packet & getPacket();
 	void putPacket(Packet & packet);
+	Codec * getCodec();
+//	void putPacket(Packet & packet);
 };
 }}}}
 #endif

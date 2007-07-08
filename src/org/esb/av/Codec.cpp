@@ -12,9 +12,9 @@ namespace org{
 		if(!_codec)
 		    cout << "Codec not found"<<endl;
 		_codecCtx=avcodec_alloc_context();
+		_codecCtx->width=512;
+		_codecCtx->height=256;
 		avcodec_open(_codecCtx, _codec);
-		_codecCtx->width=256;
-		_codecCtx->height=512;
 		
             }
 

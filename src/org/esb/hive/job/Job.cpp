@@ -11,7 +11,7 @@ Job::Job(Properties & p){
     _props=p;
     File file(p.getProperty("source.file"));
     _fis=new FormatInputStream(&file);
-    _pis=new PacketInputStream(_fis);
+    _pis=new PacketInputStream(_fis->getStream(0));
 }
 
 Job::~Job(){
@@ -33,6 +33,10 @@ void Job::putFrame(Frame & frame){
 
 Packet & Job::getPacket(){
     return _pis->readPacket();
+}
+
+Codec * Job::getCodec(){
+    return _pis->getCodec();
 }
 
 void Job::putPacket(Packet & packet){

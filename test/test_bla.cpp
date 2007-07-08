@@ -8,6 +8,7 @@
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/CodecOutputStream.h"
 
 
 using namespace std;
@@ -16,24 +17,29 @@ using namespace org::esb::av;
 
 int main(){
     cout << LIBAVCODEC_IDENT <<endl;
-    File *file=new File("/media/jh/Video/aufnahme/AV000001.ASF");
+//    File *file=new File("/media/jh/Video/aufnahme/AV000001.ASF");
 //    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
-//    File *file=new File("test.dvd");
+    File *file=new File("test.dvd");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
 //    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
-    pis->skip(10);
+//    pis->skip(10);
     Codec * codec=pis->getCodec();
+
+    FileOutputStream focs("/tmp/hive/1.codec.test");
+    CodecOutputStream cos(&focs);
+    cos.writeCodec(codec);
+    cout << codec->getCodecContext()->bit_rate<<endl;
     int a=0;
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<100){
+    while(a<1){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
-
+	cout << "PacketSize:"<<packet.getSize()<<endl;
         frame=new Frame(&packet, codec);
 	cout <<"FrameFormat"<< frame->getFormat()<<endl;
 	cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
