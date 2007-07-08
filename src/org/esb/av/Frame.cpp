@@ -13,18 +13,18 @@ Frame::Frame(Packet * packet, Codec * codec){
 
     pts=AV_NOPTS_VALUE;
     key_frame=1;
-
+    _frameFinished=0;
     _packet=packet;
     _codecContext=codec->getCodecContext();
     _width=_codecContext->width;
     _height=_codecContext->height;
     _pixFormat=_codecContext->pix_fmt;
-    int bytesRemaining=_packet->size, frameFinished=0, bytesDecoded=0;
+    int bytesRemaining=_packet->size,  bytesDecoded=0;
     uint8_t * rawData=packet->data;
     _buffer=new uint8_t[1];
     while(bytesRemaining > 0)
     {
-      bytesDecoded=avcodec_decode_video(_codecContext, this, &frameFinished, rawData, bytesRemaining);
+      bytesDecoded=avcodec_decode_video(_codecContext, this, &_frameFinished, rawData, bytesRemaining);
       if(bytesDecoded < 0)
       {
         fprintf(stderr, "Error while decoding frame\n");
@@ -33,7 +33,8 @@ Frame::Frame(Packet * packet, Codec * codec){
 
       bytesRemaining-=bytesDecoded;
       rawData+=bytesDecoded;
-      if(frameFinished){
+      if(_frameFinished){
+	    cout <<"FrameFinished"<<endl;
 	    break;
       }
     }    
@@ -57,7 +58,7 @@ Frame::Frame(int format, int width, int height, unsigned char * data){
     _pixFormat=format;
     int numBytes=avpicture_get_size(format, _width,_height);
     _buffer=new uint8_t[numBytes];
-	memcpy(_buffer, data, numBytes);
+    memcpy(_buffer, data, numBytes);
     avpicture_fill((AVPicture *)this, _buffer, format, _width,_height);
 //    img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
 }
@@ -70,14 +71,15 @@ Frame::Frame(Frame * source, int format){
     _pixFormat=format;
     int numBytes=avpicture_get_size(format, _width,_height);
     _buffer=new uint8_t[numBytes];
+    memset(_buffer, 0, numBytes);
     avpicture_fill((AVPicture *)this, _buffer, format, source->getWidth(),source->getHeight());
-    img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
+    if(source->_frameFinished){
+	img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
+    }    
 }
 
 Frame::~Frame(){
-
     delete []_buffer;
-
 }
 
 AVPacket * Frame::getPacket(){
@@ -87,7 +89,6 @@ AVPacket * Frame::getPacket(){
 
 uint8_t * Frame::getData(){
     return data[0];
-
 }
 
 int Frame::getFormat(){

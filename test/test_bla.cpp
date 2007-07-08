@@ -16,23 +16,27 @@ using namespace org::esb::av;
 
 int main(){
     cout << LIBAVCODEC_IDENT <<endl;
-    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File *file=new File("/media/jh/Video/aufnahme/AV000001.ASF");
+//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    File *file=new File("test.dvd");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
 //    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
-    pis->skip(155000);
+    pis->skip(10);
     Codec * codec=pis->getCodec();
     int a=0;
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<1){
+    while(a<100){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
 
         frame=new Frame(&packet, codec);
+	cout <<"FrameFormat"<< frame->getFormat()<<endl;
+	cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
         /*
 //        cout << "FrameSize:"<<frame->getSize()<<endl;
@@ -41,13 +45,14 @@ int main(){
         */
 
         char filename[32];
-        sprintf(filename,"/tmp/hive/test.%d.raw",a);
+        sprintf(filename,"/tmp/hive/test.%d.ppm",a);
+
         FileOutputStream *out=new FileOutputStream(filename);
         FrameOutputStream *fout=new FrameOutputStream(out);
 
         char header[200];
         sprintf(header, "P6\n%d %d\n255\n", rgb->getWidth(), rgb->getHeight());
-//        fout->write(header, strlen(header));
+        fout->write(header, strlen(header));
         fout->writeFrame(rgb);
         delete fout;
         delete out;
@@ -58,7 +63,7 @@ int main(){
 //        delete packet;
     }
 	
-    FileInputStream * is =new FileInputStream("/tmp/hive/test.0.raw");
+    FileInputStream * is =new FileInputStream("/tmp/hive/test.70.ppm");
     FrameInputStream * fris=new FrameInputStream(is);
     Frame * fr=fris->readFrame();
 

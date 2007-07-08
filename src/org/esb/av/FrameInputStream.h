@@ -14,6 +14,7 @@ namespace org{
 		        int available(bool isBlocking = false);
 		        int read(unsigned char * buffer, int length);
 		        int read(vector<unsigned char>&buffer);
+		        int read();
 		        Frame * readFrame();
 		        void close();
 		    private:

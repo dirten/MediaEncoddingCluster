@@ -11,7 +11,7 @@ namespace org{
         namespace av{
             class Codec{
                 public:
-                    Codec(const int codecId);
+                    Codec(const CodecID codecId);
                     Codec(AVCodecContext * codec);
                     CodecType getCodecType();
                     char * getCodecName();

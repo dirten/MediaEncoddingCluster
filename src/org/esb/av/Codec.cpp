@@ -2,12 +2,20 @@
 extern "C" {
 #include "avformat.h"
 }
-
+#include <iostream>
+using namespace std;
 namespace org{
     namespace esb{
         namespace av{
-            Codec::Codec(const int codecId){
-
+            Codec::Codec(const CodecID codecId){
+		_codec=avcodec_find_decoder(codecId);
+		if(!_codec)
+		    cout << "Codec not found"<<endl;
+		_codecCtx=avcodec_alloc_context();
+		avcodec_open(_codecCtx, _codec);
+		_codecCtx->width=256;
+		_codecCtx->height=512;
+		
             }
 
             Codec::Codec(AVCodecContext * context){

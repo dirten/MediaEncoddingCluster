@@ -33,6 +33,8 @@ class Frame :public AVFrame{
         int _width;
         int _pixFormat;
         uint8_t * _buffer;
+	public:
+	int _frameFinished;
 };
 }}}
 #endif

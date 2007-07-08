@@ -16,7 +16,8 @@ SOURCES = \
             PacketOutputStream.cpp \
             Codec.cpp \
             Packet.cpp \
-            Frame.cpp
+            Frame.cpp \
+	    PPSWriter.cpp
             
             
 libav_la_SOURCES = $(SOURCES)

@@ -47,6 +47,9 @@ Frame * FrameInputStream::readFrame(){
 	return frame;
 }
 
+int FrameInputStream::read(){
+//	return _source->read(buffer, length);
+}
 int FrameInputStream::read(unsigned char * buffer, int length){
 	return _source->read(buffer, length);
 }

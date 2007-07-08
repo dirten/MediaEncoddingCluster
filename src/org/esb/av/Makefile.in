@@ -58,7 +58,7 @@ libav_la_LIBADD =
 am__objects_1 = FrameInputStream.lo FrameOutputStream.lo \
 	FormatInputStream.lo FormatBaseStream.lo FormatOutputStream.lo \
 	PacketInputStream.lo PacketOutputStream.lo Codec.lo Packet.lo \
-	Frame.lo
+	Frame.lo PPSWriter.lo
 am_libav_la_OBJECTS = $(am__objects_1)
 libav_la_OBJECTS = $(am_libav_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -191,7 +191,8 @@ SOURCES = \
             PacketOutputStream.cpp \
             Codec.cpp \
             Packet.cpp \
-            Frame.cpp
+            Frame.cpp \
+	    PPSWriter.cpp
 
 libav_la_SOURCES = $(SOURCES)
 libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
@@ -273,6 +274,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frame.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameOutputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PPSWriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Packet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PacketInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PacketOutputStream.Plo@am__quote@
