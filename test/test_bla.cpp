@@ -19,10 +19,11 @@ using namespace org::esb::av;
 int main(){
     cout << LIBAVCODEC_IDENT <<endl;
 //    File *file=new File("/media/jh/Video/aufnahme/AV000001.ASF");
-    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    File *file=new File("/media/jh/Video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 //    File *file=new File("test.dvd");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
-//    File *file=new File("test.avi");
+    File *file=new File("test2.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
     pis->skip(200);
@@ -40,13 +41,13 @@ int main(){
     
     c->open();
     
-    Codec * c2=new Codec((CodecID)c->getCodecId());
-    cout << c->getCodecContext()->bit_rate<<endl;
+//    Codec * c2=new Codec((CodecID)c->getCodecId());
+//    cout << c->getCodecContext()->bit_rate<<endl;
     int a=0;
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<400){
+    while(a<4){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
