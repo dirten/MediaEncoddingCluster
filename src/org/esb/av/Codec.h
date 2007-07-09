@@ -17,6 +17,7 @@ namespace org{
                     char * getCodecName();
                     int getCodecId();
                     AVCodecContext * getCodecContext();
+					void open();
 //		    void encodeFrame(Frame * frame);
 //		    void decodeFrame(Frame * frame);
                 private:

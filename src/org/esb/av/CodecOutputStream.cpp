@@ -16,6 +16,7 @@ void CodecOutputStream::writeCodec(Codec * codec){
     char codecHeight[5];
     char codecHasBFrames[2];
     char codecExtraDataSize[5];
+    char codecPrivDataSize[5];
     
     memset(codecId,0,5);
     memset(codecType,0,5);
@@ -25,6 +26,7 @@ void CodecOutputStream::writeCodec(Codec * codec){
     memset(codecHeight,0,5);
     memset(codecHasBFrames,0,2);
     memset(codecExtraDataSize,0,5);
+    memset(codecPrivDataSize,0,5);
 //    memset(codecExtraData,0,sizeof(codecExtraData));
 
     sprintf(codecId,"%04d", ctx->codec_id);
@@ -35,7 +37,9 @@ void CodecOutputStream::writeCodec(Codec * codec){
     sprintf(codecHeight,"%04d", ctx->height);
     sprintf(codecHasBFrames,"%01d", ctx->has_b_frames);
     sprintf(codecExtraDataSize,"%04d", ctx->extradata_size);
+    sprintf(codecPrivDataSize,"%04d", ctx->codec->priv_data_size);
 
+//    write((char*)&ctx->codec_id,sizeof(int));
     write((char*)codecId,4);
     write((char*)codecType,4);
     write((char*)codecBitrate,10);
@@ -44,7 +48,10 @@ void CodecOutputStream::writeCodec(Codec * codec){
     write((char*)codecHeight,4);
     write((char*)codecHasBFrames,1);
     write((char*)codecExtraDataSize,4);
+    write((char*)codecPrivDataSize,4);
     write((char*)ctx->extradata,ctx->extradata_size);
+    write((char*)ctx->priv_data,ctx->codec->priv_data_size);
+//	cout <<"TypeId"<<typeid(ctx).name()<<endl;
 }
 
 void CodecOutputStream::write(char * buffer, int length){

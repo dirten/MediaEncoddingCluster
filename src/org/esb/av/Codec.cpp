@@ -14,7 +14,6 @@ namespace org{
 		_codecCtx=avcodec_alloc_context();
 //		_codecCtx->width=512;
 //		_codecCtx->height=256;
-		avcodec_open(_codecCtx, _codec);
 		
             }
 
@@ -36,6 +35,10 @@ namespace org{
 
             AVCodecContext * Codec::getCodecContext(){
                 return _codecCtx;
+            }
+
+            void Codec::open(){
+				avcodec_open(_codecCtx, _codec);
             }
 /*
             void Codec::decodeFrame(Frame * frame){

@@ -27,19 +27,34 @@ Codec * CodecInputStream::readCodec(){
     int codecId=0;
     int codecType=1;
     int hasBFrames=0;
-    unsigned char  buffer[36];
+    unsigned char  buffer[40];
     memset(buffer,0,sizeof(buffer));
-    read(buffer, 35);
+
+
+//    read((unsigned char*)&codecId, sizeof(int));
+//    cout << "CodecID Binary:"<<codecId<<endl;
+
+    read(buffer, 39);
     cout << "Buffer"<<buffer<<endl;
     sscanf((char*)buffer,"%04d%04d", &codecId, &codecType);
     cout << "CodecId"<<codecId<<endl;
     cout << "CodecType"<<codecType<<endl;
     _codec=new Codec((CodecID)codecId);
+    _codec->open();
     AVCodecContext * c=_codec->getCodecContext();
-    sscanf((char*)buffer,"%04d%04d%010d%04d%04d%04d%01d%04d", &c->codec_id, &c->codec_type, &c->bit_rate,&c->pix_fmt,&c->width, &c->height, &hasBFrames, &c->extradata_size);
-    uint8_t * extradata=new uint8_t[c->extradata_size];
-    read(extradata, c->extradata_size);
-    c->extradata=extradata;
+    
+    sscanf((char*)buffer,"%04d%04d%010d%04d%04d%04d%01d%04d%04d", &c->codec_id, &c->codec_type, &c->bit_rate,&c->pix_fmt,&c->width, &c->height, &hasBFrames, &c->extradata_size,&c->codec->priv_data_size);
+	if(c->extradata_size>0){
+    	uint8_t * extradata=new uint8_t[c->extradata_size];
+    	read(extradata, c->extradata_size);
+    	c->extradata=extradata;
+    }
+
+	if(c->codec->priv_data_size>0){
+    	uint8_t * privdata=new uint8_t[c->codec->priv_data_size];
+    	read(privdata, c->codec->priv_data_size);
+    	c->priv_data=privdata;
+    }
     return _codec;
 }
 
