@@ -2,6 +2,7 @@
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/av/CodecOutputStream.h"
 #include "org/esb/av/Packet.h"
 #include "../job/Job.h"
 #include "../job/JobHandler.h"
@@ -37,15 +38,16 @@ class DataHandler: public ProtocolCommand{
 		PacketOutputStream pos(_os);
 		Packet packet=job->getPacket();
 //		cout << "PacketSize"<<packet.getSize();
-		pos.writePacket(&job->getPacket());
+		pos.writePacket(&packet);
 //		_os->write((char*)t.c_str(), t.size());
 	    }else
 	    if(strcmp(command,"put frame")==0){
 		string t="getting frame";
 		_os->write((char*)t.c_str(), t.size());	    
 	    }else
-	    if(strcmp(command,"put codec")==0){
-		
+	    if(strcmp(command,"get codec")==0){
+		CodecOutputStream cos(_os);
+		cos.writeCodec(job->getCodec());
 
 	    }
 	}

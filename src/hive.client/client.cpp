@@ -4,6 +4,7 @@
 #include "org/esb/av/FrameOutputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/CodecInputStream.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/av/Frame.h"
 #include <iostream>
@@ -28,23 +29,31 @@ int main(int argc,char**argv){
     }
     
     PacketInputStream pis(input);
+    CodecInputStream codecis(input);
     PacketOutputStream pos(output);
     
     int counter=0;
     int a=0;
      av_register_all();
-    Codec codec(CODEC_ID_MPEG4);
+
+
+    string getcodec="get codec";
+    output->write((char*)getcodec.c_str(),getcodec.size());
+
+    Codec * codec=codecis.readCodec();
+
     while(!socket->isClosed()){
 	string getcmd="get frame";
 	string putcmd="put frame";
 	unsigned char * test=new unsigned char[10];
 //	int size=input->read(test,10);
 	output->write((char*)getcmd.c_str(),getcmd.size());
+
 	Packet packet=pis.readPacket();
-	Frame frame(&packet, &codec);
+	Frame frame(&packet, codec);
 	
 	
-	cout << ++counter<<"neues Frame size:"<<packet.getSize()<<endl;
+//	cout << ++counter<<"neues Frame size:"<<packet.getSize()<<endl;
 	cout << ++counter<<"neues Frame size:"<<frame.getSize()<<endl;
 //	cout << ++counter<<"neues Frame size:"<<size<<"Data:"<<test<<endl;
 

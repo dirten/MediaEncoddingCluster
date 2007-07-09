@@ -9,6 +9,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/CodecOutputStream.h"
+#include "org/esb/av/CodecInputStream.h"
 
 
 using namespace std;
@@ -30,17 +31,25 @@ int main(){
     FileOutputStream focs("/tmp/hive/1.codec.test");
     CodecOutputStream cos(&focs);
     cos.writeCodec(codec);
-    cout << codec->getCodecContext()->bit_rate<<endl;
+    focs.flush();
+
+
+    FileInputStream fics("/tmp/hive/1.codec.test");
+    CodecInputStream cis(&fics);
+    Codec * c=cis.readCodec();
+    
+    Codec * c2=new Codec((CodecID)c->getCodecId());
+    cout << c->getCodecContext()->bit_rate<<endl;
     int a=0;
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<1){
+    while(a<20){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
 	cout << "PacketSize:"<<packet.getSize()<<endl;
-        frame=new Frame(&packet, codec);
+        frame=new Frame(&packet, c);
 	cout <<"FrameFormat"<< frame->getFormat()<<endl;
 	cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
