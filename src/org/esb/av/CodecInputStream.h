@@ -11,6 +11,7 @@ class CodecInputStream: public InputStream{
 	CodecInputStream(InputStream * is);
 	~CodecInputStream();
 	Codec * readCodec();
+	Codec * readCodec2();
 	int read(unsigned char * buffer, int length);
 	int read(vector<unsigned char>&buffer);
 	int read();

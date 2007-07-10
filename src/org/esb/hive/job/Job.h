@@ -17,6 +17,8 @@ class Job{
 	Properties _props;
 	FormatInputStream * _fis;
 	PacketInputStream * _pis;
+//	FormatOutputStream * _fos;
+//	PacketOutputStream * _pos;
     public:
 	Job(Properties &props);
 	~Job();
@@ -25,7 +27,8 @@ class Job{
 	void putFrame(Frame & frame);
 	Packet & getPacket();
 	void putPacket(Packet & packet);
-	Codec * getCodec();
+	Codec * getInputCodec();
+	Codec * getOutputCodec();
 //	void putPacket(Packet & packet);
 };
 }}}}

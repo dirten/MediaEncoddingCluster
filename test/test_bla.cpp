@@ -20,15 +20,22 @@ int main(){
     cout << LIBAVCODEC_IDENT <<endl;
 //    File *file=new File("/media/jh/Video/aufnahme/AV000001.ASF");
 //    File *file=new File("/media/jh/Video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
-//    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File *file=new File("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 //    File *file=new File("test.dvd");
 //    PacketInputStream *pis=new PacketInputStream(NULL);
-    File *file=new File("test2.avi");
+//    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
-    pis->skip(200);
+//    pis->skip(200);
     Codec * codec=pis->getCodec();
 
+
+	cout << "CodecContextSize:"<<sizeof(AVCodecContext)<<endl;
+	
+	int id=0;
+	memcpy(&id,codec->getCodecContext(),sizeof(int));
+	
+//	cout << "CodecId"<<codec->getCodecContext()->coded_width<<endl;
     FileOutputStream focs("/tmp/hive/1.codec.test");
     CodecOutputStream cos(&focs);
     cos.writeCodec(codec);
@@ -39,6 +46,9 @@ int main(){
     CodecInputStream cis(&fics);
     Codec * c=cis.readCodec();
     
+//	c->getCodecContext()->coded_width=512;
+//	c->getCodecContext()->coded_height=256;
+	
     c->open();
     
 //    Codec * c2=new Codec((CodecID)c->getCodecId());
@@ -47,20 +57,17 @@ int main(){
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<4){
+    while(a<400){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
         if(a%100==0)cout <<"A:"<<a<<endl;
-	cout << "PacketSize:"<<packet.getSize()<<endl;
-        frame=new Frame(&packet, codec);
-	cout <<"FrameFormat"<< frame->getFormat()<<endl;
-	cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
+        a++;
+//		cout << "PacketSize:"<<packet.getSize()<<endl;
+/*
+        frame=new Frame(&packet, c);
+		cout <<"FrameFormat"<< frame->getFormat()<<endl;
+		cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
-        /*
-//        cout << "FrameSize:"<<frame->getSize()<<endl;
-//        cout << "RGBFrameSize:"<<rgb->getSize()<<endl;
-        
-        */
 
         char filename[32];
         sprintf(filename,"/tmp/hive/test.%d.ppm",a);
@@ -79,6 +86,7 @@ int main(){
         delete rgb;
         delete frame;
 //        delete packet;
+*/
     }
 	
     FileInputStream * is =new FileInputStream("/tmp/hive/test.70.ppm");

@@ -40,7 +40,7 @@ public:
                  *
                  * @exception  IOException  if an I/O error occurs.
                  */
-                virtual void flush(){throw Exception(__FILE__,__LINE__,"Not implemented");};;
+                virtual void flush(){};;
 
                 /**
                  * Writes <code>length</code> bytes from the specified byte array 

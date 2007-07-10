@@ -27,6 +27,7 @@ using namespace org::esb::net;
 using namespace org::esb::lang;
 using namespace org::esb::util;
 using namespace org::esb::hive;
+//pthread_mutex_t ProtocolServer::mutex;
 
 ProtocolServer::~ProtocolServer() {
     list<ProtocolCommand*>::iterator i;
@@ -40,7 +41,8 @@ ProtocolServer::~ProtocolServer() {
     delete _cis;
 }
 
-ProtocolServer::ProtocolServer(Socket * socket) {
+ProtocolServer::ProtocolServer(Socket * socket,pthread_mutex_t m) {
+	mutex=m;
     this->socket=socket;
     _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
@@ -80,8 +82,10 @@ void ProtocolServer::run() {
         for(i=l.begin();i!=l.end();++i) {
             ProtocolCommand *tmp=(ProtocolCommand*)*i;
             if(tmp->isResponsible(command)==CMD_PROCESS) {
+				pthread_mutex_lock(&mutex);
                 tmp->process(command);
-		break;
+				pthread_mutex_unlock(&mutex);
+				break;
             }
             else
             if(tmp->isResponsible(command)==CMD_HELP) {

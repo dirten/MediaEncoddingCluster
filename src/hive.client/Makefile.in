@@ -52,7 +52,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am__objects_1 = client.$(OBJEXT)
 am_client_OBJECTS = $(am__objects_1)
 client_OBJECTS = $(am_client_OBJECTS)
-client_DEPENDENCIES = ../org/esb/libesb.la ../org/esb/io/libio.la
+client_DEPENDENCIES = ../org/esb/av/libav.la ../org/esb/io/libio.la \
+	../org/esb/net/libnet.la ../org/esb/lang/liblang.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -177,7 +178,7 @@ SOURCES = client.cpp
 client_SOURCES = $(SOURCES)
 client_LDFLAGS = $(all_libraries) 
 #client_LDADD   = $(top_srcdir)/src/org/esb/libesb.la
-client_LDADD = ../org/esb/libesb.la ../org/esb/io/libio.la $(all_libraries) 
+client_LDADD = ../org/esb/av/libav.la ../org/esb/io/libio.la  ../org/esb/net/libnet.la  ../org/esb/lang/liblang.la  
 INCLUDES = -I$(top_srcdir)/src \
 	        $(all_includes) 
 

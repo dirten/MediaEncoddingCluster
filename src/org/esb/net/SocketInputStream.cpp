@@ -72,8 +72,8 @@ namespace org
             	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
             	/*If Connection is dead*/
             	if(counter<=0){
-		    cout << "Socket is brocken"<<endl;
-//              		this->socket->close();
+		    		cout << "Socket is brocken"<<endl;
+              		this->socket->close();
 //					throw Exception( __FILE__, __LINE__, "socket is unusable");
             	}
           return counter;

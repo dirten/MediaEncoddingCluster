@@ -53,7 +53,7 @@ test_SOURCES=	test.cpp \
 
 test_file_LDADD=	../src/org/esb/libesb.la 
 test_bla_LDADD=	../src/org/esb/libesb.la 
-test_packet_LDADD=	../src/org/esb/libesb.la 
+test_packet_LDADD=	../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la 
 test_socket_LDADD=	../src/org/esb/libesb.la 
 test_server_LDADD=	../src/org/esb/libesb.la 
 client_LDADD	=	../src/org/esb/libesb.la 

@@ -36,8 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = framesender$(EXEEXT) framereceiver$(EXEEXT) \
-	hivelsnr$(EXEEXT)
+bin_PROGRAMS = hivelsnr$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -50,16 +49,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_framereceiver_OBJECTS = FrameReceiver.$(OBJEXT)
-framereceiver_OBJECTS = $(am_framereceiver_OBJECTS)
-framereceiver_DEPENDENCIES = ./org/esb/libesb.la
-am_framesender_OBJECTS = bruteripper.$(OBJEXT)
-framesender_OBJECTS = $(am_framesender_OBJECTS)
-framesender_DEPENDENCIES = ./org/esb/libesb.la
 am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
 hivelsnr_OBJECTS = $(am_hivelsnr_OBJECTS)
-hivelsnr_DEPENDENCIES = ./org/esb/libesb.la ./org/esb/io/libio.la \
-	./org/esb/av/libav.la
+hivelsnr_DEPENDENCIES = ./org/esb/lang/liblang.la ./org/esb/libesb.la \
+	./org/esb/io/libio.la ./org/esb/av/libav.la \
+	./org/esb/net/libnet.la ./org/esb/hive/libhive.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -71,10 +65,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
-	$(hivelsnr_SOURCES)
-DIST_SOURCES = $(framereceiver_SOURCES) $(framesender_SOURCES) \
-	$(hivelsnr_SOURCES)
+SOURCES = $(hivelsnr_SOURCES)
+DIST_SOURCES = $(hivelsnr_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -206,9 +198,9 @@ framesender_LDFLAGS = $(all_libraries)
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
-hivelsnr_LDADD = ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la
-framesender_LDADD = ./org/esb/libesb.la 
-framereceiver_LDADD = ./org/esb/libesb.la 
+hivelsnr_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
+framesender_LDADD = ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
+framereceiver_LDADD = ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
 EXTRA_DIST = introspec.h 
 all: all-recursive
 
@@ -271,12 +263,6 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-framereceiver$(EXEEXT): $(framereceiver_OBJECTS) $(framereceiver_DEPENDENCIES) 
-	@rm -f framereceiver$(EXEEXT)
-	$(CXXLINK) $(framereceiver_LDFLAGS) $(framereceiver_OBJECTS) $(framereceiver_LDADD) $(LIBS)
-framesender$(EXEEXT): $(framesender_OBJECTS) $(framesender_DEPENDENCIES) 
-	@rm -f framesender$(EXEEXT)
-	$(CXXLINK) $(framesender_LDFLAGS) $(framesender_OBJECTS) $(framesender_LDADD) $(LIBS)
 hivelsnr$(EXEEXT): $(hivelsnr_OBJECTS) $(hivelsnr_DEPENDENCIES) 
 	@rm -f hivelsnr$(EXEEXT)
 	$(CXXLINK) $(hivelsnr_LDFLAGS) $(hivelsnr_OBJECTS) $(hivelsnr_LDADD) $(LIBS)
@@ -287,9 +273,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameReceiver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Listener.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteripper.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

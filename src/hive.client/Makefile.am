@@ -8,7 +8,7 @@ bin_PROGRAMS = client
 client_SOURCES = $(SOURCES)
 client_LDFLAGS = $(all_libraries) 
 #client_LDADD   = $(top_srcdir)/src/org/esb/libesb.la
-client_LDADD   = ../org/esb/libesb.la ../org/esb/io/libio.la $(all_libraries) 
+client_LDADD   = ../org/esb/av/libav.la ../org/esb/io/libio.la  ../org/esb/net/libnet.la  ../org/esb/lang/liblang.la  
 
 
 INCLUDES     = -I$(top_srcdir)/src \

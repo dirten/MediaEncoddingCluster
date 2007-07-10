@@ -10,6 +10,7 @@ namespace org{
 					PacketOutputStream(OutputStream * os);
 					~PacketOutputStream();
 					void writePacket(Packet * packet);
+					void writePacket2(Packet * packet);
 					void write(char * buffer, int length);
 					void write(vector<unsigned char>&buffer);
 				private:

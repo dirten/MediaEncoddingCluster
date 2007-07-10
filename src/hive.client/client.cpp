@@ -37,49 +37,29 @@ int main(int argc,char**argv){
      av_register_all();
 
 
-    string getcodec="get codec";
+    string getcodec="get inputcodec";
     output->write((char*)getcodec.c_str(),getcodec.size());
 
     Codec * codec=codecis.readCodec();
-
-    while(!socket->isClosed()){
+	codec->open();
 	string getcmd="get frame";
 	string putcmd="put frame";
 	unsigned char * test=new unsigned char[10];
+
+    while(!socket->isClosed()){
 //	int size=input->read(test,10);
 	output->write((char*)getcmd.c_str(),getcmd.size());
 
 	Packet packet=pis.readPacket();
+	if(a%1000==0)
+	cout << a<<"Packet size:"<<packet.getSize()<<endl;
+	
 	Frame frame(&packet, codec);
-	
-	
-//	cout << ++counter<<"neues Frame size:"<<packet.getSize()<<endl;
-	cout << ++counter<<"neues Frame size:"<<frame.getSize()<<endl;
-//	cout << ++counter<<"neues Frame size:"<<size<<"Data:"<<test<<endl;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//	cout << counter<<"neues Frame size:"<<frame.getSize()<<endl;
 
         Frame* rgb=frame.getFrame(PIX_FMT_RGB24);
-        /*
-//        cout << "FrameSize:"<<frame->getSize()<<endl;
-//        cout << "RGBFrameSize:"<<rgb->getSize()<<endl;
-        
-        */
 
+/*
         char filename[32];
         sprintf(filename,"/tmp/hive/test.%d.ppm",a);
 
@@ -93,12 +73,12 @@ int main(int argc,char**argv){
         delete fout;
         delete out;
         
-        a++;
+*/
+
         delete rgb;
 
 
-
-
+        a++;
 
 
 

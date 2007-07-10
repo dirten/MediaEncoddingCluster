@@ -26,10 +26,11 @@ class SocketOutputStream:public OutputStream{
 	    int remaining=len, byteCounter=0, sendOpts = MSG_NOSIGNAL;
 	    while(remaining>0){
     		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
-		byteCounter+=bytes;
-		if(bytes<0){
-		    return;
-		}
+			byteCounter+=bytes;
+			if(bytes<0){
+           		this->socket->close();
+		    	return;
+			}
 		buffer+=bytes;
 		remaining-=bytes;
 	    }

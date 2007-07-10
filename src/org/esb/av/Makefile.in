@@ -54,7 +54,7 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libav_la_LIBADD =
+libav_la_DEPENDENCIES = ../io/libio.la
 am__objects_1 = FrameInputStream.lo FrameOutputStream.lo \
 	FormatInputStream.lo FormatBaseStream.lo FormatOutputStream.lo \
 	PacketInputStream.lo PacketOutputStream.lo CodecInputStream.lo \
@@ -195,10 +195,11 @@ SOURCES = \
             Codec.cpp \
             Packet.cpp \
             Frame.cpp \
-	    PPSWriter.cpp
+		    PPSWriter.cpp
 
 libav_la_SOURCES = $(SOURCES)
 libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libav_la_LIBADD = ../io/libio.la 
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 all: all-am

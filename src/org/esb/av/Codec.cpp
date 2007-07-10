@@ -12,9 +12,6 @@ namespace org{
 		if(!_codec)
 		    cout << "Codec not found"<<endl;
 		_codecCtx=avcodec_alloc_context();
-//		_codecCtx->width=512;
-//		_codecCtx->height=256;
-		
             }
 
             Codec::Codec(AVCodecContext * context){

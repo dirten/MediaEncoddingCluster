@@ -54,7 +54,7 @@ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libesb_la_DEPENDENCIES = io/libio.la net/libnet.la lang/liblang.la \
+libesb_la_DEPENDENCIES = lang/liblang.la io/libio.la net/libnet.la \
 	util/libutil.la av/libav.la hive/libhive.la
 am__objects_1 = config.lo
 am_libesb_la_OBJECTS = $(am__objects_1)
@@ -214,7 +214,7 @@ SOURCES = config/config.cpp
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
-libesb_la_LIBADD = io/libio.la net/libnet.la lang/liblang.la util/libutil.la av/libav.la hive/libhive.la
+libesb_la_LIBADD = lang/liblang.la io/libio.la net/libnet.la  util/libutil.la av/libav.la hive/libhive.la
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 EXTRA_DIST = lang/*.h io/*.h config/*.h util/*.h net/*.h av/*.h hive/*.h
 all: all-recursive

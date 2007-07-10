@@ -9,9 +9,13 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 Job::Job(Properties & p){
     _props=p;
-    File file(p.getProperty("source.file"));
-    _fis=new FormatInputStream(&file);
+    File infile(p.getProperty("source.file"));
+    _fis=new FormatInputStream(&infile);
     _pis=new PacketInputStream(_fis->getStream(0));
+/*    File outfile(p.getProperty("source.file"));
+    _fos=new FormatOutputStream(&outfile);
+    _pos=new PacketOutputStream(_fos->getStream(0));
+    */
 }
 
 Job::~Job(){
@@ -35,7 +39,11 @@ Packet & Job::getPacket(){
     return _pis->readPacket();
 }
 
-Codec * Job::getCodec(){
+Codec * Job::getInputCodec(){
+    return _pis->getCodec();
+}
+
+Codec * Job::getOutputCodec(){
     return _pis->getCodec();
 }
 

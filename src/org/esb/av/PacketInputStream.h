@@ -12,7 +12,7 @@ class PacketInputStream: public InputStream{
     public:
         PacketInputStream(InputStream * is);
         ~PacketInputStream();
-        Packet&readPacket();
+        Packet & readPacket();
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
         int read();
@@ -26,7 +26,8 @@ class PacketInputStream: public InputStream{
         AVCodec * _codec;
         Packet & readPacketFromFormatIS();
         Packet & readPacketFromIS();
-	Packet _packet;
+        Packet & readPacketFromIS2();
+		Packet _packet;
         int _streamIndex;
         int _readFrom;
         InputStream * _source;

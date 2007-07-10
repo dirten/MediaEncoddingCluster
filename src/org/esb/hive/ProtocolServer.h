@@ -22,9 +22,11 @@ namespace org{
             	    Socket * socket;
             	    list<ProtocolCommand*> l;
                     CommandInputStream * _cis;
+					pthread_mutex_t mutex;
                 public:
             	    ~ProtocolServer();
             	    ProtocolServer(Socket * socket);
+            	    ProtocolServer(Socket * socket, pthread_mutex_t m);
             	    void run();
             };
         }

@@ -18,7 +18,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
         _formatCtx=((FormatInputStream*)is)->getFormatContext();
         _streamIndex=((FormatInputStream*)is)->selectedStream;
         _codecCtx=_formatCtx->streams[_streamIndex]->codec;
-	cout << "BitRate:"<<_codecCtx->bit_rate<<endl;
+//	cout << "BitRate:"<<_codecCtx->bit_rate<<endl;
 	//_codec=_codecCtx->codec;
 	
         _codec=avcodec_find_decoder(_codecCtx->codec_id);
@@ -56,11 +56,28 @@ Packet & PacketInputStream::readPacketFromFormatIS(){
 		break;
             }
         } while(_packet.stream_index!=_streamIndex);
-    cout << "PacketSize:"<<_packet.size<<endl;
+//    cout << "PacketSize:"<<_packet.size<<endl;
     return _packet;
 }
 
 Packet & PacketInputStream::readPacketFromIS(){
+    if(_packet.data!=NULL)
+	   delete [] _packet.data;// av_free_packet(&_packet);
+	read((unsigned char*)&_packet.pts,sizeof(int64_t));
+	read((unsigned char*)&_packet.dts,sizeof(int64_t));
+	read((unsigned char*)&_packet.size,sizeof(int));
+	read((unsigned char*)&_packet.stream_index,sizeof(int));
+	read((unsigned char*)&_packet.flags,sizeof(int));
+	read((unsigned char*)&_packet.duration,sizeof(int));
+	read((unsigned char*)&_packet.pos,sizeof(int64_t));
+	uint8_t * b=new uint8_t[_packet.size];
+	_packet.data=b;
+	read((unsigned char*)_packet.data,_packet.size);	
+	return _packet;
+	
+
+}
+Packet & PacketInputStream::readPacketFromIS2(){
 	char pts[21];
 	char dts[21];
 	char size[11];

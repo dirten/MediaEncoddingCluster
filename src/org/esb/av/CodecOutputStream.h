@@ -11,6 +11,7 @@ class CodecOutputStream: public OutputStream{
     public:
 	CodecOutputStream(OutputStream * os);
 	void writeCodec(Codec * codec);
+	void writeCodec2(Codec * codec);
 	void write(char*buffer, int length);
 	void write(vector<unsigned char> & v);
     private:

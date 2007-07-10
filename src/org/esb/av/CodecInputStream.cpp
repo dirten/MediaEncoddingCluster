@@ -13,6 +13,31 @@ CodecInputStream::~CodecInputStream(){
 }
 
 Codec * CodecInputStream::readCodec(){
+    CodecID codecId;
+    read((unsigned char*)&codecId,sizeof(CodecID));
+	cout << "CodecIdRead:"<<codecId<<endl;
+    _codec=new Codec(codecId);
+//    _codec->open();
+    AVCodecContext * ctx=_codec->getCodecContext();
+
+
+//    read((unsigned char*)&ctx->codec_id,sizeof(CodecID));
+    read((unsigned char*)&ctx->codec_type,sizeof(CodecType));
+    read((unsigned char*)&ctx->bit_rate,sizeof(int));
+    read((unsigned char*)&ctx->pix_fmt,sizeof(PixelFormat));
+    read((unsigned char*)&ctx->width,sizeof(int));
+    read((unsigned char*)&ctx->height,sizeof(int));
+    read((unsigned char*)&ctx->has_b_frames,sizeof(int));
+    read((unsigned char*)&ctx->extradata_size,sizeof(int));
+	if(ctx->extradata_size>0){
+		uint8_t * extradata=new uint8_t[ctx->extradata_size];
+		ctx->extradata=extradata;
+    	read((unsigned char*)ctx->extradata,ctx->extradata_size);
+    }
+    return _codec;
+
+}
+Codec * CodecInputStream::readCodec2(){
 /*
     char codecId[5];
     char codecType[5];

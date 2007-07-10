@@ -34,7 +34,6 @@ Frame::Frame(Packet * packet, Codec * codec){
       bytesRemaining-=bytesDecoded;
       rawData+=bytesDecoded;
       if(_frameFinished){
-	    cout <<"FrameFinished"<<endl;
 	    break;
       }
     }    

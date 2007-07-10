@@ -19,11 +19,12 @@ SOURCES = \
             Codec.cpp \
             Packet.cpp \
             Frame.cpp \
-	    PPSWriter.cpp
+		    PPSWriter.cpp
             
             
 libav_la_SOURCES = $(SOURCES)
 libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libav_la_LIBADD = ../io/libio.la 
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src
 #	    $(all_includes) 

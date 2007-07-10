@@ -7,7 +7,7 @@ SUBDIRS = org hive.client
 #framehive
 
 
-bin_PROGRAMS = framesender framereceiver hivelsnr
+bin_PROGRAMS = hivelsnr
 
 
 #bin_PROGRAMS = zpipe
@@ -28,9 +28,9 @@ framesender_LDFLAGS = $(all_libraries)
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
 
-hivelsnr_LDADD=./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la
+hivelsnr_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 
 
-framesender_LDADD=./org/esb/libesb.la 
-framereceiver_LDADD=./org/esb/libesb.la 
+framesender_LDADD=./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
+framereceiver_LDADD=./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
 EXTRA_DIST=introspec.h 
