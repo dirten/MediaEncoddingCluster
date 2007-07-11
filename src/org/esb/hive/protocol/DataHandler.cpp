@@ -16,6 +16,7 @@ class DataHandler: public ProtocolCommand{
 	OutputStream * _os;
 	PacketOutputStream * _pos;
 	Job * _job;
+	static pthread_mutex_t * mutex;;
 
     public:
 	DataHandler(InputStream * is, OutputStream * os){
@@ -23,6 +24,14 @@ class DataHandler: public ProtocolCommand{
 	    _os=os;
 	    _pos=new PacketOutputStream(_os);
 	    _job=JobHandler::getInstance()->getJob();
+	    if(mutex==0){
+	    cout << "Mutex Create"<<endl;
+	    mutex=(pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
+	    pthread_mutexattr_t attr;
+	    pthread_mutexattr_init(&attr);
+	    pthread_mutex_init(mutex, &attr);
+	    pthread_mutexattr_destroy(&attr);
+	    }
 
 	}
 
@@ -41,8 +50,15 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
+			pthread_mutex_lock(mutex);
 			Packet packet=_job->getPacket();
-			_pos->writePacket(&packet);
+			Packet *tmp=new Packet(&packet);
+			pthread_mutex_unlock(mutex);
+//			packet=_job->getPacket();
+			_pos->writePacket(tmp);
+//			_pos->writePacket(&packet);
+			delete tmp;
+
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";
@@ -61,4 +77,4 @@ class DataHandler: public ProtocolCommand{
 	void printHelp(){
 	}
 };
-
+pthread_mutex_t * DataHandler::mutex=0;

@@ -10,6 +10,19 @@ Packet::Packet(){
 	data=0;
 }
 
+Packet::Packet(Packet * packet){
+	data=new uint8_t[packet->size];
+	memcpy(data, packet->data, packet->size);
+	size=packet->size;
+	pts=packet->pts;
+	dts=packet->dts;
+	flags=packet->flags;
+	stream_index=packet->stream_index;
+	duration=packet->duration;
+	pos=packet->pos;
+//	data=0;
+}
+
 Packet::~Packet(){
 /*
     if(data)

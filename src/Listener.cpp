@@ -19,9 +19,13 @@ int main(){
 			pthread_mutexattr_destroy(&attr);
 
     for(;Socket * clientSocket=server->accept();){
-	    ProtocolServer *protoServer=new ProtocolServer(clientSocket, mutex);
+//	    pthread_mutex_lock(&mutex);
+
+	    ProtocolServer *protoServer=new ProtocolServer(clientSocket, &mutex);
 	    Thread thread(protoServer);
 	    thread.start();
+//	    pthread_mutex_unlock(&mutex);
+
     }
 }
 

@@ -11,6 +11,7 @@ namespace org{
 	    {
 		public:
 		    Packet();
+		    Packet(Packet * packet);
 		    ~Packet();
             uint8_t * getData();
             int getSize();

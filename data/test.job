@@ -1,4 +1,4 @@
-source.file=/home/jhoelscher/bripper/Der Blutige Pfad Gottes - German (DVD-Quali).avi
+source.file=/home/jhoelscher/Der Blutige Pfad Gottes - German (DVD-Quali).avi
 #source.file=/home/jhoelscher/bripper/MediaEncodingCluster/test.avi
 target.file=/home/jhoelscher/data/testvideo.avi
 target.audio.format=mp2

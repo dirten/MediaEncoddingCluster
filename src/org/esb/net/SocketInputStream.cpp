@@ -82,8 +82,6 @@ namespace org
         /******************************************************************************/
         int available(bool isBlocking)
         {
-
-
 	#if defined(WIN32) 
 
 	    unsigned long numBytes = 0;
@@ -104,10 +102,10 @@ namespace org
 	    }
 	}
 	
-        int numBytes = 0;
+    	    int numBytes = 0;
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
-	    return numBytes;
-        }
+		return numBytes;
+    	    }
 	#endif
 	#endif
           return 1;

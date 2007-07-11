@@ -41,8 +41,8 @@ ProtocolServer::~ProtocolServer() {
     delete _cis;
 }
 
-ProtocolServer::ProtocolServer(Socket * socket,pthread_mutex_t m) {
-	mutex=m;
+ProtocolServer::ProtocolServer(Socket * socket,pthread_mutex_t *m) {
+    mutex=m;
     this->socket=socket;
     _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
@@ -65,12 +65,14 @@ void ProtocolServer::run() {
 
 
     while(!socket->isClosed()) {
+//	pthread_mutex_lock(mutex);
+
 //        Command * cmd=_cis->readCommand();
 
 	int dataLength=socket->getInputStream()->available(true);
 	if(dataLength==0){
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
-	    break;
+//	    break;
 	}
         unsigned char buffer[dataLength+1];
 	memset(buffer,0, dataLength+1);
@@ -82,9 +84,7 @@ void ProtocolServer::run() {
         for(i=l.begin();i!=l.end();++i) {
             ProtocolCommand *tmp=(ProtocolCommand*)*i;
             if(tmp->isResponsible(command)==CMD_PROCESS) {
-				pthread_mutex_lock(&mutex);
                 tmp->process(command);
-				pthread_mutex_unlock(&mutex);
 				break;
             }
             else
@@ -96,6 +96,7 @@ void ProtocolServer::run() {
     	    string line="--------------------------------------------------------\n";
 //    	    socket->getOutputStream()->write((char *)line.c_str(),line.length());
 	}
+//	pthread_mutex_unlock(mutex);
         
     }
     cout <<"Elvis has left the Building"<<endl;
