@@ -9,9 +9,11 @@ namespace org{
 	namespace av{
 	    class FormatOutputStream: public FormatBaseStream, public org::esb::io::OutputStream {
 		public:
-		    FormatOutputStream(org::esb::io::File * source);
+		    FormatOutputStream(org::esb::io::File * target);
 		    ~FormatOutputStream();
-		    int write(unsigned char * buffer, int length);
+		    void write(unsigned char * buffer, int length);
+		    void write(vector<unsigned char>&buffer);
+		    void write(unsigned char * buffer);
 		    void close();
 		private:
 

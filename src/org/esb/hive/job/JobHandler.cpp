@@ -11,12 +11,6 @@ JobHandler::JobHandler(){
     FileInputStream p("data/test.job");
     _props.load(&p);
     _testJob=new Job(_props);
-
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init(&attr);
-    pthread_mutex_init(&mutex, &attr);
-    pthread_mutexattr_destroy(&attr);
-
     cout << "Create JobHandler"<<endl;
 }
 

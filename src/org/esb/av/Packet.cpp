@@ -7,6 +7,7 @@ using namespace std;
 using namespace org::esb::av;
 
 Packet::Packet(){
+	isCopy=false;
 	data=0;
 }
 
@@ -20,14 +21,12 @@ Packet::Packet(Packet * packet){
 	stream_index=packet->stream_index;
 	duration=packet->duration;
 	pos=packet->pos;
-//	data=0;
+	isCopy=true;
 }
 
 Packet::~Packet(){
-/*
-    if(data)
-        av_free(data);
-*/
+    if(isCopy&&data)
+        delete [] data;
 }
 
 uint8_t * Packet::getData(){return data;}

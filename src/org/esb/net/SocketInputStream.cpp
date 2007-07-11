@@ -2,6 +2,7 @@
 #include "org/esb/net/Socket.h"
 #include <iostream>
 #include "org/esb/lang/Byte.h"
+#include "config.h"
 #include <vector>
 #if !defined(WIN32) 
     #include <sys/select.h>
@@ -31,17 +32,39 @@ namespace org
       private:
         Socket * socket;
         uint8_t byte;
+        /**
+         * The mutex object.
+         */
+        #ifdef HAVE_PTHREAD_H
+            pthread_mutex_t mutex;
+        #else
+            CRITICAL_SECTION mutex;
+        #endif
+
       public:
         /******************************************************************************/
         ~SocketInputStream()
         {
-        
+		#ifdef HAVE_PTHREAD_H
+    		pthread_mutex_destroy(&mutex);
+		#else
+    		DeleteCriticalSection(&mutex);
+		#endif
         }
         /******************************************************************************/
         SocketInputStream(Socket * socket)
         {
+		#ifdef HAVE_PTHREAD_H
+    		pthread_mutexattr_t attr;
+    		pthread_mutexattr_init(&attr);
+    		pthread_mutex_init(&mutex, &attr);
+    		pthread_mutexattr_destroy(&attr);
+		#else
+    		InitializeCriticalSection(&mutex);            
+		#endif
           this->socket=socket;
 		  byte=-1;
+
         }
 
         /******************************************************************************/
@@ -83,18 +106,20 @@ namespace org
         int available(bool isBlocking)
         {
 	#if defined(WIN32) 
+        EnterCriticalSection(&mutex);
 
 	    unsigned long numBytes = 0;
 
 	    if (::ioctlsocket (this->socket->getDescriptor(), FIONREAD, &numBytes) == SOCKET_ERROR){
 //    		throw SocketException( __FILE__, __LINE__, "ioctlsocket failed" );
 	    }
-
+        LeaveCriticalSection(&mutex);
 	    return (std::size_t)numBytes;
 
 	#else // !defined(HAVE_WINSOCK2_H)
 
 	#if defined(FIONREAD)
+    pthread_mutex_lock(&mutex);
 	if(isBlocking){
 	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
 	    if(counter<0){
@@ -104,6 +129,7 @@ namespace org
 	
     	    int numBytes = 0;
 	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
+    	pthread_mutex_unlock(&mutex);
 		return numBytes;
     	    }
 	#endif

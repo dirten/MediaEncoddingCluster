@@ -22,6 +22,8 @@ namespace org{
             int getDuration();
             void * getPriv();
             int64_t getPosition();
+        private:
+        	bool isCopy;
 	    };
 	}
     }

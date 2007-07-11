@@ -11,7 +11,6 @@ Frame::Frame(Packet * packet, Codec * codec){
     assert(packet);
     assert(codec);
 
-    pts=AV_NOPTS_VALUE;
     key_frame=1;
     _frameFinished=0;
     _packet=packet;
@@ -36,7 +35,10 @@ Frame::Frame(Packet * packet, Codec * codec){
       if(_frameFinished){
 	    break;
       }
-    }    
+    }
+    
+        pts=packet->pts;
+    
 }
 /*
 Frame::Frame(int format, int width, int height){

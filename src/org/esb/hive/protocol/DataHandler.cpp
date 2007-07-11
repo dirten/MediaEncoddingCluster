@@ -16,7 +16,7 @@ class DataHandler: public ProtocolCommand{
 	OutputStream * _os;
 	PacketOutputStream * _pos;
 	Job * _job;
-	static pthread_mutex_t * mutex;;
+	static pthread_mutex_t * mutex;
 
     public:
 	DataHandler(InputStream * is, OutputStream * os){
@@ -50,15 +50,13 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
-			pthread_mutex_lock(mutex);
-			Packet packet=_job->getPacket();
-			Packet *tmp=new Packet(&packet);
-			pthread_mutex_unlock(mutex);
-//			packet=_job->getPacket();
-			_pos->writePacket(tmp);
-//			_pos->writePacket(&packet);
-			delete tmp;
-
+			pthread_mutex_lock(mutex);			//lock mutex
+			Packet packet=_job->getPacket();	//_job->getPackage() must be synchronized 
+												//with the Copy from the Packet
+			Packet *tmp=new Packet(&packet);	//copy the data in a new Packet
+			pthread_mutex_unlock(mutex);		//release lock
+			_pos->writePacket(tmp);				//write Packet to the Client
+			delete tmp;							//delete Packet Copy
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";
@@ -73,7 +71,6 @@ class DataHandler: public ProtocolCommand{
 			cos.writeCodec(_job->getOutputCodec());
 	    }
 	}
-
 	void printHelp(){
 	}
 };

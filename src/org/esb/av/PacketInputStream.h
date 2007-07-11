@@ -26,7 +26,6 @@ class PacketInputStream: public InputStream{
         AVCodec * _codec;
         Packet & readPacketFromFormatIS();
         Packet & readPacketFromIS();
-        Packet & readPacketFromIS2();
 		Packet _packet;
         int _streamIndex;
         int _readFrom;
