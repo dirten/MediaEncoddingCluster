@@ -5,7 +5,10 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/av/CodecOutputStream.h"
+#include "org/esb/av/Codec.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "framehive/FrameHive.h"
 
 #include <iostream>
 
@@ -19,33 +22,47 @@ int main(){
 	File file("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     FormatInputStream fis(&file);
     PacketInputStream pis(fis.getStream(0));
-	pis.skip(155000);
-		
+    Codec * codec=pis.getCodec();
+
+//	pis.skip(155000);
+			
 	Packet packet;
-	int a=0;
-	while(a<10){
+	int a=0, packetCounter=0;
+	
+//	FrameHive * hive=new FrameHive("test");
+	FileOutputStream * fos=NULL;
+	PacketOutputStream * pos=NULL;
+	CodecOutputStream * cos=NULL;
+	while(true){
 	    packet=pis.readPacket();
+		if(packet.isKeyFrame()){
+			packetCounter++;
+			char filename[100];
+			sprintf(filename,"/tmp/hive/con%04d.data",packetCounter);
+			cout << filename<<endl;
+			if(fos!=NULL)
+				delete fos;
+			fos=new FileOutputStream(filename);
+			if(pos!=NULL)
+				delete pos;
+			pos=new PacketOutputStream(fos);
+			if(cos!=NULL)
+				delete cos;
+				
+			cos=new CodecOutputStream(fos);
+			cos->writeCodec(codec);
+			cos->writeCodec(codec);
+		}
+		pos->writePacket(&packet);
 	    if(packet.data==NULL)break;
-	    char filename[32];
-        sprintf(filename,"/tmp/hive/test.%d.packet",a);
-        FileOutputStream out(filename);
-        PacketOutputStream pout(&out);
-		pout.writePacket(&packet);
-//		delete packet;
+		
+//		hive->putPacket(&packet);
+//		if(a%10==0)cout<<"Packet:"<<a<<endl;
 		a++;	
 	}
 
-//	delete packet;
 
 
-	FileInputStream fileis("/tmp/hive/test.0.packet");
-	PacketInputStream pis2(&fileis);
-	Packet rp=pis2.readPacket();
-        FileOutputStream out("/tmp/hive/test.test.packet");
-        PacketOutputStream pout(&out);
-	pout.writePacket(&rp);
-
-//	delete rp;
 	
 	
 }

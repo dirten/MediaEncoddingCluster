@@ -8,10 +8,10 @@ namespace org{
     namespace esb{
         namespace av{
             Codec::Codec(const CodecID codecId){
-		_codec=avcodec_find_decoder(codecId);
-		if(!_codec)
-		    cout << "Codec not found"<<endl;
-		_codecCtx=avcodec_alloc_context();
+				_codec=avcodec_find_decoder(codecId);
+				if(!_codec)
+		    		cout << "Codec not found for id :"<<codecId<<endl;
+				_codecCtx=avcodec_alloc_context();
             }
 
             Codec::Codec(AVCodecContext * context){

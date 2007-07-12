@@ -19,10 +19,12 @@ CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
 
 AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is "/usr/local")],
-	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-1.1"
+	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-2.0"
 	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
 	    AMQ_PATH="$withval")
 
+CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
+LDFLAGS="$LDFLAGS $AMQ_LD -luuid"
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
 AC_CHECK_LIB(avcodec, av_free)
@@ -68,6 +70,7 @@ AC_OUTPUT(
     src/org/esb/net/Makefile
     src/org/esb/hive/Makefile
     src/hive.client/Makefile 
+    src/framehive/Makefile 
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     
 dnl    src/hive.listener/Makefile 

@@ -48,6 +48,7 @@ int main(int argc,char**argv){
 	string getcmd="get frame";
 	string putcmd="put frame";
 	unsigned char * test=new unsigned char[10];
+
 	Codec outCodec(CODEC_ID_MPEG4);
 
 	AVCodecContext *cc=avcodec_alloc_context();
@@ -60,7 +61,7 @@ int main(int argc,char**argv){
     cc->time_base.num = 1;
     cc->gop_size = 40; /* emit one intra frame every twelve frames at most */
     cc->pix_fmt = STREAM_PIX_FMT;
-    cc->flags |= CODEC_FLAG_GLOBAL_HEADER;
+//    cc->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
 	AVCodec * c=avcodec_find_encoder(CODEC_ID_MPEG4);
     if (!c) {
@@ -81,7 +82,7 @@ int main(int argc,char**argv){
 	output->write((char*)getcmd.c_str(),getcmd.size());
 
 	Packet packet=pis.readPacket();
-	if(a>=5000)exit(0);
+	if(a>=30000)exit(0);
 	if(a%1000==0)
 	cout << a<<"Packet size:"<<packet.getSize()<<endl;
 		

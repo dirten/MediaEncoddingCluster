@@ -1,44 +1,57 @@
 #include "Command.h"
 
-using namespace org::esb::hive;
-Command::Command(){
-    _mode=TEXT_MODE;
+using namespace
+	org::esb::hive;
+Command::Command ()
+{
+	_mode = TEXT_MODE;
 
 }
 
 
-Command::~Command(){
-//	delete []_command;
+Command::~Command ()
+{
+//      delete []_command;
 
 }
 
-void Command::setCommand(const char * command){
-    _command=command;
+void
+Command::setCommand (const char *command)
+{
+	_command = command;
 }
 
-void Command::setCommand(string & command){
-    _command=string(command);
+void
+Command::setCommand (string & command)
+{
+	_command = string (command);
 }
 
-string & Command::getCommand(){
-    return _command;
+string & Command::getCommand ()
+{
+	return _command;
 }
 
-void Command::setData(const void * data){
-    _data=data;
+void
+Command::setData (const void *data)
+{
+	_data = data;
 }
 
-const void * Command::getData(){
-    return _data;
+const void *
+Command::getData ()
+{
+	return _data;
 }
 
-void Command::setDataLength(int datalength){
-    _datalength=datalength;
+void
+Command::setDataLength (int datalength)
+{
+	_datalength = datalength;
 }
 
-int Command::getDataLength(){
-    return _datalength;
+int
+Command::getDataLength ()
+{
+	return _datalength;
 }
-
-
-

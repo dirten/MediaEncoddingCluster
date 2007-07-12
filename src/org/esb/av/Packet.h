@@ -20,6 +20,7 @@ namespace org{
             int getFlags();
             int getStreamIndex();
             int getDuration();
+			bool isKeyFrame();
             void * getPriv();
             int64_t getPosition();
         private:

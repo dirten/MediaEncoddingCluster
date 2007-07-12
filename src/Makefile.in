@@ -182,7 +182,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hive.client
+SUBDIRS = org hive.client framehive
 
 #bin_PROGRAMS = zpipe
 hivelsnr_SOURCES = Listener.cpp

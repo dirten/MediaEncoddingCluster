@@ -36,6 +36,7 @@ int Packet::getDts(){return dts;}
 int Packet::getFlags(){return flags;}
 int Packet::getStreamIndex(){return stream_index;}
 int Packet::getDuration(){return duration;}
+bool Packet::isKeyFrame(){return flags & PKT_FLAG_KEY;}
 void * Packet::getPriv(){return priv;}
 int64_t Packet::getPosition(){return pos;}
 

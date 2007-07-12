@@ -18763,11 +18763,13 @@ CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 # Check whether --with-amq or --without-amq was given.
 if test "${with_amq+set}" = set; then
   withval="$with_amq"
-  AMQ_CFLAGS="-I$withval/include/activemq-cpp-1.1"
+  AMQ_CFLAGS="-I$withval/include/activemq-cpp-2.0"
 	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
 	    AMQ_PATH="$withval"
 fi;
 
+CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
+LDFLAGS="$LDFLAGS $AMQ_LD -luuid"
 # moved up to comply with standard autoconf layout
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
 
@@ -19396,7 +19398,7 @@ CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lz -lpthread"
 
-                                                                                                                        ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile src/hive.client/Makefile"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile src/hive.client/Makefile src/framehive/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -19965,6 +19967,7 @@ do
   "src/org/esb/net/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/net/Makefile" ;;
   "src/org/esb/hive/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/hive/Makefile" ;;
   "src/hive.client/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hive.client/Makefile" ;;
+  "src/framehive/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/framehive/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

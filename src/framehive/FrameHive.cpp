@@ -1,93 +1,53 @@
 #include "FrameHive.h"
+
+#include <activemq/core/ActiveMQConnectionFactory.h>
+
+using namespace activemq::core;
 using namespace org::esb::config;
-/*****************************************************************************/
-MYSQL *mysql;
-MYSQL_STMT *stmt;
-sqlite3 *db;
-sqlite3_stmt *pStmt;
-char *zErrMsg = 0;
-int rc;
-
-/*****************************************************************************/
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
-{
-  int i;
-  for(i=0; i<argc; i++)
-  {
-    printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-  }
-  printf("\n");
-  return 0;
-}
-
 
 
 /*****************************************************************************/
 FrameHive::FrameHive(string dbname)
 {
 
-  this->frameCounter=0;
-  this->pathCounter=0;
-  this->pfad="/tmp/frame.container";
-  this->compressor=new FrameCompressor();
-  this->pFileHive=fopen("/tmp/frame.container/hive.data", "wb");
+         // Create a ConnectionFactory
+    std::string brokerURI =
+        "tcp://127.0.0.1:61616"
+        "?wireFormat=openwire";
 
-  rc = sqlite3_open(dbname.c_str(), &db);
-  if( rc )
-  {
-    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-    sqlite3_close(db);
-    exit(1);
-  }
-  string sql="insert into test(data) values (?)";
-  sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
+            ActiveMQConnectionFactory* connectionFactory =
+                new ActiveMQConnectionFactory( brokerURI );
 
 
-  if(Config::getProperty("mysql")=="true")
-  {
-    mysql = mysql_init(NULL);
-    if(mysql == NULL)
-    {
-      fprintf(stderr, " Initialisierung fehlgeschlagen\n");
-    }
-    /* Mit dem Server verbinden */
-    if( mysql_real_connect (
-          mysql,   /* Zeiger auf MYSQL-Handler*/
-          "10.122.6.163", /* Host-Name*/
-          "root", /* User-Name*/
-          NULL, /* Passwort für user_name */
-          NULL,  /* Name der Datenbank*/
-          0,     /* Port (default=0) */
-          NULL,  /* Socket (default=NULL)*/
-          0      /* keine Flags */  )  == NULL)
-    {
-      fprintf (stderr, "Fehler mysql_real_connect():" "%u (%s)\n",mysql_errno (mysql), mysql_error (mysql));
-    }
-    else
-    {
-      printf("Erfolgreich mit dem MySQL-Server verbunden\n");
-    }
-    int rc=0;
-    rc=mysql_select_db(mysql,"framehive");
-    if(rc!=0)
-    {
-      fprintf (stderr, "Fehler mysql_select_db:" "%u (%s)\n",mysql_errno (mysql), mysql_error (mysql));
-    }
-    stmt=mysql_stmt_init(mysql);
-    //    string sql="insert into test(data) values (?)";
-    rc=mysql_stmt_prepare(stmt,sql.c_str(), sql.length());
-  }
 
-  //
+
+            // Create a Connection
+            connection = connectionFactory->createConnection();
+            connection->start();
+
+            // free the factory, we are done with it.
+
+            delete connectionFactory;
+
+            // Create a Session
+            session = connection->createSession( Session::AUTO_ACKNOWLEDGE );
+
+            // Create the destination (Topic or Queue)
+            destination = session->createQueue( "TEST.FOO" );
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+            producer = session->createProducer( destination );
+            producer->setDeliveryMode( DeliveryMode::NON_PERSISTENT );
+
+
+
+
+
+
 }
-
-
 /*****************************************************************************/
 FrameHive::~FrameHive()
 {
-  sqlite3_close(db);
-  /* Verbindung trennen */
-  mysql_close (mysql);
 
 }
 
@@ -99,7 +59,16 @@ void FrameHive::putFrame( AVFrame * frame, AVCodecContext *codecCtx )
   //    this->putFrameMySQL(frame, codecCtx);
   this->putFrameFS(frame, codecCtx);
 }
+/*****************************************************************************/
+void FrameHive::putPacket( AVPacket * packet )
+{
+                BytesMessage* message = session->createBytesMessage( packet->data, packet->size);
+//                printf( "Sent message #%d from thread %s\n", ix, threadIdStr.c_str() );
+                producer->send( message );
 
+                delete message;
+
+}
 /*****************************************************************************/
 void FrameHive::putFrameHive( AVFrame * frame, AVCodecContext *codecCtx )
 {
@@ -116,35 +85,6 @@ void FrameHive::putFrameHive( AVFrame * frame, AVCodecContext *codecCtx )
       fwrite(frame->data[0]+y*frame->linesize[0], 1, codecCtx->width*3, pFileHive);
     fflush(pFileHive);
   }
-}
-void FrameHive::putFrameMySQL( AVFrame * frame, AVCodecContext *codecCtx )
-{
-
-  int height=codecCtx->height;
-  int width=codecCtx->width;
-  int bufSize=width*height*3;
-  unsigned char * buffer = new unsigned char[bufSize];
-  bufSize=compressor->deflateFrame(frame, buffer);
-  /*
-      for(int y=0; y<height; y++){
-        memcpy(buffer+(frame->linesize[0]*y),frame->data[0]+(y*frame->linesize[0]),width*3);
-      }
-  */
-
-  /* Hier befindet sich der Code für die Arbeit mit MySQL */
-  MYSQL_BIND bind[1];
-  memset(bind, 0, sizeof(bind));
-  bind[0].buffer_type=MYSQL_TYPE_BLOB;
-  bind[0].buffer=buffer;
-  bind[0].buffer_length=bufSize;
-  //    bind[0].length=bufSize;
-  mysql_stmt_bind_param(stmt,bind);
-  int rc=mysql_stmt_execute(stmt);
-  if(rc!=0)
-  {
-    fprintf (stderr, "Fehler in execute:" "%u (%s)\n",mysql_errno (mysql), mysql_error (mysql));
-  }
-  delete buffer;
 }
 
 /*****************************************************************************/
@@ -188,25 +128,4 @@ void FrameHive::putFrameFS( AVFrame * frame, AVCodecContext *codecCtx )
   */
 }
 
-/*****************************************************************************/
-void FrameHive::putFrameSQLite( AVFrame * frame, AVCodecContext *codecCtx )
-{
-  int height=codecCtx->height;
-  int width=codecCtx->width;
-  int bufSize=width*height*3;
-  unsigned char * buffer = new unsigned char[bufSize];
-  for(int y=0; y<height; y++)
-  {
-    memcpy(buffer+(frame->linesize[0]*y),frame->data[0]+(y*frame->linesize[0]),width*3);
-  }
-  sqlite3_bind_text( pStmt, 1, (char*)buffer,bufSize, SQLITE_STATIC );
-  rc=sqlite3_step(pStmt);
-  rc = sqlite3_reset(pStmt);
-  if( rc!=SQLITE_OK )
-  {
-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
-    sqlite3_free(zErrMsg);
-  }
-  delete buffer;
-}
 

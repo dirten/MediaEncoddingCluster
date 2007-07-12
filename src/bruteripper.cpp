@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
 //    container->putFrame(pFrameRGB,pCodecCtx);
 //    container->putFrame3(pFrameRGB,pCodecCtx);
 //    container->putFrame(pFrameRGB,pCodecCtx);
-//      hive->putFrame(pFrameRGB,pCodecCtx);
+//      hive->putPacket(pFrameRGB,pCodecCtx);
     SaveFrame(pFrameRGB, pCodecCtx->width, pCodecCtx->height, i);
   }
 	cerr << "\rProcessing Frame :"<< i;
