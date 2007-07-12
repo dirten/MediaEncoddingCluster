@@ -16,12 +16,16 @@ PacketInputStream::PacketInputStream(InputStream * is){
 	_readFrom=0;
     if(instanceOf(*is, FormatInputStream)){
         _formatCtx=((FormatInputStream*)is)->getFormatContext();
+
         _streamIndex=((FormatInputStream*)is)->selectedStream;
-        _codecCtx=_formatCtx->streams[_streamIndex]->codec;	
-        _codec=avcodec_find_decoder(_codecCtx->codec_id);
-        if(avcodec_open(_codecCtx, _codec)<0) {
-            fprintf(stderr, "avcodec_open failed in PacketInputStream\n");
-        }
+
+        _codecCtx=_formatCtx->streams[_streamIndex]->codec;
+	_codec2=new Codec(_codecCtx);
+	_codec2->open();
+//        _codec=avcodec_find_decoder(_codecCtx->codec_id);
+//        if(avcodec_open(_codecCtx, _codec)<0) {
+//            fprintf(stderr, "avcodec_open failed in PacketInputStream\n");
+//        }
         _readFrom=1;
     }else{
     	_source=is;	
@@ -30,7 +34,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
 PacketInputStream::~PacketInputStream(){
     if(_readFrom==1){
-	avcodec_close(_codecCtx);
+	avcodec_close(_codec2);
 	av_free_packet(&_packet);
     }
 }
@@ -91,7 +95,7 @@ uint64_t PacketInputStream::getDuration(){
 }
 
 Codec * PacketInputStream::getCodec(){
-    return new Codec(_codecCtx);
+    return _codec2;
 }
 
 void PacketInputStream::skip(long packets){

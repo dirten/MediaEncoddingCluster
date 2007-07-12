@@ -22,11 +22,13 @@ class PacketInputStream: public InputStream{
         void skip(long packets);
     private:
         AVFormatContext * _formatCtx;
-        AVCodecContext * _codecCtx;
+        Codec * _codec2;
+	AVCodecContext * _codecCtx;
         AVCodec * _codec;
+	
         Packet & readPacketFromFormatIS();
         Packet & readPacketFromIS();
-		Packet _packet;
+	Packet _packet;
         int _streamIndex;
         int _readFrom;
         InputStream * _source;

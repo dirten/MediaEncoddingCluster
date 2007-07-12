@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hive.client framehive
+SUBDIRS = org hive.client
 #hive.server hive.client hive.listener 
 #framehive
 

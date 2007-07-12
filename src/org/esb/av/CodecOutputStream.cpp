@@ -7,7 +7,7 @@ CodecOutputStream::CodecOutputStream(OutputStream * os){
 }
 
 void CodecOutputStream::writeCodec(Codec * codec){
-    AVCodecContext * ctx=codec->getCodecContext();
+    AVCodecContext * ctx=codec;
     write((char*)&ctx->codec_id,sizeof(CodecID));
     write((char*)&ctx->codec_type,sizeof(CodecType));
     write((char*)&ctx->bit_rate,sizeof(int));

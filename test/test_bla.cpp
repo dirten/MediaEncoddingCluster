@@ -26,21 +26,22 @@ int main(){
 //    File *file=new File("test.avi");
     FormatInputStream *fis=new FormatInputStream(file);
     PacketInputStream *pis=new PacketInputStream(fis->getStream(0));
-//    pis->skip(200);
+    cout << "Duration:"<<pis->getDuration()<<endl;;
+    pis->skip(155000);
     Codec * codec=pis->getCodec();
 
 
 	cout << "CodecContextSize:"<<sizeof(AVCodecContext)<<endl;
 	
 	int id=0;
-	memcpy(&id,codec->getCodecContext(),sizeof(int));
+	memcpy(&id,codec,sizeof(int));
 	
 //	cout << "CodecId"<<codec->getCodecContext()->coded_width<<endl;
     FileOutputStream focs("/tmp/hive/1.codec.test");
     CodecOutputStream cos(&focs);
     cos.writeCodec(codec);
     focs.flush();
-
+    focs.close();
 
     FileInputStream fics("/tmp/hive/1.codec.test");
     CodecInputStream cis(&fics);
@@ -57,17 +58,19 @@ int main(){
 //    int duration=pis->getDuration();
     Packet packet;
     Frame * frame;
-    while(a<400){
+    while(true){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
-        if(a%100==0)cout <<"A:"<<a<<endl;
-        a++;
+//        if(a%100==0)cout <<"A:"<<a<<endl;
+//        a++;
 //		cout << "PacketSize:"<<packet.getSize()<<endl;
-/*
-        frame=new Frame(&packet, c);
-		cout <<"FrameFormat"<< frame->getFormat()<<endl;
-		cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
+	cout << "PTS:"<<packet.pts<<endl;
+//        frame=new Frame(&packet, c);
+/*        frame=c->decode(packet);
+//		cout <<"FrameFormat"<< frame->getFormat()<<endl;
+//		cout << "RGBFormat"<<PIX_FMT_RGB24<<endl;
         Frame* rgb=frame->getFrame(PIX_FMT_RGB24);
+	
 
         char filename[32];
         sprintf(filename,"/tmp/hive/test.%d.ppm",a);
@@ -82,11 +85,13 @@ int main(){
         delete fout;
         delete out;
         
-        a++;
         delete rgb;
+	
         delete frame;
+	*/
+        a++;
 //        delete packet;
-*/
+
     }
 	
     FileInputStream * is =new FileInputStream("/tmp/hive/test.70.ppm");

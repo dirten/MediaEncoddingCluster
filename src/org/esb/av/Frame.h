@@ -12,7 +12,7 @@ namespace esb{
 namespace av{
 class Frame :public AVFrame{
     public:
-//	Frame(int format, int width, int height);
+	Frame();
 	Frame(int format, int width, int height, unsigned char * data);
 	Frame(Frame * source, int format);
 	Frame(Packet * packet, Codec * codec);
@@ -25,13 +25,13 @@ class Frame :public AVFrame{
 	AVPacket * getPacket();
 	Frame * getFrame(int format=0);
 //	void setFrame(AVFrame * frame);
+        int _height;
+        int _width;
+        int _pixFormat;
     private:
         AVCodecContext * _codecContext;
 	    AVPacket * _packet;
 	    AVFrame * _frame;
-        int _height;
-        int _width;
-        int _pixFormat;
         uint8_t * _buffer;
 	public:
 	int _frameFinished;

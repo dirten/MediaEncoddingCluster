@@ -7,6 +7,12 @@ extern "C" {
 #include <iostream>
 using namespace std;
 using namespace org::esb::av;
+Frame::Frame(){
+    key_frame=1;
+    _buffer=new uint8_t[1];
+
+}
+
 Frame::Frame(Packet * packet, Codec * codec){
     assert(packet);
     assert(codec);
@@ -14,7 +20,7 @@ Frame::Frame(Packet * packet, Codec * codec){
     key_frame=1;
     _frameFinished=0;
     _packet=packet;
-    _codecContext=codec->getCodecContext();
+    _codecContext=codec;
     _width=_codecContext->width;
     _height=_codecContext->height;
     _pixFormat=_codecContext->pix_fmt;

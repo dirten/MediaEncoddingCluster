@@ -129,7 +129,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -182,7 +181,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hive.client framehive
+SUBDIRS = org hive.client
 
 #bin_PROGRAMS = zpipe
 hivelsnr_SOURCES = Listener.cpp

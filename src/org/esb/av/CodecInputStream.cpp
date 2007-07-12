@@ -16,7 +16,7 @@ Codec * CodecInputStream::readCodec(){
     CodecID codecId;
     read((unsigned char*)&codecId,sizeof(CodecID));
     _codec=new Codec(codecId);
-    AVCodecContext * ctx=_codec->getCodecContext();
+    AVCodecContext * ctx=_codec;
     read((unsigned char*)&ctx->codec_type,sizeof(CodecType));
     read((unsigned char*)&ctx->bit_rate,sizeof(int));
     read((unsigned char*)&ctx->pix_fmt,sizeof(PixelFormat));
