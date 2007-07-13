@@ -34,7 +34,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
 PacketInputStream::~PacketInputStream(){
     if(_readFrom==1){
-	avcodec_close(_codec2);
+//	avcodec_close(_codec2);
 	av_free_packet(&_packet);
     }
 }

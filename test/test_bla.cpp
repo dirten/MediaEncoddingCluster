@@ -36,7 +36,7 @@ int main(){
 	int id=0;
 	memcpy(&id,codec,sizeof(int));
 	
-//	cout << "CodecId"<<codec->getCodecContext()->coded_width<<endl;
+	cout << "CodecId"<<codec->codec_id<<endl;
     FileOutputStream focs("/tmp/hive/1.codec.test");
     CodecOutputStream cos(&focs);
     cos.writeCodec(codec);
@@ -65,6 +65,7 @@ int main(){
 //        a++;
 //		cout << "PacketSize:"<<packet.getSize()<<endl;
 	cout << "PTS:"<<packet.pts<<endl;
+	frame=c->decode(packet);
 //        frame=new Frame(&packet, c);
 /*        frame=c->decode(packet);
 //		cout <<"FrameFormat"<< frame->getFormat()<<endl;
@@ -93,7 +94,7 @@ int main(){
 //        delete packet;
 
     }
-	
+	/*
     FileInputStream * is =new FileInputStream("/tmp/hive/test.70.ppm");
     FrameInputStream * fris=new FrameInputStream(is);
     Frame * fr=fris->readFrame();
@@ -109,7 +110,7 @@ int main(){
 	delete is;
 	delete fris;
 	delete fr;
-	
+	*/
 	    
 //    delete packet;
     delete codec;

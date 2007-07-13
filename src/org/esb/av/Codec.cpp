@@ -4,6 +4,7 @@ extern "C" {
 }
 #include "Frame.h"
 #include <iostream>
+#include <assert.h>
 using namespace std;
 namespace org{
     namespace esb{
@@ -17,6 +18,7 @@ namespace org{
 
             Codec::Codec(AVCodecContext * context){
 		_codec=avcodec_find_decoder(context->codec_id);
+		codec_id=context->codec_id;
 		codec_type=context->codec_type;
 		width=context->width;
 		height=context->height;
@@ -45,7 +47,7 @@ namespace org{
             }
 
             void Codec::open(){
-		avcodec_open(this, _codec);
+				avcodec_open(this, _codec);
             }
 
             Packet* Codec::encodeFrame(Frame & frame){
@@ -54,7 +56,7 @@ namespace org{
             Frame * Codec::decode(Packet & packet){
 		Frame * frame=new Frame();
                 assert(&packet);
-		assert(codec);
+				assert(codec);
 
 		int _frameFinished=0;
     	        frame->_width=this->width;
