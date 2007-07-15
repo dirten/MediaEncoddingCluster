@@ -15,8 +15,10 @@ void CodecOutputStream::writeCodec(Codec * codec){
     write((char*)&ctx->width,sizeof(int));
     write((char*)&ctx->height,sizeof(int));
     write((char*)&ctx->has_b_frames,sizeof(int));
+    
     write((char*)&ctx->extradata_size,sizeof(int));
     write((char*)ctx->extradata,ctx->extradata_size);
+    
 }
 
 void CodecOutputStream::write(char * buffer, int length){

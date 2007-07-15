@@ -23,6 +23,7 @@ Codec * CodecInputStream::readCodec(){
     read((unsigned char*)&ctx->width,sizeof(int));
     read((unsigned char*)&ctx->height,sizeof(int));
     read((unsigned char*)&ctx->has_b_frames,sizeof(int));
+    
     read((unsigned char*)&ctx->extradata_size,sizeof(int));
 	if(ctx->extradata_size>0){
 		uint8_t * extradata=new uint8_t[ctx->extradata_size];

@@ -38,8 +38,8 @@ int main(){
 	int packets=0;
 	AVCodecContext *cc=avcodec_alloc_context();
     cc->codec_type = CODEC_TYPE_VIDEO;
-	cc->height=codec->getCodecContext()->height;
-	cc->width=codec->getCodecContext()->width;
+	cc->height=codec->height;
+	cc->width=codec->width;
 	cc->bit_rate=20000000;
 	cc->max_b_frames=1;
     cc->time_base.den = 25;
@@ -90,7 +90,7 @@ int main(){
              pkt.stream_index= 0;
              pkt.data= video_outbuf;
              pkt.size= out_size;
- 			 pos.writePacket(&pkt);
+	      pos.writePacket(&pkt);
              /* write the compressed frame in the media file */
 //             ret = av_write_frame(oc, &pkt);
          }

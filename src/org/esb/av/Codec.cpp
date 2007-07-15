@@ -56,8 +56,7 @@ namespace org{
             Frame * Codec::decode(Packet & packet){
 		Frame * frame=new Frame();
                 assert(&packet);
-				assert(codec);
-
+		assert(codec);
 		int _frameFinished=0;
     	        frame->_width=this->width;
 	        frame->_height=this->height;

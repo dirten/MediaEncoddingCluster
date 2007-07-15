@@ -13,7 +13,10 @@ SOURCES = \
             CommandInputStream.cpp \
             CommandOutputStream.cpp \
 	    job/Job.cpp \
-	    job/JobHandler.cpp
+	    job/JobHandler.cpp \
+	    BundleIndex.cpp \
+	    BundleIndexWriter.cpp \
+	    rdb/HiveDbConnection.cpp
             
             
             

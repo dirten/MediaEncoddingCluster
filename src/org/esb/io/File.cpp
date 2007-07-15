@@ -13,7 +13,7 @@ using namespace org::esb::io;
 
 File::File(const char * pathname) {
     if(pathname==NULL) {
-        throw Exception(__FILE__, __LINE__, "File::File - Filename given is NULL");
+//        throw Exception(__FILE__, __LINE__, "File::File - Filename given is NULL");
     }
     _filename=pathname;
 }

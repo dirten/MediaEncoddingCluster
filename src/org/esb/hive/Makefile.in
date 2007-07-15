@@ -57,7 +57,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libhive_la_LIBADD =
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
 	CommandInputStream.lo CommandOutputStream.lo Job.lo \
-	JobHandler.lo
+	JobHandler.lo BundleIndex.lo BundleIndexWriter.lo \
+	HiveDbConnection.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -188,7 +189,10 @@ SOURCES = \
             CommandInputStream.cpp \
             CommandOutputStream.cpp \
 	    job/Job.cpp \
-	    job/JobHandler.cpp
+	    job/JobHandler.cpp \
+	    BundleIndex.cpp \
+	    BundleIndexWriter.cpp \
+	    rdb/HiveDbConnection.cpp
 
 libhive_la_SOURCES = $(SOURCES)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
@@ -263,10 +267,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BundleIndex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BundleIndexWriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveControl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveDbConnection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Job.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolServer.Plo@am__quote@
@@ -305,6 +312,13 @@ JobHandler.lo: job/JobHandler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/JobHandler.cpp' object='JobHandler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o JobHandler.lo `test -f 'job/JobHandler.cpp' || echo '$(srcdir)/'`job/JobHandler.cpp
+
+HiveDbConnection.lo: rdb/HiveDbConnection.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HiveDbConnection.lo -MD -MP -MF "$(DEPDIR)/HiveDbConnection.Tpo" -c -o HiveDbConnection.lo `test -f 'rdb/HiveDbConnection.cpp' || echo '$(srcdir)/'`rdb/HiveDbConnection.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/HiveDbConnection.Tpo" "$(DEPDIR)/HiveDbConnection.Plo"; else rm -f "$(DEPDIR)/HiveDbConnection.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='rdb/HiveDbConnection.cpp' object='HiveDbConnection.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HiveDbConnection.lo `test -f 'rdb/HiveDbConnection.cpp' || echo '$(srcdir)/'`rdb/HiveDbConnection.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

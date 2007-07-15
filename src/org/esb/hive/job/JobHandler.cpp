@@ -19,11 +19,8 @@ Job * JobHandler::getJob(){
 }
 
 JobHandler * JobHandler::getInstance(){
-
     if(_handler==NULL){
 		JobHandler::_handler=new JobHandler();
     }
-	
     return _handler;
-
 }
