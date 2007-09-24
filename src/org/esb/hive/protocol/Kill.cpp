@@ -37,12 +37,12 @@ class Kill:public ProtocolCommand{
 
 	void process(char * data){
 	    socket->close();
-    	    raise(SIGINT);
+    	raise(SIGINT);
 //        exit(0);
 	}
 
 	void printHelp(){
-	    string help="Kill the Listener\n";
+	    string help="kill\t\t\t[Kill the Listener]\n";
 //	    help+="-------------------------\n";
         socket->getOutputStream()->write((char *)help.c_str(),help.length());
 	}

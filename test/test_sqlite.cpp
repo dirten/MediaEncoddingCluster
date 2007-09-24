@@ -36,7 +36,7 @@ int main(){
 //    Frame * frame;
     int count=0;
     sqlite3_exec(db,"BEGIN TRANSACTION",NULL,NULL,NULL);
-    while(true){
+    while(true&&count < 10000){
         packet=pis->readPacket();
         if(packet.data==NULL)break;
 	if(++count%1000==0)cout << count << "Packets in db"<<endl;

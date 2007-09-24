@@ -3,14 +3,16 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
+#include <unistd.h>
 
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
-int main(){
+int main(int argc, char*argv[]){
+//memset(argv[0],0,strlen(argv[0]));
+//memcpy(argv[0],(char*)"test",4);
 
-
-
+//setproctitle("%s", "bla");
     Config::init("./cluster.cfg");
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);

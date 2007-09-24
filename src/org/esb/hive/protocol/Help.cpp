@@ -35,7 +35,7 @@ class Help:public ProtocolCommand{
 
 	void printHelp(){
 	    string help="List of all Hive Commands\n";
-	    help+="-------------------------\n";
+	    help+="--------------------------------------------------------\n";
 	    os->write((char *)help.c_str(),help.length());
 	}
 };
