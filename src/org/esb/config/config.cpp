@@ -53,6 +53,7 @@ void Config::init(char * filename)
  */
 char * Config::getProperty(char * key)
 {
+  if(!properties->hasProperty(key))return NULL;
   return (char*)properties->getProperty(key);
 }
 

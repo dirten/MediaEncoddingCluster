@@ -16,7 +16,8 @@ SOURCES = \
 	    job/JobHandler.cpp \
 	    BundleIndex.cpp \
 	    BundleIndexWriter.cpp \
-	    rdb/HiveDbConnection.cpp
+	    rdb/HiveDbConnection.cpp \
+	    rdb/SqlPacketOutputStream.cpp
             
             
             

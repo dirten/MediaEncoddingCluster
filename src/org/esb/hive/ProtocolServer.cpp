@@ -17,6 +17,7 @@
 #include "protocol/ShutdownHive.cpp"
 #include "protocol/StartupHive.cpp"
 #include "protocol/Status.cpp"
+#include "protocol/CreateHive.cpp"
 #include "protocol/Unknown.cpp"
 
 
@@ -47,6 +48,7 @@ ProtocolServer::ProtocolServer(Socket * socket,pthread_mutex_t *m) {
     _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
     l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
+    l.push_back(new CreateHive(socket->getInputStream(), socket->getOutputStream()));
     l.push_back(new Disconnect(socket));
     l.push_back(new Kill(socket));
     l.push_back(new ShowConfig(socket));

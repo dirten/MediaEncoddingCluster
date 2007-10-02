@@ -3,6 +3,7 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
+#include "Environment.cpp"
 #include <unistd.h>
 
 using namespace org::esb::net;
@@ -14,6 +15,12 @@ int main(int argc, char*argv[]){
 
 //setproctitle("%s", "bla");
     Config::init("./cluster.cfg");
+    if(!checkEnvironment()){
+    	cout << "Fehler in der Configuration"<<endl;
+    	exit(1);
+    }
+    
+        
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);
     server->bind();

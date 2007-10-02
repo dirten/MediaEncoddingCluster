@@ -9,9 +9,9 @@ using namespace std;
 
 class Help:public ProtocolCommand{
     private:
-	Socket * socket;
+		Socket * socket;
     public:
-	~Help(){
+		~Help(){
 	}
 
     
