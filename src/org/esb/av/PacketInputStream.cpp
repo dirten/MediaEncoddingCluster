@@ -19,9 +19,9 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
         _streamIndex=((FormatInputStream*)is)->selectedStream;
 
-        _codecCtx=_formatCtx->streams[_streamIndex]->codec;
-	_codec2=new Codec(_codecCtx);
-	_codec2->open();
+//        _codecCtx=_formatCtx->streams[_streamIndex]->codec;
+//	_codec2=new Codec(_codecCtx);
+//	_codec2->open();
 //        _codec=avcodec_find_decoder(_codecCtx->codec_id);
 //        if(avcodec_open(_codecCtx, _codec)<0) {
 //            fprintf(stderr, "avcodec_open failed in PacketInputStream\n");
@@ -47,14 +47,14 @@ Packet & PacketInputStream::readPacket(){
 }
 
 Packet & PacketInputStream::readPacketFromFormatIS(){
-    do {
+//    do {
         if(_packet.data!=NULL)
             av_free_packet(&_packet);
             if(av_read_frame(_formatCtx, &_packet)<0){
 				cout << "Invalid Packet read"<<endl;
-				break;
+//				break;
             }
-        } while(_packet.stream_index!=_streamIndex);
+//        } while(_packet.stream_index!=_streamIndex);
     return _packet;
 }
 

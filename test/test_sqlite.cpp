@@ -61,7 +61,9 @@ int main(){
 	
     }
     sqlite3_exec(db,"commit",NULL,NULL,NULL);
-
+	delete fis;
+	delete pis;
+	delete file;
 }
 
 
