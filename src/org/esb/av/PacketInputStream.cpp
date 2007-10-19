@@ -17,8 +17,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
     if(instanceOf(*is, FormatInputStream)){
         _formatCtx=((FormatInputStream*)is)->getFormatContext();
 
-        _streamIndex=((FormatInputStream*)is)->selectedStream;
-
+//        _streamIndex=((FormatInputStream*)is)->selectedStream;
 //        _codecCtx=_formatCtx->streams[_streamIndex]->codec;
 //	_codec2=new Codec(_codecCtx);
 //	_codec2->open();

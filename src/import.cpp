@@ -7,7 +7,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Codec.h"
 #include "CreateDatabase.cpp"
-
+#include <avformat.h>
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
@@ -36,27 +36,44 @@ int main(int argc, char * argv[]){
     string sql="insert into packets(id,pts,dts,stream_index,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?)";
 
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-    sqlite3_exec(db,"BEGIN TRANSACTION",NULL,NULL,NULL);
+
+	string sqlFile="INSERT INTO files(filename) values ( '"; 
+		sqlFile+=inputFile.getPath();
+		sqlFile+="')";
+	
+    sqlite3_exec(db,sqlFile.c_str(),NULL,NULL,NULL);
+    int fileid =sqlite3_last_insert_rowid(db);
 
 
     FormatInputStream fis(&inputFile);
+    AVFormatContext * ctx=fis.getFormatContext();
+
+	for(int a =0;a<ctx->nb_streams;a++){
+		string sqlStreams="insert into streams (fileid,stream_index,codec,framerate,start_time,duration) values(";
+		char  values[1000];
+		sprintf(values,"%d,%d,%d,%d,%d,%d",fileid,a,ctx->streams[a]->codec->codec_id,ctx->streams[a]->r_frame_rate,ctx->streams[a]->start_time,ctx->streams[a]->duration);
+		sqlStreams+=values;
+		sqlStreams+=")";
+		char *zErrMsg = 0;
+	    sqlite3_exec(db,sqlStreams.c_str(),NULL,NULL,&zErrMsg);
+    	cout << zErrMsg;
+
+    }
+    sqlite3_exec(db,"BEGIN TRANSACTION",NULL,NULL,NULL);
+
+
 	int streamCount=fis.getStreamCount();
 	cout << "StreamCount="<<streamCount<<endl;
-//	for(int a=0;a<streamCount;a++){
-//	cout << "Loading Stream "<<a<<endl; 
     PacketInputStream pis(&fis);
-//    Codec * codec=pis.getCodec();
     Packet packet;
 
 
-
-
 	int count=0;
-    while(true&&count < 2000){
+    while(true&&count < 1000){
         packet=pis.readPacket();
         if(packet.data==NULL)break;
 		if(++count%1000==0)cout << count << "Packets in db"<<endl;
-
+		
 
         sqlite3_bind_int( pStmt, 1, packet.pts);
         sqlite3_bind_int( pStmt, 2, packet.dts);
@@ -74,11 +91,9 @@ int main(int argc, char * argv[]){
 	   		sqlite3_free(zErrMsg);
         }
     }
- //   }
     sqlite3_exec(db,"commit",NULL,NULL,NULL);
 
  sqlite3_close(db);
-//free(db);
 
 
 	return 0;
