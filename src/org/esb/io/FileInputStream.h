@@ -37,8 +37,8 @@ public:
  * @see        java.lang.SecurityManager#checkRead(java.lang.String)
  */
 
-                FileInputStream(File * file)throw (org::esb::lang::Exception);
-                FileInputStream(const char *)throw (org::esb::lang::Exception);
+                FileInputStream(File * file);
+                FileInputStream(const char *);
                 ~FileInputStream();
                 int available(bool i=false);
                 int read(unsigned char * buffer, int length);
@@ -46,7 +46,7 @@ public:
                 int read();
                 void close();
 private:
-                void open(const char * name)throw(org::esb::lang::Exception);
+                void open(const char * name);
                 std::FILE * file;
                 long _filePointer;
                 uint8_t _byte;

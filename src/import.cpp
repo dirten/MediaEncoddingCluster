@@ -13,7 +13,7 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(int argc, char * argv[]){
-
+	cout << LIBAVCODEC_IDENT <<endl;
 	if(argc!=3){
 		cout << "wrong parameter count"<<endl;	
 		exit(1);
@@ -32,8 +32,9 @@ int main(int argc, char * argv[]){
     sqlite3_stmt *pStmt;
     char *zErrMsg = 0;
 	sqlite3 * db=getDatabase(databaseFile);
+//	sqlite3 * db=getDatabase(databaseFile);
 
-    string sql="insert into packets(id,pts,dts,stream_index,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?)";
+    string sql="insert into packets(id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?)";
 
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
 
@@ -56,7 +57,7 @@ int main(int argc, char * argv[]){
 		sqlStreams+=")";
 		char *zErrMsg = 0;
 	    sqlite3_exec(db,sqlStreams.c_str(),NULL,NULL,&zErrMsg);
-    	cout << zErrMsg;
+    	
 
     }
     sqlite3_exec(db,"BEGIN TRANSACTION",NULL,NULL,NULL);
@@ -68,21 +69,26 @@ int main(int argc, char * argv[]){
     Packet packet;
 
 
-	int count=0;
-    while(true&&count < 1000){
+    int count=0, frame_group=0;
+    while(true&&count < 20000){
         packet=pis.readPacket();
         if(packet.data==NULL)break;
-		if(++count%1000==0)cout << count << "Packets in db"<<endl;
-		
+	if(++count%1000==0)cout << count << "Packets in db"<<endl;
+	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 
         sqlite3_bind_int( pStmt, 1, packet.pts);
         sqlite3_bind_int( pStmt, 2, packet.dts);
         sqlite3_bind_int( pStmt, 3, packet.stream_index);
-        sqlite3_bind_int( pStmt, 4, packet.flags);
-        sqlite3_bind_int( pStmt, 5, packet.duration);
-        sqlite3_bind_int( pStmt, 6, packet.pos);
-        sqlite3_bind_int( pStmt, 7, packet.size);
-        sqlite3_bind_blob( pStmt, 8, (char*)packet.data,packet.size, SQLITE_STATIC );
+        sqlite3_bind_int( pStmt, 4, packet.isKeyFrame());
+	if(packet.stream_index==0)
+    	    sqlite3_bind_int( pStmt, 5, frame_group);
+	else
+    	    sqlite3_bind_null( pStmt, 5);	
+        sqlite3_bind_int( pStmt, 6, packet.flags);
+        sqlite3_bind_int( pStmt, 7, packet.duration);
+        sqlite3_bind_int( pStmt, 8, packet.pos);
+        sqlite3_bind_int( pStmt, 9, packet.size);
+        sqlite3_bind_blob( pStmt, 10, (char*)packet.data,packet.size, SQLITE_STATIC );
         int rc=sqlite3_step(pStmt);
 
         rc = sqlite3_reset(pStmt);
@@ -93,7 +99,7 @@ int main(int argc, char * argv[]){
     }
     sqlite3_exec(db,"commit",NULL,NULL,NULL);
 
- sqlite3_close(db);
+    sqlite3_close(db);
 
 
 	return 0;

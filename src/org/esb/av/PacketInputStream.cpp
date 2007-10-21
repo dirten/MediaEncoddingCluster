@@ -46,20 +46,17 @@ Packet & PacketInputStream::readPacket(){
 }
 
 Packet & PacketInputStream::readPacketFromFormatIS(){
-//    do {
         if(_packet.data!=NULL)
             av_free_packet(&_packet);
             if(av_read_frame(_formatCtx, &_packet)<0){
-				cout << "Invalid Packet read"<<endl;
-//				break;
+		cout << "Invalid Packet read"<<endl;
             }
-//        } while(_packet.stream_index!=_streamIndex);
     return _packet;
 }
 
 Packet & PacketInputStream::readPacketFromIS(){
     if(_packet.data!=NULL)
-	   delete [] _packet.data;// av_free_packet(&_packet);
+	delete [] _packet.data;// av_free_packet(&_packet);
 	read((unsigned char*)&_packet.pts,sizeof(int64_t));
 	read((unsigned char*)&_packet.dts,sizeof(int64_t));
 	read((unsigned char*)&_packet.size,sizeof(int));
@@ -100,5 +97,3 @@ Codec * PacketInputStream::getCodec(){
 void PacketInputStream::skip(long packets){
     av_seek_frame(_formatCtx,_streamIndex,packets,AVSEEK_FLAG_ANY);
 }
-
-
