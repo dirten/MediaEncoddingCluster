@@ -24,7 +24,7 @@ namespace org {
                 if(av_find_stream_info(formatCtx)<0){
                     cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" <<endl;
                 }
-//                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
+                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
             }
 
             AVFormatContext * FormatInputStream::getFormatContext() {

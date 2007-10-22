@@ -7,13 +7,14 @@ SUBDIRS = org hive.client
 #framehive
 
 
-bin_PROGRAMS = hivelsnr import
+bin_PROGRAMS = hivelsnr import job
 
 
 #bin_PROGRAMS = zpipe
 
 
 import_SOURCES = Importer.cpp
+job_SOURCES = job.cpp
 hivelsnr_SOURCES = Listener.cpp
 import_SOURCES = import.cpp 
 framesender_SOURCES = bruteripper.cpp
@@ -27,12 +28,14 @@ INCLUDES=   -I$(top_srcdir)/src
 # the library search path.
 framesender_LDFLAGS = $(all_libraries) 
 import_LDFLAGS = $(all_libraries) 
+job_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
 
 hivelsnr_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 import_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
+job_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 
 
 framesender_LDADD=./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
