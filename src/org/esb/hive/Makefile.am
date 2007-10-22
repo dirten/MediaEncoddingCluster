@@ -14,6 +14,7 @@ SOURCES = \
             CommandOutputStream.cpp \
 	    job/Job.cpp \
 	    job/JobHandler.cpp \
+	    job/ClientHandler.cpp \
 	    BundleIndex.cpp \
 	    BundleIndexWriter.cpp \
 	    rdb/HiveDbConnection.cpp \

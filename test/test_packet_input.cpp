@@ -4,11 +4,14 @@
 #include "org/esb/av/CodecInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/config/config.h"
+
 #include "avformat.h"
 #include <iostream>
 
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::config;
 
 
 
@@ -17,6 +20,7 @@ int main(){
 
 	int bundleCounter=1;
 	char filename[100];
+    Config::init("./cluster.cfg");	
 
 
 

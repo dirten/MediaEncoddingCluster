@@ -57,13 +57,15 @@ test_sqlite_LDFLAGS = $(all_libraries)
 test_packet_LDFLAGS = $(all_libraries) 
 test_packet_input_LDFLAGS = $(all_libraries) 
 test_bla_LDFLAGS = $(all_libraries) 
+server_LDFLAGS = $(all_libraries) 
 
 test_file_LDADD=	../src/org/esb/libesb.la 
 test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
-test_packet_LDADD=	../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
+test_packet_LDADD=	../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la  ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
 test_sqlite_LDADD=	../src/org/esb/lang/liblang.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la
 test_packet_input_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
 test_socket_LDADD=	../src/org/esb/libesb.la 
+server_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
 test_server_LDADD=	../src/org/esb/libesb.la 
 client_LDADD	=	../src/org/esb/libesb.la 
 console_LDADD   =	../src/org/esb/libesb.la 

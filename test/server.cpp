@@ -2,6 +2,7 @@
 #include <iostream>
 //#include "config.h"
 #include "org/esb/net/ServerSocket.h"
+#include "org/esb/lang/Exception.h"
 #include "org/esb/config/config.h"
 #include <fcntl.h>
 #include <iostream>

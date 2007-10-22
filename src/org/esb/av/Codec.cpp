@@ -13,7 +13,7 @@ namespace org{
 				_codec=avcodec_find_decoder(codecId);
 				if(!_codec)
 		    		cout << "Codec not found for id :"<<codecId<<endl;
-				 avcodec_get_context_defaults2(this, CODEC_TYPE_UNKNOWN);
+				 avcodec_get_context_defaults(this/*, CODEC_TYPE_UNKNOWN*/);
             }
 
             Codec::Codec(AVCodecContext * context){

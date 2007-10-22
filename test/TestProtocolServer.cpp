@@ -65,12 +65,12 @@ class TestProtocolServer: public CppUnit::TestFixture
 //CPPUNIT_TEST_SUITE_REGISTRATION(TestProtocolServer);
 
 TestProtocolServer::TestProtocolServer(){
+    Config::init("cluster.cfg");
 }
 TestProtocolServer::~TestProtocolServer(){
 }
 
 void TestProtocolServer::setUp(){
-    Config::init("cluster.cfg");
     
     cerr << "SetUpStart"<<endl;
     server=new SocketThread2();

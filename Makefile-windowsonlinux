@@ -21,3 +21,4 @@ make-ffmpeg-linux:
 
 make-ffmpeg-win32:
 	@cd ffmpeg;./configure;make clean all
+	

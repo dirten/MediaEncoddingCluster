@@ -6,6 +6,7 @@
 #include "org/esb/av/Packet.h"
 #include "../job/Job.h"
 #include "../job/JobHandler.h"
+#include "../job/ClientHandler.h"
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
@@ -17,13 +18,14 @@ class DataHandler: public ProtocolCommand{
 	PacketOutputStream * _pos;
 	Job * _job;
 	static pthread_mutex_t * mutex;
-
+	ClientHandler* _handler;
     public:
 	DataHandler(InputStream * is, OutputStream * os){
 	    _is=is;
 	    _os=os;
 	    _pos=new PacketOutputStream(_os);
 	    _job=JobHandler::getInstance()->getJob();
+	    _handler=new ClientHandler();
 	    if(mutex==0){
 	    cout << "Mutex Create"<<endl;
 	    mutex=(pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));

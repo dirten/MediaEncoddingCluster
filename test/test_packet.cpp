@@ -10,6 +10,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/hive/BundleIndex.h"
 #include "org/esb/hive/BundleIndexWriter.h"
+#include "org/esb/config/config.h"
 //#include "framehive/FrameHive.h"
 
 #include <iostream>
@@ -18,10 +19,11 @@ using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::hive;
+using namespace org::esb::config;
  
 int main(){
 
-	
+    Config::init("./cluster.cfg");	
 	File file("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     FormatInputStream fis(&file);
     PacketInputStream pis(fis.getStream(0));
