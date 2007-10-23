@@ -133,6 +133,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -185,7 +186,7 @@ target_alias = @target_alias@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = lang util io net av hive
+SUBDIRS = lang util io net av hive sql
 MAJOR_VERSION = 0
 MINOR_VERSION = 0
 MICRO_VERSION = 1

@@ -40,13 +40,13 @@ bool createDatabase(File &databaseFile){
 	rc=sqlite3_exec(db,"create table packets (id integer  primary key autoincrement,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data)",NULL,NULL,&zErrMsg);
 	if(rc!=SQLITE_OK)
 		cout << zErrMsg<<endl;;
-	rc=sqlite3_exec(db,"create table jobs (id integer  primary key autoincrement, infile integer, outfile integer)",NULL,NULL,&zErrMsg);
+	rc=sqlite3_exec(db,"create table jobs (id integer  primary key autoincrement, infile integer, outfile integer, begin date, complete date)",NULL,NULL,&zErrMsg);
 	if(rc!=SQLITE_OK)
 		cout << zErrMsg<<endl;;
 	rc=sqlite3_exec(db,"create table job_details (id integer  primary key autoincrement, job_id integer, instream integer, outstream integer)",NULL,NULL,&zErrMsg);
 	if(rc!=SQLITE_OK)
 		cout << zErrMsg<<endl;;
-	rc=sqlite3_exec(db,"create table job_logs (id integer  primary key autoincrement, begin, complete)",NULL,NULL,&zErrMsg);
+	rc=sqlite3_exec(db,"create table job_logs (id integer  primary key autoincrement, packet_in integer,packet_out integer, begin date, complete date)",NULL,NULL,&zErrMsg);
 	if(rc!=SQLITE_OK)
 		cout << zErrMsg<<endl;;
 	rc=sqlite3_exec(db,"create table version (id integer  primary key autoincrement, component, version)",NULL,NULL,&zErrMsg);

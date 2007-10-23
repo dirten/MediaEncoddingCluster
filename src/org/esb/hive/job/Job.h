@@ -14,22 +14,12 @@ namespace hive{
 namespace job{
 class Job{
     private:
-	Properties _props;
-	FormatInputStream * _fis;
-	PacketInputStream * _pis;
-//	FormatOutputStream * _fos;
-//	PacketOutputStream * _pos;
+
     public:
-	Job(Properties &props);
-	~Job();
-	Properties & getProperties();
-	Frame & getFrame();
-	void putFrame(Frame & frame);
-	Packet & getPacket();
-	void putPacket(Packet & packet);
-	Codec * getInputCodec();
-	Codec * getOutputCodec();
-//	void putPacket(Packet & packet);
+		Job();
+		~Job();
+		File & getSourceFile(void);
+		File & getTargetFile(void);
 };
 }}}}
 #endif

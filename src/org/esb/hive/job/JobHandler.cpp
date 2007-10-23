@@ -7,14 +7,19 @@ using namespace org::esb::io;
 
 JobHandler * JobHandler::_handler=0;
 
+int callback(void *NotUsed, int argc, char **argv, char **azColName){
+
+}
+
 JobHandler::JobHandler(){
-    FileInputStream p("data/test.job");
-    _props.load(&p);
-    _testJob=new Job(_props);
-    cout << "Create JobHandler"<<endl;
+	
+	
 }
 
 Job * JobHandler::getJob(){
+	string sql="select * from jobs where complete is null limit 1";
+
+
     return _testJob;
 }
 

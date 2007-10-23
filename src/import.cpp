@@ -96,7 +96,7 @@ int main(int argc, char * argv[]){
 
 
     int count=0, frame_group=0;
-    while(true&&count < 20000){
+    while(true/*&&count < 20000*/){
 
         packet=pis.readPacket();
         if(packet.data==NULL)break;
@@ -120,7 +120,7 @@ int main(int argc, char * argv[]){
         sqlite3_bind_int( pStmt, field++, packet.duration);
         sqlite3_bind_int( pStmt, field++, packet.pos);
         sqlite3_bind_int( pStmt, field++, packet.size);
-        sqlite3_bind_blob( pStmt, field++, (char*)packet.data,packet.size, SQLITE_STATIC );
+//        sqlite3_bind_blob( pStmt, field++, (char*)packet.data,packet.size, SQLITE_STATIC );
         int rc=sqlite3_step(pStmt);
 
         rc = sqlite3_reset(pStmt);

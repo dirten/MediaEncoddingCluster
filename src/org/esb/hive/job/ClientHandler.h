@@ -1,5 +1,6 @@
 #include <vector>
-
+#include "ProcessUnit.h"
+#include "JobHandler.h"
 using namespace std;
 namespace org{
 namespace esb{
@@ -8,10 +9,11 @@ namespace job{
 class ClientHandler{
     public:
 	ClientHandler();
-	vector<void*>getPacketList();
+	ProcessUnit & getProcessUnit();
 	void setPacketList(vector<void*>);
     private:
-	vector<void*> list;
+		ProcessUnit  unit;
+		JobHandler * _handler;
 };
 }}}}
 

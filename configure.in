@@ -69,6 +69,7 @@ AC_OUTPUT(
     src/org/esb/av/Makefile
     src/org/esb/net/Makefile
     src/org/esb/hive/Makefile
+    src/org/esb/sql/Makefile
     src/hive.client/Makefile 
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     
