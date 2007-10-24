@@ -20,17 +20,20 @@ class Job{
 		~Job();
 		File & getSourceFile(void);
 		File & getTargetFile(void);
-		void setSourceFile(File&);
-		void setTargetFile(File&);
+		void setSourceFile(File& source);
+		void setTargetFile(File& target);
 		int getStartTime();
 		int getCompleteTime();
 		void setStartTime(int start);
 		void setCompleteTime(int complete);
+		int getId();
+		void setId(int id);
 	private:
 		File * _source;
 		File * _target;
 		int _startTime;
 		int _completeTime;
+		int _id;
 };	
 }}}}
 #endif

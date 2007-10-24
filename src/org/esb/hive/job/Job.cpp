@@ -16,14 +16,15 @@ Job::~Job(){
 
 File & Job::getSourceFile(){return *_source;}
 File & Job::getTargetFile(){return *_target;}
-void Job::setSourceFile(File & source){*_source=source;}
-void Job::setTargetFile(File & target){*_target=target;}
+void Job::setSourceFile(File & source){_source=&source;}
+void Job::setTargetFile(File & target){_target=&target;}
 
 int Job::getStartTime(){return _startTime;}
 int Job::getCompleteTime(){return _completeTime;}
 void Job::setStartTime(int start){_startTime=start;}
 void Job::setCompleteTime(int complete){_completeTime=complete;}
-
+void Job::setId(int id){_id=id;}
+int Job::getId(){return _id;}
 
 
 

@@ -12,14 +12,16 @@ JobHandler * _handler=NULL;
 static int jobs(void *NotUsed, int argc, char **argv, char **azColName){
 	int i;
 	Job * job=new Job();
+	job->setId(atoi(argv[0]));
 	File *source=new File(argv[1]);
-	File *target=new File(argv[1]);
+	File *target=new File(argv[2]);
 	job->setSourceFile(*source);
 	job->setTargetFile(*target);
 	_handler->addJob(*job);
+	/*
   for(i=0; i<argc; i++){
     printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-  }
+  }*/
   printf("\n");
   return 0;
 }

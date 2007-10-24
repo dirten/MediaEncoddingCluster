@@ -23,6 +23,18 @@ Job * JobHandler::getJob(){
 }
 
 void  JobHandler::addJob(Job & job){
+        list<Job*>::iterator i;
+        bool toAdd=true;
+        for(i=_jobList.begin();i!=_jobList.end();++i) {
+            Job *tmp=(Job*)*i;
+			if(tmp->getId()==job.getId()){
+				toAdd=false;
+			}
+        }
+        if(toAdd){
+        	_jobList.push_back(&job);
+        	cout << "Job with ID added:"<<job.getId()<<endl;
+        }
 
 }
 

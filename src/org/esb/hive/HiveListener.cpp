@@ -22,8 +22,8 @@ class HiveListener:public Runnable{
 
 	~HiveListener(){
 	    cout << "Shutdown HiveListener"<<endl;
-	    server->close();
-	    delete server;
+//	    server->close();
+//	    delete server;
 	    server=0;
 	}
 
