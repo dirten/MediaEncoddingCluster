@@ -5,12 +5,30 @@
 #include <sqlite3.h>
 #include <iostream>
 #include <iomanip>
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
 
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
 
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+	int i;
+  for(i=0; i<argc; i++){
+    printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+  }
+  printf("\n");
+  return 0;
+}
+
 int main(){
+	File dbfile("./test.db2");
+	Connection con(dbfile);
+	Statement  *stmt = &con.createStatement();
+	stmt->executeQuery("select count(*) from packets", (void*)callback);
+//	delete &stmt;
+	exit(0);
+
 
     sqlite3 *db;
     sqlite3_stmt *pStmt;

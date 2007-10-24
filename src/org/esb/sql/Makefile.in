@@ -55,7 +55,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsql_la_LIBADD =
-am__objects_1 = Connection.lo Statement.lo ResultSet.lo
+am__objects_1 = Connection.lo Statement.lo PreparedStatement.lo \
+	ResultSet.lo
 am_libsql_la_OBJECTS = $(am__objects_1)
 libsql_la_OBJECTS = $(am_libsql_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -179,7 +180,7 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libsql.la
-SOURCES = Connection.cpp Statement.cpp ResultSet.cpp
+SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp
 # set the include path found by configure
 INCLUDES = -I$(top_srcdir)/src
 libsql_la_SOURCES = $(SOURCES)
@@ -255,6 +256,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Connection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreparedStatement.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ResultSet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Statement.Plo@am__quote@
 

@@ -32,7 +32,6 @@ int main(int argc, char * argv[]){
     sqlite3_stmt *pStmt,*pStmt2;
     char *zErrMsg = 0;
 	sqlite3 * db=getDatabase(databaseFile);
-//	sqlite3 * db=getDatabase(databaseFile);
 
     string sql="insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)";
 

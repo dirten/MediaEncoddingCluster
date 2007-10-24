@@ -2,7 +2,7 @@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = lang util io net av hive sql
+SUBDIRS = lang util io net av sql hive 
 
 MAJOR_VERSION=0
 MINOR_VERSION=0

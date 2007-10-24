@@ -1,5 +1,6 @@
 #ifndef ORG_ESB_HIVE_JOB_JOBHANDLER_H
 #define ORG_ESB_HIVE_JOB_JOBHANDLER_H
+
 #include "Job.h"
 #include <list>
 namespace org{
@@ -15,6 +16,7 @@ class JobHandler{
     public:
 	static JobHandler * getInstance();
 	Job * getJob();
+	void addJob(Job & job);
 	Properties _props;
 };
 }}}}

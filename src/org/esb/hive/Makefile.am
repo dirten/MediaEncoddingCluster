@@ -13,7 +13,9 @@ SOURCES = \
             CommandInputStream.cpp \
             CommandOutputStream.cpp \
 	    job/Job.cpp \
+	    job/JobDetail.cpp \
 	    job/JobHandler.cpp \
+	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
 	    BundleIndex.cpp \
 	    BundleIndexWriter.cpp \
@@ -25,5 +27,6 @@ SOURCES = \
             
 libhive_la_SOURCES = $(SOURCES)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libhive_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src

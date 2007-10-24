@@ -41,6 +41,7 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
+	    	JobHandler::getInstance();
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";

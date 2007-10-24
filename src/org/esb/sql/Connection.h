@@ -13,6 +13,9 @@ class Connection {
 		Connection(File & databaseFile);
 		Statement & createStatement();
 		void close();
+	private:
+		sqlite3 *_db;
+		
 };
 }}}
 #endif
