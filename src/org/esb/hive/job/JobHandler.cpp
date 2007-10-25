@@ -19,10 +19,28 @@ JobHandler::JobHandler(){
 }
 
 Job * JobHandler::getJob(){
-    return _testJob;
+        list<Job*>::iterator i;
+        for(i=_jobList.begin();i!=_jobList.end();++i) {
+            Job *tmp=(Job*)*i;
+			if(tmp->getCompleteTime()==NULL){
+				return tmp;
+			}
+        }
+    return new Job();
 }
 
-void  JobHandler::addJob(Job & job){
+Job * JobHandler::getJob(int id){
+        list<Job*>::iterator i;
+        for(i=_jobList.begin();i!=_jobList.end();++i) {
+            Job *tmp=(Job*)*i;
+			if(tmp->getId()==id){
+				return tmp;
+			}
+        }
+        return NULL;
+}
+
+void JobHandler::addJob(Job & job){
         list<Job*>::iterator i;
         bool toAdd=true;
         for(i=_jobList.begin();i!=_jobList.end();++i) {
@@ -35,7 +53,6 @@ void  JobHandler::addJob(Job & job){
         	_jobList.push_back(&job);
         	cout << "Job with ID added:"<<job.getId()<<endl;
         }
-
 }
 
 JobHandler * JobHandler::getInstance(){

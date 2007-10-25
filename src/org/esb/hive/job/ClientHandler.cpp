@@ -12,9 +12,6 @@ ClientHandler::ClientHandler(){
 
 ProcessUnit & ClientHandler::getProcessUnit(){
 	Job * job=_handler->getJob();
-
-
-
 	return unit;
 }
 

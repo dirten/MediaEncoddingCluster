@@ -5,24 +5,32 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/sql/Connection.h"
 
+using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::lang;
 using namespace org::esb::hive::job;
 JobHandler * _handler=NULL;
+//vector<Job*> _jobList;
+int prev_job_id=0;
+Job * job=NULL;
 static int jobs(void *NotUsed, int argc, char **argv, char **azColName){
-	int i;
-	Job * job=new Job();
-	job->setId(atoi(argv[0]));
-	File *source=new File(argv[1]);
-	File *target=new File(argv[2]);
-	job->setSourceFile(*source);
-	job->setTargetFile(*target);
-	_handler->addJob(*job);
-	/*
-  for(i=0; i<argc; i++){
-    printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-  }*/
-  printf("\n");
+	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
+		job=new Job();
+		job->setId(atoi(argv[0]));
+		File *source=new File(argv[1]);
+		File *target=new File(argv[2]);
+		job->setSourceFile(*source);
+		job->setTargetFile(*target);
+	}
+	JobDetail * detail=new JobDetail();
+	detail->setId(atoi(argv[5]));
+	detail->setSourceStream(atoi(argv[7]));
+	detail->setTargetStream(atoi(argv[8]));
+	job->addJobDetails(*detail);
+	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
+		_handler->addJob(*job);
+	}
+	prev_job_id=atoi(argv[0]);
   return 0;
 }
 
@@ -38,8 +46,7 @@ JobWatcher::JobWatcher(JobHandler & handler){
 void JobWatcher::run(){
 	while(!_isStopSignal){
 			cout << "JobWatcher run"<<endl;
-			_stmt->executeQuery("select id, infile, outfile, begin, complete from jobs where complete is null", (void *)jobs);
-
+			_stmt->executeQuery("select * from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id", (void *)jobs);
 			Thread::sleep(10000);
 	}
 }

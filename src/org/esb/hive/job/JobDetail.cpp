@@ -3,10 +3,7 @@
 
 using namespace org::esb::hive::job;
 
-JobDetail::JobDetail(int id, int source, int target){
-	_id=id;
-	_source=source;
-	_target=target;
+JobDetail::JobDetail(){
 }
 
 int JobDetail::getId(){return _id;}

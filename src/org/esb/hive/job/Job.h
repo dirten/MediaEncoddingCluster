@@ -6,6 +6,10 @@
 #include "org/esb/av/Codec.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "JobDetail.h"
+#include <vector>
+
+using namespace std;
 using namespace org::esb::util;
 using namespace org::esb::av;
 namespace org{
@@ -13,8 +17,6 @@ namespace esb{
 namespace hive{
 namespace job{
 class Job{
-    private:
-
     public:
 		Job();
 		~Job();
@@ -28,12 +30,14 @@ class Job{
 		void setCompleteTime(int complete);
 		int getId();
 		void setId(int id);
+		void addJobDetails(JobDetail & detail);
 	private:
 		File * _source;
 		File * _target;
 		int _startTime;
 		int _completeTime;
 		int _id;
+		vector<JobDetail*>_detailList;
 };	
 }}}}
 #endif

@@ -7,6 +7,7 @@
 #include "../job/Job.h"
 #include "../job/JobHandler.h"
 #include "../job/ClientHandler.h"
+#include "../job/ProcessUnit.h"
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
@@ -41,7 +42,7 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
-	    	JobHandler::getInstance();
+	    	ProcessUnit  unit=_handler->getProcessUnit();
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";

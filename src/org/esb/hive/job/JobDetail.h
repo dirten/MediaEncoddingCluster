@@ -8,7 +8,7 @@ namespace org{
 			namespace job{ 
 				class JobDetail{
 					public:
-						JobDetail(int id, int source, int target);
+						JobDetail();
 						int getId();
 						int getSourceStream();
 						int getTargetStream();	

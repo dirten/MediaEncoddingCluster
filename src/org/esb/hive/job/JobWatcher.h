@@ -25,7 +25,6 @@ namespace org{
 						bool _isStopSignal;
 						Connection * _con;
 						Statement  *_stmt;
-						vector<Job*> _jobList;
 				};
 			}
 		}
