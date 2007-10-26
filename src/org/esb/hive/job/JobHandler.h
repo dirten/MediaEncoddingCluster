@@ -17,7 +17,7 @@ class JobHandler{
 	static JobHandler * getInstance();
 	Job * getJob();
 	Job * getJob(int id);
-	void addJob(Job & job);
+	bool addJob(Job & job);
 	Properties _props;
 };
 }}}}
