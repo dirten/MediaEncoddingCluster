@@ -10,8 +10,11 @@ using namespace org::esb::io;
 using namespace org::esb::lang;
 using namespace org::esb::hive::job;
 JobHandler * _handler=NULL;
+int prev_job_id=0;
+Job * job=0;
+
 //vector<Job*> _jobList;
-/*
+
 int jobs(void *NotUsed, int argc, char **argv, char **azColName){
 	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
 		job=new Job();
@@ -32,7 +35,7 @@ int jobs(void *NotUsed, int argc, char **argv, char **azColName){
 	prev_job_id=atoi(argv[0]);
   return 0;
 }
-*/
+
 
 JobWatcher::JobWatcher(JobHandler & handler){
 	_handler=&handler;
@@ -41,6 +44,7 @@ JobWatcher::JobWatcher(JobHandler & handler){
 	_con=new Connection(file);
 	_stmt=&_con->createStatement();
 }
+/*
 int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
 	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
 		job=new Job();
@@ -63,10 +67,11 @@ int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
 
 
 }
+*/
 void JobWatcher::run(){
 	while(!_isStopSignal){
 			cout << "JobWatcher run"<<endl;
-			_stmt->executeQuery("select * from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id", (void *)JobWatcher::jobs);
+			_stmt->executeQuery("select * from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id", (void *)jobs);
 			Thread::sleep(10000);
 	}
 }

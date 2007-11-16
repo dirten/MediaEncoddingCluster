@@ -5,7 +5,7 @@
 #include "org/esb/hive/job/JobHandler.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
-#include <vector.h>
+#include <vector>
 
 using namespace org::esb::lang;
 using namespace org::esb::sql;
@@ -21,12 +21,12 @@ namespace org{
 						JobWatcher(JobHandler & handler);
 						void run();
 					private:
-						int jobs(void *NotUsed, int argc, char **argv, char **azColName);
+//						static int jobs(void *NotUsed, int argc, char **argv, char **azColName);
 						bool _isStopSignal;
 						Connection * _con;
 						Statement  *_stmt;
-						int prev_job_id;
-						Job * job;
+						//int prev_job_id;
+						//Job * job;
 						
 				};
 			}
