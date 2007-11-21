@@ -12,6 +12,45 @@ using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
 
+class ProgressBar{
+	public:
+		ProgressBar(){
+			_maximum=100;
+			_prev_percent=0;
+		};
+		void setMaximum(float val){
+			_maximum=val;
+		}
+		void setValue(float val){
+			_value=val;
+			_percent=((_value/_maximum)*100);
+//			cout << _percent<< " "<<_value<<endl;
+//			printf("%d,%f,%f\n",_percent,_maximum,_value);
+			if(_percent>_prev_percent){
+				print();
+				_prev_percent=_percent;
+			}
+		}
+	private:
+		float _maximum;
+		float _value;
+		int _percent;
+		int _prev_percent;
+		void print(){
+			printf("%s","\r["); 
+			for(int a=0;a<=100;a++){
+				if(a<=_percent){
+					printf("%s","=");
+				}else{
+					printf(" ");
+				}
+			}
+			printf("%s","]");
+			
+		}
+
+};
+
 int main(int argc, char * argv[]){
 	cout << LIBAVCODEC_IDENT <<endl;
 	if(argc!=3){
@@ -50,9 +89,7 @@ int main(int argc, char * argv[]){
 	string sqlStreams="insert into streams (fileid,stream_index, stream_type,codec,framerate,start_time,duration,time_base, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     sqlite3_prepare( db, sqlStreams.c_str(), sqlStreams.size(), &pStmt,  NULL );
            fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
-
 	for(int a =0;a<ctx->nb_streams;a++){
-
 		char *zErrMsg = 0;
 		int field=1;
 	    sqlite3_bind_int( pStmt, field++, fileid);
@@ -95,14 +132,20 @@ int main(int argc, char * argv[]){
 
 
     int count=0, frame_group=0;
+	ProgressBar pBar;
+	pBar.setMaximum(394000);
+
     while(true/*&&count < 20000*/){
 
         packet=pis.readPacket();
         if(packet.data==NULL)break;
-	if(++count%1000==0){
-		cout << count << "Packets in db"<<endl;
+        ++count;
+//	if(++count%1000==0){
+//		cout << count << "Packets in db"<<endl;
 	
-	}
+//	}
+		pBar.setValue(count);
+
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;
 //		cout << "Stream:"<<streams[packet.stream_index]<<endl;
