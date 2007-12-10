@@ -54,7 +54,7 @@ namespace org
         void        setPort(int);
         char        * getHostname();
         int         getPort();
-        void        bind();
+        int        bind();
         Socket*     accept();
         void        close();
       };

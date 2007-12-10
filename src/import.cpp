@@ -24,8 +24,6 @@ class ProgressBar{
 		void setValue(float val){
 			_value=val;
 			_percent=((_value/_maximum)*100);
-//			cout << _percent<< " "<<_value<<endl;
-//			printf("%d,%f,%f\n",_percent,_maximum,_value);
 			if(_percent>_prev_percent){
 				print();
 				_prev_percent=_percent;
@@ -144,7 +142,7 @@ int main(int argc, char * argv[]){
 //		cout << count << "Packets in db"<<endl;
 	
 //	}
-		pBar.setValue(count);
+//		pBar.setValue(count);
 
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;

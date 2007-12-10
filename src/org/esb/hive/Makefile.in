@@ -58,8 +58,8 @@ libhive_la_DEPENDENCIES = $(top_srcdir)/src/org/esb/sql/libsql.la
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
 	CommandInputStream.lo CommandOutputStream.lo Job.lo \
 	JobDetail.lo JobHandler.lo JobWatcher.lo ClientHandler.lo \
-	BundleIndex.lo BundleIndexWriter.lo HiveDbConnection.lo \
-	SqlPacketOutputStream.lo
+	ProcessUnit.lo BundleIndex.lo BundleIndexWriter.lo \
+	HiveDbConnection.lo SqlPacketOutputStream.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -195,6 +195,7 @@ SOURCES = \
 	    job/JobHandler.cpp \
 	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
+	    job/ProcessUnit.cpp \
 	    BundleIndex.cpp \
 	    BundleIndexWriter.cpp \
 	    rdb/HiveDbConnection.cpp \
@@ -286,6 +287,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobDetail.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobWatcher.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProcessUnit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolServer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SqlPacketOutputStream.Plo@am__quote@
 
@@ -344,6 +346,13 @@ ClientHandler.lo: job/ClientHandler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/ClientHandler.cpp' object='ClientHandler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ClientHandler.lo `test -f 'job/ClientHandler.cpp' || echo '$(srcdir)/'`job/ClientHandler.cpp
+
+ProcessUnit.lo: job/ProcessUnit.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ProcessUnit.lo -MD -MP -MF "$(DEPDIR)/ProcessUnit.Tpo" -c -o ProcessUnit.lo `test -f 'job/ProcessUnit.cpp' || echo '$(srcdir)/'`job/ProcessUnit.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ProcessUnit.Tpo" "$(DEPDIR)/ProcessUnit.Plo"; else rm -f "$(DEPDIR)/ProcessUnit.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/ProcessUnit.cpp' object='ProcessUnit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ProcessUnit.lo `test -f 'job/ProcessUnit.cpp' || echo '$(srcdir)/'`job/ProcessUnit.cpp
 
 HiveDbConnection.lo: rdb/HiveDbConnection.cpp
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HiveDbConnection.lo -MD -MP -MF "$(DEPDIR)/HiveDbConnection.Tpo" -c -o HiveDbConnection.lo `test -f 'rdb/HiveDbConnection.cpp' || echo '$(srcdir)/'`rdb/HiveDbConnection.cpp; \

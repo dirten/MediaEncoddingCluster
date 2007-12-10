@@ -34,9 +34,11 @@ int main(int argc, char*argv[]){
 	pthread_mutexattr_destroy(&attr);
 
     for(;Socket * clientSocket=server->accept();){
-	    ProtocolServer *protoServer=new ProtocolServer(clientSocket, &mutex);
-	    Thread thread(protoServer);
-	    thread.start();
+		if(clientSocket!=NULL){
+	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket, &mutex);
+	    	Thread thread(protoServer);
+	    	thread.start();
+	    }
     }
 }
 

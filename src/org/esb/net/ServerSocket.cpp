@@ -71,7 +71,7 @@ ServerSocket::init ()
 }
 
 /******************************************************************************/
-void ServerSocket::bind()
+int ServerSocket::bind()
 {
   this->init ();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
@@ -82,7 +82,13 @@ void ServerSocket::bind()
     error+=strerror(errno);
 //    throw Exception(__FILE__, __LINE__, error.c_str() );
   }
-  listen(server_socketFd,1024);
+  int err=::listen(server_socketFd,1024);
+
+  if(err){
+	perror("listen");
+	return err;
+  }
+  return NULL;
 }
 
 /******************************************************************************/
@@ -98,6 +104,7 @@ ServerSocket::accept ()
   {
     perror("accept");
     this->close();
+    return NULL;
   }
   return new Socket(client_socketFd);
 }

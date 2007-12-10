@@ -6,7 +6,8 @@ namespace esb{
 namespace hive{
 namespace job{
 class ProcessUnit{
-	
+	public:
+		ProcessUnit();	
 
 
 };
