@@ -9,10 +9,10 @@ namespace job{
 class ClientHandler{
     public:
 	ClientHandler();
-	ProcessUnit & getProcessUnit();
+	ProcessUnit * getProcessUnit();
 	void setPacketList(vector<void*>);
     private:
-		ProcessUnit  unit;
+		ProcessUnit *  unit;
 		JobHandler * _handler;
 };
 }}}}

@@ -42,11 +42,11 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
-	    	ProcessUnit  unit=_handler->getProcessUnit();
+	    	ProcessUnit * unit=_handler->getProcessUnit();
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";
-			_os->write((char*)t.c_str(), t.size());	    
+			_os->write((char*)t.c_str(), t.size());
 	    }else
 	    if(strcmp(command,"get inputcodec")==0){
 	    }else

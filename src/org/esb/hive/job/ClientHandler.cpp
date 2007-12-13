@@ -10,9 +10,12 @@ ClientHandler::ClientHandler(){
 	_handler=JobHandler::getInstance();
 }
 
-ProcessUnit & ClientHandler::getProcessUnit(){
+ProcessUnit * ClientHandler::getProcessUnit(){
 	Job * job=_handler->getJob();
-	return unit;
+	if(job !=NULL){
+		return unit;
+	}
+	return NULL;
 }
 
 

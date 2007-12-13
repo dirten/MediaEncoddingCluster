@@ -26,7 +26,7 @@ Job * JobHandler::getJob(){
 				return tmp;
 			}
         }
-    return new Job();
+    return NULL;
 }
 
 Job * JobHandler::getJob(int id){
