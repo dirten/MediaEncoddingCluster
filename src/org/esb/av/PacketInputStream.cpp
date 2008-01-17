@@ -66,7 +66,7 @@ Packet & PacketInputStream::readPacketFromIS(){
 	read((unsigned char*)&_packet.pos,sizeof(int64_t));
 	uint8_t * b=new uint8_t[_packet.size];
 	_packet.data=b;
-	read((unsigned char*)_packet.data,_packet.size);	
+	read((unsigned char*)_packet.data,_packet.size);
 	return _packet;
 }
 

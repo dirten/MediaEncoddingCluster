@@ -1,7 +1,7 @@
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(media-encoding-cluster, 0.1)
 AM_CONFIG_HEADER(config.h)
-AM_PATH_CPPUNIT(1.10.2)
+#AM_PATH_CPPUNIT(1.10.2)
 #AC_CONFIG_HEADERS(config.h)
 
 #AC_LANG_CPLUSPLUS
@@ -24,7 +24,7 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 	    AMQ_PATH="$withval")
 
 CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
-LDFLAGS="$LDFLAGS $AMQ_LD -luuid"
+LDFLAGS="$LDFLAGS $AMQ_LD"
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
 AC_CHECK_LIB(avcodec, av_free)
@@ -55,12 +55,11 @@ http://ffmpeg.mplayerhq.hu
 
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lz -lpthread -lsqlite3"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lz -lpthread -lboost_serialization -lsqlite3 "
 
 AC_OUTPUT(
     Makefile 
     src/Makefile 
-    test/Makefile
     src/org/Makefile
     src/org/esb/Makefile
     src/org/esb/lang/Makefile
@@ -71,6 +70,7 @@ AC_OUTPUT(
     src/org/esb/hive/Makefile
     src/org/esb/sql/Makefile
     src/hive.client/Makefile 
+dnl    test/Makefile
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     
 dnl    src/hive.listener/Makefile 

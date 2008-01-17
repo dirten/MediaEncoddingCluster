@@ -3,5 +3,5 @@
 #AUTOMAKE_OPTIONS = foreign 1.4
 CFLAGS=
 CXXLAGS=
-SUBDIRS = src test
+SUBDIRS = src
 

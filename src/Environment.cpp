@@ -19,5 +19,11 @@ bool checkEnvironment(){
 	result=checkConfigKey("protocol.listener.port");
 	result=checkConfigKey("data.dir");
 	result=checkConfigKey("data.file");
+	cout << "Environment seems to be ";
+	if(result)
+	    cout << "clean."<<endl;
+	else
+	    cout << "dirty - check config please!!!"<<endl;
+	    
 	return result;
 }

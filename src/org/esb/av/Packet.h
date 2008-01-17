@@ -3,7 +3,13 @@
 extern "C" {
 #include "avformat.h"
 }
-
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/archive/text_iarchive.hpp>
+//#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/split_member.hpp>
+//using namespace boost;
 namespace org{
     namespace esb{
 	namespace av{
@@ -13,18 +19,36 @@ namespace org{
 		    Packet();
 		    Packet(Packet * packet);
 		    ~Packet();
-            uint8_t * getData();
-            int getSize();
-            int getPts();
-            int getDts();
-            int getFlags();
-            int getStreamIndex();
-            int getDuration();
-			bool isKeyFrame();
-            void * getPriv();
-            int64_t getPosition();
-        private:
-        	bool isCopy;
+        	    uint8_t * getData();
+    		    int getSize();
+        	    int getPts();
+        	    int getDts();
+        	    int getFlags();
+        	    int getStreamIndex();
+        	    int getDuration();
+		    bool isKeyFrame();
+        	    void * getPriv();
+        	    int64_t getPosition();
+    		private:
+        	    bool isCopy;
+        	    friend class boost::serialization::access;
+
+		    template<class Archive>
+		        void serialize(Archive & ar, const unsigned int version)
+		            {
+		                ar & size;
+				if(data==NULL){
+				    data=new uint8_t[size];
+				    isCopy=true;
+				}
+				ar & boost::serialization::make_binary_object(data,size);
+		                ar & pts;
+		                ar & dts;
+		                ar & flags;
+		                ar & stream_index;
+		                ar & duration;
+		                ar & pos;
+		            }
 	    };
 	}
     }

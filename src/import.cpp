@@ -1,6 +1,7 @@
 
 #include <sqlite3.h>
 #include <iostream>
+#include <fstream>
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -8,47 +9,40 @@
 #include "org/esb/av/Codec.h"
 #include "CreateDatabase.cpp"
 #include <avformat.h>
+#include <boost/progress.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/polymorphic_binary_iarchive.hpp> 
+#include <boost/archive/polymorphic_binary_oarchive.hpp> 
+
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
+using namespace boost;
 
-class ProgressBar{
-	public:
-		ProgressBar(){
-			_maximum=100;
-			_prev_percent=0;
-		};
-		void setMaximum(float val){
-			_maximum=val;
-		}
-		void setValue(float val){
-			_value=val;
-			_percent=((_value/_maximum)*100);
-			if(_percent>_prev_percent){
-				print();
-				_prev_percent=_percent;
-			}
-		}
-	private:
-		float _maximum;
-		float _value;
-		int _percent;
-		int _prev_percent;
-		void print(){
-			printf("%s","\r["); 
-			for(int a=0;a<=100;a++){
-				if(a<=_percent){
-					printf("%s","=");
-				}else{
-					printf(" ");
-				}
-			}
-			printf("%s","]");
-			
-		}
+
+class test_serial{
+    private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	    void serialize(Archive & ar, const unsigned int version)
+	        {
+	    	    ar & degrees;
+	            ar & minutes;
+	            ar & seconds;
+	        }
+        int degrees;
+	int minutes;
+	float seconds;
+    public:
+	test_serial(){};
+	test_serial(int d, int m, float s) :
+            degrees(d), minutes(m), seconds(s)
+            {}    
 
 };
-
 int main(int argc, char * argv[]){
 	cout << LIBAVCODEC_IDENT <<endl;
 	if(argc!=3){
@@ -125,19 +119,32 @@ int main(int argc, char * argv[]){
 	int streamCount=fis.getStreamCount();
 	cout << "StreamCount="<<streamCount<<endl;
     PacketInputStream pis(&fis);
-    Packet packet;
+//    const Packet  packet;
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
 
 
     int count=0, frame_group=0;
-	ProgressBar pBar;
-	pBar.setMaximum(394000);
+//	ProgressBar pBar;
+//	pBar.setMaximum(394000);
+	progress_display show_progress( 394000);
 
-    while(true/*&&count < 20000*/){
+//    const test_serial ts(1,2,1);
+    
+//    bos << ts;
 
-        packet=pis.readPacket();
+    while(true&&count < 20000){
+
+        Packet packet=pis.readPacket();
+	char filename[100];
+	sprintf(filename,"/tmp/hive/data.%d",count);
+	ofstream ofs(filename,ios::binary);
+	boost::archive::binary_oarchive bos(ofs);
+//	const Packet packet2;
+	bos << (const Packet)packet;
         if(packet.data==NULL)break;
+        
         ++count;
+	++show_progress;
 //	if(++count%1000==0){
 //		cout << count << "Packets in db"<<endl;
 	
