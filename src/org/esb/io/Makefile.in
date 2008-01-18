@@ -53,7 +53,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libio_la_LIBADD =
 am__objects_1 = File.lo FileInputStream.lo FileOutputStream.lo \
 	CharArrayInputStream.lo CharArrayOutputStream.lo \
-	BufferedOutputStream.lo BufferedInputStream.lo
+	BufferedOutputStream.lo BufferedInputStream.lo \
+	ObjectOutputStream.lo
 am_libio_la_OBJECTS = $(am__objects_1)
 libio_la_OBJECTS = $(am_libio_la_OBJECTS)
 libio_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -187,7 +188,7 @@ MICRO_VERSION = 1
 
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libio.la
-SOURCES = File.cpp FileInputStream.cpp FileOutputStream.cpp CharArrayInputStream.cpp CharArrayOutputStream.cpp BufferedOutputStream.cpp BufferedInputStream.cpp 
+SOURCES = File.cpp FileInputStream.cpp FileOutputStream.cpp CharArrayInputStream.cpp CharArrayOutputStream.cpp BufferedOutputStream.cpp BufferedInputStream.cpp ObjectOutputStream.cpp
 libio_la_SOURCES = $(SOURCES)
 libio_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION) -version-info $(MICRO_VERSION)
 # set the include path found by configure
@@ -268,6 +269,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileOutputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ObjectOutputStream.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

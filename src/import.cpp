@@ -138,7 +138,7 @@ int main(int argc, char * argv[]){
 	char filename[100];
 	sprintf(filename,"/tmp/hive/data.%d",count);
 	ofstream ofs(filename,ios::binary);
-	boost::archive::binary_oarchive bos(ofs);
+	boost::archive::text_oarchive bos(ofs);
 //	const Packet packet2;
 	bos << (const Packet)packet;
         if(packet.data==NULL)break;

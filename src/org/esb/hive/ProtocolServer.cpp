@@ -42,8 +42,8 @@ ProtocolServer::~ProtocolServer() {
     delete _cis;
 }
 
-ProtocolServer::ProtocolServer(Socket * socket,pthread_mutex_t *m) {
-    mutex=m;
+ProtocolServer::ProtocolServer(Socket * socket) {
+//    mutex=m;
     this->socket=socket;
     _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));

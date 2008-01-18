@@ -9,7 +9,6 @@ using namespace org::esb::av;
 Packet::Packet(){
 	isCopy=false;
 	data=NULL;
-//	data=new uint8_t[5452];
 }
 
 Packet::Packet(Packet * packet){
@@ -40,3 +39,4 @@ int Packet::getDuration(){return duration;}
 bool Packet::isKeyFrame(){return flags & PKT_FLAG_KEY;}
 void * Packet::getPriv(){return priv;}
 int64_t Packet::getPosition(){return pos;}
+

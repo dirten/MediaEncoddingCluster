@@ -20,7 +20,7 @@ public:
                  * @exception  IOException  if an I/O error occurs.
                  */
 
-                virtual void close(){throw Exception(__FILE__,__LINE__,"Not implemented");};;
+                virtual void close(){throw Exception(__FILE__,__LINE__,"Not implemented");};
 
                 /**
                  * Flushes this output stream and forces any buffered output bytes 

@@ -3,12 +3,12 @@
 extern "C" {
 #include "avformat.h"
 }
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/archive/binary_iarchive.hpp>
+//#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/text_iarchive.hpp>
 //#include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
-#include <boost/serialization/split_member.hpp>
+//#include <boost/serialization/split_member.hpp>
 //using namespace boost;
 namespace org{
     namespace esb{
@@ -32,6 +32,7 @@ namespace org{
     		private:
         	    bool isCopy;
         	    friend class boost::serialization::access;
+//		    void serialize(boost::archive::Archive & ar, const unsigned int version);
 
 		    template<class Archive>
 		        void serialize(Archive & ar, const unsigned int version)
@@ -49,6 +50,7 @@ namespace org{
 		                ar & duration;
 		                ar & pos;
 		            }
+		            
 	    };
 	}
     }

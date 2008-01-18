@@ -5,15 +5,24 @@
 #include "org/esb/config/config.h"
 #include "Environment.cpp"
 #include <unistd.h>
-
+#include <stdlib.h>
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
-int main(int argc, char*argv[]){
-//memset(argv[0],0,strlen(argv[0]));
-//memcpy(argv[0],(char*)"test",4);
+using namespace std;
 
-//setproctitle("%s", "bla");
+int main(int argc, char*argv[]){
+/*
+string prog=argv[0];
+prog+="test";
+//delete [] argv[0];
+argv[0]=new char[prog.length()];
+memset(argv[0],0,strlen(argv[0]));
+memcpy(argv[0],(char*)prog.c_str(),prog.length());
+
+
+setproctitle("%s", "bla");
+*/
     Config::init("./cluster.cfg");
     if(!checkEnvironment()){
     	cout << "Fehler in der Configuration"<<endl;
@@ -27,15 +36,10 @@ int main(int argc, char*argv[]){
 
 
 
-	pthread_mutex_t mutex;
-	pthread_mutexattr_t attr;
-	pthread_mutexattr_init(&attr);
-	pthread_mutex_init(&mutex, &attr);
-	pthread_mutexattr_destroy(&attr);
 
     for(;Socket * clientSocket=server->accept();){
 		if(clientSocket!=NULL){
-	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket, &mutex);
+	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    	Thread thread(protoServer);
 	    	thread.start();
 	    }
