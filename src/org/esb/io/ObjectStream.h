@@ -1,0 +1,6 @@
+#ifndef ORG_ESB_IO_OBJECTSTREAM
+#define ORG_ESB_IO_OBJECTSTREAM
+
+#define DATA_SIZE_HEADER 8
+
+#endif
