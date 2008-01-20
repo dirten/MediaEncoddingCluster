@@ -1,6 +1,8 @@
 #ifndef ORG_ESB_IO_OBJECTOUTPUTSTREAM_H
 #define ORG_ESB_IO_OBJECTOUTPUTSTREAM_H
 #include "OutputStream.h"
+#include "ObjectStream.h"
+#include <boost/lexical_cast.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <istream>
 
@@ -18,16 +20,20 @@ class ObjectOutputStream:public OutputStream{
 	void flush();
 
 	template<typename T>
-	void write_object(const T&object){
+	void writeObject(const T&object){
 	    std::ostringstream archive_stream;
 	    boost::archive::text_oarchive archive(archive_stream);
 	    archive << object;
-	    _outbound_data = archive_stream.str();
+	    std::string _outbound_data = archive_stream.str();
+//	    int64_t * length=new int64_t;
+	    int length=_outbound_data.length();
+	    
+	    _os->write((char*)&length,sizeof(int));
 	    _os->write((char*)_outbound_data.c_str(),_outbound_data.length());
 	}
     private:
 	OutputStream * _os;
-	std::string _outbound_data;
+//	std::string _outbound_data;
 };
 }}}
 #endif

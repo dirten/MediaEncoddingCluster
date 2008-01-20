@@ -7,9 +7,11 @@
 #include <fstream>
 #include "org/esb/av/Packet.h"
 #include "org/esb/io/FileOutputStream.h"
+#include "org/esb/io/FileInputStream.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 #include <iostream>
 #include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/ObjectInputStream.h"
 
 using namespace org::esb::av;
 using namespace org::esb::io;
@@ -76,8 +78,8 @@ int main(){
     }
 //    return 0; 
 
-//    ifstream ifs("/tmp/hive/data.100",ios::binary);
-    ifstream ifs("test.ous",ios::binary);
+    ifstream ifs("/tmp/hive/data.100",ios::binary);
+//    ifstream ifs("test.ous",ios::binary);
     boost::archive::text_iarchive bis(ifs);
     Packet packet2;
 //    packet2.data=new uint8_t[10000];
@@ -85,7 +87,13 @@ int main(){
     cout << packet2.getSize() << endl;
     FileOutputStream fos("test.ous2");
     ObjectOutputStream oos(&fos);
-    oos.write_object(packet2);
+    oos.writeObject(packet2);
+
+    FileInputStream fis("test.ous2");
+    ObjectInputStream ois(&fis);
+    Packet packet3;
+    ois.readObject(packet3);
+
 //    delete packet2.data;
 
 }

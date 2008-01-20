@@ -53,6 +53,8 @@ int main(int argc, char * argv[]){
 	File databaseFile(argv[1]);
 	if(!databaseFile.exists()||!checkDatabase(databaseFile)){
 		createDatabase(databaseFile);
+	}else{
+	    cout << "Database not found";
 	}
 
 	File inputFile(argv[2]);
@@ -80,7 +82,7 @@ int main(int argc, char * argv[]){
 	int streams[10];
 	string sqlStreams="insert into streams (fileid,stream_index, stream_type,codec,framerate,start_time,duration,time_base, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     sqlite3_prepare( db, sqlStreams.c_str(), sqlStreams.size(), &pStmt,  NULL );
-           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
+//           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
 	for(int a =0;a<ctx->nb_streams;a++){
 		char *zErrMsg = 0;
 		int field=1;
@@ -105,7 +107,7 @@ int main(int argc, char * argv[]){
 //        sqlite3_clear_bindings(pStmt);
 
 		if( rc!=SQLITE_OK ){
-           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
+//           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
         }
     	int streamid =sqlite3_last_insert_rowid(db);
     	
@@ -132,7 +134,7 @@ int main(int argc, char * argv[]){
     
 //    bos << ts;
 
-    while(true&&count < 20000){
+    while(true&&count < 1000){
 
         Packet packet=pis.readPacket();
 	char filename[100];
