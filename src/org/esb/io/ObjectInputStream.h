@@ -16,21 +16,13 @@ namespace org{
 		int read(unsigned char * buffer, int length);
 		int read(vector<unsigned char>&buffer);
 		int read();
-
 	    	template<typename T>
 		void readObject(T& object){
 		    istringstream archive_stream;
 		    int length=0;;
-
-		    _is->read((unsigned char*)&length,sizeof(int));
-		    cout << "inbound data length:"<<length<<endl;
-		    unsigned char inbound_data[length];
-//		    memcpy(inbound_data,0,length);
-		    
-		    int readed=_is->read((unsigned char*)&inbound_data,length);
-//		    readed=_is->read((unsigned char*)&inbound_data,length);
-		    string inbound_string=(const char*)&inbound_data;
-		    cout << "inbound data readed:"<<readed<<endl;
+		    _is->read((unsigned char*)&length,sizeof(int64_t));
+		    char inbound_data[length];
+		    int readed=_is->read((unsigned char*)&inbound_data,sizeof(inbound_data));
 		    archive_stream.str((char*)inbound_data);
 		    boost::archive::text_iarchive archive(archive_stream);
 		    archive >> object;
