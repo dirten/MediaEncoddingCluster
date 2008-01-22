@@ -68,7 +68,7 @@ namespace org
         }
 
         /******************************************************************************/
-        int read(vector<unsigned char>&buffer)throw (org::esb::lang::Exception)
+        int read(vector<unsigned char>&buffer)
         {
 	    size_t size=buffer.size();
 	    buffer.clear();
@@ -82,14 +82,14 @@ namespace org
         }
 
         /******************************************************************************/
-        int read()throw (org::esb::lang::Exception)
+        int read()
         {
 			read((unsigned char*)&byte,1);
 	    	return byte;
         }
         
         /******************************************************************************/
-        int read(unsigned char * buffer, int length)throw (org::esb::lang::Exception)
+        int read(unsigned char * buffer, int length)
         {
           int  counter=1;
             	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);

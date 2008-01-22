@@ -1,9 +1,10 @@
 #include "ObjectOutputStream.h"
-
+#include "org/esb/io/BufferedOutputStream.h"
 
 using namespace org::esb::io;
 
 ObjectOutputStream::ObjectOutputStream(OutputStream * os){
+//    _os=new BufferdOutputStream(os, 32000);
     _os=os;
 }
 

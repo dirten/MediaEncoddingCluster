@@ -16,7 +16,7 @@ class ProcessUnit{
 	public:
 		ProcessUnit();	
 
-	private:
+//	private:
 		vector<Packet*> _input_packets;
 		vector<Packet*> _output_packets;
 		Codec * _input_codec;

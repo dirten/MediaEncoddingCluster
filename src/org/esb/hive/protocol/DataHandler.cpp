@@ -31,7 +31,9 @@ class DataHandler: public ProtocolCommand{
 	    if(strcmp(command,"get frame")==0||
 	       strcmp(command,"put frame")==0||
 	       strcmp(command,"get inputcodec")==0||
-	       strcmp(command,"get outputcodec")==0){
+	       strcmp(command,"get outputcodec")==0||
+	       strcmp(command,"get process_unit")==0||
+	       strcmp(command,"put process_unit")==0){
 		    return CMD_PROCESS;
 	    }else
 	    if(strcmp(command,"help")==0){
@@ -51,6 +53,10 @@ class DataHandler: public ProtocolCommand{
 	    if(strcmp(command,"get inputcodec")==0){
 	    }else
 	    if(strcmp(command,"get outputcodec")==0){
+	    }else
+	    if(strcmp(command,"get process_unit")==0){
+	    }else
+	    if(strcmp(command,"put process_unit")==0){
 	    }
 	}
 	void printHelp(){

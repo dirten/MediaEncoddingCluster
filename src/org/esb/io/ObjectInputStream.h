@@ -1,8 +1,10 @@
 #ifndef ORG_ESB_IO_OBJECTINPUTSTREAM
 #define ORG_ESB_IO_OBJECTINPUTSTREAM
 #include <boost/archive/text_iarchive.hpp>
-#include <iostream>
-#include <sstream>
+#include <boost/archive/binary_iarchive.hpp>
+#include <fstream>
+//#include <ostream>
+//#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
 using namespace std;
@@ -18,12 +20,15 @@ namespace org{
 		int read();
 	    	template<typename T>
 		void readObject(T& object){
-		    istringstream archive_stream;
 		    int length=0;;
 		    _is->read((unsigned char*)&length,sizeof(int64_t));
 		    char inbound_data[length];
 		    int readed=_is->read((unsigned char*)&inbound_data,sizeof(inbound_data));
-		    archive_stream.str((char*)inbound_data);
+//		    ofstream of("tmp.data",ios::binary);
+//		    of.write((char*)&inbound_data,length);
+//		    archive_stream.str((char*)inbound_data);
+//		    ifstream is("tmp.data",ios::binary);
+		    istringstream archive_stream((char*)inbound_data);
 		    boost::archive::text_iarchive archive(archive_stream);
 		    archive >> object;
 		}

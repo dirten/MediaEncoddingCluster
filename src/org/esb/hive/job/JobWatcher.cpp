@@ -70,7 +70,7 @@ int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
 */
 void JobWatcher::run(){
 	while(!_isStopSignal){
-			cout << "JobWatcher run"<<endl;
+			cout << "JobWatcher cycle"<<endl;
 			_stmt->executeQuery("select * from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id", (void *)jobs);
 			Thread::sleep(10000);
 	}

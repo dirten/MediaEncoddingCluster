@@ -157,7 +157,7 @@ namespace lang{
         
     
    
-        virtual void buildMessage( const char* format, va_list& vargs );
+        void buildMessage( const char* format, va_list& vargs );
 
 //        virtual const char * what()const throw();
    };

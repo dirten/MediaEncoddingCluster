@@ -2,7 +2,6 @@
 #include "Socket.h"
 #include "SocketInputStream.cpp"
 #include "SocketOutputStream.cpp"
-#include "org/esb/lang/Exception.h"
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
@@ -85,7 +84,7 @@ void Socket::init()
 /******************************************************************************/
 
 /******************************************************************************/
-void Socket::connect() throw (Exception)
+void Socket::connect()
 {
   this->init();
   inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);

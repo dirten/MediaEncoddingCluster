@@ -4,7 +4,9 @@
 #include "ObjectStream.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/archive/text_oarchive.hpp>
-#include <istream>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/iostreams/device/array.hpp>
+#include <fstream>
 
 namespace org{
     namespace esb{
@@ -21,6 +23,8 @@ class ObjectOutputStream:public OutputStream{
 
 	template<typename T>
 	void writeObject(const T&object){
+//	    char test[10];
+//	    boost::iostreams::basic_array_sink sink((char*)&test,10);
 	    std::ostringstream archive_stream;
 	    boost::archive::text_oarchive archive(archive_stream);
 	    archive << object;

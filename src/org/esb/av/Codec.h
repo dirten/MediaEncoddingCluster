@@ -3,7 +3,7 @@
 extern "C" {
 #include "avformat.h"
 }
-//#include "Frame.h"
+#include <boost/serialization/binary_object.hpp>
 #include "Packet.h"
 
 
@@ -22,6 +22,23 @@ namespace org{
 		    void open();
 		    Packet * encodeFrame(Frame & frame);
 		    Frame * decode(Packet & packet);
+
+		    template<class Archive>
+		        void serialize(Archive & ar, const unsigned int version)
+		            {
+		                ar & codec_id;
+		                ar & codec_type;
+		                ar & bit_rate;
+		                ar & pix_fmt;
+		                ar & width;
+		                ar & height;
+		                ar & has_b_frames;
+		                ar & extradata_size;
+				if(extradata==NULL){
+				    extradata=new uint8_t[extradata_size];
+				}
+				ar & boost::serialization::make_binary_object(extradata,extradata_size);
+		            }
                 private:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;

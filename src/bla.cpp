@@ -82,10 +82,11 @@ int main(){
     ifstream ifs("/tmp/hive/data.100");
 //    ifstream ifs("test.ous",ios::binary);
     boost::archive::text_iarchive bis(ifs);
-    Packet packet2;
+    Packet  packet2;
 //    packet2.data=new uint8_t[10000];
     bis >> packet2;
     cout << packet2.getSize() << endl;
+
     FileOutputStream fos("test.ous2");
     ObjectOutputStream oos(&fos);
     oos.writeObject(packet2);
@@ -96,8 +97,6 @@ int main(){
     
     FileInputStream fis("test.ous2");
     ObjectInputStream ois(&fis);
-
-
     Packet packet3;
     ois.readObject(packet3);
 

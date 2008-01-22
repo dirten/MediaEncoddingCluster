@@ -27,7 +27,7 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test test_packet test_bla test_packet_input test_sqlite
+bin_PROGRAMS=test test_packet test_bla test_packet_input test_sqlite test_server test_client
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 datasize_SOURCES=datasize.cpp
@@ -38,6 +38,8 @@ test_packet_SOURCES=test_packet.cpp
 test_packet_input_SOURCES=test_packet_input.cpp
 test_bla_SOURCES=test_bla.cpp
 test_dvdread_SOURCES=test_dvdread.cpp 
+test_server_SOURCES=test_server.cpp 
+test_client_SOURCES=test_client.cpp 
 console_SOURCES=console.cpp
 test_thread_SOURCES=test_thread.cpp 
 test_socket_SOURCES=test_socket.cpp 
@@ -61,16 +63,16 @@ server_LDFLAGS = $(all_libraries)
 
 test_file_LDADD=	../src/org/esb/libesb.la 
 test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
-test_packet_LDADD=	../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la  ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
+test_packet_LDADD=	../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la  ../src/org/esb/av/libav.la
 test_sqlite_LDADD=	../src/org/esb/lang/liblang.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/sql/libsql.la
-test_packet_input_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
+test_packet_input_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/org/esb/av/libav.la
 test_socket_LDADD=	../src/org/esb/libesb.la 
-server_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/framehive/libframehive.la ../src/org/esb/av/libav.la
+server_LDADD= ../src/org/esb/libesb.la ../src/org/esb/lang/liblang.la ../src/org/esb/av/libav.la
 test_server_LDADD=	../src/org/esb/libesb.la 
 client_LDADD	=	../src/org/esb/libesb.la 
 console_LDADD   =	../src/org/esb/libesb.la 
-server_LDADD	=	../src/org/esb/libesb.la \
-			-lpthread 
+test_server_LDADD	=../src/org/esb/libesb.la
+test_client_LDADD	=../src/org/esb/lang/liblang.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/net/libnet.la ../src/org/esb/sql/libsql.la
 
 test_thread_LDADD=	../src/org/esb/libesb.la \
 			-lpthread 

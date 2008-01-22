@@ -20,7 +20,7 @@ public:
                  * @exception  IOException  if an I/O error occurs.
                  */
 
-                virtual void close(){throw Exception(__FILE__,__LINE__,"Not implemented");};
+                virtual void close(){};
 
                 /**
                  * Flushes this output stream and forces any buffered output bytes 
@@ -85,7 +85,7 @@ public:
                  *             stream is closed.
                  */
 
-                virtual void write(char * buffer,int offset, int length){throw Exception(__FILE__,__LINE__,"Not implemented");};
+                virtual void write(char * buffer,int offset, int length){};
                 /**
                  * Writes the specified byte to this output stream. The general 
                  * contract for <code>write</code> is that one byte is written 
@@ -102,7 +102,7 @@ public:
                  *             output stream has been closed.
                  */
 
-                virtual void write(char * buffer){throw Exception(__FILE__,__LINE__,"Not implemented");};
+                virtual void write(char * buffer){};
 
                 virtual ~OutputStream() {}
                 ;

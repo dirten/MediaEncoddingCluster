@@ -78,7 +78,7 @@ namespace org
         int         getPort();
         void        bind();
         Socket*     accept();
-        void        connect()throw(Exception);
+        void        connect();
         void        close();
 	bool	    isClosed();
  int getDescriptor();
