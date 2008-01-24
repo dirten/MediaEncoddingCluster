@@ -17,8 +17,7 @@ int main(){
 	++count;
 	if(count%10000==0)
 	    cout << "Packet readed"<<count << endl;
-	if(count%300000==0)
+	if(count%30000==0)
 	    break;
-	    
     }
 }

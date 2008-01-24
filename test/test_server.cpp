@@ -7,7 +7,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/File.h"
-
+#include <list>
 using namespace std;
 //using namespace org::esb::net;
 using namespace org::esb;
@@ -36,23 +36,33 @@ class ProtocolServer:public Runnable{
 	    io::ObjectOutputStream oos(socket->getOutputStream());
 	    int count=0;
 	    while(true){
-		av::Packet packet=pis.readPacket();
-		++count;
-		if(count%10000==0)
-		    cout << "FrameSended:"<<count<<endl;
-		if(packet.data==NULL)
-		    break;
-		oos.writeObject(packet);
+    		    av::Packet packet;
+		    if(pis.readPacket(packet)<0){
+		        cout << "Fehler beim lesen des Packet"<<endl;
+		        break;
+		    }
+		    ++count;
+		    if(count%10000==0)
+		        cout << "FrameSended:"<<count<<endl;
+		    if(packet.data==NULL)
+		        break;
+		try{
+		    oos.writeObject(packet);
+		}catch(...){cout << "Fehler"<<endl;break;}
 	    }
 	}
 };
 
 int main(int argc,char**argv){
 
-    net::ServerSocket *server=new net::ServerSocket(20000);
-    server->bind();
-    for(;net::Socket * clientSocket=server->accept();){
-	Thread * thread=new Thread(new ProtocolServer(clientSocket));
-	thread->start();
+    net::ServerSocket server(20000);
+    server.bind();
+    if(net::Socket * clientSocket=server.accept()){
+	ProtocolServer server(clientSocket);
+	server.run();
+	delete clientSocket;
+//	Thread * thread=new Thread(new ProtocolServer(clientSocket));
+//	thread->start();
+//	thread->join();
     }
 }

@@ -25,8 +25,11 @@ Packet::Packet(Packet * packet){
 }
 
 Packet::~Packet(){
-    if(isCopy&&data)
+    if(isCopy&&data){
         delete [] data;
+    }else{
+//	av_free_packet(this);
+    }
 }
 
 uint8_t * Packet::getData(){return data;}

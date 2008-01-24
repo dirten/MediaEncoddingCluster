@@ -33,11 +33,14 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
 PacketInputStream::~PacketInputStream(){
     if(_readFrom==1){
-//	avcodec_close(_codec2);
-	av_free_packet(&_packet);
+        if(_packet.data!=NULL)
+	    av_free_packet(&_packet);
     }
 }
 
+/**
+ * @deprecated Use the software.
+ */
 Packet & PacketInputStream::readPacket(){
     if(_readFrom==1)
     	return readPacketFromFormatIS();
@@ -45,12 +48,30 @@ Packet & PacketInputStream::readPacket(){
     
 }
 
+int PacketInputStream::readPacket(Packet&packet){
+    if(_readFrom==1)
+    	return readPacketFromFormatIS(packet);
+    return readPacketFromIS(packet);
+    
+}
+
+int PacketInputStream::readPacketFromFormatIS(Packet & packet){
+        if(packet.data!=NULL)
+            av_free_packet(&packet);
+        int count=0;
+        count=av_read_frame(_formatCtx, &packet);
+    return count;
+}
+
+/**
+ * @deprecated Use the software.
+ */
 Packet & PacketInputStream::readPacketFromFormatIS(){
         if(_packet.data!=NULL)
             av_free_packet(&_packet);
-            if(av_read_frame(_formatCtx, &_packet)<0){
-		cout << "Invalid Packet read"<<endl;
-            }
+        if(av_read_frame(_formatCtx, &_packet)<0){
+	    cout << "Invalid Packet read"<<endl;
+        }
     return _packet;
 }
 
@@ -68,6 +89,23 @@ Packet & PacketInputStream::readPacketFromIS(){
 	_packet.data=b;
 	read((unsigned char*)_packet.data,_packet.size);
 	return _packet;
+}
+
+int PacketInputStream::readPacketFromIS(Packet&packet){
+    int count=0;
+    if(packet.data!=NULL)
+	delete [] packet.data;// av_free_packet(&_packet);
+	count+=read((unsigned char*)&packet.pts,sizeof(int64_t));
+	count+=read((unsigned char*)&packet.dts,sizeof(int64_t));
+	count+=read((unsigned char*)&packet.size,sizeof(int));
+	count+=read((unsigned char*)&packet.stream_index,sizeof(int));
+	count+=read((unsigned char*)&packet.flags,sizeof(int));
+	count+=read((unsigned char*)&packet.duration,sizeof(int));
+	count+=read((unsigned char*)&packet.pos,sizeof(int64_t));
+	uint8_t * b=new uint8_t[packet.size];
+	packet.data=b;
+	count+=read((unsigned char*)packet.data,_packet.size);
+	return count;
 }
 
 int PacketInputStream::read(unsigned char * buffer, int length){

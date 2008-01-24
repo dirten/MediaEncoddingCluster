@@ -20,6 +20,15 @@ Socket::Socket(int sock)
 Socket::~Socket()
 {
     this->close();
+    if(this->inputStream!=NULL){
+	delete this->inputStream;
+	this->inputStream=NULL;
+    }
+    if(this->outputStream!=NULL){
+	delete this->outputStream;
+	this->outputStream=NULL;
+    }
+
 }
 
 
@@ -96,6 +105,7 @@ void Socket::connect()
 void Socket::close()
 {
     if(!isClosed()){
+    /*
     if(this->inputStream!=NULL){
 	delete this->inputStream;
 	this->inputStream=NULL;
@@ -103,7 +113,7 @@ void Socket::close()
     if(this->outputStream!=NULL){
 	delete this->outputStream;
 	this->outputStream=NULL;
-    }
+    }*/
     if(!isClosed()){
 //	::shutdown( this->socketFd, SHUT_RDWR );
     #if defined(WIN32)

@@ -33,6 +33,7 @@ class ObjectOutputStream:public OutputStream{
 	    _os->write((char*)&length,sizeof(int64_t));
 	    _os->write((char*)_outbound_data.c_str(),_outbound_data.length());
 	}
+	
     private:
 	OutputStream * _os;
 };
