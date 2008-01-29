@@ -24,19 +24,12 @@ namespace org{
 		    int64_t length=0;;
 		    _is->read((unsigned char*)&length,sizeof(int64_t));
 		    if(!length>0)cout <<"Fehler in der groesse INBOUND_DATA:"<<length<<endl;
-		    char in[length+1];
-		    
+		    char in[length+1];		    
 		    memset(&in,0,length+1);
-		    int readed=_is->read((unsigned char*)&in,length);
-//		    ofstream of("tmp.data",ios::binary);
-//		    of.write((char*)&inbound_data,length);
-//		    archive_stream.str((char*)inbound_data);
-//		    ifstream is("tmp.data",ios::binary);
+		    _is->read((unsigned char*)&in,length);
 		    istringstream archive_stream((char*)&in);
-//		    archive_stream.str(inbound_data);
 		    boost::archive::text_iarchive archive(archive_stream);
 		    archive >> object;
-//		    delete [] inbound_data;
 		}
 		private:
 		    InputStream * _is;

@@ -17,18 +17,18 @@ namespace org{
 		            FormatInputStream(File * source);
     			    ~FormatInputStream();
     			    AVFormatContext * getFormatContext();
-    	    		int available(bool isBlocking = false);
-	        		long getFileSize();
+    	    		    int available(bool isBlocking = false);
+	        	    long getFileSize();
 		            int read(unsigned char * buffer, int length);
 		            int read(vector<unsigned char>&buffer);
 		            int read();
 		            int getStreamCount();
-        			InputStream * getStream(int sNumber);
-	        		void close();
-                    int selectedStream;
+        		    InputStream * getStream(int sNumber);
+	        	    void close();
+                	    int selectedStream;
 		        private:
-            		org::esb::io::File * _sourceFile;
-                protected:
+            		    org::esb::io::File * _sourceFile;
+            		protected:
 		            AVFormatContext * formatCtx;            	    
 	        };
     	}

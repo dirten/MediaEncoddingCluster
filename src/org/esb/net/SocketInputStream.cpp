@@ -2,7 +2,7 @@
 #include "org/esb/net/Socket.h"
 #include <iostream>
 #include "org/esb/lang/Byte.h"
-#include "config.h"
+#include "../config.h"
 #include <vector>
 #if !defined(WIN32) 
     #include <sys/select.h>
