@@ -11,6 +11,7 @@
 #include "org/esb/hive/BundleIndex.h"
 #include "org/esb/hive/BundleIndexWriter.h"
 #include "org/esb/config/config.h"
+#include <boost/shared_ptr.hpp>
 //#include "framehive/FrameHive.h"
 
 #include <iostream>
@@ -20,7 +21,8 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::hive;
 using namespace org::esb::config;
- 
+
+//typedef boost::shared_ptr<Packet> PacketPtr;
 int main(){
 
     Config::init("./cluster.cfg");	

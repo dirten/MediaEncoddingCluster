@@ -60,7 +60,7 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet){
             av_free_packet(&packet);
         int count=0;
         count=av_read_frame(_formatCtx, &packet);
-    return count;
+	return count;
 }
 
 /**
@@ -77,7 +77,7 @@ Packet & PacketInputStream::readPacketFromFormatIS(){
 
 Packet & PacketInputStream::readPacketFromIS(){
     if(_packet.data!=NULL)
-	delete [] _packet.data;// av_free_packet(&_packet);
+//	delete [] _packet.data;// av_free_packet(&_packet);
 	read((unsigned char*)&_packet.pts,sizeof(int64_t));
 	read((unsigned char*)&_packet.dts,sizeof(int64_t));
 	read((unsigned char*)&_packet.size,sizeof(int));

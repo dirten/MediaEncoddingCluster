@@ -9,10 +9,12 @@ using namespace org::esb::av;
 Packet::Packet(){
 	isCopy=false;
 	data=NULL;
+//	av_init_packet(this);
 }
 
 Packet::Packet(Packet * packet){
-	data=new uint8_t[packet->size];
+	data=new uint8_t[packet->size+1];
+	memset(data,0,packet->size+1);
 	memcpy(data, packet->data, packet->size);
 	size=packet->size;
 	pts=packet->pts;
@@ -25,10 +27,12 @@ Packet::Packet(Packet * packet){
 }
 
 Packet::~Packet(){
-    if(isCopy&&data){
-        delete [] data;
+    if(isCopy&&data&&size>0){
+//	cout << "destruct copy data";
+        delete []data;
     }else{
-//	av_free_packet(this);
+//	cout << "destruct av_free_packet";
+	av_free_packet(this);
     }
 }
 

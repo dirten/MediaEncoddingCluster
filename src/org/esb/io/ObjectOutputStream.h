@@ -22,9 +22,7 @@ class ObjectOutputStream:public OutputStream{
 	void flush();
 
 	template<typename T>
-	void writeObject(const T&object){
-//	    char test[10];
-//	    boost::iostreams::basic_array_sink sink((char*)&test,10);
+	void writeObject(const T &object){
 	    std::ostringstream archive_stream;
 	    boost::archive::text_oarchive archive(archive_stream);
 	    archive << object;

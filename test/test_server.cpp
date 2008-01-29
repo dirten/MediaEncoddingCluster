@@ -6,11 +6,29 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/File.h"
 #include <list>
 using namespace std;
 //using namespace org::esb::net;
 using namespace org::esb;
+
+class Receiver:public Runnable{
+    public:
+	Receiver(InputStream * is){
+	    _is=is;
+	}
+	void run(){
+	    io::ObjectInputStream ois(_is);
+	    while(true){
+		av::Packet packet;
+		ois.readObject(packet);
+	    }
+	}
+	
+    private:
+	InputStream * _is;
+};
 
 class ProtocolServer:public Runnable{
     private:
@@ -34,20 +52,28 @@ class ProtocolServer:public Runnable{
 	    av::FormatInputStream fis(&file);
 	    av::PacketInputStream pis(&fis);
 	    io::ObjectOutputStream oos(socket->getOutputStream());
+	    io::ObjectInputStream ois(socket->getInputStream());
+
+	    Receiver recv(socket->getInputStream());
+	    lang::Thread recv_thread(&recv);
+	    recv_thread.start();
+	    
+	    
 	    int count=0;
 	    while(true){
+		try{
     		    av::Packet packet;
 		    if(pis.readPacket(packet)<0){
 		        cout << "Fehler beim lesen des Packet"<<endl;
 		        break;
 		    }
 		    ++count;
-		    if(count%10000==0)
+//		    if(count%10000==0)
 		        cout << "FrameSended:"<<count<<endl;
 		    if(packet.data==NULL)
 		        break;
-		try{
 		    oos.writeObject(packet);
+//		    ois.readObject(packet);
 		}catch(...){cout << "Fehler"<<endl;break;}
 	    }
 	}

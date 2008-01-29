@@ -4,9 +4,8 @@
 using namespace org::esb::io;
 
 ObjectOutputStream::ObjectOutputStream(OutputStream * out){
-//    BufferedOutputStream bos=new BufferedOutputStream(out, 32000);
-    _os=new BufferedOutputStream(out, 32000);
-//    _os=out;
+//    _os=new BufferedOutputStream(out, 32000);
+    _os=out;
 }
 
 	void ObjectOutputStream::write(char  buffer){}

@@ -8,6 +8,7 @@ extern "C" {
 //#include <boost/archive/text_iarchive.hpp>
 //#include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
+#include <boost/shared_ptr.hpp>
 //#include <boost/serialization/split_member.hpp>
 //using namespace boost;
 namespace org{
@@ -29,6 +30,7 @@ namespace org{
 		    bool isKeyFrame();
         	    void * getPriv();
         	    int64_t getPosition();
+//        	    boost::shared_ptr<unsigned char*> data;
     		private:
         	    bool isCopy;
         	    friend class boost::serialization::access;
@@ -40,8 +42,10 @@ namespace org{
 		                ar & size;
 				if(data==NULL){
 				    data=new uint8_t[size];
+				    memset(data,0,size);
 				    isCopy=true;
 				}
+				//boost::serialization::make_binary_object(data,size);
 				ar & boost::serialization::make_binary_object(data,size);
 		                ar & pts;
 		                ar & dts;
