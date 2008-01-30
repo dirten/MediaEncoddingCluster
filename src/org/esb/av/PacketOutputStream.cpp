@@ -1,16 +1,27 @@
 #include "PacketOutputStream.h"
 #include "org/esb/io/BufferedOutputStream.h"
+#include "org/esb/av/FormatOutputStream.h"
 #include "Packet.h"
+#include "introspec.h"
 
 using namespace org::esb::av;
 using namespace org::esb::io;
 
 PacketOutputStream::PacketOutputStream(OutputStream * os){
+
+    if(instanceOf(*os, FormatOutputStream)){
+	_fmtCtx=((FormatOutputStream*)os)->_fmtCtx;
+    }else{
 	_target=new BufferedOutputStream(os,32000);
+    }
 }
 
 PacketOutputStream::~PacketOutputStream(){
 	delete _target;
+}
+
+void PacketOutputStream::writePacket(Packet & packet){
+    int result=av_write_frame(_fmtCtx,&packet);    
 }
 
 void PacketOutputStream::writePacket(Packet * packet){

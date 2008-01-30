@@ -12,7 +12,7 @@ namespace org{
 	        bool isInitialized=false;
 	        
 	        FormatBaseStream::FormatBaseStream(){
-                initialize();
+            	    initialize();
 	        }
 	        
 	        void FormatBaseStream::initialize(){
