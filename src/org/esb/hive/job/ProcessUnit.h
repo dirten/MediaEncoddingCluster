@@ -30,8 +30,8 @@ class ProcessUnit{
 	    	    void serialize(Archive & ar, const unsigned int version){
 	    		ar & _input_packets;
 	    		ar & _output_packets;
-	    		ar & _input_codec;
-	    		ar & _output_codec;
+//	    		ar & _input_codec;
+//	    		ar & _output_codec;
 	    	    }
 	private:
 };

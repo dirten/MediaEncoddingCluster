@@ -23,7 +23,7 @@ class DataHandler: public ProtocolCommand{
 	ClientHandler* _handler;
 
     public:
-		DataHandler(InputStream * is, OutputStream * os){
+	    DataHandler(InputStream * is, OutputStream * os){
 	    _is=is;
 	    _os=os;
 	    _pos=new PacketOutputStream(_os);
@@ -48,8 +48,6 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,"get frame")==0){
-	    	ProcessUnit * unit=_handler->getProcessUnit();
-	    	_oos->writeObject(unit);
 	    }else
 	    if(strcmp(command,"put frame")==0){
 			string t="getting frame";
@@ -60,6 +58,8 @@ class DataHandler: public ProtocolCommand{
 	    if(strcmp(command,"get outputcodec")==0){
 	    }else
 	    if(strcmp(command,"get process_unit")==0){
+	    	ProcessUnit * unit=_handler->getProcessUnit();
+	    	_oos->writeObject(*unit);
 	    }else
 	    if(strcmp(command,"put process_unit")==0){
 	    }

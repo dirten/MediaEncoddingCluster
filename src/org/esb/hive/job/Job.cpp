@@ -53,12 +53,16 @@ void Job::addJobDetails(JobDetail & detail){
 ProcessUnit * Job::getNextProcessUnit(){
     {
 	_unit = new ProcessUnit();
+	/**
+	* @TODO Path entries must come from the Configuration
+	*/
 	File file("/tmp/hive.db");
 	Connection con(file);
 	Statement stmt=con.createStatement();
 	string sql="select * from packets where frame_group=";
 	sql+=Job::_frame_group;
         cout << sql.c_str()<<endl;
+
         stmt.executeQuery(sql.c_str(), (void *)process);
         Job::_frame_group++;
         return _unit;
