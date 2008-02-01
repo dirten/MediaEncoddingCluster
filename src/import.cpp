@@ -128,21 +128,24 @@ int main(int argc, char * argv[]){
     int count=0, frame_group=0;
 //	ProgressBar pBar;
 //	pBar.setMaximum(394000);
-	progress_display show_progress( 394000);
+	progress_display show_progress(394000);
 
 //    const test_serial ts(1,2,1);
     
 //    bos << ts;
 
-    while(true&&count < 1000){
+    while(true/*&&count < 1000*/){
 
-        Packet packet=pis.readPacket();
+        Packet packet;
+        pis.readPacket(packet);
+	/*
 	char filename[100];
 	sprintf(filename,"/tmp/hive/data.%d",count);
 	ofstream ofs(filename,ios::binary);
 	boost::archive::text_oarchive bos(ofs);
 //	const Packet packet2;
 	bos << (const Packet)packet;
+	*/
         if(packet.data==NULL)break;
         
         ++count;
@@ -169,7 +172,7 @@ int main(int argc, char * argv[]){
         sqlite3_bind_int( pStmt, field++, packet.duration);
         sqlite3_bind_int( pStmt, field++, packet.pos);
         sqlite3_bind_int( pStmt, field++, packet.size);
-//        sqlite3_bind_blob( pStmt, field++, (char*)packet.data,packet.size, SQLITE_STATIC );
+        sqlite3_bind_blob( pStmt, field++, (char*)packet.data,packet.size, SQLITE_STATIC );
         int rc=sqlite3_step(pStmt);
 
         rc = sqlite3_reset(pStmt);

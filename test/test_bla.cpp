@@ -8,7 +8,8 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/CodecOutputStream.h"
 #include "org/esb/av/CodecInputStream.h"
-
+#include "org/esb/av/AVInputStream.h"
+#include <avcodec.h>
 
 using namespace std;
 using namespace org::esb::io;
@@ -26,11 +27,32 @@ int main(){
     FormatInputStream fis(&file_in);
     PacketInputStream pis(&fis);
 
-    FormatOutputStream fos(&file_out);
-    PacketOutputStream pos(&fos);
+
+
+    AVFormatContext * c=fis.getFormatContext();
+
+
+    AVInputStream *avis=fis.getAVStream(1);
+    AVCodecContext * ctx=avis->getCodec();
+//    avcodec_open(c->streams[0]->codec);
+//    cout << "Codec:"<<c->streams[1]->codec->codec_id<<endl;
+
+
+    cout << "Codec:"<<av_q2d(avis->r_frame_rate)<<endl;
+    cout << "Codec:"<<c->duration<<endl;
+    cout << "Codec:"<<c->file_size<<endl;
+    cout << "Codec:"<<c->bit_rate<<endl;
+    cout << "Codec:"<<ctx->bit_rate<<endl;
+    
+
+
+    
+
+//    FormatOutputStream fos(&file_out);
+//    PacketOutputStream pos(&fos);
     
     int count=0;
-
+/*
     while(true&&count < 200000){
 	Packet packet;
 
@@ -40,8 +62,8 @@ int main(){
 	if(++count%10000==0)
 	    cout << "Packets:"<<count<<endl;
     }
-
-    fis.close();
-    fos.close();
+*/
+//    fis.close();
+//    fos.close();
 }
 

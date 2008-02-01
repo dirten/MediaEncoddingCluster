@@ -33,8 +33,8 @@ PacketInputStream::PacketInputStream(InputStream * is){
 
 PacketInputStream::~PacketInputStream(){
     if(_readFrom==1){
-        if(_packet.data!=NULL)
-	    av_free_packet(&_packet);
+//        if(_packet.data!=NULL)
+//	    av_free_packet(&_packet);
     }
 }
 

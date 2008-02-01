@@ -6,6 +6,7 @@ extern "C" {
 }
 
 #include <iostream>
+#include <boost/cast.hpp>
 using namespace std;
 
 using namespace org::esb::io;
@@ -41,6 +42,11 @@ namespace org {
             InputStream * FormatInputStream::getStream(int streamIndex){
                 selectedStream=streamIndex;
                 return this;
+            }
+
+            AVInputStream * FormatInputStream::getAVStream(int streamIndex){
+		AVInputStream * str=(AVInputStream*)formatCtx->streams[streamIndex];
+                return str;
             }
 
 	    int FormatInputStream::available(bool withBlocking){

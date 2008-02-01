@@ -1,13 +1,18 @@
 #ifndef ORG_ESB_AV_FORMATINPUTSTREAM_H
 #define ORG_ESB_AV_FORMATINPUTSTREAM_H
 #include "FormatBaseStream.h"
-//#include "AVInputStream.h"
+#include "AVInputStream.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/File.h"
+
 #include <vector>
+
 extern "C" {
 #include "avformat.h"
 }
+
+
+//extern "C" AVStream;
 using namespace org::esb::io;
 namespace org{
     namespace esb{
@@ -23,7 +28,8 @@ namespace org{
 		            int read(vector<unsigned char>&buffer);
 		            int read();
 		            int getStreamCount();
-        		    InputStream * getStream(int sNumber);
+        		    __attribute__((deprecated))InputStream * getStream(int sNumber);
+        		    AVInputStream * getAVStream(int sNumber);
 	        	    void close();
                 	    int selectedStream;
 		        private:
