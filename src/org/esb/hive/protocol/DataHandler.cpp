@@ -59,6 +59,8 @@ class DataHandler: public ProtocolCommand{
 	    }else
 	    if(strcmp(command,"get process_unit")==0){
 	    	ProcessUnit * unit=_handler->getProcessUnit();
+	    	unit->_input_packets.push_back(new Packet());
+	    	unit->_output_packets.push_back(new Packet());
 	    	_oos->writeObject(*unit);
 	    }else
 	    if(strcmp(command,"put process_unit")==0){
