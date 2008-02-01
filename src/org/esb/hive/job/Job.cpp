@@ -4,6 +4,8 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/io/File.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
 #include <vector>
 #include <iostream>
 #include <list>
@@ -12,6 +14,16 @@ using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 using namespace org::esb::io;
+
+int Job::_frame_group=0;
+ProcessUnit*Job::_unit=0;
+int Job::process(void *NotUsed, int argc, char **argv, char **azColName){
+    
+
+
+    return 0;
+}
+
 Job::Job(){
 
 }
@@ -36,8 +48,19 @@ void Job::addJobDetails(JobDetail & detail){
         list<JobDetail*>::iterator i;
         _detailList.push_back(&detail);
         cout << "JobDetail with ID added:"<<detail.getId()<<endl;
-
 }
 
-
-
+ProcessUnit * Job::getNextProcessUnit(){
+    {
+	_unit = new ProcessUnit();
+	File file("/tmp/hive.db");
+	Connection con(file);
+	Statement stmt=con.createStatement();
+	string sql="select * from packets where frame_group=";
+	sql+=Job::_frame_group;
+        cout << sql.c_str()<<endl;
+        stmt.executeQuery(sql.c_str(), (void *)process);
+        Job::_frame_group++;
+        return _unit;
+    }
+}

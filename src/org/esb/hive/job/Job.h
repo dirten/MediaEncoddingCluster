@@ -7,6 +7,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "JobDetail.h"
+#include "ProcessUnit.h"
 #include <vector>
 
 using namespace std;
@@ -31,6 +32,9 @@ class Job{
 		int getId();
 		void setId(int id);
 		void addJobDetails(JobDetail & detail);
+		
+		
+		ProcessUnit * getNextProcessUnit();
 	private:
 		File * _source;
 		File * _target;
@@ -38,6 +42,9 @@ class Job{
 		int _completeTime;
 		int _id;
 		vector<JobDetail*>_detailList;
+		static int process(void *NotUsed, int argc, char **argv, char **azColName);
+		static int _frame_group;
+		static ProcessUnit * _unit;
 };	
 }}}}
 #endif

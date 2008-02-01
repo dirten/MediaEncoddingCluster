@@ -13,7 +13,8 @@ ClientHandler::ClientHandler(){
 ProcessUnit * ClientHandler::getProcessUnit(){
 	Job * job=_handler->getJob();
 	if(job !=NULL){
-		return unit;
+	    unit=job->getNextProcessUnit();
+	    return unit;
 	}
 	return NULL;
 }
