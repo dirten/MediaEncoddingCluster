@@ -23,26 +23,7 @@ using namespace org::esb::av;
 using namespace boost;
 
 
-class test_serial{
-    private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	    void serialize(Archive & ar, const unsigned int version)
-	        {
-	    	    ar & degrees;
-	            ar & minutes;
-	            ar & seconds;
-	        }
-        int degrees;
-	int minutes;
-	float seconds;
-    public:
-	test_serial(){};
-	test_serial(int d, int m, float s) :
-            degrees(d), minutes(m), seconds(s)
-            {}    
 
-};
 int main(int argc, char * argv[]){
 	cout << LIBAVCODEC_IDENT <<endl;
 	if(argc!=3){

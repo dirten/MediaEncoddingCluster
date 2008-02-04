@@ -2,25 +2,30 @@
 #define PREPAREDSTATEMENT_H_
 #include <string>
 //#include "ResultSet.h"
-#include <sqlite3.h>
+#include "sqlite3x.hpp"
 using namespace std;
+using namespace sqlite3x;
 namespace org{
 	namespace esb{
 		namespace sql{
+			class Connection;
 			class ResultSet;
-			class PreparedStatement{
+			class PreparedStatement:public sqlite3_command {
 				public:
-					void setBlob(int pos, void*, long length);
+				    PreparedStatement(Connection & db, const char * sql);
 					void setDouble(int pos, double val);
 					void setInt(int pos, int val);
 					void setNull(int pos);
-					void setClob(int pos, void* val, long length);
+					void setBlob(int pos, void*, int length);
+					void setClob(int pos, void* val, int length);
 					void setString(int pos, string val);
 					bool execute();
 					ResultSet & executeQuery();
 					int executeUpdate();
 				private:
 					sqlite3_stmt *_pStmt;
+//					void bind(int pos, void* val);
+
 			};
 		}
 	}

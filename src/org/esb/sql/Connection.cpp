@@ -20,6 +20,10 @@ Statement & Connection::createStatement(const char * sql){
 	Statement *stmt=new Statement(*this, sql);
 	return *stmt;
 }
+PreparedStatement & Connection::prepareStatement(const char * sql){
+	PreparedStatement *stmt=new PreparedStatement(*this, sql);
+	return *stmt;
+}
 
 Statement & Connection::createStatement(){}
 

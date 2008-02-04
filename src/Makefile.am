@@ -13,11 +13,11 @@ bin_PROGRAMS = hivelsnr import job bla
 #bin_PROGRAMS = zpipe
 
 
-import_SOURCES = Importer.cpp
+#import_SOURCES = Importer.cpp
 job_SOURCES = job.cpp
 bla_SOURCES = bla.cpp
 hivelsnr_SOURCES = Listener.cpp
-import_SOURCES = import.cpp 
+import_SOURCES = import2.cpp 
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
 #zpipe_SOURCES = zpipe.c
