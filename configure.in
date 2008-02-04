@@ -25,6 +25,14 @@ AC_ARG_WITH(boost, [  --with-boost=path   where boost is installed. (Standard is
 CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
 LDFLAGS="$LDFLAGS $BOOST_LD"
 
+AC_ARG_WITH(litesql, [  --with-litesql=path   where litesql is installed. (Standard is "/usr/local")],
+	    LITESQL_CFLAGS="-I$withval/include"
+	    LITESQL_LD="-L$withval/lib"
+	    LITESQL_PATH="$withval")
+
+CPPFLAGS="$CPPFLAGS $LITESQL_CFLAGS"
+LDFLAGS="$LDFLAGS $LITESQL_LD"
+
 
 AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is "/usr/local")],
 	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-2.0"
@@ -63,7 +71,7 @@ http://ffmpeg.mplayerhq.hu
 
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lz -lpthread -lboost_serialization -lboost_signals -lsqlite3 "
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lz -lpthread -lboost_serialization -lboost_signals -lsqlite3 -llitesql"
 
 AC_OUTPUT(
     Makefile 

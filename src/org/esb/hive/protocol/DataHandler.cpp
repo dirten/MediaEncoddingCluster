@@ -4,6 +4,7 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/CodecOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "../job/Job.h"
 #include "../job/JobHandler.h"
@@ -14,12 +15,17 @@ using namespace org::esb::hive::job;
 using namespace org::esb::av;
 using namespace org::esb;
 
+
+#define GET_UNIT  "get process_unit"
+#define PUT_UNIT  "put process_unit"
+
 class DataHandler: public ProtocolCommand{
     private:
 	InputStream * _is;
 	OutputStream * _os;
 	PacketOutputStream * _pos;
 	io::ObjectOutputStream * _oos;
+	io::ObjectInputStream * _ois;
 	ClientHandler* _handler;
 
     public:
@@ -28,16 +34,14 @@ class DataHandler: public ProtocolCommand{
 	    _os=os;
 	    _pos=new PacketOutputStream(_os);
 	    _oos=new io::ObjectOutputStream(_os);
+	    _ois=new io::ObjectInputStream(_is);
 	    _handler=new ClientHandler();
 	}
 
 	int isResponsible(char * command){
-	    if(strcmp(command,"get frame")==0||
-	       strcmp(command,"put frame")==0||
-	       strcmp(command,"get inputcodec")==0||
-	       strcmp(command,"get outputcodec")==0||
-	       strcmp(command,"get process_unit")==0||
-	       strcmp(command,"put process_unit")==0){
+	    if(
+	       strcmp(command,GET_UNIT)==0||
+	       strcmp(command,PUT_UNIT)==0){
 		    return CMD_PROCESS;
 	    }else
 	    if(strcmp(command,"help")==0){
@@ -47,23 +51,19 @@ class DataHandler: public ProtocolCommand{
 	}
 
 	void process(char * command){
-	    if(strcmp(command,"get frame")==0){
+	    if(strcmp(command,GET_UNIT)==0){
+		ProcessUnit un;
+		if(!_handler->getProcessUnit(un)){
+		    cout << "nothing to do, sorry!";
+		}
+	    	_oos->writeObject(un);
 	    }else
-	    if(strcmp(command,"put frame")==0){
-			string t="getting frame";
-			_os->write((char*)t.c_str(), t.size());
-	    }else
-	    if(strcmp(command,"get inputcodec")==0){
-	    }else
-	    if(strcmp(command,"get outputcodec")==0){
-	    }else
-	    if(strcmp(command,"get process_unit")==0){
-	    	ProcessUnit * unit=_handler->getProcessUnit();
-	    	unit->_input_packets.push_back(new Packet());
-	    	unit->_output_packets.push_back(new Packet());
-	    	_oos->writeObject(*unit);
-	    }else
-	    if(strcmp(command,"put process_unit")==0){
+	    if(strcmp(command,PUT_UNIT)==0){
+		ProcessUnit un;
+	    	_ois->readObject(un);
+		if(!_handler->putProcessUnit(un)){
+		    cout << "error while putProcessUnit!";
+		}
 	    }
 	}
 	void printHelp(){

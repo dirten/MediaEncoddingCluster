@@ -21,12 +21,12 @@ namespace org{
 						JobWatcher(JobHandler & handler);
 						void run();
 					private:
-//						static int jobs(void *NotUsed, int argc, char **argv, char **azColName);
+						static int jobs(void *NotUsed, int argc, char **argv, char **azColName);
 						bool _isStopSignal;
 						Connection * _con;
 						Statement  *_stmt;
 						//int prev_job_id;
-						//Job * job;
+						static Job * job;
 						
 				};
 			}

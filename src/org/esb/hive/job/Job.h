@@ -8,6 +8,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "JobDetail.h"
 #include "ProcessUnit.h"
+#include <queue>
 #include <vector>
 
 using namespace std;
@@ -32,17 +33,17 @@ class Job{
 		int getId();
 		void setId(int id);
 		void addJobDetails(JobDetail & detail);
-		
-		
-		ProcessUnit * getNextProcessUnit();
+		bool getNextProcessUnit(ProcessUnit & unit);
+		static queue<ProcessUnit*> _unit_queue;
+		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:
+		friend class JobProcess;
 		File * _source;
 		File * _target;
 		int _startTime;
 		int _completeTime;
 		int _id;
 		vector<JobDetail*>_detailList;
-		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 		static int _frame_group;
 		static ProcessUnit * _unit;
 };	

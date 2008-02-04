@@ -9,7 +9,7 @@ namespace sql{
 class ResultSet{
 	public:
 		ResultSet();
-		void next();
+		bool next();
 
 };
 }}}

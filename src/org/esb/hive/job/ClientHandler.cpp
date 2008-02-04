@@ -10,19 +10,18 @@ ClientHandler::ClientHandler(){
 	_handler=JobHandler::getInstance();
 }
 
-ProcessUnit * ClientHandler::getProcessUnit(){
+bool ClientHandler::getProcessUnit(ProcessUnit & unit){
 	Job * job=_handler->getJob();
 	if(job !=NULL){
-	    unit=job->getNextProcessUnit();
-	    return unit;
+	    job->getNextProcessUnit(unit);
+	    return true;
 	}
-	return NULL;
+	return false;
 }
 
-
-void ClientHandler::setPacketList(vector<void*>list){
-
-
+bool ClientHandler::putProcessUnit(ProcessUnit & unit){
+    return true;
 }
+
 
 

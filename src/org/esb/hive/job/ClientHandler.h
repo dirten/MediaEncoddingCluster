@@ -9,8 +9,8 @@ namespace job{
 class ClientHandler{
     public:
 	ClientHandler();
-	ProcessUnit * getProcessUnit();
-	void setPacketList(vector<void*>);
+	bool getProcessUnit(ProcessUnit & unit);
+	bool putProcessUnit(ProcessUnit & unit);
     private:
 		ProcessUnit *  unit;
 		JobHandler * _handler;

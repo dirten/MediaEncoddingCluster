@@ -28,7 +28,8 @@ class ObjectOutputStream:public OutputStream{
 	    archive << object;
 	    std::string _outbound_data = archive_stream.str();
 	    int length=_outbound_data.length();
-	    _os->write((char*)&length,sizeof(int64_t));
+	    cout << "WriteLength"<<length<<endl;
+	    _os->write((char*)&length,sizeof(int));
 	    _os->write((char*)_outbound_data.c_str(),_outbound_data.length());
 	}
 	

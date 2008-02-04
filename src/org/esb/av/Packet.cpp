@@ -9,6 +9,7 @@ using namespace org::esb::av;
 Packet::Packet(){
 	isCopy=false;
 	data=NULL;
+	size=0;
 //	av_init_packet(this);
 }
 

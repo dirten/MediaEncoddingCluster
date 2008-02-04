@@ -45,8 +45,8 @@ namespace org {
             }
 
             AVInputStream * FormatInputStream::getAVStream(int streamIndex){
-		AVInputStream * str=(AVInputStream*)formatCtx->streams[streamIndex];
-                return str;
+//		AVInputStream * str=(AVInputStream*)formatCtx->streams[streamIndex];
+                return (AVInputStream*)formatCtx->streams[streamIndex];
             }
 
 	    int FormatInputStream::available(bool withBlocking){

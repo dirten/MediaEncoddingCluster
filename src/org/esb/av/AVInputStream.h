@@ -11,7 +11,9 @@ namespace org{
 	    class AVInputStream:public AVStream{
 		public:
 		    Codec * getCodec();
-	    
+		    void setFormatContext(AVFormatContext * ctx);
+		private:
+		    AVFormatContext *_formatContext;
 	    };
 	}
     }

@@ -11,11 +11,12 @@ using namespace org::esb::lang;
 using namespace org::esb::hive::job;
 JobHandler * _handler=NULL;
 int prev_job_id=0;
-Job * job=0;
+Job * JobWatcher::job=0;
 
 //vector<Job*> _jobList;
 
-int jobs(void *NotUsed, int argc, char **argv, char **azColName){
+int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
+//	Job * job;
 	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
 		job=new Job();
 		job->setId(atoi(argv[0]));
@@ -40,7 +41,10 @@ int jobs(void *NotUsed, int argc, char **argv, char **azColName){
 JobWatcher::JobWatcher(JobHandler & handler){
 	_handler=&handler;
 	_isStopSignal=false;
-	File file("./test.db2");
+	/**
+	* @TODO Path entries must come from the Configuration
+	*/
+	File file("/tmp/hive.db");
 	_con=new Connection(file);
 	_stmt=&_con->createStatement();
 }

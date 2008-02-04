@@ -7,3 +7,7 @@ ResultSet::ResultSet(){
 
 
 }
+bool ResultSet::next(){
+
+
+}
