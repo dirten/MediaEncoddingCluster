@@ -7,7 +7,7 @@
 #include <iomanip>
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
-
+/*
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::av;
@@ -99,4 +99,8 @@ int main(){
 	delete file;
 }
 
+
+*/
+
+int main(){}
 

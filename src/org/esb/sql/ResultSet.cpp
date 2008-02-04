@@ -3,7 +3,7 @@
 
 
 using namespace org::esb::sql;
-ResultSet::ResultSet(){
+ResultSet::ResultSet(Statement & stmt):sqlite3_reader(stmt.executereader()){
 
 
 }

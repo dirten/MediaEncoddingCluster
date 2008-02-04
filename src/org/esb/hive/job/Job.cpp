@@ -30,7 +30,9 @@ class JobProcess:public Runnable{
 	    _frame_group=0;
 	}
 	void run(){
+	    /*
 	    File file("/tmp/hive.db");
+
 	    Connection con(file);
 	    Statement stmt=con.createStatement();
 	    string sql="select * from packets where frame_group=?";
@@ -44,6 +46,7 @@ class JobProcess:public Runnable{
 		}
 		Thread::sleep(500);
 	    }
+	    */
 	}
     private:
 	int _frame_group;

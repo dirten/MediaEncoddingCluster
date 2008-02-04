@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdexcept>
 #include "org/esb/sql/sqlite3x.hpp"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/ResultSet.h"
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::net;
@@ -16,7 +18,17 @@ using namespace sqlite3x;
 
 
 int main(){
-    
+
+
+    sql::Connection my_con("/tmp/hive.db");
+    sql::Statement *stmt=&my_con.createStatement("select data_size,data from packets limit 100;");
+    sql::ResultSet *rs=&stmt->executeQuery();
+
+    while(rs->read()) {
+	cout << rs->getcolname(0) << ": " << rs->getint(0)<<"---";
+	cout << rs->getcolname(1) << ": " << rs->getblob(1).length()<<": "<<strlen(rs->getblob(1).c_str()) << endl;
+    }
+/*    
     sqlite3_connection con("/tmp/hive.db");
     sqlite3_command cmd(con, "select data_size,data from packets limit 100;");
     sqlite3_reader reader = cmd.executereader();
@@ -24,7 +36,7 @@ int main(){
 	cout << reader.getcolname(0) << ": " << reader.getint(0)<<"---";
 	cout << reader.getcolname(1) << ": " << reader.getblob(1).length()<<": "<<strlen(reader.getblob(1).c_str()) << endl;
     }
-
+*/
 
 /*
     File outfile("/tmp/test.file");

@@ -1,12 +1,13 @@
 #ifndef PREPAREDSTATEMENT_H_
 #define PREPAREDSTATEMENT_H_
 #include <string>
-#include "ResultSet.h"
+//#include "ResultSet.h"
 #include <sqlite3.h>
 using namespace std;
 namespace org{
 	namespace esb{
 		namespace sql{
+			class ResultSet;
 			class PreparedStatement{
 				public:
 					void setBlob(int pos, void*, long length);

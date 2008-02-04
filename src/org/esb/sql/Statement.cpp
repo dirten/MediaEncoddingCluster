@@ -1,23 +1,16 @@
 #include "Statement.h"
-#include <sqlite3.h>
+#include "ResultSet.h"
+//#include <sqlite3.h>
 
 using namespace org::esb::sql;
 
 
-Statement::Statement(sqlite3 * db){
-	_db=db;
+Statement::Statement(Connection & db, const char * sql):sqlite3_command((sqlite3_connection&)db, sql){}
 
-}
+ResultSet & Statement::executeQuery(string sql, void * callback){}
 
-ResultSet & Statement::executeQuery(string sql, void * callback){
-	char *zErrMsg;
-	int rc = sqlite3_exec(_db, sql.c_str(), (int (*)(void*, int, char**, char**))callback, 0, &zErrMsg);
-}
+ResultSet & Statement::executeQuery(){return *new ResultSet(*this);}
 
-void Statement::execute(string sql){
-	char *zErrMsg;
-	int rc = sqlite3_exec(_db, sql.c_str(), NULL, 0, &zErrMsg);
-}
+void Statement::execute(string sql){}
 
-void Statement::close(){
-}
+void Statement::close(){}
