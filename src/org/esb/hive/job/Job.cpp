@@ -6,6 +6,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 #include "org/esb/lang/Runnable.h"
 #include "org/esb/lang/Thread.h"
 #include <vector>
@@ -14,53 +15,51 @@
 
 using namespace std;
 using namespace org::esb::hive::job;
+using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace org::esb::io;
 
-int Job::_frame_group=0;
-ProcessUnit*Job::_unit=0;
+//int Job::_frame_group=0;
+//ProcessUnit*Job::_unit=0;
 
-queue<ProcessUnit*> Job::_unit_queue;
+//queue<ProcessUnit*> Job::_unit_queue;
 
 
 
 class JobProcess:public Runnable{
     public:
-	JobProcess(){
+	JobProcess(Job*job){
+	    _job=job;
 	    _frame_group=0;
 	}
 	void run(){
-	    /*
 	    File file("/tmp/hive.db");
-
 	    Connection con(file);
-	    Statement stmt=con.createStatement();
-	    string sql="select * from packets where frame_group=?";
-    	    cout << sql.c_str()<<endl;
+	    Statement stmt=con.createStatement("select * from packets where frame_group=?");
 	    while(true){
-		if(Job::_unit_queue.size()<100){
+		if(_job->_unit_queue.size()<100){
     		    for(int a =0;a<20;a++){
-        		stmt.executeQuery(sql.c_str(), (void *)Job::process);
+    			stmt.bind(1,_frame_group);
+        		ResultSet rs=stmt.executeQuery();
+        		ProcessUnit * u=new ProcessUnit();
+        		while(rs.next()){
+        		
+        		}
+        		_job->_unit_queue.push(u);
         		_frame_group++;
 		    }
 		}
+		cout << "ProcessCount"<<_job->getId()<<":"<<_job->_unit_queue.size()<<endl;
 		Thread::sleep(500);
-	    }
-	    */
+	    }	    
 	}
     private:
 	int _frame_group;
+	Job*_job;
 };
 
-
-
-int Job::process(void *NotUsed, int argc, char **argv, char **azColName){
-    _unit_queue.push(new ProcessUnit());
-    return 0;
-}
-
 Job::Job(){
-    Thread * runner=new Thread(new JobProcess());
+    Thread * runner=new Thread(new JobProcess(this));
     runner->start();
 }
 
@@ -83,7 +82,7 @@ int Job::getId(){return _id;}
 void Job::addJobDetails(JobDetail & detail){
         list<JobDetail*>::iterator i;
         _detailList.push_back(&detail);
-        cout << "JobDetail with ID added:"<<detail.getId()<<endl;
+//        cout << "JobDetail with ID added:"<<detail.getId()<<endl;
 }
 
 bool Job::getNextProcessUnit(ProcessUnit & unit){

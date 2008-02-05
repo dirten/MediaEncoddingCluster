@@ -13,16 +13,16 @@ namespace esb{
 namespace sql{
 class Connection;
 class ResultSet;
-class Statement:public sqlite3_command  {
+class Statement:public sqlite3_command {
 	public:
-//		Statement();
+//		friend class ResultSet;
 		Statement(Connection & db, const char * sql);
+		Statement(const Statement & st);
 		ResultSet & executeQuery (string sql, void * callback);
-		ResultSet & executeQuery ();
-		void execute(string sql);
+		ResultSet executeQuery ();
+		void execute();
 		void close();
 	private:	
-//		sqlite3 * _db;
 
 };
 }}}

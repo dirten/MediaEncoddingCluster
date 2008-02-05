@@ -12,9 +12,9 @@ JobHandler * JobHandler::_handler=0;
 
 
 JobHandler::JobHandler(){
-	JobWatcher *_watcher=new JobWatcher(*this);
-	Thread *runner=new Thread(_watcher);
-	runner->start();
+//	JobWatcher *_watcher=new JobWatcher(*this);
+//	Thread *runner=new Thread(_watcher);
+//	runner->start();
 	
 }
 

@@ -10,6 +10,7 @@ namespace sql{
 class ResultSet:public sqlite3_reader{
 	public:
 		ResultSet(Statement & stmt);
+		ResultSet(const ResultSet & rs);
 		bool next();
 
 };

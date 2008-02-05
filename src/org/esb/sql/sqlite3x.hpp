@@ -30,7 +30,7 @@
 #include <boost/utility.hpp>
 #include <stdexcept>
 namespace sqlite3x {
-	class sqlite3_connection : boost::noncopyable {
+	class sqlite3_connection /*: boost::noncopyable */{
 	private:
 		friend class sqlite3_command;
 		friend class database_error;
@@ -86,7 +86,7 @@ namespace sqlite3x {
 		std::string executeblob(const std::wstring &sql);
 	};
 
-	class sqlite3_transaction : boost::noncopyable {
+	class sqlite3_transaction /*: boost::noncopyable*/ {
 	private:
 		sqlite3_connection &con;
 		bool intrans;
@@ -102,10 +102,10 @@ namespace sqlite3x {
 
 		class sqlite3_reader;
 
-	class sqlite3_command : boost::noncopyable {
+	class sqlite3_command /*:public boost::noncopyable*/ {
 	private:
-		friend class sqlite3_reader;
-
+		friend class sqlite3_reader;		
+		
 		sqlite3_connection &con;
 		struct sqlite3_stmt *stmt;
 		unsigned int refs;

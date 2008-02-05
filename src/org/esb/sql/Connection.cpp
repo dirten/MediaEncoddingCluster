@@ -7,18 +7,20 @@ using namespace org::esb::io;
 
 
 Connection::Connection(char*filename):sqlite3_connection(filename){
-    printf("Opening Database Connection\n");
-//    open(filename);
+//    printf("Opening Database Connection\n");
 }
 
-Connection::Connection(File & databaseFile){
-    printf("Opening Database Connection\n");
-    open(databaseFile.getPath());
+sqlite3_transaction Connection::getTransaction(){
+    return sqlite3_transaction(*this);
 }
 
-Statement & Connection::createStatement(const char * sql){
-	Statement *stmt=new Statement(*this, sql);
-	return *stmt;
+Connection::Connection(File & databaseFile):sqlite3_connection(databaseFile.getPath()){
+//    printf("Opening Database Connection\n");
+}
+
+Statement Connection::createStatement(const char * sql){
+//	_tmpStatement=Statement(*this, sql);
+	return Statement(*this, sql);
 }
 PreparedStatement & Connection::prepareStatement(const char * sql){
 	PreparedStatement *stmt=new PreparedStatement(*this, sql);
@@ -27,6 +29,7 @@ PreparedStatement & Connection::prepareStatement(const char * sql){
 
 Statement & Connection::createStatement(){}
 
+
 void Connection::close(){
-//        sqlite3_close(_db);	
+    sqlite3_connection::close();	
 }

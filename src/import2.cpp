@@ -17,10 +17,17 @@
 #include <boost/archive/polymorphic_binary_iarchive.hpp> 
 #include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
+
+
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
 using namespace org::esb::io;
+using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace boost;
+using namespace sqlite3x;
 
 
 
@@ -43,129 +50,80 @@ int main(int argc, char * argv[]){
 		cout << "Source File not found"<<endl;
 	}
 
-    sqlite3_stmt *pStmt,*pStmt2;
-    char *zErrMsg = 0;
-	sqlite3 * db=getDatabase(databaseFile);
+    
 
-    string sql="insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)";
+	int fileid=0,count=0, frame_group=0;
 
-
-	string sqlFile="INSERT INTO files(filename) values ( '"; 
-		sqlFile+=inputFile.getPath();
-		sqlFile+="')";
-	
-    sqlite3_exec(db,sqlFile.c_str(),NULL,NULL,NULL);
-    int fileid =sqlite3_last_insert_rowid(db);
+	FormatInputStream fis(&inputFile);
+	PacketInputStream pis(&fis);
 
 
-    FormatInputStream fis(&inputFile);
-    AVFormatContext * ctx=fis.getFormatContext();
-	int streams[10];
-	string sqlStreams="insert into streams (fileid,stream_index, stream_type,codec,framerate,start_time,duration,time_base, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    sqlite3_prepare( db, sqlStreams.c_str(), sqlStreams.size(), &pStmt,  NULL );
-//           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
-	for(int a =0;a<ctx->nb_streams;a++){
-		char *zErrMsg = 0;
-		int field=1;
-	    sqlite3_bind_int( pStmt, field++, fileid);
-	    sqlite3_bind_int( pStmt, field++, a);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->codec_type);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->codec_id);
-	    sqlite3_bind_int( pStmt, field++, av_q2d(ctx->streams[a]->r_frame_rate));
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->start_time);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->duration);
-	    sqlite3_bind_int( pStmt, field++, av_q2d(ctx->streams[a]->time_base));
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->width);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->height);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->gop_size);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->pix_fmt);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->rate_emu);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->sample_rate);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->channels);
-	    sqlite3_bind_int( pStmt, field++, ctx->streams[a]->codec->sample_fmt);
-        int rc=sqlite3_step(pStmt);
-        sqlite3_reset(pStmt);
-//        sqlite3_clear_bindings(pStmt);
+	Connection con(argv[1]);
+	sqlite3_transaction trans=con.getTransaction();
 
-		if( rc!=SQLITE_OK ){
-//           fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db));
-        }
-    	int streamid =sqlite3_last_insert_rowid(db);
-    	
-		cout << "LastInsertId"<<streamid<<endl;
-    	streams[a]=streamid;
+	con.executenonquery(string("INSERT INTO files(filename) values ( '")+inputFile.getPath()+"')");
+	fileid=con.insertid();
 
-    }
-    sqlite3_exec(db,"BEGIN TRANSACTION",NULL,NULL,NULL);
-
-
-	int streamCount=fis.getStreamCount();
-	cout << "StreamCount="<<streamCount<<endl;
-    PacketInputStream pis(&fis);
-//    const Packet  packet;
-    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-
-
-    int count=0, frame_group=0;
-//	ProgressBar pBar;
-//	pBar.setMaximum(394000);
+	AVFormatContext * ctx=fis.getFormatContext();
 	progress_display show_progress(394000);
 
-//    const test_serial ts(1,2,1);
-    
-//    bos << ts;
+	int streams[ctx->nb_streams];
 
-    while(true/*&&count < 1000*/){
+	Statement stmt_str=con.createStatement( "insert into streams (fileid,stream_index, stream_type,codec,framerate,start_time,duration,time_base, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)" );
+	for(int a =0;a<ctx->nb_streams;a++){
+	    int field=1;
+	    stmt_str.bind( field++, fileid);
+	    stmt_str.bind( field++, a);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_type);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_id);
+	    stmt_str.bind( field++, av_q2d(ctx->streams[a]->r_frame_rate));
+	    stmt_str.bind( field++, ctx->streams[a]->start_time);
+	    stmt_str.bind( field++, ctx->streams[a]->duration);
+	    stmt_str.bind( field++, av_q2d(ctx->streams[a]->time_base));
+	    stmt_str.bind( field++, ctx->streams[a]->codec->width);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->height);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->gop_size);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->pix_fmt);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->rate_emu);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->sample_rate);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->channels);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->sample_fmt);
+	    stmt_str.execute();
+    	    int streamid =con.insertid();
+    	    streams[a]=streamid;
+        }
 
-        Packet packet;
+    Packet packet;
+
+    Statement stmt=con.createStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)");
+    while(true){
+
         pis.readPacket(packet);
-	/*
-	char filename[100];
-	sprintf(filename,"/tmp/hive/data.%d",count);
-	ofstream ofs(filename,ios::binary);
-	boost::archive::text_oarchive bos(ofs);
-//	const Packet packet2;
-	bos << (const Packet)packet;
-	*/
+
         if(packet.data==NULL)break;
         
         ++count;
 	++show_progress;
-//	if(++count%1000==0){
-//		cout << count << "Packets in db"<<endl;
-	
-//	}
-//		pBar.setValue(count);
 
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;
-//		cout << "Stream:"<<streams[packet.stream_index]<<endl;
-        sqlite3_bind_int( pStmt, field++, streams[packet.stream_index]);
-        sqlite3_bind_int( pStmt, field++, packet.pts);
-        sqlite3_bind_int( pStmt, field++, packet.dts);
-        sqlite3_bind_int( pStmt, field++, packet.stream_index);
-        sqlite3_bind_int( pStmt, field++, packet.isKeyFrame());
+        stmt.bind( field++, packet.stream_index);
+        stmt.bind( field++, packet.pts);
+        stmt.bind( field++, packet.dts);
+        stmt.bind( field++, packet.stream_index);
+        stmt.bind( field++, packet.isKeyFrame());
 	if(packet.stream_index==0)
-    	    sqlite3_bind_int( pStmt, field++, frame_group);
+    	    stmt.bind( field++, frame_group);
 	else
-    	    sqlite3_bind_null( pStmt, field++);	
-        sqlite3_bind_int( pStmt, field++, packet.flags);
-        sqlite3_bind_int( pStmt, field++, packet.duration);
-        sqlite3_bind_int( pStmt, field++, packet.pos);
-        sqlite3_bind_int( pStmt, field++, packet.size);
-        sqlite3_bind_blob( pStmt, field++, (char*)packet.data,packet.size, SQLITE_STATIC );
-        int rc=sqlite3_step(pStmt);
-
-        rc = sqlite3_reset(pStmt);
-		if( rc!=SQLITE_OK ){
-           fprintf(stderr, "SQL error: %s\n", zErrMsg);
-	   		sqlite3_free(zErrMsg);
-        }
+    	    stmt.bind( field++);	
+        stmt.bind( field++, packet.flags);
+        stmt.bind( field++, packet.duration);
+        stmt.bind( field++, packet.pos);
+        stmt.bind( field++, packet.size);
+        stmt.bind( field++, (const void*)packet.data,packet.size);
+	stmt.execute();
     }
-    sqlite3_exec(db,"commit",NULL,NULL,NULL);
-
-    sqlite3_close(db);
-//    cout << endl;
-//    cout.flush();
-	return 0;
+    trans.commit();
+	
+    	return 0;
 }

@@ -4,79 +4,57 @@
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::lang;
 using namespace org::esb::hive::job;
 JobHandler * _handler=NULL;
-int prev_job_id=0;
-Job * JobWatcher::job=0;
-
-//vector<Job*> _jobList;
-
-int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
-//	Job * job;
-	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
-		job=new Job();
-		job->setId(atoi(argv[0]));
-		File *source=new File(argv[1]);
-		File *target=new File(argv[2]);
-		job->setSourceFile(*source);
-		job->setTargetFile(*target);
-	}
-	JobDetail * detail=new JobDetail();
-	detail->setId(atoi(argv[5]));
-	detail->setSourceStream(atoi(argv[7]));
-	detail->setTargetStream(atoi(argv[8]));
-	job->addJobDetails(*detail);
-	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
-		bool isAdded=_handler->addJob(*job);
-	}
-	prev_job_id=atoi(argv[0]);
-  return 0;
-}
-
 
 JobWatcher::JobWatcher(JobHandler & handler){
 	_handler=&handler;
 	_isStopSignal=false;
-	/**
-	* @TODO Path entries must come from the Configuration
-	*/
-	File file("/tmp/hive.db");
-	_con=new Connection(file);
-	_stmt=&_con->createStatement();
 }
-/*
-int JobWatcher::jobs(void *NotUsed, int argc, char **argv, char **azColName){
-	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
-		job=new Job();
-		job->setId(atoi(argv[0]));
-		File *source=new File(argv[1]);
-		File *target=new File(argv[2]);
-		job->setSourceFile(*source);
-		job->setTargetFile(*target);
-	}
-	JobDetail * detail=new JobDetail();
-	detail->setId(atoi(argv[5]));
-	detail->setSourceStream(atoi(argv[7]));
-	detail->setTargetStream(atoi(argv[8]));
-	job->addJobDetails(*detail);
-	if(atoi(argv[0])>0&&atoi(argv[0])!=prev_job_id){
-		bool isAdded=_handler->addJob(*job);
-	}
-	prev_job_id=atoi(argv[0]);
-  return 0;
 
 
-}
-*/
 void JobWatcher::run(){
 	while(!_isStopSignal){
-			cout << "JobWatcher cycle"<<endl;
-			_stmt->executeQuery("select * from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id", (void *)jobs);
-			Thread::sleep(10000);
+	    cout << "JobWatcher cycle"<<endl;
+	    /**
+	    * @TODO Path entries must come from the Configuration
+	    */
+	    Connection con("/tmp/hive.db");
+	    Statement stmt=con.createStatement("select id,infile,outfile from jobs where complete is null order by id");
+	    Statement stmt_detail=con.createStatement("select id,instream,outstream from job_details where job_id=?");
+	    ResultSet rs=stmt.executeQuery();
+
+	    while(rs.next()){
+		try{
+		    if(_handler->getJob(rs.getint(0))!=NULL)continue;
+		    Job * job=new Job();
+		    job->setId(rs.getint(0));
+		    File *source=new File(rs.getstring(1).c_str());
+		    File *target=new File(rs.getstring(2).c_str());
+		    job->setSourceFile(*source);
+		    job->setTargetFile(*target);
+
+		    stmt_detail.bind(1,rs.getint(0));
+		    ResultSet rs_d=stmt_detail.executeQuery();
+		    while(rs_d.next()){
+			JobDetail * detail=new JobDetail();
+			detail->setId(rs_d.getint(0));
+			detail->setSourceStream(rs_d.getint(1));
+			detail->setTargetStream(rs_d.getint(2));
+			job->addJobDetails(*detail);
+		    }
+		    bool isAdded=_handler->addJob(*job);
+		}catch(exception&ex){
+		    cout << __FILE__<<":"<<__LINE__<<":"<<ex.what()<<endl;
+		}
+	    }
+    	    Thread::sleep(10000);
 	}
 }
 

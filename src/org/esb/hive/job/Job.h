@@ -34,8 +34,8 @@ class Job{
 		void setId(int id);
 		void addJobDetails(JobDetail & detail);
 		bool getNextProcessUnit(ProcessUnit & unit);
-		static queue<ProcessUnit*> _unit_queue;
-		static int process(void *NotUsed, int argc, char **argv, char **azColName);
+		queue<ProcessUnit*> _unit_queue;
+//		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:
 		friend class JobProcess;
 		File * _source;
@@ -44,8 +44,8 @@ class Job{
 		int _completeTime;
 		int _id;
 		vector<JobDetail*>_detailList;
-		static int _frame_group;
-		static ProcessUnit * _unit;
+		int _frame_group;
+//		static ProcessUnit * _unit;
 };	
 }}}}
 #endif

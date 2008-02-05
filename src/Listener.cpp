@@ -3,6 +3,7 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/job/JobWatcher.h"
 #include "Environment.cpp"
 #include <unistd.h>
 #include <stdlib.h>
@@ -29,6 +30,11 @@ setproctitle("%s", "bla");
     	exit(1);
     }
     
+
+    JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
+    Thread *runner=new Thread(_watcher);
+    runner->start();
+
         
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);
@@ -36,13 +42,16 @@ setproctitle("%s", "bla");
 
 
 
-
+    try{
     for(;Socket * clientSocket=server->accept();){
 		if(clientSocket!=NULL){
 	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    	Thread thread(protoServer);
 	    	thread.start();
 	    }
+    }
+    }catch(exception & ex){
+	cout << "Exception in Main:"<<ex.what();
     }
 }
 

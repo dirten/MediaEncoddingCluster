@@ -21,13 +21,26 @@ int main(){
 
 
     sql::Connection my_con("/tmp/hive.db");
-    sql::Statement *stmt=&my_con.createStatement("select data_size,data from packets limit 100;");
-    sql::ResultSet *rs=&stmt->executeQuery();
-
-    while(rs->read()) {
-	cout << rs->getcolname(0) << ": " << rs->getint(0)<<"---";
-	cout << rs->getcolname(1) << ": " << rs->getblob(1).length()<<": "<<strlen(rs->getblob(1).c_str()) << endl;
+    sql::Statement stmt=my_con.createStatement("select data_size,data from packets where frame_group=?;");
+    stmt.bind(1,1);
+{    
+    sql::ResultSet rs=stmt.executeQuery();
+    while(rs.read()) {
+	cout << rs.getcolname(0) << ": " << rs.getint(0)<<"---";
+	cout << rs.getcolname(1) << ": " << rs.getblob(1).length()<<": "<<strlen(rs.getblob(1).c_str()) << endl;
     }
+}    
+    
+    
+    stmt.bind(1,2);
+{
+    sql::ResultSet rs=stmt.executeQuery();
+    cout << "bla"<<endl;
+    while(rs.read()) {
+	cout << rs.getcolname(0) << ": " << rs.getint(0)<<"---";
+	cout << rs.getcolname(1) << ": " << rs.getblob(1).length()<<": "<<strlen(rs.getblob(1).c_str()) << endl;
+    }
+}    
 /*    
     sqlite3_connection con("/tmp/hive.db");
     sqlite3_command cmd(con, "select data_size,data from packets limit 100;");

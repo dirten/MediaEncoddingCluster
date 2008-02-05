@@ -23,8 +23,8 @@ namespace org{
 					private:
 						static int jobs(void *NotUsed, int argc, char **argv, char **azColName);
 						bool _isStopSignal;
-						Connection * _con;
-						Statement  *_stmt;
+//						Connection  _con;
+//						Statement  *_stmt;
 						//int prev_job_id;
 						static Job * job;
 						
