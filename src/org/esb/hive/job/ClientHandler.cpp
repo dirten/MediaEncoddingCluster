@@ -11,6 +11,9 @@ ClientHandler::ClientHandler(){
 }
 
 bool ClientHandler::getProcessUnit(ProcessUnit & unit){
+
+	boost::mutex::scoped_lock scoped_lock(m_mutex);
+
 	Job * job=_handler->getJob();
 	if(job !=NULL){
 	    job->getNextProcessUnit(unit);

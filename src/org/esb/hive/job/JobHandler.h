@@ -3,6 +3,7 @@
 
 #include "Job.h"
 #include <list>
+#include <boost/thread/mutex.hpp>
 namespace org{
 namespace esb{
 namespace hive{
@@ -13,6 +14,8 @@ class JobHandler{
 	JobHandler();
 	list<Job*>_jobList;
 	Job * _testJob;
+	mutable boost::mutex m_mutex;
+
     public:
 	static JobHandler * getInstance();
 	Job * getJob();

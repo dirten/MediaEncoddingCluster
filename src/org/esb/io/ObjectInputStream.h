@@ -23,7 +23,7 @@ namespace org{
 		void readObject(T& object){
 		    int length=0;
 		    _is->read((unsigned char*)&length,sizeof(int));
-		    cout << "length:"<<length<<endl;
+//		    cout << "length:"<<length<<endl;
 		    if(!length>0){
 			cout <<"Fehler in der groesse INBOUND_DATA:"<<length<<endl;
 			return;

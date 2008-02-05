@@ -82,11 +82,11 @@ int Job::getId(){return _id;}
 void Job::addJobDetails(JobDetail & detail){
         list<JobDetail*>::iterator i;
         _detailList.push_back(&detail);
-//        cout << "JobDetail with ID added:"<<detail.getId()<<endl;
 }
 
 bool Job::getNextProcessUnit(ProcessUnit & unit){
     {
+	boost::mutex::scoped_lock scoped_lock(m_mutex);
 	bool result=false;
 	if(_unit_queue.size()>0){
 	    unit = *_unit_queue.front();
@@ -94,22 +94,6 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
 	    result=true;
 	}
 	return result;
-//	_unit = new ProcessUnit();
-	/**
-	* @TODO Path entries must come from the Configuration
-	*/
-/*
-	File file("/tmp/hive.db");
-	Connection con(file);
-	Statement stmt=con.createStatement();
-	string sql="select * from packets where frame_group=";
-	sql+=Job::_frame_group;
-        cout << sql.c_str()<<endl;
-
-        stmt.executeQuery(sql.c_str(), (void *)process);
-        Job::_frame_group++;
-        return true;
-        */
     }
 }
 

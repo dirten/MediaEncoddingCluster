@@ -6,6 +6,7 @@
 #include "org/esb/av/Codec.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include <boost/thread/mutex.hpp>
 #include "JobDetail.h"
 #include "ProcessUnit.h"
 #include <queue>
@@ -45,6 +46,7 @@ class Job{
 		int _id;
 		vector<JobDetail*>_detailList;
 		int _frame_group;
+		mutable boost::mutex m_mutex;
 //		static ProcessUnit * _unit;
 };	
 }}}}

@@ -20,66 +20,16 @@ using namespace sqlite3x;
 int main(){
 
 
-    sql::Connection my_con("/tmp/hive.db");
-    sql::Statement stmt=my_con.createStatement("select data_size,data from packets where frame_group=?;");
-    stmt.bind(1,1);
-{    
-    sql::ResultSet rs=stmt.executeQuery();
-    while(rs.read()) {
-	cout << rs.getcolname(0) << ": " << rs.getint(0)<<"---";
-	cout << rs.getcolname(1) << ": " << rs.getblob(1).length()<<": "<<strlen(rs.getblob(1).c_str()) << endl;
-    }
-}    
-    
-    
-    stmt.bind(1,2);
-{
-    sql::ResultSet rs=stmt.executeQuery();
-    cout << "bla"<<endl;
-    while(rs.read()) {
-	cout << rs.getcolname(0) << ": " << rs.getint(0)<<"---";
-	cout << rs.getcolname(1) << ": " << rs.getblob(1).length()<<": "<<strlen(rs.getblob(1).c_str()) << endl;
-    }
-}    
-/*    
-    sqlite3_connection con("/tmp/hive.db");
-    sqlite3_command cmd(con, "select data_size,data from packets limit 100;");
-    sqlite3_reader reader = cmd.executereader();
-    while(reader.read()) {
-	cout << reader.getcolname(0) << ": " << reader.getint(0)<<"---";
-	cout << reader.getcolname(1) << ": " << reader.getblob(1).length()<<": "<<strlen(reader.getblob(1).c_str()) << endl;
-    }
-*/
-
-/*
-    File outfile("/tmp/test.file");
-    FileOutputStream fos(&outfile);
-    ObjectOutputStream oos(&fos);
-    
-    ProcessUnit unit_out;
-    Packet p1;
-    unit_out._input_packets.push_back(&p1);
-    oos.writeObject(unit_out);
-    fos.close();
-
-    File infile("/tmp/test.file");
-    FileInputStream fis(&infile);
-    ObjectInputStream ois(&fis);
-    
-    ProcessUnit unit_in;
-    ois.readObject(unit_in);
-
-*/
-
-/*
     Socket sock("localhost", 20000);
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
-    char * text="get process_unit";
-    sock.getOutputStream()->write(text, strlen(text));
-    cout << "hier"<<endl;
-    ProcessUnit unit;
-    ois.readObject(unit);
-*/    
+    while(true){
+	char * text="get process_unit";
+	sock.getOutputStream()->write(text, strlen(text));
+	cout << "hier"<<endl;
+	ProcessUnit unit;
+	ois.readObject(unit);
+    }
+    
 }
 

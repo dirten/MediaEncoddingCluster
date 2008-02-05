@@ -1,6 +1,8 @@
 #include <vector>
 #include "ProcessUnit.h"
 #include "JobHandler.h"
+#include <boost/thread/mutex.hpp>
+
 using namespace std;
 namespace org{
 namespace esb{
@@ -14,6 +16,8 @@ class ClientHandler{
     private:
 		ProcessUnit *  unit;
 		JobHandler * _handler;
+		mutable boost::mutex m_mutex;
+
 };
 }}}}
 
