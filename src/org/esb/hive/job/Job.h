@@ -11,10 +11,12 @@
 #include "ProcessUnit.h"
 #include <queue>
 #include <vector>
-
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/Connection.h"
 using namespace std;
 using namespace org::esb::util;
 using namespace org::esb::av;
+using namespace org::esb::sql;
 namespace org{
 namespace esb{
 namespace hive{
@@ -35,6 +37,7 @@ class Job{
 		void setId(int id);
 		void addJobDetails(JobDetail & detail);
 		bool getNextProcessUnit(ProcessUnit & unit);
+		ProcessUnit getNextProcessUnit();
 		queue<ProcessUnit*> _unit_queue;
 //		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:
@@ -47,6 +50,8 @@ class Job{
 		vector<JobDetail*>_detailList;
 		int _frame_group;
 		mutable boost::mutex m_mutex;
+		Connection * _con;
+		Statement * _stmt;
 //		static ProcessUnit * _unit;
 };	
 }}}}

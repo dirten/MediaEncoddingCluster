@@ -29,10 +29,11 @@ Packet::Packet(Packet * packet){
 
 Packet::~Packet(){
     if(isCopy&&data&&size>0){
-//	cout << "destruct copy data";
+//out << "destruct copy data";
         delete []data;
     }else{
 //	cout << "destruct av_free_packet";
+        delete data;
 //	av_free_packet(this);
     }
 }

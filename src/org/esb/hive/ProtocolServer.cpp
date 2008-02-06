@@ -17,7 +17,7 @@
 #include "protocol/ShutdownHive.cpp"
 #include "protocol/StartupHive.cpp"
 #include "protocol/Status.cpp"
-#include "protocol/CreateHive.cpp"
+//#include "protocol/CreateHive.cpp"
 #include "protocol/Unknown.cpp"
 
 
@@ -48,7 +48,7 @@ ProtocolServer::ProtocolServer(Socket * socket) {
     _cis=new CommandInputStream(socket->getInputStream());
     l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
     l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
-    l.push_back(new CreateHive(socket->getInputStream(), socket->getOutputStream()));
+//    l.push_back(new CreateHive(socket->getInputStream(), socket->getOutputStream()));
     l.push_back(new Disconnect(socket));
     l.push_back(new Kill(socket));
     l.push_back(new ShowConfig(socket));
@@ -64,22 +64,14 @@ ProtocolServer::ProtocolServer(Socket * socket) {
 }
 
 void ProtocolServer::run() {
-
-
     while(!socket->isClosed()) {
-//	pthread_mutex_lock(mutex);
-
-//        Command * cmd=_cis->readCommand();
-
-	int dataLength=socket->getInputStream()->available(true);
+    try{
+	string cmd;	
+	int dataLength=socket->getInputStream()->read(cmd);
 	if(dataLength==0){
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
-//	    break;
 	}
-        unsigned char buffer[dataLength+1];
-	memset(buffer,0, dataLength+1);
-        socket->getInputStream()->read(buffer, dataLength);
-        char *command=strtok((char*)buffer,"\n\r");
+        char *command=strtok((char*)cmd.c_str(),"\n\r");
 //	cout << "Command:"<<command<<endl;
 	if(command==NULL||strlen(command)<=0)continue;
         list<ProtocolCommand*>::iterator i;
@@ -87,7 +79,7 @@ void ProtocolServer::run() {
             ProtocolCommand *tmp=(ProtocolCommand*)*i;
             if(tmp->isResponsible(command)==CMD_PROCESS) {
                 tmp->process(command);
-				break;
+		break;
             }
             else
             if(tmp->isResponsible(command)==CMD_HELP) {
@@ -98,8 +90,9 @@ void ProtocolServer::run() {
     	    string line="--------------------------------------------------------\n";
 //    	    socket->getOutputStream()->write((char *)line.c_str(),line.length());
 	}
-//	pthread_mutex_unlock(mutex);
-        
+    }catch(exception & ex){
+	cout <<"Fehler im ProtokollServer:" <<ex.what()<<endl;
+    }
     }
     cout <<"Elvis has left the Building"<<endl;
 }

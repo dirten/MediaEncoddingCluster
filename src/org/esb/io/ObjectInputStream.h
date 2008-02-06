@@ -21,18 +21,14 @@ namespace org{
 		int read();
 	    	template<typename T>
 		void readObject(T& object){
-		    int length=0;
-		    _is->read((unsigned char*)&length,sizeof(int));
-//		    cout << "length:"<<length<<endl;
-		    if(!length>0){
-			cout <<"Fehler in der groesse INBOUND_DATA:"<<length<<endl;
+		    string data;
+		    int readed=_is->read(data);
+		    if(!data.length()>0){
+			cout <<"Fehler in der groesse INBOUND_DATA:"<<data.length()<<endl;
 			return;
 		    }
-		    char in[length+1];
-		    memset(&in,0,length+1);
-		    _is->read((unsigned char*)&in,length);
-		    istringstream archive_stream((char*)&in);
-		    boost::archive::text_iarchive archive(archive_stream);
+		    istringstream archive_stream(data);
+		    boost::archive::binary_iarchive archive(archive_stream);
 		    archive >> object;
 		}
 		private:

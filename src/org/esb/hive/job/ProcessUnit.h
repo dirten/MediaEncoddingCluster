@@ -7,10 +7,11 @@
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/vector.hpp>
-
+#include <boost/shared_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 using namespace std;
 using namespace org::esb::av;
-
+//using namespace boost;
 namespace org{
 namespace esb{
 namespace hive{
@@ -22,8 +23,8 @@ class ProcessUnit{
 //	private:
 //	        friend class boost::serialization::access;
 
-		list<Packet*> _input_packets;
-		list<Packet*> _output_packets;
+		list<boost::shared_ptr<Packet> > _input_packets;
+		list<boost::shared_ptr<Packet> > _output_packets;
 		Codec * _input_codec;
 		Codec * _output_codec;
 		template<class Archive>

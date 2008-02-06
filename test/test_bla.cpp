@@ -10,6 +10,7 @@
 #include "org/esb/sql/sqlite3x.hpp"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/ResultSet.h"
+#include <boost/shared_ptr.hpp>
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::net;
@@ -23,13 +24,24 @@ int main(){
     Socket sock("localhost", 20000);
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
+    int size=0;
     while(true){
 	char * text="get process_unit";
 	sock.getOutputStream()->write(text, strlen(text));
-	cout << "hier"<<endl;
+//	cout << "hier"<<endl;
 	ProcessUnit unit;
 	ois.readObject(unit);
+	list< boost::shared_ptr<Packet> >::iterator it; 
+	if(unit._input_packets.size()==0)break;
+//	boost::shared_ptr<Packet> p=unit._input_packets.front();
+//	p->size;
+	for(it=unit._input_packets.begin();it!=unit._input_packets.end();it++){
+	    boost::shared_ptr<Packet> p=*it;
+	    size+=p->size;
+	}
+	
+	cout << "\rDataSize="<<size/1024/1024;
+	cout.flush();
     }
-    
 }
 

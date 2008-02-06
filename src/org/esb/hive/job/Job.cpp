@@ -12,13 +12,13 @@
 #include <vector>
 #include <iostream>
 #include <list>
-
+#include <boost/shared_ptr.hpp>
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace org::esb::io;
-
+using namespace boost;
 //int Job::_frame_group=0;
 //ProcessUnit*Job::_unit=0;
 
@@ -30,27 +30,39 @@ class JobProcess:public Runnable{
     public:
 	JobProcess(Job*job){
 	    _job=job;
-	    _frame_group=0;
+	    _frame_group=1;
 	}
 	void run(){
 	    File file("/tmp/hive.db");
 	    Connection con(file);
-	    Statement stmt=con.createStatement("select * from packets where frame_group=?");
+	    Statement stmt=con.createStatement("select data_size, data from packets where frame_group=?");
 	    while(true){
 		if(_job->_unit_queue.size()<100){
     		    for(int a =0;a<20;a++){
     			stmt.bind(1,_frame_group);
         		ResultSet rs=stmt.executeQuery();
-        		ProcessUnit * u=new ProcessUnit();
-        		while(rs.next()){
-        		
+        		if(!rs.next()){
+        		    _job->setCompleteTime(1);
+        		    break;
         		}
+        		ProcessUnit * u=new ProcessUnit();
+        		do{
+        		    Packet * p=new Packet();
+        		    p->size=rs.getint(0);
+        		    p->data=new uint8_t[p->size];
+        		    memcpy(p->data,rs.getblob(1).c_str(),p->size);;
+//        		    u->_input_packets.push_back(p);        		
+        		}while(rs.next());
         		_job->_unit_queue.push(u);
         		_frame_group++;
 		    }
 		}
 		cout << "ProcessCount"<<_job->getId()<<":"<<_job->_unit_queue.size()<<endl;
 		Thread::sleep(500);
+		if(_job->getCompleteTime()>0){
+		    cout << "Job "<<_job->getId()<<" erledigt"<<endl;
+		    break;
+		}
 	    }	    
 	}
     private:
@@ -59,8 +71,14 @@ class JobProcess:public Runnable{
 };
 
 Job::Job(){
-    Thread * runner=new Thread(new JobProcess(this));
-    runner->start();
+//    Thread * runner=new Thread(new JobProcess(this));
+//    runner->start();
+//	File file("/tmp/hive.db");
+	_con=new Connection("/tmp/hive.db");
+	_stmt=new Statement(_con->createStatement("select data_size, data from packets where frame_group=?"));
+	_frame_group=1;
+
+
 }
 
 Job::~Job(){
@@ -94,6 +112,32 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
 	    result=true;
 	}
 	return result;
+    }
+}
+ProcessUnit Job::getNextProcessUnit(){
+    {
+	boost::mutex::scoped_lock scoped_lock(m_mutex);
+//	File file("/tmp/hive.db");
+//	Connection con(file);
+//	Statement stmt=_con->createStatement("select data_size, data from packets where frame_group=? and frame_group < 10");
+
+	_stmt->bind(1,_frame_group);
+	ResultSet rs=_stmt->executeQuery();
+	ProcessUnit u;
+	if(!rs.next()){
+	    setCompleteTime(1);
+	    cout << "Job "<<getId()<<" complete"<<endl;
+	    return u;
+	}
+	do{
+	    shared_ptr<Packet> p(new Packet());
+	    p->size=rs.getint(0);
+	    p->data=new uint8_t[p->size];
+	    memcpy(p->data,rs.getblob(1).c_str(),p->size);
+	    u._input_packets.push_back(p);
+	}while(rs.next());
+	_frame_group++;
+	return u;
     }
 }
 

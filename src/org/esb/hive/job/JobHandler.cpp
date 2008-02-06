@@ -19,7 +19,7 @@ JobHandler::JobHandler(){
 }
 
 Job * JobHandler::getJob(){
-	boost::mutex::scoped_lock scoped_lock(m_mutex);
+//	boost::mutex::scoped_lock scoped_lock(m_mutex);
         list<Job*>::iterator i;
         for(i=_jobList.begin();i!=_jobList.end();++i) {
             Job *tmp=(Job*)*i;

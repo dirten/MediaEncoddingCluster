@@ -212,7 +212,7 @@ top_srcdir = @top_srcdir@
 # *   Copyright (C) 2007 by Jan Hoelscher                                   *
 # *   jan.hoelscher@esblab.com                                              *
 # ***************************************************************************/
-SUBDIRS = org hive.client
+SUBDIRS = org
 
 #bin_PROGRAMS = zpipe
 

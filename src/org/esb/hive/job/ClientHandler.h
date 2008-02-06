@@ -12,6 +12,7 @@ class ClientHandler{
     public:
 	ClientHandler();
 	bool getProcessUnit(ProcessUnit & unit);
+	ProcessUnit getProcessUnit();
 	bool putProcessUnit(ProcessUnit & unit);
     private:
 		ProcessUnit *  unit;

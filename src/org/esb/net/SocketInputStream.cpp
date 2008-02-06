@@ -40,7 +40,12 @@ namespace org
         #else
             CRITICAL_SECTION mutex;
         #endif
-
+/*
+	#if defined(WIN32) 
+	#define Synchronized
+	#else
+	#endif
+*/	
       public:
         /******************************************************************************/
         ~SocketInputStream()
@@ -84,57 +89,61 @@ namespace org
         /******************************************************************************/
         int read()
         {
-			read((unsigned char*)&byte,1);
+		read((unsigned char*)&byte,1);
 	    	return byte;
         }
         
         /******************************************************************************/
         int read(unsigned char * buffer, int length)
         {
-          int  counter=1;
-            	counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
-            	/*If Connection is dead*/
-            	if(counter<=0){
-		    		cout << "Socket is brocken"<<endl;
-              		this->socket->close();
-//					throw Exception( __FILE__, __LINE__, "socket is unusable");
-            	}
+	    int  counter=1, len=0;
+            /*Receive data into buffer*/
+            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
+            /*If Connection is dead*/
+            if(counter<=0){
+		cout << "Socket is brocken"<<endl;
+              	this->socket->close();
+            }
           return counter;
         }
         
+        int read(string & str)
+        {
+	    int length=available(true);
+//	    cout << "Readed Buffer length"<<length<<endl;
+	    char buffer[length];
+	    int  counter=1, len=0;
+            /*Receive data into buffer*/
+            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
+            /*If Connection is dead*/
+            if(counter<=0){
+		cout << "Socket is brocken"<<endl;
+              	this->socket->close();
+            }else{
+        	str=string(buffer, length);
+            }
+          return counter;
+        }
         /******************************************************************************/
         int available(bool isBlocking)
         {
-	#if defined(WIN32) 
-        EnterCriticalSection(&mutex);
 
-	    unsigned long numBytes = 0;
 
-	    if (::ioctlsocket (this->socket->getDescriptor(), FIONREAD, &numBytes) == SOCKET_ERROR){
-//    		throw SocketException( __FILE__, __LINE__, "ioctlsocket failed" );
-	    }
-        LeaveCriticalSection(&mutex);
-	    return (std::size_t)numBytes;
+	int numBytes = 0, len=0;
 
-	#else // !defined(HAVE_WINSOCK2_H)
+//	pthread_mutex_lock(&mutex);
 
-	#if defined(FIONREAD)
-    pthread_mutex_lock(&mutex);
 	if(isBlocking){
-	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
-	    if(counter<0){
-			this->socket->close();
+//	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
+	    /*Receive length of buffer*/
+            numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),MSG_WAITALL);
+	    if(numBytes<0){
+		this->socket->close();
 	    }
 	}
-	
-    	    int numBytes = 0;
-	    if( ::ioctl (this->socket->getDescriptor(), FIONREAD, &numBytes) != -1 ){
-    	pthread_mutex_unlock(&mutex);
-		return numBytes;
-    	    }
-	#endif
-	#endif
-          return 1;
+//    	pthread_mutex_unlock(&mutex);
+	return len;
+    	    
         }
       };
     }

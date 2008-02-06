@@ -28,9 +28,18 @@ class SocketOutputStream:public OutputStream{
 		cout << "Socket is Closed"<<endl;
 //		return;
 	    }
-	    int remaining=len, byteCounter=0, sendOpts = MSG_NOSIGNAL;
+	    int remaining=len, byteCounter=0, sendOpts = MSG_NOSIGNAL, bytes=0;
+
+	    /*
+	    * Send length from buffer
+	    */
+	    bytes=::send(this->socket->getDescriptor(),&len,sizeof(int),sendOpts);
+
+	    /*
+	    * Send buffer
+	    */
 	    while(remaining>0){
-    		int bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+    		bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 		byteCounter+=bytes;
 		if(bytes<0){
 		    cout << "Fehler beim versenden"<< endl;

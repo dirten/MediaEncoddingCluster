@@ -24,12 +24,12 @@ class ObjectOutputStream:public OutputStream{
 	template<typename T>
 	void writeObject(const T &object){
 	    std::ostringstream archive_stream;
-	    boost::archive::text_oarchive archive(archive_stream);
+	    boost::archive::binary_oarchive archive(archive_stream);
 	    archive << object;
 	    std::string _outbound_data = archive_stream.str();
 	    int length=_outbound_data.length();
 //	    cout << "WriteLength"<<length<<endl;
-	    _os->write((char*)&length,sizeof(int));
+//	    _os->write((char*)&length,sizeof(int));
 	    _os->write((char*)_outbound_data.c_str(),_outbound_data.length());
 	}
 	

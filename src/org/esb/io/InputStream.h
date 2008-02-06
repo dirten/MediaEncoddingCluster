@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_IO_INPUTSTREAM
 #define ORG_ESB_IO_INPUTSTREAM
-//#include <iostream>
+#include <iostream>
 #include <vector>
 #include "org/esb/lang/Byte.h"
 using namespace std;
@@ -69,6 +69,7 @@ public:
                  */
                 virtual int read(unsigned char * buffer, int length)=0;
                 virtual int read(vector<unsigned char>&buffer)=0;
+                virtual int read(string & str){std::cout << "InputStream::read not implemented!!!";}
                 virtual int read()=0;
 
                 /**

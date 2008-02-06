@@ -12,7 +12,7 @@ ClientHandler::ClientHandler(){
 
 bool ClientHandler::getProcessUnit(ProcessUnit & unit){
 
-	boost::mutex::scoped_lock scoped_lock(m_mutex);
+//	boost::mutex::scoped_lock scoped_lock(m_mutex);
 
 	Job * job=_handler->getJob();
 	if(job !=NULL){
@@ -20,6 +20,13 @@ bool ClientHandler::getProcessUnit(ProcessUnit & unit){
 	    return true;
 	}
 	return false;
+}
+ProcessUnit ClientHandler::getProcessUnit(){
+	Job * job=_handler->getJob();
+	if(job !=NULL){
+	    return job->getNextProcessUnit();
+	}
+	return ProcessUnit();
 }
 
 bool ClientHandler::putProcessUnit(ProcessUnit & unit){
