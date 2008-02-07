@@ -21,6 +21,7 @@ bool ClientHandler::getProcessUnit(ProcessUnit & unit){
 	}
 	return false;
 }
+
 ProcessUnit ClientHandler::getProcessUnit(){
 	Job * job=_handler->getJob();
 	if(job !=NULL){

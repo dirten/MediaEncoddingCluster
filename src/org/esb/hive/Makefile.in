@@ -54,8 +54,7 @@ libhive_la_DEPENDENCIES = $(top_srcdir)/src/org/esb/sql/libsql.la
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
 	CommandInputStream.lo CommandOutputStream.lo Job.lo \
 	JobDetail.lo JobHandler.lo JobWatcher.lo ClientHandler.lo \
-	ProcessUnit.lo BundleIndex.lo BundleIndexWriter.lo \
-	HiveDbConnection.lo SqlPacketOutputStream.lo
+	ProcessUnit.lo HiveDbConnection.lo SqlPacketOutputStream.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 libhive_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -202,8 +201,6 @@ SOURCES = \
 	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
 	    job/ProcessUnit.cpp \
-	    BundleIndex.cpp \
-	    BundleIndexWriter.cpp \
 	    rdb/HiveDbConnection.cpp \
 	    rdb/SqlPacketOutputStream.cpp
 
@@ -282,8 +279,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BundleIndex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BundleIndexWriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ClientHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandInputStream.Plo@am__quote@

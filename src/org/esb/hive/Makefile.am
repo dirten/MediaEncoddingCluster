@@ -18,8 +18,6 @@ SOURCES = \
 	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
 	    job/ProcessUnit.cpp \
-	    BundleIndex.cpp \
-	    BundleIndexWriter.cpp \
 	    rdb/HiveDbConnection.cpp \
 	    rdb/SqlPacketOutputStream.cpp
             

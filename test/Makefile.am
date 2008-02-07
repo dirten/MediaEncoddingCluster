@@ -27,7 +27,7 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test test_packet test_bla test_packet_input test_sqlite test_server test_client
+bin_PROGRAMS=test test_bla test_packet_input test_sqlite test_server test_client
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 datasize_SOURCES=datasize.cpp

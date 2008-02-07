@@ -12,6 +12,7 @@ using namespace org::esb::config;
 using namespace org::esb::hive;
 using namespace std;
 
+bool main_nextLoop=true;
 int main(int argc, char*argv[]){
 /*
 string prog=argv[0];
@@ -24,6 +25,7 @@ memcpy(argv[0],(char*)prog.c_str(),prog.length());
 
 setproctitle("%s", "bla");
 */
+    
     Config::init("./cluster.cfg");
     if(!checkEnvironment()){
     	cout << "Fehler in der Configuration"<<endl;
@@ -41,9 +43,10 @@ setproctitle("%s", "bla");
     server->bind();
 
 
-
+//    bool nextLoop=true;
     try{
-    for(;Socket * clientSocket=server->accept();){
+    for(;main_nextLoop;){
+	    Socket * clientSocket=server->accept();
 		if(clientSocket!=NULL){
 	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    	Thread thread(protoServer);

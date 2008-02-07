@@ -37,7 +37,7 @@ class Kill:public ProtocolCommand{
 
 	void process(char * data){
 	    socket->close();
-    	raise(SIGINT);
+    	    raise(SIGINT);
 //        exit(0);
 	}
 

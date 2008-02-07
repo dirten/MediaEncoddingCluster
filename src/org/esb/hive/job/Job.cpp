@@ -117,10 +117,6 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
 ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
-//	File file("/tmp/hive.db");
-//	Connection con(file);
-//	Statement stmt=_con->createStatement("select data_size, data from packets where frame_group=? and frame_group < 10");
-
 	_stmt->bind(1,_frame_group);
 	ResultSet rs=_stmt->executeQuery();
 	ProcessUnit u;
