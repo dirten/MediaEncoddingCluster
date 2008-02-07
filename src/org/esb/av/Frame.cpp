@@ -16,7 +16,7 @@ Frame::Frame(){
 Frame::Frame(Packet * packet, Codec * codec){
     assert(packet);
     assert(codec);
-
+    
     key_frame=1;
     _frameFinished=0;
     _packet=packet;

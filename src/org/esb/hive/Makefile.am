@@ -17,9 +17,7 @@ SOURCES = \
 	    job/JobHandler.cpp \
 	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
-	    job/ProcessUnit.cpp \
-	    rdb/HiveDbConnection.cpp \
-	    rdb/SqlPacketOutputStream.cpp
+	    job/ProcessUnit.cpp 
             
             
             

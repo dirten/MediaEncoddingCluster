@@ -68,7 +68,7 @@ namespace org {
             }
 
             void FormatInputStream::close() {
-                av_close_input_file(formatCtx);
+//                av_close_input_file(formatCtx);
             }
         }
     }

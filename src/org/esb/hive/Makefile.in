@@ -54,7 +54,7 @@ libhive_la_DEPENDENCIES = $(top_srcdir)/src/org/esb/sql/libsql.la
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
 	CommandInputStream.lo CommandOutputStream.lo Job.lo \
 	JobDetail.lo JobHandler.lo JobWatcher.lo ClientHandler.lo \
-	ProcessUnit.lo HiveDbConnection.lo SqlPacketOutputStream.lo
+	ProcessUnit.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 libhive_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -200,9 +200,7 @@ SOURCES = \
 	    job/JobHandler.cpp \
 	    job/JobWatcher.cpp \
 	    job/ClientHandler.cpp \
-	    job/ProcessUnit.cpp \
-	    rdb/HiveDbConnection.cpp \
-	    rdb/SqlPacketOutputStream.cpp
+	    job/ProcessUnit.cpp 
 
 libhive_la_SOURCES = $(SOURCES)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
@@ -284,14 +282,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveControl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveDbConnection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Job.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobDetail.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobWatcher.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProcessUnit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolServer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SqlPacketOutputStream.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -355,20 +351,6 @@ ProcessUnit.lo: job/ProcessUnit.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='job/ProcessUnit.cpp' object='ProcessUnit.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ProcessUnit.lo `test -f 'job/ProcessUnit.cpp' || echo '$(srcdir)/'`job/ProcessUnit.cpp
-
-HiveDbConnection.lo: rdb/HiveDbConnection.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HiveDbConnection.lo -MD -MP -MF $(DEPDIR)/HiveDbConnection.Tpo -c -o HiveDbConnection.lo `test -f 'rdb/HiveDbConnection.cpp' || echo '$(srcdir)/'`rdb/HiveDbConnection.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/HiveDbConnection.Tpo $(DEPDIR)/HiveDbConnection.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='rdb/HiveDbConnection.cpp' object='HiveDbConnection.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HiveDbConnection.lo `test -f 'rdb/HiveDbConnection.cpp' || echo '$(srcdir)/'`rdb/HiveDbConnection.cpp
-
-SqlPacketOutputStream.lo: rdb/SqlPacketOutputStream.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SqlPacketOutputStream.lo -MD -MP -MF $(DEPDIR)/SqlPacketOutputStream.Tpo -c -o SqlPacketOutputStream.lo `test -f 'rdb/SqlPacketOutputStream.cpp' || echo '$(srcdir)/'`rdb/SqlPacketOutputStream.cpp
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/SqlPacketOutputStream.Tpo $(DEPDIR)/SqlPacketOutputStream.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='rdb/SqlPacketOutputStream.cpp' object='SqlPacketOutputStream.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SqlPacketOutputStream.lo `test -f 'rdb/SqlPacketOutputStream.cpp' || echo '$(srcdir)/'`rdb/SqlPacketOutputStream.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

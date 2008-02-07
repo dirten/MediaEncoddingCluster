@@ -17,6 +17,7 @@ SOURCES = \
             CodecInputStream.cpp \
             CodecOutputStream.cpp \
             Codec.cpp \
+            Decoder.cpp \
             Packet.cpp \
             Frame.cpp \
 	    PPSWriter.cpp \

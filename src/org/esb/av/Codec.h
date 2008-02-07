@@ -13,13 +13,16 @@ namespace org{
 	class Frame;
             class Codec: public AVCodecContext{
                 public:
-                    Codec(const CodecID codecId);
+		    const static int DECODER=1;
+		    const static int ENCODER=2;
+                    Codec(const CodecID codecId, int mode=DECODER);
                     Codec(AVCodecContext * codec);
                     CodecType getCodecType();
                     char * getCodecName();
                     int getCodecId();
                     AVCodecContext * getCodecContext();
-		    void open();
+		    void open(int mode=DECODER);
+		    void initDefaults();
 		    Packet * encodeFrame(Frame & frame);
 		    Frame * decode(Packet & packet);
 
@@ -42,6 +45,8 @@ namespace org{
                 private:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;
+		    CodecID _codec_id;
+                    void findCodec(int mode);
             };
         }
     }

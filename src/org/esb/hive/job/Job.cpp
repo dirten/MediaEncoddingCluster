@@ -77,6 +77,7 @@ Job::Job(){
 	_con=new Connection("/tmp/hive.db");
 	_stmt=new Statement(_con->createStatement("select data_size, data from packets where frame_group=?"));
 	_frame_group=1;
+	_completeTime=NULL;
 
 
 }
@@ -86,6 +87,7 @@ Job::~Job(){
 
 File & Job::getSourceFile(){return *_source;}
 File & Job::getTargetFile(){return *_target;}
+
 void Job::setSourceFile(File & source){_source=&source;}
 void Job::setTargetFile(File & target){_target=&target;}
 

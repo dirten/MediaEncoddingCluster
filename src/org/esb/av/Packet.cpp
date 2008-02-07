@@ -33,7 +33,8 @@ Packet::~Packet(){
         delete []data;
     }else{
 //	cout << "destruct av_free_packet";
-        delete data;
+	if(data!=NULL)
+    	    delete data;
 //	av_free_packet(this);
     }
 }
