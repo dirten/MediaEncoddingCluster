@@ -18,6 +18,7 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/ResultSet.h"
 #include <boost/shared_ptr.hpp>
+#include <avcodec.h>
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::net;
@@ -25,7 +26,7 @@ using namespace org::esb::av;
 using namespace org::esb::hive::job;
 using namespace sqlite3x;
 
-
+void writePPM(Frame * frame);
 int main(){
 
 
@@ -36,8 +37,15 @@ int main(){
     File f("/tmp/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 //    FileInputStream is(&f);
     FormatInputStream fis(&f);
-    AVInputStream * ais=fis.getAVStream(0);
-    Decoder *decoder=(Decoder*)ais->getCodec();
+//    AVInputStream * ais=fis.getAVStream(0);
+
+//    Decoder *decoder=(Decoder*)ais->getCodec();
+
+
+
+    Decoder * decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+    decoder->width=512;
+    decoder->height=256;
 /*
     cout << "CodecId MPEG:"<<CODEC_ID_MPEG2VIDEO<<endl;
     Codec *encoder=new Codec(CODEC_ID_MPEG2VIDEO,2);
@@ -57,24 +65,64 @@ int main(){
 //    codec->open(Codec::DECODER);
 //    cout << "CodecInit:"<<decoder->codec->id<<endl;
     decoder->open(Codec::DECODER);
-    
+
     PacketInputStream pis(&fis);
     Packet p;
     while(true){
 	pis.readPacket(p);
 	if(p.getStreamIndex()==0){
-	    if(p.pts>100){
+	    if(p.pts>=0){
 		Frame * f=decoder->decode(p);
-/*		if(strlen((char*)f->getData())>0)
-		    cout << "FrameData:"<<f->getData()<<endl;
-*/	    
+//		writePPM(f->getFrame(PIX_FMT_RGB24));
 //		Packet * pac=encoder->encodeFrame(*f);
-		if(p.pts<200)
+		if(p.pts>50)
     		    break;
     	    }
 	}
     }
-/*    
+
+//    CodecID cid=CODEC_ID_MPEG1VIDEO;
+    CodecID cid=CODEC_ID_MSMPEG4V3;
+    Decoder * decoder2=new Decoder(cid);
+    decoder2->width=512;
+    decoder2->height=256;
+    decoder2->open(Codec::DECODER);
+
+    Encoder *encoder=new Encoder(cid);
+
+    encoder->bit_rate=400000;
+    encoder->time_base=(AVRational){1,25};
+    encoder->gop_size=10;
+//    encoder->max_b_frames=2;
+    encoder->pix_fmt=PIX_FMT_YUV420P;
+    encoder->mb_decision=2;
+
+
+    encoder->width=decoder2->width;
+    encoder->height=decoder2->height;
+//    encoder->flags|= CODEC_FLAG_GLOBAL_HEADER;
+    encoder->open(Codec::ENCODER);
+
+
+/*
+    AVFrame*picture;
+	    picture=avcodec_alloc_frame();
+
+	    int outbuf_size = 100000;
+	    uint8_t * outbuf = new uint8_t[outbuf_size];
+	    size = decoder->width * decoder->height;
+	    uint8_t * picture_buf = new uint8_t[((size * 3) / 2)]; 
+
+	    picture->data[0] = picture_buf;
+            picture->data[1] = picture->data[0] + size;
+	    picture->data[2] = picture->data[1] + size / 4;
+	    picture->linesize[0] = decoder->width;
+	    picture->linesize[1] = decoder->width / 2;
+	    picture->linesize[2] = decoder->width / 2;
+	    encoder->encode((Frame&)*picture);
+*/
+    size=0;
+
     while(true){
 	char * text="get process_unit";
 	sock.getOutputStream()->write(text, strlen(text));
@@ -88,15 +136,55 @@ int main(){
 	for(it=unit._input_packets.begin();it!=unit._input_packets.end();it++){
 	    boost::shared_ptr<Packet> p=*it;
 	    size+=p->size;
-	    cout << "new Frame size:"<<p->size<<endl;
-	    Frame * f=codec->decode(*p.get());
-	    Packet * pac=encoder->encodeFrame(*f);
-//	    encoder->encodeFrame(*p.get());
+//	    cout << "new Frame size:"<<p->size<<endl;
+	    cout << "PacketPts:"<<p->pts<<endl;
+	    Frame * f=decoder->decode(*p.get());
+
+//	    writePPM(f->getFrame(PIX_FMT_RGB24));
+//	    Packet * pac=encoder->encodeFrame(*f);
+
+	    Packet * ret=encoder->encode(*f);
+
+	    Frame * f2 = decoder2->decode(*ret);
+
+	    Frame *f3= f2->getFrame(PIX_FMT_RGB24);
+//	    writePPM(f2->getFrame(PIX_FMT_RGB24));
+	    writePPM(f3);
+
+
+
+	    delete ret;
+	    delete f3;
+	    delete f2;
+	    delete f;
 	}
 	
 	cout << "\rDataSize="<<size/1024/1024;
 	cout.flush();
-    }
-    */
+    }    
+    
 }
+void writePPM(Frame * frame){
+  FILE *pFile;
+  char szFilename[32];
+  int  y;
 
+    // Open file
+  sprintf(szFilename, "frame%d.ppm", frame->pts);
+  cout << "FileName:"<<szFilename<<endl;
+  pFile=fopen(szFilename, "wb");
+  if(pFile==NULL)
+    return;
+
+    // Write header
+  fprintf(pFile, "P6\n%d %d\n255\n", frame->getWidth(), frame->getHeight());
+
+    // Write pixel data
+  for(y=0; y<frame->getHeight(); y++)
+    fwrite(frame->data[0]+y*frame->linesize[0], 1, frame->getWidth()*3, pFile);
+
+    // Close file
+  fclose(pFile);
+
+
+}

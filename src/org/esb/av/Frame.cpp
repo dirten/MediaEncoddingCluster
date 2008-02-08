@@ -72,7 +72,7 @@ Frame::Frame(int format, int width, int height, unsigned char * data){
 
 Frame::Frame(Frame * source, int format){
     pts=AV_NOPTS_VALUE;
-    key_frame=1;
+//    key_frame=1;
     _width=source->getWidth();
     _height=source->getHeight();
     _pixFormat=format;
@@ -82,7 +82,8 @@ Frame::Frame(Frame * source, int format){
     avpicture_fill((AVPicture *)this, _buffer, format, source->getWidth(),source->getHeight());
     if(source->_frameFinished){
 	img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
-    }    
+    }
+    pts=source->pts;
 }
 
 Frame::~Frame(){

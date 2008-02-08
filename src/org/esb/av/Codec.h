@@ -24,7 +24,7 @@ namespace org{
 		    void open(int mode=DECODER);
 		    void initDefaults();
 		    Packet * encodeFrame(Frame & frame);
-		    Frame * decode(Packet & packet);
+//		    Frame * decode(Packet & packet);
 
 		    template<class Archive>
 		        void serialize(Archive & ar, const unsigned int version)
@@ -42,7 +42,7 @@ namespace org{
 				}
 				ar & boost::serialization::make_binary_object(extradata,extradata_size);
 		            }
-                private:
+                protected:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;
 		    CodecID _codec_id;

@@ -54,8 +54,8 @@ libav_la_DEPENDENCIES = ../io/libio.la
 am__objects_1 = FrameInputStream.lo FrameOutputStream.lo \
 	FormatInputStream.lo FormatBaseStream.lo FormatOutputStream.lo \
 	PacketInputStream.lo PacketOutputStream.lo CodecInputStream.lo \
-	CodecOutputStream.lo Codec.lo Decoder.lo Packet.lo Frame.lo \
-	PPSWriter.lo AVInputStream.lo
+	CodecOutputStream.lo Codec.lo Decoder.lo Encoder.lo Packet.lo \
+	Frame.lo PPSWriter.lo AVInputStream.lo
 am_libav_la_OBJECTS = $(am__objects_1)
 libav_la_OBJECTS = $(am_libav_la_OBJECTS)
 libav_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -201,6 +201,7 @@ SOURCES = \
             CodecOutputStream.cpp \
             Codec.cpp \
             Decoder.cpp \
+            Encoder.cpp \
             Packet.cpp \
             Frame.cpp \
 	    PPSWriter.cpp \
@@ -285,6 +286,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CodecInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CodecOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Decoder.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Encoder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatBaseStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FormatOutputStream.Plo@am__quote@

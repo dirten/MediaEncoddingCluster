@@ -75,7 +75,7 @@ Job::Job(){
 //    runner->start();
 //	File file("/tmp/hive.db");
 	_con=new Connection("/tmp/hive.db");
-	_stmt=new Statement(_con->createStatement("select data_size, data from packets where frame_group=?"));
+	_stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=?"));
 	_frame_group=1;
 	_completeTime=NULL;
 
@@ -132,6 +132,12 @@ ProcessUnit Job::getNextProcessUnit(){
 	    p->size=rs.getint(0);
 	    p->data=new uint8_t[p->size];
 	    memcpy(p->data,rs.getblob(1).c_str(),p->size);
+	    p->pts=rs.getint(2);
+	    p->dts=rs.getint(3);
+	    p->duration=rs.getint(4);
+	    p->flags=rs.getint(5);
+	    p->pos=rs.getint(6);
+	    p->stream_index=rs.getint(7);
 	    u._input_packets.push_back(p);
 	}while(rs.next());
 	_frame_group++;

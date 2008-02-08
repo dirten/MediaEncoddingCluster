@@ -30,10 +30,10 @@ class Frame :public AVFrame{
         int _pixFormat;
     private:
         AVCodecContext * _codecContext;
-	    AVPacket * _packet;
-	    AVFrame * _frame;
+	AVPacket * _packet;
+	AVFrame * _frame;
         uint8_t * _buffer;
-	public:
+    public:
 	int _frameFinished;
 };
 }}}

@@ -6,9 +6,11 @@
 namespace org{
 namespace esb{
 namespace av{
+class Frame;
 class Decoder:public Codec{
     public:
 	Decoder(CodecID id);
+	Frame * decode(Packet & packet);
 
 };
 }}}
