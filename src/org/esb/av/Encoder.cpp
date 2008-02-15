@@ -9,15 +9,24 @@ Encoder::Encoder(CodecID id): Codec(id,Codec::ENCODER){
 
 }
 
-Packet* Encoder::encode(Frame & frame){
-    Packet * pac=new Packet();
+Packet Encoder::encode(Frame & frame){
     int buffer_size=1024*256;
-    uint8_t * buffer=new  uint8_t[buffer_size];
-    int ret=avcodec_encode_video(this,buffer, buffer_size, &frame);
-    pac->data=buffer;
-    pac->size=ret;
-    pac->pts=frame.pts;
-    pac->duration=1;
-    pac->flags=0;
+    uint8_t data[buffer_size];
+    memset(data,0,buffer_size);
+    int ret=avcodec_encode_video(this,data, buffer_size, &frame);
+//    pac.data=new uint8_t[ret];
+    Packet pac(ret);
+    memcpy(pac.data, data, ret);
+//    pac.data=data;
+    pac.size=ret;
+    pac.pts=frame.pts;
+    pac.dts=frame.dts;
+    pac.duration=1;
+//    pac.flags=0;
+    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
+        pac.pts= av_rescale_q(coded_frame->pts, time_base, time_base);
+
+    if(coded_frame && coded_frame->key_frame)
+	pac.flags |= PKT_FLAG_KEY;
     return pac;
 }

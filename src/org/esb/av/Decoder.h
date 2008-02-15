@@ -10,7 +10,9 @@ class Frame;
 class Decoder:public Codec{
     public:
 	Decoder(CodecID id);
-	Frame * decode(Packet & packet);
+//	Frame * decode(Packet & packet);
+	Frame decode(Packet & packet);
+	void decode(Packet & packet, Frame & frame);
 
 };
 }}}

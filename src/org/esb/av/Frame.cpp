@@ -46,17 +46,17 @@ Frame::Frame(Packet * packet, Codec * codec){
         pts=packet->pts;
     
 }
-/*
+
 Frame::Frame(int format, int width, int height){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
     
-    int numBytes=avpicture_get_size(PIX_FMT_RGB24, width,height);
-    uint8_t * buffer=new uint8_t[numBytes];
+    int numBytes=avpicture_get_size(format, width,height);
+    _buffer=new uint8_t[numBytes];
     // Assign appropriate parts of buffer to image planes in pFrameRGB
-    avpicture_fill((AVPicture *)this, buffer, format, width, height);
+    avpicture_fill((AVPicture *)this, _buffer, format, width, height);
 }
-*/
+
 Frame::Frame(int format, int width, int height, unsigned char * data){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
@@ -72,22 +72,26 @@ Frame::Frame(int format, int width, int height, unsigned char * data){
 
 Frame::Frame(Frame * source, int format){
     pts=AV_NOPTS_VALUE;
-//    key_frame=1;
+    key_frame=1;
+
+
+
     _width=source->getWidth();
     _height=source->getHeight();
     _pixFormat=format;
-    int numBytes=avpicture_get_size(format, _width,_height);
+    int numBytes=avpicture_get_size(_pixFormat, _width,_height);
     _buffer=new uint8_t[numBytes];
     memset(_buffer, 0, numBytes);
-    avpicture_fill((AVPicture *)this, _buffer, format, source->getWidth(),source->getHeight());
-    if(source->_frameFinished){
-	img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
-    }
+    avpicture_fill((AVPicture *)this, _buffer, _pixFormat, _width,_height);
+//    if(source->_frameFinished){
+	img_convert((AVPicture *)this, _pixFormat, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
+//    }
     pts=source->pts;
 }
 
 Frame::~Frame(){
-    delete []_buffer;
+//    if(strlen(_buffer)>0)
+        delete []_buffer;
 }
 
 AVPacket * Frame::getPacket(){
@@ -107,12 +111,8 @@ int Frame::getSize(){
     return avpicture_get_size(getFormat(), getWidth(),getHeight());
 }
 
-Frame * Frame::getFrame(int format){
-    Frame * result=this;
-    if(format > 0){
-        result=new Frame(this, format);
-    }
-    return result;
+Frame Frame::getFrame(int format){
+    return Frame(this, format);
 }
 
 int Frame::getHeight(){

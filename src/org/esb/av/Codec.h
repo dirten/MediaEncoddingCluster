@@ -17,6 +17,7 @@ namespace org{
 		    const static int ENCODER=2;
                     Codec(const CodecID codecId, int mode=DECODER);
                     Codec(AVCodecContext * codec);
+                    ~Codec();
                     CodecType getCodecType();
                     char * getCodecName();
                     int getCodecId();

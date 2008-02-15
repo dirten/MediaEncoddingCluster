@@ -8,34 +8,27 @@ using namespace org::esb::av;
 
 Packet::Packet(){
 	isCopy=false;
+	av_init_packet(this);
+	callDestruct=false;
 	data=NULL;
 	size=0;
-//	av_init_packet(this);
-}
 
-Packet::Packet(Packet * packet){
-	data=new uint8_t[packet->size+1];
-	memset(data,0,packet->size+1);
-	memcpy(data, packet->data, packet->size);
-	size=packet->size;
-	pts=packet->pts;
-	dts=packet->dts;
-	flags=packet->flags;
-	stream_index=packet->stream_index;
-	duration=packet->duration;
-	pos=packet->pos;
-	isCopy=true;
 }
-
+Packet::Packet(int s){
+	isCopy=false;
+	av_init_packet(this);
+	size=s;
+	data=new uint8_t[s];
+	memset(data,0,s);
+	callDestruct=true;
+}
 Packet::~Packet(){
     if(isCopy&&data&&size>0){
-//out << "destruct copy data";
         delete []data;
     }else{
-//	cout << "destruct av_free_packet";
-	if(data!=NULL)
-    	    delete data;
-//	av_free_packet(this);
+	if(callDestruct)
+    	    delete  data;
+	av_free_packet(this);
     }
 }
 

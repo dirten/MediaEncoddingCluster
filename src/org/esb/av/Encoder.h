@@ -12,7 +12,7 @@ namespace av{
     class Encoder:public Codec{
 	public:
 	    Encoder(CodecID id);
-	    Packet * encode(Frame & f);
+	    Packet encode(Frame & f);
     
     };
 }}}

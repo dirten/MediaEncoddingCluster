@@ -62,7 +62,9 @@ namespace org{
         	    flags|=CODEC_FLAG_TRUNCATED;
 		avcodec_open(this, _codec);
             }
-
+	    Codec::~Codec(){
+		avcodec_close(this);
+	    }
             Packet* Codec::encodeFrame(Frame & frame){
 		Packet * pac=new Packet();
 		int buffer_size=1024*256;

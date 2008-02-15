@@ -28,7 +28,7 @@ class Receiver:public Runnable{
 //		q.push(p);
 //		av::Packet* pak=new av::Packet(packet);
 //		q.push(packet);
-		q.push(new av::Packet(&packet));
+		q.push(new av::Packet(packet));
 	    }
 	    cout << "Exit Receiver"<<endl;
 	}

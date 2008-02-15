@@ -13,6 +13,7 @@ namespace av{
 class Frame :public AVFrame{
     public:
 	Frame();
+	Frame(int format, int width, int height);
 	Frame(int format, int width, int height, unsigned char * data);
 	Frame(Frame * source, int format);
 	Frame(Packet * packet, Codec * codec);
@@ -23,7 +24,7 @@ class Frame :public AVFrame{
 	int getSize();
 	int getFormat();
 	AVPacket * getPacket();
-	Frame * getFrame(int format=0);
+	Frame getFrame(int format=0);
 //	void setFrame(AVFrame * frame);
         int _height;
         int _width;
@@ -35,6 +36,8 @@ class Frame :public AVFrame{
         uint8_t * _buffer;
     public:
 	int _frameFinished;
+        int64_t dts;
+
 };
 }}}
 #endif

@@ -41,21 +41,19 @@ PacketInputStream::~PacketInputStream(){
 /**
  * @deprecated Use the software.
  */
-Packet & PacketInputStream::readPacket(){
-    if(_readFrom==1)
+Packet PacketInputStream::readPacket(){
+//    if(_readFrom==1)
     	return readPacketFromFormatIS();
-    return readPacketFromIS();
+//    return readPacketFromIS();
     
 }
 
 int PacketInputStream::readPacket(Packet&packet){
-    if(_readFrom==1)
-    	return readPacketFromFormatIS(packet);
-    return readPacketFromIS(packet);
-    
+    return readPacketFromFormatIS(packet);
 }
 
 int PacketInputStream::readPacketFromFormatIS(Packet & packet){
+
         if(packet.data!=NULL)
             av_free_packet(&packet);
         int count=0;
@@ -63,18 +61,15 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet){
 	return count;
 }
 
-/**
- * @deprecated Use the software.
- */
-Packet & PacketInputStream::readPacketFromFormatIS(){
-        if(_packet.data!=NULL)
-            av_free_packet(&_packet);
-        if(av_read_frame(_formatCtx, &_packet)<0){
-	    cout << "Invalid Packet read"<<endl;
-        }
-    return _packet;
+Packet PacketInputStream::readPacketFromFormatIS(){
+    Packet pac;
+//    av_init_packet(&pac);
+//        if(_packet.data!=NULL)
+//            av_free_packet(&_packet);
+    int count=av_read_frame(_formatCtx, &pac);
+    return pac;
 }
-
+/*
 Packet & PacketInputStream::readPacketFromIS(){
     if(_packet.data!=NULL)
 //	delete [] _packet.data;// av_free_packet(&_packet);
@@ -90,7 +85,7 @@ Packet & PacketInputStream::readPacketFromIS(){
 	read((unsigned char*)_packet.data,_packet.size);
 	return _packet;
 }
-
+*/
 int PacketInputStream::readPacketFromIS(Packet&packet){
     int count=0;
     if(packet.data!=NULL)

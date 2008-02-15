@@ -18,7 +18,8 @@ namespace org{
 	    {
 		public:
 		    Packet();
-		    Packet(Packet * packet);
+		    Packet(int size);
+//		    Packet(Packet * packet);
 		    ~Packet();
         	    uint8_t * getData();
     		    int getSize();
@@ -33,6 +34,8 @@ namespace org{
 //        	    boost::shared_ptr<unsigned char*> data;
     		private:
         	    bool isCopy;
+        	    bool callDestruct;
+        	    uint8_t _data;
         	    friend class boost::serialization::access;
 //		    void serialize(boost::archive::Archive & ar, const unsigned int version);
 
@@ -45,7 +48,6 @@ namespace org{
 				    memset(data,0,size);
 				    isCopy=true;
 				}
-				//boost::serialization::make_binary_object(data,size);
 				ar & boost::serialization::make_binary_object(data,size);
 		                ar & pts;
 		                ar & dts;
