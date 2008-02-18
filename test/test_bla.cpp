@@ -74,8 +74,8 @@ int main(){
 
 
 
-    CodecID cid=CODEC_ID_MPEG2VIDEO;
-//    CodecID cid=CODEC_ID_MSMPEG4V3;
+//    CodecID cid=CODEC_ID_MPEG2VIDEO;
+    CodecID cid=CODEC_ID_MSMPEG4V3;
 //    CodecID cid=CODEC_ID_MPEG4;
     Decoder * decoder2=new Decoder(cid);
     decoder2->width=512;
@@ -85,9 +85,9 @@ int main(){
 
     Encoder *encoder=new Encoder(cid);
 
-    encoder->bit_rate=400000;
+    encoder->bit_rate=4000000;
     encoder->time_base=(AVRational){1,25};
-    encoder->gop_size=10;
+    encoder->gop_size=5;
 //    encoder->max_b_frames=1;
     encoder->pix_fmt=PIX_FMT_YUV420P;
 //    encoder->pix_fmt=PIX_FMT_RGB24;
@@ -106,7 +106,7 @@ int main(){
     while(true){
 	Packet p=pis.readPacket();
 	if(p.getStreamIndex()==0){
-	    if(p.pts>=100){
+	    if(p.pts>=1){
 		Frame f=decoder->decode(p);
 		Packet p2=encoder->encode(f);
 		cout<<"SizeA:"<<p.size<<" SizeB:"<<p2.size<<endl;

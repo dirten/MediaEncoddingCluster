@@ -1,12 +1,20 @@
 #include "org/esb/io/File.h"
+#include "org/esb/sql/Connection.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
-#include <sqlite3.h>
+//#include <sqlite3.h>
 #include <iostream>
 #include <iomanip>
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
+using namespace org::esb::sql;
+using namespace org::esb::io;
+int main(){
+    File f("/tmp/hive.db");
+    Connection con(f);
+}
+
 /*
 using namespace std;
 using namespace org::esb::io;
@@ -102,5 +110,4 @@ int main(){
 
 */
 
-int main(){}
 

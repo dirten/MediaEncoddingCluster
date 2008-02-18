@@ -15,6 +15,7 @@ Packet Encoder::encode(Frame & frame){
     memset(data,0,buffer_size);
     int ret=avcodec_encode_video(this,data, buffer_size, &frame);
 //    pac.data=new uint8_t[ret];
+
     Packet pac(ret);
     memcpy(pac.data, data, ret);
 //    pac.data=data;
@@ -23,8 +24,6 @@ Packet Encoder::encode(Frame & frame){
     pac.dts=frame.dts;
     pac.duration=1;
 //    pac.flags=0;
-    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
-        pac.pts= av_rescale_q(coded_frame->pts, time_base, time_base);
 
     if(coded_frame && coded_frame->key_frame)
 	pac.flags |= PKT_FLAG_KEY;

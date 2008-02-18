@@ -2,9 +2,11 @@
 #include "Connection.h"
 #include "Statement.h"
 //#include <sqlite3.h>
+#include <iostream>
 using namespace org::esb::sql;
 using namespace org::esb::io;
 
+void _init() __attribute__((constructor));
 
 Connection::Connection(char*filename):sqlite3_connection(filename){
 //    printf("Opening Database Connection\n");
@@ -32,4 +34,10 @@ Statement & Connection::createStatement(){}
 
 void Connection::close(){
     sqlite3_connection::close();	
+}
+void
+//_init(int argc, char *argv[], char *envp[])
+_init()
+{
+    std::cout << "Lib SQL Init"<<std::endl;
 }
