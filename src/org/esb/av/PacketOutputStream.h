@@ -2,6 +2,7 @@
 #define ORG_ESB_AV_PACKETOUTPUTSTREAM_H
 #include "org/esb/io/OutputStream.h"
 #include "Packet.h"
+#include "Encoder.h"
 
 using namespace org::esb::io;
 namespace org{
@@ -12,6 +13,7 @@ namespace org{
 					PacketOutputStream(OutputStream * os);
 					~PacketOutputStream();
 					void writePacket(Packet * packet);
+					void setEncoder(Encoder & encoder);
 					void writePacket(Packet & packet);
 					void write(char * buffer, int length);
 					void write(vector<unsigned char>&buffer);

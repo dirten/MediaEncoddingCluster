@@ -14,7 +14,7 @@ FormatOutputStream::FormatOutputStream(File * target_file){
     AVOutputFormat * fmt=guess_format(NULL,target_file->getPath(),NULL);
     _fmtCtx->oformat = fmt;
 
-    AVStream * st = av_new_stream(_fmtCtx, 0);
+//    AVStream * st = av_new_stream(_fmtCtx, 0);
 
     if (!(fmt->flags & AVFMT_NOFILE)) {
         if (url_fopen(&_fmtCtx->pb,target_file->getPath(), URL_WRONLY) < 0) {
@@ -22,14 +22,14 @@ FormatOutputStream::FormatOutputStream(File * target_file){
 //            exit(1);
         }
     }
-    av_write_header(_fmtCtx);
+//    av_write_header(_fmtCtx);
 }
 
 FormatOutputStream::~FormatOutputStream(){
-
+    close();
 }
 
-void FormatOutputStream::addPacketStream(PacketOutputStream * pos){
+void FormatOutputStream::addPacketStream(PacketOutputStream & pos, Encoder & encoder){
 
 
 }

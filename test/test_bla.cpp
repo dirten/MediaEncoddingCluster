@@ -5,8 +5,10 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/av/AVInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/Encoder.h"
@@ -38,8 +40,12 @@ int main(){
     ObjectInputStream ois(sock.getInputStream());
     int size=0;
     File f("/tmp/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+    File fout("/tmp/test.vob");
 //    FileInputStream is(&f);
     FormatInputStream fis(&f);
+
+    FormatOutputStream fos(&fout);
+    PacketOutputStream pos(&fos);
 //    AVInputStream * ais=fis.getAVStream(0);
 
 //    Decoder *decoder=(Decoder*)ais->getCodec();
@@ -74,8 +80,8 @@ int main(){
 
 
 
-//    CodecID cid=CODEC_ID_MPEG2VIDEO;
-    CodecID cid=CODEC_ID_MSMPEG4V3;
+    CodecID cid=CODEC_ID_MPEG2VIDEO;
+//    CodecID cid=CODEC_ID_MSMPEG4V3;
 //    CodecID cid=CODEC_ID_MPEG4;
     Decoder * decoder2=new Decoder(cid);
     decoder2->width=512;
@@ -99,6 +105,15 @@ int main(){
 //    encoder->flags|= CODEC_FLAG_GLOBAL_HEADER;
     encoder->open(Codec::ENCODER);
 
+    Encoder *encoder2=new Encoder(cid);
+    encoder2->bit_rate=4000000;
+    encoder2->time_base=(AVRational){1,25};
+    encoder2->gop_size=5;
+    encoder2->pix_fmt=PIX_FMT_YUV420P;
+    encoder2->width=decoder2->width;
+    encoder2->height=decoder2->height;
+    encoder2->open(Codec::ENCODER);
+    pos.setEncoder(*encoder2);
 
 //    int  test[10];
     PacketInputStream pis(&fis);
@@ -109,17 +124,18 @@ int main(){
 	    if(p.pts>=1){
 		Frame f=decoder->decode(p);
 		Packet p2=encoder->encode(f);
+		pos.writePacket(p2);
 		cout<<"SizeA:"<<p.size<<" SizeB:"<<p2.size<<endl;
 		cout<<"Pts:"<<p2.pts<<" Dts:"<<p2.dts<<endl;
-		Frame f2=decoder2->decode(p2);
+//		Frame f2=decoder2->decode(p2);
 //		Frame tmp=f.getFrame(PIX_FMT_RGB24);
-		writePPM(f2.getFrame(PIX_FMT_RGB24));
+//		writePPM(f2.getFrame(PIX_FMT_RGB24));
 //		writePPM(f2);
 //		Packet * pac=encoder->encodeFrame(*f);
 //		delete f;
 //		delete f2;
 //		delete p2;
-		if(p.pts>150)
+		if(p.pts>1050)
     		    break;
     	    }
 	}
@@ -127,6 +143,7 @@ int main(){
     delete decoder;
     delete decoder2;
     delete encoder;
+    
 /*
 return 0;
 

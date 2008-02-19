@@ -41,3 +41,4 @@ _init()
 {
     std::cout << "Lib SQL Init"<<std::endl;
 }
+

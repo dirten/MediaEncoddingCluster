@@ -4,6 +4,7 @@
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/io/File.h"
 #include "org/esb/av/PacketOutputStream.h"
+#include "org/esb/av/Encoder.h"
 extern "C" {
 #include "avformat.h"
 }
@@ -18,7 +19,7 @@ namespace org{
 		    void write(vector<unsigned char>&buffer);
 		    void write(char * buffer);
 		    void close();
-		    void addPacketStream(PacketOutputStream * stream);
+		    void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
 		private:
 		    friend class PacketOutputStream;
 		    AVFormatContext * _fmtCtx;

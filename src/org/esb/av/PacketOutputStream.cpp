@@ -8,7 +8,6 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 PacketOutputStream::PacketOutputStream(OutputStream * os){
-
     if(instanceOf(*os, FormatOutputStream)){
 	_fmtCtx=((FormatOutputStream*)os)->_fmtCtx;
     }else{
@@ -17,11 +16,18 @@ PacketOutputStream::PacketOutputStream(OutputStream * os){
 }
 
 PacketOutputStream::~PacketOutputStream(){
-	delete _target;
+//	delete _target;
 }
 
 void PacketOutputStream::writePacket(Packet & packet){
-    int result=av_write_frame(_fmtCtx,&packet);    
+    int result=av_write_frame(_fmtCtx,&packet);
+}
+
+void PacketOutputStream::setEncoder(Encoder & encoder){
+    AVStream * st=av_new_stream(_fmtCtx,0);
+    st->codec=&encoder;
+    av_write_header(_fmtCtx);
+
 }
 
 void PacketOutputStream::writePacket(Packet * packet){
