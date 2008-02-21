@@ -65,11 +65,15 @@ ProtocolServer::ProtocolServer(Socket * socket) {
 
 void ProtocolServer::run() {
     while(!socket->isClosed()) {
-    try{
+//    try{
+//        cout << "ProtocolServer::run()"<< endl;
+	
 	string cmd;	
 	int dataLength=socket->getInputStream()->read(cmd);
 	if(dataLength==0){
 	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
+	    if(socket->isClosed())
+		break;
 	}
         char *command=strtok((char*)cmd.c_str(),"\n\r");
 //	cout << "Command:"<<command<<endl;
@@ -90,9 +94,9 @@ void ProtocolServer::run() {
     	    string line="--------------------------------------------------------\n";
 //    	    socket->getOutputStream()->write((char *)line.c_str(),line.length());
 	}
-    }catch(exception & ex){
-	cout <<"Fehler im ProtokollServer:" <<ex.what()<<endl;
-    }
+//    }catch(exception & ex){
+//	cout <<"Fehler im ProtokollServer:" <<ex.what()<<endl;
+//    }
     }
     cout <<"Elvis has left the Building"<<endl;
 }

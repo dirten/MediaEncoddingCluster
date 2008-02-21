@@ -17,20 +17,37 @@ namespace org{
 		    const static int ENCODER=2;
                     Codec(const CodecID codecId, int mode=DECODER);
                     Codec(AVCodecContext * codec);
+                    Codec();
                     ~Codec();
                     CodecType getCodecType();
                     char * getCodecName();
                     int getCodecId();
                     AVCodecContext * getCodecContext();
-		    void open(int mode=DECODER);
+		    void open();
 		    void initDefaults();
-		    Packet * encodeFrame(Frame & frame);
+//		    Packet * encodeFrame(Frame & frame);
 //		    Frame * decode(Packet & packet);
+		    void setWidth(int w);
+		    void setHeight(int h);
+		    void setPixelFormat(PixelFormat pfm);
+		    void setBitRate(int rate);
+		    void setTimeBase(AVRational tb);
+		    void setGopSize(int size);
+
 
 		    template<class Archive>
 		        void serialize(Archive & ar, const unsigned int version)
 		            {
-		                ar & codec_id;
+		                ar & _codec_id;
+		                ar & _mode;
+		                ar & _pix_fmt;
+		                ar & _width;
+		                ar & _height;
+		                ar & _time_base.num;
+		                ar & _time_base.den;
+		                ar & _gop_size;
+		                ar & _bit_rate;
+/*
 		                ar & codec_type;
 		                ar & bit_rate;
 		                ar & pix_fmt;
@@ -42,12 +59,22 @@ namespace org{
 				    extradata=new uint8_t[extradata_size];
 				}
 				ar & boost::serialization::make_binary_object(extradata,extradata_size);
+				*/
 		            }
                 protected:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;
 		    CodecID _codec_id;
                     void findCodec(int mode);
+                    int _mode;
+                private:
+		    int _width;
+		    int _height;
+		    PixelFormat _pix_fmt;
+		    int _bit_rate;
+		    AVRational _time_base;
+		    int _gop_size;
+//            	    static void initialize();
             };
         }
     }

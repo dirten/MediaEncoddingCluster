@@ -19,7 +19,8 @@ namespace org{
 		public:
 		    Packet();
 		    Packet(int size);
-//		    Packet(Packet * packet);
+		    Packet(const Packet & packet);
+		    Packet &operator=(Packet & packet);
 		    ~Packet();
         	    uint8_t * getData();
     		    int getSize();

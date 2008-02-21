@@ -2,7 +2,8 @@
 #define ORG_ESB_HIVE_JOB_PROCESS_UNIT_H
 
 #include "org/esb/av/Packet.h"
-#include "org/esb/av/Codec.h"
+#include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
 #include <vector>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/list.hpp>
@@ -18,21 +19,28 @@ namespace hive{
 namespace job{
 class ProcessUnit{
 	public:
-		ProcessUnit();	
+		ProcessUnit();
+		void process();
 
 //	private:
 //	        friend class boost::serialization::access;
 
 		list<boost::shared_ptr<Packet> > _input_packets;
 		list<boost::shared_ptr<Packet> > _output_packets;
-		Codec * _input_codec;
-		Codec * _output_codec;
+		Decoder * _decoder;
+		Encoder * _encoder;
+		int _source_stream;
+		int _target_stream;
 		template<class Archive>
 	    	    void serialize(Archive & ar, const unsigned int version){
 	    		ar & _input_packets;
 	    		ar & _output_packets;
-//	    		ar & _input_codec;
-//	    		ar & _output_codec;
+	    		ar & _source_stream;
+	    		ar & _target_stream;
+//	    		if(_decoder!=NULL)
+	    		    ar & _decoder;
+//	    		if(_encoder!=NULL)
+	    		    ar & _encoder;
 	    	    }
 	private:
 };

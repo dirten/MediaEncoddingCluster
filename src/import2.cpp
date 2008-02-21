@@ -96,7 +96,7 @@ int main(int argc, char * argv[]){
     Packet packet;
 
     Statement stmt=con.createStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)");
-    while(true){
+    while(true/*&&count < 1000*/){
 
         pis.readPacket(packet);
 
@@ -107,7 +107,7 @@ int main(int argc, char * argv[]){
 
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;
-        stmt.bind( field++, packet.stream_index);
+        stmt.bind( field++, streams[packet.stream_index]);
         stmt.bind( field++, packet.pts);
         stmt.bind( field++, packet.dts);
         stmt.bind( field++, packet.stream_index);

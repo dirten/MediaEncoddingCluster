@@ -4,6 +4,7 @@
 using namespace org::esb::av;
 
 
+Decoder::Decoder(): Codec(){}
 Decoder::Decoder(CodecID id): Codec(id,Codec::DECODER){}
 
 Frame Decoder::decode(Packet & packet){

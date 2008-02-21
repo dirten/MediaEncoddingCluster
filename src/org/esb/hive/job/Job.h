@@ -13,6 +13,8 @@
 #include <vector>
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/Connection.h"
+#include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
 using namespace std;
 using namespace org::esb::util;
 using namespace org::esb::av;
@@ -25,33 +27,43 @@ class Job{
     public:
 		Job();
 		~Job();
-		File & getSourceFile(void);
-		File & getTargetFile(void);
-		void setSourceFile(File& source);
-		void setTargetFile(File& target);
+		int getId();
+		void setId(int id);
 		int getStartTime();
 		int getCompleteTime();
 		void setStartTime(int start);
 		void setCompleteTime(int complete);
-		int getId();
-		void setId(int id);
+		void setSourceStream(int s);
+		void setTargetStream(int s);
+		int getSourceStream();
+		int getTargetStream();
+/*		File & getSourceFile(void);
+		File & getTargetFile(void);
+		void setSourceFile(File& source);
+		void setTargetFile(File& target);
 		void addJobDetails(JobDetail & detail);
-		bool getNextProcessUnit(ProcessUnit & unit);
+		*/
+//		bool getNextProcessUnit(ProcessUnit & unit);
 		ProcessUnit getNextProcessUnit();
 		queue<ProcessUnit*> _unit_queue;
 //		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:
 		friend class JobProcess;
-		File * _source;
-		File * _target;
+//		File * _source;
+//		File * _target;
 		int _startTime;
 		int _completeTime;
 		int _id;
-		vector<JobDetail*>_detailList;
+		int _source_stream;
+		int _target_stream;
+		
+//		vector<JobDetail*>_detailList;
 		int _frame_group;
 		mutable boost::mutex m_mutex;
 		Connection * _con;
 		Statement * _stmt;
+		Decoder * _decoder;
+		Encoder * _encoder;
 //		static ProcessUnit * _unit;
 };	
 }}}}

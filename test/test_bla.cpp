@@ -32,13 +32,182 @@ using namespace sqlite3x;
 
 
 void writePPM(Frame frame);
+void encodeFromSocket();
+void encodeFromProcessUnit();
+void encodeFromFile();
+
 int main(){
+//    encodeFromFile();
+//    encodeFromSocket();
+    encodeFromProcessUnit();
+}
+void encodeFromProcessUnit(){
+
+
+    Socket sock("localhost", 20000);
+    sock.connect();
+    ObjectInputStream ois(sock.getInputStream());
+    ObjectOutputStream oos(sock.getOutputStream());
+    int size=0;
+
+    File fout("/tmp/test.vob");
+    FormatOutputStream fos(&fout);
+    PacketOutputStream pos(&fos);
+
+
+    
+    Decoder * decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+    decoder->width=512;
+    decoder->height=256;
+    decoder->pix_fmt=PIX_FMT_YUV420P;
+    decoder->setWidth(512);
+    decoder->setHeight(256);
+    decoder->setPixelFormat(PIX_FMT_YUV420P);
+    decoder->open();
+
+
+    CodecID cid=CODEC_ID_MPEG2VIDEO;
+
+    Encoder *encoder=new Encoder(cid);
+//    encoder->bit_rate=4000;
+//    encoder->time_base=(AVRational){1,25};
+//    encoder->gop_size=50;
+//    encoder->pix_fmt=PIX_FMT_YUV420P;
+//    encoder->mb_decision=20;
+//    encoder->width=512;
+//    encoder->height=256;
+
+//    encoder->setBitRate(4000);
+    encoder->setTimeBase((AVRational){1,25});
+//    encoder->gop_size=50;
+//    encoder->setGopSize(10);
+    encoder->setPixelFormat(PIX_FMT_YUV420P);
+//    encoder->mb_decision=20;
+    encoder->setWidth(512);
+    encoder->setHeight(256);
+    encoder->open();
+    pos.setEncoder(*encoder);
+
+
+
+
+    size=0;
+    int pCount=0;
+    while(true||++pCount<20){
+	char * text="get process_unit";
+	sock.getOutputStream()->write(text, strlen(text));
+//	cout << "hier"<<endl;
+	ProcessUnit unit;
+	ois.readObject(unit);
+//	unit._decoder=decoder;
+	unit._decoder->open();
+//	unit._encoder=encoder;
+	unit._encoder->open();
+	
+	cout << "EncoderBitRate:"<<unit._encoder->bit_rate<<endl;
+	unit.process();	
+
+	char * text_out="put process_unit";
+	sock.getOutputStream()->write(text_out, strlen(text_out));
+	oos.writeObject(unit);
+	
+	list< boost::shared_ptr<Packet> >::iterator it; 
+	if(unit._input_packets.size()==0)break;
+//	boost::shared_ptr<Packet> p=unit._input_packets.front();
+//	p->size;
+    
+	for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
+	    boost::shared_ptr<Packet> p=*it;
+//	    pos.writePacket(*p);
+	}
+	delete unit._decoder;
+//	unit._encoder=encoder;
+	delete unit._encoder;
+	
+	cout << "\rDataSize="<<size/1024/1024;
+	cout.flush();
+    }
+
+
+}
+
+
+void encodeFromSocket(){
 
 
     Socket sock("localhost", 20000);
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
     int size=0;
+
+    File fout("/tmp/test.vob");
+    FormatOutputStream fos(&fout);
+    PacketOutputStream pos(&fos);
+
+
+    
+    Decoder * decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+    decoder->width=512;
+    decoder->height=256;
+    decoder->pix_fmt=PIX_FMT_YUV420P;
+    decoder->open();
+
+
+    CodecID cid=CODEC_ID_MPEG2VIDEO;
+//    CodecID cid=CODEC_ID_MSMPEG4V3;
+    /*
+    Decoder * decoder2=new Decoder(cid);
+    decoder2->width=512;
+    decoder2->height=256;
+    decoder2->open(Codec::DECODER);
+*/
+    Encoder *encoder=new Encoder(cid);
+
+    encoder->bit_rate=400000;
+    encoder->time_base=(AVRational){1,25};
+    encoder->gop_size=100;
+    encoder->pix_fmt=PIX_FMT_YUV420P;
+    encoder->mb_decision=20;
+    encoder->width=512;
+    encoder->height=256;
+    encoder->open();
+    pos.setEncoder(*encoder);
+
+
+
+    size=0;
+    int pCount=0;
+    while(++pCount<20){
+	char * text="get process_unit";
+	sock.getOutputStream()->write(text, strlen(text));
+//	cout << "hier"<<endl;
+	ProcessUnit unit;
+	ois.readObject(unit);
+	list< boost::shared_ptr<Packet> >::iterator it; 
+	if(unit._input_packets.size()==0)break;
+//	boost::shared_ptr<Packet> p=unit._input_packets.front();
+//	p->size;
+	for(it=unit._input_packets.begin();it!=unit._input_packets.end();it++){
+	    boost::shared_ptr<Packet> p=*it;
+	    size+=p->size;
+//	    cout << "new Frame size:"<<p->size<<endl;
+	    cout << "PacketPts:"<<p->pts<<endl;
+	    Frame f=decoder->decode(*p.get());
+	    Packet ret=encoder->encode(f);
+	    pos.writePacket(ret);
+//	    delete ret;
+//	    delete f3;
+//	    delete f2;
+//	    delete f;
+	}
+	
+	cout << "\rDataSize="<<size/1024/1024;
+	cout.flush();
+    }
+}
+
+
+void encodeFromFile(){
     File f("/tmp/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
     File fout("/tmp/test.vob");
 //    FileInputStream is(&f);
@@ -56,26 +225,7 @@ int main(){
     decoder->width=512;
     decoder->height=256;
     decoder->pix_fmt=PIX_FMT_YUV420P;
-
-/*
-    cout << "CodecId MPEG:"<<CODEC_ID_MPEG2VIDEO<<endl;
-    Codec *encoder=new Codec(CODEC_ID_MPEG2VIDEO,2);
-    encoder->width=decoder->width;
-    encoder->height=decoder->height;
-    encoder->flags|= CODEC_FLAG_GLOBAL_HEADER;
-    encoder->open(Codec::ENCODER);
-//    encoder->initDefaults();
-    cout << "width:"<<encoder->coded_width<<endl;
-    cout << "height:"<<encoder->coded_height<<endl;
-    cout << "width:"<<encoder->width<<endl;
-    cout << "height:"<<encoder->height<<endl;
-*/
-    
-
-//    Codec *codec=ais->getCodec();
-//    codec->open(Codec::DECODER);
-//    cout << "CodecInit:"<<decoder->codec->id<<endl;
-    decoder->open(Codec::DECODER);
+    decoder->open();
 
 
 
@@ -86,7 +236,7 @@ int main(){
     Decoder * decoder2=new Decoder(cid);
     decoder2->width=512;
     decoder2->height=256;
-    decoder2->open(Codec::DECODER);
+    decoder2->open();
     decoder2->pix_fmt=PIX_FMT_YUV420P;
 
     Encoder *encoder=new Encoder(cid);
@@ -103,7 +253,7 @@ int main(){
     encoder->width=decoder2->width;
     encoder->height=decoder2->height;
 //    encoder->flags|= CODEC_FLAG_GLOBAL_HEADER;
-    encoder->open(Codec::ENCODER);
+    encoder->open();
 
     Encoder *encoder2=new Encoder(cid);
     encoder2->bit_rate=4000000;
@@ -112,7 +262,7 @@ int main(){
     encoder2->pix_fmt=PIX_FMT_YUV420P;
     encoder2->width=decoder2->width;
     encoder2->height=decoder2->height;
-    encoder2->open(Codec::ENCODER);
+    encoder2->open();
     pos.setEncoder(*encoder2);
 
 //    int  test[10];
@@ -143,93 +293,8 @@ int main(){
     delete decoder;
     delete decoder2;
     delete encoder;
-    
-/*
-return 0;
-
-//    CodecID cid=CODEC_ID_MPEG1VIDEO;
-    CodecID cid=CODEC_ID_MSMPEG4V3;
-    Decoder * decoder2=new Decoder(cid);
-    decoder2->width=512;
-    decoder2->height=256;
-    decoder2->open(Codec::DECODER);
-
-    Encoder *encoder=new Encoder(cid);
-
-    encoder->bit_rate=400000;
-    encoder->time_base=(AVRational){1,25};
-    encoder->gop_size=10;
-//    encoder->max_b_frames=2;
-    encoder->pix_fmt=PIX_FMT_YUV420P;
-    encoder->mb_decision=2;
 
 
-    encoder->width=decoder2->width;
-    encoder->height=decoder2->height;
-//    encoder->flags|= CODEC_FLAG_GLOBAL_HEADER;
-    encoder->open(Codec::ENCODER);
-
-*/
-/*
-    AVFrame*picture;
-	    picture=avcodec_alloc_frame();
-
-	    int outbuf_size = 100000;
-	    uint8_t * outbuf = new uint8_t[outbuf_size];
-	    size = decoder->width * decoder->height;
-	    uint8_t * picture_buf = new uint8_t[((size * 3) / 2)]; 
-
-	    picture->data[0] = picture_buf;
-            picture->data[1] = picture->data[0] + size;
-	    picture->data[2] = picture->data[1] + size / 4;
-	    picture->linesize[0] = decoder->width;
-	    picture->linesize[1] = decoder->width / 2;
-	    picture->linesize[2] = decoder->width / 2;
-	    encoder->encode((Frame&)*picture);
-*/
-/*
-    size=0;
-
-    while(true){
-	char * text="get process_unit";
-	sock.getOutputStream()->write(text, strlen(text));
-//	cout << "hier"<<endl;
-	ProcessUnit unit;
-	ois.readObject(unit);
-	list< boost::shared_ptr<Packet> >::iterator it; 
-	if(unit._input_packets.size()==0)break;
-//	boost::shared_ptr<Packet> p=unit._input_packets.front();
-//	p->size;
-	for(it=unit._input_packets.begin();it!=unit._input_packets.end();it++){
-	    boost::shared_ptr<Packet> p=*it;
-	    size+=p->size;
-//	    cout << "new Frame size:"<<p->size<<endl;
-	    cout << "PacketPts:"<<p->pts<<endl;
-	    Frame * f=decoder->decode(*p.get());
-
-//	    writePPM(f->getFrame(PIX_FMT_RGB24));
-//	    Packet * pac=encoder->encodeFrame(*f);
-
-	    Packet * ret=encoder->encode(*f);
-
-	    Frame * f2 = decoder2->decode(*ret);
-
-	    Frame *f3= f2->getFrame(PIX_FMT_RGB24);
-//	    writePPM(f2->getFrame(PIX_FMT_RGB24));
-	    writePPM(f3);
-
-
-
-	    delete ret;
-	    delete f3;
-	    delete f2;
-	    delete f;
-	}
-	
-	cout << "\rDataSize="<<size/1024/1024;
-	cout.flush();
-    }*/
-    
 }
 void writePPM(Frame  frame){
   FILE *pFile;

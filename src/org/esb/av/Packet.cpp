@@ -14,6 +14,37 @@ Packet::Packet(){
 	size=0;
 
 }
+
+Packet::Packet(const Packet & packet){
+    pts=packet.pts;
+    dts=packet.dts;
+    data=new uint8_t[packet.size+1];
+    memcpy(data,packet.data,packet.size);
+    size=packet.size;
+    stream_index=packet.stream_index;
+    flags=packet.flags;
+    duration=packet.duration;
+    destruct=packet.destruct;
+    priv=packet.priv;
+    pos=packet.pos;
+    callDestruct=true;
+}
+
+Packet & Packet::operator=(Packet & packet){
+    pts=packet.pts;
+    dts=packet.dts;
+    data=new uint8_t[packet.size+1];
+    memcpy(data,packet.data,packet.size);
+    size=packet.size;
+    stream_index=packet.stream_index;
+    flags=packet.flags;
+    duration=packet.duration;
+    destruct=packet.destruct;
+    priv=packet.priv;
+    pos=packet.pos;
+    callDestruct=true;
+    return *this;
+}
 Packet::Packet(int s){
 	isCopy=false;
 	av_init_packet(this);
@@ -22,14 +53,21 @@ Packet::Packet(int s){
 	memset(data,0,s);
 	callDestruct=true;
 }
+
 Packet::~Packet(){
-    if(isCopy&&data&&size>0){
+    if(false&&isCopy&&data&&size>0){
         delete []data;
+        data=NULL;
     }else{
-	if(callDestruct)
-    	    delete  data;
-	av_free_packet(this);
     }
+	if(data!=NULL&&size>0){
+    	    delete data;
+    	    data=NULL;
+    	}
+	av_free_packet(this);
+
+    data=NULL;
+
 }
 
 uint8_t * Packet::getData(){return data;}

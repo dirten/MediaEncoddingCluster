@@ -13,7 +13,7 @@ class PacketInputStream: public InputStream{
         PacketInputStream(InputStream * is);
         ~PacketInputStream();
         int readPacket(Packet&packet);
-        Packet readPacket();
+        Packet & readPacket();
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
         int read();
@@ -29,7 +29,7 @@ class PacketInputStream: public InputStream{
 	
         int readPacketFromFormatIS(Packet&packet);
         int readPacketFromIS(Packet&packet);
-        Packet readPacketFromFormatIS();
+        Packet & readPacketFromFormatIS();
         __attribute__((deprecated))Packet & readPacketFromIS();
 	Packet _packet;
         int _streamIndex;

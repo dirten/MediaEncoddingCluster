@@ -9,6 +9,11 @@ Encoder::Encoder(CodecID id): Codec(id,Codec::ENCODER){
 
 }
 
+Encoder::Encoder(): Codec(){
+
+
+}
+
 Packet Encoder::encode(Frame & frame){
     int buffer_size=1024*256;
     uint8_t data[buffer_size];

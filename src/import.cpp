@@ -111,7 +111,7 @@ int main(int argc, char * argv[]){
         }
     	int streamid =sqlite3_last_insert_rowid(db);
     	
-		cout << "LastInsertId"<<streamid<<endl;
+	cout << "LastInsertId"<<streamid<<endl;
     	streams[a]=streamid;
 
     }

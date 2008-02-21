@@ -6,14 +6,24 @@ extern "C" {
 #include <iostream>
 #include <assert.h>
 using namespace std;
+void __attribute__ ((constructor)) my_init(void);
+//void _init() __attribute__((constructor));
+
+void my_init(){
+    cout << "Init AV Package"<<endl;
+    av_register_all();
+}
 namespace org{
     namespace esb{
         namespace av{
+//    	    bool isInitialized=false;
+    	    Codec::Codec(){}
             Codec::Codec(const CodecID codecId, int mode){
         	cout << "CodecConstructor:"<<codecId<<endl;
         	_codec_id=codecId;
         	_codec=NULL;
-		if(mode == DECODER){
+        	_mode=mode;
+		if(_mode == DECODER){
 		    _codec=avcodec_find_decoder(_codec_id);
 		}else{
 		    _codec=avcodec_find_encoder(_codec_id);
@@ -54,10 +64,17 @@ namespace org{
 		    if(_codec==NULL)
 			cout << "Encoder not found for id :"<<_codec_id<<endl;
 		}
+		avcodec_get_context_defaults2(this, _codec->type);
+		pix_fmt=_pix_fmt;
+		width=_width;
+		height=_height;
+		bit_rate=_bit_rate;
+		time_base=_time_base;
+		gop_size=_gop_size;
 	    }
 	    
-            void Codec::open(int mode){
-        	findCodec(mode);
+            void Codec::open(){
+        	findCodec(_mode);
         	if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         	    flags|=CODEC_FLAG_TRUNCATED;
 		avcodec_open(this, _codec);
@@ -65,6 +82,7 @@ namespace org{
 	    Codec::~Codec(){
 		avcodec_close(this);
 	    }
+/*
             Packet* Codec::encodeFrame(Frame & frame){
 		Packet * pac=new Packet();
 		int buffer_size=1024*256;
@@ -75,6 +93,21 @@ namespace org{
 		pac->size=ret;
 		return pac;
             }
+            */
+            void Codec::setWidth(int w){_width=w;}
+            void Codec::setHeight(int h){_height=h;}
+            void Codec::setPixelFormat(PixelFormat pf){_pix_fmt=pf;}
+            void Codec::setBitRate(int rate){_bit_rate=rate;}
+            void Codec::setTimeBase(AVRational tb){_time_base=tb;}
+            void Codec::setGopSize(int size){_gop_size=size;}
+	    /*
+            void Codec::initialize(){
+		if(!isInitialized){
+		    av_register_all();
+		    isInitialized=true;
+		}
+	    }*/	
+
         }
     }
 }

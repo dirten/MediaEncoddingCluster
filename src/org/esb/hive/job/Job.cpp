@@ -26,71 +26,45 @@ using namespace boost;
 
 
 
-class JobProcess:public Runnable{
-    public:
-	JobProcess(Job*job){
-	    _job=job;
-	    _frame_group=1;
-	}
-	void run(){
-	    File file("/tmp/hive.db");
-	    Connection con(file);
-	    Statement stmt=con.createStatement("select data_size, data from packets where frame_group=?");
-	    while(true){
-		if(_job->_unit_queue.size()<100){
-    		    for(int a =0;a<20;a++){
-    			stmt.bind(1,_frame_group);
-        		ResultSet rs=stmt.executeQuery();
-        		if(!rs.next()){
-        		    _job->setCompleteTime(1);
-        		    break;
-        		}
-        		ProcessUnit * u=new ProcessUnit();
-        		do{
-        		    Packet * p=new Packet();
-        		    p->size=rs.getint(0);
-        		    p->data=new uint8_t[p->size];
-        		    memcpy(p->data,rs.getblob(1).c_str(),p->size);;
-//        		    u->_input_packets.push_back(p);        		
-        		}while(rs.next());
-        		_job->_unit_queue.push(u);
-        		_frame_group++;
-		    }
-		}
-		cout << "ProcessCount"<<_job->getId()<<":"<<_job->_unit_queue.size()<<endl;
-		Thread::sleep(500);
-		if(_job->getCompleteTime()>0){
-		    cout << "Job "<<_job->getId()<<" erledigt"<<endl;
-		    break;
-		}
-	    }	    
-	}
-    private:
-	int _frame_group;
-	Job*_job;
-};
 
 Job::Job(){
-//    Thread * runner=new Thread(new JobProcess(this));
-//    runner->start();
-//	File file("/tmp/hive.db");
-	_con=new Connection("/tmp/hive.db");
-	_stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=?"));
-	_frame_group=1;
-	_completeTime=NULL;
+    _con=new Connection("/tmp/hive.db");
+    _con->executenonquery("PRAGMA read_uncommitted = 1");
+    _stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
+    _frame_group=1;
+    _completeTime=NULL;
+    
+    _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+    _decoder->setWidth(512);
+    _decoder->setHeight(256);
+    _decoder->setPixelFormat(PIX_FMT_YUV420P);
+    _decoder->open();
 
+    CodecID cid=CODEC_ID_MPEG2VIDEO;
+//    CodecID cid=CODEC_ID_MSMPEG4V3;
+    _encoder=new Encoder(cid);
+    _encoder->setBitRate(400000);
+    _encoder->setTimeBase((AVRational){1,25});
+//    _encoder->gop_size=10;
+    _encoder->setGopSize(50);
+    _encoder->setPixelFormat(PIX_FMT_YUV420P);
+//    encoder->mb_decision=20;
+    _encoder->setWidth(512);
+    _encoder->setHeight(256);
+    _encoder->open();
 
 }
 
 Job::~Job(){
 }
-
+/*
 File & Job::getSourceFile(){return *_source;}
 File & Job::getTargetFile(){return *_target;}
 
 void Job::setSourceFile(File & source){_source=&source;}
 void Job::setTargetFile(File & target){_target=&target;}
 
+*/
 int Job::getStartTime(){return _startTime;}
 int Job::getCompleteTime(){return _completeTime;}
 void Job::setStartTime(int start){_startTime=start;}
@@ -98,7 +72,12 @@ void Job::setCompleteTime(int complete){_completeTime=complete;}
 void Job::setId(int id){_id=id;}
 int Job::getId(){return _id;}
 
+void Job::setSourceStream(int id){_source_stream=id;}
+void Job::setTargetStream(int id){_target_stream=id;}
+int Job::getSourceStream(){return _source_stream;}
+int Job::getTargetStream(){return _target_stream;}
 
+/*
 void Job::addJobDetails(JobDetail & detail){
         list<JobDetail*>::iterator i;
         _detailList.push_back(&detail);
@@ -116,10 +95,12 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
 	return result;
     }
 }
+*/
 ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
 	_stmt->bind(1,_frame_group);
+	_stmt->bind(2,getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
 	ProcessUnit u;
 	if(!rs.next()){
@@ -140,6 +121,10 @@ ProcessUnit Job::getNextProcessUnit(){
 	    p->stream_index=rs.getint(7);
 	    u._input_packets.push_back(p);
 	}while(rs.next());
+	u._decoder=_decoder;
+	u._encoder=_encoder;
+	u._source_stream=getSourceStream();
+	u._target_stream=getTargetStream();
 	_frame_group++;
 	return u;
     }

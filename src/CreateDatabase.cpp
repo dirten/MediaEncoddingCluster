@@ -45,5 +45,6 @@ bool createDatabase(File &databaseFile){
 	createTable(con,"create table job_logs (id integer  primary key autoincrement, packet_in integer,packet_out integer, begin date, complete date)");
 	createTable(con,"create table version (id integer  primary key autoincrement, component, version)");
 	createTable(con,"insert into version (component, version) values ('database.model','0.1.1')");
+	createTable(con,"CREATE INDEX packet_group_idx on packets(frame_group)");
 	con.close();
 }

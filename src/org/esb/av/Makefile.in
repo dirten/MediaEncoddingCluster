@@ -51,7 +51,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libav_la_DEPENDENCIES = ../io/libio.la
-am__objects_1 = FrameInputStream.lo FrameOutputStream.lo \
+am__objects_1 = Init.lo FrameInputStream.lo FrameOutputStream.lo \
 	FormatInputStream.lo FormatBaseStream.lo FormatOutputStream.lo \
 	PacketInputStream.lo PacketOutputStream.lo CodecInputStream.lo \
 	CodecOutputStream.lo Codec.lo Decoder.lo Encoder.lo Packet.lo \
@@ -190,6 +190,7 @@ MICRO_VERSION = 1
 #noinst_HEADERS=*.h 
 lib_LTLIBRARIES = libav.la
 SOURCES = \
+	    Init.cpp \
             FrameInputStream.cpp \
             FrameOutputStream.cpp \
             FormatInputStream.cpp \
@@ -293,6 +294,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frame.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameOutputStream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PPSWriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Packet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PacketInputStream.Plo@am__quote@

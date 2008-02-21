@@ -44,17 +44,21 @@ setproctitle("%s", "bla");
 
 
 //    bool nextLoop=true;
-    try{
     for(;main_nextLoop;){
+	try{
 	    Socket * clientSocket=server->accept();
-		if(clientSocket!=NULL){
+	    cout << "Neuer Client"<<endl;
+	    if(clientSocket!=NULL){
 	    	ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    	Thread thread(protoServer);
 	    	thread.start();
+	    }else{
+		cout << "Client  Socket ist null"<<endl;
+		break;
 	    }
-    }
-    }catch(exception & ex){
-	cout << "Exception in Main:"<<ex.what();
+	}catch(exception & ex){
+	    cout << "Exception in Main:"<<ex.what();
+	}
     }
 }
 
