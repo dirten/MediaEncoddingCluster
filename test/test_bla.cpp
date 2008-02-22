@@ -16,11 +16,12 @@
 #include "org/esb/hive/job/ProcessUnit.h"
 #include <iostream>
 #include <stdexcept>
-#include "org/esb/sql/sqlite3x.hpp"
+//#include "org/esb/sql/sqlite3x.hpp"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/ResultSet.h"
 #include <boost/shared_ptr.hpp>
 #include <avcodec.h>
+//#include <sqlite3.h>
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::net;
@@ -37,6 +38,7 @@ void encodeFromProcessUnit();
 void encodeFromFile();
 
 int main(){
+//    int ts=sqlite3::sqlite3_threadsafe();
 //    encodeFromFile();
 //    encodeFromSocket();
     encodeFromProcessUnit();

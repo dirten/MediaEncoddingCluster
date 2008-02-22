@@ -1,18 +1,21 @@
 #include "org/esb/io/File.h"
-#include "org/esb/sql/Connection.h"
+//#include "org/esb/sql/Connection.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
-//#include <sqlite3.h>
+#include <sqlite3.h>
 #include <iostream>
 #include <iomanip>
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-using namespace org::esb::sql;
-using namespace org::esb::io;
+//#include "org/esb/sql/Connection.h"
+//#include "org/esb/sql/Statement.h"
+//using namespace org::esb::sql;
+//using namespace sqlite3;
 int main(){
-    File f("/tmp/hive.db");
-    Connection con(f);
+    int ts=sqlite3_threadsafe();
+    if(ts>0)cout << "ThreadSafe"<<endl;
+//    File f("/tmp/hive.db");
+//    Connection con(f);
+return 0;
 }
 
 /*

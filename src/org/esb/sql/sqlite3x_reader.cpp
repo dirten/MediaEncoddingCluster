@@ -25,7 +25,10 @@
 
 #include <sqlite3.h>
 #include "sqlite3x.hpp"
-
+#include <iostream>
+#include <errno.h>
+#include "org/esb/lang/Thread.h"
+using namespace org::esb::lang;
 namespace sqlite3x {
 
 sqlite3_reader::sqlite3_reader() : cmd(NULL) {}
@@ -53,14 +56,35 @@ sqlite3_reader& sqlite3_reader::operator=(const sqlite3_reader &copy) {
 
 bool sqlite3_reader::read() {
 	if(!this->cmd) throw database_error("reader is closed");
-
-	switch(sqlite3_step(this->cmd->stmt)) {
+	bool toContinue=true;
+	int retry_counter=3;
+	while(true){
+	    switch(sqlite3_step(this->cmd->stmt)) {
 		case SQLITE_ROW:
 			return true;
 		case SQLITE_DONE:
 			return false;
+		case SQLITE_BUSY:
+			std::cout << "Database Locked-> retry("<<retry_counter<<")"<<std::endl;
+			if(retry_counter>0){
+			    --retry_counter;
+  struct timespec rec, rem;
+  rec.tv_sec = 500 / 1000;
+  rec.tv_nsec = (500 % 1000) * 1000000;
+  while( nanosleep( &rec, &rem ) == -1 )
+  {
+    if( errno != EINTR )
+    {
+      break;
+    }
+  }
+
+//			    Thread::sleep(500);
+			    break;
+			}
 		default:
 			throw database_error(this->cmd->con);
+	    }
 	}
 }
 

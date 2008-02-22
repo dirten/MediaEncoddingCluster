@@ -48,7 +48,7 @@ void JobWatcher::run(){
 		    cout << __FILE__<<":"<<__LINE__<<":"<<ex.what()<<endl;
 		}
 	    }
-    	    Thread::sleep(10000);
+    	    Thread::sleep(60000);
 	}
 }
 

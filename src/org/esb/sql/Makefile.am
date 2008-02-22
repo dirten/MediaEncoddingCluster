@@ -15,4 +15,6 @@ SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp \
 INCLUDES=-I$(top_srcdir)/src
 libsql_la_SOURCES = $(SOURCES)
 libsql_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libav_la_LIBADD = ../lang/liblang.la 
+
 EXTRA_DIST=*.h

@@ -96,7 +96,7 @@ namespace org
         /******************************************************************************/
         int read(unsigned char * buffer, int length)
         {
-	    int  counter=1, len=0;
+	    int  counter=0, len=0;
             /*Receive data into buffer*/
             counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
             /*If Connection is dead*/
@@ -111,10 +111,12 @@ namespace org
         {
 	    int length=available(true);
 //	    cout << "Readed Buffer length"<<length<<endl;
-	    char buffer[length];
-	    int  counter=1, len=0;
+	    char *buffer=new char[length];
+//	    char buffer[length];
+	    int  counter=0, len=0;
             /*Receive data into buffer*/
-            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
+//            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
+            counter=read((unsigned char*)buffer,length);
             /*If Connection is dead*/
             if(counter<=0){
 		cout << "Socket is brocken"<<endl;
@@ -122,28 +124,20 @@ namespace org
             }else{
         	str=string(buffer, length);
             }
+            delete buffer;
           return counter;
         }
         /******************************************************************************/
-        int available(bool isBlocking)
-        {
-
-
-	int numBytes = 0, len=0;
-
-//	pthread_mutex_lock(&mutex);
-
-	if(isBlocking){
-//	    int counter=::recv(this->socket->getDescriptor(),NULL,0,MSG_PEEK);
-	    /*Receive length of buffer*/
-            numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),MSG_WAITALL);
-	    if(numBytes<0){
-		this->socket->close();
+        int available(bool isBlocking){
+	    int numBytes = 0, len=0;
+	    if(isBlocking){
+		/*Receive length of buffer*/
+        	numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),MSG_WAITALL);
+		if(numBytes<0){
+		    this->socket->close();
+		}
 	    }
-	}
-//    	pthread_mutex_unlock(&mutex);
-	return len;
-    	    
+	    return len;
         }
       };
     }

@@ -41,6 +41,15 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 
 CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
 LDFLAGS="$LDFLAGS $AMQ_LD"
+
+AC_ARG_WITH(sqlite, [  --with-sqlite=path   where sqlite is installed. (Standard is "/usr/local")],
+	    sqlite_CFLAGS="-I$withval/include"
+	    sqlite_LD="-L$withval/lib -lsqlite3"
+	    sqlite_PATH="$withval")
+
+CPPFLAGS="$CPPFLAGS $sqlite_CFLAGS"
+LDFLAGS="$LDFLAGS $sqlite_LD"
+
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
 AC_CHECK_LIB(avcodec, av_free)

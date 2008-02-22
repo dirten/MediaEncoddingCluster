@@ -29,7 +29,7 @@ using namespace boost;
 
 Job::Job(){
     _con=new Connection("/tmp/hive.db");
-    _con->executenonquery("PRAGMA read_uncommitted = 1");
+//    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
     _frame_group=1;
     _completeTime=NULL;
@@ -43,7 +43,7 @@ Job::Job(){
     CodecID cid=CODEC_ID_MPEG2VIDEO;
 //    CodecID cid=CODEC_ID_MSMPEG4V3;
     _encoder=new Encoder(cid);
-    _encoder->setBitRate(400000);
+    _encoder->setBitRate(4000000);
     _encoder->setTimeBase((AVRational){1,25});
 //    _encoder->gop_size=10;
     _encoder->setGopSize(50);
@@ -96,6 +96,8 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
     }
 }
 */
+//boost::mutex Job::m_mutex;
+
 ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);

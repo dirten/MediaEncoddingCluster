@@ -30,7 +30,7 @@ namespace sqlite3x {
 
 sqlite3_command::sqlite3_command(sqlite3_connection &con, const char *sql) : con(con),refs(0) {
 	const char *tail=NULL;
-	if(sqlite3_prepare(con.db, sql, -1, &this->stmt, &tail)!=SQLITE_OK)
+	if(sqlite3_prepare_v2(con.db, sql, -1, &this->stmt, &tail)!=SQLITE_OK)
 		throw database_error(con);
 
 	this->argc=sqlite3_column_count(this->stmt);
@@ -38,7 +38,7 @@ sqlite3_command::sqlite3_command(sqlite3_connection &con, const char *sql) : con
 
 sqlite3_command::sqlite3_command(sqlite3_connection &con, const wchar_t *sql) : con(con),refs(0) {
 	const wchar_t *tail=NULL;
-	if(sqlite3_prepare16(con.db, sql, -1, &this->stmt, (const void**)&tail)!=SQLITE_OK)
+	if(sqlite3_prepare16_v2(con.db, sql, -1, &this->stmt, (const void**)&tail)!=SQLITE_OK)
 		throw database_error(con);
 
 	this->argc=sqlite3_column_count(this->stmt);
@@ -46,7 +46,7 @@ sqlite3_command::sqlite3_command(sqlite3_connection &con, const wchar_t *sql) : 
 
 sqlite3_command::sqlite3_command(sqlite3_connection &con, const std::string &sql) : con(con),refs(0) {
 	const char *tail=NULL;
-	if(sqlite3_prepare(con.db, sql.data(), (int)sql.length(), &this->stmt, &tail)!=SQLITE_OK)
+	if(sqlite3_prepare_v2(con.db, sql.data(), (int)sql.length(), &this->stmt, &tail)!=SQLITE_OK)
 		throw database_error(con);
 
 	this->argc=sqlite3_column_count(this->stmt);
@@ -54,7 +54,7 @@ sqlite3_command::sqlite3_command(sqlite3_connection &con, const std::string &sql
 
 sqlite3_command::sqlite3_command(sqlite3_connection &con, const std::wstring &sql) : con(con),refs(0) {
 	const wchar_t *tail=NULL;
-	if(sqlite3_prepare16(con.db, sql.data(), (int)sql.length()*2, &this->stmt, (const void**)&tail)!=SQLITE_OK)
+	if(sqlite3_prepare16_v2(con.db, sql.data(), (int)sql.length()*2, &this->stmt, (const void**)&tail)!=SQLITE_OK)
 		throw database_error(con);
 
 	this->argc=sqlite3_column_count(this->stmt);
