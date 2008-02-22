@@ -61,10 +61,10 @@ namespace org{
 				ar & boost::serialization::make_binary_object(extradata,extradata_size);
 				*/
 		            }
+		    CodecID _codec_id;
                 protected:
                     AVCodecContext * _codecCtx;
                     AVCodec * _codec;
-		    CodecID _codec_id;
                     void findCodec(int mode);
                     int _mode;
                 private:

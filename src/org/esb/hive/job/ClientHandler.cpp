@@ -75,6 +75,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         _stmt->bind( field++, (const void*)packet->data,packet->size);
 	_stmt->execute();
     }
+    cout << count << "Frames saved"<<endl;
     trans.commit();
     
 

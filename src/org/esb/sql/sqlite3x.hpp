@@ -33,6 +33,7 @@ namespace sqlite3x {
 	class sqlite3_connection /*: boost::noncopyable */{
 	private:
 		friend class sqlite3_command;
+		friend class sqlite3_reader;
 		friend class database_error;
 
 		struct sqlite3 *db;

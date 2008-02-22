@@ -11,8 +11,8 @@
 //using namespace org::esb::sql;
 //using namespace sqlite3;
 int main(){
-    int ts=sqlite3_threadsafe();
-    if(ts>0)cout << "ThreadSafe"<<endl;
+//    int ts=sqlite3_threadsafe();
+//    if(ts>0)cout << "ThreadSafe"<<endl;
 //    File f("/tmp/hive.db");
 //    Connection con(f);
 return 0;

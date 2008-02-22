@@ -38,13 +38,17 @@ class SocketOutputStream:public OutputStream{
 	    /*
 	    * Send buffer
 	    */
+//	    cout << "neuer sendevorgang mit der länge:"<<len<<endl;
+//	    sendOpts=0;
 	    while(remaining>0){
     		bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
 		byteCounter+=bytes;
+//		cout << "ByteCounter:"<<byteCounter<<endl;
 		if(bytes<0){
+		    perror("error send packet");
 		    cout << "Fehler beim versenden"<< endl;
-           	    this->socket->close();
-		    throw "fehler beim versenden";
+//           	    this->socket->close();
+//		    throw "fehler beim versenden";
 		}
 		buffer+=bytes;
 		remaining-=bytes;

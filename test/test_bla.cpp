@@ -79,7 +79,7 @@ void encodeFromProcessUnit(){
 //    encoder->width=512;
 //    encoder->height=256;
 
-//    encoder->setBitRate(4000);
+    encoder->setBitRate(4000);
     encoder->setTimeBase((AVRational){1,25});
 //    encoder->gop_size=50;
 //    encoder->setGopSize(10);

@@ -31,6 +31,7 @@ namespace org{
 		if(_codec==NULL)
 		    cout << "Codec not found for id :"<<codecId<<endl;
 		avcodec_get_context_defaults2(this, _codec->type);
+//		avcodec_get_context_defaults(this);
 //		codec->capabilities=_codec->capabilities;
             }
 

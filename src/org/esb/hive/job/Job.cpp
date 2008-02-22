@@ -34,7 +34,8 @@ Job::Job(){
     _frame_group=1;
     _completeTime=NULL;
     
-    _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+//    _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+    _decoder=new Decoder(CODEC_ID_MPEG4);
     _decoder->setWidth(512);
     _decoder->setHeight(256);
     _decoder->setPixelFormat(PIX_FMT_YUV420P);
