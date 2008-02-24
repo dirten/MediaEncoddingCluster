@@ -25,7 +25,7 @@ void JobWatcher::run(){
 	    Statement stmt=con.createStatement("select id,infile,outfile from jobs where complete is null order by id");
 	    Statement stmt_detail=con.createStatement("select id,instream,outstream from job_details where job_id=?");
 	while(!_isStopSignal){
-	    cout << "JobWatcher cycle"<<endl;
+//	    cout << "JobWatcher cycle"<<endl;
 	    /**
 	    * @TODO Path entries must come from the Configuration
 	    */

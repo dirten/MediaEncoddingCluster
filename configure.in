@@ -17,13 +17,14 @@ AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard
 
 CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
-AC_ARG_WITH(boost, [  --with-boost=path   where boost is installed. (Standard is "/usr/local")],
-	    BOOST_CFLAGS="-I$withval/include/boost-1_34_1"
-	    BOOST_LD="-L$withval/lib"
-	    BOOST_PATH="$withval")
+AC_ARG_WITH(boost-lib, [  --with-boost-lib=path where boost libraries are installed. ],
+	    BOOST_LD="-L$withval")
+
+LDFLAGS="$LDFLAGS $BOOST_LD"
+AC_ARG_WITH(boost-inc, [  --with-boost-inc=path where boost headers are installed.],
+	    BOOST_CFLAGS="-I$withval")
 
 CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
-LDFLAGS="$LDFLAGS $BOOST_LD"
 
 AC_ARG_WITH(litesql, [  --with-litesql=path   where litesql is installed. (Standard is "/usr/local")],
 	    LITESQL_CFLAGS="-I$withval/include"

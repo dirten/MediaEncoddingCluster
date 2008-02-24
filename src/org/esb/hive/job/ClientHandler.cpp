@@ -48,16 +48,18 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 //    if(unit._input_packets.size()==0)break;
 //	boost::shared_ptr<Packet> p=unit._input_packets.front();
 //	p->size;
-    int count=0, frame_group=0;;
+    int count=0, frame_group=0;
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
         boost::shared_ptr<Packet> packet=*it;
 
-        if(packet->data==NULL)break;
+        if(packet->data==NULL){
+        	cout << "Packet data is null???"<<endl;
+        }
         
         ++count;
 //	++show_progress;
 
-	if(packet->stream_index==0&&packet->isKeyFrame())frame_group++;
+//	if(packet->stream_index==0&&packet->isKeyFrame())frame_group++;
 	int  field=1;
         _stmt->bind( field++, unit._target_stream);
         _stmt->bind( field++, packet->pts);
@@ -75,7 +77,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         _stmt->bind( field++, (const void*)packet->data,packet->size);
 	_stmt->execute();
     }
-    cout << count << "Frames saved"<<endl;
+//    cout << count << "Frames saved"<<endl;
     trans.commit();
     
 

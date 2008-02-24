@@ -51,7 +51,9 @@ bool JobHandler::addJob(Job & job){
 			}
         }
         if(toAdd){
+        	job.activate();
         	_jobList.push_back(&job);
+        	
         	cout << "Job with ID added:"<<job.getId()<<endl;
         	result=true;
         }

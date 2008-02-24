@@ -41,7 +41,7 @@ PacketInputStream::~PacketInputStream(){
 /**
  * @deprecated Use the software.
  */
-Packet & PacketInputStream::readPacket(){
+Packet PacketInputStream::readPacket(){
 //    if(_readFrom==1)
     	return readPacketFromFormatIS();
 //    return readPacketFromIS();
@@ -61,7 +61,7 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet){
 	return count;
 }
 
-Packet & PacketInputStream::readPacketFromFormatIS(){
+Packet PacketInputStream::readPacketFromFormatIS(){
     Packet pac;
 //    av_init_packet(&pac);
 //        if(_packet.data!=NULL)

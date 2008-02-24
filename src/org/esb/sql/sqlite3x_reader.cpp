@@ -66,7 +66,7 @@ bool sqlite3_reader::read() {
 			return false;
 		default:
 //		case SQLITE_BUSY:sqlite3_errmsg(con.db)
-			std::cout << "Database Error("<<sqlite3_errmsg(this->cmd->con.db)<<") retry("<<retry_counter<<")"<<std::endl;
+//			std::cout << "Database Error("<<sqlite3_errmsg(this->cmd->con.db)<<") retry("<<retry_counter<<")"<<std::endl;
 			if(retry_counter>0){
 			    --retry_counter;
 			    struct timespec rec, rem;

@@ -69,21 +69,24 @@ int main(int argc, char * argv[]){
 
 	int streams[ctx->nb_streams];
 
-	Statement stmt_str=con.createStatement( "insert into streams (fileid,stream_index, stream_type,codec,framerate,start_time,duration,time_base, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)" );
+	Statement stmt_str=con.createStatement( "insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate,start_time,duration,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)" );
 	for(int a =0;a<ctx->nb_streams;a++){
 	    int field=1;
 	    stmt_str.bind( field++, fileid);
 	    stmt_str.bind( field++, a);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_type);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_id);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_name);
 	    stmt_str.bind( field++, av_q2d(ctx->streams[a]->r_frame_rate));
 	    stmt_str.bind( field++, ctx->streams[a]->start_time);
 	    stmt_str.bind( field++, ctx->streams[a]->duration);
-	    stmt_str.bind( field++, av_q2d(ctx->streams[a]->time_base));
+	    stmt_str.bind( field++, ctx->streams[a]->time_base.num);
+	    stmt_str.bind( field++, ctx->streams[a]->time_base.den);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->width);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->height);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->gop_size);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->pix_fmt);
+	    stmt_str.bind( field++, ctx->streams[a]->codec->bit_rate);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->rate_emu);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->sample_rate);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->channels);

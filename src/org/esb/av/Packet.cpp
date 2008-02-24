@@ -9,17 +9,22 @@ using namespace org::esb::av;
 Packet::Packet(){
 	isCopy=false;
 	av_init_packet(this);
-	callDestruct=false;
+	callDestruct=true;
 	data=NULL;
 	size=0;
 
 }
 
 Packet::Packet(const Packet & packet){
+	av_init_packet(this);
+	data=NULL;
     pts=packet.pts;
     dts=packet.dts;
-    data=new uint8_t[packet.size+1];
-    memcpy(data,packet.data,packet.size);
+//	if(packet.size>0){
+//		cout << "PacketSize"<<packet.size<<endl;
+    	data=new uint8_t[packet.size];
+    	memcpy(data,packet.data,packet.size);
+//    }
     size=packet.size;
     stream_index=packet.stream_index;
     flags=packet.flags;
@@ -31,10 +36,15 @@ Packet::Packet(const Packet & packet){
 }
 
 Packet & Packet::operator=(Packet & packet){
+	av_init_packet(this);
     pts=packet.pts;
     dts=packet.dts;
-    data=new uint8_t[packet.size+1];
-    memcpy(data,packet.data,packet.size);
+    data=NULL;
+//	if(packet.size>0){
+//		cout << "PacketSize"<<packet.size<<endl;
+    	data=new uint8_t[packet.size];
+    	memcpy(data,packet.data,packet.size);
+//    }
     size=packet.size;
     stream_index=packet.stream_index;
     flags=packet.flags;
@@ -45,6 +55,7 @@ Packet & Packet::operator=(Packet & packet){
     callDestruct=true;
     return *this;
 }
+
 Packet::Packet(int s){
 	isCopy=false;
 	av_init_packet(this);
@@ -60,11 +71,11 @@ Packet::~Packet(){
         data=NULL;
     }else{
     }
-	if(data!=NULL&&size>0){
+	if(data!=NULL&&size>0&&callDestruct){
     	    delete data;
     	    data=NULL;
     	}
-	av_free_packet(this);
+		av_free_packet(this);
 
     data=NULL;
 

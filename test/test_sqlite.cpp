@@ -3,18 +3,33 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Encoder.h"
 #include <sqlite3.h>
 #include <iostream>
 #include <iomanip>
 //#include "org/esb/sql/Connection.h"
 //#include "org/esb/sql/Statement.h"
-//using namespace org::esb::sql;
+using namespace org::esb::av;
 //using namespace sqlite3;
 int main(){
 //    int ts=sqlite3_threadsafe();
 //    if(ts>0)cout << "ThreadSafe"<<endl;
 //    File f("/tmp/hive.db");
 //    Connection con(f);
+
+//	cout << "Activate job"<<_id<<endl;
+	int nResult;
+	sscanf("86017", "%d", &nResult);
+	av_register_all();
+	avcodec_register_all();
+	
+	enum tmp{a=86017} t;
+	cout << "Hex"<<0x15001<<":"<<t<<endl;
+	AVCodec * codec=avcodec_find_encoder((CodecID)a);
+	if(!codec)cout << "Codec not found"<<endl;
+	Encoder * e=new Encoder((CodecID)a);
+//	cout << "Encoder:"<<e->getCodecId()<<endl;
+
 return 0;
 }
 

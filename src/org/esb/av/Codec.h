@@ -33,6 +33,9 @@ namespace org{
 		    void setBitRate(int rate);
 		    void setTimeBase(AVRational tb);
 		    void setGopSize(int size);
+		    void setChannels(int size);
+		    void setSampleRate(int size);
+		    void setSampleFormat(SampleFormat size);
 
 
 		    template<class Archive>
@@ -47,6 +50,9 @@ namespace org{
 		                ar & _time_base.den;
 		                ar & _gop_size;
 		                ar & _bit_rate;
+		                ar & _channels;
+		                ar & _sample_rate;
+		                ar & _sample_format;
 /*
 		                ar & codec_type;
 		                ar & bit_rate;
@@ -74,6 +80,9 @@ namespace org{
 		    int _bit_rate;
 		    AVRational _time_base;
 		    int _gop_size;
+		    int _channels;
+		    int _sample_rate;
+		    SampleFormat _sample_format;
 //            	    static void initialize();
             };
         }

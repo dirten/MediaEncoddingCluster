@@ -10,8 +10,9 @@ void __attribute__ ((constructor)) my_init(void);
 //void _init() __attribute__((constructor));
 
 void my_init(){
-    cout << "Init AV Package"<<endl;
+    cout << "Init AV Package Codec"<<endl;
     av_register_all();
+    avcodec_register_all();
 }
 namespace org{
     namespace esb{
@@ -72,14 +73,17 @@ namespace org{
 		bit_rate=_bit_rate;
 		time_base=_time_base;
 		gop_size=_gop_size;
+		sample_rate=_sample_rate;
+		sample_fmt=_sample_format;
+		channels=_channels;
 	    }
 	    
-            void Codec::open(){
+        void Codec::open(){
         	findCodec(_mode);
         	if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         	    flags|=CODEC_FLAG_TRUNCATED;
-		avcodec_open(this, _codec);
-            }
+			avcodec_open(this, _codec);
+        }
 	    Codec::~Codec(){
 		avcodec_close(this);
 	    }
@@ -101,6 +105,9 @@ namespace org{
             void Codec::setBitRate(int rate){_bit_rate=rate;}
             void Codec::setTimeBase(AVRational tb){_time_base=tb;}
             void Codec::setGopSize(int size){_gop_size=size;}
+            void Codec::setChannels(int c){_channels=c;}
+            void Codec::setSampleRate(int rate){_sample_rate=rate;}
+            void Codec::setSampleFormat(SampleFormat f){_sample_format=f;}
 	    /*
             void Codec::initialize(){
 		if(!isInitialized){

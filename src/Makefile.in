@@ -37,7 +37,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = hivelsnr$(EXEEXT) import$(EXEEXT) job$(EXEEXT) \
-	bla$(EXEEXT)
+	bla$(EXEEXT) export$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -53,6 +53,11 @@ PROGRAMS = $(bin_PROGRAMS)
 am_bla_OBJECTS = bla.$(OBJEXT)
 bla_OBJECTS = $(am_bla_OBJECTS)
 bla_DEPENDENCIES = ./org/esb/lang/liblang.la ./org/esb/libesb.la \
+	./org/esb/io/libio.la ./org/esb/av/libav.la \
+	./org/esb/net/libnet.la ./org/esb/hive/libhive.la
+am_export_OBJECTS = export.$(OBJEXT)
+export_OBJECTS = $(am_export_OBJECTS)
+export_DEPENDENCIES = ./org/esb/lang/liblang.la ./org/esb/libesb.la \
 	./org/esb/io/libio.la ./org/esb/av/libav.la \
 	./org/esb/net/libnet.la ./org/esb/hive/libhive.la
 am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
@@ -81,10 +86,10 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(bla_SOURCES) $(hivelsnr_SOURCES) $(import_SOURCES) \
-	$(job_SOURCES)
-DIST_SOURCES = $(bla_SOURCES) $(hivelsnr_SOURCES) $(import_SOURCES) \
-	$(job_SOURCES)
+SOURCES = $(bla_SOURCES) $(export_SOURCES) $(hivelsnr_SOURCES) \
+	$(import_SOURCES) $(job_SOURCES)
+DIST_SOURCES = $(bla_SOURCES) $(export_SOURCES) $(hivelsnr_SOURCES) \
+	$(import_SOURCES) $(job_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -144,6 +149,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -205,6 +211,7 @@ job_SOURCES = job.cpp
 bla_SOURCES = bla.cpp
 hivelsnr_SOURCES = Listener.cpp
 import_SOURCES = import2.cpp 
+export_SOURCES = export.cpp 
 framesender_SOURCES = bruteripper.cpp
 framereceiver_SOURCES = FrameReceiver.cpp
 #zpipe_SOURCES = zpipe.c
@@ -215,12 +222,14 @@ INCLUDES = -I$(top_srcdir)/src
 # the library search path.
 framesender_LDFLAGS = $(all_libraries) 
 import_LDFLAGS = $(all_libraries) 
+export_LDFLAGS = $(all_libraries) 
 job_LDFLAGS = $(all_libraries) 
 #$(top_srcdir)/src/config/libconfig.la 
 #zpipe_LDFLAGS = $(all_libraries) 
 #noinst_HEADERS = *.h 
 hivelsnr_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 import_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
+export_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 job_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 bla_LDADD = ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 framesender_LDADD = ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/net/libnet.la ./org/esb/av/libav.la
@@ -290,6 +299,9 @@ clean-binPROGRAMS:
 bla$(EXEEXT): $(bla_OBJECTS) $(bla_DEPENDENCIES) 
 	@rm -f bla$(EXEEXT)
 	$(CXXLINK) $(bla_LDFLAGS) $(bla_OBJECTS) $(bla_LDADD) $(LIBS)
+export$(EXEEXT): $(export_OBJECTS) $(export_DEPENDENCIES) 
+	@rm -f export$(EXEEXT)
+	$(CXXLINK) $(export_LDFLAGS) $(export_OBJECTS) $(export_LDADD) $(LIBS)
 hivelsnr$(EXEEXT): $(hivelsnr_OBJECTS) $(hivelsnr_DEPENDENCIES) 
 	@rm -f hivelsnr$(EXEEXT)
 	$(CXXLINK) $(hivelsnr_LDFLAGS) $(hivelsnr_OBJECTS) $(hivelsnr_LDADD) $(LIBS)
@@ -308,6 +320,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Listener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bla.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/export.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/job.Po@am__quote@
 

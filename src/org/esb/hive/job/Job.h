@@ -37,6 +37,8 @@ class Job{
 		void setTargetStream(int s);
 		int getSourceStream();
 		int getTargetStream();
+		void activate();
+		bool isActive();
 /*		File & getSourceFile(void);
 		File & getTargetFile(void);
 		void setSourceFile(File& source);
@@ -58,12 +60,14 @@ class Job{
 		int _target_stream;
 		
 //		vector<JobDetail*>_detailList;
-		int _frame_group;
+//		int _frame_group;
 		mutable boost::mutex m_mutex;
 		Connection * _con;
 		Statement * _stmt;
 		Decoder * _decoder;
 		Encoder * _encoder;
+		bool _isActive;
+		queue<int> _frame_groups;
 //		static ProcessUnit * _unit;
 };	
 }}}}

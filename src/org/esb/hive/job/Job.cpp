@@ -28,31 +28,24 @@ using namespace boost;
 
 
 Job::Job(){
+	_isActive=false;
     _con=new Connection("/tmp/hive.db");
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
-    _frame_group=1;
+//    _frame_group=1;
     _completeTime=NULL;
-    
-//    _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
-    _decoder=new Decoder(CODEC_ID_MPEG4);
+
+
+
+/*    
+    _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
+//    _decoder=new Decoder(CODEC_ID_MPEG4);
     _decoder->setWidth(512);
     _decoder->setHeight(256);
     _decoder->setPixelFormat(PIX_FMT_YUV420P);
     _decoder->open();
-
-    CodecID cid=CODEC_ID_MPEG2VIDEO;
-//    CodecID cid=CODEC_ID_MSMPEG4V3;
-    _encoder=new Encoder(cid);
-    _encoder->setBitRate(4000000);
-    _encoder->setTimeBase((AVRational){1,25});
-//    _encoder->gop_size=10;
-    _encoder->setGopSize(50);
-    _encoder->setPixelFormat(PIX_FMT_YUV420P);
-//    encoder->mb_decision=20;
-    _encoder->setWidth(512);
-    _encoder->setHeight(256);
-    _encoder->open();
+*/
+//    CodecID cid=CODEC_ID_MPEG2VIDEO;
 
 }
 
@@ -77,7 +70,59 @@ void Job::setSourceStream(int id){_source_stream=id;}
 void Job::setTargetStream(int id){_target_stream=id;}
 int Job::getSourceStream(){return _source_stream;}
 int Job::getTargetStream(){return _target_stream;}
+void Job::activate(){
+	Connection con("/tmp/hive.db");
+	{
+		Statement stmt=con.createStatement("select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts");
+		stmt.bind(1,_source_stream);
+		stmt.bind(2,_target_stream);
+		stmt.bind(3,_source_stream);
+		ResultSet rs=stmt.executeQuery();
+		while(rs.next()){
+			_frame_groups.push(rs.getint(0));
+		}
+	}
+	
+	{
+		Statement stmt=con.createStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=?");
+		stmt.bind(1,_id);
+		ResultSet rs=stmt.executeQuery();
+		if(rs.next()){
+    		_decoder=new Decoder((CodecID)rs.getint(0));
+    		_decoder->setWidth(rs.getint(1));
+    		_decoder->setHeight(rs.getint(2));
+    		_decoder->setPixelFormat((PixelFormat)rs.getint(3));
+    		_decoder->open();
+		}
+	}
+	{
+		Statement stmt=con.createStatement("select s.codec, s.width, s.height, s.pix_fmt, s.bit_rate, s.time_base_num, s.time_base_den, s.gop_size, s.channels, s.sample_rate, s.sample_fmt from job_details j, streams s where (j.outstream=s.id) and j.id=?");
+		stmt.bind(1,_id);
+		ResultSet rs=stmt.executeQuery();
+		if(rs.next()){
+    		_encoder=new Encoder((CodecID)rs.getint(0));
+    		_encoder->setWidth(rs.getint(1));
+    		_encoder->setHeight(rs.getint(2));
+    		_encoder->setPixelFormat((PixelFormat)rs.getint(3));
+    		_encoder->setBitRate(rs.getint(4));
+    		_encoder->setTimeBase((AVRational){rs.getint(5),rs.getint(6)});
+    		_encoder->setGopSize(rs.getint(7));
+    		_encoder->setChannels(rs.getint(8));
+    		_encoder->setSampleRate(rs.getint(9));
+    		_encoder->setSampleFormat((SampleFormat)rs.getint(10));
+    		_encoder->open();
+		}
+	}
+	cout << "FrameGroups:"<<_frame_groups.size()<<endl;
+	if(_frame_groups.size()==0){
+		setCompleteTime(1);
+		cout << "Job "<<getId()<<" complete"<<endl;	
+	}
 
+}
+bool Job::isActive(){
+	return _isActive;
+}
 /*
 void Job::addJobDetails(JobDetail & detail){
         list<JobDetail*>::iterator i;
@@ -102,16 +147,16 @@ bool Job::getNextProcessUnit(ProcessUnit & unit){
 ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
-	_stmt->bind(1,_frame_group);
+	ProcessUnit u;
+	if(_frame_groups.size()>0){
+	int fr_gr=_frame_groups.front();
+	_frame_groups.pop();
+	cout << "\rFrameGroup:"<<fr_gr;
+	cout.flush();
+	_stmt->bind(1,fr_gr);
 	_stmt->bind(2,getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
-	ProcessUnit u;
-	if(!rs.next()){
-	    setCompleteTime(1);
-	    cout << "Job "<<getId()<<" complete"<<endl;
-	    return u;
-	}
-	do{
+	while(rs.next()){
 	    shared_ptr<Packet> p(new Packet());
 	    p->size=rs.getint(0);
 	    p->data=new uint8_t[p->size];
@@ -123,12 +168,16 @@ ProcessUnit Job::getNextProcessUnit(){
 	    p->pos=rs.getint(6);
 	    p->stream_index=rs.getint(7);
 	    u._input_packets.push_back(p);
-	}while(rs.next());
+	}
 	u._decoder=_decoder;
 	u._encoder=_encoder;
 	u._source_stream=getSourceStream();
 	u._target_stream=getTargetStream();
-	_frame_group++;
+//	_frame_group++;
+	}else{
+	    setCompleteTime(1);
+	    cout << "Job "<<getId()<<" complete"<<endl;	
+	}
 	return u;
     }
 }

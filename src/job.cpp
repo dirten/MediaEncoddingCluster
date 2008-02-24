@@ -31,7 +31,7 @@ int main(int argc, char*argv[]){
 
 
 	field=1;
-	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base, framecount, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
     sqlite3_bind_int( pStmt, field++, fileid);
@@ -41,12 +41,14 @@ int main(int argc, char*argv[]){
     sqlite3_bind_int( pStmt, field++, 25);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 156007);
-    sqlite3_bind_int( pStmt, field++, 0);
+    sqlite3_bind_int( pStmt, field++, 1);
+    sqlite3_bind_int( pStmt, field++, 25);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 512);
     sqlite3_bind_int( pStmt, field++, 256);
     sqlite3_bind_int( pStmt, field++, 100);
     sqlite3_bind_int( pStmt, field++, 0);
+    sqlite3_bind_int( pStmt, field++, 4000000);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 0);
@@ -66,24 +68,26 @@ int main(int argc, char*argv[]){
 
 
 	field=1;
-	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base, framecount, width, height, gop_size, pix_fmt, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
     sqlite3_bind_int( pStmt, field++, fileid);
+    sqlite3_bind_int( pStmt, field++, 1);
+    sqlite3_bind_int( pStmt, field++, 1);
+    sqlite3_bind_int( pStmt, field++, 86017);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 17);
-    sqlite3_bind_int( pStmt, field++, 25);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 156007);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 512);
-    sqlite3_bind_int( pStmt, field++, 256);
-    sqlite3_bind_int( pStmt, field++, 100);
+    sqlite3_bind_int( pStmt, field++, 99573495);
+    sqlite3_bind_int( pStmt, field++, 1);
+    sqlite3_bind_int( pStmt, field++, 15963);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 0);
     sqlite3_bind_int( pStmt, field++, 0);
+    sqlite3_bind_int( pStmt, field++, 12);
     sqlite3_bind_int( pStmt, field++, 0);
+    sqlite3_bind_int( pStmt, field++, 128000);
+    sqlite3_bind_int( pStmt, field++, 0);
+    sqlite3_bind_int( pStmt, field++, 44100);
+    sqlite3_bind_int( pStmt, field++, 2);
     sqlite3_bind_int( pStmt, field++, 1);
     rc=sqlite3_step(pStmt);
     rc = sqlite3_reset(pStmt);
@@ -93,7 +97,7 @@ int main(int argc, char*argv[]){
 	sql="insert into job_details (job_id,instream, outstream)values(?,?,?)";
     sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
     sqlite3_bind_int( pStmt, 1, jobid);
-    sqlite3_bind_int( pStmt, 2, 1);
+    sqlite3_bind_int( pStmt, 2, 2);
     sqlite3_bind_int( pStmt, 3, streamid);
     rc=sqlite3_step(pStmt);
     rc = sqlite3_reset(pStmt);

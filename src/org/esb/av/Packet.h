@@ -48,6 +48,7 @@ namespace org{
 				    data=new uint8_t[size];
 				    memset(data,0,size);
 				    isCopy=true;
+				    callDestruct=true;
 				}
 				ar & boost::serialization::make_binary_object(data,size);
 		                ar & pts;
