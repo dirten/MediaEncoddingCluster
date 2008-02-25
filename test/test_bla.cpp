@@ -103,12 +103,13 @@ void encodeFromProcessUnit(){
 	ProcessUnit unit;
 	ois.readObject(unit);
 //	unit._decoder=decoder;
-	unit._decoder->open();
+//	unit._decoder->open();
 //	unit._encoder=encoder;
-	unit._encoder->open();
+//	unit._encoder->open();
 	
 //	cout << "EncoderBitRate:"<<unit._encoder->bit_rate<<endl;
 //	cout << "EncoderBitRate:"<<unit._encoder->gop_size<<endl;
+	if(unit._input_packets.size()==0)break;
 	unit.process();	
 
 	char * text_out="put process_unit";
@@ -116,7 +117,6 @@ void encodeFromProcessUnit(){
 	oos.writeObject(unit);
 	
 	list< boost::shared_ptr<Packet> >::iterator it; 
-	if(unit._input_packets.size()==0)break;
 //	boost::shared_ptr<Packet> p=unit._input_packets.front();
 //	p->size;
     

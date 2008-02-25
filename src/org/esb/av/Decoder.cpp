@@ -8,6 +8,10 @@ Decoder::Decoder(): Codec(){}
 Decoder::Decoder(CodecID id): Codec(id,Codec::DECODER){}
 
 Frame Decoder::decode(Packet & packet){
+	return decodeVideo(packet);
+}
+
+Frame Decoder::decodeVideo(Packet & packet){
     Frame frame(pix_fmt, width, height);
     int _frameFinished=0;
     frame._width=this->width;
@@ -31,4 +35,7 @@ Frame Decoder::decode(Packet & packet){
     frame.pts=packet.pts;
     frame.dts=packet.dts;
     return frame;
+}
+Frame Decoder::decodeAudio(Packet & packet){
+
 }

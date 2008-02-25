@@ -31,6 +31,9 @@ namespace av{
 		}
 		ar & boost::serialization::make_binary_object(extradata,extradata_size);
 	    }*/
+	private:
+		Packet encodeVideo(Frame & f);
+		Packet encodeAudio(Frame & f);
 
     };
 }}}

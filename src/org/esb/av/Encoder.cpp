@@ -15,6 +15,9 @@ Encoder::Encoder(): Codec(){
 }
 
 Packet Encoder::encode(Frame & frame){
+	return encodeVideo(frame);
+}
+Packet Encoder::encodeVideo(Frame & frame){
     int buffer_size=1024*256;
     uint8_t data[buffer_size];
     memset(data,0,buffer_size);
@@ -33,4 +36,8 @@ Packet Encoder::encode(Frame & frame){
     if(coded_frame && coded_frame->key_frame)
 	pac.flags |= PKT_FLAG_KEY;
     return pac;
+}
+
+Packet Encoder::encodeAudio(Frame & frame){
+
 }

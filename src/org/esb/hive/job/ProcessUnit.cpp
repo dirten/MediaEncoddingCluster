@@ -9,11 +9,22 @@ ProcessUnit::ProcessUnit(){
     _encoder=NULL;
     _target_stream=0;
 }
+ProcessUnit::~ProcessUnit(){
+	if(_decoder!=NULL)
+		delete _decoder;
+	if(_encoder!=NULL)
+		delete _encoder;
+    _decoder=NULL;
+    _encoder=NULL;
+    _target_stream=0;
+}
 void ProcessUnit::process(){
 	int size=0;
 	list< boost::shared_ptr<Packet> >::iterator it; 
-//	_decoder->open();
-//	_encoder->open();
+	if(_decoder!=NULL)
+		_decoder->open();
+	if(_encoder!=NULL)
+		_encoder->open();
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){
 	    boost::shared_ptr<Packet> p=*it;
 	    size+=p->size;

@@ -32,6 +32,10 @@ class Decoder:public Codec{
 		ar & boost::serialization::make_binary_object(extradata,extradata_size);
 	    }
 	    */
+	    
+//		prívate:
+			Frame decodeVideo(Packet & packet);
+			Frame decodeAudio(Packet & packet);
 
 
 };

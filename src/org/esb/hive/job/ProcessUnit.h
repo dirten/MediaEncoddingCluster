@@ -20,6 +20,7 @@ namespace job{
 class ProcessUnit{
 	public:
 		ProcessUnit();
+		~ProcessUnit();
 		void process();
 
 //	private:
