@@ -32,6 +32,16 @@ namespace org{
 		if(_codec==NULL)
 		    cout << "Codec not found for id :"<<codecId<<endl;
 		avcodec_get_context_defaults2(this, _codec->type);
+		_width=0;
+		_height=0;
+//		    PixelFormat _pix_fmt;
+		_bit_rate=0;
+		//_time_base;
+		_gop_size=0;
+		_channels=0;
+		_sample_rate=0;
+		//_sample_format;
+
 //		avcodec_get_context_defaults(this);
 //		codec->capabilities=_codec->capabilities;
             }
@@ -82,7 +92,9 @@ namespace org{
         	findCodec(_mode);
         	if(_codec->capabilities & CODEC_CAP_TRUNCATED)
         	    flags|=CODEC_FLAG_TRUNCATED;
-			avcodec_open(this, _codec);
+		if(avcodec_open(this, _codec)<0){
+		    cout << "ERROR : while openning Codec"<<endl;
+		}
         }
 	    Codec::~Codec(){
 		avcodec_close(this);

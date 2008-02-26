@@ -7,10 +7,10 @@ extern "C" {
 #include <iostream>
 using namespace std;
 using namespace org::esb::av;
+
 Frame::Frame(){
     key_frame=1;
     _buffer=new uint8_t[1];
-
 }
 
 Frame::Frame(Packet * packet, Codec * codec){
@@ -90,8 +90,10 @@ Frame::Frame(Frame * source, int format){
 }
 
 Frame::~Frame(){
-//    if(strlen(_buffer)>0)
+//    if(_buffer!=NULL)
+//        delete []_buffer;
         delete []_buffer;
+//    _buffer=NULL;
 }
 
 AVPacket * Frame::getPacket(){

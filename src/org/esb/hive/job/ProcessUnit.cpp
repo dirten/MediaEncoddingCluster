@@ -10,10 +10,12 @@ ProcessUnit::ProcessUnit(){
     _target_stream=0;
 }
 ProcessUnit::~ProcessUnit(){
+/*
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
+*/
     _decoder=NULL;
     _encoder=NULL;
     _target_stream=0;

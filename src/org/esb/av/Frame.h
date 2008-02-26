@@ -29,7 +29,7 @@ class Frame :public AVFrame{
         int _height;
         int _width;
         int _pixFormat;
-    private:
+//    private:
         AVCodecContext * _codecContext;
 	AVPacket * _packet;
 	AVFrame * _frame;
@@ -37,6 +37,7 @@ class Frame :public AVFrame{
     public:
 	int _frameFinished;
         int64_t dts;
+        int _size;
 
 };
 }}}

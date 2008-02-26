@@ -15,7 +15,10 @@ Encoder::Encoder(): Codec(){
 }
 
 Packet Encoder::encode(Frame & frame){
-	return encodeVideo(frame);
+	if(this->codec_type==CODEC_TYPE_VIDEO)
+	    return encodeVideo(frame);
+	if(this->codec_type==CODEC_TYPE_AUDIO)
+	    return encodeAudio(frame);
 }
 Packet Encoder::encodeVideo(Frame & frame){
     int buffer_size=1024*256;
@@ -39,5 +42,5 @@ Packet Encoder::encodeVideo(Frame & frame){
 }
 
 Packet Encoder::encodeAudio(Frame & frame){
-
+    return Packet();
 }
