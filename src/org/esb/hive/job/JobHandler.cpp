@@ -23,10 +23,17 @@ Job * JobHandler::getJob(){
         list<Job*>::iterator i;
         for(i=_jobList.begin();i!=_jobList.end();++i) {
             Job *tmp=(Job*)*i;
+	    if(tmp->getCompleteTime()==NULL&&tmp->_stream_type==CODEC_TYPE_AUDIO){
+		return tmp;
+	    }
+        }
+        for(i=_jobList.begin();i!=_jobList.end();++i) {
+            Job *tmp=(Job*)*i;
 	    if(tmp->getCompleteTime()==NULL){
 		return tmp;
 	    }
         }
+
     return NULL;
 }
 
@@ -34,9 +41,9 @@ Job * JobHandler::getJob(int id){
         list<Job*>::iterator i;
         for(i=_jobList.begin();i!=_jobList.end();++i) {
             Job *tmp=(Job*)*i;
-			if(tmp->getId()==id){
-				return tmp;
-			}
+	    if(tmp->getId()==id){
+		return tmp;
+	    }
         }
         return NULL;
 }

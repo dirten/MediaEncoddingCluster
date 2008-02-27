@@ -42,5 +42,14 @@ Packet Encoder::encodeVideo(Frame & frame){
 }
 
 Packet Encoder::encodeAudio(Frame & frame){
-    return Packet();
+	int outbuf_size=10000;
+	uint8_t outbuf[outbuf_size];
+        int out_size = avcodec_encode_audio(this, (uint8_t*)&outbuf, outbuf_size, (short int *)frame._buffer);
+	Packet pak(out_size);
+	pak.size=out_size;
+	memcpy(pak.data,&outbuf,out_size);
+	pak.pts=frame.pts;
+	pak.dts=frame.dts;
+	
+    return pak;
 }

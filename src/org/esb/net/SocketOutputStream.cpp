@@ -47,8 +47,8 @@ class SocketOutputStream:public OutputStream{
 		if(bytes<0){
 		    perror("error send packet");
 		    cout << "Fehler beim versenden"<< endl;
-//           	    this->socket->close();
-//		    throw "fehler beim versenden";
+           	    this->socket->close();
+		    throw "fehler beim versenden";
 		}
 		buffer+=bytes;
 		remaining-=bytes;

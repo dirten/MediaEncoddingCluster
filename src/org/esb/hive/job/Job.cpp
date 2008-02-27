@@ -71,6 +71,7 @@ void Job::setTargetStream(int id){_target_stream=id;}
 int Job::getSourceStream(){return _source_stream;}
 int Job::getTargetStream(){return _target_stream;}
 void Job::activate(){
+	cout << "Activating job "<<getId()<<endl;
 	Connection con("/tmp/hive.db");
 	{
 		Statement stmt=con.createStatement("select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts");
@@ -114,6 +115,7 @@ void Job::activate(){
 		}
 	}
 	cout << "FrameGroups:"<<_frame_groups.size()<<endl;
+	_stream_type=_decoder->codec_type;
 	if(_frame_groups.size()==0){
 		setCompleteTime(1);
 		cout << "Job "<<getId()<<" complete"<<endl;	

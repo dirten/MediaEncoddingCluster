@@ -19,6 +19,9 @@ ProcessUnit::~ProcessUnit(){
     _decoder=NULL;
     _encoder=NULL;
     _target_stream=0;
+    _input_packets.clear();
+    _output_packets.clear();
+    
 }
 void ProcessUnit::process(){
 	int size=0;

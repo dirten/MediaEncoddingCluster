@@ -16,6 +16,7 @@ PacketOutputStream::PacketOutputStream(OutputStream * os){
 }
 
 PacketOutputStream::~PacketOutputStream(){
+    av_write_trailer(_fmtCtx);
 //	delete _target;
 }
 
@@ -24,10 +25,18 @@ void PacketOutputStream::writePacket(Packet & packet){
 }
 
 void PacketOutputStream::setEncoder(Encoder & encoder){
-    AVStream * st=av_new_stream(_fmtCtx,0);
-    st->codec=&encoder;
-    av_write_header(_fmtCtx);
+    setEncoder(encoder,0);
+}
 
+void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
+    AVStream * st=av_new_stream(_fmtCtx,stream_id);
+    st->codec=&encoder;
+//    av_write_header(_fmtCtx);
+
+}
+
+void PacketOutputStream::init(){
+    av_write_header(_fmtCtx);
 }
 
 void PacketOutputStream::writePacket(Packet * packet){

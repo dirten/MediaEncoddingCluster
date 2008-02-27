@@ -14,6 +14,8 @@ namespace org{
 					~PacketOutputStream();
 					void writePacket(Packet * packet);
 					void setEncoder(Encoder & encoder);
+					void setEncoder(Encoder & encoder, int stream_id);
+					void init();
 					void writePacket(Packet & packet);
 					void write(char * buffer, int length);
 					void write(vector<unsigned char>&buffer);

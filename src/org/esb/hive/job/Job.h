@@ -68,6 +68,8 @@ class Job{
 		Encoder * _encoder;
 		bool _isActive;
 		queue<int> _frame_groups;
+		public:
+		int _stream_type;
 //		static ProcessUnit * _unit;
 };	
 }}}}

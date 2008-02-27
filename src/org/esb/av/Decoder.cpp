@@ -87,6 +87,8 @@ Frame Decoder::decodeAudio(Packet & packet){
         }
         Frame frame;
         frame._buffer=outbuf;
+        frame.pts=packet.pts;
+        frame.dts=packet.dts;
         frame._size=out_size;
     return frame;
 }
