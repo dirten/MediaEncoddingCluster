@@ -16,12 +16,12 @@ PacketOutputStream::PacketOutputStream(OutputStream * os){
 }
 
 PacketOutputStream::~PacketOutputStream(){
-    av_write_trailer(_fmtCtx);
+//    av_write_trailer(_fmtCtx);
 //	delete _target;
 }
 
 void PacketOutputStream::writePacket(Packet & packet){
-    int result=av_write_frame(_fmtCtx,&packet);
+    int result=av_interleaved_write_frame(_fmtCtx,&packet);
 }
 
 void PacketOutputStream::setEncoder(Encoder & encoder){

@@ -38,5 +38,5 @@ void FormatOutputStream::write(char * buffer, int length){};
 void FormatOutputStream::write(vector<unsigned char>&buffer){};
 void FormatOutputStream::write(char * buffer){};
 void FormatOutputStream::close(){
-    av_write_trailer(_fmtCtx);
+//    av_write_trailer(_fmtCtx);
 };
