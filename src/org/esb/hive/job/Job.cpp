@@ -71,19 +71,12 @@ void Job::setTargetStream(int id){_target_stream=id;}
 int Job::getSourceStream(){return _source_stream;}
 int Job::getTargetStream(){return _target_stream;}
 void Job::activate(){
-	cout << "Activating job "<<getId()<<endl;
+
+
+
+
 	Connection con("/tmp/hive.db");
-	{
-		Statement stmt=con.createStatement("select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts");
-		stmt.bind(1,_source_stream);
-		stmt.bind(2,_target_stream);
-		stmt.bind(3,_source_stream);
-		ResultSet rs=stmt.executeQuery();
-		while(rs.next()){
-			_frame_groups.push(rs.getint(0));
-		}
-	}
-	
+
 	{
 		Statement stmt=con.createStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=?");
 		stmt.bind(1,_id);
@@ -114,8 +107,26 @@ void Job::activate(){
     		_encoder->open();
 		}
 	}
+
+	{
+		string sql;
+		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
+			sql="select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts";
+		}	
+		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
+			sql="select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts";
+		}
+		Statement stmt=con.createStatement(sql.c_str());
+		stmt.bind(1,_source_stream);
+		stmt.bind(2,_target_stream);
+		stmt.bind(3,_source_stream);
+		ResultSet rs=stmt.executeQuery();
+		while(rs.next()){
+			_frame_groups.push(rs.getint(0));
+		}
+	}
+	
 	cout << "FrameGroups:"<<_frame_groups.size()<<endl;
-	_stream_type=_decoder->codec_type;
 	if(_frame_groups.size()==0){
 		setCompleteTime(1);
 		cout << "Job "<<getId()<<" complete"<<endl;	

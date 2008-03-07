@@ -30,10 +30,13 @@
 #include "org/esb/lang/Exception.h"
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
+#define SOCKET_WAITALL 0
 #elif defined( unix ) && !defined( __CYGWIN__ ) && !defined( sun )
 #define SOCKET_NOSIGNAL MSG_NOSIGNAL
+#define SOCKET_WAITALL MSG_WAITALL
 #else
 #define SOCKET_NOSIGNAL 0
+#define SOCKET_WAITALL 0
 #endif
 using namespace org::esb::io;
 using namespace org::esb::lang;

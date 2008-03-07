@@ -50,15 +50,18 @@ namespace org
         /******************************************************************************/
         ~SocketInputStream()
         {
+        /*
 		#ifdef HAVE_PTHREAD_H
     		pthread_mutex_destroy(&mutex);
 		#else
     		DeleteCriticalSection(&mutex);
 		#endif
+		*/
         }
         /******************************************************************************/
         SocketInputStream(Socket * socket)
         {
+        /*
 		#ifdef HAVE_PTHREAD_H
     		pthread_mutexattr_t attr;
     		pthread_mutexattr_init(&attr);
@@ -67,6 +70,7 @@ namespace org
 		#else
     		InitializeCriticalSection(&mutex);            
 		#endif
+		*/
           this->socket=socket;
 		  byte=-1;
 
@@ -98,10 +102,11 @@ namespace org
         {
 	    int  counter=0, len=0;
             /*Receive data into buffer*/
-            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
+            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
+//            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
             /*If Connection is dead*/
             if(counter<=0){
-		cout << "Socket is brocken"<<endl;
+				cout << "Socket is brocken"<<endl;
               	this->socket->close();
             }
           return counter;
@@ -115,29 +120,30 @@ namespace org
 //	    char buffer[length];
 	    int  counter=0, len=0;
             /*Receive data into buffer*/
-//            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,MSG_WAITALL);
-            counter=read((unsigned char*)buffer,length);
+            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
+//            counter=read((unsigned char*)buffer,length);
             /*If Connection is dead*/
             if(counter<=0){
-		cout << "Socket is brocken"<<endl;
+				cout << "Socket is brocken"<<endl;
               	this->socket->close();
             }else{
-        	str=string(buffer, length);
+        		str=string(buffer, length);
             }
             delete buffer;
           return counter;
         }
+        
         /******************************************************************************/
         int available(bool isBlocking){
-	    int numBytes = 0, len=0;
-	    if(isBlocking){
-		/*Receive length of buffer*/
-        	numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),MSG_WAITALL);
-		if(numBytes<0){
-		    this->socket->close();
-		}
-	    }
-	    return len;
+	    	int numBytes = 0, len=0;
+	    	if(isBlocking){
+				/*Receive length of buffer*/
+        		numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),SOCKET_WAITALL);
+				if(numBytes<0){
+		    		this->socket->close();
+				}
+	    	}
+	    	return len;
         }
       };
     }

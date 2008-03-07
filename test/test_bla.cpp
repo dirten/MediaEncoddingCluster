@@ -57,7 +57,7 @@ void encodeFromProcessUnit(){
     PacketOutputStream pos(&fos);
 
 
-    
+/*    
     Decoder * decoder=new Decoder(CODEC_ID_MSMPEG4V3);
     decoder->width=512;
     decoder->height=256;
@@ -91,7 +91,7 @@ void encodeFromProcessUnit(){
     encoder->open();
     pos.setEncoder(*encoder);
 
-
+*/
 
 
     size=0;
@@ -103,9 +103,9 @@ void encodeFromProcessUnit(){
 	ProcessUnit unit;
 	ois.readObject(unit);
 //	unit._decoder=decoder;
-//	unit._decoder->open();
+	unit._decoder->open();
 //	unit._encoder=encoder;
-//	unit._encoder->open();
+	unit._encoder->open();
 	
 //	cout << "EncoderBitRate:"<<unit._encoder->bit_rate<<endl;
 //	cout << "EncoderBitRate:"<<unit._encoder->gop_size<<endl;

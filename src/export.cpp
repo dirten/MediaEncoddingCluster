@@ -15,8 +15,8 @@ using namespace org::esb::io;
 using namespace org::esb::sql;
 using namespace org::esb::lang;
 
-int main(){
-    File fout("/tmp/testdb.vob");
+int exporter(int argc, char * argv[]){
+    File fout("/tmp/testdb.avi");
 //    File fout("/tmp/testdb.mp2");
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
@@ -29,16 +29,17 @@ int main(){
     encoder->setWidth(512);
     encoder->setHeight(256);
     encoder->open();
-//    pos.setEncoder(*encoder,0);
+
+    pos.setEncoder(*encoder,0);
 
     Encoder *encoder2=new Encoder(CODEC_ID_MP2);
     encoder2->setBitRate(128000);
     encoder2->setSampleRate(44100);
     encoder2->setChannels(2);
     encoder2->setSampleFormat((SampleFormat)1);
-
     encoder2->open();
-    pos.setEncoder(*encoder2,0);
+
+    pos.setEncoder(*encoder2,1);
 
 /*
     Decoder *decoder2=new Decoder(CODEC_ID_MP3);
@@ -50,10 +51,10 @@ int main(){
     pos.setEncoder((Encoder&)*decoder2,0);
 */
     pos.init();
-    if(false)
+//    if(false)
     {
 	Connection con("/tmp/hive.db");
-	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=4 order by pts");
+	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=4 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
@@ -74,6 +75,7 @@ int main(){
 	    p.pos=rs.getint(6);
 	    p.stream_index=0;//rs.getint(7);
 	    pos.writePacket(p);
+		if(video_packets%1000==0)
 	    cout<<"\r" << video_packets ;
 	    cout.flush();
 
@@ -85,7 +87,7 @@ int main(){
 //    if(false)
         {
 	Connection con("/tmp/hive.db");
-	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=3 order by pts");
+	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=3 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
@@ -97,15 +99,16 @@ int main(){
 	    Packet p;
 	    p.size=rs.getint(0);
 	    p.data=new uint8_t[p.size];
-	    cout <<"Size:"<<p.size<<endl;
+//	    cout <<"Size:"<<p.size<<endl;
 	    memcpy(p.data,rs.getblob(1).c_str(),p.size);
-	    p.pts=rs.getint(2);
-	    p.dts=rs.getint(3);
+	    p.pts=rs.getint(2)>0?(rs.getint(2)/417):rs.getint(2);
+	    p.dts=p.pts;//rs.getint(3);
 	    p.duration=rs.getint(4);
 	    p.flags=rs.getint(5);
 	    p.pos=rs.getint(6);
-	    p.stream_index=0;//rs.getint(7);
+	    p.stream_index=1;//rs.getint(7);
 	    pos.writePacket(p);
+		if(audio_packets%1000==0)
 	    cout<<"\r" << audio_packets ;
 	    cout.flush();
 

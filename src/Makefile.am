@@ -7,7 +7,7 @@ SUBDIRS = org
 #framehive
 
 
-bin_PROGRAMS = hivelsnr import job bla export
+bin_PROGRAMS = hive hivelsnr
 
 
 #bin_PROGRAMS = zpipe
@@ -17,6 +17,7 @@ bin_PROGRAMS = hivelsnr import job bla export
 job_SOURCES = job.cpp
 bla_SOURCES = bla.cpp
 hivelsnr_SOURCES = Listener.cpp
+hive_SOURCES = Hive.cpp
 import_SOURCES = import2.cpp 
 export_SOURCES = export.cpp 
 framesender_SOURCES = bruteripper.cpp
@@ -37,6 +38,7 @@ job_LDFLAGS = $(all_libraries)
 #noinst_HEADERS = *.h 
 
 hivelsnr_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
+hive_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 import_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 export_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 
 job_LDADD= ./org/esb/lang/liblang.la ./org/esb/libesb.la ./org/esb/io/libio.la ./org/esb/av/libav.la ./org/esb/net/libnet.la ./org/esb/hive/libhive.la 

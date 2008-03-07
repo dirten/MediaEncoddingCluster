@@ -2,8 +2,9 @@
 
 #include "Frame.h"
 #include "Packet.h"
+#include <iostream>
 using namespace org::esb::av;
-
+using namespace std;
 Encoder::Encoder(CodecID id): Codec(id,Codec::ENCODER){
 
 
@@ -33,6 +34,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     pac.size=ret;
     pac.pts=frame.pts;
     pac.dts=frame.dts;
+    pac.pos=frame.pos;
     pac.duration=1;
 //    pac.flags=0;
 
@@ -49,7 +51,13 @@ Packet Encoder::encodeAudio(Frame & frame){
 	pak.size=out_size;
 	memcpy(pak.data,&outbuf,out_size);
 	pak.pts=frame.pts;
+//	pak.pts=this->coded_frame->pts;
+//    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
+//    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
+
 	pak.dts=frame.dts;
-	
+	pak.pos=frame.pos;
+	pak.duration=frame.duration;
+//	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;	
     return pak;
 }

@@ -1,5 +1,5 @@
 
-#include <sqlite3.h>
+//#include <sqlite3.h>
 #include <iostream>
 #include <fstream>
 #include "org/esb/io/File.h"
@@ -18,12 +18,13 @@
 #include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
 
-
+#include "org/esb/config/config.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
 using namespace org::esb::io;
+using namespace org::esb::config;
 using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace boost;
@@ -31,13 +32,18 @@ using namespace sqlite3x;
 
 
 
-int main(int argc, char * argv[]){
+int import(int argc, char * argv[]){
 	cout << LIBAVCODEC_IDENT <<endl;
-	if(argc!=3){
+
+    Config::init("./cluster.cfg");
+
+	if(argc!=2){
 		cout << "wrong parameter count"<<endl;	
 		exit(1);
 	}
-
+	string dbFile=Config::getProperty("data.dir");
+	dbFile+="/";
+	dbFile+=Config::getProperty("data.file");
 	File databaseFile(argv[1]);
 	if(!databaseFile.exists()||!checkDatabase(databaseFile)){
 		createDatabase(databaseFile);
@@ -130,3 +136,8 @@ int main(int argc, char * argv[]){
 	
     	return 0;
 }
+/*
+int main(int argc, char * argv[]){
+	import(argc,argv);
+}
+*/

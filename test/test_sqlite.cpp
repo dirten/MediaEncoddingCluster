@@ -12,6 +12,23 @@
 using namespace org::esb::av;
 //using namespace sqlite3;
 int main(){
+	Encoder e(CODEC_ID_MP2);
+	e.setSampleRate(44100);
+	e.setBitRate(128000);
+	e.setChannels(2);
+	e.setSampleFormat((SampleFormat)1);
+	e.time_base.num=0;
+	e.time_base.den=0;
+	e.open();
+	cout << e.time_base.num<<":"<<e.time_base.den;
+	cout << av_rescale_q(19097,(AVRational){1,15963},(AVRational){1,15963})<<endl;	
+	cout << av_rescale_q(1,(AVRational){1,25},(AVRational){1,25})<<endl;	
+//	cout << av_rescale_q(19097,15963,15963).den<<endl;	
+
+}
+
+/*
+int main(){
 //    int ts=sqlite3_threadsafe();
 //    if(ts>0)cout << "ThreadSafe"<<endl;
 //    File f("/tmp/hive.db");
@@ -32,7 +49,7 @@ int main(){
 
 return 0;
 }
-
+*/
 /*
 using namespace std;
 using namespace org::esb::io;

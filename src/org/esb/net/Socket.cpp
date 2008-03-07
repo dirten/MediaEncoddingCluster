@@ -96,7 +96,9 @@ void Socket::init()
 void Socket::connect()
 {
   this->init();
+  #if !defined(WIN32) 
   inet_pton(AF_INET,this->hostname,&this->socketaddr.sin_addr);
+  #endif
   ::connect(this->socketFd,(struct sockaddr*)&this->socketaddr,sizeof(this->socketaddr));
   
 }

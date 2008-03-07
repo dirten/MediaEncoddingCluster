@@ -28,27 +28,23 @@ class SocketOutputStream:public OutputStream{
 		cout << "Socket is Closed"<<endl;
 //		return;
 	    }
-	    int remaining=len, byteCounter=0, sendOpts = MSG_NOSIGNAL, bytes=0;
+	    int remaining=len, byteCounter=0, bytes=0;
 
 	    /*
 	    * Send length from buffer
 	    */
-	    bytes=::send(this->socket->getDescriptor(),&len,sizeof(int),sendOpts);
+	    bytes=::send(this->socket->getDescriptor(),(const char *)&len,sizeof(int),SOCKET_NOSIGNAL);
 
 	    /*
 	    * Send buffer
 	    */
-//	    cout << "neuer sendevorgang mit der länge:"<<len<<endl;
-//	    sendOpts=0;
 	    while(remaining>0){
-    		bytes=::send(this->socket->getDescriptor(),buffer,remaining,sendOpts);
+    		bytes=::send(this->socket->getDescriptor(),buffer,remaining,SOCKET_NOSIGNAL);
 		byteCounter+=bytes;
-//		cout << "ByteCounter:"<<byteCounter<<endl;
 		if(bytes<0){
 		    perror("error send packet");
-		    cout << "Fehler beim versenden"<< endl;
-           	    this->socket->close();
-		    throw "fehler beim versenden";
+           	this->socket->close();
+//		    throw "fehler beim versenden";
 		}
 		buffer+=bytes;
 		remaining-=bytes;

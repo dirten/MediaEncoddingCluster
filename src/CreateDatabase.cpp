@@ -1,15 +1,19 @@
+#ifndef CREATE_DATABASE
+#define CREATE_DATABASE
 #include "org/esb/io/File.h"
-#include <sqlite3.h>
+//#include <sqlite3.h>
 #include <iostream>
 #include "org/esb/sql/Connection.h"
 
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::sql;
+//using namespace sqlite;
+/*
 sqlite3 *db=NULL;
 sqlite3 * getDatabase(File &databaseFile){
     char *zErrMsg = 0;
-//    if(db==NULL){
+    if(db==NULL){
 	printf("Opening Database Connection\n");
     int rc = sqlite3_open(databaseFile.getPath(), &db);
     if( rc ){
@@ -17,10 +21,10 @@ sqlite3 * getDatabase(File &databaseFile){
         sqlite3_close(db);
 		exit(1);
     }
-//    }
+    }
   return db;
 }
-
+*/
 bool checkDatabase(File &databaseFile){
 
 	return false;
@@ -49,3 +53,5 @@ bool createDatabase(File &databaseFile){
 	createTable(con,"CREATE INDEX packet_pts_idx on packets(pts)");
 	con.close();
 }
+
+#endif
