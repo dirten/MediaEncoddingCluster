@@ -11,39 +11,39 @@ using namespace org::esb::lang;
 using namespace org::esb::net;
 using namespace org::esb::av;
 
-class HiveClientHandler: public Runnable{
-    private:
+class HiveClientHandler:public Runnable {
+  private:
 	Socket * socket;
-//	HiveListener * listener;
-	HiveFrameReader * frameReader;
-	FrameInputStream * fis;
-	FrameOutputStream * fos;
-    public:
-	HiveClientHandler(Socket * socket){
-	    this->socket=socket;
-	    this->frameReader=new HiveFrameReader("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+//  HiveListener * listener;
+	HiveFrameReader *frameReader;
+	FrameInputStream *fis;
+	FrameOutputStream *fos;
+  public:
+	HiveClientHandler (Socket * socket) {
+		this->socket = socket;
+		this->frameReader =
+			new
+			HiveFrameReader
+			("../Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 
-		fos=new FrameOutputStream(socket->getOutputStream());
-		fis=new FrameInputStream(socket->getInputStream());
+		fos = new FrameOutputStream (socket->getOutputStream ());
+		fis = new FrameInputStream (socket->getInputStream ());
+	} ~HiveClientHandler () {
+		cout << "closing HiveClientHandler" << endl;
+//      this->listener->remove(this);
+		delete socket;
+		socket = 0;
 	}
-	
-	~HiveClientHandler(){
-	    cout << "closing HiveClientHandler"<<endl;
-//	    this->listener->remove(this);
-	    delete socket;
-	    socket=0;
-	}
-	
-	void run(){
-	    for(int a=0;a<100;a++){
 
-	    Frame * frame=frameReader->getNextFrame();
-		fos->writeFrame(frame);
-	    delete frame;
-		frame=fis->readFrame();
-	    delete frame;
-	    }
+	void run () {
+		for (int a = 0; a < 100; a++) {
+
+			Frame *frame = frameReader->getNextFrame ();
+			fos->writeFrame (frame);
+			delete frame;
+			frame = fis->readFrame ();
+			delete frame;
+		}
 	}
 };
 #endif
-

@@ -62,9 +62,6 @@ void client(int argc, char *argv[]){
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
     ObjectOutputStream oos(sock.getOutputStream());
-//    int size=0;
-    
-    
     int pCount=0;
     while(true||++pCount<20){
 		char * text="get process_unit";
@@ -89,8 +86,6 @@ void listener(int argc, char *argv[]){
     	exit(1);
     }
     JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
-//	cout <<typeid(JobWatcher).name()<<endl;
-
     Thread *runner=new Thread(_watcher);
     runner->start();
     int port=atoi(Config::getProperty("protocol.listener.port"));
@@ -99,7 +94,6 @@ void listener(int argc, char *argv[]){
     for(;main_nextLoop;){
 		try{
 	    	Socket * clientSocket=server->accept();
-//	    	cout << "Neuer Client"<<endl;
 	    	if(clientSocket!=NULL){
 	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    		Thread thread(protoServer);
