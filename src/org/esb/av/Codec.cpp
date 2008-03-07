@@ -19,7 +19,7 @@ namespace org{
         namespace av{
     	    Codec::Codec(){}
             Codec::Codec(const CodecID codecId, int mode){
-        		cout << "CodecConstructor:"<<codecId<<endl;
+//        		cout << "CodecConstructor:"<<codecId<<endl;
         		_codec_id=codecId;
         		_codec=NULL;
         		_mode=mode;
@@ -30,12 +30,14 @@ namespace org{
 				}
 				if(_codec==NULL)
 		    		cout << "Codec not found for id :"<<codecId<<endl;
+/*
 		    	if(_codec->type==CODEC_TYPE_VIDEO){
 		    		cout << "CodecTypeVideo"<<endl;
 		    	}
 		    	if(_codec->type==CODEC_TYPE_AUDIO){
 		    		cout << "CodecTypeAudio"<<endl;
 		    	}
+*/
 				avcodec_get_context_defaults2(this, _codec->type);
 				_width=0;
 				_height=0;
@@ -46,19 +48,19 @@ namespace org{
             }
 
             CodecType Codec::getCodecType(){
-//                return _codecCtx->codec_type;
+                return _codecCtx->codec_type;
             }
             
             char * Codec::getCodecName(){
-//                return _codecCtx->codec_name;
+                return _codecCtx->codec_name;
             }
 
             int Codec::getCodecId(){
-//                return _codecCtx->codec_id;
+                return _codecCtx->codec_id;
             }
 
             AVCodecContext * Codec::getCodecContext(){
-//                return _codecCtx;
+                return _codecCtx;
             }
 
             void Codec::initDefaults(){
@@ -94,7 +96,8 @@ namespace org{
 		if(avcodec_open(this, _codec)<0){
 		    cout << "ERROR : while openning Codec"<<endl;
 		}
-		    cout << "openning Codec"<<_codec_id<<endl;
+/*
+		 	    cout << "openning Codec"<<_codec_id<<endl;
 
 		    	if(codec_type==CODEC_TYPE_VIDEO){
 		    		cout << "CodecTypeVideo"<<endl;
@@ -102,7 +105,7 @@ namespace org{
 		    	if(codec_type==CODEC_TYPE_AUDIO){
 		    		cout << "CodecTypeAudio"<<endl;
 		    	}
-
+*/
         }
 	    Codec::~Codec(){
 			avcodec_close(this);

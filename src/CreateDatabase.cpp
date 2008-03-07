@@ -52,6 +52,8 @@ bool createDatabase(File &databaseFile){
 	createTable(con,"CREATE INDEX packet_group_idx on packets(frame_group)");
 	createTable(con,"CREATE INDEX packet_pts_idx on packets(pts)");
 	con.close();
+	return true;
 }
 
 #endif
+

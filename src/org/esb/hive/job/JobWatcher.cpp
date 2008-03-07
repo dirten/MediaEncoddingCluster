@@ -42,7 +42,7 @@ void JobWatcher::run(){
 			job->setId(rs_d.getint(0));
 			job->setSourceStream(rs_d.getint(1));
 			job->setTargetStream(rs_d.getint(2));
-			bool isAdded=_handler->addJob(*job);
+			_handler->addJob(*job);
 		    }
 		}catch(exception&ex){
 		    cout << __FILE__<<":"<<__LINE__<<":"<<ex.what()<<endl;

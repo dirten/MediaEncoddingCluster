@@ -131,7 +131,7 @@ std::string StringTokenizer::nextToken(void)
             "StringTokenizer::nextToken - No more Tokens available");
             
     */}
-    
+	return "";//string;    
 }
 
 ////////////////////////////////////////////////////////////////////////////////

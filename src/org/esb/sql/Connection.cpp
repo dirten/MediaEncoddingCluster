@@ -29,7 +29,7 @@ PreparedStatement & Connection::prepareStatement(const char * sql){
 	return *stmt;
 }
 
-Statement & Connection::createStatement(){}
+//Statement & Connection::createStatement(){return;}
 
 
 void Connection::close(){

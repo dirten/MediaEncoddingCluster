@@ -9,7 +9,7 @@ Statement::Statement(Connection & db, const char * sql):sqlite3_command((sqlite3
 
 Statement::Statement(const Statement & st):sqlite3_command((sqlite3_command&)st){}
 
-ResultSet & Statement::executeQuery(string sql, void * callback){}
+//ResultSet & Statement::executeQuery(string sql, void * callback){}
 
 ResultSet Statement::executeQuery(){return ResultSet(*this);}
 

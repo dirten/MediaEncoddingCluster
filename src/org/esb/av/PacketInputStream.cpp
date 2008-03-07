@@ -66,7 +66,7 @@ Packet PacketInputStream::readPacketFromFormatIS(){
 //    av_init_packet(&pac);
 //        if(_packet.data!=NULL)
 //            av_free_packet(&_packet);
-    int count=av_read_frame(_formatCtx, &pac);
+    av_read_frame(_formatCtx, &pac);
     return pac;
 }
 /*

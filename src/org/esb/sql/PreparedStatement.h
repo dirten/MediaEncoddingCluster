@@ -20,7 +20,7 @@ namespace org{
 					void setClob(int pos, void* val, int length);
 					void setString(int pos, string val);
 					bool execute();
-					ResultSet & executeQuery();
+//					ResultSet & executeQuery();
 					int executeUpdate();
 				private:
 					sqlite3_stmt *_pStmt;

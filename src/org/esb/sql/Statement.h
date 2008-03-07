@@ -18,7 +18,7 @@ class Statement:public sqlite3_command {
 //		friend class ResultSet;
 		Statement(Connection & db, const char * sql);
 		Statement(const Statement & st);
-		ResultSet & executeQuery (string sql, void * callback);
+//		ResultSet & executeQuery (string sql, void * callback);
 		ResultSet executeQuery ();
 		void execute();
 		void close();

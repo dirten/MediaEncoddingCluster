@@ -17,7 +17,7 @@ class Connection:public sqlite3_connection {
 		Connection(char*filename);
 		Connection(File & databaseFile);
 		Statement createStatement(const char * sql);
-		Statement & createStatement();
+//		Statement & createStatement();
 		PreparedStatement & prepareStatement(const char * sql);
 		sqlite3_transaction getTransaction();
 		void close();

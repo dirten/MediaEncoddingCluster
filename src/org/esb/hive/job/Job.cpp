@@ -33,7 +33,7 @@ Job::Job(){
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
 //    _frame_group=1;
-    _completeTime=NULL;
+    _completeTime=0;
 
 
 

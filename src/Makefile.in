@@ -36,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = hive$(EXEEXT) hivelsnr$(EXEEXT)
+bin_PROGRAMS = hive$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -54,11 +54,6 @@ hive_OBJECTS = $(am_hive_OBJECTS)
 hive_DEPENDENCIES = ./org/esb/lang/liblang.la ./org/esb/libesb.la \
 	./org/esb/io/libio.la ./org/esb/av/libav.la \
 	./org/esb/net/libnet.la ./org/esb/hive/libhive.la
-am_hivelsnr_OBJECTS = Listener.$(OBJEXT)
-hivelsnr_OBJECTS = $(am_hivelsnr_OBJECTS)
-hivelsnr_DEPENDENCIES = ./org/esb/lang/liblang.la ./org/esb/libesb.la \
-	./org/esb/io/libio.la ./org/esb/av/libav.la \
-	./org/esb/net/libnet.la ./org/esb/hive/libhive.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -70,8 +65,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(hive_SOURCES) $(hivelsnr_SOURCES)
-DIST_SOURCES = $(hive_SOURCES) $(hivelsnr_SOURCES)
+SOURCES = $(hive_SOURCES)
+DIST_SOURCES = $(hive_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -283,9 +278,6 @@ clean-binPROGRAMS:
 hive$(EXEEXT): $(hive_OBJECTS) $(hive_DEPENDENCIES) 
 	@rm -f hive$(EXEEXT)
 	$(CXXLINK) $(hive_LDFLAGS) $(hive_OBJECTS) $(hive_LDADD) $(LIBS)
-hivelsnr$(EXEEXT): $(hivelsnr_OBJECTS) $(hivelsnr_DEPENDENCIES) 
-	@rm -f hivelsnr$(EXEEXT)
-	$(CXXLINK) $(hivelsnr_LDFLAGS) $(hivelsnr_OBJECTS) $(hivelsnr_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -294,7 +286,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Hive.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Listener.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

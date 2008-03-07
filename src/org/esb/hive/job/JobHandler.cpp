@@ -23,13 +23,13 @@ Job * JobHandler::getJob(){
         list<Job*>::iterator i;
         for(i=_jobList.begin();i!=_jobList.end();++i) {
             Job *tmp=(Job*)*i;
-	    if(tmp->getCompleteTime()==NULL&&tmp->_stream_type==CODEC_TYPE_AUDIO){
+	    if(tmp->getCompleteTime()==0&&tmp->_stream_type==CODEC_TYPE_AUDIO){
 		return tmp;
 	    }
         }
         for(i=_jobList.begin();i!=_jobList.end();++i) {
             Job *tmp=(Job*)*i;
-	    if(tmp->getCompleteTime()==NULL){
+	    if(tmp->getCompleteTime()==0){
 		return tmp;
 	    }
         }

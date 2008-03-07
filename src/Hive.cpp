@@ -35,7 +35,6 @@ void shell(int argc, char * argv[]);
 int main(int argc, char * argv[]){	
 
 
-	
 	for(int arg_counter=1;argc>arg_counter;arg_counter++){
 		if(strcmp(argv[arg_counter],"listen")==0){
 			listener(argc, argv);
@@ -46,7 +45,8 @@ int main(int argc, char * argv[]){
 		}else if(strcmp(argv[arg_counter],"job")==0){
 			jobcreator(argc,argv);
 		}else if(strcmp(argv[arg_counter],"import")==0){
-			import(argc,argv);
+			import(--argc,++argv);
+			return 0;
 		}else if(strcmp(argv[arg_counter],"export")==0){
 			exporter(argc,argv);
 		}else{
@@ -62,7 +62,7 @@ void client(int argc, char *argv[]){
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
     ObjectOutputStream oos(sock.getOutputStream());
-    int size=0;
+//    int size=0;
     
     
     int pCount=0;
@@ -89,6 +89,8 @@ void listener(int argc, char *argv[]){
     	exit(1);
     }
     JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
+//	cout <<typeid(JobWatcher).name()<<endl;
+
     Thread *runner=new Thread(_watcher);
     runner->start();
     int port=atoi(Config::getProperty("protocol.listener.port"));
@@ -111,3 +113,4 @@ void listener(int argc, char *argv[]){
 		}
     }
 }
+

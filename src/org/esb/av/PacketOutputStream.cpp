@@ -21,7 +21,7 @@ PacketOutputStream::~PacketOutputStream(){
 }
 
 void PacketOutputStream::writePacket(Packet & packet){
-    int result=av_interleaved_write_frame(_fmtCtx,&packet);
+    av_interleaved_write_frame(_fmtCtx,&packet);
 //    int result=av_write_frame(_fmtCtx,&packet);
 }
 

@@ -7,3 +7,5 @@ Codec * AVInputStream::getCodec(){
 }
 
 void AVInputStream::setFormatContext(AVFormatContext * ctx){_formatContext=ctx;}
+
+

@@ -8,27 +8,27 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Codec.h"
 #include "CreateDatabase.cpp"
-#include <avformat.h>
+//#include <avformat.h>
 #include <boost/progress.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/polymorphic_binary_iarchive.hpp> 
-#include <boost/archive/polymorphic_binary_oarchive.hpp> 
+//#include <boost/archive/polymorphic_binary_iarchive.hpp> 
+//#include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
 
 #include "org/esb/config/config.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
-#include "org/esb/sql/sqlite3x.hpp"
+//#include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::config;
 using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace boost;
-using namespace sqlite3x;
+//using namespace sqlite3x;
 
 
 
@@ -37,7 +37,7 @@ int import(int argc, char * argv[]){
 
     Config::init("./cluster.cfg");
 
-	if(argc!=2){
+	if(argc!=3){
 		cout << "wrong parameter count"<<endl;	
 		exit(1);
 	}
@@ -71,15 +71,15 @@ int import(int argc, char * argv[]){
 	fileid=con.insertid();
 
 	AVFormatContext * ctx=fis.getFormatContext();
-	progress_display show_progress(394000);
 
 	int streams[ctx->nb_streams];
-
+	long duration=0;
 	Statement stmt_str=con.createStatement( "insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate,start_time,duration,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)" );
-	for(int a =0;a<ctx->nb_streams;a++){
+	for(unsigned int a =0;a<ctx->nb_streams;a++){
 	    int field=1;
+		duration+=ctx->streams[a]->duration;
 	    stmt_str.bind( field++, fileid);
-	    stmt_str.bind( field++, a);
+	    stmt_str.bind( field++, (int)a);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_type);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_id);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->codec_name);
@@ -98,9 +98,10 @@ int import(int argc, char * argv[]){
 	    stmt_str.bind( field++, ctx->streams[a]->codec->channels);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->sample_fmt);
 	    stmt_str.execute();
-    	    int streamid =con.insertid();
-    	    streams[a]=streamid;
+   	    int streamid =con.insertid();
+   	    streams[a]=streamid;
         }
+	progress_display show_progress(duration);
 
     Packet packet;
 
@@ -112,7 +113,6 @@ int import(int argc, char * argv[]){
         if(packet.data==NULL)break;
         
         ++count;
-	++show_progress;
 
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;
@@ -131,9 +131,13 @@ int import(int argc, char * argv[]){
         stmt.bind( field++, packet.size);
         stmt.bind( field++, (const void*)packet.data,packet.size);
 	stmt.execute();
+	show_progress+=packet.duration;
+
     }
+    
     trans.commit();
-	
+    cout << endl;
+//	show_progress=duration;
     	return 0;
 }
 /*
@@ -141,3 +145,5 @@ int main(int argc, char * argv[]){
 	import(argc,argv);
 }
 */
+
+

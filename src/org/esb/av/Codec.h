@@ -69,7 +69,7 @@ namespace org{
 		            }
 		    CodecID _codec_id;
                 protected:
-//                    AVCodecContext * _codecCtx;
+                    AVCodecContext * _codecCtx;
                     AVCodec * _codec;
                     void findCodec(int mode);
                     int _mode;

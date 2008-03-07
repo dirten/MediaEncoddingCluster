@@ -23,8 +23,8 @@ void PreparedStatement::setNull(int pos){bind(pos,NULL);}
 
 void PreparedStatement::setString(int pos, string data){bind(pos,data);}
 
-bool PreparedStatement::execute(){executenonquery();}
+bool PreparedStatement::execute(){executenonquery();return true;}
 
-ResultSet & PreparedStatement::executeQuery(){}
+//ResultSet & PreparedStatement::executeQuery(){}
 
-int PreparedStatement::executeUpdate(){}
+int PreparedStatement::executeUpdate(){return 0;}

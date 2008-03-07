@@ -100,7 +100,7 @@ namespace org
         /******************************************************************************/
         int read(unsigned char * buffer, int length)
         {
-	    int  counter=0, len=0;
+	    int  counter=0;
             /*Receive data into buffer*/
             counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
 //            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
@@ -118,7 +118,7 @@ namespace org
 //	    cout << "Readed Buffer length"<<length<<endl;
 	    char *buffer=new char[length];
 //	    char buffer[length];
-	    int  counter=0, len=0;
+	    int  counter=0;
             /*Receive data into buffer*/
             counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
 //            counter=read((unsigned char*)buffer,length);

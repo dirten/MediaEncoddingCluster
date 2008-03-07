@@ -13,8 +13,8 @@ int jobcreator(int argc, char*argv[]){
 //	sqlite3 * db=getDatabase(databaseFile);
 
 	string sql;
-	char*zErrMsg=0;
-	int rc=0;
+//	char*zErrMsg=0;
+//	int rc=0;
 	int field=1, fileid=0, jobid=0, streamid=0;
 	sql="insert into files (filename)values('../output.avi')";
 	{
@@ -181,5 +181,5 @@ int jobcreator(int argc, char*argv[]){
     rc = sqlite3_reset(pStmt);
 */
 
-
+	return 0;
 }

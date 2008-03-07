@@ -317,7 +317,7 @@ void writePPM(Frame  frame){
 
 
     // Open file
-  sprintf(szFilename, "frame%d.ppm", frame.pts);
+  sprintf(szFilename, "frame%d.ppm", (int)frame.pts);
   cout << "FileName:"<<szFilename<<endl;
   pFile=fopen(szFilename, "wb");
   if(pFile==NULL)

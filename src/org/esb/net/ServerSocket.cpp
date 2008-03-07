@@ -88,7 +88,7 @@ int ServerSocket::bind()
 	perror("listen");
 	return err;
   }
-  return NULL;
+  return 0;
 }
 
 /******************************************************************************/

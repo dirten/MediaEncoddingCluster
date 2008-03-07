@@ -7,7 +7,7 @@ SUBDIRS = org
 #framehive
 
 
-bin_PROGRAMS = hive hivelsnr
+bin_PROGRAMS = hive
 
 
 #bin_PROGRAMS = zpipe
