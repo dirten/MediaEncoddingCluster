@@ -16,6 +16,7 @@ using namespace org::esb::sql;
 using namespace org::esb::lang;
 
 int exporter(int argc, char * argv[]){
+
     File fout("/tmp/testdb.avi");
 //    File fout("/tmp/testdb.mp2");
     FormatOutputStream fos(&fout);
@@ -52,13 +53,16 @@ int exporter(int argc, char * argv[]){
 */
     pos.init();
 //    if(false)
+	string dbFile=Config::getProperty("data.dir");
+	dbFile+="/";
+	dbFile+=Config::getProperty("data.file");
+	Connection con((char*)dbFile.c_str());
+
     {
-	Connection con("/tmp/hive.db");
 	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=4 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
-//    CodecID cid=CODEC_ID_MPEG2VIDEO;
 
 	int video_packets=0;
 
@@ -84,14 +88,11 @@ int exporter(int argc, char * argv[]){
     
 	    cout<<endl;
     
-//    if(false)
         {
-	Connection con("/tmp/hive.db");
 	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=3 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
-//    CodecID cid=CODEC_ID_MPEG2VIDEO;
 
 	int audio_packets=0;
 	while(rs.next()){
@@ -99,8 +100,8 @@ int exporter(int argc, char * argv[]){
 	    Packet p;
 	    p.size=rs.getint(0);
 	    p.data=new uint8_t[p.size];
-//	    cout <<"Size:"<<p.size<<endl;
 	    memcpy(p.data,rs.getblob(1).c_str(),p.size);
+	    /*for some AudioStreams it might be pts=pts/duration */
 	    p.pts=rs.getint(2)>0?(rs.getint(2)/417):rs.getint(2);
 	    p.dts=p.pts;//rs.getint(3);
 	    p.duration=rs.getint(4);
@@ -113,11 +114,9 @@ int exporter(int argc, char * argv[]){
 	    cout.flush();
 
 	}
-//	Thread::sleep(10000);
 
 	cout << "Audio Fertig:"<<audio_packets<<endl;
     }
-//	Thread::sleep(10000);
 
 return 0;
 }

@@ -69,8 +69,7 @@ void client(int argc, char *argv[]){
 		ProcessUnit unit;
 		ois.readObject(unit);
 		if(unit._input_packets.size()==0)break;
-		unit.process();	
-
+		unit.process();
 		char * text_out="put process_unit";
 		sock.getOutputStream()->write(text_out, strlen(text_out));
 		oos.writeObject(unit);

@@ -27,12 +27,13 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test test_bla test_mysql
+bin_PROGRAMS=test test_bla test_mysql test_httpd
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 datasize_SOURCES=datasize.cpp
 
 test_file_SOURCES=test_file.cpp
+test_httpd_SOURCES=test_httpd.cpp
 test_sqlite_SOURCES=test_sqlite.cpp
 test_mysql_SOURCES=test_mysql.cpp
 test_packet_SOURCES=test_packet.cpp
@@ -66,6 +67,7 @@ test_audio_LDFLAGS = $(all_libraries)
 server_LDFLAGS = $(all_libraries) 
 
 test_file_LDADD=	../src/org/esb/libesb.la 
+test_httpd_LDADD=	../src/org/esb/libesb.la 
 test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
 test_mysql_LDADD=	../src/org/esb/libesb.la
 test_audio_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la

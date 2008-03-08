@@ -13,11 +13,13 @@
 #include <iostream>
 #include <list>
 #include <boost/shared_ptr.hpp>
+#include "org/esb/config/config.h"
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::config;
 using namespace boost;
 //int Job::_frame_group=0;
 //ProcessUnit*Job::_unit=0;
@@ -29,7 +31,11 @@ using namespace boost;
 
 Job::Job(){
 	_isActive=false;
-    _con=new Connection("/tmp/hive.db");
+	string dbFile=Config::getProperty("data.dir");
+	dbFile+="/";
+	dbFile+=Config::getProperty("data.file");
+
+    _con=new Connection((char*)dbFile.c_str());
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new Statement(_con->createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
 //    _frame_group=1;
@@ -74,8 +80,10 @@ void Job::activate(){
 
 
 
-
-	Connection con("/tmp/hive.db");
+	string dbFile=Config::getProperty("data.dir");
+	dbFile+="/";
+	dbFile+=Config::getProperty("data.file");
+	Connection con((char*)dbFile.c_str());
 
 	{
 		Statement stmt=con.createStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=?");

@@ -37,23 +37,27 @@ int import(int argc, char * argv[]){
 
     Config::init("./cluster.cfg");
 
-	if(argc!=3){
+	if(argc!=2){
 		cout << "wrong parameter count"<<endl;	
 		exit(1);
 	}
 	string dbFile=Config::getProperty("data.dir");
 	dbFile+="/";
 	dbFile+=Config::getProperty("data.file");
-	File databaseFile(argv[1]);
+//	cout << dbFile;
+	File databaseFile(dbFile.c_str());
+//	File databaseFile("/tmp/hive.db3");
 	if(!databaseFile.exists()||!checkDatabase(databaseFile)){
 		createDatabase(databaseFile);
 	}else{
 	    cout << "Database not found";
 	}
 
-	File inputFile(argv[2]);
+	File inputFile(argv[1]);
 	if(!inputFile.canRead()){
 		cout << "Source File not found"<<endl;
+	}else{
+		cout << "File:"<<inputFile.getPath()<<endl;
 	}
 
     
@@ -63,8 +67,8 @@ int import(int argc, char * argv[]){
 	FormatInputStream fis(&inputFile);
 	PacketInputStream pis(&fis);
 
-
-	Connection con(argv[1]);
+	
+	Connection con(databaseFile);
 	sqlite3_transaction trans=con.getTransaction();
 
 	con.executenonquery(string("INSERT INTO files(filename) values ( '")+inputFile.getPath()+"')");
