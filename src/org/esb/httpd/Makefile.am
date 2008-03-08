@@ -22,25 +22,11 @@ SOURCES = 	compat_unix.c \
 			io_dir.c \
 			io_cgi.c
 
-SOURCES_NULL = \
-            Command.cpp \
-            ProtocolServer.cpp \
-            HiveControl.cpp \
-            CommandInputStream.cpp \
-            CommandOutputStream.cpp \
-	    job/Job.cpp \
-	    job/JobDetail.cpp \
-	    job/JobHandler.cpp \
-	    job/JobWatcher.cpp \
-	    job/ClientHandler.cpp \
-	    job/ProcessUnit.cpp 
-            
-            
-            
             
 libhttpd_la_SOURCES = $(SOURCES)
 libhttpd_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-libhttpd_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la
+libhttpd_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la 
+#libhttpd_la_LDADD= $(top_srcdir)/src/org/esb/web/index.tmpl 
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src
-#EXTRA_DIST=job/*.h job/*.cpp rdb/*.h rdb/*.cpp protocol/*.cpp
+EXTRA_DIST=*.h

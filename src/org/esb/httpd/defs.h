@@ -19,7 +19,7 @@
 #include "config.h"
 
 #define	NELEMS(ar)	(sizeof(ar) / sizeof(ar[0]))
-
+//#define _DEBUG
 #ifdef _DEBUG
 #define	DBG(x)	do { printf x ; putchar('\n'); fflush(stdout); } while (0)
 #else

@@ -19303,7 +19303,7 @@ CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient"
 
-                                                                                                                                            ac_config_files="$ac_config_files Makefile src/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile src/org/esb/httpd/Makefile src/org/esb/sql/Makefile src/hive.client/Makefile test/Makefile"
+                                                                                                                                                      ac_config_files="$ac_config_files Makefile src/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile src/org/esb/httpd/Makefile src/org/esb/web/Makefile src/org/esb/sql/Makefile src/hive.client/Makefile test/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -19871,6 +19871,7 @@ do
   "src/org/esb/net/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/net/Makefile" ;;
   "src/org/esb/hive/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/hive/Makefile" ;;
   "src/org/esb/httpd/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/httpd/Makefile" ;;
+  "src/org/esb/web/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/web/Makefile" ;;
   "src/org/esb/sql/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/org/esb/sql/Makefile" ;;
   "src/hive.client/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/hive.client/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
