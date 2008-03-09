@@ -56,7 +56,7 @@ sqlite3_reader& sqlite3_reader::operator=(const sqlite3_reader &copy) {
 
 bool sqlite3_reader::read() {
 	if(!this->cmd) throw database_error("reader is closed");
-	bool toContinue=true;
+//	bool toContinue=true;
 	int retry_counter=1;
 	while(true){
 	    switch(sqlite3_step(this->cmd->stmt)) {
@@ -66,7 +66,6 @@ bool sqlite3_reader::read() {
 			return false;
 		default:
 //		case SQLITE_BUSY:sqlite3_errmsg(con.db)
-		#if defined( unix )
 			std::cout << "Database Error("<<sqlite3_errmsg(this->cmd->con.db)<<") retry("<<retry_counter<<")"<<std::endl;
 			if(retry_counter>0){
 			    ++retry_counter;
@@ -83,9 +82,7 @@ bool sqlite3_reader::read() {
 //			    Thread::sleep(500);
 //			    break;
 			}
-		#else
-			throw database_error(this->cmd->con);		
-		#endif
+//			throw database_error(this->cmd->con);		
 //		default:
 //			throw database_error(this->cmd->con);
 	    }

@@ -26,7 +26,6 @@ sqlite3 * getDatabase(File &databaseFile){
 }
 */
 bool checkDatabase(File &databaseFile){
-
 	return false;
 }
 
@@ -47,6 +46,7 @@ bool createDatabase(File &databaseFile){
 	createTable(con,"create table jobs (id integer  primary key autoincrement, infile integer, outfile integer, begin date, complete date)");
 	createTable(con,"create table job_details (id integer  primary key autoincrement, job_id integer, instream integer, outstream integer)");
 	createTable(con,"create table job_logs (id integer  primary key autoincrement, packet_in integer,packet_out integer, begin date, complete date)");
+  createTable(con,"create table frame_groups(id integer primary key autoincrement, frame_group integer, stream_id integer, complete timestamp)");
 	createTable(con,"create table version (id integer  primary key autoincrement, component, version)");
 	createTable(con,"insert into version (component, version) values ('database.model','0.1.1')");
 	createTable(con,"CREATE INDEX packet_group_idx on packets(frame_group)");

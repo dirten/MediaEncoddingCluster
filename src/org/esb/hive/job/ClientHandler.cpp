@@ -1,3 +1,4 @@
+#include "org/esb/config/config.h"
 #include "ClientHandler.h"
 #include "ProcessUnit.h"
 #include "JobHandler.h"
@@ -5,12 +6,16 @@
 
 using namespace std;
 using namespace org::esb::hive::job;
+using namespace org::esb::config;
 boost::mutex ClientHandler::m_mutex;
 
 ClientHandler::ClientHandler(){
 	_handler=JobHandler::getInstance();
+	string dbFile=Config::getProperty("data.dir");
+	dbFile+="/";
+	dbFile+=Config::getProperty("data.file");
 
-    _con=new Connection("/tmp/hive.db");
+    _con=new Connection((char*)dbFile.c_str());
     _stmt=new Statement(_con->createStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
 
 }

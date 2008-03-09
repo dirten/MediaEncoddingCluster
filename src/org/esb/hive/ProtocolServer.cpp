@@ -28,75 +28,67 @@ using namespace org::esb::net;
 using namespace org::esb::lang;
 using namespace org::esb::util;
 using namespace org::esb::hive;
-//pthread_mutex_t ProtocolServer::mutex;
 
-ProtocolServer::~ProtocolServer() {
-    list<ProtocolCommand*>::iterator i;
-    for(i=l.begin();i!=l.end();++i) {
-	    ProtocolCommand *tmp=(ProtocolCommand*)*i;
-	    delete tmp;
-    }
-    l.clear();
-    delete socket;
-    socket=0;
-    delete _cis;
+ProtocolServer::~ProtocolServer ()
+{
+	list < ProtocolCommand * >::iterator i;
+	for (i = l.begin (); i != l.end (); ++i) {
+		ProtocolCommand *tmp = (ProtocolCommand *) * i;
+		delete tmp;
+	}
+	l.clear ();
+	delete socket;
+	socket = 0;
+	delete _cis;
 }
 
-ProtocolServer::ProtocolServer(Socket * socket) {
-//    mutex=m;
-    this->socket=socket;
-    _cis=new CommandInputStream(socket->getInputStream());
-    l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
-    l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
-//    l.push_back(new CreateHive(socket->getInputStream(), socket->getOutputStream()));
-    l.push_back(new Disconnect(socket));
-    l.push_back(new Kill(socket));
-    l.push_back(new ShowConfig(socket));
-    l.push_back(new ShutdownHive(socket));
-    l.push_back(new StartupHive(socket));
-    l.push_back(new Status(socket));
-    l.push_back(new Unknown(socket));
-
-    string help="\n\nWelcome to the MediaEncodingCluster ProtocolServer-0.0.1\n";
-    help+="Type 'help' for Help\n";
-    help+="--------------------------------------------------------\n";
-//    socket->getOutputStream()->write((char *)help.c_str(),help.length());
+ProtocolServer::ProtocolServer (Socket * socket)
+{
+	this->socket = socket;
+	_cis = new CommandInputStream (socket->getInputStream ());
+	l.push_back (new
+				 Help (socket->getInputStream (),
+					   socket->getOutputStream ()));
+	l.push_back (new
+				 DataHandler (socket->getInputStream (),
+							  socket->getOutputStream ()));
+	l.push_back (new Disconnect (socket));
+	l.push_back (new Kill (socket));
+	l.push_back (new ShowConfig (socket));
+	l.push_back (new ShutdownHive (socket));
+	l.push_back (new StartupHive (socket));
+	l.push_back (new Status (socket));
+	l.push_back (new Unknown (socket));
 }
 
-void ProtocolServer::run() {
-    while(!socket->isClosed()) {
-//    try{
-//        cout << "ProtocolServer::run()"<< endl;
-	
-	string cmd;	
-	int dataLength=socket->getInputStream()->read(cmd);
-	if(dataLength==0){
-	    cout << "0 Byte empfangen, das ist nicht gut!!!"<< endl;
-	    if(socket->isClosed())
-		break;
+void ProtocolServer::run ()
+{
+	while (!socket->isClosed ()) {
+		try {
+			string cmd;
+			int dataLength = socket->getInputStream ()->read (cmd);
+			if (dataLength == 0) {
+				if (socket->isClosed ())
+					break;
+			}
+			char *command = strtok ((char *) cmd.c_str (), "\n\r");
+			if (command == NULL || strlen (command) <= 0)
+				continue;
+			list < ProtocolCommand * >::iterator i;
+			for (i = l.begin (); i != l.end (); ++i) {
+				ProtocolCommand *tmp = (ProtocolCommand *) * i;
+				if (tmp->isResponsible (command) == CMD_PROCESS) {
+					tmp->process (command);
+					break;
+				}
+				else if (tmp->isResponsible (command) == CMD_HELP) {
+					tmp->printHelp ();
+				}
+			}
+		}
+		catch (exception & ex) {
+			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
+		}
 	}
-        char *command=strtok((char*)cmd.c_str(),"\n\r");
-//	cout << "Command:"<<command<<endl;
-	if(command==NULL||strlen(command)<=0)continue;
-        list<ProtocolCommand*>::iterator i;
-        for(i=l.begin();i!=l.end();++i) {
-            ProtocolCommand *tmp=(ProtocolCommand*)*i;
-            if(tmp->isResponsible(command)==CMD_PROCESS) {
-                tmp->process(command);
-		break;
-            }
-            else
-            if(tmp->isResponsible(command)==CMD_HELP) {
-                tmp->printHelp();
-            }
-        }
-	if(!socket->isClosed()){
-    	    string line="--------------------------------------------------------\n";
-//    	    socket->getOutputStream()->write((char *)line.c_str(),line.length());
-	}
-//    }catch(exception & ex){
-//	cout <<"Fehler im ProtokollServer:" <<ex.what()<<endl;
-//    }
-    }
-    cout <<"Elvis has left the Building"<<endl;
+	cout << "Elvis has left the Building" << endl;
 }

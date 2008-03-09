@@ -1,9 +1,9 @@
 #include <iostream>
 #include <stdio.h>
 #include "org/esb/httpd/shttpd.h"
-
+#include "org/esb/web/WebServer.h"
 using namespace std;
-
+using namespace org::esb::web;
 
 
 static void show_post(struct shttpd_arg *arg)
@@ -76,7 +76,7 @@ static void show_index(struct shttpd_arg *arg){
 }
 
 int main(){
-	int			data = 1234567;
+/*	int			data = 1234567;
 	struct shttpd_ctx	*ctx;
 	
 	ctx = shttpd_init();
@@ -86,6 +86,8 @@ int main(){
 
 	for (;;)
 		shttpd_poll(ctx, 1000);
+*/
+	WebServer(8080);
 	return 0;
 }
 
