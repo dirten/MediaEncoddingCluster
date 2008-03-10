@@ -10,6 +10,7 @@ SOURCES = \
             Command.cpp \
             ProtocolServer.cpp \
             HiveControl.cpp \
+            HiveListener.cpp \
             CommandInputStream.cpp \
             CommandOutputStream.cpp \
 	    job/Job.cpp \

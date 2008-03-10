@@ -17,4 +17,4 @@ libsql_la_SOURCES = $(SOURCES)
 libsql_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 libav_la_LIBADD = ../lang/liblang.la 
 
-EXTRA_DIST=*.h
+EXTRA_DIST=*.h *.hpp

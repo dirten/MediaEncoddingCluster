@@ -56,9 +56,9 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libhive_la_DEPENDENCIES = $(top_srcdir)/src/org/esb/sql/libsql.la
 am__objects_1 = Command.lo ProtocolServer.lo HiveControl.lo \
-	CommandInputStream.lo CommandOutputStream.lo Job.lo \
-	JobDetail.lo JobHandler.lo JobWatcher.lo ClientHandler.lo \
-	ProcessUnit.lo
+	HiveListener.lo CommandInputStream.lo CommandOutputStream.lo \
+	Job.lo JobDetail.lo JobHandler.lo JobWatcher.lo \
+	ClientHandler.lo ProcessUnit.lo
 am_libhive_la_OBJECTS = $(am__objects_1)
 libhive_la_OBJECTS = $(am_libhive_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -184,6 +184,7 @@ SOURCES = \
             Command.cpp \
             ProtocolServer.cpp \
             HiveControl.cpp \
+            HiveListener.cpp \
             CommandInputStream.cpp \
             CommandOutputStream.cpp \
 	    job/Job.cpp \
@@ -273,6 +274,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandInputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandOutputStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveControl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HiveListener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Job.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobDetail.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JobHandler.Plo@am__quote@

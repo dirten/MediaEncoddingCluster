@@ -19,3 +19,5 @@ SOURCES = WebServer.cpp
 libweb_la_SOURCES = $(SOURCES)
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 libweb_la_LIBADD= $(top_srcdir)/src/org/esb/httpd/libhttpd.la
+
+EXTRA_DIST=*.h *.tmpl *.shtml
