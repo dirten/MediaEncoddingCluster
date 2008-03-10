@@ -67,7 +67,7 @@ test_audio_LDFLAGS = $(all_libraries)
 server_LDFLAGS = $(all_libraries) 
 
 test_file_LDADD=	../src/org/esb/libesb.la 
-test_httpd_LDADD=	../src/org/esb/libesb.la 
+test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la 
 test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
 test_mysql_LDADD=	../src/org/esb/libesb.la
 test_audio_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la

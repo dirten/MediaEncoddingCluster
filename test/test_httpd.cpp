@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include "org/esb/httpd/shttpd.h"
 #include "org/esb/web/WebServer.h"
+#include "org/esb/config/config.h"
 using namespace std;
 using namespace org::esb::web;
+using namespace org::esb::config;
 
 
 static void show_post(struct shttpd_arg *arg)
@@ -87,7 +89,9 @@ int main(){
 	for (;;)
 		shttpd_poll(ctx, 1000);
 */
-	WebServer(8080);
+	Config::init("./cluster.cfg");
+
+	WebServer(atoi(Config::getProperty("web.listener.port")));
 	return 0;
 }
 

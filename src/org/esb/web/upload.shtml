@@ -1,8 +1,5 @@
 <html>
 <body>
-<!--#if test == "bla" -->
-<!--#endif  -->
-
 <!--#include file="menu.tmpl" -->
 </body>
 <html>

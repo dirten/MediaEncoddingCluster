@@ -1,0 +1,31 @@
+#include "Files.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/config/config.h"
+#include <iostream>
+
+using namespace org::esb::web;
+using namespace org::esb::sql;
+using namespace org::esb::config;
+void Files::show_files(struct shttpd_arg *arg){
+//	shttpd_printf(arg, "%s", "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
+	char value[20];
+	const char * query_string = shttpd_get_env(arg, "QUERY_STRING");
+	if(query_string!=NULL)
+	    shttpd_get_var("name", query_string, strlen(query_string), value, sizeof(value));
+	
+
+	Connection con(Config::getProperty("db.connection"));
+	Statement stmt=con.createStatement("select * from files");
+	ResultSet rs=stmt.executeQuery();
+
+	shttpd_printf(arg, "<div>");
+	while(rs.next()){
+	    shttpd_printf(arg, "<div>");
+	    shttpd_printf(arg, rs.getstring(1).c_str());
+	    shttpd_printf(arg, "</div>");
+	}
+	shttpd_printf(arg, "</div>");
+	arg->flags |= SHTTPD_END_OF_OUTPUT;
+}

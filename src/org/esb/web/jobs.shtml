@@ -1,5 +1,6 @@
 <html>
 <body>
 <!--#include file="menu.tmpl" -->
+<!--#call showJobs -->
 </body>
 <html>
