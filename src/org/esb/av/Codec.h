@@ -61,6 +61,7 @@ namespace org {
 				int _channels;
 				int _sample_rate;
 				SampleFormat _sample_format;
+				bool _opened;
 			};
 }}}
 #endif

@@ -21,7 +21,7 @@ using namespace org::esb::util;
  */
 Properties * properties=0;
 
-string trim(string & s, string & drop = *new string(" ")){
+string trim(string & s, string & drop ){
     string r=s.erase(s.find_last_not_of(drop)+1);
     return r.erase(0,r.find_first_not_of(drop));
 

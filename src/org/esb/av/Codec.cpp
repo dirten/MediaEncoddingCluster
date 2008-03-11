@@ -10,7 +10,7 @@ void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
 {
-	cout << "Init AV Package Codec" << endl;
+//	cout << "Init AV Package Codec" << endl;
 	av_register_all ();
 	avcodec_register_all ();
 }
@@ -19,7 +19,9 @@ namespace org {
 	namespace esb {
 		namespace av {
 			Codec::Codec () {
-			} Codec::Codec (const CodecID codecId, int mode) {
+			    _opened=false;
+			} 
+			Codec::Codec (const CodecID codecId, int mode) {
 				_codec_id = codecId;
 				_codec = NULL;
 				_mode = mode;
@@ -37,6 +39,7 @@ namespace org {
 				_gop_size = 0;
 				_channels = 0;
 				_sample_rate = 0;
+    				_opened=false;
 			}
 
 			CodecType Codec::getCodecType () {
@@ -92,8 +95,10 @@ namespace org {
 				if (avcodec_open (this, _codec) < 0) {
 					cout << "ERROR : while openning Codec" << endl;
 				}
+				_opened=true;
 			}
 			Codec::~Codec () {
+			    if(_opened)
 				avcodec_close (this);
 			}
 			void Codec::setWidth (int w) {

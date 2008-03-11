@@ -70,8 +70,13 @@ int import(int argc, char * argv[]){
 	
 	Connection con(databaseFile);
 	sqlite3_transaction trans=con.getTransaction();
-
-	con.executenonquery(string("INSERT INTO files(filename) values ( '")+inputFile.getPath()+"')");
+	{
+	    Statement st=con.createStatement("INSERT INTO files(filename, size) values (?,?)");
+	    st.bind(1,inputFile.getPath());
+	    st.bind(2,(long long int)fis.getFileSize());
+	    st.execute();
+	}
+//	con.executenonquery(string("INSERT INTO files(filename,size) values ( '")+inputFile.getPath()+string("',")+fis.getFileSize()+")");
 	fileid=con.insertid();
 
 	AVFormatContext * ctx=fis.getFormatContext();

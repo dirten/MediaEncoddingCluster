@@ -1,0 +1,40 @@
+body {
+    background:grey;
+    color:ffffff;
+}
+a {
+    color:#ffffff;
+
+}
+div.block { 
+    color:#efefef;
+    border:1px solid #000000;
+    margin:3px;
+    width:200;
+    display:table-cell;
+}
+div.stream_info_block { 
+    color:#efefef;
+    border-top:1px solid #000000;
+    margin:3px;
+    width:200;
+//    display:table-cell;
+}
+
+div.menu { 
+    color:blue;
+    border:1px solid #000000;
+    margin:1px;
+    width:400;
+//    display:table-cell;
+}
+div.menuentry { 
+    color:blue;
+    align:center;
+    text-align:center;
+//    border:1px solid #000000;
+    margin:1px;
+    width:200;
+    display:table-cell;
+}
+

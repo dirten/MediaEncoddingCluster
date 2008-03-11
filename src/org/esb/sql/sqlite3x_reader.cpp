@@ -102,6 +102,11 @@ void sqlite3_reader::close() {
 		this->cmd=NULL;
 	}
 }
+int sqlite3_reader::getColumnCount() {
+	if(!this->cmd) throw database_error("reader is closed");
+	return this->cmd->argc-1;
+//	return sqlite3_column_int(this->cmd->stmt, index);
+}
 
 int sqlite3_reader::getint(int index) {
 	if(!this->cmd) throw database_error("reader is closed");

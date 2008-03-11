@@ -157,6 +157,8 @@ namespace sqlite3x {
 		void reset();
 		void close();
 
+		int getColumnCount();
+
 		int getint(int index);
 		long long getint64(int index);
 		double getdouble(int index);

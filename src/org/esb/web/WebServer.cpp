@@ -1,6 +1,8 @@
 #include "WebServer.h"
 #include <iostream>
 #include "Files.h"
+#include "Stream.h"
+#include "Page.h"
 #include "Jobs.h"
 using namespace std;
 using namespace org::esb::web;
@@ -53,13 +55,21 @@ WebServer::WebServer(int port){
 	shttpd_set_option(ctx, "root", "src/org/esb/web");
 	shttpd_set_option(ctx, "access_log", "access.log");
 	shttpd_set_option(ctx, "error_log", "error.log");
-	shttpd_register_uri(ctx, "/", &show_index, (void *) NULL);
-	shttpd_register_uri(ctx, "/files/*", &Files::show_files, (void *) NULL);
-	shttpd_register_uri(ctx, "/jobs/*", &Jobs::show_jobs, (void *) NULL);
+//	shttpd_register_uri(ctx, "/", &show_index, (void *) NULL);
+//	Page page();
+//	page.showPage();
+	shttpd_register_uri(ctx, "/", &Page::showPage, (void *) NULL);
+	shttpd_handle_error(ctx, 404, &Page::showPage, NULL);
+
+//	shttpd_register_uri(ctx, "/files/detail/*", &Files::show_details, (void *) NULL);
+//	shttpd_register_uri(ctx, "/files/*", &Files::show_files, (void *) NULL);
+//	shttpd_register_uri(ctx, "/files/stream/*", &Stream::edit_stream, (void *) NULL);
+//	shttpd_register_uri(ctx, "/files/stream/edit/*", &Stream::edit_stream, (void *) NULL);
+//	shttpd_register_uri(ctx, "/jobs/*", &Jobs::show_jobs, (void *) NULL);
 //	shttpd_register_uri(ctx, "/files/", &show_files, (void *) NULL);
 
-	shttpd_register_ssi_func(ctx, "showFiles", &Files::show_files, NULL);
-	shttpd_register_ssi_func(ctx, "showJobs", &Jobs::show_jobs, NULL);
+//	shttpd_register_ssi_func(ctx, "showPage", &Page::showPage, NULL);
+//	shttpd_register_ssi_func(ctx, "showJobs", &Jobs::show_jobs, NULL);
 
 //	shttpd_register_uri(ctx, "/post", &show_post, NULL);
 
