@@ -53,7 +53,7 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
 	}
     }
     shttpd_printf(arg, "<div>");
-    shttpd_printf(arg, "<a href=\"?page=streams&edit_stream=-1\">Add Stream</a>");
+    shttpd_printf(arg, "<a href=\"?fileid=%d&page=streams&edit_stream=-1\">Add Stream</a>", id);
     shttpd_printf(arg, "</div>");
 
 }

@@ -64,20 +64,30 @@ void Stream::build_stream_form(struct shttpd_arg *arg, Properties & props){
     Statement stmt=con.createStatement("select * from streams where id=?");
     stmt.bind(1,atoi(props.getProperty("edit_stream")));
     ResultSet rs=stmt.executeQuery();
-//    int cc=rs.getColumnCount();
+
     if(rs.next()){
 	shttpd_printf(arg, "<div class=\"stream_info_block\">");
 	shttpd_printf(arg, "<div><input type=\"text\" value=\"%s\"></div>",rs.getstring(2).c_str());
 	Codec codec((CodecID)rs.getint(4));
 	codec.open();
 	AVCodec *p=NULL;
-	shttpd_printf(arg, "<div><select name=\"codec\">");
-	while((p= av_codec_next(p))) {
-		if(p->encode&&p->type==CODEC_TYPE_VIDEO)
-			shttpd_printf(arg, "<option>%s</option>",p->name);	
-	}
+	shttpd_printf(arg, "<div>Type:<select name=\"type\">");
+	shttpd_printf(arg, "<option value=\"%d\" >Audio</option>",CODEC_TYPE_AUDIO);
+	shttpd_printf(arg, "<option value=\"%d\">Video</option>",CODEC_TYPE_VIDEO);
 	shttpd_printf(arg, "</select></div>");
 
+//	shttpd_printf(arg, "<div>Type: %s</div>",codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video");
+
+	shttpd_printf(arg, "<div>Codec:<select name=\"codec\">");
+	while((p= av_codec_next(p))) {
+		string selected="";
+		if(strcmp(p->name,codec.codec->name)==0){
+		    selected="selected";
+		}
+		if(p->encode&&p->type==codec.codec->type)
+			shttpd_printf(arg, "<option %s>%s</option>",selected.c_str(), p->name);	
+	}
+	shttpd_printf(arg, "</select></div>");
 	shttpd_printf(arg, "<div>Type: %s</div>",codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video");
 	shttpd_printf(arg, "<div>CodecName: %s</div>",codec.codec->name);
 	shttpd_printf(arg, "<div>Time Base: %d/%d</div>",rs.getint(9),rs.getint(10));	
@@ -92,5 +102,5 @@ void Stream::build_stream_form(struct shttpd_arg *arg, Properties & props){
 	    shttpd_printf(arg, "<div>Channels: %d</div>",rs.getint(19));	
 	}
 	shttpd_printf(arg, "</div>");
-	}
+    }
 }
