@@ -53,7 +53,7 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
 	}
     }
     shttpd_printf(arg, "<div>");
-    shttpd_printf(arg, "<a target=\"edit\"href=\"?edit=-1\">Add Stream</a>");
+    shttpd_printf(arg, "<a href=\"?page=streams&edit_stream=-1\">Add Stream</a>");
     shttpd_printf(arg, "</div>");
 
 }
@@ -63,7 +63,7 @@ void Files::edit_details(struct shttpd_arg *arg, int fileid){
     Statement stmt=con.createStatement("select * from streams where fileid=?");
     stmt.bind(1,fileid);
     ResultSet rs=stmt.executeQuery();
-    int cc=rs.getColumnCount();
+//    int cc=rs.getColumnCount();
     while(rs.next()){
 //	Stream::edit_stream(arg);
     }

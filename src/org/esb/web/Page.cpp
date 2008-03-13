@@ -15,6 +15,8 @@ void Page::showPage(struct shttpd_arg *arg){
 	    "<div class=\"menuentry\"><a href=\"?page=files\">Files</a></div>"
 	    "<div class=\"menuentry\"><a href=\"?page=jobs\">Jobs</a></div>"
 	    "</div>");
+
+
     Properties param=getParams(arg);
     if(!param.hasProperty("page")){
 	Files::show_files(arg, param);
