@@ -39,7 +39,7 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
 //        int cc=rs.getColumnCount();
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
-    	    Stream::show_stream(arg, props);
+    	    Stream::show_input_stream(arg, props);
 	}
     }
     {
@@ -49,7 +49,7 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
 //        int cc=rs.getColumnCount();
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
-    	    Stream::edit_stream(arg, props);
+    	    Stream::show_output_stream(arg, props);
 	}
     }
     shttpd_printf(arg, "<div>");

@@ -14,7 +14,7 @@ using namespace org::esb::sql;
 using namespace org::esb::av;
 using namespace org::esb::config;
 
-void Stream::show_stream(struct shttpd_arg *arg, Properties & props){
+void Stream::show_input_stream(struct shttpd_arg *arg, Properties & props){
     if(props.hasProperty("streamid")){
     Connection con(Config::getProperty("db.connection"));
     Statement stmt=con.createStatement("select * from streams where id=?");
@@ -45,12 +45,12 @@ void Stream::show_stream(struct shttpd_arg *arg, Properties & props){
 	shttpd_printf(arg, "no stream id");
     }
 }
-
+/*
 void Stream::edit_stream(struct shttpd_arg *arg, Properties & props){
 	    if(props.hasProperty("edit_stream")){
-			build_stream_form(arg, props);
+			show_output_stream(arg, props);
 	    }else{
-    		show_stream(arg, props);
+    		show_input_stream(arg, props);
 	        int value=atoi(props.getProperty("streamid"));
 		shttpd_printf(arg, "<div class=\"stream_edit_delete\">");
 	        shttpd_printf(arg, "<a href=\"?page=streams&edit_stream=%d\">Edit Stream</a>&nbsp;", value);
@@ -58,11 +58,12 @@ void Stream::edit_stream(struct shttpd_arg *arg, Properties & props){
 	        shttpd_printf(arg, "</div>");
 	    }
 }
-void Stream::build_stream_form(struct shttpd_arg *arg, Properties & props){
+*/
+void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
 
     Connection con(Config::getProperty("db.connection"));
     Statement stmt=con.createStatement("select * from streams where id=?");
-    stmt.bind(1,atoi(props.getProperty("edit_stream")));
+    stmt.bind(1,atoi(props.getProperty("streamid")));
     ResultSet rs=stmt.executeQuery();
 
     if(rs.next()){

@@ -22,9 +22,10 @@ void Page::showPage(struct shttpd_arg *arg){
 	Files::show_files(arg, param);
     }else if(strcmp(param.getProperty("page"),"files")==0){
 	Files::show_files(arg, param);    
-    }else if(param.hasProperty("edit_stream")){
-	Stream::edit_stream(arg, param);
     }
+/*    else if(param.hasProperty("edit_stream")){
+	Stream::edit_stream(arg, param);
+    }*/
     shttpd_printf(arg,"</body></html>");
     arg->flags |= SHTTPD_END_OF_OUTPUT;
 }
