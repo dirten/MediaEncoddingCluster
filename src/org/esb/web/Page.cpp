@@ -10,6 +10,7 @@ using namespace org::esb::util;
 void Page::showPage(struct shttpd_arg *arg){
 
 	Table table;
+	table.setAttribute("border","1");
 	TableRow row(table);
 	TableColumn col(row);
 
@@ -30,9 +31,10 @@ void Page::showPage(struct shttpd_arg *arg){
 	    "<body>");
 	
 	el.setValue("test Element");
-
+//	string str=table.toHtml();
     shttpd_printf(arg, head);
-    shttpd_printf(arg, el);
+//    shttpd_printf(arg, table.toHtml().c_str());
+//    shttpd_printf(arg, table);
 	
 //	col.addElement();
     shttpd_printf(arg, "<div class=\"menu\">"
@@ -43,9 +45,9 @@ void Page::showPage(struct shttpd_arg *arg){
 
     Properties param=getParams(arg);
     if(!param.hasProperty("page")){
-	Files::show_files(arg, param);
+		Files::show_files(arg, param);
     }else if(strcmp(param.getProperty("page"),"files")==0){
-	Files::show_files(arg, param);    
+		Files::show_files(arg, param);    
     }
 /*    else if(param.hasProperty("edit_stream")){
 	Stream::edit_stream(arg, param);

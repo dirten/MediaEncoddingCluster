@@ -4,6 +4,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/av/Codec.h"
 #include "Stream.h"
+#include "WTK.h"
 //#include "avformat.h"
 
 
@@ -53,7 +54,17 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
     stmt.bind(1,atoi(props.getProperty("streamid")));
     ResultSet rs=stmt.executeQuery();
 
+//	Table table;
     if(rs.next()){
+//	TableRow row(table);
+//	TableColumn col(row);
+//	Element el(TableColumn(TableRow(table)));
+//	TableRow row(TableColumn(Element()));
+//	TableRow row;
+//	table.addRow(row);
+//	el.setValue("<div>OutputStream ( )</div>");
+
+
 	shttpd_printf(arg, "<div class=\"stream_info_block\">");
 	shttpd_printf(arg, "<div>OutputStream ( %s )</div>",rs.getstring(2).c_str());
 	Codec codec((CodecID)rs.getint(4));
@@ -72,7 +83,7 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
 	}
 	shttpd_printf(arg, "</select></div>");
 	shttpd_printf(arg, "<div>Time Base: %d/%d</div>",rs.getint(9),rs.getint(10));	
-	shttpd_printf(arg, "<div>Duration: %00.00f sec.</div>",rs.getdouble(8)/rs.getdouble(10));	
+	shttpd_printf(arg, "<div>Duration: %00.00f sec.</div>",rs.getdouble(8)/rs.getdouble(10));
 	shttpd_printf(arg, "<div>Bit Rate: <input type=\"text\" value=\"%d\"> </div>",rs.getint(16));
 	if(codec.codec_type==CODEC_TYPE_VIDEO){
 	    shttpd_printf(arg, "<div>Frame Rate: %d</div>",rs.getint(6));	

@@ -1,5 +1,7 @@
 #include "WTK.h"
 #include <iostream>
+#include <vector>
+#include <map>
 using namespace org::esb::web;
 using namespace std;
 
@@ -7,18 +9,23 @@ Element::Element(){
 
 }
 
-Element::Element(TableColumn & el){
+Element::Element(Element & el){
 	el.addElement(*this);
 }
 
-Element Element::setValue(const char * value){
+Element & Element::setValue(const char * value){
 	_value=string(value);
 	return * this;
 }
 
-Element Element::addElement(Element & el){
+Element & Element::setAttribute(const char * key,const char * val){
+	_attr.setProperty(key, val);
+	return * this;
+}
+
+Element & Element::addElement(Element & el){
 	_elements.push_back(&el);
-	return * this;	
+	return * this;
 }
 
 string Element::toHtml(){
@@ -28,11 +35,21 @@ string Element::toHtml(){
 		_value.append(el->toHtml());
 	}
 	if(strlen(_name.c_str())>0){
-		return string("<").append(_name).append(">").append(_value).append("</").append(_name).append(">");
+		return string("<").append(_name).append(buildAttributes()).append(">").append(_value).append("</").append(_name).append(">");
 	}else{
 		return _value;
+	}	
+}
+string Element::buildAttributes(){
+	string result=" ";
+	vector<std::pair<std::string,std::string> > attr=_attr.toArray();
+	vector<std::pair<std::string,std::string> >::iterator it;
+	for(it=attr.begin();it!=attr.end();it++){
+		pair<std::string,std::string> el=*it;
+		result.append(el.first).append("=");
+		result.append("\"").append(el.second).append("\" ");
 	}
-	
+	return result;
 }
 
 /*-------------------------------------------------------------------------------------*/
@@ -46,15 +63,15 @@ Table::~Table(){
 
 }
 
-Table Table::addRow(TableRow & row){	
-	_elements.push_back(&row);
-	return *this;
+void Table::addRow(TableRow row){	
+//	_elements.push_back(&row);
+//	return *this;
 }
 
 /*-------------------------------------------------------------------------------------*/
 
 TableRow::TableRow(){
-
+	_name="tr";
 }
 
 TableRow::TableRow(Table & table){
@@ -62,7 +79,12 @@ TableRow::TableRow(Table & table){
 	table.addElement(*this);
 }
 
-TableRow TableRow::addColumn(TableColumn & col){
+TableRow::TableRow(TableColumn  col){
+	_name="tr";
+	addElement(col);
+}
+
+TableRow & TableRow::addColumn(TableColumn & col){
 	_elements.push_back(&col);
 	return *this;
 }
@@ -87,5 +109,8 @@ TableColumn::~TableColumn(){
 
 
 }
-
+/*-------------------------------------------------------------------------------------*/
+Input::Input(){
+	_name="input";
+}
 

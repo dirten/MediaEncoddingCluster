@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <list>
-
+#include "org/esb/util/Properties.h"
 using namespace std;
 namespace org{
 namespace esb{
@@ -14,20 +14,23 @@ class Table;
 class TableRow;
 class TableColumn;
 
-
+using namespace org::esb::util;
 class Element{
 	public:
 		virtual std::string toHtml();//{return string("<").append(_name).append(">").append(_value).append("</").append(_name).append(">");}
 		virtual ~Element(){};
-		Element(TableColumn & el);
+		Element(Element & el);
 		Element();
-		Element setValue(const char * value);
-		virtual Element addElement(Element & el);
+		virtual Element & setValue(const char * value);
+		Element & setAttribute(const char * key,const char * val);
+		virtual Element & addElement(Element & el);
 		operator const char*(){return toHtml().c_str();}
 	protected:
 		string _value;
 		string _name;
 		list<Element*>_elements;
+		Properties _attr;
+		string buildAttributes();
 };
 
 
@@ -35,6 +38,7 @@ class TableColumn:public Element{
 	public:
 		TableColumn();
 		TableColumn(TableRow & row);
+//		TableColumn(TableRow & row);
 		~TableColumn();
 };
 
@@ -42,19 +46,23 @@ class TableRow:public Element{
 	public:
 		TableRow();
 		TableRow(Table&table);
+		TableRow(TableColumn col);
 		~TableRow();
-		TableRow addColumn(TableColumn & col);
+		TableRow & addColumn(TableColumn & col);
 };
 
 class Table: public Element{
 	public:
 		Table();
 		~Table();
-		Table addRow(TableRow & row);
+		void addRow(TableRow row);
 		
 };
 
-
+class Input: public Element{
+	public:
+		Input();
+};
 }}}
 #endif
 
