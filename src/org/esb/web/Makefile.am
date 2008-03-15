@@ -14,7 +14,7 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libweb.la
-SOURCES = WebServer.cpp Files.cpp Jobs.cpp Stream.cpp Page.cpp
+SOURCES = WTK.cpp WebServer.cpp Files.cpp Jobs.cpp Stream.cpp Page.cpp
             
 libweb_la_SOURCES = $(SOURCES)
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)

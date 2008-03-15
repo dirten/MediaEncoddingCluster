@@ -10,14 +10,14 @@ div.block {
     color:#efefef;
     border:1px solid #000000;
     margin:3px;
-    width:200;
+    width:300;
     display:table-cell;
 }
 div.stream_info_block { 
     color:#efefef;
     border-top:1px solid #000000;
     margin:3px;
-    width:200;
+    width:300;
 //    display:table-cell;
 }
 

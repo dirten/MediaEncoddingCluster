@@ -43,12 +43,14 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
 	}
     }
     {
-	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id;");
+	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id order by s.stream_type;");
 	stmt.bind(1,id);
         ResultSet rs=stmt.executeQuery();
 //        int cc=rs.getColumnCount();
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
+//    	    Stream::edit_stream(arg, props);
+//    	    Stream::build_stream_form(arg, props);
     	    Stream::show_output_stream(arg, props);
 	}
     }

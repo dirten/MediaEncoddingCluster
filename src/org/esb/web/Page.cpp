@@ -2,15 +2,39 @@
 #include "Files.h"
 #include "Stream.h"
 #include "org/esb/util/StringTokenizer.h"
-
+#include "WTK.h"
 
 using namespace org::esb::web;
 using namespace org::esb::util;
 
 void Page::showPage(struct shttpd_arg *arg){
+
+	Table table;
+	TableRow row(table);
+	TableColumn col(row);
+
+
+//	table.addRow(row);
+
+/*
     shttpd_printf(arg, "<html><head>"
     	    "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"><head>"
 	    "<body>");
+*/
+
+	Element el(col);
+
+	Element head;
+	head.setValue("<html><head>"
+    	    "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"><head>"
+	    "<body>");
+	
+	el.setValue("test Element");
+
+    shttpd_printf(arg, head);
+    shttpd_printf(arg, el);
+	
+//	col.addElement();
     shttpd_printf(arg, "<div class=\"menu\">"
 	    "<div class=\"menuentry\"><a href=\"?page=files\">Files</a></div>"
 	    "<div class=\"menuentry\"><a href=\"?page=jobs\">Jobs</a></div>"
