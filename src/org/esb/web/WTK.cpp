@@ -113,4 +113,18 @@ TableColumn::~TableColumn(){
 Input::Input(){
 	_name="input";
 }
+/*-------------------------------------------------------------------------------------*/
+LabledTableRow::LabledTableRow(const char * label, Element & el):_label(label), _element(el){
 
+
+}
+
+void LabledTableRow::setLabel(const char * label){
+
+
+}
+
+void LabledTableRow::setElement(Element & el){
+
+
+}

@@ -63,6 +63,16 @@ class Input: public Element{
 	public:
 		Input();
 };
+
+class LabledTableRow: public TableRow{
+	public:
+		LabledTableRow(const char * label, Element & el);
+		void setLabel(const char * label);
+		void setElement(Element & element);
+	private:
+		const char * _label;
+		Element & _element;
+};
 }}}
 #endif
 

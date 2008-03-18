@@ -63,7 +63,7 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
 //	TableRow row;
 //	table.addRow(row);
 //	el.setValue("<div>OutputStream ( )</div>");
-
+	
 
 	shttpd_printf(arg, "<div class=\"stream_info_block\">");
 	shttpd_printf(arg, "<div>OutputStream ( %s )</div>",rs.getstring(2).c_str());
