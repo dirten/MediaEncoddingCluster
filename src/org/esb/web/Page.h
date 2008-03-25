@@ -14,6 +14,7 @@ namespace web{
 	    static void showPage(struct shttpd_arg *arg);
 	private:
 	    static Properties getParams(struct shttpd_arg *arg);
+	    static string getMenu(Properties&);
 	    Properties _params;
     };
 }}}

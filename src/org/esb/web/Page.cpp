@@ -75,3 +75,12 @@ Properties Page::getParams(struct shttpd_arg *arg){
   return props;
 }
 
+string Page::getMenu(Properties & props){
+
+	string result;
+	result="";
+	
+	return result;
+}
+
+

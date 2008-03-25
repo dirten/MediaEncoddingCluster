@@ -41,6 +41,11 @@ my $stuff = <<EOP ;
 	<input type=text name=b>
 	<input type=submit value=post>
 </form>
+
+<form method=post enctype="multipart/form-data">
+	<input type=file name=filetype >
+	<input type=submit value=post>
+</form>
 EOP
 
 system('some shit');
