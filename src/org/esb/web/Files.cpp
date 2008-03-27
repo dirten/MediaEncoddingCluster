@@ -1,4 +1,5 @@
 #include "Files.h"
+#include "Page.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/sql/Connection.h"
@@ -78,25 +79,15 @@ void Files::upload_file(struct shttpd_arg *arg){
 }
 
 void Files::show_files(struct shttpd_arg *arg){
-
     Connection con(Config::getProperty("db.connection"));
     Statement stmt=con.createStatement("select * from files");
     ResultSet rs=stmt.executeQuery();
     shttpd_printf(arg, "<div>");
     while(rs.next()){
-        shttpd_printf(arg, "<div><a href=\"?filedetails=%d\">%s</a></div>",rs.getint(0),rs.getstring(1).c_str());
+        shttpd_printf(arg, "<div><a href=\"filedetails.shtml?file=%d\">%s</a></div>",rs.getint(0),rs.getstring(1).c_str());
     }
-    
-    shttpd_printf(arg, "<div>");
-/*    
-    shttpd_printf(arg, "<li>Upload file example. "
-	    "<form action=\"/upload\" method=\"post\" enctype=\"multipart/form-data\" "
-	    "action=\"/post\"><input type=\"file\" name=\"file\">"
-	    "<input type=\"submit\"></form>");
-*/
     shttpd_printf(arg, "</div>");
-    shttpd_printf(arg, "</div>");
-			arg->flags |= SHTTPD_END_OF_OUTPUT;
+    arg->flags |= SHTTPD_END_OF_OUTPUT;
 }
 
 void Files::show_files(struct shttpd_arg *arg, Properties & params){
@@ -149,6 +140,37 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
     shttpd_printf(arg, "<a href=\"?fileid=%d&page=streams&edit_stream=-1\">Add Stream</a>", id);
     shttpd_printf(arg, "</div>");
 
+}
+
+void Files::show_details(struct shttpd_arg *arg){
+    Properties props=Page::getParams(arg);
+    int id=0;
+    if(props.hasProperty("file"))
+	id=atoi(props.getProperty("file"));
+    
+    Connection con(Config::getProperty("db.connection"));
+    {
+	Statement stmt=con.createStatement("select id from streams where fileid=? order by stream_index");
+	stmt.bind(1,id);
+        ResultSet rs=stmt.executeQuery();
+        while(rs.next()){
+    	    props.setProperty("streamid",rs.getstring(0));
+    	    Stream::show_input_stream(arg, props);
+	}
+    }
+    {
+	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id order by s.stream_type;");
+	stmt.bind(1,id);
+        ResultSet rs=stmt.executeQuery();
+        while(rs.next()){
+    	    props.setProperty("streamid",rs.getstring(0));
+    	    Stream::show_output_stream(arg, props);
+	}
+    }
+//    shttpd_printf(arg, "<div>");
+//    shttpd_printf(arg, "<a href=\"?fileid=%d&page=streams&edit_stream=-1\">Add Stream</a>", id);
+//    shttpd_printf(arg, "</div>");
+    arg->flags |= SHTTPD_END_OF_OUTPUT;
 }
 
 void Files::edit_details(struct shttpd_arg *arg, int fileid){

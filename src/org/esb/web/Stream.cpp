@@ -54,17 +54,7 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
     stmt.bind(1,atoi(props.getProperty("streamid")));
     ResultSet rs=stmt.executeQuery();
 
-//	Table table;
     if(rs.next()){
-//	TableRow row(table);
-//	TableColumn col(row);
-//	Element el(TableColumn(TableRow(table)));
-//	TableRow row(TableColumn(Element()));
-//	TableRow row;
-//	table.addRow(row);
-//	el.setValue("<div>OutputStream ( )</div>");
-	
-
 	shttpd_printf(arg, "<div class=\"stream_info_block\">");
 	shttpd_printf(arg, "<div>OutputStream ( %s )</div>",rs.getstring(2).c_str());
 	Codec codec((CodecID)rs.getint(4));

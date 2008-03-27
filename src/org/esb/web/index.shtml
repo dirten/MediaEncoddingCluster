@@ -3,5 +3,9 @@
 <body>
 <!--#include file="menu.tmpl" -->
 <!--#call showFiles -->
+<form action="/upload" method="post" enctype="multipart/form-data" action="/post">
+    <input type="file" name="file">
+    <input type="submit">
+</form>
 </body>
 <html>

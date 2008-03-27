@@ -22,6 +22,7 @@ WebServer::WebServer(int port){
 //	shttpd_register_uri(ctx, "/", &Page::showPage, (void *) NULL);
 	shttpd_register_uri(ctx, "/upload", &Files::upload_file, (void *) NULL);
 	shttpd_register_ssi_func(ctx, "showFiles", &Files::show_files, NULL);
+	shttpd_register_ssi_func(ctx, "showFileDetails", &Files::show_details, NULL);
 //	shttpd_handle_error(ctx, 404, &Page::showPage, NULL);
 	while (!WebServer::_toStop)
 		shttpd_poll(ctx, 1000);
