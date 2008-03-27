@@ -77,6 +77,28 @@ void Files::upload_file(struct shttpd_arg *arg){
 	}
 }
 
+void Files::show_files(struct shttpd_arg *arg){
+
+    Connection con(Config::getProperty("db.connection"));
+    Statement stmt=con.createStatement("select * from files");
+    ResultSet rs=stmt.executeQuery();
+    shttpd_printf(arg, "<div>");
+    while(rs.next()){
+        shttpd_printf(arg, "<div><a href=\"?filedetails=%d\">%s</a></div>",rs.getint(0),rs.getstring(1).c_str());
+    }
+    
+    shttpd_printf(arg, "<div>");
+/*    
+    shttpd_printf(arg, "<li>Upload file example. "
+	    "<form action=\"/upload\" method=\"post\" enctype=\"multipart/form-data\" "
+	    "action=\"/post\"><input type=\"file\" name=\"file\">"
+	    "<input type=\"submit\"></form>");
+*/
+    shttpd_printf(arg, "</div>");
+    shttpd_printf(arg, "</div>");
+			arg->flags |= SHTTPD_END_OF_OUTPUT;
+}
+
 void Files::show_files(struct shttpd_arg *arg, Properties & params){
 
     if(params.hasProperty("filedetails")){
