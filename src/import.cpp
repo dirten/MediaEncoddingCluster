@@ -71,7 +71,7 @@ int import(int argc, char * argv[]){
 	Connection con(databaseFile);
 	sqlite3_transaction trans=con.getTransaction();
 	{
-	    Statement st=con.createStatement("INSERT INTO files(filename, size) values (?,?)");
+	    Statement st=con.createStatement("INSERT INTO files(filename, size, type, insertdate) values (?,?,1,datetime('now'))");
 	    st.bind(1,inputFile.getPath());
 	    st.bind(2,(long long int)fis.getFileSize());
 	    st.execute();
@@ -125,6 +125,7 @@ int import(int argc, char * argv[]){
 
 	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=1;
+	packet.duration=packet.duration==0?1:packet.duration;
         stmt.bind( field++, streams[packet.stream_index]);
         stmt.bind( field++, packet.pts);
         stmt.bind( field++, packet.dts);

@@ -26,11 +26,17 @@ void Stream::show_input_stream(struct shttpd_arg *arg, Properties & props){
 	shttpd_printf(arg, "<div class=\"stream_info_block\">");
 	shttpd_printf(arg, "<div>Stream ( %s )</div>",rs.getstring(2).c_str());
 	Codec codec((CodecID)rs.getint(4));
+	if(codec.codec_type==CODEC_TYPE_AUDIO){
+	    codec.setSampleRate(1);
+	    codec.setChannels(1);
+	    codec.setBitRate(100);
+	}
+	
 	codec.open();
 	shttpd_printf(arg, "<div>Type: %s</div>",codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video");
 	shttpd_printf(arg, "<div>CodecName: %s</div>",codec.codec->name);
 	shttpd_printf(arg, "<div>Time Base: %d/%d</div>",rs.getint(9),rs.getint(10));	
-	shttpd_printf(arg, "<div>Duration: %00.00f sec.</div>",rs.getdouble(8)/rs.getdouble(10));	
+	shttpd_printf(arg, "<div>Duration: %00.00f sec.</div>",rs.getdouble(8)/(rs.getdouble(10)/rs.getdouble(9)));
 	shttpd_printf(arg, "<div>Bit Rate: %d </div>",rs.getint(16));
 	if(codec.codec_type==CODEC_TYPE_VIDEO){
 	    shttpd_printf(arg, "<div>Frame Rate: %d</div>",rs.getint(6));	

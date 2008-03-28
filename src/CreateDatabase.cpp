@@ -40,7 +40,7 @@ void createTable(Connection & con,const char * sql){
 
 bool createDatabase(File &databaseFile){
 	Connection con(databaseFile);
-	createTable(con,"create table files (id integer  primary key autoincrement ,filename, size, stream_count, title, autho, copyright, comment, album, year, track, genre, duration, bitrate)");
+	createTable(con,"create table files (id integer  primary key autoincrement ,filename, size, stream_count, title, autho, copyright, comment, album, year, track, genre, duration, bitrate, insertdate,type)");
 	createTable(con,"create table streams(id integer  primary key autoincrement,fileid, stream_index, stream_type, codec, codec_name,framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)");
 	createTable(con,"create table packets (id integer  primary key autoincrement,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data)");
 	createTable(con,"create table jobs (id integer  primary key autoincrement, infile integer, outfile integer, begin date, complete date)");

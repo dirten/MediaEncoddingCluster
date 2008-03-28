@@ -8,7 +8,7 @@
 #include "org/esb/config/config.h"
 #include "Stream.h"
 #include <iostream>
-
+#include "import.cpp"
 using namespace org::esb::web;
 using namespace org::esb::sql;
 using namespace org::esb::config;
@@ -18,11 +18,13 @@ bool isFirst=true;
 //string str;
 void Files::upload_file(struct shttpd_arg *arg){
 
-	const char	*s, *path = "uploaded.txt";
+	const char	*s;
+	char *path;
 	struct state {
 		size_t	cl;		/* Content-Length	*/
 		size_t	nread;		/* Number of bytes read	*/
 		FILE	*fp;
+		char	*filename;
 	} *state;
 
 	/* If the connection was broken prematurely, cleanup */
@@ -39,7 +41,30 @@ void Files::upload_file(struct shttpd_arg *arg){
 		/* New request. Allocate a state structure, and open a file */
 		arg->state = state = (struct state*)calloc(1, sizeof(*state));
 		state->cl = strtoul(s, NULL, 10);
-		state->fp = fopen(path, "wb+");
+		string str(arg->in.buf,arg->in.len);
+		StringTokenizer tok(str,"\r\n");
+		for(int a=0;a<3;a++){
+		    string line=tok.nextToken();
+		    if(a==1){
+		        StringTokenizer tokLine(line,";");
+		        tokLine.nextToken();
+		        tokLine.nextToken();
+		        string filename= tokLine.nextToken();
+		        filename=filename.substr(11);
+		        filename=filename.substr(0,filename.length()-1);
+			state->filename = new char[filename.length()+1];
+//			state->filename =(char *)filename.c_str();
+			memset(state->filename,0,filename.length()+1);
+			memcpy(state->filename,filename.c_str(),filename.length());
+			if(strlen(state->filename)==0){
+			    shttpd_printf(arg, "HTTP/1.0 200 OK\n"
+				"Content-Type: text/plain\n\n");
+			    arg->flags |= SHTTPD_END_OF_OUTPUT;
+			}
+			state->fp = fopen(state->filename, "wb+");
+		        cout << state->filename<< endl;
+		    }
+		}
 		shttpd_printf(arg, "HTTP/1.0 200 OK\n"
 			"Content-Type: text/plain\n\n");
 	} else	{
@@ -49,7 +74,6 @@ void Files::upload_file(struct shttpd_arg *arg){
 		
 		string str(arg->in.buf,arg->in.len);
 		if(isFirst){
-
 			StringTokenizer tok(str,"\r\n");
 			for(int a=0;a<3;a++){
 				string line=tok.nextToken();
@@ -69,8 +93,10 @@ void Files::upload_file(struct shttpd_arg *arg){
 		arg->in.num_bytes = arg->in.len;
 		if (state->nread >= state->cl) {
 			shttpd_printf(arg, "Written %d bytes to %s from ",
-			    state->nread, path);
+			    state->nread, state->filename);
 			(void) fclose(state->fp);
+			char * argv[]={"",state->filename};			
+			import(2,argv);
 			free(state);
 			arg->flags |= SHTTPD_END_OF_OUTPUT;
 			isFirst=true;
@@ -80,13 +106,14 @@ void Files::upload_file(struct shttpd_arg *arg){
 
 void Files::show_files(struct shttpd_arg *arg){
     Connection con(Config::getProperty("db.connection"));
-    Statement stmt=con.createStatement("select * from files");
+    Statement stmt=con.createStatement("select * from files where type=1");
     ResultSet rs=stmt.executeQuery();
-    shttpd_printf(arg, "<div>");
+    shttpd_printf(arg, "<table class=\"list\">");
+    shttpd_printf(arg, "<tr class=\"header\"><td>Id</td><td>Filename</td><td>Size</td><td>Insert Date</td></tr>");
     while(rs.next()){
-        shttpd_printf(arg, "<div><a href=\"filedetails.shtml?file=%d\">%s</a></div>",rs.getint(0),rs.getstring(1).c_str());
+        shttpd_printf(arg, "<tr class=\"row\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rs.getint(0),rs.getint(0),rs.getstring(1).c_str(),(rs.getint(4)/1024/1024),rs.getstring(2).c_str());
     }
-    shttpd_printf(arg, "</div>");
+    shttpd_printf(arg, "</table>");
     arg->flags |= SHTTPD_END_OF_OUTPUT;
 }
 

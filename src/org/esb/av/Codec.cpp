@@ -37,6 +37,7 @@ namespace org {
 				_height = 0;
 				_bit_rate = 0;
 				_gop_size = 0;
+			//	_time_base=AVRational{0,0};
 				_channels = 0;
 				_sample_rate = 0;
     				_opened=false;
@@ -93,9 +94,10 @@ namespace org {
 				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
 					flags |= CODEC_FLAG_TRUNCATED;
 				if (avcodec_open (this, _codec) < 0) {
-					cout << "ERROR : while openning Codec" << endl;
+					cout << "ERROR : while openning Codec" <<avcodec_open (this, _codec) <<endl;
+				}else{
+				    _opened=true;
 				}
-				_opened=true;
 			}
 			Codec::~Codec () {
 			    if(_opened)
