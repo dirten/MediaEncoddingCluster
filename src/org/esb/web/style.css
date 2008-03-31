@@ -62,12 +62,14 @@ tr.header {
 //    width:200;
 //    display:table-cell;
 }
+
 div.menuleft { 
     background-image:url(images/but4_left.png);
     margin:1px;
     width:10;
     display:table-cell;
 }
+
 div.menuright { 
     background-image:url(images/but4_right.png);
     margin:5px;
