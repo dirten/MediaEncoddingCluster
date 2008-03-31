@@ -6,7 +6,7 @@
 using namespace org::esb::sql;
 
 int jobcreator(int argc, char*argv[]){
-	File databaseFile(argv[1]);
+	File databaseFile(argv[2]);
 	Connection con(databaseFile);
 
 
@@ -16,7 +16,7 @@ int jobcreator(int argc, char*argv[]){
 //	char*zErrMsg=0;
 //	int rc=0;
 	int field=1, fileid=0, jobid=0, streamid=0;
-	sql="insert into files (filename)values('../output.avi')";
+	sql="insert into files (filename)values('output.avi')";
 	{
 	Statement stmt=con.createStatement(sql.c_str());
 	stmt.execute();
@@ -33,6 +33,7 @@ int jobcreator(int argc, char*argv[]){
 	{
 		Statement stmt=con.createStatement(sql.c_str());
 		stmt.bind(1,fileid);
+		stmt.execute();
 //    	sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
   //  	sqlite3_bind_int( pStmt, 1, fileid);
     //	rc=sqlite3_step(pStmt);

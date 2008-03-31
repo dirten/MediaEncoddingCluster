@@ -59,7 +59,7 @@ int exporter(int argc, char * argv[]){
 	Connection con((char*)dbFile.c_str());
 
     {
-	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=4 order by pts limit 10000");
+	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=1 order by a.pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
@@ -69,14 +69,14 @@ int exporter(int argc, char * argv[]){
 	while(rs.next()){
 	    video_packets++;
 	    Packet p;
-	    p.size=rs.getint(0);
+	    p.size=rs.getInt("data_size");
 	    p.data=new uint8_t[p.size];
-	    memcpy(p.data,rs.getblob(1).c_str(),p.size);
-	    p.pts=rs.getint(2);
-	    p.dts=rs.getint(3);
-	    p.duration=rs.getint(4);
-	    p.flags=rs.getint(5);
-	    p.pos=rs.getint(6);
+	    memcpy(p.data,rs.getBlob("data").c_str(),p.size);
+	    p.pts=rs.getInt("pts");
+	    p.dts=rs.getInt("dts");
+	    p.duration=rs.getInt("duration");
+	    p.flags=rs.getInt("flags");
+	    p.pos=rs.getInt("pos");
 	    p.stream_index=0;//rs.getint(7);
 	    pos.writePacket(p);
 		if(video_packets%1000==0)
@@ -89,7 +89,7 @@ int exporter(int argc, char * argv[]){
 	    cout<<endl;
     
         {
-	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=3 order by pts limit 10000");
+	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=2 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	
 	
@@ -98,15 +98,15 @@ int exporter(int argc, char * argv[]){
 	while(rs.next()){
 	    audio_packets++;
 	    Packet p;
-	    p.size=rs.getint(0);
+	    p.size=rs.getInt("data_size");
 	    p.data=new uint8_t[p.size];
-	    memcpy(p.data,rs.getblob(1).c_str(),p.size);
+	    memcpy(p.data,rs.getBlob("data").c_str(),p.size);
 	    /*for some AudioStreams it might be pts=pts/duration */
-	    p.pts=rs.getint(2)>0?(rs.getint(2)/417):rs.getint(2);
+	    p.pts=rs.getInt("pts")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
 	    p.dts=p.pts;//rs.getint(3);
-	    p.duration=rs.getint(4);
-	    p.flags=rs.getint(5);
-	    p.pos=rs.getint(6);
+	    p.duration=1;//rs.getInt("duration");
+	    p.flags=rs.getInt("flags");
+	    p.pos=rs.getInt("pos");
 	    p.stream_index=1;//rs.getint(7);
 	    pos.writePacket(p);
 		if(audio_packets%1000==0)

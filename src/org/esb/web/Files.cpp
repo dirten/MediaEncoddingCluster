@@ -106,12 +106,12 @@ void Files::upload_file(struct shttpd_arg *arg){
 
 void Files::show_files(struct shttpd_arg *arg){
     Connection con(Config::getProperty("db.connection"));
-    Statement stmt=con.createStatement("select * from files where type=1");
+    Statement stmt=con.createStatement("select id, filename, size, insertdate  from files where type=1");
     ResultSet rs=stmt.executeQuery();
     shttpd_printf(arg, "<table class=\"list\">");
     shttpd_printf(arg, "<tr class=\"header\"><td>Id</td><td>Filename</td><td>Size</td><td>Insert Date</td></tr>");
     while(rs.next()){
-        shttpd_printf(arg, "<tr class=\"row\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rs.getint(0),rs.getint(0),rs.getstring(1).c_str(),(rs.getint(4)/1024/1024),rs.getstring(2).c_str());
+        shttpd_printf(arg, "<tr class=\"row\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rs.getInt(0),rs.getInt(0),rs.getString(1).c_str(),(rs.getInt(2)/1024/1024),rs.getString(3).c_str());
     }
     shttpd_printf(arg, "</table>");
     arg->flags |= SHTTPD_END_OF_OUTPUT;
@@ -154,6 +154,8 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
     	    Stream::show_input_stream(arg, props);
 		}
     }
+    bool have=false;
+
     {
 	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id order by s.stream_type;");
 	stmt.bind(1,id);
@@ -161,8 +163,20 @@ void Files::show_details(struct shttpd_arg *arg, Properties & props){
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
     	    Stream::show_output_stream(arg, props);
+    	    have=true;
 		}
     }
+   if(!have)
+   {
+	Statement stmt=con.createStatement("select id from streams where fileid=? order by stream_index");
+	stmt.bind(1,id);
+        ResultSet rs=stmt.executeQuery();
+        while(rs.next()){
+    	    props.setProperty("streamid",rs.getstring(0));
+    	    Stream::show_output_stream(arg, props);
+		}
+    }
+
     shttpd_printf(arg, "<div>");
     shttpd_printf(arg, "<a href=\"?fileid=%d&page=streams&edit_stream=-1\">Add Stream</a>", id);
     shttpd_printf(arg, "</div>");
@@ -185,15 +199,36 @@ void Files::show_details(struct shttpd_arg *arg){
     	    Stream::show_input_stream(arg, props);
 	}
     }
+	
     {
 	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id order by s.stream_type;");
+	stmt.bind(1,id);
+        ResultSet rs=stmt.executeQuery();
+   		shttpd_printf(arg, "<form name=\"save_output_stream\" action=\"save_stream_details\" method=\"post\">");
+        string streamids;
+        while(rs.next()){
+    	    props.setProperty("streamid",rs.getstring(0));
+    	    Stream::show_output_stream(arg, props);
+			streamids.append(rs.getstring(0)).append(",");
+		}
+		streamids=streamids.substr(0,streamids.length()-1);
+	   	shttpd_printf(arg, "<input type=\"hidden\" name=\"streamids\" value=\"%s\">",streamids.c_str());
+    	shttpd_printf(arg, "<input type=\"submit\" value=\"save\">");
+    	shttpd_printf(arg, "</form>");
+
+    }
+/*
+    if(!have)
+   {
+	Statement stmt=con.createStatement("select id from streams where fileid=? order by stream_index");
 	stmt.bind(1,id);
         ResultSet rs=stmt.executeQuery();
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
     	    Stream::show_output_stream(arg, props);
-	}
-    }
+		}
+    }*/
+
 //    shttpd_printf(arg, "<div>");
 //    shttpd_printf(arg, "<a href=\"?fileid=%d&page=streams&edit_stream=-1\">Add Stream</a>", id);
 //    shttpd_printf(arg, "</div>");

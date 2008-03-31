@@ -34,6 +34,7 @@ void shell(int argc, char * argv[]);
 
 int main(int argc, char * argv[]){	
 
+    Config::init("./cluster.cfg");
 
 	for(int arg_counter=1;argc>arg_counter;arg_counter++){
 		if(strcmp(argv[arg_counter],"listen")==0){

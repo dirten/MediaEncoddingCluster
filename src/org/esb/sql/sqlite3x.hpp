@@ -158,13 +158,14 @@ namespace sqlite3x {
 		void close();
 
 		int getColumnCount();
+		int getColumnIndex(std::string name);
 
-		int getint(int index);
-		long long getint64(int index);
-		double getdouble(int index);
-		std::string getstring(int index);
-		std::wstring getstring16(int index);
-		std::string getblob(int index);
+		__attribute__((deprecated))int getint(int index);
+		__attribute__((deprecated))long long getint64(int index);
+		__attribute__((deprecated))double getdouble(int index);
+		__attribute__((deprecated))std::string getstring(int index);
+		__attribute__((deprecated))std::wstring getstring16(int index);
+		__attribute__((deprecated))std::string getblob(int index);
 
 		std::string getcolname(int index);
 		std::wstring getcolname16(int index);

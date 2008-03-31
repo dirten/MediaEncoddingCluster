@@ -18,7 +18,7 @@ div.stream_info_block {
     border-top:1px solid #000000;
     margin:3px;
     width:300;
-//    display:table-cell;
+    display:table-cell;
 }
 
 div.menu { 

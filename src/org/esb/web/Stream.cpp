@@ -92,3 +92,12 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
 	shttpd_printf(arg, "</div>");
     }
 }
+
+void Stream::save_output_stream(struct shttpd_arg *arg){
+	char value[100];
+	(void) shttpd_get_var("test", arg->in.buf, arg->in.len, value, sizeof(value));
+	cout << "save stream details:codec:"<<value<<endl;
+	shttpd_printf(arg, "HTTP/1.1 303 See Other\r\n"
+	 				"Location: %s\r\n\r\n", "index.shtml");
+	    arg->flags |= SHTTPD_END_OF_OUTPUT;
+}

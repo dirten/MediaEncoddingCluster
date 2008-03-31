@@ -71,9 +71,20 @@ int import(int argc, char * argv[]){
 	Connection con(databaseFile);
 	sqlite3_transaction trans=con.getTransaction();
 	{
-	    Statement st=con.createStatement("INSERT INTO files(filename, size, type, insertdate) values (?,?,1,datetime('now'))");
+	    Statement st=con.createStatement("INSERT INTO files(filename, size, type, insertdate,stream_count, title,autho, copyright, comment, album, year, track, genre, duration,bitrate) values (?,?,1,datetime('now'),?,?,?,?,?,?,?,?,?,?,?)");
 	    st.bind(1,inputFile.getPath());
 	    st.bind(2,(long long int)fis.getFileSize());
+	    st.bind(3,(long long int)fis.getStreamCount());
+	    st.bind(4,(char*)&fis.getFormatContext()->title);
+	    st.bind(5,(char*)&fis.getFormatContext()->author);
+	    st.bind(6,(char*)&fis.getFormatContext()->copyright);
+	    st.bind(7,(char*)&fis.getFormatContext()->comment);
+	    st.bind(8,(char*)&fis.getFormatContext()->album);
+	    st.bind(9,(char*)&fis.getFormatContext()->year);
+	    st.bind(10,(char*)&fis.getFormatContext()->track);
+	    st.bind(11,(char*)&fis.getFormatContext()->genre);
+	    st.bind(12,(long long int)&fis.getFormatContext()->duration);
+	    st.bind(13,(long long int)&fis.getFormatContext()->bit_rate);
 	    st.execute();
 	}
 //	con.executenonquery(string("INSERT INTO files(filename,size) values ( '")+inputFile.getPath()+string("',")+fis.getFileSize()+")");

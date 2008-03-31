@@ -21,6 +21,7 @@ WebServer::WebServer(int port){
 	shttpd_set_option(ctx, "error_log", "error.log");
 //	shttpd_register_uri(ctx, "/", &Page::showPage, (void *) NULL);
 	shttpd_register_uri(ctx, "/upload", &Files::upload_file, (void *) NULL);
+	shttpd_register_uri(ctx, "/save_stream_details", &Stream::save_output_stream, (void *) NULL);
 	shttpd_register_ssi_func(ctx, "showFiles", &Files::show_files, NULL);
 	shttpd_register_ssi_func(ctx, "showFileDetails", &Files::show_details, NULL);
 //	shttpd_handle_error(ctx, 404, &Page::showPage, NULL);

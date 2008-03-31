@@ -90,10 +90,10 @@ void Job::activate(){
 		stmt.bind(1,_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
-    		_decoder=new Decoder((CodecID)rs.getint(0));
-    		_decoder->setWidth(rs.getint(1));
-    		_decoder->setHeight(rs.getint(2));
-    		_decoder->setPixelFormat((PixelFormat)rs.getint(3));
+    		_decoder=new Decoder((CodecID)rs.getInt(0));
+    		_decoder->setWidth(rs.getInt(1));
+    		_decoder->setHeight(rs.getInt(2));
+    		_decoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		_decoder->open();
 		}
 	}
@@ -102,16 +102,16 @@ void Job::activate(){
 		stmt.bind(1,_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
-    		_encoder=new Encoder((CodecID)rs.getint(0));
-    		_encoder->setWidth(rs.getint(1));
-    		_encoder->setHeight(rs.getint(2));
-    		_encoder->setPixelFormat((PixelFormat)rs.getint(3));
-    		_encoder->setBitRate(rs.getint(4));
-    		_encoder->setTimeBase((AVRational){rs.getint(5),rs.getint(6)});
-    		_encoder->setGopSize(rs.getint(7));
-    		_encoder->setChannels(rs.getint(8));
-    		_encoder->setSampleRate(rs.getint(9));
-    		_encoder->setSampleFormat((SampleFormat)rs.getint(10));
+    		_encoder=new Encoder((CodecID)rs.getInt(0));
+    		_encoder->setWidth(rs.getInt(1));
+    		_encoder->setHeight(rs.getInt(2));
+    		_encoder->setPixelFormat((PixelFormat)rs.getInt(3));
+    		_encoder->setBitRate(rs.getInt(4));
+    		_encoder->setTimeBase((AVRational){rs.getInt(5),rs.getInt(6)});
+    		_encoder->setGopSize(rs.getInt(7));
+    		_encoder->setChannels(rs.getInt(8));
+    		_encoder->setSampleRate(rs.getInt(9));
+    		_encoder->setSampleFormat((SampleFormat)rs.getInt(10));
     		_encoder->open();
 		}
 	}
@@ -130,7 +130,7 @@ void Job::activate(){
 		stmt.bind(3,_source_stream);
 		ResultSet rs=stmt.executeQuery();
 		while(rs.next()){
-			_frame_groups.push(rs.getint(0));
+			_frame_groups.push(rs.getInt(0));
 		}
 	}
 	
@@ -179,15 +179,15 @@ ProcessUnit Job::getNextProcessUnit(){
 	ResultSet rs=_stmt->executeQuery();
 	while(rs.next()){
 	    shared_ptr<Packet> p(new Packet());
-	    p->size=rs.getint(0);
+	    p->size=rs.getInt(0);
 	    p->data=new uint8_t[p->size];
-	    memcpy(p->data,rs.getblob(1).c_str(),p->size);
-	    p->pts=rs.getint(2);
-	    p->dts=rs.getint(3);
-	    p->duration=rs.getint(4);
-	    p->flags=rs.getint(5);
-	    p->pos=rs.getint(6);
-	    p->stream_index=rs.getint(7);
+	    memcpy(p->data,rs.getBlob(1).c_str(),p->size);
+	    p->pts=rs.getInt(2);
+	    p->dts=rs.getInt(3);
+	    p->duration=rs.getInt(4);
+	    p->flags=rs.getInt(5);
+	    p->pos=rs.getInt(6);
+	    p->stream_index=rs.getInt(7);
 	    u._input_packets.push_back(p);
 	}
 	u._decoder=_decoder;

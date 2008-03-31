@@ -107,6 +107,17 @@ int sqlite3_reader::getColumnCount() {
 	return this->cmd->argc-1;
 //	return sqlite3_column_int(this->cmd->stmt, index);
 }
+int sqlite3_reader::getColumnIndex(string name) {
+	if(!this->cmd) throw database_error("reader is closed");
+	int cols=getColumnCount();
+	int index=-1;
+	for (int a=0;a<cols;a++){
+		if(strcmp(name.c_str(),sqlite3_column_name(this->cmd->stmt, a))==0){
+			index=a;
+		}
+	}
+	return index;
+}
 
 int sqlite3_reader::getint(int index) {
 	if(!this->cmd) throw database_error("reader is closed");
