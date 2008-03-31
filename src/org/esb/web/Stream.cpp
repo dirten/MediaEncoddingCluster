@@ -23,8 +23,8 @@ void Stream::show_input_stream(struct shttpd_arg *arg, Properties & props){
     ResultSet rs=stmt.executeQuery();
 //    int cc=rs.getColumnCount();
     while(rs.next()){
-	shttpd_printf(arg, "<div class=\"stream_info_block\">");
-	shttpd_printf(arg, "<div>Stream ( %s )</div>",rs.getstring(2).c_str());
+	shttpd_printf(arg, "<table class=\"stream_info_block\" border=\"1\">");
+	shttpd_printf(arg, "<tr><td>Stream</td><td>( %s )</td></tr>",rs.getstring(2).c_str());
 	Codec codec((CodecID)rs.getint(4));
 	if(codec.codec_type==CODEC_TYPE_AUDIO){
 	    codec.setSampleRate(1);
@@ -33,20 +33,20 @@ void Stream::show_input_stream(struct shttpd_arg *arg, Properties & props){
 	}
 	
 	codec.open();
-	shttpd_printf(arg, "<div>Type: %s</div>",codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video");
-	shttpd_printf(arg, "<div>CodecName: %s</div>",codec.codec->name);
-	shttpd_printf(arg, "<div>Time Base: %d/%d</div>",rs.getint(9),rs.getint(10));	
-	shttpd_printf(arg, "<div>Duration: %00.00f sec.</div>",rs.getdouble(8)/(rs.getdouble(10)/rs.getdouble(9)));
-	shttpd_printf(arg, "<div>Bit Rate: %d </div>",rs.getint(16));
+	shttpd_printf(arg, "<tr><td>Type:</td><td>%s</td></tr>",codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video");
+	shttpd_printf(arg, "<tr><td>CodecName:</td><td>%s</td></tr>",codec.codec->name);
+	shttpd_printf(arg, "<tr><td>Time Base:</td><td>%d/%d</td></tr>",rs.getint(9),rs.getint(10));	
+	shttpd_printf(arg, "<tr><td>Duration:</td><td>%00.00f sec.</td></tr>",rs.getdouble(8)/(rs.getdouble(10)/rs.getdouble(9)));
+	shttpd_printf(arg, "<tr><td>Bit Rate:</td><td>%d </td></tr>",rs.getint(16));
 	if(codec.codec_type==CODEC_TYPE_VIDEO){
-	    shttpd_printf(arg, "<div>Frame Rate: %d</div>",rs.getint(6));	
-	    shttpd_printf(arg, "<div>Dimension WxH: %dx%d</div>",rs.getint(12),rs.getint(13));
+	    shttpd_printf(arg, "<tr><td>Frame Rate:</td><td>%d</td></tr>",rs.getint(6));	
+	    shttpd_printf(arg, "<tr><td>Dimension WxH:</td><td>%dx%d</td></tr>",rs.getint(12),rs.getint(13));
 	}else
 	if(codec.codec_type==CODEC_TYPE_AUDIO){
-	    shttpd_printf(arg, "<div>Sample Rate: %d</div>",rs.getint(18));	
-	    shttpd_printf(arg, "<div>Channels: %d</div>",rs.getint(19));	
+	    shttpd_printf(arg, "<tr><td>Sample Rate:</td><td>%d</td></tr>",rs.getint(18));	
+	    shttpd_printf(arg, "<tr><td>Channels:</td><td>%d</td></tr>",rs.getint(19));	
 	}
-	shttpd_printf(arg, "</div>");
+	shttpd_printf(arg, "</table>");
     }
     }else{
 	shttpd_printf(arg, "no stream id");
@@ -95,7 +95,7 @@ void Stream::show_output_stream(struct shttpd_arg *arg, Properties & props){
 
 void Stream::save_output_stream(struct shttpd_arg *arg){
 	char value[100];
-	(void) shttpd_get_var("test", arg->in.buf, arg->in.len, value, sizeof(value));
+	(void) shttpd_get_var("instreamids", arg->in.buf, arg->in.len, value, sizeof(value));
 	cout << "save stream details:codec:"<<value<<endl;
 	shttpd_printf(arg, "HTTP/1.1 303 See Other\r\n"
 	 				"Location: %s\r\n\r\n", "index.shtml");

@@ -57,16 +57,16 @@ void Files::upload_file(struct shttpd_arg *arg){
 			memset(state->filename,0,filename.length()+1);
 			memcpy(state->filename,filename.c_str(),filename.length());
 			if(strlen(state->filename)==0){
-			    shttpd_printf(arg, "HTTP/1.0 200 OK\n"
-				"Content-Type: text/plain\n\n");
-			    arg->flags |= SHTTPD_END_OF_OUTPUT;
+//			    shttpd_printf(arg, "HTTP/1.0 200 OK\n"
+//				"Content-Type: text/html\n\n");
+//			    arg->flags |= SHTTPD_END_OF_OUTPUT;
 			}
 			state->fp = fopen(state->filename, "wb+");
 		        cout << state->filename<< endl;
 		    }
 		}
-		shttpd_printf(arg, "HTTP/1.0 200 OK\n"
-			"Content-Type: text/plain\n\n");
+//		shttpd_printf(arg, "HTTP/1.0 200 OK\n"
+//			"Content-Type: text/plain\n\n");
 	} else	{
 		/*cut out Post Header*/
 		char * buffer;
@@ -92,8 +92,9 @@ void Files::upload_file(struct shttpd_arg *arg){
 		state->nread += arg->in.len;
 		arg->in.num_bytes = arg->in.len;
 		if (state->nread >= state->cl) {
-			shttpd_printf(arg, "Written %d bytes to %s from ",
-			    state->nread, state->filename);
+		    shttpd_printf(arg, "HTTP/1.1 303 See Other\r\n"
+	 				"Location: %s\r\n\r\n", "index.shtml");
+//			shttpd_printf(arg, "Written %d bytes to %s from ",   state->nread, state->filename);
 			(void) fclose(state->fp);
 			char * argv[]={"",state->filename};			
 			import(2,argv);
@@ -108,10 +109,15 @@ void Files::show_files(struct shttpd_arg *arg){
     Connection con(Config::getProperty("db.connection"));
     Statement stmt=con.createStatement("select id, filename, size, insertdate  from files where type=1");
     ResultSet rs=stmt.executeQuery();
-    shttpd_printf(arg, "<table class=\"list\">");
+    shttpd_printf(arg, "<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\">");
     shttpd_printf(arg, "<tr class=\"header\"><td>Id</td><td>Filename</td><td>Size</td><td>Insert Date</td></tr>");
+    string rowcolor1="#efefef";
+    string rowcolor2="#ffffff";
+    int i=0;
     while(rs.next()){
-        shttpd_printf(arg, "<tr class=\"row\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rs.getInt(0),rs.getInt(0),rs.getString(1).c_str(),(rs.getInt(2)/1024/1024),rs.getString(3).c_str());
+	string rowcolor=i%2==0?rowcolor1:rowcolor2;
+	i++;
+        shttpd_printf(arg, "<tr class=\"row\" bgcolor=\"%s\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rowcolor.c_str(),rs.getInt(0),rs.getInt(0),rs.getString(1).c_str(),(rs.getInt(2)/1024/1024),rs.getString(3).c_str());
     }
     shttpd_printf(arg, "</table>");
     arg->flags |= SHTTPD_END_OF_OUTPUT;
@@ -190,6 +196,8 @@ void Files::show_details(struct shttpd_arg *arg){
 	id=atoi(props.getProperty("file"));
     
     Connection con(Config::getProperty("db.connection"));
+    string instreamids;
+
     {
 	Statement stmt=con.createStatement("select id from streams where fileid=? order by stream_index");
 	stmt.bind(1,id);
@@ -197,6 +205,7 @@ void Files::show_details(struct shttpd_arg *arg){
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
     	    Stream::show_input_stream(arg, props);
+	    instreamids.append(rs.getstring(0)).append(",");
 	}
     }
 	
@@ -204,18 +213,19 @@ void Files::show_details(struct shttpd_arg *arg){
 	Statement stmt=con.createStatement("select s.id from jobs j, job_details jd, streams s where infile=? and j.id=jd.job_id and jd.outstream=s.id order by s.stream_type;");
 	stmt.bind(1,id);
         ResultSet rs=stmt.executeQuery();
-   		shttpd_printf(arg, "<form name=\"save_output_stream\" action=\"save_stream_details\" method=\"post\">");
+   	shttpd_printf(arg, "<form name=\"save_output_stream\" action=\"save_stream_details\" method=\"post\">");
         string streamids;
         while(rs.next()){
     	    props.setProperty("streamid",rs.getstring(0));
     	    Stream::show_output_stream(arg, props);
 			streamids.append(rs.getstring(0)).append(",");
 		}
-		streamids=streamids.substr(0,streamids.length()-1);
-	   	shttpd_printf(arg, "<input type=\"hidden\" name=\"streamids\" value=\"%s\">",streamids.c_str());
+	streamids=streamids.substr(0,streamids.length()-1);
+	instreamids=instreamids.substr(0,instreamids.length()-1);
+	shttpd_printf(arg, "<input type=\"hidden\" name=\"instreamids\" value=\"%s\">",instreamids.c_str());
+	shttpd_printf(arg, "<input type=\"hidden\" name=\"outstreamids\" value=\"%s\">",streamids.c_str());
     	shttpd_printf(arg, "<input type=\"submit\" value=\"save\">");
     	shttpd_printf(arg, "</form>");
-
     }
 /*
     if(!have)
