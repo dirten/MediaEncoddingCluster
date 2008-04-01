@@ -32,6 +32,9 @@ table.list td{
     border-bottom:1px solid #CCCCCC;
     border-top:1px solid #FFFFFF;
 }
+table.list tr.row_alt{
+    background-color:#efefef;
+}
 table.list { 
 //    border:1px solid #000000;
 //    margin:1px;

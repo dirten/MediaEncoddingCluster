@@ -38,6 +38,7 @@ class TableColumn:public Element{
 	public:
 		TableColumn();
 		TableColumn(TableRow & row);
+//		std::string toHtml();
 //		TableColumn(TableRow & row);
 		~TableColumn();
 };
@@ -55,7 +56,7 @@ class Table: public Element{
 	public:
 		Table();
 		~Table();
-		void addRow(TableRow row);
+		Table& addRow(TableRow &row);
 		
 };
 

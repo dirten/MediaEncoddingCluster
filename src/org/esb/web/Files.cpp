@@ -111,13 +111,12 @@ void Files::show_files(struct shttpd_arg *arg){
     ResultSet rs=stmt.executeQuery();
     shttpd_printf(arg, "<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\">");
     shttpd_printf(arg, "<tr class=\"header\"><td>Id</td><td>Filename</td><td>Size</td><td>Insert Date</td></tr>");
-    string rowcolor1="#efefef";
-    string rowcolor2="#ffffff";
+    string rowclass_def="row";
+    string rowclass_alt="row_alt";
     int i=0;
     while(rs.next()){
-	string rowcolor=i%2==0?rowcolor1:rowcolor2;
-	i++;
-        shttpd_printf(arg, "<tr class=\"row\" bgcolor=\"%s\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rowcolor.c_str(),rs.getInt(0),rs.getInt(0),rs.getString(1).c_str(),(rs.getInt(2)/1024/1024),rs.getString(3).c_str());
+	string rowclass=i++%2==0?rowclass_def:rowclass_alt;
+        shttpd_printf(arg, "<tr class=\"%s\"><td>%d.</td><td><a href=\"filedetails.shtml?file=%d\">%s</a></td><td> %.02dMB</td><td>%s</td></tr>",rowclass.c_str(),rs.getInt(0),rs.getInt(0),rs.getString(1).c_str(),(rs.getInt(2)/1024/1024),rs.getString(3).c_str());
     }
     shttpd_printf(arg, "</table>");
     arg->flags |= SHTTPD_END_OF_OUTPUT;

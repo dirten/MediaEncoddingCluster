@@ -63,9 +63,10 @@ Table::~Table(){
 
 }
 
-void Table::addRow(TableRow row){	
-//	_elements.push_back(&row);
-//	return *this;
+Table& Table::addRow(TableRow & row){	
+//    return addElement((Element&)row);
+	_elements.push_back(&row);
+	return *this;
 }
 
 /*-------------------------------------------------------------------------------------*/
@@ -109,6 +110,11 @@ TableColumn::~TableColumn(){
 
 
 }
+/*
+std::string TableColumn::toHtml(){
+    return Element::toHtml();
+}
+*/
 /*-------------------------------------------------------------------------------------*/
 Input::Input(){
 	_name="input";

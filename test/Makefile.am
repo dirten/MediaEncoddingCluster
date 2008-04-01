@@ -69,7 +69,7 @@ server_LDFLAGS = $(all_libraries)
 
 test_file_LDADD=	../src/org/esb/libesb.la 
 test_codec_LDADD=	../src/org/esb/libesb.la 
-test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la 
+test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/web/libweb.la 
 test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
 test_mysql_LDADD=	../src/org/esb/libesb.la
 test_audio_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la
