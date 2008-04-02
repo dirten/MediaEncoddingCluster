@@ -71,7 +71,7 @@ int import(int argc, char * argv[]){
 	Connection con(databaseFile);
 	sqlite3_transaction trans=con.getTransaction();
 	{
-	    Statement st=con.createStatement("INSERT INTO files(filename, size, type, insertdate,stream_count, title,autho, copyright, comment, album, year, track, genre, duration,bitrate) values (?,?,1,datetime('now'),?,?,?,?,?,?,?,?,?,?,?)");
+	    Statement st=con.createStatement("INSERT INTO files(filename, size, type, insertdate,stream_count, title,author, copyright, comment, album, year, track, genre, duration,bitrate) values (?,?,1,datetime('now'),?,?,?,?,?,?,?,?,?,?,?)");
 	    st.bind(1,inputFile.getPath());
 	    st.bind(2,(long long int)fis.getFileSize());
 	    st.bind(3,(long long int)fis.getStreamCount());

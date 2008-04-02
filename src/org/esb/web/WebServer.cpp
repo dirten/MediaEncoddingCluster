@@ -3,6 +3,7 @@
 #include "Files.h"
 #include "Stream.h"
 #include "Page.h"
+#include "Profiles.h"
 #include "Jobs.h"
 #include "WTK.h"
 using namespace std;
@@ -42,8 +43,11 @@ WebServer::WebServer(int port){
 	shttpd_register_uri(ctx, "/upload", &Files::upload_file, (void *) NULL);
 	shttpd_register_uri(ctx, "/test", &testWtk, (void *) NULL);
 	shttpd_register_uri(ctx, "/save_stream_details", &Stream::save_output_stream, (void *) NULL);
+	shttpd_register_uri(ctx, "/profiles_save", &Profiles::save, (void *) NULL);
 	shttpd_register_ssi_func(ctx, "showFiles", &Files::show_files, NULL);
 	shttpd_register_ssi_func(ctx, "showFileDetails", &Files::show_details, NULL);
+	shttpd_register_ssi_func(ctx, "showProfiles", &Profiles::list, NULL);
+	shttpd_register_ssi_func(ctx, "editProfiles", &Profiles::edit, NULL);
 //	shttpd_handle_error(ctx, 404, &Page::showPage, NULL);
 	while (!WebServer::_toStop)
 		shttpd_poll(ctx, 1000);

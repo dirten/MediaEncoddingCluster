@@ -41,9 +41,11 @@ void Files::upload_file(struct shttpd_arg *arg){
 		/* New request. Allocate a state structure, and open a file */
 		arg->state = state = (struct state*)calloc(1, sizeof(*state));
 		state->cl = strtoul(s, NULL, 10);
+		state->filename="test.bla";
 		string str(arg->in.buf,arg->in.len);
+		cout << str<<endl;
 		StringTokenizer tok(str,"\r\n");
-		for(int a=0;a<3;a++){
+		for(int a=0;a<3&&tok.countTokens()>3;a++){
 		    string line=tok.nextToken();
 		    if(a==1){
 		        StringTokenizer tokLine(line,";");
@@ -61,10 +63,11 @@ void Files::upload_file(struct shttpd_arg *arg){
 //				"Content-Type: text/html\n\n");
 //			    arg->flags |= SHTTPD_END_OF_OUTPUT;
 			}
-			state->fp = fopen(state->filename, "wb+");
-		        cout << state->filename<< endl;
 		    }
 		}
+		state->fp = fopen(state->filename, "wb+");
+		cout << state->filename<< endl;
+
 //		shttpd_printf(arg, "HTTP/1.0 200 OK\n"
 //			"Content-Type: text/plain\n\n");
 	} else	{
@@ -76,8 +79,27 @@ void Files::upload_file(struct shttpd_arg *arg){
 		if(isFirst){
 			StringTokenizer tok(str,"\r\n");
 			for(int a=0;a<3;a++){
-				string line=tok.nextToken();
-				len+=line.length()+2;
+			    string line=tok.nextToken();
+			    len+=line.length()+2;
+			    if(a==1){
+		    		StringTokenizer tokLine(line,";");
+		    		tokLine.nextToken();
+		    		tokLine.nextToken();
+		    		string filename= tokLine.nextToken();
+		    		filename=filename.substr(11);
+		    		filename=filename.substr(0,filename.length()-1);
+				state->filename = new char[filename.length()+1];
+//				state->filename =(char *)filename.c_str();
+				memset(state->filename,0,filename.length()+1);
+				memcpy(state->filename,filename.c_str(),filename.length());
+				if(strlen(state->filename)==0){
+//			    		shttpd_printf(arg, "HTTP/1.0 200 OK\n"
+//					"Content-Type: text/html\n\n");
+//			    		arg->flags |= SHTTPD_END_OF_OUTPUT;
+				}
+				state->fp = fopen(state->filename, "wb+");
+				cout << state->filename<< endl;
+			    }
 			}
 			str=str.substr(len+2);
 			buffer=(char*)str.c_str();
