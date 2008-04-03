@@ -10,7 +10,7 @@ void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
 {
-//	cout << "Init AV Package Codec" << endl;
+	cout << "Init AV Package Codec" << endl;
 	av_register_all ();
 	avcodec_register_all ();
 }

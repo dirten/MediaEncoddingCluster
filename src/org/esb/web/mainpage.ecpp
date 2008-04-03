@@ -1,0 +1,25 @@
+<%pre>
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+</%pre>
+<%args>
+    string test;
+
+</%args>
+<html>
+ <head>
+  <title>ecpp-application myfirst test</title>
+ </head>
+ <body>
+<$test$>
+<{
+    using namespace org::esb::sql;
+    Connection con("/tmp/hive.db");
+    Statement stmt=con.createStatement("select * from profiles");
+    ResultSet rs=stmt.executeQuery();
+    while(rs.next()){ }>
+	<$rs.getString(2)$><{    }    }>
+  <h1>myfirst</h1>
+ </body>
+</html>

@@ -59,6 +59,7 @@ test_SOURCES=	test.cpp \
 
 #aviclient_LDADD =-laviplay
 test_LDFLAGS = $(all_libraries) 
+test_httpd_LDFLAGS = $(all_libraries) 
 test_sqlite_LDFLAGS = $(all_libraries) 
 test_packet_LDFLAGS = $(all_libraries) 
 test_packet_input_LDFLAGS = $(all_libraries) 

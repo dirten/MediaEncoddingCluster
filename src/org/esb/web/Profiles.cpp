@@ -174,3 +174,16 @@ void Profiles::save(struct shttpd_arg *arg){
     arg->flags |= SHTTPD_END_OF_OUTPUT;
 
 }
+void Profiles::selector(struct shttpd_arg *arg){
+    Connection con(Config::getProperty("db.connection"));
+    Statement stmt=con.createStatement("select id,profile_name from profiles");
+    ResultSet rs=stmt.executeQuery();
+    shttpd_printf(arg, "<select name=\"profile\">");
+    while(rs.next()){
+	shttpd_printf(arg, "<option value=\"%d\">%s</option>",rs.getInt(0),rs.getString(1).c_str());
+    }
+    shttpd_printf(arg, "</select>");
+    arg->flags |= SHTTPD_END_OF_OUTPUT;
+
+}
+

@@ -48,7 +48,7 @@ div.menuentry {
     align:center;
     text-align:center;
 //    border:1px solid #000000;
-    background-image:url(images/but4_center.png);
+    background-image:url(but4_center.png);
     margin-top:14px;
     width:200;
     height:20px;
@@ -59,7 +59,7 @@ tr.header {
 //    align:center;
 //    text-align:center;
 //    border:1px solid #000000;
-    background-image:url(images/but4_center.png);
+    background-image:url(but4_center.png);
 //    margin-left:10px;
     height:25px;
 //    width:200;
@@ -67,14 +67,14 @@ tr.header {
 }
 
 div.menuleft { 
-    background-image:url(images/but4_left.png);
+    background-image:url(but4_left.png);
     margin:1px;
     width:10;
     display:table-cell;
 }
 
 div.menuright { 
-    background-image:url(images/but4_right.png);
+    background-image:url(but4_right.png);
     margin:5px;
     width:10;
     display:table-cell;

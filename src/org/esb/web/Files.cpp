@@ -8,7 +8,7 @@
 #include "org/esb/config/config.h"
 #include "Stream.h"
 #include <iostream>
-#include "import.cpp"
+//#include "import.cpp"
 using namespace org::esb::web;
 using namespace org::esb::sql;
 using namespace org::esb::config;
@@ -39,11 +39,14 @@ void Files::upload_file(struct shttpd_arg *arg){
 		isFirst=true;
 	} else if (arg->state == NULL) {
 		/* New request. Allocate a state structure, and open a file */
+		char profile[10];
+		(void) shttpd_get_var("profiles", arg->in.buf, arg->in.len, profile, sizeof(profile));
+		cout << "ProfileId:"<<profile<<endl;
 		arg->state = state = (struct state*)calloc(1, sizeof(*state));
 		state->cl = strtoul(s, NULL, 10);
 		state->filename="test.bla";
 		string str(arg->in.buf,arg->in.len);
-		cout << str<<endl;
+//		cout << str<<endl;
 		StringTokenizer tok(str,"\r\n");
 		for(int a=0;a<3&&tok.countTokens()>3;a++){
 		    string line=tok.nextToken();
@@ -119,7 +122,7 @@ void Files::upload_file(struct shttpd_arg *arg){
 //			shttpd_printf(arg, "Written %d bytes to %s from ",   state->nread, state->filename);
 			(void) fclose(state->fp);
 			char * argv[]={"",state->filename};			
-			import(2,argv);
+//			import(2,argv);
 			free(state);
 			arg->flags |= SHTTPD_END_OF_OUTPUT;
 			isFirst=true;

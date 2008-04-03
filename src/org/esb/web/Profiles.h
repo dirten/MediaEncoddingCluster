@@ -11,6 +11,7 @@ namespace web{
     	    static void list(struct shttpd_arg *arg);
     	    static void edit(struct shttpd_arg *arg);
     	    static void save(struct shttpd_arg *arg);
+    	    static void selector(struct shttpd_arg *arg);
     };
 }}}
 #endif

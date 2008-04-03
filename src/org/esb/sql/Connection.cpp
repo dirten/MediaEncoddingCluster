@@ -1,6 +1,9 @@
 #include "org/esb/io/File.h"
 #include "Connection.h"
 #include "Statement.h"
+//#include "Statement.h"
+#include "PreparedStatement.h"
+
 //#include <sqlite3.h>
 #include <iostream>
 using namespace org::esb::sql;

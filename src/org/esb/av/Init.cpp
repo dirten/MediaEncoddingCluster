@@ -10,6 +10,8 @@ void __attribute__ ((constructor)) my_init(void);
 
 void my_init(){
     cout << "Init AV Package2"<<endl;
-    av_register_all();
+//    av_register_all();
 }
 }}}
+
+

@@ -1,0 +1,73 @@
+<%pre>
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/av/Codec.h"
+</%pre>
+
+<%args>
+int id=0;
+</%args>
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style">
+</head>
+<body>
+<%include>menu.tmpl</%include>
+<{
+    using namespace org::esb::sql;
+    using namespace org::esb::av;
+    Connection con("/tmp/hive.db");
+    if(!id>0){
+    Statement stmt=con.createStatement("select * from files");
+    ResultSet rs=stmt.executeQuery();
+    }>
+    <table class="list" cellspacing="0" cellpadding="0">
+    <tr class="header"><td>Id</td><td>Filename</td><td>Size</td><td>Insert Date</td></tr>
+%    while(rs.next()){ 
+	<tr>
+	    <td><$rs.getString("id")$>.</td>
+	    <td><a href="file?id=<$rs.getString("id")$>"><$rs.getString("filename")$></a></td>
+	    <td><$rs.getString("size")$></td>
+	    <td><$rs.getString("insertdate")$></td>
+	</tr>
+% }
+<{ }else{
+    Statement stmt=con.createStatement("select streams.* from files, streams where files.id=streams.fileid and files.id=?");
+    stmt.bind(1, id);
+    ResultSet rs=stmt.executeQuery();
+    while(rs.next()){ }>
+    	<table class="stream_info_block" border="1">
+	<tr><td>Stream</td><td>( <$rs.getString("id")$> )</td></tr>
+	<{
+	Codec codec((CodecID)rs.getint(4));
+	if(codec.codec_type==CODEC_TYPE_AUDIO){
+	    codec.setSampleRate(1);
+	    codec.setChannels(1);
+	    codec.setBitRate(100);
+	}
+	
+	codec.open();
+	}>
+	<tr><td>Type:</td><td><$codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video"$></td></tr>
+	<tr><td>CodecName:</td><td><$codec.codec->name$></td></tr>
+	<tr><td>Time Base:</td><td><$rs.getint(9)$>/<$rs.getint(10)$></td></tr>
+	<tr><td>Duration:</td><td><$(rs.getdouble(8)/(rs.getdouble(10)/rs.getdouble(9)))$> sec.</td></tr>
+	<tr><td>Bit Rate:</td><td><$rs.getint(16)$> </td></tr>
+%	if(codec.codec_type==CODEC_TYPE_VIDEO){
+	    <tr><td>Frame Rate:</td><td><$rs.getint(6)$></td></tr>
+	    <tr><td>Dimension WxH:</td><td><$rs.getint(12)$>x<$rs.getint(13)$></td></tr>
+%	}else
+%	if(codec.codec_type==CODEC_TYPE_AUDIO){
+	    <tr><td>Sample Rate:</td><td><$rs.getint(18)$></td></tr>
+	    <tr><td>Channels:</td><td><$rs.getint(19)$></td></tr>
+%	}
+	</table>
+
+    <{
+    
+    }
+} }>
+</body>
+<html>

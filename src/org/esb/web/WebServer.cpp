@@ -48,6 +48,7 @@ WebServer::WebServer(int port){
 	shttpd_register_ssi_func(ctx, "showFileDetails", &Files::show_details, NULL);
 	shttpd_register_ssi_func(ctx, "showProfiles", &Profiles::list, NULL);
 	shttpd_register_ssi_func(ctx, "editProfiles", &Profiles::edit, NULL);
+	shttpd_register_ssi_func(ctx, "profilesSelector", &Profiles::selector, NULL);
 //	shttpd_handle_error(ctx, 404, &Page::showPage, NULL);
 	while (!WebServer::_toStop)
 		shttpd_poll(ctx, 1000);

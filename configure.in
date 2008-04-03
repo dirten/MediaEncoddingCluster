@@ -43,6 +43,22 @@ AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is 
 CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
 LDFLAGS="$LDFLAGS $AMQ_LD"
 
+AC_ARG_WITH(tntnet, [  --with-tntnet=path   where tntnet is installed. (Standard is "/usr/local")],
+	    TNTNET_CFLAGS="-I$withval/include"
+	    TNTNET_LD="-L$withval/lib -ltntnet"
+	    TNTNET_PATH="$withval")
+
+CPPFLAGS="$CPPFLAGS $TNTNET_CFLAGS"
+LDFLAGS="$LDFLAGS $TNTNET_LD"
+
+AC_ARG_WITH(tnttools, [  --with-tnttools=path   where tnt cxxtools is installed. (Standard is "/usr/local")],
+	    TNTTOOLS_CFLAGS="-I$withval/include"
+	    TNTTOOLS_LD="-L$withval/lib -ltntnet"
+	    TNTTOOLS_PATH="$withval")
+
+CPPFLAGS="$CPPFLAGS $TNTTOOLS_CFLAGS"
+LDFLAGS="$LDFLAGS $TNTTOOLS_LD"
+
 AC_ARG_WITH(sqlite, [  --with-sqlite=path   where sqlite is installed. (Standard is "/usr/local")],
 	    sqlite_CFLAGS="-I$withval/include"
 	    sqlite_LD="-L$withval/lib -lsqlite3"

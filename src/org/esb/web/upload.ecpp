@@ -1,0 +1,29 @@
+<%pre>
+#include <fstream>
+#include "import.cpp"
+</%pre>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style">
+</head>
+<body>
+<%include>menu.tmpl</%include>
+<form action="/upload" method="post" enctype="multipart/form-data" action="/post">
+    <input type="file" name="file">
+    <input type="submit">
+</form>
+<%cpp>
+const tnt::Multipart& mp = request.getMultipart();
+tnt::Multipart::const_iterator it = mp.find("file");
+if (it != mp.end()){
+    std::ofstream out(it->getFilename().c_str());
+    for (tnt::Part::const_iterator pi = it->getBodyBegin(); pi != it->getBodyEnd(); ++pi)
+      out << *pi;
+
+    char * argv[]={"",(char*)it->getFilename().c_str()};
+    import(2,argv);
+
+}
+</%cpp>
+</body>
+<html>

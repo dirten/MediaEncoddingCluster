@@ -1,4 +1,5 @@
-
+#ifndef IMPORT_CPP
+#define IMPORT_CPP
 //#include <sqlite3.h>
 #include <iostream>
 #include <fstream>
@@ -166,5 +167,5 @@ int main(int argc, char * argv[]){
 	import(argc,argv);
 }
 */
-
+#endif
 
