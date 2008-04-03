@@ -89,7 +89,7 @@ int import(int argc, char * argv[]){
 	    st.execute();
 	}
 //	con.executenonquery(string("INSERT INTO files(filename,size) values ( '")+inputFile.getPath()+string("',")+fis.getFileSize()+")");
-	fileid=con.insertid();
+	fileid=con.lastInsertId();
 
 	AVFormatContext * ctx=fis.getFormatContext();
 
@@ -119,7 +119,7 @@ int import(int argc, char * argv[]){
 	    stmt_str.bind( field++, ctx->streams[a]->codec->channels);
 	    stmt_str.bind( field++, ctx->streams[a]->codec->sample_fmt);
 	    stmt_str.execute();
-   	    int streamid =con.insertid();
+   	    int streamid =con.lastInsertId();
    	    streams[a]=streamid;
         }
 	progress_display show_progress(duration);
@@ -146,7 +146,7 @@ int import(int argc, char * argv[]){
 	if(packet.stream_index==0)
     	    stmt.bind( field++, frame_group);
 	else
-    	    stmt.bind( field++);	
+    	    stmt.bind( field++,0);	
         stmt.bind( field++, packet.flags);
         stmt.bind( field++, packet.duration);
         stmt.bind( field++, packet.pos);

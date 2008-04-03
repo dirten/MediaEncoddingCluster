@@ -74,7 +74,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 	if(packet->stream_index==0)
     	    _stmt->bind( field++, frame_group);
 	else
-    	    _stmt->bind( field++);	
+    	    _stmt->bind( field++,0);	
         _stmt->bind( field++, packet->flags);
         _stmt->bind( field++, packet->duration);
         _stmt->bind( field++, packet->pos);

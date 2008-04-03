@@ -23,7 +23,7 @@ int jobcreator(int argc, char*argv[]){
 //	rc = sqlite3_exec(db,sql.c_str(),NULL,NULL,&zErrMsg);
 //	if(rc!=SQLITE_OK)
 //		cout << zErrMsg<<endl;;
-    fileid =con.insertid();//sqlite3_last_insert_rowid(db);
+    fileid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
 	}
 
 
@@ -38,7 +38,7 @@ int jobcreator(int argc, char*argv[]){
   //  	sqlite3_bind_int( pStmt, 1, fileid);
     //	rc=sqlite3_step(pStmt);
     //	rc = sqlite3_reset(pStmt);
-    	jobid =con.insertid();//sqlite3_last_insert_rowid(db);
+    	jobid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
 	}
 
 
@@ -67,7 +67,7 @@ int jobcreator(int argc, char*argv[]){
     	stmt.bind( field++, 2);
     	stmt.bind( field++, 1);
     	stmt.execute();
-    	streamid =con.insertid();//sqlite3_last_insert_rowid(db);
+    	streamid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
 	}
 /*    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
     sqlite3_bind_int( pStmt, field++, fileid);
@@ -162,7 +162,7 @@ int jobcreator(int argc, char*argv[]){
     rc=sqlite3_step(pStmt);
     rc = sqlite3_reset(pStmt);
     */
-    streamid =con.insertid();//sqlite3_last_insert_rowid(db);
+    streamid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
 
 
     sql="insert into job_details (job_id,instream, outstream)values(?,?,?)";

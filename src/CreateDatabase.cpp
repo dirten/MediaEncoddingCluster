@@ -31,7 +31,7 @@ bool checkDatabase(File &databaseFile){
 
 void createTable(Connection & con,const char * sql){
 	try{
-    	    con.executenonquery(sql);
+    	    con.executeNonQuery(sql);
 	}catch(exception&ex){
 	    cout << "Fehler:"<<ex.what()<<endl;
 	}

@@ -15,7 +15,7 @@
 <$test$>
 <{
     using namespace org::esb::sql;
-    Connection con("/tmp/hive.db");
+    Connection con("sqlite:/tmp/hive.db.2");
     Statement stmt=con.createStatement("select * from profiles");
     ResultSet rs=stmt.executeQuery();
     while(rs.next()){ }>

@@ -36,15 +36,15 @@ void JobWatcher::run(){
 
 	    while(rs.next()){
 //		try{
-		    if(_handler->getJob(rs.getint(0))!=NULL)continue;
+		    if(_handler->getJob(rs.getInt(0))!=NULL)continue;
 
-		    stmt_detail.bind(1,rs.getint(0));
+		    stmt_detail.bind(1,rs.getInt(0));
 		    ResultSet rs_d=stmt_detail.executeQuery();
 		    while(rs_d.next()){
 			Job * job=new Job();
-			job->setId(rs_d.getint(0));
-			job->setSourceStream(rs_d.getint(1));
-			job->setTargetStream(rs_d.getint(2));
+			job->setId(rs_d.getInt(0));
+			job->setSourceStream(rs_d.getInt(1));
+			job->setTargetStream(rs_d.getInt(2));
 			_handler->addJob(*job);
 		    }
 //		}catch(exception&ex){

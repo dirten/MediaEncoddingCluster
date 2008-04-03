@@ -27,7 +27,7 @@ std::string a_samplerate="";
 <body>
 <%include>menu.tmpl</%include>
 <{
-    Connection con("/tmp/hive.db");
+    Connection con("/tmp/hive.db.2");
     if(id==0){
     Statement stmt=con.createStatement("select * from profiles");
     ResultSet rs=stmt.executeQuery();
@@ -126,13 +126,13 @@ std::string a_samplerate="";
 %	AVCodec *ac=NULL;
 %	while((ac= av_codec_next(ac))) {
 %		string selected="";
-%		if(ac->id==rs.getInt("a_codec")){
+%		if(ac->name==rs.getString("a_codec")){
 %		    selected="selected";
 %		}
 %		if(ac->encode&&ac->type==CODEC_TYPE_AUDIO){
-%		int codecId=ac->id;
-%std::cout << "ACID:"<<codecId<<std::endl;
-			<option <$selected$> value="<$codecId$>"><$ac->name$></option>
+%		string codecId;
+%//std::cout << "ACID:"<<codecId<<std::endl;
+			<option <$selected$> value="<$ ac->name $>"><$ac->name$></option>
 %		}
 %	}
     </select></td></tr>

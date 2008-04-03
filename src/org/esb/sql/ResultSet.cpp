@@ -1,24 +1,47 @@
 #include "ResultSet.h"
-
+#include "tntdb/blob.h"
+//#include "tntdb/row.h"
+#include <list.h>
 using namespace org::esb::sql;
 
-ResultSet::ResultSet(Statement & stmt):sqlite3_reader(stmt.executereader()){}
+ResultSet::ResultSet(tntdb::Result result){
+	_result=result;
+	_rows=new tntdb::Result::const_iterator(result.begin());
+}
 
-ResultSet::ResultSet(const ResultSet & rs):sqlite3_reader(rs){}
+//ResultSet::ResultSet(const ResultSet & rs){}
 
-bool ResultSet::next(){return read();}
+bool ResultSet::next(){
+	++*_rows;
+	_row=**_rows;
+	if(*_rows!=_result.end())
+		return true;
+	else
+		return false;
+}
 
-string ResultSet::getString(int col){return getstring(col);}
-string ResultSet::getString(string col){return getString(getColumnIndex(col));}
+string ResultSet::getString(int col){return _row.getString(col);}
+string ResultSet::getString(string col){return _row.getString(col);}
 
-int ResultSet::getInt(int col){return getint(col);}
-int ResultSet::getInt(string col){return getInt(getColumnIndex(col));}
+int ResultSet::getInt(int col){return _row.getInt(col);}
+int ResultSet::getInt(string col){return _row.getInt(col);}
 
-long ResultSet::getLong(int col){return getint64(col);}
-long ResultSet::getLong(string col){return getLong(getColumnIndex(col));}
+long ResultSet::getLong(int col){return _row.getInt64(col);}
+long ResultSet::getLong(string col){return _row.getInt64(col);}
 
-string ResultSet::getBlob(int col){return getblob(col);}
-string ResultSet::getBlob(string col){return getBlob(getColumnIndex(col));}
+double ResultSet::getDouble(int col){return _row.getDouble(col);}
+double ResultSet::getDouble(string col){return _row.getDouble(col);}
+
+string ResultSet::getBlob(int col){
+	tntdb::Blob b=_row.getBlob(col);
+	string blob(b.data(),b.size());
+	return blob;
+}
+string ResultSet::getBlob(string col){
+	tntdb::Blob b=_row.getBlob(col);
+	string blob(b.data(),b.size());
+	return blob;
+}
 /*
 int ResultSet::getColumnIndex(string name){
 	int cols=getColumnCount();

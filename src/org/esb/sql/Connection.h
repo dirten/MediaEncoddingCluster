@@ -4,7 +4,7 @@
 //#include "Statement.h"
 //#include "PreparedStatement.h"
 #include "sqlite3x.hpp"
-
+#include "tntdb/connection.h"
 //using namespace org::esb::io;
 using namespace sqlite3x;
 
@@ -18,12 +18,14 @@ namespace esb{
 namespace sql{
 class PreparedStatement;
 class Statement;
-class Connection:public sqlite3_connection {
+class Connection{
 	public:
 		Connection(char*filename);
 		Connection(org::esb::io::File & databaseFile);
 		Statement createStatement(const char * sql);
 //		Statement & createStatement();
+		void executeNonQuery(const char * sql);
+		long lastInsertId();
 		PreparedStatement & prepareStatement(const char * sql);
 		sqlite3_transaction getTransaction();
 		void close();
@@ -31,6 +33,7 @@ class Connection:public sqlite3_connection {
 		static const int USERCOMMIT=2;
 	private:
 	    Statement * _tmpStatement;
+	    tntdb::Connection _con;
 		
 };
 }}}

@@ -2,14 +2,16 @@
 #define ORG_ESB_SQL_RESULTSET_H
 #include "Statement.h"
 #include "sqlite3x.hpp"
+#include "tntdb/result.h"
+#include "tntdb/row.h"
 using namespace sqlite3x;
 namespace org{
 namespace esb{
 namespace sql{
 
-class ResultSet:public sqlite3_reader{
+class ResultSet{
 	public:
-		ResultSet(Statement & stmt);
+		ResultSet(tntdb::Result result);
 		ResultSet(const ResultSet & rs);
 		bool next();
 		string getString(int col);
@@ -22,7 +24,10 @@ class ResultSet:public sqlite3_reader{
 		double getDouble(string col);
 		string getBlob(int col);
 		string getBlob(string col);
-//	private:
+	private:
+		tntdb::Result _result;
+		tntdb::Row _row;
+		tntdb::Result::const_iterator * _rows;
 //		int getColumnIndex(string name);
 };
 }}}

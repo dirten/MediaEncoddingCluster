@@ -47,9 +47,17 @@ AC_ARG_WITH(tntnet, [  --with-tntnet=path   where tntnet is installed. (Standard
 	    TNTNET_CFLAGS="-I$withval/include"
 	    TNTNET_LD="-L$withval/lib -ltntnet"
 	    TNTNET_PATH="$withval")
-
+AC_SUBST(TNTNET_PATH)
 CPPFLAGS="$CPPFLAGS $TNTNET_CFLAGS"
 LDFLAGS="$LDFLAGS $TNTNET_LD"
+
+AC_ARG_WITH(tntdb, [  --with-tntdb=path   where tntdb is installed. (Standard is "/usr/local")],
+	    TNTDB_CFLAGS="-I$withval/include"
+	    TNTDB_LD="-L$withval/lib -ltntdb"
+	    TNTDB_PATH="$withval")
+
+CPPFLAGS="$CPPFLAGS $TNTDB_CFLAGS"
+LDFLAGS="$LDFLAGS $TNTDB_LD"
 
 AC_ARG_WITH(tnttools, [  --with-tnttools=path   where tnt cxxtools is installed. (Standard is "/usr/local")],
 	    TNTTOOLS_CFLAGS="-I$withval/include"
