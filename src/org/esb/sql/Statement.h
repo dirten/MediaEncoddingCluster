@@ -13,11 +13,11 @@ namespace esb{
 namespace sql{
 class Connection;
 class ResultSet;
-class Statement{
+class Statement:public tntdb::Statement{
 	public:
 //		friend class ResultSet;
 		Statement(Connection & db, const char * sql);
-		Statement(tntdb::Statement  stmt);
+//		Statement(tntdb::Statement &stmt);
 //		Statement(const Statement & st);
 //		ResultSet & executeQuery (string sql, void * callback);
 		void bind(int pos, string ref);

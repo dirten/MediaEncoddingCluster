@@ -3,11 +3,12 @@
 #include "org/esb/io/File.h"
 //#include <sqlite3.h>
 #include <iostream>
-#include "org/esb/sql/Connection.h"
+#include "tntdb/connection.h"
+#include "tntdb/connect.h"
 
 using namespace std;
 using namespace org::esb::io;
-using namespace org::esb::sql;
+using namespace tntdb;
 //using namespace sqlite;
 /*
 sqlite3 *db=NULL;
@@ -29,9 +30,9 @@ bool checkDatabase(File &databaseFile){
 	return false;
 }
 
-void createTable(Connection & con,const char * sql){
+void createTable(tntdb::Connection & con,const char * sql){
 	try{
-    	    con.executeNonQuery(sql);
+    	    con.execute(sql);
 	}catch(exception&ex){
 	    cout << "Fehler:"<<ex.what()<<endl;
 	}
@@ -39,7 +40,7 @@ void createTable(Connection & con,const char * sql){
 }
 
 bool createDatabase(File &databaseFile){
-	Connection con(databaseFile);
+	tntdb::Connection con=connect(databaseFile.getPath());
 	createTable(con,"create table files (id integer  primary key autoincrement ,filename, size, stream_count, title, author, copyright, comment, album, year, track, genre, duration, bitrate, insertdate,type)");
 	createTable(con,"create table streams(id integer  primary key autoincrement,fileid, stream_index, stream_type, codec, codec_name,framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)");
 	createTable(con,"create table packets (id integer  primary key autoincrement,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data)");

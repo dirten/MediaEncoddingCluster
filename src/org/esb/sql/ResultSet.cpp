@@ -4,17 +4,18 @@
 #include <list.h>
 using namespace org::esb::sql;
 
-ResultSet::ResultSet(tntdb::Result result){
+ResultSet::ResultSet(tntdb::Result result):_rows(result.begin()){
 	_result=result;
-	_rows=new tntdb::Result::const_iterator(result.begin());
+//	_rows=new tntdb::Result::const_iterator(result.begin());
 }
 
 //ResultSet::ResultSet(const ResultSet & rs){}
 
 bool ResultSet::next(){
-	++*_rows;
-	_row=**_rows;
-	if(*_rows!=_result.end())
+	++_rows;
+	_row=*_rows;
+	cout <<"isNull:"<< _result.getRow(1).isNull(1) << endl;
+	if(_rows!=_result.end())
 		return true;
 	else
 		return false;
@@ -31,6 +32,9 @@ long ResultSet::getLong(string col){return _row.getInt64(col);}
 
 double ResultSet::getDouble(int col){return _row.getDouble(col);}
 double ResultSet::getDouble(string col){return _row.getDouble(col);}
+
+bool ResultSet::isNull(int col){return _row.isNull(col);}
+bool ResultSet::isNull(string col){return _row.isNull(col);}
 
 string ResultSet::getBlob(int col){
 	tntdb::Blob b=_row.getBlob(col);

@@ -10,10 +10,11 @@ using namespace org::esb::sql;
 Statement::Statement(Connection & db, const char * sql)/*:sqlite3_command((sqlite3_connection&)db, sql)*/{
 //	_stmt=db.prepare(sql);
 }
-
-Statement::Statement(tntdb::Statement  st){
+/*
+Statement::Statement(tntdb::Statement & st){
 	_stmt=st;
 }
+*/
 //Statement::Statement(const Statement & st){}
 
 //ResultSet & Statement::executeQuery(string sql, void * callback){}

@@ -24,10 +24,12 @@ class ResultSet{
 		double getDouble(string col);
 		string getBlob(int col);
 		string getBlob(string col);
+		bool isNull(int col);
+		bool isNull(string col);
 	private:
 		tntdb::Result _result;
 		tntdb::Row _row;
-		tntdb::Result::const_iterator * _rows;
+		tntdb::Result::const_iterator  _rows;
 //		int getColumnIndex(string name);
 };
 }}}

@@ -1,7 +1,7 @@
 #include "org/esb/io/File.h"
 #include "Connection.h"
 #include "Statement.h"
-//#include "Statement.h"
+#include "Statement.h"
 #include "PreparedStatement.h"
 #include "tntdb/connect.h"
 //#include <sqlite3.h>
@@ -26,7 +26,9 @@ Connection::Connection(File & databaseFile)/*:sqlite3_connection(databaseFile.ge
 
 Statement Connection::createStatement(const char * sql){
 //	_tmpStatement=Statement(*this, sql);
-	return Statement(_con.prepare(sql));
+	tntdb::Statement stmt=prepare(sql);
+	Statement s=(Statement&)stmt;
+	return s;
 }
 PreparedStatement & Connection::prepareStatement(const char * sql){
 	PreparedStatement *stmt=new PreparedStatement(*this, sql);

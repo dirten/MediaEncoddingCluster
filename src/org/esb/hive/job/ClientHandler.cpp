@@ -3,7 +3,8 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <vector>
-
+#include "tntdb/connection.h"
+#include "tntdb/connect.h"
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::config;
@@ -14,9 +15,9 @@ ClientHandler::ClientHandler(){
 	string dbFile=Config::getProperty("data.dir");
 	dbFile+="/";
 	dbFile+=Config::getProperty("data.file");
-
-    _con=new Connection((char*)dbFile.c_str());
-    _stmt=new Statement(_con->createStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
+    tntdb::Connection con=tntdb::connect((char*)dbFile.c_str());
+    _con=new tntdb::Connection(con);
+    _stmt=new tntdb::Statement(_con->prepare("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
 
 }
 /*
@@ -44,7 +45,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
 //    cout << "Target:"<<unit._target_stream<<endl;
-    sqlite3_transaction trans=_con->getTransaction();
+//    sqlite3_transaction trans=_con->getTransaction();
 
 
 
@@ -83,7 +84,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 	_stmt->execute();
     }
 //    cout << count << "Frames saved"<<endl;
-    trans.commit();
+//    trans.commit();
     
 
     }

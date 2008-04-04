@@ -31,6 +31,6 @@ SOURCES = mainpage.ecpp upload.ecpp file.ecpp profile.ecpp style.css \
             
 libweb_la_SOURCES = $(SOURCES)
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-libweb_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/util/libutil.la -ltntnet
+libweb_la_LIBADD= $(top_srcdir)/src/org/esb/util/libutil.la -ltntnet
 
 EXTRA_DIST=*.h *.tmpl *.shtml

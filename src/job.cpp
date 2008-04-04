@@ -1,13 +1,14 @@
 #include "org/esb/io/File.h"
 #include "CreateDatabase.cpp"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
+#include "tntdb/connect.h"
+#include "tntdb/connection.h"
+#include "tntdb/statement.h"
 
 using namespace org::esb::sql;
 
 int jobcreator(int argc, char*argv[]){
 	File databaseFile(argv[2]);
-	Connection con(databaseFile);
+	Connection con=connect(databaseFile);
 
 
 //	sqlite3 * db=getDatabase(databaseFile);

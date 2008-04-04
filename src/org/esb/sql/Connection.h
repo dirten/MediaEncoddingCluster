@@ -18,7 +18,7 @@ namespace esb{
 namespace sql{
 class PreparedStatement;
 class Statement;
-class Connection{
+class Connection:public tntdb::Connection{
 	public:
 		Connection(char*filename);
 		Connection(org::esb::io::File & databaseFile);
