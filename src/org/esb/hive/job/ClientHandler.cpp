@@ -3,7 +3,7 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <vector>
-#include "tntdb/connection.h"
+//#include "tntdb/connection.h"
 #include "tntdb/connect.h"
 using namespace std;
 using namespace org::esb::hive::job;
@@ -15,9 +15,9 @@ ClientHandler::ClientHandler(){
 	string dbFile=Config::getProperty("data.dir");
 	dbFile+="/";
 	dbFile+=Config::getProperty("data.file");
-    tntdb::Connection con=tntdb::connect((char*)dbFile.c_str());
-    _con=new tntdb::Connection(con);
-    _stmt=new tntdb::Statement(_con->prepare("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
+//    Connection con=(Connection&)tntdb::connect((char*)dbFile.c_str());
+//    _con=new Connection(con);
+//    _stmt=new Statement(_con->prepare("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
 
 }
 /*

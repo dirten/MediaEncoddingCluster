@@ -5,6 +5,8 @@
 //#include "PreparedStatement.h"
 #include "sqlite3x.hpp"
 #include "tntdb/connection.h"
+#include <mysql/mysql.h>
+#include "boost/smart_ptr.hpp"
 //using namespace org::esb::io;
 using namespace sqlite3x;
 
@@ -18,9 +20,11 @@ namespace esb{
 namespace sql{
 class PreparedStatement;
 class Statement;
-class Connection:public tntdb::Connection{
+class Connection{
 	public:
-		Connection(char*filename);
+		Connection(char*connect_str);
+//		Connection(char*filename);
+		~Connection();
 		Connection(org::esb::io::File & databaseFile);
 		Statement createStatement(const char * sql);
 //		Statement & createStatement();
@@ -32,9 +36,10 @@ class Connection:public tntdb::Connection{
 		static const int AUTOCOMMIT=1;
 		static const int USERCOMMIT=2;
 	private:
+		friend class Statement;
 	    Statement * _tmpStatement;
 	    tntdb::Connection _con;
-		
+		MYSQL * mysql;
 };
 }}}
 #endif

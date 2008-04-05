@@ -1,10 +1,11 @@
 #ifndef ORG_ESB_SQL_STATEMENT_H
 #define ORG_ESB_SQL_STATEMENT_H
 #include <string>
-//#include "Connection.h"
+#include "Connection.h"
 //#include "ResultSet.h"
 #include "sqlite3x.hpp"
 #include "tntdb/statement.h"
+#include <mysql/mysql.h>
 using namespace std;
 //using namespace org::esb::sql;
 using namespace sqlite3x;
@@ -13,10 +14,11 @@ namespace esb{
 namespace sql{
 class Connection;
 class ResultSet;
-class Statement:public tntdb::Statement{
+class Statement{
 	public:
 //		friend class ResultSet;
 		Statement(Connection & db, const char * sql);
+		~Statement();
 //		Statement(tntdb::Statement &stmt);
 //		Statement(const Statement & st);
 //		ResultSet & executeQuery (string sql, void * callback);
@@ -26,8 +28,11 @@ class Statement:public tntdb::Statement{
 		ResultSet executeQuery ();
 		void execute();
 		void close();
-	private:	
+	private:
 		tntdb::Statement _stmt;
+		Connection _con;
+		const char * _sql;
+		MYSQL_RES * res;
 };
 }}}
 #endif

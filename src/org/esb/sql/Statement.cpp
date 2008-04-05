@@ -7,8 +7,13 @@
 using namespace org::esb::sql;
 
 
-Statement::Statement(Connection & db, const char * sql)/*:sqlite3_command((sqlite3_connection&)db, sql)*/{
+Statement::Statement(Connection & db, const char * sql):_con(db),_sql(sql){
+//	cout << (char*)_con.mysql<<endl;
+
 //	_stmt=db.prepare(sql);
+}
+Statement::~Statement(){
+	mysql_free_result(res);
 }
 /*
 Statement::Statement(tntdb::Statement & st){
@@ -19,7 +24,14 @@ Statement::Statement(tntdb::Statement & st){
 
 //ResultSet & Statement::executeQuery(string sql, void * callback){}
 
-ResultSet Statement::executeQuery(){return ResultSet(_stmt.select());}
+ResultSet Statement::executeQuery(){
+	mysql_query(_con.mysql, _sql);
+	res=mysql_store_result(_con.mysql);
+//	MYSQL_ROW _record=mysql_fetch_row(res);
+//	cout << _record[0]<<endl;
+
+	return ResultSet(res);
+}
 
 void Statement::execute(){
 

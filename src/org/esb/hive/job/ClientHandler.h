@@ -2,8 +2,8 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <boost/thread/mutex.hpp>
-#include "tntdb/connection.h"
-#include "tntdb/statement.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
 
 using namespace std;
 using namespace org::esb;
@@ -21,8 +21,8 @@ class ClientHandler{
 		ProcessUnit *  unit;
 		JobHandler * _handler;
 		static boost::mutex m_mutex;
-		tntdb::Connection * _con;
-		tntdb::Statement * _stmt;
+		sql::Connection * _con;
+		sql::Statement * _stmt;
 };
 }}}}
 
