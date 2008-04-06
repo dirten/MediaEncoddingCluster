@@ -22,8 +22,9 @@ Connection::Connection(char*connect_str){
 	}
 	string type=toker.nextToken();
 	if(strcmp(type.c_str(),"mysql")!=0&&strcmp(type.c_str(),"mysql_embedded")!=0){
-		cout << "Database Type can only be \"mysql\" or \"mysql_embedded\""<<endl;
-		exit(0);
+		throw "Database Type can only be \"mysql\" or \"mysql_embedded\"";
+//		cout << "Database Type can only be \"mysql\" or \"mysql_embedded\""<<endl;
+//		exit(0);
 	}
 	string con_str=toker.nextToken();
 	StringTokenizer info(con_str,"/");
@@ -71,9 +72,9 @@ Statement Connection::createStatement(const char * sql){
 	return Statement(*this, sql);
 //	_tmpStatement=Statement(*this, sql);
 }
-PreparedStatement & Connection::prepareStatement(const char * sql){
-	PreparedStatement *stmt=new PreparedStatement(*this, sql);
-	return *stmt;
+PreparedStatement Connection::prepareStatement(const char * sql){
+//	PreparedStatement *stmt=new PreparedStatement(*this, sql);
+	return PreparedStatement(*this, sql);
 }
 
 //Statement & Connection::createStatement(){return;}

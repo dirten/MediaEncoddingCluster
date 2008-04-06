@@ -3,16 +3,15 @@
 //#include "tntdb/row.h"
 #include <list.h>
 using namespace org::esb::sql;
-
+/*
 ResultSet::ResultSet(boost::shared_ptr<MYSQL_RES> res){
 	
 	*_results=&*res;
 //	_rows=new tntdb::Result::const_iterator(result.begin());
 }
-
+*/
 ResultSet::ResultSet(MYSQL_RES* res){
 	__results=res;
-//	_rows=new tntdb::Result::const_iterator(result.begin());
 }
 
 ResultSet::ResultSet(const ResultSet & rs){}

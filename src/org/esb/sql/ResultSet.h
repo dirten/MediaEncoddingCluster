@@ -13,7 +13,7 @@ namespace sql{
 
 class ResultSet{
 	public:
-		ResultSet(boost::shared_ptr<MYSQL_RES> res);
+//		ResultSet(boost::shared_ptr<MYSQL_RES> res);
 		ResultSet(MYSQL_RES* res);
 		ResultSet(const ResultSet & rs);
 		bool next();

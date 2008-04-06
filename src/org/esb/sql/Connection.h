@@ -30,13 +30,15 @@ class Connection{
 //		Statement & createStatement();
 		void executeNonQuery(const char * sql);
 		long lastInsertId();
-		PreparedStatement & prepareStatement(const char * sql);
+		PreparedStatement prepareStatement(const char * sql);
 		sqlite3_transaction getTransaction();
 		void close();
 		static const int AUTOCOMMIT=1;
 		static const int USERCOMMIT=2;
 	private:
 		friend class Statement;
+		friend class PreparedStatement;
+		
 	    Statement * _tmpStatement;
 	    tntdb::Connection _con;
 		MYSQL * mysql;
