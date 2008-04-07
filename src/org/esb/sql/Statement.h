@@ -22,17 +22,22 @@ class Statement{
 //		Statement(tntdb::Statement &stmt);
 //		Statement(const Statement & st);
 //		ResultSet & executeQuery (string sql, void * callback);
+
 		void bind(int pos, string ref);
 		void bind(int pos, int ref);
 		void bind(int pos, const void * ref, int size);
+
 		ResultSet executeQuery ();
 		void execute();
 		void close();
 	private:
-		tntdb::Statement _stmt;
-		Connection _con;
+//		tntdb::Statement _stmt;
+		Connection & _con;
 		const char * _sql;
-		MYSQL_RES * res;
+		friend class ResultSet;
+		MYSQL_RES * _res;
+		MYSQL_STMT* _stmt;
+
 };
 }}}
 #endif

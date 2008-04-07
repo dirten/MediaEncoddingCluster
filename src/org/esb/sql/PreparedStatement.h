@@ -17,6 +17,7 @@ namespace org{
 			class PreparedStatement{
 				public:
 				    PreparedStatement(Connection & db, const char * sql);
+				    ~PreparedStatement();
 					void setDouble(int pos, double val);
 					void setInt(int pos, int val);
 					void setNull(int pos);

@@ -8,12 +8,10 @@ using namespace org::esb::sql;
 
 
 Statement::Statement(Connection & db, const char * sql):_con(db),_sql(sql){
-//	cout << (char*)_con.mysql<<endl;
-
-//	_stmt=db.prepare(sql);
+    _stmt=mysql_stmt_init(_con.mysql);
 }
 Statement::~Statement(){
-	mysql_free_result(res);
+//	mysql_free_result(_res);
 }
 /*
 Statement::Statement(tntdb::Statement & st){
@@ -25,12 +23,27 @@ Statement::Statement(tntdb::Statement & st){
 //ResultSet & Statement::executeQuery(string sql, void * callback){}
 
 ResultSet Statement::executeQuery(){
-	mysql_query(_con.mysql, _sql);
-	res=mysql_store_result(_con.mysql);
-//	MYSQL_ROW _record=mysql_fetch_row(res);
-//	cout << _record[0]<<endl;
+//    mysql_stmt_execute(_stmt);
+if(mysql_stmt_prepare(_stmt,_sql, strlen(_sql))){
+    fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
+    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
+    exit(0);
+}
+    
+if (mysql_stmt_execute(_stmt)){
+    fprintf(stderr, " mysql_stmt_execute(), failed\n");
+    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
+    exit(0);
+}
+//    mysql_stmt_store_result(_stmt);
 
-	return ResultSet(res);
+//	mysql_query(_con.mysql, _sql);
+//	if(mysql_errno(_con.mysql)>0){
+//		cout <<mysql_error(_con.mysql)<<endl;
+//		exit(0);
+//	}
+//	_res=mysql_store_result(_con.mysql);
+	return ResultSet(*this);
 }
 
 void Statement::execute(){

@@ -5,17 +5,17 @@
 
 using namespace org::esb::sql;
 int main(){
-	Connection con("mysql:/localhost/port=3306;username=root;password=root;database=lexdb_produktion");
-	Statement stmt=con.createStatement("select * from aktiv_cgi");
+	Connection con("mysql:/localhost/port=3306;username=root;database=hive");
+	Statement stmt=con.createStatement("select * from files");
 	ResultSet rs=stmt.executeQuery();
 	while(rs.next()){
 //		cout << "test:"<<rs.getString("cgi_lohninfo")<<endl;
-		cout << "test:"<<rs.getBlob("cgi_lohninfo")<<endl;
+		cout << "test:"<<rs.getString("filename")<<endl;
 	}
 	
-	PreparedStatement pstmt=con.prepareStatement("select artikel_nr, cgi_frist from aktiv_cgi where artikel_nr=?");
-	pstmt.setString(0,"0480c");
-	ResultSet prs= pstmt.executeQuery();
+//	PreparedStatement pstmt=con.prepareStatement("select * from files where id=?");
+//	pstmt.setInt(0,1);
+//	ResultSet prs= pstmt.executeQuery();
 
 }
 
