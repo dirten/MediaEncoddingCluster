@@ -10,7 +10,7 @@ int main(){
 	ResultSet rs=stmt.executeQuery();
 	while(rs.next()){
 //		cout << "test:"<<rs.getString("cgi_lohninfo")<<endl;
-		cout << "test:"<<rs.getString("filename")<<endl;
+		cout << "test:"<<rs.getString("id")<<endl;
 	}
 	
 //	PreparedStatement pstmt=con.prepareStatement("select * from files where id=?");

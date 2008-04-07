@@ -47,6 +47,8 @@ class ResultSet{
 		my_bool isError;
 		unsigned long length;
 		vector<Column*> _row;
+		template <typename int_type> int_type getInteger(const MYSQL_BIND& bind);
+
 };
 }}}
 #endif
