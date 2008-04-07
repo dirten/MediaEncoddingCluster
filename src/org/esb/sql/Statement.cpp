@@ -13,37 +13,23 @@ Statement::Statement(Connection & db, const char * sql):_con(db),_sql(sql){
 Statement::~Statement(){
 //	mysql_free_result(_res);
 }
-/*
-Statement::Statement(tntdb::Statement & st){
-	_stmt=st;
-}
-*/
-//Statement::Statement(const Statement & st){}
+
 
 //ResultSet & Statement::executeQuery(string sql, void * callback){}
 
 ResultSet Statement::executeQuery(){
-//    mysql_stmt_execute(_stmt);
-if(mysql_stmt_prepare(_stmt,_sql, strlen(_sql))){
-    fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
-    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-    exit(0);
-}
+	if(mysql_stmt_prepare(_stmt,_sql, strlen(_sql))){
+    	fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
+    	fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
+    	exit(0);
+	}
     
-if (mysql_stmt_execute(_stmt)){
-    fprintf(stderr, " mysql_stmt_execute(), failed\n");
-    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-    exit(0);
-}
-//    mysql_stmt_store_result(_stmt);
-
-//	mysql_query(_con.mysql, _sql);
-//	if(mysql_errno(_con.mysql)>0){
-//		cout <<mysql_error(_con.mysql)<<endl;
-//		exit(0);
-//	}
-//	_res=mysql_store_result(_con.mysql);
-	return ResultSet(*this);
+	if (mysql_stmt_execute(_stmt)){
+	    fprintf(stderr, " mysql_stmt_execute(), failed\n");
+	    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
+	    exit(0);
+	}
+	return ResultSet(*this->_stmt);
 }
 
 void Statement::execute(){

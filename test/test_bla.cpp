@@ -27,7 +27,7 @@ using namespace org::esb;
 using namespace org::esb::net;
 using namespace org::esb::av;
 using namespace org::esb::hive::job;
-using namespace sqlite3x;
+//using namespace sqlite3x;
 
 //void writePPM(Frame * frame, int width, int height);
 

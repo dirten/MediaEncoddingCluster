@@ -3,12 +3,12 @@
 #include <string>
 #include "Connection.h"
 //#include "ResultSet.h"
-#include "sqlite3x.hpp"
-#include "tntdb/statement.h"
+//#include "sqlite3x.hpp"
+//#include "tntdb/statement.h"
 #include <mysql/mysql.h>
 using namespace std;
 //using namespace org::esb::sql;
-using namespace sqlite3x;
+//using namespace sqlite3x;
 namespace org{
 namespace esb{
 namespace sql{
@@ -30,7 +30,8 @@ class Statement{
 		ResultSet executeQuery ();
 		void execute();
 		void close();
-	private:
+	protected:
+		
 //		tntdb::Statement _stmt;
 		Connection & _con;
 		const char * _sql;

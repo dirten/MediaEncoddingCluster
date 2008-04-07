@@ -4,7 +4,7 @@
 #include "Connection.h"
 #include "Statement.h"
 #include "PreparedStatement.h"
-#include "tntdb/connect.h"
+//#include "tntdb/connect.h"
 //#include <sqlite3.h>
 #include <iostream>
 //#include <mysql.h>
@@ -60,13 +60,13 @@ Connection::~Connection(){
 //	mysql_close(mysql);
 }
 
-sqlite3_transaction Connection::getTransaction(){
+//sqlite3_transaction Connection::getTransaction(){
 //    return sqlite3_transaction(*this);
-}
+//}
 
-Connection::Connection(File & databaseFile)/*:sqlite3_connection(databaseFile.getPath())*/{
+//Connection::Connection(File & databaseFile)/*:sqlite3_connection(databaseFile.getPath())*/{
 //    printf("Opening Database Connection\n");
-}
+//}
 
 Statement Connection::createStatement(const char * sql){
 	return Statement(*this, sql);

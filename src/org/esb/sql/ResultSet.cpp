@@ -1,10 +1,12 @@
 #include "ResultSet.h"
+#include "sstream"
 #include <list>
 using namespace org::esb::sql;
-
+using namespace std;
 namespace org{
 namespace esb{
 namespace sql{
+/*******************************************************************************************************/
 class Column{
     public:
 	Column(MYSQL_FIELD & field){
@@ -25,12 +27,14 @@ class Column{
 };
 }}}
 
-ResultSet::ResultSet(Statement & stmt):_stmt(stmt){
-    _resultSetMetadata=mysql_stmt_result_metadata(_stmt._stmt);
+/*******************************************************************************************************/
+
+ResultSet::ResultSet(MYSQL_STMT & stmt):_stmt(stmt){
+    _resultSetMetadata=mysql_stmt_result_metadata(&_stmt);
 
     if (!_resultSetMetadata){
 	fprintf(stderr," mysql_stmt_result_metadata(), returned no meta information\n");
-        fprintf(stderr, " %s\n", mysql_stmt_error(_stmt._stmt));
+        fprintf(stderr, " %s\n", mysql_stmt_error(&_stmt));
         exit(0);
     }
 
@@ -53,18 +57,20 @@ ResultSet::ResultSet(Statement & stmt):_stmt(stmt){
 	printf("Field %u is %s\n", i, fields[i].name);
     }
     
-    if (mysql_stmt_bind_result(_stmt._stmt, _bindColumns)){
+    if (mysql_stmt_bind_result(&_stmt, _bindColumns)){
         fprintf(stderr, " mysql_stmt_bind_result() failed\n");
-        fprintf(stderr, " %s\n", mysql_stmt_error(_stmt._stmt));
+        fprintf(stderr, " %s\n", mysql_stmt_error(&_stmt));
         exit(0);
     }
 }
 
+/*******************************************************************************************************/
 bool ResultSet::next(){	
-	bool hasNext=(!mysql_stmt_fetch(_stmt._stmt));
+	bool hasNext=(!mysql_stmt_fetch(&_stmt));
 	return hasNext;
 }
 
+/*******************************************************************************************************/
 string ResultSet::getString(int col){//return static_cast<const char*>(_bindColumns[col].buffer);
     string ret;
     MYSQL_BIND bind=_bindColumns[col];
@@ -147,11 +153,13 @@ string ResultSet::getString(int col){//return static_cast<const char*>(_bindColu
         }
       }
     return ret;
-
-
-
 }
 
+/*******************************************************************************************************/
+	string ResultSet::getString(string col){return getString(getColumnIndex(col));}
+
+
+/*******************************************************************************************************/
     template <typename int_type>
     int_type ResultSet::getInteger(const MYSQL_BIND& bind)
     {
@@ -278,31 +286,118 @@ string ResultSet::getString(int col){//return static_cast<const char*>(_bindColu
       }
     }
 
-string ResultSet::getString(string col){return getString(getColumnIndex(col));}
+/*******************************************************************************************************/
+    template <typename float_type>
+    float_type ResultSet::getFloat(const MYSQL_BIND& bind)
+    {
+
+//      if (isNull(bind))
+//        throw NullValue();
+
+      switch (bind.buffer_type)
+      {
+        case MYSQL_TYPE_TINY:
+        case MYSQL_TYPE_SHORT:
+        case MYSQL_TYPE_INT24:
+        case MYSQL_TYPE_LONG:
+          return getInteger<int>(bind);
+
+        case MYSQL_TYPE_FLOAT:
+          return *static_cast<float*>(bind.buffer);
+
+        case MYSQL_TYPE_DOUBLE:
+          return *static_cast<double*>(bind.buffer);
+
+        case MYSQL_TYPE_VAR_STRING:
+        case MYSQL_TYPE_STRING:
+        {
+          std::string data(static_cast<char*>(bind.buffer), *bind.length);
+//          log_debug("extract float-type from string \"" << data << '"');
+          std::istringstream in(data);
+          float_type ret;
+          in >> ret;
+          if (in.eof() || !in.fail())
+            return ret;
+
+          // no break!!!
+        }
+
+//        default:
+//          log_error("type-error in getFloat, type=" << bind.buffer_type);
+//          throw TypeError("type-error in getFloat");
+      }
+    }
 
 
 
 
-int ResultSet::getInt(int col){return *static_cast<short int*>(_row[col]->data);}
-int ResultSet::getInt(string col){return getInt(getColumnIndex(col));}
 
-long ResultSet::getLong(int col){}
-long ResultSet::getLong(string col){return getLong(getColumnIndex(col));}
+/*******************************************************************************************************/
+    bool ResultSet::getBool(int index){return getInteger<bool>(_bindColumns[index]);}
+    bool ResultSet::getBool(string index){return getBool(getColumnIndex(index));}
 
-double ResultSet::getDouble(int col){}
-double ResultSet::getDouble(string col){return getDouble(getColumnIndex(col));}
+/*******************************************************************************************************/
+    int ResultSet::getInt(int index){return getInteger<int>(_bindColumns[index]);}
+    int ResultSet::getInt(string index){return getInt(getColumnIndex(index));}
 
-float ResultSet::getFloat(int col){}
-float ResultSet::getFloat(string col){return getFloat(getColumnIndex(col));}
+/*******************************************************************************************************/
+    unsigned ResultSet::getUnsigned(int index){return getInteger<unsigned>(_bindColumns[index]);}
+    unsigned ResultSet::getUnsigned(string index){return getUnsigned(getColumnIndex(index));}
 
+/*******************************************************************************************************/
+    long ResultSet::getLong(int index){return getInteger<long>(_bindColumns[index]);}
+    long ResultSet::getLong(string index){return getLong(getColumnIndex(index));}
+
+/*******************************************************************************************************/
+    int32_t ResultSet::getInt32(int index){return getInteger<int32_t>(_bindColumns[index]);}
+    int32_t ResultSet::getInt32(string index){return getInt32(getColumnIndex(index));}
+
+/*******************************************************************************************************/
+    uint32_t ResultSet::getUnsigned32(int index){return getInteger<uint32_t>(_bindColumns[index]);}
+    uint32_t ResultSet::getUnsigned32(string index){return getUnsigned32(getColumnIndex(index));}
+
+/*******************************************************************************************************/
+    int64_t ResultSet::getInt64(int index){return getInteger<int64_t>(_bindColumns[index]);}
+    int64_t ResultSet::getInt64(string index){return getInt64(getColumnIndex(index));}
+
+/*******************************************************************************************************/
+    uint64_t ResultSet::getUnsigned64(int index){return getInteger<uint64_t>(_bindColumns[index]);}
+    uint64_t ResultSet::getUnsigned64(string index){return getUnsigned64(getColumnIndex(index));}
+
+/*******************************************************************************************************/
 bool ResultSet::isNull(int col){}
 bool ResultSet::isNull(string col){return isNull(getColumnIndex(col));}
 
-string ResultSet::getBlob(int col){}
+    string ResultSet::getBlob(int index)
+    {
+//      if (isNull(bind))
+//        throw NullValue();
+		string ret;
+		MYSQL_BIND bind=_bindColumns[index];
+      switch (bind.buffer_type)
+      {
+        case MYSQL_TYPE_STRING:
+        case MYSQL_TYPE_VAR_STRING:
+        case MYSQL_TYPE_TINY_BLOB:
+        case MYSQL_TYPE_BLOB:
+        case MYSQL_TYPE_MEDIUM_BLOB:
+        case MYSQL_TYPE_LONG_BLOB:
+          ret.assign(static_cast<const char*>(bind.buffer),
+                             *bind.length);
+          break;
+//        default:
+//          log_error("type-error in getBlob, type=" << bind.buffer_type);
+//          throw TypeError("type-error in getBlob");
+      }
+      return ret;
+    }
 
-string ResultSet::getBlob(string col){
-	return getBlob(getColumnIndex(col));
-}
+
+//string ResultSet::getBlob(int col){}
+
+string ResultSet::getBlob(string col){return getBlob(getColumnIndex(col));}
+string ResultSet::getClob(int col){return getBlob(col);}
+string ResultSet::getClob(string col){return getBlob(getColumnIndex(col));}
 
 int ResultSet::getColumnIndex(string name){
 	int cols=mysql_num_fields(_resultSetMetadata);
