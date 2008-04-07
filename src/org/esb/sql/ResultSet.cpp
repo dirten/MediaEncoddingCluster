@@ -11,6 +11,10 @@ class Column{
 	    type=field.type;
 	    unsigned int flag=field.flags;
 	    data=new char[255];
+	    buffer_length=255;
+	    length=0;
+	    is_null=0;
+	    is_error=0;
 	}
 	enum_field_types type;
 	void * data;
