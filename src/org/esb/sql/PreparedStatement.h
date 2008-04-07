@@ -2,7 +2,7 @@
 #define PREPAREDSTATEMENT_H_
 #include <string>
 #include "Connection.h"
-//#include "ResultSet.h"
+#include "ResultSet.h"
 //#include "ResultSet.h"
 //#include "ResultSet.h"
 #include "sqlite3x.hpp"
@@ -25,6 +25,7 @@ namespace org{
 					void setString(int pos, string val);
 					bool execute();
 					int executeUpdate();
+					ResultSet executeQuery();
 				private:
 					Connection _con;
 					const char * _sql;

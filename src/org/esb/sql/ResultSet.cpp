@@ -10,6 +10,9 @@ ResultSet::ResultSet(boost::shared_ptr<MYSQL_RES> res){
 //	_rows=new tntdb::Result::const_iterator(result.begin());
 }
 */
+ResultSet::ResultSet(){
+	
+}
 ResultSet::ResultSet(MYSQL_RES* res){
 	__results=res;
 }

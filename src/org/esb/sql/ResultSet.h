@@ -14,6 +14,7 @@ namespace sql{
 class ResultSet{
 	public:
 //		ResultSet(boost::shared_ptr<MYSQL_RES> res);
+		ResultSet();
 		ResultSet(MYSQL_RES* res);
 		ResultSet(const ResultSet & rs);
 		bool next();
@@ -32,7 +33,7 @@ class ResultSet{
 		bool isNull(int col);
 		bool isNull(string col);
 	private:
-		boost::shared_ptr<MYSQL_RES*> _results;
+//		boost::shared_ptr<MYSQL_RES*> _results;
 		MYSQL_RES* __results;
 		MYSQL_ROW _record;
 		unsigned long * _lengths;
