@@ -14,7 +14,8 @@ using namespace org::esb::util;
 //void __attribute__ ((constructor)) my_init(void);
 //void _init() __attribute__((constructor));
 
-Connection::Connection(char*connect_str){
+Connection::Connection(const char*connect_str){
+//	cout << "DBConnection:"<<connect_str<<endl;
 	StringTokenizer toker(connect_str,":");
 	if(toker.countTokens()!=2){
 		cout <<  "connect_string falsch"<<endl;
@@ -72,6 +73,7 @@ Statement Connection::createStatement(const char * sql){
 	return Statement(*this, sql);
 //	_tmpStatement=Statement(*this, sql);
 }
+
 PreparedStatement Connection::prepareStatement(const char * sql){
 //	PreparedStatement *stmt=new PreparedStatement(*this, sql);
 	return PreparedStatement(*this, sql);

@@ -57,6 +57,7 @@ class ResultSet{
 		MYSQL_BIND * _bindColumns;
 //		unsigned long * _lengths;
 		int getColumnIndex(string name);
+		void allocateBigResult();
 //		char data[255];
 //		my_bool isNullB;
 //		my_bool isError;

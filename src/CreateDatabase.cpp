@@ -3,12 +3,13 @@
 #include "org/esb/io/File.h"
 //#include <sqlite3.h>
 #include <iostream>
-#include "tntdb/connection.h"
-#include "tntdb/connect.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+//#include "tntdb/connect.h"
 
 using namespace std;
-using namespace org::esb::io;
-using namespace tntdb;
+using namespace org::esb::sql;
+//using namespace tntdb;
 //using namespace sqlite;
 /*
 sqlite3 *db=NULL;
@@ -26,21 +27,21 @@ sqlite3 * getDatabase(File &databaseFile){
   return db;
 }
 */
-bool checkDatabase(File &databaseFile){
+bool checkDatabase(Connection & con){
 	return false;
 }
 
-void createTable(tntdb::Connection & con,const char * sql){
+void createTable(Connection & con,const char * sql){
 	try{
-    	    con.execute(sql);
+    	    Statement stmt=con.createStatement(sql);
+    	    stmt.execute();
 	}catch(exception&ex){
 	    cout << "Fehler:"<<ex.what()<<endl;
 	}
 
 }
 
-bool createDatabase(File &databaseFile){
-	tntdb::Connection con=connect(databaseFile.getPath());
+bool createDatabase(Connection & con){
 
 	createTable(con,"create table files (id integer(11) primary key auto_increment ,filename varchar(255), size integer(11), stream_count integer(2), title varchar(255), author varchar(255), copyright varchar(255), comment varchar(255), album varchar(255), year integer(4), track varchar(255), genre varchar(255), duration integer(11), bitrate integer(11), insertdate timestamp, type integer(1))");
 	createTable(con,"create table streams(id integer(11) primary key auto_increment,fileid integer(11), stream_index integer(11), stream_type integer(11), codec integer(11), codec_name varchar(255) ,framerate integer(11), start_time integer(11), duration integer(11), time_base_num integer(11),time_base_den integer(11), framecount integer(11), width integer(11), height integer(11), gop_size integer(11), pix_fmt integer(11), bit_rate integer(11), rate_emu integer(11), sample_rate integer(11), channels integer(11), sample_fmt integer(11))");

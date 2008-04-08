@@ -55,6 +55,7 @@ int main(int argc, char * argv[]){
 			exit(-127);
 		}		
 	}
+	Config::close();
 	return 0;
 }
 

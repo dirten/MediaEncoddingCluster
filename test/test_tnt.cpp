@@ -12,36 +12,35 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(int argc, char ** argv){
-	Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
-	Statement stmt=con.createStatement("select * from files");
+	Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
+	Statement stmt=con.createStatement("select filename, genre, insertdate from files limit 100");
 	ResultSet rs=stmt.executeQuery();
 	while(rs.next()){
-		cout << "test:"<<rs.getBlob("filename")<<endl;
+		cout << "test:"<<rs.getString("filename")<<endl;
 	}
 	
-	PreparedStatement pstmt=con.prepareStatement("insert into packets(data_size,data) values (?,?)");
-//	pstmt.setInt(0,1);
-	
+//	PreparedStatement pstmt=con.prepareStatement("insert into packets(data_size,data) values (?,?)");
+/*
+	PreparedStatement pstmt=con.prepareStatement("insert into files(filename) values (?)");
 	File inputFile(argv[1]);
-
+	string tmp="bla fasel";
+//	pstmt.setBlob(0,(void *)tmp.c_str(), tmp.length());
+	pstmt.setString(0,tmp);
+	pstmt.execute();
+*/
+/*
 	FormatInputStream fis(&inputFile);
 	PacketInputStream pis(&fis);
-//	memset(bind,0,sizeof(bind));
-
 	Packet packet;
 	int count =0;
-    while(true/*&&count < 1000*/){
-        pis.readPacket(packet);
-//        cout << "New Packet"<<endl;
-        if(packet.data==NULL)break;
-        ++count;
-		pstmt.setInt(0,packet.size);
-		pstmt.setBlob(1,packet.data,packet.size);
-//		cout << packet.size <<endl;
-		pstmt.execute();
-	}
-	
-	
-
+	while(true){
+    	    pis.readPacket(packet);
+    	    if(packet.data==NULL)break;
+    	    ++count;
+	    pstmt.setInt(0,packet.size);
+	    
+	    pstmt.setBlob(1,(char*)packet.data,packet.size);
+	    pstmt.execute();
+	}*/
 }
 

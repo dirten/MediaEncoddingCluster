@@ -98,6 +98,7 @@ int main(){
 	
 */
 
+    Config::init("./cluster.cfg");
     tnt::Tntnet app;
     app.listen("0.0.0.0",8008);
     app.mapUrl("^/$","mainpage").setPathInfo("/mainpage");

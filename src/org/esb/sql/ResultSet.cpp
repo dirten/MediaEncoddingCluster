@@ -1,5 +1,6 @@
 #include "ResultSet.h"
 #include "sstream"
+#include <iostream>
 #include <list>
 using namespace org::esb::sql;
 using namespace std;
@@ -11,14 +12,17 @@ class Column{
     public:
 	Column(MYSQL_FIELD & field){
 	    type=field.type;
+	    field_size=field.length;
+//	    cout << "Allocate buffersize to:"<<field_size<<endl;
 	    unsigned int flag=field.flags;
-	    data=new char[255];
-	    buffer_length=255;
-	    length=0;
-	    is_null=0;
+	    data=new char[field_size];
+	    buffer_length=field_size;
+	    length=field_size;
+	    is_null=1;
 	    is_error=0;
 	}
 	enum_field_types type;
+	unsigned long field_size;
 	void * data;
 	unsigned long buffer_length;
 	unsigned long length;
@@ -54,7 +58,7 @@ ResultSet::ResultSet(MYSQL_STMT & stmt):_stmt(stmt){
 	_bindColumns[i].is_null=&col->is_null;
 	_bindColumns[i].error=&col->is_error;
 
-	printf("Field %u is %s\n", i, fields[i].name);
+//	printf("Field %u is %s\n", i, fields[i].name);
     }
     
     if (mysql_stmt_bind_result(&_stmt, _bindColumns)){
@@ -65,9 +69,18 @@ ResultSet::ResultSet(MYSQL_STMT & stmt):_stmt(stmt){
 }
 
 /*******************************************************************************************************/
-bool ResultSet::next(){	
-	bool hasNext=(!mysql_stmt_fetch(&_stmt));
-	return hasNext;
+bool ResultSet::next(){
+
+	int ret=mysql_stmt_fetch(&_stmt);
+	if(ret==MYSQL_DATA_TRUNCATED){
+	    allocateBigResult();
+	}
+	return ret!=MYSQL_NO_DATA;
+}
+
+/*******************************************************************************************************/
+void ResultSet::allocateBigResult(){
+    std::cout << "Allocate big result"<<std::endl;
 }
 
 /*******************************************************************************************************/

@@ -20,7 +20,7 @@ int main(int argc, char * argv[]){
 	
 	
 	db=mysql_init(NULL);
-	mysql_real_connect(db,"127.0.0.1","jhoelscher","erkentnis","test",0,NULL,0);
+	mysql_real_connect(db,"127.0.0.1","root","","hive",0,NULL,0);
 //	mysql_query(db, "SELECT Host, User FROM user");
 //	Statement stmt=con.createStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)");
 	stmt=mysql_stmt_init(db);

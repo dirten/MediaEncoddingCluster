@@ -9,7 +9,7 @@ class PreparedStatement;
 class Statement;
 class Connection{
 	public:
-		Connection							(char*connect_str);
+		Connection							(const char*connect_str);
 		~Connection							();
 		Statement 			createStatement	(const char * sql);
 		PreparedStatement 	prepareStatement(const char * sql);
