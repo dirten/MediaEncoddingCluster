@@ -5,12 +5,7 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libsql.la
-SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp \
-	sqlite3x_connection.cpp \
-	sqlite3x_exception.cpp \
-	sqlite3x_reader.cpp \
-	sqlite3x_transaction.cpp \ 
-	sqlite3x_command.cpp 
+SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp 
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 libsql_la_SOURCES = $(SOURCES)
