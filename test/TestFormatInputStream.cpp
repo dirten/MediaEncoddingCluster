@@ -28,7 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
 
 
 void TestFormatInputStream::setUp(){
-    file=new File("test.avi");
+    file=new File("863_spongebong3-illustrated.wmv");
 }
 
 
@@ -45,10 +45,12 @@ void TestFormatInputStream::testConstructor(){
     FormatInputStream fis(file);
 //    FormatInputStream *fis2=new FormatInputStream(file);
     CPPUNIT_ASSERT(fis.getStreamCount()==2);
+/*
     PacketInputStream pis(fis.getStream(1));
     int a=0;
+    Packet p;
     while(true){
-	Packet p=pis.readPacket();
+	pis.readPacket(p);
 	if(p.data==NULL){
 	    break;
 	}
@@ -57,5 +59,5 @@ void TestFormatInputStream::testConstructor(){
 //	    cout <<"\r"<< a << "Packet";
 //	cout.flush();
     }
-
+*/
 }
