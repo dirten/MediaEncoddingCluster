@@ -3,21 +3,22 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <vector>
+#include "org/esb/sql/Connection.h"
+//#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
-#include "tntdb/connect.h"
+//#include "tntdb/connect.h"
 using namespace std;
 using namespace org::esb::hive::job;
+using namespace org::esb::sql;
 using namespace org::esb::config;
 boost::mutex ClientHandler::m_mutex;
 
 ClientHandler::ClientHandler(){
-	_handler=JobHandler::getInstance();
-	string dbFile=Config::getProperty("data.dir");
-	dbFile+="/";
-	dbFile+=Config::getProperty("data.file");
-//    Connection con=(Connection&)tntdb::connect((char*)dbFile.c_str());
-//    _con=new Connection(con);
-//    _stmt=new Statement(_con->prepare("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
+    _handler=JobHandler::getInstance();
+    Connection con(Config::getProperty("db.connection"));
+    _con=new Connection(con);
+    _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
 
 }
 /*
@@ -63,28 +64,23 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         }
         
         ++count;
-//	++show_progress;
-
-//	if(packet->stream_index==0&&packet->isKeyFrame())frame_group++;
-	int  field=1;
-        _stmt->bind( field++, unit._target_stream);
-        _stmt->bind( field++, packet->pts);
-        _stmt->bind( field++, packet->dts);
-        _stmt->bind( field++, packet->stream_index);
-        _stmt->bind( field++, packet->isKeyFrame());
+	int  field=0;
+        _stmt->setInt( field++, unit._target_stream);
+        _stmt->setInt( field++, packet->pts);
+        _stmt->setInt( field++, packet->dts);
+        _stmt->setInt( field++, packet->stream_index);
+        _stmt->setInt( field++, packet->isKeyFrame());
 	if(packet->stream_index==0)
-    	    _stmt->bind( field++, frame_group);
+    	    _stmt->setInt( field++, frame_group);
 	else
-    	    _stmt->bind( field++,0);	
-        _stmt->bind( field++, packet->flags);
-        _stmt->bind( field++, packet->duration);
-        _stmt->bind( field++, packet->pos);
-        _stmt->bind( field++, packet->size);
-        _stmt->bind( field++, (const void*)packet->data,packet->size);
+    	    _stmt->setInt( field++,0);	
+        _stmt->setInt( field++, packet->flags);
+        _stmt->setInt( field++, packet->duration);
+        _stmt->setInt( field++, packet->pos);
+        _stmt->setInt( field++, packet->size);
+        _stmt->setBlob( field++, (char *)packet->data,packet->size);
 	_stmt->execute();
     }
-//    cout << count << "Frames saved"<<endl;
-//    trans.commit();
     
 
     }

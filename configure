@@ -20023,7 +20023,7 @@ done
 
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
 ac_config_files="$ac_config_files Makefile src/Makefile src/org/Makefile src/org/esb/Makefile src/org/esb/lang/Makefile src/org/esb/util/Makefile src/org/esb/io/Makefile src/org/esb/av/Makefile src/org/esb/net/Makefile src/org/esb/hive/Makefile src/org/esb/httpd/Makefile src/org/esb/web/Makefile src/org/esb/sql/Makefile test/Makefile"
 

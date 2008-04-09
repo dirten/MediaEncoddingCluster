@@ -31,6 +31,7 @@ namespace org{
         		    __attribute__((deprecated))InputStream * getStream(int sNumber);
         		    AVInputStream * getAVStream(int sNumber);
 	        	    void close();
+	        	    void dumpFormat();
                 	    int selectedStream;
 		        private:
             		    org::esb::io::File * _sourceFile;

@@ -5,6 +5,7 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
+#include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 using namespace std;
@@ -21,15 +22,12 @@ JobWatcher::JobWatcher(JobHandler & handler){
 
 
 void JobWatcher::run(){
-	string dbFile=Config::getProperty("data.dir");
-	dbFile+="/";
-	dbFile+=Config::getProperty("data.file");
-	Connection con((char*)dbFile.c_str());
+	Connection con(Config::getProperty("db.connection"));
 
 //	    Connection con("/tmp/hive.db");
 //	    con.executenonquery("PRAGMA read_uncommitted=1");
 	    Statement stmt=con.createStatement("select id,infile,outfile from jobs where complete is null order by id");
-	    Statement stmt_detail=con.createStatement("select id,instream,outstream from job_details where job_id=?");
+	    PreparedStatement stmt_detail=con.prepareStatement("select id,instream,outstream from job_details where job_id=?");
 	while(!_isStopSignal){
 	    cout << "JobWatcher cycle"<<endl;
 	    ResultSet rs=stmt.executeQuery();
@@ -38,7 +36,7 @@ void JobWatcher::run(){
 //		try{
 		    if(_handler->getJob(rs.getInt(0))!=NULL)continue;
 
-		    stmt_detail.bind(1,rs.getInt(0));
+		    stmt_detail.setInt(0,rs.getInt(0));
 		    ResultSet rs_d=stmt_detail.executeQuery();
 		    while(rs_d.next()){
 			Job * job=new Job();
