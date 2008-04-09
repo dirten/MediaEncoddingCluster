@@ -6,6 +6,7 @@
 //#include "sqlite3x.hpp"
 //#include "tntdb/statement.h"
 #include <mysql/mysql.h>
+#include "SqlException.h"
 using namespace std;
 //using namespace org::esb::sql;
 //using namespace sqlite3x;
@@ -15,6 +16,7 @@ namespace sql{
 class Connection;
 class ResultSet;
 class Statement{
+	logger("hive.sql.Statement")
 	public:
 //		friend class ResultSet;
 		Statement(Connection & db, const char * sql);
@@ -22,11 +24,11 @@ class Statement{
 //		Statement(tntdb::Statement &stmt);
 //		Statement(const Statement & st);
 //		ResultSet & executeQuery (string sql, void * callback);
-
+/*
 		void bind(int pos, string ref);
 		void bind(int pos, int ref);
 		void bind(int pos, const void * ref, int size);
-
+*/
 		ResultSet executeQuery ();
 		void execute();
 		void close();

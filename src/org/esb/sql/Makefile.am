@@ -5,7 +5,7 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libsql.la
-SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp 
+SOURCES = Connection.cpp Statement.cpp PreparedStatement.cpp ResultSet.cpp SqlException.cpp
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 libsql_la_SOURCES = $(SOURCES)

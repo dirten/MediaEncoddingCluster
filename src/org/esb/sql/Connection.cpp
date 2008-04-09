@@ -4,35 +4,28 @@
 #include "Connection.h"
 #include "Statement.h"
 #include "PreparedStatement.h"
-//#include "tntdb/connect.h"
-//#include <sqlite3.h>
 #include <iostream>
-//#include <mysql.h>
+
 using namespace org::esb::sql;
 using namespace org::esb::io;
 using namespace org::esb::util;
-//void __attribute__ ((constructor)) my_init(void);
-//void _init() __attribute__((constructor));
 
-Connection::Connection(const char*connect_str){
-//	cout << "DBConnection:"<<connect_str<<endl;
+Connection::Connection(const char*connect_str) throw (SqlException){
+
+	logdebug("Opennig Connection with "<<connect_str);
 	StringTokenizer toker(connect_str,":");
 	if(toker.countTokens()!=2){
-		cout <<  "connect_string falsch"<<endl;
-		exit(0);
+		throw SqlException("connect String is wrong");
 	}
 	string type=toker.nextToken();
 	if(strcmp(type.c_str(),"mysql")!=0&&strcmp(type.c_str(),"mysql_embedded")!=0){
-		throw "Database Type can only be \"mysql\" or \"mysql_embedded\"";
-//		cout << "Database Type can only be \"mysql\" or \"mysql_embedded\""<<endl;
-//		exit(0);
+		throw SqlException("Database Type can only be \"mysql\" or \"mysql_embedded\"");
 	}
 	string con_str=toker.nextToken();
 	StringTokenizer info(con_str,"/");
 
 	if(info.countTokens()<2){
-		cout << "wrong connectioninfo"<<endl;
-		exit(0);
+		throw SqlException("wrong connectioninfo");
 	}
 	string host=info.nextToken();
 	string parameter=info.nextToken();
@@ -53,8 +46,7 @@ Connection::Connection(const char*connect_str){
 		props.getProperty("database"), 0,NULL,0);
 		
 	if(mysql_errno(mysql)>0){
-		cout <<mysql_error(mysql)<<endl;
-		exit(0);
+		throw SqlException(string("Connection failed !!! ").append(mysql_error(mysql)));
 	}
 }
 Connection::~Connection(){

@@ -16,11 +16,13 @@
 
 #include "import.cpp"
 #include "export.cpp"
+#include "org/esb/util/Log.h"
 //#include "job.cpp"
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
 using namespace std;
+
 
 
 using namespace std;
@@ -33,6 +35,7 @@ void shell(int argc, char * argv[]);
 
 
 int main(int argc, char * argv[]){	
+    loginit("log.properties");
 
     Config::init("./cluster.cfg");
 

@@ -18,15 +18,11 @@ Statement::~Statement(){
 
 ResultSet Statement::executeQuery(){
 	if(mysql_stmt_prepare(_stmt,_sql, strlen(_sql))){
-    	fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
-    	fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-    	exit(0);
+		throw SqlException(string("prepare Statement failed: ").append(mysql_stmt_error(_stmt)));
 	}
     
 	if (mysql_stmt_execute(_stmt)){
-	    fprintf(stderr, " mysql_stmt_execute(), failed\n");
-	    fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-	    exit(0);
+		throw SqlException(string("execute Statement failed: ").append(mysql_stmt_error(_stmt)));
 	}
 	return ResultSet(*this->_stmt);
 }
@@ -35,7 +31,7 @@ void Statement::execute(){
 
 
 }
-
+/*
 void Statement::bind(int pos, string ref){
 
 
@@ -48,6 +44,6 @@ void Statement::bind(int pos, const void * ref, int size){
 
 
 }
-
+*/
 void Statement::close(){}
 

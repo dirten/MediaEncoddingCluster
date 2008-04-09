@@ -26,10 +26,10 @@ void JobWatcher::run(){
 
 //	    Connection con("/tmp/hive.db");
 //	    con.executenonquery("PRAGMA read_uncommitted=1");
-	    Statement stmt=con.createStatement("select id,infile,outfile from jobs where complete is null order by id");
+	    Statement stmt=con.createStatement("select id,inputfile, outputfile from jobs where complete is null order by id");
 	    PreparedStatement stmt_detail=con.prepareStatement("select id,instream,outstream from job_details where job_id=?");
 	while(!_isStopSignal){
-	    cout << "JobWatcher cycle"<<endl;
+	    logdebug("JobWatcher cycle");
 	    ResultSet rs=stmt.executeQuery();
 
 	    while(rs.next()){

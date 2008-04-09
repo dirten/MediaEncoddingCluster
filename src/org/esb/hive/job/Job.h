@@ -12,6 +12,7 @@
 #include <queue>
 #include <vector>
 #include "org/esb/sql/Statement.h"
+#include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
@@ -63,7 +64,7 @@ class Job{
 //		int _frame_group;
 		mutable boost::mutex m_mutex;
 		Connection * _con;
-		Statement * _stmt;
+		PreparedStatement * _stmt;
 		Decoder * _decoder;
 		Encoder * _encoder;
 		bool _isActive;

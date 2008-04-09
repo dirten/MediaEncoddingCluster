@@ -6,6 +6,7 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include <vector>
+#include "org/esb/util/Log.h"
 
 using namespace org::esb::lang;
 using namespace org::esb::sql;
@@ -17,6 +18,7 @@ namespace org{
 		namespace hive{
 			namespace job{
 				class JobWatcher :public Runnable{
+					logger("hive.JobWatcher")
 					public:
 						JobWatcher(JobHandler & handler);
 						void run();
