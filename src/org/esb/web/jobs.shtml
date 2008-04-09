@@ -1,7 +1,0 @@
-<html>
-<link rel="stylesheet" type="text/css" href="style.css">
-<body>
-<!--#include file="menu.tmpl" -->
-<!--#call showJobs -->
-</body>
-<html>

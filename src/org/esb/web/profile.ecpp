@@ -1,12 +1,12 @@
 <%pre>
-#include "tntdb/connection.h"
-#include "tntdb/connect.h"
-#include "tntdb/result.h"
-#include "tntdb/statement.h"
-#include "tntdb/row.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 #include <string>
 #include "org/esb/av/Codec.h"
-using namespace tntdb;
+#include "org/esb/config/config.h"
+using namespace org::esb::sql;
+using namespace org::esb::config;
 </%pre>
 <%args>
 int id=0;
@@ -30,22 +30,21 @@ std::string a_samplerate="";
 <body>
 <%include>menu.tmpl</%include>
 <{
-    Connection con=tntdb::connect("sqlite:/tmp/hive.db");
+    Connection con(Config::getProperty("db.connection"));
     if(id==0){
-    Statement stmt=con.prepare("select * from profiles");
-    Result rs=stmt.select();
+    Statement stmt=con.createStatement("select * from profiles");
+    ResultSet rs=stmt.executeQuery();
 
     }>
     <table class="list" cellspacing="0" cellpadding="0">
     <tr class="header"><td>Id</td><td>Profile Name</td><td>Format</td><td>Video Codec</td><td>Video Bitrate</td><td>Video Framerate</td></tr>
-%    for(int a=0;a<rs.size();a++){
-%	Row row=rs.getRow(a);
+%    while(rs.next()){
 	<tr class="row">
-	<td><$row.getInt("id")$>.</td><td><a href="?id=<$row.getInt("id")$>"><$row.isNull("profile_name")?"":row.getString("profile_name")$></a></td>
-	<td><$row.isNull("v_format")?"":row.getString("v_format")$></td>
-	<td><$row.isNull("v_codec")?"":row.getString("v_codec")$></td>
-	<td><$row.isNull("v_bitrate")?"":row.getString("v_bitrate")$></td>
-	<td><$row.isNull("v_framerate")?"":row.getString("v_framerate")$></td>
+	<td><$rs.getInt("id")$>.</td><td><a href="?id=<$rs.getInt("id")$>"><$rs.getString("profile_name")$></a></td>
+	<td><$rs.getString("v_format")$></td>
+	<td><$rs.getString("v_codec")$></td>
+	<td><$rs.getString("v_bitrate")$></td>
+	<td><$rs.getString("v_framerate")$></td>
 	</tr>
 %    }
     <a href="profile?id=-1">Create new Profile</a>
@@ -58,18 +57,20 @@ std::string a_samplerate="";
     std::string sql="";
     if(id==-1){
 	sql.append("INSERT INTO profiles (profile_name, v_format, v_codec, v_bitrate,v_framerate,v_width, v_height, a_channels, a_codec, a_bitrate,a_samplerate) values"
-	"(:profile_name, :v_format, :v_codec, :v_bitrate,:v_framerate,:v_width, :v_height, :a_channels, :a_codec, :a_bitrate,:a_samplerate)");
+	"(?,?,?,?,?,?,?,?,?,?,?)");
+//	"(:profile_name, :v_format, :v_codec, :v_bitrate,:v_framerate,:v_width, :v_height, :a_channels, :a_codec, :a_bitrate,:a_samplerate)");
 //	sql.append("INSERT INTO profiles (profile_name) values(?)");
     }else{
-	sql.append("UPDATE profiles SET profile_name=:profile_name, v_format=:v_format, v_codec=:v_codec, v_bitrate=:v_bitrate,v_framerate=:v_framerate,v_width=:v_width, v_height=:v_height, a_channels=:a_channels, a_codec=:a_codec, a_bitrate=:a_bitrate,a_samplerate=:a_samplerate where id=:id");
+	sql.append("UPDATE profiles SET profile_name=?, v_format=?, v_codec=?, v_bitrate=?,v_framerate=?,v_width=?, v_height=?, a_channels=?, a_codec=?, a_bitrate=?,a_samplerate=? where id=?");
+//	sql.append("UPDATE profiles SET profile_name=:profile_name, v_format=:v_format, v_codec=:v_codec, v_bitrate=:v_bitrate,v_framerate=:v_framerate,v_width=:v_width, v_height=:v_height, a_channels=:a_channels, a_codec=:a_codec, a_bitrate=:a_bitrate,a_samplerate=:a_samplerate where id=:id");
 //	sql.append("UPDATE profiles SET profile_name=? where id=?");
     }
 //    Connection con("/tmp/hive.db");
-    Statement stmt=con.prepare(sql.c_str());
+    PreparedStatement stmt=con.prepareStatement(sql.c_str());
 //    std::cout << "sql:"<<sql.c_str()<<std::endl;
 
-    int field=1;
-    stmt.set("profile_name",profile_name);
+    int field=0;
+/*    stmt.set("profile_name",profile_name);
     stmt.set("v_format",v_format);
     stmt.set("v_codec",v_codec);
     stmt.set("v_bitrate",v_bitrate);
@@ -80,29 +81,41 @@ std::string a_samplerate="";
     stmt.set("a_codec",a_codec);
     stmt.set("a_bitrate",a_bitrate);
     stmt.set("a_samplerate",a_samplerate);
+*/
+    stmt.setString(field++,profile_name);
+    stmt.setString(field++,v_format);
+    stmt.setString(field++,v_codec);
+    stmt.setString(field++,v_bitrate);
+    stmt.setString(field++,v_framerate);
+    stmt.setString(field++,v_width);
+    stmt.setString(field++,v_height);
+    stmt.setString(field++,a_channels);
+    stmt.setString(field++,a_codec);
+    stmt.setString(field++,a_bitrate);
+    stmt.setString(field++,a_samplerate);
     if(id>0){
-        stmt.set("id",id);    
+        stmt.setInt(field++,id);    
     }
     stmt.execute();
 
     }
 
 
-    Statement stmt=con.prepare("select * from profiles where id=:id");
-    stmt.set("id",id);
-    Result rs=stmt.select();
-    if(rs.size()==1){
-	Row row=rs.getRow(0);
+    PreparedStatement stmt=con.prepareStatement("select * from profiles where id=?");
+    stmt.setInt(0,id);
+    ResultSet rs=stmt.executeQuery();
+    if(rs.next()||id==-1){
+//	Row row=rs.getRow(0);
 }>
     <form name="save_profile" action="profile" method="post">
     <table class="list" cellspacing="0" cellpadding="0">
 
-    <tr><td>Profile Name:</td><td><input type="text" name="profile_name" value="<$row.isNull("profile_name")?"":row.getString("profile_name")$>"></td></tr>
+    <tr><td>Profile Name:</td><td><input type="text" name="profile_name" value="<$rs.getString("profile_name")$>"></td></tr>
     <tr><td>Format:</td><td><select name="v_format">
 %	AVOutputFormat *f=NULL;
 %	while((f= av_oformat_next(f))) {
 %		std::string selected="";
-%		if(strcmp(f->name,row.isNull("v_format")?"":row.getString("v_format").c_str())==0){
+%		if(strcmp(f->name,rs.getString("v_format").c_str())==0){
 %		    selected="selected";
 %		}
 	    <option <$selected$> value="<$f->name$>"><$f->long_name$></option>
@@ -113,7 +126,7 @@ std::string a_samplerate="";
 %	AVCodec *p=NULL;
 %	while((p= av_codec_next(p))) {
 %		std::string selected="";
-%		if(p->id==(row.isNull("v_codec")?0:row.getInt("v_codec"))){
+%		if(p->id==(rs.getInt("v_codec"))){
 %		    selected="selected";
 %		}
 %		if(p->encode&&p->type==CODEC_TYPE_VIDEO){
@@ -122,17 +135,17 @@ std::string a_samplerate="";
 %	}
 	</select></td></tr>
 
-    <tr><td>Bit Rate:</td><td><input type="text" name="v_bitrate" value="<$row.isNull("v_bitrate")?"":row.getString("v_bitrate")$>"></td></tr>
-    <tr><td>Frame Rate:</td><td><input type="text" name="v_framerate" value="<$row.isNull("v_framerate")?"":row.getString("v_framerate")$>"></td></tr>
-    <tr><td>Frame Width:</td><td><input type="text" name="v_width" value="<$row.isNull("v_width")?"":row.getString("v_width")$>"></td></tr>
-    <tr><td>Frame height:</td><td><input type="text" name="v_height" value="<$row.isNull("v_height")?"":row.getString("v_height")$>"></td></tr>
-    <tr><td>Audio Channels:</td><td><input type="text" name="a_channels" value="<$row.isNull("a_channels")?"":row.getString("a_channels")$>"></td></tr>
+    <tr><td>Bit Rate:</td><td><input type="text" name="v_bitrate" value="<$rs.getString("v_bitrate")$>"></td></tr>
+    <tr><td>Frame Rate:</td><td><input type="text" name="v_framerate" value="<$rs.getString("v_framerate")$>"></td></tr>
+    <tr><td>Frame Width:</td><td><input type="text" name="v_width" value="<$rs.getString("v_width")$>"></td></tr>
+    <tr><td>Frame height:</td><td><input type="text" name="v_height" value="<$rs.getString("v_height")$>"></td></tr>
+    <tr><td>Audio Channels:</td><td><input type="text" name="a_channels" value="<$rs.getString("a_channels")$>"></td></tr>
 
     <tr><td>Audio Codec:</td><td><select name="a_codec">
 %	AVCodec *ac=NULL;
 %	while((ac= av_codec_next(ac))) {
 %		std::string selected="";
-%		if(ac->name==(row.isNull("a_codec")?"":row.getString("a_codec"))){
+%		if(ac->name==(rs.getString("a_codec"))){
 %		    selected="selected";
 %		}
 %		if(ac->encode&&ac->type==CODEC_TYPE_AUDIO){
@@ -142,9 +155,9 @@ std::string a_samplerate="";
 %		}
 %	}
     </select></td></tr>
-    <tr><td>Audio Bitrate:</td><td><input type="text" name="a_bitrate" value="<$row.isNull("a_bitrate")?0:row.getInt("a_bitrate")$>"></td></tr>
+    <tr><td>Audio Bitrate:</td><td><input type="text" name="a_bitrate" value="<$rs.getInt("a_bitrate")$>"></td></tr>
     <#/*@TODO rs.getInt(11) austauschen durch qualifizierten namen im ResultSet. z.Z. ist das ResultSet noch Buggy, der Wert wird nicht über den Namen aufgelöst*/#>
-    <tr><td>Audio Samplerate:</td><td><input type="text" name="a_samplerate" value="<$row.isNull("a_samplerate")?0:row.getInt("a_samplerate")$>"></td></tr>
+    <tr><td>Audio Samplerate:</td><td><input type="text" name="a_samplerate" value="<$rs.getInt("a_samplerate")$>"></td></tr>
     <input type="hidden" name="id" value="<$id$>">
     <tr><td><input type="submit" value="save" name="action"></td></tr>
     </form>

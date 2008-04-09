@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stdio.h>
 #include "org/esb/httpd/shttpd.h"
-#include "org/esb/web/WebServer.h"
+//#include "org/esb/web/WebServer.h"
 #include "org/esb/config/config.h"
 #include "tnt/tntnet.h"
 using namespace std;
-using namespace org::esb::web;
+//using namespace org::esb::web;
 using namespace org::esb::config;
 
 

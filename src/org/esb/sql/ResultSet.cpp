@@ -13,6 +13,7 @@ class Column{
 	Column(MYSQL_FIELD & field){
 	    type=field.type;
 	    field_size=field.length;
+//	    field_size=0;
 //	    cout << "Allocate buffersize to:"<<field_size<<endl;
 	    unsigned int flag=field.flags;
 	    data=new char[field_size];
@@ -20,6 +21,7 @@ class Column{
 	    length=field_size;
 	    is_null=1;
 	    is_error=0;
+	    memset(data,0,field_size);
 	}
 	enum_field_types type;
 	unsigned long field_size;
