@@ -11,7 +11,9 @@ namespace sql{
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-ResultSet::ResultSet(tntdb::Result result):tntresult(result),tntiterator(result.begin()){}
+ResultSet::ResultSet(tntdb::Result result):tntresult(result),tntiterator(result.begin()){
+	tntrow=tntdb::Row(0);
+}
 
 
 /*******************************************************************************************************/

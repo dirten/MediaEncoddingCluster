@@ -1,6 +1,6 @@
 <%pre>
 #include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include <string>
 #include "org/esb/av/Codec.h"
@@ -61,8 +61,8 @@ std::string a_samplerate="";
 //	"(:profile_name, :v_format, :v_codec, :v_bitrate,:v_framerate,:v_width, :v_height, :a_channels, :a_codec, :a_bitrate,:a_samplerate)");
 //	sql.append("INSERT INTO profiles (profile_name) values(?)");
     }else{
-	sql.append("UPDATE profiles SET profile_name=?, v_format=?, v_codec=?, v_bitrate=?,v_framerate=?,v_width=?, v_height=?, a_channels=?, a_codec=?, a_bitrate=?,a_samplerate=? where id=?");
-//	sql.append("UPDATE profiles SET profile_name=:profile_name, v_format=:v_format, v_codec=:v_codec, v_bitrate=:v_bitrate,v_framerate=:v_framerate,v_width=:v_width, v_height=:v_height, a_channels=:a_channels, a_codec=:a_codec, a_bitrate=:a_bitrate,a_samplerate=:a_samplerate where id=:id");
+//	sql.append("UPDATE profiles SET profile_name=?, v_format=?, v_codec=?, v_bitrate=?,v_framerate=?,v_width=?, v_height=?, a_channels=?, a_codec=?, a_bitrate=?,a_samplerate=? where id=?");
+	sql.append("UPDATE profiles SET profile_name=:profile_name, v_format=:v_format, v_codec=:v_codec, v_bitrate=:v_bitrate,v_framerate=:v_framerate,v_width=:v_width, v_height=:v_height, a_channels=:a_channels, a_codec=:a_codec, a_bitrate=:a_bitrate,a_samplerate=:a_samplerate where id=:id");
 //	sql.append("UPDATE profiles SET profile_name=? where id=?");
     }
 //    Connection con("/tmp/hive.db");
@@ -70,18 +70,18 @@ std::string a_samplerate="";
 //    std::cout << "sql:"<<sql.c_str()<<std::endl;
 
     int field=0;
-/*    stmt.set("profile_name",profile_name);
-    stmt.set("v_format",v_format);
-    stmt.set("v_codec",v_codec);
-    stmt.set("v_bitrate",v_bitrate);
-    stmt.set("v_framerate",v_framerate);
-    stmt.set("v_width",v_width);
-    stmt.set("v_height",v_height);
-    stmt.set("a_channels",a_channels);
-    stmt.set("a_codec",a_codec);
-    stmt.set("a_bitrate",a_bitrate);
-    stmt.set("a_samplerate",a_samplerate);
-*/
+    stmt.setString("profile_name",profile_name);
+    stmt.setString("v_format",v_format);
+    stmt.setString("v_codec",v_codec);
+    stmt.setString("v_bitrate",v_bitrate);
+    stmt.setString("v_framerate",v_framerate);
+    stmt.setString("v_width",v_width);
+    stmt.setString("v_height",v_height);
+    stmt.setString("a_channels",a_channels);
+    stmt.setString("a_codec",a_codec);
+    stmt.setString("a_bitrate",a_bitrate);
+    stmt.setString("a_samplerate",a_samplerate);
+/*
     stmt.setString(field++,profile_name);
     stmt.setString(field++,v_format);
     stmt.setString(field++,v_codec);
@@ -93,18 +93,20 @@ std::string a_samplerate="";
     stmt.setString(field++,a_codec);
     stmt.setString(field++,a_bitrate);
     stmt.setString(field++,a_samplerate);
+    */
     if(id>0){
-        stmt.setInt(field++,id);    
+        stmt.setInt("id",id);    
     }
     stmt.execute();
 
     }
 
 
-    PreparedStatement stmt=con.prepareStatement("select * from profiles where id=?");
-    stmt.setInt(0,id);
+    PreparedStatement stmt=con.prepareStatement("select * from profiles where id=:id");
+    stmt.setInt("id",id);
     ResultSet rs=stmt.executeQuery();
     if(rs.next()||id==-1){
+//	Row row(0);
 //	Row row=rs.getRow(0);
 }>
     <form name="save_profile" action="profile" method="post">

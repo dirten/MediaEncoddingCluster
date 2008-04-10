@@ -29,7 +29,7 @@ Statement Connection::createStatement(const char * sql){
 
 PreparedStatement Connection::prepareStatement(const char * sql){
 //	PreparedStatement *stmt=new PreparedStatement(*this, sql);
-	return PreparedStatement(*this, sql);
+	return PreparedStatement(tntcon.prepare(sql));
 }
 
 //Statement & Connection::createStatement(){return;}

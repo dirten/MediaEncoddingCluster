@@ -34,7 +34,7 @@ Job::Job(){
 
     _con=new Connection(Config::getProperty("db.connection"));
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
-    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
+    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id"));
 //    _frame_group=1;
     _completeTime=0;
 
@@ -80,8 +80,8 @@ void Job::activate(){
 	Connection con(Config::getProperty("db.connection"));
 
 	{
-		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=?");
-		stmt.setInt(1,_id);
+		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=:id");
+		stmt.setInt("id",_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
     		_decoder=new Decoder((CodecID)rs.getInt(0));
@@ -92,8 +92,8 @@ void Job::activate(){
 		}
 	}
 	{
-		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.bit_rate, s.time_base_num, s.time_base_den, s.gop_size, s.channels, s.sample_rate, s.sample_fmt from job_details j, streams s where (j.outstream=s.id) and j.id=?");
-		stmt.setInt(1,_id);
+		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.bit_rate, s.time_base_num, s.time_base_den, s.gop_size, s.channels, s.sample_rate, s.sample_fmt from job_details j, streams s where (j.outstream=s.id) and j.id=:id");
+		stmt.setInt("id",_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
     		_encoder=new Encoder((CodecID)rs.getInt(0));
@@ -113,15 +113,14 @@ void Job::activate(){
 	{
 		string sql;
 		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
-			sql="select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts";
+			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
 		}	
 		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
-			sql="select distinct b.frame_group from (select pts from packets where stream_id=? except select pts from packets where stream_id=?) a, packets b where a.pts=b.pts and b.stream_id=? order by a.pts";
+			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
 		}
 		PreparedStatement stmt=con.prepareStatement(sql.c_str());
-		stmt.setInt(1,_source_stream);
-		stmt.setInt(2,_target_stream);
-		stmt.setInt(3,_source_stream);
+		stmt.setInt("source_stream_id",_source_stream);
+		stmt.setInt("target_stream_id",_target_stream);
 		ResultSet rs=stmt.executeQuery();
 		while(rs.next()){
 			_frame_groups.push(rs.getInt(0));
@@ -168,8 +167,8 @@ ProcessUnit Job::getNextProcessUnit(){
 	_frame_groups.pop();
 	cout << "\rFrameGroup:"<<fr_gr;
 	cout.flush();
-	_stmt->setInt(1,fr_gr);
-	_stmt->setInt(2,getSourceStream());
+	_stmt->setInt("frame_group",fr_gr);
+	_stmt->setInt("stream_id",getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
 	while(rs.next()){
 	    shared_ptr<Packet> p(new Packet());

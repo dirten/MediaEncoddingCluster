@@ -16,8 +16,8 @@ ResultSet Statement::executeQuery(){
 	return ResultSet(tntstmt.select());
 }
 
-void Statement::execute(){
-	tntstmt.execute();
+bool Statement::execute(){
+	return tntstmt.execute()==0;
 }
 
 void Statement::close(){

@@ -23,7 +23,7 @@ class Statement{
 		Statement(tntdb::Statement  stmt);
 		~Statement();
 		ResultSet executeQuery ();
-		void execute();
+		bool execute();
 		void close();
 	protected:
 		friend class ResultSet;

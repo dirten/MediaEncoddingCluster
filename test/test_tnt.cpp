@@ -17,11 +17,22 @@ int main(int argc, char ** argv){
 //	Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
 	Connection con("mysql:db=hive;user=root;passwd=root");
 
-	Statement stmt=con.createStatement("select filename, genre from files limit 100");
+	PreparedStatement stmt=con.prepareStatement("select * from profiles limit 100");
 	ResultSet rs=stmt.executeQuery();
 //	log_trace("bla fasel");
 	while(rs.next()){
 		cout << "test:"<<rs.getString(0)<<endl;
+		cout << "test:"<<rs.getString(1)<<endl;
+		cout << "test:"<<rs.getString(2)<<endl;
+		cout << "test:"<<rs.getString(3)<<endl;
+		cout << "test:"<<rs.getString(4)<<endl;
+		cout << "test:"<<rs.getString(5)<<endl;
+		cout << "test:"<<rs.getString(6)<<endl;
+		cout << "test:"<<rs.getString(7)<<endl;
+		cout << "test:"<<rs.getString(8)<<endl;
+		cout << "test:"<<rs.getString(9)<<endl;
+		cout << "test:"<<rs.getString(10)<<endl;
+		cout << "test:"<<rs.getString(11)<<endl;
 	}
 	
 //	PreparedStatement pstmt=con.prepareStatement("insert into packets(data_size,data) values (?,?)");

@@ -18,7 +18,8 @@ ClientHandler::ClientHandler(){
     _handler=JobHandler::getInstance();
     Connection con(Config::getProperty("db.connection"));
     _con=new Connection(con);
-    _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values (NULL,?,?,?,?,?,?,?,?,?,?,?)"));
+    _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+    "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
 
 }
 /*
@@ -65,20 +66,21 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         
         ++count;
 	int  field=0;
-        _stmt->setInt( field++, unit._target_stream);
-        _stmt->setInt( field++, packet->pts);
-        _stmt->setInt( field++, packet->dts);
-        _stmt->setInt( field++, packet->stream_index);
-        _stmt->setInt( field++, packet->isKeyFrame());
+
+        _stmt->setInt( "stream_id", unit._target_stream);
+        _stmt->setInt( "pts", packet->pts);
+        _stmt->setInt( "dts", packet->dts);
+        _stmt->setInt( "stream_index", packet->stream_index);
+        _stmt->setInt( "key_frame", packet->isKeyFrame());
 	if(packet->stream_index==0)
-    	    _stmt->setInt( field++, frame_group);
+    	    _stmt->setInt( "frame_group", frame_group);
 	else
-    	    _stmt->setInt( field++,0);	
-        _stmt->setInt( field++, packet->flags);
-        _stmt->setInt( field++, packet->duration);
-        _stmt->setInt( field++, packet->pos);
-        _stmt->setInt( field++, packet->size);
-        _stmt->setBlob( field++, (char *)packet->data,packet->size);
+    	    _stmt->setInt( "frame_group",0);	
+        _stmt->setInt( "flags", packet->flags);
+        _stmt->setInt( "duration", packet->duration);
+        _stmt->setInt( "pos", packet->pos);
+        _stmt->setInt( "data_size", packet->size);
+        _stmt->setBlob( "data", (char *)packet->data,packet->size);
 	_stmt->execute();
     }
     
