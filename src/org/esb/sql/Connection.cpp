@@ -5,66 +5,25 @@
 #include "Statement.h"
 #include "PreparedStatement.h"
 #include <iostream>
-
+#include "tntdb/connect.h"
 using namespace org::esb::sql;
 using namespace org::esb::io;
 using namespace org::esb::util;
 
-Connection::Connection(const char*connect_str) throw (SqlException){
+Connection::Connection() throw (SqlException){
 
-	logdebug("Opennig Connection with "<<connect_str);
-	StringTokenizer toker(connect_str,":");
-	if(toker.countTokens()!=2){
-		throw SqlException("connect String is wrong");
-	}
-	string type=toker.nextToken();
-	if(strcmp(type.c_str(),"mysql")!=0&&strcmp(type.c_str(),"mysql_embedded")!=0){
-		throw SqlException("Database Type can only be \"mysql\" or \"mysql_embedded\"");
-	}
-	string con_str=toker.nextToken();
-	StringTokenizer info(con_str,"/");
-
-	if(info.countTokens()<2){
-		throw SqlException("wrong connectioninfo");
-	}
-	string host=info.nextToken();
-	string parameter=info.nextToken();
-	StringTokenizer params(parameter,";");
-	Properties props;
-	props.setProperty("host", host);
-	while(params.hasMoreTokens()){
-		StringTokenizer p(params.nextToken(),"=");
-		string key=p.nextToken();
-		string val=p.nextToken();
-		props.setProperty(key,val);
-	}
-	mysql=boost::shared_ptr<MYSQL>(mysql_init(NULL));
-	mysql_real_connect(mysql.get(), 
-		props.getProperty("host"),
-		props.getProperty("username"),
-		props.getProperty("password"), 
-		props.getProperty("database"), 0,NULL,0);
-		
-	if(mysql_errno(mysql.get())>0){
-		throw SqlException(string("Connection failed !!! ").append(mysql_error(mysql.get())));
-	}
+}
+Connection::Connection(const char * con) throw (SqlException){
+	tntcon=tntdb::connect(con);
 }
 
 Connection::~Connection(){
-    
-
+	tntcon.close();
 }
 
-//sqlite3_transaction Connection::getTransaction(){
-//    return sqlite3_transaction(*this);
-//}
-
-//Connection::Connection(File & databaseFile)/*:sqlite3_connection(databaseFile.getPath())*/{
-//    printf("Opening Database Connection\n");
-//}
 
 Statement Connection::createStatement(const char * sql){
-	return Statement(*this, sql);
+	return Statement(tntcon.prepare(sql));
 //	_tmpStatement=Statement(*this, sql);
 }
 
@@ -77,7 +36,7 @@ PreparedStatement Connection::prepareStatement(const char * sql){
 
 
 void Connection::close(){
-//	mysql_close(mysql.get());
+	mysql_close(mysql);
 //    sqlite3_connection::close();	
 }
 void Connection::executeNonQuery(const char * sql){

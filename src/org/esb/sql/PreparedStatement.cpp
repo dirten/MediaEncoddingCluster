@@ -4,19 +4,15 @@ using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(Connection & db, const char * sql) : _con(db), _sql(sql){
     logdebug("PreparedStatement()"<<sql);
-    _stmt=mysql_stmt_init(_con.mysql.get());
+    _stmt=mysql_stmt_init(_con.mysql);
     _is_null=0;
     _is_error=0;
 //    fprintf(stderr, "test bla fasel");
-	if (!_stmt)
-	{
-	  fprintf(stderr, " mysql_stmt_init(), out of memory\n");
-	    exit(0);
+	if (!_stmt)	{
+		throw SqlException("mysql_stmt_init(), out of memory");
 	}
     if (mysql_stmt_prepare(_stmt, _sql, strlen(_sql))){
-	fprintf(stderr, " mysql_stmt_prepare(), INSERT failed\n");
-	fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-        exit(0);
+		throw SqlException(string("mysql_stmt_prepare failed").append(mysql_stmt_error(_stmt)));
     }
     _columnCount=mysql_stmt_param_count(_stmt);
     _is_null=new my_bool[_columnCount];
@@ -107,7 +103,7 @@ ResultSet PreparedStatement::executeQuery(){
 //    mysql_stmt_store_result(_stmt);
 //    int num_rows = mysql_stmt_num_rows(_stmt);
 //    cout <<"numRows:"<<num_rows<<endl;
-    return ResultSet(*this->_stmt);
+//    return ResultSet(_stmt);
 }
 unsigned long long PreparedStatement::getLastInsertId(){
     return mysql_stmt_insert_id(_stmt);

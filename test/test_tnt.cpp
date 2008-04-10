@@ -12,14 +12,16 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 
 int main(int argc, char ** argv){
-    log_init("log.properties");
+//    log_init("log.properties");
+    
+//	Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
+	Connection con("mysql:db=hive;user=root;passwd=root");
 
-	Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
 	Statement stmt=con.createStatement("select filename, genre from files limit 100");
 	ResultSet rs=stmt.executeQuery();
-	log_trace("bla fasel");
+//	log_trace("bla fasel");
 	while(rs.next()){
-	//	cout << "test:"<<rs.getString("filename")<<endl;
+		cout << "test:"<<rs.getString(0)<<endl;
 	}
 	
 //	PreparedStatement pstmt=con.prepareStatement("insert into packets(data_size,data) values (?,?)");

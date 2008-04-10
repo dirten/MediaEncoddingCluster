@@ -23,6 +23,7 @@ class TestOrgEsbSql: public CppUnit::TestFixture
 	void testStatement();
 	void testStatementResult();
 	void testPreparedStatement();
+	
 };
 
 
@@ -38,29 +39,28 @@ void TestOrgEsbSql::tearDown(){
 }
 
 void TestOrgEsbSql::testConnect(){
-    Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
+    Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
     con.close();
-    
 }
 void TestOrgEsbSql::testStatement(){
-    Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
+    Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
     Statement stmt=con.createStatement("select * from files");
     con.close();
     
 }
 void TestOrgEsbSql::testPreparedStatement(){
-    Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
+    Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
     PreparedStatement stmt=con.prepareStatement("select id from files");
     con.close();
     
 }
 void TestOrgEsbSql::testStatementResult(){
-    Connection con("mysql:/localhost/port=3306;username=root;password=;database=hive");
-    Statement stmt=con.createStatement("select id from files");
+    Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
+    Statement stmt=con.createStatement("select id, filename from files");
     ResultSet rs=stmt.executeQuery();
-    while(rs.next()){
-	rs.getInt("id");
-    }
+//    while(rs.next()){
+//	rs.getInt("id");
+  //  }
     con.close();
 
 }

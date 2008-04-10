@@ -36,7 +36,7 @@ class TestProtocolCommands: public CppUnit::TestFixture
 	void testUnknown();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestProtocolCommands);
+//CPPUNIT_TEST_SUITE_REGISTRATION(TestProtocolCommands);
 
 
 void TestProtocolCommands::setUp(){

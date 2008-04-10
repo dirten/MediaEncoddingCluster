@@ -61,7 +61,7 @@ int id=0;
 	<tr><td>Type:</td><td><$codec.codec_type==CODEC_TYPE_AUDIO?"Audio":"Video"$></td></tr>
 	<tr><td>CodecName:</td><td><$codec.codec->name$></td></tr>
 	<tr><td>Time Base:</td><td><$rs.getInt(9)$>/<$rs.getInt(10)$></td></tr>
-	<tr><td>Duration:</td><td><$(rs.getLong(8)/(rs.getLong(10)/rs.getLong(9)))$> sec.</td></tr>
+	<tr><td>Duration:</td><td><$(rs.getDouble(8)/(rs.getDouble(10)/rs.getDouble(9)))$> sec.</td></tr>
 	<tr><td>Bit Rate:</td><td><$rs.getInt(16)$> </td></tr>
 %	if(codec.codec_type==CODEC_TYPE_VIDEO){
 	    <tr><td>Frame Rate:</td><td><$rs.getInt(6)$></td></tr>

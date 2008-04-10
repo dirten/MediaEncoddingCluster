@@ -5,45 +5,23 @@
 
 using namespace org::esb::sql;
 
-
-Statement::Statement(Connection & db, const char * sql):_con(db),_sql(sql){
-    _stmt=mysql_stmt_init(_con.mysql.get());
+Statement::Statement(tntdb::Statement  stmt){
+	tntstmt=stmt;
 }
 Statement::~Statement(){
-	mysql_stmt_close(_stmt);
+
 }
 
-
-//ResultSet & Statement::executeQuery(string sql, void * callback){}
-
 ResultSet Statement::executeQuery(){
-	if(mysql_stmt_prepare(_stmt,_sql, strlen(_sql))){
-		throw SqlException(string("prepare Statement failed: ").append(mysql_stmt_error(_stmt)));
-	}
-    
-	if (mysql_stmt_execute(_stmt)){
-		throw SqlException(string("execute Statement failed: ").append(mysql_stmt_error(_stmt)));
-	}
-	return ResultSet(*this->_stmt);
+	return ResultSet(tntstmt.select());
 }
 
 void Statement::execute(){
+	tntstmt.execute();
+}
+
+void Statement::close(){
 
 
 }
-/*
-void Statement::bind(int pos, string ref){
-
-
-}
-void Statement::bind(int pos, int ref){
-
-
-}
-void Statement::bind(int pos, const void * ref, int size){
-
-
-}
-*/
-void Statement::close(){}
 

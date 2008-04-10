@@ -5,7 +5,8 @@
 #include "org/esb/util/Log.h"
 //#include "sqlite3x.hpp"
 #include <mysql/mysql.h>
-//#include "boost/shared_ptr.hpp"
+#include "tntdb/result.h"
+#include "tntdb/row.h"
 #include <vector>
 //using namespace sqlite3x;
 namespace org{
@@ -14,25 +15,14 @@ namespace sql{
 class Column;
 class ResultSet{
 	public:
-	~ResultSet();
 	bool 		next();
 	
     bool 		getBool			(int index);
     bool 		getBool			(string index);
     int 		getInt			(int index);
     int 		getInt			(string index);
-    unsigned 	getUnsigned		(int index);
-    unsigned 	getUnsigned		(string index);
-    long 		getLong			(int index);
-    long 		getLong			(string index);
-    int32_t 	getInt32		(int index);
-    int32_t 	getInt32		(string index);
-    uint32_t 	getUnsigned32	(int index);
-    uint32_t 	getUnsigned32	(string index);
-    int64_t 	getInt64		(int index);
-    int64_t 	getInt64		(string index);
-    uint64_t	getUnsigned64	(int index);
-    uint64_t	getUnsigned64	(string index);
+    double 		getDouble		(int index);
+    double 		getDouble		(string index);
 
 	string 		getString		(int col);
 	string 		getString		(string col);
@@ -52,23 +42,11 @@ class ResultSet{
 	private:
 		friend class Statement;
 		friend class PreparedStatement;
-		ResultSet(MYSQL_STMT & stmt);
-		MYSQL_STMT & _stmt;
-		MYSQL_RES* _resultSetMetadata;
-		MYSQL_ROW _record;
-		MYSQL_BIND * _bindColumns;
-//		unsigned long * _lengths;
-		int getColumnIndex(string name);
-		void allocateBigResult();
-//		char data[255];
-//		my_bool isNullB;
-//		my_bool isError;
-//		unsigned long length;
-		vector<Column*> _row;
-		template <typename int_type> 
-			int_type getInteger(const MYSQL_BIND& bind);
-    	template <typename float_type>
-    		float_type getFloat(const MYSQL_BIND& bind);
+//		ResultSet(MYSQL_STMT * stmt);
+		ResultSet(tntdb::Result result);
+		tntdb::Result tntresult;
+		tntdb::Row tntrow;
+		tntdb::Result::const_iterator tntiterator;
 
 };
 }}}

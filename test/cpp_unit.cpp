@@ -2,11 +2,12 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <iostream>
-
+#include "org/esb/util/Log.h"
 
 using namespace std;
 //using namespace CppUnit;
 int main(){
+	loginit("log.properties");
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
     CppUnit::TextUi::TestRunner runner;
     runner.addTest(suite);

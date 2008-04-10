@@ -24,7 +24,7 @@ class TestFormatInputStream: public CppUnit::TestFixture
 	File * file;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
+//CPPUNIT_TEST_SUITE_REGISTRATION(TestFormatInputStream);
 
 
 void TestFormatInputStream::setUp(){

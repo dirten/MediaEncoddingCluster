@@ -3,8 +3,8 @@
 #include <mysql/mysql.h>
 #include "org/esb/util/Log.h"
 #include "SqlException.h"
-#include <boost/shared_ptr.hpp>
 
+#include "tntdb/connection.h"
 namespace org{
 namespace esb{
 namespace sql{
@@ -13,7 +13,8 @@ class Statement;
 class Connection{
 	logger("hive.sql.Connection")
 	public:
-		Connection		(const char*connect_str)	throw (SqlException);
+		Connection		()	throw (SqlException);
+		Connection		(const char * con)	throw (SqlException);
 		~Connection							();
 		Statement 			createStatement	(const char * sql);
 		PreparedStatement 	prepareStatement(const char * sql);
@@ -27,10 +28,8 @@ class Connection{
 	private:
 		friend class Statement;
 		friend class PreparedStatement;
-		
-	    Statement * _tmpStatement;
-//	    tntdb::Connection _con;
-		boost::shared_ptr<MYSQL> mysql;
+		tntdb::Connection tntcon;
+		MYSQL * mysql;
 };
 }}}
 #endif

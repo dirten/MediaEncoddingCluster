@@ -32,7 +32,7 @@ namespace org{
 					int executeUpdate();
 					ResultSet executeQuery();
 				private:
-					Connection _con;
+					Connection & _con;
 					const char * _sql;
 					MYSQL_STMT* _stmt;
 					MYSQL_BIND * _col;
