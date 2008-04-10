@@ -54,6 +54,7 @@ public:
                  * @see        java.io.OutputStream#write(byte[], int, int)
                  */
                 virtual void write(char * buffer, int length)=0;
+                virtual void write(string & str){std::cout << "OutputStream::write not implemented!!!";}
                 virtual void write(vector<unsigned char>&buffer)=0;
 
                 /**

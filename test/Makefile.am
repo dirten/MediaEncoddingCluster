@@ -12,12 +12,14 @@
 check_PROGRAMS = cpp_unit 
 cpp_unit_SOURCES=cpp_unit.cpp \
                 TestFile.cpp \
-                TestFormatInputStream.cpp 
+                TestFormatInputStream.cpp \
+                TestFileOutputStream.cpp \
+            	TestOrgEsbNet.cpp \
+            	TestOrgEsbSql.cpp \
+                TestProtocolCommands.cpp 
 #                TestSocket.cpp 
 #                TestCommandInputStream.cpp \
-#                TestFileOutputStream.cpp \
 #                TestProtocolServer.cpp \
-#                TestProtocolCommands.cpp \
 #                TestProperties.cpp
                 
                 
@@ -30,7 +32,7 @@ cpp_unit_LDADD=	../src/org/esb/libesb.la
 bin_PROGRAMS=test_mysql test_httpd test_tnt
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
-datasize_SOURCES=datasize.cpp
+#datasize_SOURCES=datasize.cpp
 
 #test_file_SOURCES=test_file.cpp
 test_tnt_SOURCES=test_tnt.cpp

@@ -11,6 +11,7 @@ class TestFileOutputStream: public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestFileOutputStream);
     CPPUNIT_TEST(testSimple);
     CPPUNIT_TEST(testSingleByte);
+    CPPUNIT_TEST(writeTestConfig);
     CPPUNIT_TEST_SUITE_END();
     
     public:
@@ -18,6 +19,7 @@ class TestFileOutputStream: public CppUnit::TestFixture
 	void tearDown();
 	void testSimple();
 	void testSingleByte();
+	void writeTestConfig();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestFileOutputStream);
@@ -43,12 +45,10 @@ void TestFileOutputStream::testSimple(){
 
     FileInputStream in("test.file");
     int bytes=in.available();
-    char * buffer=new char[bytes+1];
-    memset(buffer,0,bytes+1);
-    in.read((unsigned char *)buffer, bytes);
+    char buffer[bytes+1];
+    memset(&buffer,0,bytes+1);
+    in.read((unsigned char *)&buffer, bytes);
     CPPUNIT_ASSERT_EQUAL(string(tmp),string(buffer));    
-    delete []buffer;
-    
 }
 
 void TestFileOutputStream::testSingleByte(){
@@ -72,3 +72,14 @@ void TestFileOutputStream::testSingleByte(){
     delete in;
     
 }
+void TestFileOutputStream::writeTestConfig(){
+    FileOutputStream out("test.conf");
+    char * tmp="src.path=test/path";
+    out.write(tmp, strlen(tmp));
+    out.close();
+
+
+}
+
+
+

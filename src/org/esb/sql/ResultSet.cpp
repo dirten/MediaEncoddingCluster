@@ -9,12 +9,21 @@ namespace esb{
 namespace sql{
 /*******************************************************************************************************/
 class Column{
+    logger("hive.sql")
     public:
 	Column(MYSQL_FIELD & field){
 	    type=field.type;
+	    if(	type==MYSQL_TYPE_TIMESTAMP||
+		type==MYSQL_TYPE_DATE||
+		type==MYSQL_TYPE_TIME||
+		type==MYSQL_TYPE_DATETIME||
+		type==MYSQL_TYPE_YEAR){
+		    throw SqlException("Date Types unsupported now");
+		}
 	    field_size=field.length;
 //	    field_size=0;
 //	    cout << "Allocate buffersize to:"<<field_size<<endl;
+	    logdebug("allocate ColumnSize of "<<field_size);
 	    unsigned int flag=field.flags;
 	    data=new char[field_size];
 	    buffer_length=field_size;
@@ -22,6 +31,9 @@ class Column{
 	    is_null=1;
 	    is_error=0;
 	    memset(data,0,field_size);
+	}
+	~Column(){
+//	    delete data;
 	}
 	enum_field_types type;
 	unsigned long field_size;
@@ -68,6 +80,12 @@ ResultSet::ResultSet(MYSQL_STMT & stmt):_stmt(stmt){
         fprintf(stderr, " %s\n", mysql_stmt_error(&_stmt));
         exit(0);
     }
+}
+
+ResultSet::~ResultSet(){
+    delete []_bindColumns;
+    mysql_free_result(_resultSetMetadata);
+    _row.clear();
 }
 
 /*******************************************************************************************************/

@@ -38,19 +38,21 @@ Connection::Connection(const char*connect_str) throw (SqlException){
 		string val=p.nextToken();
 		props.setProperty(key,val);
 	}
-	mysql=mysql_init(NULL);
-	mysql_real_connect(mysql, 
+	mysql=boost::shared_ptr<MYSQL>(mysql_init(NULL));
+	mysql_real_connect(mysql.get(), 
 		props.getProperty("host"),
 		props.getProperty("username"),
 		props.getProperty("password"), 
 		props.getProperty("database"), 0,NULL,0);
 		
-	if(mysql_errno(mysql)>0){
-		throw SqlException(string("Connection failed !!! ").append(mysql_error(mysql)));
+	if(mysql_errno(mysql.get())>0){
+		throw SqlException(string("Connection failed !!! ").append(mysql_error(mysql.get())));
 	}
 }
+
 Connection::~Connection(){
-//	mysql_close(mysql);
+    
+
 }
 
 //sqlite3_transaction Connection::getTransaction(){
@@ -75,6 +77,7 @@ PreparedStatement Connection::prepareStatement(const char * sql){
 
 
 void Connection::close(){
+//	mysql_close(mysql.get());
 //    sqlite3_connection::close();	
 }
 void Connection::executeNonQuery(const char * sql){

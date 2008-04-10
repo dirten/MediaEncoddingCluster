@@ -1,5 +1,8 @@
 #include "org/esb/io/OutputStream.h"
 #include "Socket.h"
+#include "SocketException.h"
+#include <errno.h>
+
 //#include <exception.h>
 using namespace org::esb::io;
 using namespace std;
@@ -22,10 +25,15 @@ class SocketOutputStream:public OutputStream{
 	void write(vector<unsigned char>&buffer){
 	    write((char*)&buffer[0], buffer.size());
 	}
+	void write(string&buffer){
+	    write((char*)buffer.c_str(), buffer.length());
+	}
 /******************************************************************************/
 	void write(char * buffer, int len){
 	    if(this->socket->isClosed()){
-		cout << "Socket is Closed"<<endl;
+//		    string error="SocketOutputStream - Socket is Closed";		    
+		    throw SocketException("SocketOutputStream::write - can not Write, because Socket is allready Closed");
+//		cout << "Socket is Closed"<<endl;
 //		return;
 	    }
 	    int remaining=len, byteCounter=0, bytes=0;
@@ -42,9 +50,10 @@ class SocketOutputStream:public OutputStream{
     		bytes=::send(this->socket->getDescriptor(),buffer,remaining,SOCKET_NOSIGNAL);
 		byteCounter+=bytes;
 		if(bytes<0){
-		    perror("error send packet");
-           	this->socket->close();
-//		    throw "fehler beim versenden";
+		    string error="SocketOutputStream::write - ";
+		    error+=strerror(errno);
+           	    this->socket->close();
+		    throw SocketException(error);
 		}
 		buffer+=bytes;
 		remaining-=bytes;

@@ -31,11 +31,8 @@ using namespace boost;
 
 Job::Job(){
 	_isActive=false;
-	string dbFile=Config::getProperty("data.dir");
-	dbFile+="/";
-	dbFile+=Config::getProperty("data.file");
 
-    _con=new Connection((char*)dbFile.c_str());
+    _con=new Connection(Config::getProperty("db.connection"));
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=? and stream_id=?"));
 //    _frame_group=1;

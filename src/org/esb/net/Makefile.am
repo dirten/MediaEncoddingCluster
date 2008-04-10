@@ -6,7 +6,7 @@ CFLAGS=
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libnet.la
-SOURCES = ServerSocket.cpp Socket.cpp SocketInputStream.cpp SocketOutputStream.cpp
+SOURCES = SocketException.cpp ServerSocket.cpp Socket.cpp SocketInputStream.cpp SocketOutputStream.cpp
 libnet_la_SOURCES = $(SOURCES)
 libnet_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) 
 # set the include path found by configure

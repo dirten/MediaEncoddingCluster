@@ -3,6 +3,7 @@
 #include <string>
 #include "Connection.h"
 #include "ResultSet.h"
+#include "org/esb/util/Log.h"
 //#include "ResultSet.h"
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
@@ -15,6 +16,7 @@ namespace org{
 			class Connection;
 			class ResultSet;
 			class PreparedStatement{
+			    logger("hive.sql")
 				public:
 				    PreparedStatement(Connection & db, const char * sql);
 				    ~PreparedStatement();
@@ -36,7 +38,7 @@ namespace org{
 					MYSQL_BIND * _col;
 					my_bool * _is_error;
 					my_bool * _is_null;
-					int * _data_length;
+//					int * _data_length;
 					unsigned long _columnCount;
 					void bind(int col, enum_field_types buffer_type,char * data, int data_length);
 					template <typename c_type>

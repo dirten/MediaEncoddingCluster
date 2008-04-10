@@ -116,7 +116,7 @@ namespace org
         {
 	    int length=available(true);
 //	    cout << "Readed Buffer length"<<length<<endl;
-	    char *buffer=new char[length];
+	    char * buffer=new char[length];
 //	    char buffer[length];
 	    int  counter=0;
             /*Receive data into buffer*/
@@ -129,7 +129,7 @@ namespace org
             }else{
         		str=string(buffer, length);
             }
-            delete buffer;
+            delete []buffer;
           return counter;
         }
         

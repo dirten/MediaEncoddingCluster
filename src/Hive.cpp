@@ -9,6 +9,7 @@
 #include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/web/WebServer.h"
 
 #include "Environment.cpp"
 #include <unistd.h>
@@ -21,6 +22,7 @@
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
+using namespace org::esb::web;
 using namespace std;
 
 
@@ -35,9 +37,10 @@ void shell(int argc, char * argv[]);
 
 
 int main(int argc, char * argv[]){	
-    loginit("log.properties");
-
+//    loginit("log.properties");
     Config::init("./cluster.cfg");
+
+    loginit(Config::getProperty("log.conf"));
 
 	for(int arg_counter=1;argc>arg_counter;arg_counter++){
 		if(strcmp(argv[arg_counter],"listen")==0){
@@ -91,6 +94,9 @@ void listener(int argc, char *argv[]){
     }
     JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
     Thread *runner=new Thread(_watcher);
+    WebServer * webServer=new WebServer();
+    Thread * webRunner=new Thread(webServer);
+    webRunner->start();
     runner->start();
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);

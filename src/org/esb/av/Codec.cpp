@@ -5,12 +5,15 @@ extern "C" {
 #include "Frame.h"
 #include <iostream>
 #include <assert.h>
+#include "org/esb/util/Log.h"
 using namespace std;
 void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
 {
-	cout << "Init AV Package Codec" << endl;
+	using namespace org::esb::av;
+	cout << "test"<<endl;
+	logdebug("init av package");
 	av_register_all ();
 	avcodec_register_all ();
 }
@@ -31,7 +34,9 @@ namespace org {
 				else {
 					_codec = avcodec_find_encoder (_codec_id);
 				} if (_codec == NULL)
-					cout << "Codec not found for id :" << codecId << endl;
+					logerror("Codec not found for id :" << codecId);
+
+//					cout << "Codec not found for id :" << codecId << endl;
 				avcodec_get_context_defaults2 (this, _codec->type);
 				_width = 0;
 				_height = 0;
@@ -65,17 +70,16 @@ namespace org {
 			}
 
 			void Codec::findCodec (int mode) {
+			    logdebug("try to find "<<(mode==DECODER?"Decoder":"Encoder")<<" with id:"<<_codec_id);
 				if (mode == DECODER) {
 					_codec = avcodec_find_decoder (_codec_id);
 					if (_codec == NULL)
-						cout << "Decoder not found for id :" << _codec_id <<
-							endl;
+					    logerror("Decoder not found for id :" << _codec_id);
 				}
 				else {
 					_codec = avcodec_find_encoder (_codec_id);
 					if (_codec == NULL)
-						cout << "Encoder not found for id :" << _codec_id <<
-							endl;
+					    logerror("Encoder not found for id :" << _codec_id);
 				}
 				avcodec_get_context_defaults2 (this, _codec->type);
 				pix_fmt = _pix_fmt;
@@ -94,7 +98,8 @@ namespace org {
 				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
 					flags |= CODEC_FLAG_TRUNCATED;
 				if (avcodec_open (this, _codec) < 0) {
-					cout << "ERROR : while openning Codec" <<avcodec_open (this, _codec) <<endl;
+					logerror("ERROR : while openning Codec" <<avcodec_open (this, _codec));
+//					cout << "ERROR : while openning Codec" <<avcodec_open (this, _codec) <<endl;
 				}else{
 				    _opened=true;
 				}

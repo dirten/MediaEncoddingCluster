@@ -1,7 +1,7 @@
 #include <iostream>
 #include <errno.h>
-#include "org/esb/net/ServerSocket.h"
-#include "org/esb/lang/Exception.h"
+#include "ServerSocket.h"
+#include "SocketException.h"
 using namespace std;
 using namespace
   org::esb::net;
@@ -76,11 +76,12 @@ int ServerSocket::bind()
   this->init ();
   if(::bind(this->server_socketFd,(struct sockaddr*)&this->socketaddr, sizeof(this->socketaddr))<0)
   {
-    perror("bind");
+//    perror("bind");
     close();
     string error="ServerSocket:bind - ";
     error+=strerror(errno);
-//    throw Exception(__FILE__, __LINE__, error.c_str() );
+    error.append(__FILE__);
+    throw SocketException(error);
   }
   int err=::listen(server_socketFd,1024);
 

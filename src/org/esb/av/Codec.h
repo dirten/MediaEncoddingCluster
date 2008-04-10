@@ -5,9 +5,12 @@ extern "C" {
 }
 #include <boost/serialization/binary_object.hpp>
 #include "Packet.h"
+#include "org/esb/util/Log.h"
+
 namespace org {
 	namespace esb {
 		namespace av {
+		    logger("hive.av")
 			class Frame;
 			class Codec:public AVCodecContext {
 			  public:

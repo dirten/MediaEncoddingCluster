@@ -7,10 +7,10 @@ using namespace org::esb::sql;
 
 
 Statement::Statement(Connection & db, const char * sql):_con(db),_sql(sql){
-    _stmt=mysql_stmt_init(_con.mysql);
+    _stmt=mysql_stmt_init(_con.mysql.get());
 }
 Statement::~Statement(){
-//	mysql_free_result(_res);
+	mysql_stmt_close(_stmt);
 }
 
 

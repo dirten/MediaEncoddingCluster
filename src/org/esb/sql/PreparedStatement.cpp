@@ -3,7 +3,8 @@
 using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(Connection & db, const char * sql) : _con(db), _sql(sql){
-    _stmt=mysql_stmt_init(_con.mysql);
+    logdebug("PreparedStatement()"<<sql);
+    _stmt=mysql_stmt_init(_con.mysql.get());
     _is_null=0;
     _is_error=0;
 //    fprintf(stderr, "test bla fasel");
@@ -20,7 +21,7 @@ PreparedStatement::PreparedStatement(Connection & db, const char * sql) : _con(d
     _columnCount=mysql_stmt_param_count(_stmt);
     _is_null=new my_bool[_columnCount];
     _is_error=new my_bool[_columnCount];
-    _data_length=new int[_columnCount];
+//    _data_length=new int[_columnCount];
 //    std::cout << "ColumnCount:"<<_columnCount<<std::endl;
     _col=new MYSQL_BIND[_columnCount];
     memset(_col, 0, sizeof(MYSQL_BIND)*_columnCount);
@@ -28,7 +29,18 @@ PreparedStatement::PreparedStatement(Connection & db, const char * sql) : _con(d
 }
 
 PreparedStatement::~PreparedStatement(){
+    logdebug("~PreparedStatement");
+    if(mysql_stmt_free_result(_stmt)){
+	throw SqlException(string("free result failed: ").append(mysql_stmt_error(_stmt)));
+    }
+    if(mysql_stmt_close(_stmt)){
+	throw SqlException(string("close statement failed: ").append(mysql_stmt_error(_stmt)));    
+    }
     delete []_col;
+    delete []_is_error;
+    delete []_is_null;
+    
+//    _col=0;    
 }
 
 void PreparedStatement::setBlob(int pos, char* data, int length){
@@ -65,16 +77,14 @@ void PreparedStatement::setString(int pos, char * data){
 }
 
 bool PreparedStatement::execute(){
+	logdebug("stmt bind param:"<<_sql);
 	if (mysql_stmt_bind_param(_stmt,_col)){
-		fprintf(stderr, " mysql_stmt_bind_param() failed\n");
-		fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-		exit(0);
+	    throw SqlException(string("bind param failed: ").append(mysql_stmt_error(_stmt)));
 	}
 
+	logdebug("stmt execute:"<<_sql);
 	if (mysql_stmt_execute(_stmt)){
-		fprintf(stderr, " mysql_stmt_execute(), 1 failed\n");
-		fprintf(stderr, " %s\n", mysql_stmt_error(_stmt));
-		exit(0);
+	    throw SqlException(string("stmt execute failed: ").append(mysql_stmt_error(_stmt)));
 	}
 }
 
@@ -83,10 +93,19 @@ int PreparedStatement::executeUpdate(){
 }
 
 ResultSet PreparedStatement::executeQuery(){
-    mysql_stmt_bind_param(_stmt, _col);
-    mysql_stmt_execute(_stmt);
-    mysql_stmt_store_result(_stmt);
-    int num_rows = mysql_stmt_num_rows(_stmt);
+//    mysql_stmt_bind_param(_stmt, _col);
+//    mysql_stmt_execute(_stmt);
+    execute();
+
+//    mysql_use_result(_con);
+
+    if (mysql_stmt_store_result(_stmt)){
+        throw SqlException(string("stmt store result failed: ").append(mysql_stmt_error(_stmt)));
+    }
+    
+    
+//    mysql_stmt_store_result(_stmt);
+//    int num_rows = mysql_stmt_num_rows(_stmt);
 //    cout <<"numRows:"<<num_rows<<endl;
     return ResultSet(*this->_stmt);
 }

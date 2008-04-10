@@ -2,6 +2,7 @@
 #define ORG_ESB_SQL_RESULTSET_H
 #include "Statement.h"
 #include "PreparedStatement.h"
+#include "org/esb/util/Log.h"
 //#include "sqlite3x.hpp"
 #include <mysql/mysql.h>
 //#include "boost/shared_ptr.hpp"
@@ -13,6 +14,7 @@ namespace sql{
 class Column;
 class ResultSet{
 	public:
+	~ResultSet();
 	bool 		next();
 	
     bool 		getBool			(int index);
