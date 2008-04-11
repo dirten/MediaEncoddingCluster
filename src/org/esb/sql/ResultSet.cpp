@@ -11,16 +11,25 @@ namespace sql{
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-ResultSet::ResultSet(tntdb::Result result):tntresult(result),tntiterator(result.begin()){
-	tntrow=tntdb::Row(0);
+ResultSet::ResultSet(tntdb::Result result):tntresult(result){
+//	tntrow=tntdb::Row(0);
+}
+ResultSet::ResultSet(tntdb::Statement stmt):tntstmt(stmt){
+    isBeforeFirst=true;
+//	tntrow=tntdb::Row(0);
 }
 
 
 /*******************************************************************************************************/
 bool ResultSet::next(){
+	if(isBeforeFirst){
+	    tntiterator=tntstmt.begin();
+	    isBeforeFirst=false;
+	}else{
+	    tntiterator++;
+	}
+	bool islast=tntiterator!=tntstmt.end();
 	tntrow=*tntiterator;
-	bool islast=tntiterator!=tntresult.end();
-	tntiterator++;
 	return islast;
 }
 

@@ -98,9 +98,10 @@ namespace org {
 				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
 					flags |= CODEC_FLAG_TRUNCATED;
 				if (avcodec_open (this, _codec) < 0) {
-					logerror("ERROR : while openning Codec" <<avcodec_open (this, _codec));
+					logerror("ERROR : while openning Codec" <<_codec_id);
 //					cout << "ERROR : while openning Codec" <<avcodec_open (this, _codec) <<endl;
 				}else{
+				    logdebug("Codec opened:" << _codec_id);
 				    _opened=true;
 				}
 			}

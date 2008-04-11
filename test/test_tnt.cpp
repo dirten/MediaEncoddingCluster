@@ -15,25 +15,32 @@ int main(int argc, char ** argv){
 //    log_init("log.properties");
     
 //	Connection con("mysql:/localhost/port=3306;username=root;password=root;database=hive");
-	Connection con("mysql:db=hive;user=root;passwd=root");
+	Connection con("mysql:db=hive;user=root;passwd=");
 
-	PreparedStatement stmt=con.prepareStatement("select * from profiles limit 100");
+	/*
+	Statement stmt=con.createStatement("select * from packets order by id limit 10");
 	ResultSet rs=stmt.executeQuery();
-//	log_trace("bla fasel");
 	while(rs.next()){
-		cout << "test:"<<rs.getString(0)<<endl;
-		cout << "test:"<<rs.getString(1)<<endl;
-		cout << "test:"<<rs.getString(2)<<endl;
-		cout << "test:"<<rs.getString(3)<<endl;
-		cout << "test:"<<rs.getString(4)<<endl;
-		cout << "test:"<<rs.getString(5)<<endl;
-		cout << "test:"<<rs.getString(6)<<endl;
-		cout << "test:"<<rs.getString(7)<<endl;
-		cout << "test:"<<rs.getString(8)<<endl;
-		cout << "test:"<<rs.getString(9)<<endl;
-		cout << "test:"<<rs.getString(10)<<endl;
-		cout << "test:"<<rs.getString(11)<<endl;
+	    cout <<rs.getInt("id")<<endl;
 	}
+	*/
+
+	PreparedStatement stmt=con.prepareStatement("select id from packets where stream_id=1 and frame_group=:frame_group");
+//	for(int a=1;a<100;a++){
+	    
+	    for(int a=1;a<10;a++){
+	    stmt.setInt("frame_group",a);
+	    ResultSet rs=stmt.executeQuery();
+	    while(rs.next()){
+//		cout << "dts:"<<rs.getInt("dts");
+//		cout << "\tsize:"<<rs.getInt("data_size");
+//		cout << "\tdata:"<<rs.getBlob("data")<<endl;
+	    }
+	    cout <<"\rFrameGroup "<<a;
+	    cout.flush();
+	    }
+//	}
+
 	
 //	PreparedStatement pstmt=con.prepareStatement("insert into packets(data_size,data) values (?,?)");
 /*

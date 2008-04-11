@@ -14,6 +14,7 @@
 #include <list>
 #include <boost/shared_ptr.hpp>
 #include "org/esb/config/config.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::sql;
@@ -34,7 +35,7 @@ Job::Job(){
 
     _con=new Connection(Config::getProperty("db.connection"));
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
-    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id"));
+    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id order by pts"));
 //    _frame_group=1;
     _completeTime=0;
 
@@ -76,6 +77,7 @@ int Job::getTargetStream(){return _target_stream;}
 void Job::activate(){
 
 
+	logdebug("activating StreamId="<<_id);
 
 	Connection con(Config::getProperty("db.connection"));
 
@@ -113,14 +115,16 @@ void Job::activate(){
 	{
 		string sql;
 		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
-			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
+//			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
+		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
 		}	
 		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
-			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
+//			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
+		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
 		}
 		PreparedStatement stmt=con.prepareStatement(sql.c_str());
-		stmt.setInt("source_stream_id",_source_stream);
-		stmt.setInt("target_stream_id",_target_stream);
+		stmt.setInt("instream",_source_stream);
+//		stmt.setInt("target_stream_id",_target_stream);
 		ResultSet rs=stmt.executeQuery();
 		while(rs.next()){
 			_frame_groups.push(rs.getInt(0));
@@ -171,6 +175,7 @@ ProcessUnit Job::getNextProcessUnit(){
 	_stmt->setInt("stream_id",getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
 	while(rs.next()){
+	    cout << "Frame:"<<rs.getInt(2)<<" with size goes into ProcessUnit"<<endl;
 	    shared_ptr<Packet> p(new Packet());
 	    p->size=rs.getInt(0);
 	    p->data=new uint8_t[p->size];

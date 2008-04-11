@@ -64,7 +64,7 @@ ProtocolServer::ProtocolServer (Socket * socket)
 void ProtocolServer::run ()
 {
 	while (!socket->isClosed ()) {
-		try {
+//		try {
 			string cmd;
 			int dataLength = socket->getInputStream ()->read (cmd);
 			if (dataLength == 0) {
@@ -85,10 +85,10 @@ void ProtocolServer::run ()
 					tmp->printHelp ();
 				}
 			}
-		}
-		catch (exception & ex) {
-			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
-		}
+//		}
+//		catch (exception & ex) {
+//			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
+//		}
 	}
 	cout << "Elvis has left the Building" << endl;
 }

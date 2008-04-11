@@ -7,13 +7,25 @@ using namespace org::esb::sql;
 
 Statement::Statement(tntdb::Statement  stmt){
 	tntstmt=stmt;
+	res=0;
 }
-Statement::~Statement(){
 
+Statement::~Statement(){
+	if(res!=NULL)
+	    delete res;
 }
 
 ResultSet Statement::executeQuery(){
-	return ResultSet(tntstmt.select());
+	return ResultSet(tntstmt);
+}
+
+ResultSet & Statement::executeQuery(char* tmp){
+	if(res!=NULL)
+	    delete res;
+	res=0;
+	res=new ResultSet(tntstmt);
+//	ResultSet rs(res);
+	return *res;
 }
 
 bool Statement::execute(){

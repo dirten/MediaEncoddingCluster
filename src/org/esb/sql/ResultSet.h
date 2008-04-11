@@ -6,6 +6,7 @@
 //#include "sqlite3x.hpp"
 #include <mysql/mysql.h>
 #include "tntdb/result.h"
+#include "tntdb/statement.h"
 #include "tntdb/row.h"
 #include <vector>
 //using namespace sqlite3x;
@@ -43,10 +44,13 @@ class ResultSet{
 		friend class Statement;
 		friend class PreparedStatement;
 //		ResultSet(MYSQL_STMT * stmt);
+		bool isBeforeFirst;
 		ResultSet(tntdb::Result result);
+		ResultSet(tntdb::Statement result);
 		tntdb::Result tntresult;
+		tntdb::Statement tntstmt;
 		tntdb::Row tntrow;
-		tntdb::Result::const_iterator tntiterator;
+		tntdb::Statement::const_iterator tntiterator;
 
 };
 }}}

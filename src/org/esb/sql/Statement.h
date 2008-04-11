@@ -9,6 +9,7 @@
 #include "SqlException.h"
 #include "org/esb/util/Log.h"
 #include "tntdb/statement.h"
+#include "tntdb/result.h"
 using namespace std;
 //using namespace org::esb::sql;
 //using namespace sqlite3x;
@@ -23,11 +24,13 @@ class Statement{
 		Statement(tntdb::Statement  stmt);
 		~Statement();
 		ResultSet executeQuery ();
+		ResultSet & executeQuery(char * );
 		bool execute();
 		void close();
 	protected:
 		friend class ResultSet;
 		tntdb::Statement tntstmt;
+		ResultSet * res;
 
 };
 }}}
