@@ -36,13 +36,14 @@ PreparedStatement Connection::prepareStatement(const char * sql){
 
 
 void Connection::close(){
-	mysql_close(mysql);
+//	mysql_close(mysql);
 //    sqlite3_connection::close();	
 }
 void Connection::executeNonQuery(const char * sql){
 //    sqlite3_connection::close();	
 }
 long Connection::lastInsertId(){
+	return tntcon.selectValue("select last_insert_id()").getInt();
 //    sqlite3_connection::close();	
 }
 /*

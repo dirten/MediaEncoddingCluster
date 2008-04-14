@@ -9,22 +9,19 @@ using namespace org::esb::av;
 Packet::Packet(){
 	isCopy=false;
 	av_init_packet(this);
-	callDestruct=true;
-	data=NULL;
+	callDestruct=false;
+	data=0;
 	size=0;
 
 }
 
 Packet::Packet(const Packet & packet){
 	av_init_packet(this);
-	data=NULL;
+	data=0;
     pts=packet.pts;
     dts=packet.dts;
-//	if(packet.size>0){
-//		cout << "PacketSize"<<packet.size<<endl;
-    	data=new uint8_t[packet.size];
-    	memcpy(data,packet.data,packet.size);
-//    }
+   	data=new uint8_t[packet.size];
+   	memcpy(data,packet.data,packet.size);
     size=packet.size;
     stream_index=packet.stream_index;
     flags=packet.flags;
@@ -39,12 +36,9 @@ Packet & Packet::operator=(Packet & packet){
 	av_init_packet(this);
     pts=packet.pts;
     dts=packet.dts;
-    data=NULL;
-//	if(packet.size>0){
-//		cout << "PacketSize"<<packet.size<<endl;
-    	data=new uint8_t[packet.size];
-    	memcpy(data,packet.data,packet.size);
-//    }
+    data=0;
+   	data=new uint8_t[packet.size];
+   	memcpy(data,packet.data,packet.size);
     size=packet.size;
     stream_index=packet.stream_index;
     flags=packet.flags;
@@ -66,19 +60,12 @@ Packet::Packet(int s){
 }
 
 Packet::~Packet(){
-    if(false&&isCopy&&data&&size>0){
-        delete []data;
-        data=NULL;
-    }else{
-    }
-	if(data!=NULL&&size>0&&callDestruct){
-    	    delete data;
-    	    data=NULL;
-    	}
-		av_free_packet(this);
-
-    data=NULL;
-
+	if(callDestruct){
+        delete []data;	
+	}
+	av_free_packet(this);
+    data=0;
+    size=0;
 }
 
 uint8_t * Packet::getData(){return data;}

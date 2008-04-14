@@ -4,7 +4,7 @@
 #include "AVInputStream.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/File.h"
-
+#include "org/esb/util/Log.h"
 #include <vector>
 
 extern "C" {
@@ -17,12 +17,13 @@ using namespace org::esb::io;
 namespace org{
     namespace esb{
 	    namespace av{
+//	    	logger("hive.av")
 	        class FormatInputStream: public FormatBaseStream, public InputStream {
 		        public:
 		            FormatInputStream(File * source);
     			    ~FormatInputStream();
     			    AVFormatContext * getFormatContext();
-    	    		    int available(bool isBlocking = false);
+    	    		int available(bool isBlocking = false);
 	        	    long getFileSize();
 		            int read(unsigned char * buffer, int length);
 		            int read(vector<unsigned char>&buffer);
@@ -32,7 +33,8 @@ namespace org{
         		    AVInputStream * getAVStream(int sNumber);
 	        	    void close();
 	        	    void dumpFormat();
-                	    int selectedStream;
+	        	    int seek(int stream_index,int64_t timestamp);
+                	int selectedStream;
 		        private:
             		    org::esb::io::File * _sourceFile;
             		protected:

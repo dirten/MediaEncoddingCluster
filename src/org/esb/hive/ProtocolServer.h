@@ -7,7 +7,7 @@
 #include "ProtocolCommand.h"
 #include "Command.h"
 #include "CommandInputStream.h"
-
+#include "org/esb/util/Log.h"
 //#include "proto_command.h"
 #include <list>
 
@@ -17,6 +17,7 @@ using namespace org::esb::lang;
 namespace org{
     namespace esb{
         namespace hive{
+        	logger("hive.core")
             class ProtocolServer:public Runnable{
                 private:
             	    Socket * socket;

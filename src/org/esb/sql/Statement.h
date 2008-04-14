@@ -24,7 +24,7 @@ class Statement{
 		Statement(tntdb::Statement  stmt);
 		~Statement();
 		ResultSet executeQuery ();
-		ResultSet & executeQuery(char * );
+		ResultSet executeQuery(char * );
 		bool execute();
 		void close();
 	protected:

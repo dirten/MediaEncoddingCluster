@@ -18,7 +18,7 @@
 #include "import.cpp"
 #include "export.cpp"
 #include "org/esb/util/Log.h"
-//#include "job.cpp"
+#include "job.cpp"
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
@@ -50,7 +50,7 @@ int main(int argc, char * argv[]){
 		}else if(strcmp(argv[arg_counter],"client")==0){
 			client(argc,argv);
 		}else if(strcmp(argv[arg_counter],"job")==0){
-//			jobcreator(argc,argv);
+			jobcreator(argc,argv);
 		}else if(strcmp(argv[arg_counter],"import")==0){
 			import(--argc,++argv);
 			return 0;

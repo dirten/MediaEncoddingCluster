@@ -1,187 +1,151 @@
-#include "org/esb/io/File.h"
-#include "CreateDatabase.cpp"
-#include "tntdb/connect.h"
-#include "tntdb/connection.h"
-#include "tntdb/statement.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/PreparedStatement.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/config/config.h"
 
 using namespace org::esb::sql;
-
+using namespace org::esb::config;
 int jobcreator(int argc, char*argv[]){
-	File databaseFile(argv[2]);
-	Connection con=connect(databaseFile);
+	Connection con(Config::getProperty("db.connection"));
+	int fileid=atoi(argv[2]), outfileid=0, v_stream_id=0, a_stream_id=0, in_v_stream=0, in_a_stream=0, jobid=0;
+	int profileid=atoi(argv[3]);
+
+	string filename;
+	
+	std::string profileaction="";
+	std::string profilename="";
+	std::string	profile_v_format="";
+	int 		profile_v_codec=0;
+	int			profile_v_bitrate=0;
+	int 		profile_v_framerate=0;
+	int			profile_v_width=0;
+	int			profile_v_height=0;
+	int			profile_a_channels=0;
+	int 		profile_a_codec=0;
+	int			profile_a_bitrate=0;
+	int			profile_a_samplerate=0;
+	
+//	cout << "FileId:"<<fileid<<"\tProfileId:"<<profileid<<endl;
+{
+	PreparedStatement stmt=con.prepareStatement("select id, filename from files where files.id=:id ");
+	stmt.setInt("id",fileid);
+	ResultSet rs=stmt.executeQuery();
+	if(rs.next()){
+		filename=rs.getString("filename");
+	}
+}
+{
+	PreparedStatement stmt=con.prepareStatement("select * from profiles where id=:id ");
+	stmt.setInt("id",profileid);
+	ResultSet rs=stmt.executeQuery();
+	if(rs.next()){
+
+		profilename=rs.getString("profile_name");
+		profile_v_format=rs.getString("v_format");
+		profile_v_codec=rs.getInt("v_codec");
+		profile_v_bitrate=rs.getInt("v_bitrate");
+		profile_v_framerate=rs.getInt("v_framerate");
+		profile_v_width=rs.getInt("v_width");
+		profile_v_height=rs.getInt("v_height");
+		profile_a_channels=rs.getInt("a_channels");
+		profile_a_codec=rs.getInt("a_codec");
+		profile_a_bitrate=rs.getInt("a_bitrate");
+		profile_a_samplerate=rs.getInt("a_samplerate");
+	}
+}
+
+{
+	PreparedStatement stmt=con.prepareStatement("select * from streams where fileid=:id and stream_type=0");
+	stmt.setInt("id",fileid);
+	ResultSet rs=stmt.executeQuery();
+	if(rs.next()){
+		in_v_stream=rs.getInt("id");
+	}
+}
+{
+	PreparedStatement stmt=con.prepareStatement("select * from streams where fileid=:id and stream_type=1");
+	stmt.setInt("id",fileid);
+	ResultSet rs=stmt.executeQuery();
+	if(rs.next()){
+		in_a_stream=rs.getInt("id");
+	}
+}
 
 
-//	sqlite3 * db=getDatabase(databaseFile);
 
-	string sql;
-//	char*zErrMsg=0;
-//	int rc=0;
-	int field=1, fileid=0, jobid=0, streamid=0;
-	sql="insert into files (filename)values('output.avi')";
-	{
-	Statement stmt=con.createStatement(sql.c_str());
+{
+	PreparedStatement stmt=con.prepareStatement("insert into files ( filename ) values( :filename )");
+	stmt.setString("filename",profilename+"/"+filename);
 	stmt.execute();
-//	rc = sqlite3_exec(db,sql.c_str(),NULL,NULL,&zErrMsg);
-//	if(rc!=SQLITE_OK)
-//		cout << zErrMsg<<endl;;
-    fileid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
-	}
+	outfileid=con.lastInsertId();
+}
+{
+	PreparedStatement stmt=con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
+	"(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
+	stmt.setInt("fileid",outfileid);
+	stmt.setInt("stream_index",0);
+	stmt.setInt("stream_type",0);
+	stmt.setInt("codec",profile_v_codec);
+	stmt.setInt("framerate",profile_v_framerate);
+	stmt.setInt("time_base_num",1);
+	stmt.setInt("time_base_den",profile_v_framerate);
+	stmt.setInt("width",profile_v_width);
+	stmt.setInt("height",profile_v_height);
+	stmt.setInt("gop_size",20);
+	stmt.setInt("pix_fmt",-1);
+	stmt.setInt("bit_rate",profile_v_bitrate);
+	stmt.execute();
+	v_stream_id=con.lastInsertId();
+}
+{
+	PreparedStatement stmt=con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt) values"
+	"(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt)");
+	stmt.setInt("fileid",outfileid);
+	stmt.setInt("stream_index",1);
+	stmt.setInt("stream_type",1);
+	stmt.setInt("codec",profile_a_codec);
+	stmt.setInt("time_base_num",1);
+	stmt.setInt("time_base_den",15963);
+	stmt.setInt("bit_rate",profile_a_bitrate);
+	stmt.setInt("sample_rate",profile_a_samplerate);
+	stmt.setInt("channels",profile_a_channels);
+	stmt.setInt("sample_fmt",1);
+	stmt.execute();
+	a_stream_id=con.lastInsertId();
+}
 
-
-//    sqlite3_stmt *pStmt;
-  
-    sql="insert into jobs (infile, outfile)values(1,?)";
-	{
-		Statement stmt=con.createStatement(sql.c_str());
-		stmt.bind(1,fileid);
-		stmt.execute();
-//    	sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-  //  	sqlite3_bind_int( pStmt, 1, fileid);
-    //	rc=sqlite3_step(pStmt);
-    //	rc = sqlite3_reset(pStmt);
-    	jobid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
-	}
-
-
-
-	field=1;
-	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	{
-		Statement stmt=con.createStatement(sql.c_str());
-    	stmt.bind( field++, fileid);
-    	stmt.bind( field++, 1);
-    	stmt.bind( field++, 1);
-    	stmt.bind( field++, 86016);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 99573495);
-    	stmt.bind( field++, 1);
-    	stmt.bind( field++, 15963);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 12);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 128000);
-    	stmt.bind( field++, 0);
-    	stmt.bind( field++, 44100);
-    	stmt.bind( field++, 2);
-    	stmt.bind( field++, 1);
-    	stmt.execute();
-    	streamid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
-	}
-/*    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-    sqlite3_bind_int( pStmt, field++, fileid);
-    sqlite3_bind_int( pStmt, field++, 1);
-    sqlite3_bind_int( pStmt, field++, 1);
-    sqlite3_bind_int( pStmt, field++, 86016);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 99573495);
-    sqlite3_bind_int( pStmt, field++, 1);
-    sqlite3_bind_int( pStmt, field++, 15963);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 12);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 128000);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 44100);
-    sqlite3_bind_int( pStmt, field++, 2);
-    sqlite3_bind_int( pStmt, field++, 1);
-    rc=sqlite3_step(pStmt);
-    rc = sqlite3_reset(pStmt);*/
-    
-
-
-	sql="insert into job_details (job_id,instream, outstream)values(?,?,?)";
-	{
-		Statement stmt=con.createStatement(sql.c_str());
-		stmt.bind(1,jobid);
-		stmt.bind(2,2);
-		stmt.bind(3,streamid);
-		stmt.execute();
-	}
-	/*
-    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-    sqlite3_bind_int( pStmt, 1, jobid);
-    sqlite3_bind_int( pStmt, 2, 2);
-    sqlite3_bind_int( pStmt, 3, streamid);
-    rc=sqlite3_step(pStmt);
-    rc = sqlite3_reset(pStmt);
-	*/
-
-
-
-	field=1;
-	sql="insert into streams(fileid, stream_index, stream_type, codec, framerate, start_time, duration, time_base_num,time_base_den, framecount, width, height, gop_size, pix_fmt, bit_rate, rate_emu, sample_rate, channels, sample_fmt)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    {
-    	Statement stmt=con.createStatement(sql.c_str());
-    	stmt.bind( field++, fileid);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 17);
-	    stmt.bind( field++, 25);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 156007);
-	    stmt.bind( field++, 1);
-	    stmt.bind( field++, 25);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 512);
-	    stmt.bind( field++, 256);
-	    stmt.bind( field++, 100);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 4000000);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 0);
-	    stmt.bind( field++, 1);
-	    stmt.execute();
-    }
-	/*
-    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-    sqlite3_bind_int( pStmt, field++, fileid);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 17);
-    sqlite3_bind_int( pStmt, field++, 25);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 156007);
-    sqlite3_bind_int( pStmt, field++, 1);
-    sqlite3_bind_int( pStmt, field++, 25);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 512);
-    sqlite3_bind_int( pStmt, field++, 256);
-    sqlite3_bind_int( pStmt, field++, 100);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 4000000);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 0);
-    sqlite3_bind_int( pStmt, field++, 1);
-    rc=sqlite3_step(pStmt);
-    rc = sqlite3_reset(pStmt);
-    */
-    streamid =con.lastInsertId();//sqlite3_last_insert_rowid(db);
-
-
-    sql="insert into job_details (job_id,instream, outstream)values(?,?,?)";
-	{
-		Statement stmt=con.createStatement(sql.c_str());
-		stmt.bind(1,jobid);
-		stmt.bind(2,2);
-		stmt.bind(3,streamid);
-		stmt.execute();
-	}
-	/*
-    sqlite3_prepare( db, sql.c_str(), sql.size(), &pStmt,  NULL );
-    sqlite3_bind_int( pStmt, 1, jobid);
-    sqlite3_bind_int( pStmt, 2, 1);
-    sqlite3_bind_int( pStmt, 3, streamid);
-    rc=sqlite3_step(pStmt);
-    rc = sqlite3_reset(pStmt);
-*/
-
-	return 0;
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into jobs ( inputfile, outputfile, begin ) values( :inputfile, :outputfile, now())");
+	stmtJob.setInt("inputfile",fileid);
+	stmtJob.setInt("outputfile",outfileid);
+	stmtJob.execute();
+	jobid=con.lastInsertId();
+}
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into job_details ( job_id,instream, outstream ) values(:jobid, :in, :out)");
+	stmtJob.setInt("in",in_v_stream);
+	stmtJob.setInt("out",v_stream_id);
+	stmtJob.setInt("jobid",jobid);
+	stmtJob.execute();
+}
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into job_details ( job_id, instream, outstream ) values( :jobid, :in, :out)");
+	stmtJob.setInt("in",in_a_stream);
+	stmtJob.setInt("out",a_stream_id);
+	stmtJob.setInt("jobid",jobid);
+	stmtJob.execute();
+}
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, stream_id) (select distinct :jobid, frame_group, :id from packets where stream_id=:id)");
+	stmtJob.setInt("jobid",jobid);
+	stmtJob.setInt("id",in_v_stream);
+	stmtJob.execute();
+}
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, stream_id) (select distinct :jobid, frame_group, :id from packets where stream_id=:id)");
+	stmtJob.setInt("jobid",jobid);
+	stmtJob.setInt("id",in_a_stream);
+	stmtJob.execute();
+}
 }

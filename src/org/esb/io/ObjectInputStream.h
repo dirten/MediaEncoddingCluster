@@ -24,7 +24,7 @@ namespace org{
 		    string data;
 		    _is->read(data);
 		    if(!data.length()>0){
-			cout <<"Fehler in der groesse INBOUND_DATA:"<<data.length()<<endl;
+				cout <<"Fehler in der groesse INBOUND_DATA:"<<data.length()<<endl;
 			return;
 		    }
 		    istringstream archive_stream(data);

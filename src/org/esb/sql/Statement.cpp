@@ -11,21 +11,15 @@ Statement::Statement(tntdb::Statement  stmt){
 }
 
 Statement::~Statement(){
-	if(res!=NULL)
-	    delete res;
+	close();
 }
 
 ResultSet Statement::executeQuery(){
 	return ResultSet(tntstmt);
 }
 
-ResultSet & Statement::executeQuery(char* tmp){
-	if(res!=NULL)
-	    delete res;
-	res=0;
-	res=new ResultSet(tntstmt);
-//	ResultSet rs(res);
-	return *res;
+ResultSet Statement::executeQuery(char* tmp){
+
 }
 
 bool Statement::execute(){
@@ -33,7 +27,6 @@ bool Statement::execute(){
 }
 
 void Statement::close(){
-
-
+	tntstmt.clear();
 }
 

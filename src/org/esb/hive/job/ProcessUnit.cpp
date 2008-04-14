@@ -29,6 +29,7 @@ ProcessUnit::~ProcessUnit(){
 void ProcessUnit::process(){
 	int size=0;
 	list< boost::shared_ptr<Packet> >::iterator it; 
+
 	if(_decoder!=NULL)
 		_decoder->open();
 	if(_encoder!=NULL)
@@ -37,13 +38,16 @@ void ProcessUnit::process(){
 	    boost::shared_ptr<Packet> p=*it;
 	    size+=p->size;
 	    Frame f=_decoder->decode(*p.get());
+		/*	
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
 	    _output_packets.push_back(pEnc);
+	    */
 	}
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
+	
 
 }

@@ -16,7 +16,8 @@ namespace org {
         namespace av {
             FormatInputStream::FormatInputStream(File * source) {
                 _sourceFile=source;
-                // Open video file                
+                // Open video file
+                logdebug("openning MediaFile:"<<source->getPath());
                 if(av_open_input_file(&formatCtx, _sourceFile->getPath(), NULL, 0, NULL)!=0){
 //    		    throw Exception(__FILE__, __LINE__, "FormatInputStream<init> - could not open File");
                     cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" <<endl;
@@ -68,7 +69,10 @@ namespace org {
             int FormatInputStream::read(vector<unsigned char>&buffer) {
                 return 0;
             }
-
+			
+            int FormatInputStream::seek(int stream_index, int64_t timestamp) {
+                return av_seek_frame(formatCtx, stream_index, timestamp,AVSEEK_FLAG_BACKWARD);
+            }
             void FormatInputStream::close() {
                 av_close_input_file(formatCtx);
             }

@@ -29,13 +29,15 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test_mysql test_httpd test_tnt
+bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 #datasize_SOURCES=datasize.cpp
 
 #test_file_SOURCES=test_file.cpp
 test_tnt_SOURCES=test_tnt.cpp
+test_seek_SOURCES=test_seek.cpp
+test_codec_SOURCES=test_codec.cpp
 #test_codec_SOURCES=test_codec.cpp
 test_httpd_SOURCES=test_httpd.cpp
 #test_sqlite_SOURCES=test_sqlite.cpp
@@ -73,6 +75,8 @@ test_mysql_LDFLAGS = $(all_libraries)
 
 #test_file_LDADD=	../src/org/esb/libesb.la 
 test_tnt_LDADD=	../src/org/esb/libesb.la 
+test_codec_LDADD=	../src/org/esb/libesb.la 
+test_seek_LDADD=	../src/org/esb/libesb.la 
 #test_codec_LDADD=	../src/org/esb/libesb.la 
 test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/web/libweb.la 
 #test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la

@@ -46,16 +46,7 @@ ProcessUnit ClientHandler::getProcessUnit(){
 bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
-//    cout << "Target:"<<unit._target_stream<<endl;
-//    sqlite3_transaction trans=_con->getTransaction();
-
-
-
-
     list< boost::shared_ptr<Packet> >::iterator it; 
-//    if(unit._input_packets.size()==0)break;
-//	boost::shared_ptr<Packet> p=unit._input_packets.front();
-//	p->size;
     int count=0, frame_group=0;
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
         boost::shared_ptr<Packet> packet=*it;
@@ -65,23 +56,23 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         }
         
         ++count;
-	int  field=0;
+		int  field=0;
 
         _stmt->setInt( "stream_id", unit._target_stream);
         _stmt->setInt( "pts", packet->pts);
         _stmt->setInt( "dts", packet->dts);
         _stmt->setInt( "stream_index", packet->stream_index);
         _stmt->setInt( "key_frame", packet->isKeyFrame());
-	if(packet->stream_index==0)
+		if(packet->stream_index==0)
     	    _stmt->setInt( "frame_group", frame_group);
-	else
+		else
     	    _stmt->setInt( "frame_group",0);	
         _stmt->setInt( "flags", packet->flags);
         _stmt->setInt( "duration", packet->duration);
         _stmt->setInt( "pos", packet->pos);
         _stmt->setInt( "data_size", packet->size);
         _stmt->setBlob( "data", (char *)packet->data,packet->size);
-	_stmt->execute();
+		_stmt->execute();
     }
     
 

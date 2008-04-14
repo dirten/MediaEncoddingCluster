@@ -34,14 +34,12 @@ class ProcessUnit{
 		int _target_stream;
 		template<class Archive>
 	    	    void serialize(Archive & ar, const unsigned int version){
-	    		ar & _input_packets;
-	    		ar & _output_packets;
-	    		ar & _source_stream;
-	    		ar & _target_stream;
-//	    		if(_decoder!=NULL)
+//	    		ar & _input_packets;
+//	    		ar & _output_packets;
+//	    		ar & _source_stream;
+//	    		ar & _target_stream;
 	    		    ar & _decoder;
-//	    		if(_encoder!=NULL)
-	    		    ar & _encoder;
+//	    		    ar & _encoder;
 	    	    }
 	private:
 };

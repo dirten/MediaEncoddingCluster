@@ -1,3 +1,5 @@
+#ifndef ORG_ESB_UTIL_LOGGER_H
+#define ORG_ESB_UTIL_LOGGER_H
 #include "cxxtools/log.h"
 #include "cxxtools/loginit.h"
 
@@ -9,3 +11,8 @@
 #define logwarn(o1)log_warn(o1)
 #define loginfo(o1)log_info(o1)
 #define logdebug(o1)log_debug(o1)
+
+
+#endif
+
+

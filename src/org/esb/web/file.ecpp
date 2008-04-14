@@ -26,7 +26,7 @@ int id=0;
     
     Connection con(Config::getProperty("db.connection"));
     if(!id>0){
-    Statement stmt=con.createStatement("select id,filename, size from files");
+    Statement stmt=con.createStatement("select id,filename, size, insertdate from files");
     ResultSet rs=stmt.executeQuery();//executeQuery();
     }>
     <table class="list" cellspacing="0" cellpadding="0">
@@ -36,14 +36,14 @@ int id=0;
 	    <td><$rs.getString("id")$>.</td>
 	    <td><a href="file?id=<$rs.getString("id")$>"><$rs.getString("filename")$></a></td>
 	    <td><$rs.getString("size")$></td>
-	    <td><\$rs.getString("insertdate")$></td>
+	    <td><$rs.getString("insertdate")$></td>
 	</tr>
 % } 
 <{ 
 }else{ 
     Connection con(Config::getProperty("db.connection"));
-    PreparedStatement stmt=con.prepareStatement("select streams.* from files, streams where files.id=streams.fileid and files.id=?");
-    stmt.setInt(0, id);
+    PreparedStatement stmt=con.prepareStatement("select streams.* from files, streams where files.id=streams.fileid and files.id=:id");
+    stmt.setInt("id", id);
     ResultSet rs=stmt.executeQuery();
     while(rs.next()){ }>
     	<table class="stream_info_block" border="1">

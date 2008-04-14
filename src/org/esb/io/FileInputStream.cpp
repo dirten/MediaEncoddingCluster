@@ -50,6 +50,15 @@ int FileInputStream::available(bool isBlocking) {
 	return _filePointer; 
 }
 
+int FileInputStream::read(string & str) {
+    int size=available();
+	char * buffer=new char[size];
+    int read=fread((char*)buffer,1, size, file);
+    _filePointer-=read;
+	str=string(buffer,size);
+	delete []buffer;
+    return read;
+}
 int FileInputStream::read(unsigned char * buffer, int length) {
     int read=fread((char*)buffer,1, length, file);
     _filePointer-=read;

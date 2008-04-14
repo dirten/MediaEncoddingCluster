@@ -37,6 +37,7 @@ namespace org {
 				  template < class Archive >
 					void serialize (Archive & ar, const unsigned int version)
 				{
+					
 					ar & _codec_id;
 					ar & _mode;
 					ar & _pix_fmt;
@@ -49,8 +50,11 @@ namespace org {
 					ar & _channels;
 					ar & _sample_rate;
 					ar & _sample_format;
-				} CodecID _codec_id;
-			  protected:
+					
+				}
+				
+				int _codec_id;
+//			  protected:
 				  AVCodec * _codec;
 				void findCodec (int mode);
 				int _mode;

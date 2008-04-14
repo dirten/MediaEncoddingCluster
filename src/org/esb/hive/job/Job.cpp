@@ -82,7 +82,7 @@ void Job::activate(){
 	Connection con(Config::getProperty("db.connection"));
 
 	{
-		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt from job_details j, streams s where (j.instream=s.id) and j.id=:id");
+		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.stream_type from job_details j, streams s where (j.instream=s.id) and j.id=:id");
 		stmt.setInt("id",_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
@@ -91,6 +91,7 @@ void Job::activate(){
     		_decoder->setHeight(rs.getInt(2));
     		_decoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		_decoder->open();
+    		_stream_type=rs.getInt(4);
 		}
 	}
 	{
@@ -114,14 +115,15 @@ void Job::activate(){
 
 	{
 		string sql;
-		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
+//		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
-		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
-		}	
-		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
+//		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
+		    sql="select frame_group  from frame_groups where stream_id=:instream";
+//		}	
+//		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
-		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
-		}
+//		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
+//		}
 		PreparedStatement stmt=con.prepareStatement(sql.c_str());
 		stmt.setInt("instream",_source_stream);
 //		stmt.setInt("target_stream_id",_target_stream);
@@ -141,26 +143,6 @@ void Job::activate(){
 bool Job::isActive(){
 	return _isActive;
 }
-/*
-void Job::addJobDetails(JobDetail & detail){
-        list<JobDetail*>::iterator i;
-        _detailList.push_back(&detail);
-}
-
-bool Job::getNextProcessUnit(ProcessUnit & unit){
-    {
-	boost::mutex::scoped_lock scoped_lock(m_mutex);
-	bool result=false;
-	if(_unit_queue.size()>0){
-	    unit = *_unit_queue.front();
-	    _unit_queue.pop();
-	    result=true;
-	}
-	return result;
-    }
-}
-*/
-//boost::mutex Job::m_mutex;
 
 ProcessUnit Job::getNextProcessUnit(){
     {
@@ -175,10 +157,10 @@ ProcessUnit Job::getNextProcessUnit(){
 	_stmt->setInt("stream_id",getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
 	while(rs.next()){
-	    cout << "Frame:"<<rs.getInt(2)<<" with size goes into ProcessUnit"<<endl;
-	    shared_ptr<Packet> p(new Packet());
-	    p->size=rs.getInt(0);
-	    p->data=new uint8_t[p->size];
+//	    cout << "Frame:"<<rs.getInt(2)<<" with size goes into ProcessUnit"<<endl;
+	    shared_ptr<Packet> p(new Packet(rs.getInt(0)));
+//	    p->size=rs.getInt(0);
+//	    p->data=new uint8_t[p->size];
 	    memcpy(p->data,rs.getBlob(1).c_str(),p->size);
 	    p->pts=rs.getInt(2);
 	    p->dts=rs.getInt(3);

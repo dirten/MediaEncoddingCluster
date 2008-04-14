@@ -1,5 +1,6 @@
 <%pre>
 #include <fstream>
+#include <iostream>
 #include "import.cpp"
 </%pre>
 <html>
@@ -16,10 +17,11 @@
 const tnt::Multipart& mp = request.getMultipart();
 tnt::Multipart::const_iterator it = mp.find("file");
 if (it != mp.end()){
+  	std::cout << "FileSize:"<<it->getSize()<<std::endl;
     std::ofstream out(it->getFilename().c_str());
     for (tnt::Part::const_iterator pi = it->getBodyBegin(); pi != it->getBodyEnd(); ++pi)
       out << *pi;
-
+	out.flush();
     char * argv[]={"",(char*)it->getFilename().c_str()};
     import(2,argv);
 

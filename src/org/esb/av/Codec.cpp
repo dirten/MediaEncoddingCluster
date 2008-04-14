@@ -23,29 +23,58 @@ namespace org {
 		namespace av {
 			Codec::Codec () {
 			    _opened=false;
+			    	
+					_codec_id=0;
+					_mode=0;
+					_pix_fmt=(PixelFormat)0;
+					_width=0;
+					_height=0;
+					_time_base.num=0;
+					_time_base.den=0;
+					_gop_size=0;
+					_bit_rate=0;
+					_channels=0;
+					_sample_rate=0;
+					_sample_format=(SampleFormat)0;
 			} 
 			Codec::Codec (const CodecID codecId, int mode) {
 				_codec_id = codecId;
 				_codec = NULL;
 				_mode = mode;
 				if (_mode == DECODER) {
-					_codec = avcodec_find_decoder (_codec_id);
+					_codec = avcodec_find_decoder ((CodecID)_codec_id);
 				}
 				else {
-					_codec = avcodec_find_encoder (_codec_id);
+					_codec = avcodec_find_encoder ((CodecID)_codec_id);
 				} if (_codec == NULL)
 					logerror("Codec not found for id :" << codecId);
-
 //					cout << "Codec not found for id :" << codecId << endl;
 				avcodec_get_context_defaults2 (this, _codec->type);
+	/*
+					ar & _codec_id;
+					ar & _mode;
+					ar & _pix_fmt;
+					ar & _width;
+					ar & _height;
+					ar & _time_base.num;
+					ar & _time_base.den;
+					ar & _gop_size;
+					ar & _bit_rate;
+					ar & _channels;
+					ar & _sample_rate;
+					ar & _sample_format;
+	*/
 				_width = 0;
 				_height = 0;
 				_bit_rate = 0;
 				_gop_size = 0;
-			//	_time_base=AVRational{0,0};
+				_time_base.num=0;
+				_time_base.den=0;
 				_channels = 0;
 				_sample_rate = 0;
-    				_opened=false;
+				_sample_format = (SampleFormat)0;
+				_pix_fmt = (PixelFormat)0;
+    			_opened=false;
 			}
 
 			CodecType Codec::getCodecType () {
@@ -72,12 +101,12 @@ namespace org {
 			void Codec::findCodec (int mode) {
 			    logdebug("try to find "<<(mode==DECODER?"Decoder":"Encoder")<<" with id:"<<_codec_id);
 				if (mode == DECODER) {
-					_codec = avcodec_find_decoder (_codec_id);
+					_codec = avcodec_find_decoder ((CodecID)_codec_id);
 					if (_codec == NULL)
 					    logerror("Decoder not found for id :" << _codec_id);
 				}
 				else {
-					_codec = avcodec_find_encoder (_codec_id);
+					_codec = avcodec_find_encoder ((CodecID)_codec_id);
 					if (_codec == NULL)
 					    logerror("Encoder not found for id :" << _codec_id);
 				}
@@ -106,8 +135,12 @@ namespace org {
 				}
 			}
 			Codec::~Codec () {
-			    if(_opened)
-				avcodec_close (this);
+			    logdebug("Codec closed:" << _codec_id);
+			    if(_opened){
+					avcodec_close (this);
+//					delete _codec;
+				}
+				_opened=false;
 			}
 			void Codec::setWidth (int w) {
 				_width = w;
