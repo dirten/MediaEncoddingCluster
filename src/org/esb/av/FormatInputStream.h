@@ -19,7 +19,7 @@ namespace org{
 	    namespace av{
 //	    	logger("hive.av")
 	        class FormatInputStream: public FormatBaseStream, public InputStream {
-		    logger("hive.av")
+		    	logger("hive.av");
 
 		        public:
 		            FormatInputStream(File * source);

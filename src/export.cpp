@@ -26,8 +26,8 @@ int exporter(int argc, char * argv[]){
     encoder->setTimeBase((AVRational){1,25});
     encoder->setGopSize(20);
     encoder->setPixelFormat(PIX_FMT_YUV420P);
-    encoder->setWidth(384);
-    encoder->setHeight(288);
+    encoder->setWidth(512);
+    encoder->setHeight(256);
     encoder->open();
 
     pos.setEncoder(*encoder,0);
@@ -55,7 +55,7 @@ int exporter(int argc, char * argv[]){
 	Connection con(Config::getProperty("db.connection"));
 
     {
-	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=3 order by a.pts limit 50");
+	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=9 order by a.pts limit 500");
 	ResultSet rs=stmt.executeQuery();
 	
 

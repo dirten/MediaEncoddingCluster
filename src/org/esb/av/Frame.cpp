@@ -50,7 +50,12 @@ Frame::Frame(Packet * packet, Codec * codec){
 Frame::Frame(int format, int width, int height){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
-    
+	_width=width;
+	_height=height;
+	_pixFormat=format;
+
+
+	avcodec_get_frame_defaults(this);
     int numBytes=avpicture_get_size(format, width,height);
     _buffer=new uint8_t[numBytes];
     // Assign appropriate parts of buffer to image planes in pFrameRGB

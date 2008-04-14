@@ -12,7 +12,7 @@ void __attribute__ ((constructor)) my_init (void);
 void my_init ()
 {
 	using namespace org::esb::av;
-	cout << "test"<<endl;
+	cout << "test initialised"<<endl;
 //	logdebug("init av package");
 	av_register_all ();
 	avcodec_register_all ();
@@ -120,6 +120,7 @@ namespace org {
 				sample_rate = _sample_rate;
 				sample_fmt = _sample_format;
 				channels = _channels;
+				max_b_frames=1;
 			}
 
 			void Codec::open () {

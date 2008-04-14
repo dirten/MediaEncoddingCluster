@@ -54,18 +54,20 @@ Packet::Packet(int s){
 	isCopy=false;
 	av_init_packet(this);
 	size=s;
-	data=new uint8_t[s];
-	memset(data,0,s);
-	callDestruct=true;
+	if(s>0){
+		data=new uint8_t[s];
+		memset(data,0,s);
+		callDestruct=true;
+	}
 }
 
 Packet::~Packet(){
 	if(callDestruct){
         delete []data;	
 	}
-	av_free_packet(this);
-    data=0;
-    size=0;
+//	av_free_packet(this);
+//    data=0;
+//    size=0;
 }
 
 uint8_t * Packet::getData(){return data;}

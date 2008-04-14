@@ -45,9 +45,9 @@ void Decoder::decodeVideo(Packet & packet, Frame & frame){
 Frame Decoder::decodeVideo(Packet & packet){
     Frame frame(pix_fmt, width, height);
     int _frameFinished=0;
-    frame._width=this->width;
-    frame._height=this->height;
-    frame._pixFormat=this->pix_fmt;
+//    frame._width=this->width;
+//    frame._height=this->height;
+//    frame._pixFormat=this->pix_fmt;
     int bytesRemaining=packet.size,  bytesDecoded=0;
     uint8_t * rawData=packet.data;
     while(bytesRemaining > 0){

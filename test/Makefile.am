@@ -65,6 +65,7 @@ test_mysql_SOURCES=test_mysql.cpp
 #aviclient_LDADD =-laviplay
 #test_LDFLAGS = $(all_libraries) 
 test_httpd_LDFLAGS = $(all_libraries) 
+test_codec_LDFLAGS = $(all_libraries) 
 #test_sqlite_LDFLAGS = $(all_libraries) 
 #test_packet_LDFLAGS = $(all_libraries) 
 #test_packet_input_LDFLAGS = $(all_libraries) 
@@ -75,7 +76,7 @@ test_mysql_LDFLAGS = $(all_libraries)
 
 #test_file_LDADD=	../src/org/esb/libesb.la 
 test_tnt_LDADD=	../src/org/esb/libesb.la 
-test_codec_LDADD=	../src/org/esb/libesb.la 
+test_codec_LDADD=	
 test_seek_LDADD=	../src/org/esb/libesb.la 
 #test_codec_LDADD=	../src/org/esb/libesb.la 
 test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/web/libweb.la 
