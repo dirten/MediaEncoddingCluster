@@ -8,7 +8,7 @@ using namespace org::esb::sql;
 using namespace org::esb::config;
 int jobcreator(int argc, char*argv[]){
 	Connection con(Config::getProperty("db.connection"));
-	int fileid=atoi(argv[2]), outfileid=0, v_stream_id=0, a_stream_id=0, in_v_stream=0, in_a_stream=0, jobid=0;
+	int fileid=atoi(argv[2]), outfileid=0, v_stream_id=0, a_stream_id=0, in_v_stream=0, in_a_stream=0, jobid=0, v_stream_idx=0, a_stream_idx=0;
 	int profileid=atoi(argv[3]);
 
 	string filename;
@@ -61,6 +61,7 @@ int jobcreator(int argc, char*argv[]){
 	ResultSet rs=stmt.executeQuery();
 	if(rs.next()){
 		in_v_stream=rs.getInt("id");
+	    v_stream_idx=rs.getInt("stream_index");
 	}
 }
 {
@@ -69,6 +70,7 @@ int jobcreator(int argc, char*argv[]){
 	ResultSet rs=stmt.executeQuery();
 	if(rs.next()){
 		in_a_stream=rs.getInt("id");
+		a_stream_idx=rs.getInt("stream_index");
 	}
 }
 
@@ -137,13 +139,13 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.execute();
 }
 {
-	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, stream_id) (select distinct :jobid, frame_group, :id from packets where stream_id=:id)");
+	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, startts, stream_id, stream_index, frame_count) (select :jobid, frame_group,min(dts),:id, :stream_idx, count(id) from packets where stream_id=:id group by frame_group)");
 	stmtJob.setInt("jobid",jobid);
 	stmtJob.setInt("id",in_v_stream);
 	stmtJob.execute();
 }
 {
-	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, stream_id) (select distinct :jobid, frame_group, :id from packets where stream_id=:id)");
+	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, startts, stream_id, stream_index, frame_count) (select :jobid, frame_group,min(dts),:id, :stream_idx, count(id) from packets where stream_id=:id group by frame_group)");
 	stmtJob.setInt("jobid",jobid);
 	stmtJob.setInt("id",in_a_stream);
 	stmtJob.execute();

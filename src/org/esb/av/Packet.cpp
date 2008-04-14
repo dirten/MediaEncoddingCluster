@@ -16,12 +16,12 @@ Packet::Packet(){
 }
 
 Packet::Packet(const Packet & packet){
-	av_init_packet(this);
-	data=0;
+    av_init_packet(this);
+    data=0;
     pts=packet.pts;
     dts=packet.dts;
-   	data=new uint8_t[packet.size];
-   	memcpy(data,packet.data,packet.size);
+   data=new uint8_t[packet.size];
+   memcpy(data,packet.data,packet.size);
     size=packet.size;
     stream_index=packet.stream_index;
     flags=packet.flags;

@@ -1,6 +1,5 @@
 #include "Job.h"
 #include "org/esb/av/Frame.h"
-#include "org/esb/av/FrameInputStream.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/io/File.h"
@@ -40,7 +39,6 @@ Job::Job(){
     _completeTime=0;
 
 
-
 /*    
     _decoder=new Decoder(CODEC_ID_MSMPEG4V3);
 //    _decoder=new Decoder(CODEC_ID_MPEG4);
@@ -75,14 +73,31 @@ void Job::setTargetStream(int id){_target_stream=id;}
 int Job::getSourceStream(){return _source_stream;}
 int Job::getTargetStream(){return _target_stream;}
 void Job::activate(){
-
-
 	logdebug("activating StreamId="<<_id);
+
+
+
 
 	Connection con(Config::getProperty("db.connection"));
 
 	{
-		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.stream_type from job_details j, streams s where (j.instream=s.id) and j.id=:id");
+	    PreparedStatement stmt=con.prepareStatement("select filename from files f, streams s where f.id=s.fileid and s.id=:inid");
+	    stmt.setInt("inid", _source_stream);
+	    ResultSet rs=stmt.executeQuery();
+	    if(rs.next()){
+		filename=rs.getString("filename");
+		File f(filename.c_str());
+		if(f.exists()){
+		    _fis=new FormatInputStream(&f);
+		}else{
+		    logerror("File not Found:"<<f.getPath());
+		    return;
+		}
+	    }
+	}
+
+	{
+		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.stream_type, s.stream_index from job_details j, streams s where (j.instream=s.id) and j.id=:id");
 		stmt.setInt("id",_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
@@ -92,6 +107,7 @@ void Job::activate(){
     		_decoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		_decoder->open();
     		_stream_type=rs.getInt(4);
+    		_stream_index=rs.getInt(4);
 		}
 	}
 	{
@@ -118,7 +134,7 @@ void Job::activate(){
 //		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
 //		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
-		    sql="select frame_group  from frame_groups where stream_id=:instream";
+		    sql="select frame_group, startts, frame_count  from frame_groups where stream_id=:instream";
 //		}	
 //		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
@@ -129,7 +145,12 @@ void Job::activate(){
 //		stmt.setInt("target_stream_id",_target_stream);
 		ResultSet rs=stmt.executeQuery();
 		while(rs.next()){
-			_frame_groups.push(rs.getInt(0));
+		    std::pair<int,std::pair<int, int> > p;
+		    
+		    p.first=rs.getInt(0);
+		    p.second.first=rs.getInt(1);
+		    p.second.second=rs.getInt(2);
+		    _frame_groups.push(p);
 		}
 	}
 	
@@ -145,11 +166,44 @@ bool Job::isActive(){
 }
 
 ProcessUnit Job::getNextProcessUnit(){
+    boost::mutex::scoped_lock scoped_lock(m_mutex);
+    ProcessUnit u;
+    if(_frame_groups.size()>0){
+	int fr_gr=_frame_groups.front().first;
+	int startts=_frame_groups.front().second.first;
+	int frame_count=_frame_groups.front().second.second;
+	_frame_groups.pop();
+	logdebug("packing frame group :" <<fr_gr<<" with startts: "<<startts);
+	_fis->seek(_stream_index,(int64_t)startts);
+	Packet tmp_p;
+	PacketInputStream pis(_fis);
+	int size=0;
+	for(int a=0;a<frame_count;){
+	    pis.readPacket(tmp_p);
+	    if(tmp_p.stream_index!=_stream_index)continue;
+	    a++;
+	    shared_ptr<Packet> p(new Packet(tmp_p));
+	    u._input_packets.push_back(p);
+	    size+=p->size;
+	}
+	u._decoder=_decoder;
+	u._encoder=_encoder;
+	u._source_stream=getSourceStream();
+	u._target_stream=getTargetStream();
+	logdebug("packing frame group :" <<fr_gr<<" with size:"<<size<<" !!!");
+    }else{
+        logdebug("no more frame groups left, setting job as completed");
+        setCompleteTime(1);
+    }
+    return u;
+}
+
+ProcessUnit Job::getNextProcessUnit2(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
 	ProcessUnit u;
 	if(_frame_groups.size()>0){
-	int fr_gr=_frame_groups.front();
+	int fr_gr=_frame_groups.front().first;
 	_frame_groups.pop();
 	cout << "\rFrameGroup:"<<fr_gr;
 	cout.flush();

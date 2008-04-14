@@ -21,25 +21,25 @@ int exporter(int argc, char * argv[]){
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
 
-    Encoder *encoder=new Encoder(CODEC_ID_MSMPEG4V3);
+    Encoder *encoder=new Encoder(CODEC_ID_MPEG4);
     encoder->setBitRate(4000000);
     encoder->setTimeBase((AVRational){1,25});
-    encoder->setGopSize(10);
+    encoder->setGopSize(20);
     encoder->setPixelFormat(PIX_FMT_YUV420P);
-    encoder->setWidth(512);
-    encoder->setHeight(256);
+    encoder->setWidth(384);
+    encoder->setHeight(288);
     encoder->open();
 
     pos.setEncoder(*encoder,0);
-
+/*
     Encoder *encoder2=new Encoder(CODEC_ID_MP2);
     encoder2->setBitRate(128000);
     encoder2->setSampleRate(44100);
     encoder2->setChannels(2);
     encoder2->setSampleFormat((SampleFormat)1);
     encoder2->open();
-
-    pos.setEncoder(*encoder2,1);
+*/
+//    pos.setEncoder(*encoder2,1);
 
 /*
     Decoder *decoder2=new Decoder(CODEC_ID_MP3);
@@ -55,7 +55,7 @@ int exporter(int argc, char * argv[]){
 	Connection con(Config::getProperty("db.connection"));
 
     {
-	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=1 order by a.pts limit 10000");
+	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=3 order by a.pts limit 50");
 	ResultSet rs=stmt.executeQuery();
 	
 
@@ -64,9 +64,9 @@ int exporter(int argc, char * argv[]){
 	while(rs.next()){
 //	    Row row=rs.getRow(a);
 	    video_packets++;
-	    Packet p;
-	    p.size=rs.getInt("data_size");
-	    p.data=new uint8_t[p.size];
+	    Packet p(rs.getInt("data_size"));
+//	    p.size=rs.getInt("data_size");
+//	    p.data=new uint8_t[p.size];
 	    memcpy(p.data,rs.getBlob("data").data(),p.size);
 	    p.pts=rs.getInt("pts");
 	    p.dts=rs.getInt("dts");
@@ -75,16 +75,15 @@ int exporter(int argc, char * argv[]){
 	    p.pos=rs.getInt("pos");
 	    p.stream_index=0;//rs.getint(7);
 	    pos.writePacket(p);
-		if(video_packets%1000==0)
-	    cout<<"\r" << video_packets ;
+//	    if(video_packets%1000==0)
+	    cout<<"\r" << p.dts ;
 	    cout.flush();
-
 	}
     }
     
 	    cout<<endl;
     
-        {
+        if(false){
 	Statement stmt=con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=2 order by pts limit 10000");
 	ResultSet rs=stmt.executeQuery();
 	

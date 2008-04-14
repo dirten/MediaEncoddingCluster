@@ -10,9 +10,9 @@ extern "C" {
 namespace org {
 	namespace esb {
 		namespace av {
-		    logger("hive.av")
 			class Frame;
 			class Codec:public AVCodecContext {
+			    logger("hive.av")
 			  public:
 				const static int DECODER = 1;
 				const static int ENCODER = 2;

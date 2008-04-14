@@ -90,11 +90,7 @@ Frame::Frame(Frame * source, int format){
 }
 
 Frame::~Frame(){
-//    if(_buffer!=NULL)
-//        delete []_buffer;
-//        delete []_buffer;
-	av_free((AVPicture*)this);
-//    _buffer=NULL;
+        delete []_buffer;
 }
 
 AVPacket * Frame::getPacket(){

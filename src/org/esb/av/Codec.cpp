@@ -13,7 +13,7 @@ void my_init ()
 {
 	using namespace org::esb::av;
 	cout << "test"<<endl;
-	logdebug("init av package");
+//	logdebug("init av package");
 	av_register_all ();
 	avcodec_register_all ();
 }
@@ -74,7 +74,7 @@ namespace org {
 				_sample_rate = 0;
 				_sample_format = (SampleFormat)0;
 				_pix_fmt = (PixelFormat)0;
-    			_opened=false;
+    			    _opened=false;
 			}
 
 			CodecType Codec::getCodecType () {

@@ -78,8 +78,9 @@ void Config::parseLine(const char*line)
 		val.append("=");
 	}
     }
-    char *delim="\n";
+    char delim[]="\n";
     properties->setProperty(strtok((char*)key.c_str(),delim),strtok((char*)val.c_str(),delim));
+    
 //    delete st;
   }
 }

@@ -25,6 +25,7 @@ namespace esb{
 namespace hive{
 namespace job{
 class Job{
+    logger("hive.job")
     public:
 		Job();
 		~Job();
@@ -48,9 +49,12 @@ class Job{
 		*/
 //		bool getNextProcessUnit(ProcessUnit & unit);
 		ProcessUnit getNextProcessUnit();
+		ProcessUnit getNextProcessUnit2();
 		queue<ProcessUnit*> _unit_queue;
 //		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:
+		FormatInputStream * _fis;
+		string filename;
 		friend class JobProcess;
 //		File * _source;
 //		File * _target;
@@ -68,9 +72,10 @@ class Job{
 		Decoder * _decoder;
 		Encoder * _encoder;
 		bool _isActive;
-		queue<int> _frame_groups;
+		queue< pair<int, pair <int, int > > > _frame_groups;
 		public:
 		int _stream_type;
+		int _stream_index;
 //		static ProcessUnit * _unit;
 };	
 }}}}

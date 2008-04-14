@@ -25,12 +25,12 @@ Packet Encoder::encode(Frame & frame){
 Packet Encoder::encodeVideo(Frame & frame){
     int buffer_size=1024*256;
     uint8_t data[buffer_size];
-    memset(data,0,buffer_size);
-    int ret=avcodec_encode_video(this,data, buffer_size, &frame);
+    memset(&data,0,buffer_size);
+    int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
 //    pac.data=new uint8_t[ret];
 
     Packet pac(ret);
-    memcpy(pac.data, data, ret);
+    memcpy(pac.data, &data, ret);
 //    pac.data=data;
     pac.size=ret;
     pac.pts=frame.pts;

@@ -11,15 +11,15 @@ ProcessUnit::ProcessUnit(){
 }
 
 ProcessUnit::~ProcessUnit(){
-
-/*	if(_decoder!=NULL)
+/*
+	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
-
+*/
     _decoder=NULL;
     _encoder=NULL;
-    */
+    
     _target_stream=0;
     _input_packets.clear();
     _output_packets.clear();
@@ -38,12 +38,13 @@ void ProcessUnit::process(){
 	    boost::shared_ptr<Packet> p=*it;
 	    size+=p->size;
 	    Frame f=_decoder->decode(*p.get());
-		/*	
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
 	    _output_packets.push_back(pEnc);
-	    */
 	}
+	cout <<"Size Packet:"<<size<<endl;
+
+
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)

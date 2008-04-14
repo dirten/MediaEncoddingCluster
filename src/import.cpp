@@ -36,6 +36,10 @@ using namespace boost;
 //using namespace sqlite3x;
 
 
+template <class T>
+    T nullCheck(T param){
+	return param;
+    }
 
 int import(int argc, char * argv[]){
 	cout << LIBAVCODEC_IDENT <<endl;
@@ -80,7 +84,7 @@ int import(int argc, char * argv[]){
 	    "(:filename, :size,1,now(),:stream_count, :title, :author, :copyright, :comment, :album, :year, :track, :genre, :duration, :bitrate)");
 	    int field=0;
 	    string tmp="testfile.test";
-	    st.setString("filename",(char*)inputFile.getPath());
+	    st.setString("filename",nullCheck<char*>((char*)inputFile.getPath()));
 	    st.setDouble("size",(double )fis.getFileSize());
 	    st.setDouble("stream_count",(double )fis.getStreamCount());
 	    st.setString("title",fis.getFormatContext()->title);
@@ -89,7 +93,7 @@ int import(int argc, char * argv[]){
 	    st.setString("comment",(char*)fis.getFormatContext()->comment);
 	    st.setString("album",(char*)fis.getFormatContext()->album);
 	    st.setInt("year",fis.getFormatContext()->year);
-	    st.setString("track",(char*)fis.getFormatContext()->track);
+	    st.setInt("track",(unsigned int)fis.getFormatContext()->track);
 	    st.setString("genre",(char*)fis.getFormatContext()->genre);
 	    st.setInt("duration",(unsigned int)fis.getFormatContext()->duration);
 	    st.setInt("bitrate",(unsigned int)fis.getFormatContext()->bit_rate);
