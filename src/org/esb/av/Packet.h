@@ -19,8 +19,6 @@ namespace org{
 		public:
 		    Packet();
 		    Packet(int size);
-//		    Packet(const Packet & packet);
-//		    Packet &operator=(Packet & packet);
 		    ~Packet();
         	    uint8_t * getData();
     		    int getSize();
@@ -33,9 +31,11 @@ namespace org{
         	    void * getPriv();
         	    int64_t getPosition();
 //        	    boost::shared_ptr<unsigned char*> data;
+		    Packet(const Packet & packet);
+//		    Packet operator=(Packet & packet);
 
 		    AVPacket * packet;
-
+			boost::shared_ptr<AVPacket> packetPtr;
     		private:
 		    AVPacket _packet;
         	    bool isCopy;
@@ -47,13 +47,16 @@ namespace org{
 		    template<class Archive>
 		        void serialize(Archive & ar, const unsigned int version)
 		            {
-		                ar & packet->size;
+		            ar & packet->size;
+				
 				if(packet->data==NULL){
 				    packet->data=new uint8_t[packet->size];
 				    memset(packet->data,0,packet->size);
 				    isCopy=true;
 				    callDestruct=true;
 				}
+				
+				
 				ar & boost::serialization::make_binary_object(packet->data,packet->size);
 		                ar & packet->pts;
 		                ar & packet->dts;

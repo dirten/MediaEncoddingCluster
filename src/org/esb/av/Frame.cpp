@@ -98,7 +98,7 @@ Frame::Frame(Frame * source, int format){
 }
 
 Frame::~Frame(){
-    cout <<"Delete Frame"<<endl;
+//    cout <<"Delete Frame"<<endl;
         delete []_buffer;
 }
 

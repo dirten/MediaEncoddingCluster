@@ -8,21 +8,26 @@ using namespace org::esb::av;
 
 Packet::Packet(){
 	isCopy=false;
-	packet=new AVPacket();
+	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
+	packet=packetPtr.get();
 	av_init_packet(packet);
 	callDestruct=false;
 //	data=0;
 //	size=0;
 
 }
-/*
+
 Packet::Packet(const Packet & p){
+	cout << "CopyConstruct"<<endl;
+//	callDestruct=false;
+	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
+	packet=packetPtr.get();
     av_init_packet(packet);
     packet->data=0;
     packet->pts=p.packet->pts;
     packet->dts=p.packet->dts;
-   packet->data=new uint8_t[p.packet->size];
-   memcpy(packet->data,p.packet->data,p.packet->size);
+    packet->data=new uint8_t[p.packet->size];
+    memcpy(packet->data,p.packet->data,p.packet->size);
     packet->size=p.packet->size;
     packet->stream_index=p.packet->stream_index;
     packet->flags=p.packet->flags;
@@ -31,9 +36,13 @@ Packet::Packet(const Packet & p){
     packet->priv=p.packet->priv;
     packet->pos=p.packet->pos;
     callDestruct=true;
+    
 }
 
-Packet & Packet::operator=(Packet & p){
+/*
+Packet Packet::operator=(Packet & p){
+	cout << "=Construct"<<endl;
+	packet=new AVPacket();
     av_init_packet(packet);
     packet->pts=p.packet->pts;
     packet->dts=p.packet->dts;
@@ -53,7 +62,8 @@ Packet & Packet::operator=(Packet & p){
 */
 Packet::Packet(int s){
 	isCopy=false;
-	packet=new AVPacket();
+	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
+	packet=packetPtr.get();
 	av_init_packet(packet);
 	packet->size=s;
 	if(s>0){
@@ -64,16 +74,17 @@ Packet::Packet(int s){
 }
 
 Packet::~Packet(){
-/*
-	if(callDestruct){
-        delete []data;	
-	}
-*/
-    cout << "delete Packet"<<endl;
-    av_free_packet(packet);
-    delete packet;
-//    data=0;
-//    size=0;
+//    cout << "delete Packet"<<endl;
+//  	av_free_packet(packetPtr.get());
+	
+	if(callDestruct)
+    	delete [] packet->data;
+    else
+  		av_free_packet(packet);
+
+//    packet->data=0;
+//    delete packet;
+//    packet=0;
 }
 
 uint8_t * Packet::getData(){return packet->data;}

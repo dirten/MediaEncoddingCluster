@@ -22,41 +22,6 @@ void Encoder::encode(Frame & frame, Packet & p){
     
     int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
 //    pac.data=new uint8_t[ret];
-/*
-    Packet pac(ret);
-    memcpy(pac.packet->data, &data, ret);
-//    pac.data=data;
-    pac.packet->size=ret;
-    pac.packet->pts=frame.pts;
-    pac.packet->dts=frame.dts;
-    pac.packet->pos=frame.pos;
-    pac.packet->duration=1;
-//    pac.flags=0;
-
-    if(coded_frame && coded_frame->key_frame)
-	pac.packet->flags |= PKT_FLAG_KEY;
-	*/
-//    return pac;
-}
-
-
-Packet Encoder::encode(Frame & frame){
-	if(this->codec_type==CODEC_TYPE_VIDEO)
-	    return encodeVideo(frame);
-	if(this->codec_type==CODEC_TYPE_AUDIO)
-	    return encodeAudio(frame);
-	return Packet();
-}
-Packet Encoder::encodeVideo(Frame & frame){
-
-
-
-    int buffer_size=1024*256;
-    uint8_t data[buffer_size];
-    memset(&data,0,buffer_size);
-    
-    int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
-//    pac.data=new uint8_t[ret];
 
     Packet pac(ret);
     memcpy(pac.packet->data, &data, ret);
@@ -71,6 +36,41 @@ Packet Encoder::encodeVideo(Frame & frame){
     if(coded_frame && coded_frame->key_frame)
 	pac.packet->flags |= PKT_FLAG_KEY;
 	
+//    return pac;
+}
+
+
+Packet Encoder::encode(Frame & frame){
+	if(this->codec_type==CODEC_TYPE_VIDEO)
+	    return encodeVideo(frame);
+	if(this->codec_type==CODEC_TYPE_AUDIO)
+	    return encodeAudio(frame);
+	return Packet();
+}
+
+Packet Encoder::encodeVideo(Frame & frame){
+
+
+
+    int buffer_size=1024*256;
+    uint8_t data[buffer_size];
+    memset(&data,0,buffer_size);
+    
+    int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
+//    pac.data=new uint8_t[ret];
+	cout << "ret:"<<ret<<endl;
+    Packet pac(ret);
+    memcpy(pac.packet->data, &data, ret);
+//    pac.data=data;
+    pac.packet->size=ret;
+    pac.packet->pts=frame.pts;
+    pac.packet->dts=frame.dts;
+    pac.packet->pos=frame.pos;
+    pac.packet->duration=1;
+//    pac.flags=0;
+
+    if(coded_frame && coded_frame->key_frame)
+		pac.packet->flags |= PKT_FLAG_KEY;
     return pac;
 }
 

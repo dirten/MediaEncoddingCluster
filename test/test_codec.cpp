@@ -87,95 +87,63 @@ int main(int argc, char ** argv){
 	dec.open();
 
 	Encoder enc(CODEC_ID_MPEG2VIDEO);
+	enc.max_b_frames=1;
+//	Encoder enc(CODEC_ID_MSMPEG4V3);
+
 	enc.setWidth(ic->streams[0]->codec->width);
 	enc.setHeight(ic->streams[0]->codec->height);
 	enc.setTimeBase((AVRational){1,25});
+	enc.setBitRate(800000);
 	enc.setGopSize(20);
 	enc.setPixelFormat(PIX_FMT_YUV420P);
 	enc.open();
 
 //    AVPacket pkt;
 	int got_picture;
-	for(int i=0;i<30;i++){
-//	    memset(p.packet,0,sizeof(AVPacket));
+
+
+	ProcessUnit unit;
+	unit._decoder=&dec;
+	unit._encoder=&enc;
+
+	for(int i=0;i<300;i++){
 	    Packet p;
 	    pis.readPacket(p);
-//	    int ret = av_read_frame(ic, p.packet);
-//	    pkt=*p.packet;
-		
-//		pais.readPacket(p);
-    	    if(p.packet->stream_index!=0)continue;
+   	    if(p.packet->stream_index!=0)continue;
+//	    AVFrame * picture= avcodec_alloc_frame();
+    	cout << "InputPacketSize:"<<p.packet->size<<endl;
+		boost::shared_ptr<Packet> ptr(new Packet(p));
+//    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
 
-//    	int bytesRemaining=pkt.size,  bytesDecoded=0;
-//    	uint8_t * rawData=pkt.data;
-//    	while(bytesRemaining > 0){
-	    AVFrame * picture= avcodec_alloc_frame();
-
-    	    cout << "Loop"<<endl;
+	    unit._input_packets.push_back(ptr);
 	    Frame f = dec.decode(p);
-	    cout <<"FrameHere"<<endl;
-	    enc.encode(f);
+//	    cout <<"FrameHere"<<endl;
+	    Packet pe=enc.encode(f);
+//	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 
-
-	av_free(picture);
-
-	/*
-	int bytesDecoded=avcodec_decode_video(c, &picture, &got_picture, p.packet->data, p.packet->size);
-		if(bytesDecoded < 0){
-        		fprintf(stderr, "Error while decoding frame\n");
-        		break;
-		}
-	*/
-//    	}
-//    	av_free_packet(p.packet);
+//		av_free(picture);
 	}
-//    	av_free_packet(p.packet);
-
-//	delete []rawData;
-
-
-//	av_free(&picture);
-//	avcodec_close(c);
-//	av_close_input_file(ic);
-//	av_free(ic);
-
-//    Config::init("./cluster.cfg");
-//    const string log="log.properties";
-//    log_init(cxxtools::Logger::LOG_LEVEL_DEBUG);
-
-//    File file("/mnt/Video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
-//	FormatInputStream fois(&file);
-//	fois.dumpFormat();
-
-//	testAV();
-
-//    File file("/mnt/Video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
-//	FormatInputStream fois(&file);
-//	fois.dumpFormat();
 	
 	
-//	File file()
+	FileOutputStream fos("test.unit");
+	ObjectOutputStream oos(&fos);
+	oos.writeObject(unit);
+	fos.flush();
+
+
+	
+	ProcessUnit unit2;	
+	FileInputStream fis("test.unit");
+	ObjectInputStream ois(&fis);
+	ois.readObject(unit2);
+
+	unit2.process();
+
+	delete unit2._decoder;
+	delete unit2._encoder;
+
+
 /*
-
-
-	Decoder dec((CodecID)13);
-	dec.setWidth(512);
-	dec.setHeight(256);
-	dec.setTimeBase((AVRational){1,25});
-    dec.setGopSize(20);
-    dec.setPixelFormat(PIX_FMT_YUV420P);
-
-	dec.open();
-	
-
-	Encoder enc((CodecID)13);
-	enc.setWidth(512);
-	enc.setHeight(256);
-	enc.setTimeBase((AVRational){1,25});
-    enc.setGopSize(20);
-    enc.setPixelFormat(PIX_FMT_YUV420P);
-	enc.open();
-
 	ProcessUnit unit;
 //	unit._decoder=&dec;
 //	unit._encoder=&enc;

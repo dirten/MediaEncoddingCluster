@@ -121,7 +121,7 @@ namespace org {
 				sample_rate = _sample_rate;
 				sample_fmt = _sample_format;
 				channels = _channels;
-				max_b_frames=1;
+//				max_b_frames=1;
 			}
 
 			void Codec::open () {

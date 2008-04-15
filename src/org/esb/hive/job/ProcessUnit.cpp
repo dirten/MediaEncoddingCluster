@@ -21,9 +21,9 @@ ProcessUnit::~ProcessUnit(){
 //    _decoder=NULL;
 //    _encoder=NULL;
     
-    _target_stream=0;
-    _input_packets.clear();
-    _output_packets.clear();
+//    _target_stream=0;
+//    _input_packets.clear();
+//    _output_packets.clear();
     
 }
 
@@ -36,16 +36,15 @@ void ProcessUnit::process(){
 	if(_encoder!=NULL)
 		_encoder->open();
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){
-		
 	    boost::shared_ptr<Packet> p=*it;
+		cout << "Input:"<<p->packet->size<<endl;
 	    size+=p->packet->size;
 	    Frame f=_decoder->decode(*p);
-
-
-
-//	    Packet ret=_encoder->encode(f);
-//	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-//	    _output_packets.push_back(pEnc);
+	    
+	    Packet ret=_encoder->encode(f);
+	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
+		cout << "Output:"<<ret.packet->size << "\tKeyFrame:" << ret.isKeyFrame() << endl;
+	    _output_packets.push_back(pEnc);
 	    
 	}
 	cout <<"Size Packet:"<<size<<endl;
