@@ -35,9 +35,9 @@ class ProcessUnit{
 		template<class Archive>
 	    	    void serialize(Archive & ar, const unsigned int version){
 	    		ar & _input_packets;
-	    		ar & _output_packets;
-	    		ar & _source_stream;
-	    		ar & _target_stream;
+//	    		ar & _output_packets;
+//	    		ar & _source_stream;
+//	    		ar & _target_stream;
 	    		ar & _decoder;
 	    		ar & _encoder;
 	    	    }

@@ -52,7 +52,6 @@ namespace org{
 				if(packet->data==NULL){
 				    packet->data=new uint8_t[packet->size];
 				    memset(packet->data,0,packet->size);
-				    isCopy=true;
 				    callDestruct=true;
 				}
 				

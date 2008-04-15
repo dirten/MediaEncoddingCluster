@@ -26,8 +26,10 @@ Packet::Packet(const Packet & p){
     packet->data=0;
     packet->pts=p.packet->pts;
     packet->dts=p.packet->dts;
-    packet->data=new uint8_t[p.packet->size];
-    memcpy(packet->data,p.packet->data,p.packet->size);
+	if(p.packet->size>0){
+    	packet->data=new uint8_t[p.packet->size];
+    	memcpy(packet->data,p.packet->data,p.packet->size);
+    }
     packet->size=p.packet->size;
     packet->stream_index=p.packet->stream_index;
     packet->flags=p.packet->flags;

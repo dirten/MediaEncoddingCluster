@@ -86,9 +86,9 @@ int main(int argc, char ** argv){
 	dec.setPixelFormat(ic->streams[0]->codec->pix_fmt);
 	dec.open();
 
-	Encoder enc(CODEC_ID_MPEG2VIDEO);
-	enc.max_b_frames=1;
-//	Encoder enc(CODEC_ID_MSMPEG4V3);
+//	Encoder enc(CODEC_ID_MPEG2VIDEO);
+//	enc.max_b_frames=3;
+	Encoder enc(CODEC_ID_MSMPEG4V3);
 
 	enc.setWidth(ic->streams[0]->codec->width);
 	enc.setHeight(ic->streams[0]->codec->height);
@@ -106,19 +106,20 @@ int main(int argc, char ** argv){
 	unit._decoder=&dec;
 	unit._encoder=&enc;
 
-	for(int i=0;i<300;i++){
+	for(int i=0;i<100;i++){
 	    Packet p;
 	    pis.readPacket(p);
    	    if(p.packet->stream_index!=0)continue;
 //	    AVFrame * picture= avcodec_alloc_frame();
     	cout << "InputPacketSize:"<<p.packet->size<<endl;
+    	cout << "InputPacketPts:"<<p.packet->pts<<endl;
 		boost::shared_ptr<Packet> ptr(new Packet(p));
 //    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
 
 	    unit._input_packets.push_back(ptr);
 	    Frame f = dec.decode(p);
 //	    cout <<"FrameHere"<<endl;
-	    Packet pe=enc.encode(f);
+//	    Packet pe=enc.encode(f);
 //	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 
 //		av_free(picture);
@@ -129,7 +130,7 @@ int main(int argc, char ** argv){
 	ObjectOutputStream oos(&fos);
 	oos.writeObject(unit);
 	fos.flush();
-
+	cout << "Data Serailized"<<endl;
 
 	
 	ProcessUnit unit2;	
