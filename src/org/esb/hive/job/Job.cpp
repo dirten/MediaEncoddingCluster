@@ -180,11 +180,11 @@ ProcessUnit Job::getNextProcessUnit(){
 	int size=0;
 	for(int a=0;a<frame_count;){
 	    pis.readPacket(tmp_p);
-	    if(tmp_p.stream_index!=_stream_index)continue;
+	    if(tmp_p.packet->stream_index!=_stream_index)continue;
 	    a++;
 	    shared_ptr<Packet> p(new Packet(tmp_p));
 	    u._input_packets.push_back(p);
-	    size+=p->size;
+	    size+=p->packet->size;
 	}
 	u._decoder=_decoder;
 	u._encoder=_encoder;
@@ -197,7 +197,7 @@ ProcessUnit Job::getNextProcessUnit(){
     }
     return u;
 }
-
+/*
 ProcessUnit Job::getNextProcessUnit2(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
@@ -236,4 +236,4 @@ ProcessUnit Job::getNextProcessUnit2(){
 	return u;
     }
 }
-
+*/

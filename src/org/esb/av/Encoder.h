@@ -14,6 +14,7 @@ namespace av{
 	    Encoder(CodecID id);
 	    Encoder();
 	    Packet encode(Frame & f);
+	    void encode(Frame & f, Packet & p);
 	    /*
 	    template<class Archive>
 	    void serialize(Archive & ar, const unsigned int version){

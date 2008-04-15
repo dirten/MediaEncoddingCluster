@@ -14,13 +14,13 @@ extern "C" {
 namespace org{
     namespace esb{
 	namespace av{
-	    class Packet:public AVPacket
+	    class Packet
 	    {
 		public:
 		    Packet();
 		    Packet(int size);
-		    Packet(const Packet & packet);
-		    Packet &operator=(Packet & packet);
+//		    Packet(const Packet & packet);
+//		    Packet &operator=(Packet & packet);
 		    ~Packet();
         	    uint8_t * getData();
     		    int getSize();
@@ -33,7 +33,11 @@ namespace org{
         	    void * getPriv();
         	    int64_t getPosition();
 //        	    boost::shared_ptr<unsigned char*> data;
+
+		    AVPacket * packet;
+
     		private:
+		    AVPacket _packet;
         	    bool isCopy;
         	    bool callDestruct;
         	    uint8_t _data;
@@ -43,20 +47,20 @@ namespace org{
 		    template<class Archive>
 		        void serialize(Archive & ar, const unsigned int version)
 		            {
-		                ar & size;
-				if(data==NULL){
-				    data=new uint8_t[size];
-				    memset(data,0,size);
+		                ar & packet->size;
+				if(packet->data==NULL){
+				    packet->data=new uint8_t[packet->size];
+				    memset(packet->data,0,packet->size);
 				    isCopy=true;
 				    callDestruct=true;
 				}
-				ar & boost::serialization::make_binary_object(data,size);
-		                ar & pts;
-		                ar & dts;
-		                ar & flags;
-		                ar & stream_index;
-		                ar & duration;
-		                ar & pos;
+				ar & boost::serialization::make_binary_object(packet->data,packet->size);
+		                ar & packet->pts;
+		                ar & packet->dts;
+		                ar & packet->flags;
+		                ar & packet->stream_index;
+		                ar & packet->duration;
+		                ar & packet->pos;
 		            }
 		            
 	    };

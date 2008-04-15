@@ -11,11 +11,14 @@ using namespace std;
 using namespace org::esb::av;
 using namespace org::esb::lang;
 
-
 PacketInputStream::PacketInputStream(InputStream * is){
+
+}
+
+PacketInputStream::PacketInputStream(InputStream & is){
 	_readFrom=0;
-    if(instanceOf(*is, FormatInputStream)){
-        _formatCtx=((FormatInputStream*)is)->getFormatContext();
+    if(instanceOf(is, FormatInputStream)){
+        _formatCtx=((FormatInputStream&)is).getFormatContext();
 
 //        _streamIndex=((FormatInputStream*)is)->selectedStream;
 //        _codecCtx=_formatCtx->streams[_streamIndex]->codec;
@@ -27,7 +30,7 @@ PacketInputStream::PacketInputStream(InputStream * is){
 //        }
         _readFrom=1;
     }else{
-    	_source=is;	
+    	_source=&is;	
     }
 }
 
@@ -53,11 +56,8 @@ int PacketInputStream::readPacket(Packet&packet){
 }
 
 int PacketInputStream::readPacketFromFormatIS(Packet & packet){
-
-        if(packet.data!=NULL)
-            av_free_packet(&packet);
         int count=0;
-        count=av_read_frame(_formatCtx, &packet);
+        count=av_read_frame(_formatCtx, packet.packet);
 	return count;
 }
 
@@ -66,7 +66,7 @@ Packet PacketInputStream::readPacketFromFormatIS(){
 //    av_init_packet(&pac);
 //        if(_packet.data!=NULL)
 //            av_free_packet(&_packet);
-    av_read_frame(_formatCtx, &pac);
+    av_read_frame(_formatCtx, pac.packet);
     return pac;
 }
 /*
@@ -86,6 +86,7 @@ Packet & PacketInputStream::readPacketFromIS(){
 	return _packet;
 }
 */
+/*
 int PacketInputStream::readPacketFromIS(Packet&packet){
     int count=0;
     if(packet.data!=NULL)
@@ -102,7 +103,7 @@ int PacketInputStream::readPacketFromIS(Packet&packet){
 	count+=read((unsigned char*)packet.data,_packet.size);
 	return count;
 }
-
+*/
 int PacketInputStream::read(unsigned char * buffer, int length){
     return _source->read(buffer, length);
 }

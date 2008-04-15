@@ -8,76 +8,82 @@ using namespace org::esb::av;
 
 Packet::Packet(){
 	isCopy=false;
-	av_init_packet(this);
+	packet=new AVPacket();
+	av_init_packet(packet);
 	callDestruct=false;
-	data=0;
-	size=0;
+//	data=0;
+//	size=0;
 
 }
-
-Packet::Packet(const Packet & packet){
-    av_init_packet(this);
-    data=0;
-    pts=packet.pts;
-    dts=packet.dts;
-   data=new uint8_t[packet.size];
-   memcpy(data,packet.data,packet.size);
-    size=packet.size;
-    stream_index=packet.stream_index;
-    flags=packet.flags;
-    duration=packet.duration;
-    destruct=packet.destruct;
-    priv=packet.priv;
-    pos=packet.pos;
+/*
+Packet::Packet(const Packet & p){
+    av_init_packet(packet);
+    packet->data=0;
+    packet->pts=p.packet->pts;
+    packet->dts=p.packet->dts;
+   packet->data=new uint8_t[p.packet->size];
+   memcpy(packet->data,p.packet->data,p.packet->size);
+    packet->size=p.packet->size;
+    packet->stream_index=p.packet->stream_index;
+    packet->flags=p.packet->flags;
+    packet->duration=p.packet->duration;
+    packet->destruct=p.packet->destruct;
+    packet->priv=p.packet->priv;
+    packet->pos=p.packet->pos;
     callDestruct=true;
 }
 
-Packet & Packet::operator=(Packet & packet){
-	av_init_packet(this);
-    pts=packet.pts;
-    dts=packet.dts;
-    data=0;
-   	data=new uint8_t[packet.size];
-   	memcpy(data,packet.data,packet.size);
-    size=packet.size;
-    stream_index=packet.stream_index;
-    flags=packet.flags;
-    duration=packet.duration;
-    destruct=packet.destruct;
-    priv=packet.priv;
-    pos=packet.pos;
+Packet & Packet::operator=(Packet & p){
+    av_init_packet(packet);
+    packet->pts=p.packet->pts;
+    packet->dts=p.packet->dts;
+    packet->data=0;
+    packet->data=new uint8_t[p.packet->size];
+    memcpy(packet->data,p.packet->data,p.packet->size);
+    packet->size=p.packet->size;
+    packet->stream_index=p.packet->stream_index;
+    packet->flags=p.packet->flags;
+    packet->duration=p.packet->duration;
+    packet->destruct=p.packet->destruct;
+    packet->priv=p.packet->priv;
+    packet->pos=p.packet->pos;
     callDestruct=true;
     return *this;
 }
-
+*/
 Packet::Packet(int s){
 	isCopy=false;
-	av_init_packet(this);
-	size=s;
+	packet=new AVPacket();
+	av_init_packet(packet);
+	packet->size=s;
 	if(s>0){
-		data=new uint8_t[s];
-		memset(data,0,s);
+		packet->data=new uint8_t[s];
+		memset(packet->data,0,s);
 		callDestruct=true;
 	}
 }
 
 Packet::~Packet(){
+/*
 	if(callDestruct){
         delete []data;	
 	}
-//	av_free_packet(this);
+*/
+    cout << "delete Packet"<<endl;
+    av_free_packet(packet);
+    delete packet;
 //    data=0;
 //    size=0;
 }
 
-uint8_t * Packet::getData(){return data;}
-int Packet::getSize(){return size;}
-int Packet::getPts(){return pts;}
-int Packet::getDts(){return dts;}
-int Packet::getFlags(){return flags;}
-int Packet::getStreamIndex(){return stream_index;}
-int Packet::getDuration(){return duration;}
-bool Packet::isKeyFrame(){return flags & PKT_FLAG_KEY;}
-void * Packet::getPriv(){return priv;}
-int64_t Packet::getPosition(){return pos;}
+uint8_t * Packet::getData(){return packet->data;}
+int Packet::getSize(){return packet->size;}
+int Packet::getPts(){return packet->pts;}
+int Packet::getDts(){return packet->dts;}
+int Packet::getFlags(){return packet->flags;}
+int Packet::getStreamIndex(){return packet->stream_index;}
+int Packet::getDuration(){return packet->duration;}
+bool Packet::isKeyFrame(){return packet->flags & PKT_FLAG_KEY;}
+void * Packet::getPriv(){return packet->priv;}
+int64_t Packet::getPosition(){return packet->pos;}
 

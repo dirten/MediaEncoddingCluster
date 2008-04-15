@@ -51,7 +51,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
         boost::shared_ptr<Packet> packet=*it;
 
-        if(packet->data==NULL){
+        if(packet->packet->data==NULL){
         	cout << "Packet data is null???"<<endl;
         }
         
@@ -59,19 +59,19 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 		int  field=0;
 
         _stmt->setInt( "stream_id", unit._target_stream);
-        _stmt->setInt( "pts", packet->pts);
-        _stmt->setInt( "dts", packet->dts);
-        _stmt->setInt( "stream_index", packet->stream_index);
+        _stmt->setInt( "pts", packet->packet->pts);
+        _stmt->setInt( "dts", packet->packet->dts);
+        _stmt->setInt( "stream_index", packet->packet->stream_index);
         _stmt->setInt( "key_frame", packet->isKeyFrame());
-		if(packet->stream_index==0)
+		if(packet->packet->stream_index==0)
     	    _stmt->setInt( "frame_group", frame_group);
 		else
     	    _stmt->setInt( "frame_group",0);	
-        _stmt->setInt( "flags", packet->flags);
-        _stmt->setInt( "duration", packet->duration);
-        _stmt->setInt( "pos", packet->pos);
-        _stmt->setInt( "data_size", packet->size);
-        _stmt->setBlob( "data", (char *)packet->data,packet->size);
+        _stmt->setInt( "flags", packet->packet->flags);
+        _stmt->setInt( "duration", packet->packet->duration);
+        _stmt->setInt( "pos", packet->packet->pos);
+        _stmt->setInt( "data_size", packet->packet->size);
+        _stmt->setBlob( "data", (char *)packet->packet->data,packet->packet->size);
 		_stmt->execute();
     }
     

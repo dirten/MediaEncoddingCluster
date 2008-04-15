@@ -33,7 +33,7 @@ int main(){
 		fis.seek(0,wert);
 		av::Packet p=pis.readPacket();
 		av::Packet p2(500);
-		cout <<"PacketPts:"<<p.pts<<"\tWertPts"<< wert<<endl;
+		cout <<"PacketPts:"<<p.packet->pts<<"\tWertPts"<< wert<<endl;
 	}
 }
 

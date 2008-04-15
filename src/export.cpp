@@ -67,16 +67,16 @@ int exporter(int argc, char * argv[]){
 	    Packet p(rs.getInt("data_size"));
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
-	    memcpy(p.data,rs.getBlob("data").data(),p.size);
-	    p.pts=rs.getInt("pts");
-	    p.dts=rs.getInt("dts");
-	    p.duration=rs.getInt("duration");
-	    p.flags=rs.getInt("flags");
-	    p.pos=rs.getInt("pos");
-	    p.stream_index=0;//rs.getint(7);
+	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
+	    p.packet->pts=rs.getInt("pts");
+	    p.packet->dts=rs.getInt("dts");
+	    p.packet->duration=rs.getInt("duration");
+	    p.packet->flags=rs.getInt("flags");
+	    p.packet->pos=rs.getInt("pos");
+	    p.packet->stream_index=0;//rs.getint(7);
 	    pos.writePacket(p);
 //	    if(video_packets%1000==0)
-	    cout<<"\r" << p.dts ;
+	    cout<<"\r" << p.packet->dts ;
 	    cout.flush();
 	}
     }
@@ -94,16 +94,16 @@ int exporter(int argc, char * argv[]){
 //	    Row row=rs.getRow(a);
 	    audio_packets++;
 	    Packet p;
-	    p.size=rs.getInt("data_size");
-	    p.data=new uint8_t[p.size];
-	    memcpy(p.data,rs.getBlob("data").data(),p.size);
+	    p.packet->size=rs.getInt("data_size");
+	    p.packet->data=new uint8_t[p.packet->size];
+	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
 	    /*for some AudioStreams it might be pts=pts/duration */
-	    p.pts=rs.getInt("pts")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
-	    p.dts=p.pts;//rs.getint(3);
-	    p.duration=1;//rs.getInt("duration");
-	    p.flags=rs.getInt("flags");
-	    p.pos=rs.getInt("pos");
-	    p.stream_index=1;//rs.getint(7);
+	    p.packet->pts=rs.getInt("pts")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
+	    p.packet->dts=p.packet->pts;//rs.getint(3);
+	    p.packet->duration=1;//rs.getInt("duration");
+	    p.packet->flags=rs.getInt("flags");
+	    p.packet->pos=rs.getInt("pos");
+	    p.packet->stream_index=1;//rs.getint(7);
 	    pos.writePacket(p);
 		if(audio_packets%1000==0)
 	    cout<<"\r" << audio_packets ;

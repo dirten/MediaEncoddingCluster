@@ -49,7 +49,7 @@ class Job{
 		*/
 //		bool getNextProcessUnit(ProcessUnit & unit);
 		ProcessUnit getNextProcessUnit();
-		ProcessUnit getNextProcessUnit2();
+//		ProcessUnit getNextProcessUnit2();
 		queue<ProcessUnit*> _unit_queue;
 //		static int process(void *NotUsed, int argc, char **argv, char **azColName);
 	private:

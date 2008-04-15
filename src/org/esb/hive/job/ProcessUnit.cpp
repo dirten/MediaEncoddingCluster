@@ -38,8 +38,8 @@ void ProcessUnit::process(){
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){
 		
 	    boost::shared_ptr<Packet> p=*it;
-	    size+=p->size;
-	    Frame f=_decoder->decode(*p.get());
+	    size+=p->packet->size;
+	    Frame f=_decoder->decode(*p);
 
 
 

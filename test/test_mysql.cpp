@@ -40,19 +40,19 @@ int main(int argc, char * argv[]){
     while(true/*&&count < 1000*/){
         pis.readPacket(packet);
 //        cout << "New Packet"<<endl;
-        if(packet.data==NULL)break;
+        if(packet.packet->data==NULL)break;
 //        ++count;
 
 		bind[0].buffer_type= MYSQL_TYPE_SHORT;
-		bind[0].buffer= (char *)&packet.size;
+		bind[0].buffer= (char *)&packet.packet->size;
 		bind[0].is_null= 0;
 		bind[0].length=0;	
 
 
 		bind[1].buffer_type= MYSQL_TYPE_STRING;
-		bind[1].buffer= (char *)packet.data;
+		bind[1].buffer= (char *)packet.packet->data;
 		bind[1].is_null= 0;
-		bind[1].length=(long unsigned int*)&packet.size;
+		bind[1].length=(long unsigned int*)&packet.packet->size;
 		
 		
 		if (mysql_stmt_bind_param(stmt, bind))

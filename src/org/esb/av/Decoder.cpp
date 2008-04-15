@@ -15,66 +15,38 @@ Frame Decoder::decode(Packet & packet){
 		return decodeAudio(packet);
 	return Frame();
 }
-/*
-void Decoder::decodeVideo(Packet & packet, Frame & frame){
-//    Frame frame(pix_fmt, width, height);
-    int _frameFinished=0;
-    frame._width=this->width;
-    frame._height=this->height;
-    frame._pixFormat=this->pix_fmt;
-    int bytesRemaining=packet.size,  bytesDecoded=0;
-    uint8_t * rawData=packet.data;
-    while(bytesRemaining > 0){
-		bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, rawData, bytesRemaining);
-		if(bytesDecoded < 0){
-	    	fprintf(stderr, "Error while decoding frame\n");
-	    	break;
-		}
-		bytesRemaining-=bytesDecoded;
-		rawData+=bytesDecoded;
-		if(_frameFinished){
-	    	break;
-		}
-    }
-    frame._pixFormat=pix_fmt;
-    frame.pts=packet.pts;
-    frame.dts=packet.dts;
-    return frame;
+
+void Decoder::decode(Packet & packet, Frame & frame){
+
+
 }
-*/
+
 Frame Decoder::decodeVideo(Packet & packet){
     Frame frame(pix_fmt, width, height);
     int _frameFinished=0;
-//    frame._width=this->width;
-//    frame._height=this->height;
-//    frame._pixFormat=this->pix_fmt;
-    int bytesRemaining=packet.size,  bytesDecoded=0;
-    uint8_t * rawData=packet.data;
-    while(bytesRemaining > 0){
-		bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, rawData, bytesRemaining);
-		if(bytesDecoded < 0){
-	    	fprintf(stderr, "Error while decoding frame\n");
-	    	break;
-		}
-		bytesRemaining-=bytesDecoded;
-		rawData+=bytesDecoded;
-		if(_frameFinished){
-	    	break;
-		}
+//    int bytesRemaining=packet.packet->size,  bytesDecoded=0;
+//    uint8_t * rawData=packet.packet->data;
+//    while(bytesRemaining > 0){
+    int bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, packet.packet->data,packet.packet->size);
+    if(bytesDecoded < 0){
+	fprintf(stderr, "Error while decoding frame\n");
+//	break;
     }
+//		bytesRemaining-=bytesDecoded;
+//		rawData+=bytesDecoded;
     frame._pixFormat=pix_fmt;
-    frame.pts=packet.pts;
-    frame.dts=packet.dts;
-    frame.pos=packet.pos;
+    frame.pts=packet.packet->pts;
+    frame.dts=packet.packet->dts;
+    frame.pos=packet.packet->pos;
     return frame;
 }
 
 Frame Decoder::decodeAudio(Packet & packet){
 //	cout << "DecodeAudio Packet"<<endl;
 //        Frame frame;
-	int size=packet.size, out_size;
+	int size=packet.packet->size, out_size;
 	uint8_t * outbuf=new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-	uint8_t * inbuf=packet.data;
+	uint8_t * inbuf=packet.packet->data;
         while (size > 0) {
             int len = avcodec_decode_audio2(this, (short *)outbuf, &out_size, inbuf, size);
             if (len < 0) {
@@ -92,10 +64,10 @@ Frame Decoder::decodeAudio(Packet & packet){
 // 		cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
         Frame frame;
         frame._buffer=outbuf;
-        frame.pts=packet.pts;
-        frame.dts=packet.dts;
-        frame.pos=packet.pos;
-        frame.duration=packet.duration;
+        frame.pts=packet.packet->pts;
+        frame.dts=packet.packet->dts;
+        frame.pos=packet.packet->pos;
+        frame.duration=packet.packet->duration;
         frame._size=out_size;
     return frame;
 }

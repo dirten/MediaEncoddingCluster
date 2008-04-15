@@ -32,10 +32,10 @@ class Frame :public AVFrame{
 //    private:
         AVCodecContext * _codecContext;
 	AVPacket * _packet;
-	AVFrame * _frame;
+//	AVFrame * _frame;
         uint8_t * _buffer;
     public:
-		int _frameFinished;
+	int _frameFinished;
         int64_t dts;
         int64_t pos;
         int duration;

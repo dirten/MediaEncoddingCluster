@@ -21,7 +21,7 @@ PacketOutputStream::~PacketOutputStream(){
 }
 
 void PacketOutputStream::writePacket(Packet & packet){
-    av_interleaved_write_frame(_fmtCtx,&packet);
+    av_interleaved_write_frame(_fmtCtx,packet.packet);
 //    int result=av_write_frame(_fmtCtx,&packet);
 }
 
@@ -39,7 +39,7 @@ void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
 void PacketOutputStream::init(){
     av_write_header(_fmtCtx);
 }
-
+/*
 void PacketOutputStream::writePacket(Packet * packet){
 	write((char*)&packet->pts,sizeof(int64_t));
 	write((char*)&packet->dts,sizeof(int64_t));
@@ -51,7 +51,7 @@ void PacketOutputStream::writePacket(Packet * packet){
 	write((char*)packet->data,packet->size);
 	flush();
 }
-
+*/
 void PacketOutputStream::write(char * buffer, int length){
 	_target->write(buffer, length);
 }

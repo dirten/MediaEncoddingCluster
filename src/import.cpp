@@ -157,29 +157,29 @@ int import(int argc, char * argv[]){
 			cout<<"\r" << count;
 			cout.flush();
 		}
-        if(packet.data==NULL)break;
+        if(packet.packet->data==NULL)break;
         
         ++count;
         
 
-	if(packet.stream_index==0&&packet.isKeyFrame())frame_group++;
+	if(packet.packet->stream_index==0&&packet.isKeyFrame())frame_group++;
 	int  field=0;
-	packet.duration=packet.duration==0?1:packet.duration;
-        stmt.setInt( "stream_id", streams[packet.stream_index]);
-        stmt.setDouble( "pts", (double)packet.pts);
-        stmt.setDouble( "dts", (double)packet.dts);
-        stmt.setInt( "stream_index", packet.stream_index);
+	packet.packet->duration=packet.packet->duration==0?1:packet.packet->duration;
+        stmt.setInt( "stream_id", streams[packet.packet->stream_index]);
+        stmt.setDouble( "pts", (double)packet.packet->pts);
+        stmt.setDouble( "dts", (double)packet.packet->dts);
+        stmt.setInt( "stream_index", packet.packet->stream_index);
         stmt.setInt( "key_frame", packet.isKeyFrame());
-	if(packet.stream_index==0)
+	if(packet.packet->stream_index==0)
     	    stmt.setInt( "frame_group", frame_group);
 	else
     	    stmt.setInt( "frame_group",0);	
-        stmt.setInt( "flags", packet.flags);
-        stmt.setInt( "duration", packet.duration);
-        stmt.setDouble( "pos", (double)packet.pos);
-        stmt.setInt( "data_size", packet.size);
+        stmt.setInt( "flags", packet.packet->flags);
+        stmt.setInt( "duration", packet.packet->duration);
+        stmt.setDouble( "pos", (double)packet.packet->pos);
+        stmt.setInt( "data_size", packet.packet->size);
 //        Blob blob((const char*)packet.data,packet.size);
-        stmt.setBlob( "data", (char*)packet.data, packet.size);
+        stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
 	stmt.execute();
 //	show_progress+=packet.duration;
     }

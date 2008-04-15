@@ -7,6 +7,7 @@ extern "C" {
 #include <assert.h>
 #include "org/esb/util/Log.h"
 using namespace std;
+/*
 void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
@@ -17,7 +18,7 @@ void my_init ()
 	av_register_all ();
 	avcodec_register_all ();
 }
-
+*/
 namespace org {
 	namespace esb {
 		namespace av {

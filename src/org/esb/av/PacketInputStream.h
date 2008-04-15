@@ -11,6 +11,7 @@ namespace av{
 class PacketInputStream: public InputStream{
     public:
         PacketInputStream(InputStream * is);
+        PacketInputStream(InputStream & is);
         ~PacketInputStream();
         int readPacket(Packet&packet);
         Packet  readPacket();

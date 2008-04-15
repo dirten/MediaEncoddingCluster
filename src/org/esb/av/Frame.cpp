@@ -19,13 +19,13 @@ Frame::Frame(Packet * packet, Codec * codec){
     
     key_frame=1;
     _frameFinished=0;
-    _packet=packet;
+    _packet=packet->packet;
     _codecContext=codec;
     _width=_codecContext->width;
     _height=_codecContext->height;
     _pixFormat=_codecContext->pix_fmt;
     int bytesRemaining=_packet->size,  bytesDecoded=0;
-    uint8_t * rawData=packet->data;
+    uint8_t * rawData=packet->packet->data;
     _buffer=new uint8_t[1];
     while(bytesRemaining > 0)
     {
@@ -43,7 +43,7 @@ Frame::Frame(Packet * packet, Codec * codec){
       }
     }
     
-        pts=packet->pts;
+        pts=packet->packet->pts;
     
 }
 
@@ -54,12 +54,15 @@ Frame::Frame(int format, int width, int height){
 	_height=height;
 	_pixFormat=format;
 
+    memset(this,0,sizeof(Frame));
+    pts= AV_NOPTS_VALUE;
+    key_frame= 1;
 
-	avcodec_get_frame_defaults(this);
+//    avcodec_get_frame_defaults(this);
     int numBytes=avpicture_get_size(format, width,height);
     _buffer=new uint8_t[numBytes];
     // Assign appropriate parts of buffer to image planes in pFrameRGB
-    avpicture_fill((AVPicture *)this, _buffer, format, width, height);
+    avpicture_fill((AVPicture*)this, _buffer, format, width, height);
 }
 
 Frame::Frame(int format, int width, int height, unsigned char * data){
@@ -95,6 +98,7 @@ Frame::Frame(Frame * source, int format){
 }
 
 Frame::~Frame(){
+    cout <<"Delete Frame"<<endl;
         delete []_buffer;
 }
 
