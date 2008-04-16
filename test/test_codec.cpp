@@ -15,6 +15,7 @@
 
 
 #include <list>
+#include <vector>
 #include "boost/shared_ptr.hpp"
 using namespace org::esb::av;
 using namespace org::esb::config;
@@ -33,7 +34,49 @@ logger("main")
 using namespace std;
  
 //void testAV();
+
+
+/* prepare a dummy image */
+static void fill_yuv_image(AVFrame *pict, int frame_index, int width, int height)
+{
+    int x, y, i;
+
+    i = frame_index;
+
+    /* Y */
+    for(y=0;y<height;y++) {
+        for(x=0;x<width;x++) {
+            pict->data[0][y * pict->linesize[0] + x] = x + y + i * 3;
+        }
+    }
+
+    /* Cb and Cr */
+    for(y=0;y<height/2;y++) {
+        for(x=0;x<width/2;x++) {
+            pict->data[1][y * pict->linesize[1] + x] = 128 + y + i * 2;
+            pict->data[2][y * pict->linesize[2] + x] = 64 + x + i * 5;
+        }
+    }
+}
+
+//using namespace std;
+
+
+std::vector< std::vector<double> >  test(){
+    std::vector< std::vector<double> > testVector;
+
+    std::vector<double> t;
+    t.push_back(1);
+
+    testVector.push_back(std::vector<double>(1));
+    return testVector;
+}
+
 int main(int argc, char ** argv){
+//    std::vector< std::vector<double> > v=test();
+//    cout << v[0][0]<<endl;
+//    return 0;
+
     av_register_all();
 
     avcodec_init();
@@ -72,7 +115,7 @@ int main(int argc, char ** argv){
     */
 //	int ret = av_read_frame(ic, pkt);
 
-
+    
     File file(filename);
     FormatInputStream fois(&file);
     AVFormatContext *ic=fois.getFormatContext();
@@ -88,14 +131,23 @@ int main(int argc, char ** argv){
 
 //	Encoder enc(CODEC_ID_MPEG2VIDEO);
 //	enc.max_b_frames=3;
-	Encoder enc(CODEC_ID_MSMPEG4V3);
-
+	Encoder enc(CODEC_ID_MPEG4);
 	enc.setWidth(ic->streams[0]->codec->width);
 	enc.setHeight(ic->streams[0]->codec->height);
 	enc.setTimeBase((AVRational){1,25});
 	enc.setBitRate(800000);
 	enc.setGopSize(20);
 	enc.setPixelFormat(PIX_FMT_YUV420P);
+
+//	    enc.thread_count=1;
+//	    enc.max_qdiff=0;
+//	    enc.sample_aspect_ratio=(AVRational){1,1};
+//	    enc.rc_override_count=0;
+//	    enc.me_threshold=0;
+//	    enc.intra_dc_precision=0;
+//	    enc.strict_std_compliance=0;
+//	    enc.debug|=FF_DEBUG_MV;
+
 	enc.open();
 
 //    AVPacket pkt;
@@ -106,24 +158,88 @@ int main(int argc, char ** argv){
 	unit._decoder=&dec;
 	unit._encoder=&enc;
 
+
+	AVFrame * picture;
+	uint8_t *picture_buf;
+	int size;
+
+	picture = avcodec_alloc_frame();
+	if (!picture)
+    	    return NULL;
+	size = avpicture_get_size(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
+	picture_buf = (uint8_t*)av_malloc(size);
+	if (!picture_buf) {
+    	    av_free(picture);
+    	    return NULL;
+	}
+	avpicture_fill((AVPicture *)picture, picture_buf,
+                   enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
+
+
+
+
+
+
+
+
+
+	AVCodecContext * cc;
+	cc=avcodec_alloc_context();
+	cc->codec_id=CODEC_ID_MPEG4;
+	cc->codec_type=CODEC_TYPE_VIDEO;
+	cc->bit_rate=400000;
+	cc->width=enc.getWidth();
+	cc->height=enc.getHeight();
+	cc->time_base.num=1;
+	cc->time_base.den=25;
+	cc->gop_size=12;
+	cc->pix_fmt=PIX_FMT_YUV420P;
+	
+	
+	AVCodec * codec;
+	codec=avcodec_find_encoder(cc->codec_id);
+	avcodec_open(cc,codec);
+	
+
+
 	for(int i=0;i<100;i++){
 	    Packet p;
+	    av_init_packet(p.packet);
 	    pis.readPacket(p);
    	    if(p.packet->stream_index!=0)continue;
 //	    AVFrame * picture= avcodec_alloc_frame();
-    	cout << "InputPacketSize:"<<p.packet->size<<endl;
-    	cout << "InputPacketPts:"<<p.packet->pts<<endl;
+        	cout << "InputPacketSize:"<<p.packet->size<<endl;
+		cout << "InputPacketPts:"<<p.packet->pts<<endl;
 		boost::shared_ptr<Packet> ptr(new Packet(p));
 //    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
 
 	    unit._input_packets.push_back(ptr);
-	    Frame f = dec.decode(p);
+//	    dec.debug|=FF_DEBUG_MV;
+//	    int out_size = avcodec_decode_video(&dec, picture, &got_picture, p.packet->data, p.packet->size);
+//	    picture->pict_type=1;
+//	    picture->quality=dec.coded_frame->quality;
+//	    Frame f = dec.decode(p);
+//	    fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
+//	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
+	    
+	    
+	    int video_outbuf_size = 200000;
+    	    uint8_t* video_outbuf = (uint8_t*)av_malloc(video_outbuf_size);
+
+	    
+//	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, picture);
+	    av_free(video_outbuf);
+
 //	    cout <<"FrameHere"<<endl;
 //	    Packet pe=enc.encode(f);
 //	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 
 //		av_free(picture);
 	}
+	avcodec_close(cc);
+	av_free(cc);
+	av_free(picture);
+	av_free(picture_buf);
 	
 	
 	FileOutputStream fos("test.unit");

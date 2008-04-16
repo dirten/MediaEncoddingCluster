@@ -121,6 +121,7 @@ AC_OUTPUT(
     src/org/esb/web/Makefile
     src/org/esb/sql/Makefile
     test/Makefile
+    test/fobs/Makefile
 dnl    src/hive.client/Makefile 
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     

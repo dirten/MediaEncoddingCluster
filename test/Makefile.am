@@ -8,6 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #noinst_HEADERS=*.h 
+SUBDIRS=fobs
 
 check_PROGRAMS = cpp_unit 
 cpp_unit_SOURCES=cpp_unit.cpp \
@@ -37,7 +38,8 @@ bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec outex
 #test_file_SOURCES=test_file.cpp
 test_tnt_SOURCES=test_tnt.cpp
 test_seek_SOURCES=test_seek.cpp
-outex_SOURCES=output_example.c
+#outex_SOURCES=output_example.c
+outex_SOURCES=apiexample.c
 seek_test_SOURCES=seek_test.c
 test_codec_SOURCES=test_codec.cpp
 #test_codec_SOURCES=test_codec.cpp

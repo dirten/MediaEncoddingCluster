@@ -34,6 +34,10 @@ namespace org {
 				void setChannels (int size);
 				void setSampleRate (int size);
 				void setSampleFormat (SampleFormat size);
+				int getWidth ();
+				int getHeight ();
+				int getPixelFormat ();
+
 				  template < class Archive >
 					void serialize (Archive & ar, const unsigned int version)
 				{

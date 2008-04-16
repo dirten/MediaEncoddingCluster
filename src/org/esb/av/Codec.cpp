@@ -111,7 +111,8 @@ namespace org {
 					if (_codec == NULL)
 					    logerror("Encoder not found for id :" << _codec_id);
 				}
-				avcodec_get_context_defaults2 (this, _codec->type);
+//				avcodec_get_context_defaults2 (this, _codec->type);
+				codec_id=(CodecID)_codec_id;
 				pix_fmt = _pix_fmt;
 				width = _width;
 				height = _height;
@@ -171,6 +172,16 @@ namespace org {
 			void Codec::setSampleFormat (SampleFormat f) {
 				_sample_format = f;
 			}
+			int Codec::getWidth () {
+				return width;
+			}
+			int Codec::getHeight () {
+				return height;
+			}
+			int Codec::getPixelFormat () {
+				return pix_fmt;
+			}
+
 
 		}
 	}
