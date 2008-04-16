@@ -21,8 +21,8 @@ int exporter(int argc, char * argv[]){
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
 
-    Encoder *encoder=new Encoder(CODEC_ID_MPEG4);
-    encoder->setBitRate(4000000);
+    Encoder *encoder=new Encoder(CODEC_ID_MSMPEG4V3);
+    encoder->setBitRate(1000000);
     encoder->setTimeBase((AVRational){1,25});
     encoder->setGopSize(20);
     encoder->setPixelFormat(PIX_FMT_YUV420P);

@@ -33,8 +33,8 @@ void Decoder::decode(Packet & packet, Frame & frame){
 //		rawData+=bytesDecoded;
     frame._pixFormat=pix_fmt;
     frame.pts=packet.packet->pts;
-    frame.dts=packet.packet->dts;
-    frame.pos=packet.packet->pos;
+//    frame.dts=packet.packet->dts;
+//    frame.pos=packet.packet->pos;
 //    return frame;
 
 

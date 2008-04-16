@@ -80,7 +80,7 @@ int ServerSocket::bind()
     close();
     string error="ServerSocket:bind - ";
     error+=strerror(errno);
-    error.append(__FILE__);
+    error.append(" ").append(__FILE__);
     throw SocketException(error);
   }
   int err=::listen(server_socketFd,1024);

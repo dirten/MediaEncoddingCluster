@@ -7,7 +7,7 @@ extern "C" {
 #include <assert.h>
 #include "org/esb/util/Log.h"
 using namespace std;
-/*
+
 void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
@@ -18,7 +18,7 @@ void my_init ()
 	av_register_all ();
 	avcodec_register_all ();
 }
-*/
+
 namespace org {
 	namespace esb {
 		namespace av {
@@ -75,7 +75,7 @@ namespace org {
 				_sample_rate = 0;
 				_sample_format = (SampleFormat)0;
 				_pix_fmt = (PixelFormat)0;
-    			    _opened=false;
+   			    _opened=false;
 			}
 
 			CodecType Codec::getCodecType () {
@@ -111,7 +111,7 @@ namespace org {
 					if (_codec == NULL)
 					    logerror("Encoder not found for id :" << _codec_id);
 				}
-//				avcodec_get_context_defaults2 (this, _codec->type);
+				avcodec_get_context_defaults2 (this, _codec->type);
 				codec_id=(CodecID)_codec_id;
 				pix_fmt = _pix_fmt;
 				width = _width;
@@ -181,8 +181,6 @@ namespace org {
 			int Codec::getPixelFormat () {
 				return pix_fmt;
 			}
-
-
 		}
 	}
 }

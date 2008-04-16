@@ -18,7 +18,7 @@ Packet::Packet(){
 }
 
 Packet::Packet(const Packet & p){
-	cout << "CopyConstruct"<<endl;
+//	cout << "CopyConstruct"<<endl;
 //	callDestruct=false;
 	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
 	packet=packetPtr.get();

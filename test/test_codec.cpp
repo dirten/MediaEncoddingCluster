@@ -46,15 +46,15 @@ static void fill_yuv_image(AVFrame *pict, int frame_index, int width, int height
     /* Y */
     for(y=0;y<height;y++) {
         for(x=0;x<width;x++) {
-            pict->data[0][y * pict->linesize[0] + x] = x + y + i * 3;
+            pict->data[0][y * pict->linesize[0] + x] =0;// x + y + i * 3;
         }
     }
 
     /* Cb and Cr */
     for(y=0;y<height/2;y++) {
         for(x=0;x<width/2;x++) {
-            pict->data[1][y * pict->linesize[1] + x] = 128 + y + i * 2;
-            pict->data[2][y * pict->linesize[2] + x] = 64 + x + i * 5;
+            pict->data[1][y * pict->linesize[1] + x] = 0;//128 + y + i * 2;
+            pict->data[2][y * pict->linesize[2] + x] = 0;//64 + x + i * 5;
         }
     }
 }
@@ -135,8 +135,8 @@ int main(int argc, char ** argv){
 	enc.setWidth(ic->streams[0]->codec->width);
 	enc.setHeight(ic->streams[0]->codec->height);
 	enc.setTimeBase((AVRational){1,25});
-	enc.setBitRate(800000);
-	enc.setGopSize(20);
+	enc.setBitRate(500000);
+	enc.setGopSize(10);
 	enc.setPixelFormat(PIX_FMT_YUV420P);
 
 //	    enc.thread_count=1;
@@ -161,10 +161,10 @@ int main(int argc, char ** argv){
 	AVCodec * decodec= avcodec_find_decoder(ic->streams[0]->codec->codec_id);
 //	cc=avcodec_alloc_context();
 
-//	AVCodecContext * decc=avcodec_alloc_context();//ic->streams[0]->codec;
-	AVCodecContext * decc=ic->streams[0]->codec;
-	decc->width=enc.getWidth();
-	decc->height=enc.getHeight();
+	AVCodecContext * decc=avcodec_alloc_context();//ic->streams[0]->codec;
+//	AVCodecContext * decc=ic->streams[0]->codec;
+//	decc->width=enc.getWidth();
+//	decc->height=enc.getHeight();
 	decc->time_base.num=1;
 	decc->time_base.den=25;
 
@@ -184,6 +184,7 @@ int main(int argc, char ** argv){
     	    return NULL;
 	size = avpicture_get_size(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
 	picture_buf = (uint8_t*)av_malloc(size);
+	memset(picture_buf,0,size);
 	if (!picture_buf) {
     	    av_free(picture);
     	    return NULL;
@@ -201,16 +202,30 @@ int main(int argc, char ** argv){
 
 	AVCodecContext * cc;
 	cc=avcodec_alloc_context();
-	cc->codec_id=CODEC_ID_MPEG1VIDEO;
+//	cc->codec_id=CODEC_ID_MPEG1VIDEO;
+//	cc->codec_id=CODEC_ID_MPEG2VIDEO;
+	cout << "CodecIC"<<CODEC_ID_MSMPEG4V3<<endl;
+	cc->codec_id=CODEC_ID_MSMPEG4V3;
 	cc->codec_type=CODEC_TYPE_VIDEO;
-	cc->max_b_frames=3;
-	cc->bit_rate=400000;
+//	cc->max_b_frames=1;
+	cc->bit_rate=500000;
 	cc->width=enc.getWidth();
 	cc->height=enc.getHeight();
 	cc->time_base.num=1;
 	cc->time_base.den=25;
-	cc->gop_size=12;
+	cc->gop_size=10;
 	cc->pix_fmt=PIX_FMT_YUV420P;
+/*
+	cc->thread_count=1;
+	cc->max_qdiff=0;
+	cc->sample_aspect_ratio=(AVRational){1,1};
+	cc->rc_override_count=0;
+	cc->me_threshold=0;
+	cc->intra_dc_precision=0;
+	cc->strict_std_compliance=0;
+	cc->mb_decision=2;
+ */
+//	cc->debug|=FF_DEBUG_MV;
 	
 	
 	AVCodec * codec;
@@ -220,64 +235,82 @@ int main(int argc, char ** argv){
 
 	    int video_outbuf_size = 200000;
    	    uint8_t* video_outbuf = (uint8_t*)av_malloc(video_outbuf_size);
-
+	int insize=0, outsize=0;
 	for(int i=0;i<100;i++){
 	    Packet p;
 	    av_init_packet(p.packet);
 	    pis.readPacket(p);
    	    if(p.packet->stream_index!=0)continue;
 //	    AVFrame * picture= avcodec_alloc_frame();
-       	cout << "InputPacketSize:"<<p.packet->size<<endl;
-		cout << "InputPacketPts:"<<p.packet->pts<<endl;
-//		boost::shared_ptr<Packet> ptr(new Packet(p));
+       	insize+=p.packet->size;
+//		cout << "InputPacketPts:"<<p.packet->pts<<endl;
+		boost::shared_ptr<Packet> ptr(new Packet(p));
 //    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
 		Frame frame(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
-//	    unit._input_packets.push_back(ptr);
+	    unit._input_packets.push_back(ptr);
 //	    dec.debug|=FF_DEBUG_MV;
-	    int out_size = avcodec_decode_video(decc, picture, &got_picture, p.packet->data, p.packet->size);
+//	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
+	    int out_size = avcodec_decode_video(decc, &frame, &got_picture, p.packet->data, p.packet->size);
 //	    picture->pict_type=1;
 //	    picture->quality=dec.coded_frame->quality;
-//	    Frame f = dec.decode(p);
+
+
+//	    Frame frame = dec.decode(p);
+
+
+	    frame.pts = p.packet->pts;
+
+//	    Packet pe=enc.encode(frame);
+//		int out_size=pe.packet->size;
 //	    fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
-//	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
 	    
 	    
 
-	    picture->pts = p.packet->pts;
-	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, picture);
+//	    picture->pts = AV_NOPTS_VALUE;//p.packet->pts;
+//	    frame.pts = p.packet->pts;//AV_NOPTS_VALUE;//p.packet->pts;
+
+	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, &frame);
+	    outsize+=out_size;
+
+       	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  cc->coded_frame->key_frame<<endl;
 		
-	    cout <<"FrameHere:"<<out_size<<endl;
+//	    cout <<"FrameHere:"<<out_size<<endl;
+	    outsize+=out_size;
 //	    Packet pe=enc.encode(f);
 //	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 
 //		av_free(picture);
 	}
+   	cout << "InputPacketSizeAll:"<<insize<<"\tOutputPacketSizeAll:"<<outsize<<endl;
+
     av_free(video_outbuf);
 	avcodec_close(cc);
 	avcodec_close(decc);
 	av_free(cc);
-//	av_free(decc);
+	av_free(decc);
+//	av_free(decodec);
+//	av_free(codec);
 	av_free(picture);
 	av_free(picture_buf);
 	
-/*	
+	
 	FileOutputStream fos("test.unit");
 	ObjectOutputStream oos(&fos);
 	oos.writeObject(unit);
 	fos.flush();
 	cout << "Data Serailized"<<endl;
-*/
-/*	
+
+	
 	ProcessUnit unit2;	
 	FileInputStream fis("test.unit");
 	ObjectInputStream ois(&fis);
 	ois.readObject(unit2);
 
-//	unit2.process();
+	unit2.process();
 
 	delete unit2._decoder;
 	delete unit2._encoder;
-*/
+
 
 /*
 	ProcessUnit unit;

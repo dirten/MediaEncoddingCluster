@@ -58,7 +58,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     
     int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
 //    pac.data=new uint8_t[ret];
-	cout << "ret:"<<ret<<endl;
+//	cout << "ret:"<<ret<<endl;
     Packet pac(ret);
     memcpy(pac.packet->data, &data, ret);
 //    pac.data=data;

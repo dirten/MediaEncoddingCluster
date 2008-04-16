@@ -12,6 +12,13 @@ using namespace org::esb::av;
 using namespace org::esb::lang;
 
 PacketInputStream::PacketInputStream(InputStream * is){
+	_readFrom=0;
+    if(instanceOf(*is, FormatInputStream)){
+        _formatCtx=((FormatInputStream*)is)->getFormatContext();
+        _readFrom=1;
+    }else{
+    	_source=is;	
+    }
 
 }
 
