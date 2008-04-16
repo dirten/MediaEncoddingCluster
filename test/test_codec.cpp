@@ -158,7 +158,23 @@ int main(int argc, char ** argv){
 	unit._decoder=&dec;
 	unit._encoder=&enc;
 
+	AVCodec * decodec= avcodec_find_decoder(ic->streams[0]->codec->codec_id);
+//	cc=avcodec_alloc_context();
 
+//	AVCodecContext * decc=avcodec_alloc_context();//ic->streams[0]->codec;
+	AVCodecContext * decc=ic->streams[0]->codec;
+	decc->width=enc.getWidth();
+	decc->height=enc.getHeight();
+	decc->time_base.num=1;
+	decc->time_base.den=25;
+
+	if (avcodec_open(decc, decodec) < 0) {
+        fprintf(stderr, "could not open codec\n");
+        exit(1);
+    }
+
+	
+	
 	AVFrame * picture;
 	uint8_t *picture_buf;
 	int size;
@@ -185,8 +201,9 @@ int main(int argc, char ** argv){
 
 	AVCodecContext * cc;
 	cc=avcodec_alloc_context();
-	cc->codec_id=CODEC_ID_MPEG4;
+	cc->codec_id=CODEC_ID_MPEG1VIDEO;
 	cc->codec_type=CODEC_TYPE_VIDEO;
+	cc->max_b_frames=3;
 	cc->bit_rate=400000;
 	cc->width=enc.getWidth();
 	cc->height=enc.getHeight();
@@ -201,6 +218,8 @@ int main(int argc, char ** argv){
 	avcodec_open(cc,codec);
 	
 
+	    int video_outbuf_size = 200000;
+   	    uint8_t* video_outbuf = (uint8_t*)av_malloc(video_outbuf_size);
 
 	for(int i=0;i<100;i++){
 	    Packet p;
@@ -208,14 +227,14 @@ int main(int argc, char ** argv){
 	    pis.readPacket(p);
    	    if(p.packet->stream_index!=0)continue;
 //	    AVFrame * picture= avcodec_alloc_frame();
-        	cout << "InputPacketSize:"<<p.packet->size<<endl;
+       	cout << "InputPacketSize:"<<p.packet->size<<endl;
 		cout << "InputPacketPts:"<<p.packet->pts<<endl;
-		boost::shared_ptr<Packet> ptr(new Packet(p));
+//		boost::shared_ptr<Packet> ptr(new Packet(p));
 //    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
-
-	    unit._input_packets.push_back(ptr);
+		Frame frame(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
+//	    unit._input_packets.push_back(ptr);
 //	    dec.debug|=FF_DEBUG_MV;
-//	    int out_size = avcodec_decode_video(&dec, picture, &got_picture, p.packet->data, p.packet->size);
+	    int out_size = avcodec_decode_video(decc, picture, &got_picture, p.packet->data, p.packet->size);
 //	    picture->pict_type=1;
 //	    picture->quality=dec.coded_frame->quality;
 //	    Frame f = dec.decode(p);
@@ -223,42 +242,42 @@ int main(int argc, char ** argv){
 //	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
 	    
 	    
-	    int video_outbuf_size = 200000;
-    	    uint8_t* video_outbuf = (uint8_t*)av_malloc(video_outbuf_size);
 
-	    
-//	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, picture);
-	    av_free(video_outbuf);
-
-//	    cout <<"FrameHere"<<endl;
+	    picture->pts = p.packet->pts;
+	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, picture);
+		
+	    cout <<"FrameHere:"<<out_size<<endl;
 //	    Packet pe=enc.encode(f);
 //	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 
 //		av_free(picture);
 	}
+    av_free(video_outbuf);
 	avcodec_close(cc);
+	avcodec_close(decc);
 	av_free(cc);
+//	av_free(decc);
 	av_free(picture);
 	av_free(picture_buf);
 	
-	
+/*	
 	FileOutputStream fos("test.unit");
 	ObjectOutputStream oos(&fos);
 	oos.writeObject(unit);
 	fos.flush();
 	cout << "Data Serailized"<<endl;
-
-	
+*/
+/*	
 	ProcessUnit unit2;	
 	FileInputStream fis("test.unit");
 	ObjectInputStream ois(&fis);
 	ois.readObject(unit2);
 
-	unit2.process();
+//	unit2.process();
 
 	delete unit2._decoder;
 	delete unit2._encoder;
-
+*/
 
 /*
 	ProcessUnit unit;
