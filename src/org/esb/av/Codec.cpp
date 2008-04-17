@@ -40,31 +40,7 @@ namespace org {
 			} 
 			Codec::Codec (const CodecID codecId, int mode) {
 				_codec_id = codecId;
-				_codec = NULL;
-				_mode = mode;
-				if (_mode == DECODER) {
-					_codec = avcodec_find_decoder ((CodecID)_codec_id);
-				}
-				else {
-					_codec = avcodec_find_encoder ((CodecID)_codec_id);
-				} if (_codec == NULL)
-					logerror("Codec not found for id :" << codecId);
-//					cout << "Codec not found for id :" << codecId << endl;
-				avcodec_get_context_defaults2 (this, _codec->type);
-	/*
-					ar & _codec_id;
-					ar & _mode;
-					ar & _pix_fmt;
-					ar & _width;
-					ar & _height;
-					ar & _time_base.num;
-					ar & _time_base.den;
-					ar & _gop_size;
-					ar & _bit_rate;
-					ar & _channels;
-					ar & _sample_rate;
-					ar & _sample_format;
-	*/
+				_mode=mode;
 				_width = 0;
 				_height = 0;
 				_bit_rate = 0;
@@ -79,24 +55,15 @@ namespace org {
 			}
 
 			CodecType Codec::getCodecType () {
-				return codec_type;
+				return ctx->codec_type;
 			}
 
 			char *Codec::getCodecName () {
-				return codec_name;
+				return ctx->codec_name;
 			}
 
 			int Codec::getCodecId () {
-				return codec_id;
-			}
-/*
-            AVCodecContext * Codec::getCodecContext(){
-                return _codecCtx;
-            }
-*/
-			void Codec::initDefaults () {
-				avcodec_get_context_defaults (this	/*, CODEC_TYPE_UNKNOWN */
-					);
+				return _codec_id;
 			}
 
 			void Codec::findCodec (int mode) {
@@ -106,32 +73,45 @@ namespace org {
 					if (_codec == NULL)
 					    logerror("Decoder not found for id :" << _codec_id);
 				}
-				else {
+				else 
+				if (mode == ENCODER){
 					_codec = avcodec_find_encoder ((CodecID)_codec_id);
 					if (_codec == NULL)
 					    logerror("Encoder not found for id :" << _codec_id);
+				}else{
+					    logerror("Mode not set for Codec");
 				}
-				avcodec_get_context_defaults2 (this, _codec->type);
-				codec_id=(CodecID)_codec_id;
-				pix_fmt = _pix_fmt;
-				width = _width;
-				height = _height;
-				bit_rate = _bit_rate;
-				time_base = _time_base;
-				gop_size = _gop_size;
-				sample_rate = _sample_rate;
-				sample_fmt = _sample_format;
-				channels = _channels;
-//				max_b_frames=1;
 			}
 
+			void Codec::setParams () {
+				ctx->codec_id=(CodecID)_codec_id;
+				ctx->codec_type=_codec->type;
+				ctx->pix_fmt = _pix_fmt;
+				ctx->width = _width;
+				ctx->height = _height;
+//				if(_bit_rate>0)
+					ctx->bit_rate = _bit_rate;
+				
+				ctx->time_base = _time_base;
+				
+//				if(_gop_size>0)
+					ctx->gop_size = _gop_size;
+//				if(_sample_rate>0)
+					ctx->sample_rate = _sample_rate;
+//				if(_sample_format>0)
+					ctx->sample_fmt = _sample_format;
+//				if(_channels>0)
+					ctx->channels = _channels;
+			}
+			
 			void Codec::open () {
 				findCodec (_mode);
-				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
-					flags |= CODEC_FLAG_TRUNCATED;
-				if (avcodec_open (this, _codec) < 0) {
+				ctx=avcodec_alloc_context();
+				setParams();
+//				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
+//					ctx->flags |= CODEC_FLAG_TRUNCATED;
+				if (avcodec_open (ctx, _codec) < 0) {
 					logerror("ERROR : while openning Codec" <<_codec_id);
-//					cout << "ERROR : while openning Codec" <<avcodec_open (this, _codec) <<endl;
 				}else{
 				    logdebug("Codec opened:" << _codec_id);
 				    _opened=true;
@@ -140,8 +120,7 @@ namespace org {
 			Codec::~Codec () {
 			    logdebug("Codec closed:" << _codec_id);
 			    if(_opened){
-					avcodec_close (this);
-//					delete _codec;
+					avcodec_close (ctx);
 				}
 				_opened=false;
 			}
@@ -173,13 +152,13 @@ namespace org {
 				_sample_format = f;
 			}
 			int Codec::getWidth () {
-				return width;
+				return _width;
 			}
 			int Codec::getHeight () {
-				return height;
+				return _height;
 			}
 			int Codec::getPixelFormat () {
-				return pix_fmt;
+				return _pix_fmt;
 			}
 		}
 	}

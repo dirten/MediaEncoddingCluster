@@ -12,6 +12,7 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
+#include "org/esb/util/Log.h"
 
 
 #include <list>
@@ -77,6 +78,7 @@ int main(int argc, char ** argv){
 //    cout << v[0][0]<<endl;
 //    return 0;
 
+	log_init();
     av_register_all();
 
     avcodec_init();
@@ -126,12 +128,14 @@ int main(int argc, char ** argv){
 	Decoder dec(ic->streams[0]->codec->codec_id);
 	dec.setWidth(ic->streams[0]->codec->width);
 	dec.setHeight(ic->streams[0]->codec->height);
+	dec.setTimeBase((AVRational){1,25});
 	dec.setPixelFormat(ic->streams[0]->codec->pix_fmt);
+//	dec.setGopSize(0);
 	dec.open();
-
+//	cerr << "Decoder"<<endl;
 //	Encoder enc(CODEC_ID_MPEG2VIDEO);
 //	enc.max_b_frames=3;
-	Encoder enc(CODEC_ID_MPEG4);
+	Encoder enc(CODEC_ID_MSMPEG4V3);
 	enc.setWidth(ic->streams[0]->codec->width);
 	enc.setHeight(ic->streams[0]->codec->height);
 	enc.setTimeBase((AVRational){1,25});
@@ -204,7 +208,7 @@ int main(int argc, char ** argv){
 	cc=avcodec_alloc_context();
 //	cc->codec_id=CODEC_ID_MPEG1VIDEO;
 //	cc->codec_id=CODEC_ID_MPEG2VIDEO;
-	cout << "CodecIC"<<CODEC_ID_MSMPEG4V3<<endl;
+//	cout << "CodecIC"<<CODEC_ID_MSMPEG4V3<<endl;
 	cc->codec_id=CODEC_ID_MSMPEG4V3;
 	cc->codec_type=CODEC_TYPE_VIDEO;
 //	cc->max_b_frames=1;
@@ -253,7 +257,9 @@ int main(int argc, char ** argv){
 	    unit._input_packets.push_back(ptr);
 //	    dec.debug|=FF_DEBUG_MV;
 //	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
-	    int out_size = avcodec_decode_video(&dec, &frame, &got_picture, p.packet->data, p.packet->size);
+		
+		int out_size=0;
+	    out_size = avcodec_decode_video(decc, &frame, &got_picture, p.packet->data, p.packet->size);
 //	    picture->pict_type=1;
 //	    picture->quality=dec.coded_frame->quality;
 
@@ -272,10 +278,10 @@ int main(int argc, char ** argv){
 //	    picture->pts = AV_NOPTS_VALUE;//p.packet->pts;
 //	    frame.pts = p.packet->pts;//AV_NOPTS_VALUE;//p.packet->pts;
 
-	    out_size = avcodec_encode_video(&enc, video_outbuf, video_outbuf_size, &frame);
+	    out_size = avcodec_encode_video(enc.ctx, video_outbuf, video_outbuf_size, &frame);
 	    outsize+=out_size;
 
-       	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  enc.coded_frame->key_frame<<endl;
+       	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  enc.ctx->coded_frame->key_frame<<endl;
 		
 //	    cout <<"FrameHere:"<<out_size<<endl;
 //	    outsize+=out_size;
@@ -311,8 +317,8 @@ int main(int argc, char ** argv){
 
 	unit2.process();
 
-	delete unit2._decoder;
-	delete unit2._encoder;
+//	delete unit2._decoder;
+//	delete unit2._encoder;
 
 
 /*

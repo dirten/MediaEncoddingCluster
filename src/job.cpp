@@ -97,7 +97,7 @@ int jobcreator(int argc, char*argv[]){
 	stmt.setInt("gop_size",20);
 	Codec codec((CodecID)profile_v_codec);
 	codec.open();
-	stmt.setInt("pix_fmt",codec.pix_fmt);
+	stmt.setInt("pix_fmt",codec.getPixelFormat());
 	stmt.setInt("bit_rate",profile_v_bitrate);
 	stmt.execute();
 	v_stream_id=con.lastInsertId();

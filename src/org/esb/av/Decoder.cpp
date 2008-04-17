@@ -9,21 +9,21 @@ Decoder::Decoder(): Codec(){}
 Decoder::Decoder(CodecID id): Codec(id,Codec::DECODER){}
 
 Frame Decoder::decode(Packet & packet){
-	if(this->codec_type==CODEC_TYPE_VIDEO)
+	if(ctx->codec_type==CODEC_TYPE_VIDEO)
 		return decodeVideo(packet);
-	if(this->codec_type==CODEC_TYPE_AUDIO)
+	if(ctx->codec_type==CODEC_TYPE_AUDIO)
 		return decodeAudio(packet);
 	return Frame();
 }
 
 Frame Decoder::decodeVideo(Packet & packet){
-    Frame frame(pix_fmt, width, height);
+    Frame frame(_pix_fmt, _width, _height);
     int _frameFinished=0;
-    int bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, packet.packet->data,packet.packet->size);
+    int bytesDecoded=avcodec_decode_video(ctx, &frame, &_frameFinished, packet.packet->data,packet.packet->size);
     if(bytesDecoded < 0){
 	fprintf(stderr, "Error while decoding frame\n");
     }
-    frame._pixFormat=pix_fmt;
+    frame._pixFormat=_pix_fmt;
     frame.pts=packet.packet->pts;
     frame.dts=packet.packet->dts;
     frame.pos=packet.packet->pos;
@@ -37,7 +37,7 @@ Frame Decoder::decodeAudio(Packet & packet){
 	uint8_t * outbuf=new uint8_t[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	uint8_t * inbuf=packet.packet->data;
         while (size > 0) {
-            int len = avcodec_decode_audio2(this, (short *)outbuf, &out_size, inbuf, size);
+            int len = avcodec_decode_audio2(ctx, (short *)outbuf, &out_size, inbuf, size);
             if (len < 0) {
                 fprintf(stderr, "Error while decoding\n");
                 exit(1);

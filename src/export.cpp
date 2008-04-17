@@ -22,7 +22,7 @@ int exporter(int argc, char * argv[]){
     PacketOutputStream pos(&fos);
 
     Encoder *encoder=new Encoder((CodecID)13);
-    encoder->setBitRate(800000);
+    encoder->setBitRate(1000000);
     encoder->setTimeBase((AVRational){1,25});
     encoder->setGopSize(20);
     encoder->setPixelFormat(PIX_FMT_YUV420P);

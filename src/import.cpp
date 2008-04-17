@@ -132,11 +132,11 @@ int import(int argc, char * argv[]){
 	    stmt_str.setInt( "sample_rate", ctx->streams[a]->codec->sample_rate);
 	    stmt_str.setInt( "channels", ctx->streams[a]->codec->channels);
 	    stmt_str.setInt( "sample_fmt", ctx->streams[a]->codec->sample_fmt);
-		Codec codec(ctx->streams[a]->codec->codec_id);
+//		Codec codec(ctx->streams[a]->codec->codec_id);
 
-	    stmt_str.setInt( "priv_data_size", codec._codec->priv_data_size);
-	    avcodec_open(ctx->streams[a]->codec, codec._codec);
-	    stmt_str.setBlob( "priv_data",(char*) ctx->streams[a]->codec->priv_data,codec._codec->priv_data_size);
+//	    stmt_str.setInt( "priv_data_size", codec._codec->priv_data_size);
+//	    avcodec_open(ctx->streams[a]->codec, codec._codec);
+//	    stmt_str.setBlob( "priv_data",(char*) ctx->streams[a]->codec->priv_data,codec._codec->priv_data_size);
 //	    stmt_str.setInt( "priv_data_size", ctx->iformat->priv_data_size);
 //	    stmt_str.setBlob( "priv_data",(char*) ctx->priv_data,ctx->iformat->priv_data_size);
 	    stmt_str.execute();
@@ -178,7 +178,7 @@ int import(int argc, char * argv[]){
         stmt.setDouble( "pos", (double)packet.packet->pos);
         stmt.setInt( "data_size", packet.packet->size);
 //        Blob blob((const char*)packet.data,packet.size);
-        stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
+//        stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
 	stmt.execute();
 //	show_progress+=packet.duration;
     }

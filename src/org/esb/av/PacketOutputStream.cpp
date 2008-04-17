@@ -31,7 +31,7 @@ void PacketOutputStream::setEncoder(Encoder & encoder){
 
 void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
     AVStream * st=av_new_stream(_fmtCtx,stream_id);
-    st->codec=&encoder;
+    st->codec=encoder.ctx;
 //    av_write_header(_fmtCtx);
 
 }

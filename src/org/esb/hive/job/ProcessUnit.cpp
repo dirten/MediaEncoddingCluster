@@ -43,7 +43,7 @@ void ProcessUnit::process(){
 	    
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-    	    cout << "Output:"<<ret.packet->size << "\tKeyFrame:" << ret.isKeyFrame() << endl;
+//    	    cout << "Output:"<<ret.packet->size << "\tKeyFrame:" << ret.isKeyFrame() << endl;
 	    outsize+=ret.packet->size;
 	    _output_packets.push_back(pEnc);
 	    

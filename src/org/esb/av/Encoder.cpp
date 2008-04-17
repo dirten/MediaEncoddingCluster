@@ -15,48 +15,21 @@ Encoder::Encoder(): Codec(){
 
 }
 
-void Encoder::encode(Frame & frame, Packet & p){
-    int buffer_size=1024*256;
-    uint8_t data[buffer_size];
-    memset(&data,0,buffer_size);
-    
-    int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
-//    pac.data=new uint8_t[ret];
-
-    Packet pac(ret);
-    memcpy(pac.packet->data, &data, ret);
-//    pac.data=data;
-    pac.packet->size=ret;
-    pac.packet->pts=frame.pts;
-    pac.packet->dts=frame.dts;
-    pac.packet->pos=frame.pos;
-    pac.packet->duration=1;
-//    pac.flags=0;
-
-    if(coded_frame && coded_frame->key_frame)
-	pac.packet->flags |= PKT_FLAG_KEY;
-	
-//    return pac;
-}
-
-
 Packet Encoder::encode(Frame & frame){
-	if(this->codec_type==CODEC_TYPE_VIDEO)
+	if(ctx->codec_type==CODEC_TYPE_VIDEO)
 	    return encodeVideo(frame);
-	if(this->codec_type==CODEC_TYPE_AUDIO)
+	if(ctx->codec_type==CODEC_TYPE_AUDIO)
 	    return encodeAudio(frame);
 	return Packet();
 }
 
 Packet Encoder::encodeVideo(Frame & frame){
 
-
-
     int buffer_size=1024*256;
     uint8_t data[buffer_size];
     memset(&data,0,buffer_size);
     
-    int ret=avcodec_encode_video(this,(uint8_t*)&data, buffer_size, &frame);
+    int ret=avcodec_encode_video(ctx,(uint8_t*)&data, buffer_size, &frame);
 //    pac.data=new uint8_t[ret];
 //	cout << "ret:"<<ret<<endl;
     Packet pac(ret);
@@ -69,7 +42,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     pac.packet->duration=1;
 //    pac.flags=0;
 
-    if(coded_frame && coded_frame->key_frame)
+    if(ctx->coded_frame && ctx->coded_frame->key_frame)
 		pac.packet->flags |= PKT_FLAG_KEY;
     return pac;
 }
@@ -77,7 +50,7 @@ Packet Encoder::encodeVideo(Frame & frame){
 Packet Encoder::encodeAudio(Frame & frame){
 	int outbuf_size=10000;
 	uint8_t outbuf[outbuf_size];
-        int out_size = avcodec_encode_audio(this, (uint8_t*)&outbuf, outbuf_size, (short int *)frame._buffer);
+        int out_size = avcodec_encode_audio(ctx, (uint8_t*)&outbuf, outbuf_size, (short int *)frame._buffer);
 	Packet pak(out_size);
 	pak.packet->size=out_size;
 	memcpy(pak.packet->data,&outbuf,out_size);

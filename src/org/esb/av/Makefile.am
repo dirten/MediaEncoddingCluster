@@ -15,8 +15,6 @@ SOURCES = \
             FormatOutputStream.cpp \
             PacketInputStream.cpp \
             PacketOutputStream.cpp \
-            CodecInputStream.cpp \
-            CodecOutputStream.cpp \
             Codec.cpp \
             Decoder.cpp \
             Encoder.cpp \
@@ -25,6 +23,8 @@ SOURCES = \
 	    PPSWriter.cpp \
 	    AVInputStream.cpp
             
+#           CodecInputStream.cpp \
+#            CodecOutputStream.cpp 
             
 libav_la_SOURCES = $(SOURCES)
 libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)

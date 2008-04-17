@@ -20,7 +20,7 @@ Frame::Frame(Packet * packet, Codec * codec){
     key_frame=1;
     _frameFinished=0;
     _packet=packet->packet;
-    _codecContext=codec;
+//    _codecContext=codec;
     _width=_codecContext->width;
     _height=_codecContext->height;
     _pixFormat=_codecContext->pix_fmt;

@@ -11,7 +11,7 @@ namespace org {
 	namespace esb {
 		namespace av {
 			class Frame;
-			class Codec:public AVCodecContext {
+			class Codec{
 			    logger("hive.av.codec")
 			  public:
 				const static int DECODER = 1;
@@ -24,7 +24,6 @@ namespace org {
 				char *getCodecName ();
 				int getCodecId ();
 				void open ();
-				void initDefaults ();
 				void setWidth (int w);
 				void setHeight (int h);
 				void setPixelFormat (PixelFormat pfm);
@@ -37,6 +36,8 @@ namespace org {
 				int getWidth ();
 				int getHeight ();
 				int getPixelFormat ();
+//				int getCodecType ();
+//				string getCodecName ();
 
 				  template < class Archive >
 					void serialize (Archive & ar, const unsigned int version)
@@ -59,20 +60,25 @@ namespace org {
 				
 				int _codec_id;
 //			  protected:
-				  AVCodec * _codec;
+				
+				AVCodec * _codec;
 				void findCodec (int mode);
 				int _mode;
-			  private:
-				int _width;
-				int _height;
+				AVCodecContext * ctx;
+			protected:
+				int 		_width;
+				int 		_height;
 				PixelFormat _pix_fmt;
-				int _bit_rate;
-				AVRational _time_base;
-				int _gop_size;
-				int _channels;
-				int _sample_rate;
+				int 		_bit_rate;
+				AVRational 	_time_base;
+				int 		_gop_size;
+				int 		_channels;
+				int 		_sample_rate;
 				SampleFormat _sample_format;
-				bool _opened;
+				bool 		_opened;
+				
+			  private:
+				void setParams ();
 			};
 }}}
 #endif
