@@ -12,7 +12,7 @@ namespace org {
 		namespace av {
 			class Frame;
 			class Codec:public AVCodecContext {
-			    logger("hive.av")
+			    logger("hive.av.codec")
 			  public:
 				const static int DECODER = 1;
 				const static int ENCODER = 2;

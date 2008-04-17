@@ -28,8 +28,8 @@ namespace org{
 			return;
 		    }
 		    istringstream archive_stream(data);
-//		    boost::archive::binary_iarchive archive(archive_stream);
-		    boost::archive::text_iarchive archive(archive_stream);
+		    boost::archive::binary_iarchive archive(archive_stream);
+//		    boost::archive::text_iarchive archive(archive_stream);
 		    archive >> object;
 		}
 		private:

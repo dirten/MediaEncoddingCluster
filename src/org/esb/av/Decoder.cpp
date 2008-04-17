@@ -16,43 +16,13 @@ Frame Decoder::decode(Packet & packet){
 	return Frame();
 }
 
-void Decoder::decode(Packet & packet, Frame & frame){
-
-
-//    Frame frame(pix_fmt, width, height);
-    int _frameFinished=0;
-//    int bytesRemaining=packet.packet->size,  bytesDecoded=0;
-//    uint8_t * rawData=packet.packet->data;
-//    while(bytesRemaining > 0){
-    int bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, packet.packet->data,packet.packet->size);
-    if(bytesDecoded < 0){
-	fprintf(stderr, "Error while decoding frame\n");
-//	break;
-    }
-//		bytesRemaining-=bytesDecoded;
-//		rawData+=bytesDecoded;
-    frame._pixFormat=pix_fmt;
-    frame.pts=packet.packet->pts;
-//    frame.dts=packet.packet->dts;
-//    frame.pos=packet.packet->pos;
-//    return frame;
-
-
-}
-
 Frame Decoder::decodeVideo(Packet & packet){
     Frame frame(pix_fmt, width, height);
     int _frameFinished=0;
-//    int bytesRemaining=packet.packet->size,  bytesDecoded=0;
-//    uint8_t * rawData=packet.packet->data;
-//    while(bytesRemaining > 0){
     int bytesDecoded=avcodec_decode_video(this, &frame, &_frameFinished, packet.packet->data,packet.packet->size);
     if(bytesDecoded < 0){
 	fprintf(stderr, "Error while decoding frame\n");
-//	break;
     }
-//		bytesRemaining-=bytesDecoded;
-//		rawData+=bytesDecoded;
     frame._pixFormat=pix_fmt;
     frame.pts=packet.packet->pts;
     frame.dts=packet.packet->dts;

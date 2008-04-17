@@ -29,6 +29,7 @@ div.menu {
     display:table-cell;
 }
 table.list td{
+    border-left:1px solid #CCCCCC;
     border-bottom:1px solid #CCCCCC;
     border-top:1px solid #FFFFFF;
 }

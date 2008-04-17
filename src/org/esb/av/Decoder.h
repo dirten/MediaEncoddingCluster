@@ -13,7 +13,7 @@ class Decoder:public Codec{
 	Decoder();
 //	Frame * decode(Packet & packet);
 	Frame decode(Packet & packet);
-	void decode(Packet & packet, Frame & frame);
+//	void decode(Packet & packet, Frame & frame);
 	/*
 	template<class Archive>
 	    void serialize(Archive & ar, const unsigned int version){

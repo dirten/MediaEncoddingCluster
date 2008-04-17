@@ -21,8 +21,8 @@ int exporter(int argc, char * argv[]){
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
 
-    Encoder *encoder=new Encoder(CODEC_ID_MSMPEG4V3);
-    encoder->setBitRate(1000000);
+    Encoder *encoder=new Encoder((CodecID)13);
+    encoder->setBitRate(800000);
     encoder->setTimeBase((AVRational){1,25});
     encoder->setGopSize(20);
     encoder->setPixelFormat(PIX_FMT_YUV420P);
@@ -55,7 +55,7 @@ int exporter(int argc, char * argv[]){
 	Connection con(Config::getProperty("db.connection"));
 
     {
-	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=9 order by a.pts limit 500");
+	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=3 order by a.pts limit 5000");
 	ResultSet rs=stmt.executeQuery();
 	
 

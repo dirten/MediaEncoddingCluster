@@ -145,13 +145,12 @@ int import(int argc, char * argv[]){
         }
 //	progress_display show_progress(duration);
 
-    Packet packet;
 
     PreparedStatement stmt=con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
 //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
     "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
     while(true/*&&count < 1000*/){
-		
+	Packet packet;	
         pis.readPacket(packet);
 		if(count%1000==0){
 			cout<<"\r" << count;

@@ -163,8 +163,8 @@ int main(int argc, char ** argv){
 
 	AVCodecContext * decc=avcodec_alloc_context();//ic->streams[0]->codec;
 //	AVCodecContext * decc=ic->streams[0]->codec;
-//	decc->width=enc.getWidth();
-//	decc->height=enc.getHeight();
+	decc->width=enc.getWidth();
+	decc->height=enc.getHeight();
 	decc->time_base.num=1;
 	decc->time_base.den=25;
 
@@ -215,6 +215,7 @@ int main(int argc, char ** argv){
 	cc->time_base.den=25;
 	cc->gop_size=10;
 	cc->pix_fmt=PIX_FMT_YUV420P;
+
 /*
 	cc->thread_count=1;
 	cc->max_qdiff=0;
@@ -227,10 +228,12 @@ int main(int argc, char ** argv){
  */
 //	cc->debug|=FF_DEBUG_MV;
 	
+//	cc->max_b_frames=1;
 	
 	AVCodec * codec;
 	codec=avcodec_find_encoder(cc->codec_id);
 	avcodec_open(cc,codec);
+//	cc->max_b_frames=1;
 	
 
 	    int video_outbuf_size = 200000;
@@ -250,7 +253,7 @@ int main(int argc, char ** argv){
 	    unit._input_packets.push_back(ptr);
 //	    dec.debug|=FF_DEBUG_MV;
 //	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
-	    int out_size = avcodec_decode_video(decc, &frame, &got_picture, p.packet->data, p.packet->size);
+	    int out_size = avcodec_decode_video(&dec, &frame, &got_picture, p.packet->data, p.packet->size);
 //	    picture->pict_type=1;
 //	    picture->quality=dec.coded_frame->quality;
 
@@ -269,13 +272,13 @@ int main(int argc, char ** argv){
 //	    picture->pts = AV_NOPTS_VALUE;//p.packet->pts;
 //	    frame.pts = p.packet->pts;//AV_NOPTS_VALUE;//p.packet->pts;
 
-	    out_size = avcodec_encode_video(cc, video_outbuf, video_outbuf_size, &frame);
+	    out_size = avcodec_encode_video(&enc, video_outbuf, video_outbuf_size, &frame);
 	    outsize+=out_size;
 
-       	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  cc->coded_frame->key_frame<<endl;
+       	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  enc.coded_frame->key_frame<<endl;
 		
 //	    cout <<"FrameHere:"<<out_size<<endl;
-	    outsize+=out_size;
+//	    outsize+=out_size;
 //	    Packet pe=enc.encode(f);
 //	    cout << "EncPacketSize:"<<pe.packet->size<<endl;
 

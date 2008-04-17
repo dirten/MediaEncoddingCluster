@@ -175,10 +175,10 @@ ProcessUnit Job::getNextProcessUnit(){
 	_frame_groups.pop();
 	logdebug("packing frame group :" <<fr_gr<<" with startts: "<<startts);
 	_fis->seek(_stream_index,(int64_t)startts);
-	Packet tmp_p;
 	PacketInputStream pis(_fis);
 	int size=0;
 	for(int a=0;a<frame_count;){
+	    Packet tmp_p;
 	    pis.readPacket(tmp_p);
 	    if(tmp_p.packet->stream_index!=_stream_index)continue;
 	    a++;

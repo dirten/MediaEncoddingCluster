@@ -28,7 +28,7 @@ ProcessUnit::~ProcessUnit(){
 }
 
 void ProcessUnit::process(){
-	int size=0;
+	int insize=0, outsize=0;
 	list< boost::shared_ptr<Packet> >::iterator it; 
 
 	if(_decoder!=NULL)
@@ -38,22 +38,23 @@ void ProcessUnit::process(){
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){
 	    boost::shared_ptr<Packet> p=*it;
 //		cout << "Input:"<<p->packet->size<<endl;
-	    size+=p->packet->size;
+	    insize+=p->packet->size;
 	    Frame f=_decoder->decode(*p);
 	    
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-//		cout << "Output:"<<ret.packet->size << "\tKeyFrame:" << ret.isKeyFrame() << endl;
+    	    cout << "Output:"<<ret.packet->size << "\tKeyFrame:" << ret.isKeyFrame() << endl;
+	    outsize+=ret.packet->size;
 	    _output_packets.push_back(pEnc);
 	    
 	}
-	cout <<"Size Packet:"<<size<<endl;
+	cout <<"InputSize:"<<insize<<"OutputSize:"<<outsize<<endl;
 
 
-//	if(_decoder!=NULL)
-//		delete _decoder;
-//	if(_encoder!=NULL)
-//		delete _encoder;
+	if(_decoder!=NULL)
+		delete _decoder;
+	if(_encoder!=NULL)
+		delete _encoder;
 	
 
 }
