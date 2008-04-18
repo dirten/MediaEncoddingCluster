@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #noinst_HEADERS=*.h 
-SUBDIRS=fobs
+#SUBDIRS=fobs
 
 check_PROGRAMS = cpp_unit 
 cpp_unit_SOURCES=cpp_unit.cpp \

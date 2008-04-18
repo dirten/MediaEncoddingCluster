@@ -9,7 +9,8 @@ namespace esb{
 namespace av{
 struct FrameFormat{
 	PixelFormat pixel_format;
-	
+	int width;
+	int height;	
 };
-}
+}}}
 #endif

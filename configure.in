@@ -12,7 +12,7 @@ AM_PROG_LIBTOOL
 
 AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard is "/usr/local")],
 	    FFMPEG_CFLAGS="-I$withval/include/ffmpeg"
-	    FFMPEG_LD="-L$withval/lib -lavformat -lavcodec -lavutil"
+	    FFMPEG_LD="-L$withval/lib -lavformat -lavcodec -lavutil -lswscale"
 	    FFMPEG_PATH="$withval")
 
 CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"

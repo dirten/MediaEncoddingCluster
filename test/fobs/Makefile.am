@@ -24,7 +24,7 @@ SOURCES = \
             
 libfobs_la_SOURCES = $(SOURCES)
 libfobs_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-libfobs_la_LIBADD = -lavformat -lavutil -lavcodec
+libfobs_la_LIBADD = -lavformat -lavutil -lavcodec -lswscale
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src
 
