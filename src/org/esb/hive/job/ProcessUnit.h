@@ -10,6 +10,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
+#include "org/esb/util/Log.h"
+
 using namespace std;
 using namespace org::esb::av;
 //using namespace boost;
@@ -19,6 +21,7 @@ namespace hive{
 namespace job{
 class ProcessUnit{
 	public:
+		logger("hive.processunit");
 		ProcessUnit();
 		~ProcessUnit();
 		void process();
