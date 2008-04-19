@@ -121,6 +121,7 @@ namespace org {
 			    logdebug("Codec closed:" << _codec_id);
 			    if(_opened){
 					avcodec_close (ctx);
+					av_free(ctx);
 				}
 				_opened=false;
 			}

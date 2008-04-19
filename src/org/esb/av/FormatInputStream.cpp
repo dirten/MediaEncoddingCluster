@@ -73,7 +73,8 @@ namespace org {
                 return av_seek_frame(formatCtx, stream_index, timestamp,AVSEEK_FLAG_BACKWARD);
             }
             void FormatInputStream::close() {
-                av_close_input_file(formatCtx);
+            	if(formatCtx)
+                	av_close_input_file(formatCtx);
             }
         }
     }

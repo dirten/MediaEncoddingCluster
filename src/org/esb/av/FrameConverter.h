@@ -19,6 +19,7 @@ namespace av{
     class FrameConverter{
 	public:
 		FrameConverter(FrameFormat& targetFormat);
+		~FrameConverter();
 		Frame convert(Frame & input);
 	private:
 	    void getSwsContext();

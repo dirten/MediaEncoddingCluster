@@ -88,7 +88,7 @@ Frame::Frame(Frame * source, int format){
     memset(_buffer, 0, numBytes);
     avpicture_fill((AVPicture *)this, _buffer, _pixFormat, _width,_height);
 //    if(source->_frameFinished){
-	img_convert((AVPicture *)this, _pixFormat, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
+//	img_convert((AVPicture *)this, _pixFormat, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
 //    }
     pts=source->pts;
 }

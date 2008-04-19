@@ -12,6 +12,8 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
+#include "org/esb/av/FrameConverter.h"
+#include "org/esb/av/FrameFormat.h"
 #include "org/esb/util/Log.h"
 
 
@@ -135,11 +137,18 @@ int main(int argc, char ** argv){
 //	cerr << "Decoder"<<endl;
 //	Encoder enc(CODEC_ID_MPEG2VIDEO);
 //	enc.max_b_frames=3;
+
+	FrameFormat format;
+	format.pixel_format=PIX_FMT_YUV420P;
+	format.height=ic->streams[0]->codec->height;
+	format.width=ic->streams[0]->codec->width;
+
+
 	Encoder enc(CODEC_ID_MSMPEG4V3);
-	enc.setWidth(ic->streams[0]->codec->width);
-	enc.setHeight(ic->streams[0]->codec->height);
+	enc.setWidth(format.width);
+	enc.setHeight(format.height);
 	enc.setTimeBase((AVRational){1,25});
-	enc.setBitRate(500000);
+	enc.setBitRate(4000000);
 	enc.setGopSize(10);
 	enc.setPixelFormat(PIX_FMT_YUV420P);
 
@@ -243,7 +252,16 @@ int main(int argc, char ** argv){
 	    int video_outbuf_size = 200000;
    	    uint8_t* video_outbuf = (uint8_t*)av_malloc(video_outbuf_size);
 	int insize=0, outsize=0;
-	for(int i=0;i<100;i++){
+	
+	FrameConverter converter(format);
+	
+	
+	File fout("/tmp/testdb.avi");
+    FormatOutputStream ffos(&fout);
+    PacketOutputStream pos(&ffos);
+    pos.setEncoder(enc,0);
+	pos.init();
+	for(int i=0;i<10000;i++){
 	    Packet p;
 	    av_init_packet(p.packet);
 	    pis.readPacket(p);
@@ -253,24 +271,31 @@ int main(int argc, char ** argv){
 //		cout << "InputPacketPts:"<<p.packet->pts<<endl;
 		boost::shared_ptr<Packet> ptr(new Packet(p));
 //    	cout << "InputPacketSize:"<<ptr->packet->size<<endl;
-		Frame frame(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
+//		Frame frame(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
 	    unit._input_packets.push_back(ptr);
 //	    dec.debug|=FF_DEBUG_MV;
 //	    fill_yuv_image(picture, i, enc.getWidth(), enc.getHeight());
 		
 		int out_size=0;
-	    out_size = avcodec_decode_video(decc, &frame, &got_picture, p.packet->data, p.packet->size);
+//	    out_size = avcodec_decode_video(decc, &frame, &got_picture, p.packet->data, p.packet->size);
 //	    picture->pict_type=1;
 //	    picture->quality=dec.coded_frame->quality;
 
 
-//	    Frame frame = dec.decode(p);
-
+	    Frame frame = dec.decode(p);
+	    
+//		Frame f=converter.convert(frame);
 
 	    frame.pts = p.packet->pts;
 
-//	    Packet pe=enc.encode(frame);
-//		int out_size=pe.packet->size;
+	    Packet pe=enc.encode(frame);
+	    
+//	    pe.packet->pts=p.packet->pts;
+//	    pe.packet->dts=p.packet->dts;
+//	    pe.packet->stream_index=0;
+	   
+		pos.writePacket(pe);
+		out_size=pe.packet->size;
 //	    fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 	    
 	    
@@ -278,7 +303,7 @@ int main(int argc, char ** argv){
 //	    picture->pts = AV_NOPTS_VALUE;//p.packet->pts;
 //	    frame.pts = p.packet->pts;//AV_NOPTS_VALUE;//p.packet->pts;
 
-	    out_size = avcodec_encode_video(enc.ctx, video_outbuf, video_outbuf_size, &frame);
+//	    out_size = avcodec_encode_video(enc.ctx, video_outbuf, video_outbuf_size, &frame);
 	    outsize+=out_size;
 
        	cout << "InputPacketSize:"<<p.packet->size<<"\tOutputPacketSize:"<<out_size<<"\tKeyFrame:"<<  enc.ctx->coded_frame->key_frame<<endl;
@@ -309,14 +334,14 @@ int main(int argc, char ** argv){
 	fos.flush();
 	cout << "Data Serailized"<<endl;
 
-	
+	/*
 	ProcessUnit unit2;	
 	FileInputStream fis("test.unit");
 	ObjectInputStream ois(&fis);
 	ois.readObject(unit2);
 
 	unit2.process();
-
+*/
 //	delete unit2._decoder;
 //	delete unit2._encoder;
 
