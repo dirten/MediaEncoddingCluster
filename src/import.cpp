@@ -150,13 +150,13 @@ int import(int argc, char * argv[]){
 //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
     "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
     while(true/*&&count < 1000*/){
-	Packet packet;	
-        pis.readPacket(packet);
+		Packet packet;	
+        int read=pis.readPacket(packet);
 		if(count%1000==0){
 			cout<<"\r" << count;
 			cout.flush();
 		}
-        if(packet.packet->data==NULL)break;
+        if(read<0)break;
         
         ++count;
         
@@ -186,7 +186,7 @@ int import(int argc, char * argv[]){
 //    trans.commit();
     cout << endl;
 //	show_progress=duration;
-    	return 0;
+    	return fileid;
 }
 /*
 int main(int argc, char * argv[]){

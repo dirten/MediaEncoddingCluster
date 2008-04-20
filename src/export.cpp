@@ -21,7 +21,7 @@ int exporter(int argc, char * argv[]){
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
 
-    Encoder *encoder=new Encoder((CodecID)13);
+    Encoder *encoder=new Encoder(CODEC_ID_H264);
     encoder->setBitRate(1000000);
     encoder->setTimeBase((AVRational){1,25});
     encoder->setGopSize(20);

@@ -1,5 +1,7 @@
 #include "ProcessUnit.h"
 #include "org/esb/av/Frame.h"
+#include "org/esb/av/FrameFormat.h"
+#include "org/esb/av/FrameConverter.h"
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
@@ -35,10 +37,22 @@ void ProcessUnit::process(){
 		_decoder->open();
 	if(_encoder!=NULL)
 		_encoder->open();
+
+	FrameFormat format;
+	format.pixel_format=(PixelFormat)_encoder->getPixelFormat();//PIX_FMT_YUV420P;
+	format.height=_encoder->getHeight();
+	format.width=_encoder->getWidth();
+	cout << "Create Formater"<<endl;
+
+	FrameConverter conv(format);
+	cout << "start decoding encoding"<<endl;
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){
+		
 	    boost::shared_ptr<Packet> p=*it;
 	    insize+=p->packet->size;
-	    Frame f=_decoder->decode(*p);
+	    Frame tmp=_decoder->decode(*p);
+
+	    Frame f=conv.convert(tmp);
 	    
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
@@ -46,6 +60,8 @@ void ProcessUnit::process(){
 	    _output_packets.push_back(pEnc);
 	    
 	}
+	cout << "decoding encoding ready"<<endl;
+
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
 	if(_decoder!=NULL)
 		delete _decoder;

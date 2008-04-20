@@ -24,6 +24,7 @@ namespace org {
 				char *getCodecName ();
 				int getCodecId ();
 				void open ();
+				void close ();
 				void setWidth (int w);
 				void setHeight (int h);
 				void setPixelFormat (PixelFormat pfm);
@@ -33,6 +34,7 @@ namespace org {
 				void setChannels (int size);
 				void setSampleRate (int size);
 				void setSampleFormat (SampleFormat size);
+				void setFlag (int flag);
 				int getWidth ();
 				int getHeight ();
 				int getPixelFormat ();
@@ -45,6 +47,7 @@ namespace org {
 					
 					ar & _codec_id;
 					ar & _mode;
+					ar & _flags;
 					ar & _pix_fmt;
 					ar & _width;
 					ar & _height;
@@ -67,6 +70,7 @@ namespace org {
 				AVCodecContext * ctx;
 			protected:
 				int 		_width;
+				int 		_flags;
 				int 		_height;
 				PixelFormat _pix_fmt;
 				int 		_bit_rate;

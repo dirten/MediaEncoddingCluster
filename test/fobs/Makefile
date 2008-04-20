@@ -101,7 +101,7 @@ CPPFLAGS =  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -I/usr/loca
 CXX = /usr/bin/g++
 CXXCPP = /usr/bin/g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS =  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -I/usr/local/include/boost-1_34_1/   -I/home/jhoelscher/bripper/tnt/tntnet/include -I/home/jhoelscher/bripper/tnt/tntdb/include -I/home/jhoelscher/bripper/tnt/cxxtools/include  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0
+CXXFLAGS =  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -I/usr/local/include/boost-1_34_1/   -I/home/jhoelscher/bripper/tnt/tntnet/include -I/home/jhoelscher/bripper/tnt/tntdb/include -I/home/jhoelscher/bripper/tnt/cxxtools/include  -I/home/jhoelscher/bripper/ffmpeg-install/include/ffmpeg -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -ggdb -g3
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -117,7 +117,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS =  -L/usr/local/lib   -L/home/jhoelscher/bripper/tnt/tntnet/lib -ltntnet -L/home/jhoelscher/bripper/tnt/tntdb/lib -ltntdb -L/home/jhoelscher/bripper/tnt/cxxtools/lib -ltntnet  -L/home/jhoelscher/bripper/ffmpeg-install/lib -lavformat -lavcodec -lavutil -lswscale -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit
+LDFLAGS =  -L/usr/local/lib   -L/home/jhoelscher/bripper/tnt/tntnet/lib -ltntnet -L/home/jhoelscher/bripper/tnt/tntdb/lib -ltntdb -L/home/jhoelscher/bripper/tnt/cxxtools/lib -ltntnet  -L/home/jhoelscher/bripper/ffmpeg-install/lib -lavformat -lavcodec -lavutil -lswscale -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit -L/home/jhoelscher/bripper/x264/lib -lx264
 LIBOBJS = 
 LIBS = -lpthread 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool

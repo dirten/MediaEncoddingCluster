@@ -4,12 +4,15 @@
 #include "JobHandler.h"
 #include <vector>
 #include "org/esb/sql/Connection.h"
+#include "org/esb/io/FileOutputStream.h"
+#include "org/esb/io/ObjectOutputStream.h"
 //#include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/connect.h"
 using namespace std;
 using namespace org::esb::hive::job;
+using namespace org::esb::io;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 boost::mutex ClientHandler::m_mutex;
@@ -43,10 +46,29 @@ ProcessUnit ClientHandler::getProcessUnit(){
 	return ProcessUnit();
 }
 
+string toString(int num){
+	char c[(int)log(num)];
+	sprintf(c,"%d",num);
+	return string(c);
+}
 bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     list< boost::shared_ptr<Packet> >::iterator it; 
+
+	string filename="packet_";
+	filename +=toString(unit._source_stream);
+	filename += "_";
+	filename +=toString(unit._target_stream);
+	filename += "_";
+	filename +=toString(unit._frame_group);
+	filename +=".data";
+	/*
+	FileOutputStream fos(filename.c_str());
+	ObjectOutputStream oos(&fos);
+	oos.writeObject(unit);
+	fos.flush();
+	*/
     int count=0, frame_group=0;
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
         boost::shared_ptr<Packet> packet=*it;

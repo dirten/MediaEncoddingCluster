@@ -172,6 +172,7 @@ ProcessUnit Job::getNextProcessUnit(){
 	int fr_gr=_frame_groups.front().first;
 	int startts=_frame_groups.front().second.first;
 	int frame_count=_frame_groups.front().second.second;
+	u._frame_group=fr_gr;
 	_frame_groups.pop();
 	logdebug("packing frame group :" <<fr_gr<<" with startts: "<<startts);
 	_fis->seek(_stream_index,(int64_t)startts);

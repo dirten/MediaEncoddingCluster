@@ -40,7 +40,7 @@ Frame Decoder::decodeAudio(Packet & packet){
             int len = avcodec_decode_audio2(ctx, (short *)outbuf, &out_size, inbuf, size);
             if (len < 0) {
                 fprintf(stderr, "Error while decoding\n");
-                exit(1);
+//                exit(1);
             }
             if (out_size > 0) {
                 /* if a frame has been decoded, output it */

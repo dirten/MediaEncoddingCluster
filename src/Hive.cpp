@@ -71,6 +71,7 @@ void client(int argc, char *argv[]){
     ObjectInputStream ois(sock.getInputStream());
     ObjectOutputStream oos(sock.getOutputStream());
     int pCount=0;
+while(true){
     while(true||++pCount<20){
 		char * text="get process_unit";
 		sock.getOutputStream()->write(text, strlen(text));
@@ -81,7 +82,11 @@ void client(int argc, char *argv[]){
 		char * text_out="put process_unit";
 		sock.getOutputStream()->write(text_out, strlen(text_out));
 		oos.writeObject(unit);
+//		break;
     }
+//    break;
+	Thread::sleep(10000);
+}
 }
 
 /*----------------------------------------------------------------------------------------------*/

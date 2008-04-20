@@ -33,6 +33,9 @@ namespace av{
 
 //		getSwsContext();
     	sws_scale(_swsContext,in_frame.data, in_frame.linesize,0,in_frame.getHeight(),out_frame.data, out_frame.linesize);
+    	out_frame.pos=in_frame.pos;
+    	out_frame.pts=in_frame.pts;
+    	out_frame.dts=in_frame.dts;
 		return out_frame;
     }
 

@@ -1,3 +1,5 @@
+#ifndef JOB_FILE
+#define JOB_FILE
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/Statement.h"
@@ -153,3 +155,6 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.execute();
 }
 }
+#endif
+
+

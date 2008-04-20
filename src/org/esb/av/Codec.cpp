@@ -40,6 +40,7 @@ namespace org {
 			} 
 			Codec::Codec (const CodecID codecId, int mode) {
 				_codec_id = codecId;
+				_flags=0;
 				_mode=mode;
 				_width = 0;
 				_height = 0;
@@ -102,6 +103,7 @@ namespace org {
 					ctx->sample_fmt = _sample_format;
 //				if(_channels>0)
 					ctx->channels = _channels;
+					ctx->flags|=_flags;
 			}
 			
 			void Codec::open () {
@@ -117,11 +119,17 @@ namespace org {
 				    _opened=true;
 				}
 			}
+			void Codec::setFlag(int flag){
+				_flags|=flag;
+			}
 			Codec::~Codec () {
-			    logdebug("Codec closed:" << _codec_id);
+				close();
+			}
+			void Codec::close () {
 			    if(_opened){
-					avcodec_close (ctx);
+					avcodec_close(ctx);
 					av_free(ctx);
+			    	logdebug("Codec closed:" << _codec_id);
 				}
 				_opened=false;
 			}
