@@ -41,7 +41,7 @@ template < class T > T nullCheck(T param) {
 }
 
 int import(int argc, char *argv[]) {
-	cout << LIBAVCODEC_IDENT << endl;
+//	cout << LIBAVCODEC_IDENT << endl;
 
 	if (argc != 2) {
 		cout << "wrong parameter count" << endl;
@@ -154,6 +154,10 @@ int import(int argc, char *argv[]) {
 					prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
 					//    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
 						"(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
+
+	int min_frame_group_count=atoi(Config::getProperty("hive.min_frame_group_count"));
+	int frame_group_counter=0;
+
 	while (true /*&&count < 1000 */) {
 		Packet packet;
 		int read = pis.readPacket(packet);
@@ -166,8 +170,12 @@ int import(int argc, char *argv[]) {
 
 		++count;
 
-		if (packet.packet->stream_index == 0 && packet.isKeyFrame())
+		if (packet.packet->stream_index == 0 && packet.isKeyFrame()&&frame_group_counter>=min_frame_group_count){
 			frame_group++;
+			frame_group_counter=0;
+		}
+		if(packet.packet->stream_index == 0)
+			frame_group_counter++;
 		int field = 0;
 		packet.packet->duration = packet.packet->duration == 0 ? 1
 				: packet.packet->duration;

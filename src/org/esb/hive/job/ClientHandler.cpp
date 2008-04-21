@@ -47,7 +47,8 @@ ProcessUnit ClientHandler::getProcessUnit(){
 }
 
 string toString(int num){
-	char c[(int)log(num)];
+	char c[10];
+	memset(&c,0,10);
 	sprintf(c,"%d",num);
 	return string(c);
 }

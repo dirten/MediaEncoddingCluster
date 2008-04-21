@@ -8,6 +8,7 @@ using namespace org::esb::av;
 Frame::Frame(){
     key_frame=1;
     _buffer=new uint8_t[1];
+    _type=CODEC_TYPE_VIDEO;
 }
 
 Frame::Frame(Packet * packet, Codec * codec){

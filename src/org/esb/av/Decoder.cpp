@@ -38,6 +38,7 @@ Frame Decoder::decodeVideo (Packet & packet)
   frame.pts = packet.packet->pts;
   frame.dts = packet.packet->dts;
   frame.pos = packet.packet->pos;
+  frame._type=CODEC_TYPE_VIDEO;
   return frame;
 }
 
@@ -70,5 +71,6 @@ Frame Decoder::decodeAudio (Packet & packet)
   frame.pos = packet.packet->pos;
   frame.duration = packet.packet->duration;
   frame._size = out_size;
+  frame._type=CODEC_TYPE_AUDIO;
   return frame;
 }

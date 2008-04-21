@@ -15,6 +15,7 @@
 #include "org/esb/av/FrameConverter.h"
 #include "org/esb/av/FrameFormat.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/config/config.h"
 
 
 #include <list>
@@ -23,6 +24,7 @@
 using namespace org::esb::av;
 using namespace org::esb::config;
 using namespace org::esb::io;
+using namespace org::esb::config;
 using namespace org::esb::hive::job;
 
 logger ("main")
@@ -68,7 +70,9 @@ int main (int argc, char **argv)
 //    std::vector< std::vector<double> > v=test();
 //    cout << v[0][0]<<endl;
 //    return 0;
-	cout << "bla fsel"<<endl;
+
+	Config::init("cluster.cfg");
+	cout << "bla fsel:"<<Config::getProperty("hive.min_frame_group_count")<<endl;
   log_init ("log.properties");
   av_register_all ();
 

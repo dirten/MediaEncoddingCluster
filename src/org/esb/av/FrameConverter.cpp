@@ -2,7 +2,7 @@
 #include "FrameFormat.h"
 #include "Frame.h"
 //#include "swscale.h"
-
+#include <iostream>
 namespace org{
 namespace esb{
 namespace av{
@@ -13,12 +13,19 @@ namespace av{
 		
     }
     FrameConverter::~FrameConverter(){
-		av_free(_swsContext);
+		if(_swsContext);
+			av_free(_swsContext);
 		_swsContext=0;
 		
     }
 
     Frame FrameConverter::convert(Frame & in_frame){
+		/*
+		if(in_frame._type!=CODEC_TYPE_VIDEO){
+			std::cerr <<"Kein Video"<<std::endl;
+			return in_frame;
+		}*/
+//		std::cerr <<"Video"<<std::endl;
 		Frame out_frame(_outFormat->pixel_format,_outFormat->width, _outFormat->height);
 /*
 		ImgReSampleContext * resampling_ctx = 

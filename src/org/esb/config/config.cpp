@@ -8,10 +8,14 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
  * See the COPYING file for the terms of usage and distribution.
  */
 #include <org/esb/config/config.h>
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
+using namespace org::esb::sql;
 //namespace org{
 //namespace esb{
 //namespace config{
@@ -46,10 +50,17 @@ void Config::init(char * filename)
     parseLine(buffer);
   }
   fclose(fp);
+  /*load params from database*/
+  Connection con(getProperty("db.connection"));
+  Statement stmt=con.createStatement("select * from config");
+  ResultSet rs=stmt.executeQuery();
+  while(rs.next()){
+    properties->setProperty(rs.getString("key"),rs.getString("val"));
+  }
 }
 
 /**
- * ermitteln des Wertes zum Schlüssel
+ * ermitteln des Wertes zum SchlÃ¼ssel
  */
 char * Config::getProperty(char * key)
 {
