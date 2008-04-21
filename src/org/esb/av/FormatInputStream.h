@@ -7,9 +7,8 @@
 #include "org/esb/util/Log.h"
 #include <vector>
 
-extern "C" {
-#include "avformat.h"
-}
+
+#include "AV.h"
 
 
 //extern "C" AVStream;

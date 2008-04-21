@@ -1,10 +1,7 @@
 #ifndef ORG_ESB_AV_FRAMECONVERTER_H
 #define ORG_ESB_AV_FRAMECONVERTER_H
 
-extern "C" {
-#include "swscale.h"
-//#include "avformat.h"
-}
+#include "AV.h"
 
 
 //struct SwsContext;

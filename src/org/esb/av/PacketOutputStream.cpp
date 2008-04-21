@@ -9,9 +9,9 @@ using namespace org::esb::io;
 
 PacketOutputStream::PacketOutputStream(OutputStream * os){
     if(instanceOf(*os, FormatOutputStream)){
-	_fmtCtx=((FormatOutputStream*)os)->_fmtCtx;
+	  _fmtCtx=((FormatOutputStream*)os)->_fmtCtx;
     }else{
-	_target=new BufferedOutputStream(os,32000);
+	  _target=new BufferedOutputStream(os,32000);
     }
 }
 
@@ -21,6 +21,8 @@ PacketOutputStream::~PacketOutputStream(){
 }
 
 void PacketOutputStream::writePacket(Packet & packet){
+    if(!_isInitialized)
+      throw runtime_error("PacketOutputStream not initialized");
     av_interleaved_write_frame(_fmtCtx,packet.packet);
 //    int result=av_write_frame(_fmtCtx,&packet);
 }
@@ -38,6 +40,7 @@ void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
 
 void PacketOutputStream::init(){
     av_write_header(_fmtCtx);
+    _isInitialized=true;
 }
 /*
 void PacketOutputStream::writePacket(Packet * packet){

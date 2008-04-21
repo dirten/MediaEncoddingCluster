@@ -13,8 +13,9 @@ using namespace std;
 
 
 
-int main(){
-    File f("/tmp/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
+int main(int argc, char ** argv){
+
+    File f(argv[1]);
     FormatInputStream fis(&f);
     PacketInputStream pis(&fis);
 
@@ -36,12 +37,13 @@ int main(){
     enc.open();
 
     pos.setEncoder(enc);
-    
-    cout << "Sample Size"<<enc.frame_size<<endl;
+    pos.init();    
+//    cout << "Sample Size"<<enc.frame_size<<endl;
     Packet pkt;
     while(true){
-    	pis.readPacket(pkt);
-	if(pkt.getStreamIndex()==1){
+      if(pis.readPacket(pkt)<0)break;
+    	
+	  if(pkt.getStreamIndex()==1){
 //	    cout << "Decode"<<endl;
 	    Frame f=dec.decode(pkt);
 //	    cout << "DecodedSize:"<<f._size<<endl;

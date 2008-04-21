@@ -21,6 +21,7 @@ namespace org{
 					void write(vector<unsigned char>&buffer);
 					void flush();
 				private:
+					bool _isInitialized;
 					OutputStream * _target;
 					AVFormatContext * _fmtCtx;
 			};

@@ -11,7 +11,7 @@ AM_PROG_LIBTOOL
 
 
 AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard is "/usr/local")],
-	    FFMPEG_CFLAGS="-I$withval/include/ffmpeg"
+	    FFMPEG_CFLAGS="-I$withval/include"
 	    FFMPEG_LD="-L$withval/lib -lavformat -lavcodec -lavutil -lswscale"
 	    FFMPEG_PATH="$withval")
 
@@ -83,8 +83,8 @@ AC_CHECK_LIB(avutil, av_free)
 AC_CHECK_LIB(pthread, main)
 AC_CHECK_HEADERS([pthread.h])
 
-AC_CHECK_HEADERS([avcodec.h avformat.h],
-                [AC_DEFINE([HAVE_AVCODEC_H])],
+AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h],
+                ,
                 [AC_MSG_ERROR([
 *********************************************************************
 Sorry, no avcodec.h or avformat.h found,
@@ -105,7 +105,7 @@ http://ffmpeg.mplayerhq.hu
 
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -ggdb -g3"
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit -L/home/jhoelscher/bripper/x264/lib -lx264"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit -L/home/jhoelscher/x264/lib -lx264"
 
 AC_OUTPUT(
     Makefile 

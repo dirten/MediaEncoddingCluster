@@ -1,7 +1,7 @@
 #include "FrameConverter.h"
 #include "FrameFormat.h"
 #include "Frame.h"
-#include "swscale.h"
+//#include "swscale.h"
 
 namespace org{
 namespace esb{

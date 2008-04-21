@@ -2,7 +2,7 @@
 #define ORG_ESBG_AV_ENCODER
 
 #include "Codec.h"
-#include <avcodec.h>
+#include "AV.h"
 
 
 namespace org{

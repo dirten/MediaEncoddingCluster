@@ -1,7 +1,4 @@
 #include "Codec.h"
-extern "C" {
-#include "avformat.h"
-}
 #include "Frame.h"
 #include <iostream>
 #include <assert.h>

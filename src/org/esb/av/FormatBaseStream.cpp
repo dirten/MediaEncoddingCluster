@@ -1,7 +1,7 @@
 #include "FormatBaseStream.h"
-extern "C" {
-#include "avformat.h"
-}
+
+#include "AV.h"
+
 #include <iostream>
 
 

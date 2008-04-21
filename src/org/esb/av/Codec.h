@@ -1,8 +1,8 @@
 #ifndef ORG_ESB_AV_CODEC_H
 #define ORG_ESB_AV_CODEC_H
-extern "C" {
-#include "avformat.h"
-}
+
+#include "AV.h"
+
 #include <boost/serialization/binary_object.hpp>
 #include "Packet.h"
 #include "org/esb/util/Log.h"
@@ -83,6 +83,7 @@ namespace org {
 				
 			  private:
 				void setParams ();
+				
 			};
 }}}
 #endif

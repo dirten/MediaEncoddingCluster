@@ -1,9 +1,6 @@
 #include "FormatInputStream.h"
 #include "org/esb/io/File.h"
 #include "org/esb/lang/Exception.h"
-extern "C" {
-#include "avformat.h"
-}
 
 #include <iostream>
 #include <boost/cast.hpp>

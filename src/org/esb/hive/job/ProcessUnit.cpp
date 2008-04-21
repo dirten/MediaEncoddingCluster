@@ -51,8 +51,11 @@ void ProcessUnit::process(){
 	    boost::shared_ptr<Packet> p=*it;
 	    insize+=p->packet->size;
 	    Frame tmp=_decoder->decode(*p);
-
-	    Frame f=conv.convert(tmp);
+	    Frame f;
+        if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
+  	      f=conv.convert(tmp);
+  	    else
+  	      f=tmp;
 	    
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));

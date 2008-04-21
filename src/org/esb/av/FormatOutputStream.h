@@ -5,9 +5,9 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Encoder.h"
-extern "C" {
-#include "avformat.h"
-}
+
+#include "AV.h"
+
 namespace org{
     namespace esb{
 	namespace av{
