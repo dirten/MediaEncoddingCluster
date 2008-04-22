@@ -11,6 +11,7 @@ ProcessUnit::ProcessUnit(){
     _encoder=NULL;
     _target_stream=0;
     _source_stream=0;
+    _frame_group=0;
 }
 
 ProcessUnit::~ProcessUnit(){
@@ -54,9 +55,9 @@ void ProcessUnit::process(){
 
 		Frame f=conv.convert(tmp);
 	    
-	    Packet ret=_encoder->encode(f);
+	    Packet ret=_encoder->encode(tmp);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-	    outsize+=ret.packet->size;
+	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
 	    
 	}

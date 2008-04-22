@@ -21,9 +21,9 @@ SOURCES = \
             Packet.cpp \
             Frame.cpp \
 	        PPSWriter.cpp \
-	        AVInputStream.cpp \
-	        VideoFrame.cpp \
-	        AudioFrame.cpp
+	        AVInputStream.cpp 
+#	        VideoFrame.cpp \
+#	        AudioFrame.cpp
             
 #           CodecInputStream.cpp \
 #            CodecOutputStream.cpp 

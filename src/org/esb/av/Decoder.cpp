@@ -1,7 +1,7 @@
 #include "Decoder.h"
 #include "Frame.h"
-#include "VideoFrame.h"
-#include "AudioFrame.h"
+//#include "VideoFrame.h"
+//#include "AudioFrame.h"
 
 #include <iostream>
 using namespace org::esb::av;
@@ -74,5 +74,8 @@ Frame Decoder::decodeAudio (Packet & packet)
   frame.duration = packet.packet->duration;
   frame._size = out_size;
   frame._type=CODEC_TYPE_AUDIO;
+  frame.channels=ctx->channels;
+  frame.sample_rate=ctx->sample_rate;
+  
   return frame;
 }

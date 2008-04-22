@@ -9,13 +9,14 @@ Packet::Packet(){
 	packet=packetPtr.get();
 	av_init_packet(packet);
 	callDestruct=false;
+	packet->data=NULL;
 //	data=0;
 //	size=0;
 
 }
 
 Packet::Packet(const Packet & p){
-//	cout << "CopyConstruct"<<endl;
+//	cout << "Packet(const Packet & p)"<<endl;
 //	callDestruct=false;
 	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
 	packet=packetPtr.get();
@@ -38,10 +39,12 @@ Packet::Packet(const Packet & p){
     
 }
 
-/*
+
 Packet Packet::operator=(Packet & p){
-	cout << "=Construct"<<endl;
-	packet=new AVPacket();
+//	cout << "Packet::operator="<<endl;
+	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());
+	packet=packetPtr.get();
+//	packet=new AVPacket();
     av_init_packet(packet);
     packet->pts=p.packet->pts;
     packet->dts=p.packet->dts;
@@ -58,7 +61,7 @@ Packet Packet::operator=(Packet & p){
     callDestruct=true;
     return *this;
 }
-*/
+
 Packet::Packet(int s){
 	isCopy=false;
 	packetPtr=boost::shared_ptr<AVPacket>(new AVPacket());

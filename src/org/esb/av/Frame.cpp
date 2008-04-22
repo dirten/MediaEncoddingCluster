@@ -10,6 +10,8 @@ Frame::Frame(){
     key_frame=1;
     _buffer=0;//new uint8_t[1];
     _type=CODEC_TYPE_VIDEO;
+    channels=0;
+    sample_rate=0;
     
 }
 /*
@@ -54,6 +56,7 @@ Frame::Frame(const Frame & frame){
 	_pixFormat=frame._pixFormat;
     pts=frame.pts;
     dts=frame.dts;
+    _type=frame._type;
     if(frame._type==CODEC_TYPE_VIDEO){
       avcodec_get_frame_defaults(this);
       int numBytes=avpicture_get_size(_pixFormat, _width,_height);
@@ -65,12 +68,15 @@ Frame::Frame(const Frame & frame){
       _size=frame._size;
       _buffer=new uint8_t[_size];
       memcpy(_buffer,frame._buffer,_size);
+      channels=frame.channels;
+      sample_rate=frame.sample_rate;;
+
     }
 }
 
 //Packet Packet::operator=(Packet & p){
 Frame Frame::operator=(Frame & frame){
-    cout << "Create Frame::operator=(Frame & frame)"<<endl;
+//    cout << "Create Frame::operator=(Frame & frame)"<<endl;
 	_width=frame._width;
 	_height=frame._height;
 	_pixFormat=frame._pixFormat;
@@ -85,7 +91,9 @@ Frame Frame::operator=(Frame & frame){
 }
 
 Frame::Frame(PixelFormat format, int width, int height){
-    cout << "Create Frame(int format, int width, int height)"<<endl;
+//    cout << "Create Frame(int format, int width, int height)"<<endl;
+    channels=0;
+    sample_rate=0;
 	_width=width;
 	_height=height;
 	_pixFormat=format;

@@ -10,7 +10,9 @@ namespace av{
 struct FrameFormat{
 	PixelFormat pixel_format;
 	int width;
-	int height;	
+	int height;
+	int channels;
+	int samplerate;
 };
 }}}
 #endif

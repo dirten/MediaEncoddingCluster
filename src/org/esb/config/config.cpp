@@ -51,12 +51,14 @@ void Config::init(char * filename)
   }
   fclose(fp);
   /*load params from database*/
+/*
   Connection con(getProperty("db.connection"));
   Statement stmt=con.createStatement("select * from config");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
     properties->setProperty(rs.getString("key"),rs.getString("val"));
   }
+  */
 }
 
 /**

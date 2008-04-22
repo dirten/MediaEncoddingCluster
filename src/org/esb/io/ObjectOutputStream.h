@@ -32,6 +32,7 @@ class ObjectOutputStream:public OutputStream{
 //	    cout << "WriteLength"<<length<<endl;
 //	    _os->write((char*)&length,sizeof(int));
 	    _os->write((char*)_outbound_data.c_str(),_outbound_data.length());
+	    _os->flush();
 	}
 	
     private:

@@ -42,6 +42,8 @@ class Frame :public AVFrame{
         int duration;
         int _size;
         int _type;
+        int channels;
+        int sample_rate;
 
 };
 }}}
