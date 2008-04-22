@@ -66,7 +66,7 @@ Frame Decoder::decodeAudio (Packet & packet)
   }
 //              cout << "DataSize:"<<out_size<<endl;
 //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
-  AudioFrame frame;
+  Frame frame;
   frame._buffer = outbuf;
   frame.pts = packet.packet->pts;
   frame.dts = packet.packet->dts;

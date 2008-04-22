@@ -6,7 +6,7 @@ using namespace std;
 using namespace org::esb::av;
 
 Frame::Frame(){
-    cout << "Create Frame()"<<endl;
+//    cout << "Create Frame()"<<endl;
     key_frame=1;
     _buffer=0;//new uint8_t[1];
     _type=CODEC_TYPE_VIDEO;
@@ -53,17 +53,24 @@ Frame::Frame(const Frame & frame){
 	_height=frame._height;
 	_pixFormat=frame._pixFormat;
     pts=frame.pts;
-    avcodec_get_frame_defaults(this);
-    int numBytes=avpicture_get_size(_pixFormat, _width,_height);
-    _buffer=new uint8_t[numBytes];
-	memset(_buffer,0,numBytes);
-    avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
-    av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
+    dts=frame.dts;
+    if(frame._type==CODEC_TYPE_VIDEO){
+      avcodec_get_frame_defaults(this);
+      int numBytes=avpicture_get_size(_pixFormat, _width,_height);
+      _buffer=new uint8_t[numBytes];
+	  memset(_buffer,0,numBytes);
+      avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
+      av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
+    }else{
+      _size=frame._size;
+      _buffer=new uint8_t[_size];
+      memcpy(_buffer,frame._buffer,_size);
+    }
 }
 
 //Packet Packet::operator=(Packet & p){
 Frame Frame::operator=(Frame & frame){
-//    cout << "Create Frame::operator=(Frame & frame)"<<endl;
+    cout << "Create Frame::operator=(Frame & frame)"<<endl;
 	_width=frame._width;
 	_height=frame._height;
 	_pixFormat=frame._pixFormat;
@@ -78,7 +85,7 @@ Frame Frame::operator=(Frame & frame){
 }
 
 Frame::Frame(PixelFormat format, int width, int height){
-//    cout << "Create Frame(int format, int width, int height)"<<endl;
+    cout << "Create Frame(int format, int width, int height)"<<endl;
 	_width=width;
 	_height=height;
 	_pixFormat=format;

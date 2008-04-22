@@ -51,6 +51,7 @@ void ProcessUnit::process(){
 	    boost::shared_ptr<Packet> p=*it;
 	    insize+=p->packet->size;
 	    Frame tmp=_decoder->decode(*p);
+
 		Frame f=conv.convert(tmp);
 	    
 	    Packet ret=_encoder->encode(f);
