@@ -99,7 +99,7 @@ CPPFLAGS =  -I/home/jhoelscher/ffmpeg/include    -I/home/jhoelscher/tntnet/tnt//
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS =  -I/home/jhoelscher/ffmpeg/include    -I/home/jhoelscher/tntnet/tnt//include -I/home/jhoelscher/tntnet/tntdb/include -I/home/jhoelscher/tntnet/cxxtools//include  -I/home/jhoelscher/ffmpeg/include -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -ggdb -g3
+CXXFLAGS =  -I/home/jhoelscher/ffmpeg/include    -I/home/jhoelscher/tntnet/tnt//include -I/home/jhoelscher/tntnet/tntdb/include -I/home/jhoelscher/tntnet/cxxtools//include  -I/home/jhoelscher/ffmpeg/include -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -pg -g -O0 
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
