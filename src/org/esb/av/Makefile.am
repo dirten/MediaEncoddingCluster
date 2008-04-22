@@ -9,7 +9,6 @@ lib_LTLIBRARIES = libav.la
 SOURCES = \
 	    Init.cpp \
             FrameConverter.cpp \
-            FrameInputStream.cpp \
             FrameOutputStream.cpp \
             FormatInputStream.cpp \
             FormatBaseStream.cpp \
@@ -21,11 +20,14 @@ SOURCES = \
             Encoder.cpp \
             Packet.cpp \
             Frame.cpp \
-	    PPSWriter.cpp \
-	    AVInputStream.cpp
+	        PPSWriter.cpp \
+	        AVInputStream.cpp \
+	        VideoFrame.cpp \
+	        AudioFrame.cpp
             
 #           CodecInputStream.cpp \
 #            CodecOutputStream.cpp 
+#            FrameInputStream.cpp 
             
 libav_la_SOURCES = $(SOURCES)
 libav_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)

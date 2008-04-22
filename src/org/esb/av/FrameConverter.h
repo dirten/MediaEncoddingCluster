@@ -19,7 +19,9 @@ namespace av{
 		~FrameConverter();
 		Frame convert(Frame & input);
 	private:
-	    void getSwsContext();
+		Frame convertVideo(Frame & input);
+		Frame convertAudio(Frame & input);
+//	    void getSwsContext();
 	    SwsContext * _swsContext;
 	    FrameFormat * _inFormat;
 	    FrameFormat * _outFormat;

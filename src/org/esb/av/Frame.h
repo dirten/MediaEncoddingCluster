@@ -11,10 +11,13 @@ namespace av{
 class Frame :public AVFrame{
     public:
 	Frame();
-	Frame(int format, int width, int height);
-	Frame(int format, int width, int height, unsigned char * data);
-	Frame(Frame * source, int format);
-	Frame(Packet * packet, Codec * codec);
+	Frame(PixelFormat format, int width, int height);
+//	Frame(int format, int width, int height, unsigned char * data);
+//	Frame(Frame * source, int format);
+	Frame(const Frame & source);
+//	Frame(Packet * packet, Codec * codec);
+    Frame operator=(Frame & frame);
+
 	~Frame();
 	uint8_t * getData();
     int getWidth();

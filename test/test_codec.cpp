@@ -71,9 +71,9 @@ int main (int argc, char **argv)
 //    cout << v[0][0]<<endl;
 //    return 0;
 
-	Config::init("cluster.cfg");
-	cout << "bla fsel:"<<Config::getProperty("hive.min_frame_group_count")<<endl;
-  log_init ("log.properties");
+//	Config::init("cluster.cfg");
+//	cout << "bla fsel:"<<Config::getProperty("hive.min_frame_group_count")<<endl;
+//  log_init ("log.properties");
   av_register_all ();
 
   avcodec_init ();
@@ -213,27 +213,29 @@ int main (int argc, char **argv)
   uint8_t *video_outbuf = (uint8_t *) av_malloc (video_outbuf_size);
   int insize = 0, outsize = 0;
 
-  File fout ("/tmp/testdb.avi");
-  FormatOutputStream ffos (&fout);
-  PacketOutputStream pos (&ffos);
+//  File fout ("/tmp/testdb.avi");
+//  FormatOutputStream ffos (&fout);
+//  PacketOutputStream pos (&ffos);
 
   FrameFormat format;
   format.pixel_format = PIX_FMT_YUV420P;
   format.height = 1080;		//ic->streams[0]->codec->height;
   format.width = 1920;		//ic->streams[0]->codec->width;
   FrameConverter converter (format);
-
+/*
   Encoder enc2 (CODEC_ID_H264);
   enc2.setWidth (format.width);
   enc2.setHeight (format.height);
-  enc2.setTimeBase ((AVRational) {
-		    1, 25});
+  enc2.setTimeBase ((AVRational) {1, 25});
   enc2.setBitRate (4000000);
   enc2.setGopSize (250);
   enc2.setPixelFormat (PIX_FMT_YUV420P);
   enc2.open ();
-  pos.setEncoder (enc2, 0);
-  pos.init ();
+*/
+
+
+
+
 
   Decoder dec (ic->streams[0]->codec->codec_id);
   dec.setWidth (ic->streams[0]->codec->width);
@@ -249,8 +251,8 @@ int main (int argc, char **argv)
 
 
 
-//      Encoder enc(CODEC_ID_MSMPEG4V3);
-  Encoder enc (CODEC_ID_H264);
+      Encoder enc(CODEC_ID_MSMPEG4V3);
+//  Encoder enc (CODEC_ID_H264);
   enc.setWidth (format.width);
   enc.setHeight (format.height);
   enc.setTimeBase ((AVRational) {
@@ -260,18 +262,20 @@ int main (int argc, char **argv)
   enc.setPixelFormat (PIX_FMT_YUV420P);
 //      enc.setFlag(CODEC_FLAG_PASS1);
   enc.open ();
+//  pos.setEncoder (enc, 0);
+//  pos.init ();
 
 
-  FILE *logfile;
-  logfile = fopen ("stats.out", "w");
+//  FILE *logfile;
+//  logfile = fopen ("stats.out", "w");
 
   for (int i = 0; i < 10; i++) {
     Packet p;
     av_init_packet (p.packet);
     pis.readPacket (p);
     if (i % 5 == 0) {
-      enc.close ();
-      enc.open ();
+//      enc.close ();
+//      enc.open ();
     }
     if (p.packet->stream_index != 0)
       continue;
@@ -318,6 +322,8 @@ int main (int argc, char **argv)
     cout << "convert Packet";
     cout.flush ();
 
+    Frame bla;
+    bla=frame;
     Frame f = converter.convert (frame);
     cout << "FrameSize:" << f.getSize () << endl;
     frame.pts = p.packet->pts;
@@ -327,8 +333,8 @@ int main (int argc, char **argv)
     cout << "encode Packet";
     cout.flush ();
     Packet pe = enc.encode (f);
-    if (enc.ctx->stats_out)
-      fprintf (logfile, "%s", enc.ctx->stats_out);
+//    if (enc.ctx->stats_out)
+//      fprintf (logfile, "%s", enc.ctx->stats_out);
 
 //          pe.packet->pts=p.packet->pts;
 //          pe.packet->dts=p.packet->dts;
@@ -336,7 +342,7 @@ int main (int argc, char **argv)
 
     cout << "write Packet";
     cout.flush ();
-    pos.writePacket (pe);
+//    pos.writePacket (pe);
     out_size = pe.packet->size;
 //          fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 
@@ -361,6 +367,8 @@ int main (int argc, char **argv)
   }
   cout << "InputPacketSizeAll:" << insize << "\tOutputPacketSizeAll:" <<
     outsize << endl;
+//  pos.close();
+//  Config::close();
 /*
     av_free(video_outbuf);
 	avcodec_close(cc);

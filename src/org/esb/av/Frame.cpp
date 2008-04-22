@@ -6,11 +6,13 @@ using namespace std;
 using namespace org::esb::av;
 
 Frame::Frame(){
+    cout << "Create Frame()"<<endl;
     key_frame=1;
-    _buffer=new uint8_t[1];
+    _buffer=0;//new uint8_t[1];
     _type=CODEC_TYPE_VIDEO;
+    
 }
-
+/*
 Frame::Frame(Packet * packet, Codec * codec){
     assert(packet);
     assert(codec);
@@ -41,11 +43,42 @@ Frame::Frame(Packet * packet, Codec * codec){
       }
     }
     
-        pts=packet->packet->pts;
+    pts=packet->packet->pts;
     
 }
+*/
+Frame::Frame(const Frame & frame){
+//    cout << "Create Frame(const Frame & frame)"<<endl;
+	_width=frame._width;
+	_height=frame._height;
+	_pixFormat=frame._pixFormat;
+    pts=frame.pts;
+    avcodec_get_frame_defaults(this);
+    int numBytes=avpicture_get_size(_pixFormat, _width,_height);
+    _buffer=new uint8_t[numBytes];
+	memset(_buffer,0,numBytes);
+    avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
+    av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
+}
 
-Frame::Frame(int format, int width, int height){
+//Packet Packet::operator=(Packet & p){
+Frame Frame::operator=(Frame & frame){
+//    cout << "Create Frame::operator=(Frame & frame)"<<endl;
+	_width=frame._width;
+	_height=frame._height;
+	_pixFormat=frame._pixFormat;
+    pts=frame.pts;
+    avcodec_get_frame_defaults(this);
+    int numBytes=avpicture_get_size(_pixFormat, _width,_height);
+    _buffer=new uint8_t[numBytes];
+	memset(_buffer,0,numBytes);
+    avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
+    av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
+    return *this;
+}
+
+Frame::Frame(PixelFormat format, int width, int height){
+//    cout << "Create Frame(int format, int width, int height)"<<endl;
 	_width=width;
 	_height=height;
 	_pixFormat=format;
@@ -58,7 +91,7 @@ Frame::Frame(int format, int width, int height){
     // Assign appropriate parts of buffer to image planes
     avpicture_fill((AVPicture*)this, _buffer, format, width, height);
 }
-
+/*
 Frame::Frame(int format, int width, int height, unsigned char * data){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
@@ -71,7 +104,8 @@ Frame::Frame(int format, int width, int height, unsigned char * data){
     avpicture_fill((AVPicture *)this, _buffer, format, _width,_height);
 //    img_convert((AVPicture *)this, format, (AVPicture*)source, source->getFormat(), source->getWidth(),source->getHeight());
 }
-
+*/
+/*
 Frame::Frame(Frame * source, int format){
     pts=AV_NOPTS_VALUE;
     key_frame=1;
@@ -90,10 +124,13 @@ Frame::Frame(Frame * source, int format){
 //    }
     pts=source->pts;
 }
-
+*/
 Frame::~Frame(){
+  if(_buffer){
 //    cout <<"Delete Frame"<<endl;
         delete []_buffer;
+        _buffer=0;
+  }
 }
 
 AVPacket * Frame::getPacket(){
@@ -112,11 +149,11 @@ int Frame::getFormat(){
 int Frame::getSize(){
     return avpicture_get_size(getFormat(), getWidth(),getHeight());
 }
-
+/*
 Frame Frame::getFrame(int format){
     return Frame(this, format);
 }
-
+*/
 int Frame::getHeight(){
     return _height;
 }

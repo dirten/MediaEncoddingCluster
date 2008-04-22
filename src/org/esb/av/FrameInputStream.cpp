@@ -43,7 +43,7 @@ Frame * FrameInputStream::readFrame(){
 		remaining-=bytes;
 		counter+=bytes;
 	}
-	Frame * frame=new Frame(atoi(format), atoi(width), atoi(height), (unsigned char*)buffer);
+	Frame * frame=new Frame(atoi(format), atoi(width), atoi(height));
 	return frame;
 }
 

@@ -46,6 +46,10 @@ int main(int argc, char ** argv){
 	  if(pkt.getStreamIndex()==1){
 //	    cout << "Decode"<<endl;
 	    Frame f=dec.decode(pkt);
+        Frame tmp;
+//        tmp=f;
+
+
 //	    cout << "DecodedSize:"<<f._size<<endl;
 	/*
 	Encoder enc2(CODEC_ID_MP2);

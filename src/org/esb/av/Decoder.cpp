@@ -1,5 +1,7 @@
 #include "Decoder.h"
 #include "Frame.h"
+#include "VideoFrame.h"
+#include "AudioFrame.h"
 
 #include <iostream>
 using namespace org::esb::av;
@@ -64,7 +66,7 @@ Frame Decoder::decodeAudio (Packet & packet)
   }
 //              cout << "DataSize:"<<out_size<<endl;
 //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
-  Frame frame;
+  AudioFrame frame;
   frame._buffer = outbuf;
   frame.pts = packet.packet->pts;
   frame.dts = packet.packet->dts;
