@@ -9,6 +9,7 @@ using namespace org::esb::av;
 ProcessUnit::ProcessUnit(){
     _decoder=NULL;
     _encoder=NULL;
+    codec=NULL;
     _target_stream=0;
     _source_stream=0;
     _frame_group=0;
@@ -20,6 +21,8 @@ ProcessUnit::~ProcessUnit(){
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
+	if(codec!=NULL)
+		delete codec;
 */
 //    _decoder=NULL;
 //    _encoder=NULL;
@@ -64,10 +67,11 @@ void ProcessUnit::process(){
 	cout << "decoding encoding ready"<<endl;
 
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
+    /*
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
-	
+	*/
 
 }

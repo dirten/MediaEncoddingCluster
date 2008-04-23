@@ -14,6 +14,10 @@ PacketOutputStream::PacketOutputStream(OutputStream * os){
 	  _target=new BufferedOutputStream(os,32000);
     }
 }
+void PacketOutputStream::close(){
+//    av_write_trailer(_fmtCtx);
+
+}
 
 PacketOutputStream::~PacketOutputStream(){
 //    av_write_trailer(_fmtCtx);
@@ -22,7 +26,7 @@ PacketOutputStream::~PacketOutputStream(){
 
 void PacketOutputStream::writePacket(Packet & packet){
     if(!_isInitialized)
-      throw runtime_error("PacketOutputStream not initialized");
+      throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
     av_interleaved_write_frame(_fmtCtx,packet.packet);
 //    int result=av_write_frame(_fmtCtx,&packet);
 }

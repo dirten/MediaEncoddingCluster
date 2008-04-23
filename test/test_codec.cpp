@@ -208,14 +208,11 @@ int main (int argc, char **argv)
 	
 
 */
-
+/*
   int video_outbuf_size = 200000;
   uint8_t *video_outbuf = (uint8_t *) av_malloc (video_outbuf_size);
+*/
   int insize = 0, outsize = 0;
-
-  File fout ("/tmp/testdb.avi");
-  FormatOutputStream ffos (&fout);
-  PacketOutputStream pos (&ffos);
 
   FrameFormat format;
   format.pixel_format = PIX_FMT_YUV420P;
@@ -240,8 +237,7 @@ int main (int argc, char **argv)
   Decoder dec (ic->streams[0]->codec->codec_id);
   dec.setWidth (ic->streams[0]->codec->width);
   dec.setHeight (ic->streams[0]->codec->height);
-  dec.setTimeBase ((AVRational) {
-		   1, 25});
+  dec.setTimeBase ((AVRational) {1, 25});
   dec.setPixelFormat (ic->streams[0]->codec->pix_fmt);
 //      dec.setGopSize(0);
   dec.open ();
@@ -262,16 +258,20 @@ int main (int argc, char **argv)
   enc.setPixelFormat (PIX_FMT_YUV420P);
 //      enc.setFlag(CODEC_FLAG_PASS1);
   enc.open ();
+/*
+  File fout ("/tmp/testdb.avi");
+  FormatOutputStream ffos (&fout);
+  PacketOutputStream pos (&ffos);
   pos.setEncoder (enc, 0);
   pos.init ();
-
+*/
 
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
 
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 10; i++) {
     Packet p;
-    av_init_packet (p.packet);
+//    av_init_packet (p.packet);
     pis.readPacket (p);
     if (i % 5 == 0) {
 //      enc.close ();
@@ -342,7 +342,7 @@ int main (int argc, char **argv)
 
     cout << "write Packet";
     cout.flush ();
-    pos.writePacket (pe);
+//    pos.writePacket (pe);
     out_size = pe.packet->size;
 //          fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 
@@ -367,7 +367,9 @@ int main (int argc, char **argv)
   }
   cout << "InputPacketSizeAll:" << insize << "\tOutputPacketSizeAll:" <<
     outsize << endl;
-  pos.close();
+//  pos.close();
+  
+  
 //  Config::close();
 /*
     av_free(video_outbuf);

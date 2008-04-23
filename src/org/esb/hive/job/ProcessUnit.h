@@ -33,6 +33,7 @@ class ProcessUnit{
 		list<boost::shared_ptr<Packet> > _output_packets;
 		Decoder * _decoder;
 		Encoder * _encoder;
+		Codec  * codec;
 		int _source_stream;
 		int _target_stream;
 		int _frame_group;
@@ -45,6 +46,7 @@ class ProcessUnit{
 	    		ar & _frame_group;
 	    		ar & _decoder;
 	    		ar & _encoder;
+	    		ar & codec;
 	    	    }
 	private:
 };

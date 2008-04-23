@@ -20,6 +20,7 @@ namespace org{
 					void write(char * buffer, int length);
 					void write(vector<unsigned char>&buffer);
 					void flush();
+					void close();
 				private:
 					bool _isInitialized;
 					OutputStream * _target;

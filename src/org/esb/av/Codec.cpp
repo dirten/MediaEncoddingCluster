@@ -13,6 +13,7 @@ void my_init ()
 	cout << "test initialised"<<endl;
 //	logdebug("init av package");
 	av_register_all ();
+    avcodec_init();
 	avcodec_register_all ();
 }
 
@@ -20,15 +21,14 @@ namespace org {
 	namespace esb {
 		namespace av {
 			Codec::Codec () {
-			    _opened=false;
-			    	
+			      _opened=false;
 					_codec_id=0;
 					_mode=0;
 					_pix_fmt=(PixelFormat)0;
 					_width=0;
 					_height=0;
-					_time_base.num=0;
-					_time_base.den=0;
+					_time_base=(AVRational){0,0};
+//					_time_base.den=0;
 					_gop_size=0;
 					_bit_rate=0;
 					_channels=0;
@@ -127,6 +127,8 @@ namespace org {
 					avcodec_close(ctx);
 					av_free(ctx);
 			    	logdebug("Codec closed:" << _codec_id);
+				}else{
+			    	logdebug("Codec not closed, because it was not opened:" << _codec_id);				
 				}
 				_opened=false;
 			}

@@ -44,6 +44,7 @@ namespace org {
 				  template < class Archive >
 					void serialize (Archive & ar, const unsigned int version)
 				{
+
 					
 					ar & _codec_id;
 					ar & _mode;
@@ -58,7 +59,7 @@ namespace org {
 					ar & _channels;
 					ar & _sample_rate;
 					ar & _sample_format;
-					
+
 				}
 				
 				int _codec_id;

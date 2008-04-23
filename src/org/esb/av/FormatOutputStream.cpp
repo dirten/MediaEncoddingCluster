@@ -15,6 +15,10 @@ FormatOutputStream::FormatOutputStream(File * target_file){
     _fmtCtx->oformat = fmt;
 
 //    AVStream * st = av_new_stream(_fmtCtx, 0);
+    if (av_set_parameters(_fmtCtx, NULL) < 0) {
+        fprintf(stderr, "Invalid output format parameters\n");
+        exit(1);
+    }
 
     if (!(fmt->flags & AVFMT_NOFILE)) {
         if (url_fopen(&_fmtCtx->pb,target_file->getPath(), URL_WRONLY) < 0) {
