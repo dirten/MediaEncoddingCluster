@@ -53,7 +53,8 @@ int main(int argc, char ** argv){
     dec.open ();
 
 //    Encoder enc(CODEC_ID_MSMPEG4V3);
-  Encoder enc (CODEC_ID_H264);
+//  Encoder enc (CODEC_ID_H263);
+  Encoder enc (CODEC_ID_MPEG2VIDEO);
     enc.setWidth (format.width);
     enc.setHeight (format.height);
     enc.setTimeBase ((AVRational) {1, 25});
@@ -76,7 +77,7 @@ int main(int argc, char ** argv){
 //	unit.codec=c;
 	unit._decoder=&dec;
 	unit._encoder=&enc;
-	for(int a=0;a<100;a++){
+	for(int a=0;a<10;a++){
       std::cout << "Loop:"<<a<<std::endl;
 		Packet p;
 		pis.readPacket(p);
@@ -99,7 +100,7 @@ int main(int argc, char ** argv){
 //	delete c;
 //	delete dec;
 //	delete unit._decoder;
-
+/*
      ProcessUnit unit2;   
      FileInputStream ffis("new.unit");
      ObjectInputStream ois(&ffis);
@@ -108,4 +109,6 @@ int main(int argc, char ** argv){
    //  unit2.process();
   delete unit2._decoder;
   delete unit2._encoder;
+  */
+  av_free_static();
 }

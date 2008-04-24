@@ -17,7 +17,7 @@ namespace av{
     
     FrameConverter::~FrameConverter(){
 		if(_swsContext);
-			av_free(_swsContext);
+			sws_freeContext(_swsContext);
 		_swsContext=0;
 		
     }
@@ -49,6 +49,7 @@ namespace av{
     	out_frame.dts=in_frame.dts;
 		return out_frame;
     }
+    
     Frame FrameConverter::convertAudio(Frame & in_frame){
     return in_frame;
 		ReSampleContext * reCtx=audio_resample_init(_outFormat->channels,

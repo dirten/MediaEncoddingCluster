@@ -109,12 +109,16 @@ namespace org {
 				setParams();
 //				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
 //					ctx->flags |= CODEC_FLAG_TRUNCATED;
+                
 				if (avcodec_open (ctx, _codec) < 0) {
 					logerror("ERROR : while openning Codec" <<_codec_id);
 				}else{
 				    logdebug("Codec opened:" << _codec_id);
 				    _opened=true;
 				}
+				
+//				_opened=true;
+
 			}
 			void Codec::setFlag(int flag){
 				_flags|=flag;
@@ -124,6 +128,7 @@ namespace org {
 			}
 			void Codec::close () {
 			    if(_opened){
+			        av_freep(&ctx->stats_in);
 					avcodec_close(ctx);
 					av_free(ctx);
 			    	logdebug("Codec closed:" << _codec_id);

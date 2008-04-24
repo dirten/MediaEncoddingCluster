@@ -9,13 +9,15 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
 
-
+PATH="`pwd`/external:$PATH"
+AC_SUBST(PATH)
+#AC_MSG_ERROR([$PATH])
 AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard is "/usr/local")],
 	    FFMPEG_CFLAGS="-I$withval/include"
 	    FFMPEG_LD="-L$withval/lib -lavformat -lavcodec -lavutil -lswscale"
 	    FFMPEG_PATH="$withval")
 
-CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
+#CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
 AC_ARG_WITH(boost-lib, [  --with-boost-lib=path where boost libraries are installed. ],
 	    BOOST_LD="-L$withval")
@@ -77,12 +79,28 @@ LDFLAGS="$LDFLAGS $sqlite_LD"
 
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
-AC_CHECK_LIB(avcodec, av_free)
-AC_CHECK_LIB(avformat, av_free)
-AC_CHECK_LIB(avutil, av_free)
+
+
+
+
+
+
+#AC_CHECK_LIB(avcodec, av_free)
+#AC_CHECK_LIB(avformat, av_free)
+#AC_CHECK_LIB(avutil, av_free)
 AC_CHECK_LIB(pthread, main)
 AC_CHECK_HEADERS([pthread.h])
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 "
+CXXFLAGS+=" -I`pwd`/external/ffmpeg"
+CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
+CXXFLAGS+=" -I`pwd`/external/tntdb/include"
+CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
 
+#CXXFLAGS+="-I`pwd`/external/ffmpeg/libavutil"
+#CXXFLAGS+="-I`pwd`/external/ffmpeg/libavformat"
+#CXXFLAGS+="-I`pwd`/external/ffmpeg/libavcodec"
+#CXXFLAGS+="-I`pwd`/external/ffmpeg/libswscale"
+CPPFLAGS="$CXXFLAGS"
 AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h],
                 ,
                 [AC_MSG_ERROR([
@@ -103,9 +121,35 @@ http://ffmpeg.mplayerhq.hu
 #*********************************************************************
 #])])
 
-CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 "
-#LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit -L/home/jhoelscher/x264/lib -lx264"
+if test -d "$srcdir/external/cxxtools"; then
+  AC_CONFIG_SUBDIRS([external/cxxtools])
+fi
+if test -d "$srcdir/external/tntdb"; then
+  AC_CONFIG_SUBDIRS([external/tntdb])
+fi
+if test -d "$srcdir/external/tntnet"; then
+  AC_CONFIG_SUBDIRS([external/tntnet])
+fi
+
+if test -d "$srcdir/external/libx264"; then
+  AC_CONFIG_SUBDIRS([external/libx264])
+fi
+
+if test -d "$srcdir/external/ffmpeg"; then
+  AC_CONFIG_SUBDIRS([external/ffmpeg])
+fi
+
+
+#LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient" $(top_srcdir)
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
+
+LDFLAGS+=" -L`pwd`/external/libx264 -lx264"
+LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
+LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
+LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
+LDFLAGS+=" -L`pwd`/external/ffmpeg/libavformat -lavformat"
+LDFLAGS+=" -L`pwd`/external/ffmpeg/libavcodec -lavcodec"
+LDFLAGS+=" -L`pwd`/external/ffmpeg/libswscale -lswscale"
 
 AC_OUTPUT(
     Makefile 
@@ -120,6 +164,7 @@ AC_OUTPUT(
     src/org/esb/hive/Makefile
     src/org/esb/web/Makefile
     src/org/esb/sql/Makefile
+    external/Makefile
     test/Makefile
     test/fobs/Makefile
 dnl    src/hive.client/Makefile 
