@@ -102,7 +102,7 @@ Frame::Frame(PixelFormat format, int width, int height){
     avcodec_get_frame_defaults(this);
     int numBytes=avpicture_get_size(format, width,height);
     _buffer=new uint8_t[numBytes];
-	memset(_buffer,0,numBytes);
+    memset(_buffer,0,numBytes);
     // Assign appropriate parts of buffer to image planes
     avpicture_fill((AVPicture*)this, _buffer, format, width, height);
 }

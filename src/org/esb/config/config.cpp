@@ -57,7 +57,7 @@ void Config::init(char * filename)
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
     properties->setProperty(rs.getString("key"),rs.getString("val"));
-  }
+  }  
   */
 }
 

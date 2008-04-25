@@ -21,7 +21,7 @@ using namespace org::esb::hive::job;
 
 
 int main(int argc, char ** argv){
-//	log_init();
+	log_init();
   av_register_all ();
 
   avcodec_init ();
@@ -54,7 +54,8 @@ int main(int argc, char ** argv){
 
 //    Encoder enc(CODEC_ID_MSMPEG4V3);
 //  Encoder enc (CODEC_ID_H263);
-  Encoder enc (CODEC_ID_MPEG2VIDEO);
+  Encoder enc (CODEC_ID_H264);
+//  Encoder enc (CODEC_ID_MPEG2VIDEO);
     enc.setWidth (format.width);
     enc.setHeight (format.height);
     enc.setTimeBase ((AVRational) {1, 25});
@@ -77,19 +78,39 @@ int main(int argc, char ** argv){
 //	unit.codec=c;
 	unit._decoder=&dec;
 	unit._encoder=&enc;
-	for(int a=0;a<10;a++){
+	for(int a=0;a<250;a++){
       std::cout << "Loop:"<<a<<std::endl;
 		Packet p;
 		pis.readPacket(p);
 		if(p.packet->stream_index!=0)continue;
 		boost::shared_ptr<Packet>packet(new Packet(p));
 		unit._input_packets.push_back(packet);
-        Frame f=dec.decode(p);
-        Frame f2=converter.convert(f);
+//        Frame f=dec.decode(*packet);
+//        Frame f2=converter.convert(f);
 //        f.pts = p.packet->pts;
 //        f.dts = p.packet->dts;
-        Packet p2=enc.encode(f2);
+//        Packet p2=enc.encode(f2);
 	}
+	/*
+		int insize=0, outsize=0;
+
+	list< boost::shared_ptr<Packet> >::iterator it; 
+	for(it=unit._input_packets.begin();it!=unit._input_packets.end();it++){
+		
+	    boost::shared_ptr<Packet> p=*it;
+	    insize+=p->packet->size;
+	    cout << "start decoding insize:"<<p->packet->size<<endl;
+
+	    Frame tmp=unit._decoder->decode(*p);
+
+		Frame f=converter.convert(tmp);
+	    cout << "FrameSize:"<<f.getSize()<<endl;
+	    Packet ret=unit._encoder->encode(f);
+	    
+	}
+*/
+
+  //  unit.process();
 	
 	FileOutputStream fos("new.unit");
 	ObjectOutputStream oos(&fos);
@@ -100,6 +121,7 @@ int main(int argc, char ** argv){
 //	delete c;
 //	delete dec;
 //	delete unit._decoder;
+//	delete unit._encoder;
 /*
      ProcessUnit unit2;   
      FileInputStream ffis("new.unit");
@@ -110,5 +132,5 @@ int main(int argc, char ** argv){
   delete unit2._decoder;
   delete unit2._encoder;
   */
-  av_free_static();
+//  av_free_static();
 }

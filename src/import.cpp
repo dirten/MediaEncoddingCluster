@@ -7,7 +7,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Codec.h"
-//#include "CreateDatabase.cpp"
+#include "CreateDatabase.cpp"
 //#include <boost/progress.hpp>
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/binary_iarchive.hpp>
@@ -52,13 +52,13 @@ int import(int argc, char *argv[]) {
 
 	string connect_str = Config::getProperty("db.connection");
 	Connection con(connect_str.c_str());
-	/*
+	
 	 if(!checkDatabase(con)){
-	 createDatabase(con);
+	  createDatabase(con);
 	 }else{
 	 cout << "Database not found";
 	 }
-	 */
+	 
 	File inputFile(argv[1]);
 	if (!inputFile.canRead()) {
 		cout << "Source File not found" << endl;
@@ -169,7 +169,7 @@ int import(int argc, char *argv[]) {
 			break;
 
 		++count;
-
+//		continue;
 		if (packet.packet->stream_index == 0 && packet.isKeyFrame()&&frame_group_counter>=min_frame_group_count){
 			frame_group++;
 			frame_group_counter=0;
