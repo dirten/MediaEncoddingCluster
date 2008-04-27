@@ -3,8 +3,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 #include "File.h"
 #include "org/esb/lang/Exception.h"
+#include <boost/shared_ptr.hpp>
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::io;
@@ -79,3 +81,18 @@ bool File::canWrite() {
     }
 }
 
+std::list<boost::shared_ptr<File> > File::listFiles(){
+	assert(isDirectory());
+	DIR * dir=opendir(_filename);
+	struct dirent * entry;
+	std::list<boost::shared_ptr<File> > files;
+	do{
+		entry = readdir(dir);
+		if(entry){
+			boost::shared_ptr<File>f(new File(entry->d_name));
+			files.push_back(f);
+		}
+	}while(entry);
+	closedir(dir);
+	return files;
+}

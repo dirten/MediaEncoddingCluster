@@ -1,5 +1,8 @@
 #ifndef ORG_ESB_IO_FILE_H
 #define ORG_ESB_IO_FILE_H
+#include <list>
+#include <boost/shared_ptr.hpp>
+#include "org/esb/util/Log.h"
 namespace org {
     namespace esb {
         namespace io {
@@ -268,8 +271,12 @@ public:
      */
 
                 bool setReadOnly();
+                
+                
+     			std::list<boost::shared_ptr<File> > listFiles();
 private:
                 const char * _filename;
+                logger("io.file");
             };
         }
     }

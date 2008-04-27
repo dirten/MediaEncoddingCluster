@@ -19,6 +19,7 @@ class JobHandler{
     public:
 	static JobHandler * getInstance();
 	Job * getJob();
+	list<Job*> getJobList();
 	Job * getJob(int id);
 	bool addJob(Job & job);
 	Properties _props;

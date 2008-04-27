@@ -23,6 +23,7 @@ ClientHandler::ClientHandler(){
     _con=new Connection(con);
     _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
     "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
+    _stmt_fr=new PreparedStatement(_con->prepareStatement("update frame_groups set complete = now() where frame_group=:fr and stream_id=:sid"));
 
 }
 /*
@@ -56,20 +57,23 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     list< boost::shared_ptr<Packet> >::iterator it; 
-
-	string filename="packet_";
+	
+	string filename=Config::getProperty("hive.data.dir");
+	filename +="/packet_";
 	filename +=toString(unit._source_stream);
 	filename += "_";
 	filename +=toString(unit._target_stream);
 	filename += "_";
 	filename +=toString(unit._frame_group);
 	filename +=".data";
-	/*
+	
 	FileOutputStream fos(filename.c_str());
 	ObjectOutputStream oos(&fos);
 	oos.writeObject(unit);
 	fos.flush();
-	*/
+	_stmt_fr->setInt("fr",unit._frame_group);
+	_stmt_fr->setInt("sid",unit._source_stream);
+	_stmt_fr->execute();
     int count=0, frame_group=0;
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){
         boost::shared_ptr<Packet> packet=*it;
@@ -93,8 +97,8 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         _stmt->setInt( "flags", packet->packet->flags);
         _stmt->setInt( "duration", packet->packet->duration);
         _stmt->setInt( "pos", packet->packet->pos);
-        _stmt->setInt( "data_size", packet->packet->size);
-        _stmt->setBlob( "data", (char *)packet->packet->data,packet->packet->size);
+//        _stmt->setInt( "data_size", packet->packet->size);
+//        _stmt->setBlob( "data", (char *)packet->packet->data,packet->packet->size);
 		_stmt->execute();
     }
     

@@ -70,7 +70,7 @@ int import(int argc, char *argv[]) {
 
 	FormatInputStream fis(&inputFile);
 	PacketInputStream pis(&fis);
-
+	fis.getFormatContext()->flags|=AVFMT_FLAG_GENPTS;
 	//      tntdb::Connection con=connect(databaseFile.getPath());
 	//      sqlite3_transaction trans=con.getTransaction();
 	{
@@ -104,6 +104,11 @@ int import(int argc, char *argv[]) {
 	AVFormatContext *ctx = fis.getFormatContext();
 
 	int streams[ctx->nb_streams];
+	int codec_types[ctx->nb_streams];
+	int num[ctx->nb_streams];
+	int den[ctx->nb_streams];
+	int channels[ctx->nb_streams];
+	int sample_rates[ctx->nb_streams];
 	long duration = 0;
 	PreparedStatement
 			stmt_str =
@@ -144,19 +149,25 @@ int import(int argc, char *argv[]) {
 		stmt_str.execute();
 		int streamid = con.lastInsertId();
 		streams[a] = streamid;
+		codec_types[a] = ctx->streams[a]->codec->codec_type;
+		num[a] = ctx->streams[a]->time_base.num;
+		den[a] = ctx->streams[a]->time_base.den;
+		channels[a] = ctx->streams[a]->codec->channels;
+		sample_rates[a] = ctx->streams[a]->codec->sample_rate;
 	}
 	//      progress_display show_progress(duration);
 
 
+//	PreparedStatement stmt_data=con.prepareStatement("insert into data()");
 	PreparedStatement
 			stmt =
-					con.
-					prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+//					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size) values "
 					//    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
 						"(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
 
 	int min_frame_group_count=100;//atoi(Config::getProperty("hive.min_frame_group_count"));
-	int frame_group_counter=0;
+	int frame_group_counter=0, next_pts=0;
 
 	while (true /*&&count < 1000 */) {
 		Packet packet;
@@ -181,6 +192,7 @@ int import(int argc, char *argv[]) {
 				: packet.packet->duration;
 		stmt.setInt("stream_id", streams[packet.packet->stream_index]);
 		stmt.setDouble("pts", (double) packet.packet->pts);
+//		stmt.setDouble("pts", (double) next_pts);
 		stmt.setDouble("dts", (double) packet.packet->dts);
 		stmt.setInt("stream_index", packet.packet->stream_index);
 		stmt.setInt("key_frame", packet.isKeyFrame());
@@ -193,10 +205,22 @@ int import(int argc, char *argv[]) {
 		stmt.setDouble("pos", (double) packet.packet->pos);
 		stmt.setInt("data_size", packet.packet->size);
 		//        Blob blob((const char*)packet.data,packet.size);
-		//        stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
+		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
 		stmt.execute();
 		//      show_progress+=packet.duration;
+		/*
+		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_VIDEO){
+			next_pts += ((int64_t)1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
+		}
+		
+		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_AUDIO){
+			next_pts += ((int64_t)AV_TIME_BASE/2 * packet.packet->size) / 
+				(sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
+		}
+		*/
 	}
+
+	
 
 	//    trans.commit();
 	cout << endl;

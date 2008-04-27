@@ -17,6 +17,9 @@ JobHandler::JobHandler(){
 //	runner->start();
 	
 }
+list<Job*> JobHandler::getJobList(){
+	return _jobList;
+}
 
 Job * JobHandler::getJob(){
 //	boost::mutex::scoped_lock scoped_lock(m_mutex);

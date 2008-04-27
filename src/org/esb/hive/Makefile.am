@@ -7,18 +7,19 @@ MICRO_VERSION=1
 
 lib_LTLIBRARIES = libhive.la
 SOURCES = \
-            Command.cpp \
-            ProtocolServer.cpp \
-            HiveControl.cpp \
-            HiveListener.cpp \
-            CommandInputStream.cpp \
-            CommandOutputStream.cpp \
-	    job/Job.cpp \
-	    job/JobDetail.cpp \
-	    job/JobHandler.cpp \
-	    job/JobWatcher.cpp \
-	    job/ClientHandler.cpp \
-	    job/ProcessUnit.cpp 
+	Command.cpp \
+	ProtocolServer.cpp \
+	HiveControl.cpp \
+	HiveListener.cpp \
+	CommandInputStream.cpp \
+	CommandOutputStream.cpp \
+	PacketCollector.cpp \
+	job/Job.cpp \
+	job/JobDetail.cpp \
+	job/JobHandler.cpp \
+	job/JobWatcher.cpp \
+	job/ClientHandler.cpp \
+	job/ProcessUnit.cpp 
             
             
             

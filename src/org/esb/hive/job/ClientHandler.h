@@ -23,6 +23,7 @@ class ClientHandler{
 		static boost::mutex m_mutex;
 		sql::Connection * _con;
 		sql::PreparedStatement * _stmt;
+		sql::PreparedStatement * _stmt_fr;
 };
 }}}}
 

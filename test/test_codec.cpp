@@ -247,8 +247,8 @@ int main (int argc, char **argv)
 
 
 
-      Encoder enc(CODEC_ID_MSMPEG4V3);
-//  Encoder enc (CODEC_ID_H264);
+//      Encoder enc(CODEC_ID_MSMPEG4V3);
+  Encoder enc (CODEC_ID_H264);
   enc.setWidth (format.width);
   enc.setHeight (format.height);
   enc.setTimeBase ((AVRational) {

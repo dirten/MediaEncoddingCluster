@@ -39,7 +39,7 @@ int main(int argc, char ** argv){
     format.width = 1920;		//ic->streams[0]->codec->width;
     FrameConverter converter (format);
 
-    int codec_id=17;//fis.getAVStream(0)->getCodec()->ctx->codec_id;
+    int codec_id=13;//fis.getAVStream(0)->getCodec()->ctx->codec_id;
     int width=512;//fis.getAVStream(0)->getCodec()->ctx->width;
     int height=256;//fis.getAVStream(0)->getCodec()->ctx->height;
     int pix_fmt=0;//fis.getAVStream(0)->getCodec()->ctx->pix_fmt;

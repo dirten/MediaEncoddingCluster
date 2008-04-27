@@ -11,6 +11,7 @@
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
 
+#include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
 #include <unistd.h>
 #include <stdlib.h>
@@ -103,10 +104,18 @@ void listener(int argc, char *argv[]){
     }
     JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
     Thread *runner=new Thread(_watcher);
+
+    PacketCollector *_collector=new PacketCollector();
+    Thread *collector_runner=new Thread(_collector);
+
     WebServer * webServer=new WebServer();
     Thread * webRunner=new Thread(webServer);
+    
+    collector_runner->start();
     webRunner->start();
     runner->start();
+    
+    
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);
     server->bind();

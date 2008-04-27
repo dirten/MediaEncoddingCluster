@@ -134,7 +134,7 @@ void Job::activate(){
 //		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
 //		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
-		    sql="select frame_group, startts, frame_count  from frame_groups where stream_id=:instream";
+		    sql="select frame_group, startts, frame_count  from frame_groups where stream_id=:instream and complete is null";
 //		}	
 //		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
@@ -164,7 +164,7 @@ void Job::activate(){
 bool Job::isActive(){
 	return _isActive;
 }
-
+/*
 ProcessUnit Job::getNextProcessUnit(){
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     ProcessUnit u;
@@ -198,8 +198,8 @@ ProcessUnit Job::getNextProcessUnit(){
     }
     return u;
 }
-/*
-ProcessUnit Job::getNextProcessUnit2(){
+*/
+ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
 	ProcessUnit u;
@@ -212,23 +212,21 @@ ProcessUnit Job::getNextProcessUnit2(){
 	_stmt->setInt("stream_id",getSourceStream());
 	ResultSet rs=_stmt->executeQuery();
 	while(rs.next()){
-//	    cout << "Frame:"<<rs.getInt(2)<<" with size goes into ProcessUnit"<<endl;
 	    shared_ptr<Packet> p(new Packet(rs.getInt(0)));
-//	    p->size=rs.getInt(0);
-//	    p->data=new uint8_t[p->size];
-	    memcpy(p->data,rs.getBlob(1).c_str(),p->size);
-	    p->pts=rs.getInt(2);
-	    p->dts=rs.getInt(3);
-	    p->duration=rs.getInt(4);
-	    p->flags=rs.getInt(5);
-	    p->pos=rs.getInt(6);
-	    p->stream_index=rs.getInt(7);
+	    memcpy(p->packet->data,rs.getBlob(1).c_str(),p->packet->size);
+	    p->packet->pts=rs.getInt(2);
+	    p->packet->dts=rs.getInt(3);
+	    p->packet->duration=rs.getInt(4);
+	    p->packet->flags=rs.getInt(5);
+	    p->packet->pos=rs.getInt(6);
+	    p->packet->stream_index=rs.getInt(7);
 	    u._input_packets.push_back(p);
 	}
 	u._decoder=_decoder;
 	u._encoder=_encoder;
 	u._source_stream=getSourceStream();
 	u._target_stream=getTargetStream();
+	u._frame_group=fr_gr;
 //	_frame_group++;
 	}else{
 	    setCompleteTime(1);
@@ -237,4 +235,4 @@ ProcessUnit Job::getNextProcessUnit2(){
 	return u;
     }
 }
-*/
+
