@@ -49,15 +49,13 @@ int exporter(int argc, char * argv[]){
         video_id=rs.getInt("sid");
         cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
-
       }
       if(encoder->ctx->codec_type==CODEC_TYPE_AUDIO){
         audio_id=rs.getInt("sid");
         cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
         cout << "Num:"<<encoder->ctx->time_base.num<<"\tDen:"<<encoder->ctx->time_base.den<<endl;
-        pos.setEncoder(*encoder,rs.getInt("stream_index"));
+//        pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
-      
     }
   }
     pos.init();
@@ -68,10 +66,10 @@ int exporter(int argc, char * argv[]){
 //    sql+=stream_id;
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
-    string sql="select * from packets where stream_id in (:video, :audio) order by pos/* order by case when stream_index = 0  then 1/25*pts else 3/125*pts end*/";
+    string sql="select * from packets where stream_id in (:video, :audio) /* order by case when stream_index = 0  then 1/25*pts else 3/125*pts end*/";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
-	stmt.setInt("audio",audio_id);
+//	stmt.setInt("audio",audio_id);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
 	ResultSet rs=stmt.executeQuery();
 	
