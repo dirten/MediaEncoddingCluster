@@ -18,17 +18,30 @@ int exporter(int argc, char * argv[]){
 
     File fout("/tmp/testdb.avi");
 //    File fout("/tmp/testdb.mp2");
+    string stream_id=argv[2];
+//    int codec_id=atoi(argv[3]);
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);
 
-    Encoder *encoder=new Encoder(CODEC_ID_H264);
-    encoder->setBitRate(1000000);
-    encoder->setTimeBase((AVRational){1,25});
-    encoder->setGopSize(20);
-    encoder->setPixelFormat(PIX_FMT_YUV420P);
-    encoder->setWidth(512);
-    encoder->setHeight(256);
-    encoder->open();
+	Connection con(Config::getProperty("db.connection"));
+    Encoder *encoder=NULL;
+
+  {
+    PreparedStatement stmt=con.prepareStatement("select * from streams where id=:id");
+    stmt.setString("id", stream_id);
+    ResultSet rs=stmt.executeQuery();
+    if(rs.next()){
+      encoder=new Encoder((CodecID)rs.getInt("codec"));
+      encoder->setBitRate(rs.getInt("bit_rate"));
+      encoder->setTimeBase((AVRational){rs.getInt("time_base_num"),rs.getInt("time_base_den")});
+      encoder->setGopSize(rs.getInt("gop_size"));
+      encoder->setPixelFormat((PixelFormat)rs.getInt("pix_fmt"));
+      encoder->setWidth(rs.getInt("width"));
+      encoder->setHeight(rs.getInt("height"));
+      encoder->open();
+    }
+  }
+//    Encoder *encoder=new Encoder(CODEC_ID_H264);
 
     pos.setEncoder(*encoder,0);
 /*
@@ -52,10 +65,12 @@ int exporter(int argc, char * argv[]){
 */
     pos.init();
 //    if(false)
-	Connection con(Config::getProperty("db.connection"));
 
     {
-	Statement stmt=con.createStatement("select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=3 order by a.pts limit 5000");
+    string sql="select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=";
+    sql+=stream_id;
+    sql+=" order by a.pts limit 5000";
+	Statement stmt=con.createStatement(sql.c_str());
 	ResultSet rs=stmt.executeQuery();
 	
 

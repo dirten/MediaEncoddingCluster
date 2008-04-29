@@ -109,6 +109,7 @@ int import(int argc, char *argv[]) {
 	int den[ctx->nb_streams];
 	int channels[ctx->nb_streams];
 	int sample_rates[ctx->nb_streams];
+	int stream_pts[ctx->nb_streams];
 	long duration = 0;
 	PreparedStatement
 			stmt_str =
@@ -154,6 +155,8 @@ int import(int argc, char *argv[]) {
 		den[a] = ctx->streams[a]->time_base.den;
 		channels[a] = ctx->streams[a]->codec->channels;
 		sample_rates[a] = ctx->streams[a]->codec->sample_rate;
+		stream_pts[a]=0;
+
 	}
 	//      progress_display show_progress(duration);
 
@@ -192,7 +195,7 @@ int import(int argc, char *argv[]) {
 				: packet.packet->duration;
 		stmt.setInt("stream_id", streams[packet.packet->stream_index]);
 		stmt.setDouble("pts", (double) packet.packet->pts);
-//		stmt.setDouble("pts", (double) next_pts);
+//		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
 		stmt.setDouble("dts", (double) packet.packet->dts);
 		stmt.setInt("stream_index", packet.packet->stream_index);
 		stmt.setInt("key_frame", packet.isKeyFrame());
@@ -208,16 +211,16 @@ int import(int argc, char *argv[]) {
 		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
 		stmt.execute();
 		//      show_progress+=packet.duration;
-		/*
+		
 		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_VIDEO){
-			next_pts += ((int64_t)1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
+			stream_pts[packet.packet->stream_index] += ((int64_t)1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
 		}
 		
 		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_AUDIO){
-			next_pts += ((int64_t)AV_TIME_BASE/2 * packet.packet->size) / 
+			stream_pts[packet.packet->stream_index] += ((int64_t)AV_TIME_BASE/2 * packet.packet->size) / 
 				(sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
 		}
-		*/
+		
 	}
 
 	

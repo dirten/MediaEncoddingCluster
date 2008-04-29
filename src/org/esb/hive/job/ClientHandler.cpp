@@ -57,7 +57,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
     {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     list< boost::shared_ptr<Packet> >::iterator it; 
-	
+	/*
 	string filename=Config::getProperty("hive.data.dir");
 	filename +="/packet_";
 	filename +=toString(unit._source_stream);
@@ -71,6 +71,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 	ObjectOutputStream oos(&fos);
 	oos.writeObject(unit);
 	fos.flush();
+	*/
 	_stmt_fr->setInt("fr",unit._frame_group);
 	_stmt_fr->setInt("sid",unit._source_stream);
 	_stmt_fr->execute();
@@ -97,8 +98,8 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
         _stmt->setInt( "flags", packet->packet->flags);
         _stmt->setInt( "duration", packet->packet->duration);
         _stmt->setInt( "pos", packet->packet->pos);
-//        _stmt->setInt( "data_size", packet->packet->size);
-//        _stmt->setBlob( "data", (char *)packet->packet->data,packet->packet->size);
+        _stmt->setInt( "data_size", packet->packet->size);
+        _stmt->setBlob( "data", (char *)packet->packet->data,packet->packet->size);
 		_stmt->execute();
     }
     
