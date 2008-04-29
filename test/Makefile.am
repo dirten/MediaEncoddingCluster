@@ -30,12 +30,13 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test_serial test_deserial
+bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test_serial test_deserial info
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 #datasize_SOURCES=datasize.cpp
 
 #test_file_SOURCES=test_file.cpp
+info_SOURCES=info.cpp
 test_tnt_SOURCES=test_tnt.cpp
 test_seek_SOURCES=test_seek.cpp
 test_serial_SOURCES=test_serial.cpp
@@ -82,6 +83,7 @@ test_mysql_LDFLAGS = $(all_libraries)
 #server_LDFLAGS = $(all_libraries) 
 
 #test_file_LDADD=	../src/org/esb/libesb.la 
+info_LDADD=	../src/org/esb/libesb.la 
 test_tnt_LDADD=	../src/org/esb/libesb.la 
 test_serial_LDADD=	../src/org/esb/libesb.la 
 test_deserial_LDADD=	../src/org/esb/libesb.la 

@@ -9,23 +9,25 @@ using namespace org::esb::io;
 
 
 FormatOutputStream::FormatOutputStream(File * target_file){
+	_file=target_file;
     _fmtCtx=av_alloc_format_context();
 
-    AVOutputFormat * fmt=guess_format(NULL,target_file->getPath(),NULL);
-    _fmtCtx->oformat = fmt;
+    _fmt=guess_format(NULL,target_file->getPath(),NULL);
+    _fmtCtx->oformat = _fmt;
 
 //    AVStream * st = av_new_stream(_fmtCtx, 0);
+
+    if (!(_fmt->flags & AVFMT_NOFILE)) {
+        if (url_fopen(&_fmtCtx->pb,_file->getPath(), URL_WRONLY) < 0) {
+            fprintf(stderr, "Could not open '%s'\n", _file->getPath());
+//            exit(1);
+        }
+    }
     if (av_set_parameters(_fmtCtx, NULL) < 0) {
         fprintf(stderr, "Invalid output format parameters\n");
         exit(1);
     }
 
-    if (!(fmt->flags & AVFMT_NOFILE)) {
-        if (url_fopen(&_fmtCtx->pb,target_file->getPath(), URL_WRONLY) < 0) {
-            fprintf(stderr, "Could not open '%s'\n", target_file->getPath());
-//            exit(1);
-        }
-    }
 //    av_write_header(_fmtCtx);
 }
 
@@ -41,6 +43,14 @@ void FormatOutputStream::addPacketStream(PacketOutputStream & pos, Encoder & enc
 void FormatOutputStream::write(char * buffer, int length){};
 void FormatOutputStream::write(vector<unsigned char>&buffer){};
 void FormatOutputStream::write(char * buffer){};
+void FormatOutputStream::open(){
+    if (!(_fmt->flags & AVFMT_NOFILE)) {
+        if (url_fopen(&_fmtCtx->pb,_file->getPath(), URL_WRONLY) < 0) {
+            fprintf(stderr, "Could not open '%s'\n", _file->getPath());
+//            exit(1);
+        }
+    }
+}
 void FormatOutputStream::close(){
     av_write_trailer(_fmtCtx);
     av_free(_fmtCtx);

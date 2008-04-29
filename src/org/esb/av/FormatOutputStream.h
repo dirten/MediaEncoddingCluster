@@ -18,11 +18,14 @@ namespace org{
 		    void write(char * buffer, int length);
 		    void write(vector<unsigned char>&buffer);
 		    void write(char * buffer);
+		    void open();
 		    void close();
 		    void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
-		private:
+//		private:
 		    friend class PacketOutputStream;
 		    AVFormatContext * _fmtCtx;
+		    AVOutputFormat * _fmt;
+		    File * _file;
 	    };
 	}
     }

@@ -39,14 +39,28 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
     AVStream * st=av_new_stream(_fmtCtx,0);
     st->codec=encoder.ctx;
     st->time_base=st->codec->time_base;
+	cout << "TimeBase #"<<"\tnum:"<<st->time_base.num<<"\tden"<<st->time_base.den<<endl;
+
 //    av_write_header(_fmtCtx);
 
 }
 
 void PacketOutputStream::init(){
-    av_write_header(_fmtCtx);
+    if(av_write_header(_fmtCtx)<0){
+		cout <<"av_write_header(_fmtCtx) failed"<<endl;
+		exit(1);
+    }
     _isInitialized=true;
     dump_format(_fmtCtx, 0, NULL, 1);
+    
+    int streams=_fmtCtx->nb_streams;
+	for (int a=0;a<streams;a++){
+		AVStream * stream=_fmtCtx->streams[a];
+		stream->time_base=stream->codec->time_base;
+
+		cout << "TimeBase #"<<a<<"\tnum:"<<stream->codec->time_base.num<<"\tden"<<stream->codec->time_base.den<<endl;
+		cout << "TimeBase Stream#"<<a<<"\tnum:"<<stream->time_base.num<<"\tden"<<stream->time_base.den<<endl;	
+	}
 
 }
 /*
