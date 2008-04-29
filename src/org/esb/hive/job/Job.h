@@ -69,6 +69,7 @@ class Job{
 		mutable boost::mutex m_mutex;
 		Connection * _con;
 		PreparedStatement * _stmt;
+		PreparedStatement * _frStmt;
 		Decoder * _decoder;
 		Encoder * _encoder;
 		bool _isActive;

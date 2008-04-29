@@ -67,6 +67,10 @@ logger ("main")
 
 int main (int argc, char **argv)
 {
+
+
+
+
 //    std::vector< std::vector<double> > v=test();
 //    cout << v[0][0]<<endl;
 //    return 0;
@@ -78,6 +82,12 @@ int main (int argc, char **argv)
 
   avcodec_init ();
   avcodec_register_all ();
+
+
+  int test=av_rescale(1,1000*25000,25000*1000);
+  int test_audio=av_rescale(100,125,AV_TIME_BASE*3);
+  cout <<"av_rescale():"<<test_audio<<endl;
+  return 0;
 
   char *filename = argv[1];
 

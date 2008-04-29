@@ -31,11 +31,11 @@ void PacketOutputStream::writePacket(Packet & packet){
 //    int result=av_write_frame(_fmtCtx,&packet);
 }
 
-void PacketOutputStream::setEncoder(Encoder & encoder){
+void PacketOutputStream::setEncoder(Codec & encoder){
     setEncoder(encoder,0);
 }
 
-void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
+void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
     AVStream * st=av_new_stream(_fmtCtx,stream_id);
     st->codec=encoder.ctx;
 //    av_write_header(_fmtCtx);
@@ -45,6 +45,8 @@ void PacketOutputStream::setEncoder(Encoder & encoder, int stream_id){
 void PacketOutputStream::init(){
     av_write_header(_fmtCtx);
     _isInitialized=true;
+    dump_format(_fmtCtx, 0, NULL, 1);
+
 }
 /*
 void PacketOutputStream::writePacket(Packet * packet){

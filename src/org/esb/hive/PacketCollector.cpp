@@ -1,8 +1,12 @@
 
 #include "PacketCollector.h"
 #include "org/esb/io/File.h"
-
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/config/config.h"
 using namespace org::esb;
+using namespace org::esb::config;
 namespace org{
 namespace esb{
 namespace hive{
@@ -19,17 +23,15 @@ PacketCollector::~PacketCollector(){
 }
 
 void PacketCollector::run(){
+    sql::Connection con(Config::getProperty("db.connection"));
 	while(true){
-		lang::Thread::sleep(5000);
-		logdebug("collector turn arround");
-		io::File dir("/tmp/hive");
-		list<boost::shared_ptr<io::File> > files=dir.listFiles();
-		list<boost::shared_ptr<io::File> >::iterator it;
-		for(it=files.begin();it!=files.end();it++){
-			boost::shared_ptr<io::File> file=*it;
-			
-//			logdebug(file->getPath());
-		}
+      sql::Statement stmt=con.createStatement("select * from frame_groups fg, jobs j, files f where fg.jobid=j.id and j.outputfile=f.id and fg.sended is not null order by f.id");
+      sql::ResultSet rs=stmt.executeQuery();
+      while(rs.next()){
+        
+      
+      }
+      Thread::sleep(1000);
 	}
 }
 

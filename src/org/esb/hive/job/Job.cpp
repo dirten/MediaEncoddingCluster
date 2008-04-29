@@ -35,6 +35,7 @@ Job::Job(){
     _con=new Connection(Config::getProperty("db.connection"));
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
     _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id order by pts"));
+    _frStmt=new PreparedStatement(_con->prepareStatement("update frame_groups set sended=now() where frame_group=:fr and stream_id=:stream"));
 //    _frame_group=1;
     _completeTime=0;
 
@@ -134,7 +135,7 @@ void Job::activate(){
 //		if(_decoder->codec_type==CODEC_TYPE_VIDEO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
 //		    sql="select a.frame_group  from packets a, job_details left join packets b on outstream=b.stream_id  where a.stream_id=:instream and a.stream_id=instream and b.stream_id is null group by a.frame_group;";
-		    sql="select frame_group, startts, frame_count  from frame_groups where stream_id=:instream and complete is null";
+		    sql="select frame_group, startts, frame_count  from frame_groups where stream_id=:instream and sended is null";
 //		}	
 //		if(_decoder->codec_type==CODEC_TYPE_AUDIO){
 //			sql="select distinct b.frame_group from (select pts from packets where stream_id=:source_stream_id except select pts from packets where stream_id=:target_stream_id) a, packets b where a.pts=b.pts and b.stream_id=:source_stream_id order by a.pts";
@@ -228,6 +229,10 @@ ProcessUnit Job::getNextProcessUnit(){
 	u._target_stream=getTargetStream();
 	u._frame_group=fr_gr;
 //	_frame_group++;
+	_frStmt->setInt("fr",fr_gr);
+	_frStmt->setInt("stream",getSourceStream());
+	_frStmt->execute();
+
 	}else{
 	    setCompleteTime(1);
 	    cout << "Job "<<getId()<<" complete"<<endl;	

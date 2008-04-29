@@ -47,6 +47,7 @@ namespace av{
     	out_frame.pos=in_frame.pos;
     	out_frame.pts=in_frame.pts;
     	out_frame.dts=in_frame.dts;
+    	out_frame.duration=in_frame.duration;
 		return out_frame;
     }
     

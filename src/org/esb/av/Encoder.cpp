@@ -39,7 +39,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     pac.packet->pts=frame.pts;
     pac.packet->dts=frame.dts;
     pac.packet->pos=frame.pos;
-    pac.packet->duration=1;
+    pac.packet->duration=frame.duration;
 //    pac.flags=0;
 
     if(ctx->coded_frame && ctx->coded_frame->key_frame)
