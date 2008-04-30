@@ -77,12 +77,12 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*pts ";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*pts limit 5000";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
-//	stmt.setInt("video",video_id);
+	stmt.setInt("video",video_id);
 	stmt.setInt("audio",audio_id);
-	stmt.setInt("video",3);
-	stmt.setInt("audio",2);
+//	stmt.setInt("video",3);
+//	stmt.setInt("audio",2);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
 	ResultSet rs=stmt.executeQuery();
 	
@@ -103,7 +103,7 @@ int exporter(int argc, char * argv[]){
 //	    p.packet->dts=rs.getInt("dts");
 	    p.packet->duration=rs.getInt("duration");
 	    p.packet->flags=rs.getInt("flags");
-	    p.packet->pos=rs.getInt("pos");
+	    p.packet->pos=0;//rs.getInt("pos");
 	    p.packet->stream_index=rs.getInt("stream_index");
 	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
 

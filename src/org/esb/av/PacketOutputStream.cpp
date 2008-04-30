@@ -58,9 +58,10 @@ void PacketOutputStream::init(){
     dump_format(_fmtCtx, 0, NULL, 1);
     
     int streams=_fmtCtx->nb_streams;
+
 	for (int a=0;a<streams;a++){
 		AVStream * stream=_fmtCtx->streams[a];
-		stream->time_base=stream->codec->time_base;
+//		stream->time_base=stream->codec->time_base;
 
 		cout << "TimeBase #"<<a<<"\tnum:"<<stream->codec->time_base.num<<"\tden"<<stream->codec->time_base.den<<endl;
 		cout << "TimeBase Stream#"<<a<<"\tnum:"<<stream->time_base.num<<"\tden"<<stream->time_base.den<<endl;	

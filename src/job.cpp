@@ -112,7 +112,7 @@ int jobcreator(int argc, char*argv[]){
 	stmt.setInt("stream_type",1);
 	stmt.setInt("codec",profile_a_codec);
 	stmt.setInt("time_base_num",1);
-	stmt.setInt("time_base_den",15963);
+	stmt.setInt("time_base_den",16000);
 	stmt.setInt("bit_rate",profile_a_bitrate);
 	stmt.setInt("sample_rate",profile_a_samplerate);
 	stmt.setInt("channels",profile_a_channels);

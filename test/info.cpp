@@ -12,7 +12,7 @@ int main(int argc, char ** argv){
         if(argc!=2)return 1;
         File file(argv[1]);
         FormatInputStream fis(&file);
-//        fis.dumpFormat();
+        fis.dumpFormat();
       AVFormatContext * f=fis.getFormatContext();
       cout << endl;
       cout <<"<File Information>"<<endl;
