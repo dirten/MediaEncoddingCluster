@@ -9,9 +9,12 @@ using namespace org::esb::io;
 
 
 FormatOutputStream::FormatOutputStream(File * target_file){
+    AVFormatParameters params, *ap = &params;
+    memset(ap, 0, sizeof(*ap));
+
+
 	_file=target_file;
     _fmtCtx=av_alloc_format_context();
-
     _fmt=guess_format(NULL,target_file->getPath(),NULL);
     _fmtCtx->oformat = _fmt;
 
@@ -23,7 +26,8 @@ FormatOutputStream::FormatOutputStream(File * target_file){
 //            exit(1);
         }
     }
-    if (av_set_parameters(_fmtCtx, NULL) < 0) {
+
+    if (av_set_parameters(_fmtCtx, ap) < 0) {
         fprintf(stderr, "Invalid output format parameters\n");
         exit(1);
     }
@@ -53,6 +57,7 @@ void FormatOutputStream::open(){
 }
 void FormatOutputStream::close(){
     av_write_trailer(_fmtCtx);
+    url_fclose(_fmtCtx->pb);
     av_free(_fmtCtx);
 //	av_close_input_file(_fmtCtx);
 };

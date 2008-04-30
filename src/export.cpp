@@ -27,7 +27,7 @@ int exporter(int argc, char * argv[]){
     Decoder *encoder=NULL;
     int video_id=0;
     int audio_id=0;
-    int v_num=0,v_den=0,a_num=0,a_den=0;
+//    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
     PreparedStatement stmt=con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id");
@@ -48,20 +48,20 @@ int exporter(int argc, char * argv[]){
       encoder->open();
       if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
         video_id=rs.getInt("sid");
-        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
+//        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
         encoder->ctx->block_align=1;
-        v_num=rs.getInt("time_base_num");
-        v_den=rs.getInt("time_base_den");
+//        v_num=rs.getInt("time_base_num");
+//        v_den=rs.getInt("time_base_den");
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
       if(rs.getInt("stream_type")==CODEC_TYPE_AUDIO){
         audio_id=rs.getInt("sid");
-        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
+//        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
 //        encoder->setTimeBase((AVRational){3,125});
 //            encoder->open();
-        cout << "Num:"<<encoder->ctx->time_base.num<<"\tDen:"<<encoder->ctx->time_base.den<<endl;
-        a_num=rs.getInt("time_base_num");
-        a_den=rs.getInt("time_base_den");
+//        cout << "Num:"<<encoder->ctx->time_base.num<<"\tDen:"<<encoder->ctx->time_base.den<<endl;
+//        a_num=rs.getInt("time_base_num");
+//        a_den=rs.getInt("time_base_den");
         encoder->ctx->block_align=1;
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
@@ -77,10 +77,10 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio)  order by s.time_base_num/s.time_base_den*pts ";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*pts ";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 //	stmt.setInt("video",video_id);
-//	stmt.setInt("audio",audio_id);
+	stmt.setInt("audio",audio_id);
 	stmt.setInt("video",3);
 	stmt.setInt("audio",2);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;

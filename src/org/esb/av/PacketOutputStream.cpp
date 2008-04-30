@@ -36,7 +36,11 @@ void PacketOutputStream::setEncoder(Codec & encoder){
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
-    AVStream * st=av_new_stream(_fmtCtx,0);
+    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
+    if (!st) {
+        fprintf(stderr, "Could not alloc stream\n");
+    }
+
     st->codec=encoder.ctx;
     st->time_base=st->codec->time_base;
 	cout << "TimeBase #"<<"\tnum:"<<st->time_base.num<<"\tden"<<st->time_base.den<<endl;
