@@ -9,6 +9,8 @@ using namespace org::esb::io;
 
 
 FormatOutputStream::FormatOutputStream(File * target_file){
+
+
     AVFormatParameters params, *ap = &params;
     memset(ap, 0, sizeof(*ap));
 
@@ -17,6 +19,7 @@ FormatOutputStream::FormatOutputStream(File * target_file){
     _fmtCtx=av_alloc_format_context();
     _fmt=guess_format(NULL,target_file->getPath(),NULL);
     _fmtCtx->oformat = _fmt;
+//    _fmtCtx->timestamp=0;
 
 //    AVStream * st = av_new_stream(_fmtCtx, 0);
 

@@ -36,14 +36,17 @@ Packet Encoder::encodeVideo(Frame & frame){
     memcpy(pac.packet->data, &data, ret);
 //    pac.data=data;
     pac.packet->size=ret;
-    pac.packet->pts=frame.pts;
+//    pac.packet->pts=frame.pts;
     pac.packet->dts=frame.dts;
     pac.packet->pos=frame.pos;
     pac.packet->duration=frame.duration;
 //    pac.flags=0;
 
-    if(ctx->coded_frame && ctx->coded_frame->key_frame)
-		pac.packet->flags |= PKT_FLAG_KEY;
+    if(ctx->coded_frame){
+    	if(ctx->coded_frame->key_frame)
+			pac.packet->flags |= PKT_FLAG_KEY;
+		pac.packet->pts=ctx->coded_frame->pts;
+	}
     return pac;
 }
 
@@ -54,10 +57,15 @@ Packet Encoder::encodeAudio(Frame & frame){
 	Packet pak(out_size);
 	pak.packet->size=out_size;
 	memcpy(pak.packet->data,&outbuf,out_size);
-	pak.packet->pts=frame.pts;
+//	pak.packet->pts=frame.pts;
 //	pak.pts=this->coded_frame->pts;
 //    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
 //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
+
+    if(ctx->coded_frame){
+		pak.packet->pts=ctx->coded_frame->pts;
+	}
+	pak.packet->flags |= PKT_FLAG_KEY;
 
 	pak.packet->dts=frame.dts;
 	pak.packet->pos=frame.pos;

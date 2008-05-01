@@ -215,8 +215,8 @@ ProcessUnit Job::getNextProcessUnit(){
 	while(rs.next()){
 	    shared_ptr<Packet> p(new Packet(rs.getInt(0)));
 	    memcpy(p->packet->data,rs.getBlob(1).c_str(),p->packet->size);
-	    p->packet->pts=rs.getInt(2);
-	    p->packet->dts=rs.getInt(3);
+	    p->packet->pts=rs.getDouble(2);
+	    p->packet->dts=rs.getDouble(3);
 	    p->packet->duration=rs.getInt(4);
 	    p->packet->flags=rs.getInt(5);
 	    p->packet->pos=rs.getInt(6);

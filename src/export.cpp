@@ -16,7 +16,7 @@ using namespace org::esb::sql;
 
 int exporter(int argc, char * argv[]){
 
-    File fout("/tmp/testdb.avi");
+    File fout("/tmp/testdb.vob");
 //    File fout("/tmp/testdb.mp2");
     string stream_id=argv[2];
 //    int codec_id=atoi(argv[3]);
@@ -24,18 +24,24 @@ int exporter(int argc, char * argv[]){
     PacketOutputStream pos(&fos);
 
 	Connection con(Config::getProperty("db.connection"));
-    Decoder *encoder=NULL;
+    Encoder *encoder=NULL;
     int video_id=0;
     int audio_id=0;
 //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
-    PreparedStatement stmt=con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id");
+    PreparedStatement stmt=con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
     stmt.setString("id", stream_id);
     ResultSet rs=stmt.executeQuery();
     
     while(rs.next()){
-      encoder=new Decoder((CodecID)rs.getInt("codec"));
+      CodecID codec_id=(CodecID)rs.getInt("codec");
+      if(rs.getInt("stream_type")==CODEC_TYPE_AUDIO){
+      	codec_id=av_guess_codec(fos._fmtCtx->oformat,NULL,fout.getPath(),NULL,CODEC_TYPE_AUDIO);
+      
+      }
+
+      encoder=new Encoder(codec_id);
       encoder->setBitRate(rs.getInt("bit_rate"));
       encoder->setTimeBase((AVRational){rs.getInt("time_base_num"),rs.getInt("time_base_den")});
       encoder->setGopSize(rs.getInt("gop_size"));
@@ -49,7 +55,7 @@ int exporter(int argc, char * argv[]){
       if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
         video_id=rs.getInt("sid");
 //        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
-        encoder->ctx->block_align=1;
+//        encoder->ctx->block_align=1;
 //        v_num=rs.getInt("time_base_num");
 //        v_den=rs.getInt("time_base_den");
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
@@ -62,7 +68,7 @@ int exporter(int argc, char * argv[]){
 //        cout << "Num:"<<encoder->ctx->time_base.num<<"\tDen:"<<encoder->ctx->time_base.den<<endl;
 //        a_num=rs.getInt("time_base_num");
 //        a_den=rs.getInt("time_base_den");
-        encoder->ctx->block_align=1;
+//        encoder->ctx->block_align=1;
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
 
@@ -77,12 +83,12 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*pts limit 5000";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts limit 5000";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
 	stmt.setInt("audio",audio_id);
 //	stmt.setInt("video",3);
-//	stmt.setInt("audio",2);
+//	stmt.setInt("audio",0);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
 	ResultSet rs=stmt.executeQuery();
 	
@@ -92,21 +98,21 @@ int exporter(int argc, char * argv[]){
 	while(rs.next()){
 //	    Row row=rs.getRow(a);
 	    video_packets++;
-	    cout<<"\r" << rs.getInt("id");
+//	    cout<<"" << rs.getInt("id")<<endl;
 	    Packet p(rs.getInt("data_size"));
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
 //	    p.packet->pts=AV_NOPTS_VALUE;//rs.getInt("pts");
 //	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
-	    p.packet->pts=rs.getInt("pts");//>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
-	    p.packet->pts=rs.getInt("dts");//>0?(rs.getInt("dts")/rs.getInt("duration")):rs.getInt("dts");
+	    p.packet->pts=rs.getDouble("pts");//>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
+	    p.packet->dts=rs.getDouble("dts");//>0?(rs.getInt("dts")/rs.getInt("duration")):rs.getInt("dts");
 //	    p.packet->dts=rs.getInt("dts");
 	    p.packet->duration=rs.getInt("duration");
 	    p.packet->flags=rs.getInt("flags");
 	    p.packet->pos=0;//rs.getInt("pos");
 	    p.packet->stream_index=rs.getInt("stream_index");
 	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
-
+//		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
 	    pos.writePacket(p);
 //	    if(video_packets%1000==0)
 	    cout.flush();
@@ -130,7 +136,7 @@ int exporter(int argc, char * argv[]){
 	    p.packet->data=new uint8_t[p.packet->size];
 	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
 	    /*for some AudioStreams it might be pts=pts/duration */
-	    p.packet->pts=rs.getInt("pts")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
+	    p.packet->pts=rs.getInt("pts");//>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
 	    p.packet->dts=p.packet->pts;//rs.getint(3);
 	    p.packet->duration=1;//rs.getInt("duration");
 	    p.packet->flags=rs.getInt("flags");

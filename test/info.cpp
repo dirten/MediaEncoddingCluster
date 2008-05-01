@@ -29,7 +29,7 @@ int main(int argc, char ** argv){
         int streams=fis.getStreamCount();
         cout <<endl;
         cout <<"<Stream Information>"<<endl;
-        cout << "#\tindex\tcodec\tnum\tden\tquality\tduration"<<endl;
+        cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tduration"<<endl;
         cout <<"-------------------------------------------------------------------------"<<endl;
         for (int a=0;a<streams;a++){
                 AVStream * s=fis.getFormatContext()->streams[a];
@@ -39,6 +39,7 @@ int main(int argc, char ** argv){
           cout << s->time_base.num<<"\t";
           cout << s->time_base.den<<"\t";
           cout << s->quality<<"\t";
+          cout << s->start_time<<"\t";
           cout << s->duration<<"\t";
           cout << endl;
         }

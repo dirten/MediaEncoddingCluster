@@ -3,6 +3,7 @@
 #include "org/esb/io/OutputStream.h"
 #include "Packet.h"
 #include "Codec.h"
+#include <list>
 
 using namespace org::esb::io;
 namespace org{
@@ -25,6 +26,7 @@ namespace org{
 					bool _isInitialized;
 					OutputStream * _target;
 					AVFormatContext * _fmtCtx;
+					list<AVStream*> streams;
 			};
 		}
 	}

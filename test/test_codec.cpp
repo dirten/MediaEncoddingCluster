@@ -83,12 +83,12 @@ int main (int argc, char **argv)
   avcodec_init ();
   avcodec_register_all ();
 
-
+/*
   int test=av_rescale(1,1000*25000,25000*1000);
   int test_audio=av_rescale(100,125,AV_TIME_BASE*3);
   cout <<"av_rescale():"<<test_audio<<endl;
   return 0;
-
+*/
   char *filename = argv[1];
 
 /*
@@ -261,8 +261,7 @@ int main (int argc, char **argv)
   Encoder enc (CODEC_ID_H264);
   enc.setWidth (format.width);
   enc.setHeight (format.height);
-  enc.setTimeBase ((AVRational) {
-		   1, 25});
+  enc.setTimeBase ((AVRational) {1, 25});
   enc.setBitRate (4000000);
   enc.setGopSize (250);
   enc.setPixelFormat (PIX_FMT_YUV420P);
@@ -279,13 +278,13 @@ int main (int argc, char **argv)
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 30; i++) {
     Packet p;
 //    av_init_packet (p.packet);
     pis.readPacket (p);
     if (i % 5 == 0) {
-//      enc.close ();
-//      enc.open ();
+      enc.close ();
+      enc.open ();
     }
     if (p.packet->stream_index != 0)
       continue;
@@ -363,10 +362,8 @@ int main (int argc, char **argv)
 
 //          out_size = avcodec_encode_video(enc.ctx, video_outbuf, video_outbuf_size, &frame);
     outsize += out_size;
-
-    cout << "InputPacketSize:" << p.packet->
-      size << "\tOutputPacketSize:" << out_size << "\tKeyFrame:" << enc.ctx->
-      coded_frame->key_frame << endl;
+		cout << "InputPts:"<<p.packet->pts<<"\tOutputPts:"<<pe.packet->pts<<endl;	
+//    cout << "InputPacketSize:" << p.packet->size << "\tOutputPacketSize:" << out_size << "\tKeyFrame:" << enc.ctx->coded_frame->key_frame << endl;
 
 //          cout <<"FrameHere:"<<out_size<<endl;
 //          outsize+=out_size;
