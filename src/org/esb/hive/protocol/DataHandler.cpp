@@ -23,7 +23,7 @@ class DataHandler: public ProtocolCommand{
     private:
 	InputStream * _is;
 	OutputStream * _os;
-	PacketOutputStream * _pos;
+//	PacketOutputStream * _pos;
 	io::ObjectOutputStream * _oos;
 	io::ObjectInputStream * _ois;
 	ClientHandler* _handler;
@@ -32,7 +32,7 @@ class DataHandler: public ProtocolCommand{
 	    DataHandler(InputStream * is, OutputStream * os){
 	    _is=is;
 	    _os=os;
-	    _pos=new PacketOutputStream(_os);
+//	    _pos=new PacketOutputStream(_os);
 	    _oos=new io::ObjectOutputStream(_os);
 	    _ois=new io::ObjectInputStream(_is);
 	    _handler=new ClientHandler();

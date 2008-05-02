@@ -171,7 +171,14 @@ namespace org {
 				return _height;
 			}
 			int Codec::getPixelFormat () {
-				return _pix_fmt;
+				return ctx->pix_fmt;
+//				return _pix_fmt;
+			}
+			int Codec::getSampleRate () {
+				return _sample_rate;
+			}
+			int Codec::getChannels () {
+				return _channels;
 			}
 		}
 	}

@@ -41,13 +41,23 @@ void ProcessUnit::process(){
 	if(_encoder!=NULL)
 		_encoder->open();
 
-	FrameFormat format;
-	format.pixel_format=(PixelFormat)_encoder->getPixelFormat();//PIX_FMT_YUV420P;
-	format.height=_encoder->getHeight();
-	format.width=_encoder->getWidth();
+	FrameFormat in_format;
+	in_format.pixel_format=(PixelFormat)_decoder->getPixelFormat();//PIX_FMT_YUV420P;
+	in_format.height=_decoder->getHeight();
+	in_format.width=_decoder->getWidth();
+	in_format.channels=_decoder->getChannels();
+	in_format.samplerate=_decoder->getSampleRate();
+
+	FrameFormat out_format;
+	out_format.pixel_format=(PixelFormat)_encoder->getPixelFormat();//PIX_FMT_YUV420P;
+	out_format.height=_encoder->getHeight();
+	out_format.width=_encoder->getWidth();
+	out_format.channels=_encoder->getChannels();
+	out_format.samplerate=_encoder->getSampleRate();
+	
 //	cout << "Create Formater:\twidth:"<<format.width<<"\theight"<<format.height<<endl;
 
-	FrameConverter conv(format);
+	FrameConverter conv(in_format,out_format);
 //	cout << "start decoding encoding"<<endl;
 	list< boost::shared_ptr<Packet> >::iterator it; 
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){

@@ -16,6 +16,7 @@ namespace av{
     class FrameConverter{
 	public:
 		FrameConverter(FrameFormat& targetFormat);
+		FrameConverter(FrameFormat& sourceFormat,FrameFormat& targetFormat);
 		~FrameConverter();
 		Frame convert(Frame & input);
 	private:
@@ -25,6 +26,7 @@ namespace av{
 	    SwsContext * _swsContext;
 	    FrameFormat * _inFormat;
 	    FrameFormat * _outFormat;
+	    ReSampleContext * _audioCtx;
     };
 }}}
 

@@ -84,9 +84,10 @@ int main (int argc, char **argv)
   avcodec_register_all ();
 
 /*
-  int test=av_rescale(1,1000*25000,25000*1000);
-  int test_audio=av_rescale(100,125,AV_TIME_BASE*3);
-  cout <<"av_rescale():"<<test_audio<<endl;
+  int pts = atoi(argv[1]);
+  int test=av_rescale_q(pts,(AVRational){1,16000},(AVRational){32,1225});
+//  int test_audio=av_rescale(100,125,AV_TIME_BASE*3);
+  cout <<"av_rescale():"<<test<<endl;
   return 0;
 */
   char *filename = argv[1];
@@ -228,7 +229,9 @@ int main (int argc, char **argv)
   format.pixel_format = PIX_FMT_YUV420P;
   format.height = 1080;		//ic->streams[0]->codec->height;
   format.width = 1920;		//ic->streams[0]->codec->width;
-  FrameConverter converter (format);
+
+
+
 /*
   Encoder enc2 (CODEC_ID_H264);
   enc2.setWidth (format.width);
@@ -251,6 +254,14 @@ int main (int argc, char **argv)
   dec.setPixelFormat (ic->streams[0]->codec->pix_fmt);
 //      dec.setGopSize(0);
   dec.open ();
+
+  FrameFormat informat;
+  format.pixel_format = (PixelFormat)dec.getPixelFormat();//_pix_fmt;
+  format.height = ic->streams[0]->codec->height;
+  format.width = ic->streams[0]->codec->width;
+
+  FrameConverter converter (informat,format);
+
 //      cerr << "Decoder"<<endl;
 //      Encoder enc(CODEC_ID_MPEG2VIDEO);
 //      enc.max_b_frames=3;

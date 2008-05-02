@@ -53,22 +53,24 @@ Packet Encoder::encodeVideo(Frame & frame){
 Packet Encoder::encodeAudio(Frame & frame){
 	int outbuf_size=10000;
 	uint8_t outbuf[outbuf_size];
-        int out_size = avcodec_encode_audio(ctx, (uint8_t*)&outbuf, outbuf_size, (short int *)frame._buffer);
+    int out_size = avcodec_encode_audio(ctx, (uint8_t*)&outbuf, outbuf_size, (short int *)frame._buffer);
 	Packet pak(out_size);
 	pak.packet->size=out_size;
 	memcpy(pak.packet->data,&outbuf,out_size);
-//	pak.packet->pts=frame.pts;
+	pak.packet->pts=frame.pts;
 //	pak.pts=this->coded_frame->pts;
 //    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
 //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
 
     if(ctx->coded_frame){
-		pak.packet->pts=ctx->coded_frame->pts;
+//		pak.packet->pts=ctx->coded_frame->pts;
+//		cout <<"Encoder Audio Pts:"<<ctx->coded_frame->pts<<endl;
+//	    pak.packet->duration=ctx->coded_frame->duration;
 	}
 	pak.packet->flags |= PKT_FLAG_KEY;
 
 	pak.packet->dts=frame.dts;
-	pak.packet->pos=frame.pos;
+//	pak.packet->pos=frame.pos;
 	pak.packet->duration=frame.duration;
 //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;	
     return pak;

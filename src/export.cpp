@@ -16,7 +16,7 @@ using namespace org::esb::sql;
 
 int exporter(int argc, char * argv[]){
 
-    File fout("/tmp/testdb.vob");
+    File fout("/tmp/testdb.avi");
 //    File fout("/tmp/testdb.mp2");
     string stream_id=argv[2];
 //    int codec_id=atoi(argv[3]);
@@ -104,12 +104,14 @@ int exporter(int argc, char * argv[]){
 //	    p.data=new uint8_t[p.size];
 //	    p.packet->pts=AV_NOPTS_VALUE;//rs.getInt("pts");
 //	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
-	    p.packet->pts=rs.getDouble("pts");//>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
-	    p.packet->dts=rs.getDouble("dts");//>0?(rs.getInt("dts")/rs.getInt("duration")):rs.getInt("dts");
+	    p.packet->pts=rs.getDouble("duration")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
+        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
+	      p.packet->dts=rs.getDouble("dts")>0?(rs.getInt("dts")/rs.getInt("duration")):rs.getInt("dts");
+	      p.packet->duration=1;//rs.getInt("duration");
+	    }
 //	    p.packet->dts=rs.getInt("dts");
-	    p.packet->duration=rs.getInt("duration");
 	    p.packet->flags=rs.getInt("flags");
-	    p.packet->pos=0;//rs.getInt("pos");
+//	    p.packet->pos=0;//rs.getInt("pos");
 	    p.packet->stream_index=rs.getInt("stream_index");
 	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
 //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;

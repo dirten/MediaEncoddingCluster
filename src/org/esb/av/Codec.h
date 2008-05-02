@@ -38,6 +38,8 @@ namespace org {
 				int getWidth ();
 				int getHeight ();
 				int getPixelFormat ();
+				int getSampleRate ();
+				int getChannels ();
 //				int getCodecType ();
 //				string getCodecName ();
 

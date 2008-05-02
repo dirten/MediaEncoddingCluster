@@ -98,7 +98,7 @@ void Job::activate(){
 	}
 
 	{
-		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.stream_type, s.stream_index from job_details j, streams s where (j.instream=s.id) and j.id=:id");
+		PreparedStatement stmt=con.prepareStatement("select s.codec, s.width, s.height, s.pix_fmt, s.stream_type, s.stream_index, s.channels, s.sample_rate, s.sample_fmt from job_details j, streams s where (j.instream=s.id) and j.id=:id");
 		stmt.setInt("id",_id);
 		ResultSet rs=stmt.executeQuery();
 		if(rs.next()){
@@ -106,6 +106,10 @@ void Job::activate(){
     		_decoder->setWidth(rs.getInt(1));
     		_decoder->setHeight(rs.getInt(2));
     		_decoder->setPixelFormat((PixelFormat)rs.getInt(3));
+    		_decoder->setChannels(rs.getInt(6));
+    		_decoder->setSampleRate(rs.getInt(7));
+    		_decoder->setSampleFormat((SampleFormat)rs.getInt(8));
+
     		_decoder->open();
     		_stream_type=rs.getInt(4);
     		_stream_index=rs.getInt(4);
