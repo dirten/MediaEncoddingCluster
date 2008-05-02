@@ -83,7 +83,7 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts limit 5000";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
 	stmt.setInt("audio",audio_id);
