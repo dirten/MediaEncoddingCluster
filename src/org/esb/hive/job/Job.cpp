@@ -158,11 +158,12 @@ void Job::activate(){
 		    _frame_groups.push(p);
 		}
 	}
-	
-	cout << "FrameGroups:"<<_frame_groups.size()<<endl;
+	logdebug("FrameGroups:"<<_frame_groups.size());
+//	cout << "FrameGroups:"<<_frame_groups.size()<<endl;
 	if(_frame_groups.size()==0){
 		setCompleteTime(1);
-		cout << "Job "<<getId()<<" complete"<<endl;	
+		logdebug("Job "<<getId()<<" complete");
+//		cout << "Job "<<getId()<<" complete"<<endl;	
 	}
 
 }
@@ -223,7 +224,7 @@ ProcessUnit Job::getNextProcessUnit(){
 	    p->packet->dts=rs.getDouble(3);
 	    p->packet->duration=rs.getInt(4);
 	    p->packet->flags=rs.getInt(5);
-	    p->packet->pos=rs.getInt(6);
+	    p->packet->pos=rs.getDouble(6);
 	    p->packet->stream_index=rs.getInt(7);
 	    u._input_packets.push_back(p);
 	}
@@ -239,7 +240,7 @@ ProcessUnit Job::getNextProcessUnit(){
 
 	}else{
 	    setCompleteTime(1);
-	    cout << "Job "<<getId()<<" complete"<<endl;	
+	    logdebug("Job "<<getId()<<" complete");
 	}
 	return u;
     }

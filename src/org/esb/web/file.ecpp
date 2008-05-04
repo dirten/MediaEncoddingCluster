@@ -50,7 +50,8 @@ int id=0;
 	<tr><td>Stream</td><td>( <$rs.getString("id")$> )</td></tr>
 	<{
 	Codec codec((CodecID)rs.getInt(4));
-	if(codec.getCodecType()==CODEC_TYPE_AUDIO){
+//	if(codec.getCodecType()==CODEC_TYPE_AUDIO){
+	if(rs.getInt("stream_type")==CODEC_TYPE_AUDIO){
 	    codec.setSampleRate(1);
 	    codec.setChannels(1);
 	    codec.setBitRate(100);

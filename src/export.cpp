@@ -104,9 +104,9 @@ int exporter(int argc, char * argv[]){
 //	    p.data=new uint8_t[p.size];
 //	    p.packet->pts=AV_NOPTS_VALUE;//rs.getInt("pts");
 //	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
-	    p.packet->pts=rs.getDouble("duration")>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
+	    p.packet->pts=rs.getDouble("duration")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
         if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
-	      p.packet->dts=rs.getDouble("dts")>0?(rs.getInt("dts")/rs.getInt("duration")):rs.getInt("dts");
+	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
 	      p.packet->duration=1;//rs.getInt("duration");
 	    }
 //	    p.packet->dts=rs.getInt("dts");

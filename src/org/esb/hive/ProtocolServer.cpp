@@ -91,5 +91,5 @@ void ProtocolServer::run ()
 //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
 		}
 	}
-	cout << "Elvis has left the Building" << endl;
+//	cout << "Elvis has left the Building" << endl;
 }

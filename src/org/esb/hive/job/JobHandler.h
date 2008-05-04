@@ -2,6 +2,7 @@
 #define ORG_ESB_HIVE_JOB_JOBHANDLER_H
 
 #include "Job.h"
+#include "org/esb/util/Log.h"
 #include <list>
 #include <boost/thread/mutex.hpp>
 namespace org{
@@ -10,6 +11,7 @@ namespace hive{
 namespace job{
 class JobHandler{
     private:
+	logger("hive.jobhandler");
 	static JobHandler * _handler;
 	JobHandler();
 	list<Job*>_jobList;
