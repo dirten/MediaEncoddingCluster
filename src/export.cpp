@@ -30,7 +30,7 @@ int exporter(int argc, char * argv[]){
 //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
-    PreparedStatement stmt=con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
+    PreparedStatement stmt=con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id order by stream_type limit 2");
     stmt.setString("id", stream_id);
     ResultSet rs=stmt.executeQuery();
     
@@ -55,7 +55,7 @@ int exporter(int argc, char * argv[]){
       if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
         video_id=rs.getInt("sid");
 //        cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
-//        encoder->ctx->block_align=1;
+        encoder->ctx->block_align=1;
 //        v_num=rs.getInt("time_base_num");
 //        v_den=rs.getInt("time_base_den");
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
@@ -68,7 +68,7 @@ int exporter(int argc, char * argv[]){
 //        cout << "Num:"<<encoder->ctx->time_base.num<<"\tDen:"<<encoder->ctx->time_base.den<<endl;
 //        a_num=rs.getInt("time_base_num");
 //        a_den=rs.getInt("time_base_den");
-//        encoder->ctx->block_align=1;
+        encoder->ctx->block_align=1;
         pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
 
@@ -83,7 +83,8 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
+//    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by dts";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
 	stmt.setInt("audio",audio_id);
@@ -104,11 +105,11 @@ int exporter(int argc, char * argv[]){
 //	    p.data=new uint8_t[p.size];
 //	    p.packet->pts=AV_NOPTS_VALUE;//rs.getInt("pts");
 //	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
-	    p.packet->pts=rs.getDouble("duration")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
-        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
-	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
-	      p.packet->duration=1;//rs.getInt("duration");
-	    }
+	    p.packet->pts=rs.getDouble("pts");//>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
+//        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
+	      p.packet->dts=rs.getDouble("dts");//>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
+	      p.packet->duration=rs.getInt("duration");
+//	    }
 //	    p.packet->dts=rs.getInt("dts");
 	    p.packet->flags=rs.getInt("flags");
 //	    p.packet->pos=0;//rs.getInt("pos");

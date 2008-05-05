@@ -36,7 +36,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     memcpy(pac.packet->data, &data, ret);
 //    pac.data=data;
     pac.packet->size=ret;
-//    pac.packet->pts=frame.pts;
+    pac.packet->pts=frame.pts;
     pac.packet->dts=frame.dts;
     pac.packet->pos=frame.pos;
     pac.packet->duration=frame.duration;
@@ -45,7 +45,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     if(ctx->coded_frame){
     	if(ctx->coded_frame->key_frame)
 			pac.packet->flags |= PKT_FLAG_KEY;
-		pac.packet->pts=ctx->coded_frame->pts;
+//		pac.packet->pts=ctx->coded_frame->pts;
 	}
     return pac;
 }

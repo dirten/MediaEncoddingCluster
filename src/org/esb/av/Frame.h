@@ -38,6 +38,7 @@ class Frame :public AVFrame{
     public:
 		int _frameFinished;
         int64_t dts;
+//        int64_t dts;
         int64_t pos;
         int duration;
         int _size;

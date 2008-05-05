@@ -84,6 +84,7 @@ namespace org {
 			void Codec::setParams () {
 				ctx->codec_id=(CodecID)_codec_id;
 				ctx->codec_type=_codec->type;
+				ctx->global_quality = 100;
 				ctx->pix_fmt = _pix_fmt;
 				ctx->width = _width;
 				ctx->height = _height;

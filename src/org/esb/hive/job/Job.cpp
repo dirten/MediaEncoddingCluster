@@ -34,7 +34,7 @@ Job::Job(){
 
     _con=new Connection(Config::getProperty("db.connection"));
 //    _con->executenonquery("PRAGMA read_uncommitted = 1");
-    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id order by pts"));
+    _stmt=new PreparedStatement(_con->prepareStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where frame_group=:frame_group and stream_id=:stream_id order by dts"));
     _frStmt=new PreparedStatement(_con->prepareStatement("update frame_groups set sended=now() where frame_group=:fr and stream_id=:stream"));
 //    _frame_group=1;
     _completeTime=0;

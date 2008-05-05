@@ -7,6 +7,7 @@ using namespace org::esb::av;
 
 Frame::Frame(){
 //    cout << "Create Frame()"<<endl;
+    quality=100;
     key_frame=1;
     _buffer=0;//new uint8_t[1];
     _type=CODEC_TYPE_VIDEO;
@@ -51,11 +52,10 @@ Frame::Frame(Packet * packet, Codec * codec){
 */
 Frame::Frame(const Frame & frame){
 //    cout << "Create Frame(const Frame & frame)"<<endl;
+    quality=100;
 	_width=frame._width;
 	_height=frame._height;
 	_pixFormat=frame._pixFormat;
-    pts=frame.pts;
-    dts=frame.dts;
     _type=frame._type;
     if(frame._type==CODEC_TYPE_VIDEO){
       avcodec_get_frame_defaults(this);
@@ -70,13 +70,17 @@ Frame::Frame(const Frame & frame){
       memcpy(_buffer,frame._buffer,_size);
       channels=frame.channels;
       sample_rate=frame.sample_rate;;
-
     }
+    pts=frame.pts;
+    dts=frame.dts;
+    duration=frame.duration;
+    pos=frame.pos;
 }
 
 //Packet Packet::operator=(Packet & p){
 Frame Frame::operator=(Frame & frame){
 //    cout << "Create Frame::operator=(Frame & frame)"<<endl;
+    quality=100;
 	_width=frame._width;
 	_height=frame._height;
 	_pixFormat=frame._pixFormat;
@@ -87,11 +91,16 @@ Frame Frame::operator=(Frame & frame){
 	memset(_buffer,0,numBytes);
     avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
     av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
+    pts=frame.pts;
+    dts=frame.dts;
+    duration=frame.duration;
+    pos=frame.pos;
     return *this;
 }
 
 Frame::Frame(PixelFormat format, int width, int height){
 //    cout << "Create Frame(int format, int width, int height)"<<endl;
+    quality=100;
     channels=0;
     sample_rate=0;
 	_width=width;

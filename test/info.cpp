@@ -66,7 +66,7 @@ int main(int argc, char ** argv){
       cout <<"<Packet Information>"<<endl;
       cout << "#\tpts\tdts\tsize\tindex\tflags\tduration\tpos"<<endl;
       cout <<"------------------------------------------------------------------------"<<endl;
-      for(int a=0;a<20;a++){
+      for(int a=0;a<50;a++){
         Packet p;
         pis.readPacket(p);
         cout <<a<<"\t";

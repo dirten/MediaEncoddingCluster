@@ -2,9 +2,12 @@
 #define ORG_ESB_HIVE_JOB_PROCESS_UNIT_H
 
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Frame.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
-#include <vector>
+#include <list>
+#include <set>
+//#include <multiset>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/vector.hpp>
@@ -19,6 +22,8 @@ namespace org{
 namespace esb{
 namespace hive{
 namespace job{
+
+
 class ProcessUnit{
 	public:
 		logger("hive.processunit");
@@ -50,6 +55,15 @@ class ProcessUnit{
 	    	    }
 	private:
 };
+
+class PtsComparator {
+public:
+  bool operator()(const boost::shared_ptr<Frame> & lp, const boost::shared_ptr<Frame> & rp)const{
+    return lp->pts < rp->pts;
+  }
+};
+
+
 }}}}
 
 #endif

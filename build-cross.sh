@@ -30,6 +30,8 @@ GCC_VERSION=3.4.5-20060117-1
 GCC=gcc-$GCC_VERSION
 GCC_ARCHIVES="gcc-core-$GCC_VERSION-src.tar.gz gcc-g++-$GCC_VERSION-src.tar.gz"
 GCC_PATCH=""
+LIBTOOL=libtool-2.2.2
+LIBTOOL_ARCHIVE=$LIBTOOL.tar.gz
 BINUTILS=binutils-2.17.50-20070129-1-src
 BINUTILS_ARCHIVE=$BINUTILS.tar.gz
 MINGW=mingw-runtime-3.12
@@ -95,6 +97,49 @@ install_libs()
 	gzip -dc "$SRCDIR/$W32API_ARCHIVE" | tar xf -
 	gzip -dc "$SRCDIR/$OPENGL_ARCHIVE" | tar xf -
 	gzip -dc "$SRCDIR/$DIRECTX_ARCHIVE" | tar xf -
+	cd "$TOPDIR"
+}
+
+extract_libtool()
+{
+	cd "$SRCDIR"
+	rm -rf "$LIBTOOL"
+	echo "Extracting libtool"
+	gzip -dc "$SRCDIR/$LIBTOOL_ARCHIVE" | tar xf -
+	cd "$TOPDIR"
+}
+
+configure_libtool()
+{
+	cd "$TOPDIR"
+	rm -rf "libtool-$TARGET"
+	mkdir "libtool-$TARGET"
+	cd "libtool-$TARGET"
+	echo "Configuring libtool"
+	"$SRCDIR/$LIBTOOL/configure" --prefix="$PREFIX" --target=$TARGET &> configure.log
+	cd "$TOPDIR"
+}
+build_libtool()
+{
+	cd "$TOPDIR/libtool-$TARGET"
+	echo "Building libtool"
+	make &> make.log
+	if test $? -ne 0; then
+		echo "make failed - log available: libtool-$TARGET/make.log"
+		exit 1
+	fi
+	cd "$TOPDIR"
+}
+
+install_libtool()
+{
+	cd "$TOPDIR/libtool-$TARGET"
+	echo "Installing libtool"
+	make install &> make-install.log
+	if test $? -ne 0; then
+		echo "install failed - log available: libtool-$TARGET/make-install.log"
+		exit 1
+	fi
 	cd "$TOPDIR"
 }
 
@@ -234,20 +279,24 @@ final_tweaks()
 	echo "Installation complete!"
 }
 
-download_files
+#download_files
 
-install_libs
+#install_libs
 
-extract_binutils
-configure_binutils
-build_binutils
-install_binutils
+#extract_binutils
+#configure_binutils
+#build_binutils
+#install_binutils
 
-extract_gcc
-patch_gcc
-configure_gcc
-build_gcc
-install_gcc
+#extract_gcc
+#patch_gcc
+#configure_gcc
+#build_gcc
+#install_gcc
 
-final_tweaks
+#final_tweaks
 
+extract_libtool
+configure_libtool
+build_libtool
+install_libtool

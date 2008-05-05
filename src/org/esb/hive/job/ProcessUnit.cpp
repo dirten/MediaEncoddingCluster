@@ -60,24 +60,27 @@ void ProcessUnit::process(){
 	FrameConverter conv(in_format,out_format);
 //	cout << "start decoding encoding"<<endl;
 	list< boost::shared_ptr<Packet> >::iterator it; 
-	for(it=_input_packets.begin();it!=_input_packets.end();it++){
-		
+	multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
+	for(it=_input_packets.begin();it!=_input_packets.end();it++){		
 	    boost::shared_ptr<Packet> p=*it;
 	    insize+=p->packet->size;
-//	    cout << "start decoding insize:"<<p->packet->size<<endl;
-
 	    Frame tmp=_decoder->decode(*p);
-
-		Frame f=conv.convert(tmp);
-//	    cout << "FrameSize:"<<f.getSize()<<endl;
+        boost::shared_ptr<Frame> fr(new Frame(tmp));
+	    cout <<"PacketPts:"<<p->packet->pts<<"\tFramePts:"<<tmp.pts<<"\tFrame*Pts:"<<fr->pts<<endl;
+        pts_list.insert(fr);
+	}
+	
+	cout <<"ListSize:"<<_input_packets.size()<<"\tSetSize:"<<pts_list.size()<<endl;
+	multiset<boost::shared_ptr<Frame>, PtsComparator >::iterator pts_it;
+	for(pts_it=pts_list.begin();pts_it!=pts_list.end();pts_it++){
+	    boost::shared_ptr<Frame> tmp=*pts_it;
+		Frame f=conv.convert(*tmp);
 	    Packet ret=_encoder->encode(f);
-
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
 	    outsize+=pEnc->packet->size;
-	    _output_packets.push_back(pEnc);
-	    
+	    _output_packets.push_back(pEnc);	    
+	    cout << "Frame*Pts:"<<tmp->pts<<"\tPacketPts:"<<ret.packet->pts<<"Packet*Pts"<<pEnc->packet->pts<<endl;
 	}
-//	cout << "decoding encoding ready"<<endl;
 
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
     
