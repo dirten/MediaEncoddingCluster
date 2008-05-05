@@ -71,8 +71,9 @@ Frame::Frame(const Frame & frame){
       channels=frame.channels;
       sample_rate=frame.sample_rate;;
     }
-    pts=frame.pts;
-    dts=frame.dts;
+    _pts=frame._pts;
+    _dts=frame._dts;
+    stream_index=frame.stream_index;
     duration=frame.duration;
     pos=frame.pos;
 }
@@ -91,9 +92,10 @@ Frame Frame::operator=(Frame & frame){
 	memset(_buffer,0,numBytes);
     avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
     av_picture_copy((AVPicture*)this, (AVPicture*)&frame, _pixFormat, _width, _height);
-    pts=frame.pts;
-    dts=frame.dts;
+    _pts=frame._pts;
+    _dts=frame._dts;
     duration=frame.duration;
+    stream_index=frame.stream_index;
     pos=frame.pos;
     return *this;
 }
@@ -184,6 +186,19 @@ int Frame::getHeight(){
 
 int Frame::getWidth(){
     return _width;
+}
+int64_t Frame::getPts(){
+    return pts;
+}
+int64_t Frame::getDts(){
+    return _dts;
+}
+
+void Frame::setPts(int64_t pts){
+    pts=pts;
+}
+void Frame::setDts(int64_t dts){
+    _dts=dts;
 }
 /*
 void Frame::setFrame(AVFrame * frame){

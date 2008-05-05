@@ -37,8 +37,9 @@ Frame Decoder::decodeVideo (Packet & packet)
     fprintf (stderr, "Error while decoding frame\n");
   }
   frame._pixFormat = _pix_fmt;
-  frame.pts = packet.packet->pts;
-  frame.dts = packet.packet->dts;
+  frame.stream_index=packet.packet->stream_index;
+  frame.setPts( packet.packet->pts );
+  frame.setDts( packet.packet->dts);
   frame.pos = packet.packet->pos;
   frame.duration = packet.packet->duration;
   frame._type=CODEC_TYPE_VIDEO;
@@ -69,8 +70,9 @@ Frame Decoder::decodeAudio (Packet & packet)
 //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
   Frame frame;
   frame._buffer = outbuf;
-  frame.pts = packet.packet->pts;
-  frame.dts = packet.packet->dts;
+  frame.stream_index=packet.packet->stream_index;
+  frame.setPts( packet.packet->pts);
+  frame.setDts( packet.packet->dts);
   frame.pos = packet.packet->pos;
   frame.duration = packet.packet->duration;
   frame._size = out_size;

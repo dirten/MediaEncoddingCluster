@@ -26,6 +26,10 @@ class Frame :public AVFrame{
 	int getFormat();
 	AVPacket * getPacket();
 	Frame getFrame(int format=0);
+	void setPts(int64_t pts);
+	void setDts(int64_t pts);
+	int64_t getPts();
+	int64_t getDts();
 //	void setFrame(AVFrame * frame);
         int _height;
         int _width;
@@ -35,16 +39,19 @@ class Frame :public AVFrame{
 	AVPacket * _packet;
 //	AVFrame * _frame;
         uint8_t * _buffer;
+		private:
+        int64_t _dts;
+        int64_t _pts;
+
     public:
 		int _frameFinished;
-        int64_t dts;
-//        int64_t dts;
         int64_t pos;
         int duration;
         int _size;
         int _type;
         int channels;
         int sample_rate;
+        int stream_index;
 
 };
 }}}

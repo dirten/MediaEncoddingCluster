@@ -347,8 +347,8 @@ int main (int argc, char **argv)
     Frame f = converter.convert (frame);
     cout << "FrameSize:" << f.getSize () << endl;
     frame.pts = p.packet->pts;
-    f.pts = p.packet->pts;
-    f.dts = p.packet->dts;
+    f.setPts( p.packet->pts);
+    f.setDts( p.packet->dts);
 
     cout << "encode Packet";
     cout.flush ();

@@ -12,6 +12,7 @@ int jobcreator(int argc, char*argv[]){
 	Connection con(Config::getProperty("db.connection"));
 	int fileid=atoi(argv[2]), outfileid=0, v_stream_id=0, a_stream_id=0, in_v_stream=0, in_a_stream=0, jobid=0, v_stream_idx=0, a_stream_idx=0;
 	int profileid=atoi(argv[3]);
+	int a_stream_num=0, a_stream_den=0;
 
 	string filename;
 	
@@ -73,6 +74,8 @@ int jobcreator(int argc, char*argv[]){
 	if(rs.next()){
 		in_a_stream=rs.getInt("id");
 		a_stream_idx=rs.getInt("stream_index");
+		a_stream_num=rs.getInt("time_base_num");
+		a_stream_den=rs.getInt("time_base_den");
 	}
 }
 
@@ -111,8 +114,8 @@ int jobcreator(int argc, char*argv[]){
 	stmt.setInt("stream_index",1);
 	stmt.setInt("stream_type",1);
 	stmt.setInt("codec",profile_a_codec);
-	stmt.setInt("time_base_num",1);
-	stmt.setInt("time_base_den",16000);
+	stmt.setInt("time_base_num",a_stream_num);
+	stmt.setInt("time_base_den",a_stream_den);
 	stmt.setInt("bit_rate",profile_a_bitrate);
 	stmt.setInt("sample_rate",profile_a_samplerate);
 	stmt.setInt("channels",profile_a_channels);

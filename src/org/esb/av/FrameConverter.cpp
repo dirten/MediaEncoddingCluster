@@ -64,8 +64,9 @@ namespace av{
       
     	sws_scale(_swsContext,in_frame.data, in_frame.linesize,0,in_frame.getHeight(),out_frame.data, out_frame.linesize);
     	out_frame.pos=in_frame.pos;
-    	out_frame.pts=in_frame.pts;
-    	out_frame.dts=in_frame.dts;
+    	out_frame.setPts(in_frame.getPts());
+    	out_frame.setDts(in_frame.getDts());
+    	out_frame.stream_index=in_frame.stream_index;
     	out_frame.duration=in_frame.duration;
 		return out_frame;
     }
@@ -85,9 +86,10 @@ namespace av{
 
 	 	Frame frame;
   		frame._buffer = audio_buf;
-		frame.pts = in_frame.pts;
-  		frame.dts = in_frame.dts;
+		frame.setPts(in_frame.getPts());
+  		frame.setDts( in_frame.getDts());
   		frame.pos = in_frame.pos;
+  		frame.stream_index = in_frame.stream_index;
   		frame.duration = in_frame.duration;
   		frame._size = out_size;
   		frame._type=CODEC_TYPE_AUDIO;

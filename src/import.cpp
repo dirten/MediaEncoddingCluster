@@ -110,6 +110,7 @@ int import(int argc, char *argv[]) {
 	int channels[ctx->nb_streams];
 	int sample_rates[ctx->nb_streams];
 	int stream_pts[ctx->nb_streams];
+	double stream_start[ctx->nb_streams];
 	long duration = 0;
 	PreparedStatement
 			stmt_str =
@@ -156,6 +157,7 @@ int import(int argc, char *argv[]) {
 		channels[a] = ctx->streams[a]->codec->channels;
 		sample_rates[a] = ctx->streams[a]->codec->sample_rate;
 		stream_pts[a]=0;
+		stream_start[a]=(double) ctx->streams[a]->start_time;
 
 	}
 	//      progress_display show_progress(duration);
@@ -194,9 +196,9 @@ int import(int argc, char *argv[]) {
 		packet.packet->duration = packet.packet->duration == 0 ? 1
 				: packet.packet->duration;
 		stmt.setInt("stream_id", streams[packet.packet->stream_index]);
-		stmt.setDouble("pts", (double) packet.packet->pts);
+		stmt.setDouble("pts", (double) packet.packet->pts/*-stream_start[packet.packet->stream_index]*/);
 //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
-		stmt.setDouble("dts", (double) packet.packet->dts);
+		stmt.setDouble("dts", (double) packet.packet->dts/*-stream_start[packet.packet->stream_index]*/);
 		stmt.setInt("stream_index", packet.packet->stream_index);
 		stmt.setInt("key_frame", packet.isKeyFrame());
 		if (packet.packet->stream_index == 0)

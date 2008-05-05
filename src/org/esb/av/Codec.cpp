@@ -102,6 +102,7 @@ namespace org {
 //				if(_channels>0)
 					ctx->channels = _channels;
 					ctx->flags|=_flags;
+//					ctx->start_time=_start_time;
 			}
 			
 			void Codec::open () {
@@ -180,6 +181,9 @@ namespace org {
 			}
 			int Codec::getChannels () {
 				return _channels;
+			}
+			void Codec::setStartTime (int64_t start) {
+				_start_time=start;
 			}
 		}
 	}

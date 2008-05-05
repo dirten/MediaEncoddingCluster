@@ -40,6 +40,7 @@ namespace org {
 				int getPixelFormat ();
 				int getSampleRate ();
 				int getChannels ();
+				void setStartTime (int64_t start);
 //				int getCodecType ();
 //				string getCodecName ();
 
@@ -81,6 +82,7 @@ namespace org {
 				int 		_gop_size;
 				int 		_channels;
 				int 		_sample_rate;
+				int64_t 		_start_time;
 				SampleFormat _sample_format;
 				bool 		_opened;
 				
