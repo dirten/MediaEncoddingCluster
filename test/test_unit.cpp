@@ -103,7 +103,7 @@ int main(int argc, char ** argv){
 		boost::shared_ptr<Packet> p3=*bla;
 		cout <<"WritePacketPts:"<<p3->packet->pts<<endl;
 		p3->packet->pts=++a;//AV_NOPTS_VALUE;
-//		p3->packet->dts=AV_NOPTS_VALUE;
+		p3->packet->dts=AV_NOPTS_VALUE;
 //		p3->packet->duration=1;
 		pos.writePacket(*p3);
 		cout <<"hier"<<endl;

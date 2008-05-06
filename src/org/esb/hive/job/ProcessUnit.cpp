@@ -89,7 +89,7 @@ void ProcessUnit::process(){
 //	    tmp.setDts(AV_NOPTS_VALUE);
 	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-	    pEnc->packet->dts=AV_NOPTS_VALUE;
+//	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
 //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
