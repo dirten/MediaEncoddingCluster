@@ -247,16 +247,16 @@ int main (int argc, char **argv)
 
 
 
-  Decoder dec (ic->streams[0]->codec->codec_id);
-  dec.setWidth (ic->streams[0]->codec->width);
-  dec.setHeight (ic->streams[0]->codec->height);
-  dec.setTimeBase ((AVRational) {1, 25});
-  dec.setPixelFormat (ic->streams[0]->codec->pix_fmt);
+  Decoder * dec=new Decoder (ic->streams[0]->codec->codec_id);
+  dec->setWidth (ic->streams[0]->codec->width);
+  dec->setHeight (ic->streams[0]->codec->height);
+  dec->setTimeBase ((AVRational) {1, 25});
+  dec->setPixelFormat (ic->streams[0]->codec->pix_fmt);
 //      dec.setGopSize(0);
-  dec.open ();
+  dec->open ();
 
   FrameFormat informat;
-  format.pixel_format = (PixelFormat)dec.getPixelFormat();//_pix_fmt;
+  format.pixel_format = (PixelFormat)dec->getPixelFormat();//_pix_fmt;
   format.height = ic->streams[0]->codec->height;
   format.width = ic->streams[0]->codec->width;
 
@@ -268,37 +268,62 @@ int main (int argc, char **argv)
 
 
 
-//      Encoder enc(CODEC_ID_MSMPEG4V3);
-  Encoder enc (CODEC_ID_H264);
-  enc.setWidth (format.width);
-  enc.setHeight (format.height);
-  enc.setTimeBase ((AVRational) {1, 25});
-  enc.setBitRate (4000000);
-  enc.setGopSize (250);
-  enc.setPixelFormat (PIX_FMT_YUV420P);
+//  Encoder * enc=new Encoder(CODEC_ID_MSMPEG4V3);
+  Encoder * enc=new Encoder(CODEC_ID_H264);
+//  Encoder enc (CODEC_ID_H264);
+  enc->setWidth (format.width);
+  enc->setHeight (format.height);
+  enc->setTimeBase ((AVRational) {1, 25});
+  enc->setBitRate (4000000);
+  enc->setGopSize (25);
+  enc->setPixelFormat (PIX_FMT_YUV420P);
 //      enc.setFlag(CODEC_FLAG_PASS1);
-  enc.open ();
-/*
-  File fout ("/tmp/testdb.avi");
+  enc->open ();
+
+  File fout (argv[2]);
   FormatOutputStream ffos (&fout);
   PacketOutputStream pos (&ffos);
-  pos.setEncoder (enc, 0);
+  pos.setEncoder (*enc, 0);
   pos.init ();
-*/
+
 
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
-
-  for (int i = 0; i < 30; i++) {
+	int a=0;
+  for (int i = 0; i < 1000; i++) {
     Packet p;
 //    av_init_packet (p.packet);
     pis.readPacket (p);
-    if (i % 5 == 0) {
-      enc.close ();
-      enc.open ();
-    }
     if (p.packet->stream_index != 0)
       continue;
+
+    if (p.isKeyFrame()) {
+    	cout << "!!!!!!!!!!!!INIT ENCODER - DECODER"<<endl;
+      enc->close ();
+	  delete enc;
+	dec->close();
+//	delete dec;
+//  dec=new Decoder (ic->streams[0]->codec->codec_id);
+//  dec->setWidth (ic->streams[0]->codec->width);
+//  dec->setHeight (ic->streams[0]->codec->height);
+//  dec->setTimeBase ((AVRational) {1, 25});
+//  dec->setPixelFormat (ic->streams[0]->codec->pix_fmt);
+//      dec.setGopSize(0);
+	dec->open();
+
+      enc=new Encoder(CODEC_ID_H264);
+//      enc=new Encoder(CODEC_ID_MSMPEG4V3);
+//  Encoder enc (CODEC_ID_H264);
+	  enc->setWidth (format.width);
+  	  enc->setHeight (format.height);
+  	  enc->setTimeBase ((AVRational) {1, 25});
+  	  enc->setBitRate (4000000);
+  	  enc->setGopSize (25);
+  	  enc->setPixelFormat (PIX_FMT_YUV420P);
+//      enc.setFlag(CODEC_FLAG_PASS1);
+  	  enc->open ();
+//      enc->open ();
+    }
 
 
 
@@ -318,7 +343,7 @@ int main (int argc, char **argv)
 
 
 
-    cout << i << "read Packet";
+    cout << i << "read Packet:"<<p.packet->pts;
     cout.flush ();
 //          AVFrame * picture= avcodec_alloc_frame();
     insize += p.packet->size;
@@ -338,7 +363,8 @@ int main (int argc, char **argv)
     cout << "decode Packet";
     cout.flush ();
 
-    Frame frame = dec.decode (p);
+    Frame frame = dec->decode (p);
+    if(frame._buffer==0)continue;
     cout << "convert Packet";
     cout.flush ();
 
@@ -347,12 +373,12 @@ int main (int argc, char **argv)
     Frame f = converter.convert (frame);
     cout << "FrameSize:" << f.getSize () << endl;
     frame.pts = p.packet->pts;
-    f.setPts( p.packet->pts);
+    f.setPts( p.packet->dts);
     f.setDts( p.packet->dts);
 
     cout << "encode Packet";
     cout.flush ();
-    Packet pe = enc.encode (f);
+    Packet pe = enc->encode (f);
 //    if (enc.ctx->stats_out)
 //      fprintf (logfile, "%s", enc.ctx->stats_out);
 
@@ -362,7 +388,10 @@ int main (int argc, char **argv)
 
     cout << "write Packet";
     cout.flush ();
-//    pos.writePacket (pe);
+    pe.packet->pts=++a;
+    pe.packet->dts=AV_NOPTS_VALUE;;
+    
+    pos.writePacket (pe);
     out_size = pe.packet->size;
 //          fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 

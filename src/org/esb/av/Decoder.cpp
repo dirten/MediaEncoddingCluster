@@ -31,18 +31,38 @@ Frame Decoder::decodeVideo (Packet & packet)
 {
   Frame frame (_pix_fmt, _width, _height);
   int _frameFinished = 0;
+int len=packet.packet->size;
+while(len>0){
   int bytesDecoded =
     avcodec_decode_video (ctx, &frame, &_frameFinished, packet.packet->data,
 			  packet.packet->size);
   if (bytesDecoded < 0) {
     fprintf (stderr, "Error while decoding frame\n");
   }
-#if 0
+    if(_frameFinished){
+    	break;
+    }
+  len-=bytesDecoded;
+}
+#if 1
   if(_frameFinished){
     cout <<"Frame finished"<<endl;
   }else{
+  	
     cout <<"Frame not finished !!!!!"<<endl;  
-    return Frame();
+/*
+     int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
+  if (bla < 0) {
+    fprintf (stderr, "Error while decoding frame\n");
+  }
+  if(_frameFinished){
+    cout <<"Frame finished in second try"<<endl;
+  }else{
+    cout <<"Frame not finished in second try!!!!!"<<endl;  
+     return Frame();
+  }
+  */
+//      return Frame();
   }
 #endif
 

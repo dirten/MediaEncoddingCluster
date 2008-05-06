@@ -84,7 +84,7 @@ namespace org {
 			void Codec::setParams () {
 				ctx->codec_id=(CodecID)_codec_id;
 				ctx->codec_type=_codec->type;
-				ctx->global_quality = 1000000;
+//				ctx->global_quality = 1000000;
 				ctx->pix_fmt = _pix_fmt;
 				ctx->width = _width;
 				ctx->height = _height;
@@ -109,8 +109,10 @@ namespace org {
 				findCodec (_mode);
 				ctx=avcodec_alloc_context();
 				setParams();
-//				if (_codec->capabilities & CODEC_CAP_TRUNCATED)
+				if (_codec->capabilities & CODEC_CAP_TRUNCATED){
 //					ctx->flags |= CODEC_FLAG_TRUNCATED;
+					cout <<"CodecCapTruncated"<<endl;
+				}
                 
 				if (avcodec_open (ctx, _codec) < 0) {
 					logerror("ERROR : while openning Codec" <<_codec_id);
