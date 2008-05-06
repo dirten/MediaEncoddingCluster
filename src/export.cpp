@@ -27,6 +27,8 @@ int exporter(int argc, char * argv[]){
     Encoder *encoder=NULL;
     int video_id=0;
     int audio_id=0;
+	int audio_pts=0;
+	int video_pts=0;
 //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
@@ -69,7 +71,7 @@ int exporter(int argc, char * argv[]){
 //        a_num=rs.getInt("time_base_num");
 //        a_den=rs.getInt("time_base_den");
 //        encoder->ctx->block_align=1;
-        pos.setEncoder(*encoder,rs.getInt("stream_index"));
+//        pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
 
     }
@@ -83,11 +85,11 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
-//    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by dts";
+//    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video) order by dts";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
-	stmt.setInt("audio",audio_id);
+//	stmt.setInt("audio",audio_id);
 //	stmt.setInt("video",3);
 //	stmt.setInt("audio",0);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
@@ -95,25 +97,33 @@ int exporter(int argc, char * argv[]){
 	
 
 	int video_packets=0;
-
+	int a=0;
 	while(rs.next()){
 //	    Row row=rs.getRow(a);
 	    video_packets++;
 //	    cout<<"" << rs.getInt("id")<<endl;
 	    Packet p(rs.getInt("data_size"));
+	    p.packet->stream_index=rs.getInt("stream_index");
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
-//	    p.packet->pts=AV_NOPTS_VALUE;//rs.getInt("pts");
-//	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
-	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
+		if(p.packet->stream_index==0){
+	    	p.packet->pts=video_pts;//AV_NOPTS_VALUE;//rs.getInt("pts");
+			p.packet->duration=1;
+	    	video_pts+=1;
+	    }else 
+	    if(p.packet->stream_index==1){
+	    	p.packet->pts=audio_pts;//AV_NOPTS_VALUE;//rs.getInt("pts");
+	    	audio_pts+=rs.getInt("duration");
+	      	p.packet->duration=384;//rs.getInt("duration");
+	    }
+	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
+//	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
 //        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
-	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
-	      p.packet->duration=1;//rs.getInt("duration");
+//	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
 //	    }
 //	    p.packet->dts=rs.getInt("dts");
 	    p.packet->flags=rs.getInt("flags");
 //	    p.packet->pos=0;//rs.getInt("pos");
-	    p.packet->stream_index=rs.getInt("stream_index");
 	    memcpy(p.packet->data,rs.getBlob("data").data(),p.packet->size);
 //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
 	    pos.writePacket(p);

@@ -36,7 +36,7 @@ Packet Encoder::encodeVideo(Frame & frame){
     memcpy(pac.packet->data, &data, ret);
 //    pac.data=data;
     pac.packet->size=ret;
-//    pac.packet->pts=frame._pts;
+    pac.packet->pts=frame.getPts();
     pac.packet->dts=frame.getDts();
     pac.packet->pos=frame.pos;
     pac.packet->stream_index=frame.stream_index;
@@ -47,8 +47,7 @@ Packet Encoder::encodeVideo(Frame & frame){
 //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
     	if(ctx->coded_frame->key_frame)
 			pac.packet->flags |= PKT_FLAG_KEY;
-		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
-
+//		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
 //		pac.packet->pts=ctx->coded_frame->pts;
 	}
     return pac;

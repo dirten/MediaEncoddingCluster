@@ -171,7 +171,7 @@ int import(int argc, char *argv[]) {
 					//    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
 						"(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
 
-	int min_frame_group_count=100;//atoi(Config::getProperty("hive.min_frame_group_count"));
+	int min_frame_group_count=5;//atoi(Config::getProperty("hive.min_frame_group_count"));
 	int frame_group_counter=0, next_pts=0;
 
 	while (true /*&&count < 1000 */) {

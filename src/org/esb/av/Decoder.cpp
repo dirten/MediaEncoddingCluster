@@ -37,12 +37,15 @@ Frame Decoder::decodeVideo (Packet & packet)
   if (bytesDecoded < 0) {
     fprintf (stderr, "Error while decoding frame\n");
   }
+#if 0
   if(_frameFinished){
     cout <<"Frame finished"<<endl;
   }else{
     cout <<"Frame not finished !!!!!"<<endl;  
     return Frame();
   }
+#endif
+
   frame._pixFormat = _pix_fmt;
   frame.stream_index=packet.packet->stream_index;
   frame.setPts(packet.packet->pts);
@@ -50,8 +53,6 @@ Frame Decoder::decodeVideo (Packet & packet)
   frame.pos = packet.packet->pos;
   frame.duration = packet.packet->duration;
   frame._type=CODEC_TYPE_VIDEO;
-  cout << "DecodeVideoPacketPts:"<<packet.packet->pts<<endl;
-  cout << "DecodeVideoFramePts:"<<frame.getPts()<<endl;
   return frame;
 }
 

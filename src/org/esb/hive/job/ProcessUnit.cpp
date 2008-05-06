@@ -69,39 +69,40 @@ void ProcessUnit::process(){
       
 	    insize+=p->packet->size;
 	    Frame tmp=_decoder->decode(*p);
-	    if(tmp._buffer==0)continue;
+//	    if(tmp._buffer==0)continue;
 //        boost::shared_ptr<Frame> fr(new Frame(tmp));
 //        pts_list.insert(fr);
 
-	    cout <<"PacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts;
-	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
+//	    cout <<"PacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts;
+//	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
 //	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
-        cout << endl;
+//        cout << endl;
         
         
       
 //	    fr->setPts(++a);
 //	    fr->setDts(AV_NOPTS_VALUE);
 
-		Frame f=conv.convert(tmp);
+//		Frame f=conv.convert(tmp);
 
-	    f.setPts(f.getDts());
+//	    f.setPts(f.getDts());
+//	    f.setPts(++a);
 //	    tmp.setDts(AV_NOPTS_VALUE);
-	    Packet ret=_encoder->encode(f);
+	    Packet ret=_encoder->encode(tmp);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
 //	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
 //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
-	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;
+//	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;
 
 
 //        pts_packets.insert(p);
 	}
 	
-	cout <<"ListSize:"<<_input_packets.size()<<"\tSetSize:"<<pts_list.size()<<endl;
+//	cout <<"ListSize:"<<_input_packets.size()<<"\tSetSize:"<<pts_list.size()<<endl;
 
-	multiset<boost::shared_ptr<Frame>, PtsComparator>::iterator pts_it;
+//	multiset<boost::shared_ptr<Frame>, PtsComparator>::iterator pts_it;
 /*
 	multiset<boost::shared_ptr<Packet>, PtsPacketComparator>::iterator packet_it;
 	a=0;
@@ -148,11 +149,12 @@ void ProcessUnit::process(){
 	}
 */
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
-/*    
+    
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
-*/	
+	_decoder=0;
+	_encoder=0;
 
 }

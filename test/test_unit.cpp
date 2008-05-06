@@ -70,7 +70,7 @@ int main(int argc, char ** argv){
   	enc.setHeight (format.height);
   	enc.setTimeBase ((AVRational) {1, 25});
   	enc.setBitRate (4000000);
-  	enc.setGopSize (250);
+  	enc.setGopSize (25);
   	enc.setPixelFormat (PIX_FMT_YUV420P);
   	enc.open ();
 	
@@ -101,12 +101,12 @@ int main(int argc, char ** argv){
 	list<boost::shared_ptr<Packet> >::iterator bla;
 	for(bla=u._output_packets.begin();bla != u._output_packets.end();bla++){
 		boost::shared_ptr<Packet> p3=*bla;
-		cout <<"WritePacketPts:"<<p3->packet->pts<<endl;
+//		cout <<"WritePacketPts:"<<p3->packet->pts<<endl;
 		p3->packet->pts=++a;//AV_NOPTS_VALUE;
 		p3->packet->dts=AV_NOPTS_VALUE;
 //		p3->packet->duration=1;
 		pos.writePacket(*p3);
-		cout <<"hier"<<endl;
+//		cout <<"hier"<<endl;
 	}
 	
 	
