@@ -59,7 +59,13 @@ class ProcessUnit{
 class PtsComparator {
 public:
   bool operator()(const boost::shared_ptr<Frame> & lp, const boost::shared_ptr<Frame> & rp)const{
-    return lp->getPts() < rp->getPts();
+    return lp->getDts() < rp->getDts();
+  }
+};
+class PtsPacketComparator {
+public:
+  bool operator()(const boost::shared_ptr<Packet> & lp, const boost::shared_ptr<Packet> & rp)const{
+    return lp->packet->dts < rp->packet->dts;
   }
 };
 

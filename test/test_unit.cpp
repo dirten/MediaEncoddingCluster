@@ -39,7 +39,7 @@ int main(int argc, char ** argv){
 	
 	AVFormatContext *ic = fis.getFormatContext();
 
-	int64_t start=ic->streams[0]->start_time;
+	int64_t start=ic->start_time;
 
 
   av::FrameFormat format;
@@ -64,7 +64,8 @@ int main(int argc, char ** argv){
 	dec.setHeight(ic->streams[0]->codec->height);
 	dec.open();
 
-	av::Encoder enc(CODEC_ID_H264);
+//	av::Encoder enc(CODEC_ID_H264);
+	av::Encoder enc(CODEC_ID_MSMPEG4V3);
   	enc.setWidth (format.width);
   	enc.setHeight (format.height);
   	enc.setTimeBase ((AVRational) {1, 25});
@@ -82,15 +83,14 @@ int main(int argc, char ** argv){
 	u._encoder=&enc;
 	int b=0;
 	
-	for(int a=0;a<1000;a++){
+	for(int a=0;a<5000;a++){
 		av::Packet p;
 		pis.readPacket(p);
-		if(p.packet->stream_index!=0 || p.packet->pts<0)continue;
-		p.packet->pts-=start;
-		p.packet->dts-=start;
+		if(p.packet->stream_index!=0)continue;
+//		p.packet->pts-=start;
+//		p.packet->dts-=start;
 		boost::shared_ptr<Packet> p1(new Packet(p));
-		u._input_packets.push_back(p1);
-	
+		u._input_packets.push_back(p1);	
 	}
 	
 	u.process();		
@@ -101,11 +101,12 @@ int main(int argc, char ** argv){
 	list<boost::shared_ptr<Packet> >::iterator bla;
 	for(bla=u._output_packets.begin();bla != u._output_packets.end();bla++){
 		boost::shared_ptr<Packet> p3=*bla;
-		p3->packet->pts=++a;
-		p3->packet->dts=a;
-		p3->packet->duration=1;
+		cout <<"WritePacketPts:"<<p3->packet->pts<<endl;
+		p3->packet->pts=++a;//AV_NOPTS_VALUE;
+//		p3->packet->dts=AV_NOPTS_VALUE;
+//		p3->packet->duration=1;
 		pos.writePacket(*p3);
-//		cout <<"hier"<<endl;
+		cout <<"hier"<<endl;
 	}
 	
 	

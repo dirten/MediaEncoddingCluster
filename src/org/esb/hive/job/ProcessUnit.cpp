@@ -61,40 +61,86 @@ void ProcessUnit::process(){
 //	cout << "start decoding encoding"<<endl;
 	list< boost::shared_ptr<Packet> >::iterator it; 
 	multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
+	multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
+	int a=0;
+
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){		
 	    boost::shared_ptr<Packet> p=*it;
+      
 	    insize+=p->packet->size;
 	    Frame tmp=_decoder->decode(*p);
-        boost::shared_ptr<Frame> fr(new Frame(tmp));
-	    cout <<"FramePts:"<<fr->getPts()<<"\tFrameDts:"<<fr->getDts();
-	    cout <<"\tPacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts<<endl;
+	    if(tmp._buffer==0)continue;
+//        boost::shared_ptr<Frame> fr(new Frame(tmp));
+//        pts_list.insert(fr);
 
+	    cout <<"PacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts;
+	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
+//	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
+        cout << endl;
+        
+        
+      
+//	    fr->setPts(++a);
+//	    fr->setDts(AV_NOPTS_VALUE);
 
-	    Packet ret=_encoder->encode(tmp);
+		Frame f=conv.convert(tmp);
+
+	    f.setPts(f.getDts());
+//	    tmp.setDts(AV_NOPTS_VALUE);
+	    Packet ret=_encoder->encode(f);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
+	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
 //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
 	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;
 
 
-  //      pts_list.insert(fr);
+//        pts_packets.insert(p);
 	}
 	
 	cout <<"ListSize:"<<_input_packets.size()<<"\tSetSize:"<<pts_list.size()<<endl;
-/*
+
 	multiset<boost::shared_ptr<Frame>, PtsComparator>::iterator pts_it;
-	int a=0;
+/*
+	multiset<boost::shared_ptr<Packet>, PtsPacketComparator>::iterator packet_it;
+	a=0;
+
+	for(packet_it=pts_packets.begin();packet_it!=pts_packets.end();packet_it++){
+	    boost::shared_ptr<Packet> p=*packet_it;
+	    insize+=p->packet->size;
+	    Frame tmp=_decoder->decode(*p);
+	    if(tmp._buffer==0)continue;
+
+        boost::shared_ptr<Frame> fr(new Frame(tmp));
+//	    fr->setDts(++a);
+
+        pts_list.insert(fr);
+
+      
+	    tmp.setPts(++a);
+	    tmp.setDts(AV_NOPTS_VALUE);
+		Frame f=conv.convert(tmp);
+	    Packet ret=_encoder->encode(f);
+	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
+	    outsize+=pEnc->packet->size;
+	    _output_packets.push_back(pEnc);
+      
+    }
+*/
+/*
+	a=0;
 	for(pts_it=pts_list.begin();pts_it!=pts_list.end();pts_it++){
 	    boost::shared_ptr<Frame> tmp=*pts_it;
-//	    tmp->_pts=++a;
-//	    tmp->_dts=a;
+	    tmp->setPts(++a);
+//	    tmp->setDts(AV_NOPTS_VALUE);
 	    
-//		Frame f=conv.convert(*tmp);
+		Frame f=conv.convert(*tmp);
 //		f.dts=f.pts;
 	    Packet ret=_encoder->encode(*tmp);
 	    boost::shared_ptr<Packet> pEnc(new Packet(ret));
 	    outsize+=pEnc->packet->size;
+	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    _output_packets.push_back(pEnc);
 //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
 	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;

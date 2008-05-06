@@ -37,7 +37,7 @@ Packet Encoder::encodeVideo(Frame & frame){
 //    pac.data=data;
     pac.packet->size=ret;
 //    pac.packet->pts=frame._pts;
-//    pac.packet->dts=frame._dts;
+    pac.packet->dts=frame.getDts();
     pac.packet->pos=frame.pos;
     pac.packet->stream_index=frame.stream_index;
     pac.packet->duration=frame.duration;
@@ -47,7 +47,9 @@ Packet Encoder::encodeVideo(Frame & frame){
 //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
     	if(ctx->coded_frame->key_frame)
 			pac.packet->flags |= PKT_FLAG_KEY;
-		pac.packet->pts=ctx->coded_frame->pts;
+		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
+
+//		pac.packet->pts=ctx->coded_frame->pts;
 	}
     return pac;
 }

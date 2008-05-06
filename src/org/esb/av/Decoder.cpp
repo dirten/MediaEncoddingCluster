@@ -23,7 +23,8 @@ Frame Decoder::decode (Packet & packet)
     return decodeVideo (packet);
   if (ctx->codec_type == CODEC_TYPE_AUDIO)
     return decodeAudio (packet);
-  return Frame ();
+  throw runtime_error("Packet is no type of Video or Audio");
+//  return Frame ();
 }
 
 Frame Decoder::decodeVideo (Packet & packet)
@@ -36,13 +37,21 @@ Frame Decoder::decodeVideo (Packet & packet)
   if (bytesDecoded < 0) {
     fprintf (stderr, "Error while decoding frame\n");
   }
+  if(_frameFinished){
+    cout <<"Frame finished"<<endl;
+  }else{
+    cout <<"Frame not finished !!!!!"<<endl;  
+    return Frame();
+  }
   frame._pixFormat = _pix_fmt;
   frame.stream_index=packet.packet->stream_index;
-  frame.setPts( packet.packet->pts );
-  frame.setDts( packet.packet->dts);
+  frame.setPts(packet.packet->pts);
+  frame.setDts( packet.packet->dts );
   frame.pos = packet.packet->pos;
   frame.duration = packet.packet->duration;
   frame._type=CODEC_TYPE_VIDEO;
+  cout << "DecodeVideoPacketPts:"<<packet.packet->pts<<endl;
+  cout << "DecodeVideoFramePts:"<<frame.getPts()<<endl;
   return frame;
 }
 
