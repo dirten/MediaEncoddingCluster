@@ -7,6 +7,7 @@
 #include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/job/JobWatcher.h"
+#include "org/esb/hive/job/ProcessUnitWatcher.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
@@ -102,6 +103,9 @@ void listener(int argc, char *argv[]){
     	cout << "Fehler in der Configuration"<<endl;
     	exit(1);
     }
+    ProcessUnitWatcher *unit_watcher=new ProcessUnitWatcher();
+    Thread *unitRunner=new Thread(unit_watcher);
+
     JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
     Thread *runner=new Thread(_watcher);
 
@@ -113,7 +117,8 @@ void listener(int argc, char *argv[]){
     
     collector_runner->start();
     webRunner->start();
-    runner->start();
+//    runner->start();
+    unitRunner->start();
     
     
     int port=atoi(Config::getProperty("protocol.listener.port"));

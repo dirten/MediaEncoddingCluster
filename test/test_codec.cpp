@@ -16,7 +16,7 @@
 #include "org/esb/av/FrameFormat.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/config/config.h"
-
+#include "org/esb/hive/CodecFactory.h"
 
 #include <list>
 #include <vector>
@@ -26,6 +26,7 @@ using namespace org::esb::config;
 using namespace org::esb::io;
 using namespace org::esb::config;
 using namespace org::esb::hive::job;
+using namespace org::esb::hive;
 
 logger ("main")
 
@@ -68,14 +69,14 @@ logger ("main")
 int main (int argc, char **argv)
 {
 
-
-
-
+	Config::init("cluster.cfg");
+	loginit();
+	Encoder *temp=CodecFactory::getStreamEncoder(1);
+//	temp.open();
 //    std::vector< std::vector<double> > v=test();
 //    cout << v[0][0]<<endl;
 //    return 0;
 
-//	Config::init("cluster.cfg");
 //	cout << "bla fsel:"<<Config::getProperty("hive.min_frame_group_count")<<endl;
 //  log_init ("log.properties");
   av_register_all ();
@@ -270,6 +271,7 @@ int main (int argc, char **argv)
 
 
 //  Encoder * enc=new Encoder(CODEC_ID_MSMPEG4V3);
+
   Encoder * enc=new Encoder(CODEC_ID_H264);
 //  Encoder enc (CODEC_ID_H264);
   enc->setWidth (format.width);
@@ -291,7 +293,7 @@ int main (int argc, char **argv)
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
 	int a=0;
-  for (int i = 0;true|| i < 1000; i++) {
+  for (int i = 0;i < 100; i++) {
     Packet p;
 //    av_init_packet (p.packet);
     if(pis.readPacket (p)<0)break;

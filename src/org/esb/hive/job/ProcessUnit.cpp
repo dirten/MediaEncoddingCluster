@@ -13,6 +13,7 @@ ProcessUnit::ProcessUnit(){
     _target_stream=0;
     _source_stream=0;
     _frame_group=0;
+    id=0;
 }
 
 ProcessUnit::~ProcessUnit(){

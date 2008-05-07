@@ -170,7 +170,7 @@ void Job::activate(){
 bool Job::isActive(){
 	return _isActive;
 }
-/*
+
 ProcessUnit Job::getNextProcessUnit(){
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     ProcessUnit u;
@@ -204,7 +204,8 @@ ProcessUnit Job::getNextProcessUnit(){
     }
     return u;
 }
-*/
+
+/*
 ProcessUnit Job::getNextProcessUnit(){
     {
 	boost::mutex::scoped_lock scoped_lock(m_mutex);
@@ -245,4 +246,4 @@ ProcessUnit Job::getNextProcessUnit(){
 	return u;
     }
 }
-
+*/

@@ -42,6 +42,7 @@ class ProcessUnit{
 		int _source_stream;
 		int _target_stream;
 		int _frame_group;
+		int id;
 		template<class Archive>
 	    	    void serialize(Archive & ar, const unsigned int version){
 	    		ar & _input_packets;

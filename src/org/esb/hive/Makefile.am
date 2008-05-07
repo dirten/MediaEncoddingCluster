@@ -14,10 +14,12 @@ SOURCES = \
 	CommandInputStream.cpp \
 	CommandOutputStream.cpp \
 	PacketCollector.cpp \
+	CodecFactory.cpp \
 	job/Job.cpp \
 	job/JobDetail.cpp \
 	job/JobHandler.cpp \
 	job/JobWatcher.cpp \
+	job/ProcessUnitWatcher.cpp \
 	job/ClientHandler.cpp \
 	job/ProcessUnit.cpp 
             

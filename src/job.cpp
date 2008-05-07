@@ -145,6 +145,7 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.setInt("jobid",jobid);
 	stmtJob.execute();
 }
+/*
 {
 	PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, startts, stream_id, stream_index, frame_count) (select :jobid, frame_group,min(dts),:id, :stream_idx, count(id) from packets where stream_id=:id group by frame_group)");
 	stmtJob.setInt("jobid",jobid);
@@ -157,6 +158,15 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.setInt("id",in_a_stream);
 	stmtJob.execute();
 }
+*/
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, frame_count) (select stream_id, :target, startts, frame_count from frame_groups where stream_id=:id)");
+//	stmtJob.setInt("jobid",jobid);
+	stmtJob.setInt("id",in_v_stream);
+	stmtJob.setInt("target",v_stream_id);
+	stmtJob.execute();
+}
+
 }
 #endif
 
