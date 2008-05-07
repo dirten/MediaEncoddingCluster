@@ -101,6 +101,10 @@ namespace org {
 					ctx->sample_fmt = _sample_format;
 //				if(_channels>0)
 					ctx->channels = _channels;
+                    if(_codec->id==CODEC_ID_MPEG2VIDEO){
+					  ctx->max_b_frames = 2;
+					  cout << "setting max B Frames 2"<<endl;
+					}
 					ctx->flags|=_flags;
 //					ctx->start_time=_start_time;
 			}

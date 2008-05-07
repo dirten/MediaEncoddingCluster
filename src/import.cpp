@@ -163,7 +163,10 @@ int import(int argc, char *argv[]) {
 	//      progress_display show_progress(duration);
 
 
-//	PreparedStatement stmt_data=con.prepareStatement("insert into data()");
+	PreparedStatement stmt_fr=con.prepareStatement("insert into frame_groups(frame_group, startts, stream_id, stream_index, frame_count)"
+	        " values(:frame_group, :startts, :stream_id, :stream_index, :frame_count)");
+
+
 	PreparedStatement
 			stmt =
 					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
@@ -173,32 +176,43 @@ int import(int argc, char *argv[]) {
 
 	int min_frame_group_count=5;//atoi(Config::getProperty("hive.min_frame_group_count"));
 	int frame_group_counter=0, next_pts=0;
-
+    int b_frames_beyond_delay=3;
+    int beyond_delay_counter=0;
+    int BEYOND_STATE=0;
+    int64_t startts=0;
 	while (true /*&&count < 1000 */) {
 		Packet packet;
-		int read = pis.readPacket(packet);
-		if (count % 1000 == 0) {
+		if(pis.readPacket(packet)<0)break;
+		if (++count%1000==0) {
 			cout << "\r" << count;
 			cout.flush();
 		}
-		if (read < 0)
-			break;
 
-		++count;
+//		++count;
 //		continue;
+		if(packet.packet->stream_index == 0)
+			frame_group_counter++;
+
 		if (packet.packet->stream_index == 0 && packet.isKeyFrame()&&frame_group_counter>=min_frame_group_count){
+
+            stmt_fr.setInt("frame_group",frame_group);
+            stmt_fr.setInt("frame_count",frame_group_counter);
+            stmt_fr.setDouble("startts",startts);
+            stmt_fr.setInt("stream_id",streams[packet.packet->stream_index]);
+            stmt_fr.setInt("stream_index",packet.packet->stream_index);
+            stmt_fr.execute();
+            startts=packet.packet->dts;
 			frame_group++;
 			frame_group_counter=0;
 		}
-		if(packet.packet->stream_index == 0)
-			frame_group_counter++;
+/*
 		int field = 0;
 		packet.packet->duration = packet.packet->duration == 0 ? 1
 				: packet.packet->duration;
 		stmt.setInt("stream_id", streams[packet.packet->stream_index]);
-		stmt.setDouble("pts", (double) packet.packet->pts/*-stream_start[packet.packet->stream_index]*/);
+		stmt.setDouble("pts", (double) packet.packet->pts);
 //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
-		stmt.setDouble("dts", (double) packet.packet->dts/*-stream_start[packet.packet->stream_index]*/);
+		stmt.setDouble("dts", (double) packet.packet->dts);
 		stmt.setInt("stream_index", packet.packet->stream_index);
 		stmt.setInt("key_frame", packet.isKeyFrame());
 		if (packet.packet->stream_index == 0)
@@ -210,8 +224,8 @@ int import(int argc, char *argv[]) {
 		stmt.setDouble("pos", (double) packet.packet->pos);
 		stmt.setInt("data_size", packet.packet->size);
 		//        Blob blob((const char*)packet.data,packet.size);
-		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
-		stmt.execute();
+//		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
+//		stmt.execute();
 		//      show_progress+=packet.duration;
 		
 		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_VIDEO){
@@ -222,6 +236,7 @@ int import(int argc, char *argv[]) {
 			stream_pts[packet.packet->stream_index] += ((int64_t)AV_TIME_BASE/2 * packet.packet->size) / 
 				(sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
 		}
+		*/
 		
 	}
 

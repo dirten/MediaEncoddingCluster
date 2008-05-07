@@ -13,6 +13,8 @@ class Decoder:public Codec{
 	Decoder();
 //	Frame * decode(Packet & packet);
 	Frame decode(Packet & packet);
+	Frame decodeLast();
+	void analyzePacket(Packet & packet);
 //	void decode(Packet & packet, Frame & frame);
 	
 	template<class Archive>

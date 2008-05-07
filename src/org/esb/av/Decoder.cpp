@@ -15,40 +15,25 @@ Decoder::Decoder (CodecID id):Codec (id, Codec::DECODER)
 {
 }
 
-Frame Decoder::decode (Packet & packet)
-{
-  if(!_opened)
-    throw runtime_error("Codec not opened");
-  if (ctx->codec_type == CODEC_TYPE_VIDEO)
-    return decodeVideo (packet);
-  if (ctx->codec_type == CODEC_TYPE_AUDIO)
-    return decodeAudio (packet);
-  throw runtime_error("Packet is no type of Video or Audio");
-//  return Frame ();
-}
-
-Frame Decoder::decodeVideo (Packet & packet)
+Frame Decoder::decodeLast()
 {
   Frame frame (_pix_fmt, _width, _height);
   int _frameFinished = 0;
-int len=packet.packet->size;
-while(len>0){
-  int bytesDecoded =
-    avcodec_decode_video (ctx, &frame, &_frameFinished, packet.packet->data,
-			  packet.packet->size);
+//  int len=packet.packet->size;
+//while(len>0){
+  int bytesDecoded = avcodec_decode_video (ctx, &frame, &_frameFinished, NULL,  0);
   if (bytesDecoded < 0) {
     fprintf (stderr, "Error while decoding frame\n");
   }
     if(_frameFinished){
-    	break;
+//    	break;
     }
-  len-=bytesDecoded;
-}
+//  len-=bytesDecoded;
+//}
 #if 1
   if(_frameFinished){
     cout <<"Frame finished"<<endl;
-  }else{
-  	
+  }else{	
     cout <<"Frame not finished !!!!!"<<endl;  
 /*
      int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
@@ -64,6 +49,119 @@ while(len>0){
   */
 //      return Frame();
   }
+#endif
+
+  frame._pixFormat = _pix_fmt;
+//  frame.stream_index=packet.packet->stream_index;
+//  frame.setPts(packet.packet->pts);
+//  frame.setDts( packet.packet->dts );
+//  frame.pos = packet.packet->pos;
+//  frame.duration = packet.packet->duration;
+  frame._type=CODEC_TYPE_VIDEO;
+  return frame;
+
+}
+
+Frame Decoder::decode (Packet & packet)
+{
+  if(!_opened)
+    throw runtime_error("Codec not opened");
+  if (ctx->codec_type == CODEC_TYPE_VIDEO)
+    return decodeVideo (packet);
+  if (ctx->codec_type == CODEC_TYPE_AUDIO)
+    return decodeAudio (packet);
+  throw runtime_error("Packet is no type of Video or Audio");
+//  return Frame ();
+}
+
+
+void Decoder::analyzePacket (Packet & packet)
+{
+  int _frameFinished = 0;
+  Frame frame (_pix_fmt, _width, _height);
+
+  int bytesDecoded = avcodec_decode_video (ctx, &frame, &_frameFinished, packet.packet->data,  packet.packet->size);
+  if (bytesDecoded < 0) {
+    fprintf (stderr, "Error while decoding frame\n");
+  }
+
+
+}
+
+Frame Decoder::decodeVideo (Packet & packet)
+{
+  Frame frame (_pix_fmt, _width, _height);
+  int _frameFinished = 0;
+int len=packet.packet->size;
+
+
+
+
+
+while(len>0){
+  int bytesDecoded =
+    avcodec_decode_video (ctx, &frame, &_frameFinished, packet.packet->data,
+			  packet.packet->size);
+  if (bytesDecoded < 0) {
+    fprintf (stderr, "Error while decoding frame\n");
+  }
+    if(_frameFinished){
+    	break;
+    }
+  len-=bytesDecoded;
+}
+#if 1
+
+  if(_frameFinished){
+    cout <<"Frame finished";
+  }else{
+  	
+    cout <<"Frame not finished !!!!!";  
+/*
+     int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
+  if (bla < 0) {
+    fprintf (stderr, "Error while decoding frame\n");
+  }
+  if(_frameFinished){
+    cout <<"Frame finished in second try"<<endl;
+  }else{
+    cout <<"Frame not finished in second try!!!!!"<<endl;  
+     return Frame();
+  }
+  */
+//      return Frame();
+  }
+  
+  cout << "\tPacketFrameType:";
+  switch(frame.pict_type){
+    case FF_B_TYPE:
+      cout << "B";
+      break;
+    case FF_I_TYPE:
+      cout << "I";
+      break;
+    case FF_P_TYPE:
+      cout << "P";
+      break;
+    case FF_S_TYPE:
+      cout << "S";
+      break;
+    case FF_SI_TYPE:
+      cout << "SI";
+      break;
+    case FF_SP_TYPE:
+      cout << "SP";
+      break;
+    case FF_BI_TYPE:
+      cout << "BI";
+      break;
+    default:
+      cout << "U:"<<frame.pict_type;
+    break;
+
+  }
+  
+  cout << endl;
 #endif
 
   frame._pixFormat = _pix_fmt;

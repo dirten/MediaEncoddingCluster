@@ -252,6 +252,7 @@ int main (int argc, char **argv)
   dec->setHeight (ic->streams[0]->codec->height);
   dec->setTimeBase ((AVRational) {1, 25});
   dec->setPixelFormat (ic->streams[0]->codec->pix_fmt);
+
 //      dec.setGopSize(0);
   dec->open ();
 
@@ -290,18 +291,21 @@ int main (int argc, char **argv)
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
 	int a=0;
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0;true|| i < 1000; i++) {
     Packet p;
 //    av_init_packet (p.packet);
-    pis.readPacket (p);
+    if(pis.readPacket (p)<0)break;
     if (p.packet->stream_index != 0)
       continue;
 
-    if (p.isKeyFrame()) {
+    if (false&&p.isKeyFrame()) {
     	cout << "!!!!!!!!!!!!INIT ENCODER - DECODER"<<endl;
       enc->close ();
 	  delete enc;
-	dec->close();
+
+
+
+//	dec->close();
 //	delete dec;
 //  dec=new Decoder (ic->streams[0]->codec->codec_id);
 //  dec->setWidth (ic->streams[0]->codec->width);
@@ -309,7 +313,7 @@ int main (int argc, char **argv)
 //  dec->setTimeBase ((AVRational) {1, 25});
 //  dec->setPixelFormat (ic->streams[0]->codec->pix_fmt);
 //      dec.setGopSize(0);
-	dec->open();
+//	dec->open();
 
       enc=new Encoder(CODEC_ID_H264);
 //      enc=new Encoder(CODEC_ID_MSMPEG4V3);
@@ -343,8 +347,8 @@ int main (int argc, char **argv)
 
 
 
-    cout << i << "read Packet:"<<p.packet->pts;
-    cout.flush ();
+//    cout << i << "read Packet:"<<p.packet->pts;
+//    cout.flush ();
 //          AVFrame * picture= avcodec_alloc_frame();
     insize += p.packet->size;
 //              cout << "InputPacketPts:"<<p.packet->pts<<endl;
@@ -360,16 +364,16 @@ int main (int argc, char **argv)
 //          picture->pict_type=1;
 //          picture->quality=dec.coded_frame->quality;
 
-    cout << "decode Packet";
-    cout.flush ();
+//    cout << "decode Packet";
+//    cout.flush ();
 
-    Frame frame = dec->decode (p);
-    if(frame._buffer==0)continue;
-    cout << "convert Packet";
-    cout.flush ();
-
-    Frame bla;
-    bla=frame;
+    dec->analyzePacket(p);
+//    if(frame._buffer==0)continue;
+//    cout << "convert Packet";
+//    cout.flush ();
+/*
+//    Frame bla;
+//    bla=frame;
     Frame f = converter.convert (frame);
     cout << "FrameSize:" << f.getSize () << endl;
     frame.pts = p.packet->pts;
@@ -393,6 +397,7 @@ int main (int argc, char **argv)
     
     pos.writePacket (pe);
     out_size = pe.packet->size;
+*/
 //          fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 
 
@@ -402,7 +407,7 @@ int main (int argc, char **argv)
 
 //          out_size = avcodec_encode_video(enc.ctx, video_outbuf, video_outbuf_size, &frame);
     outsize += out_size;
-		cout << "InputPts:"<<p.packet->pts<<"\tOutputPts:"<<pe.packet->pts<<endl;	
+//		cout << "InputPts:"<<p.packet->pts<<"\tOutputPts:"<<pe.packet->pts<<endl;	
 //    cout << "InputPacketSize:" << p.packet->size << "\tOutputPacketSize:" << out_size << "\tKeyFrame:" << enc.ctx->coded_frame->key_frame << endl;
 
 //          cout <<"FrameHere:"<<out_size<<endl;

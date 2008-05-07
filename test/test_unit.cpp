@@ -40,7 +40,7 @@ int main(int argc, char ** argv){
 	AVFormatContext *ic = fis.getFormatContext();
 
 	int64_t start=ic->start_time;
-
+//    cout << "Max B Frames :"<<ic->streams[0]->codec->max_b_frames;
 
   av::FrameFormat format;
   format.pixel_format = PIX_FMT_YUV420P;
@@ -57,7 +57,34 @@ int main(int argc, char ** argv){
 
 
 
+/*	
+	av::Decoder dec(ic->streams[0]->codec->codec_id);
+	dec.setStartTime(start);
+	dec.setWidth(ic->streams[0]->codec->width);
+	dec.setHeight(ic->streams[0]->codec->height);
+	dec.open();
+*/
+//	av::Encoder enc(CODEC_ID_H264);
+	av::Encoder enc2(CODEC_ID_MSMPEG4V3);
+  	enc2.setWidth (format.width);
+  	enc2.setHeight (format.height);
+  	enc2.setTimeBase ((AVRational) {1, 25});
+  	enc2.setBitRate (4000000);
+  	enc2.setGopSize (25);
+  	enc2.setPixelFormat (PIX_FMT_YUV420P);
+  	enc2.open ();
 	
+	pos.setEncoder(enc2, 0);
+
+	pos.init();
+
+	
+	int b=0;
+	int a=0;
+
+for(int b=0;b<10;b++){	
+	hive::job::ProcessUnit u;
+
 	av::Decoder dec(ic->streams[0]->codec->codec_id);
 	dec.setStartTime(start);
 	dec.setWidth(ic->streams[0]->codec->width);
@@ -73,31 +100,22 @@ int main(int argc, char ** argv){
   	enc.setGopSize (25);
   	enc.setPixelFormat (PIX_FMT_YUV420P);
   	enc.open ();
-	
-	pos.setEncoder(enc, 0);
 
 
-	hive::job::ProcessUnit u;
-	
 	u._decoder=&dec;
 	u._encoder=&enc;
-	int b=0;
-	
-	for(int a=0;a<5000;a++){
+	for(int a=0;a<200;a++){
 		av::Packet p;
 		pis.readPacket(p);
-		if(p.packet->stream_index!=0)continue;
+		if(p.packet->stream_index!=0 )continue;
 //		p.packet->pts-=start;
 //		p.packet->dts-=start;
 		boost::shared_ptr<Packet> p1(new Packet(p));
-		u._input_packets.push_back(p1);	
+		u._input_packets.push_back(p1);
 	}
+	cout << "StartProcessUnit"<<endl;
+	u.process();
 	
-	u.process();		
-	
-	
-	pos.init();
-	int a=0;
 	list<boost::shared_ptr<Packet> >::iterator bla;
 	for(bla=u._output_packets.begin();bla != u._output_packets.end();bla++){
 		boost::shared_ptr<Packet> p3=*bla;
@@ -108,7 +126,9 @@ int main(int argc, char ** argv){
 		pos.writePacket(*p3);
 //		cout <<"hier"<<endl;
 	}
-	
+//	u._input_packets.clear();
+//	u._output_packets.clear();
+}
 	
 }
 
