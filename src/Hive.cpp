@@ -118,7 +118,7 @@ void listener(int argc, char *argv[]){
     collector_runner->start();
     webRunner->start();
 //    runner->start();
-    unitRunner->start();
+//    unitRunner->start();
     
     
     int port=atoi(Config::getProperty("protocol.listener.port"));

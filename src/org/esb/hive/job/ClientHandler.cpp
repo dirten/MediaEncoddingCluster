@@ -3,16 +3,21 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <vector>
+#include "org/esb/av/FormatInputStream.h"
+#include "org/esb/hive/CodecFactory.h"
+#include "org/esb/av/PacketInputStream.h"
 #include "org/esb/sql/Connection.h"
+#include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
-//#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/connect.h"
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
+using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 
@@ -31,6 +36,7 @@ ClientHandler::ClientHandler(){
     "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
     _stmt_fr=new PreparedStatement(_con->prepareStatement("update frame_groups set complete = now() where frame_group=:fr and stream_id=:sid"));
     _stmt_pu=new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
+    _stmt_ps=new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
 
 }
 /*
@@ -81,8 +87,59 @@ void ClientHandler::fillProcessUnit(ProcessUnit * u){
 
 }
 
-ProcessUnit * ClientHandler::getProcessUnit(){
+ProcessUnit ClientHandler::getProcessUnit(){
     boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+    Connection con(Config::getProperty("db.connection"));
+    Statement stmt_ps=con.createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+	ResultSet rs=stmt_ps.executeQuery();
+
+    ProcessUnit u;
+    if(rs.next()){
+//	int fr_gr=_frame_groups.front().first;
+	int64_t start_ts=rs.getDouble("start_ts");
+	int frame_count=rs.getInt("frame_count");
+//	u._frame_group=fr_gr;
+//	_frame_groups.pop();
+	logdebug("packing frame group with startts: "<<start_ts);
+	const char * filename=rs.getString("filename").c_str();
+	logdebug("filename "<<filename);
+
+	File file(filename);
+	FormatInputStream fis(&file);
+	fis.seek(rs.getInt("stream_index"),start_ts);
+	PacketInputStream pis(&fis);
+	int size=0;
+	for(int a=0;a<frame_count;){
+	    Packet tmp_p;
+	    pis.readPacket(tmp_p);
+	    if(tmp_p.packet->stream_index!=rs.getInt("stream_index"))continue;
+	    a++;
+	    boost::shared_ptr<Packet> p(new Packet(tmp_p));
+	    u._input_packets.push_back(p);
+	    size+=p->packet->size;
+	}
+	u._decoder=CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
+	u._encoder=CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
+	u._source_stream=rs.getInt("source_stream");
+	u._target_stream=rs.getInt("target_stream");
+	_stmt_pu->setInt("id",rs.getInt("id"));
+	_stmt_pu->execute();
+
+	logdebug("packing frame group  with size:"<<size<<" !!!");
+
+    }else{
+        logdebug("no more frame groups left, setting job as completed");
+//        setCompleteTime(1);
+    }
+    return u;
+
+
+
+
+
+
+
+/*
 	if(process_unit_list.size()>0){
 		map<int, boost::shared_ptr<ProcessUnit> >::iterator it=process_unit_list.begin();
 		ProcessUnit * unit=(*it).second.get();
@@ -91,7 +148,8 @@ ProcessUnit * ClientHandler::getProcessUnit(){
 //		process_unit_list.erase(unit->id);
 	    return unit;
 	}
-	return NULL;
+*/
+//	return ProcessUnit;
 }
 
 string toString(int num){
