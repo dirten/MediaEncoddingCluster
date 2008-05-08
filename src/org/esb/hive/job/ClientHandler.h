@@ -18,6 +18,7 @@ class ClientHandler{
 	ClientHandler();
 //	bool getProcessUnit(ProcessUnit & unit);
 	ProcessUnit getProcessUnit();
+	ProcessUnit getProcessUnit2();
 	bool putProcessUnit(ProcessUnit & unit);
 	static bool addProcessUnit(boost::shared_ptr<ProcessUnit> unit);
     private:

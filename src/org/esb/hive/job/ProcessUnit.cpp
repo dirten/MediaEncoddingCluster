@@ -69,18 +69,23 @@ void ProcessUnit::process(){
 	    boost::shared_ptr<Packet> p=*it;
       
 	    insize+=p->packet->size;
+
 	    if(p->isKeyFrame()){
-	      cout <<"KeyFrame"<<endl;
+	      cout <<"KeyFrame\t";
 	    }
-	    Frame tmp=_decoder->decode(*p);
 //	    if(tmp._buffer==0)continue;
 //        boost::shared_ptr<Frame> fr(new Frame(tmp));
 //        pts_list.insert(fr);
 
-//	    cout <<"PacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts;
+	    cout <<"PacketPts:"<<p->packet->pts<<"\tPacketDts:"<<p->packet->dts<<"\t";
 //	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
 //	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
 //        cout << endl;
+
+	    Frame tmp=_decoder->decode(*p);
+	    if(tmp._buffer==0){
+	      continue;
+	    }
         
         
       
@@ -153,13 +158,13 @@ void ProcessUnit::process(){
 	}
 */
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
-    /*
+    
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
 	_decoder=0;
 	_encoder=0;
-	*/
+	
 
 }

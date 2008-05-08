@@ -14,12 +14,14 @@ int main(int argc, char ** argv){
         FormatInputStream fis(&file);
         fis.dumpFormat();
       AVFormatContext * f=fis.getFormatContext();
+      
       cout << endl;
       cout <<"<File Information>"<<endl;
 //      cout <<"-----------------"<<endl;
-      cout << "#streams\ttimestamp\tstart\tduration\tfilename"<<endl;
+      cout << "#streams\tformatname\ttimestamp\tstart\tduration\tfilename"<<endl;
       cout << "---------------------------------------------------------------------------------"<<endl;
       cout <<f->nb_streams<<"\t\t";
+      cout <<f->iformat->name<<"\t\t";
       cout <<f->timestamp<<"\t\t";
       cout <<f->start_time<<"\t";
       cout <<f->duration<<"\t";

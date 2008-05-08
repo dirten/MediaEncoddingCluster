@@ -112,6 +112,11 @@ int import(int argc, char *argv[]) {
 	int stream_pts[ctx->nb_streams];
 	double stream_start[ctx->nb_streams];
 	long duration = 0;
+
+	PreparedStatement stmt_fr=con.prepareStatement("insert into frame_groups(frame_group, startts, byte_pos, stream_id, stream_index, frame_count)"
+	        " values(:frame_group, :startts, :byte_pos, :stream_id, :stream_index, :frame_count)");
+
+
 	PreparedStatement
 			stmt_str =
 					con.
@@ -141,6 +146,27 @@ int import(int argc, char *argv[]) {
 		stmt_str.setInt("sample_rate", ctx->streams[a]->codec->sample_rate);
 		stmt_str.setInt("channels", ctx->streams[a]->codec->channels);
 		stmt_str.setInt("sample_fmt", ctx->streams[a]->codec->sample_fmt);
+
+
+
+
+		stmt_str.execute();
+		int streamid = con.lastInsertId();
+
+
+        if(ctx->streams[a]->codec->codec_type==CODEC_TYPE_AUDIO){
+//            stmt_fr.setInt("frame_group",frame_group);
+            stmt_fr.setInt("frame_count",(double) ctx->streams[a]->duration);
+            stmt_fr.setDouble("startts",(double) ctx->streams[a]->start_time);
+            stmt_fr.setDouble("byte_pos",(double)0);
+            stmt_fr.setInt("stream_id",streamid);
+            stmt_fr.setInt("stream_index",a);
+            stmt_fr.execute();
+        }
+
+
+
+
 		//              Codec codec(ctx->streams[a]->codec->codec_id);
 
 		//          stmt_str.setInt( "priv_data_size", codec._codec->priv_data_size);
@@ -148,8 +174,6 @@ int import(int argc, char *argv[]) {
 		//          stmt_str.setBlob( "priv_data",(char*) ctx->streams[a]->codec->priv_data,codec._codec->priv_data_size);
 		//          stmt_str.setInt( "priv_data_size", ctx->iformat->priv_data_size);
 		//          stmt_str.setBlob( "priv_data",(char*) ctx->priv_data,ctx->iformat->priv_data_size);
-		stmt_str.execute();
-		int streamid = con.lastInsertId();
 		streams[a] = streamid;
 		codec_types[a] = ctx->streams[a]->codec->codec_type;
 		num[a] = ctx->streams[a]->time_base.num;
@@ -163,8 +187,6 @@ int import(int argc, char *argv[]) {
 	//      progress_display show_progress(duration);
 
 
-	PreparedStatement stmt_fr=con.prepareStatement("insert into frame_groups(frame_group, startts, stream_id, stream_index, frame_count)"
-	        " values(:frame_group, :startts, :stream_id, :stream_index, :frame_count)");
 
 
 	PreparedStatement
@@ -198,6 +220,7 @@ int import(int argc, char *argv[]) {
             stmt_fr.setInt("frame_group",frame_group);
             stmt_fr.setInt("frame_count",frame_group_counter);
             stmt_fr.setDouble("startts",startts);
+            stmt_fr.setDouble("byte_pos",(double)packet.packet->pos);
             stmt_fr.setInt("stream_id",streams[packet.packet->stream_index]);
             stmt_fr.setInt("stream_index",packet.packet->stream_index);
             stmt_fr.execute();
@@ -205,7 +228,7 @@ int import(int argc, char *argv[]) {
 			frame_group++;
 			frame_group_counter=0;
 		}
-/*
+
 		int field = 0;
 		packet.packet->duration = packet.packet->duration == 0 ? 1
 				: packet.packet->duration;
@@ -224,8 +247,8 @@ int import(int argc, char *argv[]) {
 		stmt.setDouble("pos", (double) packet.packet->pos);
 		stmt.setInt("data_size", packet.packet->size);
 		//        Blob blob((const char*)packet.data,packet.size);
-//		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
-//		stmt.execute();
+		stmt.setBlob( "data", (char*)packet.packet->data, packet.packet->size);
+		stmt.execute();
 		//      show_progress+=packet.duration;
 		
 		if(codec_types[packet.packet->stream_index]==CODEC_TYPE_VIDEO){
@@ -236,7 +259,7 @@ int import(int argc, char *argv[]) {
 			stream_pts[packet.packet->stream_index] += ((int64_t)AV_TIME_BASE/2 * packet.packet->size) / 
 				(sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
 		}
-		*/
+		
 		
 	}
 

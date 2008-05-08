@@ -166,6 +166,13 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.setInt("target",v_stream_id);
 	stmtJob.execute();
 }
+{
+	PreparedStatement stmtJob=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, frame_count) (select stream_id, :target, startts, frame_count from frame_groups where stream_id=:id)");
+//	stmtJob.setInt("jobid",jobid);
+	stmtJob.setInt("id",in_a_stream);
+	stmtJob.setInt("target",a_stream_id);
+	stmtJob.execute();
+}
 
 }
 #endif
