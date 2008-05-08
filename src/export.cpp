@@ -85,11 +85,12 @@ int exporter(int argc, char * argv[]){
 //    sql+=" order by a.pts limit 5000";
 //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
 //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts 
-//    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
-    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video) order by dts";
+    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
+//    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
-//	stmt.setInt("audio",audio_id);
+	audio_id=0;
+	stmt.setInt("audio",audio_id);
 //	stmt.setInt("video",3);
 //	stmt.setInt("audio",0);
     cout <<"VideoId"<<video_id<<"\taudio_id"<<audio_id<<endl;
@@ -106,16 +107,17 @@ int exporter(int argc, char * argv[]){
 	    p.packet->stream_index=rs.getInt("stream_index");
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
-		if(p.packet->stream_index==0){
-	    	p.packet->pts=video_pts;//AV_NOPTS_VALUE;//rs.getInt("pts");
-			p.packet->duration=1;
-	    	video_pts+=1;
+//		if(p.packet->stream_index==0){
+	    	p.packet->pts=rs.getDouble("pts")-rs.getDouble("start_time");
+			p.packet->duration=rs.getInt("duration");
+/*
 	    }else 
 	    if(p.packet->stream_index==1){
 	    	p.packet->pts=audio_pts;//AV_NOPTS_VALUE;//rs.getInt("pts");
 	    	audio_pts+=rs.getInt("duration");
 	      	p.packet->duration=384;//rs.getInt("duration");
 	    }
+	    */
 	    p.packet->dts=AV_NOPTS_VALUE;//rs.getInt("dts");
 //	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
 //        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
