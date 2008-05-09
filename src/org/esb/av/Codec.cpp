@@ -117,6 +117,7 @@ namespace org {
 //					ctx->flags |= CODEC_FLAG_TRUNCATED;
 					cout <<"CodecCapTruncated"<<endl;
 				}
+//				ctx->flags |=CODEC_FLAG_LOW_DELAY;
                 
 				if (avcodec_open (ctx, _codec) < 0) {
 					logerror("ERROR : while openning Codec" <<_codec_id);

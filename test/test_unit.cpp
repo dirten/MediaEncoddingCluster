@@ -104,7 +104,7 @@ for(int b=0;b<10;b++){
 
 	u._decoder=&dec;
 	u._encoder=&enc;
-	for(int a=0;a<200;a++){
+	for(int a=0;a<20000;a++){
 		av::Packet p;
 		pis.readPacket(p);
 		if(p.packet->stream_index!=0 )continue;
@@ -112,8 +112,13 @@ for(int b=0;b<10;b++){
 //		p.packet->dts-=start;
 		boost::shared_ptr<Packet> p1(new Packet(p));
 		u._input_packets.push_back(p1);
+		if(p.isKeyFrame())
+		
+		break;
 	}
+	
 	cout << "StartProcessUnit"<<endl;
+	if(u._input_packets.size()==0)continue;
 	u.process();
 	
 	list<boost::shared_ptr<Packet> >::iterator bla;

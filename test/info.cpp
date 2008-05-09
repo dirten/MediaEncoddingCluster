@@ -66,7 +66,7 @@ int main(int argc, char ** argv){
       PacketInputStream pis(&fis);
       cout<<endl;
       cout <<"<Packet Information>"<<endl;
-      cout << "#\tpts\tdts\tsize\tindex\tflags\tduration\tpos"<<endl;
+      cout << "#\tpts\tdts\tsize\tindex\tflags\tiskey\tduration\tpos"<<endl;
       cout <<"------------------------------------------------------------------------"<<endl;
       for(int a=0;a<50;a++){
         Packet p;
@@ -77,6 +77,7 @@ int main(int argc, char ** argv){
         cout <<p.packet->size<<"\t";
         cout <<p.packet->stream_index<<"\t";
         cout <<p.packet->flags<<"\t";
+        cout <<p.isKeyFrame()<<"\t";
         cout <<p.packet->duration<<"\t\t";
         cout <<p.packet->pos<<"\t";
         cout << endl;      

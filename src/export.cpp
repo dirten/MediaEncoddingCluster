@@ -16,8 +16,8 @@ using namespace org::esb::sql;
 
 int exporter(int argc, char * argv[]){
 
-    File fout("/tmp/testdb.avi");
-//    File fout("/tmp/testdb.mp2");
+//    File fout("/tmp/testdb.avi");
+    File fout(argv[3]);
     string stream_id=argv[2];
 //    int codec_id=atoi(argv[3]);
     FormatOutputStream fos(&fout);
@@ -71,7 +71,7 @@ int exporter(int argc, char * argv[]){
 //        a_num=rs.getInt("time_base_num");
 //        a_den=rs.getInt("time_base_den");
 //        encoder->ctx->block_align=1;
-//        pos.setEncoder(*encoder,rs.getInt("stream_index"));
+        pos.setEncoder(*encoder,rs.getInt("stream_index"));
       }
 
     }
@@ -89,7 +89,7 @@ int exporter(int argc, char * argv[]){
 //    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
 	PreparedStatement stmt=con.prepareStatement(sql.c_str());
 	stmt.setInt("video",video_id);
-	audio_id=0;
+//	audio_id=0;
 	stmt.setInt("audio",audio_id);
 //	stmt.setInt("video",3);
 //	stmt.setInt("audio",0);
@@ -99,17 +99,38 @@ int exporter(int argc, char * argv[]){
 
 	int video_packets=0;
 	int a=0;
+	int id=0;
+    cout << "StreamTimeBaseNum:"<<fos._fmtCtx->streams[id]->time_base.num;
+    cout << "\tStreamTimeBaseDen:"<<fos._fmtCtx->streams[id]->time_base.den;
+    cout << "CodecTimeBaseNum:"<<fos._fmtCtx->streams[id]->codec->time_base.num;
+    cout << "\tCodecTimeBaseDen:"<<fos._fmtCtx->streams[id]->codec->time_base.den;
+    cout << endl;
 	while(rs.next()){
 //	    Row row=rs.getRow(a);
-	    video_packets++;
+//	    video_packets++;
 //	    cout<<"" << rs.getInt("id")<<endl;
 	    Packet p(rs.getInt("data_size"));
 	    p.packet->stream_index=rs.getInt("stream_index");
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
 //		if(p.packet->stream_index==0){
-	    	p.packet->pts=rs.getDouble("pts")-rs.getDouble("start_time");
-			p.packet->duration=rs.getInt("duration");
+
+        if(p.packet->stream_index==0)
+          p.packet->pts=av_rescale_q(++video_packets,(AVRational){1,25},fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+//          p.packet->pts=av_rescale_q(++video_packets,fos._fmtCtx->streams[p.packet->stream_index]->codec->time_base,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+
+
+        
+//    	p.packet->pts=(rs.getDouble("pts")-rs.getDouble("start_time"));///rs.getInt("duration");
+//			p.packet->duration=1;//rs.getInt("duration");
+        if(p.packet->stream_index==1)
+          p.packet->pts=AV_NOPTS_VALUE;
+/*
+        cout << "\tPacketIndex"<<p.packet->stream_index;
+        cout << "\tPacketPts"<<p.packet->pts;
+        cout << "\tPacketDuration"<<p.packet->duration;
+      cout << endl;
+*/
 /*
 	    }else 
 	    if(p.packet->stream_index==1){

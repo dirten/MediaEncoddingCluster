@@ -34,9 +34,10 @@ ClientHandler::ClientHandler(){
 	
     _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
     "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
-    _stmt_fr=new PreparedStatement(_con->prepareStatement("update frame_groups set complete = now() where frame_group=:fr and stream_id=:sid"));
+//    _stmt_fr=new PreparedStatement(_con->prepareStatement("update frame_groups set complete = now() where frame_group=:fr and stream_id=:sid"));
+    _stmt_fr=new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
     _stmt_pu=new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
-    _stmt_ps=new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
+    _stmt_ps=new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
 
 }
 /*
@@ -121,6 +122,7 @@ ProcessUnit ClientHandler::getProcessUnit2(){
 	  u._encoder=CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
 	  u._source_stream=rs.getInt("source_stream");
 	  u._target_stream=rs.getInt("target_stream");
+	  u._target_stream=frame_count;
 	  _stmt_pu->setInt("id",rs.getInt("id"));
 	  _stmt_pu->execute();
 
@@ -202,6 +204,7 @@ ProcessUnit ClientHandler::getProcessUnit(){
 */
 	    size+=p->packet->size;
 	  }
+	  u._process_unit=rs.getInt("id");
 	  _stmt_pu->setInt("id",rs.getInt("id"));
 	  _stmt_pu->execute();
 
@@ -257,8 +260,8 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit){
 	oos.writeObject(unit);
 	fos.flush();
 	*/
-	_stmt_fr->setInt("fr",unit._frame_group);
-	_stmt_fr->setInt("sid",unit._source_stream);
+	_stmt_fr->setInt("id",unit._process_unit);
+//	_stmt_fr->setInt("sid",unit._source_stream);
 	_stmt_fr->execute();
     int count=0, frame_group=0;
     for(it=unit._output_packets.begin();it!=unit._output_packets.end();it++){

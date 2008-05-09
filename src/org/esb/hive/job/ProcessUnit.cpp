@@ -158,13 +158,13 @@ void ProcessUnit::process(){
 	}
 */
 	 logdebug("InputSize:"<<insize<<"OutputSize:"<<outsize);
-    
+    /*
 	if(_decoder!=NULL)
 		delete _decoder;
 	if(_encoder!=NULL)
 		delete _encoder;
 	_decoder=0;
 	_encoder=0;
-	
+	*/
 
 }
