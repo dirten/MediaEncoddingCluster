@@ -72,57 +72,13 @@ int main (int argc, char **argv)
 	Config::init("cluster.cfg");
 	loginit();
 	Encoder *temp=CodecFactory::getStreamEncoder(1);
-//	temp.open();
-//    std::vector< std::vector<double> > v=test();
-//    cout << v[0][0]<<endl;
-//    return 0;
-
-//	cout << "bla fsel:"<<Config::getProperty("hive.min_frame_group_count")<<endl;
-//  log_init ("log.properties");
   av_register_all ();
 
   avcodec_init ();
   avcodec_register_all ();
 
-/*
-  int pts = atoi(argv[1]);
-  int test=av_rescale_q(pts,(AVRational){1,16000},(AVRational){32,1225});
-//  int test_audio=av_rescale(100,125,AV_TIME_BASE*3);
-  cout <<"av_rescale():"<<test<<endl;
-  return 0;
-*/
   char *filename = argv[1];
 
-/*
-    AVFormatContext *ic;
-	
-//    File file("spongebob.schwammkopf.-.s02e01_1.-.hey.dein.schuh.ist.offen.by.dreitausend1.avi");
-//	FormatInputStream fois(&file);
-//	fois.dumpFormat();
-//	ic= av_alloc_format_context();
-//    int err = av_open_input_file(&ic, "/mnt/Video/sortiert/Der Blutige Pfad Gottes - German (DVD-Quali).avi", NULL, 0, NULL);
-    int err = av_open_input_file(&ic, filename, NULL, 0, NULL);
-//    int err = av_open_input_file(&ic, "test.dvd", NULL, 0, NULL);
-//    int err = av_open_input_file(&ic, "../dein_schuh.avi", NULL, 0, NULL);
-//    int err = av_open_input_file(&ic, "../Der Blutige Pfad Gottes - German (DVD-Quali).avi", NULL, 0, NULL);
-	if(err){
-        fprintf(stderr, "could not open file\n");
-	}
-    err = av_find_stream_info(ic);
-//    dump_format(ic, 0, "spongebob.schwammkopf.-.s02e01_1.-.hey.dein.schuh.ist.offen.by.dreitausend1.avi", 0);
-
-    AVCodec *codec;
-    AVCodecContext *c = ic->streams[0]->codec;
-    codec = avcodec_find_decoder(CODEC_ID_MPEG4);
-//    AVCodecContext *c= avcodec_alloc_context();
-    AVFrame picture;//= avcodec_alloc_frame();
-    avcodec_get_frame_defaults(&picture);
-	if (avcodec_open(c, codec) < 0) {
-        fprintf(stderr, "could not open codec\n");
-        exit(1);
-    }
-    */
-//      int ret = av_read_frame(ic, pkt);
 
 
   File file (filename);
@@ -131,105 +87,10 @@ int main (int argc, char **argv)
 
   fois.dumpFormat ();
   PacketInputStream pis (fois);
-//    cout << "Width"<<ic->streams[0]->codec->width<<endl;
-
-//    AVPacket pkt;
   int got_picture;
 
-/*
-	ProcessUnit unit;	
-//	unit._decoder=&dec;
-//	unit._encoder=&enc;
-
-	AVCodec * decodec= avcodec_find_decoder(ic->streams[0]->codec->codec_id);
-//	cc=avcodec_alloc_context();
-
-	AVCodecContext * decc=avcodec_alloc_context();//ic->streams[0]->codec;
-//	AVCodecContext * decc=ic->streams[0]->codec;
-	decc->width=enc.getWidth();
-	decc->height=enc.getHeight();
-	decc->time_base.num=1;
-	decc->time_base.den=25;
-
-	if (avcodec_open(decc, decodec) < 0) {
-        fprintf(stderr, "could not open codec\n");
-        exit(1);
-    }
-
-	
-	
-	AVFrame * picture;
-	uint8_t *picture_buf;
-	int size;
-
-	picture = avcodec_alloc_frame();
-	if (!picture)
-    	    return NULL;
-	size = avpicture_get_size(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
-	picture_buf = (uint8_t*)av_malloc(size);
-	memset(picture_buf,0,size);
-	if (!picture_buf) {
-    	    av_free(picture);
-    	    return NULL;
-	}
-	avpicture_fill((AVPicture *)picture, picture_buf,
-                   enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
-
-
-
-
-
-
-
-
-
-	AVCodecContext * cc;
-	cc=avcodec_alloc_context();
-//	cc->codec_id=CODEC_ID_MPEG1VIDEO;
-//	cc->codec_id=CODEC_ID_MPEG2VIDEO;
-//	cout << "CodecIC"<<CODEC_ID_MSMPEG4V3<<endl;
-	cc->codec_id=CODEC_ID_MSMPEG4V3;
-	cc->codec_type=CODEC_TYPE_VIDEO;
-//	cc->max_b_frames=1;
-	cc->bit_rate=500000;
-	cc->width=enc.getWidth();
-	cc->height=enc.getHeight();
-	cc->time_base.num=1;
-	cc->time_base.den=25;
-	cc->gop_size=10;
-	cc->pix_fmt=PIX_FMT_YUV420P;
-*/
-/*
-	cc->thread_count=1;
-	cc->max_qdiff=0;
-	cc->sample_aspect_ratio=(AVRational){1,1};
-	cc->rc_override_count=0;
-	cc->me_threshold=0;
-	cc->intra_dc_precision=0;
-	cc->strict_std_compliance=0;
-	cc->mb_decision=2;
- */
-//      cc->debug|=FF_DEBUG_MV;
-
-//      cc->max_b_frames=1;
-/*	
-	AVCodec * codec;
-	codec=avcodec_find_encoder(cc->codec_id);
-	avcodec_open(cc,codec);
-//	cc->max_b_frames=1;
-	
-
-*/
-/*
-  int video_outbuf_size = 200000;
-  uint8_t *video_outbuf = (uint8_t *) av_malloc (video_outbuf_size);
-*/
   int insize = 0, outsize = 0;
 
-  FrameFormat format;
-  format.pixel_format = PIX_FMT_YUV420P;
-  format.height = 1080;		//ic->streams[0]->codec->height;
-  format.width = 1920;		//ic->streams[0]->codec->width;
 
 
 
@@ -258,7 +119,12 @@ int main (int argc, char **argv)
   dec->open ();
 
   FrameFormat informat;
-  format.pixel_format = (PixelFormat)dec->getPixelFormat();//_pix_fmt;
+  informat.pixel_format = (PixelFormat)dec->getPixelFormat();//_pix_fmt;
+  informat.height = ic->streams[0]->codec->height;
+  informat.width = ic->streams[0]->codec->width;
+
+  FrameFormat format;
+  format.pixel_format = PIX_FMT_YUV420P;
   format.height = ic->streams[0]->codec->height;
   format.width = ic->streams[0]->codec->width;
 
@@ -270,9 +136,9 @@ int main (int argc, char **argv)
 
 
 
-//  Encoder * enc=new Encoder(CODEC_ID_MSMPEG4V3);
+  Encoder * enc=new Encoder(CODEC_ID_MSMPEG4V3);
 
-  Encoder * enc=new Encoder(CODEC_ID_H264);
+//  Encoder * enc=new Encoder(CODEC_ID_H264);
 //  Encoder enc (CODEC_ID_H264);
   enc->setWidth (format.width);
   enc->setHeight (format.height);
@@ -288,12 +154,14 @@ int main (int argc, char **argv)
   PacketOutputStream pos (&ffos);
   pos.setEncoder (*enc, 0);
   pos.init ();
+//  		fois.seek(0,44289);//38978
 
 
 //  FILE *logfile;
 //  logfile = fopen ("stats.out", "w");
 	int a=0;
-  for (int i = 0;i < 100; i++) {
+	bool firstSeek=false;
+  for (int i = 0;i < 1000; i++) {
     Packet p;
 //    av_init_packet (p.packet);
     if(pis.readPacket (p)<0)break;
@@ -304,7 +172,6 @@ int main (int argc, char **argv)
     	cout << "!!!!!!!!!!!!INIT ENCODER - DECODER"<<endl;
       enc->close ();
 	  delete enc;
-
 
 
 //	dec->close();
@@ -353,7 +220,9 @@ int main (int argc, char **argv)
 //    cout.flush ();
 //          AVFrame * picture= avcodec_alloc_frame();
     insize += p.packet->size;
-//              cout << "InputPacketPts:"<<p.packet->pts<<endl;
+    cout << "InputPacketPts:"<<p.packet->pts;
+    cout << "\tInputPacketDts:"<<p.packet->dts;
+    cout << endl;
 //              boost::shared_ptr<Packet> ptr(new Packet(p));
 //      cout << "InputPacketSize:"<<ptr->packet->size<<endl;
 //              Frame frame(enc.getPixelFormat(), enc.getWidth(), enc.getHeight());
@@ -369,22 +238,22 @@ int main (int argc, char **argv)
 //    cout << "decode Packet";
 //    cout.flush ();
 
-    dec->analyzePacket(p);
-//    if(frame._buffer==0)continue;
-//    cout << "convert Packet";
-//    cout.flush ();
-/*
-//    Frame bla;
-//    bla=frame;
-    Frame f = converter.convert (frame);
+    Frame tmp=dec->decode(p);
+    if(tmp._buffer==0)continue;
+    Frame f = converter.convert (tmp);
     cout << "FrameSize:" << f.getSize () << endl;
-    frame.pts = p.packet->pts;
+//    frame.pts = p.packet->pts;
     f.setPts( p.packet->dts);
-    f.setDts( p.packet->dts);
+//    f.setDts( p.packet->dts);
 
     cout << "encode Packet";
     cout.flush ();
     Packet pe = enc->encode (f);
+		if(!firstSeek){
+  			fois.seek(0,44289);
+  			firstSeek=true;
+  		}
+
 //    if (enc.ctx->stats_out)
 //      fprintf (logfile, "%s", enc.ctx->stats_out);
 
@@ -399,7 +268,7 @@ int main (int argc, char **argv)
     
     pos.writePacket (pe);
     out_size = pe.packet->size;
-*/
+
 //          fill_yuv_image(&f, i, enc.getWidth(), enc.getHeight());
 
 

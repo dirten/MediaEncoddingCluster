@@ -64,7 +64,7 @@ void ProcessUnit::process(){
 	multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
 	multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
 	int a=0;
-
+	int counter=0;
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){		
 	    boost::shared_ptr<Packet> p=*it;
       
@@ -83,6 +83,9 @@ void ProcessUnit::process(){
 //        cout << endl;
 
 	    Frame tmp=_decoder->decode(*p);
+		if(_frame_count>=counter&&tmp.pict_type==FF_I_TYPE){
+			break;
+		}
 	    if(tmp._buffer==0){
 	      continue;
 	    }

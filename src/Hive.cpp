@@ -68,7 +68,12 @@ int main(int argc, char * argv[]){
 }
 
 void client(int argc, char *argv[]){
-    Socket sock("localhost", 20000);
+	string host="localhost";
+  	if(argc==3){
+  		host=argv[2];
+  	}
+  	cout << "Connecting to "<<host<<endl;;
+    Socket sock((char*)host.c_str(), 20000);
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
     ObjectOutputStream oos(sock.getOutputStream());
