@@ -1,3 +1,4 @@
+<%include>header.ecpp</%include>
 <%pre>
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
@@ -24,11 +25,7 @@ int a_codec=0;
 std::string a_bitrate="";
 std::string a_samplerate="";
 </%args>
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="style">
-</head>
-<body>
+<& header>
 <%include>menu.tmpl</%include>
 <{
     Connection con(Config::getProperty("db.connection"));

@@ -21,6 +21,9 @@ int profile=0;
 </head>
 <body>
 <%include>menu.tmpl</%include>
+<&fieldstart legend="test legend">
+<fieldset>
+<legend>File Upload</legend>
 <form action="/upload" method="post" enctype="multipart/form-data" action="/post">
     <input type="file" name="file">
     <input type="submit">
@@ -36,6 +39,8 @@ int profile=0;
 <{	}  }>
 	</select>
 </form>
+</fieldset>
+<& fieldend>
 <%cpp>
 const tnt::Multipart& mp = request.getMultipart();
 tnt::Multipart::const_iterator it = mp.find("file");
@@ -61,3 +66,14 @@ if (it != mp.end()){
 </%cpp>
 </body>
 <html>
+
+<%def fieldstart>
+<%args>
+string legend;
+</%args>
+  <fieldset><legend><$legend$></legend>
+</%def>
+
+<%def fieldend>
+  </fieldset>
+</%def>

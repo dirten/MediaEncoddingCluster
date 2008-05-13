@@ -12,14 +12,8 @@
   <title>ecpp-application myfirst test</title>
  </head>
  <body>
+ <%include>menu.tmpl</%include>
+
 <$test$>
-<{
-    using namespace org::esb::sql;
-    Connection con("sqlite:/tmp/hive.db.2");
-    Statement stmt=con.createStatement("select * from profiles");
-    ResultSet rs=stmt.executeQuery();
-    while(rs.next()){ }>
-	<$rs.getString(2)$><{    }    }>
-  <h1>myfirst</h1>
  </body>
 </html>

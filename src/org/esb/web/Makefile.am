@@ -28,6 +28,7 @@ SOURCES = WebServer.cpp mainpage.ecpp upload.ecpp file.ecpp profile.ecpp style.c
 	but4_center.png \
 	but4_left.png \
 	but4_right.png
+#	but4_right.png 
             
 libweb_la_SOURCES = $(SOURCES)
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
