@@ -90,11 +90,10 @@ LDFLAGS="$LDFLAGS $sqlite_LD"
 #AC_CHECK_LIB(avutil, av_free)
 AC_CHECK_LIB(pthread, main)
 AC_CHECK_HEADERS([pthread.h])
-CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 "
-CXXFLAGS+=" -I`pwd`/external/ffmpeg"
-CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
-CXXFLAGS+=" -I`pwd`/external/tntdb/include"
-CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
+
+
+
+
 
 #CXXFLAGS+="-I`pwd`/external/ffmpeg/libavutil"
 #CXXFLAGS+="-I`pwd`/external/ffmpeg/libavformat"
@@ -121,35 +120,46 @@ http://ffmpeg.mplayerhq.hu
 #*********************************************************************
 #])])
 
+
+
+
+
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 "
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
+
+
 if test -d "$srcdir/external/cxxtools"; then
   AC_CONFIG_SUBDIRS([external/cxxtools])
+  CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
 fi
 if test -d "$srcdir/external/tntdb"; then
   AC_CONFIG_SUBDIRS([external/tntdb])
+  CXXFLAGS+=" -I`pwd`/external/tntdb/include"
+  LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
 fi
 if test -d "$srcdir/external/tntnet"; then
   AC_CONFIG_SUBDIRS([external/tntnet])
+  CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
+  LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
 fi
 
 if test -d "$srcdir/external/libx264"; then
   AC_CONFIG_SUBDIRS([external/libx264])
+  LDFLAGS+=" -L`pwd`/external/libx264 -lx264"
 fi
 
 if test -d "$srcdir/external/ffmpeg"; then
   AC_CONFIG_SUBDIRS([external/ffmpeg])
+  CXXFLAGS+=" -I`pwd`/external/ffmpeg"
+  LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
+  LDFLAGS+=" -L`pwd`/external/ffmpeg/libavformat -lavformat"
+  LDFLAGS+=" -L`pwd`/external/ffmpeg/libavcodec -lavcodec"
+  LDFLAGS+=" -L`pwd`/external/ffmpeg/libswscale -lswscale"
 fi
 
 
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lsqlite3 -lbz2 -lz -L/usr/lib/mysql -lmysqlclient" $(top_srcdir)
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
-LDFLAGS+=" -L`pwd`/external/libx264 -lx264"
-LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
-LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
-LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
-LDFLAGS+=" -L`pwd`/external/ffmpeg/libavformat -lavformat"
-LDFLAGS+=" -L`pwd`/external/ffmpeg/libavcodec -lavcodec"
-LDFLAGS+=" -L`pwd`/external/ffmpeg/libswscale -lswscale"
 
 AC_OUTPUT(
     Makefile 

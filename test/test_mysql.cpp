@@ -18,7 +18,7 @@ int main(int argc, char * argv[]){
 	MYSQL_ROW record;
 	MYSQL_STMT * stmt;
 	
-	
+//	mysql_library_init(NULL,NULL,NULL);
 	db=mysql_init(NULL);
 	mysql_real_connect(db,"127.0.0.1","root","","hive",0,NULL,0);
 //	mysql_query(db, "SELECT Host, User FROM user");
@@ -27,48 +27,6 @@ int main(int argc, char * argv[]){
 	string sql="insert into packets(data_size,data) values (?,?)";
 	mysql_stmt_prepare(stmt,sql.c_str(), sql.length());	
 	MYSQL_BIND    bind[2];
-
-
-
-	File inputFile(argv[1]);
-
-	FormatInputStream fis(&inputFile);
-	PacketInputStream pis(&fis);
-	memset(bind,0,sizeof(bind));
-
-	Packet packet;
-    while(true/*&&count < 1000*/){
-        pis.readPacket(packet);
-//        cout << "New Packet"<<endl;
-        if(packet.packet->data==NULL)break;
-//        ++count;
-
-		bind[0].buffer_type= MYSQL_TYPE_SHORT;
-		bind[0].buffer= (char *)&packet.packet->size;
-		bind[0].is_null= 0;
-		bind[0].length=0;	
-
-
-		bind[1].buffer_type= MYSQL_TYPE_STRING;
-		bind[1].buffer= (char *)packet.packet->data;
-		bind[1].is_null= 0;
-		bind[1].length=(long unsigned int*)&packet.packet->size;
-		
-		
-		if (mysql_stmt_bind_param(stmt, bind))
-		{
-		  fprintf(stderr, " mysql_stmt_bind_param() failed\n");
-		    fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
-		      exit(0);
-		      }
-		if (mysql_stmt_execute(stmt))
-		{
-		  fprintf(stderr, " mysql_stmt_execute(), 1 failed\n");
-		    fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
-		      exit(0);
-		      }
-    }
-
 
 
 
@@ -85,9 +43,10 @@ int main(int argc, char * argv[]){
 	{
 	  fprintf(stderr, " failed while closing the statement\n");
 	    fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
-	      exit(0);
+//	      exit(0);
 	      }
 	mysql_close(db);
+	mysql_library_end();
 	
 //return 0;
 }

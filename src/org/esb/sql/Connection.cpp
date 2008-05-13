@@ -18,6 +18,8 @@ Connection::Connection(const char * con) throw (SqlException){
 }
 
 Connection::~Connection(){
+//    delete tntcon;
+//    tntcon=0;
 	tntcon.close();
 }
 
