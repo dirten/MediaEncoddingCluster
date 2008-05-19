@@ -24,7 +24,7 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libweb.la
-SOURCES = WebServer.cpp mainpage.ecpp upload.ecpp file.ecpp profile.ecpp style.css \
+SOURCES = WebServer.cpp mainpage.ecpp upload.ecpp file.ecpp profile.ecpp header.ecpp style.css \
 	but4_center.png \
 	but4_left.png \
 	but4_right.png

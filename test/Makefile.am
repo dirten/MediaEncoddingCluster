@@ -87,6 +87,7 @@ test_mysql_LDFLAGS = $(all_libraries)
 #test_file_LDADD=	../src/org/esb/libesb.la 
 info_LDADD=	../src/org/esb/libesb.la 
 test_tnt_LDADD=	../src/org/esb/libesb.la 
+#test_sql_LDADD=	../src/org/esb/libesb.la /home/jhoelscher/bripper/libcwd/lib/libcwd.la
 test_sql_LDADD=	../src/org/esb/libesb.la 
 test_unit_LDADD=	../src/org/esb/libesb.la 
 test_serial_LDADD=	../src/org/esb/libesb.la 
@@ -118,6 +119,6 @@ test_audio_LDADD=	../src/org/esb/libesb.la
 
 #test_config_LDADD		=	../src/org/esb/libesb.la
 
-
+CPPFLAGS+=-DCWDEBUG
 INCLUDES = \
-        -I$(top_srcdir)/src/
+        -I$(top_srcdir)/src/ -I/home/jhoelscher/bripper/libcwd/include

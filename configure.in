@@ -8,6 +8,9 @@ AM_CONFIG_HEADER(config.h)
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
+if test ! -d "$srcdir/external"; then
+	mkdir external
+fi
 
 #AC_MSG_ERROR([$PATH])
 AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard is "/usr/local")],
@@ -25,23 +28,6 @@ AC_ARG_WITH(boost-inc, [  --with-boost-inc=path where boost headers are installe
 	    BOOST_CFLAGS="-I$withval")
 
 CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
-
-AC_ARG_WITH(litesql, [  --with-litesql=path   where litesql is installed. (Standard is "/usr/local")],
-	    LITESQL_CFLAGS="-I$withval/include"
-	    LITESQL_LD="-L$withval/lib"
-	    LITESQL_PATH="$withval")
-
-CPPFLAGS="$CPPFLAGS $LITESQL_CFLAGS"
-LDFLAGS="$LDFLAGS $LITESQL_LD"
-
-
-AC_ARG_WITH(amq, [  --with-amq=path   where activemq is installed. (Standard is "/usr/local")],
-	    AMQ_CFLAGS="-I$withval/include/activemq-cpp-2.0"
-	    AMQ_LD="-L$withval/lib -lactivemq-cpp"
-	    AMQ_PATH="$withval")
-
-CPPFLAGS="$CPPFLAGS $AMQ_CFLAGS"
-LDFLAGS="$LDFLAGS $AMQ_LD"
 
 AC_ARG_WITH(tntnet, [  --with-tntnet=path   where tntnet is installed. (Standard is "/usr/local")],
 	    TNTNET_CFLAGS="-I$withval/include"
@@ -66,14 +52,6 @@ AC_ARG_WITH(tnttools, [  --with-tnttools=path   where tnt cxxtools is installed.
 
 CPPFLAGS="$CPPFLAGS $TNTTOOLS_CFLAGS"
 LDFLAGS="$LDFLAGS $TNTTOOLS_LD"
-
-AC_ARG_WITH(sqlite, [  --with-sqlite=path   where sqlite is installed. (Standard is "/usr/local")],
-	    sqlite_CFLAGS="-I$withval/include"
-	    sqlite_LD="-L$withval/lib -lsqlite3"
-	    sqlite_PATH="$withval")
-
-CPPFLAGS="$CPPFLAGS $sqlite_CFLAGS"
-LDFLAGS="$LDFLAGS $sqlite_LD"
 
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
@@ -108,39 +86,41 @@ AC_CHECK_HEADERS([pthread.h])
 #*********************************************************************
 #])])
 
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
 
-
-
-
-CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 "
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit /home/jhoelscher/bripper/x264/lib/libx264.a"
 
 
 if test -d "$srcdir/external/cxxtools"; then
+#  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/cxxtools])
   CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
-#  PATH="`pwd`/external:$PATH"
-#  AC_SUBST(PATH)
+  PATH="`pwd`/external:$PATH"
+  AC_SUBST(PATH)
 fi
 
 if test -d "$srcdir/external/tntdb"; then
+#  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/tntdb])
   CXXFLAGS+=" -I`pwd`/external/tntdb/include"
   LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
 fi
 
 if test -d "$srcdir/external/tntnet"; then
+#  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/tntnet])
   CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
   LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
 fi
 
 if test -d "$srcdir/external/libx264"; then
+#  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/libx264])
   LDFLAGS+=" -L`pwd`/external/libx264 -lx264"
 fi
 
 if test -d "$srcdir/external/ffmpeg"; then
+  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/ffmpeg])
   CXXFLAGS+=" -I`pwd`/external/ffmpeg"
   LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
@@ -178,7 +158,6 @@ AC_OUTPUT(
     src/org/esb/hive/Makefile
     src/org/esb/web/Makefile
     src/org/esb/sql/Makefile
-dnl    external/Makefile
     test/Makefile
     test/fobs/Makefile
 dnl    src/hive.client/Makefile 
