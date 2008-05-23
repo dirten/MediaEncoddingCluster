@@ -90,6 +90,11 @@ CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -
 
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit /home/jhoelscher/bripper/x264/lib/libx264.a"
 
+if test -d "$srcdir/external/boost"; then
+#  AC_OUTPUT(external/Makefile)
+  AC_CONFIG_SUBDIRS([external/boost])
+  LDFLAGS+=" -L`pwd`/external/boost"
+fi
 
 if test -d "$srcdir/external/cxxtools"; then
 #  AC_OUTPUT(external/Makefile)
