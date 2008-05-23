@@ -1,6 +1,7 @@
--module(complex2).
+-module(av).
 -export([start/0, stop/0, init/1]).
--export([foo/1, bar/1]).
+-export([foo/1, bar/1, read/0]).
+-import(db).
 -include("schema.hrl").
 
 start() ->
@@ -16,18 +17,19 @@ bar(Y) ->
 print({A,B,C}) ->
 	io:format("~w~n",[A]).
 
+read()->
+  db:sequence(test).
+  
 write({A,B,C}) ->
+    I=read(),
+%	mnesia:dirty_write(packet,#packet{id=I,pts=A,data_size=B, data=term_to_binary(C)}).
 	Fun=fun()->
-		Packet = #packet{
-			pts=A,
-			data_size=B,
-			data=C
-		},
-		print({A,B,C})
-%%		mnesia:write(Packet)
+%		print({A,B,C}),
+		mnesia:write(#packet{id=I,pts=A,data_size=B,data=term_to_binary(C)})
 		end,
 %%	mnesia:async_dirty(Fun).
 	mnesia:transaction(Fun).
+%	mnesia:ets(Fun).
 	
 call_port(Msg) ->
     complex ! {call, self(), Msg},
@@ -37,7 +39,7 @@ call_port(Msg) ->
             call_port({foo,1});
         {'EXIT', Port, Reason} ->
             exit(port_terminated)
-    	after 10000 ->
+    	after 50000 ->
     		exit(port_terminated)
     end.
 

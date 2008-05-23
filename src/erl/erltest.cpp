@@ -85,10 +85,14 @@ int main() {
   long allocated, freed;
 
   erl_init(NULL, 0);
+
 	File f("/home/jhoelscher/pfad.avi");
 	FormatInputStream fis(&f);
 	PacketInputStream pis(&fis);
+//    cout << "Programm started"<<endl;
+    
   while (read_cmd(buf) > 0) {
+//    cout << "Running loop"<<endl;
 	Packet p;
 	pis.readPacket(p);
     tuplep = erl_decode(buf);
@@ -118,6 +122,6 @@ int main() {
 //    erl_free_term(arr[0]);
     erl_free_term(fnp);
     erl_free_term(argp);
-    erl_free_term(intp);
+//    erl_free_term(intp);
   }
 }
