@@ -21,15 +21,16 @@ read()->
   db:sequence(test).
   
 write({A,B,C}) ->
-    I=read(),
-%	mnesia:dirty_write(packet,#packet{id=I,pts=A,data_size=B, data=term_to_binary(C)}).
-	Fun=fun()->
-%		print({A,B,C}),
-		mnesia:write(#packet{id=I,pts=A,data_size=B,data=term_to_binary(C)})
-		end,
+%%    I=read(),
+%%    I=db:sequence(test),
+	mnesia:dirty_write(packet,#packet{pts=A, data=C}).
+%%	Fun=fun()->
+%%		print({A,B,C}),
+%%		mnesia:write(#packet{id=I,pts=A,data_size=B,data=term_to_binary(C)})
+%%		end,
 %%	mnesia:async_dirty(Fun).
-	mnesia:transaction(Fun).
-%	mnesia:ets(Fun).
+%%	mnesia:transaction(Fun).
+%%	mnesia:ets(Fun).
 	
 call_port(Msg) ->
     complex ! {call, self(), Msg},

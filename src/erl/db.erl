@@ -3,7 +3,7 @@
 -include("schema.hrl").
 
 init()->
-	mnesia:create_table(packet,[{disc_copies, [node()]},{attributes, record_info(fields, packet)}]),
+	mnesia:create_table(packet,[{type, bag}, {disc_only_copies, [node()]},{attributes, record_info(fields, packet)}]),
 	create_sequence().
 %	mnesia:add_table_index(packet, pts).
 	
@@ -21,7 +21,7 @@ create_sequence() ->
   create_sequence([node()]).
   
 create_sequence(Nodes) ->
-  mnesia:create_table(sequence, [{type, set}, {disc_copies, Nodes}, {attributes, record_info(fields, sequence)}]).
+  mnesia:create_table(sequence, [{type, set}, {ram_copies, Nodes}, {attributes, record_info(fields, sequence)}]).
 
 
 %% Inits or resets a sequence to Value

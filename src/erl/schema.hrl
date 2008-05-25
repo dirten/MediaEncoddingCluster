@@ -1,2 +1,2 @@
--record(packet, {id,pts, data_size, data}).
+-record(packet, {pts, data}).
 

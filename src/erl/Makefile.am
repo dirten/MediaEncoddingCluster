@@ -11,10 +11,10 @@ bin_PROGRAMS = erltest
 erltest_SOURCES = erltest.cpp
 
 # set the include path found by configure
-INCLUDES=   -I$(top_srcdir)/src -I/usr/lib/erlang/lib/erl_interface-3.5.5.4/include
+INCLUDES=   -I$(top_srcdir)/src -I/usr/lib/erlang/lib/erl_interface-3.5.5.2/include
 
 # the library search path.
-erltest_LDADD=-L/usr/lib/erlang/lib/erl_interface-3.5.5.4/lib -lerl_interface -lei -lpthread -lstdc++ $(top_srcdir)/src/org/esb/av/libav.la
+erltest_LDADD=-L/usr/lib/erlang/lib/erl_interface-3.5.5.2/lib -lerl_interface -lei -lpthread -lstdc++ $(top_srcdir)/src/org/esb/av/libav.la
 #		/home/jhoelscher/bripper/MediaEncodingCluster/src/org/esb/av/.libs/libav.a \
 #		/home/jhoelscher/bripper/MediaEncodingCluster/src/org/esb/io/.libs/libio.a \
 #		/home/jhoelscher/bripper/tnt/cxxtools/lib/libcxxtools.a \

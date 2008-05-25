@@ -10,7 +10,7 @@ void __attribute__ ((constructor)) my_init (void);
 void my_init ()
 {
 	using namespace org::esb::av;
-	cout << "test initialised"<<endl;
+//	cout << "test initialised"<<endl;
 //	logdebug("init av package");
 	av_register_all ();
     avcodec_init();
@@ -103,7 +103,7 @@ namespace org {
 					ctx->channels = _channels;
                     if(_codec->id==CODEC_ID_MPEG2VIDEO){
 					  ctx->max_b_frames = 2;
-					  cout << "setting max B Frames 2"<<endl;
+//					  cout << "setting max B Frames 2"<<endl;
 					}
 					ctx->flags|=_flags;
 //					ctx->start_time=_start_time;
@@ -115,7 +115,7 @@ namespace org {
 				setParams();
 				if (_codec->capabilities & CODEC_CAP_TRUNCATED){
 //					ctx->flags |= CODEC_FLAG_TRUNCATED;
-					cout <<"CodecCapTruncated"<<endl;
+//					cout <<"CodecCapTruncated"<<endl;
 				}
 //				ctx->flags |=CODEC_FLAG_LOW_DELAY;
                 

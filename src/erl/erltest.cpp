@@ -107,7 +107,7 @@ int main() {
 
 //    intp = erl_mk_int(p.getPts());
 	arr[0]=erl_mk_int(p.getPts());
-	arr[1]=erl_mk_atom((const char*)ERL_ATOM_PTR(fnp));
+	arr[1]=erl_mk_int(p.getDts());
 	arr[2]=erl_mk_binary((const char*)p.packet->data,p.packet->size );
 	tuple=erl_mk_tuple(arr,3);
     erl_encode(tuple, buf);
