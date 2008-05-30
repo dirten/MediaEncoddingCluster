@@ -21,9 +21,11 @@ read()->
   db:sequence(test).
   
 write({A,B,C}) ->
+    Write = fun(Keys) -> [mnesia:write(Keys)], ok end,
+    mnesia:activity(sync_dirty, Write, [#packet{id=db:sequence(packet), data=C}], mnesia_frag).
 %%    I=read(),
 %%    I=db:sequence(test),
-	mnesia:dirty_write(packet,#packet{pts=A, data=C}).
+%	mnesia:dirty_write(packet,#packet{pts=A, data=C}).
 %%	Fun=fun()->
 %%		print({A,B,C}),
 %%		mnesia:write(#packet{id=I,pts=A,data_size=B,data=term_to_binary(C)})
@@ -36,6 +38,7 @@ call_port(Msg) ->
     complex ! {call, self(), Msg},
     receive
         {complex, Result} ->
+%%        	print(Result),
         	write(Result),
             call_port({foo,1});
         {'EXIT', Port, Reason} ->

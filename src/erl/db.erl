@@ -3,7 +3,17 @@
 -include("schema.hrl").
 
 init()->
-	mnesia:create_table(packet,[{type, bag}, {disc_only_copies, [node()]},{attributes, record_info(fields, packet)}]),
+	mnesia:create_table(packet,[ {disc_only_copies, [node()]},{attributes, record_info(fields, packet)}]),
+%    mnesia:change_table_frag(packet, {activate, []}),
+%	Info = fun(Item) -> mnesia:table_info(packet, Item) end,
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
+%	mnesia:change_table_frag(packet, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
 	create_sequence().
 %	mnesia:add_table_index(packet, pts).
 	

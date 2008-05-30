@@ -90,11 +90,13 @@ int main() {
 	FormatInputStream fis(&f);
 	PacketInputStream pis(&fis);
 //    cout << "Programm started"<<endl;
-    
-  while (read_cmd(buf) > 0) {
+  int loop=1;
+  while (read_cmd(buf)>0) {
 //    cout << "Running loop"<<endl;
 	Packet p;
 	pis.readPacket(p);
+	
+/*
     tuplep = erl_decode(buf);
     fnp = erl_element(1, tuplep);
     argp = erl_element(2, tuplep);
@@ -104,7 +106,7 @@ int main() {
     } else if (strncmp((const char*)ERL_ATOM_PTR(fnp), "bar", 17) == 0) {
       res = bar(ERL_INT_VALUE(argp));
     }
-
+*/
 //    intp = erl_mk_int(p.getPts());
 	arr[0]=erl_mk_int(p.getPts());
 	arr[1]=erl_mk_int(p.getDts());
@@ -113,15 +115,15 @@ int main() {
     erl_encode(tuple, buf);
     write_cmd(buf, erl_term_len(tuple));
 
-    erl_free_compound(tuplep);
+//    erl_free_compound(tuplep);
     erl_free_compound(tuple);
 //    erl_free_compound(arr);
     erl_free_term(arr[0]);
     erl_free_term(arr[1]);
     erl_free_term(arr[2]);
 //    erl_free_term(arr[0]);
-    erl_free_term(fnp);
-    erl_free_term(argp);
+//    erl_free_term(fnp);
+//    erl_free_term(argp);
 //    erl_free_term(intp);
   }
 }
