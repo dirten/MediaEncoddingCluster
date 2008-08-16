@@ -6,7 +6,9 @@ using namespace std;
 
 
 bool checkConfigKey(char * key){
-	if(Config::getProperty(key)==NULL||strlen(Config::getProperty(key))==0){
+	
+    
+    if(Config::getProperty(key)==NULL||strlen(Config::getProperty(key))==0){
 		cout << key << " not set in config file!!!" <<endl;
 	}
 	return true;

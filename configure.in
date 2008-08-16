@@ -125,7 +125,7 @@ if test -d "$srcdir/external/libx264"; then
 fi
 
 if test -d "$srcdir/external/ffmpeg"; then
-  AC_OUTPUT(external/Makefile)
+#  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/ffmpeg])
   CXXFLAGS+=" -I`pwd`/external/ffmpeg"
   LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
@@ -164,7 +164,7 @@ AC_OUTPUT(
     src/org/esb/web/Makefile
     src/org/esb/sql/Makefile
     test/Makefile
-    test/fobs/Makefile
+dnl    test/fobs/Makefile
 dnl    src/hive.client/Makefile 
 dnl    src/org/esb/hivecontrol/Makefile
 dnl    src/framehive/Makefile     
