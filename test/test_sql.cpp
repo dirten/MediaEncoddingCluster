@@ -1,6 +1,6 @@
-#include <libcwd/sys.h>
-#include <libcwd/debug.h>
-#include <libcwd/type_info.h>
+//#include <libcwd/sys.h>
+//#include <libcwd/debug.h>
+//#include <libcwd/type_info.h>
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
@@ -42,7 +42,16 @@ int main(){
 //	char * tmp;
 //	delete tmp;
 
-  Connection con("mysql:db=hive;user=root;passwd=root");
+//  Connection con("mysql:db=hive;user=root;passwd=");
+  Connection con("localhost","hive","root","");
+  Statement stmt=con.createStatement("select * from version");
+  ResultSet rs=stmt.executeQuery();
+  while(rs.next()){
+//  cout << "Row:"<<rs.getString("component")<<endl;
+    cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
+  }
+
+/*
   Statement stmt=con.createStatement("select * from version");
 // Debug( list_allocations_on(libcw_do) );
 	char * t=0;
@@ -52,6 +61,7 @@ int main(){
   while(rs.next()){
     cout << "Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
   }
+  */
   mysql_library_end();
 //Debug( list_allocations_on(libcw_do) );
 }

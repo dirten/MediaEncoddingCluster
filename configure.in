@@ -45,7 +45,7 @@ AC_ARG_WITH(tntdb, [  --with-tntdb=path   where tntdb is installed. (Standard is
 CPPFLAGS="$CPPFLAGS $TNTDB_CFLAGS"
 LDFLAGS="$LDFLAGS $TNTDB_LD"
 
-AC_ARG_WITH(tnttools, [  --with-tnttools=path   where tnt cxxtools is installed. (Standard is "/usr/local")],
+AC_ARG_WITH(cxxtools, [  --with-cxxtools=path   where tnt cxxtools is installed. (Standard is "/usr/local")],
 	    TNTTOOLS_CFLAGS="-I$withval/include"
 	    TNTTOOLS_LD="-L$withval/lib -ltntnet"
 	    TNTTOOLS_PATH="$withval")
@@ -86,14 +86,36 @@ AC_CHECK_HEADERS([pthread.h])
 #*********************************************************************
 #])])
 
-CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
+#CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lsqlite3  -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit /home/jhoelscher/bripper/x264/lib/libx264.a"
 
 if test -d "$srcdir/external/boost"; then
 #  AC_OUTPUT(external/Makefile)
   AC_CONFIG_SUBDIRS([external/boost])
-  LDFLAGS+=" -L`pwd`/external/boost"
+#  CXXFLAGS+=" -I`pwd`/external/boost/boost"
+#  LDFLAGS+=" -L`pwd`/external/boost"
+fi
+
+#CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
+#LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
+
+if test -d "$srcdir/external/mysql++"; then
+#  AC_OUTPUT(external/Makefile)
+  AC_CONFIG_SUBDIRS([external/mysql++])
+  CXXFLAGS+=" -I/usr/include/mysql"
+  CXXFLAGS+=" -I`pwd`/external/mysql++/lib"
+  LDFLAGS+=" -L`pwd`/external/mysql++ -lmysqlpp"
+fi
+
+if test -d "$srcdir/external/wt"; then
+#  AC_OUTPUT(external/Makefile)
+  AC_CONFIG_SUBDIRS([external/wt])
+  CXXFLAGS+=" -I`pwd`/external/wt"
+  CXXFLAGS+=" -I`pwd`/external/wt/src"
+  LDFLAGS+=" -L`pwd`/external/wt/src -lwt -lwtext"
+  LDFLAGS+=" -L`pwd`/external/wt/src/http -lwthttp"
 fi
 
 if test -d "$srcdir/external/cxxtools"; then
@@ -116,6 +138,8 @@ if test -d "$srcdir/external/tntnet"; then
   AC_CONFIG_SUBDIRS([external/tntnet])
   CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
   LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
+  PATH="`pwd`/external/tntnet/sdk/tools/ecppc:$PATH"
+  AC_SUBST(PATH)
 fi
 
 if test -d "$srcdir/external/libx264"; then
@@ -152,6 +176,7 @@ http://ffmpeg.mplayerhq.hu
 
 AC_OUTPUT(
     Makefile 
+    external/Makefile 
     src/Makefile 
     src/org/Makefile
     src/org/esb/Makefile
