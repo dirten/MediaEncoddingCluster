@@ -56,7 +56,7 @@ int import(int argc, char *argv[]) {
 	 if(!checkDatabase(con)){
 	  createDatabase(con);
 	 }else{
-	 cout << "Database not found";
+	   cout << "Database found";
 	 }
 	 
 	File inputFile(argv[1]);
@@ -152,6 +152,7 @@ int import(int argc, char *argv[]) {
 
 		stmt_str.execute();
 		int streamid = con.lastInsertId();
+		streams[a] = streamid;
 
 
         if(ctx->streams[a]->codec->codec_type==CODEC_TYPE_AUDIO){
@@ -174,7 +175,6 @@ int import(int argc, char *argv[]) {
 		//          stmt_str.setBlob( "priv_data",(char*) ctx->streams[a]->codec->priv_data,codec._codec->priv_data_size);
 		//          stmt_str.setInt( "priv_data_size", ctx->iformat->priv_data_size);
 		//          stmt_str.setBlob( "priv_data",(char*) ctx->priv_data,ctx->iformat->priv_data_size);
-		streams[a] = streamid;
 		codec_types[a] = ctx->streams[a]->codec->codec_type;
 		num[a] = ctx->streams[a]->time_base.num;
 		den[a] = ctx->streams[a]->time_base.den;

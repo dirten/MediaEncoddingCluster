@@ -5,10 +5,10 @@
 
 
 create_data()->
-	for(1,50000,fun(I)->I+I end).
+	for(1,500,fun(I)->I+I end).
 
 init()->
-		mnesia:create_table(tpacket,[{disc_only_copies, [node()]},{attributes, record_info(fields, tpacket)}]),
+		mnesia:create_table(tpacket,[{disc_copies, [node()]},{attributes, record_info(fields, tpacket)}]),
         mnesia:change_table_frag(tpacket, {activate, []}),
 		Info = fun(Item) -> mnesia:table_info(tpacket, Item) end,
 		mnesia:change_table_frag(tpacket, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}),
@@ -25,7 +25,7 @@ free()->
 		mnesia:delete_table(tpacket).
 
 test_run()->
-	for(1,1000,fun(A)->test() end).
+	for(1,100000,fun(A)->test() end).
 
 test()->
     D=create_data(),

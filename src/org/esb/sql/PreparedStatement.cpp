@@ -1,13 +1,18 @@
 #include "PreparedStatement.h"
 #include <iostream>
-#include "tntdb/bits/blob.h"
+#include "tntdb/blob.h"
 using namespace org::esb::sql;
 
-PreparedStatement::PreparedStatement(tntdb::Statement stmt):Statement(stmt){
+PreparedStatement::PreparedStatement(MYSQL & mysql, const char * sql):Statement(mysql, sql){
+
+}
+
+PreparedStatement::PreparedStatement(mysqlpp::Query stmt):Statement(stmt){
 
 }
 
 PreparedStatement::~PreparedStatement(){
+
 }
 
 void PreparedStatement::setBlob(string pos, char* data, int length){

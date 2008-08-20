@@ -13,25 +13,56 @@ using namespace org::esb::util;
 Connection::Connection() throw (SqlException){
 
 }
-Connection::Connection(const char * con) throw (SqlException){
-	tntcon=tntdb::connect(con);
+Connection::Connection(const char * con):tntcon(tntdb::connect(con)){
+  std::string constr(con);
+  parseConnectionString(constr);
+  cppcon.connect(_db.c_str(),_host.c_str(),_username.c_str(),_passwd.c_str());
+  std::cerr << "ConnectionError "<<cppcon.error()<<std::endl;
+  std::cerr << "ConnectionServerStatus "<<cppcon.server_status()<<std::endl;
+
+
+  mysqlpp::Query query=cppcon.query("select * from version");
+  mysqlpp::UseQueryResult result=query.use();
+  mysqlpp::Row row=result.fetch_row();
+
+//	tntcon=tntdb::connect(con);
+}
+
+Connection::Connection(const char * host, const char * db, const char * user, const char *pass):cppcon(false){
+  _username=user;
+  _passwd=pass;
+  _host=host;
+  _db=db;
+  mysql_init(&mysql);
+  if (!mysql_real_connect(&mysql,_host.c_str(),_username.c_str(),_passwd.c_str(),_db.c_str(),0,NULL,0))
+  {
+    fprintf(stderr, "Failed to connect to database: Error: %s\n",
+    mysql_error(&mysql));
+  }
+/*
+  cppcon.connect(_db.c_str(),_host.c_str(),_username.c_str(),_passwd.c_str());
+  std::cerr << "ConnectionError "<<cppcon.error()<<std::endl;
+  std::cerr << "ConnectionServerStatus "<<cppcon.server_status()<<std::endl;
+*/
+/*
+  mysqlpp::Query query=cppcon.query("select * from version");
+  mysqlpp::UseQueryResult result=query.use();
+  mysqlpp::Row row=result.fetch_row();
+  */
 }
 
 Connection::~Connection(){
-//    delete tntcon;
-//    tntcon=0;
-	tntcon.close();
+  mysql_close(&mysql);
 }
 
 
 Statement Connection::createStatement(const char * sql){
-	return Statement(tntcon.prepare(sql));
-//	_tmpStatement=Statement(*this, sql);
+	return Statement(mysql, sql);
 }
 
 PreparedStatement Connection::prepareStatement(const char * sql){
 //	PreparedStatement *stmt=new PreparedStatement(*this, sql);
-	return PreparedStatement(tntcon.prepare(sql));
+	return PreparedStatement(mysql, sql);
 }
 
 //Statement & Connection::createStatement(){return;}
@@ -48,11 +79,26 @@ long Connection::lastInsertId(){
 	return tntcon.selectValue("select last_insert_id()").getInt();
 //    sqlite3_connection::close();	
 }
-/*
-void
-//_init(int argc, char *argv[], char *envp[])
-my_init()
-{
-    std::cout << "Lib SQL Init"<<std::endl;
+void Connection::parseConnectionString(std::string & constr){
+    StringTokenizer tok(constr,":");
+    if(tok.countTokens()==2){
+        tok.nextToken();
+        StringTokenizer data(tok.nextToken(),";");
+        while(data.hasMoreTokens()){
+            StringTokenizer line(data.nextToken(),"=");
+            string key=line.nextToken();
+            string val=line.nextToken();
+            if(key.compare("user")==0){
+                _username=val;
+            }else 
+            if(key.compare("passwd")==0){
+              _passwd=val;
+            }else
+            if(key.compare("host")==0){
+              _host=val;
+            }else{
+              /*nothing*/
+            }
+        }
+    }
 }
-*/

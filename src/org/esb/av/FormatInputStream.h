@@ -13,35 +13,36 @@
 
 //extern "C" AVStream;
 using namespace org::esb::io;
-namespace org{
-    namespace esb{
-	    namespace av{
-//	    	logger("hive.av")
-	        class FormatInputStream: public FormatBaseStream, public InputStream {
-		    	logger("hive.av.formatis");
+namespace org {
+    namespace esb {
+        namespace av {
+            //	    	logger("hive.av")
 
-		        public:
-		            FormatInputStream(File * source);
-    			    ~FormatInputStream();
-    			    AVFormatContext * getFormatContext();
-    	    		int available(bool isBlocking = false);
-	        	    long getFileSize();
-		            int read(unsigned char * buffer, int length);
-		            int read(vector<unsigned char>&buffer);
-		            int read();
-		            int getStreamCount();
-        		    __attribute__((deprecated))InputStream * getStream(int sNumber);
-        		    AVInputStream * getAVStream(int sNumber);
-	        	    void close();
-	        	    void dumpFormat();
-	        	    int seek(int stream_index,int64_t timestamp);
-                	int selectedStream;
-		        private:
-            		    org::esb::io::File * _sourceFile;
-            		protected:
-		            AVFormatContext * formatCtx;            	    
-	        };
-    	}
+            class FormatInputStream : public FormatBaseStream, public InputStream {
+                logger("hive.av.formatis");
+
+            public:
+                FormatInputStream(File * source);
+                ~FormatInputStream();
+                AVFormatContext * getFormatContext();
+                int available(bool isBlocking = false);
+                long getFileSize();
+                int read(unsigned char * buffer, int length);
+                int read(vector<unsigned char>&buffer);
+                int read();
+                int getStreamCount();
+                __attribute__((deprecated))InputStream * getStream(int sNumber);
+                AVInputStream * getAVStream(int sNumber);
+                void close();
+                void dumpFormat();
+                int seek(int stream_index, int64_t timestamp);
+                int selectedStream;
+            private:
+                org::esb::io::File * _sourceFile;
+            protected:
+                AVFormatContext * formatCtx;
+            };
+        }
     }
 }
 

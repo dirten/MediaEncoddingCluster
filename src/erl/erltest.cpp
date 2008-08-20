@@ -3,11 +3,13 @@
 #include <string.h>
 
 #include "org/esb/io/File.h"
+#include "org/esb/lang/Thread.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::lang;
 int foo(int x) {
   return x+1;
 }
@@ -79,7 +81,7 @@ int write_cmd(byte *buf, int len)
 int main() {
   ETERM *tuplep, *intp;
   ETERM *fnp, *argp;
-  ETERM * arr[3], *tuple;
+  ETERM * arr[10], *tuple;
   int res;
   byte buf[100000];
   long allocated, freed;
@@ -91,10 +93,12 @@ int main() {
 	PacketInputStream pis(&fis);
 //    cout << "Programm started"<<endl;
   int loop=1;
+  
   while (read_cmd(buf)>0) {
 //    cout << "Running loop"<<endl;
+//    if(++loop>10)break;
 	Packet p;
-	pis.readPacket(p);
+	if(pis.readPacket(p)<0)break;
 	
 /*
     tuplep = erl_decode(buf);
@@ -108,22 +112,36 @@ int main() {
     }
 */
 //    intp = erl_mk_int(p.getPts());
-	arr[0]=erl_mk_int(p.getPts());
-	arr[1]=erl_mk_int(p.getDts());
-	arr[2]=erl_mk_binary((const char*)p.packet->data,p.packet->size );
-	tuple=erl_mk_tuple(arr,3);
+//%-record(packet, {id,stream_id,pts,dts, stream_index, key_frame, frame_group,flags, duration, pos, data}).
+    int a=0;
+	arr[0]=erl_mk_int(1);
+	arr[1]=erl_mk_int(p.getPts());
+	arr[2]=erl_mk_int(p.getDts());
+	arr[3]=erl_mk_int(p.packet->stream_index);
+	arr[4]=erl_mk_int(p.isKeyFrame()==true?1:0);
+	arr[5]=erl_mk_int(1);
+	arr[6]=erl_mk_int(p.packet->flags);
+	arr[7]=erl_mk_int(p.packet->duration);
+	arr[8]=erl_mk_int(p.packet->pos);
+//	arr[a++]=erl_mk_int(p.getDts());
+	arr[9]=erl_mk_binary((const char*)p.packet->data,p.packet->size );
+	tuple=erl_mk_tuple(arr,10);
     erl_encode(tuple, buf);
     write_cmd(buf, erl_term_len(tuple));
 
 //    erl_free_compound(tuplep);
     erl_free_compound(tuple);
 //    erl_free_compound(arr);
-    erl_free_term(arr[0]);
-    erl_free_term(arr[1]);
-    erl_free_term(arr[2]);
+    for(int i=0;i<10;i++){
+      erl_free_term(arr[i]);
+    }
+//    erl_free_term(arr[1]);
+//    erl_free_term(arr[2]);
 //    erl_free_term(arr[0]);
 //    erl_free_term(fnp);
 //    erl_free_term(argp);
 //    erl_free_term(intp);
   }
+//  while(true)Thread::sleep(1000);
+  exit(127);
 }

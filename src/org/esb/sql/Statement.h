@@ -2,6 +2,7 @@
 #define ORG_ESB_SQL_STATEMENT_H
 #include <string>
 #include "Connection.h"
+#include "mysql++.h"
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
 //#include "tntdb/statement.h"
@@ -21,7 +22,10 @@ class ResultSet;
 class Statement{
 	logger("hive.sql.Statement")
 	public:
-		Statement(tntdb::Statement  stmt);
+		Statement(MYSQL & mysql, const char * sql);
+		Statement(mysqlpp::Query& stmt);
+//		Statement(mysqlpp::Query * stmt);
+		Statement(mysqlpp::Connection & con, const char * sql);
 		~Statement();
 		ResultSet executeQuery ();
 		ResultSet executeQuery(char * );
@@ -30,7 +34,12 @@ class Statement{
 	protected:
 		friend class ResultSet;
 		tntdb::Statement tntstmt;
-		ResultSet * res;
+		mysqlpp::Query cppstmt;
+		mysqlpp::Query * query;
+		mysqlpp::Connection _con;
+//		MYSQL_BIND      *bind;
+		MYSQL_STMT      *stmt;
+//		ResultSet * res;
 
 };
 }}}

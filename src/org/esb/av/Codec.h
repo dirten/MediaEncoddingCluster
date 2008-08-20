@@ -8,87 +8,89 @@
 #include "org/esb/util/Log.h"
 
 namespace org {
-	namespace esb {
-		namespace av {
-			class Frame;
-			class Codec{
-			    logger("hive.av.codec")
-			  public:
-				const static int DECODER = 1;
-				const static int ENCODER = 2;
-				  Codec (const CodecID codecId, int mode = DECODER);
-				  Codec (AVCodecContext * codec);
-				  Codec ();
-				 ~Codec ();
-				CodecType getCodecType ();
-				char *getCodecName ();
-				int getCodecId ();
-				void open ();
-				void close ();
-				void setWidth (int w);
-				void setHeight (int h);
-				void setPixelFormat (PixelFormat pfm);
-				void setBitRate (int rate);
-				void setTimeBase (AVRational tb);
-				void setGopSize (int size);
-				void setChannels (int size);
-				void setSampleRate (int size);
-				void setSampleFormat (SampleFormat size);
-				void setFlag (int flag);
-				int getWidth ();
-				int getHeight ();
-				int getPixelFormat ();
-				int getSampleRate ();
-				int getChannels ();
-				void setStartTime (int64_t start);
-//				int getCodecType ();
-//				string getCodecName ();
+    namespace esb {
+        namespace av {
+            class Frame;
 
-				  template < class Archive >
-					void serialize (Archive & ar, const unsigned int version)
-				{
+            class Codec {
+                logger("hive.av.codec")
+            public:
+                const static int DECODER = 1;
+                const static int ENCODER = 2;
+                Codec(const CodecID codecId, int mode = DECODER);
+                Codec(AVCodecContext * codec);
+                Codec();
+                ~Codec();
+                CodecType getCodecType();
+                char *getCodecName();
+                int getCodecId();
+                void open();
+                void close();
+                void setWidth(int w);
+                void setHeight(int h);
+                void setPixelFormat(PixelFormat pfm);
+                void setBitRate(int rate);
+                void setTimeBase(AVRational tb);
+                void setGopSize(int size);
+                void setChannels(int size);
+                void setSampleRate(int size);
+                void setSampleFormat(SampleFormat size);
+                void setFlag(int flag);
+                int getWidth();
+                int getHeight();
+                int getPixelFormat();
+                int getSampleRate();
+                int getChannels();
+                void setStartTime(int64_t start);
+                //				int getCodecType ();
+                //				string getCodecName ();
 
-					
-					ar & _codec_id;
-					ar & _mode;
-					ar & _flags;
-					ar & _pix_fmt;
-					ar & _width;
-					ar & _height;
-					ar & _time_base.num;
-					ar & _time_base.den;
-					ar & _gop_size;
-					ar & _bit_rate;
-					ar & _channels;
-					ar & _sample_rate;
-					ar & _sample_format;
+                template < class Archive >
+                void serialize(Archive & ar, const unsigned int version) {
 
-				}
-				
-				int _codec_id;
-//			  protected:
-				
-				AVCodec * _codec;
-				void findCodec (int mode);
-				int _mode;
-				AVCodecContext * ctx;
-			protected:
-				int 		_width;
-				int 		_flags;
-				int 		_height;
-				PixelFormat _pix_fmt;
-				int 		_bit_rate;
-				AVRational 	_time_base;
-				int 		_gop_size;
-				int 		_channels;
-				int 		_sample_rate;
-				int64_t 		_start_time;
-				SampleFormat _sample_format;
-				bool 		_opened;
-				
-			  private:
-				void setParams ();
-				
-			};
-}}}
+
+                    ar & _codec_id;
+                    ar & _mode;
+                    ar & _flags;
+                    ar & _pix_fmt;
+                    ar & _width;
+                    ar & _height;
+                    ar & _time_base.num;
+                    ar & _time_base.den;
+                    ar & _gop_size;
+                    ar & _bit_rate;
+                    ar & _channels;
+                    ar & _sample_rate;
+                    ar & _sample_format;
+
+                }
+
+                int _codec_id;
+                //			  protected:
+
+                AVCodec * _codec;
+                void findCodec(int mode);
+                int _mode;
+                AVCodecContext * ctx;
+            protected:
+                int _width;
+                int _flags;
+                int _height;
+                PixelFormat _pix_fmt;
+                int _bit_rate;
+                AVRational _time_base;
+                int _gop_size;
+                int _channels;
+                int _sample_rate;
+                int64_t _start_time;
+                SampleFormat _sample_format;
+                bool _opened;
+
+            private:
+                void setParams();
+
+            };
+        }
+    }
+}
 #endif

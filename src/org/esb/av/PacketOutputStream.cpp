@@ -3,6 +3,7 @@
 #include "org/esb/av/FormatOutputStream.h"
 #include "Packet.h"
 #include "introspec.h"
+#include <stdexcept>
 using namespace org::esb::av;
 using namespace org::esb::io;
 

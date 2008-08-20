@@ -9,6 +9,7 @@
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
 #include "mysql/mysql.h"
+#include "mysql++.h"
 using namespace std;
 //using namespace sqlite3x;
 namespace org{
@@ -19,7 +20,8 @@ namespace org{
 			class PreparedStatement:public Statement{
 			    logger("hive.sql")
 				public:
-				    PreparedStatement(tntdb::Statement stmt);
+				    PreparedStatement(MYSQL & mysql, const char * sql);
+				    PreparedStatement(mysqlpp::Query stmt);
 				    ~PreparedStatement();
 					void setDouble(string pos, double val);
 					void setInt(string pos, int val);

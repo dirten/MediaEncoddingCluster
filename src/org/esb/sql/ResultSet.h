@@ -8,7 +8,9 @@
 #include "tntdb/result.h"
 #include "tntdb/statement.h"
 #include "tntdb/row.h"
+#include "mysql++.h"
 #include <vector>
+#include "Row.cpp"
 //using namespace sqlite3x;
 namespace org{
 namespace esb{
@@ -45,13 +47,22 @@ class ResultSet{
 		friend class PreparedStatement;
 //		ResultSet(MYSQL_STMT * stmt);
 		bool isBeforeFirst;
+		ResultSet(Statement & stmt);
 		ResultSet(tntdb::Result result);
 		ResultSet(tntdb::Statement result);
+//		ResultSet(mysqlpp::Query result);
+		ResultSet(mysqlpp::Query * query, mysqlpp::Connection & con);
 		tntdb::Result tntresult;
 		tntdb::Statement tntstmt;
+		mysqlpp::Query cppstmt;
+		mysqlpp::Query * query;
+		mysqlpp::UseQueryResult * _res;
 		tntdb::Row tntrow;
+		mysqlpp::Row cpprow;
 		tntdb::Statement::const_iterator tntiterator;
+        Row row;
 
+//        MYSQL_BIND * bind;
 };
 }}}
 #endif

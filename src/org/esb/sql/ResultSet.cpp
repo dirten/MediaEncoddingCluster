@@ -3,6 +3,8 @@
 #include <iostream>
 #include <list>
 #include "tntdb/bits/blob.h"
+//#include "Row.cpp"
+#include "Column.h"
 using namespace org::esb::sql;
 using namespace std;
 namespace org{
@@ -11,56 +13,64 @@ namespace sql{
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-ResultSet::ResultSet(tntdb::Result result):tntresult(result){
-//	tntrow=tntdb::Row(0);
+ResultSet::ResultSet(tntdb::Result result):tntresult(result), cppstmt(NULL), row(NULL){
 }
-ResultSet::ResultSet(tntdb::Statement stmt):tntstmt(stmt){
+
+ResultSet::ResultSet(Statement & stmt):cppstmt(NULL),row(stmt.stmt){
+}
+
+ResultSet::ResultSet(tntdb::Statement stmt):tntstmt(stmt), tntiterator(tntstmt.begin()), cppstmt(NULL), row(NULL){
+}
+
+ResultSet::ResultSet(mysqlpp::Query * q, mysqlpp::Connection &con):tntstmt(NULL), cppstmt(NULL),row(NULL){
+    query=q;
+    cerr << "QueryInhalt:"<<query->str()<<endl;
+    mysqlpp::UseQueryResult temp=query->use();
+    temp.fetch_row();
+    _res=new mysqlpp::UseQueryResult(query->use());
+    cpprow=_res->fetch_row();
+    cerr << "Error received in fetching a row: " <<
+                        con.error() << endl;
     isBeforeFirst=true;
-//	tntrow=tntdb::Row(0);
+    
 }
 
 
 /*******************************************************************************************************/
 bool ResultSet::next(){
-	if(isBeforeFirst){
-	    tntiterator=tntstmt.begin();
-	    isBeforeFirst=false;
-	}else{
-	    tntiterator++;
-	}
-	bool islast=tntiterator!=tntstmt.end();
-	tntrow=*tntiterator;
-	return islast;
+	return row.next();
 }
 
 /*******************************************************************************************************/
-string ResultSet::getString(int col){return tntrow.getString(col);}
-string ResultSet::getString(string col){return tntrow.getString(col);}
+string ResultSet::getString(int col){return string(cpprow[col]);}
+string ResultSet::getString(string col){return string(row.getColumn(col.c_str())->getString());}
 
 
 /*******************************************************************************************************/
-    bool ResultSet::getBool(int index){return tntrow.getBool(index);}
-    bool ResultSet::getBool(string index){return tntrow.getBool(index);}
+bool ResultSet::getBool(int index){return tntrow.getBool(index);}
+bool ResultSet::getBool(string index){return row.getColumn(index.c_str())->getBool();}
 
 /*******************************************************************************************************/
-    int ResultSet::getInt(int index){return tntrow.getInt(index);}
-    int ResultSet::getInt(string index){return tntrow.getInt(index);}
+int ResultSet::getInt(int index){return tntrow.getInt(index);}
+int ResultSet::getInt(string index){return row.getColumn(index.c_str())->getInt();}
 
 /*******************************************************************************************************/
-    double ResultSet::getDouble(int index){return tntrow.getDouble(index);}
-    double ResultSet::getDouble(string index){return tntrow.getDouble(index);}
+double ResultSet::getDouble(int index){return tntrow.getDouble(index);}
+double ResultSet::getDouble(string index){return row.getColumn(index.c_str())->getDouble();}
 
 /*******************************************************************************************************/
 bool ResultSet::isNull(int col){return tntrow.isNull(col);}
-bool ResultSet::isNull(string col){return tntrow.isNull(col);}
+bool ResultSet::isNull(string col){return row.getColumn(col.c_str())->isNull();}
 
-    string ResultSet::getBlob(int index){
+string ResultSet::getBlob(int index){
     	tntdb::Blob lob=tntrow.getBlob(index);
     	return string(lob.data(), lob.size());
+//    	return row.getColumn(index.c_str())->getBlob();
     }
-    string ResultSet::getBlob(string index){
-    	tntdb::Blob lob=tntrow.getBlob(index);
-    	return string(lob.data(), lob.size());
+string ResultSet::getBlob(string index){
+//    	tntdb::Blob lob=tntrow.getBlob(index);
+//    	return string(lob.data(), lob.size());
+    	return row.getColumn(index.c_str())->getBlob();
     }
 
 string ResultSet::getClob(int col){return getBlob(col);}

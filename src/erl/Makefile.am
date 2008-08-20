@@ -15,7 +15,7 @@ erloader_SOURCES=erloader.cpp
 INCLUDES=   -I$(top_srcdir)/src -I/usr/lib/erlang/lib/erl_interface-3.5.5.4/include -I/home/jhoelscher/epi-0.0.3/include
 
 # the library search path.
-erltest_LDADD=-L/usr/lib/erlang/lib/erl_interface-3.5.5.4/lib -lerl_interface -lei -lpthread -lstdc++ $(top_srcdir)/src/org/esb/av/libav.la /home/jhoelscher/epi-0.0.3/lib/libepi.a 
+erltest_LDADD=-L/usr/lib/erlang/lib/erl_interface-3.5.5.4/lib -lerl_interface -lei -lpthread -lstdc++ $(top_srcdir)/src/org/esb/av/libav.la $(top_srcdir)/src/org/esb/lang/liblang.la /home/jhoelscher/epi-0.0.3/lib/libepi.a 
 erloader_LDADD=-lOpenThreads /home/jhoelscher/epi-0.0.3/lib/libepi.a -L/usr/lib/erlang/lib/erl_interface-3.5.5.4/lib -lei -lei_st  -lerl_interface  -lpthread -lstdc++ $(top_srcdir)/src/org/esb/av/libav.la 
 #		/home/jhoelscher/bripper/MediaEncodingCluster/src/org/esb/av/.libs/libav.a \
 #		/home/jhoelscher/bripper/MediaEncodingCluster/src/org/esb/io/.libs/libio.a \

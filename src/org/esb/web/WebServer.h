@@ -11,7 +11,7 @@ namespace web{
 	public:
 	    WebServer();
 	    void run();
-    
+	    void run2();
     };
 }}}
 

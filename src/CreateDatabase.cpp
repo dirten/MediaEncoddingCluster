@@ -5,6 +5,7 @@
 #include <iostream>
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connect.h"
 
 using namespace std;
@@ -28,17 +29,21 @@ sqlite3 * getDatabase(File &databaseFile){
 }
 */
 bool checkDatabase(Connection & con){
+    Statement stmt=con.createStatement("select * from version where component='database.model'");
+  	ResultSet rs=stmt.executeQuery();
+    if(rs.next()){
+      if(rs.getString(2)==string("0.1.1"))return true;
+    }
 	return false;
 }
 
 void createTable(Connection & con,const char * sql){
 	try{
-    	    Statement stmt=con.createStatement(sql);
-    	    stmt.execute();
+  	    Statement stmt=con.createStatement(sql);
+  	    stmt.execute();
 	}catch(exception&ex){
 	    cout << "Fehler:"<<ex.what()<<endl;
 	}
-
 }
 
 bool createDatabase(Connection & con){
