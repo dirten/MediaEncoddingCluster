@@ -10,7 +10,7 @@ using namespace org::esb::hive::job;
 
 
 int main(int argc, char ** argv){
-  log_init();
+  loginit();
      ProcessUnit unit2;   
      FileInputStream ffis("new.unit");
      ObjectInputStream ois(&ffis);

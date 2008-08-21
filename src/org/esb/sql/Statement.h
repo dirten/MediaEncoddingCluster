@@ -23,10 +23,10 @@ class Statement{
 	logger("hive.sql.Statement")
 	public:
 		Statement(MYSQL & mysql, const char * sql);
-		Statement(mysqlpp::Query& stmt);
+//		Statement(mysqlpp::Query& stmt);
 //		Statement(mysqlpp::Query * stmt);
-		Statement(mysqlpp::Connection & con, const char * sql);
-		~Statement();
+//		Statement(mysqlpp::Connection & con, const char * sql);
+		virtual ~Statement();
 		ResultSet executeQuery ();
 		ResultSet executeQuery(char * );
 		bool execute();
@@ -40,6 +40,10 @@ class Statement{
 //		MYSQL_BIND      *bind;
 		MYSQL_STMT      *stmt;
 //		ResultSet * res;
+        map<std::string,int> vars;
+    private:
+        void parseSql(const char * sql);
+        std::string sql;
 
 };
 }}}

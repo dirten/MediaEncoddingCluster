@@ -1,25 +1,50 @@
 #include <Column.h>
 #include "org/esb/util/Decimal.h"
 #include "org/esb/util/Date.h"
+#include "org/esb/util/Time.h"
+#include "org/esb/util/Datetime.h"
 #include <iostream>
 using namespace org::esb::util;
 namespace org{
 namespace esb{
 namespace sql{
 
-Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
-//  bind=b;
-  int size=field->length;
-  if(size<64)
-    size=64;
+Column::Column(MYSQL_BIND & b):bind(b){
+  reserve(0);
+}
 
-  buffer=new char[size];
+Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
   bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
-  bind.buffer_length=size;
-  bind.buffer=buffer;
-  bind.length=&length;
-  bind.is_null=&is_null;
-  bind.error=&error;
+  reserve(field->length);
+}
+
+void Column::reserve(unsigned long size)
+    {
+      // At least for timestamp-data metadata returns a too small size-value,
+      // so we grow it to at least 64 bytes. I don't know if this is a bug in
+      // mysql or here.
+      if (size < 64)
+        size = 64;
+
+      if (bind.buffer_length < size)
+      {
+//        log_debug("grow buffer to " << size << " initial " << bind.buffer_length);
+
+//        delete[] static_cast<char*>(bind.buffer);
+        buffer = new char[size];
+        memset(buffer,0,size);
+        bind.buffer=buffer;
+        bind.buffer_length = size;
+        bind.length=&length;
+//        bind.is_null=&is_null;
+        bind.error=&error;
+//        is_null=0;
+      }
+    }
+
+
+Column::~Column(){
+      delete[] static_cast<char*>(buffer);
 }
 
 bool Column::isNull()
@@ -27,6 +52,7 @@ bool Column::isNull()
       return bind.buffer_type == MYSQL_TYPE_NULL
           || bind.is_null && *bind.is_null;
     }
+    
 std::string Column::getBlob()
     {
       std::string ret;
@@ -82,7 +108,7 @@ std::string Column::getString()
         case MYSQL_TYPE_TIME:
         {
           MYSQL_TIME* ts = static_cast<MYSQL_TIME*>(bind.buffer);
-  //        ret.assign(Time(ts->hour, ts->minute, ts->second).getIso());
+          ret.assign(Time(ts->hour, ts->minute, ts->second).getIso());
           break;
         }
 
@@ -90,8 +116,8 @@ std::string Column::getString()
         case MYSQL_TYPE_TIMESTAMP:
         {
           MYSQL_TIME* ts = static_cast<MYSQL_TIME*>(bind.buffer);
-    //      ret.assign(Datetime(ts->year, ts->month, ts->day,
-    //                      ts->hour, ts->minute, ts->second, ts->second_part).getIso());
+          ret.assign(Datetime(ts->year, ts->month, ts->day,
+                          ts->hour, ts->minute, ts->second, ts->second_part).getIso());
           break;
         }
 
@@ -136,31 +162,22 @@ std::string Column::getString()
     }
 
 
-    bool Column::getBool(){
-      return getInteger<bool>();
-    }
-
-    int Column::getInt(){
-      return getInteger<int>();
-    }
-
-    float Column::getFloat(){
-      return getFloat<float>();
-    }
-
-    double Column::getDouble(){
-      return getFloat<double>();
-    }
-
-
-/*
-std::string Column::getString(){
-  return std::string(buffer, length);
+bool Column::getBool(){
+  return getInteger<bool>();
 }
-*/
-Column::~Column(){
-  delete []buffer;
+
+int Column::getInt(){
+  return getInteger<int>();
 }
+
+float Column::getFloat(){
+  return getFloat<float>();
+}
+
+double Column::getDouble(){
+  return getFloat<double>();
+}
+
 
 
 
@@ -339,6 +356,39 @@ Column::~Column(){
           throw SqlException("type-error in getFloat");
       }
     }
+
+void Column::setString(const char* data){
+      length = ::strlen(data);
+      reserve(length + 1);
+      memcpy(static_cast<char*>(buffer), data, length + 1);
+
+      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
+      bind.is_null = 0;
+      bind.length = &length;
+    }
+
+void Column::setString(const std::string& data){
+      reserve(data.size());
+      data.copy(static_cast<char*>(bind.buffer), data.size());
+      std::cout << "Buffer"<<(char*)bind.buffer<<std::endl;
+      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
+      bind.is_null = 0;
+      length = data.size();
+      bind.length = &length;
+    }
+
+void Column::setBlob(const std::string& data)
+    {
+      length = data.size();
+      reserve(length);
+      memcpy(static_cast<char*>(bind.buffer), data.data(), length);
+
+//      bind.buffer_type = MYSQL_TYPE_BLOB;
+      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
+//      bind.is_null = 0;
+//      bind.length = &length;
+    }
+
 
 }}}
 

@@ -21,7 +21,7 @@ using namespace org::esb::hive::job;
 
 
 int main(int argc, char ** argv){
-	log_init();
+	loginit();
   av_register_all ();
 
   avcodec_init ();

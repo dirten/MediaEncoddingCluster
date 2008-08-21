@@ -43,14 +43,25 @@ int main(){
 //	delete tmp;
 
 //  Connection con("mysql:db=hive;user=root;passwd=");
+  
+  
   Connection con("localhost","hive","root","");
-  Statement stmt=con.createStatement("select * from version");
+/*  Statement stmt=con.createStatement("select * from version where version=2");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
-//  cout << "Row:"<<rs.getString("component")<<endl;
+
     cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
   }
-
+  */
+  
+//  Connection con("localhost","hive","root","");
+  PreparedStatement pstmt=con.prepareStatement("select * from version where version=:version");
+  pstmt.setString("version2",string("0.1.1"));
+  ResultSet prs=pstmt.executeQuery();
+  while(prs.next()){
+    cout << "Component:"<<prs.getString("component")<<"\tversion:"<<prs.getString("version")<<endl;
+  }
+  
 /*
   Statement stmt=con.createStatement("select * from version");
 // Debug( list_allocations_on(libcw_do) );

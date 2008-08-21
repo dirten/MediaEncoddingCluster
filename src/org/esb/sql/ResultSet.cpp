@@ -13,27 +13,10 @@ namespace sql{
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-ResultSet::ResultSet(tntdb::Result result):tntresult(result), cppstmt(NULL), row(NULL){
-}
 
 ResultSet::ResultSet(Statement & stmt):cppstmt(NULL),row(stmt.stmt){
 }
 
-ResultSet::ResultSet(tntdb::Statement stmt):tntstmt(stmt), tntiterator(tntstmt.begin()), cppstmt(NULL), row(NULL){
-}
-
-ResultSet::ResultSet(mysqlpp::Query * q, mysqlpp::Connection &con):tntstmt(NULL), cppstmt(NULL),row(NULL){
-    query=q;
-    cerr << "QueryInhalt:"<<query->str()<<endl;
-    mysqlpp::UseQueryResult temp=query->use();
-    temp.fetch_row();
-    _res=new mysqlpp::UseQueryResult(query->use());
-    cpprow=_res->fetch_row();
-    cerr << "Error received in fetching a row: " <<
-                        con.error() << endl;
-    isBeforeFirst=true;
-    
-}
 
 
 /*******************************************************************************************************/

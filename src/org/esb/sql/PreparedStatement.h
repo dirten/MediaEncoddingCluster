@@ -10,6 +10,9 @@
 //#include "sqlite3x.hpp"
 #include "mysql/mysql.h"
 #include "mysql++.h"
+#include "Column.h"
+#include "Parameter.cpp"
+
 using namespace std;
 //using namespace sqlite3x;
 namespace org{
@@ -21,7 +24,7 @@ namespace org{
 			    logger("hive.sql")
 				public:
 				    PreparedStatement(MYSQL & mysql, const char * sql);
-				    PreparedStatement(mysqlpp::Query stmt);
+//				    PreparedStatement(mysqlpp::Query stmt);
 				    ~PreparedStatement();
 					void setDouble(string pos, double val);
 					void setInt(string pos, int val);
@@ -33,6 +36,11 @@ namespace org{
 					unsigned long long getLastInsertId();
 					int executeUpdate();
 				private:
+                  Parameter * para;
+//				  const char * parseSql(const char *);
+				  map<int,Column*> col_vars;
+//				  char * psql;
+//				  std::string sql;
 //					tntdb::Statement tntstmt;
 
 			};

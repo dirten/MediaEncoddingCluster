@@ -48,10 +48,10 @@ class ResultSet{
 //		ResultSet(MYSQL_STMT * stmt);
 		bool isBeforeFirst;
 		ResultSet(Statement & stmt);
-		ResultSet(tntdb::Result result);
-		ResultSet(tntdb::Statement result);
+//		ResultSet(tntdb::Result result);
+//		ResultSet(tntdb::Statement result);
 //		ResultSet(mysqlpp::Query result);
-		ResultSet(mysqlpp::Query * query, mysqlpp::Connection & con);
+//		ResultSet(mysqlpp::Query * query, mysqlpp::Connection & con);
 		tntdb::Result tntresult;
 		tntdb::Statement tntstmt;
 		mysqlpp::Query cppstmt;

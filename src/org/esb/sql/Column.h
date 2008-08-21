@@ -5,6 +5,7 @@
 #include <mysql/mysql.h>
 #include <string>
 #include <sstream>
+
 namespace org{
 namespace esb{
 namespace sql{
@@ -12,17 +13,22 @@ namespace sql{
 class Column {
   public:
     Column(MYSQL_FIELD * field, MYSQL_BIND & bind);
+    Column(MYSQL_BIND & bind);
     ~Column();
     std::string getString();
+    void setString(const char *);
+    void setString(const std::string&);
     bool getBool();
     int getInt();
     float getFloat();
     double getDouble();
     bool isNull();
     std::string getBlob();
+    void setBlob(const std::string &);
   private:
     MYSQL_BIND & bind;
     char * buffer;
+    void reserve(unsigned long size);
     unsigned long length;
     my_bool is_null;
     my_bool error;
