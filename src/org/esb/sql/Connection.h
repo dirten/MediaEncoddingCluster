@@ -4,8 +4,8 @@
 #include "org/esb/util/Log.h"
 #include "SqlException.h"
 #include <string>
-#include "tntdb/connection.h"
-#include "mysql++.h"
+//#include "tntdb/connection.h"
+//#include "mysql++.h"
 namespace org {
     namespace esb {
         namespace sql {
@@ -31,9 +31,6 @@ namespace org {
             private:
                 friend class Statement;
                 friend class PreparedStatement;
-                tntdb::Connection tntcon;
-                mysqlpp::Connection cppcon;
-                
                 std::string _username;
                 std::string _passwd;
                 std::string _host;

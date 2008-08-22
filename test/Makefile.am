@@ -30,7 +30,7 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test_serial test_deserial info test_unit test_sql test_wt.wt
+bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test_serial test_deserial info test_unit test_sql test_wt.wt test_signal
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
 #datasize_SOURCES=datasize.cpp
@@ -38,6 +38,7 @@ bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test
 #test_file_SOURCES=test_file.cpp
 info_SOURCES=info.cpp
 test_tnt_SOURCES=test_tnt.cpp
+test_signal_SOURCES=test_signal.cpp
 test_wt_wt_SOURCES=test_wt.cpp
 test_sql_SOURCES=test_sql.cpp
 test_unit_SOURCES=test_unit.cpp
@@ -98,6 +99,7 @@ test_codec_LDADD=	../src/org/esb/libesb.la
 #test_ffmpeg_LDADD=	../src/org/esb/libesb.la 
 test_seek_LDADD=	../src/org/esb/libesb.la 
 seek_test_LDADD=	../src/org/esb/libesb.la 
+test_signal_LDADD=	../src/org/esb/signal/libsignal.la ../src/org/esb/lang/liblang.la 
 #test_codec_LDADD=	../src/org/esb/libesb.la 
 test_httpd_LDADD=	../src/org/esb/libesb.la ../src/org/esb/io/libio.la ../src/org/esb/av/libav.la ../src/org/esb/web/libweb.la -lboost_serialization
 #test_bla_LDADD=	../src/org/esb/libesb.la ../src/org/esb/av/libav.la

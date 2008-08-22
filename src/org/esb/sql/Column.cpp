@@ -10,7 +10,7 @@ namespace esb{
 namespace sql{
 
 Column::Column(MYSQL_BIND & b):bind(b){
-  reserve(0);
+//  reserve(0);
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
@@ -181,14 +181,13 @@ double Column::getDouble(){
 
 
 
-
-    template <typename int_type>
-    int_type Column::getInteger2()
-    {
+    template <typename c_type>
+    void Column::setValue(c_type value, enum_field_types mysql_type){
+      reserve(sizeof(c_type));
+      *static_cast<c_type*>(bind.buffer) = value;
+      bind.buffer_type = mysql_type;
+      bind.is_null = 0;
     }
-
-
-
 
     template <typename int_type>
     int_type Column::getInteger()
@@ -358,37 +357,40 @@ double Column::getDouble(){
     }
 
 void Column::setString(const char* data){
-      length = ::strlen(data);
-      reserve(length + 1);
-      memcpy(static_cast<char*>(buffer), data, length + 1);
-
-      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
-      bind.is_null = 0;
-      bind.length = &length;
-    }
+  length = ::strlen(data);
+  reserve(length + 1);
+  memcpy(static_cast<char*>(buffer), data, length + 1);
+  bind.buffer_type = MYSQL_TYPE_VAR_STRING;
+}
 
 void Column::setString(const std::string& data){
-      reserve(data.size());
-      data.copy(static_cast<char*>(bind.buffer), data.size());
-      std::cout << "Buffer"<<(char*)bind.buffer<<std::endl;
-      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
-      bind.is_null = 0;
-      length = data.size();
-      bind.length = &length;
-    }
+  length = data.size();
+  reserve(length);
+  data.copy(static_cast<char*>(bind.buffer), data.size());
+  bind.buffer_type = MYSQL_TYPE_VAR_STRING;
+}
 
-void Column::setBlob(const std::string& data)
+void Column::setBlob(const std::string& data){
+  length = data.size();
+  reserve(length);
+  memcpy(static_cast<char*>(bind.buffer), data.data(), length);
+  bind.buffer_type = MYSQL_TYPE_BLOB;
+}
+
+void Column::setNull()
     {
-      length = data.size();
-      reserve(length);
-      memcpy(static_cast<char*>(bind.buffer), data.data(), length);
-
-//      bind.buffer_type = MYSQL_TYPE_BLOB;
-      bind.buffer_type = MYSQL_TYPE_VAR_STRING;
-//      bind.is_null = 0;
-//      bind.length = &length;
+//      release(bind);
+      bind.buffer_type = MYSQL_TYPE_NULL;
     }
 
+void Column::setDouble(double data){
+      setValue(data, MYSQL_TYPE_DOUBLE);
+}
+void Column::setInt(int data)
+    {
+      setValue(data, MYSQL_TYPE_LONG);
+      bind.is_unsigned = 0;
+    }
 
 }}}
 

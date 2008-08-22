@@ -1,5 +1,5 @@
 #include "WebServer.h"
-#include "tnt/tntnet.h"
+#include "org/esb/config/config.h"
 #include <Wt/WApplication>
 #include <Wt/WEnvironment>
 
@@ -47,8 +47,8 @@ MyApplication::MyApplication(const WEnvironment& env)
    * Connect signals with slots
    */
 
-//  b->clicked.connect(SLOT(this, HelloApplication::greet));
-//  nameEdit_->enterPressed.connect(SLOT(this, HelloApplication::greet));
+  b->clicked.connect(SLOT(this, MyApplication::greet));
+  nameEdit_->enterPressed.connect(SLOT(this, MyApplication::greet));
 }
 
 void MyApplication::greet()
@@ -56,7 +56,7 @@ void MyApplication::greet()
   /*
    * Update the text, using text input into the nameEdit_ field.
    */
-//  greeting_->setText("Hello there, " + nameEdit_->text());
+  greeting_->setText("Hello there, " + nameEdit_->text());
 }
 
 
@@ -77,16 +77,12 @@ WApplication *createApp(const WEnvironment& env)
 }
 
 void WebServer::run(){
-  char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", "7070"};
+  char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", org::esb::config::Config::getProperty("web.port")};
+  WRun(7,args,&createApp);
+}
+void WebServer::onMessage(Message msg){
+  char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", org::esb::config::Config::getProperty("web.port")};
   WRun(7,args,&createApp);
 }
 
-void WebServer::run2(){
-    tnt::Tntnet app;
-    app.listen("0.0.0.0",8008);
-    app.mapUrl("^/$","mainpage").setPathInfo("/mainpage");
-    app.mapUrl("^/(.*)$","$1");
-    app.mapUrl("^/(.*).png$","$1");
-    app.run();
-}
 

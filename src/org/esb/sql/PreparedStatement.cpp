@@ -1,57 +1,73 @@
 #include "PreparedStatement.h"
 #include <iostream>
-#include "tntdb/blob.h"
+//#include "tntdb/blob.h"
 #include "Column.h"
 using namespace org::esb::sql;
 
-PreparedStatement::PreparedStatement(MYSQL & mysql, const char * sql):Statement(mysql, sql){
+PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s){
+
+  stmt = mysql_stmt_init(&mysql);
+  if (!stmt){
+    throw SqlException( "mysql_stmt_init(), out of memory");
+  }
+  parseSql(s);
+  if (mysql_stmt_prepare(stmt, sql.c_str(), strlen(sql.c_str()))){
+    throw SqlException( mysql_stmt_error(stmt));
+  }
   para=new Parameter(stmt);
 }
 
 
 PreparedStatement::~PreparedStatement(){
   delete para;
+  close();
+}
+void PreparedStatement::close(){
+  if (mysql_stmt_close(stmt)){
+    throw SqlException( string("failed while closing the statement: ").append( mysql_stmt_error(stmt)));
+  }
 }
 
-void PreparedStatement::setBlob(string pos, char* data, int length){
+void PreparedStatement::setBlob(string pos, char* data, int length){para->getParameter(vars[pos])->setBlob(data);}
+void PreparedStatement::setClob(string pos, char* data, int length){para->getParameter(vars[pos])->setString(data);}
 
-	tntdb::Blob lob(data, length);
-	tntstmt.setBlob(pos, lob);
-}
 
-void PreparedStatement::setClob(string pos, char* data, int length){
-	tntdb::Blob lob(data, length);
-	tntstmt.setBlob(pos, lob);
-}
+void PreparedStatement::setDouble(string pos, double data){para->getParameter(vars[pos])->setDouble(data);}
 
-void PreparedStatement::setDouble(string pos, double data){
-	tntstmt.setDouble(pos, data);
-}
+void PreparedStatement::setInt(string pos, int data){para->getParameter(vars[pos])->setInt(data);}
 
-void PreparedStatement::setInt(string pos, int data){
-	tntstmt.setInt(pos, data);
-}
-
-void PreparedStatement::setNull(string pos){
-	tntstmt.setNull(pos);
-}
+void PreparedStatement::setNull(string pos){para->getParameter(vars[pos])->setNull();}
 
 void PreparedStatement::setString(string pos, string data){para->getParameter(vars[pos])->setString(data);}
 void PreparedStatement::setString(string pos, char * data){para->getParameter(vars[pos])->setString(data);}
 
 
+ResultSet PreparedStatement::executeQuery(){
+    if (mysql_stmt_bind_param(stmt, para->bind)){
+      throw SqlException( mysql_stmt_error(stmt));
+    }
+    execute();
+	return ResultSet(*stmt);
+}
+
 int PreparedStatement::executeUpdate(){
 
+}
+
+bool PreparedStatement::execute(){
+  if (mysql_stmt_execute(stmt)){
+    throw SqlException( mysql_stmt_error(stmt));
+  }
+  return true;
 }
 
 unsigned long long PreparedStatement::getLastInsertId(){
 
 }
-/*
-const char * PreparedStatement::parseSql(const char * s){
+
+void PreparedStatement::parseSql(const char * s){
     int parCount=0;
     std::string sqlIn=s;
-    std::string sql;
       enum state_type {
         STATE_0,
         STATE_NAME0,
@@ -160,10 +176,5 @@ const char * PreparedStatement::parseSql(const char * s){
         default:
           ;
       }
-      std::cout <<"SqlParsed"<<sql<<std::endl;
-      psql=new char[sql.length()+1];
-      memset(psql,0,sql.length()+1);
-      memcpy(psql,sql.c_str(),sql.length());
-      return psql;    
+//      cout<<"ParseSql" << sql<<endl;
 }
-*/

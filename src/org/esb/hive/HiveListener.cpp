@@ -1,51 +1,61 @@
-#ifndef ORG_ESB_HIVE_HIVELISTENER
-#define ORG_ESB_HIVE_HIVELISTENER
+#include "HiveListener.h"
+#include "ProtocolServer.h"
 #include "org/esb/config/config.h"
+#include "org/esb/net/Socket.h"
 #include "org/esb/net/ServerSocket.h"
 #include "org/esb/lang/Thread.h"
-#include "org/esb/lang/Runnable.h"
-//#include "hive.client.handler.cpp"
+#include "org/esb/signal/Messenger.h"
+//#include "org/esb/lang/Runnable.h"
 #include <list>
 using namespace org::esb::config;
 using namespace org::esb::lang;
 using namespace org::esb::net;
 
-class HiveListener:public Runnable{
-    private:
-	int listenerPort;
-	ServerSocket * server;
-//	list<HiveClientHandler *>_clients;
-    public:
-	HiveListener(){
-//	    listenerPort=atoi(Config::getProperty("hive.listener.port"));
-	}
+namespace org{
+namespace esb{
+namespace hive{
+HiveListener::HiveListener(){
+  main_nextloop=true;
+//  org::esb::signal::Messenger::getInstance().addMessageListener(*this);
+}
 
-	~HiveListener(){
-	    cout << "Shutdown HiveListener"<<endl;
-//	    server->close();
-//	    delete server;
-	    server=0;
-	}
+HiveListener::~HiveListener(){
+  cout << "Shutdown HiveListener"<<endl;
+}
 
-	void run(){
-	    startListener();
-	}
+void HiveListener::run(){
+  startListener();
+}
 
-	void startListener(){
-	}
-/*
-	void addClient(HiveClientHandler * client){
-   _clients.push_back(client);
-	}
-	
-	void removeClient(HiveClientHandler * client){
-	    _clients.remove(client);	
-	}
+void HiveListener::onMessage(org::esb::signal::Message msg){
+  if(msg.getProperty("hivelistener")=="start")
+    cout << "Start Message Arrived:"<<endl;
+  else
+  if(msg.getProperty("hivelistener")=="stop")
+    cout << "Stop Message Arrived:"<<endl;
 
-	list<HiveClientHandler *> getClients(){
-	    return _clients;
-	}
-    */
-};
-#endif
+}
+
+void HiveListener::startListener(){
+  int port=atoi(Config::getProperty("hive.port"));
+    ServerSocket * server=new ServerSocket(port);
+    server->bind();
+    for(;main_nextloop;){
+		try{
+	    	Socket * clientSocket=server->accept();
+	    	if(clientSocket!=NULL){
+	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
+	    		Thread thread(protoServer);
+	    		thread.start();
+	    	}else{
+				cout << "Client  Socket ist null"<<endl;
+				break;
+	    	}
+		}catch(exception & ex){
+	    	cout << "Exception in Main:"<<ex.what();
+		}
+    }
+  }
+
+}}}
 

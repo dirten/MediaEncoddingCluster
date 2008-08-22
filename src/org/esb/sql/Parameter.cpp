@@ -15,16 +15,16 @@ class Parameter{
         Column * col=new Column(bind[a]);
         cols[a]=col;
       }
-      /*
+/*      
       if (mysql_stmt_bind_param(stmt, bind)){
         throw SqlException( mysql_stmt_error(stmt));
       } 
-      */   
+*/
     }
 
     Column * getParameter(int idx){
       Column * col=cols[idx];
-      if(col==NULL)throw SqlException( string("Column with name:").append(Decimal(idx).toString()).append(" not found") );
+      if(col==NULL)throw SqlException(std::string("Column with name:").append(Decimal(idx).toString()).append(" not found") );
       return col;
 //      return cols[idx];
     }
@@ -37,7 +37,7 @@ class Parameter{
       }
       cols.clear();
     }
-  private:
+//  private:
     MYSQL_STMT * st;
     MYSQL_BIND * bind;
     std::map<int, Column*> cols;

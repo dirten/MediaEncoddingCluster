@@ -101,13 +101,13 @@ fi
 #CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
 #LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lboost_serialization -lboost_signals -lsqlite3 -lboost_thread-mt -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
-if test -d "$srcdir/external/mysql++"; then
+#if test -d "$srcdir/external/mysql++"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/mysql++])
-  CXXFLAGS+=" -I/usr/include/mysql"
-  CXXFLAGS+=" -I`pwd`/external/mysql++/lib"
-  LDFLAGS+=" -L`pwd`/external/mysql++ -lmysqlpp"
-fi
+#  AC_CONFIG_SUBDIRS([external/mysql++])
+#  CXXFLAGS+=" -I/usr/include/mysql"
+#  CXXFLAGS+=" -I`pwd`/external/mysql++/lib"
+#  LDFLAGS+=" -L`pwd`/external/mysql++ -lmysqlpp"
+#fi
 
 if test -d "$srcdir/external/wt"; then
 #  AC_OUTPUT(external/Makefile)
@@ -118,29 +118,29 @@ if test -d "$srcdir/external/wt"; then
   LDFLAGS+=" -L`pwd`/external/wt/src/http -lwthttp"
 fi
 
-if test -d "$srcdir/external/cxxtools"; then
+#if test -d "$srcdir/external/cxxtools"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/cxxtools])
-  CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
-  PATH="`pwd`/external:$PATH"
-  AC_SUBST(PATH)
-fi
+#  AC_CONFIG_SUBDIRS([external/cxxtools])
+#  CXXFLAGS+=" -I`pwd`/external/cxxtools/include"
+#  PATH="`pwd`/external:$PATH"
+#  AC_SUBST(PATH)
+#fi
 
-if test -d "$srcdir/external/tntdb"; then
+#if test -d "$srcdir/external/tntdb"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/tntdb])
-  CXXFLAGS+=" -I`pwd`/external/tntdb/include"
-  LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
-fi
+#  AC_CONFIG_SUBDIRS([external/tntdb])
+#  CXXFLAGS+=" -I`pwd`/external/tntdb/include"
+#  LDFLAGS+=" -L`pwd`/external/tntdb/src -ltntdb"
+#fi
 
-if test -d "$srcdir/external/tntnet"; then
+#if test -d "$srcdir/external/tntnet"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/tntnet])
-  CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
-  LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
-  PATH="`pwd`/external/tntnet/sdk/tools/ecppc:$PATH"
-  AC_SUBST(PATH)
-fi
+#  AC_CONFIG_SUBDIRS([external/tntnet])
+#  CXXFLAGS+=" -I`pwd`/external/tntnet/framework/common"
+#  LDFLAGS+=" -L`pwd`/external/tntnet/framework/common -ltntnet"
+#  PATH="`pwd`/external/tntnet/sdk/tools/ecppc:$PATH"
+#  AC_SUBST(PATH)
+#fi
 
 if test -d "$srcdir/external/libx264"; then
 #  AC_OUTPUT(external/Makefile)
@@ -182,6 +182,7 @@ AC_OUTPUT(
     src/org/esb/Makefile
     src/org/esb/lang/Makefile
     src/org/esb/util/Makefile
+    src/org/esb/signal/Makefile
     src/org/esb/io/Makefile
     src/org/esb/av/Makefile
     src/org/esb/net/Makefile

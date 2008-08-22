@@ -11,9 +11,14 @@
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
+#include "org/esb/hive/HiveListener.h"
 
 #include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
+
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
+
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -25,6 +30,7 @@ using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
 using namespace org::esb::web;
+using namespace org::esb::signal;
 using namespace std;
 
 
@@ -102,6 +108,7 @@ while(true){
 
 /*----------------------------------------------------------------------------------------------*/
 bool main_nextLoop=true;
+
 void listener(int argc, char *argv[]){
     Config::init("./cluster.cfg");
     if(!checkEnvironment()){
@@ -124,8 +131,22 @@ void listener(int argc, char *argv[]){
     webRunner->start();
 //    runner->start();
 //    unitRunner->start();
-    
-    
+
+
+    HiveListener hive;
+    Messenger::getInstance().addMessageListener(hive);
+
+    org::esb::signal::Message msg;
+    msg.setProperty("hivelistener","start");
+
+    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
+
+
+    while(true){
+      Thread::sleep(10000);
+    }
+//    hive.run();
+/*    
     int port=atoi(Config::getProperty("protocol.listener.port"));
     ServerSocket * server=new ServerSocket(port);
     server->bind();
@@ -144,5 +165,6 @@ void listener(int argc, char *argv[]){
 	    	cout << "Exception in Main:"<<ex.what();
 		}
     }
+  */
 }
 

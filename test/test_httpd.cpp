@@ -1,15 +1,15 @@
 #include <iostream>
 #include <stdio.h>
 #include "org/esb/config/config.h"
-#include "tnt/tntnet.h"
-#include "cxxtools/log.h"
-#include "cxxtools/loginit.h"
+//#include "tnt/tntnet.h"
+//#include "cxxtools/log.h"
+//#include "cxxtools/loginit.h"
 using namespace std;
 //using namespace org::esb::web;
 using namespace org::esb::config;
 
 
-log_define("hive");
+//logdefine("hive");
 int main(){
 /*	int			data = 1234567;
 	struct shttpd_ctx	*ctx;
@@ -31,6 +31,7 @@ int main(){
 */
 	
 //	log_define("hive")
+/*
     Config::init("./cluster.cfg");
     log_init("log.properties");
     log_error("bla fasel");
@@ -40,6 +41,6 @@ int main(){
     app.mapUrl("^/(.*)$","$1");
     app.mapUrl("^/(.*).png$","$1");
     app.run();
-    
+  */  
 }
 

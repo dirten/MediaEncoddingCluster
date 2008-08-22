@@ -1,68 +1,48 @@
 #ifndef ORG_ESB_SQL_RESULTSET_H
 #define ORG_ESB_SQL_RESULTSET_H
+#include <mysql/mysql.h>
+
 #include "Statement.h"
 #include "PreparedStatement.h"
-#include "org/esb/util/Log.h"
-//#include "sqlite3x.hpp"
-#include <mysql/mysql.h>
-#include "tntdb/result.h"
-#include "tntdb/statement.h"
-#include "tntdb/row.h"
-#include "mysql++.h"
-#include <vector>
 #include "Row.cpp"
-//using namespace sqlite3x;
+#include "org/esb/util/Log.h"
 namespace org{
 namespace esb{
 namespace sql{
 class Column;
 class ResultSet{
-	public:
+  public:
 	bool 		next();
 	
     bool 		getBool			(int index);
-    bool 		getBool			(string index);
+    bool 		getBool			(std::string index);
     int 		getInt			(int index);
-    int 		getInt			(string index);
+    int 		getInt			(std::string index);
     double 		getDouble		(int index);
-    double 		getDouble		(string index);
+    double 		getDouble		(std::string index);
 
-	string 		getString		(int col);
-	string 		getString		(string col);
+	std::string getString	    (int col);
+	std::string getString	    (std::string col);
 
-	string 		getBlob			(int index);
-	string 		getBlob			(string index);
+	std::string getBlob			(int index);
+	std::string getBlob			(std::string index);
 
-	string 		getClob			(int index);
-	string 		getClob			(string index);
+	std::string getClob			(int index);
+	std::string getClob			(std::string index);
 
 	float 		getFloat		(int col);
-	float 		getFloat		(string col);
+	float 		getFloat		(std::string col);
 
 	bool 		isNull			(int col);
-	bool 		isNull			(string col);
+	bool 		isNull			(std::string col);
 
-	private:
-		friend class Statement;
-		friend class PreparedStatement;
-//		ResultSet(MYSQL_STMT * stmt);
-		bool isBeforeFirst;
-		ResultSet(Statement & stmt);
-//		ResultSet(tntdb::Result result);
-//		ResultSet(tntdb::Statement result);
-//		ResultSet(mysqlpp::Query result);
-//		ResultSet(mysqlpp::Query * query, mysqlpp::Connection & con);
-		tntdb::Result tntresult;
-		tntdb::Statement tntstmt;
-		mysqlpp::Query cppstmt;
-		mysqlpp::Query * query;
-		mysqlpp::UseQueryResult * _res;
-		tntdb::Row tntrow;
-		mysqlpp::Row cpprow;
-		tntdb::Statement::const_iterator tntiterator;
-        Row row;
+  private:
+	friend class Statement;
+	friend class PreparedStatement;
 
-//        MYSQL_BIND * bind;
+	bool isBeforeFirst;
+	ResultSet(MYSQL_STMT & stmt);
+    Row row;
 };
 }}}
 #endif

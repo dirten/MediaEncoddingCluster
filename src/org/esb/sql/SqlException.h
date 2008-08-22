@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_SQL_SQLEXCEPTION_H
 #define ORG_ESB_SQL_SQLEXCEPTION_H
 
-#include <string.h>
+#include <string>
 #include <stdexcept>
 #include "org/esb/util/Log.h"
 

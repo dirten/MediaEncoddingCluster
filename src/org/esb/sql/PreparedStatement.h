@@ -4,12 +4,12 @@
 #include "Connection.h"
 #include "ResultSet.h"
 #include "org/esb/util/Log.h"
-#include "tntdb/statement.h"
+//#include "tntdb/statement.h"
 //#include "ResultSet.h"
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
 #include "mysql/mysql.h"
-#include "mysql++.h"
+//#include "mysql++.h"
 #include "Column.h"
 #include "Parameter.cpp"
 
@@ -20,7 +20,7 @@ namespace org{
 		namespace sql{
 			class Connection;
 			class ResultSet;
-			class PreparedStatement:public Statement{
+			class PreparedStatement{
 			    logger("hive.sql")
 				public:
 				    PreparedStatement(MYSQL & mysql, const char * sql);
@@ -35,12 +35,18 @@ namespace org{
 					void setString(string pos, char * val);
 					unsigned long long getLastInsertId();
 					int executeUpdate();
+					bool execute();
+					ResultSet executeQuery();
+					void close(void);
 				private:
                   Parameter * para;
-//				  const char * parseSql(const char *);
+				  void parseSql(const char *);
 				  map<int,Column*> col_vars;
+				  map<std::string,int> vars;
+
+                  MYSQL_STMT *stmt;
 //				  char * psql;
-//				  std::string sql;
+				  std::string sql;
 //					tntdb::Statement tntstmt;
 
 			};

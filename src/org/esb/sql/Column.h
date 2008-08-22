@@ -20,9 +20,12 @@ class Column {
     void setString(const std::string&);
     bool getBool();
     int getInt();
+    void setInt(int);
     float getFloat();
     double getDouble();
+    void setDouble(double);
     bool isNull();
+    void setNull();
     std::string getBlob();
     void setBlob(const std::string &);
   private:
@@ -33,14 +36,16 @@ class Column {
     my_bool is_null;
     my_bool error;
 //    int getInteger();
-    template <typename int_type>
-    int_type getInteger2();
-    
+
     template <typename int_type>
     int_type getInteger();
     
     template <typename float_type>
     float_type getFloat();
+
+    template <typename c_type>
+    void setValue(c_type value, enum_field_types mysql_type);
+
 
 };
 

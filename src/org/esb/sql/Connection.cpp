@@ -5,7 +5,7 @@
 #include "Statement.h"
 #include "PreparedStatement.h"
 #include <iostream>
-#include "tntdb/connect.h"
+//#include "tntdb/connect.h"
 using namespace org::esb::sql;
 using namespace org::esb::io;
 using namespace org::esb::util;
@@ -13,22 +13,19 @@ using namespace org::esb::util;
 Connection::Connection() throw (SqlException){
 
 }
-Connection::Connection(const char * con):tntcon(tntdb::connect(con)){
+Connection::Connection(const char * con){
   std::string constr(con);
   parseConnectionString(constr);
-  cppcon.connect(_db.c_str(),_host.c_str(),_username.c_str(),_passwd.c_str());
-  std::cerr << "ConnectionError "<<cppcon.error()<<std::endl;
-  std::cerr << "ConnectionServerStatus "<<cppcon.server_status()<<std::endl;
+  mysql_init(&mysql);
+  if (!mysql_real_connect(&mysql,_host.c_str(),_username.c_str(),_passwd.c_str(),_db.c_str(),0,NULL,0))
+  {
+    fprintf(stderr, "Failed to connect to database: Error: %s\n",
+    mysql_error(&mysql));
+  }
 
-
-  mysqlpp::Query query=cppcon.query("select * from version");
-  mysqlpp::UseQueryResult result=query.use();
-  mysqlpp::Row row=result.fetch_row();
-
-//	tntcon=tntdb::connect(con);
 }
 
-Connection::Connection(const char * host, const char * db, const char * user, const char *pass):cppcon(false){
+Connection::Connection(const char * host, const char * db, const char * user, const char *pass){
   _username=user;
   _passwd=pass;
   _host=host;
@@ -39,16 +36,6 @@ Connection::Connection(const char * host, const char * db, const char * user, co
     fprintf(stderr, "Failed to connect to database: Error: %s\n",
     mysql_error(&mysql));
   }
-/*
-  cppcon.connect(_db.c_str(),_host.c_str(),_username.c_str(),_passwd.c_str());
-  std::cerr << "ConnectionError "<<cppcon.error()<<std::endl;
-  std::cerr << "ConnectionServerStatus "<<cppcon.server_status()<<std::endl;
-*/
-/*
-  mysqlpp::Query query=cppcon.query("select * from version");
-  mysqlpp::UseQueryResult result=query.use();
-  mysqlpp::Row row=result.fetch_row();
-  */
 }
 
 Connection::~Connection(){
@@ -76,7 +63,7 @@ void Connection::executeNonQuery(const char * sql){
 //    sqlite3_connection::close();	
 }
 long Connection::lastInsertId(){
-	return tntcon.selectValue("select last_insert_id()").getInt();
+//	return tntcon.selectValue("select last_insert_id()").getInt();
 //    sqlite3_connection::close();	
 }
 void Connection::parseConnectionString(std::string & constr){
@@ -96,6 +83,9 @@ void Connection::parseConnectionString(std::string & constr){
             }else
             if(key.compare("host")==0){
               _host=val;
+            }else
+            if(key.compare("db")==0){
+              _db=val;
             }else{
               /*nothing*/
             }

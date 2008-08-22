@@ -42,17 +42,17 @@ int main(){
 //	char * tmp;
 //	delete tmp;
 
-//  Connection con("mysql:db=hive;user=root;passwd=");
+  Connection con("mysql:db=hive;user=root;passwd=");
   
   
-  Connection con("localhost","hive","root","");
-/*  Statement stmt=con.createStatement("select * from version where version=2");
+//  Connection con("localhost","hive","root","");
+  Statement stmt=con.createStatement("select * from version");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
 
     cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
   }
-  */
+  
   
 //  Connection con("localhost","hive","root","");
   PreparedStatement pstmt=con.prepareStatement("select * from version where version=:version");
