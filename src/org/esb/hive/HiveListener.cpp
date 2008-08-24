@@ -5,6 +5,8 @@
 #include "org/esb/net/ServerSocket.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/signal/Messenger.h"
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 //#include "org/esb/lang/Runnable.h"
 #include <list>
 using namespace org::esb::config;
@@ -15,7 +17,9 @@ namespace org{
 namespace esb{
 namespace hive{
 HiveListener::HiveListener(){
+  cout << "new HiveListener"<<endl;
   main_nextloop=true;
+  is_running=false;
 //  org::esb::signal::Messenger::getInstance().addMessageListener(*this);
 }
 
@@ -27,13 +31,16 @@ void HiveListener::run(){
   startListener();
 }
 
-void HiveListener::onMessage(org::esb::signal::Message msg){
-  if(msg.getProperty("hivelistener")=="start")
+void HiveListener::onMessage(org::esb::signal::Message & msg){
+  if(msg.getProperty("hivelistener")=="start"){
     cout << "Start Message Arrived:"<<endl;
-  else
-  if(msg.getProperty("hivelistener")=="stop")
+    boost::thread tt(boost::bind(&HiveListener::startListener,this));
+    cout << "Listener running:"<<endl;
+    is_running=true;
+  }else
+  if(msg.getProperty("hivelistener")=="stop"){
     cout << "Stop Message Arrived:"<<endl;
-
+  }
 }
 
 void HiveListener::startListener(){
@@ -45,8 +52,8 @@ void HiveListener::startListener(){
 	    	Socket * clientSocket=server->accept();
 	    	if(clientSocket!=NULL){
 	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-	    		Thread thread(protoServer);
-	    		thread.start();
+	    		Thread *thread=new Thread(protoServer);
+	    		thread->start();
 	    	}else{
 				cout << "Client  Socket ist null"<<endl;
 				break;

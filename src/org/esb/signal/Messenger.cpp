@@ -1,6 +1,7 @@
 #include "Messenger.h"
 #include <iostream>
-
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 namespace org{
 namespace esb{
 namespace signal{
@@ -42,7 +43,8 @@ void Messenger::removeMessageListener(MessageListener & listener, std::string na
 void Messenger::sendMessage(Message & msg, std::string name){
   std::list<MessageListener*>::iterator l=(listener[name]).begin();
   for(;l!=listener[name].end();l++){
-    (*l)->onMessage(msg);
+	boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
+//	(*l)->onMessage(msg);
   }
 }
 

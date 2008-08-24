@@ -17,7 +17,7 @@ bar(Y) ->
     call_port({bar, Y}).
 
 print(A) ->
-	io:format("~w~n",[A]).
+	io:format("~w~w~w~n",[A,B,C]).
 
 read()->
   db:sequence(test).
@@ -26,9 +26,15 @@ read()->
 
 write({A,B,C,D,E,F,G,H,I,J}) ->
 %    dets:insert(test_packets, {db:sequence(packet),J}).
+%	db:write_packet({#tpacket{id=db:sequence(packet),data=C}}).
+%	db:write_packet({#tpacket{id=1,data=C}}).
+%	db:write_packet({C}).
+%    D=create_data(),
     Write = fun(Keys) -> [mnesia:write(Keys)], ok end,
-    mnesia:activity(sync_dirty, Write, [#packet{id=db:sequence(packet), stream_id=A, pts=B, dts=C, stream_index=D, key_frame=E, frame_group=F,flags=G, duration=H, pos=I}], mnesia_frag).
-%    mnesia:activity(sync_dirty, Write, [#packet{id=db:sequence(packet), stream_id=A, pts=B, dts=C, stream_index=D, key_frame=E, frame_group=F,flags=G, duration=H, pos=I, data=J}], mnesia_frag).
+    mnesia:activity(sync_dirty, Write, [#tpacket{id=db:sequence(test), data=C}], mnesia_frag).
+
+%    Write = fun(Keys) -> [mnesia:write(Keys)], ok end,
+%    mnesia:activity(sync_dirty, Write, [#tpacket{id=db:sequence(packet), data=A}], mnesia_frag).
 %%    I=read(),
 %%    I=db:sequence(test),
 %	mnesia:dirty_write(packet,#packet{pts=A, data=C}).
@@ -45,13 +51,21 @@ call_port(Msg) ->
         {complex, Result} ->
 %%        	print(Result),
         	write(Result),
+<<<<<<< .mine
+            call_port({foo,1});
+        {'EXIT', Port, Reason} ->
+            exit(port_terminated)
+    	after 10000 ->
+    		exit(port_terminated)
+=======
             call_port({foo,1})
     	after 10000 ->
     		ok
+>>>>>>> .r372
     end.
 
 init(ExtPrg) ->
-	mnesia:start(),
+%%	mnesia:start(),
 %	dets:open_file(test_packets, [{type, bag}]),
     register(complex, self()),
     process_flag(trap_exit, true),

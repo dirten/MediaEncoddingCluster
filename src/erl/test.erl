@@ -1,5 +1,5 @@
 -module(test).
--export([test/0, init/0, test_run/0, free/0]).
+-export([test/0, init/0, test_run/0, free/0, create_data/0]).
 
 -record(tpacket, {id,data}).
 
@@ -21,11 +21,12 @@ init()->
 		mnesia:change_table_frag(tpacket, {add_frag,mnesia:activity(sync_dirty, Info, [frag_dist], mnesia_frag)}).
 %%		mnesia:change_table_frag(Tab, {activate, []}).
 
+	
 free()->
 		mnesia:delete_table(tpacket).
 
 test_run()->
-	for(1,100000,fun(A)->test() end).
+	for(1,5000,fun(A)->test() end).
 
 test()->
     D=create_data(),

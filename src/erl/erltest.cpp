@@ -89,6 +89,7 @@ int main() {
   erl_init(NULL, 0);
 
 	File f("/home/jhoelscher/pfad.avi");
+//	File f("/media/share/pfad.avi");
 	FormatInputStream fis(&f);
 	PacketInputStream pis(&fis);
 //    cout << "Programm started"<<endl;
@@ -98,7 +99,8 @@ int main() {
 //    cout << "Running loop"<<endl;
 //    if(++loop>10)break;
 	Packet p;
-	if(pis.readPacket(p)<0)break;
+	
+	if(pis.readPacket(p)<0)exit(0);
 	
 /*
     tuplep = erl_decode(buf);

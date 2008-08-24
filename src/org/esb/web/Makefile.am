@@ -2,10 +2,9 @@
 
 #templates_DATA=index.tmpl
 # set the include path found by configure
-INCLUDES=   -I$(top_srcdir)/src
 #EXTRA_DIST=job/*.h job/*.cpp rdb/*.h rdb/*.cpp protocol/*.cpp
 
-EXTRA_ENV="PATH=$$PATH:$(TNTNET_PATH)/bin"
+#EXTRA_ENV="PATH=$$PATH:$(TNTNET_PATH)/bin"
 #ECPPC=env ${EXTRA_ENV} ecppc
 
 #.ecpp.cpp:
@@ -24,11 +23,12 @@ MICRO_VERSION=1
 #noinst_HEADERS=*.h 
 
 lib_LTLIBRARIES = libweb.la
-SOURCES = WebServer.cpp 
+#SOURCES = WebServer.cpp 
 #	but4_right.png 
             
-libweb_la_SOURCES = $(SOURCES)
+libweb_la_SOURCES = WebServer.cpp 
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-libweb_la_LIBADD=  $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/util/libutil.la
+libweb_la_LIBADD=  $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/util/libutil.la 
+INCLUDES=   -I$(top_srcdir)/src
 
-EXTRA_DIST=*.h *.tmpl 
+#EXTRA_DIST=*.h

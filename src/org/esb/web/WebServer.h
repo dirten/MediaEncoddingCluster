@@ -4,16 +4,23 @@
 #include "org/esb/lang/Thread.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/MessageListener.h"
+#include <Wt/WServer>
+
 namespace org{
 namespace esb{
 namespace web{
     using namespace org::esb::lang;
     using namespace org::esb::signal;
-    class WebServer:public Runnable, MessageListener{
+    class WebServer:public Runnable, public MessageListener{
 	public:
 	    WebServer();
+	    ~WebServer();
 	    void run();
-	    void onMessage(Message msg);
+	    void start();
+	    void stop();
+	    void onMessage(Message & msg);
+	private:
+		Wt::WServer server;
     };
 }}}
 

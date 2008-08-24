@@ -115,6 +115,35 @@ void listener(int argc, char *argv[]){
     	cout << "Fehler in der Configuration"<<endl;
     	exit(1);
     }
+    /*
+    *
+    * Initializing Application Services
+    *
+    */
+   	HiveListener hive;    
+   	Messenger::getInstance().addMessageListener(hive);
+
+	WebServer webserver;
+   	Messenger::getInstance().addMessageListener(webserver);
+   	
+    /*
+    *
+    * Starting Application Services from configuration
+    *
+    */
+	if(string(Config::getProperty("hive.start"))=="true")
+   		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
+
+	if(string(Config::getProperty("web.start"))=="true")
+   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","start"));
+
+//	Thread::sleep(5000);
+//   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
+
+    /*
+    * @todo
+    * replace Thread with Messaging
+    */
     ProcessUnitWatcher *unit_watcher=new ProcessUnitWatcher();
     Thread *unitRunner=new Thread(unit_watcher);
 
@@ -123,23 +152,16 @@ void listener(int argc, char *argv[]){
 
     PacketCollector *_collector=new PacketCollector();
     Thread *collector_runner=new Thread(_collector);
-
+/*
     WebServer * webServer=new WebServer();
     Thread * webRunner=new Thread(webServer);
-    
+*/  
     collector_runner->start();
-    webRunner->start();
+//    webRunner->start();
 //    runner->start();
 //    unitRunner->start();
 
 
-    HiveListener hive;
-    Messenger::getInstance().addMessageListener(hive);
-
-    org::esb::signal::Message msg;
-    msg.setProperty("hivelistener","start");
-
-    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
 
 
     while(true){

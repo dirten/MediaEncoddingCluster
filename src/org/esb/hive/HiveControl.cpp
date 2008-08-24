@@ -1,5 +1,5 @@
 #include "HiveControl.h"
-#include "HiveListener.cpp"
+#include "HiveListener.h"
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Properties.h"

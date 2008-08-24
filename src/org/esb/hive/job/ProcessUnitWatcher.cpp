@@ -17,6 +17,11 @@ namespace job{
 ProcessUnitWatcher::ProcessUnitWatcher(){
 	_isStopSignal=false;
 }
+
+void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg){
+
+
+}
 void ProcessUnitWatcher::run(){
 	
 	sql::Connection con(config::Config::getProperty("db.connection"));

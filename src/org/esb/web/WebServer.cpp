@@ -10,6 +10,10 @@
 #include <Wt/WText>
 #include <Wt/WBreak>
 
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+
+#include <iostream>
 using namespace org::esb::web;
 using namespace Wt;
 
@@ -61,12 +65,6 @@ void MyApplication::greet()
 
 
 
-
-WebServer::WebServer(){
-
-
-}
-
 WApplication *createApp(const WEnvironment& env)
 {
   /*
@@ -76,13 +74,40 @@ WApplication *createApp(const WEnvironment& env)
   return new MyApplication(env);
 }
 
+WebServer::WebServer():server("test"){
+  char * args[]={
+  "test",
+  "--docroot",org::esb::config::Config::getProperty("web.docroot"),
+  "--http-address", "0.0.0.0",
+  "--http-port", org::esb::config::Config::getProperty("web.port")};
+
+	server.setServerConfiguration(7,args,WTHTTP_CONFIGURATION);
+	server.addEntryPoint(WServer::Application, &createApp);
+}
+WebServer::~WebServer(){
+	std::cout << "~WebServer"<<std::endl;
+
+}
+
+
 void WebServer::run(){
   char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", org::esb::config::Config::getProperty("web.port")};
   WRun(7,args,&createApp);
 }
-void WebServer::onMessage(Message msg){
-  char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", org::esb::config::Config::getProperty("web.port")};
-  WRun(7,args,&createApp);
-}
 
+void WebServer::onMessage(Message & msg){
+	if(msg.getProperty("webserver")=="start"){
+//		boost::thread t(boost::bind(&WebServer::start,this));
+	server.start();
+//		start();
+	}else
+	if(msg.getProperty("webserver")=="stop"){
+	  server.stop();
+	}
+}
+void WebServer::start(){
+
+
+//  WRun(7,args,&createApp);
+}
 

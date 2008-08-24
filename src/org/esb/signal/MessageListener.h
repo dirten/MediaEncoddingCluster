@@ -6,7 +6,7 @@ namespace esb{
 namespace signal{
 class MessageListener{
   public:
-    virtual void onMessage(Message msg)=0;
+    virtual void onMessage(Message & msg)=0;
     virtual ~MessageListener(){};
 };
 }}}

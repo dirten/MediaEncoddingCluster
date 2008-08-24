@@ -176,8 +176,8 @@ http://ffmpeg.mplayerhq.hu
 
 AC_OUTPUT(
     Makefile 
-    external/Makefile 
     src/Makefile 
+    src/erl/Makefile 
     src/org/Makefile
     src/org/esb/Makefile
     src/org/esb/lang/Makefile
@@ -190,6 +190,7 @@ AC_OUTPUT(
     src/org/esb/web/Makefile
     src/org/esb/sql/Makefile
     test/Makefile
+dnl    external/Makefile 
 dnl    test/fobs/Makefile
 dnl    src/hive.client/Makefile 
 dnl    src/org/esb/hivecontrol/Makefile

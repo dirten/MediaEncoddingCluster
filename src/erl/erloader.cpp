@@ -17,18 +17,18 @@ using namespace epi::type;
  using namespace epi::error;
   using namespace epi::node;
 int main(int argc, char ** argv){
-  const std::string LOCALNODE = "c@tron";
-  const std::string REMOTENODE = "a@tron";
+  const std::string LOCALNODE = "c@jihad";
+  const std::string REMOTENODE = "a@jihad";
   const std::string COOKIE = "secretcookie";
   
   AutoNode node(LOCALNODE, COOKIE);  
   MailBox *mailbox = node.createMailBox();
-
 	io::File f("/home/jhoelscher/pfad.avi");
 	av::FormatInputStream fis(&f);
 	av::PacketInputStream pis(&fis);
 
     while(true){
+	cout << "hier"<<endl;
       av::Packet p;
       pis.readPacket(p);
       ErlTermPtr<> tuple(new ErlTuple(mailbox->self(), new ErlTuple(new ErlAtom("hello"),new ErlAtom("hello"),new ErlBinary(p.packet->data, p.packet->size))));

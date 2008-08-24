@@ -14,6 +14,7 @@ class HiveControl{
 	bool isRunning;
 	Properties * status;
 	Runnable * listener;
+//	boost::thread * t;
     public:
 	~HiveControl();
 	bool startup(void);
