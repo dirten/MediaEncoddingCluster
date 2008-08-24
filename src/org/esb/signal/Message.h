@@ -8,6 +8,7 @@ namespace signal{
 class Message{
   public:
     Message();
+    Message(void * ent);
     Message & setProperty(std::string key, std::string value);
     std::string getProperty(std::string key);
   private:
