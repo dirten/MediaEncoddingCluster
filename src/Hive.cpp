@@ -26,6 +26,7 @@
 #include "export.cpp"
 #include "org/esb/util/Log.h"
 #include "job.cpp"
+
 using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
@@ -110,7 +111,7 @@ while(true){
 bool main_nextLoop=true;
 
 void listener(int argc, char *argv[]){
-    Config::init("./cluster.cfg");
+//    Config::init("./cluster.cfg");
     if(!checkEnvironment()){
     	cout << "Fehler in der Configuration"<<endl;
     	exit(1);
@@ -120,9 +121,10 @@ void listener(int argc, char *argv[]){
     * Initializing Application Services
     *
     */
+/*
    	HiveListener hive;    
    	Messenger::getInstance().addMessageListener(hive);
-
+*/
 	WebServer webserver;
    	Messenger::getInstance().addMessageListener(webserver);
    	
@@ -131,10 +133,11 @@ void listener(int argc, char *argv[]){
     * Starting Application Services from configuration
     *
     */
+/*
 	if(string(Config::getProperty("hive.start"))=="true")
    		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
-
-	if(string(Config::getProperty("web.start"))=="true")
+*/
+//	if(string(Config::getProperty("web.start"))=="true")
    		Messenger::getInstance().sendMessage(Message().setProperty("webserver","start"));
 
 //	Thread::sleep(5000);
@@ -144,6 +147,7 @@ void listener(int argc, char *argv[]){
     * @todo
     * replace Thread with Messaging
     */
+/*
     ProcessUnitWatcher *unit_watcher=new ProcessUnitWatcher();
     Thread *unitRunner=new Thread(unit_watcher);
 
@@ -152,21 +156,45 @@ void listener(int argc, char *argv[]){
 
     PacketCollector *_collector=new PacketCollector();
     Thread *collector_runner=new Thread(_collector);
+    collector_runner->start();
+    */
 /*
     WebServer * webServer=new WebServer();
     Thread * webRunner=new Thread(webServer);
 */  
-    collector_runner->start();
 //    webRunner->start();
 //    runner->start();
 //    unitRunner->start();
 
 
-
-
     while(true){
       Thread::sleep(10000);
     }
+
+/*
+	sigset_t wait_mask2;
+	sigemptyset(&wait_mask2);
+	sigaddset(&wait_mask2, SIGINT);
+	sigaddset(&wait_mask2, SIGQUIT);
+	sigaddset(&wait_mask2, SIGTERM);
+	//sigaddset(&wait_mask, SIGCHLD);
+	pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
+	int sig = 0;
+	//sigdelset(&wait_mask, SIGCHLD);
+    
+	int err;
+	do {
+	  err = sigwait(&wait_mask2, &sig);
+	} while (err != 0);
+
+	Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
+	cout << "Stopping Hive "<<endl;
+*/
+/*
+    while(true){
+      Thread::sleep(10000);
+    }
+*/
 //    hive.run();
 /*    
     int port=atoi(Config::getProperty("protocol.listener.port"));

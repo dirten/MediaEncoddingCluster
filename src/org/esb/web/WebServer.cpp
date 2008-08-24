@@ -81,9 +81,11 @@ WebServer::WebServer():server("test"){
   "--http-address", "0.0.0.0",
   "--http-port", org::esb::config::Config::getProperty("web.port")};
 
+
 	server.setServerConfiguration(7,args,WTHTTP_CONFIGURATION);
 	server.addEntryPoint(WServer::Application, &createApp);
 }
+
 WebServer::~WebServer(){
 	std::cout << "~WebServer"<<std::endl;
 

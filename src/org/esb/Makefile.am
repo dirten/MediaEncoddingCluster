@@ -33,6 +33,6 @@ SOURCES = 	config/config.cpp
 # set the include path found by configure
 INCLUDES=-I$(top_srcdir)/src
 libesb_la_SOURCES = $(SOURCES)
-libesb_la_LIBADD = lang/liblang.la io/libio.la net/libnet.la util/libutil.la av/libav.la hive/libhive.la web/libweb.la -lboost_serialization
+#libesb_la_LIBADD = lang/liblang.la io/libio.la net/libnet.la util/libutil.la av/libav.la hive/libhive.la web/libweb.la signal/libsignal.la
 libesb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 EXTRA_DIST=lang/*.h io/*.h config/*.h util/*.h net/*.h av/*.h hive/*.h
