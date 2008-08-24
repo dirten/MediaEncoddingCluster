@@ -8,8 +8,9 @@
 #include "org/esb/config/config.h"
 #include "org/esb/hive/CodecFactory.h"
 
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
-using namespace org::esb;
 namespace org{
 namespace esb{
 namespace hive{
@@ -19,10 +20,17 @@ ProcessUnitWatcher::ProcessUnitWatcher(){
 }
 
 void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg){
-
+	if(msg.getProperty("processunitwatcher")=="start"){
+		boost::thread t(boost::bind(&ProcessUnitWatcher::start, this));
+	}else
+	if(msg.getProperty("processunitwatcher")=="stop"){
+		_isStopSignal=true;
+	}
+}
+void ProcessUnitWatcher::stop(){
 
 }
-void ProcessUnitWatcher::run(){
+void ProcessUnitWatcher::start(){
 	
 	sql::Connection con(config::Config::getProperty("db.connection"));
     sql::Statement stmt=con.createStatement("select * from process_units where send is null order by priority limit 100");
@@ -43,7 +51,6 @@ void ProcessUnitWatcher::run(){
 	    }	    
     	Thread::sleep(2000);
 	}
-
 }
 
 

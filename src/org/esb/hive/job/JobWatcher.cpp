@@ -39,10 +39,8 @@ void JobWatcher::run(){
 	    list<Job*>jobs=_handler->getJobList();
 	    list<Job*>::iterator it=jobs.begin();
 	    for(;it!=jobs.end();it++){
-	    	Job * job=*it;
-	    	
+	    	Job * job=*it;	
 	    }
-	    
     	Thread::sleep(60000);
 	}
 }
