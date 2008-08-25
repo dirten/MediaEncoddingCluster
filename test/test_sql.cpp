@@ -43,24 +43,34 @@ int main(){
 //	delete tmp;
 
   Connection con("mysql:db=hive;user=root;passwd=");
-  
-  
-//  Connection con("localhost","hive","root","");
+{
   Statement stmt=con.createStatement("select * from version");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
-
     cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
   }
-  
-  
+}  
+{
+  Statement stmt=con.createStatement("insert into version (component, version) values ('test','0.0.0')");
+  stmt.execute();
+}  
+
+if(true){
+  PreparedStatement pstmt=con.prepareStatement("insert into version (component, version) values ('test',:version)");
+  pstmt.setString("version",string("0.1.2"));
+//  pstmt.setInt("version",1);
+  pstmt.execute();
+}  
+
 //  Connection con("localhost","hive","root","");
   PreparedStatement pstmt=con.prepareStatement("select * from version where version=:version");
-  pstmt.setString("version2",string("0.1.1"));
+  pstmt.setString("version",string("0.1.1"));
   ResultSet prs=pstmt.executeQuery();
   while(prs.next()){
     cout << "Component:"<<prs.getString("component")<<"\tversion:"<<prs.getString("version")<<endl;
   }
+  
+  
   
 /*
   Statement stmt=con.createStatement("select * from version");

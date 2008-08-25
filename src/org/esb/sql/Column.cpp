@@ -11,11 +11,13 @@ namespace sql{
 
 Column::Column(MYSQL_BIND & b):bind(b){
 //  reserve(0);
+  buffer=NULL;
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
   bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
   reserve(field->length);
+  buffer=NULL;
 }
 
 void Column::reserve(unsigned long size)
@@ -44,7 +46,8 @@ void Column::reserve(unsigned long size)
 
 
 Column::~Column(){
-      delete[] static_cast<char*>(buffer);
+      if(buffer)
+        delete[] static_cast<char*>(buffer);
 }
 
 bool Column::isNull()
@@ -359,7 +362,7 @@ double Column::getDouble(){
 void Column::setString(const char* data){
   length = ::strlen(data);
   reserve(length + 1);
-  memcpy(static_cast<char*>(buffer), data, length + 1);
+  memcpy(static_cast<char*>(bind.buffer), data, length + 1);
   bind.buffer_type = MYSQL_TYPE_VAR_STRING;
 }
 

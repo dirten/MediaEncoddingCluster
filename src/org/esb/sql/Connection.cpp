@@ -63,6 +63,7 @@ void Connection::executeNonQuery(const char * sql){
 //    sqlite3_connection::close();	
 }
 long Connection::lastInsertId(){
+  return mysql_insert_id(&mysql);
 //	return tntcon.selectValue("select last_insert_id()").getInt();
 //    sqlite3_connection::close();	
 }

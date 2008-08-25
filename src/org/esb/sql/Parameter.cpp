@@ -15,11 +15,11 @@ class Parameter{
         Column * col=new Column(bind[a]);
         cols[a]=col;
       }
-/*      
+    /*      
       if (mysql_stmt_bind_param(stmt, bind)){
         throw SqlException( mysql_stmt_error(stmt));
       } 
-*/
+    */
     }
 
     Column * getParameter(int idx){

@@ -43,9 +43,11 @@ void PreparedStatement::setString(string pos, char * data){para->getParameter(va
 
 
 ResultSet PreparedStatement::executeQuery(){
+/*
     if (mysql_stmt_bind_param(stmt, para->bind)){
       throw SqlException( mysql_stmt_error(stmt));
     }
+*/
     execute();
 	return ResultSet(*stmt);
 }
@@ -55,6 +57,11 @@ int PreparedStatement::executeUpdate(){
 }
 
 bool PreparedStatement::execute(){
+
+  if (mysql_stmt_bind_param(stmt, para->bind)){
+    throw SqlException( mysql_stmt_error(stmt));
+  }
+
   if (mysql_stmt_execute(stmt)){
     throw SqlException( mysql_stmt_error(stmt));
   }
