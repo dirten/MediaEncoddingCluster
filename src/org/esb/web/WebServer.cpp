@@ -15,6 +15,8 @@
 #include <boost/bind.hpp>
 
 #include <iostream>
+
+#include "WebApp.h"
 using namespace org::esb::web;
 using namespace Wt;
 
@@ -99,7 +101,8 @@ WApplication *createApp(const WEnvironment& env)
    * You could read information from the environment to decide whether
    * the user has permission to start a new application
    */
-  return new MyApplication(env);
+//  return new MyApplication(env);
+  return new WebApp(env);
 }
 
 WebServer::WebServer():server("test"){

@@ -140,7 +140,7 @@ libhive_la_CXXFLAGS =  -I$(top_srcdir)/src/org/esb/hive
 #libhive_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/libav.la $(top_srcdir)/src/org/esb/signal/libsignal.la $(top_srcdir)/src/org/esb/net/libnet.la 
 
 
-libweb_la_SOURCES = web/WebServer.cpp 
+libweb_la_SOURCES = web/WebServer.cpp web/WebApp.cpp
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 libweb_la_CXXFLAGS =  -I$(top_srcdir)/src/org/esb/web
 #libweb_la_LIBADD=  $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/util/libutil.la 

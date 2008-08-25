@@ -21,6 +21,7 @@ class Messenger{
     void removeMessageListener(MessageListener &listener, std::string name=DEFAULT_NAME);
     void sendMessage(Message & msg, std::string name=DEFAULT_NAME);
   private:
+//    enum {DEFAULT= "global"};
     Messenger(std::string name);
     static std::map<std::string,Messenger*> messenger;
     static std::map<std::string,std::list<MessageListener*> > listener;

@@ -19,7 +19,7 @@ Messenger::Messenger(std::string name){
 void Messenger::free(){
   std::map<std::string, Messenger*>::iterator it=messenger.begin();
   for(;it!=messenger.end();it++){
-    std::cout << "Delete Messenger"<<(*it).first<<std::endl;
+    std::cout << "Delete Messenger:"<<(*it).first<<std::endl;
     delete (*it).second;
   }
 }
