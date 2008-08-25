@@ -92,8 +92,8 @@ info_LDADD=	../src/org/esb/libesb.la
 test_tnt_LDADD=	../src/org/esb/libesb.la ../src/org/esb/sql/libsql.la -lboost_serialization
 #test_sql_LDADD=	../src/org/esb/libesb.la /home/jhoelscher/bripper/libcwd/lib/libcwd.la
 test_sql_LDADD=	../src/org/esb/sql/libsql.la ../src/org/esb/util/libutil.la 
-test_unit_LDADD=	../src/org/esb/libesb.la 
-test_wt_LDADD=      ../src/org/esb/lang/liblang.la ../src/org/esb/util/libutil.la ../src/org/esb/libesb.la ../src/org/esb/web/libweb.la ../src/org/esb/signal/libsignal.la -lwt -lwtext -lwthttp
+test_unit_LDADD=	-lesb 
+test_wt_LDADD=      -L../src/org/esb -lio -lav -llang  -lesb -lweb -lsignal -lutil -lwt -lwtext -lwthttp
 #-lwt -lwthttp -lwtext ../src/org/esb/lang/liblang.la ../src/org/esb/signal/libsignal.la ../src/org/esb/web/libweb.la ../src/org/esb/libesb.la 
 test_serial_LDADD=	../src/org/esb/libesb.la -lboost_serialization
 test_deserial_LDADD=	../src/org/esb/libesb.la -lboost_serialization

@@ -14,7 +14,7 @@ Connection::Connection() throw (SqlException){
 
 }
 Connection::Connection(const char * con){
-  std::string constr(con);
+  std::string constr=con;
   parseConnectionString(constr);
   mysql_init(&mysql);
   if (!mysql_real_connect(&mysql,_host.c_str(),_username.c_str(),_passwd.c_str(),_db.c_str(),0,NULL,0))

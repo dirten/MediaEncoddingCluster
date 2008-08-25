@@ -11,13 +11,10 @@ namespace esb{
 namespace web{
     using namespace org::esb::lang;
     using namespace org::esb::signal;
-    class WebServer:public Runnable, public MessageListener{
+    class WebServer: public MessageListener{
 	public:
 	    WebServer();
 	    ~WebServer();
-	    void run();
-	    void start();
-	    void stop();
 	    void onMessage(Message & msg);
 	private:
 		Wt::WServer server;

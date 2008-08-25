@@ -7,7 +7,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
  *
  * See the COPYING file for the terms of usage and distribution.
  */
-#include <org/esb/config/config.h>
+#include "config.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"

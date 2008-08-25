@@ -11,7 +11,8 @@ PacketOutputStream::PacketOutputStream(OutputStream * os){
     if(instanceOf(*os, FormatOutputStream)){
 	  _fmtCtx=((FormatOutputStream*)os)->_fmtCtx;
     }else{
-	  _target=new BufferedOutputStream(os,32000);
+//	  _target=new BufferedOutputStream(os,32000);
+	  _target=os;//new BufferedOutputStream(os,32000);
     }
     _fmtCtx->packet_size= 0;
     _fmtCtx->mux_rate= 0;

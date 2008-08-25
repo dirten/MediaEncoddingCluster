@@ -28,7 +28,7 @@ SOURCES = \
             
 libhive_la_SOURCES = $(SOURCES)
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
-libhive_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/av/libav.la $(top_srcdir)/src/org/esb/signal/libsignal.la $(top_srcdir)/src/org/esb/net/libnet.la 
+libhive_la_LIBADD= $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/libav.la $(top_srcdir)/src/org/esb/signal/libsignal.la $(top_srcdir)/src/org/esb/net/libnet.la 
 # set the include path found by configure
 INCLUDES=   -I$(top_srcdir)/src
 EXTRA_DIST=job/*.h job/*.cpp protocol/*.cpp

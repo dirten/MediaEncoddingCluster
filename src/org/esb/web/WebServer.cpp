@@ -5,6 +5,7 @@
 
 
 #include <Wt/WContainerWidget>
+#include <Wt/WFileUpload>
 #include <Wt/WLineEdit>
 #include <Wt/WPushButton>
 #include <Wt/WText>
@@ -22,12 +23,15 @@ class MyApplication : public WApplication
 {
 public:
   MyApplication(const WEnvironment& env);
-
+  
 private:
   WLineEdit *nameEdit_;
   WText *greeting_;
-
+  WFileUpload * upload;
   void greet();
+  void uploaded();
+  void fileTooLarge();
+  void uploadDone();
 };
 
 
@@ -46,6 +50,24 @@ MyApplication::MyApplication(const WEnvironment& env)
   root()->addWidget(new WBreak());                       // insert a line break
 
   greeting_ = new WText(root());                         // empty text
+  upload=new WFileUpload(root());
+
+  // Try to catch the fileupload change signal to trigger an upload.
+  // We could do like google and at a delay with a WTimer as well...
+  upload->changed.connect(SLOT(upload, WFileUpload::upload));
+
+  // React to a succesfull upload.
+  upload->uploaded.connect(SLOT(this, MyApplication::uploaded));
+
+  // React to a fileupload problem.
+  upload->fileTooLarge.connect(SLOT(this, MyApplication::fileTooLarge));
+
+  /*
+   * Connect the uploadDone signal to the Composer's attachmentDone,
+   * so that the Composer can keep track of attachment upload progress,
+   * if it wishes.
+   */
+//  uploadDone.connect(SLOT(this, MyApplication::uploadDone));
 
   /*
    * Connect signals with slots
@@ -54,6 +76,12 @@ MyApplication::MyApplication(const WEnvironment& env)
   b->clicked.connect(SLOT(this, MyApplication::greet));
   nameEdit_->enterPressed.connect(SLOT(this, MyApplication::greet));
 }
+
+  void MyApplication::uploaded(){
+    std::cout << upload->spoolFileName()<<std::endl;
+  }
+  void MyApplication::fileTooLarge(){}
+  void MyApplication::uploadDone(){}
 
 void MyApplication::greet()
 {
@@ -81,7 +109,6 @@ WebServer::WebServer():server("test"){
   "--http-address", "0.0.0.0",
   "--http-port", org::esb::config::Config::getProperty("web.port")};
 
-
 	server.setServerConfiguration(7,args,WTHTTP_CONFIGURATION);
 	server.addEntryPoint(WServer::Application, &createApp);
 }
@@ -91,25 +118,11 @@ WebServer::~WebServer(){
 
 }
 
-
-void WebServer::run(){
-  char * args[]={"test","--docroot",".","--http-address", "0.0.0.0","--http-port", org::esb::config::Config::getProperty("web.port")};
-  WRun(7,args,&createApp);
-}
-
 void WebServer::onMessage(Message & msg){
 	if(msg.getProperty("webserver")=="start"){
-//		boost::thread t(boost::bind(&WebServer::start,this));
-	server.start();
-//		start();
+	  server.start();
 	}else
 	if(msg.getProperty("webserver")=="stop"){
 	  server.stop();
 	}
 }
-void WebServer::start(){
-
-
-//  WRun(7,args,&createApp);
-}
-

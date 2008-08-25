@@ -23,35 +23,36 @@ AC_ARG_WITH(ffmpeg, [  --with-ffmpeg=path   where ffmpeg is installed. (Standard
 AC_ARG_WITH(boost-lib, [  --with-boost-lib=path where boost libraries are installed. ],
 	    BOOST_LD="-L$withval")
 
-LDFLAGS="$LDFLAGS $BOOST_LD"
+LDFLAGS+=" $BOOST_LD"
+
 AC_ARG_WITH(boost-inc, [  --with-boost-inc=path where boost headers are installed.],
 	    BOOST_CFLAGS="-I$withval")
 
-CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
+CPPFLAGS+=" $BOOST_CFLAGS"
 
 AC_ARG_WITH(tntnet, [  --with-tntnet=path   where tntnet is installed. (Standard is "/usr/local")],
 	    TNTNET_CFLAGS="-I$withval/include"
 	    TNTNET_LD="-L$withval/lib -ltntnet"
 	    TNTNET_PATH="$withval")
 AC_SUBST(TNTNET_PATH)
-CPPFLAGS="$CPPFLAGS $TNTNET_CFLAGS"
-LDFLAGS="$LDFLAGS $TNTNET_LD"
+CPPFLAGS+=" $TNTNET_CFLAGS"
+LDFLAGS+=" $TNTNET_LD"
 
 AC_ARG_WITH(tntdb, [  --with-tntdb=path   where tntdb is installed. (Standard is "/usr/local")],
 	    TNTDB_CFLAGS="-I$withval/include"
 	    TNTDB_LD="-L$withval/lib -ltntdb"
 	    TNTDB_PATH="$withval")
 
-CPPFLAGS="$CPPFLAGS $TNTDB_CFLAGS"
-LDFLAGS="$LDFLAGS $TNTDB_LD"
+CPPFLAGS+=" $TNTDB_CFLAGS"
+LDFLAGS+=" $TNTDB_LD"
 
 AC_ARG_WITH(cxxtools, [  --with-cxxtools=path   where tnt cxxtools is installed. (Standard is "/usr/local")],
 	    TNTTOOLS_CFLAGS="-I$withval/include"
 	    TNTTOOLS_LD="-L$withval/lib -ltntnet"
 	    TNTTOOLS_PATH="$withval")
 
-CPPFLAGS="$CPPFLAGS $TNTTOOLS_CFLAGS"
-LDFLAGS="$LDFLAGS $TNTTOOLS_LD"
+CPPFLAGS+=" $TNTTOOLS_CFLAGS"
+LDFLAGS+=" $TNTTOOLS_LD"
 
 # moved up to comply with standard autoconf layout 
 # http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html#SEC10
@@ -88,7 +89,7 @@ AC_CHECK_HEADERS([pthread.h])
 
 #CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
 CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
-LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -lsqlite3  -L/usr/lib/mysql -lmysqlclient -lcppunit"
+LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
 
 if test -d "$srcdir/external/boost"; then
