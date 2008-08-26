@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_UTIL_PROPERTIES_H_
 #define ORG_ESB_UTIL_PROPERTIES_H_
 #include "org/esb/io/InputStream.h"
+#include "org/esb/io/OutputStream.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -248,6 +249,7 @@ namespace util{
      */
 
         virtual void load(org::esb::io::InputStream * is) ;
+        virtual void save(org::esb::io::OutputStream * os) ;
 
    };
    

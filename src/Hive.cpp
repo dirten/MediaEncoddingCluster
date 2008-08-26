@@ -198,11 +198,13 @@ void listener(int argc, char *argv[]){
 	do {
 	  err = sigwait(&wait_mask2, &sig);
 	} while (err != 0);
-
+    
 	Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
 	Messenger::free();
+    delete _watcher;
+    delete runner;
 	Thread::sleep(3000);
 	cout << "Stopping Hive "<<endl;
 

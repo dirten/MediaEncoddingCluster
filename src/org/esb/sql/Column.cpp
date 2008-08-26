@@ -46,7 +46,7 @@ void Column::reserve(unsigned long size)
 
 
 Column::~Column(){
-      if(buffer)
+//      if(buffer)
         delete[] static_cast<char*>(buffer);
 }
 

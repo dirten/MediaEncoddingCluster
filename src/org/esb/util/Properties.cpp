@@ -187,6 +187,16 @@ namespace util{
 //            	cout << "Key:"<<key <<"\tVal:"<<val<< endl;
 			}
         }
+        void Properties::save(org::esb::io::OutputStream * os){
+          std::map< std::string, std::string >::const_iterator iter = properties.begin();
+          for(;iter!=properties.end();iter++){
+            os->write((char *)iter->first.c_str(), iter->first.length() );
+            os->write((char*)"=",1);
+            os->write((char *)iter->second.c_str(), iter->second.length() );
+            os->write((char*)"\n",1);
+          }
+          os->flush();
+        }
         
     
     

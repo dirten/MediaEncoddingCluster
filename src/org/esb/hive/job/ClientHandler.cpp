@@ -38,7 +38,7 @@ ClientHandler::ClientHandler(){
     _stmt_fr=new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
     _stmt_pu=new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
     _stmt_ps=new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
-
+//    _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
 }
 /*
 bool ClientHandler::getProcessUnit(ProcessUnit & unit){

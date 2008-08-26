@@ -5,6 +5,11 @@
 #include <Wt/WText>
 #include <Wt/WMenu>
 #include <Wt/WMenuItem>
+#include <Dashboard.cpp>
+#include <Upload.cpp>
+#include <Files.cpp>
+#include <Profiles.cpp>
+#include <Configuration.cpp>
 namespace org{
 namespace esb{
 namespace web{
@@ -21,6 +26,35 @@ public:
 };
 
 
+template <typename Function>
+class DeferredWidget : public Wt::WContainerWidget
+{
+public:
+  DeferredWidget(Function f)
+    : f_(f) { }
+
+private:
+  void load() {
+    addWidget(f_());
+  }
+
+  Function f_;
+};
+
+template <typename Function>
+DeferredWidget<Function> *deferCreate(Function f)
+{
+  return new DeferredWidget<Function>(f);
+}
+
+/*
+class Dashboard{
+  public:
+    Wt::WWidget * home(){
+      return new Wt::WText("Dashboard Home");
+    }
+};
+*/
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   setTitle("test");
 
@@ -30,12 +64,18 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   Wt::WMenu *menu = new Wt::WMenu(contents, Wt::Vertical, root());
   menu->setRenderAsList(true);
   menu->enableBrowserHistory("main");
+  Dashboard dashboard;
+  Upload upload;
+  Files files;
+  Profiles profiles;
+  Configuration * config=new Configuration();
+  menu->addItem("Dashboard", deferCreate(boost::bind(&Dashboard::home, dashboard)));
+  menu->addItem("Upload", deferCreate(boost::bind(&Upload::home, upload)));
+  menu->addItem("Files", deferCreate(boost::bind(&Files::home, files)));
+  menu->addItem("Profiles", deferCreate(boost::bind(&Profiles::home, profiles)));
+  menu->addItem("Configuration", deferCreate(boost::bind(&Configuration::home, config)));
 
-  menu->addItem("Introduction", introduction());
-  menu->addItem("Test Menu", test());
-//  menu->addItem("Test Sub Menu", submenu1());
-  menu->addItem(new Wt::WMenuItem("Demo2", submenu1(),Wt::WMenuItem::LazyLoading));
-  menu->select(1);
+  menu->select(0);
 
   root()->addWidget(contents);
 }

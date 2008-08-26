@@ -48,8 +48,8 @@ void ProcessUnitWatcher::start(){
 			if(ClientHandler::addProcessUnit(unit)){
 				logdebug("ProcessUnit added with id "<<rs.getInt("id"));
 			}
-	    }	    
-    	Thread::sleep(2000);
+	    }
+    	Thread::sleep(1000);
 	}
 }
 

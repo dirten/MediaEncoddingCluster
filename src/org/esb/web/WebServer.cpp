@@ -52,6 +52,8 @@ MyApplication::MyApplication(const WEnvironment& env)
   root()->addWidget(new WBreak());                       // insert a line break
 
   greeting_ = new WText(root());                         // empty text
+
+
   upload=new WFileUpload(root());
 
   // Try to catch the fileupload change signal to trigger an upload.
@@ -117,8 +119,7 @@ WebServer::WebServer():server("test"){
 }
 
 WebServer::~WebServer(){
-	std::cout << "~WebServer"<<std::endl;
-
+//	std::cout << "~WebServer"<<std::endl;
 }
 
 void WebServer::onMessage(Message & msg){

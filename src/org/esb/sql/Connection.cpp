@@ -19,8 +19,7 @@ Connection::Connection(const char * con){
   mysql_init(&mysql);
   if (!mysql_real_connect(&mysql,_host.c_str(),_username.c_str(),_passwd.c_str(),_db.c_str(),0,NULL,0))
   {
-    fprintf(stderr, "Failed to connect to database: Error: %s\n",
-    mysql_error(&mysql));
+    throw SqlException(string("Failed to connect to database: Error:").append(mysql_error(&mysql)));
   }
 
 }
@@ -33,8 +32,7 @@ Connection::Connection(const char * host, const char * db, const char * user, co
   mysql_init(&mysql);
   if (!mysql_real_connect(&mysql,_host.c_str(),_username.c_str(),_passwd.c_str(),_db.c_str(),0,NULL,0))
   {
-    fprintf(stderr, "Failed to connect to database: Error: %s\n",
-    mysql_error(&mysql));
+    throw SqlException(string("Failed to connect to database: Error:").append(mysql_error(&mysql)));
   }
 }
 
