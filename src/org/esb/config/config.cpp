@@ -51,22 +51,21 @@ void Config::init(char * filename)
   }
   fclose(fp);
   /*load params from database*/
-/*
+
   Connection con(getProperty("db.connection"));
   Statement stmt=con.createStatement("select * from config");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
     properties->setProperty(rs.getString("key"),rs.getString("val"));
   }  
-  */
 }
 
 /**
  * ermitteln des Wertes zum Schlüssel
  */
-char * Config::getProperty(char * key)
+char * Config::getProperty(char * key, char * def)
 {
-  if(!properties->hasProperty(key))return NULL;
+  if(!properties->hasProperty(key))return def;
   return (char*)properties->getProperty(key);
 }
 

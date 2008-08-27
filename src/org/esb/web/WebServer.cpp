@@ -110,9 +110,9 @@ WApplication *createApp(const WEnvironment& env)
 WebServer::WebServer():server("test"){
   char * args[]={
   "test",
-  "--docroot",org::esb::config::Config::getProperty("web.docroot"),
+  "--docroot",org::esb::config::Config::getProperty("web.docroot","."),
   "--http-address", "0.0.0.0",
-  "--http-port", org::esb::config::Config::getProperty("web.port")};
+  "--http-port", org::esb::config::Config::getProperty("web.port","8080")};
 
 	server.setServerConfiguration(7,args,WTHTTP_CONFIGURATION);
 	server.addEntryPoint(WServer::Application, &createApp);

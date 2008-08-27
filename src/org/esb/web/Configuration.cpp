@@ -8,12 +8,19 @@
 #include <Wt/WColor>
 #include <Wt/WBorder>
 #include <Wt/WTabWidget>
+#include <Wt/WGroupBox>
 #include <Wt/WLengthValidator>
 
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/Properties.h"
+
+#include "boost/thread.hpp"
+#include "boost/bind.hpp"
+#include "org/esb/lang/Thread.h"
+#include <map>
+#include <string>
 using namespace org::esb;
 namespace org{
 namespace esb{
@@ -23,51 +30,60 @@ class Configuration : public Wt::WContainerWidget{
     Configuration():Wt::WContainerWidget(0){
     
     //  Wt::WContainerWidget * result=new Wt::WContainerWidget();
-
     Wt::WTabWidget *exampleTabs = new Wt::WTabWidget(this);
     exampleTabs->enableBrowserHistory("example");
 
-  /*
-   * The following code is functionally equivalent to:
-   *
-   *   exampleTabs->addTab(helloWorldExample(), "Hello world");
-   *
-   * However, we optimize here for memory consumption (it is a homepage
-   * after all, and we hope to be slashdotted some day)
-   *
-   * Therefore, we wrap all the static content (including the tree
-   * widgets), into WViewWidgets with static models. In this way the
-   * widgets are not actually stored in memory on the server.
-   *
-   * For the tree list example (for which we cannot use a view with a
-   * static model, since we allow the tree to be manipulated) we use
-   * the defer utility function to defer its creation until it is
-   * loaded.
-   */
+      saveButton = new Wt::WPushButton("Save Configuration", this);
+      saveButton->disable();
+      saveButton->clicked.connect(SLOT( this, Configuration::saveConfig));
 
 
-      Wt::WTable * table=new Wt::WTable(this);
-      Wt::WTable * table2=new Wt::WTable(this);
-      Wt::WTable * table3=new Wt::WTable(this);
+      exampleTabs->addTab(createDbConfigPage(),"Database Config");
+//      exampleTabs->addTab(createDirectoryPage(),"Directories");
+      exampleTabs->addTab(createSystemPage(this),"System");
 
-      exampleTabs->addTab(table,"Database");
-      exampleTabs->addTab(table2,"Directories");
-      exampleTabs->addTab(table3,"System");
-      exampleTabs->setTabEnabled(0,false);
-      exampleTabs->setTabEnabled(1,false);
-      exampleTabs->setTabEnabled(2,false);
+
+      }
+
+Wt::WWidget * createDirectoryPage(){
+  Wt::WTable * result=new Wt::WTable(this);
+  return result;
+}
+
+
+Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent){
+  Wt::WGroupBox * box =new Wt:WGroupBox("System");
+  Wt::WTable * result=new Wt::WTable(box);
+  buildElement("hive.datadir","Hive Data Directory:",result,0);
+  buildElement("hive.port","Hive Listener Port:",result,1);
+  buildElement("hive.start","Hive Autostart",result,2);
+  buildElement("test3","testlabel",result,3);
+  return result;
+}
+
+Wt::WWidget * createDbConfigPage(){
+
+      Wt::WTable * result=new Wt::WTable();
+      result->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Dotted,Wt::WBorder::Thin),WWidget::All);
+      buildElement("host","Host:",result,0);
+      buildElement("user","Username:",result,1);
+      buildElement("passwd","Password:",result,2);
+      buildElement("database","Database:",result,3);
       
-      
+            
+/*      
       Wt::WLabel *hostLabel = new Wt::WLabel("Host: ", table->elementAt(0, 0));
       hostLabel->setToolTip("hier ein testtooltip");
       table->elementAt(0, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
       host = new Wt::WLineEdit(table->elementAt(0, 1));
+      hostLabel->setBuddy(host);
+
+*/
 //      Wt::WLengthValidator *v=new Wt::WLengthValidator(this);
 //      v->setMinimumLength(4);
 //      host->setValidator(v);
 
-      hostLabel->setBuddy(host);
-
+/*
       Wt::WLabel *userLabel = new Wt::WLabel("Username: ", table->elementAt(1, 0));
       table->elementAt(1, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
       user = new Wt::WLineEdit(table->elementAt(1, 1));
@@ -82,17 +98,17 @@ class Configuration : public Wt::WContainerWidget{
       table->elementAt(3, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
       database = new Wt::WLineEdit(table->elementAt(3, 1));
       dbLabel->setBuddy(database);
-
+*/
       new Wt::WBreak(this);
 
 
-      Wt::WPushButton *testButton = new Wt::WPushButton("Test Connection", table->elementAt(4, 0));
+      Wt::WPushButton *testButton = new Wt::WPushButton("Test Connection", result->elementAt(4, 0));
       testButton->clicked.connect(SLOT( this, Configuration::checkDbConnection));
-
+/*
       saveButton = new Wt::WPushButton("Save Configuration", this);
       saveButton->disable();
       saveButton->clicked.connect(SLOT( this, Configuration::saveConfig));
-
+*/
       new Wt::WBreak(this);
 
       log=new Wt::WTextArea(this);
@@ -102,22 +118,33 @@ class Configuration : public Wt::WContainerWidget{
       log->setColumns(100);
       log->setRows(30);
       log->disable();
-    }
 
+      return result;
+    }
+        
     Wt::WWidget * home(){
       return this;
     }
 
   private:
-      Wt::WLineEdit * host;
+/*      Wt::WLineEdit * host;
       Wt::WLineEdit * user;
       Wt::WLineEdit * passwd;
-      Wt::WLineEdit * database;
+      Wt::WLineEdit * database;*/
       Wt::WTextArea * log;
       Wt::WPushButton *saveButton;
       util::Properties props;
-      
+      std::map<std::string,Wt::WLineEdit*> elements;
   private:
+
+    void buildElement(std::string name, std::string label, Wt::WTable * table,int row){
+      Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
+      table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
+      Wt::WLineEdit * element = new Wt::WLineEdit(table->elementAt(row, 1));
+      elementLabel->setBuddy(element);
+      elements[name]=element;
+    }
+
     void saveConfig(){
       io::File file("config.txt");
       io::FileOutputStream fos(&file);
@@ -130,12 +157,16 @@ class Configuration : public Wt::WContainerWidget{
 //      if(host->validate()==Wt::WValidator::Valid){
       log->setText(log->text()+"check Connection : ");
       try{
-        sql::Connection con(host->text().narrow().c_str(),database->text().narrow().c_str(),user->text().narrow().c_str(),passwd->text().narrow().c_str());
+        sql::Connection con(elements["host"]->text().narrow().c_str(),
+                            elements["database"]->text().narrow().c_str(),
+                            elements["user"]->text().narrow().c_str(),
+                            elements["passwd"]->text().narrow().c_str());
+                            
         log->setText(log->text()+" successfull connected to Database\n");
-        props.setProperty("host",host->text().narrow());
-        props.setProperty("user",user->text().narrow());
-        props.setProperty("passwd",passwd->text().narrow());
-        props.setProperty("database",database->text().narrow());
+        props.setProperty("host",elements["host"]->text().narrow());
+        props.setProperty("user",elements["user"]->text().narrow());
+        props.setProperty("passwd",elements["passwd"]->text().narrow());
+        props.setProperty("database",elements["database"]->text().narrow());
         saveButton->enable();
       }catch(sql::SqlException & ex){
         log->setText(log->text()+ex.what()+"\n");
