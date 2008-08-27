@@ -52,13 +52,23 @@ Wt::WWidget * createDirectoryPage(){
 
 
 Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent){
-  Wt::WGroupBox * box =new Wt:WGroupBox("System");
-  Wt::WTable * result=new Wt::WTable(box);
+  Wt:WContainerWidget * cont=new Wt::WContainerWidget();
+  Wt::WGroupBox * hive =new Wt::WGroupBox("Hive", cont);
+//  Wt::WGroupBox * box2 =new Wt::WGroupBox("System", cont);
+  Wt::WTable * result=new Wt::WTable(hive);
   buildElement("hive.datadir","Hive Data Directory:",result,0);
   buildElement("hive.port","Hive Listener Port:",result,1);
   buildElement("hive.start","Hive Autostart",result,2);
   buildElement("test3","testlabel",result,3);
-  return result;
+
+  Wt::WGroupBox * box2 =new Wt::WGroupBox("System", cont);
+  Wt::WTable * result2=new Wt::WTable(box2);
+  buildElement("hive.datadir","Hive Data Directory:",result2,0);
+  buildElement("hive.port","Hive Listener Port:",result2,1);
+  buildElement("hive.start","Hive Autostart",result2,2);
+  buildElement("test3","testlabel",result2,3);
+//  box2->setHidden(true);
+  return cont;
 }
 
 Wt::WWidget * createDbConfigPage(){
