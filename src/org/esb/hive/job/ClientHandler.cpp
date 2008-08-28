@@ -40,6 +40,14 @@ ClientHandler::ClientHandler(){
     _stmt_ps=new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
 //    _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
 }
+ClientHandler::~ClientHandler(){
+  delete _con;
+  delete _stmt;
+  delete _stmt_fr;
+  delete _stmt_pu;
+  delete _stmt_ps;
+}
+
 /*
 bool ClientHandler::getProcessUnit(ProcessUnit & unit){
 

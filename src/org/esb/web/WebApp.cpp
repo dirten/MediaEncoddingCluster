@@ -56,7 +56,7 @@ class Dashboard{
 };
 */
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
-  setTitle("test");
+  setTitle("Hive Webadmin");
 
   Wt::WStackedWidget *contents = new Wt::WStackedWidget();
   contents->setId("main_page");
@@ -66,14 +66,14 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   menu->enableBrowserHistory("main");
   Dashboard dashboard;
   Upload upload;
-  Files files;
+  Files *files=new Files();
   Profiles profiles;
   Configuration * config=new Configuration();
   menu->addItem("Dashboard", deferCreate(boost::bind(&Dashboard::home, dashboard)));
   menu->addItem("Upload", deferCreate(boost::bind(&Upload::home, upload)));
-  menu->addItem("Files", deferCreate(boost::bind(&Files::home, files)));
+  menu->addItem("Files", files/*deferCreate(boost::bind(&Files::home, files))*/);
   menu->addItem("Profiles", deferCreate(boost::bind(&Profiles::home, profiles)));
-  menu->addItem("Configuration", deferCreate(boost::bind(&Configuration::home, config)));
+  menu->addItem("Configuration", config/*deferCreate(boost::bind(&Configuration::home, config))*/);
 
   menu->select(0);
 

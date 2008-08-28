@@ -3,6 +3,7 @@
 #include <mysql/mysql.h>
 
 #include "Column.h"
+#include "ResultSetMetaData.h"
 #include "SqlException.h"
 
 namespace org{
@@ -14,6 +15,7 @@ class Row{
       int column_count=mysql_stmt_field_count(stmt);
       bind=new MYSQL_BIND[column_count];
       memset(bind,0,sizeof(MYSQL_BIND[column_count]));
+      rsmd=new ResultSetMetaData(stmt);
       meta=mysql_stmt_result_metadata(stmt);
 
       for(int a=0;MYSQL_FIELD * field=mysql_fetch_field(meta);a++){
@@ -35,7 +37,9 @@ class Row{
     Column * getColumn(int idx){
       return getColumn(idx2name[idx]);
     }
-
+    ResultSetMetaData * getMetaData(){
+      return rsmd;
+    }
     bool next(){
       int res=mysql_stmt_fetch(st);
       if(res!=0&&res!=MYSQL_NO_DATA&&res!=MYSQL_DATA_TRUNCATED){
@@ -62,6 +66,7 @@ class Row{
     MYSQL_STMT * st;
     MYSQL_BIND * bind;
     MYSQL_RES * meta;
+    ResultSetMetaData * rsmd;
     std::map<std::string, Column*> cols;
     std::map<int,std::string> idx2name;
 };

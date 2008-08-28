@@ -5,6 +5,7 @@
 #include "Statement.h"
 #include "PreparedStatement.h"
 #include "Row.cpp"
+#include "ResultSetMetaData.h"
 #include "org/esb/util/Log.h"
 namespace org{
 namespace esb{
@@ -35,7 +36,7 @@ class ResultSet{
 
 	bool 		isNull			(int col);
 	bool 		isNull			(std::string col);
-
+    ResultSetMetaData * getResultSetMetaData();
   private:
 	friend class Statement;
 	friend class PreparedStatement;

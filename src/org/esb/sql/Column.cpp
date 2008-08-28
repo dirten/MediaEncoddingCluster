@@ -31,8 +31,8 @@ void Column::reserve(unsigned long size)
       if (bind.buffer_length < size)
       {
 //        log_debug("grow buffer to " << size << " initial " << bind.buffer_length);
-
-//        delete[] static_cast<char*>(bind.buffer);
+//        if(buffer)
+//          delete[] buffer;
         buffer = new char[size];
         memset(buffer,0,size);
         bind.buffer=buffer;

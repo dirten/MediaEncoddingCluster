@@ -40,6 +40,10 @@ string ResultSet::getBlob(string index){return row.getColumn(index)->getBlob();}
 /*******************************************************************************************************/
 string ResultSet::getClob(int index){return getBlob(index);}
 string ResultSet::getClob(string index){return getBlob(index);}
+
+ResultSetMetaData * ResultSet::getResultSetMetaData(){
+  return row.getMetaData();
+}
 }}}
 
 

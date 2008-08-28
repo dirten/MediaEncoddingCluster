@@ -8,6 +8,8 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::config;
@@ -20,11 +22,19 @@ JobWatcher::JobWatcher(JobHandler & handler){
 	_isStopSignal=false;
 }
 
+void JobWatcher::onMessage(org::esb::signal::Message & msg){
+  if(msg.getProperty("jobwatcher")=="start"){
+    boost::thread t(boost::bind(&JobWatcher::run, this));
+  }else
+  if(msg.getProperty("jobwatcher")=="stop"){
+    _isStopSignal=true;
+  }
+}
 
 void JobWatcher::run(){
 	Connection con(Config::getProperty("db.connection"));
     Statement stmt=con.createStatement("select jobs.id, job_details.id as detailid ,inputfile, outputfile, instream, outstream from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id");
-    Statement stmt_job=con.createStatement("update jobs set complete = now() where id=:id");
+//    Statement stmt_job=con.createStatement("update jobs set complete = now() where id=:id");
 	while(!_isStopSignal){
 	    logdebug("JobWatcher cycle");
 	    ResultSet rs=stmt.executeQuery();
@@ -41,7 +51,7 @@ void JobWatcher::run(){
 	    for(;it!=jobs.end();it++){
 	    	Job * job=*it;	
 	    }
-    	Thread::sleep(60000);
+    	Thread::sleep(1000);
 	}
 }
 

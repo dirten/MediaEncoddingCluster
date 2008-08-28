@@ -2,6 +2,8 @@
 #define JOBWATCHER_H_
 
 #include "org/esb/lang/Runnable.h"
+#include "org/esb/signal/MessageListener.h"
+#include "org/esb/signal/Message.h"
 #include "org/esb/hive/job/JobHandler.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
@@ -17,11 +19,12 @@ namespace org{
 	namespace esb{
 		namespace hive{
 			namespace job{
-				class JobWatcher :public Runnable{
+				class JobWatcher :public Runnable, public org::esb::signal::MessageListener{
 					logger("hive.JobWatcher")
 					public:
 						JobWatcher(JobHandler & handler);
 						void run();
+						void onMessage(org::esb::signal::Message & msg);
 					private:
 						static int jobs(void *NotUsed, int argc, char **argv, char **azColName);
 						bool _isStopSignal;

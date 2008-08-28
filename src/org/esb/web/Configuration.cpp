@@ -15,6 +15,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/Properties.h"
+#include "org/esb/config/config.h"
 
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
@@ -34,10 +35,14 @@ class Configuration : public Wt::WContainerWidget{
     exampleTabs->enableBrowserHistory("example");
 
       saveButton = new Wt::WPushButton("Save Configuration", this);
-      saveButton->disable();
+//      saveButton->disable();
       saveButton->clicked.connect(SLOT( this, Configuration::saveConfig));
 
-
+//      Wt::WPushButton *testButton = new Wt::WPushButton("Test Connection", result->elementAt(4, 0));
+/*
+      Wt::WPushButton *testButton = new Wt::WPushButton("Test Configuration", this);
+      testButton->clicked.connect(SLOT( this, Configuration::checkDbConnection));
+*/
       exampleTabs->addTab(createDbConfigPage(),"Database Config");
 //      exampleTabs->addTab(createDirectoryPage(),"Directories");
       exampleTabs->addTab(createSystemPage(this),"System");
@@ -52,21 +57,24 @@ Wt::WWidget * createDirectoryPage(){
 
 
 Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent){
-  Wt:WContainerWidget * cont=new Wt::WContainerWidget();
+  Wt::WContainerWidget * cont=new Wt::WContainerWidget();
   Wt::WGroupBox * hive =new Wt::WGroupBox("Hive", cont);
 //  Wt::WGroupBox * box2 =new Wt::WGroupBox("System", cont);
   Wt::WTable * result=new Wt::WTable(hive);
-  buildElement("hive.datadir","Hive Data Directory:",result,0);
-  buildElement("hive.port","Hive Listener Port:",result,1);
-  buildElement("hive.start","Hive Autostart",result,2);
-  buildElement("test3","testlabel",result,3);
+  int i=0;
+  buildElement("hive.datadir","Hive Input Directory:",result,i++);
+  buildElement("hive.tempdir","Hive Output Directory:",result,i++);
+  buildElement("hive.port","Hive Listener Port:",result,i++);
+  buildElement("hive.start","Hive Autostart:",result,i++);
+  buildElement("hive.scaninterval","Hive Input Directory Scan Interval(sec.):",result,i++);
+//  buildElement("test3","testlabel",result,3);
 
-  Wt::WGroupBox * box2 =new Wt::WGroupBox("System", cont);
+  Wt::WGroupBox * box2 =new Wt::WGroupBox("Webserver", cont);
   Wt::WTable * result2=new Wt::WTable(box2);
-  buildElement("hive.datadir","Hive Data Directory:",result2,0);
-  buildElement("hive.port","Hive Listener Port:",result2,1);
-  buildElement("hive.start","Hive Autostart",result2,2);
-  buildElement("test3","testlabel",result2,3);
+  buildElement("web.docroot","Webserver Document Root:",result2,0);
+  buildElement("web.port","Webserver Listener Port:",result2,1);
+  buildElement("web.start","Webserver Autostart",result2,2);
+//  buildElement("test3","testlabel",result2,3);
 //  box2->setHidden(true);
   return cont;
 }
@@ -112,8 +120,6 @@ Wt::WWidget * createDbConfigPage(){
       new Wt::WBreak(this);
 
 
-      Wt::WPushButton *testButton = new Wt::WPushButton("Test Connection", result->elementAt(4, 0));
-      testButton->clicked.connect(SLOT( this, Configuration::checkDbConnection));
 /*
       saveButton = new Wt::WPushButton("Save Configuration", this);
       saveButton->disable();
@@ -151,6 +157,8 @@ Wt::WWidget * createDbConfigPage(){
       Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
       table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
       Wt::WLineEdit * element = new Wt::WLineEdit(table->elementAt(row, 1));
+//      if(config::Config::hasProperty(name))
+        element->setText(config::Config::getProperty((char*)name.c_str()));
       elementLabel->setBuddy(element);
       elements[name]=element;
     }
@@ -158,9 +166,24 @@ Wt::WWidget * createDbConfigPage(){
     void saveConfig(){
       io::File file("config.txt");
       io::FileOutputStream fos(&file);
+      props.setProperty("host",elements["host"]->text().narrow());
+      props.setProperty("user",elements["user"]->text().narrow());
+      props.setProperty("passwd",elements["passwd"]->text().narrow());
+      props.setProperty("database",elements["database"]->text().narrow());
+      props.setProperty("db.connection","mysql:host="+elements["host"]->text().narrow()+
+                                        ";db="+elements["database"]->text().narrow()+
+                                        ";user="+elements["user"]->text().narrow()+
+                                        ";passwd="+elements["passwd"]->text().narrow());
       props.save(&fos);
       fos.close();
       log->setText(log->text()+"Configuration saved successfull \n");
+
+      std::map<std::string,Wt::WLineEdit*>::iterator it=elements.begin();
+      
+      for(;it!=elements.end();it++){
+        config::Config::getProperties()->setProperty(it->first, it->second->text().narrow());
+      }
+      config::Config::save2db();
     }
     
     void checkDbConnection(){

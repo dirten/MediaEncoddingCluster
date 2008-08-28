@@ -27,6 +27,7 @@ namespace org
       public:
         static void init(char*filename);
         static void close();
+        static void save2db();
         static char * getProperty( char * key, char * def="");
         static Properties * getProperties();
       private:

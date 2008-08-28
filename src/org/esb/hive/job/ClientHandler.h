@@ -16,6 +16,7 @@ namespace job{
 class ClientHandler{
     public:
 	ClientHandler();
+	~ClientHandler();
 //	bool getProcessUnit(ProcessUnit & unit);
 	ProcessUnit getProcessUnit();
 	ProcessUnit getProcessUnit2();

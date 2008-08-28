@@ -56,10 +56,21 @@ void Config::init(char * filename)
   Statement stmt=con.createStatement("select * from config");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
-    properties->setProperty(rs.getString("key"),rs.getString("val"));
+    properties->setProperty(rs.getString("config_key"),rs.getString("config_val"));
   }  
 }
 
+void Config::save2db(){
+  std::vector<std::pair<std::string, std::string > > ar=properties->toArray();
+  std::vector<std::pair<std::string, std::string > >::iterator it=ar.begin();
+  Connection con(getProperty("db.connection"));
+  PreparedStatement stmt=con.prepareStatement("replace into config(config_key, config_val) values (:key, :val)");
+  for(;it!=ar.end();it++){
+    stmt.setString("key",it->first);
+    stmt.setString("val",it->second);
+    stmt.execute();
+  }
+}
 /**
  * ermitteln des Wertes zum Schlüssel
  */

@@ -25,7 +25,7 @@ ResultSet Statement::executeQuery(){
 }
 
 ResultSet Statement::executeQuery(char* tmp){
-
+//  return NULL;
 }
 
 bool Statement::execute(){

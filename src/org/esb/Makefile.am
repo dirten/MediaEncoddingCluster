@@ -83,6 +83,7 @@ libsql_la_SOURCES = \
       sql/Statement.cpp \
       sql/PreparedStatement.cpp \
       sql/ResultSet.cpp \
+      sql/ResultSetMetaData.cpp \
       sql/SqlException.cpp
 libsql_la_CXXFLAGS =  -I$(top_srcdir)/src/org/esb/sql
 libsql_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)

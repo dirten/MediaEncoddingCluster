@@ -138,6 +138,9 @@ void listener(int argc, char *argv[]){
 
 	ProcessUnitWatcher puw;
    	Messenger::getInstance().addMessageListener(puw);
+
+    JobWatcher watcher(*JobHandler::getInstance());
+   	Messenger::getInstance().addMessageListener(watcher);
    	
     /*
     *
@@ -146,6 +149,7 @@ void listener(int argc, char *argv[]){
     */
 	if(string(Config::getProperty("hive.start"))=="true"){
    		Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","start"));
+   		Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
    	}
 
@@ -163,8 +167,8 @@ void listener(int argc, char *argv[]){
     ProcessUnitWatcher *unit_watcher=new ProcessUnitWatcher();
     Thread *unitRunner=new Thread(unit_watcher);
 */
-    JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
-    Thread *runner=new Thread(_watcher);
+//    JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
+//    Thread *runner=new Thread(_watcher);
 /*
     PacketCollector *_collector=new PacketCollector();
     Thread *collector_runner=new Thread(_collector);
@@ -199,12 +203,14 @@ void listener(int argc, char *argv[]){
 	  err = sigwait(&wait_mask2, &sig);
 	} while (err != 0);
     
+	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
+//    Config::close();
 	Messenger::free();
-    delete _watcher;
-    delete runner;
+
+
 	Thread::sleep(3000);
 	cout << "Stopping Hive "<<endl;
 

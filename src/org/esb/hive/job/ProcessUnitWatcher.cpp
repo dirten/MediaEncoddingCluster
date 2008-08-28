@@ -30,10 +30,9 @@ void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg){
 void ProcessUnitWatcher::stop(){
 
 }
-void ProcessUnitWatcher::start(){
-	
+void ProcessUnitWatcher::start(){	
 	sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::Statement stmt=con.createStatement("select * from process_units where send is null order by priority limit 100");
+    sql::Statement stmt=con.createStatement("select id, source_stream, target_stream from process_units where send is null order by priority limit 100");
 	while(!_isStopSignal){
 	    logdebug("ProcessUnitWatcher cycle");
 	    sql::ResultSet rs=stmt.executeQuery();
