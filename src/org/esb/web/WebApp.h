@@ -11,7 +11,9 @@ class WebApp: public Wt::WApplication{
   public:
     WebApp(const Wt::WEnvironment & env);
   private:
+    void openFileUpload();
     void openFileList();
+    void openProfileNew();
     void openProfileList();
     void openConfig();
     void openFileList2();

@@ -49,12 +49,17 @@ class Profiles: public Wt::WContainerWidget{
       table->resize(1000, 400);
       table->setHighlightMouseOver(true);
       int colc=table->model()->columnCount();
-      for(int a=0;a<colc;a++)
+      for(int a=0;a<colc;a++){
         table->enableColumnHiding(a, true);
+        table->setColumnSortable(a, true);
+      }
 
       table->setDataLocation(Wt::Ext::ServerSide);
       table->setPageSize(10);
-      table->setBottomToolBar(table->createPagingToolBar());
+//      table->setBottomToolBar(table->createPagingToolBar());
+      table->setTopToolBar(table->createPagingToolBar());
+	  table->topToolBar()->addButton("test");
+//	  table->setBottomToolBar(table->bottomToolBar());
       addWidget(table);
     }
     Wt::WWidget * home(){

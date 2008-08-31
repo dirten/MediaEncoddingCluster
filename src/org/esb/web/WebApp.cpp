@@ -65,6 +65,8 @@ class Dashboard{
 */
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   setTitle("Hive Webadmin");
+  contents = new Wt::WStackedWidget();
+  contents->setId("main_page");
 
   Wt::Ext::Menu * files=new Wt::Ext::Menu();
   Wt::Ext::Menu * profiles=new Wt::Ext::Menu();
@@ -72,8 +74,17 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   Wt::Ext::Menu * help=new Wt::Ext::Menu();
   Wt::Ext::MenuItem * item;
 
-  files->addItem("Files",SLOT(this,WebApp::openFileList));
-  profiles->addItem("Profiles",SLOT(this,WebApp::openProfileList));
+  files->addItem("New File",SLOT(this,WebApp::openFileUpload));
+  files->addSeparator();
+  files->addItem("Filelist",SLOT(this,WebApp::openFileList));
+//  files->addItem("Files",contents,(&Wt::WStackedWidget::setCurrentIndex,0));
+	
+//  files->addItem("Files",contents,(boost::bind(&Wt::WStackedWidget::setCurrentIndex,contents,0 )));
+//    contents->setCurrentIndex(0);
+
+  profiles->addItem("New Profile",SLOT(this,WebApp::openProfileNew));
+  profiles->addSeparator();
+  profiles->addItem("Profilelist",SLOT(this,WebApp::openProfileList));
 
   system->addItem("Config",this,&WebApp::openConfig);
 
@@ -85,11 +96,9 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   tb->addButton("?", help);
 
 
-  contents = new Wt::WStackedWidget();
-  contents->setId("main_page");
 
-  Dashboard dashboard;
-  Upload upload;
+//  Dashboard dashboard;
+//  Upload *upload=new Upload();
 
 
 //  Files *files=new Files();
@@ -97,6 +106,7 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   contents->addWidget(new Files());
   contents->addWidget(new Profiles());
   contents->addWidget(new Configuration());
+  contents->addWidget(new Upload());
 
 
 /*
@@ -123,10 +133,16 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   
 }
 
+void WebApp::openFileUpload(){
+    contents->setCurrentIndex(3);
+}
 void WebApp::openFileList(){
     contents->setCurrentIndex(0);
 }
 
+void WebApp::openProfileNew(){
+//    contents->setCurrentIndex(1);
+}
 void WebApp::openProfileList(){
     contents->setCurrentIndex(1);
 }

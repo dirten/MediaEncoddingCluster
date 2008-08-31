@@ -3,6 +3,7 @@
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/sql/ResultSetMetaData.h"
+#include <Wt/WString>
 using namespace org::esb;
 namespace org{
 namespace esb{
@@ -12,6 +13,10 @@ namespace web{
       int fieldCount=rsmd->getColumnCount();
       insertColumns(0,fieldCount);
       for(int a=0;a<fieldCount;a++){
+      /*
+      * for locale support 
+      * if(!setHeaderData(a,Wt::WString::tr(rsmd->getColumnName(a).c_str()))){ 
+      */
         if(!setHeaderData(a,rsmd->getColumnName(a))){
           std::cout<<"Failed"<<std::endl;
         }

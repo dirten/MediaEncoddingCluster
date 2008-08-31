@@ -39,13 +39,15 @@ class Files: public Wt::WContainerWidget{
       table->resize(1000, 400);
       table->setHighlightMouseOver(true);
       int colc=table->model()->columnCount();
-      for(int a=0;a<colc;a++)
+      for(int a=0;a<colc;a++){
         table->enableColumnHiding(a, true);
+        table->setColumnSortable(a, true);
+      }
 
 
       table->setDataLocation(Wt::Ext::ServerSide);
       table->setPageSize(10);
-      table->setBottomToolBar(table->createPagingToolBar());
+      table->setTopToolBar(table->createPagingToolBar());
       addWidget(table);
 
 
