@@ -65,7 +65,8 @@ class Dashboard{
 */
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   setTitle("Hive Webadmin");
-  contents = new Wt::WStackedWidget();
+  Wt::Ext::ToolBar * tb=new Wt::Ext::ToolBar(root());
+  contents = new Wt::WStackedWidget(root());
   contents->setId("main_page");
 
   Wt::Ext::Menu * files=new Wt::Ext::Menu();
@@ -88,7 +89,6 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 
   system->addItem("Config",this,&WebApp::openConfig);
 
-  Wt::Ext::ToolBar * tb=new Wt::Ext::ToolBar();
   tb->addButton("File", files);
   tb->addButton("Profiles", profiles);
   tb->addButton("System", system);
@@ -102,12 +102,21 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 
 
 //  Files *files=new Files();
+//  root()->addWidget(new SqlTable(std::string("select insertdate from files limit 1")));
+//  ((Files*)new Files(root()))->resize(1024,400);
+//  new Profiles(root());
+  
 
-  contents->addWidget(new Files());
-  contents->addWidget(new Profiles());
+//  contents->addWidget(new Files(root()));
+  contents->addWidget(new Wt::WText("bla"));
+  contents->addWidget(new Files(root()));
+  contents->addWidget(new Profiles(root()));
   contents->addWidget(new Configuration());
   contents->addWidget(new Upload());
+//  contents->setCurrentIndex(0);
+//  contents->setCurrentIndex(1);
 
+//  contents->refresh();
 
 /*
   Wt::WMenu *menu = new Wt::WMenu(contents, Wt::Vertical, root());
@@ -126,29 +135,29 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 //  files->reload();
   menu->select(0);
 */
-  root()->addWidget(tb);
-  root()->addWidget(contents);
+//  root()->addWidget(tb);
+//  root()->addWidget(contents);
 //  boost::thread t(boost::bind(&Files::removeLastTest, files));
   useStyleSheet("ext/resources/css/xtheme-gray.css");
   
 }
 
 void WebApp::openFileUpload(){
-    contents->setCurrentIndex(3);
+    contents->setCurrentIndex(4);
 }
 void WebApp::openFileList(){
-    contents->setCurrentIndex(0);
+    contents->setCurrentIndex(1);
 }
 
 void WebApp::openProfileNew(){
 //    contents->setCurrentIndex(1);
 }
 void WebApp::openProfileList(){
-    contents->setCurrentIndex(1);
+    contents->setCurrentIndex(2);
 }
 
 void WebApp::openConfig(){
-    contents->setCurrentIndex(2);
+    contents->setCurrentIndex(3);
 }
 
 Wt::WWidget *WebApp::introduction()

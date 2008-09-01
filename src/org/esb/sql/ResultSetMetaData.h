@@ -10,13 +10,12 @@ class ResultSetMetaData{
   public:
     int getColumnCount(void);
     std::string getColumnName(int index);
+    MYSQL_FIELD * getColumn(int index);
   private:
     friend class Row;
     ResultSetMetaData(MYSQL_STMT * stmt);
-//    MYSQL_RES * meta;
+    ~ResultSetMetaData();
     MYSQL_RES * meta;
-
-
 };
 }}}
 #endif

@@ -1,10 +1,12 @@
 #include <map>
 #include <string>
+#include <iostream>
 #include <mysql/mysql.h>
 
 #include "Column.h"
 #include "ResultSetMetaData.h"
 #include "SqlException.h"
+
 
 namespace org{
 namespace esb{
@@ -12,16 +14,18 @@ namespace sql{
 class Row{
   public:
     Row(MYSQL_STMT * stmt):st(stmt){
+      std::cerr<<"Create Row Object"<<std::endl;
       int column_count=mysql_stmt_field_count(stmt);
       bind=new MYSQL_BIND[column_count];
       memset(bind,0,sizeof(MYSQL_BIND[column_count]));
       rsmd=new ResultSetMetaData(stmt);
-      meta=mysql_stmt_result_metadata(stmt);
+      int count=rsmd->getColumnCount();
+//      meta=mysql_stmt_result_metadata(stmt);
 
-      for(int a=0;MYSQL_FIELD * field=mysql_fetch_field(meta);a++){
-        Column *col=new Column(field, bind[a]);
-        cols[std::string(field->name)]=col;
-        idx2name[a]=field->name;
+      for(int a=0;a<count;a++){
+        Column *col=new Column(rsmd->getColumn(a), bind[a]);
+        cols[std::string(rsmd->getColumn(a)->name)]=col;
+        idx2name[a]=rsmd->getColumn(a)->name;
       }
       if (mysql_stmt_bind_result(stmt, bind)){
         throw SqlException( mysql_stmt_error(stmt));
@@ -53,12 +57,15 @@ class Row{
     }
 
     ~Row(){
-      delete []bind;
-      mysql_free_result(meta);
+      std::cerr<<"delete Row Object"<<std::endl;
+      delete rsmd;
+//      mysql_free_result(meta);
       std::map<std::string, Column*>::iterator it=cols.begin();
       for(;it!=cols.end();it++){
+        std::cerr << "Delete Column:"<<(*it).second->getName()<<std::endl;
         delete (*it).second;
       }
+      delete []bind;
       cols.clear();
     }
 

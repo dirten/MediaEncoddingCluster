@@ -11,13 +11,14 @@ namespace sql{
 
 Column::Column(MYSQL_BIND & b):bind(b){
 //  reserve(0);
-  buffer=NULL;
+//  buffer=NULL;
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
+  name=std::string(field->name);
   bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
   reserve(field->length);
-  buffer=NULL;
+//  buffer=NULL;
 }
 
 void Column::reserve(unsigned long size)
@@ -32,7 +33,7 @@ void Column::reserve(unsigned long size)
       {
 //        log_debug("grow buffer to " << size << " initial " << bind.buffer_length);
 //        if(buffer)
-//          delete[] buffer;
+  //        delete[] buffer;
         buffer = new char[size];
         memset(buffer,0,size);
         bind.buffer=buffer;
@@ -44,10 +45,13 @@ void Column::reserve(unsigned long size)
       }
     }
 
-
+std::string Column::getName(){
+  return name;
+}
 Column::~Column(){
 //      if(buffer)
-        delete[] static_cast<char*>(buffer);
+        delete[] buffer;
+//        delete[] static_cast<char*>(buffer);
 }
 
 bool Column::isNull()

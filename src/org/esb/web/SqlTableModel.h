@@ -8,6 +8,9 @@ namespace web{
 class SqlTableModel:public Wt::WStandardItemModel{
   public:
     SqlTableModel(org::esb::sql::ResultSet result,Wt::WObject* parent);
+    void clear();
+    void load(sql::ResultSet result);
+
 };
 }}}
 #endif

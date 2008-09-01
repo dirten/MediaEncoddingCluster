@@ -16,6 +16,9 @@
 
 #include <iostream>
 #include "SqlTableModel.h"
+
+
+#include "SqlTable.h"
 using namespace org::esb;
 using namespace org::esb::config;
 
@@ -25,65 +28,25 @@ namespace web{
 
 class Files: public Wt::WContainerWidget{
   public:
-    Files():Wt::WContainerWidget(0){
-//      setLayout(new Wt::WFitLayout());
-      table=new Wt::Ext::TableView();
-//      table->setAutoScrollBars(true);
-      sql::Connection con(Config::getProperty("db.connection"));
-      sql::Statement stmt=con.createStatement("select * from files");
-      table->setModel(new SqlTableModel(stmt.executeQuery(), this));
-//      table->setLayout(new Wt::WFitLayout());
-      table->setAlternatingRowColors(true);
-      table->resizeColumnsToContents(true);
-//      table->setMinimumSize(400,400);
-      table->resize(1000, 400);
-      table->setHighlightMouseOver(true);
-      int colc=table->model()->columnCount();
-      for(int a=0;a<colc;a++){
-        table->enableColumnHiding(a, true);
-        table->setColumnSortable(a, true);
-      }
-
-
-      table->setDataLocation(Wt::Ext::ServerSide);
-      table->setPageSize(10);
-      table->setTopToolBar(table->createPagingToolBar());
-      addWidget(table);
-
-
-
-      timer=new Wt::WTimer();
-      timer->setInterval(3000);
-      timer->timeout.connect(SLOT(this,Files::removeLastTest));
-//      timer->start();
-//      table->model()->removeRow(1);
-//      table->repaint();
-//      table->bottomToolBar()->addSeparator();
-//      table->bottomToolBar()->addButton("Other button");
-
-//      boost::thread t(boost::bind(&Files::removeLastTest, this));
-    }
-    Wt::WWidget * home(){
-      return this;
+    Files(Wt::WContainerWidget * parent=0):Wt::WContainerWidget(parent){
+      tab = new SqlTable(std::string("select * from files"),this);
+      tab->itemSelectionChanged.connect(SLOT(this, Files::cellClicked));
+      str=new SqlTable("select * from streams limit 2", this);
+//      str->resize(1000,400);
+      
     }
     
-    void removeLastTest(){
-      if(table->model()->rowCount()>0){
-        table->model()->removeRow(0);
-      }else{
-        timer->stop();
-      }
-    }
-    
-    void reload(){
-      sql::Connection con(Config::getProperty("db.connection"));
-      sql::Statement stmt=con.createStatement("select * from files");
-      table->setModel(new SqlTableModel(stmt.executeQuery(), this));
-      table->refresh();
+    void cellClicked(){
+//      boost::any_cast<string>(tab->model()->data(tab->currentRow(),1));
+      std::string sql="select * from streams where fileid="+boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
+      std::cout << "Clicked"<<tab->selectedRows()[0]<<boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0))<<endl;
+      std::cout << "Sql="<<sql<<std::endl;
+//      if(str)delete str;
+//      str->reload(sql);
     }
     private:
-      Wt::Ext::TableView * table;
-      Wt::WTimer * timer;
+      SqlTable * tab;
+      SqlTable * str;
 };
 }}}
 

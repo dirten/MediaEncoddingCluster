@@ -5,6 +5,7 @@
 #include <mysql/mysql.h>
 #include <string>
 #include <sstream>
+#include <boost/shared_ptr.hpp>
 
 namespace org {
     namespace esb {
@@ -28,9 +29,11 @@ namespace org {
                 void setNull();
                 std::string getBlob();
                 void setBlob(const std::string &);
+                std::string getName();
             private:
                 MYSQL_BIND & bind;
-                char * buffer;
+//                boost::shared_ptr<char*> buffer;
+                char* buffer;
                 void reserve(unsigned long size);
                 unsigned long length;
                 my_bool is_null;
@@ -46,7 +49,7 @@ namespace org {
                 template <typename c_type>
                 void setValue(c_type value, enum_field_types mysql_type);
 
-
+                std::string name;
             };
 
         }

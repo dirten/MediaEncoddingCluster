@@ -2,12 +2,14 @@
 #include <Wt/WTable>
 #include <Wt/WLabel>
 #include <Wt/WLineEdit>
+#include <Wt/Ext/LineEdit>
 #include <Wt/WBreak>
 #include <Wt/WPushButton>
 #include <Wt/WTextArea>
 #include <Wt/WColor>
 #include <Wt/WBorder>
 #include <Wt/WTabWidget>
+#include <Wt/Ext/TabWidget>
 #include <Wt/WGroupBox>
 #include <Wt/WLengthValidator>
 
@@ -31,8 +33,8 @@ class Configuration : public Wt::WContainerWidget{
     Configuration():Wt::WContainerWidget(0){
     
     //  Wt::WContainerWidget * result=new Wt::WContainerWidget();
-    Wt::WTabWidget *exampleTabs = new Wt::WTabWidget(this);
-    exampleTabs->enableBrowserHistory("example");
+    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
+//    exampleTabs->enableBrowserHistory("example");
 
       saveButton = new Wt::WPushButton("Save Configuration", this);
 //      saveButton->disable();
@@ -150,13 +152,13 @@ Wt::WWidget * createDbConfigPage(){
       Wt::WTextArea * log;
       Wt::WPushButton *saveButton;
       util::Properties props;
-      std::map<std::string,Wt::WLineEdit*> elements;
+      std::map<std::string,Wt::Ext::LineEdit*> elements;
   private:
 
     void buildElement(std::string name, std::string label, Wt::WTable * table,int row){
       Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
       table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
-      Wt::WLineEdit * element = new Wt::WLineEdit(table->elementAt(row, 1));
+      Wt::Ext::LineEdit * element = new Wt::Ext::LineEdit(table->elementAt(row, 1));
 //      if(config::Config::hasProperty(name))
         element->setText(config::Config::getProperty((char*)name.c_str()));
       elementLabel->setBuddy(element);
@@ -178,7 +180,7 @@ Wt::WWidget * createDbConfigPage(){
       fos.close();
       log->setText(log->text()+"Configuration saved successfull \n");
 
-      std::map<std::string,Wt::WLineEdit*>::iterator it=elements.begin();
+      std::map<std::string,Wt::Ext::LineEdit*>::iterator it=elements.begin();
       
       for(;it!=elements.end();it++){
         config::Config::getProperties()->setProperty(it->first, it->second->text().narrow());

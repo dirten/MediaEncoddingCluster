@@ -44,12 +44,15 @@ int main(){
 
   Connection con("mysql:db=hive;user=root;passwd=");
 {
-  Statement stmt=con.createStatement("select * from version");
+  Statement stmt=con.createStatement("select * from files");
   ResultSet rs=stmt.executeQuery();
+/*
   while(rs.next()){
-    cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("component")<<"\tversion:"<<rs.getString("version")<<endl;
+    cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("filename")<<"\tversion:"<<rs.getString(2)<<endl;
   }
+*/
 }  
+/*
 {
   Statement stmt=con.createStatement("insert into version (component, version) values ('test','0.0.0')");
   stmt.execute();
@@ -70,7 +73,7 @@ if(true){
     cout << "Component:"<<prs.getString("component")<<"\tversion:"<<prs.getString("version")<<endl;
   }
   
-  
+  */
   
 /*
   Statement stmt=con.createStatement("select * from version");

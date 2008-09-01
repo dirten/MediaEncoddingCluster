@@ -29,6 +29,37 @@ namespace web{
             std::cout<<"set data Failed"<<std::endl;
           }
       }      
+
+//      load(result);
+    }
+    
+    void SqlTableModel::clear(){
+      removeRows(0,rowCount());
+    }
+
+
+    void SqlTableModel::load(sql::ResultSet result){
+      sql::ResultSetMetaData * rsmd=result.getResultSetMetaData();
+      int fieldCount=rsmd->getColumnCount();
+      insertColumns(0,fieldCount);
+      for(int a=0;a<fieldCount;a++){
+      /*
+      * for locale support 
+      * if(!setHeaderData(a,Wt::WString::tr(rsmd->getColumnName(a).c_str()))){ 
+      */
+        if(!setHeaderData(a,rsmd->getColumnName(a))){
+          std::cout<<"Failed"<<std::endl;
+        }
+      }
+      for(int a=0;result.next();a++){
+        if(rowCount()<=a)
+          insertRow(rowCount());
+        for(int b=0;b<fieldCount;b++)
+          if(!setData(a,b,result.getString(b))){
+            std::cout<<"set data Failed"<<std::endl;
+          }
+      }      
+    
     }
 }}}
 

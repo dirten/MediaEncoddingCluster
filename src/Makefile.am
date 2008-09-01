@@ -14,5 +14,5 @@ hive_SOURCES = Hive.cpp
 INCLUDES=   -I$(top_srcdir)/src
 
 # the library search path.
-hive_LDADD= -L./org/esb -llang -lesb -lsql -lhive -lav -lutil -lsignal -lweb -lio -lnet -lwt -lwtext -lwthttp -lboost_serialization-gcc41-mt
+hive_LDADD= -L./org/esb -llang -lesb -lsql -lhive -lav -lutil -lsignal -lweb -lio -lnet -lwt -lwtext -lwthttp -lboost_serialization
 EXTRA_DIST=introspec.h import.cpp export.cpp job.cpp Environment.cpp CreateDatabase.cpp

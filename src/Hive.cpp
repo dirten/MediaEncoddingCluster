@@ -147,7 +147,7 @@ void listener(int argc, char *argv[]){
     * Starting Application Services from configuration
     *
     */
-	if(string(Config::getProperty("hive.start"))=="true"){
+	if(string(Config::getProperty("hive.start"))=="true2"){
    		Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
