@@ -16,7 +16,7 @@ namespace org {
                 _sourceFile = source;
                 //                formatCtx= av_alloc_format_context();
                 logdebug("openning MediaFile:" << source->getPath());
-                if (av_open_input_file(&formatCtx, _sourceFile->getPath(), NULL, 0, NULL) != 0) {
+                if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
                     //    		    throw Exception(__FILE__, __LINE__, "FormatInputStream<init> - could not open File");
                     cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" << endl;
                 }
@@ -30,7 +30,7 @@ namespace org {
             }
 
             void FormatInputStream::dumpFormat() {
-                dump_format(formatCtx, 0, _sourceFile->getPath(), false);
+                dump_format(formatCtx, 0, _sourceFile->getPath().c_str(), false);
             }
 
             FormatInputStream::~FormatInputStream() {

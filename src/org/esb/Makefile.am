@@ -134,7 +134,8 @@ libhive_la_SOURCES = \
 	hive/job/JobWatcher.cpp \
 	hive/job/ProcessUnitWatcher.cpp \
 	hive/job/ClientHandler.cpp \
-	hive/job/ProcessUnit.cpp 
+	hive/job/ProcessUnit.cpp \
+	hive/DirectoryScanner.cpp 
           
 libhive_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 libhive_la_CXXFLAGS =  -I$(top_srcdir)/src/org/esb/hive

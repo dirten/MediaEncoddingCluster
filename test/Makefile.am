@@ -30,7 +30,7 @@ cpp_unit_LDFLAGS = $(CPPUNIT_LIBS) ../src/org/esb/libesb.la
 cpp_unit_LDADD=	../src/org/esb/libesb.la
 #cpp_unit_LDFLAGS = -ldl
 
-bin_PROGRAMS=test_wt test_sql
+bin_PROGRAMS=test_wt test_sql test_scanner
 #bin_PROGRAMS=test_mysql test_httpd test_tnt test_seek test_codec test_audio test_serial test_deserial info test_unit test_sql test_signal test_wt
 #bin_PROGRAMS=server client test test_dvdread test_config test_thread console test_socket test_file test_bla test_packet
 #datasize
@@ -40,6 +40,7 @@ bin_PROGRAMS=test_wt test_sql
 info_SOURCES=info.cpp
 test_tnt_SOURCES=test_tnt.cpp
 test_signal_SOURCES=test_signal.cpp
+test_scanner_SOURCES=test_scanner.cpp
 test_wt_SOURCES=test_wt.cpp
 test_sql_SOURCES=test_sql.cpp
 test_unit_SOURCES=test_unit.cpp
@@ -92,6 +93,7 @@ info_LDADD=	../src/org/esb/libesb.la
 test_tnt_LDADD=	../src/org/esb/libesb.la ../src/org/esb/sql/libsql.la -lboost_serialization
 #test_sql_LDADD=	../src/org/esb/libesb.la /home/jhoelscher/bripper/libcwd/lib/libcwd.la
 test_sql_LDADD=	-L../src/org/esb -lsql -lutil
+test_scanner_LDADD=	-L../src/org/esb -lsql -lutil -lio -llang -lhive -lav -lboost_serialization -lnet -lesb -lsignal
 test_unit_LDADD=	-lesb 
 test_wt_LDADD=      -L../src/org/esb  -lav -llang  -lesb -lweb -lio -lsql -lsignal -lutil -lwt -lwtext -lwthttp
 #-lwt -lwthttp -lwtext ../src/org/esb/lang/liblang.la ../src/org/esb/signal/libsignal.la ../src/org/esb/web/libweb.la ../src/org/esb/libesb.la 

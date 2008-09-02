@@ -18,6 +18,8 @@ namespace web{
       * if(!setHeaderData(a,Wt::WString::tr(rsmd->getColumnName(a).c_str()))){ 
       */
         if(!setHeaderData(a,rsmd->getColumnName(a))){
+//        if(!setHeaderData(a,boost::any(rsmd->getColumnName(a)))){
+//        if(!setHeaderData(a,boost::any(string("test")))){
           std::cout<<"Failed"<<std::endl;
         }
       }
@@ -26,9 +28,11 @@ namespace web{
           insertRow(rowCount());
         for(int b=0;b<fieldCount;b++)
           if(!setData(a,b,result.getString(b))){
+//          if(!setData(a,b,boost::any(result.getString(b)))){
+//          if(!setData(a,b,boost::any(new string("test")))){
             std::cout<<"set data Failed"<<std::endl;
           }
-      }      
+      }
 
 //      load(result);
     }
@@ -41,16 +45,18 @@ namespace web{
     void SqlTableModel::load(sql::ResultSet result){
       sql::ResultSetMetaData * rsmd=result.getResultSetMetaData();
       int fieldCount=rsmd->getColumnCount();
-      insertColumns(0,fieldCount);
-      for(int a=0;a<fieldCount;a++){
+//      insertColumns(0,fieldCount);
+//      for(int a=0;a<fieldCount;a++){
       /*
       * for locale support 
       * if(!setHeaderData(a,Wt::WString::tr(rsmd->getColumnName(a).c_str()))){ 
       */
+      /*
         if(!setHeaderData(a,rsmd->getColumnName(a))){
           std::cout<<"Failed"<<std::endl;
         }
       }
+      */
       for(int a=0;result.next();a++){
         if(rowCount()<=a)
           insertRow(rowCount());

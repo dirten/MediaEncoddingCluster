@@ -39,7 +39,7 @@ int exporter(int argc, char * argv[]){
     while(rs.next()){
       CodecID codec_id=(CodecID)rs.getInt("codec");
       if(rs.getInt("stream_type")==CODEC_TYPE_AUDIO){
-      	codec_id=av_guess_codec(fos._fmtCtx->oformat,NULL,fout.getPath(),NULL,CODEC_TYPE_AUDIO);
+      	codec_id=av_guess_codec(fos._fmtCtx->oformat,NULL,fout.getPath().c_str(),NULL,CODEC_TYPE_AUDIO);
       
       }
 

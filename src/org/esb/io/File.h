@@ -2,7 +2,10 @@
 #define ORG_ESB_IO_FILE_H
 #include <list>
 #include <boost/shared_ptr.hpp>
+#include <boost/filesystem/path.hpp>
 #include "org/esb/util/Log.h"
+
+#include "FileFilter.h"
 namespace org {
     namespace esb {
         namespace io {
@@ -27,7 +30,9 @@ public:
                  * @return  The string form of this abstract pathname
                  */
 
-                const char * getPath();
+                const std::string getPath();
+                const std::string getFileName();
+                const std::string getFilePath();
                 /**
                  * Tests whether the application can read the file denoted by this
                  * abstract pathname.
@@ -274,8 +279,10 @@ public:
                 
                 
      			std::list<boost::shared_ptr<File> > listFiles();
+     			std::list<boost::shared_ptr<File> > listFiles(FileFilter & filter);
 private:
-                const char * _filename;
+//                const char * _filename;
+                boost::filesystem::path _full_path;
                 logger("io.file");
             };
         }

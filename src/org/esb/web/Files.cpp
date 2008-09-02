@@ -39,10 +39,10 @@ class Files: public Wt::WContainerWidget{
     void cellClicked(){
 //      boost::any_cast<string>(tab->model()->data(tab->currentRow(),1));
       std::string sql="select * from streams where fileid="+boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
-      std::cout << "Clicked"<<tab->selectedRows()[0]<<boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0))<<endl;
-      std::cout << "Sql="<<sql<<std::endl;
+//      std::cout << "Clicked"<<tab->selectedRows()[0]<<boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0))<<endl;
+//      std::cout << "Sql="<<sql<<std::endl;
 //      if(str)delete str;
-//      str->reload(sql);
+      str->reload(sql);
     }
     private:
       SqlTable * tab;

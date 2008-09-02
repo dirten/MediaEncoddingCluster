@@ -22,7 +22,7 @@ public:
                 void write(vector<unsigned char>&buffer);
 private:
                 FILE * _file;
-                void open(const char * pathname, bool append);
+                void open(const std::string pathname, bool append);
             };
         }
     }

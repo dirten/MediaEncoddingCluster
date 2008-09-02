@@ -7,15 +7,15 @@ using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::io;
 FileInputStream::FileInputStream(File * file){
-    const char * name=file!=NULL?file->getPath():NULL;
-    if(!name) {
+    const std::string name=file!=NULL?file->getPath():NULL;
+    if(!name.size()>0) {
 //        throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
     }
     open(name);
 }
 
-FileInputStream::FileInputStream(const char * name) {
-    if(!name) {
+FileInputStream::FileInputStream(const std::string name) {
+    if(!name.size()>0) {
 //        throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
     }
     open(name);
@@ -26,8 +26,8 @@ FileInputStream::FileInputStream(const char * name) {
  * @param name the name of the file
  */
 
-void FileInputStream::open(const char * name){
-    file=fopen(name,"r+");
+void FileInputStream::open(const std::string name){
+    file=fopen(name.c_str(),"r+");
     if(!file) {
         string error="FileInputStream::open - File not Found (";
         error+=name;

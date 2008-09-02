@@ -41,18 +41,26 @@ int main(){
 
 //	char * tmp;
 //	delete tmp;
+  char * tmp_c;
+  string tmp;
 
   Connection con("mysql:db=hive;user=root;passwd=");
+/*
 {
   Statement stmt=con.createStatement("select * from files");
   ResultSet rs=stmt.executeQuery();
-/*
-  while(rs.next()){
+  if(rs.next()){
     cout << "ID:"<<rs.getString("id")<<"Component:"<<rs.getString("filename")<<"\tversion:"<<rs.getString(2)<<endl;
+    tmp=rs.getString("id");
+    tmp_c=new char[rs.getString("id").length()+1];
+    memset(tmp_c,0,rs.getString("id").length()+1);
+    memcpy(tmp_c,(char*)rs.getString("id").c_str(),rs.getString("id").length());
   }
+}
+  cout << tmp << endl;
+  delete []tmp_c;
 */
-}  
-/*
+
 {
   Statement stmt=con.createStatement("insert into version (component, version) values ('test','0.0.0')");
   stmt.execute();
@@ -65,6 +73,7 @@ if(true){
   pstmt.execute();
 }  
 
+
 //  Connection con("localhost","hive","root","");
   PreparedStatement pstmt=con.prepareStatement("select * from version where version=:version");
   pstmt.setString("version",string("0.1.1"));
@@ -73,7 +82,7 @@ if(true){
     cout << "Component:"<<prs.getString("component")<<"\tversion:"<<prs.getString("version")<<endl;
   }
   
-  */
+  
   
 /*
   Statement stmt=con.createStatement("select * from version");

@@ -14,7 +14,7 @@ namespace sql{
 class Row{
   public:
     Row(MYSQL_STMT * stmt):st(stmt){
-      std::cerr<<"Create Row Object"<<std::endl;
+//      std::cerr<<"Create Row Object"<<std::endl;
       int column_count=mysql_stmt_field_count(stmt);
       bind=new MYSQL_BIND[column_count];
       memset(bind,0,sizeof(MYSQL_BIND[column_count]));
@@ -57,12 +57,12 @@ class Row{
     }
 
     ~Row(){
-      std::cerr<<"delete Row Object"<<std::endl;
+//      std::cerr<<"delete Row Object"<<std::endl;
       delete rsmd;
 //      mysql_free_result(meta);
       std::map<std::string, Column*>::iterator it=cols.begin();
       for(;it!=cols.end();it++){
-        std::cerr << "Delete Column:"<<(*it).second->getName()<<std::endl;
+//        std::cerr << "Delete Column:"<<(*it).second->getName()<<std::endl;
         delete (*it).second;
       }
       delete []bind;

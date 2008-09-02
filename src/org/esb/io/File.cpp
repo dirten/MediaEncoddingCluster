@@ -7,108 +7,92 @@
 #include "File.h"
 #include "org/esb/lang/Exception.h"
 #include <boost/shared_ptr.hpp>
+#include "boost/filesystem/operations.hpp"
+
+
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::io;
 
-
+namespace fs=boost::filesystem;
 
 File::File (const char *pathname)
 {
   if (pathname == NULL) {
 //        throw Exception(__FILE__, __LINE__, "File::File - Filename given is NULL");
   }
-  _filename = pathname;
+//  _filename = pathname;
+  _full_path=fs::system_complete( fs::path( pathname, fs::native ) );
 }
 
 File::~File ()
 {
 }
 
-const char *File::getPath ()
+const string File::getPath ()
 {
-  return _filename;
+  return _full_path.string();
+}
+const string File::getFileName ()
+{
+  if(isFile())
+    return _full_path.leaf();
+  return "";
 }
 
-bool File::exists ()
+const string File::getFilePath ()
 {
-  struct stat attribute;
-  return stat (getPath (), &attribute) == 0;
+  if(isDirectory())
+    return _full_path.string();
+  else
+  if(isFile())
+    return _full_path.branch_path().string();
+  return "";  
 }
 
-bool File::isFile ()
-{
-  struct stat attribute;
-  //                struct stat attribute=getStat(getPath());
-  if (stat (getPath (), &attribute) == 0) {
-    return S_ISREG (attribute.st_mode);
-  }
-  else {
-    return false;
-  }
+bool File::exists (){
+  return fs::exists( _full_path );
 }
 
-bool File::isDirectory ()
-{
-  struct stat attribute;
-  if (stat (getPath (), &attribute) == 0) {
-    return S_ISDIR (attribute.st_mode);
-  }
-  else {
-    return false;
-  }
+bool File::isFile (){
+  return fs::is_regular(_full_path);
+}
+
+bool File::isDirectory (){
+  return fs::is_directory(fs::status(_full_path));
 }
 
 bool File::canRead ()
 {
-  //                struct stat attribute=getStat(getPath());
-  struct stat attribute;
-  if (stat (getPath (), &attribute) == 0) {
-#ifndef __MINGW32__
-    uid_t uid = getuid ();
-    gid_t gid = getgid ();
-    return ((attribute.st_mode & S_IRUSR && attribute.st_uid == uid)
-	    || (attribute.st_mode & S_IRGRP && attribute.st_gid == gid)
-	    || attribute.st_mode & S_IROTH);
-#endif
-  }
-  else {
-    return false;
-  }
+  return true;
 }
 
 bool File::canWrite ()
 {
-  struct stat attribute;
-  if (stat (getPath (), &attribute) == 0) {
-#ifndef __MINGW32__
-    uid_t uid = getuid ();
-    gid_t gid = getgid ();
-    return ((attribute.st_mode & S_IWUSR && attribute.st_uid == uid)
-	    || (attribute.st_mode & S_IWGRP && attribute.st_gid == gid)
-	    || attribute.st_mode & S_IWOTH);
-#endif
-  }
-  else {
-    return false;
-  }
+return true;
+}
+
+
+std::list < boost::shared_ptr < File > >File::listFiles (FileFilter & filter)
+{
+    fs::directory_iterator end_iter;
+    std::list < boost::shared_ptr < File > >files;
+    for ( fs::directory_iterator dir_itr( _full_path );dir_itr != end_iter;++dir_itr ){
+      if(filter.accept(File(dir_itr->path().string().c_str()))){
+	    boost::shared_ptr < File > f (new File (dir_itr->path().string().c_str()));
+	    files.push_back (f);
+	  }
+    }
+    return files;
 }
 
 std::list < boost::shared_ptr < File > >File::listFiles ()
 {
-  DIR *dir = opendir (_filename);
-  std::list < boost::shared_ptr < File > >files;
-
-  if (dir) {
-    struct dirent *entry;
-    do {
-      entry = readdir (dir);
-      if (entry) {
-	boost::shared_ptr < File > f (new File (entry->d_name));
-	files.push_back (f);
-      }
-    } while (entry);
-    closedir (dir);
-  }
-  return files;
+    fs::directory_iterator end_iter;
+    std::list < boost::shared_ptr < File > >files;
+    for ( fs::directory_iterator dir_itr( _full_path );dir_itr != end_iter;++dir_itr ){
+	    boost::shared_ptr < File > f (new File (dir_itr->path().string().c_str()));
+	    files.push_back (f);
+    }
+    return files;
 }

@@ -12,6 +12,7 @@
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/HiveListener.h"
+#include "org/esb/hive/DirectoryScanner.h"
 
 #include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
@@ -133,6 +134,9 @@ void listener(int argc, char *argv[]){
    	HiveListener hive;
    	Messenger::getInstance().addMessageListener(hive);
 
+    DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
+   	Messenger::getInstance().addMessageListener(dirscan);
+
 	WebServer webserver;
    	Messenger::getInstance().addMessageListener(webserver);
 
@@ -147,7 +151,12 @@ void listener(int argc, char *argv[]){
     * Starting Application Services from configuration
     *
     */
-	if(string(Config::getProperty("hive.start"))=="true2"){
+
+	if(string(Config::getProperty("hive.autoscan"))=="true"){
+   		Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","start"));
+	}
+
+	if(string(Config::getProperty("hive.start"))=="true"){
    		Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
@@ -202,7 +211,7 @@ void listener(int argc, char *argv[]){
 	do {
 	  err = sigwait(&wait_mask2, &sig);
 	} while (err != 0);
-    
+	Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","stop"));    
 	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));

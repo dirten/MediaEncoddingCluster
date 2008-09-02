@@ -33,10 +33,10 @@ void JobWatcher::onMessage(org::esb::signal::Message & msg){
 
 void JobWatcher::run(){
 	Connection con(Config::getProperty("db.connection"));
-    Statement stmt=con.createStatement("select jobs.id, job_details.id as detailid ,inputfile, outputfile, instream, outstream from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id");
 //    Statement stmt_job=con.createStatement("update jobs set complete = now() where id=:id");
 	while(!_isStopSignal){
 	    logdebug("JobWatcher cycle");
+        Statement stmt=con.createStatement("select jobs.id, job_details.id as detailid ,inputfile, outputfile, instream, outstream from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id");
 	    ResultSet rs=stmt.executeQuery();
 	    while(rs.next()){
 		    if(_handler->getJob(rs.getInt("detailid"))!=NULL)continue;

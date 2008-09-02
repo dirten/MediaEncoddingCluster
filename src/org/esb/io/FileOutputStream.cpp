@@ -50,9 +50,9 @@ void FileOutputStream::write(vector<unsigned char>&buffer){
 	    write((char*)&buffer[0], buffer.size());
 }
 
-void FileOutputStream::open(const char * pathname, bool append) {
+void FileOutputStream::open(const std::string pathname, bool append) {
     const char * mode=append==true?"ab":"wb";
-    _file=fopen(pathname, mode);
+    _file=fopen(pathname.c_str(), mode);
     if(NULL==_file) {
         perror("fileopen");
     }

@@ -16,14 +16,14 @@ FormatOutputStream::FormatOutputStream(File * target_file) {
 
     _file = target_file;
     _fmtCtx = av_alloc_format_context();
-    _fmt = guess_format(NULL, target_file->getPath(), NULL);
+    _fmt = guess_format(NULL, target_file->getPath().c_str(), NULL);
     _fmtCtx->oformat = _fmt;
     //    _fmtCtx->timestamp=0;
 
     //    AVStream * st = av_new_stream(_fmtCtx, 0);
 
     if (!(_fmt->flags & AVFMT_NOFILE)) {
-        if (url_fopen(&_fmtCtx->pb, _file->getPath(), URL_WRONLY) < 0) {
+        if (url_fopen(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
             fprintf(stderr, "Could not open '%s'\n", _file->getPath());
             //            exit(1);
         }
@@ -57,7 +57,7 @@ void FormatOutputStream::write(char * buffer) {
 
 void FormatOutputStream::open() {
     if (!(_fmt->flags & AVFMT_NOFILE)) {
-        if (url_fopen(&_fmtCtx->pb, _file->getPath(), URL_WRONLY) < 0) {
+        if (url_fopen(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
             fprintf(stderr, "Could not open '%s'\n", _file->getPath());
             //            exit(1);
         }

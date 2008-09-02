@@ -83,7 +83,7 @@ int import(int argc, char *argv[]) {
 		int field = 0;
 		string tmp = "testfile.test";
 		st.setString("filename",
-				nullCheck < char *>((char *) inputFile.getPath()));
+				nullCheck < char *>((char *) inputFile.getPath().c_str()));
 		st.setDouble("size", (double) fis.getFileSize());
 		st.setDouble("stream_count", (double) fis.getStreamCount());
 		st.setString("title", fis.getFormatContext ()->title);

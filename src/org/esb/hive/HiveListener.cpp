@@ -33,13 +33,14 @@ void HiveListener::run(){
 
 void HiveListener::onMessage(org::esb::signal::Message & msg){
   if(msg.getProperty("hivelistener")=="start"){
-    cout << "Start Message Arrived:"<<endl;
+//    cout << "Start Message Arrived:"<<endl;
     boost::thread tt(boost::bind(&HiveListener::startListener,this));
-    cout << "Listener running:"<<endl;
+    cout << "Hive Listener running:"<<endl;
     is_running=true;
   }else
   if(msg.getProperty("hivelistener")=="stop"){
-    cout << "Stop Message Arrived:"<<endl;
+    cout << "Hive Listener stopped:"<<endl;
+//    cout << "Stop Message Arrived:"<<endl;
   }
 }
 

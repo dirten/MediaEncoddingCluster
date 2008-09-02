@@ -38,7 +38,7 @@ public:
  */
 
                 FileInputStream(File * file);
-                FileInputStream(const char *);
+                FileInputStream(const std::string);
                 ~FileInputStream();
                 int available(bool i=false);
                 int read(string & str);
@@ -47,7 +47,7 @@ public:
                 int read();
                 void close();
 private:
-                void open(const char * name);
+                void open(const std::string name);
                 std::FILE * file;
                 long _filePointer;
                 uint8_t _byte;
