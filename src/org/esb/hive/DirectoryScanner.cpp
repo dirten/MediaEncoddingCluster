@@ -25,8 +25,6 @@ DirectoryScanner::DirectoryScanner(std::string dir, int interval){
   _halt=true;
   _interval=interval;
   _dir=dir;
-//  _con=org::esb::sql::Connection(org::esb::config::Config::getProperty("db.connection"));
-//  _stmt=_con.prepareStatement("select * from files");
 }
 
 DirectoryScanner::~DirectoryScanner(){
@@ -79,15 +77,6 @@ void DirectoryScanner::computeFile(File file){
     std::string sql("insert into files (filename, path) values (\""+file.getFileName()+"\",\""+file.getFilePath()+"\")");
     std::cout << sql <<std::endl;
     PreparedStatement pstmt=con.prepareStatement("insert into files (filename, path) values (:name,:path)");
-/*
-    std::string str=file.getFileName();
-    int found=str.find_first_of("aeiou");
-    while (found!=std::string::npos){
-      str[found]='\'';
-      found=str.find_first_of("'",found+1);
-    }
-    cout <<"Replace"<< str<<endl;
-    */
     pstmt.setString("name", file.getFileName());
     pstmt.setString("path", file.getFilePath());
     pstmt.execute();

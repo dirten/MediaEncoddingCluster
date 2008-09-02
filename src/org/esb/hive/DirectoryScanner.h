@@ -17,12 +17,10 @@ class DirectoryScanner: public org::esb::signal::MessageListener{
     DirectoryScanner(std::string dir, int interval);
     ~DirectoryScanner();
     void onMessage(org::esb::signal::Message & msg);
-//  private:
+  private:
     void scan();
     void scan(std::string dir);
     void computeFile(org::esb::io::File file);
-//    org::esb::sql::Connection _con;
-//    org::esb::sql::PreparedStatement _stmt;
     bool _halt;
     boost::thread * th;
     std::string _dir;
