@@ -12,7 +12,8 @@ PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s){
   }
   parseSql(s);
   if (mysql_stmt_prepare(stmt, sql.c_str(), strlen(sql.c_str()))){
-    throw SqlException( mysql_stmt_error(stmt));
+    throw SqlException( string("failed while prepare the statement: ").append(mysql_stmt_error(stmt)).append(sql));
+//    throw SqlException( mysql_stmt_error(stmt));
   }
   para=new Parameter(stmt);
 }
@@ -59,11 +60,15 @@ int PreparedStatement::executeUpdate(){
 bool PreparedStatement::execute(){
 
   if (mysql_stmt_bind_param(stmt, para->bind)){
-    throw SqlException( mysql_stmt_error(stmt));
+
+    throw SqlException( string("failed while bind the param: ").append(mysql_stmt_error(stmt)));
+
+//    throw SqlException( mysql_stmt_error(stmt));
   }
 
   if (mysql_stmt_execute(stmt)){
-    throw SqlException( mysql_stmt_error(stmt));
+    throw SqlException( string("failed while execute the statement: ").append(mysql_stmt_error(stmt)));
+//    throw SqlException( mysql_stmt_error(stmt));
   }
   return true;
 }

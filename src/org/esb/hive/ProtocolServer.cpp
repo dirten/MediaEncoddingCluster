@@ -46,12 +46,8 @@ ProtocolServer::ProtocolServer (Socket * socket)
 {
 	this->socket = socket;
 	_cis = new CommandInputStream (socket->getInputStream ());
-	l.push_back (new
-				 Help (socket->getInputStream (),
-					   socket->getOutputStream ()));
-	l.push_back (new
-				 DataHandler (socket->getInputStream (),
-							  socket->getOutputStream ()));
+	l.push_back (new Help (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new DataHandler (socket->getInputStream (), socket->getOutputStream ()));
 	l.push_back (new Disconnect (socket));
 	l.push_back (new Kill (socket));
 	l.push_back (new ShowConfig (socket));

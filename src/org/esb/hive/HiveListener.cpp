@@ -49,7 +49,7 @@ void HiveListener::startListener(){
     ServerSocket * server=new ServerSocket(port);
     server->bind();
     for(;main_nextloop;){
-		try{
+//		try{
 	    	Socket * clientSocket=server->accept();
 	    	if(clientSocket!=NULL){
 	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
@@ -59,9 +59,9 @@ void HiveListener::startListener(){
 				cout << "Client  Socket ist null"<<endl;
 				break;
 	    	}
-		}catch(exception & ex){
-	    	cout << "Exception in Main:"<<ex.what();
-		}
+//		}catch(exception & ex){
+//	    	cout << "Exception in Main:"<<ex.what()<<endl;;
+//		}
     }
   }
 

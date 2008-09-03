@@ -153,7 +153,7 @@ void Job::activate(){
 		    std::pair<int,std::pair<int, int> > p;
 		    
 		    p.first=rs.getInt(0);
-		    p.second.first=rs.getInt(1);
+		    p.second.first=rs.getDouble(1);
 		    p.second.second=rs.getInt(2);
 		    _frame_groups.push(p);
 		}

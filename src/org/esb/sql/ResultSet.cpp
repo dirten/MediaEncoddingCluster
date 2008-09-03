@@ -26,7 +26,7 @@ int ResultSet::getInt(int index){return row.getColumn(index)->getInt();}
 int ResultSet::getInt(string index){return row.getColumn(index)->getInt();}
 
 /*******************************************************************************************************/
-double ResultSet::getDouble(int index){return row.getColumn(index)->getInt();}
+double ResultSet::getDouble(int index){return row.getColumn(index)->getDouble();}
 double ResultSet::getDouble(string index){return row.getColumn(index.c_str())->getDouble();}
 
 /*******************************************************************************************************/

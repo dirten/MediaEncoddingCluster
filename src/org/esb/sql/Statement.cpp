@@ -11,7 +11,7 @@ Statement::Statement(MYSQL & mysql, const char * s){
   }
   sql=s;
   if (mysql_stmt_prepare(stmt, sql.c_str(), strlen(sql.c_str()))){
-    throw SqlException( mysql_stmt_error(stmt));
+    throw SqlException( string("failed while prepare the statement: ").append(mysql_stmt_error(stmt)).append(sql));
   }
 }
 
@@ -30,7 +30,7 @@ ResultSet Statement::executeQuery(char* tmp){
 
 bool Statement::execute(){
   if (mysql_stmt_execute(stmt)){
-    throw SqlException( mysql_stmt_error(stmt));
+    throw SqlException( string("failed while execute the statement: ").append(mysql_stmt_error(stmt)));
   }
   return true;
 }

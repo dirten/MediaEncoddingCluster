@@ -28,7 +28,9 @@ class Row{
         idx2name[a]=rsmd->getColumn(a)->name;
       }
       if (mysql_stmt_bind_result(stmt, bind)){
-        throw SqlException( mysql_stmt_error(stmt));
+    	throw SqlException( std::string("failed while bind the result: ").append(mysql_stmt_error(stmt)));
+
+//        throw SqlException( mysql_stmt_error(stmt));
       }
     }
 
@@ -47,7 +49,9 @@ class Row{
     bool next(){
       int res=mysql_stmt_fetch(st);
       if(res!=0&&res!=MYSQL_NO_DATA&&res!=MYSQL_DATA_TRUNCATED){
-          throw SqlException(mysql_stmt_error(st));
+    		throw SqlException( std::string("failed while fetch the data: ").append(mysql_stmt_error(st)));
+
+//          throw SqlException(mysql_stmt_error(st));
       }
       if(res==MYSQL_DATA_TRUNCATED){
       

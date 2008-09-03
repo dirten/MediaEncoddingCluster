@@ -28,8 +28,8 @@ map<int, boost::shared_ptr<ProcessUnit> > ClientHandler::process_unit_list;
 
 ClientHandler::ClientHandler(){
     _handler=JobHandler::getInstance();
-    Connection con(Config::getProperty("db.connection"));
-    _con=new Connection(con);
+//    Connection con(Config::getProperty("db.connection"));
+    _con=new Connection(Config::getProperty("db.connection"));
 
 	
     _stmt=new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
@@ -213,8 +213,11 @@ ProcessUnit ClientHandler::getProcessUnit(){
 	    size+=p->packet->size;
 	  }
 	  u._process_unit=rs.getInt("id");
-	  _stmt_pu->setInt("id",rs.getInt("id"));
-	  _stmt_pu->execute();
+    	Connection con(Config::getProperty("db.connection"));
+		PreparedStatement pstmt=con.prepareStatement("update process_units set send = now() where id=:id");
+	  	pstmt.setInt("id",2/*rs.getInt("id")*/);
+	  	pstmt.execute();
+	  logdebug("update process_units set complete = now() where id=:id:"<<rs.getInt("id"));
 
 	  logdebug("packing frame group  with size:"<<size<<" !!!");
 

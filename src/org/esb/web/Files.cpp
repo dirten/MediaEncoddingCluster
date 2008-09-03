@@ -21,7 +21,7 @@
 #include <Wt/WLength>
 
 #include "SqlTable.h"
-#include "FileInfo.cpp"
+//#include "FileInfo.cpp"
 using namespace org::esb;
 //using namespace org::esb::config;
 

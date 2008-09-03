@@ -302,8 +302,8 @@ double Column::getDouble(){
             int_type ret = decimal.getInteger<int_type>();
             return ret;
           }
-//          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException("type-error in getInteger");      
+          logerror("type-error in getInteger, type=" << bind.buffer_type);
+          throw SqlException(std::string("type-error in getInteger").append(name).c_str());      
         }
           
         case MYSQL_TYPE_VAR_STRING:
@@ -322,7 +322,8 @@ double Column::getDouble(){
 
         default:
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException("type-error in getInteger");
+          throw SqlException(std::string("type-error in getInteger").append(name).c_str());
+//          throw SqlException("type-error in getInteger");
       }
     }
     template <typename float_type>
