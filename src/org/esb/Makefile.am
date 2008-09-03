@@ -149,6 +149,7 @@ libweb_la_SOURCES = \
     web/SqlTable.cpp
 libweb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 libweb_la_CXXFLAGS =  -I$(top_srcdir)/src/org/esb/web
+libweb_la_LIBADD = -lavformat -lavutil -lavcodec -lswscale
 #libweb_la_LIBADD=  $(top_srcdir)/src/org/esb/sql/libsql.la $(top_srcdir)/src/org/esb/util/libutil.la 
 
 

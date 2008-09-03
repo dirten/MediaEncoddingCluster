@@ -1,5 +1,5 @@
 #include "FormatOutputStream.h"
-
+#include "AV.h"
 
 using namespace org::esb::av;
 using namespace org::esb::io;
@@ -24,7 +24,7 @@ FormatOutputStream::FormatOutputStream(File * target_file) {
 
     if (!(_fmt->flags & AVFMT_NOFILE)) {
         if (url_fopen(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
-            fprintf(stderr, "Could not open '%s'\n", _file->getPath());
+            fprintf(stderr, "Could not open '%s'\n", _file->getPath().c_str());
             //            exit(1);
         }
     }

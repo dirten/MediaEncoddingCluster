@@ -9,6 +9,7 @@
 #include <Upload.cpp>
 #include <Files.cpp>
 #include <Profiles.cpp>
+#include <ProfilesEdit.cpp>
 #include <Configuration.cpp>
 
 #include <Wt/Ext/Menu>
@@ -73,7 +74,7 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   Wt::Ext::Menu * profiles=new Wt::Ext::Menu();
   Wt::Ext::Menu * system=new Wt::Ext::Menu();
   Wt::Ext::Menu * help=new Wt::Ext::Menu();
-  Wt::Ext::MenuItem * item;
+//  Wt::Ext::MenuItem * item;
 
   files->addItem("New File",SLOT(this,WebApp::openFileUpload));
   files->addSeparator();
@@ -108,11 +109,12 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   
 
 //  contents->addWidget(new Files(root()));
-  contents->addWidget(new Wt::WText("bla"));
+//  contents->addWidget(new Files(root()));
   contents->addWidget(new Files(root()));
   contents->addWidget(new Profiles(root()));
   contents->addWidget(new Configuration());
   contents->addWidget(new Upload());
+  contents->addWidget(new ProfilesEdit());
 //  contents->setCurrentIndex(0);
 //  contents->setCurrentIndex(1);
 
@@ -143,21 +145,21 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 }
 
 void WebApp::openFileUpload(){
-    contents->setCurrentIndex(4);
+    contents->setCurrentIndex(3);
 }
 void WebApp::openFileList(){
-    contents->setCurrentIndex(1);
+    contents->setCurrentIndex(0);
 }
 
 void WebApp::openProfileNew(){
-//    contents->setCurrentIndex(1);
+    contents->setCurrentIndex(4);
 }
 void WebApp::openProfileList(){
-    contents->setCurrentIndex(2);
+    contents->setCurrentIndex(1);
 }
 
 void WebApp::openConfig(){
-    contents->setCurrentIndex(3);
+    contents->setCurrentIndex(2);
 }
 
 Wt::WWidget *WebApp::introduction()

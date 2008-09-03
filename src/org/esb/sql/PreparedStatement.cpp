@@ -89,7 +89,7 @@ void PreparedStatement::parseSql(const char * s){
       sql.clear();
       char end_token;
 
-      logdebug("parse sql \"" << sqlIn << "\"");
+//      logdebug("parse sql \"" << sqlIn << "\"");
 
       for (std::string::const_iterator it = sqlIn.begin();
            it != sqlIn.end(); ++it)
@@ -133,7 +133,7 @@ void PreparedStatement::parseSql(const char * s){
               name += ch;
             else
             {
-              logdebug("hostvar :" << name);
+//              logdebug("hostvar :" << name);
               vars[name]=parCount++;
               sql += '?';//event.onHostVar(name);
 
@@ -175,7 +175,7 @@ void PreparedStatement::parseSql(const char * s){
           break;
 
         case STATE_NAME:
-          logdebug("hostvar :" << name);
+//          logdebug("hostvar :" << name);
           vars[name]=parCount++;
           sql += '?';//event.onHostVar(name);
           break;

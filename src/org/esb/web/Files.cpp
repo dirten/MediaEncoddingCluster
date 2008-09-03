@@ -1,5 +1,5 @@
 #include <Wt/WContainerWidget>
-#include <Wt/WStandardItemModel>
+/*#include <Wt/WStandardItemModel>
 #include <Wt/WFitLayout>
 #include <Wt/WTimer>
 #include <Wt/WBorderLayout>
@@ -16,11 +16,14 @@
 
 #include <iostream>
 #include "SqlTableModel.h"
+*/
 
+#include <Wt/WLength>
 
 #include "SqlTable.h"
+#include "FileInfo.cpp"
 using namespace org::esb;
-using namespace org::esb::config;
+//using namespace org::esb::config;
 
 namespace org{
 namespace esb{
@@ -30,8 +33,10 @@ class Files: public Wt::WContainerWidget{
   public:
     Files(Wt::WContainerWidget * parent=0):Wt::WContainerWidget(parent){
       tab = new SqlTable(std::string("select * from files"),this);
+      tab->resize(Wt::WLength()/*100,Wt::WLength::Percentage)*/,400);
       tab->itemSelectionChanged.connect(SLOT(this, Files::cellClicked));
       str=new SqlTable("select * from streams limit 2", this);
+      str->resize(Wt::WLength()/*100,Wt::WLength::Percentage)*/,100);
 //      str->resize(1000,400);
       
     }

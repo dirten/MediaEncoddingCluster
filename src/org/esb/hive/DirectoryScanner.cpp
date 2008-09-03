@@ -8,6 +8,7 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/io/FileFilter.h"
 
+#include "import.cpp"
 #include <boost/algorithm/string.hpp>
 namespace org{
 namespace esb{
@@ -55,7 +56,7 @@ void DirectoryScanner::scan(){
 }
 
 void DirectoryScanner::scan(std::string dir){
-    cout << "Directory Scanner loop:"<<":"<<dir<<endl;
+//    cout << "Directory Scanner loop:"<<":"<<dir<<endl;
     MyFileFilter filter;
     std::list<boost::shared_ptr< File > > list=File(dir.c_str()).listFiles();
     std::list<boost::shared_ptr< File > >::iterator it=list.begin();
@@ -74,12 +75,18 @@ void DirectoryScanner::computeFile(File file){
   stmt.setString("path", file.getFilePath());
   ResultSet rs=stmt.executeQuery();
   if(!rs.next()){
+//  found=str.find_first_of("aeiou");
+    if(file.isFile()){
+      char * argv[]={"",(char*)file.getPath().c_str()};
+      int fileid=import(2,argv);
+    }
+
     std::string sql("insert into files (filename, path) values (\""+file.getFileName()+"\",\""+file.getFilePath()+"\")");
-    std::cout << sql <<std::endl;
-    PreparedStatement pstmt=con.prepareStatement("insert into files (filename, path) values (:name,:path)");
-    pstmt.setString("name", file.getFileName());
-    pstmt.setString("path", file.getFilePath());
-    pstmt.execute();
+//    std::cout << sql <<std::endl;
+//    PreparedStatement pstmt=con.prepareStatement("insert into files (filename, path) values (:name,:path)");
+//    pstmt.setString("name", file.getFileName());
+//    pstmt.setString("path", file.getFilePath());
+//    pstmt.execute();
   }
 }
 

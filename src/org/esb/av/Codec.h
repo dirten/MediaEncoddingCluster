@@ -6,13 +6,15 @@
 #include <boost/serialization/binary_object.hpp>
 #include "Packet.h"
 #include "org/esb/util/Log.h"
+#include <boost/shared_ptr.hpp>
 
+#include <list>
 namespace org {
     namespace esb {
         namespace av {
             class Frame;
 
-            class Codec {
+            class Codec{
                 logger("hive.av.codec")
             public:
                 const static int DECODER = 1;
@@ -44,7 +46,7 @@ namespace org {
                 void setStartTime(int64_t start);
                 //				int getCodecType ();
                 //				string getCodecName ();
-
+                
                 template < class Archive >
                 void serialize(Archive & ar, const unsigned int version) {
 

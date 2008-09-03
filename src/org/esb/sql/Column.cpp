@@ -11,7 +11,7 @@ namespace sql{
 
 Column::Column(MYSQL_BIND & b):bind(b){
 //  reserve(0);
-//  buffer=NULL;
+  buffer=NULL;
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
@@ -51,7 +51,7 @@ std::string Column::getName(){
   return name;
 }
 Column::~Column(){
-//      if(buffer)
+      if(buffer)
         delete[] buffer;
 //        delete[] static_cast<char*>(buffer);
 }

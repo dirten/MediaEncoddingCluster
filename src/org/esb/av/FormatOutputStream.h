@@ -6,8 +6,9 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Encoder.h"
 
-#include "AV.h"
-
+//#include "AV.h"
+struct AVFormatContext;
+struct AVOutputFormat;
 namespace org{
     namespace esb{
 	namespace av{

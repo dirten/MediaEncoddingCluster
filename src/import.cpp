@@ -67,8 +67,9 @@ int import(int argc, char *argv[]) {
 	}
 
 	int fileid = 0, count = 0, frame_group = 0;
-
-	FormatInputStream fis(&inputFile);
+//    try{
+	  FormatInputStream fis(&inputFile);
+//	}catch(...){return 0}
 	PacketInputStream pis(&fis);
 	fis.getFormatContext()->flags|=AVFMT_FLAG_GENPTS;
 	//      tntdb::Connection con=connect(databaseFile.getPath());
@@ -77,13 +78,13 @@ int import(int argc, char *argv[]) {
 		PreparedStatement
 				st =
 						con.
-						prepareStatement("INSERT INTO files(filename, size, type, insertdate,stream_count, title,author, copyright, comment, album, year, track, genre, duration,bitrate) values "
+						prepareStatement("INSERT INTO files(filename, path, size, type, insertdate,stream_count, title,author, copyright, comment, album, year, track, genre, duration,bitrate) values "
 						//          "(?,?,1,now(),?,?,?,?,?,?,?,?,?,?,?)");
-							"(:filename, :size,1,now(),:stream_count, :title, :author, :copyright, :comment, :album, :year, :track, :genre, :duration, :bitrate)");
+							"(:filename,:path, :size,1,now(),:stream_count, :title, :author, :copyright, :comment, :album, :year, :track, :genre, :duration, :bitrate)");
 		int field = 0;
 		string tmp = "testfile.test";
-		st.setString("filename",
-				nullCheck < char *>((char *) inputFile.getPath().c_str()));
+		st.setString("filename",nullCheck < char *>((char *) inputFile.getFileName().c_str()));
+		st.setString("path",nullCheck < char *>((char *) inputFile.getFilePath().c_str()));
 		st.setDouble("size", (double) fis.getFileSize());
 		st.setDouble("stream_count", (double) fis.getStreamCount());
 		st.setString("title", fis.getFormatContext ()->title);
