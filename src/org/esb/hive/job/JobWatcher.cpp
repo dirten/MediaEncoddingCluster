@@ -35,7 +35,7 @@ void JobWatcher::run(){
 	Connection con(Config::getProperty("db.connection"));
 //    Statement stmt_job=con.createStatement("update jobs set complete = now() where id=:id");
 	while(!_isStopSignal){
-	    logdebug("JobWatcher cycle");
+//	    logdebug("JobWatcher cycle");
         Statement stmt=con.createStatement("select jobs.id, job_details.id as detailid ,inputfile, outputfile, instream, outstream from jobs, job_details where jobs.id=job_details.job_id and complete is null order by jobs.id");
 	    ResultSet rs=stmt.executeQuery();
 	    while(rs.next()){
