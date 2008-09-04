@@ -25,17 +25,18 @@ class Row{
       for(int a=0;a<count;a++){
         Column *col=new Column(rsmd->getColumn(a), bind[a]);
         cols[std::string(rsmd->getColumn(a)->name)]=col;
-        idx2name[a]=rsmd->getColumn(a)->name;
+        fqncols[std::string(rsmd->getColumn(a)->table).append(".").append(rsmd->getColumn(a)->name)]=col;
+        idx2name[a]=std::string(rsmd->getColumn(a)->table).append(".").append(rsmd->getColumn(a)->name);
       }
       if (mysql_stmt_bind_result(stmt, bind)){
     	throw SqlException( std::string("failed while bind the result: ").append(mysql_stmt_error(stmt)));
-
 //        throw SqlException( mysql_stmt_error(stmt));
       }
     }
 
     Column * getColumn(std::string name){
       Column * col=cols[name];
+      if(col==NULL)col=fqncols[name];
       if(col==NULL)throw SqlException(std::string("Column with name:").append(name).append(" not found") );
       return col;
     }
@@ -43,9 +44,11 @@ class Row{
     Column * getColumn(int idx){
       return getColumn(idx2name[idx]);
     }
+    
     ResultSetMetaData * getMetaData(){
       return rsmd;
     }
+    
     bool next(){
       int res=mysql_stmt_fetch(st);
       if(res!=0&&res!=MYSQL_NO_DATA&&res!=MYSQL_DATA_TRUNCATED){
@@ -79,6 +82,7 @@ class Row{
     MYSQL_RES * meta;
     ResultSetMetaData * rsmd;
     std::map<std::string, Column*> cols;
+    std::map<std::string, Column*> fqncols;
     std::map<int,std::string> idx2name;
 };
 }}}

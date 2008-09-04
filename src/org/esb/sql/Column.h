@@ -30,8 +30,10 @@ namespace org {
                 std::string getBlob();
                 void setBlob(const std::string &);
                 std::string getName();
+                std::string getTableName();
             private:
                 MYSQL_BIND & bind;
+                MYSQL_FIELD * _field;
 //                boost::shared_ptr<char*> buffer;
                 char* buffer;
                 void reserve(unsigned long size);

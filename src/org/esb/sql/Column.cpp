@@ -15,6 +15,7 @@ Column::Column(MYSQL_BIND & b):bind(b){
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
+  _field=field;
   name=std::string(field->name);
   bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
   reserve(field->length);
@@ -48,8 +49,13 @@ void Column::reserve(unsigned long size)
     }
 
 std::string Column::getName(){
-  return name;
+  return _field->name;
 }
+
+std::string Column::getTableName(){
+  return _field->table;
+}
+
 Column::~Column(){
       if(buffer)
         delete[] buffer;
