@@ -100,6 +100,7 @@ namespace web{
         }
       if(true){
         but=new Wt::Ext::Button("save",this);
+        but->setEnabled(false);
         but->clicked.connect(SLOT(this, ProfilesEdit::saveData));
       }
       }
@@ -126,6 +127,7 @@ namespace web{
 			elements["a_bitrate"]->setText(rs.getString("a_bitrate"));
 			elements["a_samplerate"]->setText(rs.getString("a_samplerate"));
 //			elements["a_codec"]->setText(rs.getString("a_codec"));
+          
         }
       }else{
         std::map<std::string,Wt::Ext::LineEdit*>::iterator elit=elements.begin();
@@ -133,6 +135,7 @@ namespace web{
 	      (*elit).second->setText("");
 	    }
       }
+      but->setEnabled(true);
 	}
 	void setEnabled(bool e){
       std::map<std::string,Wt::Ext::LineEdit*>::iterator elit=elements.begin();
@@ -200,6 +203,8 @@ namespace web{
 	  }
 	  pstmt.execute();
 	  profileSaved.emit();
+	  but->setEnabled(false);
+	  setEnabled(false);
     }
   };
 }}}

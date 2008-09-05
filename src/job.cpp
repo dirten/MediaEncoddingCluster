@@ -5,7 +5,8 @@
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
-
+#include "org/esb/av/Codec.h"
+using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 int jobcreator(int argc, char*argv[]){
@@ -14,6 +15,10 @@ int jobcreator(int argc, char*argv[]){
 	int profileid=atoi(argv[3]);
 	int a_stream_num=0, a_stream_den=0;
 
+    std::cout <<"FileId:"<<argv[2]<<":"<<std::endl;
+    std::cout <<"ProfileId:"<<argv[3]<<":"<<std::endl;
+
+    
 	string filename;
 	
 	std::string profileaction="";
@@ -42,7 +47,9 @@ int jobcreator(int argc, char*argv[]){
 	PreparedStatement stmt=con.prepareStatement("select * from profiles where id=:id ");
 	stmt.setInt("id",profileid);
 	ResultSet rs=stmt.executeQuery();
+    std::cout <<"Resolving Profile Data for "<<profileid<<std::endl;
 	if(rs.next()){
+      std::cout <<" Profile Data Resolved"<<std::endl;
 
 		profilename=rs.getString("profile_name");
 		profile_v_format=rs.getString("v_format");
@@ -55,7 +62,9 @@ int jobcreator(int argc, char*argv[]){
 		profile_a_codec=rs.getInt("a_codec");
 		profile_a_bitrate=rs.getInt("a_bitrate");
 		profile_a_samplerate=rs.getInt("a_samplerate");
-	}
+	}else{
+      std::cout <<" Profile Data not found"<<std::endl;
+    }
 }
 
 {

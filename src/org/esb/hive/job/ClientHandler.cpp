@@ -171,9 +171,9 @@ ProcessUnit ClientHandler::getProcessUnit(){
 	  int64_t start_ts=rs.getDouble("start_ts");
 	  int frame_count=rs.getInt("frame_count");
 	  int stream_index=rs.getInt("stream_index");
-	  logdebug("packing frame group with startts: "<<start_ts);
+//	  logdebug("packing frame group with startts: "<<start_ts);
 	  string filename=rs.getString("filename");
-	  logdebug("filename "<<filename);
+//	  logdebug("filename "<<filename);
 	  u._decoder=CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
 	  u._encoder=CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
 	  u._source_stream=rs.getInt("source_stream");
@@ -212,14 +212,14 @@ ProcessUnit ClientHandler::getProcessUnit(){
 */
 	    size+=p->packet->size;
 	  }
-	  u._process_unit=rs.getInt("id");
+	  u._process_unit=rs.getInt("u.id");
     	Connection con(Config::getProperty("db.connection"));
 		PreparedStatement pstmt=con.prepareStatement("update process_units set send = now() where id=:id");
-	  	pstmt.setInt("id",2/*rs.getInt("id")*/);
+	  	pstmt.setInt("id",rs.getInt("u.id"));
 	  	pstmt.execute();
-	  logdebug("update process_units set complete = now() where id=:id:"<<rs.getInt("id"));
+//	  logdebug("update process_units set send = now() where id=:id:"<<rs.getInt("u.id"));
 
-	  logdebug("packing frame group  with size:"<<size<<" !!!");
+//	  logdebug("packing frame group  with size:"<<size<<" !!!");
 
     }else{
       logdebug("no more process units left, sending empty process unit");
