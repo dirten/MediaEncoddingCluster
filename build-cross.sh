@@ -9,6 +9,8 @@
 # Updated by Sam Lantinga <slouken@libsdl.org>
 
 # what flavor are we building?
+export CC=gcc
+export CXX=g++
 
 TARGET=i386-mingw32msvc
 
@@ -279,24 +281,23 @@ final_tweaks()
 	echo "Installation complete!"
 }
 
-#download_files
-
-#install_libs
+download_files
+install_libs
 
 #extract_binutils
-#configure_binutils
-#build_binutils
-#install_binutils
+configure_binutils
+build_binutils
+install_binutils
 
-#extract_gcc
-#patch_gcc
-#configure_gcc
-#build_gcc
-#install_gcc
+extract_gcc
+patch_gcc
+configure_gcc
+build_gcc
+install_gcc
 
-#final_tweaks
+final_tweaks
 
-extract_libtool
-configure_libtool
-build_libtool
-install_libtool
+#extract_libtool
+#configure_libtool
+#build_libtool
+#install_libtool
