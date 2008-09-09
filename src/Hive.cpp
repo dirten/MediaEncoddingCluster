@@ -23,10 +23,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "import.cpp"
+#include "org/esb/hive/FileImporter.h"
 #include "export.cpp"
 #include "org/esb/util/Log.h"
-#include "job.cpp"
+//#include "job.cpp"
+#include "org/esb/hive/JobUtil.h"
 #if !defined(_WIN32)
 
 #include <signal.h>

@@ -32,14 +32,6 @@ namespace org
       private:
         Socket * socket;
         uint8_t byte;
-        /**
-         * The mutex object.
-         */
-        #ifdef HAVE_PTHREAD_H
-            pthread_mutex_t mutex;
-        #else
-            CRITICAL_SECTION mutex;
-        #endif
 /*
 	#if defined(WIN32) 
 	#define Synchronized
@@ -50,27 +42,11 @@ namespace org
         /******************************************************************************/
         ~SocketInputStream()
         {
-        /*
-		#ifdef HAVE_PTHREAD_H
-    		pthread_mutex_destroy(&mutex);
-		#else
-    		DeleteCriticalSection(&mutex);
-		#endif
-		*/
         }
         /******************************************************************************/
         SocketInputStream(Socket * socket)
         {
-        /*
-		#ifdef HAVE_PTHREAD_H
-    		pthread_mutexattr_t attr;
-    		pthread_mutexattr_init(&attr);
-    		pthread_mutex_init(&mutex, &attr);
-    		pthread_mutexattr_destroy(&attr);
-		#else
-    		InitializeCriticalSection(&mutex);            
-		#endif
-		*/
+
           this->socket=socket;
 		  byte=-1;
 

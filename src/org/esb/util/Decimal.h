@@ -42,10 +42,10 @@ namespace util{
   class Decimal
   {
   public:
-    typedef uint64_t MantissaType;
-    typedef int32_t ExponentType;
-    typedef int8_t FlagsType;
-    typedef int8_t PrintFlagsType;
+    typedef unsigned long long int MantissaType;
+    typedef int ExponentType;
+    typedef char FlagsType;
+    typedef char PrintFlagsType;
     enum { Base = 10 };
     /// Flags used for denoting positive or negative, infinity and not a number.
     enum FlagsTypeEnum
@@ -173,8 +173,8 @@ namespace util{
     /// Return this decimal number rounded as a C++ int32_t.
     /// @return int32_t result if the result will fit.
     /// @throw std::overflow_error if the result will not fit
-    int32_t getInt32() const throw(std::overflow_error)
-      { return getInteger<int32_t>(); }
+    int getInt32() const throw(std::overflow_error)
+      { return getInteger<int>(); }
       
     /// Return this decimal number rounded as a C++ unsigned.
     /// @return unsigned result if the result will fit.
@@ -185,20 +185,20 @@ namespace util{
     /// Return this decimal number rounded as a C++ uint32_t.
     /// @return uint32_t result if the result will fit.
     /// @throw std::overflow_error if the result will not fit
-    uint32_t getUnsigned32() const throw(std::overflow_error)
-      { return getInteger<uint32_t>(); }
+    unsigned int getUnsigned32() const throw(std::overflow_error)
+      { return getInteger<unsigned int>(); }
 
     /// Return this decimal number rounded as a C++ int64_t.
     /// @return int64_t result if the result will fit.
     /// @throw std::overflow_error if the result will not fit
-    int64_t getInt64() const throw(std::overflow_error)
-      { return getInteger<int64_t>(); }
+    long long int getInt64() const throw(std::overflow_error)
+      { return getInteger<long long int>(); }
 
     /// Return this decimal number rounded as a C++ uint64_t.
     /// @return uint64_t number, if the result will fit.
     /// @throw std::overflow_error if the result will not fit
-    uint64_t getUnsigned64() const throw(std::overflow_error)
-      { return getInteger<uint64_t>(); }
+    unsigned long long int  getUnsigned64() const throw(std::overflow_error)
+      { return getInteger<unsigned long long int>(); }
     
     /// Convert to a C++ float.
     /// @return float result, which is computed with binary floating point
@@ -229,7 +229,7 @@ namespace util{
     /// @param num integer decimal mantissa value to set this Decimal number to.
     /// @param exponent integer base 10 exponent to set this Decimal number to.
     template <typename IntegerType>
-    void setDecimalInteger(IntegerType num, int32_t exponent);
+    void setDecimalInteger(IntegerType num, int exponent);
       
     /// Set this this tntdb::Decimal object to the value of the given int.
     /// @param num integer value to set this Decimal number to.
@@ -238,8 +238,8 @@ namespace util{
 
     /// Set this this tntdb::Decimal object to the value of the given int32_t.
     /// @param num integer value to set this Decimal number to.
-    void setInt32(int32_t num)
-      { setInteger<int32_t>(num); }
+    void setInt32(int num)
+      { setInteger<int>(num); }
       
     /// Set this this tntdb::Decimal object to the value of the given unsigned.
     /// @param num integer value to set this Decimal number to.
@@ -248,32 +248,32 @@ namespace util{
 
     /// Set this this tntdb::Decimal object to the value of the given uint32_t.
     /// @param num integer value to set this Decimal number to.
-    void setUnsigned32(uint32_t num)
-      { setInteger<uint32_t>(num); }
+    void setUnsigned32(unsigned int num)
+      { setInteger<unsigned int>(num); }
 
     /// Set this this tntdb::Decimal object to the value of the given int64_t.
     /// @param num integer value to set this Decimal number to.
-    void setInt64(int64_t num)
-      { setInteger<int64_t>(num); }
+    void setInt64(long long int num)
+      { setInteger<long long int>(num); }
 
     /// Set this this tntdb::Decimal object to the value of the given uint64_t.
     /// @param num integer value to set this Decimal number to.
-    void setUnsigned64(uint64_t num)
-      { setInteger<int64_t>(num); }
+    void setUnsigned64(unsigned long long int num)
+      { setInteger<long long int>(num); }
 
     /// Set this this tntdb::Decimal object to the value of the given int64_t
     /// decimal mantissa and base 10 exponent.
     /// @param num decimal mantissa integer value to set this Decimal number to.
     /// @param exp base 10 exponent.
-    void setDecimalInt64(int64_t num, int32_t exp)
-      { setDecimalInteger<int64_t>(num, exp); }
+    void setDecimalInt64(long long int num, int exp)
+      { setDecimalInteger<long long int>(num, exp); }
 
     /// Set this this tntdb::Decimal object to the value of the given uint64_t
     /// decimal mantissa and base 10 exponent.
     /// @param num decimal mantissa integer value to set this Decimal number to.
     /// @param exp base 10 exponent.
-    void setDecimalUnsigned64(uint64_t num, int32_t exp)
-      { setDecimalInteger<int64_t>(num, exp); }
+    void setDecimalUnsigned64(unsigned long long int num, int exp)
+      { setDecimalInteger<long long int>(num, exp); }
 
     /// Set this this tntdb::Decimal object to the value of the given float.
     /// @param num float value to set this Decimal number to.

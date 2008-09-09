@@ -9,6 +9,10 @@
 #include <boost/shared_ptr.hpp>
 
 #include <list>
+//struct CodecID;
+//struct AVCodecContext;
+//struct PixelFormat;
+//struct SampleFormat;
 namespace org {
     namespace esb {
         namespace av {

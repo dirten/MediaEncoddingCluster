@@ -40,10 +40,10 @@ namespace util{
     setDouble(value);
   }
 
-  Decimal::Decimal(int64_t man, ExponentType exp)
-    : mantissa(MantissaType(man >= int64_t(0) ? man : -man)),
+  Decimal::Decimal(long long int man, ExponentType exp)
+    : mantissa(MantissaType(man >= (long long int)(0) ? man : -man)),
       exponent(exp),
-      flags(man >=int64_t(0) ? positive : 0),
+      flags(man >=(long long int)(0) ? positive : 0),
       defaultPrintFlags(infinityShort)
   {
   }
@@ -298,7 +298,7 @@ namespace util{
     MantissaType mantissaMultiplier = 10;
     MantissaType man = 0;
     MantissaType previousMan = 0;
-    typedef uint32_t UnsignedExponentType;
+    typedef unsigned int UnsignedExponentType;
     UnsignedExponentType absExp = 0;
     UnsignedExponentType previousAbsExp = 0;
     ExponentType exponentSign = 1;
