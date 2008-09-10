@@ -2,7 +2,7 @@
 #include "org/esb/net/Socket.h"
 #include <iostream>
 #include "org/esb/lang/Byte.h"
-#include "../config.h"
+//#include "../config.h"
 #include <vector>
 #if !defined(WIN32) 
     #include <sys/select.h>
@@ -31,7 +31,7 @@ namespace org
       {
       private:
         Socket * socket;
-        uint8_t byte;
+        char byte;
 /*
 	#if defined(WIN32) 
 	#define Synchronized
@@ -57,12 +57,13 @@ namespace org
         {
 	    size_t size=buffer.size();
 	    buffer.clear();
-	    unsigned char tmp_buffer[size];
+	    unsigned char * tmp_buffer=new unsigned char[size];
 	    size_t counter=read(tmp_buffer, size);
             for( std::size_t ix = 0; ix < counter; ++ix )
             {
                 buffer.push_back(tmp_buffer[ix]);
             }
+			delete tmp_buffer;
 	    return counter;
         }
 

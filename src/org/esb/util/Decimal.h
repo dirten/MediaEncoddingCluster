@@ -18,6 +18,7 @@
 
 #ifndef ORG_ESB_UTIL_DECIMAL_H
 #define ORG_ESB_UTIL_DECIMAL_H
+#pragma warning( disable : 4290 )
 
 #include <string>
 #include <iostream>
@@ -86,7 +87,7 @@ namespace util{
     /// Initialize this Decimal-object with the given decimal mantissa and exponent.
     /// @param man integer decimal mantissa value to set this Decimal number to.
     /// @param exp integer base 10 exponent to set this Decimal number to.
-    Decimal(int64_t man, ExponentType exp);
+    Decimal(long long int man, ExponentType exp);
     
     /// Initializes the Decimal-object with the given MantissaType mantissa
     /// and ExponentType exponent

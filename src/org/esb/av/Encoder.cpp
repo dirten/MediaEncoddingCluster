@@ -26,8 +26,8 @@ Packet Encoder::encode(Frame & frame) {
 
 Packet Encoder::encodeVideo(Frame & frame) {
 
-    int buffer_size = 1024 * 256;
-    uint8_t data[buffer_size];
+    const int buffer_size = 1024 * 256;
+    char  data[buffer_size];
     memset(&data, 0, buffer_size);
 
     int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, &frame);
@@ -55,8 +55,8 @@ Packet Encoder::encodeVideo(Frame & frame) {
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
-    int outbuf_size = 10000;
-    uint8_t outbuf[outbuf_size];
+    const int outbuf_size = 10000;
+    char outbuf[outbuf_size];
     int out_size = avcodec_encode_audio(ctx, (uint8_t*) & outbuf, outbuf_size, (short int *) frame._buffer);
     Packet pak(out_size);
     pak.packet->size = out_size;

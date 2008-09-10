@@ -6,14 +6,14 @@ using namespace org::esb::io;
 BufferedOutputStream::BufferedOutputStream(OutputStream * os){
 	_buffer_size=8192;
 	_count=0;
-	_buffer=new uint8_t[_buffer_size];
+	_buffer=new char[_buffer_size];
 	_os=os;
 }
 
 BufferedOutputStream::BufferedOutputStream(OutputStream* os, int bufferSize){
 	_buffer_size=bufferSize;
 	_count=0;
-	_buffer=new uint8_t[_buffer_size];
+	_buffer=new char[_buffer_size];
 	_os=os;
 }
 

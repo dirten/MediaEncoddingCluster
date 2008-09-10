@@ -8,14 +8,14 @@ using namespace org::esb::lang;
 using namespace org::esb::io;
 FileInputStream::FileInputStream(File * file){
     const std::string name=file!=NULL?file->getPath():NULL;
-    if(!name.size()>0) {
+    if(!(name.size()>0)) {
 //        throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
     }
     open(name);
 }
 
 FileInputStream::FileInputStream(const std::string name) {
-    if(!name.size()>0) {
+    if(!(name.size()>0)) {
 //        throw Exception(__FILE__, __LINE__, "FileInputStream::FileInputStream - No Filename given ");
     }
     open(name);
@@ -73,13 +73,14 @@ int FileInputStream::read() {
 int FileInputStream::read(vector<unsigned char>&buffer) {
     size_t size=buffer.size();
     buffer.clear();
-    unsigned char tmp_buffer[size];
+    unsigned char * tmp_buffer=new unsigned char[size];
     size_t read=fread((char*)tmp_buffer,1, size, file);
     for( std::size_t ix = 0; ix < read; ++ix )
     {
         buffer.push_back(tmp_buffer[ix]);
     }
     _filePointer-=read;
+	delete tmp_buffer;
     return read;
 }
 

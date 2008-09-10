@@ -1,7 +1,8 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include <mysql/mysql.h>
+#include <my_global.h>
+#include <mysql.h>
 
 #include "Column.h"
 #include "ResultSetMetaData.h"
@@ -17,7 +18,7 @@ class Row{
 //      std::cerr<<"Create Row Object"<<std::endl;
       int column_count=mysql_stmt_field_count(stmt);
       bind=new MYSQL_BIND[column_count];
-      memset(bind,0,sizeof(MYSQL_BIND[column_count]));
+      memset(bind,0,sizeof(MYSQL_BIND)*column_count);
       rsmd=new ResultSetMetaData(stmt);
       int count=rsmd->getColumnCount();
 //      meta=mysql_stmt_result_metadata(stmt);

@@ -25,7 +25,8 @@ ResultSet Statement::executeQuery(){
 }
 
 ResultSet Statement::executeQuery(char* tmp){
-//  return NULL;
+	throw SqlException(" Statement::executeQuery(char* tmp) !! not implemented!");
+  return ResultSet(*stmt);
 }
 
 bool Statement::execute(){

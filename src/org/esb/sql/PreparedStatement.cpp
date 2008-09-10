@@ -54,7 +54,7 @@ ResultSet PreparedStatement::executeQuery(){
 }
 
 int PreparedStatement::executeUpdate(){
-
+	return 0;
 }
 
 bool PreparedStatement::execute(){
@@ -74,7 +74,7 @@ bool PreparedStatement::execute(){
 }
 
 unsigned long long PreparedStatement::getLastInsertId(){
-
+	return 0;
 }
 
 void PreparedStatement::parseSql(const char * s){
@@ -119,7 +119,7 @@ void PreparedStatement::parseSql(const char * s){
             break;
 
           case STATE_NAME0:
-            if (std::isalpha(ch))
+            if (isalpha(ch))
             {
               name = ch;
               state = STATE_NAME;
@@ -134,7 +134,7 @@ void PreparedStatement::parseSql(const char * s){
             break;
 
           case STATE_NAME:
-            if (std::isalnum(ch) || ch == '_')
+            if (isalnum(ch) || ch == '_')
               name += ch;
             else
             {

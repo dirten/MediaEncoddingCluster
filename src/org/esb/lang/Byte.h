@@ -1,12 +1,12 @@
 #ifndef ORG_ESB_LANG_BYTE
 #define ORG_ESB_LANG_BYTE
-#include <stdint.h>
+//#include <stdint.h>
 namespace org{
 namespace esb{
 namespace lang{
 class Byte {
     private:
-	uint8_t _byte;
+	char _byte;
     public:
 	~Byte();
     /**
@@ -35,7 +35,7 @@ class Byte {
      * Returns the value of this <code>Byte</code> as a
      * <code>byte</code>.
      */
-	uint8_t byteValue();
+	char byteValue();
 
     /**
      * Returns the value of this <code>Byte</code> as a

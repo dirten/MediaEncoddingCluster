@@ -250,7 +250,7 @@ double Column::getDouble(){
             }
             else
             {
-              int32_t val;
+              int val;
               unsigned char* vptr = reinterpret_cast<unsigned char*>(&val);
               vptr[0] = ptr[0];
               vptr[1] = ptr[1];

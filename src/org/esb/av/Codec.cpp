@@ -5,7 +5,7 @@
 #include "org/esb/util/Log.h"
 using namespace std;
 
-void __attribute__ ((constructor)) my_init (void);
+//void __attribute__ ((constructor)) my_init (void);
 
 void my_init ()
 {
@@ -27,8 +27,9 @@ namespace org {
 					_pix_fmt=(PixelFormat)0;
 					_width=0;
 					_height=0;
-					_time_base=(AVRational){0,0};
-//					_time_base.den=0;
+////					_time_base=(AVRational){0,0};
+					_time_base.num=0;
+					_time_base.den=0;
 					_gop_size=0;
 					_bit_rate=0;
 					_channels=0;

@@ -6,7 +6,7 @@ include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
-include_directories (${FFMPEG_DIR})
+include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 add_library (av av av/Init.cpp 
             av/FrameConverter.cpp 
             av/FrameOutputStream.cpp 
@@ -70,6 +70,7 @@ add_library (net net/SocketException.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
+include_directories (${MYSQL_INC_DIR})
 add_library (sql sql/Column.cpp 
       sql/Connection.cpp 
       sql/Statement.cpp 

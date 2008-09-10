@@ -68,7 +68,7 @@ namespace util{
 
   bool Decimal::isInfinity() const
   {
-    return (flags & infinity);
+    return (bool)(flags & infinity);
   }
 
   bool Decimal::isInfinity(bool positiveInf) const

@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_SQL_RESULTSET_H
 #define ORG_ESB_SQL_RESULTSET_H
-#include <mysql/mysql.h>
+#include <my_global.h>
+#include <mysql.h>
 
 #include "Statement.h"
 #include "PreparedStatement.h"

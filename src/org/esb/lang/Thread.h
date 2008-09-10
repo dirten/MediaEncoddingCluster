@@ -97,7 +97,8 @@ namespace lang{
          * calling thread and not to the thread object.
          * @param millisecs time in milliseconds to sleep
          */
-        static void sleep( int millisecs );
+	        static void sleep2( int millisecs );
+//	        static void sleep( int millisecs );
        
         /**
          * Obtains the Thread Id of the current thread

@@ -22,7 +22,7 @@ namespace org {
 	  template < typename T > void readObject (T & object) {
 	  string data;
 	    _is->read (data);
-	  if (!data.length () > 0) {
+	  if (!(data.length () > 0)) {
 	    cout << "Fehler in der groesse INBOUND_DATA:" << data.
 	      length () << endl;
 	    return;

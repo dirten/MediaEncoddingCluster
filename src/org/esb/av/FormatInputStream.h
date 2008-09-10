@@ -31,7 +31,8 @@ namespace org {
                 int read(vector<unsigned char>&buffer);
                 int read();
                 int getStreamCount();
-                __attribute__((deprecated))InputStream * getStream(int sNumber);
+//                __attribute__((deprecated))InputStream * getStream(int sNumber);
+                InputStream * getStream(int sNumber);
                 AVInputStream * getAVStream(int sNumber);
                 void close();
                 void dumpFormat();

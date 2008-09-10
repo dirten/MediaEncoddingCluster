@@ -3,14 +3,14 @@
 using namespace org::esb::lang;
 
 Byte::Byte(char byte){
-    _byte=static_cast<uint8_t>(byte);
+    _byte=static_cast<char>(byte);
 }
 
 Byte::~Byte(){
 
 }
 
-uint8_t Byte::byteValue(){
+char Byte::byteValue(){
     return _byte;
 }
 

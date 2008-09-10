@@ -50,7 +50,7 @@ private:
                 void open(const std::string name);
                 std::FILE * file;
                 long _filePointer;
-                uint8_t _byte;
+                char _byte;
             };
         }
     }

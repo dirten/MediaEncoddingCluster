@@ -3,7 +3,8 @@
 #include <string>
 #include <map>
 #include "Connection.h"
-#include <mysql/mysql.h>
+#include <my_global.h>
+#include <mysql.h>
 #include "SqlException.h"
 #include "org/esb/util/Log.h"
 //using namespace std;

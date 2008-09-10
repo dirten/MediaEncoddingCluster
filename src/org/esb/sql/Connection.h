@@ -1,9 +1,11 @@
 #ifndef ORG_ESB_SQL_CONNECTION_H
 #define ORG_ESB_SQL_CONNECTION_H
-#include <mysql/mysql.h>
 #include "org/esb/util/Log.h"
 #include "SqlException.h"
 #include <string>
+#include <my_global.h>
+#include <mysql.h>
+
 //#include "tntdb/connection.h"
 //#include "mysql++.h"
 namespace org {

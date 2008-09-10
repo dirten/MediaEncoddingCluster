@@ -17,7 +17,7 @@ class BufferedOutputStream: public OutputStream{
 		void flush();
 	private:
 		int _buffer_size;
-		uint8_t * _buffer;
+		char * _buffer;
 		int _count;
 		OutputStream * _os;
 };

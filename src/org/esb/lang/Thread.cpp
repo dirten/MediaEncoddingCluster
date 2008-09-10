@@ -13,7 +13,10 @@ extern int errno;
 //#include <activemq/exceptions/RuntimeException.h>
 
 using namespace std;
-using namespace org::esb::lang;
+//using namespace org::esb::lang;
+namespace org{
+	namespace esb{
+		namespace lang{
 ////////////////////////////////////////////////////////////////////////////////
 Thread::Thread()
 {
@@ -104,7 +107,9 @@ void Thread::join() throw( Exception )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Thread::sleep( int millisecs )
+
+
+void Thread::sleep2( int millisecs )
 {
 #ifndef WIN32
   struct timespec rec, rem;
@@ -175,3 +180,6 @@ Thread::runCallback( void* param )
 void Thread::setAutoDelete(bool autoDelete){
     _autoDelete=autoDelete;
 }
+
+}}}
+

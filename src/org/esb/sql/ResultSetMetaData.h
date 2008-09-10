@@ -1,7 +1,8 @@
 #ifndef ORG_ESB_SQL_RESULTSETMETADATA_H
 #define ORG_ESB_SQL_RESULTSETMETADATA_H
 
-#include <mysql/mysql.h>
+#include <my_global.h>
+#include <mysql.h>
 #include <string>
 namespace org{
 namespace esb{

@@ -87,7 +87,7 @@ public:
     {
 		ar & packet->size;
 //		std::cout << "PacketSize:"<<packet->size<<std::endl;;
-		packet->data=new uint8_t[packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
+		packet->data=new unsigned char[packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
 		memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
 		callDestruct=true;
 		ar & boost::serialization::make_binary_object(packet->data,	packet->size);

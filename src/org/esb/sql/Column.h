@@ -1,8 +1,12 @@
 #ifndef ORG_ESB_SQL_COLUMN_H
 #define ORG_ESB_SQL_COLUMN_H
 #include "SqlException.h"
+//#include "stdafx.h"   
+//#include <winsock2.h>   
+#include <my_global.h>
+#include <mysql.h>
 
-#include <mysql/mysql.h>
+//#include <mysql.h>
 #include <string>
 #include <sstream>
 #include <boost/shared_ptr.hpp>
