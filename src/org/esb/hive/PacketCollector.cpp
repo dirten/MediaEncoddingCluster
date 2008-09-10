@@ -11,7 +11,7 @@ namespace org{
 namespace esb{
 namespace hive{
 
-
+	using namespace org::esb::lang;
 PacketCollector::PacketCollector(){
 
 
@@ -31,7 +31,7 @@ void PacketCollector::run(){
         
       
       }
-      Thread::sleep(1000);
+      Thread::sleep2(1000);
 	}
 }
 

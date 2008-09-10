@@ -26,7 +26,11 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid){
     		decoder->setHeight(rs.getInt(2));
     		decoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		decoder->setBitRate(rs.getInt(4));
-    		decoder->setTimeBase((AVRational){rs.getInt(5),rs.getInt(6)});
+			AVRational r;
+			r.num=rs.getInt(5);
+			r.den=rs.getInt(6);
+
+			decoder->setTimeBase(r);
     		decoder->setGopSize(rs.getInt(7));
     		decoder->setChannels(rs.getInt(8));
     		decoder->setSampleRate(rs.getInt(9));
@@ -53,7 +57,11 @@ av::Encoder * CodecFactory::getStreamEncoder(int streamid){
     		_encoder->setHeight(rs.getInt(2));
     		_encoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		_encoder->setBitRate(rs.getInt(4));
-    		_encoder->setTimeBase((AVRational){rs.getInt(5),rs.getInt(6)});
+			AVRational r;
+			r.num=rs.getInt(5);
+			r.den=rs.getInt(6);
+
+    		_encoder->setTimeBase(r);
     		_encoder->setGopSize(rs.getInt(7));
     		_encoder->setChannels(rs.getInt(8));
     		_encoder->setSampleRate(rs.getInt(9));

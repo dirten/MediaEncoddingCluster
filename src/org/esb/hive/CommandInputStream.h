@@ -19,7 +19,7 @@ class CommandInputStream : public InputStream{
     private:
         InputStream * _source;
 		Command _command;
-		uint8_t byte;
+		unsigned char byte;
 };
 
 }}}

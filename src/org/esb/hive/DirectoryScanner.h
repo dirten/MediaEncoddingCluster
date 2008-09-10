@@ -1,8 +1,6 @@
 #ifndef ORG_ESB_HIVE_DIRECTORYSCANNER_H
 #define ORG_ESB_HIVE_DIRECTORYSCANNER_H
 #include "org/esb/signal/MessageListener.h"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/io/File.h"
 #include <boost/thread.hpp>
 

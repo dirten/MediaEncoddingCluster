@@ -54,7 +54,8 @@ ProtocolServer::ProtocolServer (Socket * socket)
 	l.push_back (new ShutdownHive (socket));
 	l.push_back (new StartupHive (socket));
 	l.push_back (new Status (socket));
-	l.push_back (new Unknown (socket));
+
+	//	l.push_back (new Unknown (socket));
 }
 
 void ProtocolServer::run ()

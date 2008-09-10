@@ -87,7 +87,7 @@ void Job::activate(){
 	    ResultSet rs=stmt.executeQuery();
 	    if(rs.next()){
 		filename=rs.getString("filename");
-		File f(filename.c_str());
+		org::esb::io::File f(filename.c_str());
 		if(f.exists()){
 		    _fis=new FormatInputStream(&f);
 		}else{
@@ -125,7 +125,10 @@ void Job::activate(){
     		_encoder->setHeight(rs.getInt(2));
     		_encoder->setPixelFormat((PixelFormat)rs.getInt(3));
     		_encoder->setBitRate(rs.getInt(4));
-    		_encoder->setTimeBase((AVRational){rs.getInt(5),rs.getInt(6)});
+			AVRational r;
+			r.num=rs.getInt(5);
+			r.den=rs.getInt(6);
+    		_encoder->setTimeBase(r);
     		_encoder->setGopSize(rs.getInt(7));
     		_encoder->setChannels(rs.getInt(8));
     		_encoder->setSampleRate(rs.getInt(9));
@@ -181,7 +184,7 @@ ProcessUnit Job::getNextProcessUnit(){
 	u._frame_group=fr_gr;
 	_frame_groups.pop();
 	logdebug("packing frame group :" <<fr_gr<<" with startts: "<<startts);
-	_fis->seek(_stream_index,(int64_t)startts);
+	_fis->seek(_stream_index,(long long int)startts);
 	PacketInputStream pis(_fis);
 	int size=0;
 	for(int a=0;a<frame_count;){

@@ -111,7 +111,7 @@ ProcessUnit ClientHandler::getProcessUnit2(){
 	  string filename=rs.getString("filename");
 	  logdebug("filename "<<filename);
 
-	  File file(filename.c_str());
+	  org::esb::io::File file(filename.c_str());
 	  /*TODO build formatstream Factory, */
 	  FormatInputStream fis(&file);
 	  fis.seek(rs.getInt("stream_index"),start_ts);

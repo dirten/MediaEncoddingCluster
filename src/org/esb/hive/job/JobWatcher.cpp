@@ -1,3 +1,5 @@
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
 #include "JobWatcher.h"
 #include "JobHandler.h"
@@ -8,8 +10,6 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 using namespace std;
 using namespace org::esb::io;
 using namespace org::esb::config;
@@ -51,7 +51,7 @@ void JobWatcher::run(){
 	    for(;it!=jobs.end();it++){
 	    	Job * job=*it;	
 	    }
-    	Thread::sleep(1000);
+    	Thread::sleep2(1000);
 	}
 }
 

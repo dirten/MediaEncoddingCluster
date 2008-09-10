@@ -1,5 +1,8 @@
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 #include "ProcessUnitWatcher.h"
 #include "ClientHandler.h"
+
 #include "org/esb/lang/Thread.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
@@ -8,8 +11,6 @@
 #include "org/esb/config/config.h"
 #include "org/esb/hive/CodecFactory.h"
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 
 namespace org{
 namespace esb{
@@ -48,7 +49,7 @@ void ProcessUnitWatcher::start(){
 				logdebug("ProcessUnit added with id "<<rs.getInt("id"));
 			}
 	    }
-    	Thread::sleep(1000);
+		org::esb::lang::Thread::sleep2(1000);
 	}
 }
 
