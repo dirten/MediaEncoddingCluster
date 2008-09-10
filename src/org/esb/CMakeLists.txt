@@ -63,6 +63,8 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 add_library (net net/SocketException.cpp 
       net/ServerSocket.cpp 
       net/Socket.cpp 
+      net/TcpServerSocket.cpp 
+      net/TcpSocket.cpp 
       net/SocketInputStream.cpp 
       net/SocketOutputStream.cpp
 )
