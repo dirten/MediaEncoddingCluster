@@ -9,12 +9,14 @@ namespace net{
       TcpSocket::TcpSocket(boost::asio::io_service& io_service){
       
       }
-      TcpSocket::TcpSocket(boost::shared_ptr<tcp::socket> io_service){
+	  TcpSocket::TcpSocket(boost::shared_ptr<tcp::socket> io_service):_io_service(io_service){
       
       }
+	  /*
       tcp::socket& TcpSocket::socket(){
-//        return socket_;
+        return socket_;
       }
+	  */
       void TcpSocket::run(){
       
       }

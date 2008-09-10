@@ -21,7 +21,7 @@ namespace net{
         boost::shared_ptr<tcp::socket> sock(new tcp::socket(io_service_));
         acceptor_.accept(*sock);
         TcpSocket * socket=new TcpSocket(sock);
-        boost::thread t(boost::bind(&TcpSocket::run,socket));
+//        boost::thread t(boost::bind(&TcpSocket::run,socket));
         /*
         TcpSocket* new_session = new TcpSocket(io_service_);
         acceptor_.async_accept(new_session->socket(),

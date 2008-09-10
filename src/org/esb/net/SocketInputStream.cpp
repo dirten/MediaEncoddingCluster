@@ -13,6 +13,9 @@
     #include <winsock2.h>
 #endif
 
+#include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+using boost::asio::ip::tcp; 
 
 using namespace org::esb::lang;
 using namespace org::esb::io;
@@ -30,7 +33,9 @@ namespace org
       class SocketInputStream: public InputStream
       {
       private:
+		boost::system::error_code error;
         Socket * socket;
+		boost::shared_ptr<tcp::socket> _socket;
         char byte;
 /*
 	#if defined(WIN32) 
@@ -44,16 +49,25 @@ namespace org
         {
         }
         /******************************************************************************/
-        SocketInputStream(Socket * socket)
+
+		SocketInputStream(Socket * socket)
         {
 
           this->socket=socket;
 		  byte=-1;
 
         }
+		SocketInputStream(boost::shared_ptr<tcp::socket> socket):_socket(socket)
+        {
+
+//          this->socket=socket;
+//		  byte=-1;
+
+        }
 
         /******************************************************************************/
-        int read(vector<unsigned char>&buffer)
+
+		int read(vector<unsigned char>&buffer)
         {
 	    size_t size=buffer.size();
 	    buffer.clear();
@@ -70,57 +84,56 @@ namespace org
         /******************************************************************************/
         int read()
         {
-		read((unsigned char*)&byte,1);
+			read((unsigned char*)&byte,1);
 	    	return byte;
         }
         
         /******************************************************************************/
-        int read(unsigned char * buffer, int length)
-        {
+        int read(unsigned char * buffer, int length){
 	    int  counter=0;
             /*Receive data into buffer*/
-            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
+		counter=_socket->read_some(boost::asio::buffer(buffer, length),error);
+//		counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
 //            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,0);
             /*If Connection is dead*/
-            if(counter<=0){
+        /*    
+			if(counter<=0){
 				cout << "Socket is brocken"<<endl;
               	this->socket->close();
             }
+		*/
           return counter;
         }
         
-        int read(string & str)
-        {
-	    int length=available(true);
+        int read(string & str){
+		    int length=available(true);
 //	    cout << "Readed Buffer length"<<length<<endl;
-	    char * buffer=new char[length];
-//	    char buffer[length];
+			unsigned char * buffer=new unsigned char[length];
 	    int  counter=0;
             /*Receive data into buffer*/
-            counter=::recv(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
-//            counter=read((unsigned char*)buffer,length);
+//            counter=read(this->socket->getDescriptor(),(char*)buffer,length,SOCKET_WAITALL);
+            counter=read((unsigned char*)buffer,length);
             /*If Connection is dead*/
             if(counter<=0){
 				cout << "Socket is brocken"<<endl;
               	this->socket->close();
             }else{
-        		str=string(buffer, length);
+        		str=string((char*)buffer, length);
             }
             delete []buffer;
           return counter;
         }
         
         /******************************************************************************/
-        int available(bool isBlocking){
-	    	int numBytes = 0, len=0;
-	    	if(isBlocking){
-				/*Receive length of buffer*/
-        		numBytes=::recv(this->socket->getDescriptor(),(char*)&len,sizeof(int),SOCKET_WAITALL);
-				if(numBytes<0){
-		    		this->socket->close();
-				}
-	    	}
-	    	return len;
+/*Receive length of buffer*/
+		int available(bool isBlocking){
+			char tmp[10];
+			_socket->read_some(boost::asio::buffer(tmp),error);
+			if (error == boost::asio::error::eof)
+				return 0;
+			else
+				throw boost::system::system_error(error);
+	    	return atoi(tmp);
         }
       };
     }
