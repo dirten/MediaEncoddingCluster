@@ -1,7 +1,10 @@
 #ifndef ORG_ESB_SQL_RESULTSETMETADATA_H
 #define ORG_ESB_SQL_RESULTSETMETADATA_H
-
+#ifdef MSVC
 #include <my_global.h>
+#endif
+
+//#include <my_global.h>
 #include <mysql.h>
 #include <string>
 namespace org{

@@ -3,7 +3,11 @@
 #include <string>
 #include <map>
 #include "Connection.h"
+
+#ifdef MSVC
 #include <my_global.h>
+#endif
+
 #include <mysql.h>
 #include "SqlException.h"
 #include "org/esb/util/Log.h"

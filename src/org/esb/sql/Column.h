@@ -3,7 +3,10 @@
 #include "SqlException.h"
 //#include "stdafx.h"   
 //#include <winsock2.h>   
+
+#ifdef MSVC
 #include <my_global.h>
+#endif
 #include <mysql.h>
 
 //#include <mysql.h>

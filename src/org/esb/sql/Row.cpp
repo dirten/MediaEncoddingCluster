@@ -1,7 +1,11 @@
 #include <map>
 #include <string>
 #include <iostream>
+#ifdef MSVC
 #include <my_global.h>
+#endif
+
+//#include <my_global.h>
 #include <mysql.h>
 
 #include "Column.h"

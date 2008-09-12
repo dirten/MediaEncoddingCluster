@@ -6,6 +6,7 @@ include_directories (${FFMPEG_DIR})
 include_directories (${WT_DIR}/src)
 include_directories (${WT_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${MYSQL_INC_DIR})
 
 LINK_DIRECTORIES(${WT_DIR}/src)
 LINK_DIRECTORIES(${BOOST_LIB_DIR})
@@ -15,7 +16,7 @@ LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
 LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
 LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)
 LINK_DIRECTORIES(${X264_DIR})
-LINK_DIRECTORIES(/usr/lib/mysql)
+LINK_DIRECTORIES(${MYSQL_LIB_DIR})
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 

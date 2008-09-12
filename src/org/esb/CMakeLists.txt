@@ -98,6 +98,7 @@ add_library (hive hive/Command.cpp
 	hive/job/ProcessUnit.cpp 
 	hive/DirectoryScanner.cpp 
 	hive/DatabaseUtil.cpp 
+	hive/FileImporter.cpp 
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)

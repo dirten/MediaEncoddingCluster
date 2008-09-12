@@ -113,7 +113,7 @@ while(true){
 //		break;
     }
 //    break;
-	Thread::sleep(10000);
+	Thread::sleep2(10000);
 }
 }
 
@@ -221,7 +221,7 @@ void listener(int argc, char *argv[]){
 	Messenger::free();
 
 
-	Thread::sleep(3000);
+	Thread::sleep2(3000);
 	cout << "Stopping Hive "<<endl;
 
 /*
