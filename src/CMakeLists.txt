@@ -21,7 +21,7 @@ LINK_DIRECTORIES(${MYSQL_LIB_DIR})
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 add_executable (mhive Hive.cpp)
-target_link_libraries (mhive lang esb sql hive av util signal web io net  avcodec avformat avutil swscale wt wtext wthttp
+target_link_libraries (mhive lang esb sql web hive av util signal io net  avcodec avformat avutil swscale wt wtext wthttp
 ${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
 
 #hive_LDADD= -L./org/esb -llang -lesb -lsql -lhive -lav -lutil -lsignal -lweb -lio -lnet -lwt -lwtext -lwthttp -lboost_serialization

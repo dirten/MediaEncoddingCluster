@@ -1,7 +1,7 @@
 #include "ProtocolServer.h"
 #include <iostream>
 #include "org/esb/lang/Runnable.h"
-#include "org/esb/net/Socket.h"
+#include "org/esb/net/TcpSocket.h"
 #include "ProtocolCommand.h"
 #include "ProtocolServer.h"
 #include "Command.h"
@@ -42,18 +42,18 @@ ProtocolServer::~ProtocolServer ()
 	delete _cis;
 }
 
-ProtocolServer::ProtocolServer (Socket * socket)
+ProtocolServer::ProtocolServer (TcpSocket * socket)
 {
 	this->socket = socket;
 	_cis = new CommandInputStream (socket->getInputStream ());
 	l.push_back (new Help (socket->getInputStream (), socket->getOutputStream ()));
 	l.push_back (new DataHandler (socket->getInputStream (), socket->getOutputStream ()));
-	l.push_back (new Disconnect (socket));
-	l.push_back (new Kill (socket));
-	l.push_back (new ShowConfig (socket));
-	l.push_back (new ShutdownHive (socket));
-	l.push_back (new StartupHive (socket));
-	l.push_back (new Status (socket));
+	l.push_back (new Disconnect (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new Kill (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new ShowConfig (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new ShutdownHive (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new StartupHive (socket->getInputStream (), socket->getOutputStream ()));
+	l.push_back (new Status (socket->getInputStream (), socket->getOutputStream ()));
 
 	//	l.push_back (new Unknown (socket));
 }
@@ -85,6 +85,7 @@ void ProtocolServer::run ()
 		}
 		catch (exception & ex) {
 			logerror("ERROR in ProtocolServer:" << ex.what ());
+          socket->close();
 //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
 		}
 	}

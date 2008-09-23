@@ -29,6 +29,7 @@ namespace org
         static void close();
         static void save2db();
         static char * getProperty( char * key, char * def="");
+        static char * setProperty(const char * key, const char * val);
         static Properties * getProperties();
       private:
         static void parseLine(const char*);

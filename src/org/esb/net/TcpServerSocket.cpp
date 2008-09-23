@@ -11,14 +11,14 @@ namespace net{
 //      typedef boost::shared_ptr<tcp::socket> socket_ptr;
 
 
-      TcpServerSocket::TcpServerSocket(boost::asio::io_service& io_service, short port)
-      : io_service_(io_service), acceptor_(io_service, tcp::endpoint(tcp::v4(), port)){
+      TcpServerSocket::TcpServerSocket(short port)
+      : acceptor_(_io_service, tcp::endpoint(tcp::v4(), port)){
       
       }
       
       TcpSocket * TcpServerSocket::accept(){
       
-        boost::shared_ptr<tcp::socket> sock(new tcp::socket(io_service_));
+        boost::shared_ptr<tcp::socket> sock(new tcp::socket(_io_service));
         acceptor_.accept(*sock);
         TcpSocket * socket=new TcpSocket(sock);
 //        boost::thread t(boost::bind(&TcpSocket::run,socket));
@@ -30,8 +30,15 @@ namespace net{
         */
         return socket;
       }
-
+/*
     void TcpServerSocket::handle_accept(TcpSocket* new_session,const boost::system::error_code& error){
+      
+    }
+*/
+    void TcpServerSocket::bind(){
+      
+    }
+    void TcpServerSocket::close(){
       
     }
 

@@ -2,7 +2,7 @@
 #define ORG_ESB_HIVE_PROTOCOLLSERVER_H
 #include <iostream>
 #include "org/esb/lang/Runnable.h"
-#include "org/esb/net/Socket.h"
+#include "org/esb/net/TcpSocket.h"
 #include "org/esb/util/StringUtil.h"
 #include "ProtocolCommand.h"
 #include "Command.h"
@@ -20,13 +20,13 @@ namespace org{
         	logger("hive.core")
             class ProtocolServer:public Runnable{
                 private:
-            	    Socket * socket;
+            	    TcpSocket * socket;
             	    list<ProtocolCommand*> l;
                     CommandInputStream * _cis;
 //		    pthread_mutex_t * mutex;
                 public:
             	    ~ProtocolServer();
-            	    ProtocolServer(Socket * socket);
+            	    ProtocolServer(TcpSocket * socket);
             	    void run();
             };
         }

@@ -67,6 +67,8 @@ add_library (net net/SocketException.cpp
       net/TcpSocket.cpp 
       net/SocketInputStream.cpp 
       net/SocketOutputStream.cpp
+#      net/TcpSocketInputStream.cpp 
+#      net/TcpSocketOutputStream.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
@@ -99,6 +101,7 @@ add_library (hive hive/Command.cpp
 	hive/DirectoryScanner.cpp 
 	hive/DatabaseUtil.cpp 
 	hive/FileImporter.cpp 
+	hive/JobUtil.cpp 
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)

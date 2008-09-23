@@ -1,10 +1,10 @@
 #include <iostream>
+#include <boost/program_options.hpp>
 
-
-#include "org/esb/net/ServerSocket.h"
-#include "org/esb/net/Socket.h"
-#include "org/esb/lang/Thread.h"
-#include "org/esb/hive/ProtocolServer.h"
+//#include "org/esb/net/TcpServerSocket.h"
+#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/lang/Thread.h"
+//#include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "org/esb/util/Decimal.h"
 #include "org/esb/hive/FileImporter.h"
 #include "export.cpp"
 #include "org/esb/util/Log.h"
@@ -41,6 +42,7 @@ using namespace org::esb::net;
 using namespace org::esb::config;
 using namespace org::esb::hive;
 using namespace org::esb::web;
+using namespace org::esb::util;
 using namespace org::esb::signal;
 using namespace std;
 
@@ -48,19 +50,83 @@ using namespace std;
 
 using namespace std;
 
+namespace po = boost::program_options;
 
 void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 
 
-
 int main(int argc, char * argv[]){	
 //    loginit("log.properties");
-    Config::init("./cluster.cfg");
+    std::string config_path;
+    po::options_description gen("general options");
+    gen.add_options()
+        ("help", "produce this message")
+        ("config,c", po::value<std::string>()->default_value("/etc/hive.conf"), "use Configuration")
+        ("version,v", "Prints the Version")
+        ;
 
+    po::options_description ser("Server options");
+    ser.add_options()
+        ("server,s", "start the Hive Server Process")
+        ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
+        ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
+        ("webroot,r", po::value<std::string>()->default_value("."), "define the Path for Web Server root")
+        ;
+
+
+    po::options_description cli("Client options");
+    cli.add_options()
+        ("client,i","start the Hive Client")
+        ("host,h", po::value<std::string>()->default_value("localhost"), "Host to connect")
+        ("port,p", po::value<int>()->default_value(20200), "Port to connect")
+        ;
+
+    po::options_description all("options");
+    all.add(gen).add(ser).add(cli);
+
+    gen.add(ser).add(cli);
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, gen), vm);
+    po::notify(vm);
+    
+    if (argc==1 || vm.count("help")) {
+      cout << gen << "\n";
+      return 1;
+    }
+
+	av_register_all ();
+    avcodec_init();
+	avcodec_register_all ();
+
+    Config::init((char*)vm["config"].as<std::string>().c_str());
+    
+
+    if (vm.count("server")) {
+//      logdebug("setting webroot to :"<<vm["webroot"].as<std::string>());
+  	  Config::setProperty("web.docroot",vm["webroot"].as<std::string>().c_str());
+  	  Config::setProperty("hive.port",Decimal(vm["port"].as<int>()).toString().c_str());
+  	  listener(argc, argv);
+    }
+
+    if (vm.count("client")) {
+  	  Config::setProperty("client.port",Decimal(vm["port"].as<int>()).toString().c_str());
+  	  Config::setProperty("client.host",vm["host"].as<std::string>().c_str());
+	  client(argc,argv);
+    }
+
+
+//    Config::init("./cluster.cfg");
+/*
     loginit(Config::getProperty("log.conf"));
 
+	av_register_all ();
+    avcodec_init();
+	avcodec_register_all ();
+*/
+/*
 	for(int arg_counter=1;argc>arg_counter;arg_counter++){
 		if(strcmp(argv[arg_counter],"listen")==0){
 			listener(argc, argv);
@@ -76,21 +142,22 @@ int main(int argc, char * argv[]){
 		}else if(strcmp(argv[arg_counter],"export")==0){
 			exporter(argc,argv);
 		}else{
-			cout << "Argument unknown : "<<argv[arg_counter]<<endl;
+//			cout << "Argument unknown : "<<argv[arg_counter]<<endl;
 			exit(-127);
 		}		
 	}
+	*/
 	Config::close();
 	return 0;
 }
 
 void client(int argc, char *argv[]){
-	string host="localhost";
-  	if(argc==3){
-  		host=argv[2];
-  	}
-  	cout << "Connecting to "<<host<<endl;;
-    Socket sock((char*)host.c_str(), 20000);
+
+	string host=Config::getProperty("client.host");
+	int port=atoi(Config::getProperty("client.port"));
+
+  	cout << "Connecting to "<<host<<" on port "<<port<<endl;;
+    TcpSocket sock((char*)host.c_str(), port);
     sock.connect();
     ObjectInputStream ois(sock.getInputStream());
     ObjectOutputStream oos(sock.getOutputStream());
@@ -113,7 +180,7 @@ while(true){
 //		break;
     }
 //    break;
-	Thread::sleep2(10000);
+	Thread::sleep2(1000);
 }
 }
 

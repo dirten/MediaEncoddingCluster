@@ -4,7 +4,9 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/lang/Runnable.h"
+#include "org/esb/net/TcpServerSocket.h"
 #include <boost/thread.hpp>
+
 namespace org{
 namespace esb{
 namespace hive{
@@ -19,6 +21,7 @@ class HiveListener:public org::esb::signal::MessageListener, public org::esb::la
 		bool main_nextloop;
 		bool is_running;
 		boost::thread *t;
+		org::esb::net::TcpServerSocket * server;
 };
 }}}
 #endif

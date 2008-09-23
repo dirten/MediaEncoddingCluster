@@ -6,7 +6,9 @@ class Disconnect:public ProtocolCommand {
 		this->socket = socket;
 		this->is = socket->getInputStream ();
 		this->os = socket->getOutputStream ();
-	} Disconnect (InputStream * is, OutputStream * os) {
+	} 
+	
+	Disconnect (InputStream * is, OutputStream * os) {
 		this->socket = 0;
 		this->is = is;
 		this->os = os;

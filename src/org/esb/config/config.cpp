@@ -12,6 +12,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 
+#include "org/esb/lang/Exception.h"
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
@@ -40,10 +41,8 @@ void Config::init(char * filename)
   char buffer[255];
   if((fp = fopen(filename,"r"))==NULL)
   {
-    cout << "Configurationfile not found !!!!" <<endl;
-    exit(1);
+    throw Exception(__FILE__,__LINE__,string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
-//  printf("Configuration Loaded from %s\n", filename);
   properties=new Properties();
   while (fgets(buffer,255,fp) != NULL)
   {
@@ -78,6 +77,11 @@ char * Config::getProperty(char * key, char * def)
 {
   if(!properties->hasProperty(key))return def;
   return (char*)properties->getProperty(key);
+}
+
+char * Config::setProperty(const char * key, const char * val)
+{
+  properties->setProperty(key,val);
 }
 
 Properties * Config::getProperties()

@@ -193,6 +193,10 @@ ProcessUnit ClientHandler::getProcessUnit(){
 	  ResultSet rs_p=stmt_p.executeQuery();
 
 	  for(int a=0;rs_p.next();){
+        if(rs_p.getInt("data_size")!=rs_p.getBlob("data").length()){
+          logerror("field data_size has different value then the blob field on packet id:"<<rs_p.getInt("id")<<" : DROP PACKET")
+          continue;
+        }
 	    boost::shared_ptr<Packet> p(new Packet(rs_p.getInt("data_size")));
 	    memcpy(p->packet->data,rs_p.getBlob("data").c_str(),p->packet->size);
 	    p->packet->pts=rs_p.getDouble("pts");

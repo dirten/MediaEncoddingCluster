@@ -9,14 +9,14 @@
 #include <boost/shared_ptr.hpp>
 
 #include <list>
-//struct CodecID;
-//struct AVCodecContext;
-//struct PixelFormat;
-//struct SampleFormat;
 namespace org {
     namespace esb {
         namespace av {
             class Frame;
+/*class CodecID;
+class AVCodecContext;
+class PixelFormat;
+class SampleFormat;*/
 
             class Codec{
                 logger("hive.av.codec")
@@ -30,7 +30,7 @@ namespace org {
                 CodecType getCodecType();
                 char *getCodecName();
                 int getCodecId();
-                void open();
+                int open();
                 void close();
                 void setWidth(int w);
                 void setHeight(int h);
@@ -75,7 +75,7 @@ namespace org {
                 //			  protected:
 
                 AVCodec * _codec;
-                void findCodec(int mode);
+                bool findCodec(int mode);
                 int _mode;
                 AVCodecContext * ctx;
             protected:

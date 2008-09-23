@@ -11,9 +11,11 @@
 #include <boost/shared_ptr.hpp>
 //#include <boost/serialization/split_member.hpp>
 //using namespace boost;
+//    class AVPacket;
 namespace org {
 namespace esb {
 namespace av {
+
 class Packet {
 public:
 	Packet();
@@ -32,11 +34,10 @@ public:
 	//        	    boost::shared_ptr<unsigned char*> data;
 	Packet(const Packet & packet);
 	Packet operator=(Packet & packet);
-
 	AVPacket * packet;
 	boost::shared_ptr<AVPacket> packetPtr;
 //private:
-	AVPacket _packet;
+//	AVPacket _packet;
 	bool isCopy;
 	bool callDestruct;
 	uint8_t _data;

@@ -1,4 +1,6 @@
 #include "Packet.h"
+#include "AV.h"
+#include "org/esb/util/Log.h"
 #include <iostream>
 using namespace std;
 using namespace org::esb::av;
@@ -76,6 +78,8 @@ Packet::Packet(int s){
 		packet->data=new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
 		memset(packet->data,0,s + FF_INPUT_BUFFER_PADDING_SIZE);
 		callDestruct=true;
+	}else{
+	  logerror("Try to Allocate buffer <0")
 	}
 }
 

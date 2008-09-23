@@ -9,10 +9,13 @@ namespace net{
   class TcpSocket;
   class TcpServerSocket{
     public:
-      TcpServerSocket(boost::asio::io_service& io_service, short port);
+      TcpServerSocket(short port);
+      void bind();
+      void close();
       TcpSocket * accept();
     private:
-      boost::asio::io_service& io_service_;
+//      boost::asio::io_service& io_service_;
+      boost::asio::io_service _io_service;
       tcp::acceptor acceptor_;
       void handle_accept(TcpSocket* new_session,const boost::system::error_code& error);
 

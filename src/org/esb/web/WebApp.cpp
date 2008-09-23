@@ -115,7 +115,7 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   contents->addWidget(new Configuration());
   contents->addWidget(new Upload());
   contents->addWidget(new ProfilesEdit());
-//  contents->setCurrentIndex(0);
+  contents->setCurrentIndex(0);
 //  contents->setCurrentIndex(1);
 
 //  contents->refresh();

@@ -13,7 +13,8 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 
-#include "job.cpp"
+//#include "job.cpp"
+#include "org/esb/hive/JobUtil.h"
 #include <map>
 using namespace org::esb::sql;
 using namespace org::esb::config;

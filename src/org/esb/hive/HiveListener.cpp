@@ -1,9 +1,10 @@
 #include "HiveListener.h"
 #include "ProtocolServer.h"
 #include "org/esb/config/config.h"
-#include "org/esb/net/Socket.h"
-#include "org/esb/net/ServerSocket.h"
+#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/net/TcpServerSocket.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/util/Log.h"
 #include "org/esb/signal/Messenger.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -35,22 +36,24 @@ void HiveListener::onMessage(org::esb::signal::Message & msg){
   if(msg.getProperty("hivelistener")=="start"){
 //    cout << "Start Message Arrived:"<<endl;
     boost::thread tt(boost::bind(&HiveListener::startListener,this));
-    cout << "Hive Listener running:"<<endl;
+    logdebug("Hive Listener running on port:"<<Config::getProperty("hive.port"));
+//    cout << "Hive Listener running:"<<endl;
     is_running=true;
   }else
   if(msg.getProperty("hivelistener")=="stop"){
     cout << "Hive Listener stopped:"<<endl;
+    server->close();
 //    cout << "Stop Message Arrived:"<<endl;
   }
 }
 
 void HiveListener::startListener(){
   int port=atoi(Config::getProperty("hive.port"));
-    ServerSocket * server=new ServerSocket(port);
+    server=new TcpServerSocket(port);
     server->bind();
     for(;main_nextloop;){
-//		try{
-	    	Socket * clientSocket=server->accept();
+		try{
+	    	TcpSocket * clientSocket=server->accept();
 	    	if(clientSocket!=NULL){
 	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
 	    		Thread *thread=new Thread(protoServer);
@@ -59,9 +62,9 @@ void HiveListener::startListener(){
 				cout << "Client  Socket ist null"<<endl;
 				break;
 	    	}
-//		}catch(exception & ex){
-//	    	cout << "Exception in Main:"<<ex.what()<<endl;;
-//		}
+		}catch(exception & ex){
+	    	logerror("Exception in Main:"<<ex.what());
+		}
     }
   }
 

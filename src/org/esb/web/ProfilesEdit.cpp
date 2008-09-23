@@ -135,7 +135,6 @@ namespace web{
 	      (*elit).second->setText("");
 	    }
       }
-      but->setEnabled(true);
 	}
 	void setEnabled(bool e){
       std::map<std::string,Wt::Ext::LineEdit*>::iterator elit=elements.begin();
@@ -143,6 +142,7 @@ namespace web{
 	    (*elit).second->setEnabled(e);
 	  }
 	  elements["id"]->setEnabled(false);
+	  but->setEnabled(e);
 	}
 	
 	Wt::Signal<void> profileSaved;

@@ -7,7 +7,7 @@ namespace signal{
 Message::Message(){
 
 }
-Message::Message(void * ent){
+Message::Message(boost::shared_ptr<void *> ent){
 
 }
 

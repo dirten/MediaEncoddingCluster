@@ -2,8 +2,10 @@
 
 #include "Frame.h"
 #include "Packet.h"
+#include "org/esb/lang/Exception.h"
 #include <iostream>
 using namespace org::esb::av;
+using namespace org::esb;
 using namespace std;
 
 Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
@@ -34,7 +36,11 @@ Packet Encoder::encodeVideo(Frame & frame) {
     //    pac.data=new uint8_t[ret];
     //	cout << "ret:"<<ret<<endl;
     Packet pac(ret);
-    memcpy(pac.packet->data, &data, ret);
+    if(ret>0){
+      memcpy(pac.packet->data, &data, ret);
+    }else{
+      throw lang::Exception();
+    }
     //    pac.data=data;
     pac.packet->size = ret;
     pac.packet->pts = frame.getPts();
@@ -65,6 +71,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	pak.pts=this->coded_frame->pts;
     //    if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
     //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
+
 
     if (ctx->coded_frame) {
         //		pak.packet->pts=ctx->coded_frame->pts;

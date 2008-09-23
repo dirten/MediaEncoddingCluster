@@ -65,21 +65,27 @@ namespace org {
 				return _codec_id;
 			}
 
-			void Codec::findCodec (int mode) {
+			bool Codec::findCodec (int mode) {
+              bool result=true;
 			    logdebug("try to find "<<(mode==DECODER?"Decoder":"Encoder")<<" with id:"<<_codec_id);
 				if (mode == DECODER) {
 					_codec = avcodec_find_decoder ((CodecID)_codec_id);
-					if (_codec == NULL)
+					if (_codec == NULL){
 					    logerror("Decoder not found for id :" << _codec_id);
+					    result=false;
+					}
 				}
 				else 
 				if (mode == ENCODER){
 					_codec = avcodec_find_encoder ((CodecID)_codec_id);
-					if (_codec == NULL)
+					if (_codec == NULL){
 					    logerror("Encoder not found for id :" << _codec_id);
+					    result=false;
+					}
 				}else{
 					    logerror("Mode not set for Codec");
 				}
+				return result;
 			}
 
 			void Codec::setParams () {
@@ -110,32 +116,36 @@ namespace org {
 //					ctx->start_time=_start_time;
 			}
 			
-			void Codec::open () {
-				findCodec (_mode);
-				ctx=avcodec_alloc_context();
-				setParams();
-				if (_codec->capabilities & CODEC_CAP_TRUNCATED){
-//					ctx->flags |= CODEC_FLAG_TRUNCATED;
-//					cout <<"CodecCapTruncated"<<endl;
-				}
-//				ctx->flags |=CODEC_FLAG_LOW_DELAY;
+			int Codec::open () {
+				if(findCodec (_mode)){
+    				ctx=avcodec_alloc_context();
+	    			setParams();
+		    		if (_codec->capabilities & CODEC_CAP_TRUNCATED){
+//			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
+//					    cout <<"CodecCapTruncated"<<endl;
+				    }
+//				    ctx->flags |=CODEC_FLAG_LOW_DELAY;
                 
-				if (avcodec_open (ctx, _codec) < 0) {
-					logerror("ERROR : while openning Codec" <<_codec_id);
-				}else{
-				    logdebug("Codec opened:" << _codec_id);
-				    _opened=true;
+				    if (avcodec_open (ctx, _codec) < 0) {
+					  logerror("while openning Codec" <<_codec_id);
+					
+				    }else{
+				      logdebug("Codec opened:" << _codec_id);
+				      _opened=true;
+				    }
+				    return 0;
 				}
-				
-//				_opened=true;
-
+				return -1;
 			}
+			
 			void Codec::setFlag(int flag){
 				_flags|=flag;
 			}
+			
 			Codec::~Codec () {
 				close();
 			}
+			
 			void Codec::close () {
 			    if(_opened){
 			        av_freep(&ctx->stats_in);
@@ -159,37 +169,48 @@ namespace org {
 			void Codec::setBitRate (int rate) {
 				_bit_rate = rate;
 			}
+			
 			void Codec::setTimeBase (AVRational tb) {
 				_time_base = tb;
 			}
+			
 			void Codec::setGopSize (int size) {
 				_gop_size = size;
 			}
+			
 			void Codec::setChannels (int c) {
 				_channels = c;
 			}
+			
 			void Codec::setSampleRate (int rate) {
 				_sample_rate = rate;
 			}
+			
 			void Codec::setSampleFormat (SampleFormat f) {
 				_sample_format = f;
 			}
+			
 			int Codec::getWidth () {
 				return _width;
 			}
+			
 			int Codec::getHeight () {
 				return _height;
 			}
+			
 			int Codec::getPixelFormat () {
 				return ctx->pix_fmt;
 //				return _pix_fmt;
 			}
+			
 			int Codec::getSampleRate () {
 				return _sample_rate;
 			}
+			
 			int Codec::getChannels () {
 				return _channels;
 			}
+			
 			void Codec::setStartTime (int64_t start) {
 				_start_time=start;
 			}

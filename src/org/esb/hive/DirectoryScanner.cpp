@@ -10,6 +10,7 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 
+#include "org/esb/hive/FileImporter.h"
 //#include "import.cpp"
 #include <boost/algorithm/string.hpp>
 namespace org{
@@ -84,7 +85,7 @@ void DirectoryScanner::computeFile(File file){
 //  found=str.find_first_of("aeiou");
     if(file.isFile()){
       char * argv[]={"",(char*)file.getPath().c_str()};
-//      int fileid=import(2,argv);
+      int fileid=import(2,argv);
     }
 //    std::string sql("insert into files (filename, path) values (\""+file.getFileName()+"\",\""+file.getFilePath()+"\")");
 //    std::cout << sql <<std::endl;

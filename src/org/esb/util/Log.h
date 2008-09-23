@@ -2,16 +2,30 @@
 #define ORG_ESB_UTIL_LOGGER_H
 //#include "cxxtools/log.h"
 //#include "cxxtools/loginit.h"
+//#include "boost/date_time/gregorian/gregorian.hpp"
+//#include <boost/logging/format_fwd.hpp>
 #include <iostream>
+#include "Datetime.h"
+#include "boost/date_time/posix_time/posix_time.hpp"
 
+// Step 1: Optimize : use a cache string, to make formatting the message faster
+//BOOST_LOG_FORMAT_MSG( optimize::cache_string_one_str<> ) 
+
+using namespace boost::posix_time;
+using namespace boost::gregorian;
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
-#define logfatal(o1)std::cerr << o1<<std::endl;/*log_fatal(o1)*/
-#define logerror(o1)std::cerr << o1<<std::endl;/*log_error(o1)*/
-#define logwarn(o1)std::cout << o1<<std::endl;/*log_warn(o1)*/
-#define loginfo(o1)std::cout << o1<<std::endl;/*log_info(o1)*/
-#define logdebug(o1) std::cout << o1<<std::endl;/*log_debug(o1)*/
+#define logfatal(o1)loglevel(o1, "fatal")/*log_fatal(o1)*/
+#define logerror(o1)loglevel(o1, "error")/*log_error(o1)*/
+#define logwarn(o1)loglevel(o1, "warn")/*log_warn(o1)*/
+#define loginfo(o1)loglevel(o1, "info")/*log_info(o1)*/
+#define logdebug(o1)loglevel(o1, "debug")/*log_debug(o1)*/
 
+#define loglevel(o1,level) {\
+  ptime now = microsec_clock::local_time(); \
+  date today = now.date(); \
+  std::cout<<"["<<to_simple_string(now)<<"] ["<<level<<"][" << o1<<std::endl; \
+}
 
 #endif
 
