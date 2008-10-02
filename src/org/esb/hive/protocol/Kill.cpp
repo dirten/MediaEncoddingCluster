@@ -24,6 +24,9 @@ class Kill:public ProtocolCommand{
 	    this->is=is;
 	    this->os=os;
 	}
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
 	int isResponsible(char * command){
 	    if(strcmp(command,"kill")==0){

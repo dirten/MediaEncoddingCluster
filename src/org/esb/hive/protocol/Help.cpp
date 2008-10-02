@@ -22,6 +22,9 @@ class Help:public ProtocolCommand {
 		this->os = os;
 	}
 
+	int isResponsible (cmdId & cmid) {
+	
+	}
 	int isResponsible (char *command) {
 		if (strcmp (command, "help") == 0)
 			return CMD_HELP;

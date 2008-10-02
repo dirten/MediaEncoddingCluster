@@ -15,19 +15,19 @@ enum cmdId {
 	CMD_NONE,
 	CMD_GET_UNIT,
 	CMD_PUT_UNIT,
-//	CMD_HELP,
+	CMD_HELP,
 };
 namespace org{
     namespace esb{
         namespace hive{
-            class ProtocolCommand{
+            class ProtocolCommandHandler{
                 public:
-            	    ProtocolCommand(){};
-            	    ProtocolCommand(InputStream *is, OutputStream * os){};
+            	    ProtocolCommandHandler(){};
+            	    ProtocolCommandHandler(InputStream *is, OutputStream * os){};
 /**
  * @deprecated
  */
-             	    ProtocolCommand(org::esb::net::Socket * socket){};
+//             	    ProtocolCommandHandler(org::esb::net::Socket * socket){};
             	    virtual ~ProtocolCommand(){};
             	    virtual int isResponsible(char * command)=0;
             	    virtual int isResponsible(cmdId&)=0;

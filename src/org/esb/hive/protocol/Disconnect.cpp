@@ -17,6 +17,9 @@ class Disconnect:public ProtocolCommand {
 	~Disconnect () {
 	}
 
+	int isResponsible (cmdId & cmid) {
+	
+	}
 	int isResponsible (char *command) {
 		if (strcmp (command, "disconnect") == 0 ||
 			strcmp (command, "quit") == 0) {

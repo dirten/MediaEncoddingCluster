@@ -24,6 +24,9 @@ class CreateHive:public ProtocolCommand {
 		this->os = os;
 	}
 
+	int isResponsible (cmdId & cmid) {
+	
+	}
 	int isResponsible (char *command) {
 		if (strstr (command, "create hive") > 0) {
 			return CMD_PROCESS;

@@ -31,6 +31,9 @@ public:
     this->is = is;
     this->os = os;
   }
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
   int
   isResponsible (char *command)

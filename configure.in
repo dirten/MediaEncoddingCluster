@@ -88,7 +88,7 @@ AC_CHECK_HEADERS([pthread.h])
 #])])
 
 #CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0 -Weffc++"
-CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -ggdb -O0"
+CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -D__STDC_CONSTANT_MACROS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 #CXXFLAGS="$CPPFLAGS $FFMPEG_CFLAGS -Wall -Wno-switch  -D_LARGEFILE_SOURCE -D_GNU_SOURCE -g -O0"
 LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
@@ -113,7 +113,7 @@ LDFLAGS="$LDFLAGS $FFMPEG_LD -lpthread -L/usr/lib/mysql -lmysqlclient -lcppunit"
 
 if test -d "$srcdir/external/wt"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/wt])
+#  AC_CONFIG_SUBDIRS([external/wt])
   CXXFLAGS+=" -I`pwd`/external/wt"
   CXXFLAGS+=" -I`pwd`/external/wt/src"
   LDFLAGS+=" -L`pwd`/external/wt/src -lwt -lwtext"
@@ -146,13 +146,13 @@ fi
 
 if test -d "$srcdir/external/libx264"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/libx264])
+#  AC_CONFIG_SUBDIRS([external/libx264])
   LDFLAGS+=" -L`pwd`/external/libx264 -lx264"
 fi
 
 if test -d "$srcdir/external/ffmpeg"; then
 #  AC_OUTPUT(external/Makefile)
-  AC_CONFIG_SUBDIRS([external/ffmpeg])
+#  AC_CONFIG_SUBDIRS([external/ffmpeg])
   CXXFLAGS+=" -I`pwd`/external/ffmpeg"
   LDFLAGS+=" -L`pwd`/external/ffmpeg/libavutil -lavutil"
   LDFLAGS+=" -L`pwd`/external/ffmpeg/libavformat -lavformat"

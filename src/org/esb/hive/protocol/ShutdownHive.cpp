@@ -18,6 +18,9 @@ class ShutdownHive : public ProtocolCommand{
 	
 
 	~ShutdownHive(){}
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
 	int isResponsible(char * command){
 	    if(strcmp(command,"shutdown")==0){

@@ -19,6 +19,9 @@ class Status : public ProtocolCommand{
 	
 	~Status(){}
 
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
 	int isResponsible(char * command){
 	    if(strcmp(command,"show status")==0){

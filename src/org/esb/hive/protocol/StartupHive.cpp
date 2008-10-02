@@ -18,6 +18,9 @@ class StartupHive : public ProtocolCommand{
 	}
 	
 	~StartupHive(){}
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
 	int isResponsible(char * command){
 	    if(strcmp(command,"startup")==0){

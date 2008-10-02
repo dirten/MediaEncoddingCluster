@@ -37,6 +37,9 @@ class DataHandler: public ProtocolCommand{
 	    _ois=new io::ObjectInputStream(_is);
 	    _handler=new ClientHandler();
 	}
+	int isResponsible (cmdId & cmid) {
+	
+	}
 
 	int isResponsible(char * command){
 	    if(
@@ -45,7 +48,7 @@ class DataHandler: public ProtocolCommand{
 		    return CMD_PROCESS;
 	    }else
 	    if(strcmp(command,"help")==0){
-		return CMD_HELP;
+			return CMD_HELP;
 	    }
 	    return CMD_NA;
 	}

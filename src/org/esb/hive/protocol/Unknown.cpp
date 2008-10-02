@@ -21,6 +21,10 @@ class Unknown : public ProtocolCommand{
 	}
 	
 	~Unknown(){}
+	int isResponsible (cmdId & cmid) {
+	
+	}
+
 	int isResponsible(char * command){
 	    if(strlen(command)>0&&strcmp(command,"help")!=0){
 //		cout <<"Command Unknown:"<<command<<endl;
