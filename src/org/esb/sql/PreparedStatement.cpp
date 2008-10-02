@@ -29,7 +29,7 @@ void PreparedStatement::close(){
   }
 }
 
-void PreparedStatement::setBlob(string pos, char* data, int length){para->getParameter(vars[pos])->setBlob(data);}
+void PreparedStatement::setBlob(string pos, char* data, int length){para->getParameter(vars[pos])->setBlob(data, length);}
 void PreparedStatement::setClob(string pos, char* data, int length){para->getParameter(vars[pos])->setString(data);}
 
 

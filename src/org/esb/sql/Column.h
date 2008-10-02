@@ -36,6 +36,7 @@ namespace org {
                 void setNull();
                 std::string getBlob();
                 void setBlob(const std::string &);
+                void setBlob(const char *, int);
                 std::string getName();
                 std::string getTableName();
             private:

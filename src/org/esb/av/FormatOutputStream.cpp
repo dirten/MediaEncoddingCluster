@@ -58,7 +58,7 @@ void FormatOutputStream::write(char * buffer) {
 void FormatOutputStream::open() {
     if (!(_fmt->flags & AVFMT_NOFILE)) {
         if (url_fopen(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
-            fprintf(stderr, "Could not open '%s'\n", _file->getPath());
+            fprintf(stderr, "Could not open '%s'\n", _file->getPath().c_str());
             //            exit(1);
         }
     }

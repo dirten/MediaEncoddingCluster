@@ -1,4 +1,5 @@
 #include "Messenger.h"
+#include "org/esb/util/Log.h"
 #include <iostream>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -19,7 +20,7 @@ Messenger::Messenger(std::string name){
 void Messenger::free(){
   std::map<std::string, Messenger*>::iterator it=messenger.begin();
   for(;it!=messenger.end();it++){
-    std::cout << "Delete Messenger:"<<(*it).first<<std::endl;
+    logdebug("Delete Messenger:"<<(*it).first);
     delete (*it).second;
   }
 }
@@ -45,6 +46,14 @@ void Messenger::sendMessage(Message & msg, std::string name){
   for(;l!=listener[name].end();l++){
 	boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
 //	(*l)->onMessage(msg);
+  }
+}
+
+void Messenger::sendRequest(Message & msg, std::string name){
+  std::list<MessageListener*>::iterator l=(listener[name]).begin();
+  for(;l!=listener[name].end();l++){
+//	boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
+	(*l)->onMessage(msg);
   }
 }
 

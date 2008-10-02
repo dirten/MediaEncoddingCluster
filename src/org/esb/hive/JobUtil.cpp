@@ -91,8 +91,9 @@ int jobcreator(int argc, char*argv[]){
 
 
 {
-	PreparedStatement stmt=con.prepareStatement("insert into files ( filename ) values( :filename )");
+	PreparedStatement stmt=con.prepareStatement("insert into files ( filename, parent ) values( :filename, :parent )");
 	stmt.setString("filename",profilename+"/"+filename);
+	stmt.setInt("parent",fileid);
 	stmt.execute();
 	outfileid=con.lastInsertId();
 }

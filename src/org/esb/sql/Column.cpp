@@ -393,6 +393,13 @@ void Column::setBlob(const std::string& data){
   bind.buffer_type = MYSQL_TYPE_BLOB;
 }
 
+void Column::setBlob(const char * data, int len){
+  length = len;
+  reserve(length);
+  memcpy(static_cast<char*>(bind.buffer), data, length);
+  bind.buffer_type = MYSQL_TYPE_BLOB;
+}
+
 void Column::setNull()
     {
 //      release(bind);

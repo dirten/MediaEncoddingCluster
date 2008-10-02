@@ -21,6 +21,7 @@ class Messenger{
     void addMessageListener(MessageListener &listener, std::string name=DEFAULT_NAME);
     void removeMessageListener(MessageListener &listener, std::string name=DEFAULT_NAME);
     void sendMessage(Message & msg, std::string name=DEFAULT_NAME);
+    void sendRequest(Message & msg, std::string name=DEFAULT_NAME);
   private:
 //    enum {DEFAULT= "global"};
     Messenger(std::string name);

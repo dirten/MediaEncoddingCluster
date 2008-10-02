@@ -24,7 +24,7 @@ using namespace boost::gregorian;
 #define loglevel(o1,level) {\
   ptime now = microsec_clock::local_time(); \
   date today = now.date(); \
-  std::cout<<"["<<to_simple_string(now)<<"] ["<<level<<"][" << o1<<std::endl; \
+  std::cout<<"["<<to_simple_string(now)<<"] ["<<level<<"]" << o1<<std::endl; \
 }
 
 #endif

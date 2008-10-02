@@ -226,7 +226,7 @@ ProcessUnit ClientHandler::getProcessUnit(){
 //	  logdebug("packing frame group  with size:"<<size<<" !!!");
 
     }else{
-      logdebug("no more process units left, sending empty process unit");
+//      logdebug("no more process units left, sending empty process unit");
 //        setCompleteTime(1);
     }
     return u;
