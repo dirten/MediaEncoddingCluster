@@ -62,7 +62,7 @@ void DirectoryScanner::scan(){
 }
 
 void DirectoryScanner::scan(std::string dir){
-//    cout << "Directory Scanner loop:"<<":"<<dir<<endl;
+    logdebug("Directory Scanner loop:"<<":"<<dir);
     MyFileFilter filter;
     std::list<boost::shared_ptr< File > > list=File(dir.c_str()).listFiles();
     std::list<boost::shared_ptr< File > >::iterator it=list.begin();

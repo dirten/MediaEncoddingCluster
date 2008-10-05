@@ -16,6 +16,14 @@ SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_34_1" CACHE STRING "Boost libraries version signature")
 
+#IF(NOT BOOST_WT_FOUND)
+#  MESSAGE("** Error finding Wt required library: ")
+#  MESSAGE("** Could not find a boost installation in " ${BOOST_DIR} ".")
+#  MESSAGE("** It may be necessary to set appropriate values for the")
+#  MESSAGE("   variables BOOST_DIR, BOOST_COMPILER, and BOOST_VERSION")
+#  MESSAGE(FATAL_ERROR "** Wt requires the following C++ boost libraries: boost_date_time, boost_regex, and boost_program_options, boost_signals, and optionally boost_thread")
+#ENDIF(NOT BOOST_WT_FOUND)
+
 
 INCLUDE(cmake/WtFindBoost.txt)
 INCLUDE(cmake/WtFindAsio.txt)
