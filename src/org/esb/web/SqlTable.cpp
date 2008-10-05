@@ -1,6 +1,6 @@
 #include "SqlTable.h"
 #include "SqlTableModel.h"
-
+#include "Wt/Ext/LineEdit"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
@@ -22,13 +22,14 @@ SqlTable::SqlTable(std::string sql, Wt::WContainerWidget * parent):Wt::Ext::Tabl
   setHighlightMouseOver(true);
   setSelectionBehavior(Wt::SelectRows);
   setSelectionMode(Wt::SingleSelection);
+//  setEditor(2,new Wt::Ext::LineEdit());
   int colc=model()->columnCount();
   for(int a=0;a<colc;a++){
     enableColumnHiding(a, true);
     setColumnSortable(a, true);
   }
-  setDataLocation(Wt::Ext::ServerSide);
-  setPageSize(10);
+//  setDataLocation(Wt::Ext::ServerSide);
+//  setPageSize(10);
 //      table->setBottomToolBar(table->createPagingToolBar());
   setTopToolBar(createPagingToolBar());
 //  topToolBar()->addButton("test");

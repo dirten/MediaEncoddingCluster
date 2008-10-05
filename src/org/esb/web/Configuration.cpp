@@ -69,7 +69,7 @@ Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent){
   buildElement("hive.port","Hive Listener Port:",result,i++);
   buildElement("hive.start","Hive Autostart:",result,i++);
   buildElement("hive.autoscan","Hive Input Directory Scan :",result,i++);
-  buildElement("hive.scan","Hive Input Directory :",result,i++);
+  buildElement("hive.scandir","Hive Input Directory :",result,i++);
   buildElement("hive.scaninterval","Hive Input Directory Scan Interval(sec.):",result,i++);
 //  buildElement("test3","testlabel",result,3);
 

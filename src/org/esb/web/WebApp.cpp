@@ -141,6 +141,7 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 //  root()->addWidget(contents);
 //  boost::thread t(boost::bind(&Files::removeLastTest, files));
   useStyleSheet("ext/resources/css/xtheme-gray.css");
+  useStyleSheet("filetree.css");
   
 }
 

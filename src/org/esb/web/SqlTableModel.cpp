@@ -1,4 +1,5 @@
 #include "SqlTableModel.h"
+#include "Wt/Ext/Button"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
@@ -23,14 +24,17 @@ namespace web{
           std::cout<<"Failed"<<std::endl;
         }
       }
+
       for(int a=0;result.next();a++){
         if(rowCount()<=a)
           insertRow(rowCount());
+
         for(int b=0;b<fieldCount;b++)
           if(!setData(a,b,result.getString(b))){
 //          if(!setData(a,b,boost::any(result.getString(b)))){
 //          if(!setData(a,b,boost::any(new string("test")))){
             std::cout<<"set data Failed"<<std::endl;
+          }else{
           }
       }
 
