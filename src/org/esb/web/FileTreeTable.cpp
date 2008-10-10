@@ -13,18 +13,15 @@
 
 using namespace Wt;
 
-FileTreeTable::FileTreeTable(const boost::filesystem::path& path,
-			     WContainerWidget *parent)
-  : WTreeTable(parent)
-{
-  addColumn("Size", 80);
-  addColumn("Modified", 110);
+FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidget *parent) : WTreeTable(parent) {
+    addColumn("Size", 80);
+    addColumn("Modified", 110);
 
-  header(1)->setStyleClass("fsize");
-  header(2)->setStyleClass("date");
+    header(1)->setStyleClass("fsize");
+    header(2)->setStyleClass("date");
 
-  setTreeRoot(new FileTreeTableNode(path), "File");
+    setTreeRoot(new FileTreeTableNode(path), "File");
 
-  treeRoot()->setImagePack("icons/");
-  treeRoot()->expand();
+    treeRoot()->setImagePack("icons/");
+    treeRoot()->expand();
 }

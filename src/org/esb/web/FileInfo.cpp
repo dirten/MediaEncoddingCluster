@@ -2,6 +2,7 @@
 #define ORG_ESB_WEB_FILEINFO
 #include <Wt/WContainerWidget>
 #include <Wt/WText>
+#include <Wt/WLength>
 #include <Wt/WTable>
 #include <Wt/WGroupBox>
 #include <Wt/WComboBox>
@@ -26,7 +27,9 @@ namespace web{
     public:
       FileInfo(Wt::WContainerWidget * parent=0):Wt::WContainerWidget(parent){
 //        general=new Wt::WGroupBox("General",this);
-        Wt::WTable * table=new Wt::WTable(new Wt::WGroupBox("General",this));
+          first=true;
+        main=new Wt::WTable(this);
+        table=new Wt::WTable(new Wt::WGroupBox("General",main->elementAt(0,0)));
         ((Wt::WText *)new Wt::WText(table->elementAt(0,0)))->setText("Path:");
         ((Wt::WText *)new Wt::WText(table->elementAt(1,0)))->setText("File:");
         ((Wt::WText *)new Wt::WText(table->elementAt(2,0)))->setText("FileSize:");
@@ -37,24 +40,26 @@ namespace web{
         ((Wt::WText *)new Wt::WText(table->elementAt(7,0)))->setText("Author:");
         ((Wt::WText *)new Wt::WText(table->elementAt(8,0)))->setText("Copyright:");
         ((Wt::WText *)new Wt::WText(table->elementAt(9,0)))->setText("Comment:");
-        filepath=new Wt::WText(table->elementAt(0,1));
-        filename=new Wt::WText(table->elementAt(1,1));
+//        filepath=new Wt::WText(table->elementAt(0,1));
+//        filename=new Wt::WText(table->elementAt(1,1));
 
 //        std::string sql="select * from streams where fileid="+id;
 
         
-        
+/*        
         encodingbox=new Wt::WGroupBox("Encoding",this);
         profiles=new Wt::WComboBox(encodingbox);
         encode=new Wt::Ext::Button("Encode",encodingbox);
         encode->clicked.connect(SLOT(this, FileInfo::createJob));
         encodingbox->setHidden(true);
+ */
 //        general->setHidden(true);
       }
 
-      void createStreamBox(ResultSet & rs){
+      void createStreamBox(ResultSet & rs, int col){
           int field=0;
-        Wt::WTable * streamtable=new Wt::WTable(new Wt::WGroupBox("Stream",this));
+        Wt::WTable * streamtable=new Wt::WTable(new Wt::WGroupBox("Stream",main->elementAt(0,col)));
+        streamtable->resize(Wt::WLength(100,Wt::WLength::Percentage),150);
         ((Wt::WText *)new Wt::WText(streamtable->elementAt(++field,0)))->setText("Type:");
         ((Wt::WText *)new Wt::WText(streamtable->elementAt(field,1)))->setText(rs.getInt("stream_type")==0?"Video":"Audio");
         ((Wt::WText *)new Wt::WText(streamtable->elementAt(++field,0)))->setText("Stream#:");
@@ -102,8 +107,29 @@ namespace web{
           stmt.setInt("id", id);
           ResultSet rs=stmt.executeQuery();
           if(rs.next()){
-            filename->setText(rs.getString("filename"));
-            filepath->setText(rs.getString("path"));
+              if(!first){
+              for(int a=0;a<9;a++){
+//                (*it)->parent()->setHidden(true);
+//                if(table->elementAt(a,1)!=NULL)
+                    table->elementAt(a,1)->setHidden(true);
+//                    delete table->elementAt(a,1);
+                }
+              
+              }
+              first=false;
+//              Wt::WTable * table=(Wt::WTable*)main->elementAt(0,0)->parent();
+            ((Wt::WText *)new Wt::WText(table->elementAt(0,1)))->setText(rs.getString("path"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(1,1)))->setText(rs.getString("filename"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(2,1)))->setText(rs.getString("size"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(3,1)))->setText(rs.getString("container_type"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(4,1)))->setText(rs.getString("bitrate"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(5,1)))->setText(rs.getString("duration"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(6,1)))->setText(rs.getString("title"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(7,1)))->setText(rs.getString("author"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(8,1)))->setText(rs.getString("copyright"));
+            ((Wt::WText *)new Wt::WText(table->elementAt(9,1)))->setText(rs.getString("comment"));
+//            filename->setText(rs.getString("filename"));
+//            filepath->setText(rs.getString("path"));
           }
         }
         {
@@ -117,11 +143,12 @@ namespace web{
             PreparedStatement stmt=con.prepareStatement("select * from streams where fileid=:id");
             stmt.setInt("id", id);
             ResultSet rs=stmt.executeQuery();
+            int a=1;
             while(rs.next()){
-                createStreamBox(rs);
+                createStreamBox(rs, a++);
             }
         }
-        {
+        if(false){
           profiles->clear();
           name2id.clear();
           Statement stmt=con.createStatement("select * from profiles");
@@ -132,7 +159,7 @@ namespace web{
           }
         }
 //        general->setHidden(false);
-        encodingbox->setHidden(false);
+//        encodingbox->setHidden(false);
         refresh();
       }
       
@@ -146,6 +173,9 @@ namespace web{
       int file_id;
       map<std::string, int> name2id;
       list<Wt::WTable *> streamlist;
+      Wt::WTable * main;
+      Wt::WTable * table;
+      bool first;
   };
 }}}
 #endif

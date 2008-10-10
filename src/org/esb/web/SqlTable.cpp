@@ -31,7 +31,7 @@ SqlTable::SqlTable(std::string sql, Wt::WContainerWidget * parent):Wt::Ext::Tabl
 //  setDataLocation(Wt::Ext::ServerSide);
 //  setPageSize(10);
 //      table->setBottomToolBar(table->createPagingToolBar());
-  setTopToolBar(createPagingToolBar());
+//  setTopToolBar(createPagingToolBar());
 //  topToolBar()->addButton("test");
   
 }

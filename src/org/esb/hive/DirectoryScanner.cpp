@@ -34,7 +34,6 @@ DirectoryScanner::DirectoryScanner(std::string dir, int interval){
 
 DirectoryScanner::~DirectoryScanner(){
   delete th;
-
 }
 
 void DirectoryScanner::onMessage(org::esb::signal::Message & msg){

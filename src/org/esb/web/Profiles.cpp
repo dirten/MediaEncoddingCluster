@@ -13,6 +13,7 @@ class Profiles: public Wt::WContainerWidget{
       t=new SqlTable(std::string("select * from profiles"), this);
       t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
       t->resize(Wt::WLength(),300);
+      t->setTopToolBar(t->createPagingToolBar());
 
       buttonEdit=t->topToolBar()->addButton("Edit selected Profile");
       buttonEdit->setEnabled(false);

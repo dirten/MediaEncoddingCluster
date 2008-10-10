@@ -23,7 +23,7 @@ namespace org {
                 Column(MYSQL_FIELD * field, MYSQL_BIND & bind);
                 Column(MYSQL_BIND & bind);
                 ~Column();
-                std::string getString();
+                const std::string getString();
                 void setString(const char *);
                 void setString(const std::string&);
                 bool getBool();

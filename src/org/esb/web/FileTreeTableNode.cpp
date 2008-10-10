@@ -79,9 +79,11 @@ void FileTreeTableNode::populate()
     std::cerr << e.what() << std::endl;
   }
 }
+
 bool 	FileTreeTableNode::isSelectable () const {
     return true;
 }
+
 bool FileTreeTableNode::expandable()
 {
   if (!populated()) {

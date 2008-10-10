@@ -9,7 +9,9 @@ namespace esb{
 namespace net{
 
 //      typedef boost::shared_ptr<tcp::socket> socket_ptr;
-
+    TcpServerSocket::~TcpServerSocket(){
+        acceptor_.close();
+    }
 
       TcpServerSocket::TcpServerSocket(short port)
       : acceptor_(_io_service, tcp::endpoint(tcp::v4(), port)){

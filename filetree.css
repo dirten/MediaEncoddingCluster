@@ -2,6 +2,11 @@ body {
   font-family:arial,sans-serif; font-size: smaller;
 }
 
+.datatreenode {
+  white-space:nowrap;
+  font-size:11px;
+}
+
 .treenodelabel {
   cursor:pointer;cursor:hand;
 }

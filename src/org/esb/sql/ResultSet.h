@@ -27,8 +27,8 @@ class ResultSet{
     double 		getDouble		(int index);
     double 		getDouble		(std::string index);
 
-	std::string getString	    (int col);
-	std::string getString	    (std::string col);
+	const std::string getString	    (int col) ;
+	const std::string getString	    (std::string col) ;
 
 	std::string getBlob			(int index);
 	std::string getBlob			(std::string index);

@@ -38,9 +38,23 @@ namespace web{
           Wt::WTable *t=new Wt::WTable(group);
           int i=0;
           buildElement("id", "Profile Id",t,i++);
-		  elements["id"]->setEnabled(false);
+          elements["id"]->setEnabled(false);
           buildElement("profile_name", "Profile Name",t,i++);
-          buildElement("v_format", "File Format",t,i++);
+
+          Wt::WLabel * elementLabel = new Wt::WLabel("Codec", t->elementAt(i, 0));
+          t->elementAt(i, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
+          Wt::Ext::ComboBox * element = new Wt::Ext::ComboBox(t->elementAt(i, 1));
+         
+            AVOutputFormat *ofmt=NULL;
+            while((ofmt= av_oformat_next(ofmt))) {
+//                if((name == NULL || strcmp(ofmt->name, name)<0) &&strcmp(ofmt->name, last_name)>0){
+	          element->addItem(ofmt->long_name);
+//                }
+            }
+            elementLabel->setBuddy(element);
+            elements["v_format"]=element;
+            i++;
+//          buildElement("v_format", "File Format",t,i++);
         }
         if(true){
           Wt::WGroupBox * group =new Wt::WGroupBox("Video", this);
@@ -113,7 +127,7 @@ namespace web{
         if(rs.next()){
 			elements["id"]->setText(rs.getString("id"));
 			elements["profile_name"]->setText(rs.getString("profile_name"));
-			elements["v_format"]->setText(rs.getString("v_format"));
+////			elements["v_format"]->setText(rs.getString("v_format"));
 //			elements["v_codec"]->setText(codecid2codecname[rs.getInt("v_codec")]);
 			((Wt::Ext::ComboBox*)elements["v_codec"])->setCurrentIndex(vcodecid2vcodecidx[rs.getInt("v_codec")]);
 //			((Wt::Ext::ComboBox*)elements["v_codec"])->setCurrentIndex(vcodecid2vcodecidx[rs.getInt("v_codec")]);

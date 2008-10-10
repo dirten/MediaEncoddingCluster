@@ -10,6 +10,7 @@ namespace net{
   class TcpServerSocket{
     public:
       TcpServerSocket(short port);
+      ~TcpServerSocket();
       void bind();
       void close();
       TcpSocket * accept();

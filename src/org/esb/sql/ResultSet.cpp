@@ -14,8 +14,8 @@ bool ResultSet::next(){
 }
 
 /*******************************************************************************************************/
-string ResultSet::getString(int index){return row.getColumn(index)->getString();}
-string ResultSet::getString(string index){return row.getColumn(index)->getString();}
+const string ResultSet::getString(const int index){return row.getColumn(index)->getString();}
+const string ResultSet::getString(string index) {return row.getColumn(index)->getString();}
 
 /*******************************************************************************************************/
 bool ResultSet::getBool(int index){return row.getColumn(index)->getBool();}

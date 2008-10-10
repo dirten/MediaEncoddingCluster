@@ -93,7 +93,7 @@ std::string Column::getBlob()
       return ret;
     }
 
-std::string Column::getString()
+const std::string Column::getString() 
     {
       std::string ret;
 //      if (isNull(bind))
