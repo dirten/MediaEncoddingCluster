@@ -79,7 +79,7 @@ char * Config::getProperty(char * key, char * def)
   return (char*)properties->getProperty(key);
 }
 
-char * Config::setProperty(const char * key, const char * val)
+void Config::setProperty(const char * key, const char * val)
 {
   properties->setProperty(key,val);
 }

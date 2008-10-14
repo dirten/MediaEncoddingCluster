@@ -8,7 +8,7 @@
 //#include "ResultSet.h"
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
-#ifdef MSVC
+#ifdef WIN32
 #include <my_global.h>
 #endif
 

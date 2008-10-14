@@ -5,9 +5,9 @@
 
 class StartupHive : public ProtocolCommand{
     private:
-	Socket * socket;
+//	Socket * socket;
     public:
-	StartupHive(Socket * socket){
+	StartupHive(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
@@ -19,7 +19,7 @@ class StartupHive : public ProtocolCommand{
 	
 	~StartupHive(){}
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){

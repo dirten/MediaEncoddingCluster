@@ -1,7 +1,7 @@
 #ifndef LISTENER_PROTO_HELP
 #define LISTENER_PROTO_HELP
 #include "../ProtocolCommand.h"
-#include "org/esb/net/Socket.h"
+
 
 using namespace org::esb::net;
 using namespace org::esb::hive;
@@ -9,10 +9,10 @@ using namespace std;
 
 class Help:public ProtocolCommand {
   private:
-	Socket * socket;
+	TcpSocket * socket;
   public:
 	~Help () {
-	} Help (Socket * socket) {
+	} Help (TcpSocket * socket) {
 		this->socket = socket;
 		this->is = socket->getInputStream ();
 		this->os = socket->getOutputStream ();
@@ -23,7 +23,7 @@ class Help:public ProtocolCommand {
 	}
 
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 	int isResponsible (char *command) {
 		if (strcmp (command, "help") == 0)

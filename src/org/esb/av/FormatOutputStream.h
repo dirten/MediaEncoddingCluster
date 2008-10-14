@@ -26,7 +26,7 @@ namespace org{
 		    friend class PacketOutputStream;
 		    AVFormatContext * _fmtCtx;
 		    AVOutputFormat * _fmt;
-		    File * _file;
+			org::esb::io::File * _file;
 	    };
 	}
     }

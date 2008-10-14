@@ -1,14 +1,16 @@
 #include "org/esb/io/InputStream.h"
-#include "org/esb/net/Socket.h"
+#include "TcpSocket.h"
 #include <iostream>
 #include "org/esb/lang/Byte.h"
 //#include "../config.h"
 #include <vector>
 #if !defined(WIN32) 
-    #include <sys/select.h>
+/*
+#include <sys/select.h>
     #include <sys/socket.h>
     #include <sys/ioctl.h>
     #include <errno.h>
+	*/
 #else
     #include <winsock2.h>
 #endif

@@ -183,7 +183,7 @@ int jobcreator(int argc, char*argv[]){
 	stmtJob.setInt("target",a_stream_id);
 	stmtJob.execute();
 }
-
+return 0;
 }
 #endif
 

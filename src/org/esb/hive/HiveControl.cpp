@@ -35,10 +35,11 @@ using namespace org::esb::hive;
     bool HiveControl::startup(){
 	bool result=false;
 	if(strcmp(status->getProperty("running"),"false")==0){	    
-        
+/*        
 	    listener=new HiveListener();
 	    Thread * thread=new Thread(listener);
 	    thread->start();
+*/
 	    status->setProperty("running","true");
 	    result=true;
         

@@ -4,9 +4,9 @@
 using namespace org::esb::hive;
 class ShutdownHive : public ProtocolCommand{
     private:
-	Socket * socket;
+//	TcpSocket * socket;
     public:
-	ShutdownHive(Socket * socket){
+	ShutdownHive(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
@@ -19,7 +19,7 @@ class ShutdownHive : public ProtocolCommand{
 
 	~ShutdownHive(){}
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){

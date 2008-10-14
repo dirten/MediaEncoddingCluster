@@ -4,10 +4,12 @@
 
 
 #if defined(WIN32) 
-    #include <winsock2.h>
+/*
+#include <winsock2.h>
     #include <ws2tcpip.h> 
     #include <sys/stat.h>
     #define stat _stat
+*/
 #else
     #include <unistd.h>
     #include <netdb.h>

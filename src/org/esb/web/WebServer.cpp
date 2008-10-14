@@ -11,8 +11,6 @@
 #include <Wt/WText>
 #include <Wt/WBreak>
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 
 #include <iostream>
 

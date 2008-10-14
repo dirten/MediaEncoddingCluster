@@ -1,7 +1,7 @@
 #ifndef LISTENER_PROTO_SHOW_CONFIG
 #define LISTENER_PROTO_SHOW_CONFIG
 #include "../ProtocolCommand.h"
-#include "org/esb/net/Socket.h"
+
 #include "org/esb/config/config.h"
 
 using namespace
@@ -14,13 +14,13 @@ class ShowConfig:
 public ProtocolCommand
 {
 private:
-  Socket * socket;
+  //TcpSocket * socket;
 public:
   ~ShowConfig ()
   {
   }
 
-  ShowConfig (Socket * socket)
+  ShowConfig (TcpSocket * socket)
   {
     this->socket = socket;
     this->is = socket->getInputStream ();
@@ -32,7 +32,7 @@ public:
     this->os = os;
   }
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
   int

@@ -8,7 +8,7 @@
 #include <Wt/WContainerWidget>
 #include <Wt/Ext/ToolBar>
 #include "org/esb/config/config.h"
-#include "org/esb/lang/Thread.h"
+//#include "org/esb/lang/Thread.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
@@ -117,10 +117,11 @@ class Files: public Wt::WContainerWidget{
       
       info=new FileInfo(this);
       exampleTabs->addTab(info,"Information");
-      
+      /*
       Wt::WTimer * timer=new Wt::WTimer(this);
       timer->setInterval(30000);
       timer->timeout.connect(SLOT(this, Files::refresh));
+	  */
 //      timer->start();
     }
 

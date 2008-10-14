@@ -9,7 +9,7 @@ using namespace org::esb;
 namespace org{
 namespace esb{
 namespace web{
-    SqlTableModel::SqlTableModel(sql::ResultSet result,Wt::WObject* parent):Wt::WStandardItemModel(0,0, parent){
+    SqlTableModel::SqlTableModel(sql::ResultSet result,Wt::WContainerWidget* parent):Wt::WStandardItemModel(0,0, parent){
       sql::ResultSetMetaData * rsmd=result.getResultSetMetaData();
       int fieldCount=rsmd->getColumnCount();
       insertColumns(0,fieldCount);

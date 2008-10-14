@@ -4,7 +4,7 @@
 #include "SqlException.h"
 #include <string>
 
-#ifdef MSVC
+#ifdef WIN32
 #include <my_global.h>
 #endif
 

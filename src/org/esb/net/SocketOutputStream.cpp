@@ -1,5 +1,5 @@
 #include "org/esb/io/OutputStream.h"
-#include "Socket.h"
+#include "TcpSocket.h"
 #include "SocketException.h"
 #include <errno.h>
 
@@ -11,13 +11,13 @@ namespace esb{
 namespace net{
 class SocketOutputStream:public OutputStream{
     private:
-	Socket * socket;
+	TcpSocket * socket;
     public:
 /******************************************************************************/
 	~SocketOutputStream(){
 	}
 /******************************************************************************/
-	SocketOutputStream(Socket * socket){
+	SocketOutputStream(TcpSocket * socket){
 	    this->socket=socket;
 	}
 

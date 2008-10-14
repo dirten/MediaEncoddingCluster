@@ -1,8 +1,8 @@
 #ifndef ORG_ESB_WEB_SQLTABLE_H
 #define ORG_ESB_WEB_SQLTABLE_H
+#include <Wt/WContainerWidget>
 #include <Wt/Ext/TableView>
 #include <Wt/Ext/ToolBar>
-#include <Wt/WContainerWidget>
 #include "SqlTableModel.h"
 
 #include <string>

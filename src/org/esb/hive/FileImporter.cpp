@@ -2,6 +2,7 @@
 #define IMPORT_CPP
 //#include <iostream>
 //#include <fstream>
+#include <map>
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -27,7 +28,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 //#include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
-using namespace org::esb::io;
+using namespace org::esb;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 //using namespace tntdb;
@@ -58,7 +59,7 @@ int import(int argc, char *argv[]) {
         cout << "Database found";
     }
 
-    File inputFile(argv[1]);
+	org::esb::io::File inputFile(argv[1]);
     if (!inputFile.canRead()) {
         cout << "Source File not found" << endl;
     } else {
@@ -103,15 +104,15 @@ int import(int argc, char *argv[]) {
     //      con.executenonquery(string("INSERT INTO files(filename,size) values ( '")+inputFile.getPath()+string("',")+fis.getFileSize()+")");
 
     AVFormatContext *ctx = fis.getFormatContext();
-
-    int streams[ctx->nb_streams];
-    int codec_types[ctx->nb_streams];
-    int num[ctx->nb_streams];
-    int den[ctx->nb_streams];
-    int channels[ctx->nb_streams];
-    int sample_rates[ctx->nb_streams];
-    int stream_pts[ctx->nb_streams];
-    double stream_start[ctx->nb_streams];
+	const int nb=ctx->nb_streams;
+	std::map<int,int> streams;
+    std::map<int,int> codec_types;
+    std::map<int,int> num;
+    std::map<int,int> den;
+    std::map<int,int> channels;
+    std::map<int,int> sample_rates;
+    std::map<int,int> stream_pts;
+    std::map<int,double> stream_start;
     long duration = 0;
 
     PreparedStatement stmt_fr = con.prepareStatement("insert into frame_groups(frame_group, startts, byte_pos, stream_id, stream_index, frame_count)"
@@ -202,7 +203,7 @@ int import(int argc, char *argv[]) {
     int b_frames_beyond_delay = 3;
     int beyond_delay_counter = 0;
     int BEYOND_STATE = 0;
-    int64_t startts = 0;
+	boost::int64_t startts = 0;
     while (true /*&&count < 1000 */) {
         Packet packet;
         if (pis.readPacket(packet) < 0)break;
@@ -253,11 +254,11 @@ int import(int argc, char *argv[]) {
         //      show_progress+=packet.duration;
 
         if (codec_types[packet.packet->stream_index] == CODEC_TYPE_VIDEO) {
-            stream_pts[packet.packet->stream_index] += ((int64_t) 1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
+			stream_pts[packet.packet->stream_index] += ((boost::int64_t) 1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
         }
 
         if (codec_types[packet.packet->stream_index] == CODEC_TYPE_AUDIO) {
-            stream_pts[packet.packet->stream_index] += ((int64_t) AV_TIME_BASE / 2 * packet.packet->size) /
+			stream_pts[packet.packet->stream_index] += ((boost::int64_t) AV_TIME_BASE / 2 * packet.packet->size) /
                     (sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
         }
 

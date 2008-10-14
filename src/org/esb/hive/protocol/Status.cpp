@@ -5,9 +5,9 @@
 
 class Status : public ProtocolCommand{
     private:
-	Socket * socket;
+//	Socket * socket;
     public:
-	Status(Socket * socket){
+	Status(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
@@ -20,7 +20,7 @@ class Status : public ProtocolCommand{
 	~Status(){}
 
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){

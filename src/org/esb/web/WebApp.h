@@ -20,7 +20,7 @@ class WebApp: public Wt::WApplication{
     void openProfileList2();
     void openConfig2();
     Wt::WWidget * introduction();
-    Wt::WWidget * test();
+//    Wt::WWidget * test();
     Wt::WWidget * submenu1();
     Wt::WStackedWidget *contents;
 };

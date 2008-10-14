@@ -14,7 +14,7 @@ class CreateHive:public ProtocolCommand {
 	Socket * socket;
   public:
 	~CreateHive () {
-	} CreateHive (Socket * socket) {
+	} CreateHive (TcpSocket * socket) {
 		this->socket = socket;
 		this->is = socket->getInputStream ();
 		this->os = socket->getOutputStream ();

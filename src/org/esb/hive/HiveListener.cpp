@@ -28,9 +28,6 @@ HiveListener::~HiveListener(){
   cout << "Shutdown HiveListener"<<endl;
 }
 
-void HiveListener::run(){
-  startListener();
-}
 
 void HiveListener::onMessage(org::esb::signal::Message & msg){
   if(msg.getProperty("hivelistener")=="start"){

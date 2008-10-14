@@ -51,7 +51,7 @@ namespace org {
             }
 
             bool DataTreeTableNode::expandable() {
-                true;
+                return true;
             }
             /*
             Wt::DomElementType domElementType(){

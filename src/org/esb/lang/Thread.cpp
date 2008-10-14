@@ -124,7 +124,7 @@ void Thread::sleep2( int millisecs )
   }
 
 #else
-  ::Sleep (millisecs);
+//  ::Sleep (millisecs);
 #endif
 }
 

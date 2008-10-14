@@ -9,15 +9,13 @@
 #include <Upload.cpp>
 #include <Files.cpp>
 #include <Profiles.cpp>
-#include <ProfilesEdit.cpp>
+//#include <ProfilesEdit.cpp>
 #include <Configuration.cpp>
 
 #include <Wt/Ext/Menu>
 #include <Wt/Ext/MenuItem>
 #include <Wt/Ext/ToolBar>
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 
 namespace org{
 namespace esb{
@@ -168,11 +166,12 @@ Wt::WWidget *WebApp::introduction()
   return new Wt::WText("test Text");
 }
 
-
+/*
 Wt::WWidget *WebApp::test()
 {
   return new Wt::WText("test Text nummer 2");
 }
+*/
 Wt::WWidget *WebApp::submenu1()
 {
 
@@ -184,7 +183,7 @@ Wt::WWidget *WebApp::submenu1()
 //  menu->enableBrowserHistory("main");
 
   menu->addItem("Introduction 2", introduction());
-  menu->addItem("Test Menu 2", test());
+//  menu->addItem("Test Menu 2", test());
   root()->addWidget(contents);
 
   return menu;

@@ -61,12 +61,12 @@ add_library (io io/File.cpp
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 add_library (net net/SocketException.cpp 
-      net/ServerSocket.cpp 
-      net/Socket.cpp 
+#      net/ServerSocket.cpp 
+#      net/Socket.cpp 
       net/TcpServerSocket.cpp 
       net/TcpSocket.cpp 
-      net/SocketInputStream.cpp 
-      net/SocketOutputStream.cpp
+#      net/SocketInputStream.cpp 
+#      net/SocketOutputStream.cpp
 #      net/TcpSocketInputStream.cpp 
 #      net/TcpSocketOutputStream.cpp
 )
@@ -106,6 +106,7 @@ add_library (hive hive/Command.cpp
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
 include_directories (${WT_DIR})
+include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR}/src)
 add_library (web web/WebServer.cpp 
     web/WebApp.cpp 

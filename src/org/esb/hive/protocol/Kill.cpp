@@ -1,19 +1,19 @@
 #ifndef LISTENER_PROTO_KILL
 #define LISTENER_PROTO_KILL
 #include "../ProtocolCommand.h"
-#include "org/esb/net/Socket.h"
+
 #include <signal.h>
 using namespace org::esb::net;
 using namespace org::esb::hive;
 
 class Kill:public ProtocolCommand{
     private:
-	Socket * socket;
+	TcpSocket * socket;
     public:
 	~Kill(){
 	}
 
-	Kill(Socket * socket){
+	Kill(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
@@ -25,7 +25,7 @@ class Kill:public ProtocolCommand{
 	    this->os=os;
 	}
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){

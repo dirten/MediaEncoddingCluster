@@ -6,7 +6,6 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/FormatOutputStream.h"
-#include "org/esb/lang/Thread.h"
 #include "org/esb/io/File.h"
 
 using namespace org::esb::av;
@@ -17,7 +16,7 @@ using namespace org::esb::sql;
 int exporter(int argc, char * argv[]){
 
 //    File fout("/tmp/testdb.avi");
-    File fout(argv[3]);
+	org::esb::io::File fout(argv[3]);
     string stream_id=argv[2];
 //    int codec_id=atoi(argv[3]);
     FormatOutputStream fos(&fout);
@@ -45,7 +44,10 @@ int exporter(int argc, char * argv[]){
 
       encoder=new Encoder(codec_id);
       encoder->setBitRate(rs.getInt("bit_rate"));
-      encoder->setTimeBase((AVRational){rs.getInt("time_base_num"),rs.getInt("time_base_den")});
+	AVRational	ar;
+	ar.den=rs.getInt("time_base_den");
+	ar.num=rs.getInt("time_base_num");
+      encoder->setTimeBase(ar);
       encoder->setGopSize(rs.getInt("gop_size"));
       encoder->setPixelFormat((PixelFormat)rs.getInt("pix_fmt"));
       encoder->setWidth(rs.getInt("width"));
@@ -114,9 +116,11 @@ int exporter(int argc, char * argv[]){
 //	    p.size=rs.getInt("data_size");
 //	    p.data=new uint8_t[p.size];
 //		if(p.packet->stream_index==0){
-
+		AVRational ar2;
+		ar2.num=1;
+		ar2.den=25;
         if(p.packet->stream_index==0)
-          p.packet->pts=av_rescale_q(++video_packets,(AVRational){1,25},fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+          p.packet->pts=av_rescale_q(++video_packets,ar2,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 //          p.packet->pts=av_rescale_q(++video_packets,fos._fmtCtx->streams[p.packet->stream_index]->codec->time_base,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 
 

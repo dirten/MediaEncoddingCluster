@@ -19,6 +19,7 @@
 #ifndef ORG_ESB_UTIL_DECIMAL_H
 #define ORG_ESB_UTIL_DECIMAL_H
 #pragma warning( disable : 4290 )
+#pragma warning( disable : 4146 )
 
 #include <string>
 #include <iostream>

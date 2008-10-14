@@ -4,7 +4,7 @@
 //#include "stdafx.h"   
 //#include <winsock2.h>   
 
-#ifdef MSVC
+#ifdef WIN32
 #include <my_global.h>
 #endif
 #include <mysql.h>

@@ -19,9 +19,7 @@
 #include "org/esb/util/Properties.h"
 #include "org/esb/config/config.h"
 
-#include "boost/thread.hpp"
-#include "boost/bind.hpp"
-#include "org/esb/lang/Thread.h"
+
 #include <map>
 #include <string>
 using namespace org::esb;

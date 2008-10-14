@@ -38,7 +38,7 @@ class DataHandler: public ProtocolCommand{
 	    _handler=new ClientHandler();
 	}
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){

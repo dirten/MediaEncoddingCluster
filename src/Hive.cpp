@@ -1,34 +1,34 @@
-#include <iostream>
+//#include <iostream>
+//#include <stdlib.h>
 #include <boost/program_options.hpp>
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
 
-//#include "org/esb/net/TcpServerSocket.h"
+#include "org/esb/net/TcpServerSocket.h"
 #include "org/esb/net/TcpSocket.h"
-//#include "org/esb/lang/Thread.h"
+#include "org/esb/lang/Thread.h"
 //#include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
-#include "org/esb/hive/job/JobWatcher.h"
+//#include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
+#include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/HiveListener.h"
 #include "org/esb/hive/DirectoryScanner.h"
-
-#include "org/esb/hive/PacketCollector.h"
+#include "org/esb/av/AV.h"
+//#include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
 
-#include "org/esb/signal/Message.h"
-#include "org/esb/signal/Messenger.h"
 
-#include <unistd.h>
-#include <stdlib.h>
 
 #include "org/esb/util/Decimal.h"
-#include "org/esb/hive/FileImporter.h"
-#include "export.cpp"
-#include "org/esb/util/Log.h"
+//#include "org/esb/hive/FileImporter.h"
+//#include "export.cpp"
+//#include "org/esb/util/Log.h"
 //#include "job.cpp"
-#include "org/esb/hive/JobUtil.h"
+//#include "org/esb/hive/JobUtil.h"
 #if !defined(_WIN32)
 
 #include <signal.h>
@@ -39,8 +39,10 @@
 #endif  // !_WIN32
 
 using namespace org::esb::net;
+using namespace org::esb::io;
 using namespace org::esb::config;
 using namespace org::esb::hive;
+using namespace org::esb::hive::job;
 using namespace org::esb::web;
 using namespace org::esb::util;
 using namespace org::esb::signal;
@@ -180,7 +182,7 @@ while(true){
 //		break;
     }
 //    break;
-	Thread::sleep2(1000);
+	org::esb::lang::Thread::sleep2(1000);
 }
 }
 
@@ -211,8 +213,8 @@ void listener(int argc, char *argv[]){
 	ProcessUnitWatcher puw;
    	Messenger::getInstance().addMessageListener(puw);
 
-    JobWatcher watcher(*JobHandler::getInstance());
-   	Messenger::getInstance().addMessageListener(watcher);
+//    JobWatcher watcher(*JobHandler::getInstance());
+//   	Messenger::getInstance().addMessageListener(watcher);
    	
     /*
     *
@@ -264,7 +266,7 @@ void listener(int argc, char *argv[]){
       Thread::sleep(10000);
     }
 */
-
+/*
 	sigset_t wait_mask2;
 	sigemptyset(&wait_mask2);
 	sigaddset(&wait_mask2, SIGINT);
@@ -279,6 +281,8 @@ void listener(int argc, char *argv[]){
 	do {
 	  err = sigwait(&wait_mask2, &sig);
 	} while (err != 0);
+*/
+
 	Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","stop"));    
 	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
 	Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","stop"));
@@ -288,7 +292,7 @@ void listener(int argc, char *argv[]){
 	Messenger::free();
 
 
-	Thread::sleep2(3000);
+	org::esb::lang::Thread::sleep2(3000);
 	cout << "Stopping Hive "<<endl;
 
 /*

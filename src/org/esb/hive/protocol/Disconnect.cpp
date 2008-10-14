@@ -2,7 +2,7 @@
 class Disconnect:public ProtocolCommand {
   public:
 
-	Disconnect (Socket * socket) {
+	Disconnect (TcpSocket * socket) {
 		this->socket = socket;
 		this->is = socket->getInputStream ();
 		this->os = socket->getOutputStream ();
@@ -18,7 +18,7 @@ class Disconnect:public ProtocolCommand {
 	}
 
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 	int isResponsible (char *command) {
 		if (strcmp (command, "disconnect") == 0 ||

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../ProtocolCommand.h"
-#include "org/esb/net/Socket.h"
+
 
 using namespace std;
 using namespace org::esb::net;
@@ -8,9 +8,9 @@ using namespace org::esb::net;
 
 class Unknown : public ProtocolCommand{
     private:
-	Socket * socket;
+//	Socket * socket;
     public:
-	Unknown(Socket * socket){
+	Unknown(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
@@ -22,7 +22,7 @@ class Unknown : public ProtocolCommand{
 	
 	~Unknown(){}
 	int isResponsible (cmdId & cmid) {
-	
+		return CMD_NA;
 	}
 
 	int isResponsible(char * command){
