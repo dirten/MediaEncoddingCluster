@@ -320,13 +320,13 @@ void listener(int argc, char *argv[]){
 //    runner->start();
 //    unitRunner->start();
 
-
+/*
     while(true){
       Thread::sleep2(10000);
     }
+*/
 
-
-//    ctrlCHitWait();
+    ctrlCHitWait();
 
 	Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","stop"));    
 	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
