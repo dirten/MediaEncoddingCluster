@@ -112,9 +112,10 @@ WebServer::WebServer():server("test"){
   "--docroot",org::esb::config::Config::getProperty("web.docroot","."),
   "--http-address", "0.0.0.0",
   "--http-port", org::esb::config::Config::getProperty("web.port","8080"),
-  "--no-compression"};
-    logdebug("!!!!!!!!!!!!!!!!Webserver Root:"<<org::esb::config::Config::getProperty("web.docroot","."));
-	server.setServerConfiguration(8,args,WTHTTP_CONFIGURATION);
+  "--no-compression",
+  "--deploy-path","/"};
+    logdebug("Webserver:"<<args);
+	server.setServerConfiguration(10,args,WTHTTP_CONFIGURATION);
 	server.addEntryPoint(WServer::Application, &createApp);
 }
 

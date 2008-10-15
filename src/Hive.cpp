@@ -103,9 +103,9 @@ int main(int argc, char * argv[]){
 	av_register_all ();
     avcodec_init();
 	avcodec_register_all ();
-
+	
     Config::init((char*)vm["config"].as<std::string>().c_str());
-    
+	
 
     if (vm.count("server")) {
 //      logdebug("setting webroot to :"<<vm["webroot"].as<std::string>());
@@ -260,14 +260,14 @@ void listener(int argc, char *argv[]){
     *
     */
 
-   	HiveListener hive;
+	WebServer webserver;
+   	Messenger::getInstance().addMessageListener(webserver);
+
+	HiveListener hive;
    	Messenger::getInstance().addMessageListener(hive);
 
     DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
    	Messenger::getInstance().addMessageListener(dirscan);
-
-	WebServer webserver;
-   	Messenger::getInstance().addMessageListener(webserver);
 
 	ProcessUnitWatcher puw;
    	Messenger::getInstance().addMessageListener(puw);

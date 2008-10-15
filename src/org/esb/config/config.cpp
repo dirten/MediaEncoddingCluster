@@ -55,7 +55,8 @@ void Config::init(char * filename)
   Statement stmt=con.createStatement("select * from config");
   ResultSet rs=stmt.executeQuery();
   while(rs.next()){
-    properties->setProperty(rs.getString("config_key"),rs.getString("config_val"));
+	  if(rs.getString("config_key")!="db.connection")
+		properties->setProperty(rs.getString("config_key"),rs.getString("config_val"));
   }
 }
 
