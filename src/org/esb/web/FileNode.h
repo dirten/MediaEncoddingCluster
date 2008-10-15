@@ -6,6 +6,10 @@
  */
 
 #include "Wt/WTreeTableNode"
+#include "Wt/WIconPair"
+#include <Wt/WInteractWidget>
+#include <Wt/WWebWidget>
+
 #include "org/esb/sql/ResultSet.h"
 #ifndef _FILENODE_H
 #define	_FILENODE_H

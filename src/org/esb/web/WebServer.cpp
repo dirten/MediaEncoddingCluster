@@ -125,8 +125,10 @@ WebServer::~WebServer(){
 void WebServer::onMessage(Message & msg){
 	if(msg.getProperty("webserver")=="start"){
 	  server.start();
+	  logdebug("Webserver Started");
 	}else
 	if(msg.getProperty("webserver")=="stop"){
 	  server.stop();
+	  logdebug("Webserver Stopped");
 	}
 }

@@ -113,7 +113,7 @@ int import(int argc, char *argv[]) {
     std::map<int,int> sample_rates;
     std::map<int,int> stream_pts;
     std::map<int,double> stream_start;
-    long duration = 0;
+	boost::int64_t duration = 0;
 
     PreparedStatement stmt_fr = con.prepareStatement("insert into frame_groups(frame_group, startts, byte_pos, stream_id, stream_index, frame_count)"
             " values(:frame_group, :startts, :byte_pos, :stream_id, :stream_index, :frame_count)");
@@ -159,7 +159,7 @@ int import(int argc, char *argv[]) {
 
         if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
             //            stmt_fr.setInt("frame_group",frame_group);
-            stmt_fr.setInt("frame_count", (double) ctx->streams[a]->duration);
+            stmt_fr.setDouble("frame_count", (double) ctx->streams[a]->duration);
             stmt_fr.setDouble("startts", (double) ctx->streams[a]->start_time);
             stmt_fr.setDouble("byte_pos", (double) 0);
             stmt_fr.setInt("stream_id", streamid);

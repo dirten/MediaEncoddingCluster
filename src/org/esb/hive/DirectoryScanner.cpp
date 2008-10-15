@@ -13,6 +13,7 @@
 #include "org/esb/hive/FileImporter.h"
 //#include "import.cpp"
 #include <boost/algorithm/string.hpp>
+#include "org/esb/util/Log.h"
 namespace org{
 namespace esb{
 namespace hive{
@@ -41,7 +42,7 @@ void DirectoryScanner::onMessage(org::esb::signal::Message & msg){
     _halt=false;
     th=new boost::thread(boost::bind(&DirectoryScanner::scan, this));
 //    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
-    cout << "Directory Scanner running with interval:"<<_interval<<endl;
+    logdebug("Directory Scanner running with interval:"<<_interval);
   }else
   if(msg.getProperty("directoryscan")=="stop"){
     _halt=true;

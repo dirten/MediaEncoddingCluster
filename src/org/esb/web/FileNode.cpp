@@ -1,6 +1,5 @@
 #include "FileNode.h"
 #include <Wt/WStringUtil>
-#include <Wt/WIconPair>
 #include <Wt/WText>
 
 #include "org/esb/config/config.h"
@@ -13,14 +12,14 @@ namespace org {
 
             FileNode::FileNode(org::esb::sql::ResultSet & rs)
             : WTreeTableNode(Wt::widen(rs.getString("filename")), createIcon(rs.getInt("type"))),_id(rs.getInt("id")),_parentid(rs.getInt("parent")) {
-              label()->setFormatting(Wt::WText::PlainFormatting);
+//              label()->setFormatting(Wt::WText::PlainFormatting);
               Wt::WTreeTableNode::setStyleClass("datatreenode");
 //              this->selected.connect(SLOT(this, DataTreeTableNode::selectAction));
             }
             
             FileNode::FileNode(const std::string & name, const int type, const int parentid)
             : WTreeTableNode(Wt::widen(name), createIcon(type)),_id(parentid) {
-              label()->setFormatting(Wt::WText::PlainFormatting);
+//              label()->setFormatting(Wt::WText::PlainFormatting);
               Wt::WTreeTableNode::setStyleClass("datatreenode");
 //              this->selected.connect(SLOT(this, DataTreeTableNode::selectAction));
             }
@@ -51,7 +50,7 @@ namespace org {
             }
 
             bool FileNode::expandable() {
-                false;
+                return false;
             }
             int FileNode::getId()const{
                 return _id;

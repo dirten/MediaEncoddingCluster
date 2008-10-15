@@ -75,6 +75,7 @@ int main(int argc, char * argv[]){
         ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
         ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
         ("webroot,r", po::value<std::string>()->default_value("."), "define the Path for Web Server root")
+        ("scandir", po::value<std::string>()->default_value("."), "define the Path to Scan for new Media Files")
         ;
 
 
@@ -109,6 +110,8 @@ int main(int argc, char * argv[]){
     if (vm.count("server")) {
 //      logdebug("setting webroot to :"<<vm["webroot"].as<std::string>());
   	  Config::setProperty("web.docroot",vm["webroot"].as<std::string>().c_str());
+  	  if(vm.count("scandir"))
+		Config::setProperty("hive.scandir",vm["scandir"].as<std::string>().c_str());
   	  Config::setProperty("hive.port",Decimal(vm["port"].as<int>()).toString().c_str());
   	  listener(argc, argv);
     }
@@ -289,7 +292,7 @@ void listener(int argc, char *argv[]){
    	}
 
 	if(string(Config::getProperty("web.start"))=="true")
-   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","start"));
+   		Messenger::getInstance().sendRequest(Message().setProperty("webserver","start"));
 
 //	Thread::sleep(5000);
 //   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
@@ -317,13 +320,13 @@ void listener(int argc, char *argv[]){
 //    runner->start();
 //    unitRunner->start();
 
-/*
-    while(true){
-      Thread::sleep(10000);
-    }
-*/
 
-    ctrlCHitWait();
+    while(true){
+      Thread::sleep2(10000);
+    }
+
+
+//    ctrlCHitWait();
 
 	Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","stop"));    
 	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
