@@ -2,6 +2,8 @@
 #include "DataTreeTableNode.h"
 
 #include <Wt/WText>
+#include <Wt/WTree>
+//#include <Wt/WTreeNodeSet>
 
 #include "org/esb/config/config.h"
 #include "org/esb/sql/Connection.h"
@@ -27,7 +29,7 @@ namespace org {
                 org::esb::sql::ResultSet rs=pstmt.executeQuery();
 */              
 //                if(rs.next())
-                DataTreeTableNode *root=new DataTreeTableNode("");
+                DataTreeTableNode *root=new DataTreeTableNode("",0,0,false);
                 DataTreeTableNode *files=new DataTreeTableNode("Files");
                 DataTreeTableNode *versions=new DataTreeTableNode("Versions");
                 DataTreeTableNode *profiles=new DataTreeTableNode("Profiles");
@@ -37,9 +39,15 @@ namespace org {
                 setTreeRoot(root,"");
                 treeRoot()->setImagePack("icons/");
                 treeRoot()->expand();
-            }
-            void DataTreeTable::dataSelected(){
+//                tree()->itemSelectionChanged.connect(SLOT(this,DataTreeTable::dataSelected));
                 
+            }
+            
+            void DataTreeTable::dataSelected(){
+                std::set<Wt::WTreeNode*> set=tree()->selectedNodes();
+                std::set<Wt::WTreeNode*>::iterator it=set.begin();
+                if(it!=set.end())
+                  logdebug(((DataTreeTableNode*)(*it))->getId());
             }
         }
     }

@@ -21,7 +21,8 @@ namespace org {
                 /*! \brief Construct a new node for the given file.
                  */
                 DataTreeTableNode( org::esb::sql::ResultSet & rs);
-                DataTreeTableNode(const std::string & name, const int type=0, const int parentid=-1);
+                DataTreeTableNode(const std::string & name, const int type=0, const int parentid=-1, const bool pop=true);
+                int getId() const;
 
             private:
                 //! The path.
@@ -44,6 +45,10 @@ namespace org {
                 void selectAction();
                 
                 int _parentid;
+                
+                bool _withPopulate;
+                
+
             };
 
         }

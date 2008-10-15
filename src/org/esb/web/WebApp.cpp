@@ -74,8 +74,8 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   Wt::Ext::Menu * help=new Wt::Ext::Menu();
 //  Wt::Ext::MenuItem * item;
 
-  files->addItem("New File",SLOT(this,WebApp::openFileUpload));
-  files->addSeparator();
+//  files->addItem("New File",SLOT(this,WebApp::openFileUpload));
+//  files->addSeparator();
   files->addItem("Filelist",SLOT(this,WebApp::openFileList));
 //  files->addItem("Files",contents,(&Wt::WStackedWidget::setCurrentIndex,0));
 	
