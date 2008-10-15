@@ -280,7 +280,7 @@ void listener(int argc, char *argv[]){
     * Starting Application Services from configuration
     *
     */
-/*
+
 	if(string(Config::getProperty("hive.autoscan"))=="true"){
    		Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","start"));
 	}
@@ -290,7 +290,7 @@ void listener(int argc, char *argv[]){
    		Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","start"));
    		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
    	}
-*/
+
 	if(string(Config::getProperty("web.start"))=="true")
    		Messenger::getInstance().sendRequest(Message().setProperty("webserver","start"));
 
