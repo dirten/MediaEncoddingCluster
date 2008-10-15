@@ -21,7 +21,7 @@ namespace org {
             class Connection {
                 logger("hive.sql.Connection")
             public:
-                Connection();
+                Connection()throw (SqlException);
                 Connection(const char * con);
                 Connection(const char * host,const char * db, const char * user, const char * pass);
                 ~Connection();

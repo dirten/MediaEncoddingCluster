@@ -42,7 +42,7 @@ Thread::~Thread()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Thread::start() 
+void Thread::start() throw(Exception)
 {
   if (this->started)
   {
@@ -86,7 +86,7 @@ void Thread::start()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Thread::join() 
+void Thread::join() throw (Exception)
 {
   if (!this->started)
   {
