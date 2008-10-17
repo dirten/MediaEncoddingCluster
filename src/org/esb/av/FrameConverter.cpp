@@ -53,7 +53,8 @@ namespace av{
     
     Frame FrameConverter::convertVideo(Frame & in_frame){		
 		Frame out_frame(_outFormat->pixel_format,_outFormat->width, _outFormat->height);
-      
+		out_frame._type=in_frame._type;
+
 		int sws_flags=1;
 		_swsContext = sws_getCachedContext(_swsContext,
             in_frame.getWidth(), in_frame.getHeight(),

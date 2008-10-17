@@ -114,8 +114,8 @@ namespace org {
                     Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget();
                     sp->addWidget(exampleTabs);
 
-                    sp->children().back()->resize(1260, 500);
-                    sp->children().back()->setMinimumSize(230, 500);
+                    sp->children().back()->resize(800, Wt::WLength(100, Wt::WLength::Percentage));
+                    sp->children().back()->setMinimumSize(230, Wt::WLength(100, Wt::WLength::Percentage));
 
                     //      str=new SqlTable("select * from files limit 0 ");
                     //      str->itemSelectionChanged.connect(SLOT(this, Files::versionSelected));
@@ -142,7 +142,7 @@ namespace org {
                 }
 
                 void refresh() {
-                    tab->reload(std::string("select id, filename, container_type, size from files "));
+//                    tab->reload(std::string("select id, filename, container_type, size from files "));
                 }
 
                 void fileSelected() {

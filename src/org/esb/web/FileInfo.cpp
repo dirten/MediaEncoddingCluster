@@ -5,7 +5,7 @@
 #include <Wt/WLength>
 #include <Wt/WTable>
 #include <Wt/WGroupBox>
-#include <Wt/WComboBox>
+#include <Wt/Ext/ComboBox>
 #include <Wt/Ext/Button>
 
 #include "org/esb/sql/Connection.h"
@@ -67,7 +67,7 @@ namespace web{
         
         
         encodingbox=new Wt::WGroupBox("Encoding",this);
-        profiles=new Wt::WComboBox(encodingbox);
+		profiles=new Wt::Ext::ComboBox(encodingbox);
         encode=new Wt::Ext::Button("Encode",encodingbox);
         encode->clicked.connect(SLOT(this, FileInfo::createJob));
         encodingbox->setHidden(true);
@@ -189,7 +189,7 @@ namespace web{
       Wt::WText * filepath;
       Wt::WGroupBox * encodingbox;
 //      Wt::WGroupBox * general;
-      Wt::WComboBox * profiles;
+	  Wt::Ext::ComboBox * profiles;
       Wt::Ext::Button * encode;
       int file_id;
       map<int, Wt::WText*> wtextlist;

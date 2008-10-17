@@ -46,9 +46,9 @@ class TcpSocketOutputStream:public OutputStream{
 	    * Send length from buffer
 	    */
 	    
-	    char size[10];
+	    char * size=new char[10];
         sprintf(size,"%010d",len);
-        boost::asio::write(*_socket,boost::asio::buffer(size, sizeof(size)));
+        boost::asio::write(*_socket,boost::asio::buffer(size, 10));
 
 	    /*
 	    * Send buffer

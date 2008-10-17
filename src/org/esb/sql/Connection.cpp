@@ -11,7 +11,7 @@ using namespace org::esb::sql;
 using namespace org::esb::io;
 using namespace org::esb::util;
 
-Connection::Connection() throw(SqlException){
+Connection::Connection(){
 
 }
 Connection::Connection(const char * con){

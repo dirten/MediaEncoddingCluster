@@ -174,11 +174,11 @@ while(true){
 		ProcessUnit unit;
 		ois.readObject(unit);
 		if(unit._input_packets.size()==0)break;
-		try{
+//		try{
 			unit.process();
-		}catch(...){
-			logerror("Error in process");
-		}
+//		}catch(...){
+//			logerror("Error in process");
+//		}
 		char * text_out="put process_unit";
 		sock.getOutputStream()->write(text_out, strlen(text_out));
 		oos.writeObject(unit);
