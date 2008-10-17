@@ -266,7 +266,7 @@ void listener(int argc, char *argv[]){
 	HiveListener hive;
    	Messenger::getInstance().addMessageListener(hive);
 
-    DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
+        DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
    	Messenger::getInstance().addMessageListener(dirscan);
 
 	ProcessUnitWatcher puw;

@@ -8,8 +8,6 @@
 #include "Datetime.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
 
-// Step 1: Optimize : use a cache string, to make formatting the message faster
-//BOOST_LOG_FORMAT_MSG( optimize::cache_string_one_str<> ) 
 
 using namespace boost::posix_time;
 using namespace boost::gregorian;
