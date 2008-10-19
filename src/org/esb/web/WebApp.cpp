@@ -89,6 +89,7 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   system->addItem("Config",this,&WebApp::openConfig);
 
   tb->addButton("File", files);
+
   tb->addButton("Profiles", profiles);
   tb->addButton("System", system);
   tb->addSeparator();
@@ -111,9 +112,10 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   contents->addWidget(new Files(root()));
   contents->addWidget(new Profiles(root()));
   contents->addWidget(new Configuration());
+/*
   contents->addWidget(new Upload());
   contents->addWidget(new ProfilesEdit());
-  
+*/
   contents->setCurrentIndex(0);
 //  contents->setCurrentIndex(1);
 

@@ -40,14 +40,15 @@ DirectoryScanner::~DirectoryScanner(){
 void DirectoryScanner::onMessage(org::esb::signal::Message & msg){
   if(msg.getProperty("directoryscan")=="start"){
     _halt=false;
-    th=new boost::thread(boost::bind(&DirectoryScanner::scan, this));
-//    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
-    logdebug("Directory Scanner running with interval:"<<_interval);
+//    th=new boost::thread(boost::bind(&DirectoryScanner::scan, this));
+	logdebug("Directory Scanner running with interval:"<<_interval);
+    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
+    
   }else
   if(msg.getProperty("directoryscan")=="stop"){
     _halt=true;
 //#if BOOST_VERSION > 103500
-    th->interrupt();
+//    th->interrupt();
 //#endif
     cout << "Directory Scanner stopped:"<<endl;
   }
@@ -74,9 +75,9 @@ void DirectoryScanner::scan(std::string dir){
     }
 }
 
-void DirectoryScanner::computeFile(File file){
+void DirectoryScanner::computeFile(File & file){
 
-	Connection con(Connection(org::esb::config::Config::getProperty("db.connection")));
+	Connection con(org::esb::config::Config::getProperty("db.connection"));
   PreparedStatement stmt(con.prepareStatement("select * from files where filename=:name and path=:path"));
   stmt.setString("name", file.getFileName());
   stmt.setString("path", file.getFilePath());
@@ -84,8 +85,12 @@ void DirectoryScanner::computeFile(File file){
   if(!rs.next()){
 //  found=str.find_first_of("aeiou");
     if(file.isFile()){
-      char * argv[]={"",(char*)file.getPath().c_str()};
+		const char * filename=0;
+		std::string name=file.getPath();
+		filename=name.data();
+      char * argv[]={"",(char*)filename};
       int fileid=import(2,argv);
+	  const char * t=file.getPath().c_str();
     }
 //    std::string sql("insert into files (filename, path) values (\""+file.getFileName()+"\",\""+file.getFilePath()+"\")");
 //    std::cout << sql <<std::endl;

@@ -96,8 +96,8 @@ int import(int argc, char *argv[]) {
         st.setInt("year", fis.getFormatContext()->year);
         st.setInt("track", (unsigned int) fis.getFormatContext()->track);
         st.setString("genre", (char *) fis.getFormatContext()->genre);
-        st.setInt("duration", (unsigned int) fis.getFormatContext()->duration);
-        st.setInt("bitrate", (unsigned int) fis.getFormatContext()->bit_rate);
+        st.setDouble("duration", (double)fis.getFormatContext()->duration);
+        st.setDouble("bitrate", (double) fis.getFormatContext()->bit_rate);
         st.execute();
         fileid = con.lastInsertId();
     }
@@ -111,7 +111,7 @@ int import(int argc, char *argv[]) {
     std::map<int,int> den;
     std::map<int,int> channels;
     std::map<int,int> sample_rates;
-    std::map<int,int> stream_pts;
+//    std::map<int,int> stream_pts;
     std::map<int,double> stream_start;
 	boost::int64_t duration = 0;
 
@@ -182,8 +182,8 @@ int import(int argc, char *argv[]) {
         den[a] = ctx->streams[a]->time_base.den;
         channels[a] = ctx->streams[a]->codec->channels;
         sample_rates[a] = ctx->streams[a]->codec->sample_rate;
-        stream_pts[a] = 0;
-        stream_start[a] = (double) ctx->streams[a]->start_time;
+//        stream_pts[a] = 0;
+//        stream_start[a] = (double) ctx->streams[a]->start_time;
 
     }
     //      progress_display show_progress(duration);
@@ -252,7 +252,7 @@ int import(int argc, char *argv[]) {
         stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
         stmt.execute();
         //      show_progress+=packet.duration;
-
+/*
         if (codec_types[packet.packet->stream_index] == CODEC_TYPE_VIDEO) {
 			stream_pts[packet.packet->stream_index] += ((boost::int64_t) 1000000 * num[packet.packet->stream_index]) / den[packet.packet->stream_index];
         }
@@ -261,7 +261,7 @@ int import(int argc, char *argv[]) {
 			stream_pts[packet.packet->stream_index] += ((boost::int64_t) AV_TIME_BASE / 2 * packet.packet->size) /
                     (sample_rates[packet.packet->stream_index] * channels[packet.packet->stream_index]);
         }
-
+*/
 
     }
 

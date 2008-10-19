@@ -55,8 +55,8 @@ namespace org {
                             Wt::Ext::Splitter * spVert=new Wt::Ext::Splitter(Wt::Vertical,this);
                             spVert->resize(1260,800);
                      */
-                    Wt::Ext::Splitter * sp = new Wt::Ext::Splitter(this);
-                    sp->resize(1260, 800);
+//                    Wt::Ext::Splitter * sp = new Wt::Ext::Splitter(this);
+//                    sp->resize(1260, 800);
                     //        sp->resize(Wt::WLength(100,Wt::WLength::Percentage),Wt::WLength(100,Wt::WLength::Percentage));
                     /*
                             FileTreeTable *treeTable = new FileTreeTable("/home");
@@ -75,7 +75,7 @@ namespace org {
 
                     //        Wt::WScrollArea * sa=new Wt::WScrollArea();
 
-
+/*
                     datatree = new DataTreeTable(0);
                     datatree->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
                     datatree->tree()->setSelectionMode(Wt::ExtendedSelection);
@@ -88,7 +88,7 @@ namespace org {
                     sp->addWidget(datatree);
                     //        sp->children().back()->resize(Wt::WLength(100,Wt::WLength::Percentage), Wt::WLength(100,Wt::WLength::Percentage));
                     sp->children().back()->setMinimumSize(250, Wt::WLength(100, Wt::WLength::Percentage));
-
+*/
                     /*          
                             sp->addWidget(treeTable2);
                             sp->children().back()->resize(250, 600);
@@ -101,21 +101,23 @@ namespace org {
                     //        sp->addWidget(new Wt::WText("right"));
                     //        this->addWidget(treeTable);      
                     //        this->addWidget(treeTable);
-                    /*
-                                        tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
-                                        tab->resize(Wt::WLength(), 300);
-                                        tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
-                                        tab->setColumnHidden(0, true);
-                                        sp->addWidget(tab);
-                                        sp->children().back()->resize(1260, 500);
-                                        sp->children().back()->setMinimumSize(230, 500);
-                     */
+                    
+                    tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
+                    tab->resize(Wt::WLength(), 300);
+                    tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
+                    tab->setColumnHidden(0, true);
+//                                        sp->addWidget(tab);
+//                                        sp->children().back()->resize(1260, 500);
+//                                        sp->children().back()->setMinimumSize(230, 500);
+                     
 
-                    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget();
-                    sp->addWidget(exampleTabs);
+//                    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget();
+//                    sp->addWidget(exampleTabs);
 
-                    sp->children().back()->resize(800, Wt::WLength(100, Wt::WLength::Percentage));
-                    sp->children().back()->setMinimumSize(230, Wt::WLength(100, Wt::WLength::Percentage));
+//                    sp->children().back()->resize(800, Wt::WLength(100, Wt::WLength::Percentage));
+//                    sp->children().back()->setMinimumSize(230, Wt::WLength(100, Wt::WLength::Percentage));
+//                    sp->children().back()->resize(800, 500);
+//                    sp->children().back()->setMinimumSize(230, 500);
 
                     //      str=new SqlTable("select * from files limit 0 ");
                     //      str->itemSelectionChanged.connect(SLOT(this, Files::versionSelected));
@@ -124,12 +126,13 @@ namespace org {
 
 
                     //      str->resize(1000,400);
+                    info = new FileInfo(this);
 
-                    info = new FileInfo();
-                    pSelector=new ProfileSelector();
+					/*
+                    pSelector=new ProfileSelector(this);
                     exampleTabs->addTab(info, "Information");
                     exampleTabs->addTab(pSelector, "Encode");
-
+*/
                     
 
 //                    sp->addWidget(exampleTabs);
@@ -146,13 +149,10 @@ namespace org {
                 }
 
                 void fileSelected() {
-                    std::set<Wt::WTreeNode*> set = datatree->tree()->selectedNodes();
-                    std::set<Wt::WTreeNode*>::iterator it = set.begin();
-                    if (it != set.end())
-                        info->setData(((DataTreeTableNode*) (*it))->getId());
-                    //                        logdebug(((DataTreeTableNode*) (*it))->getId());
-
-                    logdebug("fileSelected");
+                    std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
+					info->setData(atoi(idstr.c_str()));
+                    logdebug("fileSelected"<<idstr);
+                    
                     //      std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
                     //      std::string sql="select * from files where parent="+idstr+" or id="+idstr;
                     //      str->reload(sql);

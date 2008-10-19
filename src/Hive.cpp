@@ -260,14 +260,15 @@ void listener(int argc, char *argv[]){
     *
     */
 
+	DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
+   	Messenger::getInstance().addMessageListener(dirscan);
+
 	WebServer webserver;
    	Messenger::getInstance().addMessageListener(webserver);
 
 	HiveListener hive;
    	Messenger::getInstance().addMessageListener(hive);
 
-        DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
-   	Messenger::getInstance().addMessageListener(dirscan);
 
 	ProcessUnitWatcher puw;
    	Messenger::getInstance().addMessageListener(puw);
@@ -281,9 +282,6 @@ void listener(int argc, char *argv[]){
     *
     */
 
-	if(string(Config::getProperty("hive.autoscan"))=="true"){
-   		Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","start"));
-	}
 
 	if(string(Config::getProperty("hive.start"))=="true"){
 //   		Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","start"));
@@ -293,6 +291,9 @@ void listener(int argc, char *argv[]){
 
 	if(string(Config::getProperty("web.start"))=="true")
    		Messenger::getInstance().sendRequest(Message().setProperty("webserver","start"));
+	if(string(Config::getProperty("hive.autoscan"))=="true"){
+   		Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","start"));
+	}
 
 //	Thread::sleep(5000);
 //   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));

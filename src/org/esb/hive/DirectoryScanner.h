@@ -18,7 +18,7 @@ class DirectoryScanner: public org::esb::signal::MessageListener{
   private:
     void scan();
     void scan(std::string dir);
-    void computeFile(org::esb::io::File file);
+    void computeFile(org::esb::io::File & file);
     bool _halt;
     boost::thread * th;
     std::string _dir;
