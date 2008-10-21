@@ -1,10 +1,6 @@
 #ifndef ORG_ESB_SQL_RESULTSETMETADATA_H
 #define ORG_ESB_SQL_RESULTSETMETADATA_H
-#ifdef WIN32
-#include <my_global.h>
-#endif
-//#include <my_global.h>
-#include <mysql.h>
+#include "my_sql.h"
 #include <string>
 namespace org{
 namespace esb{

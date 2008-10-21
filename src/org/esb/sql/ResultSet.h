@@ -6,12 +6,7 @@
 #include "PreparedStatement.h"
 #include "Row.cpp"
 #include "ResultSetMetaData.h"
-#ifdef WIN32
-#include <my_global.h>
-#endif
-
-#include <mysql.h>
-
+#include "my_sql.h"
 #include "org/esb/util/Log.h"
 namespace org{
 namespace esb{

@@ -8,12 +8,7 @@
 //#include "ResultSet.h"
 //#include "ResultSet.h"
 //#include "sqlite3x.hpp"
-#ifdef WIN32
-#include <my_global.h>
-#endif
-
-//#include <my_global.h>
-#include <mysql.h>
+#include "my_sql.h"
 //#include "mysql++.h"
 #include "Column.h"
 #include "Parameter.cpp"

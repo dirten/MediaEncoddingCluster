@@ -3,12 +3,7 @@
 #include "org/esb/util/Log.h"
 #include "SqlException.h"
 #include <string>
-
-#ifdef WIN32
-#include <my_global.h>
-#endif
-
-#include <mysql.h>
+#include "my_sql.h"
 
 //#include "tntdb/connection.h"
 //#include "mysql++.h"

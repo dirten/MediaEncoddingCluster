@@ -40,15 +40,15 @@ DirectoryScanner::~DirectoryScanner(){
 void DirectoryScanner::onMessage(org::esb::signal::Message & msg){
   if(msg.getProperty("directoryscan")=="start"){
     _halt=false;
-//    th=new boost::thread(boost::bind(&DirectoryScanner::scan, this));
+    th=new boost::thread(boost::bind(&DirectoryScanner::scan, this));
 	logdebug("Directory Scanner running with interval:"<<_interval);
-    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
+//    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
     
   }else
   if(msg.getProperty("directoryscan")=="stop"){
     _halt=true;
 //#if BOOST_VERSION > 103500
-//    th->interrupt();
+    th->interrupt();
 //#endif
     cout << "Directory Scanner stopped:"<<endl;
   }
@@ -56,8 +56,11 @@ void DirectoryScanner::onMessage(org::esb::signal::Message & msg){
 
 void DirectoryScanner::scan(){
   while(!_halt){
-    scan(_dir);
-//	boost::thread::sleep(_interval);
+	  if(File(_dir.c_str()).exists()){
+		scan(_dir);
+	  }else{
+		  _halt=true;
+	  }
     Thread::sleep2(_interval);
   }
 }
