@@ -106,6 +106,7 @@ namespace org {
                     tab->resize(Wt::WLength(), 300);
                     tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
                     tab->setColumnHidden(0, true);
+					tab->setTopToolBar(new Wt::Ext::ToolBar(this));
 //                                        sp->addWidget(tab);
 //                                        sp->children().back()->resize(1260, 500);
 //                                        sp->children().back()->setMinimumSize(230, 500);

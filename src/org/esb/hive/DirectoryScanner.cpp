@@ -90,10 +90,10 @@ void DirectoryScanner::computeFile(File & file){
     if(file.isFile()){
 		const char * filename=0;
 		std::string name=file.getPath();
-		filename=name.data();
-      char * argv[]={"",(char*)filename};
+//		filename=name.data();
+      char * argv[]={"",(char*)name.c_str()};
       int fileid=import(2,argv);
-	  const char * t=file.getPath().c_str();
+
     }
 //    std::string sql("insert into files (filename, path) values (\""+file.getFileName()+"\",\""+file.getFilePath()+"\")");
 //    std::cout << sql <<std::endl;
