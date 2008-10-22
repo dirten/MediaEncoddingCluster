@@ -25,7 +25,7 @@
 
 #include "org/esb/util/Decimal.h"
 //#include "org/esb/hive/FileImporter.h"
-//#include "export.cpp"
+#include "export.cpp"
 //#include "org/esb/util/Log.h"
 //#include "job.cpp"
 //#include "org/esb/hive/JobUtil.h"
@@ -86,10 +86,17 @@ int main(int argc, char * argv[]){
         ("port,p", po::value<int>()->default_value(20200), "Port to connect")
         ;
 
-    po::options_description all("options");
-    all.add(gen).add(ser).add(cli);
+	po::options_description exp("Export options");
+    exp.add_options()
+		("export,e","Exports a File")
+        ("file,f",po::value<std::string>(),"which file to export")
+        ("directory,d",po::value<std::string>(), "Directory in which the File to export")
+        ;
 
-    gen.add(ser).add(cli);
+    po::options_description all("options");
+	all.add(gen).add(ser).add(cli).add(exp);
+
+    gen.add(ser).add(cli).add(exp);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, gen), vm);
@@ -120,6 +127,11 @@ int main(int argc, char * argv[]){
   	  Config::setProperty("client.port",Decimal(vm["port"].as<int>()).toString().c_str());
   	  Config::setProperty("client.host",vm["host"].as<std::string>().c_str());
 	  client(argc,argv);
+    }
+    if (vm.count("export")) {
+		std::string file=vm["file"].as<std::string>();
+		std::string dir=vm["directory"].as<std::string>();
+			exporter((char*)file.c_str(),(char*)dir.c_str());
     }
 
 

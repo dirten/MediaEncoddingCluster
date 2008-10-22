@@ -13,11 +13,11 @@ using namespace org::esb::io;
 using namespace org::esb::lang;
 using namespace org::esb::sql;
 
-int exporter(int argc, char * argv[]){
+int exporter(char * fileid, char * outfile){
 
 //    File fout("/tmp/testdb.avi");
-	org::esb::io::File fout(argv[3]);
-    string stream_id=argv[2];
+	org::esb::io::File fout(outfile);
+    string stream_id=fileid;
 //    int codec_id=atoi(argv[3]);
     FormatOutputStream fos(&fout);
     PacketOutputStream pos(&fos);

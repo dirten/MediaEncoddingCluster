@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_SQL_RESULTSETMETADATA_H
 #define ORG_ESB_SQL_RESULTSETMETADATA_H
-#include "my_sql.h"
 #include <string>
+#include "my_sql.h"
 namespace org{
 namespace esb{
 namespace sql{

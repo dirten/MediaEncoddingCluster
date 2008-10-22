@@ -8,7 +8,7 @@ namespace esb{
 namespace web{
 class SqlTableModel:public Wt::WStandardItemModel{
   public:
-    SqlTableModel(org::esb::sql::ResultSet result,Wt::WContainerWidget* parent);
+    SqlTableModel(org::esb::sql::ResultSet result,Wt::WContainerWidget* parent=0);
     void clear();
     void load(sql::ResultSet result);
 

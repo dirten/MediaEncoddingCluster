@@ -21,7 +21,8 @@
 #include <Wt/WLength>
 #include <Wt/WScrollArea>
 
-#include <Wt/Ext/Splitter>
+#include <Wt/WLabel>
+#include <Wt/Ext/LineEdit>
 #include <Wt/Ext/TabWidget>
 #include <Wt/WContainerWidget>
 #include <Wt/WTree>
@@ -33,6 +34,7 @@
 #include <Wt/Ext/Splitter>
 
 #include "org/esb/util/Log.h"
+#include "org/esb/util/ScopedTimeCounter.h"
 #include "SqlTable.h"
 #include "FileInfo.cpp"
 #include "FileTreeTable.h"
@@ -50,7 +52,7 @@ namespace org {
             public:
 
                 Files(Wt::WContainerWidget * parent = 0) : Wt::WContainerWidget(parent) {
-                    this->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
+//                    this->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
                     /*
                             Wt::Ext::Splitter * spVert=new Wt::Ext::Splitter(Wt::Vertical,this);
                             spVert->resize(1260,800);
@@ -101,13 +103,23 @@ namespace org {
                     //        sp->addWidget(new Wt::WText("right"));
                     //        this->addWidget(treeTable);      
                     //        this->addWidget(treeTable);
-                    
-                    tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
-                    tab->resize(Wt::WLength(), 300);
+
+	
+					/* 
+					tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
+                    tab->resize(800, 300);
                     tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
                     tab->setColumnHidden(0, true);
+*/
+					/*
 					tab->setTopToolBar(new Wt::Ext::ToolBar(this));
-//                                        sp->addWidget(tab);
+					searchField=new Wt::Ext::LineEdit();
+					searchButton=new Wt::Ext::Button("Search now");
+					tab->topToolBar()->add(searchField);
+					tab->topToolBar()->add(searchButton);
+					searchButton->clicked.connect(SLOT(this,Files::search));
+*/
+					//                                        sp->addWidget(tab);
 //                                        sp->children().back()->resize(1260, 500);
 //                                        sp->children().back()->setMinimumSize(230, 500);
                      
@@ -145,15 +157,19 @@ namespace org {
  */
                 }
 
-                void refresh() {
-//                    tab->reload(std::string("select id, filename, container_type, size from files "));
+                void search() {
+//                    std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
+					ScopedTimeCounter stc("search");
+					std::string sql=std::string("select id, filename, container_type, size from files where filename like '%"+searchField->text().narrow()+"%'");
+					tab->reload(sql);
                 }
 
                 void fileSelected() {
-                    std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
-					info->setData(atoi(idstr.c_str()));
-                    logdebug("fileSelected"<<idstr);
-                    
+					if(tab->selectedRows().size()>0){
+						std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
+						info->setData(atoi(idstr.c_str()));
+						logdebug("fileSelected"<<idstr);
+					}
                     //      std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
                     //      std::string sql="select * from files where parent="+idstr+" or id="+idstr;
                     //      str->reload(sql);
@@ -170,13 +186,15 @@ namespace org {
                 }
 
 
-            private:
+            
                 SqlTable * tab;
                 SqlTable * str;
                 FileInfo * info;
                 ProfileSelector * pSelector;
                 DataTreeTable *datatree;
-            };
+				Wt::Ext::LineEdit * searchField;
+				Wt::Ext::Button * searchButton;
+			};
         }
     }
 }

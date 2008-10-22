@@ -15,6 +15,7 @@
 #include <Wt/Ext/Menu>
 #include <Wt/Ext/MenuItem>
 #include <Wt/Ext/ToolBar>
+#include <Wt/Ext/TabWidget>
 
 
 namespace org{
@@ -64,83 +65,25 @@ class Dashboard{
 */
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   setTitle("Hive Webadmin");
-  Wt::Ext::ToolBar * tb=new Wt::Ext::ToolBar(root());
-  contents = new Wt::WStackedWidget(root());
-  contents->setId("main_page");
+  Wt::WContainerWidget * main=new Wt::WContainerWidget(root());
+  main->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
 
-  Wt::Ext::Menu * files=new Wt::Ext::Menu();
-  Wt::Ext::Menu * profiles=new Wt::Ext::Menu();
-  Wt::Ext::Menu * system=new Wt::Ext::Menu();
-  Wt::Ext::Menu * help=new Wt::Ext::Menu();
-//  Wt::Ext::MenuItem * item;
+  Wt::Ext::TabWidget * tab=new Wt::Ext::TabWidget(main);
+  //tab->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
 
-//  files->addItem("New File",SLOT(this,WebApp::openFileUpload));
-//  files->addSeparator();
-  files->addItem("Filelist",SLOT(this,WebApp::openFileList));
-//  files->addItem("Files",contents,(&Wt::WStackedWidget::setCurrentIndex,0));
-	
-//  files->addItem("Files",contents,(boost::bind(&Wt::WStackedWidget::setCurrentIndex,contents,0 )));
-//    contents->setCurrentIndex(0);
-
-  profiles->addItem("New Profile",SLOT(this,WebApp::openProfileNew));
-  profiles->addSeparator();
-  profiles->addItem("Profilelist",SLOT(this,WebApp::openProfileList));
-
-  system->addItem("Config",this,&WebApp::openConfig);
-
-  tb->addButton("File", files);
-
-  tb->addButton("Profiles", profiles);
-  tb->addButton("System", system);
-  tb->addSeparator();
-  tb->addButton("?", help);
+//  tab->resize(1000,1000);
+	sql::Connection con(Config::getProperty("db.connection"));
+	sql::Statement stmt=con.createStatement("select id, filename, container_type, size from files ");
+	SqlTableModel * model=new SqlTableModel(stmt.executeQuery());
+	Wt::Ext::TableView * table;
+	tab->addTab(table=new Wt::Ext::TableView(),"Files");
+	table->setModel(model);
+  tab->resize(1000,500);
 
 
+//  tab->addTab(new Profiles(),"Profiles");
+//  tab->addTab(new Configuration(),"Configuration");
 
-//  Dashboard dashboard;
-//  Upload *upload=new Upload();
-
-
-//  Files *files=new Files();
-//  root()->addWidget(new SqlTable(std::string("select insertdate from files limit 1")));
-//  ((Files*)new Files(root()))->resize(1024,400);
-//  new Profiles(root());
-  
-
-//  contents->addWidget(new Files(root()));
-//  contents->addWidget(new Files(root()));
-  contents->addWidget(new Files(root()));
-  contents->addWidget(new Profiles(root()));
-  contents->addWidget(new Configuration());
-/*
-  contents->addWidget(new Upload());
-  contents->addWidget(new ProfilesEdit());
-*/
-  contents->setCurrentIndex(0);
-//  contents->setCurrentIndex(1);
-
-//  contents->refresh();
-
-/*
-  Wt::WMenu *menu = new Wt::WMenu(contents, Wt::Vertical, root());
-  menu->setRenderAsList(true);
-  menu->enableBrowserHistory("main");
-  Dashboard dashboard;
-  Upload upload;
-  Files *files=new Files();
-  Profiles *profiles=new Profiles();
-  Configuration * config=new Configuration();
-  menu->addItem("Dashboard", deferCreate(boost::bind(&Dashboard::home, dashboard)));
-  menu->addItem("Upload", deferCreate(boost::bind(&Upload::home, upload)));
-  menu->addItem("Files", deferCreate(boost::bind(&Files::home, files)));
-  menu->addItem("Profiles", deferCreate(boost::bind(&Profiles::home, profiles)));
-  menu->addItem("Configuration", config);
-//  files->reload();
-  menu->select(0);
-*/
-//  root()->addWidget(tb);
-//  root()->addWidget(contents);
-//  boost::thread t(boost::bind(&Files::removeLastTest, files));
   useStyleSheet("ext/resources/css/xtheme-gray.css");
   useStyleSheet("filetree.css");
   

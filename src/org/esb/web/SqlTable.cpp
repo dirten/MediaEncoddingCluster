@@ -39,7 +39,10 @@ void SqlTable::reload(string sql){
   ((SqlTableModel*)model())->clear();
   sql::Connection con(Config::getProperty("db.connection"));
   sql::Statement stmt=con.createStatement(sql.c_str());
-  ((SqlTableModel*)model())->load(stmt.executeQuery());
+  mod=new SqlTableModel(stmt.executeQuery());
+  setModel(mod);
+
+//  ((SqlTableModel*)model())->load(stmt.executeQuery());
 }
 }}}
 

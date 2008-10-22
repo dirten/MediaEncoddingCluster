@@ -41,6 +41,7 @@ add_library (util util/Properties.cpp
       util/Time.cpp 
       util/Datetime.cpp 
       util/Decimal.cpp 
+      util/ScopedTimeCounter.cpp 
       util/IllegalFormatException.cpp
 )
 

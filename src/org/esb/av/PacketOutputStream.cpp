@@ -34,8 +34,8 @@ PacketOutputStream::~PacketOutputStream(){
 void PacketOutputStream::writePacket(Packet & packet){
     if(!_isInitialized)
       throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
-    av_interleaved_write_frame(_fmtCtx,packet.packet);
-//    int result=av_write_frame(_fmtCtx,&packet);
+//    av_interleaved_write_frame(_fmtCtx,packet.packet);
+    int result=av_write_frame(_fmtCtx,packet.packet);
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder){
