@@ -105,12 +105,13 @@ namespace org {
                     //        this->addWidget(treeTable);
 
 	
-					/* 
+					
 					tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
-                    tab->resize(800, 300);
+//                    tab->resize(800, 300);
+                    tab->resize(Wt::WLength(), 300);
                     tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
-                    tab->setColumnHidden(0, true);
-*/
+//                    tab->setColumnHidden(0, true);
+
 					/*
 					tab->setTopToolBar(new Wt::Ext::ToolBar(this));
 					searchField=new Wt::Ext::LineEdit();
@@ -124,7 +125,7 @@ namespace org {
 //                                        sp->children().back()->setMinimumSize(230, 500);
                      
 
-//                    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget();
+//                    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
 //                    sp->addWidget(exampleTabs);
 
 //                    sp->children().back()->resize(800, Wt::WLength(100, Wt::WLength::Percentage));
@@ -139,7 +140,12 @@ namespace org {
 
 
                     //      str->resize(1000,400);
-                    info = new FileInfo(this);
+					Wt::Ext::TabWidget * tab=new Wt::Ext::TabWidget(this);
+					tab->resize(Wt::WLength(),Wt::WLength());
+					tab->addTab(info=new FileInfo(),"Information");
+					tab->addTab(pSelector=new ProfileSelector(),"Encoding");
+
+//                    info = new FileInfo(this);
 
 					/*
                     pSelector=new ProfileSelector(this);
@@ -168,6 +174,7 @@ namespace org {
 					if(tab->selectedRows().size()>0){
 						std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
 						info->setData(atoi(idstr.c_str()));
+						pSelector->setFileId(atoi(idstr.c_str()));
 						logdebug("fileSelected"<<idstr);
 					}
                     //      std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));

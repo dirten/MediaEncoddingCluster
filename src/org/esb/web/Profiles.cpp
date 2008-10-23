@@ -10,12 +10,12 @@ namespace web{
 class Profiles: public Wt::WContainerWidget{
   public:
     Profiles(Wt::WContainerWidget * parent=0):Wt::WContainerWidget(parent) {
-      this->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
+//      this->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
       t=new SqlTable(std::string("select * from profiles"), this);
       t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
       t->resize(Wt::WLength(),300);
       t->setTopToolBar(t->createPagingToolBar());
-
+//	  t->resize(800,300);
       buttonEdit=t->topToolBar()->addButton("Edit selected Profile");
       buttonEdit->setEnabled(false);
 	  buttonEdit->clicked.connect(SLOT(this, Profiles::editProfile));

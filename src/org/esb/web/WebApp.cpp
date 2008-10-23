@@ -11,8 +11,14 @@
 #include <Profiles.cpp>
 //#include <ProfilesEdit.cpp>
 #include <Configuration.cpp>
+#include <Account.cpp>
+#include <Login.cpp>
 
 #include <Wt/Ext/Menu>
+#include <Wt/Ext/Container>
+#include <Wt/WBorderLayout>
+#include <Wt/WFitLayout>
+#include <Wt/WString>
 #include <Wt/Ext/MenuItem>
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/TabWidget>
@@ -65,6 +71,51 @@ class Dashboard{
 */
 WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
   setTitle("Hive Webadmin");
+  _isAuthenticated=false;
+  Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
+  Wt::WBorderLayout *layout = new Wt::WBorderLayout(viewPort);
+
+  
+  Wt::Ext::Panel *north = new Wt::Ext::Panel();
+  north->setBorder(false);
+  Wt::WText *head = new Wt::WText("Header");
+  head->setStyleClass("north");
+  north->setLayout(new Wt::WFitLayout());
+  north->layout()->addWidget(head);
+  north->resize(Wt::WLength(), 35);
+  layout->addWidget(north, Wt::WBorderLayout::North);
+
+    /* West */
+  west = new Wt::Ext::Panel();
+//  west->layout()->addWidget(createMenuTree());
+
+  west->setTitle("Menu");
+  west->resize(200, Wt::WLength());
+  west->setResizable(true);
+  west->collapse();
+  west->setCollapsible(true);
+  west->setAnimate(true);
+  west->setAutoScrollBars(true);
+  layout->addWidget(west, Wt::WBorderLayout::West);
+
+  
+  /* Center */
+  Wt::Ext::Panel *center = new Wt::Ext::Panel();
+  center->setTitle("MediaEncodingCluster");
+  center->layout()->addWidget(exampleContainer_ = new Wt::WContainerWidget());
+  center->setAutoScrollBars(true);
+  layout->addWidget(center, Wt::WBorderLayout::Center);
+
+  exampleContainer_->setPadding(5);
+/*
+  Wt::WContainerWidget *container = new Wt::WContainerWidget(exampleContainer_);
+  container->addWidget(new Wt::WText(Wt::WString::tr("about")));
+  currentExample_ = container;
+*/
+
+  currentExample_ = login = new Login(exampleContainer_);
+  login->authenticated.connect(SLOT(this,WebApp::authenticated));
+/*  
   Wt::WContainerWidget * main=new Wt::WContainerWidget(root());
   main->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
 
@@ -76,64 +127,152 @@ WebApp::WebApp(const Wt::WEnvironment & env):WApplication(env){
 	sql::Statement stmt=con.createStatement("select id, filename, container_type, size from files ");
 	SqlTableModel * model=new SqlTableModel(stmt.executeQuery());
 	Wt::Ext::TableView * table;
+//	Files * files;
 	tab->addTab(table=new Wt::Ext::TableView(),"Files");
+//	tab->addTab(files=new Files(),"Files");
+//	files->resize(1000,500);
 	table->setModel(model);
-  tab->resize(1000,500);
+  	table->resize(Wt::WLength(100, Wt::WLength::Percentage),300);
+  table->setAlternatingRowColors(true);
+  table->resizeColumnsToContents(true);
+  table->setHighlightMouseOver(true);
+  table->setSelectionBehavior(Wt::SelectRows);
+  table->setSelectionMode(Wt::SingleSelection);
 
 
 //  tab->addTab(new Profiles(),"Profiles");
 //  tab->addTab(new Configuration(),"Configuration");
-
+*/
   useStyleSheet("ext/resources/css/xtheme-gray.css");
   useStyleSheet("filetree.css");
   
 }
-
-void WebApp::openFileUpload(){
-    contents->setCurrentIndex(3);
-}
-void WebApp::openFileList(){
-    contents->setCurrentIndex(0);
-}
-
-void WebApp::openProfileNew(){
-    contents->setCurrentIndex(4);
-}
-void WebApp::openProfileList(){
-    contents->setCurrentIndex(1);
-}
-
-void WebApp::openConfig(){
-    contents->setCurrentIndex(2);
-}
-
-Wt::WWidget *WebApp::introduction()
+Wt::WWidget *WebApp::createMenuTree()
 {
-  return new Wt::WText("test Text");
-}
+  Wt::WIconPair *mapIcon
+    = new Wt::WIconPair("icons/yellow-folder-closed.png",
+		    "icons/yellow-folder-open.png", false);
 
+  Wt::WTreeNode *rootNode = new Wt::WTreeNode("User MainMenu", mapIcon);
+  rootNode->setImagePack("icons/");
+  rootNode->expand();
+//  rootNode->setNodeVisible(false);
+  rootNode->setLoadPolicy(Wt::WTreeNode::NextLevelLoading);
+  createMenuNode("My Account", rootNode,
+		    &WebApp::accountView);
+  createMenuNode("My Media", rootNode,
+		    &WebApp::fileView);
+  createMenuNode("My Profiles", rootNode,
+		    &WebApp::profileView);
+  createMenuNode("My Encodings", rootNode,
+		    &WebApp::profileView);
+  createMenuNode("My Watch Folder", rootNode,
+		    &WebApp::profileView);
+  createMenuNode("Logout", rootNode,
+		    &WebApp::logout);
 /*
-Wt::WWidget *WebApp::test()
-{
-  return new Wt::WText("test Text nummer 2");
-}
+  createExampleNode("Menu & ToolBar", rootNode,
+		    &ExtKitchenApplication::menuAndToolBarExample);
+  createExampleNode("Form widgets", rootNode,
+		    &ExtKitchenApplication::formWidgetsExample);
+  createExampleNode("TableView", rootNode,
+		    &ExtKitchenApplication::tableViewExample);
+  createExampleNode("Dialogs", rootNode,
+		    &ExtKitchenApplication::dialogExample);
+  createExampleNode("TabWidget", rootNode,
+		    &ExtKitchenApplication::tabWidgetExample);
 */
-Wt::WWidget *WebApp::submenu1()
+  rootNode->setMargin(5);
+ 
+  return rootNode;
+}
+Wt::WTreeNode *WebApp::createMenuNode(const Wt::WString& label,
+						    Wt::WTreeNode *parentNode,
+						    ShowExample f)
 {
+  Wt::WIconPair *labelIcon
+    = new Wt::WIconPair("icons/document.png", "icons/document.png", false);
 
-  Wt::WStackedWidget *contents = new Wt::WStackedWidget();
-  contents->setId("sub_page");
+  Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
+  node->label()->setFormatting(Wt::WText::PlainFormatting);
+  node->label()->clicked.connect(this, f);
 
-  Wt::WMenu *menu = new Wt::WMenu(contents, Wt::Vertical, root());
-  menu->setRenderAsList(true);
-//  menu->enableBrowserHistory("main");
-
-  menu->addItem("Introduction 2", introduction());
-//  menu->addItem("Test Menu 2", test());
-  root()->addWidget(contents);
-
-  return menu;
+  return node;
+}
+void WebApp::fileView(){
+  Wt::WContainerWidget *ex = new Wt::WContainerWidget();
+//  ex->resize(600,300);
+/*
+	sql::Connection con(Config::getProperty("db.connection"));
+	sql::Statement stmt=con.createStatement("select id, filename, container_type, size from files ");
+	SqlTableModel * model=new SqlTableModel(stmt.executeQuery());
+	Wt::Ext::TableView * table;
+	table=new Wt::Ext::TableView(ex);
+	table->setModel(model);
+        table->resize(800,300);
+        table->setAlternatingRowColors(true);
+        table->resizeColumnsToContents(true);
+        table->setHighlightMouseOver(true);
+        table->setSelectionBehavior(Wt::SelectRows);
+        table->setSelectionMode(Wt::SingleSelection);
+*/
+        setContent(new Files());
+}
+void WebApp::profileView(){
+/*
+  Wt::WContainerWidget *ex = new Wt::WContainerWidget();
+  ex->resize(500,300);
+	sql::Connection con(Config::getProperty("db.connection"));
+	sql::Statement stmt=con.createStatement("select * from profiles");
+	SqlTableModel * model=new SqlTableModel(stmt.executeQuery());
+	Wt::Ext::TableView * table;
+	table=new Wt::Ext::TableView(ex);
+	table->setModel(model);
+        table->resize(700,300);
+        table->setAlternatingRowColors(true);
+        table->resizeColumnsToContents(true);
+        table->setHighlightMouseOver(true);
+        table->setSelectionBehavior(Wt::SelectRows);
+        table->setSelectionMode(Wt::SingleSelection);
+*/
+        setContent(new Profiles());
 }
 
+void WebApp::accountView(){
+        setContent(new Account(_user_id));
+}
+
+void WebApp::logout(){
+	_isAuthenticated=false;
+	_user_id=0;
+//	Wt::WWidget * w=west->layout()->widget();
+	west->layout()->removeWidget(menu);
+	delete menu;
+	west->collapse();
+  Wt::WContainerWidget *container = new Wt::WContainerWidget(exampleContainer_);
+  container->addWidget(new Wt::WText(Wt::WString::tr("logged_out")));
+	setContent(container);
+}
+
+void WebApp::authenticated(){
+	_isAuthenticated=true;
+	_user_id=login->getUserId();
+    west->layout()->addWidget(menu=createMenuTree());
+	west->expand();
+}
+
+void WebApp::setContent(Wt::WWidget *example)
+{
+
+	if(!_isAuthenticated){
+		delete example;
+		example=login=new Login();
+  		login->authenticated.connect(SLOT(this,WebApp::authenticated));
+	}
+
+  delete currentExample_;
+  currentExample_ = example;
+  exampleContainer_->addWidget(currentExample_);
+}
 }}}
 

@@ -15,7 +15,7 @@ SqlTable::SqlTable(std::string sql, Wt::WContainerWidget * parent):Wt::Ext::Tabl
   sql::Connection con(Config::getProperty("db.connection"));
 //  if(sql.size()==0)sql.append("select ")
   sql::Statement stmt=con.createStatement(sql.c_str());
-  mod=new SqlTableModel(stmt.executeQuery(), (Wt::WContainerWidget *)this);
+  mod=new SqlTableModel(stmt.executeQuery(), parent);
   setModel(mod);
   setAlternatingRowColors(true);
   resizeColumnsToContents(true);

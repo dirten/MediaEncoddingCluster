@@ -65,14 +65,14 @@ namespace web{
 //        std::string sql="select * from streams where fileid="+id;
 
         
-        
+/*        
         encodingbox=new Wt::WGroupBox("Encoding",this);
 		profiles=new Wt::Ext::ComboBox(encodingbox);
         encode=new Wt::Ext::Button("Encode",encodingbox);
         encode->clicked.connect(SLOT(this, FileInfo::createJob));
         encodingbox->setHidden(true);
- 
-//        general->setHidden(true);
+ */
+	//        general->setHidden(true);
       }
 
       void createStreamBox(ResultSet & rs, int col){
@@ -169,6 +169,7 @@ namespace web{
                 createStreamBox(rs, a++);
             }
         }
+/*
         if(true){
           profiles->clear();
           name2id.clear();
@@ -179,8 +180,9 @@ namespace web{
             name2id[rs.getString("profile_name")]=rs.getInt("id");
           }
         }
+*/
 //        general->setHidden(false);
-        encodingbox->setHidden(false);
+//        encodingbox->setHidden(false);
         refresh();
       }
       

@@ -119,6 +119,7 @@ add_library (web web/WebServer.cpp
     web/DataTreeTableNode.cpp
     web/VersionNode.cpp
     web/FileNode.cpp
+    web/SqlUtil.cpp
 )
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
