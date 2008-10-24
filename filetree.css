@@ -39,3 +39,11 @@ body {
 .table {
   border: solid 2px;
 }
+.north {
+    background:#f5f5f5 ;
+    font-weight: bold;
+    font-size:+1;
+    border:0px none;
+    padding-left:3px;
+    padding-top:3px;
+}

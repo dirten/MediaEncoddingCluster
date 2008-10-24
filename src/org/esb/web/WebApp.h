@@ -28,6 +28,7 @@ class WebApp: public Wt::WApplication{
     void fileView();
     void profileView();
     void accountView();
+    void encodingView();
     void logout();
     void setContent(Wt::WWidget *example);
     void authenticated();
@@ -35,7 +36,7 @@ class WebApp: public Wt::WApplication{
     Wt::WWidget * createMenuTree();
     Wt::WTreeNode * createMenuNode(const Wt::WString& label,
 						    Wt::WTreeNode *parentNode,
-						    ShowExample f);
+						    ShowExample f,const char * icon="icons/document.png");
 //    Wt::WWidget * test();
     Wt::WWidget * menu;
     Wt::WStackedWidget *contents;

@@ -106,10 +106,14 @@ namespace org {
 
 	
 					
-					tab = new SqlTable(std::string("select id, filename, container_type, size from files "), this);
+					tab = new SqlTable(std::string("select id, filename, container_type type, size from files "), this);
 //                    tab->resize(800, 300);
                     tab->resize(Wt::WLength(), 300);
                     tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
+            		tab->setColumnWidth(0,10);
+            		tab->setColumnWidth(2,10);
+            		tab->setColumnWidth(3,20);
+
 //                    tab->setColumnHidden(0, true);
 
 					/*
