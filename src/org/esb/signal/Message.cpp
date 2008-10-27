@@ -16,8 +16,12 @@ Message & Message::setProperty(std::string key, std::string value){
   return *this;
 }
 
-std::string Message::getProperty(std::string key){
+std::string & Message::getProperty(std::string key){
   return props[key];
+}
+
+bool Message::containsProperty(std::string key){
+  return true;
 }
 
 

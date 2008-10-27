@@ -11,7 +11,8 @@ class Message{
     Message();
     Message(boost::shared_ptr<void *> ent);
     Message & setProperty(std::string key, std::string value);
-    std::string getProperty(std::string key);
+    std::string & getProperty(std::string key);
+    bool containsProperty(std::string key);
   private:
     std::map<std::string, std::string> props;
 };

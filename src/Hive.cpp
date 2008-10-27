@@ -1,6 +1,8 @@
 //#include <iostream>
 //#include <stdlib.h>
 #include <boost/program_options.hpp>
+
+#include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 
@@ -58,167 +60,144 @@ void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 
+int main(int argc, char * argv[]) {
+  //    loginit("log.properties");
+  std::string config_path;
+  po::options_description gen("general options");
+  gen.add_options()
+      ("help", "produce this message")
+      ("config,c", po::value<std::string > ()->default_value("/etc/hive.conf"), "use Configuration")
+      ("version,v", "Prints the Version")
+      ;
 
-int main(int argc, char * argv[]){	
-//    loginit("log.properties");
-    std::string config_path;
-    po::options_description gen("general options");
-    gen.add_options()
-        ("help", "produce this message")
-        ("config,c", po::value<std::string>()->default_value("/etc/hive.conf"), "use Configuration")
-        ("version,v", "Prints the Version")
-        ;
-
-    po::options_description ser("Server options");
-    ser.add_options()
-        ("server,s", "start the Hive Server Process")
-        ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
-        ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
-        ("webroot,r", po::value<std::string>()->default_value("."), "define the Path for Web Server root")
-        ("scandir", po::value<std::string>()->default_value("."), "define the Path to Scan for new Media Files")
-        ;
-
-
-    po::options_description cli("Client options");
-    cli.add_options()
-        ("client,i","start the Hive Client")
-        ("host,h", po::value<std::string>()->default_value("localhost"), "Host to connect")
-        ("port,p", po::value<int>()->default_value(20200), "Port to connect")
-        ;
-
-	po::options_description exp("Export options");
-    exp.add_options()
-		("export,e","Exports a File")
-        ("file,f",po::value<std::string>(),"which file to export")
-        ("directory,d",po::value<std::string>(), "Directory in which the File to export")
-        ;
-
-    po::options_description all("options");
-	all.add(gen).add(ser).add(cli).add(exp);
-
-    gen.add(ser).add(cli).add(exp);
-
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, gen), vm);
-    po::notify(vm);
-    
-    if (argc==1 || vm.count("help")) {
-      cout << gen << "\n";
-      return 1;
-    }
-
-	av_register_all ();
-    avcodec_init();
-	avcodec_register_all ();
-	
-    Config::init((char*)vm["config"].as<std::string>().c_str());
-	
-
-    if (vm.count("server")) {
-//      logdebug("setting webroot to :"<<vm["webroot"].as<std::string>());
-  	  Config::setProperty("web.docroot",vm["webroot"].as<std::string>().c_str());
-  	  if(vm.count("scandir"))
-		Config::setProperty("hive.scandir",vm["scandir"].as<std::string>().c_str());
-  	  Config::setProperty("hive.port",Decimal(vm["port"].as<int>()).toString().c_str());
-  	  listener(argc, argv);
-    }
-
-    if (vm.count("client")) {
-  	  Config::setProperty("client.port",Decimal(vm["port"].as<int>()).toString().c_str());
-  	  Config::setProperty("client.host",vm["host"].as<std::string>().c_str());
-	  client(argc,argv);
-    }
-    if (vm.count("export")) {
-		std::string file=vm["file"].as<std::string>();
-		std::string dir=vm["directory"].as<std::string>();
-			exporter((char*)file.c_str(),(char*)dir.c_str());
-    }
+  po::options_description ser("Server options");
+  ser.add_options()
+      ("server,s", "start the Hive Server Process")
+      ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
+      ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
+      ("webroot,r", po::value<std::string > ()->default_value("."), "define the Path for Web Server root")
+      ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
+      ("scanint", po::value<int>()->default_value(300), "define the Interval to Scan for new Media Files")
+      ;
 
 
-//    Config::init("./cluster.cfg");
-/*
-    loginit(Config::getProperty("log.conf"));
+  po::options_description cli("Client options");
+  cli.add_options()
+      ("client,i", "start the Hive Client")
+      ("host,h", po::value<std::string > ()->default_value("localhost"), "Host to connect")
+      ("port,p", po::value<int>()->default_value(20200), "Port to connect")
+      ;
 
-	av_register_all ();
-    avcodec_init();
-	avcodec_register_all ();
-*/
-/*
-	for(int arg_counter=1;argc>arg_counter;arg_counter++){
-		if(strcmp(argv[arg_counter],"listen")==0){
-			listener(argc, argv);
-		}else if(strcmp(argv[arg_counter],"shell")==0){
-				cout << "shell is not implemeted now!!!"<<endl;
-		}else if(strcmp(argv[arg_counter],"client")==0){
-			client(argc,argv);
-		}else if(strcmp(argv[arg_counter],"job")==0){
-			jobcreator(argc,argv);
-		}else if(strcmp(argv[arg_counter],"import")==0){
-			import(--argc,++argv);
-			return 0;
-		}else if(strcmp(argv[arg_counter],"export")==0){
-			exporter(argc,argv);
-		}else{
-//			cout << "Argument unknown : "<<argv[arg_counter]<<endl;
-			exit(-127);
-		}		
-	}
-	*/
-	Config::close();
-	return 0;
+  po::options_description exp("Export options");
+  exp.add_options()
+      ("export,e", "Exports a File")
+      ("file,f", po::value<std::string > (), "which file to export")
+      ("directory,d", po::value<std::string > (), "Directory in which the File to export")
+      ;
+
+  po::options_description all("");
+  all.add(gen).add(ser).add(cli).add(exp);
+
+  gen.add(ser).add(cli).add(exp);
+
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, all), vm);
+  po::notify(vm);
+
+  if (argc == 1 || vm.count("help")) {
+    cout << all << "\n";
+    return 1;
+  }
+  if (vm.count("version")) {
+    cout << "MediaEncodingCluster V.-0.0.1" << endl;
+    cout << LIBAVCODEC_IDENT << endl;
+    cout << LIBAVFORMAT_IDENT << endl;
+    cout << LIBAVUTIL_IDENT << endl;
+    cout << LIBSWSCALE_IDENT << endl;
+    exit(0);
+  }
+  av_register_all();
+  avcodec_init();
+  avcodec_register_all();
+
+  Config::init((char*) vm["config"].as<std::string > ().c_str());
+
+
+  if (vm.count("server")) {
+    Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
+    if (vm.count("scandir"))
+      Config::setProperty("hive.scandir", vm["scandir"].as<std::string > ().c_str());
+    if (vm.count("scanint"))
+      Config::setProperty("hive.scaninterval", Decimal(vm["scanint"].as<int> ()).toString().c_str());
+    Config::setProperty("hive.port", Decimal(vm["port"].as<int>()).toString().c_str());
+    listener(argc, argv);
+  }
+
+  if (vm.count("client")) {
+    Config::setProperty("client.port", Decimal(vm["port"].as<int>()).toString().c_str());
+    Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
+    client(argc, argv);
+  }
+  if (vm.count("export")) {
+    std::string file = vm["file"].as<std::string > ();
+    std::string dir = vm["directory"].as<std::string > ();
+    exporter((char*) file.c_str(), (char*) dir.c_str());
+  }
+
+
+  Config::close();
+  return 0;
 }
 
-void client(int argc, char *argv[]){
+void client(int argc, char *argv[]) {
 
-	string host=Config::getProperty("client.host");
-	int port=atoi(Config::getProperty("client.port"));
+  string host = Config::getProperty("client.host");
+  int port = atoi(Config::getProperty("client.port"));
 
-  	cout << "Connecting to "<<host<<" on port "<<port<<endl;;
-    TcpSocket sock((char*)host.c_str(), port);
-    sock.connect();
-    ObjectInputStream ois(sock.getInputStream());
-    ObjectOutputStream oos(sock.getOutputStream());
-    int pCount=0;
-while(true){
-    while(true||++pCount<20){
-		char * text="get process_unit";
-		sock.getOutputStream()->write(text, strlen(text));
-		ProcessUnit unit;
-		ois.readObject(unit);
-		if(unit._input_packets.size()==0)break;
-//		try{
-			unit.process();
-//		}catch(...){
-//			logerror("Error in process");
-//		}
-		char * text_out="put process_unit";
-		sock.getOutputStream()->write(text_out, strlen(text_out));
-		oos.writeObject(unit);
-//		break;
+  cout << "Connecting to " << host << " on port " << port << endl;
+  TcpSocket sock((char*) host.c_str(), port);
+  sock.connect();
+  ObjectInputStream ois(sock.getInputStream());
+  ObjectOutputStream oos(sock.getOutputStream());
+  int pCount = 0;
+  while (true) {
+    while (true || ++pCount < 20) {
+      char * text = "get process_unit";
+      sock.getOutputStream()->write(text, strlen(text));
+      ProcessUnit unit;
+      ois.readObject(unit);
+      if (unit._input_packets.size() == 0)break;
+      //		try{
+      unit.process();
+      //		}catch(...){
+      //			logerror("Error in process");
+      //		}
+      char * text_out = "put process_unit";
+      sock.getOutputStream()->write(text_out, strlen(text_out));
+      oos.writeObject(unit);
+      //		break;
     }
-//    break;
-	org::esb::lang::Thread::sleep2(1000);
-}
+    //    break;
+    org::esb::lang::Thread::sleep2(1000);
+  }
 }
 
 /*----------------------------------------------------------------------------------------------*/
-bool main_nextLoop=true;
+bool main_nextLoop = true;
 
 
 #ifdef WIN32
 
-boost::mutex     terminationMutex;
+boost::mutex terminationMutex;
 boost::condition ctrlCHit;
 boost::condition serverStopped;
 
-BOOL WINAPI console_ctrl_handler(DWORD ctrl_type)
-{
-  switch (ctrl_type)
-  {
-  case CTRL_C_EVENT:
-  case CTRL_BREAK_EVENT:
-  case CTRL_CLOSE_EVENT:
-  case CTRL_SHUTDOWN_EVENT:
+BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
+  switch (ctrl_type) {
+    case CTRL_C_EVENT:
+    case CTRL_BREAK_EVENT:
+    case CTRL_CLOSE_EVENT:
+    case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
 
@@ -227,157 +206,103 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type)
       serverStopped.wait(terminationLock);
       return TRUE;
     }
-  default:
-    return FALSE;
+    default:
+      return FALSE;
   }
 }
 
-
-void ctrlCHitWait(){
-    boost::mutex::scoped_lock terminationLock(terminationMutex);
-    ctrlCHit.wait(terminationLock);
+void ctrlCHitWait() {
+  boost::mutex::scoped_lock terminationLock(terminationMutex);
+  ctrlCHit.wait(terminationLock);
 }
 
 #else
 
-void ctrlCHitWait(){
-	sigset_t wait_mask2;
-	sigemptyset(&wait_mask2);
-	sigaddset(&wait_mask2, SIGINT);
-	sigaddset(&wait_mask2, SIGQUIT);
-	sigaddset(&wait_mask2, SIGTERM);
-	//sigaddset(&wait_mask, SIGCHLD);
-	pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
-	int sig = 0;
-	//sigdelset(&wait_mask, SIGCHLD);
-    
-	int err;
-	do {
-	  err = sigwait(&wait_mask2, &sig);
-	} while (err != 0);
+void ctrlCHitWait() {
+  sigset_t wait_mask2;
+  sigemptyset(&wait_mask2);
+  sigaddset(&wait_mask2, SIGINT);
+  sigaddset(&wait_mask2, SIGQUIT);
+  sigaddset(&wait_mask2, SIGTERM);
+  //sigaddset(&wait_mask, SIGCHLD);
+  pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
+  int sig = 0;
+  //sigdelset(&wait_mask, SIGCHLD);
+
+  int err;
+  do {
+    err = sigwait(&wait_mask2, &sig);
+  } while (err != 0);
 
 }
 
 #endif
 
-void listener(int argc, char *argv[]){
-//    Config::init("./cluster.cfg");
-    if(!checkEnvironment()){
-    	cout << "Fehler in der Configuration"<<endl;
-    	exit(1);
+void listener(int argc, char *argv[]) {
+  /*
+    if (!checkEnvironment()) {
+      cout << "Fehler in der Configuration" << endl;
+      exit(1);
     }
-    /*
-    *
-    * Initializing Application Services
-    *
-    */
+   */
 
-	DirectoryScanner dirscan(Config::getProperty("hive.scandir"),atoi(Config::getProperty("hive.scaninterval", "300"))*1000);
-   	Messenger::getInstance().addMessageListener(dirscan);
+  /*
+   *
+   * Initializing Application Services
+   *
+   */
 
-	WebServer webserver;
-   	Messenger::getInstance().addMessageListener(webserver);
+  DirectoryScanner dirscan;
+  Messenger::getInstance().addMessageListener(dirscan);
 
-	HiveListener hive;
-   	Messenger::getInstance().addMessageListener(hive);
+  WebServer webserver;
+  Messenger::getInstance().addMessageListener(webserver);
 
+  HiveListener hive;
+  Messenger::getInstance().addMessageListener(hive);
 
-	ProcessUnitWatcher puw;
-   	Messenger::getInstance().addMessageListener(puw);
-
-//    JobWatcher watcher(*JobHandler::getInstance());
-//   	Messenger::getInstance().addMessageListener(watcher);
-   	
-    /*
-    *
-    * Starting Application Services from configuration
-    *
-    */
+  ProcessUnitWatcher puw;
+  Messenger::getInstance().addMessageListener(puw);
 
 
-	if(string(Config::getProperty("hive.start"))=="true"){
-//   		Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","start"));
-   		Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","start"));
-   		Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","start"));
-   	}
-
-	if(string(Config::getProperty("web.start"))=="true")
-   		Messenger::getInstance().sendRequest(Message().setProperty("webserver","start"));
-	if(string(Config::getProperty("hive.autoscan"))=="true"){
-   		Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","start"));
-	}
-
-//	Thread::sleep(5000);
-//   		Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
-
-    /*
-    * @todo
-    * replace Thread with Messaging
-    */
-/*
-    ProcessUnitWatcher *unit_watcher=new ProcessUnitWatcher();
-    Thread *unitRunner=new Thread(unit_watcher);
-*/
-//    JobWatcher *_watcher=new JobWatcher(*JobHandler::getInstance());
-//    Thread *runner=new Thread(_watcher);
-/*
-    PacketCollector *_collector=new PacketCollector();
-    Thread *collector_runner=new Thread(_collector);
-    collector_runner->start();
-  */  
-/*
-    WebServer * webServer=new WebServer();
-    Thread * webRunner=new Thread(webServer);
-  */
-//    webRunner->start();
-//    runner->start();
-//    unitRunner->start();
-
-/*
-    while(true){
-      Thread::sleep2(10000);
-    }
-*/
-
-    ctrlCHitWait();
-
-	Messenger::getInstance().sendMessage(Message().setProperty("directoryscan","stop"));    
-	Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher","stop"));
-	Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher","stop"));
-	Messenger::getInstance().sendMessage(Message().setProperty("hivelistener","stop"));
-	Messenger::getInstance().sendMessage(Message().setProperty("webserver","stop"));
-//    Config::close();
-	Messenger::free();
+  /*
+   *
+   * Starting Application Services from configuration
+   *
+   */
 
 
-	org::esb::lang::Thread::sleep2(3000);
-	cout << "Stopping Hive "<<endl;
+  if (string(Config::getProperty("hive.start")) == "true") {
+    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", "start"));
+    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", "start"));
+  }
 
-/*
-    while(true){
-      Thread::sleep(10000);
-    }
-*/
-//    hive.run();
-/*    
-    int port=atoi(Config::getProperty("protocol.listener.port"));
-    ServerSocket * server=new ServerSocket(port);
-    server->bind();
-    for(;main_nextLoop;){
-		try{
-	    	Socket * clientSocket=server->accept();
-	    	if(clientSocket!=NULL){
-	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-	    		Thread thread(protoServer);
-	    		thread.start();
-	    	}else{
-				cout << "Client  Socket ist null"<<endl;
-				break;
-	    	}
-		}catch(exception & ex){
-	    	cout << "Exception in Main:"<<ex.what();
-		}
-    }
-  */
+  if (string(Config::getProperty("web.start")) == "true"){
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", "start"));
+  }
+
+  if (string(Config::getProperty("hive.autoscan")) == "true") {
+    Messenger::getInstance().sendMessage(Message().
+        setProperty("directoryscan", "start").
+        setProperty("directory", Config::getProperty("hive.scandir")).
+        setProperty("interval", Config::getProperty("hive.scaninterval")));
+  }
+
+
+  ctrlCHitWait();
+
+  /*
+   *
+   * Stopping Application Services from configuration
+   *
+   */
+
+  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", "stop"));
+  Messenger::free();
+
 }
 
