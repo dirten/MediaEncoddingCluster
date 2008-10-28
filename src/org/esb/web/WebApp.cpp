@@ -14,6 +14,7 @@
 #include <Account.cpp>
 #include <Login.cpp>
 #include <Encodings.cpp>
+#include "WatchFolder.cpp"
 
 #include <Wt/Ext/Menu>
 #include <Wt/Ext/Container>
@@ -84,12 +85,13 @@ namespace org {
         rootNode->setImagePack("icons/");
         rootNode->expand();
           rootNode->setNodeVisible(false);
+        
         rootNode->setLoadPolicy(Wt::WTreeNode::NextLevelLoading);
         createMenuNode("My Account", rootNode, &WebApp::accountView,"icons/edit_user.png");
         createMenuNode("My Media", rootNode, &WebApp::fileView,"icons/media.png");
         createMenuNode("My Profiles", rootNode,            &WebApp::profileView,"icons/profile.png");
         createMenuNode("My Encodings", rootNode,            &WebApp::encodingView,"icons/encode.png");
-        createMenuNode("My Watch Folder", rootNode,            &WebApp::profileView,"icons/folder.png");
+        createMenuNode("My Watch Folder", rootNode,            &WebApp::watchFolderView,"icons/folder.png");
         createMenuNode("Logout", rootNode,            &WebApp::logout,"icons/logout.png");
         rootNode->setMargin(5);
 
@@ -101,6 +103,7 @@ namespace org {
         Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
         node->label()->setFormatting(Wt::WText::PlainFormatting);
         node->label()->clicked.connect(this, f);
+        node->setSelectable(true);
         return node;
       }
 
@@ -117,6 +120,9 @@ namespace org {
       }
       void WebApp::encodingView() {
         setContent(new Encoding(_user_id));
+      }
+      void WebApp::watchFolderView() {
+        setContent(new WatchFolder(_user_id));
       }
 
       void WebApp::logout() {

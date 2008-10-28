@@ -46,9 +46,10 @@ namespace org {
 
         elit = data.begin();
         for (; elit != data.end(); elit++) {
-          std::string value = (*elit).second;
-//          if ((*elit).first == "a_codec" || (*elit).first == "v_codec")value = Decimal(codecname2codecid[value]).toString();
-          pstmt.setString((*elit).first, value);
+          if((*elit).first!="id"){
+            pstmt.setString((*elit).first, (*elit).second);
+            logdebug("map2sql: "<<(*elit).first<<"="<<(*elit).second);
+          }
         }
         pstmt.execute();
       }

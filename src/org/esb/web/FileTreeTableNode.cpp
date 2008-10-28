@@ -31,8 +31,8 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
       setColumnWidget(1, new WText(false,
 				   boost::lexical_cast<std::wstring>(fsize)));
       columnWidget(1)->setStyleClass("fsize");
-    } else
-      setSelectable(false);
+    }
+    //else      setSelectable(false);
 
     std::time_t t = boost::filesystem::last_write_time(path);
     struct tm ttm;

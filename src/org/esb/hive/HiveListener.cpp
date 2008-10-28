@@ -14,56 +14,58 @@ using namespace org::esb::config;
 using namespace org::esb::lang;
 using namespace org::esb::net;
 
-namespace org{
-namespace esb{
-namespace hive{
-HiveListener::HiveListener(){
-  cout << "new HiveListener"<<endl;
-  main_nextloop=true;
-  is_running=false;
-//  org::esb::signal::Messenger::getInstance().addMessageListener(*this);
-}
+namespace org {
+  namespace esb {
+    namespace hive {
 
-HiveListener::~HiveListener(){
-  cout << "Shutdown HiveListener"<<endl;
-}
+      HiveListener::HiveListener() {
+        cout << "new HiveListener" << endl;
+        main_nextloop = true;
+        is_running = false;
+        //  org::esb::signal::Messenger::getInstance().addMessageListener(*this);
+      }
 
+      HiveListener::~HiveListener() {
+//        cout << "Shutdown HiveListener" << endl;
+      }
 
-void HiveListener::onMessage(org::esb::signal::Message & msg){
-  if(msg.getProperty("hivelistener")=="start"){
-//    cout << "Start Message Arrived:"<<endl;
-    boost::thread tt(boost::bind(&HiveListener::startListener,this));
-    logdebug("Hive Listener running on port:"<<Config::getProperty("hive.port"));
-//    cout << "Hive Listener running:"<<endl;
-    is_running=true;
-  }else
-  if(msg.getProperty("hivelistener")=="stop"){
-    cout << "Hive Listener stopped:"<<endl;
-    server->close();
-//    cout << "Stop Message Arrived:"<<endl;
-  }
-}
+      void HiveListener::onMessage(org::esb::signal::Message & msg) {
+        if (msg.getProperty("hivelistener") == "start") {
+          //    cout << "Start Message Arrived:"<<endl;
+          boost::thread tt(boost::bind(&HiveListener::startListener, this));
+          logdebug("Hive Listener running on port:" << Config::getProperty("hive.port"));
+          //    cout << "Hive Listener running:"<<endl;
+          is_running = true;
+        }else
+          if (msg.getProperty("hivelistener") == "stop") {
+          logdebug("Hive Listener stopped:");
+          server->close();
+          //    cout << "Stop Message Arrived:"<<endl;
+        }
+      }
 
-void HiveListener::startListener(){
-  int port=atoi(Config::getProperty("hive.port"));
-    server=new TcpServerSocket(port);
-    server->bind();
-    for(;main_nextloop;){
-		try{
-	    	TcpSocket * clientSocket=server->accept();
-	    	if(clientSocket!=NULL){
-	    		ProtocolServer *protoServer=new ProtocolServer(clientSocket);
-	    		Thread *thread=new Thread(protoServer);
-	    		thread->start();
-	    	}else{
-				cout << "Client  Socket ist null"<<endl;
-				break;
-	    	}
-		}catch(exception & ex){
-	    	logerror("Exception in Main:"<<ex.what());
-		}
+      void HiveListener::startListener() {
+        int port = atoi(Config::getProperty("hive.port"));
+        server = new TcpServerSocket(port);
+        server->bind();
+        for (; main_nextloop;) {
+          try {
+            TcpSocket * clientSocket = server->accept();
+            if (clientSocket != NULL) {
+              ProtocolServer *protoServer = new ProtocolServer(clientSocket);
+              Thread *thread = new Thread(protoServer);
+              thread->start();
+            }else {
+              logerror("Client  Socket ist null");
+              break;
+            }
+          } catch (exception & ex) {
+            logerror("Exception in Main:" << ex.what());
+          }
+        }
+      }
+
     }
   }
-
-}}}
+}
 

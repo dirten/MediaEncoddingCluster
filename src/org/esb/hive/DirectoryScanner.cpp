@@ -65,7 +65,7 @@ namespace org {
           //#if BOOST_VERSION > 103500
           th->interrupt();
           //#endif
-          cout << "Directory Scanner stopped:" << endl;
+          logdebug("Directory Scanner stopped:");
         }
       }
 

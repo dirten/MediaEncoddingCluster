@@ -29,6 +29,7 @@ class WebApp: public Wt::WApplication{
     void profileView();
     void accountView();
     void encodingView();
+    void watchFolderView();
     void logout();
     void setContent(Wt::WWidget *example);
     void authenticated();
