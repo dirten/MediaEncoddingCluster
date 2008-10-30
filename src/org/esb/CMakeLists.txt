@@ -103,6 +103,7 @@ add_library (hive hive/Command.cpp
 	hive/DatabaseUtil.cpp 
 	hive/FileImporter.cpp 
 	hive/JobUtil.cpp 
+	hive/HiveClient.cpp 
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
@@ -121,5 +122,7 @@ add_library (web web/WebServer.cpp
     web/FileNode.cpp
     web/SqlUtil.cpp
 )
+TARGET_LINK_LIBRARIES(web wt wtext wthttp)
+
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)

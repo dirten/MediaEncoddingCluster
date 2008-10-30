@@ -49,11 +49,28 @@ MESSAGE("** BOOST_LIB PATH: " ${BOOST_LIB_DIR})
 
 add_executable (mhive Hive.cpp)
 
-target_link_libraries (mhive lang esb sql web hive av util signal io net avcodec avformat avutil swscale 
+target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale 
   x264 )
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)
-target_link_libraries (mhive mysqlclient wt wtext wthttp)
+target_link_libraries (mhive mysqlclient wthttp wtext wt )
 ENDIF(WIN32)
-target_link_libraries (mhive ${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT})
+
+target_link_libraries (mhive 
+  ${BOOST_SERIAL_LIB_MT} 
+  ${BOOST_THREAD_LIB_MT} 
+  ${BOOST_SYSTEM_LIB_MT} 
+  ${BOOST_PO_LIB_MT} 
+  ${BOOST_SIGNALS_LIB_MT} 
+  ${BOOST_REGEX_LIB_MT} 
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
+
+
+
+INSTALL(TARGETS mhive
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})

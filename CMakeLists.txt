@@ -1,5 +1,7 @@
 project (MEC)
 
+SET(BUILD_SHARED_LIBS OFF)
+
 add_subdirectory (src)
 add_subdirectory (test)
 
@@ -28,3 +30,4 @@ SET(BOOST_VERSION "1_34_1" CACHE STRING "Boost libraries version signature")
 
 INCLUDE(cmake/WtFindBoost.txt)
 INCLUDE(cmake/WtFindAsio.txt)
+

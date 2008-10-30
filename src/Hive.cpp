@@ -22,7 +22,7 @@
 #include "org/esb/av/AV.h"
 //#include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
-
+#include "org/esb/hive/HiveClient.h"
 
 
 #include "org/esb/util/Decimal.h"
@@ -151,9 +151,15 @@ int main(int argc, char * argv[]) {
 
 void client(int argc, char *argv[]) {
 
+  
   string host = Config::getProperty("client.host");
   int port = atoi(Config::getProperty("client.port"));
 
+  org::esb::hive::HiveClient client(host, port);
+  client.connect();
+  client.process();
+  return;
+/*
   cout << "Connecting to " << host << " on port " << port << endl;
   TcpSocket sock((char*) host.c_str(), port);
   sock.connect();
@@ -180,6 +186,7 @@ void client(int argc, char *argv[]) {
     //    break;
     org::esb::lang::Thread::sleep2(1000);
   }
+ */
 }
 
 /*----------------------------------------------------------------------------------------------*/

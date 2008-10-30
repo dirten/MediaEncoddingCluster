@@ -157,9 +157,11 @@ Wt::WWidget * createDbConfigPage(){
 
     void buildElement(std::string name, std::string label, Wt::WTable * table,int row){
       Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
-      table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
+      table->elementAt(row, 0)->resize(Wt::WLength(60, Wt::WLength::FontEx), Wt::WLength());
       Wt::Ext::LineEdit * element = new Wt::Ext::LineEdit(table->elementAt(row, 1));
+//      table->elementAt(row, 1)->resize(Wt::WLength(30, Wt::WLength::FontEx), Wt::WLength());
 //      if(config::Config::hasProperty(name))
+      element->resize(Wt::WLength(30, Wt::WLength::FontEx), Wt::WLength());
         element->setText(config::Config::getProperty((char*)name.c_str()));
       elementLabel->setBuddy(element);
       elements[name]=element;

@@ -17,6 +17,7 @@ using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
 using namespace org::esb::sql;
+using namespace org::esb::lang;
 //namespace org{
 //namespace esb{
 //namespace config{

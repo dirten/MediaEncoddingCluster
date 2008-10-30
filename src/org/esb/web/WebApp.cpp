@@ -30,7 +30,6 @@ namespace org {
   namespace esb {
     namespace web {
 
-
       WebApp::WebApp(const Wt::WEnvironment & env) : WApplication(env) {
         setTitle("Hive Webadmin");
         _isAuthenticated = false;
@@ -84,15 +83,16 @@ namespace org {
         Wt::WTreeNode *rootNode = new Wt::WTreeNode("User MainMenu", mapIcon);
         rootNode->setImagePack("icons/");
         rootNode->expand();
-          rootNode->setNodeVisible(false);
-        
+        rootNode->setNodeVisible(false);
+
         rootNode->setLoadPolicy(Wt::WTreeNode::NextLevelLoading);
-        createMenuNode("My Account", rootNode, &WebApp::accountView,"icons/edit_user.png");
-        createMenuNode("My Media", rootNode, &WebApp::fileView,"icons/media.png");
-        createMenuNode("My Profiles", rootNode,            &WebApp::profileView,"icons/profile.png");
-        createMenuNode("My Encodings", rootNode,            &WebApp::encodingView,"icons/encode.png");
-        createMenuNode("My Watch Folder", rootNode,            &WebApp::watchFolderView,"icons/folder.png");
-        createMenuNode("Logout", rootNode,            &WebApp::logout,"icons/logout.png");
+        createMenuNode("My Account", rootNode, &WebApp::accountView, "icons/edit_user.png");
+        createMenuNode("My Media", rootNode, &WebApp::fileView, "icons/media.png");
+        createMenuNode("My Profiles", rootNode, &WebApp::profileView, "icons/profile.png");
+        createMenuNode("My Encodings", rootNode, &WebApp::encodingView, "icons/encode.png");
+        createMenuNode("My Watch Folder", rootNode, &WebApp::watchFolderView, "icons/folder.png");
+        createMenuNode("Admin Config", rootNode, &WebApp::configurationView, "icons/admin.png");
+        createMenuNode("Logout", rootNode, &WebApp::logout, "icons/logout.png");
         rootNode->setMargin(5);
 
         return rootNode;
@@ -118,11 +118,17 @@ namespace org {
       void WebApp::accountView() {
         setContent(new Account(_user_id));
       }
+
       void WebApp::encodingView() {
         setContent(new Encoding(_user_id));
       }
+
       void WebApp::watchFolderView() {
         setContent(new WatchFolder(_user_id));
+      }
+
+      void WebApp::configurationView() {
+        setContent(new Configuration());
       }
 
       void WebApp::logout() {
@@ -141,10 +147,10 @@ namespace org {
         _user_id = login->getUserId();
         west->layout()->addWidget(menu = createMenuTree());
         west->expand();
-          Wt::WContainerWidget *container = new Wt::WContainerWidget(exampleContainer_);
-          container->addWidget(new Wt::WText(Wt::WString::tr("about")));
-          login->setHidden(true);
-          currentExample_ = container;
+        Wt::WContainerWidget *container = new Wt::WContainerWidget(exampleContainer_);
+        container->addWidget(new Wt::WText(Wt::WString::tr("about")));
+        login->setHidden(true);
+        currentExample_ = container;
       }
 
       void WebApp::setContent(Wt::WWidget *example) {

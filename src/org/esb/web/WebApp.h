@@ -30,6 +30,7 @@ class WebApp: public Wt::WApplication{
     void accountView();
     void encodingView();
     void watchFolderView();
+    void configurationView();
     void logout();
     void setContent(Wt::WWidget *example);
     void authenticated();
