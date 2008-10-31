@@ -125,6 +125,8 @@ int main(int argc, char * argv[]) {
 
   if (vm.count("server")) {
     Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
+    if(vm.count("web"))
+      Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
     if (vm.count("scandir"))
       Config::setProperty("hive.scandir", vm["scandir"].as<std::string > ().c_str());
     if (vm.count("scanint"))
@@ -148,50 +150,6 @@ int main(int argc, char * argv[]) {
   Config::close();
   return 0;
 }
-
-void client(int argc, char *argv[]) {
-
-  
-  string host = Config::getProperty("client.host");
-  int port = atoi(Config::getProperty("client.port"));
-
-  org::esb::hive::HiveClient client(host, port);
-  client.connect();
-  client.process();
-  return;
-/*
-  cout << "Connecting to " << host << " on port " << port << endl;
-  TcpSocket sock((char*) host.c_str(), port);
-  sock.connect();
-  ObjectInputStream ois(sock.getInputStream());
-  ObjectOutputStream oos(sock.getOutputStream());
-  int pCount = 0;
-  while (true) {
-    while (true || ++pCount < 20) {
-      char * text = "get process_unit";
-      sock.getOutputStream()->write(text, strlen(text));
-      ProcessUnit unit;
-      ois.readObject(unit);
-      if (unit._input_packets.size() == 0)break;
-      //		try{
-      unit.process();
-      //		}catch(...){
-      //			logerror("Error in process");
-      //		}
-      char * text_out = "put process_unit";
-      sock.getOutputStream()->write(text_out, strlen(text_out));
-      oos.writeObject(unit);
-      //		break;
-    }
-    //    break;
-    org::esb::lang::Thread::sleep2(1000);
-  }
- */
-}
-
-/*----------------------------------------------------------------------------------------------*/
-bool main_nextLoop = true;
-
 
 #ifdef WIN32
 
@@ -244,6 +202,61 @@ void ctrlCHitWait() {
 }
 
 #endif
+
+
+
+void client(int argc, char *argv[]) {
+
+  
+  string host = Config::getProperty("client.host");
+  int port = atoi(Config::getProperty("client.port"));
+
+  org::esb::hive::HiveClient client(host, port);
+  Messenger::getInstance().addMessageListener(client);
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", "start"));
+  
+  ctrlCHitWait();
+
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", "stop"));
+
+
+//  client.connect();
+//  client.process();
+//  return;
+/*
+  cout << "Connecting to " << host << " on port " << port << endl;
+  TcpSocket sock((char*) host.c_str(), port);
+  sock.connect();
+  ObjectInputStream ois(sock.getInputStream());
+  ObjectOutputStream oos(sock.getOutputStream());
+  int pCount = 0;
+  while (true) {
+    while (true || ++pCount < 20) {
+      char * text = "get process_unit";
+      sock.getOutputStream()->write(text, strlen(text));
+      ProcessUnit unit;
+      ois.readObject(unit);
+      if (unit._input_packets.size() == 0)break;
+      //		try{
+      unit.process();
+      //		}catch(...){
+      //			logerror("Error in process");
+      //		}
+      char * text_out = "put process_unit";
+      sock.getOutputStream()->write(text_out, strlen(text_out));
+      oos.writeObject(unit);
+      //		break;
+    }
+    //    break;
+    org::esb::lang::Thread::sleep2(1000);
+  }
+ */
+}
+
+/*----------------------------------------------------------------------------------------------*/
+bool main_nextLoop = true;
+
+
 
 void listener(int argc, char *argv[]) {
   /*

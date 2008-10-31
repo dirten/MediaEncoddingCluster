@@ -5,6 +5,10 @@
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Thread.h"
+
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
+#include "Version.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -12,6 +16,28 @@ namespace org {
       HiveClient::HiveClient(std::string host, int port) {
         _host = host;
         _port = port;
+        _toHalt=false;
+      }
+      void HiveClient::onMessage(org::esb::signal::Message & msg) {
+        if(msg.getProperty("hiveclient")=="start"){
+          boost::thread t(boost::bind(&HiveClient::start, this));
+        }else
+        if(msg.getProperty("hiveclient")=="stop"){
+          _toHalt=true;
+          logdebug("StopSignal Received, waiting for all work done!")
+          boost::mutex::scoped_lock terminationLock(terminationMutex);
+          ctrlCHit.wait(terminationLock);
+        }
+      }
+      
+      void HiveClient::start() {
+        _toHalt=false;
+        connect();
+        process();
+      }
+      
+      void HiveClient::stop() {
+//        _toHalt=true;
       }
 
       void HiveClient::connect() {
@@ -26,8 +52,8 @@ namespace org {
 
       void HiveClient::process() {
         int pCount = 0;
-        while (true) {
-          while (true || ++pCount < 20) {
+        while (!_toHalt) {
+          while (!_toHalt) {
             char * text = "get process_unit";
             _sock->getOutputStream()->write(text, strlen(text));
             org::esb::hive::job::ProcessUnit unit;
@@ -46,8 +72,8 @@ namespace org {
           //    break;
           org::esb::lang::Thread::sleep2(1000);
         }
+        ctrlCHit.notify_all(); // should be just 1
       }
-
     }
   }
 }
