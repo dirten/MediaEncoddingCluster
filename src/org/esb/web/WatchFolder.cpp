@@ -30,8 +30,8 @@ namespace org {
           int i = 0;
           buildElement("id", "Id", t, i++)->setEnabled(false);
           buildElement("folder", "Watch Folder", t, i++)->setEnabled(false);
+		  Wt::Ext::Button * selectDirectory=new Wt::Ext::Button("Select Directory",t->elementAt(i-1,2));
           buildElement("profile", "Profile", t, i++)->setEnabled(false);
-		  Wt::Ext::Button * selectDirectory=new Wt::Ext::Button("Select Directory",t->elementAt(i,2));
 
           msg = new Wt::WText(t->elementAt(i, 0));
           buttonSave = new Wt::Ext::Button("Save", t->elementAt(i, 1));
@@ -43,7 +43,8 @@ namespace org {
           Wt::Ext::Button *select=new Wt::Ext::Button("Select", directoryChooser->contents());
           select->clicked.connect(SLOT(directoryChooser, Wt::Ext::Dialog::accept));
           directoryChooser->resize(600,400);
-		  tab->itemSelectionChanged.connect(SLOT(directoryChooser, Wt::Ext::Dialog::show));
+		  selectDirectory->clicked.connect(SLOT(this, WatchFolder::openDirectoryChooser));
+//		  tab->itemSelectionChanged.connect(SLOT(directoryChooser, Wt::Ext::Dialog::show));
         }
       private:
         Wt::Ext::Button * buttonEdit;

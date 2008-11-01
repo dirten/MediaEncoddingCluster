@@ -11,7 +11,7 @@ namespace esb{
 namespace av{
 
     class Frame;
-    class FrameFormat;
+    struct FrameFormat;
 
     class FrameConverter{
 	public:

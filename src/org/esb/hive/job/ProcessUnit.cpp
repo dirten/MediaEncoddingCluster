@@ -72,7 +72,7 @@ void ProcessUnit::process(){
 	int a=0;
 	int counter=0;
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){		
-//		logdebug("Loop");
+		logdebug("Loop");
 	    boost::shared_ptr<Packet> p=*it;
       
 	    insize+=p->packet->size;
@@ -90,14 +90,14 @@ void ProcessUnit::process(){
 //        cout << endl;
 
 	    Frame tmp=_decoder->decode(*p);
-//		logdebug("Frame Decoded");
+		logdebug("Frame Decoded");
 		if(_frame_count>=counter&&tmp.pict_type==FF_I_TYPE){
 			break;
 		}
 	    if(tmp._buffer==0){
 	      continue;
 	    }
-//		logdebug("Frame Buffer > 0");
+		logdebug("Frame Buffer > 0");
         
         
       
@@ -105,21 +105,21 @@ void ProcessUnit::process(){
 //	    fr->setDts(AV_NOPTS_VALUE);
 
 		Frame f=conv.convert(tmp);
-//		logdebug("Frame Converted");
+		logdebug("Frame Converted");
 
 	    f.setPts(f.getDts());
 //	    f.setPts(++a);
 //	    tmp.setDts(AV_NOPTS_VALUE);
 	    Packet ret=_encoder->encode(f);
-//		logdebug("Frame Encoded");
+		logdebug("Frame Encoded");
 
 		boost::shared_ptr<Packet> pEnc(new Packet(ret));
-//		logdebug("Packet Created");
+		logdebug("Packet Created");
 
 		//	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
-//		logdebug("Packet Added");
+		logdebug("Packet Added");
 
 		//	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
 //	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;

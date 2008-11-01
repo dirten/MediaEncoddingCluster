@@ -116,55 +116,13 @@ namespace org {
 
 //                    tab->setColumnHidden(0, true);
 
-					/*
-					tab->setTopToolBar(new Wt::Ext::ToolBar(this));
-					searchField=new Wt::Ext::LineEdit();
-					searchButton=new Wt::Ext::Button("Search now");
-					tab->topToolBar()->add(searchField);
-					tab->topToolBar()->add(searchButton);
-					searchButton->clicked.connect(SLOT(this,Files::search));
-*/
-					//                                        sp->addWidget(tab);
-//                                        sp->children().back()->resize(1260, 500);
-//                                        sp->children().back()->setMinimumSize(230, 500);
                      
 
-//                    Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
-//                    sp->addWidget(exampleTabs);
-
-//                    sp->children().back()->resize(800, Wt::WLength(100, Wt::WLength::Percentage));
-//                    sp->children().back()->setMinimumSize(230, Wt::WLength(100, Wt::WLength::Percentage));
-//                    sp->children().back()->resize(800, 500);
-//                    sp->children().back()->setMinimumSize(230, 500);
-
-                    //      str=new SqlTable("select * from files limit 0 ");
-                    //      str->itemSelectionChanged.connect(SLOT(this, Files::versionSelected));
-                    //      str->resize(Wt::WLength()/*100,Wt::WLength::Percentage)*/,100);
-                    //      exampleTabs->addTab(str,"Versions");
-
-
-                    //      str->resize(1000,400);
 					Wt::Ext::TabWidget * tab=new Wt::Ext::TabWidget(this);
 					tab->resize(Wt::WLength(),Wt::WLength());
 					tab->addTab(info=new FileInfo(),"Information");
 					tab->addTab(pSelector=new ProfileSelector(),"Encoding");
 
-//                    info = new FileInfo(this);
-
-					/*
-                    pSelector=new ProfileSelector(this);
-                    exampleTabs->addTab(info, "Information");
-                    exampleTabs->addTab(pSelector, "Encode");
-*/
-                    
-
-//                    sp->addWidget(exampleTabs);
-/*
-                    Wt::WTimer * timer = new Wt::WTimer(this);
-                    timer->setInterval(30000);
-                    timer->timeout.connect(SLOT(this, Files::refresh));
-                    //      timer->start();
- */
                 }
 
                 void search() {
