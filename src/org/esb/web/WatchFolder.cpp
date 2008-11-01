@@ -36,6 +36,7 @@ namespace org {
           buttonSave = new Wt::Ext::Button("Save", t->elementAt(i, 1));
           buttonSave->clicked.connect(SLOT(this, WatchFolder::saveMap));
           buttonSave->setEnabled(false);
+          
           directoryChooser=new Wt::Ext::Dialog("Choose Directory");
           FileTreeTable * tree=new FileTreeTable(Config::getProperty("hive.basescandir"), directoryChooser->contents());
           Wt::Ext::Button *select=new Wt::Ext::Button("Select", directoryChooser->contents());
