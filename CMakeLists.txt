@@ -3,7 +3,7 @@ project (MEC)
 SET(BUILD_SHARED_LIBS OFF)
 
 add_subdirectory (src)
-add_subdirectory (test)
+#add_subdirectory (test)
 
 SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
 SET(FFMPEG_LIB_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg Librbaries in directory")

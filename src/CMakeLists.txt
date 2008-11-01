@@ -43,14 +43,14 @@ FIND_LIBRARY(AVFORMAT_LIB
     NO_DEFAULT_PATH
   )
 #FIND_LIBRARY(avc avcodec)
+
 MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
 MESSAGE("** BOOST_LIB PATH: " ${BOOST_LIB_DIR})
 
 
 add_executable (mhive Hive.cpp)
 
-target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale 
-  x264 )
+target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 )
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)

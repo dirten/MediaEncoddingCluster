@@ -17,7 +17,6 @@ namespace org {
           tab = new SqlTable(std::string("SELECT * from watch_folder"), this);
           tab->setTopToolBar(new Wt::Ext::ToolBar());
           tab->resize(Wt::WLength(), 300);
-          tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
           buttonEdit = tab->topToolBar()->addButton("Edit selected Watch Folder");
           buttonNew = tab->topToolBar()->addButton("Create new Watch Folder");
           Wt::WGroupBox * group = new Wt::WGroupBox("WatchFolder", this);
@@ -32,6 +31,8 @@ namespace org {
           buildElement("id", "Id", t, i++)->setEnabled(false);
           buildElement("folder", "Watch Folder", t, i++)->setEnabled(false);
           buildElement("profile", "Profile", t, i++)->setEnabled(false);
+		  Wt::Ext::Button * selectDirectory=new Wt::Ext::Button("Select Directory",t->elementAt(i,2));
+
           msg = new Wt::WText(t->elementAt(i, 0));
           buttonSave = new Wt::Ext::Button("Save", t->elementAt(i, 1));
           buttonSave->clicked.connect(SLOT(this, WatchFolder::saveMap));
@@ -42,6 +43,7 @@ namespace org {
           Wt::Ext::Button *select=new Wt::Ext::Button("Select", directoryChooser->contents());
           select->clicked.connect(SLOT(directoryChooser, Wt::Ext::Dialog::accept));
           directoryChooser->resize(600,400);
+		  tab->itemSelectionChanged.connect(SLOT(directoryChooser, Wt::Ext::Dialog::show));
         }
       private:
         Wt::Ext::Button * buttonEdit;
@@ -54,8 +56,10 @@ namespace org {
         std::map<std::string, std::string> sqldata;
         std::map<std::string, Wt::Ext::LineEdit*> elements;
 
-        void enableEditButton() {
+		void openDirectoryChooser(){
           directoryChooser->show();
+		}
+		void enableEditButton() {
           logdebug("Tab"<<tab->selectedRows()[0]);
           int d=atoi(boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0)).c_str());
           SqlUtil::sql2map("watch_folder", d, sqldata);
