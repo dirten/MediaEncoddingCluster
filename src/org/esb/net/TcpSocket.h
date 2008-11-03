@@ -19,6 +19,7 @@ namespace net{
       org::esb::io::InputStream * getInputStream();
       org::esb::io::OutputStream * getOutputStream();
       bool isClosed();
+      bool isConnected();
       void close();
       void connect();
     private:
@@ -30,6 +31,7 @@ namespace net{
         
         const char * _host;
         int _port;
+        bool _connected;
   };
 }}}
 #endif
