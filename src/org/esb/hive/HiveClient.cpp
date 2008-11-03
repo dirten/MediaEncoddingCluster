@@ -41,33 +41,50 @@ namespace org {
       }
 
       void HiveClient::connect() {
-
+        try{
         logdebug("Connecting to " << _host << " on port " << _port);
         _sock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
         _sock->connect();
         _ois=new org::esb::io::ObjectInputStream(_sock->getInputStream());
         _oos=new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
+        }catch(...){
+          logerror("cant connect!!!");
+        }
 
       }
 
       void HiveClient::process() {
         int pCount = 0;
         while (!_toHalt) {
-          while (!_toHalt) {
-            char * text = "get process_unit";
-            _sock->getOutputStream()->write(text, strlen(text));
-            org::esb::hive::job::ProcessUnit unit;
-            _ois->readObject(unit);
-            if (unit._input_packets.size() == 0)break;
-            //		try{
-            unit.process();
-            //		}catch(...){
-            //			logerror("Error in process");
-            //		}
-            char * text_out = "put process_unit";
-            _sock->getOutputStream()->write(text_out, strlen(text_out));
-            _oos->writeObject(unit);
-            //		break;
+          if(!_sock->isConnected()){
+            connect();
+          }else{
+              while (!_toHalt) {
+                char * text = "get process_unit";
+                org::esb::hive::job::ProcessUnit unit;
+                try{
+                    _sock->getOutputStream()->write(text, strlen(text));
+                    _ois->readObject(unit);
+                }catch(...){
+                    logerror("Sending Computed Packet");                
+                }
+
+                if (unit._input_packets.size() == 0)break;
+                try{
+                    unit.process();
+                }catch(...){
+                    logerror("Error in process");
+                }
+                char * text_out = "put process_unit";
+                try{
+                _sock->getOutputStream()->write(text_out, strlen(text_out));
+                _oos->writeObject(unit);
+                }catch(...){
+                    logerror("Sending Computed Packet");
+                    _sock->close();
+                }
+                //		break;
+              }
           }
           //    break;
           org::esb::lang::Thread::sleep2(1000);
