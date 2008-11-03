@@ -9,6 +9,7 @@ include_directories (${WT_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_INC_DIR})
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
+include_directories (${FFMPEG_DIR}/include)
 
 LINK_DIRECTORIES(${WT_DIR}/lib)
 LINK_DIRECTORIES(${WT_DIR}/src)
@@ -50,7 +51,7 @@ MESSAGE("** BOOST_LIB PATH: " ${BOOST_LIB_DIR})
 
 add_executable (mhive Hive.cpp)
 
-target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 )
+target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 pthread)
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)
