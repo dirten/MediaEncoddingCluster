@@ -40,6 +40,7 @@ namespace org {
 
           directoryChooser = new Wt::Ext::Dialog("Choose Directory");
           FileTreeTable * tree = new FileTreeTable(Config::getProperty("hive.basescandir"), directoryChooser->contents());
+          tree->resize(500,300);
           Wt::Ext::Button *select = new Wt::Ext::Button("Select", directoryChooser->contents());
           select->clicked.connect(SLOT(directoryChooser, Wt::Ext::Dialog::accept));
           directoryChooser->resize(600, 400);
