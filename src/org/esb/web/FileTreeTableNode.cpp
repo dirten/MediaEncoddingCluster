@@ -13,6 +13,7 @@
 #include <iostream>
 #include <time.h>
 
+#include "org/esb/util/Log.h"
 #include <Wt/WIconPair>
 #include <Wt/WStringUtil>
 #include <Wt/WText>
@@ -27,7 +28,13 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 
   if (boost::filesystem::exists(path)) {
     if (!boost::filesystem::is_directory(path)) {
-      int fsize = boost::filesystem::file_size(path);
+      int fsize = 0;
+      try{
+        fsize=boost::filesystem::file_size(path);
+      }catch(...){
+        logerror("Fehler in FSIZE");
+      }
+      
       setColumnWidget(1, new WText(false,
 				   boost::lexical_cast<std::wstring>(fsize)));
       columnWidget(1)->setStyleClass("fsize");
