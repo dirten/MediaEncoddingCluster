@@ -4,24 +4,27 @@
 #include "Command.h"
 #include <vector>
 using namespace org::esb::io;
-namespace org{
-namespace esb{
-namespace hive{
-class CommandInputStream : public InputStream{
-    public:
+namespace org {
+  namespace esb {
+    namespace hive {
+
+      class CommandInputStream : public InputStream {
+      public:
         CommandInputStream(InputStream * is);
         ~CommandInputStream();
-        int read(unsigned char * buffer,int length);
+        int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
         int read();
-        int available(bool isBlocking=false);
+        int available(bool isBlocking = false);
         Command & readCommand();
-    private:
+      private:
         InputStream * _source;
-		Command _command;
-		unsigned char byte;
-};
+        Command _command;
+        unsigned char byte;
+      };
 
-}}}
+    }
+  }
+}
 #endif
 

@@ -10,6 +10,8 @@
 #include <Wt/WTreeTable>
 
 #include <boost/filesystem/path.hpp>
+#include "org/esb/io/FileFilter.h"
+
 
 /**
  * \defgroup fileexplorer File Explorer example
@@ -38,6 +40,10 @@ public:
    * Create a new FileTreeTable to browse the given path.
    */
   FileTreeTable(const boost::filesystem::path& path,
+		Wt::WContainerWidget *parent = 0);
+  
+  FileTreeTable(const boost::filesystem::path& path,
+                org::esb::io::FileFilter & filter,
 		Wt::WContainerWidget *parent = 0);
 };
 

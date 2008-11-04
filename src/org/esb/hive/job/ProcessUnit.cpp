@@ -7,7 +7,7 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-
+bool toDebug=false;
 ProcessUnit::ProcessUnit(){
     _decoder=NULL;
     _encoder=NULL;
@@ -43,13 +43,15 @@ void ProcessUnit::process(){
 		_decoder->open();
 	if(_encoder!=NULL)
 		_encoder->open();
-	logdebug("Codex openned");
+        if(toDebug)
+          logdebug("Codex openned");
 	FrameFormat in_format;
 	in_format.pixel_format=(PixelFormat)_decoder->getPixelFormat();//PIX_FMT_YUV420P;
 	in_format.height=_decoder->getHeight();
 	in_format.width=_decoder->getWidth();
 	in_format.channels=_decoder->getChannels();
 	in_format.samplerate=_decoder->getSampleRate();
+        if(toDebug)
 	logdebug("Input Formater created");
 
 	FrameFormat out_format;
@@ -58,11 +60,13 @@ void ProcessUnit::process(){
 	out_format.width=_encoder->getWidth();
 	out_format.channels=_encoder->getChannels();
 	out_format.samplerate=_encoder->getSampleRate();
+        if(toDebug)
 	logdebug("Output Formater created");
 	
 //	cout << "Create Formater:\twidth:"<<format.width<<"\theight"<<format.height<<endl;
 
 	FrameConverter conv(in_format,out_format);
+        if(toDebug)
 	logdebug("Converter created");
 
 	//	cout << "start decoding encoding"<<endl;
@@ -72,6 +76,7 @@ void ProcessUnit::process(){
 	int a=0;
 	int counter=0;
 	for(it=_input_packets.begin();it!=_input_packets.end();it++){		
+          if(toDebug)
 		logdebug("Loop");
 	    boost::shared_ptr<Packet> p=*it;
       
@@ -90,6 +95,7 @@ void ProcessUnit::process(){
 //        cout << endl;
 
 	    Frame tmp=_decoder->decode(*p);
+        if(toDebug)
 		logdebug("Frame Decoded");
 		if(_frame_count>=counter&&tmp.pict_type==FF_I_TYPE){
 			break;
@@ -97,6 +103,7 @@ void ProcessUnit::process(){
 	    if(tmp._buffer==0){
 	      continue;
 	    }
+        if(toDebug)
 		logdebug("Frame Buffer > 0");
         
         
@@ -105,20 +112,24 @@ void ProcessUnit::process(){
 //	    fr->setDts(AV_NOPTS_VALUE);
 
 		Frame f=conv.convert(tmp);
+        if(toDebug)
 		logdebug("Frame Converted");
 
 	    f.setPts(f.getDts());
 //	    f.setPts(++a);
 //	    tmp.setDts(AV_NOPTS_VALUE);
 	    Packet ret=_encoder->encode(f);
+        if(toDebug)
 		logdebug("Frame Encoded");
 
 		boost::shared_ptr<Packet> pEnc(new Packet(ret));
+        if(toDebug)
 		logdebug("Packet Created");
 
 		//	    pEnc->packet->dts=AV_NOPTS_VALUE;
 	    outsize+=pEnc->packet->size;
 	    _output_packets.push_back(pEnc);
+        if(toDebug)
 		logdebug("Packet Added");
 
 		//	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;

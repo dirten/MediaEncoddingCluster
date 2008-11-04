@@ -1,14 +1,12 @@
-#include "org/esb/io/File.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
 #include "Connection.h"
 
 #include "Statement.h"
 #include "PreparedStatement.h"
-#include <iostream>
-//#include "tntdb/connect.h"
+
+
 using namespace org::esb::sql;
-using namespace org::esb::io;
 using namespace org::esb::util;
 
 Connection::Connection(){

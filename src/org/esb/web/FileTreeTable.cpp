@@ -9,7 +9,9 @@
 #include "FileTreeTableNode.h"
 
 #include <Wt/WMessage>
+#include <Wt/WWidget>
 #include <Wt/WText>
+#include <Wt/WTree>
 
 using namespace Wt;
 
@@ -21,7 +23,23 @@ FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidg
     header(2)->setStyleClass("date");
 
     setTreeRoot(new FileTreeTableNode(path), "File");
-
+    
     treeRoot()->setImagePack("icons/");
     treeRoot()->expand();
+}
+
+FileTreeTable::FileTreeTable(const boost::filesystem::path& path,org::esb::io::FileFilter & filter, WContainerWidget *parent) : WTreeTable(parent) {
+    addColumn("Size", 80);
+    addColumn("Modified", 110);
+
+    header(1)->setStyleClass("fsize");
+    header(2)->setStyleClass("date");
+
+    setTreeRoot(new FileTreeTableNode(path, filter), "File");
+    using namespace Wt;
+    
+    tree()->setSelectionMode(SingleSelection);
+    treeRoot()->setImagePack("icons/");
+    treeRoot()->expand();
+    
 }

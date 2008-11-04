@@ -23,9 +23,10 @@ namespace org {
           sql += "INSERT INTO " + tablename;
         std::map<std::string, std::string>::iterator elit = data.begin();
         for (; elit != data.end(); elit++) {
-          if ((*elit).first == "id")continue;
-          if (update)
-            sql += " " + (*elit).first + "=:" + (*elit).first + ", ";
+          if (update){
+            if ((*elit).first == "id")continue;
+              sql += " " + (*elit).first + "=:" + (*elit).first + ", ";
+          }
           else {
             fields += (*elit).first + ", ";
             values += ":" + (*elit).first + ", ";
@@ -46,10 +47,10 @@ namespace org {
 
         elit = data.begin();
         for (; elit != data.end(); elit++) {
-          if((*elit).first!="id"){
+//          if((*elit).first!="id"){
             pstmt.setString((*elit).first, (*elit).second);
             logdebug("map2sql: "<<(*elit).first<<"="<<(*elit).second);
-          }
+//          }
         }
         pstmt.execute();
       }

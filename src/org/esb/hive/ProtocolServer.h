@@ -14,23 +14,24 @@
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
-namespace org{
-    namespace esb{
-        namespace hive{
-        	logger("hive.core")
-            class ProtocolServer:public Runnable{
-                private:
-            	    TcpSocket * socket;
-            	    list<ProtocolCommand*> l;
-                    CommandInputStream * _cis;
-//		    pthread_mutex_t * mutex;
-                public:
-            	    ~ProtocolServer();
-            	    ProtocolServer(TcpSocket * socket);
-            	    void run();
-            };
-        }
+namespace org {
+  namespace esb {
+    namespace hive {
+
+      logger("hive.core")
+      class ProtocolServer : public Runnable {
+      private:
+        TcpSocket * socket;
+        list<ProtocolCommand*> l;
+        CommandInputStream * _cis;
+        //		    pthread_mutex_t * mutex;
+      public:
+        ~ProtocolServer();
+        ProtocolServer(TcpSocket * socket);
+        void run();
+      };
     }
+  }
 }
 #endif
 

@@ -25,7 +25,7 @@ using namespace org::esb::lang;
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-Properties * properties = 0;
+Properties * properties = new Properties();;
 
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
@@ -43,7 +43,7 @@ void Config::init(char * filename) {
   if ((fp = fopen(filename, "r")) == NULL) {
     throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
-  properties = new Properties();
+//  properties = new Properties();
   while (fgets(buffer, 255, fp) != NULL) {
     parseLine(buffer);
   }

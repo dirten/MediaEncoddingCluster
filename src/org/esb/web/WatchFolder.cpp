@@ -1,12 +1,24 @@
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/Dialog>
+#include <Wt/WTree>
+#include "FileTreeTable.h"
+#include "FileTreeTableNode.h"
 
-#include "FileTreeTable.h"
-#include "FileTreeTable.h"
 #include "org/esb/config/config.h"
+#include "org/esb/io/FileFilter.h"
+#include "org/esb/io/File.h"
+
+#include <boost/algorithm/string.hpp>
+
 namespace org {
   namespace esb {
     namespace web {
+      class DirectoryFileFilter : public org::esb::io::FileFilter {
+      public:
+        bool accept(org::esb::io::File file) {
+          return file.isDirectory();
+        }
+      };
 
       class WatchFolder : public Wt::WContainerWidget {
       public:
@@ -30,33 +42,71 @@ namespace org {
           int i = 0;
           buildElement("id", "Id", t, i++)->setEnabled(false);
           buildElement("folder", "Watch Folder", t, i++)->setEnabled(false);
-          Wt::Ext::Button * selectDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
-          buildElement("profile", "Profile", t, i++)->setEnabled(false);
+          selectDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
+          selectDirectory->setEnabled(false);
+//          buildElement("profile", "Profile", t, i++)->setEnabled(false);
 
+
+//          profiles = new Wt::Ext::ComboBox(this);
+          Wt::WLabel * elementLabel = new Wt::WLabel("Profile", t->elementAt(i, 0));
+          t->elementAt(i, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
+          profiles = new Wt::Ext::ComboBox(t->elementAt(i, 1));
+          profiles->setEnabled(false);
+          Connection con(Config::getProperty("db.connection"));
+
+          Statement stmt = con.createStatement("select * from profiles");
+          ResultSet rs = stmt.executeQuery();
+          int a=0;
+          while (rs.next()) {
+            profiles->addItem(rs.getString("profile_name"));
+            name2id[rs.getString("profile_name")] = rs.getInt("id");
+            id2name[rs.getInt("id")] = rs.getString("profile_name");
+            profileid2profileidx[rs.getInt("id")]=a++;
+          }
+          elements["profile"] = profiles;
+          i++;
+          
           msg = new Wt::WText(t->elementAt(i, 0));
           buttonSave = new Wt::Ext::Button("Save", t->elementAt(i, 1));
           buttonSave->clicked.connect(SLOT(this, WatchFolder::saveMap));
           buttonSave->setEnabled(false);
 
           directoryChooser = new Wt::Ext::Dialog("Choose Directory");
-          FileTreeTable * tree = new FileTreeTable(Config::getProperty("hive.basescandir"), directoryChooser->contents());
+//          DirectoryFileFilter * filter=new DirectoryFileFilter();
+          tree = new FileTreeTable(Config::getProperty("hive.basescandir"),filter, directoryChooser->contents());
           tree->resize(500,300);
+
+          tree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectFolder));
+          
           Wt::Ext::Button *select = new Wt::Ext::Button("Select", directoryChooser->contents());
           select->clicked.connect(SLOT(directoryChooser, Wt::Ext::Dialog::accept));
           directoryChooser->resize(600, 400);
           selectDirectory->clicked.connect(SLOT(this, WatchFolder::openDirectoryChooser));
-          //		  tab->itemSelectionChanged.connect(SLOT(directoryChooser, Wt::Ext::Dialog::show));
+          tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
         }
+        ~WatchFolder(){
+          
+        }
+
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonSave;
         Wt::Ext::Dialog * directoryChooser;
+        Wt::Ext::Button * selectDirectory;
         SqlTable * tab;
         Wt::WText * msg;
         int _user_id;
+        DirectoryFileFilter filter;
+        FileTreeTable * tree;
         std::map<std::string, std::string> sqldata;
         std::map<std::string, Wt::Ext::LineEdit*> elements;
+        
+        map<std::string, int> name2id;
+        map<int, std::string> id2name;
+        std::map<int, int> profileid2profileidx;
+        Wt::Ext::ComboBox * profiles;
+        Wt::Ext::Button * encode;
 
         void openDirectoryChooser() {
           directoryChooser->show();
@@ -68,7 +118,10 @@ namespace org {
           SqlUtil::sql2map("watch_folder", d, sqldata);
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           for (; it != elements.end(); it++) {
-            (*it).second->setText(sqldata[(*it).first]);
+            if((*it).first == "profile")
+              ((Wt::Ext::ComboBox*)(*it).second)->setCurrentIndex(profileid2profileidx[atoi(sqldata[(*it).first].c_str())]);
+            else
+              (*it).second->setText(sqldata[(*it).first]);
           }
           buttonEdit->setEnabled(true);
         }
@@ -76,26 +129,45 @@ namespace org {
         void editWatchFolder() {
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           for (; it != elements.end(); it++) {
-            (*it).second->setEnabled(true);
+//            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
+          selectDirectory->setEnabled(true);
+          elements["profile"]->setEnabled(true);
         }
 
         void newWatchFolder() {
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           for (; it != elements.end(); it++) {
             (*it).second->setText("");
-            (*it).second->setEnabled(true);
+//            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
         }
 
+        void selectFolder(){
+          logdebug("Folder Selected");
+
+          Wt::WTree::WTreeNodeSet set=tree->tree()->selectedNodes();
+          Wt::WTree::WTreeNodeSet::iterator it=set.begin();
+          if(it!=set.end()){
+          logdebug("Folder in set");
+            FileTreeTableNode * node=(FileTreeTableNode*)*it;
+            elements["folder"]->setText(node->path_.string());
+            logdebug(node->path_);
+          }
+        }
         void saveMap() {
           std::map<std::string, std::string> data;
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
+          data["id"]=elements["id"]->text().narrow();
+          data["folder"]=elements["folder"]->text().narrow();
+          data["profile"]=Decimal(name2id[elements["profile"]->text().narrow()]).toString() ;
+/*
           for (; it != elements.end(); it++) {
             data[(*it).first] = (*it).second->text().narrow();
           }
+ */
           SqlUtil::map2sql("watch_folder", data);
           msg->setText("Data Saved");
         }

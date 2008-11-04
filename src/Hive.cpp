@@ -120,10 +120,10 @@ int main(int argc, char * argv[]) {
   avcodec_init();
   avcodec_register_all();
 
-  Config::init((char*) vm["config"].as<std::string > ().c_str());
 
 
   if (vm.count("server")) {
+    Config::init((char*) vm["config"].as<std::string > ().c_str());
     Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
     if(vm.count("web"))
       Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());

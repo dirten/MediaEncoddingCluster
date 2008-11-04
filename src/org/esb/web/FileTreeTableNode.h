@@ -10,7 +10,7 @@
 #include <Wt/WTreeTableNode>
 
 #include <boost/filesystem/path.hpp>
-
+#include "org/esb/io/FileFilter.h"
 /**
  * @addtogroup fileexplorer
  */
@@ -31,10 +31,12 @@ public:
   /*! \brief Construct a new node for the given file.
    */
   FileTreeTableNode(const boost::filesystem::path& path);
+  FileTreeTableNode(const boost::filesystem::path& path, org::esb::io::FileFilter & filter);
 
-private:
   //! The path.
   boost::filesystem::path path_;
+
+private:
 
   //! Reimplements WTreeNode::populate to read files within a directory.
   virtual void populate();
@@ -42,9 +44,11 @@ private:
   //! Reimplements WTreeNode::expandable
   virtual bool expandable();
 
-  virtual bool 	isSelectable () const;
   //! Create the iconpair for representing the path.
   static Wt::WIconPair *createIcon(const boost::filesystem::path& path);
+
+  org::esb::io::FileFilter * _filter;
+  
 };
 
 /*@}*/

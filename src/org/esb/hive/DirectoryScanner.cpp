@@ -83,8 +83,8 @@ namespace org {
       void DirectoryScanner::scan(std::string dir) {
         logdebug("Directory Scanner loop:" << ":" << dir);
         MyFileFilter filter;
-        std::list<boost::shared_ptr< File > > list = File(dir.c_str()).listFiles();
-        std::list<boost::shared_ptr< File > >::iterator it = list.begin();
+        FileList list = File(dir.c_str()).listFiles();
+        FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())
             scan((*it)->getPath());

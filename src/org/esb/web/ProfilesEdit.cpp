@@ -41,7 +41,7 @@ namespace web{
           elements["id"]->setEnabled(false);
           buildElement("profile_name", "Profile Name",t,i++);
 
-          Wt::WLabel * elementLabel = new Wt::WLabel("Codec", t->elementAt(i, 0));
+          Wt::WLabel * elementLabel = new Wt::WLabel("Container Format", t->elementAt(i, 0));
           t->elementAt(i, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
           Wt::Ext::ComboBox * element = new Wt::Ext::ComboBox(t->elementAt(i, 1));
          

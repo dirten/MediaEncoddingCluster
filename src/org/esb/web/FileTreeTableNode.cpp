@@ -18,11 +18,12 @@
 #include <Wt/WStringUtil>
 #include <Wt/WText>
 
+#include "org/esb/io/File.h"
 using namespace Wt;
 
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
   : WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
-    path_(path)
+    path_(path), _filter(NULL)
 {
   label()->setFormatting(WText::PlainFormatting);
 
@@ -39,7 +40,46 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 				   boost::lexical_cast<std::wstring>(fsize)));
       columnWidget(1)->setStyleClass("fsize");
     }
-    //else      setSelectable(false);
+    //else      
+    setSelectable(true);
+
+    std::time_t t = boost::filesystem::last_write_time(path);
+    struct tm ttm;
+#if WIN32
+    ttm=*localtime(&t);
+#else
+    localtime_r(&t, &ttm);
+#endif
+
+    char c[100];
+    strftime(c, 100, "%b %d %Y", &ttm);
+
+    setColumnWidget(2, new WText(c));
+    columnWidget(2)->setStyleClass("date");
+  }
+}
+
+FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::esb::io::FileFilter & filter)
+  : WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
+    path_(path), _filter(&filter)
+{
+  label()->setFormatting(WText::PlainFormatting);
+
+  if (boost::filesystem::exists(path)) {
+    if (!boost::filesystem::is_directory(path)) {
+      int fsize = 0;
+      try{
+        fsize=boost::filesystem::file_size(path);
+      }catch(...){
+        logerror("Fehler in FSIZE");
+      }
+      
+      setColumnWidget(1, new WText(false,
+				   boost::lexical_cast<std::wstring>(fsize)));
+      columnWidget(1)->setStyleClass("fsize");
+    }
+    //else      
+    setSelectable(true);
 
     std::time_t t = boost::filesystem::last_write_time(path);
     struct tm ttm;
@@ -59,6 +99,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 
 WIconPair *FileTreeTableNode::createIcon(const boost::filesystem::path& path)
 {
+
   if (boost::filesystem::exists(path)
       && boost::filesystem::is_directory(path))
     return new WIconPair("icons/yellow-folder-closed.png",
@@ -71,6 +112,7 @@ WIconPair *FileTreeTableNode::createIcon(const boost::filesystem::path& path)
 void FileTreeTableNode::populate()
 {
   try {
+    
     if (boost::filesystem::is_directory(path_)) {
       std::set<boost::filesystem::path> paths;
       boost::filesystem::directory_iterator end_itr;
@@ -79,17 +121,19 @@ void FileTreeTableNode::populate()
 	paths.insert(*i);
 
       for (std::set<boost::filesystem::path>::iterator i = paths.begin();
-	   i != paths.end(); ++i)
-	addChildNode(new FileTreeTableNode(*i));
+      i != paths.end(); ++i){
+        if(_filter!=NULL&&_filter->accept(org::esb::io::File(i->string().c_str())))
+          addChildNode(new FileTreeTableNode(*i, (org::esb::io::FileFilter&)*_filter));
+      }
     }
   } catch (boost::filesystem::filesystem_error& e) {
     std::cerr << e.what() << std::endl;
   }
+  
+  
+  
 }
 
-bool 	FileTreeTableNode::isSelectable () const {
-    return true;
-}
 
 bool FileTreeTableNode::expandable()
 {

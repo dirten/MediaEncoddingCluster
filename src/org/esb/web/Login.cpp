@@ -24,6 +24,7 @@ namespace org {
           Wt::Ext::LineEdit * pass=buildElement("auth_passwd", "Authentication Password", t, i++);
           pass->setEchoMode(Wt::Ext::LineEdit::Password);
           pass->keyWentUp.connect(SLOT(this, Login::enter));
+         
           msg=new Wt::WText(t->elementAt(i, 0));
           Wt::Ext::Button * saveBut = new Wt::Ext::Button("Login", t->elementAt(i, 1));
           saveBut->clicked.connect(SLOT(this, Login::authenticate));
