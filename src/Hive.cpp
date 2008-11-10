@@ -125,9 +125,9 @@ int main(int argc, char * argv[]) {
 
 
   if (vm.count("server")) {
-    Config::init((char*) vm["config"].as<std::string > ().c_str());
     if(vm.count("database"))
       Config::setProperty("db.connection", vm["database"].as<std::string > ().c_str());
+    Config::init((char*) vm["config"].as<std::string > ().c_str());
     Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
     if(vm.count("web"))
       Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
