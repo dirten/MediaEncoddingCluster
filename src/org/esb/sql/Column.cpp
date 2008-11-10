@@ -19,6 +19,8 @@ Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
   name=std::string(field->name);
   bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
   reserve(field->length);
+
+//  reserve(field->length>0x10000?0x10000:field->length);
   length=0;
 //  buffer=NULL;
 }

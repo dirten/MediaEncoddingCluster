@@ -4,12 +4,20 @@ project (MEC)
 
 SET(BUILD_SHARED_LIBS OFF)
 
-SET(BUILD_EMBEDDED_LIBS CACHE STRING "Use Embedded Dependency Libraries")
+SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
 
 
 
 # Build Embedded libraries in deps directory
 IF(BUILD_EMBEDDED_LIBS)
+  MESSAGE("** Building Embedded Libraries, that will take several time")
+
+  FILE(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage)
+  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/boost.build "")
+  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/wt.build "")
+  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.build "")
+  FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/x264.build "")
+
 # setup to build embedded libraries
   SET(BUILD_EMBEDDED_BOOST ON)
   INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/boost.build)
@@ -21,16 +29,16 @@ IF(BUILD_EMBEDDED_LIBS)
   INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/x264.build)
 
 # settings for the embedded Library Paths
-  SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/deps/stage/boost CACHE PATH "Boost installation path prefix")
-  SET(BOOST_COMPILER gcc41 CACHE STRING "Boost libraries compiler signature")
-  SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
-  SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg CACHE PATH "Use ffmpeg in directory")
-  SET(WT_DIR ${PROJECT_SOURCE_DIR}/deps/stage/wt CACHE PATH "Use WT in directory")
-  SET(X264_DIR ${PROJECT_SOURCE_DIR}/deps/stage/x264 CACHE PATH "Use x264 codec in directory")
+  SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/deps/stage/boost)
+  SET(BOOST_COMPILER gcc41 )
+  SET(BOOST_VERSION "1_35" )
+  SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
+  SET(WT_DIR ${PROJECT_SOURCE_DIR}/deps/stage/wt)
+  SET(X264_DIR ${PROJECT_SOURCE_DIR}/deps/stage/x264)
 ENDIF(BUILD_EMBEDDED_LIBS)
 
 add_subdirectory (src)
-#add_subdirectory (test)
+add_subdirectory (test)
 
 
 
@@ -47,18 +55,26 @@ IF(BUILD_EMBEDDED_BOOST)
   ELSE(WIN32)
     SET(BUILD_JAM_CMD "build_dist.sh")
   ENDIF(WIN32)
-
-  execute_process(COMMAND ${BOOST_JAM_DIR}/${BUILD_JAM_CMD} WORKING_DIRECTORY ${BOOST_JAM_DIR})  
+  MESSAGE("** Building Boost Jam")
+#  FILE(DOWNLOAD http://dfn.dl.sourceforge.net/sourceforge/boost/boost_1_35_0.tar.gz ${PROJECT_SOURCE_DIR}/deps/boost_1_35_0.tar.gz)
+  execute_process(COMMAND ${BOOST_JAM_DIR}/${BUILD_JAM_CMD} 
+                  WORKING_DIRECTORY ${BOOST_JAM_DIR} 
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/jam.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/jam.log)
+  MESSAGE("** Building Boost Library")
 
   execute_process(COMMAND ${BOOST_JAM_DIR}/stage/bin.linuxx86/bjam --prefix=${PROJECT_SOURCE_DIR}/deps/stage/boost
                 variant=release threading=multi link=static --without-python --without-wave --without-graph --without-test --without-mpi install
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/boost_1_35_0)
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/boost_1_35_0
+                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/boost.log 
+                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/boost.log)
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/boost.build "SET(BUILD_EMBEDDED_BOOST OFF)")
 ENDIF(BUILD_EMBEDDED_BOOST)
 
 
 IF(BUILD_EMBEDDED_WT)
   file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/wt)
+  MESSAGE("** Configure Webtoolkit")
 
   execute_process(COMMAND cmake 
                 -DBOOST_DIR=${PROJECT_SOURCE_DIR}/deps/stage/boost
@@ -67,22 +83,39 @@ IF(BUILD_EMBEDDED_WT)
                 -DSHARED_LIBS=OFF
                 -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/deps/stage/wt
                 ../../wt-2.1.5
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/wt)
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/wt
+                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/wt-configure.log 
+                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/wt-configure.log)
 
-  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/wt)
+  MESSAGE("** Building Webtoolkit")
+
+  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/wt
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/wt-compile.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/wt-compile.log)
+
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/wt.build "SET(BUILD_EMBEDDED_WT OFF)")
 ENDIF(BUILD_EMBEDDED_WT)
 
 IF(BUILD_EMBEDDED_X264)
+  MESSAGE("** Configure x264")
+
   execute_process(COMMAND ./configure 
                 --prefix=${PROJECT_SOURCE_DIR}/deps/stage/x264
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/x264)
-  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/x264)
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/x264
+                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/x264-configure.log 
+                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/x264-configure.log)
+
+  MESSAGE("** Build and Install x264")
+  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/x264
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/x264-compile.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/x264-compile.log)
+
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/x264.build "SET(BUILD_EMBEDDED_X264 OFF)")
 ENDIF(BUILD_EMBEDDED_X264)
 
 IF(BUILD_EMBEDDED_FFMPEG)
   file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
+  MESSAGE("** Configure ffmpeg")
   execute_process(COMMAND  ../../ffmpeg/configure 
                 --prefix=${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
                 --enable-swscale
@@ -94,21 +127,32 @@ IF(BUILD_EMBEDDED_FFMPEG)
                 --extra-ldflags=-L${PROJECT_SOURCE_DIR}/deps/stage/x264/lib
                 --extra-ldflags=-lpthread
                 --extra-cflags=-I${PROJECT_SOURCE_DIR}/deps/stage/x264/include
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
-  execute_process(COMMAND make WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
-  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-configure.log 
+                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-configure.log)
+
+  MESSAGE("** Build ffmpeg")
+  execute_process(COMMAND make WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-compile.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-compile.log)
+
+  MESSAGE("** Install ffmpeg")
+  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-install.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-install.log)
+
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.build "SET(BUILD_EMBEDDED_FFMPEG OFF)")
 ENDIF(BUILD_EMBEDDED_FFMPEG)
 
 
-SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
+#SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
 SET(MYSQL_INC_DIR ${USERLIB_ROOT} CACHE PATH "Use mysql Includes in directory")
 SET(MYSQL_LIB_DIR ${USERLIB_ROOT} CACHE PATH "Use mysql Librbaries in directory")
-SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
-SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "Use WT in directory")
-SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
-SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
-SET(BOOST_VERSION "1_34_1" CACHE STRING "Boost libraries version signature")
+#SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
+#SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "Use WT in directory")
+#SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
+#SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
+#SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 
 
 #IF(NOT BOOST_WT_FOUND)

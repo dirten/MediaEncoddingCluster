@@ -1,41 +1,8 @@
--- phpMyAdmin SQL Dump
--- version 2.11.8.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 31. Oktober 2008 um 15:05
--- Server Version: 5.0.45
--- PHP-Version: 5.2.6
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Datenbank: `hive`
---
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `config`
---
-
 CREATE TABLE IF NOT EXISTS `config` (
   `config_key` varchar(255) NOT NULL,
   `config_val` varchar(255) NOT NULL,
   PRIMARY KEY  (`config_key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `files`
---
 
 CREATE TABLE IF NOT EXISTS `files` (
   `id` int(11) NOT NULL auto_increment,
@@ -59,13 +26,6 @@ CREATE TABLE IF NOT EXISTS `files` (
   `parent` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `frame_groups`
---
-
 CREATE TABLE IF NOT EXISTS `frame_groups` (
   `id` int(11) NOT NULL auto_increment,
   `jobid` int(11) NOT NULL default '0',
@@ -79,13 +39,6 @@ CREATE TABLE IF NOT EXISTS `frame_groups` (
   `complete` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `jobs`
---
-
 CREATE TABLE IF NOT EXISTS `jobs` (
   `id` int(11) NOT NULL auto_increment,
   `inputfile` int(11) default NULL,
@@ -94,13 +47,6 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `complete` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `job_details`
---
-
 CREATE TABLE IF NOT EXISTS `job_details` (
   `id` int(11) NOT NULL auto_increment,
   `job_id` int(11) default NULL,
@@ -108,13 +54,6 @@ CREATE TABLE IF NOT EXISTS `job_details` (
   `outstream` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `job_logs`
---
-
 CREATE TABLE IF NOT EXISTS `job_logs` (
   `id` int(11) NOT NULL auto_increment,
   `packet_in` int(11) default NULL,
@@ -123,13 +62,6 @@ CREATE TABLE IF NOT EXISTS `job_logs` (
   `complete` timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `packets`
---
-
 CREATE TABLE IF NOT EXISTS `packets` (
   `id` int(11) NOT NULL auto_increment,
   `stream_id` int(11) default NULL,
@@ -148,13 +80,6 @@ CREATE TABLE IF NOT EXISTS `packets` (
   KEY `packet_pts_idx` (`pts`),
   KEY `stream_id` (`stream_id`,`dts`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `process_units`
---
-
 CREATE TABLE IF NOT EXISTS `process_units` (
   `id` int(11) NOT NULL auto_increment,
   `source_stream` int(11) NOT NULL,
@@ -166,13 +91,6 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `priority` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `profiles`
---
-
 CREATE TABLE IF NOT EXISTS `profiles` (
   `id` int(11) NOT NULL auto_increment,
   `profile_name` varchar(255) default NULL,
@@ -188,26 +106,12 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `a_samplerate` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `statistics_log`
---
-
 CREATE TABLE IF NOT EXISTS `statistics_log` (
   `id` bigint(20) NOT NULL auto_increment,
   `stat_key` varchar(255) NOT NULL,
   `stat_val` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `streams`
---
-
 CREATE TABLE IF NOT EXISTS `streams` (
   `id` int(11) NOT NULL auto_increment,
   `fileid` int(11) NOT NULL default '0',
@@ -234,13 +138,6 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `priv_data` blob,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `user`
---
-
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `auth_name` varchar(255) NOT NULL,
@@ -253,29 +150,19 @@ CREATE TABLE IF NOT EXISTS `user` (
   `updated` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `version`
---
-
 CREATE TABLE IF NOT EXISTS `version` (
   `id` int(11) NOT NULL auto_increment,
   `component` varchar(255) default NULL,
   `version` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `watch_folder`
---
-
 CREATE TABLE IF NOT EXISTS `watch_folder` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `folder` varchar(255) NOT NULL,
   `profile` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+INSERT INTO `version` (`id`, `component`, `version`) VALUES(1, 'database.model', '0.0.1');
+INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES
+(1, 'admin', 'admin', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00');

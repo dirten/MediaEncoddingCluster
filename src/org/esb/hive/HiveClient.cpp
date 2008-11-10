@@ -60,15 +60,17 @@ namespace org {
             connect();
           }else{
               while (!_toHalt) {
+                logdebug("ProcessLoop");
                 char * text = "get process_unit";
                 org::esb::hive::job::ProcessUnit unit;
                 try{
                     _sock->getOutputStream()->write(text, strlen(text));
+                logdebug("Command sended");
                     _ois->readObject(unit);
+                logdebug("ProcessUnit received");
                 }catch(...){
                     logerror("Sending Computed Packet");                
                 }
-
                 if (unit._input_packets.size() == 0)break;
                 try{
                     unit.process();

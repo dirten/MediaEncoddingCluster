@@ -52,13 +52,13 @@ int import(int argc, char *argv[]) {
 
     string connect_str = Config::getProperty("db.connection");
     Connection con(connect_str.c_str());
-
+/*
     if (!checkDatabase(con)) {
         createDatabase(con);
     }else {
         cout << "Database found";
     }
-
+*/
 	org::esb::io::File inputFile(argv[1]);
     if (!inputFile.canRead()) {
         cout << "Source File not found" << endl;

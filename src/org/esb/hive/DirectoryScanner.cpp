@@ -64,6 +64,8 @@ namespace org {
           _halt = true;
           //#if BOOST_VERSION > 103500
           th->interrupt();
+          delete th;
+          th=0;
           //#endif
           logdebug("Directory Scanner stopped:");
         }

@@ -83,6 +83,8 @@ add_library (sql sql/Column.cpp
       sql/ResultSet.cpp 
       sql/ResultSetMetaData.cpp 
       sql/SqlException.cpp
+      sql/ConnectionManager.cpp
+      sql/Row.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
@@ -106,6 +108,7 @@ add_library (hive hive/Command.cpp
 	hive/FileImporter.cpp 
 	hive/JobUtil.cpp 
 	hive/HiveClient.cpp 
+	hive/Setup.cpp 
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)

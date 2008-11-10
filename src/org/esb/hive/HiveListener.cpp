@@ -19,14 +19,11 @@ namespace org {
     namespace hive {
 
       HiveListener::HiveListener() {
-        cout << "new HiveListener" << endl;
         main_nextloop = true;
         is_running = false;
-        //  org::esb::signal::Messenger::getInstance().addMessageListener(*this);
       }
 
       HiveListener::~HiveListener() {
-//        cout << "Shutdown HiveListener" << endl;
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
@@ -40,6 +37,7 @@ namespace org {
           if (msg.getProperty("hivelistener") == "stop") {
           logdebug("Hive Listener stopped:");
           server->close();
+          delete server;
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
@@ -51,6 +49,7 @@ namespace org {
         for (; main_nextloop;) {
           try {
             TcpSocket * clientSocket = server->accept();
+            logdebug("new CLient here");
             if (clientSocket != NULL) {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
               Thread *thread = new Thread(protoServer);

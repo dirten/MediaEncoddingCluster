@@ -23,6 +23,7 @@
 //#include "org/esb/hive/PacketCollector.h"
 #include "Environment.cpp"
 #include "org/esb/hive/HiveClient.h"
+#include "org/esb/hive/Setup.h"
 
 
 #include "org/esb/util/Decimal.h"
@@ -78,6 +79,7 @@ int main(int argc, char * argv[]) {
       ("webroot,r", po::value<std::string > ()->default_value("."), "define the Path for Web Server root")
       ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
       ("scanint", po::value<int>()->default_value(300), "define the Interval to Scan for new Media Files")
+      ("database", po::value<std::string > (), "Database Connection mysql://mysql:db=<dbname>;host=<host>;user=<user>;passwd=<user> for e.g. mysql:db=hive;host=localhost;user=root;passwd=test")
       ;
 
 
@@ -124,6 +126,8 @@ int main(int argc, char * argv[]) {
 
   if (vm.count("server")) {
     Config::init((char*) vm["config"].as<std::string > ().c_str());
+    if(vm.count("database"))
+      Config::setProperty("db.connection", vm["database"].as<std::string > ().c_str());
     Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
     if(vm.count("web"))
       Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
@@ -132,6 +136,7 @@ int main(int argc, char * argv[]) {
     if (vm.count("scanint"))
       Config::setProperty("hive.scaninterval", Decimal(vm["scanint"].as<int> ()).toString().c_str());
     Config::setProperty("hive.port", Decimal(vm["port"].as<int>()).toString().c_str());
+    
     listener(argc, argv);
   }
 
@@ -259,6 +264,7 @@ bool main_nextLoop = true;
 
 
 void listener(int argc, char *argv[]) {
+  Setup::check();
   /*
     if (!checkEnvironment()) {
       cout << "Fehler in der Configuration" << endl;
@@ -323,6 +329,7 @@ void listener(int argc, char *argv[]) {
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", "stop"));
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", "stop"));
   Messenger::free();
+  mysql_library_end();
 
 }
 

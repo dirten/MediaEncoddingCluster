@@ -52,14 +52,14 @@ namespace org {
           char * size = new char[10];
           sprintf(size, "%010d", len);
           boost::asio::write(*_socket, boost::asio::buffer(size, 10));
-
+//          logdebug("sended size: "<<size);
           /*
            * Send buffer
            */
           while (remaining > 0) {
             int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer + (len - remaining), remaining));
             remaining -= sent;
-            //          cout << "Data send:"<<sent<<endl;
+//            cout << "Data send:"<<sent<<endl;
           }
         }
       };

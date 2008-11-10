@@ -57,9 +57,10 @@ namespace org {
         }
 
         /******************************************************************************/
+        
         int read(unsigned char * buffer, int length) {
           int counter = 0, remaining = length;
-          /*Receive data into buffer*/
+       
           while (remaining > 0) {
             int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
             remaining -= read;
@@ -68,9 +69,6 @@ namespace org {
 
           if (error)
             throw boost::system::system_error(error);
-          //				return 0;
-          //			else
-          //				throw boost::system::system_error(error);
           return counter;
         }
 
@@ -78,7 +76,7 @@ namespace org {
           /*Receive length of data*/
           int length = available(true);
 
-          //	        cout << "Readed Buffer length"<<length<<endl;
+//          cout << "Readed Buffer length"<<length<<endl;
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
@@ -97,7 +95,7 @@ namespace org {
 
         /*Receive length of buffer*/
         int available(bool isBlocking) {
-          char tmp[10];
+          char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
           int len = 0;
           _socket->read_some(boost::asio::buffer(&tmp, 10), error);

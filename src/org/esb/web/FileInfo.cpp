@@ -14,6 +14,7 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 
+#include "org/esb/util/Decimal.h"
 //#include "job.cpp"
 #include "org/esb/hive/JobUtil.h"
 #include <map>

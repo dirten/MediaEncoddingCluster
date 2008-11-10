@@ -18,11 +18,11 @@ namespace org {
             public:
                 Connection();
                 Connection(const char * con);
-                Connection(const char * host,const char * db, const char * user, const char * pass);
+                Connection(std::string host,std::string db, std::string user, std::string pass);
                 ~Connection();
                 Statement createStatement(const char * sql);
                 PreparedStatement prepareStatement(const char * sql);
-                void executeNonQuery(const char * sql);
+                void executeNonQuery(std::string sql);
                 long lastInsertId();
                 //		sqlite3_transaction getTransaction();
                 void close();
@@ -37,9 +37,10 @@ namespace org {
                 std::string _host;
                 std::string _port;
                 std::string _db;
-                
-                void parseConnectionString(std::string &constr);
                 MYSQL mysql;
+            private:
+                friend class Setup;
+                void parseConnectionString(std::string &constr);
             };
         }
     }

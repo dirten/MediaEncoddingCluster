@@ -194,10 +194,10 @@ Wt::WWidget * createDbConfigPage(){
 //      if(host->validate()==Wt::WValidator::Valid){
       log->setText(log->text()+"check Connection : ");
       try{
-        sql::Connection con(elements["host"]->text().narrow().c_str(),
-                            elements["database"]->text().narrow().c_str(),
-                            elements["user"]->text().narrow().c_str(),
-                            elements["passwd"]->text().narrow().c_str());
+        sql::Connection con(elements["host"]->text().narrow(),
+                            elements["database"]->text().narrow(),
+                            elements["user"]->text().narrow(),
+                            elements["passwd"]->text().narrow());
                             
         log->setText(log->text()+" successfull connected to Database\n");
         props.setProperty("host",elements["host"]->text().narrow());

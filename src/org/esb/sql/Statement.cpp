@@ -11,7 +11,7 @@ Statement::Statement(MYSQL & mysql, const char * s){
   }
   sql=s;
   if (mysql_stmt_prepare(stmt, sql.c_str(), strlen(sql.c_str()))){
-    throw SqlException( string("failed while prepare the statement: ").append(mysql_stmt_error(stmt)).append(sql));
+    throw SqlException( string("failed while prepare the statement: ").append(mysql_stmt_error(stmt)).append(" "+sql));
   }
 }
 
