@@ -75,7 +75,7 @@ add_library (net net/SocketException.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
-include_directories (${MYSQL_INC_DIR})
+include_directories (${MYSQL_DIR}/include/mysql)
 add_library (sql sql/Column.cpp 
       sql/Connection.cpp 
       sql/Statement.cpp 
@@ -128,6 +128,7 @@ add_library (web web/WebServer.cpp
     web/SqlUtil.cpp
 )
 #TARGET_LINK_LIBRARIES(web wt wtext wthttp)
+#TARGET_LINK_LIBRARIES(sql mysqlclient)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)

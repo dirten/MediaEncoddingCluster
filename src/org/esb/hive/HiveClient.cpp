@@ -42,15 +42,15 @@ namespace org {
 
       void HiveClient::connect() {
         try{
-        logdebug("Connecting to " << _host << " on port " << _port);
+//        logdebug("Connecting to " << _host << " on port " << _port);
         _sock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
         _sock->connect();
         _ois=new org::esb::io::ObjectInputStream(_sock->getInputStream());
         _oos=new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
+        logerror("Server "<<_host<<" connected!!!");
         }catch(...){
-          logerror("cant connect!!!");
+//          logerror("cant connect!!!");
         }
-
       }
 
       void HiveClient::process() {
@@ -69,7 +69,8 @@ namespace org {
                     _ois->readObject(unit);
                 logdebug("ProcessUnit received");
                 }catch(...){
-                    logerror("Sending Computed Packet");                
+                    logerror("Connection to Server lost!!!");                
+                    _sock->close();
                 }
                 if (unit._input_packets.size() == 0)break;
                 try{
@@ -82,7 +83,7 @@ namespace org {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(unit);
                 }catch(...){
-                    logerror("Sending Computed Packet");
+                    logerror("Connection to Server lost!!!");
                     _sock->close();
                 }
                 //		break;

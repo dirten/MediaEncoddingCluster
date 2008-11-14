@@ -25,7 +25,7 @@ using namespace org::esb::lang;
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-Properties * properties = new Properties();;
+Properties * properties = new Properties();
 
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
@@ -49,13 +49,16 @@ void Config::init(char * filename) {
   }
   fclose(fp);
   /*load params from database*/
-
+  try{
   Connection con(getProperty("db.connection"));
   Statement stmt = con.createStatement("select * from config");
   ResultSet rs = stmt.executeQuery();
   while (rs.next()) {
     if (rs.getString("config_key") != "db.connection")
       properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
+  }
+  }catch(SqlException & ex){
+    logerror("cant load configuration from database");
   }
 }
 

@@ -4,48 +4,53 @@
 
 #include "Statement.h"
 #include "PreparedStatement.h"
-#include "Row.cpp"
+#include "Row.h"
 #include "ResultSetMetaData.h"
 #include "my_sql.h"
 #include "org/esb/util/Log.h"
-namespace org{
-namespace esb{
-namespace sql{
-class Column;
-class ResultSet{
-  public:
-	bool 		next();
-	
-    bool 		getBool			(int index);
-    bool 		getBool			(std::string index);
-    int 		getInt			(int index);
-    int 		getInt			(std::string index);
-    double 		getDouble		(int index);
-    double 		getDouble		(std::string index);
+namespace org {
+  namespace esb {
+    namespace sql {
+      class Column;
 
-	const std::string getString	    (int col) ;
-	const std::string getString	    (std::string col) ;
+      class ResultSet {
+      public:
+        bool next();
 
-	std::string getBlob			(int index);
-	std::string getBlob			(std::string index);
+        bool getBool(int index);
+        bool getBool(std::string index);
+        int getInt(int index);
+        int getInt(std::string index);
+        double getDouble(int index);
+        double getDouble(std::string index);
 
-	std::string getClob			(int index);
-	std::string getClob			(std::string index);
+        const std::string getString(int col);
+        const std::string getString(std::string col);
 
-	float 		getFloat		(int col);
-	float 		getFloat		(std::string col);
+        std::string getBlob(int index);
+        std::string getBlob(std::string index);
 
-	bool 		isNull			(int col);
-	bool 		isNull			(std::string col);
-    ResultSetMetaData * getResultSetMetaData();
-  private:
-	friend class Statement;
-	friend class PreparedStatement;
+        std::string getClob(int index);
+        std::string getClob(std::string index);
 
-	bool isBeforeFirst;
-	ResultSet(MYSQL_STMT & stmt);
-    Row row;
-};
-}}}
+        float getFloat(int col);
+        float getFloat(std::string col);
+
+        bool isNull(int col);
+        bool isNull(std::string col);
+        ResultSetMetaData * getResultSetMetaData();
+        ~ResultSet();
+
+      private:
+        friend class Statement;
+        friend class PreparedStatement;
+
+        bool isBeforeFirst;
+        ResultSet(MYSQL_STMT & stmt);
+        Row row;
+      };
+    }
+  }
+}
 #endif
 

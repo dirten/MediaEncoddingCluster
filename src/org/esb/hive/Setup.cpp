@@ -10,6 +10,8 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/StringTokenizer.h"
+
 using namespace org::esb;
 namespace org {
   namespace esb {
@@ -36,7 +38,14 @@ namespace org {
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
         sql::Connection con(config::Config::getProperty("db.connection"));
-        con.executeNonQuery(sql);
+        util::StringTokenizer st(sql,";");
+        while(st.hasMoreTokens()){
+          std::string next=st.nextToken();
+//          if(strlen(util::StringUtil::trim(next))>0){
+            logdebug(next<<" Create");
+            con.executeNonQuery(next);
+//          }
+        }
 
         //        logdebug(sql);
         //        fis.read(sql);

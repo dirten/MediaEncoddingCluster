@@ -6,6 +6,10 @@ namespace esb{
 namespace sql{
 /*******************************************************************************************************/
 ResultSet::ResultSet(MYSQL_STMT & stmt):row(&stmt){
+  logdebug("ResultSet::ResultSet(MYSQL_STMT & stmt):row(&stmt)");
+}
+ResultSet::~ResultSet(){
+  logdebug("ResultSet::~ResultSet()");
 }
 
 /*******************************************************************************************************/

@@ -12,16 +12,22 @@ namespace sql{
 Column::Column(MYSQL_BIND & b):bind(b){
 //  reserve(0);
   buffer=NULL;
+  length=0;
+  is_null=0;
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
-  _field=field;
-  name=std::string(field->name);
-  bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
+//  _field=field;
+//  name=std::string(field->name);
+ //  bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
+  bind.buffer_type=field->type;
   reserve(field->length);
 
 //  reserve(field->length>0x10000?0x10000:field->length);
+//  length=new unsigned long;
   length=0;
+  is_null=0;
+
 //  buffer=NULL;
 }
 
@@ -44,14 +50,13 @@ void Column::reserve(unsigned long size)
         bind.buffer_length = size;
         bind.length=&length;
 //        length=0;
-//        bind.is_null=&is_null;
+        bind.is_null=&is_null;
         bind.error=&error;
-//        is_null=0;
       }
     }
 
 std::string Column::getName(){
-  return _field->name;
+  return "";
 }
 
 std::string Column::getTableName(){
@@ -60,8 +65,9 @@ std::string Column::getTableName(){
 
 Column::~Column(){
       if(buffer)
-        delete[] buffer;
-//        delete[] static_cast<char*>(buffer);
+        delete[] static_cast<char*>(buffer);
+//        delete[] buffer;
+      //delete length;
 }
 
 bool Column::isNull()
@@ -311,7 +317,7 @@ double Column::getDouble(){
             return ret;
           }
           logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger").append(name).c_str());      
+          throw SqlException(std::string("type-error in getInteger").c_str());      
         }
           
         case MYSQL_TYPE_VAR_STRING:
@@ -330,7 +336,7 @@ double Column::getDouble(){
 
         default:
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger").append(name).c_str());
+          throw SqlException(std::string("type-error in getInteger").c_str());
 //          throw SqlException("type-error in getInteger");
       }
     }

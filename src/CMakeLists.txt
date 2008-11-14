@@ -7,7 +7,7 @@ include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
 include_directories (${WT_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
-include_directories (${MYSQL_INC_DIR})
+include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
 
@@ -21,7 +21,7 @@ LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 #LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
 #LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)
 LINK_DIRECTORIES(${X264_DIR}/lib)
-LINK_DIRECTORIES(${MYSQL_LIB_DIR})
+LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 #set(CMAKE_FIND_LIBRARY_PREFIXES lib)
@@ -55,7 +55,7 @@ target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)
-target_link_libraries (mhive mysqlclient wthttp wtext wt )
+target_link_libraries (mhive mysqlclient crypt ssl wthttp wtext wt )
 ENDIF(WIN32)
 
 target_link_libraries (mhive 

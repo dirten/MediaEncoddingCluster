@@ -9,7 +9,7 @@ class Parameter{
     Parameter(MYSQL_STMT * stmt){
       const int column_count=mysql_stmt_param_count(stmt);
       bind=new MYSQL_BIND[column_count];
-	  const int memsize=sizeof(MYSQL_BIND)*column_count;
+      const int memsize=sizeof(MYSQL_BIND)*column_count;
       memset(bind,0,memsize);
 
       for(int a=0;a<column_count;a++){

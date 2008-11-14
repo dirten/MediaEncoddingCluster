@@ -27,21 +27,25 @@ boost::mutex ClientHandler::unit_list_mutex;
 map<int, boost::shared_ptr<ProcessUnit> > ClientHandler::process_unit_list;
 
 ClientHandler::ClientHandler() {
+  logdebug("ClientHandler::ClientHandler()");
   _handler = JobHandler::getInstance();
   //    Connection con(Config::getProperty("db.connection"));
   _con = new Connection(Config::getProperty("db.connection"));
+//  Connection * _con2 = new Connection(Config::getProperty("db.connection"));
 
+  _stmt_ps = new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
 
   _stmt = new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
   //    _stmt_fr=new PreparedStatement(_con->prepareStatement("update frame_groups set complete = now() where frame_group=:fr and stream_id=:sid"));
   _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
   _stmt_pu = new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
-  _stmt_ps = new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
-  //    _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
+//  _stmt_ps2 = new Statement(_con2->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
+//    _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
 }
 
 ClientHandler::~ClientHandler() {
+  logdebug("ClientHandler::~ClientHandler()");
   delete _con;
   delete _stmt;
   delete _stmt_fr;
@@ -166,9 +170,10 @@ ProcessUnit ClientHandler::getProcessUnit2() {
 
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-  Connection con(Config::getProperty("db.connection"));
-  Statement stmt_ps = con.createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  ResultSet rs = stmt_ps.executeQuery();
+//  Connection con(Config::getProperty("db.connection"));
+
+//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  ResultSet rs = _stmt_ps->executeQuery();
 
   ProcessUnit u;
   if (rs.next()) {

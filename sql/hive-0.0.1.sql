@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS `config` (
   `config_val` varchar(255) NOT NULL,
   PRIMARY KEY  (`config_key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS `files` (
   `id` int(11) NOT NULL auto_increment,
   `filename` varchar(255) default NULL,
@@ -162,7 +161,5 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   `profile` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
+INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, 'admin', 'admin', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `version` (`id`, `component`, `version`) VALUES(1, 'database.model', '0.0.1');
-INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES
-(1, 'admin', 'admin', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00');

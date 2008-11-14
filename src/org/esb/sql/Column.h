@@ -55,7 +55,7 @@ namespace org {
                 template <typename c_type>
                 void setValue(c_type value, enum_field_types mysql_type);
 
-                std::string name;
+//                std::string name;
             };
 
         }

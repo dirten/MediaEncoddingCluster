@@ -194,7 +194,7 @@ void ctrlCHitWait() {
   sigaddset(&wait_mask2, SIGINT);
   sigaddset(&wait_mask2, SIGQUIT);
   sigaddset(&wait_mask2, SIGTERM);
-  //sigaddset(&wait_mask, SIGCHLD);
+  sigaddset(&wait_mask2, SIGCHLD);
   pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
   int sig = 0;
   //sigdelset(&wait_mask, SIGCHLD);
@@ -224,53 +224,13 @@ void client(int argc, char *argv[]) {
 
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", "stop"));
 
-
-//  client.connect();
-//  client.process();
-//  return;
-/*
-  cout << "Connecting to " << host << " on port " << port << endl;
-  TcpSocket sock((char*) host.c_str(), port);
-  sock.connect();
-  ObjectInputStream ois(sock.getInputStream());
-  ObjectOutputStream oos(sock.getOutputStream());
-  int pCount = 0;
-  while (true) {
-    while (true || ++pCount < 20) {
-      char * text = "get process_unit";
-      sock.getOutputStream()->write(text, strlen(text));
-      ProcessUnit unit;
-      ois.readObject(unit);
-      if (unit._input_packets.size() == 0)break;
-      //		try{
-      unit.process();
-      //		}catch(...){
-      //			logerror("Error in process");
-      //		}
-      char * text_out = "put process_unit";
-      sock.getOutputStream()->write(text_out, strlen(text_out));
-      oos.writeObject(unit);
-      //		break;
-    }
-    //    break;
-    org::esb::lang::Thread::sleep2(1000);
-  }
- */
 }
 
 /*----------------------------------------------------------------------------------------------*/
-bool main_nextLoop = true;
-
-
 
 void listener(int argc, char *argv[]) {
+  
   Setup::check();
-  /*
-    if (!checkEnvironment()) {
-      cout << "Fehler in der Configuration" << endl;
-      exit(1);
-    }
-   */
 
   /*
    *
