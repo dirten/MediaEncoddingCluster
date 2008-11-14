@@ -23,7 +23,7 @@ public:
 
   test() {
     con = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=");
-    pstmt1 = new PreparedStatement(con->prepareStatement("select id,filename,filename from files"));
+    pstmt1 = new PreparedStatement(con->prepareStatement("select id,filename,filename from files where id=:id"));
     pstmt2 = new PreparedStatement(con->prepareStatement("select * from files"));
     stmt1 = new Statement(con->createStatement("select * from files"));
     stmt2 = new Statement(con->createStatement("select * from files"));
@@ -46,7 +46,9 @@ public:
   }
 
   void execute1() {
+    pstmt1->setInt("id",1);
     ResultSet rs = pstmt1->executeQuery();
+
     while (rs.next()) {
 /*      rs.getString("id");
       rs.getString("filename");
@@ -147,13 +149,13 @@ int main() {
     logdebug("round:"<<a);
 
     /*
-    logdebug("t.execute1()");
-    t.execute1();
     logdebug("t.execute2()");
     t.execute2();
+ */
+    logdebug("t.execute1()");
+    t.execute1();
     logdebug("t.execute3()");
     t.execute3();
- */
     logdebug("t.execute4()");
     t.execute4();
     logdebug("t.execute5()");
