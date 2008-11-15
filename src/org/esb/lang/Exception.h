@@ -4,7 +4,7 @@
 #include <org/esb/lang/Throwable.h>
 #include <stdarg.h>
 #include <sstream>
-
+#undef BACKTRACE
 namespace org{
 namespace esb{
 namespace lang{
@@ -158,8 +158,9 @@ namespace lang{
     
    
         void buildMessage( const char* format, va_list& vargs );
-
+#ifdef BACKTRACE
         virtual const char * what()const throw();
+#endif
    };
 
 }}}

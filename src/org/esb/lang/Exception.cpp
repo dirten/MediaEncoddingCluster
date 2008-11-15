@@ -56,7 +56,7 @@ void Exception::setMark( const char* file, const int lineNumber ){
 
     //logger.log( stream.str() );    
 }
-
+#ifdef BACKTRACE
 #ifndef WIN32
 const char * Exception::what()const throw(){
     string msg= getStackTraceString();
@@ -83,5 +83,5 @@ const char * Exception::what()const throw(){
   return getStackTraceString().c_str();
 }
 #endif
-
+#endif
 

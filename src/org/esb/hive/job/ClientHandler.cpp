@@ -41,7 +41,7 @@ ClientHandler::ClientHandler() {
   _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
   _stmt_pu = new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
 //  _stmt_ps2 = new Statement(_con2->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1"));
-//    _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
+//   _stmt_test=_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
 }
 
 ClientHandler::~ClientHandler() {
@@ -170,23 +170,23 @@ ProcessUnit ClientHandler::getProcessUnit2() {
 
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-//  Connection con(Config::getProperty("db.connection"));
+  Connection con(Config::getProperty("db.connection"));
 
-//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  ResultSet rs = _stmt_ps->executeQuery();
+  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  ResultSet * rs = stmt_ps.executeQuery2();
 
   ProcessUnit u;
-  if (rs.next()) {
-    int64_t start_ts = rs.getDouble("start_ts");
-    int frame_count = rs.getInt("frame_count");
-    int stream_index = rs.getInt("stream_index");
+  if (rs->next()) {
+    int64_t start_ts = rs->getDouble("start_ts");
+    int frame_count = rs->getInt("frame_count");
+    int stream_index = rs->getInt("stream_index");
     logdebug("packing frame group with startts: "<<start_ts);
-    string filename = rs.getString("filename");
+    string filename = rs->getString("filename");
     //	  logdebug("filename "<<filename);
-    u._decoder = CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
-    u._encoder = CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
-    u._source_stream = rs.getInt("source_stream");
-    u._target_stream = rs.getInt("target_stream");
+    u._decoder = CodecFactory::getStreamDecoder(rs->getInt("source_stream"));
+    u._encoder = CodecFactory::getStreamEncoder(rs->getInt("target_stream"));
+    u._source_stream = rs->getInt("source_stream");
+    u._target_stream = rs->getInt("target_stream");
 
     //	  File file(filename.c_str());
     /*TODO build formatstream Factory, */
@@ -196,10 +196,10 @@ ProcessUnit ClientHandler::getProcessUnit() {
     int size = 0;
     Connection con2(Config::getProperty("db.connection"));
     PreparedStatement stmt_p = con2.prepareStatement("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
-    stmt_p.setDouble("sid", rs.getInt("source_stream"));
+    stmt_p.setDouble("sid", rs->getInt("source_stream"));
     stmt_p.setDouble("dts", start_ts);
     stmt_p.setDouble("limit", frame_count + 3);
-    logdebug("select * from packets where stream_id=" << rs.getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
+    logdebug("select * from packets where stream_id=" << rs->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
     ResultSet rs_p = stmt_p.executeQuery();
 
     for (int a = 0; rs_p.next();) {
@@ -226,12 +226,12 @@ ProcessUnit ClientHandler::getProcessUnit() {
        */
       size += p->packet->size;
     }
-    u._process_unit = rs.getInt("u.id");
-    Connection con(Config::getProperty("db.connection"));
-    PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
-    pstmt.setInt("id", rs.getInt("u.id"));
-    pstmt.execute();
-    //	  logdebug("update process_units set send = now() where id=:id:"<<rs.getInt("u.id"));
+    u._process_unit = rs->getInt("u.id");
+//    Connection con(Config::getProperty("db.connection"));
+//    PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
+    _stmt_pu->setInt("id", rs->getInt("u.id"));
+    _stmt_pu->execute();
+    //	  logdebug("update process_units set send = now() where id=:id:"<<rs->getInt("u.id"));
 
     	  logdebug("packing frame group  with size:"<<size<<" !!!");
 

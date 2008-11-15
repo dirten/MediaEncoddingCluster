@@ -8,6 +8,8 @@
 #include "ResultSetMetaData.h"
 #include "my_sql.h"
 #include "org/esb/util/Log.h"
+
+#include <boost/shared_ptr.hpp>
 namespace org {
   namespace esb {
     namespace sql {
@@ -47,7 +49,8 @@ namespace org {
 
         bool isBeforeFirst;
         ResultSet(MYSQL_STMT & stmt);
-        Row row;
+//        Row row;
+        boost::shared_ptr<Row> _rowPtr;
       };
     }
   }

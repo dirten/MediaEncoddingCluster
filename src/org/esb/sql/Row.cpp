@@ -26,10 +26,12 @@ namespace org {
           memset(bind, 0, sizeof (MYSQL_BIND) * count);
 
           for (int a = 0; a < count; a++) {
-            Column *col = new Column(rsmd->getColumn(a), bind[a]);
-            cols[std::string(rsmd->getColumn(a)->name)] = col;
-            fqncols[std::string(rsmd->getColumn(a)->table).append(".").append(rsmd->getColumn(a)->name)] = col;
-            idx2name[a] = std::string(rsmd->getColumn(a)->table).append(".").append(rsmd->getColumn(a)->name);
+            MYSQL_FIELD * f=rsmd->getColumn(a);
+            Column * col = new Column(f, bind[a]);
+            cols[std::string(f->name)] = col;
+            fqncols[std::string(f->table).append(".").append(f->name)] = col;
+            idx2name[a] = std::string(f->table).append(".").append(f->name);
+//            delete f;
           }
           if (mysql_stmt_bind_result(stmt, bind)) {
             throw SqlException(std::string("failed while bind the result: ").append(mysql_stmt_error(stmt)));
@@ -82,6 +84,8 @@ namespace org {
           }
           delete []bind;
           cols.clear();
+          fqncols.clear();
+          idx2name.clear();
           std::cerr<<"Row Object deleted "<<std::endl;
 
         }

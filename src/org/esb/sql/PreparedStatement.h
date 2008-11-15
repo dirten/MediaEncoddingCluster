@@ -39,13 +39,14 @@ namespace org {
         int executeUpdate();
         bool execute();
         ResultSet executeQuery();
+        ResultSet *executeQuery2();
         void close(void);
       private:
         Parameter * para;
         void parseSql(const char *);
         map<int, Column*> col_vars;
         map<std::string, int> vars;
-
+        ResultSet * rs;
 //        MYSQL_STMT *stmt;
         boost::shared_ptr<MYSQL_STMT> stmtPtr;
         //				  char * psql;

@@ -33,10 +33,12 @@ namespace org {
         _halt = true;
         _interval = interval;
         _dir = dir;
+        th=NULL;
       }
 
       DirectoryScanner::DirectoryScanner() {
         _halt = true;
+        th=NULL;
       }
 
       DirectoryScanner::~DirectoryScanner() {
@@ -63,9 +65,11 @@ namespace org {
           if (msg.getProperty("directoryscan") == "stop") {
           _halt = true;
           //#if BOOST_VERSION > 103500
-          th->interrupt();
-          delete th;
-          th=0;
+          if(th){
+            th->interrupt();
+            delete th;
+            th=NULL;
+          }
           //#endif
           logdebug("Directory Scanner stopped:");
         }

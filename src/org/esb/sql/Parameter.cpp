@@ -31,11 +31,12 @@ class Parameter{
     }
 
     ~Parameter(){
-      delete []bind;
+      
       std::map<int, Column*>::iterator it=cols.begin();
       for(;it!=cols.end();it++){
-        delete (*it).second;
+        delete static_cast<Column*>((*it).second);
       }
+      delete []bind;
       cols.clear();
     }
 //  private:

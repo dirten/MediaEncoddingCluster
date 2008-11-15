@@ -5,7 +5,7 @@
 using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s) {
-
+  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)");
   stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(&mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
     throw SqlException("mysql_stmt_init(), out of memory");
@@ -16,10 +16,13 @@ PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s) {
     //    throw SqlException( mysql_stmt_error(stmt));
   }
   para = new Parameter(stmtPtr.get());
+  rs=0;
 }
 
 PreparedStatement::~PreparedStatement() {
+  logdebug("PreparedStatement::~PreparedStatement()");
   delete para;
+  delete rs;
 //  close();
 }
 
@@ -64,7 +67,22 @@ ResultSet PreparedStatement::executeQuery() {
       }
    */
   execute();
-  return ResultSet(*stmtPtr.get());
+  if(!rs){
+    rs=new ResultSet(*stmtPtr.get());
+  }
+  return *rs;
+}
+ResultSet * PreparedStatement::executeQuery2() {
+  /*
+      if (mysql_stmt_bind_param(stmt, para->bind)){
+        throw SqlException( mysql_stmt_error(stmt));
+      }
+   */
+  execute();
+  if(!rs){
+    rs=new ResultSet(*stmtPtr.get());
+  }
+  return rs;
 }
 
 int PreparedStatement::executeUpdate() {

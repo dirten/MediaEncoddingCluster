@@ -49,9 +49,9 @@ namespace org {
            * Send length from buffer
            */
 
-          char * size = new char[10];
-          sprintf(size, "%010d", len);
-          boost::asio::write(*_socket, boost::asio::buffer(size, 10));
+          char size[11];
+          sprintf((char*)&size, "%010d", len);
+          boost::asio::write(*_socket, boost::asio::buffer(&size, 10));
 //          logdebug("sended size: "<<size);
           /*
            * Send buffer

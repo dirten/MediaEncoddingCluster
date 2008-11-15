@@ -83,11 +83,13 @@ void ProtocolServer::run() {
           tmp->printHelp();
         }
       }
+
     } catch (exception & ex) {
       logerror("ERROR in ProtocolServer:" << ex.what());
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
+ 
   }
   //	cout << "Elvis has left the Building" << endl;
 }

@@ -22,6 +22,7 @@ namespace org {
         Statement(MYSQL * mysql, const char * sql);
         ~Statement();
         ResultSet executeQuery();
+        ResultSet * executeQuery2();
         ResultSet executeQuery(char *);
         bool execute();
         void close();
@@ -32,6 +33,7 @@ namespace org {
         std::map<std::string, int> vars;
       private:
         std::string sql;
+        ResultSet * rs;
 
       };
     }

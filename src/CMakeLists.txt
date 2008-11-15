@@ -24,6 +24,8 @@ LINK_DIRECTORIES(${X264_DIR}/lib)
 LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+ADD_DEFINITIONS(-O0)
+ADD_DEFINITIONS(-g)
 #set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 #set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 
@@ -55,7 +57,7 @@ target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)
-target_link_libraries (mhive mysqlclient crypt ssl wthttp wtext wt )
+target_link_libraries (mhive mysqld crypt ssl wthttp wtext wt )
 ENDIF(WIN32)
 
 target_link_libraries (mhive 

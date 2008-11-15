@@ -4,7 +4,7 @@
 
 using namespace org::esb::sql;
 
-Statement::Statement(MYSQL * mysql, const char * s) {
+Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
   logdebug("Statement::Statement(MYSQL * mysql, const char * s)");
 //  stmt=mysql_stmt_init(mysql);
   stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
@@ -15,16 +15,27 @@ Statement::Statement(MYSQL * mysql, const char * s) {
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(" " + sql));
   }
+  
 }
 
 Statement::~Statement() {
   logdebug("Statement::~Statement()");
+  delete rs;
 //  close();
 }
 
 ResultSet Statement::executeQuery() {
   execute();
-  return ResultSet(*stmtPtr.get());
+  if(!rs)
+    rs=new ResultSet(*stmtPtr.get());
+  return *rs;
+}
+
+ResultSet * Statement::executeQuery2() {
+  execute();
+  if(!rs)
+    rs=new ResultSet(*stmtPtr.get());
+  return rs;
 }
 
 ResultSet Statement::executeQuery(char* tmp) {

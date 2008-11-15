@@ -22,13 +22,15 @@ class test {
 public:
 
   test() {
-    con = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=");
+    con = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=root");
     pstmt1 = new PreparedStatement(con->prepareStatement("select id,filename,filename from files where id=:id"));
     pstmt2 = new PreparedStatement(con->prepareStatement("select * from files"));
     stmt1 = new Statement(con->createStatement("select * from files"));
     stmt2 = new Statement(con->createStatement("select * from files"));
     pstmt3 = new PreparedStatement(con->prepareStatement("insert into files( filename)values(:value)"));
     pstmt4 = new PreparedStatement(con->prepareStatement("insert into files( filename)values(:value)"));
+    pstmt5 = new PreparedStatement(con->prepareStatement("update files set filename=:value where id=:id"));
+//    pstmt6 = new PreparedStatement(con->prepareStatement("insert into files( filename)values(:value)"));
     stmt3 = new Statement(con->createStatement("insert into files( filename)values('testfilename-stmt3')"));
     stmt4 = new Statement(con->createStatement("insert into files( filename)values('testfilename-stmt3')"));
   }
@@ -47,55 +49,56 @@ public:
 
   void execute1() {
     pstmt1->setInt("id",1);
-    ResultSet rs = pstmt1->executeQuery();
+    ResultSet * rs = pstmt1->executeQuery2();
 
-    while (rs.next()) {
-/*      rs.getString("id");
-      rs.getString("filename");
-      rs.getString(2);
- */
+    while (rs->next()) {
+      rs->getString("id");
+      rs->getString("filename");
+      rs->getString(2);
+ 
 //      cout << "ID:" << rs.getString("id") << "Component:" << rs.getString("filename") << "\tversion:" << rs.getString(2) << endl;
     }
   }
 
   void execute2() {
-    ResultSet rs = pstmt2->executeQuery();
-    while (rs.next()) {
-/*      rs.getString("id");
-      rs.getString("filename");
-      rs.getString(2);
- */
+    ResultSet * rs = pstmt2->executeQuery2();
+    while (rs->next()) {
+      rs->getString("id");
+      rs->getString("filename");
+      rs->getString(2);
+ 
 //      cout << "ID:" << rs.getString("id") << "Component:" << rs.getString("filename") << "\tversion:" << rs.getString(2) << endl;
     }
   }
   void execute3() {
-    ResultSet rs = stmt1->executeQuery();
-    while (rs.next()) {
+    ResultSet * rs = stmt1->executeQuery2();
+    while (rs->next()) {
       
-      std::string tmp1=rs.getString("id");
-      std::string tmp2=rs.getString("filename");
-      std::string tmp3=rs.getString(2);
+      std::string tmp1=rs->getString("id");
+      std::string tmp2=rs->getString("filename");
+      std::string tmp3=rs->getString(2);
  
 //      cout << "ID:" << rs.getString("id") << "Component:" << rs.getString("filename") << "\tversion:" << rs.getString(2) << endl;
     }
   }
   void execute4() {
-    ResultSet rs = stmt2->executeQuery();
-    while (rs.next()) {
-/*      rs.getString("id");
-      rs.getString("filename");
-      rs.getString(2);
- */
+    ResultSet *rs = stmt2->executeQuery2();
+    while (rs->next()) {
+      rs->getString("id");
+      rs->getString("filename");
+      rs->getString(2);
+ 
 //      cout << "ID:" << rs.getString("id") << "Component:" << rs.getString("filename") << "\tversion:" << rs.getString(2) << endl;
     }
   }
-  void execute5() {
-    pstmt3->setString("value","testfilename-pstmt3");
+  void execute5(int val) {
+//    pstmt3->setString("value","testfilename-pstmt3");
+    pstmt3->setInt("value",val);
     pstmt3->execute();
   }
 
   void execute6() {
-    pstmt3->setString("value","testfilename-pstmt4");
+    pstmt4->setString("value","testfilename-pstmt4");
     pstmt4->execute();
   }
   void execute7() {
@@ -110,10 +113,10 @@ public:
     ResultSet rs=pst->executeQuery();
     
     while (rs.next()) {
- /*     rs.getString("id");
+      rs.getString("id");
       rs.getString("filename");
       rs.getString(2);
- */
+ 
     }
     delete pst;
   }
@@ -129,6 +132,11 @@ public:
     }
     delete pst;
   }
+  void execute11() {
+    pstmt5->setInt("value",1);
+    pstmt5->setInt("id",1);
+    pstmt5->execute();
+  }
 private:
   Connection * con;
   PreparedStatement * pstmt1;
@@ -138,6 +146,7 @@ private:
 
   PreparedStatement * pstmt3;
   PreparedStatement * pstmt4;
+  PreparedStatement * pstmt5;
   Statement * stmt3;
   Statement * stmt4;
 
@@ -145,21 +154,21 @@ private:
 
 int main() {
   test t;
-  for(int a=0;a<100;a++){  
+  for(int a=0;a<10;a++){  
     logdebug("round:"<<a);
 
     /*
-    logdebug("t.execute2()");
-    t.execute2();
  */
     logdebug("t.execute1()");
     t.execute1();
+    logdebug("t.execute2()");
+    t.execute2();
     logdebug("t.execute3()");
     t.execute3();
     logdebug("t.execute4()");
     t.execute4();
     logdebug("t.execute5()");
-    t.execute5();
+    t.execute5(a);
     logdebug("t.execute6()");
     t.execute6();
     logdebug("t.execute7()");
@@ -170,8 +179,10 @@ int main() {
     t.execute9();
     logdebug("t.execute10()");
     t.execute10();
+    logdebug("t.execute11()");
+    t.execute11();
   }
-
+  exit(0);
 //  t.execute1();
   //  Debug( libcw_do.on() );               // Turn on the default Debug Object.
   //	 Debug( core_dump() );
@@ -197,8 +208,8 @@ int main() {
   //	delete tmp;
   char * tmp_c;
   string tmp;
-Connection *con2 = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=");
-Connection con("mysql:db=hive2;host=localhost;user=root;passwd=");
+Connection *con2 = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=root");
+Connection con("mysql:db=hive2;host=localhost;user=root;passwd=root");
   /*
     Connection con("mysql:db=hive2;host=localhost;user=root;passwd=");
     Connection *con2 = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=");
