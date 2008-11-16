@@ -1,11 +1,12 @@
 #include "Connection.h"
 #include "Statement.h"
 #include "ResultSet.h"
+//#include "org/esb/util/Log.h"
 
 using namespace org::esb::sql;
 
 Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
-  logdebug("Statement::Statement(MYSQL * mysql, const char * s)");
+//  logdebug("Statement::Statement(MYSQL * mysql, const char * s)");
 //  stmt=mysql_stmt_init(mysql);
   stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
@@ -19,7 +20,7 @@ Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
 }
 
 Statement::~Statement() {
-  logdebug("Statement::~Statement()");
+//  logdebug("Statement::~Statement()");
   delete rs;
 //  close();
 }

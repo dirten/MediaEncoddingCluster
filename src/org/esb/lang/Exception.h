@@ -39,6 +39,12 @@ namespace lang{
         Exception( const Exception& ex ){
             *this = ex;
         }
+        Exception( const char * msg ){
+            
+        }
+		Exception( const std::string & msg ){
+            
+        }
        
         /**
          * Constructor - Initializes the file name and line number where

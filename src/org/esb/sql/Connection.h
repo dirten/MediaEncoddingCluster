@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_SQL_CONNECTION_H
 #define ORG_ESB_SQL_CONNECTION_H
-#include "org/esb/util/Log.h"
+
 #include "SqlException.h"
 #include <string>
 #include "my_sql.h"
@@ -13,7 +13,6 @@ namespace org {
       class Statement;
 
       class Connection {
-        logger("hive.sql.Connection")
       public:
         Connection(const char * con);
         Connection(std::string host, std::string db, std::string user, std::string pass);
@@ -36,9 +35,9 @@ namespace org {
         std::string _db;
         boost::shared_ptr<MYSQL> mysqlPtr;
 //        MYSQL * mysql;
-      private:
-        friend class Setup;
         void parseConnectionString(std::string &constr);
+      private:
+//		  friend class org::esb::hive::Setup;
         static int _staticCounter;
       };
     }

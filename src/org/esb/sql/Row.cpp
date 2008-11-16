@@ -1,17 +1,12 @@
-#include <map>
 #include <string>
+#include "Row.h"
+#include <map>
 #include <iostream>
-#ifdef MSVC
-#include <my_global.h>
-#endif
 
-//#include <my_global.h>
-#include <mysql.h>
-
-//#include "Column.h"
+#include "Column.h"
 #include "ResultSetMetaData.h"
 #include "SqlException.h"
-#include "Row.h"
+
 
 namespace org {
   namespace esb {

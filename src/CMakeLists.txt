@@ -8,6 +8,7 @@ include_directories (${WT_DIR})
 include_directories (${WT_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_DIR}/include/mysql)
+include_directories (${MYSQL_INC_DIR})
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
 
@@ -22,10 +23,11 @@ LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 #LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)
 LINK_DIRECTORIES(${X264_DIR}/lib)
 LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
+LINK_DIRECTORIES(${MYSQL_LIB_DIR})
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
-ADD_DEFINITIONS(-O0)
-ADD_DEFINITIONS(-g)
+#ADD_DEFINITIONS(-O0)
+#ADD_DEFINITIONS(-g)
 #set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 #set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 
@@ -53,11 +55,11 @@ FIND_LIBRARY(AVFORMAT_LIB
 
 add_executable (mhive Hive.cpp)
 
-target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 pthread)
+target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 )
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 libmysql wtd wtextd wthttpd)
 ELSE(WIN32)
-target_link_libraries (mhive mysqld crypt ssl wthttp wtext wt )
+target_link_libraries (mhive mysqld crypt ssl wthttp wtext wt pthread)
 ENDIF(WIN32)
 
 target_link_libraries (mhive 

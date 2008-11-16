@@ -6,7 +6,6 @@
 
 #include "my_sql.h"
 #include "SqlException.h"
-#include "org/esb/util/Log.h"
 
 #include <boost/shared_ptr.hpp>
 //using namespace std;
@@ -17,7 +16,7 @@ namespace org {
       class ResultSet;
 
       class Statement {
-        logger("hive.sql.Statement")
+        
       public:
         Statement(MYSQL * mysql, const char * sql);
         ~Statement();

@@ -58,7 +58,7 @@ void Config::init(char * filename) {
       properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
   }
   }catch(SqlException & ex){
-    logerror("cant load configuration from database");
+//    logerror("cant load configuration from database");
   }
 }
 

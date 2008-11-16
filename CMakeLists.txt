@@ -2,7 +2,7 @@ project (MEC)
 
 
 
-SET(BUILD_SHARED_LIBS OFF)
+#SET(BUILD_SHARED_LIBS OFF)
 
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
 
@@ -157,7 +157,7 @@ SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
-
+ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 #IF(NOT BOOST_WT_FOUND)
 #  MESSAGE("** Error finding Wt required library: ")
 #  MESSAGE("** Could not find a boost installation in " ${BOOST_DIR} ".")

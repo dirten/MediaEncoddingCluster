@@ -4,17 +4,19 @@
  *
  * Created on 6. November 2008, 16:12
  */
+#ifndef _ROW_H
+#define	_ROW_H
+//#include "Column.h"
+
+#include "my_sql.h"
 
 #include <map>
 
-#include "my_sql.h"
 #include "ResultSetMetaData.h"
-#include "Column.h"
-#ifndef _ROW_H
-#define	_ROW_H
 namespace org {
   namespace esb {
     namespace sql {
+		class Column;
       class Row {
       public:
         Row(MYSQL_STMT * stmt) ;

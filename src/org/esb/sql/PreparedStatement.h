@@ -3,7 +3,7 @@
 #include <string>
 #include "Connection.h"
 #include "ResultSet.h"
-#include "org/esb/util/Log.h"
+
 //#include "tntdb/statement.h"
 //#include "ResultSet.h"
 //#include "ResultSet.h"
@@ -23,7 +23,7 @@ namespace org {
       class ResultSet;
 
       class PreparedStatement {
-        logger("hive.sql")
+        
       public:
         PreparedStatement(MYSQL & mysql, const char * sql);
         //				    PreparedStatement(mysqlpp::Query stmt);

@@ -1,13 +1,12 @@
 #ifndef ORG_ESB_SQL_RESULTSET_H
 #define ORG_ESB_SQL_RESULTSET_H
 
+#include "my_sql.h"
 
 #include "Statement.h"
 #include "PreparedStatement.h"
 #include "Row.h"
 #include "ResultSetMetaData.h"
-#include "my_sql.h"
-#include "org/esb/util/Log.h"
 
 #include <boost/shared_ptr.hpp>
 namespace org {
@@ -42,13 +41,13 @@ namespace org {
         bool isNull(std::string col);
         ResultSetMetaData * getResultSetMetaData();
         ~ResultSet();
+        ResultSet(MYSQL_STMT & stmt);
 
       private:
-        friend class Statement;
-        friend class PreparedStatement;
+//        friend class Statement;
+//        friend class PreparedStatement;
 
         bool isBeforeFirst;
-        ResultSet(MYSQL_STMT & stmt);
 //        Row row;
         boost::shared_ptr<Row> _rowPtr;
       };

@@ -3,6 +3,7 @@
 #include "org/esb/util/Date.h"
 #include "org/esb/util/HTime.h"
 #include "org/esb/util/Datetime.h"
+#include "SqlException.h"
 #include <iostream>
 using namespace org::esb::util;
 namespace org{
@@ -316,7 +317,7 @@ double Column::getDouble(){
             int_type ret = decimal.getInteger<int_type>();
             return ret;
           }
-          logerror("type-error in getInteger, type=" << bind.buffer_type);
+//          logerror("type-error in getInteger, type=" << bind.buffer_type);
           throw SqlException(std::string("type-error in getInteger").c_str());      
         }
           

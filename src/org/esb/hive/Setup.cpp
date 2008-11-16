@@ -84,8 +84,8 @@ namespace org {
           sql::Statement stmt = con.createStatement("SELECT * FROM version WHERE component='database.model'");
           sql::ResultSet rs = stmt.executeQuery();
           if ((!rs.next()) || rs.getString("version") != version) {
-            logerror("Database Version mismatch");
-            logerror("you must upgrade from version "<<rs.getString("version")<< " to "<<version);
+//            logerror("Database Version mismatch");
+//            logerror("you must upgrade from version "<<rs.getString("version")<< " to "<<version);
             if(yesNoQuestion("do you want to Upgrade Database from version "+rs.getString("version")+" to "+version+" now?")){
               buildDatabaseModel("../sql/hive-upgrade-"+version+".sql");
             }

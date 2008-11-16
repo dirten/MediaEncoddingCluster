@@ -1,7 +1,7 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
 #include "Connection.h"
-
+#include "org/esb/util/Log.h"
 #include "Statement.h"
 #include "PreparedStatement.h"
 

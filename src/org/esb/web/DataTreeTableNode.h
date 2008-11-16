@@ -4,14 +4,14 @@
  *
  * Created on 6. Oktober 2008, 15:13
  */
+
+#ifndef _DATATREETABLENODE_H
+#define	_DATATREETABLENODE_H
 #include <Wt/WTreeTableNode>
 #include <Wt/WIconPair>
 #include <Wt/WInteractWidget>
 #include <Wt/WWebWidget>
 #include "org/esb/sql/ResultSet.h"
-
-#ifndef _DATATREETABLENODE_H
-#define	_DATATREETABLENODE_H
 namespace org {
     namespace esb {
         namespace web {

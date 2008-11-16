@@ -230,7 +230,7 @@ void client(int argc, char *argv[]) {
 
 void listener(int argc, char *argv[]) {
   
-  Setup::check();
+//  Setup::check();
 
   /*
    *

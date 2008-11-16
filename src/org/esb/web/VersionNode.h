@@ -8,18 +8,18 @@
 
 #ifndef _VERSIONNODE_H
 #define	_VERSIONNODE_H
+//#include "org/esb/sql/ResultSet.h"
 
 #include <Wt/WTreeTableNode>
 #include <Wt/WIconPair>
 
-#include "org/esb/sql/ResultSet.h"
 
 namespace org {
     namespace esb {
         namespace web {
             class VersionNode : public Wt::WTreeTableNode {
             public:
-                VersionNode( org::esb::sql::ResultSet & rs);
+//                VersionNode( org::esb::sql::ResultSet & rs);
 
             private:
                 //! Reimplements WTreeNode::populate to read files within a directory.

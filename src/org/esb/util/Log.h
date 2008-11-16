@@ -1,16 +1,13 @@
+#define DUMMY
 #ifndef ORG_ESB_UTIL_LOGGER_H
 #define ORG_ESB_UTIL_LOGGER_H
 //#include "cxxtools/log.h"
 //#include "cxxtools/loginit.h"
 //#include "boost/date_time/gregorian/gregorian.hpp"
 //#include <boost/logging/format_fwd.hpp>
-#include <iostream>
-#include "Datetime.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
+//#include "Datetime.h"
 
 
-using namespace boost::posix_time;
-using namespace boost::gregorian;
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
 #define logfatal(o1)loglevel(o1, "fatal")/*log_fatal(o1)*/
@@ -18,13 +15,23 @@ using namespace boost::gregorian;
 #define logwarn(o1)loglevel(o1, "warn")/*log_warn(o1)*/
 #define loginfo(o1)loglevel(o1, "info")/*log_info(o1)*/
 #define logdebug(o1)loglevel(o1, "debug")/*log_debug(o1)*/
+#ifndef DUMMY 
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include <iostream>
+using namespace boost::posix_time;
+using namespace boost::gregorian;
 
 #define loglevel(o1,level) {\
   ptime now = microsec_clock::local_time(); \
   date today = now.date(); \
   std::cout<<"["<<to_simple_string(now)<<"] ["<<level<<"]" << o1<<std::endl; \
 }
-
+#else
+#include <iostream>
+#define loglevel(o1,level) {\
+	std::cout<< "[ "<<level<< "]" << o1<<std::endl; \
+}
+#endif
 #endif
 
 

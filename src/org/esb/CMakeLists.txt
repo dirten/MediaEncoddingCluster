@@ -76,6 +76,7 @@ add_library (net net/SocketException.cpp
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 include_directories (${MYSQL_DIR}/include/mysql)
+include_directories (${MYSQL_INC_DIR})
 add_library (sql sql/Column.cpp 
       sql/Connection.cpp 
       sql/Statement.cpp 
@@ -121,8 +122,8 @@ add_library (web web/WebServer.cpp
     web/SqlTable.cpp
     web/FileTreeTable.cpp
     web/FileTreeTableNode.cpp
-    web/DataTreeTable.cpp
-    web/DataTreeTableNode.cpp
+#    web/DataTreeTable.cpp
+#    web/DataTreeTableNode.cpp
     web/VersionNode.cpp
     web/FileNode.cpp
     web/SqlUtil.cpp

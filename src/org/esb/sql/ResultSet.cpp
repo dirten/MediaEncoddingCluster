@@ -1,5 +1,7 @@
-#include "ResultSet.h"
 #include "Column.h"
+#include "ResultSet.h"
+
+//#include "org/esb/util/Log.h"
 
 namespace org{
 namespace esb{
@@ -7,10 +9,10 @@ namespace sql{
 /*******************************************************************************************************/
 ResultSet::ResultSet(MYSQL_STMT & stmt){
   _rowPtr=boost::shared_ptr<Row>(new Row(&stmt));
-  logdebug("ResultSet::ResultSet(MYSQL_STMT & stmt):row(&stmt)");
+//  logdebug("ResultSet::ResultSet(MYSQL_STMT & stmt):row(&stmt)");
 }
 ResultSet::~ResultSet(){
-  logdebug("ResultSet::~ResultSet()");
+//  logdebug("ResultSet::~ResultSet()");
 }
 
 /*******************************************************************************************************/

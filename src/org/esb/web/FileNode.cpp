@@ -2,21 +2,23 @@
 #include <Wt/WStringUtil>
 #include <Wt/WText>
 
+#include "org/esb/util/Log.h"
+/*
 #include "org/esb/config/config.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
-
+*/
 namespace org {
     namespace esb {
         namespace web {
-
+/*
             FileNode::FileNode(org::esb::sql::ResultSet & rs)
             : WTreeTableNode(Wt::widen(rs.getString("filename")), createIcon(rs.getInt("type"))),_id(rs.getInt("id")),_parentid(rs.getInt("parent")) {
 //              label()->setFormatting(Wt::WText::PlainFormatting);
               Wt::WTreeTableNode::setStyleClass("datatreenode");
 //              this->selected.connect(SLOT(this, DataTreeTableNode::selectAction));
             }
-            
+*/            
             FileNode::FileNode(const std::string & name, const int type, const int parentid)
             : WTreeTableNode(Wt::widen(name), createIcon(type)),_id(parentid) {
 //              label()->setFormatting(Wt::WText::PlainFormatting);
