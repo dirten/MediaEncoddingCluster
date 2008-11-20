@@ -168,7 +168,7 @@ Wt::WWidget * createDbConfigPage(){
     }
 
     void saveConfig(){
-      io::File file("config.txt");
+      io::File file(Config::getProperty("config.file"));
       io::FileOutputStream fos(&file);
       props.setProperty("host",elements["host"]->text().narrow());
       props.setProperty("user",elements["user"]->text().narrow());

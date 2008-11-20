@@ -1,4 +1,11 @@
 
+SET(SQL_VERSION_SERIES 0)
+SET(SQL_VERSION_MAJOR 0)
+SET(SQL_VERSION_MINOR 1)
+
+SET(WEB_VERSION_SERIES 0)
+SET(WEB_VERSION_MAJOR 0)
+SET(WEB_VERSION_MINOR 1)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
@@ -87,6 +94,11 @@ add_library (sql sql/Column.cpp
       sql/ConnectionManager.cpp
       sql/Row.cpp
 )
+SET_TARGET_PROPERTIES(sql
+PROPERTIES
+  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
+  DEBUG_POSTFIX "d"
+)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
 add_library (hive hive/Command.cpp 
@@ -127,7 +139,16 @@ add_library (web web/WebServer.cpp
     web/VersionNode.cpp
     web/FileNode.cpp
     web/SqlUtil.cpp
+    web/Setup.cpp
+    web/wtk/Div.cpp
+    web/wtk/ContentBox.cpp
 )
+SET_TARGET_PROPERTIES(web
+PROPERTIES
+  VERSION ${WEB_VERSION_SERIES}.${WEB_VERSION_MAJOR}.${WEB_VERSION_MINOR}
+  DEBUG_POSTFIX "d"
+)
+
 #TARGET_LINK_LIBRARIES(web wt wtext wthttp)
 #TARGET_LINK_LIBRARIES(sql mysqlclient)
 

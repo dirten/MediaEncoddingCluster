@@ -31,6 +31,10 @@ namespace org {
     namespace web {
 
       WebApp::WebApp(const Wt::WEnvironment & env) : WApplication(env) {
+        if(string(org::esb::config::Config::getProperty("hive.mode"))=="setup"){
+          WApplication::instance()->redirect("/setup");
+          WApplication::instance()->quit();
+        }
         setTitle("Hive Webadmin");
         _isAuthenticated = false;
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
@@ -70,8 +74,9 @@ namespace org {
 
         currentExample_ = login = new Login(exampleContainer_);
         login->authenticated.connect(SLOT(this, WebApp::authenticated));
-        useStyleSheet("ext/resources/css/xtheme-gray.css");
+//        useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("filetree.css");
+        messageResourceBundle().use("../messages",false);
 
       }
 
@@ -103,6 +108,9 @@ namespace org {
         Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
         node->label()->setFormatting(Wt::WText::PlainFormatting);
         node->label()->clicked.connect(this, f);
+        node->labelIcon()->icon1Clicked.connect(this, f);
+        node->labelIcon()->icon2Clicked.connect(this, f);
+        node->labelIcon()->setStyleClass("licon");
         node->setSelectable(true);
         return node;
       }

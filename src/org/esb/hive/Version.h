@@ -2,12 +2,11 @@
 namespace org{
 namespace esb{
 namespace hive{
-  const char * MODULE_NAME="hive";
+  const char * MODULE_NAME="libhive";
   const char * MODULE_INFO="Technical Preview";
-  enum MODULE_VERSION{
-    MAJOR=0,
-    MINOR=0,
-    PATCH=1
-  };
+  const short MAJOR_VERSION=0;
+  const short MINOR_VERSION=0;
+  const short PATCH_VERSION=1;
+//  const char * VERSION_STRING=MODULE_NAME+"("+MODULE_INFO+")";
 }}}
 

@@ -8,7 +8,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include "Version.h"
+//#include "Version.h"
 namespace org {
   namespace esb {
     namespace hive {

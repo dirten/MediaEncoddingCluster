@@ -28,5 +28,5 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 add_executable (test_sql test_sql.cpp)
 add_executable (test_mysql test_mysql.cpp)
-target_link_libraries (test_sql sql util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT}) 
+target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT}) 
 target_link_libraries (test_mysql mysqlclient crypt ssl pthread ) 

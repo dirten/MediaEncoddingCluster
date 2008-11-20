@@ -24,6 +24,7 @@
 #include "Environment.cpp"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/Setup.h"
+#include "org/esb/hive/Version.h"
 
 
 #include "org/esb/util/Decimal.h"
@@ -67,7 +68,7 @@ int main(int argc, char * argv[]) {
   po::options_description gen("general options");
   gen.add_options()
       ("help", "produce this message")
-      ("config,c", po::value<std::string > ()->default_value("/etc/hive.conf"), "use Configuration")
+      ("config,c", po::value<std::string > ()->default_value(".hive.cfg"), "use Configuration File")
       ("version,v", "Prints the Version")
       ;
 
@@ -112,6 +113,7 @@ int main(int argc, char * argv[]) {
   }
   if (vm.count("version")) {
     cout << "MediaEncodingCluster V.-0.0.1" << endl;
+//    cout << org::esb::hive::VERSION_STRING<< endl;
     cout << LIBAVCODEC_IDENT << endl;
     cout << LIBAVFORMAT_IDENT << endl;
     cout << LIBAVUTIL_IDENT << endl;
@@ -125,9 +127,16 @@ int main(int argc, char * argv[]) {
 
 
   if (vm.count("server")) {
+    Config::setProperty("hive.mode", "server");
     if(vm.count("database"))
       Config::setProperty("db.connection", vm["database"].as<std::string > ().c_str());
-    Config::init((char*) vm["config"].as<std::string > ().c_str());
+    try{
+      Config::init((char*) vm["config"].as<std::string > ().c_str());
+    }catch(Exception & ex){
+      cout << "Could not open Configuration "<<vm["config"].as<std::string > ()<<endl;
+      Config::setProperty("hive.mode", "setup");
+    }
+    Config::setProperty("config.file", vm["config"].as<std::string > ().c_str());
     Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
     if(vm.count("web"))
       Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
@@ -263,7 +272,8 @@ void listener(int argc, char *argv[]) {
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", "start"));
   }
 
-  if (string(Config::getProperty("web.start")) == "true"){
+  if (string(Config::getProperty("web.start")) == "true"||
+      string(Config::getProperty("hive.mode")) == "setup"){
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", "start"));
   }
 

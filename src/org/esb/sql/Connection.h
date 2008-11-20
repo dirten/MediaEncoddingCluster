@@ -4,7 +4,7 @@
 #include "SqlException.h"
 #include <string>
 #include "my_sql.h"
-
+#include "org/esb/util/Depricated.h"
 #include <boost/shared_ptr.hpp>
 namespace org {
   namespace esb {
@@ -17,7 +17,7 @@ namespace org {
         Connection(const char * con);
         Connection(std::string host, std::string db, std::string user, std::string pass);
         ~Connection();
-        Statement createStatement(const char * sql);
+        DEPRECATED(Statement createStatement(const char * sql));
         PreparedStatement prepareStatement(const char * sql);
         void executeNonQuery(std::string sql);
         long lastInsertId();

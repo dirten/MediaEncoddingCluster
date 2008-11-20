@@ -19,6 +19,7 @@ namespace org {
     namespace hive {
 
       HiveListener::HiveListener() {
+        server=NULL;
         main_nextloop = true;
         is_running = false;
       }
@@ -36,8 +37,10 @@ namespace org {
         }else
           if (msg.getProperty("hivelistener") == "stop") {
           logdebug("Hive Listener stopped:");
-          server->close();
+          if(server)
+            server->close();
           delete server;
+          server=NULL;
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }

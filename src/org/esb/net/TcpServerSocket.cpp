@@ -26,17 +26,13 @@ namespace org {
         return new TcpSocket(sock);;
       }
 
-            /*
-          void TcpServerSocket::handle_accept(TcpSocket* new_session,const boost::system::error_code& error){
-      
-          }
-       */
       void TcpServerSocket::bind() {
 
       }
 
       void TcpServerSocket::close() {
-        acceptor_.close();
+        if(acceptor_.is_open())
+          acceptor_.close();
       }
     }
   }
