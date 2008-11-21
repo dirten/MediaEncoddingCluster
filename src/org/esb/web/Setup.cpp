@@ -23,6 +23,9 @@
 #include <iostream>
 #include "introspec.h"
 #include "wtk/ContentBox.h"
+#include "org/esb/io/File.h"
+#include "org/esb/io/FileOutputStream.h"
+#include "org/esb/config/config.h"
 //#include "wtk/Div.h"
 
 namespace org {
@@ -176,6 +179,12 @@ namespace org {
         bla->setContent(new Wt::WText(Wt::WString::tr("stepbox")));
         bla->resize(200,110);
         west->layout()->addWidget(bla);
+        ContentBox * errorBox=new ContentBox("stepbox");
+        error=new Wt::WText();
+        errorBox->setContent(error);
+        errorBox->resize(200,100);
+        west->layout()->addWidget(errorBox);
+
 //        viewPort->layout()->addWidget(bla);
 //        border->addWidget(bla,Wt::WBorderLayout::West);
 //        border->addWidget(new Wt::WText("links"),Wt::WBorderLayout::West);
@@ -231,9 +240,11 @@ namespace org {
         ((Wt::WGridLayout*)cont->layout())->addWidget(createHivePage(),1,1);
         ((Wt::WGridLayout*)cont->layout())->addWidget(createAdminPage(),1,2);
  */
-
-
-        (center->layout())->addWidget(createDbPage());
+        dbPage=createDbPage();
+        hivePage=createHivePage();
+        adminPage=createAdminPage();
+        savePage=createSavePage();
+        (center->layout())->addWidget(dbPage);
 //        (center->layout())->addWidget(createAdminPage());
 
 //        ContentBox * c_general=new ContentBox();
@@ -262,22 +273,27 @@ namespace org {
       }
 
       void Setup::nextStep() {
-        std::cout << "nextStep in"<<stepper<<std::endl;
         if (stepper == 0) {
+          copyDbParams();
           (center->layout())->removeItem((center->layout())->itemAt(0));
           (center->layout())->addWidget(createHivePage());
           stepper++;
         } else
-          if (stepper == 1) {
+        if (stepper == 1) {
+          copyHiveParams();
           (center->layout())->removeItem((center->layout())->itemAt(0));
           (center->layout())->addWidget(createAdminPage());
           stepper++;
+        }else
+        if (stepper == 2) {
+          copyAdminParams();
+          (center->layout())->removeItem((center->layout())->itemAt(0));
+          (center->layout())->addWidget(createSavePage());
+          stepper++;
         }
-        std::cout << "nextStep out"<<stepper<<std::endl;
       }
 
       void Setup::prevStep(){
-        std::cout << "prevStep in"<<stepper<<std::endl;
         if (stepper == 1) {
           (center->layout())->removeItem((center->layout())->itemAt(0));
           (center->layout())->addWidget(createDbPage());
@@ -287,12 +303,36 @@ namespace org {
           (center->layout())->removeItem((center->layout())->itemAt(0));
           (center->layout())->addWidget(createHivePage());
           stepper--;
+        }else
+          if (stepper == 3) {
+          (center->layout())->removeItem((center->layout())->itemAt(0));
+          (center->layout())->addWidget(createAdminPage());
+          stepper--;
         }
-        std::cout << "prevStep out"<<stepper<<std::endl;
+      }
+      void Setup::copyDbParams(){
+        _parameters["db.host"]=line_host->text().narrow();
+        _parameters["db.db"]=line_db->text().narrow();
+        _parameters["db.user"]=line_user->text().narrow();
+        _parameters["db.pass"]=line_pass->text().narrow();
+      }
 
+      void Setup::copyHiveParams(){
+        _parameters["hive.hport"]=line_hport->text().narrow();
+        _parameters["hive.wport"]=line_wport->text().narrow();
+        _parameters["hive.scan_base"]=line_scan_base->text().narrow();
+        _parameters["hive.scan_int"]=line_scan_int->text().narrow();
+      }
+
+      void Setup::copyAdminParams(){
+        _parameters["adm.name"]=line_adm_name->text().narrow();
+        _parameters["adm.login"]=line_adm_login->text().narrow();
+        _parameters["adm.passwd"]=line_adm_passwd->text().narrow();
+        _parameters["adm.email"]=line_adm_email->text().narrow();
       }
 
       Wt::WWebWidget * Setup::createDbPage(){
+
         Wt::WTable * db_table=new Wt::WTable();
 
         lbl_host = new Wt::WLabel("Database Host ",db_table->elementAt(0, 0));
@@ -305,6 +345,11 @@ namespace org {
         line_user = new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
         line_pass = new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
 
+        line_host->setText(_parameters["db.host"]);
+        line_db->setText(_parameters["db.db"]);
+        line_user->setText(_parameters["db.user"]);
+        line_pass->setText(_parameters["db.pass"]);
+
         line_host->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
         line_db->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
         line_user->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
@@ -315,7 +360,7 @@ namespace org {
         lbl_user->setBuddy(line_user);
         lbl_pass->setBuddy(line_pass);
 
-        dbCheckButton=new Wt::Ext::Button("Check Connection",db_table->elementAt(4, 1));
+//        dbCheckButton=new Wt::Ext::Button("Check Connection",db_table->elementAt(4, 1));
 
         wtk::Div * div_db=new wtk::Div("");
         div_db->addWidget(new Wt::WText(Wt::WString::tr("database-setup")));
@@ -340,6 +385,11 @@ namespace org {
         line_wport = new Wt::Ext::LineEdit(hive_table->elementAt(1, 1));
         line_scan_base = new Wt::Ext::LineEdit(hive_table->elementAt(2, 1));
         line_scan_int = new Wt::Ext::LineEdit(hive_table->elementAt(3, 1));
+
+        line_hport->setText(_parameters["hive.hport"]);
+        line_wport->setText(_parameters["hive.wport"]);
+        line_scan_base->setText(_parameters["hive.scan_base"]);
+        line_scan_int->setText(_parameters["hive.scan_int"]);
 
         line_hport->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
         line_wport->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
@@ -369,6 +419,11 @@ namespace org {
         line_adm_passwd = new Wt::Ext::LineEdit(admin_table->elementAt(2, 1));
         line_adm_email = new Wt::Ext::LineEdit(admin_table->elementAt(3, 1));
 
+        line_adm_name->setText(_parameters["adm.name"]);
+        line_adm_login->setText(_parameters["adm.login"]);
+        line_adm_passwd->setText(_parameters["adm.passwd"]);
+        line_adm_email->setText(_parameters["adm.email"]);
+
         line_adm_name->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
         line_adm_login->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
         line_adm_passwd->resize(Wt::WLength(40, Wt::WLength::FontEx), Wt::WLength());
@@ -384,6 +439,41 @@ namespace org {
         wtk::ContentBox * c_admin=new wtk::ContentBox("stepbox");
         c_admin->setContent(div_admin);
         return c_admin;
+      }
+      Wt::WWebWidget * Setup::createSavePage(){
+
+
+        wtk::Div * div_admin=new wtk::Div("");
+        div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup").
+            arg(_parameters["db.host"]).
+            arg(_parameters["db.db"]).
+            arg(_parameters["db.user"]).
+            arg(_parameters["db.pass"]).
+            arg(_parameters["hive.hport"]).
+            arg(_parameters["hive.wport"]).
+            arg(_parameters["hive.scan_base"]).
+            arg(_parameters["hive.scan_int"]).
+            arg(_parameters["adm.name"]).
+            arg(_parameters["adm.login"]).
+            arg(_parameters["adm.passwd"]).
+            arg(_parameters["adm.email"])
+        ));
+
+        Wt::Ext::Button * save=new Wt::Ext::Button("Save Config");
+        div_admin->addWidget(save);
+        save->clicked.connect(SLOT(this,Setup::saveConfig));
+
+        
+        wtk::ContentBox * c_admin=new wtk::ContentBox("stepbox");
+        c_admin->setContent(div_admin);
+
+        return c_admin;
+      }
+      void Setup::saveConfig(){
+        org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
+        org::esb::io::FileOutputStream fos(&file);
+        fos.write(std::string("mysql://"));
+        error->setText("Fehler");
       }
     }
   }

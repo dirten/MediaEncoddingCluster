@@ -12,6 +12,8 @@
 #include <Wt/Ext/Button>
 #include <Wt/WText>
 
+#include <map>
+#include <string>
 #include "wtk/Div.h"
 
 #ifndef _SETUP_H
@@ -62,10 +64,16 @@ namespace org{
         Wt::WWebWidget * createDbPage();
         Wt::WWebWidget * createHivePage();
         Wt::WWebWidget * createAdminPage();
+        Wt::WWebWidget * createSavePage();
 
       private:
         void nextStep();
         void prevStep();
+        void saveConfig();
+        void copyDbParams();
+        void copyHiveParams();
+        void copyAdminParams();
+//        void copySaveParams();
         Wt::WLabel * lbl_host;
         Wt::WLabel * lbl_db;
         Wt::WLabel * lbl_user;
@@ -95,7 +103,14 @@ namespace org{
         Wt::Ext::Button * dbCheckButton;
         Wt::Ext::Panel * center;
         int stepper;
+
+        Wt::WText * error;
+        Wt::WWebWidget * dbPage;
+        Wt::WWebWidget * hivePage;
+        Wt::WWebWidget * adminPage;
+        Wt::WWebWidget * savePage;
 //        Wt::Ext::Button * dbSaveButton;
+        std::map<std::string,std::string> _parameters;
 
       };
     }

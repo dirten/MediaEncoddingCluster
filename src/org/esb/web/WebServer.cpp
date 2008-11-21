@@ -62,7 +62,7 @@ void WebServer::onMessage(Message & msg){
           if(!server.isRunning())
             server.start();
           }catch(Wt::WServer::Exception & ex){
-            
+            logerror(ex.what());
           }
 	  logdebug("Webserver Started");
 	}else
