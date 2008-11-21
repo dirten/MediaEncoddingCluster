@@ -26,6 +26,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/Properties.h"
 //#include "wtk/Div.h"
 
 namespace org {
@@ -472,7 +473,15 @@ namespace org {
       void Setup::saveConfig(){
         org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
         org::esb::io::FileOutputStream fos(&file);
-        fos.write(std::string("mysql://"));
+        org::esb::util::Properties props;
+        props.setProperty("db.connection",
+            std::string("mysql://host=").append(_parameters["db.host"]).
+            append(";db=").append(_parameters["db.db"]).
+            append(";user=").append(_parameters["db.user"]).
+            append(";passwd=").append(_parameters["db.pass"])
+            );
+        props.save(&fos);
+        fos.close();
         error->setText("Fehler");
       }
     }
