@@ -16,6 +16,7 @@
 #include <string>
 #include "wtk/Div.h"
 
+#include "org/esb/util/Properties.h"
 #ifndef _SETUP_H
 #define	_SETUP_H
 namespace org{
@@ -70,6 +71,7 @@ namespace org{
         void nextStep();
         void prevStep();
         void saveConfig();
+        void loadConfig();
         void copyDbParams();
         void copyHiveParams();
         void copyAdminParams();
@@ -111,6 +113,7 @@ namespace org{
         Wt::WWebWidget * savePage;
 //        Wt::Ext::Button * dbSaveButton;
         std::map<std::string,std::string> _parameters;
+        org::esb::util::Properties _props;
 
       };
     }

@@ -124,6 +124,11 @@ namespace org {
 */      
       Setup::Setup(const Wt::WEnvironment & env) : WApplication(env) {
         using namespace org::esb::web::wtk;
+        if(!(string(org::esb::config::Config::getProperty("hive.mode"))=="setup")){
+          WApplication::instance()->redirect("/");
+          WApplication::instance()->quit();
+        }
+
         stepper=0;
         setTitle("Hive Websetup");
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
@@ -311,6 +316,7 @@ namespace org {
           stepper--;
         }
       }
+
       void Setup::copyDbParams(){
         _parameters["db.host"]=line_host->text().narrow();
         _parameters["db.db"]=line_db->text().narrow();
@@ -469,6 +475,9 @@ namespace org {
         c_admin->setContent(div_admin);
 
         return c_admin;
+      }
+      void Setup::loadConfig(){
+
       }
       void Setup::saveConfig(){
         org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
