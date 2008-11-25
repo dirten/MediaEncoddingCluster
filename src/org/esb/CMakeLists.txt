@@ -68,6 +68,7 @@ add_library (io io/File.cpp
       io/ObjectOutputStream.cpp 
       io/ObjectInputStream.cpp
 )
+TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 add_library (net net/SocketException.cpp 
@@ -94,11 +95,12 @@ add_library (sql sql/Column.cpp
       sql/ConnectionManager.cpp
       sql/Row.cpp
 )
-SET_TARGET_PROPERTIES(sql
-PROPERTIES
-  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
-  DEBUG_POSTFIX "d"
-)
+
+#SET_TARGET_PROPERTIES(sql
+#PROPERTIES
+#  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
+#  DEBUG_POSTFIX "d"
+#)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
 add_library (hive hive/Command.cpp 
@@ -143,14 +145,14 @@ add_library (web web/WebServer.cpp
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
 )
-SET_TARGET_PROPERTIES(web
-PROPERTIES
-  VERSION ${WEB_VERSION_SERIES}.${WEB_VERSION_MAJOR}.${WEB_VERSION_MINOR}
-  DEBUG_POSTFIX "d"
-)
+#SET_TARGET_PROPERTIES(web
+#PROPERTIES
+#  VERSION ${WEB_VERSION_SERIES}.${WEB_VERSION_MAJOR}.${WEB_VERSION_MINOR}
+#  DEBUG_POSTFIX "d"
+#)
 
 #TARGET_LINK_LIBRARIES(web wt wtext wthttp)
-#TARGET_LINK_LIBRARIES(sql mysqlclient)
+TARGET_LINK_LIBRARIES(sql ${MYSQL_LIB})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
