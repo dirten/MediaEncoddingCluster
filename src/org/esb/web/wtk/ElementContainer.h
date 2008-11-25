@@ -24,6 +24,7 @@ namespace org {
         class ElementContainer {
         public:
           T * getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent);
+          void validate();
         private:
           std::map<std::string, T*> _cont;
         };
@@ -43,6 +44,14 @@ namespace org {
             _cont[name] = element;
           }
           return _cont[name];
+        }
+
+        template <typename T>
+        void ElementContainer<T>::validate(){
+          typename std::map<std::string, T*>::iterator it=_cont.begin();
+          for(;it!=_cont.end();it++){
+            (*it).second->validate();
+          }
         }
       }
     }

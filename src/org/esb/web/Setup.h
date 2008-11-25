@@ -8,6 +8,7 @@
 #include <Wt/WApplication>
 
 #include <Wt/WEnvironment>
+#include <Wt/WStackedWidget>
 #include <Wt/Ext/LineEdit>
 #include <Wt/Ext/Button>
 #include <Wt/WText>
@@ -17,6 +18,8 @@
 #include "wtk/Div.h"
 
 #include "org/esb/util/Properties.h"
+#include "wtk/ElementContainer.h"
+
 #ifndef _SETUP_H
 #define	_SETUP_H
 namespace org{
@@ -104,6 +107,8 @@ namespace org{
 
         Wt::Ext::Button * dbCheckButton;
         Wt::Ext::Panel * center;
+        ButtonLeft*butPrev;
+        ButtonRight*butNext;
         int stepper;
 
         Wt::WText * error;
@@ -114,7 +119,8 @@ namespace org{
 //        Wt::Ext::Button * dbSaveButton;
         std::map<std::string,std::string> _parameters;
         org::esb::util::Properties _props;
-
+        wtk::ElementContainer<Wt::Ext::LineEdit> _el;
+        Wt::WStackedWidget * stack;
       };
     }
   }

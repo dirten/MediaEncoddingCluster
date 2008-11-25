@@ -33,6 +33,10 @@ int ResultSet::getInt(int index){return _rowPtr->getColumn(index)->getInt();}
 int ResultSet::getInt(string index){return _rowPtr->getColumn(index)->getInt();}
 
 /*******************************************************************************************************/
+long long int ResultSet::getLong(int index){return _rowPtr->getColumn(index)->getLong();}
+long long int ResultSet::getLong(string index){return _rowPtr->getColumn(index)->getLong();}
+
+/*******************************************************************************************************/
 double ResultSet::getDouble(int index){return _rowPtr->getColumn(index)->getDouble();}
 double ResultSet::getDouble(string index){return _rowPtr->getColumn(index.c_str())->getDouble();}
 

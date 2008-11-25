@@ -195,6 +195,9 @@ bool Column::getBool(){
 int Column::getInt(){
   return getInteger<int>();
 }
+long long int Column::getLong(){
+  return getInteger<long long int>();
+}
 
 float Column::getFloat(){
   return getFloat<float>();
@@ -421,6 +424,11 @@ void Column::setDouble(double data){
       setValue(data, MYSQL_TYPE_DOUBLE);
 }
 void Column::setInt(int data)
+    {
+      setValue(data, MYSQL_TYPE_LONG);
+      bind.is_unsigned = 0;
+    }
+void Column::setLong(long long int data)
     {
       setValue(data, MYSQL_TYPE_LONG);
       bind.is_unsigned = 0;

@@ -22,6 +22,8 @@ namespace org {
         bool getBool(std::string index);
         int getInt(int index);
         int getInt(std::string index);
+        long long int getLong(int index);
+        long long int getLong(std::string index);
         double getDouble(int index);
         double getDouble(std::string index);
 

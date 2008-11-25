@@ -71,7 +71,7 @@ ELSE(USE_EMBEDDED_MYSQL)
 ENDIF(USE_EMBEDDED_MYSQL)
 
 
-target_link_libraries (mhive esb sql web hive lang av util signal io net avcodec avformat avutil swscale x264 )
+target_link_libraries (mhive web esb sql  hive lang av util signal io net avcodec avformat avutil swscale x264 )
 IF(WIN32)
 target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 ${MYSQL_LIB} wtd wtextd wthttpd)
 ELSE(WIN32)

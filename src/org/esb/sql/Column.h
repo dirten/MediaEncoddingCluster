@@ -26,6 +26,8 @@ namespace org {
                 bool getBool();
                 int getInt();
                 void setInt(int);
+                long long int getLong();
+                void setLong(long long int);
                 float getFloat();
                 double getDouble();
                 void setDouble(double);

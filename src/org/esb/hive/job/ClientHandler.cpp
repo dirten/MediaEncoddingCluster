@@ -111,7 +111,7 @@ ProcessUnit ClientHandler::getProcessUnit2() {
   ProcessUnit u;
   if (rs.next()) {
     logdebug("packing ProcessUnit");
-    int64_t start_ts = rs.getDouble("start_ts");
+    int64_t start_ts = rs.getLong("start_ts");
     int frame_count = rs.getInt("frame_count");
     int stream_index = rs.getInt("stream_index");
     logdebug("packing frame group with startts: " << start_ts);
@@ -177,7 +177,7 @@ ProcessUnit ClientHandler::getProcessUnit() {
 
   ProcessUnit u;
   if (rs->next()) {
-    int64_t start_ts = rs->getDouble("start_ts");
+    int64_t start_ts = rs->getLong("start_ts");
     int frame_count = rs->getInt("frame_count");
     int stream_index = rs->getInt("stream_index");
     logdebug("packing frame group with startts: "<<start_ts);
@@ -209,11 +209,11 @@ ProcessUnit ClientHandler::getProcessUnit() {
       }
       boost::shared_ptr<Packet> p(new Packet(rs_p.getInt("data_size")));
       memcpy(p->packet->data, rs_p.getBlob("data").c_str(), p->packet->size);
-      p->packet->pts = rs_p.getDouble("pts");
-      p->packet->dts = rs_p.getDouble("dts");
+      p->packet->pts = rs_p.getLong("pts");
+      p->packet->dts = rs_p.getLong("dts");
       p->packet->duration = rs_p.getInt("duration");
       p->packet->flags = rs_p.getInt("flags");
-      p->packet->pos = rs_p.getDouble("pos");
+      p->packet->pos = rs_p.getLong("pos");
       p->packet->stream_index = rs_p.getInt("stream_index");
       u._input_packets.push_back(p);
       /*
