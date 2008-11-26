@@ -56,11 +56,13 @@ void Exception::setMark( const char* file, const int lineNumber ){
 
     //logger.log( stream.str() );    
 }
+
 #ifdef BACKTRACE
 #ifndef WIN32
 const char * Exception::what()const throw(){
     string msg= getStackTraceString();
-       size_t size;
+/*
+    size_t size;
        char **strings;
        size_t i;
 	const void * return_addr=__builtin_return_address(1);
@@ -75,7 +77,7 @@ const char * Exception::what()const throw(){
           printf ("%s\n", strings[i]);
      
        free (strings);
-
+*/
     return msg.c_str();
 }
 #else

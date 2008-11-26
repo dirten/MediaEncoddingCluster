@@ -14,8 +14,8 @@ namespace org {
 
       class Connection {
       public:
-        Connection(const char * con);
-        Connection(std::string host, std::string db, std::string user, std::string pass);
+        Connection(const char * con, bool auto_connect=true);
+        Connection(std::string host, std::string db, std::string user, std::string pass, bool auto_connect=true);
         ~Connection();
         DEPRECATED(Statement createStatement(const char * sql));
         PreparedStatement prepareStatement(const char * sql);
@@ -25,6 +25,7 @@ namespace org {
 
         static const int AUTOCOMMIT = 1;
         static const int USERCOMMIT = 2;
+        void connect();
       private:
         friend class Statement;
         friend class PreparedStatement;

@@ -4,7 +4,7 @@
 #include <org/esb/lang/Throwable.h>
 #include <stdarg.h>
 #include <sstream>
-#undef BACKTRACE
+#define BACKTRACE
 namespace org{
 namespace esb{
 namespace lang{

@@ -89,7 +89,6 @@ void ProtocolServer::run() {
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
- 
   }
   //	cout << "Elvis has left the Building" << endl;
 }

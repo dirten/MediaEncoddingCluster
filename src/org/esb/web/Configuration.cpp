@@ -170,10 +170,12 @@ Wt::WWidget * createDbConfigPage(){
     void saveConfig(){
       io::File file(Config::getProperty("config.file"));
       io::FileOutputStream fos(&file);
+      /*
       props.setProperty("host",elements["host"]->text().narrow());
       props.setProperty("user",elements["user"]->text().narrow());
       props.setProperty("passwd",elements["passwd"]->text().narrow());
       props.setProperty("database",elements["database"]->text().narrow());
+       */
       props.setProperty("db.connection","mysql:host="+elements["host"]->text().narrow()+
                                         ";db="+elements["database"]->text().narrow()+
                                         ";user="+elements["user"]->text().narrow()+

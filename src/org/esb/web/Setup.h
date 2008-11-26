@@ -79,6 +79,7 @@ namespace org{
         void copyHiveParams();
         void copyAdminParams();
 //        void copySaveParams();
+        void checkConnection();
         Wt::WLabel * lbl_host;
         Wt::WLabel * lbl_db;
         Wt::WLabel * lbl_user;

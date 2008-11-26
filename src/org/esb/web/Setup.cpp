@@ -29,6 +29,10 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Properties.h"
+#include "org/esb/sql/Connection.h"
+
+#include "org/esb/hive/Setup.h"
+
 //#include "wtk/Div.h"
 
 namespace org {
@@ -80,6 +84,8 @@ namespace org {
         butPrev = new ButtonLeft("Previus");
         butNext = new ButtonRight("Next");
         butPrev->setHidden(true);
+        butNext->setHidden(true);
+
 
         butPrev->clicked.connect(SLOT(this, Setup::prevStep));
         butNext->clicked.connect(SLOT(this, Setup::nextStep));
@@ -250,6 +256,8 @@ namespace org {
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(db_table);
+        Wt::Ext::Button * checkDb=new Wt::Ext::Button("check Connection",db_table->elementAt(4,0));
+        checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
 
         wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
         c_db->setContent(div_db);
@@ -325,6 +333,29 @@ namespace org {
 
       }
 
+      void Setup::checkConnection() {
+        using namespace org::esb::sql;
+
+        Connection con(std::string("mysql://host=").append(_el.getElement("db.host")->text().narrow()).
+            append(";db=").append(_el.getElement("db.db")->text().narrow()).
+            append(";user=").append(_el.getElement("db.user")->text().narrow()).
+            append(";passwd=").append(_el.getElement("db.pass")->text().narrow()).c_str(), false);
+        try{
+          if(_el.getElement("db.db")->text().narrow().length()==0){
+            error->setText("Database Name cannot be empty!");
+            butNext->setHidden(true);
+            return;
+          }
+          con.connect();
+          error->setText("Database Connection Success");
+          butNext->setHidden(false);
+        }catch(SqlException & ex){
+          logerror(ex.what());
+          error->setText(ex.what());
+          butNext->setHidden(true);
+        }
+      }
+
       void Setup::saveConfig() {
         org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
         org::esb::io::FileOutputStream fos(&file);
@@ -338,6 +369,16 @@ namespace org {
         props.save(&fos);
         fos.close();
         error->setText(Wt::WString::tr("setup-saved"));
+        using namespace org::esb;
+        config::Config::setProperty("db.connection",props.getProperty("db.connection"));
+        hive::Setup::buildDatabaseModel("../sql/hive-0.0.1.sql");
+        sql::Connection con(props.getProperty("db.connection"));
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','")+_el.getElement("db.host")->text().narrow()+"')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','")+_el.getElement("db.db")->text().narrow()+"')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','")+_el.getElement("db.user")->text().narrow()+"')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','")+_el.getElement("db.pass")->text().narrow()+"')");
+        error->setText("Database Model created!");
+        config::Config::setProperty("hive.mode","server");
       }
     }
   }

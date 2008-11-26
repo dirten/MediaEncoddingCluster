@@ -20,12 +20,12 @@ namespace org {
           Wt::WGroupBox * group = new Wt::WGroupBox("Login", this);
           Wt::WTable *t = new Wt::WTable(group);
           int i = 0;
-          buildElement("auth_name", "Authentication Name", t, i++)->setText("jhoelscher");
+          buildElement("auth_name", "Authentication Name", t, i++);
           Wt::Ext::LineEdit * pass=buildElement("auth_passwd", "Authentication Password", t, i++);
           pass->setEchoMode(Wt::Ext::LineEdit::Password);
           pass->keyWentUp.connect(SLOT(this, Login::enter));
 
-          pass->setText("erkentnis");
+
          
           msg=new Wt::WText(t->elementAt(i, 0));
           Wt::Ext::Button * saveBut = new Wt::Ext::Button("Login", t->elementAt(i, 1));

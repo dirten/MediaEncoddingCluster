@@ -105,7 +105,8 @@ void Config::parseLine(const char*line) {
       }
     }
     char delim[] = "\n";
-    properties->setProperty(strtok((char*) key.c_str(), delim), strtok((char*) val.c_str(), delim));
+    if(key.length()>0&&val.length()>0)
+        properties->setProperty(strtok((char*) key.c_str(), delim), strtok((char*) val.c_str(), delim));
 
     //    delete st;
   }

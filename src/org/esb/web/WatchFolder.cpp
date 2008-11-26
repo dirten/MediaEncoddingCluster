@@ -73,7 +73,7 @@ namespace org {
 
           directoryChooser = new Wt::Ext::Dialog("Choose Directory");
 //          DirectoryFileFilter * filter=new DirectoryFileFilter();
-          tree = new FileTreeTable(Config::getProperty("hive.basescandir"),filter, directoryChooser->contents());
+          tree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, directoryChooser->contents());
           tree->resize(500,300);
 
           tree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectFolder));
@@ -143,6 +143,7 @@ namespace org {
 //            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
+          selectDirectory->setEnabled(true);
         }
 
         void selectFolder(){

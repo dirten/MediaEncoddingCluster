@@ -6,15 +6,15 @@
  */
 #include <string>
 
-#ifndef _SETUP_H
-#define	_SETUP_H
+#ifndef _ORG_ESB_HIVE_SETUP_H
+#define	_ORG_ESB_HIVE_SETUP_H
 namespace org{
   namespace esb{
     namespace hive{
       class Setup{
       public:
         static void check();
-      private:
+//      private:
         static bool checkDatabaseExist();
         static bool checkDatabaseVersion(std::string version);
         static void buildDatabase(std::string dbName);
