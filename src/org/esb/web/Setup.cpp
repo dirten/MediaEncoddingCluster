@@ -50,7 +50,7 @@ namespace org {
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
         Wt::WBorderLayout * border = new Wt::WBorderLayout();
         viewPort->setLayout(border);
-        messageResourceBundle().use("../setup", false);
+        messageResourceBundle().use("../res/setup", false);
         useStyleSheet("main.css");
 
         //        useStyleSheet("ext/resources/css/xtheme-gray.css");

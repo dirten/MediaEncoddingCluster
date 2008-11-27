@@ -76,7 +76,7 @@ namespace org {
         login->authenticated.connect(SLOT(this, WebApp::authenticated));
 //        useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("filetree.css");
-        messageResourceBundle().use("../messages",false);
+        messageResourceBundle().use("../res/messages",false);
 
       }
 
