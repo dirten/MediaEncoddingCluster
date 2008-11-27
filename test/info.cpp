@@ -6,10 +6,17 @@
 
 
 
+
 using namespace org::esb::av;
 int main(int argc, char ** argv){
 
-        if(argc!=2)return 1;
+        if(argc<2)return 1;
+        int packet_start=0;
+        int packet_count=50;
+        if(argc>2)
+            packet_start=atoi(argv[2]);
+        if(argc>3)
+            packet_count=atoi(argv[3]);
         File file(argv[1]);
         FormatInputStream fis(&file);
         fis.dumpFormat();
@@ -68,7 +75,8 @@ int main(int argc, char ** argv){
       cout <<"<Packet Information>"<<endl;
       cout << "#\tpts\tdts\tsize\tindex\tflags\tiskey\tduration\tpos"<<endl;
       cout <<"------------------------------------------------------------------------"<<endl;
-      for(int a=0;a<50;a++){
+      for(int a=0;a<packet_start+packet_count;a++){
+        if(a<packet_start)continue;
         Packet p;
         pis.readPacket(p);
         cout <<a<<"\t";
@@ -88,3 +96,4 @@ int main(int argc, char ** argv){
 
 return 0;
 }
+

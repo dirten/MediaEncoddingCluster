@@ -25,7 +25,7 @@ Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
    bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
 //  bind.buffer_type=field->type;
   reserve(field->length);
-  logdebug("FieldLength="<<field->length);
+//  logdebug("FieldLength="<<field->length);
 //  reserve(field->length>0x10000?0x10000:field->length);
 //  length=new unsigned long;
   length=0;

@@ -2,7 +2,7 @@
 #add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR}/src)
-#include_directories (${FFMPEG_DIR})
+include_directories (${FFMPEG_DIR}/include)
 #include_directories (${WT_DIR}/src)
 #include_directories (${WT_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
@@ -28,5 +28,8 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 add_executable (test_sql test_sql.cpp)
 add_executable (test_mysql test_mysql.cpp)
-target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT}) 
+add_executable (info info.cpp)
+
+target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT})
+target_link_libraries (info mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt)
 target_link_libraries (test_mysql mysqlclient crypt ssl pthread ) 
