@@ -6,7 +6,7 @@ namespace org{
       
       Connection ConnectionManager::getConnection(std::string name){
         using namespace org::esb::config;
-        return Connection(Config::getProperty("db.connection"));
+        return Connection(std::string(Config::getProperty("db.connection")));
       }
     }
   }

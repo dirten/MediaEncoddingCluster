@@ -52,7 +52,7 @@ namespace org {
           t->elementAt(i, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
           profiles = new Wt::Ext::ComboBox(t->elementAt(i, 1));
           profiles->setEnabled(false);
-          Connection con(Config::getProperty("db.connection"));
+          Connection con(std::string(Config::getProperty("db.connection")));
 
           Statement stmt = con.createStatement("select * from profiles");
           ResultSet rs = stmt.executeQuery();

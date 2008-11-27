@@ -12,7 +12,7 @@ using namespace std;
 *
 */
 
-void Exception::buildMessage(const char* format, va_list& vargs)
+void Exception::buildMessage(const std::string format, va_list& vargs)
 {
     // Allocate buffer with a guess of it's size
     int size = 128;
@@ -23,7 +23,7 @@ void Exception::buildMessage(const char* format, va_list& vargs)
     	// Allocate a buffer of the specified size.
     	char* buffer = new char[size];
     	
-        int written = vsnprintf(buffer, size, format, vargs);
+        int written = vsnprintf(buffer, size, format.c_str(), vargs);
         if (written > -1 && written < size-1) {
             
             // Guessed size was enough. Assign the string.

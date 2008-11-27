@@ -121,7 +121,7 @@ namespace web{
       }
 	void setData(int profile_id){
       if(profile_id>0){
-        Connection con(Config::getProperty("db.connection"));
+        Connection con(std::string(Config::getProperty("db.connection")));
         Statement stmt=con.createStatement(std::string("select * from profiles where id=").append(Decimal(profile_id).toString()).c_str());
         ResultSet rs=stmt.executeQuery();
         if(rs.next()){
@@ -206,7 +206,7 @@ namespace web{
 	    sql+="("+fields+") VALUES ("+values+")";
 	  }
 	  std::cout << "SQL:"<<sql<<std::endl;
-	  Connection con(Config::getProperty("db.connection"));
+	  Connection con(std::string(Config::getProperty("db.connection")));
 	  PreparedStatement pstmt=con.prepareStatement(sql.c_str());
 	  
 	  elit=elements.begin();

@@ -24,7 +24,7 @@ class test {
 public:
 
   test() {
-    con = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=root");
+    con = new Connection(std::string("mysql:db=hive2;host=localhost;user=root;passwd=root"));
     pstmt1 = new PreparedStatement(con->prepareStatement("select id,filename,filename from files where id=:id"));
     pstmt2 = new PreparedStatement(con->prepareStatement("select * from files"));
     stmt1 = new Statement(con->createStatement("select * from files"));
@@ -210,8 +210,8 @@ int main() {
   //	delete tmp;
   char * tmp_c;
   string tmp;
-Connection *con2 = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=root");
-Connection con("mysql:db=hive2;host=localhost;user=root;passwd=root");
+Connection *con2 = new Connection(std::string("mysql:db=hive2;host=localhost;user=root;passwd=root"));
+Connection con(std::string("mysql:db=hive2;host=localhost;user=root;passwd=root"));
   /*
     Connection con("mysql:db=hive2;host=localhost;user=root;passwd=");
     Connection *con2 = new Connection("mysql:db=hive2;host=localhost;user=root;passwd=");

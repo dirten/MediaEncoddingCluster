@@ -19,7 +19,7 @@ namespace org {
           encode = new Wt::Ext::Button("Encode", this);
           encode->clicked.connect(SLOT(this, ProfileSelector::createJob));
           //        			encodingbox->setHidden(true);
-          Connection con(Config::getProperty("db.connection"));
+          Connection con(std::string(Config::getProperty("db.connection")));
 
           Statement stmt = con.createStatement("select * from profiles");
           ResultSet rs = stmt.executeQuery();

@@ -42,7 +42,7 @@ namespace org {
         }
         logdebug("SQL:" << sql);
         using namespace org::esb;
-        sql::Connection con(config::Config::getProperty("db.connection"));
+        sql::Connection con(std::string(config::Config::getProperty("db.connection")));
         sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
 
         elit = data.begin();
@@ -58,7 +58,7 @@ namespace org {
       void SqlUtil::sql2map(std::string tablename, int key, std::map<std::string, std::string> &data) {
         using namespace org::esb;
         std::string sql = "SELECT * FROM " + tablename + " WHERE id=:id";
-        sql::Connection con(config::Config::getProperty("db.connection"));
+        sql::Connection con(std::string(config::Config::getProperty("db.connection")));
         sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
         pstmt.setInt("id", key);
         sql::ResultSet rs = pstmt.executeQuery();

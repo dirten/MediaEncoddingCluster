@@ -21,6 +21,11 @@ Connection::Connection(const char * con, bool auto_connect) {
   if (auto_connect)
     connect();
 }
+Connection::Connection(const std::string con, bool auto_connect) {
+  parseConnectionString(con);
+  if (auto_connect)
+    connect();
+}
 
 Connection::Connection(std::string host, std::string db, std::string user, std::string pass, bool auto_connect) {
   _username = user;
@@ -79,7 +84,7 @@ long Connection::lastInsertId() {
   return mysql_insert_id(mysqlPtr.get());
 }
 
-void Connection::parseConnectionString(std::string & constr) {
+void Connection::parseConnectionString(std::string  constr) {
   StringTokenizer tok(constr, ":");
   if (tok.countTokens() == 2) {
     tok.nextToken();
@@ -88,6 +93,7 @@ void Connection::parseConnectionString(std::string & constr) {
       StringTokenizer line(data.nextToken(), "=");
       string key = line.nextToken();
       string val = line.nextToken();
+//      logdebug("key:"<<key<<"="<<val);
       if (key.compare("user") == 0) {
         _username = val;
       } else

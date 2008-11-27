@@ -335,11 +335,11 @@ namespace org {
 
       void Setup::checkConnection() {
         using namespace org::esb::sql;
-
-        Connection con(std::string("mysql://host=").append(_el.getElement("db.host")->text().narrow()).
+        std::string constr=std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
             append(";db=").append(_el.getElement("db.db")->text().narrow()).
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
-            append(";passwd=").append(_el.getElement("db.pass")->text().narrow()).c_str(), false);
+            append(";passwd=").append(_el.getElement("db.pass")->text().narrow());
+        Connection con(constr, false);
         try{
           if(_el.getElement("db.db")->text().narrow().length()==0){
             error->setText("Database Name cannot be empty!");
@@ -350,7 +350,7 @@ namespace org {
           error->setText("Database Connection Success");
           butNext->setHidden(false);
         }catch(SqlException & ex){
-          logerror(ex.what());
+          logerror(std::string(ex.what()));
           error->setText(ex.what());
           butNext->setHidden(true);
         }
@@ -361,7 +361,7 @@ namespace org {
         org::esb::io::FileOutputStream fos(&file);
         org::esb::util::Properties props;
         props.setProperty("db.connection",
-            std::string("mysql://host=").append(_el.getElement("db.host")->text().narrow()).
+            std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
             append(";db=").append(_el.getElement("db.db")->text().narrow()).
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
             append(";passwd=").append(_el.getElement("db.pass")->text().narrow())
@@ -372,7 +372,7 @@ namespace org {
         using namespace org::esb;
         config::Config::setProperty("db.connection",props.getProperty("db.connection"));
         hive::Setup::buildDatabaseModel("../sql/hive-0.0.1.sql");
-        sql::Connection con(props.getProperty("db.connection"));
+        sql::Connection con(std::string(props.getProperty("db.connection")));
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','")+_el.getElement("db.host")->text().narrow()+"')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','")+_el.getElement("db.db")->text().narrow()+"')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','")+_el.getElement("db.user")->text().narrow()+"')");

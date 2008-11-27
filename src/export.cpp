@@ -20,7 +20,7 @@ int exporter(char * fileid, char * outfile) {
   FormatOutputStream fos(&fout);
   PacketOutputStream pos(&fos);
 
-  Connection con(Config::getProperty("db.connection"));
+  Connection con(std::string(Config::getProperty("db.connection")));
   Encoder *encoder = NULL;
   int video_id = 0;
   int audio_id = 0;

@@ -41,7 +41,7 @@ namespace org {
         void authenticate() {
           using namespace org::esb;
           std::string sql = "select * from user where auth_name=:name and auth_passwd=:passwd";
-          sql::Connection con(config::Config::getProperty("db.connection"));
+          sql::Connection con(std::string(config::Config::getProperty("db.connection")));
           sql::PreparedStatement stmt = con.prepareStatement(sql.c_str());
           stmt.setString("name", elements["auth_name"]->text().narrow());
           stmt.setString("passwd", elements["auth_passwd"]->text().narrow());

@@ -14,8 +14,9 @@ namespace org {
 
       class Connection {
       public:
-        Connection(const char * con, bool auto_connect=true);
-        Connection(std::string host, std::string db, std::string user, std::string pass, bool auto_connect=true);
+        DEPRECATED(Connection(const char * con, bool auto_connect=true));
+        Connection(std::string con, bool auto_connect=true);
+        Connection(const std::string host, std::string db, std::string user, std::string pass, bool auto_connect=true);
         ~Connection();
         DEPRECATED(Statement createStatement(const char * sql));
         PreparedStatement prepareStatement(const char * sql);
@@ -36,7 +37,7 @@ namespace org {
         std::string _db;
         boost::shared_ptr<MYSQL> mysqlPtr;
 //        MYSQL * mysql;
-        void parseConnectionString(std::string &constr);
+        void parseConnectionString(std::string constr);
       private:
 //		  friend class org::esb::hive::Setup;
         static int _staticCounter;

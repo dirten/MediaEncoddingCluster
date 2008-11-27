@@ -12,7 +12,7 @@ namespace org{
 namespace esb{
 namespace web{
 SqlTable::SqlTable(std::string sql, Wt::WContainerWidget * parent):Wt::Ext::TableView(parent){
-  sql::Connection con(Config::getProperty("db.connection"));
+  sql::Connection con(std::string(Config::getProperty("db.connection")));
 //  if(sql.size()==0)sql.append("select ")
   sql::Statement stmt=con.createStatement(sql.c_str());
   mod=new SqlTableModel(stmt.executeQuery(), parent);
@@ -37,7 +37,7 @@ SqlTable::SqlTable(std::string sql, Wt::WContainerWidget * parent):Wt::Ext::Tabl
 }
 void SqlTable::reload(string sql){
   ((SqlTableModel*)model())->clear();
-  sql::Connection con(Config::getProperty("db.connection"));
+  sql::Connection con(std::string(Config::getProperty("db.connection")));
   sql::Statement stmt=con.createStatement(sql.c_str());
   mod=new SqlTableModel(stmt.executeQuery());
   setModel(mod);

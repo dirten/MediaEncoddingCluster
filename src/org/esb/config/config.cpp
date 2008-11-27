@@ -50,7 +50,7 @@ void Config::init(char * filename) {
   fclose(fp);
   /*load params from database*/
   try{
-  Connection con(getProperty("db.connection"));
+  Connection con(std::string(getProperty("db.connection")));
   Statement stmt = con.createStatement("select * from config");
   ResultSet rs = stmt.executeQuery();
   while (rs.next()) {
@@ -65,7 +65,7 @@ void Config::init(char * filename) {
 void Config::save2db() {
   std::vector<std::pair<std::string, std::string > > ar = properties->toArray();
   std::vector<std::pair<std::string, std::string > >::iterator it = ar.begin();
-  Connection con(getProperty("db.connection"));
+  Connection con(std::string(getProperty("db.connection")));
   PreparedStatement stmt = con.prepareStatement("replace into config(config_key, config_val) values (:key, :val)");
   for (; it != ar.end(); it++) {
     stmt.setString("key", it->first);

@@ -121,7 +121,7 @@ namespace web{
       
       void setData(int id){
         file_id=id;
-        Connection con(Config::getProperty("db.connection"));
+        Connection con(std::string(Config::getProperty("db.connection")));
         {
           PreparedStatement stmt=con.prepareStatement("SELECT * FROM files where id=:id");
           stmt.setInt("id", id);
