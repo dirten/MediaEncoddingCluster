@@ -12,7 +12,7 @@ namespace esb{
 namespace sql{
 class SqlException {
 	public:
-		 SqlException(std::string & msg);
+		 SqlException(const std::string msg);
 		 const char * what();
 //		 SqlException(const char * msg);
 private:

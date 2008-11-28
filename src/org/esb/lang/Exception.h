@@ -61,7 +61,7 @@ namespace org {
         Exception(const char* file, const int lineNumber,
             const std::string msg, ...):_msg(msg) {
           va_list vargs;
-          va_start(vargs, _msg);
+          va_start(vargs, msg);
           buildMessage(_msg, vargs);
 
           // Set the first mark for this exception.
