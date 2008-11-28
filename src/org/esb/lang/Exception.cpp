@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "org/esb/lang/Exception.h"
+#include "Exception.h"
 #ifndef WIN32
 #include <execinfo.h>
 #endif

@@ -159,9 +159,9 @@ int import(int argc, char *argv[]) {
 
         if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
             //            stmt_fr.setInt("frame_group",frame_group);
-            stmt_fr.setDouble("frame_count", (double) ctx->streams[a]->duration);
-            stmt_fr.setDouble("startts", (double) ctx->streams[a]->start_time);
-            stmt_fr.setDouble("byte_pos", (double) 0);
+            stmt_fr.setLong("frame_count",  ctx->streams[a]->duration);
+            stmt_fr.setLong("startts",  ctx->streams[a]->start_time);
+            stmt_fr.setLong("byte_pos",  0);
             stmt_fr.setInt("stream_id", streamid);
             stmt_fr.setInt("stream_index", a);
             stmt_fr.execute();
@@ -203,7 +203,7 @@ int import(int argc, char *argv[]) {
     int b_frames_beyond_delay = 3;
     int beyond_delay_counter = 0;
     int BEYOND_STATE = 0;
-	boost::int64_t startts = 0;
+	long long int startts = 0;
     while (true /*&&count < 1000 */) {
         Packet packet;
         if (pis.readPacket(packet) < 0)break;
@@ -221,8 +221,8 @@ int import(int argc, char *argv[]) {
 
             stmt_fr.setInt("frame_group", frame_group);
             stmt_fr.setInt("frame_count", frame_group_counter);
-            stmt_fr.setDouble("startts", startts);
-            stmt_fr.setDouble("byte_pos", (double) packet.packet->pos);
+            stmt_fr.setLong("startts", startts);
+            stmt_fr.setLong("byte_pos", packet.packet->pos);
             stmt_fr.setInt("stream_id", streams[packet.packet->stream_index]);
             stmt_fr.setInt("stream_index", packet.packet->stream_index);
             stmt_fr.execute();

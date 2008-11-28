@@ -99,7 +99,7 @@ std::string Column::getBlob()
 
         default:
 //        log_error("type-error in getBlob, type=" << bind.buffer_type);
-          throw SqlException("type-error in getBlob");
+			throw SqlException(std::string("type-error in getBlob"));
       }
       return ret;
     }
@@ -157,9 +157,9 @@ const std::string Column::getString()
             case MYSQL_TYPE_INT24:
             case MYSQL_TYPE_LONG:
               if (bind.is_unsigned)
-                s << getInteger<unsigned int>();
+                s << getInteger<unsigned long long int>();
               else
-                s << getInteger<int>();
+                s << getInteger<long long int>();
               break;
 
             case MYSQL_TYPE_LONGLONG:
@@ -179,7 +179,7 @@ const std::string Column::getString()
 
             default:
 //              log_error("type-error in getString, type=" << bind.buffer_type);
-              throw SqlException("type-error in getString");
+				throw SqlException(std::string("type-error in getString"));
           }
           ret.assign(s.str());
         }
@@ -323,7 +323,7 @@ double Column::getDouble(){
             return ret;
           }
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger").c_str());      
+          throw SqlException(std::string("type-error in getInteger"));      
         }
           
         case MYSQL_TYPE_VAR_STRING:
@@ -342,7 +342,7 @@ double Column::getDouble(){
 
         default:
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger").c_str());
+          throw SqlException(std::string("type-error in getInteger"));
 //          throw SqlException("type-error in getInteger");
       }
     }
@@ -382,7 +382,7 @@ double Column::getDouble(){
 
         default:
 //          log_error("type-error in getFloat, type=" << bind.buffer_type);
-          throw SqlException("type-error in getFloat");
+			throw SqlException(std::string("type-error in getFloat"));
       }
     }
 

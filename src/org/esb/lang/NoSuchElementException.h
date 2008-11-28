@@ -42,7 +42,7 @@ namespace org{
          */
         NoSuchElementException( const char* file, 
                                 const int lineNumber,
-                                const char* msg, ... );
+								const std::string msg, ... );
 
         /**
          * Clones this exception.  This is useful for cases where you need

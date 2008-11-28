@@ -58,7 +58,7 @@ void Connection::connect() {
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
 
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {
-    throw SqlException(string("Failed to connect to database: ").append(mysql_error(mysqlPtr.get())));
+	  throw SqlException(string("Failed to connect to database: ").append(std::string(mysql_error(mysqlPtr.get()))));
   }
 
 }

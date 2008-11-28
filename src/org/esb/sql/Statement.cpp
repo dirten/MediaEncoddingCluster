@@ -10,7 +10,7 @@ Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
 //  stmt=mysql_stmt_init(mysql);
   stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
-    throw SqlException("mysql_stmt_init(), out of memory");
+	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   sql = s;
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
@@ -40,23 +40,23 @@ ResultSet * Statement::executeQuery2() {
 }
 
 ResultSet Statement::executeQuery(char* tmp) {
-  throw SqlException(" Statement::executeQuery(char* tmp) !! not implemented!");
+	throw SqlException(std::string(" Statement::executeQuery(char* tmp) !! not implemented!"));
   return ResultSet(*stmtPtr.get());
 }
 
 bool Statement::execute() {
   if (mysql_stmt_execute(stmtPtr.get())) {
-    throw SqlException(string("failed while execute the statement: ").append(mysql_stmt_error(stmtPtr.get())));
+	  throw SqlException(std::string("failed while execute the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }
   return true;
 }
 
 void Statement::close() {
   if (mysql_stmt_free_result(stmtPtr.get())) {
-    throw SqlException(string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
+	  throw SqlException(std::string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }
   if (mysql_stmt_close(stmtPtr.get())) {
-    throw SqlException(string("failed while closing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
+	  throw SqlException(std::string("failed while closing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }
 }
 

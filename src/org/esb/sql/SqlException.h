@@ -10,11 +10,13 @@
 namespace org{
 namespace esb{
 namespace sql{
-class SqlException : /*public boost::exception, */ /*public std::runtime_error*/public org::esb::lang::Exception {
+class SqlException {
 	public:
 		 SqlException(std::string & msg);
-		 SqlException(const char * msg);
-
+		 const char * what();
+//		 SqlException(const char * msg);
+private:
+	std::string message;
 };
 }}}
 #endif

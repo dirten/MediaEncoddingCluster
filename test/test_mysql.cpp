@@ -1,5 +1,5 @@
 
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>

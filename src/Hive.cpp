@@ -3,6 +3,7 @@
 #include <boost/program_options.hpp>
 
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/lang/Exception.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 

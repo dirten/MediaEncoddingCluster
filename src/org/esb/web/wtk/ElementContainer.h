@@ -23,14 +23,14 @@ namespace org {
         template <typename T>
         class ElementContainer {
         public:
-          T * getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent);
+          T * getElement(std::string name, std::string label="", std::string value="", Wt::WContainerWidget * parent=0);
           void validate();
         private:
           std::map<std::string, T*> _cont;
         };
 
         template <typename T>
-        T * ElementContainer<T>::getElement(std::string name, std::string label="", std::string value="", Wt::WContainerWidget * parent=0) {
+        T * ElementContainer<T>::getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent) {
           if (_cont.find(name) == _cont.end()) {
             Wt::WContainerWidget * c = new Wt::WContainerWidget(parent);
             Wt::WLabel * elementLabel = new Wt::WLabel(label);

@@ -73,7 +73,7 @@ class Job{
 		Decoder * _decoder;
 		Encoder * _encoder;
 		bool _isActive;
-		queue< pair<int, pair <int, int > > > _frame_groups;
+		queue< pair<int, pair <long long int, int > > > _frame_groups;
 		public:
 		int _stream_type;
 		int _stream_index;

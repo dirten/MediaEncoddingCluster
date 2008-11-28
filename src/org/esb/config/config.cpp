@@ -13,6 +13,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 #include "org/esb/sql/ResultSet.h"
 
 #include "org/esb/lang/Exception.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
@@ -58,7 +59,7 @@ void Config::init(char * filename) {
       properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
   }
   }catch(SqlException & ex){
-//    logerror("cant load configuration from database");
+    logerror("cant load configuration from database");
   }
 }
 

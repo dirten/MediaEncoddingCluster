@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_LANG_EXCEPTION_H
 #define ORG_ESB_LANG_EXCEPTION_H
 
-#include <org/esb/lang/Throwable.h>
+#include "org/esb/lang/Throwable.h"
 #include <stdarg.h>
 #include <sstream>
 #define BACKTRACE
@@ -44,11 +44,11 @@ namespace org {
         Exception(const char * msg) {
 
         }
-/*
-        Exception(const std::string msg):_msg(msg),Exception("",0,_msg.c_str()) {
-            _msg=msg;
+
+        Exception(const std::string msg):_msg(msg) {
+            
         }
-*/
+
         /**
          * Constructor - Initializes the file name and line number where
          * this message occured.  Sets the message to report, using an 
@@ -61,8 +61,8 @@ namespace org {
         Exception(const char* file, const int lineNumber,
             const std::string msg, ...):_msg(msg) {
           va_list vargs;
-          va_start(vargs, msg);
-          buildMessage(msg, vargs);
+          va_start(vargs, _msg);
+          buildMessage(_msg, vargs);
 
           // Set the first mark for this exception.
           setMark(file, lineNumber);
@@ -84,7 +84,7 @@ namespace org {
          * @param msg the format string for the msg.
          * @param variable - params to format into the string
          */
-        virtual void setMessage(const char* msg, ...) {
+		virtual void setMessage(const std::string msg, ...) {
           va_list vargs;
           va_start(vargs, msg);
           buildMessage(msg, vargs);

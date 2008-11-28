@@ -55,7 +55,7 @@ namespace org {
                 return 0;
             }
 
-            long FormatInputStream::getFileSize() {
+            long long int FormatInputStream::getFileSize() {
                 return formatCtx->file_size;
             }
 

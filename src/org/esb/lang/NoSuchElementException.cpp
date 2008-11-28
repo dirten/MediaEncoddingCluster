@@ -62,7 +62,7 @@ namespace lang{
          */
         NoSuchElementException( const char* file, 
                                 const int lineNumber,
-                                const char* msg, ... )
+								const std::string msg, ... )
         {
             va_list vargs;
             va_start( vargs, msg );

@@ -9,7 +9,7 @@ PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s) {
 //  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)");
   stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(&mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
-    throw SqlException("mysql_stmt_init(), out of memory");
+	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   parseSql(s);
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
@@ -43,6 +43,9 @@ void PreparedStatement::setClob(string pos, char* data, int length) {
 
 void PreparedStatement::setDouble(string pos, double data) {
   para->getParameter(vars[pos])->setDouble(data);
+}
+void PreparedStatement::setLong(string pos, long long int data) {
+  para->getParameter(vars[pos])->setLong(data);
 }
 
 void PreparedStatement::setInt(string pos, int data) {

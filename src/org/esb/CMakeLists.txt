@@ -8,6 +8,8 @@ SET(WEB_VERSION_MAJOR 0)
 SET(WEB_VERSION_MINOR 1)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
@@ -15,6 +17,8 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
+#TARGET_LINK_LIBRARIES(av ${FFMPEG_DIR}/lib)
+#TARGET_LINK_LIBRARIES(av ${BOOST_FS_LIB_MT})
 
 add_library (av av av/Init.cpp 
             av/FrameConverter.cpp 
@@ -38,8 +42,8 @@ add_library (lang lang/Byte.cpp
       lang/String.cpp 
       lang/Thread.cpp 
       lang/Exception.cpp 
-      lang/NoSuchElementException.cpp 
-      lang/NullPointerException.cpp
+#      lang/NoSuchElementException.cpp 
+#      lang/NullPointerException.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
@@ -68,7 +72,7 @@ add_library (io io/File.cpp
       io/ObjectOutputStream.cpp 
       io/ObjectInputStream.cpp
 )
-TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
+#TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 add_library (net net/SocketException.cpp 
@@ -152,7 +156,7 @@ add_library (web web/WebServer.cpp
 #)
 
 #TARGET_LINK_LIBRARIES(web wt wtext wthttp)
-TARGET_LINK_LIBRARIES(sql ${MYSQL_LIB})
+#TARGET_LINK_LIBRARIES(sql ${MYSQL_LIB})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)

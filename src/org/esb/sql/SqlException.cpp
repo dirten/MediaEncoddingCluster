@@ -5,12 +5,17 @@
 namespace org{
 namespace esb{
 namespace sql{
-	SqlException::SqlException(std::string & msg):Exception("",0,msg.c_str())/*std::runtime_error(msg)*/{
+	SqlException::SqlException(std::string & msg):message(msg){
+		logerror(msg);
+	}
+	const char * SqlException::what(){
+		return message.c_str();
+	}
+	/*
+SqlException::SqlException(const char * msg):Exception("",0,msg){
 	logerror(msg);
 }
-SqlException::SqlException(const char * msg):Exception("",0,msg)/*std::runtime_error(msg)*/{
-	logerror(msg);
-}
+*/
 }}}
 
 

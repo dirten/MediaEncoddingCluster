@@ -29,6 +29,7 @@ namespace org {
         //				    PreparedStatement(mysqlpp::Query stmt);
         ~PreparedStatement();
         void setDouble(string pos, double val);
+        void setLong(string pos, long long int val);
         void setInt(string pos, int val);
         void setNull(string pos);
         void setBlob(string pos, char* data, int length);

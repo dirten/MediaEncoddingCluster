@@ -196,9 +196,9 @@ ProcessUnit ClientHandler::getProcessUnit() {
     int size = 0;
     Connection con2(Config::getProperty("db.connection"));
     PreparedStatement stmt_p = con2.prepareStatement("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
-    stmt_p.setDouble("sid", rs->getInt("source_stream"));
-    stmt_p.setDouble("dts", start_ts);
-    stmt_p.setDouble("limit", frame_count + 3);
+    stmt_p.setInt("sid", rs->getInt("source_stream"));
+    stmt_p.setLong("dts", start_ts);
+    stmt_p.setInt("limit", frame_count + 3);
     logdebug("select * from packets where stream_id=" << rs->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
     ResultSet rs_p = stmt_p.executeQuery();
 
@@ -301,8 +301,8 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
       int field = 0;
 
       _stmt->setInt("stream_id", unit._target_stream);
-      _stmt->setDouble("pts", packet->packet->pts);
-      _stmt->setDouble("dts", packet->packet->dts);
+      _stmt->setLong("pts", packet->packet->pts);
+      _stmt->setLong("dts", packet->packet->dts);
       _stmt->setInt("stream_index", packet->packet->stream_index);
       _stmt->setInt("key_frame", packet->isKeyFrame());
       if (packet->packet->stream_index == 0)
@@ -311,7 +311,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
         _stmt->setInt("frame_group", 0);
       _stmt->setInt("flags", packet->packet->flags);
       _stmt->setInt("duration", packet->packet->duration);
-      _stmt->setDouble("pos", packet->packet->pos);
+      _stmt->setLong("pos", packet->packet->pos);
       _stmt->setInt("data_size", packet->packet->size);
       _stmt->setBlob("data", (char *) packet->packet->data, packet->packet->size);
       _stmt->execute();

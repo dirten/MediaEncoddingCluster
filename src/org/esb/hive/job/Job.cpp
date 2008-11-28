@@ -153,10 +153,10 @@ void Job::activate(){
 //		stmt.setInt("target_stream_id",_target_stream);
 		ResultSet rs=stmt.executeQuery();
 		while(rs.next()){
-		    std::pair<int,std::pair<int, int> > p;
+		    std::pair<int,std::pair<long long int, int> > p;
 		    
 		    p.first=rs.getInt(0);
-		    p.second.first=rs.getDouble(1);
+		    p.second.first=rs.getLong(1);
 		    p.second.second=rs.getInt(2);
 		    _frame_groups.push(p);
 		}
@@ -179,7 +179,7 @@ ProcessUnit Job::getNextProcessUnit(){
     ProcessUnit u;
     if(_frame_groups.size()>0){
 	int fr_gr=_frame_groups.front().first;
-	int startts=_frame_groups.front().second.first;
+	long long int startts=_frame_groups.front().second.first;
 	int frame_count=_frame_groups.front().second.second;
 	u._frame_group=fr_gr;
 	_frame_groups.pop();
