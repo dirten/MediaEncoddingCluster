@@ -80,7 +80,7 @@ void Connection::executeNonQuery(std::string sql) {
     throw SqlException(string("Failed to execute Query -> ").append(sql).append(" -> ").append(mysql_error(mysqlPtr.get())));
 }
 
-long Connection::lastInsertId() {
+long long int Connection::lastInsertId() {
   return mysql_insert_id(mysqlPtr.get());
 }
 

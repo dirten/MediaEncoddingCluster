@@ -99,8 +99,8 @@ Packet::~Packet(){
 
 uint8_t * Packet::getData(){return packet->data;}
 int Packet::getSize(){return packet->size;}
-int Packet::getPts(){return packet->pts;}
-int Packet::getDts(){return packet->dts;}
+long long int Packet::getPts(){return packet->pts;}
+long long int Packet::getDts(){return packet->dts;}
 int Packet::getFlags(){return packet->flags;}
 int Packet::getStreamIndex(){return packet->stream_index;}
 int Packet::getDuration(){return packet->duration;}

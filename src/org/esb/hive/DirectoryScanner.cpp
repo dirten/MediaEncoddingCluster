@@ -25,7 +25,7 @@ namespace org {
       public:
 
         bool accept(File file) {
-          return !(boost::starts_with(file.getPath(), "."));
+          return (boost::ends_with(file.getPath(), ".ts"));
         }
       };
 
@@ -76,12 +76,17 @@ namespace org {
       }
 
       void DirectoryScanner::scan() {
-        while (!_halt) {
-          if (File(_dir.c_str()).exists()) {
-            scan(_dir);
+		  while (!_halt) {
+		Connection con(org::esb::config::Config::getProperty("db.connection"));
+		Statement stmt=con.createStatement("select * from watch_folder");
+		ResultSet rs=stmt.executeQuery();
+		while(rs.next()){
+		  if (File(rs.getString("folder").c_str()).exists()) {
+            scan(rs.getString("folder"));
           }else {
-            _halt = true;
+//            _halt = true;
           }
+		}
           Thread::sleep2(_interval);
         }
       }
@@ -89,7 +94,8 @@ namespace org {
       void DirectoryScanner::scan(std::string dir) {
         logdebug("Directory Scanner loop:" << ":" << dir);
         MyFileFilter filter;
-        FileList list = File(dir.c_str()).listFiles();
+
+		FileList list = File(dir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())

@@ -29,7 +29,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 
   if (boost::filesystem::exists(path)) {
     if (!boost::filesystem::is_directory(path)) {
-      int fsize = 0;
+      long long int fsize = 0;
       try{
         fsize=boost::filesystem::file_size(path);
       }catch(...){
@@ -42,8 +42,12 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
     }
     //else      
     setSelectable(true);
-
-    std::time_t t = boost::filesystem::last_write_time(path);
+	std::time_t t;
+	try{
+    t = boost::filesystem::last_write_time(path);
+	}catch(...){
+	    logerror("last_write_time(path)");
+	}
     struct tm ttm;
 #if WIN32
     ttm=*localtime(&t);
@@ -67,7 +71,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
 
   if (boost::filesystem::exists(path)) {
     if (!boost::filesystem::is_directory(path)) {
-      int fsize = 0;
+      long long int fsize = 0;
       try{
         fsize=boost::filesystem::file_size(path);
       }catch(...){
@@ -80,8 +84,9 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
     }
     //else      
     setSelectable(true);
-
-    std::time_t t = boost::filesystem::last_write_time(path);
+	std::time_t t;
+	try{
+    t = boost::filesystem::last_write_time(path);
     struct tm ttm;
 #if WIN32
     ttm=*localtime(&t);
@@ -94,7 +99,11 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
 
     setColumnWidget(2, new WText(c));
     columnWidget(2)->setStyleClass("date");
-  }
+	}catch(...){
+        logerror("last_write_time(path)");
+	}
+
+	}
 }
 
 WIconPair *FileTreeTableNode::createIcon(const boost::filesystem::path& path)

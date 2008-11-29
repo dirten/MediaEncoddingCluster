@@ -67,6 +67,7 @@ namespace org {
           sql::Connection con(parseConnectionString(conf, "host"), string(""), parseConnectionString(conf, "user"), parseConnectionString(conf, "password"));
           con.executeNonQuery(std::string("use ").append(parseConnectionString(conf, "db")));
         } catch (sql::SqlException & ex) {
+			logerror(ex.what());
           if(yesNoQuestion("do you want to Create Database "+parseConnectionString(conf, "db")+" now?")){
             buildDatabase(parseConnectionString(conf, "db"));
             result = true;
@@ -92,6 +93,7 @@ namespace org {
             result = false;
           }
         } catch (sql::SqlException & ex) {
+			logerror(ex.what());
             if(yesNoQuestion("do you want to Create Database Model now?")){
               buildDatabaseModel("../sql/hive-0.0.1.sql");
               result=true;

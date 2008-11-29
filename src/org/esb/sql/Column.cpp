@@ -44,9 +44,10 @@ void Column::reserve(unsigned long size)
 
       if (bind.buffer_length < size)
       {
-//        log_debug("grow buffer to " << size << " initial " << bind.buffer_length);
+        logdebug("grow buffer to " << size << " initial " << bind.buffer_length);
 //        if(buffer)
   //        delete[] buffer;
+//		  delete[] static_cast<char*>(buffer);
         buffer = new char[size];
         memset(buffer,0,size);
         bind.buffer=buffer;
@@ -142,8 +143,15 @@ const std::string Column::getString()
         case MYSQL_TYPE_TIMESTAMP:
         {
           MYSQL_TIME* ts = static_cast<MYSQL_TIME*>(bind.buffer);
-          ret.assign(Datetime(ts->year, ts->month, ts->day,
-                          ts->hour, ts->minute, ts->second, ts->second_part).getIso());
+          ret.assign(Datetime(
+			  ts->year, 
+			  ts->month, 
+			  ts->day,
+              ts->hour, 
+			  ts->minute, 
+			  ts->second, 
+			  static_cast<unsigned short>(ts->second_part)
+			  ).getIso());
           break;
         }
 

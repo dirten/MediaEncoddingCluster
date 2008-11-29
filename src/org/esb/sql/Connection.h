@@ -21,7 +21,7 @@ namespace org {
         DEPRECATED(Statement createStatement(const char * sql));
         PreparedStatement prepareStatement(const char * sql);
         void executeNonQuery(std::string sql);
-        long lastInsertId();
+        long long int lastInsertId();
         void close();
 
         static const int AUTOCOMMIT = 1;

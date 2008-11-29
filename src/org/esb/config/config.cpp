@@ -60,6 +60,7 @@ void Config::init(char * filename) {
   }
   }catch(SqlException & ex){
     logerror("cant load configuration from database");
+	logerror(ex.what());
   }
 }
 

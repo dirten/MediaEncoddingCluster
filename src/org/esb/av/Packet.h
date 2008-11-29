@@ -23,8 +23,8 @@ public:
 	~Packet();
 	uint8_t * getData();
 	int getSize();
-	int getPts();
-	int getDts();
+	long long int getPts();
+	long long int getDts();
 	int getFlags();
 	int getStreamIndex();
 	int getDuration();

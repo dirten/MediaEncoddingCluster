@@ -13,7 +13,7 @@ namespace org {
       const std::string StringUtil::toLower(std::string s) {
         std::string result;
         const char * str = s.c_str();
-        for (int i = 0; i < strlen(str); i++) {
+        for (unsigned int i = 0; i < strlen(str); i++) {
           if (str[i] >= 'A' && str[i] <= 'Z')
             result += str[i] | 32;
           else

@@ -31,10 +31,12 @@ class Profiles: public Wt::WContainerWidget{
 //	  addWidget(edit);
     }
     void enableButton(){
+		if(t->selectedRows().size()>0){
 	  int d=atoi(boost::any_cast<string>(t->model()->data(t->selectedRows()[0],0)).c_str());
       edit->setData(d);
       buttonEdit->setEnabled(true);
       edit->setEnabled(false);
+		}
     }
     
     void reloadProfiles(){

@@ -123,7 +123,7 @@ int PacketInputStream::read(vector<unsigned char>&buffer){
     return _source->read(buffer);
 }
 
-int PacketInputStream::available(bool isBlocking){
+ int PacketInputStream::available(bool isBlocking){
     return _formatCtx->file_size;
 }
 

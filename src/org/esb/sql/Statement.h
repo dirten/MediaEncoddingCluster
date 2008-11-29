@@ -20,7 +20,7 @@ namespace org {
       public:
         Statement(MYSQL * mysql, const char * sql);
         ~Statement();
-        ResultSet executeQuery();
+		ResultSet executeQuery(std::string sql=std::string());
         ResultSet * executeQuery2();
         ResultSet executeQuery(char *);
         bool execute();

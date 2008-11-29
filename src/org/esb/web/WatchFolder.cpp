@@ -144,6 +144,7 @@ namespace org {
           }
           buttonSave->setEnabled(true);
           selectDirectory->setEnabled(true);
+		  elements["profile"]->setEnabled(true);
         }
 
         void selectFolder(){
