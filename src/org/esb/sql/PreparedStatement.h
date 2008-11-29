@@ -23,7 +23,6 @@ namespace org {
       class ResultSet;
 
       class PreparedStatement {
-        
       public:
         PreparedStatement(MYSQL & mysql, const char * sql);
         //				    PreparedStatement(mysqlpp::Query stmt);
@@ -48,7 +47,7 @@ namespace org {
         map<int, Column*> col_vars;
         map<std::string, int> vars;
         ResultSet * rs;
-//        MYSQL_STMT *stmt;
+        //        MYSQL_STMT *stmt;
         boost::shared_ptr<MYSQL_STMT> stmtPtr;
         //				  char * psql;
         std::string sql;

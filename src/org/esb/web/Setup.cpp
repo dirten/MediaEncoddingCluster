@@ -377,6 +377,8 @@ namespace org {
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','")+_el.getElement("db.db")->text().narrow()+"')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','")+_el.getElement("db.user")->text().narrow()+"')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','")+_el.getElement("db.pass")->text().narrow()+"')");
+        con.executeNonQuery(std::string("INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
+
         error->setText("Database Model created!");
         config::Config::setProperty("hive.mode","server");
       }

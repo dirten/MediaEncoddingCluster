@@ -161,6 +161,5 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   `profile` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, 'admin', 'admin', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `config` (`config_key`, `config_val`) VALUES ('web.start','true');
 INSERT INTO `version` (`id`, `component`, `version`) VALUES(1, 'database.model', '0.0.1');

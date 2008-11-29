@@ -33,7 +33,7 @@ class PacketInputStream: public InputStream{
         Packet readPacketFromFormatIS();
 //        __attribute__((deprecated))Packet & readPacketFromIS();
         Packet & readPacketFromIS();
-	Packet _packet;
+//	Packet _packet;
         int _streamIndex;
         int _readFrom;
         InputStream * _source;
