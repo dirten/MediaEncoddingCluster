@@ -10,6 +10,7 @@ include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_INC_DIR})
 LINK_DIRECTORIES(${WT_DIR}/lib)
 LINK_DIRECTORIES(${BOOST_LIB_DIR})
+LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${WT_DIR}/lib)
 LINK_DIRECTORIES(${WT_DIR}/src)
 LINK_DIRECTORIES(${WT_DIR}/src/http)
@@ -33,6 +34,18 @@ add_executable (testav test_av.cpp)
 
 target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT})
 target_link_libraries (info mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt)
-target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 )
+target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 z pthread)
+target_link_libraries (testav 
+  ${BOOST_SERIAL_LIB_MT} 
+  ${BOOST_THREAD_LIB_MT} 
+  ${BOOST_SYSTEM_LIB_MT} 
+  ${BOOST_PO_LIB_MT} 
+  ${BOOST_SIGNALS_LIB_MT} 
+  ${BOOST_REGEX_LIB_MT} 
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
+
 target_link_libraries (test_mysql mysqlclient  ) 
+
 ENDIF(NOT WIN32)
