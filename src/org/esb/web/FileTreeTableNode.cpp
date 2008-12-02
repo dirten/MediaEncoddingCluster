@@ -85,6 +85,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
     //else      
     setSelectable(true);
 	std::time_t t;
+/*
 	try{
     t = boost::filesystem::last_write_time(path);
     struct tm ttm;
@@ -102,7 +103,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
 	}catch(...){
         logerror("last_write_time(path)");
 	}
-
+*/
 	}
 }
 

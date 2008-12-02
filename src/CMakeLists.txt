@@ -58,7 +58,8 @@ FIND_LIBRARY(AVFORMAT_LIB
 add_executable (mhive Hive.cpp)
 IF(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIB libmysql)
+    SET(MYSQL_LIB libmysqld)
+#    SET(MYSQL_LIB mysqlserver)
   ELSE(WIN32)
     SET(MYSQL_LIB mysqld)
   ENDIF(WIN32)
@@ -71,12 +72,12 @@ ELSE(USE_EMBEDDED_MYSQL)
 ENDIF(USE_EMBEDDED_MYSQL)
 
 
-target_link_libraries (mhive web esb sql  hive lang av util signal io net avcodec avformat avutil swscale x264 )
+target_link_libraries (mhive web esb sql  hive lang av util signal io net avcodec avformat avutil swscale )
 IF(WIN32)
-target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 ${MYSQL_LIB} wtd wtextd wthttpd)
-#target_link_libraries (mhive ${MYSQL_LIB} wtd wtextd wthttpd)
+#target_link_libraries (mhive x264 z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 ${MYSQL_LIB} wtd wtextd wthttpd)
+target_link_libraries (mhive ${MYSQL_LIB} wtd wtextd wthttpd)
 ELSE(WIN32)
-target_link_libraries (mhive ${MYSQL_LIB} crypt ssl wthttp wtext wt pthread)
+target_link_libraries (mhive x264 ${MYSQL_LIB} crypt ssl wthttp wtext wt pthread)
 ENDIF(WIN32)
 
 target_link_libraries (mhive 

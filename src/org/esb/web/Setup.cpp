@@ -350,6 +350,9 @@ namespace org {
           error->setText("Database Connection Success");
           butNext->setHidden(false);
         }catch(SqlException & ex){
+			sql::Connection con("");
+			con.executeNonQuery(string("CREATE DATABASE ").append(_el.getElement("db.db")->text().narrow()));
+
           logerror(std::string(ex.what()));
           error->setText(ex.what());
           butNext->setHidden(true);

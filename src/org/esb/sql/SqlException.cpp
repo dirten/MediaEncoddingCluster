@@ -5,8 +5,9 @@
 namespace org{
 namespace esb{
 namespace sql{
-	SqlException::SqlException(const std::string msg):message(msg){
-		logerror(msg);
+	SqlException::SqlException(std::string & msg, int err):message(msg){
+		_error_code=err;
+		logerror(msg<<"("<<_error_code<<")");
 	}
 	const char * SqlException::what(){
 		return message.c_str();

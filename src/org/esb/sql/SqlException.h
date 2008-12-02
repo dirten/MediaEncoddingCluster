@@ -12,11 +12,13 @@ namespace esb{
 namespace sql{
 class SqlException {
 	public:
-		 SqlException(const std::string msg);
+		 SqlException(std::string & msg, int err=0);
 		 const char * what();
+		 int getErrorCode(){return _error_code;}
 //		 SqlException(const char * msg);
 private:
 	std::string message;
+	int _error_code;
 };
 }}}
 #endif
