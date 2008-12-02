@@ -48,7 +48,7 @@ Connection::~Connection() {
 
 void Connection::connect() {
   if (_staticCounter == 0) {
-    static char *server_options[] = {"", "--datadir=.", "--language=H:\\mysql-5.1.30-win32\\share\\english", NULL};
+    static char *server_options[] = {"", "--datadir=.", "--language=/usr/local/mysql-5.1.29/share/mysql/english/", NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);

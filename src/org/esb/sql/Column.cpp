@@ -433,7 +433,7 @@ void Column::setDouble(double data){
 }
 void Column::setInt(int data)
     {
-      setValue(data, MYSQL_TYPE_LONG);
+      setValue(data, MYSQL_TYPE_INT);
       bind.is_unsigned = 0;
     }
 void Column::setLong(long long int data)

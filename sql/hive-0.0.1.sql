@@ -75,9 +75,8 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `data_size` int(11) default NULL,
   `data` mediumblob,
   PRIMARY KEY  (`id`),
-  KEY `packet_group_idx` (`frame_group`),
   KEY `packet_pts_idx` (`pts`),
-  KEY `stream_id` (`stream_id`,`dts`)
+  KEY `packet_dts_idx` (`pts`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 CREATE TABLE IF NOT EXISTS `process_units` (
   `id` int(11) NOT NULL auto_increment,

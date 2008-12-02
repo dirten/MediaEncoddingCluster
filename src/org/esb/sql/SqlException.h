@@ -12,7 +12,7 @@ namespace esb{
 namespace sql{
 class SqlException {
 	public:
-		 SqlException(std::string & msg, int err=0);
+		 SqlException(std::string msg, int err=0);
 		 const char * what();
 		 int getErrorCode(){return _error_code;}
 //		 SqlException(const char * msg);
