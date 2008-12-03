@@ -50,7 +50,9 @@ void Connection::connect() {
   if (_staticCounter == 0) {
 	  std::string lang="--language=";
 	  lang.append(org::esb::config::Config::getProperty("hive.path"));
+//	  lang.append("/");
 	  static char *server_options[] = {"", "--datadir=.", const_cast<char*>(lang.c_str()), NULL};
+//	  static char *server_options[] = {"", "--datadir=.", "--language=/home/jhoelscher/mec/bin", NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);

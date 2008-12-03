@@ -67,10 +67,11 @@ int main(int argc, char * argv[]) {
   //    loginit("log.properties");
 	File f(argv[0]);
 	std::string s=f.getFilePath();
-	char * path=new char[s.length()];
+	char * path=new char[s.length()+1];
+    memset(path,0,s.length()+1);
 	strcpy(path,s.c_str());
 	Config::setProperty("hive.path", path);
-
+    std::cout << "Path"<<path<<std::endl;
   std::string config_path;
   po::options_description gen("general options");
   gen.add_options()
