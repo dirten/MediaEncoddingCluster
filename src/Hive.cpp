@@ -65,6 +65,12 @@ void shell(int argc, char * argv[]);
 
 int main(int argc, char * argv[]) {
   //    loginit("log.properties");
+	File f(argv[0]);
+	std::string s=f.getFilePath();
+	char * path=new char[s.length()];
+	strcpy(path,s.c_str());
+	Config::setProperty("hive.path", path);
+
   std::string config_path;
   po::options_description gen("general options");
   gen.add_options()
@@ -148,6 +154,7 @@ int main(int argc, char * argv[]) {
     Config::setProperty("hive.port", Decimal(vm["port"].as<int>()).toString().c_str());
     
     listener(argc, argv);
+	return 0;
   }
 
   if (vm.count("client")) {

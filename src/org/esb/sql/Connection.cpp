@@ -4,7 +4,7 @@
 #include "org/esb/util/Log.h"
 #include "Statement.h"
 #include "PreparedStatement.h"
-
+#include "org/esb/config/config.h"
 
 using namespace org::esb::sql;
 using namespace org::esb::util;
@@ -48,7 +48,9 @@ Connection::~Connection() {
 
 void Connection::connect() {
   if (_staticCounter == 0) {
-    static char *server_options[] = {"", "--datadir=.", "--language=/usr/local/mysql-5.1.29/share/mysql/english/", NULL};
+	  std::string lang="--language=";
+	  lang.append(org::esb::config::Config::getProperty("hive.path"));
+	  static char *server_options[] = {"", "--datadir=.", const_cast<char*>(lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);

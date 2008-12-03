@@ -1,5 +1,5 @@
 project (MEC)
-INCLUDE(cmake/HiveFindBoost.txt)
+INCLUDE(cmake/WtFindBoost.txt)
 SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
 SET(USE_EMBEDDED_MYSQL OFF CACHE STRING "Use Embedded Mysql")
