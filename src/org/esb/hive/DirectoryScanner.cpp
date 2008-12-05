@@ -33,12 +33,12 @@ namespace org {
         _halt = true;
         _interval = interval;
         _dir = dir;
-        th=NULL;
+        th = NULL;
       }
 
       DirectoryScanner::DirectoryScanner() {
         _halt = true;
-        th=NULL;
+        th = NULL;
       }
 
       DirectoryScanner::~DirectoryScanner() {
@@ -57,36 +57,38 @@ namespace org {
           if (msg.containsProperty("interval")) {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;
           }
-          th = new boost::thread(boost::bind(&DirectoryScanner::scan, this));
+          boost::thread (boost::bind(&DirectoryScanner::scan, this));
           logdebug("Directory Scanner running with interval:" << _interval);
           //    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
 
-        }else
+        } else
           if (msg.getProperty("directoryscan") == "stop") {
           _halt = true;
           //#if BOOST_VERSION > 103500
-          if(th){
+/*
+          if (th) {
             th->interrupt();
             delete th;
-            th=NULL;
+            th = NULL;
           }
+ */
           //#endif
           logdebug("Directory Scanner stopped:");
         }
       }
 
       void DirectoryScanner::scan() {
-		  while (!_halt) {
-		Connection con(org::esb::config::Config::getProperty("db.connection"));
-		Statement stmt=con.createStatement("select * from watch_folder");
-		ResultSet rs=stmt.executeQuery();
-		while(rs.next()){
-		  if (File(rs.getString("folder").c_str()).exists()) {
-            scan(rs.getString("folder"));
-          }else {
-//            _halt = true;
+        while (!_halt) {
+          Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
+          Statement stmt = con.createStatement("select * from watch_folder");
+          ResultSet rs = stmt.executeQuery();
+          while (rs.next()) {
+            if (File(rs.getString("folder").c_str()).exists()) {
+              scan(rs.getString("folder"));
+            } else {
+              //            _halt = true;
+            }
           }
-		}
           Thread::sleep2(_interval);
         }
       }
@@ -95,7 +97,7 @@ namespace org {
         logdebug("Directory Scanner loop:" << ":" << dir);
         MyFileFilter filter;
 
-		FileList list = File(dir.c_str()).listFiles(filter);
+        FileList list = File(dir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())
@@ -107,7 +109,7 @@ namespace org {
 
       void DirectoryScanner::computeFile(File & file) {
 
-        Connection con(org::esb::config::Config::getProperty("db.connection"));
+        Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
         PreparedStatement stmt(con.prepareStatement("select * from files where filename=:name and path=:path"));
         stmt.setString("name", file.getFileName());
         stmt.setString("path", file.getFilePath());

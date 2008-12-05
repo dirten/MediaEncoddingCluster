@@ -44,7 +44,7 @@ void Column::reserve(unsigned long size)
 
       if (bind.buffer_length < size)
       {
-        logdebug("grow buffer to " << size << " initial " << bind.buffer_length);
+//        logdebug("grow buffer to " << size << " initial " << bind.buffer_length);
 //        if(buffer)
   //        delete[] buffer;
 //		  delete[] static_cast<char*>(buffer);

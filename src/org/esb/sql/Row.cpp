@@ -68,7 +68,7 @@ namespace org {
         }
 
         Row::~Row() {
-          std::cerr<<"delete Row Object"<<std::endl;
+//          std::cerr<<"delete Row Object"<<std::endl;
           delete rsmd;
           //      mysql_free_result(meta);
           std::map<std::string, Column*>::iterator it = cols.begin();
@@ -81,7 +81,7 @@ namespace org {
           cols.clear();
           fqncols.clear();
           idx2name.clear();
-          std::cerr<<"Row Object deleted "<<std::endl;
+//          std::cerr<<"Row Object deleted "<<std::endl;
 
         }
 /*

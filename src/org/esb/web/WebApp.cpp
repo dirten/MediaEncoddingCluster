@@ -21,6 +21,7 @@
 #include <Wt/WBorderLayout>
 #include <Wt/WFitLayout>
 #include <Wt/WString>
+#include <Wt/WImage>
 #include <Wt/Ext/MenuItem>
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/TabWidget>
@@ -76,6 +77,7 @@ namespace org {
         login->authenticated.connect(SLOT(this, WebApp::authenticated));
 //        useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("filetree.css");
+        useStyleSheet("main.css");
         messageResourceBundle().use("../res/messages",false);
 
       }
@@ -105,6 +107,8 @@ namespace org {
 
       Wt::WTreeNode *WebApp::createMenuNode(const Wt::WString& label, Wt::WTreeNode *parentNode, ShowExample f, const char * icon) {
         Wt::WIconPair *labelIcon = new Wt::WIconPair(icon, icon, false);
+        labelIcon->icon1()->resize(30,30);
+        labelIcon->icon2()->resize(30,30);
         Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
         node->label()->setFormatting(Wt::WText::PlainFormatting);
         node->label()->clicked.connect(this, f);

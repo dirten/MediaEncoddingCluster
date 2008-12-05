@@ -66,6 +66,7 @@ namespace org{
       public:
         Setup(const Wt::WEnvironment & env);
         Wt::WWebWidget * createDbPage();
+        Wt::WWebWidget * createDbEmbeddedPage();
         Wt::WWebWidget * createHivePage();
         Wt::WWebWidget * createAdminPage();
         Wt::WWebWidget * createSavePage();

@@ -32,7 +32,7 @@ void JobWatcher::onMessage(org::esb::signal::Message & msg){
 }
 
 void JobWatcher::run(){
-	Connection con(Config::getProperty("db.connection"));
+	Connection con(std::string(Config::getProperty("db.connection")));
 //    Statement stmt_job=con.createStatement("update jobs set complete = now() where id=:id");
 	while(!_isStopSignal){
 //	    logdebug("JobWatcher cycle");

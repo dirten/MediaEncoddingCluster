@@ -25,8 +25,8 @@
 
     <section>
       <title>Hive</title>
-
-      <para></para>
+      <para>The Media Encoding Cluster is an Distributed Video/Audio Encoding Solution</para>
+      <para>It is based on FFMpeg as Media Library and Codec usage</para>
     </section>
 
     <section>
@@ -37,10 +37,10 @@
   </chapter>
 
   <chapter>
-    <title>Building from Scratch</title>
+    <title>Building Media Encoding Cluster</title>
 
     <section>
-      <title>Linux</title>
+      <title>Building from Scratch</title>
 
       <section>
         <title>Building Dependencies</title>
@@ -453,6 +453,14 @@
           </listitem>
         </itemizedlist>
       </section>
+    </section>
+    <section>
+      <title>Building on Fedora Core 4</title>
+        <itemizedlist>
+          <listitem>
+            <para>yum install wget cmake mysql-devel make gcc gcc-c++</para>
+          </listitem>
+        </itemizedlist>
     </section>
   </chapter>
 </book>

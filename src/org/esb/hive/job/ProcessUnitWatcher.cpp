@@ -32,7 +32,7 @@ void ProcessUnitWatcher::stop(){
 
 }
 void ProcessUnitWatcher::start(){	
-	sql::Connection con(config::Config::getProperty("db.connection"));
+	sql::Connection con(std::string(config::Config::getProperty("db.connection")));
 	while(!_isStopSignal){
 //	    logdebug("ProcessUnitWatcher cycle");
         sql::Statement stmt=con.createStatement("select id, source_stream, target_stream from process_units where send is null order by priority limit 100");

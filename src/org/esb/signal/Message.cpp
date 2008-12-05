@@ -12,12 +12,16 @@ Message::Message(boost::shared_ptr<void *> ent){
 }
 
 Message & Message::setProperty(std::string key, std::string value){
-  props[key]=value;
+  str_props[key]=value;
+  return *this;
+}
+Message & Message::setProperty(std::string key, int value){
+  int_props[key]=value;
   return *this;
 }
 
 std::string & Message::getProperty(std::string key){
-  return props[key];
+  return str_props[key];
 }
 
 bool Message::containsProperty(std::string key){

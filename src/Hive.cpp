@@ -237,11 +237,11 @@ void client(int argc, char *argv[]) {
 
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", "start"));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", START));
   
   ctrlCHitWait();
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", STOP));
 
 }
 
@@ -278,18 +278,18 @@ void listener(int argc, char *argv[]) {
 
 
   if (string(Config::getProperty("hive.start")) == "true") {
-    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", "start"));
-    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", "start"));
+    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", START));
+    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", START));
   }
 
   if (string(Config::getProperty("web.start")) == "true"||
       string(Config::getProperty("hive.mode")) == "setup"){
-    Messenger::getInstance().sendRequest(Message().setProperty("webserver", "start"));
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
   }
 
   if (string(Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().
-        setProperty("directoryscan", "start").
+        setProperty("directoryscan", START).
         setProperty("directory", Config::getProperty("hive.scandir")).
         setProperty("interval", Config::getProperty("hive.scaninterval")));
   }
@@ -303,11 +303,11 @@ void listener(int argc, char *argv[]) {
    *
    */
 
-  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", "stop"));
-  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", "stop"));
-  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", "stop"));
-  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", "stop"));
-  Messenger::getInstance().sendRequest(Message().setProperty("webserver", "stop"));
+  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", STOP));
   Messenger::free();
   mysql_library_end();
 

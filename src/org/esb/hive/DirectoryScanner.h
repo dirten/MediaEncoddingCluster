@@ -9,6 +9,9 @@
 namespace org {
   namespace esb {
     namespace hive {
+        const static std::string RESTART="restart";
+        const static std::string STOP="stop";
+        const static std::string START="start";
 
       class DirectoryScanner : public org::esb::signal::MessageListener {
       public:

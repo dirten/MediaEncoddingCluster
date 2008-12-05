@@ -11,6 +11,13 @@
     <hr size="1"/>
     Please type in the Connection Parameter for the Database Server. 
   </message>
+  <message id='database-embedded-setup'>
+    <h2>1. Database Connection Setup</h2>
+    <hr size="1"/>
+    In this version of the Media Encoding Cluster, there is no need to configure the Database Connection because the Database is Embedded into the Media Encoding Cluster.
+    <hr size="1"/>
+    NOTE: The embedded Server makes System under Heavy CPU Load!
+  </message>
   <message id='hive-setup'>
     <h2>2. Hive Setup</h2>
     <hr size="1"/>

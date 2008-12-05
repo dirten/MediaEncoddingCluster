@@ -63,7 +63,9 @@ IF(BUILD_EMBEDDED_BOOST)
                   ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/jam.log)
   MESSAGE("** Building Boost Library")
 
-  execute_process(COMMAND ${BOOST_JAM_DIR}/stage/bin.linuxx86/bjam --prefix=${PROJECT_SOURCE_DIR}/deps/stage/boost
+  execute_process(COMMAND ${BOOST_JAM_DIR}/stage/bin.linuxx86/bjam 
+                --prefix=${PROJECT_SOURCE_DIR}/deps/stage/boost
+                --layout=system
                 variant=release threading=multi link=static --without-python --without-wave --without-graph --without-test --without-mpi install
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/boost_1_35_0
                 OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/boost.log 
@@ -101,6 +103,7 @@ IF(BUILD_EMBEDDED_X264)
 
   execute_process(COMMAND ./configure 
                 --prefix=${PROJECT_SOURCE_DIR}/deps/stage/x264
+                --disable-asm
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/x264
                 OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/x264-configure.log 
                 ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/x264-configure.log)
@@ -123,6 +126,7 @@ IF(BUILD_EMBEDDED_FFMPEG)
                 --disable-shared
                 --enable-static
                 --disable-stripping
+                --disable-devices
                 --enable-libx264
                 --extra-ldflags=-L${PROJECT_SOURCE_DIR}/deps/stage/x264/lib
                 --extra-ldflags=-lpthread

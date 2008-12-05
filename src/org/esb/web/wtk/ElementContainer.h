@@ -29,7 +29,7 @@ namespace org {
           std::map<std::string, T*> _cont;
         };
 
-        template <typename T>
+        template <typename T >
         T * ElementContainer<T>::getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent) {
           if (_cont.find(name) == _cont.end()) {
             Wt::WContainerWidget * c = new Wt::WContainerWidget(parent);

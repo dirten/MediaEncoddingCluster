@@ -3,6 +3,7 @@
 #include <Wt/WLabel>
 #include <Wt/WLineEdit>
 #include <Wt/Ext/LineEdit>
+#include <Wt/Ext/Button>
 #include <Wt/WBreak>
 #include <Wt/WPushButton>
 #include <Wt/WTextArea>
@@ -12,6 +13,7 @@
 #include <Wt/Ext/TabWidget>
 #include <Wt/WGroupBox>
 #include <Wt/WLengthValidator>
+#include <Wt/WSignalMapper>
 
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
@@ -19,7 +21,7 @@
 #include "org/esb/util/Properties.h"
 #include "org/esb/config/config.h"
 
-
+#include "wtk/ContentBox.h"
 #include <map>
 #include <string>
 using namespace org::esb;
@@ -32,10 +34,12 @@ namespace org {
 
         Configuration() : Wt::WContainerWidget(0) {
           Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
-          saveButton = new Wt::WPushButton("Save Configuration", this);
+          exampleTabs->setBorder(false);
+          saveButton = new Wt::Ext::Button("Save Configuration", this);
           saveButton->clicked.connect(SLOT(this, Configuration::saveConfig));
           exampleTabs->addTab(createDbConfigPage(), "Database Config");
           exampleTabs->addTab(createSystemPage(this), "System");
+          exampleTabs->addTab(createServicePage(this), "Services");
         }
 
         Wt::WWidget * createDirectoryPage() {
@@ -43,6 +47,43 @@ namespace org {
           return result;
         }
 
+        Wt::WWidget * createServicePage(Wt::WContainerWidget * parent) {
+          Wt::WSignalMapper<Wt::Ext::Button*> *myMap = new Wt::WSignalMapper<Wt::Ext::Button*>();
+          myMap->mapped.connect(SLOT(this, Configuration::onClick));
+
+//          Wt::WContainerWidget * cont = new Wt::WContainerWidget();
+          wtk::ContentBox * cont = new wtk::ContentBox("stepbox");
+//          Wt::WGroupBox * hive = new Wt::WGroupBox("Services", cont);
+          Wt::WTable * result = new Wt::WTable();
+          result->resize(Wt::WLength(100, Wt::WLength::Percentage),Wt::WLength(100, Wt::WLength::Percentage));
+          cont->setContent(result);
+          Wt::Ext::Button * b1=new Wt::Ext::Button("stop Directory Scanner",result->elementAt(0, 0));
+          Wt::Ext::Button * b2=new Wt::Ext::Button("stop Hive",result->elementAt(0, 1));
+//          Wt::Ext::Button * b3=new Wt::Ext::Button("stop Web",result->elementAt(2, 0));
+
+          Wt::Ext::Button * b4=new Wt::Ext::Button("start Directory Scanner",result->elementAt(1, 0));
+          Wt::Ext::Button * b5=new Wt::Ext::Button("start Hive",result->elementAt(1, 1));
+//          Wt::Ext::Button * b6=new Wt::Ext::Button("start Web",result->elementAt(2, 1));
+
+          Wt::Ext::Button * b7=new Wt::Ext::Button("restart Directory Scanner",result->elementAt(2, 0));
+          Wt::Ext::Button * b8=new Wt::Ext::Button("restart Hive",result->elementAt(2, 1));
+          Wt::Ext::Button * b9=new Wt::Ext::Button("restart Web",result->elementAt(2, 2));
+//          Wt::Ext::Button * b1=new Wt::Ext::Button("",result->elementAt(3, 0))
+
+          
+          myMap->mapConnect(b1->clicked, b1);
+          myMap->mapConnect(b2->clicked, b2);
+          myMap->mapConnect(b4->clicked, b4);
+          myMap->mapConnect(b5->clicked, b5);
+          myMap->mapConnect(b7->clicked, b7);
+          myMap->mapConnect(b8->clicked, b8);
+          myMap->mapConnect(b9->clicked, b9);
+ 
+          return cont;
+        }
+        void onClick(Wt::Ext::Button*src){
+          logdebug("button clicked"<<src->text());
+        }
         Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent) {
           Wt::WContainerWidget * cont = new Wt::WContainerWidget();
           Wt::WGroupBox * hive = new Wt::WGroupBox("Hive", cont);
@@ -134,7 +175,7 @@ namespace org {
               Wt::WLineEdit * passwd;
               Wt::WLineEdit * database;*/
         Wt::WTextArea * log;
-        Wt::WPushButton *saveButton;
+        Wt::Ext::Button *saveButton;
         util::Properties props;
         std::map<std::string, Wt::Ext::LineEdit*> elements;
       private:

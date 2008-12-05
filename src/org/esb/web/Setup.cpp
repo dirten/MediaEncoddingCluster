@@ -166,7 +166,12 @@ namespace org {
                 ((Wt::WGridLayout*)cont->layout())->addWidget(createAdminPage(),1,2);
          */
         stack = new Wt::WStackedWidget();
+#ifndef USE_EMBEDDED_MYSQL
         stack->addWidget(createDbPage());
+#else
+        stack->addWidget(createDbEmbeddedPage());
+#endif
+
         stack->addWidget(createHivePage());
         stack->addWidget(createAdminPage());
 
@@ -200,13 +205,13 @@ namespace org {
 
       void Setup::nextStep() {
         _el.validate();
-        if(stepper==2)
-            stack->addWidget(createSavePage());
+        if (stepper == 2)
+          stack->addWidget(createSavePage());
         if (stepper < 3) {
-//          butNext->setHidden(false);
+          //          butNext->setHidden(false);
           stack->setCurrentIndex(++stepper);
-        }else{
-//            butNext->setHidden(true);
+        } else {
+          //            butNext->setHidden(true);
         }
         if (stepper > 0)
           butPrev->setHidden(false);
@@ -216,15 +221,15 @@ namespace org {
         if (stepper < 3)
           butNext->setHidden(false);
         else
-            butNext->setHidden(true);
+          butNext->setHidden(true);
 
       }
 
       void Setup::prevStep() {
-        if(stepper==3){
-          Wt::WWidget * ref=stack->widget(3);
-            stack->removeWidget(ref);
-            delete ref;
+        if (stepper == 3) {
+          Wt::WWidget * ref = stack->widget(3);
+          stack->removeWidget(ref);
+          delete ref;
         }
 
         if (stepper > 0) {
@@ -238,10 +243,23 @@ namespace org {
         if (stepper < 3)
           butNext->setHidden(false);
         else
-            butNext->setHidden(true);
+          butNext->setHidden(true);
 
       }
 
+      Wt::WWebWidget * Setup::createDbEmbeddedPage() {
+        _el.getElement("db.db")->setText("hive");
+          butNext->setHidden(false);
+        wtk::Div * div_db = new wtk::Div("");
+        div_db->addWidget(new Wt::WText(Wt::WString::tr("database-embedded-setup")));
+        div_db->addWidget(new Wt::WBreak());
+        div_db->addWidget(new Wt::WBreak());
+        wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
+        c_db->resize(400,200);
+        c_db->setContent(div_db);
+        return c_db;
+
+      }
 
       Wt::WWebWidget * Setup::createDbPage() {
 
@@ -256,7 +274,7 @@ namespace org {
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(db_table);
-        Wt::Ext::Button * checkDb=new Wt::Ext::Button("check Connection",db_table->elementAt(4,0));
+        Wt::Ext::Button * checkDb = new Wt::Ext::Button("check Connection", db_table->elementAt(4, 0));
         checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
 
         wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
@@ -335,13 +353,13 @@ namespace org {
 
       void Setup::checkConnection() {
         using namespace org::esb::sql;
-        std::string constr=std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
+        std::string constr = std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
             append(";db=").append(_el.getElement("db.db")->text().narrow()).
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
             append(";passwd=").append(_el.getElement("db.pass")->text().narrow());
         Connection con(constr, false);
-        try{
-          if(_el.getElement("db.db")->text().narrow().length()==0){
+        try {
+          if (_el.getElement("db.db")->text().narrow().length() == 0) {
             error->setText("Database Name cannot be empty!");
             butNext->setHidden(true);
             return;
@@ -349,10 +367,7 @@ namespace org {
           con.connect();
           error->setText("Database Connection Success");
           butNext->setHidden(false);
-        }catch(SqlException & ex){
-			sql::Connection con("");
-			con.executeNonQuery(string("CREATE DATABASE ").append(_el.getElement("db.db")->text().narrow()));
-
+        } catch (SqlException & ex) {
           logerror(std::string(ex.what()));
           error->setText(ex.what());
           butNext->setHidden(true);
@@ -373,17 +388,21 @@ namespace org {
         fos.close();
         error->setText(Wt::WString::tr("setup-saved"));
         using namespace org::esb;
-        config::Config::setProperty("db.connection",props.getProperty("db.connection"));
+#ifdef USE_EMBEDDED_MYSQL
+        sql::Connection con_create(std::string(""));
+        con_create.executeNonQuery(string("CREATE DATABASE hive"));
+#endif
+        config::Config::setProperty("db.connection", props.getProperty("db.connection"));
         hive::Setup::buildDatabaseModel("../sql/hive-0.0.1.sql");
         sql::Connection con(std::string(props.getProperty("db.connection")));
-        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','")+_el.getElement("db.host")->text().narrow()+"')");
-        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','")+_el.getElement("db.db")->text().narrow()+"')");
-        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','")+_el.getElement("db.user")->text().narrow()+"')");
-        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','")+_el.getElement("db.pass")->text().narrow()+"')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','") + _el.getElement("db.db")->text().narrow() + "')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
+        con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
         con.executeNonQuery(std::string("INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
 
         error->setText("Database Model created!");
-        config::Config::setProperty("hive.mode","server");
+        config::Config::setProperty("hive.mode", "server");
       }
     }
   }
