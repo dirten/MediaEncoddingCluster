@@ -47,6 +47,7 @@ class SampleFormat;*/
                 int getPixelFormat();
                 int getSampleRate();
                 int getChannels();
+                AVRational getTimeBase();
                 void setStartTime(int64_t start);
                 //				int getCodecType ();
                 //				string getCodecName ();

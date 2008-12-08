@@ -132,8 +132,6 @@ int main(int argc, char * argv[]) {
   avcodec_init();
   avcodec_register_all();
 
-
-
   if (vm.count("server")) {
     Config::setProperty("hive.mode", "server");
     if(vm.count("database"))
@@ -270,6 +268,7 @@ void listener(int argc, char *argv[]) {
   Messenger::getInstance().addMessageListener(puw);
 
 
+  
   /*
    *
    * Starting Application Services from configuration
@@ -286,6 +285,7 @@ void listener(int argc, char *argv[]) {
       string(Config::getProperty("hive.mode")) == "setup"){
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
   }
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
 
   if (string(Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().

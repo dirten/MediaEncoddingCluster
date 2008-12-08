@@ -181,6 +181,10 @@ namespace org {
         _time_base = tb;
       }
 
+      AVRational Codec::getTimeBase() {
+        return _time_base ;
+      }
+
       void Codec::setGopSize(int size) {
         _gop_size = size;
       }

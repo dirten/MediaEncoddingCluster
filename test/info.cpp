@@ -76,12 +76,14 @@ int main(int argc, char ** argv){
       cout << "#\tpts\tdts\tsize\tindex\tflags\tiskey\tduration\tpos"<<endl;
       cout <<"------------------------------------------------------------------------"<<endl;
       for(int a=0;a<packet_start+packet_count;a++){
-        if(a<packet_start)continue;
         Packet p;
         pis.readPacket(p);
+        if(a<packet_start)continue;
         cout <<a<<"\t";
-        cout <<p.packet->pts<<"\t";
-        cout <<p.packet->dts<<"\t";
+        printf("%25ld\t",p.packet->pts);
+        printf("%25ld\t",p.packet->dts);
+//        cout <<p.packet->pts<<"\t";
+//        cout <<p.packet->dts<<"\t";
         cout <<p.packet->size<<"\t";
         cout <<p.packet->stream_index<<"\t";
         cout <<p.packet->flags<<"\t";
