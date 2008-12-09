@@ -35,7 +35,7 @@ int exporter(char * fileid, char * outfile) {
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
-    PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 1");
+    PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
     stmt.setString("id", stream_id);
     ResultSet rs = stmt.executeQuery();
 
@@ -45,6 +45,8 @@ int exporter(char * fileid, char * outfile) {
 //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
 //      encoder->open();
       enc[rs.getInt("stream_index")]=codec;
+      ptsmap[rs.getInt("stream_index")]=0;
+      dtsmap[rs.getInt("stream_index")]=0;
       pos.setEncoder(*codec, rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
@@ -106,7 +108,7 @@ int exporter(char * fileid, char * outfile) {
     //    sql+=" order by a.pts limit 5000";
     //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
     //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts
-    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num/s.time_base_den*dts";
+    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
 //    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by pts";
     //    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
     PreparedStatement stmt = con.prepareStatement(sql.c_str());
@@ -142,8 +144,14 @@ int exporter(char * fileid, char * outfile) {
       //	    p.data=new uint8_t[p.size];
       //		if(p.packet->stream_index==0){
       //        if(p.packet->stream_index==CODEC_TYPE_VIDEO)
-      AVRational ar2=enc[rs.getInt("stream_index")]->getTimeBase();
-      p.packet->pts = av_rescale_q(++video_packets, ar2, fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+      p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
+      p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
+
+//      AVRational ar2=enc[rs.getInt("stream_index")]->getTimeBase();
+//      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
+//        p.packet->pts = av_rescale_q(++video_packets, enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+//      }
+
       //          p.packet->pts=av_rescale_q(++video_packets,fos._fmtCtx->streams[p.packet->stream_index]->codec->time_base,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 
 
@@ -168,15 +176,17 @@ int exporter(char * fileid, char * outfile) {
        */
 
 //      p.packet->pts = rs.getLong("pts");
-//      p.packet->dts = rs.getInt("dts");
-      p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
+//      p.packet->dts = rs.getLong("dts");
+      
+//      p.packet->dts = dtsmap[rs.getInt("stream_index")];//rs.getLong("dts");
+//      dtsmap[rs.getInt("stream_index")]+=rs.getInt("duration");
       //	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
       //        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
       //	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
       //	    }
       //	    p.packet->dts=rs.getInt("dts");
       p.packet->flags = rs.getInt("flags");
-      p.packet->duration=1;
+      p.packet->duration=rs.getInt("duration");
       //	    p.packet->pos=0;//rs.getInt("pos");
       memcpy(p.packet->data, rs.getBlob("data").data(), p.packet->size);
       //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
