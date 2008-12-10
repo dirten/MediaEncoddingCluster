@@ -193,17 +193,18 @@ int import(int argc, char *argv[]) {
 
     PreparedStatement
     stmt =
-            con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+            con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,sort,data_size,data) values "
             //					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size) values "
             //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
-            "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
+            "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:sort,:data_size,:data)");
 
     int min_frame_group_count = 5; //atoi(Config::getProperty("hive.min_frame_group_count"));
     int frame_group_counter = 0, next_pts = 0;
     int b_frames_beyond_delay = 3;
     int beyond_delay_counter = 0;
     int BEYOND_STATE = 0;
-	long long int startts = 0;
+    long long int startts = 0;
+    long long int pkt_count=0;
     while (true /*&&count < 1000 */) {
         Packet packet;
         if (pis.readPacket(packet) < 0)break;
@@ -247,6 +248,7 @@ int import(int argc, char *argv[]) {
         stmt.setInt("flags", packet.packet->flags);
         stmt.setInt("duration", packet.packet->duration);
         stmt.setLong("pos",  packet.packet->pos);
+        stmt.setLong("sort",  ++pkt_count);
         stmt.setInt("data_size", packet.packet->size);
         //        Blob blob((const char*)packet.data,packet.size);
         stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);

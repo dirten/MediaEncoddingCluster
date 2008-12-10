@@ -21,6 +21,9 @@ int exporter(char * fileid, char * outfile) {
   map<int, Decoder*> enc;
   map<int, int> ptsmap;
   map<int, int> dtsmap;
+  map<int, long long int> ptsoffset;
+  map<int, long long int> dtsoffset;
+//  map<int, int> dtsmap;
   org::esb::io::File fout(outfile);
   string stream_id = fileid;
   FormatOutputStream fos(&fout);
@@ -32,6 +35,7 @@ int exporter(char * fileid, char * outfile) {
   int audio_id = 0;
   int audio_pts = 0;
   int video_pts = 0;
+  bool build_offset=true;
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
@@ -47,6 +51,8 @@ int exporter(char * fileid, char * outfile) {
       enc[rs.getInt("stream_index")]=codec;
       ptsmap[rs.getInt("stream_index")]=0;
       dtsmap[rs.getInt("stream_index")]=0;
+      dtsoffset[rs.getInt("stream_index")]=-1;
+      ptsoffset[rs.getInt("stream_index")]=-1;
       pos.setEncoder(*codec, rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
@@ -55,6 +61,9 @@ int exporter(char * fileid, char * outfile) {
       if (rs.getInt("stream_type") == CODEC_TYPE_AUDIO) {
         audio_id = rs.getInt("sid");
       }
+        if(codec->getCodecId()==CODEC_ID_MPEG2VIDEO){
+          build_offset=false;
+        }
 
       /*
       CodecID codec_id = (CodecID) rs.getInt("codec");
@@ -98,6 +107,11 @@ int exporter(char * fileid, char * outfile) {
       }
 */
     }
+    cout << "StreamTimeBaseNum:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
+    cout << "\tStreamTimeBaseDen:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
+    cout << "CodecTimeBaseNum:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
+    cout << "\tCodecTimeBaseDen:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
+    cout << endl;
   }
   //	fos.open();
   pos.init();
@@ -109,8 +123,8 @@ int exporter(char * fileid, char * outfile) {
     //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
     //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts
     string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
-//    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by pts";
-    //    string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
+//    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by sort";
+//        string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
     PreparedStatement stmt = con.prepareStatement(sql.c_str());
     stmt.setInt("video", video_id);
     //	audio_id=0;
@@ -124,11 +138,8 @@ int exporter(char * fileid, char * outfile) {
     int video_packets = 0;
     int a = 0;
     int id = 0;
-    cout << "StreamTimeBaseNum:" << fos._fmtCtx->streams[id]->time_base.num;
-    cout << "\tStreamTimeBaseDen:" << fos._fmtCtx->streams[id]->time_base.den;
-    cout << "CodecTimeBaseNum:" << fos._fmtCtx->streams[id]->codec->time_base.num;
-    cout << "\tCodecTimeBaseDen:" << fos._fmtCtx->streams[id]->codec->time_base.den;
-    cout << endl;
+    int first_pts=-1;
+    int first_dts=-1;
     /*
       AVRational ar2;
       ar2.num = 1;
@@ -140,6 +151,9 @@ int exporter(char * fileid, char * outfile) {
       //	    cout<<"" << rs.getInt("id")<<endl;
       Packet p(rs.getInt("data_size"));
       p.packet->stream_index = rs.getInt("stream_index");
+      p.packet->flags = rs.getInt("flags");
+//      p.packet->size = rs.getInt("data_size");
+      p.packet->duration=1;
       //	    p.size=rs.getInt("data_size");
       //	    p.data=new uint8_t[p.size];
       //		if(p.packet->stream_index==0){
@@ -147,11 +161,35 @@ int exporter(char * fileid, char * outfile) {
       p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
       p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
 
-//      AVRational ar2=enc[rs.getInt("stream_index")]->getTimeBase();
+      AVRational ar2={1,25};//enc[rs.getInt("stream_index")]->getTimeBase();
 //      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
-//        p.packet->pts = av_rescale_q(++video_packets, enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+
+        p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+        p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 //      }
 
+
+        if(build_offset){
+            if(ptsoffset[rs.getInt("stream_index")]==-1){
+              ptsoffset[rs.getInt("stream_index")]=p.packet->pts;
+            }
+            if(dtsoffset[rs.getInt("stream_index")]==-1){
+            dtsoffset[rs.getInt("stream_index")]=p.packet->dts;
+            }
+            p.packet->pts=p.packet->pts-ptsoffset[rs.getInt("stream_index")];
+            p.packet->dts=p.packet->dts-dtsoffset[rs.getInt("stream_index")];
+        }
+
+        if(false&&enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
+            p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
+            p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
+      }
+//        printf("PTS=%lli DTS=%lli Stream=%i\n",p.packet->pts,p.packet->dts,rs.getInt("stream_index"));
+//        cout << "PTS="<<p.packet->pts<<endl;
+        if(false){
+            p.packet->pts =++ptsmap[rs.getInt("stream_index")];
+            p.packet->dts =++dtsmap[rs.getInt("stream_index")];
+        }
       //          p.packet->pts=av_rescale_q(++video_packets,fos._fmtCtx->streams[p.packet->stream_index]->codec->time_base,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 
 
@@ -185,9 +223,8 @@ int exporter(char * fileid, char * outfile) {
       //	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
       //	    }
       //	    p.packet->dts=rs.getInt("dts");
-      p.packet->flags = rs.getInt("flags");
-      p.packet->duration=rs.getInt("duration");
       //	    p.packet->pos=0;//rs.getInt("pos");
+//        p.packet->data=static_cast<unsigned int*>(const_cast<char*>(rs.getBlob("data").data()));
       memcpy(p.packet->data, rs.getBlob("data").data(), p.packet->size);
       //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
       pos.writePacket(p);

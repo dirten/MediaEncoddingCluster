@@ -29,7 +29,7 @@ class SampleFormat;*/
                 ~Codec();
                 CodecType getCodecType();
                 char *getCodecName();
-                int getCodecId();
+                CodecID getCodecId();
                 int open();
                 void close();
                 void setWidth(int w);
@@ -72,7 +72,7 @@ class SampleFormat;*/
 
                 }
 
-                int _codec_id;
+                CodecID _codec_id;
                 //			  protected:
 
                 AVCodec * _codec;

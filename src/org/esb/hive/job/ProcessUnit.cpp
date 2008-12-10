@@ -123,6 +123,9 @@ void ProcessUnit::process() {
     //	    f.setPts(++a);
     //	    tmp.setDts(AV_NOPTS_VALUE);
     Packet ret = _encoder->encode(f);
+    ret.packet->pts = av_rescale_q(ret.packet->pts, _decoder->getTimeBase(), _encoder->getTimeBase());
+    ret.packet->dts = av_rescale_q(ret.packet->dts, _decoder->getTimeBase(), _encoder->getTimeBase());
+cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)
       logdebug("Frame Encoded");
 

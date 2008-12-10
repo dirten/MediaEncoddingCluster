@@ -22,7 +22,7 @@ namespace org {
 
       Codec::Codec() {
         _opened = false;
-        _codec_id = 0;
+        _codec_id = CODEC_ID_NONE;
         _mode = 0;
         _pix_fmt = (PixelFormat) 0;
         _width = 0;
@@ -62,7 +62,7 @@ namespace org {
         return ctx->codec_name;
       }
 
-      int Codec::getCodecId() {
+      CodecID Codec::getCodecId() {
         return _codec_id;
       }
 

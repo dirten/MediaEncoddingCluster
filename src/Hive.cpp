@@ -27,6 +27,7 @@
 #include "org/esb/hive/Setup.h"
 #include "org/esb/hive/Version.h"
 
+#include "org/esb/hive/FileImporter.h"
 
 #include "org/esb/util/Decimal.h"
 //#include "org/esb/hive/FileImporter.h"
@@ -106,8 +107,15 @@ int main(int argc, char * argv[]) {
       ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
       ;
 
+  po::options_description imp("Import options");
+  imp.add_options()
+      ("import,p", "Import a File")
+      ("file,f", po::value<std::string > (), "which file to import")
+//      ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
+      ;
+
   po::options_description all("");
-  all.add(gen).add(ser).add(cli).add(exp);
+  all.add(gen).add(ser).add(cli).add(exp).add(imp);
 
   gen.add(ser).add(cli).add(exp);
 
@@ -166,6 +174,16 @@ int main(int argc, char * argv[]) {
     std::string file = vm["file"].as<std::string > ();
     std::string dir = vm["directory"].as<std::string > ();
     exporter((char*) file.c_str(), (char*) dir.c_str());
+  }
+  if (vm.count("import")) {
+    Config::init((char*) vm["config"].as<std::string > ().c_str());
+    std::string file = vm["file"].as<std::string > ();
+
+    char * argv[] = {"", (char*) file.c_str()};
+    int fileid = import(2, argv);
+    printf("File imported with ID %i", fileid);
+//    std::string dir = vm["directory"].as<std::string > ();
+//    exporter((char*) file.c_str(), (char*) dir.c_str());
   }
 
 

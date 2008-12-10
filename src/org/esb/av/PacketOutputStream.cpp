@@ -53,11 +53,11 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
 	streams.push_back(st);
 
 
-/*
-	avcodec_get_context_defaults2(st->codec,encoder.ctx->codec_type);
 
-	st->time_base.num=1;
-	st->time_base.den=90000;
+	avcodec_get_context_defaults2(st->codec,encoder.ctx->codec_type);
+//        st->time_base=encoder.getTimeBase();
+//	st->time_base.num=1;
+//	st->time_base.den=90000;
 
 
 	st->stream_copy=1;
@@ -74,12 +74,13 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
 		st->codec->time_base=encoder.ctx->time_base;
 		
 	}
-	*/
-//	st->stream_copy=1;
+/*
+	st->stream_copy=1;
 	st->codec=encoder.ctx;
+	st->time_base=encoder.getTimeBase();
+*/
 	
 	
-	/*
     AVCodecContext * video_enc=st->codec;//=encoder.ctx;
     
     video_enc->codec_id = encoder.ctx->codec_id;
@@ -108,21 +109,23 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
     if (avcodec_open(st->codec, codec) < 0) {
             fprintf(stderr, "Could not open Codec\n");
     }
-*/
+
 //    st->time_base=st->codec->time_base;
-	cout << "TimeBase #"<<"\tnum:"<<st->time_base.num<<"\tden"<<st->time_base.den<<endl;
+	cout << "TimeBase #"<<stream_id<<"\tnum:"<<st->time_base.num<<"\tden"<<st->time_base.den<<endl;
 
 //    av_write_header(_fmtCtx);
 
 }
 
 void PacketOutputStream::init(){
-    if(av_write_header(_fmtCtx)<0){
+//  cout << _fmtCtx->oformat->write_header<<endl;
+  if(av_write_header(_fmtCtx)<0){
 		cout <<"av_write_header(_fmtCtx) failed"<<endl;
 		exit(1);
     }
+ 
     _isInitialized=true;
-    dump_format(_fmtCtx, 0, NULL, 1);
+//    dump_format(_fmtCtx, 0, NULL, 1);
     
     int streams=_fmtCtx->nb_streams;
 
