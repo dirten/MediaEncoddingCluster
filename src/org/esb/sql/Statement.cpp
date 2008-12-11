@@ -22,7 +22,8 @@ Statement::~Statement() {
 //  close();
 }
 
-ResultSet Statement::executeQuery(std::string sql) {
+ResultSet Statement::executeQuery(std::string s) {
+	sql=s;
 	execute();
   if(!rs)
     rs=new ResultSet(*stmtPtr.get());
@@ -35,12 +36,12 @@ ResultSet * Statement::executeQuery2() {
     rs=new ResultSet(*stmtPtr.get());
   return rs;
 }
-
+/*
 ResultSet Statement::executeQuery(char* tmp) {
 	throw SqlException(std::string(" Statement::executeQuery(char* tmp) !! not implemented!"));
   return ResultSet(*stmtPtr.get());
 }
-
+*/
 bool Statement::execute() {
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(" " + sql));

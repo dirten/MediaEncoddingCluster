@@ -63,9 +63,18 @@ namespace po = boost::program_options;
 void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
-
+int rec=0;
+int euclid(int a, int b){
+	std::cout<<"cycle("<<a<<","<<b<<std::endl;
+	if(b==0)
+		return a;
+	else
+		return euclid(b, a%b);
+}
 int main(int argc, char * argv[]) {
   //    loginit("log.properties");
+//	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
+//	return 0;
 	File f(argv[0]);
 	std::string s=f.getFilePath();
 	char * path=new char[s.length()+1];
@@ -180,6 +189,8 @@ int main(int argc, char * argv[]) {
     std::string file = vm["file"].as<std::string > ();
 
     char * argv[] = {"", (char*) file.c_str()};
+    printf("Import File %s", file.c_str());
+
     int fileid = import(2, argv);
     printf("File imported with ID %i", fileid);
 //    std::string dir = vm["directory"].as<std::string > ();

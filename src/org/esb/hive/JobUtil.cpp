@@ -11,7 +11,8 @@ using namespace org::esb::sql;
 using namespace org::esb::config;
 int jobcreator(int argc, char*argv[]){
 	Connection con(Config::getProperty("db.connection"));
-	int fileid=atoi(argv[2]), outfileid=0, v_stream_id=0, a_stream_id=0, in_v_stream=0, in_a_stream=0, jobid=0, v_stream_idx=0, a_stream_idx=0;
+	int fileid=atoi(argv[2]),  in_v_stream=0, in_a_stream=0, v_stream_idx=0, a_stream_idx=0;
+	long long int outfileid=0,v_stream_id=0,a_stream_id=0, jobid=0;
 	int profileid=atoi(argv[3]);
 	int a_stream_num=0, a_stream_den=0;
 

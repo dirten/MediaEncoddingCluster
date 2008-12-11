@@ -68,7 +68,10 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id){
 		st->codec->strict_std_compliance=0;
 		st->codec->channels=encoder.ctx->channels;
 		st->codec->sample_rate=encoder.ctx->sample_rate;
-		st->codec->time_base=(AVRational){1,encoder.ctx->sample_rate};
+		AVRational ar;//(1,encoder.ctx->sample_rate);
+		ar.num=1;
+		ar.den=encoder.ctx->sample_rate;
+		st->codec->time_base=ar;//(AVRational){1,encoder.ctx->sample_rate};
 	}
 	if(encoder.ctx->codec_type==CODEC_TYPE_VIDEO){
 		st->codec->time_base=encoder.ctx->time_base;

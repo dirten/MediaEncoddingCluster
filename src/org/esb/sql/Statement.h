@@ -22,7 +22,7 @@ namespace org {
         ~Statement();
 		ResultSet executeQuery(std::string sql=std::string());
         ResultSet * executeQuery2();
-        ResultSet executeQuery(char *);
+//        ResultSet executeQuery(char *);
         bool execute();
         void close();
       protected:
