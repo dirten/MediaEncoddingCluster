@@ -36,6 +36,12 @@ ResultSet * Statement::executeQuery2() {
     rs=new ResultSet(*stmtPtr.get());
   return rs;
 }
+ResultSet  Statement::executeQuery() {
+  execute();
+  if(!rs)
+    rs=new ResultSet(*stmtPtr.get());
+  return *rs;
+}
 /*
 ResultSet Statement::executeQuery(char* tmp) {
 	throw SqlException(std::string(" Statement::executeQuery(char* tmp) !! not implemented!"));

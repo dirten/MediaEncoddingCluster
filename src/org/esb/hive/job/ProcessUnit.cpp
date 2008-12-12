@@ -7,7 +7,7 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = false;
+bool toDebug = true;
 
 ProcessUnit::ProcessUnit() {
   _decoder = NULL;

@@ -102,7 +102,7 @@ void ClientHandler::fillProcessUnit(ProcessUnit * u) {
 
 }
 
-ProcessUnit ClientHandler::getProcessUnit2() {
+ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   Connection con(Config::getProperty("db.connection"));
   Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
@@ -138,7 +138,7 @@ ProcessUnit ClientHandler::getProcessUnit2() {
     ResultSet rs_p = stmt_p.executeQuery();
 */
 //Packet p;
-	for (int a = 0; a<frame_count;) {
+	for (int a = 0; a<frame_count+3;) {
 //		boost::shared_ptr<Packet> p(new Packet(p));
 //      memcpy(p->packet->data, rs_p.getBlob("data").c_str(), p->packet->size);
 /*      p->packet->pts = rs_p.getLong("pts");
@@ -151,7 +151,7 @@ ProcessUnit ClientHandler::getProcessUnit2() {
 */
 
       Packet tmp_p;
-      pis.readPacket(tmp_p);
+      if(pis.readPacket(tmp_p)<0)break;
       if(tmp_p.packet->stream_index!=stream_index)continue;
 	  if(tmp_p.packet->dts>=start_ts){
 		a++;
@@ -176,7 +176,7 @@ ProcessUnit ClientHandler::getProcessUnit2() {
   return u;
 }
 
-ProcessUnit ClientHandler::getProcessUnit() {
+ProcessUnit ClientHandler::getProcessUnit2() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 //  Connection con(Config::getProperty("db.connection"));
 

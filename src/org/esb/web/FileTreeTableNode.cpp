@@ -126,9 +126,23 @@ void FileTreeTableNode::populate()
     if (boost::filesystem::is_directory(path_)) {
       std::set<boost::filesystem::path> paths;
       boost::filesystem::directory_iterator end_itr;
-
-      for (boost::filesystem::directory_iterator i(path_); i != end_itr; ++i)
-	paths.insert(*i);
+/*
+	  if(path_=="/"){
+	  std::set<std::string> drives;
+	  drives.insert("A:");
+	  drives.insert("B:");
+	  drives.insert("C:");
+	  drives.insert("D:");
+	  drives.insert("E:");
+	  drives.insert("F:");
+	  drives.insert("G:");
+	  drives.insert("H:");
+	  for(std::set<std::string>::iterator d=drives.begin();d!=drives.end();d++){
+		  paths.insert(*d);
+	  }
+	  }else*/
+	  for (boost::filesystem::directory_iterator i(path_); i != end_itr; ++i)
+		paths.insert(*i);
 
       for (std::set<boost::filesystem::path>::iterator i = paths.begin();
       i != paths.end(); ++i){

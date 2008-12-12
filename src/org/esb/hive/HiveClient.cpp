@@ -47,7 +47,7 @@ namespace org {
         _sock->connect();
         _ois=new org::esb::io::ObjectInputStream(_sock->getInputStream());
         _oos=new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
-        logerror("Server "<<_host<<" connected!!!");
+        loginfo("Server "<<_host<<" connected!!!");
         }catch(...){
 //          logerror("cant connect!!!");
         }
@@ -60,14 +60,14 @@ namespace org {
             connect();
           }else{
               while (!_toHalt) {
-                logdebug("ProcessLoop");
+//                logdebug("ProcessLoop");
                 char * text = "get process_unit";
                 org::esb::hive::job::ProcessUnit unit;
                 try{
                     _sock->getOutputStream()->write(text, strlen(text));
-                logdebug("Command sended");
+//                logdebug("Command sended");
                     _ois->readObject(unit);
-                logdebug("ProcessUnit received");
+//                logdebug("ProcessUnit received");
                 }catch(...){
                     logerror("Connection to Server lost!!!");                
                     _sock->close();
@@ -90,7 +90,7 @@ namespace org {
               }
           }
           //    break;
-          org::esb::lang::Thread::sleep2(1000);
+          org::esb::lang::Thread::sleep2(5000);
         }
         ctrlCHit.notify_all(); // should be just 1
       }

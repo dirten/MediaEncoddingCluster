@@ -251,7 +251,7 @@ int import(int argc, char *argv[]) {
         stmt.setLong("sort",  ++pkt_count);
         stmt.setInt("data_size", packet.packet->size);
         //        Blob blob((const char*)packet.data,packet.size);
-        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
+//        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
         stmt.execute();
         //      show_progress+=packet.duration;
 /*

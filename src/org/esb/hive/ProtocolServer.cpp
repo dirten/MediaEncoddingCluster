@@ -72,7 +72,7 @@ void ProtocolServer::run() {
         logdebug("Command is NULL, continue!");
         continue;
       }
-      logdebug("Command : " << command);
+//      logdebug("Command : " << command);
       list < ProtocolCommand * >::iterator i;
       for (i = l.begin(); i != l.end(); ++i) {
         ProtocolCommand *tmp = (ProtocolCommand *) * i;
