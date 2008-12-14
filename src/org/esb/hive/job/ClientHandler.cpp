@@ -114,7 +114,8 @@ ProcessUnit ClientHandler::getProcessUnit() {
     int frame_count = rs->getInt("frame_count");
     int stream_index = rs->getInt("stream_index");
     logdebug("packing frame group with startts: "<<start_ts);
-    string filename = rs->getString("path");
+	string filename = rs->getString("path");
+	filename.append("/");
 	filename.append(rs->getString("filename"));
     //	  logdebug("filename "<<filename);
     u._decoder = CodecFactory::getStreamDecoder(rs->getInt("source_stream"));
@@ -122,9 +123,9 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._source_stream = rs->getInt("source_stream");
     u._target_stream = rs->getInt("target_stream");
 
-    	  File file(filename.c_str());
+	org::esb::io::File file(filename.c_str());
     	  if(!file.exists()){
-    	  	logerror("Could nor find"<<filename.c_str());
+			  logerror("Could not find file : "<<filename.c_str());
     	  	_stmt_pu->setInt("id", rs->getInt("u.id"));
     		_stmt_pu->execute();
     	  	return u;

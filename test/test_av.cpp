@@ -21,7 +21,7 @@ int main(int argc, char ** argv){
 
 //	File f("/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts");
 //	File f("/media/TREKSTOR/videos/20070401 1825 - PREMIERE 3 - Wes Craven prÃ¤sentiert Dracula III_ Legacy (Dracula III_ Legacy).ts");
-	File f("e:/ChocolateFactory.ts");
+	org::esb::io::File f("e:/ChocolateFactory.ts");
 //	File f("m:\\video\\20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts");
 	FormatInputStream fis(&f);
 	fis.seek(0,(3769560833-70000));

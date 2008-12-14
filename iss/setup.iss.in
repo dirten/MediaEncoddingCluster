@@ -29,12 +29,19 @@ Source: "@CMAKE_INSTALL_PREFIX@\bin\mhive.exe"; DestDir: "{app}\bin"; Flags: ign
 Source: "@CMAKE_INSTALL_PREFIX@\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@CMAKE_INSTALL_PREFIX@\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@CMAKE_INSTALL_PREFIX@\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "@CMAKE_INSTALL_PREFIX@\bin\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion 
-Source: "@MYSQL_LIB_DIR@\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@MYSQL_DIR@\share\english\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@MYSQL_LIB_DIR@\libmysql.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\avutil-49.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\SDL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_LIB_DIR@\..\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\Media Encoding Cluster Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon

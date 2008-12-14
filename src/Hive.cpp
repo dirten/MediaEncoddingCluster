@@ -75,7 +75,7 @@ int main(int argc, char * argv[]) {
   //    loginit("log.properties");
 //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
 //	return 0;
-	File f(argv[0]);
+	org::esb::io::File f(argv[0]);
 	std::string s=f.getFilePath();
 	char * path=new char[s.length()+1];
     memset(path,0,s.length()+1);

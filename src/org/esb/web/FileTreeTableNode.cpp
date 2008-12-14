@@ -64,9 +64,10 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 }
 
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::esb::io::FileFilter & filter)
-  : WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
+: WTreeTableNode(Wt::widen(path.leaf()=="/"?path.root_name():path.leaf()), createIcon(path)),
     path_(path), _filter(&filter)
 {
+//	std::cout <<"Path:"<<path_.root_name()<<std::endl;
   label()->setFormatting(WText::PlainFormatting);
 
   if (boost::filesystem::exists(path)) {
@@ -126,21 +127,45 @@ void FileTreeTableNode::populate()
     if (boost::filesystem::is_directory(path_)) {
       std::set<boost::filesystem::path> paths;
       boost::filesystem::directory_iterator end_itr;
-/*
+#ifdef WIN32
 	  if(path_=="/"){
-	  std::set<std::string> drives;
-	  drives.insert("A:");
-	  drives.insert("B:");
-	  drives.insert("C:");
-	  drives.insert("D:");
-	  drives.insert("E:");
-	  drives.insert("F:");
-	  drives.insert("G:");
-	  drives.insert("H:");
-	  for(std::set<std::string>::iterator d=drives.begin();d!=drives.end();d++){
-		  paths.insert(*d);
-	  }
-	  }else*/
+		  std::set<std::string> drives;
+		  drives.insert("A:\\");
+		  drives.insert("B:\\");
+		  drives.insert("C:\\");
+		  drives.insert("D:\\");
+		  drives.insert("E:\\");
+		  drives.insert("F:\\");
+		  drives.insert("G:\\");
+		  drives.insert("H:\\");
+		  drives.insert("I:\\");
+		  drives.insert("J:\\");
+		  drives.insert("K:\\");
+		  drives.insert("L:\\");
+		  drives.insert("M:\\");
+		  drives.insert("N:\\");
+		  drives.insert("O:\\");
+		  drives.insert("P:\\");
+		  drives.insert("Q:\\");
+		  drives.insert("R:\\");
+		  drives.insert("S:\\");
+		  drives.insert("T:\\");
+		  drives.insert("U:\\");
+		  drives.insert("V:\\");
+		  drives.insert("W:\\");
+		  drives.insert("X:\\");
+		  drives.insert("Y:\\");
+		  drives.insert("Z:\\");
+		  for(std::set<std::string>::iterator d=drives.begin();d!=drives.end();d++){
+			  try{
+			  if(boost::filesystem::exists(*d))
+				paths.insert(*d);
+			  }catch(boost::filesystem::filesystem_error & er){
+				  loginfo(er.what());
+			  }
+		  }
+	  }else
+#endif
 	  for (boost::filesystem::directory_iterator i(path_); i != end_itr; ++i)
 		paths.insert(*i);
 

@@ -128,6 +128,8 @@ add_library (hive hive/Command.cpp
 	hive/JobUtil.cpp 
 	hive/HiveClient.cpp 
 	hive/Setup.cpp 
+	hive/FileExporter.cpp
+	
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
