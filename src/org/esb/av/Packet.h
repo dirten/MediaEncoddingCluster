@@ -30,17 +30,20 @@ public:
 	int getDuration();
 	bool isKeyFrame();
 	void * getPriv();
+	AVPacket * getAVPacket();
 	int64_t getPosition();
 	//        	    boost::shared_ptr<unsigned char*> data;
+
+
 	Packet(const Packet & packet);
 	Packet operator=(Packet & packet);
-	AVPacket * packet;
+
 	boost::shared_ptr<AVPacket> packetPtr;
 //private:
 //	AVPacket _packet;
 	bool isCopy;
 	bool callDestruct;
-	uint8_t _data;
+//	uint8_t _data;
 	friend class boost::serialization::access;
 	//		    void serialize(boost::archive::Archive & ar, const unsigned int version);
 /*
@@ -100,7 +103,10 @@ public:
 		ar & packet->pos;
 
     }
+    
     BOOST_SERIALIZATION_SPLIT_MEMBER()
+//	private:
+		AVPacket * packet;
 
 };
 }

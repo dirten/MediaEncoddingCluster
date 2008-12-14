@@ -23,13 +23,14 @@ Packet::Packet(const Packet & p) {
   //	callDestruct=false;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket(), &av_free_packet);
   packet = packetPtr.get();
+
   av_init_packet(packet);
   packet->data = 0;
   packet->pts = p.packet->pts;
   packet->dts = p.packet->dts;
   if (p.packet->size > 0) {
     packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
-    memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
+//    memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(packet->data, p.packet->data, p.packet->size);
   }
   packet->size = p.packet->size;
@@ -40,7 +41,7 @@ Packet::Packet(const Packet & p) {
   packet->priv = p.packet->priv;
   packet->pos = p.packet->pos;
   callDestruct = true;
-
+  
 }
 
 Packet Packet::operator=(Packet & p) {
@@ -53,7 +54,7 @@ Packet Packet::operator=(Packet & p) {
   packet->dts = p.packet->dts;
   packet->data = 0;
   packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE ];
-  memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
+//  memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
   memcpy(packet->data, p.packet->data, p.packet->size);
   packet->size = p.packet->size;
   packet->stream_index = p.packet->stream_index;
@@ -134,5 +135,8 @@ void * Packet::getPriv() {
 
 int64_t Packet::getPosition() {
   return packet->pos;
+}
+AVPacket* Packet::getAVPacket() {
+  return packetPtr.get();
 }
 

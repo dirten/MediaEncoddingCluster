@@ -123,6 +123,12 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._target_stream = rs->getInt("target_stream");
 
     	  File file(filename.c_str());
+    	  if(!file.exists()){
+    	  	logerror("Could nor find"<<filename.c_str());
+    	  	_stmt_pu->setInt("id", rs->getInt("u.id"));
+    		_stmt_pu->execute();
+    	  	return u;
+    	  }
     /*TODO build formatstream Factory, */
     	  FormatInputStream fis(&file);
     	  fis.seek(rs->getInt("stream_index"),(start_ts-70000));
@@ -321,7 +327,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
       _stmt->setInt("flags", packet->packet->flags);
       _stmt->setInt("duration", packet->packet->duration);
       _stmt->setLong("pos", packet->packet->pos);
-      _stmt->setInt("data_size", packet->packet->size);
+      _stmt->setInt("data_size", packet->getSize());
       _stmt->setBlob("data", (char *) packet->packet->data, packet->packet->size);
       _stmt->execute();
     }

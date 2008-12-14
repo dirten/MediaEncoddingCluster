@@ -190,11 +190,11 @@ ProcessUnit Job::getNextProcessUnit(){
 	for(int a=0;a<frame_count;){
 	    Packet tmp_p;
 	    pis.readPacket(tmp_p);
-	    if(tmp_p.packet->stream_index!=_stream_index)continue;
+	    if(tmp_p.getAVPacket()->stream_index!=_stream_index)continue;
 	    a++;
 	    shared_ptr<Packet> p(new Packet(tmp_p));
 	    u._input_packets.push_back(p);
-	    size+=p->packet->size;
+	    size+=p->getAVPacket()->size;
 	}
 	u._decoder=_decoder;
 	u._encoder=_encoder;

@@ -70,7 +70,7 @@ public:
 class PtsPacketComparator {
 public:
   bool operator()(const boost::shared_ptr<Packet> & lp, const boost::shared_ptr<Packet> & rp)const{
-    return lp->packet->dts < rp->packet->dts;
+    return lp->getAVPacket()->dts < rp->getAVPacket()->dts;
   }
 };
 
