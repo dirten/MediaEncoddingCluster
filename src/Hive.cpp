@@ -28,6 +28,8 @@
 #include "org/esb/hive/Version.h"
 
 #include "org/esb/hive/FileImporter.h"
+#include "org/esb/hive/FileExporter.h"
+#include "org/esb/hive/ExportScanner.h"
 
 #include "org/esb/util/Decimal.h"
 //#include "org/esb/hive/FileImporter.h"
@@ -287,6 +289,9 @@ void listener(int argc, char *argv[]) {
   DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
+  ExportScanner expscan;
+  Messenger::getInstance().addMessageListener(expscan);
+
   WebServer webserver;
   Messenger::getInstance().addMessageListener(webserver);
 
@@ -315,6 +320,7 @@ void listener(int argc, char *argv[]) {
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
   }
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
+    Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
 
   if (string(Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().

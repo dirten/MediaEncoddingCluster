@@ -44,7 +44,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 #hive_LDADD= -L./org/esb -llang -lesb -lsql -lhive -lav -lutil -lsignal -lweb -lio -lnet -lwt -lwtext -lwthttp -lboost_serialization
 add_executable (testav test_av.cpp)
 
-target_link_libraries (testav web sql esb hive lang av util signal io net avcodec avformat avutil swscale )
+target_link_libraries (testav web sql esb hive lang av util signal io net avformat avcodec avutil swscale )
 IF(WIN32)
 target_link_libraries (testav z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wtd wtextd wthttpd)
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wtd wtextd wthttpd )
