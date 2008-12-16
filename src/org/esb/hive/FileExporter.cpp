@@ -44,7 +44,6 @@ void FileExporter::exportFile(int fileid){
   FormatOutputStream fos(&fout);
   PacketOutputStream pos(&fos);
 
-//  Encoder *encoder = NULL;
   int video_id = 0;
   int audio_id = 0;
   int audio_pts = 0;
@@ -229,7 +228,7 @@ void FileExporter::exportFile(int fileid){
 
 //      p.packet->pts = rs.getLong("pts");
 //      p.packet->dts = rs.getLong("dts");
-      
+
 //      p.packet->dts = dtsmap[rs.getInt("stream_index")];//rs.getLong("dts");
 //      dtsmap[rs.getInt("stream_index")]+=rs.getInt("duration");
       //	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");

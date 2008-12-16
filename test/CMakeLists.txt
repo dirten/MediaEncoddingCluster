@@ -59,8 +59,8 @@ add_executable (test_mysql test_mysql.cpp)
 add_executable (info info.cpp)
 
 target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT})
-target_link_libraries (info mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt)
-target_link_libraries (test_mysql mysqlclient  ) 
+target_link_libraries (info mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
+target_link_libraries (test_mysql pthread mysqlclient crypt ssl z) 
 ENDIF(NOT WIN32)
 
 #target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 z pthread)

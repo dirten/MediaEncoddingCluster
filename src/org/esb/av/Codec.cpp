@@ -115,7 +115,6 @@ namespace org {
         ctx->flags |= _flags;
         //					ctx->start_time=_start_time;
       }
-
       int Codec::open() {
         if (findCodec(_mode)) {
           ctx = avcodec_alloc_context();
