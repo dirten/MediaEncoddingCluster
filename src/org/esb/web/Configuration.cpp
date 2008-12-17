@@ -39,7 +39,7 @@ namespace org {
           saveButton->clicked.connect(SLOT(this, Configuration::saveConfig));
           exampleTabs->addTab(createDbConfigPage(), "Database Config");
           exampleTabs->addTab(createSystemPage(this), "System");
-          exampleTabs->addTab(createServicePage(this), "Services");
+//          exampleTabs->addTab(createServicePage(this), "Services");
         }
 
         Wt::WWidget * createDirectoryPage() {
@@ -69,7 +69,7 @@ namespace org {
           Wt::Ext::Button * b8=new Wt::Ext::Button("restart Hive",result->elementAt(2, 1));
           Wt::Ext::Button * b9=new Wt::Ext::Button("restart Web",result->elementAt(2, 2));
 //          Wt::Ext::Button * b1=new Wt::Ext::Button("",result->elementAt(3, 0))
-
+          
           
           myMap->mapConnect(b1->clicked, b1);
           myMap->mapConnect(b2->clicked, b2);

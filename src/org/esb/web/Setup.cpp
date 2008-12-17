@@ -393,16 +393,23 @@ namespace org {
         con_create.executeNonQuery(string("CREATE DATABASE hive"));
 #endif
         config::Config::setProperty("db.connection", props.getProperty("db.connection"));
-        hive::Setup::buildDatabaseModel("../sql/hive-0.0.1.sql");
+        config::Config::setProperty("host",_el.getElement("db.host")->text().narrow().c_str());
+        config::Config::setProperty("user",_el.getElement("db.user")->text().narrow().c_str());
+        config::Config::setProperty("passwd",_el.getElement("db.pass")->text().narrow().c_str());
+        config::Config::setProperty("database",_el.getElement("db.db")->text().narrow().c_str());
+        hive::Setup::buildDatabaseModel("../sql/hive-0.0.2.sql");
         sql::Connection con(std::string(props.getProperty("db.connection")));
+/*
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','") + _el.getElement("db.db")->text().narrow() + "')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
+ **/
         con.executeNonQuery(std::string("INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
 
         error->setText("Database Model created!");
         config::Config::setProperty("hive.mode", "server");
+        config::Config::save2db();
       }
     }
   }

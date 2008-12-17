@@ -278,7 +278,8 @@ namespace org {
          */
 
         bool setReadOnly();
-
+        const std::string getExtension();
+        void changeExtension(const std::string &);
 
         FileList listFiles();
         FileList listFiles(FileFilter & filter);

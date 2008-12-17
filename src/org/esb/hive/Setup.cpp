@@ -25,7 +25,7 @@ namespace org {
           exit(-127);
         }
 
-        if (!checkDatabaseVersion(string("0.0.1"))) {
+        if (!checkDatabaseVersion(string("0.0.2"))) {
 //          logerror("Database Version mismatch");
           exit(-127);
         }
@@ -40,22 +40,21 @@ namespace org {
         sql::Connection con(config::Config::getProperty("db.connection"));
         util::StringTokenizer st(sql,";");
         while(st.hasMoreTokens()){
-          std::string next=st.nextToken();
-//          if(strlen(util::StringUtil::trim(next))>0){
-            logdebug(next<<" Create");
-            con.executeNonQuery(next);
-//          }
+          std::string t=st.nextToken();
+          t=StringUtil::trim(t,*new std::string("\n"));
+          std::string next=StringUtil::trim(t);
+            logdebug("Create Table "<<next);
+            logdebug("Create Table leng"<<next.size());
+            if(next.size()>1)
+                con.executeNonQuery(next);
         }
-
-        //        logdebug(sql);
-        //        fis.read(sql);
       }
 
       void Setup::buildDatabase(std::string dbName) {
         std::string conf = config::Config::getProperty("db.connection");
         sql::Connection con(parseConnectionString(conf, "host"), string(""), parseConnectionString(conf, "user"), parseConnectionString(conf, "password"));
         con.executeNonQuery(string("CREATE DATABASE ").append(dbName));
-        buildDatabaseModel("../sql/hive-0.0.1.sql");
+        buildDatabaseModel("../sql/hive-0.0.2.sql");
       }
 
       bool Setup::checkDatabaseExist() {

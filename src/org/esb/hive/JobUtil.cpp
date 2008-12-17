@@ -6,6 +6,7 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 #include "org/esb/av/Codec.h"
+#include "org/esb/io/File.h"
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
@@ -93,7 +94,16 @@ int jobcreator(int argc, char*argv[]){
 
 {
 	PreparedStatement stmt=con.prepareStatement("insert into files ( filename, parent ) values( :filename, :parent )");
-	stmt.setString("filename",profilename+"/"+filename);
+        org::esb::io::File f(filename.c_str());
+        std::string ext=f.getExtension();
+            AVOutputFormat *ofmt=NULL;
+            while((ofmt= av_oformat_next(ofmt))) {
+                if(profile_v_format==ofmt->long_name){
+                  f.changeExtension(ofmt->extensions);
+                }
+            }
+
+        stmt.setString("filename",profilename+"/"+f.getFileName());
 	stmt.setInt("parent",fileid);
 	stmt.execute();
 	outfileid=con.lastInsertId();

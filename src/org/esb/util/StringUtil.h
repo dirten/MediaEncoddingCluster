@@ -10,7 +10,7 @@ namespace org{
 	    class StringUtil{
 		public:
 		    string tmp;
-		    static const char * trim(string & s, string & drop = *new string(" "));
+		    static const std::string trim(string & s, string & drop = *new string(" "));
 		    static const std::string toLower(std::string);
 	    };
 

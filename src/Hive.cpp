@@ -320,13 +320,13 @@ void listener(int argc, char *argv[]) {
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
   }
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
-    Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
 
   if (string(Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().
         setProperty("directoryscan", START).
         setProperty("directory", Config::getProperty("hive.scandir")).
         setProperty("interval", Config::getProperty("hive.scaninterval")));
+        Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
   }
 
 

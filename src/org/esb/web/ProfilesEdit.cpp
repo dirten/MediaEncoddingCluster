@@ -19,6 +19,7 @@
 
 #include "org/esb/av/AV.h"
 
+#include "SqlUtil.h"
 #include <map>
 #include <string>
 
@@ -180,6 +181,17 @@ namespace web{
     
     void saveData(){
       bool update=atoi(elements["id"]->text().narrow().c_str())>0?true:false;
+      std::map<std::string, std::string> data;
+      std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
+
+      for (; it != elements.end(); it++) {
+        std::string value=(*it).second->text().narrow();
+	if((*it).first=="a_codec"||(*it).first=="v_codec")value=Decimal(codecname2codecid[value]).toString();
+        data[(*it).first] = value;
+      }
+      SqlUtil::map2sql("profiles", data);
+      return;
+
       std::string sql;
       std::string fields;
       std::string values;
@@ -213,7 +225,8 @@ namespace web{
 	  for(;elit!=elements.end();elit++){
 	    std::string value=(*elit).second->text().narrow();
 	    if((*elit).first=="a_codec"||(*elit).first=="v_codec")value=Decimal(codecname2codecid[value]).toString();
-	    pstmt.setString((*elit).first,value);
+//            std::cout << (*elit).first <<"="<<value<<std::endl;
+            pstmt.setString((*elit).first,value);
 	  }
 	  pstmt.execute();
 	  profileSaved.emit();

@@ -8,6 +8,7 @@
 #include "org/esb/lang/Exception.h"
 #include <boost/shared_ptr.hpp>
 #include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/convenience.hpp"
 
 
 using namespace std;
@@ -29,6 +30,14 @@ File::~File ()
 {
 }
 
+const string File::getExtension ()
+{
+  return fs::extension(_full_path);
+}
+void File::changeExtension (const std::string & ext)
+{
+  _full_path=fs::change_extension(_full_path, "."+ext);
+}
 const string File::getPath ()
 {
   return _full_path.string();
@@ -37,7 +46,7 @@ const string File::getFileName ()
 {
   if(isFile())
     return _full_path.leaf();
-  return "";
+  return _full_path.leaf();
 }
 
 const string File::getFilePath ()

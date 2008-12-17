@@ -21,7 +21,7 @@ Packet::Packet() {
 Packet::Packet(const Packet & p) {
   //	cout << "Packet(const Packet & p)"<<endl;
   //	callDestruct=false;
-  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket(), &av_free_packet);
+  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
 
   av_init_packet(packet);
@@ -46,7 +46,7 @@ Packet::Packet(const Packet & p) {
 
 Packet Packet::operator=(Packet & p) {
   //	cout << "Packet::operator="<<endl;
-  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket(), &av_free_packet);
+  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
   //	packet=new AVPacket();
   av_init_packet(packet);
@@ -70,7 +70,7 @@ Packet Packet::operator=(Packet & p) {
 Packet::Packet(int s) {
   //	cout << "Packet(int s)"<<endl;
   isCopy = false;
-  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket(), &av_free_packet);
+  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
   av_init_packet(packet);
   packet->size = s;
@@ -86,9 +86,9 @@ Packet::Packet(int s) {
 Packet::~Packet() {
   //    cout << "delete Packet"<<endl;
   //  	av_free_packet(packetPtr.get());
-
   if (callDestruct)
     delete [] packet->data;
+
   else
     av_free_packet(packet);
 
