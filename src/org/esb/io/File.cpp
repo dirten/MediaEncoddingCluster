@@ -17,12 +17,14 @@ using namespace org::esb::io;
 
 namespace fs=boost::filesystem;
 
-File::File (const char *pathname)
-{
+File::File (const char *pathname){
   if (pathname == NULL) {
 //        throw Exception(__FILE__, __LINE__, "File::File - Filename given is NULL");
   }
 //  _filename = pathname;
+  _full_path=fs::system_complete( fs::path( pathname, fs::native ) );
+}
+File::File (const std::string&pathname){
   _full_path=fs::system_complete( fs::path( pathname, fs::native ) );
 }
 
@@ -61,6 +63,9 @@ const string File::getFilePath ()
 
 bool File::exists (){
   return fs::exists( _full_path );
+}
+bool File::mkdir (){
+  return fs::create_directory( _full_path );
 }
 
 bool File::isFile (){

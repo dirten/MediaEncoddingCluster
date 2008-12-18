@@ -37,6 +37,9 @@ void FileOutputStream::flush() {
 void FileOutputStream::write(const char * buffer) {
     write((char*)buffer, 1);
 }
+void FileOutputStream::write(const std::string & buffer) {
+    write((char*)buffer.c_str(), buffer.size());
+}
 
 void FileOutputStream::write(char * buffer, int length) {
     fwrite(buffer,1, length, _file);

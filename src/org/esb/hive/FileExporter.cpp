@@ -40,6 +40,10 @@ void FileExporter::exportFile(int fileid){
 	}
   }
   org::esb::io::File fout(filename.c_str());
+  org::esb::io::File outDirectory(fout.getFilePath().c_str());
+  if(!outDirectory.exists()){
+    outDirectory.mkdir();
+  }
 //  string stream_id = fileid;
   FormatOutputStream fos(&fout);
   PacketOutputStream pos(&fos);

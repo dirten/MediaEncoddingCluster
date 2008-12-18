@@ -23,6 +23,7 @@ namespace org {
          *          If the <code>pathname</code> argument is <code>null</code>
          */
         File(const char * filename);
+        File(const std::string& filename);
         ~File();
         /**
          * Converts this abstract pathname into a pathname string.  The resulting

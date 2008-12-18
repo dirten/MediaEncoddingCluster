@@ -40,7 +40,7 @@ namespace org {
     namespace web {
 
       Setup::Setup(const Wt::WEnvironment & env) : WApplication(env) {
-        using namespace org::esb::web::wtk;
+        using namespace wtk;
         if (!(string(org::esb::config::Config::getProperty("hive.mode")) == "setup")) {
           WApplication::instance()->redirect("/");
           WApplication::instance()->quit();
@@ -50,7 +50,9 @@ namespace org {
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
         Wt::WBorderLayout * border = new Wt::WBorderLayout();
         viewPort->setLayout(border);
-        messageResourceBundle().use("../res/setup", false);
+        std::string res=org::esb::config::Config::getProperty("hive.path");
+
+        messageResourceBundle().use(res+"../res/setup", false);
         useStyleSheet("main.css");
 
         //        useStyleSheet("ext/resources/css/xtheme-gray.css");

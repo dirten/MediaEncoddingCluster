@@ -17,6 +17,7 @@ public:
                 void close();
                 void flush();
                 void write(const char * buffer);
+                void write(const std::string&);
                 void write(char * buffer, int length);
                 void write(const char * buffer, int offset, int length);
                 void write(vector<unsigned char>&buffer);

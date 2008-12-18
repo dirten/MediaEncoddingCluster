@@ -29,7 +29,8 @@ Packet::Packet(const Packet & p) {
   packet->pts = p.packet->pts;
   packet->dts = p.packet->dts;
   if (p.packet->size > 0) {
-    packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
+    packet->data = new uint8_t[p.packet->size];
+//    packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
 //    memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(packet->data, p.packet->data, p.packet->size);
   }
@@ -53,7 +54,8 @@ Packet Packet::operator=(Packet & p) {
   packet->pts = p.packet->pts;
   packet->dts = p.packet->dts;
   packet->data = 0;
-  packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE ];
+    packet->data = new uint8_t[p.packet->size];
+//  packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE ];
 //  memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
   memcpy(packet->data, p.packet->data, p.packet->size);
   packet->size = p.packet->size;
@@ -75,8 +77,9 @@ Packet::Packet(int s) {
   av_init_packet(packet);
   packet->size = s;
   if (s > 0) {
-    packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
-    memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
+    packet->data = new uint8_t[s];
+//    packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
+//    memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
     callDestruct = true;
   }else {
     logerror("Try to Allocate buffer <0")
