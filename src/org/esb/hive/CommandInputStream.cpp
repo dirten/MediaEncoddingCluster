@@ -40,6 +40,6 @@ int CommandInputStream::read(unsigned char * buffer, int length) {
   return _source->read(buffer, length);
 }
 
-int CommandInputStream::available(bool isBlocking) {
+long long int CommandInputStream::available(bool isBlocking) {
   return _source->available(isBlocking);
 }

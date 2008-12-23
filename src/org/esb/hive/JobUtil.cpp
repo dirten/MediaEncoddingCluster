@@ -111,7 +111,7 @@ int jobcreator(int argc, char*argv[]){
 {
 	PreparedStatement stmt=con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
 	"(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
-	stmt.setInt("fileid",outfileid);
+	stmt.setLong("fileid",outfileid);
 	stmt.setInt("stream_index",0);
 	stmt.setInt("stream_type",0);
 	stmt.setInt("codec",profile_v_codec);
@@ -131,7 +131,7 @@ int jobcreator(int argc, char*argv[]){
 {
 	PreparedStatement stmt=con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt) values"
 	"(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt)");
-	stmt.setInt("fileid",outfileid);
+	stmt.setLong("fileid",outfileid);
 	stmt.setInt("stream_index",1);
 	stmt.setInt("stream_type",1);
 	stmt.setInt("codec",profile_a_codec);
@@ -148,22 +148,22 @@ int jobcreator(int argc, char*argv[]){
 {
 	PreparedStatement stmtJob=con.prepareStatement("insert into jobs ( inputfile, outputfile, begin ) values( :inputfile, :outputfile, now())");
 	stmtJob.setInt("inputfile",fileid);
-	stmtJob.setInt("outputfile",outfileid);
+	stmtJob.setLong("outputfile",outfileid);
 	stmtJob.execute();
 	jobid=con.lastInsertId();
 }
 {
 	PreparedStatement stmtJob=con.prepareStatement("insert into job_details ( job_id,instream, outstream ) values(:jobid, :in, :out)");
 	stmtJob.setInt("in",in_v_stream);
-	stmtJob.setInt("out",v_stream_id);
-	stmtJob.setInt("jobid",jobid);
+	stmtJob.setLong("out",v_stream_id);
+	stmtJob.setLong("jobid",jobid);
 	stmtJob.execute();
 }
 {
 	PreparedStatement stmtJob=con.prepareStatement("insert into job_details ( job_id, instream, outstream ) values( :jobid, :in, :out)");
 	stmtJob.setInt("in",in_a_stream);
-	stmtJob.setInt("out",a_stream_id);
-	stmtJob.setInt("jobid",jobid);
+	stmtJob.setLong("out",a_stream_id);
+	stmtJob.setLong("jobid",jobid);
 	stmtJob.execute();
 }
 /*
@@ -184,14 +184,14 @@ int jobcreator(int argc, char*argv[]){
 	PreparedStatement stmtJob=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, frame_count) (select stream_id, :target, startts, frame_count from frame_groups where stream_id=:id)");
 //	stmtJob.setInt("jobid",jobid);
 	stmtJob.setInt("id",in_v_stream);
-	stmtJob.setInt("target",v_stream_id);
+	stmtJob.setLong("target",v_stream_id);
 	stmtJob.execute();
 }
 {
 	PreparedStatement stmtJob=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, frame_count) (select stream_id, :target, startts, frame_count from frame_groups where stream_id=:id)");
 //	stmtJob.setInt("jobid",jobid);
 	stmtJob.setInt("id",in_a_stream);
-	stmtJob.setInt("target",a_stream_id);
+	stmtJob.setLong("target",a_stream_id);
 	stmtJob.execute();
 }
 return 0;

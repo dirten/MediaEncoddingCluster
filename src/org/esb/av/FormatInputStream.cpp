@@ -51,7 +51,7 @@ namespace org {
                 return (AVInputStream*) formatCtx->streams[streamIndex];
             }
 
-            int FormatInputStream::available(bool withBlocking) {
+            long long int FormatInputStream::available(bool withBlocking) {
                 return 0;
             }
 

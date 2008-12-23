@@ -9,7 +9,7 @@ CharArrayInputStream::CharArrayInputStream(const char * in, int length) {
     _length=length;
 }
 
-int CharArrayInputStream::available(bool isBlocking){
+long long int CharArrayInputStream::available(bool isBlocking){
     return 0;
 }
 

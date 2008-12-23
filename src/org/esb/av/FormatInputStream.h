@@ -25,7 +25,7 @@ namespace org {
                 FormatInputStream(File * source);
                 ~FormatInputStream();
                 AVFormatContext * getFormatContext();
-                int available(bool isBlocking = false);
+                long long int available(bool isBlocking = false);
                 long long int getFileSize();
                 int read(unsigned char * buffer, int length);
                 int read(vector<unsigned char>&buffer);

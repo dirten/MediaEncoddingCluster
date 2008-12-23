@@ -36,12 +36,19 @@ void FileExporter::exportFile(int fileid){
     stmt.setInt("id", fileid);
     ResultSet rs = stmt.executeQuery();
 	if(rs.next()){
-		filename=rs.getString("filename");
+		if(rs.getString("path").size()==0){
+			filename=Config::getProperty("hive.path");
+		}else{
+			filename=rs.getString("path");
+		}
+		filename+="/";
+		filename+=rs.getString("filename");
 	}
   }
   org::esb::io::File fout(filename.c_str());
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if(!outDirectory.exists()){
+	logdebug("creating output directory:"<<outDirectory.getFilePath());
     outDirectory.mkdir();
   }
 //  string stream_id = fileid;

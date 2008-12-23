@@ -329,6 +329,8 @@ void listener(int argc, char *argv[]) {
         Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
   }
 
+//  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
+
 
   ctrlCHitWait();
 

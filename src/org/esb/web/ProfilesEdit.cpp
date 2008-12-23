@@ -190,48 +190,10 @@ namespace web{
         data[(*it).first] = value;
       }
       SqlUtil::map2sql("profiles", data);
-      return;
-
-      std::string sql;
-      std::string fields;
-      std::string values;
-      if(update)
-        sql+="UPDATE profiles SET ";
-      else
-        sql+="INSERT INTO profiles ";
-      std::map<std::string,Wt::Ext::LineEdit*>::iterator elit=elements.begin();
-	  for(;elit!=elements.end();elit++){
-        if((*elit).first=="id")continue;
-	    if(update)
-	      sql+=" "+(*elit).first+"=:"+(*elit).first+", ";
-	    else{
-	      fields+=(*elit).first+", ";
-          values+=":"+(*elit).first+", ";
-	    }
-	  }
-	  fields=fields.substr(0,fields.length()-2);
-	  values=values.substr(0,values.length()-2);
-	  if(update){
-	    sql=sql.substr(0,sql.length()-2);
-	    sql+=" where id=:id";
-	  }else{
-	    sql+="("+fields+") VALUES ("+values+")";
-	  }
-	  std::cout << "SQL:"<<sql<<std::endl;
-	  Connection con(std::string(Config::getProperty("db.connection")));
-	  PreparedStatement pstmt=con.prepareStatement(sql.c_str());
-	  
-	  elit=elements.begin();
-	  for(;elit!=elements.end();elit++){
-	    std::string value=(*elit).second->text().narrow();
-	    if((*elit).first=="a_codec"||(*elit).first=="v_codec")value=Decimal(codecname2codecid[value]).toString();
-//            std::cout << (*elit).first <<"="<<value<<std::endl;
-            pstmt.setString((*elit).first,value);
-	  }
-	  pstmt.execute();
 	  profileSaved.emit();
 	  but->setEnabled(false);
 	  setEnabled(false);
+      return;
     }
   };
 }}}

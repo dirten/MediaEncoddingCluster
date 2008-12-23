@@ -58,7 +58,7 @@ const string File::getFilePath ()
   else
   if(isFile())
     return _full_path.branch_path().string();
-  return "";  
+  return _full_path.branch_path().string();  
 }
 
 bool File::exists (){

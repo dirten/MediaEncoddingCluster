@@ -15,7 +15,7 @@ namespace org {
       class ObjectInputStream:public InputStream {
       public:
 	ObjectInputStream (InputStream * is);
-	int available (bool isBlocking = false);
+	long long int available (bool isBlocking = false);
 	int read (unsigned char *buffer, int length);
 	int read (vector < unsigned char >&buffer);
 	int read ();
@@ -28,8 +28,8 @@ namespace org {
 	    return;
 	  }
 	  istringstream archive_stream (data);
-//	    boost::archive::binary_iarchive archive (archive_stream);
-                  boost::archive::text_iarchive archive(archive_stream);
+	    boost::archive::binary_iarchive archive (archive_stream);
+//      boost::archive::text_iarchive archive(archive_stream);
 	    archive >> object;
 	}
       private:

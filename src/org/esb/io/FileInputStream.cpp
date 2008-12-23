@@ -47,12 +47,12 @@ void FileInputStream::close() {
   fclose(file);
 }
 
-int FileInputStream::available(bool isBlocking) {
+long long int FileInputStream::available(bool isBlocking) {
   return _filePointer;
 }
 
 int FileInputStream::read(string & str) {
-  int size = available();
+  int size = static_cast<int>(available());
   char * buffer = new char[size];
   int read = fread((char*) buffer, 1, size, file);
   _filePointer -= read;

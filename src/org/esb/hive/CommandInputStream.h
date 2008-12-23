@@ -15,7 +15,7 @@ namespace org {
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
         int read();
-        int available(bool isBlocking = false);
+        long long int available(bool isBlocking = false);
         Command & readCommand();
       private:
         InputStream * _source;

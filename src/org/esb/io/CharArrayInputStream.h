@@ -9,7 +9,7 @@ class CharArrayInputStream: public InputStream {
 public:
                 CharArrayInputStream(const char * in, int length);
                 ~CharArrayInputStream();
-		int available(bool isBlocking=false);
+		long long int available(bool isBlocking=false);
 		int read(unsigned char * buffer, int length);
 		int read(vector<unsigned char>&buffer);
 		int read();

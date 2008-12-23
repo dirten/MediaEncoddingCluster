@@ -46,7 +46,7 @@ Connection::~Connection() {
   if(mysqlPtr.use_count()==0)
     delete mysqlPtr.get();
    */
-  std::cout <<"Connection Object destroyed"<<std::endl;
+//  std::cout <<"Connection Object destroyed"<<std::endl;
 }
 
 void Connection::connect() {

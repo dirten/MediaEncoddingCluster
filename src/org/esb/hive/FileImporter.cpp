@@ -75,7 +75,7 @@ int import(int argc, char *argv[]) {
     cout << "File:" << inputFile.getPath() << endl;
   }
 
-  int fileid = 0, count = 0, frame_group = 0;
+  long long int fileid = 0, count = 0, frame_group = 0;
   //    try{
   FormatInputStream fis(&inputFile);
   //	}catch(...){return 0}
@@ -114,7 +114,7 @@ int import(int argc, char *argv[]) {
 
   AVFormatContext *ctx = fis.getFormatContext();
   const int nb = ctx->nb_streams;
-  std::map<int, int> streams;
+  std::map<int, long long int> streams;
   std::map<int, int> codec_types;
   std::map<int, int> num;
   std::map<int, int> den;
@@ -137,7 +137,7 @@ int import(int argc, char *argv[]) {
   for (unsigned int a = 0; a < ctx->nb_streams; a++) {
     int field = 0;
     duration += ctx->streams[a]->duration;
-    stmt_str.setInt("fileid", fileid);
+    stmt_str.setLong("fileid", fileid);
     stmt_str.setInt("stream_index", (int) a);
     stmt_str.setInt("stream_type", ctx->streams[a]->codec->codec_type);
     stmt_str.setInt("codec", ctx->streams[a]->codec->codec_id);
@@ -162,7 +162,7 @@ int import(int argc, char *argv[]) {
 
 
     stmt_str.execute();
-    int streamid = con.lastInsertId();
+    long long int streamid = con.lastInsertId();
     streams[a] = streamid;
 
 
@@ -171,7 +171,7 @@ int import(int argc, char *argv[]) {
       stmt_fr.setLong("frame_count", ctx->streams[a]->duration);
       stmt_fr.setLong("startts", ctx->streams[a]->start_time);
       stmt_fr.setLong("byte_pos", 0);
-      stmt_fr.setInt("stream_id", streamid);
+      stmt_fr.setLong("stream_id", streamid);
       stmt_fr.setInt("stream_index", a);
       stmt_fr.execute();
     }
@@ -268,11 +268,11 @@ int import(int argc, char *argv[]) {
 
     if (packet.packet->stream_index == 0 && packet.isKeyFrame() && frame_group_counter >= min_frame_group_count) {
 
-      stmt_fr.setInt("frame_group", frame_group);
+      stmt_fr.setLong("frame_group", frame_group);
       stmt_fr.setInt("frame_count", frame_group_counter);
       stmt_fr.setLong("startts", startts);
       stmt_fr.setLong("byte_pos", packet.packet->pos);
-      stmt_fr.setInt("stream_id", streams[packet.packet->stream_index]);
+      stmt_fr.setLong("stream_id", streams[packet.packet->stream_index]);
       stmt_fr.setInt("stream_index", packet.packet->stream_index);
       stmt_fr.execute();
       startts = packet.packet->dts;
@@ -283,14 +283,14 @@ int import(int argc, char *argv[]) {
     int field = 0;
     packet.packet->duration = packet.packet->duration == 0 ? 1
         : packet.packet->duration;
-    stmt.setInt("stream_id", streams[packet.packet->stream_index]);
+    stmt.setLong("stream_id", streams[packet.packet->stream_index]);
     stmt.setLong("pts", packet.packet->pts);
     //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
     stmt.setLong("dts", packet.packet->dts);
     stmt.setInt("stream_index", packet.packet->stream_index);
     stmt.setInt("key_frame", packet.isKeyFrame());
     if (packet.packet->stream_index == 0)
-      stmt.setInt("frame_group", frame_group);
+      stmt.setLong("frame_group", frame_group);
     else
       stmt.setInt("frame_group", 0);
     stmt.setInt("flags", packet.packet->flags);
@@ -300,7 +300,7 @@ int import(int argc, char *argv[]) {
     stmt.setInt("data_size", packet.packet->size);
     //        Blob blob((const char*)packet.data,packet.size);
     //        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
-    stmt.execute();
+//    stmt.execute();
 
     //      show_progress+=packet.duration;
 
@@ -322,7 +322,7 @@ int import(int argc, char *argv[]) {
   //    trans.commit();
   cout << endl;
   //      show_progress=duration;
-  return fileid;
+  return static_cast<int>(fileid);
 }
 
 /*

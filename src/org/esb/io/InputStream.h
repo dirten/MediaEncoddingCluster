@@ -87,7 +87,7 @@ public:
                  *             without blocking.
                  * @exception  IOException  if an I/O error occurs.
                  */
-                virtual int available(bool isBlocking=false)=0;
+                virtual long long int available(bool isBlocking=false)=0;
 
                 /**
                  * Closes this input stream and releases any system resources associated

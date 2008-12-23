@@ -74,7 +74,7 @@ namespace org {
 
         int read(string & str) {
           /*Receive length of data*/
-          int length = available(true);
+          int length = static_cast<int>(available(true));
 
 //          cout << "Readed Buffer length"<<length<<endl;
           unsigned char * buffer = new unsigned char[length];
@@ -94,7 +94,7 @@ namespace org {
         /******************************************************************************/
 
         /*Receive length of buffer*/
-        int available(bool isBlocking) {
+        long long int available(bool isBlocking) {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
           int len = 0;
