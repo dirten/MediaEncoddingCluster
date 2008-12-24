@@ -5,6 +5,7 @@
 #include <vector>
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/hive/CodecFactory.h"
+#include "org/esb/hive/FormatStreamFactory.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
@@ -85,7 +86,7 @@ void ClientHandler::fillProcessUnit(ProcessUnit * u) {
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   Connection con(Config::getProperty("db.connection"));
-  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority, start_ts limit 1");
   ResultSet * rs = stmt_ps.executeQuery2();
 
   ProcessUnit u;
@@ -101,7 +102,7 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._encoder = CodecFactory::getStreamEncoder(rs->getInt("target_stream"));
     u._source_stream = rs->getInt("source_stream");
     u._target_stream = rs->getInt("target_stream");
-
+/*
     org::esb::io::File file(filename.c_str());
     if (!file.exists()) {
       logerror("Could not find file : " << filename.c_str());
@@ -109,10 +110,12 @@ ProcessUnit ClientHandler::getProcessUnit() {
       _stmt_pu->execute();
       return u;
     }
-    /*TODO build formatstream Factory, */
     FormatInputStream fis(&file);
-    fis.seek(rs->getInt("stream_index"), (start_ts - 70000));
-    PacketInputStream pis(&fis);
+*/
+	FormatInputStream * fis=FormatStreamFactory::getInputStream(filename);
+//    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
+    fis->seek(rs->getInt("stream_index"), (start_ts));
+    PacketInputStream pis(fis);
     int size = 0;
     for (int a = 0; a < frame_count + 3;) {
       Packet tmp_p;

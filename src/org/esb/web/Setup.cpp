@@ -399,7 +399,7 @@ namespace org {
         config::Config::setProperty("user",_el.getElement("db.user")->text().narrow().c_str());
         config::Config::setProperty("passwd",_el.getElement("db.pass")->text().narrow().c_str());
         config::Config::setProperty("database",_el.getElement("db.db")->text().narrow().c_str());
-        hive::Setup::buildDatabaseModel("../sql/hive-0.0.2.sql");
+        hive::Setup::buildDatabaseModel("../sql/hive-0.0.3.sql");
         sql::Connection con(std::string(props.getProperty("db.connection")));
 /*
         con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");

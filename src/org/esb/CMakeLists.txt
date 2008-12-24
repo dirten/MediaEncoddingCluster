@@ -130,6 +130,7 @@ add_library (hive hive/Command.cpp
 	hive/Setup.cpp 
 	hive/FileExporter.cpp
 	hive/ExportScanner.cpp
+	hive/FormatStreamFactory.cpp
 	
 )
 

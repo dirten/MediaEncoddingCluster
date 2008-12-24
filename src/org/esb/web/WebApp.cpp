@@ -44,7 +44,7 @@ namespace org {
 
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
         north->setBorder(false);
-        Wt::WText *head = new Wt::WText("MediaEncodingCluster V-0.0.1 build-'$Rev$");
+        Wt::WText *head = new Wt::WText("MediaEncodingCluster V-0.0.3 ($Rev$-"__DATE__ "-" __TIME__")");
         head->setStyleClass("north");
         north->setLayout(new Wt::WFitLayout());
         north->layout()->addWidget(head);
