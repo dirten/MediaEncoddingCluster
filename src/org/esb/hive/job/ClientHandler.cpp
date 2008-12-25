@@ -204,8 +204,18 @@ string toString(int num) {
 */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   {
+	  logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start");
     boost::mutex::scoped_lock scoped_lock(m_mutex);
-    list< boost::shared_ptr<Packet> >::iterator it;
+	std::string name=org::esb::config::Config::getProperty("hive.path");
+	name+="/tmp/";
+	name+=org::esb::util::Decimal(unit._process_unit).toString();
+	name+=".unit";
+	org::esb::io::File out(name.c_str());
+	org::esb::io::FileOutputStream fos(&out);
+	org::esb::io::ObjectOutputStream ous(&fos);
+	ous.writeObject(unit);
+	/*
+	list< boost::shared_ptr<Packet> >::iterator it;
     _stmt_fr->setInt("id", unit._process_unit);
     _stmt_fr->execute();
     int count = 0, frame_group = 0;
@@ -232,8 +242,10 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
       _stmt->setInt("data_size", packet->getSize());
       _stmt->setBlob("data", (char *) packet->packet->data, packet->packet->size);
       _stmt->execute();
-    }
+    }*/
   }
+  logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start");
+
   return true;
 }
 
