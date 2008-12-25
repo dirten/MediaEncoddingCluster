@@ -31,7 +31,7 @@ namespace org {
         }
         bool accept(File file) {
           bool result=false;
-          if(media_ext.find(file.getExtension())!=media_ext.end())
+		  if(file.isDirectory()||media_ext.find(file.getExtension())!=media_ext.end())
             result=true;
           return result;
         }
