@@ -78,22 +78,23 @@ void ProcessUnit::process() {
   multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
   multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
   int a = 0;
-  int counter = 0;
+  int counter = 0, s=0;
   for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
     if (toDebug)
       logdebug("Loop");
     boost::shared_ptr<Packet> p = *it;
-
+	if(++s%100==0)
+		cout << "\r"<<s;
     insize += p->packet->size;
 
     if (p->isKeyFrame()) {
-      cout << "KeyFrame\t";
+//      cout << "KeyFrame\t";
     }
     //	    if(tmp._buffer==0)continue;
     //        boost::shared_ptr<Frame> fr(new Frame(tmp));
     //        pts_list.insert(fr);
 
-    cout << "PacketPts:" << p->packet->pts << "\tPacketDts:" << p->packet->dts << "\t";
+//    cout << "PacketPts:" << p->packet->pts << "\tPacketDts:" << p->packet->dts << "\t";
     //	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
     //	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
     //        cout << endl;
@@ -125,7 +126,7 @@ void ProcessUnit::process() {
     Packet ret = _encoder->encode(f);
     ret.packet->pts = av_rescale_q(ret.packet->pts, _decoder->getTimeBase(), _encoder->getTimeBase());
     ret.packet->dts = av_rescale_q(ret.packet->dts, _decoder->getTimeBase(), _encoder->getTimeBase());
-cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
+//cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)
       logdebug("Frame Encoded");
 
