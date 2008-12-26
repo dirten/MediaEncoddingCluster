@@ -69,7 +69,7 @@ int import(int argc, char *argv[]) {
       }
    */
   org::esb::io::File inputFile(argv[1]);
-  if (!inputFile.canRead()) {
+  if (!inputFile.exists()||!inputFile.canRead()) {
     cout << "Source File not found" << endl;
   } else {
     cout << "File:" << inputFile.getPath() << endl;

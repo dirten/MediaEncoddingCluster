@@ -78,7 +78,7 @@ bool File::isDirectory (){
 
 bool File::canRead ()
 {
-  return true;
+	return fs::status_known( fs::status(_full_path) );
 }
 
 bool File::canWrite ()
