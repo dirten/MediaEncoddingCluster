@@ -1,4 +1,6 @@
 #include "ExportScanner.h"
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
@@ -8,8 +10,6 @@
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 namespace org {
   namespace esb {
     namespace hive {
