@@ -39,6 +39,7 @@ namespace org {
         io::FileInputStream(&f).read(sql);
         sql::Connection con(config::Config::getProperty("db.connection"));
         util::StringTokenizer st(sql,";");
+
 		int tok=st.countTokens();
 		for(int i=0;i<tok-1;i++){
           std::string t=st.nextToken();
