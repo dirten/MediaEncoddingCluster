@@ -34,8 +34,8 @@ class ProcessUnit{
 //	private:
 //	        friend class boost::serialization::access;
 
-		list<boost::shared_ptr<Packet> > _input_packets;
-		list<boost::shared_ptr<Packet> > _output_packets;
+		std::list<boost::shared_ptr<Packet> > _input_packets;
+		std::list<boost::shared_ptr<Packet> > _output_packets;
 		Decoder * _decoder;
 		Encoder * _encoder;
 		Codec  * codec;
