@@ -179,7 +179,9 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `send` timestamp NULL default NULL,
   `complete` timestamp NULL default NULL,
   `priority` tinyint(1) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `send_idx` (`send`),
+  KEY `source_stream_idx` (`source_stream`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3417 ;
 
 -- --------------------------------------------------------
