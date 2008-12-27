@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `frame_groups` (
   `byte_pos` double NOT NULL,
   `stream_id` int(11) default NULL,
   `stream_index` int(11) NOT NULL default '0',
-  `frame_count` int(11) NOT NULL default '0',
+  `frame_count` bigint NOT NULL default '0',
   `sended` timestamp NULL default NULL,
   `complete` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
@@ -175,10 +175,10 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `source_stream` int(11) NOT NULL,
   `target_stream` int(11) NOT NULL,
   `start_ts` bigint(20) NOT NULL,
-  `frame_count` int(11) NOT NULL,
+  `frame_count` bigint NOT NULL,
   `send` timestamp NULL default NULL,
   `complete` timestamp NULL default NULL,
-  `priority` tinyint(1) NOT NULL,
+  `priority` tinyint(1) NOT NULL default '5',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `codec_name` varchar(255) default NULL,
   `framerate` int(11) NOT NULL default '0',
   `start_time` double NOT NULL default '0',
-  `duration` int(11) NOT NULL default '0',
+  `duration` bigint NOT NULL default '0',
   `time_base_num` int(11) NOT NULL default '0',
   `time_base_den` int(11) NOT NULL default '0',
   `framecount` int(11) NOT NULL default '0',
