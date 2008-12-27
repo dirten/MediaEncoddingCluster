@@ -22,8 +22,9 @@ namespace org {
       TcpSocket * TcpServerSocket::accept() {
         boost::shared_ptr<tcp::socket> sock(new tcp::socket(_io_service));
         acceptor_.accept(*sock);
-        
-        return new TcpSocket(sock);;
+		boost::asio::socket_base::keep_alive option(true);
+//		sock->set_option(option);
+        return new TcpSocket(sock);
       }
 
       void TcpServerSocket::bind() {
