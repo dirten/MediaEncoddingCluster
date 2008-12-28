@@ -8,6 +8,7 @@
 #include "org/esb/sql/ResultSet.h"
 
 #include "org/esb/config/config.h"
+#include "org/esb/util/Queue.h"
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::sql;
@@ -15,6 +16,47 @@ using namespace org::esb::config;
 
 using namespace std;
 int main(int argc, char ** argv){
+
+			class test{
+			};
+			class QTest:public QueueListener{
+			public:
+				QTest(){
+					Queue<test*> q;
+					q.setQueueListener(this);
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+					q.enqueue(new test());
+				}
+				void onQueueEvent(QueueEvent event){
+					logdebug("Qevent");
+					if(event==QEVENT_DEQUEUE)
+						logdebug("QEVENT_DEQUEUE"<<event);
+					if(event==QEVENT_ENQUEUE)
+						logdebug("QEVENT_ENQUEUE"<<event);
+					if(event==QEVENT_QEMPTY)
+						logdebug("QEVENT_EMPTY"<<event);
+					if(event==QEVENT_QFULL)
+						logdebug("QEVENT_FULL"<<event);
+				}
+			};
+			QTest t;
+
+return 0;
 	int loop=1;
 	while(loop-->0){
 	std::cout <<"loop "<<loop<<endl;
