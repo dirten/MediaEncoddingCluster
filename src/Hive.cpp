@@ -218,10 +218,10 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
     case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
-
+	  logdebug("ctlc event");
       ctrlCHit.notify_all(); // should be just 1
 
-      serverStopped.wait(terminationLock);
+//      serverStopped.wait(terminationLock);
       return TRUE;
     }
     default:
@@ -229,7 +229,9 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
   }
 }
 
+
 void ctrlCHitWait() {
+  SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
   boost::mutex::scoped_lock terminationLock(terminationMutex);
   ctrlCHit.wait(terminationLock);
 }

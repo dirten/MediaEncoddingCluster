@@ -211,6 +211,7 @@ namespace org {
           //    break;
           org::esb::lang::Thread::sleep2(5000);
         }
+		boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all(); // should be just 1
       }
     }
