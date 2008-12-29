@@ -3,6 +3,8 @@
 
 #include <queue>
 #include "QueueListener.h"
+#include <boost/thread.hpp>
+#include "Log.h"
 namespace org{
 	namespace esb{
 		namespace util{
@@ -11,20 +13,62 @@ namespace org{
 			private:
 				std::queue<T> _q;
 				QueueListener * _listener;
+		        boost::mutex queue_mutex;
+		        boost::mutex queue_thread_mutex;
+		        boost::condition queue_condition;
 			public:
-				
+				Queue(){
+					_listener=NULL;
+				}
 				void enqueue(T obj){
+//					boost::mutex::scoped_lock enqueue_lock(queue_thread_mutex);
+//					logdebug("enqueue");
+					if(_q.size()>=MAXSIZE){
+						if(_listener!=NULL)
+							_listener->onQueueEvent(QEVENT_QFULL);
+						boost::mutex::scoped_lock queue_lock(queue_mutex);
+						queue_condition.wait(queue_lock);
+					}
 					_q.push(obj);
-					_listener->onQueueEvent(QEVENT_ENQUEUE);
-					if(_q.size()>=MAXSIZE)
-						_listener->onQueueEvent(QEVENT_QFULL);
+					boost::mutex::scoped_lock queue_lock(queue_mutex);
+					queue_condition.notify_all();
+					if(_listener!=NULL)
+						_listener->onQueueEvent(QEVENT_ENQUEUE);
 				}
 
-				void dequeue(T obj){
-					_q.pop(obj);
-					_listener->onQueueEvent(QEVENT_DEQUEUE);
-					if(_q.size()==0)
-						_listener->onQueueEvent(QEVENT_QEMPTY);
+				T dequeue(T obj){
+//					boost::mutex::scoped_lock dequeue_lock(queue_thread_mutex);
+					if(_q.size()==0){
+						if(_listener!=NULL)
+							_listener->onQueueEvent(QEVENT_QEMPTY);
+						boost::mutex::scoped_lock queue_lock(queue_mutex);
+						queue_condition.wait(queue_lock);
+					}
+					T object;
+					object = _q.front();
+					_q.pop();
+					boost::mutex::scoped_lock queue_lock(queue_mutex);
+					queue_condition.notify_all();
+					if(_listener!=NULL)
+						_listener->onQueueEvent(QEVENT_DEQUEUE);
+					return object;
+				}
+				T dequeue(){
+//					boost::mutex::scoped_lock dequeue_lock(queue_thread_mutex);
+					if(_q.size()==0){
+						if(_listener!=NULL)
+							_listener->onQueueEvent(QEVENT_QEMPTY);
+						boost::mutex::scoped_lock queue_lock(queue_mutex);
+						queue_condition.wait(queue_lock);
+					}
+					T object;
+					object = _q.front();
+					_q.pop();
+					boost::mutex::scoped_lock queue_lock(queue_mutex);
+					queue_condition.notify_all();
+					if(_listener!=NULL)
+						_listener->onQueueEvent(QEVENT_DEQUEUE);
+					return object;
 				}
 
 				void setQueueListener(QueueListener * listener){

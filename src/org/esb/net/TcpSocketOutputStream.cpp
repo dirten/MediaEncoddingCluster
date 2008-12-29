@@ -3,6 +3,7 @@
 #include "SocketException.h"
 #include "org/esb/util/Decimal.h"
 #include <errno.h>
+#include <boost/thread.hpp>
 
 //#include <exception.h>
 using namespace org::esb::io;
@@ -10,10 +11,11 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace net {
-
+boost::mutex thread_write_mutex;
       class TcpSocketOutputStream : public OutputStream {
       private:
         boost::shared_ptr<tcp::socket> _socket;
+		
 
       public:
 
@@ -38,7 +40,7 @@ namespace org {
 
                 /******************************************************************************/
         void write(char * buffer, int len) {
-
+		  boost::mutex::scoped_lock queue_lock(thread_write_mutex);
           if (!_socket->is_open()) {
             throw SocketException("SocketOutputStream::write - can not Write, because Socket is allready Closed");
           }

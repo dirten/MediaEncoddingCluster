@@ -22,8 +22,8 @@
 #include "protocol/Unknown.cpp"
 
 
-
-
+#define DEBUG
+#undef DEBUG
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
@@ -59,8 +59,10 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 
 void ProtocolServer::run() {
   while (!socket->isClosed()) {
-    try {
-      string cmd;
+#ifndef DEBUG
+	  try {
+#endif
+		  string cmd;
       int dataLength = socket->getInputStream()->read(cmd);
       if (dataLength == 0) {
         if (socket->isClosed())
@@ -83,12 +85,13 @@ void ProtocolServer::run() {
           tmp->printHelp();
         }
       }
-
+#ifndef DEBUG
     } catch (exception & ex) {
       logerror("ERROR in ProtocolServer:" << ex.what());
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
+#endif
   }
   //	cout << "Elvis has left the Building" << endl;
 }

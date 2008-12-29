@@ -7,40 +7,49 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 
+#include "org/esb/lang/Thread.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Queue.h"
+#include <boost/bind.hpp>
+
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 
 using namespace std;
-int main(int argc, char ** argv){
 
+int main(int argc, char ** argv){
+	
 			class test{
 			};
 			class QTest:public QueueListener{
 			public:
+				Queue<test*> q;
 				QTest(){
-					Queue<test*> q;
-					q.setQueueListener(this);
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
-					q.enqueue(new test());
+//					q.setQueueListener(this);
+//					boost::thread t(boost::bind(&QTest::enqueue, this));
+//					org::esb::lang::Thread::sleep2(10000);
+//					dequeue();
+					boost::thread de(boost::bind(&QTest::dequeue, this));
+					org::esb::lang::Thread::sleep2(1000);
+					boost::thread en(boost::bind(&QTest::enqueue, this));
+					org::esb::lang::Thread::sleep2(10000);
+
+				}
+
+				void enqueue(){
+					while(true)
+						q.enqueue(new test());
+				}
+				void dequeue(){
+					int a=0;
+					while(true){
+						test t;
+						q.dequeue(&t);
+						org::esb::lang::Thread::sleep2(1000);
+						std::cout << a++;
+					}
 				}
 				void onQueueEvent(QueueEvent event){
 					logdebug("Qevent");

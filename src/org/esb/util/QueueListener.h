@@ -13,7 +13,7 @@ namespace org{
 				};
 
 //			private:
-//				_event;
+//				Eent _event;
 //			};
 			class QueueListener{
 			public:

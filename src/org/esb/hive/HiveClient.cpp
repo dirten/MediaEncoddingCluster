@@ -3,7 +3,7 @@
 #include "org/esb/net/TcpSocket.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/hive/job/ProcessUnit.h"
+
 #include "org/esb/lang/Thread.h"
 
 #include <boost/bind.hpp>
@@ -18,8 +18,6 @@ namespace org {
 
 		HiveClient::HiveClient(std::string host, int port)
 		{
-			ipc::message_queue queue1(ipc::open_or_create,"in_pu_queue",1,10000000);
-			ipc::message_queue queue2(ipc::open_or_create,"out_pu_queue",1,10000000);
         _host = host;
         _port = port;
         _toHalt=false;
@@ -49,9 +47,9 @@ namespace org {
       void HiveClient::start() {
         _toHalt=false;
         connect();
-//		 boost::thread t1(boost::bind(&HiveClient::packetReader, this));
-//		 boost::thread t2(boost::bind(&HiveClient::packetWriter, this));
-        process();
+		 boost::thread t1(boost::bind(&HiveClient::packetReader, this));
+		 boost::thread t2(boost::bind(&HiveClient::packetWriter, this));
+        process2();
       }
       
       void HiveClient::stop() {
@@ -61,10 +59,12 @@ namespace org {
       void HiveClient::connect() {
         try{
 //        logdebug("Connecting to " << _host << " on port " << _port);
-        _sock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
-        _sock->connect();
-        _ois=new org::esb::io::ObjectInputStream(_sock->getInputStream());
-        _oos=new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
+        _insock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
+        _outsock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
+        _insock->connect();
+        _outsock->connect();
+        _ois=new org::esb::io::ObjectInputStream(_insock->getInputStream());
+        _oos=new org::esb::io::ObjectOutputStream(_outsock->getOutputStream());
         loginfo("Server "<<_host<<" connected!!!");
         }catch(...){
 //          logerror("cant connect!!!");
@@ -73,81 +73,55 @@ namespace org {
 		
 
 	  void HiveClient::packetReader(){
-		  ipc::message_queue inQueue1(ipc::open_only,"in_pu_queue");
+		  logdebug("HiveClient::packetReader");
 		  while(!_toHalt){	            
                 char * text = "get process_unit";
 				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
-                try{
-				/*
-					if(inQueue.get_max_msg()==inQueue.get_num_msg()){
-						logdebug("Queue full wait 5 sec");
-						org::esb::lang::Thread::sleep2(1000);
-						continue;
-					}
-					*/
-                    _sock->getOutputStream()->write(text, strlen(text));
+//				job::ProcessUnit * unit=NULL;//new job::ProcessUnit();
+//                try{
+					boost::mutex::scoped_lock queue_lock(thread_read_mutex);
+                    _insock->getOutputStream()->write(text, strlen(text));
 					logdebug("Command sended");
-					std::string t;
-					_sock->getInputStream()->read(t);
-//                    _ois->readObject(*unitptr);
+                    _ois->readObject(*unitptr);
 					logdebug("ProcessUnit received");
-					inQueue1.send(t.c_str(),t.size(),0);
-//					inQueue.send(&unitptr,sizeof(boost::shared_ptr<job::ProcessUnit>),0);
+					inQueue.enqueue(unitptr);
 					logdebug("ProcessUnit enqueued");
-				}catch(ipc::interprocess_exception& ex ){
-					logerror(ex.what());
+//				}catch(ipc::interprocess_exception& ex ){
+//					logerror(ex.what());
 //                    _sock->close();
-                }
+//                }
 		  }
 	  }
 	  void HiveClient::packetWriter(){
-		 ipc::message_queue outQueue1(ipc::open_only,"out_pu_queue");
+		  logdebug("HiveClient::packetWriter");
 		  while(!_toHalt){
             char * text_out = "put process_unit";
-            try{
-				org::esb::hive::job::ProcessUnit * unit=new job::ProcessUnit();
-				std::size_t recvd_size;
-				unsigned int priority;
+//            try{
+				boost::mutex::scoped_lock queue_lock(thread_write_mutex);
+				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
+//				org::esb::hive::job::ProcessUnit * unit=NULL;//=new job::ProcessUnit();
 				logdebug("outQueue pre dequeue");
-				char * t=new char[10000000];
-				outQueue1.receive(t,10000000, recvd_size, priority);
+				outQueue.dequeue(unitptr);
 				logdebug("outQueue post dequeue");
-
-//				_sock->getOutputStream()->write(text_out, strlen(text_out));
-//				_sock->getOutputStream()->write(t, recvd_size);
-				delete t;
-//				_oos->writeObject(unit);
-            }catch(...){
-                logerror("Connection to Server lost!!!");
-                _sock->close();
-            }
+				_outsock->getOutputStream()->write(text_out, strlen(text_out));
+				_oos->writeObject(*unitptr);
+//            }catch(...){
+//                logerror("Connection to Server lost!!!");
+//                _sock->close();
+//            }
 		  }
 	  }
 		void HiveClient::process2() {
 			logdebug("process2()");
-			ipc::message_queue inQueue2(ipc::open_only,"in_pu_queue");
-			ipc::message_queue outQueue2(ipc::open_only,"out_pu_queue");
 			while(!_toHalt){	
-				org::esb::hive::job::ProcessUnit * unit=new job::ProcessUnit();
-				std::size_t recvd_size;
-				unsigned int priority;
-//				std::string t;
-				char * t=new char[10000000];
+//				org::esb::hive::job::ProcessUnit * unit=new org::esb::hive::job::ProcessUnit();
+//				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
+//				org::esb::lang::Thread::sleep2(1000);
 				logdebug("inQueue pre dequeue");
-				inQueue2.receive(t,10000000, recvd_size, priority);
-				logdebug("inQueue post dequeue:"<<recvd_size);
-				std::string data(t,recvd_size);
-				delete t;
-				istringstream archive_stream (data);
-			    boost::archive::binary_iarchive archive (archive_stream);
-				job::ProcessUnit un;
-			    archive >> un;
-				un.process();
-				std::ostringstream archive_out_stream;
-                boost::archive::binary_oarchive oarchive(archive_out_stream);
-				oarchive << un;
-				std::string _outbound_data = archive_out_stream.str();
-				outQueue2.send(_outbound_data.c_str(),_outbound_data.size(),0);
+				boost::shared_ptr<job::ProcessUnit> unitptr = inQueue.dequeue();
+				logdebug("inQueue post dequeue:");
+				unitptr->process();
+				outQueue.enqueue(unitptr);
 
 /*
                 if (unit._input_packets.size() == 0)break;
@@ -159,11 +133,13 @@ namespace org {
 */				
 //				outQueue.send(unit,sizeof(job::ProcessUnit),0);
 			}
+			boost::mutex::scoped_lock terminationLock(terminationMutex);
+	        ctrlCHit.notify_all(); // should be just 1
 		}
       void HiveClient::process() {
         int pCount = 0;
         while (!_toHalt) {
-          if(!_sock->isConnected()){
+          if(!_insock->isConnected()||!_outsock->isConnected()){
             connect();
           }else{
               while (!_toHalt) {
@@ -171,15 +147,15 @@ namespace org {
                 logdebug("ProcessLoop");
 
 				  char * text = "get process_unit";
-                org::esb::hive::job::ProcessUnit unit;
+                org::esb::hive::job::ProcessUnit * unit=new org::esb::hive::job::ProcessUnit();
                 try{
-                    _sock->getOutputStream()->write(text, strlen(text));
+                    _insock->getOutputStream()->write(text, strlen(text));
 //                logdebug("Command sended");
-                    _ois->readObject(unit);
+                    _ois->readObject(*unit);
 //                logdebug("ProcessUnit received");
                 }catch(...){
                     logerror("Connection to Server lost!!!");                
-                    _sock->close();
+                    _insock->close();
                 }
 /*				
 				org::esb::hive::job::ProcessUnit * unit=new job::ProcessUnit();;
@@ -188,9 +164,9 @@ namespace org {
 
 				inQueue.receive(unit,sizeof(job::ProcessUnit), recvd_size, priority);
 */
-                if (unit._input_packets.size() == 0)break;
+                if (unit->_input_packets.size() == 0)break;
                 try{
-                    unit.process();
+                    unit->process();
                 }catch(...){
                     logerror("Error in process");
                 }
@@ -198,11 +174,12 @@ namespace org {
 				
                 char * text_out = "put process_unit";
                 try{
-                _sock->getOutputStream()->write(text_out, strlen(text_out));
-                _oos->writeObject(unit);
+                _outsock->getOutputStream()->write(text_out, strlen(text_out));
+                _oos->writeObject(*unit);
+				delete unit;
                 }catch(...){
                     logerror("Connection to Server lost!!!");
-                    _sock->close();
+                    _outsock->close();
                 }
 				
                 //		break;

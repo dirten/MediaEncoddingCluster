@@ -6,6 +6,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 using boost::asio::ip::tcp;
 
 using namespace org::esb::lang;
@@ -17,11 +18,13 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace net {
+	  boost::mutex thread_read_mutex;
 
       class TcpSocketInputStream : public InputStream {
       private:
         boost::system::error_code error;
         boost::shared_ptr<tcp::socket> _socket;
+
         char byte;
 
       public:
@@ -59,7 +62,9 @@ namespace org {
         /******************************************************************************/
         
         int read(unsigned char * buffer, int length) {
-          int counter = 0, remaining = length;
+     		boost::mutex::scoped_lock queue_lock(thread_read_mutex);
+
+			int counter = 0, remaining = length;
        
           while (remaining > 0) {
             int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
