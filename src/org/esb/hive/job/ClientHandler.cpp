@@ -211,8 +211,8 @@ string toString(int num) {
 */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   {
-	  logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start");
     boost::mutex::scoped_lock scoped_lock(m_mutex);
+    logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start"<<unit._process_unit);
 	std::string name=org::esb::config::Config::getProperty("hive.path");
 	name+="/tmp/";
 	name+=org::esb::util::Decimal(unit._process_unit).toString();
@@ -253,7 +253,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
       _stmt->execute();
     }*/
   }
-  logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start");
+  logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : end");
 
   return true;
 }

@@ -98,10 +98,11 @@ namespace org {
             char * text_out = "put process_unit";
 //            try{
 				boost::mutex::scoped_lock queue_lock(thread_write_mutex);
-				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
+//				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
 //				org::esb::hive::job::ProcessUnit * unit=NULL;//=new job::ProcessUnit();
 				logdebug("outQueue pre dequeue");
-				outQueue.dequeue(unitptr);
+				boost::shared_ptr<job::ProcessUnit> unitptr = outQueue.dequeue();
+//				outQueue.dequeue(unitptr);
 				logdebug("outQueue post dequeue");
 				_outsock->getOutputStream()->write(text_out, strlen(text_out));
 				_oos->writeObject(*unitptr);
