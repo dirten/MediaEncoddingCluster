@@ -11,10 +11,11 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace net {
-boost::mutex thread_write_mutex;
+//boost::mutex thread_write_mutex;
       class TcpSocketOutputStream : public OutputStream {
       private:
         boost::shared_ptr<tcp::socket> _socket;
+		boost::mutex & _write_mutex;
 		
 
       public:
@@ -24,7 +25,8 @@ boost::mutex thread_write_mutex;
         }
 
                 /******************************************************************************/
-        TcpSocketOutputStream(boost::shared_ptr<tcp::socket> socket) : _socket(socket) {
+        TcpSocketOutputStream(boost::shared_ptr<tcp::socket> socket,boost::mutex & m) : 
+		_socket(socket),_write_mutex(m) {
 
         }
 
@@ -40,7 +42,7 @@ boost::mutex thread_write_mutex;
 
                 /******************************************************************************/
         void write(char * buffer, int len) {
-		  boost::mutex::scoped_lock queue_lock(thread_write_mutex);
+		  boost::mutex::scoped_lock lock(_write_mutex);
           if (!_socket->is_open()) {
             throw SocketException("SocketOutputStream::write - can not Write, because Socket is allready Closed");
           }

@@ -17,8 +17,9 @@ namespace org {
 
       TcpSocket::TcpSocket(boost::shared_ptr<tcp::socket> socket) :
       _socket(socket),
-      _is(new TcpSocketInputStream(socket)),
-      _os(new TcpSocketOutputStream(socket)) {
+      _is(new TcpSocketInputStream(socket,net_io_mutex)),
+      _os(new TcpSocketOutputStream(socket,net_io_mutex)) {
+		  _connected = true;
       }
 
       TcpSocket::~TcpSocket() {
@@ -55,8 +56,8 @@ namespace org {
 
         _socket->connect(*iterator);
 
-        _is = new TcpSocketInputStream(_socket);
-        _os = new TcpSocketOutputStream(_socket);
+        _is = new TcpSocketInputStream(_socket,net_io_mutex);
+        _os = new TcpSocketOutputStream(_socket,net_io_mutex);
         _connected = true;
       }
     }

@@ -18,13 +18,13 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace net {
-	  boost::mutex thread_read_mutex;
+	  
 
       class TcpSocketInputStream : public InputStream {
       private:
         boost::system::error_code error;
         boost::shared_ptr<tcp::socket> _socket;
-
+		boost::mutex & _read_mutex;
         char byte;
 
       public:
@@ -35,7 +35,8 @@ namespace org {
 
         /******************************************************************************/
 
-        TcpSocketInputStream(boost::shared_ptr<tcp::socket> socket) : _socket(socket) {
+        TcpSocketInputStream(boost::shared_ptr<tcp::socket> socket,boost::mutex & m) : 
+		_socket(socket),_read_mutex(m) {
 
         }
 
@@ -62,7 +63,7 @@ namespace org {
         /******************************************************************************/
         
         int read(unsigned char * buffer, int length) {
-     		boost::mutex::scoped_lock queue_lock(thread_read_mutex);
+     		boost::mutex::scoped_lock lock(_read_mutex);
 
 			int counter = 0, remaining = length;
        

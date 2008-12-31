@@ -47,9 +47,9 @@ namespace org {
       void HiveClient::start() {
         _toHalt=false;
         connect();
-		 boost::thread t1(boost::bind(&HiveClient::packetReader, this));
-		 boost::thread t2(boost::bind(&HiveClient::packetWriter, this));
-        process2();
+//		 boost::thread t1(boost::bind(&HiveClient::packetReader, this));
+//		 boost::thread t2(boost::bind(&HiveClient::packetWriter, this));
+        process();
       }
       
       void HiveClient::stop() {
@@ -59,15 +59,15 @@ namespace org {
       void HiveClient::connect() {
         try{
 //        logdebug("Connecting to " << _host << " on port " << _port);
-        _insock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
-        _outsock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
-        _insock->connect();
-        _outsock->connect();
-        _ois=new org::esb::io::ObjectInputStream(_insock->getInputStream());
-        _oos=new org::esb::io::ObjectOutputStream(_outsock->getOutputStream());
+        _sock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
+//        _outsock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
+        _sock->connect();
+  //      _outsock->connect();
+        _ois=new org::esb::io::ObjectInputStream(_sock->getInputStream());
+        _oos=new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
         loginfo("Server "<<_host<<" connected!!!");
         }catch(...){
-//          logerror("cant connect!!!");
+          logerror("cant connect!!!");
         }
       }
 		
@@ -80,7 +80,7 @@ namespace org {
 //				job::ProcessUnit * unit=NULL;//new job::ProcessUnit();
 //                try{
 					boost::mutex::scoped_lock queue_lock(thread_read_mutex);
-                    _insock->getOutputStream()->write(text, strlen(text));
+                    _sock->getOutputStream()->write(text, strlen(text));
 					logdebug("Command sended");
                     _ois->readObject(*unitptr);
 					logdebug("ProcessUnit received");
@@ -97,14 +97,14 @@ namespace org {
 		  while(!_toHalt){
             char * text_out = "put process_unit";
 //            try{
-				boost::mutex::scoped_lock queue_lock(thread_write_mutex);
+				boost::mutex::scoped_lock queue_lock(thread_read_mutex);
 //				boost::shared_ptr<job::ProcessUnit> unitptr(new job::ProcessUnit());
 //				org::esb::hive::job::ProcessUnit * unit=NULL;//=new job::ProcessUnit();
 				logdebug("outQueue pre dequeue");
 				boost::shared_ptr<job::ProcessUnit> unitptr = outQueue.dequeue();
 //				outQueue.dequeue(unitptr);
 				logdebug("outQueue post dequeue");
-				_outsock->getOutputStream()->write(text_out, strlen(text_out));
+				_sock->getOutputStream()->write(text_out, strlen(text_out));
 				_oos->writeObject(*unitptr);
 //            }catch(...){
 //                logerror("Connection to Server lost!!!");
@@ -140,7 +140,7 @@ namespace org {
       void HiveClient::process() {
         int pCount = 0;
         while (!_toHalt) {
-          if(!_insock->isConnected()||!_outsock->isConnected()){
+          if(!_sock->isConnected()){
             connect();
           }else{
               while (!_toHalt) {
@@ -150,13 +150,13 @@ namespace org {
 				  char * text = "get process_unit";
                 org::esb::hive::job::ProcessUnit * unit=new org::esb::hive::job::ProcessUnit();
                 try{
-                    _insock->getOutputStream()->write(text, strlen(text));
+                    _sock->getOutputStream()->write(text, strlen(text));
 //                logdebug("Command sended");
                     _ois->readObject(*unit);
 //                logdebug("ProcessUnit received");
                 }catch(...){
                     logerror("Connection to Server lost!!!");                
-                    _insock->close();
+                    _sock->close();
                 }
 /*				
 				org::esb::hive::job::ProcessUnit * unit=new job::ProcessUnit();;
@@ -175,12 +175,12 @@ namespace org {
 				
                 char * text_out = "put process_unit";
                 try{
-                _outsock->getOutputStream()->write(text_out, strlen(text_out));
+                _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
 				delete unit;
                 }catch(...){
                     logerror("Connection to Server lost!!!");
-                    _outsock->close();
+                    _sock->close();
                 }
 				
                 //		break;
