@@ -1,42 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<?altova_sps C:\Programme\Altova\Authentic2008\sps\Template\Publishing\DocBook.sps?>
 <book>
-  <bookinfo revisionflag="added">
-    <title arch="x86" revision="0.0.1" role="">Media Encoding Hive</title>
-
-    <author>
-      <firstname>Jan</firstname>
-
-      <surname>Hoelscher</surname>
-
-      <affiliation>
-        <orgname></orgname>
-      </affiliation>
-    </author>
-
-    <pubdate>03.12.2008</pubdate>
-  </bookinfo>
-
-  <chapter>
-    <title>About</title>
-
-    <section>
-      <title>Hive</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title></title>
-
-      <para></para>
-    </section>
-  </chapter>
-
-  <chapter>
-    <title></title>
-
-    <para></para>
-  </chapter>
+	<bookinfo revisionflag="added">
+		<title arch="x86" revision="0.0.1" role="">Media Encoding Hive</title>
+		<author>
+			<firstname>Jan</firstname>
+			<surname>Hoelscher</surname>
+			<affiliation>
+				<orgname/>
+			</affiliation>
+		</author>
+		<pubdate>03.12.2008</pubdate>
+	</bookinfo>
+	<chapter>
+		<title>About</title>
+		<section>
+			<title>Hive</title>
+			<para/>
+		</section>
+		<section>
+			<title/>
+			<para/>
+		</section>
+	</chapter>
+	<chapter>
+		<title/>
+		<para/>
+	</chapter>
 </book>

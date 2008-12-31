@@ -1,124 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<?altova_sps C:\Programme\Altova\Authentic2008\sps\Template\Publishing\DocBook.sps?>
 <book>
-  <bookinfo revisionflag="added">
-    <title>Media Encoding Hive</title>
-
-    <author>
-      <firstname>Jan</firstname>
-
-      <surname>Hoelscher</surname>
-
-      <affiliation>
-        <orgname></orgname>
-      </affiliation>
-    </author>
-
-    <pubdate>03.12.2008</pubdate>
-
-    <releaseinfo>0.0.1</releaseinfo>
-  </bookinfo>
-
-  <chapter>
-    <title>About</title>
-
-    <section>
-      <title>Hive</title>
-      <para>The Media Encoding Cluster is an Distributed Video/Audio Encoding Solution</para>
-      <para>It is based on FFMpeg as Media Library and Codec usage</para>
-    </section>
-
-    <section>
-      <title></title>
-
-      <para></para>
-    </section>
-  </chapter>
-
-  <chapter>
-    <title>Building Media Encoding Cluster</title>
-
-    <section>
-      <title>Building from Scratch</title>
-
-      <section>
-        <title>Building Dependencies</title>
-
-        <para>In this section we explain how to build the Dependencies
+	<bookinfo revisionflag="added">
+		<title>Media Encoding Hive</title>
+		<author>
+			<firstname>Jan</firstname>
+			<surname>Hoelscher</surname>
+			<affiliation>
+				<orgname/>
+			</affiliation>
+		</author>
+		<pubdate>03.12.2008</pubdate>
+		<releaseinfo>0.0.1</releaseinfo>
+	</bookinfo>
+	<chapter>
+		<title>About</title>
+		<section>
+			<title>Hive</title>
+			<para>The Media Encoding Cluster is an Distributed Video/Audio Encoding Solution</para>
+			<para>It is based on FFMpeg as Media Library and Codec usage</para>
+		</section>
+		<section>
+			<title/>
+			<para/>
+		</section>
+	</chapter>
+	<chapter>
+		<title>Building Media Encoding Cluster</title>
+		<section>
+			<title>Building from Scratch</title>
+			<section>
+				<title>Building Dependencies</title>
+				<para>In this section we explain how to build the Dependencies
         Libraries</para>
-
-        <para>The following dependencies where needed!</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>cmake 2.4 - for building WT and Media Encoding Cluster
-            <ulink url="http://cmake.org">[ Home of cmake ]</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para>Boost Libraries v 1.35 for building WT and Media Encoding
+				<para>The following dependencies where needed!</para>
+				<itemizedlist>
+					<listitem>
+						<para>cmake 2.4 - for building WT and Media Encoding Cluster
+            <ulink url="http://cmake.org">[ Home of cmake ]</ulink>
+						</para>
+					</listitem>
+					<listitem>
+						<para>Boost Libraries v 1.35 for building WT and Media Encoding
             Cluster <ulink url="http://boost.org">[ Home of boost
-            ]</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para>x264 for building ffmpeg with encoding support for h264
+            ]</ulink>
+						</para>
+					</listitem>
+					<listitem>
+						<para>x264 for building ffmpeg with encoding support for h264
             <ulink url="http://www.videolan.org/developers/x264.html">[ Home
-            of x264 ]</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para>ffmpeg for building Media Encoding Cluster <ulink
-            url="http://ffmpeg.mplayerhq.hu">[ Home of ffmpeg ]</ulink></para>
-          </listitem>
-
-          <listitem>
-            <para>WT for building Media Encoding Cluster with internal Web
+            of x264 ]</ulink>
+						</para>
+					</listitem>
+					<listitem>
+						<para>ffmpeg for building Media Encoding Cluster <ulink url="http://ffmpeg.mplayerhq.hu">[ Home of ffmpeg ]</ulink>
+						</para>
+					</listitem>
+					<listitem>
+						<para>WT for building Media Encoding Cluster with internal Web
             Interface Support <ulink url="http://http://www.webtoolkit.eu/">[
-            Home of WT ]</ulink></para>
-          </listitem>
-        </itemizedlist>
-
-        <section>
-          <title>Download, Build &amp; Install Boost Library</title>
-
-          <para>You need the Boost Libraries for building the WT Webserver and
+            Home of WT ]</ulink>
+						</para>
+					</listitem>
+				</itemizedlist>
+				<section>
+					<title>Download, Build &amp; Install Boost Library</title>
+					<para>You need the Boost Libraries for building the WT Webserver and
           the Hive self!</para>
-
-          <para>Download the Boost Library Sources from Sorceforge <ulink
-          url="http://downloads.sourceforge.net/boost/boost_1_35_0.tar.gz">boost_1_35_0.tar.gz</ulink>
+					<para>Download the Boost Library Sources from Sorceforge <ulink url="http://downloads.sourceforge.net/boost/boost_1_35_0.tar.gz">boost_1_35_0.tar.gz</ulink>
           and extract this Package into Directory "boost_1_35"</para>
-
-          <para>To build the Boost Library, we first need to build Jam. Jam is
+					<para>To build the Boost Library, we first need to build Jam. Jam is
           the Build tool for Building Boost</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>change into the boost Jam Directory "boost_1_35"</para>
-
-              <screen><prompt>bash$</prompt> <command>cd /path/to/boost_1_35/tools/jam</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the command</para>
-
-              <screen><prompt>bash$</prompt><command> ./build_dist.sh</command></screen>
-
-              <para>After you have build the Jam Toolkit, you can now build
+					<itemizedlist>
+						<listitem>
+							<para>change into the boost Jam Directory "boost_1_35"</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command>cd /path/to/boost_1_35/tools/jam</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> ./build_dist.sh</command>
+							</screen>
+							<para>After you have build the Jam Toolkit, you can now build
               the Boost Library</para>
-            </listitem>
-
-            <listitem>
-              <para>change into the boost Directory "boost_1_35"</para>
-
-              <screen><prompt>bash$</prompt><command> cd /path/to/boost_1_35</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the build Command</para>
-
-              <screen><prompt>bash$</prompt><command> tools/jam/stage/bin.linuxx86/bjam \
+						</listitem>
+						<listitem>
+							<para>change into the boost Directory "boost_1_35"</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cd /path/to/boost_1_35</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the build Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> tools/jam/stage/bin.linuxx86/bjam \
       --prefix=/path/to/boost/install \
       variant=release \
       threading=multi \
@@ -128,95 +111,95 @@
       --without-graph \
       --without-test \
       --without-mpi
-      </command></screen>
-            </listitem>
-
-            <listitem>
-              <para>After you have build the Boost Libraries, you now ready to
+      </command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>After you have build the Boost Libraries, you now ready to
               Install the Libraries by executing the install Command</para>
-
-              <screen><prompt>bash$</prompt><command> tools/jam/stage/bin.linuxx86/bjam install</command></screen>
-
-              <para>this will install the Libraries into the Directory, that
+							<screen>
+								<prompt>bash$</prompt>
+								<command> tools/jam/stage/bin.linuxx86/bjam install</command>
+							</screen>
+							<para>this will install the Libraries into the Directory, that
               you provided in the --prefix attribute for the build
               Process</para>
-            </listitem>
-          </itemizedlist>
-        </section>
-
-        <section>
-          <title>Download, Build &amp; Install x264 Library</title>
-
-          <itemizedlist>
-            <listitem>
-              <para>Download x264 Sources from <ulink
-              url="http://www.videolan.org/developers/x264.html">VideoLAN
-              Project</ulink>. Grab the Sources from <ulink
-              url="ftp://ftp.videolan.org/pub/videolan/x264/snapshots/">daily
+						</listitem>
+					</itemizedlist>
+				</section>
+				<section>
+					<title>Download, Build &amp; Install x264 Library</title>
+					<itemizedlist>
+						<listitem>
+							<para>Download x264 Sources from <ulink url="http://www.videolan.org/developers/x264.html">VideoLAN
+              Project</ulink>. Grab the Sources from <ulink url="ftp://ftp.videolan.org/pub/videolan/x264/snapshots/">daily
               tarball</ulink> and extract this Package into Directory
               "libx264"</para>
-
-              <screen><prompt>bash$</prompt> <command>tar -xf x264-snapshot-{version}.tar.bz2 </command></screen>
-
-              <para>After you have downloaded and extracted x264, you can now
+							<screen>
+								<prompt>bash$</prompt>
+								<command>tar -xf x264-snapshot-{version}.tar.bz2 </command>
+							</screen>
+							<para>After you have downloaded and extracted x264, you can now
               build the Library</para>
-            </listitem>
-
-            <listitem>
-              <para>change into the x264 Directory "lib264"</para>
-
-              <screen><prompt>bash$</prompt><command> cd /path/to/lib264</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the configure Command</para>
-
-              <screen><prompt>bash$</prompt><command> ./configure --prefix=/path/to/x264/install</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the make Command</para>
-
-              <screen><prompt>bash$</prompt><command> make</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the install Command</para>
-
-              <screen><prompt>bash$</prompt><command> make install</command></screen>
-
-              <para>this will install the Libraries into the Directory, that
+						</listitem>
+						<listitem>
+							<para>change into the x264 Directory "lib264"</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cd /path/to/lib264</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the configure Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> ./configure --prefix=/path/to/x264/install</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the make Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the install Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make install</command>
+							</screen>
+							<para>this will install the Libraries into the Directory, that
               you provided in the --prefix attribute for the build
               Process</para>
-            </listitem>
-          </itemizedlist>
-        </section>
-
-        <section>
-          <title>Download, Build &amp; Install ffmpeg Library</title>
-
-          <itemizedlist>
-            <listitem>
-              <para>Download ffmpeg Sources from <ulink
-              url="http://ffmpeg.mplayerhq.hu/">FFMpeg Project</ulink>. Grab
-              the Sources from <ulink
-              url="http://ffmpeg.mplayerhq.hu/ffmpeg-export-snapshot.tar.bz2">daily
+						</listitem>
+					</itemizedlist>
+				</section>
+				<section>
+					<title>Download, Build &amp; Install ffmpeg Library</title>
+					<itemizedlist>
+						<listitem>
+							<para>Download ffmpeg Sources from <ulink url="http://ffmpeg.mplayerhq.hu/">FFMpeg Project</ulink>. Grab
+              the Sources from <ulink url="http://ffmpeg.mplayerhq.hu/ffmpeg-export-snapshot.tar.bz2">daily
               tarball</ulink> and extract this Package into Directory
               "ffmpeg"</para>
-
-              <screen><prompt>bash$</prompt> <command>tar -xf ffmpeg-export-snapshot.tar.bz2 </command></screen>
-            </listitem>
-
-            <listitem>
-              <para>change into the FFmpeg Directory "ffmpeg"</para>
-
-              <screen><prompt>bash$</prompt><command> cd /path/to/ffmpeg</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the configure Command</para>
-
-              <screen><prompt>bash$</prompt><command> ./configure \
+							<screen>
+								<prompt>bash$</prompt>
+								<command>tar -xf ffmpeg-export-snapshot.tar.bz2 </command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>change into the FFmpeg Directory "ffmpeg"</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cd /path/to/ffmpeg</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the configure Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> ./configure \
     --prefix=/path/to/ffmpeg/install \
     --enable-swscale \
     --enable-gpl \
@@ -228,157 +211,156 @@
     --extra-ldflags=-lpthread \
     --extra-cflags=-I/path/to/x264-install/include
 
-    </command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the make Command</para>
-
-              <screen><prompt>bash$</prompt><command> make</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the install Command</para>
-
-              <screen><prompt>bash$</prompt><command> make install</command></screen>
-
-              <para>this will install the Libraries into the Directory, that
+    </command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the make Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the install Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make install</command>
+							</screen>
+							<para>this will install the Libraries into the Directory, that
               you provided in the --prefix attribute for the build
               Process</para>
-            </listitem>
-          </itemizedlist>
-        </section>
-
-        <section>
-          <title>Download, Build &amp; Install WT Library</title>
-
-          <itemizedlist>
-            <listitem>
-              <para>Download WT(webtoolkit) Sources from <ulink
-              url="http://webtoolkit.eu/">WebToolkit Project</ulink>. Grab the
-              Sources from <ulink
-              url="http://prdownloads.sourceforge.net/witty/wt-2.2.2.tar.gz?download">Wt
+						</listitem>
+					</itemizedlist>
+				</section>
+				<section>
+					<title>Download, Build &amp; Install WT Library</title>
+					<itemizedlist>
+						<listitem>
+							<para>Download WT(webtoolkit) Sources from <ulink url="http://webtoolkit.eu/">WebToolkit Project</ulink>. Grab the
+              Sources from <ulink url="http://prdownloads.sourceforge.net/witty/wt-2.2.2.tar.gz?download">Wt
               2.2.2</ulink> and extract this Package into Directory
               "wt-2.2.2"</para>
-
-              <screen><prompt>bash$</prompt> <command>tar -xf wt-2.2.2.tar.gz </command></screen>
-            </listitem>
-
-            <listitem>
-              <para>change into the WT Directory "wt-2.2.2"</para>
-
-              <screen><prompt>bash$</prompt><command> cd /path/to/wt</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>create a Build Directory</para>
-
-              <screen><prompt>bash$</prompt> <command>mkdir build</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>change into build Directory</para>
-
-              <screen><prompt>bash$</prompt><command> cd build</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>to configure the WT Package, you need cmake
+							<screen>
+								<prompt>bash$</prompt>
+								<command>tar -xf wt-2.2.2.tar.gz </command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>change into the WT Directory "wt-2.2.2"</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cd /path/to/wt</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>create a Build Directory</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command>mkdir build</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>change into build Directory</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cd build</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>to configure the WT Package, you need cmake
               installed</para>
-
-              <para>executing cmake in the build Directory</para>
-
-              <screen><prompt>bash$</prompt><command> cmake .. \
+							<para>executing cmake in the build Directory</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> cmake .. \
     -DCMAKE_INSTALL_PREFIX=/path/to/wt-install \
     -DBOOST_DIR=/path/to/boost-install \
     -DBOOST_COMPILER=gcc41 \
-    -DBOOST_VERSION=1_35</command></screen>
-
-              <para>the options must be set correctly to find Boost
+    -DBOOST_VERSION=1_35</command>
+							</screen>
+							<para>the options must be set correctly to find Boost
               Library</para>
-
-              <itemizedlist>
-                <listitem>
-                  <para>BOOST_DIR - must be set to the base Directory of the
+							<itemizedlist>
+								<listitem>
+									<para>BOOST_DIR - must be set to the base Directory of the
                   Boost Library installation Path</para>
-                </listitem>
-
-                <listitem>
-                  <para>BOOST_COMPILER - must be set to the Compiler +
+								</listitem>
+								<listitem>
+									<para>BOOST_COMPILER - must be set to the Compiler +
                   Version, e.g. When using gcc 4.1.2 then it must be set to
                   gcc41, when you use gcc 4.2.1 it must be set to gcc42</para>
-                </listitem>
-
-                <listitem>
-                  <para>BOOST_VERSION - must be set to the Boost Library
+								</listitem>
+								<listitem>
+									<para>BOOST_VERSION - must be set to the Boost Library
                   Version</para>
-                </listitem>
-
-                <listitem>
-                  <para>CMAKE_INSTALL_PREFIX - must be set to the Installation
+								</listitem>
+								<listitem>
+									<para>CMAKE_INSTALL_PREFIX - must be set to the Installation
                   Directory of WT</para>
-                </listitem>
-              </itemizedlist>
-            </listitem>
-
-            <listitem>
-              <para>Execute the make Command</para>
-
-              <screen><prompt>bash$</prompt><command> make</command></screen>
-            </listitem>
-
-            <listitem>
-              <para>Execute the install Command</para>
-
-              <screen><prompt>bash$</prompt><command> make install</command></screen>
-
-              <para>this will install the Libraries into the Directory, that
+								</listitem>
+							</itemizedlist>
+						</listitem>
+						<listitem>
+							<para>Execute the make Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make</command>
+							</screen>
+						</listitem>
+						<listitem>
+							<para>Execute the install Command</para>
+							<screen>
+								<prompt>bash$</prompt>
+								<command> make install</command>
+							</screen>
+							<para>this will install the Libraries into the Directory, that
               you provided in the CMAKE_INSTALL_PREFIX attribute for the build
               Process</para>
-            </listitem>
-          </itemizedlist>
-        </section>
-      </section>
-
-      <section>
-        <title>Building Media Encoding Cluster</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>Download Media Encoding Cluster Sources from <ulink
-            url="http://webtoolkit.eu/">ProjectPage at Sourceforge</ulink>.
-            Grab the Sources from <ulink
-            url="http://downloads.sourceforge.net/bripper/MediaEncodingCluster-0.0.1-tr2.tar.gz">MediaEncodingCluster
+						</listitem>
+					</itemizedlist>
+				</section>
+			</section>
+			<section>
+				<title>Building Media Encoding Cluster</title>
+				<itemizedlist>
+					<listitem>
+						<para>Download Media Encoding Cluster Sources from <ulink url="http://webtoolkit.eu/">ProjectPage at Sourceforge</ulink>.
+            Grab the Sources from <ulink url="http://downloads.sourceforge.net/bripper/MediaEncodingCluster-0.0.1-tr2.tar.gz">MediaEncodingCluster
             0.0.1</ulink> and extract this Package into Directory
             "MEC-0.0.1"</para>
-
-            <screen><prompt>bash$</prompt> <command>tar -xf MediaEncodingCluster-0.0.1-tr2.tar.gz </command></screen>
-          </listitem>
-
-          <listitem>
-            <para>change into the Directory "MEC-0.0.1"</para>
-
-            <screen><prompt>bash$</prompt><command> cd /path/to/mec</command></screen>
-          </listitem>
-
-          <listitem>
-            <para>create a Build Directory</para>
-
-            <screen><prompt>bash$</prompt> <command>mkdir build</command></screen>
-          </listitem>
-
-          <listitem>
-            <para>change into build Directory</para>
-
-            <screen><prompt>bash$</prompt><command> cd build</command></screen>
-          </listitem>
-
-          <listitem>
-            <para>to configure the Media Encoding Cluster,using cmake.</para>
-
-            <para>executing cmake in the build Directory</para>
-
-            <screen><prompt>bash$</prompt><command> cmake .. \
+						<screen>
+							<prompt>bash$</prompt>
+							<command>tar -xf MediaEncodingCluster-0.0.1-tr2.tar.gz </command>
+						</screen>
+					</listitem>
+					<listitem>
+						<para>change into the Directory "MEC-0.0.1"</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command> cd /path/to/mec</command>
+						</screen>
+					</listitem>
+					<listitem>
+						<para>create a Build Directory</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command>mkdir build</command>
+						</screen>
+					</listitem>
+					<listitem>
+						<para>change into build Directory</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command> cd build</command>
+						</screen>
+					</listitem>
+					<listitem>
+						<para>to configure the Media Encoding Cluster,using cmake.</para>
+						<para>executing cmake in the build Directory</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command> cmake .. \
     -DCMAKE_INSTALL_PREFIX=/path/to/mec-install \
     -DBOOST_DIR=/path/to/boost-install \
     -DBOOST_COMPILER=gcc41 \
@@ -386,81 +368,74 @@
     -MYSQL_DIR=/path/to/mysql \
     -FFMPEG_DIR=/path/to/ffmpeg-install \
     -X264_DIR=/path/to/x264-install \
-    -WT_DIR=/path/to/wt-install</command></screen>
-
-            <para>the options must be set correctly to find Boost
+    -WT_DIR=/path/to/wt-install</command>
+						</screen>
+						<para>the options must be set correctly to find Boost
             Library</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>BOOST_DIR - must be set to the base Directory of the
+						<itemizedlist>
+							<listitem>
+								<para>BOOST_DIR - must be set to the base Directory of the
                 Boost Library installation Path</para>
-              </listitem>
-
-              <listitem>
-                <para>BOOST_COMPILER - must be set to the Compiler + Version,
+							</listitem>
+							<listitem>
+								<para>BOOST_COMPILER - must be set to the Compiler + Version,
                 e.g. When using gcc 4.1.2 then it must be set to gcc41, when
                 you use gcc 4.2.1 it must be set to gcc42</para>
-              </listitem>
-
-              <listitem>
-                <para>BOOST_VERSION - must be set to the Boost Library
+							</listitem>
+							<listitem>
+								<para>BOOST_VERSION - must be set to the Boost Library
                 Version</para>
-              </listitem>
-
-              <listitem>
-                <para>CMAKE_INSTALL_PREFIX - can be set to the alternative
+							</listitem>
+							<listitem>
+								<para>CMAKE_INSTALL_PREFIX - can be set to the alternative
                 Installation Directory of Media Encoding Cluster, defaults to
                 /usr/local.</para>
-              </listitem>
-
-              <listitem>
-                <para>MYSQL_DIR - must be set to the base Directory of the
+							</listitem>
+							<listitem>
+								<para>MYSQL_DIR - must be set to the base Directory of the
                 MySQL Library installation Path</para>
-              </listitem>
-
-              <listitem>
-                <para>FFMPEG_DIR - must be set to the base Directory of the
+							</listitem>
+							<listitem>
+								<para>FFMPEG_DIR - must be set to the base Directory of the
                 FFMpeg Library installation Path.</para>
-              </listitem>
-
-              <listitem>
-                <para>X264_DIR - must be set to the base Directory of the x264
+							</listitem>
+							<listitem>
+								<para>X264_DIR - must be set to the base Directory of the x264
                 Library installation Path.</para>
-              </listitem>
-
-              <listitem>
-                <para>WT_DIR - must be set to the base Directory of the WT
+							</listitem>
+							<listitem>
+								<para>WT_DIR - must be set to the base Directory of the WT
                 Library installation Path.</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para>Execute the make Command</para>
-
-            <screen><prompt>bash$</prompt><command> make</command></screen>
-          </listitem>
-
-          <listitem>
-            <para>Execute the install Command</para>
-
-            <screen><prompt>bash$</prompt><command> make install</command></screen>
-
-            <para>this will install the Libraries into the Directory, that you
+							</listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>
+						<para>Execute the make Command</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command> make</command>
+						</screen>
+					</listitem>
+					<listitem>
+						<para>Execute the install Command</para>
+						<screen>
+							<prompt>bash$</prompt>
+							<command> make install</command>
+						</screen>
+						<para>this will install the Libraries into the Directory, that you
             provided in the CMAKE_INSTALL_PREFIX attribute for the build
             Process</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-    </section>
-    <section>
-      <title>Building on Fedora Core 4</title>
-        <itemizedlist>
-          <listitem>
-            <para>yum install wget cmake mysql-devel make gcc gcc-c++</para>
-          </listitem>
-        </itemizedlist>
-    </section>
-  </chapter>
+					</listitem>
+				</itemizedlist>
+			</section>
+		</section>
+		<section>
+			<title>Building on Fedora Core 4</title>
+			<itemizedlist>
+				<listitem>
+					<para>yum install wget cmake mysql-devel make gcc gcc-c++</para>
+				</listitem>
+			</itemizedlist>
+		</section>
+	</chapter>
 </book>

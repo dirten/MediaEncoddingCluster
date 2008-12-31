@@ -115,6 +115,7 @@ int import(int argc, char *argv[]) {
   AVFormatContext *ctx = fis.getFormatContext();
   const int nb = ctx->nb_streams;
   std::map<int, long long int> streams;
+  std::map<int, long long int> stream_frame_group;
   std::map<int, int> codec_types;
   std::map<int, int> num;
   std::map<int, int> den;
@@ -164,8 +165,9 @@ int import(int argc, char *argv[]) {
     stmt_str.execute();
     long long int streamid = con.lastInsertId();
     streams[a] = streamid;
+	stream_frame_group[a]=0;
 
-
+/*
     if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
       //            stmt_fr.setInt("frame_group",frame_group);
       stmt_fr.setLong("frame_count", ctx->streams[a]->duration);
@@ -175,7 +177,7 @@ int import(int argc, char *argv[]) {
       stmt_fr.setInt("stream_index", a);
       stmt_fr.execute();
     }
-
+*/
 
 
 
@@ -262,14 +264,14 @@ int import(int argc, char *argv[]) {
 
     //		++count;
     //		continue;
+	stream_frame_group[packet.packet->stream_index]++;
+//    if (packet.packet->stream_index == 0)
+//      frame_group_counter++;
 
-    if (packet.packet->stream_index == 0)
-      frame_group_counter++;
-
-    if (packet.packet->stream_index == 0 && packet.isKeyFrame() && frame_group_counter >= min_frame_group_count) {
+    if ( packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count) {
 
       stmt_fr.setLong("frame_group", frame_group);
-      stmt_fr.setInt("frame_count", frame_group_counter);
+      stmt_fr.setInt("frame_count", stream_frame_group[packet.packet->stream_index]);
       stmt_fr.setLong("startts", startts);
       stmt_fr.setLong("byte_pos", packet.packet->pos);
       stmt_fr.setLong("stream_id", streams[packet.packet->stream_index]);
@@ -277,9 +279,10 @@ int import(int argc, char *argv[]) {
       stmt_fr.execute();
       startts = packet.packet->dts;
       frame_group++;
-      frame_group_counter = 0;
+	  stream_frame_group[packet.packet->stream_index]=0;
+//      frame_group_counter = 0;
     }
-
+/*
     int field = 0;
     packet.packet->duration = packet.packet->duration == 0 ? 1
         : packet.packet->duration;
@@ -298,7 +301,8 @@ int import(int argc, char *argv[]) {
     stmt.setLong("pos", packet.packet->pos);
     stmt.setLong("sort", ++pkt_count);
     stmt.setInt("data_size", packet.packet->size);
-    //        Blob blob((const char*)packet.data,packet.size);
+*/
+	//        Blob blob((const char*)packet.data,packet.size);
     //        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
 //    stmt.execute();
 
