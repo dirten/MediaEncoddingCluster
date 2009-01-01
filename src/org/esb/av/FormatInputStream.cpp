@@ -13,19 +13,24 @@ namespace org {
         namespace av {
 
             FormatInputStream::FormatInputStream(File * source) {
+				_isValid=false;
                 _sourceFile = source;
                 //                formatCtx= av_alloc_format_context();
                 logdebug("openning MediaFile:" << source->getPath());
                 if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
-                    //    		    throw Exception(__FILE__, __LINE__, "FormatInputStream<init> - could not open File");
+//                    throw Exception("FormatInputStream<init> - could not open File");
                     cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" << endl;
+					return;
                 }
                 if (av_find_stream_info(formatCtx) < 0) {
                     cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" << endl;
                 }
+				_isValid=true;
             }
 
-            AVFormatContext * FormatInputStream::getFormatContext() {
+			bool FormatInputStream::isValid(){return _isValid;}
+
+			AVFormatContext * FormatInputStream::getFormatContext() {
                 return formatCtx;
             }
 

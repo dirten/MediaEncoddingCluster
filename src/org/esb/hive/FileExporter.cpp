@@ -182,13 +182,19 @@ void FileExporter::exportFile(int fileid){
 	std::string path=org::esb::config::Config::getProperty("hive.path");
 	path+="/tmp/";
     while (rs.next()) {
-		std::string filename=path.append(rs.getString("u.id")).append(".unit");
+		std::string filename=path.append(org::esb::util::Decimal(rs.getInt("u.id")%1000).toString());
+		filename+="/";
+		filename.append(rs.getString("u.id")).append(".unit");
 		org::esb::io::File infile(filename.c_str());
 		if(infile.exists()){
 			org::esb::io::FileInputStream fis(&infile);
 			org::esb::io::ObjectInputStream ois(&fis);
 			org::esb::hive::job::ProcessUnit un;
-			ois.readObject(un);
+			try{
+				ois.readObject(un);
+			}catch(...){
+				logerror("ProcessUnit "<< filename <<" ungültig!!!" );
+			}
 			list< boost::shared_ptr<Packet> >::iterator it;
 			for (it = un._output_packets.begin(); it != un._output_packets.end(); it++) {
 				boost::shared_ptr<Packet> p = *it;

@@ -27,6 +27,7 @@ namespace org {
                 AVFormatContext * getFormatContext();
                 long long int available(bool isBlocking = false);
                 long long int getFileSize();
+				bool isValid();
                 int read(unsigned char * buffer, int length);
                 int read(vector<unsigned char>&buffer);
                 int read();
@@ -40,6 +41,7 @@ namespace org {
                 int selectedStream;
             private:
                 org::esb::io::File * _sourceFile;
+				bool _isValid;
             protected:
                 AVFormatContext * formatCtx;
             };

@@ -44,7 +44,8 @@ namespace org {
         void write(char * buffer, int len) {
 		  boost::mutex::scoped_lock lock(_write_mutex);
           if (!_socket->is_open()) {
-            throw SocketException("SocketOutputStream::write - can not Write, because Socket is allready Closed");
+			  _socket->close();
+            throw SocketException("SocketOutputStream::write - can not Write, because Socket is not open");
           }
 
           int remaining = len, byteCounter = 0, bytes = 0;

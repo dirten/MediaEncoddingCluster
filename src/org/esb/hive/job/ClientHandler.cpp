@@ -86,7 +86,7 @@ void ClientHandler::fillProcessUnit(ProcessUnit * u) {
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 //  Connection con(Config::getProperty("db.connection"));
-  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id limit 1");
   ResultSet rs = stmt_ps.executeQuery();
 
   ProcessUnit u;
@@ -215,6 +215,12 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
     logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start"<<unit._process_unit);
 	std::string name=org::esb::config::Config::getProperty("hive.path");
 	name+="/tmp/";
+	name+=org::esb::util::Decimal(unit._process_unit%1000).toString();
+	name+="/";
+	org::esb::io::File dir(name.c_str());
+	if(!dir.exists()){
+		dir.mkdir();
+	}
 	name+=org::esb::util::Decimal(unit._process_unit).toString();
 	name+=".unit";
 	org::esb::io::File out(name.c_str());

@@ -1,5 +1,6 @@
 #include "org/esb/io/InputStream.h"
 #include "org/esb/net/TcpSocket.h"
+#include "SocketException.h"
 #include <iostream>
 //#include "../config.h"
 #include <vector>
@@ -64,7 +65,10 @@ namespace org {
         
         int read(unsigned char * buffer, int length) {
      		boost::mutex::scoped_lock lock(_read_mutex);
-
+			if (!_socket->is_open()) {
+				_socket->close();
+				throw SocketException("SocketOutputStream::write - can not Read, because Socket is not open");
+			}
 			int counter = 0, remaining = length;
        
           while (remaining > 0) {

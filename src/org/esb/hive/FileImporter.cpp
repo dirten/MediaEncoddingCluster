@@ -76,9 +76,18 @@ int import(int argc, char *argv[]) {
   }
 
   long long int fileid = 0, count = 0, frame_group = 0;
-  //    try{
-  FormatInputStream fis(&inputFile);
-  //	}catch(...){return 0}
+/*	FormatInputStream * fisp=NULL;
+  try{
+	fisp=new FormatInputStream(&inputFile);
+  }catch(Exception & ex){
+	  logerror(ex.what());
+	  delete fisp;
+	  return 0;
+  }
+  */
+	FormatInputStream fis(&inputFile);
+	if(!fis.isValid())return 0;
+
   PacketInputStream pis(&fis);
   fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
   //      tntdb::Connection con=connect(databaseFile.getPath());
@@ -268,7 +277,7 @@ int import(int argc, char *argv[]) {
 //    if (packet.packet->stream_index == 0)
 //      frame_group_counter++;
 
-    if ( packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count) {
+	if ( packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count*(codec_types[packet.packet->stream_index] == CODEC_TYPE_AUDIO?1000:1)) {
 
       stmt_fr.setLong("frame_group", frame_group);
       stmt_fr.setInt("frame_count", stream_frame_group[packet.packet->stream_index]);
@@ -326,6 +335,7 @@ int import(int argc, char *argv[]) {
   //    trans.commit();
   cout << endl;
   //      show_progress=duration;
+//  delete fisp;
   return static_cast<int>(fileid);
 }
 

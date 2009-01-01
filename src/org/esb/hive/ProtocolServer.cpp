@@ -58,7 +58,8 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
-  while (!socket->isClosed()) {
+	while (!socket->isClosed()) {
+		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
 #ifndef DEBUG
 	  try {
 #endif
@@ -93,5 +94,5 @@ void ProtocolServer::run() {
     }
 #endif
   }
-  //	cout << "Elvis has left the Building" << endl;
+  	cout << "Elvis has left the Building" << endl;
 }
