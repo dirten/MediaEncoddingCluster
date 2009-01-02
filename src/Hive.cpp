@@ -74,23 +74,28 @@ int euclid(int a, int b){
 		return euclid(b, a%b);
 }
 int main(int argc, char * argv[]) {
+	try{
   //    loginit("log.properties");
 //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
 //	return 0;
+
 	org::esb::io::File f(argv[0]);
 	std::string s=f.getFilePath();
 	char * path=new char[s.length()+1];
     memset(path,0,s.length()+1);
 	strcpy(path,s.c_str());
 	Config::setProperty("hive.path", path);
-    std::cout << "Path"<<path<<std::endl;
-  std::string config_path;
-  po::options_description gen("general options");
+//    std::cout << "Path"<<path<<std::endl;
+
+  std::string config_path=".hive.cfg";
+  po::options_description gen;
+  
   gen.add_options()
       ("help", "produce this message")
-      ("config,c", po::value<std::string > ()->default_value(".hive.cfg"), "use Configuration File")
-      ("version,v", "Prints the Version")
+      ("config", po::value<std::string > ()->default_value(config_path), "use Configuration File")
+      ("version", "Prints the Version")
       ;
+
 
   po::options_description ser("Server options");
   ser.add_options()
@@ -125,7 +130,7 @@ int main(int argc, char * argv[]) {
 //      ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
       ;
 
-  po::options_description all("");
+  po::options_description all("all");
   all.add(gen).add(ser).add(cli).add(exp).add(imp);
 
   gen.add(ser).add(cli).add(exp);
@@ -199,7 +204,11 @@ int main(int argc, char * argv[]) {
 //    exporter((char*) file.c_str(), (char*) dir.c_str());
   }
 
+  }catch(exception & e){
+	  std::cerr << "error: " << e.what() << "\n";
+      return 1;
 
+  }
   Config::close();
   return 0;
 }
