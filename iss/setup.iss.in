@@ -17,6 +17,8 @@ DefaultGroupName=MediaEncodingCluster
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
+OutputBaseFilename=MediaEncodingCluster-Setup-@MHIVE_VERSION@
+
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -26,6 +28,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "@CMAKE_INSTALL_PREFIX@\bin\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@CMAKE_INSTALL_PREFIX@\bin\.hive.cfg"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@CMAKE_INSTALL_PREFIX@\bin\hive\*"; DestDir: "{app}\bin\hive"; Flags: ignoreversion
 Source: "@CMAKE_INSTALL_PREFIX@\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@CMAKE_INSTALL_PREFIX@\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@CMAKE_INSTALL_PREFIX@\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs

@@ -17,6 +17,8 @@ DefaultGroupName=MediaEncodingCluster
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
+OutputBaseFilename=MediaEncodingCluster-Setup-0.0.3
+
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -25,15 +27,26 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Programme\MEC\bin\mhive.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Programme\MEC\res\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\Programme\MEC\sql\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\Programme\MEC\web\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/Programme/MEC\bin\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/Programme/MEC\bin\.hive.cfg"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/Programme/MEC\bin\hive\*"; DestDir: "{app}\bin\hive"; Flags: ignoreversion
+Source: "C:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32\share\english\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32/Embedded/DLL/release\libmysql.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\avutil-49.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\SDL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/ffmpeg-13712/lib\..\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Media Encoding Cluster"; Filename: "{app}\mhive.exe"
+Name: "{group}\Media Encoding Cluster Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\mhive.exe"; Tasks: desktopicon
+Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
 
