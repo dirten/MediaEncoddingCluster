@@ -1,0 +1,32 @@
+IF(BUILD_EMBEDDED_FFMPEG)
+  file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
+  MESSAGE("** Configure ffmpeg")
+  execute_process(COMMAND  ../../ffmpeg/configure 
+                --prefix=${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                --enable-swscale
+                --enable-gpl
+                --disable-shared
+                --enable-static
+                --disable-stripping
+                --disable-devices
+                --enable-libx264
+                --extra-ldflags=-L${PROJECT_SOURCE_DIR}/deps/stage/x264/lib
+                --extra-ldflags=-lpthread
+                --extra-cflags=-I${PROJECT_SOURCE_DIR}/deps/stage/x264/include
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-configure.log 
+                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-configure.log)
+
+  MESSAGE("** Build ffmpeg")
+  execute_process(COMMAND make WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-compile.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-compile.log)
+
+  MESSAGE("** Install ffmpeg")
+  execute_process(COMMAND make install WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg
+                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-install.log 
+                  ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-install.log)
+
+  file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.build "SET(BUILD_EMBEDDED_FFMPEG OFF)")
+ENDIF(BUILD_EMBEDDED_FFMPEG)
+
