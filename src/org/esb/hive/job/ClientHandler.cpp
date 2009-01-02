@@ -15,6 +15,12 @@
 #include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/connect.h"
+
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/is_abstract.hpp>
+#include <boost/archive/xml_oarchive.hpp>
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
@@ -138,6 +144,21 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._process_unit = rs.getInt("u.id");
     _stmt_pu->setInt("id", rs.getInt("u.id"));
     _stmt_pu->execute();
+/*
+		std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
+		path+="/tmp/";
+		std::string outfilename=path.append(org::esb::util::Decimal(rs.getInt("u.id")%1000).toString());
+		outfilename+="/";
+		org::esb::io::File dir(outfilename.c_str());
+		if(!dir.exists()){
+			dir.mkdir();
+		}
+
+		outfilename.append(rs.getString("u.id")).append(".unit_src");
+		std::ofstream ofs(outfilename.c_str());
+			boost::archive::binary_oarchive oa(ofs);
+		oa << BOOST_SERIALIZATION_NVP(u);
+*/
     logdebug("packing frame group  with size:" << size << " !!!");
 
   } else {
@@ -213,6 +234,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start"<<unit._process_unit);
+	/*
 	std::string name=org::esb::config::Config::getProperty("hive.path");
 	name+="/tmp/";
 	name+=org::esb::util::Decimal(unit._process_unit%1000).toString();
@@ -226,10 +248,11 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
 	org::esb::io::File out(name.c_str());
 	org::esb::io::FileOutputStream fos(&out);
 	org::esb::io::ObjectOutputStream ous(&fos);
-	ous.writeObject(unit);
+//	ous.writeObject(unit);
+*/
     _stmt_fr->setInt("id", unit._process_unit);
     _stmt_fr->execute();
-	/*
+	
 	list< boost::shared_ptr<Packet> >::iterator it;
     _stmt_fr->setInt("id", unit._process_unit);
     _stmt_fr->execute();
@@ -257,7 +280,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
       _stmt->setInt("data_size", packet->getSize());
       _stmt->setBlob("data", (char *) packet->packet->data, packet->packet->size);
       _stmt->execute();
-    }*/
+    }
   }
   logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : end");
 
