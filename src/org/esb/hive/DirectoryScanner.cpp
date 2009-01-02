@@ -28,6 +28,7 @@ namespace org {
         MyFileFilter(){
           media_ext[".avi"]="";
           media_ext[".ts"]="";
+          media_ext[".VOB"]="";
         }
         bool accept(File file) {
           bool result=false;

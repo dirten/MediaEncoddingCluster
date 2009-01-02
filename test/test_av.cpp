@@ -7,6 +7,12 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 
+#include "org/esb/io/File.h"
+#include "org/esb/io/FileInputStream.h"
+#include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/io/FileOutputStream.h"
+#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Queue.h"
@@ -20,51 +26,35 @@ using namespace org::esb::config;
 using namespace std;
 
 int main(int argc, char ** argv){
-	
-			class test{
-			};
-			class QTest:public QueueListener{
-			public:
-				Queue<test*> q;
-				QTest(){
-//					q.setQueueListener(this);
-//					boost::thread t(boost::bind(&QTest::enqueue, this));
-//					org::esb::lang::Thread::sleep2(10000);
-//					dequeue();
-					boost::thread de(boost::bind(&QTest::dequeue, this));
-					org::esb::lang::Thread::sleep2(1000);
-					boost::thread en(boost::bind(&QTest::enqueue, this));
-					org::esb::lang::Thread::sleep2(10000);
 
-				}
 
-				void enqueue(){
-					while(true)
-						q.enqueue(new test());
-				}
-				void dequeue(){
-					int a=0;
-					while(true){
-						test t;
-						q.dequeue(&t);
-						org::esb::lang::Thread::sleep2(1000);
-						std::cout << a++;
-					}
-				}
-				void onQueueEvent(QueueEvent event){
-					logdebug("Qevent");
-					if(event==QEVENT_DEQUEUE)
-						logdebug("QEVENT_DEQUEUE"<<event);
-					if(event==QEVENT_ENQUEUE)
-						logdebug("QEVENT_ENQUEUE"<<event);
-					if(event==QEVENT_QEMPTY)
-						logdebug("QEVENT_EMPTY"<<event);
-					if(event==QEVENT_QFULL)
-						logdebug("QEVENT_FULL"<<event);
-				}
-			};
-			QTest t;
+	char * f="3";
+	std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
+	path+="/tmp/";
+		std::string filename=path.append(org::esb::util::Decimal(atoi(f)%1000).toString());
+		filename+="/";
+		filename.append(f).append(".unit");
 
+		std::ifstream ifs(filename.c_str());
+		boost::archive::binary_iarchive ia(ifs);
+
+    // restore the schedule from the archive
+		org::esb::hive::job::ProcessUnit * un= new org::esb::hive::job::ProcessUnit();
+	    ia >> BOOST_SERIALIZATION_NVP(un);
+		std::cerr << "Archive loaded"<<std::endl;
+/*
+		org::esb::io::File infile(filename.c_str());
+		if(infile.exists()){
+			org::esb::io::FileInputStream fis(&infile);
+			org::esb::io::ObjectInputStream ois(&fis);
+			org::esb::hive::job::ProcessUnit un;
+			try{
+				ois.readObject(un);
+			}catch(...){
+				logerror("ProcessUnit "<< filename <<" ungültig!!!" );
+			}
+		}
+*/
 return 0;
 	int loop=1;
 	while(loop-->0){
