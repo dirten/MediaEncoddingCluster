@@ -1,5 +1,6 @@
 
 add_subdirectory (org)
+add_subdirectory (erl)
 
 include_directories (${MEC_SOURCE_DIR}/src)
 #include_directories (${FFMPEG_DIR})
