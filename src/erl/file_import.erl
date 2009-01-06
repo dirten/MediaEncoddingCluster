@@ -36,7 +36,7 @@ code_change(_OldVsn,N,_Extra)->{ok, N}.
 loop(Port, C) ->
   receive
     {call, Caller, Msg} ->
-      io:format("Sending Message ~w~n", [Msg]),
+%      io:format("Sending Message ~w~n", [Msg]),
       Port ! {self(), {command, term_to_binary(Msg)}},
       %      io:format("Data Sended~n", []),
       loop(Port, Caller);
@@ -51,13 +51,12 @@ loop(Port, C) ->
     stop ->
       io:format("StopSignal~n", []),
       Port ! {self(), close},
-      receive
-        {Port, closed} ->
-          unregister(fileimport),
-          exit(normal)
-      end;
+      loop(Port,C);
+    {Port, closed} ->
+      unregister(fileimport),
+      exit(normal);
     {'EXIT', Port, Reason} ->
       unregister(fileimport),
-      io:format("Port exited abnormal~n", []),
+      io:format("Port exited  ~w~n", [Reason]),
       exit({port_terminated, Reason})
   end.
