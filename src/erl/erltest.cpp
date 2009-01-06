@@ -16,7 +16,9 @@
 #include "org/esb/av/PacketInputStream.h"
 
 #include "org/esb/util/Log.h"
+#include "org/esb/util/Decimal.h"
 using namespace org::esb::av;
+using namespace org::esb::util;
 using namespace org::esb::io;
 int foo(int x) {
   return x+1;
@@ -83,10 +85,88 @@ int write_cmd(byte *buf, int len)
   return write_exact(buf, len);
 }
 
-
+void file_import(){
+  byte buf[100000];
+  ETERM *intuple, *outtuple,*fnp, *argp, *argp2;
+  ETERM * fileinfo[5];
+  ETERM * streaminfo[12];
+  ETERM * filenotfound[1];
+ logdebug("waiting for Command");
+// return;
+  while (read_cmd(buf) > 0) {
+	logdebug("Command readed");
+    intuple = erl_decode(buf);
+    fnp = erl_element(1, intuple);
+    argp = erl_element(2, intuple);
+	if (strncmp((const char*)ERL_ATOM_PTR(fnp), "fileinfo", 8) == 0) {
+		logdebug("FileInfo on:"<<(const char*)ERL_ATOM_PTR(argp));
+		File f((const char*)ERL_ATOM_PTR(argp));
+		if(f.exists()){
+		FormatInputStream fis(&f);
+		fileinfo[0]=erl_mk_atom(f.getFileName().c_str());
+		fileinfo[1]=erl_mk_atom(f.getFilePath().c_str());
+		fileinfo[2]=erl_mk_atom(Decimal(fis.getFileSize()).toString().c_str());
+		fileinfo[3]=erl_mk_atom(fis.getFormatContext()->iformat->name);
+		fileinfo[4]=erl_mk_int(fis.getStreamCount());
+	    outtuple=erl_mk_tuple(fileinfo,5);
+		}else{
+			filenotfound[0]=erl_mk_atom("filenotfound");
+		    outtuple=erl_mk_tuple(filenotfound,1);
+		}
+		erl_encode(outtuple, buf);
+		write_cmd(buf, erl_term_len(outtuple));
+    } else if (strncmp((const char*)ERL_ATOM_PTR(fnp), "streaminfo", 10) == 0) {
+		//-record(stream,{id,fileid,streamidx,streamtype,codec,rate,num, den, width, height,channels,gop,format}).
+		argp2 = erl_element(3, intuple);
+		int s=ERL_INT_UVALUE(argp2); 
+		File f((const char*)ERL_ATOM_PTR(argp));
+		if(f.exists()){
+			FormatInputStream fis(&f);
+			AVStream *str=fis.getFormatContext()->streams[s];
+			if(s<0||str==NULL){
+				filenotfound[0]=erl_mk_atom("streamnotfound");
+			    outtuple=erl_mk_tuple(filenotfound,1);
+			}else{
+			streaminfo[0]=erl_mk_int(0);
+			streaminfo[1]=erl_mk_int(str->index);
+			streaminfo[2]=erl_mk_int(str->codec->codec_type);
+			streaminfo[3]=erl_mk_int(str->codec->codec_id);
+			streaminfo[4]=erl_mk_int(str->codec->codec_type==CODEC_TYPE_VIDEO?av_q2d(str->r_frame_rate):str->codec->sample_rate);
+			streaminfo[5]=erl_mk_int(str->time_base.num);
+			streaminfo[6]=erl_mk_int(str->time_base.den);
+			streaminfo[7]=erl_mk_int(str->codec->width);
+			streaminfo[8]=erl_mk_int(str->codec->height);
+			streaminfo[9]=erl_mk_int(str->codec->channels);
+			streaminfo[10]=erl_mk_int(str->codec->gop_size);
+			streaminfo[11]=erl_mk_int(str->codec->codec_type==CODEC_TYPE_VIDEO?str->codec->pix_fmt:str->codec->sample_fmt);
+			outtuple=erl_mk_tuple(streaminfo,12);
+			}
+		}else{
+			filenotfound[0]=erl_mk_atom("filenotfound");
+		    outtuple=erl_mk_tuple(filenotfound,1);
+		}
+		erl_encode(outtuple, buf);
+		write_cmd(buf, erl_term_len(outtuple));
+    }
+  }
+}
 
 
 int main() {
+  erl_init(NULL, 0);
+
+#ifdef WIN32
+
+  /* Attention Windows programmers: you need to explicitly set
+   * mode of stdin/stdout to binary or else the port program won't work
+   */
+  setmode(fileno(stdout), O_BINARY);
+  setmode(fileno(stdin), O_BINARY);
+#endif
+
+  file_import();
+    logdebug("Program End");
+	return 0;
   ETERM *tuplep, *intp;
   ETERM *fnp, *argp;
   ETERM * arr[3], *tuple;
@@ -100,17 +180,11 @@ int main() {
 	File f("c:/1video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 	FormatInputStream fis(&f);
 	PacketInputStream pis(&fis);
-#ifdef _WIN32
-
-  /* Attention Windows programmers: you need to explicitly set
-   * mode of stdin/stdout to binary or else the port program won't work
-   */
-  setmode(fileno(stdout), O_BINARY);
-  setmode(fileno(stdin), O_BINARY);
-#endif
+  int a=0;
   while (read_cmd(buf) > 0) {
 //    logdebug("Message received");
-    Packet p;
+      if(++a>20)break;
+      Packet p;
     if(pis.readPacket(p)<0)break;
 //	pis.readPacket(p);
     tuplep = erl_decode(buf);
@@ -143,6 +217,6 @@ int main() {
     erl_free_term(argp);
 //    erl_free_term(intp);
   }
-            logdebug("Message received");
+            logdebug("Program End");
 
 }
