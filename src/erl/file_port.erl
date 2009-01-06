@@ -1,9 +1,9 @@
--module(file_import).
+-module(file_port).
 -export([start/1,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2]).
 -behaviour(gen_server).
 
 start(Dir)->
-  spawn(?MODULE,init,[[]]).
+  spawn(?MODULE,init,[Dir]).
 
 stop()->
   fileimport ! stop.
