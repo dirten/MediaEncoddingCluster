@@ -22,7 +22,8 @@ init()->
   register(myserver,spawn(server,listener,[])),
   register(complex, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, "/home/jhoelscher/MediaEncodingCluster/build/src/erl/erltest"}, [{packet, 2}, binary]),
+%  Port = open_port({spawn, "/home/jhoelscher/MediaEncodingCluster/build/src/erl/erltest"}, [{packet, 2}, binary]),
+  Port = open_port({spawn, "C:/devel/MediaEncodingCluster-build/src/erl/RelWithDebInfo/erltest"}, [{packet, 2}, binary]),
   io:format("Server started~n", []),
   loop(Port).
   

@@ -1,6 +1,15 @@
+//#include <ei.h>
 #include <erl_interface.h>
-#include <unistd.h>
-#include <string.h>
+
+//#include <unistd.h>
+//#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef WIN32
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
@@ -29,7 +38,7 @@ int read_exact(byte *buf, int len)
   int i, got=0;
 
   do {
-    if ((i = read(0, buf+got, len-got)) <= 0)
+	  if ((i = read(0, buf+got, len-got)) <= 0)
       return(i);
     got += i;
   } while (got<len);
@@ -42,7 +51,7 @@ int write_exact(byte *buf, int len)
   int i, wrote = 0;
 
   do {
-    if ((i = write(1, buf+wrote, len-wrote)) <= 0)
+	  if ((i = write(1, buf+wrote, len-wrote)) <= 0)
       return (i);
     wrote += i;
   } while (wrote<len);
@@ -87,9 +96,18 @@ int main() {
 
   erl_init(NULL, 0);
 //	File f("/home/jhoelscher/pfad.avi");
-	File f("/home/jhoelscher/dracula.ts");
+//	File f("/home/jhoelscher/dracula.ts");
+	File f("c:/1video/Der Blutige Pfad Gottes - German (DVD-Quali).avi");
 	FormatInputStream fis(&f);
 	PacketInputStream pis(&fis);
+#ifdef _WIN32
+
+  /* Attention Windows programmers: you need to explicitly set
+   * mode of stdin/stdout to binary or else the port program won't work
+   */
+  setmode(fileno(stdout), O_BINARY);
+  setmode(fileno(stdin), O_BINARY);
+#endif
   while (read_cmd(buf) > 0) {
 //    logdebug("Message received");
     Packet p;

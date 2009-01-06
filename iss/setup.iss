@@ -43,9 +43,9 @@ Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32/Embedded/DLL/r
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
-Name: "{group}\Start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-i"; WorkingDir: "{app}\bin"
-Name: "{group}\Administration"; Filename: "http://localhost:8080"
+Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
