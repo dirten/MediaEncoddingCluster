@@ -1,4 +1,6 @@
 
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)
+
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
@@ -45,7 +47,7 @@ FIND_LIBRARY(AVFORMAT_LIB
 add_executable (erltest erltest.cpp)
 
 
-target_link_libraries (erltest esb sql lang av util io avcodec avformat avutil swscale )
+target_link_libraries (erltest esb sql lang av util io hive avcodec avformat avutil swscale )
 IF(WIN32)
 #target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 erl_interface ei)
 target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
@@ -65,7 +67,9 @@ target_link_libraries (erltest
   ${BOOST_DT_LIB_MT}
 )
 
+SET(FILEPORTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erltest)
 
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)
 
 INSTALL(TARGETS erltest
     RUNTIME DESTINATION bin

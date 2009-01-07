@@ -5,7 +5,7 @@ namespace org{
 		namespace util{
 //			class QueueEvent{
 //			public:
-				const static enum QueueEvent{
+				enum QueueEvent{
 					QEVENT_ENQUEUE,
 					QEVENT_DEQUEUE,
 					QEVENT_QFULL,

@@ -1,3 +1,4 @@
+-include("config.hrl").
 -module(file_port).
 -export([start/1,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2]).
 -behaviour(gen_server).
@@ -12,7 +13,7 @@ init([])->
   io:format("Starting FileImporter~n", []),
   register(fileimport, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, "C:/devel/MediaEncodingCluster-build/src/erl/Debug/erltest"}, [{packet, 2}, binary]),
+  Port = open_port({spawn, ?FILEPORTEXE}, [{packet, 4}, binary]),
   io:format("FileImporter started~n", []),
   loop(Port,[]).
 
