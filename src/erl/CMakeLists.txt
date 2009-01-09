@@ -72,6 +72,8 @@ target_link_libraries (erltest
 )
 
 SET(FILEPORTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erltest)
+SET(ENCODECLIENTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erlclient)
+
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)
 

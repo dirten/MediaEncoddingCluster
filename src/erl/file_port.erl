@@ -39,7 +39,7 @@ loop(Port, C) ->
       Port ! {self(), {command, term_to_binary(Msg)}},
       loop(Port, Caller);
     {Port, {data, Data}} ->
-      D=binary_to_term(Data),
+      D={{0,0,0,17,25,1,25,512,256,0,12,0},{0,0,0,17,25,1,25,512,256,0,12,0},binary_to_term(Data)},
       C ! {fileimport, D},
       loop(Port,C);
     stop ->

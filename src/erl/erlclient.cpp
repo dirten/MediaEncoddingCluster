@@ -4,7 +4,9 @@
 
 
 ETERM * encode(ETERM* in){
-    
+  ETERM * input_format=erl_element(2, in);
+  ETERM * output_format=erl_element(3, in);
+  ETERM * packet_list=erl_element(4, in);
 }
 
 int main() {

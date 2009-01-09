@@ -48,6 +48,7 @@ ETERM * streaminfo(ETERM * v) {
   return vector2term(terms);
 
 }
+
 ETERM * packet(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
@@ -63,7 +64,10 @@ ETERM * packet(ETERM * v) {
         fis->seek(str,se);
     PacketInputStream pis(fis);
     Packet p;
-    pis.readPacket(p);
+    while(true){
+        pis.readPacket(p);
+        if(p.getStreamIndex()==str)break;
+    }
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
     terms.push_back(erl_mk_int(p.getPts()));
