@@ -4,17 +4,19 @@
 -behaviour(gen_server).
 
 start(Dir)->
-  spawn(?MODULE,init,[Dir]).
+  spawn(?MODULE,init,[Dir]),
+  ok.
 
 stop()->
-  fileimport ! stop.
+  fileimport ! stop,
+  ok.
 
 init([])->
-  io:format("Starting FileImporter~n", []),
+%  io:format("Starting FileImporter~n", []),
   register(fileimport, self()),
   process_flag(trap_exit, true),
   Port = open_port({spawn, ?FILEPORTEXE}, [{packet, 4}, binary]),
-  io:format("FileImporter started~n", []),
+%  io:format("FileImporter started~n", []),
   loop(Port,[]).
 
 handle_call({import_file,_Thing},_From,_N)->
@@ -41,7 +43,7 @@ loop(Port, C) ->
       C ! {fileimport, D},
       loop(Port,C);
     stop ->
-      io:format("StopSignal~n", []),
+%      io:format("StopSignal~n", []),
       Port ! {self(), close},
       loop(Port,C);
     {Port, closed} ->
@@ -49,6 +51,6 @@ loop(Port, C) ->
       exit(normal);
     {'EXIT', Port, Reason} ->
       unregister(fileimport),
-      io:format("Port exited  ~w~n", [Reason]),
+%      io:format("Port exited  ~w~n", [Reason]),
       exit({port_terminated, Reason})
   end.

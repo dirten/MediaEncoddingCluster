@@ -45,15 +45,19 @@ FIND_LIBRARY(AVFORMAT_LIB
 
 
 add_executable (erltest erltest.cpp)
+add_executable (erlclient erlclient.cpp)
 
 
 target_link_libraries (erltest esb sql lang av util io hive avcodec avformat avutil swscale )
+target_link_libraries (erlclient esb sql lang av util io hive avcodec avformat avutil swscale )
 IF(WIN32)
 #target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 erl_interface ei)
 target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
+target_link_libraries (erlclient z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #target_link_libraries (erltest x264 Winmm erl_interface ei )
 ELSE(WIN32)
 target_link_libraries (erltest x264 erl_interface ei pthread)
+target_link_libraries (erlclient x264 erl_interface ei pthread)
 ENDIF(WIN32)
 
 target_link_libraries (erltest
