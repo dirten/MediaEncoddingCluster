@@ -6,13 +6,15 @@
 
 #include <erl_interface.h>
 
-#include <unistd.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
 #ifdef WIN32
 #include <io.h>
 #include <fcntl.h>
+#else
+#include <unistd.h>
 #endif
 
 typedef unsigned char byte;
@@ -69,7 +71,8 @@ int write_cmd(byte *buf, int len) {
 }
 
 ETERM * vector2term(std::vector<ETERM*> & v) {
-  ETERM * term[v.size()];
+	const int s=static_cast<const int>(v.size());
+	ETERM ** term=new ETERM*[(const int)s];
   std::vector<ETERM*>::iterator it = v.begin();
   for (int a = 0; it != v.end(); it++) {
     term[a++] = *it;

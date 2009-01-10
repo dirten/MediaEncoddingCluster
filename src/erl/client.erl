@@ -37,18 +37,19 @@ packetgroup(Server,File, Stream, PacketCount)->
 
 listener(Server, Type, File, Stream, Seek, PacketCount)->
   %  io:format("Client listenerLoop ~w~n", [Server]),
-  {fileimport,Server} ! {call, self(),{Type, File,Stream, Seek, PacketCount}},
+  Server ! {call, self(),{Type, File,Stream, Seek, PacketCount}},
   receive    
     stopClient ->
       io:format("Client stopped~n", []);
-    {fileimport, Result} ->
-    encodeclient ! {call, self(),{encode,Result}},
-    receive
-      {encodeddata, D} ->
-        D
-      after 5000 ->
-        exit(port_terminated)
-      end
+    {packet_sender, Result} ->
+      Result
+%    encodeclient ! {call, self(),{encod,Result}},
+%    receive
+%      {encodeddata, D} ->
+%        D
+%      after 5000 ->
+%        exit(port_terminated)
+%      end
 %,      listener(Server,Type,File,Stream, Seek, PacketCount)
   after 5000 ->
       exit(port_terminated)
@@ -72,6 +73,6 @@ loop(Port, C) ->
       exit(normal);
     {'EXIT', Port, Reason} ->
       unregister(encodeclient),
-%      io:format("Port exited  ~w~n", [Reason]),
+      io:format("Port exited  ~w~n", [Reason]),
       exit({port_terminated, Reason})
   end.

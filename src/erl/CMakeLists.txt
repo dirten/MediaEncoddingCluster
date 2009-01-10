@@ -9,10 +9,14 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
 IF(WIN32)
+SET(FILEPORTEXE ${MEC_BINARY_DIR}/src/erl/Debug/erltest)
+SET(ENCODECLIENTEXE ${MEC_BINARY_DIR}/src/erl/Debug/erlclient)
 ADD_DEFINITIONS(-D__WIN32__)
 include_directories (C:/Programme/erl5.6.5/lib/erl_interface-3.5.9/include)
 LINK_DIRECTORIES(C:/Programme/erl5.6.5/lib/erl_interface-3.5.9/lib/)
 ELSE(WIN32)
+SET(FILEPORTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erltest)
+SET(ENCODECLIENTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erlclient)
 include_directories (/usr/lib/erlang/lib/erl_interface-3.5.5.4/include/)
 LINK_DIRECTORIES(/usr/lib/erlang/lib/erl_interface-3.5.5.4/lib/)
 ENDIF(WIN32)
@@ -71,8 +75,6 @@ target_link_libraries (erltest
   ${BOOST_DT_LIB_MT}
 )
 
-SET(FILEPORTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erltest)
-SET(ENCODECLIENTEXE ${PROJECT_SOURCE_DIR}/build/src/erl/erlclient)
 
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)
