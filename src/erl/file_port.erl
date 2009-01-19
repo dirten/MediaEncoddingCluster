@@ -1,15 +1,18 @@
 %% @DOC bla fasel
 -include("config.hrl").
 -module(file_port).
--export([start/1,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2]).
+-export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2]).
 -behaviour(gen_server).
 
 start(Dir)->
   spawn(?MODULE,init,[Dir]),
   ok.
 
+start_link()->
+  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
+
 stop()->
-  global:whereis_name(packet_sender) ! stop.
+  global:whereis_name(packet_sender) ! stop,
   ok.
 
 init([])->
@@ -31,6 +34,7 @@ handle_info(_Info,_N)->
   ok.
 
 terminate(_Reason,_N)->
+  io:format("~pstopping packet_sender~n",[?MODULE]),
   ok.
 
 code_change(_OldVsn,N,_Extra)->{ok, N}.
@@ -54,11 +58,11 @@ loop(Port, C) ->
       Port ! {self(), close},
       loop(Port,C);
     {Port, closed} ->
-      io:format("Port exited  ~w~n", []),
+      io:format("Port exited  ~n", []),
       global:unregister_name(packet_sender),
       exit(normal);
     {'EXIT', Port, Reason} ->
       global:unregister_name(packet_sender),
-%      io:format("Port exited  ~w~n", [Reason]),
+      io:format("Port exited  ~w~n", [Reason]),
       exit({port_terminated, Reason})
   end.

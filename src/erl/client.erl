@@ -42,14 +42,14 @@ listener(Server, Type, File, Stream, Seek, PacketCount)->
     stopClient ->
       io:format("Client stopped~n", []);
     {packet_sender, Result} ->
-      Result
-%    encodeclient ! {call, self(),{encod,Result}},
-%    receive
-%      {encodeddata, D} ->
-%        D
-%      after 5000 ->
-%        exit(port_terminated)
-%      end
+      Result,
+    encodeclient ! {call, self(),{encode,Result}},
+    receive
+      {encodeddata, D} ->
+        D
+      after 5000 ->
+        exit(port_terminated)
+      end
 %,      listener(Server,Type,File,Stream, Seek, PacketCount)
   after 5000 ->
       exit(port_terminated)
