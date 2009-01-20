@@ -15,12 +15,14 @@ stop()->
   gen_server:call({global,?MODULE}, stop).
 
 init([])->
+  io:format("~w start up~n", [?MODULE]),
+  process_flag(trap_exit, true),
   net_kernel:monitor_nodes(true),
   {ok, state}.
 
 handle_call({import_file,Thing},_From,_N)->
   io:format("FileImporter handle_call~w~n", [Thing]),
-  {reply, test, state}.
+  {reply, Thing, state}.
 
 
 handle_cast(_Msg,N)->
@@ -32,7 +34,7 @@ handle_info(Info,N)->
   {noreply, N}.
 
 terminate(_Reason,_N)->
-  io:format("~pstopping packet_sender~n",[?MODULE]),
+  io:format("~w shutdown~n", [?MODULE]),
   ok.
 
 code_change(_OldVsn,N,_Extra)->{ok, N}.

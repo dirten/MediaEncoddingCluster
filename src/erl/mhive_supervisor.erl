@@ -16,9 +16,9 @@ start_link(Args)->
 init([])->
   {ok,{{one_for_one,3,10},
   [{tag1,
-    {file_port,start_link,[]},
+    {my_gen_server,start_link,[]},
   permanent,
   10000,
   worker,
-  [file_port]}]}}.
+  [my_gen_server]}]}}.
 
