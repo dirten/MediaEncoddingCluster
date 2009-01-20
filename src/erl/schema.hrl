@@ -1,3 +1,3 @@
 -record(file,{id, filename, path, size, containertype,streamcount}).
--record(stream,{streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
+-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
 -record(framegroup,{id,framegroup,startts,byte_pos,stream_id,stream_index,frame_count}).
