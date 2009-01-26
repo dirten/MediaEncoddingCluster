@@ -18,7 +18,7 @@ init([])->
   [{tag1,
     {my_gen_server,start_link,[]},
   permanent,
-  10000,
+  10,
   worker,
   [my_gen_server]}]}}.
 
