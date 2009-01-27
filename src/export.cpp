@@ -15,6 +15,7 @@ using namespace org::esb::io;
 using namespace org::esb::lang;
 using namespace org::esb::sql;
 using namespace org::esb::hive;
+using namespace org::esb::config;
 
 int exporter(char * fileid, char * outfile) {
 

@@ -1,9 +1,9 @@
 #include "HiveClient.h"
 #include "org/esb/util/Log.h"
-#include "org/esb/net/TcpSocket.h"
-#include "org/esb/io/ObjectOutputStream.h"
-#include "org/esb/io/ObjectInputStream.h"
-
+//#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Thread.h"
 
 #include <boost/bind.hpp>
@@ -71,7 +71,7 @@ namespace org {
         }
       }
 		
-
+/*
 	  void HiveClient::packetReader(){
 		  logdebug("HiveClient::packetReader");
 		  while(!_toHalt){	            
@@ -124,19 +124,19 @@ namespace org {
 				unitptr->process();
 				outQueue.enqueue(unitptr);
 
-/*
-                if (unit._input_packets.size() == 0)break;
-                try{
-                    unit.process();
-                }catch(...){
-                    logerror("Error in process");
-                }
-*/				
+//
+//                if (unit._input_packets.size() == 0)break;
+//                try{
+//                    unit.process();
+//                }catch(...){
+//                    logerror("Error in process");
+//                }
+//				
 //				outQueue.send(unit,sizeof(job::ProcessUnit),0);
 			}
 			boost::mutex::scoped_lock terminationLock(terminationMutex);
 	        ctrlCHit.notify_all(); // should be just 1
-		}
+		}*/
       void HiveClient::process() {
         int pCount = 0;
         while (!_toHalt) {

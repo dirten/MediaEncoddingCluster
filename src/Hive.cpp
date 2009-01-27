@@ -3,26 +3,27 @@
 #include <boost/program_options.hpp>
 
 #include "org/esb/signal/Messenger.h"
-#include "org/esb/lang/Exception.h"
+//#include "org/esb/lang/Exception.h"
 #include "org/esb/signal/Message.h"
-#include "org/esb/signal/Messenger.h"
+//#include "org/esb/signal/Messenger.h"
 
-#include "org/esb/net/TcpServerSocket.h"
-#include "org/esb/net/TcpSocket.h"
-#include "org/esb/lang/Thread.h"
+
+//#include "org/esb/net/TcpServerSocket.h"
+//#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/lang/Thread.h"
 //#include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
 //#include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
-#include "org/esb/hive/job/ProcessUnit.h"
-#include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/hive/job/ProcessUnit.h"
+//#include "org/esb/io/ObjectInputStream.h"
+//#include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/HiveListener.h"
 #include "org/esb/hive/DirectoryScanner.h"
 #include "org/esb/av/AV.h"
 //#include "org/esb/hive/PacketCollector.h"
-#include "Environment.cpp"
+//#include "Environment.cpp"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/Setup.h"
 #include "org/esb/hive/Version.h"
@@ -54,7 +55,7 @@ using namespace org::esb::hive::job;
 using namespace org::esb::web;
 using namespace org::esb::util;
 using namespace org::esb::signal;
-using namespace std;
+//using namespace std;
 
 
 
@@ -66,6 +67,7 @@ void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 int rec=0;
+/*
 int euclid(int a, int b){
 	std::cout<<"cycle("<<a<<","<<b<<std::endl;
 	if(b==0)
@@ -73,7 +75,10 @@ int euclid(int a, int b){
 	else
 		return euclid(b, a%b);
 }
+*/
 int main(int argc, char * argv[]) {
+//	return 0;
+//    std::cerr << "Path"<<std::endl;
 	try{
   //    loginit("log.properties");
 //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
@@ -85,7 +90,7 @@ int main(int argc, char * argv[]) {
     memset(path,0,s.length()+1);
 	strcpy(path,s.c_str());
 	Config::setProperty("hive.path", path);
-//    std::cout << "Path"<<path<<std::endl;
+    std::cout << "Path"<<path<<std::endl;
 
   std::string config_path=".hive.cfg";
   po::options_description gen;
@@ -209,7 +214,7 @@ int main(int argc, char * argv[]) {
       return 1;
 
   }
-  Config::close();
+org::esb::config::Config::close();
   return 0;
 }
 
@@ -272,16 +277,16 @@ void ctrlCHitWait() {
 void client(int argc, char *argv[]) {
 
   
-  string host = Config::getProperty("client.host");
-  int port = atoi(Config::getProperty("client.port"));
+	string host = org::esb::config::Config::getProperty("client.host");
+  int port = atoi(org::esb::config::Config::getProperty("client.port"));
 
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", START));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   
   ctrlCHitWait();
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
 
 }
 
@@ -297,19 +302,19 @@ void listener(int argc, char *argv[]) {
    *
    */
 
-  DirectoryScanner dirscan;
+  org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
-  ExportScanner expscan;
+  org::esb::hive::ExportScanner expscan;
   Messenger::getInstance().addMessageListener(expscan);
 
-  WebServer webserver;
+  org::esb::web::WebServer webserver;
   Messenger::getInstance().addMessageListener(webserver);
 
-  HiveListener hive;
+  org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-  ProcessUnitWatcher puw;
+  org::esb::hive::job::ProcessUnitWatcher puw;
   Messenger::getInstance().addMessageListener(puw);
 
 
@@ -321,23 +326,23 @@ void listener(int argc, char *argv[]) {
    */
 
 
-  if (string(Config::getProperty("hive.start")) == "true") {
-    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", START));
-    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", START));
+  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }
 
-  if (string(Config::getProperty("web.start")) == "true"||
-      string(Config::getProperty("hive.mode")) == "setup"){
-    Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
+  if (string(org::esb::config::Config::getProperty("web.start")) == "true"||
+      string(org::esb::config::Config::getProperty("hive.mode")) == "setup"){
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   }
-    Messenger::getInstance().sendRequest(Message().setProperty("webserver", START));
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
 
-  if (string(Config::getProperty("hive.autoscan")) == "true") {
+  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().
-        setProperty("directoryscan", START).
-        setProperty("directory", Config::getProperty("hive.scandir")).
-        setProperty("interval", Config::getProperty("hive.scaninterval")));
-        Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
+        setProperty("directoryscan", org::esb::hive::START).
+        setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
+        setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
+        Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
   }
 
 //  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
@@ -351,13 +356,13 @@ void listener(int argc, char *argv[]) {
    *
    */
 
-  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("webserver", STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
   Messenger::free();
-  mysql_library_end();
+//  mysql_library_end();
 
 }
 

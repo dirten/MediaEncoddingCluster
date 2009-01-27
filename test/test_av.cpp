@@ -1,3 +1,45 @@
+//#include "org/esb/signal/Messenger.h"
+//#include "org/esb/lang/Exception.h"
+//#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/signal/Message.h"
+//#include "org/esb/signal/Messenger.h"
+
+//#include "org/esb/net/TcpServerSocket.h"
+//#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/lang/Thread.h"
+//#include "org/esb/hive/ProtocolServer.h"
+//#include "org/esb/config/config.h"
+//#include "org/esb/hive/job/JobWatcher.h"
+//#include "org/esb/hive/job/ProcessUnitWatcher.h"
+//#include "org/esb/hive/job/ProcessUnit.h"
+//#include "org/esb/io/ObjectInputStream.h"
+//#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/web/WebServer.h"
+//#include "org/esb/hive/HiveListener.h"
+//#include "org/esb/hive/DirectoryScanner.h"
+//#include "org/esb/av/AV.h"
+//#include "org/esb/hive/PacketCollector.h"
+//#include "Environment.cpp"
+//#include "org/esb/hive/HiveClient.h"
+/*
+#include "org/esb/hive/Setup.h"
+#include "org/esb/hive/Version.h"
+
+#include "org/esb/hive/FileImporter.h"
+#include "org/esb/hive/FileExporter.h"
+#include "org/esb/hive/ExportScanner.h"
+
+//#include "org/esb/util/Decimal.h"
+//#include "org/esb/hive/FileImporter.h"
+//#include "export.cpp"
+//#include "org/esb/util/Log.h"
+//#include "job.cpp"
+//#include "org/esb/hive/JobUtil.h"
+
+
+
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -24,10 +66,11 @@ using namespace org::esb::sql;
 using namespace org::esb::config;
 
 using namespace std;
-
+*/
 int main(int argc, char ** argv){
 
-
+	return 0;
+	/*
 	char * f="3";
 	std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
 	path+="/tmp/";
@@ -42,7 +85,8 @@ int main(int argc, char ** argv){
 		org::esb::hive::job::ProcessUnit * un= new org::esb::hive::job::ProcessUnit();
 	    ia >> BOOST_SERIALIZATION_NVP(un);
 		std::cerr << "Archive loaded"<<std::endl;
-/*
+*/
+		/*
 		org::esb::io::File infile(filename.c_str());
 		if(infile.exists()){
 			org::esb::io::FileInputStream fis(&infile);
@@ -56,6 +100,7 @@ int main(int argc, char ** argv){
 		}
 */
 return 0;
+/*
 	int loop=1;
 	while(loop-->0){
 	std::cout <<"loop "<<loop<<endl;
@@ -86,6 +131,6 @@ return 0;
 		}
 		}
 	std::cout << endl;
-	}
+	}*/
 }
 
