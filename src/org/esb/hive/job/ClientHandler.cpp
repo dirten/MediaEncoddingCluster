@@ -125,20 +125,25 @@ ProcessUnit ClientHandler::getProcessUnit() {
 	int framerate=rs.getInt("framerate");
 	int samplerate=rs.getInt("sample_rate");
 	int gop=rs.getInt("gop_size");
-	long offset=(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
+	long offset=0;//(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
 	logdebug("building seek offset -"<<offset);
     fis->seek(rs.getInt("stream_index"), (start_ts-offset));
     PacketInputStream pis(fis);
     int size = 0;
     for (int a = 0; a < frame_count + 3;) {
       Packet tmp_p;
-      if (pis.readPacket(tmp_p) < 0)break;
+      if (pis.readPacket(tmp_p) < 0){
+        logdebug("Null Packet from Stream");
+        break;
+      }
       if (tmp_p.packet->stream_index != stream_index)continue;
       if (tmp_p.packet->dts >= start_ts) {
         a++;
         boost::shared_ptr<Packet> p(new Packet(tmp_p));
         u._input_packets.push_back(p);
         size += p->packet->size;
+      }else{
+        logdebug("Dropping Packet with dts"<<tmp_p.packet->dts);
       }
     }
     u._process_unit = rs.getInt("u.id");

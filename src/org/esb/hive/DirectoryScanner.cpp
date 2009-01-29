@@ -16,6 +16,9 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/util/Decimal.h"
+//#include "org/esb/av/AV.h"
+#include "org/esb/util/StringTokenizer.h"
+#include "org/esb/util/StringUtil.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -25,19 +28,30 @@ namespace org {
 
       class MyFileFilter : public FileFilter {
       public:
-        MyFileFilter(){
-          media_ext[".avi"]="";
-          media_ext[".ts"]="";
-          media_ext[".VOB"]="";
+
+        MyFileFilter(std::string ext) {
+          logdebug("extensions"<<ext);
+          StringTokenizer tokenizer(ext,",");
+          while(tokenizer.hasMoreTokens()){
+            std::string tok=tokenizer.nextToken();
+            tok=StringUtil::trim(tok);
+            if(tok.length()>0){
+              std::string e=".";
+              e+=tok;
+              media_ext[e];
+              logdebug("Extension added:"<<e);
+            }
+          }
         }
+
         bool accept(File file) {
-          bool result=false;
-		  if(file.isDirectory()||media_ext.find(file.getExtension())!=media_ext.end())
-            result=true;
+          bool result = false;
+          if (file.isDirectory()||media_ext.size()==0 || media_ext.find(file.getExtension()) != media_ext.end())
+            result = true;
           return result;
         }
       private:
-        map<std::string,std::string> media_ext;
+        map<std::string, std::string> media_ext;
       };
 
       DirectoryScanner::DirectoryScanner(std::string dir, int interval) {
@@ -85,8 +99,8 @@ namespace org {
           Statement stmt = con.createStatement("select * from watch_folder");
           ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
-            if (File(rs.getString("folder").c_str()).exists()) {
-              scan(rs.getString("folder"), rs.getInt("profile"));
+            if (File(rs.getString("infolder").c_str()).exists()) {
+              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), rs.getString("extension_filter"));
             } else {
               //            _halt = true;
             }
@@ -95,21 +109,21 @@ namespace org {
         }
       }
 
-      void DirectoryScanner::scan(std::string dir, int profile) {
-        logdebug("Directory Scanner loop:" << ":" << dir);
-        MyFileFilter filter;
+      void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, std::string f) {
+        logdebug("Directory Scanner loop:" << ":" << indir);
+        MyFileFilter filter(f);
 
-        FileList list = File(dir.c_str()).listFiles(filter);
+        FileList list = File(indir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())
-            scan((*it)->getPath(), profile);
+            scan((*it)->getPath(), outdir, profile, f);
           else
-            computeFile(*it->get(), profile);
+            computeFile(*it->get(), profile, outdir);
         }
       }
 
-      void DirectoryScanner::computeFile(File & file, int p) {
+      void DirectoryScanner::computeFile(File & file, int p, std::string outdir) {
 
         Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
         PreparedStatement stmt(con.prepareStatement("select * from files where filename=:name and path=:path"));
@@ -126,10 +140,10 @@ namespace org {
             if (fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
-              char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str()};
+              char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(),(char*)outdir.c_str()};
               std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
               std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
-              jobcreator(3, jobarg);
+              jobcreator(4, jobarg);
             }
           }
         }

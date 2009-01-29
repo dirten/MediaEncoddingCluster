@@ -109,7 +109,7 @@ int main(int argc, char * argv[]) {
       ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
       ("webroot,r", po::value<std::string > ()->default_value("../web"), "define the Path for Web Server root")
       ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
-      ("scanint", po::value<int>()->default_value(300), "define the Interval to Scan for new Media Files")
+      ("scanint", po::value<int>(), "define the Interval to Scan for new Media Files")
       ("database", po::value<std::string > (), "Database Connection mysql://mysql:db=<dbname>;host=<host>;user=<user>;passwd=<user> for e.g. mysql:db=hive;host=localhost;user=root;passwd=test")
       ;
 

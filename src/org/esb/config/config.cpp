@@ -55,8 +55,10 @@ void Config::init(char * filename) {
   Statement stmt = con.createStatement("select * from config");
   ResultSet rs = stmt.executeQuery();
   while (rs.next()) {
-    if (rs.getString("config_key") != "db.connection")
+    if (rs.getString("config_key") != "db.connection"){
       properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
+      logdebug("ConfigKey:"<<rs.getString("config_key")<<" ConfigVal:"<< rs.getString("config_val"));
+    }
   }
   }catch(SqlException & ex){
     logerror("cant load configuration from database");

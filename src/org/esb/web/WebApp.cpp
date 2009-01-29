@@ -45,9 +45,9 @@ namespace org {
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
         north->setBorder(false);
 		std::string h="MediaEncodingCluster V-";
-		h+="MHIVE_VERSION";
+		h+=MHIVE_VERSION;
 		h+="($Rev$-"__DATE__ "-" __TIME__")";
-        Wt::WText *head = new Wt::WText();
+        Wt::WText *head = new Wt::WText(h);
         head->setStyleClass("north");
         north->setLayout(new Wt::WFitLayout());
         north->layout()->addWidget(head);

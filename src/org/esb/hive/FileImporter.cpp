@@ -69,24 +69,24 @@ int import(int argc, char *argv[]) {
       }
    */
   org::esb::io::File inputFile(argv[1]);
-  if (!inputFile.exists()||!inputFile.canRead()) {
+  if (!inputFile.exists() || !inputFile.canRead()) {
     cout << "Source File not found" << endl;
   } else {
     cout << "File:" << inputFile.getPath() << endl;
   }
 
   long long int fileid = 0, count = 0, frame_group = 0;
-/*	FormatInputStream * fisp=NULL;
-  try{
-	fisp=new FormatInputStream(&inputFile);
-  }catch(Exception & ex){
-	  logerror(ex.what());
-	  delete fisp;
-	  return 0;
-  }
-  */
-	FormatInputStream fis(&inputFile);
-	if(!fis.isValid())return 0;
+  /*	FormatInputStream * fisp=NULL;
+    try{
+          fisp=new FormatInputStream(&inputFile);
+    }catch(Exception & ex){
+            logerror(ex.what());
+            delete fisp;
+            return 0;
+    }
+   */
+  FormatInputStream fis(&inputFile);
+  if (!fis.isValid())return 0;
 
   PacketInputStream pis(&fis);
   fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
@@ -174,19 +174,19 @@ int import(int argc, char *argv[]) {
     stmt_str.execute();
     long long int streamid = con.lastInsertId();
     streams[a] = streamid;
-	stream_frame_group[a]=0;
+    stream_frame_group[a] = 0;
 
-/*
-    if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
-      //            stmt_fr.setInt("frame_group",frame_group);
-      stmt_fr.setLong("frame_count", ctx->streams[a]->duration);
-      stmt_fr.setLong("startts", ctx->streams[a]->start_time);
-      stmt_fr.setLong("byte_pos", 0);
-      stmt_fr.setLong("stream_id", streamid);
-      stmt_fr.setInt("stream_index", a);
-      stmt_fr.execute();
-    }
-*/
+    /*
+        if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
+          //            stmt_fr.setInt("frame_group",frame_group);
+          stmt_fr.setLong("frame_count", ctx->streams[a]->duration);
+          stmt_fr.setLong("startts", ctx->streams[a]->start_time);
+          stmt_fr.setLong("byte_pos", 0);
+          stmt_fr.setLong("stream_id", streamid);
+          stmt_fr.setInt("stream_index", a);
+          stmt_fr.execute();
+        }
+     */
 
 
 
@@ -273,12 +273,13 @@ int import(int argc, char *argv[]) {
 
     //		++count;
     //		continue;
-	stream_frame_group[packet.packet->stream_index]++;
-//    if (packet.packet->stream_index == 0)
-//      frame_group_counter++;
+    stream_frame_group[packet.packet->stream_index]++;
+    //    if (packet.packet->stream_index == 0)
+    //      frame_group_counter++;
 
-	if ( packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count*(codec_types[packet.packet->stream_index] == CODEC_TYPE_AUDIO?1000:1)) {
+    if (packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count * (codec_types[packet.packet->stream_index] == CODEC_TYPE_AUDIO ? 1000 : 1)) {
 
+      startts = packet.packet->dts;
       stmt_fr.setLong("frame_group", frame_group);
       stmt_fr.setInt("frame_count", stream_frame_group[packet.packet->stream_index]);
       stmt_fr.setLong("startts", startts);
@@ -286,34 +287,33 @@ int import(int argc, char *argv[]) {
       stmt_fr.setLong("stream_id", streams[packet.packet->stream_index]);
       stmt_fr.setInt("stream_index", packet.packet->stream_index);
       stmt_fr.execute();
-      startts = packet.packet->dts;
       frame_group++;
-	  stream_frame_group[packet.packet->stream_index]=0;
-//      frame_group_counter = 0;
+      stream_frame_group[packet.packet->stream_index] = 0;
+      //      frame_group_counter = 0;
     }
-/*
-    int field = 0;
-    packet.packet->duration = packet.packet->duration == 0 ? 1
-        : packet.packet->duration;
-    stmt.setLong("stream_id", streams[packet.packet->stream_index]);
-    stmt.setLong("pts", packet.packet->pts);
-    //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
-    stmt.setLong("dts", packet.packet->dts);
-    stmt.setInt("stream_index", packet.packet->stream_index);
-    stmt.setInt("key_frame", packet.isKeyFrame());
-    if (packet.packet->stream_index == 0)
-      stmt.setLong("frame_group", frame_group);
-    else
-      stmt.setInt("frame_group", 0);
-    stmt.setInt("flags", packet.packet->flags);
-    stmt.setInt("duration", packet.packet->duration);
-    stmt.setLong("pos", packet.packet->pos);
-    stmt.setLong("sort", ++pkt_count);
-    stmt.setInt("data_size", packet.packet->size);
-*/
-	//        Blob blob((const char*)packet.data,packet.size);
+    /*
+        int field = 0;
+        packet.packet->duration = packet.packet->duration == 0 ? 1
+            : packet.packet->duration;
+        stmt.setLong("stream_id", streams[packet.packet->stream_index]);
+        stmt.setLong("pts", packet.packet->pts);
+        //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
+        stmt.setLong("dts", packet.packet->dts);
+        stmt.setInt("stream_index", packet.packet->stream_index);
+        stmt.setInt("key_frame", packet.isKeyFrame());
+        if (packet.packet->stream_index == 0)
+          stmt.setLong("frame_group", frame_group);
+        else
+          stmt.setInt("frame_group", 0);
+        stmt.setInt("flags", packet.packet->flags);
+        stmt.setInt("duration", packet.packet->duration);
+        stmt.setLong("pos", packet.packet->pos);
+        stmt.setLong("sort", ++pkt_count);
+        stmt.setInt("data_size", packet.packet->size);
+     */
+    //        Blob blob((const char*)packet.data,packet.size);
     //        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
-//    stmt.execute();
+    //    stmt.execute();
 
     //      show_progress+=packet.duration;
 
@@ -335,8 +335,8 @@ int import(int argc, char *argv[]) {
   //    trans.commit();
   cout << endl;
   //      show_progress=duration;
-//  delete fisp;
-  return static_cast<int>(fileid);
+  //  delete fisp;
+  return static_cast<int> (fileid);
 }
 
 /*

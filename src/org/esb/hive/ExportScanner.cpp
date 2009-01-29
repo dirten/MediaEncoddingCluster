@@ -31,16 +31,16 @@ namespace org {
         while (_run) {
           org::esb::sql::ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
-            std::string filename ;
-			if(rs.getString("path").size()==0){
-				filename=org::esb::config::Config::getProperty("hive.path");
-			}else{
-				filename=rs.getString("path");
-			}
-			filename+="/";
-			filename+=rs.getString("filename");
+            std::string filename;
+            if (rs.getString("path").size() == 0) {
+              filename = org::esb::config::Config::getProperty("hive.path");
+            } else {
+              filename = rs.getString("path");
+            }
+            filename += "/";
+            filename += rs.getString("filename");
             org::esb::io::File file(filename.c_str());
-			if (!file.exists()) {
+            if (!file.exists()) {
               FileExporter::exportFile(rs.getInt("fileid"));
             }
           }

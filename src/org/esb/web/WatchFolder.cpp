@@ -41,9 +41,12 @@ namespace org {
 
           int i = 0;
           buildElement("id", "Id", t, i++)->setEnabled(false);
-          buildElement("folder", "Watch Folder", t, i++)->setEnabled(false);
-          selectDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
-          selectDirectory->setEnabled(false);
+          buildElement("infolder", "Input Watch Folder", t, i++)->setEnabled(false);
+          selectInDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
+          selectInDirectory->setEnabled(false);
+          buildElement("outfolder", "Output Folder", t, i++)->setEnabled(false);
+          selectOutDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
+          selectOutDirectory->setEnabled(false);
 //          buildElement("profile", "Profile", t, i++)->setEnabled(false);
 
 
@@ -71,17 +74,24 @@ namespace org {
           buttonSave->clicked.connect(SLOT(this, WatchFolder::saveMap));
           buttonSave->setEnabled(false);
 
-          directoryChooser = new Wt::Ext::Dialog("Choose Directory");
-//          DirectoryFileFilter * filter=new DirectoryFileFilter();
-          tree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, directoryChooser->contents());
-          tree->resize(500,300);
+          indirectoryChooser = new Wt::Ext::Dialog("Choose Directory");
+          intree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, indirectoryChooser->contents());
+          intree->resize(500,300);
+          Wt::Ext::Button *inselect = new Wt::Ext::Button("Select", indirectoryChooser->contents());
+          inselect->clicked.connect(SLOT(indirectoryChooser, Wt::Ext::Dialog::accept));
+          indirectoryChooser->resize(600, 400);
+          intree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectInFolder));
 
-          tree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectFolder));
-          
-          Wt::Ext::Button *select = new Wt::Ext::Button("Select", directoryChooser->contents());
-          select->clicked.connect(SLOT(directoryChooser, Wt::Ext::Dialog::accept));
-          directoryChooser->resize(600, 400);
-          selectDirectory->clicked.connect(SLOT(this, WatchFolder::openDirectoryChooser));
+          outdirectoryChooser = new Wt::Ext::Dialog("Choose Directory");
+          outtree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, outdirectoryChooser->contents());
+          outtree->resize(500,300);
+          Wt::Ext::Button *outselect = new Wt::Ext::Button("Select", outdirectoryChooser->contents());
+          outselect->clicked.connect(SLOT(outdirectoryChooser, Wt::Ext::Dialog::accept));
+          outdirectoryChooser->resize(600, 400);
+          outtree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectOutFolder));
+
+          selectInDirectory->clicked.connect(SLOT(this, WatchFolder::openInDirectoryChooser));
+          selectOutDirectory->clicked.connect(SLOT(this, WatchFolder::openOutDirectoryChooser));
           tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
         }
         ~WatchFolder(){
@@ -92,13 +102,16 @@ namespace org {
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonSave;
-        Wt::Ext::Dialog * directoryChooser;
-        Wt::Ext::Button * selectDirectory;
+        Wt::Ext::Dialog * indirectoryChooser;
+        Wt::Ext::Dialog * outdirectoryChooser;
+        Wt::Ext::Button * selectInDirectory;
+        Wt::Ext::Button * selectOutDirectory;
         SqlTable * tab;
         Wt::WText * msg;
         int _user_id;
         DirectoryFileFilter filter;
-        FileTreeTable * tree;
+        FileTreeTable * intree;
+        FileTreeTable * outtree;
         std::map<std::string, std::string> sqldata;
         std::map<std::string, Wt::Ext::LineEdit*> elements;
         
@@ -108,8 +121,12 @@ namespace org {
         Wt::Ext::ComboBox * profiles;
         Wt::Ext::Button * encode;
 
-        void openDirectoryChooser() {
-          directoryChooser->show();
+        void openInDirectoryChooser() {
+          indirectoryChooser->show();
+        }
+
+        void openOutDirectoryChooser() {
+          outdirectoryChooser->show();
         }
 
         void enableEditButton() {
@@ -132,7 +149,8 @@ namespace org {
 //            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
-          selectDirectory->setEnabled(true);
+          selectInDirectory->setEnabled(true);
+          selectOutDirectory->setEnabled(true);
           elements["profile"]->setEnabled(true);
         }
 
@@ -143,19 +161,32 @@ namespace org {
 //            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
-          selectDirectory->setEnabled(true);
-		  elements["profile"]->setEnabled(true);
+          selectInDirectory->setEnabled(true);
+          selectOutDirectory->setEnabled(true);
+          elements["profile"]->setEnabled(true);
         }
 
-        void selectFolder(){
+        void selectInFolder(){
           logdebug("Folder Selected");
 
-          Wt::WTree::WTreeNodeSet set=tree->tree()->selectedNodes();
+          Wt::WTree::WTreeNodeSet set=intree->tree()->selectedNodes();
           Wt::WTree::WTreeNodeSet::iterator it=set.begin();
           if(it!=set.end()){
           logdebug("Folder in set");
             FileTreeTableNode * node=(FileTreeTableNode*)*it;
-            elements["folder"]->setText(node->path_.string());
+            elements["infolder"]->setText(node->path_.string());
+            logdebug(node->path_);
+          }
+        }
+        void selectOutFolder(){
+          logdebug("Folder Selected");
+
+          Wt::WTree::WTreeNodeSet set=outtree->tree()->selectedNodes();
+          Wt::WTree::WTreeNodeSet::iterator it=set.begin();
+          if(it!=set.end()){
+          logdebug("Folder in set");
+            FileTreeTableNode * node=(FileTreeTableNode*)*it;
+            elements["outfolder"]->setText(node->path_.string());
             logdebug(node->path_);
           }
         }
@@ -163,7 +194,8 @@ namespace org {
           std::map<std::string, std::string> data;
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           data["id"]=elements["id"]->text().narrow();
-          data["folder"]=elements["folder"]->text().narrow();
+          data["infolder"]=elements["infolder"]->text().narrow();
+          data["outfolder"]=elements["outfolder"]->text().narrow();
           data["profile"]=Decimal(name2id[elements["profile"]->text().narrow()]).toString() ;
 /*
           for (; it != elements.end(); it++) {
@@ -179,7 +211,7 @@ namespace org {
           table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
           Wt::Ext::LineEdit * element = new Wt::Ext::LineEdit(table->elementAt(row, 1));
           element->setText(config::Config::getProperty((char*) name.c_str()));
-          element->resize(Wt::WLength(30, Wt::WLength::FontEx), Wt::WLength());
+          element->resize(Wt::WLength(50, Wt::WLength::FontEx), Wt::WLength());
           elementLabel->setBuddy(element);
           element->setText(sqldata[name]);
           elements[name] = element;

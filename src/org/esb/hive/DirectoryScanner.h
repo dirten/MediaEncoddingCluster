@@ -21,8 +21,8 @@ namespace org {
         void onMessage(org::esb::signal::Message & msg);
       private:
         void scan();
-        void scan(std::string dir,int profile);
-        void computeFile(org::esb::io::File & file, int profile);
+        void scan(std::string indir,std::string outdir,int profile,std::string);
+        void computeFile(org::esb::io::File & file, int profile, std::string outpath);
         bool _halt;
         boost::thread * th;
         std::string _dir;

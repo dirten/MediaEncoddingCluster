@@ -18,16 +18,15 @@ using namespace org::esb::sql;
 using namespace org::esb::hive;
 using namespace org::esb::config;
 
+void FileExporter::exportFile(int fileid) {
 
-void FileExporter::exportFile(int fileid){
-	
 
   map<int, Decoder*> enc;
   map<int, int> ptsmap;
   map<int, int> dtsmap;
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
-//  map<int, int> dtsmap;
+  //  map<int, int> dtsmap;
   std::string filename;
   Connection con(std::string(Config::getProperty("db.connection")));
 
@@ -35,23 +34,23 @@ void FileExporter::exportFile(int fileid){
     PreparedStatement stmt = con.prepareStatement("select * from files where files.id=:id");
     stmt.setInt("id", fileid);
     ResultSet rs = stmt.executeQuery();
-	if(rs.next()){
-		if(rs.getString("path").size()==0){
-			filename=Config::getProperty("hive.path");
-		}else{
-			filename=rs.getString("path");
-		}
-		filename+="/";
-		filename+=rs.getString("filename");
-	}
+    if (rs.next()) {
+      if (rs.getString("path").size() == 0) {
+        filename = Config::getProperty("hive.path");
+      } else {
+        filename = rs.getString("path");
+      }
+      filename += "/";
+      filename += rs.getString("filename");
+    }
   }
   org::esb::io::File fout(filename.c_str());
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
-  if(!outDirectory.exists()){
-	logdebug("creating output directory:"<<outDirectory.getFilePath());
+  if (!outDirectory.exists()) {
+    logdebug("creating output directory:" << outDirectory.getFilePath());
     outDirectory.mkdir();
   }
-//  string stream_id = fileid;
+  //  string stream_id = fileid;
   FormatOutputStream fos(&fout);
   PacketOutputStream pos(&fos);
 
@@ -59,7 +58,7 @@ void FileExporter::exportFile(int fileid){
   int audio_id = 0;
   int audio_pts = 0;
   int video_pts = 0;
-  bool build_offset=true;
+  bool build_offset = true;
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
 
   {
@@ -68,15 +67,15 @@ void FileExporter::exportFile(int fileid){
     ResultSet rs = stmt.executeQuery();
 
     while (rs.next()) {
-      Decoder *codec=CodecFactory::getStreamDecoder(rs.getInt("sid"));
+      Decoder *codec = CodecFactory::getStreamDecoder(rs.getInt("sid"));
       codec->open();
-//      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
-//      encoder->open();
-      enc[rs.getInt("stream_index")]=codec;
-      ptsmap[rs.getInt("stream_index")]=0;
-      dtsmap[rs.getInt("stream_index")]=0;
-      dtsoffset[rs.getInt("stream_index")]=-1;
-      ptsoffset[rs.getInt("stream_index")]=-1;
+      //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
+      //      encoder->open();
+      enc[rs.getInt("stream_index")] = codec;
+      ptsmap[rs.getInt("stream_index")] = 0;
+      dtsmap[rs.getInt("stream_index")] = 0;
+      dtsoffset[rs.getInt("stream_index")] = -1;
+      ptsoffset[rs.getInt("stream_index")] = -1;
       pos.setEncoder(*codec, rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
@@ -85,9 +84,9 @@ void FileExporter::exportFile(int fileid){
       if (rs.getInt("stream_type") == CODEC_TYPE_AUDIO) {
         audio_id = rs.getInt("sid");
       }
-        if(codec->getCodecId()==CODEC_ID_MPEG2VIDEO){
-          build_offset=false;
-        }
+      if (codec->getCodecId() == CODEC_ID_MPEG2VIDEO) {
+        build_offset = false;
+      }
 
       /*
       CodecID codec_id = (CodecID) rs.getInt("codec");
@@ -129,7 +128,7 @@ void FileExporter::exportFile(int fileid){
         //        encoder->ctx->block_align=1;
         pos.setEncoder(*encoder, rs.getInt("stream_index"));
       }
-*/
+       */
     }
     cout << "StreamTimeBaseNum:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
     cout << "\tStreamTimeBaseDen:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
@@ -147,8 +146,8 @@ void FileExporter::exportFile(int fileid){
     //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
     //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts
     string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
-//    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by sort";
-//        string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
+    //    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by sort";
+    //        string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
     PreparedStatement stmt = con.prepareStatement(sql.c_str());
     stmt.setInt("video", video_id);
     //	audio_id=0;
@@ -162,13 +161,13 @@ void FileExporter::exportFile(int fileid){
     int video_packets = 0;
     int a = 0;
     int id = 0;
-    int first_pts=-1;
-    int first_dts=-1;
+    int first_pts = -1;
+    int first_dts = -1;
     /*
       AVRational ar2;
       ar2.num = 1;
       ar2.den = 25;
-*/
+     */
     while (rs.next()) {
       //	    Row row=rs.getRow(a);
       //	    video_packets++;
@@ -176,8 +175,8 @@ void FileExporter::exportFile(int fileid){
       Packet p(rs.getInt("data_size"));
       p.packet->stream_index = rs.getInt("stream_index");
       p.packet->flags = rs.getInt("flags");
-//      p.packet->size = rs.getInt("data_size");
-      p.packet->duration=1;
+      //      p.packet->size = rs.getInt("data_size");
+      p.packet->duration = 1;
       //	    p.size=rs.getInt("data_size");
       //	    p.data=new uint8_t[p.size];
       //		if(p.packet->stream_index==0){
@@ -185,35 +184,35 @@ void FileExporter::exportFile(int fileid){
       p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
       p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
 
-      AVRational ar2={1,25};//enc[rs.getInt("stream_index")]->getTimeBase();
-//      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
+      AVRational ar2 = {1, 25}; //enc[rs.getInt("stream_index")]->getTimeBase();
+      //      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
 
-        p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
-        p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
-//      }
+      p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+      p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+      //      }
 
 
-        if(build_offset){
-            if(ptsoffset[rs.getInt("stream_index")]==-1){
-              ptsoffset[rs.getInt("stream_index")]=p.packet->pts;
-            }
-            if(dtsoffset[rs.getInt("stream_index")]==-1){
-            dtsoffset[rs.getInt("stream_index")]=p.packet->dts;
-            }
-            p.packet->pts=p.packet->pts-ptsoffset[rs.getInt("stream_index")];
-            p.packet->dts=p.packet->dts-dtsoffset[rs.getInt("stream_index")];
+      if (build_offset) {
+        if (ptsoffset[rs.getInt("stream_index")] == -1) {
+          ptsoffset[rs.getInt("stream_index")] = p.packet->pts;
         }
-
-        if(false&&enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
-            p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
-            p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
+        if (dtsoffset[rs.getInt("stream_index")] == -1) {
+          dtsoffset[rs.getInt("stream_index")] = p.packet->dts;
+        }
+        p.packet->pts = p.packet->pts - ptsoffset[rs.getInt("stream_index")];
+        p.packet->dts = p.packet->dts - dtsoffset[rs.getInt("stream_index")];
       }
-//        printf("PTS=%lli DTS=%lli Stream=%i\n",p.packet->pts,p.packet->dts,rs.getInt("stream_index"));
-//        cout << "PTS="<<p.packet->pts<<endl;
-        if(false){
-            p.packet->pts =++ptsmap[rs.getInt("stream_index")];
-            p.packet->dts =++dtsmap[rs.getInt("stream_index")];
-        }
+
+      if (false && enc[rs.getInt("stream_index")]->getCodecType() == CODEC_TYPE_VIDEO) {
+        p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
+        p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
+      }
+      //        printf("PTS=%lli DTS=%lli Stream=%i\n",p.packet->pts,p.packet->dts,rs.getInt("stream_index"));
+      //        cout << "PTS="<<p.packet->pts<<endl;
+      if (false) {
+        p.packet->pts = ++ptsmap[rs.getInt("stream_index")];
+        p.packet->dts = ++dtsmap[rs.getInt("stream_index")];
+      }
       //          p.packet->pts=av_rescale_q(++video_packets,fos._fmtCtx->streams[p.packet->stream_index]->codec->time_base,fos._fmtCtx->streams[p.packet->stream_index]->time_base);
 
 
@@ -237,18 +236,18 @@ void FileExporter::exportFile(int fileid){
                   }
        */
 
-//      p.packet->pts = rs.getLong("pts");
-//      p.packet->dts = rs.getLong("dts");
+      //      p.packet->pts = rs.getLong("pts");
+      //      p.packet->dts = rs.getLong("dts");
 
-//      p.packet->dts = dtsmap[rs.getInt("stream_index")];//rs.getLong("dts");
-//      dtsmap[rs.getInt("stream_index")]+=rs.getInt("duration");
+      //      p.packet->dts = dtsmap[rs.getInt("stream_index")];//rs.getLong("dts");
+      //      dtsmap[rs.getInt("stream_index")]+=rs.getInt("duration");
       //	    p.packet->pts=rs.getDouble("pts")>0?(rs.getDouble("pts")/rs.getDouble("duration")):rs.getDouble("pts");
       //        if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
       //	      p.packet->dts=rs.getDouble("dts")>0?(rs.getDouble("dts")/rs.getDouble("duration")):rs.getDouble("dts");
       //	    }
       //	    p.packet->dts=rs.getInt("dts");
       //	    p.packet->pos=0;//rs.getInt("pos");
-//        p.packet->data=static_cast<unsigned int*>(const_cast<char*>(rs.getBlob("data").data()));
+      //        p.packet->data=static_cast<unsigned int*>(const_cast<char*>(rs.getBlob("data").data()));
       memcpy(p.packet->data, rs.getBlob("data").data(), p.packet->size);
       //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
       pos.writePacket(p);
@@ -290,16 +289,14 @@ void FileExporter::exportFile(int fileid){
     cout << "Audio Fertig:" << audio_packets << endl;
   }
 
-//  return 0;
+  //  return 0;
 
 
 
 }
 
-FileExporter::FileExporter(void)
-{
+FileExporter::FileExporter(void) {
 }
 
-FileExporter::~FileExporter(void)
-{
+FileExporter::~FileExporter(void) {
 }
