@@ -119,6 +119,10 @@ ProcessUnit ClientHandler::getProcessUnit() {
     FormatInputStream fis(&file);
 */
 	FormatInputStream * fis=FormatStreamFactory::getInputStream(filename);
+        if(fis==NULL){
+          logerror("Error Opening Input Stream from "<<filename);
+          return u;
+        }
 //    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
 	int den=rs.getInt("time_base_den");
 	int type=rs.getInt("stream_type");
