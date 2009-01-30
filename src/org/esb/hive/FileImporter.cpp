@@ -228,6 +228,12 @@ int import(int argc, char *argv[]) {
   io::File f("test.ldr");
   io::FileOutputStream fos(&f);
   Packet packet;
+  cout << endl;
+  //      show_progress=duration;
+  //  delete fisp;
+  return static_cast<int> (fileid);
+
+
 
   while (true /*&&count < 100000*/) {
     if (pis.readPacket(packet) < 0)break;

@@ -327,6 +327,7 @@ void listener(int argc, char *argv[]) {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }

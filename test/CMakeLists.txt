@@ -40,6 +40,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 #add_executable (test_tcpsocket test_tcpsocket.cpp)
 add_executable (test test.cpp)
+add_executable (testq test_queue.cpp)
 #target_link_libraries (test_tcpsocket lang esb sql hive av signal web io net util avcodec avformat avutil swscale wt wtext wthttp
 #${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
 
@@ -47,7 +48,7 @@ add_executable (test test.cpp)
 add_executable (testav test_av.cpp)
 target_link_libraries (testav web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
 target_link_libraries (test web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
-target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
+#target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
 
 #target_link_libraries (testav web sql esb hive av lang util signal io net avformat avcodec avutil swscale )
 IF(WIN32)
@@ -74,13 +75,25 @@ target_link_libraries (test_mysql pthread mysqlclient crypt ssl z)
 ENDIF(NOT WIN32)
 
 #target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 z pthread)
-target_link_libraries (testav 
-  ${BOOST_SERIAL_LIB_MT} 
-  ${BOOST_THREAD_LIB_MT} 
-  ${BOOST_SYSTEM_LIB_MT} 
-  ${BOOST_PO_LIB_MT} 
-  ${BOOST_SIGNALS_LIB_MT} 
-  ${BOOST_REGEX_LIB_MT} 
+target_link_libraries (testav
+  ${BOOST_SERIAL_LIB_MT}
+  ${BOOST_THREAD_LIB_MT}
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_PO_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
+target_link_libraries (testq pthread lang)
+
+target_link_libraries (testq
+  ${BOOST_SERIAL_LIB_MT}
+  ${BOOST_THREAD_LIB_MT}
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_PO_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )

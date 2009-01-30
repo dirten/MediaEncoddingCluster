@@ -27,11 +27,12 @@ using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
-
+using namespace org::esb;
 
 boost::mutex ClientHandler::m_mutex;
 boost::mutex ClientHandler::unit_list_mutex;
 map<int, boost::shared_ptr<ProcessUnit> > ClientHandler::process_unit_list;
+util::Queue<boost::shared_ptr<ProcessUnit> > ClientHandler::puQueue;
 
 ClientHandler::ClientHandler() {
   logdebug("ClientHandler::ClientHandler()");
@@ -54,44 +55,82 @@ ClientHandler::~ClientHandler() {
 }
 
 bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
-  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-  bool result = false;
-  if (process_unit_list.find(unit->id) == process_unit_list.end()) {
-    process_unit_list[unit->id] = unit;
-    result = true;
-  }
-  return result;
+//  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+  puQueue.enqueue(unit);
+  return true;
 }
 
-void ClientHandler::fillProcessUnit(ProcessUnit * u) {
+void ClientHandler::fillProcessUnit() {
+
   boost::mutex::scoped_lock scoped_lock(m_mutex);
-  /*
-          logdebug("packing frame group :" <<fr_gr<<" with startts: "<<startts);
-          _fis->seek(_stream_index,(int64_t)startts);
-          PacketInputStream pis(_fis);
-          int size=0;
-          for(int a=0;a<frame_count;){
-              Packet tmp_p;
-              pis.readPacket(tmp_p);
-              if(tmp_p.packet->stream_index!=_stream_index)continue;
-              a++;
-              shared_ptr<Packet> p(new Packet(tmp_p));
-              u._input_packets.push_back(p);
-              size+=p->packet->size;
-          }
-          logdebug("packing frame group :" <<fr_gr<<" with size:"<<size<<" !!!");
-      }else{
-          logdebug("no more frame groups left, setting job as completed");
-          setCompleteTime(1);
+  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id limit 1");
+  ResultSet rs = stmt_ps.executeQuery();
+
+  if (rs.next()) {
+    boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
+    int64_t start_ts = rs.getLong("start_ts");
+    int frame_count = rs.getInt("frame_count");
+    int stream_index = rs.getInt("stream_index");
+    logdebug("packing frame group with startts: " << start_ts);
+    string filename = rs.getString("path");
+    filename.append("/");
+    filename.append(rs.getString("filename"));
+    u->_decoder = CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
+    u->_encoder = CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
+    u->_source_stream = rs.getInt("source_stream");
+    u->_target_stream = rs.getInt("target_stream");
+    FormatInputStream * fis = FormatStreamFactory::getInputStream(filename);
+    if (fis == NULL) {
+      logerror("Error Opening Input Stream from " << filename);
+//      return u;
+    }
+    //    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
+    int den = rs.getInt("time_base_den");
+    int type = rs.getInt("stream_type");
+    int framerate = rs.getInt("framerate");
+    int samplerate = rs.getInt("sample_rate");
+    int gop = rs.getInt("gop_size");
+    long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
+    logdebug("building seek offset -" << offset);
+    fis->seek(rs.getInt("stream_index"), (start_ts - offset));
+    PacketInputStream pis(fis);
+    int size = 0;
+    for (int a = 0; a < frame_count + 3;) {
+      Packet tmp_p;
+      if (pis.readPacket(tmp_p) < 0) {
+        logdebug("Null Packet from Stream");
+        break;
       }
-   */
+      if (tmp_p.packet->stream_index != stream_index)continue;
+      if (tmp_p.packet->dts >= start_ts) {
+        a++;
+        boost::shared_ptr<Packet> p(new Packet(tmp_p));
+        u->_input_packets.push_back(p);
+        size += p->packet->size;
+      } else {
+        logdebug("Dropping Packet with dts" << tmp_p.packet->dts);
+      }
+    }
+    u->_process_unit = rs.getInt("u.id");
+    _stmt_pu->setInt("id", rs.getInt("u.id"));
+    _stmt_pu->execute();
+    logdebug("packing frame group  with size:" << size << " !!!");
+    puQueue.enqueue(u);
+  } else {
+    //      logdebug("no more process units left, sending empty process unit");
+    //        setCompleteTime(1);
+  }
 
 
 }
-
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-//  Connection con(Config::getProperty("db.connection"));
+  return (*puQueue.dequeue());
+}
+
+ProcessUnit ClientHandler::getProcessUnit3() {
+  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+  //  Connection con(Config::getProperty("db.connection"));
   Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id limit 1");
   ResultSet rs = stmt_ps.executeQuery();
 
@@ -108,35 +147,35 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._encoder = CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
     u._source_stream = rs.getInt("source_stream");
     u._target_stream = rs.getInt("target_stream");
-/*
-    org::esb::io::File file(filename.c_str());
-    if (!file.exists()) {
-      logerror("Could not find file : " << filename.c_str());
-      _stmt_pu->setInt("id", rs->getInt("u.id"));
-      _stmt_pu->execute();
-      return u;
-    }
-    FormatInputStream fis(&file);
-*/
-	FormatInputStream * fis=FormatStreamFactory::getInputStream(filename);
-        if(fis==NULL){
-          logerror("Error Opening Input Stream from "<<filename);
+    /*
+        org::esb::io::File file(filename.c_str());
+        if (!file.exists()) {
+          logerror("Could not find file : " << filename.c_str());
+          _stmt_pu->setInt("id", rs->getInt("u.id"));
+          _stmt_pu->execute();
           return u;
         }
-//    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
-	int den=rs.getInt("time_base_den");
-	int type=rs.getInt("stream_type");
-	int framerate=rs.getInt("framerate");
-	int samplerate=rs.getInt("sample_rate");
-	int gop=rs.getInt("gop_size");
-	long offset=0;//(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-	logdebug("building seek offset -"<<offset);
-    fis->seek(rs.getInt("stream_index"), (start_ts-offset));
+        FormatInputStream fis(&file);
+     */
+    FormatInputStream * fis = FormatStreamFactory::getInputStream(filename);
+    if (fis == NULL) {
+      logerror("Error Opening Input Stream from " << filename);
+      return u;
+    }
+    //    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
+    int den = rs.getInt("time_base_den");
+    int type = rs.getInt("stream_type");
+    int framerate = rs.getInt("framerate");
+    int samplerate = rs.getInt("sample_rate");
+    int gop = rs.getInt("gop_size");
+    long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
+    logdebug("building seek offset -" << offset);
+    fis->seek(rs.getInt("stream_index"), (start_ts - offset));
     PacketInputStream pis(fis);
     int size = 0;
     for (int a = 0; a < frame_count + 3;) {
       Packet tmp_p;
-      if (pis.readPacket(tmp_p) < 0){
+      if (pis.readPacket(tmp_p) < 0) {
         logdebug("Null Packet from Stream");
         break;
       }
@@ -146,28 +185,28 @@ ProcessUnit ClientHandler::getProcessUnit() {
         boost::shared_ptr<Packet> p(new Packet(tmp_p));
         u._input_packets.push_back(p);
         size += p->packet->size;
-      }else{
-        logdebug("Dropping Packet with dts"<<tmp_p.packet->dts);
+      } else {
+        logdebug("Dropping Packet with dts" << tmp_p.packet->dts);
       }
     }
     u._process_unit = rs.getInt("u.id");
     _stmt_pu->setInt("id", rs.getInt("u.id"));
     _stmt_pu->execute();
-/*
-		std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
-		path+="/tmp/";
-		std::string outfilename=path.append(org::esb::util::Decimal(rs.getInt("u.id")%1000).toString());
-		outfilename+="/";
-		org::esb::io::File dir(outfilename.c_str());
-		if(!dir.exists()){
-			dir.mkdir();
-		}
+    /*
+                    std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
+                    path+="/tmp/";
+                    std::string outfilename=path.append(org::esb::util::Decimal(rs.getInt("u.id")%1000).toString());
+                    outfilename+="/";
+                    org::esb::io::File dir(outfilename.c_str());
+                    if(!dir.exists()){
+                            dir.mkdir();
+                    }
 
-		outfilename.append(rs.getString("u.id")).append(".unit_src");
-		std::ofstream ofs(outfilename.c_str());
-			boost::archive::binary_oarchive oa(ofs);
-		oa << BOOST_SERIALIZATION_NVP(u);
-*/
+                    outfilename.append(rs.getString("u.id")).append(".unit_src");
+                    std::ofstream ofs(outfilename.c_str());
+                            boost::archive::binary_oarchive oa(ofs);
+                    oa << BOOST_SERIALIZATION_NVP(u);
+     */
     logdebug("packing frame group  with size:" << size << " !!!");
 
   } else {
@@ -231,6 +270,7 @@ ProcessUnit ClientHandler::getProcessUnit2() {
   }
   return u;
 }
+
 /*
 string toString(int num) {
   char c[10];
@@ -238,31 +278,31 @@ string toString(int num) {
   sprintf(c, "%d", num);
   return string(c);
 }
-*/
+ */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
-    logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start"<<unit._process_unit);
-	/*
-	std::string name=org::esb::config::Config::getProperty("hive.path");
-	name+="/tmp/";
-	name+=org::esb::util::Decimal(unit._process_unit%1000).toString();
-	name+="/";
-	org::esb::io::File dir(name.c_str());
-	if(!dir.exists()){
-		dir.mkdir();
-	}
-	name+=org::esb::util::Decimal(unit._process_unit).toString();
-	name+=".unit";
-	org::esb::io::File out(name.c_str());
-	org::esb::io::FileOutputStream fos(&out);
-	org::esb::io::ObjectOutputStream ous(&fos);
-//	ous.writeObject(unit);
-*/
+    logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);
+    /*
+    std::string name=org::esb::config::Config::getProperty("hive.path");
+    name+="/tmp/";
+    name+=org::esb::util::Decimal(unit._process_unit%1000).toString();
+    name+="/";
+    org::esb::io::File dir(name.c_str());
+    if(!dir.exists()){
+            dir.mkdir();
+    }
+    name+=org::esb::util::Decimal(unit._process_unit).toString();
+    name+=".unit";
+    org::esb::io::File out(name.c_str());
+    org::esb::io::FileOutputStream fos(&out);
+    org::esb::io::ObjectOutputStream ous(&fos);
+    //	ous.writeObject(unit);
+     */
     _stmt_fr->setInt("id", unit._process_unit);
     _stmt_fr->execute();
-	
-	list< boost::shared_ptr<Packet> >::iterator it;
+
+    list< boost::shared_ptr<Packet> >::iterator it;
     _stmt_fr->setInt("id", unit._process_unit);
     _stmt_fr->execute();
     int count = 0, frame_group = 0;

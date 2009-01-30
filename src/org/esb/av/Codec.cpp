@@ -220,6 +220,9 @@ namespace org {
       int Codec::getChannels() {
         return _channels;
       }
+      int Codec::getGopSize() {
+        return _gop_size;
+      }
 
       void Codec::setStartTime(int64_t start) {
         _start_time = start;

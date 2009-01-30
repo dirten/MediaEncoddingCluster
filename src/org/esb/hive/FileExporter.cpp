@@ -9,7 +9,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/CodecFactory.h"
-
+#include <boost/filesystem/exception.hpp>
 #include <map>
 using namespace org::esb::av;
 using namespace org::esb::io;
@@ -48,7 +48,12 @@ void FileExporter::exportFile(int fileid) {
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
     logdebug("creating output directory:" << outDirectory.getFilePath());
-    outDirectory.mkdir();
+    try{
+        outDirectory.mkdir();
+    }catch(boost::filesystem::filesystem_error & e){
+      logerror(e.what());
+      return;
+    }
   }
   //  string stream_id = fileid;
   FormatOutputStream fos(&fout);

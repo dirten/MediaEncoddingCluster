@@ -3,6 +3,7 @@
 #include <list>
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem/exception.hpp>
 #include "org/esb/util/Log.h"
 
 #include "FileFilter.h"

@@ -6,6 +6,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/Queue.h"
 #include <list>
 #include <boost/shared_ptr.hpp>
 using namespace std;
@@ -22,11 +23,12 @@ namespace org {
           //	bool getProcessUnit(ProcessUnit & unit);
           ProcessUnit getProcessUnit();
           ProcessUnit getProcessUnit2();
+          ProcessUnit getProcessUnit3();
           bool putProcessUnit(ProcessUnit & unit);
           static bool addProcessUnit(boost::shared_ptr<ProcessUnit> unit);
         private:
           logger("hive.clienthandler");
-          void fillProcessUnit(ProcessUnit * pu);
+          void fillProcessUnit();
           ProcessUnit * unit;
           JobHandler * _handler;
           static boost::mutex m_mutex;
@@ -39,6 +41,7 @@ namespace org {
           sql::Statement * _stmt_ps2;
           //		sql::PreparedStatement _stmt_test;
           static map<int, boost::shared_ptr<ProcessUnit> > process_unit_list;
+          static util::Queue<boost::shared_ptr<ProcessUnit> > puQueue;
         };
       }
     }

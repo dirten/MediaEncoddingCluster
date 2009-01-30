@@ -47,6 +47,7 @@ class SampleFormat;*/
                 int getPixelFormat();
                 int getSampleRate();
                 int getChannels();
+                int getGopSize();
                 AVRational getTimeBase();
                 void setStartTime(int64_t start);
                 //				int getCodecType ();
