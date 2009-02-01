@@ -12,6 +12,9 @@
 #include "org/esb/hive/CodecFactory.h"
 #include "../FormatStreamFactory.h"
 #include "org/esb/av/FormatInputStream.h"
+
+
+#include <deque>
 namespace org {
   namespace esb {
     namespace hive {
@@ -36,17 +39,19 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start2() {
-          sql::Connection con(std::string(config::Config::getProperty("db.connection")));
           while (!_isStopSignal) {
+		
             //            sql::Statement stmt = con.createStatement("select * from jobs, files, job_details, streams ins, streams outs where jobs.inputfile=files.id and jobs.id=job_details.job_id and instream=ins.id and outstream=outs.id and complete is null");
-            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id");
+            sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
               string filename = rs.getString("files.path");
               filename += "/";
               filename += rs.getString("files.filename");
               org::esb::av::FormatInputStream * fis = org::esb::hive::FormatStreamFactory::getInputStream(filename);
-              if (fis == NULL) {
+			  logdebug("B-FRAMES:"<<fis->getFormatContext()->streams[0]->codec->max_b_frames);
+			  if (fis == NULL) {
                 logerror("Error Opening Input Stream from " << filename);
                 continue;
               }
@@ -63,7 +68,8 @@ namespace org {
               std::map<int, int> stream_packet_counter;
               int min_frame_group_count = 5;
               PacketInputStream pis(fis);
-
+			  int b_frame_offset=3;
+			  deque<boost::shared_ptr<Packet> > offset_queue;
               while (true) {
 
 //                for (int a = 0; true; a++) {
@@ -72,7 +78,9 @@ namespace org {
                     logdebug("Null Packet from Stream");
                     break;
                   }
-
+                  boost::shared_ptr<ProcessUnit> u = unit_map[tmp_p.packet->stream_index];
+                  boost::shared_ptr<Packet> p(new Packet(tmp_p));
+//				  offset_queue.push_back(p);
                   if (idx.find(tmp_p.packet->stream_index) == idx.end())continue;
                   stream_packet_counter[tmp_p.packet->stream_index]++;
 
@@ -93,13 +101,18 @@ namespace org {
                     u->_encoder = CodecFactory::getStreamEncoder(u->_target_stream);
                     unit_map[tmp_p.packet->stream_index] = u;
                   }
-                  boost::shared_ptr<ProcessUnit> u = unit_map[tmp_p.packet->stream_index];
-                  boost::shared_ptr<Packet> p(new Packet(tmp_p));
+
                   u->_input_packets.push_back(p);
 
                 
               }
-            }
+			}else{
+				Thread::sleep2(10000);
+			}
+              sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
+              sql::PreparedStatement pstmt = con2.prepareStatement("update jobs set complete=now() where id=:jobid");
+              pstmt.setInt("jobid", rs.getInt("jobs.id"));
+			  pstmt.execute();
           }
         }
 

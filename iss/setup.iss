@@ -33,7 +33,7 @@ Source: "C:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion rec
 Source: "C:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32\share\english\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32/lib/opt\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32/lib/debug\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
