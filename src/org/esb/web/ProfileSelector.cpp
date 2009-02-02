@@ -37,6 +37,7 @@ namespace org {
         void createJob() {
           try{
           int pid = name2id[profiles->currentText().narrow()];
+          if(pid<=0)return;
           std::string file = Decimal(file_id).toString();
           std::string profile = Decimal(pid).toString();
           char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str()};
