@@ -38,6 +38,7 @@ namespace org {
           sql::PreparedStatement * _stmt_fr;
           sql::PreparedStatement * _stmt_pu;
           sql::PreparedStatement * _stmt_ps;
+          sql::PreparedStatement * _stmt_job_log;
           sql::Statement * _stmt_ps2;
           //		sql::PreparedStatement _stmt_test;
           static map<int, boost::shared_ptr<ProcessUnit> > process_unit_list;

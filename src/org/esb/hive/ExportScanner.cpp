@@ -27,7 +27,7 @@ namespace org {
 
       void ExportScanner::start() {
         org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT fileid, filename, path FROM process_units, streams s, files WHERE target_stream = s.id and s.fileid=files.id group by fileid having count(*)=count(complete)");
+        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
         while (_run) {
           org::esb::sql::ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
@@ -41,7 +41,7 @@ namespace org {
             filename += rs.getString("filename");
             org::esb::io::File file(filename.c_str());
             if (!file.exists()) {
-              FileExporter::exportFile(rs.getInt("fileid"));
+              FileExporter::exportFile(rs.getInt("files.id"));
             }
           }
           org::esb::lang::Thread::sleep2(10000);

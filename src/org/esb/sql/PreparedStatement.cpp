@@ -111,7 +111,7 @@ bool PreparedStatement::execute() {
 }
 
 unsigned long long PreparedStatement::getLastInsertId() {
-  return 0;
+  return mysql_stmt_insert_id(stmtPtr.get());
 }
 
 void PreparedStatement::parseSql(const char * s) {

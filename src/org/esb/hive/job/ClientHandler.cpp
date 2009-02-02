@@ -43,6 +43,7 @@ ClientHandler::ClientHandler() {
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
   _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
   _stmt_pu = new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
+  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
 }
 
 ClientHandler::~ClientHandler() {
@@ -125,7 +126,14 @@ void ClientHandler::fillProcessUnit() {
 }
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-  return (*puQueue.dequeue());
+  boost::shared_ptr<ProcessUnit> unit=puQueue.dequeue();
+  _stmt_job_log->setInt("source",unit->_source_stream);
+  _stmt_job_log->setInt("target",unit->_target_stream);
+  _stmt_job_log->setLong("start",unit->_input_packets.front()->packet->dts);
+  _stmt_job_log->setInt("fcount",unit->_input_packets.size());
+  _stmt_job_log->execute();
+  unit->_process_unit=_stmt_job_log->getLastInsertId();
+  return (*unit);
 }
 
 ProcessUnit ClientHandler::getProcessUnit3() {

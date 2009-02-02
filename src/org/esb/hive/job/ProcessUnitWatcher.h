@@ -6,6 +6,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include <map>
+#include <deque>
 #include <boost/shared_ptr.hpp>
 namespace org {
   namespace esb {
@@ -19,6 +20,7 @@ namespace org {
           //			void run();
           void start();
           void start2();
+          void start3();
           void stop();
           void onMessage(org::esb::signal::Message & msg);
         private:
@@ -26,6 +28,16 @@ namespace org {
           std::map<int,boost::shared_ptr<ProcessUnit> > unit_map;
           std::map<int, int> idx;
           std::map<int, int> inout;
+          std::map<int, int> stream_type;
+          void readJobs();
+          void processAudioPacket(boost::shared_ptr<Packet>);
+          void processVideoPacket(boost::shared_ptr<Packet>);
+          std::map<int,std::list<boost::shared_ptr<Packet> > > stream_packets;
+          std::deque<boost::shared_ptr<Packet> > packet_queue;
+          std::map<int, int> stream_packet_counter;
+          int min_frame_group_count;
+          int b_frame_offset;
+          bool q_filled;
         };
 
       }

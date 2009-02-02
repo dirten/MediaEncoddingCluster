@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_UTIL_QUEUE
 #define ORG_ESB_UTIL_QUEUE
 
-#include <queue>
+#include <deque>
 #include "QueueListener.h"
 #include <boost/thread.hpp>
 #include "Log.h"
@@ -12,7 +12,7 @@ namespace org {
       template <typename T, int MAXSIZE = 10 >
           class Queue {
       private:
-        std::queue<T> _q;
+        std::deque<T> _q;
         QueueListener * _listener;
         boost::mutex queue_mutex;
         boost::mutex enqueue_mutex;
@@ -33,13 +33,13 @@ namespace org {
 //            boost::mutex::scoped_lock queue_lock(queue_mutex);
             queue_condition.wait(enqueue_lock);
           }
-          _q.push(obj);
+          _q.push_back(obj);
 //          boost::mutex::scoped_lock queue_lock(queue_mutex);
           queue_condition.notify_all();
           if (_listener != NULL)
             _listener->onQueueEvent(QEVENT_ENQUEUE);
         }
-
+/*
         T dequeue(T obj) {
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
           if (_q.size() == 0) {
@@ -57,7 +57,7 @@ namespace org {
             _listener->onQueueEvent(QEVENT_DEQUEUE);
           return object;
         }
-
+ */
         T dequeue() {
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
           if (_q.size() == 0) {
@@ -68,14 +68,16 @@ namespace org {
           }
           T object= _q.front();
 //          object = _q.front();
-          _q.pop();
+          _q.pop_front();
           boost::mutex::scoped_lock queue_lock(queue_mutex);
           queue_condition.notify_all();
           if (_listener != NULL)
             _listener->onQueueEvent(QEVENT_DEQUEUE);
           return object;
         }
-
+        T operator[](int a){
+          return _q[a];
+        }
         void setQueueListener(QueueListener * listener) {
           _listener = listener;
         }
