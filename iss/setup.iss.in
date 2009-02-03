@@ -12,7 +12,7 @@ AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
 AppUpdatesURL=http://www.codergrid.de
-DefaultDirName={pf}\MediaEncodingCluster--@MHIVE_VERSION@
+DefaultDirName={pf}\MediaEncodingCluster-@MHIVE_VERSION@
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
@@ -44,7 +44,7 @@ Source: "@MYSQL_LIB_DIR@\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignorevers
 
 [Icons]
 Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
-Name: "{group}\start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-i"; WorkingDir: "{app}\bin"
 Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"

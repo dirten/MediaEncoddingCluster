@@ -26,7 +26,8 @@ namespace org {
           while (rs.next()) {
             profiles->addItem(rs.getString("profile_name"));
             name2id[rs.getString("profile_name")] = rs.getInt("id");
-          }
+//			name2outpath[rs.getString("profile_name")]=rs.getString("");
+		  }
         }
 
         void setFileId(int id) {
@@ -40,19 +41,19 @@ namespace org {
           if(pid<=0)return;
           std::string file = Decimal(file_id).toString();
           std::string profile = Decimal(pid).toString();
-          char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str()};
+          char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(),(char*)"/"};
           std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
           std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
-          jobcreator(3, jobarg);
+          jobcreator(4, jobarg);
           }catch(...){
             logerror("Fehler im create job");
           }
-
         }
 
         Wt::Ext::ComboBox * profiles;
         Wt::Ext::Button * encode;
         map<std::string, int> name2id;
+		map<std::string, std::string> name2outpath;
         int file_id;
       };
     }
