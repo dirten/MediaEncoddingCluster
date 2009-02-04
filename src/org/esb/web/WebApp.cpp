@@ -26,7 +26,8 @@
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/TabWidget>
 
-
+#define STRINGIFY(s)    TOSTRING(s)
+#define TOSTRING(s) #s
 namespace org {
   namespace esb {
     namespace web {
@@ -45,7 +46,7 @@ namespace org {
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
         north->setBorder(false);
 		std::string h="MediaEncodingCluster V-";
-		h+=MHIVE_VERSION;
+		h+=STRINGIFY(MHIVE_VERSION);
 		h+="($Rev$-"__DATE__ "-" __TIME__")";
         Wt::WText *head = new Wt::WText(h);
         head->setStyleClass("north");

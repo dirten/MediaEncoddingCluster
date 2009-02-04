@@ -1,7 +1,7 @@
 -include("config.hrl").
 -module(client).
 %-compiler(export_all).
--export([stop/0, start/0, init/0, fileinfo/2, streaminfo/3, packet/3, packet/4, packetgroup/4, packetgroup/5]).
+-export([stop/0, start/0, init/0, fileinfo/1, streaminfo/3, packet/3, packet/4, packetgroup/4, packetgroup/5]).
 
 start()->
   spawn(?MODULE,init,[]),
@@ -17,8 +17,10 @@ init()->
   Port = open_port({spawn, ?ENCODECLIENTEXE}, [{packet, 4}, binary]),
   loop(Port,[]).
 
-fileinfo(Server,File)->
-  listener(Server,fileinfo,File,0,0,0).
+fileinfo(File)->
+  {FileName,FilePath,_Size,_Type,_StreamCount,_Duration,_BitRate}=gen_server:call(global:whereis_name(packet_sender), {fileinfo,File,0,0,0}),
+FileName.
+%  listener(Server,fileinfo,File,0,0,0).
 
 streaminfo(Server,File, Stream)->
   listener(Server,streaminfo,File, Stream,0,0).
@@ -36,7 +38,7 @@ packetgroup(Server,File, Stream, PacketCount)->
   listener(Server,packetgroup,File, Stream, -1, PacketCount).
 
 listener(Server, Type, File, Stream, Seek, PacketCount)->
-  %  io:format("Client listenerLoop ~w~n", [Server]),
+   io:format("Client listenerLoop ~w~n", [Server]),
   Server ! {call, self(),{Type, File,Stream, Seek, PacketCount}},
   receive    
     stopClient ->
@@ -52,7 +54,7 @@ listener(Server, Type, File, Stream, Seek, PacketCount)->
       end
 %,      listener(Server,Type,File,Stream, Seek, PacketCount)
   after 5000 ->
-      exit(port_terminated)
+      exit(no_answer)
   end.
 
 loop(Port, C) ->

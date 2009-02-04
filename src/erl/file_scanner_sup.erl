@@ -20,5 +20,11 @@ init([])->
   permanent,
   10,
   worker,
-  [file_scanner]}]}}.
+  [file_scanner]},
+  {file_port,
+    {file_port,start_link,[]},
+  permanent,
+  10,
+  worker,
+  [file_port]}]}}.
 

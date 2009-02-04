@@ -59,26 +59,26 @@ ETERM * packet(ETERM * v) {
 
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
-    FormatInputStream *fis=FormatStreamFactory::getInputStream(f.getPath());
-    if(se>=0)
-        fis->seek(str,se);
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    if (se >= 0)
+      fis->seek(str, se);
     PacketInputStream pis(fis);
     Packet p;
-    while(true){
-        pis.readPacket(p);
-        if(p.getStreamIndex()==str)break;
+    while (true) {
+      pis.readPacket(p);
+      if (p.getStreamIndex() == str)break;
     }
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
     terms.push_back(erl_mk_int(p.getPts()));
     terms.push_back(erl_mk_int(p.getDts()));
     terms.push_back(erl_mk_int(p.getSize()));
-    terms.push_back(erl_mk_binary((char*)p.getData(),p.getSize()));
+    terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
   }
   return vector2term(terms);
 }
 
-ETERM * packetgroup(ETERM * v){
+ETERM * packetgroup(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM * file = erl_element(2, v);
   ETERM * stream = erl_element(3, v);
@@ -87,7 +87,7 @@ ETERM * packetgroup(ETERM * v){
   int str = ERL_INT_UVALUE(stream);
   int se = ERL_INT_VALUE(seek);
   int pc = ERL_INT_VALUE(packet_count);
-  for(int a=0; a<pc;a++){
+  for (int a = 0; a < pc; a++) {
     terms.push_back(packet(v));
   }
   return vector2term(terms);
@@ -96,14 +96,25 @@ ETERM * packetgroup(ETERM * v){
 ETERM * fileinfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *argp = erl_element(2, v);
+  //  logerror(argp);
+  //  logerror(ERL_IS_ATOM(argp));
+
   File f((const char*) ERL_ATOM_PTR(argp));
   if (f.exists()) {
     FormatInputStream fis(&f);
-    terms.push_back(erl_mk_atom(f.getFileName().c_str()));
-    terms.push_back(erl_mk_atom(f.getFilePath().c_str()));
-    terms.push_back(erl_mk_atom(Decimal(fis.getFileSize()).toString().c_str()));
-    terms.push_back(erl_mk_atom(fis.getFormatContext()->iformat->name));
-    terms.push_back(erl_mk_int(fis.getStreamCount()));
+    if (!fis.isValid()) {
+      logerror("File not valid:" << f.getFileName());
+      terms.push_back(erl_mk_atom("wrongformat"));
+      return vector2term(terms);
+    } else {
+      terms.push_back(erl_mk_atom(f.getFileName().c_str()));
+      terms.push_back(erl_mk_atom(f.getFilePath().c_str()));
+      terms.push_back(erl_mk_atom(Decimal(fis.getFileSize()).toString().c_str()));
+      terms.push_back(erl_mk_atom(fis.getFormatContext()->iformat->name));
+      terms.push_back(erl_mk_int(fis.getStreamCount()));
+      terms.push_back(erl_mk_int(fis.getFormatContext()->duration));
+      terms.push_back(erl_mk_int(fis.getFormatContext()->bit_rate));
+    }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));
   }
@@ -126,13 +137,14 @@ int main() {
   ETERM *intuple = NULL, *outtuple = NULL;
 
   byte buf[5000000];
-//  memset(&buf,0,sizeof(buf));
+  //  memset(&buf,0,sizeof(buf));
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
-//    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
+    //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
+
       if (func == "fileinfo") {
         outtuple = fileinfo(intuple);
       } else if (func == "streaminfo") {
@@ -148,7 +160,8 @@ int main() {
       }
 
       if (outtuple != NULL) {
-//        std::cerr<<"InTermSize:"<<erl_size(outtuple)<<std::endl;
+//        logdebug("Build Output");
+        //        std::cerr<<"InTermSize:"<<erl_size(outtuple)<<std::endl;
         erl_encode(outtuple, buf);
         write_cmd(buf, erl_term_len(outtuple));
         erl_free_compound(outtuple);
