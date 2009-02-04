@@ -1,7 +1,8 @@
 -module(file_scanner).
 -behaviour(gen_server).
 -include("schema.hrl").
--include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
+%-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
+-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
 
 -export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2,loop/0, process_file_list/1, process_file/1, filter/2, diff/2]).
 
@@ -55,14 +56,15 @@ process_file_list([H|T])->
     mnesia:transaction(
       fun()->
         case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
-          {FileName,FilePath,_Size,_Type,_StreamCount,_Duration,_BitRate}  ->
-            io:format("File found ~s~n",[X]),
-            io:format("Try import ~s~n",[X]),
-            File = #file{id=test:sequence(file),filename=FileName, path=FilePath},
+          {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate}  ->
+            File = #file{id=test:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate},
             mnesia:write(File),
             io:format("File imported~s~n",[FileName]);
           {filenotfound}  ->
             io:format("File not found ~w~n",[X]);
+          {wrongformat}  ->
+            ok;
+%          io:format("File Wrong format ~w~n",[X]);
           Any->
             io:format("AniFileScanner ~w~n",[binary_to_term(Any)])
           end

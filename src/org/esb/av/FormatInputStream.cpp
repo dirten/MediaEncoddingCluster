@@ -19,12 +19,13 @@ namespace org {
                 logdebug("openning MediaFile:" << source->getPath());
                 if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
 //                    throw Exception("FormatInputStream<init> - could not open File");
-                    cout << "Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen" << endl;
+                    logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
 					return;
                 }
                 if (av_find_stream_info(formatCtx) < 0) {
-                    cout << "Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln" << endl;
-                }
+                    logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
+					return;
+				}
 				_isValid=true;
             }
 

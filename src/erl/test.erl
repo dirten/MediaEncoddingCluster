@@ -2,7 +2,8 @@
 
 -export([insert/0, read/0, read2/0, create/0, drop/0,sequence/1]).
 -include("schema.hrl").
--include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
+-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
+%-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
 %-include("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
 
@@ -10,6 +11,7 @@ create()->
   mnesia:create_table(file,[{disc_copies, [node()]},{attributes, record_info(fields, file)}]),
   mnesia:create_table(watchfolder,[{disc_copies, [node()]},{attributes, record_info(fields, watchfolder)}]),
   mnesia:create_table(stream,[{disc_copies, [node()]},{attributes, record_info(fields, stream)}]),
+  mnesia:create_table(profile,[{disc_copies, [node()]},{attributes, record_info(fields, profile)}]),
   mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]).
 
 drop()->

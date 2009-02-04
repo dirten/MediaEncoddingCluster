@@ -28,17 +28,14 @@ init([])->
 
 handle_call({Command,File,0,0,0},From,N)->
 %  io:format("handle_call(Thing,_From,_N)~n", []),
-  io:format("handle_call(~s,~s)~n", [Command,File]),
+%  io:format("handle_call(~s,~s)~n", [Command,File]),
 %  Fi=term_to_binary(File),
   fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),0,0,0})}},
   receive
     {Fileport, {data, Data}} ->
       D=binary_to_term(Data),
-      io:format("Data ~w~n", [D]),
-      {reply, D, state};
-    Any->
-      io:format("AnyFilePort ~w~n",[Any]),
-        {reply, unknownfileformat, state}
+%      io:format("Data ~w~n", [D]),
+      {reply, D, state}
     end.
 
 

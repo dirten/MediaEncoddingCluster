@@ -37,6 +37,18 @@ using namespace std;
 
 
 int main(){
+	File f("c:/2video/Neu Textdokument.txt");
+	if(f.exists()){
+		std::cout<<"File exists"<<std::endl;
+		FormatInputStream fis(&f);
+		if(fis.isValid()){
+			std::cout<<"File is Valid"<<std::endl;
+		}else{
+			std::cout<<"File is not Valid"<<std::endl;
+		}
+	}else{
+		std::cout<<"File does not exist"<<std::endl;
+	}
   return 0;
 }
 
