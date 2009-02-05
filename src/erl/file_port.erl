@@ -21,20 +21,17 @@ init([])->
   %  register(fileimport, self()),
   process_flag(trap_exit, true),
   Port = open_port({spawn, ?FILEPORTEXE}, [{packet, 4}, binary]),
+  link(Port),
   register(fileport,Port),
   io:format("FileImporter started~n", []),
 %  spawn(?MODULE,loop,[Port,[]]),
   {ok, state}.
 
-handle_call({Command,File,0,0,0},From,N)->
-%  io:format("handle_call(Thing,_From,_N)~n", []),
-%  io:format("handle_call(~s,~s)~n", [Command,File]),
-%  Fi=term_to_binary(File),
-  fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),0,0,0})}},
+handle_call({Command,File,Stream,Seek,PacketCount},From,N)->
+  fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),Stream,Seek,PacketCount})}},
   receive
     {Fileport, {data, Data}} ->
       D=binary_to_term(Data),
-%      io:format("Data ~w~n", [D]),
       {reply, D, state}
     end.
 

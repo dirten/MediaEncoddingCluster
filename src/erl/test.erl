@@ -1,9 +1,9 @@
 -module(test).
 
--export([insert/0, read/0, read2/0, create/0, drop/0,sequence/1]).
+-export([insert/0, read/0, read2/0, create/0, drop/0,sequence/1, load/0, clear/0]).
 -include("schema.hrl").
--include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
-%-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
+%-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
+-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
 %-include("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
 
@@ -12,14 +12,27 @@ create()->
   mnesia:create_table(watchfolder,[{disc_copies, [node()]},{attributes, record_info(fields, watchfolder)}]),
   mnesia:create_table(stream,[{disc_copies, [node()]},{attributes, record_info(fields, stream)}]),
   mnesia:create_table(profile,[{disc_copies, [node()]},{attributes, record_info(fields, profile)}]),
+  mnesia:create_table(job,[{disc_copies, [node()]},{attributes, record_info(fields, job)}]),
+  mnesia:create_table(jobdetail,[{disc_copies, [node()]},{attributes, record_info(fields, jobdetail)}]),
   mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]).
+
 
 drop()->
   mnesia:delete_table(file),
   mnesia:delete_table(watchfolder),
   mnesia:delete_table(stream),
+  mnesia:delete_table(profile),
+  mnesia:delete_table(job),
+  mnesia:delete_table(jobdetail),
   mnesia:delete_table(sequence).
 
+load()->
+  mnesia:load_textfile("test.data").
+
+clear()->
+  drop(),
+  create(),
+  load().
 init_sequence(Name, Value) ->
  	  {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(#sequence{key=Name, index=Value})end),
  	  ok.
@@ -42,7 +55,7 @@ read()->
 
 read2()->
   F = fun() ->
-    Q = qlc:q([filename:join([E#file.path,E#file.filename]) || E <- mnesia:table(file)]),
+    Q = qlc:q([[E#file.path,E#file.filename] || E <- mnesia:table(file)]),
     qlc:e(Q)
   end,
   {atomic,E}=mnesia:transaction(F),

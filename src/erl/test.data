@@ -1,0 +1,11 @@
+{tables,[
+  {watchfolder,[{attributes,[id,infolder,outfolder,profile,filter]}]},
+  {profile,[{attributes,[id,name,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate]}]}
+]}.
+
+{profile,1,"Test Profile","avi","AVI format",16,512000,25,320,240,2,86016,128000,44100}.
+
+{watchfolder,1,"/media/disk","/media/out",1,undefined}.
+{watchfolder,2,"/media/video","/media/out",1,undefined}.
+{watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,undefined}.
+

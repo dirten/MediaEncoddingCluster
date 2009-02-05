@@ -40,7 +40,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 #add_executable (test_tcpsocket test_tcpsocket.cpp)
 add_executable (test test.cpp)
-add_executable (testq test.cpp)
+add_executable (testq test_queue.cpp)
 #target_link_libraries (test_tcpsocket lang esb sql hive av signal web io net util avcodec avformat avutil swscale wt wtext wthttp
 #${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
 

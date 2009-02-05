@@ -96,24 +96,20 @@ ETERM * packetgroup(ETERM * v) {
 ETERM * fileinfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *argp = erl_element(2, v);
-  //  logerror(argp);
-  //  logerror(ERL_IS_ATOM(argp));
-
   File f((const char*) ERL_ATOM_PTR(argp));
   if (f.exists()) {
-    FormatInputStream fis(&f);
-    if (!fis.isValid()) {
-      logerror("File not valid:" << f.getFileName());
-      terms.push_back(erl_mk_atom("wrongformat"));
-      return vector2term(terms);
+//    FormatInputStream fis(&f);
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    if (!fis->isValid()) {
+      terms.push_back(erl_mk_atom("format_invalid"));
     } else {
       terms.push_back(erl_mk_atom(f.getFileName().c_str()));
       terms.push_back(erl_mk_atom(f.getFilePath().c_str()));
-      terms.push_back(erl_mk_atom(Decimal(fis.getFileSize()).toString().c_str()));
-      terms.push_back(erl_mk_atom(fis.getFormatContext()->iformat->name));
-      terms.push_back(erl_mk_int(fis.getStreamCount()));
-      terms.push_back(erl_mk_int(fis.getFormatContext()->duration));
-      terms.push_back(erl_mk_int(fis.getFormatContext()->bit_rate));
+      terms.push_back(erl_mk_atom(Decimal(fis->getFileSize()).toString().c_str()));
+      terms.push_back(erl_mk_atom(fis->getFormatContext()->iformat->name));
+      terms.push_back(erl_mk_int(fis->getStreamCount()));
+      terms.push_back(erl_mk_int(fis->getFormatContext()->duration));
+      terms.push_back(erl_mk_int(fis->getFormatContext()->bit_rate));
     }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));
@@ -121,7 +117,7 @@ ETERM * fileinfo(ETERM * v) {
   return vector2term(terms);
 }
 
-int main() {
+int main(int argc, char** argv) {
 #ifdef WIN32
   /* Attention Windows programmers: you need to explicitly set
    * mode of stdin/stdout to binary or else the port program won't work
@@ -136,7 +132,7 @@ int main() {
 
   ETERM *intuple = NULL, *outtuple = NULL;
 
-  byte buf[5000000];
+  byte *buf =new byte[5000000];
   //  memset(&buf,0,sizeof(buf));
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
@@ -158,6 +154,10 @@ int main() {
         terms.push_back(erl_mk_atom("unknown_command"));
         outtuple = vector2term(terms);
       }
+      if(intuple != NULL){
+        erl_free_compound(intuple);
+        intuple=NULL;
+      }
 
       if (outtuple != NULL) {
 //        logdebug("Build Output");
@@ -169,7 +169,7 @@ int main() {
       }
     }
   }
-
+  delete []buf;
 
 
 

@@ -26,5 +26,12 @@ init([])->
   permanent,
   10,
   worker,
-  [file_port]}]}}.
+  [file_port]},
+  {packet_server,
+    {packet_server,start_link,[]},
+  permanent,
+  10,
+  worker,
+  [packet_server]}
+]}}.
 
