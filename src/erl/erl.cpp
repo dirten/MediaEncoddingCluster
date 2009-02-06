@@ -71,8 +71,8 @@ int write_cmd(byte *buf, int len) {
 }
 
 ETERM * vector2term(std::vector<ETERM*> & v) {
-	const int s=static_cast<const int>(v.size());
-	ETERM ** term=new ETERM*[(const int)s];
+  const int s = static_cast<const int> (v.size());
+  ETERM ** term = new ETERM*[(const int) s];
   std::vector<ETERM*>::iterator it = v.begin();
   for (int a = 0; it != v.end(); it++) {
     term[a++] = *it;
@@ -80,6 +80,6 @@ ETERM * vector2term(std::vector<ETERM*> & v) {
   return erl_mk_tuple(term, v.size());
 }
 
-  
+
 #endif
 

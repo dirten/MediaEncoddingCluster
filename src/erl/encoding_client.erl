@@ -10,12 +10,15 @@ init()->
   register(encodeclient, self()),
   process_flag(trap_exit, true),
   Port = open_port({spawn, ?ENCODECLIENTEXE}, [{packet, 4}, binary]),
-  loop(global:whereis_name(packet_sender),Port).
+  loop(global:whereis_name(packet_server),Port).
 
 loop(Server, Port)->
-  Server ! {call, self()},
+  case gen_server:call(Server, {packetgroup}) of
+    Any->io:format("Received  ~w~n", [Any])
+  end,
+%  Server ! {call, self(),bla},
   receive
-    {packet_sender, Result} ->
+    {packet_server, Result} ->
 %       io:format("{packet_sender, Result}  ~w~n", []),
       Port ! { self(),{encod,term_to_binary(Result)}},
       receive
@@ -29,12 +32,16 @@ loop(Server, Port)->
  %     unregister(encodeclient),
   %        exit(port_terminated)
       end;
-    {'EXIT', Port, Reason} ->
+      Any->io:format("Received  ~w~n", [Any]);
+
+
+{'EXIT', Port, Reason} ->
       unregister(encodeclient),
       io:format("Port exited  ~w~n", [Reason]),
       exit({port_terminated, Reason})
       after 5000 ->
       unregister(encodeclient),
+      io:format("Port exited  ~n", []),
           exit(port_terminated)
 
 end.

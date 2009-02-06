@@ -13,8 +13,9 @@ start_link()->
 init([])->
 %  register(fileport,Port),
   process_flag(trap_exit, true),
-  Q=queue:new(),
-  spawn_link(?MODULE,loop,[Q]),
+  global:register_name(?MODULE, self()),
+  %  Q=queue:new(),
+%  spawn_link(?MODULE,loop,[Q]),
   io:format("~s started~n", [?MODULE]),
   {ok, running}.
 
@@ -32,9 +33,10 @@ loop(Q) ->
     after 10000->
       io:format(" Reading packets into Q~n",[]),
       N=queue:len(Q),
-      if N < 100 ->
+      if N < 3 ->
         Term=gen_server:call(global:whereis_name(packet_sender), {packetgroup,"",0,0,100}),
-        io:format("~w",[Term])
+        io:format("~w",[Term]),
+        lists:foreach(fun(X)->queue:in(X,Q) end,[Term])
         end,
       loop(Q)
     end,
@@ -42,7 +44,8 @@ loop(Q) ->
 
 
 handle_call(Call,_From,_N)->
-  {reply, Call, state}.
+  io:format("handle_call ~w ~n", [Call]),
+  {reply, {packet_server,{bla}}, state}.
 
 handle_cast(_Msg,N)->
   io:format("handle_cast(Msg,N)~n", []),
