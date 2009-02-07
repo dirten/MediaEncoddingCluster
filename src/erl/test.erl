@@ -1,10 +1,10 @@
 -module(test).
 
--export([insert/0, read/0, read2/0, create/0, drop/0,sequence/1, load/0, clear/0]).
+-export([insert/0, read/0, read2/0, read3/0, read4/0, read5/1, create/0, drop/0,sequence/1, load/0, clear/0]).
 -include("schema.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
--include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
-%-include("stdlib/include/qlc.hrl").
+%-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
+-include_lib("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
 
 create()->
@@ -60,3 +60,26 @@ read2()->
   end,
   {atomic,E}=mnesia:transaction(F),
   E.
+read3()->
+  F = fun() ->
+    Q = qlc:q([[Files,Jobs,Details] || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Details <- mnesia:table(jobdetail),Jobs#job.id==Details#jobdetail.jobid,Jobs#job.infile==Files#file.id , Jobs#job.complete_time == undefined ],{join, nested_loop}),
+    qlc:e(Q)
+  end,
+  {atomic,E}=mnesia:transaction(F),
+  E.
+read4()->
+  F = fun() ->
+    Q = qlc:q([[Files,Jobs] || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Jobs#job.infile==Files#file.id , Jobs#job.complete_time == undefined ]),
+    C = qlc:cursor(Q),
+    qlc:next_answers(C, 1)
+  end,
+  {atomic,[E|_]}=mnesia:transaction(F),
+    E.
+read5(JobId)->
+  F = fun() ->
+    Q = qlc:q([[Detail,Stream] || Detail <- mnesia:table(jobdetail),Stream <- mnesia:table(stream),Detail#jobdetail.instream==Stream#stream.id, Detail#jobdetail.jobid == JobId ]),
+    C = qlc:cursor(Q),
+    qlc:next_answers(C, 2)
+  end,
+  {atomic,E}=mnesia:transaction(F),
+    E.

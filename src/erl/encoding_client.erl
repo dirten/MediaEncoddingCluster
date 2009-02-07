@@ -7,42 +7,18 @@ start()->
   ok.
 
 init()->
-  register(encodeclient, self()),
+%  register(encodeclient, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, ?ENCODECLIENTEXE}, [{packet, 4}, binary]),
-  loop(global:whereis_name(packet_server),Port).
+%  Port = open_port({spawn, ?ENCODECLIENTEXE}, [{packet, 4}, binary]),
+  loop(global:whereis_name(packet_server),[]).
 
 loop(Server, Port)->
   case gen_server:call(Server, {packetgroup}) of
-    Any->io:format("Received  ~w~n", [Any])
-  end,
-%  Server ! {call, self(),bla},
-  receive
-    {packet_server, Result} ->
-%       io:format("{packet_sender, Result}  ~w~n", []),
-      Port ! { self(),{encod,term_to_binary(Result)}},
-      receive
-        {Port,{data,Data}} ->
-%      {encodeddata, Data} ->
-        io:format("{Port, {data, Data}}  ~w~n", [binary_to_term(Data)])
-
-          
-%          loop(Server, Port)
-%      after 5000 ->
- %     unregister(encodeclient),
-  %        exit(port_terminated)
-      end;
-      Any->io:format("Received  ~w~n", [Any]);
-
-
-{'EXIT', Port, Reason} ->
-      unregister(encodeclient),
-      io:format("Port exited  ~w~n", [Reason]),
-      exit({port_terminated, Reason})
-      after 5000 ->
-      unregister(encodeclient),
-      io:format("Port exited  ~n", []),
-          exit(port_terminated)
-
-end.
+    Any->
+      Size=element(5,element(1,element(5,Any))),
+      io:format("~w,~w,~w,~w,~w~n",[element(1,element(1,element(5,Any))),element(2,element(1,element(5,Any))),element(3,element(1,element(5,Any))),element(4,element(1,element(5,Any))),element(5,element(1,element(5,Any)))]),
+    if Size > 0 ->
+      loop(Server, Port)
+    end
+  end.
 

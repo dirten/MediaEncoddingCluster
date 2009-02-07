@@ -24,11 +24,12 @@ ETERM * streaminfo(ETERM * v) {
   int s = ERL_INT_UVALUE(stream);
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
-    FormatInputStream fis(&f);
-    if (!fis.isValid() || s < 0 || s >= fis.getFormatContext()->nb_streams) {
+//    FormatInputStream fis(&f);
+	FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    if (!fis->isValid() || s < 0 || s >= fis->getFormatContext()->nb_streams) {
       terms.push_back(erl_mk_atom("streamnotfound"));
     } else {
-      AVStream *str = fis.getFormatContext()->streams[s];
+      AVStream *str = fis->getFormatContext()->streams[s];
       terms.push_back(erl_mk_int(0));
       terms.push_back(erl_mk_int(str->index));
       terms.push_back(erl_mk_int(str->codec->codec_type));

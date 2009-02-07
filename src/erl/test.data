@@ -8,4 +8,5 @@
 {watchfolder,1,"/media/disk","/media/out",1,undefined}.
 {watchfolder,2,"/media/video","/media/out",1,undefined}.
 {watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,undefined}.
+{watchfolder,4,"m:/video","/media/out",1,undefined}.
 

@@ -26,20 +26,20 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:/Programme/MEC\bin\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/Programme/MEC\bin\.hive.cfg"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/Programme/MEC\bin\hive\*"; DestDir: "{app}\bin\hive"; Flags: ignoreversion
-Source: "C:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32\share\english\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/devel/mysql-noinstall-5.1.30-win32/mysql-5.1.30-win32/Embedded/DLL/release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\avutil-49.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\SDL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/devel/ffmpeg-13712/lib\..\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/Programme/MEC\bin\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/Programme/MEC\bin\.hive.cfg"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/Programme/MEC\bin\hive\*"; DestDir: "{app}\bin\hive"; Flags: ignoreversion
+Source: "D:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/Programme/MySQL/MySQL Server 5.1\share\english\errmsg.sys"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/Programme/MySQL/MySQL Server 5.1/lib/debug\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\avutil-49.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\SDL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "\..\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -111,7 +111,8 @@ process_file_list([H|T],Profile, OutPath)->
       end,
   {atomic,E}=mnesia:transaction(F),
 
-  Files =diff([H|T],E),
+%  Files =diff([H|T],E),
+  Files =[H|T]--E,
 
   Fun=fun(X)->
           mnesia:transaction(
@@ -135,7 +136,9 @@ process_file_list([H|T],Profile, OutPath)->
                 end
             end)
       end,
-  lists:foreach(Fun,Files).
+  lists:foreach(Fun,Files);
+process_file_list([],Profile, OutPath)->
+      ok.
 %io:format("File ~s~n",[Files]);
 
 %  process_file(T),
