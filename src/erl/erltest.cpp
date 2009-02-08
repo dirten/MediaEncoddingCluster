@@ -74,6 +74,8 @@ ETERM * packet(ETERM * v) {
     terms.push_back(erl_mk_int(p.isKeyFrame()));
     terms.push_back(erl_mk_int(p.getPts()));
     terms.push_back(erl_mk_int(p.getDts()));
+	terms.push_back(erl_mk_int(p.getFlags()));
+	terms.push_back(erl_mk_int(p.getDuration()));
     terms.push_back(erl_mk_int(p.getSize()));
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
     boost::shared_ptr<Packet> pPacket(new Packet(p));

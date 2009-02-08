@@ -48,10 +48,13 @@ get_job()->
 handle_call(Call,_From,_N)->
   io:format("handle_call ~w ~n", [Call]),
   {Filename, JobId, Decoder, Encoder}=get_job(),
-  case gen_server:call(global:whereis_name(packet_sender), {packetgroup,Filename,0,0,2})of
+  case gen_server:call(global:whereis_name(packet_sender), {packetgroup,Filename,1,0,2})of
     Data ->
-%      io:format("~w",[Data]),
-      {reply, {Filename, JobId, Decoder, Encoder, Data}, state}
+      io:format("Stream ~w",[element(1,element(1,Data))]),
+      [D|_]=[X||X<-Decoder,element(4,X)==element(1,element(1,Data))],
+      [E|_]=[X||X<-Encoder,element(4,X)==element(1,element(1,Data))],
+      io:format("Decoder ~w",[E]),
+      {reply, {Filename, JobId, D, E, Data}, state}
   end.
 
 handle_cast(_Msg,N)->
