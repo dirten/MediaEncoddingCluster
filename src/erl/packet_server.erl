@@ -5,17 +5,14 @@
 -include("schema.hrl").
 
 
--export([init/1,handle_call/3,handle_cast/2, code_change/3, terminate/2, start_link/0,loop/1, get_job/0]).
+-export([init/1,handle_call/3,handle_cast/2, code_change/3, terminate/2, start_link/0, get_job/0]).
 
 start_link()->
   gen_server:start_link({local,?MODULE},?MODULE,[],[]).
 
 init([])->
-  %  register(fileport,Port),
   process_flag(trap_exit, true),
   global:register_name(?MODULE, self()),
-  %  Q=queue:new(),
-  %  spawn_link(?MODULE,loop,[Q]),
   io:format("~s started~n", [?MODULE]),
   {ok, running}.
 
@@ -48,31 +45,14 @@ get_job()->
   {element(2,Job),element(1,Job),Decoder,Encoder}.
 
 
-loop(Q) ->
-  io:format(" Q Loop~n",[]),
-  receive
-  after 10000->
-      io:format(" Reading packets into Q~n",[]),
-      N=queue:len(Q),
-      if N < 3 ->
-          Term=gen_server:call(global:whereis_name(packet_sender), {packetgroup,"",0,0,100}),
-          io:format("~w",[Term]),
-          lists:foreach(fun(X)->queue:in(X,Q) end,[Term])
-      end,
-      loop(Q)
-  end,
-  ok.
-
-
 handle_call(Call,_From,_N)->
   io:format("handle_call ~w ~n", [Call]),
   {Filename, JobId, Decoder, Encoder}=get_job(),
-  case gen_server:call(global:whereis_name(packet_sender), {packetgroup,Filename,0,-1,120})of
+  case gen_server:call(global:whereis_name(packet_sender), {packetgroup,Filename,0,0,2})of
     Data ->
-%      io:format("~w~n",[Data]),
+%      io:format("~w",[Data]),
       {reply, {Filename, JobId, Decoder, Encoder, Data}, state}
   end.
-%{reply, {Filename, JobId, Decoder, Encoder}, state}.
 
 handle_cast(_Msg,N)->
   io:format("handle_cast(Msg,N)~n", []),

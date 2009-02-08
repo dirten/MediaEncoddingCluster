@@ -10,13 +10,15 @@
 
 #include "org/esb/hive/FormatStreamFactory.h"
 
-#include <vector>
+#include <boost/shared_ptr.hpp>
 
+#include <vector>
+#include <list>
 using namespace org::esb::av;
 using namespace org::esb::util;
 using namespace org::esb::hive;
 using namespace org::esb::io;
-
+std::list<boost::shared_ptr<Packet> > last_packet_list;
 ETERM * streaminfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
@@ -65,8 +67,7 @@ ETERM * packet(ETERM * v) {
       fis->seek(str, se);
     PacketInputStream pis(fis);
     Packet p;
-    while (true) {
-      pis.readPacket(p);
+    while (pis.readPacket(p)>=0) {
       if (p.getStreamIndex() == str)break;
     }
     terms.push_back(erl_mk_int(p.getStreamIndex()));
@@ -75,21 +76,36 @@ ETERM * packet(ETERM * v) {
     terms.push_back(erl_mk_int(p.getDts()));
     terms.push_back(erl_mk_int(p.getSize()));
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
+    boost::shared_ptr<Packet> pPacket(new Packet(p));
+
+    last_packet_list.push_back(pPacket);
+    if(last_packet_list.size()>10)
+      last_packet_list.pop_front();
   }
   return vector2term(terms);
 }
 
 ETERM * packetgroup(ETERM * v) {
   std::vector<ETERM *> terms;
-  ETERM * file = erl_element(2, v);
-  ETERM * stream = erl_element(3, v);
-  ETERM * seek = erl_element(4, v);
   ETERM * packet_count = erl_element(5, v);
-  int str = ERL_INT_UVALUE(stream);
-  int se = ERL_INT_VALUE(seek);
   int pc = ERL_INT_VALUE(packet_count);
-  for (int a = 0; a < pc; a++) {
-    terms.push_back(packet(v));
+  if(last_packet_list.size()>0){
+	std::vector<ETERM *> myterm;
+	boost::shared_ptr<Packet>p=last_packet_list.back();
+    myterm.push_back(erl_mk_int(p->getStreamIndex()));
+    myterm.push_back(erl_mk_int(p->isKeyFrame()));
+    myterm.push_back(erl_mk_int(p->getPts()));
+    myterm.push_back(erl_mk_int(p->getDts()));
+    myterm.push_back(erl_mk_int(p->getSize()));
+    myterm.push_back(erl_mk_binary((char*) p->getData(), p->getSize()));
+	terms.push_back(vector2term(myterm));
+  }
+  for (int a = 0; pc<0||a < pc; a++) {
+    ETERM * p=packet(v);
+	if((pc<0&&last_packet_list.back()->isKeyFrame())||last_packet_list.back()->getSize()<=0){
+		break;
+	}
+    terms.push_back(p);
   }
   return vector2term(terms);
 }
