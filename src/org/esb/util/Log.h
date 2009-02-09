@@ -7,6 +7,7 @@
 //#include <boost/logging/format_fwd.hpp>
 //#include "Datetime.h"
 
+#include <fstream>
 
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
@@ -29,7 +30,10 @@ using namespace boost::gregorian;
 #else
 #include <iostream>
 #define loglevel(o1,level) {\
-	std::cerr<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
+	std::ofstream myfile;\
+	myfile.open ("data.log",std::ios::out | std::ios::app);\
+	myfile<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
+	 myfile.close();\
 }
 #endif
 #endif

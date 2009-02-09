@@ -98,6 +98,8 @@ ETERM * packetgroup(ETERM * v) {
     myterm.push_back(erl_mk_int(p->isKeyFrame()));
     myterm.push_back(erl_mk_int(p->getPts()));
     myterm.push_back(erl_mk_int(p->getDts()));
+	myterm.push_back(erl_mk_int(p->getFlags()));
+	myterm.push_back(erl_mk_int(p->getDuration()));
     myterm.push_back(erl_mk_int(p->getSize()));
     myterm.push_back(erl_mk_binary((char*) p->getData(), p->getSize()));
 	terms.push_back(vector2term(myterm));
