@@ -4,7 +4,7 @@
 -record(watchfolder,{id,infolder,outfolder,profile,filter}).
 
 -record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
--record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
+-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format}).
 
 -record(job,{id, infile, outfile, begin_time, complete_time}).
 -record(jobdetail,{id, jobid,instream, outstream}).

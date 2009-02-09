@@ -3,6 +3,7 @@
 #include <iostream>
 #include <assert.h>
 #include "org/esb/util/Log.h"
+#include "org/esb/util/Decimal.h"
 using namespace std;
 
 //void __attribute__ ((constructor)) my_init (void);
@@ -227,7 +228,17 @@ namespace org {
       void Codec::setStartTime(int64_t start) {
         _start_time = start;
       }
-
+      std::string Codec::toString(){
+        using namespace org::esb::util;
+        std::string data;
+        data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
+        data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
+        data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
+        data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
+        data.append("BitRate:").append(Decimal(_bit_rate).toString()).append("\r\n");
+        data.append("GOP:").append(Decimal(_gop_size).toString()).append("\r\n");
+        return data;
+      }
     }
   }
 }

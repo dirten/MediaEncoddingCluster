@@ -77,9 +77,9 @@ Packet::Packet(int s) {
   av_init_packet(packet);
   packet->size = s;
   if (s > 0) {
-    packet->data = new uint8_t[s];
-//    packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
-//    memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
+//    packet->data = new uint8_t[s];
+    packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
+    memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
     callDestruct = true;
   }else {
     logerror("Try to Allocate buffer <0")
@@ -141,5 +141,14 @@ int64_t Packet::getPosition() {
 }
 AVPacket* Packet::getAVPacket() {
   return packetPtr.get();
+}
+void Packet::toString(){
+  logdebug("Packet->Size:"<<getSize());
+  logdebug("Packet->Pts:"<<getPts());
+  logdebug("Packet->Dts:"<<getDts());
+  logdebug("Packet->StreamIndex:"<<getStreamIndex());
+  logdebug("Packet->Duration:"<<getDuration());
+  logdebug("Packet->Position:"<<getPosition());
+
 }
 

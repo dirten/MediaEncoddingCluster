@@ -50,6 +50,7 @@ class SampleFormat;*/
                 int getGopSize();
                 AVRational getTimeBase();
                 void setStartTime(int64_t start);
+                std::string toString(void);
                 //				int getCodecType ();
                 //				string getCodecName ();
                 

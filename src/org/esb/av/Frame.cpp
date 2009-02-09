@@ -13,6 +13,8 @@ Frame::Frame() {
     _type = CODEC_TYPE_VIDEO;
     channels = 0;
     sample_rate = 0;
+    _width = 0;
+    _height = 0;
 
 }
 
@@ -207,6 +209,16 @@ void Frame::setPts(int64_t pts) {
 
 void Frame::setDts(int64_t dts) {
     _dts = dts;
+}
+void Frame::toString(){
+  if(getHeight()>0&&getWidth()>0)
+    logdebug("Frame->Size:"<<getSize());
+  logdebug("Frame->Width:"<<getWidth());
+  logdebug("Frame->Height:"<<getHeight());
+  logdebug("Frame->Pts:"<<getPts());
+  logdebug("Frame->Dts:"<<getDts());
+  logdebug("Frame->Channels:"<<channels);
+  logdebug("Frame->SampleRate:"<<sample_rate);
 }
 /*
 void Frame::setFrame(AVFrame * frame){

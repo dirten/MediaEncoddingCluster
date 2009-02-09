@@ -21,7 +21,7 @@ Frame Decoder::decodeLast() {
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }
-#if 1
+#if 0
     if (_frameFinished) {
         cout << "Frame finished" << endl;
     }else {
@@ -100,10 +100,10 @@ Frame Decoder::decodeVideo(Packet & packet) {
 #if 1
 
     if (_frameFinished) {
-        cout << "Frame finished";
+        logdebug( "Frame finished");
     }else {
 
-        cout << "Frame not finished !!!!!";
+        logdebug( "Frame not finished !!!!!");
         /*
              int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
           if (bla < 0) {
@@ -116,41 +116,41 @@ Frame Decoder::decodeVideo(Packet & packet) {
              return Frame();
           }
          */
-        cout << endl;
+//        cout << endl;
 
         return Frame();
     }
 
-    cout << "\tPacketFrameType:";
+    logdebug( "\tPacketFrameType:");
     switch (frame.pict_type) {
         case FF_B_TYPE:
-            cout << "B";
+            logdebug( "B");
             break;
         case FF_I_TYPE:
-            cout << "I";
+            logdebug("I");
             break;
         case FF_P_TYPE:
-            cout << "P";
+            logdebug("P");
             break;
         case FF_S_TYPE:
-            cout << "S";
+            logdebug("S");
             break;
         case FF_SI_TYPE:
-            cout << "SI";
+            logdebug("SI");
             break;
         case FF_SP_TYPE:
-            cout << "SP";
+            logdebug("SP");
             break;
         case FF_BI_TYPE:
-            cout << "BI";
+            logdebug("BI");
             break;
         default:
-            cout << "U:" << frame.pict_type;
+            logdebug("U:" << frame.pict_type);
             break;
 
     }
 
-    cout << endl;
+//    cout << endl;
 #endif
 
     frame._pixFormat = _pix_fmt;

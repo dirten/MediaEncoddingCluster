@@ -32,6 +32,7 @@ public:
 	void * getPriv();
 	AVPacket * getAVPacket();
 	int64_t getPosition();
+        void toString(void);
 	//        	    boost::shared_ptr<unsigned char*> data;
 
 

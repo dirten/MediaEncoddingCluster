@@ -28,6 +28,7 @@ namespace org {
                 void setDts(int64_t pts);
                 int64_t getPts();
                 int64_t getDts();
+                void toString();
                 
                 //	void setFrame(AVFrame * frame);
                 int _height;

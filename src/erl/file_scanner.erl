@@ -20,7 +20,7 @@ init([])->
   io:format("~w start up~n", [?MODULE]),
   process_flag(trap_exit, true),
   Pid=spawn_link(?MODULE,loop,[]),
-%  link(Pid),
+  %  link(Pid),
   register(loop, Pid),
   io:format("~w started~n", [?MODULE]),
   {ok, state}.
@@ -57,19 +57,19 @@ create_job(Fileid,Profileid,OutPath)->
   {atomic,FileList}=mnesia:transaction(F),
 
   F2 = fun() ->
-          Q = qlc:q([E|| E <- mnesia:table(profile),E#profile.id == Profileid]),
-          qlc:e(Q)
-      end,
+           Q = qlc:q([E|| E <- mnesia:table(profile),E#profile.id == Profileid]),
+           qlc:e(Q)
+       end,
   {atomic,ProfileList}=mnesia:transaction(F2),
   F3 = fun() ->
-          Q = qlc:q([E|| E <- mnesia:table(stream),E#stream.fileid == Fileid]),
-          qlc:e(Q)
-      end,
+           Q = qlc:q([E|| E <- mnesia:table(stream),E#stream.fileid == Fileid]),
+           qlc:e(Q)
+       end,
   {atomic,Streams}=mnesia:transaction(F3),
 
   [Profile|_T]=ProfileList,
   [File|_T]=FileList,
-%  NewFile=#file{id=test:sequence(file), path=OutPath, streamcount=2},
+  %  NewFile=#file{id=test:sequence(file), path=OutPath, streamcount=2},
   NewFile=#file{id=test:sequence(file),filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."), path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]), streamcount=2},
   mnesia:write(NewFile),
 
@@ -77,8 +77,35 @@ create_job(Fileid,Profileid,OutPath)->
   [VS|Rest]=SortedStreams,
   [AS|_Rest]=Rest,
 
-  NewVideoStream=#stream{id=test:sequence(stream),fileid=NewFile#file.id,streamidx=VS#stream.streamidx},
-  NewAudioStream=#stream{id=test:sequence(stream),fileid=NewFile#file.id,streamidx=AS#stream.streamidx},
+  %-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
+  %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
+  NewVideoStream=#stream{
+    id=test:sequence(stream),
+    fileid=NewFile#file.id,
+    streamidx=VS#stream.streamidx,
+    codec=Profile#profile.vcodec,
+    bitrate=Profile#profile.vbitrate,
+    rate=Profile#profile.vframerate,
+    num=1,
+    den=Profile#profile.vframerate,
+    width=Profile#profile.vwidth,
+    height=Profile#profile.vheight,
+    gop=20,
+    format=0},
+  NewAudioStream=#stream{
+    id=test:sequence(stream),
+    fileid=NewFile#file.id,
+    streamidx=AS#stream.streamidx,
+    codec=Profile#profile.acodec,
+    rate=Profile#profile.asamplerate,
+    num=AS#stream.num,
+    den=AS#stream.den,
+    bitrate=Profile#profile.abitrate,
+%    width=Profile#profile.width,
+%    height=Profile#profile.height,
+    channels=Profile#profile.achannels,
+    gop=20,
+    format=0},
   mnesia:write(NewVideoStream),
   mnesia:write(NewAudioStream),
 
@@ -89,18 +116,23 @@ create_job(Fileid,Profileid,OutPath)->
   mnesia:write(JobVideoDetail),
   mnesia:write(JobAudioDetail),
   
-io:format("FileJob info ~w ~w ~w~n",[File, Profile, NewVideoStream]).
+  io:format("FileJob info ~w ~w ~w~n",[File, Profile, NewVideoStream]).
 
 save_stream_info(FileName,SID, FileId)->
   %  io:format("get stream info from~s~n",[FileName]),
   case gen_server:call(global:whereis_name(packet_sender), {streaminfo,FileName,SID,0,0}) of
-    {_Tmp,Index,SType,Codec,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format} ->
-      Stream = #stream{id=test:sequence(stream),fileid=FileId,streamidx=Index,streamtype=SType,codec=Codec,rate=Rate,num=TbNum, den=TbDen, width=Width, height=Height,channels=Channels,gop=Gop,format=Format},
-      mnesia:write(Stream),
+%    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
+%   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
+    {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format} ->
+      Stream = #stream{id=test:sequence(stream),fileid=FileId,streamidx=Index,streamtype=SType,codec=Codec,bitrate=BitRate,rate=Rate,num=TbNum, den=TbDen, width=Width, height=Height,channels=Channels,gop=Gop,format=Format},
       io:format("Stream info ~w~n",[Stream]),
+      mnesia:write(Stream),
+%      case mnesia:write(Stream) of
+%        Any->io:format("MNEsia _w",[Any])
+%      end,
       save_stream_info(FileName,SID+1, FileId);
     Any->
-      io:format("Stream info ~w~n",[Any])
+      io:format("Any Stream info ~w~n",[Any])
   end,
   ok.
 
@@ -111,7 +143,7 @@ process_file_list([H|T],Profile, OutPath)->
       end,
   {atomic,E}=mnesia:transaction(F),
 
-%  Files =diff([H|T],E),
+  %  Files =diff([H|T],E),
   Files =[H|T]--E,
 
   Fun=fun(X)->
@@ -130,7 +162,7 @@ process_file_list([H|T],Profile, OutPath)->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
                     ok;
-                  %          io:format("File Wrong format ~w~n",[X]);
+%                           io:format("File Wrong format ~w~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end
@@ -138,7 +170,7 @@ process_file_list([H|T],Profile, OutPath)->
       end,
   lists:foreach(Fun,Files);
 process_file_list([],Profile, OutPath)->
-      ok.
+  ok.
 %io:format("File ~s~n",[Files]);
 
 %  process_file(T),

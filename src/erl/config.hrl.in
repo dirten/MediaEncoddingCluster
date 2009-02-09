@@ -1,3 +1,4 @@
 -define(FILEPORTEXE,"@FILEPORTEXE@" ).
 %-define(FILEPORTEXE,"/usr/bin/valgrind --log-file=/tmp/erltest  --tool=memcheck --leak-check=full --show-reachable=yes @FILEPORTEXE@" ).
--define(ENCODECLIENTEXE,"@ENCODECLIENTEXE@" ).
+%-define(ENCODECLIENTEXE,"@ENCODECLIENTEXE@" ).
+-define(ENCODECLIENTEXE,"/usr/bin/valgrind --log-file=/tmp/erlclient  --tool=memcheck --leak-check=full --show-reachable=yes @ENCODECLIENTEXE@" ).

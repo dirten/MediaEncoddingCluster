@@ -21,7 +21,7 @@ loop(Server, Port)->
         {Fileport, {data, Data}} ->
           D=binary_to_term(Data),
           io:format("~w~n",[D])
-          after 20000->
+          after 10000->
             io:format("No Data~n",[])
           end,
     Port ! {self(), close},

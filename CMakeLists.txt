@@ -58,6 +58,7 @@ INCLUDE(cmake/HiveBuildFfmpeg.txt)
 
 
 IF(NOT BUILD_EMBEDDED_LIBS)
+SET(ERLANG_DIR ${USERLIB_ROOT} CACHE PATH "Use Erlang in directory")
 SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
 SET(MYSQL_INC_DIR ${USERLIB_ROOT} CACHE PATH "Use mysql Includes in directory")
 SET(MYSQL_LIB_DIR ${USERLIB_ROOT} CACHE PATH "Use mysql Librbaries in directory")

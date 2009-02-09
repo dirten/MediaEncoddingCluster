@@ -28,6 +28,7 @@ using namespace boost::gregorian;
   std::cout<<"["<<to_simple_string(now)<<"] ["<<level<<"]" << o1<<std::endl; \
 }
 #else
+#ifdef FILELOGGING
 #include <iostream>
 #define loglevel(o1,level) {\
 	std::ofstream myfile;\
@@ -35,6 +36,12 @@ using namespace boost::gregorian;
 	myfile<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
 	 myfile.close();\
 }
+#else
+#include <iostream>
+#define loglevel(o1,level) {\
+	std::cerr<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
+}
+#endif
 #endif
 #endif
 

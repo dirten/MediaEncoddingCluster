@@ -19,6 +19,7 @@ using namespace org::esb::util;
 using namespace org::esb::hive;
 using namespace org::esb::io;
 std::list<boost::shared_ptr<Packet> > last_packet_list;
+
 ETERM * streaminfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
@@ -26,8 +27,8 @@ ETERM * streaminfo(ETERM * v) {
   int s = ERL_INT_UVALUE(stream);
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
-//    FormatInputStream fis(&f);
-	FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    //    FormatInputStream fis(&f);
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
     if (!fis->isValid() || s < 0 || s >= fis->getFormatContext()->nb_streams) {
       terms.push_back(erl_mk_atom("streamnotfound"));
     } else {
@@ -36,6 +37,7 @@ ETERM * streaminfo(ETERM * v) {
       terms.push_back(erl_mk_int(str->index));
       terms.push_back(erl_mk_int(str->codec->codec_type));
       terms.push_back(erl_mk_int(str->codec->codec_id));
+      terms.push_back(erl_mk_int(str->codec->bit_rate));
       terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
       terms.push_back(erl_mk_int(str->time_base.num));
       terms.push_back(erl_mk_int(str->time_base.den));
@@ -67,21 +69,21 @@ ETERM * packet(ETERM * v) {
       fis->seek(str, se);
     PacketInputStream pis(fis);
     Packet p;
-    while (pis.readPacket(p)>=0) {
+    while (pis.readPacket(p) >= 0) {
       if (p.getStreamIndex() == str)break;
     }
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
-    terms.push_back(erl_mk_int(p.getPts()));
-    terms.push_back(erl_mk_int(p.getDts()));
-	terms.push_back(erl_mk_int(p.getFlags()));
-	terms.push_back(erl_mk_int(p.getDuration()));
+    terms.push_back(erl_mk_atom(Decimal(p.getPts()).toString().c_str()));
+    terms.push_back(erl_mk_atom(Decimal(p.getDts()).toString().c_str()));
+    terms.push_back(erl_mk_int(p.getFlags()));
+    terms.push_back(erl_mk_int(p.getDuration()));
     terms.push_back(erl_mk_int(p.getSize()));
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
     boost::shared_ptr<Packet> pPacket(new Packet(p));
 
     last_packet_list.push_back(pPacket);
-    if(last_packet_list.size()>10)
+    if (last_packet_list.size() > 10)
       last_packet_list.pop_front();
   }
   return vector2term(terms);
@@ -91,24 +93,24 @@ ETERM * packetgroup(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM * packet_count = erl_element(5, v);
   int pc = ERL_INT_VALUE(packet_count);
-  if(last_packet_list.size()>0){
-	std::vector<ETERM *> myterm;
-	boost::shared_ptr<Packet>p=last_packet_list.back();
+  if (last_packet_list.size() > 0) {
+    std::vector<ETERM *> myterm;
+    boost::shared_ptr<Packet>p = last_packet_list.back();
     myterm.push_back(erl_mk_int(p->getStreamIndex()));
     myterm.push_back(erl_mk_int(p->isKeyFrame()));
-    myterm.push_back(erl_mk_int(p->getPts()));
-    myterm.push_back(erl_mk_int(p->getDts()));
-	myterm.push_back(erl_mk_int(p->getFlags()));
-	myterm.push_back(erl_mk_int(p->getDuration()));
+    myterm.push_back(erl_mk_atom(Decimal(p->getPts()).toString().c_str()));
+    myterm.push_back(erl_mk_atom(Decimal(p->getDts()).toString().c_str()));
+    myterm.push_back(erl_mk_int(p->getFlags()));
+    myterm.push_back(erl_mk_int(p->getDuration()));
     myterm.push_back(erl_mk_int(p->getSize()));
     myterm.push_back(erl_mk_binary((char*) p->getData(), p->getSize()));
-	terms.push_back(vector2term(myterm));
+    terms.push_back(vector2term(myterm));
   }
-  for (int a = 0; pc<0||a < pc; a++) {
-    ETERM * p=packet(v);
-	if((pc<0&&last_packet_list.back()->isKeyFrame())||last_packet_list.back()->getSize()<=0){
-		break;
-	}
+  for (int a = 0; pc < 0 || a < pc; a++) {
+    ETERM * p = packet(v);
+    if ((pc < 0 && last_packet_list.back()->isKeyFrame()) || last_packet_list.back()->getSize() <= 0) {
+      break;
+    }
     terms.push_back(p);
   }
   return vector2term(terms);
@@ -119,7 +121,7 @@ ETERM * fileinfo(ETERM * v) {
   ETERM *argp = erl_element(2, v);
   File f((const char*) ERL_ATOM_PTR(argp));
   if (f.exists()) {
-//    FormatInputStream fis(&f);
+    //    FormatInputStream fis(&f);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
@@ -150,10 +152,13 @@ int main(int argc, char** argv) {
   //  file_import();
   //  logdebug("Program End");
   //  return 0;
+ av_register_all();
+  avcodec_init();
+  avcodec_register_all();
 
   ETERM *intuple = NULL, *outtuple = NULL;
 
-  byte *buf =new byte[5000000];
+  byte *buf = new byte[5000000];
   //  memset(&buf,0,sizeof(buf));
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
@@ -175,13 +180,13 @@ int main(int argc, char** argv) {
         terms.push_back(erl_mk_atom("unknown_command"));
         outtuple = vector2term(terms);
       }
-      if(intuple != NULL){
+      if (intuple != NULL) {
         erl_free_compound(intuple);
-        intuple=NULL;
+        intuple = NULL;
       }
 
       if (outtuple != NULL) {
-//        logdebug("Build Output");
+        //        logdebug("Build Output");
         //        std::cerr<<"InTermSize:"<<erl_size(outtuple)<<std::endl;
         erl_encode(outtuple, buf);
         write_cmd(buf, erl_term_len(outtuple));
