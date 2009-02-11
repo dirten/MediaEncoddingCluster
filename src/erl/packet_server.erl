@@ -39,22 +39,38 @@ get_job()->
                 Data
             end,
   
-      Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
-       Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
+  Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
+  Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
   ,
   {element(2,Job),element(1,Job),Decoder,Encoder}.
 
 
-handle_call(Call,_From,_N)->
+handle_call(Call,From,_N)->
   io:format("handle_call ~w ~n", [Call]),
-  {Filename, JobId, Decoder, Encoder}=get_job(),
-  case gen_server:call(global:whereis_name(packet_sender), {packetgroup,Filename,1,-1,-1  })of
-    Data ->
-%      io:format("Stream ~w",[element(1,element(1,Data))]),
-      [D|_]=[X||X<-Decoder,element(4,X)==element(1,element(1,Data))],
-      [E|_]=[X||X<-Encoder,element(4,X)==element(1,element(1,Data))],
-%      io:format("Decoder ~w",[E]),
-      {reply, {Filename, JobId, D, E, Data}, state}
+  case get_job() of
+    {Filename, JobId, Decoder, Encoder}->
+      case gen_server:call({global,packet_sender}, {packetgroup,Filename,0,-1,-1  })of
+        hivetimeout->
+          {reply, {hivetimeout}, state};
+        {nomorepackets}->
+          {reply, {nomorepackets}, state};
+        Data ->
+%                io:format("Data ~w",[Data]),
+          %      io:format("Stream ~w",[element(1,element(1,Data))]),
+          [D|_]=[X||X<-Decoder,element(4,X)==element(1,element(1,Data))],
+          [E|_]=[X||X<-Encoder,element(4,X)==element(1,element(1,Data))],
+          %      io:format("Data ~w",[Data]),
+          ProcU=#process_unit{
+            id=libdb:sequence(process_unit),
+            sourcestream=D#stream.id,
+            targetstream=D#stream.id,
+            sendtime=now(),
+            sendnode=From},
+          mnesia:transaction(fun()->mnesia:write(ProcU)end),
+          {reply, {Filename, JobId, D, E, Data}, state};
+        Any->
+          io:format("~w Any Data ~w",[?MODULE, Any])
+      end
   end.
 
 handle_cast(_Msg,N)->

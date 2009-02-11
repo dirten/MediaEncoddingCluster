@@ -1,5 +1,4 @@
 
-#include "erl.cpp"
 
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
@@ -11,6 +10,7 @@
 #include "org/esb/hive/FormatStreamFactory.h"
 
 #include <boost/shared_ptr.hpp>
+#include "erl.cpp"
 
 #include <vector>
 #include <list>
@@ -19,7 +19,8 @@ using namespace org::esb::util;
 using namespace org::esb::hive;
 using namespace org::esb::io;
 std::list<boost::shared_ptr<Packet> > last_packet_list;
-
+std::list<boost::shared_ptr<Packet> > audio_packet_list;
+bool packet_group_break=false;
 ETERM * streaminfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
@@ -55,10 +56,11 @@ ETERM * streaminfo(ETERM * v) {
 }
 
 ETERM * packet(ETERM * v) {
-  std::vector<ETERM *> terms;
+//  std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
   ETERM *stream = erl_element(3, v);
   ETERM *seek = erl_element(4, v);
+  ETERM * packet=NULL;
   int str = ERL_INT_UVALUE(stream);
   int se = ERL_INT_VALUE(seek);
 
@@ -70,8 +72,10 @@ ETERM * packet(ETERM * v) {
     PacketInputStream pis(fis);
     Packet p;
     while (pis.readPacket(p) >= 0) {
-      if (p.getStreamIndex() == str)break;
+        if (p.getStreamIndex() == str)break;
     }
+    packet=buildTermFromPacket(p);
+/*
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
     terms.push_back(erl_mk_atom(Decimal(p.getPts()).toString().c_str()));
@@ -80,19 +84,23 @@ ETERM * packet(ETERM * v) {
     terms.push_back(erl_mk_int(p.getDuration()));
     terms.push_back(erl_mk_int(p.getSize()));
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
+ */
     boost::shared_ptr<Packet> pPacket(new Packet(p));
 
     last_packet_list.push_back(pPacket);
     if (last_packet_list.size() > 10)
       last_packet_list.pop_front();
+    
   }
-  return vector2term(terms);
+//  return vector2term(terms);
+  return packet;
 }
 
 ETERM * packetgroup(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM * packet_count = erl_element(5, v);
   int pc = ERL_INT_VALUE(packet_count);
+  packet_group_break=false;
   if (last_packet_list.size() > 0) {
     std::vector<ETERM *> myterm;
     boost::shared_ptr<Packet>p = last_packet_list.back();
@@ -105,13 +113,16 @@ ETERM * packetgroup(ETERM * v) {
     myterm.push_back(erl_mk_int(p->getSize()));
     myterm.push_back(erl_mk_binary((char*) p->getData(), p->getSize()));
     terms.push_back(vector2term(myterm));
+    last_packet_list.pop_front();
   }
   for (int a = 0; pc < 0 || a < pc; a++) {
     ETERM * p = packet(v);
-    if ((pc < 0 && last_packet_list.back()->isKeyFrame()) || last_packet_list.back()->getSize() <= 0) {
+
+    if ((pc < 0 && (last_packet_list.back()->isKeyFrame()) || last_packet_list.back()->getSize() <= 0)) {
       break;
     }
     terms.push_back(p);
+    if(packet_group_break)break;
   }
   return vector2term(terms);
 }
@@ -136,6 +147,48 @@ ETERM * fileinfo(ETERM * v) {
     }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));
+  }
+  return vector2term(terms);
+}
+ETERM * packetstream(ETERM * v) {
+  std::vector<ETERM *> terms;
+  ETERM *file = erl_element(2, v);
+//  ETERM *stream = erl_element(3, v);
+//  ETERM *seek = erl_element(4, v);
+//  int str = ERL_INT_UVALUE(stream);
+//  int se = ERL_INT_VALUE(seek);
+
+  File f((const char*) ERL_ATOM_PTR(file));
+  if (f.exists()) {
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    PacketInputStream pis(fis);
+    Packet p;
+    while(pis.readPacket(p)>=0){
+
+      boost::shared_ptr<Packet> pPacket(new Packet(p));
+      if(p.getStreamIndex()==0){
+        if (last_packet_list.size() > 0) {
+          terms.push_back(buildTermFromPacket(*last_packet_list.back()));
+        }
+        last_packet_list.push_back(pPacket);
+        if (last_packet_list.size() > 10)
+          last_packet_list.pop_front();
+        if(p.isKeyFrame()==true){
+          break;
+        }
+        terms.push_back(buildTermFromPacket(p));
+      }else
+      if(p.getStreamIndex()==1){
+        audio_packet_list.push_back(pPacket);
+        if (audio_packet_list.size() > 200){
+          std::list<boost::shared_ptr<Packet> >::iterator it=audio_packet_list.begin();
+          for(;it!=audio_packet_list.end();it++){
+            terms.push_back(buildTermFromPacket(**it));
+          }
+          audio_packet_list.clear();
+        }
+      }
+    }
   }
   return vector2term(terms);
 }
@@ -175,6 +228,8 @@ int main(int argc, char** argv) {
         outtuple = packet(intuple);
       } else if (func == "packetgroup") {
         outtuple = packetgroup(intuple);
+      } else if (func == "packetstream") {
+        outtuple = packetstream(intuple);
       } else {
         std::vector<ETERM *> terms;
         terms.push_back(erl_mk_atom("unknown_command"));
@@ -194,6 +249,7 @@ int main(int argc, char** argv) {
         outtuple = NULL;
       }
     }
+//    erl_free_compound(intuple);
   }
   delete []buf;
 

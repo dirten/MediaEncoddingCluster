@@ -61,8 +61,8 @@ target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbise
 target_link_libraries (erlclient z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #target_link_libraries (erltest x264 Winmm erl_interface ei )
 ELSE(WIN32)
-target_link_libraries (erltest x264 erl_interface ei pthread)
-target_link_libraries (erlclient x264 erl_interface ei pthread)
+target_link_libraries (erltest x264  erl_interface_st ei_st pthread)
+target_link_libraries (erlclient x264  erl_interface_st ei_st  pthread)
 ENDIF(WIN32)
 
 target_link_libraries (erltest

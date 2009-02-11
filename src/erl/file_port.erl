@@ -1,7 +1,7 @@
 %% @DOC bla fasel
 -include("config.hrl").
 -module(file_port).
--export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2,handle_info/2, code_change/3, terminate/2, loop/2]).
+-export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, code_change/3, terminate/2, loop/2]).
 -behaviour(gen_server).
 
 start(Dir)->
@@ -24,21 +24,25 @@ init([])->
   link(Port),
   register(fileport,Port),
   io:format("FileImporter started~n", []),
-%  spawn(?MODULE,loop,[Port,[]]),
+  %  spawn(?MODULE,loop,[Port,[]]),
   {ok, state}.
 
-handle_call({Command,File,Stream,Seek,PacketCount},From,N)->
+handle_call({Command,File,Stream,Seek,PacketCount},_From,_N)->
   io:format("~w-handle_call~w~n", [?MODULE,{Command}]),
   fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),Stream,Seek,PacketCount})}},
   receive
-    {Fileport, {data, Data}} ->
+    {_Fileport, {data, Data}} ->
       D=binary_to_term(Data),
-%    io:format("Any Data ~w",[D]),
+      %io:format("Any Data ~w",[D]),
       {reply, D, state}
-  after 3000 ->
-    {reply, timeout, state}
-%      Any->io:format("Any Data ~w",[Any])
-    end.
+      %    {'EXIT', _Fileport, Reason2} ->
+      %        global:unregister_name(packet_sender),
+      %          io:format("Port exited  ~w~n", [Reason2]),
+      %         exit({normal, Reason2})
+  after 4000 ->
+      io:format("FilePort Timeout~n",[]),
+      {reply, hivetimeout, state}
+  end.
 
 
 
@@ -46,12 +50,13 @@ handle_cast(_Msg,N)->
   io:format("handle_cast(Msg,N)~n", []),
   {noreply, N}.
 
-handle_info(Info,N)->
-  io:format("handle_info(~w,N)~n", [Info]),
-  {noreply, N}.
+%handle_info(Info,N)->
+%  io:format("handle_info(~w,N)~n", [Info]),
+%  {noreply, N}.
 
 terminate(_Reason,_N)->
-  io:format("~p stopping packet_sender~n",[?MODULE]),
+  %  global:unregister_name(packet_sender, self()),
+  io:format("~p terminate~n",[?MODULE]),
   ok.
 
 code_change(_OldVsn,N,_Extra)->{ok, N}.
@@ -72,7 +77,7 @@ loop(Port, C) ->
       C ! {packet_sender, D},
       loop(Port,C);
     stop ->
-%      io:format("StopSignal~n", []),
+      %      io:format("StopSignal~n", []),
       Port ! {self(), close},
       loop(Port,C);
     {Port, closed} ->

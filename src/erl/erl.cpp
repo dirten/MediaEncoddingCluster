@@ -5,8 +5,8 @@
 #define ERL_ERL
 
 #include <erl_interface.h>
-
-
+#include "org/esb/av/Packet.h"
+#include "org/esb/util/Decimal.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -27,7 +27,7 @@ int read_exact(byte *buf, int len) {
       return (i);
     got += i;
   } while (got < len);
-
+//  logdebug("Bytes readed"<<len);
   return (len);
 }
 
@@ -70,6 +70,7 @@ int write_cmd(byte *buf, int len) {
   return write_exact(buf, len);
 }
 
+
 ETERM * vector2term(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
   ETERM ** term = new ETERM*[(const int) s];
@@ -78,6 +79,38 @@ ETERM * vector2term(std::vector<ETERM*> & v) {
     term[a++] = *it;
   }
   return erl_mk_tuple(term, v.size());
+}
+using namespace org::esb::av;
+using namespace org::esb::util;
+ETERM * buildTermFromPacket(Packet & p){
+    std::vector<ETERM *> terms;
+    terms.push_back(erl_mk_int(p.getStreamIndex()));
+    terms.push_back(erl_mk_int(p.isKeyFrame()));
+    terms.push_back(erl_mk_atom(Decimal(p.getPts()).toString().c_str()));
+    terms.push_back(erl_mk_atom(Decimal(p.getDts()).toString().c_str()));
+    terms.push_back(erl_mk_int(p.getFlags()));
+    terms.push_back(erl_mk_int(p.getDuration()));
+    terms.push_back(erl_mk_int(p.getSize()));
+    terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
+    return vector2term(terms);
+}
+
+Packet * buildPacketFromTerm(ETERM * in){
+  ETERM * streamidx = erl_element(1, in);
+  ETERM * pts = erl_element(3, in);
+  ETERM * dts = erl_element(4, in);
+  ETERM * flags = erl_element(5, in);
+  ETERM * duration = erl_element(6, in);
+  ETERM * size = erl_element(7, in);
+  ETERM * data = erl_element(8, in);
+  Packet * p = new Packet(ERL_INT_UVALUE(size));
+  p->packet->stream_index = ERL_INT_UVALUE(streamidx);
+  sscanf((const char *)ERL_ATOM_PTR(pts),"%llu",&p->packet->pts);
+  sscanf((const char *)ERL_ATOM_PTR(dts),"%llu",&p->packet->dts);
+  p->packet->flags = ERL_INT_VALUE(flags);
+  p->packet->duration = ERL_INT_UVALUE(duration);
+  memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
+  return p;
 }
 
 

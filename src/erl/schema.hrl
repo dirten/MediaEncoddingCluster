@@ -9,5 +9,7 @@
 -record(job,{id, infile, outfile, begin_time, complete_time}).
 -record(jobdetail,{id, jobid,instream, outstream}).
 
+-record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime}).
+
 -record(framegroup,{id,framegroup,startts,byte_pos,stream_id,stream_index,frame_count}).
--record(packet,{id,pts,data, data_size}).
+-record(packet,{id,pts, dts,data, data_size}).

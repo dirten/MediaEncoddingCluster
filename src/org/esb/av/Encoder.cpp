@@ -27,40 +27,40 @@ Packet Encoder::encode(Frame & frame) {
 }
 
 Packet Encoder::encodeVideo(Frame & frame) {
-  logdebug("VideoEncoderFrame");
-  frame.toString();
+//  logdebug("VideoEncoderFrame");
+//  frame.toString();
     const int buffer_size = 1024 * 256;
-    char * data=new char[buffer_size];
-    memset(data, 0, buffer_size);
+    char data[buffer_size];
+    memset(&data, 0, buffer_size);
 
     int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, &frame);
     //    pac.data=new uint8_t[ret];
     //	cout << "ret:"<<ret<<endl;
-    logdebug("PacketSIze:"<<ret);
-    Packet * pac= new Packet(ret);
+//    logdebug("\rCreate Packet with Size:"<<ret);
+    Packet pac(ret);
     if(ret>0){
-//      memcpy(pac->packet->data, data, ret);
-      delete []data;
+      memcpy(pac.packet->data, &data, ret);
+//      delete []data;
     }else{
       throw lang::Exception();
     }
     //    pac.data=data;
-    pac->packet->size = ret;
-    pac->packet->pts = frame.getPts();
-    pac->packet->dts = frame.getDts();
-    pac->packet->pos = frame.pos;
-    pac->packet->stream_index = frame.stream_index;
-    pac->packet->duration = frame.duration;
+    pac.packet->size = ret;
+    pac.packet->pts = frame.getPts();
+    pac.packet->dts = frame.getDts();
+    pac.packet->pos = frame.pos;
+    pac.packet->stream_index = frame.stream_index;
+    pac.packet->duration = frame.duration;
     //    pac.flags=0;
 
     if (ctx->coded_frame) {
         //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
         if (ctx->coded_frame->key_frame)
-            pac->packet->flags |= PKT_FLAG_KEY;
+            pac.packet->flags |= PKT_FLAG_KEY;
         //		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
         //		pac.packet->pts=ctx->coded_frame->pts;
     }
-    return *pac;
+    return pac;
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {

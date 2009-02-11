@@ -23,9 +23,9 @@ Frame Decoder::decodeLast() {
     }
 #if 0
     if (_frameFinished) {
-        cout << "Frame finished" << endl;
+        logdebug( "Frame finished");
     }else {
-        cout << "Frame not finished !!!!!" << endl;
+        logdebug("Frame not finished !!!!!");
         /*
              int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
           if (bla < 0) {
@@ -97,7 +97,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
     }
     len -= bytesDecoded;
     //}
-#if 1
+#if 0
 
     if (_frameFinished) {
         logdebug( "Frame finished");
