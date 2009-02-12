@@ -39,7 +39,7 @@ ETERM * streaminfo(ETERM * v) {
       terms.push_back(erl_mk_int(str->codec->codec_type));
       terms.push_back(erl_mk_int(str->codec->codec_id));
       terms.push_back(erl_mk_int(str->codec->bit_rate));
-      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
+      terms.push_back(erl_mk_float(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
       terms.push_back(erl_mk_int(str->time_base.num));
       terms.push_back(erl_mk_int(str->time_base.den));
       terms.push_back(erl_mk_int(str->codec->width));
@@ -153,44 +153,29 @@ ETERM * fileinfo(ETERM * v) {
 ETERM * packetstream(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
-//  ETERM *stream = erl_element(3, v);
-//  ETERM *seek = erl_element(4, v);
-//  int str = ERL_INT_UVALUE(stream);
-//  int se = ERL_INT_VALUE(seek);
+  ETERM *stream = erl_element(3, v);
+  ETERM *seek = erl_element(4, v);
+  ETERM *count = erl_element(5, v);
+  int str = ERL_INT_UVALUE(stream);
+  int se = ERL_INT_VALUE(seek);
+  int c = ERL_INT_VALUE(count);
 
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
     PacketInputStream pis(fis);
     Packet p;
-    while(pis.readPacket(p)>=0){
-
-      boost::shared_ptr<Packet> pPacket(new Packet(p));
-      if(p.getStreamIndex()==0){
-        if (last_packet_list.size() > 0) {
-          terms.push_back(buildTermFromPacket(*last_packet_list.back()));
-        }
-        last_packet_list.push_back(pPacket);
-        if (last_packet_list.size() > 10)
-          last_packet_list.pop_front();
-        if(p.isKeyFrame()==true){
-          break;
-        }
+    if (se >= 0)
+      fis->seek(str, se);
+    for(int a=0;a<c;a++){
+      if(pis.readPacket(p)>=0){
         terms.push_back(buildTermFromPacket(p));
-      }else
-      if(p.getStreamIndex()==1){
-        audio_packet_list.push_back(pPacket);
-        if (audio_packet_list.size() > 200){
-          std::list<boost::shared_ptr<Packet> >::iterator it=audio_packet_list.begin();
-          for(;it!=audio_packet_list.end();it++){
-            terms.push_back(buildTermFromPacket(**it));
-          }
-          audio_packet_list.clear();
-        }
+      }else{
+        break;
       }
     }
   }
-  return vector2term(terms);
+  return vector2list(terms);
 }
 
 int main(int argc, char** argv) {
@@ -212,7 +197,7 @@ int main(int argc, char** argv) {
   ETERM *intuple = NULL, *outtuple = NULL;
 
   byte *buf = new byte[5000000];
-  //  memset(&buf,0,sizeof(buf));
+  memset(buf,0,5000000);
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
     //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;

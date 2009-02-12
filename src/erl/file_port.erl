@@ -1,7 +1,7 @@
 %% @DOC bla fasel
 -include("config.hrl").
 -module(file_port).
--export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, code_change/3, terminate/2, loop/2]).
+-export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2, loop/2]).
 -behaviour(gen_server).
 
 start(Dir)->
@@ -50,9 +50,17 @@ handle_cast(_Msg,N)->
   io:format("handle_cast(Msg,N)~n", []),
   {noreply, N}.
 
-%handle_info(Info,N)->
+handle_info(Info,N)->
 %  io:format("handle_info(~w,N)~n", [Info]),
-%  {noreply, N}.
+  case Info of
+    {'EXIT', _Fileport, Reason2} ->
+      io:format("Port exited  ~w~n", [Reason2]),
+      exit({normal, Reason2});
+     _->
+         io:format("handle_info(,N)~n", [])
+
+   end,
+  {noreply, N}.
 
 terminate(_Reason,_N)->
   %  global:unregister_name(packet_sender, self()),

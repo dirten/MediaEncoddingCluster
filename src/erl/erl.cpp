@@ -80,6 +80,26 @@ ETERM * vector2term(std::vector<ETERM*> & v) {
   }
   return erl_mk_tuple(term, v.size());
 }
+
+ETERM * vector2tuple(std::vector<ETERM*> & v) {
+  const int s = static_cast<const int> (v.size());
+  ETERM ** term = new ETERM*[(const int) s];
+  std::vector<ETERM*>::iterator it = v.begin();
+  for (int a = 0; it != v.end(); it++) {
+    term[a++] = *it;
+  }
+  return erl_mk_tuple(term, v.size());
+}
+
+ETERM * vector2list(std::vector<ETERM*> & v) {
+  const int s = static_cast<const int> (v.size());
+  ETERM ** term = new ETERM*[(const int) s];
+  std::vector<ETERM*>::iterator it = v.begin();
+  for (int a = 0; it != v.end(); it++) {
+    term[a++] = *it;
+  }
+  return erl_mk_list(term, v.size());
+}
 using namespace org::esb::av;
 using namespace org::esb::util;
 ETERM * buildTermFromPacket(Packet & p){
