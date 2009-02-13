@@ -20,7 +20,11 @@ loop( Port)->
     {nomorepackets}->
       io:format("nomorepackets waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;
+    {nodata}->
+      io:format("nomorepackets waiting 5 secs~n",[]),
+      receive after 5000->loop(Port)end;
     Any->
+%  {Filename, Procid, D, E, Data}->
 %      io:format("~w~n",[Any]),
       Port ! {self(), {command, term_to_binary({encode,Any})}},
 %      Data=erlang:port_info(Port),
@@ -28,6 +32,10 @@ loop( Port)->
       receive
         {Fileport, {data, Data}} ->
           D=binary_to_term(Data),
+        {_, Procid, _, _, _}=Any,
+        gen_server:cast({global,packet_server}, {encoded,Procid,D}),
+%        {global,packet_server} ! {encoded,D},
+        io:format("Data sended to packet server ~n", []),
 %          io:format("~w~n",[D])
           loop(Port);
         {Port, closed} ->
@@ -37,7 +45,7 @@ loop( Port)->
         {'EXIT', Port, Reason2} ->
  %        global:unregister_name(packet_sender),
           io:format("EncodingClient exited  ~w~n", [Reason2]),
-          init()
+          receive after 5000->init()end
 %         exit({normal, Reason2})
           after 10000->
             io:format("No Data~n",[]),
@@ -54,7 +62,9 @@ loop( Port)->
       io:format("GenCall to ~w Failed  ~w~n", [Port,Reason])
 %      exit({normal, Reason})
       end;
-    {timeout,{_Reason}}->loop( Port)
+    {timeout,{_Reason}}->
+      io:format("DataTimeOut ~n", []),
+      loop( Port)
 %      Size=element(5,element(1,element(5,Any))),
 %      io:format("~w,~w,~w,~w,~w~n",[element(1,element(1,element(5,Any))),element(2,element(1,element(5,Any))),element(3,element(1,element(5,Any))),element(4,element(1,element(5,Any))),element(5,element(1,element(5,Any)))])
 %if Size > 0 ->

@@ -155,14 +155,16 @@ ETERM * encode(ETERM* in) {
     logdebug("Converter created");
 //  d->toString();
 //  e->toString();
-  int pc = ERL_TUPLE_SIZE(packet_list);
+  int pc = erl_length(packet_list);
+  ETERM * tail=packet_list;
   for (int a = 0; a < pc; a++) {
 //    logdebug("Output term " << a);
 //    erl_print_term((FILE*)stderr, erl_element(a + 1, packet_list));
   if (toDebug)
     logdebug("Create Packet" << a);
-
-    Packet *p = buildPacketFromTerm(erl_element(a + 1, packet_list));
+    ETERM * head=erl_hd(tail);
+    Packet *p = buildPacketFromTerm(head);
+    tail=erl_tl(tail);
 //    p->toString();
     Frame f = d->decode(*p);
     delete p;
@@ -219,7 +221,7 @@ ETERM * encode(ETERM* in) {
     terms.push_back(erl_mk_uint(ERL_TUPLE_SIZE(erl_element(1, packet_list))));
     terms.push_back(erl_mk_uint(ERL_IS_TUPLE(packet_list)));
     terms.push_back(erl_mk_uint(ERL_TUPLE_SIZE(packet_list)));*/
-  return vector2term(terms);
+  return vector2list(terms);
 }
 
 int i=0;
