@@ -2,13 +2,13 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Frame.h"
-#include "org/esb/lang/Thread.h"
+//#include "org/esb/lang/Thread.h"
 #include "org/esb/av/FrameFormat.h"
 #include "org/esb/av/FrameConverter.h"
 #include <string>
 #include <vector>
 #include "erl.cpp"
-#include <stdio.h>
+//#include <stdio.h>
 using namespace org::esb::av;
 
 Packet * create_packet(ETERM* in) {
@@ -225,11 +225,6 @@ ETERM * encode(ETERM* in) {
 }
 
 int i=0;
-void recur(){
-  std::cerr << "\r" <<i++;
-  std::cerr << flush;
-  recur();
-}
 int main() {
 //  recur();
 #ifdef WIN32
