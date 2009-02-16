@@ -162,11 +162,15 @@ ETERM * packetstream(ETERM * v) {
 
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
-    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    long long int s;
+    logdebug("SeekValue:"<<ERL_ATOM_PTR(seek));
+    sscanf((const char *)ERL_ATOM_PTR(seek),"%llu",&s);
+//    logdebug("SeekValueScanned:"<<s);
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);
     PacketInputStream pis(fis);
     Packet p;
-    if (se >= 0)
-      fis->seek(str, se);
+//    if (se >= 0)
+//      fis->seek(str, se);
     for(int a=0;a<c;a++){
       if(pis.readPacket(p)>=0){
         terms.push_back(buildTermFromPacket(p));

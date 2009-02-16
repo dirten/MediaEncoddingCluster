@@ -6,7 +6,7 @@
 -record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
 -record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format}).
 
--record(job,{id, infile, outfile, begin_time, complete_time}).
+-record(job,{id, infile, outfile, begin_time, complete_time, last_ts}).
 -record(jobdetail,{id, jobid,instream, outstream}).
 
 -record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime, sendsize, receivesize, data}).

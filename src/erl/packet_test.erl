@@ -1,10 +1,10 @@
 -module(packet_test).
 
 
--export([packetstream/1, mysum/1]).
+-export([packetstream/2, mysum/1]).
 
 
-packetstream(Filename)->
+packetstream(Filename, Offset)->
   case get(streamdata) of
     undefined->
       put(streamdata,[]);
@@ -12,12 +12,12 @@ packetstream(Filename)->
         
   end,
   C=length(get(streamdata)),
-  if C<50 ->
-      case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,-1,500  })of
+  if C<350 ->
+      case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,400  })of
         hivetimeout->
           hivetimeout;
         Any->
-          [Required|_]=[[X||X<-Any,element(1,X)<1]],
+          [Required|_]=[[X||X<-Any,element(1,X)<2]],
           put(streamdata,get(streamdata)++Required)
       end;
     true->ok
@@ -33,26 +33,39 @@ packetstream(Filename)->
   %      {VideoData, AudioData}
   %      io:format("~w",[VideoData])
   %  if length(get(streamdata)) > 0 ->
-  Data=process(get(streamdata),0),
-  packet_group(Data,0).
+    Count=length(process(get(streamdata),1)),
+  if Count> 300->
+      Data=process(get(streamdata),1),
+      put(streamdata,get(streamdata)--Data),
+      io:format("Audioooooooooooooooo Packet",[]),
+      Data;
+%      packet_group(Data,1);
+    true->
+      Data=process(get(streamdata),0),
+      io:format("Videooooooooooooooooo Packet",[]),
+      packet_group(Data,0)
+  end.
+
 %  packetstream()
-%end
+%end 3759782495
 
 
 process([], _Stream)->[];
 process(List, Stream)->
   {Data,_}=lists:partition(fun(A) -> is_tuple(A),element(1,A)==Stream end, List),
   Data.
-packet_group([],C)->[];
-packet_group([H|T], C)->
+packet_group([],_C)->[];
+packet_group(Data, _C)->
   % io:format("~w~n~n~n",[H]),
-  [PG|_]=[[X||X<-[H|T],filter(X)]],
+  [PG|_]=[[X||X<-Data,filter(X)]],
   put(counter,0),
   put(state,keyframeend),
-  put(streamdata,get(streamdata)--PG),
+  Result=Data--PG,
+  put(streamdata,Result),
   %  put(counter,0),
-  [[A1,A2,A3|_]|_]=[[X||X<-get(streamdata), element(1,X)==0]],
-  lists:flatten([PG,A1,A2,A3]).
+  [[A1,A2,A3|_]|_]=[[X||X<-Result, element(1,X)==0]],
+  lists:flatten([PG, A1, A2, A3]).
+%  PG.
 
 
 filter(El)->
@@ -84,9 +97,9 @@ filter(El)->
 %[Data|_]=[[lists:nth(element(1,X)+1,Acc)||X<-PacketList]],
 %  Data.
 %process()
-getunique([], Acc)->
+getunique([], _Acc)->
   [];
-getunique([H|T], Acc)->
+getunique([H|T], _Acc)->
   %  Acc:set(element(1,H), H),
   %  [Acc:get(element(1,H))]++getunique(T).
   [element(1,H)]++getunique(T).

@@ -169,7 +169,7 @@ Frame Decoder::decodeAudio(Packet & packet) {
     int size = packet.packet->size, out_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
     uint8_t *outbuf = new uint8_t[out_size];
     uint8_t *inbuf = packet.packet->data;
-    while (size > 0) {
+//    while (size > 0) {
         int len = avcodec_decode_audio2(ctx, (short *) outbuf, &out_size, inbuf, size);
         if (len < 0) {
             fprintf(stderr, "Error while decoding audio Frame\n");
@@ -181,7 +181,7 @@ Frame Decoder::decodeAudio(Packet & packet) {
         }
         size -= len;
         inbuf += len;
-    }
+//    }
     //              cout << "DataSize:"<<out_size<<endl;
     //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
     Frame frame;

@@ -18,11 +18,15 @@ init([])->
 
 get_job()->
   JobFun = fun() ->
-               Q = qlc:q([{Jobs#job.id, filename:join(Files#file.path,Files#file.filename)} || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Jobs#job.complete_time == undefined,Jobs#job.infile==Files#file.id ]),
+               Q = qlc:q([{Jobs#job.id, filename:join(Files#file.path,Files#file.filename), Jobs#job.last_ts} || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Jobs#job.complete_time == undefined,Jobs#job.infile==Files#file.id ]),
                C = qlc:cursor(Q),
                qlc:next_answers(C, 1)
            end,
-  {atomic,[Job|_]}=mnesia:transaction(JobFun),
+
+%  {atomic,[Job|_]}=mnesia:transaction(JobFun),
+  case mnesia:transaction(JobFun) of
+%    {atomic,[]}->[];
+    {atomic,[Job|_]}->
   %  io:format("~w~n",[Job]),
   JobDetailFun = fun() ->
                      Q = qlc:q([Detail || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid == element(1,Job) ]),
@@ -42,13 +46,16 @@ get_job()->
   Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
   Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
   ,
-  {element(2,Job),element(1,Job),Decoder,Encoder}.
+  {element(2,Job),element(1,Job),element(3,Job),Decoder,Encoder}
+  end.
 
 handle_call(Call,From,_N)->
   io:format("handle_call ~w ~n", [Call]),
   case get_job() of
-    {Filename, JobId, Decoder, Encoder}->
-      Data=packet_test:packetstream(Filename),
+    []->{reply, {nojob}, state};
+    {Filename, JobId, LastTs, Decoder, Encoder}->
+
+      Data=packet_test:packetstream(Filename,LastTs),
       C=length(Data),
       if
         C==0->
@@ -82,6 +89,18 @@ handle_call(Call,From,_N)->
             framecount=length(Data),
             sendsize=BytesSend},
           mnesia:transaction(fun()->mnesia:write(ProcU)end),
+          Result=mnesia:transaction(
+            fun()->
+                case mnesia:read({job, JobId}) of
+                  []->io:format("Data not found ~n",[]),
+                    mnesia:abort(no_job_found);
+                  [Job|_]->
+                    %          io:format("Data found ~w~n",[Unit]),
+                    %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
+                    mnesia:write(Job#job{last_ts=element(3,FirstPacket)})
+                end
+            end),
+
           {reply, {Filename, ProcU#process_unit.id, D, E, Data}, state}
           %          []->{reply, {nojob}, state}
       end
@@ -131,7 +150,8 @@ handle_cast(Msg,N)->
             mnesia:abort(no_process_unit_found);
           [Unit|_]->
             %          io:format("Data found ~w~n",[Unit]),
-            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
+            %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
+            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()})
         end
     end
                            ),

@@ -109,7 +109,7 @@ create_job(Fileid,Profileid,OutPath)->
   mnesia:write(NewVideoStream),
   mnesia:write(NewAudioStream),
 
-  Job=#job{id=test:sequence(job), infile=Fileid, outfile=NewFile#file.id},
+  Job=#job{id=test:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts='-1'},
   mnesia:write(Job),
   JobVideoDetail=#jobdetail{id=test:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
   JobAudioDetail=#jobdetail{id=test:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},

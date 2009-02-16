@@ -11,7 +11,7 @@ namespace org {
 
       class FormatStreamFactory {
       public:
-        static org::esb::av::FormatInputStream * getInputStream(std::string filename);
+        static org::esb::av::FormatInputStream * getInputStream(std::string filename, long long int offset=-1);
       private:
         static std::map<std::string, org::esb::av::FormatInputStream*> _inputStreams;
       };

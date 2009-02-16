@@ -1,6 +1,6 @@
 -module(test).
 
--export([dirtyimport/0,import/1,insert/0, read/0, read2/0, read3/0, read4/0, read5/1, create/0, drop/0,sequence/1, load/0, clear/0]).
+-export([export/0,dirtyimport/0,import/1,insert/0, read/0, read2/0, read3/0, read4/0, read5/1, create/0, drop/0,sequence/1, load/0, clear/0]).
 -include("schema.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
@@ -133,3 +133,11 @@ dirtyimport()->
           ok
       end
   end.
+export()->
+    F = fun() ->
+          Q = qlc:q([[PU] || PU <- qlc:keysort(5,mnesia:table(process_unit),{order, descending}), element(4,PU)==13]),
+          C = qlc:cursor(Q),
+          qlc:next_answers(C, 3)
+      end,
+  {atomic,E}=mnesia:transaction(F),
+  E.

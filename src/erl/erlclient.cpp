@@ -165,7 +165,7 @@ ETERM * encode(ETERM* in) {
     ETERM * head=erl_hd(tail);
     Packet *p = buildPacketFromTerm(head);
     tail=erl_tl(tail);
-//    p->toString();
+    p->toString();
     Frame f = d->decode(*p);
     delete p;
 //    f.toString();
@@ -249,7 +249,7 @@ int main() {
   av_register_all();
   avcodec_init();
   avcodec_register_all();
-
+  av_log_level=AV_LOG_ERROR;
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
 //    erl_print_term((FILE*)stderr, intuple);
