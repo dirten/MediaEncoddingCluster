@@ -33,19 +33,19 @@ packetstream(Filename, Offset)->
   %      {VideoData, AudioData}
   %      io:format("~w",[VideoData])
   %  if length(get(streamdata)) > 0 ->
-    Count=length(process(get(streamdata),1)),
-%    io:format("Videoooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),0))]),
-%    io:format("Audioooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),1))]),
-%    io:format("ALLLoooooooooooooooo Packet Count ~w~n",[length(get(streamdata))]),
+  Count=length(process(get(streamdata),1)),
+  %    io:format("Videoooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),0))]),
+  %    io:format("Audioooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),1))]),
+  %    io:format("ALLLoooooooooooooooo Packet Count ~w~n",[length(get(streamdata))]),
   if Count> 300->
       Data=process(get(streamdata),1),
       put(streamdata,get(streamdata)--Data),
-%      io:format("Audioooooooooooooooo Packet",[]),
+      %      io:format("Audioooooooooooooooo Packet",[]),
       Data;
-%      packet_group(Data,1);
+    %      packet_group(Data,1);
     true->
       Data=process(get(streamdata),0),
-%      io:format("Videooooooooooooooooo PacketGroup ~w",[length(Data)]),
+      %      io:format("Videooooooooooooooooo PacketGroup ~w",[length(Data)]),
       packet_group(Data,0)
   end.
 
@@ -67,9 +67,9 @@ packet_group(Data, _C)->
   put(streamdata,get(streamdata)--PG),
   %  put(counter,0),
   if length(Result)> 0->
-  [[A1,A2,A3|_]|_]=[[X||X<-Result]],
-  lists:flatten([PG, A1, A2, A3]);
- true->lists:flatten([PG])
+      [[A1,A2,A3|_]|_]=[[X||X<-Result]],
+      lists:flatten([PG, A1, A2, A3]);
+    true->lists:flatten([PG])
   end.
 %  PG.
 

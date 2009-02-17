@@ -163,7 +163,7 @@ ETERM * packetstream(ETERM * v) {
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     long long int s;
-    logdebug("SeekValue:"<<ERL_ATOM_PTR(seek));
+//    logdebug("SeekValue:"<<ERL_ATOM_PTR(seek));
     sscanf((const char *)ERL_ATOM_PTR(seek),"%llu",&s);
 //    logdebug("SeekValueScanned:"<<s);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);

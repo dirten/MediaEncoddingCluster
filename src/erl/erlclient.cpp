@@ -165,7 +165,8 @@ ETERM * encode(ETERM* in) {
     ETERM * head=erl_hd(tail);
     Packet *p = buildPacketFromTerm(head);
     tail=erl_tl(tail);
-    p->toString();
+    if (toDebug)
+      p->toString();
     Frame f = d->decode(*p);
     delete p;
 //    f.toString();
@@ -186,8 +187,8 @@ ETERM * encode(ETERM* in) {
     logdebug("after converting frame");
 //    f2.toString();
     Packet ret=e->encode(f2);
-    ret.packet->pts = av_rescale_q(ret.packet->pts, d->getTimeBase(), e->getTimeBase());
-    ret.packet->dts = av_rescale_q(ret.packet->dts, d->getTimeBase(), e->getTimeBase());
+//    ret.packet->pts = av_rescale_q(ret.packet->pts, d->getTimeBase(), e->getTimeBase());
+//    ret.packet->dts = av_rescale_q(ret.packet->dts, d->getTimeBase(), e->getTimeBase());
     ETERM * pac=buildTermFromPacket(ret);
     terms.push_back(pac);
   if (toDebug)

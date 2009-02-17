@@ -13,7 +13,7 @@ init()->
   loop(Port).
 
 loop( Port)->
-  case catch gen_server:call({global,packet_server}, {packetgroup}) of
+  case catch gen_server:call({global,packet_server}, {packetgroup}, 10000) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;
@@ -22,6 +22,9 @@ loop( Port)->
       receive after 5000->loop(Port)end;
     {nodata}->
       io:format("nomorepackets waiting 5 secs~n",[]),
+      receive after 5000->loop(Port)end;
+    {nojob}->
+%      io:format("nojob waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;
     Any->
 %  {Filename, Procid, D, E, Data}->
@@ -44,7 +47,7 @@ loop( Port)->
           exit(normal);
         {'EXIT', Port, Reason2} ->
  %        global:unregister_name(packet_sender),
-          io:format("EncodingClient exited  ~w~n", [Reason2]),
+          io:format("EncodingClient exited  ~w with data ~w ~n", [Reason2, Any]),
           receive after 5000->init()end
 %         exit({normal, Reason2})
           after 10000->

@@ -64,8 +64,8 @@ Packet Encoder::encodeVideo(Frame & frame) {
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
-  logdebug("AudioEncoderFrame");
-  frame.toString();
+//  logdebug("AudioEncoderFrame");
+//  frame.toString();
     const int outbuf_size = 10000;
     char outbuf[outbuf_size];
     int out_size = avcodec_encode_audio(ctx, (uint8_t*) & outbuf, outbuf_size, (short int *) frame._buffer);

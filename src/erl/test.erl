@@ -1,6 +1,6 @@
 -module(test).
 
--export([export/0,dirtyimport/0,import/1,insert/0, read/0, read2/0, read3/0, read4/0, read5/1, create/0, drop/0,sequence/1, load/0, clear/0]).
+-export([grid/0, gridimport/0,export/1,dirtyimport/0,import/1,insert/0, read/0, read2/0, read3/0, read4/0, read5/1, create/0, drop/0,sequence/1, load/0, clear/0]).
 -include("schema.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
@@ -133,11 +133,41 @@ dirtyimport()->
           ok
       end
   end.
-export()->
+  gridimport()->
+      {ok, Pid}=gridfile:open("grid","testfile"),
+
+  case gen_server:call({global,packet_sender}, {packetstream,"/media/TREKSTOR/videos/Der Blutige Pfad Gottes - German (DVD-Quali).avi",-1,-1,100  })of
+    hivetimeout->
+      hivetimeout;
+    Any->
+      %-record(packet,{id,pts, dts,data, data_size}).
+
+      %Result=[mnesia:dirty_write(#packet{
+      %              id=libdb:sequence(packet),
+      %              pts=element(3,X),
+      %              data=element(8,X)})||X<-Any
+      %            ],
+    gridfile:insert(Pid,{Any, {bla,3}})
+  end.
+
+
+export(cursor)->
     F = fun() ->
-          Q = qlc:q([[PU] || PU <- qlc:keysort(5,mnesia:table(process_unit),{order, descending}), element(4,PU)==13]),
+          Q = qlc:q([[PU] || PU <- qlc:keysort(5,mnesia:table(process_unit),{order, descending}), element(4,PU)==27]),
           C = qlc:cursor(Q),
-          qlc:next_answers(C, 3)
+          qlc:next_answers(C, 1)
       end,
   {atomic,E}=mnesia:transaction(F),
+  E;
+export(select)->
+%E=ets:select(process_unit,[{#process_unit{id='$1', sourcestream='_', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'}, [], ['$1']}]),
+
+  P = #process_unit{id='$1', sourcestream='$2', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'},
+  E=mnesia:dirty_select(process_unit,[{P,[],['$2','$1']}]),
   E.
+%ok.
+grid()->
+%  {ok, Pid}=gridfile:new("grid","testfile",[{dimensions, 2}]),
+  {ok, Pid}=gridfile:open("grid","testfile"),
+  gridfile:insert(Pid,{myobject2, {bla,3}}).
+

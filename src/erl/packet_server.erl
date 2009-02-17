@@ -5,7 +5,7 @@
 -include("schema.hrl").
 
 
--export([init/1,handle_call/3,handle_call_2/3,handle_cast/2, code_change/3, terminate/2, start_link/0, get_job/0]).
+-export([init/1,handle_call/3,handle_cast/2, code_change/3, terminate/2, start_link/0, get_job/0]).
 
 start_link()->
   gen_server:start_link({local,?MODULE},?MODULE,[],[]).
@@ -23,39 +23,40 @@ get_job()->
                qlc:next_answers(C, 1)
            end,
 
-%  {atomic,[Job|_]}=mnesia:transaction(JobFun),
+  %  {atomic,[Job|_]}=mnesia:transaction(JobFun),
   case mnesia:transaction(JobFun) of
-%    {atomic,[]}->[];
     {atomic,[Job|_]}->
-  %  io:format("~w~n",[Job]),
-  JobDetailFun = fun() ->
-                     Q = qlc:q([Detail || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid == element(1,Job) ]),
-                     qlc:e(Q)
-                 end,
-  {atomic,JobDetails}=mnesia:transaction(JobDetailFun),
+      %  io:format("~w~n",[Job]),
+      JobDetailFun = fun() ->
+                         Q = qlc:q([Detail || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid == element(1,Job) ]),
+                         qlc:e(Q)
+                     end,
+      {atomic,JobDetails}=mnesia:transaction(JobDetailFun),
 
-  Streams = fun(Id)->
-                DataFun = fun()->
-                              qlc:e(qlc:q([Stream || Stream <- mnesia:table(stream), Stream#stream.id == Id ]))
-                          end,
-                {atomic,[Data|_]}=mnesia:transaction(DataFun),
-                %               io:format("~w~n",[Data]),
-                Data
-            end,
+      Streams = fun(Id)->
+                    DataFun = fun()->
+                                  qlc:e(qlc:q([Stream || Stream <- mnesia:table(stream), Stream#stream.id == Id ]))
+                              end,
+                    {atomic,[Data|_]}=mnesia:transaction(DataFun),
+                    %               io:format("~w~n",[Data]),
+                    Data
+                end,
   
-  Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
-  Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
-  ,
-  {element(2,Job),element(1,Job),element(3,Job),Decoder,Encoder}
+      Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
+      Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
+      ,
+      {element(2,Job),element(1,Job),element(3,Job),Decoder,Encoder};
+     {atomic,[]}->[]
+
   end.
 
 handle_call(Call,From,_N)->
-  io:format("handle_call ~w ~n", [Call]),
+  %  io:format("handle_call ~w ~n", [Call]),
   case get_job() of
     []->{reply, {nojob}, state};
     {Filename, JobId, LastTs, Decoder, Encoder}->
 
-      Data=packet_test:packetstream(Filename,LastTs),
+      Data=packet_stack:packetstream(Filename,LastTs),
       C=length(Data),
       if
         C==0->
@@ -73,7 +74,7 @@ handle_call(Call,From,_N)->
         true->
           DS=[element(7,X)||X<-Data],
           BytesSend=lists:sum(DS),
-          io:format("BytesPacked ~w~n",[BytesSend]),
+          %          io:format("BytesPacked ~w~n",[BytesSend]),
           [FirstPacket|_]=Data,
           %      io:format("Data: ~w",[element(1,FirstPacket)]),
           [D|_]=[X||X<-Decoder,element(4,X)==element(1,FirstPacket)],
@@ -106,40 +107,8 @@ handle_call(Call,From,_N)->
       end
   end.
 
-handle_call_2(Call,From,_N)->
-  io:format("handle_call ~w ~n", [Call]),
-  case get_job() of
-    {Filename, JobId, Decoder, Encoder}->
-      case gen_server:call({global,packet_sender}, {packetgroup,Filename,0,-1,-1  })of
-        hivetimeout->
-          {reply, {hivetimeout}, state};
-        {nomorepackets}->
-          {reply, {nomorepackets}, state};
-        Data ->
-          %                io:format("Data ~w",[Data]),
-          %      io:format("Stream ~w",[element(1,element(1,Data))]),
-          [DS|_]=[element(7,X)||X<-Data],
-          BytesSend=lists:sum(DS),
-          io:format("BytesPacked ~w",[BytesSend]),
-          [D|_]=[X||X<-Decoder,element(4,X)==element(1,element(1,Data))],
-          [E|_]=[X||X<-Encoder,element(4,X)==element(1,element(1,Data))],
-          %      io:format("Data ~w",[Data]),
-          ProcU=#process_unit{
-            id=libdb:sequence(process_unit),
-            sourcestream=D#stream.id,
-            targetstream=D#stream.id,
-            sendtime=now(),
-            sendnode=From,
-            sendsize=BytesSend},
-          mnesia:transaction(fun()->mnesia:write(ProcU)end),
-          {reply, {Filename, JobId, D, E, Data}, state};
-        Any->
-          io:format("~w Any Data ~w",[?MODULE, Any])
-      end
-  end.
-
 handle_cast(Msg,N)->
-  io:format("handle_cast(Msg,N) ~n", []),
+  %  io:format("handle_cast(Msg,N) ~n", []),
   {_,ProcId,Data}=Msg,
   DS=[element(7,X)||X<-Data],
   BytesReceived=lists:sum(DS),
@@ -153,10 +122,23 @@ handle_cast(Msg,N)->
             %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
             mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()})
         end
-    end
-                           ),
+    end),
+    {ok,Pid}=dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+    dets:insert(Pid,Data),
+    dets:close(Pid),
 
-  io:format("BytesReceived ~w ~w~n",[BytesReceived, Result]),
+%      Result=mnesia:transaction(
+%      fun()->
+%          case mnesia:read({job, JobId}) of
+%            []->io:format("Data not found ~n",[]),
+%              mnesia:abort(no_job_found);
+%            [Job|_]->
+              %          io:format("Data found ~w~n",[Unit]),
+              %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
+%              mnesia:write(Job#job{last_ts=element(3,FirstPacket)})
+%          end
+%      end)
+  %  io:format("BytesReceived ~w ~w~n",[BytesReceived, Result]),
   {noreply, N}.
 
 %handle_info(Info,N)->

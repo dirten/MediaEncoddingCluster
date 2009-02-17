@@ -69,7 +69,7 @@ namespace org {
 
       bool Codec::findCodec(int mode) {
         bool result = true;
-        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
+//        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
         if (mode == DECODER) {
           _codec = avcodec_find_decoder((CodecID) _codec_id);
           if (_codec == NULL) {
@@ -130,7 +130,7 @@ namespace org {
               logerror("while openning Codec" << _codec_id);
 
             } else {
-              logdebug("Codec opened:" << _codec_id);
+//              logdebug("Codec opened:" << _codec_id);
               _opened = true;
             }
           } catch (...) {
@@ -154,7 +154,7 @@ namespace org {
           av_freep(&ctx->stats_in);
           avcodec_close(ctx);
           av_free(ctx);
-          logdebug("Codec closed:" << _codec_id);
+//          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << _codec_id);
         }

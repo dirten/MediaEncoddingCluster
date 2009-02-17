@@ -23,7 +23,7 @@ int main(int argc, char ** argv){
       AVFormatContext * f=fis.getFormatContext();
       
       cout << endl;
-      cout <<"<File Information>"<<endl;
+      cout <<"<File Information><TIME_BASE>"<<AV_TIME_BASE<<endl;
 //      cout <<"-----------------"<<endl;
       cout << "#streams\tformatname\ttimestamp\tstart\tduration\tfilename"<<endl;
       cout << "---------------------------------------------------------------------------------"<<endl;
