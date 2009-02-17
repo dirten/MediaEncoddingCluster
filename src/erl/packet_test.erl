@@ -1,7 +1,7 @@
--module(packet_test).
+-module(packet_stack).
 
 
--export([packetstream/2, mysum/1]).
+-export([packetstream/2]).
 
 
 packetstream(Filename, Offset)->
@@ -34,15 +34,18 @@ packetstream(Filename, Offset)->
   %      io:format("~w",[VideoData])
   %  if length(get(streamdata)) > 0 ->
     Count=length(process(get(streamdata),1)),
+%    io:format("Videoooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),0))]),
+%    io:format("Audioooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),1))]),
+%    io:format("ALLLoooooooooooooooo Packet Count ~w~n",[length(get(streamdata))]),
   if Count> 300->
       Data=process(get(streamdata),1),
       put(streamdata,get(streamdata)--Data),
-      io:format("Audioooooooooooooooo Packet",[]),
+%      io:format("Audioooooooooooooooo Packet",[]),
       Data;
 %      packet_group(Data,1);
     true->
       Data=process(get(streamdata),0),
-      io:format("Videooooooooooooooooo Packet",[]),
+%      io:format("Videooooooooooooooooo PacketGroup ~w",[length(Data)]),
       packet_group(Data,0)
   end.
 
@@ -57,14 +60,17 @@ process(List, Stream)->
 packet_group([],_C)->[];
 packet_group(Data, _C)->
   % io:format("~w~n~n~n",[H]),
-  [PG|_]=[[X||X<-Data,filter(X)]],
+  PG=[X||X<-Data,filter(X)],
   put(counter,0),
   put(state,keyframeend),
   Result=Data--PG,
-  put(streamdata,Result),
+  put(streamdata,get(streamdata)--PG),
   %  put(counter,0),
-  [[A1,A2,A3|_]|_]=[[X||X<-Result, element(1,X)==0]],
-  lists:flatten([PG, A1, A2, A3]).
+  if length(Result)> 0->
+  [[A1,A2,A3|_]|_]=[[X||X<-Result]],
+  lists:flatten([PG, A1, A2, A3]);
+ true->lists:flatten([PG])
+  end.
 %  PG.
 
 
@@ -93,20 +99,3 @@ filter(El)->
     %    C>11->false;
     true->false
   end.
-%  false.
-%[Data|_]=[[lists:nth(element(1,X)+1,Acc)||X<-PacketList]],
-%  Data.
-%process()
-getunique([], _Acc)->
-  [];
-getunique([H|T], _Acc)->
-  %  Acc:set(element(1,H), H),
-  %  [Acc:get(element(1,H))]++getunique(T).
-  [element(1,H)]++getunique(T).
-
-getunique(Data)->
-  getunique(Data, array:new(10)).
-
-mysum([])->0;
-mysum([H|T])->H+mysum(T).
-
