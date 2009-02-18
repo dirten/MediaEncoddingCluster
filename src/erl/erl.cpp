@@ -16,6 +16,8 @@
 #else
 #include <unistd.h>
 #endif
+#include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
 
 typedef unsigned char byte;
 
@@ -106,8 +108,10 @@ ETERM * buildTermFromPacket(Packet & p){
     std::vector<ETERM *> terms;
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
-    terms.push_back(erl_mk_atom(Decimal(p.getPts()).toString().c_str()));
-    terms.push_back(erl_mk_atom(Decimal(p.getDts()).toString().c_str()));
+    terms.push_back(erl_mk_string(Decimal(p.getPts()).toString().c_str()));
+    terms.push_back(erl_mk_string(Decimal(p.getDts()).toString().c_str()));
+//    terms.push_back(erl_mk_binary((const char *)p.getPts(),8));
+//    terms.push_back(erl_mk_binary((const char*)p.getDts(),8));
     terms.push_back(erl_mk_int(p.getFlags()));
     terms.push_back(erl_mk_int(p.getDuration()));
     terms.push_back(erl_mk_int(p.getSize()));
@@ -127,12 +131,79 @@ Packet * buildPacketFromTerm(ETERM * in){
   p->packet->stream_index = ERL_INT_UVALUE(streamidx);
   sscanf((const char *)ERL_ATOM_PTR(pts),"%llu",&p->packet->pts);
   sscanf((const char *)ERL_ATOM_PTR(dts),"%llu",&p->packet->dts);
+//  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
+//  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
   p->packet->flags = ERL_INT_VALUE(flags);
   p->packet->duration = ERL_INT_UVALUE(duration);
   memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
   return p;
 }
 
+Decoder * buildDecoderFromTerm(ETERM* in) {
+  ETERM * codecid = erl_element(6, in);
+  ETERM * bitrate = erl_element(8, in);
+  ETERM * rate = erl_element(9, in);
+  ETERM * num = erl_element(10, in);
+  ETERM * den = erl_element(11, in);
+  ETERM * width = erl_element(12, in);
+  ETERM * height = erl_element(13, in);
+  ETERM * channels = erl_element(14, in);
+  ETERM * gop = erl_element(15, in);
+  ETERM * fmt = erl_element(16, in);
 
+  Decoder * d = new Decoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  d->findCodec(Codec::DECODER);
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  //	d->setPixelFormat((PixelFormat)0);
+  d->setHeight(ERL_INT_UVALUE(height));
+  d->setWidth(ERL_INT_UVALUE(width));
+  AVRational r;
+  r.num = ERL_INT_UVALUE(num);
+  r.den = ERL_INT_UVALUE(den);
+  d->setTimeBase(r);
+//  d->_time_base.num=ERL_INT_UVALUE(num);
+//  d->_time_base.den=ERL_INT_UVALUE(den);
+  d->setGopSize(ERL_INT_UVALUE(gop));
+  d->setBitRate(ERL_INT_UVALUE(bitrate));
+  d->setChannels(ERL_INT_UVALUE(channels));
+  d->setSampleRate(d->_codec->type == CODEC_TYPE_AUDIO ? ERL_INT_UVALUE(rate) : 0);
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (1));
+  d->open();
+
+  return d;
+}
+
+Encoder * buildEncoderFromTerm(ETERM * in){
+  ETERM * codecid = erl_element(6, in);
+  ETERM * bitrate = erl_element(8, in);
+  ETERM * rate = erl_element(9, in);
+  ETERM * num = erl_element(10, in);
+  ETERM * den = erl_element(11, in);
+  ETERM * width = erl_element(12, in);
+  ETERM * height = erl_element(13, in);
+  ETERM * channels = erl_element(14, in);
+  ETERM * gop = erl_element(15, in);
+  ETERM * fmt = erl_element(16, in);
+
+  Encoder * d = new Encoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  d->findCodec(Codec::ENCODER);
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  d->setHeight(ERL_INT_UVALUE(height));
+  d->setWidth(ERL_INT_UVALUE(width));
+  AVRational r;
+  r.num = ERL_INT_UVALUE(num);
+  r.den = ERL_INT_UVALUE(den);
+  d->setTimeBase(r);
+//  d->_time_base.num=ERL_INT_UVALUE(num);
+//  d->_time_base.den=ERL_INT_UVALUE(den);
+//  d->setFlag(0);
+  d->setGopSize(ERL_INT_UVALUE(gop));
+  d->setBitRate(ERL_INT_UVALUE(bitrate));
+  d->setChannels(ERL_INT_UVALUE(channels));
+  d->setSampleRate(ERL_INT_UVALUE(rate));
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
+  d->open();
+  return d;
+}
 #endif
 

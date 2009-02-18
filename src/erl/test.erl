@@ -100,11 +100,11 @@ import(Count)->
             ]
         end),
       io:format("Data Write ~w",[Result]),
-     NewCount= if Count > 10 ->
-          mnesia:dump_log(),
-          0;
-        true->Count+1
-      end,
+      NewCount= if Count > 10 ->
+                    mnesia:dump_log(),
+                    0;
+                  true->Count+1
+                end,
       case Result of
         {atomic,[]}->ok;
         _->
@@ -133,8 +133,8 @@ dirtyimport()->
           ok
       end
   end.
-  gridimport()->
-      {ok, Pid}=gridfile:open("grid","testfile"),
+gridimport()->
+  {ok, Pid}=gridfile:open("grid","testfile"),
 
   case gen_server:call({global,packet_sender}, {packetstream,"/media/TREKSTOR/videos/Der Blutige Pfad Gottes - German (DVD-Quali).avi",-1,-1,100  })of
     hivetimeout->
@@ -147,27 +147,70 @@ dirtyimport()->
       %              pts=element(3,X),
       %              data=element(8,X)})||X<-Any
       %            ],
-    gridfile:insert(Pid,{Any, {bla,3}})
+      gridfile:insert(Pid,{Any, {bla,3}})
   end.
 
 
 export(cursor)->
-    F = fun() ->
-          Q = qlc:q([[PU] || PU <- qlc:keysort(5,mnesia:table(process_unit),{order, descending}), element(4,PU)==27]),
+  F = fun() ->
+          Q = qlc:q([[PU] || PU <- qlc:keysort(5,mnesia:table(process_unit),{order, descending}), element(4,PU)==45]),
           C = qlc:cursor(Q),
           qlc:next_answers(C, 1)
       end,
   {atomic,E}=mnesia:transaction(F),
   E;
+export(job)->
+  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time>undefined, F#file.id==PU#job.outfile,F#file.id==4]))end),
+  T=[X||X<-E,not filelib:is_regular(X)],
+  F2=[X||X<-T,filelib:ensure_dir(element(2,X))==ok],
+  Fun2=fun(JobId)->
+    DataFun=fun()->
+    qlc:e(
+      qlc:q(
+        [Detail#jobdetail.outstream || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid==JobId]
+        )
+      )
+    end
+  end,
+  Bla=[element(2,mnesia:transaction(Fun2(element(1,D))))|| D<-F2],
+%  {atomic,E2}=mnesia:transaction(Fun2(2)),
+  Fun=fun(StreamId)->
+    DataFun=fun()->
+    qlc:e(
+      qlc:q(
+        [P || P <- mnesia:table(process_unit), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
+        )
+      )
+    end
+  end,
+ Result=lists:flatten([[element(2,mnesia:transaction(Fun(T)))||T<-D] ||D<-Bla]),
+
+  FileWriter = fun(FileId, MergePid)->
+    case file:read_file(filename:join(["tmp", integer_to_list(FileId)])) of
+      {ok,Data}->
+        file:write(MergePid, Data);
+%        binary_to_term(Data);
+      {error,enoent}->
+        nodata
+      end
+    end,
+%    B=[element(2,X)||X<-Result],
+    {ok,Pid}=file:open("Merge.data", write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+ %   io:write(Pid, Data),
+
+    B=[FileWriter(element(2,X), Pid)||X<-Result],
+    file:close(Pid),
+% {atomic,E3}=mnesia:transaction(Fun(13)),
+  B;
 export(select)->
-%E=ets:select(process_unit,[{#process_unit{id='$1', sourcestream='_', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'}, [], ['$1']}]),
+  %E=ets:select(process_unit,[{#process_unit{id='$1', sourcestream='_', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'}, [], ['$1']}]),
 
   P = #process_unit{id='$1', sourcestream='$2', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'},
   E=mnesia:dirty_select(process_unit,[{P,[],['$2','$1']}]),
   E.
 %ok.
 grid()->
-%  {ok, Pid}=gridfile:new("grid","testfile",[{dimensions, 2}]),
+  %  {ok, Pid}=gridfile:new("grid","testfile",[{dimensions, 2}]),
   {ok, Pid}=gridfile:open("grid","testfile"),
   gridfile:insert(Pid,{myobject2, {bla,3}}).
 

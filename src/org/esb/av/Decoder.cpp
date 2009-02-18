@@ -118,7 +118,6 @@ Frame Decoder::decodeVideo(Packet & packet) {
          */
 //        cout << endl;
 
-        return Frame();
     }
 
     logdebug( "\tPacketFrameType:");
@@ -152,6 +151,9 @@ Frame Decoder::decodeVideo(Packet & packet) {
 
 //    cout << endl;
 #endif
+    if (!_frameFinished) {
+        return Frame();
+    }
 
     frame._pixFormat = _pix_fmt;
     frame.stream_index = packet.packet->stream_index;

@@ -32,6 +32,12 @@ init([])->
   permanent,
   10,
   worker,
-  [packet_server]}
+  [packet_server]},
+  {file_export,
+    {file_export,start_link,[]},
+  permanent,
+  10,
+  worker,
+  [file_export]}
 ]}}.
 

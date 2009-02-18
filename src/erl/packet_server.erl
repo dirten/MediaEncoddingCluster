@@ -8,11 +8,11 @@
 -export([init/1,handle_call/3,handle_cast/2, code_change/3, terminate/2, start_link/0, get_job/0]).
 
 start_link()->
-  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
+  gen_server:start_link({global,?MODULE},?MODULE,[],[]).
 
 init([])->
   process_flag(trap_exit, true),
-  global:register_name(?MODULE, self()),
+%  global:register_name(?MODULE, self()),
   io:format("~s started~n", [?MODULE]),
   {ok, running}.
 
@@ -111,7 +111,10 @@ handle_cast(Msg,N)->
   %  io:format("handle_cast(Msg,N) ~n", []),
   {_,ProcId,Data}=Msg,
   DS=[element(7,X)||X<-Data],
-  BytesReceived=lists:sum(DS),
+  BinLen=[length(binary_to_list(element(8,X)))||X<-Data],
+% io:format("~w:~w",[DS,BinLen]),
+BytesReceived=lists:sum(DS),
+ % io:format("-~w:~w:~w:~w-",[DS,BinLen,BytesReceived, lists:sum(BinLen)]),
   Result=mnesia:transaction(
     fun()->
         case mnesia:read({process_unit, ProcId}) of
@@ -119,14 +122,15 @@ handle_cast(Msg,N)->
             mnesia:abort(no_process_unit_found);
           [Unit|_]->
             %          io:format("Data found ~w~n",[Unit]),
-            %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
+%            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
             mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()})
         end
     end),
-    {ok,Pid}=dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
-    dets:insert(Pid,Data),
-    dets:close(Pid),
 
+    {ok,Pid}=file:open(filename:join(["tmp", integer_to_list(ProcId)]), write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+ %   io:write(Pid, Data),
+    file:write(Pid, term_to_binary(Data)),
+    file:close(Pid),
 %      Result=mnesia:transaction(
 %      fun()->
 %          case mnesia:read({job, JobId}) of

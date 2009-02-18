@@ -33,6 +33,7 @@ ETERM * streaminfo(ETERM * v) {
     if (!fis->isValid() || s < 0 || s >= fis->getFormatContext()->nb_streams) {
       terms.push_back(erl_mk_atom("streamnotfound"));
     } else {
+
       AVStream *str = fis->getFormatContext()->streams[s];
       terms.push_back(erl_mk_int(0));
       terms.push_back(erl_mk_int(str->index));
@@ -232,8 +233,12 @@ int main(int argc, char** argv) {
       if (outtuple != NULL) {
         //        logdebug("Build Output");
         //        std::cerr<<"InTermSize:"<<erl_size(outtuple)<<std::endl;
+        int size=erl_term_len(outtuple);
+        if(size>5000000){
+          logerror("OutTuple to big(max 5000000b):"<<size);
+        }
         erl_encode(outtuple, buf);
-        write_cmd(buf, erl_term_len(outtuple));
+        write_cmd(buf, size);
         erl_free_compound(outtuple);
         outtuple = NULL;
       }

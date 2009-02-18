@@ -55,7 +55,7 @@ packetstream(Filename, Offset)->
 
 process([], _Stream)->[];
 process(List, Stream)->
-  {Data,_}=lists:partition(fun(A) -> is_tuple(A),element(1,A)==Stream end, List),
+  {Data,_}=lists:partition(fun(A) -> element(1,A)==Stream end, List),
   Data.
 packet_group([],_C)->[];
 packet_group(Data, _C)->
@@ -66,7 +66,7 @@ packet_group(Data, _C)->
   Result=Data--PG,
   put(streamdata,get(streamdata)--PG),
   %  put(counter,0),
-  if length(Result)> 0->
+  if length(Result)> 2->
       [[A1,A2,A3|_]|_]=[[X||X<-Result]],
       lists:flatten([PG, A1, A2, A3]);
     true->lists:flatten([PG])

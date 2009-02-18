@@ -50,10 +50,12 @@ FIND_LIBRARY(AVFORMAT_LIB
 
 add_executable (erltest erltest.cpp)
 add_executable (erlclient erlclient.cpp)
+add_executable (mhivewriter mhivewriter.cpp)
 
 
-target_link_libraries (erltest z av hive util io avformat avcodec avutil )
+target_link_libraries (erltest z av hive util io lang avformat avcodec avutil )
 target_link_libraries (erlclient z esb sql av lang util io hive avcodec avformat avutil swscale )
+target_link_libraries (mhivewriter z esb sql av lang util io hive avcodec avformat avutil swscale )
 #target_link_libraries (erltest z esb sql av lang util io hive avcodec avformat avutil swscale )
 IF(WIN32)
 #target_link_libraries (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 erl_interface ei)
@@ -63,6 +65,7 @@ target_link_libraries (erlclient z faac faad gsm mp3lame ogg theora vorbis vorbi
 ELSE(WIN32)
 target_link_libraries (erltest x264  erl_interface_st ei_st pthread)
 target_link_libraries (erlclient x264  erl_interface_st ei_st  pthread)
+target_link_libraries (mhivewriter x264  erl_interface_st ei_st  pthread)
 ENDIF(WIN32)
 
 target_link_libraries (erltest
@@ -75,7 +78,10 @@ target_link_libraries (erltest
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )
-
+target_link_libraries (mhivewriter
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_FS_LIB_MT}
+)
 
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)

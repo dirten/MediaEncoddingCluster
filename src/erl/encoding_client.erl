@@ -13,7 +13,7 @@ init()->
   loop(Port).
 
 loop( Port)->
-  case catch gen_server:call({global,packet_server}, {packetgroup}, 10000) of
+  case catch gen_server:call({global,packet_server}, {packetgroup}) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;
@@ -33,7 +33,7 @@ loop( Port)->
 %      Data=erlang:port_info(Port),
 %      io:format("~w",[Data]),
       receive
-        {Fileport, {data, Data}} ->
+        {_Fileport, {data, Data}} ->
           D=binary_to_term(Data),
         {_, Procid, _, _, _}=Any,
         gen_server:cast({global,packet_server}, {encoded,Procid,D}),
