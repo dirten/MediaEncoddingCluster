@@ -228,6 +228,7 @@ ETERM * encode(ETERM* in) {
 int i=0;
 int main() {
 //  recur();
+
 #ifdef WIN32
   /* Attention Windows programmers: you need to explicitly set
    * mode of stdin/stdout to binary or else the port program won't work

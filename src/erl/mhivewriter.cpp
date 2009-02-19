@@ -15,25 +15,30 @@ ETERM * createfile(ETERM* in) {
 
 ETERM * initfile(ETERM* in) {
   pos->init();
+  return in;
 }
 
 ETERM * closefile(ETERM* in) {
   pos->close();
   fos->close();
+  return in;
 }
 
 ETERM * addstream(ETERM * in) {
   ETERM *streamidx = erl_element(3, in);
   Decoder * d = buildDecoderFromTerm(erl_element(2, in));
   pos->setEncoder(*d, ERL_INT_UVALUE(streamidx));
+  return in;
 }
 
 ETERM * writepacket(ETERM * in) {
   Packet * p=buildPacketFromTerm(in);
   pos->writePacket(*p);
+  return in;
 }
 
 ETERM * writepacketlist(ETERM * in) {
+  return in;
 
 }
 

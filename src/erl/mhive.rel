@@ -2,6 +2,7 @@
 {release,
  {"MHIVE", "FIRST"},
  {erts, "5.6.5"},
- [{kernel, "2.12.1"},
-  {stdlib, "1.15.1"},
-  {sasl, "2.1.5.2"}]}.
+ [{kernel, "2.12.5"},
+  {stdlib, "1.15.5"},
+  {sasl, "2.1.5.4"},
+  {mhive, "0.0.1"}]}.
