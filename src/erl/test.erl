@@ -178,30 +178,41 @@ export(job)->
     DataFun=fun()->
     qlc:e(
       qlc:q(
-        [P || P <- mnesia:table(process_unit), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
+        [P || P <- qlc:keysort(5,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
         )
       )
     end
   end,
  Result=lists:flatten([[element(2,mnesia:transaction(Fun(T)))||T<-D] ||D<-Bla]),
 
-  FileWriter = fun(FileId, MergePid)->
+  FileWriter = fun(FileId, FilePort)->
     case file:read_file(filename:join(["tmp", integer_to_list(FileId)])) of
       {ok,Data}->
-        file:write(MergePid, Data);
+        FilePort ! {self(), {command, term_to_binary({writepacket,binary_to_term(Data)})}},
+      ok;
+%        file:write(MergePid, Data);
 %        binary_to_term(Data);
       {error,enoent}->
         nodata
       end
     end,
 %    B=[element(2,X)||X<-Result],
-    {ok,Pid}=file:open("Merge.data", write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+    Port = open_port({spawn, "/home/jhoelscher/MediaEncodingCluster/build/src/erl/mhivewriter"}, [{packet, 4}, binary]),
+    Port ! {self(), {command, term_to_binary({createfile,'test.avi'})}},
+  {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==4]))end),
+  Re=[Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
+    Port ! {self(), {command, term_to_binary({initfile})}},
+
+%    {ok,Pid}=file:open("Merge.data", write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
  %   io:write(Pid, Data),
 
-    B=[FileWriter(element(2,X), Pid)||X<-Result],
-    file:close(Pid),
+    B=[FileWriter(element(2,X), Port)||X<-Result],
+    Port ! {self(), {command, term_to_binary({closefile})}},
+    Port ! {self(), close},
+
+%    file:close(Pid),
 % {atomic,E3}=mnesia:transaction(Fun(13)),
-  B;
+  Re;
 export(select)->
   %E=ets:select(process_unit,[{#process_unit{id='$1', sourcestream='_', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'}, [], ['$1']}]),
 

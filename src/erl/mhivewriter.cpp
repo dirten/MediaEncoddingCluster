@@ -8,38 +8,57 @@ org::esb::av::FormatOutputStream *fos = NULL;
 ETERM * createfile(ETERM* in) {
   ETERM *file = erl_element(2, in);
   org::esb::io::File fout((const char*) ERL_ATOM_PTR(file));
+  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
   fos = new org::esb::av::FormatOutputStream(&fout);
   pos = new org::esb::av::PacketOutputStream(fos);
-  return in;
+  return erl_mk_string("ok");
 }
 
 ETERM * initfile(ETERM* in) {
   pos->init();
-  return in;
+  return erl_mk_string("ok");
 }
 
 ETERM * closefile(ETERM* in) {
   pos->close();
   fos->close();
-  return in;
+  return erl_mk_string("ok");
 }
 
 ETERM * addstream(ETERM * in) {
   ETERM *streamidx = erl_element(3, in);
   Decoder * d = buildDecoderFromTerm(erl_element(2, in));
   pos->setEncoder(*d, ERL_INT_UVALUE(streamidx));
-  return in;
+  return erl_mk_string("ok");
 }
 
 ETERM * writepacket(ETERM * in) {
+  logdebug("WritePacket");
   Packet * p=buildPacketFromTerm(in);
+  p->packet->pts=0;
+  p->packet->dts=0;
   pos->writePacket(*p);
-  return in;
+  delete p;
+  return erl_mk_string("ok");
 }
 
 ETERM * writepacketlist(ETERM * in) {
-  return in;
+  ETERM * packet_list = erl_element(2, in);
+  ETERM * tail=packet_list;
+  int pc = erl_length(packet_list);
+  logdebug("WritePacketList");
 
+  for(int a = 0;a<pc;a++){
+//  logdebug("WritePacket");
+    ETERM * head=erl_hd(tail);
+//    Packet *p = buildPacketFromTerm(head);
+    writepacket(head);
+    erl_free_compound(head);
+    tail=erl_tl(tail);
+  }
+
+
+  return erl_mk_string("ok");
 }
 
 int main() {
