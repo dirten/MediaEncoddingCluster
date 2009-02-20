@@ -11,10 +11,12 @@ start(_Type, StartArgs)->
   mnesia:start(),
   libdb:create(),
 %  mnesia:create_table(files,[{disc_copies, [node()]},{attributes, record_info(fields, file)}]),
+  nitrogen:start(),
   file_scanner_sup:start_link(StartArgs).
 %  mhive_supervisor:start_link(StartArgs).
 
 stop(_State)->
+  nitrogen:stop(),
 %  application:stop(mnesia),
 %  mnesia:stop(),
   ok.

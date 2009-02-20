@@ -17,11 +17,12 @@ stop()->
   gen_server:call(?MODULE, stop).
 
 init([])->
+
   io:format("~w start up~n", [?MODULE]),
   process_flag(trap_exit, true),
   Pid=spawn_link(?MODULE,loop,[]),
   %  link(Pid),
-  register(loop, Pid),
+  register(file_scanner_loop, Pid),
   io:format("~w started~n", [?MODULE]),
   {ok, state}.
 
@@ -70,7 +71,7 @@ create_job(Fileid,Profileid,OutPath)->
   [Profile|_T]=ProfileList,
   [File|_T]=FileList,
   %  NewFile=#file{id=test:sequence(file), path=OutPath, streamcount=2},
-  NewFile=#file{id=test:sequence(file),filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."), path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]), streamcount=2},
+  NewFile=#file{id=libdb:sequence(file),filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."), path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]), streamcount=2},
   mnesia:write(NewFile),
 
   SortedStreams=lists:keysort(4, Streams),
@@ -80,7 +81,7 @@ create_job(Fileid,Profileid,OutPath)->
   %-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
   %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
   NewVideoStream=#stream{
-    id=test:sequence(stream),
+    id=libdb:sequence(stream),
     fileid=NewFile#file.id,
     streamidx=VS#stream.streamidx,
     codec=Profile#profile.vcodec,
@@ -93,7 +94,7 @@ create_job(Fileid,Profileid,OutPath)->
     gop=20,
     format=0},
   NewAudioStream=#stream{
-    id=test:sequence(stream),
+    id=libdb:sequence(stream),
     fileid=NewFile#file.id,
     streamidx=AS#stream.streamidx,
     codec=Profile#profile.acodec,
@@ -109,10 +110,10 @@ create_job(Fileid,Profileid,OutPath)->
   mnesia:write(NewVideoStream),
   mnesia:write(NewAudioStream),
 
-  Job=#job{id=test:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts='-1'},
+  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts='-1'},
   mnesia:write(Job),
-  JobVideoDetail=#jobdetail{id=test:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
-  JobAudioDetail=#jobdetail{id=test:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
+  JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
+  JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
   mnesia:write(JobVideoDetail),
   mnesia:write(JobAudioDetail),
   
@@ -124,7 +125,7 @@ save_stream_info(FileName,SID, FileId)->
 %    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
 %   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
     {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format} ->
-      Stream = #stream{id=test:sequence(stream),fileid=FileId,streamidx=Index,streamtype=SType,codec=Codec,bitrate=BitRate,rate=Rate,num=TbNum, den=TbDen, width=Width, height=Height,channels=Channels,gop=Gop,format=Format},
+      Stream = #stream{id=libdb:sequence(stream),fileid=FileId,streamidx=Index,streamtype=SType,codec=Codec,bitrate=BitRate,rate=Rate,num=TbNum, den=TbDen, width=Width, height=Height,channels=Channels,gop=Gop,format=Format},
       io:format("Stream info ~w~n",[Stream]),
       mnesia:write(Stream),
 %      case mnesia:write(Stream) of
@@ -151,7 +152,7 @@ process_file_list([H|T],Profile, OutPath)->
             fun()->
                 case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
                   {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate}  ->
-                    File = #file{id=test:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate},
+                    File = #file{id=libdb:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate},
                     mnesia:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
                     save_stream_info(X,0,File#file.id),
@@ -208,7 +209,7 @@ handle_cast(_Msg,N)->
 %  {noreply, N}.
 
 terminate(Reason,_N)->
-  loop ! stop,
+  file_scanner_loop ! stop,
   io:format("~w shutdown ~w~n", [?MODULE, Reason]),
   ok.
 

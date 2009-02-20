@@ -92,7 +92,7 @@ create(RelFileName) ->
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
-%    remove_dir_tree("tmp"),
+    remove_dir_tree("tmp"),
     ok.
 
 

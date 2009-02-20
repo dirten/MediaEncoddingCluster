@@ -57,7 +57,7 @@ handle_info(Info,N)->
       io:format("Port exited  ~w~n", [Reason2]),
       exit({normal, Reason2});
      _->
-         io:format("handle_info(,N)~n", [])
+         io:format("handle_info(,N)~w~n", [Info])
 
    end,
   {noreply, N}.
