@@ -15,6 +15,8 @@
 //#include "org/esb/hive/job/ProcessUnit.h"
 //#include "org/esb/util/Queue.h"
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
+
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org{

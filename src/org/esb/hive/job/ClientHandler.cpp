@@ -19,7 +19,7 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/list.hpp>
-#include <boost/serialization/is_abstract.hpp>
+//#include <boost/serialization/is_abstract.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 using namespace std;
 using namespace org::esb::hive::job;

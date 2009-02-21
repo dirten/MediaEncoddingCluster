@@ -40,7 +40,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 #add_executable (test_tcpsocket test_tcpsocket.cpp)
 add_executable (test test.cpp)
-add_executable (testq test_queue.cpp)
+add_executable (testq test.cpp)
 #target_link_libraries (test_tcpsocket lang esb sql hive av signal web io net util avcodec avformat avutil swscale wt wtext wthttp
 #${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
 
@@ -59,7 +59,7 @@ target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc 
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wtd wtextd wthttpd )
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wt wtext wthttp )
 ELSE(WIN32)
-target_link_libraries (testav x264 ${MYSQL_LIB} crypt ssl wthttp wtext wt pthread)
+target_link_libraries (testav x264 ${MYSQL_LIB} ssl wthttp wtext wt pthread)
 ENDIF(WIN32)
 
 #target_link_libraries (test  pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
@@ -69,10 +69,10 @@ add_executable (test_mysql test_mysql.cpp)
 add_executable (info info.cpp)
 add_executable (test test.cpp)
 
-target_link_libraries (test_sql sql esb util lang mysqlclient crypt ssl pthread ${BOOST_DT_LIB_MT})
-target_link_libraries (info mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
+target_link_libraries (test_sql sql esb util lang mysqlclient  ssl pthread ${BOOST_DT_LIB_MT})
+target_link_libraries (info bz2 mysqlclient pthread esb web sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
 target_link_libraries (test mysqlclient pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
-target_link_libraries (test_mysql pthread mysqlclient crypt ssl z) 
+target_link_libraries (test_mysql pthread mysqlclient  ssl z) 
 ENDIF(NOT WIN32)
 
 #target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 z pthread)

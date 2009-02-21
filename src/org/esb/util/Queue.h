@@ -4,6 +4,7 @@
 #include <deque>
 #include "QueueListener.h"
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
 #include "Log.h"
 namespace org {
   namespace esb {
