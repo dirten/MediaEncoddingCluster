@@ -94,5 +94,5 @@ INSTALL(TARGETS erltest
 
 file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
 MESSAGE("** ERLANG SOURCES: " ${ERLANG_SRC_FILES})
-add_custom_target(erlang ALL erlc ${ERLANG_SRC_FILES}
+add_custom_target(erlang ALL ${ERLANG_DIR}/bin/erlc ${ERLANG_SRC_FILES}
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
