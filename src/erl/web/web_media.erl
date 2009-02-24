@@ -51,7 +51,8 @@ body() ->
 %				#tablecell {body=#hr{}, colspan=4}
 %			]},
 			#bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
-				#tablecell { id=titleLabel },
+%				#tablecell { body=#link {body=#label{id=titleLabel}, id=myButton }},
+				#tablecell { id=titleLabel},
 				#tablecell { id=authorLabel },
 				#tablecell { id=descriptionLabel },
 				#tablecell { body=#button { id=myButton, text="Details" } }
@@ -59,9 +60,9 @@ body() ->
 		]}
 	],
 	wf:render(Column2).
-%  #rounded_panel { color=gray, body=[
+%  #rounded_panel { color=black, body=[
 %	#h3 { text="Title" },
-%	wf:render(Column2)
+%	Column2
 %]}.
 
 
@@ -72,14 +73,15 @@ body() ->
 event({data, Data}) ->
 	Message = "Clicked On Data: " ++ wf:to_list(Data),
 wf:wire(#alert { text=Message });
-event(_) ->
-  io:format("Message:leer",[]),
+event(Data) ->
+  io:format("Message:~w",[Data]),
 ok.
 
 
 %%% ALTERNATE BACKGROUND COLORS %%%
 alternate_color(DataRow, Acc) when Acc == []; Acc==odd ->
-	{DataRow, even, {top@style, "background-color: #eee;"}};
+%  io:format("DataRow:~s",[DataRow]),
+	{DataRow, even, [{top@style, "background-color: #eee;"}]};
 
 alternate_color(DataRow, Acc) when Acc == even ->
 	{DataRow, odd, {top@style, "background-color: #ddd;"}}.
