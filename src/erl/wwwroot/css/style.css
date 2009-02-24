@@ -14,7 +14,7 @@ a:hover { color: #E35; text-decoration: underline; }
 /*** CONTENT/LEFT/MIDDLE/RIGHT ***/
 
 .leftcolumn, .rightcolumn { width: 18%; }
-.middlecolumn { width: 50%; }
+.middlecolumn { width: 90%; }
 .leftcolumn, .middlecolumn, .rightcolumn { float: left; padding: 0% 2%; } 
 .leftcolumn { text-align: right; }
 .rightcolumn { text-align: left; border-left: solid 1px #DDD; }
@@ -51,10 +51,11 @@ a:hover { color: #E35; text-decoration: underline; }
 
 .topmenu2 { 
 	background: #DDD;
-	padding-top: 15px;
+  text-align:right;
+/*	padding-top: 10px;*/
 	width: 100%; 
 	overflow: hidden;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 .topmenu2 ul { float: left; width: 2000px; margin-left: 25%; }
@@ -69,7 +70,7 @@ a:hover { color: #E35; text-decoration: underline; }
 	text-transform: uppercase;
 }
 
-.topmenu2 ul:hover li a { color: #777; }
+/*.topmenu2 ul:hover li a { color: #777; }*/
 .topmenu2 ul li a.selected {
 	color: #E35;
 	background-color: #FFF;

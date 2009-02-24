@@ -2,7 +2,6 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Frame.h"
-//#include "org/esb/lang/Thread.h"
 #include "org/esb/av/FrameFormat.h"
 #include "org/esb/av/FrameConverter.h"
 #include <string>
@@ -11,42 +10,6 @@
 //#include <stdio.h>
 using namespace org::esb::av;
 
-Packet * create_packet(ETERM* in) {
-  ETERM * streamidx = erl_element(1, in);
-//  ETERM * isKey = erl_element(2, in);
-  ETERM * pts = erl_element(3, in);
-  ETERM * dts = erl_element(4, in);
-  ETERM * flags = erl_element(5, in);
-  ETERM * duration = erl_element(6, in);
-  ETERM * size = erl_element(7, in);
-  ETERM * data = erl_element(8, in);
-  Packet * p = new Packet(ERL_INT_UVALUE(size));
-  p->packet->stream_index = ERL_INT_UVALUE(streamidx);
-  sscanf((const char *)ERL_ATOM_PTR(pts),"%llu",&p->packet->pts);
-  sscanf((const char *)ERL_ATOM_PTR(dts),"%llu",&p->packet->dts);
-//  p->packet->dts = ERL_INT_UVALUE(dts);
-  p->packet->flags = ERL_INT_VALUE(flags);
-  p->packet->duration = ERL_INT_UVALUE(duration);
-  memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
-  return p;
-}
-
-/*
-    ar & _codec_id;
-    ar & _mode;
-    ar & _flags;
-    ar & _pix_fmt;
-    ar & _width;
-    ar & _height;
-    ar & _time_base.num;
-    ar & _time_base.den;
-    ar & _gop_size;
-    ar & _bit_rate;
-    ar & _channels;
-    ar & _sample_rate;
-    ar & _sample_format;
-
- */
 Decoder * create_decoder(ETERM* in) {
   ETERM * codecid = erl_element(6, in);
   ETERM * bitrate = erl_element(8, in);
@@ -69,8 +32,6 @@ Decoder * create_decoder(ETERM* in) {
   r.num = ERL_INT_UVALUE(num);
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
-//  d->_time_base.num=ERL_INT_UVALUE(num);
-//  d->_time_base.den=ERL_INT_UVALUE(den);
   d->setGopSize(ERL_INT_UVALUE(gop));
   d->setBitRate(ERL_INT_UVALUE(bitrate));
   d->setChannels(ERL_INT_UVALUE(channels));
@@ -102,9 +63,6 @@ Encoder * create_encoder(ETERM* in) {
   r.num = ERL_INT_UVALUE(num);
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
-//  d->_time_base.num=ERL_INT_UVALUE(num);
-//  d->_time_base.den=ERL_INT_UVALUE(den);
-//  d->setFlag(0);
   d->setGopSize(ERL_INT_UVALUE(gop));
   d->setBitRate(ERL_INT_UVALUE(bitrate));
   d->setChannels(ERL_INT_UVALUE(channels));
@@ -119,7 +77,6 @@ ETERM * encode(ETERM* in) {
   bool toDebug=false;
   std::vector<ETERM *> terms;
   ETERM * input_term = erl_element(2, in);
-//  ETERM * file_name = erl_element(1, input_term);
   ETERM * decoder = erl_element(3, input_term);
   ETERM * encoder = erl_element(4, input_term);
   ETERM * packet_list = erl_element(5, input_term);
@@ -201,33 +158,11 @@ ETERM * encode(ETERM* in) {
   delete out_format;
   delete in_format;
   delete conv;
-//  terms.push_back(encoder);
-//  terms.push_back(erl_mk_atom("encoded"));
-
-  //  terms.push_back(erl_element(1, packet_list));
-/*
-  terms.push_back(erl_element(1, erl_element(1, packet_list)));
-  terms.push_back(erl_element(2, erl_element(1, packet_list)));
-  terms.push_back(erl_element(3, erl_element(1, packet_list)));
-  terms.push_back(erl_element(4, erl_element(1, packet_list)));
-  terms.push_back(erl_element(5, erl_element(1, packet_list)));
-  terms.push_back(erl_element(6, erl_element(1, packet_list)));
-  terms.push_back(erl_element(7, erl_element(1, packet_list)));
-*/
-  //  terms.push_back(erl_element(8,erl_element(1, packet_list)));
-  //  terms.push_back(erl_mk_uint(ERL_TUPLE_SIZE(packet_list)));
-  //  terms.push_back(decoder);
-  //  terms.push_back(  in);
-  /*
-    terms.push_back(erl_mk_uint(ERL_TUPLE_SIZE(erl_element(1, packet_list))));
-    terms.push_back(erl_mk_uint(ERL_IS_TUPLE(packet_list)));
-    terms.push_back(erl_mk_uint(ERL_TUPLE_SIZE(packet_list)));*/
   return vector2list(terms);
 }
 
 int i=0;
 int main() {
-//  recur();
 
 #ifdef WIN32
   /* Attention Windows programmers: you need to explicitly set
@@ -241,7 +176,6 @@ int main() {
   erl_init(NULL, 0);
   ETERM *intuple = NULL, *outtuple = NULL;
   byte * buf = new byte[50000000];
-//  memset(buf,0,5000000);
 
   av_register_all();
   avcodec_init();
@@ -249,9 +183,6 @@ int main() {
   av_log_level=AV_LOG_ERROR;
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
-//    erl_print_term((FILE*)stderr, intuple);
-//    logdebug("Term Size:"<<erl_size(erl_element(5,erl_element(2,intuple))));
-//    return 0;
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
@@ -262,19 +193,16 @@ int main() {
         terms.push_back(erl_mk_atom("unknown_command"));
         outtuple = vector2term(terms);
       }
-//    erl_print_term((FILE*)stderr, outtuple);
 
       if (outtuple != NULL) {
         erl_encode(outtuple, buf);
         write_cmd(buf, erl_term_len(outtuple));
-//        erl_free_compound(outtuple);
         erl_free_compound(outtuple);
         outtuple = NULL;
       }
     }
     erl_free_compound(intuple);
     erl_free_compound(fnp);
-  //  delete fnp;
   }
   delete []buf;
 }

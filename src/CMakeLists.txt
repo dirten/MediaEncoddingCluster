@@ -81,7 +81,7 @@ target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc
 #target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore  libgcc mingwex vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
 #target_link_libraries (mhive Winmm ${MYSQL_LIB} wt wtext wthttp )
 ELSE(WIN32)
-target_link_libraries (mhive x264 ${MYSQL_LIB} z bz2 ssl wthttp wtext wt pthread)
+target_link_libraries (mhive x264 ${MYSQL_LIB} z ssl wthttp wtext wt pthread)
 ENDIF(WIN32)
 
 target_link_libraries (mhive 
