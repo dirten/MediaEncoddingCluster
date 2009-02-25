@@ -3,6 +3,9 @@
 	{ i, "./nitrogen/include" },
 	{ outdir, "./ebin" }
 ]}.
+{ './core/*', [
+	{ outdir, "./ebin" }
+]}.
 { './web/*', [
 	{ i, "./nitrogen/include" },
 	{ outdir, "./ebin" }
