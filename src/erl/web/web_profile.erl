@@ -109,6 +109,7 @@ body() ->
 event({data, Data}) ->
 	Message = "Clicked On Data: " ++ wf:to_list(Data),
 	wf:wire(#alert { text=Message }),
+    wf:redirect(wf:f("/web/profile/edit/?id=~w",[Data])),
 	ok;
 event(_) ->
   io:format("Message:leer",[]),

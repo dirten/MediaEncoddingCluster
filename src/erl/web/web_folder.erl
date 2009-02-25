@@ -73,7 +73,8 @@ body() ->
 	wf:render(Column2).
 event({data, Data}) ->
 	Message = "Clicked On Data: " ++ wf:to_list(Data),
-wf:wire(#alert { text=Message });
+wf:wire(#alert { text=Message }),
+    wf:redirect(wf:f("/web/folder/edit/?id=~w",[Data]));
 event(_) ->
   io:format("Message:leer",[]),
 ok.

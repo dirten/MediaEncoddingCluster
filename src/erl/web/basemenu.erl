@@ -4,12 +4,12 @@
 
 render(_,Item) ->
 	Items = [
-		{media, "Media", "media"},
-		{profile, "Profiles", "profile"},
-		{encoding, "Encodings", "encoding"},
-		{folder, "Folders", "folder"},
-		{setting, "Settings", "setting"},
-		{account, "Account", "account"}
+		{media, "Media", "/web/media"},
+		{profile, "Profiles", "/web/profile"},
+		{encoding, "Encodings", "/web/encoding"},
+		{folder, "Folders", "/web/folder"},
+		{setting, "Settings", "/web/setting"},
+		{account, "Account", "/web/account"}
 	],
 
 	Transform = fun(DataRow, Acc) ->

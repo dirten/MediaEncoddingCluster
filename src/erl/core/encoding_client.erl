@@ -1,4 +1,4 @@
--include("config.hrl").
+-include("../include/config.hrl").
 -module(encoding_client).
 -export([start/0, init/0]).
 

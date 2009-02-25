@@ -42,7 +42,7 @@ loop()->
           end,
       {atomic, E}=mnesia:transaction(F),
       Fun=fun(El)->
-              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*")),
+              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*/*")),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
           end,
       lists:foreach(Fun,E),
@@ -152,6 +152,7 @@ process_file_list([H|T],Profile, OutPath)->
             fun()->
                 case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
                   {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate}  ->
+%                    io:format("try File import~s~n",[FileName]),
                     File = #file{id=libdb:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate},
                     mnesia:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
@@ -162,8 +163,8 @@ process_file_list([H|T],Profile, OutPath)->
                   {filenotfound}  ->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
-                    ok;
-%                           io:format("File Wrong format ~w~n",[X]);
+%                    ok;
+                           io:format("File Wrong format ~s~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end

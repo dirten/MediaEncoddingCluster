@@ -127,10 +127,10 @@ BytesReceived=lists:sum(DS),
         end
     end),
 
-    {ok,Pid}=file:open(filename:join(["data", integer_to_list(ProcId)]), write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+%    {ok,Pid}=file:open(filename:join(["data", integer_to_list(ProcId)]), write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
  %   io:write(Pid, Data),
-    file:write(Pid, term_to_binary(Data)),
-    file:close(Pid),
+%    file:write(Pid, term_to_binary(Data)),
+%    file:close(Pid),
 %      Result=mnesia:transaction(
 %      fun()->
 %          case mnesia:read({job, JobId}) of

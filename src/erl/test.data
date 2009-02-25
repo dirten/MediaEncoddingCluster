@@ -10,4 +10,5 @@
 {watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,undefined}.
 {watchfolder,4,"c:/2video","c:/3vodeoOut",1,undefined}.
 {watchfolder,5,"m:/video","/media/out",1,undefined}.
+{watchfolder,6,"/Users/jholscher/Movies/DivX Movies/","/media/out",1,undefined}.
 
