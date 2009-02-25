@@ -67,13 +67,20 @@ target_link_libraries (mhivewriter
   ${BOOST_FS_LIB_MT}
 )
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/config.hrl)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/include/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/include/config.hrl)
 
 INSTALL(TARGETS erltest
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
-add_custom_target(erlang ALL ${ERLANG_DIR}/bin/erlc -Initrogen/include ${ERLANG_SRC_FILES}
+#execute_process(COMMAND ${ERLANG_DIR}/bin/erl -args_file compile.args
+#                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/
+#                  OUTPUT_FILE ${PROJECT_SOURCE_DIR}/src/erl/compile.log 
+#                  ERROR_FILE ${PROJECT_SOURCE_DIR}/src/erl/compile.log
+#                  )
+
+#file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
+add_custom_target(erlang ALL ${ERLANG_DIR}/bin/erl -args_file compile.args
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
+configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)

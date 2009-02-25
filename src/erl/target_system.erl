@@ -126,7 +126,7 @@ make_script(RelFileName) ->
 %%
 make_tar(RelFileName) ->
     RootDir = code:root_dir(),
-    systools:make_tar(RelFileName, [{erts, RootDir}]).
+    systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]}]).
 
 %% extract_tar(TarFile, DestDir)
 %%

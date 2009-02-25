@@ -8,5 +8,5 @@
 
 
 
-table_view(TableName)->
+table_view(_TableName)->
   ok.

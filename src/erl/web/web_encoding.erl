@@ -15,7 +15,7 @@ main() ->
 title() -> "Encodings".
 
 get_data()->
-  NowToString=fun(Now)->
+  NowToString=fun(_Now)->
     ok
   end,
   Transform=fun(Data)->

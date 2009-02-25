@@ -1,9 +1,13 @@
 % Compile Nitrogen Files.
 { '*', [
 	{ i, "./nitrogen/include" },
+	{ i, "./" },
 	{ outdir, "./ebin" }
 ]}.
 { './core/*', [
+	{ outdir, "./ebin" }
+]}.
+{ './lib/*', [
 	{ outdir, "./ebin" }
 ]}.
 { './web/*', [
