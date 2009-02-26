@@ -1,0 +1,18 @@
+-record(
+  profile,
+  {
+    id,
+    name,
+    ext,
+    vformat,
+    vcodec,
+    vbitrate,
+    vframerate,
+    vwidth,
+    vheight,
+    achannels,
+    acodec,
+    abitrate,
+    asamplerate
+  }
+).

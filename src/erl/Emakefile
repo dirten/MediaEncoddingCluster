@@ -5,12 +5,16 @@
 	{ outdir, "./ebin" }
 ]}.
 { './core/*', [
-	{ outdir, "./ebin" }
+	{ i, "./" },
+	{ i, "./include" },
+	{ outdir, "./ebin" },
+	debug_info
 ]}.
 { './lib/*', [
 	{ outdir, "./ebin" }
 ]}.
 { './web/*', [
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" }
+	{ outdir, "./ebin" },
+	debug_info
 ]}.

@@ -1,8 +1,7 @@
 -module(web_profile).
--include ("nitrogen/include/wf.inc").
+-include ("wf.inc").
 -include_lib("stdlib/include/qlc.hrl").
 -compile(export_all).
-
 
 
 title()->
@@ -65,9 +64,13 @@ body() ->
 	Map = get_map(),
 	Column2 = [
 		#h3 { text=title() },
+    #button { class=tiny,id=newProfile,text="Add a new Profile", postback={data, -1} },
     #hr{},
-		#table { class=tiny, rows=[
-    #tablerow { cells=[
+		#table { 
+    class=tiny,
+    rows=[
+    #tablerow {
+    cells=[
     #tableheader { text="Name" },
     #tableheader { text="Format" },
     #tableheader { text="Ext" },
@@ -81,23 +84,28 @@ body() ->
     #tableheader { text="Audio Bitrate" },
     #tableheader { text="Audio Samplerate" },
     #tableheader { }
-                      ]},
-                        #bind { id=tableBinding, data=Data,transform=fun alternate_color/2, map=Map, body=#tablerow { id=top, cells=[
-                        #tablecell { id=nameLabel },
-                        #tablecell { id=formatLabel },
-                        #tablecell { id=extLabel },
-                        #tablecell { id=vcodecLabel },
-                        #tablecell { id=vbitrateLabel },
-                        #tablecell { id=vframerateLabel },
-                        #tablecell { id=vwidthLabel },
-                        #tablecell { id=vheightLabel },
-                        #tablecell { id=acodecLabel },
-                        #tablecell { id=achannelsLabel },
-                        #tablecell { id=abitrateLabel },
-                        #tablecell { id=asamplerateLabel },
-                        #tablecell { body=#button { id=myButton, text="Details" } }
-                                                                                                                                    ]}}
-                              ]}
+          ]},
+            #bind {
+            id=tableBinding,
+            data=Data,
+            transform=fun alternate_color/2,
+            map=Map, 
+            body=#tablerow { id=top, cells=[
+            #tablecell { id=nameLabel },
+            #tablecell { id=formatLabel },
+            #tablecell { id=extLabel },
+            #tablecell { id=vcodecLabel },
+            #tablecell { id=vbitrateLabel },
+            #tablecell { id=vframerateLabel },
+            #tablecell { id=vwidthLabel },
+            #tablecell { id=vheightLabel },
+            #tablecell { id=acodecLabel },
+            #tablecell { id=achannelsLabel },
+            #tablecell { id=abitrateLabel },
+            #tablecell { id=asamplerateLabel },
+            #tablecell { body=#button { id=myButton, text="Edit Profile" } }
+                                           ]}}
+         ]}
             ],
 	wf:render(Column2).
 
@@ -107,9 +115,9 @@ body() ->
 %	wf:flash("Hello there"),
 %	wf:update(test, "This is a test.");
 event({data, Data}) ->
-	Message = "Clicked On Data: " ++ wf:to_list(Data),
-	wf:wire(#alert { text=Message }),
-    wf:redirect(wf:f("/web/profile/edit/?id=~w",[Data])),
+%	Message = "Clicked On Data: " ++ wf:to_list(Data),
+%	wf:wire(#alert { text=Message }),
+  wf:redirect(wf:f("/web/profile/edit/?id=~w",[Data])),
 	ok;
 event(_) ->
   io:format("Message:leer",[]),

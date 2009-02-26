@@ -5,8 +5,8 @@
 render(_,Item) ->
 	Items = [
 		{media, "Media", "/web/media"},
-		{profile, "Profiles", "/web/profile"},
 		{encoding, "Encodings", "/web/encoding"},
+		{profile, "Profiles", "/web/profile"},
 		{folder, "Folders", "/web/folder"},
 		{setting, "Settings", "/web/setting"},
 		{account, "Account", "/web/account"}

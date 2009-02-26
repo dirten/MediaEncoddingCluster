@@ -12,7 +12,7 @@ main() ->
 	{'Group', media},
 	{'Item', folder}
 ]}.
-title() -> "Import Folders".
+title() -> "Watch Folders".
 
 
 get_data()->
@@ -49,6 +49,7 @@ body() ->
 	Map = get_map(),
 	Column2 = [
 		#h3 { text=title()},
+    #button { class=tiny,id=newProfile,text="Add a new Watchfolder", postback={data, -1} },
     #hr{},
 		#table { class=tiny, rows=[
 			#tablerow { cells=[
@@ -72,8 +73,8 @@ body() ->
 	],
 	wf:render(Column2).
 event({data, Data}) ->
-	Message = "Clicked On Data: " ++ wf:to_list(Data),
-wf:wire(#alert { text=Message }),
+%	Message = "Clicked On Data: " ++ wf:to_list(Data),
+%wf:wire(#alert { text=Message }),
     wf:redirect(wf:f("/web/folder/edit/?id=~w",[Data]));
 event(_) ->
   io:format("Message:leer",[]),

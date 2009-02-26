@@ -2,7 +2,7 @@
 -behavior(gen_server).
 -include("config.hrl").
 -include_lib("stdlib/include/qlc.hrl").
--include("schema.hrl").
+-include("./schema.hrl").
 
 
 -export([init/1,handle_call/3,handle_cast/2, code_change/3, terminate/2, start_link/0, get_job/0]).
