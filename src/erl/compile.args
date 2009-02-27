@@ -1,1 +1,1 @@
--s make all -eval "init:stop()"
+-noshell -s make all -s init stop

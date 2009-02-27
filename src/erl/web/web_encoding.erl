@@ -15,14 +15,16 @@ main() ->
 title() -> "Encodings".
 
 get_data()->
-  NowToString=fun(_Now)->
-    ok
+  NowToString=fun(Now)->
+%    tuple_to_list(Now),
+  ok
   end,
   Transform=fun(Data)->
                 if
+                  Data=:="undefined"->Data;
                   is_integer(Data) ==true ->integer_to_list(Data);
-                  is_tuple(Data) ==true ->tuple_to_list(Data);
                   is_atom(Data) ==true ->atom_to_list(Data);
+                  is_tuple(Data) ==true ->tuple_to_list(Data);
                   true->Data
                 end
             end,
@@ -33,7 +35,7 @@ get_data()->
             Transform(element(5,E)),
             Transform(NowToString(element(6,E))),
             Transform(element(7,E)),
-            {data,element(2,E)}] || E <- mnesia:table(job)]),
+            {data,element(2,E)}] || E <- qlc:keysort(2,mnesia:table(job))]),
           qlc:e(Q)
       end,
   {atomic,E}=mnesia:transaction(F),
@@ -71,8 +73,8 @@ body() ->
 				#tablecell { id=outfileLabel },
 				#tablecell { id=beginLabel },
 				#tablecell { id=completeLabel },
-				#tablecell { id=currentLabel },
-				#tablecell { body=#button { id=myButton, text="Details" } }
+				#tablecell { id=currentLabel }
+%				#tablecell { body=#button { id=myButton, text="Details" } }
 			]}}
 		]}
 	],

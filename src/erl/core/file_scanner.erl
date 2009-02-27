@@ -42,7 +42,7 @@ loop()->
           end,
       {atomic, E}=mnesia:transaction(F),
       Fun=fun(El)->
-              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*/*")),
+              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*")),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
           end,
       lists:foreach(Fun,E),
@@ -71,7 +71,12 @@ create_job(Fileid,Profileid,OutPath)->
   [Profile|_T]=ProfileList,
   [File|_T]=FileList,
   %  NewFile=#file{id=test:sequence(file), path=OutPath, streamcount=2},
-  NewFile=#file{id=libdb:sequence(file),filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."), path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]), streamcount=2},
+  NewFile=#file{
+    id=libdb:sequence(file),
+    filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
+    path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
+    streamcount=2
+    },
   mnesia:write(NewFile),
 
   SortedStreams=lists:keysort(4, Streams),
@@ -110,7 +115,7 @@ create_job(Fileid,Profileid,OutPath)->
   mnesia:write(NewVideoStream),
   mnesia:write(NewAudioStream),
 
-  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts='-1'},
+  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts="-1"},
   mnesia:write(Job),
   JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
   JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
@@ -124,8 +129,24 @@ save_stream_info(FileName,SID, FileId)->
   case gen_server:call(global:whereis_name(packet_sender), {streaminfo,FileName,SID,0,0}) of
 %    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
 %   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
-    {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format} ->
-      Stream = #stream{id=libdb:sequence(stream),fileid=FileId,streamidx=Index,streamtype=SType,codec=Codec,bitrate=BitRate,rate=Rate,num=TbNum, den=TbDen, width=Width, height=Height,channels=Channels,gop=Gop,format=Format},
+    {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format, StartTime} ->
+      Stream = #stream{
+        id=libdb:sequence(stream),
+        fileid=FileId,
+        streamidx=Index,
+        streamtype=SType,
+        codec=Codec,
+        bitrate=BitRate,
+        rate=Rate,
+        num=TbNum,
+        den=TbDen,
+        width=Width,
+        height=Height,
+        channels=Channels,
+        gop=Gop,
+        format=Format,
+        start_time=StartTime
+        },
       io:format("Stream info ~w~n",[Stream]),
       mnesia:write(Stream),
 %      case mnesia:write(Stream) of
@@ -163,8 +184,8 @@ process_file_list([H|T],Profile, OutPath)->
                   {filenotfound}  ->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
-%                    ok;
-                           io:format("File Wrong format ~s~n",[X]);
+                    ok;
+%                           io:format("File Wrong format ~s~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end

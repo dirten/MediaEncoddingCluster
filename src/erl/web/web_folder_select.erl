@@ -1,4 +1,4 @@
--module(web_folder_edit).
+-module(web_folder_select).
 
 -include ("wf.inc").
 -include ("schema_watchfolder.hrl").
@@ -13,7 +13,7 @@ main() ->
 	{'Group', media},
 	{'Item', folder}
 ]}.
-title() -> "Watch Folders Edit".
+title() -> "Watch Folders Select".
 
 get_data(Id)->
   Transform=fun(Data)->
@@ -105,7 +105,7 @@ event(save) ->
     id=NewPid,
     infolder=In,
     outfolder=Out,
-    profile=list_to_integer(Pro),
+    profile=Pro,
     filter=Fil
   },
    {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Folder)end),

@@ -4,12 +4,12 @@
 -compile(export_all).
 
 main() ->
-    {ok,Val}=application:get_env(wwwroot),
-    Temp=string:concat(Val,"/onecolumn.html"),
-    #template { file=Temp, bindings=[
-	{'Group', media},
-	{'Item', media}
-]}.
+  {ok,Val}=application:get_env(wwwroot),
+  Temp=string:concat(Val,"/onecolumn.html"),
+  #template { file=Temp, bindings=[
+    {'Group', media},
+    {'Item', media}
+                                  ]}.
 title() -> "Media List".
 
 get_data()->
@@ -22,13 +22,19 @@ get_data()->
                 end
             end,
   F = fun() ->
-          Q = qlc:q([[Transform(element(4,E)),Transform(element(3,E)),Transform(element(5,E)),{data,element(2,E)}] || E <- mnesia:table(file)]),
+          Q = qlc:q([
+            [
+            Transform(element(4,E)),
+            Transform(element(3,E)),
+            Transform(element(5,E)),
+            {data,element(2,E)}
+            ] || E <- qlc:keysort(2,mnesia:table(file),{order, ascending})]),
           qlc:e(Q)
-%          C = qlc:cursor(Q),
-%          qlc:next_answers(C, 1)
+          %          C = qlc:cursor(Q),
+          %          qlc:next_answers(C, 1)
       end,
   {atomic,E}=mnesia:transaction(F),
-%  io:format("Data:~w",[E]),
+  %  io:format("Data:~w",[E]),
   E.
 
 get_map() -> [titleLabel@text, authorLabel@text, descriptionLabel@text, myButton@postback].
@@ -41,24 +47,24 @@ body() ->
 		#h3 { text="Media Files" },
     #hr{},
     #table { class=tiny, rows=[
-			#tablerow { cells=[
-				#tableheader { text="Path" },
-				#tableheader { text="File" },
-				#tableheader { text="Size" },
-				#tableheader { }
-			]},
-%			#tablerow { cells=[
-%				#tablecell {body=#hr{}, colspan=4}
-%			]},
-			#bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
-%				#tablecell { body=#link {body=#label{id=titleLabel}, id=myButton }},
-				#tablecell { id=titleLabel},
-				#tablecell { id=authorLabel },
-				#tablecell { id=descriptionLabel },
-				#tablecell { body=#button { id=myButton, text="Details" } }
-			]}}
-		]}
-	],
+    #tablerow { cells=[
+    #tableheader { text="Path" },
+    #tableheader { text="File" },
+    #tableheader { text="Size" },
+    #tableheader { }
+                      ]},
+                        %			#tablerow { cells=[
+                               %				#tablecell {body=#hr{}, colspan=4}
+                               %			]},
+                               #bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
+                                 %				#tablecell { body=#link {body=#label{id=titleLabel}, id=myButton }},
+                                                                                                                                           #tablecell { id=titleLabel},
+                                                                                                                                             #tablecell { id=authorLabel },
+                                                                                                                                             #tablecell { id=descriptionLabel },
+                                                                                                                                             #tablecell { body=#button { id=myButton, text="Details" } }
+                                                                                                                                          ]}}
+                              ]}
+            ],
 	wf:render(Column2).
 %  #rounded_panel { color=black, body=[
 %	#h3 { text="Title" },
@@ -71,16 +77,15 @@ body() ->
 %	wf:flash("Hello there"),
 %	wf:update(test, "This is a test.");
 event({data, Data}) ->
-	Message = "Clicked On Data: " ++ wf:to_list(Data),
-wf:wire(#alert { text=Message });
+  wf:redirect(wf:f("/web/media/detail/?id=~w",[Data]));
 event(Data) ->
   io:format("Message:~w",[Data]),
-ok.
+  ok.
 
 
 %%% ALTERNATE BACKGROUND COLORS %%%
 alternate_color(DataRow, Acc) when Acc == []; Acc==odd ->
-%  io:format("DataRow:~s",[DataRow]),
+  %  io:format("DataRow:~s",[DataRow]),
 	{DataRow, even, [{top@style, "background-color: #eee;"}]};
 
 alternate_color(DataRow, Acc) when Acc == even ->

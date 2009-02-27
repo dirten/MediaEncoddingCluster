@@ -48,6 +48,7 @@ ETERM * streaminfo(ETERM * v) {
       terms.push_back(erl_mk_int(str->codec->channels));
       terms.push_back(erl_mk_int(str->codec->gop_size));
       terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? str->codec->pix_fmt : str->codec->sample_fmt));
+      terms.push_back(erl_mk_string(Decimal(str->start_time).toString().c_str()));
     }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));
@@ -138,12 +139,12 @@ ETERM * fileinfo(ETERM * v) {
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
     } else {
-      terms.push_back(erl_mk_atom(f.getFileName().c_str()));
-      terms.push_back(erl_mk_atom(f.getFilePath().c_str()));
-      terms.push_back(erl_mk_atom(Decimal(fis->getFileSize()).toString().c_str()));
-      terms.push_back(erl_mk_atom(fis->getFormatContext()->iformat->name));
+      terms.push_back(erl_mk_string(f.getFileName().c_str()));
+      terms.push_back(erl_mk_string(f.getFilePath().c_str()));
+      terms.push_back(erl_mk_string(Decimal(fis->getFileSize()).toString().c_str()));
+      terms.push_back(erl_mk_string(fis->getFormatContext()->iformat->name));
       terms.push_back(erl_mk_int(fis->getStreamCount()));
-      terms.push_back(erl_mk_int(fis->getFormatContext()->duration));
+      terms.push_back(erl_mk_string(Decimal(fis->getFormatContext()->duration).toString().c_str()));
       terms.push_back(erl_mk_int(fis->getFormatContext()->bit_rate));
     }
   } else {
@@ -152,6 +153,7 @@ ETERM * fileinfo(ETERM * v) {
   return vector2term(terms);
 }
 ETERM * packetstream(ETERM * v) {
+//  erl_print_term((FILE*)stderr,v);
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
   ETERM *stream = erl_element(3, v);
@@ -164,8 +166,8 @@ ETERM * packetstream(ETERM * v) {
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     long long int s;
-//    logdebug("SeekValue:"<<ERL_ATOM_PTR(seek));
-    sscanf((const char *)ERL_ATOM_PTR(seek),"%llu",&s);
+//    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
+    sscanf((const char *)erl_iolist_to_string(seek),"%llu",&s);
 //    logdebug("SeekValueScanned:"<<s);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);
     PacketInputStream pis(fis);

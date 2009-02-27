@@ -6,7 +6,7 @@
 
 %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
 -include("schema_profile.hrl").
--record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format}).
+-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format, start_time, duration}).
 
 -record(job,{id, infile, outfile, begin_time, complete_time, last_ts}).
 -record(jobdetail,{id, jobid,instream, outstream}).

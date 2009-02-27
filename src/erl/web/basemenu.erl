@@ -8,8 +8,8 @@ render(_,Item) ->
 		{encoding, "Encodings", "/web/encoding"},
 		{profile, "Profiles", "/web/profile"},
 		{folder, "Folders", "/web/folder"},
-		{setting, "Settings", "/web/setting"},
-		{account, "Account", "/web/account"}
+		{setting, "Settings", "/web/setting"}
+%		{account, "Account", "/web/account"}
 	],
 
 	Transform = fun(DataRow, Acc) ->

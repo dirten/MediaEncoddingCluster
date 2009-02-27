@@ -98,10 +98,9 @@ handle_call(Call,From,_N)->
                   [Job|_]->
                     %          io:format("Data found ~w~n",[Unit]),
                     %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
-                    mnesia:write(Job#job{last_ts=element(3,FirstPacket)})
+                    mnesia:write(Job#job{last_ts=element(4,FirstPacket)})
                 end
             end),
-
           {reply, {Filename, ProcU#process_unit.id, D, E, Data}, state}
           %          []->{reply, {nojob}, state}
       end
@@ -127,10 +126,10 @@ BytesReceived=lists:sum(DS),
         end
     end),
 
-%    {ok,Pid}=file:open(filename:join(["data", integer_to_list(ProcId)]), write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
+    {ok,Pid}=file:open(filename:join(["data", integer_to_list(ProcId)]), write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
  %   io:write(Pid, Data),
-%    file:write(Pid, term_to_binary(Data)),
-%    file:close(Pid),
+    file:write(Pid, term_to_binary(Data)),
+    file:close(Pid),
 %      Result=mnesia:transaction(
 %      fun()->
 %          case mnesia:read({job, JobId}) of
