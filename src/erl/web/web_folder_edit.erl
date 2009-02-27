@@ -49,29 +49,35 @@ body()->
     true->
       Data={"","","","","","",""}
   end,
+  F=fun()->
+    qlc:e(qlc:q([Profile||Profile<-mnesia:table(profile)]))
+  end,
+  {atomic,Profiles}=mnesia:transaction(F),
+  ProfileOptions=[#option{text=element(3,X), value=integer_to_list(element(2,X)), selected=element(5,Data)=:=integer_to_list(element(2,X))}||X<-Profiles],
 
 %  [Data|_]=get_data(list_to_integer(Id)),
 %  io:format("PostData:~w",[Data]),
     ProfileData=#table { class=tiny, rows=[
     #tablerow { cells=[
       #tablecell { body=#label { text="Folder Id" } },
-      #tablecell { body=#value { text=element(2,Data), id=pId} }
+      #tablecell { body=#textbox { text=element(2,Data), id=pId} }
     ]},
     #tablerow { cells=[
       #tablecell { body=#label { text="Input Folder" } },
-      #tablecell { body=#textbox { text=element(3,Data), id=pName} }
+      #tablecell { body=#textbox { text=element(3,Data), id=pInfolder} }
     ]},
     #tablerow { cells=[
       #tablecell { body=#label { text="Output Folder" } },
-      #tablecell { body=#textbox { text=element(4,Data), id=pExt} }
+      #tablecell { body=#textbox { text=element(4,Data), id=pOutfolder} }
     ]},
     #tablerow { cells=[
       #tablecell { body=#label { text="Profile" } },
-      #tablecell { body=#textbox { text=element(5,Data), id=pFormat} }
+%      #tablecell { body=#textbox { text=element(5,Data), id=pProfile} }
+      #tablecell { body=#dropdown { options=ProfileOptions, id=pProfile} }
     ]},
     #tablerow { cells=[
       #tablecell { body=#label { text="File Extension Filter" } },
-      #tablecell { body=#textbox {  text=element(6,Data), id=pFormat} }
+      #tablecell { body=#textbox {  text=element(6,Data), id=pFilter} }
     ]}
   ]},
     [#h3 { text=title() },
@@ -83,6 +89,27 @@ body()->
 ].
 
 event(save) ->
-  ok;
+  [Pid|_] = wf:q(pId),
+  if Pid == "-1"->
+    NewPid=libdb:sequence(watchfolder);
+    true->
+      NewPid=list_to_integer(Pid)
+        end,
+
+  [In|_]=wf:q(pInfolder),
+  [Out|_]=wf:q(pOutfolder),
+  [Pro|_]=wf:q(pProfile),
+  [Fil|_]=wf:q(pFilter),
+  Folder=#watchfolder{
+    id=NewPid,
+    infolder=In,
+    outfolder=Out,
+    profile=Pro,
+    filter=Fil
+  },
+   {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Folder)end),
+%  io:format("Message:saveed for id ~w",[Pid]),
+  wf:flash("Watch Folder Data saved."),
+ok;
 event(cancel) ->
     wf:redirect("/web/folder").

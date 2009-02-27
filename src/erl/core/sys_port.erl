@@ -1,5 +1,5 @@
 %% @DOC bla fasel
--include("config.hrl").
+-include("../include/config.hrl").
 -module(sys_port).
 -export([start/1, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
 -behaviour(gen_server).
