@@ -33,7 +33,7 @@ ETERM * addstream(ETERM * in) {
 }
 
 ETERM * writepacket(ETERM * in) {
-  logdebug("WritePacket");
+//  logdebug("WritePacket");
   Packet * p=buildPacketFromTerm(in);
   p->packet->pts=0;
   p->packet->dts=0;
@@ -46,7 +46,7 @@ ETERM * writepacketlist(ETERM * in) {
   ETERM * packet_list = erl_element(2, in);
   ETERM * tail=packet_list;
   int pc = erl_length(packet_list);
-  logdebug("WritePacketList");
+//  logdebug("WritePacketList");
 
   for(int a = 0;a<pc;a++){
 //  logdebug("WritePacket");

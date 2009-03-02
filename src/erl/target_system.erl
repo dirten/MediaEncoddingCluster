@@ -33,6 +33,9 @@ create(RelFileName) ->
     {ok, Fd} = file:open("plain.rel", [write]),
     io:fwrite(Fd, "~p.~n", [PlainRelSpec]),
     file:close(Fd),
+    io:fwrite("Copying file \"mhive.app\" to \"~s\" ...~n",
+              [filename:join([".", "mhive.app"])]),
+    copy_file("mhive.app", filename:join(["./ebin", "mhive.app"])),
 
     io:fwrite("Making \"plain.script\" and \"plain.boot\" files ...~n"),
     make_script("plain"),

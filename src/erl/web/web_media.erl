@@ -24,6 +24,7 @@ get_data()->
   F = fun() ->
           Q = qlc:q([
             [
+            Transform(element(2,E)),
             Transform(element(4,E)),
             Transform(element(3,E)),
             Transform(element(5,E)),
@@ -37,7 +38,7 @@ get_data()->
   %  io:format("Data:~w",[E]),
   E.
 
-get_map() -> [titleLabel@text, authorLabel@text, descriptionLabel@text, myButton@postback].
+get_map() -> [idLabel@text,titleLabel@text, authorLabel@text, descriptionLabel@text, myButton@postback].
 
 
 body() ->
@@ -48,21 +49,19 @@ body() ->
     #hr{},
     #table { class=tiny, rows=[
     #tablerow { cells=[
+    #tableheader { text="#" },
     #tableheader { text="Path" },
     #tableheader { text="File" },
     #tableheader { text="Size" },
     #tableheader { }
                       ]},
-                        %			#tablerow { cells=[
-                               %				#tablecell {body=#hr{}, colspan=4}
-                               %			]},
-                               #bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
-                                 %				#tablecell { body=#link {body=#label{id=titleLabel}, id=myButton }},
-                                                                                                                                           #tablecell { id=titleLabel},
-                                                                                                                                             #tablecell { id=authorLabel },
-                                                                                                                                             #tablecell { id=descriptionLabel },
-                                                                                                                                             #tablecell { body=#button { id=myButton, text="Details" } }
-                                                                                                                                          ]}}
+                        #bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
+                        #tablecell { id=idLabel},
+                        #tablecell { id=titleLabel},
+                        #tablecell { id=authorLabel },
+                        #tablecell { id=descriptionLabel },
+                        #tablecell { body=#button { id=myButton, text="Details" } }
+                                                                                                                                   ]}}
                               ]}
             ],
 	wf:render(Column2).

@@ -1,6 +1,7 @@
 -module(web_encoding).
 
 -include ("wf.inc").
+-include("schema_job.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -compile(export_all).
 
@@ -16,12 +17,18 @@ title() -> "Encodings".
 
 get_data()->
   NowToString=fun(Now)->
-%    tuple_to_list(Now),
-  ok
+    case Now of
+      undefined->
+        no;
+      _->
+        {{Year,Month,Day},{Hour, Min, Sec}}=calendar:now_to_local_time(Now),
+        integer_to_list(Year)++"-"++integer_to_list(Month)++"-"++integer_to_list(Day)++" "++integer_to_list(Hour)++":"++integer_to_list(Min)++":"++integer_to_list(Sec)
+      end
   end,
   Transform=fun(Data)->
                 if
                   Data=:="undefined"->Data;
+                  is_float(Data) ==true ->float_to_list(Data);
                   is_integer(Data) ==true ->integer_to_list(Data);
                   is_atom(Data) ==true ->atom_to_list(Data);
                   is_tuple(Data) ==true ->tuple_to_list(Data);
@@ -34,8 +41,9 @@ get_data()->
             Transform(element(4,E)),
             Transform(element(5,E)),
             Transform(NowToString(element(6,E))),
-            Transform(element(7,E)),
-            {data,element(2,E)}] || E <- qlc:keysort(2,mnesia:table(job))]),
+%            Transform(round(((list_to_integer(E#job.last_ts)-5056299161)/566978400)*100)),
+            Transform(E#job.last_ts),
+            {data,element(2,E)}] || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
           qlc:e(Q)
       end,
   {atomic,E}=mnesia:transaction(F),
@@ -62,7 +70,7 @@ body() ->
 				#tableheader { text="Outfile" },
 				#tableheader { text="Begin" },
 				#tableheader { text="Complete" },
-				#tableheader { text="Current Ts" },
+				#tableheader { text="% Done" },
 				#tableheader { }
 			]},
 %			#tablerow { cells=[

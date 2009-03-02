@@ -129,7 +129,7 @@ save_stream_info(FileName,SID, FileId)->
   case gen_server:call(global:whereis_name(packet_sender), {streaminfo,FileName,SID,0,0}) of
 %    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
 %   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
-    {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format, StartTime} ->
+    {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format, StartTime, Duration} ->
       Stream = #stream{
         id=libdb:sequence(stream),
         fileid=FileId,
@@ -145,7 +145,8 @@ save_stream_info(FileName,SID, FileId)->
         channels=Channels,
         gop=Gop,
         format=Format,
-        start_time=StartTime
+        start_time=list_to_integer(StartTime),
+        duration=list_to_integer(Duration)
         },
       io:format("Stream info ~w~n",[Stream]),
       mnesia:write(Stream),

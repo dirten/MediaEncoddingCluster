@@ -159,10 +159,14 @@ export(cursor)->
       end,
   {atomic,E}=mnesia:transaction(F),
   E;
-export(job)->
-  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time>undefined, F#file.id==PU#job.outfile,F#file.id==4]))end),
-  T=[X||X<-E,not filelib:is_regular(X)],
-  F2=[X||X<-T,filelib:ensure_dir(element(2,X))==ok],
+export(FileNo) when is_integer(FileNo)->
+  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time > undefined, F#file.id==PU#job.outfile,F#file.id==FileNo]))end),
+    io:format("open File ~p",[E]),
+%  T=[X||X<-E,not filelib:is_regular(element(2,X))],
+  [FileName|_]=E,
+  case filelib:is_regular(element(2,FileName)) of
+    false->
+  F2=[X||X<-E,filelib:ensure_dir(element(2,FileName))==ok],
   Fun2=fun(JobId)->
     DataFun=fun()->
     qlc:e(
@@ -183,13 +187,14 @@ export(job)->
       )
     end
   end,
- Result=lists:flatten([[element(2,mnesia:transaction(Fun(T)))||T<-D] ||D<-Bla]),
+ Result=lists:flatten([[element(2,mnesia:transaction(Fun(T1)))||T1<-D] ||D<-Bla]),
 
   FileWriter = fun(FileId, FilePort)->
-    case file:read_file(filename:join(["tmp", integer_to_list(FileId)])) of
+    case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
       {ok,Data}->
+%        io:format("Write Data"),
         FilePort ! {self(), {command, term_to_binary({writepacket,binary_to_term(Data)})}},
-      ok;
+        ok;
 %        file:write(MergePid, Data);
 %        binary_to_term(Data);
       {error,enoent}->
@@ -197,9 +202,12 @@ export(job)->
       end
     end,
 %    B=[element(2,X)||X<-Result],
+%  [File|_]=T,
+%  io:format("open File ~s",[element(2,File)]),
     Port = open_port({spawn, "/home/jhoelscher/MediaEncodingCluster/build/src/erl/mhivewriter"}, [{packet, 4}, binary]),
-    Port ! {self(), {command, term_to_binary({createfile,'test.avi'})}},
-  {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==4]))end),
+%  Port=[],
+  Port ! {self(), {command, term_to_binary({createfile,list_to_atom(element(2,FileName))})}},
+  {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
   Re=[Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
     Port ! {self(), {command, term_to_binary({initfile})}},
 
@@ -212,13 +220,14 @@ export(job)->
 
 %    file:close(Pid),
 % {atomic,E3}=mnesia:transaction(Fun(13)),
-  Re;
-export(select)->
-  %E=ets:select(process_unit,[{#process_unit{id='$1', sourcestream='_', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'}, [], ['$1']}]),
+  file_created;
+  true->
+    fileexist
+  end;
 
-  P = #process_unit{id='$1', sourcestream='$2', targetstream=27, startts='_', framecount='_', sendtime='_', sendnode='_', completetime='_', sendsize='_', receivesize='_', data='_'},
-  E=mnesia:dirty_select(process_unit,[{P,[],['$2','$1']}]),
-  E.
+export(select)->
+  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([PU#job.outfile|| PU <- qlc:keysort(2,mnesia:table(job)), PU#job.complete_time > undefined]))end),
+  [export(F)||F<-E].
 %ok.
 grid()->
   %  {ok, Pid}=gridfile:new("grid","testfile",[{dimensions, 2}]),

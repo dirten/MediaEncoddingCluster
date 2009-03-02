@@ -8,7 +8,8 @@
 -include("schema_profile.hrl").
 -record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format, start_time, duration}).
 
--record(job,{id, infile, outfile, begin_time, complete_time, last_ts}).
+%-record(job,{id, infile, outfile, begin_time, complete_time, last_ts}).
+-include("schema_job.hrl").
 -record(jobdetail,{id, jobid,instream, outstream}).
 
 -record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime, sendsize, receivesize, data}).

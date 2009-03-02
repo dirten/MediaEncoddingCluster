@@ -7,6 +7,7 @@ startapp()->
   application:start(mhive).
 
 start(_Type, StartArgs)->
+  net_kernel:start([node, shortnames]),
   mnesia:create_schema([node()]),
   mnesia:start(),
   libdb:create(),
