@@ -1,5 +1,5 @@
 % Compile Nitrogen Files.
-{ '*', [
+{ './mhive.erl', [
 	{ i, "./nitrogen/include" },
 	{ i, "./" },
 	{ outdir, "./ebin" }
@@ -14,6 +14,11 @@
 	{ outdir, "./ebin" }
 ]}.
 { './web/*', [
+	{ i, "./nitrogen/include" },
+	{ outdir, "./ebin" },
+	debug_info
+]}.
+{ './test/test.erl', [
 	{ i, "./nitrogen/include" },
 	{ outdir, "./ebin" },
 	debug_info

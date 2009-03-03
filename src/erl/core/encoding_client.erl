@@ -64,10 +64,10 @@ loop( Port)->
  %     global:unregister_name(packet_sender),
       io:format("GenCall to ~w Failed  ~w~n", [Port,Reason])
 %      exit({normal, Reason})
-      end;
-    {timeout,{_Reason}}->
-      io:format("DataTimeOut ~n", []),
-      loop( Port)
+      end
+%    {timeout,{_Reason}}->
+%      io:format("DataTimeOut ~n", []),
+%      loop( Port)
 %      Size=element(5,element(1,element(5,Any))),
 %      io:format("~w,~w,~w,~w,~w~n",[element(1,element(1,element(5,Any))),element(2,element(1,element(5,Any))),element(3,element(1,element(5,Any))),element(4,element(1,element(5,Any))),element(5,element(1,element(5,Any)))])
 %if Size > 0 ->

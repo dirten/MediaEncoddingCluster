@@ -8,50 +8,39 @@ packetstream(Filename, Offset)->
   case get(streamdata) of
     undefined->
       put(streamdata,[]);
-    _->ok
-        
+    _->ok        
   end,
+  LastFilename=get(lastfilename),
   C=length(get(streamdata)),
-  if C<350 ->
-      case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,400  })of
-        hivetimeout->
-          hivetimeout;
-        Any->
-          [Required|_]=[[X||X<-Any,element(1,X)<2]],
-          put(streamdata,get(streamdata)++Required)
+  if
+    LastFilename =:=Filename orelse LastFilename=:=undefined->
+      if C<350 ->
+          case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,400  })of
+            hivetimeout->
+              hivetimeout;
+            Any->
+              [Required|_]=[[X||X<-Any,element(1,X)<2]],
+              put(streamdata,get(streamdata)++Required)
+          end;
+        true->ok
       end;
-    true->ok
+    true->
+      if C ==0->
+          put(lastfilename, Filename);
+        true->
+          do_nothing
+      end
   end,
 
-
-  %      Size=mysum(Any),
-  %      io:format("~wM",[mysum(Size)/1024/1024]),
-  %      [VideoData|_]=[[X||X<-Any,element(1,X)==0]],
-  %      [AudioData|_]=[[X||X<-Any,element(1,X)==1]],
-  %      put(video,get(video)++VideoData),
-  %      put(audio,get(audio)++AudioData),
-  %      {VideoData, AudioData}
-  %      io:format("~w",[VideoData])
-  %  if length(get(streamdata)) > 0 ->
   Count=length(process(get(streamdata),1)),
-  %    io:format("Videoooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),0))]),
-  %    io:format("Audioooooooooooooooo Packet Count ~w~n",[length(process(get(streamdata),1))]),
-  %    io:format("ALLLoooooooooooooooo Packet Count ~w~n",[length(get(streamdata))]),
   if Count> 300->
       Data=process(get(streamdata),1),
       put(streamdata,get(streamdata)--Data),
-      %      io:format("Audioooooooooooooooo Packet",[]),
       Data;
-    %      packet_group(Data,1);
     true->
       Data=process(get(streamdata),0),
-      %      io:format("Videooooooooooooooooo PacketGroup ~w",[length(Data)]),
       packet_group(Data,0)
   end.
-
-%  packetstream()
-%end 3759782495
-
 
 process([], _Stream)->[];
 process(List, Stream)->

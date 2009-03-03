@@ -7,7 +7,7 @@
                         action_event,action_fade,action_hide,
                         action_jquery_effect,action_remove_class,
                         action_script,action_show,action_toggle,
-                        action_validate,action_validation_error,basemenu,
+                        action_validate,action_validation_error,basemenu,config,
                         element_bind,element_body,element_br,element_button,
                         element_checkbox,element_draggable,element_dropdown,
                         element_droppable,element_file,element_flash,

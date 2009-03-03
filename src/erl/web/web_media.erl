@@ -52,7 +52,7 @@ body() ->
     #tableheader { text="#" },
     #tableheader { text="Path" },
     #tableheader { text="File" },
-    #tableheader { text="Size" },
+    #tableheader { text="Size | Bytes" },
     #tableheader { }
                       ]},
                         #bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[

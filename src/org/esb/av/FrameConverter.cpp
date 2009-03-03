@@ -73,7 +73,7 @@ namespace org {
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
-        return in_frame;
+//        return in_frame;
         /*
                         ReSampleContext * reCtx=audio_resample_init(_outFormat->channels,
                                         in_frame.channels,

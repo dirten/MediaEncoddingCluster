@@ -5,7 +5,7 @@
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
 
--export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, code_change/3, terminate/2,loop/0, process_file_list/3, process_file/1, filter/2, diff/2]).
+-export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2,loop/0, process_file_list/3, process_file/1, filter/2, diff/2]).
 
 start()->
   spawn(?MODULE,init,[[]]).
@@ -173,9 +173,9 @@ process_file_list([H|T],Profile, OutPath)->
           mnesia:transaction(
             fun()->
                 case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
-                  {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate}  ->
+                  {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
 %                    io:format("try File import~s~n",[FileName]),
-                    File = #file{id=libdb:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate},
+                    File = #file{id=libdb:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate, start_time=StartTime},
                     mnesia:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
                     save_stream_info(X,0,File#file.id),
@@ -193,7 +193,7 @@ process_file_list([H|T],Profile, OutPath)->
             end)
       end,
   lists:foreach(Fun,Files);
-process_file_list([],Profile, OutPath)->
+process_file_list([],_Profile, _OutPath)->
   ok.
 %io:format("File ~s~n",[Files]);
 
@@ -227,9 +227,9 @@ handle_cast(_Msg,N)->
   io:format("~w handle_cast~w~n", [?MODULE,N]),
   {noreply, N}.
 
-%handle_info(Info,N)->
-%  io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
-%  {noreply, N}.
+handle_info(Info,N)->
+  io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
+  {noreply, N}.
 
 terminate(Reason,_N)->
   file_scanner_loop ! stop,

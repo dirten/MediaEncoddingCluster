@@ -234,3 +234,13 @@ grid()->
   {ok, Pid}=gridfile:open("grid","testfile"),
   gridfile:insert(Pid,{myobject2, {bla,3}}).
 
+config(Key)->
+  config:get(Key).
+
+
+arguments(Args)->
+  io:format("PArgs:~p",[Args]).
+
+
+
+

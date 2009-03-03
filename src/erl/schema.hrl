@@ -1,5 +1,5 @@
 % this records save the data that was imported or encoded in the Media Hive
--record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent}).
+-record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time}).
 % this Record saves the Data for watchfolders
 -include("schema_watchfolder.hrl").
 %-record(watchfolder,{id,infolder,outfolder,profile,filter}).
@@ -16,3 +16,7 @@
 
 -record(framegroup,{id,framegroup,startts,byte_pos,stream_id,stream_index,frame_count}).
 -record(packet,{id,pts, dts,data, data_size}).
+
+-record(timestamp,{num,den}).
+
+-include("schema_config.hrl").

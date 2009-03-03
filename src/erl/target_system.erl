@@ -105,7 +105,7 @@ install(RelFileName, RootDir) ->
     extract_tar(TarFile, RootDir),
     StartErlDataFile = filename:join([RootDir, "releases", "start_erl.data"]),
     {ok, StartErlData} = read_txt_file(StartErlDataFile),
-    [ErlVsn, RelVsn| _] = string:tokens(StartErlData, " \n"),
+    [ErlVsn, _RelVsn| _] = string:tokens(StartErlData, " \n"),
     ErtsBinDir = filename:join([RootDir, "erts-" ++ ErlVsn, "bin"]),
     BinDir = filename:join([RootDir, "bin"]),
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"

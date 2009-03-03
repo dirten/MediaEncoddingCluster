@@ -1,4 +1,4 @@
--module(file_scanner_sup).
+-module(mhive_supervisor).
 -behaviour(supervisor).
 -export([start/0,start_in_the_shell/0, start_link/1,init/1]).
 

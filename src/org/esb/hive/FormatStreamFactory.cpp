@@ -19,7 +19,7 @@ namespace org {
             loginfo("find file : " << filename.c_str());
             if (offset > 0){
               logdebug("seeking->"<<offset);
-              fis->seek(0, offset);
+              fis->seek(-1, offset);
             }
             _inputStreams[filename] = fis;
           }

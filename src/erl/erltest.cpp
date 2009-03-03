@@ -147,6 +147,8 @@ ETERM * fileinfo(ETERM * v) {
       terms.push_back(erl_mk_int(fis->getStreamCount()));
       terms.push_back(erl_mk_string(Decimal(fis->getFormatContext()->duration).toString().c_str()));
       terms.push_back(erl_mk_int(fis->getFormatContext()->bit_rate));
+      terms.push_back(erl_mk_string(Decimal(fis->getFormatContext()->start_time).toString().c_str()));
+//      terms.push_back(erl_mk_string(Decimal(fis->getFormatContext()->duration).toString().c_str()));
     }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));

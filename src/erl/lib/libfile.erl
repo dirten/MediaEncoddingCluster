@@ -2,5 +2,5 @@
 -export([find/3]).
 
 
-find(Dir,Filter,Recursive)->
+find(_Dir,_Filter,_Recursive)->
   ok.
