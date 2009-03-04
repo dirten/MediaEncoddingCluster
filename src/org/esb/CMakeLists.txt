@@ -35,6 +35,8 @@ add_library (av av av/Init.cpp
             av/Frame.cpp 
 	        av/PPSWriter.cpp 
 	        av/AVInputStream.cpp 
+	        av/FormatStreamFactory.cpp
+
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/lang)
@@ -59,8 +61,8 @@ add_library (util util/Properties.cpp
       util/Queue.cpp
 )
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
-add_library (signal signal/Messenger.cpp signal/Message.cpp)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
+#add_library (signal signal/Messenger.cpp signal/Message.cpp)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/io)
 add_library (io io/File.cpp 
@@ -75,31 +77,31 @@ add_library (io io/File.cpp
 )
 TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
-add_library (net net/SocketException.cpp 
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
+#add_library (net net/SocketException.cpp 
 #      net/ServerSocket.cpp 
 #      net/Socket.cpp 
-      net/TcpServerSocket.cpp 
-      net/TcpSocket.cpp 
+##      net/TcpServerSocket.cpp 
+##      net/TcpSocket.cpp 
 #      net/SocketInputStream.cpp 
 #      net/SocketOutputStream.cpp
 #      net/TcpSocketInputStream.cpp 
 #      net/TcpSocketOutputStream.cpp
-)
+#)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
-include_directories (${MYSQL_DIR}/include/mysql)
-include_directories (${MYSQL_INC_DIR})
-add_library (sql sql/Column.cpp 
-      sql/Connection.cpp 
-      sql/Statement.cpp 
-      sql/PreparedStatement.cpp 
-      sql/ResultSet.cpp 
-      sql/ResultSetMetaData.cpp 
-      sql/SqlException.cpp
-      sql/ConnectionManager.cpp
-      sql/Row.cpp
-)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
+#include_directories (${MYSQL_DIR}/include/mysql)
+#include_directories (${MYSQL_INC_DIR})
+#add_library (sql sql/Column.cpp 
+#      sql/Connection.cpp 
+#      sql/Statement.cpp 
+#      sql/PreparedStatement.cpp 
+#      sql/ResultSet.cpp 
+#      sql/ResultSetMetaData.cpp 
+#      sql/SqlException.cpp
+#      sql/ConnectionManager.cpp
+#      sql/Row.cpp
+#)
 
 #SET_TARGET_PROPERTIES(sql
 #PROPERTIES
@@ -107,53 +109,54 @@ add_library (sql sql/Column.cpp
 #  DEBUG_POSTFIX "d"
 #)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
-add_library (hive hive/Command.cpp 
-	hive/ProtocolServer.cpp 
-	hive/HiveControl.cpp 
-	hive/HiveListener.cpp 
-	hive/CommandInputStream.cpp 
-	hive/CommandOutputStream.cpp 
-	hive/PacketCollector.cpp 
-	hive/CodecFactory.cpp 
-	hive/job/Job.cpp 
-	hive/job/JobDetail.cpp 
-	hive/job/JobHandler.cpp 
-	hive/job/JobWatcher.cpp 
-	hive/job/ProcessUnitWatcher.cpp 
-	hive/job/ClientHandler.cpp 
-	hive/job/ProcessUnit.cpp 
-	hive/DirectoryScanner.cpp 
-	hive/DatabaseUtil.cpp 
-	hive/FileImporter.cpp 
-	hive/JobUtil.cpp 
-	hive/HiveClient.cpp 
-	hive/Setup.cpp 
-	hive/FileExporter.cpp
-	hive/ExportScanner.cpp
-	hive/FormatStreamFactory.cpp
-	
-)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
+#add_library (hive 
+#    hive/Command.cpp 
+#	hive/ProtocolServer.cpp 
+#	hive/HiveControl.cpp 
+#	hive/HiveListener.cpp 
+#	hive/CommandInputStream.cpp 
+#	hive/CommandOutputStream.cpp 
+#	hive/PacketCollector.cpp 
+#	hive/CodecFactory.cpp 
+#	hive/job/Job.cpp 
+#	hive/job/JobDetail.cpp 
+#	hive/job/JobHandler.cpp 
+#	hive/job/JobWatcher.cpp 
+#	hive/job/ProcessUnitWatcher.cpp 
+#	hive/job/ClientHandler.cpp 
+#	hive/job/ProcessUnit.cpp 
+#	hive/DirectoryScanner.cpp 
+#	hive/DatabaseUtil.cpp 
+#	hive/FileImporter.cpp 
+#	hive/JobUtil.cpp 
+#	hive/HiveClient.cpp 
+#	hive/Setup.cpp 
+#	hive/FileExporter.cpp
+#	hive/ExportScanner.cpp
+#	hive/FormatStreamFactory.cpp
+#	
+#)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
-include_directories (${WT_DIR})
-include_directories (${WT_DIR}/include)
-include_directories (${WT_DIR}/src)
-add_library (web web/WebServer.cpp 
-    web/WebApp.cpp 
-    web/SqlTableModel.cpp 
-    web/SqlTable.cpp
-    web/FileTreeTable.cpp
-    web/FileTreeTableNode.cpp
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
+#include_directories (${WT_DIR})
+#include_directories (${WT_DIR}/include)
+#include_directories (${WT_DIR}/src)
+#add_library (web web/WebServer.cpp 
+#    web/WebApp.cpp 
+#    web/SqlTableModel.cpp 
+#    web/SqlTable.cpp
+#    web/FileTreeTable.cpp
+#    web/FileTreeTableNode.cpp
 #    web/DataTreeTable.cpp
 #    web/DataTreeTableNode.cpp
-    web/VersionNode.cpp
-    web/FileNode.cpp
-    web/SqlUtil.cpp
-    web/Setup.cpp
-    web/wtk/Div.cpp
-    web/wtk/ContentBox.cpp
-)
+#    web/VersionNode.cpp
+#    web/FileNode.cpp
+#    web/SqlUtil.cpp
+#    web/Setup.cpp
+#    web/wtk/Div.cpp
+#    web/wtk/ContentBox.cpp
+#)
 #SET_TARGET_PROPERTIES(web
 #PROPERTIES
 #  VERSION ${WEB_VERSION_SERIES}.${WEB_VERSION_MAJOR}.${WEB_VERSION_MINOR}
@@ -163,5 +166,5 @@ add_library (web web/WebServer.cpp
 #TARGET_LINK_LIBRARIES(web wt wtext wthttp)
 #TARGET_LINK_LIBRARIES(sql ${MYSQL_LIB})
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
-add_library (esb config/config.cpp)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
+#add_library (esb config/config.cpp)

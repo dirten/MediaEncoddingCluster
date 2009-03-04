@@ -173,15 +173,25 @@ process_file_list([H|T],Profile, OutPath)->
           mnesia:transaction(
             fun()->
                 case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
-                  {FileName,FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
+                  {_FileName,_FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
 %                    io:format("try File import~s~n",[FileName]),
-                    File = #file{id=libdb:sequence(file),filename=FileName, path=FilePath, size=Size, containertype=Type,streamcount=StreamCount,duration=Duration,bitrate=BitRate, start_time=StartTime},
+                    File = #file{
+                      id=libdb:sequence(file),
+                      filename=filename:basename(X),
+                      path=filename:dirname(X),
+                      size=Size,
+                      containertype=Type,
+                      streamcount=StreamCount,
+                      duration=Duration,
+                      bitrate=BitRate,
+                      start_time=StartTime
+                      },
                     mnesia:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
                     save_stream_info(X,0,File#file.id),
-                    io:format("File imported~s~n",[FileName]),
+                    io:format("File imported~s~n",[filename:basename(X)]),
                     create_job(File#file.id, Profile, OutPath),
-                    io:format("File Job Created ~s~n",[FileName]);
+                    io:format("File Job Created ~s~n",[filename:basename(X)]);
                   {filenotfound}  ->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->

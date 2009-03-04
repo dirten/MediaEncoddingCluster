@@ -36,10 +36,10 @@ ADD_EXECUTABLE (mhivewriter mhivewriter.cpp)
 ADD_EXECUTABLE (mhivesys erlsys.cpp)
 
 
-TARGET_LINK_LIBRARIES (erltest z ${BZ2_LIB} av hive util io lang avformat avcodec avutil )
-TARGET_LINK_LIBRARIES (erlclient z ${BZ2_LIB} esb sql av lang util io hive avcodec avformat avutil swscale )
-TARGET_LINK_LIBRARIES (mhivewriter z ${BZ2_LIB} esb sql av lang util io hive avcodec avformat avutil swscale )
-TARGET_LINK_LIBRARIES (mhivesys z ${BZ2_LIB} esb sql av lang util io hive avcodec avformat avutil swscale )
+TARGET_LINK_LIBRARIES (erltest z ${BZ2_LIB} av util io lang avformat avcodec avutil )
+TARGET_LINK_LIBRARIES (erlclient z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
+TARGET_LINK_LIBRARIES (mhivewriter z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
+TARGET_LINK_LIBRARIES (mhivesys z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
 
 IF(WIN32)
   TARGET_LINK_LIBRARIES (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)

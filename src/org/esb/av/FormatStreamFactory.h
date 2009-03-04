@@ -6,8 +6,7 @@ namespace org {
   namespace esb {
     namespace av {
       class FormatInputStream;
-    }
-    namespace hive {
+   
 
       class FormatStreamFactory {
       public:

@@ -7,7 +7,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Decimal.h"
 
-#include "org/esb/hive/FormatStreamFactory.h"
+#include "org/esb/av/FormatStreamFactory.h"
 
 #include <boost/shared_ptr.hpp>
 #include "erl.cpp"
@@ -16,7 +16,6 @@
 #include <list>
 using namespace org::esb::av;
 using namespace org::esb::util;
-using namespace org::esb::hive;
 using namespace org::esb::io;
 std::list<boost::shared_ptr<Packet> > last_packet_list;
 std::list<boost::shared_ptr<Packet> > audio_packet_list;
@@ -133,15 +132,19 @@ ETERM * packetgroup(ETERM * v) {
 ETERM * fileinfo(ETERM * v) {
   std::vector<ETERM *> terms;
   ETERM *argp = erl_element(2, v);
-  File f((const char*) ERL_ATOM_PTR(argp));
+  std::string t((const char*) ERL_ATOM_PTR(argp));
+  File f(t);
+//  logdebug("fileinfo:"<<f.getPath());
   if (f.exists()) {
     //    FormatInputStream fis(&f);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
     } else {
-      terms.push_back(erl_mk_string(f.getFileName().c_str()));
-      terms.push_back(erl_mk_string(f.getFilePath().c_str()));
+//      terms.push_back(erl_mk_string(f.getFilePath().c_str()));
+//      terms.push_back(erl_mk_string(f.getFilePath().c_str()));
+      terms.push_back(erl_mk_string("undefined"));
+      terms.push_back(erl_mk_string("undefined"));
       terms.push_back(erl_mk_string(Decimal(fis->getFileSize()).toString().c_str()));
       terms.push_back(erl_mk_string(fis->getFormatContext()->iformat->name));
       terms.push_back(erl_mk_int(fis->getStreamCount()));
@@ -165,7 +168,6 @@ ETERM * packetstream(ETERM * v) {
   int str = ERL_INT_UVALUE(stream);
   int se = ERL_INT_VALUE(seek);
   int c = ERL_INT_VALUE(count);
-
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     long long int s;

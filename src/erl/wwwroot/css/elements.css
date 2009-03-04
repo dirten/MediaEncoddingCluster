@@ -61,8 +61,8 @@ div.inplace_textbox .LV_invalid {
 
 .flash {
 	color: #303030;
-	background-color: #FAEC7F;
-	border: #FFE800 solid 2px; 
+	background-color: #dddddd;
+	border: black solid 1px;
 	padding: 3px 5px 3px 5px; 
 	margin-bottom: 7px;
 }

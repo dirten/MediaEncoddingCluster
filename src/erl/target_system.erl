@@ -78,6 +78,7 @@ create(RelFileName) ->
     copy_file(filename:join([ErtsBinDir, "to_erl"]),
               filename:join([TmpBinDir, "to_erl"]), [preserve]),
 
+        
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),
     StartErlData = io_lib:fwrite("~s ~s~n", [ErtsVsn, RelVsn]),
@@ -95,7 +96,7 @@ create(RelFileName) ->
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
-    remove_dir_tree("tmp"),
+%    remove_dir_tree("tmp"),
     ok.
 
 

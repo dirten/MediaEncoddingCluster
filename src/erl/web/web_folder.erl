@@ -67,7 +67,7 @@ body() ->
 				#tablecell { id=outfolderLabel },
 				#tablecell { id=profileLabel },
 				#tablecell { id=filterLabel },
-				#tablecell { body=#button { id=myButton, text="Details" } }
+				#tablecell { body=#button { id=myButton, text="Edit Folder" } }
 			]}}
 		]}
 	],

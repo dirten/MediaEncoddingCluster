@@ -19,7 +19,7 @@ namespace org {
 //        logdebug("openning MediaFile:" << source->getPath());
         if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
           //                    throw Exception("FormatInputStream<init> - could not open File");
-          //                    logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
+//                              logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
 //          close();
           return;
         }
