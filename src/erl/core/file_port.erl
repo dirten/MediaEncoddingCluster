@@ -16,11 +16,11 @@ stop()->
   ok.
 
 init([])->
-  io:format("Starting FileImporter~n", []),
+  io:format("Starting FileImporter with ~s~n", [?FILEPORTEXE]),
   global:register_name(packet_sender, self()),
   %  register(fileimport, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, ?FILEPORTEXE}, [{packet, 4}, binary]),
+  Port = open_port({spawn, ?SYSPORTEXE}, [{packet, 4}, binary]),
   link(Port),
   register(fileport,Port),
   io:format("FileImporter started~n", []),

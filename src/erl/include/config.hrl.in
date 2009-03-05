@@ -1,8 +1,4 @@
--define(FILEPORTEXE,"@FILEPORTEXE@" ).
--define(ENCODECLIENTEXE,"@ENCODECLIENTEXE@" ).
 -define(SYSPORTEXE,"@SYSPORTEXE@" ).
 
 
-%-define(FILEPORTEXE,"/usr/bin/valgrind --log-file=/tmp/erltest  --tool=memcheck --leak-check=full --show-reachable=yes @FILEPORTEXE@" ).
 %-define(SYSPORTEXE,"/usr/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes @SYSPORTEXE@" ).
-%-define(ENCODECLIENTEXE,"/usr/bin/valgrind --log-file=/tmp/erlclient  --tool=memcheck --leak-check=full --show-reachable=yes @ENCODECLIENTEXE@" ).

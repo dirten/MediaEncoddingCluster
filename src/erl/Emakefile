@@ -10,6 +10,27 @@
 	{ outdir, "./ebin" },
 	debug_info
 ]}.
+{ './nitrogen/src/*', [
+	{ i, "./" },
+	{ i, "./include" },
+	{ i, "./nitrogen/include" },
+	{ outdir, "./ebin" },
+	debug_info
+]}.
+{ './nitrogen/src/*/*', [
+	{ i, "./" },
+	{ i, "./include" },
+	{ i, "./nitrogen/include" },
+	{ outdir, "./ebin" },
+	debug_info
+]}.
+{ './nitrogen/src/elements/*/*', [
+	{ i, "./" },
+	{ i, "./include" },
+	{ i, "./nitrogen/include" },
+	{ outdir, "./ebin" },
+	debug_info
+]}.
 { './lib/*', [
 	{ outdir, "./ebin" }
 ]}.

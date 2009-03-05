@@ -1,9 +1,11 @@
 -module(file_export).
 
+-include("config.hrl").
+
 -export([init/1,start_link/0, loop/0]).
 -export([system_continue/3, system_terminate/4]).
 
--include("schema.hrl").
+	-include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
 start_link()->
@@ -87,7 +89,7 @@ export(FileNo) when is_integer(FileNo)->
           %    B=[element(2,X)||X<-Result],
           %  [File|_]=T,
           %  io:format("open File ~s",[element(2,File)]),
-          Port = open_port({spawn, "/home/jhoelscher/MediaEncodingCluster/build/src/erl/mhivewriter"}, [{packet, 4}, binary]),
+          Port = open_port({spawn, ?SYSPORTEXE}, [{packet, 4}, binary]),
           %  Port=[],
           Port ! {self(), {command, term_to_binary({createfile,list_to_atom(element(2,FileName))})}},
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),

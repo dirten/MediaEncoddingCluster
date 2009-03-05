@@ -75,7 +75,8 @@ ENDIF(WIN32)
 IF(NOT WIN32)
 
 #target_link_libraries (test_sql sql esb util lang mysqlclient  ssl pthread ${BOOST_DT_LIB_MT})
-target_link_libraries (info ${BZ2_LIB}  pthread av util io lang avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
+target_link_libraries (info ${BZ2_LIB} pthread io av util lang avformat avcodec avutil swscale x264 wthttp wtext wt z)
+#												av lang util io avcodec avformat avutil swscale
 #target_link_libraries (test mysqlclient pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
 #target_link_libraries (test_mysql pthread mysqlclient  ssl z)
 ENDIF(NOT WIN32)

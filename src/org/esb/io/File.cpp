@@ -1,7 +1,8 @@
 #include <iostream>
+#include <fstream>
 //#include <assert.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 //#include <unistd.h>
 //#include <dirent.h>
 #include <errno.h>
@@ -21,14 +22,16 @@ using namespace org::esb::io;
 
 File::File(const std::string pathname):_pathname(pathname) {
 //  logdebug("FIle:"<<_pathname);
-
-  int desc=open(pathname.c_str(), O_RDONLY) == 0;
-  _exist=fstat(desc, &status) == 0;
-  if (!_exist) {
+	ifstream in(pathname.c_str(),ifstream::in);
+//  int desc=open(pathname.c_str(), O_RDONLY) == 0;
+//  _exist=fstat(desc, &status) == 0;
+  if (!in) {
     logdebug("status for file not found:"<<pathname);
     logdebug("errormsg:"<<strerror(errno));
-    logdebug("PathMax:"<<PATH_MAX);
+//    logdebug("PathMax:"<<PATH_MAX);
 
+  }else{
+	  _exist=true;
   }
 }
 

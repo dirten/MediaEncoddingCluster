@@ -1,6 +1,6 @@
 {application,mhive,
              [{description,"Media Encoding Cluster"},
-              {vsn,"0.0.1"},
+              {vsn,"0.0.4.1"},
               {modules,[action_add_class,action_alert,action_animate,
                         action_appear,action_buttonize,action_comet_start,
                         action_confirm,action_disable_selection,action_effect,

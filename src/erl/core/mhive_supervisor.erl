@@ -15,7 +15,8 @@ start_link(Args)->
 
 init([])->
   {ok,{{one_for_one,3,10},
-  [{filescanner,
+  [
+  {filescanner,
     {file_scanner,start_link,[]},
   permanent,
   10,
