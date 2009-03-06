@@ -76,14 +76,22 @@ create(RelFileName) ->
     io:fwrite("Copying files \"epmd\", \"run_erl\" and \"to_erl\" from \n"
               "\"~s\" to \"~s\" ...~n",
               [ErtsBinDir, TmpBinDir]),
+    case os:type() of 
+      {win32,nt} ->
+    copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
+              filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
+    copy_file("bin/Release/mhivesys.exe", filename:join([TmpBinDir, "mhivesys.exe"]),[preserve]);
+      {unix, linux}->
     copy_file(filename:join([ErtsBinDir, "epmd"]),
               filename:join([TmpBinDir, "epmd"]), [preserve]),
-%    copy_file(filename:join([ErtsBinDir, "run_erl"]),
-%              filename:join([TmpBinDir, "run_erl"]), [preserve]),
-%    copy_file(filename:join([ErtsBinDir, "to_erl"]),
-%              filename:join([TmpBinDir, "to_erl"]), [preserve]),
+    copy_file(filename:join([ErtsBinDir, "run_erl"]),
+              filename:join([TmpBinDir, "run_erl"]), [preserve]),
+    copy_file(filename:join([ErtsBinDir, "to_erl"]),
+              filename:join([TmpBinDir, "to_erl"]), [preserve]),
+    copy_file("bin/mhivesys", filename:join([TmpBinDir, "mhivesys"]),[preserve])
+    end,
+	
 
-    copy_file("bin/mhivesys", filename:join([TmpBinDir, "mhivesys"]),[preserve]),
         
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),
@@ -102,7 +110,7 @@ create(RelFileName) ->
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
-%    remove_dir_tree("tmp"),
+    remove_dir_tree("tmp"),
     ok.
 
 
@@ -119,7 +127,7 @@ install(RelFileName, RootDir) ->
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"
               "form erl, start and start_erl ...\n"),
     case os:type() of 
-      win32 ->
+      {win32,nt} ->
         ok;
       {unix, linux}->
         subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
@@ -215,7 +223,7 @@ copy_file(Src, Dest) ->
     copy_file(Src, Dest, []).
 
 copy_file(Src, Dest, Opts) ->
-    io:format("Src:~s Dest:~s",[Src, Dest]),
+    io:format("Src:~s Dest:~s~n",[Src, Dest]),
     {ok, InFd} = file:open(Src, [raw, binary, read]),
     {ok, OutFd} = file:open(Dest, [raw, binary, write]),
     do_copy_file(InFd, OutFd),

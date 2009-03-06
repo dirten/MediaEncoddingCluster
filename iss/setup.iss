@@ -15,6 +15,18 @@ Compression=lzma
 SolidCompression=yes
 OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4
 
+[Code]
+function MyConst(Param: String): String;
+begin
+  StringChangeEx(Param,'\','/',True);
+  Result:=Param;
+end;
+
+[INI]
+Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Flags: uninsdeletesection
+Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Bindir"; String: "{code:MyConst|{app}}/erts-5.6.5/bin"
+Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Progname"; String: "erl"
+Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Rootdir"; String: "{code:MyConst|{app}}"
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -22,15 +34,19 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
-[Files]
+[Run]
+Filename: "{tmp}\vcredist_x86.exe"
 
-Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "H:/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "H:/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "H:/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+[Files]
+Source: "c:\erltest\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
+
+;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "H:/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "H:/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "H:/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "F:/ffmpeg-r13242-gpl-lstatic-win32/lib\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "F:/ffmpeg-r13242-gpl-lstatic-win32/lib\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "F:/ffmpeg-r13242-gpl-lstatic-win32/lib\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
