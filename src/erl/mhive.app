@@ -35,7 +35,7 @@
                         web_account,web_encoding,web_folder,web_folder_edit,
                         web_folder_select,web_index,web_media,
                         web_media_detail,web_profile,web_profile_edit,
-                        web_samples,web_setting,web_x,wf,wf_bind,wf_cache,
+                        web_system,web_setting,web_x,wf,wf_bind,wf_cache,
                         wf_cache_server,wf_comet,wf_continuation,wf_convert,
                         wf_counter,wf_email,wf_handle,wf_inets,wf_init,
                         wf_mochiweb,wf_path,wf_platform,wf_platform_inets,
@@ -50,4 +50,5 @@
                     {port,9000},
                     {session_timeout,20},
                     {sign_key,"b37ca07"},
-                    {wwwroot,"wwwroot"}]}]}.
+                    {wwwroot,"wwwroot"},
+                    {sysportexe,"bin/mhivesys"}]}]}.

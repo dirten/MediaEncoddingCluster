@@ -16,13 +16,14 @@ stop()->
   ok.
 
 init([])->
-  io:format("Starting System Port~n", []),
+  {ok,SysPortCommand}=application:get_env(sysportexe),
+  io:format("Starting ~s ~s ~n", [?MODULE, SysPortCommand]),
   global:register_name(hive_system_info, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, ?SYSPORTEXE}, [{packet, 4}, binary]),
+  Port = open_port({spawn, SysPortCommand}, [{packet, 4}, binary]),
   link(Port),
   register(mhive_sys_port,Port),
-  io:format("System Port started~n", []),
+  io:format("~s started~n", [?MODULE]),
   {ok, state}.
 
 handle_call({Command},_From,_N)->

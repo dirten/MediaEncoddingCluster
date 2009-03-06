@@ -37,9 +37,9 @@ create(RelFileName) ->
               [filename:join([".", "mhive.app"])]),
     copy_file("mhive.app", filename:join(["./ebin", "mhive.app"])),
     
-    io:fwrite("Copying file \"bin/Release/mhivesys.exe\" to \"~s\" ...~n",
-              [filename:join(["./priv", "mhivesys.exe"])]),
-    copy_file("bin/Release/mhivesys.exe", filename:join(["./priv", "mhivesys.exe"])),
+%    io:fwrite("Copying file \"bin/mhivesys\" to \"~s\" ...~n",
+%              [filename:join(["./priv", "mhivesys"])]),
+%    copy_file("bin/mhivesys", filename:join(["./priv", "mhivesys"])),
 
 
     io:fwrite("Making \"plain.script\" and \"plain.boot\" files ...~n"),
@@ -76,13 +76,14 @@ create(RelFileName) ->
     io:fwrite("Copying files \"epmd\", \"run_erl\" and \"to_erl\" from \n"
               "\"~s\" to \"~s\" ...~n",
               [ErtsBinDir, TmpBinDir]),
-    copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
-              filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
+    copy_file(filename:join([ErtsBinDir, "epmd"]),
+              filename:join([TmpBinDir, "epmd"]), [preserve]),
 %    copy_file(filename:join([ErtsBinDir, "run_erl"]),
 %              filename:join([TmpBinDir, "run_erl"]), [preserve]),
 %    copy_file(filename:join([ErtsBinDir, "to_erl"]),
 %              filename:join([TmpBinDir, "to_erl"]), [preserve]),
 
+    copy_file("bin/mhivesys", filename:join([TmpBinDir, "mhivesys"]),[preserve]),
         
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),
@@ -111,13 +112,22 @@ install(RelFileName, RootDir) ->
     extract_tar(TarFile, RootDir),
     StartErlDataFile = filename:join([RootDir, "releases", "start_erl.data"]),
     {ok, StartErlData} = read_txt_file(StartErlDataFile),
-    [ErlVsn, _RelVsn| _] = string:tokens(StartErlData, " \n"),
+    [ErlVsn, RelVsn| _] = string:tokens(StartErlData, " \n"),
     ErtsBinDir = filename:join([RootDir, "erts-" ++ ErlVsn, "bin"]),
     BinDir = filename:join([RootDir, "bin"]),
+    LibDir = filename:join([RootDir, "lib"]),
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"
               "form erl, start and start_erl ...\n"),
-%    subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
-%                      [{"FINAL_ROOTDIR", RootDir}, {"EMU", "beam"}],
+    case os:type() of 
+      win32 ->
+        ok;
+      {unix, linux}->
+        subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
+                      [{"FINAL_ROOTDIR", RootDir}, {"EMU", "beam"}],
+                      [preserve])
+    end,
+%    subst_src_scripts(["mhive.app"], "./", LibDir,
+%                      [{"SYSPORTEXE", "\"priv/mhivesys\""}],
 %                      [preserve]),
     io:fwrite("Creating the RELEASES file ...\n"),
     create_RELEASES(RootDir,
@@ -234,6 +244,7 @@ write_file(FName, Conts) ->
     file:close(Fd).
 
 read_txt_file(File) ->
+    io:format("Reading text File ~p",[File]),
     {ok, Bin} = file:read_file(File),
     {ok, binary_to_list(Bin)}.
 

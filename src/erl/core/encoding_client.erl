@@ -8,8 +8,9 @@ start()->
 
 init()->
 %  register(encodeclient, self()),
+  {ok,SysPortCommand}=application:get_env(sysportexe),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, ?ENCODECLIENTEXE}, [{packet, 4}, binary]),
+  Port = open_port({spawn, SysPortCommand}, [{packet, 4}, binary]),
   loop(Port).
 
 loop( Port)->

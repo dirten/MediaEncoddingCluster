@@ -89,7 +89,9 @@ export(FileNo) when is_integer(FileNo)->
           %    B=[element(2,X)||X<-Result],
           %  [File|_]=T,
           %  io:format("open File ~s",[element(2,File)]),
-          Port = open_port({spawn, ?SYSPORTEXE}, [{packet, 4}, binary]),
+          {ok,SysPortCommand}=application:get_env(sysportexe),
+
+          Port = open_port({spawn, SysPortCommand}, [{packet, 4}, binary]),
           %  Port=[],
           Port ! {self(), {command, term_to_binary({createfile,list_to_atom(element(2,FileName))})}},
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
