@@ -22,6 +22,12 @@ begin
   Result:=Param;
 end;
 
+ {
+;[Components]
+;Name: "runtime"; Description: "This is the Base Runtime System"; Types: full
+;Name: "base/server"; Description: "Configure System as Server"; Types: full compact
+;Name: "base/client"; Description: "Configure System as Client"; Types: full compact
+  }
 [INI]
 Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Flags: uninsdeletesection
 Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Bindir"; String: "{code:MyConst|{app}}/erts-5.6.5/bin"
@@ -32,11 +38,16 @@ Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Rootdir"; Str
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
+Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
+;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
+;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
 Filename: "{tmp}\vcredist_x86.exe"
-
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(mhive)."""
+;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default"" -eval application:start(mhive)."
 [Files]
 Source: "c:\erltest\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
@@ -61,5 +72,5 @@ Name: "{group}\start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-i"
 Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
+;Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
 

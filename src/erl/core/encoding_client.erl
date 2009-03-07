@@ -6,6 +6,7 @@ start()->
   spawn(?MODULE,init,[]),
   ok.
 
+
 init()->
 %  register(encodeclient, self()),
   {ok,SysPortCommand}=application:get_env(sysportexe),

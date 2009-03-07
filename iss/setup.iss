@@ -4,16 +4,16 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{EDC20B92-4C2B-441C-AF0B-AB3D658825D8}
 AppName=Media Encoding Cluster
-AppVerName=Media Encoding Cluster 0.0.4
+AppVerName=Media Encoding Cluster 0.0.4.1
 AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
 AppUpdatesURL=http://www.codergrid.de
-DefaultDirName={pf}\MediaEncodingCluster-0.0.4
+DefaultDirName={pf}\MediaEncodingCluster
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
-OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4
+OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.1
 
 [Code]
 function MyConst(Param: String): String;
