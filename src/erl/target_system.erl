@@ -1,6 +1,6 @@
 -module(target_system).
 -include_lib("kernel/include/file.hrl").
--export([create/1, install/2]).
+-export([create/1, install/1]).
 -define(BUFSIZE, 8192).
 
 %% Note: RelFileName below is the *stem* without trailing .rel,
@@ -9,8 +9,9 @@
 
 %% create(RelFileName)
 %%
-create(RelFileName) ->
-    RelFile = RelFileName ++ ".rel",
+create([H|T]) ->
+	RelFileName=atom_to_list(H),
+    RelFile = (RelFileName) ++ ".rel",
     io:fwrite("Reading file: \"~s\" ...~n", [RelFile]),
     {ok, [RelSpec]} = file:consult(RelFile),
     io:fwrite("Creating file: \"~s\" from \"~s\" ...~n",
@@ -90,6 +91,9 @@ create(RelFileName) ->
               filename:join([TmpBinDir, "to_erl"]), [preserve]),
     copy_file("bin/mhivesys", filename:join([TmpBinDir, "mhivesys"]),[preserve])
     end,
+    file:make_dir("tmp/config"),
+    file:make_dir("tmp/logs"),
+    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
 	
 
         
@@ -114,7 +118,8 @@ create(RelFileName) ->
     ok.
 
 
-install(RelFileName, RootDir) ->
+install([A, RootDir]) ->
+	RelFileName=atom_to_list(A),
     TarFile = RelFileName ++ ".tar.gz",
     io:fwrite("Extracting ~s ...~n", [TarFile]),
     extract_tar(TarFile, RootDir),
@@ -153,7 +158,7 @@ make_script(RelFileName) ->
 %%
 make_tar(RelFileName) ->
     RootDir = code:root_dir(),
-    systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,[priv]}]).
+    systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]}]).
 
 %% extract_tar(TarFile, DestDir)
 %%

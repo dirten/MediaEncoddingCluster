@@ -24,7 +24,7 @@
                         element_tablerow,element_template,element_textarea,
                         element_textbox,element_value,element_wizard,
                         encoding_client,file_export,file_port,file_scanner,
-                        libdb,libfile,mhive,mhive_supervisor,
+                        libav,libdb,libfile,mhive,mhive_supervisor,
                         mirror,nitrogen,nitrogen_file,nitrogen_inets_app,
                         nitrogen_mochiweb_app,nitrogen_project,
                         nitrogen_yaws_app,packet_server,packet_stack,sync,

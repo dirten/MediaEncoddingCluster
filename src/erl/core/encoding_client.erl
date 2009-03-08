@@ -51,7 +51,8 @@ loop( Port)->
           exit(normal);
         {'EXIT', Port, Reason2} ->
  %        global:unregister_name(packet_sender),
-          io:format("EncodingClient exited  ~w ~n", [Reason2]),
+          io:format("EncodingClient exited  ~w with data ~w ~n", [Reason2, Any]),
+%          io:format("EncodingClient exited  ~w ~n", [Reason2]),
           receive after 1000->init()end
 %         exit({normal, Reason2})
           after 10000->

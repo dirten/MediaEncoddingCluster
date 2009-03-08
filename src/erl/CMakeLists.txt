@@ -96,4 +96,8 @@ INSTALL(TARGETS mhivesys
 #file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
 add_custom_target(erlang ALL ${ERLANG_DIR}/bin/erl -args_file compile.args
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
+
+add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -args_file system.args
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
+
 configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)

@@ -9,7 +9,7 @@ AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
 AppUpdatesURL=http://www.codergrid.de
-DefaultDirName={pf}\MediaEncodingCluster
+DefaultDirName={pf}\MediaEncodingCluster-0.0.4.1
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
@@ -22,6 +22,12 @@ begin
   Result:=Param;
 end;
 
+ {
+;[Components]
+;Name: "runtime"; Description: "This is the Base Runtime System"; Types: full
+;Name: "base/server"; Description: "Configure System as Server"; Types: full compact
+;Name: "base/client"; Description: "Configure System as Client"; Types: full compact
+  }
 [INI]
 Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Flags: uninsdeletesection
 Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Bindir"; String: "{code:MyConst|{app}}/erts-5.6.5/bin"
@@ -30,15 +36,24 @@ Filename: "{app}/erts-5.6.5/bin/erl.ini"; Section: "erlang"; Key: "Rootdir"; Str
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "german"; MessagesFile: "compiler:languages/German.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
+Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
+;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
+;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"
-
+Filename: "{tmp}\vcredist_x86.exe"; OnlyBelowVersion: 0,9.0
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -boot releases\0.0.4.1\start -config logger.config"""; Tasks: baseserver
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(mhive)."""; Tasks: baseclient
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService"; Flags:postinstall;
+;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default"" -eval application:start(mhive)."
 [Files]
-Source: "c:\erltest\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "F:/MediaEncodingCluster-svn/src/erl/target/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -56,10 +71,10 @@ Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
-Name: "{group}\start Client"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-i"; WorkingDir: "{app}\bin"
-Name: "{group}\{cm:ProgramOnTheWeb,Administration}"; Filename: "http://localhost:8080"
+;Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\start Console"; Filename: "{app}\erts-5.6.5\bin\werl.exe" ; Parameters: "-sname console -setcookie default -config logger.config -eval application:start(sasl)."; WorkingDir: "{app}"
+Name: "{group}\Web Administration"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
+;Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon
 
