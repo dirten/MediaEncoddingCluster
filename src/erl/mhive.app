@@ -28,7 +28,7 @@
                         mirror,nitrogen,nitrogen_file,nitrogen_inets_app,
                         nitrogen_mochiweb_app,nitrogen_project,
                         nitrogen_yaws_app,packet_server,packet_stack,sync,
-                        sys_port,validator_confirm_password,
+                        sys_port,user_default,validator_confirm_password,
                         validator_custom,validator_is_email,
                         validator_is_integer,validator_is_required,
                         validator_js_custom,validator_min_length,web,
@@ -51,4 +51,4 @@
                     {session_timeout,20},
                     {sign_key,"b37ca07"},
                     {wwwroot,"wwwroot"},
-                    {sysportexe,"bin/mhivesys"}]}]}.
+                    {sysportexe,"bin/Release/mhivesys"}]}]}.

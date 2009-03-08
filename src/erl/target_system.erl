@@ -9,7 +9,7 @@
 
 %% create(RelFileName)
 %%
-create([H|T]) ->
+create([H|_T]) ->
 	RelFileName=atom_to_list(H),
     RelFile = (RelFileName) ++ ".rel",
     io:fwrite("Reading file: \"~s\" ...~n", [RelFile]),
@@ -93,6 +93,7 @@ create([H|T]) ->
     end,
     file:make_dir("tmp/config"),
     file:make_dir("tmp/logs"),
+    file:make_dir("tmp/data"),
     copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
 	
 
@@ -111,11 +112,15 @@ create([H|T]) ->
     erl_tar:add(Tar, "erts-" ++ ErtsVsn, []),
     erl_tar:add(Tar, "releases", []),
     erl_tar:add(Tar, "lib", []),
+    erl_tar:add(Tar, "config", []),
+    erl_tar:add(Tar, "logs	", []),
+    erl_tar:add(Tar, "data", []),
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
     remove_dir_tree("tmp"),
     ok.
+
 
 
 install([A, RootDir]) ->

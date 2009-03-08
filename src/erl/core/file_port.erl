@@ -17,7 +17,7 @@ stop()->
 
 init([])->
   {ok,SysPortCommand}=application:get_env(sysportexe),
-  io:format("Starting FileImporter with ~p~n", [SysPortCommand]),
+  io:format("Starting ~w with ~p~n", [?MODULE,SysPortCommand]),
   global:register_name(packet_sender, self()),
   %  register(fileimport, self()),
   process_flag(trap_exit, true),
@@ -29,7 +29,7 @@ init([])->
   {ok, state}.
 
 handle_call({Command,File,Stream,Seek,PacketCount},_From,_N)->
-%  io:format("~w-handle_call~w~n", [?MODULE,{Command}]),
+  io:format("~w-handle_call~w~n", [?MODULE,{Command,File,Stream,Seek,PacketCount}]),
   fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),Stream,Seek,PacketCount})}},
   receive
     {_Fileport, {data, Data}} ->

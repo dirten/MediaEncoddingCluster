@@ -35,14 +35,15 @@ loop()->
       io:format("~w stop loop~n", [?MODULE]),
       ok
   after 10000->
-      %      io:format("~w Loop entry1 ~n", [?MODULE]),
+            io:format("~w Loop entry1 ~n", [?MODULE]),
       F = fun() ->
               Q = qlc:q([E || E <- mnesia:table(watchfolder)]),
               qlc:e(Q)
           end,
       {atomic, E}=mnesia:transaction(F),
       Fun=fun(El)->
-              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*/*")),
+              FileList=filelib:wildcard(string:concat(El#watchfolder.infolder,"/*")),
+%              io:format("WatchFolder:~w")
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
           end,
       lists:foreach(Fun,E),
@@ -174,7 +175,7 @@ process_file_list([H|T],Profile, OutPath)->
             fun()->
                 case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
                   {_FileName,_FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
-%                    io:format("try File import~s~n",[FileName]),
+                    io:format("try File import~s~n",[X]),
                     File = #file{
                       id=libdb:sequence(file),
                       filename=filename:basename(X),
@@ -195,8 +196,8 @@ process_file_list([H|T],Profile, OutPath)->
                   {filenotfound}  ->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
-                    ok;
-%                           io:format("File Wrong format ~s~n",[X]);
+                    ok,
+                           io:format("File Wrong format ~s~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end
@@ -239,6 +240,10 @@ handle_cast(_Msg,N)->
 
 handle_info(Info,N)->
   io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
+  case Info of
+    {{'EXIT',_,killed},state}->
+      exit(killed)
+    end,
   {noreply, N}.
 
 terminate(Reason,_N)->

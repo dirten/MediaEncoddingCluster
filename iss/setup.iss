@@ -9,7 +9,7 @@ AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
 AppUpdatesURL=http://www.codergrid.de
-DefaultDirName={pf}\MediaEncodingCluster-0.0.4.1
+DefaultDirName={pf}\MediaEncodingCluster
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
@@ -48,12 +48,16 @@ Name: "baseclient"; Description: "Configure System as Client"; GroupDescription:
 [Run]
 Filename: "{tmp}\vcredist_x86.exe"; OnlyBelowVersion: 0,9.0
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
-Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -boot releases\0.0.4.1\start -config logger.config"""; Tasks: baseserver
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -boot releases\0.0.4.1\start -config config/logger.config"""; Tasks: baseserver
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(mhive)."""; Tasks: baseclient
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService"; Flags:postinstall;
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default"" -eval application:start(mhive)."
+[UninstallRun]
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "remove MHiveService";
+
 [Files]
 Source: "F:/MediaEncodingCluster-svn/src/erl/target/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "F:/MediaEncodingCluster-svn/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -72,7 +76,7 @@ Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 [Icons]
 ;Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
-Name: "{group}\start Console"; Filename: "{app}\erts-5.6.5\bin\werl.exe" ; Parameters: "-sname console -setcookie default -config logger.config -eval application:start(sasl)."; WorkingDir: "{app}"
+Name: "{group}\start Console"; Filename: "{app}\erts-5.6.5\bin\werl.exe" ; Parameters: "-sname console -setcookie default -config config/logger.config -eval application:start(sasl)."; WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
