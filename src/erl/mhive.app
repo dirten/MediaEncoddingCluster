@@ -51,4 +51,4 @@
                     {session_timeout,20},
                     {sign_key,"b37ca07"},
                     {wwwroot,"wwwroot"},
-                    {sysportexe,"bin/Release/mhivesys"}]}]}.
+                    {sysportexe,"bin/mhivesys"}]}]}.

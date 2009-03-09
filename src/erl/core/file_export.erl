@@ -27,18 +27,18 @@ init(Parent)->
 
 loop()->
   receive
-  after 15000->
+  after 10000->
       export(select),
       loop()
   end.
 
 
 system_continue(_Parent, _Deb, _Chs) ->
-  io:format("~s",[?MODULE]),
+  io:format("System Continue ~s",[?MODULE]),
   loop().
 
 system_terminate(Reason, _Parent, _Deb, _Chs) ->
-  io:format("~s,~w",[?MODULE, Reason]),
+  io:format("Terminate~s,~w",[?MODULE, Reason]),
   exit(Reason).
 
 
@@ -77,12 +77,19 @@ export(FileNo) when is_integer(FileNo)->
           FileWriter = fun(FileId, FilePort)->
                            case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
                              {ok,Data}->
-                               %        io:format("Write Data"),
+ %                              io:format("Write Data ~p~n",[FileId]),
                                FilePort ! {self(), {command, term_to_binary({writepacket,binary_to_term(Data)})}},
+%                              receive
+%                                {_Port,{data, Data}} ->
+%                                  io:format("Data Written ~w",[Data])
+%                                  after 10000 ->
+%                                    io:format("Now answer ",[])
+%                                end,
                                ok;
                              %        file:write(MergePid, Data);
                              %        binary_to_term(Data);
                              {error,enoent}->
+                               io:format("File ~p Not Found",[FileId]),
                                nodata
                            end
                        end,
@@ -90,20 +97,38 @@ export(FileNo) when is_integer(FileNo)->
           %  [File|_]=T,
           %  io:format("open File ~s",[element(2,File)]),
           {ok,SysPortCommand}=application:get_env(sysportexe),
-
+%          SysPortCommand="/usr/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes bin/mhivesys",
+%          SysPortCommand="bin/mhivesys",
+%          process_flag(trap_exit, true),
           Port = open_port({spawn, SysPortCommand}, [{packet, 4}, binary]),
+          link(Port),
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           %  Port=[],
           Port ! {self(), {command, term_to_binary({createfile,list_to_atom(element(2,FileName))})}},
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
           [Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           Port ! {self(), {command, term_to_binary({initfile})}},
+%          receive
+%            {_Fileport, {data, Data}} ->
+%              io:format("File Ititialized ~p",[binary_to_term(Data)])
+%              after 10000 ->
+%                io:format("File Not Ititialized ",[])
+%            end,
+%          io:format("Portinfo: after init~p~n",[erlang:port_info(Port)]),
 
           %    {ok,Pid}=file:open("Merge.data", write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
           %   io:write(Pid, Data),
 
+
+%        io:format("Result:~w",[Result]),
           [FileWriter(element(2,X), Port)||X<-Result],
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           Port ! {self(), {command, term_to_binary({closefile})}},
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           Port ! {self(), close},
+%        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
 
           %    file:close(Pid),
           % {atomic,E3}=mnesia:transaction(Fun(13)),

@@ -13,7 +13,7 @@ init()->
 %  io:format("Client:~p",[application:get_env(sysportexe)]),
 %  {ok,SysPortCommand}=application:get_env(sysportexe),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, "f:/MediaEncodingCluster-svn/src/erl/bin/Release/mhivesys.exe  "}, [{packet, 4}, binary]),
+  Port = open_port({spawn, "bin/mhivesys"}, [{packet, 4}, binary]),
   loop(Port).
 
 loop( Port)->

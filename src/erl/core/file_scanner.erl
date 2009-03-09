@@ -35,7 +35,7 @@ loop()->
       io:format("~w stop loop~n", [?MODULE]),
       ok
   after 10000->
-            io:format("~w Loop entry1 ~n", [?MODULE]),
+%            io:format("~w Loop entry1 ~n", [?MODULE]),
       F = fun() ->
               Q = qlc:q([E || E <- mnesia:table(watchfolder)]),
               qlc:e(Q)

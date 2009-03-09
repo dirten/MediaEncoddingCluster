@@ -61,7 +61,7 @@ ELSE(WIN32)
 #  TARGET_LINK_LIBRARIES (erltest x264  erl_interface ei pthread)
 #  TARGET_LINK_LIBRARIES (erlclient x264  erl_interface ei  pthread)
 #  TARGET_LINK_LIBRARIES (mhivewriter x264  erl_interface ei  pthread)
-  TARGET_LINK_LIBRARIES (mhivesys x264  erl_interface ei  pthread)
+  TARGET_LINK_LIBRARIES (mhivesys x264 erl_interface ei pthread)
 ENDIF(WIN32)
 
 #target_link_libraries (erltest

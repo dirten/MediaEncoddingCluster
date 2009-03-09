@@ -55,6 +55,7 @@ int read_cmd(byte *buf) {
 }
 
 int write_cmd(byte *buf, int len) {
+//  logdebug("Try Write Command:"<<buf);
   byte li;
 
   li = (len >> 24) & 0xff;
@@ -68,7 +69,7 @@ int write_cmd(byte *buf, int len) {
 
   li = len & 0xff;
   write_exact(&li, 1);
-
+//  logdebug("Write Buffer with Length "<<len);
   return write_exact(buf, len);
 }
 

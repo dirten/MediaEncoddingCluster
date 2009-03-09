@@ -6,7 +6,6 @@
 %% Note: RelFileName below is the *stem* without trailing .rel,
 %% .script etc.
 %%
-
 %% create(RelFileName)
 %%
 create([H|_T]) ->
@@ -115,6 +114,8 @@ create([H|_T]) ->
     erl_tar:add(Tar, "config", []),
     erl_tar:add(Tar, "logs	", []),
     erl_tar:add(Tar, "data", []),
+    file:set_cwd(".."),
+    erl_tar:add(Tar, "wwwroot", []),
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),

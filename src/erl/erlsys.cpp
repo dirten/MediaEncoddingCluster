@@ -77,30 +77,41 @@ org::esb::av::PacketOutputStream * pos = NULL;
 org::esb::av::FormatOutputStream *fos = NULL;
 
 ETERM * createfile(ETERM* in) {
+  std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, in);
   org::esb::io::File fout((const char*) ERL_ATOM_PTR(file));
-  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
+//  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
   fos = new org::esb::av::FormatOutputStream(&fout);
   pos = new org::esb::av::PacketOutputStream(fos);
-  return erl_mk_string("ok");
+
+  terms.push_back(erl_mk_atom("ok_file_created"));
+  return vector2list(terms);
 }
 
 ETERM * initfile(ETERM* in) {
+  std::vector<ETERM *> terms;
   pos->init();
-  return erl_mk_string("ok");
+  terms.push_back(erl_mk_atom("ok_file_initialized"));
+  return vector2list(terms);
 }
 
 ETERM * closefile(ETERM* in) {
+  std::vector<ETERM *> terms;
   pos->close();
   fos->close();
-  return erl_mk_string("ok");
+  terms.push_back(erl_mk_atom("ok_file_closed"));
+
+  return vector2list(terms);
 }
 
 ETERM * addstream(ETERM * in) {
+  std::vector<ETERM *> terms;
   ETERM *streamidx = erl_element(3, in);
   Decoder * d = buildDecoderFromTerm(erl_element(2, in));
   pos->setEncoder(*d, ERL_INT_UVALUE(streamidx));
-  return erl_mk_string("ok");
+  terms.push_back(erl_mk_atom("ok_stream_added"));
+
+  return vector2list(terms);
 }
 
 ETERM * writepacket(ETERM * in) {
@@ -110,10 +121,12 @@ ETERM * writepacket(ETERM * in) {
   p->packet->dts=0;
   pos->writePacket(*p);
   delete p;
-  return erl_mk_string("ok");
+  return erl_mk_atom("ok");
 }
 
 ETERM * writepacketlist(ETERM * in) {
+  std::vector<ETERM *> terms;
+
   ETERM * packet_list = erl_element(2, in);
   ETERM * tail=packet_list;
   int pc = erl_length(packet_list);
@@ -124,12 +137,12 @@ ETERM * writepacketlist(ETERM * in) {
     ETERM * head=erl_hd(tail);
 //    Packet *p = buildPacketFromTerm(head);
     writepacket(head);
-    erl_free_compound(head);
+//    erl_free_compound(head);
     tail=erl_tl(tail);
   }
-
-
-  return erl_mk_string("ok");
+//  logdebug("WritePacket Ready- > returning");
+  terms.push_back(erl_mk_string("ok_packets_written"));
+  return vector2list(terms);
 }
 
 
@@ -426,43 +439,32 @@ int main(int argc, char** argv) {
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
     //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
-    erl_print_term((FILE*)stderr, intuple);
+//    erl_print_term((FILE*)stderr, intuple);
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
-/*Information Functions for FFMpeg*/
-	  if (func == "formatlist") {
+
+      if (func == "formatlist") {             /*Information Functions for FFMpeg*/
         outtuple = formatlist(intuple);
-      } else
-        if (func == "codeclist") {
+      } else if (func == "codeclist") {
         outtuple = codeclist(intuple);
-      } else 
-		if (func == "createfile") {
+      } else if (func == "createfile") {
         outtuple = createfile(intuple);
-      } else
-/*System functions for creation output Files*/
-		if (func == "addstream") {
+      } else if (func == "addstream") {       /*System functions for creation output Files*/
         outtuple = addstream(intuple);
-      } else
-        if (func == "writepacket") {
+      } else if (func == "writepacket") {
         outtuple = writepacketlist(intuple);
-      } else
-        if (func == "initfile") {
+      } else if (func == "initfile") {
         outtuple = initfile(intuple);
-      } else
-        if (func == "closefile") {
+      } else if (func == "closefile") {
         outtuple = closefile(intuple);
-      }else
-/*System function to get Data from Input Files*/
-	  if (func == "fileinfo") {
+      } else if (func == "fileinfo") {         /*System function to get Data from Input Files*/
         outtuple = fileinfo(intuple);
       } else if (func == "streaminfo") {
         outtuple = streaminfo(intuple);
       } else if (func == "packetstream") {
         outtuple = packetstream(intuple);
-      } else 
-/*System function to Encode Frames*/
-	  if (func == "encode") {
+      } else if (func == "encode") {           /*System function to Encode Frames*/
         outtuple = encode(intuple);
       } else{
         std::vector<ETERM *> terms;
@@ -476,20 +478,30 @@ int main(int argc, char** argv) {
 
 //      logdebug("try return data");
       if (outtuple != NULL) {
-//        logdebug("return data");
+//        logdebug("return data:");
+//          erl_print_term((FILE*)stderr, outtuple);
         int size = erl_term_len(outtuple);
+//        logdebug("term size:"<<size);
         if (size > 5000000) {
           logerror("OutTuple to big(max 5000000b):" << size);
         }
-        erl_encode(outtuple, buf);
-        write_cmd(buf, size);
-        erl_free_compound(outtuple);
-        outtuple = NULL;
+        if(erl_encode(outtuple, buf)>0){
+//          logdebug("try write_cmd");
+          write_cmd(buf, size);
+//          logdebug("write_cmd success");
+          erl_free_compound(outtuple);
+          outtuple = NULL;
+//          logdebug("return data written");
+        }else{
+          erl_print_term((FILE*)stderr, outtuple);          
+          logerror("Error while encoding term:");
+        }
       } else {
         logdebug("OutTuple is NULL");
       }
     }
   }
   delete []buf;
+//  logdebug("mhivesys Exiting Normal");
 }
 
