@@ -37,6 +37,7 @@ create([H|_T]) ->
               [filename:join([".", "mhive.app"])]),
     copy_file("mhive.app", filename:join(["./ebin", "mhive.app"])),
     
+    
 %    io:fwrite("Copying file \"bin/mhivesys\" to \"~s\" ...~n",
 %              [filename:join(["./priv", "mhivesys"])]),
 %    copy_file("bin/mhivesys", filename:join(["./priv", "mhivesys"])),
@@ -95,7 +96,7 @@ create([H|_T]) ->
     file:make_dir("tmp/data"),
     copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
 	
-
+    copy_file("mhive_client.app", filename:join(["tmp/lib",RelFileName++"-"++RelVsn,"ebin", "mhive_client.app"])),
         
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),

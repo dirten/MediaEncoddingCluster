@@ -1,19 +1,25 @@
 -include("../include/config.hrl").
 -module(encoding_client).
--export([start/0, init/0]).
+-compile(export_all).
+-behaviour(gen_server).
 
 start()->
-  spawn(?MODULE,init,[]),
+  spawn(?MODULE,init,[temp]),
   ok.
 
+start_link()->
+  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
 
-init()->
-%  register(encodeclient, self()),
+
+
+init([])->
 %  application:set_env(sysportexe,"bin/mhivesys"),
 %  io:format("Client:~p",[application:get_env(sysportexe)]),
 %  {ok,SysPortCommand}=application:get_env(sysportexe),
-  process_flag(trap_exit, true),
+%  process_flag(trap_exit, true),
   Port = open_port({spawn, "bin/mhivesys"}, [{packet, 4}, binary]),
+  unlink(Port),
+  register(encodeclient, Port),
   loop(Port).
 
 loop( Port)->
@@ -53,7 +59,7 @@ loop( Port)->
  %        global:unregister_name(packet_sender),
           io:format("EncodingClient exited  ~w with data ~w ~n", [Reason2, Any]),
 %          io:format("EncodingClient exited  ~w ~n", [Reason2]),
-          receive after 1000->init()end
+          receive after 1000->init([])end
 %         exit({normal, Reason2})
           after 10000->
             io:format("No Data~n",[]),
