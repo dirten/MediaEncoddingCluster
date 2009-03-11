@@ -43,12 +43,7 @@
                         wf_redirect,wf_render,wf_script,wf_session,
                         wf_session_server,wf_session_sup,wf_state,wf_tags,
                         wf_utils,wf_validation,wf_yaws]},
-              {registered,[file_scanner_loop,packet_server]},
+              {registered,[]},
               {applications,[kernel,stdlib]},
-              {mod,{mhive,[client]}},
-              {env,[{platform,inets},
-                    {port,9000},
-                    {session_timeout,20},
-                    {sign_key,"b37ca07"},
-                    {wwwroot,"wwwroot"},
-                    {sysportexe,"bin/mhivesys"}]}]}.
+              {mod,{mhive_client_app,[]}}
+              ]}.

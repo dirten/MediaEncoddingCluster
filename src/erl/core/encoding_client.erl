@@ -1,25 +1,29 @@
 -include("../include/config.hrl").
 -module(encoding_client).
 -compile(export_all).
--behaviour(gen_server).
+%-behaviour(gen_server).
 
 start()->
   spawn(?MODULE,init,[temp]),
   ok.
 
 start_link()->
-  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
+  proc_lib:start_link(?MODULE,init,[self()]).
 
 
 
-init([])->
+init(Parent)->
+  io:format("~s Started~n",[?MODULE]),
+%  loop().
 %  application:set_env(sysportexe,"bin/mhivesys"),
 %  io:format("Client:~p",[application:get_env(sysportexe)]),
 %  {ok,SysPortCommand}=application:get_env(sysportexe),
 %  process_flag(trap_exit, true),
   Port = open_port({spawn, "bin/mhivesys"}, [{packet, 4}, binary]),
-  unlink(Port),
-  register(encodeclient, Port),
+%  unlink(Port),
+  proc_lib:init_ack(Parent, {ok, self()}),
+%  register(encodeclient, Port),
+%  proc_lib:init_ack(Parent, {ok, self()}),
   loop(Port).
 
 loop( Port)->
@@ -92,4 +96,12 @@ loop( Port)->
    %     end
 %    end
   end.
+
+system_continue(_Parent, _Deb, _Chs) ->
+  io:format("System Continue ~s",[?MODULE]).
+%  loop().
+
+system_terminate(Reason, _Parent, _Deb, _Chs) ->
+  io:format("Terminate~s,~w",[?MODULE, Reason]),
+  exit(Reason).
 

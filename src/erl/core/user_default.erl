@@ -54,10 +54,19 @@ connect(Host, NodeName)->
     end.
 
 startserver()->
-  application:start(mhive).
+      {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+      {A1,A2,A3,A4}=Data,
+      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+      Node=list_to_atom("node@"++Ip),
+      _Pid=spawn(Node,application,start,[mhive]).
+%  application:start(mhive).
 
 stopserver()->
-  application:stop(mhive).
+      {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+      {A1,A2,A3,A4}=Data,
+      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+      Node=list_to_atom("node@"++Ip),
+      _Pid=spawn(Node,application,stop,[mhive]).
 
 startclient(Host)->
   startclient(Host,"node").
@@ -69,7 +78,7 @@ startclient(Server, NodeName)->
       {A1,A2,A3,A4}=Data,
       Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
       Node=list_to_atom("node@"++Ip),
-      Pid=spawn(Node,application,start,[mhive_client]),
+      _Pid=spawn(Node,application,start,[mhive_client]),
 %      rpc:call(Node, application,start,[mhive_client]),
 %      unlink(Pid),
       ok;
@@ -83,5 +92,5 @@ stopclient()->
       {A1,A2,A3,A4}=Data,
       Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
       Node=list_to_atom("node@"++Ip),
-      Pid=spawn(Node,application,stop,[mhive_client]).
+      _Pid=spawn(Node,application,stop,[mhive_client]).
 
