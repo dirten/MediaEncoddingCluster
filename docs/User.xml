@@ -1,32 +1,305 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <?altova_sps C:\Programme\Altova\Authentic2008\sps\Template\Publishing\DocBook.sps?>
 <book>
-	<bookinfo revisionflag="added">
-		<title arch="x86" revision="0.0.1" role="">Media Encoding Hive</title>
-		<author>
-			<firstname>Jan</firstname>
-			<surname>Hoelscher</surname>
-			<affiliation>
-				<orgname/>
-			</affiliation>
-		</author>
-		<pubdate>03.12.2008</pubdate>
-	</bookinfo>
-	<chapter>
-		<title>About</title>
-		<section>
-			<title>Hive</title>
-			<para/>
-		</section>
-		<section>
-			<title/>
-			<para/>
-		</section>
-	</chapter>
-	<chapter>
-		<title/>
-		<para/>
-	</chapter>
+  <bookinfo>
+    <title revision="0.0.4.1">Media Encoding Cluster</title>
+
+    <author>
+      <firstname>Jan</firstname>
+
+      <surname>Hoelscher</surname>
+
+      <affiliation>
+        <orgname></orgname>
+      </affiliation>
+
+      <email>info@esblab.com</email>
+    </author>
+
+    <pubdate>12.03.2008</pubdate>
+  </bookinfo>
+
+  <chapter label="Introduction">
+    <title>About</title>
+
+    <para>The Media Encoding CLuster is a Programm which can be used to Encode
+    Media Files Distributed over Nodes that reduces the Encoding Time.</para>
+
+    <section>
+      <title>Why using Media Encoding Cluster</title>
+
+      <para>If you want to reduce Encoding Time per Media File!</para>
+
+      <para>If you want to Encode Files in a Batch!</para>
+
+      <para>If you want to have a Fault tollerant and allmost uptime
+      Infrastructure for your Media Services!</para>
+    </section>
+
+    <section>
+      <title>Which Operting System for using Media Encoding Cluster</title>
+
+      <para>It is currently running under Windows XP, Linux, MacOsx
+      10.5</para>
+    </section>
+
+    <section>
+      <title>What do i need for running the Media Encoding Cluster</title>
+
+      <para>You need only the Download Package from http://codergrid.de</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Installation</title>
+
+    <section>
+      <title>System requirements and languages</title>
+
+      <para></para>
+
+      <section>
+        <title>Supported operating systems</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>Windows XP with Service Pack 2</para>
+          </listitem>
+
+          <listitem>
+            <para>Linux</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Hardware requirements</title>
+
+        <para></para>
+
+        <itemizedlist>
+          <listitem>
+            <para>3.2GHz Intel® Pentium® 4 processor (dual Intel Xeon® or
+            faster recommended) </para>
+          </listitem>
+
+          <listitem>
+            <para>2GB of RAM (4GB recommended)</para>
+          </listitem>
+
+          <listitem>
+            <para>1Gb Ethernet card </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Language versions</title>
+
+        <para>This product is available in the following languages:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>English</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>Installation on Windows XP</title>
+
+      <para>Download the Programm from <ulink
+      url="http://sourceforge.net/project/showfiles.php?group_id=39013">http://sourceforge.net/</ulink></para>
+
+      <para>Double Click on "MediaEncodingCluster-Setup-X.X.X.X.exe", where
+      "X.X.X.X" is the actual Version. </para>
+
+      <para>This will open the Welcome Screen from the Installer.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/welcome.png" scale="70" />
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/program_dir.png" scale="70" />
+        </imageobject>
+
+        <caption><para>After "next" Button clicked, you can enter the Target
+        Diretory location for the Programm Installation.</para><para>e.g.
+        "C:\Programms\MediaEncodingCluster"</para><para>Accept the default
+        installation location or enter a new location.</para><para>Note, there
+        must be enough Space Left for Temporary Encoded Data and the Encoded
+        Files</para></caption>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/program_group.png" scale="70" />
+        </imageobject>
+
+        <caption><para>Default Programm Group where the Tools are located in
+        the Windows Programm Menu</para><para>Accept the default location for
+        the Media Encoding Cluster program shortcuts or enter a new
+        location.</para></caption>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/tasks.png" scale="70" />
+        </imageobject>
+
+        <caption><para>defining the System Configuration</para><itemizedlist>
+            <listitem>
+              <para>Server System</para>
+
+              <para>System will be configured to autostart the Server as
+              System Service</para>
+            </listitem>
+
+            <listitem>
+              <para>Client System</para>
+
+              <para>System will be configured to autostart the Client as
+              System Service</para>
+            </listitem>
+          </itemizedlist></caption>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/ready_to_install.png" scale="70" />
+        </imageobject>
+
+        <caption><para>Summary of the Installation Tasks.</para><para>Review
+        your installation choices. Click Back to make any necessary
+        changes.</para><para>Click Install. </para><para>Note: On Windows,
+        Microsoft Visual C++ 2008 Redistributable Package also installs.
+        </para></caption>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/install_progress_3.png" scale="70" />
+        </imageobject>
+
+        <caption><para>after installation</para></caption>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/complete_setup.png" scale="70" />
+        </imageobject>
+
+        <caption><para>you can start the Runtime System on the
+        Node</para><para> Select any final options and click Finish. The
+        installation is complete. If you configured it to start, Media
+        Encoding Cluster starts. </para></caption>
+      </mediaobject>
+
+      <para>After installation there is an new Service under the Windows
+      Services called MHiveService</para>
+
+      <para>This Service will be automatically started when the System boots
+      up.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/setup/dienste.png" scale="70" />
+        </imageobject>
+      </mediaobject>
+
+      <para>Setup finish!</para>
+
+      <refentry>
+        <refnamediv>
+          <refname>console</refname>
+
+          <refpurpose></refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+          <para></para>
+
+          <funcsynopsis>
+            <funcsynopsisinfo></funcsynopsisinfo>
+
+            <funcprototype>
+              <funcdef><function>startserver</function></funcdef>
+
+              <paramdef></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsect1>
+          <title></title>
+
+          <para></para>
+        </refsect1>
+      </refentry>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Starting and Stopping the Server or Client</title>
+
+    <para>In condition to your Installation the Server and/or the Client
+    starts automatical on the Node.</para>
+
+    <para>when you want to start or stop the Server and/or Client, you can do
+    this over the Console</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Open the Console over the Startmenu from Windows
+        "Start-&gt;Programs-&gt;MediaEncodingCluster-&gt;start Console"</para>
+      </listitem>
+
+      <listitem>
+        <para>Type in the Command "startserver()." &lt;- dont forget the dot
+        at the end -&gt;</para>
+
+        <para>This starts the Server on the Local Maschine</para>
+      </listitem>
+
+      <listitem>
+        <para>Type in the Command "stopserver()." &lt;- dont forget the dot at
+        the end -&gt;</para>
+
+        <para>This stops the Server on the Local Maschine</para>
+      </listitem>
+
+      <listitem>
+        <para>Type in the Command "startclient("Host")." &lt;- dont forget the
+        dot at the end -&gt;</para>
+
+        <para>This Command will connect to the Server Maschine defined by
+        "Host" and start the Client Process on the Local Maschine</para>
+
+        <para>e.g. console@10.11.12.13&gt;startclient("10.10.1.245").</para>
+      </listitem>
+
+      <listitem>
+        <para>Type in the Command "stopclient()." &lt;- dont forget the dot at
+        the end -&gt;</para>
+
+        <para>This will stop the Local Client Process</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>after you have started or stopped the System, you can close the
+    Console.</para>
+  </chapter>
+
+  <chapter>
+    <title>Administrating the System</title>
+
+    <para></para>
+  </chapter>
 </book>

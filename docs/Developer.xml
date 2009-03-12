@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <?altova_sps C:\Programme\Altova\Authentic2008\sps\Template\Publishing\DocBook.sps?>
 <book>
 	<bookinfo revisionflag="added">
-		<title>Media Encoding Hive</title>
+		<title>Media Encoding Hive - Developer Guide</title>
 		<author>
 			<firstname>Jan</firstname>
 			<surname>Hoelscher</surname>
@@ -76,10 +76,7 @@
 					<itemizedlist>
 						<listitem>
 							<para>change into the boost Jam Directory "boost_1_35"</para>
-							<screen>
-								<prompt>bash$</prompt>
-								<command>cd /path/to/boost_1_35/tools/jam</command>
-							</screen>
+							<screen><prompt>bash$</prompt><command>cd /path/to/boost_1_35/tools/jam</command></screen>
 						</listitem>
 						<listitem>
 							<para>Execute the command</para>
