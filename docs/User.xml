@@ -82,7 +82,7 @@
         <itemizedlist>
           <listitem>
             <para>3.2GHz Intel® Pentium® 4 processor (dual Intel Xeon® or
-            faster recommended) </para>
+            faster recommended)</para>
           </listitem>
 
           <listitem>
@@ -90,7 +90,7 @@
           </listitem>
 
           <listitem>
-            <para>1Gb Ethernet card </para>
+            <para>1Gb Ethernet card</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -115,7 +115,7 @@
       url="http://sourceforge.net/project/showfiles.php?group_id=39013">http://sourceforge.net/</ulink></para>
 
       <para>Double Click on "MediaEncodingCluster-Setup-X.X.X.X.exe", where
-      "X.X.X.X" is the actual Version. </para>
+      "X.X.X.X" is the actual Version.</para>
 
       <para>This will open the Welcome Screen from the Installer.</para>
 
