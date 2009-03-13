@@ -3,7 +3,10 @@
 -compile(export_all).
 
 render(_,Item) ->
-	Items = [
+
+	{ok,System}=application:get_env(mhive,mode),
+%  io:format("SystemEnv:~p",[System]),
+  I = [
 		{media, "Media", "/web/media"},
 		{encoding, "Encodings", "/web/encoding"},
 		{profile, "Profiles", "/web/profile"},
@@ -12,9 +15,14 @@ render(_,Item) ->
  		{system, "System", "/web/system"}
 %		{account, "Account", "/web/account"}
 	],
-
+  if System==both ->
+      Items=lists:append(I,[{client, "Client Configuration", "/web/client"}]);
+    System==client ->
+      Items=[{client, "Client Configuration", "/web/client"}];
+    true->
+      Items=I
+  end,
 	Transform = fun(DataRow, Acc) ->
-%    io:format("Item:~w:~w",[Item,DataRow]),
 		case element(1, DataRow) == Item of
 			true -> {DataRow, Acc, {link@class, selected}};
 			false -> {DataRow, Acc, []}

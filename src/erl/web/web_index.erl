@@ -1,4 +1,15 @@
--module (web_index).
--compile (export_all).
+-module(web_index).
 
-main() -> wf:redirect("/web/media").
+-include ("wf.inc").
+-include_lib("stdlib/include/qlc.hrl").
+-compile(export_all).
+
+
+main() ->
+    {ok,Val}=application:get_env(wwwroot),
+    Temp=string:concat(Val,"/onecolumn.html"),
+    #template { file=Temp, bindings=[
+	{'Group', main},
+	{'Item', main}
+]}.
+title() -> "Welcome".
