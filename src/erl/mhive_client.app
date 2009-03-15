@@ -45,5 +45,11 @@
                         wf_utils,wf_validation,wf_yaws]},
               {registered,[]},
               {applications,[kernel,stdlib]},
-              {mod,{mhive_client_app,[]}}
-              ]}.
+              {mod,{mhive_client_app,[]}},
+              {env,[{platform,inets},
+                    {port,9000},
+                    {session_timeout,20},
+                    {sign_key,"b37ca07"},
+                    {mode,client},
+                    {wwwroot,"wwwroot"},
+                    {sysportexe,"bin/mhivesys"}]}]}.

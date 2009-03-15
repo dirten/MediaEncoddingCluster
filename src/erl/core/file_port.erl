@@ -29,7 +29,7 @@ init([])->
   {ok, state}.
 
 handle_call({Command,File,Stream,Seek,PacketCount},_From,_N)->
-  io:format("~w-handle_call~w~n", [?MODULE,{Command,File,Stream,Seek,PacketCount}]),
+  io:format("~w-handle_call~p~n", [?MODULE,{Command,File,Stream,Seek,PacketCount}]),
   fileport ! {self(), {command, term_to_binary({Command,list_to_atom(File),Stream,Seek,PacketCount})}},
   receive
     {_Fileport, {data, Data}} ->

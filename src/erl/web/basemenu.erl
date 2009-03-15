@@ -4,7 +4,10 @@
 
 render(_,Item) ->
 
-	{ok,System}=application:get_env(mhive,mode),
+	case application:get_env(mode) of
+    {ok,System}->ok;
+    _->System=server
+      end,
 %  io:format("SystemEnv:~p",[System]),
   I = [
 		{media, "Media", "/web/media"},

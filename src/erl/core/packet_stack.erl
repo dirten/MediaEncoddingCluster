@@ -15,10 +15,12 @@ packetstream(Filename, Offset)->
   if
     LastFilename =:=Filename orelse LastFilename=:=undefined->
       if C<350 ->
-          case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,400  })of
+          case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,500  })of
             hivetimeout->
+              io:format("hivetimeout",[]),
               hivetimeout;
             Any->
+%              io:format("Data:~p",[Any]),
               [Required|_]=[[X||X<-Any,element(1,X)<2]],
               put(streamdata,get(streamdata)++Required)
           end;
@@ -41,6 +43,7 @@ packetstream(Filename, Offset)->
       Data=process(get(streamdata),0),
       packet_group(Data,0)
   end.
+
 
 process([], _Stream)->[];
 process(List, Stream)->
