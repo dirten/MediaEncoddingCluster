@@ -1,7 +1,8 @@
 -module(node_watcher).
 -behaviour(gen_server).
 
--export([start_link/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
+-export([start_link/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2, listen/0]).
+
 
 start_link()->
   gen_server:start_link({local,?MODULE},?MODULE,[],[]).
@@ -10,7 +11,21 @@ init([])->
   io:format("~s Started~n",[?MODULE]),
 %  register(?MODULE, self()),
   net_kernel:monitor_nodes(true),
+%  _Pid=spawn_link(?MODULE,listen,[]),
   {ok, state}.
+
+listen()->
+  {ok, S} = gen_udp:open(6000),
+    loop(S).
+
+
+loop(S) ->
+    receive
+      {udp,Port,Ip,_,_} ->
+	    io:format("received:~p ~p~n", [node(Port),Ip]),
+	    loop(S)
+    end.
+
 
 handle_call(All,_From,_N)->
   io:format("~w handle_call scan~w~n", [?MODULE,All]),

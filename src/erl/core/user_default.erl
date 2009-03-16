@@ -47,26 +47,26 @@ connect(Host, NodeName)->
           Services=[element(1,X)||X<-Data],
           format("Available Services on Host Address ~p~n",[Services]),
           error
-       end;
+      end;
     {error, nxdomain}->
       format("Can not resolve Host Address for ~p~n",[Host]),
-    error
-    end.
+      error
+  end.
 
 startserver()->
-      {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
-      {A1,A2,A3,A4}=Data,
-      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
-      Node=list_to_atom("node@"++Ip),
-      _Pid=spawn(Node,application,start,[mhive]).
+  {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+  {A1,A2,A3,A4}=Data,
+  Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+  Node=list_to_atom("node@"++Ip),
+  _Pid=spawn(Node,application,start,[mhive]).
 %  application:start(mhive).
 
 stopserver()->
-      {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
-      {A1,A2,A3,A4}=Data,
-      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
-      Node=list_to_atom("node@"++Ip),
-      _Pid=spawn(Node,application,stop,[mhive]).
+  {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+  {A1,A2,A3,A4}=Data,
+  Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+  Node=list_to_atom("node@"++Ip),
+  _Pid=spawn(Node,application,stop,[mhive]).
 
 startclient(Host)->
   startclient(Host,"node").
@@ -79,18 +79,26 @@ startclient(Server, NodeName)->
       Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
       Node=list_to_atom("node@"++Ip),
       _Pid=spawn(Node,application,start,[mhive_client]),
-%      rpc:call(Node, application,start,[mhive_client]),
-%      unlink(Pid),
+      %      rpc:call(Node, application,start,[mhive_client]),
+      %      unlink(Pid),
       ok;
     error->
       error
-   end,
+  end,
   ok.
-
+startclient()->
+  {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+  {A1,A2,A3,A4}=Data,
+  Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+  Node=list_to_atom("node@"++Ip),
+  Pid=spawn(Node,application,start,[mhive_client]),
+  %      rpc:call(Node, application,start,[mhive_client]),
+  %      unlink(Pid),
+  Pid.
 stopclient()->
-      {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
-      {A1,A2,A3,A4}=Data,
-      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
-      Node=list_to_atom("node@"++Ip),
-      _Pid=spawn(Node,application,stop,[mhive_client]).
+  {ok,Data}=inet:getaddr(net_adm:localhost(), inet),
+  {A1,A2,A3,A4}=Data,
+  Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+  Node=list_to_atom("node@"++Ip),
+  _Pid=spawn(Node,application,stop,[mhive_client]).
 

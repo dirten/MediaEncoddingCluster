@@ -18,7 +18,7 @@ stop()->
 init([])->
   io:format("~w start up~n", [?MODULE]),
   process_flag(trap_exit, true),
-  _Pid=spawn_link(?MODULE,listen,[]),
+%  _Pid=spawn_link(?MODULE,listen,[]),
   _Pid2=spawn_link(?MODULE,send,[]),
   %  link(Pid),
 %  register(file_scanner_loop, Pid),
@@ -40,17 +40,18 @@ send()->
     send()
   end.
 
+
 listen()->
   {ok, S} = gen_udp:open(6000),
     loop(S).
 
+
 loop(S) ->
     receive
-	Any ->
-	    io:format("received:~p~n", [Any]),
+      {udp,Port,Ip,_,_} ->
+	    io:format("received:~p ~p~n", [node(Port),Ip]),
 	    loop(S)
     end.
-
 
 handle_call({import_file,Thing},_From,_N)->
   io:format("~w handle_call import~w~n", [?MODULE,Thing]),
@@ -66,10 +67,10 @@ handle_cast(_Msg,N)->
 
 handle_info(Info,N)->
   io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
-%  case Info of
-%    {{'EXIT',_,killed},state}->
-%      exit(killed)
-%    end,
+  case Info of
+    {{'EXIT',_,killed},state}->
+      exit(killed)
+    end,
   {noreply, N}.
 
 terminate(Reason,_N)->

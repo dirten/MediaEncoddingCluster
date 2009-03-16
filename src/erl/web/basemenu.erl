@@ -14,7 +14,7 @@ render(_,Item) ->
 		{encoding, "Encodings", "/web/encoding"},
 		{profile, "Profiles", "/web/profile"},
 		{folder, "Folders", "/web/folder"},
-		{setting, "Settings", "/web/setting"},
+%		{setting, "Settings", "/web/setting"},
  		{system, "System", "/web/system"}
 %		{account, "Account", "/web/account"}
 	],
