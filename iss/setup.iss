@@ -56,8 +56,8 @@ Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "start MHiveService"; Descr
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
-Source: "F:/MediaEncodingCluster-svn/src/erl/target/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "F:/MediaEncodingCluster-svn/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "F:/MediaEncodingCluster-svn/src/erl/target/*"; DestDir: "{app}"; Excludes: ".svn"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "F:/MediaEncodingCluster-svn/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion

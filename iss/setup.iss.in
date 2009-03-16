@@ -49,7 +49,7 @@ Name: "baseclient"; Description: "Configure System as Client"; GroupDescription:
 Filename: "{tmp}\vcredist_x86.exe"; OnlyBelowVersion: 0,9.0
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -boot releases\0.0.4.1\start -config config/logger.config"""; Tasks: baseserver
-Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(mhive)."""; Tasks: baseclient
+Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(sasl),application:start(mhive_client)."""; Tasks: baseclient
 Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService"; Flags:postinstall;
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default"" -eval application:start(mhive)."
 [UninstallRun]
@@ -75,7 +75,10 @@ Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-;Name: "{group}\start Server"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s -r ..\web"; WorkingDir: "{app}\bin"
+Name: "{group}\Server\start Server"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config config/logger.config -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
+Name: "{group}\Server\stop Server"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config config/logger.config -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
+Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config config/logger.config -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
+Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config config/logger.config -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
 Name: "{group}\start Console"; Filename: "{app}\erts-5.6.5\bin\werl.exe" ; Parameters: "-sname console -setcookie default -config config/logger.config -eval application:start(sasl)."; WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
