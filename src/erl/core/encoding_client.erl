@@ -27,7 +27,7 @@ init(Parent)->
   loop(Port).
 
 loop( Port)->
-  case catch gen_server:call({global,packet_server}, {packetgroup}) of
+  case gen_server:call({global,packet_server}, {packetgroup}) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;

@@ -115,12 +115,13 @@ create([H|_T]) ->
     erl_tar:add(Tar, "config", []),
     erl_tar:add(Tar, "logs	", []),
     erl_tar:add(Tar, "data", []),
-    file:set_cwd(".."),
+%    file:set_cwd(".."),
+%    libfile:copy_dir("../wwwroot","wwwroot"),
     erl_tar:add(Tar, "wwwroot", []),
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
-    remove_dir_tree("tmp"),
+%    remove_dir_tree("tmp"),
     ok.
 
 

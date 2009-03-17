@@ -44,3 +44,7 @@
 	{ outdir, "./ebin" },
 	debug_info
 ]}.
+{ './target_system.erl', [
+	{ outdir, "./ebin" },
+	debug_info
+]}.

@@ -481,11 +481,11 @@ int main(int argc, char** argv) {
 //        logdebug("return data:");
 //          erl_print_term((FILE*)stderr, outtuple);
         int size = erl_term_len(outtuple);
-        logdebug("term size:"<<size);
+//        logdebug("term size:"<<size);
         if (size > 5000000) {
           logerror("OutTuple to big(max 5000000b):" << size);
         }else{
-            loginfo("OutTuple size:" << size);
+//            loginfo("OutTuple size:" << size);
         }
         if(erl_encode(outtuple, buf)>0){
 //          logdebug("try write_cmd");
