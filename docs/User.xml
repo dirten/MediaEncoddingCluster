@@ -247,54 +247,83 @@
   </chapter>
 
   <chapter>
-    <title>Starting and Stopping the Server or Client</title>
+    <title>Starting and Stopping the System</title>
 
     <para>In condition to your Installation the Server and/or the Client
     starts automatical on the Node.</para>
 
-    <para>when you want to start or stop the Server and/or Client, you can do
-    this over the Console</para>
+    <section>
+      <title>Start and Stop the Server on Windows</title>
 
-    <itemizedlist>
-      <listitem>
-        <para>Open the Console over the Startmenu from Windows
-        "Start-&gt;Programs-&gt;MediaEncodingCluster-&gt;start Console"</para>
-      </listitem>
+      <section>
+        <title>Start the Server from the Start menu</title>
 
-      <listitem>
-        <para>Type in the Command "startserver()." &lt;- dont forget the dot
-        at the end -&gt;</para>
+        <itemizedlist>
+          <listitem>
+            <para>Choose Start -&gt; All Programs -&gt; MediaEncodingCluster
+            -&gt; Server -&gt; start Server</para>
+          </listitem>
+        </itemizedlist>
+      </section>
 
-        <para>This starts the Server on the Local Maschine</para>
-      </listitem>
+      <section>
+        <title>Stop the Server from the Start menu</title>
 
-      <listitem>
-        <para>Type in the Command "stopserver()." &lt;- dont forget the dot at
-        the end -&gt;</para>
+        <itemizedlist>
+          <listitem>
+            <para>Choose Start -&gt; All Programs -&gt; MediaEncodingCluster
+            -&gt; Server -&gt; stop Server</para>
+          </listitem>
+        </itemizedlist>
+      </section>
 
-        <para>This stops the Server on the Local Maschine</para>
-      </listitem>
+      <section>
+        <title>Start, stop or restart the Server from the Services
+        window</title>
 
-      <listitem>
-        <para>Type in the Command "startclient("Host")." &lt;- dont forget the
-        dot at the end -&gt;</para>
+        <itemizedlist>
+          <listitem>
+            <para>Choose Start -&gt; Control Panel -&gt; Administrative Tools
+            -&gt; Services</para>
+          </listitem>
 
-        <para>This Command will connect to the Server Maschine defined by
-        "Host" and start the Client Process on the Local Maschine</para>
+          <listitem>
+            <para>Select MediaEncodingService from the Services list and click
+            Stop, Start or Restart.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
 
-        <para>e.g. console@10.11.12.13&gt;startclient("10.10.1.245").</para>
-      </listitem>
+    <section>
+      <title>Start and stop the server on Linux</title>
 
-      <listitem>
-        <para>Type in the Command "stopclient()." &lt;- dont forget the dot at
-        the end -&gt;</para>
+      <para>On Linux, Media Encoding CLuster is installed as a service. You
+      start and stop the Media Encoding CLuster service using the mectl
+      utility. Use the mectl utility to perform other tasks as well, such as
+      configuring the service to start automatically when the system is
+      started. </para>
 
-        <para>This will stop the Local Client Process</para>
-      </listitem>
-    </itemizedlist>
+      <section>
+        <title>Start, stop, or restart Media Encoding CLuster</title>
 
-    <para>after you have started or stopped the System, you can close the
-    Console.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Log in as a root user.</para>
+          </listitem>
+
+          <listitem>
+            <para>Change to the directory where the server is
+            installed.</para>
+          </listitem>
+
+          <listitem>
+            <para>Open a shell window and type one of the following: ./mectl
+            server start|stop.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
   </chapter>
 
   <chapter>

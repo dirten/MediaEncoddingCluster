@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <bookinfo>
+    <title>Internal Protocol Description</title>
+
+    <author>
+      <firstname>Jan</firstname>
+
+      <surname>Hölscher</surname>
+
+      <affiliation>
+        <orgname></orgname>
+      </affiliation>
+    </author>
+
+    <pubdate>17.03.2009</pubdate>
+  </bookinfo>
+
+  <chapter>
+    <title>Protocol HiveReader System</title>
+
+    <section>
+      <title>Data Type Description</title>
+
+      <para>Packet = {StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size,
+      Data}</para>
+
+      <para><literallayout>Packet = {StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
+		StreamIndex	= internal Stream Index
+		KeyFrame	= is this Packet a Key Frame
+		Pts		= Presentation timestamp in time_base units.
+		Dts		= Decompression timestamp in time_base units.
+		Flags		= Special purpose of the Packet is encoded in Flags
+		Duration	= Duration of this packet in time_base units, 0 if unknown.
+		Size		= Packet Data size
+		Data		= Packet Data</literallayout></para>
+    </section>
+
+    <section>
+      <title>Function Description</title>
+
+      <para></para>
+
+      <section>
+        <title>FileInformation</title>
+
+        <para><literallayout>{fileinfo, File}-&gt;
+	{FileName, FilePath, FileSize, Format, StreamCount, Duration, Rate}
+
+	File 		= Full Path to the File incl. FileName
+	FileName 	= only the FileName
+	FilePath		= only the Path from the File
+	FileSize		= total file size, 0 if unknown 
+	Format		= container File Format
+	StreamCount	= Number of the Streams in the File
+	Duration	= duration of the stream, in AV_TIME_BASE fractional seconds.
+	Rate		= total stream bitrate in bit/s, 0 if not available.</literallayout></para>
+      </section>
+
+      <section>
+        <title>StreamInformation</title>
+
+        <para><literallayout>{streaminfo, File, StreamIdx}-&gt;
+	{0,
+	StreamIdx,
+	CodecType,
+	CodecId,
+	BitRate,
+	FrameRate|SampleRate,
+	TimeBaseNum,
+	TimeBaseDen,
+	Width,
+	Height,
+	Channels,
+	GopSize,
+	PixFormat|SampleFormat,
+	start_time}</literallayout></para>
+      </section>
+
+      <section>
+        <title>StreamData</title>
+
+        <para><literallayout>{packetstream, File, StreamId, Seek, PacketCount}-&gt;
+	{[Packet]} | []</literallayout></para>
+      </section>
+    </section>
+  </chapter>
+</book>
