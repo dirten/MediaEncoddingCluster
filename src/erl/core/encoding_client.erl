@@ -13,13 +13,14 @@ start_link()->
 
 
 init(Parent)->
-  io:format("~s Started~n",[?MODULE]),
+  BinPath=libcode:get_mhivesys_exe(),
+  io:format("~s Started with ~p~n",[?MODULE, BinPath]),
 %  loop().
 %  application:set_env(sysportexe,"bin/mhivesys"),
 %  io:format("Client:~p",[application:get_env(sysportexe)]),
 %  {ok,SysPortCommand}=application:get_env(sysportexe),
 %  process_flag(trap_exit, true),
-  Port = open_port({spawn, "bin/mhivesys"}, [{packet, 4}, binary]),
+  Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
 %  unlink(Port),
   proc_lib:init_ack(Parent, {ok, self()}),
 %  register(encodeclient, Port),
@@ -27,7 +28,7 @@ init(Parent)->
   loop(Port).
 
 loop( Port)->
-  case gen_server:call({global,packet_server}, {packetgroup}) of
+  case catch gen_server:call({global,packet_server}, {packetgroup}) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->loop(Port)end;

@@ -1,6 +1,6 @@
 -module(target_system).
 -include_lib("kernel/include/file.hrl").
--export([create/1, install/1]).
+-export([create/1, install/1, build_release_file/1]).
 -define(BUFSIZE, 8192).
 
 %% Note: RelFileName below is the *stem* without trailing .rel,
@@ -8,6 +8,35 @@
 %%
 %% create(RelFileName)
 %%
+build_release_file(AppFileName)->
+    {ok, [RelSpec]} = file:consult(AppFileName),
+    {application,AppName,
+      [
+        {description,Desc},
+        {vsn,Version},
+        {modules,Modules},
+        {registered,Registered},
+        {applications,Applications},
+        {mod, Start},
+        {env,Env}
+        ]
+    }=RelSpec,
+      Rel={release,
+        {string:to_upper(atom_to_list(AppName)),Version},
+        {erts}},
+      Rel.
+
+%    {release,
+% {"MHIVE", "0.0.4.1"},
+% {erts, "5.6.5"},
+% [{kernel, "2.12.5"},
+%  {stdlib, "1.15.5"},
+%  {sasl, "2.1.5.4"},
+%  {mhive, "0.0.4.1"},
+%  {inets, "5.0.12"},
+%  {mnesia, "4.4.7"}
+%]}.
+
 create([H|_T]) ->
 	RelFileName=atom_to_list(H),
     RelFile = (RelFileName) ++ ".rel",
@@ -33,9 +62,11 @@ create([H|_T]) ->
     {ok, Fd} = file:open("plain.rel", [write]),
     io:fwrite(Fd, "~p.~n", [PlainRelSpec]),
     file:close(Fd),
-    io:fwrite("Copying file \"mhive.app\" to \"~s\" ...~n",
-              [filename:join([".", "mhive.app"])]),
+%    io:fwrite("Copying file \"mhive.app\" to \"~s\" ...~n", [filename:join([".", "mhive.app"])]),
+    file:delete(filename:join(["./ebin", "mhive.app"])),
+    file:delete(filename:join(["./ebin", "mhive_client.app"])),
     copy_file("mhive.app", filename:join(["./ebin", "mhive.app"])),
+    copy_file("mhive_client.app", filename:join(["./ebin", "mhive_client.app"])),
     
     
 %    io:fwrite("Copying file \"bin/mhivesys\" to \"~s\" ...~n",
@@ -46,8 +77,7 @@ create([H|_T]) ->
     io:fwrite("Making \"plain.script\" and \"plain.boot\" files ...~n"),
     make_script("plain"),
 
-    io:fwrite("Making \"~s.script\" and \"~s.boot\" files ...~n",
-              [RelFileName, RelFileName]),
+    io:fwrite("Making \"~s.script\" and \"~s.boot\" files ...~n", [RelFileName, RelFileName]),
     make_script(RelFileName),
 
     TarFileName = io_lib:fwrite("~s.tar.gz", [RelFileName]),
@@ -69,19 +99,20 @@ create([H|_T]) ->
 
     io:fwrite("Creating temporary directory \"~s\" ...~n", [TmpBinDir]),
     file:make_dir(TmpBinDir),
+    file:make_dir("priv"),
 
-    io:fwrite("Copying file \"plain.boot\" to \"~s\" ...~n",
-              [filename:join([TmpBinDir, "start.boot"])]),
+%    io:fwrite("Copying file \"plain.boot\" to \"~s\" ...~n",
+%              [filename:join([TmpBinDir, "start.boot"])]),
     copy_file("plain.boot", filename:join([TmpBinDir, "start.boot"])),
 
-    io:fwrite("Copying files \"epmd\", \"run_erl\" and \"to_erl\" from \n"
-              "\"~s\" to \"~s\" ...~n",
-              [ErtsBinDir, TmpBinDir]),
+%    io:fwrite("Copying files \"epmd\", \"run_erl\" and \"to_erl\" from \n"
+%              "\"~s\" to \"~s\" ...~n",
+%              [ErtsBinDir, TmpBinDir]),
     case os:type() of 
       {win32,nt} ->
     copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
               filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
-    copy_file("bin/Release/mhivesys.exe", filename:join([TmpBinDir, "mhivesys.exe"]),[preserve]);
+    copy_file("bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]),[preserve]);
       {unix, linux}->
     copy_file(filename:join([ErtsBinDir, "epmd"]),
               filename:join([TmpBinDir, "epmd"]), [preserve]),
@@ -89,14 +120,14 @@ create([H|_T]) ->
               filename:join([TmpBinDir, "run_erl"]), [preserve]),
     copy_file(filename:join([ErtsBinDir, "to_erl"]),
               filename:join([TmpBinDir, "to_erl"]), [preserve]),
-    copy_file("bin/mhivesys", filename:join([TmpBinDir, "mhivesys"]),[preserve])
+    copy_file("bin/mhivesys", filename:join(["priv", "mhivesys"]),[preserve])
     end,
     file:make_dir("tmp/config"),
     file:make_dir("tmp/logs"),
     file:make_dir("tmp/data"),
     copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
 	
-    copy_file("mhive_client.app", filename:join(["tmp/lib",RelFileName++"-"++RelVsn,"ebin", "mhive_client.app"])),
+    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
         
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),
@@ -121,7 +152,7 @@ create([H|_T]) ->
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
-%    remove_dir_tree("tmp"),
+    remove_dir_tree("tmp"),
     ok.
 
 
@@ -171,7 +202,7 @@ make_tar(RelFileName) ->
 %% extract_tar(TarFile, DestDir)
 %%
 extract_tar(TarFile, DestDir) ->
-    erl_tar:extract(TarFile, [{cwd, DestDir}, compressed]).
+    erl_tar:extract(TarFile, [{cwd, DestDir}, compressed, verbose]).
 
 create_RELEASES(DestDir, RelFileName) ->
     release_handler:create_RELEASES(DestDir, RelFileName ++ ".rel").
@@ -236,7 +267,7 @@ copy_file(Src, Dest) ->
     copy_file(Src, Dest, []).
 
 copy_file(Src, Dest, Opts) ->
-    io:format("Src:~s Dest:~s~n",[Src, Dest]),
+    io:fwrite("Copying file \"~s\" to \"~s\" ~p...~n", [Src, Dest, Opts]),
     {ok, InFd} = file:open(Src, [raw, binary, read]),
     {ok, OutFd} = file:open(Dest, [raw, binary, write]),
     do_copy_file(InFd, OutFd),

@@ -16,12 +16,12 @@ stop()->
   ok.
 
 init([])->
-  {ok,SysPortCommand}=application:get_env(sysportexe),
-  io:format("Starting ~w with ~p~n", [?MODULE,SysPortCommand]),
+  BinPath=libcode:get_mhivesys_exe(),
+  io:format("Starting ~w with ~p~n", [?MODULE,BinPath]),
   global:register_name(packet_sender, self()),
   %  register(fileimport, self()),
   process_flag(trap_exit, true),
-  Port = open_port({spawn, SysPortCommand}, [{packet, 4}, binary]),
+  Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
   link(Port),
   register(fileport,Port),
   io:format("FileImporter started~n", []),

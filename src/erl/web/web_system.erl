@@ -18,10 +18,23 @@ title() -> "System Overview".
 
 
 get_data()->
-  E=[[atom_to_list(X)]||X<-[node()|nodes()]],
+  Fun=fun(Data)->
+    case Data of
+      {ok,client}->
+        "Client";
+      {ok,server}->
+        "Server";
+      {ok,both}->
+        "Server / Client";
+      undefined->
+        "Undefined"
+      end
+
+  end,
+  E=[[atom_to_list(X),Fun(rpc:call(X,application,get_env,[mhive,mode]))]||X<-[node()|nodes()]],
   E.
 
-get_map() -> [nodeLabel@text].
+get_map() -> [nodeLabel@text,typeLabel@text].
 
 
 
@@ -54,13 +67,15 @@ body()->
   ]},
   NodeTable=#table { class=tiny, rows=[
 			#tablerow { cells=[
-				#tableheader { text="Visible Nodes" }
+				#tableheader { text="Visible Nodes" },
+				#tableheader { text="Mode" }
 			]},
 %			#tablerow { cells=[
 %				#tablecell {body=#hr{}, colspan=4}
 %			]},
 			#bind { id=tableBinding, data=Data, map=Map,transform=fun libweb:alternate_color/2, body=#tablerow { id=top,cells=[
-				#tablecell { id=nodeLabel }
+				#tablecell { id=nodeLabel },
+				#tablecell { id=typeLabel }
 			]}}
 		]},
   Result=[

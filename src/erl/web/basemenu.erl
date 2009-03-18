@@ -4,10 +4,6 @@
 
 render(_,Item) ->
 
-	case application:get_env(mode) of
-    {ok,System}->ok;
-    _->System=server
-      end,
 %  io:format("SystemEnv:~p",[System]),
   I = [
 		{media, "Media", "/web/media"},
@@ -18,6 +14,7 @@ render(_,Item) ->
  		{system, "System", "/web/system"}
 %		{account, "Account", "/web/account"}
 	],
+  System=server,
   if System==both ->
       Items=lists:append(I,[{client, "Client Configuration", "/web/client"}]);
     System==client ->
