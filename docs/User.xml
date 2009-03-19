@@ -71,6 +71,10 @@
           <listitem>
             <para>Linux</para>
           </listitem>
+
+          <listitem>
+            <para>Mac OS 10.5</para>
+          </listitem>
         </itemizedlist>
       </section>
 
@@ -302,7 +306,7 @@
       start and stop the Media Encoding CLuster service using the mectl
       utility. Use the mectl utility to perform other tasks as well, such as
       configuring the service to start automatically when the system is
-      started. </para>
+      started.</para>
 
       <section>
         <title>Start, stop, or restart Media Encoding CLuster</title>

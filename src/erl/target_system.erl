@@ -113,7 +113,7 @@ create([H|_T]) ->
     copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
               filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
     copy_file("bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]),[preserve]);
-      {unix, linux}->
+      {unix, _}->
     copy_file(filename:join([ErtsBinDir, "epmd"]),
               filename:join([TmpBinDir, "epmd"]), [preserve]),
     copy_file(filename:join([ErtsBinDir, "run_erl"]),
@@ -173,7 +173,7 @@ install([A, RootDir]) ->
     case os:type() of 
       {win32,nt} ->
         ok;
-      {unix, linux}->
+      {unix, _}->
         subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
                       [{"FINAL_ROOTDIR", RootDir}, {"EMU", "beam"}],
                       [preserve])
