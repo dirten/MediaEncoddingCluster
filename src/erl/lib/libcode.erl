@@ -14,3 +14,9 @@ get_mhivesys_exe()->
     Path when is_list(Path) ->filename:join([Path,BinName]);
     {error, bad_name}->filename:join(["priv",BinName])
     end.
+    
+get_privdir()->
+  case code:priv_dir(mhive) of
+    Path when is_list(Path) ->Path;
+    {error, bad_name}->"priv"
+    end.

@@ -1,0 +1,161 @@
+#!/bin/sh
+#
+#  File name:  S75mhive.system
+#  Purpose:    Automatically starts MHiveSystemService on Linux when the
+#              system starts
+#  Author:     jan.hoelscher@esblab.com
+#  Resides in: /etc/rc3.d
+#
+
+MHIVE_HOME=/home/jhoelscher/testerl2
+
+DATA_DIR=data
+
+if [ ! -d /usr/bin ]
+then                    # /usr not mounted
+        exit
+fi
+. /etc/rc.d/init.d/functions
+prog="MHiveService"
+
+#if [ $(id -u) != "0" ]
+#then
+#    echo "You must be root to run the configure script.  Login as root and then run the
+#configure script."
+#    exit 1
+#fi
+
+killproc() {            # kill the named process(es)
+        pid=`/usr/bin/ps -e |
+             /usr/bin/grep -w $1 |
+             /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
+        [ "$pid" != "" ] && kill $pid
+}
+unset COLUMNS
+checkproc(){
+
+    lsproc=$(ps xao "%p %a"|grep -E "$MHIVE_HOME"|grep -E $1 |grep -v grep|awk '{print $1}')
+
+#    echo $lsproc
+#    if [ -n $lsproc ]; then
+#        return 0
+#    fi
+    return $lsproc
+}
+
+usage(){
+        echo "Usage: $0 { start | stop | configure | status}"
+}
+
+status_runtime(){
+	if checkproc "beam"; then
+	    echo "Mhive Runtime is OFF"
+      action $"Running $prog" /bin/false
+	else
+	    echo "Mhive CLuster Runtime is ON"
+    action $"Running $prog" /bin/true
+	fi
+}
+
+status_server(){
+  false
+}
+
+status_client(){
+  false
+}
+
+start_runtime(){
+  action $"Starting $prog" /bin/true
+  false
+}
+
+stop_runtime(){
+  false
+}
+
+stop_runtime(){
+  false
+}
+
+start_server(){
+  RELDIR=$MHIVE_HOME/releases
+  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
+  $MHIVE_HOME/bin/run_erl -daemon /tmp/ $MHIVE_HOME/logs "exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA"
+  action $"Starting $prog" /bin/true
+}
+
+stop_server(){
+  ${MHIVE_HOME}/bin/erl -noshell -s mhive stopapp -s init stop
+}
+
+start_client(){
+  false
+
+}
+
+stop_client(){
+  false
+
+}
+
+configure(){
+  ${MHIVE_HOME}/bin/erl -noshell -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'" -s mhive configure -s init stop
+}
+
+configure_client(){
+  false
+
+}
+
+# Start/stop processes required for Erlang
+
+
+case "$1" in
+    'start')
+            # Start the Erlang emulator
+            #
+            status "beam.smp"
+#            status_runtime
+#            start_runtime
+            start_server
+            ;;
+    'stop')
+            stop_server
+            ;;
+    'configure')
+            configure
+            ;;
+    'status')
+            # Start the Erlang emulator
+            #
+            status "beam.smp"
+            status_runtime
+            ;;
+    'start_erl')
+        shift
+        ROOTDIR=$1
+        shift
+        RELDIR=$1
+        shift
+        DataFile=$1
+        shift
+
+        ERTS_VSN=`awk '{print $1}' $DataFile`
+        VSN=`awk '{print $2}' $DataFile`
+
+        BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+        EMU=beam
+        PROGNAME=`echo $0 | sed 's/.*\///'`
+        export EMU
+        export ROOTDIR
+        export BINDIR
+        export PROGNAME
+        export RELDIR
+
+        exec $BINDIR/erlexec -boot $RELDIR/$VSN/start -config $RELDIR/$VSN/sys ${1+"$@"} -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'"
+            ;;
+    *)
+      usage
+            ;;
+esac

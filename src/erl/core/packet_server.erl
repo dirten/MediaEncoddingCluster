@@ -138,7 +138,6 @@ handle_cast(Msg,N)->
             mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()})
         end
     end),
-
   {ok,Pid}=file:open(filename:join([config:get(tmp_data_dir,"data"), integer_to_list(ProcId)]), write),
   %   io:write(Pid, Data),
   file:write(Pid, term_to_binary(Data)),

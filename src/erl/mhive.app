@@ -25,7 +25,7 @@
                         element_tablerow,element_template,element_textarea,
                         element_textbox,element_value,element_wizard,
                         encoding_client,file_export,file_port,file_scanner,
-                        libav,libdb,libfile,libweb,libcode,mhive,mhive_supervisor,
+                        libav,libdb,libfile,libweb,libcode,libnet,mhive,mhive_supervisor,
                         mirror,nitrogen,nitrogen_file,nitrogen_inets_app,
                         nitrogen_mochiweb_app,nitrogen_project,
                         nitrogen_yaws_app,node_watcher, node_finder,packet_server,packet_stack,sync,
@@ -50,6 +50,5 @@
               {env,[{platform,inets},
                     {port,9000},
                     {session_timeout,20},
-                    {sign_key,"b37ca07"},
-                    {wwwroot,"wwwroot"},
-                    {sysportexe,"bin/mhivesys"}]}]}.
+                    {sign_key,"b37ca07"}
+              ]}]}.

@@ -14,12 +14,7 @@ title() -> "Media List".
 
 get_data()->
   Transform=fun(Data)->
-                if
-                  is_integer(Data) ==true ->integer_to_list(Data);
-                  is_tuple(Data) ==true ->tuple_to_list(Data);
-                  is_atom(Data) ==true ->atom_to_list(Data);
-                  true->Data
-                end
+               libutil:to_string(Data)
             end,
   F = fun() ->
           Q = qlc:q([

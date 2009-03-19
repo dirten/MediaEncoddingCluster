@@ -20,18 +20,18 @@ title() -> "System Overview".
 get_data()->
   Fun=fun(Data)->
     case Data of
-      {ok,client}->
+      client->
         "Client";
-      {ok,server}->
+      server->
         "Server";
-      {ok,both}->
+      both->
         "Server / Client";
-      undefined->
-        "Undefined"
+      _->
+        "Not running"
       end
 
   end,
-  E=[[atom_to_list(X),Fun(rpc:call(X,application,get_env,[mhive,mode]))]||X<-[node()|nodes()]],
+  E=[[atom_to_list(X),Fun(rpc:call(X,config,get,[mode]))]||X<-[node()|nodes()]],
   E.
 
 get_map() -> [nodeLabel@text,typeLabel@text].

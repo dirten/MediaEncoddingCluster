@@ -3,6 +3,7 @@
 -export([create/1, install/1, build_release_file/1]).
 -define(BUFSIZE, 8192).
 
+-import(libutil,[to_string/1]).
 %% Note: RelFileName below is the *stem* without trailing .rel,
 %% .script etc.
 %%
@@ -12,17 +13,17 @@ build_release_file(AppFileName)->
     {ok, [RelSpec]} = file:consult(AppFileName),
     {application,AppName,
       [
-        {description,Desc},
+        {description,_Desc},
         {vsn,Version},
-        {modules,Modules},
-        {registered,Registered},
-        {applications,Applications},
-        {mod, Start},
-        {env,Env}
+        {modules,_Modules},
+        {registered,_Registered},
+        {applications,_Applications},
+        {mod, _Start},
+        {env,_Env}
         ]
     }=RelSpec,
       Rel={release,
-        {string:to_upper(atom_to_list(AppName)),Version},
+        {string:to_upper(to_string(AppName)),Version},
         {erts}},
       Rel.
 
@@ -110,24 +111,26 @@ create([H|_T]) ->
 %              [ErtsBinDir, TmpBinDir]),
     case os:type() of 
       {win32,nt} ->
-    copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
-              filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
-    copy_file("bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]),[preserve]);
+        copy_file(filename:join([ErtsBinDir, "epmd.exe"]),
+                  filename:join([TmpBinDir, "epmd.exe"]), [preserve]),
+        copy_file("bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]),[preserve]);
       {unix, _}->
-    copy_file(filename:join([ErtsBinDir, "epmd"]),
-              filename:join([TmpBinDir, "epmd"]), [preserve]),
-    copy_file(filename:join([ErtsBinDir, "run_erl"]),
-              filename:join([TmpBinDir, "run_erl"]), [preserve]),
-    copy_file(filename:join([ErtsBinDir, "to_erl"]),
-              filename:join([TmpBinDir, "to_erl"]), [preserve]),
-    copy_file("bin/mhivesys", filename:join(["priv", "mhivesys"]),[preserve])
+        copy_file(filename:join([ErtsBinDir, "epmd"]),
+                  filename:join([TmpBinDir, "epmd"]), [preserve]),
+        copy_file(filename:join([ErtsBinDir, "run_erl"]),
+                  filename:join([TmpBinDir, "run_erl"]), [preserve]),
+        copy_file(filename:join([ErtsBinDir, "to_erl"]),
+                  filename:join([TmpBinDir, "to_erl"]), [preserve]),
+        copy_file("bin/mhivesys", filename:join(["priv", "mhivesys"]),[preserve]),
+        copy_file(filename:join(["..", "mectl"]),
+                  filename:join([TmpBinDir, "mectl"]), [preserve])
     end,
-    file:make_dir("tmp/config"),
+%    file:make_dir("tmp/config"),
     file:make_dir("tmp/logs"),
     file:make_dir("tmp/data"),
-    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
-	
-    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
+    libfile:copy_dir("./wwwroot","./priv/",[".svn"]),
+%    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
+%    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
         
     StartErlDataFile = filename:join(["tmp", "releases", "start_erl.data"]),
     io:fwrite("Creating \"~s\" ...~n", [StartErlDataFile]),
@@ -136,19 +139,20 @@ create([H|_T]) ->
 
     io:fwrite("Recreating tar file \"~s\" from contents in directory "
               "\"tmp\" ...~n", [TarFileName]),
+
+    libfile:touch("tmp/.hosts.erlang"),
     {ok, Tar} = erl_tar:open(TarFileName, [write, compressed]),
     {ok, Cwd} = file:get_cwd(),
     file:set_cwd("tmp"),
+    erl_tar:add(Tar, ".hosts.erlang", []),
     erl_tar:add(Tar, "bin", []),
     erl_tar:add(Tar, "erts-" ++ ErtsVsn, []),
     erl_tar:add(Tar, "releases", []),
     erl_tar:add(Tar, "lib", []),
-    erl_tar:add(Tar, "config", []),
-    erl_tar:add(Tar, "logs	", []),
+%    erl_tar:add(Tar, "config", []),
     erl_tar:add(Tar, "data", []),
-%    file:set_cwd(".."),
-%    libfile:copy_dir("../wwwroot","wwwroot"),
-    erl_tar:add(Tar, "wwwroot", []),
+    erl_tar:add(Tar, "logs", [verbose]),
+%    erl_tar:add(Tar, "wwwroot", []),
     erl_tar:close(Tar),
     file:set_cwd(Cwd),
     io:fwrite("Removing directory \"tmp\" ...~n"),
@@ -157,17 +161,18 @@ create([H|_T]) ->
 
 
 
-install([A, RootDir]) ->
+install([A, InstallFolder]) ->
 	RelFileName=atom_to_list(A),
+  RootDir=libutil:to_string(InstallFolder),
     TarFile = RelFileName ++ ".tar.gz",
     io:fwrite("Extracting ~s ...~n", [TarFile]),
     extract_tar(TarFile, RootDir),
     StartErlDataFile = filename:join([RootDir, "releases", "start_erl.data"]),
     {ok, StartErlData} = read_txt_file(StartErlDataFile),
-    [ErlVsn, RelVsn| _] = string:tokens(StartErlData, " \n"),
+    [ErlVsn, _RelVsn| _] = string:tokens(StartErlData, " \n"),
     ErtsBinDir = filename:join([RootDir, "erts-" ++ ErlVsn, "bin"]),
     BinDir = filename:join([RootDir, "bin"]),
-    LibDir = filename:join([RootDir, "lib"]),
+%    LibDir = filename:join([RootDir, "lib"]),
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"
               "form erl, start and start_erl ...\n"),
     case os:type() of 
@@ -197,12 +202,12 @@ make_script(RelFileName) ->
 %%
 make_tar(RelFileName) ->
     RootDir = code:root_dir(),
-    systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]}]).
+    systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,[priv]}]).
 
 %% extract_tar(TarFile, DestDir)
 %%
 extract_tar(TarFile, DestDir) ->
-    erl_tar:extract(TarFile, [{cwd, DestDir}, compressed, verbose]).
+    erl_tar:extract(TarFile, [{cwd, DestDir}, compressed]).
 
 create_RELEASES(DestDir, RelFileName) ->
     release_handler:create_RELEASES(DestDir, RelFileName ++ ".rel").
@@ -296,7 +301,7 @@ write_file(FName, Conts) ->
     file:close(Fd).
 
 read_txt_file(File) ->
-    io:format("Reading text File ~p",[File]),
+    io:format("Reading text File ~p~n",[File]),
     {ok, Bin} = file:read_file(File),
     {ok, binary_to_list(Bin)}.
 
