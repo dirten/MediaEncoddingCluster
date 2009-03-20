@@ -50,10 +50,10 @@ usage(){
 status_runtime(){
 	if checkproc "beam"; then
 	    echo "Mhive Runtime is OFF"
-      action $"Running $prog" /bin/false
+#      action $"Running $prog" /bin/false
 	else
 	    echo "Mhive CLuster Runtime is ON"
-    action $"Running $prog" /bin/true
+#      action $"Running $prog" /bin/true
 	fi
 }
 
@@ -115,9 +115,11 @@ case "$1" in
     'start')
             # Start the Erlang emulator
             #
-            status "beam.smp"
-#            status_runtime
-#            start_runtime
+            status "epmd"
+            if [ $? -ne 0 ]; then
+              ${MHIVE_HOME}/bin/epmd -daemon
+              action $"Starting epmd" /bin/true
+            fi
             start_server
             ;;
     'stop')
@@ -129,7 +131,7 @@ case "$1" in
     'status')
             # Start the Erlang emulator
             #
-            status "beam.smp"
+            status "epmd"
             status_runtime
             ;;
     'start_erl')

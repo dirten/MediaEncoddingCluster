@@ -21,11 +21,17 @@
     <pubdate>12.03.2008</pubdate>
   </bookinfo>
 
-  <chapter label="Introduction">
-    <title>About</title>
+  <chapter>
+    <title>About Media Encoding Cluster</title>
 
     <para>The Media Encoding CLuster is a Programm which can be used to Encode
     Media Files Distributed over Nodes that reduces the Encoding Time.</para>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
 
     <section>
       <title>Why using Media Encoding Cluster</title>
@@ -56,9 +62,13 @@
     <title>Installation</title>
 
     <section>
-      <title>System requirements and languages</title>
+      <title></title>
 
       <para></para>
+    </section>
+
+    <section>
+      <title>System requirements and languages</title>
 
       <section>
         <title>Supported operating systems</title>
@@ -219,34 +229,6 @@
       </mediaobject>
 
       <para>Setup finish!</para>
-
-      <refentry>
-        <refnamediv>
-          <refname>console</refname>
-
-          <refpurpose></refpurpose>
-        </refnamediv>
-
-        <refsynopsisdiv>
-          <para></para>
-
-          <funcsynopsis>
-            <funcsynopsisinfo></funcsynopsisinfo>
-
-            <funcprototype>
-              <funcdef><function>startserver</function></funcdef>
-
-              <paramdef></paramdef>
-            </funcprototype>
-          </funcsynopsis>
-        </refsynopsisdiv>
-
-        <refsect1>
-          <title></title>
-
-          <para></para>
-        </refsect1>
-      </refentry>
     </section>
   </chapter>
 

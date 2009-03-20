@@ -26,7 +26,7 @@ configure()->
     _->
       ok
   end,
-  Node=libnet:local_name("configure"),
+  Node=libnet:local_name(),
   io:format("Using Local Name ~p~n",[Node]),
   net_kernel:start([Node]),
 %  net_adm:world(),
