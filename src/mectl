@@ -7,7 +7,7 @@
 #  Resides in: /etc/rc3.d
 #
 
-MHIVE_HOME=/home/jhoelscher/testerl2
+MHIVE_HOME=/mec
 
 DATA_DIR=data
 
@@ -15,7 +15,11 @@ if [ ! -d /usr/bin ]
 then                    # /usr not mounted
         exit
 fi
-. /etc/rc.d/init.d/functions
+#if [ -e . /etc/rc.d/init.d/functions ]
+#then                    # /usr not mounted
+#. /etc/rc.d/init.d/functions
+#fi
+
 prog="MHiveService"
 
 #if [ $(id -u) != "0" ]
@@ -34,7 +38,7 @@ killproc() {            # kill the named process(es)
 unset COLUMNS
 checkproc(){
 
-    lsproc=$(ps xao "%p %a"|grep -E "$MHIVE_HOME"|grep -E $1 |grep -v grep|awk '{print $1}')
+    lsproc=$(ps xa |grep -E "$MHIVE_HOME"|grep -E $1 |grep -v grep|awk '{print $1}')
 
 #    echo $lsproc
 #    if [ -n $lsproc ]; then
@@ -82,7 +86,8 @@ start_server(){
   RELDIR=$MHIVE_HOME/releases
   START_ERL_DATA=${1:-$RELDIR/start_erl.data}
   $MHIVE_HOME/bin/run_erl -daemon /tmp/ $MHIVE_HOME/logs "exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA"
-  action $"Starting $prog" /bin/true
+#  action $"Starting $prog" /bin/true
+  status
 }
 
 stop_server(){
@@ -118,7 +123,8 @@ case "$1" in
             status "epmd"
             if [ $? -ne 0 ]; then
               ${MHIVE_HOME}/bin/epmd -daemon
-              action $"Starting epmd" /bin/true
+#              action $"Starting epmd" /bin/true
+              status_runtime
             fi
             start_server
             ;;
@@ -131,7 +137,7 @@ case "$1" in
     'status')
             # Start the Erlang emulator
             #
-            status "epmd"
+#            status "epmd"
             status_runtime
             ;;
     'start_erl')
