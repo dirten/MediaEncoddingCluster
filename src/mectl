@@ -7,18 +7,10 @@
 #  Resides in: /etc/rc3.d
 #
 
-MHIVE_HOME=/mec
-
-DATA_DIR=data
-
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted
         exit
 fi
-#if [ -e . /etc/rc.d/init.d/functions ]
-#then                    # /usr not mounted
-#. /etc/rc.d/init.d/functions
-#fi
 
 prog="MHiveService"
 
@@ -86,8 +78,7 @@ start_server(){
   RELDIR=$MHIVE_HOME/releases
   START_ERL_DATA=${1:-$RELDIR/start_erl.data}
   $MHIVE_HOME/bin/run_erl -daemon /tmp/ $MHIVE_HOME/logs "exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA"
-#  action $"Starting $prog" /bin/true
-  status
+  status_runtime
 }
 
 stop_server(){
@@ -113,18 +104,20 @@ configure_client(){
 
 }
 
-# Start/stop processes required for Erlang
+# Start/stop processes required for MHive
 
+current_dir=`pwd`
+script_dir=`dirname $0`
+cd ${script_dir}/..
+MHIVE_HOME=`pwd`
+DATA_DIR=data
 
 case "$1" in
     'start')
-            # Start the Erlang emulator
+            # Start the MHive Runtime
             #
-            status "epmd"
             if [ $? -ne 0 ]; then
               ${MHIVE_HOME}/bin/epmd -daemon
-#              action $"Starting epmd" /bin/true
-              status_runtime
             fi
             start_server
             ;;
@@ -135,9 +128,6 @@ case "$1" in
             configure
             ;;
     'status')
-            # Start the Erlang emulator
-            #
-#            status "epmd"
             status_runtime
             ;;
     'start_erl')
@@ -167,3 +157,4 @@ case "$1" in
       usage
             ;;
 esac
+
