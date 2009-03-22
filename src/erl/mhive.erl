@@ -1,6 +1,6 @@
 -module(mhive).
 -behaviour(application).
--export([start/2, stop/1, startapp/0, stopapp/0, configure/0]).
+-export([start/2, stop/1, startapp/0, stopapp/0, configure/0, configure/2]).
 -include("schema.hrl").
 
 startapp()->
@@ -26,6 +26,10 @@ configure()->
     _->
       ok
   end,
+  configure(list_to_atom(Mode), list_to_atom(Auto)),
+init:stop().
+
+configure(Mode, Auto) when is_atom(Mode) and is_atom(Auto)->
   Node=libnet:local_name(),
   io:format("Using Local Name ~p~n",[Node]),
   net_kernel:start([Node]),
@@ -34,17 +38,17 @@ configure()->
   mnesia:start(),
   mnesia:wait_for_tables([config],1000),
   libdb:create(),
-  mnesia:dirty_write(#config{key=mode, val=list_to_atom(Mode)}),
+  mnesia:dirty_write(#config{key=mode, val=Mode}),
   case Auto of
-    "yes"->
+    yes->
       {ok,Base}=file:get_cwd(),
-      Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/S75mectl"),
-      Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/K03mectl");
+      _Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/S75mectl"),
+      _Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/K03mectl");
 %      io:format("Copy ~p",[Res]);
      _->
       ok
-  end,
-  init:stop().
+  end.
+
 
 read_data(Text,Values)->
   {ok, [Data|_]}=io:fread(Text,"~s"),
