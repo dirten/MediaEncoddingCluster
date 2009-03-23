@@ -7,17 +7,19 @@ setup()->
   io:format("Configure Cluster Environment~n"),
   Mode=read_data("Cluster Instance Mode {server | client | both}: ",[server,client,both]),
   Auto=read_data("Cluster Instance Autostart at System Boot {yes | no}: ",[yes,no]),
-  setup_linux(Mode,Auto).
+  setup_linux(list_to_atom(Mode),list_to_atom(Auto)).
 
 setup_linux(Mode,Auto)->
-  setup_config(Mode),
+  setup_db(),
+	setup_config(mode,Mode),
   setup_auto_start(Auto),
   ok.
 
 setup_win32(Mode, _Auto)->
 	[ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
-	setup_config(Mode),
-      Node=libnet:local_name(),
+	setup_db(),
+	setup_config(mode,Mode),
+  Node=libnet:local_name(),
 	R=os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d console -args \"-mnesia dir 'data' -setcookie default -config releases/0.0.4.1/sys -boot releases/0.0.4.1/start\""])),
 	R.
 
@@ -32,15 +34,19 @@ setup_auto_start(AutoStart)->
   end,
   ok.
 
-setup_config(Mode)->
+setup_db()->
   Node=libnet:local_name(),
   io:format("Using Local Name ~p~n",[Node]),
   net_kernel:start([Node]),
-  mnesia:create_schema([node()]),
+  mnesia:create_schema([Node]),
   mnesia:start(),
   mnesia:wait_for_tables([config],1000),
-  libdb:create(),
-  mnesia:dirty_write(#config{key=mode, val=Mode}).
+  libdb:create().
+
+setup_config(Key, Val)->
+  {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(#config{key=Key, val=Val})end).
+%    mnesia:dirty_write(#config{key=Key, val=Val}).
+
 
 read_data(Text,Values)->
   {ok, [Data|_]}=io:fread(Text,"~s"),

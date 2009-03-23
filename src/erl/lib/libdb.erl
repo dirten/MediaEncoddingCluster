@@ -13,9 +13,9 @@ create()->
   mnesia:create_table(profile,[{disc_copies, [node()]},{attributes, record_info(fields, profile)}]),
   mnesia:create_table(job,[{disc_copies, [node()]},{attributes, record_info(fields, job)}]),
   mnesia:create_table(jobdetail,[{disc_copies, [node()]},{attributes, record_info(fields, jobdetail)}]),
-  mnesia:create_table(process_unit,[{disc_only_copies, [node()]},{attributes, record_info(fields, process_unit)}]),
-  mnesia:create_table(packet,[{disc_only_copies, [node()]},{attributes, record_info(fields, packet)}]),
-  mnesia:create_table(config,[{disc_only_copies, [node()]},{attributes, record_info(fields, config)}]),
+  mnesia:create_table(process_unit,[{disc_copies, [node()]},{attributes, record_info(fields, process_unit)}]),
+  mnesia:create_table(packet,[{disc_copies, [node()]},{attributes, record_info(fields, packet)}]),
+  mnesia:create_table(config,[{disc_copies, [node()]},{attributes, record_info(fields, config)}]),
   mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]).
 
 drop()->

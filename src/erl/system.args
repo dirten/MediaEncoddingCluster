@@ -1,1 +1,1 @@
--noshell -pa ebin -s target_system create mhive -s target_system install mhive ./target -s init stop
+-noshell -pa ebin -s make all load -s target_system create mhive -s target_system install mhive ./target -s init stop

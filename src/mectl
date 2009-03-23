@@ -11,7 +11,6 @@ if [ ! -d /usr/bin ]
 then                    # /usr not mounted
         exit
 fi
-
 prog="MHiveService"
 
 #if [ $(id -u) != "0" ]
@@ -82,7 +81,7 @@ start_server(){
 }
 
 stop_server(){
-  ${MHIVE_HOME}/bin/erl -noshell -s mhive stopapp -s init stop
+  $BINDIR/erlexec -noshell -s mhive stopapp -s init stop
 }
 
 start_client(){
@@ -96,7 +95,7 @@ stop_client(){
 }
 
 configure(){
-  ${MHIVE_HOME}/bin/erl -noshell -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'" -s mhive configure -s init stop
+  $BINDIR/erlexec -noshell -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'" -s mhive configure -s init stop
 }
 
 configure_client(){
@@ -105,17 +104,29 @@ configure_client(){
 }
 
 # Start/stop processes required for MHive
-
-current_dir=`pwd`
-script_dir=`dirname $0`
-cd ${script_dir}/..
-MHIVE_HOME=`pwd`
+ len=${#MHIVE_HOME}
+  if [[ "$len" -lt "1" ]]
+    then
+      current_dir=`pwd`
+      script_dir=`dirname $0`
+      cd ${script_dir}/..
+      MHIVE_HOME=`pwd`
+  fi
 DATA_DIR=data
+ROOTDIR=${MHIVE_HOME}
+BINDIR=$ROOTDIR/erts-5.6.5/bin
+EMU=beam
+PROGNAME=`echo $0 | sed 's/.*\///'`
+export EMU
+export ROOTDIR
+export BINDIR
+export PROGNAME
 
 case "$1" in
     'start')
             # Start the MHive Runtime
             #
+            checkproc "epmd"
             if [ $? -ne 0 ]; then
               ${MHIVE_HOME}/bin/epmd -daemon
             fi

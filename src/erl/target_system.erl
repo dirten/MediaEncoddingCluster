@@ -40,6 +40,7 @@ build_release_file(AppFileName)->
 %]}.
 
 create([H|_T]) ->
+  
 	RelFileName=atom_to_list(H),
     RelFile = (RelFileName) ++ ".rel",
     io:fwrite("Reading file: \"~s\" ...~n", [RelFile]),
@@ -128,7 +129,9 @@ create([H|_T]) ->
     end,
 %    file:make_dir("tmp/config"),
     file:make_dir("tmp/logs"),
+    libfile:touch("tmp/logs/empty_file"),
     file:make_dir("tmp/data"),
+    libfile:touch("tmp/data/empty_file"),
     libfile:copy_dir("./wwwroot","./priv/",[".svn"]),
 %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
 %    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
@@ -145,6 +148,7 @@ create([H|_T]) ->
     {ok, Tar} = erl_tar:open(TarFileName, [write, compressed]),
     {ok, Cwd} = file:get_cwd(),
     file:set_cwd("tmp"),
+    file:delete("bin/erl"),
     erl_tar:add(Tar, ".hosts.erlang", []),
     erl_tar:add(Tar, "bin", []),
     erl_tar:add(Tar, "erts-" ++ ErtsVsn, []),
@@ -163,6 +167,7 @@ create([H|_T]) ->
 
 
 install([A, InstallFolder]) ->
+%  remove_dir_tree(InstallFolder),
 	RelFileName=atom_to_list(A),
   RootDir=libutil:to_string(InstallFolder),
     TarFile = RelFileName ++ ".tar.gz",
@@ -176,14 +181,14 @@ install([A, InstallFolder]) ->
 %    LibDir = filename:join([RootDir, "lib"]),
     io:fwrite("Substituting in erl.src, start.src and start_erl.src to\n"
               "form erl, start and start_erl ...\n"),
-    case os:type() of 
-      {win32,nt} ->
-        ok;
-      {unix, _}->
-        subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
-                      [{"FINAL_ROOTDIR", RootDir}, {"EMU", "beam"}],
-                      [preserve])
-    end,
+%    case os:type() of
+%      {win32,nt} ->
+%        ok;
+%      {unix, _}->
+%        subst_src_scripts(["erl", "start", "start_erl"], ErtsBinDir, BinDir,
+%                      [{"FINAL_ROOTDIR", RootDir}, {"EMU", "beam"}],
+%                      [preserve])
+%    end,
 %    subst_src_scripts(["mhive.app"], "./", LibDir,
 %                      [{"SYSPORTEXE", "\"priv/mhivesys\""}],
 %                      [preserve]),

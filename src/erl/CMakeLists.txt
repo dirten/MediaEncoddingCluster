@@ -6,7 +6,6 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
 MESSAGE("Erlang Interface Dir " ${ERLANG_INTERFACE_DIR})
 #SET(BZ2_LIB bz2)
-
 INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIRS})
@@ -82,10 +81,10 @@ ENDIF(WIN32)
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/include/config.hrl.in ${PROJECT_SOURCE_DIR}/src/erl/include/config.hrl)
 
-INSTALL(TARGETS mhivesys
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#INSTALL(TARGETS mhivesys
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 #execute_process(COMMAND ${ERLANG_DIR}/bin/erl -args_file compile.args
 #                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/
@@ -94,10 +93,12 @@ INSTALL(TARGETS mhivesys
 #                  )
 
 #file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
-add_custom_target(erlang ALL ${ERLANG_DIR}/bin/erl -args_file compile.args
+add_custom_target(erlang ${ERLANG_DIR}/bin/erl -args_file compile.args
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
 
-add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -args_file system.args
+
+#add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -args_file system.args
+add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -noshell -pa ebin -s make all load -s target_system create mhive -s target_system install mhive ./target -s init stop
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
 
 add_custom_command(TARGET mhivesys POST_BUILD
@@ -112,7 +113,33 @@ add_custom_command(TARGET mhivesys POST_BUILD
 
 configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)
 
-INSTALL(TARGETS mhivesys
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#INSTALL(TARGETS mhivesys
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/lib/
+  DESTINATION lib
+  USE_SOURCE_PERMISSIONS)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/bin/
+  DESTINATION bin
+  USE_SOURCE_PERMISSIONS)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/data/
+  DESTINATION data
+  USE_SOURCE_PERMISSIONS)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/erts-5.6.5/
+  DESTINATION erts-5.6.5
+  USE_SOURCE_PERMISSIONS)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/logs
+  DESTINATION .
+  USE_SOURCE_PERMISSIONS)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl/target/releases/
+  DESTINATION releases
+  USE_SOURCE_PERMISSIONS)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/erl/target/.hosts.erlang 
+  DESTINATION . 
+  )
+#set(CPACK_INSTALL_COMMANDS NULL)
+INSTALL(SCRIPT CMakeSetup.txt)
+
