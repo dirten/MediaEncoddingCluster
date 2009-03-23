@@ -4,6 +4,11 @@
 	{ i, "./" },
 	{ outdir, "./ebin" }
 ]}.
+{ './setup.erl', [
+	{ i, "./nitrogen/include" },
+	{ i, "./" },
+	{ outdir, "./ebin" }
+]}.
 { './core/*', [
 	{ i, "./" },
 	{ i, "./include" },

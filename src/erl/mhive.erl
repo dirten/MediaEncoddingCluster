@@ -75,10 +75,10 @@ start(_Type, StartArgs)->
   Node=libnet:local_name(),
   net_kernel:start([Node]),
   net_adm:world(),
-  mnesia:create_schema([node()]),
+%  mnesia:create_schema([node()]),
   mnesia:start(),
   mnesia:wait_for_tables([config],1000),
-  libdb:create(),
+%  libdb:create(),
   application:set_env(mhive,port,config:get(http_port,8080)),
   application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
   

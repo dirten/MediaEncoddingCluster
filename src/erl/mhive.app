@@ -29,7 +29,7 @@
                         mirror,nitrogen,nitrogen_file,nitrogen_inets_app,
                         nitrogen_mochiweb_app,nitrogen_project,
                         nitrogen_yaws_app,node_watcher, node_finder,packet_server,packet_stack,sync,
-                        sys_port,user_default,validator_confirm_password,
+                        sys_port,setup,user_default,validator_confirm_password,
                         validator_custom,validator_is_email,
                         validator_is_integer,validator_is_required,
                         validator_js_custom,validator_min_length,web,

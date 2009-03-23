@@ -9,6 +9,7 @@
 %%
 %% create(RelFileName)
 %%
+
 build_release_file(AppFileName)->
     {ok, [RelSpec]} = file:consult(AppFileName),
     {application,AppName,
