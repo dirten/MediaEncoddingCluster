@@ -105,6 +105,10 @@
 
           <listitem>
             <para>1Gb Ethernet card</para>
+
+            <para>Note: When you want to use Distributed Encoding then you
+            need a working Network connection between the Distributed Encoding
+            Nodes</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -304,8 +308,11 @@
           </listitem>
 
           <listitem>
-            <para>Open a shell window and type one of the following: ./mectl
-            server start|stop.</para>
+            <para>Open a shell window and type one of the following:
+            ./bin/mectl server start|stop.</para>
+
+            <para>Note: first you need to configure the Environment by type in
+            "./bin/mectl configure"</para>
           </listitem>
         </itemizedlist>
       </section>

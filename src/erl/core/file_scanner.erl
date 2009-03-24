@@ -42,14 +42,13 @@ loop()->
           end,
       {atomic, E}=mnesia:transaction(F),
       Fun=fun(El)->
-              FileList=libfile:find(string:concat(El#watchfolder.infolder,"/*")),
+              FileList=libfile:find(El#watchfolder.infolder,"",false),
 %              io:format("WatchFolder:~w")
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
           end,
       lists:foreach(Fun,E),
       loop()
   end.
-
 
 create_job(Fileid,Profileid,OutPath)->
   F = fun() ->

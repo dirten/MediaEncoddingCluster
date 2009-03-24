@@ -412,8 +412,15 @@ ETERM * encode(ETERM* in) {
 
 
 
-
-
+int current_size=0;
+void build_buffer(byte * buffer, int size){
+    logdebug("Increasing Buffer from:"<<current_size<<" to:"<<size);
+    if(buffer!=NULL)
+        delete[]buffer;
+    buffer = new byte[size];
+    memset(buffer, 0, size);
+    current_size=size;
+}
 /*
  * 
  */
@@ -434,13 +441,13 @@ int main(int argc, char** argv) {
   avcodec_register_all();
 
   ETERM *intuple = NULL, *outtuple = NULL;
-
-  byte *buf = new byte[5000000];
-  memset(buf, 0, 5000000);
+//  byte *buf=NULL;
+  byte *buf=new byte[5000000];
+//  build_buffer(buf, 5000000);
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
     //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
-//    erl_print_term((FILE*)stderr, intuple);
+    erl_print_term((FILE*)stderr, intuple);
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
@@ -483,8 +490,9 @@ int main(int argc, char** argv) {
 //          erl_print_term((FILE*)stderr, outtuple);
         int size = erl_term_len(outtuple);
 //        logdebug("term size:"<<size);
-        if (size > 5000000) {
+        if (size > current_size) {
           logerror("OutTuple to big(max 5000000b):" << size);
+//          build_buffer(buf, size);
         }else{
 //            loginfo("OutTuple size:" << size);
         }
