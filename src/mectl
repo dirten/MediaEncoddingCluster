@@ -121,15 +121,17 @@ export EMU
 export ROOTDIR
 export BINDIR
 export PROGNAME
+# always start the epmd
+
+checkproc "epmd"
+if [ $? -ne 0 ]; then
+  ${MHIVE_HOME}/bin/epmd -daemon
+fi
 
 case "$1" in
     'start')
             # Start the MHive Runtime
             #
-            checkproc "epmd"
-            if [ $? -ne 0 ]; then
-              ${MHIVE_HOME}/bin/epmd -daemon
-            fi
             start_server
             ;;
     'stop')
