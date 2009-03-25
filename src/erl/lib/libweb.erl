@@ -1,5 +1,6 @@
 -module(libweb).
 
+%-compiler(export_all).
 -export([alternate_color/2]).
 
 

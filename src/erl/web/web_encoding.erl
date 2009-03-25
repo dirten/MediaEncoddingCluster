@@ -40,7 +40,7 @@ get_data()->
             Transform(element(3,E)),
             Transform(element(4,E)),
             Transform(element(5,E)),
-            Transform(NowToString(element(6,E))),
+            Transform(NowToString(element(6,E))),            %file.start_time                 %file.duration
             Transform(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100)),
 %            Transform(E#job.last_ts),
             {data,element(2,E)}] || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),

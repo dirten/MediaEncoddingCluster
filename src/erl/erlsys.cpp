@@ -412,14 +412,18 @@ ETERM * encode(ETERM* in) {
 
 
 
-int current_size=0;
-void build_buffer(byte * buffer, int size){
-    logdebug("Increasing Buffer from:"<<current_size<<" to:"<<size);
-    if(buffer!=NULL)
-        delete[]buffer;
+int current_size = 0;
+
+byte * get_buffer(byte * buffer, int size) {
+  if (current_size < size) {
+    logdebug("Increasing Buffer from:" << current_size << " to:" << size);
+    if (buffer != NULL)
+      delete[]buffer;
     buffer = new byte[size];
     memset(buffer, 0, size);
-    current_size=size;
+    current_size = size;
+  }
+  return buffer;
 }
 /*
  * 
@@ -433,21 +437,18 @@ int main(int argc, char** argv) {
   setmode(fileno(stdin), O_BINARY);
 #endif
   erl_init(NULL, 0);
-  //  file_import();
-  //  logdebug("Program End");
-  //  return 0;
   av_register_all();
   avcodec_init();
   avcodec_register_all();
 
   ETERM *intuple = NULL, *outtuple = NULL;
-//  byte *buf=NULL;
-  byte *buf=new byte[5000000];
-//  build_buffer(buf, 5000000);
+
+  byte *buf=get_buffer(NULL,5000000);
+
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
     //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
-    erl_print_term((FILE*)stderr, intuple);
+//    erl_print_term((FILE*)stderr, intuple);
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
@@ -490,11 +491,9 @@ int main(int argc, char** argv) {
 //          erl_print_term((FILE*)stderr, outtuple);
         int size = erl_term_len(outtuple);
 //        logdebug("term size:"<<size);
+        buf=get_buffer(buf, size);
         if (size > current_size) {
-          logerror("OutTuple to big(max 5000000b):" << size);
-//          build_buffer(buf, size);
-        }else{
-//            loginfo("OutTuple size:" << size);
+          logerror("OutTuple to big:" << size);
         }
         if(erl_encode(outtuple, buf)>0){
 //          logdebug("try write_cmd");

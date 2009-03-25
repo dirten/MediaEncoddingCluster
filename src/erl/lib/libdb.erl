@@ -1,13 +1,13 @@
 -module(libdb).
--export([create/0, sequence/1, clear/0]).
+-export([create/0, sequence/1, clear/0, write/1, read/1]).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
 
 %%
-
 create()->
   mnesia:create_table(file,[{disc_copies, [node()]},{attributes, record_info(fields, file)}]),
+  mnesia:create_table(media,[{disc_copies, [node()]},{attributes, record_info(fields, media)}]),
   mnesia:create_table(watchfolder,[{disc_copies, [node()]},{attributes, record_info(fields, watchfolder)}]),
   mnesia:create_table(stream,[{disc_copies, [node()]},{attributes, record_info(fields, stream)}]),
   mnesia:create_table(profile,[{disc_copies, [node()]},{attributes, record_info(fields, profile)}]),
@@ -20,6 +20,7 @@ create()->
 
 drop()->
   mnesia:delete_table(file),
+  mnesia:delete_table(media),
   mnesia:delete_table(watchfolder),
   mnesia:delete_table(stream),
   mnesia:delete_table(profile),
@@ -43,3 +44,18 @@ sequence(Name, Inc) ->
 
 sequence(Name) ->
   sequence(Name, 1).
+
+write(Obj)->
+  case mnesia:transaction(fun() ->mnesia:write(Obj)end) of
+    {atomic, ok} ->
+    ok;
+    Err->{error, Err}
+  end.
+
+read(Table)->
+  F=fun()->
+    qlc:e(qlc:q([Data||Data<-mnesia:table(Table)]))
+  end,
+  {atomic,Data}=mnesia:transaction(F),
+  Data.
+

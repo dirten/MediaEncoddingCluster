@@ -23,8 +23,8 @@ stopapp()->
   init:stop().
 
 configure()->
-  setup:setup(),
-  init:stop().
+  setup:setup().
+%  init:stop().
 
 start(_Type, StartArgs)->
   Node=libnet:local_name(),

@@ -1,5 +1,10 @@
 % this records save the data that was imported or encoded in the Media Hive
+% this record is obsolete, use media instead
 -record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time}).
+
+% new Record for saving MediaFile Information
+-record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
+
 % this Record saves the Data for watchfolders
 -include("schema_watchfolder.hrl").
 %-record(watchfolder,{id,infolder,outfolder,profile,filter}).

@@ -44,7 +44,8 @@ setup_db()->
   libdb:create().
 
 setup_config(Key, Val)->
-  {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(#config{key=Key, val=Val})end).
+  libdb:write(#config{key=Key, val=Val}).
+%  {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(#config{key=Key, val=Val})end).
 %    mnesia:dirty_write(#config{key=Key, val=Val}).
 
 

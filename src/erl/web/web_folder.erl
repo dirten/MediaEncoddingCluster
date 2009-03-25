@@ -3,6 +3,8 @@
 -include ("wf.inc").
 -include_lib("stdlib/include/qlc.hrl").
 -compile(export_all).
+-import(libutil,[to_string/1]).
+%-import(libweb,[alternate_color/2]).
 
 
 main() ->
@@ -16,20 +18,12 @@ title() -> "Watch Folders".
 
 
 get_data()->
-  Transform=fun(Data)->
-                if
-                  is_integer(Data) ==true ->integer_to_list(Data);
-                  is_tuple(Data) ==true ->tuple_to_list(Data);
-                  is_atom(Data) ==true ->atom_to_list(Data);
-                  true->Data
-                end
-            end,
   F = fun() ->
           Q = qlc:q([[
-            Transform(element(3,E)),
-            Transform(element(4,E)),
-            Transform(element(5,E)),
-            Transform(element(6,E)),
+            to_string(element(3,E)),
+            to_string(element(4,E)),
+            to_string(element(5,E)),
+            to_string(element(6,E)),
             {data,element(2,E)}] || E <- mnesia:table(watchfolder)]),
           qlc:e(Q)
       end,
@@ -62,7 +56,7 @@ body() ->
 %			#tablerow { cells=[
 %				#tablecell {body=#hr{}, colspan=4}
 %			]},
-			#bind { id=tableBinding, data=Data, map=Map,transform=fun alternate_color/2, body=#tablerow { id=top,cells=[
+			#bind { id=tableBinding, data=Data, map=Map,transform=fun libweb:alternate_color/2, body=#tablerow { id=top,cells=[
 				#tablecell { id=infolderLabel },
 				#tablecell { id=outfolderLabel },
 				#tablecell { id=profileLabel },
@@ -72,6 +66,7 @@ body() ->
 		]}
 	],
 	wf:render(Column2).
+
 event({data, Data}) ->
 %	Message = "Clicked On Data: " ++ wf:to_list(Data),
 %wf:wire(#alert { text=Message }),
@@ -80,10 +75,3 @@ event(_) ->
   io:format("Message:leer",[]),
 ok.
 
-
-%%% ALTERNATE BACKGROUND COLORS %%%
-alternate_color(DataRow, Acc) when Acc == []; Acc==odd ->
-	{DataRow, even, {top@style, "background-color: #eee;"}};
-
-alternate_color(DataRow, Acc) when Acc == even ->
-	{DataRow, odd, {top@style, "background-color: #ddd;"}}.

@@ -34,20 +34,14 @@ loop()->
     stop ->
       io:format("~w stop loop~n", [?MODULE]),
       ok
-  after 10000->
-%            io:format("~w Loop entry1 ~n", [?MODULE]),
-      F = fun() ->
-              Q = qlc:q([E || E <- mnesia:table(watchfolder)]),
-              qlc:e(Q)
-          end,
-      {atomic, E}=mnesia:transaction(F),
+  after 10000->    
+      E=libdb:read(watchfolder),
       Fun=fun(El)->
-              FileList=libfile:find(El#watchfolder.infolder,"",false),
-%              io:format("WatchFolder:~w")
+              FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,El#watchfolder.recursive),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
           end,
       lists:foreach(Fun,E),
-      loop()
+      file_scanner:loop()
   end.
 
 create_job(Fileid,Profileid,OutPath)->
@@ -75,13 +69,17 @@ create_job(Fileid,Profileid,OutPath)->
     id=libdb:sequence(file),
     filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
     path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
-    streamcount=2
+    streamcount=File#file.streamcount
     },
   mnesia:write(NewFile),
 
+  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts=File#file.start_time},
+  io:format("Job : ~p",[Job]),
+  mnesia:write(Job),
+
   SortedStreams=lists:keysort(4, Streams),
   [VS|Rest]=SortedStreams,
-  [AS|_Rest]=Rest,
+
 
   %-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
   %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
@@ -98,6 +96,12 @@ create_job(Fileid,Profileid,OutPath)->
     height=Profile#profile.vheight,
     gop=20,
     format=0},
+  mnesia:write(NewVideoStream),
+  JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
+  mnesia:write(JobVideoDetail),
+
+  if length(Rest)>0->
+  [AS|_Rest]=Rest,
   NewAudioStream=#stream{
     id=libdb:sequence(stream),
     fileid=NewFile#file.id,
@@ -112,17 +116,15 @@ create_job(Fileid,Profileid,OutPath)->
     channels=Profile#profile.achannels,
     gop=20,
     format=0},
-  mnesia:write(NewVideoStream),
   mnesia:write(NewAudioStream),
 
-  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts="-1"},
-  mnesia:write(Job),
-  JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
   JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
-  mnesia:write(JobVideoDetail),
-  mnesia:write(JobAudioDetail),
+  mnesia:write(JobAudioDetail);
+  true->
+    no
+  end.
   
-  io:format("FileJob info ~w ~w ~w~n",[File, Profile, NewVideoStream]).
+ % io:format("FileJob info ~p ~p ~p~n",[File, Profile, NewVideoStream]).
 
 save_stream_info(FileName,SID, FileId)->
   %  io:format("get stream info from~s~n",[FileName]),
@@ -186,7 +188,7 @@ process_file_list([H|T],Profile, OutPath)->
                       bitrate=BitRate,
                       start_time=StartTime
                       },
-                    mnesia:write(File),
+                    libdb:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
                     save_stream_info(X,0,File#file.id),
                     io:format("File imported~s~n",[filename:basename(X)]),

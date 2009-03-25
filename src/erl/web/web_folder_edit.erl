@@ -3,6 +3,7 @@
 -include ("wf.inc").
 -include ("schema_watchfolder.hrl").
 -include_lib("stdlib/include/qlc.hrl").
+-import(libutil,[to_string/1]).
 -compile(export_all).
 
 
@@ -16,23 +17,15 @@ main() ->
 title() -> "Watch Folders Edit".
 
 get_data(Id)->
-  Transform=fun(Data)->
-                if
-                  is_integer(Data) ==true ->integer_to_list(Data);
-                  is_tuple(Data) ==true ->tuple_to_list(Data);
-                  is_atom(Data) ==true ->atom_to_list(Data);
-                  true->Data
-                end
-            end,
   F = fun() ->
           Q = qlc:q([{
-            Transform(element(1,E)),
-            Transform(element(2,E)),
-            Transform(element(3,E)),
-            Transform(element(4,E)),
-            Transform(element(5,E)),
-            Transform(element(6,E))
-                     } || E <- mnesia:table(watchfolder), element(2,E)=:=Id]),
+            to_string(element(1,E)),
+            to_string(element(2,E)),
+            to_string(element(3,E)),
+            to_string(element(4,E)),
+            to_string(element(5,E)),
+            to_string(element(6,E))
+                     } || E <- mnesia:table(watchfolder), E#watchfolder.id=:=Id]),
           qlc:e(Q)
       end,
   {atomic,E}=mnesia:transaction(F),
@@ -40,9 +33,8 @@ get_data(Id)->
 
 
 body()->
-%  io:format("Module:~w",[?MODULE]),
+
   [Id|_]=wf:q(id),
-%  io:format("PostId:~w",[Id]),
   G=list_to_integer(Id),
   if
     G > 0->
@@ -50,14 +42,9 @@ body()->
     true->
       Data={"","-1","","","","",""}
   end,
-  F=fun()->
-    qlc:e(qlc:q([Profile||Profile<-mnesia:table(profile)]))
-  end,
-  {atomic,Profiles}=mnesia:transaction(F),
-  ProfileOptions=[#option{text=element(3,X), value=integer_to_list(element(2,X)), selected=element(5,Data)=:=integer_to_list(element(2,X))}||X<-Profiles],
+  Profiles=libdb:read(profile),
+  ProfileOptions=[#option{text=element(3,X), value=to_string(element(2,X)), selected=element(5,Data)=:=to_string(element(2,X))}||X<-Profiles],
 
-%  [Data|_]=get_data(list_to_integer(Id)),
-%  io:format("PostData:~w",[Data]),
     ProfileData=#table { class=tiny, rows=[
     #tablerow { cells=[
       #tablecell { body=#label { text="Folder Id" } },
@@ -92,10 +79,10 @@ body()->
 event(save) ->
   [Pid|_] = wf:q(pId),
   if Pid == "-1"->
-    NewPid=libdb:sequence(watchfolder);
+      NewPid=libdb:sequence(watchfolder);
     true->
       NewPid=list_to_integer(Pid)
-        end,
+  end,
 
   [In|_]=wf:q(pInfolder),
   [Out|_]=wf:q(pOutfolder),
@@ -107,10 +94,10 @@ event(save) ->
     outfolder=Out,
     profile=list_to_integer(Pro),
     filter=Fil
-  },
-   {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Folder)end),
-%  io:format("Message:saveed for id ~w",[Pid]),
+                     },
+  {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Folder)end),
+  %  io:format("Message:saveed for id ~w",[Pid]),
   wf:flash("Watch Folder Data saved."),
-ok;
+  ok;
 event(cancel) ->
-    wf:redirect("/web/folder").
+  wf:redirect("/web/folder").

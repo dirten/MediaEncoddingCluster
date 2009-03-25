@@ -6,7 +6,8 @@
     infolder,
     outfolder,
     profile,
-    filter
+    filter,
+    recursive=0
   }
 ).
 
