@@ -3,6 +3,8 @@
 
 -export([packetstream/2]).
 
+-record(streams, {index,stream}).
+-record(packetgroup,{id, packets}).
 
 packetstream(Filename, Offset)->
   case get(streamdata) of

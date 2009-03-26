@@ -2,11 +2,13 @@
 { './mhive.erl', [
 	{ i, "./nitrogen/include" },
 	{ i, "./" },
-	{ outdir, "./ebin" }
+	{ outdir, "./ebin" },
+	debug_info
 ]}.
 { './setup.erl', [
 	{ i, "./" },
-	{ outdir, "./ebin" }
+	{ outdir, "./ebin" },
+	debug_info
 ]}.
 { './core/*', [
 	{ i, "./" },
@@ -36,7 +38,8 @@
 	debug_info
 ]}.
 { './lib/*', [
-	{ outdir, "./ebin" }
+	{ outdir, "./ebin" },
+	debug_info
 ]}.
 { './web/*', [
 	{ i, "./nitrogen/include" },

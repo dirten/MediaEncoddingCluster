@@ -4,6 +4,7 @@
 -include("schema_job.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -compile(export_all).
+-import(libutil,[to_string/1]).
 
 
 main() ->
@@ -25,23 +26,14 @@ get_data()->
         integer_to_list(Year)++"-"++integer_to_list(Month)++"-"++integer_to_list(Day)++" "++integer_to_list(Hour)++":"++integer_to_list(Min)++":"++integer_to_list(Sec)
       end
   end,
-  Transform=fun(Data)->
-                if
-                  Data=:="undefined"->Data;
-                  is_float(Data) ==true ->float_to_list(Data);
-                  is_integer(Data) ==true ->integer_to_list(Data);
-                  is_atom(Data) ==true ->atom_to_list(Data);
-                  is_tuple(Data) ==true ->tuple_to_list(Data);
-                  true->Data
-                end
-            end,
+  
   F = fun() ->
           Q = qlc:q([[
-            Transform(element(3,E)),
-            Transform(element(4,E)),
-            Transform(element(5,E)),
-            Transform(NowToString(element(6,E))),            %file.start_time                 %file.duration
-            Transform(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100)),
+            to_string(element(3,E)),
+            to_string(element(4,E)),
+            to_string(element(5,E)),
+            to_string(NowToString(element(6,E))),            %file.start_time                 %file.duration
+            to_string(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100)),
 %            Transform(E#job.last_ts),
             {data,element(2,E)}] || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
           qlc:e(Q)

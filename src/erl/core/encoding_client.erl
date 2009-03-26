@@ -19,7 +19,7 @@ init(Parent)->
 %  application:set_env(sysportexe,"bin/mhivesys"),
 %  io:format("Client:~p",[application:get_env(sysportexe)]),
 %  {ok,SysPortCommand}=application:get_env(sysportexe),
-%  process_flag(trap_exit, true),
+  process_flag(trap_exit, true),
   Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
 %  unlink(Port),
   proc_lib:init_ack(Parent, {ok, self()}),
@@ -31,16 +31,16 @@ loop( Port)->
   case catch gen_server:call({global,packet_server}, {packetgroup}) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
-      receive after 5000->loop(Port)end;
+      receive after 5000->encodig_client:loop(Port)end;
     {nomorepackets}->
       io:format("nomorepackets waiting 5 secs~n",[]),
-      receive after 5000->loop(Port)end;
+      receive after 5000->encodig_client:loop(Port)end;
     {nodata}->
       io:format("nomorepackets waiting 5 secs~n",[]),
-      receive after 5000->loop(Port)end;
+      receive after 5000->encodig_client:loop(Port)end;
     {nojob}->
 %      io:format("nojob waiting 5 secs~n",[]),
-      receive after 5000->loop(Port)end;
+      receive after 5000->encodig_client:loop(Port)end;
     Any->
 %  {Filename, Procid, D, E, Data}->
 %      io:format("~w~n",[Any]),
@@ -55,7 +55,7 @@ loop( Port)->
 %        {global,packet_server} ! {encoded,D},
         io:format("Data sended to packet server ~n", []),
 %          io:format("~w~n",[D])
-          loop(Port);
+          encodig_client:loop(Port);
         {Port, closed} ->
           io:format("Port exited on close ~n", []),
 %         global:unregister_name(packet_sender),
@@ -67,8 +67,8 @@ loop( Port)->
           receive after 1000->init([])end
 %         exit({normal, Reason2})
           after 10000->
-            io:format("No Data~n",[]),
-            loop(Port)
+            io:format("No Data from port~n",[]),
+            encodig_client:loop(Port)
           end,
     Port ! {self(), close},
     receive
