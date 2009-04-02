@@ -22,7 +22,7 @@ packetstream(Filename, Offset)->
               io:format("hivetimeout",[]),
               hivetimeout;
             Any->
-%              io:format("Data:~p",[Any]),
+              %              io:format("Data:~p",[Any]),
               [Required|_]=[[X||X<-Any,element(1,X)<2]],
               put(streamdata,get(streamdata)++Required)
           end;
@@ -51,6 +51,7 @@ process([], _Stream)->[];
 process(List, Stream)->
   {Data,_}=lists:partition(fun(A) -> element(1,A)==Stream end, List),
   Data.
+
 packet_group([],_C)->[];
 packet_group(Data, _C)->
   % io:format("~w~n~n~n",[H]),
