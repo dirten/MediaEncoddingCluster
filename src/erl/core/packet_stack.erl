@@ -3,7 +3,7 @@
 
 -export([packetstream/2]).
 
--record(streams, {index,stream}).
+-record(streams, {index,packetcount,packetgroup}).
 -record(packetgroup,{id, packets}).
 
 packetstream(Filename, Offset)->
@@ -21,10 +21,13 @@ packetstream(Filename, Offset)->
             hivetimeout->
               io:format("hivetimeout",[]),
               hivetimeout;
+              {no_more_packets}->
+                io:format("No more Packets from File ~p",[Filename]);
             Any->
               %              io:format("Data:~p",[Any]),
-              [Required|_]=[[X||X<-Any,element(1,X)<2]],
-              put(streamdata,get(streamdata)++Required)
+              process_new_packets(Any)
+%              [Required|_]=[[X||X<-Any,element(1,X)<2]],
+%              put(streamdata,get(streamdata)++Required)
           end;
         true->ok
       end;
@@ -46,6 +49,19 @@ packetstream(Filename, Offset)->
       packet_group(Data,0)
   end.
 
+process_new_packets(List)->
+  Data=get(streamdata),
+  [process_packet(X, Data)||X<-List].
+
+process_packet(P, D)->
+  _Stream=lists:nth(element(1,P),D),
+  if element(2,D)==element(1,P) ->ok end,
+  ok.
+
+process_packet_list([Packet|Tail], List)->
+  Stream=lists:append(lists:nth(element(1,Packet),List), Packet),
+  NewList=lists:keyreplace(element(1,Packet),2,List, Stream),
+  process_packet_list(Tail, NewList).
 
 process([], _Stream)->[];
 process(List, Stream)->

@@ -178,7 +178,7 @@ ETERM * streaminfo(ETERM * v) {
       terms.push_back(erl_mk_int(str->codec->height));
       terms.push_back(erl_mk_int(str->codec->channels));
       terms.push_back(erl_mk_int(str->codec->gop_size));
-      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? str->codec->pix_fmt : str->codec->sample_fmt));
+      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? (int)str->codec->pix_fmt : (int)str->codec->sample_fmt));
       terms.push_back(erl_mk_string(Decimal(str->start_time).toString().c_str()));
       terms.push_back(erl_mk_string(Decimal(str->duration).toString().c_str()));
     }
@@ -244,7 +244,7 @@ ETERM * packetstream(ETERM * v) {
       if(pis.readPacket(p)>=0){
         terms.push_back(buildTermFromPacket(p));
       }else{
-        break;
+         break;
       }
     }
   }
