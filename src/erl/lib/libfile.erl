@@ -54,7 +54,7 @@ find(Name,Filter,Rec, Acc)->
         end
       end
   end,
-  filelib:fold_files(Name,".*", true, Fun,[]).
+  filelib:fold_files(Name,".*", Rec, Fun,[]).
 
 find()->
   ok.
