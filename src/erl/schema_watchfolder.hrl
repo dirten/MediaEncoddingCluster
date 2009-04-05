@@ -7,7 +7,7 @@
     outfolder,
     profile,
     filter,
-    recursive=0
+    recursive=false
   }
 ).
 
