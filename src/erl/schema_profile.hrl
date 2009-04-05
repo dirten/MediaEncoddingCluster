@@ -13,6 +13,7 @@
     achannels,
     acodec,
     abitrate,
-    asamplerate
+    asamplerate,
+    multipass=0
   }
 ).
