@@ -83,23 +83,23 @@ handle_call(_Call,From,_N)->
           BytesSend=lists:sum(DS),
           %          io:format("BytesPacked ~w~n",[BytesSend]),
           [FirstPacket|_]=Data,
-          %      io:format("Data: ~w",[element(1,FirstPacket)]),
+%          io:format("Data: ~p",[FirstPacket]),
           [D|_]=[X||X<-Decoder,element(4,X)==element(1,FirstPacket)],
           [E|_]=[X||X<-Encoder,element(4,X)==element(1,FirstPacket)],
           %          io:format("DecoderData: ~w",[D]),
           FromTs=#timestamp{num=element(10,D), den=element(11,D)},
           ToTs=#timestamp{num=1, den=1000000},
+          LastTimeStamp=libav:rescale_timestamp(list_to_integer(element(4,FirstPacket)), FromTs, ToTs),
           ProcU=#process_unit{
             id=libdb:sequence(process_unit),
             sourcestream=D#stream.id,
             targetstream=E#stream.id,
             sendtime=now(),
             sendnode=From,
-            startts=libav:rescale_timestamp(list_to_integer(element(3,FirstPacket)), FromTs, ToTs),
+            startts=LastTimeStamp,
             framecount=length(Data),
             sendsize=BytesSend},
           mnesia:transaction(fun()->mnesia:write(ProcU)end),
-          LastTimeStamp=libav:rescale_timestamp(list_to_integer(element(4,FirstPacket)), FromTs, ToTs),
         
           _Result=mnesia:transaction(
             fun()->
