@@ -67,7 +67,7 @@ export(FileNo) when is_integer(FileNo)->
                   fun()->
                               qlc:e(
                                 qlc:q(
-                                [P || P <- qlc:keysort(5,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
+                                [P || P <- qlc:keysort(#process_unit.startts,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
                                      )
                                    )
                           end
