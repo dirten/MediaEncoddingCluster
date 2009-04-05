@@ -21,13 +21,15 @@ packetstream(Filename, Offset)->
             hivetimeout->
               io:format("hivetimeout",[]),
               hivetimeout;
-              {no_more_packets}->
-                io:format("No more Packets from File ~p",[Filename]);
+            {no_more_packets}->
+              io:format("No more Packets from File ~p",[Filename]);
             Any->
               %              io:format("Data:~p",[Any]),
-              process_new_packets(Any)
-%              [Required|_]=[[X||X<-Any,element(1,X)<2]],
-%              put(streamdata,get(streamdata)++Required)
+              %              process_new_packets(Any)
+              %% currently there will be only the firtst 2 streams processed
+
+              [Required|_]=[[X||X<-Any,element(1,X)<2]],
+              put(streamdata,get(streamdata)++Required)
           end;
         true->ok
       end;
@@ -46,7 +48,14 @@ packetstream(Filename, Offset)->
       Data;
     true->
       Data=process(get(streamdata),0),
-      packet_group(Data,0)
+      case packet_group(Data,0) of
+        not_enough_video_data->
+          AudioData=process(get(streamdata),1),
+          put(streamdata,get(streamdata)--AudioData),
+          AudioData;
+        VideoData->
+          VideoData
+      end
   end.
 
 process_new_packets(List)->
@@ -73,14 +82,19 @@ packet_group(Data, _C)->
   % io:format("~w~n~n~n",[H]),
   PG=[X||X<-Data,filter(X)],
   put(counter,0),
-  put(state,keyframeend),
-  Result=Data--PG,
-  put(streamdata,get(streamdata)--PG),
-  %  put(counter,0),
-  if length(Result)> 2->
-      [[A1,A2,A3|_]|_]=[[X||X<-Result]],
-      lists:flatten([PG, A1, A2, A3]);
-    true->lists:flatten([PG])
+  case get(state)of
+    keyframeend->
+      Result=Data--PG,
+      put(streamdata,get(streamdata)--PG),
+      %  put(counter,0),
+      if length(Result)> 2->
+          [[A1,A2,A3|_]|_]=[[X||X<-Result]],
+          lists:flatten([PG, A1, A2, A3]);
+        true->lists:flatten([PG])
+      end;
+    _->
+      put(state,keyframeend),
+      not_enough_video_data
   end.
 %  PG.
 
