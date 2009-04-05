@@ -39,7 +39,8 @@ get_data(Id)->
             Transform(element(12,E)),
             Transform(element(11,E)),
             Transform(element(13,E)),
-            Transform(element(14,E))
+            Transform(element(14,E)),
+            Transform(element(15,E))
                      } || E <- mnesia:table(profile), element(2,E)=:=Id]),
           qlc:e(Q)
       end,
@@ -56,7 +57,7 @@ body()->
     G > 0->
       [Data|_]=get_data(G);
     G<0->
-      Data={"","-1","","","","","","","","","","","",""}
+      Data={"","-1","","","","","","","","","","","","",""}
   end,
   case gen_server:call({global,hive_system_info}, {codeclist})of
     AnyCodec->
@@ -127,6 +128,10 @@ body()->
     #tablerow { cells=[
       #tablecell { body=#label { text="Profile Audio Samplerate" } },
       #tablecell { body=#textbox { text=element(14,Data),id=pAsamplerate} }
+    ]},
+    #tablerow { cells=[
+      #tablecell { body=#label { text="2 Pass Encoding" } },
+      #tablecell { body=#textbox { text=element(15,Data),id=pMultiPass} }
     ]}
   ]},
 
@@ -166,6 +171,7 @@ event(save) ->
   [PAchannels] = wf:q(pAchannels),
   [PAbitrate] = wf:q(pAbitrate),
   [PAsamplerate] = wf:q(pAsamplerate),
+  [PMultiPass] = wf:q(pMultiPass),
   
 Profile=#profile{
     id=NewPid,
@@ -180,7 +186,8 @@ Profile=#profile{
     acodec=list_to_integer(PAcodec),
     achannels=list_to_integer(PAchannels),
     abitrate=list_to_integer(PAbitrate),
-    asamplerate=list_to_integer(PAsamplerate)
+    asamplerate=list_to_integer(PAsamplerate),
+    multipass=list_to_integer(PMultiPass)
     },
    {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Profile)end),
 %  io:format("Message:saveed for id ~w",[Pid]),
