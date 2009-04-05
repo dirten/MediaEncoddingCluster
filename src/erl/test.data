@@ -7,12 +7,12 @@
 
 {profile,1,"Test Profile","avi","AVI format",16,512000,25,320,240,2,86016,128000,44100}.
 
-{watchfolder,1,"/media/disk","/media/out",1,undefined}.
-{watchfolder,2,"/media/video","/media/out",1,undefined}.
-{watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,undefined}.
-{watchfolder,4,"c:/2video","c:/3vodeoOut",1,undefined}.
-{watchfolder,5,"m:/video","/media/out",1,undefined}.
-{watchfolder,6,"/Users/jholscher/Movies/DivX Movies/","/media/out",1,undefined}.
+{watchfolder,1,"/media/disk","/media/out",1,undefined,false}.
+{watchfolder,2,"/media/video","/media/out",1,undefined,false}.
+{watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,undefined,false}.
+{watchfolder,4,"c:/2video","c:/3vodeoOut",1,undefined,false}.
+{watchfolder,5,"m:/video","/media/out",1,undefined,false}.
+{watchfolder,6,"/Users/jholscher/Movies/","/media/out",1,[],false}.
 
 {config, http_port, 8080}.
 
