@@ -17,7 +17,7 @@
 -include("schema_job.hrl").
 -record(jobdetail,{id, jobid,instream, outstream}).
 
--record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime, sendsize, receivesize, data}).
+-record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime, sendsize, receivesize, data, log}).
 
 -record(framegroup,{id,framegroup,startts,byte_pos,stream_id,stream_index,frame_count}).
 -record(packet,{id,pts, dts,data, data_size}).
