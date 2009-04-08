@@ -92,3 +92,20 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;	
     return pak;
 }
+
+/**
+ * returns the 2 pass statistics from the last encoded Frame
+ */
+char * Encoder::getStatistics(){
+  if(ctx->stats_out)
+    return ctx->stats_out;
+  return NULL;
+}
+
+/**
+ * sets the statistics data for 2 pass encoding
+ */
+void Encoder::setStatistics(char * stats){
+  ctx->stats_in=stats;
+}
+

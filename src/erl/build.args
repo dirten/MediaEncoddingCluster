@@ -1,1 +1,1 @@
--noshell -pa ebin -s target_system create mhive -s target_system install mhive "/tmp/target" -s init stop
+-noshell -pa ebin -s make all -s target_system create mhive -s target_system install mhive "/tmp/target" -s init stop

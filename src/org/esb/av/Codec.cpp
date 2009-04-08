@@ -69,7 +69,7 @@ namespace org {
 
       bool Codec::findCodec(int mode) {
         bool result = true;
-//        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
+        //        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
         if (mode == DECODER) {
           _codec = avcodec_find_decoder((CodecID) _codec_id);
           if (_codec == NULL) {
@@ -116,6 +116,7 @@ namespace org {
         ctx->flags |= _flags;
         //					ctx->start_time=_start_time;
       }
+
       int Codec::open() {
         if (findCodec(_mode)) {
           ctx = avcodec_alloc_context();
@@ -130,7 +131,7 @@ namespace org {
               logerror("while openning Codec" << _codec_id);
 
             } else {
-//              logdebug("Codec opened:" << _codec_id);
+              //              logdebug("Codec opened:" << _codec_id);
               _opened = true;
             }
           } catch (...) {
@@ -154,7 +155,7 @@ namespace org {
           av_freep(&ctx->stats_in);
           avcodec_close(ctx);
           av_free(ctx);
-//          logdebug("Codec closed:" << _codec_id);
+          //          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << _codec_id);
         }
@@ -182,7 +183,7 @@ namespace org {
       }
 
       AVRational Codec::getTimeBase() {
-        return _time_base ;
+        return _time_base;
       }
 
       void Codec::setGopSize(int size) {
@@ -221,6 +222,7 @@ namespace org {
       int Codec::getChannels() {
         return _channels;
       }
+
       int Codec::getGopSize() {
         return _gop_size;
       }
@@ -228,7 +230,8 @@ namespace org {
       void Codec::setStartTime(int64_t start) {
         _start_time = start;
       }
-      std::string Codec::toString(){
+
+      std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");

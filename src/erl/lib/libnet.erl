@@ -23,9 +23,8 @@ connect(Host, NodeName)->
           io:format("Visible Nodes ~p~n",[[node()|nodes()]]),
           {ok,Node};
         pang->
-%          wf:flash("no pssible Service found"),
 
-          io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
+%          io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
 %          {ok,Data}=net_adm:names(Ip),
 %          Services=[element(1,X)||X<-Data],
 %          io:format("Available Services on Host Address ~p~n",[Services]),
@@ -33,6 +32,6 @@ connect(Host, NodeName)->
        end;
     {error, nxdomain}->
 %      wf:flash("Can not resolve Host Address"),
-      io:format("Can not resolve Host Address for ~p~n",[Host]),
+%      io:format("Can not resolve Host Address for ~p~n",[Host]),
     {error,"Can not resolve Host Address"}
     end.

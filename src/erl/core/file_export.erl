@@ -29,7 +29,7 @@ loop()->
   receive
   after 10000->
       export(select),
-      loop()
+      file_export:loop()
   end.
 
 
@@ -40,7 +40,6 @@ system_continue(_Parent, _Deb, _Chs) ->
 system_terminate(Reason, _Parent, _Deb, _Chs) ->
   io:format("Terminate~s,~w",[?MODULE, Reason]),
   exit(Reason).
-
 
 export(FileNo) when is_integer(FileNo)->
   {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time > undefined, F#file.id==PU#job.outfile,F#file.id==FileNo]))end),
@@ -142,6 +141,6 @@ export(FileNo) when is_integer(FileNo)->
 
 
 export(select)->
-  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([PU#job.outfile|| PU <- qlc:keysort(2,mnesia:table(job)), PU#job.complete_time > undefined]))end),
+  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([PU#job.outfile|| PU <- qlc:keysort(2,mnesia:table(job)), PU#job.complete_time > undefined,PU#job.pass=:=0 orelse PU#job.pass=:=2]))end),
   [export(F)||F<-E].
 

@@ -15,20 +15,20 @@ start_link()->
 init(Parent)->
   BinPath=libcode:get_mhivesys_exe(),
   io:format("~s Started with ~p~n",[?MODULE, BinPath]),
-%  loop().
-%  application:set_env(sysportexe,"bin/mhivesys"),
-%  io:format("Client:~p",[application:get_env(sysportexe)]),
-%  {ok,SysPortCommand}=application:get_env(sysportexe),
+  %  loop().
+  %  application:set_env(sysportexe,"bin/mhivesys"),
+  %  io:format("Client:~p",[application:get_env(sysportexe)]),
+  %  {ok,SysPortCommand}=application:get_env(sysportexe),
   process_flag(trap_exit, true),
   Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
-%  unlink(Port),
+  %  unlink(Port),
   proc_lib:init_ack(Parent, {ok, self()}),
-%  register(encodeclient, Port),
-%  proc_lib:init_ack(Parent, {ok, self()}),
+  %  register(encodeclient, Port),
+  %  proc_lib:init_ack(Parent, {ok, self()}),
   loop(Port).
 
 loop( Port)->
-  case catch gen_server:call({global,packet_server}, {packetgroup}) of
+  case catch gen_server:call({global,packet_server}, {packetgroup},infinity) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
@@ -39,63 +39,37 @@ loop( Port)->
       io:format("nomorepackets waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
     {nojob}->
-%      io:format("nojob waiting 5 secs~n",[]),
+      %      io:format("nojob waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
-    Any->
-%  {Filename, Procid, D, E, Data}->
-%      io:format("~w~n",[Any]),
-      Port ! {self(), {command, term_to_binary({encode,Any})}},
-%      Data=erlang:port_info(Port),
-%      io:format("~w",[Data]),
+    %Any->
+    {Filename, Procid, Pass,Dec, Enc, Data}->
+%            io:format("~p~n",[{Filename, Procid, Pass,Dec, Enc}]),
+      Port ! {self(), {command, term_to_binary({encode,{Filename, Procid, Pass, Dec, Enc, Data}})}},
+      %      Data=erlang:port_info(Port),
+      %      io:format("~w",[Data]),
       receive
-        {_Fileport, {data, Data}} ->
-          D=binary_to_term(Data),
-        {_, Procid, _, _, _}=Any,
-        gen_server:cast({global,packet_server}, {encoded,Procid,D}),
-%        {global,packet_server} ! {encoded,D},
-        io:format("Data sended to packet server ~n", []),
-%          io:format("~w~n",[D])
+        {_Fileport, {data, InData}} ->
+          D=binary_to_term(InData),
+          gen_server:cast({global,packet_server}, {encoded,Procid,Pass,D}),
+          %        {global,packet_server} ! {encoded,D},
+%          io:format("Data sended to packet server ~n", []),
+          %          io:format("~w~n",[D])
           encoding_client:loop(Port);
         {Port, closed} ->
           io:format("Port exited on close ~n", []),
-%         global:unregister_name(packet_sender),
+          %         global:unregister_name(packet_sender),
           exit(normal);
         {'EXIT', Port, Reason2} ->
- %        global:unregister_name(packet_sender),
-          io:format("EncodingClient exited  ~w with data ~w ~n", [Reason2, Any]),
-%          io:format("EncodingClient exited  ~w ~n", [Reason2]),
-          receive after 1000->init([])end
-%         exit({normal, Reason2})
-          after 10000->
-            io:format("No Data from port~n",[]),
-            encoding_client:loop(Port)
-          end,
-    Port ! {self(), close},
-    receive
-    {Port, closed} ->
-      io:format("Port exited on close ~n", []),
-%      global:unregister_name(packet_sender),
-      exit(normal);
-    {'EXIT', Port, Reason} ->
- %     global:unregister_name(packet_sender),
-      io:format("GenCall to ~w Failed  ~w~n", [Port,Reason])
-%      exit({normal, Reason})
+          %        global:unregister_name(packet_sender),
+          io:format("EncodingClient exited  ~w with data ~p ~n", [Reason2,Procid]),
+          %          io:format("EncodingClient exited  ~w ~n", [Reason2]),
+          exit({normal, Reason2}),
+          receive after 4000->init([])end
+          %         exit({normal, Reason2})
+      after 100000->
+          io:format("No Data from port~n",[]),
+          encoding_client:loop(Port)
       end
-%    {timeout,{_Reason}}->
-%      io:format("DataTimeOut ~n", []),
-%      loop( Port)
-%      Size=element(5,element(1,element(5,Any))),
-%      io:format("~w,~w,~w,~w,~w~n",[element(1,element(1,element(5,Any))),element(2,element(1,element(5,Any))),element(3,element(1,element(5,Any))),element(4,element(1,element(5,Any))),element(5,element(1,element(5,Any)))])
-%if Size > 0 ->
-%      loop(Server, Port);
-%      ok;
-%      true->
-%        io:format("Nothing to do")
-%        receive
- %         after 1000->
-  %          loop(Server,Port)
-   %     end
-%    end
   end.
 
 system_continue(_Parent, _Deb, _Chs) ->

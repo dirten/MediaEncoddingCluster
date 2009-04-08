@@ -101,10 +101,10 @@ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
 add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -noshell -pa ebin -s make all load -s target_system create mhive -s target_system install mhive ./target -s init stop
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
 
-add_custom_command(TARGET mhivesys POST_BUILD
-  COMMAND ${ERLANG_DIR}/bin/erl -args_file build.args
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
-)
+#add_custom_command(TARGET mhivesys POST_BUILD
+#  COMMAND ${ERLANG_DIR}/bin/erl -args_file build.args
+#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+#)#
 
 #INSTALL(CODE "
 #${ERLANG_DIR}/bin/erl -args_file build.args

@@ -25,3 +25,5 @@
 -record(timestamp,{num,den}).
 
 -include("schema_config.hrl").
+%-record(streams, {index,packetcount,packets=[]}).
+%-record(packetgroup,{id, packets}).

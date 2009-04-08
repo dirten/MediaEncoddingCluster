@@ -1,7 +1,7 @@
 -record(
   profile,
   {
-    id,
+    id=-1,
     name,
     ext,
     vformat,
@@ -14,6 +14,7 @@
     acodec,
     abitrate,
     asamplerate,
-    multipass=0
+    multipass=0,
+    gop=20
   }
 ).

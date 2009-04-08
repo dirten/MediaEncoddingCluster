@@ -105,10 +105,20 @@ ETERM * vector2list(std::vector<ETERM*> & v) {
 }
 using namespace org::esb::av;
 using namespace org::esb::util;
+
+std::string toString(long long int num) {
+  char c[25];
+  memset(&c, 0, 25);
+  sprintf(c, "%d", num);
+  return std::string(c);
+}
+//{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
 ETERM * buildTermFromPacket(Packet & p){
     std::vector<ETERM *> terms;
     terms.push_back(erl_mk_int(p.getStreamIndex()));
     terms.push_back(erl_mk_int(p.isKeyFrame()));
+//    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
+//    terms.push_back(erl_mk_string(toString(p.getDts()).c_str()));
     terms.push_back(erl_mk_string(Decimal(p.getPts()).toString().c_str()));
     terms.push_back(erl_mk_string(Decimal(p.getDts()).toString().c_str()));
 //    terms.push_back(erl_mk_binary((const char *)p.getPts(),8));

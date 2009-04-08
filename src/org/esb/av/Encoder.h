@@ -17,6 +17,9 @@ namespace org {
                 Encoder(CodecID id);
                 Encoder();
                 Packet encode(Frame & f);
+                char * getStatistics();
+                void setStatistics(char *);
+
                 /*
                 template<class Archive>
                 void serialize(Archive & ar, const unsigned int version){

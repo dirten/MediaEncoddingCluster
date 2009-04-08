@@ -25,7 +25,7 @@ init([])->
 
 get_job()->
   JobFun = fun() ->
-               Q = qlc:q([{Jobs#job.id, filename:join(Files#file.path,Files#file.filename), Jobs#job.last_ts} || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Jobs#job.complete_time == undefined,Jobs#job.infile==Files#file.id ]),
+               Q = qlc:q([{Jobs#job.id, filename:join(Files#file.path,Files#file.filename), Jobs#job.last_ts, Jobs#job.pass} || Jobs <- mnesia:table(job),Files <- mnesia:table(file),Jobs#job.complete_time == undefined,Jobs#job.infile==Files#file.id ]),
                C = qlc:cursor(Q),
                qlc:next_answers(C, 1)
            end,
@@ -50,9 +50,8 @@ get_job()->
                 end,
   
       Decoder=[Streams(X)||X<-[SID#jobdetail.instream||SID<-JobDetails]],
-      Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]]
-      ,
-      {element(2,Job),element(1,Job),element(3,Job),Decoder,Encoder};
+      Encoder=[Streams(X)||X<-[SID#jobdetail.outstream||SID<-JobDetails]],
+      {element(2,Job),element(1,Job),element(3,Job),element(4,Job),Decoder,Encoder};
     {atomic,[]}->[]
 
   end.
@@ -61,9 +60,9 @@ handle_call(_Call,From,_N)->
   %  io:format("handle_call ~w ~n", [Call]),
   case get_job() of
     []->{reply, {nojob}, state};
-    {Filename, JobId, LastTs, Decoder, Encoder}->
+    {Filename, JobId, LastTs, Pass, Decoder, Encoder}->
 
-      Data=packet_stack:packetstream(Filename,LastTs),
+      Data=packet_stack:packetstream(Filename,LastTs, Decoder,Encoder),
       C=length(Data),
       if
         C==0->
@@ -83,7 +82,7 @@ handle_call(_Call,From,_N)->
           BytesSend=lists:sum(DS),
           %          io:format("BytesPacked ~w~n",[BytesSend]),
           [FirstPacket|_]=Data,
-%          io:format("Data: ~p",[FirstPacket]),
+          %          io:format("Data: ~p",[FirstPacket]),
           [D|_]=[X||X<-Decoder,element(4,X)==element(1,FirstPacket)],
           [E|_]=[X||X<-Encoder,element(4,X)==element(1,FirstPacket)],
           %          io:format("DecoderData: ~w",[D]),
@@ -114,18 +113,14 @@ handle_call(_Call,From,_N)->
                 end
             end),
           %            io:format("Decoder ~p",[D]),
-          {reply, {Filename, ProcU#process_unit.id, D, E, Data}, state}
+          {reply, {Filename, ProcU#process_unit.id, Pass, D, E, Data}, state}
           %          []->{reply, {nojob}, state}
       end
   end.
 
 handle_cast(Msg,N)->
   %  io:format("handle_cast(Msg,N) ~n", []),
-  {_,ProcId,Data}=Msg,
-  DS=[element(7,X)||X<-Data],
-  %  BinLen=[length(binary_to_list(element(8,X)))||X<-Data],
-  % io:format("~w:~w",[DS,BinLen]),
-  BytesReceived=lists:sum(DS),
+  {_,ProcId,Pass,Data}=Msg,
   % io:format("-~w:~w:~w:~w-",[DS,BinLen,BytesReceived, lists:sum(BinLen)]),
   _Result=mnesia:transaction(
     fun()->
@@ -133,15 +128,20 @@ handle_cast(Msg,N)->
           []->io:format("Data not found ~n",[]),
             mnesia:abort(no_process_unit_found);
           [Unit|_]->
-            %          io:format("Data found ~w~n",[Unit]),
-            %            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now(), data=Data})
-            mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()})
+ %           io:format("Data for Pass ~p ~n",[Pass]),
+            if Pass =:= 1->
+                mnesia:write(Unit#process_unit{receivesize=0, completetime=now(), log=Data});
+              Pass =:= 0 orelse Pass =:= 2 ->
+                DS=[element(7,X)||X<-Data],
+                BytesReceived=lists:sum(DS),
+                mnesia:write(Unit#process_unit{receivesize=BytesReceived, completetime=now()}),
+                {ok,Pid}=file:open(filename:join([config:get(tmp_data_dir,"data"), integer_to_list(ProcId)]), write),
+                file:write(Pid, term_to_binary(Data)),
+                file:close(Pid)
+%              io:format("Data written to disk ~n",[])
+            end
         end
     end),
-  {ok,Pid}=file:open(filename:join([config:get(tmp_data_dir,"data"), integer_to_list(ProcId)]), write),
-  %   io:write(Pid, Data),
-  file:write(Pid, term_to_binary(Data)),
-  file:close(Pid),
   %      Result=mnesia:transaction(
   %      fun()->
   %          case mnesia:read({job, JobId}) of
@@ -156,8 +156,8 @@ handle_cast(Msg,N)->
   %  io:format("BytesReceived ~w ~w~n",[BytesReceived, Result]),
   {noreply, N}.
 
-handle_info(Info,N)->
-  io:format("handle_info(~w,N)~n", [Info]),
+handle_info(_Info,N)->
+  io:format("handle_info(Info,N) in Module ~p~n", [?MODULE]),
   {noreply, N}.
 
 terminate(_Reason,_N)->

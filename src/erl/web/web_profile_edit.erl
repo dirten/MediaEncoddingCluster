@@ -40,7 +40,8 @@ get_data(Id)->
             Transform(element(11,E)),
             Transform(element(13,E)),
             Transform(element(14,E)),
-            Transform(element(15,E))
+            Transform(element(15,E)),
+            Transform(element(16,E))
                      } || E <- mnesia:table(profile), element(2,E)=:=Id]),
           qlc:e(Q)
       end,
@@ -57,7 +58,8 @@ body()->
     G > 0->
       [Data|_]=get_data(G);
     G<0->
-      Data={"","-1","","","","","","","","","","","","",""}
+%      Data={"","-1","","","","","","","","","","","","",""}
+      Data=#profile{}
   end,
   case gen_server:call({global,hive_system_info}, {codeclist})of
     AnyCodec->
@@ -110,6 +112,10 @@ body()->
     #tablerow { cells=[
       #tablecell { body=#label { text="Profile Video Height" } },
       #tablecell { body=#textbox { text=element(10,Data),id=pVheight} }
+    ]},
+    #tablerow { cells=[
+      #tablecell { body=#label { text="Group of Picture" } },
+      #tablecell { body=#textbox { text=element(16,Data),id=pGop} }
     ]}
   ]},
   AudioData=#table { class=tiny, rows=[
@@ -172,6 +178,7 @@ event(save) ->
   [PAbitrate] = wf:q(pAbitrate),
   [PAsamplerate] = wf:q(pAsamplerate),
   [PMultiPass] = wf:q(pMultiPass),
+  [PGop] = wf:q(pGop),
   
 Profile=#profile{
     id=NewPid,
@@ -187,7 +194,8 @@ Profile=#profile{
     achannels=list_to_integer(PAchannels),
     abitrate=list_to_integer(PAbitrate),
     asamplerate=list_to_integer(PAsamplerate),
-    multipass=list_to_integer(PMultiPass)
+    multipass=list_to_integer(PMultiPass),
+    gop=list_to_integer(PGop)
     },
    {atomic, ok} =mnesia:transaction(fun() ->mnesia:write(Profile)end),
 %  io:format("Message:saveed for id ~w",[Pid]),

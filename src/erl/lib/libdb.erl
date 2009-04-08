@@ -49,7 +49,9 @@ write(Obj)->
   case mnesia:transaction(fun() ->mnesia:write(Obj)end) of
     {atomic, ok} ->
     ok;
-    Err->{error, Err}
+    Err->
+      io:format("Error in ~p:~p",[?MODULE,Err]),
+      {error, Err}
   end.
 
 read(Table)->

@@ -6,7 +6,6 @@
 -compile(export_all).
 -import(libutil,[to_string/1]).
 
-
 main() ->
     {ok,Val}=application:get_env(wwwroot),
     Temp=string:concat(Val,"/onecolumn.html"),

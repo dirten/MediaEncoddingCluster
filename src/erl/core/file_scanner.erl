@@ -72,10 +72,14 @@ create_job(Fileid,Profileid,OutPath)->
     streamcount=File#file.streamcount
     },
   mnesia:write(NewFile),
-
-  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts=File#file.start_time},
+  Pass=if
+    Profile#profile.multipass =:=2->1;
+    true->0
+    end,
+  Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts=File#file.start_time, profile=Profile#profile.id, pass=Pass},
   io:format("Job : ~p",[Job]),
-  mnesia:write(Job),
+  libdb:write(Job),
+%  mnesia:write(Job),
 
   SortedStreams=lists:keysort(4, Streams),
   [VS|Rest]=SortedStreams,
@@ -94,11 +98,11 @@ create_job(Fileid,Profileid,OutPath)->
     den=Profile#profile.vframerate,
     width=Profile#profile.vwidth,
     height=Profile#profile.vheight,
-    gop=20,
+    gop=Profile#profile.gop,
     format=0},
-  mnesia:write(NewVideoStream),
+  libdb:write(NewVideoStream),
   JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
-  mnesia:write(JobVideoDetail),
+  libdb:write(JobVideoDetail),
 
   if length(Rest)>0->
   [AS|_Rest]=Rest,
@@ -116,10 +120,10 @@ create_job(Fileid,Profileid,OutPath)->
     channels=Profile#profile.achannels,
     gop=20,
     format=0},
-  mnesia:write(NewAudioStream),
+  libdb:write(NewAudioStream),
 
   JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
-  mnesia:write(JobAudioDetail);
+  libdb:write(JobAudioDetail);
   true->
     no
   end.
@@ -151,10 +155,7 @@ save_stream_info(FileName,SID, FileId)->
         duration=list_to_integer(Duration)
         },
       io:format("Stream info ~w~n",[Stream]),
-      mnesia:write(Stream),
-%      case mnesia:write(Stream) of
-%        Any->io:format("MNEsia _w",[Any])
-%      end,
+      libdb:write(Stream),
       save_stream_info(FileName,SID+1, FileId);
     Any->
       io:format("Any Stream info ~w~n",[Any])
@@ -197,8 +198,8 @@ process_file_list([H|T],Profile, OutPath)->
                   {filenotfound}  ->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
-                    ok,
-                           io:format("File Wrong format ~s~n",[X]);
+                    ok;
+%                           io:format("File Wrong format ~s~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end
