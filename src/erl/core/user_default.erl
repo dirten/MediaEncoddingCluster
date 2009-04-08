@@ -15,6 +15,13 @@ help()->
   format("stopclient()      --> Stopping the Client on this Node\n"),
   true.
 
+
+restart()->
+  application:stop(mhive),
+  make:all([load]),
+  libdb:clear(),
+  application:start(mhive).
+  
 logload()->
   rb:start().
 

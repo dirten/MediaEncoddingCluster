@@ -75,7 +75,6 @@ packetstream(Filename, Offset, DecoderList,EncoderList)->
       element(2,Tmp);
     _->[]
   end.
-  %[Tmp|_]=qlc:next_answers(qlc:cursor(qlc:q([DataTmp||DataTmp<-ets:table(prozessgrouplist)])),1),
   %  Count=length(process(get(streamdata),1)),
   %  if Count> 300->
   %      Data=process(get(streamdata),1),
@@ -104,7 +103,7 @@ packetstream(Filename, Offset, DecoderList,EncoderList)->
 
 build_audio_groups(Stream)->
   Packets=Stream#streams.packets,
-  process_audio_packet(Packets,100,[]).
+  process_audio_packet(Packets,20,[]).
 
 build_video_groups(Stream, Dec)->
   Packets=Stream#streams.packets,
@@ -123,7 +122,7 @@ process_video_packet([Packet|T],State,PG, Dec)->
         %% do nothing while find the first Keyframe
         true->
           NewState=State,%#state{status=group, count=1},
-          NewPG=lists:append([[], [Packet]])
+          NewPG=lists:append([PG, [Packet]])
       end;
     group->
       if element(2,Packet)==1->
