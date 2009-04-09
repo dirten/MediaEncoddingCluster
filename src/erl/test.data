@@ -5,7 +5,7 @@
   {config,[{attributes,[key, val]}]}
 ]}.
 
-{profile,1,"Test Profile","avi","AVI format",13,512000,25,320,240,2,86016,128000,48000,0,30}.
+{profile,1,"Test Profile","avi","AVI format",13,512000,25,640,480,2,86016,192000,48000,0,30}.
 
 {watchfolder,1,"/media/disk","/media/out",1,[],false}.
 {watchfolder,2,"/media/video","/media/out",1,[],false}.

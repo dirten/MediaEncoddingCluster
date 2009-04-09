@@ -19,8 +19,9 @@ init([])->
       io:format("Error: Tmp Data dir not exist ~p",[Reason])
       %      {error,permission_denied_tmp_data}
   end,
-  %  global:register_name(?MODULE, self()),
-  io:format("~s started~n", [?MODULE]),
+  register(?MODULE, self()),
+  io:format("~s started with PID=~p~n", [?MODULE, self()]),
+%  fprof:trace(start),
   {ok, running}.
 
 get_job()->
@@ -162,6 +163,7 @@ handle_info(_Info,N)->
 
 terminate(_Reason,_N)->
   io:format("~p stopping~n",[?MODULE]),
+%  fprof:trace(stop),
   ok.
 
 code_change(_OldVsn,N,_Extra)->{ok, N}.
