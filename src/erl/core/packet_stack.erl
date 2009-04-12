@@ -81,7 +81,7 @@ build_process_groups([Stream|T], Dec)->
 
 build_audio_groups(Stream, PG)->
   Packets=Stream#streams.packets,
-  process_audio_packet(Packets,20,PG).
+  process_audio_packet(Packets,200,PG).
 
 build_video_groups(Stream, Dec, PG)->
   Packets=Stream#streams.packets,
