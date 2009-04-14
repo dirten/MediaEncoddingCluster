@@ -2,44 +2,14 @@
 
 -include("config.hrl").
 
--export([init/1,start_link/0, loop/0]).
--export([system_continue/3, system_terminate/4]).
-
+-export([run/0]).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
-start_link()->
-  proc_lib:start_link(?MODULE,init,[self()]).
 
-init(Parent)->
-  proc_lib:init_ack(Parent, {ok, self()}),
-  io:format("FileExport Started~n",[]),
-  loop().
-
-%get_completed_jobs()->
-%  F = fun() ->
-%          Q = qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time > undefined, F#file.id==PU#job.outfile]),
-%          C = qlc:e(Q),
-%          C
-%      end,
-%  {atomic,E}=mnesia:transaction(F),
-%  E.
-
-loop()->
-  receive
-  after 10000->
-      export(select),
-      file_export:loop()
-  end.
-
-
-system_continue(_Parent, _Deb, _Chs) ->
-  io:format("System Continue ~s",[?MODULE]),
-  loop().
-
-system_terminate(Reason, _Parent, _Deb, _Chs) ->
-  io:format("Terminate~s,~w",[?MODULE, Reason]),
-  exit(Reason).
+run()->
+  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([PU#job.outfile|| PU <- qlc:keysort(2,mnesia:table(job)), PU#job.complete_time > undefined,PU#job.pass=:=0 orelse PU#job.pass=:=2]))end),
+  [export(F)||F<-E].
 
 export(FileNo) when is_integer(FileNo)->
   {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([{PU#job.id,filename:join(F#file.path, F#file.filename)} || PU <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file), PU#job.complete_time > undefined, F#file.id==PU#job.outfile,F#file.id==FileNo]))end),
@@ -137,10 +107,6 @@ export(FileNo) when is_integer(FileNo)->
       end;
     true->
       fileexist
-  end;
+  end.
 
-
-export(select)->
-  {atomic,E}=mnesia:transaction(fun()->qlc:e(qlc:q([PU#job.outfile|| PU <- qlc:keysort(2,mnesia:table(job)), PU#job.complete_time > undefined,PU#job.pass=:=0 orelse PU#job.pass=:=2]))end),
-  [export(F)||F<-E].
 

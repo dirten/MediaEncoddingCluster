@@ -5,44 +5,15 @@
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
 
--export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2,loop/0, process_file_list/3, process_file/1, filter/2, diff/2]).
+-export([scan/0, process_file_list/3, process_file/1, filter/2, diff/2]).
 
-start()->
-  spawn(?MODULE,init,[[]]).
-
-start_link()->
-  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
-
-stop()->
-  gen_server:call(?MODULE, stop).
-
-init([])->
-
-  io:format("~w start up~n", [?MODULE]),
-  process_flag(trap_exit, true),
-  Pid=spawn_link(?MODULE,loop,[]),
-  %  link(Pid),
-  register(file_scanner_loop, Pid),
-  io:format("~w started~n", [?MODULE]),
-  {ok, state}.
-
-%profile_creator()->
-%  ok.
-
-loop()->
-  receive
-    stop ->
-      io:format("~w stop loop~n", [?MODULE]),
-      ok
-  after 10000->    
-      E=libdb:read(watchfolder),
-      Fun=fun(El)->
-              FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,El#watchfolder.recursive),
-              process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
-          end,
-      lists:foreach(Fun,E),
-      file_scanner:loop()
-  end.
+scan()->
+  E=libdb:read(watchfolder),
+  Fun=fun(El)->
+          FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,El#watchfolder.recursive),
+          process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
+      end,
+  lists:foreach(Fun,E).
 
 create_job(Fileid,Profileid,OutPath)->
   F = fun() ->
@@ -70,16 +41,16 @@ create_job(Fileid,Profileid,OutPath)->
     filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
     path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
     streamcount=File#file.streamcount
-    },
+               },
   mnesia:write(NewFile),
   Pass=if
-    Profile#profile.multipass =:=2->1;
-    true->0
-    end,
+         Profile#profile.multipass =:=2->1;
+         true->0
+       end,
   Job=#job{id=libdb:sequence(job), infile=Fileid, outfile=NewFile#file.id, last_ts=File#file.start_time, profile=Profile#profile.id, pass=Pass},
   io:format("Job : ~p",[Job]),
   libdb:write(Job),
-%  mnesia:write(Job),
+  %  mnesia:write(Job),
 
   SortedStreams=lists:keysort(4, Streams),
   [VS|Rest]=SortedStreams,
@@ -105,36 +76,36 @@ create_job(Fileid,Profileid,OutPath)->
   libdb:write(JobVideoDetail),
 
   if length(Rest)>0->
-  [AS|_Rest]=Rest,
-  NewAudioStream=#stream{
-    id=libdb:sequence(stream),
-    fileid=NewFile#file.id,
-    streamidx=AS#stream.streamidx,
-    codec=Profile#profile.acodec,
-    rate=Profile#profile.asamplerate,
-    num=AS#stream.num,
-    den=AS#stream.den,
-    bitrate=Profile#profile.abitrate,
-%    width=Profile#profile.width,
-%    height=Profile#profile.height,
-    channels=Profile#profile.achannels,
-    gop=20,
-    format=0},
-  libdb:write(NewAudioStream),
+      [AS|_Rest]=Rest,
+      NewAudioStream=#stream{
+        id=libdb:sequence(stream),
+        fileid=NewFile#file.id,
+        streamidx=AS#stream.streamidx,
+        codec=Profile#profile.acodec,
+        rate=Profile#profile.asamplerate,
+        num=AS#stream.num,
+        den=AS#stream.den,
+        bitrate=Profile#profile.abitrate,
+        %    width=Profile#profile.width,
+                             %    height=Profile#profile.height,
+                             channels=Profile#profile.achannels,
+                               gop=20,
+                               format=0},
+      libdb:write(NewAudioStream),
 
-  JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
-  libdb:write(JobAudioDetail);
-  true->
-    no
+      JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
+      libdb:write(JobAudioDetail);
+    true->
+      no
   end.
   
- % io:format("FileJob info ~p ~p ~p~n",[File, Profile, NewVideoStream]).
+% io:format("FileJob info ~p ~p ~p~n",[File, Profile, NewVideoStream]).
 
 save_stream_info(FileName,SID, FileId)->
   %  io:format("get stream info from~s~n",[FileName]),
   case gen_server:call(global:whereis_name(packet_sender), {streaminfo,FileName,SID,0,0}) of
-%    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
-%   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
+    %    {stream,518,518,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0}
+    %   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
     {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format, StartTime, Duration} ->
       Stream = #stream{
         id=libdb:sequence(stream),
@@ -153,7 +124,7 @@ save_stream_info(FileName,SID, FileId)->
         format=Format,
         start_time=list_to_integer(StartTime),
         duration=list_to_integer(Duration)
-        },
+                      },
       io:format("Stream info ~w~n",[Stream]),
       libdb:write(Stream),
       save_stream_info(FileName,SID+1, FileId);
@@ -188,7 +159,7 @@ process_file_list([H|T],Profile, OutPath)->
                       duration=Duration,
                       bitrate=BitRate,
                       start_time=StartTime
-                      },
+                                },
                     libdb:write(File),
                     %                    io:format("get stream info from~s~n",[FileName]),
                     save_stream_info(X,0,File#file.id),
@@ -199,7 +170,7 @@ process_file_list([H|T],Profile, OutPath)->
                     io:format("File not found ~w~n",[list_to_atom(X)]);
                   {format_invalid}  ->
                     ok;
-%                           io:format("File Wrong format ~s~n",[X]);
+                  %                           io:format("File Wrong format ~s~n",[X]);
                   Any->
                     io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
                 end
@@ -227,33 +198,4 @@ filter(_F, []) -> [].
 
 diff(L1, L2) ->
   filter(fun(X) -> not lists:member(X, L2) end, L1).
-
-handle_call({import_file,Thing},_From,_N)->
-  io:format("~w handle_call import~w~n", [?MODULE,Thing]),
-  {reply, Thing, state};
-
-handle_call({scan,Directory},_From,_N)->
-  io:format("~w handle_call scan~w~n", [?MODULE,Directory]),
-  {reply, Directory, state}.
-
-handle_cast(_Msg,N)->
-  io:format("~w handle_cast~w~n", [?MODULE,N]),
-  {noreply, N}.
-
-handle_info(Info,N)->
-  io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
-  case Info of
-    {{'EXIT',_,killed},state}->
-      exit(killed)
-    end,
-  {noreply, N}.
-
-terminate(Reason,_N)->
-  file_scanner_loop ! stop,
-  io:format("~w shutdown ~w~n", [?MODULE, Reason]),
-  ok.
-
-code_change(_OldVsn,N,_Extra)->
-  io:format("~w CodeChange ~n", [?MODULE]),
-  {ok, N}.
 

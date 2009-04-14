@@ -8,14 +8,16 @@
 
 {profile,1,"Test Profile","avi","AVI format",13,1024000,25,640,480,2,86016,192000,48000,0,30}.
 
-{scheduler,1, "test schedule", io, format, ["test scheduler ~p",["Test"]], 5000, "Bla fasel"}.
+{scheduler,1, "file_scanner", file_scanner, scan, [], 10000, "Scans Directory in interval"}.
+{scheduler,2, "file_export", file_export, run, [], 10000, "Export completed files"}.
+{scheduler,3, "auto_update", auto_update, run, [], 10000, "Check for Program Updates"}.
 
-{watchfolder,1,"/media/disk","/media/out",1,[],false}.
-{watchfolder,2,"/media/video","/media/out",1,[],false}.
-{watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,[],false}.
-{watchfolder,4,"c:/2video","c:/3vodeoOut",1,[],false}.
-{watchfolder,5,"m:/video","/media/out",1,[],false}.
-{watchfolder,6,"/Users/jholscher/media/","/media/out",1,[],false}.
+{watchfolder,1,"/media/disk","/media/out",1,[],false, active}.
+{watchfolder,2,"/media/video","/media/out",1,[],false, active}.
+{watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,[],false, active}.
+{watchfolder,4,"c:/2video","c:/3vodeoOut",1,[],false, active}.
+{watchfolder,5,"m:/video","/media/out",1,[],false, active}.
+{watchfolder,6,"/Users/jholscher/media/","/media/out",1,[],false, active}.
 
 {config, http_port, 8080}.
 {config, mode, both}.
@@ -26,4 +28,5 @@
 {sequence,job,0}.
 {sequence,file,0}.
 {sequence,watchfolder,7}.
+{sequence,scheduler,3}.
 

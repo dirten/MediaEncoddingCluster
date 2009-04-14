@@ -1,6 +1,6 @@
 %% mhive.rel
 {release,
- {"MHIVE", "0.0.4.2"},
+ {"MHIVE", "0.0.4.1"},
  {erts, "5.6.5"},
  [{kernel, "2.12.5"},
   {stdlib, "1.15.5"},

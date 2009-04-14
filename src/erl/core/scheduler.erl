@@ -2,12 +2,16 @@
 -module(scheduler).
 -include("schema.hrl").
 -compile(export_all).
+-export([start_link/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
+-behaviour(gen_server).
 
+start_link()->
+  gen_server:start_link({local,?MODULE},?MODULE,[],[]).
 
 init([])->
   List=libdb:read(scheduler),
   create_timer_from_db(List),
-  ok.
+   {ok, started}.
 
 
 create_timer_from_db([])->ok;
@@ -61,3 +65,32 @@ create_interval(List,Name, Time,Mod, Func, Args)->
   {ok,Ref}=timer:apply_interval(Time, Mod, Func, Args),
   lists:append(List,[{Name,Ref}]).
   
+handle_call({import_file,Thing},_From,_N)->
+  io:format("~w handle_call import~w~n", [?MODULE,Thing]),
+  {reply, Thing, state};
+
+handle_call({scan,Directory},_From,_N)->
+  io:format("~w handle_call scan~w~n", [?MODULE,Directory]),
+  {reply, Directory, state}.
+
+handle_cast(_Msg,N)->
+  io:format("~w handle_cast~w~n", [?MODULE,N]),
+  {noreply, N}.
+
+handle_info(Info,N)->
+  io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
+  case Info of
+    {{'EXIT',_,killed},state}->
+      exit(killed)
+  end,
+  {noreply, N}.
+
+terminate(Reason,_N)->
+  file_scanner_loop ! stop,
+  io:format("~w shutdown ~w~n", [?MODULE, Reason]),
+  ok.
+
+code_change(_OldVsn,N,_Extra)->
+  io:format("~w CodeChange ~n", [?MODULE]),
+  {ok, N}.
+

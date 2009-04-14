@@ -19,11 +19,12 @@ init(_Args)->
      {one_for_one,3,10},
      [
 %     {node_finder,{node_finder,start_link,[]},  permanent,  10,  worker,  [node_finder]},
-     {filescanner,{file_scanner,start_link,[]},  permanent,  10,  worker,  [file_scanner]},
+     {scheduler,{scheduler,start_link,[]},  permanent,  10,  worker,  [scheduler]},
+ %    {filescanner,{file_scanner,start_link,[]},  permanent,  10,  worker,  [file_scanner]},
      {file_port, {file_port,start_link,[]},  permanent,  10,  worker,  [file_port]},
      {sys_port, {sys_port,start_link,[]},  permanent,  10,  worker,  [sys_port]},
      {packet_server, {packet_server,start_link,[]},  permanent,  10,  worker,  [packet_server]},
-     {file_export, {file_export,start_link,[]},  permanent,  10,  worker,  [file_export]},
+%     {file_export, {file_export,start_link,[]},  permanent,  10,  worker,  [file_export]},
      {webserver, {nitrogen,start,[]},  permanent,  10,  supervisor,  [webserver]},
      {node_watcher, {node_watcher,start_link,[]},  permanent,  10,  worker,  [node_watcher]}
      ]
