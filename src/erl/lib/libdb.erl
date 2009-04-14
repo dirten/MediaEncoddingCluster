@@ -16,7 +16,8 @@ create()->
   mnesia:create_table(process_unit,[{disc_copies, [node()]},{attributes, record_info(fields, process_unit)}]),
   mnesia:create_table(packet,[{disc_copies, [node()]},{attributes, record_info(fields, packet)}]),
   mnesia:create_table(config,[{disc_copies, [node()]},{attributes, record_info(fields, config)}]),
-  mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]).
+  mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]),
+  mnesia:create_table(scheduler, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, scheduler)}]).
 
 drop()->
   mnesia:delete_table(file),
@@ -29,6 +30,7 @@ drop()->
   mnesia:delete_table(process_unit),
   mnesia:delete_table(packet),
   mnesia:delete_table(config),
+  mnesia:delete_table(scheduler),
   mnesia:delete_table(sequence).
 
 load()->
