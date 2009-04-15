@@ -35,14 +35,18 @@ packetstream(Filename, Offset, DecoderList,_EncoderList)->
             {no_more_packets}->
               io:format("No more Packets from File ~p",[Filename]);
             [eof]->
-              io:format("No more Packets from File ~p",[Filename]);
+              io:format("No more Packets from File ~p",[Filename]),
+
+              [ets:insert(prozessgrouplist,{libdb:sequence(prozessgrouplist),Data})||Data<-qlc:e(qlc:q([D||{_Id,D}<-ets:table(rest)])), length(Data)>0],
+              ets:delete_all_objects(rest);
+              %            ets:insert(prozessgrouplist,{libdb:sequence(prozessgrouplist),D})
             %{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
             Any->
               %% currently there will be only the firtst 2 streams processed
               [Required|_]=[[X||X<-Any,element(1,X)<2]],
               NewStreams=process_packet_list(Required,[#streams{index=1},#streams{index=2},#streams{index=3},#streams{index=4},#streams{index=5},#streams{index=6},#streams{index=7},#streams{index=8}]),
               [Decoder|_]=[X||X<-DecoderList,X#stream.streamidx==0],
-%              [Encoder|_]=[X||X<-EncoderList,X#stream.streamidx==0],
+              %              [Encoder|_]=[X||X<-EncoderList,X#stream.streamidx==0],
               build_process_groups(NewStreams, Decoder)
           end;
         true->do_nothing
@@ -69,7 +73,7 @@ build_process_groups([Stream|T], Dec)->
        [Tmp|_]->
          ets:delete(rest,Stream#streams.index),
          element(2, Tmp);
-         _->[]
+       _->[]
      end,
   if Stream#streams.index =:= 1->
       Rest=build_video_groups(Stream,Dec,PG);

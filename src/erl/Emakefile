@@ -2,56 +2,47 @@
 { './mhive.erl', [
 	{ i, "./nitrogen/include" },
 	{ i, "./" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './setup.erl', [
 	{ i, "./" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './core/*', [
 	{ i, "./" },
 	{ i, "./include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './nitrogen/src/*', [
 	{ i, "./" },
 	{ i, "./include" },
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './nitrogen/src/*/*', [
 	{ i, "./" },
 	{ i, "./include" },
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './nitrogen/src/elements/*/*', [
 	{ i, "./" },
 	{ i, "./include" },
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './lib/*', [
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './web/*', [
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
 { './test/test.erl', [
 	{ i, "./nitrogen/include" },
-	{ outdir, "./ebin" },
 	debug_info
 ]}.
-{ './target_system.erl', [
-	{ outdir, "./ebin" },
+{ ['./target_system.erl','./devel.erl'], [
+	{outdir,"."},
 	debug_info
 ]}.

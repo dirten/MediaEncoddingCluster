@@ -17,7 +17,6 @@ title() -> "Client Configuration".
 
 get_data()->
   E=[[atom_to_list(X)]||X<-[node()|nodes()]],
-  [[atom_to_list(node())]],
   E.
 
 get_map() -> [nodeLabel@text].
@@ -83,7 +82,7 @@ event(save) ->
   if
     length(H)>0 ->
       case connect(H,N) of
-        {ok,Node}->  wf:flash("sucessfully Connected to Server ");
+        {ok,_Node}->  wf:flash("sucessfully Connected to Server ");
         error->wf:flash("Connection to Server failed")
       end;
     true->  wf:flash("please give a Server Name")

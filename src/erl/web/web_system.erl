@@ -31,10 +31,10 @@ get_data()->
       end
 
   end,
-  E=[[atom_to_list(X),Fun(rpc:call(X,config,get,[mode]))]||X<-[node()|nodes()]],
+  E=[[atom_to_list(X),Fun(rpc:call(X,config,get,[mode])),rpc:call(X,libcode,get_mhive_version,[])]||X<-[node()|nodes()]],
   E.
 
-get_map() -> [nodeLabel@text,typeLabel@text].
+get_map() -> [nodeLabel@text,typeLabel@text,versionLabel@text].
 
 
 
@@ -68,14 +68,16 @@ body()->
   NodeTable=#table { class=tiny, rows=[
 			#tablerow { cells=[
 				#tableheader { text="Visible Nodes" },
-				#tableheader { text="Mode" }
+				#tableheader { text="Mode" },
+				#tableheader { text="Version" }
 			]},
 %			#tablerow { cells=[
 %				#tablecell {body=#hr{}, colspan=4}
 %			]},
 			#bind { id=tableBinding, data=Data, map=Map,transform=fun libweb:alternate_color/2, body=#tablerow { id=top,cells=[
 				#tablecell { id=nodeLabel },
-				#tablecell { id=typeLabel }
+				#tablecell { id=typeLabel },
+				#tablecell { id=versionLabel }
 			]}}
 		]},
   Result=[

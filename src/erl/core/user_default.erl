@@ -18,7 +18,7 @@ help()->
 
 restart()->
   application:stop(mhive),
-  make:all([load]),
+  devel:build("0.0.4.2"),
   libdb:clear(),
   application:start(mhive).
   

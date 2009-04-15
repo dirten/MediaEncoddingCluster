@@ -1,5 +1,5 @@
 -module(file_scanner).
--behaviour(gen_server).
+%-behaviour(gen_server).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").

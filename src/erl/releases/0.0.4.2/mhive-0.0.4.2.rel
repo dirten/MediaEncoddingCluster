@@ -1,11 +1,11 @@
 %% mhive.rel
 {release,
  {"MHIVE", "0.0.4.2"},
- {erts, "5.6.5"},
- [{kernel, "2.12.5"},
-  {stdlib, "1.15.5"},
-  {sasl, "2.1.5.4"},
+ {erts, "5.7"},
+ [{kernel, "2.13"},
+  {stdlib, "1.16"},
+  {sasl, "2.1.6"},
   {mhive, "0.0.4.2"},
-  {inets, "5.0.12"},
-  {mnesia, "4.4.7"} 
+  {inets, "5.0.13"},
+  {mnesia, "4.4.8"}
 ]}.

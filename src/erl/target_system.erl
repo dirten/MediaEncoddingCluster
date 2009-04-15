@@ -1,6 +1,6 @@
 -module(target_system).
 -include_lib("kernel/include/file.hrl").
--export([create/1, install/1, build_release_file/1]).
+-export([create/1, install/1, build_release_file/1, realup/2]).
 -define(BUFSIZE, 8192).
 
 -import(libutil,[to_string/1]).
@@ -38,6 +38,12 @@ build_release_file(AppFileName)->
 %  {inets, "5.0.12"},
 %  {mnesia, "4.4.7"}
 %]}.
+
+realup(FromVersion, ToVersion)->
+%  Opts = [no_module_tests],
+  systools:make_relup("mhive-"++ToVersion,["mhive-"++FromVersion],["mhive-"++ToVersion],[{path,["./ebin","./releases/"++ToVersion,"./releases/"++FromVersion]}]),
+  systools:make_script("mhive-"++ToVersion,[{path,["./ebin","./releases/"++ToVersion]}]),
+  systools:make_tar("mhive-"++ToVersion,[{path,["./ebin","./releases/"++ToVersion]}]).
 
 create([H|_T]) ->
   
