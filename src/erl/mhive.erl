@@ -34,7 +34,9 @@ start(_Type, StartArgs)->
   mnesia:start(),
   mnesia:wait_for_tables([config],5000),
   application:set_env(mhive,port,config:get(http_port,8080)),
-  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),  
+  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
+%% TODO libcode wieder einbinden
+%%application:set_env(mhive,wwwroot,"wwwroot"),
   case config:get(mode) of
     server->
       mhive_supervisor:start_link(StartArgs);

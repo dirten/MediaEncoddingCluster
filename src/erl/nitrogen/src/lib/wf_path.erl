@@ -37,6 +37,7 @@ to_path(P) when is_atom(P) ->
 	to_path(P3).
 
 to_html_id(P) ->
+%    io:format("to_html_id(P) ->~p",[P]),
 	P1 = [wf:to_list(X) || X <- lists:reverse(to_path(P))],
 	string:join(P1, "__").
 	

@@ -3,9 +3,13 @@
 -include_lib("stdlib/include/qlc.hrl").
 -compile(export_all).
 
+main2()->
+  #template{}.
+
+
 main() ->
   {ok,Val}=application:get_env(wwwroot),
-  Temp=string:concat(Val,"/onecolumn.html"),
+  Temp=string:concat("wwwroot","/empty.html"),
   #template { file=Temp, bindings=[
     {'Group', media},
     {'Item', medialist}
@@ -54,7 +58,15 @@ body() ->
 			]}}
 		]}
 	],
-	wf:render(Column2).
+	wf:render(Column2),
+%  io:format("Data:~p",[Data]),
+
+  Bla=[
+   #list{id="tree1", class="tree",body=#listitem{text="MediaFiles", class="folder f-close root", body=#list{body=[#listitem{id="link1",class="doc",body=#link{text=lists:nth(2,D)}}||D<-Data]}}}
+  ],
+  Bla2=wf:render(Bla),
+  io:format("BlaBlah:~p",[Bla2]),
+    ["<ul id='tree1' class='tree'><li class='folder f-close root'>MediaFiles<ul><li id='link1' class='doc'><span><a>ChocolateFactory.ts</a></span></li><li id='link2' class='doc'><span><a>ChocolateFactory.avi</a></span></li></ul></li></ul>"].
 
 event({data, Data}) ->
 	Message = "Clicked On Data: " ++ wf:to_list(Data),
