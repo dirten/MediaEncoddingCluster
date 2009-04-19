@@ -102,8 +102,11 @@ release(Version)->
   file:make_dir("tmp/logs"),
   libfile:touch("tmp/logs/empty_file"),
   file:make_dir("tmp/data"),
+  file:make_dir("priv/wwwroot"),
+  file:make_dir("priv/wwwroot/tmp"),
   libfile:touch("tmp/data/empty_file"),
-  libfile:copy_dir(SrcDir++"/wwwroot","./priv/",[".svn"]),
+  libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn"]),
+  remove_dir_tree("priv/wwwroot/tmp"),
   %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
   %    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
 
@@ -114,6 +117,7 @@ release(Version)->
 
   io:fwrite("Recreating tar file \"~s\" from contents in directory "
       "\"tmp\" ...~n", [TarFileName]),
+
 
   libfile:touch("tmp/.hosts.erlang"),
   {ok, Tar} = erl_tar:open(TarFileName, [write, compressed]),

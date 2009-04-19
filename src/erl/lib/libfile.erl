@@ -26,7 +26,9 @@ touch(File)->
 
 copy(Src, Dst)->
   filelib:ensure_dir(Dst),
-  file:copy(Src,Dst),
+  io:format("CopyFile from:~p to ~p",[Src, Dst]),
+  {ok,Bytes}=file:copy(Src,Dst),
+  io:format("BytesCopyed:~p~n",[Bytes]),
   {ok, FileInfo} = file:read_file_info(Src),
   file:write_file_info(Dst, FileInfo).
 
@@ -47,9 +49,12 @@ copy_dir(Src, Dst, Filter)->
           end
       end,
   FileList=filelib:fold_files(Src,".*", true, Fun,[]),
-  [copy(File, filename:join(Dst, File))||File<-FileList],
+  io:format("CopyDir:~p",[FileList]),
+ 
+  {ok,Cwd}=file:get_cwd(),
+   io:format("CopyTo:~p~n",[Dst]),
+  [copy(File, filename:join([Dst, File]))||File<-FileList],
   ok.
-
 
 is_ignored(_, []) -> false;
 is_ignored(File, [H|T]) ->

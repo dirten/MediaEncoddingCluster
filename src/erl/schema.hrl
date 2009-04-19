@@ -24,7 +24,11 @@
 
 -record(timestamp,{num,den}).
 
--record(scheduler,{id, name, module, func, args, interval, desc}).
+-record(scheduler,{id, name, module, func, args, interval, desc, active=true}).
+
+-record(releases,{version,application,desc,status}).
+
+-record(logging,{id, time, level, msg}).
 
 -include("schema_config.hrl").
 %-record(streams, {index,packetcount,packets=[]}).

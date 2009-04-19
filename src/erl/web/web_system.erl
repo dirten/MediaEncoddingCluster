@@ -1,6 +1,7 @@
 -module (web_system).
 -include ("nitrogen/include/wf.inc").
 -include_lib("stdlib/include/qlc.hrl").
+
 -compile(export_all).
 
 -import(libweb,[alternate_color/2]).
@@ -35,7 +36,20 @@ get_data()->
   E.
 
 get_map() -> [nodeLabel@text,typeLabel@text,versionLabel@text].
+get_release_map() -> [versionLabel@text,descLabel@text,statusLabel@text,myButton@postback].
 
+get_release_data()->
+    F = fun() ->
+          Q = qlc:q([[
+            libutil:to_string(element(2,E)),
+            libutil:to_string(element(4,E)),
+            libutil:to_string(element(5,E)),
+            {install,element(2,E)}
+                     ] || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded]),
+          qlc:e(Q)
+      end,
+  {atomic,E}=mnesia:transaction(F),
+  E.
 
 
 
@@ -69,7 +83,7 @@ body()->
 			#tablerow { cells=[
 				#tableheader { text="Visible Nodes" },
 				#tableheader { text="Mode" },
-				#tableheader { text="Version" }
+				#tableheader { text="Running Release#" }
 			]},
 %			#tablerow { cells=[
 %				#tablecell {body=#hr{}, colspan=4}
@@ -80,13 +94,32 @@ body()->
 				#tablecell { id=versionLabel }
 			]}}
 		]},
+    ReleaseTable=#table { class=tiny, rows=[
+			#tablerow { cells=[
+				#tableheader { text="Release#" },
+				#tableheader { text="Description" },
+				#tableheader { text="Status" },
+        #tableheader { }
+			]},
+%			#tablerow { cells=[
+%				#tablecell {body=#hr{}, colspan=4}
+%			]},
+			#bind { id=tableBinding, data=get_release_data(), map=get_release_map(),transform=fun libweb:alternate_color/2, body=#tablerow { id=top,cells=[
+				#tablecell { id=versionLabel },
+				#tablecell { id=descLabel },
+				#tablecell { id=statusLabel },
+        #tablecell { body=#button { id=myButton, text="Install" } }
+			]}}
+		]},
+
   Result=[
     #h3 { text=title() },
     #hr{},
     #table { class=tiny, rows=[
       #tablerow { cells=[
         #tablecell { valign=top,body=ProfileData },
-        #tablecell { valign=top,body=NodeTable }
+        #tablecell { valign=top,body=NodeTable },
+        #tablecell { valign=top,body=ReleaseTable }
       ]}
     ]},
     #hr{},
@@ -94,6 +127,11 @@ body()->
     #button { class=tiny,id=cancel,text="Cancel", postback=cancel }
   ],
   Result.
+event({install, Data}) ->
+  Message = "Clicked On Data: " ++ wf:to_list(Data),
+auto_update:install(Data),
+	wf:wire(#alert { text=Message }),
+	ok;
 
 event(save) ->
   [H]=wf:q(pHost),

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #  File name:  S75mhive.system
-#  Purpose:    Automatically starts MHiveSystemService on Linux when the
+#  Purpose:    Automatically starts MHiveSystemService on Linux/*nix when the
 #              system starts
 #  Author:     jan.hoelscher@esblab.com
 #  Resides in: /etc/rc3.d

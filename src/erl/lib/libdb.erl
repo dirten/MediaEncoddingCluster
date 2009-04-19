@@ -1,5 +1,5 @@
 -module(libdb).
--export([create/0, sequence/1, clear/0, write/1, read/1]).
+-export([create/0, sequence/1, clear/0, write/1, read/1, recreate/0]).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
@@ -17,7 +17,9 @@ create()->
   mnesia:create_table(packet,[{disc_copies, [node()]},{attributes, record_info(fields, packet)}]),
   mnesia:create_table(config,[{disc_copies, [node()]},{attributes, record_info(fields, config)}]),
   mnesia:create_table(sequence, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, sequence)}]),
-  mnesia:create_table(scheduler, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, scheduler)}]).
+  mnesia:create_table(scheduler, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, scheduler)}]),
+  mnesia:create_table(logging, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, logging)}]),
+  mnesia:create_table(releases, [{type, set}, {disc_copies,[node()]}, {attributes, record_info(fields, releases)}]).
 
 drop()->
   mnesia:delete_table(file),
@@ -31,10 +33,16 @@ drop()->
   mnesia:delete_table(packet),
   mnesia:delete_table(config),
   mnesia:delete_table(scheduler),
+  mnesia:delete_table(releases),
+  mnesia:delete_table(logging),
   mnesia:delete_table(sequence).
 
 load()->
   mnesia:load_textfile("test.data").
+
+recreate()->
+  drop(),
+create().
 
 clear()->
   drop(),
