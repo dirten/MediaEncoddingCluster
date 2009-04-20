@@ -45,7 +45,7 @@ get_release_data()->
             libutil:to_string(element(4,E)),
             libutil:to_string(element(5,E)),
             {install,element(2,E)}
-                     ] || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded]),
+                     ] || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
           qlc:e(Q)
       end,
   {atomic,E}=mnesia:transaction(F),
@@ -83,7 +83,7 @@ body()->
 			#tablerow { cells=[
 				#tableheader { text="Visible Nodes" },
 				#tableheader { text="Mode" },
-				#tableheader { text="Running Release#" }
+				#tableheader { text="Release#" }
 			]},
 %			#tablerow { cells=[
 %				#tablecell {body=#hr{}, colspan=4}

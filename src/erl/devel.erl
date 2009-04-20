@@ -107,6 +107,7 @@ release(Version)->
   libfile:touch("tmp/data/empty_file"),
   libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn"]),
   remove_dir_tree("priv/wwwroot/tmp"),
+  libfile:copy(filename:join([SrcDir, "sys.config"]),filename:join(["tmp","releases",Version, "sys.config"])),
   %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
   %    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
 
@@ -136,7 +137,7 @@ release(Version)->
   erl_tar:close(Tar),
   file:set_cwd(Cwd),
   io:fwrite("Removing directory \"tmp\" ...~n"),
-  remove_dir_tree("tmp"),
+%  remove_dir_tree("tmp"),
   file:set_cwd(SrcDir),
   ok.
 %% LOCALS

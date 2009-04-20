@@ -114,7 +114,11 @@ configure_client(){
   fi
 DATA_DIR=data
 ROOTDIR=${MHIVE_HOME}
-BINDIR=$ROOTDIR/erts-5.6.5/bin
+RELDIR=$MHIVE_HOME/releases
+START_ERL_DATA=$RELDIR/start_erl.data
+ERTS_VSN=`awk '{print $1}' $START_ERL_DATA`
+MHIVE_VSN=`awk '{print $2}' $START_ERL_DATA`
+BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
 EMU=beam
 PROGNAME=`echo $0 | sed 's/.*\///'`
 export EMU
