@@ -111,7 +111,7 @@ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
 #WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl"
 #)
 
-configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)
+#configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)
 
 #INSTALL(TARGETS mhivesys
 #    RUNTIME DESTINATION bin

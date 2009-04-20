@@ -20,18 +20,19 @@ using namespace org::esb::io;
 
 //namespace fs = boost::filesystem;
 
-File::File(const std::string pathname):_pathname(pathname) {
-//  logdebug("FIle:"<<_pathname);
-	ifstream in(pathname.c_str(),ifstream::in);
-//  int desc=open(pathname.c_str(), O_RDONLY) == 0;
-//  _exist=fstat(desc, &status) == 0;
+File::File(const std::string pathname) : _pathname(pathname) {
+  //  logdebug("FIle:"<<_pathname);
+  ifstream in(pathname.c_str(), ifstream::in);
+  //  int desc=open(pathname.c_str(), O_RDONLY) == 0;
+  //  _exist=fstat(desc, &status) == 0;
   if (!in) {
-//    logdebug("status for file not found:"<<pathname);
-//    logdebug("errormsg:"<<strerror(errno));
-//    logdebug("PathMax:"<<PATH_MAX);
+    _exist = true;
+    //    logdebug("status for file not found:"<<pathname);
+    //    logdebug("errormsg:"<<strerror(errno));
+    //    logdebug("PathMax:"<<PATH_MAX);
 
-  }else{
-	  _exist=true;
+  } else {
+    _exist = true;
   }
 }
 
@@ -40,7 +41,7 @@ File::~File() {
 
 const string File::getExtension() {
   throw Exception(__FILE__, __LINE__, "File::getExtension not implemenhted");
-//  return _pathname;
+  //  return _pathname;
 }
 
 void File::changeExtension(const std::string & ext) {

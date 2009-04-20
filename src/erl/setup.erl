@@ -41,7 +41,9 @@ setup_db()->
   mnesia:create_schema([Node]),
   mnesia:start(),
   mnesia:wait_for_tables([config],1000),
-  libdb:create().
+  libdb:create(),
+  mnesia:load_textfile(filename:join([libcode:get_privdir(),"default.data"])).
+
 
 setup_config(Key, Val)->
   libdb:write(#config{key=Key, val=Val}).

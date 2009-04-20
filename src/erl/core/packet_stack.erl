@@ -27,7 +27,7 @@ packetstream(Filename, Offset, DecoderList,_EncoderList)->
   if
     LastFilename =:=Filename orelse LastFilename=:=undefined->
       if C<5 ->
-          io:format("Loading Packets~n",[]),
+%          io:format("Loading Packets~n",[]),
           case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,500  },infinity)of
             hivetimeout->
               io:format("hivetimeout",[]),

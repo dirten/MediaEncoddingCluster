@@ -237,9 +237,45 @@
   </chapter>
 
   <chapter>
+    <title>Configure the System</title>
+
+    <para></para>
+
+    <section>
+      <title>Configure the System on WIndows</title>
+
+      <para>the configuration is done by the Installer, no additional
+      configuration needed</para>
+    </section>
+
+    <section>
+      <title>Configure the System on Linux</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Log in as a root user.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open a shell window and change to the directory where the
+          system is installed.</para>
+        </listitem>
+
+        <listitem>
+          <para>type in "./bin/mectl configure"</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>go into the Installation directory</para>
+
+      <para></para>
+    </section>
+  </chapter>
+
+  <chapter>
     <title>Starting and Stopping the System</title>
 
-    <para>In condition to your Installation the Server and/or the Client
+    <para>In condition to your Configuration, the Server and/or the Client
     starts automatical on the Node.</para>
 
     <section>

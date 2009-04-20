@@ -108,6 +108,7 @@ release(Version)->
   libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn"]),
   remove_dir_tree("priv/wwwroot/tmp"),
   libfile:copy(filename:join([SrcDir, "sys.config"]),filename:join(["tmp","releases",Version, "sys.config"])),
+  libfile:copy(SrcDir++"/default.data", filename:join(["priv", "default.data"])),
   %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
   %    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
 
