@@ -26,7 +26,7 @@ File::File(const std::string pathname) : _pathname(pathname) {
   //  int desc=open(pathname.c_str(), O_RDONLY) == 0;
   //  _exist=fstat(desc, &status) == 0;
   if (!in) {
-    _exist = true;
+    _exist = false;
     //    logdebug("status for file not found:"<<pathname);
     //    logdebug("errormsg:"<<strerror(errno));
     //    logdebug("PathMax:"<<PATH_MAX);

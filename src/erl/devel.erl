@@ -6,7 +6,12 @@
 
 build(Version)->
   code:add_patha("releases/"++Version++"/ebin"),
+  code:add_patha("releases/"++Version),
   make:all([load,{outdir,"releases/"++Version++"/ebin"}]).
+
+clean(Version)->
+  remove_dir_tree("releases/"++Version++"/ebin"),
+  file:make_dir("releases/"++Version++"/ebin").
 
 release(Version)->
 
@@ -142,7 +147,15 @@ release(Version)->
   file:set_cwd(SrcDir),
   ok.
 %% LOCALS
+update(FromVersion, ToVersion)->
+  systools:make_relup("mhive-"++ToVersion, ["mhive-"++FromVersion], ["mhive-"++FromVersion],[{path,["releases/"++FromVersion,"releases/"++ToVersion,"releases/"++ToVersion++"/ebin"]},{outdir,"releases/"++ToVersion}]),
+  systools:make_script("mhive-"++ToVersion,[{path,["releases/"++ToVersion++"/ebin"]}]),
 
+  RelDir="releases/"++ToVersion,
+  {ok,SrcDir}=file:get_cwd(),
+  file:set_cwd(RelDir),
+  systools:make_tar("mhive-"++ToVersion,[{path,["./ebin"]}]),
+  file:set_cwd(SrcDir).
 %% make_script(RelFileName)
 %%
 make_script(RelFileName) ->

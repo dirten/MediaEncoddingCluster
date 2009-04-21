@@ -67,7 +67,7 @@ download(Version)->
 
 
 install(Version)->
-  {ok, Version}=release_handler:unpack_release("mhive-update-"++Version),
+  {ok, Version}=release_handler:unpack_release("mhive-"++Version),
   {ok,_OtherVsn, _Desc}=release_handler:install_release(Version),
   ok=release_handler:make_permanent(Version).
   

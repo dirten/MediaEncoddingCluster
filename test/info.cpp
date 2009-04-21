@@ -12,10 +12,10 @@ using namespace org::esb::av;
 int main(int argc, char ** argv) {
 
   if (argc < 2)return 1;
-  int packet_start = 0;
+  long long int packet_start = 0;
   int packet_count = 50;
   if (argc > 2)
-    packet_start = atoi(argv[2]);
+   sscanf(argv[2],"%llu",&packet_start);
   if (argc > 3)
     packet_count = atoi(argv[3]);
   File file(argv[1]);
@@ -72,6 +72,7 @@ int main(int argc, char ** argv) {
     cout << endl;
   }
 
+  
   PacketInputStream pis(&fis);
   cout << endl;
   cout << "<Packet Information>" << endl;
@@ -79,6 +80,7 @@ int main(int argc, char ** argv) {
   printf("%10s|", "#");
   printf("%20s|", "pts");
   printf("%20s|", "dts");
+  printf("%20s|", "timebase");
   printf("%8s|", "size");
   printf("%2s|", "ix");
   printf("%2s|", "k");
@@ -86,17 +88,21 @@ int main(int argc, char ** argv) {
   printf("%20s|", "pos");
   cout << endl;
   cout << "------------------------------------------------------------------------------------------------------------" << endl;
-  for (int a = 0; a < packet_start + packet_count; a++) {
+  cout << "seeking to :"<<packet_start<<endl;
+  if(packet_start>0)
+    fis.seek(0,packet_start);
+  for (int a = 0; a < packet_count; a++) {
     Packet p;
     if (pis.readPacket(p) != 0) {
       logdebug("Last Packet REACHED");
       break;
     }
-    if (a < packet_start)continue;
+//    if (a < packet_start)continue;
     //        cout <<a<<"\t";
     printf("%10ld|", a);
     printf("%20lli|", p.packet->pts);
     printf("%20lld|", p.packet->dts);
+    printf("%20lld|",fis.getFormatContext()->streams[p.packet->stream_index]->time_base);
     printf("%8d|", p.packet->size);
     printf("%2d|", p.packet->stream_index);
     printf("%2d|", p.isKeyFrame());

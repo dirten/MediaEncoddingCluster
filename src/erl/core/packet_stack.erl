@@ -76,7 +76,11 @@ build_process_groups([Stream|T], Dec)->
        _->[]
      end,
   if Stream#streams.index =:= 1->
-      Rest=build_video_groups(Stream,Dec,PG);
+      Rest=build_video_groups(Stream,Dec,PG)
+
+
+
+      ;
     true->
       Rest=build_audio_groups(Stream, PG)
   end,

@@ -79,6 +79,12 @@ start_server(){
   $MHIVE_HOME/bin/run_erl -daemon /tmp/ $MHIVE_HOME/logs "exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA"
   status_runtime
 }
+run_server(){
+  RELDIR=$MHIVE_HOME/releases
+  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
+  exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA
+  status_runtime
+}
 
 stop_server(){
   $BINDIR/erlexec -noshell -s mhive stopapp -s init stop
@@ -137,6 +143,11 @@ case "$1" in
             # Start the MHive Runtime
             #
             start_server
+            ;;
+    'run')
+            # Start the MHive Runtime
+            #
+            run_server
             ;;
     'stop')
             stop_server
