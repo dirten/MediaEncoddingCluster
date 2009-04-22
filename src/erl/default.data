@@ -10,7 +10,7 @@
 
 {scheduler,1, "file_scanner", file_scanner, scan, [], 10000, "Scans Directory in interval", true}.
 {scheduler,2, "file_export", file_export, run, [], 10000, "Export completed files", true}.
-{scheduler,3, "auto_update", auto_update, run, [], 10000, "Check for Program Updates", true}.
+{scheduler,3, "auto_update", auto_update, run, [], 300000, "Check for Program Updates", true}.
 
 {watchfolder,1,"/media/disk","/media/out",1,[],false, active}.
 {watchfolder,2,"/media/video","/media/out",1,[],false, active}.
