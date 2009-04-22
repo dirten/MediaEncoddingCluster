@@ -1,34 +1,41 @@
 -module(webadmin).
+%-compile(export_all).
+-export([start/0, start_httpd/0, stop/0, test/3, test/2]).
+start()->
+  inets:start(),
+{ok, Pid} = inets:start(
+    httpd, [
+    {port, 9090},
+    {server_name,"httpd_test"},
+    {server_root,"/tmp"},
+    {document_root,"/tmp/htdocs"},
+    {bind_address, "localhost"},
+    {modules,[mod_esi]},
+    {error_log_format, pretty}
+           ]),
+           httpd:info(Pid).
+start_httpd()->
+  inets:start(),
+  inets:start(httpd,[{file,"/home/jhoelscher/otp-13A/lib/erlang/lib/inets-5.0.13/examples/server_root/conf/8080.conf"}]).
+%  httpd:start("/home/jhoelscher/otp-13A/lib/erlang/lib/inets-5.0.13/examples/server_root/conf/8080.conf").
 
--export([config_data/0]).
--export([helloworld/2, files/2]).
+stop()->
+  inets:stop().
 
-config_data()->
-  {testtool,
-   [{web_data,{"TestTool","/testtool/webadmin/helloworld"}},
-    {alias,{erl_alias,"/testtool",[webadmin]}}]}.
+test(SessionID,_Data2,_Data3)->
+%  io:format("Bla Function:~p",[Data2]),
+  io:format("Bla Function:arity/3",[]),
+%    mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+%    mod_esi:deliver(SessionID, top("new esi format test")),
+%    mod_esi:deliver(SessionID, "This new format is nice<BR>"),
+%    mod_esi:deliver(SessionID, "This new format is nice<BR>"),
+%    mod_esi:deliver(SessionID, "This new format is nice123<BR>"),
+%    mod_esi:deliver(SessionID, footer()).
+"Content-Type:text/plain\r\n\r\n"
+.
 
-files(_Env,_Input)->
-  [header()].
 
-helloworld(Env,Input)->
-  [header(),html_header(),helloworld_body(Env,Input),ets:tab2list(file),html_end()].
+test(_Data1,_Data2)->
+  io:format("Bla Function:arity/2",[]),
 
-header() ->
-  header("text/html").
-
-header(MimeType) ->
-  "Content-type: " ++ MimeType ++ "\r\n\r\n".
-
-html_header() ->
-  "<HTML>
-               <HEAD>
-                  <TITLE>Hello world Example </TITLE>
-               </HEAD>\n".
-
-helloworld_body(_Env,Input)->
-  ["<BODY>Hello World</BODY><br>",Input,"<br>",
-  filelib:wildcard("/tmp/*")].
-
-html_end()->
-  "</HTML>".
+[ "Content-Type: text/plain\r\n\r\nAccept-Ranges:none\n\nsome very plain text"  ].
