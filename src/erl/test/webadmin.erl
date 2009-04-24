@@ -25,14 +25,17 @@ stop()->
 test(SessionID,_Data2,_Data3)->
 %  io:format("Bla Function:~p",[Data2]),
   io:format("Bla Function:arity/3",[]),
-%    mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
 %    mod_esi:deliver(SessionID, top("new esi format test")),
-%    mod_esi:deliver(SessionID, "This new format is nice<BR>"),
-%    mod_esi:deliver(SessionID, "This new format is nice<BR>"),
+    Data=libdb:read(file),
+    io:format("Data:~p",[Data]),
+    mod_esi:deliver(SessionID, "This new format is nice12<BR>"),
+    J= mochijson:encode(Data),
+    io:format("JSON:~p",[J]),
+    mod_esi:deliver(SessionID,J),
 %    mod_esi:deliver(SessionID, "This new format is nice123<BR>"),
 %    mod_esi:deliver(SessionID, footer()).
-"Content-Type:text/plain\r\n\r\n"
-.
+"ende".
 
 
 test(_Data1,_Data2)->

@@ -16,7 +16,7 @@ init([])->
 
 create_timer_from_db([])->ok;
 create_timer_from_db([S|T])->
-  io:format("Schedule:~p",[S]),
+%  io:format("Schedule:~p",[S]),
   create_interval(S#scheduler.name,S#scheduler.interval,S#scheduler.module,S#scheduler.func,S#scheduler.args),
   create_timer_from_db(T).
 
@@ -65,13 +65,9 @@ create_interval(List,Name, Time,Mod, Func, Args)->
   {ok,Ref}=timer:apply_interval(Time, Mod, Func, Args),
   lists:append(List,[{Name,Ref}]).
   
-handle_call({import_file,Thing},_From,_N)->
-  io:format("~w handle_call import~w~n", [?MODULE,Thing]),
-  {reply, Thing, state};
-
-handle_call({scan,Directory},_From,_N)->
-  io:format("~w handle_call scan~w~n", [?MODULE,Directory]),
-  {reply, Directory, state}.
+handle_call(Thing,_From,_N)->
+  io:format("~w handle_call unknown~w~n", [?MODULE,Thing]),
+  {reply, Thing, state}.
 
 handle_cast(_Msg,N)->
   io:format("~w handle_cast~w~n", [?MODULE,N]),

@@ -17,7 +17,7 @@ get_mhivesys_exe()->
   case code:priv_dir(mhive) of
     Path when is_list(Path) ->filename:join([Path,BinName]);
     %    {error, bad_name}->"/usr/bin/valgrind --log-file=/tmp/mhivesys  --tool=memcheck --leak-check=full --show-reachable=yes "++filename:join(["priv",BinName])
-    {error, bad_name}->filename:join(["priv",BinName])
+    {error, bad_name}->filename:join(["bin",BinName])
   end.
     
 get_privdir()->

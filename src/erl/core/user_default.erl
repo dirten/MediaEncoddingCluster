@@ -15,9 +15,15 @@ help()->
   format("stopclient()      --> Stopping the Client on this Node\n"),
   true.
 
+reload()->
+    application:stop(mhive),
+  application:unload(mhive),
+  devel:build("0.0.4.2"),
+  application:start(mhive).
 
 restart()->
   application:stop(mhive),
+  application:unload(mhive),
   devel:build("0.0.4.2"),
   libdb:clear(),
   application:start(mhive).

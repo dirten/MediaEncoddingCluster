@@ -2,7 +2,9 @@
 -compile(export_all).
 -include_lib("kernel/include/file.hrl").
 
-
+rebuild(Version)->
+  clean(Version),
+  build(Version).
 
 build(Version)->
   code:add_patha("releases/"++Version++"/ebin"),
@@ -56,7 +58,7 @@ release(Version)->
   file:delete(filename:join(["ebin", "mhive_client.app"])),
 
   libfile:copy("mhive.app", filename:join(["ebin", "mhive.app"])),
-%  libfile:copy("mhive_client.app", filename:join(["ebin", "mhive_client.app"])),
+  %  libfile:copy("mhive_client.app", filename:join(["ebin", "mhive_client.app"])),
 
   io:fwrite("Making \"plain.script\" and \"plain.boot\" files ...~n"),
   make_script("plain"),
@@ -123,7 +125,7 @@ release(Version)->
   libfile:write(StartErlDataFile, StartErlData),
 
   io:fwrite("Recreating tar file \"~s\" from contents in directory "
-      "\"tmp\" ...~n", [TarFileName]),
+    "\"tmp\" ...~n", [TarFileName]),
 
 
   libfile:touch("tmp/.hosts.erlang"),
@@ -143,7 +145,7 @@ release(Version)->
   erl_tar:close(Tar),
   file:set_cwd(Cwd),
   io:fwrite("Removing directory \"tmp\" ...~n"),
-%  remove_dir_tree("tmp"),
+  %  remove_dir_tree("tmp"),
   file:set_cwd(SrcDir),
   ok.
 %% LOCALS

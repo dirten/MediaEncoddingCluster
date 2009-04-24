@@ -28,16 +28,17 @@ configure()->
 
 start(_Type, StartArgs)->
   Node=libnet:local_name(),
-  io:format("Self node = ~p",[Node]),
+%  io:format("Self node = ~p",[Node]),
   net_kernel:start([Node]),
   net_adm:world(),
   mnesia:start(),
   mnesia:wait_for_tables([config, scheduler],5000),
-  application:set_env(mhive,port,config:get(http_port,8080)),
-  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
+  application:set_env(mhive,port,config:get(http_port,8080)),  
+%  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
 %% TODO libcode wieder einbinden
 %%application:set_env(mhive,wwwroot,"wwwroot"),
-  case config:get(mode) of
+
+case config:get(mode) of
     server->
       mhive_supervisor:start_link(StartArgs);
     client->
