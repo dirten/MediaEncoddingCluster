@@ -27,7 +27,7 @@ packetstream(Filename, Offset, DecoderList,_EncoderList)->
   if
     LastFilename =:=Filename orelse LastFilename=:=undefined->
       if C<5 ->
-%          io:format("Loading Packets~n",[]),
+          %          io:format("Loading Packets~n",[]),
           case gen_server:call({global,packet_sender}, {packetstream,Filename,-1,Offset,500  },infinity)of
             hivetimeout->
               io:format("hivetimeout",[]),
@@ -39,7 +39,7 @@ packetstream(Filename, Offset, DecoderList,_EncoderList)->
 
               [ets:insert(prozessgrouplist,{libdb:sequence(prozessgrouplist),Data})||Data<-qlc:e(qlc:q([D||{_Id,D}<-ets:table(rest)])), length(Data)>0],
               ets:delete_all_objects(rest);
-              %            ets:insert(prozessgrouplist,{libdb:sequence(prozessgrouplist),D})
+            %            ets:insert(prozessgrouplist,{libdb:sequence(prozessgrouplist),D})
             %{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
             Any->
               %% currently there will be only the firtst 2 streams processed
@@ -76,11 +76,7 @@ build_process_groups([Stream|T], Dec)->
        _->[]
      end,
   if Stream#streams.index =:= 1->
-      Rest=build_video_groups(Stream,Dec,PG)
-
-
-
-      ;
+      Rest=build_video_groups(Stream,Dec,PG);
     true->
       Rest=build_audio_groups(Stream, PG)
   end,

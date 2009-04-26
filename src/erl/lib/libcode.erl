@@ -23,5 +23,5 @@ get_mhivesys_exe()->
 get_privdir()->
   case code:priv_dir(mhive) of
     Path when is_list(Path) ->Path;
-    {error, bad_name}->"priv"
+    {error, bad_name}->""
   end.
