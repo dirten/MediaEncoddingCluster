@@ -1,0 +1,116 @@
+<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
+<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
+<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
+<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
+
+<script type="text/javascript">
+
+  function onGridSelect(evt)
+  {
+    new MochaUI.Window({
+			id: 'blapage',
+			loadMethod: 'xhr',
+			contentURL: 'pages/filedetail.html',
+			width: 640,
+			height: 480,
+      title:'File Details',
+      onContentLoaded: function(){
+        var url='/api/json/get_file_detail?id='+evt.target.getDataByRow(evt.row).id;
+        var request = new Request.JSON({
+          url: url,
+          method: 'get',
+          onComplete: function(properties) {
+            var myElement=new Element('div',{id:'testid', text:'bla fasel'});
+            myElement.inject($('filedetail'));
+            //            MochaUI.newWindowsFromJSON(properties.windows);
+          }
+        }).send();
+
+      }
+		});
+    /*
+         var str = 'row: '+evt.row+' indices: '+evt.indices;
+         str += ' id: '+evt.target.getDataByRow(evt.row).id;
+
+         alert( str );
+     */
+  }
+
+  function gridButtonClick(button, grid)
+  {
+    alert(button);
+  }
+
+  var cmu = [
+    {
+      header: "ID",
+      dataIndex: 'id',
+      dataType:'number',
+      width:30
+    },
+    {
+      header: "Path",
+      dataIndex: 'path',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "Filename",
+      dataIndex: 'filename',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "File Size",
+      dataIndex: 'size',
+      dataType:'number'
+    },
+    {
+      header: "Type",
+      dataIndex: 'containertype',
+      dataType:'string'
+    },
+
+  ];
+
+  window.addEvent("domready", function(){
+
+    datagrid = new omniGrid('mygrid', {
+      columnModel: cmu,
+      /*
+      buttons : [
+        {name: 'Add', bclass: 'add', onclick : gridButtonClick},
+        {name: 'Delete', bclass: 'delete', onclick : gridButtonClick},
+        {separator: true},
+        {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
+      ],*/
+      url:"/api/json/get_file_list",
+      perpage:10,
+      page:1,
+      pagination:false,
+      serverSort:false,
+      showHeader: true,
+      alternaterows: true,
+      showHeader:true,
+      sortHeader:true,
+      resizeColumns:true,
+      multipleSelection:false,
+
+      // uncomment this if you want accordion behavior for every row
+      /*
+	        accordion:true,
+	        accordionRenderer:accordionFunction,
+	        autoSectionToggle:false,
+       */
+
+      width:800,
+      height: null
+    });
+
+    datagrid.addEvent('dblclick', onGridSelect);
+
+  });
+
+</script>
+
+<div id="mygrid" ></div>

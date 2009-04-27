@@ -6,6 +6,12 @@ rebuild(Version)->
   clean(Version),
   build(Version).
 
+build()->
+  {ok, [Release]} = file:consult("VERSION"),
+  Version=element(2,Release),
+  io:format("Building Version:~p~n",[Version]),
+  build(Version).
+  
 build(Version)->
   code:add_patha("releases/"++Version++"/ebin"),
   code:add_patha("releases/"++Version),

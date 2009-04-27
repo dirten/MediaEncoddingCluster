@@ -1,5 +1,5 @@
 -module(libdb).
--export([create/0, sequence/1, clear/0, write/1, read/1, recreate/0]).
+-export([create/0, sequence/1, clear/0, write/1, read/1, recreate/0, load_presets/0, columns/1]).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -record(sequence, {key, index}).
@@ -37,8 +37,8 @@ drop()->
   mnesia:delete_table(logging),
   mnesia:delete_table(sequence).
 
-load()->
-  mnesia:load_textfile("test.data").
+load_presets()->
+  mnesia:load_textfile("default.data").
 
 recreate()->
   drop(),
@@ -47,7 +47,7 @@ create().
 clear()->
   drop(),
   create(),
-  load().
+  load_presets().
 
 sequence(Name, Inc) ->
  	     mnesia:dirty_update_counter(sequence, Name, Inc).
@@ -71,3 +71,6 @@ read(Table)->
   {atomic,Data}=mnesia:transaction(F),
   Data.
 
+
+columns(TableName)->
+  mnesia:table_info(TableName, attributes).
