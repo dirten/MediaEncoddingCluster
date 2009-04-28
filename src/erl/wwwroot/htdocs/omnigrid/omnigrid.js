@@ -846,7 +846,8 @@ var omniGrid = new Class({
 			var div = new Element('div');
 			// ******************************************
 			// ****** default postavke columnModela *****
-			if (columnModel.width == null)  this.options.columnModel[c].width = 100; 
+			if (columnModel.width == null)
+        this.options.columnModel[c].width = 100;
 			columnModel.sort = 'ASC'; 
 			// ******************************************
 

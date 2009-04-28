@@ -46,41 +46,44 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
 
   var cmu = [
     {
-      header: "ID",
-      dataIndex: 'id',
+      header: "Source File",
+      dataIndex: 'source',
       dataType:'number',
       width:30
     },
     {
-      header: "Path",
-      dataIndex: 'path',
-      dataType:'string',
-      width:200
-    },
-    {
-      header: "Filename",
-      dataIndex: 'filename',
-      dataType:'string',
-      width:200
-    },
-    {
-      header: "File Size",
-      dataIndex: 'size',
+      header: "Target File",
+      dataIndex: 'target',
       dataType:'number',
-      width:100
+      width:30
     },
     {
-      header: "Type",
-      dataIndex: 'containertype',
+      header: "Start Time",
+      dataIndex: 'start',
       dataType:'string',
-      width:100
+      width:200
+    },
+    {
+      header: "End Time",
+      dataIndex: 'endtime',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "% Done",
+      dataIndex: 'complete',
+      dataType:'number'
     },
 
   ];
-
+  /*
+  window.addEvent("blur",function(){
+    MochaUI.notification('Window lost focus.');
+  });
+*/
   window.addEvent("domready", function(){
 
-    datagrid = new omniGrid('filegrid', {
+    datagrid = new omniGrid('encodinggrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -89,7 +92,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/get_file_list",
+      url:"/api/json/get_encoding_list",
       perpage:10,
       page:1,
       pagination:false,
@@ -109,13 +112,15 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
        */
 
       width:800,
-      height: 300
+      height: null
     });
-
+   
     datagrid.addEvent('click', onGridSelect);
-
+    var myRefresh = function(){  this.refresh();};
+    myRefresh.periodical(2000, datagrid);
+//    datagrid.refresh.periodical(2000);
   });
 
 </script>
 
-<div id="filegrid" ></div>
+<div id="encodinggrid" ></div>

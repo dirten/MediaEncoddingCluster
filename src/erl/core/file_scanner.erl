@@ -40,7 +40,8 @@ create_job(Fileid,Profileid,OutPath)->
     id=libdb:sequence(file),
     filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
     path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
-    streamcount=File#file.streamcount
+    streamcount=File#file.streamcount,
+    parent=Fileid
                },
   mnesia:write(NewFile),
   Pass=if

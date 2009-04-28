@@ -46,41 +46,40 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
 
   var cmu = [
     {
-      header: "ID",
+      header: "Id",
       dataIndex: 'id',
       dataType:'number',
       width:30
     },
     {
-      header: "Path",
-      dataIndex: 'path',
+      header: "Name",
+      dataIndex: 'name',
+      dataType:'string',
+      width:150
+    },
+    {
+      header: "Extension",
+      dataIndex: 'ext',
       dataType:'string',
       width:200
     },
     {
-      header: "Filename",
-      dataIndex: 'filename',
+      header: "Video Format",
+      dataIndex: 'vformat',
       dataType:'string',
       width:200
     },
     {
-      header: "File Size",
-      dataIndex: 'size',
-      dataType:'number',
-      width:100
-    },
-    {
-      header: "Type",
-      dataIndex: 'containertype',
-      dataType:'string',
-      width:100
+      header: "Video Codec",
+      dataIndex: 'vcodec',
+      dataType:'string'
     },
 
   ];
 
   window.addEvent("domready", function(){
 
-    datagrid = new omniGrid('filegrid', {
+    datagrid = new omniGrid('encodinggrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -89,7 +88,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/get_file_list",
+      url:"/api/json/get_profile_list",
       perpage:10,
       page:1,
       pagination:false,
@@ -109,7 +108,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
        */
 
       width:800,
-      height: 300
+      height: null
     });
 
     datagrid.addEvent('click', onGridSelect);
@@ -118,4 +117,4 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
 
 </script>
 
-<div id="filegrid" ></div>
+<div id="encodinggrid" ></div>
