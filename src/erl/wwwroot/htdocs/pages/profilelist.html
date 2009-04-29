@@ -7,36 +7,22 @@
 
   function onGridSelect(evt)
   {
-        var url='/api/json/get_file_detail';
-        var request = new Request.JSON({
-          url: url,
-          method: 'get',
-          onComplete: function(properties) {
-            var l=properties.id;
-//            alert(l);
-//            var myElement=new Element('div',{id:'testid', text:l});
-              setFileDetails(properties);
-//            $('fileid').set('text',properties.id);
-//            $('filepath').set('text',properties.path);
-//            $('filename').set('text',properties.filename);
 /*
-appendChild(new Element('div',{id:'testid', text:properties.id})).
-              appendChild(new Element('div',{id:'testid', text:properties.path})).
-              appendChild(new Element('div',{id:'testid', text:properties.filename})).
-              appendChild(new Element('div',{id:'testid', text:properties.containertype})).
-              appendChild(new Element('div',{id:'testid', text:properties.streamcount}))
-              ;*/
-//            myElement.inject($('filedetail'));
-            //            MochaUI.newWindowsFromJSON(properties.windows);
-          }
-        }).send('id='+evt.target.getDataByRow(evt.row).id);
-//
-    /*
-         var str = 'row: '+evt.row+' indices: '+evt.indices;
-         str += ' id: '+evt.target.getDataByRow(evt.row).id;
+    var str = 'row: '+evt.row+' indices: '+evt.indices;
+    str += ' id: '+evt.target.getDataByRow(evt.row).id;
 
-         alert( str );
-     */
+    alert( str );
+*/
+    var url='/api/json/get_profile';
+    var request = new Request.JSON({
+      url: url,
+      method: 'get',
+      onComplete: function(properties) {
+        setProfileDetails(properties);
+      }
+    }).send('id='+evt.target.getDataByRow(evt.row).id);
+  
+    
   }
 
   function gridButtonClick(button, grid)

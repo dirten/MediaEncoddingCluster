@@ -18,3 +18,7 @@ string_replace(Src, Needle, Replacement)->
   Str=lists:flatten([[X, Replacement]||X<-Tok]),
   string:substr(Str,1,length(Str)-length(Replacement)).
 
+trim(Input) ->
+   {_,LS,_} = regexp:sub(Input, "^[ \r\n]*", ""),
+   {_,RS,_} = regexp:sub(LS, "[ \r\n]*$", ""),
+   RS.

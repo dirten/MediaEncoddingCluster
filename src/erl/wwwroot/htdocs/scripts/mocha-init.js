@@ -53,11 +53,24 @@ initializeWindows = function(){
   if ($('allMediaLinkCheck')){
     $('allMediaLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
+     
       MochaUI.updateContent({
         'element': $('mainPanel'),
         'loadMethod': 'xhr',
         'url': 'pages/filelist.html',
         'title': 'Imported File List',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+      MochaUI.updateContent({
+        'element': $('help-panel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/filedetail.html',
+        'title': 'File Info',
         'padding': {
           top: 8,
           right: 8,
@@ -128,6 +141,19 @@ initializeWindows = function(){
           left: 8
         }
       });
+      MochaUI.updateContent({
+        'element': $('help-panel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/profiledetail.html',
+        'title': 'Profile Info',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+
     });
   }
 
@@ -559,17 +585,19 @@ MochaUI.profileWindow = function(){
       id: 'profile',
       title: 'Profile Builder',
       icon: 'images/icons/page.gif',
+      scrollbars:true,
       loadMethod: 'xhr',
       contentURL: 'pages/profileform.html',
       onContentLoaded: function(){
         $('profileSubmit').addEvent('click', function(e){
           new Event(e).stop();
-//            $('profileForm').set('send', {url: '/api/json/set_profile', method: 'get'});
             $('profileForm').send();
+            MochaUI.closeWindow($('profile'));
+            MochaUI.notification('Profile Updated');
         });
       },
       width: 400,
-      height: 450,
+      height: 500,
       maximizable: false,
       resizable: false,
       scrollbars: false
@@ -866,7 +894,7 @@ window.addEvent('domready', function(){
     id: 'help-panel',
     title:'Information',
     loadMethod: 'xhr',
-    contentURL: 'pages/filedetail.html',
+    contentURL: 'pages/blank.html',
     column: 'sideColumn2',
     width:300
   //		tabsURL: 'pages/panel-tabs.html'

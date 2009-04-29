@@ -1,4 +1,4 @@
-<form id="profileForm" action="/api/json/set_profile" method="post">
+<form id="profileForm" action="/api/json/set_profile" method="put">
 	<div class="formLabel">Name:</div>
 	<div class="formField"><input type="text" class="input" name="profileName" id="profileName" value="new Profile" maxlength="38" /></div>
 	<div class="clear"></div>
@@ -20,7 +20,26 @@
 	<div class="clear"></div>
 
   <div class="formLabel" >Video Framerate:</div>
-	<div class="formField"><input type="text" class="input number" name="profileVideoFramerate" id="profileVideoFramerate" value="" maxlength="4" /><div class="lite">25</div></div>
+	<div class="formField">
+    <select name="profileVideoFramerate" id="profileVideoFramerate">
+      <option>0.09</option>
+      <option>5.995</option>
+      <option>7.5</option>
+      <option>7.992</option>
+      <option>8.0</option>
+      <option>10.0</option>
+      <option>11.998</option>
+      <option>12.0</option>
+      <option>14.985</option>
+      <option>15.0</option>
+      <option>20.0</option>
+      <option>23.98</option>
+      <option>24.0</option>
+      <option>25.0</option>
+      <option>29.97</option>
+      <option>30</option>
+    </select>
+  </div>
 	<div class="clear"></div>
 
 	<div class="formLabel">Video Width:</div>
@@ -49,6 +68,10 @@
 
   <div class="formLabel">2 Pass Encoding:</div>
 	<div class="formField"><input type="text" class="input number" name="profileMultipass" id="profileMultipass" value="" maxlength="4" /></div>
+	<div class="clear"></div>
+
+  <div class="formLabel">Group of Picture size:</div>
+	<div class="formField"><input type="text" class="input number" name="profileGop" id="profileGop" value="" maxlength="4" /></div>
 	<div class="clear"></div>
 
 	<div class="formLabel"></div>

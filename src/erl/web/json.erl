@@ -1,7 +1,8 @@
 -module(json).
--export([get_file_list/3, get_file_detail/3, get_encoding_list/3, get_profile_list/3, get_profile/3, set_profile/3]).
+-export([get_file_list/3, get_file_detail/3, get_encoding_list/3, get_profile_list/3, get_profile/3, set_profile/3, watchfolder/3]).
 -include_lib("stdlib/include/qlc.hrl").
 -include("schema_job.hrl").
+-include("schema_profile.hrl").
 record_to_json(_R,[],_C,Acc)->
   Acc;
 
@@ -13,7 +14,7 @@ record_to_json(Record)->
   Fields=libdb:columns(element(1, Record)),
   lists:reverse(record_to_json(Record, Fields,2,[])).
 record_to_json(Record, Fields)->
-%  Fields=libdb:columns(element(1, Record)),
+  %  Fields=libdb:columns(element(1, Record)),
   lists:reverse(record_to_json(Record, Fields,1,[])).
 
 reformat([], Acc)->
@@ -48,7 +49,7 @@ get_file_detail(SessionID,_Data2,Data3)->
   mod_esi:deliver(SessionID, J).
 
 get_encoding_list(SessionID,_Data2,_Data3)->
-%  io:format("Encodings:",[]),
+  %  io:format("Encodings:",[]),
   NowToString=fun(Now)->
                   case Now of
                     undefined->
@@ -65,15 +66,15 @@ get_encoding_list(SessionID,_Data2,_Data3)->
             libutil:to_string(element(5,E)),
             libutil:to_string(NowToString(element(6,E))),            %file.start_time                 %file.duration
             libutil:to_string(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100))
-            %            Transform(E#job.last_ts),
-                      } || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
+                      %            Transform(E#job.last_ts),
+                     } || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
           qlc:e(Q)
       end,
   {atomic,E}=mnesia:transaction(F),
-%  io:format("Encodings:~p",[E]),
+  %  io:format("Encodings:~p",[E]),
   F2=reformat(E,[source,target,start,endtime,complete],[]),
   J=mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F2}}]}),
-%  io:format("Encodings:~p",[J]),
+  %  io:format("Encodings:~p",[J]),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, J).
 
@@ -98,12 +99,92 @@ get_profile(SessionID,_Data2,Data3)->
 
 set_profile(SessionID,Data2,Data3)->
   Query=httpd:parse_query(Data3),
-  io:format("DataSetProfile:~p~n Get:~p~n",[Data2, Query]),
- mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
+  %  io:format("DataSetProfile:~p~n Get:~p~n",[Data2, Query]),
+  ProfileName=get_query_param(Query,"profileName"),
+  ProfileExtension=get_query_param(Query,"profileExtension"),
+  ProfileFormat=get_query_param(Query,"profileFormat"),
+  ProfileVideoCodec=list_to_integer(get_query_param(Query,"profileVideoCodec","13")),
+  ProfileVideoBitrate=list_to_integer(get_query_param(Query,"profileVideoBitrate","512000")),
+  ProfileVideoFramerate=list_to_float(get_query_param(Query,"profileVideoFramerate","25")),
+  ProfileVideoWidth=list_to_integer(get_query_param(Query,"profileVideoWidth","0")),
+  ProfileVideoHeight=list_to_integer(get_query_param(Query,"profileVideoHeight","0")),
+  ProfileAudioChannels=list_to_integer(get_query_param(Query,"profileAudioChannels","2")),
+  ProfileAudioCodec=list_to_integer(get_query_param(Query,"profileAudioCodec","86016")),
+  ProfileAudioBitrate=list_to_integer(get_query_param(Query,"profileAudioBitrate","128000")),
+  ProfileAudioSamplerate=list_to_integer(get_query_param(Query,"profileAudioSamplerate","44100")),
+  ProfileMultipass=list_to_integer(get_query_param(Query,"profileMultipass","0")),
+  ProfileGop=list_to_integer(get_query_param(Query,"profileGop","20")),
+  Profile=#profile{
+    id=libdb:sequence(profile),
+    name=ProfileName,
+    ext=ProfileExtension,
+    vformat=ProfileFormat,
+    vcodec=ProfileVideoCodec,
+    vbitrate=ProfileVideoBitrate,
+    vframerate=ProfileVideoFramerate,
+    vwidth=ProfileVideoWidth,
+    vheight=ProfileVideoHeight,
+    achannels=ProfileAudioChannels,
+    acodec=ProfileAudioCodec,
+    abitrate=ProfileAudioBitrate,
+    asamplerate=ProfileAudioSamplerate,
+    multipass=ProfileMultipass,
+    gop=ProfileGop},
+  io:format("Profile:~p",[Profile]),
+  libdb:write(Profile),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
 
-get_query_param([],_Param)->
-  {error,param_not_found};
-get_query_param([H|T],Param)->
+watchfolder(SessionID,Data2,Data3)->
+  %  io:format("WatchFolder:~p~n",[Data2]),
+  case get_request(Data2) of
+    "GET"->
+      Query=httpd:parse_query(Data3),
+      E=
+        case get_query_param(Query,"id") of
+          {error,param_not_found}->libdb:read(watchfolder);
+          IdStr->
+            Id=list_to_integer(IdStr),
+            {atomic,Data}=mnesia:transaction(
+              fun()->
+                  qlc:e(qlc:q([Data||Data<-mnesia:table(watchfolder), element(2, Data)=:=Id]))
+              end),
+            Data
+        end,
+      F=reformat(E,[]),
+      J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J);
+    "POST"->
+      MyData= libutil:trim(Data3),
+      io:format("Data:~p~n",[MyData]),
+      MyD=try mochijson:decode(MyData) of
+            Data->io:format("Data"),
+              Data
+            
+          catch
+            All->io:format("Error Found"),
+              {struct,[{error,parsing_json_data}]}
+          end,
+      io:format("JSON:~p~n",[MyD]),
+      J= mochijson:encode({struct,[{error,request_method_post_not_implemented}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J);
+    _->
+      J= mochijson:encode({struct,[{error,unknown_request_method}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J)
+  end.
+
+
+get_request(Data)->
+  get_query_param(Data,request_method).
+
+get_query_param(Query,Key)->
+  get_query_param(Query,Key,{error,param_not_found}).
+
+get_query_param([],_Param, Default)->
+  Default;
+get_query_param([H|T],Param, Default)->
   if element(1,H)=:=Param ->element(2,H);
-    true->get_query_param(T,Param)
+    true->get_query_param(T,Param, Default)
   end.

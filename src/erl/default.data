@@ -29,4 +29,5 @@
 {sequence,file,0}.
 {sequence,watchfolder,7}.
 {sequence,scheduler,3}.
+{sequence,profile,2}.
 
