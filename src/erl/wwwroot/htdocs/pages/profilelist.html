@@ -13,7 +13,7 @@
 
     alert( str );
 */
-    var url='/api/json/get_profile';
+    var url='/api/json/profile';
     var request = new Request.JSON({
       url: url,
       method: 'get',
@@ -74,7 +74,8 @@
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/get_profile_list",
+      url:"/api/json/profile",
+      method:'get',
       perpage:10,
       page:1,
       pagination:false,

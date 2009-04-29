@@ -1,0 +1,35 @@
+<form id="watchfolderForm" action="/api/json/watchfolder" method="POST">
+	<div class="formLabel">Input Folder:</div>
+	<div class="formField"><input type="text" class="input" name="infolder" id="infolder" value="/" maxlength="255" /></div>
+	<div class="clear"></div>
+
+	<div class="formLabel">Output Folder:</div>
+	<div class="formField"><input type="text" class="input" name="outfolder" id="outfolder" value="/" maxlength="255" /></div>
+	<div class="clear"></div>
+
+	<div class="formLabel">Profile Id:</div>
+	<div class="formField"><input type="text" class="input number" name="profileid" id="profileid" value="0" maxlength="4" /></div>
+	<div class="clear"></div>
+
+	<div class="formLabel">File Filter:</div>
+	<div class="formField"><input type="text" class="input" name="filter" id="filter" value="" maxlength="200" /></div>
+	<div class="clear"></div>
+
+  <div class="formLabel">Search Directory Recursive:</div>
+	<div class="formField"><input type="checkbox" class="input number" name="recursive" id="recursive" value="" /><div class="lite">value in bits e.g. (1024000)</div></div>
+	<div class="clear"></div>
+
+  <div class="formLabel" >State:</div>
+	<div class="formField">
+    <select name="profileVideoFramerate" id="profileVideoFramerate">
+      <option value="enabled">Enabled</option>
+      <option value="disabled">Disabled</option>
+    </select>
+  </div>
+	<div class="clear"></div>
+
+
+	<div class="formLabel"></div>
+	<div class="formField"><input type="submit" class="submit" id="profileSubmit" value="Save Profile" /></div>
+	<div class="clear"></div>
+</form>

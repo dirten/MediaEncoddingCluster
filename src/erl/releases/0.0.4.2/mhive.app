@@ -46,7 +46,7 @@
                         wf_session_server,wf_session_sup,wf_state,wf_tags,
                         wf_utils,wf_validation,wf_yaws]},
               {registered,[file_scanner_loop,packet_server]},
-              {applications,[kernel,sasl,stdlib]},
+              {applications,[kernel,stdlib]},
               {mod,{mhive, [ ]}},
               {env,[{platform,inets},
                     {port,9000},

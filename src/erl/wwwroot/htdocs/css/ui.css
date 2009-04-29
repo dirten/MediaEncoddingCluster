@@ -141,7 +141,8 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 #desktopNavbar {
 	background: #4C4C4C;
 	height: 30px;
-	margin: 0 0px;	
+	margin: 0 0px;
+  background:url(../images/menu_bg.jpg);
 }
 
 #desktopNavbar ul {	

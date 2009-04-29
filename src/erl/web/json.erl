@@ -1,5 +1,5 @@
 -module(json).
--export([get_file_list/3, get_file_detail/3, get_encoding_list/3, get_profile_list/3, get_profile/3, set_profile/3, watchfolder/3]).
+-export([get_file_list/3, get_file_detail/3, get_encoding_list/3, watchfolder/3, codec/3, format/3, profile/3]).
 -include_lib("stdlib/include/qlc.hrl").
 -include("schema_job.hrl").
 -include("schema_profile.hrl").
@@ -61,11 +61,11 @@ get_encoding_list(SessionID,_Data2,_Data3)->
               end,
   F = fun() ->
           Q = qlc:q([{
-            libutil:to_string(element(3,E)),
-            libutil:to_string(element(4,E)),
-            libutil:to_string(element(5,E)),
-            libutil:to_string(NowToString(element(6,E))),            %file.start_time                 %file.duration
-            libutil:to_string(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100))
+              libutil:to_string(element(3,E)),
+              libutil:to_string(element(4,E)),
+              libutil:to_string(element(5,E)),
+              libutil:to_string(NowToString(element(6,E))),            %file.start_time                 %file.duration
+              libutil:to_string(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100))
                       %            Transform(E#job.last_ts),
                      } || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
           qlc:e(Q)
@@ -78,26 +78,37 @@ get_encoding_list(SessionID,_Data2,_Data3)->
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, J).
 
-get_profile_list(SessionID,_Data2,_Data3)->
-  E=libdb:read(profile),
-  F=reformat(E,[]),
-  J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
-  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  mod_esi:deliver(SessionID, J).
+profile(SessionID,Data2,Data3)->
+  io:format("Data:~p Data2:~p",[Data2, Data3]),
+  case get_request(Data2) of
+    "GET"->
+      Query=httpd:parse_query(Data3),
+      E=case get_query_param(Query,"id") of
+          {error,param_not_found}->
+            D=libdb:read(profile),
+            F=reformat(D,[]),
+            mochijson:encode({struct,[{page,1},{total,length(F)},{data,{array,F}}]});
 
-get_profile(SessionID,_Data2,Data3)->
-  Query=httpd:parse_query(Data3),
-  Id=list_to_integer(get_query_param(Query,"id")),
-  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  F=fun()->
-        qlc:e(qlc:q([Data||Data<-mnesia:table(profile), element(2, Data)=:=Id]))
-    end,
-  {atomic,Data}=mnesia:transaction(F),
-  [F2|_]=reformat(Data,[]),
-  J=mochijson:encode(F2),
-  mod_esi:deliver(SessionID, J).
+          IdStr->
+            Id=list_to_integer(IdStr),
+            {atomic,Data}=mnesia:transaction(
+                fun()->
+                    qlc:e(qlc:q([Data||Data<-mnesia:table(profile), element(2, Data)=:=Id]))
+                end),
+            [F|_]=reformat(Data,[]),
+            mochijson:encode(F)
+        end,
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, E);
+    "POST"->set_profile(SessionID,Data2,Data3);
 
-set_profile(SessionID,Data2,Data3)->
+    _->
+      J= mochijson:encode({struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by profile"}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J)
+  end.
+
+set_profile(SessionID,_Data2,Data3)->
   Query=httpd:parse_query(Data3),
   %  io:format("DataSetProfile:~p~n Get:~p~n",[Data2, Query]),
   ProfileName=get_query_param(Query,"profileName"),
@@ -115,21 +126,21 @@ set_profile(SessionID,Data2,Data3)->
   ProfileMultipass=list_to_integer(get_query_param(Query,"profileMultipass","0")),
   ProfileGop=list_to_integer(get_query_param(Query,"profileGop","20")),
   Profile=#profile{
-    id=libdb:sequence(profile),
-    name=ProfileName,
-    ext=ProfileExtension,
-    vformat=ProfileFormat,
-    vcodec=ProfileVideoCodec,
-    vbitrate=ProfileVideoBitrate,
-    vframerate=ProfileVideoFramerate,
-    vwidth=ProfileVideoWidth,
-    vheight=ProfileVideoHeight,
-    achannels=ProfileAudioChannels,
-    acodec=ProfileAudioCodec,
-    abitrate=ProfileAudioBitrate,
-    asamplerate=ProfileAudioSamplerate,
-    multipass=ProfileMultipass,
-    gop=ProfileGop},
+      id=libdb:sequence(profile),
+      name=ProfileName,
+      ext=ProfileExtension,
+      vformat=ProfileFormat,
+      vcodec=ProfileVideoCodec,
+      vbitrate=ProfileVideoBitrate,
+      vframerate=ProfileVideoFramerate,
+      vwidth=ProfileVideoWidth,
+      vheight=ProfileVideoHeight,
+      achannels=ProfileAudioChannels,
+      acodec=ProfileAudioCodec,
+      abitrate=ProfileAudioBitrate,
+      asamplerate=ProfileAudioSamplerate,
+      multipass=ProfileMultipass,
+      gop=ProfileGop},
   io:format("Profile:~p",[Profile]),
   libdb:write(Profile),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
@@ -140,16 +151,16 @@ watchfolder(SessionID,Data2,Data3)->
     "GET"->
       Query=httpd:parse_query(Data3),
       E=
-        case get_query_param(Query,"id") of
-          {error,param_not_found}->libdb:read(watchfolder);
-          IdStr->
-            Id=list_to_integer(IdStr),
-            {atomic,Data}=mnesia:transaction(
-              fun()->
-                  qlc:e(qlc:q([Data||Data<-mnesia:table(watchfolder), element(2, Data)=:=Id]))
-              end),
-            Data
-        end,
+          case get_query_param(Query,"id") of
+            {error,param_not_found}->libdb:read(watchfolder);
+            IdStr->
+              Id=list_to_integer(IdStr),
+              {atomic,Data}=mnesia:transaction(
+                  fun()->
+                      qlc:e(qlc:q([Data||Data<-mnesia:table(watchfolder), element(2, Data)=:=Id]))
+                  end),
+              Data
+          end,
       F=reformat(E,[]),
       J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
       mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
@@ -162,7 +173,7 @@ watchfolder(SessionID,Data2,Data3)->
               Data
             
           catch
-            All->io:format("Error Found"),
+            _All->io:format("Error Found"),
               {struct,[{error,parsing_json_data}]}
           end,
       io:format("JSON:~p~n",[MyD]),
@@ -175,6 +186,49 @@ watchfolder(SessionID,Data2,Data3)->
       mod_esi:deliver(SessionID, J)
   end.
 
+codec(SessionID,Data2,Data3)->
+  case get_request(Data2) of
+    "GET"->
+      Query=httpd:parse_query(Data3),
+      E=
+          case get_query_param(Query,"id") of
+            {error,param_not_found}->sys_port:get_codec_list();
+            IdStr->
+              _Id=list_to_integer(IdStr),
+              sys_port:get_codec_list()
+          end,
+      F=reformat(E,[name,id,type, encoder, decoder,capabilities],[]),
+      J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J);
+    _->
+      J= mochijson:encode({struct,[{error,request_method_invalid},{description,"Only request_method GET is Supported by codecs"}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J)
+  end.
+
+format(SessionID,Data2,Data3)->
+  case get_request(Data2) of
+    "GET"->
+      Query=httpd:parse_query(Data3),
+      E=
+          case get_query_param(Query,"id") of
+            {error,param_not_found}->sys_port:get_format_list();
+            IdStr->
+              _Id=list_to_integer(IdStr),
+              sys_port:get_format_list()
+          end,
+      %          io:format("Format:~p",[E]),
+      F=reformat(E,[name,long_name,mime_type, extensions],[]),
+      %          io:format("Format:~p",[F]),
+      J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J);
+    _->
+      J= mochijson:encode({struct,[{error,request_method_invalid},{description,"Only request_method GET is Supported by format"}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J)
+  end.
 
 get_request(Data)->
   get_query_param(Data,request_method).

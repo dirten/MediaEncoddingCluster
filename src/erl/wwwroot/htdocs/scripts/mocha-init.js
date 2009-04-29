@@ -53,7 +53,7 @@ initializeWindows = function(){
   if ($('allMediaLinkCheck')){
     $('allMediaLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
-     
+
       MochaUI.updateContent({
         'element': $('mainPanel'),
         'loadMethod': 'xhr',
@@ -78,6 +78,37 @@ initializeWindows = function(){
           left: 8
         }
       });
+    });
+  }
+  if ($('viewWatchfoldersLinkCheck')){
+    $('viewWatchfoldersLinkCheck').addEvent('click', function(e){
+      new Event(e).stop();
+
+      MochaUI.updateContent({
+        'element': $('mainPanel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/watchfolderlist.html',
+        'title': 'Watchfolder List',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+      MochaUI.updateContent({
+        'element': $('help-panel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/blank.html',
+        'title': 'Info',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+
     });
   }
   
@@ -607,6 +638,35 @@ MochaUI.profileWindow = function(){
     $('createProfileLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
       MochaUI.profileWindow();
+    });
+  }
+  MochaUI.watchfolderWindow = function(){
+    new MochaUI.Window({
+      id: 'watchfolder',
+      title: 'Watchfolder Builder',
+      icon: 'images/icons/page.gif',
+      scrollbars:true,
+      loadMethod: 'xhr',
+      contentURL: 'pages/watchfolderform.html',
+      onContentLoaded: function(){
+        $('profileSubmit').addEvent('click', function(e){
+          new Event(e).stop();
+            $('watchfolderForm').send();
+            MochaUI.closeWindow($('watchfolder'));
+            MochaUI.notification('Watchfolder Updated');
+        });
+      },
+      width: 400,
+      height: 220,
+      maximizable: false,
+      resizable: false,
+      scrollbars: false
+    });
+  }
+  if ($('createWatchfoldersLinkCheck')){
+    $('createWatchfoldersLinkCheck').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.watchfolderWindow();
     });
   }
 	

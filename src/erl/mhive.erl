@@ -28,7 +28,7 @@ configure()->
 
 start(_Type, StartArgs)->
   Node=libnet:local_name(),
-%  io:format("Self node = ~p",[Node]),
+  io:format("Self node = ~p",[Node]),
   net_kernel:start([Node]),
   net_adm:world(),
   mnesia:start(),

@@ -59,16 +59,18 @@ ETERM * codeclist(ETERM * v) {
   std::vector<ETERM *> terms;
   AVCodec *p = NULL;
   while ((p = av_codec_next(p))) {
-    std::vector<ETERM *> c;
-    c.push_back(erl_mk_string(p->name));
-    c.push_back(erl_mk_int(p->id));
-    c.push_back(erl_mk_int(p->type));
-    c.push_back(erl_mk_int(p->encode ? 1 : 0));
-    c.push_back(erl_mk_int(p->decode ? 1 : 0));
-    int cap = p->capabilities ? p->capabilities : 0;
-    c.push_back(erl_mk_int(cap));
-    //    erl_print_term((FILE*)stderr, vector2term(c));
-    terms.push_back(vector2term(c));
+    if(p->encode){
+      std::vector<ETERM *> c;
+      c.push_back(erl_mk_string(p->name));
+      c.push_back(erl_mk_int(p->id));
+      c.push_back(erl_mk_int(p->type));
+      c.push_back(erl_mk_int(p->encode ? 1 : 0));
+      c.push_back(erl_mk_int(p->decode ? 1 : 0));
+      int cap = p->capabilities ? p->capabilities : 0;
+      c.push_back(erl_mk_int(cap));
+      //    erl_print_term((FILE*)stderr, vector2term(c));
+      terms.push_back(vector2term(c));
+    }
   }
   return vector2list(terms);
 }

@@ -324,7 +324,7 @@ var omniGrid = new Class({
 		// **************************************************
 		
 		var url = (url != null) ? url : this.options.url;
-		var request = new Request.JSON({url:url, data:data});
+		var request = new Request.JSON({url:url, data:data, method:'get'});
 
 		request.addEvent("complete", this.onLoadData.bind(this) ) ;
 
