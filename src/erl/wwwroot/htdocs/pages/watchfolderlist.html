@@ -1,0 +1,106 @@
+<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
+<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
+<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
+<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
+
+<script type="text/javascript">
+
+  function onGridSelect(evt)
+  {
+/*
+    var str = 'row: '+evt.row+' indices: '+evt.indices;
+    str += ' id: '+evt.target.getDataByRow(evt.row).id;
+
+    alert( str );
+*/
+    var url='/api/json/get_profile';
+    var request = new Request.JSON({
+      url: url,
+      method: 'get',
+      onComplete: function(properties) {
+        setProfileDetails(properties);
+      }
+    }).send('id='+evt.target.getDataByRow(evt.row).id);
+
+
+  }
+
+  function gridButtonClick(button, grid)
+  {
+    alert(button);
+  }
+
+  var cmu = [
+    {
+      header: "Id",
+      dataIndex: 'id',
+      dataType:'number',
+      width:30
+    },
+    {
+      header: "Name",
+      dataIndex: 'name',
+      dataType:'string',
+      width:150
+    },
+    {
+      header: "Extension",
+      dataIndex: 'ext',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "Video Format",
+      dataIndex: 'vformat',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "Video Codec",
+      dataIndex: 'vcodec',
+      dataType:'string'
+    },
+
+  ];
+
+  window.addEvent("domready", function(){
+
+    datagrid = new omniGrid('encodinggrid', {
+      columnModel: cmu,
+      /*
+      buttons : [
+        {name: 'Add', bclass: 'add', onclick : gridButtonClick},
+        {name: 'Delete', bclass: 'delete', onclick : gridButtonClick},
+        {separator: true},
+        {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
+      ],*/
+      url:"/api/json/watchfolder",
+      perpage:10,
+      page:1,
+      pagination:false,
+      serverSort:false,
+      showHeader: true,
+      alternaterows: true,
+      showHeader:true,
+      sortHeader:true,
+      resizeColumns:true,
+      multipleSelection:false,
+
+      // uncomment this if you want accordion behavior for every row
+      /*
+	        accordion:true,
+	        accordionRenderer:accordionFunction,
+	        autoSectionToggle:false,
+       */
+
+      width:800,
+      height: null
+    });
+
+    datagrid.addEvent('click', onGridSelect);
+
+  });
+
+</script>
+
+<div id="encodinggrid" ></div>
