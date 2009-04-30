@@ -7,13 +7,16 @@
 
   function onGridSelect(evt)
   {
-        var url='/api/json/get_file_detail';
+        var url='/api/json/file';
         var request = new Request.JSON({
           url: url,
           method: 'get',
+          onException:function(name, value){
+            alert('test');
+            MochaUI.notification('Failed to Request File Information');
+          },
           onComplete: function(properties) {
-            var l=properties.id;
-//            alert(l);
+
 //            var myElement=new Element('div',{id:'testid', text:l});
               setFileDetails(properties);
 //            $('fileid').set('text',properties.id);
@@ -74,8 +77,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
       dataIndex: 'containertype',
       dataType:'string',
       width:100
-    },
-
+    }
   ];
 
   window.addEvent("domready", function(){
@@ -89,7 +91,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/get_file_list",
+      url:"/api/json/file",
       perpage:10,
       page:1,
       pagination:false,
@@ -108,8 +110,8 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
 	        autoSectionToggle:false,
        */
 
-      width:800,
-      height: 300
+      width:800
+//      height: 300
     });
 
     datagrid.addEvent('click', onGridSelect);

@@ -53,7 +53,6 @@ initializeWindows = function(){
   if ($('allMediaLinkCheck')){
     $('allMediaLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
-
       MochaUI.updateContent({
         'element': $('mainPanel'),
         'loadMethod': 'xhr',
@@ -867,15 +866,15 @@ window.addEvent('domready', function(){
   new MochaUI.Column({
     id: 'mainColumn',
     placement: 'main',
-    width: null,
-    resizeLimit: [100, 500]
+    width:600
+//    resizeLimit: [100, 500]
   });
 
   new MochaUI.Column({
     id: 'sideColumn2',
     placement: 'right',
-    width: 320,
-    resizeLimit: [195, 350]
+    width: 320
+//    resizeLimit: [195, 350]
   });
 
   // Add panels to first side column

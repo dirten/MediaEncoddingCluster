@@ -1,18 +1,15 @@
-<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
-<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
-<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
-<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
 
 <script type="text/javascript">
 
   function onGridSelect(evt)
   {
-/*
+    /*
     var str = 'row: '+evt.row+' indices: '+evt.indices;
     str += ' id: '+evt.target.getDataByRow(evt.row).id;
 
     alert( str );
-*/
+     */
+    //  alert('hier');
     var url='/api/json/profile';
     var request = new Request.JSON({
       url: url,
@@ -21,9 +18,36 @@
         setProfileDetails(properties);
       }
     }).send('id='+evt.target.getDataByRow(evt.row).id);
-  
-    
+
+
   }
+  function openProfileForm(evt){
+    new MochaUI.Window({
+      id: 'profile',
+      title: 'Profile Builder',
+      icon: 'images/icons/page.gif',
+      scrollbars:true,
+      loadMethod: 'xhr',
+      contentURL: 'pages/profileform.html',
+      onContentLoaded: function(){
+        new Request.JSON({
+          url: '/api/json/profile',
+          method: 'get',
+          onComplete: function(properties) {
+            setProfileFormData(properties);
+          }
+        }).send('id='+evt.target.getDataByRow(evt.row).id);
+        //        $('profileId').set('value',evt.target.getDataByRow(evt.row).id);
+
+      },
+      width: 400,
+      height: 500,
+      maximizable: false,
+      resizable: false,
+      scrollbars: false
+    });
+  }
+
 
   function gridButtonClick(button, grid)
   {
@@ -59,7 +83,7 @@
       header: "Video Codec",
       dataIndex: 'vcodec',
       dataType:'string'
-    },
+    }
 
   ];
 
@@ -99,6 +123,7 @@
     });
 
     datagrid.addEvent('click', onGridSelect);
+    datagrid.addEvent('dblclick', openProfileForm);
 
   });
 

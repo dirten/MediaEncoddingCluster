@@ -1,4 +1,5 @@
 <form id="profileForm" action="/api/json/profile" method="POST">
+  <input type="hidden" class="hidden" name="profileId" id="profileId" value="-1"  />
 	<div class="formLabel">Name:</div>
 	<div class="formField"><input type="text" class="input" name="profileName" id="profileName" value="new Profile" maxlength="38" /></div>
 	<div class="clear"></div>
@@ -12,7 +13,7 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Video Codec:</div>
-	<div class="formField"><input type="text" class="input" name="profileVideoCodec" id="profileVideoCodec" value="" maxlength="10" /><div class="lite">13</div></div>
+  <div class="formField"><select class="input" name="profileVideoCodec" id="profileVideoCodec" value=""></select></div>
 	<div class="clear"></div>
 
   <div class="formLabel">Video Bitrate:</div>
@@ -21,7 +22,7 @@
 
   <div class="formLabel" >Video Framerate:</div>
 	<div class="formField">
-    <select name="profileVideoFramerate" id="profileVideoFramerate">
+    <select name="profileVideoFramerate" id="profileVideoFramerate" class="input" >
       <option>0.09</option>
       <option>5.995</option>
       <option>7.5</option>
@@ -55,7 +56,7 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Audio Codec:</div>
-	<div class="formField"><input type="text" class="input number" name="profileAudioCodec" id="profileAudioCodec" value="" maxlength="4" /></div>
+  <div class="formField"><select class="input" name="profileAudioCodec" id="profileAudioCodec" value="" maxlength="4" ></select></div>
 	<div class="clear"></div>
 
 	<div class="formLabel">Audio Bitrate:</div>
@@ -75,6 +76,45 @@
 	<div class="clear"></div>
 
 	<div class="formLabel"></div>
-	<div class="formField"><input type="submit" class="submit" id="profileSubmit" value="Save Profile" /></div>
-	<div class="clear"></div>
+	<div class="formField">
+    <input class="input" type="submit" class="submit" id="profileSubmit" value="Save Profile" />
+    <input class="input" type="submit" class="submit" id="profileCancel" value="Cancel" /></div>
+  <div class="clear"></div>
 </form>
+<script type="text/javascript">
+  function setProfileCodecData(props){
+    $each(props,function(prop){
+      if(prop.type==0)
+        new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileVideoCodec'));
+      if(prop.type==1)
+        new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileAudioCodec'));
+    });
+  }
+  function setProfileFormData(props){
+    $('profileId').set('value',props.id);
+    $('profileName').set('value',props.name);
+  }
+
+  window.addEvent("domready", function(){
+
+    new Request.JSON({
+      url: '/api/json/codec',
+      method: 'get',
+      onComplete: function(properties) {
+        setProfileCodecData(properties.data);
+      }
+    }).send();
+
+    $('profileSubmit').addEvent('click', function(e){
+      new Event(e).stop();
+      $('profileForm').send();
+      MochaUI.closeWindow($('profile'));
+      MochaUI.notification('Profile Updated');
+    });
+    $('profileCancel').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.closeWindow($('profile'));
+      MochaUI.notification('Profile Update Canceled');
+    });
+  });
+</script>
