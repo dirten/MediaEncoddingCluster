@@ -619,14 +619,9 @@ MochaUI.profileWindow = function(){
       loadMethod: 'xhr',
       contentURL: 'pages/profileform.html',
       onContentLoaded: function(){
-        $('profileSubmit').addEvent('click', function(e){
-          new Event(e).stop();
-            $('profileForm').send();
-            MochaUI.closeWindow($('profile'));
-            MochaUI.notification('Profile Updated');
-        });
+        setProfileFormData(null);
       },
-      width: 400,
+      width: 380,
       height: 500,
       maximizable: false,
       resizable: false,
@@ -639,7 +634,7 @@ MochaUI.profileWindow = function(){
       MochaUI.profileWindow();
     });
   }
-  MochaUI.watchfolderWindow = function(){
+  MochaUI.watchfolderWindow = function(props){
     new MochaUI.Window({
       id: 'watchfolder',
       title: 'Watchfolder Builder',
@@ -648,12 +643,7 @@ MochaUI.profileWindow = function(){
       loadMethod: 'xhr',
       contentURL: 'pages/watchfolderform.html',
       onContentLoaded: function(){
-        $('profileSubmit').addEvent('click', function(e){
-          new Event(e).stop();
-            $('watchfolderForm').send();
-            MochaUI.closeWindow($('watchfolder'));
-            MochaUI.notification('Watchfolder Updated');
-        });
+        setWatchFolderFormData(props);
       },
       width: 400,
       height: 220,
@@ -665,7 +655,7 @@ MochaUI.profileWindow = function(){
   if ($('createWatchfoldersLinkCheck')){
     $('createWatchfoldersLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
-      MochaUI.watchfolderWindow();
+      MochaUI.watchfolderWindow(null);
     });
   }
 	
@@ -940,9 +930,9 @@ window.addEvent('domready', function(){
 */
   new MochaUI.Panel({
     id: 'mainPanel',
-    title: 'Panel',
+    title: 'Dashboard',
     loadMethod: 'xhr',
-    contentURL: 'pages/lipsum.html',
+    contentURL: 'pages/dashboard.html',
     column: 'mainColumn',
     height: 200
   });

@@ -89,7 +89,7 @@
 
   window.addEvent("domready", function(){
 
-    datagrid = new omniGrid('encodinggrid', {
+    profilegrid = new omniGrid('encodinggrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -122,8 +122,8 @@
       height: null
     });
 
-    datagrid.addEvent('click', onGridSelect);
-    datagrid.addEvent('dblclick', openProfileForm);
+    profilegrid.addEvent('click', onGridSelect);
+    profilegrid.addEvent('dblclick', openProfileForm);
 
   });
 

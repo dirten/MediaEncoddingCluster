@@ -1,8 +1,21 @@
 -module(config).
+-include_lib("stdlib/include/qlc.hrl").
 -include("schema_config.hrl").
 -compile(export_all).
 
+get([])->
+  F=fun()->
+        qlc:e(qlc:q([{Key, Val}||{_Name, Key, Val}<-mnesia:table(config)]))
+    end,
+  {atomic,Data}=mnesia:transaction(F),
+  Data,
 
+  lists:filter(
+      fun(Entry)-> if
+                     element(1,Entry)=:=included_applications->false;
+                     true->true
+                   end
+      end,application:get_all_env(mhive)++Data);
 get(Key)->get(Key,[]).
 get(Key, Def)->
   case application:get_env(mhive,Key) of

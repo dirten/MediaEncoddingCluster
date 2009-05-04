@@ -30,6 +30,38 @@
 
 
 	<div class="formLabel"></div>
-	<div class="formField"><input type="submit" class="submit" id="profileSubmit" value="Save Profile" /></div>
+	<div class="formField"><input type="submit" class="submit" id="profileSubmit" value="Save Watchfolder" /></div>
 	<div class="clear"></div>
 </form>
+
+
+<script type="text/javascript">
+
+  function setWatchFolderFormData(wid){
+    new Request.JSON({
+      url: '/api/json/watchfolder',
+      method: 'get',
+      onComplete: function(properties) {
+        $('infolder').set('value',properties.infolder);
+        $('outfolder').set('value',properties.outfolder);
+        $('profileid').set('value',properties.profile);
+        if(properties.recursive==true)
+          $('recursive').set('checked');
+      }
+    }).send('id='+wid);
+  }
+
+  window.addEvent("domready", function(){
+    $('profileSubmit').addEvent('click', function(e){
+      new Event(e).stop();
+      $('watchfolderForm').send();
+      MochaUI.closeWindow($('watchfolder'));
+      MochaUI.notification('Watchfolder Updated');
+    })
+  });
+
+  
+
+
+
+</script>

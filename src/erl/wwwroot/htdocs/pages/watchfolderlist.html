@@ -24,6 +24,11 @@
 
 
   }
+  function openWatchFolderForm(evt)
+  {
+   
+    MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
+  }
 
   function gridButtonClick(button, grid)
   {
@@ -111,6 +116,7 @@
     });
 
     datagrid.addEvent('click', onGridSelect);
+    datagrid.addEvent('dblclick', openWatchFolderForm);
 
   });
 

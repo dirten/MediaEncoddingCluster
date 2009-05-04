@@ -45,7 +45,7 @@ body {
 #desktopTitlebar {
 	padding: 7px 8px 6px 8px;
 	height: 32px;
-//	background: url(../images/logo.gif) no-repeat;
+/*	background: url(../images/logo.gif) no-repeat;*/
 	background-position: left 0;
 }
 
@@ -139,7 +139,7 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 /* Navbar */
 
 #desktopNavbar {
-	background: #4C4C4C;
+	background: #0C0C0C;
 	height: 30px;
 	margin: 0 0px;
   background:url(../images/menu_bg.jpg);
@@ -1003,7 +1003,7 @@ div.mochaToolbarWrapper.bottom {
 #desktop .formLabel {
 	float: left;	
 	text-align: right;
-	width: 80px;
+	width: 100px;
 	margin: 0 0 5px 0;
 }
 
