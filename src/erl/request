@@ -5,7 +5,7 @@ echo "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.4) Ge
 echo "Host: $3"
 echo "Content-Length:121"
 echo
-echo "[{\"id\":2,\"infolder\":\"/media/video\",\"outfolder\":\"/media/out\",\"profile\":1,\"filter\":\"\",\"recursive\":false,\"status\":\"active\"}]"
+echo "{\"id\":-1,\"infolder\":\"/media/video\",\"outfolder\":\"/media/out\",\"profile\":1,\"filter\":\"\",\"recursive\":false,\"status\":\"active\"}"
 echo
 echo
 sleep 2

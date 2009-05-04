@@ -655,7 +655,7 @@ MochaUI.profileWindow = function(){
   if ($('createWatchfoldersLinkCheck')){
     $('createWatchfoldersLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
-      MochaUI.watchfolderWindow(null);
+      MochaUI.watchfolderWindow(-1);
     });
   }
 	

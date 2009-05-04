@@ -1,14 +1,66 @@
 <html>
-  <head><title>test title</title></head>
+  <head><title>test title</title>
+  
+    <script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
+    <script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
+    
+
+    
+  <style type="text/css">
+    body{
+        /*direction:rtl;*/
+    }
+
+    div.mui-tree{
+    }
+
+    div.mui-tree ul, div.mui-tree ul ul{
+        border-left:1px dotted #000;
+        list-style-type:none;
+        padding:0;margin:0;
+        margin-left:1.5em;
+        display:block;
+        font-size:0.9em;
+    }
+
+    div.mui-tree ul li{
+        padding-left:3px;
+        margin:2px 0;
+        line-height:1.5em;
+        vertical-align:top;
+    }
+
+
+    div.mui-treetitle{
+        cursor: default;
+    }
+
+    div.mui-treetitle:before{
+        content: '>>'
+    }
+
+    div.mui-treetitle.expanded:before{
+        content: '<<';
+    }
+
+    div.mui-treetitle:hover{
+        background-color: yellow;
+        display:inline;
+        clear:both;
+    }
+   </style>
+
+  </head>
   <body>
 
+  <div id="directory_chooser"></div>
 
-<form ACTION="/api/json:set_profile" METHOD=POST>
-	<input type="hidden" name="bla_test"  value="newProfile" >
-	<input type="text"  value="newProfile" >
-	<input type="submit">
-</form>
+  <script type="text/javascript">
+      $('directory_chooser').adopt(new Element('div',{'text':'test'}));
+      $('directory_chooser').adopt(new Element('div',{'text':'test2'}));
 
-</body>
+    </script>
+
+  </body>
 </html>
 

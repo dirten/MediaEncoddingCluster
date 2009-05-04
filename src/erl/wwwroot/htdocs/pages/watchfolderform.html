@@ -1,5 +1,6 @@
-<form id="watchfolderForm" action="/api/json/watchfolder" method="POST">
-	<div class="formLabel">Input Folder:</div>
+<form name="watchfolderForm" id="watchfolderForm" action="/api/json/watchfolder" method="POST">
+	<input type="hidden" class="input" name="id" id="id" value="-1" maxlength="255" />
+  <div class="formLabel">Input Folder:</div>
 	<div class="formField"><input type="text" class="input" name="infolder" id="infolder" value="/" maxlength="255" /></div>
 	<div class="clear"></div>
 
@@ -8,21 +9,26 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Profile Id:</div>
-	<div class="formField"><input type="text" class="input number" name="profileid" id="profileid" value="0" maxlength="4" /></div>
+	<div class="formField"><select name="profileid" id="profileid" ></select></div>
 	<div class="clear"></div>
 
 	<div class="formLabel">File Filter:</div>
-	<div class="formField"><input type="text" class="input" name="filter" id="filter" value="" maxlength="200" /></div>
+	<div class="formField"><input type="text" class="input" name="filter" id="filter" value="" maxlength="200" /><div class="lite">comma separated e.g. *.vob,*.avi</div></div>
 	<div class="clear"></div>
 
   <div class="formLabel">Search Directory Recursive:</div>
-	<div class="formField"><input type="checkbox" class="input number" name="recursive" id="recursive" value="" /><div class="lite">value in bits e.g. (1024000)</div></div>
+	<div class="formField">
+    <select name="recursive" id="recursive">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+    </div>
 	<div class="clear"></div>
 
   <div class="formLabel" >State:</div>
 	<div class="formField">
-    <select name="profileVideoFramerate" id="profileVideoFramerate">
-      <option value="enabled">Enabled</option>
+    <select name="status" id="status">
+      <option value="active">Enabled</option>
       <option value="disabled">Disabled</option>
     </select>
   </div>
@@ -36,17 +42,45 @@
 
 
 <script type="text/javascript">
+  function setProfileData(props, selected){
+    $each(props,function(prop){
+        var el=new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileid'));
+        if(prop.id==selected)
+          el.set('selected');
+  });
+  }
 
   function setWatchFolderFormData(wid){
     new Request.JSON({
       url: '/api/json/watchfolder',
       method: 'get',
       onComplete: function(properties) {
+        $('id').set('value',properties.id);
         $('infolder').set('value',properties.infolder);
         $('outfolder').set('value',properties.outfolder);
-        $('profileid').set('value',properties.profile);
+//        $('profileid').set('value',properties.profile);
+        $('filter').set('value',properties.filter);
+        new Request.JSON({
+          url: '/api/json/profile',
+          method: 'get',
+          onComplete: function(profiles) {
+              setProfileData(profiles.data,properties.profile);
+          }
+        }).send();
         if(properties.recursive==true)
           $('recursive').set('checked');
+        optionList=$$('#status option');
+        $each(optionList,function(option){
+          if(option.get('value')==properties.status){
+            option.set('selected');
+          }
+        });
+        optionList=$$('#recursive option');
+        $each(optionList,function(option){
+          if(option.get('value')==properties.recursive){
+            option.set('selected');
+          }
+        });
       }
     }).send('id='+wid);
   }
@@ -54,9 +88,20 @@
   window.addEvent("domready", function(){
     $('profileSubmit').addEvent('click', function(e){
       new Event(e).stop();
-      $('watchfolderForm').send();
-      MochaUI.closeWindow($('watchfolder'));
-      MochaUI.notification('Watchfolder Updated');
+      var json=form2json($('watchfolderForm'));
+      new Request.JSON({
+        url: '/api/json/watchfolder',
+        method: 'POST',
+        onComplete: function(props) {
+          if(props.ok){
+            MochaUI.closeWindow($('watchfolder'));
+            MochaUI.notification('Watchfolder Updated');
+            watchfoldergrid.refresh();
+          }else{
+            MochaUI.notification('Error: '+props.error);
+          }
+        }
+      }).send(json);
     })
   });
 

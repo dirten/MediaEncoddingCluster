@@ -10,8 +10,17 @@
 scan()->
   E=libdb:read(watchfolder),
   Fun=fun(El)->
-          FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,El#watchfolder.recursive),
-          process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder)
+          case El#watchfolder.status of
+            "active"->
+              Recursive =
+                if El#watchfolder.recursive =:="yes"->true;
+                  El#watchfolder.recursive =:="no"->false;
+                  true->false
+                end,
+              FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,Recursive),
+              process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder);
+              _Else->do_nothing
+          end
       end,
   lists:foreach(Fun,E).
 

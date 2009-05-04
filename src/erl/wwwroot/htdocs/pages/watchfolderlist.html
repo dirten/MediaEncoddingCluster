@@ -83,7 +83,7 @@
 
   window.addEvent("domready", function(){
 
-    datagrid = new omniGrid('encodinggrid', {
+    watchfoldergrid = new omniGrid('watchfoldergrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -115,11 +115,11 @@
       height: null
     });
 
-    datagrid.addEvent('click', onGridSelect);
-    datagrid.addEvent('dblclick', openWatchFolderForm);
+//    datagrid.addEvent('click', onGridSelect);
+    watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
 
   });
 
 </script>
 
-<div id="encodinggrid" ></div>
+<div id="watchfoldergrid" ></div>
