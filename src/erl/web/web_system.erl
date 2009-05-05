@@ -52,7 +52,6 @@ get_release_data()->
   E.
 
 
-
 body()->
 	Data = get_data(),
 	Map = get_map(),

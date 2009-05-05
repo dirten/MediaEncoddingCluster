@@ -1,13 +1,11 @@
 % Compile Nitrogen Files.
 { './mhive.erl', [
-	{ i, "./nitrogen/include" },
-	{ i, "./" },
 	debug_info
 ]}.
-{ './rfc4627-1.0.2/src/*', [
-	{ i, "./rfc4627-1.0.2/include" },
-	debug_info
-]}.
+%{ './rfc4627-1.0.2/src/*', [
+%	{ i, "./rfc4627-1.0.2/include" },
+%	debug_info
+%]}.
 { './setup.erl', [
 	{ i, "./" },
 	debug_info
@@ -17,33 +15,34 @@
 	{ i, "./include" },
 	debug_info
 ]}.
-{ './nitrogen/src/*', [
-	{ i, "./" },
-	{ i, "./include" },
-	{ i, "./nitrogen/include" },
-	debug_info
-]}.
-{ './nitrogen/src/*/*', [
-	{ i, "./" },
-	{ i, "./include" },
-	{ i, "./nitrogen/include" },
-	debug_info
-]}.
-{ './nitrogen/src/elements/*/*', [
-	{ i, "./" },
-	{ i, "./include" },
-	{ i, "./nitrogen/include" },
-	debug_info
-]}.
+%{ './nitrogen/src/*', [
+%	{ i, "./" },
+%	{ i, "./include" },
+%	{ i, "./nitrogen/include" },
+%	debug_info
+%]}.
+%{ './nitrogen/src/*/*', [
+%	{ i, "./" },
+%	{ i, "./include" },
+%	{ i, "./nitrogen/include" },
+%	debug_info
+%]}.
+%{ './nitrogen/src/elements/*/*', [
+%	{ i, "./" },
+%	{ i, "./include" },
+%	{ i, "./nitrogen/include" },
+%	debug_info
+%]}.
 { './lib/*', [
 	debug_info
 ]}.
-{ './web/*', [
-	{ i, "./nitrogen/include" },
+{ './web/json*', [
+	debug_info
+]}.
+{ './web/mochi*', [
 	debug_info
 ]}.
 { './test/test.erl', [
-	{ i, "./nitrogen/include" },
 	debug_info
 ]}.
 { ['./target_system.erl','./devel.erl'], [

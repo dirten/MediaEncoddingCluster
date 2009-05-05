@@ -19,7 +19,8 @@ scan()->
                 end,
               FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,Recursive),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder);
-              _Else->do_nothing
+              _Else->
+                do_nothing
           end
       end,
   lists:foreach(Fun,E).

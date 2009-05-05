@@ -156,6 +156,40 @@ initializeWindows = function(){
       });
     });
   }
+  if ($('clientNodesLink')){
+    $('clientNodesLink').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.updateContent({
+        'element': $('mainPanel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/nodelist.html',
+        'title': 'Nodes',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+    });
+  }
+  if ($('softwareUpdateLink')){
+    $('softwareUpdateLink').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.updateContent({
+        'element': $('mainPanel'),
+        'loadMethod': 'xhr',
+        'url': 'pages/updatelist.html',
+        'title': 'Nodes',
+        'padding': {
+          top: 8,
+          right: 8,
+          bottom: 8,
+          left: 8
+        }
+      });
+    });
+  }
   if ($('viewProfilesLinkCheck')){
     $('viewProfilesLinkCheck').addEvent('click', function(e){
       new Event(e).stop();
@@ -646,7 +680,7 @@ MochaUI.profileWindow = function(){
         setWatchFolderFormData(props);
       },
       width: 400,
-      height: 220,
+      height: 250,
       maximizable: false,
       resizable: false,
       scrollbars: false
@@ -796,13 +830,13 @@ MochaUI.profileWindow = function(){
   MochaUI.aboutWindow = function(){
     new MochaUI.Window({
       id: 'about',
-      title: 'MochaUI',
+      title: 'MEC',
       loadMethod: 'xhr',
       contentURL: 'pages/about.html',
       type: 'modal2',
       width: 350,
       height: 195,
-      contentBgColor: '#e5e5e5 url(images/logo2.gif) left 3px no-repeat',
+//      contentBgColor: '#e5e5e5 url(images/logo2.gif) left 3px no-repeat',
       padding: {
         top: 43,
         right: 12,

@@ -17,6 +17,11 @@ build(Version)->
   code:add_patha("releases/"++Version),
   make:all([load,{outdir,"releases/"++Version++"/ebin"}]).
 
+clean()->
+  {ok, [Release]} = file:consult("VERSION"),
+  Version=element(2,Release),
+  io:format("Cleaning Version:~p~n",[Version]),
+  clean(Version).
 clean(Version)->
   remove_dir_tree("releases/"++Version++"/ebin"),
   file:make_dir("releases/"++Version++"/ebin").
@@ -73,7 +78,15 @@ release(Version)->
 
   TarFileName = io_lib:fwrite("~s.tar.gz", [RelFileName]),
   io:fwrite("Creating tar file \"~s\" ...~n", [TarFileName]),
-  make_tar(RelFileName),
+
+  file:make_dir("priv/wwwroot"),
+  file:make_dir("priv/wwwroot/tmp"),
+  libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn","logs"]),
+  remove_dir_tree("priv/wwwroot/tmp"),
+
+  RootDir = code:root_dir(),
+  systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,[priv]}]),
+%  make_tar(RelFileName),
 
   io:fwrite("Creating directory \"tmp\" ...~n"),
   file:make_dir("tmp"),
@@ -115,11 +128,7 @@ release(Version)->
   file:make_dir("tmp/logs"),
   libfile:touch("tmp/logs/empty_file"),
   file:make_dir("tmp/data"),
-  file:make_dir("priv/wwwroot"),
-  file:make_dir("priv/wwwroot/tmp"),
   libfile:touch("tmp/data/empty_file"),
-  libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn"]),
-  remove_dir_tree("priv/wwwroot/tmp"),
   libfile:copy(filename:join([SrcDir, "sys.config"]),filename:join(["tmp","releases",Version, "sys.config"])),
   libfile:copy(SrcDir++"/default.data", filename:join(["priv", "default.data"])),
   %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
@@ -174,7 +183,7 @@ make_script(RelFileName) ->
 %%
 make_tar(RelFileName) ->
   RootDir = code:root_dir(),
-  systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,[priv]}]).
+  systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,["priv"]}]).
 remove_dir_tree(Dir) ->
   remove_all_files(".", [Dir]).
 

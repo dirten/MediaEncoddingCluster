@@ -1,8 +1,3 @@
-<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
-<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
-<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
-<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
-
 <script type="text/javascript">
 
   function onGridSelect(evt)
@@ -26,8 +21,22 @@
   }
   function openWatchFolderForm(evt)
   {
-   
-    MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
+    new MochaUI.Window({
+      id: 'updateform',
+      title: 'Update Software',
+      icon: 'images/icons/page.gif',
+      scrollbars:true,
+      loadMethod: 'xhr',
+      contentURL: 'pages/updateform.html',
+      onContentLoaded: function(){
+        setUpdateFormData(evt.target.getDataByRow(evt.row).version);
+      },
+      width: 400,
+      height: 250,
+      maximizable: false,
+      resizable: false,
+      scrollbars: false
+    });
   }
 
   function gridButtonClick(button, grid)
@@ -37,53 +46,28 @@
 
   var cmu = [
     {
-      header: "Id",
-      dataIndex: 'id',
-      dataType:'number',
-      width:30
-    },
-    {
-      header: "Input Folder",
-      dataIndex: 'infolder',
-      dataType:'string',
-      width:200
-    },
-    {
-      header: "Output Folder",
-      dataIndex: 'outfolder',
-      dataType:'string',
-      width:200
-    },
-    {
-      header: "Profile ID",
-      dataIndex: 'profile',
-      dataType:'string',
-      width:60
-    },
-    {
-      header: "File Filter",
-      dataIndex: 'filter',
+      header: "Version",
+      dataIndex: 'version',
       dataType:'string',
       width:100
     },
     {
-      header: "Recursive",
-      dataIndex: 'recursive',
+      header: "Description",
+      dataIndex: 'description',
       dataType:'string',
-      width:100
+      width:400
     },
     {
       header: "State",
-      dataIndex: 'status',
-      width:60,
-      dataType:'string'
+      dataIndex: 'state',
+      dataType:'string',
+      width:100
     }
-
   ];
 
   window.addEvent("domready", function(){
 
-    watchfoldergrid = new omniGrid('watchfoldergrid', {
+    updategrid = new omniGrid('updategrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -92,7 +76,7 @@
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/watchfolder",
+      url:"/api/json/softwareupdate",
       perpage:10,
       page:1,
       pagination:false,
@@ -116,10 +100,10 @@
     });
 
 //    datagrid.addEvent('click', onGridSelect);
-    watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
+    updategrid.addEvent('dblclick', openWatchFolderForm);
 
   });
 
 </script>
 
-<div id="watchfoldergrid" ></div>
+<div id="updategrid" ></div>

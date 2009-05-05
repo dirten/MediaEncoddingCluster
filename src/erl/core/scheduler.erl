@@ -65,20 +65,21 @@ create_interval(List,Name, Time,Mod, Func, Args)->
   {ok,Ref}=timer:apply_interval(Time, Mod, Func, Args),
   lists:append(List,[{Name,Ref}]).
   
+handle_call({timer_list},_From,_N)->
+  io:format("GetTimerList~n",[]),
+  Timer=get_timer_list(),
+  {reply, Timer, state};
 handle_call(Thing,_From,_N)->
   io:format("~w handle_call unknown~w~n", [?MODULE,Thing]),
   {reply, Thing, state}.
+
 
 handle_cast(_Msg,N)->
   io:format("~w handle_cast~w~n", [?MODULE,N]),
   {noreply, N}.
 
 handle_info(Info,N)->
-  io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
-  case Info of
-    {{'EXIT',_,killed},state}->
-      exit(killed)
-  end,
+  io:format("~p handle_info~w~n", [?MODULE,{Info,N}]),
   {noreply, N}.
 
 terminate(Reason,_N)->

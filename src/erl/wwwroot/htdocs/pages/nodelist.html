@@ -1,8 +1,3 @@
-<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
-<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
-<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
-<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
-
 <script type="text/javascript">
 
   function onGridSelect(evt)
@@ -26,7 +21,7 @@
   }
   function openWatchFolderForm(evt)
   {
-   
+
     MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
   }
 
@@ -37,53 +32,28 @@
 
   var cmu = [
     {
-      header: "Id",
-      dataIndex: 'id',
-      dataType:'number',
-      width:30
-    },
-    {
-      header: "Input Folder",
-      dataIndex: 'infolder',
+      header: "Name",
+      dataIndex: 'name',
       dataType:'string',
       width:200
     },
     {
-      header: "Output Folder",
-      dataIndex: 'outfolder',
+      header: "Mode",
+      dataIndex: 'mode',
       dataType:'string',
       width:200
     },
     {
-      header: "Profile ID",
-      dataIndex: 'profile',
+      header: "Version",
+      dataIndex: 'version',
       dataType:'string',
-      width:60
-    },
-    {
-      header: "File Filter",
-      dataIndex: 'filter',
-      dataType:'string',
-      width:100
-    },
-    {
-      header: "Recursive",
-      dataIndex: 'recursive',
-      dataType:'string',
-      width:100
-    },
-    {
-      header: "State",
-      dataIndex: 'status',
-      width:60,
-      dataType:'string'
+      width:200
     }
-
   ];
 
   window.addEvent("domready", function(){
 
-    watchfoldergrid = new omniGrid('watchfoldergrid', {
+    nodegrid = new omniGrid('nodegrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -92,7 +62,7 @@
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/watchfolder",
+      url:"/api/json/nodes",
       perpage:10,
       page:1,
       pagination:false,
@@ -116,10 +86,10 @@
     });
 
 //    datagrid.addEvent('click', onGridSelect);
-    watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
+    nodegrid.addEvent('dblclick', openWatchFolderForm);
 
   });
 
 </script>
 
-<div id="watchfoldergrid" ></div>
+<div id="nodegrid" ></div>

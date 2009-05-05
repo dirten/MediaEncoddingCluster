@@ -93,7 +93,7 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],*/
-      url:"/api/json/get_encoding_list",
+      url:"/api/json/encoding",
       perpage:10,
       page:1,
       pagination:false,
@@ -117,8 +117,8 @@ appendChild(new Element('div',{id:'testid', text:properties.id})).
     });
    
     datagrid.addEvent('click', onGridSelect);
-    var myRefresh = function(){  this.refresh();};
-    myRefresh.periodical(2000, datagrid);
+//    var myRefresh = function(){  this.refresh();};
+//    myRefresh.periodical(2000, datagrid);
 //    datagrid.refresh.periodical(2000);
   });
 

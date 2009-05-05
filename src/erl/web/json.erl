@@ -1,5 +1,5 @@
 -module(json).
--export([get_encoding_list/3, config/3, file/3, watchfolder/3, codec/3, format/3, profile/3]).
+-export([encoding/3, config/3, file/3, watchfolder/3, codec/3, format/3, profile/3, nodes/3, softwareupdate/3]).
 -include_lib("stdlib/include/qlc.hrl").
 -include("schema_job.hrl").
 -include("schema_profile.hrl").
@@ -38,7 +38,7 @@ template(SessionID,Data2,Data3)->
         Query=httpd:parse_query(Data3),
         case get_query_param(Query,"id") of
           {error,param_not_found}->do_get_without_id;
-          IdStr->do_get_with_id
+          _IdStr->do_get_with_id
         end;
       "POST"->do_post;
       _->
@@ -93,38 +93,7 @@ file(SessionID,Data2,Data3)->
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, R).
 
-encoding(SessionID,Data2,Data3)->
-  NowToString=
-    fun(Now)->
-        case Now of
-          undefined->
-            no;
-          _->
-            {{Year,Month,Day},{Hour, Min, Sec}}=calendar:now_to_local_time(Now),
-            integer_to_list(Year)++"-"++integer_to_list(Month)++"-"++integer_to_list(Day)++" "++integer_to_list(Hour)++":"++integer_to_list(Min)++":"++integer_to_list(Sec)
-        end
-    end,
-  F = fun() ->
-          Q = qlc:q([{
-            libutil:to_string(element(3,E)),
-            libutil:to_string(element(4,E)),
-            libutil:to_string(element(5,E)),
-            libutil:to_string(NowToString(element(6,E))),            %file.start_time                 %file.duration
-            libutil:to_string(round(((list_to_integer(E#job.last_ts)-list_to_integer(element(12,F)))/list_to_integer(element(8,F)))*100))
-                      %            Transform(E#job.last_ts),
-                     } || E <- qlc:keysort(2,mnesia:table(job)),F<-mnesia:table(file),E#job.infile==element(2,F)]),
-          qlc:e(Q)
-      end,
-  {atomic,E}=mnesia:transaction(F),
-  %  io:format("Encodings:~p",[E]),
-  F2=reformat(E,[source,target,start,endtime,complete],[]),
-  J=mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F2}}]}),
-  %  io:format("Encodings:~p",[J]),
-  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  mod_esi:deliver(SessionID, J).
-
-get_encoding_list(SessionID,_Data2,_Data3)->
-  %  io:format("Encodings:",[]),
+encoding(SessionID,_Data2,_Data3)->
   NowToString=
     fun(Now)->
         case Now of
@@ -186,7 +155,7 @@ profile(SessionID,Data2,Data3)->
       mod_esi:deliver(SessionID, J)
   end.
 
-set_profile(SessionID,Data2,Data3)->
+set_profile(SessionID,_Data2,Data3)->
   Query=httpd:parse_query(Data3),
   Id=list_to_integer(get_query_param(Query,"profileId")),
   ProfileId=if Id=:=-1->libdb:sequence(profile);true->Id end,
@@ -224,57 +193,56 @@ set_profile(SessionID,Data2,Data3)->
   libdb:write(Profile),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
 
-watchfolder(SessionID,Data2,Data3)->
-  Response =case get_request(Data2) of
-              "GET"->
-                Query=httpd:parse_query(Data3),
-                E=
-                  case get_query_param(Query,"id") of
-                    {error,param_not_found}->
-                      Data=libdb:read(watchfolder),
-                      F=reformat(Data,[]),
-                      mochijson:encode({struct,[{page,1},{total,length(Data)},{data,{array,F}}]});
-                    IdStr->
-                      Id=list_to_integer(IdStr),
-                      {atomic,Data}=mnesia:transaction(
-                        fun()->
-                            qlc:e(qlc:q([Data||Data<-mnesia:table(watchfolder), element(2, Data)=:=Id]))
-                        end),
-                      NewData= case Data of
-                                 []->[#watchfolder{id=-1}];
-                                 Any->Any
-                               end,
-%                      io:format("WatchfolderData:~p~n",[NewData]),
-                      [F|_]=reformat(NewData,[]),
-                      mochijson:encode(F)
-                  end,
-                mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-                mod_esi:deliver(SessionID, E);
-              "POST"->
-                MyData= libutil:trim(Data3),
-%                io:format("Data:~p~n",[MyData]),
-                MyD=try mochijson:decode(MyData) of
-                      {struct,JsonArray}->io:format("Data"),
-                        Folder = lists:foldl(fun build_watchfolder_record/2, #watchfolder{}, JsonArray ),
-%                        io:format("Folder:~p",[Folder]),
-                        libdb:write(Folder),
-                        {struct,[{"ok", true}, {"id", Folder#watchfolder.id}]};
-                      Any->
-%                        io:format("Unknown Format:~p~n",[Any]),
-                        {struct,[{error,unknown_json_format}]}
-                    catch
-                      _:_->
-                        {struct,[{error,parsing_json_data}]}
-                    end,
-%                io:format("JSON:~p~n",[MyD]),
-                J= mochijson:encode(MyD),
-                mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-                mod_esi:deliver(SessionID, J);
-              _->
-                J= mochijson:encode({struct,[{error,unknown_request_method}]}),
-                mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-                mod_esi:deliver(SessionID, J)
-            end.
+watchfolder(SessionID,Data2,Data3)->  
+  case get_request(Data2) of
+    "GET"->
+      Query=httpd:parse_query(Data3),
+      E=
+        case get_query_param(Query,"id") of
+          {error,param_not_found}->
+            Data=libdb:read(watchfolder),
+            F=reformat(Data,[]),
+            mochijson:encode({struct,[{page,1},{total,length(Data)},{data,{array,F}}]});
+          IdStr->
+            Id=list_to_integer(IdStr),
+            {atomic,Data}=mnesia:transaction(
+              fun()->
+                  qlc:e(qlc:q([Data||Data<-mnesia:table(watchfolder), element(2, Data)=:=Id]))
+              end),
+            NewData= case Data of
+                       []->[#watchfolder{id=-1}];
+                       Any->Any
+                     end,
+            [F|_]=reformat(NewData,[]),
+            mochijson:encode(F)
+        end,
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, E);
+    "POST"->
+      MyData= libutil:trim(Data3),
+      %                io:format("Data:~p~n",[MyData]),
+      MyD=try mochijson:decode(MyData) of
+            {struct,JsonArray}->
+              Folder = lists:foldl(fun json2record:build_watchfolder_record/2, #watchfolder{}, JsonArray ),
+              %                        io:format("Folder:~p",[Folder]),
+              libdb:write(Folder),
+              {struct,[{"ok", true}, {"id", Folder#watchfolder.id}]};
+            _Any->
+              %                        io:format("Unknown Format:~p~n",[Any]),
+              {struct,[{error,unknown_json_format}]}
+          catch
+            _:_->
+              {struct,[{error,parsing_json_data}]}
+          end,
+      %                io:format("JSON:~p~n",[MyD]),
+      J= mochijson:encode(MyD),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J);
+    _->
+      J= mochijson:encode({struct,[{error,unknown_request_method}]}),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J)
+  end.
 
 codec(SessionID,Data2,Data3)->
   case get_request(Data2) of
@@ -320,32 +288,41 @@ format(SessionID,Data2,Data3)->
       mod_esi:deliver(SessionID, J)
   end.
 
-build_watchfolder_record({"id", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Id=if is_list(Val)->list_to_integer(Val);true->Val end,
-  NewId = if
-            Id =:= -1-> libdb:sequence(watchfolder);
-            true->Id
-          end,
-  Rec#watchfolder{id=NewId};
-build_watchfolder_record({"profileid", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{profile=Val};
-build_watchfolder_record({"recursive", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{recursive=Val};
-build_watchfolder_record({"status", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{status=Val};
-build_watchfolder_record({"infolder", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{infolder=Val};
-build_watchfolder_record({"outfolder", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{outfolder=Val};
-build_watchfolder_record({"filter", Val}, Rec)->
-  %  io:format("Setting id to ~p~n",[Val]),
-  Rec#watchfolder{filter=Val}.
+nodes(SessionID,_Data2,_Data3)->
+  Fun=fun(Data)->
+          case Data of
+            client->
+              "Client";
+            server->
+              "Server";
+            both->
+              "Server / Client";
+            _->
+              "Not running"
+          end
+      end,
+  E=[{atom_to_list(X),Fun(rpc:call(X,config,get,[mode])),rpc:call(X,libcode,get_mhive_version,[])}||X<-[node()|nodes()]],
+  F=reformat(E,[name,mode,version],[]),
+  J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, J).
+
+softwareupdate(SessionID,_Data2,_Data3)->
+  Fun = fun() ->
+            Q = qlc:q([{
+              libutil:to_string(element(2,E)),
+              libutil:to_string(element(4,E)),
+              libutil:to_string(element(5,E))
+                       } || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
+            qlc:e(Q)
+        end,
+  {atomic,E}=mnesia:transaction(Fun),
+  F=reformat(E,[version,description,state],[]),
+  J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, J).
+
+
 
 get_request(Data)->
   get_query_param(Data,request_method).
