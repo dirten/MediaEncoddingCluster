@@ -19,6 +19,22 @@ string_replace(Src, Needle, Replacement)->
   string:substr(Str,1,length(Str)-length(Replacement)).
 
 trim(Input) ->
-   {_,LS,_} = regexp:sub(Input, "^[ \r\n]*", ""),
-   {_,RS,_} = regexp:sub(LS, "[ \r\n]*$", ""),
-   RS.
+  {_,LS,_} = regexp:sub(Input, "^[ \r\n]*", ""),
+  {_,RS,_} = regexp:sub(LS, "[ \r\n]*$", ""),
+  RS.
+
+
+is_string(String) ->
+  Fun = fun(Char) ->
+            if 
+              is_float(Char)->false;
+              Char < 0 -> false;
+              Char > 255 -> false;
+              true -> true
+            end
+        end,
+  case is_list(String) of
+    false -> false;
+    true -> lists:all(Fun, String)
+  end.
+

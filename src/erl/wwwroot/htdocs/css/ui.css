@@ -1054,3 +1054,18 @@ div.mochaToolbarWrapper.bottom {
 	overflow: hidden;
 	visibility: hidden;
 }
+button { font-size: 100%; -webkit-appearance: square-button; }
+button[disabled] { color: #999; }
+button { background: transparent 2px 2px no-repeat; border: none;
+  color: #666; margin: 0; padding: 2px 1em 2px 22px; cursor: pointer;
+  font-size: 95%; font-weight: bold; line-height: 16px;
+}
+
+button:hover { background-position: 2px -30px; color: #000; }
+button:active { background-position: 2px -62px; color: #000; }
+button.add { background-image: url(../images/add.png); }
+button.compact { background-image: url(../image/compact.png); }
+button.delete { background-image: url(../image/delete.png); }
+button.load { background-image: url(../images/load.png); }
+button.run { background-image: url(../image/run.png); }
+button.save { background-image: url(../image/save.png); }

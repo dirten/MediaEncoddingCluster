@@ -2,12 +2,12 @@
 
   function onGridSelect(evt)
   {
-/*
+    /*
     var str = 'row: '+evt.row+' indices: '+evt.indices;
     str += ' id: '+evt.target.getDataByRow(evt.row).id;
 
     alert( str );
-*/
+     */
     var url='/api/json/get_profile';
     var request = new Request.JSON({
       url: url,
@@ -19,10 +19,21 @@
 
 
   }
-  function openWatchFolderForm(evt)
-  {
-
-    MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
+  function openAddNodeForm(evt)
+  { 
+    new MochaUI.Window({
+      id: 'addnodewindow',
+      title: 'Connect a new Node to the System',
+      icon: 'images/icons/page.gif',
+      scrollbars:true,
+      loadMethod: 'xhr',
+      contentURL: 'pages/nodeform.html',
+      width: 400,
+      height: 250,
+      maximizable: false,
+      resizable: false,
+      scrollbars: false
+    });
   }
 
   function gridButtonClick(button, grid)
@@ -85,11 +96,11 @@
       height: null
     });
 
-//    datagrid.addEvent('click', onGridSelect);
-    nodegrid.addEvent('dblclick', openWatchFolderForm);
-
+    //    datagrid.addEvent('click', onGridSelect);
+//    nodegrid.addEvent('dblclick', openWatchFolderForm);
+    $('addNewNodeButton').addEvent('click',openAddNodeForm);
   });
 
 </script>
-
+<button class="add" id="addNewNodeButton">Connect to a new Node ...</button>
 <div id="nodegrid" ></div>

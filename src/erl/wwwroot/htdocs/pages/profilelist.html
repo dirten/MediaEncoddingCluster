@@ -124,9 +124,13 @@
 
     profilegrid.addEvent('click', onGridSelect);
     profilegrid.addEvent('dblclick', openProfileForm);
+    $('createNewProfileButton').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.profileWindow();
+    });
 
   });
 
 </script>
-
+<button class="add" id="createNewProfileButton">Create Profile ...</button>
 <div id="encodinggrid" ></div>

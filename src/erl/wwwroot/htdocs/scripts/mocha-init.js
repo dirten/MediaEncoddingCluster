@@ -173,6 +173,7 @@ initializeWindows = function(){
       });
     });
   }
+  
   if ($('softwareUpdateLink')){
     $('softwareUpdateLink').addEvent('click', function(e){
       new Event(e).stop();
@@ -180,7 +181,7 @@ initializeWindows = function(){
         'element': $('mainPanel'),
         'loadMethod': 'xhr',
         'url': 'pages/updatelist.html',
-        'title': 'Nodes',
+        'title': 'Software Updates',
         'padding': {
           top: 8,
           right: 8,

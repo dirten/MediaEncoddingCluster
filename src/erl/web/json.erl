@@ -30,6 +30,24 @@ reformat([H|T], Fields, Acc) when is_tuple(H)->
   NewAcc=[{struct,record_to_json(H, Fields)}]++Acc,
   reformat(T, Fields, NewAcc).
 
+format([],Acc)->Acc;
+format([H|T],Acc)->
+  NewAcc=format(H, Acc),
+  format(T,NewAcc);
+
+format({Key, Val},Acc)->
+  io:format("Key, Val,~p,~p~n",[Key,Val]),
+  case libutil:is_string(Val) of
+    true->io:format("isString~n"),[{Key, Val}]++Acc;
+    false->
+      format_list({Key, Val},Acc)
+    end.
+
+format_list({Key, Val},Acc) when is_list(Val)->
+  [{Key,{array, Val}}]++Acc;
+format_list({Key, Val},Acc) ->
+  [{Key,Val}]++Acc.
+
 
 template(SessionID,Data2,Data3)->
   Response =
@@ -54,16 +72,26 @@ config(SessionID,Data2,Data3)->
       "GET"->
         Query=httpd:parse_query(Data3),
         case get_query_param(Query,"key") of
-          {error,param_not_found}->{struct,config:get([])};
+          {error,param_not_found}->
+            Dat={struct,format(config:get([]),[])},
+%            io:format("Config:~p~n",[Dat]),
+            Dat;
           K->
             Key=list_to_atom(K),
-            {struct,[{Key,config:get(Key)}]}
+ %           io:format("Config:~p~n",[config:get(Key)]),
+            Dat={struct,format([{Key,config:get(Key)}],[])},
+ %           io:format("Config:~p~n",[Dat]),
+            Dat
         end;
       "POST"->do_post;
       _->
         {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
     end,
-  R=mochijson:encode(Response),
+  R=try mochijson:encode(Response) of
+      Any->Any
+    catch
+      _:_->mochijson:encode({struct,[{error,internal_server_error},{description,"Internal server Error"}]})
+    end,
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, R).
 
@@ -156,42 +184,25 @@ profile(SessionID,Data2,Data3)->
   end.
 
 set_profile(SessionID,_Data2,Data3)->
-  Query=httpd:parse_query(Data3),
-  Id=list_to_integer(get_query_param(Query,"profileId")),
-  ProfileId=if Id=:=-1->libdb:sequence(profile);true->Id end,
-  ProfileName=get_query_param(Query,"profileName"),
-  ProfileExtension=get_query_param(Query,"profileExtension"),
-  ProfileFormat=get_query_param(Query,"profileFormat"),
-  ProfileVideoCodec=list_to_integer(get_query_param(Query,"profileVideoCodec","13")),
-  ProfileVideoBitrate=list_to_integer(get_query_param(Query,"profileVideoBitrate","512000")),
-  ProfileVideoFramerate=list_to_float(get_query_param(Query,"profileVideoFramerate","25")),
-  ProfileVideoWidth=list_to_integer(get_query_param(Query,"profileVideoWidth","0")),
-  ProfileVideoHeight=list_to_integer(get_query_param(Query,"profileVideoHeight","0")),
-  ProfileAudioChannels=list_to_integer(get_query_param(Query,"profileAudioChannels","2")),
-  ProfileAudioCodec=list_to_integer(get_query_param(Query,"profileAudioCodec","86016")),
-  ProfileAudioBitrate=list_to_integer(get_query_param(Query,"profileAudioBitrate","128000")),
-  ProfileAudioSamplerate=list_to_integer(get_query_param(Query,"profileAudioSamplerate","44100")),
-  ProfileMultipass=list_to_integer(get_query_param(Query,"profileMultipass","0")),
-  ProfileGop=list_to_integer(get_query_param(Query,"profileGop","20")),
-  Profile=#profile{
-    id=ProfileId,
-    name=ProfileName,
-    ext=ProfileExtension,
-    vformat=ProfileFormat,
-    vcodec=ProfileVideoCodec,
-    vbitrate=ProfileVideoBitrate,
-    vframerate=ProfileVideoFramerate,
-    vwidth=ProfileVideoWidth,
-    vheight=ProfileVideoHeight,
-    achannels=ProfileAudioChannels,
-    acodec=ProfileAudioCodec,
-    abitrate=ProfileAudioBitrate,
-    asamplerate=ProfileAudioSamplerate,
-    multipass=ProfileMultipass,
-    gop=ProfileGop},
-  io:format("Profile:~p",[Profile]),
-  libdb:write(Profile),
-  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
+      MyData= libutil:trim(Data3),
+                   io:format("Data:~p~n",[MyData]),
+      MyD=try mochijson:decode(MyData) of
+            {struct,JsonStruct}->
+              Profile = lists:foldl(fun json2record:build_profile_record/2, #profile{}, JsonStruct ),
+              io:format("Profile:~p",[Profile]),
+              libdb:write(Profile),
+              {struct,[{"ok", true}, {"id", Profile#profile.id}]};
+            Any->
+              io:format("Unknown Format:~p~n",[Any]),
+              {struct,[{error,unknown_json_format}]}
+          catch
+            M:F->
+              io:format("Exception:~p : ~p ~n",[M,F]),
+              {struct,[{error,parsing_json_data}]}
+          end,
+      J= mochijson:encode(MyD),
+      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+      mod_esi:deliver(SessionID, J).
 
 watchfolder(SessionID,Data2,Data3)->  
   case get_request(Data2) of
@@ -222,8 +233,8 @@ watchfolder(SessionID,Data2,Data3)->
       MyData= libutil:trim(Data3),
       %                io:format("Data:~p~n",[MyData]),
       MyD=try mochijson:decode(MyData) of
-            {struct,JsonArray}->
-              Folder = lists:foldl(fun json2record:build_watchfolder_record/2, #watchfolder{}, JsonArray ),
+            {struct,JsonStruct}->
+              Folder = lists:foldl(fun json2record:build_watchfolder_record/2, #watchfolder{}, JsonStruct ),
               %                        io:format("Folder:~p",[Folder]),
               libdb:write(Folder),
               {struct,[{"ok", true}, {"id", Folder#watchfolder.id}]};

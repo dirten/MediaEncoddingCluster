@@ -101,9 +101,13 @@
 
 //    datagrid.addEvent('click', onGridSelect);
     updategrid.addEvent('dblclick', openWatchFolderForm);
+    $('checkForUpdatesButton').addEvent('click', function(e){
+      new Event(e).stop();
+//      MochaUI.profileWindow();
+    });
 
   });
 
 </script>
-
+<button class="load" id="checkForUpdatesButton">Check for Updates now ...</button>
 <div id="updategrid" ></div>
