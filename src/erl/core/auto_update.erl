@@ -38,17 +38,17 @@ update()->
 process(Release)->
   io:format("Processing Release:~p~n",[Release]),
   Status = case download(element(1,Release)) of
-    {ok,_Version}->
-      downloaded;
-    {error,What}->
-      What
-    end,
+             {ok,_Version}->
+               downloaded;
+             {error,What}->
+               What
+           end,
   R=#releases{
     version=element(1,Release),
     application=element(2,Release),
     desc=element(3,Release),
     status=Status
-  },
+             },
   libdb:write(R).
 
 
@@ -65,9 +65,18 @@ download(Version)->
     _->{error,release_not_found}
   end.
 
-
 install(Version)->
-  {ok, Version}=release_handler:unpack_release("mhive-"++Version),
-  {ok,_OtherVsn, _Desc}=release_handler:install_release(Version),
-  ok=release_handler:make_permanent(Version).
+  case release_handler:unpack_release("mhive-"++Version)of
+    {ok, Version}->
+      case release_handler:install_release(Version) of
+        {ok,_OtherVsn, _Desc}->
+          case release_handler:make_permanent(Version) of
+            ok->ok;
+            {error,Else3}->io:format("Error3~p~n",[Else3]),
+              {error,Else3}
+          end;
+        {error,Else2}->io:format("Error2~p~n",[Else2]),{error,Else2}
+      end;
+    {error,Msg}->io:format("Error~p~n",[Msg]),{error,Msg}
+  end.
   

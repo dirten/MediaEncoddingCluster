@@ -16,8 +16,8 @@ start()->
            httpd:info(Pid).
 start_httpd()->
   inets:start(),
-%  inets:start(httpd,[{file,"wwwroot/conf/8080.conf"}]).
-  httpd:start("/home/jhoelscher/otp-13A/lib/erlang/lib/inets-5.0.13/examples/server_root/conf/8080.conf").
+  inets:start(httpd,[{file,"wwwroot/conf/8080.conf"}]).
+%  httpd:start("/home/jhoelscher/otp-13A/lib/erlang/lib/inets-5.0.13/examples/server_root/conf/8080.conf").
 
 stop()->
   inets:stop().

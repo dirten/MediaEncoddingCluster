@@ -7,12 +7,12 @@
 
   function onGridSelect(evt)
   {
-/*
+    /*
     var str = 'row: '+evt.row+' indices: '+evt.indices;
     str += ' id: '+evt.target.getDataByRow(evt.row).id;
 
     alert( str );
-*/
+     */
     var url='/api/json/get_profile';
     var request = new Request.JSON({
       url: url,
@@ -115,11 +115,14 @@
       height: null
     });
 
-//    datagrid.addEvent('click', onGridSelect);
+    //    datagrid.addEvent('click', onGridSelect);
     watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
-
+    $('createNewWatchfolderButton').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.watchfolderWindow(-1);
+    });
   });
 
 </script>
-
+<button class="add" id="createNewWatchfolderButton">Create Watchfolder ...</button>
 <div id="watchfoldergrid" ></div>

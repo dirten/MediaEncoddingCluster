@@ -36,12 +36,12 @@ format([H|T],Acc)->
   format(T,NewAcc);
 
 format({Key, Val},Acc)->
-  io:format("Key, Val,~p,~p~n",[Key,Val]),
   case libutil:is_string(Val) of
-    true->io:format("isString~n"),[{Key, Val}]++Acc;
+    true->
+      [{Key, Val}]++Acc;
     false->
       format_list({Key, Val},Acc)
-    end.
+  end.
 
 format_list({Key, Val},Acc) when is_list(Val)->
   [{Key,{array, Val}}]++Acc;
@@ -74,13 +74,10 @@ config(SessionID,Data2,Data3)->
         case get_query_param(Query,"key") of
           {error,param_not_found}->
             Dat={struct,format(config:get([]),[])},
-%            io:format("Config:~p~n",[Dat]),
             Dat;
           K->
             Key=list_to_atom(K),
- %           io:format("Config:~p~n",[config:get(Key)]),
             Dat={struct,format([{Key,config:get(Key)}],[])},
- %           io:format("Config:~p~n",[Dat]),
             Dat
         end;
       "POST"->do_post;
@@ -184,25 +181,21 @@ profile(SessionID,Data2,Data3)->
   end.
 
 set_profile(SessionID,_Data2,Data3)->
-      MyData= libutil:trim(Data3),
-                   io:format("Data:~p~n",[MyData]),
-      MyD=try mochijson:decode(MyData) of
-            {struct,JsonStruct}->
-              Profile = lists:foldl(fun json2record:build_profile_record/2, #profile{}, JsonStruct ),
-              io:format("Profile:~p",[Profile]),
-              libdb:write(Profile),
-              {struct,[{"ok", true}, {"id", Profile#profile.id}]};
-            Any->
-              io:format("Unknown Format:~p~n",[Any]),
-              {struct,[{error,unknown_json_format}]}
-          catch
-            M:F->
-              io:format("Exception:~p : ~p ~n",[M,F]),
-              {struct,[{error,parsing_json_data}]}
-          end,
-      J= mochijson:encode(MyD),
-      mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-      mod_esi:deliver(SessionID, J).
+  MyData= libutil:trim(Data3),
+  MyD=try mochijson:decode(MyData) of
+        {struct,JsonStruct}->
+          Profile = lists:foldl(fun json2record:build_record/2, #profile{}, JsonStruct ),
+          libdb:write(Profile),
+          {struct,[{"ok", true}, {"id", Profile#profile.id}]};
+        _Any->
+          {struct,[{error,unknown_json_format}]}
+      catch
+        _M:_F->
+          {struct,[{error,parsing_json_data}]}
+      end,
+  J= mochijson:encode(MyD),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, J).
 
 watchfolder(SessionID,Data2,Data3)->  
   case get_request(Data2) of
@@ -318,22 +311,88 @@ nodes(SessionID,_Data2,_Data3)->
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, J).
 
-softwareupdate(SessionID,_Data2,_Data3)->
-  Fun = fun() ->
-            Q = qlc:q([{
-              libutil:to_string(element(2,E)),
-              libutil:to_string(element(4,E)),
-              libutil:to_string(element(5,E))
-                       } || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
-            qlc:e(Q)
-        end,
-  {atomic,E}=mnesia:transaction(Fun),
-  F=reformat(E,[version,description,state],[]),
-  J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+softwareupdate2(SessionID,Data2,_Data3)->
+  Response =
+    case get_request(Data2) of
+      "GET"->
+        Fun = fun() ->
+                  Q = qlc:q([{
+                    libutil:to_string(element(2,E)),
+                    libutil:to_string(element(4,E)),
+                    libutil:to_string(element(5,E))
+                             } || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
+                  qlc:e(Q)
+              end,
+        {atomic,E}=mnesia:transaction(Fun),
+        F=reformat(E,[version,description,state],[]),
+        {struct,[{page,1},{total,length(E)},{data,{array,F}}]};
+      "POST"->do_post;
+      _->
+        {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
+    end,
+  R=mochijson:encode(Response),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  mod_esi:deliver(SessionID, J).
+  mod_esi:deliver(SessionID, R).
 
-
+softwareupdate(SessionID,Data2,Data3)->
+  Response =
+    case get_request(Data2) of
+      "GET"->
+        Query=httpd:parse_query(Data3),
+        case get_query_param(Query,"id") of
+          {error,param_not_found}->
+            Fun = fun() ->
+                      Q = qlc:q([{
+                        libutil:to_string(element(2,E)),
+                        libutil:to_string(element(4,E)),
+                        libutil:to_string(element(5,E))
+                                 } || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
+                      qlc:e(Q)
+                  end,
+            {atomic,E}=mnesia:transaction(Fun),
+            F=reformat(E,[version,description,state],[]),
+            {struct,[{page,1},{total,length(E)},{data,{array,F}}]};
+          IdStr->
+            Fun = fun() ->
+                      Q = qlc:q([{
+                        libutil:to_string(element(2,E)),
+                        libutil:to_string(element(4,E)),
+                        libutil:to_string(element(5,E))
+                                 } || E <-qlc:keysort(2, mnesia:table(releases)), element(2,E)=:=IdStr]),
+                      qlc:e(Q)
+                  end,
+            {atomic,E}=mnesia:transaction(Fun),
+            [Data4|_]=reformat(E,[version,description,state],[]),
+            Data4
+            
+        end;
+      "POST"->
+        io:format("POST COMMAND:~p",[Data3]),
+        MyData= libutil:trim(Data3),
+        io:format("Data:~p~n",[MyData]),
+        MyD=try mochijson:decode(MyData) of
+              {struct,[{"command","check_for_updates"}]}->
+                {struct,[{"ok", true}, {"id", 1}]};
+              {struct,[{"install",Version}]}->
+                case auto_update:install(Version) of
+                  ok->{struct,[{"ok", true}, {"version", Version}]};
+                  {error,D}->{struct,[{"error", true}, D]}
+                end;
+              _Any->
+                %                        io:format("Unknown Format:~p~n",[Any]),
+                {struct,[{error,unknown_json_format}]}
+            catch
+              _:_->
+                {struct,[{error,parsing_json_data}]}
+            end,
+        io:format("POST COMMAND:~p",[MyD]),
+        MyD;
+      _->
+        {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by softwareupdate"}]}
+    end,
+  R=mochijson:encode(Response),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, R).
 
 get_request(Data)->
   get_query_param(Data,request_method).

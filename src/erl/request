@@ -1,11 +1,12 @@
 echo "open $1 $2"
 sleep 2
-echo "GET $4 HTTP/1.0"
+echo "POST $4 HTTP/1.0"
 echo "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.4) Gecko/20070515 Firefox/2.0.0.4"
 echo "Host: $3"
 echo "Content-Length:121"
 echo
-echo "{\"id\":-1,\"infolder\":\"/media/video\",\"outfolder\":\"/media/out\",\"profile\":1,\"filter\":\"\",\"recursive\":false,\"status\":\"active\"}"
+#echo "{\"id\":-1,\"infolder\":\"/media/video\",\"outfolder\":\"/media/out\",\"profile\":1,\"filter\":\"\",\"recursive\":false,\"status\":\"active\"}"
+echo "{\"command\":\"check_for_new_releases\"}"
 echo
 echo
 sleep 2
