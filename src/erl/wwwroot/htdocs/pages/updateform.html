@@ -1,0 +1,49 @@
+<form id="updateForm" action="" method="POST">
+
+  <div class="formLabel">Version:</div>
+	<div class="formField"><div id="updateversion"/></div>
+	<div class="clear"></div>
+
+  <div class="formLabel">Description:</div>
+	<div class="formField"><span id="updatedesc"/></div>
+	<div class="clear"></div>
+
+	<div class="formLabel"></div>
+	<div class="formField">
+    <input type="submit" class="submit" id="installSubmit" value="Install this Version" />
+    <input type="submit" class="submit" id="installCancel" value="Cancel" /></div>
+  <div class="clear"></div>
+</form>
+<script type="text/javascript">
+  function setUpdateFormData(data){
+     $('updateversion').set('text',data.version);
+     $('updatedesc').set('text',data.description);
+  }
+  window.addEvent("domready", function(){
+
+
+    $('installSubmit').addEvent('click', function(e){
+      new Event(e).stop();
+      new Event(e).stop();
+      data='{"install":"'+$('updateversion').get('text')+'"}';
+      new Request.JSON({
+        url: '/api/json/softwareupdate',
+        method: 'POST',
+        onComplete: function(props) {
+          if(props.ok){
+            MochaUI.closeWindow($('updateform'));
+            MochaUI.notification('Node Connected');
+            nodegrid.refresh();
+          }else{
+            MochaUI.notification('Error: '+props.error);
+          }
+        }
+      }).send(data);
+    });
+    $('installCancel').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.closeWindow($('updateform'));
+//      MochaUI.notification('Profile Update Canceled');
+    });
+  });
+</script>

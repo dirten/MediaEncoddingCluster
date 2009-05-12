@@ -657,7 +657,7 @@ MochaUI.profileWindow = function(){
         setProfileFormData(null);
       },
       width: 380,
-      height: 500,
+      height: 450,
       maximizable: false,
       resizable: false,
       scrollbars: false

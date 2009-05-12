@@ -19,7 +19,7 @@ init(Parent)->
   loop(Port).
 
 loop( Port)->
-  case catch gen_server:call({global,packet_server}, {packetgroup},infinity) of
+  try gen_server:call({global,packet_server}, {packetgroup},infinity) of
     {hivetimeout}->
       io:format("hivetimeout waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
@@ -30,6 +30,7 @@ loop( Port)->
       io:format("nomorepackets waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
     {nojob}->
+       io:format("nojob waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
     {Filename, Procid, Pass,Dec, Enc, Data}->
       Port ! {self(), {command, term_to_binary({encode,{Filename, Procid, Pass, Dec, Enc, Data}})}},
@@ -49,6 +50,19 @@ loop( Port)->
           io:format("No Data from port~n",[]),
           encoding_client:loop(Port)
       end
+  catch
+    M:{noproc,
+       {gen_server,call,
+        [{global,packet_server},
+         {packetgroup},
+         infinity]}}->
+      io:format("No connection to Packet Server ~p~n",[M]),
+      receive after 10000->
+                  encoding_client:loop(Port)
+                  
+              end;
+    M:F->io:format("Exception aufgetreten ~p:~p~n",[M,F])
+
   end.
 
 system_continue(_Parent, _Deb, _Chs) ->

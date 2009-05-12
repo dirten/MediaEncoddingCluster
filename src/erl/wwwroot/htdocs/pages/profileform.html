@@ -200,8 +200,8 @@ optionList2=$('profileFormat').getChildren();
       new Event(e).stop();
       new Event(e).stop();
       var json=form2json($('profileForm'));
-//      alert(json);
-new Request.JSON({
+      //      alert(json);
+      new Request.JSON({
         url: '/api/json/profile',
         method: 'POST',
         onComplete: function(props) {
@@ -218,7 +218,7 @@ new Request.JSON({
     $('profileCancel').addEvent('click', function(e){
       new Event(e).stop();
       MochaUI.closeWindow($('profile'));
-      MochaUI.notification('Profile Update Canceled');
+//      MochaUI.notification('Profile Update Canceled');
     });
   });
 </script>

@@ -19,7 +19,7 @@
 
 
   }
-  function openWatchFolderForm(evt)
+  function openForm(evt)
   {
     new MochaUI.Window({
       id: 'updateform',
@@ -29,7 +29,7 @@
       loadMethod: 'xhr',
       contentURL: 'pages/updateform.html',
       onContentLoaded: function(){
-        setUpdateFormData(evt.target.getDataByRow(evt.row).version);
+        setUpdateFormData(evt.target.getDataByRow(evt.row));
       },
       width: 400,
       height: 250,
@@ -100,14 +100,22 @@
     });
 
 //    datagrid.addEvent('click', onGridSelect);
-    updategrid.addEvent('dblclick', openWatchFolderForm);
+    updategrid.addEvent('dblclick', openForm);
     $('checkForUpdatesButton').addEvent('click', function(e){
       new Event(e).stop();
+      MochaUI.notification('Check for Updates now');
+      new Request.JSON({
+      url: '/api/json/softwareupdate',
+      method: 'post',
+      onComplete: function(properties) {
+        MochaUI.notification('Check for Updates sucessful');
+      }
+    }).send('{"command":"check_for_updates"}');
 //      MochaUI.profileWindow();
     });
 
   });
 
 </script>
-<button class="load" id="checkForUpdatesButton">Check for Updates now ...</button>
+<button class="load" id="checkForUpdatesButton">Check for new Updates now ...</button>
 <div id="updategrid" ></div>

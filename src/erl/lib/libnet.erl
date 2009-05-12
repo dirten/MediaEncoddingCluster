@@ -24,7 +24,7 @@ connect(Host, NodeName)->
           {ok,Node};
         pang->
 
-%          io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
+          io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
 %          {ok,Data}=net_adm:names(Ip),
 %          Services=[element(1,X)||X<-Data],
 %          io:format("Available Services on Host Address ~p~n",[Services]),

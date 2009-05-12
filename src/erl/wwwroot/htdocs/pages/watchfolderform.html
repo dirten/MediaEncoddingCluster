@@ -36,7 +36,10 @@
 
 
 	<div class="formLabel"></div>
-	<div class="formField"><input type="submit" class="submit" id="profileSubmit" value="Save Watchfolder" /></div>
+	<div class="formField">
+    <input type="submit" class="submit" id="profileSubmit" value="Save Watchfolder" />
+    <input type="submit" class="submit" id="profileCancel" value="Cancel" />
+  </div>
 	<div class="clear"></div>
 </form>
 
@@ -44,10 +47,10 @@
 <script type="text/javascript">
   function setProfileData(props, selected){
     $each(props,function(prop){
-        var el=new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileid'));
-        if(prop.id==selected)
-          el.set('selected');
-  });
+      var el=new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileid'));
+      if(prop.id==selected)
+        el.set('selected');
+    });
   }
 
   function setWatchFolderFormData(wid){
@@ -58,13 +61,13 @@
         $('id').set('value',properties.id);
         $('infolder').set('value',properties.infolder);
         $('outfolder').set('value',properties.outfolder);
-//        $('profileid').set('value',properties.profile);
+        //        $('profileid').set('value',properties.profile);
         $('filter').set('value',properties.filter);
         new Request.JSON({
           url: '/api/json/profile',
           method: 'get',
           onComplete: function(profiles) {
-              setProfileData(profiles.data,properties.profile);
+            setProfileData(profiles.data,properties.profile);
           }
         }).send();
         if(properties.recursive==true)
@@ -102,7 +105,13 @@
           }
         }
       }).send(json);
-    })
+    });
+    $('profileCancel').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.closeWindow($('watchfolder'));
+      //      MochaUI.notification('Profile Update Canceled');
+    });
+
   });
 
   

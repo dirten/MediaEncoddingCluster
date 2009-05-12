@@ -292,24 +292,53 @@ format(SessionID,Data2,Data3)->
       mod_esi:deliver(SessionID, J)
   end.
 
-nodes(SessionID,_Data2,_Data3)->
-  Fun=fun(Data)->
-          case Data of
-            client->
-              "Client";
-            server->
-              "Server";
-            both->
-              "Server / Client";
-            _->
-              "Not running"
-          end
-      end,
-  E=[{atom_to_list(X),Fun(rpc:call(X,config,get,[mode])),rpc:call(X,libcode,get_mhive_version,[])}||X<-[node()|nodes()]],
-  F=reformat(E,[name,mode,version],[]),
-  J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
+nodes(SessionID,Data2,Data3)->
+  Response =
+    case get_request(Data2) of
+      "GET"->
+        Query=httpd:parse_query(Data3),
+        case get_query_param(Query,"id") of
+          _Any->
+            Fun=fun(Data)->
+                    case Data of
+                      client->
+                        "Client";
+                      server->
+                        "Server";
+                      both->
+                        "Server / Client";
+                      _->
+                        "Not running"
+                    end
+                end,
+            E=[{atom_to_list(X),Fun(rpc:call(X,config,get,[mode])),rpc:call(X,libcode,get_mhive_version,[])}||X<-[node()|nodes()]],
+            F=reformat(E,[name,mode,version],[]),
+            {struct,[{page,1},{total,length(E)},{data,{array,F}}]}
+        end;
+      "POST"->
+        MyData= libutil:trim(Data3),
+        io:format("Data:~p~n",[MyData]),
+        try mochijson:decode(MyData) of
+          {array,[{struct,[{"command","connect"}]},
+                       {struct,[{"host",H}]},
+                       {struct,[{"name",N}]}]}->
+            case libnet:connect(H,N) of
+              {ok,_Node}->{struct,[{"ok", true}]};
+              {error,Msg}->{error,Msg}
+            end;
+          Any->
+            io:format("Unknown Format:~p~n",[Any]),
+            {struct,[{error,unknown_json_format}]}
+        catch
+          _:_->
+            {struct,[{error,parsing_json_data}]}
+        end;
+      _->
+        {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
+    end,
+  R=mochijson:encode(Response),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  mod_esi:deliver(SessionID, J).
+  mod_esi:deliver(SessionID, R).
 
 softwareupdate2(SessionID,Data2,_Data3)->
   Response =
@@ -372,11 +401,13 @@ softwareupdate(SessionID,Data2,Data3)->
         io:format("Data:~p~n",[MyData]),
         MyD=try mochijson:decode(MyData) of
               {struct,[{"command","check_for_updates"}]}->
-                {struct,[{"ok", true}, {"id", 1}]};
+                auto_update:run(),
+                {struct,[{"ok", true}]};
               {struct,[{"install",Version}]}->
                 case auto_update:install(Version) of
                   ok->{struct,[{"ok", true}, {"version", Version}]};
-                  {error,D}->{struct,[{"error", true}, D]}
+                  {error,{D,A}}->{struct,[{"error", D},{"description",A}]};
+                  {error,D}->{struct,[{"error", D}]}
                 end;
               _Any->
                 %                        io:format("Unknown Format:~p~n",[Any]),

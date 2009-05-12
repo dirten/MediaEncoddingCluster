@@ -66,17 +66,25 @@ download(Version)->
   end.
 
 install(Version)->
-  case release_handler:unpack_release("mhive-"++Version)of
-    {ok, Version}->
-      case release_handler:install_release(Version) of
-        {ok,_OtherVsn, _Desc}->
-          case release_handler:make_permanent(Version) of
-            ok->ok;
-            {error,Else3}->io:format("Error3~p~n",[Else3]),
-              {error,Else3}
+  CurrentVersion=libcode:get_mhive_version(),
+  if Version /= CurrentVersion->
+    io:format("Installing Version ~p~n",[Version]),
+    try release_handler:unpack_release("mhive-"++Version)of
+        {ok, Version}->
+          case release_handler:install_release(Version) of
+            {ok,_OtherVsn, _Desc}->
+              case release_handler:make_permanent(Version) of
+                ok->ok;
+                {error,Else3}->io:format("Error3~p~n",[Else3]),
+                  {error,Else3}
+              end;
+            {error,Else2}->io:format("Error2~p~n",[Else2]),{error,Else2}
           end;
-        {error,Else2}->io:format("Error2~p~n",[Else2]),{error,Else2}
+        {error,Msg}->io:format("Error~p~n",[Msg]),{error,Msg}
+        catch
+        M:F->io:format("Unknown error ~p:~p~n",[M,F]),
+        {error,unknown_error}
       end;
-    {error,Msg}->io:format("Error~p~n",[Msg]),{error,Msg}
+    true->{error,version_currently_installed}
   end.
   
