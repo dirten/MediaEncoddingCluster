@@ -1,0 +1,2 @@
+MESSAGE("Test Install Script")
+FILE(MAKE_DIRECTORY data)
