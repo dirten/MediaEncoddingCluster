@@ -1,6 +1,5 @@
 -module(packet_server).
 -behavior(gen_server).
--include("config.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 -include("./schema.hrl").
 

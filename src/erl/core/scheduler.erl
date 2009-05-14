@@ -11,12 +11,12 @@ start_link()->
 init([])->
   List=libdb:read(scheduler),
   create_timer_from_db(List),
-   {ok, started}.
+  {ok, started}.
 
 
 create_timer_from_db([])->ok;
 create_timer_from_db([S|T])->
-%  io:format("Schedule:~p",[S]),
+  %  io:format("Schedule:~p",[S]),
   create_interval(S#scheduler.name,S#scheduler.interval,S#scheduler.module,S#scheduler.func,S#scheduler.args),
   create_timer_from_db(T).
 
@@ -83,7 +83,6 @@ handle_info(Info,N)->
   {noreply, N}.
 
 terminate(Reason,_N)->
-  file_scanner_loop ! stop,
   io:format("~w shutdown ~w~n", [?MODULE, Reason]),
   ok.
 

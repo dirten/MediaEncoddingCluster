@@ -30,7 +30,7 @@ loop( Port)->
       io:format("nomorepackets waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
     {nojob}->
-       io:format("nojob waiting 5 secs~n",[]),
+      %io:format("nojob waiting 5 secs~n",[]),
       receive after 5000->encoding_client:loop(Port)end;
     {Filename, Procid, Pass,Dec, Enc, Data}->
       Port ! {self(), {command, term_to_binary({encode,{Filename, Procid, Pass, Dec, Enc, Data}})}},

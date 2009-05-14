@@ -60,8 +60,8 @@ add_subdirectory (src)
 add_subdirectory (test)
 
 
-INCLUDE(cmake/HiveBuildBoost.txt)
-INCLUDE(cmake/HiveBuildWT.txt)
+#INCLUDE(cmake/HiveBuildBoost.txt)
+#INCLUDE(cmake/HiveBuildWT.txt)
 INCLUDE(cmake/HiveBuildX264.txt)
 INCLUDE(cmake/HiveBuildFfmpeg.txt)
 

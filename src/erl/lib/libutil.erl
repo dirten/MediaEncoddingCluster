@@ -1,7 +1,8 @@
 -module(libutil).
 -compile(export_all).
 
-
+toString(Val)->
+  to_string(Val).
 to_string(S) when is_atom(S)->
   atom_to_list(S);
 to_string(S) when is_binary(S)->
@@ -12,6 +13,15 @@ to_string(S) when is_integer(S)->
   integer_to_list(S);
 to_string(S) ->
   S.
+
+toInteger(Val) when is_atom(Val)->
+  toInteger(atom_to_list(Val));
+toInteger(Val) when is_binary(Val)->
+  toInteger(binary_to_list(Val));
+toInteger(Val) when is_list(Val)->
+  list_to_integer(Val);
+toInteger(Val) ->
+  Val.
 
 string_replace(Src, Needle, Replacement)->
   Tok=string:tokens(Src,Needle),

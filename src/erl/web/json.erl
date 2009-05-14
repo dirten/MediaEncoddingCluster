@@ -340,28 +340,6 @@ nodes(SessionID,Data2,Data3)->
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, R).
 
-softwareupdate2(SessionID,Data2,_Data3)->
-  Response =
-    case get_request(Data2) of
-      "GET"->
-        Fun = fun() ->
-                  Q = qlc:q([{
-                    libutil:to_string(element(2,E)),
-                    libutil:to_string(element(4,E)),
-                    libutil:to_string(element(5,E))
-                             } || E <-qlc:keysort(2, mnesia:table(releases)), element(5,E)=:=downloaded orelse element(5,E)=:= installed]),
-                  qlc:e(Q)
-              end,
-        {atomic,E}=mnesia:transaction(Fun),
-        F=reformat(E,[version,description,state],[]),
-        {struct,[{page,1},{total,length(E)},{data,{array,F}}]};
-      "POST"->do_post;
-      _->
-        {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
-    end,
-  R=mochijson:encode(Response),
-  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
-  mod_esi:deliver(SessionID, R).
 
 softwareupdate(SessionID,Data2,Data3)->
   Response =

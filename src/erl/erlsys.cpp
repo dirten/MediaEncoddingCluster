@@ -292,6 +292,7 @@ Decoder * create_decoder(ETERM* in) {
 }
 
 Encoder * create_encoder(ETERM* in) {
+//  erl_print_term((FILE*)stderr, in);
   ETERM * codecid = erl_element(6, in);
   ETERM * bitrate = erl_element(8, in);
   ETERM * rate = erl_element(9, in);

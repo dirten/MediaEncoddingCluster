@@ -51,7 +51,7 @@ copy_dir(Src, Dst, Filter)->
   FileList=filelib:fold_files(Src,".*", true, Fun,[]),
   io:format("CopyDir:~p",[FileList]),
  
-  {ok,Cwd}=file:get_cwd(),
+  {ok,_Cwd}=file:get_cwd(),
    io:format("CopyTo:~p~n",[Dst]),
   [copy(File, filename:join([Dst, File]))||File<-FileList],
   ok.

@@ -26,6 +26,12 @@ clean(Version)->
   remove_dir_tree("releases/"++Version++"/ebin"),
   file:make_dir("releases/"++Version++"/ebin").
 
+release()->
+  {ok, [Release]} = file:consult("VERSION"),
+  Version=element(2,Release),
+  io:format("Building Version:~p~n",[Version]),
+  release(Version).
+
 release(Version)->
 
   RelDir="releases/"++Version,
@@ -71,6 +77,28 @@ release(Version)->
   libfile:copy("mhive.app", filename:join(["ebin", "mhive.app"])),
   %  libfile:copy("mhive_client.app", filename:join(["ebin", "mhive_client.app"])),
 
+  io:fwrite("Creating directory \"tmp\" ...~n"),
+  file:make_dir("tmp"),
+  file:make_dir("priv"),
+  RootDir = code:root_dir(),
+  TmpBinDir = filename:join(["tmp", "bin"]),
+  ErtsBinDir = filename:join([RootDir, "erts-" ++ ErtsVsn, "bin"]),
+  file:make_dir(TmpBinDir),
+  file:make_dir(ErtsBinDir),
+
+  case os:type() of
+    {win32,nt} ->
+      libfile:copy(filename:join([ErtsBinDir, "epmd.exe"]),filename:join([TmpBinDir, "epmd.exe"])),
+      libfile:copy(SrcDir++"bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]));
+    {unix, _}->
+      libfile:copy(filename:join([ErtsBinDir, "epmd"]),filename:join([TmpBinDir, "epmd"])),
+      libfile:copy(filename:join([ErtsBinDir, "run_erl"]),filename:join([TmpBinDir, "run_erl"])),
+      libfile:copy(filename:join([ErtsBinDir, "to_erl"]),filename:join([TmpBinDir, "to_erl"])),
+      libfile:copy(SrcDir++"/bin/mhivesys", filename:join(["priv", "mhivesys"])),
+      libfile:copy(filename:join([SrcDir,"..", "mectl"]),filename:join([TmpBinDir, "mectl"]))
+  end,
+  libfile:copy(SrcDir++"/default.data", filename:join(["priv", "default.data"])),
+
   io:fwrite("Making \"plain.script\" and \"plain.boot\" files ...~n"),
   make_script("plain"),
   io:fwrite("Making \"~s.script\" and \"~s.boot\" files ...~n", [RelFileName, RelFileName]),
@@ -84,26 +112,18 @@ release(Version)->
   libfile:copy_dir("../../wwwroot","priv/wwwroot/tmp",[".svn","logs"]),
   remove_dir_tree("priv/wwwroot/tmp"),
 
-  RootDir = code:root_dir(),
   systools:make_tar(RelFileName, [{erts, RootDir},{path,["./ebin"]},{dirs,[priv]}]),
 %  make_tar(RelFileName),
 
-  io:fwrite("Creating directory \"tmp\" ...~n"),
-  file:make_dir("tmp"),
 
   io:fwrite("Extracting \"~s\" into directory \"tmp\" ...~n", [TarFileName]),
   extract_tar(TarFileName, "tmp"),
 
-  TmpBinDir = filename:join(["tmp", "bin"]),
-  ErtsBinDir = filename:join(["tmp", "erts-" ++ ErtsVsn, "bin"]),
   io:fwrite("Deleting \"erl\" and \"start\" in directory \"~s\" ...~n",
             [ErtsBinDir]),
-  file:delete(filename:join([ErtsBinDir, "erl"])),
-  file:delete(filename:join([ErtsBinDir, "start"])),
+%  file:delete(filename:join([ErtsBinDir, "erl"])),
+%  file:delete(filename:join([ErtsBinDir, "start"])),
 
-  io:fwrite("Creating temporary directory \"~s\" ...~n", [TmpBinDir]),
-  file:make_dir(TmpBinDir),
-  file:make_dir("priv"),
 
   %    io:fwrite("Copying file \"plain.boot\" to \"~s\" ...~n",
   %              [filename:join([TmpBinDir, "start.boot"])]),
@@ -113,24 +133,12 @@ release(Version)->
   %              "\"~s\" to \"~s\" ...~n",
   %              [ErtsBinDir, TmpBinDir]),
   
-  case os:type() of
-    {win32,nt} ->
-      libfile:copy(filename:join([ErtsBinDir, "epmd.exe"]),filename:join([TmpBinDir, "epmd.exe"])),
-      libfile:copy(SrcDir++"bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]));
-    {unix, _}->
-      libfile:copy(filename:join([ErtsBinDir, "epmd"]),filename:join([TmpBinDir, "epmd"])),
-      libfile:copy(filename:join([ErtsBinDir, "run_erl"]),filename:join([TmpBinDir, "run_erl"])),
-      libfile:copy(filename:join([ErtsBinDir, "to_erl"]),filename:join([TmpBinDir, "to_erl"])),
-      libfile:copy(SrcDir++"/bin/mhivesys", filename:join(["priv", "mhivesys"])),
-      libfile:copy(filename:join([SrcDir,"..", "mectl"]),filename:join([TmpBinDir, "mectl"]))
-  end,
   %    file:make_dir("tmp/config"),
   file:make_dir("tmp/logs"),
   libfile:touch("tmp/logs/empty_file"),
   file:make_dir("tmp/data"),
   libfile:touch("tmp/data/empty_file"),
   libfile:copy(filename:join([SrcDir, "sys.config"]),filename:join(["tmp","releases",Version, "sys.config"])),
-  libfile:copy(SrcDir++"/default.data", filename:join(["priv", "default.data"])),
   %    copy_file("logger.config", filename:join(["tmp/config", "logger.config"]),[preserve]),
   %    copy_file("mhive_client.app", filename:join(["tmp/lib",string:to_lower(RelName)++"-"++RelVsn,"ebin", "mhive_client.app"])),
 

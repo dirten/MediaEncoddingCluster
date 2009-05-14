@@ -35,9 +35,9 @@ setup_auto_start(AutoStart)->
   ok.
 
 setup_db()->
-  Node=node(),%libnet:local_name(),
+  Node=libnet:local_name(),
   io:format("Using Local Name ~p~n",[Node]),
-%  net_kernel:start([Node]),
+  net_kernel:start([Node]),
   mnesia:create_schema([Node]),
   mnesia:start(),
   mnesia:wait_for_tables([config],1000),

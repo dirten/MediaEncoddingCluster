@@ -3,6 +3,7 @@
 -include("schema_profile.hrl").
 -compile(export_all).
 
+-import(libutil,[toInteger/1, toString/1]).
 
 build_watchfolder_record({"id", Val}, Rec)->
   %  io:format("Setting id to ~p~n",[Val]),
@@ -43,67 +44,67 @@ build_profile_record({"profileId",Val}, Rec)->
 build_profile_record({"profileFormat",Val}, Rec)->
   Rec#profile{vformat=Val};
 build_profile_record({"profileVideoCodec",Val}, Rec)->
-  Rec#profile{vcodec=Val};
+  Rec#profile{vcodec=toInteger(Val)};
 build_profile_record({"profileVideoFramerate",Val}, Rec)->
-  Rec#profile{vframerate=Val};
+  Rec#profile{vframerate=toInteger(Val)};
 build_profile_record({"profileAudioCodec",Val}, Rec)->
-  Rec#profile{acodec=Val};
+  Rec#profile{acodec=toInteger(Val)};
 build_profile_record({"profileAudioSamplerate",Val}, Rec)->
-  Rec#profile{asamplerate=Val};
+  Rec#profile{asamplerate=toInteger(Val)};
 build_profile_record({"profileName",Val}, Rec)->
   Rec#profile{name=Val};
 build_profile_record({"profileExtension",Val}, Rec)->
   Rec#profile{ext=Val};
 build_profile_record({"profileVideoBitrate",Val}, Rec)->
-  Rec#profile{vbitrate=Val};
+  Rec#profile{vbitrate=toInteger(Val)};
 build_profile_record({"profileVideoWidth",Val}, Rec)->
-  Rec#profile{vwidth=Val};
+  Rec#profile{vwidth=toInteger(Val)};
 build_profile_record({"profileVideoHeight",Val}, Rec)->
-  Rec#profile{vheight=Val};
+  Rec#profile{vheight=toInteger(Val)};
 build_profile_record({"profileAudioChannels",Val}, Rec)->
-  Rec#profile{achannels=Val};
+  Rec#profile{achannels=toInteger(Val)};
 build_profile_record({"profileAudioBitrate",Val}, Rec)->
-  Rec#profile{abitrate=Val};
+  Rec#profile{abitrate=toInteger(Val)};
 build_profile_record({"profileMultipass",Val}, Rec)->
-  Rec#profile{multipass=Val};
+  Rec#profile{multipass=toInteger(Val)};
 build_profile_record({"profileGop",Val}, Rec=#profile{})->
-  Rec#profile{gop=Val}.
+  Rec#profile{gop=toInteger(Val)}.
 
 build_record({"profileId",Val}, Rec=#profile{})->
-  Id=if is_list(Val)->list_to_integer(Val);true->Val end,
+  Id=toInteger(Val),
   NewId = if
             Id =:= -1-> libdb:sequence(profile);
             true->Id
           end,
   Rec#profile{id=NewId};
 build_record({"profileFormat",Val}, Rec=#profile{})->
-  Rec#profile{vformat=Val};
+  Rec#profile{vformat=toString(Val)};
 build_record({"profileVideoCodec",Val}, Rec=#profile{})->
-  Rec#profile{vcodec=Val};
+  Rec#profile{vcodec=toInteger(Val)};
 build_record({"profileVideoFramerate",Val}, Rec=#profile{})->
-  Rec#profile{vframerate=Val};
+  Rec#profile{vframerate=toInteger(Val)};
 build_record({"profileAudioCodec",Val}, Rec=#profile{})->
-  Rec#profile{acodec=Val};
+  Rec#profile{acodec=toInteger(Val)};
 build_record({"profileAudioSamplerate",Val}, Rec=#profile{})->
-  Rec#profile{asamplerate=Val};
+  Rec#profile{asamplerate=toInteger(Val)};
 build_record({"profileName",Val}, Rec=#profile{})->
-  Rec#profile{name=Val};
+  Rec#profile{name=toString(Val)};
 build_record({"profileExtension",Val}, Rec=#profile{})->
-  Rec#profile{ext=Val};
+  Rec#profile{ext=toString(Val)};
 build_record({"profileVideoBitrate",Val}, Rec=#profile{})->
-  Rec#profile{vbitrate=Val};
+  Rec#profile{vbitrate=toInteger(Val)};
 build_record({"profileVideoWidth",Val}, Rec=#profile{})->
-  Rec#profile{vwidth=Val};
+  Rec#profile{vwidth=toInteger(Val)};
 build_record({"profileVideoHeight",Val}, Rec=#profile{})->
-  Rec#profile{vheight=Val};
+  Rec#profile{vheight=toInteger(Val)};
 build_record({"profileAudioChannels",Val}, Rec=#profile{})->
-  Rec#profile{achannels=Val};
+  Rec#profile{achannels=toInteger(Val)};
 build_record({"profileAudioBitrate",Val}, Rec=#profile{})->
-  Rec#profile{abitrate=Val};
+  Rec#profile{abitrate=toInteger(Val)};
 build_record({"profileMultipass",Val}, Rec=#profile{})->
-  Rec#profile{multipass=Val};
+  Rec#profile{multipass=toInteger(Val)};
 build_record({"profileGop",Val}, Rec=#profile{})->
-  Rec#profile{gop=Val}.
+  Rec#profile{gop=toInteger(Val)}.
 
 
 
