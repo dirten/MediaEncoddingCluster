@@ -1,5 +1,5 @@
 -module(json).
--export([encoding/3, config/3, file/3, watchfolder/3, codec/3, format/3, profile/3, nodes/3, softwareupdate/3]).
+-export([encoding/3, config/3, file/3,test/3, watchfolder/3, codec/3, format/3, profile/3, nodes/3, softwareupdate/3]).
 -include_lib("stdlib/include/qlc.hrl").
 -include("schema_job.hrl").
 -include("schema_profile.hrl").
@@ -65,9 +65,25 @@ template(SessionID,Data2,Data3)->
   R=mochijson:encode(Response),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, R).
+test(SessionID,Data2,Data3)->
+  Response =
+    case get_request(Data2) of
+      "GET"->
+        Query=httpd:parse_query(Data3),
+        case get_query_param(Query,"id") of
+          {error,param_not_found}->do_get_without_id;
+          _IdStr->do_get_with_id
+        end;
+      "POST"->do_post;
+      _->
+        {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
+    end,
+  R=mochijson:encode(Response),
+  mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+  mod_esi:deliver(SessionID, R).
 
 config(SessionID,Data2,Data3)->
-  Response =
+Response =
     case get_request(Data2) of
       "GET"->
         Query=httpd:parse_query(Data3),
@@ -80,10 +96,10 @@ config(SessionID,Data2,Data3)->
             Dat={struct,format([{Key,config:get(Key)}],[])},
             Dat
         end;
-      "POST"->do_post;
       _->
         {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
     end,
+
   R=try mochijson:encode(Response) of
       Any->Any
     catch
@@ -114,6 +130,7 @@ file(SessionID,Data2,Data3)->
       _->
         {struct,[{error,request_method_invalid},{description,"Only request_method GET is Supported by file"}]}
     end,
+%   io:format("File:~p~n",[Response]),
   R=mochijson:encode(Response),
   mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
   mod_esi:deliver(SessionID, R).
