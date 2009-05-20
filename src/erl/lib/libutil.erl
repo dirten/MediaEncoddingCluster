@@ -18,9 +18,42 @@ toInteger(Val) when is_atom(Val)->
   toInteger(atom_to_list(Val));
 toInteger(Val) when is_binary(Val)->
   toInteger(binary_to_list(Val));
+toInteger([]) ->
+  0;
 toInteger(Val) when is_list(Val)->
   list_to_integer(Val);
 toInteger(Val) ->
+  Val.
+
+toFloat(Val) when is_atom(Val)->
+  toFloat(atom_to_list(Val));
+toFloat(Val) when is_binary(Val)->
+  toFloat(binary_to_list(Val));
+toFloat([]) ->
+  0.0;
+toFloat(Val) when is_list(Val)->
+  list_to_float(Val);
+toFloat(Val) ->
+  Val.
+
+toNumber(Val) when is_atom(Val)->
+  toNumber(atom_to_list(Val));
+toNumber(Val) when is_binary(Val)->
+  toNumber(binary_to_list(Val));
+toNumber([]) ->
+  0.0;
+toNumber(Val) when is_list(Val)->
+  Val1=try list_to_float(Val) of
+         Float->Float
+       catch
+         _:_->Val
+       end,
+  try list_to_integer(Val1) of
+    Int->Int
+  catch
+    _:_->Val1
+  end;
+toNumber(Val) ->
   Val.
 
 string_replace(Src, Needle, Replacement)->

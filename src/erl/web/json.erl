@@ -192,7 +192,7 @@ encoding(SessionID,_Data2,_Data3)->
   mod_esi:deliver(SessionID, J).
 
 profile(SessionID,Data2,Data3)->
-  %  io:format("Data:~p Data2:~p",[Data2, Data3]),
+%    io:format("Data:~p Data2:~p",[Data2, Data3]),
   case get_request(Data2) of
     "GET"->
       Query=httpd:parse_query(Data3),
@@ -225,9 +225,10 @@ profile(SessionID,Data2,Data3)->
 
 set_profile(SessionID,_Data2,Data3)->
   MyData= libutil:trim(Data3),
-  MyD=try mochijson:decode(MyData) of
+MyD=try mochijson:decode(MyData) of
         {struct,JsonStruct}->
           Profile = lists:foldl(fun json2record:build_record/2, #profile{}, JsonStruct ),
+          io:format("Profile:~p",[Profile]),
           libdb:write(Profile),
           {struct,[{"ok", true}, {"id", Profile#profile.id}]};
         _Any->

@@ -45,11 +45,11 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Video Width:</div>
-	<div class="formField"><input type="text" class="input number" name="profileVideoWidth" id="profileVideoWidth" value="300" maxlength="4" /></div>
+	<div class="formField"><input type="text" class="input number" name="profileVideoWidth" id="profileVideoWidth" value="320" maxlength="4" /></div>
 	<div class="clear"></div>
 
 	<div class="formLabel">Video Height:</div>
-	<div class="formField"><input type="text" class="input number" name="profileVideoHeight" id="profileVideoHeight" value="125" maxlength="4" /></div>
+	<div class="formField"><input type="text" class="input number" name="profileVideoHeight" id="profileVideoHeight" value="240" maxlength="4" /></div>
 	<div class="clear"></div>
 
 	<div class="formLabel">Audio Channels:</div>
@@ -61,7 +61,10 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Audio Bitrate:</div>
-	<div class="formField"><input type="text" class="input number" name="profileAudioBitrate" id="profileAudioBitrate" value="" maxlength="4" /></div>
+	<div class="formField">
+    <select class="input" name="profileAudioBitrate" id="profileAudioBitrate" value=""></select>
+<!--    <input type="text" class="input number" name="profileAudioBitrate" id="profileAudioBitrate" value="" maxlength="4" />-->
+  </div>
 	<div class="clear"></div>
 
   <div class="formLabel">Audio Samplerate:</div>
@@ -113,6 +116,13 @@
         el.set('selected');
     });
   }
+  function setProfileAudioBitrateData(props, selected){
+    $each(props,function(prop){
+      var el=new Element('option',{'text':prop+' bits/s', 'value':prop}).inject($('profileAudioBitrate'));
+      if(prop==selected)
+        el.set('selected');
+    });
+  }
   function setProfileFrameRateData(props, selected){
     $each(props,function(prop){
       var el=new Element('option',{'text':prop+' fps', 'value':prop}).inject($('profileVideoFramerate'));
@@ -152,6 +162,16 @@
       }
     }).send();
     new Request.JSON({
+      url: '/api/json/config?key=audio_bitrates',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileAudioBitrateData(properties.audio_bitrates,null);
+        else
+          setProfileAudioBitrateData(properties.audio_bitrates,props.abitrate);
+      }
+    }).send();
+    new Request.JSON({
       url: '/api/json/config?key=framerates',
       method: 'get',
       onComplete: function(properties) {
@@ -171,7 +191,7 @@
     $('profileVideoWidth').set('value',props.vwidth);
     $('profileVideoHeight').set('value',props.vheight);
     $('profileAudioChannels').set('value',props.achannels);
-    $('profileAudioBitrate').set('value',props.abitrate);
+//    $('profileAudioBitrate').set('value',props.abitrate);
     $('profileAudioSamplerate').set('value',props.asamplerate);
     $('profileMultipass').set('value',props.multipass);
     $('profileGop').set('value',props.gop);

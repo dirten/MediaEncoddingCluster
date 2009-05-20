@@ -3,7 +3,7 @@
 -include("schema_profile.hrl").
 -compile(export_all).
 
--import(libutil,[toInteger/1, toString/1]).
+-import(libutil,[toInteger/1, toString/1, toNumber/1]).
 
 build_watchfolder_record({"id", Val}, Rec)->
   %  io:format("Setting id to ~p~n",[Val]),
@@ -82,7 +82,7 @@ build_record({"profileFormat",Val}, Rec=#profile{})->
 build_record({"profileVideoCodec",Val}, Rec=#profile{})->
   Rec#profile{vcodec=toInteger(Val)};
 build_record({"profileVideoFramerate",Val}, Rec=#profile{})->
-  Rec#profile{vframerate=toInteger(Val)};
+  Rec#profile{vframerate=toNumber(Val)};
 build_record({"profileAudioCodec",Val}, Rec=#profile{})->
   Rec#profile{acodec=toInteger(Val)};
 build_record({"profileAudioSamplerate",Val}, Rec=#profile{})->
