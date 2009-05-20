@@ -174,7 +174,7 @@ uint8_t * Frame::getData() {
     return data[0];
 }
 
-int Frame::getFormat() {
+PixelFormat Frame::getFormat() {
     return _pixFormat;
 }
 

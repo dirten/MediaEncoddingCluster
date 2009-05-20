@@ -15,6 +15,7 @@ build()->
 build(Version)->
   code:add_patha("releases/"++Version++"/ebin"),
   code:add_patha("releases/"++Version),
+  file:make_dir("releases/"++Version++"/ebin"),
   make:all([load,{outdir,"releases/"++Version++"/ebin"}]).
 
 clean()->

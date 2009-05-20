@@ -21,7 +21,7 @@ namespace org {
                 int getWidth();
                 int getHeight();
                 int getSize();
-                int getFormat();
+                PixelFormat getFormat();
                 AVPacket * getPacket();
                 Frame getFrame(int format = 0);
                 void setPts(int64_t pts);
@@ -33,7 +33,7 @@ namespace org {
                 //	void setFrame(AVFrame * frame);
                 int _height;
                 int _width;
-                int _pixFormat;
+                PixelFormat _pixFormat;
                 //    private:
                 AVCodecContext * _codecContext;
                 AVPacket * _packet;
