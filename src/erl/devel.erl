@@ -101,7 +101,7 @@ release(Version)->
   case os:type() of
     {win32,nt} ->
       libfile:copy(filename:join([ErtsBinDir, "epmd.exe"]),filename:join([TmpBinDir, "epmd.exe"])),
-      libfile:copy(SrcDir++"bin/Release/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]));
+      libfile:copy(SrcDir++"/bin/Debug/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]));
     {unix, _}->
       libfile:copy(filename:join([ErtsBinDir, "epmd"]),filename:join([TmpBinDir, "epmd"])),
       libfile:copy(filename:join([ErtsBinDir, "run_erl"]),filename:join([TmpBinDir, "run_erl"])),

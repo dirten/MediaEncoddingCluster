@@ -67,9 +67,9 @@ Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 ;Source: "C:/bruteripper-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "C:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "C:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
