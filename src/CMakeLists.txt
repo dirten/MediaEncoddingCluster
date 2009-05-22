@@ -51,6 +51,22 @@ FIND_LIBRARY(AVFORMAT_LIB
       ${FFMPEG_DIR}/lib
     NO_DEFAULT_PATH
   )
+FIND_LIBRARY(AVUTIL_LIB
+    NAMES
+      avutil
+      libavutil
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(SWSCALE_LIB
+    NAMES
+      swscale
+      libswscale
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
 #FIND_LIBRARY(avc avcodec)
 
 #MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})

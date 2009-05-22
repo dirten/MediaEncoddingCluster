@@ -6,6 +6,13 @@ rebuild(Version)->
   clean(Version),
   build(Version).
 
+update()->
+  {ok, [Release]} = file:consult("VERSION"),
+  FromVersion=element(1,Release),
+  ToVersion=element(2,Release),
+  io:format("Building Update from Version:~p to Version ~p~n",[FromVersion, ToVersion]),
+  update(FromVersion, ToVersion).
+
 build()->
   {ok, [Release]} = file:consult("VERSION"),
   Version=element(2,Release),
@@ -36,6 +43,10 @@ release()->
 release(Version)->
 
   RelDir="releases/"++Version,
+
+  code:add_patha(RelDir++"/ebin"),
+  code:add_patha(RelDir),
+  io:format("~p~n",[code:get_path()]),
   {ok,SrcDir}=file:get_cwd(),
   file:set_cwd(RelDir),
   RelFileName="mhive-"++Version,
@@ -172,6 +183,7 @@ release(Version)->
   %  remove_dir_tree("tmp"),
   file:set_cwd(SrcDir),
   ok.
+
 %% LOCALS
 update(FromVersion, ToVersion)->
   systools:make_relup("mhive-"++ToVersion, ["mhive-"++FromVersion], ["mhive-"++FromVersion],[{path,["releases/"++FromVersion,"releases/"++ToVersion,"releases/"++ToVersion++"/ebin"]},{outdir,"releases/"++ToVersion}]),
@@ -182,6 +194,8 @@ update(FromVersion, ToVersion)->
   file:set_cwd(RelDir),
   systools:make_tar("mhive-"++ToVersion,[{path,["./ebin"]}]),
   file:set_cwd(SrcDir).
+
+
 %% make_script(RelFileName)
 %%
 make_script(RelFileName) ->

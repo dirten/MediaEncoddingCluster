@@ -1,10 +1,33 @@
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+
+
+
 #ADD_DEFINITIONS(-NODEFAULTLIB LIBCMT)
 
 FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
 MESSAGE("Erlang Interface Dir " ${ERLANG_INTERFACE_DIR})
+
+
+FIND_LIBRARY(ERL_INTERFACE_LIB
+    NAMES
+      erl_interface
+    PATHS
+      ${ERLANG_INTERFACE_DIR}/lib/
+    NO_DEFAULT_PATH
+  )
+  
+FIND_LIBRARY(ERL_EI_LIB
+    NAMES
+      ei
+    PATHS
+      ${ERLANG_INTERFACE_DIR}/lib/
+    NO_DEFAULT_PATH
+  )
+MESSAGE("Erlang Interface LIB " ${ERL_INTERFACE_LIB})
+MESSAGE("Erlang Interface LIB " ${ERL_EI_LIB})
+
 #SET(BZ2_LIB bz2)
 INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/src)
@@ -22,6 +45,8 @@ IF(WIN32)
   SET(RELEASE_DIR "/Release")
   ADD_DEFINITIONS(-D__WIN32__)
 ENDIF(WIN32)
+
+MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/src/erl/bin) 
 
@@ -44,7 +69,20 @@ ADD_EXECUTABLE (mhivesys erlsys.cpp)
 #TARGET_LINK_LIBRARIES (erltest z ${BZ2_LIB} av util io lang avformat avcodec avutil )
 #TARGET_LINK_LIBRARIES (erlclient z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
 #TARGET_LINK_LIBRARIES (mhivewriter z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
-TARGET_LINK_LIBRARIES (mhivesys ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
+
+TARGET_LINK_LIBRARIES(mhivesys 
+  ${BZ2_LIB} 
+  av 
+  lang 
+  util 
+  io 
+  ${AVCODEC_LIB}
+  ${AVFORMAT_LIB}
+  ${AVUTIL_LIB}
+  ${SWSCALE_LIB}
+  ${ERL_INTERFACE_LIB}
+  ${ERL_EI_LIB}
+)
 
 IF(WIN32)
 #  TARGET_LINK_LIBRARIES (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
@@ -61,7 +99,7 @@ ELSE(WIN32)
 #  TARGET_LINK_LIBRARIES (erltest x264  erl_interface ei pthread)
 #  TARGET_LINK_LIBRARIES (erlclient x264  erl_interface ei  pthread)
 #  TARGET_LINK_LIBRARIES (mhivewriter x264  erl_interface ei  pthread)
-  TARGET_LINK_LIBRARIES (mhivesys x264 erl_interface ei pthread)
+  TARGET_LINK_LIBRARIES (mhivesys z x264 pthread)
 ENDIF(WIN32)
 
 #target_link_libraries (erltest
@@ -94,13 +132,27 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/erl/include/config.hrl.in ${PROJECT_SOU
 #                  )
 
 #file(GLOB ERLANG_SRC_FILES ${PROJECT_SOURCE_DIR}/src/erl/*.erl)
-add_custom_target(erlang ${ERLANG_DIR}/bin/erl -args_file compile.args
-WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
+add_custom_target(erlang 
+  ${ERLANG_DIR}/bin/erl -noshell -s devel build -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
 
 
 #add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -args_file system.args
-add_custom_target(tsystem ${ERLANG_DIR}/bin/erl -noshell -pa ebin -s make all load -s target_system create mhive -s target_system install mhive ./target -s init stop
-WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl)
+
+add_custom_target(tsystem 
+  ${ERLANG_DIR}/bin/erl -noshell -pa ebin -s make all load -s target_system create mhive -s target_system install mhive ./target -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
+
+add_custom_target(release
+  ${ERLANG_DIR}/bin/erl -noshell -s devel clean -s devel build -s devel release -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
+add_custom_target(update 
+  ${ERLANG_DIR}/bin/erl -noshell -s devel clean -s devel build -s devel release  -s devel update -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
 
 #add_custom_command(TARGET mhivesys POST_BUILD
 #  COMMAND ${ERLANG_DIR}/bin/erl -args_file build.args

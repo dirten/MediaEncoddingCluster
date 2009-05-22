@@ -135,8 +135,9 @@ export PROGNAME
 
 checkproc "epmd"
 if [ $? -ne 0 ]; then
-  ${MHIVE_HOME}/bin/epmd -daemon
+  ${BINDIR}/epmd -daemon
 fi
+${BINDIR}/epmd -daemon
 
 case "$1" in
     'start')
