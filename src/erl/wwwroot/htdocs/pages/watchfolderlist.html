@@ -85,38 +85,25 @@
 
     watchfoldergrid = new omniGrid('watchfoldergrid', {
       columnModel: cmu,
-      /*
-      buttons : [
-        {name: 'Add', bclass: 'add', onclick : gridButtonClick},
-        {name: 'Delete', bclass: 'delete', onclick : gridButtonClick},
-        {separator: true},
-        {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
-      ],*/
       url:"/api/json/watchfolder",
+      method:'get',
       perpage:10,
       page:1,
       pagination:false,
       serverSort:false,
       showHeader: true,
       alternaterows: true,
-      showHeader:true,
+
       sortHeader:true,
       resizeColumns:true,
       multipleSelection:false,
-
-      // uncomment this if you want accordion behavior for every row
-      /*
-	        accordion:true,
-	        accordionRenderer:accordionFunction,
-	        autoSectionToggle:false,
-       */
-
       width:800,
       height: null
     });
 
-    //    datagrid.addEvent('click', onGridSelect);
+    
     watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
+    
     $('createNewWatchfolderButton').addEvent('click', function(e){
       new Event(e).stop();
       MochaUI.watchfolderWindow(-1);
@@ -124,5 +111,5 @@
   });
 
 </script>
-<button class="add" id="createNewWatchfolderButton">Create Watchfolder ...</button>
+<button class="add" id="createNewWatchfolderButton">Create Watchfolder 12...</button>
 <div id="watchfoldergrid" ></div>
