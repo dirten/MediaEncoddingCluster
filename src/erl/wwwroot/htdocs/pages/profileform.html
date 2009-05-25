@@ -9,7 +9,7 @@
 	<div class="clear"></div>
 
 	<div class="formLabel">Format:</div>
-	<div class="formField"><select class="input" name="profileFormat" id="profileFormat" value=""></select></div>
+	<div class="formField"><select class="input" name="profileFormat" id="profileContainerFormat" value=""></select></div>
 	<div class="clear"></div>
 
 	<div class="formLabel">Video Codec:</div>
@@ -104,7 +104,7 @@
   }
   function setProfileFormatData(props, selected){
     $each(props,function(prop){
-      var el=new Element('option',{'text':prop.long_name, 'value':prop.name}).inject($('profileFormat'));
+      var el=new Element('option',{'text':prop.long_name, 'value':prop.name}).inject($('profileContainerFormat'));
       if(prop.name==selected)
         el.set('selected');
     });
