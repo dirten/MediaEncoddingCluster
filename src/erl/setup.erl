@@ -15,12 +15,12 @@ setup_linux(Mode,Auto)->
   setup_auto_start(Auto),
   ok.
 
-setup_win32(Mode, _Auto)->
+setup_win32(Mode, _Auto, Version)->
 	[ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
 	setup_db(),
 	setup_config(mode,Mode),
   Node=libnet:local_name(),
-	R=os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d console -args \"-mnesia dir 'data' -setcookie default -config releases/0.0.4.1/sys -boot releases/0.0.4.1/start\""])),
+	R=os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d console -args \"-mnesia dir 'data' -setcookie default -config releases/"++libutil:toString(Version)++"/sys -boot releases/"++libutil:toString(Version)++"/start\""])),
 	R.
 
 setup_auto_start(AutoStart)->

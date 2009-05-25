@@ -44,6 +44,7 @@ LINK_DIRECTORIES    (${X264_DIR}/lib)
 IF(WIN32)
   SET(RELEASE_DIR "/Release")
   ADD_DEFINITIONS(-D__WIN32__)
+#  ADD_DEFINITIONS(/NODEFAULTLIB:"LIBCMT" ) 
 ENDIF(WIN32)
 
 MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
@@ -85,11 +86,12 @@ TARGET_LINK_LIBRARIES(mhivesys
 )
 
 IF(WIN32)
+	MESSAGE("** Link Windows: " )
 #  TARGET_LINK_LIBRARIES (erltest z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #  TARGET_LINK_LIBRARIES (erlclient z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #  TARGET_LINK_LIBRARIES (mhivewriter z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #  TARGET_LINK_LIBRARIES (mhivesys z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
-  TARGET_LINK_LIBRARIES (mhivesys wsock32 vfw32 erl_interface ei)
+  TARGET_LINK_LIBRARIES (mhivesys libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm erl_interface ei )
 ELSEIF(APPLE)
 #  TARGET_LINK_LIBRARIES (erltest x264 bz2 erl_interface ei pthread)
 #  TARGET_LINK_LIBRARIES (erlclient x264 bz2 erl_interface ei  pthread)
@@ -165,6 +167,7 @@ add_custom_target(update
 #)
 
 #configure_file(mhive.app ${PROJECT_SOURCE_DIR}/src/erl/ebin/mhive.app COPYONLY)
+
 
 #INSTALL(TARGETS mhivesys
 #    RUNTIME DESTINATION bin

@@ -29,6 +29,7 @@ clean()->
   {ok, [Release]} = file:consult("VERSION"),
   Version=element(2,Release),
   io:format("Cleaning Version:~p~n",[Version]),
+  filelib:ensure_dir("releases/"++Version++"/ebin"),
   clean(Version).
 clean(Version)->
   remove_dir_tree("releases/"++Version++"/ebin"),

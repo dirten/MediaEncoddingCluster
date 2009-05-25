@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Decimal.h"
+
 using namespace std;
 
 //void __attribute__ ((constructor)) my_init (void);
