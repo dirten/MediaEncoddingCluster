@@ -75,7 +75,7 @@ add_library (io io/File.cpp
       io/ObjectOutputStream.cpp 
       io/ObjectInputStream.cpp
 )
-TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
+#TARGET_LINK_LIBRARIES(io ${BOOST_FS_LIB_MT})
 
 #include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 #add_library (net net/SocketException.cpp 

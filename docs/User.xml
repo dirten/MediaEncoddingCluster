@@ -107,7 +107,7 @@
             <para>1Gb Ethernet card</para>
 
             <para>Note: When you want to use Distributed Encoding then you
-            need a working Network connection between the Distributed Encoding
+            need Network connections between the Distributed Encoding
             Nodes</para>
           </listitem>
         </itemizedlist>
@@ -324,7 +324,7 @@
     <section>
       <title>Start and stop the server on Linux</title>
 
-      <para>On Linux, Media Encoding CLuster is installed as a service. You
+      <para>On Linux, Media Encoding Cluster is installed as a service. You
       start and stop the Media Encoding CLuster service using the mectl
       utility. Use the mectl utility to perform other tasks as well, such as
       configuring the service to start automatically when the system is
@@ -339,13 +339,9 @@
           </listitem>
 
           <listitem>
-            <para>Change to the directory where the server is
-            installed.</para>
-          </listitem>
-
-          <listitem>
-            <para>Open a shell window and type one of the following:
-            ./bin/mectl server start|stop.</para>
+            <para>Open a shell window, change to the directory where the
+            server is installed and type one of the following: ./bin/mectl
+            server start|stop.</para>
 
             <para>Note: first you need to configure the Environment by type in
             "./bin/mectl configure"</para>
