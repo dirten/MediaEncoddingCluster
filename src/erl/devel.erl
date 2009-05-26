@@ -188,7 +188,7 @@ release(Version)->
 %% LOCALS
 update(FromVersion, ToVersion)->
   systools:make_relup("mhive-"++ToVersion, ["mhive-"++FromVersion], ["mhive-"++FromVersion],[{path,["releases/"++FromVersion,"releases/"++ToVersion,"releases/"++ToVersion++"/ebin"]},{outdir,"releases/"++ToVersion}]),
-  systools:make_script("mhive-"++ToVersion,[{path,["releases/"++ToVersion++"/ebin"]}]),
+  systools:make_script("mhive-"++ToVersion,[{path,["releases/"++ToVersion++"/ebin","releases/"++ToVersion]},{outdir,"releases/"++ToVersion}]),
 
   RelDir="releases/"++ToVersion,
   {ok,SrcDir}=file:get_cwd(),

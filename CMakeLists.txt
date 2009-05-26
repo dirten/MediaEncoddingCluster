@@ -47,35 +47,6 @@ IF(BUILD_EMBEDDED_LIBS)
   FILE(APPEND ${PROJECT_SOURCE_DIR}/deps/stage/mp3lame.download "")
 
 
-  SET(DOWNLOAD_EMBEDDED_FFMPEG ON)
-  INCLUDE(${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.download)
- IF(DOWNLOAD_EMBEDDED_FFMPEG)
-  MESSAGE("** Downloading FFMpeg")
-
-  FILE(DOWNLOAD http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2 ../deps/ffmpeg-export-snapshot.tar.bz2)
-  FILE(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg.download "SET(DOWNLOAD_EMBEDDED_FFMPEG OFF)")
-  FILE(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/ffmpeg)
-  execute_process(COMMAND bunzip2 ../ffmpeg-export-snapshot.tar.bz2
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/ffmpeg
-                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-extract.log 
-                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-extract.log)
-  execute_process(COMMAND tar -xf ../ffmpeg-export-snapshot.tar
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/ffmpeg
-                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-extract.log 
-                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/ffmpeg-extract.log)
- ENDIF(DOWNLOAD_EMBEDDED_FFMPEG)
-  MESSAGE("** Downloading lib264")
-  FILE(DOWNLOAD ftp://ftp.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20090524-2245.tar.bz2 ../deps/libx264-snapshot.tar.bz2)
-  FILE(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/libx264)
-  execute_process(COMMAND bunzip2 ../libx264-snapshot.tar.bz2
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/libx264
-                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/lib264-extract.log 
-                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/lib264-extract.log)
-  execute_process(COMMAND tar -xf ../libx264-snapshot.tar
-                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/libx264
-                OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/libx264-extract.log 
-                ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/libx264-extract.log)
-
 
 
 #  MESSAGE("** Downloading erlang runtime")
@@ -109,7 +80,7 @@ IF(BUILD_EMBEDDED_LIBS)
 ENDIF(BUILD_EMBEDDED_LIBS)
 
 add_subdirectory (src)
-add_subdirectory (test)
+#add_subdirectory (test)
 
 
 #INCLUDE(cmake/HiveBuildBoost.txt)

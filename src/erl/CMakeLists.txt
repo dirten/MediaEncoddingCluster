@@ -108,7 +108,7 @@ ELSE(WIN32)
 #  TARGET_LINK_LIBRARIES (erltest x264  erl_interface ei pthread)
 #  TARGET_LINK_LIBRARIES (erlclient x264  erl_interface ei  pthread)
 #  TARGET_LINK_LIBRARIES (mhivewriter x264  erl_interface ei  pthread)
-  TARGET_LINK_LIBRARIES (mhivesys z x264 pthread mp3lame theora vorbis vorbisenc xvidcore)
+  TARGET_LINK_LIBRARIES (mhivesys z x264 pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(WIN32)
 
 #target_link_libraries (erltest
