@@ -96,9 +96,11 @@ build_xvid
 configure_file "ffmpeg" \
 "--enable-libxvid --extra-cflags=-I$SRCDIR/xvidcore-build/include --extra-ldflags=-L$SRCDIR/xvidcore-build/lib \
 --enable-libx264 --extra-cflags=-I$SRCDIR/x264-build/include --extra-ldflags=-L$SRCDIR/x264-build/lib --enable-gpl \
---enable-libmp3lame --extra-cflags=-I$SRCDIR/lame-build/include --extra-ldflags=-L$SRCDIR/lame-build/lib "
-#--enable-libvorbis --extra-cflags=-I$SRCDIR/libvorbis-build/include/vorbis --extra-ldflags=-L$SRCDIR/libvorbis-build/lib "
-#--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib "
-#--enable-libtheora --extra-cflags=-I$SRCDIR/libtheora-build/include --extra-ldflags=-L$SRCDIR/libtheora-build/lib \
+--enable-libmp3lame --extra-cflags=-I$SRCDIR/lame-build/include --extra-ldflags=-L$SRCDIR/lame-build/lib  \
+--enable-libvorbis --extra-cflags=-I$SRCDIR/libvorbis-build/include --extra-ldflags=-L$SRCDIR/libvorbis-build/lib \
+--enable-libtheora --extra-cflags=-I$SRCDIR/libtheora-build/include --extra-ldflags=-L$SRCDIR/libtheora-build/lib \
+--extra-ldflags=-lpthread --extra-ldflags=-L$SRCDIR/libogg-build/lib \
+--extra-cflags=-I$SRCDIR/libogg-build/include "
+#--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib \
 
 build_file "ffmpeg"
