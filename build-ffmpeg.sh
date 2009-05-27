@@ -2,6 +2,7 @@
 
 TOPDIR=`pwd`
 SRCDIR="$TOPDIR/source"
+BUILDDIR="build"
 mkdir -p $SRCDIR
 download_file(){
   cd "$SRCDIR"
@@ -48,13 +49,13 @@ untar_file(){
 configure_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Configuring $1"
- 	        "./configure" --prefix="$SRCDIR/$1-build" --disable-shared --enable-static $2 &> configure-$1.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --disable-shared --enable-static $2 &> configure-$1.log
  	        cd "$TOPDIR"
  	}
 configure_xvid(){
  	        cd "$SRCDIR/xvidcore/build/generic/"
  	        echo "Configuring xvidcore"
- 	        "./configure" --prefix="$SRCDIR/xvidcore-build" $2 &> configure-xvidcore.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/xvidcore" $2 &> configure-xvidcore.log
  	        cd "$TOPDIR"
  	}
 build_file(){
@@ -112,28 +113,28 @@ build_file "x264"
 configure_file "libogg"
 build_file "libogg"
 export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
-configure_file "libtheora" "--with-ogg=$SRCDIR/libogg-build"
+configure_file "libtheora" "--with-ogg=$SRCDIR/$BUILDDIR/libogg"
 build_file "libtheora"
-configure_file "speex" "--with-ogg-dir=$SRCDIR/libogg-build"
-build_file "speex"
-configure_file "libvorbis" "--with-ogg=$SRCDIR/libogg-build"
+#configure_file "speex" "--with-ogg-dir=$SRCDIR/$BUILDDIR/libogg"
+#build_file "speex"
+configure_file "libvorbis" "--with-ogg=$SRCDIR/$BUILDDIR/libogg"
 build_file "libvorbis"
 configure_xvid
 build_xvid
 
 SYS=`uname`
 if [[ $SYS != MINGW32* ]]; then
-  LIBPTHREAD="-extra-ldflags=-lpthread"
+  LIBPTHREAD="--extra-ldflags=-lpthread"
 fi
 
 configure_file "ffmpeg" \
-"--enable-libxvid --extra-cflags=-I$SRCDIR/xvidcore-build/include --extra-ldflags=-L$SRCDIR/xvidcore-build/lib \
---enable-libx264 --extra-cflags=-I$SRCDIR/x264-build/include --extra-ldflags=-L$SRCDIR/x264-build/lib --enable-gpl \
---enable-libmp3lame --extra-cflags=-I$SRCDIR/lame-build/include --extra-ldflags=-L$SRCDIR/lame-build/lib  \
---enable-libvorbis --extra-cflags=-I$SRCDIR/libvorbis-build/include --extra-ldflags=-L$SRCDIR/libvorbis-build/lib \
---enable-libtheora --extra-cflags=-I$SRCDIR/libtheora-build/include --extra-ldflags=-L$SRCDIR/libtheora-build/lib \
---extra-ldflags=-L$SRCDIR/libogg-build/lib \
-$LIBPTHREAD --extra-cflags=-I$SRCDIR/libogg-build/include --disable-devices --enable-memalign-hack"
+"--enable-libxvid --extra-cflags=-I$SRCDIR/$BUILDDIR/xvidcore/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/xvidcore/lib \
+--enable-libx264 --extra-cflags=-I$SRCDIR/$BUILDDIR/x264/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/x264/lib --enable-gpl \
+--enable-libmp3lame --extra-cflags=-I$SRCDIR/$BUILDDIR/lame/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/lame/lib  \
+--enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
+--enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
+--extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack"
 #--extra-ldflags=-lpthread 
 #--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib \
 
