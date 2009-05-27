@@ -107,7 +107,7 @@ untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 
 configure_file "lame"
 build_file "lame"
-configure_file "x264" "--disable-asm"
+configure_file "x264"
 build_file "x264"
 configure_file "libogg"
 build_file "libogg"
