@@ -65,12 +65,12 @@ Source: "F:/MediaEncodingCluster-svn/src/erl/releases/0.0.4.2/tmp/*"; DestDir: "
 ;Source: "F:/MediaEncodingCluster-svn/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 
-;Source: "F:/MediaEncodingCluster-build-msys/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "C:/Programme/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "C:/Programme/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "C:/Programme/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "H:/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "H:/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "H:/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion

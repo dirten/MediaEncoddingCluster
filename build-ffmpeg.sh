@@ -79,6 +79,14 @@ build_xvid(){
  	        make install&> make.log
  	        cd "$TOPDIR"
  	}
+rename_file(){
+  cd $SRCDIR/$BUILDDIR/$1
+  if test -f $2.a ; then
+    mv $2.a $2.lib
+  fi
+  cd "$TOPDIR"
+}
+if [[ false ]]; then
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
 download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar"
 download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
@@ -87,7 +95,9 @@ download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" 
 download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
 download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
 download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
+fi
 
+if [[ true==false ]] ; then
 bunzip_file "ffmpeg-export-snapshot.tar.bz2"
 bunzip_file "x264-snapshot-20090524-2245.tar.bz2"
 gunzip_file "lame.src.tar.gz"
@@ -96,7 +106,9 @@ bunzip_file "libtheora-1.0.tar.bz2"
 gunzip_file "speex-1.0.5.tar.gz"
 gunzip_file "libvorbis-1.2.0.tar.gz"
 gunzip_file "xvidcore-1.2.1.tar.gz"
+fi
 
+if [ false ] ; then
 untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
 untar_file "x264-snapshot-20090524-2245.tar" "x264-snap*" "x264"
 untar_file "lame.src.tar" "lame-*" "lame"
@@ -105,7 +117,9 @@ untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
 untar_file "speex-1.0.5.tar" "speex-*" "speex"
 untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
 untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
+fi
 
+if [ false ] ; then
 configure_file "lame"
 build_file "lame"
 configure_file "x264"
@@ -139,3 +153,30 @@ $LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices 
 #--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib \
 
 build_file "ffmpeg"
+fi
+
+if [[ $SYS != MINGW32* ]]; then
+  echo "Fixing mingw Build"
+  echo "Copy required Libraries from MinGW"
+  cd $SRCDIR/$BUILDDIR/ffmpeg/lib
+  cp /usr/mingw/lib/libmingwex.a libmingwex.lib
+  cp /usr/mingw/lib/libcoldname.a libcoldname.lib
+  cp /usr/mingw/lib/libmoldname90.a libmoldname90.lib
+  cp /usr/mingw/lib/gcc/mingw32/4.2.1-sjlj/libgcc.a libgcc.lib
+  echo "Remove Symbols from libmingwex.lib"
+  lib -remove:mbrtowc.o libmingwex.lib
+  lib -remove:wcrtomb.o libmingwex.lib
+  echo "rename builded Libraries"
+  rename_file "ffmpeg/lib" "libavformat"
+  rename_file "ffmpeg/lib" "libavcodec"
+  rename_file "ffmpeg/lib" "libavdevice"
+  rename_file "ffmpeg/lib" "libavutil"
+  rename_file "ffmpeg/lib" "libswscale"
+  rename_file "lame/lib" "libmp3lame"
+  rename_file "libogg/lib" "libogg"
+  rename_file "libtheora/lib" "libtheora"
+  rename_file "libvorbis/lib" "libvorbis"
+  rename_file "libvorbis/lib" "libvorbisenc"
+  rename_file "x264/lib" "libx264"
+  rename_file "xvidcore/lib" "xvidcore"
+fi
