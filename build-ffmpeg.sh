@@ -149,13 +149,11 @@ configure_file "ffmpeg" \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
 --extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
 $LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack"
-#--extra-ldflags=-lpthread 
-#--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib \
 
 build_file "ffmpeg"
 fi
 
-if [[ $SYS != MINGW32* ]]; then
+if [[ $SYS == MINGW32* ]]; then
   echo "Fixing mingw Build"
   echo "Copy required Libraries from MinGW"
   cd $SRCDIR/$BUILDDIR/ffmpeg/lib
