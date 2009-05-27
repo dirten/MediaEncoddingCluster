@@ -3,8 +3,9 @@
 
 #ifndef ERL_ERL
 #define ERL_ERL
-
+extern "C" {
 #include <erl_interface.h>
+}
 #include "org/esb/av/Packet.h"
 #include "org/esb/util/Decimal.h"
 #include <stdio.h>

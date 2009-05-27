@@ -5,7 +5,7 @@ SRCDIR="$TOPDIR/source"
 mkdir -p $SRCDIR
 download_file(){
   cd "$SRCDIR"
-  if test ! -f $2 ; then
+  if test ! -f $3 ; then
     echo "Downloading $1"
     curl  "$1" -o $2
     if test ! -f $2 ; then
@@ -31,6 +31,7 @@ gunzip_file(){
     echo "gunzip $1"
     gunzip  "$1"
   fi 
+  cd "$TOPDIR"
 }
 
 untar_file(){
@@ -42,6 +43,7 @@ untar_file(){
     ln -s $DIR $3
     echo $DIR
   fi 
+  cd "$TOPDIR"
 }
 configure_file(){
  	        cd "$SRCDIR/$1"
@@ -76,32 +78,32 @@ build_xvid(){
  	        make install&> make.log
  	        cd "$TOPDIR"
  	}
-#download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" 
-#download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar.bz2"
-#download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz"
-#download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz"
-#download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2"
-#download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz"
-#download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz"
-#download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz"
+download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
+download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar"
+download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
+download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
+download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
+download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
+download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
+download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
 
-#bunzip_file "ffmpeg-export-snapshot.tar.bz2"
-#bunzip_file "x264-snapshot-20090524-2245.tar.bz2"
-#gunzip_file "lame.src.tar.gz"
-#gunzip_file "libogg-1.1.3.tar.gz"
-#bunzip_file "libtheora-1.0.tar.bz2"
-#gunzip_file "speex-1.0.5.tar.gz"
-#gunzip_file "libvorbis-1.2.0.tar.gz"
-#gunzip_file "xvidcore-1.2.1.tar.gz"
+bunzip_file "ffmpeg-export-snapshot.tar.bz2"
+bunzip_file "x264-snapshot-20090524-2245.tar.bz2"
+gunzip_file "lame.src.tar.gz"
+gunzip_file "libogg-1.1.3.tar.gz"
+bunzip_file "libtheora-1.0.tar.bz2"
+gunzip_file "speex-1.0.5.tar.gz"
+gunzip_file "libvorbis-1.2.0.tar.gz"
+gunzip_file "xvidcore-1.2.1.tar.gz"
 
-#untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
-#untar_file "x264-snapshot-20090524-2245.tar" "x264-snap*" "x264"
-#untar_file "lame.src.tar" "lame-*" "lame"
-#untar_file "libogg-1.1.3.tar" "libogg-*" "libogg"
-#untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
-#untar_file "speex-1.0.5.tar" "speex-*" "speex"
-#untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
-#untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
+untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
+untar_file "x264-snapshot-20090524-2245.tar" "x264-snap*" "x264"
+untar_file "lame.src.tar" "lame-*" "lame"
+untar_file "libogg-1.1.3.tar" "libogg-*" "libogg"
+untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
+untar_file "speex-1.0.5.tar" "speex-*" "speex"
+untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
+untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 
 configure_file "lame"
 build_file "lame"
@@ -119,14 +121,20 @@ build_file "libvorbis"
 configure_xvid
 build_xvid
 
+SYS=`uname`
+if [[ $SYS != MINGW32* ]]; then
+  LIBPTHREAD="-extra-ldflags=-lpthread"
+fi
+
 configure_file "ffmpeg" \
 "--enable-libxvid --extra-cflags=-I$SRCDIR/xvidcore-build/include --extra-ldflags=-L$SRCDIR/xvidcore-build/lib \
 --enable-libx264 --extra-cflags=-I$SRCDIR/x264-build/include --extra-ldflags=-L$SRCDIR/x264-build/lib --enable-gpl \
 --enable-libmp3lame --extra-cflags=-I$SRCDIR/lame-build/include --extra-ldflags=-L$SRCDIR/lame-build/lib  \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/libvorbis-build/include --extra-ldflags=-L$SRCDIR/libvorbis-build/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/libtheora-build/include --extra-ldflags=-L$SRCDIR/libtheora-build/lib \
---extra-ldflags=-lpthread --extra-ldflags=-L$SRCDIR/libogg-build/lib \
---extra-cflags=-I$SRCDIR/libogg-build/include --disable-devices"
+--extra-ldflags=-L$SRCDIR/libogg-build/lib \
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/libogg-build/include --disable-devices --enable-memalign-hack"
+#--extra-ldflags=-lpthread 
 #--enable-libspeex --extra-cflags=-I$SRCDIR/speex-build/include --extra-ldflags=-L$SRCDIR/speex-build/lib \
 
 build_file "ffmpeg"
