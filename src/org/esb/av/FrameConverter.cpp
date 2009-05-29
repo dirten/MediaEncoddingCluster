@@ -21,7 +21,18 @@ namespace org {
         _inFormat = &in_format;
         int sws_flags = 1;
 
-        _audioCtx = audio_resample_init(_outFormat->channels, _inFormat->channels, _outFormat->samplerate, _inFormat->samplerate);
+        _audioCtx = av_audio_resample_init(
+            _outFormat->channels,
+            _inFormat->channels,
+            _outFormat->samplerate,
+            _inFormat->samplerate,
+            SAMPLE_FMT_S16,
+            SAMPLE_FMT_S16,
+            16,
+            10,
+            0,
+            0.8
+      );
         /*
                         _swsContext = sws_getContext(
                     _inFormat->width, _inFormat->height, _inFormat->pixel_format,
@@ -73,7 +84,7 @@ namespace org {
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
-        return in_frame;
+//        return in_frame;
         /*
                         ReSampleContext * reCtx=audio_resample_init(_outFormat->channels,
                                         in_frame.channels,
