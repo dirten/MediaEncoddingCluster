@@ -1,39 +1,24 @@
-% Compile Nitrogen Files.
+{ ['./target_system.erl','./devel.erl'], [
+	{outdir,"."},
+	{ i, "./releases" },
+	debug_info
+]}.
 { './mhive.erl', [
 	debug_info
 ]}.
-%{ './rfc4627-1.0.2/src/*', [
-%	{ i, "./rfc4627-1.0.2/include" },
-%	debug_info
-%]}.
 { './setup.erl', [
 	{ i, "./" },
+	{ i, "./releases" },
 	debug_info
 ]}.
 { './core/*', [
 	{ i, "./" },
 	{ i, "./include" },
+	{ i, "./releases" },
 	debug_info
 ]}.
-%{ './nitrogen/src/*', [
-%	{ i, "./" },
-%	{ i, "./include" },
-%	{ i, "./nitrogen/include" },
-%	debug_info
-%]}.
-%{ './nitrogen/src/*/*', [
-%	{ i, "./" },
-%	{ i, "./include" },
-%	{ i, "./nitrogen/include" },
-%	debug_info
-%]}.
-%{ './nitrogen/src/elements/*/*', [
-%	{ i, "./" },
-%	{ i, "./include" },
-%	{ i, "./nitrogen/include" },
-%	debug_info
-%]}.
 { './lib/*', [
+	{ i, "./releases" },
 	debug_info
 ]}.
 { './web/json*', [
@@ -43,9 +28,5 @@
 	debug_info
 ]}.
 { './test/test.erl', [
-	debug_info
-]}.
-{ ['./target_system.erl','./devel.erl'], [
-	{outdir,"."},
 	debug_info
 ]}.

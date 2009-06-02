@@ -9,23 +9,23 @@ start_link()->
 
 init([])->
   io:format("~s Started~n",[?MODULE]),
-%  register(?MODULE, self()),
+  %  register(?MODULE, self()),
   process_flag(trap_exit, true),
   net_kernel:monitor_nodes(true),
-%  _Pid=spawn_link(?MODULE,listen,[]),
+  _Pid=spawn_link(?MODULE,listen,[]),
   {ok, state}.
 
 listen()->
   {ok, S} = gen_udp:open(6000),
-    loop(S).
+  loop(S).
 
 
 loop(S) ->
-    receive
-      {udp,Port,Ip,_,_} ->
+  receive
+    {udp,Port,Ip,_,_} ->
 	    io:format("received:~p ~p~n", [node(Port),Ip]),
 	    loop(S)
-    end.
+  end.
 
 
 handle_call(All,_From,_N)->
@@ -42,18 +42,18 @@ handle_info({nodeup, Node},N)->
   Data=binary_to_list(Bin),
   List=string:tokens(Data,"\n"),
   Host="'"++string:substr(atom_to_list(Node),string:rchr(atom_to_list(Node), $@)+1)++"'.",
-%  io:format("Host:~p, List:~p",[Host, List]),
+  %  io:format("Host:~p, List:~p",[Host, List]),
   case lists:member(Host,List) of
     false->
-%      io:format("Adding new Node:~p",[Node]),
+      %      io:format("Adding new Node:~p",[Node]),
       Out=lists:append(List,[Host]),
-%      io:format("new Host List:~p",[string:join(Out,"\n")++"\n"]),
+      %      io:format("new Host List:~p",[string:join(Out,"\n")++"\n"]),
       file:write_file(".hosts.erlang",string:join(Out,"\n")++"\n"),
       append;
     true->
-%      io:format("Not new Node:~p",[Node]),
+      %      io:format("Not new Node:~p",[Node]),
       do_nothing
-    end,
+  end,
   {noreply, N};
 handle_info({nodedown, Node},N)->
   error_logger:info_msg("NodeDown ~p",[Node]),

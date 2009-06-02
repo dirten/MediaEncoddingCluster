@@ -1,28 +1,28 @@
 -module(devel).
 -compile(export_all).
 -include_lib("kernel/include/file.hrl").
+-include("version.hrl").
 
 rebuild(Version)->
   clean(Version),
   build(Version).
 
 update()->
-  {ok, [Release]} = file:consult("VERSION"),
-  FromVersion=element(1,Release),
-  ToVersion=element(2,Release),
-  io:format("Building Update from Version:~p to Version ~p~n",[FromVersion, ToVersion]),
-  update(FromVersion, ToVersion).
+  io:format("Building Update from Version:~p to Version ~p~n",[?PREV_VERSION, ?VERSION]),
+  update(?PREV_VERSION, ?VERSION).
+
+rebuild()->
+  clean(),
+  build().
 
 build()->
-  {ok, [Release]} = file:consult("VERSION"),
-  Version=element(2,Release),
-  io:format("Building Version:~p~n",[Version]),
-  build(Version).
+  io:format("Building Version:~p~n",[?VERSION]),
+  build(?VERSION).
   
 build(Version)->
   code:add_patha("releases/"++Version++"/ebin"),
   code:add_patha("releases/"++Version),
-  file:make_dir("releases/"++Version++"/ebin"),
+  filelib:ensure_dir("releases/"++Version++"/ebin/tmp"),
   make:all([load,{outdir,"releases/"++Version++"/ebin"}]).
 
 clean()->

@@ -29,6 +29,7 @@
 
 local_name()->
   local_name("node").
+
 local_name(Name)->
 	{ok,HostName}=inet:gethostname(),
    {ok,Data}=inet:getaddr(HostName, inet),
