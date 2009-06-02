@@ -21,7 +21,36 @@ begin
   StringChangeEx(Param,'\','/',True);
   Result:=Param;
 end;
-
+function ShouldInstallMSVC90: Boolean;
+var
+  MS, LS: Cardinal;
+begin
+  Result := False;
+  if GetVersionNumbers(ExpandConstant('{sys}\comctl32.dll'), MS, LS) then
+    if MS < $00050050 then
+      Result := True;
+end;
+function ShouldInstallTest: Boolean;
+var
+  FilesFound: Integer;
+  FindRec: TFindRec;
+begin
+  FilesFound := 0;
+  if FindFirst(ExpandConstant('{win}\WinSxS\*.dll'), FindRec) then begin
+    try
+      repeat
+        // Don't count directories
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
+          FilesFound := FilesFound + 1;
+      until not FindNext(FindRec);
+    finally
+      FindClose(FindRec);
+    end;
+  end;
+  MsgBox(IntToStr(FilesFound) + ' files found in the System directory.',
+    mbInformation, MB_OK);
+  Result:=False;
+end;
  {
 ;[Components]
 ;Name: "runtime"; Description: "This is the Base Runtime System"; Types: full
@@ -40,13 +69,14 @@ Name: "german"; MessagesFile: "compiler:languages/German.isl"
 
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
 Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"; OnlyBelowVersion: 0,9.0
+Filename: "{tmp}\vcredist_x86.exe"; Check: ShouldInstallMSVC90
 Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/epmd.exe" ; Parameters: "-daemon"
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
 ;Filename: "{app}/erts-5.6.5/bin/erl.exe" ; Parameters: "-setcookie default -config releases\0.0.4.1\sys -eval ""setup:setup_win32(no,no),init:stop()."" "; WorkingDir: "{app}";
