@@ -61,16 +61,16 @@ Filename: "{app}/erts-5.7.1/bin/erlsrv"; Parameters: "start MHiveService"; Descr
 Filename: "{app}/erts-5.7.1/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
-Source: "F:/MediaEncodingCluster-svn/src/erl/releases/0.0.4.2/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "F:/MediaEncodingCluster-svn/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
+Source: "C:/bruteripper/src/erl/releases/0.0.4.2/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/bruteripper/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 
-;Source: "F:/MediaEncodingCluster-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
+;Source: "C:/bruteripper-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "H:/MEC\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "H:/MEC\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "H:/MEC\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "C:/MediaEncodingCluster\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -80,12 +80,12 @@ Source: "e:\vcredist_x86.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\start Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
-Name: "{group}\stop Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\start Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\stop Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
-Name: "{group}\start Console"; Filename: "{app}\erts-5.7.1\bin\werl.exe" ; Parameters: "-name console -setcookie default -config releases/0.0.4.2/sys -eval application:start(sasl)."; WorkingDir: "{app}"
-Name: "{group}\Web Administration"; Filename: "http://localhost:8080"
+;Name: "{group}\start Console"; Filename: "{app}\erts-5.7.1\bin\werl.exe" ; Parameters: "-name console -setcookie default -config releases/0.0.4.2/sys -eval application:start(sasl)."; WorkingDir: "{app}"
+Name: "{group}\Web Administration"; Filename: "http://localhost:8080/mec.html"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
 ;Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon

@@ -42,6 +42,7 @@ untar_file(){
     tar -xf  "$1"
     DIR=`basename $2`
     ln -s $DIR $3
+    echo $DIR
   fi 
   cd "$TOPDIR"
 }
@@ -60,7 +61,7 @@ configure_xvid(){
 build_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Building $1"
- 	        make install &> make-$1.log
+ 	        make install&> make-$1.log
  	        if test $? -ne 0; then
  	                echo "make failed - log available: $1/make-$1.log"
  	                exit 1
@@ -75,7 +76,7 @@ build_xvid(){
  	                echo "make failed - log available: xvidcore/make-xvidcore.log"
  	                exit 1
  	        fi
- 	        make install &> make.log
+ 	        make install&> make.log
  	        cd "$TOPDIR"
  	}
 rename_file(){
@@ -136,7 +137,7 @@ configure_xvid
 build_xvid
 
 SYS=`uname`
-if [[ $SYS != MINGW32* ]]; then
+if [ $SYS != MINGW32* ]; then
   LIBPTHREAD="--extra-ldflags=-lpthread"
 fi
 
@@ -152,7 +153,7 @@ $LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices 
 build_file "ffmpeg"
 fi
 
-if [[ $SYS == MINGW32* ]]; then
+if [ $SYS == MINGW32* ]; then
   echo "Fixing mingw Build"
   echo "Copy required Libraries from MinGW"
   cd $SRCDIR/$BUILDDIR/ffmpeg/lib
