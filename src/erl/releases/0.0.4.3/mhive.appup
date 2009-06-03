@@ -1,13 +1,26 @@
-{"0.0.4.2",
-[
+{"0.0.4.3",
+ [
+  {"0.0.4.2",
+    [
+      {update, mhive, soft, soft_purge, soft_purge, []}
+    ]
+  },
   {"0.0.4.1",
     [
+      {update, mhive, soft, soft_purge, soft_purge, []}
     ]
   }
-],
-[
+ ],
+ [
+  {"0.0.4.2",
+    [
+      {update, mhive, soft, soft_purge, soft_purge, []}
+    ]
+  },
   {"0.0.4.1",
     [
+      {update, mhive, soft, soft_purge, soft_purge, []}
     ]
   }
-]}.
+ ]
+}.

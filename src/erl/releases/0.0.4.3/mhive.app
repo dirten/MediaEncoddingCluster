@@ -1,6 +1,6 @@
 {application,mhive,
              [{description,"Media Encoding Cluster"},
-              {vsn,"0.0.4.2"},
+              {vsn,"0.0.4.3"},
               {modules,[auto_update,config,
                         client_supervisor,
                         encoding_client,

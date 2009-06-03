@@ -1,12 +1,39 @@
+%%%----------------------------------------------------------------------
+%%% File    : setup.erl
+%%% Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+%%% Purpose : Setting up the MHIVE
+%%% Created : 18 Feb 2009 by Jan Hölscher <jan.hoelscher@esblab.com>
+%%%
+%%%
+%%% MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+%%%
+%%% This program is free software; you can redistribute it and/or
+%%% modify it under the terms of the GNU General Public License as
+%%% published by the Free Software Foundation; either version 2 of the
+%%% License, or (at your option) any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+%%% General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+%%% 02111-1307 USA
+%%%
+%%%----------------------------------------------------------------------
 -module(setup).
 -compile(export_all).
 -include("schema.hrl").
 -include("version.hrl").
 
 setup()->
+  setup_db(),
   io:format("Configure Cluster Environment~n"),
-  Mode=read_data("Cluster Instance Mode {server | client | both}: ",[server,client,both]),
-  Auto=read_data("Cluster Instance Autostart at System Boot {yes | no}: ",[yes,no]),
+  Mode=setup_mode(),
+  Auto=setup_autostart(),
+
   case os:type() of
     {win32,nt} ->
       setup:setup_win32(list_to_atom(Mode),list_to_atom(Auto));
@@ -14,15 +41,25 @@ setup()->
       setup_linux(list_to_atom(Mode),list_to_atom(Auto))
   end.
 
+setup_mode()->
+  read_data("Cluster Instance Mode {server | client | both}: ",[server,client,both]).
+
+setup_autostart()->
+  read_data("Cluster Instance Autostart at System Boot {yes | no}: ",[yes,no]).
+
+setup_webserver()->
+  read_data("Webserver Port : ",[]).
+
+
 setup_linux(Mode,Auto)->
-  setup_db(),
+%  setup_db(),
 	setup_config(mode,Mode),
   setup_auto_start(Auto),
   ok.
 
 setup_win32(Mode, AutoStart)->
 	[ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
-	setup_db(),
+%	setup_db(),
 	setup_config(mode,Mode),
   case AutoStart of
     yes->

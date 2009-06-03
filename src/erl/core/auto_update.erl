@@ -58,7 +58,7 @@ download(Version)->
   io:format("Status:~p",[Code]),
   case Code of
     200->
-      {ok,Pid}=file:open(filename:join([code:root_dir(),"releases","mhive-update-"++Version++".tar.gz"]), write),
+      {ok,Pid}=file:open(filename:join([code:root_dir(),"releases","mhive-"++Version++".tar.gz"]), write),
       file:write(Pid, Body),
       file:close(Pid),
       {ok,Version};

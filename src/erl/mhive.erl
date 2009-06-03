@@ -1,5 +1,5 @@
 %%%----------------------------------------------------------------------
-%%% File    : mhive_.erl
+%%% File    : mhive.erl
 %%% Author  : Jan Hölscher <jan.hoelscher@esblab.com>
 %%% Purpose : Main Start and Stop Module
 %%% Created : 18 Feb 2009 by Jan Hölscher <jan.hoelscher@esblab.com>
@@ -68,27 +68,38 @@ configure()->
 %% @doc this function will be called from application:start(mhive) function
 %% @end
 start(_Type, StartArgs)->
+  case erl_epmd:open() of
+    {error,econnrefused}->
+      error_logger:info_report("Warning : epmd not running\nstarting epmd now!\n"),
+      [ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
+      os:cmd([ErtsPath,"/bin/epmd -daemon"]);
+    _->ok
+  end,
   Node=libnet:local_name(),
-  io:format("Self node name = ~p~n",[Node]),
   net_kernel:start([Node]),
   %  net_adm:world(),
   %  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
   %% TODO libcode wieder einbinden
   %%application:set_env(mhive,wwwroot,"wwwroot"),
-
-  case config:get(mode) of
-    server->
-      mnesia:start(),
-      mnesia:wait_for_tables([config, scheduler],5000),
-      mhive_supervisor:start_link(StartArgs);
-    client->
-      client_supervisor:start_link(StartArgs);
-    both->
-      mnesia:start(),
-      mnesia:wait_for_tables([config, scheduler],5000),
-      mhive_supervisor:start_link(StartArgs),
-      client_supervisor:start_link(StartArgs);
-    _->system_not_configured
+  ok=mnesia:start(),
+  case mnesia:wait_for_tables([config, scheduler],5000)of
+    {timeout,_Tables}->
+      error_logger:error_report("could not load configuration from Database\nyou need to run setup:setup() before first start!");
+    %      io:format("could not load configuration from Database~n"),
+    %      io:format("you need to run configuration script before first start!~n"),
+    %    exit(normal);
+    _->
+      case config:get(mode) of
+        server->
+          mhive_supervisor:start_link(StartArgs);
+        client->
+          client_supervisor:start_link(StartArgs);
+        both->
+          mhive_supervisor:start_link(StartArgs),
+          client_supervisor:start_link(StartArgs);
+        _->system_not_configured
+     
+      end
   end.
 
 %% @spec stop() -> ok

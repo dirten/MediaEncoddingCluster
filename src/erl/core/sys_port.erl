@@ -1,5 +1,5 @@
 %%%----------------------------------------------------------------------
-%%% File    : mhive_webserver.erl
+%%% File    : sys_port.erl
 %%% Author  : Jan Hölscher <jan.hoelscher@esblab.com>
 %%% Purpose : Start and Stop the internal System Information Port
 %%% Created : 18 Feb 2009 by Jan Hölscher <jan.hoelscher@esblab.com>

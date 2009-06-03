@@ -81,7 +81,7 @@ IF(BUILD_EMBEDDED_LIBS)
 ENDIF(BUILD_EMBEDDED_LIBS)
 
 add_subdirectory (src)
-#add_subdirectory (test)
+add_subdirectory (test)
 
 
 #INCLUDE(cmake/HiveBuildBoost.txt)
