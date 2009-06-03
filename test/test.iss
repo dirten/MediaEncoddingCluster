@@ -35,49 +35,90 @@ Name: "{group}\My Program"; Filename: "{app}\MyProg.exe"
 Name: "{commondesktop}\My Program"; Filename: "{app}\MyProg.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\MyProg.exe"; Description: "{cm:LaunchProgram,My Program}";Check: MyFindFile(ExpandConstant('{win}\WinSxS'))
+Filename: "{app}\MyProg.exe"; Description: "{cm:LaunchProgram,My Program}";Check: checkFileVersion('c:\windows\winsxs','msvcr80.dll')
 
 [Code]
+
 var
+  SearchPath: String;
+  SearchFile: String;
   FindRec: TFindRec;
-function MyFindFile(MyPath:String):Boolean;
+  FileFound: Boolean;
+  DirDepth: Integer;
+
+procedure SearchForFile();
+var
+  SearchHandle: THandle;
+  SearchPathLength: Integer;
 begin
-  if FindFirst(MyPath+'\*', FindRec) then begin
+  if FindFirst(SearchPath + '\*', FindRec) then begin
     try
       repeat
-        // Don't count directories
-        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <>0 then begin
-          MsgBox(FindRec.Name + ' files found in the directory.'+MyPath,mbInformation, MB_OK);
-          if FindRec.Name <> '.' and FindRec.Name <'..'> then
-            MyFindFile(MyPath+'\'+FindRec.Name)
+        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then begin
+          if (CompareStr(FindRec.Name, '.') <> 0) and (CompareStr(FindRec.Name, '..') <> 0) then begin
+            if (DirDepth > 0) or (DirDepth = -1) then begin
+              SearchHandle := FindRec.FindHandle;
+              SearchPathLength := Length(SearchPath);
+              SearchPath := SearchPath + '\' + FindRec.Name;
+              if DirDepth > -1 then
+                DirDepth := DirDepth - 1;
+              SearchForFile();
+              if DirDepth > -1 then
+                DirDepth := DirDepth + 1;
+              if FileFound = False then
+                SetLength(SearchPath, SearchPathLength);
+              FindRec.FindHandle := SearchHandle;
+            end;
+          end;
+        end else begin
+          if (CompareStr(AnsiLowercase(FindRec.Name), AnsiLowercase(SearchFile)) = 0) then
+            FileFound := True;
         end;
-      until not FindNext(FindRec);
+      until (FindNext(FindRec) = False) or FileFound;
     finally
       FindClose(FindRec);
     end;
   end;
-  Result :=False
 end;
 
-function ShouldInstallTest: Boolean;
+function checkFileVersion(Path:String;Filename:String):Boolean;
 var
-  FilesFound: Integer;
   FindRec: TFindRec;
+  MS, LS: Cardinal;
+
 begin
-  FilesFound := 0;
-  if FindFirst(ExpandConstant('{win}\WinSxS\*.dll'), FindRec) then begin
+  if FindFirst(Path + '\*', FindRec) then begin
     try
       repeat
-        // Don't count directories
-        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
-          FilesFound := FilesFound + 1;
-      until not FindNext(FindRec);
+        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then begin
+          if (CompareStr(FindRec.Name, '.') <> 0) and (CompareStr(FindRec.Name, '..') <> 0) then begin
+            checkFileVersion(Path+'\'+FindRec.Name,Filename);
+          end;
+        end else begin
+          if (CompareStr(AnsiLowercase(FindRec.Name), AnsiLowercase(FileName)) = 0) then begin
+          GetVersionNumbers(ExpandConstant('{sys}\comctl32.dll'), MS, LS);
+            msgbox('Datei gefunden in:' + #13 + Path+'\'+FindRec.Name+' mit MS:'+IntToStr(MS)+' und LS:'+IntToStr(LS), mbinformation, mb_ok);
+          end;
+        end;
+      until (FindNext(FindRec) = False);
     finally
       FindClose(FindRec);
     end;
   end;
-  MsgBox(IntToStr(FilesFound) + ' files found in the System directory.',
-    mbInformation, MB_OK);
   Result:=False;
+end;
+function HaveMSVCR80():Boolean;
+var
+  SearchPath: String;
+  SearchFile: String;
+begin
+  SearchPath:='c:\Windows\WinSxs';
+  SearchFile:='msvcr80.dll';
+  
+end;
+
+function InitializeSetup: Boolean;
+begin
+    Result := True;
 end;
 
