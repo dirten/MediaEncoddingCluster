@@ -8,6 +8,7 @@
 -export([scan/0, process_file_list/3, process_file/1, filter/2, diff/2]).
 
 scan()->
+%  io:format("Scanning files"),
   E=libdb:read(watchfolder),
   Fun=fun(El)->
           case El#watchfolder.status of
@@ -18,6 +19,7 @@ scan()->
                   true->false
                 end,
               FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,Recursive),
+%              io:format("FileList~p~n",[FileList]),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder);
               _Else->
                 do_nothing

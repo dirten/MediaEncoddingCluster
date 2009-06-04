@@ -141,8 +141,10 @@ Packet * buildPacketFromTerm(ETERM * in){
   ETERM * data = erl_element(8, in);
   Packet * p = new Packet(ERL_INT_UVALUE(size));
   p->packet->stream_index = ERL_INT_UVALUE(streamidx);
-  sscanf((const char *)ERL_ATOM_PTR(pts),"%llu",&p->packet->pts);
-  sscanf((const char *)ERL_ATOM_PTR(dts),"%llu",&p->packet->dts);
+//  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
+//  logdebug("buildPacketFromTerm(ETERM * in) -> dts:"<<(const char *) erl_iolist_to_string(dts))
+  sscanf((const char *)erl_iolist_to_string(pts),"%llu",&p->packet->pts);
+  sscanf((const char *)erl_iolist_to_string(dts),"%llu",&p->packet->dts);
 //  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
 //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
   p->packet->flags = ERL_INT_VALUE(flags);

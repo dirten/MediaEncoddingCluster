@@ -19,6 +19,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 
+
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Frame.h"
@@ -86,7 +87,7 @@ ETERM * createfile(ETERM* in) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, in);
   org::esb::io::File fout((const char*) ERL_ATOM_PTR(file));
-  //  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
+  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
   fos = new org::esb::av::FormatOutputStream(&fout);
   pos = new org::esb::av::PacketOutputStream(fos);
 
@@ -121,13 +122,18 @@ ETERM * addstream(ETERM * in) {
 }
 
 ETERM * writepacket(ETERM * in) {
-  //  logdebug("WritePacket");
-  Packet * p = buildPacketFromTerm(in);
+  std::vector<ETERM *> terms;
+//  logdebug("WritePacket");
+//  logdebug("Build Packet:");
+  Packet * p = buildPacketFromTerm(erl_element(2,in));
+//  logdebug("Packet Ready:");
+  p->toString();
   p->packet->pts = 0;
   p->packet->dts = 0;
   pos->writePacket(*p);
   delete p;
-  return erl_mk_atom("ok");
+  terms.push_back(erl_mk_string("ok_packet_written"));
+  return vector2list(terms);
 }
 
 ETERM * writepacketlist(ETERM * in) {
@@ -477,6 +483,8 @@ int main(int argc, char** argv) {
       } else if (func == "addstream") { /*System functions for creation output Files*/
         outtuple = addstream(intuple);
       } else if (func == "writepacket") {
+        outtuple = writepacket(intuple);
+      } else if (func == "writepacketlist") {
         outtuple = writepacketlist(intuple);
       } else if (func == "initfile") {
         outtuple = initfile(intuple);

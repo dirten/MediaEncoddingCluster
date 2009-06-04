@@ -2,7 +2,7 @@
 
 -include("config.hrl").
 
--export([run/0]).
+-export([run/0, export/1]).
 -include("schema.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
@@ -21,92 +21,64 @@ export(FileNo) when is_integer(FileNo)->
       case filelib:ensure_dir(element(2,FileName)) of
         ok->
           F2=[X||X<-E,filelib:ensure_dir(element(2,FileName))=:=ok],
-          Fun2=fun(JobId)->
-                   fun()->
-                       qlc:e(
-                         qlc:q(
-                         [Detail#jobdetail.outstream || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid==JobId]
-                              )
-                            )
-                   end
-               end,
+          Fun2=
+            fun(JobId)->
+                fun()->
+                    qlc:e(
+                      qlc:q(
+                      [Detail#jobdetail.outstream || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid==JobId]
+                           )
+                         )
+                end
+            end,
           Bla=[element(2,mnesia:transaction(Fun2(element(1,D))))|| D<-F2],
           %  {atomic,E2}=mnesia:transaction(Fun2(2)),
-          Fun=fun(StreamId)->
-                  fun()->
-                      qlc:e(
-                        qlc:q(
-                        [P || P <- qlc:keysort(#process_unit.startts,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
-                             )
+          Fun=
+            fun(StreamId)->
+                fun()->
+                    qlc:e(
+                      qlc:q(
+                      [P || P <- qlc:keysort(#process_unit.startts,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
                            )
-                  end
-              end,
-          Result=lists:flatten([[element(2,mnesia:transaction(Fun(T1)))||T1<-D] ||D<-Bla]),
+                         )
+                end
+            end,
+          Result=lists:keysort(5,lists:flatten([[element(2,mnesia:transaction(Fun(T1)))||T1<-D] ||D<-Bla])),
 
-          FileWriter = fun(FileId, FilePort)->
-                           case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
-                             {ok,Data}->
-                               %                              io:format("Write Data ~p~n",[FileId]),
-                               FilePort ! {self(), {command, term_to_binary({writepacket,binary_to_term(Data)})}},
-                               %                              receive
-                               %                                {_Port,{data, Data}} ->
-                               %                                  io:format("Data Written ~w",[Data])
-                               %                                  after 10000 ->
-                               %                                    io:format("Now answer ",[])
-                               %                                end,
-                               ok;
-                             %        file:write(MergePid, Data);
-                             %        binary_to_term(Data);
-                             {error,enoent}->
-                               io:format("File ~p Not Found",[FileId]),
-                               nodata
-                           end
-                       end,
-          %    B=[element(2,X)||X<-Result],
-          %  [File|_]=T,
-          %  io:format("open File ~s",[element(2,File)]),
-          %          {ok,SysPortCommand}=application:get_env(sysportexe),
+          FileWriter =
+            fun(FileId, FilePort)->
+                case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
+                  {ok,Data}->
+                    FilePort ! {self(), {command, term_to_binary({writepacketlist,binary_to_term(Data)})}},
+                    ok;
+                  {error,enoent}->
+                    io:format("File ~p Not Found",[FileId]),
+                    nodata
+                end
+            end,
+          PacketWriter =
+            fun(Packet, FilePort)->
+                    FilePort ! {self(), {command, term_to_binary({writepacket,Packet})}},
+                    ok
+            end,
           BinPath=libcode:get_mhivesys_exe(),
-          %          SysPortCommand="/usr/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes bin/mhivesys",
-          %          SysPortCommand="bin/mhivesys",
-          %          process_flag(trap_exit, true),
           Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
           link(Port),
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
-          %  Port=[],
           Port ! {self(), {command, term_to_binary({createfile,list_to_atom(element(2,FileName))})}},
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
           [Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           Port ! {self(), {command, term_to_binary({initfile})}},
-          %          receive
-          %            {_Fileport, {data, Data}} ->
-          %              io:format("File Ititialized ~p",[binary_to_term(Data)])
-          %              after 10000 ->
-          %                io:format("File Not Ititialized ",[])
-          %            end,
-          %          io:format("Portinfo: after init~p~n",[erlang:port_info(Port)]),
-
-          %    {ok,Pid}=file:open("Merge.data", write),%dets:open_file(filename:join(["tmp", integer_to_list(ProcId)]),[]),
-          %   io:write(Pid, Data),
-
-
-          %        io:format("Result:~w",[Result]),
-          [FileWriter(element(2,X), Port)||X<-Result],
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
+          ResultSorted=file_export_stack:prepare(Result),
+          [PacketWriter(X, Port)||X<-ResultSorted],
           Port ! {self(), {command, term_to_binary({closefile})}},
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
           Port ! {self(), close},
-          %        io:format("Portinfo:~p~n",[erlang:port_info(Port)]),
-
-          %    file:close(Pid),
-          % {atomic,E3}=mnesia:transaction(Fun(13)),
-          file_created;
+          file_created,
+          ResultSorted;
         _->directory_not_writable
       end;
     true->
-      fileexist
+      fileexist;
+    _->error
   end.
 
 
