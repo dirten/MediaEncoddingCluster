@@ -51,12 +51,6 @@ prepare(Result)->
   lists:nthtail(20,[Data||Data<-lists:keysort(3,ets:tab2list(packetlist))]).
 
 table(FileList) ->
-  case ets:info(packetlist) of
-    undefined->
-      ets:new(packetlist,[named_table, duplicate_bag]);
-    _->
-      ets:delete_all_objects(packetlist)
-  end,
   {FirstTwoFiles,Rest}=lists:split(2, FileList),
   Tmp=lists:flatten([file_loader(element(2,X))||X<-FirstTwoFiles]),
   %  [Data||Data<-lists:keysort(2,lists:map(fun(D)->{element(1,D),list_to_integer(element(3,D))} end,ets:tab2list(packetlist)))].
