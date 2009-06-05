@@ -123,11 +123,12 @@ ETERM * addstream(ETERM * in) {
 
 ETERM * writepacket(ETERM * in) {
   std::vector<ETERM *> terms;
+//  erl_print_term((FILE*)stderr, in);
 //  logdebug("WritePacket");
 //  logdebug("Build Packet:");
-  Packet * p = buildPacketFromTerm(erl_element(2,in));
+  Packet * p = buildPacketFromTerm(in);
 //  logdebug("Packet Ready:");
-  p->toString();
+//  p->toString();
   p->packet->pts = 0;
   p->packet->dts = 0;
   pos->writePacket(*p);
@@ -483,7 +484,7 @@ int main(int argc, char** argv) {
       } else if (func == "addstream") { /*System functions for creation output Files*/
         outtuple = addstream(intuple);
       } else if (func == "writepacket") {
-        outtuple = writepacket(intuple);
+        outtuple = writepacket(erl_element(2,intuple));
       } else if (func == "writepacketlist") {
         outtuple = writepacketlist(intuple);
       } else if (func == "initfile") {

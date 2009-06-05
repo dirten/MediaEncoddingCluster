@@ -30,12 +30,13 @@
 
 file_loader(FileId)->
   case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
-    {ok,Data}->
-      ets:insert(packetlist,binary_to_term(Data)),
-      ok;
+    {ok,D}->
+      Data=binary_to_term(D),
+%      ets:insert(packetlist,Data),
+      lists:flatten([Data|[{0,0,integer_to_list(list_to_integer(element(3,lists:last(Data)))+1),"0",load_trigger,0,0,<<0>>}]]);
     {error,enoent}->
       io:format("File ~p Not Found",[FileId]),
-      nodata
+      []
   end.
 
 prepare(Result)->
@@ -46,11 +47,54 @@ prepare(Result)->
       ets:delete_all_objects(packetlist)
   end,
   [file_loader(element(2,X))||X<-Result],
-%  [Data||Data<-lists:keysort(2,lists:map(fun(D)->{element(1,D),list_to_integer(element(3,D))} end,ets:tab2list(packetlist)))].
+  %  [Data||Data<-lists:keysort(2,lists:map(fun(D)->{element(1,D),list_to_integer(element(3,D))} end,ets:tab2list(packetlist)))].
   lists:nthtail(20,[Data||Data<-lists:keysort(3,ets:tab2list(packetlist))]).
 
-table(_T)->
-  ok.
+table(FileList) ->
+  case ets:info(packetlist) of
+    undefined->
+      ets:new(packetlist,[named_table, duplicate_bag]);
+    _->
+      ets:delete_all_objects(packetlist)
+  end,
+  {FirstTwoFiles,Rest}=lists:split(2, FileList),
+  Tmp=lists:flatten([file_loader(element(2,X))||X<-FirstTwoFiles]),
+  %  [Data||Data<-lists:keysort(2,lists:map(fun(D)->{element(1,D),list_to_integer(element(3,D))} end,ets:tab2list(packetlist)))].
+  %  PacketList=[D||D<-lists:keysort(3,ets:tab2list(packetlist))],
+  io:format("Result Loaded"),
+  List=lists:keysort(3,Tmp),
+  io:format("Result sorted"),
+
+  TF =
+    fun() ->
+        io:format("first tf"),
+        qlc_next(List, Rest)
+    end,
+  qlc:table(TF, []).
+
+qlc_next([],[])->
+  [];
+qlc_next(List, FileList)when length(List)>0 andalso length(FileList)>0->
+  ChunkSize=
+    if
+      length(List)>=20 -> 20;
+      true->length(List)
+    end,
+  {Val,T}=lists:split(ChunkSize,List),
+  {Packets,PacketList,LastFiles}=
+    case lists:keyfind(load_trigger,5,Val) of
+      false->{Val,T,FileList};
+      Any->
+        io:format("loading chunk:~p~n",[Any]),
+        [ToLoad|Rest]=FileList,
+        {lists:delete(Any, Val),lists:keysort(3,lists:flatten([T|file_loader(element(2,ToLoad))])),Rest}
+    end,
+  %  [Val|T]=List,
+  %  io:format("Value List:~p~n",[Val]),
+  [Packets|qlc_next(PacketList, LastFiles)];
+qlc_next(_,_)->
+  [].
+
 
 packet_viewer(FileId)->
   case file:read_file(filename:join(["data", integer_to_list(FileId)])) of

@@ -61,6 +61,12 @@ export(FileNo) when is_integer(FileNo)->
                     FilePort ! {self(), {command, term_to_binary({writepacket,Packet})}},
                     ok
             end,
+          PacketListWriter =
+            fun(PacketList, FilePort)->
+                io:format("write PacketList"),
+                    FilePort ! {self(), {command, term_to_binary({writepacketlist,PacketList})}},
+                    ok
+            end,
           BinPath=libcode:get_mhivesys_exe(),
           Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
           link(Port),
@@ -68,12 +74,13 @@ export(FileNo) when is_integer(FileNo)->
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
           [Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
           Port ! {self(), {command, term_to_binary({initfile})}},
-          ResultSorted=file_export_stack:prepare(Result),
-          [PacketWriter(X, Port)||X<-ResultSorted],
+%          ResultSorted=file_export_stack:prepare(Result),
+%          qlc:e(qlc:q([PacketWriter(D, Port)||D<-file_export_stack:table(Result)])),
+          qlc:e(qlc:q([PacketListWriter(D, Port)||D<-file_export_stack:table(Result)])),
+%          [PacketWriter(X, Port)||X<-file_export_stack:table(Result)],
           Port ! {self(), {command, term_to_binary({closefile})}},
           Port ! {self(), close},
-          file_created,
-          ResultSorted;
+          file_created;
         _->directory_not_writable
       end;
     true->
