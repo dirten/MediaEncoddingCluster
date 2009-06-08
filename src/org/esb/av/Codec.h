@@ -44,8 +44,9 @@ class SampleFormat;*/
                 void setFlag(int flag);
                 int getWidth();
                 int getHeight();
-                int getPixelFormat();
+                PixelFormat getPixelFormat();
                 int getSampleRate();
+                SampleFormat getSampleFormat();
                 int getChannels();
                 int getGopSize();
                 AVRational getTimeBase();

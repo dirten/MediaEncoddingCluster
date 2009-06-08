@@ -65,7 +65,7 @@ export(FileNo) when is_integer(FileNo)->
             fun(PacketList, FilePort)->
                 io:format("write PacketList"),
                     FilePort ! {self(), {command, term_to_binary({writepacketlist,PacketList})}},
-                    ok
+                    FilePort
             end,
           BinPath=libcode:get_mhivesys_exe(),
           Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
@@ -76,6 +76,8 @@ export(FileNo) when is_integer(FileNo)->
           Port ! {self(), {command, term_to_binary({initfile})}},
 %          ResultSorted=file_export_stack:prepare(Result),
 %          qlc:e(qlc:q([PacketWriter(D, Port)||D<-file_export_stack:table(Result)])),
+
+%          qlc:fold(PacketListWriter, Port,qlc:q([D||D<-file_export_stack:table(Result)])),
           qlc:e(qlc:q([PacketListWriter(D, Port)||D<-file_export_stack:table(Result)])),
 %          [PacketWriter(X, Port)||X<-file_export_stack:table(Result)],
           Port ! {self(), {command, term_to_binary({closefile})}},

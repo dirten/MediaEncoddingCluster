@@ -2,7 +2,8 @@
 #define ORG_ESB_AV_FRAMECONVERTER_H
 
 #include "AV.h"
-
+#include "Encoder.h"
+#include "Decoder.h"
 
 //struct SwsContext;
 
@@ -16,7 +17,8 @@ namespace av{
     class FrameConverter{
 	public:
 		FrameConverter(FrameFormat& targetFormat);
-		FrameConverter(FrameFormat& sourceFormat,FrameFormat& targetFormat);
+//		FrameConverter(FrameFormat& sourceFormat,FrameFormat& targetFormat);
+		FrameConverter(Decoder* dec,Encoder* enc);
 		~FrameConverter();
 		Frame convert(Frame & input);
 	private:
@@ -26,6 +28,9 @@ namespace av{
 	    SwsContext * _swsContext;
 	    FrameFormat * _inFormat;
 	    FrameFormat * _outFormat;
+            Decoder * _dec;
+            Encoder * _enc;
+
 	    ReSampleContext * _audioCtx;
     };
 }}}

@@ -368,7 +368,7 @@ ETERM * encode(ETERM* in) {
   out_format->samplerate = e->getSampleRate();
   if (toDebug)
     logdebug("Output Formater created");
-  FrameConverter * conv = new FrameConverter(*in_format, *out_format);
+  FrameConverter * conv = new FrameConverter(d, e);
   if (toDebug)
     logdebug("Converter created");
   //  d->toString();
