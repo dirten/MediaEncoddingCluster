@@ -33,7 +33,7 @@ Packet Encoder::encodeVideo(Frame & frame) {
     char data[buffer_size];
     memset(&data, 0, buffer_size);
 
-    int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, &frame);
+    int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, frame.getAVFrame());
     //    pac.data=new uint8_t[ret];
     //	cout << "ret:"<<ret<<endl;
 //    logdebug("\rCreate Packet with Size:"<<ret);

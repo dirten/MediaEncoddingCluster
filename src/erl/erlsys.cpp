@@ -8,7 +8,7 @@
 #include <vector>
 
 
-#define DEBUG false
+#define DEBUG true
 
 //#include <stdlib.h>
 #include "erl.cpp"
@@ -387,15 +387,16 @@ ETERM * encode(ETERM* in) {
       p->toString();
     Frame f = d->decode(*p);
     delete p;
-    //    f.toString();
-    if (f._buffer == 0) {
+//        f.toString();
+/*
+    if (f.getAVFrame()->buffer == 0) {
       if (toDebug)
         logdebug("Frame Buffer == 0||f.getSize()<0");
       continue;
     }
     if (toDebug)
       logdebug("Frame Buffer > 0");
-
+*/
     Frame f2 = conv->convert(f);
     if (toDebug)
       logdebug("Frame Converted");

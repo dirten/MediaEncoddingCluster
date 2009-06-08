@@ -17,7 +17,7 @@ Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
 Frame Decoder::decodeLast() {
     Frame frame(_pix_fmt, _width, _height);
     int _frameFinished = 0;
-    int bytesDecoded = avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
+    int bytesDecoded = avcodec_decode_video(ctx, frame.getAVFrame(), &_frameFinished, NULL, 0);
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }
@@ -68,7 +68,7 @@ void Decoder::analyzePacket(Packet & packet) {
     int _frameFinished = 0;
     Frame frame(_pix_fmt, _width, _height);
 
-    int bytesDecoded = avcodec_decode_video(ctx, &frame, &_frameFinished, packet.packet->data, packet.packet->size);
+    int bytesDecoded = avcodec_decode_video(ctx, frame.getAVFrame(), &_frameFinished, packet.packet->data, packet.packet->size);
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }
@@ -87,8 +87,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
 
     //while(len>0){
     int bytesDecoded =
-            avcodec_decode_video(ctx, &frame, &_frameFinished, packet.packet->data,
-            packet.packet->size);
+            avcodec_decode_video2(ctx, frame.getAVFrame(), &_frameFinished, packet.packet);
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }

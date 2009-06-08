@@ -102,7 +102,7 @@ namespace org {
                     _outFormat->pixel_format, sws_flags, NULL, NULL, NULL);
          */
 
-        sws_scale(_swsContext, in_frame.data, in_frame.linesize, 0, in_frame.getHeight(), out_frame.data, out_frame.linesize);
+        sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
         out_frame.setDts(in_frame.getDts());
@@ -112,7 +112,7 @@ namespace org {
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
-//        return in_frame;
+        return in_frame;
         /*
                         ReSampleContext * reCtx=audio_resample_init(_outFormat->channels,
                                         in_frame.channels,

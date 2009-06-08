@@ -6,15 +6,16 @@ using namespace std;
 using namespace org::esb::av;
 
 Frame::Frame() {
-    //    cout << "Create Frame()"<<endl;
-    quality = 100;
-    key_frame = 1;
-    _buffer = 0; //new uint8_t[1];
-    _type = CODEC_TYPE_VIDEO;
-    channels = 0;
-    sample_rate = 0;
-    _width = 0;
-    _height = 0;
+  //    cout << "Create Frame()"<<endl;
+  framePtr=boost::shared_ptr<AVFrame>(avcodec_alloc_frame());
+  framePtr->quality = 100;
+  framePtr->key_frame = 1;
+  _buffer = 0; //new uint8_t[1];
+  _type = CODEC_TYPE_VIDEO;
+  channels = 0;
+  sample_rate = 0;
+  _width = 0;
+  _height = 0;
 
 }
 
@@ -53,74 +54,81 @@ Frame::Frame(Packet * packet, Codec * codec){
     
 }
  */
+/*
 Frame::Frame(const Frame & frame) {
-    //    cout << "Create Frame(const Frame & frame)"<<endl;
-    quality = 100;
-    _width = frame._width;
-    _height = frame._height;
-    _pixFormat = frame._pixFormat;
-    _type = frame._type;
-    if (frame._type == CODEC_TYPE_VIDEO) {
-        avcodec_get_frame_defaults(this);
-        int numBytes = avpicture_get_size(_pixFormat, _width, _height);
-        _buffer = new uint8_t[numBytes];
-        memset(_buffer, 0, numBytes);
-        avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
-        av_picture_copy((AVPicture*)this, (AVPicture*) & frame, _pixFormat, _width, _height);
-    }else {
-        _size = frame._size;
-        _buffer = new uint8_t[_size];
-        memcpy(_buffer, frame._buffer, _size);
-        channels = frame.channels;
-        sample_rate = frame.sample_rate;
-        ;
-    }
-    pts = frame.pts;
-    _dts = frame._dts;
-    stream_index = frame.stream_index;
-    duration = frame.duration;
-    pos = frame.pos;
-}
-
-//Packet Packet::operator=(Packet & p){
-
-Frame Frame::operator=(Frame & frame) {
-    //    cout << "Create Frame::operator=(Frame & frame)"<<endl;
-    quality = 100;
-    _width = frame._width;
-    _height = frame._height;
-    _pixFormat = frame._pixFormat;
-    //    pts=frame.pts;
+  logdebug("Create Frame(const Frame & frame)");
+  quality = 100;
+  _width = frame._width;
+  _height = frame._height;
+  _pixFormat = frame._pixFormat;
+  _type = frame._type;
+  if (frame._type == CODEC_TYPE_VIDEO) {
     avcodec_get_frame_defaults(this);
     int numBytes = avpicture_get_size(_pixFormat, _width, _height);
     _buffer = new uint8_t[numBytes];
     memset(_buffer, 0, numBytes);
     avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
     av_picture_copy((AVPicture*)this, (AVPicture*) & frame, _pixFormat, _width, _height);
-    pts = frame.pts;
-    _dts = frame._dts;
-    duration = frame.duration;
-    stream_index = frame.stream_index;
-    pos = frame.pos;
-    return *this;
+  } else {
+    _size = frame._size;
+    _buffer = new uint8_t[_size];
+    memcpy(_buffer, frame._buffer, _size);
+    channels = frame.channels;
+    sample_rate = frame.sample_rate;
+    ;
+  }
+  pts = frame.pts;
+  _dts = frame._dts;
+  stream_index = frame.stream_index;
+  duration = frame.duration;
+  pos = frame.pos;
 }
+*/
+//Packet Packet::operator=(Packet & p){
+/*
+Frame Frame::operator=(Frame & frame) {
+  logdebug("Create Frame::operator=(Frame & frame)");
+  quality = 100;
+  _width = frame._width;
+  _height = frame._height;
+  _pixFormat = frame._pixFormat;
+  //    pts=frame.pts;
+  avcodec_get_frame_defaults(this);
+  int numBytes = avpicture_get_size(_pixFormat, _width, _height);
+  _buffer = new uint8_t[numBytes];
+  memset(_buffer, 0, numBytes);
+  avpicture_fill((AVPicture*)this, _buffer, _pixFormat, _width, _height);
+  av_picture_copy((AVPicture*)this, (AVPicture*) & frame, _pixFormat, _width, _height);
+  pts = frame.pts;
+  _dts = frame._dts;
+  duration = frame.duration;
+  stream_index = frame.stream_index;
+  pos = frame.pos;
+  return *this;
+}
+*/
+
 
 Frame::Frame(PixelFormat format, int width, int height) {
-    //    cout << "Create Frame(int format, int width, int height)"<<endl;
-    quality = 100;
-    channels = 0;
-    sample_rate = 0;
-    _width = width;
-    _height = height;
-    _pixFormat = format;
+  logdebug("Create Frame(int format, int width, int height)");
+  framePtr=boost::shared_ptr<AVFrame>(avcodec_alloc_frame(), &av_free);
 
-    pts = AV_NOPTS_VALUE;
-    avcodec_get_frame_defaults(this);
-    int numBytes = avpicture_get_size(format, width, height);
-    _buffer = new uint8_t[numBytes];
-    memset(_buffer, 0, numBytes);
-    // Assign appropriate parts of buffer to image planes
-    avpicture_fill((AVPicture*)this, _buffer, format, width, height);
+/*
+  quality = 100;
+  channels = 0;
+  sample_rate = 0;
+  _width = width;
+  _height = height;
+  _pixFormat = format;
+
+  pts = AV_NOPTS_VALUE;
+*/
+ //  avcodec_get_frame_defaults(this);
+//  int numBytes = avpicture_get_size(format, width, height);
+//  _buffer = new uint8_t[numBytes];
+//  memset(_buffer, 0, numBytes);
+  // Assign appropriate parts of buffer to image planes
+//  avpicture_fill((AVPicture*)framePtr.get(), _buffer, format, width, height);
 }
 /*
 Frame::Frame(int format, int width, int height, unsigned char * data){
@@ -157,29 +165,33 @@ Frame::Frame(Frame * source, int format){
     pts=source->pts;
 }
  */
+/*
 Frame::~Frame() {
-    if (_buffer) {
-        //    cout <<"Delete Frame"<<endl;
-        delete []_buffer;
-        _buffer = 0;
-    }
+  if (_buffer) {
+    //    cout <<"Delete Frame"<<endl;
+    delete []_buffer;
+    _buffer = 0;
+  }
 }
-
+*/
 AVPacket * Frame::getPacket() {
-    return _packet;
+  return _packet;
 
+}
+AVFrame * Frame::getAVFrame(){
+  return framePtr.get();
 }
 
 uint8_t * Frame::getData() {
-    return data[0];
+  return framePtr->data[0];
 }
 
 PixelFormat Frame::getFormat() {
-    return _pixFormat;
+  return _pixFormat;
 }
 
 int Frame::getSize() {
-    return avpicture_get_size(getFormat(), getWidth(), getHeight());
+  return avpicture_get_size(getFormat(), getWidth(), getHeight());
 }
 
 /*
@@ -188,37 +200,38 @@ Frame Frame::getFrame(int format){
 }
  */
 int Frame::getHeight() {
-    return _height;
+  return _height;
 }
 
 int Frame::getWidth() {
-    return _width;
+  return _width;
 }
 
 int64_t Frame::getPts() {
-    return pts;
+  return framePtr->pts;
 }
 
 int64_t Frame::getDts() {
-    return _dts;
+  return _dts;
 }
 
 void Frame::setPts(int64_t pts) {
-    this->pts = pts;
+  framePtr->pts = pts;
 }
 
 void Frame::setDts(int64_t dts) {
-    _dts = dts;
+  _dts = dts;
 }
-void Frame::toString(){
-  if(getHeight()>0&&getWidth()>0)
-    logdebug("Frame->Size:"<<getSize());
-  logdebug("Frame->Width:"<<getWidth());
-  logdebug("Frame->Height:"<<getHeight());
-  logdebug("Frame->Pts:"<<getPts());
-  logdebug("Frame->Dts:"<<getDts());
-  logdebug("Frame->Channels:"<<channels);
-  logdebug("Frame->SampleRate:"<<sample_rate);
+
+void Frame::toString() {
+  if (getHeight() > 0 && getWidth() > 0)
+    logdebug("Frame->Size:" << getSize());
+  logdebug("Frame->Width:" << getWidth());
+  logdebug("Frame->Height:" << getHeight());
+  logdebug("Frame->Pts:" << getPts());
+  logdebug("Frame->Dts:" << getDts());
+  logdebug("Frame->Channels:" << channels);
+  logdebug("Frame->SampleRate:" << sample_rate);
 }
 /*
 void Frame::setFrame(AVFrame * frame){

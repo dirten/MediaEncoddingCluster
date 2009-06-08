@@ -4,18 +4,19 @@
 #include "Packet.h"
 #include "Codec.h"
 
+#include <boost/shared_ptr.hpp>
 
 namespace org {
     namespace esb {
         namespace av {
 
-            class Frame : public AVFrame {
+            class Frame {
             public:
                 Frame();
                 Frame(PixelFormat format, int width, int height);
-                Frame(const Frame & source);
-                Frame operator=(Frame & frame);
-                ~Frame();
+//                Frame(const Frame & source);
+//                Frame operator=(Frame & frame);
+//                ~Frame();
 
                 uint8_t * getData();
                 int getWidth();
@@ -28,6 +29,7 @@ namespace org {
                 void setDts(int64_t pts);
                 int64_t getPts();
                 int64_t getDts();
+                AVFrame * getAVFrame();
                 void toString();
                 
                 //	void setFrame(AVFrame * frame);
@@ -42,6 +44,7 @@ namespace org {
             private:
                 int64_t _dts;
                 int64_t _pts;
+                boost::shared_ptr<AVFrame> framePtr;
 
             public:
                 int _frameFinished;

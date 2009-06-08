@@ -110,14 +110,12 @@ configure_client(){
 }
 
 # Start/stop processes required for MHive
- len=${#MHIVE_HOME}
-  if [[ "$len" -lt "1" ]]
-    then
-      current_dir=`pwd`
-      script_dir=`dirname $0`
-      cd ${script_dir}/..
-      MHIVE_HOME=`pwd`
-  fi
+current_dir=`pwd`
+script_dir=`dirname $0`
+cd ${script_dir}/..
+MHIVE_HOME=`pwd`
+echo $MHIVE_HOME
+
 DATA_DIR=data
 ROOTDIR=${MHIVE_HOME}
 RELDIR=$MHIVE_HOME/releases
