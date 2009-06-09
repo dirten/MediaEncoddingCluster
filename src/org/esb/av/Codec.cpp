@@ -221,7 +221,7 @@ namespace org {
       }
 
       SampleFormat Codec::getSampleFormat() {
-        return _sample_format;
+        return ctx->sample_fmt;
       }
 
       int Codec::getChannels() {
@@ -239,12 +239,17 @@ namespace org {
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
+        data.append("Codec Type:").append(ctx->codec_type==CODEC_TYPE_AUDIO?"AUDIO":"VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
         data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
-        data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
         data.append("BitRate:").append(Decimal(_bit_rate).toString()).append("\r\n");
         data.append("GOP:").append(Decimal(_gop_size).toString()).append("\r\n");
+        data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
+        data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
+        char buf[256];
+        avcodec_string(buf, sizeof(buf),ctx,_mode);
+        data.append("InternalData:").append(std::string(buf)).append("\r\n");
         return data;
       }
     }

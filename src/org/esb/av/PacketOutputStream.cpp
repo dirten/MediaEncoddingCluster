@@ -36,8 +36,8 @@ void PacketOutputStream::writePacket(Packet & packet) {
   if (!_isInitialized)
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
   //
-  int result = av_write_frame(_fmtCtx, packet.packet);
-  //    int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
+  //int result = av_write_frame(_fmtCtx, packet.packet);
+      int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {
@@ -48,7 +48,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
   AVStream * st = av_new_stream(_fmtCtx, stream_id);
   if (!st) {
-    fprintf(stderr, "Could not alloc stream\n");
+    logerror( "Could not alloc stream");
   }
 //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
@@ -61,7 +61,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //	st->time_base.den=90000;
 
 
-  st->stream_copy = 1;
+//  st->stream_copy = 1;
   st->codec->time_base = encoder.ctx->time_base;
   st->codec->codec_type = encoder.ctx->codec_type;
 
@@ -69,6 +69,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
     st->codec->strict_std_compliance = 0;
     st->codec->channels = encoder.ctx->channels;
     st->codec->sample_rate = encoder.ctx->sample_rate;
+    st->codec->sample_fmt = encoder.ctx->sample_fmt;
     AVRational ar; //(1,encoder.ctx->sample_rate);
     ar.num = 1;
     ar.den = encoder.ctx->sample_rate;
@@ -92,7 +93,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   video_enc->bit_rate = encoder.ctx->bit_rate;
   video_enc->width = encoder.ctx->width;
   video_enc->height = encoder.ctx->height;
-  video_enc->time_base = encoder.ctx->time_base;
+//  video_enc->time_base = encoder.ctx->time_base;
   video_enc->pix_fmt = encoder.ctx->pix_fmt;
   video_enc->sample_fmt = encoder.ctx->sample_fmt;
   video_enc->bit_rate_tolerance = 4000 * 1000;
@@ -129,7 +130,7 @@ void PacketOutputStream::init() {
   }
 
   _isInitialized = true;
-  //    dump_format(_fmtCtx, 0, NULL, 1);
+      dump_format(_fmtCtx, 0, NULL, 1);
 
   int streams = _fmtCtx->nb_streams;
 

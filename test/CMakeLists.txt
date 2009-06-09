@@ -46,7 +46,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 
 #add_executable (test_tcpsocket test_tcpsocket.cpp)
-#add_executable (test test.cpp)
+add_executable (test test.cpp)
 #add_executable (testq test.cpp)
 #target_link_libraries (test_tcpsocket lang esb sql hive av signal web io net util avcodec avformat avutil swscale wt wtext wthttp
 #${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
@@ -70,6 +70,7 @@ IF(WIN32)
 #target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
 #target_link_libraries (testav faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
 target_link_libraries (info avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
+target_link_libraries (test avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wtd wtextd wthttpd )
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wt wtext wthttp )
 ELSEIF(APPLE)
@@ -84,6 +85,7 @@ IF(NOT WIN32)
 
 #target_link_libraries (test_sql sql esb util lang mysqlclient  ssl pthread ${BOOST_DT_LIB_MT})
 target_link_libraries (info ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (test ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 #target_link_libraries (seek ${BZ2_LIB} pthread io av util lang avformat avcodec avutil swscale x264 z)
 #												av lang util io avcodec avformat avutil swscale
 #target_link_libraries (test mysqlclient pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)

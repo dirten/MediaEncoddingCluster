@@ -7,18 +7,29 @@ using namespace org::esb::av;
 
 Frame::Frame() {
   //    cout << "Create Frame()"<<endl;
-  framePtr=boost::shared_ptr<AVFrame>(avcodec_alloc_frame());
+  _isFinished = false;
+  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   framePtr->quality = 100;
   framePtr->key_frame = 1;
-  _buffer = 0; //new uint8_t[1];
+  _buffer = NULL; //new uint8_t[1];
+  _allocated=false;
   _type = CODEC_TYPE_VIDEO;
   channels = 0;
   sample_rate = 0;
   _width = 0;
   _height = 0;
+  _pixFormat=(PixelFormat)0;
 
 }
+Frame::Frame(uint8_t *buffer) {
+   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  _buffer=buffer;
+  _allocated=true;
+  _width = 0;
+  _height = 0;
+  _pixFormat=(PixelFormat)0;
 
+}
 /*
 Frame::Frame(Packet * packet, Codec * codec){
     assert(packet);
@@ -83,8 +94,9 @@ Frame::Frame(const Frame & frame) {
   duration = frame.duration;
   pos = frame.pos;
 }
-*/
+ */
 //Packet Packet::operator=(Packet & p){
+
 /*
 Frame Frame::operator=(Frame & frame) {
   logdebug("Create Frame::operator=(Frame & frame)");
@@ -106,29 +118,35 @@ Frame Frame::operator=(Frame & frame) {
   pos = frame.pos;
   return *this;
 }
-*/
+ */
 
 
-Frame::Frame(PixelFormat format, int width, int height) {
+Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   logdebug("Create Frame(int format, int width, int height)");
-  framePtr=boost::shared_ptr<AVFrame>(avcodec_alloc_frame(), &av_free);
-
-/*
-  quality = 100;
-  channels = 0;
-  sample_rate = 0;
+  _isFinished = false;
+  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   _width = width;
   _height = height;
   _pixFormat = format;
+  _allocated=allocate;
+  /*
+    quality = 100;
+    channels = 0;
+    sample_rate = 0;
+    _width = width;
+    _height = height;
+    _pixFormat = format;
 
-  pts = AV_NOPTS_VALUE;
-*/
- //  avcodec_get_frame_defaults(this);
-//  int numBytes = avpicture_get_size(format, width, height);
-//  _buffer = new uint8_t[numBytes];
-//  memset(_buffer, 0, numBytes);
-  // Assign appropriate parts of buffer to image planes
-//  avpicture_fill((AVPicture*)framePtr.get(), _buffer, format, width, height);
+    pts = AV_NOPTS_VALUE;
+   */
+  //  avcodec_get_frame_defaults(this);
+  if(allocate){
+    int numBytes = avpicture_get_size(format, width, height);
+    _buffer = new uint8_t[numBytes];
+    memset(_buffer, 0, numBytes);
+    // Assign appropriate parts of buffer to image planes
+    avpicture_fill((AVPicture*) framePtr.get(), _buffer, format, width, height);
+  }
 }
 /*
 Frame::Frame(int format, int width, int height, unsigned char * data){
@@ -165,20 +183,21 @@ Frame::Frame(Frame * source, int format){
     pts=source->pts;
 }
  */
-/*
+
 Frame::~Frame() {
-  if (_buffer) {
+  if (_allocated&&_buffer) {
     //    cout <<"Delete Frame"<<endl;
-    delete []_buffer;
-    _buffer = 0;
+//    delete []_buffer;
+//    _buffer = NULL;
   }
 }
-*/
+
 AVPacket * Frame::getPacket() {
   return _packet;
 
 }
-AVFrame * Frame::getAVFrame(){
+
+AVFrame * Frame::getAVFrame() {
   return framePtr.get();
 }
 
@@ -192,6 +211,14 @@ PixelFormat Frame::getFormat() {
 
 int Frame::getSize() {
   return avpicture_get_size(getFormat(), getWidth(), getHeight());
+}
+
+void Frame::setFinished(bool f) {
+  _isFinished = f;
+}
+
+bool Frame::isFinished() {
+  return _isFinished;
 }
 
 /*
@@ -228,6 +255,7 @@ void Frame::toString() {
     logdebug("Frame->Size:" << getSize());
   logdebug("Frame->Width:" << getWidth());
   logdebug("Frame->Height:" << getHeight());
+  logdebug("Frame->PixelFormat:" << getFormat());
   logdebug("Frame->Pts:" << getPts());
   logdebug("Frame->Dts:" << getDts());
   logdebug("Frame->Channels:" << channels);

@@ -1,3 +1,4 @@
+
 #ifndef ORG_ESB_AV_FRAME_H
 #define ORG_ESB_AV_FRAME_H
 #include "AV.h"
@@ -13,10 +14,12 @@ namespace org {
             class Frame {
             public:
                 Frame();
-                Frame(PixelFormat format, int width, int height);
+                Frame(PixelFormat format, int width, int height, bool allocate=true);
+                Frame(uint8_t * buffer);
+
 //                Frame(const Frame & source);
 //                Frame operator=(Frame & frame);
-//                ~Frame();
+                ~Frame();
 
                 uint8_t * getData();
                 int getWidth();
@@ -30,6 +33,8 @@ namespace org {
                 int64_t getPts();
                 int64_t getDts();
                 AVFrame * getAVFrame();
+                bool isFinished();
+                void setFinished(bool);
                 void toString();
                 
                 //	void setFrame(AVFrame * frame);
@@ -42,10 +47,11 @@ namespace org {
                 //	AVFrame * _frame;
                 uint8_t * _buffer;
             private:
+              bool _isFinished;
                 int64_t _dts;
                 int64_t _pts;
                 boost::shared_ptr<AVFrame> framePtr;
-
+                bool _allocated;
             public:
                 int _frameFinished;
                 int64_t pos;

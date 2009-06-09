@@ -15,7 +15,7 @@ FormatOutputStream::FormatOutputStream(File * target_file) {
 
 
     _file = target_file;
-    _fmtCtx = av_alloc_format_context();
+    _fmtCtx = avformat_alloc_context();
     _fmt = guess_format(NULL, target_file->getPath().c_str(), NULL);
     _fmtCtx->oformat = _fmt;
     //    _fmtCtx->timestamp=0;

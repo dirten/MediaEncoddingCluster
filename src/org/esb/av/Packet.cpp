@@ -107,7 +107,12 @@ uint8_t * Packet::getData() {
 int Packet::getSize() {
   return packet->size;
 }
-
+void Packet::setPts(long long int ts){
+  packet->pts=ts;
+}
+void Packet::setDts(long long int ts){
+  packet->dts=ts;
+}
 long long int Packet::getPts() {
   return packet->pts;
 }

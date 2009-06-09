@@ -77,7 +77,7 @@ void Decoder::analyzePacket(Packet & packet) {
 }
 
 Frame Decoder::decodeVideo(Packet & packet) {
-    Frame frame(_pix_fmt, _width, _height);
+    Frame frame(_pix_fmt, _width, _height, false);
     int _frameFinished = 0;
     int len = packet.packet->size;
 
@@ -88,10 +88,12 @@ Frame Decoder::decodeVideo(Packet & packet) {
     //while(len>0){
     int bytesDecoded =
             avcodec_decode_video2(ctx, frame.getAVFrame(), &_frameFinished, packet.packet);
+    logdebug("BytesDecoded:"<<bytesDecoded);
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }
     if (_frameFinished) {
+//      logdebug("Frame Finished");
         //    	break;
     }
     len -= bytesDecoded;
@@ -120,7 +122,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
     }
 
     logdebug( "\tPacketFrameType:");
-    switch (frame.pict_type) {
+    switch (frame.getAVFrame()->pict_type) {
         case FF_B_TYPE:
             logdebug( "B");
             break;
@@ -143,7 +145,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
             logdebug("BI");
             break;
         default:
-            logdebug("U:" << frame.pict_type);
+            logdebug("U:" << frame.getAVFrame()->pict_type);
             break;
 
     }
@@ -153,7 +155,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
     if (!_frameFinished) {
         return Frame();
     }
-
+    frame.setFinished(_frameFinished);
     frame._pixFormat = _pix_fmt;
     frame.stream_index = packet.packet->stream_index;
     frame.setPts(packet.packet->pts);
@@ -185,8 +187,8 @@ Frame Decoder::decodeAudio(Packet & packet) {
 //    }
     //              cout << "DataSize:"<<out_size<<endl;
     //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
-    Frame frame;
-    frame._buffer = outbuf;
+    Frame frame(outbuf);
+//    frame._buffer = outbuf;
     frame.stream_index = packet.packet->stream_index;
     frame.setPts(packet.packet->pts);
     frame.setDts(packet.packet->dts);

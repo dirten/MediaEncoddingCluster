@@ -25,7 +25,9 @@ public:
 	int getSize();
 	long long int getPts();
 	long long int getDts();
-	int getFlags();
+        void setPts(long long int);
+        void setDts(long long int);
+        int getFlags();
 	int getStreamIndex();
 	int getDuration();
 	bool isKeyFrame();
