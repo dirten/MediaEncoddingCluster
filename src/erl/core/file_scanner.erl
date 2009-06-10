@@ -103,7 +103,7 @@ create_job(Fileid,Profileid,OutPath)->
                              %    height=Profile#profile.height,
                              channels=Profile#profile.achannels,
                                gop=20,
-                               format=0},
+                               format=1},
       libdb:write(NewAudioStream),
 
       JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},

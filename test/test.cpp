@@ -20,8 +20,10 @@ using namespace org::esb::av;
 using namespace std;
 
 int audio(){
-  File infile("/media/video/ChocolateFactory.ts");
-  File outfile("/media/out/ChocolateFactory.ogg");
+  //
+//  File infile("/media/video/ChocolateFactory.ts");
+  File infile("/media/disk/big_buck_bunny_1080p_surround.avi");
+  File outfile("/media/out/test.mp3");
   if (!infile.exists()) {
     logdebug("file does not exit");
     return 127;
@@ -32,12 +34,11 @@ int audio(){
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
 
-
-  Decoder dec(CODEC_ID_MP3);
-  dec.setChannels(2);
-  dec.setBitRate(192000);
-  dec.setSampleRate(48000);
-
+  AVCodecContext * c=fis.getFormatContext()->streams[1]->codec;
+  Decoder dec(c->codec_id);
+  dec.setChannels(c->channels);
+  dec.setBitRate(c->bit_rate);
+  dec.setSampleRate(c->sample_rate);
 //  dec.setHeight(576);
   
 
@@ -45,12 +46,13 @@ int audio(){
 //  dec.setBitRate(4000000);
 //  dec.setGopSize(12);
   //  	dec.setPixelFormat (PIX_FMT_YUV420P);
+  dec.ctx->request_channel_layout=2;
   dec.open();
 
-  Encoder enc(CODEC_ID_VORBIS);
+  Encoder enc(CODEC_ID_MP2);
   enc.setChannels(2);
-  enc.setBitRate(128000);
-  enc.setSampleRate(44100);
+  enc.setBitRate(192000);
+  enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
 //  enc.setGopSize(25);
 //  enc.setPixelFormat(PIX_FMT_YUV420P);
@@ -63,19 +65,23 @@ int audio(){
 
 
   FrameConverter conv(&dec, &enc);
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 50; i++) {
     Packet p;
     pis.readPacket(p);
     if (p.getStreamIndex() != 1)continue;
+    logdebug("InputPacket:");
     p.toString();
     Frame f = dec.decode(p);
-    f.toString();
+//    f.toString();
     if (f.isFinished()) {
       Frame f2=conv.convert(f);
       f2.setPts(f2.getDts());
       Packet pt = enc.encode(f2);
       pt.setPts(0);
       pt.setDts(0);
+      pt.setStreamIndex(0);
+      logdebug("OutputPacket:");
+      pt.toString();
       pos.writePacket(pt);
     }
   }

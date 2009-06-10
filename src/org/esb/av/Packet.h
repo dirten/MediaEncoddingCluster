@@ -29,6 +29,7 @@ public:
         void setDts(long long int);
         int getFlags();
 	int getStreamIndex();
+	void setStreamIndex(int);
 	int getDuration();
 	bool isKeyFrame();
 	void * getPriv();

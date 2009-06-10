@@ -11,7 +11,8 @@ start_link()->
   proc_lib:start_link(?MODULE,init,[self()]).
 
 init(Parent)->
-  BinPath="/Users/jholscher/devel/valgrind/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes "++libcode:get_mhivesys_exe(),
+%  BinPath="/Users/jholscher/devel/valgrind/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes "++libcode:get_mhivesys_exe(),
+  BinPath=libcode:get_mhivesys_exe(),
   io:format("~s Started with ~p~n",[?MODULE, BinPath]),
   process_flag(trap_exit, true),
   Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),

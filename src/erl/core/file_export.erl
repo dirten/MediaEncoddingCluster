@@ -61,10 +61,14 @@ export(FileNo) when is_integer(FileNo)->
                     FilePort ! {self(), {command, term_to_binary({writepacket,Packet})}},
                     ok
             end,
+            Mapper=fun(A)->
+                {element(1,A),element(2,A),libutil:toString(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A)}
+              end,
           PacketListWriter =
             fun(PacketList, FilePort)->
-                io:format("write PacketList"),
-                    FilePort ! {self(), {command, term_to_binary({writepacketlist,PacketList})}},
+              NewPacketList=lists:map(Mapper,PacketList),
+%                io:format("write PacketList:~p",[NewPacketList]),
+                    FilePort ! {self(), {command, term_to_binary({writepacketlist,NewPacketList})}},
                     FilePort
             end,
           BinPath=libcode:get_mhivesys_exe(),

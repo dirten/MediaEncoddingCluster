@@ -37,6 +37,8 @@ namespace org {
         _channels = 0;
         _sample_rate = 0;
         _sample_format = (SampleFormat) 0;
+          ctx = avcodec_alloc_context();
+
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
@@ -54,6 +56,8 @@ namespace org {
         _sample_format = (SampleFormat) 0;
         _pix_fmt = (PixelFormat) 0;
         _opened = false;
+   ctx = avcodec_alloc_context();
+
       }
 
       CodecType Codec::getCodecType() {
@@ -120,7 +124,7 @@ namespace org {
 
       int Codec::open() {
         if (findCodec(_mode)) {
-          ctx = avcodec_alloc_context();
+//          ctx = avcodec_alloc_context();
           setParams();
           if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
             //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
@@ -243,6 +247,7 @@ namespace org {
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
         data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
+        data.append("RequestChannelLayout:").append(Decimal(ctx->request_channel_layout).toString()).append("\r\n");
         data.append("BitRate:").append(Decimal(_bit_rate).toString()).append("\r\n");
         data.append("GOP:").append(Decimal(_gop_size).toString()).append("\r\n");
         data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");

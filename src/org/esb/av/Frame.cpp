@@ -28,6 +28,7 @@ Frame::Frame(uint8_t *buffer) {
   _width = 0;
   _height = 0;
   _pixFormat=(PixelFormat)0;
+  _isFinished=false;
 
 }
 /*
@@ -187,8 +188,8 @@ Frame::Frame(Frame * source, int format){
 Frame::~Frame() {
   if (_allocated&&_buffer) {
     //    cout <<"Delete Frame"<<endl;
-//    delete []_buffer;
-//    _buffer = NULL;
+    delete []_buffer;
+    _buffer = NULL;
   }
 }
 

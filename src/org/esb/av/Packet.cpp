@@ -83,6 +83,7 @@ Packet::Packet(int s) {
     callDestruct = true;
   }else {
     logerror("Try to Allocate buffer <0")
+        callDestruct = false;
   }
 }
 
@@ -127,6 +128,9 @@ int Packet::getFlags() {
 
 int Packet::getStreamIndex() {
   return packet->stream_index;
+}
+void Packet::setStreamIndex(int idx) {
+  packet->stream_index=idx;
 }
 
 int Packet::getDuration() {

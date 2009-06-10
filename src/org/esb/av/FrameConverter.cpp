@@ -20,18 +20,18 @@ namespace org {
 
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
         _swsContext = NULL;
-        _audioCtx=NULL;
+        _audioCtx = NULL;
         int sws_flags = 1;
-        _dec=dec;
-        _enc=enc;
+        _dec = dec;
+        _enc = enc;
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           _audioCtx = av_audio_resample_init(
-             enc->getChannels(), dec->getChannels(),
+              enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
-              enc->getSampleFormat(),dec->getSampleFormat(),
+              enc->getSampleFormat(), dec->getSampleFormat(),
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
-          if(_audioCtx==NULL)
+          if (_audioCtx == NULL)
             logerror("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
@@ -39,37 +39,38 @@ namespace org {
               dec->getWidth(), dec->getHeight(), dec->getPixelFormat(),
               enc->getWidth(), enc->getHeight(), enc->getPixelFormat(),
               sws_flags, NULL, NULL, NULL);
-          if(_swsContext==NULL)
+          if (_swsContext == NULL)
             logerror("Could not initialize SWSCALE");
         }
       }
-/*
-      FrameConverter::FrameConverter(FrameFormat & in_format, FrameFormat & out_format) {
-        _swsContext = 0;
-        _outFormat = &out_format;
-        _inFormat = &in_format;
-        int sws_flags = 1;
 
-        _audioCtx = av_audio_resample_init(
-            _outFormat->channels,
-            _inFormat->channels,
-            _outFormat->samplerate,
-            _inFormat->samplerate,
-            SAMPLE_FMT_S16,
-            SAMPLE_FMT_S16,
-            16,
-            10,
-            0,
-            0.8
-            );
+            /*
+            FrameConverter::FrameConverter(FrameFormat & in_format, FrameFormat & out_format) {
+              _swsContext = 0;
+              _outFormat = &out_format;
+              _inFormat = &in_format;
+              int sws_flags = 1;
 
-        _swsContext = sws_getContext(
-            _inFormat->width, _inFormat->height, _inFormat->pixel_format,
-            _outFormat->width, _outFormat->height, _outFormat->pixel_format,
-            sws_flags, NULL, NULL, NULL);
+              _audioCtx = av_audio_resample_init(
+                  _outFormat->channels,
+                  _inFormat->channels,
+                  _outFormat->samplerate,
+                  _inFormat->samplerate,
+                  SAMPLE_FMT_S16,
+                  SAMPLE_FMT_S16,
+                  16,
+                  10,
+                  0,
+                  0.8
+                  );
 
-      }
-*/
+              _swsContext = sws_getContext(
+                  _inFormat->width, _inFormat->height, _inFormat->pixel_format,
+                  _outFormat->width, _outFormat->height, _outFormat->pixel_format,
+                  sws_flags, NULL, NULL, NULL);
+
+            }
+       */
       FrameConverter::~FrameConverter() {
         if (_swsContext)
           sws_freeContext(_swsContext);
@@ -112,26 +113,29 @@ namespace org {
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
-        return in_frame;
-        /*
-                        ReSampleContext * reCtx=audio_resample_init(_outFormat->channels,
-                                        in_frame.channels,
-                                        _outFormat->samplerate,
-                                        in_frame.sample_rate
-                                        );
-         */
-        int isize=av_get_bits_per_sample_format(_dec->getSampleFormat())/8;
+
+        int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
-        int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
+        int delta = _dec->getSampleRate() - _enc->getSampleRate();
+
+
+//        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, -delta, _enc->getSampleRate());
+//        fprintf(stderr, "audio resample size %d channels %d isize %d\n",in_frame._size ,in_frame.channels , isize);
+        int out_size = audio_resample(
+            _audioCtx,
+            (short *) audio_buf,
+            (short *) in_frame._buffer,
+            in_frame._size / (in_frame.channels * isize)
+            );
         //		audio_resample_close( reCtx );
 
-        Frame frame;
-        frame._buffer = audio_buf;
+        Frame frame(audio_buf);
+        //        frame._buffer = audio_buf;
         frame.setPts(in_frame.getPts());
         frame.setDts(in_frame.getDts());
         frame.pos = in_frame.pos;
         frame.stream_index = in_frame.stream_index;
-        frame.duration = in_frame.duration;
+        frame.duration = 1;//in_frame.duration;
         frame._size = out_size;
         frame._type = CODEC_TYPE_AUDIO;
         frame.channels = _enc->getChannels();

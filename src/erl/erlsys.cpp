@@ -8,7 +8,7 @@
 #include <vector>
 
 
-#define DEBUG true
+#define DEBUG false
 
 //#include <stdlib.h>
 #include "erl.cpp"
@@ -181,7 +181,7 @@ ETERM * streaminfo(ETERM * v) {
       terms.push_back(erl_mk_int(str->codec->codec_type));
       terms.push_back(erl_mk_int(str->codec->codec_id));
       terms.push_back(erl_mk_int(str->codec->bit_rate));
-      terms.push_back(erl_mk_float(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
+      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
       terms.push_back(erl_mk_int(str->time_base.num));
       terms.push_back(erl_mk_int(str->time_base.den));
       terms.push_back(erl_mk_int(str->codec->width));
@@ -293,7 +293,7 @@ Decoder * create_decoder(ETERM* in) {
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(d->_codec->type == CODEC_TYPE_AUDIO ? ERL_INT_UVALUE(rate) : 0);
   d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (1));
-  d->open();
+//  d->open();
 
   return d;
 }
@@ -326,7 +326,7 @@ Encoder * create_encoder(ETERM* in) {
   d->setSampleRate(ERL_INT_UVALUE(rate));
   d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
   d->setFlag(CODEC_FLAG_PASS1);
-  d->open();
+//  d->open();
 
   return d;
 }
@@ -341,8 +341,8 @@ ETERM * encode(ETERM* in) {
   ETERM * encoder = erl_element(5, input_term);
   ETERM * packet_list = erl_element(6, input_term);
   if (toDebug){
-    logdebug("PacketList");
-    erl_print_term((FILE*)stderr, packet_list);
+//    logdebug("PacketList");
+//    erl_print_term((FILE*)stderr, packet_list);
     logdebug("Decoder");
     erl_print_term((FILE*)stderr, decoder);
     logdebug("Encoder");
@@ -352,6 +352,13 @@ ETERM * encode(ETERM* in) {
   int multipass = ERL_INT_UVALUE(pass);
   Decoder *d = create_decoder(decoder);
   Encoder *e = create_encoder(encoder);
+  d->ctx->request_channel_layout=e->getChannels();
+  e->open();
+  d->open();
+  if (toDebug)
+  logdebug("Decoder:"<<d->toString());
+  if (toDebug)
+  logdebug("Encoder:"<<e->toString());
   FrameFormat * in_format = new FrameFormat();
   in_format->pixel_format = (PixelFormat) d->getPixelFormat(); //PIX_FMT_YUV420P;
   in_format->height = d->getHeight();
@@ -387,16 +394,17 @@ ETERM * encode(ETERM* in) {
       p->toString();
     Frame f = d->decode(*p);
     delete p;
-//        f.toString();
-/*
-    if (f.getAVFrame()->buffer == 0) {
+  if (toDebug)
+        f.toString();
+
+    if (!f.isFinished()) {
       if (toDebug)
-        logdebug("Frame Buffer == 0||f.getSize()<0");
+        logdebug("Frame not finished, continuing");
       continue;
     }
     if (toDebug)
       logdebug("Frame Buffer > 0");
-*/
+
     Frame f2 = conv->convert(f);
     if (toDebug)
       logdebug("Frame Converted");
@@ -406,6 +414,7 @@ ETERM * encode(ETERM* in) {
       logdebug("after converting frame");
     //    f2.toString();
     Packet ret = e->encode(f2);
+//    ret.toString();
     if (multipass == 1 && e->getStatistics())
       statistics.append(e->getStatistics());
     if (multipass == 0||multipass == 2) {
@@ -465,13 +474,13 @@ int main(int argc, char** argv) {
 
   ETERM *intuple = NULL, *outtuple = NULL;
 
-  byte *buf = get_buffer(NULL, 5000000);
+  byte *buf = get_buffer(NULL, 50000000);
 
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
     //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
-    if (DEBUG)
-      erl_print_term((FILE*) stderr, intuple);
+//    if (DEBUG)
+//      erl_print_term((FILE*) stderr, intuple);
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
@@ -514,8 +523,8 @@ int main(int argc, char** argv) {
       if (outtuple != NULL) {
         if (DEBUG)
           logdebug("return data:");
-        if (DEBUG)
-          erl_print_term((FILE*) stderr, outtuple);
+//        if (DEBUG)
+//          erl_print_term((FILE*) stderr, outtuple);
         int size = erl_term_len(outtuple);
         //        logdebug("term size:"<<size);
         buf = get_buffer(buf, size);
