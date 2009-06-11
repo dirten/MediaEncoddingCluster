@@ -50,7 +50,7 @@ int audio() {
   dec.ctx->request_channel_layout = 2;
   dec.open();
 
-  Encoder enc(CODEC_ID_MP2);
+  Encoder enc(CODEC_ID_VORBIS);
   enc.setChannels(2);
   enc.setBitRate(192000);
   enc.setSampleRate(48000);
@@ -82,8 +82,8 @@ int audio() {
       Frame f2 = conv.convert(f);
       f2.setPts(f2.getDts());
       Packet pt = enc.encode(f2);
-      pt.setPts(0);
-      pt.setDts(0);
+  //    pt.setPts(0);
+  //    pt.setDts(0);
       pt.setStreamIndex(0);
 //      logdebug("OutputPacket:");
 //      pt.toString();
@@ -241,6 +241,7 @@ int av() {
   aenc.setBitRate(192000);
   aenc.setSampleRate(48000);
   aenc.setSampleFormat(dec.getSampleFormat());
+  aenc.setFlag(4194304);
   //  enc.setGopSize(25);
   //  enc.setPixelFormat(PIX_FMT_YUV420P);
   aenc.open();
@@ -248,8 +249,8 @@ int av() {
 
 
 
-  pos.setEncoder(enc);
-  pos.setEncoder(aenc);
+  pos.setEncoder(enc,0);
+//  pos.setEncoder(aenc,1);
   pos.init();
   FrameConverter conv(&dec, &enc);
   FrameConverter aconv(&adec, &aenc);
@@ -262,8 +263,8 @@ int av() {
         Frame f2 = conv.convert(f);
         f2.setPts(f2.getDts());
         Packet pt = enc.encode(f2);
-        pt.setPts(0);
-        pt.setDts(0);
+        pt.setPts(i);
+        pt.setDts(i);
         pos.writePacket(pt);
       }
     } else
@@ -273,16 +274,16 @@ int av() {
         Frame f2 = aconv.convert(f);
         f2.setPts(f2.getDts());
         Packet pt = aenc.encode(f2);
-        pt.setPts(0);
-        pt.setDts(0);
-        pos.writePacket(pt);
+        pt.setPts(i);
+        pt.setDts(i);
+//        pos.writePacket(pt);
       }
     }
   }
 }
 
 int main() {
-    audio();
+//    audio();
 //    video();
-//  av();
+  av();
 }
