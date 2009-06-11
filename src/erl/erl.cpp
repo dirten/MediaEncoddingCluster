@@ -198,7 +198,7 @@ Encoder * buildEncoderFromTerm(ETERM * in){
   ETERM * channels = erl_element(14, in);
   ETERM * gop = erl_element(15, in);
   ETERM * fmt = erl_element(16, in);
-
+  ETERM * flags = erl_element(19, in);
   Encoder * d = new Encoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::ENCODER);
   d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
@@ -212,10 +212,12 @@ Encoder * buildEncoderFromTerm(ETERM * in){
 //  d->_time_base.den=ERL_INT_UVALUE(den);
 //  d->setFlag(0);
   d->setGopSize(ERL_INT_UVALUE(gop));
-  d->setBitRate(ERL_INT_UVALUE(bitrate));
+  d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(ERL_INT_UVALUE(rate));
   d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
+  d->setFlag(ERL_INT_UVALUE(flags));
+//  d->setFlag(CODEC_FLAG_GLOBAL_HEADER);
   d->open();
   return d;
 }

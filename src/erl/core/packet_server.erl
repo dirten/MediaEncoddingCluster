@@ -87,7 +87,7 @@ handle_call(_Call,From,_N)->
   case get_job() of
     []->{reply, {nojob}, state};
     {Filename, JobId, LastTs, Pass, Decoder, Encoder}->
-
+    io:format("Encoder:~p",[Encoder]),
       Data=packet_stack:packetstream(Filename,LastTs, Decoder,Encoder),
       C=length(Data),
       if

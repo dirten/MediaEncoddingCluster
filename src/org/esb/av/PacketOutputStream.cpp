@@ -35,11 +35,11 @@ PacketOutputStream::~PacketOutputStream() {
 void PacketOutputStream::writePacket(Packet & packet) {
   if (!_isInitialized)
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
-  if(streams.size()<=packet.getStreamIndex())
-    logerror("there is no stream associated to packet.stream_index #"<<packet.getStreamIndex());
-//
+  if (streams.size() <= packet.getStreamIndex())
+    logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
+  //
   int result = av_write_frame(_fmtCtx, packet.packet);
-//      int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
+  //      int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {
@@ -50,11 +50,15 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
   AVStream * st = av_new_stream(_fmtCtx, stream_id);
   if (!st) {
-    logerror( "Could not alloc stream");
+    logerror("Could not alloc stream");
   }
-//  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
+  //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
-
+  st->codec = encoder.ctx;
+  st->time_base = encoder.ctx->time_base;
+//  st->time_base = encoder.ctx->time_base;
+  return;
+  //  	st->time_base.den=90000;
 
 
   avcodec_get_context_defaults2(st->codec, encoder.ctx->codec_type);
@@ -63,9 +67,10 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //	st->time_base.den=90000;
 
 
-//  st->stream_copy = 1;
+  //  st->stream_copy = 1;
   st->codec->time_base = encoder.ctx->time_base;
   st->codec->codec_type = encoder.ctx->codec_type;
+  st->codec->flags = encoder.ctx->flags;
 
   if (encoder.ctx->codec_type == CODEC_TYPE_AUDIO) {
     st->codec->strict_std_compliance = 0;
@@ -81,11 +86,6 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
     st->codec->time_base = encoder.ctx->time_base;
 
   }
-  /*
-          st->stream_copy=1;
-          st->codec=encoder.ctx;
-          st->time_base=encoder.getTimeBase();
-   */
 
 
   AVCodecContext * video_enc = st->codec; //=encoder.ctx;
@@ -118,7 +118,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   }
 
   //    st->time_base=st->codec->time_base;
-//  logdebug( "TimeBase #" << stream_id << "\tnum:" << st->time_base.num << "\tden" << st->time_base.den );
+  //  logdebug( "TimeBase #" << stream_id << "\tnum:" << st->time_base.num << "\tden" << st->time_base.den );
 
   //    av_write_header(_fmtCtx);
 
@@ -127,12 +127,12 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
 void PacketOutputStream::init() {
   //  cout << _fmtCtx->oformat->write_header<<endl;
   if (av_write_header(_fmtCtx) < 0) {
-    logerror( "av_write_header(_fmtCtx) failed");
+    logerror("av_write_header(_fmtCtx) failed");
     exit(1);
   }
 
   _isInitialized = true;
-      dump_format(_fmtCtx, 0, NULL, 1);
+  dump_format(_fmtCtx, 0, NULL, 1);
 
   int streams = _fmtCtx->nb_streams;
 
@@ -140,8 +140,8 @@ void PacketOutputStream::init() {
     AVStream * stream = _fmtCtx->streams[a];
     //		stream->time_base=stream->codec->time_base;
 
-//    logdebug( "TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
-//    logdebug( "TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den );
+    logdebug("TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
+    logdebug("TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den);
   }
 
 }

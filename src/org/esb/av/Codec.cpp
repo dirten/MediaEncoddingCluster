@@ -37,7 +37,7 @@ namespace org {
         _channels = 0;
         _sample_rate = 0;
         _sample_format = (SampleFormat) 0;
-          ctx = avcodec_alloc_context();
+        ctx = avcodec_alloc_context();
 
       }
 
@@ -56,7 +56,7 @@ namespace org {
         _sample_format = (SampleFormat) 0;
         _pix_fmt = (PixelFormat) 0;
         _opened = false;
-   ctx = avcodec_alloc_context();
+        ctx = avcodec_alloc_context();
 
       }
 
@@ -118,13 +118,13 @@ namespace org {
           ctx->max_b_frames = 2;
           //					  cout << "setting max B Frames 2"<<endl;
         }
-        ctx->flags |= _flags;
+        //        ctx->flags |= _flags;
         //					ctx->start_time=_start_time;
       }
 
       int Codec::open() {
         if (findCodec(_mode)) {
-//          ctx = avcodec_alloc_context();
+          //          ctx = avcodec_alloc_context();
           setParams();
           if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
             //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
@@ -148,7 +148,7 @@ namespace org {
       }
 
       void Codec::setFlag(int flag) {
-        _flags |= flag;
+        ctx->flags |= flag;
       }
 
       Codec::~Codec() {
@@ -243,7 +243,7 @@ namespace org {
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
-        data.append("Codec Type:").append(ctx->codec_type==CODEC_TYPE_AUDIO?"AUDIO":"VIDEO").append("\r\n");
+        data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
         data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
@@ -253,7 +253,7 @@ namespace org {
         data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
         data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
         char buf[256];
-        avcodec_string(buf, sizeof(buf),ctx,_mode);
+        avcodec_string(buf, sizeof (buf), ctx, _mode);
         data.append("InternalData:").append(std::string(buf)).append("\r\n");
         return data;
       }

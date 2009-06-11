@@ -88,7 +88,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
     //while(len>0){
     int bytesDecoded =
             avcodec_decode_video2(ctx, frame.getAVFrame(), &_frameFinished, packet.packet);
-    logdebug("BytesDecoded:"<<bytesDecoded);
+//    logdebug("BytesDecoded:"<<bytesDecoded);
     if (bytesDecoded < 0) {
         fprintf(stderr, "Error while decoding frame\n");
     }

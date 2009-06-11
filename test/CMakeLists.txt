@@ -75,6 +75,7 @@ target_link_libraries (test avcodec avformat avutil swscale z ${BZ2_LIB} io av u
 #target_link_libraries (testav Winmm ${MYSQL_LIB} wt wtext wthttp )
 ELSEIF(APPLE)
 target_link_libraries (info bz2 )
+target_link_libraries (test bz2 )
 
 ELSE(WIN32)
 #target_link_libraries (testav x264 ${MYSQL_LIB} ssl wthttp wtext wt pthread)

@@ -48,6 +48,7 @@ ETERM * formatlist(ETERM * v) {
     const char * extensions = ofmt->extensions ? ofmt->extensions : "";
     f.push_back(erl_mk_string(mime_type));
     f.push_back(erl_mk_string(extensions));
+    f.push_back(erl_mk_int(ofmt->flags));
     //    erl_print_term((FILE*)stderr, vector2term(f));
     terms.push_back(vector2term(f));
   }
@@ -114,7 +115,7 @@ ETERM * closefile(ETERM* in) {
 ETERM * addstream(ETERM * in) {
   std::vector<ETERM *> terms;
   ETERM *streamidx = erl_element(3, in);
-  Decoder * d = buildDecoderFromTerm(erl_element(2, in));
+  Encoder * d = buildEncoderFromTerm(erl_element(2, in));
   pos->setEncoder(*d, ERL_INT_UVALUE(streamidx));
   terms.push_back(erl_mk_atom("ok_stream_added"));
 
@@ -131,8 +132,11 @@ ETERM * writepacket(ETERM * in) {
 //  p->toString();
   p->packet->pts = 0;
   p->packet->dts = 0;
+  if(p->getSize()>0){
   pos->writePacket(*p);
   delete p;
+  }else
+    logerror("Packet is not usabel");
   terms.push_back(erl_mk_string("ok_packet_written"));
   return vector2list(terms);
 }
@@ -289,7 +293,7 @@ Decoder * create_decoder(ETERM* in) {
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
   d->setGopSize(ERL_INT_UVALUE(gop));
-  d->setBitRate(ERL_INT_UVALUE(bitrate));
+  d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(d->_codec->type == CODEC_TYPE_AUDIO ? ERL_INT_UVALUE(rate) : 0);
   d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (1));
@@ -310,6 +314,7 @@ Encoder * create_encoder(ETERM* in) {
   ETERM * channels = erl_element(14, in);
   ETERM * gop = erl_element(15, in);
   ETERM * fmt = erl_element(16, in);
+  ETERM * flags = erl_element(19, in);
 
   Encoder * d = new Encoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::ENCODER);
@@ -321,11 +326,12 @@ Encoder * create_encoder(ETERM* in) {
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
   d->setGopSize(ERL_INT_UVALUE(gop));
-  d->setBitRate(ERL_INT_UVALUE(bitrate));
+  d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(ERL_INT_UVALUE(rate));
   d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
   d->setFlag(CODEC_FLAG_PASS1);
+  d->setFlag(ERL_INT_UVALUE(flags));
 //  d->open();
 
   return d;

@@ -1,6 +1,6 @@
 % this records save the data that was imported or encoded in the Media Hive
 % this record is obsolete, use media instead
--record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time}).
+-record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status=ok}).
 
 % new Record for saving MediaFile Information
 -record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
@@ -11,7 +11,7 @@
 
 %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
 -include("schema_profile.hrl").
--record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format, start_time, duration}).
+-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format, start_time, duration, flags=0}).
 
 %-record(job,{id, infile, outfile, begin_time, complete_time, last_ts}).
 -include("schema_job.hrl").

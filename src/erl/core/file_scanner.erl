@@ -1,6 +1,7 @@
 -module(file_scanner).
 %-behaviour(gen_server).
 -include("schema.hrl").
+-include("av.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 %-include("/usr/lib/erlang/lib/stdlib-1.15.1/include/qlc.hrl").
 %-include("C:\\Programme\\erl5.6.5\\lib\\stdlib-1.15.5\\include/qlc.hrl").
@@ -8,21 +9,21 @@
 -export([scan/0, process_file_list/3, process_file/1, filter/2, diff/2]).
 
 scan()->
-%  io:format("Scanning files"),
+  %  io:format("Scanning files"),
   E=libdb:read(watchfolder),
   Fun=fun(El)->
           case El#watchfolder.status of
             "active"->
               Recursive =
-                if El#watchfolder.recursive =:="yes"->true;
-                  El#watchfolder.recursive =:="no"->false;
-                  true->false
-                end,
+                  if El#watchfolder.recursive =:="yes"->true;
+                    El#watchfolder.recursive =:="no"->false;
+                    true->false
+                  end,
               FileList=libfile:find(El#watchfolder.infolder,El#watchfolder.filter,Recursive),
-%              io:format("FileList~p~n",[FileList]),
+              %              io:format("FileList~p~n",[FileList]),
               process_file_list(FileList,El#watchfolder.profile,El#watchfolder.outfolder);
-              _Else->
-                do_nothing
+            _Else->
+              do_nothing
           end
       end,
   lists:foreach(Fun,E).
@@ -49,11 +50,11 @@ create_job(Fileid,Profileid,OutPath)->
   [File|_T]=FileList,
   %  NewFile=#file{id=test:sequence(file), path=OutPath, streamcount=2},
   NewFile=#file{
-    id=libdb:sequence(file),
-    filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
-    path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
-    streamcount=File#file.streamcount,
-    parent=Fileid
+      id=libdb:sequence(file),
+      filename=string:join([filename:rootname(File#file.filename),Profile#profile.ext],"."),
+      path=filename:join([OutPath|[string:join(string:tokens(Profile#profile.name," "),"_")]]),
+      streamcount=File#file.streamcount,
+      parent=Fileid
                },
   mnesia:write(NewFile),
   Pass=if
@@ -68,22 +69,29 @@ create_job(Fileid,Profileid,OutPath)->
   SortedStreams=lists:keysort(4, Streams),
   [VS|Rest]=SortedStreams,
 
-
+  %%resolving FormatOutputFlags
+  OFormat=sys_port:get_format(Profile#profile.vformat),
+  Flags=case element(5,OFormat) of
+          Data when (Data band ?AVFMT_GLOBALHEADER) >0 ->?AVCODEC_FLAG_GLOBAL_HEADER;
+          _Data->0
+        end,
+  io:format("Flags:~p",[Flags]),
   %-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,rate,num, den, width, height,channels,gop,format}).
   %-record(profile,{id,name,ext,vformat,vcodec,vbitrate,vframerate,vwidth,vheight,achannels,acodec,abitrate,asamplerate}).
   NewVideoStream=#stream{
-    id=libdb:sequence(stream),
-    fileid=NewFile#file.id,
-    streamidx=VS#stream.streamidx,
-    codec=Profile#profile.vcodec,
-    bitrate=Profile#profile.vbitrate,
-    rate=Profile#profile.vframerate,
-    num=1,
-    den=Profile#profile.vframerate,
-    width=Profile#profile.vwidth,
-    height=Profile#profile.vheight,
-    gop=Profile#profile.gop,
-    format=0},
+      id=libdb:sequence(stream),
+      fileid=NewFile#file.id,
+      streamidx=VS#stream.streamidx,
+      codec=Profile#profile.vcodec,
+      bitrate=Profile#profile.vbitrate,
+      rate=Profile#profile.vframerate,
+      num=1,
+      den=Profile#profile.vframerate,
+      width=Profile#profile.vwidth,
+      height=Profile#profile.vheight,
+      gop=Profile#profile.gop,
+      format=0,
+      flags=Flags},
   libdb:write(NewVideoStream),
   JobVideoDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=VS#stream.id, outstream=NewVideoStream#stream.id},
   libdb:write(JobVideoDetail),
@@ -91,19 +99,18 @@ create_job(Fileid,Profileid,OutPath)->
   if length(Rest)>0->
       [AS|_Rest]=Rest,
       NewAudioStream=#stream{
-        id=libdb:sequence(stream),
-        fileid=NewFile#file.id,
-        streamidx=AS#stream.streamidx,
-        codec=Profile#profile.acodec,
-        rate=Profile#profile.asamplerate,
-        num=AS#stream.num,
-        den=AS#stream.den,
-        bitrate=Profile#profile.abitrate,
-        %    width=Profile#profile.width,
-                             %    height=Profile#profile.height,
-                             channels=Profile#profile.achannels,
-                               gop=20,
-                               format=1},
+          id=libdb:sequence(stream),
+          fileid=NewFile#file.id,
+          streamidx=AS#stream.streamidx,
+          codec=Profile#profile.acodec,
+          rate=Profile#profile.asamplerate,
+          num=AS#stream.num,
+          den=AS#stream.den,
+          bitrate=Profile#profile.abitrate,
+          channels=Profile#profile.achannels,
+          gop=20,
+          format=1,
+          flags=Flags},
       libdb:write(NewAudioStream),
 
       JobAudioDetail=#jobdetail{id=libdb:sequence(jobdetail), jobid=Job#job.id, instream=AS#stream.id, outstream=NewAudioStream#stream.id},
@@ -121,22 +128,22 @@ save_stream_info(FileName,SID, FileId)->
     %   {0,0,0,2,8000000,25,1,90000,720,576,0,12,0}
     {_Tmp,Index,SType,Codec,BitRate,Rate,TbNum,TbDen,Width,Height,Channels,Gop,Format, StartTime, Duration} ->
       Stream = #stream{
-        id=libdb:sequence(stream),
-        fileid=FileId,
-        streamidx=Index,
-        streamtype=SType,
-        codec=Codec,
-        bitrate=BitRate,
-        rate=Rate,
-        num=TbNum,
-        den=TbDen,
-        width=Width,
-        height=Height,
-        channels=Channels,
-        gop=Gop,
-        format=Format,
-        start_time=list_to_integer(StartTime),
-        duration=list_to_integer(Duration)
+          id=libdb:sequence(stream),
+          fileid=FileId,
+          streamidx=Index,
+          streamtype=SType,
+          codec=Codec,
+          bitrate=BitRate,
+          rate=Rate,
+          num=TbNum,
+          den=TbDen,
+          width=Width,
+          height=Height,
+          channels=Channels,
+          gop=Gop,
+          format=Format,
+          start_time=list_to_integer(StartTime),
+          duration=list_to_integer(Duration)
                       },
       io:format("Stream info ~w~n",[Stream]),
       libdb:write(Stream),
@@ -158,36 +165,36 @@ process_file_list([H|T],Profile, OutPath)->
 
   Fun=fun(X)->
           mnesia:transaction(
-            fun()->
-                case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
-                  {_FileName,_FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
-                    io:format("try File import~s~n",[X]),
-                    File = #file{
-                      id=libdb:sequence(file),
-                      filename=filename:basename(X),
-                      path=filename:dirname(X),
-                      size=Size,
-                      containertype=Type,
-                      streamcount=StreamCount,
-                      duration=Duration,
-                      bitrate=BitRate,
-                      start_time=StartTime
-                                },
-                    libdb:write(File),
-                    %                    io:format("get stream info from~s~n",[FileName]),
-                    save_stream_info(X,0,File#file.id),
-                    io:format("File imported~s~n",[filename:basename(X)]),
-                    create_job(File#file.id, Profile, OutPath),
-                    io:format("File Job Created ~s~n",[filename:basename(X)]);
-                  {filenotfound}  ->
-                    io:format("File not found ~w~n",[list_to_atom(X)]);
-                  {format_invalid}  ->
-                    ok;
-                  %                           io:format("File Wrong format ~s~n",[X]);
-                  Any->
-                    io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
-                end
-            end)
+              fun()->
+                  case gen_server:call(global:whereis_name(packet_sender), {fileinfo,X,0,0,0}) of
+                    {_FileName,_FilePath,Size,Type,StreamCount,Duration,BitRate, StartTime}  ->
+                      io:format("try File import~s~n",[X]),
+                      File = #file{
+                          id=libdb:sequence(file),
+                          filename=filename:basename(X),
+                          path=filename:dirname(X),
+                          size=Size,
+                          containertype=Type,
+                          streamcount=StreamCount,
+                          duration=Duration,
+                          bitrate=BitRate,
+                          start_time=StartTime
+                                  },
+                      libdb:write(File),
+                      %                    io:format("get stream info from~s~n",[FileName]),
+                      save_stream_info(X,0,File#file.id),
+                      io:format("File imported~s~n",[filename:basename(X)]),
+                      create_job(File#file.id, Profile, OutPath),
+                      io:format("File Job Created ~s~n",[filename:basename(X)]);
+                    {filenotfound}  ->
+                      io:format("File not found ~w~n",[list_to_atom(X)]);
+                    {format_invalid}  ->
+                      ok;
+                    %                           io:format("File Wrong format ~s~n",[X]);
+                    Any->
+                      io:format("AnyFileScanner ~w~n",[binary_to_term(Any)])
+                  end
+              end)
       end,
   lists:foreach(Fun,Files);
 process_file_list([],_Profile, _OutPath)->

@@ -123,7 +123,7 @@ Frame Frame::operator=(Frame & frame) {
 
 
 Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
-  logdebug("Create Frame(int format, int width, int height)");
+//  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   _width = width;

@@ -22,55 +22,55 @@ export(FileNo) when is_integer(FileNo)->
         ok->
           F2=[X||X<-E,filelib:ensure_dir(element(2,FileName))=:=ok],
           Fun2=
-            fun(JobId)->
-                fun()->
-                    qlc:e(
-                      qlc:q(
-                      [Detail#jobdetail.outstream || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid==JobId]
+              fun(JobId)->
+                  fun()->
+                      qlc:e(
+                          qlc:q(
+                          [Detail#jobdetail.outstream || Detail <- mnesia:table(jobdetail), Detail#jobdetail.jobid==JobId]
+                               )
                            )
-                         )
-                end
-            end,
+                  end
+              end,
           Bla=[element(2,mnesia:transaction(Fun2(element(1,D))))|| D<-F2],
           %  {atomic,E2}=mnesia:transaction(Fun2(2)),
           Fun=
-            fun(StreamId)->
-                fun()->
-                    qlc:e(
-                      qlc:q(
-                      [P || P <- qlc:keysort(#process_unit.startts,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
+              fun(StreamId)->
+                  fun()->
+                      qlc:e(
+                          qlc:q(
+                          [P || P <- qlc:keysort(#process_unit.startts,mnesia:table(process_unit)), P#process_unit.targetstream==StreamId,P#process_unit.receivesize>0]
+                               )
                            )
-                         )
-                end
-            end,
+                  end
+              end,
           Result=lists:keysort(5,lists:flatten([[element(2,mnesia:transaction(Fun(T1)))||T1<-D] ||D<-Bla])),
 
           FileWriter =
-            fun(FileId, FilePort)->
-                case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
-                  {ok,Data}->
-                    FilePort ! {self(), {command, term_to_binary({writepacketlist,binary_to_term(Data)})}},
-                    ok;
-                  {error,enoent}->
-                    io:format("File ~p Not Found",[FileId]),
-                    nodata
-                end
-            end,
-          PacketWriter =
-            fun(Packet, FilePort)->
-                    FilePort ! {self(), {command, term_to_binary({writepacket,Packet})}},
-                    ok
-            end,
-            Mapper=fun(A)->
-                {element(1,A),element(2,A),libutil:toString(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A)}
+              fun(FileId, FilePort)->
+                  case file:read_file(filename:join(["data", integer_to_list(FileId)])) of
+                    {ok,Data}->
+                      FilePort ! {self(), {command, term_to_binary({writepacketlist,binary_to_term(Data)})}},
+                      ok;
+                    {error,enoent}->
+                      io:format("File ~p Not Found",[FileId]),
+                      nodata
+                  end
               end,
+          PacketWriter =
+              fun(Packet, FilePort)->
+                  FilePort ! {self(), {command, term_to_binary({writepacket,Packet})}},
+                  ok
+              end,
+          Mapper=fun(A)->
+                     {element(1,A),element(2,A),libutil:toString(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A)}
+                 end,
           PacketListWriter =
-            fun(PacketList, FilePort)->
-              NewPacketList=lists:map(Mapper,PacketList),
-%                io:format("write PacketList:~p",[NewPacketList]),
-                    FilePort ! {self(), {command, term_to_binary({writepacketlist,NewPacketList})}},
-                    FilePort
-            end,
+              fun(PacketList, FilePort)->
+                  NewPacketList=lists:map(Mapper,PacketList),
+ %                 io:format("write PacketList:~p",[NewPacketList]),
+                  FilePort ! {self(), {command, term_to_binary({writepacketlist,NewPacketList})}},
+                  FilePort
+              end,
           BinPath=libcode:get_mhivesys_exe(),
           Port = open_port({spawn, BinPath}, [{packet, 4}, binary]),
           link(Port),
@@ -78,12 +78,12 @@ export(FileNo) when is_integer(FileNo)->
           {atomic,St}=mnesia:transaction(fun()->qlc:e(qlc:q([S || S <- qlc:keysort(2,mnesia:table(stream)), S#stream.fileid==FileNo]))end),
           [Port!{self(), {command, term_to_binary({addstream,S, element(4,S)})}}||S<-St],
           Port ! {self(), {command, term_to_binary({initfile})}},
-%          ResultSorted=file_export_stack:prepare(Result),
-%          qlc:e(qlc:q([PacketWriter(D, Port)||D<-file_export_stack:table(Result)])),
+          %          ResultSorted=file_export_stack:prepare(Result),
+          %          qlc:e(qlc:q([PacketWriter(D, Port)||D<-file_export_stack:table(Result)])),
 
-%          qlc:fold(PacketListWriter, Port,qlc:q([D||D<-file_export_stack:table(Result)])),
+          %          qlc:fold(PacketListWriter, Port,qlc:q([D||D<-file_export_stack:table(Result)])),
           qlc:e(qlc:q([PacketListWriter(D, Port)||D<-file_export_stack:table(Result)])),
-%          [PacketWriter(X, Port)||X<-file_export_stack:table(Result)],
+          %          [PacketWriter(X, Port)||X<-file_export_stack:table(Result)],
           Port ! {self(), {command, term_to_binary({closefile})}},
           Port ! {self(), close},
           file_created;

@@ -82,7 +82,7 @@ Packet::Packet(int s) {
     memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
     callDestruct = true;
   }else {
-    logerror("Try to Allocate buffer <0")
+    logerror("Try to Allocate Packet buffer <0")
         callDestruct = false;
   }
 }

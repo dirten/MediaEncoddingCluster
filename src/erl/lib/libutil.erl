@@ -81,6 +81,10 @@ toNumber(Val) when is_list(Val)->
 toNumber(Val) ->
   Val.
 
+hexToDec(Val)->
+  {_,[D],_}=io_lib:fread("~16u",Val),
+  D.
+
 string_replace(Src, Needle, Replacement)->
   Tok=string:tokens(Src,Needle),
   Str=lists:flatten([[X, Replacement]||X<-Tok]),
