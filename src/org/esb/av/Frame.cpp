@@ -254,6 +254,7 @@ void Frame::setDts(int64_t dts) {
 void Frame::toString() {
   if (getHeight() > 0 && getWidth() > 0)
     logdebug("Frame->Size:" << getSize());
+  logdebug("Frame->SampleSize:"<<_size);
   logdebug("Frame->Width:" << getWidth());
   logdebug("Frame->Height:" << getHeight());
   logdebug("Frame->PixelFormat:" << getFormat());

@@ -58,6 +58,8 @@ Packet PacketInputStream::readPacket(){
     
 }
 
+
+
 int PacketInputStream::readPacket(Packet&packet){
     return readPacketFromFormatIS(packet);
 }
@@ -65,7 +67,9 @@ int PacketInputStream::readPacket(Packet&packet){
 int PacketInputStream::readPacketFromFormatIS(Packet & packet){
         if(packet.packet->data!=NULL)
             av_free_packet(packet.packet);
-  return av_read_frame(_formatCtx, packet.packet);
+        int size=av_read_frame(_formatCtx, packet.packet);
+//    logdebug("Packet Size:"<<packet.packet->size)
+  return size;
 }
 
 Packet PacketInputStream::readPacketFromFormatIS(){
@@ -74,6 +78,7 @@ Packet PacketInputStream::readPacketFromFormatIS(){
 //        if(_packet.data!=NULL)
 //            av_free_packet(&_packet);
     av_read_frame(_formatCtx, pac.packet);
+    logdebug("Packet Size:"<<pac.packet->size)
     return pac;
 }
 /*

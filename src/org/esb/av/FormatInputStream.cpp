@@ -15,17 +15,17 @@ namespace org {
       FormatInputStream::FormatInputStream(File * source) {
         _isValid = false;
         _sourceFile = source;
-        //                formatCtx= av_alloc_format_context();
-//        logdebug("openning MediaFile:" << source->getPath());
+        formatCtx = avformat_alloc_context();
+        //        logdebug("openning MediaFile:" << source->getPath());
         if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
           //                    throw Exception("FormatInputStream<init> - could not open File");
-//                              logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
-//          close();
+          logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
+          //          close();
           return;
         }
         if (av_find_stream_info(formatCtx) < 0) {
-          //                    logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
-//          close();
+          logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
+          //          close();
           return;
         }
         _isValid = true;

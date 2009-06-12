@@ -21,9 +21,10 @@ using namespace std;
 
 int audio() {
   //
-  //  File infile("/media/video/ChocolateFactory.ts");
-//  File infile("/media/disk/big_buck_bunny_1080p_surround.avi");
-  File infile("/Users/jholscher/media/ChocolateFactory.ts");
+  int stream_id=1;
+//  File infile("/media/video/ChocolateFactory.ts");
+  File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
+  //  File infile("/Users/jholscher/media/ChocolateFactory.ts");
   File outfile("/media/out/test.mp4");
   if (!infile.exists()) {
     logdebug("file does not exit");
@@ -35,7 +36,7 @@ int audio() {
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
 
-  AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
+  AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
   Decoder dec(c->codec_id);
   dec.setChannels(c->channels);
   dec.setBitRate(c->bit_rate);
@@ -50,14 +51,20 @@ int audio() {
   dec.ctx->request_channel_layout = 2;
   dec.open();
 
+
+
+
+
   Encoder enc(CODEC_ID_VORBIS);
   enc.setChannels(2);
-  enc.setBitRate(192000);
-  enc.setSampleRate(48000);
+  enc.setBitRate(128000);
+  enc.setSampleRate(44100);
   enc.setSampleFormat(dec.getSampleFormat());
+
   enc.setTimeBase((AVRational) {
-    1, 25
+    1, 44100
   });
+  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
 
   //  enc.setGopSize(25);
   //  enc.setPixelFormat(PIX_FMT_YUV420P);
@@ -70,23 +77,32 @@ int audio() {
 
 
   FrameConverter conv(&dec, &enc);
+  int pts = 0;
   for (int i = 0; i < 5000; i++) {
     Packet p;
     pis.readPacket(p);
-    if (p.getStreamIndex() != 1)continue;
-//    logdebug("InputPacket:");
-//    p.toString();
+    if (p.getStreamIndex() != stream_id)continue;
+    //    logdebug("InputPacket:");
+    //    p.toString();
     Frame f = dec.decode(p);
     //    f.toString();
     if (f.isFinished()) {
       Frame f2 = conv.convert(f);
       f2.setPts(f2.getDts());
+      //      f2.toString();
       Packet pt = enc.encode(f2);
-  //    pt.setPts(0);
-  //    pt.setDts(0);
+      logdebug("Duration:"<<enc.ctx->frame_size);
+
+//      pt.setDuration(enc.ctx->frame_size);
+//      pt.setPts(pts);
+      pt.setDts(0);
+//      if(pt.getSize()>0)
+        pts+=enc.ctx->frame_size;
+
       pt.setStreamIndex(0);
-//      logdebug("OutputPacket:");
-//      pt.toString();
+
+      //      logdebug("OutputPacket:");
+            pt.toString();
       pos.writePacket(pt);
     }
   }
@@ -99,7 +115,8 @@ int audio() {
 
 int video() {
 
-  File infile("/Users/jholscher/media/ChocolateFactory.ts");
+  File infile("/media/video/ChocolateFactory.ts");
+  //  File infile("/Users/jholscher/media/ChocolateFactory.ts");
   File outfile("/media/out/ChocolateFactory.mp4");
   if (!infile.exists()) {
     logdebug("file does not exit");
@@ -113,16 +130,12 @@ int video() {
   PacketOutputStream pos(&fos);
 
   logdebug("oformat_name:" << fos._fmt->name);
+  AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
   Decoder dec(CODEC_ID_MPEG2VIDEO);
-  dec.setWidth(720);
-  dec.setHeight(576);
-
-  dec.setTimeBase((AVRational) {
-    1, 25
-  });
-  dec.setBitRate(4000000);
-  dec.setGopSize(12);
-  //  	dec.setPixelFormat (PIX_FMT_YUV420P);
+  dec.setWidth(c->width);
+  dec.setHeight(c->height);
+  dec.setTimeBase(c->time_base);
+  dec.setPixelFormat(c->pix_fmt);
   dec.open();
 
   Encoder enc(CODEC_ID_H264);
@@ -134,34 +147,39 @@ int video() {
   });
   enc.setBitRate(1024000);
   enc.setGopSize(25);
-  enc.ctx->max_b_frames = 0;
-  //  enc.setPixelFormat(PIX_FMT_YUV420P);
-  //  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
-//  logdebug("Flags:" << CODEC_FLAG_GLOBAL_HEADER)
   enc.setFlag(4194304);
-  //  enc.ctx->codec_tag=MKTAG('m','p','4','v');
   enc.open();
+
   logdebug("Decoder:" << dec.toString());
   logdebug("Encoder:" << enc.toString());
 
   pos.setEncoder(enc);
   pos.init();
   FrameConverter conv(&dec, &enc);
+  Packet p;
+  int pts = 0;
   for (int i = 0; i < 5000; i++) {
-    Packet p;
-    pis.readPacket(p);
-    if (p.getStreamIndex() != 0)continue;
-    //    p.toString();
+    if (pis.readPacket(p) < 0) {
+      logerror("Error reading Packet");
+      continue;
+    }
+    if (p.getStreamIndex() != 1)continue;
+    //      p.toString();
 
     Frame f = dec.decode(p);
     //    f.toString();
     if (f.isFinished()) {
+      //    f.toString();
       Frame f2 = conv.convert(f);
       f2.setPts(f2.getDts());
       Packet pt = enc.encode(f2);
-      pt.setPts(0);
-      pt.setDts(0);
+      pt.setPts(++pts);
+      pt.setDts(pts);
+      pt.setStreamIndex(0);
+      pt.setDuration(1);
       pos.writePacket(pt);
+    } else {
+      //      logdebug("Frame not finished");
     }
   }
 
@@ -172,7 +190,8 @@ int video() {
 
 int av() {
 
-  File infile("/Users/jholscher/media/ChocolateFactory.ts");
+  //  File infile("/Users/jholscher/media/ChocolateFactory.ts");
+  File infile("/media/video/ChocolateFactory.ts");
   File outfile("/media/out/ChocolateFactory.mp4");
   if (!infile.exists()) {
     logdebug("file does not exit");
@@ -185,19 +204,16 @@ int av() {
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
 
-  AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
+  //  AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
 
   logdebug("oformat_name:" << fos._fmt->name);
-  Decoder dec(CODEC_ID_MPEG2VIDEO);
-  dec.setWidth(720);
-  dec.setHeight(576);
 
-  dec.setTimeBase((AVRational) {
-    1, 25
-  });
-  dec.setBitRate(4000000);
-  dec.setGopSize(12);
-  //  	dec.setPixelFormat (PIX_FMT_YUV420P);
+  AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
+  Decoder dec(CODEC_ID_MPEG2VIDEO);
+  dec.setWidth(c->width);
+  dec.setHeight(c->height);
+  dec.setTimeBase(c->time_base);
+  dec.setPixelFormat(c->pix_fmt);
   dec.open();
 
   Encoder enc(CODEC_ID_H264);
@@ -207,9 +223,10 @@ int av() {
   enc.setTimeBase((AVRational) {
     1, 25
   });
+
   enc.setBitRate(1024000);
   enc.setGopSize(25);
-  enc.ctx->max_b_frames = 0;
+  //  enc.ctx->max_b_frames = 0;
   //  enc.setPixelFormat(PIX_FMT_YUV420P);
   //  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
   logdebug("Flags:" << CODEC_FLAG_GLOBAL_HEADER)
@@ -221,6 +238,7 @@ int av() {
 
 
 
+  c = fis.getFormatContext()->streams[2]->codec;
 
   Decoder adec(c->codec_id);
   adec.setChannels(c->channels);
@@ -249,41 +267,53 @@ int av() {
 
 
 
-  pos.setEncoder(enc,0);
-//  pos.setEncoder(aenc,1);
+  pos.setEncoder(enc, 0);
+  pos.setEncoder(aenc, 1);
   pos.init();
   FrameConverter conv(&dec, &enc);
   FrameConverter aconv(&adec, &aenc);
-  for (int i = 0; i < 5000; i++) {
+
+  int pts = 0;
+  int apts = 0;
+  for (int i = 0; i < 500; i++) {
     Packet p;
     pis.readPacket(p);
-    if (p.getStreamIndex() == 0) {
+    if (p.getStreamIndex() == 1) {
       Frame f = dec.decode(p);
       if (f.isFinished()) {
         Frame f2 = conv.convert(f);
         f2.setPts(f2.getDts());
         Packet pt = enc.encode(f2);
-        pt.setPts(i);
-        pt.setDts(i);
+        logdebug("Video FrameSize:" << enc.ctx->frame_size);
+        pt.setPts(++pts);
+        pt.setDts(pts);
+        pt.setStreamIndex(0);
         pos.writePacket(pt);
       }
-    } else
-      if (p.getStreamIndex() == 1) {
+    } else if (p.getStreamIndex() == 2) {
       Frame f = adec.decode(p);
+      logdebug("Decode Audio")
       if (f.isFinished()) {
+        logdebug("Decode Audio finished")
         Frame f2 = aconv.convert(f);
         f2.setPts(f2.getDts());
         Packet pt = aenc.encode(f2);
-        pt.setPts(i);
-        pt.setDts(i);
-//        pos.writePacket(pt);
+        logdebug("Audio FrameSize:" << aenc.ctx->frame_size);
+        pt.setPts(++apts * aenc.ctx->frame_size);
+        pt.setDts(apts * aenc.ctx->frame_size);
+        pt.setStreamIndex(1);
+        logdebug("Write Audio")
+        pos.writePacket(pt);
       }
     }
   }
 }
 
 int main() {
-//    audio();
-//    video();
-  av();
+  av_register_all();
+  avcodec_init();
+  avcodec_register_all();
+  audio();
+  //    video();
+  //  av();
 }

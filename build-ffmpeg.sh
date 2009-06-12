@@ -1,5 +1,12 @@
 #!/bin/sh
 
+
+
+X264_VERSION="-snapshot-20090611-2245"
+
+
+
+
 TOPDIR=`pwd`
 SRCDIR="$TOPDIR/source"
 BUILDDIR="build"
@@ -88,7 +95,7 @@ rename_file(){
 }
 if [[ false ]]; then
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
-download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar.bz2" "x264-snapshot-20090524-2245.tar"
+download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
 download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
 download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
 download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
@@ -99,7 +106,7 @@ fi
 
 if [[ true==false ]] ; then
 bunzip_file "ffmpeg-export-snapshot.tar.bz2"
-bunzip_file "x264-snapshot-20090524-2245.tar.bz2"
+bunzip_file "x264-snapshot.tar.bz2"
 gunzip_file "lame.src.tar.gz"
 gunzip_file "libogg-1.1.3.tar.gz"
 bunzip_file "libtheora-1.0.tar.bz2"
@@ -110,7 +117,7 @@ fi
 
 if [ false ] ; then
 untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
-untar_file "x264-snapshot-20090524-2245.tar" "x264-snap*" "x264"
+untar_file "x264-snapshot.tar" "x264-snap*" "x264"
 untar_file "lame.src.tar" "lame-*" "lame"
 untar_file "libogg-1.1.3.tar" "libogg-*" "libogg"
 untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
@@ -119,14 +126,15 @@ untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
 untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 fi
 
+export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
+
 if [ false ] ; then
 configure_file "lame"
 build_file "lame"
-configure_file "x264"
+configure_file "x264" "--enable-debug"
 build_file "x264"
 configure_file "libogg"
 build_file "libogg"
-export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 configure_file "libtheora" "--with-ogg=$SRCDIR/$BUILDDIR/libogg"
 build_file "libtheora"
 #configure_file "speex" "--with-ogg-dir=$SRCDIR/$BUILDDIR/libogg"

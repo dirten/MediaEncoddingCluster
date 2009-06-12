@@ -136,6 +136,9 @@ void Packet::setStreamIndex(int idx) {
 int Packet::getDuration() {
   return packet->duration;
 }
+void Packet::setDuration(int d) {
+  packet->duration=d;
+}
 
 bool Packet::isKeyFrame() {
   return packet->flags & PKT_FLAG_KEY;

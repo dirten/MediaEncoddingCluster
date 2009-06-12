@@ -22,6 +22,10 @@ namespace org {
   namespace esb {
     namespace av {
 
+      Codec::Codec(AVCodecContext * c) {
+        ctx=c;
+        _opened=true;
+      }
       Codec::Codec() {
         _opened = false;
         _codec_id = CODEC_ID_NONE;
@@ -123,6 +127,7 @@ namespace org {
       }
 
       int Codec::open() {
+        if(_opened)return 0;
         if (findCodec(_mode)) {
           //          ctx = avcodec_alloc_context();
           setParams();

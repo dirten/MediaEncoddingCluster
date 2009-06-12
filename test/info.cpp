@@ -58,12 +58,13 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\tcodec\tnum\tden\tquality\tduration" << endl;
+  cout << "#\tindex\ttype\tcodec\tnum\tden\tquality\tduration" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     AVStream * s = fis.getFormatContext()->streams[a];
     cout << a << "\t";
     cout << s->index << "\t";
+    cout << s->codec->codec_type << "\t";
     cout << s->codec->codec_id << "\t";
     cout << s->codec->time_base.num << "\t";
     cout << s->codec->time_base.den << "\t";

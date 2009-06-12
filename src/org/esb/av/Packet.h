@@ -30,6 +30,7 @@ public:
         int getFlags();
 	int getStreamIndex();
 	void setStreamIndex(int);
+        void setDuration(int);
 	int getDuration();
 	bool isKeyFrame();
 	void * getPriv();
