@@ -156,6 +156,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
   if (!_frameFinished) {
     return Frame();
   }
+  frame.setTimeBase(packet.getTimeBase());
   frame.setFinished(_frameFinished);
   frame._pixFormat = _pix_fmt;
   frame.stream_index = packet.packet->stream_index;
@@ -168,7 +169,7 @@ Frame Decoder::decodeVideo(Packet & packet) {
 }
 
 Frame Decoder::decodeAudio(Packet & packet) {
-      cout << "DecodeAudio Packet"<<endl;
+  //    cout << "DecodeAudio Packet"<<endl;
   //        Frame frame;
   int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
   uint8_t *outbuf = new uint8_t[samples_size];
@@ -190,6 +191,7 @@ Frame Decoder::decodeAudio(Packet & packet) {
   //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
   Frame frame(outbuf);
   //    frame._buffer = outbuf;
+  frame.setTimeBase(packet.getTimeBase());
   frame.stream_index = packet.packet->stream_index;
   frame.setPts(packet.packet->pts);
   frame.setDts(packet.packet->dts);
@@ -200,6 +202,6 @@ Frame Decoder::decodeAudio(Packet & packet) {
   frame.channels = ctx->channels;
   frame.sample_rate = ctx->sample_rate;
   frame.setFinished(true);
-  logdebug("return frame");
+//  logdebug("return frame");
   return frame;
 }

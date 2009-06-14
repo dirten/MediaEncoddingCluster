@@ -154,6 +154,13 @@ int64_t Packet::getPosition() {
 AVPacket* Packet::getAVPacket() {
   return packetPtr.get();
 }
+void Packet::setTimeBase(AVRational t){
+  _time_base=t;
+}
+AVRational Packet::getTimeBase(){
+  return _time_base;
+}
+
 void Packet::toString(){
   logdebug("Packet->Size:"<<getSize());
   logdebug("Packet->Pts:"<<getPts());
@@ -161,6 +168,7 @@ void Packet::toString(){
   logdebug("Packet->StreamIndex:"<<getStreamIndex());
   logdebug("Packet->Duration:"<<getDuration());
   logdebug("Packet->Position:"<<getPosition());
+  logdebug("Packet->TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
 
 }
 

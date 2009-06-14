@@ -251,6 +251,12 @@ void Frame::setDts(int64_t dts) {
   _dts = dts;
 }
 
+void Frame::setTimeBase(AVRational t){
+  _time_base=t;
+}
+AVRational Frame::getTimeBase(){
+  return _time_base;
+}
 void Frame::toString() {
   if (getHeight() > 0 && getWidth() > 0)
     logdebug("Frame->Size:" << getSize());

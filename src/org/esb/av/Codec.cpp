@@ -257,6 +257,7 @@ namespace org {
         data.append("GOP:").append(Decimal(_gop_size).toString()).append("\r\n");
         data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
         data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
+        data.append("PixelFormat:").append(Decimal(getPixelFormat()).toString()).append("\r\n");
         char buf[256];
         avcodec_string(buf, sizeof (buf), ctx, _mode);
         data.append("InternalData:").append(std::string(buf)).append("\r\n");

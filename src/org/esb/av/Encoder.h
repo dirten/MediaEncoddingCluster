@@ -2,6 +2,7 @@
 #define ORG_ESBG_AV_ENCODER
 
 #include "Codec.h"
+#include "PacketOutputStream.h"
 //#include "AV.h"
 
 
@@ -19,6 +20,7 @@ namespace org {
                 Packet encode(Frame & f);
                 char * getStatistics();
                 void setStatistics(char *);
+                void setOutputStream(PacketOutputStream *);
 
                 /*
                 template<class Archive>
@@ -40,6 +42,8 @@ namespace org {
             private:
                 Packet encodeVideo(Frame & f);
                 Packet encodeAudio(Frame & f);
+                AVFifoBuffer *fifo;
+                PacketOutputStream * _pos;
 
             };
         }

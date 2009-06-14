@@ -36,6 +36,8 @@ class PacketInputStream: public InputStream{
 //	Packet _packet;
         int _streamIndex;
         int _readFrom;
+        int _video_idx;
+        int _audio_idx;
         InputStream * _source;
 };
 }}}

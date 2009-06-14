@@ -9,7 +9,7 @@ using namespace org::esb;
 using namespace std;
 
 Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
-
+  fifo = av_fifo_alloc(1024);
 
 }
 
@@ -45,6 +45,7 @@ Packet Encoder::encodeVideo(Frame & frame) {
     throw lang::Exception();
   }
   //    pac.data=data;
+  pac.setTimeBase(frame.getTimeBase());
   pac.packet->size = ret;
   pac.packet->pts = frame.getPts();
   pac.packet->dts = frame.getDts();
@@ -60,46 +61,78 @@ Packet Encoder::encodeVideo(Frame & frame) {
     //		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
     //		pac.packet->pts=ctx->coded_frame->pts;
   }
+  //  _pos->writePacket(pac);
   return pac;
+}
+
+void Encoder::setOutputStream(PacketOutputStream* pos) {
+  _pos = pos;
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
   //  logdebug("AudioEncoderFrame");
   //  frame.toString();
-  const int outbuf_size = 10000;
-  char outbuf[outbuf_size];
-  //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
 
-  int out_size = avcodec_encode_audio(ctx, (uint8_t*) & outbuf, outbuf_size, (short int *) frame._buffer);
-  if (out_size < 0) {
-    logerror("Error Encoding audio Frame");
+  int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
+  int size_out = frame._size * ctx->channels * osize;
+  int frame_bytes = ctx->frame_size * osize * ctx->channels;
+  if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + size_out) < 0) {
+    fprintf(stderr, "av_fifo_realloc2() failed\n");
   }
 
-  Packet pak(out_size);
-  pak.packet->size = out_size;
-  memcpy(pak.packet->data, &outbuf, out_size);
-  //    pak.packet->pts = frame.getPts();
-  //	pak.pts=this->coded_frame->pts;
-  if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE)
-    pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,48000});
+  av_fifo_generic_write(fifo, frame._buffer, size_out, NULL);
 
-  //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
-  //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
+  int audio_buf_size = (2 * 128 * 1024);
+  uint8_t * audio_buf = new uint8_t[audio_buf_size];
+  int audio_out_size = (4 * 128 * 1024);
+  uint8_t * audio_out = new uint8_t[audio_out_size];
+
+  while (av_fifo_size(fifo) >= frame_bytes) {
+
+    av_fifo_generic_read(fifo, audio_buf, frame_bytes, NULL);
 
 
-  if (ctx->coded_frame) {
-    //		pak.packet->pts=ctx->coded_frame->pts;
-    //		cout <<"Encoder Audio Pts:"<<ctx->coded_frame->pts<<endl;
-    //	    pak.packet->duration=ctx->coded_frame->duration;
+
+    //  const int outbuf_size = 1000;
+    //  char outbuf[outbuf_size];
+    //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
+
+    int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
+    if (out_size < 0) {
+      logerror("Error Encoding audio Frame");
+    }
+
+    Packet pak(out_size);
+    pak.packet->size = out_size;
+    memcpy(pak.packet->data, audio_out, out_size);
+    //    pak.packet->pts = frame.getPts();
+    //	pak.pts=this->coded_frame->pts;
+
+    if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE)
+      pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {
+        1, 48000
+      });
+
+    //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
+    //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
+
+
+    if (ctx->coded_frame) {
+      //		pak.packet->pts=ctx->coded_frame->pts;
+      //		cout <<"Encoder Audio Pts:"<<ctx->coded_frame->pts<<endl;
+      //	    pak.packet->duration=ctx->coded_frame->duration;
+    }
+    pak.setTimeBase(frame.getTimeBase());
+    pak.packet->flags |= PKT_FLAG_KEY;
+    pak.packet->stream_index = frame.stream_index;
+
+    pak.packet->dts = frame.getDts();
+    //	pak.packet->pos=frame.pos;
+    pak.packet->duration = frame.duration;
+    //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
+    _pos->writePacket(pak);
   }
-  pak.packet->flags |= PKT_FLAG_KEY;
-  pak.packet->stream_index = frame.stream_index;
-
-  pak.packet->dts = frame.getDts();
-  //	pak.packet->pos=frame.pos;
-  pak.packet->duration = frame.duration;
-  //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
-  return pak;
+  return Packet();
 }
 
 /**

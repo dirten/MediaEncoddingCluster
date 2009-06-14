@@ -3,7 +3,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 
-
+#include <vector>
 
 
 
@@ -37,6 +37,8 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   int streams = fis.getStreamCount();
+  std::vector<long long int> start_dts;
+  std::vector<long long int> start_pts;
   cout << endl;
   cout << "<Stream Information>" << endl;
   cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tfirst_dts\tduration" << endl;
@@ -53,6 +55,8 @@ int main(int argc, char ** argv) {
     cout << s->first_dts << "\t";
     cout << s->duration << "\t";
     cout << endl;
+    start_dts.push_back(s->first_dts);
+    start_pts.push_back(s->start_time);
   }
 
 
@@ -81,7 +85,9 @@ int main(int argc, char ** argv) {
   printf("%10s|", "#");
   printf("%20s|", "pts");
   printf("%20s|", "dts");
-  printf("%20s|", "timebase");
+  printf("%20s|", "offset-pts");
+  printf("%20s|", "offset-dts");
+//  printf("%20s|", "timebase");
   printf("%8s|", "size");
   printf("%2s|", "ix");
   printf("%2s|", "k");
@@ -103,7 +109,9 @@ int main(int argc, char ** argv) {
     printf("%10ld|", a);
     printf("%20lli|", p.packet->pts);
     printf("%20lld|", p.packet->dts);
-    printf("%20lld|",fis.getFormatContext()->streams[p.packet->stream_index]->time_base);
+    printf("%20lld|", p.packet->pts-start_pts[p.packet->stream_index]);
+    printf("%20lld|", p.packet->dts-start_dts[p.packet->stream_index]);
+//    printf("%20lld|",fis.getFormatContext()->streams[p.packet->stream_index]->time_base);
     printf("%8d|", p.packet->size);
     printf("%2d|", p.packet->stream_index);
     printf("%2d|", p.isKeyFrame());

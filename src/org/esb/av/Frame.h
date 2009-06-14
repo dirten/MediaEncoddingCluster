@@ -8,63 +8,66 @@
 #include <boost/shared_ptr.hpp>
 
 namespace org {
-    namespace esb {
-        namespace av {
+  namespace esb {
+    namespace av {
 
-            class Frame {
-            public:
-                Frame();
-                Frame(PixelFormat format, int width, int height, bool allocate=true);
-                Frame(uint8_t * buffer);
+      class Frame {
+      public:
+        Frame();
+        Frame(PixelFormat format, int width, int height, bool allocate = true);
+        Frame(uint8_t * buffer);
 
-//                Frame(const Frame & source);
-//                Frame operator=(Frame & frame);
-                ~Frame();
+        //                Frame(const Frame & source);
+        //                Frame operator=(Frame & frame);
+        ~Frame();
 
-                uint8_t * getData();
-                int getWidth();
-                int getHeight();
-                int getSize();
-                PixelFormat getFormat();
-                AVPacket * getPacket();
-                Frame getFrame(int format = 0);
-                void setPts(int64_t pts);
-                void setDts(int64_t pts);
-                int64_t getPts();
-                int64_t getDts();
-                AVFrame * getAVFrame();
-                bool isFinished();
-                void setFinished(bool);
-                void toString();
-                
-                //	void setFrame(AVFrame * frame);
-                int _height;
-                int _width;
-                PixelFormat _pixFormat;
-                //    private:
-                AVCodecContext * _codecContext;
-                AVPacket * _packet;
-                //	AVFrame * _frame;
-                uint8_t * _buffer;
-            private:
-              bool _isFinished;
-                int64_t _dts;
-                int64_t _pts;
-                boost::shared_ptr<AVFrame> framePtr;
-                bool _allocated;
-            public:
-                int _frameFinished;
-                int64_t pos;
-                int duration;
-                int _size;
-                int _type;
-                int channels;
-                int sample_rate;
-                int stream_index;
+        uint8_t * getData();
+        int getWidth();
+        int getHeight();
+        int getSize();
+        PixelFormat getFormat();
+        AVPacket * getPacket();
+        Frame getFrame(int format = 0);
+        void setPts(int64_t pts);
+        void setDts(int64_t pts);
+        int64_t getPts();
+        int64_t getDts();
+        AVFrame * getAVFrame();
+        bool isFinished();
+        void setFinished(bool);
+        void toString();
+        void setTimeBase(AVRational);
+        AVRational getTimeBase();
 
-            };
-        }
+        //	void setFrame(AVFrame * frame);
+        int _height;
+        int _width;
+        PixelFormat _pixFormat;
+        //    private:
+        AVCodecContext * _codecContext;
+        AVPacket * _packet;
+        //	AVFrame * _frame;
+        uint8_t * _buffer;
+      private:
+        bool _isFinished;
+        int64_t _dts;
+        int64_t _pts;
+        boost::shared_ptr<AVFrame> framePtr;
+        bool _allocated;
+        AVRational _time_base;
+      public:
+        int _frameFinished;
+        int64_t pos;
+        int duration;
+        int _size;
+        int _type;
+        int channels;
+        int sample_rate;
+        int stream_index;
+
+      };
     }
+  }
 }
 #endif
 

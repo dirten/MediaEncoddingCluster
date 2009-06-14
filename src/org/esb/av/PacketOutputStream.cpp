@@ -37,7 +37,12 @@ void PacketOutputStream::writePacket(Packet & packet) {
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
   if (streams.size() <= packet.getStreamIndex())
     logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
-  //
+  
+  /**
+   * calculate right pts for the entire streams here
+   */
+
+  
   int result = av_write_frame(_fmtCtx, packet.packet);
   //      int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
 }
