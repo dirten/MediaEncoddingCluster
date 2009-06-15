@@ -1,13 +1,15 @@
 #ifndef ORG_ESBG_AV_ENCODER
 #define ORG_ESBG_AV_ENCODER
 
+
 #include "Codec.h"
 #include "PacketOutputStream.h"
+#include "Sink.h"
 //#include "AV.h"
 
 
 
-
+//class PacketTermSink;
 namespace org {
     namespace esb {
         namespace av {
@@ -21,7 +23,7 @@ namespace org {
                 char * getStatistics();
                 void setStatistics(char *);
                 void setOutputStream(PacketOutputStream *);
-
+                void setSink(Sink*);
                 /*
                 template<class Archive>
                 void serialize(Archive & ar, const unsigned int version){
@@ -44,7 +46,7 @@ namespace org {
                 Packet encodeAudio(Frame & f);
                 AVFifoBuffer *fifo;
                 PacketOutputStream * _pos;
-
+                Sink*_sink;
             };
         }
     }

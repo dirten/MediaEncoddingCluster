@@ -19,7 +19,7 @@ extern "C" {
 #endif
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
-
+#include "org/esb/av/Sink.h"
 typedef unsigned char byte;
 
 int read_exact(byte *buf, int len) {
@@ -131,6 +131,7 @@ ETERM * buildTermFromPacket(Packet & p){
     return vector2term(terms);
 }
 
+
 Packet * buildPacketFromTerm(ETERM * in){
   ETERM * streamidx = erl_element(1, in);
   ETERM * pts = erl_element(3, in);
@@ -152,6 +153,29 @@ Packet * buildPacketFromTerm(ETERM * in){
   memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
   return p;
 }
+
+class TermPacketSource{
+public:
+    TermPacketSource(ETERM * t){}
+};
+
+class PacketTermSink:public Sink{
+public:
+  PacketTermSink(){}
+  void write(void * p){
+    logdebug("Write Packet to Term Sink");
+    Packet* pt=(Packet*)p;
+    pkts.push_back(buildTermFromPacket(*pt));
+  }
+  ETERM * getTerm(){
+    return vector2list(pkts);
+  }
+
+private:
+    std::vector<ETERM *> pkts;
+
+};
+
 
 Decoder * buildDecoderFromTerm(ETERM* in) {
   ETERM * codecid = erl_element(6, in);

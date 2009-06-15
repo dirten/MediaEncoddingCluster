@@ -2,6 +2,7 @@
 #define ORG_ESB_AV_PACKETINPUTSTREAM_H
 #include <vector>
 #include "org/esb/io/InputStream.h"
+#include "FormatInputStream.h"
 #include "Packet.h"
 #include "Codec.h"
 using namespace org::esb::io;
@@ -11,7 +12,7 @@ namespace av{
 class PacketInputStream: public InputStream{
     public:
         PacketInputStream(InputStream * is);
-        PacketInputStream(InputStream & is);
+        
         ~PacketInputStream();
         int readPacket(Packet&packet);
         Packet  readPacket();
@@ -36,9 +37,14 @@ class PacketInputStream: public InputStream{
 //	Packet _packet;
         int _streamIndex;
         int _readFrom;
-        int _video_idx;
+/*        int _video_idx;
         int _audio_idx;
+        int _video_idx_map;
+        int _audio_idx_map;*/
         InputStream * _source;
+        FormatInputStream * _fis;
+        /** private CopyConstructor */
+        PacketInputStream(InputStream & is);
 };
 }}}
 #endif

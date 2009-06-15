@@ -1,7 +1,7 @@
 #include "org/esb/io/InputStream.h"
 #include "FrameBaseStream.h"
 #include "Frame.h"
-
+#include "StreamInfo.h"
 using namespace org::esb::io;
 
 namespace org {
@@ -17,6 +17,7 @@ namespace org {
                 int read(vector<unsigned char>&buffer);
                 int read();
                 Frame * readFrame();
+               
                 void close();
             private:
                 InputStream * _source;

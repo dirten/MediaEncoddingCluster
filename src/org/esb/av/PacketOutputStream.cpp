@@ -39,6 +39,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
     logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
   
   /**
+   * @TOTO implementing now
    * calculate right pts for the entire streams here
    */
 

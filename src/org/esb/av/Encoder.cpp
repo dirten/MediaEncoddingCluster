@@ -10,7 +10,9 @@ using namespace std;
 
 Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
   fifo = av_fifo_alloc(1024);
+  _pos = NULL;
 
+    _sink=NULL;
 }
 
 Encoder::Encoder() : Codec() {
@@ -62,6 +64,7 @@ Packet Encoder::encodeVideo(Frame & frame) {
     //		pac.packet->pts=ctx->coded_frame->pts;
   }
   //  _pos->writePacket(pac);
+  _sink->write(&pac);
   return pac;
 }
 
@@ -69,6 +72,9 @@ void Encoder::setOutputStream(PacketOutputStream* pos) {
   _pos = pos;
 }
 
+void Encoder::setSink(Sink * sink){
+  _sink=sink;
+}
 Packet Encoder::encodeAudio(Frame & frame) {
   //  logdebug("AudioEncoderFrame");
   //  frame.toString();
@@ -130,8 +136,14 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	pak.packet->pos=frame.pos;
     pak.packet->duration = frame.duration;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
-    _pos->writePacket(pak);
+    if (_pos != NULL)
+      _pos->writePacket(pak);
+    if(_sink!=NULL)
+      _sink->write(&pak);
+//  return pak;
   }
+  delete []audio_buf;
+  delete []audio_out;
   return Packet();
 }
 

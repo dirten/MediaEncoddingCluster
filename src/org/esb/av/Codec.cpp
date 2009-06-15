@@ -248,6 +248,7 @@ namespace org {
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
+        data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
         data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");

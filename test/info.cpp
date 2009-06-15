@@ -44,19 +44,19 @@ int main(int argc, char ** argv) {
   cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tfirst_dts\tduration" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
-    AVStream * s = fis.getFormatContext()->streams[a];
+    StreamInfo * s = fis.getStreamInfo(a);
     cout << a << "\t";
-    cout << s->index << "\t";
-    cout << s->codec->codec_id << "\t";
-    cout << s->time_base.num << "\t";
-    cout << s->time_base.den << "\t";
-    cout << s->quality << "\t";
-    cout << s->start_time << "\t";
-    cout << s->first_dts << "\t";
-    cout << s->duration << "\t";
+    cout << s->getIndex() << "\t";
+    cout << s->getCodecId() << "\t";
+    cout << s->getTimeBase().num << "\t";
+    cout << s->getTimeBase().den << "\t";
+    cout << s->getQuality() << "\t";
+    cout << s->getFirstPts() << "\t";
+    cout << s->getFirstDts() << "\t";
+    cout << s->getDuration() << "\t";
     cout << endl;
-    start_dts.push_back(s->first_dts);
-    start_pts.push_back(s->start_time);
+    start_dts.push_back(s->getFirstDts());
+    start_pts.push_back(s->getFirstPts());
   }
 
 
@@ -65,15 +65,13 @@ int main(int argc, char ** argv) {
   cout << "#\tindex\ttype\tcodec\tnum\tden\tquality\tduration" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
-    AVStream * s = fis.getFormatContext()->streams[a];
+    StreamInfo * s = fis.getStreamInfo(a);
     cout << a << "\t";
-    cout << s->index << "\t";
-    cout << s->codec->codec_type << "\t";
-    cout << s->codec->codec_id << "\t";
-    cout << s->codec->time_base.num << "\t";
-    cout << s->codec->time_base.den << "\t";
-    //          cout << s->codec->quality<<"\t";
-    //          cout << s->duration<<"\t";
+    cout << s->getIndex() << "\t";
+    cout << s->getCodecType() << "\t";
+    cout << s->getCodecId() << "\t";
+    cout << s->getCodecTimeBase().num << "\t";
+    cout << s->getCodecTimeBase().den << "\t";
     cout << endl;
   }
 

@@ -3,7 +3,7 @@
 #include "org/esb/lang/Exception.h"
 
 #include <iostream>
-#include <boost/cast.hpp>
+//#include <boost/cast.hpp>
 using namespace std;
 
 using namespace org::esb::io;
@@ -16,17 +16,33 @@ namespace org {
         _isValid = false;
         _sourceFile = source;
         formatCtx = avformat_alloc_context();
-        //        logdebug("openning MediaFile:" << source->getPath());
         if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
-          //                    throw Exception("FormatInputStream<init> - could not open File");
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
-          //          close();
           return;
         }
         if (av_find_stream_info(formatCtx) < 0) {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
-          //          close();
           return;
+        }
+        /**
+         * get the first video and audio stream
+         */
+        _streamMap[0] = -1;
+        _streamMap[1] = -1;
+        for (int i = 0; i < formatCtx->nb_streams; i++) {
+          if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _streamMap[0] == -1) {
+            _streamMap[0] = i;
+            _streamReverseMap[i] = 0;
+          } else
+            if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _streamMap[1] == -1) {
+            _streamMap[1] = i;
+            _streamReverseMap[i] = 1;
+          } else
+            _streamReverseMap[i] = -1;
+        }
+        if(_streamMap[0]<0){
+            _streamMap[0] = _streamMap[1];
+            _streamReverseMap[_streamMap[1]] = 1;
         }
         _isValid = true;
       }
@@ -48,12 +64,16 @@ namespace org {
       }
 
       int FormatInputStream::getStreamCount() {
-        return formatCtx->nb_streams;
+        return _streamMap.size();
       }
 
       InputStream * FormatInputStream::getStream(int streamIndex) {
         selectedStream = streamIndex;
         return this;
+      }
+
+      StreamInfo * FormatInputStream::getStreamInfo(int idx) {
+        return new StreamInfo(formatCtx->streams[_streamMap[idx]], idx);
       }
 
       AVInputStream * FormatInputStream::getAVStream(int streamIndex) {

@@ -117,6 +117,7 @@ ETERM * addstream(ETERM * in) {
   ETERM *streamidx = erl_element(3, in);
   Encoder * d = buildEncoderFromTerm(erl_element(2, in));
   pos->setEncoder(*d, ERL_INT_UVALUE(streamidx));
+  d->setOutputStream(pos);
   terms.push_back(erl_mk_atom("ok_stream_added"));
 
   return vector2list(terms);
@@ -175,26 +176,26 @@ ETERM * streaminfo(ETERM * v) {
   if (f.exists()) {
     //    FormatInputStream fis(&f);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
-    if (!fis->isValid() || s < 0 || s >= fis->getFormatContext()->nb_streams) {
+    if (!fis->isValid() || s < 0 || s >= fis->getStreamCount()) {
       terms.push_back(erl_mk_atom("streamnotfound"));
     } else {
 
-      AVStream *str = fis->getFormatContext()->streams[s];
+      StreamInfo *str = fis->getStreamInfo(s);
       terms.push_back(erl_mk_int(0));
-      terms.push_back(erl_mk_int(str->index));
-      terms.push_back(erl_mk_int(str->codec->codec_type));
-      terms.push_back(erl_mk_int(str->codec->codec_id));
-      terms.push_back(erl_mk_int(str->codec->bit_rate));
-      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? av_q2d(str->r_frame_rate) : str->codec->sample_rate));
-      terms.push_back(erl_mk_int(str->time_base.num));
-      terms.push_back(erl_mk_int(str->time_base.den));
-      terms.push_back(erl_mk_int(str->codec->width));
-      terms.push_back(erl_mk_int(str->codec->height));
-      terms.push_back(erl_mk_int(str->codec->channels));
-      terms.push_back(erl_mk_int(str->codec->gop_size));
-      terms.push_back(erl_mk_int(str->codec->codec_type == CODEC_TYPE_VIDEO ? (int) str->codec->pix_fmt : (int) str->codec->sample_fmt));
-      terms.push_back(erl_mk_string(Decimal(str->start_time).toString().c_str()));
-      terms.push_back(erl_mk_string(Decimal(str->duration).toString().c_str()));
+      terms.push_back(erl_mk_int(str->getIndex()));
+      terms.push_back(erl_mk_int(str->getCodecType()));
+      terms.push_back(erl_mk_int(str->getCodecId()));
+      terms.push_back(erl_mk_int(str->getCodecBitrate()));
+      terms.push_back(erl_mk_int(str->getCodecType() == CODEC_TYPE_VIDEO ? av_q2d(str->getFrameRate()) : str->getCodecSampleRate()));
+      terms.push_back(erl_mk_int(str->getTimeBase().num));
+      terms.push_back(erl_mk_int(str->getTimeBase().den));
+      terms.push_back(erl_mk_int(str->getWidth()));
+      terms.push_back(erl_mk_int(str->getheight()));
+      terms.push_back(erl_mk_int(str->getChannels()));
+      terms.push_back(erl_mk_int(str->getGOPSize()));
+      terms.push_back(erl_mk_int(str->getCodecType() == CODEC_TYPE_VIDEO ? (int) str->getPixelFormat() : (int) str->getSampleFormat()));
+      terms.push_back(erl_mk_string(Decimal(str->getFirstPts()).toString().c_str()));
+      terms.push_back(erl_mk_string(Decimal(str->getDuration()).toString().c_str()));
     }
   } else {
     terms.push_back(erl_mk_atom("filenotfound"));
@@ -358,6 +359,8 @@ ETERM * encode(ETERM* in) {
   int multipass = ERL_INT_UVALUE(pass);
   Decoder *d = create_decoder(decoder);
   Encoder *e = create_encoder(encoder);
+  PacketTermSink * sink=new PacketTermSink();
+  e->setSink(sink);
   d->ctx->request_channel_layout=e->getChannels();
   e->open();
   d->open();
@@ -435,13 +438,14 @@ ETERM * encode(ETERM* in) {
   delete out_format;
   delete in_format;
   delete conv;
+  delete sink;
   if (multipass == 1){
     if (toDebug)
       logdebug("Statistics :" << statistics);
     ETERM * stats = erl_mk_string(statistics.c_str());
     terms.push_back(stats);
   }
-  return vector2list(terms);
+  return sink->getTerm();
 }
 
 

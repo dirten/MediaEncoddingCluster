@@ -15,28 +15,40 @@ using namespace org::esb::lang;
  * the PacketInputStream reads currently only the first Video and Audio Stream
  * and maps this Streams to the Stream index
  * Video always StreamIndex 0
- * Audio always StreamIndex 1
- *
+ * Audio always StreamIndex 1 if video stream exist else then the Stream Index is 0
  **/
 PacketInputStream::PacketInputStream(InputStream * is) {
   _readFrom = 0;
-  _video_idx=-1;
-  _audio_idx=-1;
+//  _video_idx = -1;
+//  _audio_idx = -1;
+  _fis = NULL;
   if (instanceOf(*is, FormatInputStream)) {
-    _formatCtx = ((FormatInputStream*) is)->getFormatContext();
-    for(int i=0;i<_formatCtx->nb_streams;i++){
-      if(_formatCtx->streams[i]->codec->codec_type==CODEC_TYPE_VIDEO&&_video_idx==-1)
-        _video_idx=i;
-      if(_formatCtx->streams[i]->codec->codec_type==CODEC_TYPE_AUDIO&&_audio_idx==-1)
-        _audio_idx=i;
+    _formatCtx = ((FormatInputStream*) is)->formatCtx;
+    _fis = (FormatInputStream*) is;
+    /**
+     * get the first video and audio stream
+     */
+/*
+    for (int i = 0; i < _formatCtx->nb_streams; i++) {
+      if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _video_idx == -1) {
+        _video_idx = i;
+        _video_idx_map = 0;
+      }
+      if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _audio_idx == -1)
+        _audio_idx = i;
     }
+    if (_video_idx>-1) {
+      _audio_idx_map = 1;
+    } else {
+      _audio_idx_map = 0;
+    }*/
     _readFrom = 1;
   } else {
     _source = is;
   }
-
 }
 
+/*
 PacketInputStream::PacketInputStream(InputStream & is) {
   _readFrom = 0;
   if (instanceOf(is, FormatInputStream)) {
@@ -55,7 +67,7 @@ PacketInputStream::PacketInputStream(InputStream & is) {
     _source = &is;
   }
 }
-
+ */
 PacketInputStream::~PacketInputStream() {
   if (_readFrom == 1) {
     //        if(_packet.data!=NULL)
@@ -80,18 +92,16 @@ int PacketInputStream::readPacket(Packet&packet) {
 int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   if (packet.packet->data != NULL)
     av_free_packet(packet.packet);
-  int size = av_read_frame(_formatCtx, packet.packet);
-  packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
+  int status = av_read_frame(_formatCtx, packet.packet);
+  if (status == 0) {
+    packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
 
-  if(packet.getStreamIndex()==_video_idx)
-    packet.setStreamIndex(0);
-  else
-  if(packet.getStreamIndex()==_audio_idx)
-    packet.setStreamIndex(1);
-  else
-    size=readPacketFromFormatIS(packet);
-    //    logdebug("Packet Size:"<<packet.packet->size)
-  return size;
+    if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)
+      packet.setStreamIndex(_fis->_streamReverseMap[packet.getStreamIndex()]);
+    else
+      status = readPacketFromFormatIS(packet);
+  }
+  return status;
 }
 
 Packet PacketInputStream::readPacketFromFormatIS() {

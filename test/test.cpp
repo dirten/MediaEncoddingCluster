@@ -21,11 +21,11 @@ using namespace std;
 
 int audio() {
   //
-  int stream_id = 1;
-  //  File infile("/media/video/ChocolateFactory.ts");
+  int stream_id = 2;
+    File infile("/media/video/ChocolateFactory.ts");
   //File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
-  File infile("/Users/jholscher/media/ChocolateFactory.ts");
-  File outfile("/media/out/test.mp4");
+//  File infile("/Users/jholscher/media/ChocolateFactory.ts");
+  File outfile("/media/out/test.mp3");
   if (!infile.exists()) {
     logdebug("file does not exit");
     //    return 127;
@@ -79,12 +79,12 @@ int audio() {
 
   FrameConverter conv(&dec, &enc);
   int pts = 0;
-  for (int i = 0; i < 5000; i++) {
+  for (int i = 0; i < 50; i++) {
     Packet p;
     pis.readPacket(p);
-    if (p.getStreamIndex() != stream_id)continue;
+    if (p.getStreamIndex() != 1)continue;
     //    logdebug("InputPacket:");
-        p.toString();
+//        p.toString();
     Frame f = dec.decode(p);
     //    f.toString();
     if (f.isFinished()) {
@@ -92,18 +92,18 @@ int audio() {
       f2.setPts(0);
       f2.setDts(0);
       f2.stream_index = 0;
-      //      f2.toString();
-      Packet pt = enc.encode(f2);
+//            f2.toString();
+      enc.encode(f2);
 //      pt.toString();
       //      logdebug("Duration:"<<enc.ctx->frame_size);
 
       //      pt.setDuration(enc.ctx->frame_size);
-      pt.setPts(pts);
-      pt.setDts(0);
+//      pt.setPts(pts);
+//      pt.setDts(0);
       //      if(pt.getSize()>0)
-      pts += enc.ctx->frame_size;
+//      pts += enc.ctx->frame_size;
 
-      pt.setStreamIndex(0);
+//      pt.setStreamIndex(0);
 
       //      logdebug("OutputPacket:");
       //            pt.toString();

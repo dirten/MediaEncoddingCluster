@@ -33,9 +33,10 @@ add_library (av av av/Init.cpp
             av/Encoder.cpp 
             av/Packet.cpp 
             av/Frame.cpp 
-	        av/PPSWriter.cpp 
-	        av/AVInputStream.cpp 
-	        av/FormatStreamFactory.cpp
+            av/PPSWriter.cpp
+            av/AVInputStream.cpp
+            av/FormatStreamFactory.cpp
+            av/StreamInfo.cpp
 
 )
 

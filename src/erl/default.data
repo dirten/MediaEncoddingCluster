@@ -6,7 +6,7 @@
   {config,[{attributes,[key, val]}]}
 ]}.
 
-{profile,1,"Test Profile","avi","avi",13,1024,25,640,480,2,86016,192000,48000,0,30}.
+{profile,1,"Test Profile","avi","avi",13,1024,25,640,480,2,86017,192000,48000,0,30}.
 {profile,2,"ipod(640x480-x264(1024)-vorbis(192/48))","mp4","ipod",28,1024,25,640,480,2,86021, 192000,48000,0,30}.
 
 {scheduler,1, "file_scanner", file_scanner, scan, [], 10000, "Scans Directory in interval", true}.
