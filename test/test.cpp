@@ -79,7 +79,7 @@ int audio() {
 
   FrameConverter conv(&dec, &enc);
   int pts = 0;
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 50000; i++) {
     Packet p;
     pis.readPacket(p);
     if (p.getStreamIndex() != 1)continue;
@@ -112,6 +112,7 @@ int audio() {
   }
 
   //        Frame f((PixelFormat)1,320,240);
+  std::cout << "here i am"<<std::endl;
 
   return 0;
 

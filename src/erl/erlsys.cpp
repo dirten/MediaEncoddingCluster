@@ -61,7 +61,7 @@ ETERM * codeclist(ETERM * v) {
   std::vector<ETERM *> terms;
   AVCodec *p = NULL;
   while ((p = av_codec_next(p))) {
-    if(p->encode){
+    if (p->encode) {
       std::vector<ETERM *> c;
       c.push_back(erl_mk_string(p->name));
       c.push_back(erl_mk_int(p->id));
@@ -88,7 +88,7 @@ ETERM * createfile(ETERM* in) {
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, in);
   org::esb::io::File fout((const char*) ERL_ATOM_PTR(file));
-  logdebug("Create File:"<<(const char*) ERL_ATOM_PTR(file));
+  logdebug("Create File:" << (const char*) ERL_ATOM_PTR(file));
   fos = new org::esb::av::FormatOutputStream(&fout);
   pos = new org::esb::av::PacketOutputStream(fos);
 
@@ -125,19 +125,19 @@ ETERM * addstream(ETERM * in) {
 
 ETERM * writepacket(ETERM * in) {
   std::vector<ETERM *> terms;
-//  erl_print_term((FILE*)stderr, in);
-//  logdebug("WritePacket");
-//  logdebug("Build Packet:");
+  //  erl_print_term((FILE*)stderr, in);
+  //  logdebug("WritePacket");
+  //  logdebug("Build Packet:");
   Packet * p = buildPacketFromTerm(in);
-//  logdebug("Packet Ready:");
-//  p->toString();
+  //  logdebug("Packet Ready:");
+  //  p->toString();
   p->packet->pts = 0;
   p->packet->dts = 0;
-  if(p->getSize()>0){
-  pos->writePacket(*p);
-  delete p;
-  }else
-    logerror("Packet is not usabel");
+//  if (p->getSize() > 0) {
+    pos->writePacket(*p);
+    delete p;
+//  } else
+//    logerror("Packet is not usabel");
   terms.push_back(erl_mk_string("ok_packet_written"));
   return vector2list(terms);
 }
@@ -283,9 +283,9 @@ Decoder * create_decoder(ETERM* in) {
   ETERM * gop = erl_element(15, in);
   ETERM * fmt = erl_element(16, in);
 
-  Decoder * d = new Decoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  Decoder * d = new Decoder(static_cast<CodecID > (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::DECODER);
-  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat > (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat > (0));
   //	d->setPixelFormat((PixelFormat)0);
   d->setHeight(ERL_INT_UVALUE(height));
   d->setWidth(ERL_INT_UVALUE(width));
@@ -297,14 +297,14 @@ Decoder * create_decoder(ETERM* in) {
   d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(d->_codec->type == CODEC_TYPE_AUDIO ? ERL_INT_UVALUE(rate) : 0);
-  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (1));
-//  d->open();
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat > (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat > (1));
+  //  d->open();
 
   return d;
 }
 
 Encoder * create_encoder(ETERM* in) {
-//  erl_print_term((FILE*)stderr, in);
+  //  erl_print_term((FILE*)stderr, in);
   ETERM * codecid = erl_element(6, in);
   ETERM * bitrate = erl_element(8, in);
   ETERM * rate = erl_element(9, in);
@@ -317,9 +317,9 @@ Encoder * create_encoder(ETERM* in) {
   ETERM * fmt = erl_element(16, in);
   ETERM * flags = erl_element(19, in);
 
-  Encoder * d = new Encoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  Encoder * d = new Encoder(static_cast<CodecID > (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::ENCODER);
-  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat > (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat > (0));
   d->setHeight(ERL_INT_UVALUE(height));
   d->setWidth(ERL_INT_UVALUE(width));
   AVRational r;
@@ -330,10 +330,10 @@ Encoder * create_encoder(ETERM* in) {
   d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(ERL_INT_UVALUE(rate));
-  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat > (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat > (0));
   d->setFlag(CODEC_FLAG_PASS1);
   d->setFlag(ERL_INT_UVALUE(flags));
-//  d->open();
+  //  d->open();
 
   return d;
 }
@@ -341,33 +341,33 @@ Encoder * create_encoder(ETERM* in) {
 ETERM * encode(ETERM* in) {
   bool toDebug = DEBUG;
   std::vector<ETERM *> terms;
-  std:string statistics;
+  std::string statistics;
   ETERM * input_term = erl_element(2, in);
   ETERM * pass = erl_element(3, input_term);
   ETERM * decoder = erl_element(4, input_term);
   ETERM * encoder = erl_element(5, input_term);
   ETERM * packet_list = erl_element(6, input_term);
-  if (toDebug){
-//    logdebug("PacketList");
-//    erl_print_term((FILE*)stderr, packet_list);
+  if (toDebug) {
+    //    logdebug("PacketList");
+    //    erl_print_term((FILE*)stderr, packet_list);
     logdebug("Decoder");
-    erl_print_term((FILE*)stderr, decoder);
+    erl_print_term((FILE*) stderr, decoder);
     logdebug("Encoder");
-    erl_print_term((FILE*)stderr, encoder);
+    erl_print_term((FILE*) stderr, encoder);
   }
   //  org::esb::lang::Thread::sleep2(20000);
   int multipass = ERL_INT_UVALUE(pass);
   Decoder *d = create_decoder(decoder);
   Encoder *e = create_encoder(encoder);
-  PacketTermSink * sink=new PacketTermSink();
+  PacketTermSink * sink = new PacketTermSink();
   e->setSink(sink);
-  d->ctx->request_channel_layout=e->getChannels();
+  d->ctx->request_channel_layout = e->getChannels();
   e->open();
   d->open();
   if (toDebug)
-  logdebug("Decoder:"<<d->toString());
+    logdebug("Decoder:" << d->toString());
   if (toDebug)
-  logdebug("Encoder:"<<e->toString());
+    logdebug("Encoder:" << e->toString());
   FrameFormat * in_format = new FrameFormat();
   in_format->pixel_format = (PixelFormat) d->getPixelFormat(); //PIX_FMT_YUV420P;
   in_format->height = d->getHeight();
@@ -392,7 +392,7 @@ ETERM * encode(ETERM* in) {
   int pc = erl_length(packet_list);
   ETERM * tail = packet_list;
   for (int a = 0; a < pc; a++) {
-    //    logdebug("Output term " << a);
+//        logdebug("Output term " << a);
     //    erl_print_term((FILE*)stderr, erl_element(a + 1, packet_list));
     if (toDebug)
       logdebug("Create Packet" << a);
@@ -403,8 +403,8 @@ ETERM * encode(ETERM* in) {
       p->toString();
     Frame f = d->decode(*p);
     delete p;
-  if (toDebug)
-        f.toString();
+    if (toDebug)
+      f.toString();
 
     if (!f.isFinished()) {
       if (toDebug)
@@ -423,14 +423,14 @@ ETERM * encode(ETERM* in) {
       logdebug("after converting frame");
     //    f2.toString();
     Packet ret = e->encode(f2);
-//    ret.toString();
+    //    ret.toString();
     if (multipass == 1 && e->getStatistics())
       statistics.append(e->getStatistics());
-    if (multipass == 0||multipass == 2) {
+    if (multipass == 0 || multipass == 2) {
       ETERM * pac = buildTermFromPacket(ret);
       terms.push_back(pac);
     }
-     if (toDebug)
+    if (toDebug)
       logdebug("Encoded PacketSize" << ret.getSize());
   }
   delete d;
@@ -438,8 +438,8 @@ ETERM * encode(ETERM* in) {
   delete out_format;
   delete in_format;
   delete conv;
-  delete sink;
-  if (multipass == 1){
+  //  delete sink;
+  if (multipass == 1) {
     if (toDebug)
       logdebug("Statistics :" << statistics);
     ETERM * stats = erl_mk_string(statistics.c_str());
@@ -455,7 +455,7 @@ int current_size = 0;
 
 byte * get_buffer(byte * buffer, int size) {
   if (current_size < size) {
-//    logdebug("Increasing Buffer from:" << current_size << " to:" << size);
+    //    logdebug("Increasing Buffer from:" << current_size << " to:" << size);
     if (buffer != NULL)
       delete[]buffer;
     buffer = new byte[size];
@@ -488,9 +488,9 @@ int main(int argc, char** argv) {
 
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
-    //    std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
-//    if (DEBUG)
-//      erl_print_term((FILE*) stderr, intuple);
+    //        std::cerr<<"InTermSize:"<<erl_size(intuple)<<std::endl;
+    if (DEBUG)
+      erl_print_term((FILE*) stderr, intuple);
     ETERM* fnp = erl_element(1, intuple);
     if (fnp != NULL) {
       std::string func = (const char*) ERL_ATOM_PTR(fnp);
@@ -504,7 +504,7 @@ int main(int argc, char** argv) {
       } else if (func == "addstream") { /*System functions for creation output Files*/
         outtuple = addstream(intuple);
       } else if (func == "writepacket") {
-        outtuple = writepacket(erl_element(2,intuple));
+        outtuple = writepacket(erl_element(2, intuple));
       } else if (func == "writepacketlist") {
         outtuple = writepacketlist(intuple);
       } else if (func == "initfile") {
@@ -522,6 +522,7 @@ int main(int argc, char** argv) {
       } else {
         std::vector<ETERM *> terms;
         terms.push_back(erl_mk_atom("unknown_command"));
+        logdebug("unknown_command");
         outtuple = vector2term(terms);
       }
       if (intuple != NULL) {
@@ -531,10 +532,11 @@ int main(int argc, char** argv) {
       if (DEBUG)
         logdebug("try return data");
       if (outtuple != NULL) {
+        //
         if (DEBUG)
           logdebug("return data:");
-//        if (DEBUG)
-//          erl_print_term((FILE*) stderr, outtuple);
+        if (DEBUG)
+          erl_print_term((FILE*) stderr, outtuple);
         int size = erl_term_len(outtuple);
         //        logdebug("term size:"<<size);
         buf = get_buffer(buf, size);
@@ -545,6 +547,7 @@ int main(int argc, char** argv) {
           if (DEBUG)
             logdebug("try write_cmd");
           write_cmd(buf, size);
+          fflush(NULL);
           if (DEBUG)
             logdebug("write_cmd success");
           erl_free_compound(outtuple);

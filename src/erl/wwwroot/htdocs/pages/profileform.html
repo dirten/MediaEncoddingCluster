@@ -118,7 +118,7 @@
   }
   function setProfileAudioBitrateData(props, selected){
     $each(props,function(prop){
-      var el=new Element('option',{'text':prop+' bits/s', 'value':prop}).inject($('profileAudioBitrate'));
+      var el=new Element('option',{'text':prop+' Kbits/s', 'value':prop}).inject($('profileAudioBitrate'));
       if(prop==selected)
         el.set('selected');
     });

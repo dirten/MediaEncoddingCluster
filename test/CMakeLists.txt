@@ -3,23 +3,12 @@
 
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_DIR}/include)
-#include_directories (${WT_DIR}/src)
-#include_directories (${WT_DIR})
-#include_directories (${WT_DIR}/include)
 include_directories (${BOOST_INCLUDE_DIRS})
-#include_directories (${MYSQL_DIR}/include/mysql)
-#include_directories (${MYSQL_INC_DIR})
-#LINK_DIRECTORIES(${WT_DIR}/lib)
+
 LINK_DIRECTORIES(${BOOST_LIB_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
-#LINK_DIRECTORIES(${WT_DIR}/lib)
-#LINK_DIRECTORIES(${WT_DIR}/src)
-#LINK_DIRECTORIES(${WT_DIR}/src/http)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
-#LINK_DIRECTORIES(${X264_DIR}/lib)
-#LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
-#LINK_DIRECTORIES(${MYSQL_LIB_DIR})
-#LINK_DIRECTORIES(${PERFTOOLS_LIB})
+
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
@@ -27,106 +16,51 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
+FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
+MESSAGE("Erlang Interface Dir for test" ${ERLANG_INTERFACE_DIR})
+
+
+FIND_LIBRARY(ERL_INTERFACE_LIB
+    NAMES
+      erl_interface
+    PATHS
+      ${ERLANG_INTERFACE_DIR}/lib/
+    NO_DEFAULT_PATH
+  )
+
+FIND_LIBRARY(ERL_EI_LIB
+    NAMES
+      ei
+    PATHS
+      ${ERLANG_INTERFACE_DIR}/lib/
+    NO_DEFAULT_PATH
+  )
+
+INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
+LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
-IF(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIB libmysqld)
-#    SET(MYSQL_LIB mysqlserver)
-  ELSE(WIN32)
-    SET(MYSQL_LIB mysqld)
-  ENDIF(WIN32)
-ELSE(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIB libmysql)
-  ELSE(WIN32)
-    SET(MYSQL_LIB mysqlclient)
-  ENDIF(WIN32)
-ENDIF(USE_EMBEDDED_MYSQL)
 
 
-#add_executable (test_tcpsocket test_tcpsocket.cpp)
 add_executable (test test.cpp)
-#add_executable (testq test.cpp)
-#target_link_libraries (test_tcpsocket lang esb sql hive av signal web io net util avcodec avformat avutil swscale wt wtext wthttp
-#${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT} ${BOOST_SYSTEM_LIB_MT}  x264 mysqlclient)
-
-#hive_LDADD= -L./org/esb -llang -lesb -lsql -lhive -lav -lutil -lsignal -lweb -lio -lnet -lwt -lwtext -lwthttp -lboost_serialization
-#add_executable (testav test_av.cpp)
-#add_executable (test_sql test_sql.cpp)
-#add_executable (test_mysql test_mysql.cpp)
+add_executable (erltest erltest.cpp)
 add_executable (info info.cpp)
-#add_executable (seek seek_test.cpp)
-#add_executable (test test.cpp)
-
-
-#target_link_libraries (testav web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
-#target_link_libraries (test web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
-#target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
-
-#target_link_libraries (testav web sql esb hive av lang util signal io net avformat avcodec avutil swscale )
 IF(WIN32)
-#target_link_libraries (testav z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
-#target_link_libraries (test z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
-#target_link_libraries (testav faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
 target_link_libraries (info avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 target_link_libraries (test avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
-#target_link_libraries (testav Winmm ${MYSQL_LIB} wtd wtextd wthttpd )
-#target_link_libraries (testav Winmm ${MYSQL_LIB} wt wtext wthttp )
+target_link_libraries (erltest avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 ELSEIF(APPLE)
 target_link_libraries (info bz2 )
 target_link_libraries (test bz2 )
-
+target_link_libraries (erltest bz2 )
 ELSE(WIN32)
-#target_link_libraries (testav x264 ${MYSQL_LIB} ssl wthttp wtext wt pthread)
+
 ENDIF(WIN32)
 
-#target_link_libraries (test  pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
 IF(NOT WIN32)
 
-#target_link_libraries (test_sql sql esb util lang mysqlclient  ssl pthread ${BOOST_DT_LIB_MT})
 target_link_libraries (info ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (test ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
-#target_link_libraries (seek ${BZ2_LIB} pthread io av util lang avformat avcodec avutil swscale x264 z)
-#												av lang util io avcodec avformat avutil swscale
-#target_link_libraries (test mysqlclient pthread web esb sql hive lang av util signal io net avformat avcodec avutil swscale x264 ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} wthttp wtext wt z)
-#target_link_libraries (test_mysql pthread mysqlclient  ssl z)
+target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(NOT WIN32)
-#target_link_libraries (seek ${BZ2_LIB} pthread io util lang avformat avcodec avutil swscale x264 z)
-
-#target_link_libraries (testav esb lang av util io avformat avcodec avutil swscale x264 z pthread)
-#target_link_libraries (testav
-#  ${BOOST_SERIAL_LIB_MT}
-#  ${BOOST_THREAD_LIB_MT}
-#  ${BOOST_SYSTEM_LIB_MT}
-#  ${BOOST_PO_LIB_MT}
-#  ${BOOST_SIGNALS_LIB_MT}
-#  ${BOOST_REGEX_LIB_MT}
-#  ${BOOST_FS_LIB_MT}
-#  ${BOOST_DT_LIB_MT}
-#)
-#target_link_libraries (testq pthread lang)
-
-#target_link_libraries (testq
-#  ${BOOST_SERIAL_LIB_MT}
-#  ${BOOST_THREAD_LIB_MT}
-#  ${BOOST_SYSTEM_LIB_MT}
-#  ${BOOST_PO_LIB_MT}
-#  ${BOOST_SIGNALS_LIB_MT}
-#  ${BOOST_REGEX_LIB_MT}
-#  ${BOOST_FS_LIB_MT}
-#  ${BOOST_DT_LIB_MT}
-#)
-
-#target_link_libraries (test
-#  ${BOOST_SERIAL_LIB_MT}
-#  ${BOOST_THREAD_LIB_MT}
-#  ${BOOST_SYSTEM_LIB_MT}
-#  ${BOOST_PO_LIB_MT}
-#  ${BOOST_SIGNALS_LIB_MT}
-#  ${BOOST_REGEX_LIB_MT}
-#  ${BOOST_FS_LIB_MT}
-#  ${BOOST_DT_LIB_MT}
-#)
-
 

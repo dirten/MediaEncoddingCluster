@@ -2,25 +2,27 @@
 
 
 #ifndef ERL_ERL
-#define ERL_ERL
+#  define ERL_ERL
 extern "C" {
-#include <erl_interface.h>
+#  include <erl_interface.h>
 }
-#include "org/esb/av/Packet.h"
-#include "org/esb/util/Decimal.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#ifdef WIN32
-#include <io.h>
-#include <fcntl.h>
-#else
-#include <unistd.h>
-#endif
-#include "org/esb/av/Decoder.h"
-#include "org/esb/av/Encoder.h"
-#include "org/esb/av/Sink.h"
+#  include "org/esb/av/Packet.h"
+#  include "org/esb/util/Decimal.h"
+#  include <stdio.h>
+#  include <stdlib.h>
+#  include <vector>
+#  ifdef WIN32
+#    include <io.h>
+#    include <fcntl.h>
+#  else
+#    include <unistd.h>
+#  endif
+#  include "org/esb/av/Decoder.h"
+#  include "org/esb/av/Encoder.h"
+#  include "org/esb/av/Sink.h"
 typedef unsigned char byte;
+using namespace org::esb::av;
+using namespace org::esb::util;
 
 int read_exact(byte *buf, int len) {
   int i, got = 0;
@@ -30,7 +32,7 @@ int read_exact(byte *buf, int len) {
       return (i);
     got += i;
   } while (got < len);
-//  logdebug("Bytes readed"<<len);
+//  logdebug("Bytes readed" << len << ":Buffer" << buf);
   return (len);
 }
 
@@ -47,16 +49,18 @@ int write_exact(byte *buf, int len) {
 }
 
 int read_cmd(byte *buf) {
+//  logdebug("Wating for read");
   int len;
 
   if (read_exact(buf, 4) != 4)
     return (-1);
   len = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
+//  logdebug("read length:" << len);
   return read_exact(buf, len);
 }
 
 int write_cmd(byte *buf, int len) {
-//  logdebug("Try Write Command:"<<buf);
+  //  logdebug("Try Write Command:"<<buf);
   byte li;
 
   li = (len >> 24) & 0xff;
@@ -70,10 +74,9 @@ int write_cmd(byte *buf, int len) {
 
   li = len & 0xff;
   write_exact(&li, 1);
-//  logdebug("Write Buffer with Length "<<len);
+  //  logdebug("Write Buffer with Length "<<len);
   return write_exact(buf, len);
 }
-
 
 ETERM * vector2term(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
@@ -97,15 +100,21 @@ ETERM * vector2tuple(std::vector<ETERM*> & v) {
 
 ETERM * vector2list(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
-  ETERM ** term = new ETERM*[(const int) s];
+  ETERM ** term = new ETERM*[s];
   std::vector<ETERM*>::iterator it = v.begin();
+/*
+  for (int a = 0; a< v.size(); a++) {
+    logdebug("vector to list first");
+    erl_print_term((FILE*) stderr, v[a]);
+  }
+ */
   for (int a = 0; it != v.end(); it++) {
+//    logdebug("vector to list");
+//    erl_print_term((FILE*) stderr, *it);
     term[a++] = *it;
   }
   return erl_mk_list(term, v.size());
 }
-using namespace org::esb::av;
-using namespace org::esb::util;
 
 std::string toString(long long int num) {
   char c[25];
@@ -114,25 +123,30 @@ std::string toString(long long int num) {
   return std::string(c);
 }
 //{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
-ETERM * buildTermFromPacket(Packet & p){
-    std::vector<ETERM *> terms;
-    terms.push_back(erl_mk_int(p.getStreamIndex()));
-    terms.push_back(erl_mk_int(p.isKeyFrame()));
-//    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
-//    terms.push_back(erl_mk_string(toString(p.getDts()).c_str()));
-    terms.push_back(erl_mk_string(Decimal(p.getPts()).toString().c_str()));
-    terms.push_back(erl_mk_string(Decimal(p.getDts()).toString().c_str()));
-//    terms.push_back(erl_mk_binary((const char *)p.getPts(),8));
-//    terms.push_back(erl_mk_binary((const char*)p.getDts(),8));
-    terms.push_back(erl_mk_int(p.getFlags()));
-    terms.push_back(erl_mk_int(p.getDuration()));
-    terms.push_back(erl_mk_int(p.getSize()));
+
+ETERM * buildTermFromPacket(Packet & p) {
+  std::vector<ETERM *> terms;
+  terms.push_back(erl_mk_int(p.getStreamIndex()));
+  terms.push_back(erl_mk_int(p.isKeyFrame()));
+  //    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
+  //    terms.push_back(erl_mk_string(toString(p.getDts()).c_str()));
+  terms.push_back(erl_mk_string(Decimal(p.getPts()).toString().c_str()));
+  terms.push_back(erl_mk_string(Decimal(p.getDts()).toString().c_str()));
+  //    terms.push_back(erl_mk_binary((const char *)p.getPts(),8));
+  //    terms.push_back(erl_mk_binary((const char*)p.getDts(),8));
+  terms.push_back(erl_mk_int(p.getFlags()));
+  terms.push_back(erl_mk_int(p.getDuration()));
+  terms.push_back(erl_mk_int(p.getSize()));
+  if(p.getSize()>0)
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
-    return vector2term(terms);
+  else{
+    terms.push_back(erl_mk_binary((char*) "", 0));
+  }
+//  logdebug("make vector2term from packet");
+  return vector2term(terms);
 }
 
-
-Packet * buildPacketFromTerm(ETERM * in){
+Packet * buildPacketFromTerm(ETERM * in) {
   ETERM * streamidx = erl_element(1, in);
   ETERM * pts = erl_element(3, in);
   ETERM * dts = erl_element(4, in);
@@ -142,40 +156,52 @@ Packet * buildPacketFromTerm(ETERM * in){
   ETERM * data = erl_element(8, in);
   Packet * p = new Packet(ERL_INT_UVALUE(size));
   p->packet->stream_index = ERL_INT_UVALUE(streamidx);
-//  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
-//  logdebug("buildPacketFromTerm(ETERM * in) -> dts:"<<(const char *) erl_iolist_to_string(dts))
-  sscanf((const char *)erl_iolist_to_string(pts),"%llu",&p->packet->pts);
-  sscanf((const char *)erl_iolist_to_string(dts),"%llu",&p->packet->dts);
-//  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
-//  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
+  //  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
+  //  logdebug("buildPacketFromTerm(ETERM * in) -> dts:"<<(const char *) erl_iolist_to_string(dts))
+  sscanf((const char *) erl_iolist_to_string(pts), "%llu", &p->packet->pts);
+  sscanf((const char *) erl_iolist_to_string(dts), "%llu", &p->packet->dts);
+  //  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
+  //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
   p->packet->flags = ERL_INT_VALUE(flags);
   p->packet->duration = ERL_INT_UVALUE(duration);
   memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
   return p;
 }
 
-class TermPacketSource{
+class TermPacketSource
+{
+
 public:
-    TermPacketSource(ETERM * t){}
+  TermPacketSource(ETERM * t) {
+  }
 };
 
-class PacketTermSink:public Sink{
+class PacketTermSink : public Sink
+{
+
 public:
-  PacketTermSink(){}
-  void write(void * p){
-    logdebug("Write Packet to Term Sink");
-    Packet* pt=(Packet*)p;
-    pkts.push_back(buildTermFromPacket(*pt));
-  }
-  ETERM * getTerm(){
-    return vector2list(pkts);
+  PacketTermSink() {
   }
 
+  void write(void * p) {
+//    logdebug("Write Packet to Term Sink");
+    Packet* pt = (Packet*) p;
+    ETERM*t = buildTermFromPacket(*pt);
+    pkts.push_back(t);
+//    erl_print_term((FILE*) stderr, pkts.back());
+  }
+
+  ETERM * getTerm() {
+//    logdebug("Read Term from Term Sink:" << pkts.size());
+    ETERM * t = vector2list(pkts);
+//    erl_print_term((FILE*) stderr, t);
+
+    return t;
+  }
 private:
-    std::vector<ETERM *> pkts;
+  std::vector<ETERM *> pkts;
 
 };
-
 
 Decoder * buildDecoderFromTerm(ETERM* in) {
   ETERM * codecid = erl_element(6, in);
@@ -189,9 +215,9 @@ Decoder * buildDecoderFromTerm(ETERM* in) {
   ETERM * gop = erl_element(15, in);
   ETERM * fmt = erl_element(16, in);
 
-  Decoder * d = new Decoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  Decoder * d = new Decoder(static_cast<CodecID > (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::DECODER);
-  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat > (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat > (0));
   //	d->setPixelFormat((PixelFormat)0);
   d->setHeight(ERL_INT_UVALUE(height));
   d->setWidth(ERL_INT_UVALUE(width));
@@ -199,19 +225,19 @@ Decoder * buildDecoderFromTerm(ETERM* in) {
   r.num = ERL_INT_UVALUE(num);
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
-//  d->_time_base.num=ERL_INT_UVALUE(num);
-//  d->_time_base.den=ERL_INT_UVALUE(den);
+  //  d->_time_base.num=ERL_INT_UVALUE(num);
+  //  d->_time_base.den=ERL_INT_UVALUE(den);
   d->setGopSize(ERL_INT_UVALUE(gop));
   d->setBitRate(ERL_INT_UVALUE(bitrate));
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(d->_codec->type == CODEC_TYPE_AUDIO ? ERL_INT_UVALUE(rate) : 0);
-  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (1));
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat > (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat > (1));
   d->open();
 
   return d;
 }
 
-Encoder * buildEncoderFromTerm(ETERM * in){
+Encoder * buildEncoderFromTerm(ETERM * in) {
   ETERM * codecid = erl_element(6, in);
   ETERM * bitrate = erl_element(8, in);
   ETERM * rate = erl_element(9, in);
@@ -223,25 +249,25 @@ Encoder * buildEncoderFromTerm(ETERM * in){
   ETERM * gop = erl_element(15, in);
   ETERM * fmt = erl_element(16, in);
   ETERM * flags = erl_element(19, in);
-  Encoder * d = new Encoder(static_cast<CodecID> (ERL_INT_UVALUE(codecid)));
+  Encoder * d = new Encoder(static_cast<CodecID > (ERL_INT_UVALUE(codecid)));
   d->findCodec(Codec::ENCODER);
-  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat> (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat> (0));
+  d->setPixelFormat(d->_codec->type == CODEC_TYPE_VIDEO ? static_cast<PixelFormat > (ERL_INT_UVALUE(fmt)) : static_cast<PixelFormat > (0));
   d->setHeight(ERL_INT_UVALUE(height));
   d->setWidth(ERL_INT_UVALUE(width));
   AVRational r;
   r.num = ERL_INT_UVALUE(num);
   r.den = ERL_INT_UVALUE(den);
   d->setTimeBase(r);
-//  d->_time_base.num=ERL_INT_UVALUE(num);
-//  d->_time_base.den=ERL_INT_UVALUE(den);
-//  d->setFlag(0);
+  //  d->_time_base.num=ERL_INT_UVALUE(num);
+  //  d->_time_base.den=ERL_INT_UVALUE(den);
+  //  d->setFlag(0);
   d->setGopSize(ERL_INT_UVALUE(gop));
   d->setBitRate(ERL_INT_UVALUE(bitrate)*1000);
   d->setChannels(ERL_INT_UVALUE(channels));
   d->setSampleRate(ERL_INT_UVALUE(rate));
-  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat> (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat> (0));
+  d->setSampleFormat(d->_codec->type == CODEC_TYPE_AUDIO ? static_cast<SampleFormat > (ERL_INT_UVALUE(fmt)) : static_cast<SampleFormat > (0));
   d->setFlag(ERL_INT_UVALUE(flags));
-//  d->setFlag(CODEC_FLAG_GLOBAL_HEADER);
+  //  d->setFlag(CODEC_FLAG_GLOBAL_HEADER);
   d->open();
   return d;
 }

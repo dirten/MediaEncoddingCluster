@@ -42,10 +42,20 @@ void PacketOutputStream::writePacket(Packet & packet) {
    * @TOTO implementing now
    * calculate right pts for the entire streams here
    */
-
+//  streamDts[packet.getStreamIndex()]++;
+  packet.setPts(streamPts[packet.getStreamIndex()]);
+  packet.setDts(streamDts[packet.getStreamIndex()]);
+  if(false&&_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size>0){
+    streamDts[packet.getStreamIndex()]+=_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+    streamPts[packet.getStreamIndex()]+=_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+  }else{
+    streamDts[packet.getStreamIndex()]++;
+    streamPts[packet.getStreamIndex()]++;
+  }
+  packet.setDuration(1);
   
-  int result = av_write_frame(_fmtCtx, packet.packet);
-  //      int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
+//  int result = av_write_frame(_fmtCtx, packet.packet);
+        int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {

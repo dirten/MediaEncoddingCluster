@@ -6,8 +6,8 @@
   {config,[{attributes,[key, val]}]}
 ]}.
 
-{profile,1,"Test Profile","avi","avi",13,1024,25,640,480,2,86017,192000,48000,0,30}.
-{profile,2,"ipod(640x480-x264(1024)-vorbis(192/48))","mp4","ipod",28,1024,25,640,480,2,86021, 192000,48000,0,30}.
+{profile,1,"Test Profile","avi","avi",13,1024,25,640,480,2,86017,128,44100,0,30}.
+{profile,2,"ipod(640x480-x264(1024)-vorbis(192/48))","mp4","ipod",28,1024,25,640,480,2,86021, 128,44100,0,30}.
 
 {scheduler,1, "file_scanner", file_scanner, scan, [], 10000, "Scans Directory in interval", true}.
 {scheduler,2, "file_export", file_export, run, [], 10000, "Export completed files", true}.
@@ -24,7 +24,7 @@
 {config, mode, both}.
 {config, framerates, [0.09,5.995,7.5,7.992,8.0,10.0,11.998,12.0,14.985,15.0,20.0,23.98,25.0,29.97,30.0]}.
 {config, samplerates, [8000,11025,22050,32000,44100,48000,64000,88200,96000]}.
-{config, audio_bitrates, [32000,96000,128000,192000,224000,320000,442000]}.
+{config, audio_bitrates, [32,96,128,192,224,320,442]}.
 
 {sequence,process_unit,0}.
 {sequence,jobdetail,0}.

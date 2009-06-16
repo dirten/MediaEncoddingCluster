@@ -83,6 +83,7 @@ Packet::Packet(int s) {
     callDestruct = true;
   }else {
 //    logerror("Try to Allocate Packet buffer <0")
+    packet->data=NULL;
         callDestruct = false;
   }
 }
