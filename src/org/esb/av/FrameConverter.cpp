@@ -8,9 +8,12 @@
 #include <iostream>
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
-namespace org {
-  namespace esb {
-    namespace av {
+namespace org
+{
+  namespace esb
+  {
+    namespace av
+    {
 
       FrameConverter::FrameConverter(FrameFormat & out_format) {
         _swsContext = 0;
@@ -44,32 +47,32 @@ namespace org {
         }
       }
 
-            /*
-            FrameConverter::FrameConverter(FrameFormat & in_format, FrameFormat & out_format) {
-              _swsContext = 0;
-              _outFormat = &out_format;
-              _inFormat = &in_format;
-              int sws_flags = 1;
+      /*
+      FrameConverter::FrameConverter(FrameFormat & in_format, FrameFormat & out_format) {
+        _swsContext = 0;
+        _outFormat = &out_format;
+        _inFormat = &in_format;
+        int sws_flags = 1;
 
-              _audioCtx = av_audio_resample_init(
-                  _outFormat->channels,
-                  _inFormat->channels,
-                  _outFormat->samplerate,
-                  _inFormat->samplerate,
-                  SAMPLE_FMT_S16,
-                  SAMPLE_FMT_S16,
-                  16,
-                  10,
-                  0,
-                  0.8
-                  );
+        _audioCtx = av_audio_resample_init(
+            _outFormat->channels,
+            _inFormat->channels,
+            _outFormat->samplerate,
+            _inFormat->samplerate,
+            SAMPLE_FMT_S16,
+            SAMPLE_FMT_S16,
+            16,
+            10,
+            0,
+            0.8
+            );
 
-              _swsContext = sws_getContext(
-                  _inFormat->width, _inFormat->height, _inFormat->pixel_format,
-                  _outFormat->width, _outFormat->height, _outFormat->pixel_format,
-                  sws_flags, NULL, NULL, NULL);
+        _swsContext = sws_getContext(
+            _inFormat->width, _inFormat->height, _inFormat->pixel_format,
+            _outFormat->width, _outFormat->height, _outFormat->pixel_format,
+            sws_flags, NULL, NULL, NULL);
 
-            }
+      }
        */
       FrameConverter::~FrameConverter() {
         if (_swsContext)
@@ -104,6 +107,7 @@ namespace org {
          */
 
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
+        out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
         out_frame.setDts(in_frame.getDts());
@@ -119,8 +123,8 @@ namespace org {
         int delta = _dec->getSampleRate() - _enc->getSampleRate();
 
 
-//        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, -delta, _enc->getSampleRate());
-//        fprintf(stderr, "audio resample size %d channels %d isize %d\n",in_frame._size ,in_frame.channels , isize);
+        //        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, -delta, _enc->getSampleRate());
+        //        fprintf(stderr, "audio resample size %d channels %d isize %d\n",in_frame._size ,in_frame.channels , isize);
         int out_size = audio_resample(
             _audioCtx,
             (short *) audio_buf,
@@ -131,11 +135,12 @@ namespace org {
 
         Frame frame(audio_buf);
         //        frame._buffer = audio_buf;
+        frame.setTimeBase(in_frame.getTimeBase());
         frame.setPts(in_frame.getPts());
         frame.setDts(in_frame.getDts());
         frame.pos = in_frame.pos;
         frame.stream_index = in_frame.stream_index;
-        frame.duration = 1;//in_frame.duration;
+        frame.duration = 1; //in_frame.duration;
         frame._size = out_size;
         frame._type = CODEC_TYPE_AUDIO;
         frame.channels = _enc->getChannels();

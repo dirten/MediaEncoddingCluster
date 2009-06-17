@@ -14,7 +14,7 @@ namespace org{
 	namespace av{
 	    class FormatOutputStream: public FormatBaseStream, public org::esb::io::OutputStream{
 		public:
-		    FormatOutputStream(org::esb::io::File * target);
+		    FormatOutputStream(org::esb::io::File * target,const char * fmt=NULL);
 		    ~FormatOutputStream();
 		    void write(char * buffer, int length);
 		    void write(vector<unsigned char>&buffer);

@@ -62,7 +62,7 @@ export(FileNo) when is_integer(FileNo)->
                   ok
               end,
           Mapper=fun(A)->
-                     {element(1,A),element(2,A),libutil:toString(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A)}
+                     {element(1,A),element(2,A),libutil:toString(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A),element(9,A),element(10,A)}
                  end,
           PacketListWriter =
               fun(PacketList, FilePort)->

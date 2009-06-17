@@ -164,13 +164,19 @@ AVRational Packet::getTimeBase(){
 }
 
 void Packet::toString(){
-  logdebug("Packet->Size:"<<getSize());
-  logdebug("Packet->Pts:"<<getPts());
-  logdebug("Packet->Dts:"<<getDts());
-  logdebug("Packet->StreamIndex:"<<getStreamIndex());
-  logdebug("Packet->Duration:"<<getDuration());
-  logdebug("Packet->Position:"<<getPosition());
-  logdebug("Packet->TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
+  logdebug("Packet->Size:"<<getSize()<<
+      ":Pts:"<<getPts()<<
+      ":Dts:"<<getDts()<<
+      ":StreamIndex:"<<getStreamIndex()<<
+      ":Duration:"<<getDuration()<<
+      ":Position:"<<getPosition()<<
+      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
+//  logdebug("Packet->Pts:"<<getPts());
+//  logdebug("Packet->Dts:"<<getDts());
+//  logdebug("Packet->StreamIndex:"<<getStreamIndex());
+//  logdebug("Packet->Duration:"<<getDuration());
+//  logdebug("Packet->Position:"<<getPosition());
+//  logdebug("Packet->TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
 
 }
 

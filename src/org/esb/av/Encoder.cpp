@@ -116,10 +116,9 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	pak.pts=this->coded_frame->pts;
 
     if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE)
-      pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {
-        1, 48000
-      });
-
+      pak.packet->pts = ctx->coded_frame->pts;//av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 48000});
+    else
+      pak.setPts(frame.getPts());
     //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
     //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
 
@@ -137,6 +136,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	pak.packet->pos=frame.pos;
     pak.packet->duration = frame.duration;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
+    pak.toString();
     if (_pos != NULL)
       _pos->writePacket(pak);
     //    if(_sink!=NULL)

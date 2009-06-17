@@ -37,25 +37,26 @@ void PacketOutputStream::writePacket(Packet & packet) {
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
   if (streams.size() <= packet.getStreamIndex())
     logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
-  
+
   /**
    * @TOTO implementing now
    * calculate right pts for the entire streams here
    */
-//  streamDts[packet.getStreamIndex()]++;
+  //  streamDts[packet.getStreamIndex()]++;
   packet.setPts(streamPts[packet.getStreamIndex()]);
   packet.setDts(streamDts[packet.getStreamIndex()]);
-  if(false&&_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size>0){
-    streamDts[packet.getStreamIndex()]+=_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
-    streamPts[packet.getStreamIndex()]+=_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
-  }else{
+  if (_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size > 0) {
+    streamDts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+    streamPts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+    packet.setDuration(_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size);
+  } else {
     streamDts[packet.getStreamIndex()]++;
     streamPts[packet.getStreamIndex()]++;
+    packet.setDuration(0);
   }
-  packet.setDuration(1);
-  
-//  int result = av_write_frame(_fmtCtx, packet.packet);
-        int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
+
+  int result = av_write_frame(_fmtCtx, packet.packet);
+  //        int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {
@@ -72,7 +73,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   streams.push_back(st);
   st->codec = encoder.ctx;
   st->time_base = encoder.ctx->time_base;
-//  st->time_base = encoder.ctx->time_base;
+  //  st->time_base = encoder.ctx->time_base;
   return;
   //  	st->time_base.den=90000;
 

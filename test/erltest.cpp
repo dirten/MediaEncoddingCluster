@@ -15,7 +15,7 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameConverter.h"
-#  include "org/esb/util/Decimal.h"
+#include "org/esb/util/Decimal.h"
 
 
 #include "org/esb/io/FileInputStream.h"
@@ -96,18 +96,19 @@ int write_cmd(byte *buf, int len, FILE*d) {
   //  logdebug("Write Buffer with Length "<<len);
   return write_exact(buf, len, d);
 }
+
 ETERM * vector2list(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
   ETERM ** term = new ETERM*[s];
   std::vector<ETERM*>::iterator it = v.begin();
-/*
-  for (int a = 0; a< v.size(); a++) {
-    logdebug("vector to list first");
-    erl_print_term((FILE*) stderr, v[a]);
-  }*/
+  /*
+    for (int a = 0; a< v.size(); a++) {
+      logdebug("vector to list first");
+      erl_print_term((FILE*) stderr, v[a]);
+    }*/
   for (int a = 0; it != v.end(); it++) {
-//    logdebug("vector to list");
-//    erl_print_term((FILE*) stderr, *it);
+    //    logdebug("vector to list");
+    //    erl_print_term((FILE*) stderr, *it);
     term[a++] = *it;
   }
   return erl_mk_list(term, v.size());
@@ -136,11 +137,14 @@ ETERM * buildTermFromPacket(Packet & p) {
   terms.push_back(erl_mk_int(p.getFlags()));
   terms.push_back(erl_mk_int(p.getDuration()));
   terms.push_back(erl_mk_int(p.getSize()));
-  if(p.getSize()>0){
-//    logdebug("Setting binary");
+  terms.push_back(erl_mk_int(p.getTimeBase().num));
+  terms.push_back(erl_mk_int(p.getTimeBase().den));
+
+  if (p.getSize() > 0) {
+    //    logdebug("Setting binary");
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
   }
-//  logdebug("make vector2term from packet");
+  //  logdebug("make vector2term from packet");
   return vector2tuple(terms);
 }
 
@@ -166,7 +170,8 @@ int main(int argc, char** argv) {
     dup(c2p[1]);
     close(c2p[0]);
     //    std::cout << "start programm" << std::endl;
-    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
+    int s = execlp("/usr/bin/valgrind", "valgrind", "--log-file=/tmp/erlsys", "--leak-check=full", "--show-reachable=yes", "/home/jhoelscher/MediaEncodingCluster/src/erl/bin/mhivesys", NULL);
+    //    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
     std::cout << "Status :" << s << std::endl;
   } else {
     org::esb::lang::Thread::sleep2(1000);
@@ -213,25 +218,25 @@ int main(int argc, char** argv) {
 
     enc.setPixelFormat(PIX_FMT_YUV420P);
     enc.open();
-    
+
 
     std::vector<ETERM *> terms;
-/*
-    //{fileinfo,'/media/video/ChocolateFactory.ts',0,0,0}
-    terms.push_back(erl_mk_atom("fileinfo"));
-    //    terms.push_back(erl_mk_atom("/media/video/ChocolateFactory.ts"));
-    terms.push_back(erl_mk_atom(infile.getPath().c_str()));
-    terms.push_back(erl_mk_int(0));
-    terms.push_back(erl_mk_int(0));
-    terms.push_back(erl_mk_int(0));
- */
+    /*
+        //{fileinfo,'/media/video/ChocolateFactory.ts',0,0,0}
+        terms.push_back(erl_mk_atom("fileinfo"));
+        //    terms.push_back(erl_mk_atom("/media/video/ChocolateFactory.ts"));
+        terms.push_back(erl_mk_atom(infile.getPath().c_str()));
+        terms.push_back(erl_mk_int(0));
+        terms.push_back(erl_mk_int(0));
+        terms.push_back(erl_mk_int(0));
+     */
 
     std::vector<ETERM *> info;
     info.push_back(erl_mk_string(infile.getPath().c_str()));
     info.push_back(erl_mk_int(0));
     info.push_back(erl_mk_int(0));
-//    {stream,2,1,1,1,86016,undefined,192000,48000,1,90000,0,0,2,12,1,-535188686,12739680,0},
-//    {stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,-535126463,12711600,0},
+    //    {stream,2,1,1,1,86016,undefined,192000,48000,1,90000,0,0,2,12,1,-535188686,12739680,0},
+    //    {stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,-535126463,12711600,0},
     std::vector<ETERM *> decoder;
     decoder.push_back(erl_mk_atom("stream"));
     decoder.push_back(erl_mk_int(2));
@@ -254,8 +259,8 @@ int main(int argc, char** argv) {
     decoder.push_back(erl_mk_int(0));
 
 
-//  {stream,4,2,1,undefined,86017,undefined,192000,48000,1,90000,undefined,undefined,2,20,1,undefined,undefined,0}
-//  {stream,3,2,0,undefined,13,undefined,1024,25,1,25,640,480,undefined,30,0,undefined,undefined,0},
+    //  {stream,4,2,1,undefined,86017,undefined,192000,48000,1,90000,undefined,undefined,2,20,1,undefined,undefined,0}
+    //  {stream,3,2,0,undefined,13,undefined,1024,25,1,25,640,480,undefined,30,0,undefined,undefined,0},
     std::vector<ETERM *> encoder;
     encoder.push_back(erl_mk_atom("stream"));
     encoder.push_back(erl_mk_int(4));
@@ -279,9 +284,9 @@ int main(int argc, char** argv) {
 
     std::vector<ETERM *> packets;
     Packet p;
-    for(int a=0;a<100;a++){
+    for (int a = 0; a < 100; a++) {
       pis.readPacket(p);
-      if(p.getStreamIndex()!=1)continue;
+      if (p.getStreamIndex() != 1)continue;
       packets.push_back(buildTermFromPacket(p));
     }
 
@@ -294,12 +299,12 @@ int main(int argc, char** argv) {
     ETERM* writing = vector2tuple(terms);
 
 
-//{encode,{"/media/video/ChocolateFactory.ts",10,0,
-//    {stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,-535126463,12711600,0},
-//    {stream,3,2,0,undefined,13,undefined,1024,25,1,25,640,480,undefined,30,0,undefined,undefined,0},
-//        [{0,1,"3767973233","3767962433",1,3600,33508,#Bin},{0,0,"3767966033","3767966033",0,3600,7108,#Bin},{0,0,"3767969633","3767969633",0,3600,6636,#Bin},{0,0,"-9223372036854775808","3767973233",0,3600,17860,#Bin},{0,0,"3767976833","3767976833",0,3600,6588,#Bin},{0,0,"3767980433","3767980433",0,3600,7268,#Bin},{0,0,"-9223372036854775808","3767984033",0,3600,19596,#Bin},{0,0,"3767987633","3767987633",0,3600,7180,#Bin},{0,0,"3767991233","3767991233",0,3600,7156,#Bin},{0,0,"-9223372036854775808","3767994833",0,3600,17860,#Bin},{0,0,"3767998433","3767998433",0,3600,5964,#Bin},{0,0,"3768002033","3768002033",0,3600,5964,#Bin},{0,1,"3768016433","3768005633",1,3600,31180,#Bin},{0,0,"3768009233","3768009233",0,3600,5076,#Bin},{0,0,"3768012833","3768012833",0,3600,5708,#Bin},{0,0,"-9223372036854775808","3768016433",0,3600,15572,#Bin},{0,0,"3768020033","3768020033",0,3600,5268,#Bin},{0,0,"3768023633","3768023633",0,3600,5884,#Bin},{0,0,"-9223372036854775808","3768027233",0,3600,15324,#Bin},{0,0,"3768030833","3768030833",0,3600,5404,#Bin},{0,0,"3768034433","3768034433",0,3600,5628,#Bin},{0,0,"-9223372036854775808","3768038033",0,3600,16508,#Bin},{0,0,"3768041633","3768041633",0,3600,5556,#Bin},{0,0,"3768045233","3768045233",0,3600,6220,#Bin},{0,1,"3768059633","3768048833",1,3600,32284,#Bin},{0,0,"3768052433","3768052433",0,3600,5316,#Bin},{0,0,"3768056033","3768056033",0,3600,5220,#Bin}]
-//  }
-//}
+    //{encode,{"/media/video/ChocolateFactory.ts",10,0,
+    //    {stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,-535126463,12711600,0},
+    //    {stream,3,2,0,undefined,13,undefined,1024,25,1,25,640,480,undefined,30,0,undefined,undefined,0},
+    //        [{0,1,"3767973233","3767962433",1,3600,33508,#Bin},{0,0,"3767966033","3767966033",0,3600,7108,#Bin},{0,0,"3767969633","3767969633",0,3600,6636,#Bin},{0,0,"-9223372036854775808","3767973233",0,3600,17860,#Bin},{0,0,"3767976833","3767976833",0,3600,6588,#Bin},{0,0,"3767980433","3767980433",0,3600,7268,#Bin},{0,0,"-9223372036854775808","3767984033",0,3600,19596,#Bin},{0,0,"3767987633","3767987633",0,3600,7180,#Bin},{0,0,"3767991233","3767991233",0,3600,7156,#Bin},{0,0,"-9223372036854775808","3767994833",0,3600,17860,#Bin},{0,0,"3767998433","3767998433",0,3600,5964,#Bin},{0,0,"3768002033","3768002033",0,3600,5964,#Bin},{0,1,"3768016433","3768005633",1,3600,31180,#Bin},{0,0,"3768009233","3768009233",0,3600,5076,#Bin},{0,0,"3768012833","3768012833",0,3600,5708,#Bin},{0,0,"-9223372036854775808","3768016433",0,3600,15572,#Bin},{0,0,"3768020033","3768020033",0,3600,5268,#Bin},{0,0,"3768023633","3768023633",0,3600,5884,#Bin},{0,0,"-9223372036854775808","3768027233",0,3600,15324,#Bin},{0,0,"3768030833","3768030833",0,3600,5404,#Bin},{0,0,"3768034433","3768034433",0,3600,5628,#Bin},{0,0,"-9223372036854775808","3768038033",0,3600,16508,#Bin},{0,0,"3768041633","3768041633",0,3600,5556,#Bin},{0,0,"3768045233","3768045233",0,3600,6220,#Bin},{0,1,"3768059633","3768048833",1,3600,32284,#Bin},{0,0,"3768052433","3768052433",0,3600,5316,#Bin},{0,0,"3768056033","3768056033",0,3600,5220,#Bin}]
+    //  }
+    //}
 
 
     int len = erl_term_len(writing);

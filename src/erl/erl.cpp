@@ -126,6 +126,28 @@ std::string toString(long long int num) {
 
 ETERM * buildTermFromPacket(Packet & p) {
   std::vector<ETERM *> terms;
+  /*
+  ETERM *bin=NULL;
+
+  if(p.getSize()>0)
+    bin=erl_mk_binary((char*) p.getData(), p.getSize());
+  else{
+    bin=erl_mk_binary((char*) "", 0);
+  }
+  ETERM * f=erl_format("{packet,~i,~i,~f,~s,~i,~i,~i,~i,~i,~w}",
+      p.getStreamIndex(),
+      p.isKeyFrame(),
+      p.getDts(),
+      Decimal(p.getDts()).toString().c_str(),
+      p.getFlags(),
+      p.getDuration(),
+      p.getSize(),
+      p.getTimeBase().num,
+      p.getTimeBase().den,
+      bin
+      );
+    erl_print_term((FILE*)stderr, f);
+*/
   terms.push_back(erl_mk_int(p.getStreamIndex()));
   terms.push_back(erl_mk_int(p.isKeyFrame()));
   //    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
@@ -137,6 +159,8 @@ ETERM * buildTermFromPacket(Packet & p) {
   terms.push_back(erl_mk_int(p.getFlags()));
   terms.push_back(erl_mk_int(p.getDuration()));
   terms.push_back(erl_mk_int(p.getSize()));
+  terms.push_back(erl_mk_int(p.getTimeBase().num));
+  terms.push_back(erl_mk_int(p.getTimeBase().den));
   if(p.getSize()>0)
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
   else{
@@ -153,7 +177,9 @@ Packet * buildPacketFromTerm(ETERM * in) {
   ETERM * flags = erl_element(5, in);
   ETERM * duration = erl_element(6, in);
   ETERM * size = erl_element(7, in);
-  ETERM * data = erl_element(8, in);
+  ETERM * num = erl_element(8, in);
+  ETERM * den = erl_element(9, in);
+  ETERM * data = erl_element(10, in);
   Packet * p = new Packet(ERL_INT_UVALUE(size));
   p->packet->stream_index = ERL_INT_UVALUE(streamidx);
   //  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
@@ -164,6 +190,11 @@ Packet * buildPacketFromTerm(ETERM * in) {
   //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
   p->packet->flags = ERL_INT_VALUE(flags);
   p->packet->duration = ERL_INT_UVALUE(duration);
+  AVRational r={
+    ERL_INT_UVALUE(num),
+    ERL_INT_UVALUE(den)
+  };
+  p->setTimeBase(r);
   memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
   return p;
 }

@@ -37,9 +37,11 @@ namespace org {
         AVPacket * getAVPacket();
         int64_t getPosition();
         void toString(void);
+
         void setTimeBase(AVRational);
         AVRational getTimeBase();
         AVRational _time_base;
+
         Packet(const Packet & packet);
         Packet operator=(Packet & packet);
 

@@ -33,7 +33,7 @@ file_loader(FileId)->
     {ok,D}->
       Data=binary_to_term(D),
 %      ets:insert(packetlist,Data),
-      DTmp=lists:flatten([lists:map(fun file_export_stack:map_ts/1,Data)|[{0,0,list_to_integer(element(3,lists:last(Data)))+1,"0",load_trigger,0,0,<<0>>}]]),
+      DTmp=lists:flatten([lists:map(fun file_export_stack:map_ts/1,Data)|[{0,0,list_to_integer(element(3,lists:last(Data)))+1,"0",load_trigger,0,0,0,0,<<0>>}]]),
 %      io:format("~p",[DTmp]),
       DTmp;
     {error,enoent}->
@@ -92,7 +92,7 @@ qlc_next(_,_)->
   [].
 %{0,1,"3759840833","3759840833",1,3600,50563,  <<0,0,1,176,1,0,0,1,181,137,19,0,0,1,0,0,0,1,32,0,...>>}
 map_ts(A)->
-  {element(1,A),element(2,A),libutil:toInteger(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A)}.
+  {element(1,A),element(2,A),libutil:toInteger(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A),element(9,A),element(10,A)}.
 
 packet_viewer(FileId)->
   case file:read_file(filename:join(["data", integer_to_list(FileId)])) of

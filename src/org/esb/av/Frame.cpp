@@ -258,16 +258,26 @@ AVRational Frame::getTimeBase(){
   return _time_base;
 }
 void Frame::toString() {
-  if (getHeight() > 0 && getWidth() > 0)
-    logdebug("Frame->Size:" << getSize());
-  logdebug("Frame->SampleSize:"<<_size);
-  logdebug("Frame->Width:" << getWidth());
-  logdebug("Frame->Height:" << getHeight());
-  logdebug("Frame->PixelFormat:" << getFormat());
-  logdebug("Frame->Pts:" << getPts());
-  logdebug("Frame->Dts:" << getDts());
-  logdebug("Frame->Channels:" << channels);
-  logdebug("Frame->SampleRate:" << sample_rate);
+//  if (getHeight() > 0 && getWidth() > 0)
+    logdebug("Frame->Size:" << getSize()<<
+        ":SampleSize:"<<_size<<
+        ":Width:" << getWidth()<<
+        ":Height:" << getHeight()<<
+        ":PixelFormat:" << getFormat()<<
+        ":Pts:" << getPts()<<
+        ":Dts:" << getDts()<<
+        ":Channels:" << channels<<
+        ":SampleRate:" << sample_rate<<
+        ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den
+        );
+//  logdebug("Frame->SampleSize:"<<_size);
+//  logdebug("Frame->Width:" << getWidth());
+//  logdebug("Frame->Height:" << getHeight());
+//  logdebug("Frame->PixelFormat:" << getFormat());
+//  logdebug("Frame->Pts:" << getPts());
+//  logdebug("Frame->Dts:" << getDts());
+//  logdebug("Frame->Channels:" << channels);
+//  logdebug("Frame->SampleRate:" << sample_rate);
 }
 /*
 void Frame::setFrame(AVFrame * frame){

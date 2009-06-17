@@ -8,7 +8,7 @@
 #include <vector>
 
 
-#define DEBUG false
+#define DEBUG true
 
 //#include <stdlib.h>
 #include "erl.cpp"
@@ -130,7 +130,7 @@ ETERM * writepacket(ETERM * in) {
   //  logdebug("Build Packet:");
   Packet * p = buildPacketFromTerm(in);
   //  logdebug("Packet Ready:");
-  //  p->toString();
+    p->toString();
   p->packet->pts = 0;
   p->packet->dts = 0;
 //  if (p->getSize() > 0) {
@@ -359,8 +359,8 @@ ETERM * encode(ETERM* in) {
   int multipass = ERL_INT_UVALUE(pass);
   Decoder *d = create_decoder(decoder);
   Encoder *e = create_encoder(encoder);
-  PacketTermSink * sink = new PacketTermSink();
-  e->setSink(sink);
+  PacketTermSink  sink;// = new PacketTermSink();
+  e->setSink(&sink);
   d->ctx->request_channel_layout = e->getChannels();
   e->open();
   d->open();
@@ -420,10 +420,11 @@ ETERM * encode(ETERM* in) {
 
     f2.setPts(f2.getDts());
     if (toDebug)
-      logdebug("after converting frame");
-    //    f2.toString();
+//      logdebug("after converting frame");
+        f2.toString();
     Packet ret = e->encode(f2);
-    //    ret.toString();
+//    if (toDebug)
+//      ret.toString();
     if (multipass == 1 && e->getStatistics())
       statistics.append(e->getStatistics());
     if (multipass == 0 || multipass == 2) {
@@ -445,7 +446,7 @@ ETERM * encode(ETERM* in) {
     ETERM * stats = erl_mk_string(statistics.c_str());
     terms.push_back(stats);
   }
-  return sink->getTerm();
+  return sink.getTerm();
 }
 
 
