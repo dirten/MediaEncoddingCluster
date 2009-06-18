@@ -3,7 +3,7 @@
 -record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status=ok}).
 
 % new Record for saving MediaFile Information
--record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
+%-record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
 
 % this Record saves the Data for watchfolders
 -include("schema_watchfolder.hrl").
@@ -20,9 +20,10 @@
 -record(process_unit,{id, sourcestream, targetstream, startts, framecount, sendtime, sendnode, completetime, sendsize, receivesize, data, log}).
 
 -record(framegroup,{id,framegroup,startts,byte_pos,stream_id,stream_index,frame_count}).
--record(packet,{id,pts, dts,data, data_size}).
 
 -record(timestamp,{num,den}).
+
+-record(packet,{stream_id, is_key,dts ,pts, flags, duration, size, timebase_num, timebase_den, data_size}).
 
 -record(scheduler,{id, name, module, func, args, interval, desc, active=true}).
 

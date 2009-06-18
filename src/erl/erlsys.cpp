@@ -64,6 +64,7 @@ ETERM * codeclist(ETERM * v) {
     if (p->encode) {
       std::vector<ETERM *> c;
       c.push_back(erl_mk_string(p->name));
+      c.push_back(erl_mk_string(p->long_name));
       c.push_back(erl_mk_int(p->id));
       c.push_back(erl_mk_int(p->type));
       c.push_back(erl_mk_int(p->encode ? 1 : 0));
@@ -131,8 +132,8 @@ ETERM * writepacket(ETERM * in) {
   Packet * p = buildPacketFromTerm(in);
   //  logdebug("Packet Ready:");
     p->toString();
-  p->packet->pts = 0;
-  p->packet->dts = 0;
+//  p->packet->pts = 0;
+//  p->packet->dts = 0;
 //  if (p->getSize() > 0) {
     pos->writePacket(*p);
     delete p;
@@ -431,8 +432,8 @@ ETERM * encode(ETERM* in) {
       ETERM * pac = buildTermFromPacket(ret);
       terms.push_back(pac);
     }
-    if (toDebug)
-      logdebug("Encoded PacketSize" << ret.getSize());
+//    if (toDebug)
+//      logdebug("Encoded PacketSize" << ret.getSize());
   }
   delete d;
   delete e;

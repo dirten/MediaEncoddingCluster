@@ -303,7 +303,7 @@ codec(SessionID,Data2,Data3)->
             _Id=list_to_integer(IdStr),
             sys_port:get_codec_list()
         end,
-      F=reformat(E,[name,id,type, encoder, decoder,capabilities],[]),
+      F=reformat(E,[name,long_name,id,type, encoder, decoder,capabilities],[]),
       J= mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F}}]}),
       mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
       mod_esi:deliver(SessionID, J);

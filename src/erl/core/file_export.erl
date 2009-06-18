@@ -66,8 +66,9 @@ export(FileNo) when is_integer(FileNo)->
                  end,
           PacketListWriter =
               fun(PacketList, FilePort)->
+%                  io:format("write PacketList:~p",[PacketList]),
                   NewPacketList=lists:map(Mapper,PacketList),
- %                 io:format("write PacketList:~p",[NewPacketList]),
+%                  io:format("write PacketList:~p",[NewPacketList]),
                   FilePort ! {self(), {command, term_to_binary({writepacketlist,NewPacketList})}},
                   FilePort
               end,

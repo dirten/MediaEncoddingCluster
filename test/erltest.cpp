@@ -148,6 +148,34 @@ ETERM * buildTermFromPacket(Packet & p) {
   return vector2tuple(terms);
 }
 
+Packet * buildPacketFromTerm(ETERM * in) {
+  ETERM * streamidx = erl_element(1, in);
+  ETERM * pts = erl_element(3, in);
+  ETERM * dts = erl_element(4, in);
+  ETERM * flags = erl_element(5, in);
+  ETERM * duration = erl_element(6, in);
+  ETERM * size = erl_element(7, in);
+  ETERM * num = erl_element(8, in);
+  ETERM * den = erl_element(9, in);
+  ETERM * data = erl_element(10, in);
+  Packet * p = new Packet(ERL_INT_UVALUE(size));
+  p->packet->stream_index = ERL_INT_UVALUE(streamidx);
+  //  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
+  //  logdebug("buildPacketFromTerm(ETERM * in) -> dts:"<<(const char *) erl_iolist_to_string(dts))
+  sscanf((const char *) erl_iolist_to_string(pts), "%llu", &p->packet->pts);
+  sscanf((const char *) erl_iolist_to_string(dts), "%llu", &p->packet->dts);
+  //  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
+  //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
+  p->packet->flags = ERL_INT_VALUE(flags);
+  p->packet->duration = ERL_INT_UVALUE(duration);
+  AVRational r = {
+    ERL_INT_UVALUE(num),
+    ERL_INT_UVALUE(den)
+  };
+  p->setTimeBase(r);
+  memcpy(p->packet->data, ERL_BIN_PTR(data), p->getSize());
+  return p;
+}
 /*
  * little testprogramm for testing the mhive-ffmpeg api over erlang
  */
@@ -170,8 +198,8 @@ int main(int argc, char** argv) {
     dup(c2p[1]);
     close(c2p[0]);
     //    std::cout << "start programm" << std::endl;
-    int s = execlp("/usr/bin/valgrind", "valgrind", "--log-file=/tmp/erlsys", "--leak-check=full", "--show-reachable=yes", "/home/jhoelscher/MediaEncodingCluster/src/erl/bin/mhivesys", NULL);
-    //    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
+    //    int s = execlp("/usr/bin/valgrind", "valgrind", "--log-file=/tmp/erlsys", "--leak-check=full", "--show-reachable=yes", "/home/jhoelscher/MediaEncodingCluster/src/erl/bin/mhivesys", NULL);
+    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
     std::cout << "Status :" << s << std::endl;
   } else {
     org::esb::lang::Thread::sleep2(1000);
@@ -184,10 +212,11 @@ int main(int argc, char** argv) {
 
     erl_init(NULL, 0);
 
-    int stream_id = 2;
+    int stream_id = 1;
 
-    File infile("/media/video/ChocolateFactory.ts");
-    File outfile("/media/out/test.mp3");
+//        File infile("/media/video/ChocolateFactory.ts");
+    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
+    File outfile("/media/out/test.mp4");
 
     FormatInputStream fis(&infile);
     PacketInputStream pis(&fis);
@@ -195,7 +224,7 @@ int main(int argc, char** argv) {
     FormatOutputStream fos(&outfile);
     PacketOutputStream pos(&fos);
 
-    AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
+    AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
     Decoder dec(c->codec_id);
     dec.setChannels(c->channels);
     dec.setBitRate(c->bit_rate);
@@ -204,21 +233,23 @@ int main(int argc, char** argv) {
     dec.setPixelFormat(PIX_FMT_YUV420P);
     dec.ctx->request_channel_layout = 2;
     dec.open();
+    logdebug(dec.toString());
 
-    Encoder enc(CODEC_ID_VORBIS);
+    Encoder enc(CODEC_ID_MP3);
     enc.setChannels(2);
-    enc.setBitRate(448000);
+    enc.setBitRate(128000);
     enc.setSampleRate(48000);
     enc.setSampleFormat(dec.getSampleFormat());
-
     enc.setTimeBase((AVRational) {
       1, 48000
     });
     enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
-
     enc.setPixelFormat(PIX_FMT_YUV420P);
     enc.open();
+    logdebug(enc.toString());
 
+    pos.setEncoder(enc,0);
+    pos.init();
 
     std::vector<ETERM *> terms;
     /*
@@ -238,6 +269,13 @@ int main(int argc, char** argv) {
     //    {stream,2,1,1,1,86016,undefined,192000,48000,1,90000,0,0,2,12,1,-535188686,12739680,0},
     //    {stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,-535126463,12711600,0},
     std::vector<ETERM *> decoder;
+    //-record(stream,{id,fileid,streamidx,streamtype,codec,codecname,bitrate,rate,num, den, width, height,channels,gop,format, start_time, duration, flags=0}).
+
+    //      ETERM * f = erl_format("{stream,Id,FileId,StreamIdx,StreamType,Codec,CodecName,BitRate,Rate,Num,Den,Width,Height,Channels,GOP,Format,StartTime,Duration,Flags}",
+    /*
+        ETERM * f = erl_format("{~i,~i,~i,~i,~i,undefined,~i,~i,~i, ~i,~i,~i,~i,~i,~i,~i, ~i,~i}",
+            2, 1, 1, 1, dec.getCodecId(),192
+            );*/
     decoder.push_back(erl_mk_atom("stream"));
     decoder.push_back(erl_mk_int(2));
     decoder.push_back(erl_mk_int(1));
@@ -245,18 +283,18 @@ int main(int argc, char** argv) {
     decoder.push_back(erl_mk_int(1));
     decoder.push_back(erl_mk_int(dec.getCodecId()));
     decoder.push_back(erl_mk_atom("undefined"));
-    decoder.push_back(erl_mk_int(192000));
-    decoder.push_back(erl_mk_int(48000));
-    decoder.push_back(erl_mk_int(1));
-    decoder.push_back(erl_mk_int(90000));
-    decoder.push_back(erl_mk_int(0));
-    decoder.push_back(erl_mk_int(0));
-    decoder.push_back(erl_mk_int(2));
-    decoder.push_back(erl_mk_int(12));
-    decoder.push_back(erl_mk_int(1));
+    decoder.push_back(erl_mk_int(dec.getBitRate() / 1000));
+    decoder.push_back(erl_mk_int(dec.getSampleRate()));
+    decoder.push_back(erl_mk_int(dec.getTimeBase().num));
+    decoder.push_back(erl_mk_int(dec.getTimeBase().den));
+    decoder.push_back(erl_mk_int(dec.getWidth()));
+    decoder.push_back(erl_mk_int(dec.getHeight()));
+    decoder.push_back(erl_mk_int(dec.getChannels()));
+    decoder.push_back(erl_mk_int(dec.getGopSize()));
+    decoder.push_back(erl_mk_int(dec.getCodecType() == 0 ? dec.getPixelFormat() : dec.getSampleFormat()));
     decoder.push_back(erl_mk_int(-535126463));
     decoder.push_back(erl_mk_int(12711600));
-    decoder.push_back(erl_mk_int(0));
+    decoder.push_back(erl_mk_int(dec.getFlags()));
 
 
     //  {stream,4,2,1,undefined,86017,undefined,192000,48000,1,90000,undefined,undefined,2,20,1,undefined,undefined,0}
@@ -269,25 +307,26 @@ int main(int argc, char** argv) {
     encoder.push_back(erl_mk_atom("undefined"));
     encoder.push_back(erl_mk_int(enc.getCodecId()));
     encoder.push_back(erl_mk_atom("undefined"));
-    encoder.push_back(erl_mk_int(192));
-    encoder.push_back(erl_mk_int(48000));
-    encoder.push_back(erl_mk_int(1));
-    encoder.push_back(erl_mk_int(90000));
-    encoder.push_back(erl_mk_int(0));
-    encoder.push_back(erl_mk_int(0));
-    encoder.push_back(erl_mk_int(2));
-    encoder.push_back(erl_mk_int(20));
-    encoder.push_back(erl_mk_int(1));
+    encoder.push_back(erl_mk_int(enc.getBitRate() / 1000));
+    encoder.push_back(erl_mk_int(enc.getSampleRate()));
+    encoder.push_back(erl_mk_int(enc.getTimeBase().num));
+    encoder.push_back(erl_mk_int(enc.getTimeBase().den));
+    encoder.push_back(erl_mk_int(enc.getWidth()));
+    encoder.push_back(erl_mk_int(enc.getHeight()));
+    encoder.push_back(erl_mk_int(enc.getChannels()));
+    encoder.push_back(erl_mk_int(enc.getGopSize()));
+    encoder.push_back(erl_mk_int(enc.getCodecType() == 0 ? enc.getPixelFormat() : enc.getSampleFormat()));
     encoder.push_back(erl_mk_atom("undefined"));
     encoder.push_back(erl_mk_atom("undefined"));
-    encoder.push_back(erl_mk_int(0));
+    encoder.push_back(erl_mk_int(enc.getFlags()));
 
     std::vector<ETERM *> packets;
     Packet p;
-    for (int a = 0; a < 100; a++) {
+    for (int a = 0; a < 1000; a++) {
       pis.readPacket(p);
-      if (p.getStreamIndex() != 1)continue;
-      packets.push_back(buildTermFromPacket(p));
+      if (p.getStreamIndex() == 1) {
+        packets.push_back(buildTermFromPacket(p));
+      }
     }
 
     info.push_back(vector2tuple(decoder));
@@ -310,16 +349,32 @@ int main(int argc, char** argv) {
     int len = erl_term_len(writing);
     int bytes = 0;
     byte * buf = new byte[len];
-    byte * inbuf = new byte[100000];
+    byte * inbuf = new byte[100000000];
     erl_print_term((FILE*) stderr, writing);
 
     erl_encode(writing, buf);
-    logdebug("writing buffer:" << buf);
+    logdebug("writing buffer:");
     write_cmd(buf, len, tochild);
     fflush(tochild);
     read_cmd(inbuf, fromchild);
 
+
     ETERM*intuple = erl_decode(inbuf);
+
+    int pc = erl_length(intuple);
+    ETERM * tail = intuple;
+    for (int a = 0; a < pc; a++) {
+      logdebug("Write Packet");
+      ETERM * head = erl_hd(tail);
+      erl_print_term((FILE*) stderr, head);
+      Packet *p = buildPacketFromTerm(head);
+      tail = erl_tl(tail);
+      p->toString();
+      p->setStreamIndex(0);
+      pos.writePacket(*p);
+      delete p;
+    }
+
     logdebug("read_cmd()");
     erl_print_term((FILE*) stderr, intuple);
   }

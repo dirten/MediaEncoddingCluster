@@ -38,7 +38,7 @@ file_loader(FileId)->
       DTmp;
     {error,enoent}->
       io:format("File ~p Not Found",[FileId]),
-      [{0,0,999999,"0",load_trigger,0,0,<<0>>}]
+      [{0,0,999999,"0",load_trigger,0,0,0,0,<<0>>}]
   end.
 
 prepare(Result)->

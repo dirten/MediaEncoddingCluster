@@ -32,7 +32,7 @@ int read_exact(byte *buf, int len) {
       return (i);
     got += i;
   } while (got < len);
-//  logdebug("Bytes readed" << len << ":Buffer" << buf);
+  //  logdebug("Bytes readed" << len << ":Buffer" << buf);
   return (len);
 }
 
@@ -49,13 +49,13 @@ int write_exact(byte *buf, int len) {
 }
 
 int read_cmd(byte *buf) {
-//  logdebug("Wating for read");
+  //  logdebug("Wating for read");
   int len;
 
   if (read_exact(buf, 4) != 4)
     return (-1);
   len = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
-//  logdebug("read length:" << len);
+  //  logdebug("read length:" << len);
   return read_exact(buf, len);
 }
 
@@ -102,15 +102,15 @@ ETERM * vector2list(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
   ETERM ** term = new ETERM*[s];
   std::vector<ETERM*>::iterator it = v.begin();
-/*
-  for (int a = 0; a< v.size(); a++) {
-    logdebug("vector to list first");
-    erl_print_term((FILE*) stderr, v[a]);
-  }
- */
+  /*
+    for (int a = 0; a< v.size(); a++) {
+      logdebug("vector to list first");
+      erl_print_term((FILE*) stderr, v[a]);
+    }
+   */
   for (int a = 0; it != v.end(); it++) {
-//    logdebug("vector to list");
-//    erl_print_term((FILE*) stderr, *it);
+    //    logdebug("vector to list");
+    //    erl_print_term((FILE*) stderr, *it);
     term[a++] = *it;
   }
   return erl_mk_list(term, v.size());
@@ -125,19 +125,20 @@ std::string toString(long long int num) {
 //{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
 
 ETERM * buildTermFromPacket(Packet & p) {
-  std::vector<ETERM *> terms;
-  /*
-  ETERM *bin=NULL;
+//  std::vector<ETERM *> terms;
+  //-record(packet,{stream_id, is_key,dts ,pts, flags, duration, size, timebase_num, timebase_den, data_size}).
 
-  if(p.getSize()>0)
-    bin=erl_mk_binary((char*) p.getData(), p.getSize());
-  else{
-    bin=erl_mk_binary((char*) "", 0);
+  ETERM *bin = NULL;
+
+  if (p.getSize() > 0)
+    bin = erl_mk_binary((char*) p.getData(), p.getSize());
+  else {
+    bin = erl_mk_binary((char*) "", 0);
   }
-  ETERM * f=erl_format("{packet,~i,~i,~f,~s,~i,~i,~i,~i,~i,~w}",
+  ETERM * f = erl_format("{~i,~i,~s,~s,~i,~i,~i,~i,~i,~w}",
       p.getStreamIndex(),
       p.isKeyFrame(),
-      p.getDts(),
+      Decimal(p.getPts()).toString().c_str(),
       Decimal(p.getDts()).toString().c_str(),
       p.getFlags(),
       p.getDuration(),
@@ -146,8 +147,8 @@ ETERM * buildTermFromPacket(Packet & p) {
       p.getTimeBase().den,
       bin
       );
-    erl_print_term((FILE*)stderr, f);
-*/
+//  erl_print_term((FILE*) stderr, f);
+/*
   terms.push_back(erl_mk_int(p.getStreamIndex()));
   terms.push_back(erl_mk_int(p.isKeyFrame()));
   //    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
@@ -161,13 +162,15 @@ ETERM * buildTermFromPacket(Packet & p) {
   terms.push_back(erl_mk_int(p.getSize()));
   terms.push_back(erl_mk_int(p.getTimeBase().num));
   terms.push_back(erl_mk_int(p.getTimeBase().den));
-  if(p.getSize()>0)
+  if (p.getSize() > 0)
     terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
-  else{
+  else {
     terms.push_back(erl_mk_binary((char*) "", 0));
   }
-//  logdebug("make vector2term from packet");
-  return vector2term(terms);
+   */
+  //  logdebug("make vector2term from packet");
+
+     return f;//vector2term(terms);
 }
 
 Packet * buildPacketFromTerm(ETERM * in) {
@@ -190,7 +193,7 @@ Packet * buildPacketFromTerm(ETERM * in) {
   //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
   p->packet->flags = ERL_INT_VALUE(flags);
   p->packet->duration = ERL_INT_UVALUE(duration);
-  AVRational r={
+  AVRational r = {
     ERL_INT_UVALUE(num),
     ERL_INT_UVALUE(den)
   };
@@ -215,17 +218,17 @@ public:
   }
 
   void write(void * p) {
-//    logdebug("Write Packet to Term Sink");
+    //    logdebug("Write Packet to Term Sink");
     Packet* pt = (Packet*) p;
     ETERM*t = buildTermFromPacket(*pt);
     pkts.push_back(t);
-//    erl_print_term((FILE*) stderr, pkts.back());
+    //    erl_print_term((FILE*) stderr, pkts.back());
   }
 
   ETERM * getTerm() {
-//    logdebug("Read Term from Term Sink:" << pkts.size());
+    //    logdebug("Read Term from Term Sink:" << pkts.size());
     ETERM * t = vector2list(pkts);
-//    erl_print_term((FILE*) stderr, t);
+    //    erl_print_term((FILE*) stderr, t);
 
     return t;
   }

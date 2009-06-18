@@ -7,13 +7,13 @@
 ]}.
 
 {profile,1,"Test Profile","avi","avi",13,1024,25,640,480,2,86017,128,44100,0,30}.
-{profile,2,"ipod(640x480-x264(1024)-vorbis(192/48))","mp4","ipod",28,1024,25,640,480,2,86017, 128,44100,0,30}.
+{profile,2,"ipod(640x480-x264(1024)-vorbis(192/48))","mp4","ipod",28,1024,25,128,96,2,86017, 128,44100,0,30}.
 
 {scheduler,1, "file_scanner", file_scanner, scan, [], 10000, "Scans Directory in interval", true}.
 {scheduler,2, "file_export", file_export, run, [], 10000, "Export completed files", true}.
 {scheduler,3, "auto_update", auto_update, run, [], 300000, "Check for Program Updates", true}.
 
-%{watchfolder,1,"/media/disk","/media/out",1,[],"no", "active"}.
+{watchfolder,1,"/media/disk/video","/media/out",2,[],"no", "active"}.
 {watchfolder,2,"/media/video","/media/out",2,[],"no", "active"}.
 {watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,[],"no","active"}.
 {watchfolder,4,"c:/2video","c:/3vodeoOut",1,[],"no", "active"}.

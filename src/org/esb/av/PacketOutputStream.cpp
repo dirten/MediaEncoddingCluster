@@ -43,20 +43,28 @@ void PacketOutputStream::writePacket(Packet & packet) {
    * calculate right pts for the entire streams here
    */
   //  streamDts[packet.getStreamIndex()]++;
+
   packet.setPts(streamPts[packet.getStreamIndex()]);
   packet.setDts(streamDts[packet.getStreamIndex()]);
-  if (_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size > 0) {
-    streamDts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
-    streamPts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
-    packet.setDuration(_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size);
-  } else {
-    streamDts[packet.getStreamIndex()]++;
-    streamPts[packet.getStreamIndex()]++;
-    packet.setDuration(0);
-  }
+  streamDts[packet.getStreamIndex()] += packet.getDuration();
+  streamPts[packet.getStreamIndex()] += packet.getDuration();
 
-  int result = av_write_frame(_fmtCtx, packet.packet);
-  //        int result=av_interleaved_write_frame(_fmtCtx,packet.packet);
+  /*
+    if (_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size > 0) {
+      streamDts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+      streamPts[packet.getStreamIndex()] += _fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size;
+      packet.setDuration(_fmtCtx->streams[packet.getStreamIndex()]->codec->frame_size);
+    } else {
+      streamDts[packet.getStreamIndex()]++;
+      streamPts[packet.getStreamIndex()]++;
+      packet.setDuration(0);
+    }
+   */
+  //  packet.toString();
+  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+  //  int result = av_write_frame(_fmtCtx, packet.packet);
+//  logdebug("av_write_frame result:" << result);
+
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {

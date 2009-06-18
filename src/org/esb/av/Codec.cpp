@@ -228,6 +228,9 @@ namespace org {
       int Codec::getSampleRate() {
         return _sample_rate;
       }
+      int Codec::getBitRate() {
+        return _bit_rate;
+      }
 
       SampleFormat Codec::getSampleFormat() {
         return ctx->sample_fmt;
@@ -239,6 +242,9 @@ namespace org {
 
       int Codec::getGopSize() {
         return _gop_size;
+      }
+      int Codec::getFlags() {
+        return ctx->flags;
       }
 
       void Codec::setStartTime(int64_t start) {

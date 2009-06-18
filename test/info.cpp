@@ -112,7 +112,7 @@ int main(int argc, char ** argv) {
 //    printf("%20lld|",fis.getFormatContext()->streams[p.packet->stream_index]->time_base);
     printf("%8d|", p.packet->size);
     printf("%2d|", p.packet->stream_index);
-    printf("%2d|", p.isKeyFrame());
+    printf("%s|", p.isKeyFrame()==1&&p.getStreamIndex()==0?"x ":"  ");
     printf("%5d|", p.packet->duration);
     printf("%20ld|", p.packet->pos);
     //        cout <<p.packet->pts<<"\t";

@@ -103,8 +103,12 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  const int outbuf_size = 1000;
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
-
+    logdebug("Frame Size:"<<ctx->frame_size);
+    int64_t dur=av_rescale((int64_t)ctx->frame_size*_time_base.den,_time_base.num,ctx->sample_rate);
+//    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
+//    logdebug("Duration:"<<dur2);
     int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
+//    logdebug("Audio Out Size:"<<audio_out_size);
     if (out_size < 0) {
       logerror("Error Encoding audio Frame");
     }
@@ -134,7 +138,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
 
     pak.packet->dts = frame.getDts();
     //	pak.packet->pos=frame.pos;
-    pak.packet->duration = frame.duration;
+    pak.packet->duration = dur;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
     pak.toString();
     if (_pos != NULL)

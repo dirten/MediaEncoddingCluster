@@ -58,6 +58,8 @@ class SampleFormat;*/
         int getHeight();
         PixelFormat getPixelFormat();
         int getSampleRate();
+        int getBitRate();
+        int getFlags();
         SampleFormat getSampleFormat();
         int getChannels();
         int getGopSize();

@@ -268,6 +268,7 @@ void Frame::toString() {
         ":Dts:" << getDts()<<
         ":Channels:" << channels<<
         ":SampleRate:" << sample_rate<<
+        ":Duration:" << duration<<
         ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den
         );
 //  logdebug("Frame->SampleSize:"<<_size);

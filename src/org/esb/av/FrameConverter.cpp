@@ -140,7 +140,7 @@ namespace org
         frame.setDts(in_frame.getDts());
         frame.pos = in_frame.pos;
         frame.stream_index = in_frame.stream_index;
-        frame.duration = 1; //in_frame.duration;
+        frame.duration = in_frame.duration;
         frame._size = out_size;
         frame._type = CODEC_TYPE_AUDIO;
         frame.channels = _enc->getChannels();
