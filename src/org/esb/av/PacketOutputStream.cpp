@@ -44,8 +44,11 @@ void PacketOutputStream::writePacket(Packet & packet) {
    */
   //  streamDts[packet.getStreamIndex()]++;
 
-  packet.setPts(streamPts[packet.getStreamIndex()]);
-  packet.setDts(streamDts[packet.getStreamIndex()]);
+//  packet.setPts(streamPts[packet.getStreamIndex()]);
+//  packet.setDts(streamDts[packet.getStreamIndex()]);
+      packet.setDts(AV_NOPTS_VALUE);
+      packet.setPts(AV_NOPTS_VALUE);
+      packet.setDuration(0);
   streamDts[packet.getStreamIndex()] += packet.getDuration();
   streamPts[packet.getStreamIndex()] += packet.getDuration();
 

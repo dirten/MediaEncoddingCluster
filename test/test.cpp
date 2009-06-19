@@ -13,7 +13,7 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/FileOutputStream.h"
 
-
+#include <Transcoder.h>
 using namespace org::esb::io;
 using namespace org::esb::av;
 
@@ -21,9 +21,9 @@ using namespace std;
 
 int audio() {
   //
-  int stream_id = 2;
-    File infile("/media/video/ChocolateFactory.ts");
-  //File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
+  
+//    File infile("/media/video/ChocolateFactory.ts");int stream_id = 2;
+  File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
 //  File infile("/Users/jholscher/media/ChocolateFactory.ts");
   File outfile("/media/out/test.mp3");
   if (!infile.exists()) {
@@ -58,14 +58,14 @@ int audio() {
 
   Encoder enc(CODEC_ID_MP3);
   enc.setChannels(2);
-  enc.setBitRate(448000);
+  enc.setBitRate(192000);
   enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
 
   enc.setTimeBase((AVRational) {
-    1, 48000
+    1, 90000
   });
-  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
+//  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
 
   //  enc.setGopSize(25);
     enc.setPixelFormat(PIX_FMT_YUV420P);
@@ -79,7 +79,7 @@ int audio() {
 
   FrameConverter conv(&dec, &enc);
   int pts = 0;
-  for (int i = 0; i < 50000; i++) {
+  for (int i = 0; i < 1000; i++) {
     Packet p;
     pis.readPacket(p);
     if (p.getStreamIndex() != 1)continue;
@@ -89,8 +89,6 @@ int audio() {
     //    f.toString();
     if (f.isFinished()) {
       Frame f2 = conv.convert(f);
-      f2.setPts(0);
-      f2.setDts(0);
       f2.stream_index = 0;
 //            f2.toString();
       enc.encode(f2);
@@ -316,12 +314,20 @@ int av() {
     }
   }
 }
-
+using namespace omnividea::fobs;
 int main() {
+
   av_register_all();
   avcodec_init();
   avcodec_register_all();
   audio();
+   
+/*
+  Transcoder t("/media/video/ChocolateFactory.ts","/media/test/test.avi");
+//  Transcoder t("/media/disk/video/big_buck_bunny_1080p_surround.avi","/media/test/test.mp4");
+  t.chooseVideoCodec(320,240,1024000,25.0,"divx");
+  t.transcode();
+*/
 //  video();
 //    av();
 }

@@ -81,13 +81,17 @@ Packet Encoder::encodeAudio(Frame & frame) {
   //  frame.toString();
 
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
+
   int size_out = frame._size * ctx->channels * osize;
+
   int frame_bytes = ctx->frame_size * osize * ctx->channels;
+
   if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + size_out) < 0) {
     fprintf(stderr, "av_fifo_realloc2() failed\n");
   }
 
   av_fifo_generic_write(fifo, frame._buffer, size_out, NULL);
+
 
   int audio_buf_size = (2 * 128 * 1024);
   uint8_t * audio_buf = new uint8_t[audio_buf_size];
@@ -103,12 +107,12 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  const int outbuf_size = 1000;
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
-    logdebug("Frame Size:"<<ctx->frame_size);
+    logdebug("Frame Size:"<<ctx->frame_size<<" osize:"<<osize);
     int64_t dur=av_rescale((int64_t)ctx->frame_size*_time_base.den,_time_base.num,ctx->sample_rate);
 //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
 //    logdebug("Duration:"<<dur2);
     int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
-//    logdebug("Audio Out Size:"<<audio_out_size);
+    logdebug("Audio Out Size:"<<audio_out_size);
     if (out_size < 0) {
       logerror("Error Encoding audio Frame");
     }
@@ -119,10 +123,12 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //    pak.packet->pts = frame.getPts();
     //	pak.pts=this->coded_frame->pts;
 
-    if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE)
+    if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE){
       pak.packet->pts = ctx->coded_frame->pts;//av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 48000});
-    else
-      pak.setPts(frame.getPts());
+      logdebug("CodedFramePts:"<<ctx->coded_frame->pts);
+    }
+//    else
+//      pak.setPts(frame.getPts());
     //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
     //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
 
@@ -143,7 +149,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     pak.toString();
     if (_pos != NULL)
       _pos->writePacket(pak);
-    //    if(_sink!=NULL)
+        if(_sink!=NULL)
     _sink->write(&pak);
     //  return pak;
   }

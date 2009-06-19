@@ -1,136 +1,76 @@
-//#include "org/esb/signal/Messenger.h"
-//#include "org/esb/lang/Exception.h"
-//#include "org/esb/io/ObjectOutputStream.h"
-//#include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/net/TcpSocket.h"
-//#include "org/esb/signal/Message.h"
-//#include "org/esb/signal/Messenger.h"
-
-//#include "org/esb/net/TcpServerSocket.h"
-//#include "org/esb/net/TcpSocket.h"
-//#include "org/esb/lang/Thread.h"
-//#include "org/esb/hive/ProtocolServer.h"
-//#include "org/esb/config/config.h"
-//#include "org/esb/hive/job/JobWatcher.h"
-//#include "org/esb/hive/job/ProcessUnitWatcher.h"
-//#include "org/esb/hive/job/ProcessUnit.h"
-//#include "org/esb/io/ObjectInputStream.h"
-//#include "org/esb/io/ObjectOutputStream.h"
-//#include "org/esb/web/WebServer.h"
-//#include "org/esb/hive/HiveListener.h"
-//#include "org/esb/hive/DirectoryScanner.h"
-//#include "org/esb/av/AV.h"
-//#include "org/esb/hive/PacketCollector.h"
-//#include "Environment.cpp"
-//#include "org/esb/hive/HiveClient.h"
-/*
-#include "org/esb/hive/Setup.h"
-#include "org/esb/hive/Version.h"
-
-#include "org/esb/hive/FileImporter.h"
-#include "org/esb/hive/FileExporter.h"
-#include "org/esb/hive/ExportScanner.h"
-
-//#include "org/esb/util/Decimal.h"
-//#include "org/esb/hive/FileImporter.h"
-//#include "export.cpp"
-//#include "org/esb/util/Log.h"
-//#include "job.cpp"
-//#include "org/esb/hive/JobUtil.h"
 
 
 
-#include "org/esb/io/File.h"
-#include "org/esb/av/FormatInputStream.h"
-#include "org/esb/av/PacketInputStream.h"
-#include "org/esb/av/Packet.h"
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
 
-#include "org/esb/io/File.h"
-#include "org/esb/io/FileInputStream.h"
-#include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/io/FileOutputStream.h"
-#include "org/esb/io/ObjectOutputStream.h"
-#include "org/esb/hive/job/ProcessUnit.h"
-#include "org/esb/lang/Thread.h"
-#include "org/esb/config/config.h"
-#include "org/esb/util/Queue.h"
-#include <boost/bind.hpp>
+int main(int argc, char ** argv) {
 
-using namespace org::esb::io;
-using namespace org::esb::av;
-using namespace org::esb::sql;
-using namespace org::esb::config;
+  while (avpkt.size > 0 || (!pkt && ist->next_pts != ist->pts)) {
 
-using namespace std;
-*/
-int main(int argc, char ** argv){
+    static unsigned int samples_size = FFMAX(pkt->size * sizeof (*samples), AVCODEC_MAX_AUDIO_FRAME_SIZE);
+    static short *samples = av_malloc(samples_size);
 
-	return 0;
-	/*
-	char * f="3";
-	std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
-	path+="/tmp/";
-		std::string filename=path.append(org::esb::util::Decimal(atoi(f)%1000).toString());
-		filename+="/";
-		filename.append(f).append(".unit");
+    ret = avcodec_decode_audio3(ist->st->codec, samples, &samples_size, &avpkt);
 
-		std::ifstream ifs(filename.c_str());
-		boost::archive::binary_iarchive ia(ifs);
+    avpkt.data += ret;
+    avpkt.size -= ret;
 
-    // restore the schedule from the archive
-		org::esb::hive::job::ProcessUnit * un= new org::esb::hive::job::ProcessUnit();
-	    ia >> BOOST_SERIALIZATION_NVP(un);
-		std::cerr << "Archive loaded"<<std::endl;
-*/
-		/*
-		org::esb::io::File infile(filename.c_str());
-		if(infile.exists()){
-			org::esb::io::FileInputStream fis(&infile);
-			org::esb::io::ObjectInputStream ois(&fis);
-			org::esb::hive::job::ProcessUnit un;
-			try{
-				ois.readObject(un);
-			}catch(...){
-				logerror("ProcessUnit "<< filename <<" ungültig!!!" );
-			}
-		}
-*/
-return 0;
-/*
-	int loop=1;
-	while(loop-->0){
-	std::cout <<"loop "<<loop<<endl;
 
-//	File f("/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts");
-//	File f("/media/TREKSTOR/videos/20070401 1825 - PREMIERE 3 - Wes Craven prÃ¤sentiert Dracula III_ Legacy (Dracula III_ Legacy).ts");
-	org::esb::io::File f("e:/ChocolateFactory.ts");
-//	File f("m:\\video\\20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts");
-	FormatInputStream fis(&f);
-	fis.seek(0,(3769560833-70000));
-	PacketInputStream pis(&fis);
-	int a=0;
-        bool print=false;
-        Packet p;
+    ist->next_pts += ((int64_t) AV_TIME_BASE / 2 * data_size) / (ist->st->codec->sample_rate * ist->st->codec->channels);
 
-		Connection con("mysql:host=192.168.0.187;db=hive;user=root;passwd=root");
-		PreparedStatement st=con.prepareStatement("select * from packets where dts=:dts");
-		while(false||a<50){
-		if(pis.readPacket(p)<0)break;
-		if(p.packet->stream_index==0){
-			if(p.packet->pts>=3769560833){
-				st.setLong("dts",p.packet->dts);
-				ResultSet rs=st.executeQuery();
-				rs.next();
-				std::cout <<"PTS:"<< p.packet->pts<<" DTS:"<<p.packet->dts<<" Size "<<rs.getLong("data_size")<<":"<<p.packet->size<<std::endl;
-				a++;
-			}
-		}
-		}
-	std::cout << endl;
-	}*/
+
+    uint8_t *buftmp;
+    int isize = av_get_bits_per_sample_format(dec->sample_fmt) / 8;
+    int osize = av_get_bits_per_sample_format(enc->sample_fmt) / 8;
+
+    size_out = audio_resample(ost->resample, (short *) buftmp, (short *) samples, samples_size / (ist->st->codec->channels * isize));
+    size_out = size_out * enc->channels * osize;
+
+    if (av_fifo_realloc2(ost->fifo, av_fifo_size(ost->fifo) + size_out) < 0) {
+      fprintf(stderr, "av_fifo_realloc2() failed\n");
+      av_exit(1);
+    }
+
+    av_fifo_generic_write(ost->fifo, buftmp, size_out, NULL);
+
+    frame_bytes = enc->frame_size * osize * enc->channels;
+
+    const int audio_out_size= 4*MAX_AUDIO_PACKET_SIZE;
+
+    if (!audio_buf)
+      audio_buf = av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
+    if (!audio_out)
+      audio_out = av_malloc(audio_out_size);
+
+    while (av_fifo_size(ost->fifo) >= frame_bytes) {
+      AVPacket pkt;
+      av_init_packet(&pkt);
+
+      av_fifo_generic_read(ost->fifo, audio_buf, frame_bytes, NULL);
+
+      //FIXME pass ost->sync_opts as AVFrame.pts in avcodec_encode_audio()
+
+      ret = avcodec_encode_audio(enc, audio_out, audio_out_size,(short *) audio_buf);
+      if (ret < 0) {
+        fprintf(stderr, "Audio encoding failed\n");
+        av_exit(1);
+      }
+      audio_size += ret;
+      pkt.stream_index = ost->index;
+      pkt.data = audio_out;
+      pkt.size = ret;
+      if (enc->coded_frame && enc->coded_frame->pts != AV_NOPTS_VALUE)
+        pkt.pts = av_rescale_q(enc->coded_frame->pts, enc->time_base, ost->st->time_base);
+      pkt.flags |= PKT_FLAG_KEY;
+      write_frame(s, &pkt, ost->st->codec, bitstream_filters[ost->file_index][pkt.stream_index]);
+
+      ost->sync_opts += enc->frame_size;
+    }
+
+
+
+  }
+
+
 }
 

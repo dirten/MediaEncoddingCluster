@@ -4,11 +4,13 @@
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_DIR}/include)
 include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
 
 LINK_DIRECTORIES(${BOOST_LIB_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/test/fobs/dist/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
@@ -60,7 +62,7 @@ ENDIF(WIN32)
 IF(NOT WIN32)
 
 target_link_libraries (info ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
-target_link_libraries (test ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (test ${BZ2_LIB} fobscore io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(NOT WIN32)
 

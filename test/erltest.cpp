@@ -212,11 +212,11 @@ int main(int argc, char** argv) {
 
     erl_init(NULL, 0);
 
-    int stream_id = 1;
+//    int stream_id = 1;
 
-//        File infile("/media/video/ChocolateFactory.ts");
-    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
-    File outfile("/media/out/test.mp4");
+//        File infile("/media/video/ChocolateFactory.ts");int stream_id = 2;
+    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
+    File outfile("/media/out/test.mp3");
 
     FormatInputStream fis(&infile);
     PacketInputStream pis(&fis);
@@ -224,13 +224,14 @@ int main(int argc, char** argv) {
     FormatOutputStream fos(&outfile);
     PacketOutputStream pos(&fos);
 
-    AVCodecContext * c = fis.getFormatContext()->streams[1]->codec;
+    AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
     Decoder dec(c->codec_id);
     dec.setChannels(c->channels);
     dec.setBitRate(c->bit_rate);
     dec.setSampleRate(c->sample_rate);
     dec.setPixelFormat(c->pix_fmt);
     dec.setPixelFormat(PIX_FMT_YUV420P);
+    dec.setTimeBase(c->time_base);
     dec.ctx->request_channel_layout = 2;
     dec.open();
     logdebug(dec.toString());
