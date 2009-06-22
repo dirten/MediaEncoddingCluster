@@ -56,19 +56,19 @@ untar_file(){
 configure_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Configuring $1"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --disable-shared --enable-static $2 &> configure-$1.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --disable-shared --enable-static $2 > configure-$1.log
  	        cd "$TOPDIR"
  	}
 configure_xvid(){
  	        cd "$SRCDIR/xvidcore/build/generic/"
  	        echo "Configuring xvidcore"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/xvidcore" $2 &> configure-xvidcore.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/xvidcore" $2 > configure-xvidcore.log
  	        cd "$TOPDIR"
  	}
 build_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Building $1"
- 	        make install&> make-$1.log
+ 	        make install > make-$1.log
  	        if test $? -ne 0; then
  	                echo "make failed - log available: $1/make-$1.log"
  	                exit 1
@@ -78,7 +78,7 @@ build_file(){
 build_xvid(){
  	        cd "$SRCDIR/xvidcore/build/generic"
  	        echo "Building xvidcore"
- 	        make &> make.log
+ 	        make > make.log
  	        if test $? -ne 0; then
  	                echo "make failed - log available: xvidcore/make-xvidcore.log"
  	                exit 1
@@ -93,7 +93,6 @@ rename_file(){
   fi
   cd "$TOPDIR"
 }
-if [[ false ]]; then
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
 download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
 download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
@@ -102,9 +101,7 @@ download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" 
 download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
 download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
 download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
-fi
 
-if [[ true==false ]] ; then
 bunzip_file "ffmpeg-export-snapshot.tar.bz2"
 bunzip_file "x264-snapshot.tar.bz2"
 gunzip_file "lame.src.tar.gz"
@@ -113,9 +110,8 @@ bunzip_file "libtheora-1.0.tar.bz2"
 gunzip_file "speex-1.0.5.tar.gz"
 gunzip_file "libvorbis-1.2.0.tar.gz"
 gunzip_file "xvidcore-1.2.1.tar.gz"
-fi
 
-if [ false ] ; then
+if [ false = true ]; then
 untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
 untar_file "x264-snapshot.tar" "x264-snap*" "x264"
 untar_file "lame.src.tar" "lame-*" "lame"
@@ -128,7 +124,6 @@ fi
 
 export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 
-if [ false ] ; then
 configure_file "lame"
 build_file "lame"
 configure_file "x264" "--enable-debug"
@@ -145,9 +140,17 @@ configure_xvid
 build_xvid
 
 SYS=`uname`
-if [ $SYS != MINGW32* ]; then
-  LIBPTHREAD="--extra-ldflags=-lpthread"
-fi
+case "$SYS" in
+    MINGW32*)
+    ;;
+    *)
+    LIBPTHREAD="--extra-ldflags=-lpthread"
+    ;;
+esac
+
+#if [ $SYS != MINGW32* ]; then
+#  LIBPTHREAD="--extra-ldflags=-lpthread"
+#fi
 
 configure_file "ffmpeg" \
 "--enable-libxvid --extra-cflags=-I$SRCDIR/$BUILDDIR/xvidcore/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/xvidcore/lib \
@@ -159,10 +162,13 @@ configure_file "ffmpeg" \
 $LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack"
 
 build_file "ffmpeg"
-fi
 
-if [ $SYS == MINGW32* ]; then
-  echo "Fixing mingw Build"
+
+
+
+case "$SYS" in
+    MINGW32*)
+      echo "Fixing mingw Build"
   echo "Copy required Libraries from MinGW"
   cd $SRCDIR/$BUILDDIR/ffmpeg/lib
   cp /usr/mingw/lib/libmingwex.a libmingwex.lib
@@ -185,4 +191,11 @@ if [ $SYS == MINGW32* ]; then
   rename_file "libvorbis/lib" "libvorbisenc"
   rename_file "x264/lib" "libx264"
   rename_file "xvidcore/lib" "xvidcore"
-fi
+
+    ;;
+    *)
+    LIBPTHREAD="--extra-ldflags=-lpthread"
+    ;;
+esac
+
+      echo "Build successfull"
