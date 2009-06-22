@@ -3,7 +3,7 @@
 
 #include "AV.h"
 
-#include <boost/serialization/binary_object.hpp>
+//#include <boost/serialization/binary_object.hpp>
 #include "Packet.h"
 #include "org/esb/util/Log.h"
 #include <boost/shared_ptr.hpp>
@@ -68,7 +68,7 @@ class SampleFormat;*/
         std::string toString(void);
         //				int getCodecType ();
         //				string getCodecName ();
-
+/*
         template < class Archive >
         void serialize(Archive & ar, const unsigned int version) {
 
@@ -88,7 +88,7 @@ class SampleFormat;*/
           ar & _sample_format;
 
         }
-
+*/
         CodecID _codec_id;
         //			  protected:
 

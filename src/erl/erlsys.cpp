@@ -8,7 +8,7 @@
 #include <vector>
 
 
-#define DEBUG true
+#define DEBUG false
 
 //#include <stdlib.h>
 #include "erl.cpp"

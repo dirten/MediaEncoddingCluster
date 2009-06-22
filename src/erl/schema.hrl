@@ -23,7 +23,7 @@
 
 -record(timestamp,{num,den}).
 
--record(packet,{stream_id, is_key,dts ,pts, flags, duration, size, timebase_num, timebase_den, data_size}).
+-record(packet,{stream_id, is_key,dts ,pts, flags, duration, size, timebase_num, timebase_den, data_size, data}).
 
 -record(scheduler,{id, name, module, func, args, interval, desc, active=true}).
 
