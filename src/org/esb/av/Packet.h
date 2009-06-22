@@ -7,7 +7,7 @@
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/text_iarchive.hpp>
 //#include <boost/archive/text_oarchive.hpp>
-#include <boost/serialization/binary_object.hpp>
+//#include <boost/serialization/binary_object.hpp>
 #include <boost/shared_ptr.hpp>
 //#include <boost/serialization/split_member.hpp>
 //using namespace boost;
@@ -51,7 +51,7 @@ namespace org {
         bool isCopy;
         bool callDestruct;
         //	uint8_t _data;
-        friend class boost::serialization::access;
+//        friend class boost::serialization::access;
         //		    void serialize(boost::archive::Archive & ar, const unsigned int version);
 
                 /*
@@ -73,16 +73,11 @@ namespace org {
             ar & packet->pos;
           }
          */
+  /*
         template<class Archive>
         void save(Archive & ar, const unsigned int version) const {
 
           ar & packet->size;
-          /*
-              if (packet->data==NULL) {
-                packet->data=new uint8_t[packet->size];
-                memset(packet->data, 0, packet->size);
-                callDestruct=true;
-              }*/
           ar & boost::serialization::make_binary_object(packet->data, packet->size);
           ar & packet->pts;
           ar & packet->dts;
@@ -113,8 +108,8 @@ namespace org {
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()
         //	private:
+*/
         AVPacket * packet;
-
       };
     }
   }

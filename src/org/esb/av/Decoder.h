@@ -15,11 +15,12 @@ namespace org {
                 Frame decode(Packet & packet);
                 Frame decodeLast();
                 void analyzePacket(Packet & packet);
-
+/*
                 template<class Archive>
                 void serialize(Archive & ar, const unsigned int version) {
                     ar & boost::serialization::base_object<Codec > (*this);
                 }
+                 */
                 Frame decodeVideo(Packet & packet);
                 Frame decodeAudio(Packet & packet);
             };
