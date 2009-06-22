@@ -3,7 +3,7 @@
 -record(file,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status=ok}).
 
 % new Record for saving MediaFile Information
-%-record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
+-record(media,{id, filename, path, size, containertype,streamcount,duration,bitrate,type,parent, start_time, status}).
 
 % this Record saves the Data for watchfolders
 -include("schema_watchfolder.hrl").
