@@ -198,8 +198,8 @@ int main(int argc, char** argv) {
     dup(c2p[1]);
     close(c2p[0]);
     //    std::cout << "start programm" << std::endl;
-    //    int s = execlp("/usr/bin/valgrind", "valgrind", "--log-file=/tmp/erlsys", "--leak-check=full", "--show-reachable=yes", "/home/jhoelscher/MediaEncodingCluster/src/erl/bin/mhivesys", NULL);
-    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
+        int s = execlp("/usr/bin/valgrind", "valgrind", "--log-file=/tmp/erlsys", "--leak-check=full", "--show-reachable=yes", "/home/jhoelscher/MediaEncodingCluster/src/erl/bin/mhivesys", NULL);
+//    int s = execlp("../src/erl/bin/mhivesys", argv[0], NULL);
     std::cout << "Status :" << s << std::endl;
   } else {
     org::esb::lang::Thread::sleep2(1000);
@@ -214,8 +214,8 @@ int main(int argc, char** argv) {
 
 //    int stream_id = 1;
 
-//        File infile("/media/video/ChocolateFactory.ts");int stream_id = 2;
-    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
+        File infile("/media/video/ChocolateFactory.ts");int stream_id = 2;
+//    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
     File outfile("/media/out/test.mp3");
 
     FormatInputStream fis(&infile);
@@ -323,7 +323,7 @@ int main(int argc, char** argv) {
 
     std::vector<ETERM *> packets;
     Packet p;
-    for (int a = 0; a < 1000; a++) {
+    for (int a = 0; a < 100; a++) {
       pis.readPacket(p);
       if (p.getStreamIndex() == 1) {
         packets.push_back(buildTermFromPacket(p));
@@ -365,19 +365,19 @@ int main(int argc, char** argv) {
     int pc = erl_length(intuple);
     ETERM * tail = intuple;
     for (int a = 0; a < pc; a++) {
-      logdebug("Write Packet");
+//      logdebug("Write Packet");
       ETERM * head = erl_hd(tail);
-      erl_print_term((FILE*) stderr, head);
+//      erl_print_term((FILE*) stderr, head);
       Packet *p = buildPacketFromTerm(head);
       tail = erl_tl(tail);
-      p->toString();
+//      p->toString();
       p->setStreamIndex(0);
       pos.writePacket(*p);
       delete p;
     }
 
     logdebug("read_cmd()");
-    erl_print_term((FILE*) stderr, intuple);
+//    erl_print_term((FILE*) stderr, intuple);
   }
   return (EXIT_SUCCESS);
 }

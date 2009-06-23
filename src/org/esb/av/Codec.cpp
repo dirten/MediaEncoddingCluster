@@ -18,14 +18,18 @@ void my_init() {
   avcodec_register_all();
 }
 
-namespace org {
-  namespace esb {
-    namespace av {
+namespace org
+{
+  namespace esb
+  {
+    namespace av
+    {
 
       Codec::Codec(AVCodecContext * c) {
-        ctx=c;
-        _opened=true;
+        ctx = c;
+        _opened = true;
       }
+
       Codec::Codec() {
         _opened = false;
         _codec_id = CODEC_ID_NONE;
@@ -127,7 +131,7 @@ namespace org {
       }
 
       int Codec::open() {
-        if(_opened)return 0;
+        if (_opened)return 0;
         if (findCodec(_mode)) {
           //          ctx = avcodec_alloc_context();
           setParams();
@@ -136,7 +140,8 @@ namespace org {
             //					    cout <<"CodecCapTruncated"<<endl;
           }
           //				    ctx->flags |=CODEC_FLAG_LOW_DELAY;
-          try {
+          try
+          {
             if (avcodec_open(ctx, _codec) < 0) {
               logerror("while openning Codec" << _codec_id);
 
@@ -144,7 +149,9 @@ namespace org {
               //              logdebug("Codec opened:" << _codec_id);
               _opened = true;
             }
-          } catch (...) {
+          }
+
+          catch(...) {
             logerror("Exception while openning Codec" << _codec_id);
           }
           return 0;
@@ -161,14 +168,14 @@ namespace org {
       }
 
       void Codec::close() {
+        av_freep(&ctx->stats_in);
         if (_opened) {
-          av_freep(&ctx->stats_in);
           avcodec_close(ctx);
-          av_free(ctx);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << _codec_id);
         }
+        av_free(ctx);
         _opened = false;
       }
 
@@ -228,6 +235,7 @@ namespace org {
       int Codec::getSampleRate() {
         return _sample_rate;
       }
+
       int Codec::getBitRate() {
         return _bit_rate;
       }
@@ -243,6 +251,7 @@ namespace org {
       int Codec::getGopSize() {
         return _gop_size;
       }
+
       int Codec::getFlags() {
         return ctx->flags;
       }

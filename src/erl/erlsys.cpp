@@ -131,14 +131,14 @@ ETERM * writepacket(ETERM * in) {
   //  logdebug("Build Packet:");
   Packet * p = buildPacketFromTerm(in);
   //  logdebug("Packet Ready:");
-    p->toString();
-//  p->packet->pts = 0;
-//  p->packet->dts = 0;
-//  if (p->getSize() > 0) {
-    pos->writePacket(*p);
-    delete p;
-//  } else
-//    logerror("Packet is not usabel");
+  p->toString();
+  //  p->packet->pts = 0;
+  //  p->packet->dts = 0;
+  //  if (p->getSize() > 0) {
+  pos->writePacket(*p);
+  delete p;
+  //  } else
+  //    logerror("Packet is not usabel");
   terms.push_back(erl_mk_string("ok_packet_written"));
   return vector2list(terms);
 }
@@ -360,7 +360,7 @@ ETERM * encode(ETERM* in) {
   int multipass = ERL_INT_UVALUE(pass);
   Decoder *d = create_decoder(decoder);
   Encoder *e = create_encoder(encoder);
-  PacketTermSink  sink;// = new PacketTermSink();
+  PacketTermSink sink; // = new PacketTermSink();
   e->setSink(&sink);
   d->ctx->request_channel_layout = e->getChannels();
   e->open();
@@ -393,7 +393,7 @@ ETERM * encode(ETERM* in) {
   int pc = erl_length(packet_list);
   ETERM * tail = packet_list;
   for (int a = 0; a < pc; a++) {
-//        logdebug("Output term " << a);
+    //        logdebug("Output term " << a);
     //    erl_print_term((FILE*)stderr, erl_element(a + 1, packet_list));
     if (toDebug)
       logdebug("Create Packet" << a);
@@ -421,19 +421,19 @@ ETERM * encode(ETERM* in) {
 
     f2.setPts(f2.getDts());
     if (toDebug)
-//      logdebug("after converting frame");
-        f2.toString();
+      //      logdebug("after converting frame");
+      f2.toString();
     Packet ret = e->encode(f2);
-//    if (toDebug)
-//      ret.toString();
+    //    if (toDebug)
+    //      ret.toString();
     if (multipass == 1 && e->getStatistics())
       statistics.append(e->getStatistics());
-    if (multipass == 0 || multipass == 2) {
+    if (false&&multipass == 0 || multipass == 2) {
       ETERM * pac = buildTermFromPacket(ret);
       terms.push_back(pac);
     }
-//    if (toDebug)
-//      logdebug("Encoded PacketSize" << ret.getSize());
+    //    if (toDebug)
+    //      logdebug("Encoded PacketSize" << ret.getSize());
   }
   delete d;
   delete e;
@@ -527,9 +527,14 @@ int main(int argc, char** argv) {
         logdebug("unknown_command");
         outtuple = vector2term(terms);
       }
+      if (DEBUG)
+        logdebug("try freeing intuple");
       if (intuple != NULL) {
         erl_free_compound(intuple);
+//        erl_free(intuple);
         intuple = NULL;
+        if (DEBUG)
+          logdebug("intuple freed");
       }
       if (DEBUG)
         logdebug("try return data");
@@ -553,6 +558,7 @@ int main(int argc, char** argv) {
           if (DEBUG)
             logdebug("write_cmd success");
           erl_free_compound(outtuple);
+//          erl_free(outtuple);
           outtuple = NULL;
           if (DEBUG)
             logdebug("return data written");
@@ -566,6 +572,7 @@ int main(int argc, char** argv) {
     }
   }
   delete []buf;
-  //  logdebug("mhivesys Exiting Normal");
+//  erl_eterm_release();
+  logdebug("mhivesys Exiting Normal");
 }
 

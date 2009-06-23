@@ -19,6 +19,9 @@ Encoder::Encoder() : Codec() {
 
 
 }
+Encoder::~Encoder() {
+  av_fifo_free(fifo);
+}
 
 Packet Encoder::encode(Frame & frame) {
   if (ctx->codec_type == CODEC_TYPE_VIDEO)

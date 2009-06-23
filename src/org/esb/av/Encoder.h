@@ -19,6 +19,7 @@ namespace org {
             public:
                 Encoder(CodecID id);
                 Encoder();
+                ~Encoder();
                 Packet encode(Frame & f);
                 char * getStatistics();
                 void setStatistics(char *);

@@ -113,7 +113,9 @@ ETERM * vector2list(std::vector<ETERM*> & v) {
     //    erl_print_term((FILE*) stderr, *it);
     term[a++] = *it;
   }
-  return erl_mk_list(term, v.size());
+  ETERM * result=erl_mk_list(term, v.size());
+  delete []term;
+  return result;
 }
 
 std::string toString(long long int num) {
@@ -187,10 +189,13 @@ Packet * buildPacketFromTerm(ETERM * in) {
   p->packet->stream_index = ERL_INT_UVALUE(streamidx);
   //  logdebug("buildPacketFromTerm(ETERM * in) -> pts:"<<(const char *) erl_iolist_to_string(pts))
   //  logdebug("buildPacketFromTerm(ETERM * in) -> dts:"<<(const char *) erl_iolist_to_string(dts))
-  sscanf((const char *) erl_iolist_to_string(pts), "%llu", &p->packet->pts);
-  sscanf((const char *) erl_iolist_to_string(dts), "%llu", &p->packet->dts);
-  //  memcpy((char *)p->packet->pts, ERL_BIN_PTR(pts), 8);
-  //  memcpy((char *)p->packet->dts, ERL_BIN_PTR(dts), 8);
+  char * pts_p=erl_iolist_to_string(pts);
+  char * dts_p=erl_iolist_to_string(dts);
+  sscanf(pts_p, "%llu", &p->packet->pts);
+  sscanf(dts_p, "%llu", &p->packet->dts);
+  erl_free(pts_p);
+  erl_free(dts_p);
+
   p->packet->flags = ERL_INT_VALUE(flags);
   p->packet->duration = ERL_INT_UVALUE(duration);
   AVRational r = {
