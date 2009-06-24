@@ -27,6 +27,6 @@
 { './web/mochi*', [
 	debug_info
 ]}.
-{ './test/test.erl', [
-	debug_info
-]}.
+%{ './test/test.erl', [
+%	debug_info
+%]}.

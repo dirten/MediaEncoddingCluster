@@ -68,27 +68,27 @@ class SampleFormat;*/
         std::string toString(void);
         //				int getCodecType ();
         //				string getCodecName ();
-/*
-        template < class Archive >
-        void serialize(Archive & ar, const unsigned int version) {
+        /*
+                template < class Archive >
+                void serialize(Archive & ar, const unsigned int version) {
 
 
-          ar & _codec_id;
-          ar & _mode;
-          ar & _flags;
-          ar & _pix_fmt;
-          ar & _width;
-          ar & _height;
-          ar & _time_base.num;
-          ar & _time_base.den;
-          ar & _gop_size;
-          ar & _bit_rate;
-          ar & _channels;
-          ar & _sample_rate;
-          ar & _sample_format;
+                  ar & _codec_id;
+                  ar & _mode;
+                  ar & _flags;
+                  ar & _pix_fmt;
+                  ar & _width;
+                  ar & _height;
+                  ar & _time_base.num;
+                  ar & _time_base.den;
+                  ar & _gop_size;
+                  ar & _bit_rate;
+                  ar & _channels;
+                  ar & _sample_rate;
+                  ar & _sample_format;
 
-        }
-*/
+                }
+         */
         CodecID _codec_id;
         //			  protected:
 

@@ -75,6 +75,7 @@ start(_Type, StartArgs)->
       os:cmd([ErtsPath,"/bin/epmd -daemon"]);
     _->ok
   end,
+  io:format("Env:~w~n",[application:get_env(mhive, mode2)]),
   Node=libnet:local_name(),
   net_kernel:start([Node]),
   %  net_adm:world(),

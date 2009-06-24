@@ -28,6 +28,7 @@
 -include("schema.hrl").
 -include("version.hrl").
 
+%% @spec()->ok
 setup()->
   setup_db(),
   io:format("Configure Cluster Environment~n"),
@@ -42,10 +43,10 @@ setup()->
   end.
 
 setup_mode()->
-  read_data("Cluster Instance Mode {server | client | both}: ",[server,client,both]).
+  read_data("please define the Cluster Instance Mode {server | client | both}: ",[server,client,both]).
 
 setup_autostart()->
-  read_data("Cluster Instance Autostart at System Boot {yes | no}: ",[yes,no]).
+  read_data("should Instance Autostart at System Boot {yes | no}: ",[yes,no]).
 
 setup_webserver()->
   read_data("Webserver Port : ",[]).
