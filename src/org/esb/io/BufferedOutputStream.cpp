@@ -1,5 +1,5 @@
 #include "BufferedOutputStream.h"
-
+#include <string.h>
 
 
 using namespace org::esb::io;
