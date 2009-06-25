@@ -111,7 +111,6 @@ gunzip_file "speex-1.0.5.tar.gz"
 gunzip_file "libvorbis-1.2.0.tar.gz"
 gunzip_file "xvidcore-1.2.1.tar.gz"
 
-if [ false = true ]; then
 untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
 untar_file "x264-snapshot.tar" "x264-snap*" "x264"
 untar_file "lame.src.tar" "lame-*" "lame"
@@ -120,7 +119,6 @@ untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
 untar_file "speex-1.0.5.tar" "speex-*" "speex"
 untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
 untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
-fi
 
 export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 
