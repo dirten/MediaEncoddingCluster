@@ -4,7 +4,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{EDC20B92-4C2B-441C-AF0B-AB3D658825D8}
 AppName=Media Encoding Cluster
-AppVerName=Media Encoding Cluster 0.0.4.2
+AppVerName=Media Encoding Cluster 0.0.4.3
 AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
@@ -13,7 +13,7 @@ DefaultDirName={pf}\MediaEncodingCluster
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
-OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.2
+OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.3
 
 [Code]
 function MyConst(Param: String): String;
@@ -21,7 +21,36 @@ begin
   StringChangeEx(Param,'\','/',True);
   Result:=Param;
 end;
-
+function ShouldInstallMSVC90: Boolean;
+var
+  MS, LS: Cardinal;
+begin
+  Result := False;
+  if GetVersionNumbers(ExpandConstant('{sys}\comctl32.dll'), MS, LS) then
+    if MS < $00050050 then
+      Result := True;
+end;
+function ShouldInstallTest: Boolean;
+var
+  FilesFound: Integer;
+  FindRec: TFindRec;
+begin
+  FilesFound := 0;
+  if FindFirst(ExpandConstant('{win}\WinSxS\*.dll'), FindRec) then begin
+    try
+      repeat
+        // Don't count directories
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
+          FilesFound := FilesFound + 1;
+      until not FindNext(FindRec);
+    finally
+      FindClose(FindRec);
+    end;
+  end;
+  MsgBox(IntToStr(FilesFound) + ' files found in the System directory.',
+    mbInformation, MB_OK);
+  Result:=False;
+end;
  {
 ;[Components]
 ;Name: "runtime"; Description: "This is the Base Runtime System"; Types: full
@@ -40,19 +69,20 @@ Name: "german"; MessagesFile: "compiler:languages/German.isl"
 
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
 Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"; OnlyBelowVersion: 0,9.0
+Filename: "{tmp}\vcredist_x86.exe";
 Filename: "{app}/erts-5.7.1/bin/epmd.exe" ; Parameters: "-daemon"
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
 ;Filename: "{app}/erts-5.6.5/bin/erl.exe" ; Parameters: "-setcookie default -config releases\0.0.4.1\sys -eval ""setup:setup_win32(no,no),init:stop()."" "; WorkingDir: "{app}";
-Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.2/sys -eval ""setup:setup_win32(server,no,'0.0.4.2'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver
-Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.2/sys -eval ""setup:setup_win32(client,no,'0.0.4.2'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient
-Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.2/sys -eval ""setup:setup_win32(both,no,'0.0.4.2'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
+Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.3/sys -eval ""setup:setup_win32(server,no,'0.0.4.3'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver
+Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.3/sys -eval ""setup:setup_win32(client,no,'0.0.4.3'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient
+Filename: "{app}/erts-5.7.1/bin/erl.exe" ; Parameters: "-mnesia dir 'data' -setcookie default -config releases/0.0.4.3/sys -eval ""setup:setup_win32(both,no,'0.0.4.3'),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default"" -eval application:start(mhive)."
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -boot releases\0.0.4.1\start -config releases\0.0.4.1\sys""";
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "set MHiveService -w {app} -sn node -args ""-setcookie default -eval application:start(sasl),application:start(mhive_client)."""; Tasks: baseclient
@@ -61,9 +91,10 @@ Filename: "{app}/erts-5.7.1/bin/erlsrv"; Parameters: "start MHiveService"; Descr
 Filename: "{app}/erts-5.7.1/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
-Source: "C:/bruteripper/src/erl/releases/0.0.4.2/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/bruteripper/src/erl/releases/0.0.4.3/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "C:/bruteripper/src/erl/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
+Source: "c:\vcredist_x86-8056336.exe"; DestDir: "{tmp}"
 
 ;Source: "C:/bruteripper-build/src/erl/Release/mhivesys"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -80,11 +111,11 @@ Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-;Name: "{group}\start Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
-;Name: "{group}\stop Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.2/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\start Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.3/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\stop Runtime"; Filename: "{app}\erts-5.7.1\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.3/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
-;Name: "{group}\start Console"; Filename: "{app}\erts-5.7.1\bin\werl.exe" ; Parameters: "-name console -setcookie default -config releases/0.0.4.2/sys -eval application:start(sasl)."; WorkingDir: "{app}"
+;Name: "{group}\start Console"; Filename: "{app}\erts-5.7.1\bin\werl.exe" ; Parameters: "-name console -setcookie default -config releases/0.0.4.3/sys -eval application:start(sasl)."; WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080/mec.html"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"

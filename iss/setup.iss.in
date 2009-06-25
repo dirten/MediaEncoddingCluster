@@ -76,7 +76,7 @@ Name: "baseclient"; Description: "Configure System as Client"; GroupDescription:
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
-Filename: "{tmp}\vcredist_x86.exe"; Check: ShouldInstallMSVC90
+Filename: "{tmp}\vcredist_x86.exe";
 Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/epmd.exe" ; Parameters: "-daemon"
 ;Filename: "{app}/erts-5.6.5/bin/erlsrv"; Parameters: "add MHiveService -w {app} -sn node -args ""-setcookie default """;
 ;Filename: "{app}/erts-5.6.5/bin/erl.exe" ; Parameters: "-setcookie default -config releases\0.0.4.1\sys -eval ""setup:setup_win32(no,no),init:stop()."" "; WorkingDir: "{app}";
@@ -94,6 +94,7 @@ Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHi
 Source: "@ERLANG_SOURCE@/releases/@MHIVE_VERSION@/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "@ERLANG_SOURCE@/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
+Source: "c:\vcredist_x86-8056336.exe"; DestDir: "{tmp}"
 
 ;Source: "@SYSPORTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "@ENCODECLIENTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
