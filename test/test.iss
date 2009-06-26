@@ -27,7 +27,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "E:\Programme\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\Programme\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -54,25 +54,11 @@ begin
   if FindFirst(SearchPath + '\*', FindRec) then begin
     try
       repeat
-        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then begin
-          if (CompareStr(FindRec.Name, '.') <> 0) and (CompareStr(FindRec.Name, '..') <> 0) then begin
-            if (DirDepth > 0) or (DirDepth = -1) then begin
-              SearchHandle := FindRec.FindHandle;
-              SearchPathLength := Length(SearchPath);
-              SearchPath := SearchPath + '\' + FindRec.Name;
-              if DirDepth > -1 then
-                DirDepth := DirDepth - 1;
-              SearchForFile();
-              if DirDepth > -1 then
-                DirDepth := DirDepth + 1;
-              if FileFound = False then
-                SetLength(SearchPath, SearchPathLength);
-              FindRec.FindHandle := SearchHandle;
-            end;
-          end;
-        end else begin
-          if (CompareStr(AnsiLowercase(FindRec.Name), AnsiLowercase(SearchFile)) = 0) then
-            FileFound := True;
+        // Don't count directories
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <>0 then begin
+          MsgBox(FindRec.Name + ' files found in the directory.'+MyPath,mbInformation, MB_OK);
+          if (FindRec.Name <> '.') and (FindRec.Name <> '..') then
+            MyFindFile(MyPath+'\'+FindRec.Name)
         end;
       until (FindNext(FindRec) = False) or FileFound;
     finally

@@ -30,7 +30,7 @@
 
 %% @spec()->ok
 setup()->
-  setup_db(),
+%  setup_db(),
   io:format("Configure Cluster Environment~n"),
   Mode=setup_mode(),
   Auto=setup_autostart(),
@@ -53,14 +53,14 @@ setup_webserver()->
 
 
 setup_linux(Mode,Auto)->
-%  setup_db(),
+  setup_db(),
 	setup_config(mode,Mode),
   setup_auto_start(Auto),
   ok.
 
 setup_win32(Mode, AutoStart)->
 	[ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
-%	setup_db(),
+	setup_db(),
 	setup_config(mode,Mode),
   case AutoStart of
     yes->

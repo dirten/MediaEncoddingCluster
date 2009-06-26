@@ -13,7 +13,7 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/FileOutputStream.h"
 
-#include <Transcoder.h>
+//#include <Transcoder.h>
 using namespace org::esb::io;
 using namespace org::esb::av;
 
@@ -314,7 +314,7 @@ int av() {
     }
   }
 }
-using namespace omnividea::fobs;
+//using namespace omnividea::fobs;
 int main() {
 
   av_register_all();
