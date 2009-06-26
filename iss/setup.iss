@@ -67,6 +67,7 @@ Filename: "{app}/erts-5.7.2/bin/erl.ini"; Section: "erlang"; Key: "Rootdir"; Str
 Name: "english"; MessagesFile: "compiler:Default.isl"
 ;Name: "german"; MessagesFile: "compiler:languages/German.isl"
 
+
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 ;Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
