@@ -93,8 +93,8 @@ Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHi
 [Files]
 Source: "@ERLANG_SOURCE@/releases/@MHIVE_VERSION@/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "@ERLANG_SOURCE@/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
-Source: "c:\vcredist_x86-8056336.exe"; DestDir: "{tmp}"
+Source: "c:\vcredist_x86-2008-sp1.exe"; DestDir: "{tmp}"
+Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
 
 ;Source: "@SYSPORTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "@ENCODECLIENTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
