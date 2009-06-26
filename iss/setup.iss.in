@@ -65,13 +65,13 @@ Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.ini"; Section: "erlang"; Key
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "german"; MessagesFile: "compiler:languages/German.isl"
+;Name: "german"; MessagesFile: "compiler:languages/German.isl"
 
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
+;Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
 Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
-Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
+Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config";
 ;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
