@@ -59,7 +59,7 @@ add_library (util util/Properties.cpp
       util/Decimal.cpp 
       util/ScopedTimeCounter.cpp 
       util/IllegalFormatException.cpp
-      util/Queue.cpp
+#      util/Queue.cpp
 )
 
 #include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
