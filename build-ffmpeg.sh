@@ -93,6 +93,8 @@ rename_file(){
   fi
   cd "$TOPDIR"
 }
+download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" "nasm.tar.bz2" "nasm.tar"
+download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
 download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
 download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
@@ -102,6 +104,8 @@ download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "spe
 download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
 download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
 
+gunzip_file "yasm.tar.gz"
+bunzip_file "nasm.tar.bz2"
 bunzip_file "ffmpeg-export-snapshot.tar.bz2"
 bunzip_file "x264-snapshot.tar.bz2"
 gunzip_file "lame.src.tar.gz"
@@ -111,6 +115,8 @@ gunzip_file "speex-1.0.5.tar.gz"
 gunzip_file "libvorbis-1.2.0.tar.gz"
 gunzip_file "xvidcore-1.2.1.tar.gz"
 
+untar_file "nasm.tar" "nasm-*" "nasm"
+untar_file "yasm.tar" "yasm-*" "yasm"
 untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
 untar_file "x264-snapshot.tar" "x264-snap*" "x264"
 untar_file "lame.src.tar" "lame-*" "lame"
@@ -122,7 +128,14 @@ untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 
 export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 
+configure_file "nasm"
+build_file "nasm"
+export PATH=/home/framebuster/bruteripper/source/build/nasm/bin:$PATH
+
+configure_file "yasm"
+build_file "yasm"
 configure_file "lame"
+export PATH=/home/framebuster/bruteripper/source/build/yasm/bin:$PATH
 build_file "lame"
 configure_file "x264" "--enable-debug"
 build_file "x264"
