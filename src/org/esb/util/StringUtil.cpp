@@ -1,6 +1,6 @@
 #include "StringUtil.h"
 
-
+#include <string.h>
 namespace org {
   namespace esb {
     namespace util {
