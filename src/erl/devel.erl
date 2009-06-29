@@ -52,9 +52,9 @@ build(Version)->
 
 clean()->
   io:format("Cleaning Version:~p~n",[?VERSION]),
-  filelib:ensure_dir("releases/"++?VERSION++"/ebin"),
   clean(?VERSION).
 clean(Version)->
+  Res=filelib:ensure_dir("./releases/"++Version++"/ebin/tmp"),
   remove_dir_tree("releases/"++Version++"/ebin"),
   file:make_dir("releases/"++Version++"/ebin").
 

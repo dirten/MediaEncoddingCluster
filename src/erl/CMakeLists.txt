@@ -157,7 +157,7 @@ add_custom_target(tsystem
 )
 
 add_custom_target(release
-  ${ERLANG_DIR}/bin/erl -noshell -s devel clean -s devel build -s devel release -s init stop
+  ${ERLANG_DIR}/bin/erl -noshell -eval 'compile:file(devel,[{i,"./releases"}])' -s devel clean -s devel build -s devel release -s init stop
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
 )
 add_custom_target(update 
