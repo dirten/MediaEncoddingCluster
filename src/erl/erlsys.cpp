@@ -131,7 +131,7 @@ ETERM * writepacket(ETERM * in) {
   //  logdebug("Build Packet:");
   Packet * p = buildPacketFromTerm(in);
   //  logdebug("Packet Ready:");
-  p->toString();
+//  p->toString();
   //  p->packet->pts = 0;
   //  p->packet->dts = 0;
   //  if (p->getSize() > 0) {
@@ -239,17 +239,17 @@ ETERM * packetstream(ETERM * v) {
   //  erl_print_term((FILE*)stderr,v);
   std::vector<ETERM *> terms;
   ETERM *file = erl_element(2, v);
-  ETERM *stream = erl_element(3, v);
+  //  ETERM *stream = erl_element(3, v);
   ETERM *seek = erl_element(4, v);
   ETERM *count = erl_element(5, v);
-  int str = ERL_INT_UVALUE(stream);
-  int se = ERL_INT_VALUE(seek);
+  //  int str = ERL_INT_UVALUE(stream);
+  //  int se = ERL_INT_VALUE(seek);
   int c = ERL_INT_VALUE(count);
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     long long int s;
-    //    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
-    sscanf((const char *) erl_iolist_to_string(seek), "%llu", &s);
+//    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
+    sscanf((const char *) erl_iolist_to_string(seek), "%ll", &s);
     //    logdebug("SeekValueScanned:"<<s);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);
     PacketInputStream pis(fis);
@@ -258,12 +258,15 @@ ETERM * packetstream(ETERM * v) {
     //      fis->seek(str, se);
     for (int a = 0; a < c; a++) {
       if (pis.readPacket(p) >= 0) {
+//        logdebug("read_packet");
         terms.push_back(buildTermFromPacket(p));
       } else {
         terms.push_back(erl_mk_atom("eof"));
         break;
       }
     }
+  } else {
+    terms.push_back(erl_mk_atom("filenotfound"));
   }
   return vector2list(terms);
 }
@@ -428,7 +431,7 @@ ETERM * encode(ETERM* in) {
     //      ret.toString();
     if (multipass == 1 && e->getStatistics())
       statistics.append(e->getStatistics());
-    if (false&&multipass == 0 || multipass == 2) {
+    if (false && multipass == 0 || multipass == 2) {
       ETERM * pac = buildTermFromPacket(ret);
       terms.push_back(pac);
     }
@@ -531,7 +534,7 @@ int main(int argc, char** argv) {
         logdebug("try freeing intuple");
       if (intuple != NULL) {
         erl_free_compound(intuple);
-//        erl_free(intuple);
+        //        erl_free(intuple);
         intuple = NULL;
         if (DEBUG)
           logdebug("intuple freed");
@@ -558,7 +561,7 @@ int main(int argc, char** argv) {
           if (DEBUG)
             logdebug("write_cmd success");
           erl_free_compound(outtuple);
-//          erl_free(outtuple);
+          //          erl_free(outtuple);
           outtuple = NULL;
           if (DEBUG)
             logdebug("return data written");
@@ -572,7 +575,7 @@ int main(int argc, char** argv) {
     }
   }
   delete []buf;
-//  erl_eterm_release();
+  //  erl_eterm_release();
   logdebug("mhivesys Exiting Normal");
 }
 

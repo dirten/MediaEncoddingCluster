@@ -28,6 +28,8 @@
 -compile(export_all).
 
 
+global_timebase()->
+    #timestamp{num=1, den=1000000}.
 
 rescale_timestamp(TimeStamp, From, To)->
 %  io:format("Input:~p",[TimeStamp]),

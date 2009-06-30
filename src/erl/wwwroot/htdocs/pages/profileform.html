@@ -90,13 +90,13 @@
   function setProfileCodecData(props,vcodec,acodec){
     $each(props,function(prop){
       if(prop.type==0){
-        var el = new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileVideoCodec'));
+        var el = new Element('option',{'text':prop.long_name, 'value':prop.id}).inject($('profileVideoCodec'));
         if(prop.id==vcodec)
           el.set('selected');
 
       }
       if(prop.type==1){
-        var el = new Element('option',{'text':prop.name, 'value':prop.id}).inject($('profileAudioCodec'));
+        var el = new Element('option',{'text':prop.long_name, 'value':prop.id}).inject($('profileAudioCodec'));
         if(prop.id==acodec)
           el.set('selected');
       }

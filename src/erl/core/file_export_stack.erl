@@ -25,6 +25,7 @@
 %%%
 %%%----------------------------------------------------------------------
 -module(file_export_stack).
+-include("schema.hrl").
 
 -compile(export_all).
 
@@ -91,8 +92,14 @@ qlc_next(List, FileList)when length(List)>0 andalso length(FileList)>0->
 qlc_next(_,_)->
   [].
 %{0,1,"3759840833","3759840833",1,3600,50563,  <<0,0,1,176,1,0,0,1,181,137,19,0,0,1,0,0,0,1,32,0,...>>}
-map_ts(A)->
+map_ts2(A)->
   {element(1,A),element(2,A),libutil:toInteger(element(3,A)),element(4,A),element(5,A),element(6,A),element(7,A),element(8,A),element(9,A),element(10,A)}.
+map_ts(A)->
+    From=#timestamp{num=element(8,A), den=element(9,A)},
+    To=libav:global_timebase(),
+    Pts=libav:rescale_timestamp(libutil:toInteger(element(3,A)), From, To),
+    Dts=libav:rescale_timestamp(libutil:toInteger(element(4,A)), From, To),
+  {element(1,A),element(2,A),Pts,libutil:toString(Dts),element(5,A),element(6,A),element(7,A),element(8,A),element(9,A),element(10,A)}.
 
 packet_viewer(FileId)->
   case file:read_file(filename:join(["data", integer_to_list(FileId)])) of

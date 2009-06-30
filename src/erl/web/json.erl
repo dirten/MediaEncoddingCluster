@@ -184,10 +184,9 @@ encoding(SessionID,_Data2,_Data3)->
             qlc:e(Q)
         end,
     {atomic,E}=mnesia:transaction(F),
-  %  io:format("Encodings:~p",[E]),
+ 
     F2=reformat(E,[source,target,start,endtime,complete],[]),
     J=mochijson:encode({struct,[{page,1},{total,length(E)},{data,{array,F2}}]}),
-  %  io:format("Encodings:~p",[J]),
     mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
     mod_esi:deliver(SessionID, J).
 
