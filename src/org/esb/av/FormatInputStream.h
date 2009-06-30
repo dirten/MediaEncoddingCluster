@@ -13,7 +13,7 @@
 #include "AV.h"
 
 #ifdef WIN32
-#define DEPRICATED(func) __declspec(deprecated(desc)) func
+#define DEPRICATED(func) __declspec(deprecated) func
 #else
 #define DEPRICATED(f) __attribute__((deprecated)) f
 #endif
