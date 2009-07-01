@@ -160,15 +160,21 @@ add_custom_target(release
   ${ERLANG_DIR}/bin/erl -noshell  -s devel clean -s devel build -s devel release -s init stop
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
 )
+
 add_custom_target(update 
   ${ERLANG_DIR}/bin/erl -noshell -s devel clean -s devel build -s devel release  -s devel update -s init stop
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
 )
 
-#add_custom_command(TARGET mhivesys POST_BUILD
-#  COMMAND ${ERLANG_DIR}/bin/erl -args_file build.args
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
-#)#
+add_custom_target(clean
+  ${ERLANG_DIR}/bin/erl -s devel clean -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
+
+add_custom_target(all
+  ${ERLANG_DIR}/bin/erl -noshell -s devel build -s init stop
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
+)
 
 #INSTALL(CODE "
 #${ERLANG_DIR}/bin/erl -args_file build.args

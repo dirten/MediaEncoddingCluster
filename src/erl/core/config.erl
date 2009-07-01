@@ -11,10 +11,11 @@ get([])->
     Data,
 
     lists:filter(
-        fun(Entry)-> if
-                         element(1,Entry)=:=included_applications->false;
-                         true->true
-                     end
+        fun(Entry)->
+                if
+                    element(1,Entry)=:=included_applications->false;
+                    true->true
+                end
         end,application:get_all_env(mhive)++Data);
 get(Key)->get(Key,[]).
 get(Key, Def)->

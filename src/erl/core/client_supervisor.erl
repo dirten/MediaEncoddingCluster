@@ -19,7 +19,7 @@ init(_Args)->
      {one_for_one,3,10},
      [
 %     {node_finder,{node_finder,start_link,[]},  permanent,  10,  worker,  [node_finder]},
-     {encoding_client,{encoding_client,start_link,[]},  permanent,  1000,  worker,  [encoding_client]}
+     {encoding_client,{encoding_client,start_link,[]},  permanent,  2000,  worker,  [encoding_client]}
 %     {webserver, {nitrogen,start,[]},  permanent,  10,  supervisor,  [webserver]},
 %     {node_watcher, {node_watcher,start_link,[]},  permanent,  10,  worker,  [node_watcher]}
      ]

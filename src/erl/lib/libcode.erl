@@ -29,24 +29,39 @@
 -compile(export_all).
 
 get_mhive_version()->
-  ?VERSION.
+    ?VERSION.
 
 get_mhivesys_exe()->
-  BinName=
-    case os:type() of
-      {win32,nt} ->
-        "mhivesys.exe";
-      {unix, _}->
-        "mhivesys"
-    end,
-  case code:priv_dir(mhive) of
-    Path when is_list(Path) ->filename:join([Path,BinName]);
+    BinName=
+        case os:type() of
+            {win32,nt} ->
+            "mhivesys.exe";
+            {unix, _}->
+            "mhivesys"
+        end,
+    case code:priv_dir(mhive) of
+        Path when is_list(Path) ->filename:join([Path,BinName]);
     %    {error, bad_name}->"/usr/bin/valgrind --log-file=/tmp/mhivesys  --tool=memcheck --leak-check=full --show-reachable=yes "++filename:join(["priv",BinName])
-    {error, bad_name}->filename:join(["bin",BinName])
-  end.
+        {error, bad_name}->filename:join(["bin",BinName])
+    end.
     
 get_privdir()->
-  case code:priv_dir(mhive) of
-    Path when is_list(Path) ->Path;
-    {error, bad_name}->"."
-  end.
+    case code:priv_dir(mhive) of
+        Path when is_list(Path) ->Path;
+        {error, bad_name}->"."
+    end.
+
+epmd_started()->
+    case erl_epmd:open() of
+        {error,econnrefused}->false;
+        _->true
+    end.
+
+epmd_start()->
+    [ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
+    case os:find_executable("epmd", ErtsPath++"/bin") of
+        false->{error,"could not find epmd"};
+        EpmdPath->
+            os:cmd(EpmdPath++" -daemon"),
+            ok
+    end.

@@ -31,15 +31,26 @@
 help()->
   format("***  internal Commands\n"),
   format("help()            --> print this help Message\n"),
-  format("loglist()         --> Lists all Log Messages from Logging Service\n"),
-  format("loglist(N)        --> Lists last <N> Log Messages from Logging Service\n"),
-  format("logshow(N)        --> Show Log Messages with #  <N>\n"),
-  format("connect(Host)     --> Connecting this Node to Host\n"),
-  format("startserver()     --> Starting the Server on this Node\n"),
-  format("stopserver()      --> Stopping the Server on this Node\n"),
-  format("startclient(Host) --> Starting the Client on this Node and connect to Host\n"),
-  format("stopclient()      --> Stopping the Client on this Node\n"),
+  format("info()            --> print information about the system\n"),
+  format("start()           --> starts the system\n"),
+  format("stop()            --> stops the system\n"),
+%  format("loglist()         --> Lists all Log Messages from Logging Service\n"),
+%  format("loglist(N)        --> Lists last <N> Log Messages from Logging Service\n"),
+%  format("logshow(N)        --> Show Log Messages with #  <N>\n"),
+%  format("connect(Host)     --> Connecting this Node to Host\n"),
+%  format("startserver()     --> Starting the Server on this Node\n"),
+%  format("stopserver()      --> Stopping the Server on this Node\n"),
+%  format("startclient(Host) --> Starting the Client on this Node and connect to Host\n"),
+%  format("stopclient()      --> Stopping the Client on this Node\n"),
   true.
+info()->
+    mhive:info().
+
+start()->
+    application:start(mhive).
+
+stop()->
+    application:stop(mhive).
 
 reload()->
     application:stop(mhive),

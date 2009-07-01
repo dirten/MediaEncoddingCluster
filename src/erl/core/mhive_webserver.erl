@@ -45,7 +45,7 @@ init([])->
     {transfer_log,getConfig(transfer_log)},
     {security_log,getConfig(security_log)},
     {erl_script_alias, {"/api", [json]}},
-    {directory_index, ["index.hml", "welcome.html"]}
+    {directory_index, ["index.hml", "mec.html"]}
        ],
   inets:start(httpd,Conf),
   io:format("~p started~n", [?MODULE]),
