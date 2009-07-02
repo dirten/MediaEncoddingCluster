@@ -41,11 +41,11 @@ init([])->
         ok->
             ok;
         {error, Reason}->
-            io:format("Error: Tmp Data dir not exist ~p",[Reason])
+            error_logger:error_msg(io_lib:format("Error: Tmp Data dir not exist ~p",[Reason]))
       %      {error,permission_denied_tmp_data}
     end,
     register(?MODULE, self()),
-    io:format("~s started with PID=~p~n", [?MODULE, self()]),
+    error_logger:info_msg(io_lib:format("~s started with PID=~p~n", [?MODULE, self()])),
 %  fprof:trace(start),
     {ok, running}.
 

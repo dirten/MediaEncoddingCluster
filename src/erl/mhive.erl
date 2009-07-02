@@ -71,14 +71,14 @@ start(_Type, StartArgs)->
     case libcode:epmd_started() of
         false->
             case libcode:epmd_start() of
-                ok->error_logger:info_report("epmd started");
+                ok->error_logger:info_msg("epmd started");
                 {error, Msg}->error_logger:error_report(Msg)
             end;
         _->ok
     end,
 %    io:format("Env:~w~n",[application:get_env(mhive, mode2)]),
     Node=libnet:local_name(),
-    net_kernel:start([Node]),
+    net_kernel:start([Node,shortnames]),
   %  net_adm:world(),
   %  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
   %% TODO libcode wieder einbinden
@@ -86,7 +86,7 @@ start(_Type, StartArgs)->
     ok=mnesia:start(),
     case mnesia:wait_for_tables([config, scheduler],5000)of
         {timeout,_Tables}->
-            error_logger:error_report("could not load configuration from Database\nyou need to run setup:setup() before first start!");
+            error_logger:error_msg("could not load configuration from Database\nyou need to run setup:setup() before first start!");
     %      io:format("could not load configuration from Database~n"),
     %      io:format("you need to run configuration script before first start!~n"),
     %    exit(normal);

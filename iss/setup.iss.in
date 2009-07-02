@@ -70,7 +70,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 ;Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
-Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
+Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config";
 Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config";
 ;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
@@ -111,7 +111,7 @@ Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
 ;Name: "{group}\stop Runtime"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
-Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-name mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
+Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080/mec.html"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
