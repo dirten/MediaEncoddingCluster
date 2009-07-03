@@ -13,13 +13,15 @@ namespace org {
     namespace av {
 
       FormatInputStream::FormatInputStream(File * source) {
-        _isValid = false;
+		  loginfo("opening InputFile: "<<source->getPath());
+		  _isValid = false;
         _sourceFile = source;
         formatCtx = avformat_alloc_context();
         if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
+		  loginfo("find stream info: "<<source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
           return;
@@ -27,6 +29,7 @@ namespace org {
         /**
          * get the first video and audio stream
          */
+		  loginfo("create stream map: "<<source->getPath());
         _streamMap[0] = -1;
         _streamMap[1] = -1;
         for (int i = 0; i < formatCtx->nb_streams; i++) {
@@ -45,7 +48,9 @@ namespace org {
             _streamReverseMap[_streamMap[1]] = 1;
         }
         _isValid = true;
-      }
+		  loginfo("file openned: "<<source->getPath());
+
+	  }
 
       bool FormatInputStream::isValid() {
         return _isValid;
