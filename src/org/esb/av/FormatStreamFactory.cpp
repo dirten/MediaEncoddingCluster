@@ -12,9 +12,9 @@ namespace org
 
       org::esb::av::FormatInputStream *
           FormatStreamFactory::getInputStream(std::string filename, long long int offset) {
-        //        loginfo("FormatStreamFactory::getInputStream : " << filename);
+                loginfo("FormatStreamFactory::getInputStream : " << filename);
         if (_inputStreams.find(filename) == _inputStreams.end()) {
-          //          loginfo("FormatStreamFactory::InputSTream exist : " << filename);
+                    loginfo("FormatStreamFactory::InputSTream exist : " << filename);
           org::esb::io::File file(filename);
           if (!file.exists()) {
             logerror("Could not find file : " << filename.c_str());
