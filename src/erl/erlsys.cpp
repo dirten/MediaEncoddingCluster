@@ -131,7 +131,7 @@ ETERM * writepacket(ETERM * in) {
   //  logdebug("Build Packet:");
   Packet * p = buildPacketFromTerm(in);
   //  logdebug("Packet Ready:");
-//  p->toString();
+  //  p->toString();
   //  p->packet->pts = 0;
   //  p->packet->dts = 0;
   //  if (p->getSize() > 0) {
@@ -210,7 +210,7 @@ ETERM * fileinfo(ETERM * v) {
   ETERM *argp = erl_element(2, v);
   std::string t((const char*) ERL_ATOM_PTR(argp));
   File f(t);
-  //  logdebug("fileinfo:"<<f.getPath());
+    logdebug("fileinfo:"<<f.getPath());
   if (f.exists()) {
     //    FormatInputStream fis(&f);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
@@ -248,7 +248,7 @@ ETERM * packetstream(ETERM * v) {
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     long long int s;
-//    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
+    //    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
     sscanf((const char *) erl_iolist_to_string(seek), "%ll", &s);
     //    logdebug("SeekValueScanned:"<<s);
     FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);
@@ -258,7 +258,7 @@ ETERM * packetstream(ETERM * v) {
     //      fis->seek(str, se);
     for (int a = 0; a < c; a++) {
       if (pis.readPacket(p) >= 0) {
-//        logdebug("read_packet");
+        //        logdebug("read_packet");
         terms.push_back(buildTermFromPacket(p));
       } else {
         terms.push_back(erl_mk_atom("eof"));
@@ -470,11 +470,7 @@ byte * get_buffer(byte * buffer, int size) {
   return buffer;
 }
 
-/*
- * 
- */
-
-int main(int argc, char** argv) {
+void daemon() {
 #ifdef WIN32
   /* Attention Windows programmers: you need to explicitly set
    * mode of stdin/stdout to binary or else the port program won't work
@@ -482,11 +478,6 @@ int main(int argc, char** argv) {
   setmode(fileno(stdout), O_BINARY);
   setmode(fileno(stdin), O_BINARY);
 #endif
-  erl_init(NULL, 0);
-  av_register_all();
-  avcodec_init();
-  avcodec_register_all();
-
   ETERM *intuple = NULL, *outtuple = NULL;
 
   byte *buf = get_buffer(NULL, 50000000);
@@ -577,5 +568,34 @@ int main(int argc, char** argv) {
   delete []buf;
   //  erl_eterm_release();
   logdebug("mhivesys Exiting Normal");
+
+}
+
+/*
+ * 
+ */
+
+int main(int argc, char** argv) {
+  erl_init(NULL, 0);
+  av_register_all();
+  avcodec_init();
+  avcodec_register_all();
+
+  ETERM *intuple = NULL, *outtuple = NULL;
+  if (argc > 1 && strcmp(argv[1], "-test") == 0) {
+    logdebug("TestMode");
+    std::vector<ETERM *> terms;
+    if (strcmp(argv[2], "fileinfo") == 0) {
+      logdebug("Testing fileinfo");
+      terms.push_back(erl_mk_string(""));
+      terms.push_back(erl_mk_atom(argv[3]));
+      intuple=vector2term(terms);
+      erl_print_term((FILE*) stderr, intuple);
+      outtuple = fileinfo(intuple);
+      erl_print_term((FILE*) stderr, outtuple);
+    }
+  } else {
+    daemon();
+  }
 }
 
