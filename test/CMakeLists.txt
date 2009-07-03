@@ -5,7 +5,7 @@ include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_DIR}/include)
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
-
+INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 LINK_DIRECTORIES(${BOOST_LIB_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
@@ -37,6 +37,10 @@ FIND_LIBRARY(ERL_EI_LIB
       ${ERLANG_INTERFACE_DIR}/lib/
     NO_DEFAULT_PATH
   )
+IF(WIN32)
+  ADD_DEFINITIONS(-D__WIN32__)
+ENDIF(WIN32)
+
 
 INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
@@ -48,7 +52,9 @@ add_executable (test test.cpp)
 add_executable (erltest erltest.cpp)
 add_executable (info info.cpp)
 IF(WIN32)
-target_link_libraries (info libavcodec libavformat libavutil libswscale  ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
+  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm  erl_interface ei libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+
+target_link_libraries (info libavcodec libavformat libavutil libswscale  ${BZ2_LIB} io av util lang  )
 target_link_libraries (test libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 target_link_libraries (erltest libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 ELSEIF(APPLE)

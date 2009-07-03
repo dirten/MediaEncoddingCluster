@@ -213,7 +213,7 @@ ETERM * fileinfo(ETERM * v) {
     logdebug("fileinfo:"<<f.getPath());
   if (f.exists()) {
     //    FormatInputStream fis(&f);
-    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    FormatInputStream *fis = new FormatInputStream(&f);//FormatStreamFactory::getInputStream(f.getPath());
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
     } else {
@@ -583,13 +583,17 @@ int main(int argc, char** argv) {
 
   ETERM *intuple = NULL, *outtuple = NULL;
   if (argc > 1 && strcmp(argv[1], "-test") == 0) {
+	  File f(argv[3]);
+//		FormatInputStream * fis=new FormatInputStream(&f);
+		FormatInputStream fis(&f);
     logdebug("TestMode");
     std::vector<ETERM *> terms;
     if (strcmp(argv[2], "fileinfo") == 0) {
       logdebug("Testing fileinfo");
       terms.push_back(erl_mk_string(""));
       terms.push_back(erl_mk_atom(argv[3]));
-      intuple=vector2term(terms);
+	  
+	  intuple=vector2term(terms);
       erl_print_term((FILE*) stderr, intuple);
       outtuple = fileinfo(intuple);
       erl_print_term((FILE*) stderr, outtuple);
@@ -598,4 +602,5 @@ int main(int argc, char** argv) {
     daemon();
   }
 }
+
 

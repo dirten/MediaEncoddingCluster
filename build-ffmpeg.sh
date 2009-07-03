@@ -170,7 +170,7 @@ configure_file "ffmpeg" \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
 --extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
-$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack"
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack --extra-cflags=-fno-commons --disable-stripping"
 
 build_file "ffmpeg"
 

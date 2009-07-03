@@ -17,7 +17,8 @@ namespace org {
 		  _isValid = false;
         _sourceFile = source;
         formatCtx = avformat_alloc_context();
-        if (av_open_input_file(&formatCtx, _sourceFile->getPath().c_str(), NULL, 0, NULL) != 0) {
+		std::string filename=_sourceFile->getPath();
+        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, NULL) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
@@ -30,6 +31,7 @@ namespace org {
          * get the first video and audio stream
          */
 		  loginfo("create stream map: "<<source->getPath());
+		  
         _streamMap[0] = -1;
         _streamMap[1] = -1;
         for (int i = 0; i < formatCtx->nb_streams; i++) {
