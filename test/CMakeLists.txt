@@ -69,7 +69,7 @@ ENDIF(WIN32)
 
 IF(NOT WIN32)
 
-target_link_libraries (info ${BZ2_LIB}  io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (info ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (test ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(NOT WIN32)

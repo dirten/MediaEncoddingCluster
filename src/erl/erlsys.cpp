@@ -177,7 +177,8 @@ ETERM * streaminfo(ETERM * v) {
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     //    FormatInputStream fis(&f);
-    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath());
+    std::string filename=f.getPath();
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(filename);
     if (!fis->isValid() || s < 0 || s >= fis->getStreamCount()) {
       terms.push_back(erl_mk_atom("streamnotfound"));
     } else {
@@ -214,7 +215,8 @@ ETERM * fileinfo(ETERM * v) {
     logdebug("fileinfo:"<<f.getPath());
   if (f.exists()) {
     //    FormatInputStream fis(&f);
-    FormatInputStream *fis = new FormatInputStream(&f);//FormatStreamFactory::getInputStream(f.getPath());
+    std::string filename=f.getPath();
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(filename);
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
     } else {
@@ -253,7 +255,8 @@ ETERM * packetstream(ETERM * v) {
     //    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
     sscanf((const char *) erl_iolist_to_string(seek), "%ll", &s);
     //    logdebug("SeekValueScanned:"<<s);
-    FormatInputStream *fis = FormatStreamFactory::getInputStream(f.getPath(), s);
+    std::string filename=f.getPath();
+    FormatInputStream *fis = FormatStreamFactory::getInputStream(filename, s);
     PacketInputStream pis(fis);
     Packet p;
     //    if (se >= 0)
@@ -426,7 +429,6 @@ ETERM * encode(ETERM* in) {
 
     f2.setPts(f2.getDts());
     if (toDebug)
-      //      logdebug("after converting frame");
       f2.toString();
     Packet ret = e->encode(f2);
     //    if (toDebug)

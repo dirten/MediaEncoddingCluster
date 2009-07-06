@@ -20,14 +20,14 @@ extern "C" {
 #  include "org/esb/av/Decoder.h"
 #  include "org/esb/av/Encoder.h"
 #  include "org/esb/av/Sink.h"
-//typedef unsigned char byte;
+typedef unsigned char byte;
 using namespace org::esb::av;
 //using namespace org::esb::util;
 int read_exact(byte *buf, int len) {
   int i, got = 0;
 
   do {
-    if ((i = _read(0, buf + got, len - got)) <= 0)
+    if ((i = read(0, buf + got, len - got)) <= 0)
       return (i);
     got += i;
   } while (got < len);
@@ -40,7 +40,7 @@ int write_exact(byte *buf, int len) {
   int i, wrote = 0;
 
   do {
-    if ((i = _write(1, buf + wrote, len - wrote)) <= 0)
+    if ((i = write(1, buf + wrote, len - wrote)) <= 0)
       return (i);
     wrote += i;
   } while (wrote < len);

@@ -11,9 +11,9 @@ namespace org
       map<std::string, org::esb::av::FormatInputStream*> FormatStreamFactory::_inputStreams;
 
       org::esb::av::FormatInputStream *
-          FormatStreamFactory::getInputStream(std::string filename, long long int offset) {
+          FormatStreamFactory::getInputStream(std::string & filename, long long int offset) {
                 loginfo("FormatStreamFactory::getInputStream : " << filename);
-        if (_inputStreams.find(filename) == _inputStreams.end()) {
+        if (_inputStreams.size()==0||_inputStreams.find(filename) == _inputStreams.end()) {
                     loginfo("FormatStreamFactory::InputSTream exist : " << filename);
           org::esb::io::File file(filename);
           if (!file.exists()) {
