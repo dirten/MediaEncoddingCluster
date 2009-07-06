@@ -50,12 +50,6 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 #LINK_DIRECTORIES    (${X264_DIR}/lib)
 #MESSAGE("** FFMPEG PATH: " ${MEC_SOURCE_DIR})
 
-IF(WIN32)
-  SET(RELEASE_DIR "/Release")
-  ADD_DEFINITIONS(-D__WIN32__)
-  #ADD_DEFINITIONS(-MTd)
-#  ADD_DEFINITIONS(/NODEFAULTLIB:"LIBCMT" ) 
-ENDIF(WIN32)
 
 MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
 
@@ -75,6 +69,15 @@ ENDIF(WIN32)
 #ADD_EXECUTABLE (erlclient erlclient.cpp)
 #ADD_EXECUTABLE (mhivewriter mhivewriter.cpp)
 ADD_EXECUTABLE (mhivesys erlsys.cpp)
+
+IF(WIN32)
+  SET(RELEASE_DIR "/Release")
+  ADD_DEFINITIONS(-D__WIN32__)
+  #ADD_DEFINITIONS(-MTd)
+  SET_TARGET_PROPERTIES(mhivesys PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libcmt")
+
+#  ADD_DEFINITIONS("/NODEFAULTLIB:\"LIBCMT\"" ) 
+ENDIF(WIN32)
 
 
 #TARGET_LINK_LIBRARIES (erltest z ${BZ2_LIB} av util io lang avformat avcodec avutil )
