@@ -1,6 +1,7 @@
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
-ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+
+#ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
+#ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 
@@ -29,17 +30,16 @@ FIND_LIBRARY(ERL_EI_LIB
 #MESSAGE("Erlang Interface LIB " ${ERL_EI_LIB})
 
 #SET(BZ2_LIB bz2)
+
 INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 INCLUDE_DIRECTORIES (${MEC_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIRS})
-#INCLUDE_DIRECTORIES (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 INCLUDE_DIRECTORIES (${FFMPEG_DIR}/include)
 
 
 LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
-LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
-#LINK_DIRECTORIES    (${BOOST_LIB_DIR})
-#LINK_DIRECTORIES    (${BOOST_DIR}/lib)
+LINK_DIRECTORIES    (${BOOST_LIB_DIR})
+LINK_DIRECTORIES    (${BOOST_DIR}/lib)
 LINK_DIRECTORIES    (${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
@@ -53,6 +53,7 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 IF(WIN32)
   SET(RELEASE_DIR "/Release")
   ADD_DEFINITIONS(-D__WIN32__)
+  #ADD_DEFINITIONS(-MTd)
 #  ADD_DEFINITIONS(/NODEFAULTLIB:"LIBCMT" ) 
 ENDIF(WIN32)
 
@@ -80,19 +81,6 @@ ADD_EXECUTABLE (mhivesys erlsys.cpp)
 #TARGET_LINK_LIBRARIES (erlclient z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
 #TARGET_LINK_LIBRARIES (mhivewriter z ${BZ2_LIB} av lang util io avcodec avformat avutil swscale )
 
-TARGET_LINK_LIBRARIES(mhivesys 
-  ${BZ2_LIB} 
-  av 
-  lang 
-  util 
-  io 
-  ${AVCODEC_LIB}
-  ${AVFORMAT_LIB}
-  ${AVUTIL_LIB}
-  ${SWSCALE_LIB}
-  ${ERL_INTERFACE_LIB}
-  ${ERL_EI_LIB}
-)
 
 IF(WIN32)
 	MESSAGE("** Link Windows: " )
@@ -100,7 +88,12 @@ IF(WIN32)
 #  TARGET_LINK_LIBRARIES (erlclient z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #  TARGET_LINK_LIBRARIES (mhivewriter z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
 #  TARGET_LINK_LIBRARIES (mhivesys z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 a52 x264 erl_interface ei)
-  TARGET_LINK_LIBRARIES (mhivesys libx264 libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm  erl_interface ei libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+##  TARGET_LINK_LIBRARIES (mhivesys libx264 libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm  erl_interface ei libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+  TARGET_LINK_LIBRARIES (mhivesys erl_interface ei libx264 libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+#  TARGET_LINK_LIBRARIES (mhivesys erl_interface ei libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm )
+
+  target_link_libraries (mhivesys ${BZ2_LIB} io av util lang libavcodec libavformat libavutil libswscale)
+
 ELSEIF(APPLE)
 #  TARGET_LINK_LIBRARIES (erltest x264 bz2 erl_interface ei pthread)
 #  TARGET_LINK_LIBRARIES (erlclient x264 bz2 erl_interface ei  pthread)
@@ -112,6 +105,19 @@ ELSE(WIN32)
 #  TARGET_LINK_LIBRARIES (mhivewriter x264  erl_interface ei  pthread)
   TARGET_LINK_LIBRARIES (mhivesys z x264 pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(WIN32)
+#TARGET_LINK_LIBRARIES(mhivesys 
+#  ${BZ2_LIB} 
+#  av 
+#  lang 
+#  util 
+#  io 
+#  ${AVCODEC_LIB}
+#  ${AVFORMAT_LIB}
+#  ${AVUTIL_LIB}
+#  ${SWSCALE_LIB}
+#  ${ERL_INTERFACE_LIB}
+#  ${ERL_EI_LIB}
+#)
 
 #target_link_libraries (erltest
 #  ${BOOST_SERIAL_LIB_MT} 

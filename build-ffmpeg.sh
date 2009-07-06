@@ -4,7 +4,7 @@
 
 X264_VERSION="-snapshot-20090611-2245"
 
-
+DOWNLOAD_LIBS="yes"
 
 
 TOPDIR=`pwd`
@@ -83,7 +83,7 @@ build_xvid(){
  	                echo "make failed - log available: xvidcore/make-xvidcore.log"
  	                exit 1
  	        fi
- 	        make install&> make.log
+ 	        make install > make.log
  	        cd "$TOPDIR"
  	}
 rename_file(){
@@ -93,6 +93,7 @@ rename_file(){
   fi
   cd "$TOPDIR"
 }
+
 download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" "nasm.tar.bz2" "nasm.tar"
 download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
@@ -130,12 +131,15 @@ export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 
 configure_file "nasm"
 build_file "nasm"
+
 export PATH=/home/framebuster/bruteripper/source/build/nasm/bin:$PATH
 
 configure_file "yasm"
 build_file "yasm"
-configure_file "lame"
+
 export PATH=/home/framebuster/bruteripper/source/build/yasm/bin:$PATH
+
+configure_file "lame"
 build_file "lame"
 configure_file "x264" "--enable-debug"
 build_file "x264"
@@ -153,6 +157,7 @@ build_xvid
 SYS=`uname`
 case "$SYS" in
     MINGW32*)
+#	rm -f $SRCDIR/$BUILDDIR/xvidcore/lib/xvidcore.dll
     ;;
     *)
     LIBPTHREAD="--extra-ldflags=-lpthread"
@@ -170,7 +175,7 @@ configure_file "ffmpeg" \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
 --extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
-$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack --extra-cflags=-fno-commons --disable-stripping"
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack --extra-cflags=-fno-common --disable-stripping"
 
 build_file "ffmpeg"
 

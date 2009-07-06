@@ -8,16 +8,15 @@
 #include <vector>
 
 
-#define DEBUG false
+#define DEBUG true
 
 //#include <stdlib.h>
-#include "erl.cpp"
-#include "org/esb/av/AV.h"
+//#include "org/esb/av/AV.h"
 #include "org/esb/io/File.h"
-#include "org/esb/av/FormatOutputStream.h"
-#include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/FormatOutputStream.h"
+#include "org/esb/av/PacketOutputStream.h"
 
 
 #include "org/esb/av/Decoder.h"
@@ -30,6 +29,8 @@
 #include "org/esb/util/Decimal.h"
 
 #include "org/esb/av/FormatStreamFactory.h"
+#include "erl.cpp"
+using namespace org::esb::util;
 
 /**********************************************************
  *
@@ -234,6 +235,7 @@ ETERM * fileinfo(ETERM * v) {
   }
   return vector2term(terms);
 }
+
 
 ETERM * packetstream(ETERM * v) {
   //  erl_print_term((FILE*)stderr,v);
@@ -583,10 +585,11 @@ int main(int argc, char** argv) {
 
   ETERM *intuple = NULL, *outtuple = NULL;
   if (argc > 1 && strcmp(argv[1], "-test") == 0) {
-	  File f(argv[3]);
+//	  File f(argv[3]);
 //		FormatInputStream * fis=new FormatInputStream(&f);
-		FormatInputStream fis(&f);
-    logdebug("TestMode");
+//		FormatInputStream fis(&f);
+//		return 0;
+		logdebug("TestMode");
     std::vector<ETERM *> terms;
     if (strcmp(argv[2], "fileinfo") == 0) {
       logdebug("Testing fileinfo");

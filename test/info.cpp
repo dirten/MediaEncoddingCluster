@@ -1,3 +1,4 @@
+
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -6,6 +7,7 @@ extern "C" {
 #include <erl_interface.h>
 }
 #include <vector>
+#include "../src/erl/erl.cpp"
 
 
 
@@ -17,7 +19,7 @@ int main(int argc, char ** argv) {
   av_register_all();
   avcodec_init();
   avcodec_register_all();
-  
+  erl_mk_string("");
   if (argc < 2)return 1;
   long long int packet_start = 0;
   int packet_count = 50;

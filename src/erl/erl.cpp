@@ -20,15 +20,14 @@ extern "C" {
 #  include "org/esb/av/Decoder.h"
 #  include "org/esb/av/Encoder.h"
 #  include "org/esb/av/Sink.h"
-typedef unsigned char byte;
+//typedef unsigned char byte;
 using namespace org::esb::av;
-using namespace org::esb::util;
-
+//using namespace org::esb::util;
 int read_exact(byte *buf, int len) {
   int i, got = 0;
 
   do {
-    if ((i = read(0, buf + got, len - got)) <= 0)
+    if ((i = _read(0, buf + got, len - got)) <= 0)
       return (i);
     got += i;
   } while (got < len);
@@ -36,11 +35,12 @@ int read_exact(byte *buf, int len) {
   return (len);
 }
 
+
 int write_exact(byte *buf, int len) {
   int i, wrote = 0;
 
   do {
-    if ((i = write(1, buf + wrote, len - wrote)) <= 0)
+    if ((i = _write(1, buf + wrote, len - wrote)) <= 0)
       return (i);
     wrote += i;
   } while (wrote < len);
@@ -78,6 +78,7 @@ int write_cmd(byte *buf, int len) {
   return write_exact(buf, len);
 }
 
+
 ETERM * vector2term(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
   ETERM ** term = new ETERM*[(const int) s];
@@ -102,12 +103,6 @@ ETERM * vector2list(std::vector<ETERM*> & v) {
   const int s = static_cast<const int> (v.size());
   ETERM ** term = new ETERM*[s];
   std::vector<ETERM*>::iterator it = v.begin();
-  /*
-    for (int a = 0; a< v.size(); a++) {
-      logdebug("vector to list first");
-      erl_print_term((FILE*) stderr, v[a]);
-    }
-   */
   for (int a = 0; it != v.end(); it++) {
     //    logdebug("vector to list");
     //    erl_print_term((FILE*) stderr, *it);
@@ -126,7 +121,7 @@ std::string toString(long long int num) {
 }
 //{StreamIndex, KeyFrame, Pts, Dts, Flags, Duration, Size, Data}
 
-ETERM * buildTermFromPacket(Packet & p) {
+ETERM * buildTermFromPacket(org::esb::av::Packet & p) {
 //  std::vector<ETERM *> terms;
   //-record(packet,{stream_id, is_key,dts ,pts, flags, duration, size, timebase_num, timebase_den, data_size}).
 
@@ -140,8 +135,8 @@ ETERM * buildTermFromPacket(Packet & p) {
   ETERM * f = erl_format("{~i,~i,~s,~s,~i,~i,~i,~i,~i,~w}",
       p.getStreamIndex(),
       p.isKeyFrame(),
-      Decimal(p.getPts()).toString().c_str(),
-      Decimal(p.getDts()).toString().c_str(),
+	  org::esb::util::Decimal(p.getPts()).toString().c_str(),
+      org::esb::util::Decimal(p.getDts()).toString().c_str(),
       p.getFlags(),
       p.getDuration(),
       p.getSize(),
@@ -149,33 +144,10 @@ ETERM * buildTermFromPacket(Packet & p) {
       p.getTimeBase().den,
       bin
       );
-//  erl_print_term((FILE*) stderr, f);
-/*
-  terms.push_back(erl_mk_int(p.getStreamIndex()));
-  terms.push_back(erl_mk_int(p.isKeyFrame()));
-  //    terms.push_back(erl_mk_string(toString(p.getPts()).c_str()));
-  //    terms.push_back(erl_mk_string(toString(p.getDts()).c_str()));
-  terms.push_back(erl_mk_string(Decimal(p.getPts()).toString().c_str()));
-  terms.push_back(erl_mk_string(Decimal(p.getDts()).toString().c_str()));
-  //    terms.push_back(erl_mk_binary((const char *)p.getPts(),8));
-  //    terms.push_back(erl_mk_binary((const char*)p.getDts(),8));
-  terms.push_back(erl_mk_int(p.getFlags()));
-  terms.push_back(erl_mk_int(p.getDuration()));
-  terms.push_back(erl_mk_int(p.getSize()));
-  terms.push_back(erl_mk_int(p.getTimeBase().num));
-  terms.push_back(erl_mk_int(p.getTimeBase().den));
-  if (p.getSize() > 0)
-    terms.push_back(erl_mk_binary((char*) p.getData(), p.getSize()));
-  else {
-    terms.push_back(erl_mk_binary((char*) "", 0));
-  }
-   */
-  //  logdebug("make vector2term from packet");
 
      return f;//vector2term(terms);
 }
-
-Packet * buildPacketFromTerm(ETERM * in) {
+org::esb::av::Packet * buildPacketFromTerm(ETERM * in) {
   ETERM * streamidx = erl_element(1, in);
   ETERM * pts = erl_element(3, in);
   ETERM * dts = erl_element(4, in);
@@ -241,7 +213,6 @@ private:
   std::vector<ETERM *> pkts;
 
 };
-
 Decoder * buildDecoderFromTerm(ETERM* in) {
   ETERM * codecid = erl_element(6, in);
   ETERM * bitrate = erl_element(8, in);
@@ -310,5 +281,7 @@ Encoder * buildEncoderFromTerm(ETERM * in) {
   d->open();
   return d;
 }
+
+
 #endif
 
