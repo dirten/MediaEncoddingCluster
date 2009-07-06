@@ -41,7 +41,7 @@ init([])->
 
 create_timer_from_db([])->ok;
 create_timer_from_db([S|T])->
-  %  io:format("Schedule:~p",[S]),
+    io:format("Schedule:~p",[S]),
   create_interval(S#scheduler.name,S#scheduler.interval,S#scheduler.module,S#scheduler.func,S#scheduler.args),
   create_timer_from_db(T).
 

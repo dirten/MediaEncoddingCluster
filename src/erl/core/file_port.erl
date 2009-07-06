@@ -33,7 +33,7 @@ handle_call({Command,File,Stream,Seek,PacketCount},_From,_N)->
   receive
     {_Fileport, {data, Data}} ->
       D=binary_to_term(Data),
-      %io:format("Any Data ~w",[D]),
+      io:format("Any Data ~w",[D]),
       {reply, D, state};
     {'EXIT', _Fileport, Reason2} ->
       io:format("Port exited  ~w~n", [Reason2]),
