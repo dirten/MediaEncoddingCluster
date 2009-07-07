@@ -411,7 +411,6 @@ ETERM * encode(ETERM* in) {
     if (toDebug)
       p->toString();
     Frame f = d->decode(*p);
-    delete p;
     if (toDebug)
       f.toString();
 
@@ -441,6 +440,8 @@ ETERM * encode(ETERM* in) {
     }
     //    if (toDebug)
     //      logdebug("Encoded PacketSize" << ret.getSize());
+    delete p;
+
   }
   delete d;
   delete e;
