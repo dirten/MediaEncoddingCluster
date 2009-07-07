@@ -462,19 +462,7 @@ ETERM * encode(ETERM* in) {
 
 
 
-int current_size = 0;
 
-byte * get_buffer(byte * buffer, int size) {
-  if (current_size < size) {
-    //    logdebug("Increasing Buffer from:" << current_size << " to:" << size);
-    if (buffer != NULL)
-      delete[]buffer;
-    buffer = new byte[size];
-    memset(buffer, 0, size);
-    current_size = size;
-  }
-  return buffer;
-}
 
 void daemon() {
 #ifdef WIN32
