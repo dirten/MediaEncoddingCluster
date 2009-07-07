@@ -50,15 +50,18 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 
 add_executable (test test.cpp)
-add_executable (erltest erltest.cpp)
+IF(NOT WIN32)
+  add_executable (erltest erltest.cpp)
+  target_link_libraries (erltest libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
+ENDIF(NOT WIN32)
+
 add_executable (info info.cpp)
 IF(WIN32)
-  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 libgcc libmingwex libcoldname  wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei  libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm )
 
-target_link_libraries (info ${BZ2_LIB} io av util lang libavcodec libavformat libavutil libswscale   )
-target_link_libraries (test libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
-target_link_libraries (erltest libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
+target_link_libraries (info ${BZ2_LIB} io av util lang avcodec avformat avutil swscale   )
+target_link_libraries (test avcodec avformat avutil swscale ${BZ2_LIB} io av util lang libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg )
 ELSEIF(APPLE)
 target_link_libraries (info bz2 )
 target_link_libraries (test bz2 )

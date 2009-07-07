@@ -26,7 +26,7 @@
 -module(devel).
 -compile(export_all).
 -include_lib("kernel/include/file.hrl").
--include("version.hrl").
+-include("releases/version.hrl").
 
 rebuild(Version)->
   clean(Version),
@@ -123,7 +123,12 @@ release(Version)->
   case os:type() of
     {win32,nt} ->
       libfile:copy(filename:join([ErtsBinDir, "epmd.exe"]),filename:join([TmpBinDir, "epmd.exe"])),
-      libfile:copy(SrcDir++"/bin/mhivesys.exe", filename:join(["priv", "mhivesys.exe"]));
+      libfile:copy(SrcDir++"/bin/mhivesys.exe", filename:join(["priv", "mhivesys.exe"])),
+      libfile:copy(SrcDir++"/bin/avcodec-52.dll", filename:join(["priv", "avcodec-52.dll"])),
+      libfile:copy(SrcDir++"/bin/avdevice-52.dll", filename:join(["priv", "avdevice-52.dll"])),
+      libfile:copy(SrcDir++"/bin/avformat-52.dll", filename:join(["priv", "avformat-52.dll"])),
+      libfile:copy(SrcDir++"/bin/avutil-50.dll", filename:join(["priv", "avutil-50.dll"])),
+      libfile:copy(SrcDir++"/bin/swscale-0.dll", filename:join(["priv", "swscale-0.dll"]));
     {unix, _}->
       libfile:copy(filename:join([ErtsBinDir, "epmd"]),filename:join([TmpBinDir, "epmd"])),
       libfile:copy(filename:join([ErtsBinDir, "run_erl"]),filename:join([TmpBinDir, "run_erl"])),

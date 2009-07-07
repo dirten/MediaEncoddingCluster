@@ -169,7 +169,7 @@ add_custom_target(tsystem
 )
 
 add_custom_target(release
-  ${ERLANG_DIR}/bin/erl -noshell  -s devel clean -s devel build -s devel release -s init stop
+  ${ERLANG_DIR}/bin/erl -noshell -pa releases -s compile file devel -s devel clean -s devel build -s devel release -s init stop
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/erl
 )
 

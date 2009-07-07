@@ -56,7 +56,7 @@ untar_file(){
 configure_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Configuring $1"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --disable-shared --enable-static $2 > configure-$1.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --enable-shared --disable-static $2 > configure-$1.log
  	        cd "$TOPDIR"
  	}
 configure_xvid(){

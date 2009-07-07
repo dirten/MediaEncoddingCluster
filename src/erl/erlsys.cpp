@@ -482,9 +482,10 @@ void daemon() {
   setmode(fileno(stdout), O_BINARY);
   setmode(fileno(stdin), O_BINARY);
 #endif
+//  erl_printf(stderr, "mhive start");
   ETERM *intuple = NULL, *outtuple = NULL;
 
-  byte *buf = get_buffer(NULL, 50000000);
+  byte *buf = get_buffer(NULL, 5000000);
 
   while (read_cmd(buf) > 0) {
     intuple = erl_decode(buf);
@@ -602,7 +603,19 @@ int main(int argc, char** argv) {
       erl_print_term((FILE*) stderr, intuple);
       outtuple = fileinfo(intuple);
       erl_print_term((FILE*) stderr, outtuple);
+    }else
+    if (strcmp(argv[2], "streaminfo") == 0) {
+      logdebug("Testing streaminfo");
+      terms.push_back(erl_mk_string(""));
+      terms.push_back(erl_mk_atom(argv[3]));
+      terms.push_back(erl_mk_int(atoi(argv[4])));
+	  
+	  intuple=vector2term(terms);
+      erl_print_term((FILE*) stderr, intuple);
+      outtuple = streaminfo(intuple);
+      erl_print_term((FILE*) stderr, outtuple);
     }
+
   } else {
     daemon();
   }

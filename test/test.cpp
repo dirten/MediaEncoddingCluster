@@ -61,10 +61,10 @@ int audio() {
   enc.setBitRate(192000);
   enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
-
-  enc.setTimeBase((AVRational) {
-    1, 90000
-  });
+  AVRational ar;
+  ar.num=1;
+  ar.den=90000;
+  enc.setTimeBase(ar);
 //  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
 
   //  enc.setGopSize(25);
@@ -144,10 +144,11 @@ int video() {
   Encoder enc(CODEC_ID_H264);
   enc.setWidth(320);
   enc.setHeight(240);
+  AVRational ar;
+  ar.num=1;
+  ar.den=25;
 
-  enc.setTimeBase((AVRational) {
-    1, 25
-  });
+  enc.setTimeBase(ar);
   enc.setBitRate(1024000);
   enc.setGopSize(25);
   enc.setFlag(4194304);
@@ -225,9 +226,11 @@ int av() {
   enc.setWidth(320);
   enc.setHeight(240);
 
-  enc.setTimeBase((AVRational) {
-    1, 25
-  });
+  AVRational ar;
+  ar.num=1;
+  ar.den=25;
+
+  enc.setTimeBase(ar);
 
   enc.setBitRate(1024000);
   enc.setGopSize(25);
