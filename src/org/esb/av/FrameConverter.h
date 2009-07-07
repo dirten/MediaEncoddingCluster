@@ -6,7 +6,11 @@
 #include "Decoder.h"
 
 //struct SwsContext;
-
+#ifdef WIN32
+#define DEPRICATED(func) __declspec(deprecated) func
+#else
+#define DEPRICATED(f) __attribute__((deprecated)) f
+#endif
 namespace org{
 namespace esb{
 namespace av{
@@ -20,10 +24,13 @@ namespace av{
 //		FrameConverter(FrameFormat& sourceFormat,FrameFormat& targetFormat);
 		FrameConverter(Decoder* dec,Encoder* enc);
 		~FrameConverter();
-		Frame convert(Frame & input);
+		DEPRICATED(Frame convert(Frame & input));
+		void convert(Frame & input, Frame & out);
 	private:
 		Frame convertVideo(Frame & input);
 		Frame convertAudio(Frame & input);
+		void convertVideo(Frame & input, Frame & out);
+		void convertAudio(Frame & input, Frame & out);
 //	    void getSwsContext();
 	    SwsContext * _swsContext;
 	    FrameFormat * _inFormat;

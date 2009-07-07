@@ -409,19 +409,21 @@ ETERM * encode(ETERM* in) {
     tail = erl_tl(tail);
     if (toDebug)
       p->toString();
-    Frame f = d->decode(*p);
+    Frame * f = d->decode2(*p);
     if (toDebug)
-      f.toString();
+      f->toString();
 
-    if (!f.isFinished()) {
+    if (!f->isFinished()) {
       if (toDebug)
         logdebug("Frame not finished, continuing");
       continue;
     }
     if (toDebug)
       logdebug("Frame Buffer > 0");
+    Frame f2(e->getPixelFormat(), e->getWidth(), e->getHeight());
 
-    Frame f2 = conv->convert(f);
+	conv->convert(*f, f2);
+	delete f;
     if (toDebug)
       logdebug("Frame Converted");
 

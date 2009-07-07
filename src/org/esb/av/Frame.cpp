@@ -204,6 +204,7 @@ Frame::~Frame() {
     //    cout <<"Delete Frame"<<endl;
     delete []_buffer;
     _buffer = NULL;
+	_allocated=false;
   }
 }
 
@@ -273,7 +274,7 @@ AVRational Frame::getTimeBase(){
 }
 void Frame::toString() {
 //  if (getHeight() > 0 && getWidth() > 0)
-    logdebug("Frame->Size:" << "not implemented"<<
+    logdebug("Frame->Size:" << getSize()<<
         ":SampleSize:"<<_size<<
         ":Width:" << getWidth()<<
         ":Height:" << getHeight()<<

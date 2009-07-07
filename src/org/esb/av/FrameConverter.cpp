@@ -92,6 +92,14 @@ namespace org
         }
         return in_frame;
       }
+      void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
+        if (in_frame._type == CODEC_TYPE_VIDEO) {
+          convertVideo(in_frame, out_frame);
+        }
+        if (in_frame._type == CODEC_TYPE_AUDIO) {
+          convertAudio(in_frame, out_frame);
+        }
+      }
 
       Frame FrameConverter::convertVideo(Frame & in_frame) {
         Frame out_frame(_enc->getPixelFormat(), _enc->getWidth(), _enc->getHeight());
@@ -114,6 +122,27 @@ namespace org
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
         return out_frame;
+      }
+      void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
+        out_frame._type = in_frame._type;
+
+        int sws_flags = 1;
+        /*
+                _swsContext = sws_getCachedContext(_swsContext,
+                    in_frame.getWidth(), in_frame.getHeight(),
+                    (PixelFormat) in_frame.getFormat(),
+                    _outFormat->width, _outFormat->height,
+                    _outFormat->pixel_format, sws_flags, NULL, NULL, NULL);
+         */
+
+        sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
+        out_frame.setTimeBase(in_frame.getTimeBase());
+        out_frame.pos = in_frame.pos;
+        out_frame.setPts(in_frame.getPts());
+        out_frame.setDts(in_frame.getDts());
+        out_frame.stream_index = in_frame.stream_index;
+        out_frame.duration = in_frame.duration;
+//        return out_frame;
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
@@ -147,6 +176,38 @@ namespace org
         frame.sample_rate = _enc->getSampleRate();
 
         return frame;
+      }
+      void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+//		return in_frame;
+        int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
+        uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
+        int delta = _dec->getSampleRate() - _enc->getSampleRate();
+
+
+        //        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, -delta, _enc->getSampleRate());
+        //        fprintf(stderr, "audio resample size %d channels %d isize %d\n",in_frame._size ,in_frame.channels , isize);
+        int out_size = audio_resample(
+            _audioCtx,
+            (short *) audio_buf,
+            (short *) in_frame._buffer,
+            in_frame._size / (in_frame.channels * isize)
+            );
+        //		audio_resample_close( reCtx );
+
+//        Frame frame(audio_buf);
+        out_frame._buffer = audio_buf;
+        out_frame.setTimeBase(in_frame.getTimeBase());
+        out_frame.setPts(in_frame.getPts());
+        out_frame.setDts(in_frame.getDts());
+        out_frame.pos = in_frame.pos;
+        out_frame.stream_index = in_frame.stream_index;
+        out_frame.duration = in_frame.duration;
+        out_frame._size = out_size;
+        out_frame._type = CODEC_TYPE_AUDIO;
+        out_frame.channels = _enc->getChannels();
+        out_frame.sample_rate = _enc->getSampleRate();
+
+//        return frame;
       }
 
     }
