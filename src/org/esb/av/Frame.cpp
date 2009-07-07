@@ -19,7 +19,11 @@ Frame::Frame() {
   _width = 0;
   _height = 0;
   _pixFormat=(PixelFormat)0;
-
+  _size=0;
+  duration=0;
+   _time_base.num=0;
+   _time_base.den=0;
+   _dts=0;
 }
 Frame::Frame(uint8_t *buffer) {
    framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
@@ -29,7 +33,13 @@ Frame::Frame(uint8_t *buffer) {
   _height = 0;
   _pixFormat=(PixelFormat)0;
   _isFinished=false;
-
+   _size=0;
+   channels = 0;
+   sample_rate = 0;
+   duration=0;
+   _time_base.num=0;
+   _time_base.den=0;
+   _dts=0;
 }
 /*
 Frame::Frame(Packet * packet, Codec * codec){
@@ -125,11 +135,15 @@ Frame Frame::operator=(Frame & frame) {
 Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
 //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
+   _size=0;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   _width = width;
   _height = height;
   _pixFormat = format;
   _allocated=allocate;
+  channels=0;
+  sample_rate=0,
+      duration=0;
   /*
     quality = 100;
     channels = 0;
@@ -259,7 +273,7 @@ AVRational Frame::getTimeBase(){
 }
 void Frame::toString() {
 //  if (getHeight() > 0 && getWidth() > 0)
-    logdebug("Frame->Size:" << getSize()<<
+    logdebug("Frame->Size:" << "not implemented"<<
         ":SampleSize:"<<_size<<
         ":Width:" << getWidth()<<
         ":Height:" << getHeight()<<

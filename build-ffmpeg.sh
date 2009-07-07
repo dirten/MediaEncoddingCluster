@@ -158,6 +158,7 @@ SYS=`uname`
 case "$SYS" in
     MINGW32*)
 #	rm -f $SRCDIR/$BUILDDIR/xvidcore/lib/xvidcore.dll
+      MEMALIGNHACK="--enable-memalign-hack"
     ;;
     *)
     LIBPTHREAD="--extra-ldflags=-lpthread"
@@ -175,7 +176,7 @@ configure_file "ffmpeg" \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
 --extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
-$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices --enable-memalign-hack --extra-cflags=-fno-common --disable-stripping"
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices $MEMALIGNHACK --extra-cflags=-fno-common --disable-stripping"
 
 build_file "ffmpeg"
 

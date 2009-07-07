@@ -177,7 +177,7 @@ ETERM * streaminfo(ETERM * v) {
   File f((const char*) ERL_ATOM_PTR(file));
   if (f.exists()) {
     //    FormatInputStream fis(&f);
-    std::string filename=f.getPath();
+    std::string filename = f.getPath();
     FormatInputStream *fis = FormatStreamFactory::getInputStream(filename);
     if (!fis->isValid() || s < 0 || s >= fis->getStreamCount()) {
       terms.push_back(erl_mk_atom("streamnotfound"));
@@ -212,10 +212,10 @@ ETERM * fileinfo(ETERM * v) {
   ETERM *argp = erl_element(2, v);
   std::string t((const char*) ERL_ATOM_PTR(argp));
   File f(t);
-    logdebug("fileinfo:"<<f.getPath());
+  logdebug("fileinfo:" << f.getPath());
   if (f.exists()) {
     //    FormatInputStream fis(&f);
-    std::string filename=f.getPath();
+    std::string filename = f.getPath();
     FormatInputStream *fis = FormatStreamFactory::getInputStream(filename);
     if (!fis->isValid()) {
       terms.push_back(erl_mk_atom("format_invalid"));
@@ -238,7 +238,6 @@ ETERM * fileinfo(ETERM * v) {
   return vector2term(terms);
 }
 
-
 ETERM * packetstream(ETERM * v) {
   //  erl_print_term((FILE*)stderr,v);
   std::vector<ETERM *> terms;
@@ -255,7 +254,7 @@ ETERM * packetstream(ETERM * v) {
     //    logdebug("SeekValue:"<<erl_iolist_to_string(seek));
     sscanf((const char *) erl_iolist_to_string(seek), "%ll", &s);
     //    logdebug("SeekValueScanned:"<<s);
-    std::string filename=f.getPath();
+    std::string filename = f.getPath();
     FormatInputStream *fis = FormatStreamFactory::getInputStream(filename, s);
     PacketInputStream pis(fis);
     Packet p;
@@ -483,7 +482,7 @@ void daemon() {
   setmode(fileno(stdout), O_BINARY);
   setmode(fileno(stdin), O_BINARY);
 #endif
-//  erl_printf(stderr, "mhive start");
+  //  erl_printf(stderr, "mhive start");
   ETERM *intuple = NULL, *outtuple = NULL;
 
   byte *buf = get_buffer(NULL, 5000000);
@@ -589,32 +588,110 @@ int main(int argc, char** argv) {
 
   ETERM *intuple = NULL, *outtuple = NULL;
   if (argc > 1 && strcmp(argv[1], "-test") == 0) {
-//	  File f(argv[3]);
-//		FormatInputStream * fis=new FormatInputStream(&f);
-//		FormatInputStream fis(&f);
-//		return 0;
-		logdebug("TestMode");
+    //	  File f(argv[3]);
+    //		FormatInputStream * fis=new FormatInputStream(&f);
+    //		FormatInputStream fis(&f);
+    //		return 0;
+    logdebug("TestMode");
     std::vector<ETERM *> terms;
     if (strcmp(argv[2], "fileinfo") == 0) {
       logdebug("Testing fileinfo");
       terms.push_back(erl_mk_string(""));
       terms.push_back(erl_mk_atom(argv[3]));
-	  
-	  intuple=vector2term(terms);
+
+      intuple = vector2term(terms);
       erl_print_term((FILE*) stderr, intuple);
       outtuple = fileinfo(intuple);
       erl_print_term((FILE*) stderr, outtuple);
-    }else
-    if (strcmp(argv[2], "streaminfo") == 0) {
+    } else
+      if (strcmp(argv[2], "streaminfo") == 0) {
       logdebug("Testing streaminfo");
       terms.push_back(erl_mk_string(""));
       terms.push_back(erl_mk_atom(argv[3]));
       terms.push_back(erl_mk_int(atoi(argv[4])));
-	  
-	  intuple=vector2term(terms);
+
+      intuple = vector2term(terms);
       erl_print_term((FILE*) stderr, intuple);
       outtuple = streaminfo(intuple);
       erl_print_term((FILE*) stderr, outtuple);
+    } else
+      if (strcmp(argv[2], "encodevideo") == 0) {
+      logdebug("Testing encode");
+      ETERM * dec = erl_format("{stream,1,1,0,0,2,undefined,15000000,25,1,90000,720,576,0,12,0,535126463,12711600,0}");
+      ETERM * enc = erl_format("{stream,3,2,0,undefined,28,undefined,1024,25,1,25,128,96,undefined,30,0,undefined,undefined,4194304}");
+
+
+      File infile(argv[3]);
+//      int stream_id = 2;
+      //    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
+//      File outfile("/media/out/test.mp3");
+
+      FormatInputStream fis(&infile);
+      PacketInputStream pis(&fis);
+
+//      FormatOutputStream fos(&outfile);
+//      PacketOutputStream pos(&fos);
+
+      std::vector<ETERM *> packets;
+      Packet p;
+      for (int a = 0; a < 100; a++) {
+        pis.readPacket(p);
+        if (p.getStreamIndex() == 0) {
+          packets.push_back(buildTermFromPacket(p));
+        }
+      }
+      ETERM * data=erl_format("{encode,{~s,0,0,~w,~w,~w}}", argv[3], dec, enc, vector2list(packets));
+      packets.clear();
+//      ETERM * data;
+
+      erl_print_term((FILE*) stderr, data);
+      outtuple = encode(data);
+      erl_print_term((FILE*) stderr, outtuple);
+
+      erl_free(dec);
+      erl_free(enc);
+      erl_free(data);
+      erl_free_compound(outtuple);
+      erl_eterm_release();
+    } else
+      if (strcmp(argv[2], "encodeaudio") == 0) {
+      logdebug("Testing encode");
+      ETERM * dec = erl_format("{stream,2,1,1,1,86016,undefined,192000,48000,1,90000,0,0,2,12,1,535188686,12739680,0}");
+      ETERM * enc = erl_format("{stream,4,2,1,undefined,86017,undefined,128,44100,1,90000,undefined,undefined,2,20,1,undefined,undefined,4194304}");
+
+
+      File infile(argv[3]);
+//      int stream_id = 2;
+      //    File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");int stream_id = 1;
+//      File outfile("/media/out/test.mp3");
+
+      FormatInputStream fis(&infile);
+      PacketInputStream pis(&fis);
+
+//      FormatOutputStream fos(&outfile);
+//      PacketOutputStream pos(&fos);
+
+      std::vector<ETERM *> packets;
+      Packet p;
+      for (int a = 0; a < 100; a++) {
+        pis.readPacket(p);
+        if (p.getStreamIndex() == 1) {
+          packets.push_back(buildTermFromPacket(p));
+        }
+      }
+      ETERM * data=erl_format("{encode,{~s,0,0,~w,~w,~w}}", argv[3], dec, enc, vector2list(packets));
+      packets.clear();
+//      ETERM * data;
+
+      erl_print_term((FILE*) stderr, data);
+      outtuple = encode(data);
+      erl_print_term((FILE*) stderr, outtuple);
+
+      erl_free(dec);
+      erl_free(enc);
+      erl_free(data);
+      erl_free_compound(outtuple);
+      erl_eterm_release();
     }
 
   } else {

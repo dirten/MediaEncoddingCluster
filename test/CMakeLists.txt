@@ -52,7 +52,7 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 add_executable (test test.cpp)
 IF(NOT WIN32)
   add_executable (erltest erltest.cpp)
-  target_link_libraries (erltest libavcodec libavformat libavutil libswscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
+#  target_link_libraries (erltest avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
 ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
