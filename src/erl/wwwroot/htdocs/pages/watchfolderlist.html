@@ -1,41 +1,14 @@
-<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
-<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
-<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
-<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
 
 <script type="text/javascript">
 
-  function onGridSelect(evt)
-  {
-    /*
-    var str = 'row: '+evt.row+' indices: '+evt.indices;
-    str += ' id: '+evt.target.getDataByRow(evt.row).id;
-
-    alert( str );
-     */
-    var url='/api/json/get_profile';
-    var request = new Request.JSON({
-      url: url,
-      method: 'get',
-      onComplete: function(properties) {
-        setProfileDetails(properties);
-      }
-    }).send('id='+evt.target.getDataByRow(evt.row).id);
-
-
-  }
+ 
   function openWatchFolderForm(evt)
   {
    
     MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
   }
 
-  function gridButtonClick(button, grid)
-  {
-    alert(button);
-  }
-
-  var cmu = [
+  var cmu2 = [
     {
       header: "Id",
       dataIndex: 'id',
@@ -57,7 +30,7 @@
     {
       header: "Profile ID",
       dataIndex: 'profile',
-      dataType:'string',
+      dataType:'number',
       width:60
     },
     {
@@ -83,10 +56,11 @@
 
   window.addEvent("domready", function(){
 
-    watchfoldergrid = new omniGrid('watchfoldergrid', {
-      columnModel: cmu,
+    watchfgrid = new omniGrid('watchfoldergrid', {
+      columnModel: cmu2,
       url:"/api/json/watchfolder",
       method:'get',
+      
       perpage:10,
       page:1,
       pagination:false,
@@ -102,7 +76,7 @@
     });
 
     
-    watchfoldergrid.addEvent('dblclick', openWatchFolderForm);
+    watchfgrid.addEvent('dblclick', openWatchFolderForm);
     
     $('createNewWatchfolderButton').addEvent('click', function(e){
       new Event(e).stop();

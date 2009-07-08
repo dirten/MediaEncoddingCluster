@@ -95,6 +95,7 @@ initializeWindows = function(){
           left: 8
         }
       });
+      
       MochaUI.updateContent({
         'element': $('help-panel'),
         'loadMethod': 'xhr',

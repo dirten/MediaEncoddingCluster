@@ -67,7 +67,7 @@
 
   window.addEvent("domready", function(){
 
-    updategrid = new omniGrid('updategrid', {
+    updateg = new omniGrid('updategrid', {
       columnModel: cmu,
       /*
       buttons : [
@@ -100,7 +100,7 @@
     });
 
 //    datagrid.addEvent('click', onGridSelect);
-    updategrid.addEvent('dblclick', openForm);
+    updateg.addEvent('dblclick', openForm);
     $('checkForUpdatesButton').addEvent('click', function(e){
       new Event(e).stop();
       MochaUI.notification('Check for Updates now');

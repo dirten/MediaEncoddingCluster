@@ -97,9 +97,9 @@
         method: 'POST',
         onComplete: function(props) {
           if(props.ok){
-            MochaUI.closeWindow($('watchfolder'));
             MochaUI.notification('Watchfolder Updated');
-            watchfoldergrid.refresh();
+            MochaUI.closeWindow($('watchfolder'));
+            watchfgrid.refresh();
           }else{
             MochaUI.notification('Error: '+props.error);
           }

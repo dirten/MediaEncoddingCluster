@@ -23,18 +23,30 @@ init([])->
     io:format("~w started~n", [?MODULE]),
     {ok, state}.
 
-send()->
+send2()->
     receive after 2000->
             case inet:ifget("eth0", [broadaddr]) of
                 {ok, [{broadaddr, Ip}]} ->
                     {ok, S} =  gen_udp:open(5011, [{broadcast, true}]),
                     gen_udp:send(S, Ip, 6000, "test2"),
                     gen_udp:close(S),
-                    io:format("Packet sended ");
+                    io:format("Packet sended to ip ~p",[Ip]);
                 _ ->
                     io:format("Bad interface name, or\n"
                         "broadcasting not supported\n")
             end,
+            node_finder:send()
+            end.
+send()->
+    receive after 2000->
+            SendOpts = [ { ip, {0,0,0,0 } },
+                        { multicast_ttl, 3000 },
+                        { multicast_loop, true } ],
+
+            {ok, S} =  gen_udp:open(5011, SendOpts),
+            gen_udp:send(S, {192,168,0,255}, 6000, ""),
+            gen_udp:close(S),
+            io:format("Packet sended "),
             node_finder:send()
             end.
 
@@ -46,8 +58,8 @@ listen()->
 
 listen(S) ->
     receive
-        {udp,Port,Ip,_,_} ->
-            io:format("received:~p ~p~n", [node(Port),Ip]),
+        {udp,Port,Ip,D1,D2} ->
+            io:format("received:~p ~p ~p ~p~n", [node(Port),Ip, D1, D2]),
             node_finder:listen(S);
         Any->
             io:format("~p",[Any])
