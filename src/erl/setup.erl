@@ -65,6 +65,7 @@ setup_win32(Mode, AutoStart)->
     case AutoStart of
         yes->
             Node=libnet:local_name(),
+            os:cmd(lists:concat([ErtsPath,"/bin/erlsrv remove MHiveService "]));
             os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d new -args \"-setcookie default -config releases/"++libutil:toString(?VERSION)++"/sys -boot releases/"++libutil:toString(?VERSION)++"/start\""]));
         _->
             ok
