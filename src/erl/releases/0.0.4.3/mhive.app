@@ -21,6 +21,7 @@
         libutil,
         mhive,
         mhive_supervisor,
+        mhive_generic_sup,
         mhive_webserver,
         node_watcher,
         node_finder,
