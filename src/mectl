@@ -178,7 +178,7 @@ case "$1" in
         export PROGNAME
         export RELDIR
 
-        exec $BINDIR/erlexec -boot $RELDIR/$VSN/start -config $RELDIR/$VSN/sys ${1+"$@"} -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'"
+        exec $BINDIR/erlexec -boot $RELDIR/$VSN/start -config $RELDIR/$VSN/sys ${1+"$@"} -setcookie default -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'"
             ;;
     *)
       usage

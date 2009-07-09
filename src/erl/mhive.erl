@@ -77,36 +77,32 @@ start(_Type, StartArgs)->
         _->ok
     end,
 %    io:format("Env:~w~n",[application:get_env(mhive, mode2)]),
-    Node=libnet:local_name(),
-    net_kernel:start([Node,shortnames]),
-  %  net_adm:world(),
-  %  application:set_env(mhive,wwwroot,filename:join(libcode:get_privdir(),"wwwroot")),
+%    Node=libnet:local_name(),
+%    net_kernel:start([Node,shortnames]),
+    libnet:start_network(),
+    mhive_generic_sup:start_link(StartArgs),
   %% TODO libcode wieder einbinden
 %    application:set_env(mnesia,dir,"data"),
-    ok=mnesia:start(),
-    case mnesia:wait_for_tables([config, scheduler],5000)of
-        {timeout,_Tables}->
-            error_logger:error_msg("could not load configuration from Database\nyou need to run setup:setup() before first start!");
-    %      io:format("could not load configuration from Database~n"),
-    %      io:format("you need to run configuration script before first start!~n"),
-    %    exit(normal);
-        _->
-            case config:get(mode) of
-                server->
-                    mhive_supervisor:start_link(StartArgs);
-                client->
-                    client_supervisor:start_link(StartArgs);
-                both->
-                    mhive_supervisor:start_link(StartArgs),
-                    client_supervisor:start_link(StartArgs);
-                _->system_not_configured
-            end
-    end.
+ok=mnesia:start(),
+case mnesia:wait_for_tables([config, scheduler],5000)of
+    {timeout,_Tables}->
+        error_logger:error_msg("could not load configuration from Database\nyou need to run setup:setup() before first start!");
+    _->
+        case config:get(mode) of
+            server->
+                mhive_supervisor:start_link(StartArgs);
+            client->
+                client_supervisor:start_link(StartArgs);
+            both->
+                mhive_supervisor:start_link(StartArgs),
+                client_supervisor:start_link(StartArgs);
+            _->system_not_configured
+        end
+end.
 
 %% @spec stop() -> ok
 %% @doc this function will be called from application:stop(mhive) function
 %% @end
-
 stop(_State)->
     ok.
 

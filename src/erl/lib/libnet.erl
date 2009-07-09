@@ -26,35 +26,50 @@
 -module(libnet).
 -compile(export_all).
 
+stop_network()->
+    net_kernel:stop().
+
+start_network()->
+    Node=libnet:local_name(),
+    net_kernel:start([Node,shortnames]),
+    inet_db:set_lookup([native, file]).
+
+get_host_name(Name)->
+    Start = string:rchr(Name, $@),
+    lists:sublist(Name, Start+1,length(Name)).
+get_node_name(Name)->
+    Start = string:rchr(Name, $@),
+    lists:sublist(Name, Start-1).
+
 
 local_name()->
-  local_name("node").
+    local_name("node").
 
 local_name(Name)->
-	{ok,HostName}=inet:gethostname(),
-  list_to_atom(Name++"@"++HostName).
+    {ok,HostName}=inet:gethostname(),
+    list_to_atom(Name++"@"++HostName).
   
 connect(Host, NodeName)->
-  case inet:getaddr(Host, inet) of
-    {ok, Addr}->
-      io:format("Connecting to Host Address ~w~n",[Addr]),
-      {A1,A2,A3,A4}=Addr,
-      Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
-      Node=list_to_atom(NodeName++"@"++Ip),
-      case net_adm:ping(Node)of
-        pong->
-          io:format("Visible Nodes ~p~n",[[node()|nodes()]]),
-          {ok,Node};
-        pang->
+    case inet:getaddr(Host, inet) of
+        {ok, Addr}->
+            io:format("Connecting to Host Address ~w~n",[Addr]),
+            {A1,A2,A3,A4}=Addr,
+            Ip=integer_to_list(A1)++"."++integer_to_list(A2)++"."++integer_to_list(A3)++"."++integer_to_list(A4),
+            Node=list_to_atom(NodeName++"@"++Ip),
+            case net_adm:ping(Node)of
+                pong->
+                    io:format("Visible Nodes ~p~n",[[node()|nodes()]]),
+                    {ok,Node};
+                pang->
 
-          io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
+                    io:format("No Services ~p found on Host with Address ~p ~p~n",[NodeName,Host,Node]),
           %          {ok,Data}=net_adm:names(Ip),
           %          Services=[element(1,X)||X<-Data],
           %          io:format("Available Services on Host Address ~p~n",[Services]),
-          {error,"no pssible Service found"}
-      end;
-    {error, nxdomain}->
+                    {error,"no pssible Service found"}
+            end;
+        {error, nxdomain}->
       %      wf:flash("Can not resolve Host Address"),
       %      io:format("Can not resolve Host Address for ~p~n",[Host]),
-      {error,"Can not resolve Host Address"}
-  end.
+            {error,"Can not resolve Host Address"}
+    end.

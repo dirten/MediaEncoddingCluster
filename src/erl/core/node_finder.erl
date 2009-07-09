@@ -3,7 +3,7 @@
 -behaviour(gen_server).
 %-compile(export_all).
 
--export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2, listen/0, listen/1, send/0]).
+-export([start/0, start_link/0,stop/0, init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2, listen/0, listen/1, send/0, get_bcast_addrs/0]).
 
 
 start()->
@@ -23,9 +23,26 @@ init([])->
     io:format("~w started~n", [?MODULE]),
     {ok, state}.
 
-send2()->
+get_bcast_addrs()->
+    {ok,List}=inet:getif(),
+    lists:foldl(fun(El, Acc)->[{element(1,element(1, El)),element(2,element(1, El)),element(3,element(1, El)),255}]++Acc end,[], List).
+
+send()->
     receive after 2000->
-            case inet:ifget("eth0", [broadaddr]) of
+            BCast=fun(Ip)->
+                    receive after 500->
+                            {ok, S} =  gen_udp:open(5011, [{broadcast, true}]),
+                            gen_udp:send(S, Ip, 6000, libutil:toString(node())),
+                            gen_udp:close(S)
+                            end
+                  end,
+            %sending to each ip address an udp broadcast message to discover
+            lists:foreach(BCast,get_bcast_addrs()),
+            node_finder:send()
+            end.
+send3()->
+    receive after 2000->
+            case inet:ifget("vmnet8", [broadaddr]) of
                 {ok, [{broadaddr, Ip}]} ->
                     {ok, S} =  gen_udp:open(5011, [{broadcast, true}]),
                     gen_udp:send(S, Ip, 6000, "test2"),
@@ -37,16 +54,18 @@ send2()->
             end,
             node_finder:send()
             end.
-send()->
+send2()->
     receive after 2000->
             SendOpts = [ { ip, {0,0,0,0 } },
                         { multicast_ttl, 3000 },
-                        { multicast_loop, true } ],
+                        { multicast_loop, true },
+                        {broadcast, true}],
 
             {ok, S} =  gen_udp:open(5011, SendOpts),
-            gen_udp:send(S, {192,168,0,255}, 6000, ""),
+            io:format("SocketOpts:~p",[inet:getopts(S,[ip])]),
+            gen_udp:send(S, {224,0,0,1}, 6000, "testdata"),
             gen_udp:close(S),
-            io:format("Packet sended "),
+            io:format("Packet sended ~n"),
             node_finder:send()
             end.
 
@@ -58,8 +77,13 @@ listen()->
 
 listen(S) ->
     receive
-        {udp,Port,Ip,D1,D2} ->
-            io:format("received:~p ~p ~p ~p~n", [node(Port),Ip, D1, D2]),
+        {udp,Port,Ip,_PortNumber,NodeName} ->
+            Host=libnet:get_host_name(NodeName),
+            inet_db:add_host(Ip,[Host]),
+            case lists:member(list_to_atom(NodeName),nodes()) of
+                false->net_adm:ping(list_to_atom(NodeName));
+                true->allready_connected
+            end,
             node_finder:listen(S);
         Any->
             io:format("~p",[Any])
