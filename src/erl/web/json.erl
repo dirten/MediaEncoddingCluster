@@ -123,7 +123,7 @@ config(SessionID,Data2,Data3)->
                     Dat
             end;
             _->
-            {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
+            {struct,[{error,request_method_invalid},{description,"Only request_method GET is Supported by config"}]}
         end,
 
     R=try mochijson:encode(Response) of

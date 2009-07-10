@@ -78,10 +78,12 @@ listen()->
 listen(S) ->
     receive
         {udp,Port,Ip,_PortNumber,NodeName} ->
+
             Host=libnet:get_host_name(NodeName),
             inet_db:add_host(Ip,[Host]),
-            case lists:member(list_to_atom(NodeName),nodes()) of
-                false->net_adm:ping(list_to_atom(NodeName));
+            case lists:member(list_to_atom(NodeName),nodes()++[node()]) of
+                false->
+                    net_adm:ping(list_to_atom(NodeName));
                 true->allready_connected
             end,
             node_finder:listen(S);
@@ -114,7 +116,7 @@ handle_info(Info,N)->
 
 terminate(Reason,_N)->
   %  file_scanner_loop ! stop,
-    io:format("~w shutdown ~w~n", [?MODULE, Reason]),
+    io:format("~w shutdown ~w ~n", [?MODULE, Reason]),
     ok.
 
 code_change(_OldVsn,N,_Extra)->

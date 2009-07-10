@@ -30,6 +30,14 @@ stop_network()->
     net_kernel:stop().
 
 start_network()->
+    case libcode:epmd_started() of
+        false->
+            case libcode:epmd_start() of
+                ok->error_logger:info_msg("epmd started");
+                {error, Msg}->error_logger:error_report(Msg)
+            end;
+        _->ok
+    end,
     Node=libnet:local_name(),
     net_kernel:start([Node,shortnames]),
     inet_db:set_lookup([native, file]).

@@ -68,14 +68,6 @@ configure()->
 %% @doc this function will be called from application:start(mhive) function
 %% @end
 start(_Type, StartArgs)->
-    case libcode:epmd_started() of
-        false->
-            case libcode:epmd_start() of
-                ok->error_logger:info_msg("epmd started");
-                {error, Msg}->error_logger:error_report(Msg)
-            end;
-        _->ok
-    end,
 %    io:format("Env:~w~n",[application:get_env(mhive, mode2)]),
 %    Node=libnet:local_name(),
 %    net_kernel:start([Node,shortnames]),

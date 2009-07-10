@@ -63,5 +63,6 @@ epmd_start()->
         false->{error,"could not find epmd"};
         EpmdPath->
             os:cmd(EpmdPath++" -daemon"),
+            receive after 500->ok end,
             ok
     end.
