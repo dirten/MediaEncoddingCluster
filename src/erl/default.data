@@ -14,13 +14,13 @@
 {scheduler,3, "auto_update", auto_update, run, [], 300000, "Check for Program Updates", true}.
 
 {watchfolder,1,"/media/disk/video","/media/out",1,[],"no", "active"}.
-{watchfolder,2,"/media/video","/media/out",1,[],"no", "active"}.
+{watchfolder,2,"/media/video","/media/out",2,[],"no", "active"}.
 {watchfolder,3,"/media/TREKSTOR/videos","/media/out",1,[],"no","inactive"}.
 {watchfolder,4,"c:/2video","c:/3vodeoOut",1,[],"no", "active"}.
 {watchfolder,5,"m:/video","/media/out",1,[],"no", "active"}.
 {watchfolder,6,"/Users/jholscher/media/","/media/out",2,[],"no", "active"}.
 
-{config, http_port, 8080}.
+%{config, http_port, 8080}.
 %{config, mode, server}.
 {config, framerates, [0.09,5.995,7.5,7.992,8.0,10.0,11.998,12.0,14.985,15.0,20.0,23.98,25.0,29.97,30.0]}.
 {config, samplerates, [8000,11025,22050,32000,44100,48000,64000,88200,96000]}.

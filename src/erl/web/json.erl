@@ -25,11 +25,16 @@
 %%%----------------------------------------------------------------------
 
 -module(json).
--export([encoding/3, config/3, file/3,test/3, watchfolder/3, codec/3, format/3, profile/3, nodes/3, softwareupdate/3]).
+-export([encoding/3, config/3, file/3,test/3, watchfolder/3, codec/3, format/3, profile/3, nodes/3, softwareupdate/3, setup/3, restart/3]).
 -include_lib("stdlib/include/qlc.hrl").
 -include("schema_job.hrl").
 -include("schema_profile.hrl").
 -include("schema_watchfolder.hrl").
+-include("schema_setup.hrl").
+-include("schema_request.hrl").
+
+
+
 record_to_json(_R,[],_C,Acc)->
     Acc;
 
@@ -226,10 +231,15 @@ set_profile(SessionID,_Data2,Data3)->
     MyData= libutil:trim(Data3),
     MyD=try mochijson:decode(MyData) of
             {struct,JsonStruct}->
+            Request=lists:foldl(fun json2record:build_record/2, #request{}, JsonStruct ),
             Profile = lists:foldl(fun json2record:build_record/2, #profile{}, JsonStruct ),
-            io:format("Profile:~p",[Profile]),
-            libdb:write(Profile),
-            {struct,[{"ok", true}, {"id", Profile#profile.id}]};
+            if Request#request.action =:= "delete" ->
+                    libdb:delete({profile,Profile#profile.id}),
+                    {struct,[{"ok", true}]};
+                true->                    
+                    libdb:write(Profile),
+                    {struct,[{"ok", true}, {"id", Profile#profile.id}]}
+            end;
             _Any->
             {struct,[{error,unknown_json_format}]}
             catch
@@ -240,7 +250,8 @@ set_profile(SessionID,_Data2,Data3)->
             mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
             mod_esi:deliver(SessionID, J).
 
-watchfolder(SessionID,Data2,Data3)->  
+watchfolder(SessionID,Data2,Data3)->
+    io:format("Data:~p",[Data3]),
     case get_request(Data2) of
         "GET"->
             Query=httpd:parse_query(Data3),
@@ -270,10 +281,16 @@ watchfolder(SessionID,Data2,Data3)->
       %                io:format("Data:~p~n",[MyData]),
             MyD=try mochijson:decode(MyData) of
                     {struct,JsonStruct}->
+                    Request=lists:foldl(fun json2record:build_record/2, #request{}, JsonStruct ),
                     Folder = lists:foldl(fun json2record:build_watchfolder_record/2, #watchfolder{}, JsonStruct ),
-              %                        io:format("Folder:~p",[Folder]),
-                    libdb:write(Folder),
-                    {struct,[{"ok", true}, {"id", Folder#watchfolder.id}]};
+                    if Request#request.action =:= "delete" ->
+                            libdb:delete({watchfolder,Folder#watchfolder.id}),
+                            {struct,[{"ok", true}]};
+                        true->                    
+                            libdb:write(Folder),
+                            {struct,[{"ok", true}, {"id", Folder#watchfolder.id}]}
+                    end;
+
                     _Any->
               %                        io:format("Unknown Format:~p~n",[Any]),
                     {struct,[{error,unknown_json_format}]}
@@ -334,7 +351,6 @@ format(SessionID,Data2,Data3)->
             mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
             mod_esi:deliver(SessionID, J)
     end.
-
 nodes(SessionID,Data2,Data3)->
     Response =
         case get_request(Data2) of
@@ -382,6 +398,45 @@ nodes(SessionID,Data2,Data3)->
             R=mochijson:encode(Response),
             mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
             mod_esi:deliver(SessionID, R).
+
+
+setup(SessionID,Data2,Data3)->
+    Response =
+        case get_request(Data2) of
+            "GET"->"";
+            "POST"->
+
+            MyData=libutil:trim(Data3),
+            MyD=
+                try mochijson:decode(MyData) of
+                    {struct,JsonStruct}->
+                    io:format("~p",[JsonStruct]),
+                    Setup = lists:foldl(fun json2record:build_record/2, #setup{}, JsonStruct ),
+                    io:format("SetupRecord:~p",[Setup]),
+                    try setup:setup(Setup) of
+                        ok->
+                            {struct,[{"ok", true}]}
+                            catch
+                            A:B->
+                                io:format("A:~p,B:~p~n",[A,B]),
+                                {struct,[{error,B}]}
+                          end
+                    catch
+                        _:_->
+                            {struct,[{error,parsing_json_data}]}
+                    end;
+                    _->
+                    {struct,[{error,request_method_invalid},{description,"Only request_method GET and POST is Supported by file"}]}
+                end,
+            R=mochijson:encode(Response),
+            io:format("Data:~p",[R]),
+            mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n"),
+            mod_esi:deliver(SessionID, R).
+
+restart(SessionID,Data2,Data3)->
+    io:format("json restart"),
+    init:restart(),
+    mod_esi:deliver(SessionID, "Content-Type:text/plain\r\n\r\n").
 
 
 softwareupdate(SessionID,Data2,Data3)->

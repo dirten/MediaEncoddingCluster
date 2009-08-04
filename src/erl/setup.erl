@@ -40,13 +40,29 @@ setup()->
             setup:setup_win32(list_to_atom(Mode),list_to_atom(Auto));
         {unix, _}->
             setup_linux(list_to_atom(Mode),list_to_atom(Auto))
-    end.
+    end,
+    ok.
+
+setup(Setup=#setup{})->
+    io:format("Configure Cluster Environment with Setup:~p~n",[Setup]),
+    Mode=libutil:toString(Setup#setup.instance_mode),
+    Auto=libutil:toString(Setup#setup.instance_start),
+    case os:type() of
+        {win32,nt} ->
+            setup:setup_win32(list_to_atom(Mode),list_to_atom(Auto));
+        {unix, _}->
+            setup_linux(list_to_atom(Mode),list_to_atom(Auto))
+    end,
+    setup_config(http_port,libutil:toInteger(Setup#setup.http_port)),
+    setup_config(auto_node_discovery,list_to_atom(Setup#setup.auto_node_discovery)),
+
+    ok.
 
 setup_mode()->
     read_data("please define the Cluster Instance Mode {server | client | both}: ",[server,client,both]).
 
 setup_autostart()->
-    read_data("should Instance Autostart at System Boot {yes | no}: ",[yes,no]).
+    read_data("should Instance Autostart at System Boot {true | false}: ",[true,false]).
 
 setup_webserver()->
     read_data("Webserver Port : ",[]).
@@ -63,7 +79,7 @@ setup_win32(Mode, AutoStart)->
     setup_db(),
     setup_config(mode,Mode),
     case AutoStart of
-        yes->
+        true->
             Node=libnet:local_name(),
             os:cmd(lists:concat([ErtsPath,"/bin/erlsrv remove MHiveService "])),
             os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d new -args \"-setcookie default -config releases/"++libutil:toString(?VERSION)++"/sys -boot releases/"++libutil:toString(?VERSION)++"/start\""]));
@@ -73,7 +89,7 @@ setup_win32(Mode, AutoStart)->
 
 setup_auto_start(AutoStart)->
     case AutoStart of
-        yes->
+        true->
             {ok,Base}=file:get_cwd(),
             _Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/S75mectl"),
             _Res=libfile:symlink(filename:join(Base,"bin/mectl"),"/etc/rc.d/rc5.d/K03mectl");

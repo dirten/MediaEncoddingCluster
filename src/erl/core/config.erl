@@ -35,5 +35,5 @@ get(Key, Def)->
 .
 
 set(Key, Val)->
-    mnesia:dirty_write(#config{key=Key, val=Val}),
+    libdb:write(#config{key=Key, val=Val}),
     Val.

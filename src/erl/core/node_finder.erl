@@ -100,6 +100,9 @@ handle_call({scan,Directory},_From,_N)->
     {reply, Directory, state};
 handle_call(stop,_From,_N)->
     io:format("~w handle_call stop~n", [?MODULE]),
+    {reply, stop, state};
+handle_call(Any,_From,_N)->
+    io:format("~w handle_call ~w ~n", [?MODULE, Any]),
     {reply, stop, state}.
 
 handle_cast(_Msg,N)->
@@ -108,15 +111,11 @@ handle_cast(_Msg,N)->
 
 handle_info(Info,N)->
     io:format("~w handle_info~w~n", [?MODULE,{Info,N}]),
-    case Info of
-        {{'EXIT',_,killed},state}->
-            exit(killed)
-    end,
     {noreply, N}.
 
-terminate(Reason,_N)->
+terminate(shutdown,_State)->
   %  file_scanner_loop ! stop,
-    io:format("~w shutdown ~w ~n", [?MODULE, Reason]),
+%    io:format("~w shutdown ~n", [?MODULE]),
     ok.
 
 code_change(_OldVsn,N,_Extra)->

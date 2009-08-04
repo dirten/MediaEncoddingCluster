@@ -94,6 +94,7 @@ initializeWindows = function(){
           bottom: 8,
           left: 8
         }
+
       });
       
       MochaUI.updateContent({
@@ -714,26 +715,27 @@ MochaUI.profileWindow = function(){
   }
 
   // Help
-  MochaUI.featuresWindow = function(){
+  MochaUI.setupWindow = function(){
     new MochaUI.Window({
-      id: 'features',
-      title: 'Features',
+      id: 'setup',
+      title: 'System Setup',
       loadMethod: 'xhr',
-      contentURL: 'pages/features-layout.html',
-      width: 305,
-      height: 175,
+      contentURL: 'pages/setup-general.html',
+      type: 'modal',
+      width: 600,
+      height: 320,
       resizeLimit: {
         'x': [275, 2500],
         'y': [125, 2000]
         },
       toolbar: true,
-      toolbarURL: 'pages/features-tabs.html'
+      toolbarURL: 'pages/setup_wizard.html'
     });
   }
-  if ($('featuresLinkCheck')){
-    $('featuresLinkCheck').addEvent('click', function(e){
+  if ($('setupLink')){
+    $('setupLink').addEvent('click', function(e){
       new Event(e).stop();
-      MochaUI.featuresWindow();
+      MochaUI.setupWindow();
     });
   }
 
@@ -835,7 +837,7 @@ MochaUI.profileWindow = function(){
       title: 'MEC',
       loadMethod: 'xhr',
       contentURL: 'pages/about.html',
-      type: 'modal2',
+      type: 'modal',
       width: 350,
       height: 195,
 //      contentBgColor: '#e5e5e5 url(images/logo2.gif) left 3px no-repeat',
@@ -869,7 +871,8 @@ MochaUI.profileWindow = function(){
 
 // Initialize MochaUI when the DOM is ready
 window.addEvent('domready', function(){
-  MochaUI.Desktop = new MochaUI.Desktop();
+
+MochaUI.Desktop = new MochaUI.Desktop();
   MochaUI.Dock = new MochaUI.Dock();
 
   /* Create Columns

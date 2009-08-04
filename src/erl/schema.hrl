@@ -30,7 +30,8 @@
 -record(releases,{version,application,desc,status}).
 
 -record(logging,{id, time, level, msg}).
-
 -include("schema_config.hrl").
+-include("schema_setup.hrl").
+
 %-record(streams, {index,packetcount,packets=[]}).
 %-record(packetgroup,{id, packets}).

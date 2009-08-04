@@ -68,29 +68,11 @@ configure()->
 %% @doc this function will be called from application:start(mhive) function
 %% @end
 start(_Type, StartArgs)->
-%    io:format("Env:~w~n",[application:get_env(mhive, mode2)]),
+    io:format("Startargs:~w~n",[StartArgs]),
 %    Node=libnet:local_name(),
 %    net_kernel:start([Node,shortnames]),
     libnet:start_network(),
-    mhive_generic_sup:start_link(StartArgs),
-  %% TODO libcode wieder einbinden
-%    application:set_env(mnesia,dir,"data"),
-ok=mnesia:start(),
-case mnesia:wait_for_tables([config, scheduler],5000)of
-    {timeout,_Tables}->
-        error_logger:error_msg("could not load configuration from Database\nyou need to run setup:setup() before first start!");
-    _->
-        case config:get(mode) of
-            server->
-                mhive_supervisor:start_link(StartArgs);
-            client->
-                client_supervisor:start_link(StartArgs);
-            both->
-                mhive_supervisor:start_link(StartArgs),
-                client_supervisor:start_link(StartArgs);
-            _->system_not_configured
-        end
-end.
+    mhive_supervisor:start_link(StartArgs).
 
 %% @spec stop() -> ok
 %% @doc this function will be called from application:stop(mhive) function

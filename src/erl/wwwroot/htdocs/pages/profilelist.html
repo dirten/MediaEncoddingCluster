@@ -18,6 +18,7 @@
         setProfileDetails(properties);
       }
     }).send('id='+evt.target.getDataByRow(evt.row).id);
+    selectedItem=evt.target.getDataByRow(evt.row);
 
 
   }
@@ -126,13 +127,40 @@
 
     profilegrid.addEvent('click', onGridSelect);
     profilegrid.addEvent('dblclick', openProfileForm);
+//    profilegrid.addEvent('click', setItem);
     $('createNewProfileButton').addEvent('click', function(e){
       new Event(e).stop();
       MochaUI.profileWindow();
     });
 
+    $('deleteProfileButton').addEvent('click', function(e){
+      new Event(e).stop();
+      if(selectedItem!=null&&selectedItem.id!=null){
+        if(confirm("Do you really want to delete the Profile Entry with the Id "+selectedItem.id+"?")){
+          new Request.JSON({
+
+          url: '/api/json/profile',
+          method: 'POST',
+          onComplete: function(props) {
+            if(props.ok){
+              MochaUI.notification('Profile deleted');
+              profilegrid.refresh();
+            }else{
+              MochaUI.notification('Error: '+props.error);
+            }
+          }
+        }).send("{\"action\":\"delete\",\"profileId\":\""+selectedItem.id+"\"}");
+      }
+    }else{
+      alert("please select an Item in the Profile List!");
+    }
+    selectedItem=null;
+  });
+
+
   });
 
 </script>
 <button class="add" id="createNewProfileButton">Create Profile ...</button>
+<button class="delete" id="deleteProfileButton">Delete selected Profile...</button>
 <div id="encodinggrid" ></div>

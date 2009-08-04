@@ -1065,7 +1065,7 @@ button:hover { background-position: 2px -30px; color: #000; }
 button:active { background-position: 2px -62px; color: #000; }
 button.add { background-image: url(/images/add.png); }
 button.compact { background-image: url(/image/compact.png); }
-button.delete { background-image: url(/image/delete.png); }
+button.delete { background-image: url(/images/delete.png); }
 button.load { background-image: url(/images/load.png); }
 button.run { background-image: url(/image/run.png); }
 button.save { background-image: url(/image/save.png); }

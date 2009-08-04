@@ -1,0 +1,82 @@
+<form id="setupForm" action="/api/json/setup" method="POST">
+
+
+  <div class="formLabel">Instance Mode: </div>
+  <div class="formField"><input type="radio" class="input" name="instance_mode" id="instance_mode" value="server" /> Server Mode</div>
+  <div class="clear"></div>
+  <div class="formField"><input type="radio" class="input" name="instance_mode" id="instance_mode" value="client" /> Client Mode</div>
+  <div class="clear"></div>
+  <div class="formField"><input type="radio" class="input" name="instance_mode" id="instance_mode" value="both" checked /> Server/Client Mode</div>
+  <div class="clear"></div>
+  <div class="clear"></div>
+
+
+  <div class="formLabel">Auto Node Discovery: </div>
+  <div class="formField"><input type="checkbox" class="input" name="auto_node_discovery" id="auto_node_discovery" value="true" checked /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">Auto Start Node: </div>
+  <div class="formField"><input type="checkbox" class="input" name="instance_auto_start" id="instance_auto_start" value="true" checked /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">HTTP Port:</div>
+  <div class="formField"><input type="text" class="input" name="http_port" id="profileExtension" value="8080" maxlength="5" /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel"></div>
+  <div class="formField">
+    <input type="submit" class="submit" id="setupSubmit" value="Save Setup" />
+    <input type="submit" class="submit" id="setupCancel" value="Cancel Setup" /></div>
+  <div class="clear"></div>
+</form>
+
+<script type="text/javascript">
+  function openSuccessSetupWindow(){
+    new MochaUI.Window({
+      id: 'setup_success',
+      title: 'System Setup Successful',
+      icon: 'images/icons/page.gif',
+      loadMethod: 'xhr',
+      contentURL: 'pages/setup-success.html',
+      width: 400,
+      height: 500,
+      padding: {
+        top: 43,
+        right: 12,
+        bottom: 10,
+        left: 12
+      },
+
+      //
+      //      maximizable: false,
+      //      resizable: false,
+      scrollbars: false
+    });
+  }
+  window.addEvent("domready", function(){
+
+
+    $('setupSubmit').addEvent('click', function(e){
+      new Event(e).stop();
+      var json=form2json($('setupForm'));
+      //      alert(json);
+      new Request.JSON({
+        url: '/api/json/setup',
+        method: 'POST',
+        onComplete: function(props) {
+          if(props.ok){
+//            MochaUI.notification('System Configured');
+            openSuccessSetupWindow();
+          }else{
+            MochaUI.notification('Error: '+props.error);
+          }
+        }
+      }).send(json);
+    });
+    $('setupCancel').addEvent('click', function(e){
+      new Event(e).stop();
+      //      MochaUI.closeWindow($('setup'));
+      MochaUI.notification('Profile Update Canceled');
+    });
+  });
+</script>
