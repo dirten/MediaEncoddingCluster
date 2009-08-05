@@ -73,6 +73,11 @@ setup_linux(Mode,Auto)->
     setup_config(mode,Mode),
     setup_auto_start(Auto),
     ok.
+setup_windows_service()->
+    [ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),
+    Node=libnet:local_name(),
+    os:cmd(lists:concat([ErtsPath,"/bin/erlsrv remove MHiveService "])),
+    os:cmd(lists:concat([ErtsPath,"/bin/erlsrv add MHiveService -w ",code:root_dir()," -name ",Node," -d new -args \"-setcookie default -config releases/"++libutil:toString(?VERSION)++"/sys -boot releases/"++libutil:toString(?VERSION)++"/start\""])).
 
 setup_win32(Mode, AutoStart)->
     [ErtsPath|_]=filelib:wildcard(code:root_dir()++"/erts*"),

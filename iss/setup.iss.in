@@ -70,19 +70,19 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 ;Name: "config"; Description: "How to configure the System"; GroupDescription: "System Config";
-Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config";
-Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config";
+;Name: "baseserver"; Description: "Configure System as Server"; GroupDescription: "System Config";
+;Name: "baseclient"; Description: "Configure System as Client"; GroupDescription: "System Config";
 ;Name: "base\server"; Description: "Configure System as Server"; GroupDescription: "System Config"; Flags: unchecked
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
 Filename: "{tmp}\vcredist_x86-2008-sp1.exe"; Parameters: "/q"
 Filename: "{tmp}\vcredist_x86-2005-sp1.exe"; Parameters: "/q"
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/epmd.exe" ; Parameters: "-daemon"
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(server,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and not baseclient
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService"; Flags:postinstall;
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/epmd.exe" ; Parameters: "-daemon"
+Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_windows_service,init:stop()."" "; WorkingDir: "{app}"
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
+Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
 [UninstallRun]
 Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHiveService";
 
