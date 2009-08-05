@@ -1,5 +1,8 @@
 
-#add_subdirectory (org)
+#ENABLE_TESTING()
+ADD_TEST(FIRSTTEST ${EXECUTABLE_OUTPUT_PATH}/info "/media/out/ChocolateFactory.mp2")
+
+add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_DIR}/include)
