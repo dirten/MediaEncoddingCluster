@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF8"?>
+<messages>
+  <message id='setup-head'>
+         <h1>Welcome to the Video Hive Web Installer</h1>
+  </message>
+  <message id='about'>
+         Welcome dear visiter, {1} of the WFooBar magic website !
+  </message>
+  <message id='database-setup'>
+    <h2>1. Database Connection Setup</h2>
+    <hr size="1"/>
+    Please type in the Connection Parameter for the Database Server. 
+  </message>
+  <message id='database-embedded-setup'>
+    <h2>1. Database Connection Setup</h2>
+    <hr size="1"/>
+    In this version of the Media Encoding Cluster, there is no need to configure the Database Connection because the Database is Embedded into the Media Encoding Cluster.
+    <hr size="1"/>
+    NOTE: The embedded Server makes System under Heavy CPU Load!
+  </message>
+  <message id='hive-setup'>
+    <h2>2. Hive Setup</h2>
+    <hr size="1"/>
+    Please type in the Connection Parameter for the Database Server. 
+  </message>
+  <message id='admin-setup'>
+    <h2>3. Admin Account Setup</h2>
+    <hr size="1"/>
+    Please type in the Connection Parameter for the Database Server. 
+  </message>
+  <message id='save-setup'>
+    <h2>4. Saving Setup</h2>
+    <hr size="1"/>
+    <table>
+      <tr><td colspan=2>You've typed in the following Parameter</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      <tr><td>Database Server</td><td> : {1}</td></tr>
+      <tr><td>Database Name</td><td> : {2}</td></tr>
+      <tr><td>Database User</td><td> : {3}</td></tr>
+      <tr><td>Database Password</td><td> : {4}</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      <tr><td>Hive Listener Port</td><td> : {5}</td></tr>
+      <tr><td>Web Listener Port</td><td> : {6}</td></tr>
+      <tr><td>Scan Base Directory</td><td> : {7}</td></tr>
+      <tr><td>Scan Interval</td><td> : {8}</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      <tr><td>Admin Name</td><td> : {9}</td></tr>
+      <tr><td>Admin Login</td><td> : {10}</td></tr>
+      <tr><td>Admin Password</td><td> : {11}</td></tr>
+      <tr><td>Admin eMail</td><td> : {12}</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      </table>
+  </message>
+  <message id='company-policy'>
+         The company policy is to
+    <b>please our share-holders</b>.
+  </message>
+  <message id='stepbox'>
+         <h1>Configuration Steps</h1>
+         <hr size="1"/>
+          <ul>
+            <li>1. Database Setup</li>
+            <li>2. Hive Setup</li>
+            <li>3. Admin Account Setup</li>
+            <li>4. Save Setup Configuration</li>
+          </ul>
+  </message>
+</messages>
