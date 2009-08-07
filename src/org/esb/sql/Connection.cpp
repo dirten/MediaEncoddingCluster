@@ -21,6 +21,7 @@ Connection::Connection(const char * con, bool auto_connect) {
   if (auto_connect)
     connect();
 }
+
 Connection::Connection(const std::string con, bool auto_connect) {
   parseConnectionString(con);
   if (auto_connect)
@@ -46,15 +47,15 @@ Connection::~Connection() {
   if(mysqlPtr.use_count()==0)
     delete mysqlPtr.get();
    */
-//  std::cout <<"Connection Object destroyed"<<std::endl;
+  //  std::cout <<"Connection Object destroyed"<<std::endl;
 }
 
 void Connection::connect() {
   if (_staticCounter == 0) {
-	  std::string lang="--language=";
-	  lang.append(org::esb::config::Config::getProperty("hive.path"));
-//	  lang.append("/");
-	  static char *server_options[] = {"", "--datadir=.", const_cast<char*>(lang.c_str()), NULL};
+    std::string lang = "--language=";
+    lang.append(org::esb::config::Config::getProperty("hive.path"));
+    //	  lang.append("/");
+    static char *server_options[] = {"", "--datadir=.", const_cast<char*>(lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);
@@ -62,7 +63,7 @@ void Connection::connect() {
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
 
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {
-	  throw SqlException(string("Failed to connect to database: ").append(std::string(mysql_error(mysqlPtr.get()))));
+    throw SqlException(string("Failed to connect to database: ").append(std::string(mysql_error(mysqlPtr.get()))));
   }
 
   _staticCounter++;
@@ -89,7 +90,7 @@ long long int Connection::lastInsertId() {
   return mysql_insert_id(mysqlPtr.get());
 }
 
-void Connection::parseConnectionString(std::string  constr) {
+void Connection::parseConnectionString(std::string constr) {
   StringTokenizer tok(constr, ":");
   if (tok.countTokens() == 2) {
     tok.nextToken();
@@ -98,7 +99,7 @@ void Connection::parseConnectionString(std::string  constr) {
       StringTokenizer line(data.nextToken(), "=");
       string key = line.nextToken();
       string val = line.nextToken();
-//      logdebug("key:"<<key<<"="<<val);
+      //      logdebug("key:"<<key<<"="<<val);
       if (key.compare("user") == 0) {
         _username = val;
       } else

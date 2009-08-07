@@ -17,7 +17,7 @@ Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
 Frame Decoder::decodeLast() {
   Frame frame(_pix_fmt, _width, _height);
   int _frameFinished = 0;
-  int bytesDecoded = avcodec_decode_video(ctx, frame.getAVFrame(), &_frameFinished, NULL, 0);
+  int bytesDecoded = avcodec_decode_video2(ctx, frame.getAVFrame(), &_frameFinished, NULL);
   if (bytesDecoded < 0) {
     fprintf(stderr, "Error while decoding frame\n");
   }

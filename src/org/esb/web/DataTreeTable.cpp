@@ -9,6 +9,7 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
+#include "org/esb/util/Log.h"
 
 namespace org {
     namespace esb {

@@ -2,16 +2,16 @@
 #define ORG_ESB_IO_FILE_H
 #include <list>
 #include <sys/stat.h>
-//#include <boost/shared_ptr.hpp>
-//#include <boost/filesystem/path.hpp>
-//#include <boost/filesystem/exception.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/exception.hpp>
 #include "org/esb/util/Log.h"
 
 #include "FileFilter.h"
 namespace org {
   namespace esb {
     namespace io {
-//      typedef std::list<boost::shared_ptr<File> > FileList;
+      typedef std::list<boost::shared_ptr<File> > FileList;
 
       class File {
       public:
@@ -283,11 +283,11 @@ namespace org {
         const std::string getExtension();
         void changeExtension(const std::string &);
 
-//        FileList listFiles();
-//        FileList listFiles(FileFilter & filter);
+        FileList listFiles();
+        FileList listFiles(FileFilter & filter);
       private:
         //                const char * _filename;
-//        boost::filesystem::path _full_path;
+        boost::filesystem::path _full_path;
         logger("io.file");
         struct stat status;
         std::string _pathname;

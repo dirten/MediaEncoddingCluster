@@ -10,104 +10,96 @@
 #include "File.h"
 #include "org/esb/lang/Exception.h"
 //#include <boost/shared_ptr.hpp>
-//#include "boost/filesystem/operations.hpp"
-//#include "boost/filesystem/convenience.hpp"
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/convenience.hpp"
 
 
 using namespace std;
 using namespace org::esb::lang;
 using namespace org::esb::io;
 
-//namespace fs = boost::filesystem;
+namespace fs = boost::filesystem;
 
 File::File(const std::string pathname) : _pathname(pathname) {
-  //  logdebug("FIle:"<<_pathname);
-  ifstream in(pathname.c_str(), ifstream::in);
-  //  int desc=open(pathname.c_str(), O_RDONLY) == 0;
-  //  _exist=fstat(desc, &status) == 0;
-  if (!in) {
-    _exist = false;
-    //    logdebug("status for file not found:"<<pathname);
-    //    logdebug("errormsg:"<<strerror(errno));
-    //    logdebug("PathMax:"<<PATH_MAX);
-
-  } else {
-    _exist = true;
-  }
+  _full_path=fs::system_complete( fs::path( pathname, fs::native ) );
 }
 
 File::~File() {
 }
 
 const string File::getExtension() {
-  throw Exception(__FILE__, __LINE__, "File::getExtension not implemenhted");
-  //  return _pathname;
+  //  throw Exception(__FILE__, __LINE__, "File::getExtension not implemenhted");
+  return fs::extension(_full_path);
 }
 
 void File::changeExtension(const std::string & ext) {
-  throw Exception(__FILE__, __LINE__, "File::changeExtension not implemenhted");
+  _full_path = fs::change_extension(_full_path, "." + ext);
 }
 
 const string File::getPath() {
-  return _pathname;
+  return _full_path.string();
 }
 
 const string File::getFileName() {
-  throw Exception(__FILE__, __LINE__, "File::getFileName not implemented");
+  if (isFile())
+    return _full_path.leaf();
+  return _full_path.leaf();
 }
 
 const string File::getFilePath() {
-  throw Exception(__FILE__, __LINE__, "File::getFilePath not implemented");
+  if (isDirectory())
+    return _full_path.string();
+  else
+    if (isFile())
+    return _full_path.branch_path().string();
+  return _full_path.branch_path().string();
 }
 
 bool File::exists() {
-  return _exist;
+  return fs::exists( _full_path );
 }
 
 bool File::mkdir() {
-  throw Exception(__FILE__, __LINE__, "File::mkdir not implemented");
+  fs::create_directory( _full_path );
 }
 
 bool File::isFile() {
-  throw Exception(__FILE__, __LINE__, "File::isFile not implemented");
+  fs::is_regular(_full_path);
 }
 
 bool File::isDirectory() {
-  throw Exception(__FILE__, __LINE__, "File::isDirectory not implemented");
+  fs::is_directory(fs::status(_full_path));
 }
 
 bool File::canRead() {
-  throw Exception(__FILE__, __LINE__, "File::canRead not implemented");
+  fs::is_regular( fs::status(_full_path) );
 }
 
 bool File::canWrite() {
   throw Exception(__FILE__, __LINE__, "File::canWrite not implemented");
 }
 
-/*
-std::list < boost::shared_ptr < File > >File::listFiles (FileFilter & filter)
-{
-    fs::directory_iterator end_iter;
-    std::list < boost::shared_ptr < File > >files;
-    for ( fs::directory_iterator dir_itr( _full_path );dir_itr != end_iter;++dir_itr ){
-      if(filter.accept(File(dir_itr->path().string().c_str()))){
-            boost::shared_ptr < File > f (new File (dir_itr->path().string().c_str()));
-            files.push_back (f);
-          }
+std::list < boost::shared_ptr < File > >File::listFiles(FileFilter & filter) {
+  fs::directory_iterator end_iter;
+  std::list < boost::shared_ptr < File > >files;
+  for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
+    if (filter.accept(File(dir_itr->path().string().c_str()))) {
+      boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
+      files.push_back(f);
     }
-    return files;
+  }
+  return files;
 }
 
-std::list < boost::shared_ptr < File > >File::listFiles ()
-{
-    fs::directory_iterator end_iter;
-    std::list < boost::shared_ptr < File > >files;
-    for ( fs::directory_iterator dir_itr( _full_path );dir_itr != end_iter;++dir_itr ){
-            boost::shared_ptr < File > f (new File (dir_itr->path().string().c_str()));
-            files.push_back (f);
-    }
-    return files;
+std::list < boost::shared_ptr < File > >File::listFiles() {
+  fs::directory_iterator end_iter;
+  std::list < boost::shared_ptr < File > >files;
+  for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
+    boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
+    files.push_back(f);
+  }
+  return files;
 }
- */
+
 
 

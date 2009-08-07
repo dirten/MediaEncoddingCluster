@@ -38,7 +38,7 @@ INCLUDE_DIRECTORIES (${FFMPEG_DIR}/include)
 
 
 LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
-LINK_DIRECTORIES    (${BOOST_LIB_DIR})
+#LINK_DIRECTORIES    (${BOOST_LIB_DIR})
 LINK_DIRECTORIES    (${BOOST_DIR}/lib)
 LINK_DIRECTORIES    (${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
@@ -125,16 +125,16 @@ ENDIF(WIN32)
 #  ${ERL_EI_LIB}
 #)
 
-#target_link_libraries (erltest
-#  ${BOOST_SERIAL_LIB_MT} 
-#  ${BOOST_THREAD_LIB_MT} 
-#  ${BOOST_SYSTEM_LIB_MT} 
-#  ${BOOST_PO_LIB_MT} 
-#  ${BOOST_SIGNALS_LIB_MT} 
-#  ${BOOST_REGEX_LIB_MT} 
-#  ${BOOST_FS_LIB_MT}
-#  ${BOOST_DT_LIB_MT}
-#)
+target_link_libraries (mhivesys
+  ${BOOST_SERIAL_LIB_MT}
+  ${BOOST_THREAD_LIB_MT}
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_PO_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
 
 #target_link_libraries (mhivewriter
 #  ${BOOST_SYSTEM_LIB_MT}

@@ -7,7 +7,7 @@
 
 #ifndef _FILENODE_H
 #define	_FILENODE_H
-//#include "org/esb/sql/ResultSet.h"
+#include "org/esb/sql/ResultSet.h"
 
 #include "Wt/WTreeTableNode"
 #include "Wt/WIconPair"
@@ -23,7 +23,7 @@ namespace org {
             public:
                 /*! \brief Construct a new node for the given file.
                  */
-//                FileNode( org::esb::sql::ResultSet & rs);
+                FileNode( org::esb::sql::ResultSet & rs);
                 FileNode(const std::string & name, const int type=0, const int parentid=-1);
                 int getId() const;
 

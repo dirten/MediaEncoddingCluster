@@ -128,7 +128,7 @@ namespace org
         
         /******************************************************************************/
 /*Receive length of buffer*/
-		int available(bool isBlocking){
+		long long int available(bool isBlocking){
 			char tmp[10];
 			_socket->read_some(boost::asio::buffer(tmp),error);
 			if (error == boost::asio::error::eof)

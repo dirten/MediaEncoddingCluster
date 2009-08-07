@@ -13,7 +13,7 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/CodecFactory.h"
-#include "../FormatStreamFactory.h"
+#include "org/esb/av/FormatStreamFactory.h"
 #include "org/esb/av/FormatInputStream.h"
 
 
@@ -50,7 +50,7 @@ namespace org {
             sql::ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
               string filename = rs.getString("files.path") + "/" + rs.getString("files.filename");
-              org::esb::av::FormatInputStream * fis = org::esb::hive::FormatStreamFactory::getInputStream(filename);
+              org::esb::av::FormatInputStream * fis = org::esb::av::FormatStreamFactory::getInputStream(filename);
               if (fis == NULL) {
                 logerror("Error Opening Input Stream from " << filename);
                 continue;
@@ -200,7 +200,7 @@ namespace org {
               string filename = rs.getString("files.path");
               filename += "/";
               filename += rs.getString("files.filename");
-              org::esb::av::FormatInputStream * fis = org::esb::hive::FormatStreamFactory::getInputStream(filename);
+              org::esb::av::FormatInputStream * fis = org::esb::av::FormatStreamFactory::getInputStream(filename);
               logdebug("B-FRAMES:" << fis->getFormatContext()->streams[0]->codec->max_b_frames);
               if (fis == NULL) {
                 logerror("Error Opening Input Stream from " << filename);

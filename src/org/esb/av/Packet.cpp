@@ -19,7 +19,7 @@ Packet::Packet() {
 }
 
 Packet::Packet(const Packet & p) {
-  //	cout << "Packet(const Packet & p)"<<endl;
+  	cout << "Packet(const Packet & p)"<<endl;
   //	callDestruct=false;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
@@ -46,7 +46,7 @@ Packet::Packet(const Packet & p) {
 }
 
 Packet Packet::operator=(Packet & p) {
-  //	cout << "Packet::operator="<<endl;
+  	cout << "Packet::operator="<<endl;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
   //	packet=new AVPacket();
@@ -93,7 +93,6 @@ Packet::~Packet() {
   //  	av_free_packet(packetPtr.get());
   if (callDestruct)
     delete [] packet->data;
-
   else
     av_free_packet(packet);
 
@@ -126,6 +125,9 @@ long long int Packet::getDts() {
 
 int Packet::getFlags() {
   return packet->flags;
+}
+void Packet::setFlags(int f) {
+  packet->flags=f;
 }
 
 int Packet::getStreamIndex() {

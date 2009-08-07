@@ -3,7 +3,7 @@
 #include "OutputStream.h"
 #include "ObjectStream.h"
 //#include <boost/lexical_cast.hpp>
-//#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/iostreams/device/array.hpp>
 #include <fstream>
@@ -21,7 +21,7 @@ namespace org {
                 void write(vector <unsigned char >& buffer);
                 void close();
                 void flush();
-/*
+
                 template<typename T>
                 void writeObject(const T &object) {
                     std::ostringstream archive_stream;
@@ -35,7 +35,7 @@ namespace org {
                     _os->write((char*) _outbound_data.c_str(), _outbound_data.length());
                     _os->flush();
                 }
-*/
+
             private:
                 OutputStream * _os;
             };

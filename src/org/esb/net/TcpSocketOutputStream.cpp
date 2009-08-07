@@ -14,7 +14,7 @@ namespace org {
 //boost::mutex thread_write_mutex;
       class TcpSocketOutputStream : public OutputStream {
       private:
-        boost::shared_ptr<tcp::socket> _socket;
+        boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
 		boost::mutex & _write_mutex;
 		
 
@@ -25,7 +25,7 @@ namespace org {
         }
 
                 /******************************************************************************/
-        TcpSocketOutputStream(boost::shared_ptr<tcp::socket> socket,boost::mutex & m) : 
+        TcpSocketOutputStream(boost::shared_ptr<boost::asio::ip::tcp::socket> socket,boost::mutex & m) :
 		_socket(socket),_write_mutex(m) {
 
         }

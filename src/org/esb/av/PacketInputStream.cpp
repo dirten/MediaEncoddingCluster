@@ -19,8 +19,8 @@ using namespace org::esb::lang;
  **/
 PacketInputStream::PacketInputStream(InputStream * is) {
   _readFrom = 0;
-//  _video_idx = -1;
-//  _audio_idx = -1;
+  //  _video_idx = -1;
+  //  _audio_idx = -1;
   _fis = NULL;
   if (instanceOf(*is, FormatInputStream)) {
     _formatCtx = ((FormatInputStream*) is)->formatCtx;
@@ -28,20 +28,20 @@ PacketInputStream::PacketInputStream(InputStream * is) {
     /**
      * get the first video and audio stream
      */
-/*
-    for (int i = 0; i < _formatCtx->nb_streams; i++) {
-      if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _video_idx == -1) {
-        _video_idx = i;
-        _video_idx_map = 0;
-      }
-      if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _audio_idx == -1)
-        _audio_idx = i;
-    }
-    if (_video_idx>-1) {
-      _audio_idx_map = 1;
-    } else {
-      _audio_idx_map = 0;
-    }*/
+    /*
+        for (int i = 0; i < _formatCtx->nb_streams; i++) {
+          if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _video_idx == -1) {
+            _video_idx = i;
+            _video_idx_map = 0;
+          }
+          if (_formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _audio_idx == -1)
+            _audio_idx = i;
+        }
+        if (_video_idx>-1) {
+          _audio_idx_map = 1;
+        } else {
+          _audio_idx_map = 0;
+        }*/
     _readFrom = 1;
   } else {
     _source = is;

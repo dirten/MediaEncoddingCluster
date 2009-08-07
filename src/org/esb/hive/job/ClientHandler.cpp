@@ -5,7 +5,7 @@
 #include <vector>
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/hive/CodecFactory.h"
-#include "org/esb/hive/FormatStreamFactory.h"
+#include "org/esb/av/FormatStreamFactory.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"

@@ -69,7 +69,7 @@ void ProcessUnit::process() {
 
   //	cout << "Create Formater:\twidth:"<<format.width<<"\theight"<<format.height<<endl;
 
-  FrameConverter conv(in_format, out_format);
+  FrameConverter conv(_decoder, _encoder);
   if (toDebug)
     logdebug("Converter created");
 
@@ -102,9 +102,9 @@ void ProcessUnit::process() {
     Frame tmp = _decoder->decode(*p);
     if (toDebug)
       logdebug("Frame Decoded");
-    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
-      break;
-    }
+//    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
+//      break;
+//    }
     if (tmp._buffer == 0) {
       continue;
     }
