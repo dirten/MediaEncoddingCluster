@@ -1,0 +1,52 @@
+body {
+  font-family:arial,sans-serif; font-size: smaller;
+}
+
+.datatreenode {
+  white-space:nowrap;
+  font-size:11px;
+}
+
+.treenodelabel {
+  cursor:pointer;cursor:hand;
+}
+.licon {
+  cursor:pointer;cursor:hand;
+}
+
+.selected {
+  background-color: #FFFFAA;
+}
+
+.treenodechildcount {
+  color:blue;
+}
+
+.header * {
+  font-weight: bold;
+}
+
+.header {
+  border-bottom: solid 1px;
+}
+
+.date {
+  text-align: right;
+  padding-right: 3px;
+}
+
+.fsize {
+  text-align: right;
+}
+
+.table {
+  border: solid 2px;
+}
+.north {
+    background:#f5f5f5 ;
+    font-weight: bold;
+    font-size:+1;
+    border:0px none;
+    padding-left:3px;
+    padding-top:3px;
+}
