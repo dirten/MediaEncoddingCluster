@@ -1,8 +1,7 @@
 
 #ENABLE_TESTING()
-ADD_TEST(FIRSTTEST ${EXECUTABLE_OUTPUT_PATH}/info "/media/out/ChocolateFactory.mp2")
+#ADD_TEST(FIRSTTEST ${EXECUTABLE_OUTPUT_PATH}/info "/media/out/ChocolateFactory.mp2")
 
-add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_DIR}/include)
@@ -21,6 +20,8 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+add_subdirectory (org)
+
 
 FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
 MESSAGE("Erlang Interface Dir for test" ${ERLANG_INTERFACE_DIR})
@@ -59,8 +60,31 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
+target_link_libraries (info x264 ${MYSQL_LIB} z pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+
+target_link_libraries (info
+  ${BOOST_SERIAL_LIB_MT}
+  ${BOOST_THREAD_LIB_MT}
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_PO_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
+target_link_libraries (erltest
+  ${BOOST_SERIAL_LIB_MT}
+  ${BOOST_THREAD_LIB_MT}
+  ${BOOST_SYSTEM_LIB_MT}
+  ${BOOST_PO_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
+  ${BOOST_FS_LIB_MT}
+  ${BOOST_DT_LIB_MT}
+)
+
 IF(WIN32)
-  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+#  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei  libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm )
 
 target_link_libraries (info ${BZ2_LIB} io av util lang avcodec avformat avutil swscale   )
@@ -68,10 +92,12 @@ target_link_libraries (test avcodec avformat avutil swscale ${BZ2_LIB} io av uti
 ELSEIF(APPLE)
 target_link_libraries (info bz2 )
 target_link_libraries (test bz2 )
-target_link_libraries (erltest bz2 )
+#target_link_libraries (erltest bz2 )
 ELSE(WIN32)
 
 ENDIF(WIN32)
+MESSAGE("BOOST FileSystem Library" ${BOOST_FS_LIB_MT})
+
 
 IF(NOT WIN32)
 

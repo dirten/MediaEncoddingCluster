@@ -1,0 +1,34 @@
+ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+
+include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${FFMPEG_DIR}/include)
+include_directories (${MEC_SOURCE_DIR}/src)
+
+LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+
+add_executable (TestPacket TestPacket.cpp)
+add_executable (TestSerializePacket TestSerializePacket.cpp)
+add_executable (TestDeSerializePacket TestDeSerializePacket.cpp)
+add_executable (TestFormatInputStream TestFormatInputStream.cpp)
+add_executable (TestPacketInputStream TestPacketInputStream.cpp)
+
+target_link_libraries (TestPacket ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (TestSerializePacket ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
+target_link_libraries (TestDeSerializePacket ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
+target_link_libraries (TestFormatInputStream ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (TestPacketInputStream ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+
+
+ADD_TEST(LibAVPacket ${EXECUTABLE_OUTPUT_PATH}/TestPacket)
+ADD_TEST(LibAVSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestSerializePacket)
+ADD_TEST(LibAVDeSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestDeSerializePacket)
+ADD_TEST(LibAVFormatInputStream ${EXECUTABLE_OUTPUT_PATH}/TestFormatInputStream)
+ADD_TEST(LibAVPacketInputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketInputStream)
+
+
