@@ -6,7 +6,7 @@
 #include <Wt/WMenu>
 #include <Wt/WMenuItem>
 #include <Dashboard.cpp>
-#include <Upload.cpp>
+//#include <Upload.cpp>
 #include <Files.cpp>
 #include <Profiles.cpp>
 //#include <ProfilesEdit.cpp>
