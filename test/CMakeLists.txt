@@ -60,6 +60,7 @@ add_executable (test test.cpp)
 #ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
+target_link_libraries (info  io av util lang avformat avcodec avutil swscale)
 
 
 IF(WIN32)
