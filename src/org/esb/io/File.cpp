@@ -60,7 +60,7 @@ bool File::exists() {
 }
 
 bool File::mkdir() {
-  fs::create_directory( _full_path );
+  return fs::create_directory( _full_path );
 }
 
 bool File::isFile() {
