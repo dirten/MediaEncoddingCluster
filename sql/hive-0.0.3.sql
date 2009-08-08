@@ -290,7 +290,8 @@ CREATE TABLE IF NOT EXISTS `version` (
 
 CREATE TABLE IF NOT EXISTS `watch_folder` (
   `id` int(11) unsigned NOT NULL auto_increment,
-  `folder` varchar(255) NOT NULL,
+  `infolder` varchar(255) NOT NULL,
+  `outfolder` varchar(255) NOT NULL,
   `profile` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

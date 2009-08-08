@@ -83,7 +83,8 @@ namespace org {
           intree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectInFolder));
 
           outdirectoryChooser = new Wt::Ext::Dialog("Choose Directory");
-          outtree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, outdirectoryChooser->contents());
+          logdebug("hive.scandir:"<<Config::getProperty("hive.scandir","/"));
+          outtree = new FileTreeTable(Config::getProperty("hive.scandir","/"),filter, outdirectoryChooser->contents());
           outtree->resize(500,300);
           Wt::Ext::Button *outselect = new Wt::Ext::Button("Select", outdirectoryChooser->contents());
           outselect->clicked.connect(SLOT(outdirectoryChooser, Wt::Ext::Dialog::accept));

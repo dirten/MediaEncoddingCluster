@@ -60,6 +60,8 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 
     setColumnWidget(2, new WText(c));
     columnWidget(2)->setStyleClass("date");
+  }else{
+    logdebug("Path does not exist:"<<path)
   }
 }
 

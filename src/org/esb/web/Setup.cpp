@@ -52,7 +52,7 @@ namespace org {
         viewPort->setLayout(border);
         std::string res=org::esb::config::Config::getProperty("hive.path");
 
-        messageResourceBundle().use(res+"../res/setup", false);
+        messageResourceBundle().use("../res/setup", false);
         useStyleSheet("main.css");
 
         //        useStyleSheet("ext/resources/css/xtheme-gray.css");
@@ -391,8 +391,12 @@ namespace org {
         error->setText(Wt::WString::tr("setup-saved"));
         using namespace org::esb;
 #ifdef USE_EMBEDDED_MYSQL
+        try{
         sql::Connection con_create(std::string(""));
         con_create.executeNonQuery(string("CREATE DATABASE hive"));
+        }catch(...){
+        error->setText(Wt::WString::tr("create-database_failed"));        
+        }
 #endif
         config::Config::setProperty("db.connection", props.getProperty("db.connection"));
         config::Config::setProperty("host",_el.getElement("db.host")->text().narrow().c_str());
@@ -413,6 +417,7 @@ namespace org {
 
         error->setText("Database Model created!");
         config::Config::setProperty("hive.mode", "server");
+        config::Config::setProperty("hive.scandir", _el.getElement("hive.scan_base")->text().narrow().c_str());
         config::Config::save2db();
       }
     }

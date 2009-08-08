@@ -2,6 +2,7 @@
 
 int main(){
   org::esb::io::File f("Makefile");
+  org::esb::io::File dir("../lang");
   assert(f.exists());
   logdebug(f.getPath());
   assert(f.getPath().length()>0);
@@ -12,6 +13,7 @@ int main(){
   //  assert(f.canWrite()==true);
   assert(f.isFile());
   assert(!f.isDirectory());
+  assert(dir.isDirectory());
 
 //  f.getExtension();
   return 0;

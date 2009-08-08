@@ -51,16 +51,19 @@ Connection::~Connection() {
 }
 
 void Connection::connect() {
+//  logdebug("Connection::connect()");
   if (_staticCounter == 0) {
+//    logdebug("_staticCounter == 0");
     std::string lang = "--language=";
     lang.append(org::esb::config::Config::getProperty("hive.path"));
+//    logdebug("Hive.Path:"+lang);
     //	  lang.append("/");
-    static char *server_options[] = {"", "--datadir=.", const_cast<char*>(lang.c_str()), NULL};
+    static char *server_options[] = {"", "--datadir=.",const_cast<char*>(lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);
   }
-  mysql_init(NULL);
+//  mysql_init(NULL);
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
 
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {
