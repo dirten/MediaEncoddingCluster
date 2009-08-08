@@ -971,7 +971,8 @@ MochaUI.Desktop = new MochaUI.Desktop();
     id: 'mainPanel',
     title: 'Dashboard',
     loadMethod: 'xhr',
-    contentURL: 'pages/dashboard.html',
+//    contentURL: 'pages/dashboard.html',
+    contentURL: 'pages/setup.html',
     column: 'mainColumn',
     height: 200
   });

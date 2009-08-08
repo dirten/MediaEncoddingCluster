@@ -33,7 +33,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 
-#SET(BZ2_LIB bz2)
+SET(BZ2_LIB bz2)
 
 SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
@@ -105,6 +105,8 @@ SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
 SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
+SET(MYSQL_DIR ${USERLIB_ROOT} PATH "Mysql libraries")
+SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
