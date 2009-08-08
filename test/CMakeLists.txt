@@ -54,10 +54,10 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 
 add_executable (test test.cpp)
-IF(NOT WIN32)
-  add_executable (erltest erltest.cpp)
+#IF(NOT WIN32)
+#  add_executable (erltest erltest.cpp)
 #  target_link_libraries (erltest avcodec avformat avutil swscale z ${BZ2_LIB} io av util lang faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 )
-ENDIF(NOT WIN32)
+#ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
 
@@ -88,16 +88,16 @@ target_link_libraries (info
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )
-target_link_libraries (erltest
-  ${BOOST_SERIAL_LIB_MT}
-  ${BOOST_THREAD_LIB_MT}
-  ${BOOST_SYSTEM_LIB_MT}
-  ${BOOST_PO_LIB_MT}
-  ${BOOST_SIGNALS_LIB_MT}
-  ${BOOST_REGEX_LIB_MT}
-  ${BOOST_FS_LIB_MT}
-  ${BOOST_DT_LIB_MT}
-)
+#target_link_libraries (erltest
+#  ${BOOST_SERIAL_LIB_MT}
+#  ${BOOST_THREAD_LIB_MT}
+#  ${BOOST_SYSTEM_LIB_MT}
+#  ${BOOST_PO_LIB_MT}
+#  ${BOOST_SIGNALS_LIB_MT}
+#  ${BOOST_REGEX_LIB_MT}
+#  ${BOOST_FS_LIB_MT}
+#  ${BOOST_DT_LIB_MT}
+#)
 
 MESSAGE("BOOST FileSystem Library" ${BOOST_FS_LIB_MT})
 
@@ -106,6 +106,6 @@ IF(NOT WIN32)
 
 target_link_libraries (info ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (test ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
-target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+#target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(NOT WIN32)
 
