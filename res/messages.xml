@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF8"?>
+<messages>
+  <message id='about'>
+         Welcome dear visiter, {1}  123of the WFooBar magic website !
+  </message>
+  <message id='company-policy'>
+         The company policy is to
+    <b>please our share-holders</b>.
+  </message>
+</messages>
