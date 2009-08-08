@@ -105,7 +105,7 @@ SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
 SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
-SET(MYSQL_DIR ${USERLIB_ROOT} PATH "Mysql libraries")
+SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
