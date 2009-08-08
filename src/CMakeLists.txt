@@ -9,6 +9,8 @@ include_directories (${WT_DIR})
 #include_directories (${WT_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_DIR}/include/mysql)
+include_directories (${MYSQL_DIR}/include)
+
 #include_directories (${MYSQL_INC_DIR})
 #include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
