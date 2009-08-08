@@ -86,8 +86,9 @@ target_link_libraries (erltest
 IF(WIN32)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 #  TARGET_LINK_LIBRARIES (info erl_interface ei  libgcc libmingwex libcoldname libmoldname90 wsock32 vfw32 winmm )
+target_link_libraries (info  ${MYSQL_LIB}  libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 
-target_link_libraries (info ${BZ2_LIB} io av util lang avcodec avformat avutil swscale   )
+#target_link_libraries (info ${BZ2_LIB} io av util lang avcodec avformat avutil swscale   )
 target_link_libraries (test avcodec avformat avutil swscale ${BZ2_LIB} io av util lang libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg )
 ELSEIF(APPLE)
 target_link_libraries (info bz2 )
