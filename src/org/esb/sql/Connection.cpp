@@ -60,6 +60,7 @@ void Connection::connect() {
     static char *server_groups[] = {"embedded", "server", NULL};
     mysql_library_init(num_elements, server_options, server_groups);
   }
+  mysql_init(NULL);
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
 
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {

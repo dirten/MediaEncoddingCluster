@@ -64,19 +64,20 @@ bool File::mkdir() {
 }
 
 bool File::isFile() {
-  fs::is_regular(_full_path);
+  return fs::is_regular(_full_path);
 }
 
 bool File::isDirectory() {
-  fs::is_directory(fs::status(_full_path));
+  return fs::is_directory(fs::status(_full_path));
 }
 
 bool File::canRead() {
-  fs::is_regular( fs::status(_full_path) );
+  return fs::is_regular( fs::status(_full_path) );
 }
 
 bool File::canWrite() {
   throw Exception(__FILE__, __LINE__, "File::canWrite not implemented");
+  return false;
 }
 
 std::list < boost::shared_ptr < File > >File::listFiles(FileFilter & filter) {
