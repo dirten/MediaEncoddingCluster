@@ -26,6 +26,9 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY mhive)
 #SET(CPACK_GENERATOR "PackageMaker;STGZ;TGZ;TZ;TBZ2" )
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
+  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
+      "File "..\Prerequisites\ActiveSyncSetup.exe"
+      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'")
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
 ELSE(WIN32)
