@@ -104,10 +104,8 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 target_link_libraries (mhive  web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
 IF(WIN32)
-##target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore libgcc mingwex wsock32 vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wtd wtextd wthttpd)
-target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
-##target_link_libraries (mhive z faac faad gsm mp3lame ogg theora vorbis vorbisenc xvidcore  libgcc mingwex vfw32 pthreadGC2 Winmm a52 x264 ${MYSQL_LIB} wt wtext wthttp)
-##target_link_libraries (mhive Winmm ${MYSQL_LIB} wt wtext wthttp )
+target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd winmm)
+#target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 ELSEIF(APPLE)
 target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} z ssl wthttp wtext wt pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ELSE(WIN32)
@@ -141,9 +139,24 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
   USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE)
 
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
+  DESTINATION ./sql
+  )
+
 IF(WIN32)
+INSTALL(FILES ${MYSQL_DIR}/Embedded/DLL/debug/libmysqld.dll
+  DESTINATION ./bin
+  )
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res
+  )
+INSTALL(FILES 
+	${FFMPEG_DIR}/bin/avcodec-52.dll
+	${FFMPEG_DIR}/bin/avdevice-52.dll
+	${FFMPEG_DIR}/bin/avformat-52.dll
+	${FFMPEG_DIR}/bin/avutil-50.dll
+	${FFMPEG_DIR}/bin/swscale-0.dll
+  DESTINATION ./bin
   )
 ELSE(WIN32)
 INSTALL(FILES ${MYSQL_DIR}/share/mysql/english/errmsg.sys
