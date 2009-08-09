@@ -27,7 +27,7 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY MediaEncodingCluster-${MHIVE_VERSION})
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
   SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
-      "File \\\"E:\\\\vcredist_x86.exe\\\"
+      "File \\\"c:\\\\vcredist_x86.exe\\\"
       ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'")
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
