@@ -40,7 +40,7 @@ using namespace boost::gregorian;
 #else
 #include <iostream>
 #define loglevel(o1,level) {\
-	std::cerr<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
+	std::cout<< "[ "<<level<< " ]" << o1<<"\r"<<std::endl; \
 }
 #endif
 #endif
