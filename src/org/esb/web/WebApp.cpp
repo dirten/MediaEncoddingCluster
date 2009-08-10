@@ -82,7 +82,9 @@ namespace org {
 //        useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
-        messageResourceBundle().use("../res/messages",false);
+        std::string res=std::string(Config::getProperty("hive.path"));
+        res.append("/../res/messages");
+        messageResourceBundle().use(res.c_str(),false);
 
       }
 

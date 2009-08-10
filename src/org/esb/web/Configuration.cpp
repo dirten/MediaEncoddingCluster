@@ -25,21 +25,37 @@
 #include <map>
 #include <string>
 using namespace org::esb;
-namespace org {
-  namespace esb {
-    namespace web {
+namespace org
+{
+  namespace esb
+  {
+    namespace web
+    {
 
-      class Configuration : public Wt::WContainerWidget {
-      public:
+      class Configuration : public Wt::WContainerWidget
+      {
+
+public:
 
         Configuration() : Wt::WContainerWidget(0) {
           Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
           exampleTabs->setBorder(false);
           saveButton = new Wt::Ext::Button("Save Configuration", this);
           saveButton->clicked.connect(SLOT(this, Configuration::saveConfig));
+
+#ifndef USE_EMBEDDED_MYSQL
           exampleTabs->addTab(createDbConfigPage(), "Database Config");
+#endif
           exampleTabs->addTab(createSystemPage(this), "System");
-//          exampleTabs->addTab(createServicePage(this), "Services");
+          //          exampleTabs->addTab(createServicePage(this), "Services");
+          log = new Wt::WTextArea(this);
+          log->decorationStyle().setBackgroundColor(Wt::WColor(255, 255, 255));
+          log->decorationStyle().setForegroundColor(Wt::WColor(0, 0, 0));
+          log->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Hidden), WWidget::All);
+          log->setColumns(100);
+          log->setRows(30);
+          log->disable();
+
         }
 
         Wt::WWidget * createDirectoryPage() {
@@ -51,26 +67,26 @@ namespace org {
           Wt::WSignalMapper<Wt::Ext::Button*> *myMap = new Wt::WSignalMapper<Wt::Ext::Button*>();
           myMap->mapped.connect(SLOT(this, Configuration::onClick));
 
-//          Wt::WContainerWidget * cont = new Wt::WContainerWidget();
+          //          Wt::WContainerWidget * cont = new Wt::WContainerWidget();
           wtk::ContentBox * cont = new wtk::ContentBox("stepbox");
-//          Wt::WGroupBox * hive = new Wt::WGroupBox("Services", cont);
+          //          Wt::WGroupBox * hive = new Wt::WGroupBox("Services", cont);
           Wt::WTable * result = new Wt::WTable();
-          result->resize(Wt::WLength(100, Wt::WLength::Percentage),Wt::WLength(100, Wt::WLength::Percentage));
+          result->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
           cont->setContent(result);
-          Wt::Ext::Button * b1=new Wt::Ext::Button("stop Directory Scanner",result->elementAt(0, 0));
-          Wt::Ext::Button * b2=new Wt::Ext::Button("stop Hive",result->elementAt(0, 1));
-//          Wt::Ext::Button * b3=new Wt::Ext::Button("stop Web",result->elementAt(2, 0));
+          Wt::Ext::Button * b1 = new Wt::Ext::Button("stop Directory Scanner", result->elementAt(0, 0));
+          Wt::Ext::Button * b2 = new Wt::Ext::Button("stop Hive", result->elementAt(0, 1));
+          //          Wt::Ext::Button * b3=new Wt::Ext::Button("stop Web",result->elementAt(2, 0));
 
-          Wt::Ext::Button * b4=new Wt::Ext::Button("start Directory Scanner",result->elementAt(1, 0));
-          Wt::Ext::Button * b5=new Wt::Ext::Button("start Hive",result->elementAt(1, 1));
-//          Wt::Ext::Button * b6=new Wt::Ext::Button("start Web",result->elementAt(2, 1));
+          Wt::Ext::Button * b4 = new Wt::Ext::Button("start Directory Scanner", result->elementAt(1, 0));
+          Wt::Ext::Button * b5 = new Wt::Ext::Button("start Hive", result->elementAt(1, 1));
+          //          Wt::Ext::Button * b6=new Wt::Ext::Button("start Web",result->elementAt(2, 1));
 
-          Wt::Ext::Button * b7=new Wt::Ext::Button("restart Directory Scanner",result->elementAt(2, 0));
-          Wt::Ext::Button * b8=new Wt::Ext::Button("restart Hive",result->elementAt(2, 1));
-          Wt::Ext::Button * b9=new Wt::Ext::Button("restart Web",result->elementAt(2, 2));
-//          Wt::Ext::Button * b1=new Wt::Ext::Button("",result->elementAt(3, 0))
-          
-          
+          Wt::Ext::Button * b7 = new Wt::Ext::Button("restart Directory Scanner", result->elementAt(2, 0));
+          Wt::Ext::Button * b8 = new Wt::Ext::Button("restart Hive", result->elementAt(2, 1));
+          Wt::Ext::Button * b9 = new Wt::Ext::Button("restart Web", result->elementAt(2, 2));
+          //          Wt::Ext::Button * b1=new Wt::Ext::Button("",result->elementAt(3, 0))
+
+
           myMap->mapConnect(b1->clicked, b1);
           myMap->mapConnect(b2->clicked, b2);
           myMap->mapConnect(b4->clicked, b4);
@@ -78,29 +94,31 @@ namespace org {
           myMap->mapConnect(b7->clicked, b7);
           myMap->mapConnect(b8->clicked, b8);
           myMap->mapConnect(b9->clicked, b9);
- 
+
           return cont;
         }
-        void onClick(Wt::Ext::Button*src){
-          logdebug("button clicked"<<src->text());
+
+        void onClick(Wt::Ext::Button * src) {
+          logdebug("button clicked" << src->text());
         }
+
         Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent) {
           Wt::WContainerWidget * cont = new Wt::WContainerWidget();
           Wt::WGroupBox * hive = new Wt::WGroupBox("Hive", cont);
           Wt::WTable * result = new Wt::WTable(hive);
           int i = 0;
-          buildElement("hive.outdir", "Hive Output Directory:", result, i++);
+          //          buildElement("hive.outdir", "Hive Output Directory:", result, i++);
           buildElement("hive.port", "Hive Listener Port:", result, i++);
-          buildElement("hive.start", "Hive Autostart:", result, i++);
-          buildElement("hive.autoscan", "Hive Input Directory Scan :", result, i++);
-          buildElement("hive.scandir", "Hive Input Directory :", result, i++);
-          buildElement("hive.scaninterval", "Hive Input Directory Scan Interval(sec.):", result, i++);
+          buildElement("web.port", "Webserver Listener Port:", result, 1);
+          //          buildElement("hive.start", "Hive Autostart:", result, i++);
+          //          buildElement("hive.autoscan", "Hive Input Directory Scan :", result, i++);
+          //          buildElement("hive.scandir", "Hive Input Directory :", result, i++);
+          //          buildElement("hive.scaninterval", "Hive Input Directory Scan Interval(sec.):", result, i++);
 
-          Wt::WGroupBox * box2 = new Wt::WGroupBox("Webserver", cont);
-          Wt::WTable * result2 = new Wt::WTable(box2);
-          buildElement("web.docroot", "Webserver Document Root:", result2, 0);
-          buildElement("web.port", "Webserver Listener Port:", result2, 1);
-          buildElement("web.start", "Webserver Autostart", result2, 2);
+          //          Wt::WGroupBox * box2 = new Wt::WGroupBox("Webserver", cont);
+          //          Wt::WTable * result2 = new Wt::WTable(box2);
+          //          buildElement("web.docroot", "Webserver Document Root:", result2, 0);
+          //          buildElement("web.start", "Webserver Autostart", result2, 2);
           //  buildElement("test3","testlabel",result2,3);
           //  box2->setHidden(true);
           return cont;
@@ -110,7 +128,7 @@ namespace org {
 
           Wt::WTable * result = new Wt::WTable();
           result->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Dotted, Wt::WBorder::Thin), WWidget::All);
-          buildElement("host", "Host:", result, 0);
+          buildElement("host", "Host1:", result, 0);
           buildElement("user", "Username:", result, 1);
           buildElement("passwd", "Password:", result, 2);
           buildElement("database", "Database:", result, 3);
@@ -154,13 +172,6 @@ namespace org {
            */
           new Wt::WBreak(this);
 
-          log = new Wt::WTextArea(this);
-          log->decorationStyle().setBackgroundColor(Wt::WColor(255, 255, 255));
-          log->decorationStyle().setForegroundColor(Wt::WColor(0, 0, 0));
-          log->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Hidden), WWidget::All);
-          log->setColumns(100);
-          log->setRows(30);
-          log->disable();
 
           return result;
         }
@@ -169,7 +180,7 @@ namespace org {
           return this;
         }
 
-      private:
+private:
         /*      Wt::WLineEdit * host;
               Wt::WLineEdit * user;
               Wt::WLineEdit * passwd;
@@ -178,7 +189,8 @@ namespace org {
         Wt::Ext::Button *saveButton;
         util::Properties props;
         std::map<std::string, Wt::Ext::LineEdit*> elements;
-      private:
+
+private:
 
         void buildElement(std::string name, std::string label, Wt::WTable * table, int row) {
           Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
@@ -193,20 +205,16 @@ namespace org {
         }
 
         void saveConfig() {
+#ifndef USE_EMBEDDED_MYSQL
           io::File file(Config::getProperty("config.file"));
           io::FileOutputStream fos(&file);
-          /*
-          props.setProperty("host",elements["host"]->text().narrow());
-          props.setProperty("user",elements["user"]->text().narrow());
-          props.setProperty("passwd",elements["passwd"]->text().narrow());
-          props.setProperty("database",elements["database"]->text().narrow());
-           */
           props.setProperty("db.connection", "mysql:host=" + elements["host"]->text().narrow() +
               ";db=" + elements["database"]->text().narrow() +
               ";user=" + elements["user"]->text().narrow() +
               ";passwd=" + elements["passwd"]->text().narrow());
           props.save(&fos);
           fos.close();
+#endif
           log->setText(log->text() + "Configuration saved successfull \n");
 
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
@@ -220,7 +228,8 @@ namespace org {
         void checkDbConnection() {
           //      if(host->validate()==Wt::WValidator::Valid){
           log->setText(log->text() + "check Connection : ");
-          try {
+          try
+          {
             sql::Connection con(elements["host"]->text().narrow(),
                 elements["database"]->text().narrow(),
                 elements["user"]->text().narrow(),
@@ -232,7 +241,9 @@ namespace org {
             props.setProperty("passwd", elements["passwd"]->text().narrow());
             props.setProperty("database", elements["database"]->text().narrow());
             saveButton->enable();
-          } catch (sql::SqlException & ex) {
+          }
+
+          catch(sql::SqlException & ex) {
             log->setText(log->text() + ex.what() + "\n");
             saveButton->disable();
           }

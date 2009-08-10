@@ -57,7 +57,7 @@ void Connection::connect() {
     std::string lang = "--language=";
     lang.append(org::esb::config::Config::getProperty("hive.path"));
 //    logdebug("Hive.Path:"+lang);
-    //	  lang.append("/");
+    	  lang.append("/../res");
     static char *server_options[] = {"", "--datadir=.",const_cast<char*>(lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};

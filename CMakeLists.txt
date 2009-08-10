@@ -28,7 +28,11 @@ IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
   SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
       "File \\\"c:\\\\vcredist_x86.exe\\\"
-      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'")
+      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'
+      MessageBox MB_YESNO "Install Install MediaEncodingCluster as Windows Service?" /SD IDYES IDNO endWindowsService
+      Goto endWindowsService
+      endWindowsService:
+  ")
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
 ELSE(WIN32)
@@ -36,7 +40,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 
-SET(BZ2_LIB bz2)
+#SET(BZ2_LIB bz2)
 
 SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
@@ -112,12 +116,16 @@ SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
+
+LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 
 INCLUDE(cmake/WtFindBoost.txt)
+IF(WIN32)
+  INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
+ENDIF(WIN32)
 
-INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
 #INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web DESTINATION ${CMAKE_INSTALL_PREFIX} PATTERN ".svn" EXCLUDE)
 #INSTALL(FILES sql/hive-0.0.1.sql DESTINATION sql )
 #INSTALL(FILES ${PROJECT_SOURCE_DIR}/setup.xml DESTINATION ${CMAKE_INSTALL_PREFIX}/res )
