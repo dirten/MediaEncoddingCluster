@@ -5,7 +5,7 @@
 #include "org/esb/util/Datetime.h"
 #include "SqlException.h"
 #include <iostream>
-
+#include <memory.h>
 #include "org/esb/util/Log.h"
 using namespace org::esb::util;
 namespace org{

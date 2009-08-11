@@ -2,7 +2,7 @@
 #include "Row.h"
 #include <map>
 #include <iostream>
-
+#include <memory.h>
 #include "Column.h"
 #include "ResultSetMetaData.h"
 #include "SqlException.h"

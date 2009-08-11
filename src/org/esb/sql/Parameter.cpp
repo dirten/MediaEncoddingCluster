@@ -1,5 +1,5 @@
 #include "org/esb/util/Decimal.h"
-
+#include <string.h>
 using namespace org::esb::util;
 namespace org{
 namespace esb{

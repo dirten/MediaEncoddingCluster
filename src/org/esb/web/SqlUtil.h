@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_WEB_SQLUTIL
 #define ORG_ESB_WEB_SQLUTIL
 #include <map>
-
+#include <string>
 namespace org {
   namespace esb {
     namespace web {
