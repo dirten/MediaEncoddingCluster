@@ -1,5 +1,10 @@
-
+############################################################
+#
+# Main Cmake file
+#
+############################################################
 cmake_minimum_required(VERSION 2.6)
+
 project (MEC)
 
 INCLUDE(CTest)
@@ -7,42 +12,62 @@ INCLUDE(CTest)
 ENABLE_TESTING()
 
 INCLUDE(cmake/WtFindBoost.txt)
-
+############################################################
+#
+# Setup the version for MHive
+#
+############################################################
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 0)
 SET(PATCH_VERSION 4)
 SET(MINOR_PATCH_VERSION 3)
 SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION})
-SET(ERLANG_SOURCE ${PROJECT_SOURCE_DIR}/src/erl)
-SET(ERLANG_ERTS_VERSION "5.7.2")
 ADD_DEFINITIONS(-DMHIVE_VERSION)
-set(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
-set(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
-set(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}.${MINOR_PATCH_VERSION}")
+
+############################################################
+#
+# Settings for the CPAck Packaging
+# on windows the packages will be build with the inno setup
+#
+############################################################
+SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
+SET(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}.${MINOR_PATCH_VERSION}")
 SET(CPACK_PACKAGE_NAME "MediaEncodingCluster")
 SET(CPACK_PACKAGE_VENDOR "EsbLab")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY MediaEncodingCluster-${MHIVE_VERSION})
-#SET(CPACK_GENERATOR "RPM;STGZ;TGZ;TZ;TBZ2" )
-#SET(CPACK_GENERATOR "PackageMaker;STGZ;TGZ;TZ;TBZ2" )
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
-  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
-      "File \\\"c:\\\\vcredist_x86.exe\\\"
-      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'
-      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive.lnk" "$INSTDIR\\\\bin\\\\mhive.exe -s\\\"
-  ")
+#  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
+#      "File \\\"c:\\\\vcredist_x86.exe\\\"
+#      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'
+#      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive.lnk" "$INSTDIR\\\\bin\\\\mhive.exe -s\\\"
+#  ")
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
 ELSE(WIN32)
   SET(CPACK_GENERATOR "TGZ;TBZ2" )
 ENDIF(WIN32)
 
+############################################################
+#
+# Find the libz, it is needed for ffmpeg when visible
+#
+############################################################
+FIND_LIBRARY(LIBBZ2
+  NAMES
+    bz2
+  PATHS
+    /usr/lib
+  )
+IF(LIBBZ2)
+  SET(BZ2_LIB ${LIBBZ2})
+ENDIF(LIBBZ2)
 
-#SET(BZ2_LIB bz2)
 
 SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
-SET(USE_EMBEDDED_MYSQL OFF CACHE STRING "Use Embedded Mysql")
+SET(USE_EMBEDDED_MYSQL ON CACHE STRING "Use Embedded Mysql")
 
 IF(USE_EMBEDDED_MYSQL)
   ADD_DEFINITIONS(-DUSE_EMBEDDED_MYSQL)
@@ -115,11 +140,14 @@ SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 
-LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+#LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+
+
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 
-INCLUDE(cmake/WtFindBoost.txt)
+#INCLUDE(cmake/WtFindBoost.txt)
+
 IF(WIN32)
   INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
   SET( ISS_SOURCE_PATH ${CMAKE_INSTALL_PREFIX})
@@ -127,15 +155,6 @@ IF(WIN32)
 ENDIF(WIN32)
 
 
-#INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web DESTINATION ${CMAKE_INSTALL_PREFIX} PATTERN ".svn" EXCLUDE)
-#INSTALL(FILES sql/hive-0.0.1.sql DESTINATION sql )
-#INSTALL(FILES ${PROJECT_SOURCE_DIR}/setup.xml DESTINATION ${CMAKE_INSTALL_PREFIX}/res )
-#INSTALL(FILES ${PROJECT_SOURCE_DIR}/messages.xml DESTINATION ${CMAKE_INSTALL_PREFIX}/res )
-##INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
 INCLUDE(CPack)
-#INCLUDE(CPackRPM)
-#IF(RPMTools_FOUND)
-#     RPMTools_ADD_RPM_TARGETS(testrpm)
-#  ENDIF(RPMTools_FOUND)
 
 
