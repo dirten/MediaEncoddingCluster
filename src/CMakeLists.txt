@@ -82,7 +82,7 @@ FIND_LIBRARY(SWSCALE_LIB
 #FIND_LIBRARY(avc avcodec)
 
 #MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
-MESSAGE("** BOOST_LIB PATH: " ${BOOST_LIB_DIR})
+MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
 add_executable (mhive Hive.cpp)
@@ -113,7 +113,7 @@ target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} z ssl wthttp wtext wt 
 ELSE(WIN32)
 target_link_libraries (mhive x264 ${MYSQL_LIB} crypt z ssl wthttp wtext wt pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(WIN32)
-MESSAGE("** BOOST_LIB PATH: " ${BOOST_THREAD_LIB_MT})
+#MESSAGE("** BOOST_LIB PATH: " ${BOOST_THREAD_LIB_MT})
 
 target_link_libraries (mhive 
   ${BOOST_SERIAL_LIB_MT} 
@@ -125,6 +125,7 @@ target_link_libraries (mhive
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )
+MESSAGE("Executable_output_path" ${EXECUTABLE_OUTPUT_PATH})
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin

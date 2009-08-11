@@ -103,7 +103,7 @@ int main(int argc, char * argv[]) {
 
 
     po::options_description ser("Server options");
-    std::string webroot = std::string(Config::getProperty("hive.path"));
+    std::string webroot ;//= std::string(Config::getProperty("hive.path"));
     webroot.append("/../web");
     ser.add_options()
         ("server,s", "start the Hive Server Process")

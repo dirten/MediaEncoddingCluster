@@ -57,11 +57,6 @@ end;
 ;Name: "base/server"; Description: "Configure System as Server"; Types: full compact
 ;Name: "base/client"; Description: "Configure System as Client"; Types: full compact
   }
-[INI]
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.ini"; Section: "erlang"; Flags: uninsdeletesection
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.ini"; Section: "erlang"; Key: "Bindir"; String: "{code:MyConst|{app}}/erts-@ERLANG_ERTS_VERSION@/bin"
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.ini"; Section: "erlang"; Key: "Progname"; String: "erl"
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.ini"; Section: "erlang"; Key: "Rootdir"; String: "{code:MyConst|{app}}"
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -76,34 +71,35 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 ;Name: "base\client"; Description: "Configure System as Client"; GroupDescription: "System Config"; Flags: unchecked
 
 [Run]
-Filename: "{tmp}\vcredist_x86-2008-sp1.exe"; Parameters: "/q"
-Filename: "{tmp}\vcredist_x86-2005-sp1.exe"; Parameters: "/q"
+Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
+;Filename: "{tmp}\vcredist_x86-2005-sp1.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/epmd.exe" ; Parameters: "-daemon"
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_windows_service(),init:stop()."" "; WorkingDir: "{app}"
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_windows_service(),init:stop()."" "; WorkingDir: "{app}"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
-[UninstallRun]
-Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHiveService";
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
+;[UninstallRun]
+;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
-Source: "@ERLANG_SOURCE@/releases/@MHIVE_VERSION@/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "@ERLANG_SOURCE@/releases/@MHIVE_VERSION@/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "@ERLANG_SOURCE@/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "c:\vcredist_x86-2008-sp1.exe"; DestDir: "{tmp}"
-Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
+Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
+;Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
 
 ;Source: "@SYSPORTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: "@ENCODECLIENTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@WRITERPORTEXE@"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@CMAKE_INSTALL_PREFIX@\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "@CMAKE_INSTALL_PREFIX@\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "@CMAKE_INSTALL_PREFIX@\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-;Source: "@FFMPEG_LIB_DIR@\..\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@FFMPEG_LIB_DIR@\..\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@FFMPEG_LIB_DIR@\..\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@FFMPEG_LIB_DIR@\..\bin\avutil-49.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@FFMPEG_LIB_DIR@\..\bin\SDL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-;Source: "@FFMPEG_LIB_DIR@\..\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@CMAKE_BINARY_DIR@\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@CMAKE_SOURCE_DIR@\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "@CMAKE_SOURCE_DIR@\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "@CMAKE_SOURCE_DIR@\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "@MYSQL_DIR@\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
+Source: "@MYSQL_DIR@\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_DIR@\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_DIR@\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_DIR@\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_DIR@\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "@FFMPEG_DIR@\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -111,8 +107,9 @@ Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
 ;Name: "{group}\stop Runtime"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
-Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
-Name: "{group}\Web Administration"; Filename: "http://localhost:8080/mec.html"
+;Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
+Name: "{group}\start MHive"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s"; WorkingDir: "{app}"
+Name: "{group}\Web Administration"; Filename: "http://localhost:8080/"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
 ;Name: "{commondesktop}\Media Encoding Cluster"; Filename: "{app}\bin\mhive.exe"; Tasks: desktopicon

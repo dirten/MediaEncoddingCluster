@@ -15,7 +15,7 @@ download_file(){
   cd "$SRCDIR"
   if test ! -f $3 ; then
     echo "Downloading $1"
-    curl  "$1" -o $2
+    /bin/curl  "$1" -o $2
     if test ! -f $2 ; then
       echo "Could not download $2"
  	    exit 1
