@@ -4,7 +4,7 @@ TOPDIR=`pwd`
 SRCDIR="$TOPDIR/source"
 BUILDDIR="build"
 mkdir -p $SRCDIR
-. ./build-util.sh
+#. ./build-util.sh
 
 download_file "http://dfn.dl.sourceforge.net/project/witty/wt/2.2.4/wt-2.2.4.tar.gz" "wt-2.2.4.tar.gz" "wt-2.2.4.tar"
 gunzip_file "wt-2.2.4.tar.gz" "wt-2.2.4.tar"

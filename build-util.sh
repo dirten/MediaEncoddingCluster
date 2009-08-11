@@ -13,14 +13,6 @@ download_file(){
  	cd "$TOPDIR"
 }
 
-unzip_file(){
-  cd "$SRCDIR"
-  if test -f $1 && test ! -f $2; then
-    echo "$3 $1"
-    $3 "$1"
-  fi 
-  cd "$TOPDIR"
-}
 
 gunzip_file(){
 #  unzip_file $1 $2 gunzip
