@@ -340,7 +340,7 @@ void listener(int argc, char *argv[]) {
       string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   }
-  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+//  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
 
   if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().

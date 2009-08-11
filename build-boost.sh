@@ -7,6 +7,9 @@ SRCDIR="$TOPDIR/source"
 BUILDDIR="build"
 mkdir -p $SRCDIR
 . ./build-util.sh
+echo dirname $0
+sleep 20
+
 
 download_file "http://dfn.dl.sourceforge.net/project/boost/boost/1.35.0/boost_1_35_0.tar.bz2" "boost.src.tar.bz2" "boost.src.tar"
 bunzip_file "boost.src.tar.bz2" "boost.src.tar"
