@@ -29,9 +29,7 @@ IF(WIN32)
   SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
       "File \\\"c:\\\\vcredist_x86.exe\\\"
       ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'
-      MessageBox MB_YESNO "Install Install MediaEncodingCluster as Windows Service?" /SD IDYES IDNO endWindowsService
-      Goto endWindowsService
-      endWindowsService:
+      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive.lnk" "$INSTDIR\\\\bin\\\\mhive.exe -s\\\"
   ")
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
