@@ -23,24 +23,24 @@ unzip_file(){
 }
 
 gunzip_file(){
-  unzip_file $1 $2 gunzip
-#  cd "$SRCDIR"
+#  unzip_file $1 $2 gunzip
+  cd "$SRCDIR"
   
-#  if test -f $1 && test ! -f $2; then
-#    echo "gunzip $1"
-#    gunzip  "$1"
-#  fi 
-#  cd "$TOPDIR"
+  if test -f $1 && test ! -f $2; then
+    echo "gunzip $1"
+    gunzip  "$1"
+  fi 
+  cd "$TOPDIR"
 }
 
 bunzip_file(){
-  unzip_file $1 $2 bunzip2
-#  cd "$SRCDIR"
-#  if test -f $1 && test ! -f $2; then
-#    echo "bunzip2 $1"
-#    bunzip2  "$1"
-#  fi 
-#  cd "$TOPDIR"
+#  unzip_file $1 $2 bunzip2
+  cd "$SRCDIR"
+  if test -f $1 && test ! -f $2; then
+    echo "bunzip2 $1"
+    bunzip2  "$1"
+  fi 
+  cd "$TOPDIR"
 }
 
 untar_file(){
