@@ -40,6 +40,9 @@ const string File::getPath() {
   return _full_path.string();
 }
 
+const string File::getParent() {
+  return _full_path.branch_path().string();
+}
 const string File::getFileName() {
   if (isFile())
     return _full_path.leaf();

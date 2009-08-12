@@ -22,47 +22,52 @@
 
 #ifndef _SETUP_H
 #define	_SETUP_H
-namespace org{
-  namespace esb{
-    namespace web{
-            class ButtonLeft : public wtk::Div{
+namespace org {
+  namespace esb {
+    namespace web {
+
+      class ButtonLeft : public wtk::Div {
       public:
-        ButtonLeft(const char * name="") : Div("") {
+
+        ButtonLeft(const char * name = "") : Div("") {
           setStyleClass("button-right");
-          resize(100,26);
-          inner=new Div("");
+          resize(100, 26);
+          inner = new Div("");
           inner->setStyleClass("prev");
-          inner->resize(70,26);
+          inner->resize(70, 26);
           addWidget(inner);
-          Wt::WText * text=new Wt::WText(name);
+          Wt::WText * text = new Wt::WText(name);
           text->setStyleClass("button");
           inner->addWidget(text);
-//          clicked.connect(SLOT(this,ButtonLeft::testClicked));
+          //          clicked.connect(SLOT(this,ButtonLeft::testClicked));
         }
 
         Div * inner;
       };
-      class ButtonRight : public wtk::Div{
+
+      class ButtonRight : public wtk::Div {
       public:
-        ButtonRight(const char * name="") : Div("") {
+
+        ButtonRight(const char * name = "") : Div("") {
           setStyleClass("button-left");
-//          resize(100,26);
-          inner=new Div("");
+          //          resize(100,26);
+          inner = new Div("");
           inner->setStyleClass("next");
-//          inner->resize(70,26);
+          //          inner->resize(70,26);
           addWidget(inner);
-          Wt::WText * text=new Wt::WText(name);
+          Wt::WText * text = new Wt::WText(name);
           text->setStyleClass("button");
           inner->addWidget(text);
-//          clicked.connect(SLOT(this,ButtonRight::testClicked));
+          //          clicked.connect(SLOT(this,ButtonRight::testClicked));
         }
-        void testClicked(){
-//          std::cout << "ButtonClicked"<<std::endl;
+
+        void testClicked() {
+          //          std::cout << "ButtonClicked"<<std::endl;
         }
         Div * inner;
       };
 
-      class Setup: public Wt::WApplication{
+      class Setup : public Wt::WApplication {
       public:
         Setup(const Wt::WEnvironment & env);
         Wt::WWebWidget * createDbPage();
@@ -70,6 +75,7 @@ namespace org{
         Wt::WWebWidget * createHivePage();
         Wt::WWebWidget * createAdminPage();
         Wt::WWebWidget * createSavePage();
+        Wt::WWebWidget * createSuccessPage();
 
       private:
         void nextStep();
@@ -79,8 +85,10 @@ namespace org{
         void copyDbParams();
         void copyHiveParams();
         void copyAdminParams();
-//        void copySaveParams();
+        //        void copySaveParams();
         void checkConnection();
+        void setLoginScreen();
+
         Wt::WLabel * lbl_host;
         Wt::WLabel * lbl_db;
         Wt::WLabel * lbl_user;
@@ -118,8 +126,8 @@ namespace org{
         Wt::WWebWidget * hivePage;
         Wt::WWebWidget * adminPage;
         Wt::WWebWidget * savePage;
-//        Wt::Ext::Button * dbSaveButton;
-        std::map<std::string,std::string> _parameters;
+        //        Wt::Ext::Button * dbSaveButton;
+        std::map<std::string, std::string> _parameters;
         org::esb::util::Properties _props;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
         Wt::WStackedWidget * stack;

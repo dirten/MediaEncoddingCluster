@@ -19,6 +19,7 @@ Encoder::Encoder() : Codec() {
 
 
 }
+
 Encoder::~Encoder() {
   av_fifo_free(fifo);
 }
@@ -67,7 +68,8 @@ Packet Encoder::encodeVideo(Frame & frame) {
     //		pac.packet->pts=ctx->coded_frame->pts;
   }
   //  _pos->writePacket(pac);
-  _sink->write(&pac);
+  if (_sink != NULL)
+    _sink->write(&pac);
   return pac;
 }
 
@@ -110,12 +112,12 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  const int outbuf_size = 1000;
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
-    logdebug("Frame Size:"<<ctx->frame_size<<" osize:"<<osize);
-    int64_t dur=av_rescale((int64_t)ctx->frame_size*_time_base.den,_time_base.num,ctx->sample_rate);
-//    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
-//    logdebug("Duration:"<<dur2);
+    logdebug("Frame Size:" << ctx->frame_size << " osize:" << osize);
+    int64_t dur = av_rescale((int64_t) ctx->frame_size * _time_base.den, _time_base.num, ctx->sample_rate);
+    //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
+    //    logdebug("Duration:"<<dur2);
     int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
-    logdebug("Audio Out Size:"<<audio_out_size);
+    logdebug("Audio Out Size:" << audio_out_size);
     if (out_size < 0) {
       logerror("Error Encoding audio Frame");
     }
@@ -126,12 +128,12 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //    pak.packet->pts = frame.getPts();
     //	pak.pts=this->coded_frame->pts;
 
-    if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE){
-      pak.packet->pts = ctx->coded_frame->pts;//av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 48000});
-      logdebug("CodedFramePts:"<<ctx->coded_frame->pts);
+    if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE) {
+      pak.packet->pts = ctx->coded_frame->pts; //av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 48000});
+      logdebug("CodedFramePts:" << ctx->coded_frame->pts);
     }
-//    else
-//      pak.setPts(frame.getPts());
+    //    else
+    //      pak.setPts(frame.getPts());
     //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
     //    	pak.pts= av_rescale_q(coded_frame->pts, time_base, (AVRational){1,15963});
 
@@ -152,9 +154,9 @@ Packet Encoder::encodeAudio(Frame & frame) {
     pak.toString();
     if (_pos != NULL)
       _pos->writePacket(pak);
-        if(_sink!=NULL)
-    _sink->write(&pak);
-    //  return pak;
+    if (_sink != NULL)
+      _sink->write(&pak);
+      return pak;
   }
   delete []audio_buf;
   delete []audio_out;

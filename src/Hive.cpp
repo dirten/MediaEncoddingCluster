@@ -89,8 +89,19 @@ int main(int argc, char * argv[]) {
     char * path = new char[s.length() + 1];
     memset(path, 0, s.length() + 1);
     strcpy(path, s.c_str());
+
     Config::setProperty("hive.path", path);
-    std::cout << "Path" << path << std::endl;
+
+    std::string sb = org::esb::io::File(f.getParent()).getParent();
+    char * base_path = new char[sb.length() + 1];
+    memset(base_path, 0, sb.length() + 1);
+    strcpy(base_path, sb.c_str());
+
+    Config::setProperty("hive.base_path", base_path);
+
+    std::cout << "Bin Path" << path << std::endl;
+    std::cout << "Base Path" << base_path << std::endl;
+    delete path;
 
     std::string config_path = ".hive.cfg";
     po::options_description gen;
@@ -103,16 +114,14 @@ int main(int argc, char * argv[]) {
 
 
     po::options_description ser("Server options");
-    std::string webroot ;//= std::string(Config::getProperty("hive.path"));
-    webroot.append("/../web");
     ser.add_options()
         ("server,s", "start the Hive Server Process")
         ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
         ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
-        ("webroot,r", po::value<std::string > ()->default_value(webroot), "define the Path for Web Server root")
-        ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
-        ("scanint", po::value<int>(), "define the Interval to Scan for new Media Files")
-        ("database", po::value<std::string > (), "Database Connection mysql://mysql:db=<dbname>;host=<host>;user=<user>;passwd=<user> for e.g. mysql:db=hive;host=localhost;user=root;passwd=test")
+        //        ("webroot,r", po::value<std::string > ()->default_value(webroot), "define the Path for Web Server root")
+        //        ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
+        //        ("scanint", po::value<int>(), "define the Interval to Scan for new Media Files")
+        //        ("database", po::value<std::string > (), "Database Connection mysql://mysql:db=<dbname>;host=<host>;user=<user>;passwd=<user> for e.g. mysql:db=hive;host=localhost;user=root;passwd=test")
         ;
 
 
@@ -138,9 +147,17 @@ int main(int argc, char * argv[]) {
         ;
 
     po::options_description all("all");
-    all.add(gen).add(ser).add(cli).add(exp).add(imp);
+    all.
+        add(gen).
+        add(ser).
+        add(cli).
+        add(exp).
+        add(imp);
 
-    gen.add(ser).add(cli).add(exp);
+    gen.
+        add(ser).
+        add(cli).
+        add(exp);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, all), vm);
@@ -177,7 +194,9 @@ int main(int argc, char * argv[]) {
         Config::setProperty("hive.mode", "setup");
       }
       Config::setProperty("config.file", vm["config"].as<std::string > ().c_str());
-      Config::setProperty("web.docroot", vm["webroot"].as<std::string > ().c_str());
+      std::string webroot = std::string(Config::getProperty("hive.base_path"));
+      webroot.append("/web");
+      Config::setProperty("web.docroot", webroot.c_str());
       if (vm.count("web"))
         Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
       if (vm.count("scandir"))
@@ -340,7 +359,7 @@ void listener(int argc, char *argv[]) {
       string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   }
-//  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+  //  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
 
   if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().

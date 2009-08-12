@@ -28,12 +28,15 @@
 
 #define STRINGIFY(s)    TOSTRING(s)
 #define TOSTRING(s) #s
-namespace org {
-  namespace esb {
-    namespace web {
+namespace org
+{
+  namespace esb
+  {
+    namespace web
+    {
 
       WebApp::WebApp(const Wt::WEnvironment & env) : WApplication(env) {
-        if(string(org::esb::config::Config::getProperty("hive.mode"))=="setup"){
+        if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
         }
@@ -45,9 +48,9 @@ namespace org {
 
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
         north->setBorder(false);
-		std::string h="MediaEncodingCluster V-";
-		h+=STRINGIFY(MHIVE_VERSION);
-		h+="($Rev$-"__DATE__ "-" __TIME__")";
+        std::string h = "MediaEncodingCluster V-";
+        h += STRINGIFY(MHIVE_VERSION);
+        h += "($Rev$-"__DATE__ "-" __TIME__")";
         Wt::WText *head = new Wt::WText(h);
         head->setStyleClass("north");
         north->setLayout(new Wt::WFitLayout());
@@ -79,16 +82,16 @@ namespace org {
 
         currentExample_ = login = new Login(exampleContainer_);
         login->authenticated.connect(SLOT(this, WebApp::authenticated));
-//        useStyleSheet("ext/resources/css/xtheme-gray.css");
+        //        useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
-        std::string res=std::string(Config::getProperty("hive.path"));
+        std::string res = std::string(Config::getProperty("hive.path"));
         res.append("/../res/messages");
-        messageResourceBundle().use(res.c_str(),false);
+        messageResourceBundle().use(res.c_str(), false);
 
       }
 
-      Wt::WWidget *WebApp::createMenuTree() {
+      Wt::WWidget * WebApp::createMenuTree() {
         Wt::WIconPair *mapIcon
             = new Wt::WIconPair("icons/yellow-folder-closed.png",
             "icons/yellow-folder-open.png", false);
@@ -97,7 +100,6 @@ namespace org {
         rootNode->setImagePack("icons/");
         rootNode->expand();
         rootNode->setNodeVisible(false);
-
         rootNode->setLoadPolicy(Wt::WTreeNode::NextLevelLoading);
         createMenuNode("Account", rootNode, &WebApp::accountView, "icons/edit_user.png");
         createMenuNode("Media Data", rootNode, &WebApp::fileView, "icons/media.png");
@@ -111,10 +113,10 @@ namespace org {
         return rootNode;
       }
 
-      Wt::WTreeNode *WebApp::createMenuNode(const Wt::WString& label, Wt::WTreeNode *parentNode, ShowExample f, const char * icon) {
+      Wt::WTreeNode * WebApp::createMenuNode(const Wt::WString& label, Wt::WTreeNode *parentNode, ShowExample f, const char * icon) {
         Wt::WIconPair *labelIcon = new Wt::WIconPair(icon, icon, false);
-        labelIcon->icon1()->resize(30,30);
-        labelIcon->icon2()->resize(30,30);
+        labelIcon->icon1()->resize(30, 30);
+        labelIcon->icon2()->resize(30, 30);
         Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
         node->label()->setFormatting(Wt::WText::PlainFormatting);
         node->label()->clicked.connect(this, f);
@@ -171,7 +173,7 @@ namespace org {
         currentExample_ = container;
       }
 
-      void WebApp::setContent(Wt::WWidget *example) {
+      void WebApp::setContent(Wt::WWidget * example) {
 
         if (!_isAuthenticated) {
           delete example;

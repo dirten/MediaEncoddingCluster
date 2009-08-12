@@ -278,8 +278,13 @@ namespace org {
          *
          * @since 1.2
          */
-
         bool setReadOnly();
+
+        
+        
+        const std::string getParent();
+
+
         const std::string getExtension();
         void changeExtension(const std::string &);
 

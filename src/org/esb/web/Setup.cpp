@@ -53,10 +53,10 @@ namespace org
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
         Wt::WBorderLayout * border = new Wt::WBorderLayout();
         viewPort->setLayout(border);
-//        std::string res = org::esb::config::Config::getProperty("hive.path");
+        //        std::string res = org::esb::config::Config::getProperty("hive.path");
 
-        std::string res = std::string(org::esb::config::Config::getProperty("hive.path"));
-        res.append("/../res/setup");
+        std::string res = std::string(org::esb::config::Config::getProperty("hive.base_path"));
+        res.append("/res/setup");
         messageResourceBundle().use(res.c_str(), false);
         useStyleSheet("main.css");
 
@@ -181,6 +181,7 @@ namespace org
 
         stack->addWidget(createHivePage());
         stack->addWidget(createAdminPage());
+        stack->addWidget(createSuccessPage());
 
         (center->layout())->addWidget(stack);
         //        (center->layout())->addWidget(createAdminPage());
@@ -213,7 +214,7 @@ namespace org
       void Setup::nextStep() {
         _el.validate();
         if (stepper == 2)
-          stack->addWidget(createSavePage());
+          stack->insertWidget(3,createSavePage());
         if (stepper < 3) {
           //          butNext->setHidden(false);
           stack->setCurrentIndex(++stepper);
@@ -293,6 +294,8 @@ namespace org
         Wt::WTable * hive_table = new Wt::WTable();
         _el.getElement("hive.hport", "Hive Listener Port", "", hive_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
         _el.getElement("hive.wport", "Web Listener Port", "", hive_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        _el.getElement("hive.hport")->setText("20200");
+        _el.getElement("hive.wport")->setText("8080");
         //        _el.getElement("hive.scan_base", "Scan Base Dir", "", hive_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
         //        _el.getElement("hive.scan_int", "Scan Interval", "", hive_table->elementAt(3, 0))->setValidator(new Wt::WIntValidator(1, 300)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
         wtk::Div * div_hive = new wtk::Div("");
@@ -328,7 +331,11 @@ namespace org
 
 
         wtk::Div * div_admin = new wtk::Div("");
+#ifdef USE_EMBEDDED_MYSQL
+        div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup-embedded").
+#else
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup").
+#endif
             arg(_el.getElement("db.host")->text().narrow()).
             arg(_el.getElement("db.db")->text().narrow()).
             arg(_el.getElement("db.user")->text().narrow()).
@@ -346,6 +353,21 @@ namespace org
         Wt::Ext::Button * save = new Wt::Ext::Button("Save Config");
         div_admin->addWidget(save);
         save->clicked.connect(SLOT(this, Setup::saveConfig));
+
+
+        wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
+        c_admin->setContent(div_admin);
+
+        return c_admin;
+      }
+
+      Wt::WWebWidget * Setup::createSuccessPage() {
+        wtk::Div * div_admin = new wtk::Div("");
+        div_admin->addWidget(new Wt::WText(Wt::WString::tr("success-setup")));
+
+        Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
+        div_admin->addWidget(bt);
+        bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
 
 
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
@@ -382,6 +404,11 @@ namespace org
           error->setText(ex.what());
           butNext->setHidden(true);
         }
+      }
+
+      void Setup::setLoginScreen() {
+          WApplication::instance()->redirect("/");
+          WApplication::instance()->quit();
       }
 
       void Setup::saveConfig() {
@@ -442,6 +469,9 @@ namespace org
         config::Config::setProperty("hive.scaninterval", "300");
         config::Config::setProperty("web.start", "true");
         config::Config::save2db();
+        int idx=stack->currentIndex();
+        stack->setCurrentIndex(++idx);
+
       }
     }
   }

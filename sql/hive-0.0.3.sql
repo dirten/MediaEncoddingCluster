@@ -233,6 +233,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `framerate` int(11) NOT NULL default '0',
   `start_time` double NOT NULL default '0',
   `duration` bigint NOT NULL default '0',
+  `nb_frames` bigint NOT NULL default '0',
   `time_base_num` int(11) NOT NULL default '0',
   `time_base_den` int(11) NOT NULL default '0',
   `framecount` int(11) NOT NULL default '0',
@@ -292,6 +293,10 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `infolder` varchar(255) NOT NULL,
   `outfolder` varchar(255) NOT NULL,
+  `extension_filter` varchar(255) default NULL,
   `profile` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+insert into profiles values(1,"test","AVI format",28,1024,25,320,240,2,86016,128000,44100);
+

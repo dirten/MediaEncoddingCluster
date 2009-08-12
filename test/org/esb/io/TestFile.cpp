@@ -13,7 +13,13 @@ int main(){
   //  assert(f.canWrite()==true);
   assert(f.isFile());
   assert(!f.isDirectory());
+
+  assert(!dir.isFile());
   assert(dir.isDirectory());
+
+  logdebug(dir.getPath());
+  logdebug(dir.getParent());
+  logdebug(f.getParent());
 
 //  f.getExtension();
   return 0;

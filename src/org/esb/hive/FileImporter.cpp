@@ -1,16 +1,16 @@
 #ifndef IMPORT_CPP
-#define IMPORT_CPP
+#  define IMPORT_CPP
 //#include <iostream>
 //#include <fstream>
-#include <map>
-#include "org/esb/io/File.h"
-#include "org/esb/io/FileOutputStream.h"
-#include "org/esb/av/FormatInputStream.h"
-#include "org/esb/av/PacketInputStream.h"
-#include "org/esb/av/Packet.h"
-#include "org/esb/av/Codec.h"
-#include "org/esb/util/Decimal.h"
-#include "org/esb/hive/DatabaseUtil.h"
+#  include <map>
+#  include "org/esb/io/File.h"
+#  include "org/esb/io/FileOutputStream.h"
+#  include "org/esb/av/FormatInputStream.h"
+#  include "org/esb/av/PacketInputStream.h"
+#  include "org/esb/av/Packet.h"
+#  include "org/esb/av/Codec.h"
+#  include "org/esb/util/Decimal.h"
+#  include "org/esb/hive/DatabaseUtil.h"
 //#include <boost/progress.hpp>
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/binary_iarchive.hpp>
@@ -20,14 +20,14 @@
 //#include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
 
-#include "org/esb/config/config.h"
+#  include "org/esb/config/config.h"
 //#include "tntdb/connect.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/statement.h"
 //#include "tntdb/blob.h"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-#include "org/esb/sql/PreparedStatement.h"
+#  include "org/esb/sql/Connection.h"
+#  include "org/esb/sql/Statement.h"
+#  include "org/esb/sql/PreparedStatement.h"
 //#include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
 using namespace org::esb;
@@ -168,9 +168,9 @@ int import(int argc, char *argv[]) {
     stmt_str.setInt("sample_rate", ctx->streams[a]->codec->sample_rate);
     stmt_str.setInt("channels", ctx->streams[a]->codec->channels);
     stmt_str.setInt("sample_fmt", ctx->streams[a]->codec->sample_fmt);
-    
-//    stmt_str.setLong("priv_data_size", ctx->streams[a]->codec->codec->priv_data_size);
-//    stmt_str.setBlob("priv_data", (char*)ctx->streams[a]->codec->priv_data, ctx->streams[a]->codec->codec->priv_data_size);
+
+    //    stmt_str.setLong("priv_data_size", ctx->streams[a]->codec->codec->priv_data_size);
+    //    stmt_str.setBlob("priv_data", (char*)ctx->streams[a]->codec->priv_data, ctx->streams[a]->codec->codec->priv_data_size);
 
 
 
@@ -217,10 +217,10 @@ int import(int argc, char *argv[]) {
 
   PreparedStatement
   stmt =
-      con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,sort,data_size) values "
+      con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,sort,data_size, data) values "
       //					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size) values "
       //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
-      "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:sort,:data_size)");
+      "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:sort,:data_size, :data)");
 
   int min_frame_group_count = 5; //atoi(Config::getProperty("hive.min_frame_group_count"));
   int frame_group_counter = 0, next_pts = 0;
@@ -235,7 +235,7 @@ int import(int argc, char *argv[]) {
   cout << endl;
   //      show_progress=duration;
   //  delete fisp;
-  return static_cast<int> (fileid);
+  //  return static_cast<int> (fileid);
 
 
 
@@ -301,29 +301,29 @@ int import(int argc, char *argv[]) {
       stream_frame_group[packet.packet->stream_index] = 0;
       //      frame_group_counter = 0;
     }
-    /*
-        int field = 0;
-        packet.packet->duration = packet.packet->duration == 0 ? 1
-            : packet.packet->duration;
-        stmt.setLong("stream_id", streams[packet.packet->stream_index]);
-        stmt.setLong("pts", packet.packet->pts);
-        //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
-        stmt.setLong("dts", packet.packet->dts);
-        stmt.setInt("stream_index", packet.packet->stream_index);
-        stmt.setInt("key_frame", packet.isKeyFrame());
-        if (packet.packet->stream_index == 0)
-          stmt.setLong("frame_group", frame_group);
-        else
-          stmt.setInt("frame_group", 0);
-        stmt.setInt("flags", packet.packet->flags);
-        stmt.setInt("duration", packet.packet->duration);
-        stmt.setLong("pos", packet.packet->pos);
-        stmt.setLong("sort", ++pkt_count);
-        stmt.setInt("data_size", packet.packet->size);
-     */
-    //        Blob blob((const char*)packet.data,packet.size);
-    //        stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
-    //    stmt.execute();
+
+    int field = 0;
+    packet.packet->duration = packet.packet->duration == 0 ? 1
+        : packet.packet->duration;
+    stmt.setLong("stream_id", streams[packet.packet->stream_index]);
+    stmt.setLong("pts", packet.packet->pts);
+    //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
+    stmt.setLong("dts", packet.packet->dts);
+    stmt.setInt("stream_index", packet.packet->stream_index);
+    stmt.setInt("key_frame", packet.isKeyFrame());
+    if (packet.packet->stream_index == 0)
+      stmt.setLong("frame_group", frame_group);
+    else
+      stmt.setInt("frame_group", 0);
+    stmt.setInt("flags", packet.packet->flags);
+    stmt.setInt("duration", packet.packet->duration);
+    stmt.setLong("pos", packet.packet->pos);
+    stmt.setLong("sort", ++pkt_count);
+    stmt.setInt("data_size", packet.packet->size);
+
+    //    Blob blob((const char*) packet.data, packet.size);
+    stmt.setBlob("data", (char*) packet.packet->data, packet.packet->size);
+    stmt.execute();
 
     //      show_progress+=packet.duration;
 

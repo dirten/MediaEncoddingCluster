@@ -19,7 +19,7 @@
     <hr size="1"/>
     In this version of the Media Encoding Cluster, there is no need to configure the Database Connection because the Database is Embedded into the Media Encoding Cluster.
     <hr size="1"/>
-    NOTE: The embedded Server makes System under Heavy CPU Load!
+    NOTE: The embedded Server makes System under Heavy CPU Load, but it is currently the only option!
   </message>
   <message id='hive-setup'>
     <h2>2. Hive Setup</h2>
@@ -44,8 +44,6 @@
       <tr><td colspan=2><hr size=1/></td></tr>
       <tr><td>Hive Listener Port</td><td> : {5}</td></tr>
       <tr><td>Web Listener Port</td><td> : {6}</td></tr>
-      <tr><td>Scan Base Directory</td><td> : {7}</td></tr>
-      <tr><td>Scan Interval</td><td> : {8}</td></tr>
       <tr><td colspan=2><hr size=1/></td></tr>
       <tr><td>Admin Name</td><td> : {9}</td></tr>
       <tr><td>Admin Login</td><td> : {10}</td></tr>
@@ -54,9 +52,28 @@
       <tr><td colspan=2><hr size=1/></td></tr>
       </table>
   </message>
-  <message id='company-policy'>
-         The company policy is to
-    <b>please our share-holders</b>.
+  <message id='save-setup-embedded'>
+    <h2>4. Saving Setup</h2>
+    <hr size="1"/>
+    <table>
+      <tr><td colspan=2>You've typed in the following Parameter</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      <tr><td>Hive Listener Port</td><td> : {5}</td></tr>
+      <tr><td>Web Listener Port</td><td> : {6}</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      <tr><td>Admin Name</td><td> : {9}</td></tr>
+      <tr><td>Admin Login</td><td> : {10}</td></tr>
+      <tr><td>Admin Password</td><td> : {11}</td></tr>
+      <tr><td>Admin eMail</td><td> : {12}</td></tr>
+      <tr><td colspan=2><hr size=1/></td></tr>
+      </table>
+  </message>
+  <message id='success-setup'>
+         <b>Congratulation!</b><br/>
+         You have sucessfully setup the Media Encoding Cluster.
+  </message>
+  <message id='go-to-login-screen'>
+         Take me to the Login Page
   </message>
   <message id='stepbox'>
          <h1>Configuration Steps</h1>
