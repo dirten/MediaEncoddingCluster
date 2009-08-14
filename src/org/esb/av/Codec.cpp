@@ -147,6 +147,7 @@ namespace org
 
             } else {
               //              logdebug("Codec opened:" << _codec_id);
+               fifo = av_fifo_alloc(1024);
               _opened = true;
             }
           }
@@ -171,6 +172,7 @@ namespace org
         av_freep(&ctx->stats_in);
         if (_opened) {
           avcodec_close(ctx);
+           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << _codec_id);

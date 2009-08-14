@@ -201,7 +201,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   }
   len -= bytesDecoded;
   //  }
-#if 0
+#if 1
 
   if (_frameFinished) {
     logdebug("Frame finished");
@@ -225,7 +225,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   }
 
   logdebug("\tPacketFrameType:");
-  switch (frame.getAVFrame()->pict_type) {
+  switch (frame->getAVFrame()->pict_type) {
     case FF_B_TYPE:
       logdebug("B");
       break;
@@ -248,7 +248,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
       logdebug("BI");
       break;
     default:
-      logdebug("U:" << frame.getAVFrame()->pict_type);
+      logdebug("U:" << frame->getAVFrame()->pict_type);
       break;
 
   }
@@ -331,6 +331,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //              cout << "DataSize:"<<out_size<<endl;
   //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
   Frame * frame=new Frame(outbuf);
+  frame->_allocated=true;
 //  frame._buffer = outbuf;
   frame->setTimeBase(packet.getTimeBase());
   frame->stream_index = packet.packet->stream_index;

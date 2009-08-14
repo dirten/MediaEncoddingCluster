@@ -45,7 +45,7 @@ namespace org {
       private:
         Packet encodeVideo(Frame & f);
         Packet encodeAudio(Frame & f);
-        AVFifoBuffer *fifo;
+//        AVFifoBuffer *fifo;
         PacketOutputStream * _pos;
         Sink*_sink;
       };

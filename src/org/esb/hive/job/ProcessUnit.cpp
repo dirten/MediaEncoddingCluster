@@ -2,12 +2,36 @@
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameFormat.h"
 #include "org/esb/av/FrameConverter.h"
+#include "org/esb/av/Sink.h"
 
 #include "org/esb/util/Log.h"
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = false;
+bool toDebug = true;
+
+class PacketSink : public Sink
+{
+
+public:
+  PacketSink() {
+  }
+
+  void write(void * p) {
+    logdebug("Write Packet to Term Sink");
+    Packet* pt = (Packet*) p;
+    boost::shared_ptr<Packet> pEnc(new Packet(*pt));
+    pkts.push_back(pEnc);
+    //    erl_print_term((FILE*) stderr, pkts.back());
+  }
+
+  std::list<boost::shared_ptr<Packet> > getList() {
+    return pkts;
+  }
+private:
+  std::list<boost::shared_ptr<Packet> > pkts;
+
+};
 
 ProcessUnit::ProcessUnit() {
   _decoder = NULL;
@@ -42,6 +66,9 @@ ProcessUnit::~ProcessUnit() {
 
 void ProcessUnit::process() {
   int insize = 0, outsize = 0;
+    av_register_all();
+    avcodec_init();
+    avcodec_register_all();
 
   if (_decoder != NULL)
     _decoder->open();
@@ -49,26 +76,10 @@ void ProcessUnit::process() {
     _encoder->open();
   if (toDebug)
     logdebug("Codex openned");
-  FrameFormat in_format;
-  in_format.pixel_format = (PixelFormat) _decoder->getPixelFormat(); //PIX_FMT_YUV420P;
-  in_format.height = _decoder->getHeight();
-  in_format.width = _decoder->getWidth();
-  in_format.channels = _decoder->getChannels();
-  in_format.samplerate = _decoder->getSampleRate();
-  if (toDebug)
-    logdebug("Input Formater created");
-
-  FrameFormat out_format;
-  out_format.pixel_format = (PixelFormat) _encoder->getPixelFormat(); //PIX_FMT_YUV420P;
-  out_format.height = _encoder->getHeight();
-  out_format.width = _encoder->getWidth();
-  out_format.channels = _encoder->getChannels();
-  out_format.samplerate = _encoder->getSampleRate();
-  if (toDebug)
-    logdebug("Output Formater created");
-
-  //	cout << "Create Formater:\twidth:"<<format.width<<"\theight"<<format.height<<endl;
-
+  _decoder->ctx->request_channel_layout = 2;
+  
+  PacketSink sink;
+  _encoder->setSink(&sink);
   FrameConverter conv(_decoder, _encoder);
   if (toDebug)
     logdebug("Converter created");
@@ -78,34 +89,34 @@ void ProcessUnit::process() {
   multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
   multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
   int a = 0;
-  int counter = 0, s=0;
+  int counter = 0, s = 0;
   for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
     if (toDebug)
       logdebug("Loop");
     boost::shared_ptr<Packet> p = *it;
-	if(++s%100==0)
-		cout << "\r"<<s;
+    if (++s % 100 == 0)
+      cout << "\r" << s;
     insize += p->packet->size;
 
     if (p->isKeyFrame()) {
-//      cout << "KeyFrame\t";
+      //      cout << "KeyFrame\t";
     }
     //	    if(tmp._buffer==0)continue;
     //        boost::shared_ptr<Frame> fr(new Frame(tmp));
     //        pts_list.insert(fr);
 
-//    cout << "PacketPts:" << p->packet->pts << "\tPacketDts:" << p->packet->dts << "\t";
+    //    cout << "PacketPts:" << p->packet->pts << "\tPacketDts:" << p->packet->dts << "\t";
     //	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
     //	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
     //        cout << endl;
 
-    Frame tmp = _decoder->decode(*p);
+    Frame * tmp = _decoder->decode2(*p);
     if (toDebug)
       logdebug("Frame Decoded");
-//    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
-//      break;
-//    }
-    if (tmp._buffer == 0) {
+    //    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
+    //      break;
+    //    }
+    if (!tmp->isFinished()) {
       continue;
     }
     if (toDebug)
@@ -115,18 +126,26 @@ void ProcessUnit::process() {
 
     //	    fr->setPts(++a);
     //	    fr->setDts(AV_NOPTS_VALUE);
-
-    Frame f = conv.convert(tmp);
+     Frame * f;
+    if(_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
+      f=new Frame (_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
+    if(_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
+      f=new Frame ();
+     if (toDebug)
+      logdebug("try Frame Convert");
+    conv.convert(*tmp, *f);
+    delete tmp;
     if (toDebug)
       logdebug("Frame Converted");
 
-    f.setPts(f.getDts());
+    f->setPts(f->getDts());
     //	    f.setPts(++a);
     //	    tmp.setDts(AV_NOPTS_VALUE);
-    Packet ret = _encoder->encode(f);
+    Packet ret = _encoder->encode(*f);
+    delete f;
     ret.packet->pts = av_rescale_q(ret.packet->pts, _decoder->getTimeBase(), _encoder->getTimeBase());
     ret.packet->dts = av_rescale_q(ret.packet->dts, _decoder->getTimeBase(), _encoder->getTimeBase());
-//cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
+    //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)
       logdebug("Frame Encoded");
 

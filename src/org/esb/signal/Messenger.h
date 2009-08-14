@@ -18,6 +18,7 @@ class Messenger{
 //    ~Messenger();
     static void free();
     static Messenger & getInstance(std::string name=DEFAULT_NAME);
+    ~Messenger();
     void addMessageListener(MessageListener &listener, std::string name=DEFAULT_NAME);
     void removeMessageListener(MessageListener &listener, std::string name=DEFAULT_NAME);
     void sendMessage(Message & msg, std::string name=DEFAULT_NAME);

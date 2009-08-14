@@ -11,7 +11,9 @@ namespace org {
       TcpSocket::TcpSocket(const char * host, int port) {
         _connected = false;
         _host = host;
-        _port = port;
+       _port = port;
+//        boost::asio::io_service _io_service;
+
         _socket = boost::shared_ptr<tcp::socket > (new tcp::socket(_io_service));
       }
 

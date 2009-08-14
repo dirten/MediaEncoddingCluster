@@ -38,11 +38,12 @@ ClientHandler::ClientHandler() {
   logdebug("ClientHandler::ClientHandler()");
   _handler = JobHandler::getInstance();
   _con = new Connection(Config::getProperty("db.connection"));
+  _con2 = new Connection(Config::getProperty("db.connection"));
   _stmt_ps = new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
   _stmt = new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
   _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
-  _stmt_pu = new PreparedStatement(_con->prepareStatement("update process_units set send = now() where id=:id"));
+  _stmt_pu = new PreparedStatement(_con2->prepareStatement("update process_units set send = now() where id=:id"));
   _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
 }
 
@@ -124,7 +125,7 @@ void ClientHandler::fillProcessUnit() {
 
 
 }
-ProcessUnit ClientHandler::getProcessUnit() {
+ProcessUnit ClientHandler::getProcessUnit2() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   boost::shared_ptr<ProcessUnit> unit=puQueue.dequeue();
   _stmt_job_log->setInt("source",unit->_source_stream);
@@ -224,7 +225,7 @@ ProcessUnit ClientHandler::getProcessUnit3() {
   return u;
 }
 
-ProcessUnit ClientHandler::getProcessUnit2() {
+ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
   Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");

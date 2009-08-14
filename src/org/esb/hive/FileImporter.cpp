@@ -19,7 +19,7 @@
 //#include <boost/archive/polymorphic_binary_iarchive.hpp> 
 //#include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
-
+#  include "org/esb/io/ObjectOutputStream.h"
 #  include "org/esb/config/config.h"
 //#include "tntdb/connect.h"
 //#include "tntdb/connection.h"
@@ -49,17 +49,27 @@ template < class T > T nullCheck(T param) {
   return param;
 }
 
+struct stream_group {
+  long long int id; // database stream id
+  int idx; // file stream index
+  long long int start_ts; // group start ts
+  int packet_count; // group packet count
+  int stream_type; // audio or video type
+  int frame_group; // ???
+} ;
+
 int import(int argc, char *argv[]) {
   //	cout << LIBAVCODEC_IDENT << endl;
 
   if (argc != 2) {
-    cout << "wrong parameter count" << endl;
+    logerror("wrong parameter count");
     exit(1);
   }
   //      Config::init("./cluster.cfg");
 
 
   string connect_str = Config::getProperty("db.connection");
+  logdebug("using db connection : " << connect_str);
   Connection con(connect_str.c_str());
   /*
       if (!checkDatabase(con)) {
@@ -70,9 +80,9 @@ int import(int argc, char *argv[]) {
    */
   org::esb::io::File inputFile(argv[1]);
   if (!inputFile.exists() || !inputFile.canRead()) {
-    cout << "Source File not found" << endl;
+    logerror("Source File not found");
   } else {
-    cout << "File:" << inputFile.getPath() << endl;
+    logdebug("File:" << inputFile.getPath());
   }
 
   long long int fileid = 0, count = 0, frame_group = 0;
@@ -123,15 +133,17 @@ int import(int argc, char *argv[]) {
 
   AVFormatContext *ctx = fis.getFormatContext();
   const int nb = ctx->nb_streams;
-  std::map<int, long long int> streams;
-  std::map<int, long long int> stream_frame_group;
-  std::map<int, int> codec_types;
-  std::map<int, int> num;
-  std::map<int, int> den;
-  std::map<int, int> channels;
-  std::map<int, int> sample_rates;
-  //    std::map<int,int> stream_pts;
-  std::map<int, double> stream_start;
+  //  std::map<int, long long int> streams;
+  std::map<int, stream_group> stream_groups;
+  //  std::map<int, int> codec_types;
+  /*
+    std::map<int, int> num;
+    std::map<int, int> den;
+    std::map<int, int> channels;
+    std::map<int, int> sample_rates;
+    //    std::map<int,int> stream_pts;
+    std::map<int, double> stream_start;
+   */
   boost::int64_t duration = 0;
 
   PreparedStatement stmt_fr = con.prepareStatement("insert into frame_groups(frame_group, startts, byte_pos, stream_id, stream_index, frame_count)"
@@ -177,8 +189,14 @@ int import(int argc, char *argv[]) {
 
     stmt_str.execute();
     long long int streamid = con.lastInsertId();
-    streams[a] = streamid;
-    stream_frame_group[a] = 0;
+    stream_groups[a].id = streamid;
+    stream_groups[a].packet_count = 0;
+    stream_groups[a].stream_type = ctx->streams[a]->codec->codec_type;
+    stream_groups[a].start_ts = -1;
+    stream_groups[a].idx = a;
+    stream_groups[a].frame_group=0;
+    //    streams[a] = streamid;
+    //    stream_frame_group[a] = 0;
 
     /*
         if (ctx->streams[a]->codec->codec_type == CODEC_TYPE_AUDIO) {
@@ -201,11 +219,13 @@ int import(int argc, char *argv[]) {
     //          stmt_str.setBlob( "priv_data",(char*) ctx->streams[a]->codec->priv_data,codec._codec->priv_data_size);
     //          stmt_str.setInt( "priv_data_size", ctx->iformat->priv_data_size);
     //          stmt_str.setBlob( "priv_data",(char*) ctx->priv_data,ctx->iformat->priv_data_size);
-    codec_types[a] = ctx->streams[a]->codec->codec_type;
-    num[a] = ctx->streams[a]->time_base.num;
-    den[a] = ctx->streams[a]->time_base.den;
-    channels[a] = ctx->streams[a]->codec->channels;
-    sample_rates[a] = ctx->streams[a]->codec->sample_rate;
+    /*
+        codec_types[a] = ctx->streams[a]->codec->codec_type;
+        num[a] = ctx->streams[a]->time_base.num;
+        den[a] = ctx->streams[a]->time_base.den;
+        channels[a] = ctx->streams[a]->codec->channels;
+        sample_rates[a] = ctx->streams[a]->codec->sample_rate;
+     */
     //        stream_pts[a] = 0;
     //        stream_start[a] = (double) ctx->streams[a]->start_time;
 
@@ -240,72 +260,52 @@ int import(int argc, char *argv[]) {
 
 
   while (true /*&&count < 100000*/) {
-    if (pis.readPacket(packet) < 0)break;
+    if (pis.readPacket(packet) < 0) {
+      break;
+    } else {
+
+    }
     if (++count % 1000 == 0) {
       cout << "\r" << count;
       cout.flush();
     }
     /*
-            fos.write(";");
-    //        fos.write(util::Decimal(streams[packet.packet->stream_index]).toString());
-            fos.write(toString(streams[packet.packet->stream_index]));
-            fos.write(";");
-            fos.write(toString(packet.packet->pts));
-            fos.write(";");
-            fos.write(toString(packet.packet->dts));
-            fos.write(";");
-            fos.write(toString(packet.packet->stream_index));
-            fos.write(";");
-            fos.write(toString(packet.packet->size));
-            fos.write(";");
-            fos.write(toString(packet.isKeyFrame()));
-            fos.write(";");
-            fos.write(toString(frame_group));
-            fos.write(";");
-            fos.write(toString(packet.packet->flags));
-            fos.write(";");
-            fos.write(toString(packet.packet->duration));
-            fos.write(";");
-            fos.write(toString(-1));
-            fos.write(";");
-            fos.write(toString(++pkt_count));
-            fos.write(";");
-            fos.write(toString(packet.packet->size));
-            fos.write(";");
-            fos.write("\n");
-     */
-    /*
-    fos.write((const char*)packet.packet->pts);
-    fos.write((const char*)packet.packet->dts);
-    fos.write((const char*)packet.packet->size);
-    fos.write((const char*)packet.packet->duration);
-     */
+        char * filename=new char[100];
 
-    //		++count;
-    //		continue;
-    stream_frame_group[packet.packet->stream_index]++;
+        sprintf(filename,"packet-%d-%d.pkt",packet.getStreamIndex(),count);
+      io::File f(filename);
+      io::FileOutputStream fos(&f);
+      io::ObjectOutputStream oos(&fos);
+      oos.writeObject(packet);
+      fos.close();
+     */
+    if (stream_groups[packet.packet->stream_index].start_ts == -1)
+      stream_groups[packet.packet->stream_index].start_ts = packet.getDts();
+
+    stream_groups[packet.packet->stream_index].packet_count++;
     //    if (packet.packet->stream_index == 0)
     //      frame_group_counter++;
 
-    if (packet.isKeyFrame() && stream_frame_group[packet.packet->stream_index] >= min_frame_group_count * (codec_types[packet.packet->stream_index] == CODEC_TYPE_AUDIO ? 1000 : 1)) {
 
-      startts = packet.packet->dts;
-      stmt_fr.setLong("frame_group", frame_group);
-      stmt_fr.setInt("frame_count", stream_frame_group[packet.packet->stream_index]);
-      stmt_fr.setLong("startts", startts);
-      stmt_fr.setLong("byte_pos", packet.packet->pos);
-      stmt_fr.setLong("stream_id", streams[packet.packet->stream_index]);
-      stmt_fr.setInt("stream_index", packet.packet->stream_index);
+    if (packet.isKeyFrame() &&
+        stream_groups[packet.packet->stream_index].packet_count >= min_frame_group_count *
+        (stream_groups[packet.packet->stream_index].stream_type == CODEC_TYPE_AUDIO ? 100 : 1)) {
+      stmt_fr.setLong("frame_group", stream_groups[packet.packet->stream_index].frame_group);
+      stmt_fr.setInt("frame_count", stream_groups[packet.packet->stream_index].packet_count);
+      stmt_fr.setLong("startts", stream_groups[packet.packet->stream_index].start_ts);
+      stmt_fr.setLong("byte_pos", 0);
+      stmt_fr.setLong("stream_id", stream_groups[packet.packet->stream_index].id);
+      stmt_fr.setInt("stream_index", stream_groups[packet.packet->stream_index].idx);
       stmt_fr.execute();
-      frame_group++;
-      stream_frame_group[packet.packet->stream_index] = 0;
-      //      frame_group_counter = 0;
+      stream_groups[packet.packet->stream_index].frame_group++;
+      stream_groups[packet.packet->stream_index].start_ts=packet.getDts();
+      stream_groups[packet.packet->stream_index].packet_count = 0;
     }
 
     int field = 0;
     packet.packet->duration = packet.packet->duration == 0 ? 1
         : packet.packet->duration;
-    stmt.setLong("stream_id", streams[packet.packet->stream_index]);
+    stmt.setLong("stream_id", stream_groups[packet.packet->stream_index].id);
     stmt.setLong("pts", packet.packet->pts);
     //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
     stmt.setLong("dts", packet.packet->dts);
@@ -339,8 +339,17 @@ int import(int argc, char *argv[]) {
      */
 
   }
-
-
+  
+    for(int a=0;a<stream_groups.size();a++){
+      stmt_fr.setLong("frame_group", stream_groups[a].frame_group);
+      stmt_fr.setInt("frame_count", stream_groups[a].packet_count);
+      stmt_fr.setLong("startts", stream_groups[a].start_ts);
+      stmt_fr.setLong("byte_pos", 0);
+      stmt_fr.setLong("stream_id", stream_groups[a].id);
+      stmt_fr.setInt("stream_index", stream_groups[a].idx);
+      stmt_fr.execute();
+    }
+   
 
   //    trans.commit();
   cout << endl;

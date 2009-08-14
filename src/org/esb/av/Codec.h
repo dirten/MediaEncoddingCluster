@@ -109,7 +109,7 @@ class SampleFormat;*/
         int64_t _start_time;
         SampleFormat _sample_format;
         bool _opened;
-
+        AVFifoBuffer *fifo;
       private:
         void setParams();
 

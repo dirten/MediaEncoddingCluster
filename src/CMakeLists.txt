@@ -104,7 +104,7 @@ ENDIF(USE_EMBEDDED_MYSQL)
 
 
 
-target_link_libraries (mhive  web esb sql  hive lang av util signal io net  avcodec avformat avutil swscale )
+target_link_libraries (mhive  web esb sql hive lang av util signal io net  avcodec avformat avutil swscale )
 IF(WIN32)
 target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
 #target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)

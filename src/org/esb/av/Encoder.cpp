@@ -9,7 +9,7 @@ using namespace org::esb;
 using namespace std;
 
 Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
-  fifo = av_fifo_alloc(1024);
+//  fifo = av_fifo_alloc(1024);
   _pos = NULL;
 
   _sink = NULL;
@@ -21,7 +21,7 @@ Encoder::Encoder() : Codec() {
 }
 
 Encoder::~Encoder() {
-  av_fifo_free(fifo);
+//  av_fifo_free(fifo);
 }
 
 Packet Encoder::encode(Frame & frame) {
@@ -152,11 +152,11 @@ Packet Encoder::encodeAudio(Frame & frame) {
     pak.packet->duration = dur;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
     pak.toString();
-    if (_pos != NULL)
-      _pos->writePacket(pak);
+//    if (_pos != NULL)
+//      _pos->writePacket(pak);
     if (_sink != NULL)
       _sink->write(&pak);
-      return pak;
+//      return pak;
   }
   delete []audio_buf;
   delete []audio_out;

@@ -78,12 +78,6 @@ int euclid(int a, int b){
 int main(int argc, char * argv[]) {
   //	return 0;
   //    std::cerr << "Path"<<std::endl;
-  try
-  {
-    //    loginit("log.properties");
-    //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
-    //	return 0;
-
     org::esb::io::File f(argv[0]);
     std::string s = f.getFilePath();
     char * path = new char[s.length() + 1];
@@ -101,7 +95,14 @@ int main(int argc, char * argv[]) {
 
     std::cout << "Bin Path" << path << std::endl;
     std::cout << "Base Path" << base_path << std::endl;
-    delete path;
+
+  try
+  {
+    //    loginit("log.properties");
+    //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
+    //	return 0;
+
+
 
     std::string config_path = ".hive.cfg";
     po::options_description gen;
@@ -240,6 +241,9 @@ int main(int argc, char * argv[]) {
     return 1;
 
   }
+  delete []path;
+  delete []base_path;
+
   org::esb::config::Config::close();
   return 0;
 }
@@ -310,7 +314,7 @@ void client(int argc, char *argv[]) {
   ctrlCHitWait();
 
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
-
+  Messenger::free();
 }
 
 /*----------------------------------------------------------------------------------------------*/

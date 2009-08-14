@@ -15,6 +15,7 @@ namespace net{
       void close();
       TcpSocket * accept();
     private:
+      TcpServerSocket();
 //      boost::asio::io_service& io_service_;
       boost::asio::io_service _io_service;
       tcp::acceptor acceptor_;

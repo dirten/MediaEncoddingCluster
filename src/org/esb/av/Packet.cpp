@@ -15,14 +15,19 @@ Packet::Packet() {
   packet->data = NULL;
   //	data=0;
   packet->size=0;
+  _time_base.num=0;
+  _time_base.den=0;
 
 }
 
 Packet::Packet(const Packet & p) {
-  	cout << "Packet(const Packet & p)"<<endl;
+//  	cout << "Packet(const Packet & p)"<<endl;
   //	callDestruct=false;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
+  _time_base.num=p._time_base.num;
+  _time_base.den=p._time_base.num;
+//_time_base=p.getTimeBase();
 
   av_init_packet(packet);
   packet->data = 0;
@@ -72,6 +77,8 @@ Packet Packet::operator=(Packet & p) {
 Packet::Packet(int s) {
   //	cout << "Packet(int s)"<<endl;
   isCopy = false;
+  _time_base.num=0;
+  _time_base.den=0;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
   av_init_packet(packet);
@@ -172,7 +179,8 @@ void Packet::toString(){
       ":StreamIndex:"<<getStreamIndex()<<
       ":Duration:"<<getDuration()<<
       ":Position:"<<getPosition()<<
-      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
+      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den
+      );
 //  logdebug("Packet->Pts:"<<getPts());
 //  logdebug("Packet->Dts:"<<getDts());
 //  logdebug("Packet->StreamIndex:"<<getStreamIndex());

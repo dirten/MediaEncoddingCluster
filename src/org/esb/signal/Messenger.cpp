@@ -15,6 +15,9 @@ std::map<std::string, std::list<MessageListener*> > Messenger::listener;
 Messenger::Messenger(std::string name){
   messenger[name]=this;
 }
+Messenger::~Messenger(){
+//  free();
+}
 
 
 void Messenger::free(){

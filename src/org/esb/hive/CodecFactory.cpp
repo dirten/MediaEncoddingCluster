@@ -38,6 +38,7 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
       //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
+      logerror("no Decoder found for stream id "<<streamid);
       throw std::runtime_error(string("no Decoder found for stream id "));
     }
   }

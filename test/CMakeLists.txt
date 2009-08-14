@@ -20,6 +20,11 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+
+LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
+LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
+LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
+
 add_subdirectory (org)
 
 
@@ -46,6 +51,20 @@ IF(WIN32)
   ADD_DEFINITIONS(-D__WIN32__)
 ENDIF(WIN32)
 
+IF(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIB libmysqld)
+#    SET(MYSQL_LIB mysqlserver)
+  ELSE(WIN32)
+    SET(MYSQL_LIB mysqld)
+  ENDIF(WIN32)
+ELSE(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIB libmysql)
+  ELSE(WIN32)
+    SET(MYSQL_LIB mysqlclient)
+  ENDIF(WIN32)
+ENDIF(USE_EMBEDDED_MYSQL)
 
 INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)

@@ -53,9 +53,9 @@ namespace org {
         int64_t _dts;
         int64_t _pts;
         boost::shared_ptr<AVFrame> framePtr;
-        bool _allocated;
         AVRational _time_base;
       public:
+        bool _allocated;
         int _frameFinished;
         int64_t pos;
         int duration;

@@ -92,6 +92,7 @@ namespace org
         }
         return in_frame;
       }
+
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
         if (in_frame._type == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
@@ -123,6 +124,7 @@ namespace org
         out_frame.duration = in_frame.duration;
         return out_frame;
       }
+
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
         out_frame._type = in_frame._type;
 
@@ -142,11 +144,11 @@ namespace org
         out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
-//        return out_frame;
+        //        return out_frame;
       }
 
       Frame FrameConverter::convertAudio(Frame & in_frame) {
-		return in_frame;
+        //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
         int delta = _dec->getSampleRate() - _enc->getSampleRate();
@@ -177,11 +179,12 @@ namespace org
 
         return frame;
       }
+
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
-//		return in_frame;
+        //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
-        int delta = _dec->getSampleRate() - _enc->getSampleRate();
+        //        int delta = _dec->getSampleRate() - _enc->getSampleRate();
 
 
         //        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, -delta, _enc->getSampleRate());
@@ -194,7 +197,8 @@ namespace org
             );
         //		audio_resample_close( reCtx );
 
-//        Frame frame(audio_buf);
+        //        Frame frame(audio_buf);
+        out_frame._allocated=true;
         out_frame._buffer = audio_buf;
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.setPts(in_frame.getPts());
@@ -207,7 +211,7 @@ namespace org
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
 
-//        return frame;
+        //        return frame;
       }
 
     }
