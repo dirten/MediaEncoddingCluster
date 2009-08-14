@@ -80,6 +80,7 @@ void ProcessUnit::process() {
   
   PacketSink sink;
   _encoder->setSink(&sink);
+
   FrameConverter conv(_decoder, _encoder);
   if (toDebug)
     logdebug("Converter created");
@@ -149,13 +150,14 @@ void ProcessUnit::process() {
     if (toDebug)
       logdebug("Frame Encoded");
 
-    boost::shared_ptr<Packet> pEnc(new Packet(ret));
+//    boost::shared_ptr<Packet> pEnc(new Packet(ret));
     if (toDebug)
       logdebug("Packet Created");
 
     //	    pEnc->packet->dts=AV_NOPTS_VALUE;
-    outsize += pEnc->packet->size;
-    _output_packets.push_back(pEnc);
+    outsize += ret.packet->size;
+//    _output_packets.push_back(pEnc);
+      _output_packets=sink.getList();
     if (toDebug)
       logdebug("Packet Added");
 

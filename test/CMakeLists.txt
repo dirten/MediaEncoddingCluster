@@ -25,7 +25,9 @@ LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
 LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
 LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
 
+IF(BUILD_TESTING)
 add_subdirectory (org)
+ENDIF(BUILD_TESTING)
 
 
 FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
