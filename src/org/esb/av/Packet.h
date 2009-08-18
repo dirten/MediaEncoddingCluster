@@ -86,6 +86,8 @@ namespace org {
           ar & packet->stream_index;
           ar & packet->duration;
           ar & packet->pos;
+          ar & _time_base.num;
+          ar & _time_base.den;
 
 
         }
@@ -104,6 +106,8 @@ namespace org {
           ar & packet->stream_index;
           ar & packet->duration;
           ar & packet->pos;
+          ar & _time_base.num;
+          ar & _time_base.den;
 
         }
 

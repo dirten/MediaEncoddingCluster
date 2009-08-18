@@ -21,7 +21,7 @@ using namespace org::esb::config;
 void FileExporter::exportFile(int fileid) {
 
 
-  map<int, Decoder*> enc;
+  map<int, Encoder*> enc;
   map<int, int> ptsmap;
   map<int, int> dtsmap;
   map<int, long long int> ptsoffset;
@@ -56,8 +56,8 @@ void FileExporter::exportFile(int fileid) {
     }
   }
   //  string stream_id = fileid;
-  FormatOutputStream fos(&fout);
-  PacketOutputStream pos(&fos);
+  FormatOutputStream * fos=new FormatOutputStream(&fout);
+  PacketOutputStream * pos=new PacketOutputStream(fos);
 
   int video_id = 0;
   int audio_id = 0;
@@ -72,7 +72,7 @@ void FileExporter::exportFile(int fileid) {
     ResultSet rs = stmt.executeQuery();
 
     while (rs.next()) {
-      Decoder *codec = CodecFactory::getStreamDecoder(rs.getInt("sid"));
+      Encoder *codec = CodecFactory::getStreamEncoder(rs.getInt("sid"));
       codec->open();
       //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
       //      encoder->open();
@@ -81,7 +81,8 @@ void FileExporter::exportFile(int fileid) {
       dtsmap[rs.getInt("stream_index")] = 0;
       dtsoffset[rs.getInt("stream_index")] = -1;
       ptsoffset[rs.getInt("stream_index")] = -1;
-      pos.setEncoder(*codec, rs.getInt("stream_index"));
+      pos->setEncoder(*codec, rs.getInt("stream_index"));
+      logdebug("Added Encoder to StreamIndex:"<<rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
       }
@@ -134,15 +135,16 @@ void FileExporter::exportFile(int fileid) {
         pos.setEncoder(*encoder, rs.getInt("stream_index"));
       }
        */
+    cout << "StreamTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
+    cout << "\tStreamTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
+    cout << "CodecTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
+    cout << "\tCodecTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
+    logdebug("neue Zeile");
+    cout.flush();
     }
-    cout << "StreamTimeBaseNum:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
-    cout << "\tStreamTimeBaseDen:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
-    cout << "CodecTimeBaseNum:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
-    cout << "\tCodecTimeBaseDen:" << fos._fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
-    cout << endl;
   }
   //	fos.open();
-  pos.init();
+  pos->init();
 
   {
     //    string sql="select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=";
@@ -179,21 +181,24 @@ void FileExporter::exportFile(int fileid) {
       //	    cout<<"" << rs.getInt("id")<<endl;
       Packet p(rs.getInt("data_size"));
       p.packet->stream_index = rs.getInt("stream_index");
-      p.packet->flags = rs.getInt("flags");
+      p.packet->flags = rs.getInt("packets.flags");
       //      p.packet->size = rs.getInt("data_size");
-      p.packet->duration = 1;
+      p.packet->duration = rs.getInt("packets.duration");
       //	    p.size=rs.getInt("data_size");
       //	    p.data=new uint8_t[p.size];
       //		if(p.packet->stream_index==0){
       //        if(p.packet->stream_index==CODEC_TYPE_VIDEO)
-      p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
-      p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
+//      p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
+//      p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
 
       AVRational ar2 = {1, 25}; //enc[rs.getInt("stream_index")]->getTimeBase();
       //      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
 
-      p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
-      p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+//      p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+//      p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+
+//      p.packet->dts = rs.getLong("dts");
+//      p.packet->pts = rs.getLong("pts")==AV_NOPTS_VALUE?rs.getLong("dts"):rs.getLong("pts");
       //      }
 
 
@@ -204,8 +209,8 @@ void FileExporter::exportFile(int fileid) {
         if (dtsoffset[rs.getInt("stream_index")] == -1) {
           dtsoffset[rs.getInt("stream_index")] = p.packet->dts;
         }
-        p.packet->pts = p.packet->pts - ptsoffset[rs.getInt("stream_index")];
-        p.packet->dts = p.packet->dts - dtsoffset[rs.getInt("stream_index")];
+//        p.packet->pts = p.packet->pts - ptsoffset[rs.getInt("stream_index")];
+//        p.packet->dts = p.packet->dts - dtsoffset[rs.getInt("stream_index")];
       }
 
       if (false && enc[rs.getInt("stream_index")]->getCodecType() == CODEC_TYPE_VIDEO) {
@@ -255,12 +260,14 @@ void FileExporter::exportFile(int fileid) {
       //        p.packet->data=static_cast<unsigned int*>(const_cast<char*>(rs.getBlob("data").data()));
       memcpy(p.packet->data, rs.getBlob("data").data(), p.packet->size);
       //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
-      pos.writePacket(p);
+//      p.toString();
+      pos->writePacket(p);
       //	    if(video_packets%1000==0)
       cout.flush();
     }
   }
-
+  pos->close();
+  fos->close();
   cout << endl;
 
   if (false) {
@@ -284,7 +291,7 @@ void FileExporter::exportFile(int fileid) {
       p.packet->flags = rs.getInt("flags");
       p.packet->pos = rs.getInt("pos");
       p.packet->stream_index = 1; //rs.getint(7);
-      pos.writePacket(p);
+      pos->writePacket(p);
       if (audio_packets % 1000 == 0)
         cout << "\r" << audio_packets;
       cout.flush();

@@ -35,12 +35,9 @@
 
 //#include "wtk/Div.h"
 
-namespace org
-{
-  namespace esb
-  {
-    namespace web
-    {
+namespace org {
+  namespace esb {
+    namespace web {
 
       Setup::Setup(const Wt::WEnvironment & env) : WApplication(env) {
         using namespace wtk;
@@ -48,7 +45,6 @@ namespace org
           WApplication::instance()->redirect("/");
           WApplication::instance()->quit();
         }
-        stepper = 0;
         setTitle("Hive Websetup");
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
         Wt::WBorderLayout * border = new Wt::WBorderLayout();
@@ -96,7 +92,7 @@ namespace org
 
         butPrev->clicked.connect(SLOT(this, Setup::prevStep));
         butNext->clicked.connect(SLOT(this, Setup::nextStep));
-
+        
         northRight->layout()->addWidget(butPrev);
         northRight->layout()->addWidget(butNext);
 
@@ -173,6 +169,9 @@ namespace org
                 ((Wt::WGridLayout*)cont->layout())->addWidget(createAdminPage(),1,2);
          */
         stack = new Wt::WStackedWidget();
+        stack->addWidget(createModePage());
+        stack->addWidget(createClientPage());
+
 #ifndef USE_EMBEDDED_MYSQL
         stack->addWidget(createDbPage());
 #else
@@ -212,21 +211,26 @@ namespace org
       }
 
       void Setup::nextStep() {
+        logdebug("Step=" << stack->currentIndex());
         _el.validate();
-        if (stepper == 2)
-          stack->insertWidget(3,createSavePage());
-        if (stepper < 3) {
-          //          butNext->setHidden(false);
-          stack->setCurrentIndex(++stepper);
+        int idx = stack->currentIndex();
+        if(idx==0&&(!_elchk.getElement("mode.client")->isChecked()))
+          idx++;
+        if(idx==1&&(!_elchk.getElement("mode.server")->isChecked()))
+          idx+=3;
+        if (idx == 4)
+          stack->insertWidget(5, createSavePage());
+        if (idx < stack->count()) {
+          stack->setCurrentIndex(++idx);
         } else {
           //            butNext->setHidden(true);
         }
-        if (stepper > 0)
+        if (idx > 0)
           butPrev->setHidden(false);
         else
           butPrev->setHidden(true);
 
-        if (stepper < 3)
+        if (idx < 5)
           butNext->setHidden(false);
         else
           butNext->setHidden(true);
@@ -234,24 +238,71 @@ namespace org
       }
 
       void Setup::prevStep() {
-        if (stepper == 3) {
-          Wt::WWidget * ref = stack->widget(3);
+        int idx = stack->currentIndex();
+        if(idx==5&&(!_elchk.getElement("mode.server")->isChecked()))
+          idx-=3;
+        if(idx==2&&(!_elchk.getElement("mode.client")->isChecked()))
+          idx--;
+        if (idx == 5) {
+          Wt::WWidget * ref = stack->widget(5);
           stack->removeWidget(ref);
           delete ref;
         }
 
-        if (stepper > 0) {
-          stack->setCurrentIndex(--stepper);
+        if (idx > 0) {
+          stack->setCurrentIndex(--idx);
         }
-        if (stepper > 0)
+        if (idx > 0)
           butPrev->setHidden(false);
         else
           butPrev->setHidden(true);
 
-        if (stepper < 3)
+        if (idx < 5)
           butNext->setHidden(false);
         else
           butNext->setHidden(true);
+
+      }
+
+      Wt::WWebWidget * Setup::createModePage() {
+        Wt::WTable * db_table = new Wt::WTable();
+        _elchk.getElement("mode.server", "Server Mode", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _elchk.getElement("mode.client", "Client Mode", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        //        _el.getElement("db.user", "Database User", "", db_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
+        //        _el.getElement("db.pass", "Database Password", "", db_table->elementAt(3, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
+
+        wtk::Div * div_db = new wtk::Div("");
+        div_db->addWidget(new Wt::WText(Wt::WString::tr("mode-setup")));
+        div_db->addWidget(new Wt::WBreak());
+        div_db->addWidget(new Wt::WBreak());
+        div_db->addWidget(db_table);
+        //        Wt::Ext::Button * checkDb = new Wt::Ext::Button("check Connection", db_table->elementAt(4, 0));
+        //        checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
+        butNext->setHidden(false);
+        wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
+        c_db->setContent(div_db);
+        return c_db;
+
+      }
+
+      Wt::WWebWidget * Setup::createClientPage() {
+        Wt::WTable * db_table = new Wt::WTable();
+        _el.getElement("client.host", "Server Hostname", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _el.getElement("client.port", "Server Port", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        //        _el.getElement("db.user", "Database User", "", db_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
+        //        _el.getElement("db.pass", "Database Password", "", db_table->elementAt(3, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
+
+        wtk::Div * div_db = new wtk::Div("");
+        div_db->addWidget(new Wt::WText(Wt::WString::tr("client-setup")));
+        div_db->addWidget(new Wt::WBreak());
+        div_db->addWidget(new Wt::WBreak());
+        div_db->addWidget(db_table);
+        //        Wt::Ext::Button * checkDb = new Wt::Ext::Button("check Connection", db_table->elementAt(4, 0));
+        //        checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
+        butNext->setHidden(false);
+        wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
+        c_db->setContent(div_db);
+        return c_db;
 
       }
 
@@ -266,7 +317,6 @@ namespace org
         c_db->resize(400, 200);
         c_db->setContent(div_db);
         return c_db;
-
       }
 
       Wt::WWebWidget * Setup::createDbPage() {
@@ -331,25 +381,29 @@ namespace org
 
 
         wtk::Div * div_admin = new wtk::Div("");
+
+        const char * server_mode = _elchk.getElement("mode.server")->isChecked() ? "On" : "Off";
+        const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
+
+
 #ifdef USE_EMBEDDED_MYSQL
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup-embedded").
 #else
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup").
 #endif
+            arg(server_mode).
+            arg(client_mode).
             arg(_el.getElement("db.host")->text().narrow()).
             arg(_el.getElement("db.db")->text().narrow()).
             arg(_el.getElement("db.user")->text().narrow()).
             arg(_el.getElement("db.pass")->text().narrow()).
             arg(_el.getElement("hive.hport")->text().narrow()).
             arg(_el.getElement("hive.wport")->text().narrow()).
-            arg(_el.getElement("hive.scan_base")->text().narrow()).
-            arg(_el.getElement("hive.scan_int")->text().narrow()).
             arg(_el.getElement("adm.name")->text().narrow()).
             arg(_el.getElement("adm.login")->text().narrow()).
             arg(_el.getElement("adm.passwd")->text().narrow()).
             arg(_el.getElement("adm.email")->text().narrow())
             ));
-
         Wt::Ext::Button * save = new Wt::Ext::Button("Save Config");
         div_admin->addWidget(save);
         save->clicked.connect(SLOT(this, Setup::saveConfig));
@@ -387,8 +441,7 @@ namespace org
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
             append(";passwd=").append(_el.getElement("db.pass")->text().narrow());
         Connection con(constr, false);
-        try
-        {
+        try {
           if (_el.getElement("db.db")->text().narrow().length() == 0) {
             error->setText("Database Name cannot be empty!");
             butNext->setHidden(true);
@@ -397,9 +450,7 @@ namespace org
           con.connect();
           error->setText("Database Connection Success");
           butNext->setHidden(false);
-        }
-
-        catch(SqlException & ex) {
+        } catch (SqlException & ex) {
           logerror(std::string(ex.what()));
           error->setText(ex.what());
           butNext->setHidden(true);
@@ -407,13 +458,11 @@ namespace org
       }
 
       void Setup::setLoginScreen() {
-          WApplication::instance()->redirect("/");
-          WApplication::instance()->quit();
+        WApplication::instance()->redirect("/");
+        WApplication::instance()->quit();
       }
 
       void Setup::saveConfig() {
-        org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
-        org::esb::io::FileOutputStream fos(&file);
         org::esb::util::Properties props;
         props.setProperty("db.connection",
             std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
@@ -421,18 +470,17 @@ namespace org
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
             append(";passwd=").append(_el.getElement("db.pass")->text().narrow())
             );
-        props.save(&fos);
-        fos.close();
-        error->setText(Wt::WString::tr("setup-saved"));
+        const char * server_mode = _elchk.getElement("mode.server")->isChecked() ? "On" : "Off";
+        const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
+        props.setProperty("mode.server", server_mode);
+        props.setProperty("mode.client", client_mode);
+        //        error->setText(Wt::WString::tr("setup-saved"));
         using namespace org::esb;
 #ifdef USE_EMBEDDED_MYSQL
-        try
-        {
+        try {
           sql::Connection con_create(std::string(""));
           con_create.executeNonQuery(string("CREATE DATABASE hive"));
-        }
-
-        catch(...) {
+        } catch (...) {
           error->setText(Wt::WString::tr("create-database_failed"));
         }
 #endif
@@ -441,16 +489,17 @@ namespace org
         config::Config::setProperty("user", _el.getElement("db.user")->text().narrow().c_str());
         config::Config::setProperty("passwd", _el.getElement("db.pass")->text().narrow().c_str());
         config::Config::setProperty("database", _el.getElement("db.db")->text().narrow().c_str());
-        try
-        {
+        try {
           std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
           sql_script.append("/../sql/hive-0.0.3.sql");
 
           hive::Setup::buildDatabaseModel(sql_script.c_str());
+        } catch (sql::SqlException & ex) {
+          logerror("SqlException:" << ex.what());
+          error->setText(ex.what());
+          return;
         }
 
-        catch(...) {
-        }
         sql::Connection con(std::string(props.getProperty("db.connection")));
         /*
                 con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
@@ -458,7 +507,7 @@ namespace org
                 con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
                 con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
          **/
-        con.executeNonQuery(std::string("INSERT INTO `user` (`id`, `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES (1, '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
+        con.executeNonQuery(std::string("INSERT INTO `user` ( `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES ( '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
 
         error->setText("Database Model created!");
         config::Config::setProperty("hive.mode", "server");
@@ -469,7 +518,13 @@ namespace org
         config::Config::setProperty("hive.scaninterval", "300");
         config::Config::setProperty("web.start", "true");
         config::Config::save2db();
-        int idx=stack->currentIndex();
+
+        org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
+        org::esb::io::FileOutputStream fos(&file);
+        props.save(&fos);
+        fos.close();
+
+        int idx = stack->currentIndex();
         stack->setCurrentIndex(++idx);
 
       }

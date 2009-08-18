@@ -31,7 +31,7 @@ namespace org {
          * get the first video and audio stream
          */
 		  loginfo("create stream map: "<<source->getPath());
-		  
+/*
         _streamMap[0] = -1;
         _streamMap[1] = -1;
         for (int i = 0; i < formatCtx->nb_streams; i++) {
@@ -48,7 +48,7 @@ namespace org {
         if(_streamMap[0]<0){
             _streamMap[0] = _streamMap[1];
             _streamReverseMap[_streamMap[1]] = 1;
-        }
+        }*/
         _isValid = true;
 		  loginfo("file openned: "<<source->getPath());
 
@@ -71,7 +71,7 @@ namespace org {
       }
 
       int FormatInputStream::getStreamCount() {
-        return _streamMap.size();
+        return formatCtx->nb_streams;
       }
 
       InputStream * FormatInputStream::getStream(int streamIndex) {
@@ -80,7 +80,7 @@ namespace org {
       }
 
       StreamInfo * FormatInputStream::getStreamInfo(int idx) {
-        return new StreamInfo(formatCtx->streams[_streamMap[idx]], idx);
+        return new StreamInfo(formatCtx->streams[idx], idx);
       }
 
       AVInputStream * FormatInputStream::getAVStream(int streamIndex) {

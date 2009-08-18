@@ -31,6 +31,7 @@ namespace org
       }
 
       Codec::Codec() {
+        logdebug("Codec::Codec()");
         _opened = false;
         _codec_id = CODEC_ID_NONE;
         _mode = 0;
@@ -50,6 +51,7 @@ namespace org
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
+        logdebug("Codec::Codec(const CodecID codecId, int mode)");
         _codec_id = codecId;
         _flags = 0;
         _mode = mode;

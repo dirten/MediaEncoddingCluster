@@ -17,24 +17,25 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-      boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) rs.getInt(0)));
-      decoder->setWidth(rs.getInt(1));
-      decoder->setHeight(rs.getInt(2));
-      decoder->setPixelFormat((PixelFormat) rs.getInt(3));
-      decoder->setBitRate(rs.getInt(4));
+      boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) rs.getInt("codec")));
+      decoder->setWidth(rs.getInt("width"));
+      decoder->setHeight(rs.getInt("height"));
+      decoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
+      decoder->setBitRate(rs.getInt("bit_rate"));
       AVRational r;
-      r.num = rs.getInt(5);
-      r.den = rs.getInt(6);
+      r.num = rs.getInt("time_base_num");
+      r.den = rs.getInt("time_base_den");
 
       decoder->setTimeBase(r);
-      decoder->setGopSize(rs.getInt(7));
-      decoder->setChannels(rs.getInt(8));
-      decoder->setSampleRate(rs.getInt(9));
-      decoder->setSampleFormat((SampleFormat) rs.getInt(10));
+      decoder->setGopSize(rs.getInt("gop_size"));
+      decoder->setChannels(rs.getInt("channels"));
+      decoder->setSampleRate(rs.getInt("sample_rate"));
+      decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
+      decoder->setFlag(rs.getInt("flags"));
       //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
@@ -48,24 +49,26 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
 av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) rs.getInt(0)));
-      _encoder->setWidth(rs.getInt(1));
-      _encoder->setHeight(rs.getInt(2));
-      _encoder->setPixelFormat((PixelFormat) rs.getInt(3));
-      _encoder->setBitRate(rs.getInt(4));
+      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) rs.getInt("codec")));
+      _encoder->findCodec(org::esb::av::Codec::ENCODER);
+      _encoder->setWidth(rs.getInt("width"));
+      _encoder->setHeight(rs.getInt("height"));
+      _encoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
+      _encoder->setBitRate(rs.getInt("bit_rate"));
       AVRational r;
-      r.num = rs.getInt(5);
-      r.den = rs.getInt(6);
+      r.num = rs.getInt("time_base_num");
+      r.den = rs.getInt("time_base_den");
 
       _encoder->setTimeBase(r);
-      _encoder->setGopSize(rs.getInt(7));
-      _encoder->setChannels(rs.getInt(8));
-      _encoder->setSampleRate(rs.getInt(9));
-      _encoder->setSampleFormat((SampleFormat) rs.getInt(10));
+      _encoder->setGopSize(rs.getInt("gop_size"));
+      _encoder->setChannels(rs.getInt("channels"));
+      _encoder->setSampleRate(rs.getInt("sample_rate"));
+      _encoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
+      _encoder->setFlag(rs.getInt("flags"));
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } else {

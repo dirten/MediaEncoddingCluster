@@ -8,12 +8,9 @@
 #include <iostream>
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
-namespace org
-{
-  namespace esb
-  {
-    namespace av
-    {
+namespace org {
+  namespace esb {
+    namespace av {
 
       FrameConverter::FrameConverter(FrameFormat & out_format) {
         _swsContext = 0;
@@ -100,6 +97,15 @@ namespace org
         if (in_frame._type == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
+        rescaleTimestamp(in_frame, out_frame);
+      }
+
+      void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
+        
+        out_frame.setPts( av_rescale_q(in_frame.getPts(), _dec->getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDts( av_rescale_q(in_frame.getDts(), _dec->getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), _dec->getTimeBase(), _enc->getTimeBase()));
+        out_frame.setTimeBase(_enc->getTimeBase());
       }
 
       Frame FrameConverter::convertVideo(Frame & in_frame) {
@@ -116,7 +122,7 @@ namespace org
          */
 
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
-        out_frame.setTimeBase(in_frame.getTimeBase());
+        //        out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
         out_frame.setDts(in_frame.getDts());
@@ -198,9 +204,9 @@ namespace org
         //		audio_resample_close( reCtx );
 
         //        Frame frame(audio_buf);
-        out_frame._allocated=true;
+        out_frame._allocated = true;
         out_frame._buffer = audio_buf;
-        out_frame.setTimeBase(in_frame.getTimeBase());
+        //        out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.setPts(in_frame.getPts());
         out_frame.setDts(in_frame.getDts());
         out_frame.pos = in_frame.pos;

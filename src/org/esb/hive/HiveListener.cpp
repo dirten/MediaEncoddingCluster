@@ -19,12 +19,13 @@ namespace org {
     namespace hive {
 
       HiveListener::HiveListener() {
-        server=NULL;
+        server = NULL;
         main_nextloop = true;
         is_running = false;
       }
 
       HiveListener::~HiveListener() {
+//        server->close();
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
@@ -34,13 +35,14 @@ namespace org {
           logdebug("Hive Listener running on port:" << Config::getProperty("hive.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
-        }else
+        } else
           if (msg.getProperty("hivelistener") == "stop") {
           logdebug("Hive Listener stopped:");
-          if(server)
+          main_nextloop = false;
+          if (server)
             server->close();
           delete server;
-          server=NULL;
+          server = NULL;
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
@@ -57,7 +59,7 @@ namespace org {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
               Thread *thread = new Thread(protoServer);
               thread->start();
-            }else {
+            } else {
               logerror("Client  Socket ist null");
               break;
             }

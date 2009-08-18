@@ -249,6 +249,12 @@ int Frame::getHeight() {
 int Frame::getWidth() {
   return _width;
 }
+int Frame::getDuration() {
+  return duration;
+}
+void Frame::setDuration(int d) {
+  duration=d;
+}
 
 int64_t Frame::getPts() {
   return framePtr->pts;

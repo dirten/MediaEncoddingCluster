@@ -17,6 +17,7 @@ add_executable (TestSerializePacket TestSerializePacket.cpp)
 add_executable (TestDeSerializePacket TestDeSerializePacket.cpp)
 add_executable (TestFormatInputStream TestFormatInputStream.cpp)
 add_executable (TestPacketInputStream TestPacketInputStream.cpp)
+add_executable (TestPacketOutputStream TestPacketOutputStream.cpp)
 add_executable (TestProcessAudioPacket TestProcessAudioPacket.cpp)
 
 target_link_libraries (TestPacket io av util lang avformat avcodec avutil swscale )
@@ -24,6 +25,7 @@ target_link_libraries (TestSerializePacket io av util lang avformat avcodec avut
 target_link_libraries (TestDeSerializePacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFormatInputStream io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestPacketInputStream io av util lang avformat avcodec avutil swscale )
+target_link_libraries (TestPacketOutputStream io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestProcessAudioPacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 
 IF(NOT WIN32)
@@ -32,6 +34,7 @@ target_link_libraries (TestSerializePacket ${BZ2_LIB} avformat avcodec avutil sw
 target_link_libraries (TestDeSerializePacket ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFormatInputStream ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (TestPacketInputStream ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (TestPacketOutputStream ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (TestProcessAudioPacket ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
 
 ENDIF(NOT WIN32)
@@ -41,6 +44,7 @@ ADD_TEST(LibAVSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestSerializePacket)
 ADD_TEST(LibAVDeSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestDeSerializePacket)
 ADD_TEST(LibAVFormatInputStream ${EXECUTABLE_OUTPUT_PATH}/TestFormatInputStream)
 ADD_TEST(LibAVPacketInputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketInputStream)
+ADD_TEST(TestPacketOutputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketOutputStream)
 ADD_TEST(TestProcessAudioPacket ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket)
 
 

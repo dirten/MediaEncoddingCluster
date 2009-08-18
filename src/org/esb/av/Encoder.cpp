@@ -59,7 +59,9 @@ Packet Encoder::encodeVideo(Frame & frame) {
   pac.packet->stream_index = frame.stream_index;
   pac.packet->duration = frame.duration;
   //    pac.flags=0;
-
+  logdebug("Encoder data");
+  frame.toString();
+  pac.toString();
   if (ctx->coded_frame) {
     //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
     if (ctx->coded_frame->key_frame)

@@ -20,7 +20,7 @@ namespace net{
       boost::asio::io_service _io_service;
       tcp::acceptor acceptor_;
       void handle_accept(TcpSocket* new_session,const boost::system::error_code& error);
-
+      bool _inShutdown;
   };
 }}}
 #endif

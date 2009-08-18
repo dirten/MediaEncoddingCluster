@@ -44,25 +44,27 @@ void Config::init(char * filename) {
   if ((fp = fopen(filename, "r")) == NULL) {
     throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
-//  properties = new Properties();
+  //  properties = new Properties();
   while (fgets(buffer, 255, fp) != NULL) {
     parseLine(buffer);
   }
   fclose(fp);
   /*load params from database*/
-  try{
-  Connection con(std::string(getProperty("db.connection")));
-  Statement stmt = con.createStatement("select * from config");
-  ResultSet rs = stmt.executeQuery();
-  while (rs.next()) {
-    if (rs.getString("config_key") != "db.connection"){
-      properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
-      logdebug("ConfigKey:"<<rs.getString("config_key")<<" ConfigVal:"<< rs.getString("config_val"));
+  try {
+    if (std::string(getProperty("db.connection")).length() > 0) {
+      Connection con(std::string(getProperty("db.connection")));
+      Statement stmt = con.createStatement("select * from config");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        if (rs.getString("config_key") != "db.connection") {
+          properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
+          logdebug("ConfigKey:" << rs.getString("config_key") << " ConfigVal:" << rs.getString("config_val"));
+        }
+      }
     }
-  }
-  }catch(SqlException & ex){
+  } catch (SqlException & ex) {
     logerror("cant load configuration from database");
-	logerror(ex.what());
+    logerror(ex.what());
   }
 }
 
@@ -102,15 +104,15 @@ void Config::parseLine(const char*line) {
     for (int a = 0; st.hasMoreTokens(); a++) {
       if (a == 0) {
         key.append(st.nextToken());
-      }else {
+      } else {
         val.append(st.nextToken());
         if (st.hasMoreTokens())
           val.append("=");
       }
     }
     char delim[] = "\n";
-    if(key.length()>0&&val.length()>0)
-        properties->setProperty(strtok((char*) key.c_str(), delim), strtok((char*) val.c_str(), delim));
+    if (key.length() > 0 && val.length() > 0)
+      properties->setProperty(strtok((char*) key.c_str(), delim), strtok((char*) val.c_str(), delim));
 
     //    delete st;
   }

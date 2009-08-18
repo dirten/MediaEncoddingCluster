@@ -25,8 +25,9 @@ Packet::Packet(const Packet & p) {
   //	callDestruct=false;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
-  _time_base.num=p._time_base.num;
-  _time_base.den=p._time_base.num;
+//  _time_base.num=p._time_base.num;
+//  _time_base.den=p._time_base.num;
+  _time_base=p._time_base;
 //_time_base=p.getTimeBase();
 
   av_init_packet(packet);
@@ -179,7 +180,9 @@ void Packet::toString(){
       ":StreamIndex:"<<getStreamIndex()<<
       ":Duration:"<<getDuration()<<
       ":Position:"<<getPosition()<<
-      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den
+      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den<<
+      ":Flags:"<<getFlags()<<
+      ":KeyFrame"<<isKeyFrame()
       );
 //  logdebug("Packet->Pts:"<<getPts());
 //  logdebug("Packet->Dts:"<<getDts());

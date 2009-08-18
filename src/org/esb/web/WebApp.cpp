@@ -1,4 +1,5 @@
 #include "WebApp.h"
+#include "config.h"
 #include <Wt/WContainerWidget>
 #include <Wt/WStackedWidget>
 #include <Wt/WWidget>
@@ -49,7 +50,7 @@ namespace org
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
         north->setBorder(false);
         std::string h = "MediaEncodingCluster V-";
-        h += STRINGIFY(MHIVE_VERSION);
+        h += MHIVE_VERSION;
         h += "($Rev$-"__DATE__ "-" __TIME__")";
         Wt::WText *head = new Wt::WText(h);
         head->setStyleClass("north");

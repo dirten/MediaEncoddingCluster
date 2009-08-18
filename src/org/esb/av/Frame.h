@@ -32,6 +32,8 @@ namespace org {
         void setDts(int64_t pts);
         int64_t getPts();
         int64_t getDts();
+        int getDuration();
+        void setDuration(int);
         AVFrame * getAVFrame();
         bool isFinished();
         void setFinished(bool);

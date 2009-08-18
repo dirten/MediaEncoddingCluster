@@ -11,6 +11,8 @@
 #include <Wt/WStackedWidget>
 #include <Wt/Ext/LineEdit>
 #include <Wt/Ext/Button>
+#include <Wt/Ext/CheckBox>
+
 #include <Wt/WText>
 
 #include <map>
@@ -72,6 +74,8 @@ namespace org {
         Setup(const Wt::WEnvironment & env);
         Wt::WWebWidget * createDbPage();
         Wt::WWebWidget * createDbEmbeddedPage();
+        Wt::WWebWidget * createModePage();
+        Wt::WWebWidget * createClientPage();
         Wt::WWebWidget * createHivePage();
         Wt::WWebWidget * createAdminPage();
         Wt::WWebWidget * createSavePage();
@@ -119,7 +123,7 @@ namespace org {
         Wt::Ext::Panel * center;
         ButtonLeft*butPrev;
         ButtonRight*butNext;
-        int stepper;
+//        int stepper;
 
         Wt::WText * error;
         Wt::WWebWidget * dbPage;
@@ -130,6 +134,7 @@ namespace org {
         std::map<std::string, std::string> _parameters;
         org::esb::util::Properties _props;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
+        wtk::ElementContainer<Wt::Ext::CheckBox> _elchk;
         Wt::WStackedWidget * stack;
       };
     }

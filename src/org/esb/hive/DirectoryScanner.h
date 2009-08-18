@@ -25,7 +25,6 @@ namespace org {
         void computeFile(org::esb::io::File & file, int profile, std::string outpath);
         bool _halt;
         boost::thread * th;
-        std::string _dir;
         int _interval;
         int _level;
       };

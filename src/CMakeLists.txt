@@ -2,6 +2,7 @@
 add_subdirectory (org)
 #add_subdirectory (erl)
 
+include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 ##include_directories (${FFMPEG_DIR})
 include_directories (${WT_DIR}/include)
@@ -112,6 +113,7 @@ ELSEIF(APPLE)
 target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} z ssl wthttp wtext wt pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ELSE(WIN32)
 target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} crypt z wthttp wtext wt mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries(mhive pthread ssl )
 ENDIF(WIN32)
 #MESSAGE("** BOOST_LIB PATH: " ${BOOST_THREAD_LIB_MT})
 
@@ -125,7 +127,7 @@ target_link_libraries (mhive
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )
-target_link_libraries(mhive pthread ssl )
+#target_link_libraries(mhive pthread ssl )
 MESSAGE("Executable_output_path" ${EXECUTABLE_OUTPUT_PATH})
 
 INSTALL(TARGETS mhive

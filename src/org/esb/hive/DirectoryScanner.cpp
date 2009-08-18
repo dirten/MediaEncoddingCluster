@@ -57,13 +57,13 @@ namespace org {
       DirectoryScanner::DirectoryScanner(std::string dir, int interval) {
         _halt = true;
         _interval = interval;
-        _dir = dir;
         th = NULL;
       }
 
       DirectoryScanner::DirectoryScanner() {
         _halt = true;
         th = NULL;
+        _interval=300000;
       }
 
       DirectoryScanner::~DirectoryScanner() {
@@ -75,9 +75,6 @@ namespace org {
         if (msg.getProperty("directoryscan") == "start") {
 
           _halt = false;
-          if (msg.containsProperty("directory")) {
-            _dir = msg.getProperty("directory");
-          }
 
           if (msg.containsProperty("interval")) {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;

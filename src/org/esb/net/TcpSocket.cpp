@@ -25,8 +25,8 @@ namespace org {
       }
 
       TcpSocket::~TcpSocket() {
-        delete _is;
-        delete _os;
+//        delete _is;
+//        delete _os;
       }
 
       org::esb::io::InputStream * TcpSocket::getInputStream() {

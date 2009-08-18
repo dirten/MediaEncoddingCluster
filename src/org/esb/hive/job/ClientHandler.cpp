@@ -265,6 +265,10 @@ ProcessUnit ClientHandler::getProcessUnit() {
       p->packet->flags = rs_p.getInt("flags");
       p->packet->pos = rs_p.getLong("pos");
       p->packet->stream_index = rs_p.getInt("stream_index");
+      AVRational ar;
+      ar.num=rs->getInt("time_base_num");
+      ar.den=rs->getInt("time_base_den");
+      p->setTimeBase(ar);
       u._input_packets.push_back(p);
       size += p->packet->size;
     }

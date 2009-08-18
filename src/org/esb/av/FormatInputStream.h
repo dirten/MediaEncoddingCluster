@@ -49,8 +49,8 @@ namespace org {
             private:
                 org::esb::io::File * _sourceFile;
                 bool _isValid;
-                std::map<int, int> _streamMap;
-                std::map<int, int> _streamReverseMap;
+//                std::map<int, int> _streamMap;
+//                std::map<int, int> _streamReverseMap;
                 friend class PacketInputStream;
                 AVFormatContext * formatCtx;
 

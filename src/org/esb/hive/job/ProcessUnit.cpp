@@ -10,10 +10,9 @@ using namespace org::esb::av;
 
 bool toDebug = true;
 
-class PacketSink : public Sink
-{
-
+class PacketSink : public Sink {
 public:
+
   PacketSink() {
   }
 
@@ -22,6 +21,12 @@ public:
     Packet* pt = (Packet*) p;
     boost::shared_ptr<Packet> pEnc(new Packet(*pt));
     pkts.push_back(pEnc);
+    if (toDebug) {
+      logdebug("outputpacket");
+      pEnc->toString();
+
+    }
+
     //    erl_print_term((FILE*) stderr, pkts.back());
   }
 
@@ -66,9 +71,9 @@ ProcessUnit::~ProcessUnit() {
 
 void ProcessUnit::process() {
   int insize = 0, outsize = 0;
-    av_register_all();
-    avcodec_init();
-    avcodec_register_all();
+  av_register_all();
+  avcodec_init();
+  avcodec_register_all();
 
   if (_decoder != NULL)
     _decoder->open();
@@ -77,7 +82,7 @@ void ProcessUnit::process() {
   if (toDebug)
     logdebug("Codex openned");
   _decoder->ctx->request_channel_layout = 2;
-  
+
   PacketSink sink;
   _encoder->setSink(&sink);
 
@@ -98,6 +103,10 @@ void ProcessUnit::process() {
     if (++s % 100 == 0)
       cout << "\r" << s;
     insize += p->packet->size;
+    if (toDebug) {
+      logdebug("inputpacket")
+      p->toString();
+    }
 
     if (p->isKeyFrame()) {
       //      cout << "KeyFrame\t";
@@ -112,8 +121,10 @@ void ProcessUnit::process() {
     //        cout << endl;
 
     Frame * tmp = _decoder->decode2(*p);
-    if (toDebug)
+    if (toDebug){
       logdebug("Frame Decoded");
+      tmp->toString();
+    }
     //    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
     //      break;
     //    }
@@ -127,37 +138,37 @@ void ProcessUnit::process() {
 
     //	    fr->setPts(++a);
     //	    fr->setDts(AV_NOPTS_VALUE);
-     Frame * f;
-    if(_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
-      f=new Frame (_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
-    if(_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
-      f=new Frame ();
-     if (toDebug)
+    Frame * f;
+    if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
+      f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
+    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
+      f = new Frame();
+    if (toDebug)
       logdebug("try Frame Convert");
     conv.convert(*tmp, *f);
     delete tmp;
-    if (toDebug)
+    if (toDebug){
       logdebug("Frame Converted");
+      f->toString();
+    }
 
-    f->setPts(f->getDts());
+//    f->setPts(f->getDts());
     //	    f.setPts(++a);
     //	    tmp.setDts(AV_NOPTS_VALUE);
     Packet ret = _encoder->encode(*f);
     delete f;
-    ret.packet->pts = av_rescale_q(ret.packet->pts, _decoder->getTimeBase(), _encoder->getTimeBase());
-    ret.packet->dts = av_rescale_q(ret.packet->dts, _decoder->getTimeBase(), _encoder->getTimeBase());
     //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)
       logdebug("Frame Encoded");
 
-//    boost::shared_ptr<Packet> pEnc(new Packet(ret));
+    //    boost::shared_ptr<Packet> pEnc(new Packet(ret));
     if (toDebug)
       logdebug("Packet Created");
 
     //	    pEnc->packet->dts=AV_NOPTS_VALUE;
     outsize += ret.packet->size;
-//    _output_packets.push_back(pEnc);
-      _output_packets=sink.getList();
+    //    _output_packets.push_back(pEnc);
+    _output_packets = sink.getList();
     if (toDebug)
       logdebug("Packet Added");
 
