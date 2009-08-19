@@ -34,11 +34,9 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)
 #LINK_DIRECTORIES(${X264_DIR}/lib)
-LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
-LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
-LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
+
 ##LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
-LINK_DIRECTORIES(${MYSQL_LIB_DIR})
+#LINK_DIRECTORIES(${MYSQL_LIB_DIR})
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
@@ -64,6 +62,7 @@ FIND_LIBRARY(AVFORMAT_LIB
       ${FFMPEG_DIR}/lib
     NO_DEFAULT_PATH
   )
+
 FIND_LIBRARY(AVUTIL_LIB
     NAMES
       avutil
@@ -87,20 +86,56 @@ MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
 add_executable (mhive Hive.cpp)
+
 IF(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIB libmysqld)
-#    SET(MYSQL_LIB mysqlserver)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/release)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqld
+          libmysqld
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
   ELSE(WIN32)
-    SET(MYSQL_LIB mysqld)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqld
+          libmysqld
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
   ENDIF(WIN32)
 ELSE(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIB libmysql)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/opt)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysql
+          libmysql
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
   ELSE(WIN32)
-    SET(MYSQL_LIB mysqlclient)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqlclient
+          libmysqlclient
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
   ENDIF(WIN32)
 ENDIF(USE_EMBEDDED_MYSQL)
+
+#LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
+#LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
+MESSAGE("** MYSQL_LIBRARY_PATH: " ${MYSQL_LIB})
 
 
 
@@ -150,7 +185,7 @@ INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
   )
 
 IF(WIN32)
-INSTALL(FILES ${MYSQL_DIR}/Embedded/DLL/debug/libmysqld.dll
+INSTALL(FILES ${MYSQL_LIBRARY_PATH}/${MYSQL_LIB}
   DESTINATION ./bin
   )
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
