@@ -37,6 +37,7 @@ namespace org {
         std::string sql;
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
+		logdebug("FullSql:"<<sql);
         sql::Connection con(config::Config::getProperty("db.connection"));
         util::StringTokenizer st(sql,";");
 
@@ -51,6 +52,7 @@ namespace org {
                 con.executeNonQuery(next);
         }
       }
+
 
       void Setup::buildDatabase(std::string dbName) {
         std::string conf = config::Config::getProperty("db.connection");

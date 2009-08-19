@@ -43,6 +43,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
+#else
+#include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
 
 #endif  // !_WIN32
 
@@ -289,7 +293,52 @@ void ctrlCHitWait() {
   boost::mutex::scoped_lock terminationLock(terminationMutex);
   ctrlCHit.wait(terminationLock);
 }
+#define SVCNAME TEXT("SvcName")
 
+VOID SvcReportEvent(LPTSTR szFunction) 
+{ 
+    HANDLE hEventSource;
+    LPCTSTR lpszStrings[2];
+    TCHAR Buffer[80];
+
+    hEventSource = RegisterEventSource(NULL, SVCNAME);
+
+    if( NULL != hEventSource )
+    {
+        StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
+
+        lpszStrings[0] = SVCNAME;
+        lpszStrings[1] = Buffer;
+
+        ReportEvent(hEventSource,        // event log handle
+                    EVENTLOG_ERROR_TYPE, // event type
+                    0,                   // event category
+                    NULL,           // event identifier
+                    NULL,                // no security identifier
+                    2,                   // size of lpszStrings array
+                    0,                   // no binary data
+                    lpszStrings,         // array of strings
+                    NULL);               // no binary data
+
+        DeregisterEventSource(hEventSource);
+    }
+}
+
+VOID WINAPI SvcMain( DWORD dwArgc, LPTSTR *lpszArgv )
+{
+}
+void start_win32(){
+SERVICE_TABLE_ENTRY DispatchTable[] = 
+    { 
+        { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain }, 
+        { NULL, NULL } 
+    }; 
+ if (!StartServiceCtrlDispatcher( DispatchTable )) 
+    { 
+        SvcReportEvent(TEXT("StartServiceCtrlDispatcher")); 
+    } 
+
+}
 #else
 
 void ctrlCHitWait() {

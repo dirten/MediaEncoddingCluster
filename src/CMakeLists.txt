@@ -140,7 +140,7 @@ MESSAGE("** MYSQL_LIBRARY_PATH: " ${MYSQL_LIB})
 
 
 
-target_link_libraries (mhive  web esb sql hive lang av util signal io net  avcodec avformat avutil swscale )
+target_link_libraries (mhive  web esb sql hive lang av util signal io net  ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWSCALE_LIB} )
 IF(WIN32)
 target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
 #target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
@@ -185,7 +185,7 @@ INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
   )
 
 IF(WIN32)
-INSTALL(FILES ${MYSQL_LIBRARY_PATH}/${MYSQL_LIB}
+INSTALL(FILES ${MYSQL_LIBRARY_PATH}/libmysqld.dll
   DESTINATION ./bin
   )
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
