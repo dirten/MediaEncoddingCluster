@@ -26,30 +26,30 @@ namespace org {
         }
 
         if (!checkDatabaseVersion(string("0.0.2"))) {
-//          logerror("Database Version mismatch");
+          //          logerror("Database Version mismatch");
           exit(-127);
         }
-//        buildDatabaseModel("../sql/hive-0.0.1.sql");
+        //        buildDatabaseModel("../sql/hive-0.0.1.sql");
       }
 
       void Setup::buildDatabaseModel(std::string sqlfile) {
-        logdebug("loading DB model from "<<sqlfile);
+        logdebug("loading DB model from " << sqlfile);
         std::string sql;
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
 		logdebug("FullSql:"<<sql);
         sql::Connection con(config::Config::getProperty("db.connection"));
-        util::StringTokenizer st(sql,";");
+        util::StringTokenizer st(sql, ";");
 
-		int tok=st.countTokens();
-		for(int i=0;i<tok-1;i++){
-          std::string t=st.nextToken();
-          t=StringUtil::trim(t,*new std::string("\n"));
-          std::string next=StringUtil::trim(t);
-            logdebug("Create Table "<<next);
-            logdebug("Create Table leng"<<next.size());
-            if(next.size()>1)
-                con.executeNonQuery(next);
+        int tok = st.countTokens();
+        for (int i = 0; i < tok - 1; i++) {
+          std::string t = st.nextToken();
+          t = StringUtil::trim(t, *new std::string("\n"));
+          std::string next = StringUtil::trim(t);
+          logdebug("Create Table " << next);
+          logdebug("Create Table leng" << next.size());
+          if (next.size() > 1)
+            con.executeNonQuery(next);
         }
       }
 
@@ -66,16 +66,16 @@ namespace org {
         using namespace org::esb;
         std::string conf = config::Config::getProperty("db.connection");
         try {
-//          std::string conf = config::Config::getProperty("db.connection");
+          //          std::string conf = config::Config::getProperty("db.connection");
           sql::Connection con(parseConnectionString(conf, "host"), string(""), parseConnectionString(conf, "user"), parseConnectionString(conf, "password"));
           con.executeNonQuery(std::string("use ").append(parseConnectionString(conf, "db")));
         } catch (sql::SqlException & ex) {
-			logerror(ex.what());
-          if(yesNoQuestion("do you want to Create Database "+parseConnectionString(conf, "db")+" now?")){
+          logerror(ex.what());
+          if (yesNoQuestion("do you want to Create Database " + parseConnectionString(conf, "db") + " now?")) {
             buildDatabase(parseConnectionString(conf, "db"));
             result = true;
-          }else
-          result = false;
+          } else
+            result = false;
         }
         return result;
       }
@@ -88,42 +88,43 @@ namespace org {
           sql::Statement stmt = con.createStatement("SELECT * FROM version WHERE component='database.model'");
           sql::ResultSet rs = stmt.executeQuery();
           if ((!rs.next()) || rs.getString("version") != version) {
-//            logerror("Database Version mismatch");
-//            logerror("you must upgrade from version "<<rs.getString("version")<< " to "<<version);
-            if(yesNoQuestion("do you want to Upgrade Database from version "+rs.getString("version")+" to "+version+" now?")){
-              buildDatabaseModel("../sql/hive-upgrade-"+version+".sql");
+            //            logerror("Database Version mismatch");
+            //            logerror("you must upgrade from version "<<rs.getString("version")<< " to "<<version);
+            if (yesNoQuestion("do you want to Upgrade Database from version " + rs.getString("version") + " to " + version + " now?")) {
+              buildDatabaseModel("../sql/hive-upgrade-" + version + ".sql");
             }
             result = false;
           }
         } catch (sql::SqlException & ex) {
-			logerror(ex.what());
-            if(yesNoQuestion("do you want to Create Database Model now?")){
-              buildDatabaseModel("../sql/hive-0.0.1.sql");
-              result=true;
-            }
+          logerror(ex.what());
+          if (yesNoQuestion("do you want to Create Database Model now?")) {
+            buildDatabaseModel("../sql/hive-0.0.1.sql");
+            result = true;
+          }
           result = false;
         }
         return result;
       }
-      
-      void Setup::upgradeDatabaseModel(std::string sqlfile){
-        
+
+      void Setup::upgradeDatabaseModel(std::string sqlfile) {
+
       }
-      
-      bool Setup::yesNoQuestion(std::string quest){
-        bool result=false;
-        std::cout << quest<< " [y/N] :";
+
+      bool Setup::yesNoQuestion(std::string quest) {
+        bool result = false;
+        std::cout << quest << " [y/N] :";
         std::string input;
-        std::cin>>input;
-        if(input.size()>1){
-          cout << "please type only (y/n)"<<endl;
-        }else{
-          std::string in=util::StringUtil::toLower(input);
-          if(in=="y")
-            result=true;
+        std::cin >> input;
+        if (input.size() > 1) {
+          cout << "please type only (y/n)" << endl;
+        } else {
+          std::string in = util::StringUtil::toLower(input);
+          if (in == "y")
+            result = true;
         }
         return result;
       }
+
       std::string Setup::parseConnectionString(std::string constr, std::string key_com) {
         StringTokenizer tok(constr, ":");
         if (tok.countTokens() == 2) {

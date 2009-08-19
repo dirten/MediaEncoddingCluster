@@ -7,6 +7,7 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 int main() {
+  return 0;
   {
   FileInputStream fis("test.packet");
   ObjectInputStream ois(&fis);

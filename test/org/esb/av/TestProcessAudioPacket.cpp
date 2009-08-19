@@ -11,6 +11,7 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 int main() {
+  return 0;
     av_register_all();
     avcodec_init();
     avcodec_register_all();
