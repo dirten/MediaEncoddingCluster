@@ -60,8 +60,11 @@ void Connection::connect() {
 
     std::string datadir="--datadir=";
     datadir.append(base_path);
-//    datadir.append("");
-    logdebug("Database Dir:"<<datadir);
+#ifdef USE_EMBEDDED_MYSQL
+	logdebug("Using Embedded Mysql");
+#endif
+	logdebug("DataDir:"<<datadir);
+    logdebug("LangDir:"<<lang);
     static char *server_options[] = {"", const_cast<char*>(datadir.c_str()), const_cast<char*>(lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};
@@ -79,8 +82,8 @@ void Connection::connect() {
 Statement Connection::createStatement(const char * sql) {
   return Statement(mysqlPtr.get(), sql);
 }
-Statement * Connection::createStatement(const char * sql) {
-  return new Statement(mysqlPtr.get(), sql);
+Statement * Connection::createStatement() {
+  return new Statement(mysqlPtr.get(), NULL);
 }
 
 PreparedStatement Connection::prepareStatement(const char * sql) {

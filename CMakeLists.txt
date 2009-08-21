@@ -65,6 +65,61 @@ IF(LIBBZ2)
   SET(BZ2_LIB ${LIBBZ2})
 ENDIF(LIBBZ2)
 
+############################################################
+#
+# Find the mysql library
+#
+############################################################
+
+IF(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/release)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqld
+          libmysqld
+          mysqlserver
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
+  ELSE(WIN32)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqld
+          libmysqld
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
+  ENDIF(WIN32)
+ELSE(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/opt)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysql
+          libmysql
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
+  ELSE(WIN32)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIB
+        NAMES
+          mysqlclient
+          libmysqlclient
+        PATHS
+          ${MYSQL_LIBRARY_PATH}
+        NO_DEFAULT_PATH
+      )
+  ENDIF(WIN32)
+ENDIF(USE_EMBEDDED_MYSQL)
+
+LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
+LINK_DIRECTORIES(${WT_DIR}/lib)
 
 SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")

@@ -1,11 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 3.0.1.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 17. Dezember 2008 um 19:57
--- Server Version: 5.0.45
--- PHP-Version: 5.2.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -15,15 +7,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Datenbank: `hive`
---
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `codec`
---
 
 CREATE TABLE IF NOT EXISTS `codec` (
   `id` int(11) NOT NULL,
@@ -32,11 +15,6 @@ CREATE TABLE IF NOT EXISTS `codec` (
   `long_name` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `config`
---
 
 CREATE TABLE IF NOT EXISTS `config` (
   `config_key` varchar(255) NOT NULL,
@@ -44,11 +22,6 @@ CREATE TABLE IF NOT EXISTS `config` (
   PRIMARY KEY  (`config_key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `files`
---
 
 CREATE TABLE IF NOT EXISTS `files` (
   `id` int(11) NOT NULL auto_increment,
@@ -73,11 +46,6 @@ CREATE TABLE IF NOT EXISTS `files` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `frame_groups`
---
 
 CREATE TABLE IF NOT EXISTS `frame_groups` (
   `id` int(11) NOT NULL auto_increment,
@@ -93,11 +61,6 @@ CREATE TABLE IF NOT EXISTS `frame_groups` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `jobs`
---
 
 CREATE TABLE IF NOT EXISTS `jobs` (
   `id` int(11) NOT NULL auto_increment,
@@ -108,11 +71,6 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `job_details`
---
 
 CREATE TABLE IF NOT EXISTS `job_details` (
   `id` int(11) NOT NULL auto_increment,
@@ -122,11 +80,6 @@ CREATE TABLE IF NOT EXISTS `job_details` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `job_logs`
---
 
 CREATE TABLE IF NOT EXISTS `job_logs` (
   `id` int(11) NOT NULL auto_increment,
@@ -137,11 +90,6 @@ CREATE TABLE IF NOT EXISTS `job_logs` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `packets`
---
 
 CREATE TABLE IF NOT EXISTS `packets` (
   `id` int(11) NOT NULL auto_increment,
@@ -164,11 +112,6 @@ CREATE TABLE IF NOT EXISTS `packets` (
   KEY `stream_id_2` (`stream_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `process_units`
---
 
 CREATE TABLE IF NOT EXISTS `process_units` (
   `id` int(11) NOT NULL auto_increment,
@@ -181,12 +124,6 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `priority` tinyint(1) NOT NULL default '5',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `profiles`
---
 
 CREATE TABLE IF NOT EXISTS `profiles` (
   `id` int(11) NOT NULL auto_increment,
@@ -204,12 +141,6 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `statistics_log`
---
-
 CREATE TABLE IF NOT EXISTS `statistics_log` (
   `id` bigint(20) NOT NULL auto_increment,
   `stat_key` varchar(255) NOT NULL,
@@ -217,11 +148,6 @@ CREATE TABLE IF NOT EXISTS `statistics_log` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `streams`
---
 
 CREATE TABLE IF NOT EXISTS `streams` (
   `id` int(11) NOT NULL auto_increment,
@@ -252,11 +178,6 @@ CREATE TABLE IF NOT EXISTS `streams` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `user`
---
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL auto_increment,
@@ -271,11 +192,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `version`
---
 
 CREATE TABLE IF NOT EXISTS `version` (
   `id` int(11) NOT NULL auto_increment,
@@ -284,11 +200,6 @@ CREATE TABLE IF NOT EXISTS `version` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `watch_folder`
---
 
 CREATE TABLE IF NOT EXISTS `watch_folder` (
   `id` int(11) unsigned NOT NULL auto_increment,
@@ -299,4 +210,5 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-insert into profiles values(1,"test","AVI format",28,1024000,25,320,240,2,86016,128000,44100)
+insert into profiles values(1,"test","AVI format",28,1024000,25,320,240,2,86016,128000,44100);
+

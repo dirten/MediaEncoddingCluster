@@ -51,7 +51,9 @@ WebServer::WebServer() : server("test") {
 WebServer::~WebServer() {
   //	std::cout << "~WebServer"<<std::endl;
 }
-
+void WebServer::start() {
+	server.start();
+}
 void WebServer::onMessage(Message & msg) {
   if (msg.getProperty("webserver") == "start") {
     try

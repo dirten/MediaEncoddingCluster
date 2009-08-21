@@ -307,12 +307,16 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createDbEmbeddedPage() {
-        _el.getElement("db.db")->setText("hive");
+//        _el.getElement("db.db")->setText("hive");
         butNext->setHidden(false);
         wtk::Div * div_db = new wtk::Div("");
         div_db->addWidget(new Wt::WText(Wt::WString::tr("database-embedded-setup")));
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(new Wt::WBreak());
+        _el.getElement("db.host", "Database Host", ""); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _el.getElement("db.db", "Database Name", "hive"); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        _el.getElement("db.user", "Database User", ""); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
+        _el.getElement("db.pass", "Database Password", ""); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
         wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
         c_db->resize(400, 200);
         c_db->setContent(div_db);

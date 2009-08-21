@@ -16,7 +16,7 @@ include_directories (${MYSQL_DIR}/include)
 #include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
 
-LINK_DIRECTORIES(${WT_DIR}/lib)
+
 #LINK_DIRECTORIES(${WT_DIR}/src)
 #LINK_DIRECTORIES(${BOOST_LIB_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
@@ -87,56 +87,8 @@ MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 add_executable (mhive Hive.cpp)
 
-IF(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/static/release)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqld
-          libmysqld
-          mysqlserver
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqld
-          libmysqld
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ENDIF(WIN32)
-ELSE(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/opt)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysql
-          libmysql
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqlclient
-          libmysqlclient
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ENDIF(WIN32)
-ENDIF(USE_EMBEDDED_MYSQL)
-
-#LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
 #LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
-MESSAGE("** MYSQL_LIBRARY_PATH: " ${MYSQL_LIB})
+
 
 
 
