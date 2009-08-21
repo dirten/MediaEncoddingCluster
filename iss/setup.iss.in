@@ -78,6 +78,7 @@ Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
+;Filename: "{app}/sc"; Parameters: "create MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
 ;[UninstallRun]
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHiveService";
 
