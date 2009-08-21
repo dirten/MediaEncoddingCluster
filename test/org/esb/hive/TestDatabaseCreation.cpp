@@ -7,7 +7,7 @@
 
 using namespace org::esb;
 int main(){
-	  std::string src=MEC_SOURCE_DIR;
+	  std::string src="MEC_SOURCE_DIR";
 	  std::string sqlfile=src;
 	  sqlfile.append("/sql/hive-0.0.3.sql");
 	  logdebug("loading DB model from " << sqlfile);

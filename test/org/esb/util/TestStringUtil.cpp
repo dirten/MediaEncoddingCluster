@@ -6,8 +6,8 @@ using namespace org::esb;
 
 int main() {
   std::string sql;
-  logdebug(MEC_SOURCE_DIR);
-  std::string path=MEC_SOURCE_DIR;
+  logdebug("MEC_SOURCE_DIR");
+  std::string path="MEC_SOURCE_DIR";
   path.append("/sql/hive-0.0.3.sql");
   io::File f(path);
   io::FileInputStream(&f).read(sql);

@@ -101,7 +101,7 @@ ELSEIF(APPLE)
 target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} z ssl wthttp wtext wt pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ELSE(WIN32)
 target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} crypt z wthttp wtext wt mp3lame theora vorbis vorbisenc xvidcore ogg)
-target_link_libraries(mhive pthread ssl /usr/lib/libk5crypto.so)
+target_link_libraries(mhive pthread ssl )
 ENDIF(WIN32)
 #MESSAGE("** BOOST_LIB PATH: " ${BOOST_THREAD_LIB_MT})
 
