@@ -523,7 +523,7 @@ namespace org {
         config::Config::setProperty("web.start", "true");
         config::Config::save2db();
 
-        org::esb::io::File file(org::esb::config::Config::getProperty("config.file"));
+        org::esb::io::File file(org::esb::config::Config::getProperty("config.file",".hive.cfg"));
         org::esb::io::FileOutputStream fos(&file);
         props.save(&fos);
         fos.close();
