@@ -23,10 +23,10 @@ int main() {
   dec.setBitRate(192000);
   dec.setSampleRate(48000);
   dec.setSampleFormat((SampleFormat) 1);
-
-  dec.setTimeBase((AVRational) {
-    1, 48000
-  });
+  AVRational ar;
+  ar.num=1;
+  ar.den=48000;
+  dec.setTimeBase(ar);
   dec.ctx->request_channel_layout = 2;
   dec.open();
 
@@ -36,9 +36,7 @@ int main() {
   enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
 
-  enc.setTimeBase((AVRational) {
-    1, 48000
-  });
+  enc.setTimeBase(ar);
   enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
   enc.setPixelFormat(PIX_FMT_YUV420P);
   enc.open();

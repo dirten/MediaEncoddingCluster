@@ -19,6 +19,7 @@ namespace org {
         Connection(const std::string host, std::string db, std::string user, std::string pass, bool auto_connect=true);
         ~Connection();
         DEPRECATED(Statement createStatement(const char * sql));
+		Statement * createStatement();
         PreparedStatement prepareStatement(const char * sql);
         void executeNonQuery(std::string sql);
         long long int lastInsertId();

@@ -22,12 +22,12 @@ Statement::~Statement() {
 //  close();
 }
 
-ResultSet Statement::executeQuery(std::string s) {
+ResultSet * Statement::executeQuery(std::string s) {
 	sql=s;
 	execute();
   if(!rs)
     rs=new ResultSet(*stmtPtr.get());
-  return *rs;
+  return rs;
 }
 
 ResultSet * Statement::executeQuery2() {

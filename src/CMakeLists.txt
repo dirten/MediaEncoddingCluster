@@ -89,11 +89,12 @@ add_executable (mhive Hive.cpp)
 
 IF(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/release)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/static/release)
     FIND_LIBRARY(MYSQL_LIB
         NAMES
           mysqld
           libmysqld
+          mysqlserver
         PATHS
           ${MYSQL_LIBRARY_PATH}
         NO_DEFAULT_PATH

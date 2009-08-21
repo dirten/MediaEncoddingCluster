@@ -79,6 +79,9 @@ void Connection::connect() {
 Statement Connection::createStatement(const char * sql) {
   return Statement(mysqlPtr.get(), sql);
 }
+Statement * Connection::createStatement(const char * sql) {
+  return new Statement(mysqlPtr.get(), sql);
+}
 
 PreparedStatement Connection::prepareStatement(const char * sql) {
   return PreparedStatement(*mysqlPtr.get(), sql);

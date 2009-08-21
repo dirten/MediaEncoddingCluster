@@ -21,7 +21,7 @@ namespace org {
         Statement(MYSQL * mysql, const char * sql);
         ~Statement();
 		ResultSet executeQuery();
-		ResultSet executeQuery(std::string sql);
+		ResultSet * executeQuery(std::string sql);
         ResultSet * executeQuery2();
 //        ResultSet executeQuery(char *);
         bool execute();
