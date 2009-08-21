@@ -395,8 +395,8 @@ namespace org {
 #else
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup").
 #endif
-            arg(server_mode).
-            arg(client_mode).
+            arg(Wt::WString(server_mode)).
+			arg(Wt::WString(client_mode)).
             arg(_el.getElement("db.host")->text().narrow()).
             arg(_el.getElement("db.db")->text().narrow()).
             arg(_el.getElement("db.user")->text().narrow()).

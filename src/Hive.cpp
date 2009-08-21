@@ -293,7 +293,19 @@ void ctrlCHitWait() {
   boost::mutex::scoped_lock terminationLock(terminationMutex);
   ctrlCHit.wait(terminationLock);
 }
-#define SVCNAME TEXT("SvcName")
+#define SVCNAME TEXT("MHiveService")
+SERVICE_STATUS          gSvcStatus; 
+SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
+HANDLE                  ghSvcStopEvent = NULL;
+
+//VOID SvcInstall(void);
+VOID WINAPI SvcCtrlHandler( DWORD ); 
+VOID WINAPI SvcMain( DWORD, LPTSTR * ); 
+
+VOID ReportSvcStatus( DWORD, DWORD, DWORD );
+VOID SvcInit( DWORD, LPTSTR * ); 
+VOID SvcReportEvent( LPTSTR );
+
 
 VOID SvcReportEvent(LPTSTR szFunction) 
 { 
@@ -323,9 +335,71 @@ VOID SvcReportEvent(LPTSTR szFunction)
         DeregisterEventSource(hEventSource);
     }
 }
+VOID WINAPI SvcCtrlHandler( DWORD dwCtrl )
+{
+   // Handle the requested control code. 
+
+   switch(dwCtrl) 
+   {  
+      case SERVICE_CONTROL_STOP: 
+         ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+
+         // Signal the service to stop.
+
+         SetEvent(ghSvcStopEvent);
+         
+         return;
+ 
+      case SERVICE_CONTROL_INTERROGATE: 
+         // Fall through to send current status.
+         break; 
+ 
+      default: 
+         break;
+   } 
+
+   ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
+}
+
+VOID ReportSvcStatus( DWORD dwCurrentState,
+                      DWORD dwWin32ExitCode,
+                      DWORD dwWaitHint)
+{
+    static DWORD dwCheckPoint = 1;
+
+    // Fill in the SERVICE_STATUS structure.
+
+    gSvcStatus.dwCurrentState = dwCurrentState;
+    gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
+    gSvcStatus.dwWaitHint = dwWaitHint;
+
+    if (dwCurrentState == SERVICE_START_PENDING)
+        gSvcStatus.dwControlsAccepted = 0;
+    else gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+
+    if ( (dwCurrentState == SERVICE_RUNNING) ||
+           (dwCurrentState == SERVICE_STOPPED) )
+        gSvcStatus.dwCheckPoint = 0;
+    else gSvcStatus.dwCheckPoint = dwCheckPoint++;
+
+    // Report the status of the service to the SCM.
+    SetServiceStatus( gSvcStatusHandle, &gSvcStatus );
+}
+
 
 VOID WINAPI SvcMain( DWORD dwArgc, LPTSTR *lpszArgv )
 {
+	gSvcStatusHandle = RegisterServiceCtrlHandler( 
+        SVCNAME, 
+        SvcCtrlHandler);
+
+    if( !gSvcStatusHandle )
+    { 
+        SvcReportEvent(TEXT("RegisterServiceCtrlHandler")); 
+        return; 
+    } 
+
+
 }
 void start_win32(){
 SERVICE_TABLE_ENTRY DispatchTable[] = 
