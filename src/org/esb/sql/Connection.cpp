@@ -38,6 +38,7 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 }
 
 Connection::~Connection() {
+	logdebug("Connection::~Connection()");
   //mysql_close(mysqlPtr.get());
   /*
     _staticCounter--;
@@ -83,7 +84,7 @@ Statement Connection::createStatement(const char * sql) {
   return Statement(mysqlPtr.get(), sql);
 }
 Statement * Connection::createStatement() {
-  return new Statement(mysqlPtr.get(), NULL);
+  return new Statement(mysqlPtr.get(), "");
 }
 
 PreparedStatement Connection::prepareStatement(const char * sql) {

@@ -49,7 +49,7 @@ ResultSet Statement::executeQuery(char* tmp) {
 }
 */
 bool Statement::execute() {
-  if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
+	if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(" " + sql));
   }
   if (mysql_stmt_execute(stmtPtr.get())) {

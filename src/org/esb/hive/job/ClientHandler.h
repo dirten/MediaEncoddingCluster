@@ -35,7 +35,9 @@ namespace org {
           static boost::mutex unit_list_mutex;
           sql::Connection * _con;
           sql::Connection * _con2;
+          sql::Connection * _con3;
           sql::PreparedStatement * _stmt;
+          sql::PreparedStatement * _stmt3;
           sql::PreparedStatement * _stmt_fr;
           sql::PreparedStatement * _stmt_pu;
           sql::PreparedStatement * _stmt_ps;

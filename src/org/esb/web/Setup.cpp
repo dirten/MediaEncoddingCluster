@@ -515,6 +515,7 @@ namespace org {
 
         error->setText("Database Model created!");
         config::Config::setProperty("hive.mode", "server");
+        config::Config::setProperty("hive.port", _el.getElement("hive.hport")->text().narrow().c_str());
         config::Config::setProperty("hive.start", "true");
         config::Config::setProperty("hive.scandir", "/");
         config::Config::setProperty("hive.outdir", "/");

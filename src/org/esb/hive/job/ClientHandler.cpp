@@ -38,8 +38,10 @@ ClientHandler::ClientHandler() {
   logdebug("ClientHandler::ClientHandler()");
   _handler = JobHandler::getInstance();
   _con = new Connection(Config::getProperty("db.connection"));
+  _con3 = new Connection(Config::getProperty("db.connection"));
   _con2 = new Connection(Config::getProperty("db.connection"));
   _stmt_ps = new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
+//  _stmt3 = new PreparedStatement(_con3->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
   _stmt = new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
   _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
@@ -228,8 +230,11 @@ ProcessUnit ClientHandler::getProcessUnit3() {
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
-  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  ResultSet * rs = stmt_ps.executeQuery2();
+//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+//  ResultSet * rs = stmt_ps.executeQuery2();
+  Connection * con=new Connection(Config::getProperty("db.connection"));
+  Statement * stmt_ps = con->createStatement();
+  ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
 
   ProcessUnit u;
   if (rs->next()) {

@@ -317,7 +317,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //    while (size > 0) {
   //int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
-  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize());
+//  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize());
   if (len < 0) {
     logerror("Error while decoding audio Frame");
   }

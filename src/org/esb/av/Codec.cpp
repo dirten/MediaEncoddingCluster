@@ -47,6 +47,12 @@ namespace org
         _sample_rate = 0;
         _sample_format = (SampleFormat) 0;
         ctx = avcodec_alloc_context();
+		/*default settings for x264*/
+		ctx->me_range=16;
+		ctx->max_qdiff=4;
+		ctx->qmin=10;
+		ctx->qmax=51;
+		ctx->qcompress=0.6;
 
       }
 

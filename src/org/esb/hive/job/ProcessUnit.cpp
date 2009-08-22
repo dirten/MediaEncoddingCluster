@@ -8,7 +8,7 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = true;
+bool toDebug = false;
 
 class PacketSink : public Sink {
 public:
@@ -17,6 +17,7 @@ public:
   }
 
   void write(void * p) {
+	  if(toDebug)
     logdebug("Write Packet to Term Sink");
     Packet* pt = (Packet*) p;
     boost::shared_ptr<Packet> pEnc(new Packet(*pt));

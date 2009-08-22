@@ -508,17 +508,16 @@ void listener(int argc, char *argv[]) {
    * Initializing Application Services
    *
    */
-/*
+
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
   org::esb::hive::ExportScanner expscan;
   Messenger::getInstance().addMessageListener(expscan);
-*/
+
   org::esb::web::WebServer webserver;
-	webserver.start();
-//  Messenger::getInstance().addMessageListener(webserver);
-/*
+  Messenger::getInstance().addMessageListener(webserver);
+
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
@@ -526,10 +525,10 @@ void listener(int argc, char *argv[]) {
   Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
-  int port = atoi(org::esb::config::Config::getProperty("client.port", "8080"));
+  int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
-*/
+
 
 
   /*
@@ -538,7 +537,7 @@ void listener(int argc, char *argv[]) {
    *
    */
 
-/*
+
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
@@ -548,9 +547,9 @@ void listener(int argc, char *argv[]) {
   if (string(org::esb::config::Config::getProperty("web.start")) == "true" ||
       string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
-  }*/
+  }
 //    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
-/*
+
   if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
     Messenger::getInstance().sendMessage(Message().
         setProperty("directoryscan", org::esb::hive::START).
@@ -563,7 +562,7 @@ void listener(int argc, char *argv[]) {
   }
   //  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
 
-*/
+
   ctrlCHitWait();
 
   /*
