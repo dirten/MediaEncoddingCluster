@@ -1,14 +1,15 @@
 #include "Connection.h"
 #include "Statement.h"
 #include "ResultSet.h"
-//#include "org/esb/util/Log.h"
+#include "org/esb/util/Log.h"
 
 using namespace org::esb::sql;
 
 Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
 //  logdebug("Statement::Statement(MYSQL * mysql, const char * s)");
 //  stmt=mysql_stmt_init(mysql);
-  stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
+	rs=NULL;
+	stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
 	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
@@ -17,8 +18,8 @@ Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
 }
 
 Statement::~Statement() {
-//  logdebug("Statement::~Statement()");
-  delete rs;
+  logdebug("Statement::~Statement()");
+//  delete rs;
 //  close();
 }
 
@@ -26,20 +27,20 @@ ResultSet * Statement::executeQuery(std::string s) {
 	sql=s;
 	execute();
   if(!rs)
-    rs=new ResultSet(*stmtPtr.get());
+    rs=new ResultSet(stmtPtr.get());
   return rs;
 }
 
 ResultSet * Statement::executeQuery2() {
   execute();
   if(!rs)
-    rs=new ResultSet(*stmtPtr.get());
+    rs=new ResultSet(stmtPtr.get());
   return rs;
 }
 ResultSet  Statement::executeQuery() {
   execute();
   if(!rs)
-    rs=new ResultSet(*stmtPtr.get());
+    rs=new ResultSet(stmtPtr.get());
   return *rs;
 }
 /*

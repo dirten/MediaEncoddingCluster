@@ -43,7 +43,7 @@ namespace org {
         bool isNull(std::string col);
         ResultSetMetaData * getResultSetMetaData();
         ~ResultSet();
-        ResultSet(MYSQL_STMT & stmt);
+        ResultSet(MYSQL_STMT * stmt);
 
       private:
 //        friend class Statement;

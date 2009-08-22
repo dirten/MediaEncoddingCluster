@@ -12,7 +12,7 @@
 namespace org {
   namespace esb {
     namespace sql {
-      class Connection;
+//      class Connection;
       class ResultSet;
 
       class Statement {

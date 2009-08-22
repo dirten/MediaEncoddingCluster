@@ -73,7 +73,7 @@ ENDIF(LIBBZ2)
 
 IF(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/release)
+    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/debug)
     FIND_LIBRARY(MYSQL_LIB
         NAMES
           mysqld

@@ -5,19 +5,19 @@
 //#include "org/esb/util/Log.h"
 using namespace org::esb::sql;
 
-PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s) {
+PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
 //  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)");
-  stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(&mysql),&mysql_stmt_close);
+  stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
 	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   parseSql(s);
-  if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), strlen(sql.c_str()))) {
+  if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(sql));
     //    throw SqlException( mysql_stmt_error(stmt));
   }
   para = new Parameter(stmtPtr.get());
-  rs=0;
+  rs=NULL;
 }
 
 PreparedStatement::~PreparedStatement() {
@@ -72,7 +72,7 @@ ResultSet PreparedStatement::executeQuery() {
    */
   execute();
   if(!rs){
-    rs=new ResultSet(*stmtPtr.get());
+    rs=new ResultSet(stmtPtr.get());
   }
   return *rs;
 }
@@ -84,7 +84,7 @@ ResultSet * PreparedStatement::executeQuery2() {
    */
   execute();
   if(!rs){
-    rs=new ResultSet(*stmtPtr.get());
+    rs=new ResultSet(stmtPtr.get());
   }
   return rs;
 }

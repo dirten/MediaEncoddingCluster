@@ -16,14 +16,15 @@ Connection::Connection() {
 }
  */
 Connection::Connection(const char * con, bool auto_connect) {
-  std::string constr = con;
-  parseConnectionString(constr);
+  _constr = con;
+  parseConnectionString(_constr);
   if (auto_connect)
     connect();
 }
 
 Connection::Connection(const std::string con, bool auto_connect) {
-  parseConnectionString(con);
+	_constr=con;
+	parseConnectionString(con);
   if (auto_connect)
     connect();
 }
@@ -52,6 +53,7 @@ Connection::~Connection() {
 }
 
 void Connection::connect() {
+	logdebug("Connection::connect()");
   if (_staticCounter == 0) {
     std::string base_path=org::esb::config::Config::getProperty("hive.base_path");
 
@@ -88,7 +90,11 @@ Statement * Connection::createStatement() {
 }
 
 PreparedStatement Connection::prepareStatement(const char * sql) {
-  return PreparedStatement(*mysqlPtr.get(), sql);
+  return PreparedStatement(mysqlPtr.get(), sql);
+}
+
+PreparedStatement * Connection::prepareStatement2(const char * sql) {
+  return new PreparedStatement(mysqlPtr.get(), sql);
 }
 
 void Connection::close() {

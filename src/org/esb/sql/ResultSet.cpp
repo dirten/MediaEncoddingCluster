@@ -7,8 +7,8 @@ namespace org{
 namespace esb{
 namespace sql{
 /*******************************************************************************************************/
-ResultSet::ResultSet(MYSQL_STMT & stmt){
-  _rowPtr=boost::shared_ptr<Row>(new Row(&stmt));
+ResultSet::ResultSet(MYSQL_STMT * stmt){
+  _rowPtr=boost::shared_ptr<Row>(new Row(stmt));
 //  logdebug("ResultSet::ResultSet(MYSQL_STMT & stmt):row(&stmt)");
 }
 ResultSet::~ResultSet(){

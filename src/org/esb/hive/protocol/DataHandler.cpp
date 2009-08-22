@@ -55,7 +55,8 @@ class DataHandler: public ProtocolCommand{
 
 	void process(char * command){
 	    if(strcmp(command,GET_UNIT)==0){
-		ProcessUnit  un=_handler->getProcessUnit();
+			ProcessUnit  un;
+		_handler->getProcessUnit(un);
 		_oos->writeObject(un);
 	    }else
 	    if(strcmp(command,PUT_UNIT)==0){

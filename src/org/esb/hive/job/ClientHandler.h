@@ -20,24 +20,24 @@ namespace org {
         public:
           ClientHandler();
           ~ClientHandler();
-          //	bool getProcessUnit(ProcessUnit & unit);
+          bool getProcessUnit(ProcessUnit & unit);
           ProcessUnit getProcessUnit();
-          ProcessUnit getProcessUnit2();
-          ProcessUnit getProcessUnit3();
           bool putProcessUnit(ProcessUnit & unit);
           static bool addProcessUnit(boost::shared_ptr<ProcessUnit> unit);
         private:
           logger("hive.clienthandler");
           void fillProcessUnit();
           ProcessUnit * unit;
-          JobHandler * _handler;
+//          JobHandler * _handler;
           static boost::mutex m_mutex;
           static boost::mutex unit_list_mutex;
           sql::Connection * _con;
           sql::Connection * _con2;
           sql::Connection * _con3;
+          sql::Connection * _con4;
           sql::PreparedStatement * _stmt;
           sql::PreparedStatement * _stmt3;
+          sql::PreparedStatement * _stmt_p;
           sql::PreparedStatement * _stmt_fr;
           sql::PreparedStatement * _stmt_pu;
           sql::PreparedStatement * _stmt_ps;

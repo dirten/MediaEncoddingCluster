@@ -20,7 +20,8 @@ namespace org {
         ~Connection();
         DEPRECATED(Statement createStatement(const char * sql));
 		Statement * createStatement();
-        PreparedStatement prepareStatement(const char * sql);
+        DEPRECATED(PreparedStatement prepareStatement(const char * sql));
+        PreparedStatement * prepareStatement2(const char * sql);
         void executeNonQuery(std::string sql);
         long long int lastInsertId();
         void close();
@@ -31,6 +32,7 @@ namespace org {
       private:
         friend class Statement;
         friend class PreparedStatement;
+		std::string _constr;
         std::string _username;
         std::string _passwd;
         std::string _host;

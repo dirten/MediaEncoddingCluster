@@ -26,15 +26,15 @@ using namespace org::esb::lang;
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-Properties * properties = new Properties();
+Properties * properties = new Properties();;
 
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
   return r.erase(0, r.find_first_not_of(drop));
-
 }
 
 void Config::close() {
+	properties->clear();
   delete properties;
 }
 
@@ -44,7 +44,7 @@ void Config::init(char * filename) {
   if ((fp = fopen(filename, "r")) == NULL) {
     throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
-  //  properties = new Properties();
+//  properties = new Properties();
   while (fgets(buffer, 255, fp) != NULL) {
     parseLine(buffer);
   }
@@ -53,14 +53,16 @@ void Config::init(char * filename) {
   try {
     if (std::string(getProperty("db.connection")).length() > 0) {
       Connection con(std::string(getProperty("db.connection")));
-      Statement stmt = con.createStatement("select * from config");
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        if (rs.getString("config_key") != "db.connection") {
-          properties->setProperty(rs.getString("config_key"), rs.getString("config_val"));
-          logdebug("ConfigKey:" << rs.getString("config_key") << " ConfigVal:" << rs.getString("config_val"));
+      Statement * stmt = con.createStatement();
+      ResultSet * rs = stmt->executeQuery("select * from config");
+      while (rs->next()) {
+        if (rs->getString("config_key") != "db.connection") {
+          properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
+          logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }
       }
+//	  delete rs;
+	  delete stmt;
     }
   } catch (SqlException & ex) {
     logerror("cant load configuration from database");
@@ -72,12 +74,13 @@ void Config::save2db() {
   std::vector<std::pair<std::string, std::string > > ar = properties->toArray();
   std::vector<std::pair<std::string, std::string > >::iterator it = ar.begin();
   Connection con(std::string(getProperty("db.connection")));
-  PreparedStatement stmt = con.prepareStatement("replace into config(config_key, config_val) values (:key, :val)");
+  PreparedStatement * stmt = con.prepareStatement2("replace into config(config_key, config_val) values (:key, :val)");
   for (; it != ar.end(); it++) {
-    stmt.setString("key", it->first);
-    stmt.setString("val", it->second);
-    stmt.execute();
+    stmt->setString("key", it->first);
+    stmt->setString("val", it->second);
+    stmt->execute();
   }
+  delete stmt;
 }
 
 /**

@@ -36,17 +36,20 @@ util::Queue<boost::shared_ptr<ProcessUnit> > ClientHandler::puQueue;
 
 ClientHandler::ClientHandler() {
   logdebug("ClientHandler::ClientHandler()");
-  _handler = JobHandler::getInstance();
-  _con = new Connection(Config::getProperty("db.connection"));
-  _con3 = new Connection(Config::getProperty("db.connection"));
-  _con2 = new Connection(Config::getProperty("db.connection"));
-  _stmt_ps = new PreparedStatement(_con->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
-//  _stmt3 = new PreparedStatement(_con3->prepareStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1"));
-  _stmt = new PreparedStatement(_con->prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
-      "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)"));
-  _stmt_fr = new PreparedStatement(_con->prepareStatement("update process_units set complete = now() where id=:id"));
-  _stmt_pu = new PreparedStatement(_con2->prepareStatement("update process_units set send = now() where id=:id"));
-  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
+//  _handler = JobHandler::getInstance();
+  std::string c=Config::getProperty("db.connection");
+  _con = new Connection(c);
+  _con3 = new Connection(c);
+  _con4 = new Connection(c);
+  _con2 = new Connection(c);
+//  _stmt_ps = _con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  _stmt = _con->prepareStatement2("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+      "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
+  _stmt_fr = _con->prepareStatement2("update process_units set complete = now() where id=:id");
+  _stmt_pu = _con->prepareStatement2("update process_units set send = now() where id=:id");
+    _stmt_p = _con->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
+//  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
 }
 
 ClientHandler::~ClientHandler() {
@@ -67,164 +70,71 @@ bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
 void ClientHandler::fillProcessUnit() {
 
   boost::mutex::scoped_lock scoped_lock(m_mutex);
-  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id limit 1");
-  ResultSet rs = stmt_ps.executeQuery();
-
-  if (rs.next()) {
-    boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
-    int64_t start_ts = rs.getLong("start_ts");
-    int frame_count = rs.getInt("frame_count");
-    int stream_index = rs.getInt("stream_index");
-    logdebug("packing frame group with startts: " << start_ts);
-    string filename = rs.getString("path");
-    filename.append("/");
-    filename.append(rs.getString("filename"));
-    u->_decoder = CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
-    u->_encoder = CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
-    u->_source_stream = rs.getInt("source_stream");
-    u->_target_stream = rs.getInt("target_stream");
-    FormatInputStream * fis = FormatStreamFactory::getInputStream(filename);
-    if (fis == NULL) {
-      logerror("Error Opening Input Stream from " << filename);
-//      return u;
-    }
-    //    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
-    int den = rs.getInt("time_base_den");
-    int type = rs.getInt("stream_type");
-    int framerate = rs.getInt("framerate");
-    int samplerate = rs.getInt("sample_rate");
-    int gop = rs.getInt("gop_size");
-    long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-    logdebug("building seek offset -" << offset);
-    fis->seek(rs.getInt("stream_index"), (start_ts - offset));
-    PacketInputStream pis(fis);
-    int size = 0;
-    for (int a = 0; a < frame_count + 3;) {
-      Packet tmp_p;
-      if (pis.readPacket(tmp_p) < 0) {
-        logdebug("Null Packet from Stream");
-        break;
-      }
-      if (tmp_p.packet->stream_index != stream_index)continue;
-      if (tmp_p.packet->dts >= start_ts) {
-        a++;
-        boost::shared_ptr<Packet> p(new Packet(tmp_p));
-        u->_input_packets.push_back(p);
-        size += p->packet->size;
-      } else {
-        logdebug("Dropping Packet with dts" << tmp_p.packet->dts);
-      }
-    }
-    u->_process_unit = rs.getInt("u.id");
-    _stmt_pu->setInt("id", rs.getInt("u.id"));
-    _stmt_pu->execute();
-    logdebug("packing frame group  with size:" << size << " !!!");
-    puQueue.enqueue(u);
-  } else {
-    //      logdebug("no more process units left, sending empty process unit");
-    //        setCompleteTime(1);
-  }
-
 
 }
-ProcessUnit ClientHandler::getProcessUnit2() {
-  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-  boost::shared_ptr<ProcessUnit> unit=puQueue.dequeue();
-  _stmt_job_log->setInt("source",unit->_source_stream);
-  _stmt_job_log->setInt("target",unit->_target_stream);
-  _stmt_job_log->setLong("start",unit->_input_packets.front()->packet->dts);
-  _stmt_job_log->setInt("fcount",unit->_input_packets.size());
-  _stmt_job_log->execute();
-  unit->_process_unit=_stmt_job_log->getLastInsertId();
-  return (*unit);
-}
+bool ClientHandler::getProcessUnit(ProcessUnit & u) {
+//  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
-ProcessUnit ClientHandler::getProcessUnit3() {
-  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-  //  Connection con(Config::getProperty("db.connection"));
-  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id limit 1");
-  ResultSet rs = stmt_ps.executeQuery();
-
-  ProcessUnit u;
-  if (rs.next()) {
-    int64_t start_ts = rs.getLong("start_ts");
-    int frame_count = rs.getInt("frame_count");
-    int stream_index = rs.getInt("stream_index");
+//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+//  ResultSet * rs = stmt_ps.executeQuery2();
+//  Connection * con234=new Connection(Config::getProperty("db.connection"));
+  logdebug("prepare statement");
+//  PreparedStatement *s = con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  logdebug("statement  prepared");
+  //  ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  ResultSet * rs_pu = _stmt3->executeQuery2();
+  logdebug("Query executed");
+  if (rs_pu->next()) {
+    int64_t start_ts = rs_pu->getLong("start_ts");
+    int frame_count = rs_pu->getInt("frame_count");
+    int stream_index = rs_pu->getInt("stream_index");
     logdebug("packing frame group with startts: " << start_ts);
-    string filename = rs.getString("path");
-    filename.append("/");
-    filename.append(rs.getString("filename"));
-    u._decoder = CodecFactory::getStreamDecoder(rs.getInt("source_stream"));
-    u._encoder = CodecFactory::getStreamEncoder(rs.getInt("target_stream"));
-    u._source_stream = rs.getInt("source_stream");
-    u._target_stream = rs.getInt("target_stream");
-    /*
-        org::esb::io::File file(filename.c_str());
-        if (!file.exists()) {
-          logerror("Could not find file : " << filename.c_str());
-          _stmt_pu->setInt("id", rs->getInt("u.id"));
-          _stmt_pu->execute();
-          return u;
-        }
-        FormatInputStream fis(&file);
-     */
-    FormatInputStream * fis = FormatStreamFactory::getInputStream(filename);
-    if (fis == NULL) {
-      logerror("Error Opening Input Stream from " << filename);
-      return u;
-    }
-    //    fis->seek(rs->getInt("stream_index"), (start_ts - 70000));
-    int den = rs.getInt("time_base_den");
-    int type = rs.getInt("stream_type");
-    int framerate = rs.getInt("framerate");
-    int samplerate = rs.getInt("sample_rate");
-    int gop = rs.getInt("gop_size");
-    long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-    logdebug("building seek offset -" << offset);
-    fis->seek(rs.getInt("stream_index"), (start_ts - offset));
-    PacketInputStream pis(fis);
+    string filename = rs_pu->getString("path");
+    filename.append(rs_pu->getString("filename"));
+    u._decoder = CodecFactory::getStreamDecoder(rs_pu->getInt("source_stream"));
+    u._encoder = CodecFactory::getStreamEncoder(rs_pu->getInt("target_stream"));
+    u._source_stream = rs_pu->getInt("source_stream");
+    u._target_stream = rs_pu->getInt("target_stream");
     int size = 0;
-    for (int a = 0; a < frame_count + 3;) {
-      Packet tmp_p;
-      if (pis.readPacket(tmp_p) < 0) {
-        logdebug("Null Packet from Stream");
-        break;
-      }
-      if (tmp_p.packet->stream_index != stream_index)continue;
-      if (tmp_p.packet->dts >= start_ts) {
-        a++;
-        boost::shared_ptr<Packet> p(new Packet(tmp_p));
-        u._input_packets.push_back(p);
-        size += p->packet->size;
-      } else {
-        logdebug("Dropping Packet with dts" << tmp_p.packet->dts);
-      }
-    }
-    u._process_unit = rs.getInt("u.id");
-    _stmt_pu->setInt("id", rs.getInt("u.id"));
-    _stmt_pu->execute();
-    /*
-                    std::string path="C:/devel/MediaEncodingCluster-build/src/Debug";
-                    path+="/tmp/";
-                    std::string outfilename=path.append(org::esb::util::Decimal(rs.getInt("u.id")%1000).toString());
-                    outfilename+="/";
-                    org::esb::io::File dir(outfilename.c_str());
-                    if(!dir.exists()){
-                            dir.mkdir();
-                    }
+//    Connection con2(Config::getProperty("db.connection"));
+//    PreparedStatement * stmt_p = _con3->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
+    _stmt_p->setInt("sid", rs_pu->getInt("source_stream"));
+    _stmt_p->setLong("dts", start_ts);
+    _stmt_p->setInt("limit", frame_count + 3);
+    logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
+    ResultSet rs_p = _stmt_p->executeQuery();
 
-                    outfilename.append(rs.getString("u.id")).append(".unit_src");
-                    std::ofstream ofs(outfilename.c_str());
-                            boost::archive::binary_oarchive oa(ofs);
-                    oa << BOOST_SERIALIZATION_NVP(u);
-     */
+    for (int a = 0; rs_p.next();) {
+      if (rs_p.getInt("data_size") != rs_p.getBlob("data").length()) {
+        logerror("field data_size has different value then the blob field on packet id:" << rs_p.getInt("id") << " : DROP PACKET")
+        continue;
+      }
+      boost::shared_ptr<Packet> p(new Packet(rs_p.getInt("data_size")));
+      memcpy(p->packet->data, rs_p.getBlob("data").c_str(), p->packet->size);
+      p->packet->pts = rs_p.getLong("pts");
+      p->packet->dts = rs_p.getLong("dts");
+      p->packet->duration = rs_p.getInt("duration");
+      p->packet->flags = rs_p.getInt("flags");
+      p->packet->pos = rs_p.getLong("pos");
+      p->packet->stream_index = rs_p.getInt("stream_index");
+      AVRational ar;
+      ar.num=rs_pu->getInt("time_base_num");
+      ar.den=rs_pu->getInt("time_base_den");
+      p->setTimeBase(ar);
+      u._input_packets.push_back(p);
+      size += p->packet->size;
+    }
+    u._process_unit = rs_pu->getInt("u.id");
+    _stmt_pu->setInt("id", rs_pu->getInt("u.id"));
+    _stmt_pu->execute();
     logdebug("packing frame group  with size:" << size << " !!!");
 
   } else {
     //      logdebug("no more process units left, sending empty process unit");
     //        setCompleteTime(1);
   }
-  return u;
+  return true;
+
 }
 
 ProcessUnit ClientHandler::getProcessUnit() {

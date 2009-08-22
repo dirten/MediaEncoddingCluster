@@ -24,7 +24,7 @@ namespace org {
 
       class PreparedStatement {
       public:
-        PreparedStatement(MYSQL & mysql, const char * sql);
+        PreparedStatement(MYSQL * mysql, const char * sql);
         //				    PreparedStatement(mysqlpp::Query stmt);
         ~PreparedStatement();
         void setDouble(string pos, double val);
