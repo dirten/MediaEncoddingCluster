@@ -77,7 +77,7 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
 
 //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
 //  ResultSet * rs = stmt_ps.executeQuery2();
-//  Connection * con234=new Connection(Config::getProperty("db.connection"));
+  Connection * con234=new Connection(Config::getProperty("db.connection"));
   logdebug("prepare statement");
 //  PreparedStatement *s = con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   logdebug("statement  prepared");

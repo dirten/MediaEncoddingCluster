@@ -498,11 +498,7 @@ void client(int argc, char *argv[]) {
 }
 
 /*----------------------------------------------------------------------------------------------*/
-
-void listener(int argc, char *argv[]) {
-
-  //  Setup::check();
-
+void start(){
   /*
    *
    * Initializing Application Services
@@ -562,9 +558,8 @@ void listener(int argc, char *argv[]) {
   }
   //  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", START));
 
-
-  ctrlCHitWait();
-
+}
+void stop(){
   /*
    *
    * Stopping Application Services from configuration
@@ -580,6 +575,15 @@ void listener(int argc, char *argv[]) {
 
   Messenger::free();
   //  mysql_library_end();
+
+}
+void listener(int argc, char *argv[]) {
+
+  //  Setup::check();
+
+  start();
+  ctrlCHitWait();
+  stop();
 
 }
 
