@@ -25,7 +25,7 @@ namespace org
       class Config
       {
       public:
-        static void init(char*filename);
+        static bool init(char*filename);
         static void close();
         static void save2db();
         static char * getProperty( char * key, char * def="");

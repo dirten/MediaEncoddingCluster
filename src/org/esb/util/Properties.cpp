@@ -172,7 +172,7 @@ namespace util{
          * Clears all properties from the map.
          */
         void Properties::clear(){
-            properties.clear();
+			properties.clear();
         }
         
         void Properties::load(org::esb::io::InputStream * is){

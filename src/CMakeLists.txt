@@ -139,7 +139,7 @@ INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
   )
 
 IF(WIN32)
-INSTALL(FILES ${MYSQL_LIBRARY_PATH}/libmysqld.dll
+INSTALL(FILES ${MYSQL_LIBRARY_PATH}/libmysql.dll
   DESTINATION ./bin
   )
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys

@@ -43,7 +43,7 @@ ClientHandler::ClientHandler() {
   _con4 = new Connection(c);
   _con2 = new Connection(c);
 //  _stmt_ps = _con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id /*order by priority*/ limit 1");
   _stmt = _con->prepareStatement2("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
   _stmt_fr = _con->prepareStatement2("update process_units set complete = now() where id=:id");
@@ -73,11 +73,11 @@ void ClientHandler::fillProcessUnit() {
 
 }
 bool ClientHandler::getProcessUnit(ProcessUnit & u) {
-//  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
 //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
 //  ResultSet * rs = stmt_ps.executeQuery2();
-  Connection * con234=new Connection(Config::getProperty("db.connection"));
+//  Connection * con234=new Connection(Config::getProperty("db.connection"));
   logdebug("prepare statement");
 //  PreparedStatement *s = con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   logdebug("statement  prepared");
@@ -133,6 +133,7 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     //      logdebug("no more process units left, sending empty process unit");
     //        setCompleteTime(1);
   }
+//  delete con234;
   return true;
 
 }

@@ -47,8 +47,8 @@ namespace org {
                 //		org::esb::util::Queue<boost::shared_ptr<job::ProcessUnit> ,10> outQueue;
                 boost::mutex terminationMutex;
                 boost::condition ctrlCHit;
-                boost::mutex thread_read_mutex;
-                boost::mutex thread_write_mutex;
+//                boost::mutex thread_read_mutex;
+//                boost::mutex thread_write_mutex;
                 void packetReader();
                 void packetWriter();
             };
