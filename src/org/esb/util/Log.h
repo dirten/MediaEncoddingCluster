@@ -1,5 +1,5 @@
 #define DUMMY
-#define FILELOGGING_
+#define FILELOGGING
 #ifndef ORG_ESB_UTIL_LOGGER_H
 #define ORG_ESB_UTIL_LOGGER_H
 //#include "cxxtools/log.h"

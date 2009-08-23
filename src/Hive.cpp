@@ -70,6 +70,7 @@ namespace po = boost::program_options;
 void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
+void start();
 int rec = 0;
 
 /*
@@ -109,7 +110,8 @@ int main(int argc, char * argv[]) {
 
 
 
-    std::string config_path = ".hive.cfg";
+    std::string config_path = Config::getProperty("hive.base_path");
+	config_path.append("/.hive.cfg");
     po::options_description gen;
 
     gen.add_options()
@@ -438,17 +440,85 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
     }
 
     // Report running status when initialization is complete.
+	/*
+   *
+   * Initializing Application Services
+   *
+   */
+
+  org::esb::hive::DirectoryScanner dirscan;
+  Messenger::getInstance().addMessageListener(dirscan);
+
+  org::esb::hive::ExportScanner expscan;
+  Messenger::getInstance().addMessageListener(expscan);
+
+  org::esb::web::WebServer webserver;
+  Messenger::getInstance().addMessageListener(webserver);
+
+  org::esb::hive::HiveListener hive;
+  Messenger::getInstance().addMessageListener(hive);
+
+//  org::esb::hive::job::ProcessUnitWatcher puw;
+//  Messenger::getInstance().addMessageListener(puw);
+
+  string host = org::esb::config::Config::getProperty("client.host", "localhost");
+  int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
+  org::esb::hive::HiveClient client(host, port);
+  Messenger::getInstance().addMessageListener(client);
+
+
+
+  /*
+   *
+   * Starting Application Services from configuration
+   *
+   */
+
+
+  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+//    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
+  }
+
+  if (string(org::esb::config::Config::getProperty("web.start")) == "true" ||
+      string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+  }
+
+  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
+    Messenger::getInstance().sendMessage(Message().
+        setProperty("directoryscan", org::esb::hive::START).
+        setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
+        setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
+    Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+  }
+  if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
+    Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+  }
 
     ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
     // TO_DO: Perform work until service stops.
-
     while(1)
     {
         // Check whether to stop the service.
 
         WaitForSingleObject(ghSvcStopEvent, INFINITE);
+/*
+   *
+   * Stopping Application Services from configuration
+   *
+   */
 
+  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+
+  Messenger::free();
         ReportSvcStatus( SERVICE_STOPPED, NO_ERROR, 0 );
         return;
     }
@@ -600,8 +670,12 @@ void stop(){
 void listener(int argc, char *argv[]) {
 
   //  Setup::check();
-
-  start();
+#ifdef WIN32
+start_win32();
+#else
+start();
+#endif
+  
   
 //  org::esb::config::Config::close();
 //  stop();
