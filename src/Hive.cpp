@@ -265,6 +265,8 @@ int main(int argc, char * argv[]) {
   delete []base_path;
 
   org::esb::config::Config::close();
+  mysql_server_end();
+
   return 0;
 }
 

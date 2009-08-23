@@ -35,6 +35,7 @@ map<int, boost::shared_ptr<ProcessUnit> > ClientHandler::process_unit_list;
 util::Queue<boost::shared_ptr<ProcessUnit> > ClientHandler::puQueue;
 
 ClientHandler::ClientHandler() {
+	mysql_thread_init();
   logdebug("ClientHandler::ClientHandler()");
 //  _handler = JobHandler::getInstance();
   std::string c=Config::getProperty("db.connection");
@@ -59,6 +60,7 @@ ClientHandler::~ClientHandler() {
   delete _stmt_fr;
   delete _stmt_pu;
   delete _stmt_ps;
+  mysql_thread_end();
 }
 
 bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
@@ -77,12 +79,12 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
 
 //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
 //  ResultSet * rs = stmt_ps.executeQuery2();
-//  Connection * con234=new Connection(Config::getProperty("db.connection"));
+  Connection  con(Config::getProperty("db.connection"));
   logdebug("prepare statement");
-//  PreparedStatement *s = con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  PreparedStatement *s = con.prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   logdebug("statement  prepared");
   //  ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  ResultSet * rs_pu = _stmt3->executeQuery2();
+  ResultSet * rs_pu = s->executeQuery2();
   logdebug("Query executed");
   if (rs_pu->next()) {
     int64_t start_ts = rs_pu->getLong("start_ts");
