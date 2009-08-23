@@ -109,7 +109,7 @@ Source: "@FFMPEG_DIR@\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignorever
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
-Name: "{group}\start MHive"; Filename: "{app}\bin\mhive.exe" ; Parameters: "-s"; WorkingDir: "{app}"
+Name: "{group}\start MHive"; Filename: "{app}\bin\mhive.exe" ; WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080/"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"
