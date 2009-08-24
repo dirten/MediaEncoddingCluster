@@ -34,11 +34,14 @@ WApplication *createApp(const WEnvironment& env) {
 }
 
 WebServer::WebServer() : server("test") {
+  std::string log_file=org::esb::config::Config::getProperty("hive.base_path");
+  log_file.append("/http.log");
   char * args[] = {
     "mhive",
     "--docroot", org::esb::config::Config::getProperty("web.docroot", "."),
     "--http-address", "0.0.0.0",
     "--http-port", org::esb::config::Config::getProperty("web.port", "8080"),
+    "--accesslog",const_cast<char*>(log_file.c_str()),
     "--no-compression",
     "--deploy-path", "/"
   };
@@ -46,6 +49,7 @@ WebServer::WebServer() : server("test") {
 
   server.addEntryPoint(WServer::Application, &createApp);
   server.addEntryPoint(WServer::Application, &createSetup, "setup");
+//  logdebug(typeid(*this).name());
 }
 
 WebServer::~WebServer() {

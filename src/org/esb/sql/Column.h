@@ -18,7 +18,7 @@ namespace org {
             class Column {
             public:
                 Column(MYSQL_FIELD * field, MYSQL_BIND & bind);
-                Column(MYSQL_BIND & bind);
+                Column(MYSQL_BIND & bind, std::string name);
                 ~Column();
                 const std::string getString();
                 void setString(const char *);
@@ -58,7 +58,7 @@ namespace org {
                 template <typename c_type>
                 void setValue(c_type value, enum_field_types mysql_type);
 
-//                std::string name;
+                std::string name;
             };
 
         }

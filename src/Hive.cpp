@@ -100,7 +100,7 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.base_path", base_path);
 
-  //    std::cout << "Bin Path" << path << std::endl;
+   //   std::cout << "Bin Path" << path << std::endl;
   //    std::cout << "Base Path" << base_path << std::endl;
 
   try {

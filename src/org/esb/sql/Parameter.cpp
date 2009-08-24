@@ -13,7 +13,7 @@ class Parameter{
       memset(bind,0,memsize);
 
       for(int a=0;a<column_count;a++){
-        Column * col=new Column(bind[a]);
+        Column * col=new Column(bind[a],"");
         cols[a]=col;
       }
     /*      

@@ -61,6 +61,7 @@ add_library (util util/Properties.cpp
       util/Decimal.cpp 
       util/ScopedTimeCounter.cpp 
       util/IllegalFormatException.cpp
+      util/Log.cpp
 #      util/Queue.cpp
 )
 

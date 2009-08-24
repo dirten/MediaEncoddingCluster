@@ -76,7 +76,7 @@ namespace org {
       int StreamInfo::getDuration(){
         return _s->duration;
       }
-      int StreamInfo::getQuality(){
+      float StreamInfo::getQuality(){
         return _s->quality;
       }
       long long int StreamInfo::getFirstPts(){

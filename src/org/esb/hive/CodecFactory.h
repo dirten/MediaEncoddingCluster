@@ -19,6 +19,7 @@ namespace hive{
 		public:
 			static org::esb::av::Decoder * getStreamDecoder(int streamid);
 			static org::esb::av::Encoder * getStreamEncoder(int streamid);
+                        static void free();
 		private:
 			CodecFactory();
 			static std::map<int, boost::shared_ptr<org::esb::av::Decoder> > decoder_map;

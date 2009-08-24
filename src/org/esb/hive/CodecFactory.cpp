@@ -77,4 +77,15 @@ av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
   }
   return encoder_map[streamid].get();
 }
-
+void CodecFactory::free(){
+/*
+  std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
+  for(;it_dec!=decoder_map.end();it_dec++){
+    delete (*it_dec).second;
+  }
+  std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_enc=encoder_map.begin();
+  for(;it_enc!=encoder_map.end();it_enc++){
+    delete (*it_enc).second;
+  }
+   */
+}

@@ -32,7 +32,7 @@ namespace org {
         if (msg.getProperty("hivelistener") == "start") {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          logdebug("Hive Listener running on port:" << Config::getProperty("hive.port"));
+          logdebug("Hive Listener running on port:" << Config::getProperty("hive.port","20200"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
@@ -48,7 +48,7 @@ namespace org {
       }
 
       void HiveListener::startListener() {
-        int port = atoi(Config::getProperty("hive.port"));
+        int port = atoi(Config::getProperty("hive.port","20200"));
         server = new TcpServerSocket(port);
         server->bind();
         for (; main_nextloop;) {

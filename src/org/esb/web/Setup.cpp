@@ -34,7 +34,7 @@
 #include "org/esb/hive/Setup.h"
 
 //#include "wtk/Div.h"
-
+using namespace org::esb;
 namespace org {
   namespace esb {
     namespace web {
@@ -92,7 +92,7 @@ namespace org {
 
         butPrev->clicked.connect(SLOT(this, Setup::prevStep));
         butNext->clicked.connect(SLOT(this, Setup::nextStep));
-        
+
         northRight->layout()->addWidget(butPrev);
         northRight->layout()->addWidget(butNext);
 
@@ -214,10 +214,10 @@ namespace org {
         logdebug("Step=" << stack->currentIndex());
         _el.validate();
         int idx = stack->currentIndex();
-        if(idx==0&&(!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
           idx++;
-        if(idx==1&&(!_elchk.getElement("mode.server")->isChecked()))
-          idx+=3;
+        if (idx == 1 && (!_elchk.getElement("mode.server")->isChecked()))
+          idx += 3;
         if (idx == 4)
           stack->insertWidget(5, createSavePage());
         if (idx < stack->count()) {
@@ -239,9 +239,9 @@ namespace org {
 
       void Setup::prevStep() {
         int idx = stack->currentIndex();
-        if(idx==5&&(!_elchk.getElement("mode.server")->isChecked()))
-          idx-=3;
-        if(idx==2&&(!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 5 && (!_elchk.getElement("mode.server")->isChecked()))
+          idx -= 3;
+        if (idx == 2 && (!_elchk.getElement("mode.client")->isChecked()))
           idx--;
         if (idx == 5) {
           Wt::WWidget * ref = stack->widget(5);
@@ -307,7 +307,7 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createDbEmbeddedPage() {
-//        _el.getElement("db.db")->setText("hive");
+        //        _el.getElement("db.db")->setText("hive");
         butNext->setHidden(false);
         wtk::Div * div_db = new wtk::Div("");
         div_db->addWidget(new Wt::WText(Wt::WString::tr("database-embedded-setup")));
@@ -396,7 +396,7 @@ namespace org {
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("save-setup").
 #endif
             arg(Wt::WString(server_mode)).
-			arg(Wt::WString(client_mode)).
+            arg(Wt::WString(client_mode)).
             arg(_el.getElement("db.host")->text().narrow()).
             arg(_el.getElement("db.db")->text().narrow()).
             arg(_el.getElement("db.user")->text().narrow()).
@@ -468,63 +468,70 @@ namespace org {
 
       void Setup::saveConfig() {
         org::esb::util::Properties props;
-        props.setProperty("db.connection",
-            std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
-            append(";db=").append(_el.getElement("db.db")->text().narrow()).
-            append(";user=").append(_el.getElement("db.user")->text().narrow()).
-            append(";passwd=").append(_el.getElement("db.pass")->text().narrow())
-            );
         const char * server_mode = _elchk.getElement("mode.server")->isChecked() ? "On" : "Off";
         const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
         props.setProperty("mode.server", server_mode);
         props.setProperty("mode.client", client_mode);
-        //        error->setText(Wt::WString::tr("setup-saved"));
-        using namespace org::esb;
+
+        if (_elchk.getElement("mode.client")->isChecked()) {
+          props.setProperty("client.port", _el.getElement("client.port")->text().narrow().c_str());
+          props.setProperty("client.host", _el.getElement("client.host")->text().narrow().c_str());
+        }
+        if (_elchk.getElement("mode.server")->isChecked()) {
+          props.setProperty("db.connection",
+              std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
+              append(";db=").append(_el.getElement("db.db")->text().narrow()).
+              append(";user=").append(_el.getElement("db.user")->text().narrow()).
+              append(";passwd=").append(_el.getElement("db.pass")->text().narrow())
+              );
+          //        error->setText(Wt::WString::tr("setup-saved"));
+          //        using namespace org::esb;
 #ifdef USE_EMBEDDED_MYSQL
-        try {
-          sql::Connection con_create(std::string(""));
-          con_create.executeNonQuery(string("CREATE DATABASE hive"));
-        } catch (...) {
-          error->setText(Wt::WString::tr("create-database_failed"));
-        }
+          try {
+            sql::Connection con_create(std::string(""));
+            con_create.executeNonQuery(string("CREATE DATABASE hive"));
+          } catch (...) {
+            error->setText(Wt::WString::tr("create-database_failed"));
+          }
 #endif
-        config::Config::setProperty("db.connection", props.getProperty("db.connection"));
-        config::Config::setProperty("host", _el.getElement("db.host")->text().narrow().c_str());
-        config::Config::setProperty("user", _el.getElement("db.user")->text().narrow().c_str());
-        config::Config::setProperty("passwd", _el.getElement("db.pass")->text().narrow().c_str());
-        config::Config::setProperty("database", _el.getElement("db.db")->text().narrow().c_str());
-        try {
-          std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script.append("/../sql/hive-0.0.3.sql");
+          config::Config::setProperty("db.connection", props.getProperty("db.connection"));
+          config::Config::setProperty("host", _el.getElement("db.host")->text().narrow().c_str());
+          config::Config::setProperty("user", _el.getElement("db.user")->text().narrow().c_str());
+          config::Config::setProperty("passwd", _el.getElement("db.pass")->text().narrow().c_str());
+          config::Config::setProperty("database", _el.getElement("db.db")->text().narrow().c_str());
+          try {
+            std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
+            sql_script.append("/../sql/hive-0.0.3.sql");
 
-          hive::Setup::buildDatabaseModel(sql_script.c_str());
-        } catch (sql::SqlException & ex) {
-          logerror("SqlException:" << ex.what());
-          error->setText(ex.what());
-          return;
+            hive::Setup::buildDatabaseModel(sql_script.c_str());
+          } catch (sql::SqlException & ex) {
+            logerror("SqlException:" << ex.what());
+            error->setText(ex.what());
+            return;
+          }
+
+          sql::Connection con(std::string(props.getProperty("db.connection")));
+          /*
+                  con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
+                  con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','") + _el.getElement("db.db")->text().narrow() + "')");
+                  con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
+                  con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
+           **/
+          con.executeNonQuery(std::string("INSERT INTO `user` ( `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES ( '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
+
+          error->setText("Database Model created!");
+          config::Config::setProperty("hive.mode", "server");
+          config::Config::setProperty("hive.port", _el.getElement("hive.hport")->text().narrow().c_str());
+          config::Config::setProperty("hive.start", "true");
+          config::Config::setProperty("hive.scandir", "/");
+          config::Config::setProperty("hive.outdir", "/");
+          config::Config::setProperty("hive.autoscan", "true");
+          config::Config::setProperty("hive.scaninterval", "30");
+          config::Config::setProperty("web.start", "true");
+          config::Config::save2db();
         }
 
-        sql::Connection con(std::string(props.getProperty("db.connection")));
-        /*
-                con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
-                con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','") + _el.getElement("db.db")->text().narrow() + "')");
-                con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
-                con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
-         **/
-        con.executeNonQuery(std::string("INSERT INTO `user` ( `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES ( '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
-
-        error->setText("Database Model created!");
-        config::Config::setProperty("hive.mode", "server");
-        config::Config::setProperty("hive.port", _el.getElement("hive.hport")->text().narrow().c_str());
-        config::Config::setProperty("hive.start", "true");
-        config::Config::setProperty("hive.scandir", "/");
-        config::Config::setProperty("hive.outdir", "/");
-        config::Config::setProperty("hive.autoscan", "true");
-        config::Config::setProperty("hive.scaninterval", "300");
-        config::Config::setProperty("web.start", "true");
-        config::Config::save2db();
-
-        org::esb::io::File file(org::esb::config::Config::getProperty("config.file",".hive.cfg"));
+        org::esb::io::File file(org::esb::config::Config::getProperty("config.file", ".hive.cfg"));
         org::esb::io::FileOutputStream fos(&file);
         props.save(&fos);
         fos.close();

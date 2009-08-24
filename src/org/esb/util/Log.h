@@ -1,5 +1,5 @@
 #define DUMMY
-#define FILELOGGING
+#define FILELOGGING_
 #ifndef ORG_ESB_UTIL_LOGGER_H
 #define ORG_ESB_UTIL_LOGGER_H
 //#include "cxxtools/log.h"
@@ -9,6 +9,7 @@
 //#include "Datetime.h"
 
 #include <fstream>
+#include <sstream>
 
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
@@ -17,6 +18,26 @@
 #define logwarn(o1)loglevel(o1, "warn")/*log_warn(o1)*/
 #define loginfo(o1)loglevel(o1, "info")/*log_info(o1)*/
 #define logdebug(o1)loglevel(o1, "debug")/*log_debug(o1)*/
+//#define logdebug(o1) { std::stringstream t; \
+//t<< o1; \
+//Log::getLogger()->debug(t);}
+#include <iostream>
+
+
+class Log{
+public:
+    static Log * getLogger();
+    void debug(std::stringstream &);
+    void info(std::stringstream &);
+    void warn(std::stringstream &);
+    void error(std::stringstream &);
+    void fatal(std::stringstream &);
+private:
+    Log();
+    void loggg(std::stringstream & s, const char * level);
+    std::ofstream myfile;
+    static Log * _logger;
+};
 #ifndef DUMMY 
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include <iostream>
@@ -30,10 +51,8 @@ using namespace boost::gregorian;
 }
 #else
 #ifdef FILELOGGING
-#include <iostream>
+
 #define loglevel(o1,level) {\
-	std::ofstream myfile;\
-	myfile.open ("data.log",std::ios::out | std::ios::app);\
 	myfile<< "[ "<<level<< "]" << o1<<"\r"<<std::endl; \
 	 myfile.close();\
 }
@@ -41,6 +60,11 @@ using namespace boost::gregorian;
 #include <iostream>
 #define loglevel(o1,level) {\
 	std::cout<< "[ "<<level<< " ] ["<<__FILE__<<":"<<__LINE__<<"]" << o1<<"\r"<<std::endl; \
+}
+#define loglevel2(o1,level) {\
+    std::stringstream t; \
+    t<< o1; \
+    Log::getLogger()->debug(t);\
 }
 #endif
 #endif

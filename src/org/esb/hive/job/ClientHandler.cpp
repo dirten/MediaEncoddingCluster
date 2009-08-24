@@ -35,36 +35,36 @@ map<int, boost::shared_ptr<ProcessUnit> > ClientHandler::process_unit_list;
 util::Queue<boost::shared_ptr<ProcessUnit> > ClientHandler::puQueue;
 
 ClientHandler::ClientHandler() {
-	mysql_thread_init();
+  //	mysql_thread_init();
   logdebug("ClientHandler::ClientHandler()");
-//  _handler = JobHandler::getInstance();
-  std::string c=Config::getProperty("db.connection");
+  //  _handler = JobHandler::getInstance();
+  std::string c = Config::getProperty("db.connection");
   _con = new Connection(c);
-  _con3 = new Connection(c);
-  _con4 = new Connection(c);
-  _con2 = new Connection(c);
-//  _stmt_ps = _con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id /*order by priority*/ limit 1");
+  //  _con3 = new Connection(c);
+  //  _con4 = new Connection(c);
+  //  _con2 = new Connection(c);
+  //  _stmt_ps = _con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  //  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id /*order by priority*/ limit 1");
   _stmt = _con->prepareStatement2("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
   _stmt_fr = _con->prepareStatement2("update process_units set complete = now() where id=:id");
   _stmt_pu = _con->prepareStatement2("update process_units set send = now() where id=:id");
-    _stmt_p = _con->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
-//  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
+  _stmt_p = _con->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
+  //  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
 }
 
 ClientHandler::~ClientHandler() {
   logdebug("ClientHandler::~ClientHandler()");
+
   delete _con;
   delete _stmt;
+  delete _stmt_p;
   delete _stmt_fr;
   delete _stmt_pu;
-  delete _stmt_ps;
-  mysql_thread_end();
 }
 
 bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
-//  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+  //  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   puQueue.enqueue(unit);
   return true;
 }
@@ -74,19 +74,22 @@ void ClientHandler::fillProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(m_mutex);
 
 }
+
 bool ClientHandler::getProcessUnit(ProcessUnit & u) {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
-//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-//  ResultSet * rs = stmt_ps.executeQuery2();
-  Connection  con(Config::getProperty("db.connection"));
+  //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  //  ResultSet * rs = stmt_ps.executeQuery2();
+  Connection con(Config::getProperty("db.connection"));
   logdebug("prepare statement");
-  PreparedStatement *s = con.prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  //  PreparedStatement *s = con.prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  PreparedStatement *s = con.prepareStatement2("select u.id,start_ts, frame_count, stream_index, path,filename, source_stream, target_stream,time_base_num,time_base_den from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   logdebug("statement  prepared");
   //  ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   ResultSet * rs_pu = s->executeQuery2();
   logdebug("Query executed");
   if (rs_pu->next()) {
+    logdebug("Packing ProcessUnit");
     int64_t start_ts = rs_pu->getLong("start_ts");
     int frame_count = rs_pu->getInt("frame_count");
     int stream_index = rs_pu->getInt("stream_index");
@@ -98,8 +101,8 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     u._source_stream = rs_pu->getInt("source_stream");
     u._target_stream = rs_pu->getInt("target_stream");
     int size = 0;
-//    Connection con2(Config::getProperty("db.connection"));
-//    PreparedStatement * stmt_p = _con3->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
+    //    Connection con2(Config::getProperty("db.connection"));
+    //    PreparedStatement * stmt_p = _con3->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
     _stmt_p->setInt("sid", rs_pu->getInt("source_stream"));
     _stmt_p->setLong("dts", start_ts);
     _stmt_p->setInt("limit", frame_count + 3);
@@ -120,8 +123,8 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
       p->packet->pos = rs_p.getLong("pos");
       p->packet->stream_index = rs_p.getInt("stream_index");
       AVRational ar;
-      ar.num=rs_pu->getInt("time_base_num");
-      ar.den=rs_pu->getInt("time_base_den");
+      ar.num = rs_pu->getInt("time_base_num");
+      ar.den = rs_pu->getInt("time_base_den");
       p->setTimeBase(ar);
       u._input_packets.push_back(p);
       size += p->packet->size;
@@ -131,11 +134,16 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     _stmt_pu->execute();
     logdebug("packing frame group  with size:" << size << " !!!");
 
+
   } else {
     //      logdebug("no more process units left, sending empty process unit");
     //        setCompleteTime(1);
   }
-//  delete con234;
+  logdebug("Delete Statement");
+  delete s;
+  logdebug("Delete ResultSet");
+  //  delete rs_pu;
+  //  delete con234;
   return true;
 
 }
@@ -143,9 +151,9 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
 ProcessUnit ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
-//  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-//  ResultSet * rs = stmt_ps.executeQuery2();
-  Connection * con=new Connection(Config::getProperty("db.connection"));
+  //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
+  //  ResultSet * rs = stmt_ps.executeQuery2();
+  Connection * con = new Connection(Config::getProperty("db.connection"));
   Statement * stmt_ps = con->createStatement();
   ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
 
@@ -184,8 +192,8 @@ ProcessUnit ClientHandler::getProcessUnit() {
       p->packet->pos = rs_p.getLong("pos");
       p->packet->stream_index = rs_p.getInt("stream_index");
       AVRational ar;
-      ar.num=rs->getInt("time_base_num");
-      ar.den=rs->getInt("time_base_den");
+      ar.num = rs->getInt("time_base_num");
+      ar.den = rs->getInt("time_base_den");
       p->setTimeBase(ar);
       u._input_packets.push_back(p);
       size += p->packet->size;

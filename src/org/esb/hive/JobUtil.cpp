@@ -124,6 +124,9 @@ int jobcreator(int argc, char*argv[]) {
     stmt.setInt("height", profile_v_height);
     stmt.setInt("gop_size", 20);
     Codec codec((CodecID) profile_v_codec, Codec::ENCODER);
+    codec.setWidth(profile_v_width);
+    codec.setHeight(profile_v_height);
+//    codec.findCodec(Codec::ENCODER);
     codec.open();
     stmt.setInt("pix_fmt", codec.getPixelFormat());
     stmt.setInt("bit_rate", profile_v_bitrate);

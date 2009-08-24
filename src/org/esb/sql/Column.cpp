@@ -12,18 +12,20 @@ namespace org{
 namespace esb{
 namespace sql{
 
-Column::Column(MYSQL_BIND & b):bind(b){
+Column::Column(MYSQL_BIND & b, std::string n):bind(b){
 //  reserve(0);
+  name=n;
   buffer=NULL;
   length=0;
   is_null=0;
 }
 
 Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
-//  _field=field;
-//  name=std::string(field->name);
+  _field=field;
+  name=std::string(field->name);
    bind.buffer_type=field->type?field->type:MYSQL_TYPE_VAR_STRING;
 //  bind.buffer_type=field->type;
+  buffer=NULL;
   reserve(field->length);
 //  logdebug("FieldLength="<<field->length);
 //  reserve(field->length>0x10000?0x10000:field->length);
@@ -31,7 +33,6 @@ Column::Column(MYSQL_FIELD * field, MYSQL_BIND & b):bind(b){
   length=0;
   is_null=0;
 
-//  buffer=NULL;
 }
 
 void Column::reserve(unsigned long size)
@@ -44,10 +45,10 @@ void Column::reserve(unsigned long size)
 
       if (bind.buffer_length < size)
       {
-//        logdebug("grow buffer to " << size << " initial " << bind.buffer_length);
-//        if(buffer)
-  //        delete[] buffer;
-//		  delete[] static_cast<char*>(buffer);
+  //      logdebug("grow buffer to " << size << " initial " << bind.buffer_length);
+        if(buffer)
+//          delete[] buffer;
+		  delete[] static_cast<char*>(buffer);
         buffer = new char[size];
         memset(buffer,0,size);
         bind.buffer=buffer;
@@ -60,7 +61,7 @@ void Column::reserve(unsigned long size)
     }
 
 std::string Column::getName(){
-  return "";
+  return name;
 }
 
 std::string Column::getTableName(){
@@ -70,7 +71,7 @@ std::string Column::getTableName(){
 Column::~Column(){
       if(buffer)
         delete[] static_cast<char*>(buffer);
-//        delete[] buffer;
+//        delete[] bind.buffer;
       //delete length;
 }
 
