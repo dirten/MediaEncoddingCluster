@@ -92,26 +92,26 @@ CREATE TABLE IF NOT EXISTS `job_logs` (
 
 
 CREATE TABLE IF NOT EXISTS `packets` (
-  `id` int(11) NOT NULL auto_increment,
-  `stream_id` int(11) default NULL,
-  `pts` bigint(20) default NULL,
-  `dts` bigint(20) default NULL,
-  `stream_index` int(11) default NULL,
-  `key_frame` int(11) default NULL,
-  `frame_group` int(11) default NULL,
-  `flags` int(11) default NULL,
-  `duration` int(11) default NULL,
-  `pos` int(11) default NULL,
-  `sort` bigint(20) NOT NULL default '0',
-  `data_size` int(11) default NULL,
+`id` int(11) NOT NULL AUTO_INCREMENT,
+  `stream_id` int(11) DEFAULT NULL,
+  `pts` bigint(20) DEFAULT NULL,
+  `dts` bigint(20) DEFAULT NULL,
+  `stream_index` int(11) DEFAULT NULL,
+  `key_frame` int(11) DEFAULT NULL,
+  `frame_group` int(11) DEFAULT NULL,
+  `flags` int(11) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `pos` bigint(20) DEFAULT NULL,
+  `sort` bigint(20) NOT NULL DEFAULT '0',
+  `data_size` int(11) DEFAULT NULL,
   `data` mediumblob,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `packet_group_idx` (`frame_group`),
   KEY `pts` (`pts`),
   KEY `dts` (`dts`),
-  KEY `stream_id_2` (`stream_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
+  KEY `stream_id` (`stream_id`),
+  KEY `sid_dts_idx` (`stream_id`,`dts`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `process_units` (
   `id` int(11) NOT NULL auto_increment,

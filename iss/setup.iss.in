@@ -78,8 +78,12 @@ Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erl.exe" ; Parameters: "-setcookie default -config releases/@MHIVE_VERSION@/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
-;Filename: "{app}/sc"; Parameters: "create MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
-;[UninstallRun]
+Filename: "sc"; Parameters: "stop MHiveService"; Description: "stop MHiveService."
+Filename: "sc"; Parameters: "delete MHiveService"; Description: "delete MHive from Service DB."
+Filename: "sc"; Parameters: "create MHiveService binPath= {app}\bin\mhive.exe"; Description: "Install MHive as a Service."
+[UninstallRun]
+Filename: "sc"; Parameters: "stop MHiveService"
+Filename: "sc"; Parameters: "delete MHiveService"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
@@ -109,7 +113,9 @@ Source: "@FFMPEG_DIR@\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignorever
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\start Console"; Filename: "{app}\erts-@ERLANG_ERTS_VERSION@\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/@MHIVE_VERSION@/sys"; WorkingDir: "{app}"
-Name: "{group}\start MHive"; Filename: "{app}\bin\mhive.exe" ; WorkingDir: "{app}"
+Name: "{group}\start MHiveService"; Filename: "sc";Parameters: "start MHiveService"
+Name: "{group}\stop MHiveService"; Filename: "sc";Parameters: "stop MHiveService"
+Name: "{group}\start Local MHive Client"; Filename: "{app}\bin\mhive.exe";Parameters: "-i";WorkingDir: "{app}"
 Name: "{group}\Web Administration"; Filename: "http://localhost:8080/"
 Name: "{group}\{cm:ProgramOnTheWeb,Media Encoding Cluster}"; Filename: "http://www.codergrid.de"
 Name: "{group}\{cm:UninstallProgram,Media Encoding Cluster}"; Filename: "{uninstallexe}"

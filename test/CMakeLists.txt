@@ -81,7 +81,7 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 #ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
-target_link_libraries (info io av util esb sql dl crypt lang avformat avcodec avutil swscale)
+target_link_libraries (info io av util esb sql ${MYSQL_LIB} lang avformat avcodec avutil swscale)
 
 
 IF(WIN32)
@@ -97,7 +97,7 @@ target_link_libraries (info bz2 )
 #target_link_libraries (test bz2 )
 #target_link_libraries (erltest bz2 )
 ELSE(WIN32)
-target_link_libraries (info x264 ${MYSQL_LIB} z pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+target_link_libraries (info x264 ${MYSQL_LIB} z dl  pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 
 ENDIF(WIN32)
 target_link_libraries (info

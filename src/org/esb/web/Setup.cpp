@@ -33,7 +33,7 @@
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/hive/Setup.h"
-
+#include "config.h"
 //#include "wtk/Div.h"
 using namespace org::esb;
 namespace org {
@@ -533,8 +533,9 @@ namespace org {
           config::Config::setProperty("web.start", "true");
           config::Config::save2db();
         }
-
-        org::esb::io::File file(org::esb::config::Config::getProperty("config.file", ".hive.cfg"));
+		std::string configfile=org::esb::config::Config::getProperty("hive.base_path");
+		configfile.append("/.hive.cfg");
+        org::esb::io::File file(configfile);
         org::esb::io::FileOutputStream fos(&file);
         props.save(&fos);
         fos.close();

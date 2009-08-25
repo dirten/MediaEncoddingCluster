@@ -19,7 +19,7 @@ Log * Log::getLogger() {
 }
 
 void Log::log(std::stringstream & s, const char * l){
-  std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
+  myfile<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
 }
 
 void Log::debug(std::stringstream & s){
