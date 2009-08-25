@@ -81,7 +81,7 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 #ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
-target_link_libraries (info  io av util lang avformat avcodec avutil swscale)
+target_link_libraries (info io av util esb sql dl crypt lang avformat avcodec avutil swscale)
 
 
 IF(WIN32)
