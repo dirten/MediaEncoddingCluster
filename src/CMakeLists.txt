@@ -87,15 +87,11 @@ MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 add_executable (mhive Hive.cpp)
 
-#LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
-
-
-
 
 
 target_link_libraries (mhive  web esb sql hive lang av util signal io net  ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWSCALE_LIB} )
 IF(WIN32)
-target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd winmm)
+target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
 ##target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
 #target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
 ELSEIF(APPLE)
