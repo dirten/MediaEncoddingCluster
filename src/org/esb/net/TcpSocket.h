@@ -25,6 +25,7 @@ namespace org {
         bool isConnected();
         void close();
         void connect();
+        std::string getRemoteIpAddress();
       private:
         boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
         boost::asio::io_service _io_service;

@@ -15,13 +15,14 @@ Connection::Connection() {
 
 }
  */
+/*
 Connection::Connection(const char * con, bool auto_connect) {
   _constr = con;
   parseConnectionString(_constr);
   if (auto_connect)
     connect();
 }
-
+*/
 Connection::Connection(const std::string con, bool auto_connect) {
   _constr = con;
   parseConnectionString(con);
@@ -39,7 +40,7 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 }
 
 Connection::~Connection() {
-  logdebug("Connection::~Connection()");
+//  logdebug("Connection::~Connection()");
   //	mysql_thread_end();
   //mysql_close(mysqlPtr.get());
   /*
@@ -54,7 +55,7 @@ Connection::~Connection() {
 }
 
 void Connection::connect() {
-  logdebug("Connection::connect()");
+//  logdebug("Connection::connect()");
   if (_staticCounter == 0) {
     std::string base_path = org::esb::config::Config::getProperty("hive.base_path");
 
@@ -64,11 +65,6 @@ void Connection::connect() {
 
     std::string datadir = "--datadir=";
     datadir.append(base_path);
-#ifdef USE_EMBEDDED_MYSQL
-    logdebug("Using Embedded Mysql");
-#endif
-    logdebug("DataDir:" << datadir);
-    logdebug("LangDir:" << lang);
     static char *server_options[] = {"", const_cast<char*> (datadir.c_str()), const_cast<char*> (lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
     static char *server_groups[] = {"embedded", "server", NULL};

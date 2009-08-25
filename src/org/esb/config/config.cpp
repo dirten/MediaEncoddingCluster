@@ -14,6 +14,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/util/Log.h"
+#include "Defaults.cpp"
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
@@ -34,18 +35,20 @@ string trim(string & s, string & drop) {
 }
 
 void Config::close() {
-	logdebug("clear config");
-	properties->clear();
+  logdebug("clear config");
+  properties->clear();
   delete properties;
+  properties = NULL;
 }
 
 bool Config::init(char * filename) {
-//  properties = new Properties();
+  //  properties = new Properties();
+  loadDefaults(properties);
   FILE * fp;
   char buffer[255];
   if ((fp = fopen(filename, "r")) == NULL) {
-		return false;
-	  //    throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
+    return false;
+    //    throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
   while (fgets(buffer, 255, fp) != NULL) {
     parseLine(buffer);
@@ -63,8 +66,8 @@ bool Config::init(char * filename) {
           logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }
       }
-//	  delete rs;
-	  delete stmt;
+      //	  delete rs;
+      delete stmt;
     }
   } catch (SqlException & ex) {
     logerror("cant load configuration from database");
@@ -90,7 +93,7 @@ void Config::save2db() {
  * ermitteln des Wertes zum Schlüssel
  */
 char * Config::getProperty(char * key, char * def) {
-  if (!properties->hasProperty(key))return def;
+  if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
 }
 

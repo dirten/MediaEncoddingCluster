@@ -9,26 +9,27 @@
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
-
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace hive {
 
       void ExportScanner::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("exportscanner") == "start") {
+          logdebug("Start Request for the ExportScanner");
           _run = true;
           boost::thread t(boost::bind(&ExportScanner::start, this));
+          logdebug("ExportScanner started");
         } else
           if (msg.getProperty("exportscanner") == "stop") {
+          logdebug("Stop Request for the ExportScanner");
           _run = false;
-
         }
       }
 
       void ExportScanner::start() {
         while (_run) {
           {
-
             org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
 //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
             org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
@@ -50,6 +51,7 @@ namespace org {
           }
           org::esb::lang::Thread::sleep2(10000);
         }
+        logdebug("ExportScanner stopped");
       }
     }
   }

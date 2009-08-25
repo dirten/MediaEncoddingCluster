@@ -7,7 +7,7 @@
 //#include "boost/date_time/gregorian/gregorian.hpp"
 //#include <boost/logging/format_fwd.hpp>
 //#include "Datetime.h"
-
+#include <boost/thread.hpp>
 #include <fstream>
 #include <sstream>
 
@@ -32,9 +32,9 @@ public:
     void warn(std::stringstream &);
     void error(std::stringstream &);
     void fatal(std::stringstream &);
+    void log(std::stringstream & s, const char * level);
 private:
     Log();
-    void loggg(std::stringstream & s, const char * level);
     std::ofstream myfile;
     static Log * _logger;
 };
@@ -58,13 +58,15 @@ using namespace boost::gregorian;
 }
 #else
 #include <iostream>
-#define loglevel(o1,level) {\
-	std::cout<< "[ "<<level<< " ] ["<<__FILE__<<":"<<__LINE__<<"]" << o1<<"\r"<<std::endl; \
-}
+#include <iomanip>
+
 #define loglevel2(o1,level) {\
+	std::cout<<std::dec<< "[ "<<level<< " ] "<<boost::this_thread::get_id()<<" ["<<__FILE__<<":"<<__LINE__<<"]" << o1<<"\r"<<std::endl; \
+}
+#define loglevel(o1,level) {\
     std::stringstream t; \
-    t<< o1; \
-    Log::getLogger()->debug(t);\
+    t <<boost::this_thread::get_id()<<" ["<<__FUNCTION__<<":"<<__LINE__<<"]" << o1; \
+    Log::getLogger()->log(t, level);\
 }
 #endif
 #endif

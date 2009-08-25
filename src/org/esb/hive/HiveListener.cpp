@@ -29,14 +29,14 @@ namespace org {
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
-        if (msg.getProperty("hivelistener") == "start") {
+        if (msg.getProperty("hivelistener") == org::esb::hive::START) {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          logdebug("Hive Listener running on port:" << Config::getProperty("hive.port","20200"));
+          logdebug("Hive Listener running on port:" << Config::getProperty("hive.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
-          if (msg.getProperty("hivelistener") == "stop") {
+          if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
           logdebug("Hive Listener stopped:");
           main_nextloop = false;
           if (server)
@@ -48,19 +48,20 @@ namespace org {
       }
 
       void HiveListener::startListener() {
-        int port = atoi(Config::getProperty("hive.port","20200"));
+        int port = atoi(Config::getProperty("hive.port"));
+        logdebug("Listening on port "<<port);
         server = new TcpServerSocket(port);
         server->bind();
         for (; main_nextloop;) {
           try {
             TcpSocket * clientSocket = server->accept();
-            logdebug("new CLient here");
-            if (clientSocket != NULL) {
+            logdebug("new connection from: "<<clientSocket->getRemoteIpAddress());
+            if (clientSocket != NULL || (!main_nextloop)) {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
               Thread *thread = new Thread(protoServer);
               thread->start();
             } else {
-              logerror("Client  Socket ist null");
+              logerror("Client was not accepted");
               break;
             }
           } catch (exception & ex) {

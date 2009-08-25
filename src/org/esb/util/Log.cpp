@@ -1,9 +1,15 @@
 #include "Log.h"
-
+#include "org/esb/config/config.h"
+#include "boost/date_time/gregorian/gregorian.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <string>
+using namespace boost::posix_time;
 Log * Log::_logger=NULL;
 
 Log::Log() {
-  myfile.open("data.log", std::ios::out | std::ios::app);
+  std::string logfile=org::esb::config::Config::getProperty("hive.base_path");
+  logfile.append("/mhive.log");
+  myfile.open(logfile.c_str(), std::ios::out | std::ios::app);
 }
 
 Log * Log::getLogger() {
@@ -12,24 +18,25 @@ Log * Log::getLogger() {
   return Log::_logger;
 }
 
-void Log::loggg(std::stringstream & s, const char * l){
-  std::cout<< "[ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
+void Log::log(std::stringstream & s, const char * l){
+  std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
 }
 
 void Log::debug(std::stringstream & s){
-  loggg(s,"debug");
+  log(s,"debug");
 }
+
 void Log::info(std::stringstream & s){
-  loggg(s,"info");
+  log(s,"info");
 }
 void Log::warn(std::stringstream & s){
-  loggg(s,"warn");
+  log(s,"warn");
 }
 void Log::error(std::stringstream & s){
-  loggg(s,"error");
+  log(s,"error");
 }
 void Log::fatal(std::stringstream & s){
-  loggg(s,"fatal");
+  log(s,"fatal");
 }
 
 

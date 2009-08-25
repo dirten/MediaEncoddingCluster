@@ -19,7 +19,6 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
 include_directories (${FFMPEG_DIR}/include)
 #TARGET_LINK_LIBRARIES(av ${FFMPEG_DIR}/lib)
-#TARGET_LINK_LIBRARIES(av ${BOOST_FS_LIB_MT})
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 
 add_library (av av av/Init.cpp 
@@ -64,6 +63,7 @@ add_library (util util/Properties.cpp
       util/Log.cpp
 #      util/Queue.cpp
 )
+TARGET_LINK_LIBRARIES(util  ${BOOST_DT_LIB_MT})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
 add_library (signal

@@ -79,8 +79,8 @@ namespace org {
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           loginfo("Server " << _host << " connected!!!");
-        } catch (...) {
-          logerror("cant connect!!!");
+        } catch (exception & ex) {
+          logerror("cant connect!!!"<<ex.what());
         }
       }
 

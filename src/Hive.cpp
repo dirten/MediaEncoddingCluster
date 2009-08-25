@@ -83,25 +83,21 @@ int euclid(int a, int b){
 }
  */
 int main(int argc, char * argv[]) {
-  //	return 0;
-  //    std::cerr << "Path"<<std::endl;
-  org::esb::io::File f(argv[0]);
-  std::string s = f.getFilePath();
-  char * path = new char[s.length() + 1];
-  memset(path, 0, s.length() + 1);
-  strcpy(path, s.c_str());
+        /*setting default path to Program*/
+        org::esb::io::File f(argv[0]);
+        std::string s = f.getFilePath();
+        char * path = new char[s.length() + 1];
+        memset(path, 0, s.length() + 1);
+        strcpy(path, s.c_str());
 
-  Config::setProperty("hive.path", path);
+        Config::setProperty("hive.path", path);
 
-  std::string sb = org::esb::io::File(f.getParent()).getParent();
-  char * base_path = new char[sb.length() + 1];
-  memset(base_path, 0, sb.length() + 1);
-  strcpy(base_path, sb.c_str());
+        std::string sb = org::esb::io::File(f.getParent()).getParent();
+        char * base_path = new char[sb.length() + 1];
+        memset(base_path, 0, sb.length() + 1);
+        strcpy(base_path, sb.c_str());
 
-  Config::setProperty("hive.base_path", base_path);
-
-   //   std::cout << "Bin Path" << path << std::endl;
-  //    std::cout << "Base Path" << base_path << std::endl;
+        Config::setProperty("hive.base_path", base_path);
 
   try {
     //    loginit("log.properties");
@@ -111,7 +107,8 @@ int main(int argc, char * argv[]) {
 
 
     std::string config_path = Config::getProperty("hive.base_path");
-	config_path.append("/.hive.cfg");
+    logdebug(config_path);
+    config_path.append("/.hive.cfg");
     po::options_description gen;
 
     gen.add_options()
@@ -180,17 +177,17 @@ int main(int argc, char * argv[]) {
     avcodec_register_all();
 
     if (argc == 1) {
-      
-	  if(!Config::init((char*) vm["config"].as<std::string > ().c_str())){
-      
-        cout << "Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > () << endl;
+
+      if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
+
+        logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
         Config::setProperty("web.docroot", webroot.c_str());
       }
       listener(argc, argv);
-//      return 0;
+      //      return 0;
     }
 
     if (vm.count("version")) {
@@ -202,62 +199,62 @@ int main(int argc, char * argv[]) {
       cout << LIBSWSCALE_IDENT << endl;
       exit(0);
     }
-	 if (vm.count("client")) {
-      Config::setProperty("client.port", Decimal(vm["port"].as<int>()).toString().c_str());
-      Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
-      client(argc, argv);
-    }
-/*
-    if (vm.count("server")) {
-      Config::setProperty("hive.mode", "server");
-      if (vm.count("database"))
-        Config::setProperty("db.connection", vm["database"].as<std::string > ().c_str());
-      try {
-        Config::init((char*) vm["config"].as<std::string > ().c_str());
-      } catch (Exception & ex) {
-        cout << "Could not open Configuration " << vm["config"].as<std::string > () << endl;
-        Config::setProperty("hive.mode", "setup");
-      }
-      Config::setProperty("config.file", vm["config"].as<std::string > ().c_str());
-      std::string webroot = std::string(Config::getProperty("hive.base_path"));
-      webroot.append("/web");
-      Config::setProperty("web.docroot", webroot.c_str());
-      if (vm.count("web"))
-        Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
-      if (vm.count("scandir"))
-        Config::setProperty("hive.scandir", vm["scandir"].as<std::string > ().c_str());
-      if (vm.count("scanint"))
-        Config::setProperty("hive.scaninterval", Decimal(vm["scanint"].as<int> ()).toString().c_str());
-      Config::setProperty("hive.port", Decimal(vm["port"].as<int>()).toString().c_str());
-
-      listener(argc, argv);
-      return 0;
-    }
-
     if (vm.count("client")) {
       Config::setProperty("client.port", Decimal(vm["port"].as<int>()).toString().c_str());
       Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
       client(argc, argv);
     }
-    if (vm.count("export")) {
-      Config::init((char*) vm["config"].as<std::string > ().c_str());
-      std::string file = vm["file"].as<std::string > ();
-      std::string dir = vm["directory"].as<std::string > ();
-      exporter((char*) file.c_str(), (char*) dir.c_str());
-    }
-    if (vm.count("import")) {
-      Config::init((char*) vm["config"].as<std::string > ().c_str());
-      std::string file = vm["file"].as<std::string > ();
+    /*
+        if (vm.count("server")) {
+          Config::setProperty("hive.mode", "server");
+          if (vm.count("database"))
+            Config::setProperty("db.connection", vm["database"].as<std::string > ().c_str());
+          try {
+            Config::init((char*) vm["config"].as<std::string > ().c_str());
+          } catch (Exception & ex) {
+            cout << "Could not open Configuration " << vm["config"].as<std::string > () << endl;
+            Config::setProperty("hive.mode", "setup");
+          }
+          Config::setProperty("config.file", vm["config"].as<std::string > ().c_str());
+          std::string webroot = std::string(Config::getProperty("hive.base_path"));
+          webroot.append("/web");
+          Config::setProperty("web.docroot", webroot.c_str());
+          if (vm.count("web"))
+            Config::setProperty("web.port", Decimal(vm["web"].as<int> ()).toString().c_str());
+          if (vm.count("scandir"))
+            Config::setProperty("hive.scandir", vm["scandir"].as<std::string > ().c_str());
+          if (vm.count("scanint"))
+            Config::setProperty("hive.scaninterval", Decimal(vm["scanint"].as<int> ()).toString().c_str());
+          Config::setProperty("hive.port", Decimal(vm["port"].as<int>()).toString().c_str());
 
-      char * argv[] = {"", (char*) file.c_str()};
-      printf("Import File %s", file.c_str());
+          listener(argc, argv);
+          return 0;
+        }
 
-      int fileid = import(2, argv);
-      printf("File imported with ID %i", fileid);
-      //    std::string dir = vm["directory"].as<std::string > ();
-      //    exporter((char*) file.c_str(), (char*) dir.c_str());
-    }
-*/
+        if (vm.count("client")) {
+          Config::setProperty("client.port", Decimal(vm["port"].as<int>()).toString().c_str());
+          Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
+          client(argc, argv);
+        }
+        if (vm.count("export")) {
+          Config::init((char*) vm["config"].as<std::string > ().c_str());
+          std::string file = vm["file"].as<std::string > ();
+          std::string dir = vm["directory"].as<std::string > ();
+          exporter((char*) file.c_str(), (char*) dir.c_str());
+        }
+        if (vm.count("import")) {
+          Config::init((char*) vm["config"].as<std::string > ().c_str());
+          std::string file = vm["file"].as<std::string > ();
+
+          char * argv[] = {"", (char*) file.c_str()};
+          printf("Import File %s", file.c_str());
+
+          int fileid = import(2, argv);
+          printf("File imported with ID %i", fileid);
+          //    std::string dir = vm["directory"].as<std::string > ();
+          //    exporter((char*) file.c_str(), (char*) dir.c_str());
+        }
+     */
   } catch (exception & e) {
     std::cerr << "error: " << e.what() << "\n";
     return 1;
@@ -267,7 +264,7 @@ int main(int argc, char * argv[]) {
   delete []base_path;
 
   org::esb::config::Config::close();
-  mysql_server_end();
+//  mysql_server_end();
 
   return 0;
 }
@@ -303,144 +300,135 @@ void ctrlCHitWait() {
   ctrlCHit.wait(terminationLock);
 }
 #define SVCNAME TEXT("MHiveService")
-SERVICE_STATUS          gSvcStatus; 
-SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
-HANDLE                  ghSvcStopEvent = NULL;
+SERVICE_STATUS gSvcStatus;
+SERVICE_STATUS_HANDLE gSvcStatusHandle;
+HANDLE ghSvcStopEvent = NULL;
 
 //VOID SvcInstall(void);
-VOID WINAPI SvcCtrlHandler( DWORD ); 
-VOID WINAPI SvcMain( DWORD, LPTSTR * ); 
+VOID WINAPI SvcCtrlHandler(DWORD);
+VOID WINAPI SvcMain(DWORD, LPTSTR *);
 
-VOID ReportSvcStatus( DWORD, DWORD, DWORD );
-VOID SvcInit( DWORD, LPTSTR * ); 
-VOID SvcReportEvent( LPTSTR );
+VOID ReportSvcStatus(DWORD, DWORD, DWORD);
+VOID SvcInit(DWORD, LPTSTR *);
+VOID SvcReportEvent(LPTSTR);
 
+VOID SvcReportEvent(LPTSTR szFunction) {
+  HANDLE hEventSource;
+  LPCTSTR lpszStrings[2];
+  TCHAR Buffer[80];
 
-VOID SvcReportEvent(LPTSTR szFunction) 
-{ 
-    HANDLE hEventSource;
-    LPCTSTR lpszStrings[2];
-    TCHAR Buffer[80];
+  hEventSource = RegisterEventSource(NULL, SVCNAME);
 
-    hEventSource = RegisterEventSource(NULL, SVCNAME);
+  if (NULL != hEventSource) {
+    StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
 
-    if( NULL != hEventSource )
-    {
-        StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
+    lpszStrings[0] = SVCNAME;
+    lpszStrings[1] = Buffer;
 
-        lpszStrings[0] = SVCNAME;
-        lpszStrings[1] = Buffer;
+    ReportEvent(hEventSource, // event log handle
+        EVENTLOG_ERROR_TYPE, // event type
+        0, // event category
+        NULL, // event identifier
+        NULL, // no security identifier
+        2, // size of lpszStrings array
+        0, // no binary data
+        lpszStrings, // array of strings
+        NULL); // no binary data
 
-        ReportEvent(hEventSource,        // event log handle
-                    EVENTLOG_ERROR_TYPE, // event type
-                    0,                   // event category
-                    NULL,           // event identifier
-                    NULL,                // no security identifier
-                    2,                   // size of lpszStrings array
-                    0,                   // no binary data
-                    lpszStrings,         // array of strings
-                    NULL);               // no binary data
-
-        DeregisterEventSource(hEventSource);
-    }
-}
-VOID WINAPI SvcCtrlHandler( DWORD dwCtrl )
-{
-   // Handle the requested control code. 
-
-   switch(dwCtrl) 
-   {  
-      case SERVICE_CONTROL_STOP: 
-         ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-
-         // Signal the service to stop.
-
-         SetEvent(ghSvcStopEvent);
-         
-         return;
- 
-      case SERVICE_CONTROL_INTERROGATE: 
-         // Fall through to send current status.
-         break; 
- 
-      default: 
-         break;
-   } 
-
-   ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
+    DeregisterEventSource(hEventSource);
+  }
 }
 
-VOID ReportSvcStatus( DWORD dwCurrentState,
-                      DWORD dwWin32ExitCode,
-                      DWORD dwWaitHint)
-{
-    static DWORD dwCheckPoint = 1;
+VOID WINAPI SvcCtrlHandler(DWORD dwCtrl) {
+  // Handle the requested control code.
 
-    // Fill in the SERVICE_STATUS structure.
+  switch (dwCtrl) {
+    case SERVICE_CONTROL_STOP:
+      ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
 
-    gSvcStatus.dwCurrentState = dwCurrentState;
-    gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
-    gSvcStatus.dwWaitHint = dwWaitHint;
+      // Signal the service to stop.
 
-    if (dwCurrentState == SERVICE_START_PENDING)
-        gSvcStatus.dwControlsAccepted = 0;
-    else gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+      SetEvent(ghSvcStopEvent);
 
-    if ( (dwCurrentState == SERVICE_RUNNING) ||
-           (dwCurrentState == SERVICE_STOPPED) )
-        gSvcStatus.dwCheckPoint = 0;
-    else gSvcStatus.dwCheckPoint = dwCheckPoint++;
+      return;
 
-    // Report the status of the service to the SCM.
-    SetServiceStatus( gSvcStatusHandle, &gSvcStatus );
+    case SERVICE_CONTROL_INTERROGATE:
+      // Fall through to send current status.
+      break;
+
+    default:
+      break;
+  }
+
+  ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
 }
 
+VOID ReportSvcStatus(DWORD dwCurrentState,
+    DWORD dwWin32ExitCode,
+    DWORD dwWaitHint) {
+  static DWORD dwCheckPoint = 1;
 
-VOID WINAPI SvcMain( DWORD dwArgc, LPTSTR *lpszArgv )
-{
-	gSvcStatusHandle = RegisterServiceCtrlHandler( 
-        SVCNAME, 
-        SvcCtrlHandler);
+  // Fill in the SERVICE_STATUS structure.
 
-    if( !gSvcStatusHandle )
-    { 
-        SvcReportEvent(TEXT("RegisterServiceCtrlHandler")); 
-        return; 
-    } 
-gSvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS; 
-    gSvcStatus.dwServiceSpecificExitCode = 0;    
+  gSvcStatus.dwCurrentState = dwCurrentState;
+  gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
+  gSvcStatus.dwWaitHint = dwWaitHint;
 
-    // Report initial status to the SCM
+  if (dwCurrentState == SERVICE_START_PENDING)
+    gSvcStatus.dwControlsAccepted = 0;
+  else gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
 
-    ReportSvcStatus( SERVICE_START_PENDING, NO_ERROR, 3000 );
-	SvcInit( dwArgc, lpszArgv );
+  if ((dwCurrentState == SERVICE_RUNNING) ||
+      (dwCurrentState == SERVICE_STOPPED))
+    gSvcStatus.dwCheckPoint = 0;
+  else gSvcStatus.dwCheckPoint = dwCheckPoint++;
+
+  // Report the status of the service to the SCM.
+  SetServiceStatus(gSvcStatusHandle, &gSvcStatus);
+}
+
+VOID WINAPI SvcMain(DWORD dwArgc, LPTSTR *lpszArgv) {
+  gSvcStatusHandle = RegisterServiceCtrlHandler(
+      SVCNAME,
+      SvcCtrlHandler);
+
+  if (!gSvcStatusHandle) {
+    SvcReportEvent(TEXT("RegisterServiceCtrlHandler"));
+    return;
+  }
+  gSvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+  gSvcStatus.dwServiceSpecificExitCode = 0;
+
+  // Report initial status to the SCM
+
+  ReportSvcStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
+  SvcInit(dwArgc, lpszArgv);
 
 
 }
-VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
-{
-    // TO_DO: Declare and set any required variables.
-    //   Be sure to periodically call ReportSvcStatus() with 
-    //   SERVICE_START_PENDING. If initialization fails, call
-    //   ReportSvcStatus with SERVICE_STOPPED.
 
-    // Create an event. The control handler function, SvcCtrlHandler,
-    // signals this event when it receives the stop control code.
+VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
+  // TO_DO: Declare and set any required variables.
+  //   Be sure to periodically call ReportSvcStatus() with
+  //   SERVICE_START_PENDING. If initialization fails, call
+  //   ReportSvcStatus with SERVICE_STOPPED.
 
-    ghSvcStopEvent = CreateEvent(
-                         NULL,    // default security attributes
-                         TRUE,    // manual reset event
-                         FALSE,   // not signaled
-                         NULL);   // no name
+  // Create an event. The control handler function, SvcCtrlHandler,
+  // signals this event when it receives the stop control code.
 
-    if ( ghSvcStopEvent == NULL)
-    {
-        ReportSvcStatus( SERVICE_STOPPED, NO_ERROR, 0 );
-        return;
-    }
+  ghSvcStopEvent = CreateEvent(
+      NULL, // default security attributes
+      TRUE, // manual reset event
+      FALSE, // not signaled
+      NULL); // no name
 
-    // Report running status when initialization is complete.
-	/*
+  if (ghSvcStopEvent == NULL) {
+    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    return;
+  }
+
+  // Report running status when initialization is complete.
+  /*
    *
    * Initializing Application Services
    *
@@ -458,8 +446,8 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-//  org::esb::hive::job::ProcessUnitWatcher puw;
-//  Messenger::getInstance().addMessageListener(puw);
+  //  org::esb::hive::job::ProcessUnitWatcher puw;
+  //  Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
   int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
@@ -477,7 +465,7 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
-//    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+    //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }
 
@@ -497,43 +485,40 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   }
 
-    ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
+  ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 
-    // TO_DO: Perform work until service stops.
-    while(1)
-    {
-        // Check whether to stop the service.
+  // TO_DO: Perform work until service stops.
+  while (1) {
+    // Check whether to stop the service.
 
-        WaitForSingleObject(ghSvcStopEvent, INFINITE);
-/*
-   *
-   * Stopping Application Services from configuration
-   *
-   */
+    WaitForSingleObject(ghSvcStopEvent, INFINITE);
+    /*
+     *
+     * Stopping Application Services from configuration
+     *
+     */
 
-  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
 
-  Messenger::free();
-        ReportSvcStatus( SERVICE_STOPPED, NO_ERROR, 0 );
-        return;
-    }
+    Messenger::free();
+    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    return;
+  }
 }
 
-void start_win32(){
-SERVICE_TABLE_ENTRY DispatchTable[] = 
-    { 
-        { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain }, 
-        { NULL, NULL } 
-    }; 
- if (!StartServiceCtrlDispatcher( DispatchTable )) 
-    { 
-        SvcReportEvent(TEXT("StartServiceCtrlDispatcher")); 
-    } 
+void start_win32() {
+  SERVICE_TABLE_ENTRY DispatchTable[] ={
+    { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain},
+    { NULL, NULL}
+  };
+  if (!StartServiceCtrlDispatcher(DispatchTable)) {
+    SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
+  }
 
 }
 #else
@@ -575,7 +560,7 @@ void client(int argc, char *argv[]) {
 }
 
 /*----------------------------------------------------------------------------------------------*/
-void start(){
+void start() {
   /*
    *
    * Initializing Application Services
@@ -594,8 +579,8 @@ void start(){
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-//  org::esb::hive::job::ProcessUnitWatcher puw;
-//  Messenger::getInstance().addMessageListener(puw);
+  //  org::esb::hive::job::ProcessUnitWatcher puw;
+  //  Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
   int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
@@ -613,7 +598,7 @@ void start(){
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
-//    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+    //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }
 
@@ -632,14 +617,15 @@ void start(){
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   }
-	ctrlCHitWait();
-	/*
+  ctrlCHitWait();
+  /*
    *
    * Stopping Application Services from configuration
    *
    */
 
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
@@ -649,7 +635,8 @@ void start(){
   Messenger::free();
   //  mysql_library_end();
 }
-void stop(){
+
+void stop() {
   /*
    *
    * Stopping Application Services from configuration
@@ -667,18 +654,19 @@ void stop(){
   //  mysql_library_end();
 
 }
+
 void listener(int argc, char *argv[]) {
 
   //  Setup::check();
 #ifdef WIN32
-start_win32();
+  start_win32();
 #else
-start();
+  start();
 #endif
-  
-  
-//  org::esb::config::Config::close();
-//  stop();
+
+
+  //  org::esb::config::Config::close();
+  //  stop();
 
 }
 

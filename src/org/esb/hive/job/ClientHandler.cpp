@@ -71,7 +71,7 @@ bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
 
 void ClientHandler::fillProcessUnit() {
 
-  boost::mutex::scoped_lock scoped_lock(m_mutex);
+//  boost::mutex::scoped_lock scoped_lock(m_mutex);
 
 }
 
@@ -81,19 +81,14 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
   //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   //  ResultSet * rs = stmt_ps.executeQuery2();
   Connection con(Config::getProperty("db.connection"));
-  logdebug("prepare statement");
   //  PreparedStatement *s = con.prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   PreparedStatement *s = con.prepareStatement2("select u.id,start_ts, frame_count, stream_index, path,filename, source_stream, target_stream,time_base_num,time_base_den from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
-  logdebug("statement  prepared");
   //  ResultSet * rs = stmt_ps->executeQuery("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   ResultSet * rs_pu = s->executeQuery2();
-  logdebug("Query executed");
   if (rs_pu->next()) {
-    logdebug("Packing ProcessUnit");
     int64_t start_ts = rs_pu->getLong("start_ts");
     int frame_count = rs_pu->getInt("frame_count");
     int stream_index = rs_pu->getInt("stream_index");
-    logdebug("packing frame group with startts: " << start_ts);
     string filename = rs_pu->getString("path");
     filename.append(rs_pu->getString("filename"));
     u._decoder = CodecFactory::getStreamDecoder(rs_pu->getInt("source_stream"));
@@ -139,9 +134,7 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     //      logdebug("no more process units left, sending empty process unit");
     //        setCompleteTime(1);
   }
-  logdebug("Delete Statement");
   delete s;
-  logdebug("Delete ResultSet");
   //  delete rs_pu;
   //  delete con234;
   return true;
@@ -221,7 +214,7 @@ string toString(int num) {
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
-    logdebug("ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);
+    logdebug(__FUNCTION__<<":ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);
     /*
     std::string name=org::esb::config::Config::getProperty("hive.path");
     name+="/tmp/";

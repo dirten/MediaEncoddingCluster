@@ -14,7 +14,7 @@ namespace org {
 
       class Connection {
       public:
-        DEPRECATED(Connection(const char * con, bool auto_connect=true));
+//        DEPRECATED(Connection(const char * con, bool auto_connect=true));
         Connection(std::string con, bool auto_connect=true);
         Connection(const std::string host, std::string db, std::string user, std::string pass, bool auto_connect=true);
         ~Connection();

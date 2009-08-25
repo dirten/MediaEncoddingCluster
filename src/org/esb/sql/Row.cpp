@@ -68,12 +68,8 @@ namespace org {
       }
 
       Row::~Row() {
-        logdebug("delete Row Object");
-        //      mysql_free_result(meta);
         std::map<std::string, Column*>::iterator it = fqncols.begin();
         for (; it != fqncols.end(); it++) {
-          //logdebug("Delete Column:" << (*it).second->getName());
-          //            delete (*it).second;
           delete static_cast<Column*> ((*it).second);
         }
         delete rsmd;
@@ -81,7 +77,6 @@ namespace org {
         cols.clear();
         fqncols.clear();
         idx2name.clear();
-        //          std::cerr<<"Row Object deleted "<<std::endl;
 
       }
       /*

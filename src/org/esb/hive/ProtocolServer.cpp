@@ -59,7 +59,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 
 void ProtocolServer::run() {
 	while (!socket->isClosed()) {
-		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
+//		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
 #ifndef DEBUG
 	  try {
 #endif

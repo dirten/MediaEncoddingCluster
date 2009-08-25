@@ -30,7 +30,7 @@ namespace org {
       public:
 
         MyFileFilter(std::string ext) {
-          logdebug("extensions"<<ext);
+//          logdebug("extensions"<<ext);
           StringTokenizer tokenizer(ext,",");
           while(tokenizer.hasMoreTokens()){
             std::string tok=tokenizer.nextToken();
@@ -107,7 +107,7 @@ namespace org {
       }
 
       void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, std::string f) {
-        logdebug("Directory Scanner loop:" << ":" << indir);
+        logdebug("Scanning Directory:" << indir);
         MyFileFilter filter(f);
 
         FileList list = File(indir.c_str()).listFiles(filter);

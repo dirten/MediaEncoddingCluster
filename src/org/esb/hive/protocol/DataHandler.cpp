@@ -19,54 +19,57 @@ using namespace org::esb;
 #define GET_UNIT  "get process_unit"
 #define PUT_UNIT  "put process_unit"
 
-class DataHandler: public ProtocolCommand{
-    private:
-	InputStream * _is;
-	OutputStream * _os;
-//	PacketOutputStream * _pos;
-	io::ObjectOutputStream * _oos;
-	io::ObjectInputStream * _ois;
-	ClientHandler* _handler;
+class DataHandler : public ProtocolCommand {
+private:
+  InputStream * _is;
+  OutputStream * _os;
+  //	PacketOutputStream * _pos;
+  io::ObjectOutputStream * _oos;
+  io::ObjectInputStream * _ois;
+  ClientHandler* _handler;
 
-    public:
-	    DataHandler(InputStream * is, OutputStream * os){
-	    _is=is;
-	    _os=os;
-//	    _pos=new PacketOutputStream(_os);
-	    _oos=new io::ObjectOutputStream(_os);
-	    _ois=new io::ObjectInputStream(_is);
-	    _handler=new ClientHandler();
-	}
-	int isResponsible (cmdId & cmid) {
-		return CMD_NA;
-	}
+public:
 
-	int isResponsible(char * command){
-	    if(
-	       strcmp(command,GET_UNIT)==0||
-	       strcmp(command,PUT_UNIT)==0){
-		    return CMD_PROCESS;
-	    }else
-	    if(strcmp(command,"help")==0){
-			return CMD_HELP;
-	    }
-	    return CMD_NA;
-	}
+  DataHandler(InputStream * is, OutputStream * os) {
+    _is = is;
+    _os = os;
+    //	    _pos=new PacketOutputStream(_os);
+    _oos = new io::ObjectOutputStream(_os);
+    _ois = new io::ObjectInputStream(_is);
+    _handler = new ClientHandler();
+  }
 
-	void process(char * command){
-	    if(strcmp(command,GET_UNIT)==0){
-			ProcessUnit  un;
-		_handler->getProcessUnit(un);
-		_oos->writeObject(un);
-	    }else
-	    if(strcmp(command,PUT_UNIT)==0){
-		ProcessUnit un;
-	    	_ois->readObject(un);
-		if(!_handler->putProcessUnit(un)){
-		    cout << "error while putProcessUnit!";
-		}
-	    }
-	}
-	void printHelp(){
-	}
+  int isResponsible(cmdId & cmid) {
+    return CMD_NA;
+  }
+
+  int isResponsible(char * command) {
+    if (
+        strcmp(command, GET_UNIT) == 0 ||
+        strcmp(command, PUT_UNIT) == 0) {
+      return CMD_PROCESS;
+    } else
+      if (strcmp(command, "help") == 0) {
+      return CMD_HELP;
+    }
+    return CMD_NA;
+  }
+
+  void process(char * command) {
+    if (strcmp(command, GET_UNIT) == 0) {
+      ProcessUnit un;
+      _handler->getProcessUnit(un);
+      _oos->writeObject(un);
+    } else
+      if (strcmp(command, PUT_UNIT) == 0) {
+      ProcessUnit un;
+      _ois->readObject(un);
+      if (!_handler->putProcessUnit(un)) {
+        cout << "error while putProcessUnit!";
+      }
+    }
+  }
+
+  void printHelp() {
+  }
 };

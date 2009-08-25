@@ -35,7 +35,7 @@ using namespace org::esb::sql;
 using namespace org::esb::config;
 //using namespace tntdb;
 using namespace org::esb::av;
-using namespace boost;
+//using namespace boost;
 //using namespace sqlite3x;
 
 string toString(int num) {

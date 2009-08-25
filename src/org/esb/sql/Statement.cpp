@@ -6,7 +6,6 @@
 using namespace org::esb::sql;
 
 Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
-//  logdebug("Statement::Statement(MYSQL * mysql, const char * s)");
 //  stmt=mysql_stmt_init(mysql);
 	rs=NULL;
 	stmtPtr=boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
@@ -18,13 +17,13 @@ Statement::Statement(MYSQL * mysql, const char * s):rs(NULL) {
 }
 
 Statement::~Statement() {
-  logdebug("Statement::~Statement()");
+//  logdebug("Statement::~Statement()");
 //  delete rs;
 //  close();
 }
 
 ResultSet * Statement::executeQuery(std::string s) {
-	sql=s;
+  	sql=s;
 	execute();
   if(!rs)
     rs=new ResultSet(stmtPtr.get());

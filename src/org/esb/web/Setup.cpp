@@ -30,7 +30,8 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/Properties.h"
 #include "org/esb/sql/Connection.h"
-
+#include "org/esb/signal/Messenger.h"
+#include "org/esb/signal/Message.h"
 #include "org/esb/hive/Setup.h"
 
 //#include "wtk/Div.h"
@@ -472,6 +473,8 @@ namespace org {
         const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
         props.setProperty("mode.server", server_mode);
         props.setProperty("mode.client", client_mode);
+        config::Config::setProperty("mode.server", server_mode);
+        config::Config::setProperty("mode.client", client_mode);
 
         if (_elchk.getElement("mode.client")->isChecked()) {
           props.setProperty("client.port", _el.getElement("client.port")->text().narrow().c_str());
@@ -535,6 +538,32 @@ namespace org {
         org::esb::io::FileOutputStream fos(&file);
         props.save(&fos);
         fos.close();
+        /*Restarting the Services after configuration*/
+        using namespace org::esb::signal;
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+//        signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+//        signal::Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+
+        if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+          //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+          //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+          signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::START));
+        }
+
+        if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
+          signal::Messenger::getInstance().sendRequest(Message().
+              setProperty("directoryscan", org::esb::hive::START).
+              setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
+              setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
+          signal::Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+        }
+        if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
+          signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+        }
+
 
         int idx = stack->currentIndex();
         stack->setCurrentIndex(++idx);

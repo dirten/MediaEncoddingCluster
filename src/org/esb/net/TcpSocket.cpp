@@ -62,6 +62,10 @@ namespace org {
         _os = new TcpSocketOutputStream(_socket,net_io_mutex);
         _connected = true;
       }
+      std::string TcpSocket::getRemoteIpAddress(){
+        return _socket->remote_endpoint().address().to_string();
+      }
+
     }
   }
 }
