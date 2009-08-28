@@ -4,16 +4,15 @@
 
 
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (${FFMPEG_DIR}/include)
+include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
-include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
-INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
+#include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
+#INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 
-LINK_DIRECTORIES(${BOOST_LIB_DIR})
-LINK_DIRECTORIES(${BOOST_DIR}/lib)
-LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+LINK_DIRECTORIES(${BOOST_LIB_DIRS})
+LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/test/fobs/dist/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/test/fobs/dist/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
@@ -53,23 +52,7 @@ IF(WIN32)
   ADD_DEFINITIONS(-D__WIN32__)
 ENDIF(WIN32)
 
-IF(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIB libmysqld)
-#    SET(MYSQL_LIB mysqlserver)
-  ELSE(WIN32)
-    SET(MYSQL_LIB mysqld)
-  ENDIF(WIN32)
-ELSE(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIB libmysql)
-  ELSE(WIN32)
-    SET(MYSQL_LIB mysqlclient)
-  ENDIF(WIN32)
-ENDIF(USE_EMBEDDED_MYSQL)
 
-INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
-LINK_DIRECTORIES    (${ERLANG_INTERFACE_DIR}/lib/)
 
 ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
@@ -81,7 +64,24 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 #ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
-target_link_libraries (info io av util esb sql ${MYSQL_LIB} lang avformat avcodec avutil swscale)
+
+target_link_libraries (info 
+  web 
+  esb 
+  sql 
+  hive 
+  lang 
+  av 
+  util 
+  signal 
+  io 
+  net 
+  ${MYSQL_LIBRARY} 
+  ${FFMPEG_AVCODEC_LIBRARY} 
+  ${FFMPEG_AVFORMAT_LIBRARY} 
+  ${FFMPEG_AVUTIL_LIBRARY} 
+  ${FFMPEG_SWSCALE_LIBRARY} 
+  )
 
 
 IF(WIN32)
@@ -92,14 +92,14 @@ IF(WIN32)
 #target_link_libraries (info ${BZ2_LIB} io av util lang avcodec avformat avutil swscale   )
 #target_link_libraries (test avcodec avformat avutil swscale ${BZ2_LIB} io av util lang libx264 wsock32 vfw32 winmm libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg )
 ELSEIF(APPLE)
-target_link_libraries (info x264 ${MYSQL_LIB} z pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+  target_link_libraries (info x264 z pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (info bz2 )
 #target_link_libraries (test bz2 )
 #target_link_libraries (erltest bz2 )
 ELSE(WIN32)
-target_link_libraries (info x264 ${MYSQL_LIB} z dl  pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
-
+  target_link_libraries (info x264 z dl crypt pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(WIN32)
+
 target_link_libraries (info
   ${BOOST_SERIAL_LIB_MT}
   ${BOOST_THREAD_LIB_MT}
@@ -126,7 +126,7 @@ MESSAGE("BOOST FileSystem Library" ${BOOST_FS_LIB_MT})
 
 IF(NOT WIN32)
 
-target_link_libraries (info ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+#target_link_libraries (info ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 #target_link_libraries (test ${BZ2_LIB} io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 #target_link_libraries (erltest ${BZ2_LIB} erl_interface ei io av util lang avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 ENDIF(NOT WIN32)
