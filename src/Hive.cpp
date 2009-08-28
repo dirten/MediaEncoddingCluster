@@ -83,22 +83,21 @@ int euclid(int a, int b){
 }
  */
 int main(int argc, char * argv[]) {
-        /*setting default path to Program*/
-        org::esb::io::File f(argv[0]);
-        std::string s = f.getFilePath();
-        char * path = new char[s.length() + 1];
-        memset(path, 0, s.length() + 1);
-        strcpy(path, s.c_str());
+  /*setting default path to Program*/
+  org::esb::io::File f(argv[0]);
+  std::string s = f.getFilePath();
+  char * path = new char[s.length() + 1];
+  memset(path, 0, s.length() + 1);
+  strcpy(path, s.c_str());
 
-        Config::setProperty("hive.path", path);
+  Config::setProperty("hive.path", path);
 
-        std::string sb = org::esb::io::File(f.getParent()).getParent();
-        char * base_path = new char[sb.length() + 1];
-        memset(base_path, 0, sb.length() + 1);
-        strcpy(base_path, sb.c_str());
+  std::string sb = org::esb::io::File(f.getParent()).getParent();
+  char * base_path = new char[sb.length() + 1];
+  memset(base_path, 0, sb.length() + 1);
+  strcpy(base_path, sb.c_str());
 
-        Config::setProperty("hive.base_path", base_path);
-
+  Config::setProperty("hive.base_path", base_path);
   try {
     //    loginit("log.properties");
     //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
@@ -107,7 +106,6 @@ int main(int argc, char * argv[]) {
 
 
     std::string config_path = Config::getProperty("hive.base_path");
-    logdebug(config_path);
     config_path.append("/.hive.cfg");
     po::options_description gen;
 
@@ -118,11 +116,12 @@ int main(int argc, char * argv[]) {
         ;
 
 
-    po::options_description ser("Server options");
+    po::options_description ser("Hive options");
     ser.add_options()
-        ("server,s", "start the Hive Server Process")
-        ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
-        ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
+        ("daemon,d", "start the Hive as Daemon Process")
+        ("run,r", "start the Hive as Console Process")
+        //        ("port,p", po::value<int>()->default_value(20200), "specify the port for the Hive Server")
+        //        ("web,w", po::value<int>()->default_value(8080), "start the Web Server Process on the specified port")
         //        ("webroot,r", po::value<std::string > ()->default_value(webroot), "define the Path for Web Server root")
         //        ("scandir", po::value<std::string > (), "define the Path to Scan for new Media Files")
         //        ("scanint", po::value<int>(), "define the Interval to Scan for new Media Files")
@@ -136,39 +135,40 @@ int main(int argc, char * argv[]) {
         ("host,h", po::value<std::string > ()->default_value("localhost"), "Host to connect")
         ("port,p", po::value<int>()->default_value(20200), "Port to connect")
         ;
+    /*
+        po::options_description exp("Export options");
+        exp.add_options()
+            ("export,e", "Exports a File")
+            ("file,f", po::value<std::string > (), "which file to export")
+            ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
+            ;
 
-    po::options_description exp("Export options");
-    exp.add_options()
-        ("export,e", "Exports a File")
-        ("file,f", po::value<std::string > (), "which file to export")
-        ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
-        ;
-
-    po::options_description imp("Import options");
-    imp.add_options()
-        ("import,p", "Import a File")
-        ("file,f", po::value<std::string > (), "which file to import")
-        //      ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
-        ;
-
+        po::options_description imp("Import options");
+        imp.add_options()
+            ("import,p", "Import a File")
+            ("file,f", po::value<std::string > (), "which file to import")
+            //      ("directory,d", po::value<std::string > ()->default_value("."), "Directory in which the File to export")
+            ;
+     */
     po::options_description all("all");
     all.
         add(gen).
         add(ser).
-        add(cli).
-        add(exp).
-        add(imp);
+        add(cli);
+    //      add(exp).
+    //      add(imp);
 
-    gen.
-        add(ser).
-        add(cli).
-        add(exp);
-
+    /*
+        gen.
+            add(ser).
+            add(cli).
+            add(exp);
+     */
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, all), vm);
     po::notify(vm);
 
-    if (argc == vm.count("help")) {
+    if (argc == vm.count("help") || argc == 1) {
       cout << all << "\n";
       return 1;
     }
@@ -176,16 +176,28 @@ int main(int argc, char * argv[]) {
     avcodec_init();
     avcodec_register_all();
 
-    if (argc == 1) {
-
+    if (vm.count("daemon")) {
+      Log::open(Config::getProperty("hive.base_path"));
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
         Config::setProperty("web.docroot", webroot.c_str());
       }
+      Config::setProperty("hive.mode", "daemon");
+      listener(argc, argv);
+      //      return 0;
+    }
+    if (vm.count("run")) {
+      if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
+        logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
+        Config::setProperty("hive.mode", "setup");
+        std::string webroot = std::string(Config::getProperty("hive.base_path"));
+        webroot.append("/web");
+        Config::setProperty("web.docroot", webroot.c_str());
+      }
+//      Config::setProperty("hive.mode", "daemon");
       listener(argc, argv);
       //      return 0;
     }
@@ -264,7 +276,7 @@ int main(int argc, char * argv[]) {
   delete []base_path;
 
   org::esb::config::Config::close();
-//  mysql_server_end();
+  //  mysql_server_end();
 
   return 0;
 }
@@ -512,7 +524,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 }
 
 void start_win32() {
-  SERVICE_TABLE_ENTRY DispatchTable[] ={
+  SERVICE_TABLE_ENTRY DispatchTable[] = {
     { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain},
     { NULL, NULL}
   };
@@ -624,13 +636,13 @@ void start() {
    *
    */
 
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
 
   Messenger::free();
   //  mysql_library_end();
@@ -659,8 +671,20 @@ void listener(int argc, char *argv[]) {
 
   //  Setup::check();
 #ifdef WIN32
+  if (std::string(Config::getProperty("hive.mode")) == "daemon") {
   start_win32();
+  }else
+    start();
 #else
+  if (std::string(Config::getProperty("hive.mode")) == "daemon") {
+    int i;
+    if (getppid() == 1) return; /* already a daemon */
+    i = fork();
+    if (i < 0) exit(1); /* fork error */
+    if (i > 0) exit(0); /* parent exits */
+    /* child (daemon) continues */
+    setsid(); /* obtain a new process group */
+  }
   start();
 #endif
 

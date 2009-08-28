@@ -28,7 +28,7 @@ namespace org {
         void convert(Frame & input, Frame & out);
       private:
         Frame convertVideo(Frame & input);
-        Frame convertAudio(Frame & input);
+//        Frame convertAudio(Frame & input);
         void convertVideo(Frame & input, Frame & out);
         void convertAudio(Frame & input, Frame & out);
         void rescaleTimestamp(Frame & input, Frame & out);

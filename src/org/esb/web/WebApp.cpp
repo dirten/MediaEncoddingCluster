@@ -29,12 +29,9 @@
 
 #define STRINGIFY(s)    TOSTRING(s)
 #define TOSTRING(s) #s
-namespace org
-{
-  namespace esb
-  {
-    namespace web
-    {
+namespace org {
+  namespace esb {
+    namespace web {
 
       WebApp::WebApp(const Wt::WEnvironment & env) : WApplication(env) {
         if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {

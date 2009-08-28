@@ -16,10 +16,9 @@ include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
-include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
-include_directories (${FFMPEG_DIR}/include)
-#TARGET_LINK_LIBRARIES(av ${FFMPEG_DIR}/lib)
-LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
+include_directories (${FFMPEG_INCLUDE_DIR})
+
+LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 
 add_library (av av av/Init.cpp 
             av/FrameConverter.cpp 
@@ -51,17 +50,18 @@ add_library (lang lang/Byte.cpp
 )
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util util/Properties.cpp 
-      util/StringTokenizer.cpp 
-      util/StringUtil.cpp 
-      util/Date.cpp 
-      util/Time.cpp 
-      util/Datetime.cpp 
-      util/Decimal.cpp 
-      util/ScopedTimeCounter.cpp 
-      util/IllegalFormatException.cpp
-      util/Log.cpp
-#      util/Queue.cpp
+add_library (util 
+  util/Properties.cpp 
+  util/StringTokenizer.cpp 
+  util/StringUtil.cpp 
+  util/Date.cpp 
+  util/Time.cpp 
+  util/Datetime.cpp 
+  util/Decimal.cpp 
+  util/ScopedTimeCounter.cpp 
+  util/IllegalFormatException.cpp
+  util/Log.cpp
+#  util/Queue.cpp
 )
 TARGET_LINK_LIBRARIES(util  ${BOOST_DT_LIB_MT})
 
@@ -154,7 +154,8 @@ include_directories (${WT_DIR})
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR}/src)
 add_library (web web/WebServer.cpp 
-    web/WebApp.cpp 
+    web/WebApp.cpp
+    web/WebApp2.cpp
     web/SqlTableModel.cpp 
     web/SqlTable.cpp
     web/FileTreeTable.cpp
@@ -179,3 +180,4 @@ add_library (web web/WebServer.cpp
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
+TARGET_LINK_LIBRARIES(esb util)

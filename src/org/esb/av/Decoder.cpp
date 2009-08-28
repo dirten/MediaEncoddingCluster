@@ -201,7 +201,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   }
   len -= bytesDecoded;
   //  }
-#if 1
+#if 0
 
   if (_frameFinished) {
     logdebug("Frame finished");
@@ -320,6 +320,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 //  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize());
   if (len < 0) {
     logerror("Error while decoding audio Frame");
+    return new Frame();
   }
   if (samples_size > 0) {
     /* if a frame has been decoded, output it */

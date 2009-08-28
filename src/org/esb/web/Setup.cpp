@@ -20,6 +20,8 @@
 #include <Wt/WBreak>
 #include <Wt/WTable>
 #include <Wt/WLabel>
+#include <Wt/WButtonGroup>
+#include <Wt/WGroupBox>
 //#include <web/DomElement.h>
 #include <ostream>
 #include <iostream>
@@ -181,7 +183,8 @@ namespace org {
 
         stack->addWidget(createHivePage());
         stack->addWidget(createAdminPage());
-        stack->addWidget(createSuccessPage());
+        stack->addWidget(createServerSuccessPage());
+        stack->addWidget(createClientSuccessPage());
 
         (center->layout())->addWidget(stack);
         //        (center->layout())->addWidget(createAdminPage());
@@ -215,9 +218,11 @@ namespace org {
         logdebug("Step=" << stack->currentIndex());
         _el.validate();
         int idx = stack->currentIndex();
-        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
+//        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 0 && (!mode->selectedButtonIndex()==1))
           idx++;
-        if (idx == 1 && (!_elchk.getElement("mode.server")->isChecked()))
+//        if (idx == 1 && (!_elchk.getElement("mode.server")->isChecked()))
+        if (idx == 1 && (!mode->selectedButtonIndex()==0))
           idx += 3;
         if (idx == 4)
           stack->insertWidget(5, createSavePage());
@@ -240,9 +245,11 @@ namespace org {
 
       void Setup::prevStep() {
         int idx = stack->currentIndex();
-        if (idx == 5 && (!_elchk.getElement("mode.server")->isChecked()))
+//        if (idx == 5 && (!_elchk.getElement("mode.server")->isChecked()))
+        if (idx == 5 && (!mode->selectedButtonIndex()==0))
           idx -= 3;
-        if (idx == 2 && (!_elchk.getElement("mode.client")->isChecked()))
+//        if (idx == 2 && (!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 2 && (!mode->selectedButtonIndex()==1))
           idx--;
         if (idx == 5) {
           Wt::WWidget * ref = stack->widget(5);
@@ -266,17 +273,29 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createModePage() {
-        Wt::WTable * db_table = new Wt::WTable();
-        _elchk.getElement("mode.server", "Server Mode", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _elchk.getElement("mode.client", "Client Mode", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
-        //        _el.getElement("db.user", "Database User", "", db_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
-        //        _el.getElement("db.pass", "Database Password", "", db_table->elementAt(3, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
+       Wt::WGroupBox *container = new Wt::WGroupBox("Select Mode");
+
+//        Wt::WTable * db_table = new Wt::WTable();
+         mode = new Wt::WButtonGroup(container);
+
+        _elradio.getElement("mode.server", "Server Mode", "", container); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _elradio.getElement("mode.client", "Client Mode", "", container); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        mode->addButton(_elradio.getElement("mode.server"));
+        mode->addButton(_elradio.getElement("mode.client"));
+        mode->setSelectedButtonIndex(0);
+/*
+        _elradio.getElement("mode.server", "Server Mode", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _elradio.getElement("mode.client", "Client Mode", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        group->addButton(_elradio.getElement("mode.server"));
+        group->addButton(_elradio.getElement("mode.client"));
+        group->setSelectedButtonIndex(0);
+*/
 
         wtk::Div * div_db = new wtk::Div("");
         div_db->addWidget(new Wt::WText(Wt::WString::tr("mode-setup")));
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(new Wt::WBreak());
-        div_db->addWidget(db_table);
+        div_db->addWidget(container);
         //        Wt::Ext::Button * checkDb = new Wt::Ext::Button("check Connection", db_table->elementAt(4, 0));
         //        checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
         butNext->setHidden(false);
@@ -387,8 +406,8 @@ namespace org {
 
         wtk::Div * div_admin = new wtk::Div("");
 
-        const char * server_mode = _elchk.getElement("mode.server")->isChecked() ? "On" : "Off";
-        const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
+        const char * server_mode = mode->selectedButtonIndex()==0 ? "On" : "Off";
+        const char * client_mode = mode->selectedButtonIndex()==1 ? "On" : "Off";
 
 
 #ifdef USE_EMBEDDED_MYSQL
@@ -420,14 +439,28 @@ namespace org {
         return c_admin;
       }
 
-      Wt::WWebWidget * Setup::createSuccessPage() {
+      Wt::WWebWidget * Setup::createServerSuccessPage() {
         wtk::Div * div_admin = new wtk::Div("");
-        div_admin->addWidget(new Wt::WText(Wt::WString::tr("success-setup")));
+        div_admin->addWidget(new Wt::WText(Wt::WString::tr("success-server-setup")));
 
         Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
         div_admin->addWidget(bt);
         bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
 
+        wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
+        c_admin->setContent(div_admin);
+
+        return c_admin;
+      }
+
+      Wt::WWebWidget * Setup::createClientSuccessPage() {
+        wtk::Div * div_admin = new wtk::Div("");
+        div_admin->addWidget(new Wt::WText(Wt::WString::tr("success-client-setup")));
+/*
+        Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
+        div_admin->addWidget(bt);
+        bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
+*/
 
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
         c_admin->setContent(div_admin);
@@ -469,18 +502,18 @@ namespace org {
 
       void Setup::saveConfig() {
         org::esb::util::Properties props;
-        const char * server_mode = _elchk.getElement("mode.server")->isChecked() ? "On" : "Off";
-        const char * client_mode = _elchk.getElement("mode.client")->isChecked() ? "On" : "Off";
+        const char * server_mode = mode->selectedButtonIndex()==0 ? "On" : "Off";
+        const char * client_mode = mode->selectedButtonIndex()==1 ? "On" : "Off";
         props.setProperty("mode.server", server_mode);
         props.setProperty("mode.client", client_mode);
         config::Config::setProperty("mode.server", server_mode);
         config::Config::setProperty("mode.client", client_mode);
 
-        if (_elchk.getElement("mode.client")->isChecked()) {
+        if (mode->selectedButtonIndex()==1) {
           props.setProperty("client.port", _el.getElement("client.port")->text().narrow().c_str());
           props.setProperty("client.host", _el.getElement("client.host")->text().narrow().c_str());
         }
-        if (_elchk.getElement("mode.server")->isChecked()) {
+        if (mode->selectedButtonIndex()==0) {
           props.setProperty("db.connection",
               std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
               append(";db=").append(_el.getElement("db.db")->text().narrow()).

@@ -10,6 +10,7 @@
 #include <boost/thread.hpp>
 #include <fstream>
 #include <sstream>
+#include <ostream>
 
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
@@ -21,12 +22,13 @@
 //#define logdebug(o1) { std::stringstream t; \
 //t<< o1; \
 //Log::getLogger()->debug(t);}
-#include <iostream>
 
+#include <iostream>
 
 class Log{
 public:
     static Log * getLogger();
+    static void open(std::string path);
     void debug(std::stringstream &);
     void info(std::stringstream &);
     void warn(std::stringstream &);
@@ -35,7 +37,8 @@ public:
     void log(std::stringstream & s, const char * level);
 private:
     Log();
-    std::ofstream myfile;
+    std::ofstream _myfile;
+    static std::string _logpath;
     static Log * _logger;
 };
 #ifndef DUMMY 

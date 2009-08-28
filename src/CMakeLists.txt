@@ -1,26 +1,18 @@
 
 add_subdirectory (org)
-#add_subdirectory (erl)
 
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
-##include_directories (${FFMPEG_DIR})
+
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
-#include_directories (${WT_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
-include_directories (${MYSQL_DIR}/include/mysql)
-include_directories (${MYSQL_DIR}/include)
 
-#include_directories (${MYSQL_INC_DIR})
-#include_directories (${FFMPEG_DIR} ${FFMPEG_INC_DIR})
-include_directories (${FFMPEG_DIR}/include)
+include_directories (${MYSQL_INCLUDE_DIR})
+include_directories (${FFMPEG_INCLUDE_DIR})
 
 
-#LINK_DIRECTORIES(${WT_DIR}/src)
-#LINK_DIRECTORIES(${BOOST_LIB_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
-#LINK_DIRECTORIES(${WT_DIR}/src/http)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
@@ -46,61 +38,79 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 #set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 
-FIND_LIBRARY(AVCODEC_LIB
-    NAMES
-      avcodec
-      libavcodec
-    PATHS
-      ${FFMPEG_DIR}/lib
-    NO_DEFAULT_PATH
-  )
-FIND_LIBRARY(AVFORMAT_LIB
-    NAMES
-      avformat
-      libavformat
-    PATHS
-      ${FFMPEG_DIR}/lib
-    NO_DEFAULT_PATH
-  )
-
-FIND_LIBRARY(AVUTIL_LIB
-    NAMES
-      avutil
-      libavutil
-    PATHS
-      ${FFMPEG_DIR}/lib
-    NO_DEFAULT_PATH
-  )
-FIND_LIBRARY(SWSCALE_LIB
-    NAMES
-      swscale
-      libswscale
-    PATHS
-      ${FFMPEG_DIR}/lib
-    NO_DEFAULT_PATH
-  )
 #FIND_LIBRARY(avc avcodec)
 
 #MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
-MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
+#MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
 add_executable (mhive Hive.cpp)
 
 
 
-target_link_libraries (mhive  web esb sql hive lang av util signal io net  ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWSCALE_LIB} )
+target_link_libraries (mhive 
+  web 
+  esb 
+  sql 
+  hive 
+  lang 
+  av 
+  util 
+  signal 
+  io 
+  net 
+  ${FFMPEG_AVCODEC_LIBRARY} 
+  ${FFMPEG_AVFORMAT_LIBRARY} 
+  ${FFMPEG_AVUTIL_LIBRARY} 
+  ${FFMPEG_SWSCALE_LIBRARY} 
+)
 IF(WIN32)
-target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
-##target_link_libraries (mhive  ${MYSQL_LIB} wt wtext wthttp winmm)
-#target_link_libraries (mhive  ${MYSQL_LIB} wtd wtextd wthttpd libx264 libmp3lame libtheora libvorbis libvorbisenc xvidcore libogg)
+  target_link_libraries (mhive  
+    ${MYSQL_LIBRARY} 
+    wt 
+    wtext 
+    wthttp 
+    winmm
+  )
 ELSEIF(APPLE)
-target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} z ssl wthttp wtext wt pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
+  target_link_libraries (mhive 
+    x264 
+    ${MYSQL_LIBRARY} 
+    ${BZ2_LIB} 
+    z 
+    ssl 
+    wthttp 
+    wtext 
+    wt 
+    pthread 
+    z 
+    mp3lame 
+    theora 
+    vorbis 
+    vorbisenc 
+    xvidcore 
+    ogg
+  )
 ELSE(WIN32)
-target_link_libraries (mhive x264 ${MYSQL_LIB} ${BZ2_LIB} crypt z wthttp wtext wt mp3lame theora vorbis vorbisenc xvidcore ogg)
-target_link_libraries(mhive pthread ssl )
+  target_link_libraries (mhive 
+    x264 
+    ${MYSQL_LIBRARY} 
+    ${BZ2_LIB} 
+    crypt 
+    pthread
+    ssl
+    z 
+    wthttp 
+    wtext 
+    wt 
+    mp3lame 
+    theora 
+    vorbis 
+    vorbisenc 
+    xvidcore 
+    ogg
+  )
 ENDIF(WIN32)
-#MESSAGE("** BOOST_LIB PATH: " ${BOOST_THREAD_LIB_MT})
 
 target_link_libraries (mhive 
   ${BOOST_SERIAL_LIB_MT} 
@@ -112,7 +122,6 @@ target_link_libraries (mhive
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
 )
-#target_link_libraries(mhive pthread ssl )
 MESSAGE("Executable_output_path" ${EXECUTABLE_OUTPUT_PATH})
 
 INSTALL(TARGETS mhive

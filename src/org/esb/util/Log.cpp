@@ -1,15 +1,22 @@
 #include "Log.h"
-#include "org/esb/config/config.h"
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <string>
 using namespace boost::posix_time;
 Log * Log::_logger=NULL;
-
+std::string Log::_logpath="";
 Log::Log() {
-  std::string logfile=org::esb::config::Config::getProperty("hive.base_path");
-  logfile.append("/mhive.log");
-  myfile.open(logfile.c_str(), std::ios::out | std::ios::app);
+  if(Log::_logpath.length()>0){
+    std::string logfile=Log::_logpath;//org::esb::config::Config::getProperty("hive.base_path");
+    logfile.append("/mhive.log");
+    _myfile.open(logfile.c_str(), std::ios::out | std::ios::app);
+    std::cout.rdbuf(_myfile.rdbuf());
+    std::cerr.rdbuf(_myfile.rdbuf());
+  }
+}
+
+void Log::open(std::string path) {
+  Log::_logpath=path;
 }
 
 Log * Log::getLogger() {
@@ -19,7 +26,7 @@ Log * Log::getLogger() {
 }
 
 void Log::log(std::stringstream & s, const char * l){
-  myfile<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
+    std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
 }
 
 void Log::debug(std::stringstream & s){

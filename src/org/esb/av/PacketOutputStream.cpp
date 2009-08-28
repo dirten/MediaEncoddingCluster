@@ -35,8 +35,10 @@ PacketOutputStream::~PacketOutputStream() {
 void PacketOutputStream::writePacket(Packet & packet) {
   if (!_isInitialized)
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
-  if (streams.size() <= packet.getStreamIndex())
+  if (streams.size() <= packet.getStreamIndex()){
     logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
+    return;
+  }
 
   /**
    * @TOTO implementing now
@@ -46,10 +48,13 @@ void PacketOutputStream::writePacket(Packet & packet) {
 
 //  packet.setPts(streamPts[packet.getStreamIndex()]);
 //  packet.setDts(streamDts[packet.getStreamIndex()]);
+      logdebug("Write Packet to PacketOutputStream");
+  packet.toString();
       packet.setDts(AV_NOPTS_VALUE);
       packet.setPts(AV_NOPTS_VALUE);
       packet.setDuration(0);
-//  streamDts[packet.getStreamIndex()] += packet.getDuration();
+
+      //  streamDts[packet.getStreamIndex()] += packet.getDuration();
 //  streamPts[packet.getStreamIndex()] += packet.getDuration();
 
   /*

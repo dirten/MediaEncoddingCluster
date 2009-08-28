@@ -61,7 +61,9 @@ bool Config::init(char * filename) {
       Statement * stmt = con.createStatement();
       ResultSet * rs = stmt->executeQuery("select * from config");
       while (rs->next()) {
-        if (rs->getString("config_key") != "db.connection") {
+        if (rs->getString("config_key") != "db.connection"&&
+            rs->getString("config_key") != "mode.client"&&
+            rs->getString("config_key") != "mode.server") {
           properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
           logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }

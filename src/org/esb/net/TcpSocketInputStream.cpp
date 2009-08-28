@@ -19,13 +19,12 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace net {
-	  
 
       class TcpSocketInputStream : public InputStream {
       private:
         boost::system::error_code error;
         boost::shared_ptr<tcp::socket> _socket;
-		boost::mutex & _read_mutex;
+        boost::mutex & _read_mutex;
         char byte;
 
       public:
@@ -36,8 +35,8 @@ namespace org {
 
         /******************************************************************************/
 
-        TcpSocketInputStream(boost::shared_ptr<tcp::socket> socket,boost::mutex & m) : 
-		_socket(socket),_read_mutex(m) {
+        TcpSocketInputStream(boost::shared_ptr<tcp::socket> socket, boost::mutex & m) :
+        _socket(socket), _read_mutex(m) {
 
         }
 
@@ -62,15 +61,15 @@ namespace org {
         }
 
         /******************************************************************************/
-        
+
         int read(unsigned char * buffer, int length) {
-     		boost::mutex::scoped_lock lock(_read_mutex);
-			if (!_socket->is_open()) {
-				_socket->close();
-				throw SocketException("SocketOutputStream::write - can not Read, because Socket is not open");
-			}
-			int counter = 0, remaining = length;
-       
+          boost::mutex::scoped_lock lock(_read_mutex);
+          if (!_socket->is_open()) {
+            _socket->close();
+            throw SocketException("SocketOutputStream::write - can not Read, because Socket is not open");
+          }
+          int counter = 0, remaining = length;
+
           while (remaining > 0) {
             int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
             remaining -= read;
@@ -84,9 +83,9 @@ namespace org {
 
         int read(string & str) {
           /*Receive length of data*/
-          int length = static_cast<int>(available(true));
+          int length = static_cast<int> (available(true));
 
-//          cout << "Readed Buffer length"<<length<<endl;
+          //          cout << "Readed Buffer length"<<length<<endl;
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
@@ -94,7 +93,7 @@ namespace org {
           /*If Connection is dead*/
           if (counter <= 0) {
             cout << "Socket is brocken" << endl;
-          }else {
+          } else {
             str = string((char*) buffer, length);
           }
           delete []buffer;

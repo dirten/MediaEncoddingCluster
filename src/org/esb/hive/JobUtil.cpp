@@ -36,6 +36,7 @@ int jobcreator(int argc, char*argv[]) {
   int profile_a_codec = 0;
   int profile_a_bitrate = 0;
   int profile_a_samplerate = 0;
+  AVOutputFormat *ofmt= NULL;
 
   //	cout << "FileId:"<<fileid<<"\tProfileId:"<<profileid<<endl;
   {
@@ -97,10 +98,10 @@ int jobcreator(int argc, char*argv[]) {
     PreparedStatement stmt = con.prepareStatement("insert into files ( path, filename, parent ) values(:path, :filename, :parent )");
     org::esb::io::File f(filename.c_str());
     std::string ext = f.getExtension();
-    AVOutputFormat *ofmt = NULL;
     while ((ofmt = av_oformat_next(ofmt))) {
       if (profile_v_format == ofmt->long_name) {
         f.changeExtension(ofmt->extensions);
+        break;
       }
     }
 
@@ -110,9 +111,9 @@ int jobcreator(int argc, char*argv[]) {
     stmt.execute();
     outfileid = con.lastInsertId();
   }
-  {
-    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
+  if(in_v_stream>0){
+    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags) values"
+        "(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
@@ -128,14 +129,20 @@ int jobcreator(int argc, char*argv[]) {
     codec.setHeight(profile_v_height);
 //    codec.findCodec(Codec::ENCODER);
     codec.open();
+    int flags=codec.getFlags();
+    if(ofmt->flags&AVFMT_GLOBALHEADER)
+      flags|=CODEC_FLAG_GLOBAL_HEADER;
+
+    stmt.setInt("flags", flags);
+
     stmt.setInt("pix_fmt", codec.getPixelFormat());
     stmt.setInt("bit_rate", profile_v_bitrate);
     stmt.execute();
     v_stream_id = con.lastInsertId();
   }
-  {
-    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt)");
+  if(in_a_stream>0){
+    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt, flags) values"
+        "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt, :flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 1);
     stmt.setInt("stream_type", 1);
@@ -146,6 +153,12 @@ int jobcreator(int argc, char*argv[]) {
     stmt.setInt("sample_rate", profile_a_samplerate);
     stmt.setInt("channels", profile_a_channels);
     stmt.setInt("sample_fmt", 1);
+    int flags=0;
+    if(ofmt->flags&AVFMT_GLOBALHEADER)
+      flags|=CODEC_FLAG_GLOBAL_HEADER;
+
+    stmt.setInt("flags", flags);
+
     stmt.execute();
     a_stream_id = con.lastInsertId();
   }

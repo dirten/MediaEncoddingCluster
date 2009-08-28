@@ -18,12 +18,9 @@ void my_init() {
   avcodec_register_all();
 }
 
-namespace org
-{
-  namespace esb
-  {
-    namespace av
-    {
+namespace org {
+  namespace esb {
+    namespace av {
 
       Codec::Codec(AVCodecContext * c) {
         ctx = c;
@@ -47,12 +44,12 @@ namespace org
         _sample_rate = 0;
         _sample_format = (SampleFormat) 0;
         ctx = avcodec_alloc_context();
-		/*default settings for x264*/
-		ctx->me_range=16;
-		ctx->max_qdiff=4;
-		ctx->qmin=10;
-		ctx->qmax=51;
-		ctx->qcompress=0.6;
+        /*default settings for x264*/
+        ctx->me_range = 16;
+        ctx->max_qdiff = 4;
+        ctx->qmin = 10;
+        ctx->qmax = 51;
+        ctx->qcompress = 0.6;
 
       }
 
@@ -148,19 +145,16 @@ namespace org
             //					    cout <<"CodecCapTruncated"<<endl;
           }
           //				    ctx->flags |=CODEC_FLAG_LOW_DELAY;
-          try
-          {
+          try {
             if (avcodec_open(ctx, _codec) < 0) {
               logerror("while openning Codec" << _codec_id);
 
             } else {
               //              logdebug("Codec opened:" << _codec_id);
-               fifo = av_fifo_alloc(1024);
+              fifo = av_fifo_alloc(1024);
               _opened = true;
             }
-          }
-
-          catch(...) {
+          } catch (...) {
             logerror("Exception while openning Codec" << _codec_id);
           }
           return 0;
@@ -180,7 +174,7 @@ namespace org
         av_freep(&ctx->stats_in);
         if (_opened) {
           avcodec_close(ctx);
-           av_fifo_free(fifo);
+          av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << _codec_id);

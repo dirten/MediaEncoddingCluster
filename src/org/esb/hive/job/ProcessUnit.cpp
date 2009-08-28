@@ -101,8 +101,8 @@ void ProcessUnit::process() {
     if (toDebug)
       logdebug("Loop");
     boost::shared_ptr<Packet> p = *it;
-    if (++s % 100 == 0)
-      cout << "\r" << s;
+//    if (++s % 100 == 0)
+//      cout << "\r" << s;
     insize += p->packet->size;
     if (toDebug) {
       logdebug("inputpacket")

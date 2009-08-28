@@ -85,7 +85,7 @@ namespace org {
           return convertVideo(in_frame);
         }
         if (in_frame._type == CODEC_TYPE_AUDIO) {
-          return convertAudio(in_frame);
+//          return convertAudio(in_frame);
         }
         return in_frame;
       }
@@ -152,7 +152,7 @@ namespace org {
         out_frame.duration = in_frame.duration;
         //        return out_frame;
       }
-
+/*
       Frame FrameConverter::convertAudio(Frame & in_frame) {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
@@ -185,7 +185,7 @@ namespace org {
 
         return frame;
       }
-
+*/
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;

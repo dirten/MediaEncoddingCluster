@@ -7,7 +7,6 @@
 namespace org {
   namespace esb {
     namespace net {
-		boost::mutex net_io_mutex;
       TcpSocket::TcpSocket(const char * host, int port) {
         _connected = false;
         _host = host;

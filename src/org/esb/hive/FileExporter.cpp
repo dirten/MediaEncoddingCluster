@@ -27,6 +27,7 @@ void FileExporter::exportFile(int fileid) {
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
   //  map<int, int> dtsmap;
+  logdebug("Exporting file with id:" << fileid);
   std::string filename;
   Connection con(std::string(Config::getProperty("db.connection")));
 
@@ -48,24 +49,34 @@ void FileExporter::exportFile(int fileid) {
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
     logdebug("creating output directory:" << outDirectory.getFilePath());
-    try{
-        outDirectory.mkdir();
-    }catch(boost::filesystem::filesystem_error & e){
+    try {
+      outDirectory.mkdir();
+    } catch (boost::filesystem::filesystem_error & e) {
       logerror(e.what());
       return;
     }
   }
   //  string stream_id = fileid;
-  FormatOutputStream * fos=new FormatOutputStream(&fout);
-  PacketOutputStream * pos=new PacketOutputStream(fos);
+  FormatOutputStream * fos = new FormatOutputStream(&fout);
+  PacketOutputStream * pos = new PacketOutputStream(fos);
 
   int video_id = 0;
   int audio_id = 0;
   int audio_pts = 0;
   int video_pts = 0;
   bool build_offset = true;
+  map<int, int> stream_map;
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
+  {
+    PreparedStatement stmt = con.prepareStatement("select sin.stream_index inid, sout.stream_index outid from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
+    stmt.setInt("fileid", fileid);
+    ResultSet rs = stmt.executeQuery();
 
+    while (rs.next()) {
+      stream_map[rs.getInt("inid")] = rs.getInt("outid");
+    }
+
+  }
   {
     PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
     stmt.setInt("id", fileid);
@@ -82,7 +93,7 @@ void FileExporter::exportFile(int fileid) {
       dtsoffset[rs.getInt("stream_index")] = -1;
       ptsoffset[rs.getInt("stream_index")] = -1;
       pos->setEncoder(*codec, rs.getInt("stream_index"));
-      logdebug("Added Encoder to StreamIndex:"<<rs.getInt("stream_index"));
+      logdebug("Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
       }
@@ -135,12 +146,12 @@ void FileExporter::exportFile(int fileid) {
         pos.setEncoder(*encoder, rs.getInt("stream_index"));
       }
        */
-    cout << "StreamTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
-    cout << "\tStreamTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
-    cout << "CodecTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
-    cout << "\tCodecTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
-    logdebug("neue Zeile");
-    cout.flush();
+      cout << "StreamTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
+      cout << "\tStreamTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
+      cout << "CodecTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
+      cout << "\tCodecTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
+      //    logdebug("neue Zeile");
+      cout.flush();
     }
   }
   //	fos.open();
@@ -152,7 +163,7 @@ void FileExporter::exportFile(int fileid) {
     //    sql+=" order by a.pts limit 5000";
     //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
     //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts
-    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
+    string sql = "select data, data_size, packets.stream_index,packets.flags,packets.duration, dts, pts from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
     //    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by sort";
     //        string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";
     PreparedStatement stmt = con.prepareStatement(sql.c_str());
@@ -180,25 +191,26 @@ void FileExporter::exportFile(int fileid) {
       //	    video_packets++;
       //	    cout<<"" << rs.getInt("id")<<endl;
       Packet p(rs.getInt("data_size"));
-      p.packet->stream_index = rs.getInt("stream_index");
+      p.packet->stream_index = stream_map[rs.getInt("stream_index")];
       p.packet->flags = rs.getInt("packets.flags");
       //      p.packet->size = rs.getInt("data_size");
       p.packet->duration = rs.getInt("packets.duration");
+
       //	    p.size=rs.getInt("data_size");
       //	    p.data=new uint8_t[p.size];
       //		if(p.packet->stream_index==0){
       //        if(p.packet->stream_index==CODEC_TYPE_VIDEO)
-//      p.packet->dts = AV_NOPTS_VALUE; //rs.getInt("dts");
-//      p.packet->pts = AV_NOPTS_VALUE; //rs.getInt("dts");
+      //      p.packet->dts = rs.getInt("dts");
+      //      p.packet->pts = rs.getInt("pts");
 
-      AVRational ar2 = {1, 25}; //enc[rs.getInt("stream_index")]->getTimeBase();
+      //      AVRational ar2 = {1, 25}; //enc[rs.getInt("stream_index")]->getTimeBase();
       //      if(enc[rs.getInt("stream_index")]->getCodecType()==CODEC_TYPE_VIDEO){
 
-//      p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
-//      p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), fos._fmtCtx->streams[p.packet->stream_index]->time_base);
+      p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[p.getStreamIndex()]->getTimeBase(), fos->_fmtCtx->streams[p.getStreamIndex()]->time_base);
+      p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[p.getStreamIndex()]->getTimeBase(), fos->_fmtCtx->streams[p.getStreamIndex()]->time_base);
 
-//      p.packet->dts = rs.getLong("dts");
-//      p.packet->pts = rs.getLong("pts")==AV_NOPTS_VALUE?rs.getLong("dts"):rs.getLong("pts");
+      //      p.packet->dts = rs.getLong("dts");
+      //      p.packet->pts = rs.getLong("pts")==AV_NOPTS_VALUE?rs.getLong("dts"):rs.getLong("pts");
       //      }
 
 
@@ -209,11 +221,12 @@ void FileExporter::exportFile(int fileid) {
         if (dtsoffset[rs.getInt("stream_index")] == -1) {
           dtsoffset[rs.getInt("stream_index")] = p.packet->dts;
         }
-//        p.packet->pts = p.packet->pts - ptsoffset[rs.getInt("stream_index")];
-//        p.packet->dts = p.packet->dts - dtsoffset[rs.getInt("stream_index")];
+        //        p.packet->pts = p.packet->pts - ptsoffset[rs.getInt("stream_index")];
+        //        p.packet->dts = p.packet->dts - dtsoffset[rs.getInt("stream_index")];
       }
 
       if (false && enc[rs.getInt("stream_index")]->getCodecType() == CODEC_TYPE_VIDEO) {
+        AVRational ar2 = {1, 25}; //enc[rs.getInt("stream_index")]->getTimeBase();
         p.packet->pts = av_rescale_q(rs.getLong("pts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
         p.packet->dts = av_rescale_q(rs.getLong("dts"), enc[rs.getInt("stream_index")]->getTimeBase(), ar2);
       }
@@ -260,7 +273,7 @@ void FileExporter::exportFile(int fileid) {
       //        p.packet->data=static_cast<unsigned int*>(const_cast<char*>(rs.getBlob("data").data()));
       memcpy(p.packet->data, rs.getBlob("data").data(), p.packet->size);
       //		cout << "PacketSize:"<<p.packet->size<<"="<<rs.getBlob("data").length()<<endl;
-//      p.toString();
+      //      p.toString();
       pos->writePacket(p);
       //	    if(video_packets%1000==0)
       cout.flush();

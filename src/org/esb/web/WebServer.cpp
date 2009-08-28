@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "WebApp.h"
+#include "WebApp2.h"
 #include "Setup.h"
 #include "org/esb/util/Log.h"
 using namespace org::esb::web;
@@ -34,14 +35,14 @@ WApplication *createApp(const WEnvironment& env) {
 }
 
 WebServer::WebServer() : server("test") {
-  std::string log_file=org::esb::config::Config::getProperty("hive.base_path");
+  std::string log_file = org::esb::config::Config::getProperty("hive.base_path");
   log_file.append("/http.log");
   char * args[] = {
     "mhive",
     "--docroot", org::esb::config::Config::getProperty("web.docroot", "."),
     "--http-address", "0.0.0.0",
     "--http-port", org::esb::config::Config::getProperty("web.port", "8080"),
-    "--accesslog",const_cast<char*>(log_file.c_str()),
+    "--accesslog", const_cast<char*> (log_file.c_str()),
     "--no-compression",
     "--deploy-path", "/"
   };
@@ -49,26 +50,29 @@ WebServer::WebServer() : server("test") {
 
   server.addEntryPoint(WServer::Application, &createApp);
   server.addEntryPoint(WServer::Application, &createSetup, "setup");
-//  logdebug(typeid(*this).name());
+  //  logdebug(typeid(*this).name());
 }
 
 WebServer::~WebServer() {
   //	std::cout << "~WebServer"<<std::endl;
 }
+
 void WebServer::start() {
-	server.start();
+  server.start();
+  WServer::waitForShutdown();
+  server.stop();
+
 }
+
 void WebServer::onMessage(Message & msg) {
   if (msg.getProperty("webserver") == "start") {
-    try
-    {
+    try {
       if (!server.isRunning())
         server.start();
-    }
-catch(Wt::WServer::Exception & ex) {
+      logdebug("Webserver Started");
+    } catch (Wt::WServer::Exception & ex) {
       logerror(ex.what());
     }
-    logdebug("Webserver Started");
   } else
     if (msg.getProperty("webserver") == "stop") {
     if (server.isRunning())

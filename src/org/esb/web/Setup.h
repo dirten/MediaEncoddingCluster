@@ -12,6 +12,7 @@
 #include <Wt/Ext/LineEdit>
 #include <Wt/Ext/Button>
 #include <Wt/Ext/CheckBox>
+#include <Wt/WRadioButton>
 
 #include <Wt/WText>
 
@@ -79,9 +80,12 @@ namespace org {
         Wt::WWebWidget * createHivePage();
         Wt::WWebWidget * createAdminPage();
         Wt::WWebWidget * createSavePage();
-        Wt::WWebWidget * createSuccessPage();
+        Wt::WWebWidget * createServerSuccessPage();
+        Wt::WWebWidget * createClientSuccessPage();
 
       private:
+          enum Mode { Server = 1, Client = 2 };
+
         void nextStep();
         void prevStep();
         void saveConfig();
@@ -135,7 +139,9 @@ namespace org {
         org::esb::util::Properties _props;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
         wtk::ElementContainer<Wt::Ext::CheckBox> _elchk;
+        wtk::ElementContainer<Wt::WRadioButton> _elradio;
         Wt::WStackedWidget * stack;
+        Wt::WButtonGroup *mode;
       };
     }
   }
