@@ -185,7 +185,7 @@ int main(int argc, char * argv[]) {
         webroot.append("/web");
         Config::setProperty("web.docroot", webroot.c_str());
       }
-      Config::setProperty("hive.mode", "daemon");
+      Config::setProperty("hive.start_as", "daemon");
       listener(argc, argv);
       //      return 0;
     }
@@ -671,12 +671,12 @@ void listener(int argc, char *argv[]) {
 
   //  Setup::check();
 #ifdef WIN32
-  if (std::string(Config::getProperty("hive.mode")) == "daemon") {
+  if (std::string(Config::getProperty("hive.start_as")) == "daemon") {
   start_win32();
   }else
     start();
 #else
-  if (std::string(Config::getProperty("hive.mode")) == "daemon") {
+  if (std::string(Config::getProperty("hive.start_as")) == "daemon") {
     int i;
     if (getppid() == 1) return; /* already a daemon */
     i = fork();
