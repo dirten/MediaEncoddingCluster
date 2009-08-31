@@ -21,6 +21,11 @@ namespace org {
     namespace web {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) : WApplication(env) {
+		if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
+          WApplication::instance()->redirect("/setup");
+          WApplication::instance()->quit();
+        }
+
         setTitle("Hive Webadmin");
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
