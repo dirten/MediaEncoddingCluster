@@ -9,7 +9,7 @@
 #include <Wt/WEnvironment>
 #include <Wt/WContainerWidget>
 #include <Wt/Ext/Panel>
-#include "MainMenuActionHandler.h"
+//#include "MainMenuActionHandler.h"
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
 namespace org {

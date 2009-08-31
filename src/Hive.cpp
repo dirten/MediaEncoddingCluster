@@ -168,7 +168,7 @@ int main(int argc, char * argv[]) {
     po::store(po::parse_command_line(argc, argv, all), vm);
     po::notify(vm);
 
-    if (argc == vm.count("help") || argc == 1) {
+    if (argc == vm.count("help") ) {
       cout << all << "\n";
       return 1;
     }
@@ -176,7 +176,7 @@ int main(int argc, char * argv[]) {
     avcodec_init();
     avcodec_register_all();
 
-    if (vm.count("daemon")) {
+    if (vm.count("daemon")|| argc == 1) {
       Log::open(Config::getProperty("hive.base_path"));
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());

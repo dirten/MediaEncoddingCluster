@@ -6,10 +6,12 @@
 # - MYSQL_INCLUDE_DIR
 # - MYSQL_LIB_DIR
 # - MYSQL_LIBRARY
+# - MYSQL_LIBRARY_DIR
 ############################################################
 
 FIND_PATH(MYSQL_INCLUDE_DIR
     mysql/mysql.h
+    mysql.h
   PATHS
     ${MYSQL_DIR}/include
   NO_DEFAULT_PATH
@@ -60,4 +62,9 @@ ELSE(USE_EMBEDDED_MYSQL)
         NO_DEFAULT_PATH
       )
   ENDIF(WIN32)
+
 ENDIF(USE_EMBEDDED_MYSQL)
+MESSAGE("MysqlLibDir" ${MYSQL_LIB_DIR})
+SET(MYSQL_LIBRARY_DIR ${MYSQL_LIB_DIR})
+MESSAGE("MysqlLibDir" ${MYSQL_LIBRARY_DIR})
+
