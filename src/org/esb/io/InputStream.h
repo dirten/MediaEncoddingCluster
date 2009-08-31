@@ -15,7 +15,7 @@ namespace org {
              * <p> Applications that need to define a subclass of <code>InputStream</code>
              * must always provide a method that returns the next byte of input.
              *
-             * @author  Arthur van Hoff
+             * @author  Jan Hoelscher
              * @version 1.45, 02/19/04
              * @see     BufferedInputStream
              * @see     ByteArrayInputStream
@@ -65,7 +65,7 @@ public:
                  *             the stream has been reached.
                  * @exception  IOException  if an I/O error occurs.
                  * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
-                 * @see        java.io.InputStream#read(byte[], int, int)
+                 * @see        org::esb::io::InputStream#read(byte[], int, int)
                  */
                 virtual int read(unsigned char * buffer, int length)=0;
                 virtual int read(vector<unsigned char>&buffer)=0;

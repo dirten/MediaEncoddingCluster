@@ -113,7 +113,7 @@ public:
 
           tab = new SqlTable(std::string("select id, filename, container_type type, size from files "), this);
           //                    tab->resize(800, 300);
-          tab->resize(Wt::WLength(), 300);
+//          tab->resize(Wt::WLength(), 300);
           tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));
           tab->setColumnWidth(0, 10);
           tab->setColumnWidth(2, 10);
@@ -122,12 +122,12 @@ public:
           //                    tab->setColumnHidden(0, true);
 
 
-
+/*
           Wt::Ext::TabWidget * tab = new Wt::Ext::TabWidget(this);
           tab->resize(Wt::WLength(), Wt::WLength());
           tab->addTab(info = new FileInfo(), "Information");
           tab->addTab(pSelector = new ProfileSelector(), "Encoding");
-
+*/
         }
 
         void search() {

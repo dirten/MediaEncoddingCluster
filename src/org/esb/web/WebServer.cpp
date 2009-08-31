@@ -31,7 +31,7 @@ WApplication *createApp(const WEnvironment& env) {
    * the user has permission to start a new application
    */
   //  return new MyApplication(env);
-  return new WebApp(env);
+  return new WebApp2(env);
 }
 
 WebServer::WebServer() : server("test") {

@@ -100,7 +100,11 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     //    PreparedStatement * stmt_p = _con3->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
     _stmt_p->setInt("sid", rs_pu->getInt("source_stream"));
     _stmt_p->setLong("dts", start_ts);
-    _stmt_p->setInt("limit", frame_count + 3);
+    if(u._decoder->getCodecId()==CODEC_ID_MPEG2VIDEO)
+      _stmt_p->setInt("limit", frame_count + 3);
+    else
+      _stmt_p->setInt("limit", frame_count);
+
     logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
     ResultSet rs_p = _stmt_p->executeQuery();
 

@@ -153,7 +153,9 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
 include_directories (${WT_DIR})
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR}/src)
-add_library (web web/WebServer.cpp 
+add_library (web
+    web/WebServer.cpp
+    web/MainMenu.cpp
     web/WebApp.cpp
     web/WebApp2.cpp
     web/SqlTableModel.cpp 
