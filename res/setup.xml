@@ -31,6 +31,12 @@
     <hr size="1"/>
     NOTE: The embedded Server makes System under Heavy CPU Load, but it is currently the only option!
   </message>
+  <message id='client-setup'>
+    <h2>Configure Client</h2>
+    <hr size="1"/>
+    Please type in the Connection Parameter for the Client to connect to the Server Host. 
+  </message>
+
   <message id='hive-setup'>
     <h2>Configure Hive</h2>
     <hr size="1"/>
@@ -84,9 +90,13 @@
       <tr><td colspan=2><hr size=1/></td></tr>
       </table>
   </message>
-  <message id='success-setup'>
+  <message id='success-server-setup'>
          <b>Congratulation!</b><br/>
-         You have sucessfully setup the Media Encoding Cluster.
+         You have sucessfully setup the Media Encoding Cluster Server Instance.
+  </message>
+  <message id='success-client-setup'>
+         <b>Congratulation!</b><br/>
+         You have sucessfully setup the Media Encoding Cluster Client Instance.
   </message>
   <message id='setup-saved'>
          Configuration writen!

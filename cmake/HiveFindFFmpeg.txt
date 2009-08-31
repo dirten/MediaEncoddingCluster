@@ -1,0 +1,60 @@
+############################################################
+#
+# Find the mysql library
+#
+# This file sets:
+# - FFMPEG_INCLUDE_DIR
+# - FFMPEG_LIB_DIR
+# - FFMPEG_LIBS
+# - FFMPEG_AVCODEC_LIBRARY
+# - FFMPEG_AVFORMAT_LIBRARY
+# - FFMPEG_AVUTIL_LIBRARY
+# - FFMPEG_SWSCALE_LIBRARY
+############################################################
+FIND_PATH(FFMPEG_INCLUDE_DIR
+    libavcodec/avcodec.h
+  PATHS
+    ${FFMPEG_DIR}/include
+  NO_DEFAULT_PATH
+)
+
+FIND_LIBRARY(FFMPEG_AVCODEC_LIBRARY
+    NAMES
+      avcodec
+      libavcodec
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(FFMPEG_AVFORMAT_LIBRARY
+    NAMES
+      avformat
+      libavformat
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
+
+FIND_LIBRARY(FFMPEG_AVUTIL_LIBRARY
+    NAMES
+      avutil
+      libavutil
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
+FIND_LIBRARY(FFMPEG_SWSCALE_LIBRARY
+    NAMES
+      swscale
+      libswscale
+    PATHS
+      ${FFMPEG_DIR}/lib
+    NO_DEFAULT_PATH
+  )
+  
+SET(FFMPEG_LIBS 
+  ${FFMPEG_AVFORMAT_LIBRARY}
+  ${FFMPEG_AVCODEC_LIBRARY}
+  ${FFMPEG_AVUTIL_LIBRARY}
+  ${FFMPEG_SWSCALE_LIBRARY}
+)

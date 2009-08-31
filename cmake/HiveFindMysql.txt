@@ -1,0 +1,63 @@
+############################################################
+#
+# Find the mysql library
+#
+# This file sets:
+# - MYSQL_INCLUDE_DIR
+# - MYSQL_LIB_DIR
+# - MYSQL_LIBRARY
+############################################################
+
+FIND_PATH(MYSQL_INCLUDE_DIR
+    mysql/mysql.h
+  PATHS
+    ${MYSQL_DIR}/include
+  NO_DEFAULT_PATH
+)
+
+IF(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/Embedded/DLL/release)
+    FIND_LIBRARY(MYSQL_LIBRARY
+        NAMES
+          mysqld
+          libmysqld
+          mysqlserver
+        PATHS
+          ${MYSQL_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
+  ELSE(WIN32)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIBRARY
+        NAMES
+          mysqld
+          libmysqld
+        PATHS
+          ${MYSQL_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
+  ENDIF(WIN32)
+ELSE(USE_EMBEDDED_MYSQL)
+  IF(WIN32)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/debug)
+    FIND_LIBRARY(MYSQL_LIBRARY
+        NAMES
+          mysql
+          libmysql
+        PATHS
+          ${MYSQL_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
+  ELSE(WIN32)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/mysql)
+    FIND_LIBRARY(MYSQL_LIBRARY
+        NAMES
+          mysqlclient
+          libmysqlclient
+        PATHS
+          ${MYSQL_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
+  ENDIF(WIN32)
+ENDIF(USE_EMBEDDED_MYSQL)

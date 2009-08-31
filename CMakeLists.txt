@@ -3,7 +3,7 @@
 # Main Cmake file
 #
 ############################################################
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project (MEC)
 
@@ -12,6 +12,9 @@ INCLUDE(CTest)
 ENABLE_TESTING()
 
 INCLUDE(cmake/WtFindBoost.txt)
+INCLUDE(cmake/HiveFindMysql.txt)
+INCLUDE(cmake/HiveFindFFmpeg.txt)
+
 ############################################################
 #
 # Setup the version for MHive
@@ -20,7 +23,7 @@ INCLUDE(cmake/WtFindBoost.txt)
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 0)
 SET(PATCH_VERSION 4)
-SET(MINOR_PATCH_VERSION 3)
+SET(MINOR_PATCH_VERSION 5)
 SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION})
 #ADD_DEFINITIONS(-DMHIVE_VERSION=${MHIVE_VERSION})
 
@@ -52,7 +55,7 @@ ENDIF(WIN32)
 
 ############################################################
 #
-# Find the libz, it is needed for ffmpeg when visible
+# Find the libbz2, it is needed for ffmpeg when visible
 #
 ############################################################
 FIND_LIBRARY(LIBBZ2
@@ -65,58 +68,6 @@ IF(LIBBZ2)
   SET(BZ2_LIB ${LIBBZ2})
 ENDIF(LIBBZ2)
 
-############################################################
-#
-# Find the mysql library
-#
-############################################################
-
-IF(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/Embedded/DLL/debug)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqld
-          libmysqld
-          mysqlserver
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqld
-          libmysqld
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ENDIF(WIN32)
-ELSE(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/debug)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysql
-          libmysql
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIBRARY_PATH ${MYSQL_DIR}/lib/mysql)
-    FIND_LIBRARY(MYSQL_LIB
-        NAMES
-          mysqlclient
-          libmysqlclient
-        PATHS
-          ${MYSQL_LIBRARY_PATH}
-        NO_DEFAULT_PATH
-      )
-  ENDIF(WIN32)
-ENDIF(USE_EMBEDDED_MYSQL)
 
 LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
 LINK_DIRECTORIES(${WT_DIR}/lib)
@@ -174,15 +125,14 @@ add_subdirectory (test)
 
 #INCLUDE(cmake/HiveBuildBoost.txt)
 #INCLUDE(cmake/HiveBuildWT.txt)
-INCLUDE(cmake/HiveBuildX264.txt)
-INCLUDE(cmake/HiveBuildFfmpeg.txt)
+#INCLUDE(cmake/HiveBuildX264.txt)
+#INCLUDE(cmake/HiveBuildFfmpeg.txt)
 
 	
 
 
 
 IF(NOT BUILD_EMBEDDED_LIBS)
-SET(ERLANG_DIR ${USERLIB_ROOT} CACHE PATH "Use Erlang in directory")
 SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
 SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
 SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")

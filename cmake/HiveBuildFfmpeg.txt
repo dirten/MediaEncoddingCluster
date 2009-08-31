@@ -1,3 +1,19 @@
+FUNCTION (DOWNLOAD_PACKAGE src trg)
+  MESSAGE("Downloading ${src} to ${trg}")
+ENDFUNCTION(DOWNLOAD_PACKAGE)
+
+#DOWNLOAD_PACKAGE(in aout)
+
+
+
+
+#add_custom_target(deps DOWNLOAD_PACKAGE)
+
+#add_custom_command(TARGET deps
+#  DOWNLOAD_PACKAGE test_src testtarget
+#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source
+#)
+
 IF(BUILD_EMBEDDED_FFMPEG)
   file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/deps/stage/ffmpeg)
   MESSAGE("** Configure ffmpeg")
