@@ -7,6 +7,7 @@
 
 #include <Wt/Ext/LineEdit>
 #include <Wt/Ext/ComboBox>
+#include <Wt/Ext/Container>
 #include <Wt/Ext/Button>
 
 #include "org/esb/sql/Connection.h"
@@ -29,15 +30,15 @@ namespace org {
   namespace esb {
     namespace web {
 
-      class ProfilesEdit : public Wt::WContainerWidget {
+      class ProfilesEdit : public Wt::Ext::Container {
       public:
 
-        ProfilesEdit(Wt::WContainerWidget * parent = 0) : Wt::WContainerWidget(parent) {
+        ProfilesEdit(Wt::WContainerWidget * parent = 0) : Wt::Ext::Container() {
           if (true) {
             resize(400, Wt::WLength());
 
             if (true) {
-              Wt::WGroupBox * group = new Wt::WGroupBox("General", this);
+              Wt::WGroupBox * group = new Wt::WGroupBox("General");
               Wt::WTable *t = new Wt::WTable(group);
               int i = 0;
               buildElement("id", "Profile Id", t, i++);
@@ -57,10 +58,11 @@ namespace org {
               elementLabel->setBuddy(element);
               elements["v_format"] = element;
               i++;
+              layout()->addWidget(group);
               //          buildElement("v_format", "File Format",t,i++);
             }
             if (true) {
-              Wt::WGroupBox * group = new Wt::WGroupBox("Video", this);
+              Wt::WGroupBox * group = new Wt::WGroupBox("Video");
               Wt::WTable *t = new Wt::WTable(group);
               int i = 0;
 
@@ -87,9 +89,10 @@ namespace org {
               buildElement("v_framerate", "Framerate", t, i++);
               buildElement("v_width", "Width", t, i++);
               buildElement("v_height", "Height", t, i++);
+              layout()->addWidget(group);
             }
             if (true) {
-              Wt::WGroupBox * group = new Wt::WGroupBox("Audio", this);
+              Wt::WGroupBox * group = new Wt::WGroupBox("Audio");
               Wt::WTable *t = new Wt::WTable(group);
               int i = 0;
 
@@ -114,11 +117,13 @@ namespace org {
               buildElement("a_samplerate", "Samplerate", t, i++);
               //          buildElement("v_height", "Height",t,i++);
               //          elements["a_codec"]->setText("mp2");
+              layout()->addWidget(group);
             }
             if (true) {
-              but = new Wt::Ext::Button("save", this);
+              but = new Wt::Ext::Button("save");
               but->setEnabled(false);
               but->clicked.connect(SLOT(this, ProfilesEdit::saveData));
+              layout()->addWidget(but);
             }
           }
         }

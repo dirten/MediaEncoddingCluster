@@ -9,7 +9,8 @@
 #include <Wt/WEnvironment>
 #include <Wt/WContainerWidget>
 #include <Wt/Ext/Panel>
-//#include "MainMenuActionHandler.h"
+#include <Wt/Ext/Container>
+#include "Wt/WBorderLayout"
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
 namespace org {
@@ -40,7 +41,8 @@ namespace org {
             private:
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;
-                Wt::WContainerWidget *viewPort;
+                Wt::Ext::Container *viewPort;
+                Wt::WBorderLayout *layout;
             };
         }
     }

@@ -75,7 +75,7 @@ namespace org {
           buttonSave->setEnabled(false);
 
           indirectoryChooser = new Wt::Ext::Dialog("Choose Directory");
-          intree = new FileTreeTable(Config::getProperty("hive.scandir"),filter, indirectoryChooser->contents());
+          intree = new FileTreeTable(Config::getProperty("hive.scandir","/"),filter, indirectoryChooser->contents());
           intree->resize(500,300);
           Wt::Ext::Button *inselect = new Wt::Ext::Button("Select", indirectoryChooser->contents());
           inselect->clicked.connect(SLOT(indirectoryChooser, Wt::Ext::Dialog::accept));
@@ -83,6 +83,7 @@ namespace org {
           intree->tree()->itemSelectionChanged.connect(SLOT(this,WatchFolder::selectInFolder));
 
           outdirectoryChooser = new Wt::Ext::Dialog("Choose Directory");
+//          outdirectoryChooser->setTitleBar(true);
           logdebug("hive.scandir:"<<Config::getProperty("hive.scandir","/"));
           outtree = new FileTreeTable(Config::getProperty("hive.scandir","/"),filter, outdirectoryChooser->contents());
           outtree->resize(500,300);
