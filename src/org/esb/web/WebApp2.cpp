@@ -15,6 +15,7 @@
 
 #include <Files.cpp>
 #include "Profiles.cpp"
+#include "ProfilesForm.h"
 #include "WatchFolder.cpp"
 
 namespace org {
@@ -74,7 +75,7 @@ namespace org {
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
-        head = new Wt::WText("&copy; 2009 <a target=\"_blank\" href=\"http://codergrid.de/\">Jan Hölscher</a> - GPL License");
+        head = new Wt::WText("&copy; 2009 <a target=\"_blank\" href=\"http://codergrid.de/\">Jan H&ouml;lscher</a> - GPL License");
         head->setStyleClass("north");
         footer->setLayout(new Wt::WFitLayout());
         footer->layout()->addWidget(head);
@@ -156,6 +157,12 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
+		  Wt::Ext::Dialog * d=new Wt::Ext::Dialog("Profile");
+		  d->resize(450,360);
+ 		  ProfilesForm * pf=new ProfilesForm(d->contents());
+		  pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+		  pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
+		  d->show();
       }
 
       void WebApp2::listAllWatchfolder() {

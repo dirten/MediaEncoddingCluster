@@ -18,12 +18,13 @@
 #include "WebApp2.h"
 #include "Setup.h"
 #include "org/esb/util/Log.h"
-#include "TestApp.cpp"
+//#include "TestApp.cpp"
 using namespace org::esb::web;
 using namespace Wt;
 
 WApplication *createTestApp(const WEnvironment& env) {
-  return new TestApp(env);
+  //return new TestApp(env);
+	return NULL;
 }
 WApplication *createSetup(const WEnvironment& env) {
   return new Setup(env);
@@ -37,6 +38,7 @@ WApplication *createApp(const WEnvironment& env) {
   //  return new MyApplication(env);
   return new WebApp2(env);
 }
+
 
 WebServer::WebServer() : server("test") {
   std::string log_file = org::esb::config::Config::getProperty("hive.base_path");
@@ -54,7 +56,7 @@ WebServer::WebServer() : server("test") {
 
   server.addEntryPoint(WServer::Application, &createApp);
   server.addEntryPoint(WServer::Application, &createSetup, "setup");
-  server.addEntryPoint(WServer::Application, &createTestApp, "test");
+//  server.addEntryPoint(WServer::Application, &createTestApp, "test");
   //  logdebug(typeid(*this).name());
 }
 

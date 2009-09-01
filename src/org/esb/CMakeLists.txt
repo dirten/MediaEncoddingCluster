@@ -158,6 +158,7 @@ add_library (web
     web/MainMenu.cpp
     web/WebApp.cpp
     web/WebApp2.cpp
+    web/ProfilesForm.cpp
     web/SqlTableModel.cpp 
     web/SqlTable.cpp
     web/FileTreeTable.cpp

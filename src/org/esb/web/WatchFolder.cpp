@@ -3,7 +3,7 @@
 #include <Wt/WTree>
 #include "FileTreeTable.h"
 #include "FileTreeTableNode.h"
-
+#include "SqlUtil.h"
 #include "org/esb/config/config.h"
 #include "org/esb/io/FileFilter.h"
 #include "org/esb/io/File.h"

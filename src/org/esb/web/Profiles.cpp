@@ -4,8 +4,9 @@
 #include <Wt/WFitLayout>
 #include <Wt/Ext/Button>
 #include <Wt/Ext/ToolBar>
+#include <Wt/Ext/Dialog>
 #include "SqlTable.h"
-#include "ProfilesEdit.cpp"
+#include "ProfilesForm.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -29,8 +30,11 @@ namespace org {
           buttonEdit = t->topToolBar()->addButton("Edit selected Profile");
           buttonEdit->setEnabled(false);
           buttonEdit->clicked.connect(SLOT(this, Profiles::editProfile));
-
-//          buttonNew = t->topToolBar()->addButton("Create new Profile");
+		  t->topToolBar()->addSeparator();
+          buttonDelete = t->topToolBar()->addButton("Delete selected Profile");
+		  buttonDelete->setEnabled(false);
+          buttonDelete->clicked.connect(SLOT(this, Profiles::deleteProfile));
+		  //          buttonNew = t->topToolBar()->addButton("Create new Profile");
           //      buttonNew->setEnabled(false);
 //          buttonNew->clicked.connect(SLOT(this, Profiles::newProfile));
            
@@ -55,12 +59,19 @@ namespace org {
         void reloadProfiles() {
           t->reload("select * from profiles");
         }
+        void deleteProfile() {
+			/*confirm deleting*/
+		}
 
         void editProfile() {
-          //    	edit->setData(1);
-//          edit->setEnabled(true);
-          //		((Wt::WStackedWidget*)parent())->setCurrentIndex(4);
-          //      button->setEnabled(true);
+          int c = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
+		  Wt::Ext::Dialog * d=new Wt::Ext::Dialog("Profile");
+		  d->resize(450,360);
+ 		  ProfilesForm * pf=new ProfilesForm(d->contents());
+		  pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+		  pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
+		  pf->setProfile(c);
+		  d->show();
         }
 
         void newProfile() {
@@ -73,6 +84,7 @@ namespace org {
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
+        Wt::Ext::Button * buttonDelete;
         SqlTable * t;
 //        ProfilesEdit * edit;
       };

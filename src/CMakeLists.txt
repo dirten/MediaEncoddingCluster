@@ -67,9 +67,9 @@ target_link_libraries (mhive
 IF(WIN32)
   target_link_libraries (mhive  
     ${MYSQL_LIBRARY} 
-    wt 
-    wtext
-    wthttp
+    wtd 
+    wtextd
+    wthttpd
     winmm
   )
 ELSEIF(APPLE)
