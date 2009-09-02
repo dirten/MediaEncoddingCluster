@@ -36,7 +36,7 @@ namespace org {
         ProfilesEdit(Wt::WContainerWidget * parent = 0) : Wt::Ext::Container() {
           if (true) {
             resize(400, Wt::WLength());
-
+            
             if (true) {
               Wt::WGroupBox * group = new Wt::WGroupBox("General");
               Wt::WTable *t = new Wt::WTable(group);

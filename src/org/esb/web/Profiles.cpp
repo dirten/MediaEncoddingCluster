@@ -15,78 +15,54 @@ namespace org {
       public:
 
         Profiles(Wt::WContainerWidget * parent = 0) : Wt::Ext::Container() {
-          //      this->resize(Wt::WLength(100, Wt::WLength::Percentage), Wt::WLength(100, Wt::WLength::Percentage));
-          Wt::WFitLayout * l=new Wt::WFitLayout();
+          Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
           t = new SqlTable(std::string("select * from profiles"));
           t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
-//          t->resize(Wt::WLength(), 300);
-
-//          t->setTopToolBar(t->createPagingToolBar());
           t->setTopToolBar(new Wt::Ext::ToolBar());
           layout()->addWidget(t);
 
-          //	  t->resize(800,300);
           buttonEdit = t->topToolBar()->addButton("Edit selected Profile");
           buttonEdit->setEnabled(false);
           buttonEdit->clicked.connect(SLOT(this, Profiles::editProfile));
-		  t->topToolBar()->addSeparator();
+          t->topToolBar()->addSeparator();
           buttonDelete = t->topToolBar()->addButton("Delete selected Profile");
-		  buttonDelete->setEnabled(false);
+          buttonDelete->setEnabled(false);
           buttonDelete->clicked.connect(SLOT(this, Profiles::deleteProfile));
-		  //          buttonNew = t->topToolBar()->addButton("Create new Profile");
-          //      buttonNew->setEnabled(false);
-//          buttonNew->clicked.connect(SLOT(this, Profiles::newProfile));
-           
-/*
-          edit = new ProfilesEdit();
-          //      edit->resize(500,Wt::WLength());
-          edit->setEnabled(false);
-          edit->profileSaved.connect(SLOT(this, Profiles::reloadProfiles));
-          layout()->addWidget(edit);
-*/
         }
 
         void enableButton() {
           if (t->selectedRows().size() > 0) {
             int d = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
-  //          edit->setData(d);
             buttonEdit->setEnabled(true);
-  //          edit->setEnabled(false);
           }
         }
 
         void reloadProfiles() {
           t->reload("select * from profiles");
         }
+
         void deleteProfile() {
-			/*confirm deleting*/
-		}
+          /*confirm deleting*/
+        }
 
         void editProfile() {
           int c = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
-		  Wt::Ext::Dialog * d=new Wt::Ext::Dialog("Profile");
-		  d->resize(450,360);
- 		  ProfilesForm * pf=new ProfilesForm(d->contents());
-		  pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
-		  pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
-		  pf->setProfile(c);
-		  d->show();
+          Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Profile");
+          d->resize(450, 360);
+          ProfilesForm * pf = new ProfilesForm(d->contents());
+          pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+          pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
+          pf->setProfile(c);
+          d->show();
         }
 
-        void newProfile() {
-//          edit->setData(0);
-          //    	edit->setData(1);
-//          edit->setEnabled(true);
-          //		((Wt::WStackedWidget*)parent())->setCurrentIndex(4);
-          //      button->setEnabled(true);
-        }
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonDelete;
         SqlTable * t;
-//        ProfilesEdit * edit;
+        //        ProfilesEdit * edit;
       };
     }
   }

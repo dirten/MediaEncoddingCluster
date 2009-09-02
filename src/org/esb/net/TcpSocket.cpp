@@ -7,25 +7,27 @@
 namespace org {
   namespace esb {
     namespace net {
+
       TcpSocket::TcpSocket(const char * host, int port) {
         _connected = false;
         _host = host;
-       _port = port;
-//        boost::asio::io_service _io_service;
+        _port = port;
+        //        boost::asio::io_service _io_service;
 
         _socket = boost::shared_ptr<tcp::socket > (new tcp::socket(_io_service));
       }
 
       TcpSocket::TcpSocket(boost::shared_ptr<tcp::socket> socket) :
       _socket(socket),
-      _is(new TcpSocketInputStream(socket,net_io_mutex)),
-      _os(new TcpSocketOutputStream(socket,net_io_mutex)) {
-		  _connected = true;
+      _is(new TcpSocketInputStream(socket, net_io_mutex)),
+      _os(new TcpSocketOutputStream(socket, net_io_mutex)) {
+        _connected = true;
       }
 
       TcpSocket::~TcpSocket() {
-//        delete _is;
-//        delete _os;
+        close();
+        //        delete _is;
+        //        delete _os;
       }
 
       org::esb::io::InputStream * TcpSocket::getInputStream() {
@@ -57,11 +59,12 @@ namespace org {
 
         _socket->connect(*iterator);
 
-        _is = new TcpSocketInputStream(_socket,net_io_mutex);
-        _os = new TcpSocketOutputStream(_socket,net_io_mutex);
+        _is = new TcpSocketInputStream(_socket, net_io_mutex);
+        _os = new TcpSocketOutputStream(_socket, net_io_mutex);
         _connected = true;
       }
-      std::string TcpSocket::getRemoteIpAddress(){
+
+      std::string TcpSocket::getRemoteIpAddress() {
         return _socket->remote_endpoint().address().to_string();
       }
 

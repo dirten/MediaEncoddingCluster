@@ -63,7 +63,10 @@ add_library (util
   util/Log.cpp
 #  util/Queue.cpp
 )
-TARGET_LINK_LIBRARIES(util  ${BOOST_DT_LIB_MT})
+TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT})
+IF(NOT WIN32)
+  TARGET_LINK_LIBRARIES(util pthread)
+ENDIF(NOT WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
 add_library (signal
@@ -98,7 +101,7 @@ add_library (net net/SocketException.cpp
       net/TcpSocketInputStream.cpp 
       net/TcpSocketOutputStream.cpp
 )
-
+TARGET_LINK_LIBRARIES(net util)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_DIR}/include)
@@ -159,6 +162,8 @@ add_library (web
     web/WebApp.cpp
     web/WebApp2.cpp
     web/ProfilesForm.cpp
+    web/WatchfolderForm.cpp
+    web/DirectoryChooser.cpp
     web/SqlTableModel.cpp 
     web/SqlTable.cpp
     web/FileTreeTable.cpp

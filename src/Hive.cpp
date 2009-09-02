@@ -175,7 +175,7 @@ int main(int argc, char * argv[]) {
     av_register_all();
     avcodec_init();
     avcodec_register_all();
-
+    
     if (vm.count("daemon")|| argc == 1) {
       Log::open(Config::getProperty("hive.base_path"));
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
@@ -267,8 +267,8 @@ int main(int argc, char * argv[]) {
           //    exporter((char*) file.c_str(), (char*) dir.c_str());
         }
      */
-  } catch (exception & e) {
-    std::cerr << "error: " << e.what() << "\n";
+  } catch (Exception * e) {
+    std::cerr << "error: " << e->what() << "\n";
     return 1;
 
   }

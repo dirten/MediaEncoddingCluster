@@ -17,6 +17,7 @@
 #include "Profiles.cpp"
 #include "ProfilesForm.h"
 #include "WatchFolder.cpp"
+#include "WatchfolderForm.h"
 
 namespace org {
   namespace esb {
@@ -157,12 +158,12 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
-		  Wt::Ext::Dialog * d=new Wt::Ext::Dialog("Profile");
-		  d->resize(450,360);
- 		  ProfilesForm * pf=new ProfilesForm(d->contents());
-		  pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
-		  pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
-		  d->show();
+        Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Profile");
+        d->resize(450, 360);
+        ProfilesForm * pf = new ProfilesForm(d->contents());
+        pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+        pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
+        d->show();
       }
 
       void WebApp2::listAllWatchfolder() {
@@ -171,6 +172,12 @@ namespace org {
       }
 
       void WebApp2::createWatchfolder() {
+        Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Watchfolder");
+        d->resize(450, 360);
+        WatchfolderForm * pf = new WatchfolderForm(d->contents());
+        pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+        pf->canceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
+        d->show();
       }
 
       void WebApp2::editSystemConfiguration() {

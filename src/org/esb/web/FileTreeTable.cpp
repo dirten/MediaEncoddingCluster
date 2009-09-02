@@ -16,11 +16,11 @@
 using namespace Wt;
 
 FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidget *parent) : WTreeTable(parent) {
-    addColumn("Size", 80);
-    addColumn("Modified", 110);
+//    addColumn("Size", 80);
+//    addColumn("Modified", 110);
 
-    header(1)->setStyleClass("fsize");
-    header(2)->setStyleClass("date");
+//    header(1)->setStyleClass("fsize");
+//    header(2)->setStyleClass("date");
 
     setTreeRoot(new FileTreeTableNode(path), "File");
     
@@ -29,11 +29,11 @@ FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidg
 }
 
 FileTreeTable::FileTreeTable(const boost::filesystem::path& path,org::esb::io::FileFilter & filter, WContainerWidget *parent) : WTreeTable(parent) {
-    addColumn("Size", 80);
-    addColumn("Modified", 110);
+//    addColumn("Size", 80);
+//    addColumn("Modified", 110);
 
-    header(1)->setStyleClass("fsize");
-    header(2)->setStyleClass("date");
+//    header(1)->setStyleClass("fsize");
+//    header(2)->setStyleClass("date");
 
     setTreeRoot(new FileTreeTableNode(path, filter), "File");
     using namespace Wt;
