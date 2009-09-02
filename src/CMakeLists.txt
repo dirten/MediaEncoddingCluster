@@ -67,16 +67,17 @@ target_link_libraries (mhive
 IF(WIN32)
   target_link_libraries (mhive  
     ${MYSQL_LIBRARY} 
-    wtd 
-    wtextd
-    wthttpd
+    wt 
+    wtext
+    wthttp
     winmm
   )
 ELSEIF(APPLE)
   target_link_libraries (mhive 
     x264 
     ${MYSQL_LIBRARY} 
-    ${BZ2_LIB} 
+    ${BZ2_LIB}
+    crypto
     z 
     ssl 
     wthttp 
