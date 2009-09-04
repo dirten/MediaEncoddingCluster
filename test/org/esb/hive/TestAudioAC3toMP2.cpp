@@ -49,11 +49,12 @@ private:
 };
 
 int main() {
+  av_register_all();
   //  int stream_id = 2;
-  //File infile("/media/video/ChocolateFactory.ts");
-  File infile("/media/disk/video/big_buck_bunny_1080p_surround.avi");
+//  File infile("/media/video/ChocolateFactory.ts");
+  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
   int stream_id = 1;
-  File outfile("/media/out/test.ogg");
+  File outfile("/media/out/test.mp3");
 
   FormatInputStream fis(&infile);
   PacketInputStream pis(&fis);
@@ -63,29 +64,38 @@ int main() {
 
   AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
   Decoder dec(c->codec_id);
+//  Decoder dec(c);
+
   dec.setChannels(c->channels);
   dec.setBitRate(c->bit_rate);
   dec.setSampleRate(c->sample_rate);
   dec.setPixelFormat(c->pix_fmt);
   dec.setPixelFormat(PIX_FMT_YUV420P);
   dec.setTimeBase(c->time_base);
+  
   dec.ctx->request_channel_layout = 2;
+//  dec.ctx->request_channels = 2;
   dec.open();
+
+
+
   logdebug(dec.toString());
 
-  Encoder enc(CODEC_ID_VORBIS);
+  Encoder enc(CODEC_ID_MP3);
   enc.setChannels(2);
   enc.setBitRate(128000);
   enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
-
-  enc.setTimeBase((AVRational) {
-    1, 48000
-  });
+  AVRational ar;
+  ar.num=1;
+  ar.den=48000;
+  enc.setTimeBase(ar);
   enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
   enc.setPixelFormat(PIX_FMT_YUV420P);
   enc.open();
   logdebug(enc.toString());
+  logdebug("Encoder Frame Size:"<<enc.ctx->frame_size);
+
 
   pos.setEncoder(enc, 0);
   pos.init();
@@ -94,19 +104,26 @@ int main() {
   PacketSink sink;
   enc.setSink(&sink);
 
-  Packet p;
-  for (int a = 0; a < 10000; a++) {
+  
+  for (int a = 0; a < 1000; ) {
+    Packet p;
     pis.readPacket(p);
     if (p.getStreamIndex() == stream_id) {
+      a++;
       p.setStreamIndex(0);
+      p.toString();
       Frame * tmp = dec.decode2(p);
+      tmp->toString();
+
+//      continue;
       if (!tmp->isFinished()) {
 //        continue;
       }
       Frame * f = new Frame();
       conv.convert(*tmp, *f);
-      delete tmp;
-      Packet ret = enc.encode(*f);
+      f->toString();
+//      delete tmp;
+      enc.encode(*tmp);
       delete f;
 
     }

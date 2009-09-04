@@ -108,7 +108,7 @@ int main(int argc, char ** argv) {
 //    if (a < packet_start)continue;
     //        cout <<a<<"\t";
     printf("%10ld|", a);
-    printf("%20lli|", p.packet->pts);
+    printf("%20lld|", p.packet->pts);
     printf("%20lld|", p.packet->dts);
     printf("%20lld|", p.packet->pts-start_pts[p.packet->stream_index]);
     printf("%20lld|", p.packet->dts-start_dts[p.packet->stream_index]);
