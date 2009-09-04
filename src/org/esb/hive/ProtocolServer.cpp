@@ -44,6 +44,7 @@ ProtocolServer::~ProtocolServer() {
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
   this->socket = socket;
+  logdebug("New Client Arrived from:"<<socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
@@ -94,5 +95,6 @@ void ProtocolServer::run() {
     }
 #endif
   }
-  	cout << "Elvis has left the Building" << endl;
+//  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
+//  	cout << "Elvis has left the Building" << endl;
 }

@@ -13,7 +13,8 @@ namespace org {
         _host = host;
         _port = port;
         //        boost::asio::io_service _io_service;
-
+        _is=NULL;
+        _os=NULL;
         _socket = boost::shared_ptr<tcp::socket > (new tcp::socket(_io_service));
       }
 
@@ -26,8 +27,10 @@ namespace org {
 
       TcpSocket::~TcpSocket() {
         close();
-        //        delete _is;
-        //        delete _os;
+        if(_is)
+        delete _is;
+        if(_os)
+        delete _os;
       }
 
       org::esb::io::InputStream * TcpSocket::getInputStream() {
@@ -47,21 +50,24 @@ namespace org {
       }
 
       void TcpSocket::close() {
-        _socket->close();
+
+        if (_socket.get() && _socket->is_open())
+          _socket->close();
         _connected = false;
       }
 
       void TcpSocket::connect() {
+        if (!_connected) {
+          tcp::resolver resolver(_io_service);
+          tcp::resolver::query query(tcp::v4(), _host, org::esb::util::Decimal(_port).toString().c_str());
+          tcp::resolver::iterator iterator = resolver.resolve(query);
 
-        tcp::resolver resolver(_io_service);
-        tcp::resolver::query query(tcp::v4(), _host, org::esb::util::Decimal(_port).toString().c_str());
-        tcp::resolver::iterator iterator = resolver.resolve(query);
+          _socket->connect(*iterator);
 
-        _socket->connect(*iterator);
-
-        _is = new TcpSocketInputStream(_socket, net_io_mutex);
-        _os = new TcpSocketOutputStream(_socket, net_io_mutex);
-        _connected = true;
+          _is = new TcpSocketInputStream(_socket, net_io_mutex);
+          _os = new TcpSocketOutputStream(_socket, net_io_mutex);
+          _connected = true;
+        }
       }
 
       std::string TcpSocket::getRemoteIpAddress() {

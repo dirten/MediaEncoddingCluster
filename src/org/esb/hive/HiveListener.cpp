@@ -55,7 +55,6 @@ namespace org {
         for (; main_nextloop;) {
           try {
             TcpSocket * clientSocket = server->accept();
-            logdebug("new connection from: "<<clientSocket->getRemoteIpAddress());
             if (clientSocket != NULL || (!main_nextloop)) {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
               Thread *thread = new Thread(protoServer);

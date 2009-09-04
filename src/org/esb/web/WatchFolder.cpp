@@ -127,6 +127,7 @@ namespace org {
         Wt::Ext::Dialog * outdirectoryChooser;
         Wt::Ext::Button * selectInDirectory;
         Wt::Ext::Button * selectOutDirectory;
+        Wt::Ext::Dialog * d;
         SqlTable * tab;
         Wt::WText * msg;
         int _user_id;
@@ -166,16 +167,20 @@ namespace org {
         }
 
         void editWatchFolder() {
-          Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Watchfolder");
+          d = new Wt::Ext::Dialog("Watchfolder");
           d->resize(480, 200);
           WatchfolderForm * pf = new WatchfolderForm(d->contents());
           int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
           pf->setWatchfolder(id);
-          pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+//          pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+          pf->saved.connect(SLOT(this, WatchFolder::folderSaved));
           pf->canceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
           d->show();
         }
-
+        void folderSaved() {
+          tab->reload("SELECT id,infolder, outfolder, profile from watch_folder");
+          delete d;
+        }
         void newWatchFolder() {
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           for (; it != elements.end(); it++) {

@@ -48,20 +48,24 @@ namespace org {
 
         void editProfile() {
           int c = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
-          Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Profile");
+          d = new Wt::Ext::Dialog("Profile");
           d->resize(450, 360);
           ProfilesForm * pf = new ProfilesForm(d->contents());
-          pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
+          pf->profileSaved.connect(SLOT(this, Profiles::profileSaved));
           pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
           pf->setProfile(c);
           d->show();
         }
-
+        void profileSaved(){
+          t->reload("select * from profiles");
+          delete d;
+        }
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonDelete;
         SqlTable * t;
+        Wt::Ext::Dialog * d;
         //        ProfilesEdit * edit;
       };
     }

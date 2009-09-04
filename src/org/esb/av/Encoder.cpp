@@ -89,7 +89,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
 
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
-  int size_out = frame._size * ctx->channels * osize;
+  int size_out = frame._size;
 
   int frame_bytes = ctx->frame_size * osize * ctx->channels;
 
@@ -115,7 +115,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
     //    logdebug("Frame Size:" << ctx->frame_size << " osize:" << osize);
-    int64_t dur = av_rescale((int64_t) ctx->frame_size * _time_base.den, _time_base.num, ctx->sample_rate);
+    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
     //    logdebug("Duration:"<<dur2);
     

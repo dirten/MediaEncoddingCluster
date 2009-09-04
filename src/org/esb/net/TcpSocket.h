@@ -27,14 +27,13 @@ namespace org {
                 void connect();
                 std::string getRemoteIpAddress();
             private:
-                boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
                 boost::asio::io_service _io_service;
+                boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
                 boost::mutex net_io_mutex;
 
                 org::esb::io::InputStream * _is;
                 org::esb::io::OutputStream * _os;
 
-                //		boost::mutex net_io_mutex;
                 const char * _host;
                 int _port;
                 bool _connected;

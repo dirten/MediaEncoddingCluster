@@ -189,6 +189,7 @@ namespace org {
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
+        int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
         //        int delta = _dec->getSampleRate() - _enc->getSampleRate();
 
@@ -212,7 +213,7 @@ namespace org {
         out_frame.pos = in_frame.pos;
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
-        out_frame._size = out_size;
+        out_frame._size = out_size * _enc->getChannels() * osize;
         out_frame._type = CODEC_TYPE_AUDIO;
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();

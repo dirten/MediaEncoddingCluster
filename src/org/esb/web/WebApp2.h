@@ -33,16 +33,18 @@ namespace org {
 
                 void listAllProfiles();
                 void createProfiles();
-
+                void profilesCreated();
                 void listAllWatchfolder();
                 void createWatchfolder();
-
+                void watchfolderCreated();
                 void editSystemConfiguration();
             private:
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;
                 Wt::Ext::Container *viewPort;
                 Wt::WBorderLayout *layout;
+                Wt::Ext::Dialog * cwd;
+                Wt::Ext::Dialog * cpd;
             };
         }
     }

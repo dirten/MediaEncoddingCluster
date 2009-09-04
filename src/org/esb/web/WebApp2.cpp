@@ -158,12 +158,18 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
-        Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Profile");
-        d->resize(450, 360);
-        ProfilesForm * pf = new ProfilesForm(d->contents());
-        pf->profileSaved.connect(SLOT(d, Wt::Ext::Dialog::accept));
-        pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
-        d->show();
+        listAllProfiles();
+        cpd = new Wt::Ext::Dialog("Profile");
+        cpd->resize(450, 360);
+        ProfilesForm * pf = new ProfilesForm(cpd->contents());
+        pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
+        pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
+        cpd->show();
+      }
+
+      void WebApp2::profilesCreated() {
+        listAllProfiles();
+        delete cpd;
       }
 
       void WebApp2::listAllWatchfolder() {
@@ -172,12 +178,18 @@ namespace org {
       }
 
       void WebApp2::createWatchfolder() {
-        Wt::Ext::Dialog * d = new Wt::Ext::Dialog("Watchfolder");
-        d->resize(450, 360);
-        WatchfolderForm * pf = new WatchfolderForm(d->contents());
-        pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
-        pf->canceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
-        d->show();
+        listAllWatchfolder();
+        cwd = new Wt::Ext::Dialog("Watchfolder");
+        cwd->resize(450, 360);
+        WatchfolderForm * pf = new WatchfolderForm(cwd->contents());
+        pf->saved.connect(SLOT(this, WebApp2::watchfolderCreated));
+        pf->canceled.connect(SLOT(cwd, Wt::Ext::Dialog::accept));
+        cwd->show();
+      }
+
+      void WebApp2::watchfolderCreated() {
+        listAllWatchfolder();
+        delete cwd;
       }
 
       void WebApp2::editSystemConfiguration() {
