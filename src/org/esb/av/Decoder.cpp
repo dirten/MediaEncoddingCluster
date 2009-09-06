@@ -13,7 +13,7 @@ Decoder::Decoder() : Codec() {
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
 }
-Decoder::Decoder(AVCodecContext * c) : Codec(c) {
+Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
 }
 
 Frame Decoder::decodeLast() {
@@ -179,7 +179,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //    while (size > 0) {
 //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
-//  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize());
+  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
   if (len < 0) {
     logerror("Error while decoding audio Frame");
     return new Frame();
@@ -204,7 +204,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->duration = packet.packet->duration;
   frame->_size = samples_size;
   frame->_type = CODEC_TYPE_AUDIO;
-  frame->channels = ctx->request_channel_layout;
+  frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   frame->setFinished(true);
   //  logdebug("return frame");

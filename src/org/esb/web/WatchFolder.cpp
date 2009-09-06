@@ -152,7 +152,7 @@ namespace org {
         }
 
         void enableEditButton() {
-          logdebug("Tab" << tab->selectedRows()[0]);
+//          logdebug("Tab" << tab->selectedRows()[0]);
           /*
           int d = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
           SqlUtil::sql2map("watch_folder", d, sqldata);

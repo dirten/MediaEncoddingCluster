@@ -24,9 +24,11 @@ namespace org {
 
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
+		_mode=mode;
         findCodec(mode);
         ctx->codec=_codec;
-        _opened = false;
+        _opened = true;
+//		_codec_resolved=false;
       }
 
       Codec::Codec() {
@@ -295,11 +297,13 @@ namespace org {
         using namespace org::esb::util;
         std::string data;
         data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
+		data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
         data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
         data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
         data.append("RequestChannelLayout:").append(Decimal(ctx->request_channel_layout).toString()).append("\r\n");
+        data.append("ChannelLayout:").append(Decimal(ctx->channel_layout).toString()).append("\r\n");
         data.append("BitRate:").append(Decimal(ctx->bit_rate).toString()).append("\r\n");
         data.append("GOP:").append(Decimal(ctx->gop_size).toString()).append("\r\n");
         data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");

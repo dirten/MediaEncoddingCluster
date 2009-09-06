@@ -26,7 +26,7 @@ namespace org {
         _enc = enc;
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           _audioCtx = av_audio_resample_init(
-              enc->getChannels(), dec->ctx->request_channel_layout,
+              enc->getChannels(), dec->getChannels(),
               enc->getSampleRate(), dec->getSampleRate(),
               enc->getSampleFormat(), dec->getSampleFormat(),
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
@@ -203,7 +203,7 @@ namespace org {
             in_frame._size / (in_frame.channels * isize)
             );
         //		audio_resample_close( reCtx );
-
+		logdebug("OutSize:"<<out_size);
         //        Frame frame(audio_buf);
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;

@@ -25,6 +25,8 @@ namespace org {
         _oos=NULL;
         _toHalt = false;
         _running = false;
+		          _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+
       }
 
       HiveClient::~HiveClient() {
@@ -72,7 +74,6 @@ namespace org {
       void HiveClient::connect() {
         try {
           //        logdebug("Connecting to " << _host << " on port " << _port);
-          _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
           //        _outsock=new org::esb::net::TcpSocket ((char*) _host.c_str(), _port);
           _sock->connect();
           //      _outsock->connect();
@@ -81,6 +82,7 @@ namespace org {
           loginfo("Server " << _host << " connected!!!");
         } catch (exception & ex) {
           logerror("cant connect!!!"<<ex.what());
+//		  delete _sock;
         }
       }
 

@@ -3,24 +3,24 @@
 #include "ProcessUnit.h"
 #include "JobHandler.h"
 #include <vector>
-#include "org/esb/av/FormatInputStream.h"
+//#include "org/esb/av/FormatInputStream.h"
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/av/FormatStreamFactory.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
-#include "org/esb/io/ObjectOutputStream.h"
+//#include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/connect.h"
 
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/utility.hpp>
-#include <boost/serialization/list.hpp>
+//#include <boost/serialization/base_object.hpp>
+//#include <boost/serialization/utility.hpp>
+//#include <boost/serialization/list.hpp>
 //#include <boost/serialization/is_abstract.hpp>
-#include <boost/archive/xml_oarchive.hpp>
+//#include <boost/archive/xml_oarchive.hpp>
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
@@ -101,11 +101,12 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
     _stmt_p->setInt("sid", rs_pu->getInt("source_stream"));
     _stmt_p->setLong("dts", start_ts);
     if(u._decoder->getCodecId()==CODEC_ID_MPEG2VIDEO)
-      _stmt_p->setInt("limit", frame_count + 3);
-    else
-      _stmt_p->setInt("limit", frame_count);
+      frame_count += 3;
+    
+    _stmt_p->setInt("limit", frame_count);
 
-    logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count + 3);
+
+    logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count );
     ResultSet rs_p = _stmt_p->executeQuery();
 
     for (int a = 0; rs_p.next();) {

@@ -160,8 +160,11 @@ void FileTreeTableNode::populate()
 		  drives.insert("Z:\\");
 		  for(std::set<std::string>::iterator d=drives.begin();d!=drives.end();d++){
 			  try{
-			  if(boost::filesystem::exists(*d))
-				paths.insert(*d);
+				boost::filesystem::file_status fs=boost::filesystem::status(*d);
+				
+				if(boost::filesystem::status_known(fs)&&boost::filesystem::exists(*d)){
+					paths.insert(*d);
+				  }
 			  }catch(boost::filesystem::filesystem_error & er){
 				  loginfo(er.what());
 			  }

@@ -48,13 +48,16 @@ private:
 
 };
 
-int main() {
-  av_register_all();
+int main(int argc, char ** argv) {
+ av_register_all();
+  avcodec_init();
+  avcodec_register_all();
   //  int stream_id = 2;
 //  File infile("/media/video/ChocolateFactory.ts");
-  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
-  int stream_id = 1;
-  File outfile("/media/out/test.mp3");
+//  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
+  File infile(argv[1]);
+  int stream_id = atoi(argv[2]);
+  File outfile("test.ogg");
 
   FormatInputStream fis(&infile);
   PacketInputStream pis(&fis);
@@ -64,13 +67,14 @@ int main() {
 
   AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
   Decoder dec(c->codec_id);
-//  Decoder dec(c);
+  logdebug("ChannelLayout:"<<fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
+  //  Decoder dec(c);
 
-  dec.setChannels(c->channels);
+//  dec.setChannels(c->channels);
+  dec.setChannels(2);
   dec.setBitRate(c->bit_rate);
   dec.setSampleRate(c->sample_rate);
-  dec.setPixelFormat(c->pix_fmt);
-  dec.setPixelFormat(PIX_FMT_YUV420P);
+  dec.setSampleFormat(c->sample_fmt);
   dec.setTimeBase(c->time_base);
   
   dec.ctx->request_channel_layout = 2;
@@ -81,17 +85,18 @@ int main() {
 
   logdebug(dec.toString());
 
-  Encoder enc(CODEC_ID_MP3);
+  Encoder enc(CODEC_ID_VORBIS);
   enc.setChannels(2);
   enc.setBitRate(128000);
-  enc.setSampleRate(48000);
+  enc.setSampleRate(44100);
   enc.setSampleFormat(dec.getSampleFormat());
   AVRational ar;
   ar.num=1;
-  ar.den=48000;
+  ar.den=enc.getSampleRate();
   enc.setTimeBase(ar);
-  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
-  enc.setPixelFormat(PIX_FMT_YUV420P);
+//  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
+//  enc.setPixelFormat(PIX_FMT_YUV420P);
+//  enc.ctx->bits_per_raw_sample=dec.ctx
   enc.open();
   logdebug(enc.toString());
   logdebug("Encoder Frame Size:"<<enc.ctx->frame_size);
@@ -102,11 +107,11 @@ int main() {
 
   FrameConverter conv(&dec, &enc);
   PacketSink sink;
-  enc.setSink(&sink);
-
-  
+//  enc.setSink(&sink);
+	enc.setOutputStream(&pos);
+      Packet p;
   for (int a = 0; a < 1000; ) {
-    Packet p;
+
     pis.readPacket(p);
     if (p.getStreamIndex() == stream_id) {
       a++;
@@ -122,8 +127,9 @@ int main() {
       Frame * f = new Frame();
       conv.convert(*tmp, *f);
       f->toString();
-//      delete tmp;
-      enc.encode(*tmp);
+//	  pos.writePacket(p);
+      enc.encode(*f);
+      delete tmp;
       delete f;
 
     }

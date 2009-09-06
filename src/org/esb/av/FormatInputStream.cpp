@@ -16,9 +16,15 @@ namespace org {
 		  loginfo("opening InputFile: "<<source->getPath());
 		  _isValid = false;
         _sourceFile = source;
+		AVFormatParameters params, *ap = &params;
+		memset(ap, 0, sizeof(*ap));
+		ap->channels = 2;
+//		set_context_opts(ic, avformat_opts, AV_OPT_FLAG_DECODING_PARAM);
+
+		
         formatCtx = avformat_alloc_context();
 		std::string filename=_sourceFile->getPath();
-        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, NULL) != 0) {
+        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }

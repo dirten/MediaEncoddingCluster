@@ -48,7 +48,7 @@ ProcessUnit::ProcessUnit() {
   _frame_group = 0;
   _frame_count = 0;
   _process_unit = 0;
-
+	
   id = 0;
 }
 
@@ -86,6 +86,7 @@ void ProcessUnit::process() {
 
   PacketSink sink;
   _encoder->setSink(&sink);
+  _encoder->setOutputStream(NULL);
 
   FrameConverter conv(_decoder, _encoder);
   if (toDebug)
