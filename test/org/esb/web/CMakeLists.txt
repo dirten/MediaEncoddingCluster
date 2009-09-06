@@ -7,7 +7,6 @@ add_executable (TestWebServer TestWebServer.cpp)
 
 target_link_libraries (TestWebServer web esb sql hive lang av util signal io net wthttp wtext wt  
   ${MYSQL_LIBRARY} 
-  crypt 
   ${FFMPEG_AVFORMAT_LIBRARY} 
   ${FFMPEG_AVCODEC_LIBRARY} 
   ${FFMPEG_AVUTIL_LIBRARY} 

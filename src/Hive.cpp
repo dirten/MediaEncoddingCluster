@@ -168,7 +168,7 @@ int main(int argc, char * argv[]) {
     po::store(po::parse_command_line(argc, argv, all), vm);
     po::notify(vm);
 
-    if (argc == vm.count("help") ) {
+    if (vm.count("help") ) {
       cout << all << "\n";
       return 1;
     }

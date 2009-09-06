@@ -15,12 +15,15 @@ int main(){
   int stream_id=0;
 
 
-  File f("../../../../../test.dvd");
+  std::string src = MEC_SOURCE_DIR;
+	src.append("/test.dvd");
+  File f(src.c_str());
   FormatInputStream fis(&f);
   PacketInputStream pis(&fis);
 
-
-  File fout("../../../../../test-out.dvd");
+std::string trg = MEC_SOURCE_DIR;
+trg.append("/test-out.dvd");
+  File fout(trg);
   FormatOutputStream fos(&fout);
   PacketOutputStream pos(&fos);
 

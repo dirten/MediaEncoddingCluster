@@ -4,8 +4,9 @@
 
 using namespace org::esb::hive::job;
 int main() {
-  org::esb::config::Config::setProperty("hive.base_path","/home/jhoelscher/mec");
-  org::esb::config::Config::setProperty("db.connection","mysql:host=10.122.6.40;db=hive2;user=jhoelscher;passwd=erkentnis");
+	std::string src = MEC_SOURCE_DIR;
+	org::esb::config::Config::setProperty("hive.base_path",src.c_str());
+  org::esb::config::Config::setProperty("db.connection","mysql:host=;db=hive;user=;passwd=");
 
   ClientHandler * handler=new ClientHandler();
 

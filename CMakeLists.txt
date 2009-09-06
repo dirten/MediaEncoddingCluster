@@ -134,7 +134,7 @@ add_subdirectory (test)
 
 IF(NOT BUILD_EMBEDDED_LIBS)
 SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
-SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
+#SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
 SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")

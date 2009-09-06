@@ -33,7 +33,7 @@ Packet Encoder::encode(Frame & frame) {
 
 Packet Encoder::encodeVideo(Frame & frame) {
   //  logdebug("VideoEncoderFrame");
-  //  frame.toString();
+    frame.toString();
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
@@ -41,13 +41,13 @@ Packet Encoder::encodeVideo(Frame & frame) {
   int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, frame.getAVFrame());
   //    pac.data=new uint8_t[ret];
   //	cout << "ret:"<<ret<<endl;
-  //    logdebug("\rCreate Packet with Size:"<<ret);
+      logdebug("\rCreate Packet with Size:"<<ret);
   Packet pac(ret);
   if (ret > 0) {
     memcpy(pac.packet->data, &data, ret);
     //      delete []data;
   } else {
-    throw lang::Exception();
+    throw lang::Exception(__FILE__,__LINE__,"Error in Encoding Video Packet");
   }
   //    pac.data=data;
   pac.setTimeBase(frame.getTimeBase());

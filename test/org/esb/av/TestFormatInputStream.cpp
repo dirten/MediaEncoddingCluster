@@ -6,8 +6,9 @@ using namespace org::esb::io;
 
 
 int main(){
-
-  File f("../../../../../test.dvd");
+	std::string src = MEC_SOURCE_DIR;
+	src.append("/test.dvd");
+  File f(src.c_str());
   FormatInputStream fis(&f);
   assert(fis.isValid()==true);
   assert(fis.getFileSize()==3409920);
