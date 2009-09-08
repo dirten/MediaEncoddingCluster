@@ -26,8 +26,8 @@ namespace org {
         ctx = c;
         _mode = mode;
         findCodec(mode);
-        ctx->codec = _codec;
-        _opened = true;
+//        ctx->codec = _codec;
+        _opened = false;
         //		_codec_resolved=false;
       }
 
@@ -45,8 +45,10 @@ namespace org {
         _mode = mode;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
-        setContextDefaults();
         findCodec(mode);
+		avcodec_get_context_defaults2(ctx, _codec->type);
+        ctx->codec_id = codecId;
+        setContextDefaults();
 
         _opened = false;
         /*
@@ -77,9 +79,17 @@ namespace org {
         ctx->time_base.num = 0;
         ctx->time_base.den = 0;
         ctx->gop_size = 0;
-        ctx->sample_rate = 0;
-        ctx->sample_fmt = (SampleFormat) 0;
-        ctx->channels = 0;
+		ctx->idct_algo=FF_IDCT_AUTO;
+		ctx->skip_idct=AVDISCARD_DEFAULT;
+		ctx->error_recognition= FF_ER_CAREFUL;
+		ctx->error_concealment=3;
+		ctx->workaround_bugs=1;
+		ctx->debug=1;
+		ctx->debug_mv=0;
+
+//        ctx->sample_rate = 0;
+//        ctx->sample_fmt = (SampleFormat) 0;
+//        ctx->channels = 0;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
         }

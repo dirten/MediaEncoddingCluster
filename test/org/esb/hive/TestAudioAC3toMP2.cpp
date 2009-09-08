@@ -49,9 +49,11 @@ private:
 };
 
 int main(int argc, char ** argv) {
- av_register_all();
-  avcodec_init();
-  avcodec_register_all();
+ /* register all codecs, demux and protocols */
+     avcodec_register_all();
+//     avdevice_register_all();
+     av_register_all();
+
   //  int stream_id = 2;
 //  File infile("/media/video/ChocolateFactory.ts");
 //  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
@@ -60,25 +62,27 @@ int main(int argc, char ** argv) {
   File outfile("test.mp3");
 
   FormatInputStream fis(&infile);
+  fis.dumpFormat();
   PacketInputStream pis(&fis);
 
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
 
   AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
-  Decoder dec(c->codec_id);
+  Decoder dec(c->codec_id);//CODEC_ID_EAC3
   logdebug("ChannelLayout:"<<fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
-  //  Decoder dec(c);
-
-//  dec.setChannels(c->channels);
-  dec.setChannels(2);
+//    Decoder dec(c);
+/*
+  dec.setChannels(c->channels);
+//  dec.setChannels(2);
   dec.setBitRate(c->bit_rate);
   dec.setSampleRate(c->sample_rate);
   dec.setSampleFormat(c->sample_fmt);
   dec.setTimeBase(c->time_base);
   
-  dec.ctx->request_channel_layout = 2;
-//  dec.ctx->request_channels = 2;
+ */
+  dec.ctx->request_channels = 2;
+//  dec.ctx->request_channel_layout = 2;
   dec.open();
 
 
@@ -116,7 +120,7 @@ int main(int argc, char ** argv) {
     pis.readPacket(p);
     if (p.getStreamIndex() == stream_id) {
       a++;
-      p.setStreamIndex(0);
+//      p.setStreamIndex(0);
       p.toString();
       Frame * tmp = dec.decode2(p);
       tmp->toString();
