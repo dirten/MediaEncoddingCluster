@@ -20,20 +20,20 @@ namespace org {
       HiveClient::HiveClient(std::string host, int port) {
         _host = host;
         _port = port;
-        _sock=NULL;
-        _ois=NULL;
-        _oos=NULL;
+        _sock = NULL;
+        _ois = NULL;
+        _oos = NULL;
         _toHalt = false;
         _running = false;
-		          _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+        _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
 
       }
 
       HiveClient::~HiveClient() {
         delete _ois;
         delete _oos;
-        if(_sock)
-        _sock->close();
+        if (_sock)
+          _sock->close();
         delete _sock;
         //			ipc::message_queue::remove("in_pu_queue");
         //			ipc::message_queue::remove("out_pu_queue");
@@ -44,7 +44,7 @@ namespace org {
         //		  ipc::message_queue::remove("out_pu_queue");
         if (msg.getProperty("hiveclient") == "start") {
           boost::thread t(boost::bind(&HiveClient::start, this));
-          _running=true;
+          _running = true;
         } else
           if (msg.getProperty("hiveclient") == "stop") {
           //			ipc::message_queue::remove("in_pu_queue");
@@ -81,8 +81,8 @@ namespace org {
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           loginfo("Server " << _host << " connected!!!");
         } catch (exception & ex) {
-          logerror("cant connect!!!"<<ex.what());
-//		  delete _sock;
+          logerror("cant connect to \""<<_host<<":"<<_port<<"\"!!!" << ex.what());
+          //		  delete _sock;
         }
       }
 
@@ -169,8 +169,8 @@ namespace org {
                 //                logdebug("Command sended");
                 _ois->readObject(*unit);
                 //                logdebug("ProcessUnit received");
-              } catch (...) {
-                logerror("Connection to Server lost!!!");
+              } catch (exception & ex) {
+                logerror("Connection to Server lost!!!"<<ex.what());
                 _sock->close();
               }
               /*
@@ -195,8 +195,8 @@ namespace org {
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
-              } catch (...) {
-                logerror("Connection to Server lost!!!");
+              } catch (exception & ex) {
+                logerror("Connection to Server lost!!!"<<ex.what());
                 _sock->close();
               }
               delete unit;

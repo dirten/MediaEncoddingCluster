@@ -37,7 +37,7 @@ namespace org {
         AVFrame * getAVFrame();
         bool isFinished();
         void setFinished(bool);
-        void toString();
+        std::string toString();
         void setTimeBase(AVRational);
         AVRational getTimeBase();
 

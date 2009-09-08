@@ -32,8 +32,8 @@ Packet Encoder::encode(Frame & frame) {
 }
 
 Packet Encoder::encodeVideo(Frame & frame) {
-  //  logdebug("VideoEncoderFrame");
-    frame.toString();
+  logdebug("VideoEncoderFrame:"<<frame.toString());
+  
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
@@ -41,13 +41,15 @@ Packet Encoder::encodeVideo(Frame & frame) {
   int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, frame.getAVFrame());
   //    pac.data=new uint8_t[ret];
   //	cout << "ret:"<<ret<<endl;
-      logdebug("\rCreate Packet with Size:"<<ret);
+#ifdef DEBUG
+  logdebug("Create Packet with Size:" << ret);
+#endif
   Packet pac(ret);
   if (ret > 0) {
     memcpy(pac.packet->data, &data, ret);
     //      delete []data;
   } else {
-    throw lang::Exception(__FILE__,__LINE__,"Error in Encoding Video Packet");
+    throw lang::Exception(__FILE__, __LINE__, "Error in Encoding Video Packet");
   }
   //    pac.data=data;
   pac.setTimeBase(frame.getTimeBase());
@@ -58,9 +60,9 @@ Packet Encoder::encodeVideo(Frame & frame) {
   pac.packet->stream_index = frame.stream_index;
   pac.packet->duration = frame.duration;
   //    pac.flags=0;
-//  logdebug("Encoder data");
-//  frame.toString();
-//  pac.toString();
+  //  logdebug("Encoder data");
+  //  frame.toString();
+  //  pac.toString();
   if (ctx->coded_frame) {
     //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
     if (ctx->coded_frame->key_frame)
@@ -83,16 +85,15 @@ void Encoder::setSink(Sink * sink) {
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
-  //  logdebug("AudioEncoderFrame");
-  //  frame.toString();
-
+    logdebug("AudioEncoderFrame:"<<frame.toString());
+    
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
   int size_out = frame._size;
-	uint8_t *fifo_buffer=new uint8_t[frame._size];
-	memcpy(fifo_buffer,frame._buffer,frame._size);
+  uint8_t *fifo_buffer = new uint8_t[frame._size];
+  memcpy(fifo_buffer, frame._buffer, frame._size);
   int frame_bytes = ctx->frame_size * osize * ctx->channels;
-  logdebug("FrameSize:"<<frame_bytes <<" osize:"<<osize);
+  logdebug("FrameSize:" << frame_bytes << " osize:" << osize);
   if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + size_out) < 0) {
     fprintf(stderr, "av_fifo_realloc2() failed\n");
   }
@@ -106,7 +107,9 @@ Packet Encoder::encodeAudio(Frame & frame) {
   uint8_t * audio_out = new uint8_t[audio_out_size];
 
   while (av_fifo_size(fifo) >= frame_bytes) {
-	  logdebug("Fifo size:"<<av_fifo_size(fifo)<<"FrameBytes:"<<frame_bytes);
+#ifdef DEBUG
+    logdebug("Fifo size:" << av_fifo_size(fifo) << "FrameBytes:" << frame_bytes);
+#endif
     av_fifo_generic_read(fifo, audio_buf, frame_bytes, NULL);
 
 
@@ -115,10 +118,13 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
     //    logdebug("Frame Size:" << ctx->frame_size << " osize:" << osize);
-    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
+//    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
+    int64_t dur = (((float)frame_bytes/(float)(ctx->channels*osize*ctx->sample_rate)))*((float)frame.getTimeBase().den);
+    logdebug("FrameBytes:"<<frame_bytes<<":Channels:"<<ctx->channels<<":osize:"<<osize<<":sample_rate:"<<ctx->sample_rate<<"time_base_den:"<<ctx->time_base.den);
+    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:"<<dur<<"::."<<(((float)frame_bytes/(float)(ctx->channels*osize*ctx->sample_rate)))*((float)frame.getTimeBase().den));
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
     //    logdebug("Duration:"<<dur2);
-    
+
     int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
     //    logdebug("Audio Out Size:" << audio_out_size);
     if (out_size < 0) {
@@ -137,11 +143,11 @@ Packet Encoder::encodeAudio(Frame & frame) {
     pak.setPts(frame.getPts());
 
     if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE) {
-//      pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, frame.getTimeBase(), ctx->time_base);
+      pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, frame.getTimeBase(), ctx->time_base);
       logdebug("CodedFramePts:" << ctx->coded_frame->pts);
-	}else{
+    } else {
 
-	}
+    }
     //    else
     //      pak.setPts(frame.getPts());
     //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
@@ -163,7 +169,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
     //    pak.toString();
     if (_pos != NULL)
-		_pos->writePacket(pak);
+      _pos->writePacket(pak);
     if (_sink != NULL)
       _sink->write(&pak);
     //      return pak;

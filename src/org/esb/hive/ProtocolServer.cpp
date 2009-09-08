@@ -22,8 +22,6 @@
 #include "protocol/Unknown.cpp"
 
 
-#define DEBUG
-#undef DEBUG
 using namespace std;
 using namespace org::esb::net;
 using namespace org::esb::lang;
@@ -44,7 +42,7 @@ ProtocolServer::~ProtocolServer() {
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
   this->socket = socket;
-  logdebug("New Client Arrived from:"<<socket->getRemoteIpAddress());
+  logdebug("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
@@ -59,24 +57,24 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
-	while (!socket->isClosed()) {
-//		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
+  while (!socket->isClosed()) {
+    //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
 #ifndef DEBUG
-	  try {
+    try {
 #endif
-		  string cmd;
+      string cmd;
       int dataLength = socket->getInputStream()->read(cmd);
       if (dataLength == 0) {
         if (socket->isClosed())
           break;
       }
-      
+
       char *command = strtok((char *) cmd.c_str(), "\n\r");
       if (command == NULL || strlen(command) <= 0) {
         logdebug("Command is NULL, continue!");
         continue;
       }
-//      logdebug("Command : " << command);
+      //      logdebug("Command : " << command);
       list < ProtocolCommand * >::iterator i;
       for (i = l.begin(); i != l.end(); ++i) {
         ProtocolCommand *tmp = (ProtocolCommand *) * i;
@@ -95,6 +93,6 @@ void ProtocolServer::run() {
     }
 #endif
   }
-//  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
-//  	cout << "Elvis has left the Building" << endl;
+  //  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
+  //  	cout << "Elvis has left the Building" << endl;
 }

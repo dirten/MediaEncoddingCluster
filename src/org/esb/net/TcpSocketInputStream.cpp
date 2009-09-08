@@ -71,9 +71,13 @@ namespace org {
           int counter = 0, remaining = length;
 
           while (remaining > 0) {
-            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
+            int read= boost::asio::read(*_socket,(boost::asio::buffer(buffer + (length - remaining), remaining)));
+//            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
             remaining -= read;
             counter += read;
+#ifdef NET_DEBUG
+          logdebug("readed bytes:"<<read<<":remainig bytes"<<remaining);
+#endif
           }
 
           if (error)
@@ -84,12 +88,17 @@ namespace org {
         int read(string & str) {
           /*Receive length of data*/
           int length = static_cast<int> (available(true));
-
+#ifdef NET_DEBUG
+          logdebug("size to read:"<<length);
+#endif
           //          cout << "Readed Buffer length"<<length<<endl;
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
           counter = read(buffer, length);
+#ifdef NET_DEBUG
+          logdebug("size readed:"<<counter);
+#endif
           /*If Connection is dead*/
           if (counter <= 0) {
             cout << "Socket is brocken" << endl;

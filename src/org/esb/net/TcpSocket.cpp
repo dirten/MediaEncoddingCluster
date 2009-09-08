@@ -13,8 +13,8 @@ namespace org {
         _host = host;
         _port = port;
         //        boost::asio::io_service _io_service;
-        _is=NULL;
-        _os=NULL;
+        _is = NULL;
+        _os = NULL;
         _socket = boost::shared_ptr<tcp::socket > (new tcp::socket(_io_service));
       }
 
@@ -27,10 +27,10 @@ namespace org {
 
       TcpSocket::~TcpSocket() {
         close();
-        if(_is)
-        delete _is;
-        if(_os)
-        delete _os;
+        if (_is)
+          delete _is;
+        if (_os)
+          delete _os;
       }
 
       org::esb::io::InputStream * TcpSocket::getInputStream() {
@@ -59,10 +59,21 @@ namespace org {
       void TcpSocket::connect() {
         if (!_connected) {
           tcp::resolver resolver(_io_service);
-          tcp::resolver::query query(tcp::v4(), _host, org::esb::util::Decimal(_port).toString().c_str());
+          tcp::resolver::query query( _host, org::esb::util::Decimal(_port).toString().c_str());
           tcp::resolver::iterator iterator = resolver.resolve(query);
+          tcp::resolver::iterator end;
 
-          _socket->connect(*iterator);
+          boost::system::error_code error = boost::asio::error::host_not_found;
+          while (error && iterator != end) {
+            logdebug("EndPoint to connect to:"<<iterator->endpoint());
+            _socket->close();
+            _socket->connect(*iterator++, error);
+            logdebug("Socket Status:"<<error);
+          }
+          if (error)
+            throw boost::system::system_error(error);
+
+//          _socket->connect(*iterator);
 
           _is = new TcpSocketInputStream(_socket, net_io_mutex);
           _os = new TcpSocketOutputStream(_socket, net_io_mutex);

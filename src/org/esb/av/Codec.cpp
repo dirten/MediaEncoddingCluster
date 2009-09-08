@@ -24,11 +24,11 @@ namespace org {
 
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
-		_mode=mode;
+        _mode = mode;
         findCodec(mode);
-        ctx->codec=_codec;
+        ctx->codec = _codec;
         _opened = true;
-//		_codec_resolved=false;
+        //		_codec_resolved=false;
       }
 
       Codec::Codec() {
@@ -36,13 +36,13 @@ namespace org {
         ctx = avcodec_alloc_context();
         setContextDefaults();
         _opened = false;
-        _codec_resolved=false;
+        _codec_resolved = false;
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
-        logdebug("Codec::Codec(const CodecID codecId="<<codecId<<", int mode="<<mode<<")");
-        _codec_resolved=false;
-        _mode=mode;
+        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
+        _codec_resolved = false;
+        _mode = mode;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
         setContextDefaults();
@@ -78,7 +78,7 @@ namespace org {
         ctx->time_base.den = 0;
         ctx->gop_size = 0;
         ctx->sample_rate = 0;
-        ctx->sample_fmt = (SampleFormat)0;
+        ctx->sample_fmt = (SampleFormat) 0;
         ctx->channels = 0;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
@@ -106,7 +106,7 @@ namespace org {
 
       bool Codec::findCodec(int mode) {
         bool result = true;
-//        if(_codec_resolved)return result;
+        //        if(_codec_resolved)return result;
         //        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
         if (mode == DECODER) {
           _codec = avcodec_find_decoder(ctx->codec_id);
@@ -124,10 +124,10 @@ namespace org {
         } else {
           logerror("Mode not set for Codec");
         }
-        if (result){
+        if (result) {
           ctx->codec_type = _codec->type;
-          _codec_resolved=true;
-        }else{
+          _codec_resolved = true;
+        } else {
           logerror("in resolving codec");
         }
 
@@ -288,16 +288,17 @@ namespace org {
       int Codec::getFlags() {
         return ctx->flags;
       }
-/*
-      void Codec::setStartTime(int64_t start) {
-        _start_time = start;
-      }
-*/
+
+            /*
+            void Codec::setStartTime(int64_t start) {
+              _start_time = start;
+            }
+       */
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
         data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
-		data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
+        data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
         data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
         data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");

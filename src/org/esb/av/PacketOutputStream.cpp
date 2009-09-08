@@ -48,11 +48,11 @@ void PacketOutputStream::writePacket(Packet & packet) {
 
 //  packet.setPts(streamPts[packet.getStreamIndex()]);
 //  packet.setDts(streamDts[packet.getStreamIndex()]);
-      logdebug("Write Packet to PacketOutputStream");
-  packet.toString();
-      packet.setDts(AV_NOPTS_VALUE);
-      packet.setPts(AV_NOPTS_VALUE);
-      packet.setDuration(0);
+      logdebug("Write Packet to PacketOutputStream"<<packet.toString());
+  
+//      packet.setDts(AV_NOPTS_VALUE);
+//      packet.setPts(AV_NOPTS_VALUE);
+//      packet.setDuration(0);
 
       //  streamDts[packet.getStreamIndex()] += packet.getDuration();
 //  streamPts[packet.getStreamIndex()] += packet.getDuration();
@@ -68,7 +68,6 @@ void PacketOutputStream::writePacket(Packet & packet) {
       packet.setDuration(0);
     }
    */
-    packet.toString();
   //int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
     int result = av_write_frame(_fmtCtx, packet.packet);
   if(result!=0)logdebug("av_interleaved_write_frame Result:"<<result);

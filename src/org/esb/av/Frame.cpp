@@ -12,34 +12,35 @@ Frame::Frame() {
   framePtr->quality = 100;
   framePtr->key_frame = 1;
   _buffer = NULL; //new uint8_t[1];
-  _allocated=false;
+  _allocated = false;
   _type = CODEC_TYPE_VIDEO;
   channels = 0;
   sample_rate = 0;
   _width = 0;
   _height = 0;
-  _pixFormat=(PixelFormat)0;
-  _size=0;
-  duration=0;
-   _time_base.num=0;
-   _time_base.den=0;
-   _dts=0;
+  _pixFormat = (PixelFormat) 0;
+  _size = 0;
+  duration = 0;
+  _time_base.num = 0;
+  _time_base.den = 0;
+  _dts = 0;
 }
+
 Frame::Frame(uint8_t *buffer) {
-   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
-  _buffer=buffer;
-  _allocated=true;
+  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  _buffer = buffer;
+  _allocated = true;
   _width = 0;
   _height = 0;
-  _pixFormat=(PixelFormat)0;
-  _isFinished=false;
-   _size=0;
-   channels = 0;
-   sample_rate = 0;
-   duration=0;
-   _time_base.num=0;
-   _time_base.den=0;
-   _dts=0;
+  _pixFormat = (PixelFormat) 0;
+  _isFinished = false;
+  _size = 0;
+  channels = 0;
+  sample_rate = 0;
+  duration = 0;
+  _time_base.num = 0;
+  _time_base.den = 0;
+  _dts = 0;
 }
 /*
 Frame::Frame(Packet * packet, Codec * codec){
@@ -133,17 +134,17 @@ Frame Frame::operator=(Frame & frame) {
 
 
 Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
-//  logdebug("Create Frame(int format, int width, int height)");
+  //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
-   _size=0;
+  _size = 0;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   _width = width;
   _height = height;
   _pixFormat = format;
-  _allocated=allocate;
-  channels=0;
-  sample_rate=0,
-      duration=0;
+  _allocated = allocate;
+  channels = 0;
+  sample_rate = 0,
+      duration = 0;
   /*
     quality = 100;
     channels = 0;
@@ -155,7 +156,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
     pts = AV_NOPTS_VALUE;
    */
   //  avcodec_get_frame_defaults(this);
-  if(allocate){
+  if (allocate) {
     int numBytes = avpicture_get_size(format, width, height);
     _buffer = new uint8_t[numBytes];
     memset(_buffer, 0, numBytes);
@@ -200,11 +201,11 @@ Frame::Frame(Frame * source, int format){
  */
 
 Frame::~Frame() {
-  if (_allocated&&_buffer) {
+  if (_allocated && _buffer) {
     //    cout <<"Delete Frame"<<endl;
     delete []_buffer;
     _buffer = NULL;
-	_allocated=false;
+    _allocated = false;
   }
 }
 
@@ -249,11 +250,13 @@ int Frame::getHeight() {
 int Frame::getWidth() {
   return _width;
 }
+
 int Frame::getDuration() {
   return duration;
 }
+
 void Frame::setDuration(int d) {
-  duration=d;
+  duration = d;
 }
 
 int64_t Frame::getPts() {
@@ -272,34 +275,29 @@ void Frame::setDts(int64_t dts) {
   _dts = dts;
 }
 
-void Frame::setTimeBase(AVRational t){
-  _time_base=t;
+void Frame::setTimeBase(AVRational t) {
+  _time_base = t;
 }
-AVRational Frame::getTimeBase(){
+
+AVRational Frame::getTimeBase() {
   return _time_base;
 }
-void Frame::toString() {
-//  if (getHeight() > 0 && getWidth() > 0)
-    logdebug("Frame->Size:" << getSize()<<
-        ":SampleSize:"<<_size<<
-        ":Width:" << getWidth()<<
-        ":Height:" << getHeight()<<
-        ":PixelFormat:" << getFormat()<<
-        ":Pts:" << getPts()<<
-        ":Dts:" << getDts()<<
-        ":Channels:" << channels<<
-        ":SampleRate:" << sample_rate<<
-        ":Duration:" << duration<<
-        ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den
-        );
-//  logdebug("Frame->SampleSize:"<<_size);
-//  logdebug("Frame->Width:" << getWidth());
-//  logdebug("Frame->Height:" << getHeight());
-//  logdebug("Frame->PixelFormat:" << getFormat());
-//  logdebug("Frame->Pts:" << getPts());
-//  logdebug("Frame->Dts:" << getDts());
-//  logdebug("Frame->Channels:" << channels);
-//  logdebug("Frame->SampleRate:" << sample_rate);
+
+std::string Frame::toString() {
+  std::ostringstream oss;
+  oss << "Frame->Size:" << getSize() <<
+      ":Pts:" << getPts() <<
+      ":Dts:" << getDts() <<
+      ":SampleSize:" << _size <<
+      ":Width:" << getWidth() <<
+      ":Height:" << getHeight() <<
+      ":PixelFormat:" << getFormat() <<
+      ":Channels:" << channels <<
+      ":SampleRate:" << sample_rate <<
+      ":Duration:" << duration <<
+      ":TimeBase:" << getTimeBase().num << ":" << getTimeBase().den;
+
+  return std::string(oss.str());
 }
 /*
 void Frame::setFrame(AVFrame * frame){

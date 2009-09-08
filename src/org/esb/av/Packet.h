@@ -37,7 +37,7 @@ namespace org {
         void * getPriv();
         AVPacket * getAVPacket();
         int64_t getPosition();
-        void toString(void);
+        std::string toString(void);
 
         void setTimeBase(AVRational);
         AVRational getTimeBase();

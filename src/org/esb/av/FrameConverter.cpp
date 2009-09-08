@@ -105,7 +105,7 @@ namespace org {
         out_frame.setPts( av_rescale_q(in_frame.getPts(), _dec->getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts( av_rescale_q(in_frame.getDts(), _dec->getTimeBase(), _enc->getTimeBase()));
         out_frame.setDuration(av_rescale_q(in_frame.getDuration(), _dec->getTimeBase(), _enc->getTimeBase()));
-        out_frame.setTimeBase(_enc->getTimeBase());
+        out_frame.setTimeBase(in_frame.getTimeBase());
       }
 
       Frame FrameConverter::convertVideo(Frame & in_frame) {
@@ -203,7 +203,7 @@ namespace org {
             in_frame._size / (in_frame.channels * isize)
             );
         //		audio_resample_close( reCtx );
-		logdebug("OutSize:"<<out_size);
+        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
         //        Frame frame(audio_buf);
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;

@@ -82,16 +82,18 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   Frame * frame=new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   int _frameFinished = 0;
   int len = packet.packet->size;
-
-
-
-
+#ifdef DEBUG
+  logdebug("InputPacketData:");
+  packet.toString();
+#endif
 
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
       avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
-  //    logdebug("BytesDecoded:"<<bytesDecoded);
+#ifdef DEBUG
+  logdebug("BytesDecoded:"<<bytesDecoded);
+#endif
   if (bytesDecoded < 0) {
     fprintf(stderr, "Error while decoding frame\n");
   }
@@ -167,11 +169,16 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   frame->pos = packet.packet->pos;
   frame->duration = packet.packet->duration;
   frame->_type = CODEC_TYPE_VIDEO;
+#ifdef DEBUG
+  logdebug("Decoded Video Frame");
+  frame->toString();
+
+#endif
   return frame;
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
-  //    cout << "DecodeAudio Packet"<<endl;
+ logdebug("DecodeAudio Packet:"<<packet.toString());
   //        Frame frame;
   int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
   uint8_t *outbuf = new uint8_t[samples_size];
@@ -207,6 +214,6 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   frame->setFinished(true);
-  //  logdebug("return frame");
+  logdebug("DecodedAudioFrame:"<<frame->toString());
   return frame;
 }

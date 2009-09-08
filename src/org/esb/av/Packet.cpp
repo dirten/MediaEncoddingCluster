@@ -173,8 +173,9 @@ AVRational Packet::getTimeBase(){
   return _time_base;
 }
 
-void Packet::toString(){
-  logdebug("Packet->Size:"<<getSize()<<
+std::string Packet::toString(){
+  std::ostringstream oss;
+  oss<<"Packet->Size:"<<getSize()<<
       ":Pts:"<<getPts()<<
       ":Dts:"<<getDts()<<
       ":StreamIndex:"<<getStreamIndex()<<
@@ -182,14 +183,9 @@ void Packet::toString(){
       ":Position:"<<getPosition()<<
       ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den<<
       ":Flags:"<<getFlags()<<
-      ":KeyFrame"<<isKeyFrame()
-      );
-//  logdebug("Packet->Pts:"<<getPts());
-//  logdebug("Packet->Dts:"<<getDts());
-//  logdebug("Packet->StreamIndex:"<<getStreamIndex());
-//  logdebug("Packet->Duration:"<<getDuration());
-//  logdebug("Packet->Position:"<<getPosition());
-//  logdebug("Packet->TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den);
+      ":KeyFrame"<<isKeyFrame();
+    return std::string(oss.str());
+
 
 }
 

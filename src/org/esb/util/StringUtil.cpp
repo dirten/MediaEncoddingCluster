@@ -1,6 +1,8 @@
 #include "StringUtil.h"
 
 #include <string.h>
+#include <locale>
+
 namespace org {
   namespace esb {
     namespace util {
@@ -21,6 +23,14 @@ namespace org {
         }
         return result;
       }
+/*
+      const std::string StringUtil::toString(int num) {
+        char c[10];
+        memset(&c, 0, 10);
+        sprintf(c, "%d", num);
+        return string(c);
+      }
+*/
     }
   }
 }
