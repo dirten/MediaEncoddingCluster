@@ -25,7 +25,7 @@ target_link_libraries (TestFileImporter esb sql ${MYSQL_LIBRARY} hive io av util
 
 target_link_libraries (TestDatabaseCreation esb sql ${MYSQL_LIBRARY} hive io util lang ${BOOST_THREAD_LIB_MT})
 target_link_libraries (DeleteDatabase esb sql ${MYSQL_LIBRARY} hive io util lang ${BOOST_THREAD_LIB_MT} )
-target_link_libraries (TestProcessUnit esb av hive io util lang ${BOOST_THREAD_LIB_MT} 
+target_link_libraries (TestProcessUnit esb hive av io util lang ${BOOST_THREAD_LIB_MT}
 ${FFMPEG_AVFORMAT_LIBRARY} 
   ${FFMPEG_AVCODEC_LIBRARY} 
   ${FFMPEG_AVUTIL_LIBRARY} 
@@ -54,6 +54,7 @@ IF(NOT WIN32)
   target_link_libraries(TestClientHandler x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
   target_link_libraries(TestHiveListener x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
   target_link_libraries(TestAudioAC3toMP2 x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
+  target_link_libraries(TestProcessUnit x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
 ELSE(NOT WIN32)
   target_link_libraries (TestDatabaseCreation ws2_32 msvcrt wt wthttp wtext)
 ENDIF(NOT WIN32)

@@ -57,7 +57,7 @@ int main(int argc, char ** argv) {
 //  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
   File infile(argv[1]);
   int stream_id = atoi(argv[2]);
-  File outfile("test.ogg");
+  File outfile("test.mp3");
 
   FormatInputStream fis(&infile);
   PacketInputStream pis(&fis);
@@ -85,10 +85,11 @@ int main(int argc, char ** argv) {
 
   logdebug(dec.toString());
 
-  Encoder enc(CODEC_ID_VORBIS);
+//  Encoder enc(CODEC_ID_VORBIS);
+  Encoder enc(CODEC_ID_MP3);
   enc.setChannels(2);
   enc.setBitRate(128000);
-  enc.setSampleRate(44100);
+  enc.setSampleRate(48000);
   enc.setSampleFormat(dec.getSampleFormat());
   AVRational ar;
   ar.num=1;

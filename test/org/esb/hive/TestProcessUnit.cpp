@@ -29,6 +29,7 @@ int main()	{
 
 
   FormatInputStream fis(&infile);
+  fis.dumpFormat();
   PacketInputStream pis(&fis);
 
   FormatOutputStream fos(&outfile);
@@ -54,7 +55,8 @@ int main()	{
 
   logdebug(dec.toString());
 
-  Encoder enc(CODEC_ID_MSMPEG4V3);
+//  Encoder enc(CODEC_ID_MSMPEG4V1);
+  Encoder enc(CODEC_ID_H264);
   enc.setChannels(2);
   enc.setBitRate(1024000);
 //  enc.setSampleRate(44100);
