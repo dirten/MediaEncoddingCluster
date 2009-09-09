@@ -558,8 +558,8 @@ void ctrlCHitWait() {
 void client(int argc, char *argv[]) {
 
 
-  string host = org::esb::config::Config::getProperty("client.host");
-  int port = atoi(org::esb::config::Config::getProperty("client.port"));
+  string host = org::esb::config::Config::getProperty("client.host", "localhost");
+  int port = atoi(org::esb::config::Config::getProperty("client.port","20200"));
 
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);

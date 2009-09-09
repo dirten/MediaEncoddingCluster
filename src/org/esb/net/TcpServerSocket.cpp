@@ -16,7 +16,7 @@ namespace org {
       }
 
       TcpServerSocket::TcpServerSocket(short port)
-      : acceptor_(_io_service, tcp::endpoint(tcp::v6(), port)) {
+      : acceptor_(_io_service, tcp::endpoint(tcp::v4(), port)) {
         boost::asio::socket_base::enable_connection_aborted option(true);
         acceptor_.set_option(option);
 
