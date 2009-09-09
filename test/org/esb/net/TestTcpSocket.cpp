@@ -44,6 +44,6 @@ void testBigData(){
 
 }
 int main(){
-//  testSimpleEcho();
+  testSimpleEcho();
   testBigData();
 }

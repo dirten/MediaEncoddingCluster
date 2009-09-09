@@ -49,10 +49,6 @@ private:
 };
 
 int main(int argc, char ** argv) {
- /* register all codecs, demux and protocols */
-     avcodec_register_all();
-//     avdevice_register_all();
-     av_register_all();
 
   //  int stream_id = 2;
 //  File infile("/media/video/ChocolateFactory.ts");
@@ -72,7 +68,7 @@ int main(int argc, char ** argv) {
   Decoder dec(c->codec_id);//CODEC_ID_EAC3
   logdebug("ChannelLayout:"<<fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
 //    Decoder dec(c);
-/*
+
   dec.setChannels(c->channels);
 //  dec.setChannels(2);
   dec.setBitRate(c->bit_rate);
@@ -80,7 +76,7 @@ int main(int argc, char ** argv) {
   dec.setSampleFormat(c->sample_fmt);
   dec.setTimeBase(c->time_base);
   
- */
+
   dec.ctx->request_channels = 2;
 //  dec.ctx->request_channel_layout = 2;
   dec.open();
@@ -112,15 +108,15 @@ int main(int argc, char ** argv) {
 
   FrameConverter conv(&dec, &enc);
   PacketSink sink;
-//  enc.setSink(&sink);
-	enc.setOutputStream(&pos);
+  enc.setSink(&sink);
+//	enc.setOutputStream(&pos);
       Packet p;
-  for (int a = 0; a < 1000; ) {
+  for (int a = 0; a < 10; ) {
 
     pis.readPacket(p);
     if (p.getStreamIndex() == stream_id) {
       a++;
-//      p.setStreamIndex(0);
+      p.setStreamIndex(0);
       p.toString();
       Frame * tmp = dec.decode2(p);
       tmp->toString();
@@ -144,5 +140,5 @@ int main(int argc, char ** argv) {
   for (; it != encoded.end(); it++) {
     pos.writePacket(*(*it).get());
   }
-
+  Log::close();
 }

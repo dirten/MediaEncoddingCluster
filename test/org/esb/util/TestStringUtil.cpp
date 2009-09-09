@@ -4,7 +4,9 @@
 #include "org/esb/util/StringUtil.h"
 using namespace org::esb;
 
-int main() {
+
+
+void testStringTokenizer(){
   std::string sql;
   logdebug(MEC_SOURCE_DIR);
   std::string path=MEC_SOURCE_DIR;
@@ -20,4 +22,9 @@ int main() {
     logdebug("Create Table " << next);
     logdebug("Create Table leng" << next.size());
   }
+}
+
+
+int main() {
+  testStringTokenizer();
 }
