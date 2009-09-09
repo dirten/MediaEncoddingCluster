@@ -32,8 +32,8 @@ Packet Encoder::encode(Frame & frame) {
 }
 
 Packet Encoder::encodeVideo(Frame & frame) {
-  logdebug("VideoEncoderFrame:"<<frame.toString());
-  
+  logdebug("VideoEncoderFrame:" << frame.toString());
+
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
@@ -85,26 +85,28 @@ void Encoder::setSink(Sink * sink) {
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
-    logdebug("AudioEncoderFrame:"<<frame.toString());
-    
+  logdebug("AudioEncoderFrame:" << frame.toString());
+
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
-  int size_out = frame._size;
-  uint8_t *fifo_buffer = new uint8_t[frame._size];
-  memcpy(fifo_buffer, frame._buffer, frame._size);
+  //  int size_out = frame._size;
+  //  uint8_t *fifo_buffer = new uint8_t[frame._size];
+  //  memcpy(fifo_buffer, frame._buffer, frame._size);
   int frame_bytes = ctx->frame_size * osize * ctx->channels;
   logdebug("FrameSize:" << frame_bytes << " osize:" << osize);
-  if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + size_out) < 0) {
+  if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + frame._size) < 0) {
     fprintf(stderr, "av_fifo_realloc2() failed\n");
   }
 
-  av_fifo_generic_write(fifo, fifo_buffer, size_out, NULL);
+  av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
 
 
   int audio_buf_size = (2 * 128 * 1024);
-  uint8_t * audio_buf = new uint8_t[audio_buf_size];
+  //  uint8_t * audio_buf = new uint8_t[audio_buf_size];
+  uint8_t * audio_buf = static_cast<uint8_t*> (av_malloc(audio_buf_size));
   int audio_out_size = (4 * 192 * 1024);
-  uint8_t * audio_out = new uint8_t[audio_out_size];
+  //  uint8_t * audio_out = new uint8_t[audio_out_size];
+  uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
 
   while (av_fifo_size(fifo) >= frame_bytes) {
 #ifdef DEBUG
@@ -118,10 +120,10 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //  char outbuf[outbuf_size];
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
     //    logdebug("Frame Size:" << ctx->frame_size << " osize:" << osize);
-//    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
-    int64_t dur = (((float)frame_bytes/(float)(ctx->channels*osize*ctx->sample_rate)))*((float)frame.getTimeBase().den);
-    logdebug("FrameBytes:"<<frame_bytes<<":Channels:"<<ctx->channels<<":osize:"<<osize<<":sample_rate:"<<ctx->sample_rate<<"time_base_den:"<<ctx->time_base.den);
-    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:"<<dur<<"::."<<(((float)frame_bytes/(float)(ctx->channels*osize*ctx->sample_rate)))*((float)frame.getTimeBase().den));
+    //    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
+    int64_t dur = (((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den);
+    logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
+    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:" << dur << "::." << (((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den));
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
     //    logdebug("Duration:"<<dur2);
 
@@ -174,8 +176,8 @@ Packet Encoder::encodeAudio(Frame & frame) {
       _sink->write(&pak);
     //      return pak;
   }
-  delete []audio_buf;
-  delete []audio_out;
+  av_free(audio_buf);
+  av_free(audio_out);
   return Packet();
 }
 

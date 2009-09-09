@@ -79,6 +79,9 @@ namespace org {
         ctx->time_base.num = 0;
         ctx->time_base.den = 0;
         ctx->gop_size = 0;
+        ctx->sample_rate = 0;
+        ctx->sample_fmt = (SampleFormat) 0;
+        ctx->channels = 0;
 		ctx->idct_algo=FF_IDCT_AUTO;
 		ctx->skip_idct=AVDISCARD_DEFAULT;
 		ctx->error_recognition= FF_ER_CAREFUL;
@@ -87,9 +90,6 @@ namespace org {
 		ctx->debug=1;
 		ctx->debug_mv=0;
 
-//        ctx->sample_rate = 0;
-//        ctx->sample_fmt = (SampleFormat) 0;
-//        ctx->channels = 0;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
         }

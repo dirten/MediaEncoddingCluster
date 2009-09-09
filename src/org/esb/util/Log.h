@@ -29,12 +29,14 @@ class Log{
 public:
     static Log * getLogger();
     static void open(std::string path);
+    static void close();
     void debug(std::stringstream &);
     void info(std::stringstream &);
     void warn(std::stringstream &);
     void error(std::stringstream &);
     void fatal(std::stringstream &);
     void log(std::stringstream & s, const char * level);
+    ~Log();
 private:
     Log();
     std::ofstream _myfile;

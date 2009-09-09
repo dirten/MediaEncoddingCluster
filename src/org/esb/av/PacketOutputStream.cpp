@@ -28,6 +28,7 @@ void PacketOutputStream::close() {
 }
 
 PacketOutputStream::~PacketOutputStream() {
+ 
   //    av_write_trailer(_fmtCtx);
   //	delete _target;
 }
@@ -87,6 +88,9 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   }
   //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
+  /*freeing allocated codec from av_new_stream
+   because we will using our own codec context*/
+  av_free(st->codec);
   st->codec = encoder.ctx;
   st->time_base = encoder.ctx->time_base;
   //  st->time_base = encoder.ctx->time_base;

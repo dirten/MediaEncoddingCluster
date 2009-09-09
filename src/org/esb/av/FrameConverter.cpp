@@ -190,7 +190,8 @@ namespace org {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
-        uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
+//        uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
+        uint8_t * audio_buf = (uint8_t*)av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
         //        int delta = _dec->getSampleRate() - _enc->getSampleRate();
 
 

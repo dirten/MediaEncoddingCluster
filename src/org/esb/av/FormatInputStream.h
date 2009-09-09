@@ -39,8 +39,8 @@ namespace org {
                 int read();
                 int getStreamCount();
                 //                __attribute__((deprecated))InputStream * getStream(int sNumber);
-               DEPRICATED(InputStream * getStream(int sNumber));
-               DEPRICATED(AVInputStream * getAVStream(int sNumber));
+                DEPRICATED(InputStream * getStream(int sNumber));
+                DEPRICATED(AVInputStream * getAVStream(int sNumber));
                 void close();
                 void dumpFormat();
                 int seek(int stream_index, int64_t timestamp);
@@ -49,8 +49,8 @@ namespace org {
             private:
                 org::esb::io::File * _sourceFile;
                 bool _isValid;
-//                std::map<int, int> _streamMap;
-//                std::map<int, int> _streamReverseMap;
+                //                std::map<int, int> _streamMap;
+                //                std::map<int, int> _streamReverseMap;
                 friend class PacketInputStream;
                 AVFormatContext * formatCtx;
 

@@ -14,9 +14,14 @@ Log::Log() {
     std::cerr.rdbuf(_myfile.rdbuf());
   }
 }
-
+Log::~Log() {
+  _myfile.close();
+}
 void Log::open(std::string path) {
   Log::_logpath=path;
+}
+void Log::close() {
+  delete getLogger();
 }
 
 Log * Log::getLogger() {

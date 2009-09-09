@@ -203,7 +203,7 @@ Frame::Frame(Frame * source, int format){
 Frame::~Frame() {
   if (_allocated && _buffer) {
     //    cout <<"Delete Frame"<<endl;
-    delete []_buffer;
+    av_free(_buffer);
     _buffer = NULL;
     _allocated = false;
   }

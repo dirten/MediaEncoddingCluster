@@ -59,6 +59,10 @@ void FormatOutputStream::open() {
 void FormatOutputStream::close() {
   av_write_trailer(_fmtCtx);
   url_fclose(_fmtCtx->pb);
+  int nb_streams=_fmtCtx->nb_streams;
+  for(int a=0;a<nb_streams;a++){
+    av_free(_fmtCtx->streams[a]);
+  }
   av_free(_fmtCtx);
   //	av_close_input_file(_fmtCtx);
 };
