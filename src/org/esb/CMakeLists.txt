@@ -44,7 +44,8 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/lang)
 add_library (lang lang/Byte.cpp 
       lang/String.cpp 
       lang/Thread.cpp 
-      lang/Exception.cpp 
+      lang/Exception.cpp
+#      lang/StackDumper.cpp
 #      lang/NoSuchElementException.cpp 
 #      lang/NullPointerException.cpp
 )

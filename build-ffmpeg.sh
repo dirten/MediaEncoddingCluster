@@ -15,7 +15,7 @@ download_file(){
   cd "$SRCDIR"
   if test ! -f $3 ; then
     echo "Downloading $1"
-    /bin/curl  "$1" -o $2
+    curl  "$1" -o $2
     if test ! -f $2 ; then
       echo "Could not download $2"
  	    exit 1
@@ -56,7 +56,7 @@ untar_file(){
 configure_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Configuring $1"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1" --enable-shared --disable-static $2 > configure-$1.log
+ 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1"  $2 > configure-$1.log
  	        cd "$TOPDIR"
  	}
 configure_xvid(){
@@ -132,12 +132,12 @@ export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
 configure_file "nasm"
 build_file "nasm"
 
-export PATH=/home/framebuster/bruteripper/source/build/nasm/bin:$PATH
+export PATH=$SRCDIR/$BUILDDIR/nasm/bin:$PATH
 
 configure_file "yasm"
 build_file "yasm"
 
-export PATH=/home/framebuster/bruteripper/source/build/yasm/bin:$PATH
+export PATH=$SRCDIR/$BUILDDIR/yasm/bin:$PATH
 
 configure_file "lame"
 build_file "lame"
@@ -176,7 +176,7 @@ configure_file "ffmpeg" \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
 --extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib \
-$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices $MEMALIGNHACK --extra-cflags=-fno-common --disable-stripping"
+$LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices $MEMALIGNHACK --extra-cflags=-fno-common --disable-stripping --enable-runtime-cpudetect"
 
 build_file "ffmpeg"
 
@@ -208,7 +208,6 @@ case "$SYS" in
   rename_file "libvorbis/lib" "libvorbisenc"
   rename_file "x264/lib" "libx264"
   rename_file "xvidcore/lib" "xvidcore"
-
     ;;
     *)
     LIBPTHREAD="--extra-ldflags=-lpthread"

@@ -25,8 +25,16 @@ SET(MINOR_VERSION 0)
 SET(PATCH_VERSION 4)
 SET(MINOR_PATCH_VERSION 5)
 SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION})
-#ADD_DEFINITIONS(-DMHIVE_VERSION=${MHIVE_VERSION})
 
+############################################################
+#
+# Build Type Options
+#
+############################################################
+
+IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+  ADD_DEFINITIONS(-DDEBUG)
+ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
 
 ############################################################
 #
@@ -140,6 +148,7 @@ SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
+SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 

@@ -15,6 +15,7 @@ namespace web{
 	    ~WebServer();
 	    void onMessage(Message & msg);
 		void start();
+		void stop();
 	private:
 		Wt::WServer server;
     };

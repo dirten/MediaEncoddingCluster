@@ -1,8 +1,14 @@
 #include "org/esb/config/config.h"
 
 #include "org/esb/web/WebServer.h"
+#include "org/esb/lang/Thread.h"
+#include <boost/thread.hpp>
+using namespace org::esb::lang;
 using namespace org::esb::web;
 using namespace org::esb::config;
+
+WebServer * w;
+
 
 int main() {
   //  Config::init("");
@@ -14,8 +20,10 @@ int main() {
   Config::setProperty("web.docroot", docroot.c_str());
 
 
-  WebServer * ws = new WebServer();
-  ws->start();
-  delete ws;
+  w= new WebServer();
+  w->start();
+  Thread::sleep2(10000);
+  w->stop();
+  delete w;
   Config::close();
 }

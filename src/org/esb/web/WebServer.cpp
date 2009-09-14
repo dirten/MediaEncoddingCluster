@@ -66,10 +66,13 @@ WebServer::~WebServer() {
 
 void WebServer::start() {
   server.start();
-  WServer::waitForShutdown();
+//  WServer::waitForShutdown();
+}
+void WebServer::stop() {
   server.stop();
 
 }
+
 
 void WebServer::onMessage(Message & msg) {
   if (msg.getProperty("webserver") == "start") {
