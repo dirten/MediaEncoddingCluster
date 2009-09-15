@@ -48,6 +48,7 @@ namespace org {
       }
 
       void HiveListener::startListener() {
+
         int port = atoi(Config::getProperty("hive.port"));
         logdebug("Listening on port "<<port);
         server = new TcpServerSocket(port);
@@ -63,8 +64,8 @@ namespace org {
               logerror("Client was not accepted");
               break;
             }
-          } catch (exception & ex) {
-            logerror("Exception in Main:" << ex.what());
+          } catch (...) {
+            logerror("Exception in Main:" );
           }
         }
       }

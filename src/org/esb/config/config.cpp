@@ -63,7 +63,8 @@ bool Config::init(char * filename) {
       while (rs->next()) {
         if (rs->getString("config_key") != "db.connection"&&
             rs->getString("config_key") != "mode.client"&&
-            rs->getString("config_key") != "mode.server") {
+            rs->getString("config_key") != "mode.server"&&
+			rs->getString("config_key") != "hive.mode") {
           properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
           logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }

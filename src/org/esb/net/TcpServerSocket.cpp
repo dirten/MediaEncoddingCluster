@@ -16,9 +16,15 @@ namespace org {
       }
 
       TcpServerSocket::TcpServerSocket(short port)
-      : acceptor_(_io_service, tcp::endpoint(tcp::v6(), port)) {
-        boost::asio::socket_base::enable_connection_aborted option(true);
-        acceptor_.set_option(option);
+      : _io_service(),acceptor_(_io_service) 
+	  {
+		boost::asio::ip::tcp::resolver resolver(_io_service);
+		boost::asio::ip::tcp::resolver::query query("0.0.0.0", port);
+		boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
+		acceptor_.open(endpoint.protocol());
+	    acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+		acceptor_.bind(endpoint);
+		acceptor_.listen();
 
         _inShutdown = false;
       }

@@ -62,16 +62,20 @@ namespace org {
           tcp::resolver::query query( _host, org::esb::util::Decimal(_port).toString().c_str());
           tcp::resolver::iterator iterator = resolver.resolve(query);
           tcp::resolver::iterator end;
-
-          boost::system::error_code error = boost::asio::error::host_not_found;
-          while (error && iterator != end) {
+//		  asio::error e=boost::asio::error::host_not_found;
+          boost::system::error_code e = boost::asio::error::host_not_found;
+          while (e && iterator != end) {
             logdebug("EndPoint to connect to:"<<iterator->endpoint());
             _socket->close();
-            _socket->connect(*iterator++, error);
-            logdebug("Socket Status:"<<error);
+            _socket->connect(*iterator++, e);
+			logdebug("Socket Message:"<<e.message());
+			logdebug("Socket status:"<<e);
+
           }
-          if (error)
-            throw boost::system::system_error(error);
+		  if (e){
+			  _socket->close();
+            throw boost::system::system_error(e);
+		  }
 
 //          _socket->connect(*iterator);
 

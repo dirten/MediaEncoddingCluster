@@ -26,6 +26,9 @@ namespace org {
         _toHalt = false;
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+		av_register_all();
+		avcodec_init();
+		avcodec_register_all();
 
       }
 

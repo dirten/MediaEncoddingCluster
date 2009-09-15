@@ -11,7 +11,8 @@ INCLUDE(CTest)
 
 ENABLE_TESTING()
 
-INCLUDE(cmake/WtFindBoost.txt)
+INCLUDE(cmake/HiveFindBoost.txt)
+MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 

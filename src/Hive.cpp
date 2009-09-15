@@ -46,7 +46,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
-
+#include "client/windows/handler/exception_handler.h"
 #endif  // !_WIN32
 #include "org/esb/util/Log.h"
 
@@ -83,8 +83,8 @@ int euclid(int a, int b){
 }
  */
 int main(int argc, char * argv[]) {
-  /*setting default path to Program*/
-  org::esb::io::File f(argv[0]);
+	/*setting default path to Program*/
+	org::esb::io::File f(argv[0]);
   std::string s = f.getFilePath();
   char * path = new char[s.length() + 1];
   memset(path, 0, s.length() + 1);
@@ -96,6 +96,16 @@ int main(int argc, char * argv[]) {
   char * base_path = new char[sb.length() + 1];
   memset(base_path, 0, sb.length() + 1);
   strcpy(base_path, sb.c_str());
+
+  std::string dump_path=sb;
+  dump_path.append("/dmp");
+  org::esb::io::File dpath(dump_path);
+  if(!dpath.exists())
+	dpath.mkdir();
+  Config::setProperty("hive.dump_path", dump_path.c_str());
+  std::wstring wdump_path(dump_path.begin(), dump_path.end());
+
+//	google_breakpad::ExceptionHandler exhandler(wdump_path,NULL, NULL, NULL, google_breakpad::ExceptionHandler::HANDLER_ALL);
 
   Config::setProperty("hive.base_path", base_path);
   try {
@@ -629,6 +639,9 @@ void start() {
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   }
+
+  int local_var = 1;
+  *reinterpret_cast<char*>(NULL) = 1;
   ctrlCHitWait();
   /*
    *

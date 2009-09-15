@@ -7,14 +7,14 @@ SET(WEB_VERSION_SERIES 0)
 SET(WEB_VERSION_MAJOR 0)
 SET(WEB_VERSION_MINOR 1)
 
-ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+#ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
-
+include_directories (D:/google-breakpad/src/)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
 

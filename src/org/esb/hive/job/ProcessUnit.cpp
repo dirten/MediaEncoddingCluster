@@ -72,9 +72,6 @@ ProcessUnit::~ProcessUnit() {
 
 void ProcessUnit::process() {
   int insize = 0, outsize = 0;
-  av_register_all();
-  avcodec_init();
-  avcodec_register_all();
 
   if (_decoder != NULL)
     _decoder->open();

@@ -340,7 +340,7 @@ int import(int argc, char *argv[]) {
 
   }
   
-    for(int a=0;a<stream_groups.size();a++){
+    for(unsigned int a=0;a<stream_groups.size();a++){
       stmt_fr.setLong("frame_group", stream_groups[a].frame_group);
       stmt_fr.setInt("frame_count", stream_groups[a].packet_count);
       stmt_fr.setLong("startts", stream_groups[a].start_ts);

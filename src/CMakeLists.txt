@@ -1,4 +1,4 @@
-
+#ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR})
@@ -10,6 +10,8 @@ include_directories (${BOOST_INCLUDE_DIRS})
 
 include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${FFMPEG_INCLUDE_DIR})
+
+include_directories (D:/google-breakpad/src/)
 
 
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
@@ -41,7 +43,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #FIND_LIBRARY(avc avcodec)
 
 #MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
-#MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
+MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
 add_executable (mhive Hive.cpp)
@@ -67,10 +69,11 @@ target_link_libraries (mhive
 IF(WIN32)
   target_link_libraries (mhive  
     ${MYSQL_LIBRARY} 
-    wt 
-    wtext
-    wthttp
+    wtd 
+    wtextd
+    wthttpd
     winmm
+#    "D:/google-breakpad/src/client/windows/Release/exception_handler.lib"
   )
 ELSEIF(APPLE)
   target_link_libraries (mhive 

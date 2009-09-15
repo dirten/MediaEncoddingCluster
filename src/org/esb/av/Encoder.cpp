@@ -143,13 +143,14 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //    pak.packet->pts = frame.getPts();
     //	pak.pts=this->coded_frame->pts;
     pak.setPts(frame.getPts());
-
+/*
     if (ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE) {
       pak.packet->pts = av_rescale_q(ctx->coded_frame->pts, frame.getTimeBase(), ctx->time_base);
       logdebug("CodedFramePts:" << ctx->coded_frame->pts);
     } else {
 
     }
+	*/
     //    else
     //      pak.setPts(frame.getPts());
     //        if(coded_frame && coded_frame->pts != AV_NOPTS_VALUE)
