@@ -640,8 +640,8 @@ void start() {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   }
 
-  int local_var = 1;
-  *reinterpret_cast<char*>(NULL) = 1;
+//  int local_var = 1;
+//  *reinterpret_cast<char*>(NULL) = 1;
   ctrlCHitWait();
   /*
    *

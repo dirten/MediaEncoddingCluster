@@ -18,6 +18,7 @@ namespace org {
       TcpServerSocket::TcpServerSocket(short port)
       : _io_service(),acceptor_(_io_service) 
 	  {
+		  try{
 		boost::asio::ip::tcp::resolver resolver(_io_service);
 		boost::asio::ip::tcp::resolver::query query("0.0.0.0", port);
 		boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
@@ -25,7 +26,9 @@ namespace org {
 	    acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
 		acceptor_.bind(endpoint);
 		acceptor_.listen();
-
+		  }catch(exception & ex){
+			  logerror("Cannot create server SOcket:"<<ex.what());
+		  }
         _inShutdown = false;
       }
 
