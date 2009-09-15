@@ -5,7 +5,9 @@ int die() {
   *reinterpret_cast<char*>(NULL) = 1;
 }
 
+
 int main() {
-  google_breakpad::ExceptionHandler exhandler(".",NULL, MinidumpCallback, NULL, true);
+  google_breakpad::ExceptionHandler exhandler("/tmp/test",NULL, NULL, NULL, true);
+//  exhandler.DoDump()
   die();
 }
