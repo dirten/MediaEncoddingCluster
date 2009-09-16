@@ -98,6 +98,7 @@ ELSEIF(APPLE)
 ELSE(WIN32)
   target_link_libraries (mhive 
     x264 
+    ssl
     ${MYSQL_LIBRARY} 
     ${BZ2_LIB} 
     ssl
