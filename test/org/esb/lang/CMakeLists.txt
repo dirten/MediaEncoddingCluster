@@ -1,6 +1,6 @@
 include_directories (${MEC_SOURCE_DIR}/src)
-include_directories (/home/jhoelscher/google-breakpad-read-only/src)
-LINK_DIRECTORIES    (/home/jhoelscher/breakpad/lib)
+#include_directories (/home/jhoelscher/google-breakpad-read-only/src)
+#LINK_DIRECTORIES    (/home/jhoelscher/breakpad/lib)
 
 add_executable (TestThread TestThread.cpp)
 add_executable (TestException TestException.cpp)
@@ -8,7 +8,7 @@ add_executable (TestStackDumper TestStackDumper.cpp)
 
 target_link_libraries (TestThread lang)
 target_link_libraries (TestException lang)
-target_link_libraries (TestStackDumper breakpad )
+target_link_libraries (TestStackDumper lang )
 if(NOT WIN32)
   target_link_libraries (TestThread pthread)
 ENDIF(NOT WIN32)

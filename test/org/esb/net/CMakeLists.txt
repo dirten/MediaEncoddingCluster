@@ -2,7 +2,7 @@ include_directories (${MEC_SOURCE_DIR}/src)
 
 add_executable (TestTcpSocket TestTcpSocket.cpp)
 
-target_link_libraries (TestTcpSocket net)
+target_link_libraries (TestTcpSocket net lang)
 ADD_TEST(TestTcpSocket ${EXECUTABLE_OUTPUT_PATH}/TestTcpSocket )
 
 

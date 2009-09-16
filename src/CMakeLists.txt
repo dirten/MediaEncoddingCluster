@@ -11,7 +11,7 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${FFMPEG_INCLUDE_DIR})
 
-include_directories (D:/google-breakpad/src/)
+include_directories (${BREAKPAD_INCLUDE_DIR})
 
 
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
@@ -22,7 +22,7 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
-
+LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)

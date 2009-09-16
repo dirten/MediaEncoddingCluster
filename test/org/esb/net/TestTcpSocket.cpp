@@ -4,6 +4,7 @@
 #include <boost/thread.hpp>
 
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/StackDumper.h"
 using namespace org::esb::net;
 
 void server_socket(){
@@ -44,6 +45,7 @@ void testBigData(){
 
 }
 int main(){
+  StackDumper stackd;
   testSimpleEcho();
   testBigData();
 }

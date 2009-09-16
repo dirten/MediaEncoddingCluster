@@ -20,11 +20,12 @@
 
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/FileOutputStream.h"
-
+#include "org/esb/lang/StackDumper.h"
 #include <list>
 using namespace org::esb::io;
 using namespace org::esb::av;
 using namespace org::esb::util;
+using namespace org::esb::lang;
 
 class PacketSink : public Sink {
 public:
@@ -49,7 +50,7 @@ private:
 };
 
 int main(int argc, char ** argv) {
-
+	StackDumper stack;
   //  int stream_id = 2;
 //  File infile("/media/video/ChocolateFactory.ts");
 //  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");
