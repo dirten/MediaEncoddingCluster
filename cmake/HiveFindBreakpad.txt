@@ -1,0 +1,21 @@
+############################################################
+#
+# Find the mysql library
+#
+# This file sets:
+# - BREAKPAD_INCLUDE_DIR
+# - BREAKPAD_LIB_DIR
+# - BREAKPAD_LIBS
+############################################################
+SET(BREAKPAD_LIB_DIR ${BREAKPAD_DIR}/lib)
+SET(BREAKPAD_INCLUDE_DIR ${BREAKPAD_DIR}/include)
+
+
+FIND_LIBRARY(BREAKPAD_LIBS
+    NAMES
+      breakpad
+    PATHS
+      ${BREAKPAD_LIB_DIR}
+    NO_DEFAULT_PATH
+  )
+  
