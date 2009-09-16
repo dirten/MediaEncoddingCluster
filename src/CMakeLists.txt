@@ -100,9 +100,10 @@ ELSE(WIN32)
     x264 
     ${MYSQL_LIBRARY} 
     ${BZ2_LIB} 
-    crypt 
-    pthread
     ssl
+    crypt
+    crypto
+    pthread
     z 
     wthttp 
     wtext 

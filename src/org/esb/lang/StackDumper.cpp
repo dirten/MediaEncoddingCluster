@@ -4,7 +4,11 @@
 
 StackDumper::StackDumper():
 	exhandler(
+#ifndef WIN32
+		".",
+#elif WIN32
 		L".",
+#endif
 		NULL,
 		NULL,
 		NULL,

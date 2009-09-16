@@ -14,7 +14,6 @@ add_executable (TestProcessUnit TestProcessUnit.cpp)
 
 
 
-MESSAGE("MYSQL_DRIVER" ${MYSQL_LIB})
 
 target_link_libraries (TestFileImporter esb sql ${MYSQL_LIBRARY} hive io av util lang
    ${FFMPEG_AVFORMAT_LIBRARY}
@@ -41,7 +40,7 @@ target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
   ${BOOST_THREAD_LIB_MT} 
   ${BOOST_SERIAL_LIB_MT}
 )
-target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net  ${MYSQL_LIB}  
+target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net  ${MYSQL_LIBRARY}  
   ${FFMPEG_AVFORMAT_LIBRARY} 
   ${FFMPEG_AVCODEC_LIBRARY} 
   ${FFMPEG_AVUTIL_LIBRARY} 
