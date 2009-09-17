@@ -39,6 +39,7 @@ add_library (av av av/Init.cpp
             av/StreamInfo.cpp
 
 )
+TARGET_LINK_LIBRARIES(av ${BZ2_LIB})
 
 add_subdirectory (lang)
 

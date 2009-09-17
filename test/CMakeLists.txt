@@ -79,6 +79,7 @@ target_link_libraries (info
   signal 
   io 
   net 
+  ${BZ2_LIB}
   ${MYSQL_LIBRARY} 
   ${FFMPEG_AVCODEC_LIBRARY} 
   ${FFMPEG_AVFORMAT_LIBRARY} 
