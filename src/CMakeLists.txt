@@ -69,12 +69,13 @@ target_link_libraries (mhive
 IF(WIN32)
   target_link_libraries (mhive  
     ${MYSQL_LIBRARY} 
-    wtd 
-    wtextd
-    wthttpd
+    wt 
+    wtext
+    wthttp
     winmm
 #    "D:/google-breakpad/src/client/windows/Release/exception_handler.lib"
   )
+  
 ELSEIF(APPLE)
   target_link_libraries (mhive 
     x264 
