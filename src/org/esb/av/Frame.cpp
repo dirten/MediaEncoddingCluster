@@ -158,11 +158,12 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  avcodec_get_frame_defaults(this);
   if (allocate) {
     int numBytes = avpicture_get_size(format, width, height);
-    _buffer = new uint8_t[numBytes];
+    _buffer = (uint8_t*)av_malloc(numBytes);
+	_allocated=true;
+
     memset(_buffer, 0, numBytes);
     // Assign appropriate parts of buffer to image planes
     avpicture_fill((AVPicture*) framePtr.get(), _buffer, format, width, height);
-	_allocated=true;
   }
 }
 /*
