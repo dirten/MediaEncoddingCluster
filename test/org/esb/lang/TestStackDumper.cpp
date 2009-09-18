@@ -9,7 +9,7 @@ int die() {
 
 
 int main() {
-  StackDumper stackd;
+  StackDumper stackd(".");
 //  google_breakpad::ExceptionHandler exhandler(".",NULL, NULL, NULL, true);
 //  exhandler.DoDump()
   die();

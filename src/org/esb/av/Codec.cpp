@@ -26,7 +26,7 @@ namespace org {
         ctx = c;
         _mode = mode;
         findCodec(mode);
-//        ctx->codec = _codec;
+        //        ctx->codec = _codec;
         _opened = false;
         //		_codec_resolved=false;
       }
@@ -46,7 +46,7 @@ namespace org {
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
         findCodec(mode);
-		avcodec_get_context_defaults2(ctx, _codec->type);
+        avcodec_get_context_defaults2(ctx, _codec->type);
         ctx->codec_id = codecId;
         setContextDefaults();
 
@@ -82,14 +82,14 @@ namespace org {
         ctx->sample_rate = 0;
         ctx->sample_fmt = (SampleFormat) 0;
         ctx->channels = 0;
-		ctx->idct_algo=FF_IDCT_AUTO;
-		ctx->skip_idct=AVDISCARD_DEFAULT;
-		ctx->error_recognition= FF_ER_CAREFUL;
-		ctx->error_concealment=3;
-		ctx->workaround_bugs=1;
-		ctx->debug=1;
-		ctx->debug_mv=0;
-
+        ctx->idct_algo = FF_IDCT_AUTO;
+        ctx->skip_idct = AVDISCARD_DEFAULT;
+        ctx->error_recognition = FF_ER_CAREFUL;
+        ctx->error_concealment = 3;
+        ctx->workaround_bugs = 1;
+        ctx->debug = 1;
+        ctx->debug_mv = 0;
+        ctx->request_channels = 2;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
         }
@@ -299,10 +299,10 @@ namespace org {
         return ctx->flags;
       }
 
-            /*
-            void Codec::setStartTime(int64_t start) {
-              _start_time = start;
-            }
+      /*
+      void Codec::setStartTime(int64_t start) {
+        _start_time = start;
+      }
        */
       std::string Codec::toString() {
         using namespace org::esb::util;

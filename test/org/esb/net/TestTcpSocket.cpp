@@ -45,7 +45,7 @@ void testBigData(){
 
 }
 int main(){
-  StackDumper stackd;
+  StackDumper stackd(".");
   testSimpleEcho();
   testBigData();
 }

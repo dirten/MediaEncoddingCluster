@@ -50,7 +50,7 @@ private:
 };
 
 int main(int argc, char ** argv) {
-	StackDumper stack;
+	StackDumper stack(".");
   //  int stream_id = 2;
 //  File infile("/media/video/ChocolateFactory.ts");
 //  File infile("/home/jhoelscher/MediaEncodingCluster/big_buck_bunny_480p_surround-fix.avi");

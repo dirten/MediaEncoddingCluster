@@ -1,13 +1,15 @@
+#include <string>
+
 #include "StackDumper.h"
 
 
 
-StackDumper::StackDumper():
+StackDumper::StackDumper(std::string dmp_path):
 	exhandler(
 #ifndef WIN32
-		".",
+		dmp_path,
 #elif WIN32
-		L".",
+		std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 		NULL,
 		NULL,

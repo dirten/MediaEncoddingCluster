@@ -15,7 +15,7 @@
 #endif
 class StackDumper{
 public:
-    StackDumper();
+    StackDumper(std::string dmp_path);
     ~StackDumper();
 private:
     google_breakpad::ExceptionHandler exhandler;

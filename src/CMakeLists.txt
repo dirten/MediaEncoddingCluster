@@ -102,10 +102,12 @@ ELSE(WIN32)
     ${MYSQL_LIBRARY} 
     ${BZ2_LIB} 
     ssl
+    dl
     crypt
     crypto
     pthread
     z 
+    ssl
     wthttp 
     wtext 
     wt 
@@ -127,6 +129,7 @@ target_link_libraries (mhive
   ${BOOST_REGEX_LIB_MT} 
   ${BOOST_FS_LIB_MT}
   ${BOOST_DT_LIB_MT}
+    ssl
 )
 MESSAGE("Executable_output_path" ${EXECUTABLE_OUTPUT_PATH})
 
