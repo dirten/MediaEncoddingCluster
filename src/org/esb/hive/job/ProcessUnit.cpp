@@ -17,20 +17,14 @@ public:
   }
 
   void write(void * p) {
-	  if(toDebug)
-    logdebug("Write Packet to Term Sink");
     Packet* pt = (Packet*) p;
     boost::shared_ptr<Packet> pEnc(new Packet(*pt));
     pkts.push_back(pEnc);
     if (toDebug) {
       logdebug("outputpacket");
       pEnc->toString();
-
     }
-
-    //    erl_print_term((FILE*) stderr, pkts.back());
   }
-
   std::list<boost::shared_ptr<Packet> > getList() {
     return pkts;
   }
@@ -99,8 +93,6 @@ void ProcessUnit::process() {
     if (toDebug)
       logdebug("Loop");
     boost::shared_ptr<Packet> p = *it;
-//    if (++s % 100 == 0)
-//      cout << "\r" << s;
     insize += p->packet->size;
     if (toDebug) {
       logdebug("inputpacket")
@@ -226,7 +218,7 @@ void ProcessUnit::process() {
   //	    cout << "Frame*Pts:"<<tmp->pts<<"\tPacketPts:"<<ret.packet->pts<<"Packet*Pts"<<pEnc->packet->pts<<endl;
           }
    */
-  logdebug("InputSize:" << insize << "OutputSize:" << outsize);
+//  logdebug("InputSize:" << insize << "OutputSize:" << outsize);
 
   if (_decoder != NULL)
     delete _decoder;

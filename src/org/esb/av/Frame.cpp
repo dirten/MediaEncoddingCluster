@@ -137,7 +137,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   _size = 0;
-  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  framePtr = boost::shared_ptr<AVFrame > (new AVFrame(),&av_free);
   _width = width;
   _height = height;
   _pixFormat = format;
@@ -162,6 +162,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
     memset(_buffer, 0, numBytes);
     // Assign appropriate parts of buffer to image planes
     avpicture_fill((AVPicture*) framePtr.get(), _buffer, format, width, height);
+	_allocated=true;
   }
 }
 /*

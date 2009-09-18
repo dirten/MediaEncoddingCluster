@@ -588,6 +588,7 @@ void client(int argc, char *argv[]) {
 /*----------------------------------------------------------------------------------------------*/
 void start() {
 
+
   /*
    *
    * Initializing Application Services

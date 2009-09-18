@@ -178,7 +178,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
- logdebug("DecodeAudio Packet:"<<packet.toString());
+// logdebug("DecodeAudio Packet:"<<packet.toString());
   //        Frame frame;
   int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 //  uint8_t *outbuf = new uint8_t[samples_size];
@@ -187,7 +187,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //    while (size > 0) {
 //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
-  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
+//  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
   if (len < 0) {
     logerror("Error while decoding audio Frame");
     return new Frame();
@@ -215,6 +215,6 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   frame->setFinished(true);
-  logdebug("DecodedAudioFrame:"<<frame->toString());
+//  logdebug("DecodedAudioFrame:"<<frame->toString());
   return frame;
 }

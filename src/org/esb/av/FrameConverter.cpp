@@ -204,7 +204,7 @@ namespace org {
             in_frame._size / (in_frame.channels * isize)
             );
         //		audio_resample_close( reCtx );
-        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
+//        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
         //        Frame frame(audio_buf);
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
