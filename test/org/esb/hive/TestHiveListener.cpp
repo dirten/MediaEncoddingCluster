@@ -4,6 +4,18 @@
 #include "org/esb/signal/Messenger.h"
 #include <boost/thread.hpp>
 #include "org/esb/util/Log.h"
+#if !defined(_WIN32)
+
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <pthread.h>
+#else
+#include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
+#include "client/windows/handler/exception_handler.h"
+#endif  // !_WIN32
 using namespace org::esb::hive;
 using namespace org::esb::config;
 using namespace org::esb::signal;
