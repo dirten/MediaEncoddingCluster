@@ -19,6 +19,7 @@ namespace org {
 		AVFormatParameters params, *ap = &params;
 		memset(ap, 0, sizeof(*ap));
 		ap->channels = 2;
+		
 //		set_context_opts(ic, avformat_opts, AV_OPT_FLAG_DECODING_PARAM);
 
 		
@@ -28,6 +29,8 @@ namespace org {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
+//		formatCtx->debug=5;
+
 		  loginfo("find stream info: "<<source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");

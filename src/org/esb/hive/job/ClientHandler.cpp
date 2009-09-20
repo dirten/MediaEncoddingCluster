@@ -168,6 +168,7 @@ ProcessUnit ClientHandler::getProcessUnit() {
     u._source_stream = rs->getInt("source_stream");
     u._target_stream = rs->getInt("target_stream");
     int size = 0;
+	/*@TODO performance issue !!!*/
     Connection con2(Config::getProperty("db.connection"));
     PreparedStatement stmt_p = con2.prepareStatement("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
     stmt_p.setInt("sid", rs->getInt("source_stream"));

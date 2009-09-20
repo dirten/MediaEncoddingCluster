@@ -80,7 +80,7 @@ Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-@ERLANG_ERTS_VERSION@/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
 Filename: "sc"; Parameters: "stop MHiveService"; Description: "stop MHiveService."
 Filename: "sc"; Parameters: "delete MHiveService"; Description: "delete MHive from Service DB."
-Filename: "sc"; Parameters: "create MHiveService binPath= {app}\bin\mhive.exe"; Description: "Install MHive as a Service."
+Filename: "sc"; Parameters: "create MHiveService binPath= ""{app}\bin\mhive.exe -d"" "; Description: "Install MHive as a Service."
 [UninstallRun]
 Filename: "sc"; Parameters: "stop MHiveService"
 Filename: "sc"; Parameters: "delete MHiveService"

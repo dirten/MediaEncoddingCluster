@@ -29,7 +29,7 @@ int main(int argc, char ** argv) {
   cout << endl;
   cout << "<File Information><TIME_BASE>" << AV_TIME_BASE << endl;
   //      cout <<"-----------------"<<endl;
-  cout << "#streams\tformatname\ttimestamp\tstart\tduration\tfilename" << endl;
+  cout << "#streams\tformatname\ttimestamp\tstart\tduration\tfilename\tidxsize" << endl;
   cout << "---------------------------------------------------------------------------------" << endl;
   cout << f->nb_streams << "\t\t";
   cout << f->iformat->name << "\t\t";
@@ -37,14 +37,14 @@ int main(int argc, char ** argv) {
   cout << f->start_time << "\t";
   cout << f->duration << "\t";
   cout << f->filename << "\t";
-
+//  cout << sizeof(*f->streams[0]->index_entries);
   cout << endl;
   int streams = fis.getStreamCount();
   std::vector<long long int> start_dts;
   std::vector<long long int> start_pts;
   cout << endl;
   cout << "<Stream Information>" << endl;
-  cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tfirst_dts\tduration" << endl;
+  cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tfirst_dts\tduration\tnb_index_entries" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
@@ -57,6 +57,7 @@ int main(int argc, char ** argv) {
     cout << s->getFirstPts() << "\t";
     cout << s->getFirstDts() << "\t";
     cout << s->getDuration() << "\t";
+    cout << s->getNBIndexEntries() << "\t";
     cout << endl;
     start_dts.push_back(s->getFirstDts());
     start_pts.push_back(s->getFirstPts());
@@ -91,6 +92,8 @@ int main(int argc, char ** argv) {
 //  printf("%20s|", "timebase");
   printf("%8s|", "size");
   printf("%2s|", "ix");
+  printf("%10s|", "pidx");
+  printf("%10s|", "idxentry");
   printf("%2s|", "k");
   printf("%5s|", "dur");
   printf("%20s|", "pos");
@@ -105,6 +108,7 @@ int main(int argc, char ** argv) {
       logdebug("Last Packet REACHED");
       break;
     }
+//	av_pkt_dump_log(NULL, AV_LOG_DEBUG, p.packet, false);
 //    if (a < packet_start)continue;
     //        cout <<a<<"\t";
     printf("%10ld|", a);
@@ -115,6 +119,10 @@ int main(int argc, char ** argv) {
 //    printf("%20lld|",fis.getFormatContext()->streams[p.packet->stream_index]->time_base);
     printf("%8d|", p.packet->size);
     printf("%2d|", p.packet->stream_index);
+	int pidx=av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0);
+	printf("%10d|", pidx);
+	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
+//	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
     printf("%s|", p.isKeyFrame()==1&&p.getStreamIndex()==0?"x ":"  ");
     printf("%5d|", p.packet->duration);
     printf("%20ld|", p.packet->pos);

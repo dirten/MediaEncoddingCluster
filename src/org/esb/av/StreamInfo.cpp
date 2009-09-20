@@ -85,6 +85,9 @@ namespace org {
       long long int StreamInfo::getFirstDts(){
         return _s->first_dts;
       }
+      int StreamInfo::getNBIndexEntries(){
+        return _s->nb_index_entries;
+      }
     }
   }
 }
