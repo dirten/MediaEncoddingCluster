@@ -184,6 +184,8 @@ int jobcreator(int argc, char*argv[]) {
     stmtJob.setLong("jobid", jobid);
     stmtJob.execute();
   }
+  /*there is no need to make process groups into db, because there are not exist anymore*/
+  return 0;
   /*
   {
           PreparedStatement stmtJob=con.prepareStatement("insert into frame_groups (jobid, frame_group, startts, stream_id, stream_index, frame_count) (select :jobid, frame_group,min(dts),:id, :stream_idx, count(id) from packets where stream_id=:id group by frame_group)");

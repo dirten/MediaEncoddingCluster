@@ -20,9 +20,10 @@ namespace org {
         public:
           ClientHandler();
           ~ClientHandler();
-          bool getProcessUnit(ProcessUnit & unit);
-          ProcessUnit getProcessUnit();
+          boost::shared_ptr<ProcessUnit> getProcessUnit();
+          bool getProcessUnit2(ProcessUnit & unit);
           bool putProcessUnit(ProcessUnit & unit);
+          bool putProcessUnit2(ProcessUnit & unit);
           static bool addProcessUnit(boost::shared_ptr<ProcessUnit> unit);
         private:
           logger("hive.clienthandler");

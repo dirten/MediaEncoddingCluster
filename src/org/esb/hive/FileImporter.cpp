@@ -233,6 +233,9 @@ int import(int argc, char *argv[]) {
   //      progress_display show_progress(duration);
 
 
+  /*there is no need to import the whoke file into db*/
+  return static_cast<int> (fileid);
+
 
 
   PreparedStatement

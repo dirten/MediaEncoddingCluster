@@ -57,9 +57,9 @@ public:
 
   void process(char * command) {
     if (strcmp(command, GET_UNIT) == 0) {
-      ProcessUnit un;
-      _handler->getProcessUnit(un);
-      _oos->writeObject(un);
+      boost::shared_ptr<ProcessUnit> un=_handler->getProcessUnit();
+//      _handler->getProcessUnit(un);
+      _oos->writeObject(un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
       ProcessUnit un;

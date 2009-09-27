@@ -39,10 +39,21 @@ add_library (av av av/Init.cpp
             av/StreamInfo.cpp
 
 )
-TARGET_LINK_LIBRARIES(av ${BZ2_LIB})
+TARGET_LINK_LIBRARIES(av
+  ${FFMPEG_AVFORMAT_LIBRARY}
+  ${FFMPEG_AVCODEC_LIBRARY}
+  ${FFMPEG_AVUTIL_LIBRARY}
+  ${FFMPEG_SWSCALE_LIBRARY}
+  ${BZ2_LIB}
+)
+IF(NOT WIN32)
+	target_link_libraries (av x264 pthread ssl vorbis vorbisenc ogg xvidcore mp3lame theora dl z )
+ENDIF(NOT WIN32)
 
 add_subdirectory (lang)
-
+#TARGET_LINK_LIBRARIES(lang
+#  ${BOOST_THREAD_LIB_MT}
+#)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
 add_library (util 
   util/Properties.cpp 
@@ -110,7 +121,10 @@ add_library (sql sql/Column.cpp
       sql/ConnectionManager.cpp
       sql/Row.cpp
 )
-
+TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY})
+IF(UNIX AND NOT APPLE)
+  TARGET_LINK_LIBRARIES(sql crypt)
+ENDIF(UNIX AND NOT APPLE)
 #SET_TARGET_PROPERTIES(sql
 #PROPERTIES
 #  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
@@ -171,6 +185,20 @@ add_library (web
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
 )
+TARGET_LINK_LIBRARIES(web 
+  crypto
+  wt
+  wtext
+  wthttp
+  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_REGEX_LIB_MT}
+)
+
+IF(WIN32)
+  target_link_libraries (web
+    winmm
+  )
+ENDIF(WIN32)
 #SET_TARGET_PROPERTIES(web
 #PROPERTIES
 #  VERSION ${WEB_VERSION_SERIES}.${WEB_VERSION_MAJOR}.${WEB_VERSION_MINOR}
@@ -178,7 +206,6 @@ add_library (web
 #)
 
 #TARGET_LINK_LIBRARIES(av z avcodec avformat avutil  swscale x264 pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
-#TARGET_LINK_LIBRARIES(sql ${MYSQL_LIB})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)

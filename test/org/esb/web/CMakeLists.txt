@@ -5,19 +5,21 @@ include_directories (${WT_DIR}/include)
 
 add_executable (TestWebServer TestWebServer.cpp)
 
-target_link_libraries (TestWebServer web esb sql hive lang av util signal io net wthttp wtext wt  
-  ${MYSQL_LIBRARY} 
-  ${FFMPEG_AVFORMAT_LIBRARY} 
-  ${FFMPEG_AVCODEC_LIBRARY} 
-  ${FFMPEG_AVUTIL_LIBRARY} 
-  ${FFMPEG_SWSCALE_LIBRARY} 
+target_link_libraries (TestWebServer
+  web
+  esb
+  sql
+  hive
+  lang
+  av
+  util
+  signal
+  io
+  net
+  wthttp
+  wtext
+  wt
  )
-
-IF(NOT WIN32)
-	target_link_libraries (TestWebServer x264 pthread ssl vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
-ELSE(NOT WIN32)
-  target_link_libraries (TestWebServer ws2_32 msvcrt )
-ENDIF(NOT WIN32)
 
 target_link_libraries (TestWebServer
   ${BOOST_SERIAL_LIB_MT}

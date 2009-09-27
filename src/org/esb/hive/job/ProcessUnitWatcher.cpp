@@ -32,6 +32,7 @@ namespace org {
         void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg) {
           if (msg.getProperty("processunitwatcher") == "start") {
             boost::thread t(boost::bind(&ProcessUnitWatcher::start3, this));
+            logdebug("ProcessUnitWatcher started");
           } else
             if (msg.getProperty("processunitwatcher") == "stop") {
             _isStopSignal = true;

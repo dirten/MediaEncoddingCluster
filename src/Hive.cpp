@@ -13,7 +13,7 @@
 //#include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/config/config.h"
 //#include "org/esb/hive/job/JobWatcher.h"
-//#include "org/esb/hive/job/ProcessUnitWatcher.h"
+#include "org/esb/hive/job/ProcessUnitWatcher.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 //#include "org/esb/io/ObjectInputStream.h"
 //#include "org/esb/io/ObjectOutputStream.h"
@@ -607,8 +607,8 @@ void start() {
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-  //  org::esb::hive::job::ProcessUnitWatcher puw;
-  //  Messenger::getInstance().addMessageListener(puw);
+    org::esb::hive::job::ProcessUnitWatcher puw;
+    Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
   int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
@@ -625,7 +625,7 @@ void start() {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-    //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+        Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }

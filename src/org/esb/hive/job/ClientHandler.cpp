@@ -75,7 +75,10 @@ void ClientHandler::fillProcessUnit() {
 
 }
 
-bool ClientHandler::getProcessUnit(ProcessUnit & u) {
+boost::shared_ptr<ProcessUnit> ClientHandler::getProcessUnit() {
+  return puQueue.dequeue();
+}
+bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
   //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
@@ -146,8 +149,6 @@ bool ClientHandler::getProcessUnit(ProcessUnit & u) {
 
 }
 
-ProcessUnit ClientHandler::getProcessUnit() {
-  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
   //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   //  ResultSet * rs = stmt_ps.executeQuery2();
@@ -218,6 +219,10 @@ string toString(int num) {
 }
  */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
+    boost::mutex::scoped_lock scoped_lock(m_mutex);
+
+}
+bool ClientHandler::putProcessUnit2(ProcessUnit & unit) {
   {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
     logdebug(__FUNCTION__<<":ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);

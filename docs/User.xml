@@ -242,33 +242,16 @@
     <para></para>
 
     <section>
-      <title>Configure the System on WIndows</title>
+      <title>Configure the System </title>
 
-      <para>the configuration is done by the Installer, no additional
-      configuration needed</para>
+      <para>the configuration is started, when you access the admin page the
+      first time, you will be guided through the configuration steps. The
+      Configuration will setup internal database and write the essential
+      config Files.</para>
     </section>
 
     <section>
-      <title>Configure the System on Linux</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>Log in as a root user.</para>
-        </listitem>
-
-        <listitem>
-          <para>Open a shell window and change to the directory where the
-          system is installed.</para>
-        </listitem>
-
-        <listitem>
-          <para>type in "./bin/mectl configure"</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>go into the Installation directory</para>
-
-      <para></para>
+      <para />
     </section>
   </chapter>
 
@@ -325,10 +308,9 @@
       <title>Start and stop the server on Linux</title>
 
       <para>On Linux, Media Encoding Cluster is installed as a service. You
-      start and stop the Media Encoding CLuster service using the mectl
-      utility. Use the mectl utility to perform other tasks as well, such as
-      configuring the service to start automatically when the system is
-      started.</para>
+      start and stop the Media Encoding Cluster service using the mhive binary
+      itself. Use the mhive utility to perform other tasks as well, such as
+      start automatically when the system is started.</para>
 
       <section>
         <title>Start, stop, or restart Media Encoding CLuster</title>
@@ -340,11 +322,8 @@
 
           <listitem>
             <para>Open a shell window, change to the directory where the
-            server is installed and type one of the following: ./bin/mectl
-            server start|stop.</para>
-
-            <para>Note: first you need to configure the Environment by type in
-            "./bin/mectl configure"</para>
+            server is installed and type one of the following: ./bin/mhive
+            start|stop.</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -352,8 +331,111 @@
   </chapter>
 
   <chapter>
+    <title>Encoding my first Files</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Create a Profile like the existing "test" Profile, please be
+        carefull when entering data, wrong data may crash the server and the
+        client</para>
+      </listitem>
+
+      <listitem>
+        <para>Create a Watchfolder, selecting a Directory from which the Files
+        come to Encode, select a Directory to write the Encoded Files to and
+        select a Profile in which the Source Files will be Encoded to.</para>
+      </listitem>
+
+      <listitem>
+        <para>thats all, every 10 sec. the Watchfolder will searched for new
+        Files, new Files will be visible in the Files Section under Imported
+        Files.</para>
+      </listitem>
+
+      <listitem>
+        <para>under the Encodings Menu you can see the Encoding Processes and
+        in which state there are</para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+
+  <chapter>
     <title>Administrating the System</title>
 
     <para></para>
+
+    <section>
+      <title>Main Concept of the Media Encoding Cluster</title>
+
+      <para>The Media Encoding CLuster is mainly used to Transcode multiple
+      Media Files from one Format into an other Format, these formats will be
+      described by a Profile. To Transcode one File into an other Format, it
+      will be performed over some Watchfolder, watchfolders will be
+      permanently scanned and new Files found in these folders will be
+      imported into the Cluster, these watchfolder can be connected to a
+      Profile, a Profile is mainly the Target Format in which these files will
+      be encoded to. The Watchfolder have a parameter called Output Folder,
+      these folder will be used to write the successfull encoded Files
+      into.</para>
+
+      <para>Currently there is no stable Release out from the Media Encoding
+      Cluster.</para>
+
+      <para>All Input made by the Users will not Checked and can cause a crash
+      of the Software</para>
+    </section>
+
+    <section>
+      <title>Create a Profile</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>FAQ</title>
+
+    <para></para>
+
+    <section>
+      <title>do i need additional software</title>
+
+      <para>no, there is no need to install additional software to run the
+      Media Encoding Cluster.</para>
+
+      <para>You can try put some configuration issues to connect to
+      mysql</para>
+    </section>
+
+    <section>
+      <title>i need Help, what can i do</title>
+
+      <para>look at our Forum, we look frequently into and Answers the
+      Question in that</para>
+    </section>
+
+    <section>
+      <title>what can i do when the Software crashes</title>
+
+      <para>in the base installation dirextory there is a dmp directory, in
+      that there are .dmp files that can be uploaded to us. The Dump Files
+      containing no personal Information, there are only a Stack dump fro the
+      crashed Process and some additional Information about the Hardware
+      architecture from the running System.</para>
+    </section>
+
+    <section>
+      <title>is the Software Production Ready</title>
+
+      <para>No! We are in the beginning time to distribute the Software, there
+      are many hidden Bugs in that, that can result in an unknown behavior of
+      your System. </para>
+    </section>
   </chapter>
 </book>

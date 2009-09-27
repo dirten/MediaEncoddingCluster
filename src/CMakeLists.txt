@@ -61,10 +61,7 @@ target_link_libraries (mhive
   signal 
   io 
   net 
-  ${FFMPEG_AVCODEC_LIBRARY} 
-  ${FFMPEG_AVFORMAT_LIBRARY} 
-  ${FFMPEG_AVUTIL_LIBRARY} 
-  ${FFMPEG_SWSCALE_LIBRARY} 
+  ${BOOST_PO_LIB_MT}
 )
 IF(WIN32)
   target_link_libraries (mhive  
@@ -121,17 +118,16 @@ ELSE(WIN32)
   )
 ENDIF(WIN32)
 
-target_link_libraries (mhive 
-  ${BOOST_SERIAL_LIB_MT} 
-  ${BOOST_THREAD_LIB_MT} 
-  ${BOOST_SYSTEM_LIB_MT} 
-  ${BOOST_PO_LIB_MT} 
-  ${BOOST_SIGNALS_LIB_MT} 
-  ${BOOST_REGEX_LIB_MT} 
-  ${BOOST_FS_LIB_MT}
-  ${BOOST_DT_LIB_MT}
-)
-MESSAGE("Executable_output_path" ${EXECUTABLE_OUTPUT_PATH})
+#target_link_libraries (mhive
+#  ${BOOST_SERIAL_LIB_MT}
+#  ${BOOST_THREAD_LIB_MT}
+#  ${BOOST_SYSTEM_LIB_MT}
+#  ${BOOST_PO_LIB_MT}
+#  ${BOOST_SIGNALS_LIB_MT}
+#  ${BOOST_REGEX_LIB_MT}
+#  ${BOOST_FS_LIB_MT}
+#  ${BOOST_DT_LIB_MT}
+#)
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin
