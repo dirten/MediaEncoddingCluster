@@ -71,13 +71,17 @@ bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
 
 void ClientHandler::fillProcessUnit() {
 
-//  boost::mutex::scoped_lock scoped_lock(m_mutex);
+  //  boost::mutex::scoped_lock scoped_lock(m_mutex);
 
 }
 
 boost::shared_ptr<ProcessUnit> ClientHandler::getProcessUnit() {
-  return puQueue.dequeue();
+  boost::shared_ptr<ProcessUnit> pu = puQueue.dequeue();
+  _stmt_pu->setInt("id", pu->_process_unit);
+  _stmt_pu->execute();
+  return pu;
 }
+
 bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
 
@@ -103,13 +107,13 @@ bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
     //    PreparedStatement * stmt_p = _con3->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
     _stmt_p->setInt("sid", rs_pu->getInt("source_stream"));
     _stmt_p->setLong("dts", start_ts);
-    if(u._decoder->getCodecId()==CODEC_ID_MPEG2VIDEO)
+    if (u._decoder->getCodecId() == CODEC_ID_MPEG2VIDEO)
       frame_count += 3;
-    
+
     _stmt_p->setInt("limit", frame_count);
 
 
-    logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count );
+    logdebug("select * from packets where stream_id=" << rs_pu->getInt("source_stream") << " and dts>=" << start_ts << " limit " << frame_count);
     ResultSet rs_p = _stmt_p->executeQuery();
 
     for (int a = 0; rs_p.next();) {
@@ -148,7 +152,7 @@ bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
   return true;
 
 }
-
+/*
 
   //  Statement stmt_ps = _con->createStatement("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   //  ResultSet * rs = stmt_ps.executeQuery2();
@@ -169,7 +173,7 @@ bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
     u._source_stream = rs->getInt("source_stream");
     u._target_stream = rs->getInt("target_stream");
     int size = 0;
-	/*@TODO performance issue !!!*/
+        //@TODO performance issue !!!
     Connection con2(Config::getProperty("db.connection"));
     PreparedStatement stmt_p = con2.prepareStatement("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
     stmt_p.setInt("sid", rs->getInt("source_stream"));
@@ -209,6 +213,7 @@ bool ClientHandler::getProcessUnit2(ProcessUnit & u) {
   }
   return u;
 }
+ */
 
 /*
 string toString(int num) {
@@ -219,13 +224,16 @@ string toString(int num) {
 }
  */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
-    boost::mutex::scoped_lock scoped_lock(m_mutex);
-
+  boost::mutex::scoped_lock scoped_lock(m_mutex);
+  _stmt_fr->setInt("id", unit._process_unit);
+  _stmt_fr->execute();
+  return true;
 }
+
 bool ClientHandler::putProcessUnit2(ProcessUnit & unit) {
   {
     boost::mutex::scoped_lock scoped_lock(m_mutex);
-    logdebug(__FUNCTION__<<":ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);
+    logdebug(__FUNCTION__ << ":ClientHandler::putProcessUnit(ProcessUnit & unit) : start" << unit._process_unit);
     /*
     std::string name=org::esb::config::Config::getProperty("hive.path");
     name+="/tmp/";

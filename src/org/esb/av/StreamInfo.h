@@ -33,7 +33,7 @@ namespace org {
         float getQuality();
         long long int getFirstPts();
         long long int getFirstDts();
-		int StreamInfo::getNBIndexEntries();
+		int getNBIndexEntries();
       private:
         AVStream * _s;
         int _idx;

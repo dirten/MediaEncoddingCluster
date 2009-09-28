@@ -5,6 +5,10 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/hive/job/ProcessUnit.h"
+
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/PreparedStatement.h"
+
 #include <map>
 #include <deque>
 #include <boost/shared_ptr.hpp>
@@ -38,6 +42,11 @@ namespace org {
           int min_frame_group_count;
           int b_frame_offset;
           bool q_filled;
+          int job_id;
+          org::esb::sql::Connection * _con;
+          org::esb::sql::PreparedStatement * _stmt_pu;
+          void flushStreamPackets();
+          void buildProcessUnit(int sIdx);
         };
 
       }

@@ -66,7 +66,7 @@ namespace org {
           boost::mutex::scoped_lock lock(_read_mutex);
           if (!_socket->is_open()) {
             _socket->close();
-            throw SocketException("SocketOutputStream::write - can not Read, because Socket is not open");
+            throw SocketException("SocketOutputStream::read - can not Read, because Socket is not open");
           }
           int counter = 0, remaining = length;
 
@@ -80,8 +80,8 @@ namespace org {
 #endif
           }
 
-          if (error)
-            throw boost::system::system_error(error);
+//          if (error)
+//            throw boost::system::system_error(error);
           return counter;
         }
 

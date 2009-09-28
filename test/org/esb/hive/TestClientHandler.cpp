@@ -11,6 +11,8 @@ int main() {
   ClientHandler * handler=new ClientHandler();
 
   boost::shared_ptr<ProcessUnit> pu=handler->getProcessUnit();
+//  ProcessUnit pu;
+//  handler->getProcessUnit(pu);
   
   delete handler;
   org::esb::config::Config::close();

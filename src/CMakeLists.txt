@@ -8,8 +8,9 @@ include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 
-include_directories (${MYSQL_INCLUDE_DIR})
+include_directories (${MYSQL_INCLUDE_DIR}/mysql)
 include_directories (${FFMPEG_INCLUDE_DIR})
+MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
 
@@ -118,16 +119,16 @@ ELSE(WIN32)
   )
 ENDIF(WIN32)
 
-#target_link_libraries (mhive
+target_link_libraries (mhive
 #  ${BOOST_SERIAL_LIB_MT}
 #  ${BOOST_THREAD_LIB_MT}
 #  ${BOOST_SYSTEM_LIB_MT}
-#  ${BOOST_PO_LIB_MT}
+  ${BOOST_PO_LIB_MT}
 #  ${BOOST_SIGNALS_LIB_MT}
 #  ${BOOST_REGEX_LIB_MT}
 #  ${BOOST_FS_LIB_MT}
 #  ${BOOST_DT_LIB_MT}
-#)
+)
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin

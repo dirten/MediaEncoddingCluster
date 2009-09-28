@@ -54,7 +54,7 @@ namespace org {
           /*
            * Send length from buffer
            */
-          try{
+//          try{
           char size[11];
           sprintf((char*) & size, "%010d", len);
           boost::asio::write(*_socket, boost::asio::buffer(&size, 10));
@@ -67,9 +67,9 @@ namespace org {
             remaining -= sent;
             //            cout << "Data send:"<<sent<<endl;
           }
-          }catch(exception & ex){
-            logerror("Writing to socket:"<<ex.what());
-          }
+//          }catch(exception & ex){
+//            logerror("Writing to socket:"<<ex.what());
+//          }
         }
       };
     }

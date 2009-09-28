@@ -30,7 +30,7 @@ class ProcessUnit{
 		ProcessUnit();
 		~ProcessUnit();
 		void process();
-
+                std::string toString();
 //	private:
 //	        friend class boost::serialization::access;
 

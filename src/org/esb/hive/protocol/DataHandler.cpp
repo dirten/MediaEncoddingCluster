@@ -58,14 +58,15 @@ public:
   void process(char * command) {
     if (strcmp(command, GET_UNIT) == 0) {
       boost::shared_ptr<ProcessUnit> un=_handler->getProcessUnit();
+//      ProcessUnit un;
 //      _handler->getProcessUnit(un);
-      _oos->writeObject(un.get());
+      _oos->writeObject(*un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
       ProcessUnit un;
       _ois->readObject(un);
       if (!_handler->putProcessUnit(un)) {
-        cout << "error while putProcessUnit!";
+        logerror("error while putProcessUnit!");
       }
     }
   }

@@ -111,6 +111,7 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_DIR}/include)
 include_directories (${MYSQL_INC_DIR})
+include_directories (${MYSQL_INCLUDE_DIR})
 add_library (sql sql/Column.cpp 
       sql/Connection.cpp 
       sql/Statement.cpp 
