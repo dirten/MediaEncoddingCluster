@@ -43,8 +43,8 @@ namespace org {
           int b_frame_offset;
           bool q_filled;
           int job_id;
-          org::esb::sql::Connection * _con;
-          org::esb::sql::PreparedStatement * _stmt_pu;
+          org::esb::sql::Connection * _con_tmp;
+          org::esb::sql::PreparedStatement * _stmt;
           void flushStreamPackets();
           void buildProcessUnit(int sIdx);
         };

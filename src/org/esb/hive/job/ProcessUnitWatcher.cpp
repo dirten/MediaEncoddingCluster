@@ -28,9 +28,6 @@ namespace org {
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
           _isStopSignal = false;
-          std::string c = org::esb::config::Config::getProperty("db.connection");
-          _con = new Connection(c);
-          _stmt_pu = _con->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :frame_count, null, null)");
         }
 
         void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg) {
@@ -48,6 +45,9 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start3() {
+          std::string c = org::esb::config::Config::getProperty("db.connection");
+          _con_tmp = new Connection(c);
+          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :frame_count, null, null)");
           while (!_isStopSignal) {
             //getting all jobs that not be completed
             sql::Connection con(std::string(config::Config::getProperty("db.connection")));
@@ -126,12 +126,12 @@ namespace org {
             u->_input_packets = stream_packets[sIdx];
             //Put the ProcessUnit into the Queue
 
-            _stmt_pu->setInt("source_stream", u->_source_stream);
-            _stmt_pu->setInt("target_stream", u->_target_stream);
-            _stmt_pu->setLong("start_ts", u->_input_packets.front()->packet->dts);
-            _stmt_pu->setInt("frame_count", u->_input_packets.size());
-            _stmt_pu->execute();
-            u->_process_unit=_stmt_pu->getLastInsertId();
+            _stmt->setInt("source_stream", u->_source_stream);
+            _stmt->setInt("target_stream", u->_target_stream);
+            _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+            _stmt->setInt("frame_count", u->_input_packets.size());
+            _stmt->execute();
+            u->_process_unit=_stmt->getLastInsertId();
             ClientHandler::addProcessUnit(u);
             logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
             //resetting the parameter for the next ProcessUnit

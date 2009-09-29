@@ -48,7 +48,7 @@ target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang ne
   ${FFMPEG_AVCODEC_LIBRARY} 
   ${FFMPEG_AVUTIL_LIBRARY} 
   ${FFMPEG_SWSCALE_LIBRARY} 
-${BOOST_THREAD_LIB_MT} ${BOOST_SERIAL_LIB_MT} z ${BZ2_LIB} )
+${BOOST_THREAD_LIB_MT} ${BOOST_SERIAL_LIB_MT} ${BZ2_LIB} )
 
 IF(WIN32)
   target_link_libraries (TestDatabaseCreation ws2_32 msvcrt wt wthttp wtext)

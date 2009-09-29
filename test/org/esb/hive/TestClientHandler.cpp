@@ -9,7 +9,8 @@ int main() {
   org::esb::config::Config::setProperty("db.connection","mysql:host=;db=hive;user=;passwd=");
 
   ClientHandler * handler=new ClientHandler();
-
+  boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
+  handler->addProcessUnit(u);
   boost::shared_ptr<ProcessUnit> pu=handler->getProcessUnit();
 //  ProcessUnit pu;
 //  handler->getProcessUnit(pu);

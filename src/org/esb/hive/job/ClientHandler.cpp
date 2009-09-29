@@ -42,25 +42,27 @@ ClientHandler::ClientHandler() {
   _con = new Connection(c);
   //  _con3 = new Connection(c);
   //  _con4 = new Connection(c);
-  //  _con2 = new Connection(c);
+    _con2 = new Connection(c);
   //  _stmt_ps = _con->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id order by priority limit 1");
   //  _stmt3 = _con2->prepareStatement2("select * from process_units u, streams s, files f where u.send is null and u.source_stream=s.id and s.fileid=f.id /*order by priority*/ limit 1");
-  _stmt = _con->prepareStatement2("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
+/*
+	_stmt = _con->prepareStatement2("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size,data) values "
       "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:data_size,:data)");
-  _stmt_fr = _con->prepareStatement2("update process_units set complete = now() where id=:id");
+*/
+	  _stmt_fr = _con2->prepareStatement2("update process_units set complete = now() where id=:id");
   _stmt_pu = _con->prepareStatement2("update process_units set send = now() where id=:id");
-  _stmt_p = _con->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
+//  _stmt_p = _con->prepareStatement2("select * from packets where stream_id=:sid and dts>=:dts limit :limit");
   //  _stmt_job_log = new PreparedStatement(_con->prepareStatement("insert into process_units(source_stream, target_stream, start_ts,frame_count,send) values (:source, :target, :start, :fcount, now())"));
 }
 
 ClientHandler::~ClientHandler() {
   logdebug("ClientHandler::~ClientHandler()");
 
-  delete _con;
-  delete _stmt;
-  delete _stmt_p;
+//  delete _stmt;
+//  delete _stmt_p;
   delete _stmt_fr;
   delete _stmt_pu;
+  delete _con;
 }
 
 bool ClientHandler::addProcessUnit(boost::shared_ptr<ProcessUnit> unit) {
@@ -78,6 +80,7 @@ void ClientHandler::fillProcessUnit() {
 boost::shared_ptr<ProcessUnit> ClientHandler::getProcessUnit() {
   boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   boost::shared_ptr<ProcessUnit> pu = puQueue.dequeue();
+  //PreparedStatement pstmt =_con->prepareStatement("update process_units set send = now() where id=:id")
   _stmt_pu->setInt("id", pu->_process_unit);
   _stmt_pu->execute();
   return pu;
@@ -243,7 +246,7 @@ bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   logdebug("Saving ProcessUnit");
   ous.writeObject(unit);
   _stmt_fr->setInt("id", unit._process_unit);
-  _stmt_fr->execute();
+//  _stmt_fr->execute();
   return true;
 }
 
