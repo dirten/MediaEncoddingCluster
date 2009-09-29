@@ -35,8 +35,8 @@ Packet::Packet(const Packet & p) {
   packet->pts = p.packet->pts;
   packet->dts = p.packet->dts;
   if (p.packet->size > 0) {
-    packet->data = new uint8_t[p.packet->size];
-//    packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
+//    packet->data = new uint8_t[p.packet->size];
+    packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
 //    memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(packet->data, p.packet->data, p.packet->size);
   }

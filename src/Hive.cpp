@@ -105,6 +105,11 @@ int main(int argc, char * argv[]) {
   Config::setProperty("hive.dump_path", dump_path.c_str());
 //  std::wstring wdump_path(dump_path.begin(), dump_path.end());
   StackDumper stack_dumper(dump_path);
+  std::string tmp_path=sb;
+  tmp_path.append("/tmp");
+  org::esb::io::File tpath(tmp_path);
+  if(!tpath.exists())
+	tpath.mkdir();
 
 //	google_breakpad::ExceptionHandler exhandler(wdump_path,NULL, NULL, NULL, google_breakpad::ExceptionHandler::HANDLER_ALL);
   

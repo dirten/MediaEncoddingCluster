@@ -160,7 +160,7 @@ namespace org {
             stream_packets[sidx].push_back(pPacket);
 
           //when we have enough packets for a ProcessUnit
-          if ((stream_packet_counter[sidx] >= min_frame_group_count * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))) {
+          if ((stream_packet_counter[sidx] >= min_frame_group_count * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 100 : 1))) {
             logdebug("Building Audio ProcessUnit");
             //build ProcessUnit with Decoder and Encoder
               buildProcessUnit(sidx);

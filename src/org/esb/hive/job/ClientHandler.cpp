@@ -10,7 +10,7 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
-//#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 //#include "tntdb/connection.h"
@@ -76,6 +76,7 @@ void ClientHandler::fillProcessUnit() {
 }
 
 boost::shared_ptr<ProcessUnit> ClientHandler::getProcessUnit() {
+  boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
   boost::shared_ptr<ProcessUnit> pu = puQueue.dequeue();
   _stmt_pu->setInt("id", pu->_process_unit);
   _stmt_pu->execute();
@@ -225,6 +226,22 @@ string toString(int num) {
  */
 bool ClientHandler::putProcessUnit(ProcessUnit & unit) {
   boost::mutex::scoped_lock scoped_lock(m_mutex);
+
+  std::string name = org::esb::config::Config::getProperty("hive.base_path");
+  name += "/tmp/";
+  name += org::esb::util::Decimal(unit._process_unit % 10).toString();
+  name += "/";
+  org::esb::io::File dir(name.c_str());
+  if (!dir.exists()) {
+    dir.mkdir();
+  }
+  name += org::esb::util::Decimal(unit._process_unit).toString();
+  name += ".unit";
+  org::esb::io::File out(name.c_str());
+  org::esb::io::FileOutputStream fos(&out);
+  org::esb::io::ObjectOutputStream ous(&fos);
+  logdebug("Saving ProcessUnit");
+  ous.writeObject(unit);
   _stmt_fr->setInt("id", unit._process_unit);
   _stmt_fr->execute();
   return true;

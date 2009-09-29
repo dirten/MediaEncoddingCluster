@@ -37,7 +37,7 @@ void FileExporter::exportFile(int fileid) {
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
       if (rs.getString("path").size() == 0) {
-        filename = Config::getProperty("hive.path");
+        filename = Config::getProperty("hive.base_path");
       } else {
         filename = rs.getString("path");
       }
@@ -71,11 +71,9 @@ void FileExporter::exportFile(int fileid) {
     PreparedStatement stmt = con.prepareStatement("select sin.stream_index inid, sout.stream_index outid from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
     stmt.setInt("fileid", fileid);
     ResultSet rs = stmt.executeQuery();
-
     while (rs.next()) {
       stream_map[rs.getInt("inid")] = rs.getInt("outid");
     }
-
   }
   {
     PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");

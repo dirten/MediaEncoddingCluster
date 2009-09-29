@@ -92,8 +92,8 @@ int main(int argc, char ** argv) {
 //  printf("%20s|", "timebase");
   printf("%8s|", "size");
   printf("%2s|", "ix");
-  printf("%10s|", "pidx");
-  printf("%10s|", "idxentry");
+//  printf("%10s|", "pidx");
+//  printf("%10s|", "idxentry");
   printf("%2s|", "k");
   printf("%5s|", "dur");
   printf("%20s|", "pos");
@@ -120,8 +120,8 @@ int main(int argc, char ** argv) {
     printf("%8d|", p.packet->size);
     printf("%2d|", p.packet->stream_index);
 	int pidx=av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0);
-	printf("%10d|", pidx);
-	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
+//	printf("%10d|", pidx);
+//	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
 //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
     printf("%s|", p.isKeyFrame()==1&&p.getStreamIndex()==0?"x ":"  ");
     printf("%5d|", p.packet->duration);

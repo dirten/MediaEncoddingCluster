@@ -59,9 +59,9 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 void ProtocolServer::run() {
   while (!socket->isClosed()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
-#ifndef DEBUG
+//#ifndef DEBUG
     try {
-#endif
+//#endif
       string cmd;
       int dataLength = socket->getInputStream()->read(cmd);
       if (dataLength == 0) {
@@ -85,13 +85,13 @@ void ProtocolServer::run() {
           tmp->printHelp();
         }
       }
-#ifndef DEBUG
+//#ifndef DEBUG
     } catch (exception & ex) {
       logerror("ERROR in ProtocolServer:" << ex.what());
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
-#endif
+//#endif
   }
   //  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
   //  	cout << "Elvis has left the Building" << endl;

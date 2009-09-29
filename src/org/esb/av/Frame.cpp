@@ -137,7 +137,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   _size = 0;
-  framePtr = boost::shared_ptr<AVFrame > (new AVFrame(),&av_free);
+  framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   _width = width;
   _height = height;
   _pixFormat = format;

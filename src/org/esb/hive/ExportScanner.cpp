@@ -32,12 +32,13 @@ namespace org {
           {
             org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
 //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
-            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
+//            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
+            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path from jobs, files where jobs.outputfile= files.id and jobs.complete is not null");
             org::esb::sql::ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
               std::string filename;
               if (rs.getString("path").size() == 0) {
-                filename = org::esb::config::Config::getProperty("hive.path");
+                filename = org::esb::config::Config::getProperty("hive.base_path");
               } else {
                 filename = rs.getString("path");
               }
@@ -45,7 +46,7 @@ namespace org {
               filename += rs.getString("filename");
               org::esb::io::File file(filename.c_str());
               if (!file.exists()) {
-                FileExporter::exportFile(rs.getInt("f.id"));
+                FileExporter::exportFile(rs.getInt("files.id"));
               }
             }
           }

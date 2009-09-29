@@ -75,6 +75,7 @@ namespace org {
 
                     ar & ctx->codec_id;
                     ar & _mode;
+//                    ar & _opened;
                     ar & ctx->flags;
                     ar & ctx->pix_fmt;
                     ar & ctx->width;

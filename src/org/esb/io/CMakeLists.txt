@@ -17,6 +17,7 @@ TARGET_LINK_LIBRARIES(io
   ${BOOST_SYSTEM_LIB_MT}
   ${BOOST_SERIAL_LIB_MT}
   lang
+  util
 )
 
 

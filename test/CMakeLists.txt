@@ -67,24 +67,34 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 #ENDIF(NOT WIN32)
 
 add_executable (info info.cpp)
+add_executable (pu pu.cpp)
 
-target_link_libraries (info 
-  web 
-  esb 
-  sql 
-  hive 
-  lang 
-  av 
-  util 
-  signal 
-  io 
-  net 
+target_link_libraries (info
+  web
+  esb
+  sql
+  hive
+  lang
+  av
+  util
+  signal
+  io
+  net
   ${BZ2_LIB}
-  ${MYSQL_LIBRARY} 
-  ${FFMPEG_AVCODEC_LIBRARY} 
-  ${FFMPEG_AVFORMAT_LIBRARY} 
-  ${FFMPEG_AVUTIL_LIBRARY} 
-  ${FFMPEG_SWSCALE_LIBRARY} 
+  ${MYSQL_LIBRARY}
+  ${FFMPEG_AVCODEC_LIBRARY}
+  ${FFMPEG_AVFORMAT_LIBRARY}
+  ${FFMPEG_AVUTIL_LIBRARY}
+  ${FFMPEG_SWSCALE_LIBRARY}
+  )
+target_link_libraries (pu
+  esb
+  hive
+  lang
+  av
+  util
+  io
+  ${BZ2_LIB}
   )
 
 

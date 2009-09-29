@@ -210,8 +210,8 @@ namespace org {
       }
 
       void Codec::close() {
-        av_freep(&ctx->stats_in);
         if (_opened) {
+//        av_freep(&ctx->stats_in);
           avcodec_close(ctx);
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);

@@ -202,6 +202,10 @@ namespace org {
                 logerror("Connection to Server lost!!!"<<ex.what());
                 _sock->close();
               }
+              delete unit->_decoder;
+              unit->_decoder=NULL;
+              delete unit->_encoder;
+              unit->_encoder=NULL;
               delete unit;
 
               //		break;
