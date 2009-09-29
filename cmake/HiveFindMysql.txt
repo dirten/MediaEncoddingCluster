@@ -39,6 +39,15 @@ IF(USE_EMBEDDED_MYSQL)
           ${MYSQL_LIB_DIR}
         NO_DEFAULT_PATH
       )
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
+    FIND_LIBRARY(MYSQL_LIBRARY
+        NAMES
+          mysqld
+          libmysqld
+        PATHS
+          ${MYSQL_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
   ENDIF(WIN32)
 ELSE(USE_EMBEDDED_MYSQL)
   IF(WIN32)

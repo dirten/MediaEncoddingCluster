@@ -169,9 +169,9 @@ namespace org {
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
-                //                logdebug("Command sended");
+                                logdebug("Command sended");
                 _ois->readObject(*unit);
-                //                logdebug("ProcessUnit received");
+                                logdebug("ProcessUnit received");
               } catch (exception & ex) {
                 logerror("Connection to Server lost!!!"<<ex.what());
                 _sock->close();

@@ -98,7 +98,7 @@ download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.
 download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
 download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
-download_file "http://dfn.dl.sourceforge.net/sourceforge/lame/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
+download_file "http://dfn.dl.sourceforge.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
 download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
 download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
 download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
@@ -151,7 +151,7 @@ build_file "libtheora"
 #build_file "speex"
 configure_file "libvorbis" "--with-ogg=$SRCDIR/$BUILDDIR/libogg"
 build_file "libvorbis"
-configure_xvid
+configure_xvid "" "--enable-macosx_module --disable-assembly"
 build_xvid
 
 SYS=`uname`
