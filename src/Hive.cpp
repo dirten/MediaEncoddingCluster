@@ -11,6 +11,7 @@
 //#include "org/esb/net/TcpSocket.h"
 //#include "org/esb/lang/Thread.h"
 //#include "org/esb/hive/ProtocolServer.h"
+#include "org/esb/hive/HiveClient.h"
 #include "org/esb/config/config.h"
 //#include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
@@ -23,7 +24,6 @@
 #include "org/esb/av/AV.h"
 //#include "org/esb/hive/PacketCollector.h"
 //#include "Environment.cpp"
-#include "org/esb/hive/HiveClient.h"
 //#include "org/esb/hive/Setup.h"
 //#include "org/esb/hive/Version.h"
 

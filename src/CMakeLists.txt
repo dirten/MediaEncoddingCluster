@@ -8,6 +8,7 @@ include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 
+include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${MYSQL_INCLUDE_DIR}/mysql)
 include_directories (${FFMPEG_INCLUDE_DIR})
 MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
@@ -65,14 +66,13 @@ target_link_libraries (mhive
   ${BOOST_PO_LIB_MT}
 )
 IF(WIN32)
-  target_link_libraries (mhive  
-    ${MYSQL_LIBRARY} 
-    wt 
-    wtext
-    wthttp
-    winmm
+#  target_link_libraries (mhive  
+#    wtd 
+#    wtextd
+#    wthttpd
+#    winmm
 #    "D:/google-breakpad/src/client/windows/Release/exception_handler.lib"
-  )
+#  )
   
 ELSEIF(APPLE)
   target_link_libraries (mhive 

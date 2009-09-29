@@ -80,7 +80,7 @@ Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
 Filename: "sc"; Parameters: "stop MHiveService"; Description: "stop MHiveService."
 Filename: "sc"; Parameters: "delete MHiveService"; Description: "delete MHive from Service DB."
-Filename: "sc"; Parameters: "create MHiveService binPath= {app}\bin\mhive.exe"; Description: "Install MHive as a Service."
+Filename: "sc"; Parameters: "create MHiveService binPath= ""{app}\bin\mhive.exe -d"" "; Description: "Install MHive as a Service."
 [UninstallRun]
 Filename: "sc"; Parameters: "stop MHiveService"
 Filename: "sc"; Parameters: "delete MHiveService"
@@ -94,17 +94,17 @@ Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/bruteripper-nmake\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/msys/home/framebuster/bruteripper\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/msys/home/framebuster/bruteripper\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/msys/home/framebuster/bruteripper\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:/mysql-5.1.37-win32\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
-Source: "C:/mysql-5.1.37-win32\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/ffmpeg-r19365-swscale-r29414-mingw32-shared\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/ffmpeg-r19365-swscale-r29414-mingw32-shared\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/ffmpeg-r19365-swscale-r29414-mingw32-shared\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/ffmpeg-r19365-swscale-r29414-mingw32-shared\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:/ffmpeg-r19365-swscale-r29414-mingw32-shared\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "M:/MediaEncodingCluster-build\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/MediaEncodingCluster-svn\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "M:/Programme/mysql-5.1.37-win32\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
+Source: "M:/Programme/mysql-5.1.37-win32\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/ffmpeg\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/ffmpeg\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/ffmpeg\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/ffmpeg\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/ffmpeg\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

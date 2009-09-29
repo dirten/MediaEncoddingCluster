@@ -187,13 +187,15 @@ add_library (web
     web/wtk/ContentBox.cpp
 )
 TARGET_LINK_LIBRARIES(web 
-  crypto
   wt
   wtext
   wthttp
   ${BOOST_SIGNALS_LIB_MT}
   ${BOOST_REGEX_LIB_MT}
 )
+IF(UNIX AND NOT APPLE)
+  TARGET_LINK_LIBRARIES(web crypto)
+ENDIF(UNIX AND NOT APPLE)
 
 IF(WIN32)
   target_link_libraries (web
