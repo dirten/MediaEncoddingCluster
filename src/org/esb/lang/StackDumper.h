@@ -9,7 +9,7 @@
 #ifndef _STACKDUMPER_H
 #define	_STACKDUMPER_H
 #ifndef WIN32
-	#ifdef APPLE
+	#ifdef __APPLE__
 		#include "client/mac/handler/exception_handler.h"
 	#else
 		#include "client/linux/handler/exception_handler.h"

@@ -43,12 +43,7 @@ target_link_libraries (TestClientHandler   hive esb sql av io util lang ${MYSQL_
 target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
   ${BOOST_SERIAL_LIB_MT}
 )
-target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net  ${MYSQL_LIB} 
-  ${FFMPEG_AVFORMAT_LIBRARY} 
-  ${FFMPEG_AVCODEC_LIBRARY} 
-  ${FFMPEG_AVUTIL_LIBRARY} 
-  ${FFMPEG_SWSCALE_LIBRARY} 
-${BOOST_THREAD_LIB_MT} ${BOOST_SERIAL_LIB_MT} ${BZ2_LIB} )
+target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net)
 
 IF(WIN32)
   target_link_libraries (TestDatabaseCreation ws2_32 msvcrt wt wthttp wtext)
@@ -59,10 +54,10 @@ ELSE(WIN32)
   IF(NOT APPLE)
     target_link_libraries (DeleteDatabase crypt)
   ENDIF(NOT APPLE)
-  target_link_libraries(TestClientHandler x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
-  target_link_libraries(TestHiveListener x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
-  target_link_libraries(TestAudioAC3toMP2 x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
-  target_link_libraries(TestProcessUnit x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z crypt)
+  target_link_libraries(TestClientHandler x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
+  target_link_libraries(TestHiveListener x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
+  target_link_libraries(TestAudioAC3toMP2 x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
+  target_link_libraries(TestProcessUnit x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
 
 ENDIF(WIN32)
 

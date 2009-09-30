@@ -52,8 +52,8 @@ MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 add_executable (mhive Hive.cpp)
 
 
-FIND_LIBRARY(COCOA_LIBRARY COCOA)
-MARK_AS_ADVANCED(COCOA_LIBRARY)
+#FIND_LIBRARY(COCOA_LIBRARY COCOA)
+#MARK_AS_ADVANCED(COCOA_LIBRARY)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
 target_link_libraries (mhive 
   web 
@@ -82,8 +82,8 @@ ELSEIF(APPLE)
     x264 
     ${MYSQL_LIBRARY} 
     ${BZ2_LIB}
-${COCOA_LIBRARY}
-    crypto
+#${COCOA_LIBRARY}
+#    crypto
     z 
     ssl 
     wthttp 

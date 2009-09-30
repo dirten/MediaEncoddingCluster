@@ -68,6 +68,7 @@ add_library (util
   util/Log.cpp
 #  util/Queue.cpp
 )
+
 TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT})
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread)
