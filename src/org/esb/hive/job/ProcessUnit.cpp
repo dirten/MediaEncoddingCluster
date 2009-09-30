@@ -120,6 +120,7 @@ void ProcessUnit::process() {
     //      break;
     //    }
     if (!tmp->isFinished()) {
+      delete tmp;
       continue;
     }
     if (toDebug)

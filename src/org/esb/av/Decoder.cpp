@@ -158,7 +158,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //    cout << endl;
 #endif
   if (!_frameFinished) {
-    return new Frame();
+    return frame;
   }
   frame->setTimeBase(packet.getTimeBase());
   frame->setFinished(_frameFinished);

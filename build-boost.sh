@@ -20,4 +20,4 @@ if test ! -f source/boost/tools/jam/stage/bin.linuxx86/bjam ; then
 fi
 echo "Build Boost"
 cd $SRCDIR/boost
-tools/jam/stage/bin.macosxx86/bjam --prefix=$SRCDIR/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install
+tools/jam/stage/bin.linuxx86/bjam --prefix=$SRCDIR/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install

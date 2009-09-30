@@ -11,6 +11,35 @@ INCLUDE(CTest)
 
 ENABLE_TESTING()
 
+add_custom_target(
+	build_boost
+	COMMAND ${PROJECT_SOURCE_DIR}/source/boost/tools/jam/stage/bin.linuxx86/bjam
+ 	            --prefix=${PROJECT_SOURCE_DIR}/source/build/boost
+                --layout=system
+                variant=release threading=multi link=static --without-python --without-wave --without-graph --without-test --without-mpi --without-iostreams install
+	DEPENDS build_boost_jam
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source/boost
+)
+
+add_custom_target(
+	build_boost_jam
+	COMMAND ${PROJECT_SOURCE_DIR}/source/boost/tools/jam/build_dist.sh
+	DEPENDS download_boost
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source/boost/tools/jam
+)
+
+add_custom_target(
+	download_boost
+	COMMAND ${PROJECT_SOURCE_DIR}/download_boost.sh
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+
+add_custom_target(
+	deps 
+	DEPENDS build_boost
+)
+
 INCLUDE(cmake/HiveFindBoost.txt)
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
@@ -49,7 +78,6 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}.${MINOR_PATCH_VERSION}")
 SET(CPACK_PACKAGE_NAME "MediaEncodingCluster")
 SET(CPACK_PACKAGE_VENDOR "EsbLab")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY MediaEncodingCluster-${MHIVE_VERSION})
-SET(CPACK_STRIP_FILES "bin/mhive")
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
 #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
