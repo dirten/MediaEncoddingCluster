@@ -161,6 +161,7 @@ add_library (hive
 #	hive/FormatStreamFactory.cpp
 	
 )
+TARGET_LINK_LIBRARIES(hive av)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
 include_directories (${WT_DIR})

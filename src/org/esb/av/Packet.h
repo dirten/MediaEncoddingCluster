@@ -25,8 +25,8 @@ namespace org {
         int getSize();
         long long int getPts();
         long long int getDts();
-        void setPts(long long int);
-        void setDts(long long int);
+        void setPts(int64_t);
+        void setDts(int64_t);
         int getFlags();
         void setFlags(int);
         int getStreamIndex();

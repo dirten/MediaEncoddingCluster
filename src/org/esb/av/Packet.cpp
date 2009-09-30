@@ -117,10 +117,10 @@ int Packet::getSize() {
   return packet->size;
 }
 
-void Packet::setPts(long long int ts){
+void Packet::setPts(int64_t ts){
   packet->pts=ts;
 }
-void Packet::setDts(long long int ts){
+void Packet::setDts(int64_t ts){
   packet->dts=ts;
 }
 long long int Packet::getPts() {
