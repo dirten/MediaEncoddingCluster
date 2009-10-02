@@ -6,7 +6,7 @@ include_directories (${MYSQL_DIR}/include)
 add_executable (TestFileImporter TestFileImporter.cpp)
 add_executable (TestProcessUnit TestProcessUnit.cpp)
 add_executable (TestDatabaseCreation TestDatabaseCreation.cpp)
-add_executable (TestClientHandler TestClientHandler.cpp)
+#add_executable (TestClientHandler TestClientHandler.cpp)
 add_executable (TestHiveListener TestHiveListener.cpp)
 add_executable (TestAudioAC3toMP2 TestAudioAC3toMP2.cpp)
 add_executable (DeleteDatabase DeleteDatabase.cpp)
@@ -26,20 +26,11 @@ target_link_libraries (TestProcessUnit esb sql ${MYSQL_LIBRARY} hive io av util 
   ${FFMPEG_SWSCALE_LIBRARY}
   ${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT})
 
-target_link_libraries (TestDatabaseCreation esb sql ${MYSQL_LIBRARY} hive io util lang ${BOOST_THREAD_LIB_MT})
-target_link_libraries (DeleteDatabase esb sql ${MYSQL_LIBRARY} hive io util lang ${BOOST_THREAD_LIB_MT} )
-target_link_libraries (TestProcessUnit esb hive av io util lang ${BOOST_THREAD_LIB_MT}
-${FFMPEG_AVFORMAT_LIBRARY} 
-  ${FFMPEG_AVCODEC_LIBRARY} 
-  ${FFMPEG_AVUTIL_LIBRARY} 
-  ${FFMPEG_SWSCALE_LIBRARY} 
-)
+target_link_libraries (TestDatabaseCreation esb sql  hive io util lang )
+target_link_libraries (DeleteDatabase esb sql hive io util lang  )
+target_link_libraries (TestProcessUnit esb hive av io util lang )
 
-target_link_libraries (TestClientHandler   hive esb sql av io util lang ${MYSQL_LIBRARY}
-  ${FFMPEG_LIBS}
-  ${BOOST_THREAD_LIB_MT}
-  ${BZ2_LIB}
-)
+#target_link_libraries (TestClientHandler   hive esb sql av io util lang )
 target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
   ${BOOST_SERIAL_LIB_MT}
 )
@@ -54,7 +45,7 @@ ELSE(WIN32)
   IF(NOT APPLE)
     target_link_libraries (DeleteDatabase crypt)
   ENDIF(NOT APPLE)
-  target_link_libraries(TestClientHandler x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
+ # target_link_libraries(TestClientHandler x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
   target_link_libraries(TestHiveListener x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
   target_link_libraries(TestAudioAC3toMP2 x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
   target_link_libraries(TestProcessUnit x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl)
@@ -64,7 +55,7 @@ ENDIF(WIN32)
 ADD_TEST(TestDatabaseCreation ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
 ADD_TEST(TestFileImporter ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
-ADD_TEST(TestClientHandler ${EXECUTABLE_OUTPUT_PATH}/TestClientHandler)
+#ADD_TEST(TestClientHandler ${EXECUTABLE_OUTPUT_PATH}/TestClientHandler)
 ADD_TEST(TestHiveListener ${EXECUTABLE_OUTPUT_PATH}/TestHiveListener)
 ADD_TEST(TestAudioAC3toMP2 ${EXECUTABLE_OUTPUT_PATH}/TestAudioAC3toMP2)
 ADD_TEST(DeleteDatabase ${EXECUTABLE_OUTPUT_PATH}/DeleteDatabase)

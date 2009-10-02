@@ -8,7 +8,7 @@
 
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
-
+#include "org/esb/util/Queue.h"
 #include <map>
 #include <deque>
 #include <boost/shared_ptr.hpp>
@@ -27,8 +27,11 @@ namespace org {
           void start3();
           void stop();
           void onMessage(org::esb::signal::Message & msg);
+          static boost::shared_ptr<ProcessUnit> getProcessUnit();
+          static bool putProcessUnit(ProcessUnit & unit);
         private:
-          bool _isStopSignal;
+          static org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > puQueue;
+          static bool _isStopSignal;
           std::map<int,boost::shared_ptr<ProcessUnit> > unit_map;
           std::map<int, int> idx;
           std::map<int, int> inout;
@@ -47,6 +50,10 @@ namespace org {
           org::esb::sql::PreparedStatement * _stmt;
           void flushStreamPackets();
           void buildProcessUnit(int sIdx);
+          static boost::mutex m_mutex;
+          static boost::mutex unit_list_mutex;
+          static org::esb::sql::PreparedStatement * _stmt_fr;
+
         };
 
       }

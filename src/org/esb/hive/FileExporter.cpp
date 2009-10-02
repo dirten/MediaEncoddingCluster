@@ -201,6 +201,10 @@ void FileExporter::exportFile(int fileid) {
       name += org::esb::util::Decimal(pu_id).toString();
       name += ".unit";
       org::esb::io::File infile(name.c_str());
+      if(!infile.exists()){
+        logerror(infile.getFilePath()<< ": not found");
+        continue;
+      }
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;

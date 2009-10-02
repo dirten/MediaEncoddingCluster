@@ -8,7 +8,7 @@
 #include "org/esb/av/Packet.h"
 #include "../job/Job.h"
 #include "../job/JobHandler.h"
-#include "../job/ClientHandler.h"
+#include "../job/ProcessUnitWatcher.h"
 #include "../job/ProcessUnit.h"
 
 using namespace org::esb::hive::job;
@@ -26,7 +26,7 @@ private:
   //	PacketOutputStream * _pos;
   io::ObjectOutputStream * _oos;
   io::ObjectInputStream * _ois;
-  ClientHandler* _handler;
+//  ClientHandler* _handler;
 
 public:
 
@@ -36,7 +36,7 @@ public:
     //	    _pos=new PacketOutputStream(_os);
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
-    _handler = new ClientHandler();
+//    _handler = new ClientHandler();
   }
 
   int isResponsible(cmdId & cmid) {
@@ -57,7 +57,7 @@ public:
 
   void process(char * command) {
     if (strcmp(command, GET_UNIT) == 0) {
-      boost::shared_ptr<ProcessUnit> un=_handler->getProcessUnit();
+      boost::shared_ptr<ProcessUnit> un=ProcessUnitWatcher::getProcessUnit();
 //      ProcessUnit un;
 //      _handler->getProcessUnit(un);
       _oos->writeObject(*un.get());
@@ -65,7 +65,7 @@ public:
       if (strcmp(command, PUT_UNIT) == 0) {
       ProcessUnit un;
       _ois->readObject(un);
-      if (!_handler->putProcessUnit(un)) {
+      if (!ProcessUnitWatcher::putProcessUnit(un)) {
         logerror("error while putProcessUnit!");
       }
     }
