@@ -479,8 +479,8 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-  //  org::esb::hive::job::ProcessUnitWatcher puw;
-  //  Messenger::getInstance().addMessageListener(puw);
+    org::esb::hive::job::ProcessUnitWatcher puw;
+    Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
   int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
@@ -497,7 +497,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-    //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+        Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
   }
