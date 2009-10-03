@@ -217,6 +217,7 @@ int main(int argc, char * argv[]) {
         webroot.append("/web");
         Config::setProperty("web.docroot", webroot.c_str());
       }
+	  Config::setProperty("hive.start_as", "console");
 //      Config::setProperty("hive.mode", "daemon");
       listener(argc, argv);
       //      return 0;
