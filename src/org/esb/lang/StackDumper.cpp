@@ -2,6 +2,7 @@
 
 #include "StackDumper.h"
 #include "org/esb/util/Log.h"
+#ifdef WIN32
 
 bool MyDumpSender(const wchar_t* dump_path,
                              const wchar_t* minidump_id,
@@ -9,7 +10,7 @@ bool MyDumpSender(const wchar_t* dump_path,
                              EXCEPTION_POINTERS* exinfo,
                              MDRawAssertionInfo* assertion,
 							 bool succeeded){
-	logdebug("Sending CrashReport");
+  logdebug("Sending CrashReport");
 	std::string chkpfile="checkpoint.txt";
 
 	std::string url="http://188.40.40.157/submit";
@@ -40,8 +41,9 @@ bool MyDumpSender(const wchar_t* dump_path,
 	google_breakpad::ReportResult r=sender.SendCrashReport(std::wstring(url.begin(), url.end()),para,dumpfile,&wresult);
 	std::string result(wresult.begin(), wresult.end());
 	logdebug("CrashReport sended : "<<result<<":::"<<r);
-	return true;
+  return true;
 }
+#endif
 
 StackDumper::StackDumper(std::string dmp_path):
 	exhandler(
@@ -51,7 +53,11 @@ StackDumper::StackDumper(std::string dmp_path):
 		std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 		NULL,
-		&MyDumpSender,
+#ifdef WIN32
+  &MyDumpSender,
+  #else
+  NULL,
+  #endif
 		NULL,
 #ifndef WIN32
 		true
@@ -61,6 +67,7 @@ StackDumper::StackDumper(std::string dmp_path):
 		){
 
 }
+#ifdef WIN32
 bool StackDumper::DumpSender(const wchar_t* dump_path,
                              const wchar_t* minidump_id,
                              void* context,
@@ -68,9 +75,9 @@ bool StackDumper::DumpSender(const wchar_t* dump_path,
                              MDRawAssertionInfo* assertion,
 							 bool succeeded){
 	logdebug("Sending CrashReport");
-
 	return true;
 }
+#endif
 StackDumper::~StackDumper(){
 
 }

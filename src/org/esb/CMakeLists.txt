@@ -189,9 +189,9 @@ add_library (web
     web/wtk/ContentBox.cpp
 )
 TARGET_LINK_LIBRARIES(web 
-  wtd
-  wtextd
-  wthttpd
+  wt
+  wtext
+  wthttp
   ${BOOST_SIGNALS_LIB_MT}
   ${BOOST_REGEX_LIB_MT}
 )

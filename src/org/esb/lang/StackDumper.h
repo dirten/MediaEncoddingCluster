@@ -24,12 +24,14 @@ public:
     ~StackDumper();
 private:
     google_breakpad::ExceptionHandler exhandler;
-	bool DumpSender(const wchar_t* dump_path,
+#ifdef WIN32
+    bool DumpSender(const wchar_t* dump_path,
                                    const wchar_t* minidump_id,
                                    void* context,
                                    EXCEPTION_POINTERS* exinfo,
                                    MDRawAssertionInfo* assertion,
                                    bool succeeded);
+#endif
 };
 //global function to print Program stack traces
 
