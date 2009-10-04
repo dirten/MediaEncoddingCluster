@@ -69,7 +69,7 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT})
+TARGET_LINK_LIBRARIES(util lang ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT})
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread)
 ENDIF(NOT WIN32)
@@ -189,9 +189,9 @@ add_library (web
     web/wtk/ContentBox.cpp
 )
 TARGET_LINK_LIBRARIES(web 
-  wt
-  wtext
-  wthttp
+  wtd
+  wtextd
+  wthttpd
   ${BOOST_SIGNALS_LIB_MT}
   ${BOOST_REGEX_LIB_MT}
 )

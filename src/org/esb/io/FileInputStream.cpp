@@ -28,7 +28,7 @@ FileInputStream::FileInputStream(const std::string name) {
  */
 
 void FileInputStream::open(const std::string name) {
-  file = fopen(name.c_str(), "r+");
+  file = fopen(name.c_str(), "rb");
   if (!file) {
     string error = "FileInputStream::open - File not Found (";
     error += name;
@@ -40,7 +40,8 @@ void FileInputStream::open(const std::string name) {
   fseek(file, 0, SEEK_END);
   _filePointer = ftell(file);
   logdebug("FileSize1:"<<_filePointer);
-  fseek(file, 0, 0);
+  rewind(file);
+//  fseek(file, 0, 0);
 
 }
 

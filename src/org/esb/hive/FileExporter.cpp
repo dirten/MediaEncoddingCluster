@@ -195,6 +195,7 @@ void FileExporter::exportFile(int fileid) {
     path += "/tmp/";
     while (rs.next()) {
       int pu_id=rs.getInt("id");
+	  logdebug("open PU with id : "<<pu_id)
       std::string name = path;
       name+=org::esb::util::Decimal(pu_id % 10).toString();
       name += "/";
@@ -209,7 +210,8 @@ void FileExporter::exportFile(int fileid) {
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       ois.readObject(pu);
-      logdebug(pu._process_unit);
+	  logdebug("here:"<<pu_id);
+//      logdebug(pu._process_unit);
       std::list<boost::shared_ptr<Packet> >::iterator plist=pu._output_packets.begin();
       for(;plist!=pu._output_packets.end();plist++){
         Packet * p=(*plist).get();

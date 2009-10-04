@@ -78,6 +78,14 @@ namespace org {
               job_id = rs.getInt("jobs.id");
               sql::ResultSet rs2 = pstmt.executeQuery();
               while (rs2.next()) {
+				  if(rs2.getInt("stream_type")==CODEC_TYPE_VIDEO){
+					  Decoder * dec=CodecFactory::getStreamDecoder(rs2.getInt("streams.id"));
+					  if(dec->getCodecId()==CODEC_ID_MPEG2VIDEO){
+						  b_frame_offset = 4;
+					  }else{
+						  b_frame_offset = 2;
+					  }
+				  }
                 idx[rs2.getInt("stream_index")] = rs2.getInt("instream");
                 inout[rs2.getInt("instream")] = rs2.getInt("outstream");
                 stream_type[rs2.getInt("stream_index")] = rs2.getInt("stream_type");
@@ -87,7 +95,6 @@ namespace org {
               logdebug("building seek offset -" << offset);
               //              fis->seek(offset);
               PacketInputStream pis(fis);
-              b_frame_offset = 4;
               q_filled = false;
               min_frame_group_count = 5;
 
@@ -124,12 +131,13 @@ namespace org {
 
         void ProcessUnitWatcher::buildProcessUnit(int sIdx) {
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
+		  logdebug("sIdx:"<<sIdx);
           u->_source_stream = idx[sIdx];
           u->_target_stream = inout[idx[sIdx]];
           if (u->_source_stream == 0 || u->_target_stream == 0) {
             logdebug("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
           }
-
+			
           u->_decoder = CodecFactory::getStreamDecoder(u->_source_stream);
           u->_encoder = CodecFactory::getStreamEncoder(u->_target_stream);
           //setting Input Packets
@@ -153,7 +161,8 @@ namespace org {
         void ProcessUnitWatcher::flushStreamPackets() {
           std::map<int, std::list<boost::shared_ptr<Packet> > >::iterator st = stream_packets.begin();
           for (; st != stream_packets.end(); st++) {
-            buildProcessUnit((*st).first);
+			  if((*st).second.size()>0)
+				buildProcessUnit((*st).first);
           }
         }
 

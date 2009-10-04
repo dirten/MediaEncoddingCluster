@@ -8,6 +8,7 @@
 //#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
+//#include "org/esb/util/Log.h"
 using namespace std;
 namespace org {
     namespace esb {
@@ -24,6 +25,7 @@ namespace org {
                 template < typename T > void readObject(T & object) {
                     string data;
                     _is->read(data);
+
                     if (!(data.length() > 0)) {
                         cout << "Fehler in der groesse INBOUND_DATA:" << data.
                                 length() << endl;
