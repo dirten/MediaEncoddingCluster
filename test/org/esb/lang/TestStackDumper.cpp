@@ -7,9 +7,10 @@ int die() {
   return 0;
 }
 
-
+using std::wstring;
 int main() {
   StackDumper stackd(".");
+//	std::map<wstring, wstring> para;
 //  google_breakpad::ExceptionHandler exhandler(".",NULL, NULL, NULL, true);
 //  exhandler.DoDump()
   die();

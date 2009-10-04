@@ -8,7 +8,7 @@ add_executable (TestStackDumper TestStackDumper.cpp)
 
 target_link_libraries (TestThread lang)
 #target_link_libraries (TestException lang)
-target_link_libraries (TestStackDumper lang )
+target_link_libraries (TestStackDumper lang util)
 if(NOT WIN32)
   target_link_libraries (TestThread pthread)
 ENDIF(NOT WIN32)

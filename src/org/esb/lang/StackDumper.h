@@ -16,6 +16,7 @@
 #endif
 #elif WIN32
 #include "client/windows/handler/exception_handler.h"
+#include "client/windows/sender/crash_report_sender.h"
 #endif
 class StackDumper{
 public:
@@ -23,6 +24,12 @@ public:
     ~StackDumper();
 private:
     google_breakpad::ExceptionHandler exhandler;
+	bool DumpSender(const wchar_t* dump_path,
+                                   const wchar_t* minidump_id,
+                                   void* context,
+                                   EXCEPTION_POINTERS* exinfo,
+                                   MDRawAssertionInfo* assertion,
+                                   bool succeeded);
 };
 //global function to print Program stack traces
 
