@@ -2,12 +2,13 @@
 
 #include "StackDumper.h"
 #include "org/esb/util/Log.h"
+#ifndef __WIN32__
 
 #include <curl/curl.h>
 #include <curl/types.h>
 #include <curl/easy.h>
 //#define OWNCURL
-
+#endif
 
 #ifdef __WIN32__
 

@@ -135,13 +135,17 @@ target_link_libraries (mhive
 )
 
 SET(CURL_CMD curl)
+SET(MHIVE_DBGSYM mhive)
+SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
 IF(WIN32)
   SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+  SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
+  SET(MHIVE_DBGSYM mhive.pdb)
 ENDIF(WIN32)
 
 add_custom_target(uploadsymbols
-  COMMAND ${BREAKPAD_DIR}/bin/dump_syms ${CMAKE_CURRENT_BINARY_DIR}/mhive > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
-  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://188.40.40.157/symupload.php
+  COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
+  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://192.168.1.129/symupload.php
 )
 
 INSTALL(TARGETS mhive
