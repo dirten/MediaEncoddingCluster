@@ -24,13 +24,24 @@ namespace org {
         return result;
       }
 /*
+      template <class T> std::string StringUtil::toString(const T t) {
+        std::ostringstream oss;
+        oss << t;
+        return std::string(oss.str());
+      }
+
+      template <> std::string StringUtil::toString(const std::wstring t) {
+        return std::string(t.begin(), t.end());
+      }
+*/
+      /*
       const std::string StringUtil::toString(int num) {
         char c[10];
         memset(&c, 0, 10);
         sprintf(c, "%d", num);
         return string(c);
       }
-*/
+       */
     }
   }
 }

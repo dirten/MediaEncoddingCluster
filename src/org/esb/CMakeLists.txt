@@ -70,8 +70,9 @@ add_library (util
 )
 
 TARGET_LINK_LIBRARIES(util lang ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT})
+
 IF(NOT WIN32)
-  TARGET_LINK_LIBRARIES(util pthread)
+  TARGET_LINK_LIBRARIES(util pthread )
 ENDIF(NOT WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)

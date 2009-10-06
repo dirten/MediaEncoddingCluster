@@ -1,5 +1,6 @@
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
+include_directories (/home/jhoelscher/curl/include)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 add_library (lang
@@ -14,11 +15,11 @@ add_library (lang
 FIND_LIBRARY(COCOA_LIBRARY COCOA)
 MARK_AS_ADVANCED(COCOA_LIBRARY)
 
-TARGET_LINK_LIBRARIES(lang ${BREAKPAD_LIBS})
+TARGET_LINK_LIBRARIES(lang ${BREAKPAD_LIBS} /home/jhoelscher/curl/lib/libcurl.a)
 IF(WIN32)
 	TARGET_LINK_LIBRARIES(lang crash_report_sender wininet)
 ELSE(WIN32)
-	TARGET_LINK_LIBRARIES(lang breakpad)
+	TARGET_LINK_LIBRARIES(lang breakpad glog dl curl)
   IF(APPLE)
     TARGET_LINK_LIBRARIES(lang crypto ${COCOA_LIBRARY})
   ENDIF(APPLE)

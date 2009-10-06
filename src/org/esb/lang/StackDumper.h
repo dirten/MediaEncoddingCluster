@@ -9,28 +9,32 @@
 #ifndef _STACKDUMPER_H
 #define	_STACKDUMPER_H
 #ifndef WIN32
-	#ifdef __APPLE__
-		#include "client/mac/handler/exception_handler.h"
-	#else
-		#include "client/linux/handler/exception_handler.h"
+#ifdef __APPLE__
+#include "client/mac/handler/exception_handler.h"
+#else
+#include "client/linux/handler/exception_handler.h"
+#include "common/linux/google_crashdump_uploader.h"
 #endif
 #elif WIN32
 #include "client/windows/handler/exception_handler.h"
 #include "client/windows/sender/crash_report_sender.h"
 #endif
-class StackDumper{
+
+class StackDumper {
 public:
     StackDumper(std::string dmp_path);
     ~StackDumper();
 private:
-    google_breakpad::ExceptionHandler exhandler;
+    google_breakpad::ExceptionHandler * exhandler;
 #ifdef WIN32
     bool DumpSender(const wchar_t* dump_path,
-                                   const wchar_t* minidump_id,
-                                   void* context,
-                                   EXCEPTION_POINTERS* exinfo,
-                                   MDRawAssertionInfo* assertion,
-                                   bool succeeded);
+            const wchar_t* minidump_id,
+            void* context,
+            EXCEPTION_POINTERS* exinfo,
+            MDRawAssertionInfo* assertion,
+            bool succeeded);
+#elif __APPLE__
+
 #endif
 };
 //global function to print Program stack traces

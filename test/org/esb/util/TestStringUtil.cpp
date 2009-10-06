@@ -5,7 +5,17 @@
 using namespace org::esb;
 
 
-
+void testToString(){
+  std::string str="testw";
+  std::string isr="1";
+  std::wstring t(str.begin(), str.end());
+  std::wstring in(isr.begin(), isr.end());
+  int i=1;
+  assert(util::StringUtil::toString(i)=="1");
+  assert(util::StringUtil::toString(t)==str);
+  assert(util::StringUtil::toWString(1)==in);
+  assert(util::StringUtil::toWString(str)==t);
+}
 void testStringTokenizer(){
   std::string sql;
   logdebug(MEC_SOURCE_DIR);
@@ -19,12 +29,13 @@ void testStringTokenizer(){
     std::string t = st.nextToken();
     t = util::StringUtil::trim(t, *new std::string("\n"));
     std::string next = util::StringUtil::trim(t);
-    logdebug("Create Table " << next);
-    logdebug("Create Table leng" << next.size());
+//    logdebug("Create Table " << next);
+//    logdebug("Create Table leng" << next.size());
   }
 }
 
 
 int main() {
   testStringTokenizer();
+  testToString();
 }

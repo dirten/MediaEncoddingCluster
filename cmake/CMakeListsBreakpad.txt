@@ -4,6 +4,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+SET(BREAKPAD_CLIENT_LIB_NAME breakpad)
+
 message(STATUS ${CMAKE_SYSTEM_PROCESSOR})
 
 INCLUDE_DIRECTORIES(
@@ -11,6 +13,7 @@ INCLUDE_DIRECTORIES(
 )
 
 set(SOURCES )
+set(SOURCES_SENDER )
 set(SOURCES_PROCESSOR)
 set(SOURCES_PROCESSOR_STACKWALK)
 set(SOURCES_DUMPSYMS)
@@ -114,7 +117,7 @@ endif (WIN32)
 if (UNIX)
 	if (APPLE) 
 	 
-                INCLUDE_DIRECTORIES(/Developer/Headers/FlatCarbon)
+        INCLUDE_DIRECTORIES(/Developer/Headers/FlatCarbon)
 		INCLUDE_DIRECTORIES(src/common/mac)
 
 		FIND_LIBRARY(COCOA_LIBRARY COCOA)
@@ -148,12 +151,14 @@ if (UNIX)
 			src/common/mac/string_utilities.cc
 		)
 	else (APPLE)
+		INCLUDE_DIRECTORIES(src/third_party/linux/include)
 		SET(SOURCES  ${SOURCES}
 			src/client/linux/handler/exception_handler.cc
 			src/client/linux/handler/linux_thread.cc
 			src/client/linux/minidump_writer/minidump_writer.cc
 			src/client/linux/minidump_writer/linux_dumper.cc
 			src/common/linux/dump_symbols.cc
+			src/common/linux/libcurl_wrapper.cc
 			src/common/linux/file_id.cc
 			src/common/linux/guid_creator.cc
 			src/common/linux/http_upload.cc
@@ -168,6 +173,11 @@ if (UNIX)
 	  src/common/md5.c
 	  src/tools/linux/dump_syms/dump_syms.cc
 	)
+    SET(SOURCES_SENDER ${SOURCES_SENDER}
+      src/common/linux/google_crashdump_uploader.cc
+    )
+
+    SET(EXTRA_LIBS ${PROJECT_SOURCE_DIR}/src/third_party/linux/lib/glog/libglog.a)
 
 	endif (APPLE)
 endif (UNIX)
@@ -176,13 +186,16 @@ add_executable(dump_syms ${SOURCES_DUMPSYMS})
 
 add_executable(minidump_stackwalk ${SOURCES_PROCESSOR_STACKWALK})
 
-add_library(breakpad ${SOURCES})
+#add_library(minidump_sender ${SOURCES_SENDER})
+
+add_library(${BREAKPAD_CLIENT_LIB_NAME} ${SOURCES} ${SOURCES_SENDER})
 
 IF(UNIX AND NOT APPLE)
 	SET_TARGET_PROPERTIES( breakpad PROPERTIES COMPILE_FLAGS -fPIC)
 ENDIF(UNIX AND NOT APPLE)
 
 target_link_libraries(breakpad ${EXTRA_LIBS}) 
+#target_link_libraries(minidump_sender ${EXTRA_LIBS}) 
 target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad) 
 
 INSTALL(TARGETS breakpad
@@ -210,6 +223,9 @@ IF(APPLE)
 ELSEIF(UNIX)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/linux/handler/exception_handler.h
     DESTINATION include/client/linux/handler
+  )
+  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/common/linux/google_crashdump_uploader.h
+    DESTINATION include/common/linux
   )
 ELSEIF(WIN32)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/windows/handler/exception_handler.h

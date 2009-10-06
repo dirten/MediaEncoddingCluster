@@ -13,14 +13,27 @@ namespace org {
                 string tmp;
                 static const std::string trim(string & s, string & drop = *new string(" "));
                 static const std::string toLower(std::string);
-//                static const std::string toString(int);
 
-
-                template <class T> std::string toString(const T &t) {
+                template <class T> static std::string toString(const T &t)
+                {
                     std::ostringstream oss;
                     oss << t;
                     return std::string(oss.str());
                 }
+
+                static std::string toString(const std::wstring &t) {
+                    return std::string(t.begin(), t.end());
+                }
+                template <class T> static std::wstring toWString(const T &t)
+                {
+                    std::string str=toString(t);
+                    return std::wstring(str.begin(), str.end());
+                }
+
+                static std::wstring toWString(const std::string &t) {
+                    return std::wstring(t.begin(), t.end());
+                }
+                
             };
 
         }

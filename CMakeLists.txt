@@ -77,6 +77,22 @@ FIND_LIBRARY(LIBBZ2
 IF(LIBBZ2)
   SET(BZ2_LIB ${LIBBZ2})
 ENDIF(LIBBZ2)
+############################################################
+#
+# Setup build Defines
+#
+############################################################
+IF(UNIX)
+  ADD_DEFINITIONS(-D__UNIX__)
+  IF(APPLE)
+    ADD_DEFINITIONS(-D__APPLE__)
+  ELSE(APPLE)
+    ADD_DEFINITIONS(-D__LINUX__)
+  ENDIF(APPLE)
+ELSEIF(WIN32)
+  ADD_DEFINITIONS(-D__WIN32__)
+ENDIF(UNIX)
+
 
 
 LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
