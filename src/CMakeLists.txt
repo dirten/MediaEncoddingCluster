@@ -134,6 +134,16 @@ target_link_libraries (mhive
 #  ${BOOST_DT_LIB_MT}
 )
 
+SET(CURL_CMD curl)
+IF(WIN32)
+  SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+ENDIF(WIN32)
+
+add_custom_target(uploadsymbols
+  COMMAND ${BREAKPAD_DIR}/bin/dump_syms ${CMAKE_CURRENT_BINARY_DIR}/mhive > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
+  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://188.40.40.157/symupload.php
+)
+
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}

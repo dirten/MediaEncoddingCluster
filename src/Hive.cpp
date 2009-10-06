@@ -38,6 +38,7 @@
 //#include "org/esb/hive/JobUtil.h"
 #if !defined(_WIN32)
 
+
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -83,8 +84,10 @@ int euclid(int a, int b){
 }
  */
 int main(int argc, char * argv[]) {
-/*setting default path to Program*/
+
+  /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
+//  logdebug(f.getPath());
   std::string s = f.getFilePath();
   char * path = new char[s.length() + 1];
   memset(path, 0, s.length() + 1);
@@ -197,6 +200,7 @@ int main(int argc, char * argv[]) {
     avcodec_register_all();
     
     if (vm.count("daemon")|| argc == 1) {
+      logdebug("start daemon");
       Log::open(Config::getProperty("hive.base_path"));
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
@@ -210,6 +214,7 @@ int main(int argc, char * argv[]) {
       //      return 0;
     }
     if (vm.count("run")) {
+      logdebug("start console");
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");

@@ -165,7 +165,8 @@ void PacketOutputStream::init() {
   //  cout << _fmtCtx->oformat->write_header<<endl;
   if (av_write_header(_fmtCtx) < 0) {
     logerror("av_write_header(_fmtCtx) failed");
-    exit(1);
+    return;
+//    exit(1);
   }
 
   _isInitialized = true;

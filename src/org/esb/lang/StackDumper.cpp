@@ -27,13 +27,17 @@ bool MyDumpSender(const wchar_t* dump_path,
   std::string dmp = "dmp";
   std::string p = "ProductName";
   std::string v = "Version";
+  std::string b = "BuildID";
   std::string product = "MediaEncodingCluster";
   std::string version = "0.0.4.5";
+  std::string buildid = __DATE__ "-" __TIME__;
 
   std::wstring wpro(product.begin(), product.end());
   std::wstring wver(version.begin(), version.end());
+  std::wstring wbid(buildid.begin(), buildid.end());
   std::wstring wp(p.begin(), p.end());
   std::wstring wv(v.begin(), v.end());
+  std::wstring wb(b.begin(), b.end());
 
   dumpfile.append(std::wstring(t.begin(), t.end()));
   dumpfile.append(minidump_id);
@@ -43,6 +47,7 @@ bool MyDumpSender(const wchar_t* dump_path,
   std::map<std::wstring, std::wstring> para;
   para[wp] = wpro;
   para[wv] = wver;
+  para[wb] = wbid;
   std::wstring wresult;
   google_breakpad::CrashReportSender sender(std::wstring(chkpfile.begin(), chkpfile.end()));
   google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
@@ -66,8 +71,8 @@ bool MyDumpSender(const char *dump_path,
 //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
   #ifndef OWNCURL
-
-  google_breakpad::GoogleCrashdumpUploader sender("MediaEncodingCluster","0.0.4.5","AAA-BBB","","","email","comments",path.append(file).c_str(),url.c_str(),"","");
+  std::string buildid=__DATE__ "-" __TIME__;
+  google_breakpad::GoogleCrashdumpUploader sender("MediaEncodingCluster","0.0.4.5",__DATE__ "-" __TIME__,"","","email","comments",path.append(file).c_str(),url.c_str(),"","");
   sender.Upload();
 
 

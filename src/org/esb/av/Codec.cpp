@@ -46,7 +46,9 @@ namespace org {
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
         findCodec(mode);
-        avcodec_get_context_defaults2(ctx, _codec->type);
+        if(_codec_resolved){
+          avcodec_get_context_defaults2(ctx, _codec->type);
+        }
         ctx->codec_id = codecId;
         setContextDefaults();
 

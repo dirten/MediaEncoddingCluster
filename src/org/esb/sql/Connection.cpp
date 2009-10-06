@@ -74,7 +74,8 @@ void Connection::connect() {
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
   //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_EMBEDDED_CONNECTION,NULL);
 //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_REMOTE_CONNECTION, NULL);
-  unsigned int proto = MYSQL_PROTOCOL_TCP;
+  mysql_options(mysqlPtr.get(), MYSQL_OPT_GUESS_CONNECTION, NULL);
+//  unsigned int proto = MYSQL_PROTOCOL_TCP;
 //  mysql_options(mysqlPtr.get(), MYSQL_OPT_PROTOCOL, &proto);
   if (mysql_thread_init()) {
     throw SqlException(string("Failed to init mysql thread: ").append(std::string(mysql_error(mysqlPtr.get()))));

@@ -528,6 +528,7 @@ namespace org {
             con_create.executeNonQuery(string("CREATE DATABASE hive"));
           } catch (...) {
             error->setText(Wt::WString::tr("create-database_failed"));
+            return;
           }
 #endif
           config::Config::setProperty("db.connection", props.getProperty("db.connection"));
