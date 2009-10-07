@@ -88,6 +88,7 @@ namespace org {
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
                   _stream_map[index].last_start_ts=0;
+                  _stream_map[index].packet_count=0;
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     //                  * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))
@@ -137,7 +138,7 @@ namespace org {
                     _stream_map.find(packet.packet->stream_index) == _stream_map.end() ||
                     _stream_map[packet.packet->stream_index].last_start_ts > packet.packet->dts
                     ) {
-                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
+//                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
                   continue;
                 }
                 //building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
@@ -250,7 +251,7 @@ namespace org {
 
         void ProcessUnitWatcher::processVideoPacket(boost::shared_ptr<Packet> pPacket) {
           //and put it in the read ahead queue
-          if (pPacket->packet->size > 0)
+//          if (pPacket->packet->size > 0)
             packet_queue.push_back(pPacket);
 
           //getting stream index from Packet

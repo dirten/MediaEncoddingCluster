@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "Exception.h"
-#ifndef WIN32
+#ifndef __WIN32__
 #include <execinfo.h>
 #endif
 using namespace org::esb::lang;

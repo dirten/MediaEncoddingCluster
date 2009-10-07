@@ -1,7 +1,7 @@
 #ifndef ORG_ESB_LANG_THREAD_H
 #define ORG_ESB_LANG_THREAD_H
 
-#if defined(WIN32)
+#if defined(__WIN32__)
     #include <windows.h>
 #else
     #include <pthread.h>

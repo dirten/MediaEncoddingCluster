@@ -583,7 +583,7 @@ namespace org {
         signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
 
         if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-          //    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+              Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
           //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
           signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::START));
         }

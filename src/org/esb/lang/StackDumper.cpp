@@ -56,7 +56,7 @@ bool MyDumpSender(const wchar_t* dump_path,
   logdebug("CrashReport sended : " << result << ":::" << r);
   return true;
 }
-#elif __LINUX__
+#elif defined __LINUX__
 
 bool MyDumpSender(const char *dump_path,
     const char *minidump_id,
@@ -135,7 +135,7 @@ StackDumper::StackDumper(std::string dmp_path) :
 exhandler(new google_breakpad::ExceptionHandler(
 #ifndef WIN32
 dmp_path,
-#elif WIN32
+#elif defined __WIN32__
 std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 NULL,
@@ -145,9 +145,9 @@ NULL,
 NULL,
 #endif
 NULL,
-#ifndef WIN32
+#ifndef __WIN32__
 true
-#elif WIN32
+#elif defined __WIN32__
 google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
 )) {

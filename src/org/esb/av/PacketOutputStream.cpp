@@ -49,7 +49,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
 
 //  packet.setPts(streamPts[packet.getStreamIndex()]);
 //  packet.setDts(streamDts[packet.getStreamIndex()]);
-      logdebug("Write Packet to PacketOutputStream"<<packet.toString());
+//      logdebug("Write Packet to PacketOutputStream"<<packet.toString());
   
 //      packet.setDts(AV_NOPTS_VALUE);
 //      packet.setPts(AV_NOPTS_VALUE);
