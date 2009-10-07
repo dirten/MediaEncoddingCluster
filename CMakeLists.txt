@@ -10,10 +10,10 @@ project (MEC)
 INCLUDE(CTest)
 
 ENABLE_TESTING()
-
-#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}" -D_REENTRANT")
-#set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS}" -D_REENTRANT")
-
+IF(UNIX)
+set(CMAKE_CXX_FLAGS "-D_REENTRANT")
+set(CMAKE_C_FLAGS "-D_REENTRANT")
+ENDIF(UNIX)
 INCLUDE(cmake/HiveFindBoost.txt)
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
