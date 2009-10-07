@@ -2,6 +2,7 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/Log.h"
 using namespace org::esb;
 
 
@@ -18,7 +19,7 @@ void testToString(){
 }
 void testStringTokenizer(){
   std::string sql;
-  logdebug(MEC_SOURCE_DIR);
+//  logdebug(MEC_SOURCE_DIR);
   std::string path=MEC_SOURCE_DIR;
   path.append("/sql/hive-0.0.3.sql");
   io::File f(path);

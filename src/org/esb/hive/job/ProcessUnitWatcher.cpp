@@ -26,6 +26,7 @@ namespace org {
   namespace esb {
     namespace hive {
       namespace job {
+
         //        std::map<int, boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::unit_map;
         boost::mutex ProcessUnitWatcher::m_mutex;
         boost::mutex ProcessUnitWatcher::unit_list_mutex;
@@ -62,55 +63,89 @@ namespace org {
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+              _stream_map.clear();
               string filename = rs.getString("files.path") + "/" + rs.getString("files.filename");
               org::esb::av::FormatInputStream * fis = org::esb::av::FormatStreamFactory::getInputStream(filename);
               if (fis == NULL) {
                 logerror("Error Opening Input Stream from " << filename);
                 continue;
               }
-              stream_packet_counter.clear();
-              stream_packets.clear();
+              //              stream_packet_counter.clear();
+              //              stream_packets.clear();
 
               //getting Stream Map
-              sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
-              sql::PreparedStatement pstmt = con2.prepareStatement("select * from job_details, streams where job_id=:myid and streams.id=instream");
-              pstmt.setInt("myid", rs.getInt("jobs.id"));
-              job_id = rs.getInt("jobs.id");
-              sql::ResultSet rs2 = pstmt.executeQuery();
-              while (rs2.next()) {
-                if (rs2.getInt("stream_type") == CODEC_TYPE_VIDEO) {
-                  Decoder * dec = CodecFactory::getStreamDecoder(rs2.getInt("streams.id"));
-                  if (dec->getCodecId() == CODEC_ID_MPEG2VIDEO) {
-                    b_frame_offset = 4;
-                  } else {
-                    b_frame_offset = 2;
+              {
+                sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
+                sql::PreparedStatement pstmt = con2.prepareStatement("select * from job_details, streams where job_id=:myid and streams.id=instream");
+                pstmt.setInt("myid", rs.getInt("jobs.id"));
+                job_id = rs.getInt("jobs.id");
+                sql::ResultSet rs2 = pstmt.executeQuery();
+                while (rs2.next()) {
+                  int index = rs2.getInt("stream_index");
+                  _stream_map[index].instream = rs2.getInt("instream");
+                  _stream_map[index].outstream = rs2.getInt("outstream");
+                  _stream_map[index].type = rs2.getInt("stream_type");
+                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
+                  _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
+                  _stream_map[index].last_start_ts=0;
+                  if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
+                    _stream_map[index].min_packet_count = 5;
+                    //                  * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))
+                    //                  Decoder * dec = CodecFactory::getStreamDecoder(_stream_map[index].instream);
+                    if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
+                      _stream_map[index].b_frame_offset = 4;
+                    } else {
+                      _stream_map[index].b_frame_offset = 2;
+                    }
+                  } else
+                    if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
+                    _stream_map[index].min_packet_count = 500;
+                  }
+                  //                idx[rs2.getInt("stream_index")] = rs2.getInt("instream");
+                  //                inout[rs2.getInt("instream")] = rs2.getInt("outstream");
+                  //                stream_type[rs2.getInt("stream_index")] = rs2.getInt("stream_type");
+                }
+              }
+              {
+                sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
+                sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max( start_ts ) as last_start_ts FROM process_units WHERE source_stream = :a GROUP BY source_stream");
+                std::map<int, StreamData>::iterator st = _stream_map.begin();
+                for (; st != _stream_map.end(); st++) {
+                  pstmt.setInt("a",(*st).second.instream);
+                  ResultSet rs_t=pstmt.executeQuery();
+                  if(rs_t.next()){
+                    logdebug("Setting last start_ts for stream"<<(*st).second.instream<<" to"<<rs_t.getLong("last_start_ts"))
+                    (*st).second.last_start_ts=rs_t.getLong("last_start_ts");
                   }
                 }
-                idx[rs2.getInt("stream_index")] = rs2.getInt("instream");
-                inout[rs2.getInt("instream")] = rs2.getInt("outstream");
-                stream_type[rs2.getInt("stream_index")] = rs2.getInt("stream_type");
               }
-
+              /*
+              
+               */
               long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
               logdebug("building seek offset -" << offset);
               //              fis->seek(offset);
               PacketInputStream pis(fis);
               q_filled = false;
-              min_frame_group_count = 5;
+              //            min_frame_group_count = 5;
 
               Packet packet;
               //read while packets in the stream
               while (pis.readPacket(packet) == 0 && !_isStopSignal) {
                 //if the actuall stream not mapped then discard this and continue with next packet
-                if (/*packet.packet->stream_index != 0 ||*/idx.find(packet.packet->stream_index) == idx.end()) {
-                  // loginfo("Stream Index not mapped:stream_index#" << packet.packet->stream_index);
+                if (
+                    _stream_map.find(packet.packet->stream_index) == _stream_map.end() ||
+                    _stream_map[packet.packet->stream_index].last_start_ts > packet.packet->dts
+                    ) {
+                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
                   continue;
                 }
                 //building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
                 boost::shared_ptr<Packet> pPacket(new Packet(packet));
-                if (stream_type[packet.packet->stream_index] == CODEC_TYPE_AUDIO) {
+                if (_stream_map[packet.packet->stream_index].type == CODEC_TYPE_AUDIO) {
                   processAudioPacket(pPacket);
-                } else if (stream_type[packet.packet->stream_index] == CODEC_TYPE_VIDEO) {
+                } else
+                  if (_stream_map[packet.packet->stream_index].type == CODEC_TYPE_VIDEO) {
                   processVideoPacket(pPacket);
                 } else {
                 }
@@ -132,16 +167,16 @@ namespace org {
         void ProcessUnitWatcher::buildProcessUnit(int sIdx) {
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
           logdebug("sIdx:" << sIdx);
-          u->_source_stream = idx[sIdx];
-          u->_target_stream = inout[idx[sIdx]];
+          u->_source_stream = _stream_map[sIdx].instream;
+          u->_target_stream = _stream_map[sIdx].outstream;
           if (u->_source_stream == 0 || u->_target_stream == 0) {
             logdebug("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
           }
 
-          u->_decoder = CodecFactory::getStreamDecoder(u->_source_stream);
-          u->_encoder = CodecFactory::getStreamEncoder(u->_target_stream);
+          u->_decoder = _stream_map[sIdx].decoder; //CodecFactory::getStreamDecoder(u->_source_stream);
+          u->_encoder = _stream_map[sIdx].encoder; //CodecFactory::getStreamEncoder(u->_target_stream);
           //setting Input Packets
-          u->_input_packets = stream_packets[sIdx];
+          u->_input_packets = _stream_map[sIdx].packets;
           //Put the ProcessUnit into the Queue
 
           _stmt->setInt("source_stream", u->_source_stream);
@@ -153,15 +188,15 @@ namespace org {
           puQueue.enqueue(u);
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
           //resetting the parameter for the next ProcessUnit
-          stream_packet_counter[sIdx] = 0;
-          stream_packets[sIdx].clear();
+          _stream_map[sIdx].packet_count = 0;
+          _stream_map[sIdx].packets.clear();
 
         }
 
         void ProcessUnitWatcher::flushStreamPackets() {
-          std::map<int, std::list<boost::shared_ptr<Packet> > >::iterator st = stream_packets.begin();
-          for (; st != stream_packets.end(); st++) {
-            if ((*st).second.size() > 0)
+          std::map<int, StreamData>::iterator st = _stream_map.begin();
+          for (; st != _stream_map.end(); st++) {
+            if ((*st).second.packets.size() > 0)
               buildProcessUnit((*st).first);
           }
         }
@@ -171,18 +206,18 @@ namespace org {
           Packet pRes = *pPacket.get();
 
           //getting stream index from Packet
-          int sidx = pRes.packet->stream_index;
+          int sIdx = pRes.packet->stream_index;
           //increment the actuall stream counter
-          stream_packet_counter[sidx]++;
+          _stream_map[sIdx].packet_count++;
           //put the packet into the entire PacketList
           if (pRes.packet->size > 0)
-            stream_packets[sidx].push_back(pPacket);
+            _stream_map[sIdx].packets.push_back(pPacket);
 
           //when we have enough packets for a ProcessUnit
-          if ((stream_packet_counter[sidx] >= min_frame_group_count * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 100 : 1))) {
+          if (_stream_map[sIdx].packet_count >= _stream_map[sIdx].min_packet_count) {
             logdebug("Building Audio ProcessUnit");
             //build ProcessUnit with Decoder and Encoder
-            buildProcessUnit(sidx);
+            buildProcessUnit(sIdx);
             /*
              boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
              u->_source_stream = idx[sidx];
@@ -218,32 +253,34 @@ namespace org {
           if (pPacket->packet->size > 0)
             packet_queue.push_back(pPacket);
 
-          if (packet_queue.size() >= b_frame_offset)
+          //getting stream index from Packet
+          int sIdx = pPacket->packet->stream_index;
+
+          if (packet_queue.size() >= _stream_map[sIdx].b_frame_offset)
             q_filled = true;
           //processing packets in the Queue while reading from input stream
           if (q_filled) {
             //getting Packet from queue
             boost::shared_ptr<Packet> p = packet_queue.front();
             //getting resource from shared Pointer
-            Packet pRes = *p.get();
+            //            Packet pRes = *p.get();
             //remove packet from queue
             packet_queue.pop_front();
-            //getting stream index from Packet
-            int sidx = pRes.packet->stream_index;
             //increment the actuall stream counter
-            stream_packet_counter[sidx]++;
+            _stream_map[sIdx].packet_count++;
             //put the packet into the entire PacketList
             //            if (pRes.packet->data != NULL)
-            stream_packets[sidx].push_back(p);
+            _stream_map[sIdx].packets.push_back(p);
             //when we have enough packets for a ProcessUnit
-            if ((packet_queue.front()->isKeyFrame() && stream_packet_counter[sidx] >= min_frame_group_count * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))) {
+            if (packet_queue.front()->isKeyFrame() &&
+                _stream_map[sIdx].packet_count >= _stream_map[sIdx].min_packet_count) {
               logdebug("Building Video ProcessUnit");
               //build ProcessUnit with Decoder and Encoder
               //setup b frame offset
-              for (int a = 0; a < packet_queue.size() && a < b_frame_offset - 1; a++) {
-                stream_packets[sidx].push_back(packet_queue[a]);
+              for (int a = 0; a < packet_queue.size() && a < _stream_map[sIdx].b_frame_offset - 1; a++) {
+                _stream_map[sIdx].packets.push_back(packet_queue[a]);
               }
-              buildProcessUnit(sidx);
+              buildProcessUnit(sIdx);
               /*
                boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
                u->_source_stream = idx[sidx];

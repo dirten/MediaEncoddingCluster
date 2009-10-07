@@ -100,26 +100,26 @@ ELSEIF(APPLE)
   )
 ELSE(WIN32)
   target_link_libraries (mhive 
-    x264 
-    ssl
-    ${MYSQL_LIBRARY} 
-    ${BZ2_LIB} 
-    ssl
-    dl
-    crypt
-    crypto
-    pthread
-    z 
-    ssl
-    wthttp 
-    wtext 
-    wt 
-    mp3lame 
-    theora 
-    vorbis 
-    vorbisenc 
-    xvidcore 
-    ogg
+#    x264 
+#    ssl
+#    ${MYSQL_LIBRARY} 
+#    ${BZ2_LIB} 
+#    ssl
+#    dl
+#    crypt
+#    crypto
+#    pthread
+#    z 
+#    ssl
+#    wthttp 
+#    wtext 
+#    wt 
+#    mp3lame 
+#    theora 
+#    vorbis 
+#    vorbisenc 
+#    xvidcore 
+#    ogg
   )
 ENDIF(WIN32)
 
@@ -127,7 +127,7 @@ target_link_libraries (mhive
 #  ${BOOST_SERIAL_LIB_MT}
 #  ${BOOST_THREAD_LIB_MT}
 #  ${BOOST_SYSTEM_LIB_MT}
-  ${BOOST_PO_LIB_MT}
+#  ${BOOST_PO_LIB_MT}
 #  ${BOOST_SIGNALS_LIB_MT}
 #  ${BOOST_REGEX_LIB_MT}
 #  ${BOOST_FS_LIB_MT}
@@ -145,7 +145,7 @@ ENDIF(WIN32)
 
 add_custom_target(uploadsymbols
   COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
-  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://192.168.1.129/symupload.php
+  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://188.40.40.157/symupload.php
 )
 
 INSTALL(TARGETS mhive

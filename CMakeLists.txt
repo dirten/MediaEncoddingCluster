@@ -10,7 +10,8 @@ project (MEC)
 INCLUDE(CTest)
 
 ENABLE_TESTING()
-
+set(CMAKE_CXX_FLAGS "-D_REENTRANT")
+set(CMAKE_C_FLAGS "-D_REENTRANT")
 
 INCLUDE(cmake/HiveFindBoost.txt)
 INCLUDE(cmake/HiveFindMysql.txt)
