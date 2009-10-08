@@ -77,9 +77,11 @@ void Connection::connect() {
   mysql_options(mysqlPtr.get(), MYSQL_OPT_GUESS_CONNECTION, NULL);
 //  unsigned int proto = MYSQL_PROTOCOL_TCP;
 //  mysql_options(mysqlPtr.get(), MYSQL_OPT_PROTOCOL, &proto);
+/*
   if (mysql_thread_init()) {
     throw SqlException(string("Failed to init mysql thread: ").append(std::string(mysql_error(mysqlPtr.get()))));
   }
+  */
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {
     throw SqlException(string("Failed to connect to database: ").append(std::string(mysql_error(mysqlPtr.get()))));
   }
