@@ -7,6 +7,7 @@ SET(WEB_VERSION_SERIES 0)
 SET(WEB_VERSION_MAJOR 0)
 SET(WEB_VERSION_MINOR 1)
 
+SET(LIB_INSTALL_DIR lib)
 #ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
@@ -19,6 +20,12 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
 
 LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
 add_library (av av av/Init.cpp 
             av/FrameConverter.cpp 
@@ -50,6 +57,12 @@ IF(NOT WIN32)
 	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora z )
 ENDIF(NOT WIN32)
 
+INSTALL(TARGETS av
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
 add_subdirectory (lang)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
@@ -74,12 +87,22 @@ TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THR
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread )
 ENDIF(NOT WIN32)
+INSTALL(TARGETS util
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
 add_library (signal
   signal/Messenger.cpp
   signal/Message.cpp
 )
+INSTALL(TARGETS signal
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 add_subdirectory (io)
 
@@ -109,6 +132,12 @@ add_library (net net/SocketException.cpp
       net/TcpSocketOutputStream.cpp
 )
 TARGET_LINK_LIBRARIES(net util)
+INSTALL(TARGETS net
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
 include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_DIR}/include)
@@ -133,6 +162,11 @@ ENDIF(UNIX AND NOT APPLE)
 #  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
 #  DEBUG_POSTFIX "d"
 #)
+INSTALL(TARGETS sql
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
 add_library (hive 
@@ -162,7 +196,12 @@ add_library (hive
 #	hive/FormatStreamFactory.cpp
 	
 )
-TARGET_LINK_LIBRARIES(hive av)
+
+INSTALL(TARGETS hive
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
 include_directories (${WT_DIR})
@@ -201,6 +240,12 @@ IF(UNIX AND NOT APPLE)
   TARGET_LINK_LIBRARIES(web crypto)
 ENDIF(UNIX AND NOT APPLE)
 
+INSTALL(TARGETS web
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
 IF(WIN32)
   target_link_libraries (web
     winmm
@@ -216,4 +261,9 @@ ENDIF(WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb util)
+TARGET_LINK_LIBRARIES(esb)
+INSTALL(TARGETS esb
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})

@@ -16,13 +16,12 @@ add_executable (DeleteDatabase DeleteDatabase.cpp)
 
 
 
-target_link_libraries (TestFileImporter esb sql hive io av util lang
-  ${BOOST_SERIAL_LIB_MT} ${BOOST_THREAD_LIB_MT})
+target_link_libraries (TestFileImporter esb sql hive net signal io av util lang )
 
-target_link_libraries (TestProcessUnit esb sql hive io av util lang)
+target_link_libraries (TestProcessUnit esb sql hive io av util net signal  lang)
 
-target_link_libraries (TestDatabaseCreation esb sql  hive io util lang )
-target_link_libraries (DeleteDatabase esb sql hive io util lang)
+target_link_libraries (TestDatabaseCreation esb sql util io lang )
+target_link_libraries (DeleteDatabase esb sql util )
 target_link_libraries (TestProcessUnit esb hive av io util lang )
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )

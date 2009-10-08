@@ -74,27 +74,23 @@ target_link_libraries (info
   esb
   sql
   hive
-  lang
   av
   util
   signal
   io
   net
-  ${BZ2_LIB}
-  ${MYSQL_LIBRARY}
-  ${FFMPEG_AVCODEC_LIBRARY}
-  ${FFMPEG_AVFORMAT_LIBRARY}
-  ${FFMPEG_AVUTIL_LIBRARY}
-  ${FFMPEG_SWSCALE_LIBRARY}
+  lang
   )
 target_link_libraries (pu
   esb
   hive
-  lang
   av
   util
   io
-  ${BZ2_LIB}
+  sql
+  net
+  signal
+  lang
   )
 
 

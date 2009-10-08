@@ -7,7 +7,7 @@ add_executable (TestThread TestThread.cpp)
 add_executable (TestStackDumper TestStackDumper.cpp)
 #add_executable (TestLibCurl TestLibCurl.cpp)
 
-target_link_libraries (TestThread lang)
+target_link_libraries (TestThread lang util)
 #target_link_libraries (TestException lang)
 target_link_libraries (TestStackDumper lang util)
 #target_link_libraries (TestLibCurl lang util)

@@ -21,7 +21,7 @@ using namespace org::esb::io;
 namespace fs = boost::filesystem;
 
 File::File(const std::string pathname) : _pathname(pathname) {
-  _full_path=fs::system_complete( fs::path( pathname, fs::native ) );
+  _full_path = fs::system_complete(fs::path(pathname, fs::native)).normalize();
 }
 
 File::~File() {
@@ -43,6 +43,7 @@ const string File::getPath() {
 const string File::getParent() {
   return _full_path.branch_path().string();
 }
+
 const string File::getFileName() {
   if (isFile())
     return _full_path.leaf();
@@ -59,11 +60,11 @@ const string File::getFilePath() {
 }
 
 bool File::exists() {
-  return fs::exists( _full_path );
+  return fs::exists(_full_path);
 }
 
 bool File::mkdir() {
-  return fs::create_directory( _full_path );
+  return fs::create_directory(_full_path);
 }
 
 bool File::isFile() {
@@ -75,7 +76,7 @@ bool File::isDirectory() {
 }
 
 bool File::canRead() {
-  return fs::is_regular( fs::status(_full_path) );
+  return fs::is_regular(fs::status(_full_path));
 }
 
 bool File::canWrite() {

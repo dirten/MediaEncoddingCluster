@@ -1,11 +1,20 @@
+add_custom_target(
+	mydeps
+	COMMAND ls
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+)
+#SET_PROPERTY(TARGET deps PROPERTY BUILD_EMBEDDED_BOOST ON)
+
+
+IF(NO)
+MESSAGE("BUILD Boost!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 FIND_PATH(BOOST_JAM_DIR
     build_dist.sh
   PATHS
     ${PROJECT_SOURCE_DIR}/deps/boost_1_35_0/tools/jam
   NO_DEFAULT_PATH
 )
-
-IF(BUILD_EMBEDDED_BOOST)
   IF(WIN32)
     SET(BUILD_JAM_CMD "build_dist.bat")
   ELSE(WIN32)
@@ -38,10 +47,33 @@ IF(BUILD_EMBEDDED_BOOST)
                 OUTPUT_FILE ${PROJECT_SOURCE_DIR}/deps/boost.log 
                 ERROR_FILE ${PROJECT_SOURCE_DIR}/deps/boost.log)
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/boost.build "SET(BUILD_EMBEDDED_BOOST OFF)")
-ENDIF(BUILD_EMBEDDED_BOOST)
+ENDIF(NO)
+
+  execute_process(
+	COMMAND mkdir "source"
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  )
+
+IF(WIN32)
+  SET(BUILD_JAM_CMD "build_dist.bat")
+  SET(BUILD_JAM_DIR "bin.ntx86")
+  SET(DOWNLOAD_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+  SET(UNZIP_CMD "${PROJECT_SOURCE_DIR}/win32/unzip.exe")
+  SET(BOOST_ARCHIVE_VERSION "1.35.0")
+  SET(BOOST_ARCHIVE_FILE "boost_1_35_0.zip")
+ELSE(WIN32)
+  SET(BUILD_JAM_CMD "build_dist.sh")
+  SET(DOWNLOAD_CMD "curl")
+  SET(BUILD_JAM_DIR "bin.linuxx86")
+  SET(UNZIP_CMD "bunzip2")
+  SET(UNTAR_CMD "tar")
+  SET(BOOST_ARCHIVE_VERSION "1.35.0")
+  SET(BOOST_ARCHIVE_FILE "boost_1_35_0.tar.bz2")
+ENDIF(WIN32)
+
 add_custom_target(
 	build_boost
-	COMMAND ${PROJECT_SOURCE_DIR}/source/boost_1_35_0/tools/jam/stage/bin.ntx86/bjam
+	COMMAND ${PROJECT_SOURCE_DIR}/source/boost_1_35_0/tools/jam/stage/${BUILD_JAM_DIR}/bjam
  	            --prefix=${PROJECT_SOURCE_DIR}/source/build/boost
                 --layout=system
                 variant=release threading=multi link=static --without-python --without-wave --without-graph --without-test --without-mpi --without-iostreams install
@@ -49,9 +81,12 @@ add_custom_target(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source/boost_1_35_0
 )
 
+
+
+
 add_custom_target(
 	build_boost_jam
-	COMMAND ${PROJECT_SOURCE_DIR}/source/boost_1_35_0/tools/jam/build_dist.bat
+	COMMAND ${PROJECT_SOURCE_DIR}/source/boost_1_35_0/tools/jam/${BUILD_JAM_CMD}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source/boost_1_35_0/tools/jam
 )
 
@@ -61,23 +96,11 @@ add_custom_target(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-SET(DOWNLOAD_CMD "curl")
-SET(UNZIP_CMD "bunzip2")
-IF(WIN32)
-	SET(DOWNLOAD_CMD "${PROJECT_SOURCE_DIR}/win32/wget.exe")
-	SET(UNZIP_CMD "${PROJECT_SOURCE_DIR}/win32/unzip.exe")
-ENDIF(WIN32)
-
 add_custom_target(
 	download_boost
-	COMMAND ${DOWNLOAD_CMD} -O ${PROJECT_SOURCE_DIR}/source/boost.src.zip --continue http://dfn.dl.sourceforge.net/project/boost/boost/1.35.0/boost_1_35_0.zip
-	COMMAND ${UNZIP_CMD} ${PROJECT_SOURCE_DIR}/source/boost.src.zip 
-	DEPENDS prepare_deps
+	COMMAND ${DOWNLOAD_CMD} -o ${PROJECT_SOURCE_DIR}/source/${BOOST_ARCHIVE_FILE} http://heanet.dl.sourceforge.net/project/boost/boost/${BOOST_ARCHIVE_VERSION}/${BOOST_ARCHIVE_FILE}
+	COMMAND ${UNTAR_CMD} -xjf ${PROJECT_SOURCE_DIR}/source/${BOOST_ARCHIVE_FILE}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source
 )
 
 
-add_custom_target(
-	deps 
-	DEPENDS build_boost
-)

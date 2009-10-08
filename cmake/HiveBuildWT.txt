@@ -21,3 +21,37 @@ IF(BUILD_EMBEDDED_WT)
 
   file(WRITE ${PROJECT_SOURCE_DIR}/deps/stage/wt.build "SET(BUILD_EMBEDDED_WT OFF)")
 ENDIF(BUILD_EMBEDDED_WT)
+
+IF(WIN32)
+  SET(BUILD_JAM_CMD "build_dist.bat")
+  SET(BUILD_JAM_DIR "bin.ntx86")
+  SET(DOWNLOAD_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+  SET(UNZIP_CMD "${PROJECT_SOURCE_DIR}/win32/unzip.exe")
+  SET(WT_ARCHIVE_VERSION "2.2.4")
+  SET(WT_ARCHIVE_FILE "wt-2.2.4.tar.gz")
+ELSE(WIN32)
+  SET(BUILD_JAM_CMD "build_dist.sh")
+  SET(DOWNLOAD_CMD "curl")
+  SET(BUILD_JAM_DIR "bin.linuxx86")
+  SET(UNZIP_CMD "bunzip2")
+  SET(UNTAR_CMD "tar")
+  SET(WT_ARCHIVE_VERSION "2.2.4")
+  SET(WT_ARCHIVE_FILE "wt-2.2.4.tar.gz")
+ENDIF(WIN32)
+
+add_custom_target(
+	download_wt
+	COMMAND ${DOWNLOAD_CMD} -o ${PROJECT_SOURCE_DIR}/source/${WT_ARCHIVE_FILE} http://heanet.dl.sourceforge.net/project/witty/wt/${WT_ARCHIVE_VERSION}/${WT_ARCHIVE_FILE}
+	COMMAND ${UNTAR_CMD} -xf ${PROJECT_SOURCE_DIR}/source/${WT_ARCHIVE_FILE}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source
+)
+
+add_custom_target(
+	build_wt
+	COMMAND mkdir build||cd build&& cmake ..
+                -DBOOST_DIR=${PROJECT_SOURCE_DIR}/source/build/boost
+                -DSHARED_LIBS=OFF
+                -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/source/build/wt
+    COMMAND cd build&& make install 
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source/wt-${WT_ARCHIVE_VERSION}
+)

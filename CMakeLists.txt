@@ -63,7 +63,7 @@ IF(WIN32)
 ELSEIF(APPLE)
   SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
 ELSE(WIN32)
-  SET(CPACK_GENERATOR "TGZ;TBZ2" )
+  SET(CPACK_GENERATOR "TGZ;TBZ2;STGZ" )
 ENDIF(WIN32)
 
 ############################################################
@@ -152,10 +152,10 @@ add_subdirectory (src)
 add_subdirectory (test)
 
 
-#INCLUDE(cmake/HiveBuildBoost.txt)
-#INCLUDE(cmake/HiveBuildWT.txt)
+INCLUDE(cmake/HiveBuildBoost.txt)
+INCLUDE(cmake/HiveBuildWT.txt)
 #INCLUDE(cmake/HiveBuildX264.txt)
-#INCLUDE(cmake/HiveBuildFfmpeg.txt)
+INCLUDE(cmake/HiveBuildFfmpeg.txt)
 
 	
 
@@ -170,6 +170,7 @@ SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
+SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 

@@ -18,12 +18,6 @@ include_directories (${BREAKPAD_INCLUDE_DIR})
 
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
@@ -48,8 +42,8 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
-
 add_executable (mhive Hive.cpp)
+SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
 #FIND_LIBRARY(COCOA_LIBRARY COCOA)
@@ -145,7 +139,7 @@ ENDIF(WIN32)
 
 add_custom_target(uploadsymbols
   COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
-  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://188.40.40.157/symupload.php
+  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://${SOCORRO_HOST}/symupload.php
 )
 
 INSTALL(TARGETS mhive
