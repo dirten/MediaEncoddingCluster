@@ -1,6 +1,6 @@
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
-include_directories (/home/jhoelscher/curl/include)
+#include_directories (/home/jhoelscher/curl/include)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
 add_library (lang

@@ -49,7 +49,9 @@ Packet Encoder::encodeVideo(Frame & frame) {
     memcpy(pac.packet->data, &data, ret);
     //      delete []data;
   } else {
-    throw lang::Exception(__FILE__, __LINE__, "Error in Encoding Video Packet");
+//    logdebug("packet size = 0");
+  //    throw lang::Exception(__FILE__, __LINE__, "Error in Encoding Video Packet");
+    return pac;
   }
   //    pac.data=data;
   pac.setTimeBase(frame.getTimeBase());

@@ -133,7 +133,7 @@ curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 
 StackDumper::StackDumper(std::string dmp_path) :
 exhandler(new google_breakpad::ExceptionHandler(
-#ifndef WIN32
+#ifndef __WIN32__
 dmp_path,
 #elif defined __WIN32__
 std::wstring(dmp_path.begin(), dmp_path.end()),
