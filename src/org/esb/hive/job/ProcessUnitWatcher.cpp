@@ -40,6 +40,7 @@ namespace org {
 
         void ProcessUnitWatcher::onMessage(org::esb::signal::Message & msg) {
           if (msg.getProperty("processunitwatcher") == "start") {
+            _isStopSignal = false;
             boost::thread t(boost::bind(&ProcessUnitWatcher::start3, this));
             logdebug("ProcessUnitWatcher started");
           } else if (msg.getProperty("processunitwatcher") == "stop") {
@@ -53,11 +54,15 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start3() {
+//          logdebug("ProcessUnitWatcher running");
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp = new Connection(c);
+          _con_tmp2 = new Connection(c);
+
           _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :frame_count, null, null)");
-          _stmt_fr = _con_tmp->prepareStatement2("update process_units set complete = now() where id=:id");
+          _stmt_fr = _con_tmp2->prepareStatement2("update process_units set complete = now() where id=:id");
           while (!_isStopSignal) {
+//          logdebug("ProcessUnitWatcher loop");
             //getting all jobs that not be completed
             sql::Connection con(std::string(config::Config::getProperty("db.connection")));
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
@@ -327,11 +332,11 @@ namespace org {
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
           name += org::esb::util::Decimal(unit._process_unit % 10).toString();
-          name += "/";
           org::esb::io::File dir(name.c_str());
           if (!dir.exists()) {
             dir.mkdir();
           }
+          name += "/";
           name += org::esb::util::Decimal(unit._process_unit).toString();
           name += ".unit";
           org::esb::io::File out(name.c_str());

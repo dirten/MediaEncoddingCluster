@@ -187,11 +187,11 @@ namespace org {
                 delete unit;
                 break;
               }
-              try {
+//              try {
                 unit->process();
-              } catch (...) {
-                logerror("Error in process");
-              }
+//              } catch (...) {
+//                logerror("Error in process");
+//              }
               //				outQueue.send(unit,sizeof(job::ProcessUnit),0);
 
               char * text_out = "put process_unit";

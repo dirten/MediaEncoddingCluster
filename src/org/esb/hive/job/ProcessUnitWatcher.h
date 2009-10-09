@@ -47,6 +47,7 @@ namespace org {
                     bool q_filled;
                     int job_id;
                     org::esb::sql::Connection * _con_tmp;
+                    org::esb::sql::Connection * _con_tmp2;
                     org::esb::sql::PreparedStatement * _stmt;
                     void flushStreamPackets();
                     void buildProcessUnit(int sIdx);
