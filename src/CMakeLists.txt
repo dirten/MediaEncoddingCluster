@@ -20,6 +20,14 @@ LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
+
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libswscale)

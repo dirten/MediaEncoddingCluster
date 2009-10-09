@@ -127,7 +127,8 @@ untar_file "speex-1.0.5.tar" "speex-*" "speex"
 untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
 untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 
-export LD_LIBRARY_PATH=$SRCDIR/libogg-build/lib
+
+export LD_LIBRARY_PATH=$SRCDIR/$BUILDDIR/libogg/lib
 
 configure_file "nasm"
 build_file "nasm"
