@@ -229,7 +229,6 @@ add_library (web
     web/wtk/ContentBox.cpp
 )
 TARGET_LINK_LIBRARIES(web
-  ssl
   wtext
   wthttp
   ${BOOST_PO_LIB_MT}
