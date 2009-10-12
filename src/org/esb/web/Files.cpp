@@ -111,7 +111,7 @@ public:
 
 
 
-          tab = new SqlTable(std::string("select id, filename, container_type type, size from files "), this);
+          tab = new SqlTable(std::string("select id, filename, container_type type, concat(size/1024/1024,'MB'), duration from files "), this);
           //                    tab->resize(800, 300);
 //          tab->resize(Wt::WLength(), 300);
           tab->itemSelectionChanged.connect(SLOT(this, Files::fileSelected));

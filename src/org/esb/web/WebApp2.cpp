@@ -90,26 +90,29 @@ namespace org {
       }
 
       void WebApp2::listAllFiles() {
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, size from files "));
+        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
+        tab->setColumnWidth(4, 20);
         setContent(tab);
       }
 
       void WebApp2::listImportedFiles() {
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, size from files where parent=0"));
+        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size , concat(round(duration/1000000),' sec.') as duration from files where parent=0"));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
+        tab->setColumnWidth(4, 20);
         setContent(tab);
       }
 
       void WebApp2::listEncodedFiles() {
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, size from files where parent>0"));
+        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files where parent>0"));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
+        tab->setColumnWidth(4, 20);
         setContent(tab);
       }
 
