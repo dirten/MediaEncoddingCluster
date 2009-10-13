@@ -35,7 +35,7 @@ string trim(string & s, string & drop) {
 }
 
 void Config::close() {
-  logdebug("clear config");
+//  logdebug("clear config");
   properties->clear();
   delete properties;
   properties = NULL;

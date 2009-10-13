@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `source_stream` int(11) NOT NULL,
   `target_stream` int(11) NOT NULL,
   `start_ts` bigint(20) NOT NULL,
+  `end_ts` bigint(20) NOT NULL,
   `frame_count` bigint NOT NULL,
   `send` timestamp NULL default NULL,
   `complete` timestamp NULL default NULL,

@@ -18,7 +18,7 @@ int main() {
   io::FileInputStream(&f).read(sql);
   logdebug("FullSql:" << sql);
   config::Config::setProperty("hive.base_path", src.c_str());
-  config::Config::setProperty("db.connection", "mysql:host=;db=hive;user=;passwd=");
+  config::Config::setProperty("db.connection", "mysql:host=localhost;db=hive;user=;passwd=");
   //config::Config::setProperty("db.connection","")
   {
     sql::Connection con_a("");

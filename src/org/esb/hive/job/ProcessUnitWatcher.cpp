@@ -59,7 +59,7 @@ namespace org {
           _con_tmp = new Connection(c);
           _con_tmp2 = new Connection(c);
 
-          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :frame_count, null, null)");
+          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, null, null)");
           _stmt_fr = _con_tmp2->prepareStatement2("update process_units set complete = now() where id=:id");
           while (!_isStopSignal) {
 //          logdebug("ProcessUnitWatcher loop");
@@ -188,6 +188,7 @@ namespace org {
           _stmt->setInt("source_stream", u->_source_stream);
           _stmt->setInt("target_stream", u->_target_stream);
           _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+          _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
           _stmt->setInt("frame_count", u->_input_packets.size());
           _stmt->execute();
           u->_process_unit = _stmt->getLastInsertId();
