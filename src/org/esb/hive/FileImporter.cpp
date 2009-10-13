@@ -68,9 +68,9 @@ int import(int argc, char *argv[]) {
   //      Config::init("./cluster.cfg");
 
 
-  string connect_str = Config::getProperty("db.connection");
-  logdebug("using db connection : " << connect_str);
-  Connection con(connect_str.c_str());
+//  string connect_str = Config::getProperty("db.connection");
+//  logdebug("using db connection : " << connect_str);
+  Connection con(Config::getProperty("db.connection"));
   /*
       if (!checkDatabase(con)) {
           createDatabase(con);

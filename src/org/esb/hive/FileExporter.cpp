@@ -210,13 +210,14 @@ void FileExporter::exportFile(int fileid) {
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       ois.readObject(pu);
-	  logdebug("here:"<<pu_id);
+//	  logdebug("here:"<<pu_id);
 //      logdebug(pu._process_unit);
       std::list<boost::shared_ptr<Packet> >::iterator plist=pu._output_packets.begin();
       for(;plist!=pu._output_packets.end();plist++){
         Packet * p=(*plist).get();
         p->packet->dts=0;
         p->packet->pts=0;
+		p->packet->stream_index=stream_map[p->packet->stream_index];
         pos->writePacket(*p);
       }
     }

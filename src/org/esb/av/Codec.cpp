@@ -32,7 +32,7 @@ namespace org {
       }
 
       Codec::Codec() {
-        logdebug("Codec::Codec()");
+//        logdebug("Codec::Codec()");
         ctx = avcodec_alloc_context();
         setContextDefaults();
         _opened = false;
@@ -40,7 +40,7 @@ namespace org {
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
-        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
+//        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
         _codec_resolved = false;
         _mode = mode;
         ctx = avcodec_alloc_context();

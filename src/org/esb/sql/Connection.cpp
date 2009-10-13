@@ -41,8 +41,8 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 
 Connection::~Connection() {
 //  logdebug("Connection::~Connection()");
-  //	mysql_thread_end();
-  //mysql_close(mysqlPtr.get());
+//	mysql_close(mysqlPtr.get());
+//  	mysql_thread_end();
   /*
     _staticCounter--;
     if(_staticCounter==0){
@@ -53,7 +53,8 @@ Connection::~Connection() {
    */
   //  std::cout <<"Connection Object destroyed"<<std::endl;
 }
-
+void close_connection(MYSQL*d){
+}
 void Connection::connect() {
 //  logdebug("Connection::connect()");
   if (_staticCounter == 0) {
@@ -72,6 +73,7 @@ void Connection::connect() {
   }
 
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
+//  mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &close_connection);
   //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_EMBEDDED_CONNECTION,NULL);
 //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_REMOTE_CONNECTION, NULL);
   mysql_options(mysqlPtr.get(), MYSQL_OPT_GUESS_CONNECTION, NULL);

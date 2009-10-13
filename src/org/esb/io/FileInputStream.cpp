@@ -39,7 +39,7 @@ void FileInputStream::open(const std::string name) {
 
   fseek(file, 0, SEEK_END);
   _filePointer = ftell(file);
-  logdebug("FileSize1:"<<_filePointer);
+//  logdebug("FileSize1:"<<_filePointer);
   rewind(file);
 //  fseek(file, 0, 0);
 
@@ -55,11 +55,11 @@ long long int FileInputStream::available(bool isBlocking) {
 
 int FileInputStream::read(string & str) {
   int size = static_cast<int>(available());
-  logdebug("FileSize2:"<<size);
+//  logdebug("FileSize2:"<<size);
   char * buffer = new char[size];
   memset(buffer,0,size);
   int read = fread((char*) buffer, 1, size, file);
-  logdebug("FileSizeRead:"<<read);
+//  logdebug("FileSizeRead:"<<read);
   _filePointer -= read;
   str = string(buffer, size);
   delete []buffer;
