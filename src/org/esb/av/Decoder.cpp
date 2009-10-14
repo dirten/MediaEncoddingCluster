@@ -178,7 +178,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
-// logdebug("DecodeAudio Packet:"<<packet.toString());
+ logdebug("DecodeAudio Packet:"<<packet.toString());
   //        Frame frame;
   int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 //  uint8_t *outbuf = new uint8_t[samples_size];

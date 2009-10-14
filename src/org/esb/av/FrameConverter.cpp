@@ -31,7 +31,7 @@ namespace org {
               enc->getSampleFormat(), dec->getSampleFormat(),
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
-          if (_audioCtx == NULL)
+          if (!_audioCtx)
             logerror("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
@@ -204,7 +204,8 @@ namespace org {
             in_frame._size / (in_frame.channels * isize)
             );
         //		audio_resample_close( reCtx );
-//        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
+//		logdebug("ResampleContextInChannels:");
+        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
         //        Frame frame(audio_buf);
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;

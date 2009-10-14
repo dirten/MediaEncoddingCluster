@@ -66,7 +66,7 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\ttype\tcodec\tnum\tden\tquality\tduration" << endl;
+  cout << "#\tindex\ttype\tcodec\tnum\tden\tquality\tduration\tFrameSize" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
@@ -76,6 +76,7 @@ int main(int argc, char ** argv) {
     cout << s->getCodecId() << "\t";
     cout << s->getCodecTimeBase().num << "\t";
     cout << s->getCodecTimeBase().den << "\t";
+    cout << s->getFrameBytes() << "\t";
     cout << endl;
   }
 
@@ -123,7 +124,7 @@ int main(int argc, char ** argv) {
 //	printf("%10d|", pidx);
 //	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
 //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
-    printf("%s|", p.isKeyFrame()==1&&p.getStreamIndex()==0?"x ":"  ");
+    printf("%s|", p.isKeyFrame()==1?"x ":"  ");
     printf("%5d|", p.packet->duration);
     printf("%20ld|", p.packet->pos);
     //        cout <<p.packet->pts<<"\t";

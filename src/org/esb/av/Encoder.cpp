@@ -32,7 +32,7 @@ Packet Encoder::encode(Frame & frame) {
 }
 
 Packet Encoder::encodeVideo(Frame & frame) {
-  logdebug("VideoEncoderFrame:" << frame.toString());
+//  logdebug("VideoEncoderFrame:" << frame.toString());
 
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
@@ -66,9 +66,12 @@ Packet Encoder::encodeVideo(Frame & frame) {
   //  frame.toString();
   //  pac.toString();
   if (ctx->coded_frame) {
-    //		cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
-    if (ctx->coded_frame->key_frame)
-      pac.packet->flags |= PKT_FLAG_KEY;
+//    cout <<"!!!!!!!HAVE CODED FRAME!!!!!!!!!!"<<endl;
+	  if (ctx->coded_frame->key_frame){
+//		  logdebug("keyframe!!!");
+		  pac.packet->flags |= PKT_FLAG_KEY;
+	  }
+
     //		pac.packet->pts= av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational){1,25});
     //		pac.packet->pts=ctx->coded_frame->pts;
   }
@@ -87,7 +90,7 @@ void Encoder::setSink(Sink * sink) {
 }
 
 Packet Encoder::encodeAudio(Frame & frame) {
-//  logdebug("AudioEncoderFrame:" << frame.toString());
+  logdebug("AudioEncodeFrame:" << frame.toString());
 
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
@@ -110,10 +113,10 @@ Packet Encoder::encodeAudio(Frame & frame) {
   //  uint8_t * audio_out = new uint8_t[audio_out_size];
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
 
-  while (av_fifo_size(fifo) >= frame_bytes) {
-#ifdef DEBUG
     logdebug("Fifo size:" << av_fifo_size(fifo) << "FrameBytes:" << frame_bytes);
-#endif
+  while (av_fifo_size(fifo) >= frame_bytes) {
+//#ifdef DEBUG
+//#endif
     av_fifo_generic_read(fifo, audio_buf, frame_bytes, NULL);
 
 
@@ -130,7 +133,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
     //    logdebug("Duration:"<<dur2);
 
     int out_size = avcodec_encode_audio(ctx, audio_out, audio_out_size, (short*) audio_buf);
-    //    logdebug("Audio Out Size:" << audio_out_size);
+        logdebug("Audio Out Size:" << audio_out_size);
     if (out_size < 0) {
       logerror("Error Encoding audio Frame");
     }
@@ -161,7 +164,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
 
     if (ctx->coded_frame) {
       //		pak.packet->pts=ctx->coded_frame->pts;
-      //		cout <<"Encoder Audio Pts:"<<ctx->coded_frame->pts<<endl;
+      		cout <<"Encoder Audio Pts:"<<ctx->coded_frame->pts<<endl;
       //	    pak.packet->duration=ctx->coded_frame->duration;
     }
     pak.setTimeBase(frame.getTimeBase());

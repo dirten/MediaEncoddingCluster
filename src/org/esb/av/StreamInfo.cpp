@@ -88,6 +88,9 @@ namespace org {
       int StreamInfo::getNBIndexEntries(){
         return _s->nb_index_entries;
       }
+	  int StreamInfo::getFrameBytes(){
+		  return _s->codec->frame_size;
+	  }
     }
   }
 }

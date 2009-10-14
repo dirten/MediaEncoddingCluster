@@ -8,7 +8,7 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = false;
+bool toDebug = true;
 
 class PacketSink : public Sink {
 public:
@@ -71,8 +71,11 @@ void ProcessUnit::process() {
     _decoder->open();
   if (_encoder != NULL)
     _encoder->open();
-  if (toDebug)
+  if (toDebug){
     logdebug("Codex openned");
+	logdebug(_decoder->toString());
+	logdebug(_encoder->toString());
+  }
   _decoder->ctx->request_channel_layout = 2;
 
   PacketSink sink;
@@ -114,7 +117,7 @@ void ProcessUnit::process() {
     Frame * tmp = _decoder->decode2(*p);
     if (toDebug){
       logdebug("Frame Decoded");
-      tmp->toString();
+      logdebug(tmp->toString());
     }
     //    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
     //      break;

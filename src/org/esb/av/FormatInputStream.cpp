@@ -39,7 +39,7 @@ namespace org {
         /**
          * get the first video and audio stream
          */
-		  loginfo("create stream map: "<<source->getPath());
+//		  loginfo("create stream map: "<<source->getPath());
 /*
         _streamMap[0] = -1;
         _streamMap[1] = -1;
