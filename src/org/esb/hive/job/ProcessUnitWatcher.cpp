@@ -32,7 +32,9 @@ namespace org {
         boost::mutex ProcessUnitWatcher::unit_list_mutex;
         util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::puQueue;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
+        org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
         bool ProcessUnitWatcher::_isStopSignal = false;
+		map<int, ProcessUnitWatcher::StreamData> ProcessUnitWatcher::_stream_map;
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
 
@@ -56,10 +58,14 @@ namespace org {
         void ProcessUnitWatcher::start3() {
 //          logdebug("ProcessUnitWatcher running");
           std::string c = org::esb::config::Config::getProperty("db.connection");
-          _con_tmp = new Connection(c);
+		  /*clean up previosly aborted encodings*/
+//		  Connection con(c);
+//		  con.executeNonQuery("DELETE FROM process_units where send is null or complete is null");
+
+		  _con_tmp = new Connection(c);
           _con_tmp2 = new Connection(c);
 
-          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, null, null)");
+          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
           _stmt_fr = _con_tmp2->prepareStatement2("update process_units set complete = now() where id=:id");
           while (!_isStopSignal) {
 //          logdebug("ProcessUnitWatcher loop");
@@ -114,7 +120,7 @@ namespace org {
               }
               {
                 sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
-                sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max( start_ts ) as last_start_ts FROM process_units WHERE source_stream = :a GROUP BY source_stream");
+                sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max(id) as last_id,max( start_ts ) as last_start_ts FROM process_units WHERE source_stream = :a GROUP BY source_stream");
                 std::map<int, StreamData>::iterator st = _stream_map.begin();
                 for (; st != _stream_map.end(); st++) {
                   pstmt.setInt("a",(*st).second.instream);
@@ -122,14 +128,15 @@ namespace org {
                   if(rs_t.next()){
                     logdebug("Setting last start_ts for stream"<<(*st).second.instream<<" to"<<rs_t.getLong("last_start_ts"))
                     (*st).second.last_start_ts=rs_t.getLong("last_start_ts");
+					(*st).second.last_process_unit_id=rs_t.getLong("last_id");
                   }
                 }
               }
               /*
               
                */
-              long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-              logdebug("building seek offset -" << offset);
+//              long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
+//              logdebug("building seek offset -" << offset);
               //              fis->seek(offset);
               PacketInputStream pis(fis);
               q_filled = false;
@@ -184,14 +191,6 @@ namespace org {
           //setting Input Packets
           u->_input_packets = _stream_map[sIdx].packets;
           //Put the ProcessUnit into the Queue
-
-          _stmt->setInt("source_stream", u->_source_stream);
-          _stmt->setInt("target_stream", u->_target_stream);
-          _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
-          _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
-          _stmt->setInt("frame_count", u->_input_packets.size());
-          _stmt->execute();
-          u->_process_unit = _stmt->getLastInsertId();
           puQueue.enqueue(u);
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
           //resetting the parameter for the next ProcessUnit
@@ -317,14 +316,29 @@ namespace org {
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
-          boost::shared_ptr<ProcessUnit> pu = puQueue.dequeue();
+          boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          Connection con(org::esb::config::Config::getProperty("db.connection"));
-          PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
-          pstmt.setInt("id", pu->_process_unit);
-          pstmt.execute();
-          return pu;
+		  //special case after an interupted encoding session
+		  int sIdx=u->_input_packets.front()->packet->stream_index;
+		  if(_stream_map[sIdx].last_process_unit_id==0){
+			  _stmt->setInt("source_stream", u->_source_stream);
+			  _stmt->setInt("target_stream", u->_target_stream);
+			  _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+			  _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
+			  _stmt->setInt("frame_count", u->_input_packets.size());
+			  _stmt->execute();
+			  u->_process_unit = _stmt->getLastInsertId();
+		  }else{
+			  u->_process_unit =_stream_map[sIdx].last_process_unit_id;
+			  _stream_map[sIdx].last_process_unit_id=0;
+		  }
+
+//		  Connection con(org::esb::config::Config::getProperty("db.connection"));
+//          PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
+//          pstmt.setInt("id", pu->_process_unit);
+//          pstmt.execute();
+          return u;
         }
 
         bool ProcessUnitWatcher::putProcessUnit(ProcessUnit & unit) {

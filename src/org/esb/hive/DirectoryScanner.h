@@ -8,6 +8,10 @@
 
 namespace org {
   namespace esb {
+	  namespace sql{
+		  class Connection;
+		  class PreparedStatement;
+	  }
     namespace hive {
 
       class DirectoryScanner : public org::esb::signal::MessageListener {
@@ -24,7 +28,9 @@ namespace org {
         boost::thread * th;
         int _interval;
         int _level;
-      };
+		sql::Connection * _con;
+		sql::PreparedStatement * _stmt;
+	  };
     }
   }
 }

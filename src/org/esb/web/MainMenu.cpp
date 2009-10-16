@@ -22,9 +22,9 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
 
   menu = new Wt::Ext::Menu();
   item = menu->addItem("All Encodings...",parent,&org::esb::web::WebApp2::listAllEncodings);
-  item = menu->addItem("Pending Encodings...",parent,&org::esb::web::WebApp2::listPendingEncodings);
-  item = menu->addItem("Active Encodings...",parent,&org::esb::web::WebApp2::listActiveEncodings);
-  item = menu->addItem("Successfull Encodings...",parent,&org::esb::web::WebApp2::listSuccessfullEncodings);
+//  item = menu->addItem("Pending Encodings...",parent,&org::esb::web::WebApp2::listPendingEncodings);
+//  item = menu->addItem("Active Encodings...",parent,&org::esb::web::WebApp2::listActiveEncodings);
+//  item = menu->addItem("Successfull Encodings...",parent,&org::esb::web::WebApp2::listSuccessfullEncodings);
 //  item = menu->addItem("Failure Encodings...",parent,&org::esb::web::WebApp2::listFailureEncodings);
 
   button = toolbar->addButton("Encodings", menu);

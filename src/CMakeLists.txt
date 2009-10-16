@@ -142,7 +142,7 @@ SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
 IF(WIN32)
   SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
   SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
-  SET(MHIVE_DBGSYM Debug/mhive.pdb)
+  SET(MHIVE_DBGSYM mhive.pdb)
 ENDIF(WIN32)
 
 add_custom_target(uploadsymbols

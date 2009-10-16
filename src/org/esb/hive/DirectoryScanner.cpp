@@ -58,17 +58,26 @@ namespace org {
         _halt = true;
         _interval = interval;
         th = NULL;
+        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
       }
 
       DirectoryScanner::DirectoryScanner() {
         _halt = true;
         th = NULL;
         _interval=300000;
+        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+
       }
 
       DirectoryScanner::~DirectoryScanner() {
         if (th)
           delete th;
+		delete _stmt;
+		delete _con;
+		_stmt=NULL;
+		_con=NULL;
       }
 
       void DirectoryScanner::onMessage(org::esb::signal::Message & msg) {
@@ -122,11 +131,9 @@ namespace org {
 
       void DirectoryScanner::computeFile(File & file, int p, std::string outdir) {
 
-        Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
-        PreparedStatement stmt(con.prepareStatement("select * from files where filename=:name and path=:path"));
-        stmt.setString("name", file.getFileName());
-        stmt.setString("path", file.getFilePath());
-        ResultSet rs = stmt.executeQuery();
+        _stmt->setString("name", file.getFileName());
+        _stmt->setString("path", file.getFilePath());
+        ResultSet rs = _stmt->executeQuery();
         if (!rs.next()) {
           if (file.isFile()) {
             const char * filename = 0;

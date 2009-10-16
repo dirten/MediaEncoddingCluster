@@ -40,6 +40,7 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 }
 
 Connection::~Connection() {
+	_staticCounter--;
 //  logdebug("Connection::~Connection()");
 //	mysql_close(mysqlPtr.get());
 //  	mysql_thread_end();

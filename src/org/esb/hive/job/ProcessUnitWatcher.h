@@ -48,7 +48,7 @@ namespace org {
                     int job_id;
                     org::esb::sql::Connection * _con_tmp;
                     org::esb::sql::Connection * _con_tmp2;
-                    org::esb::sql::PreparedStatement * _stmt;
+                    static org::esb::sql::PreparedStatement * _stmt;
                     void flushStreamPackets();
                     void buildProcessUnit(int sIdx);
                     static boost::mutex m_mutex;
@@ -66,8 +66,9 @@ namespace org {
                         std::list<boost::shared_ptr<Packet> > packets;
                         int packet_count;
                         int min_packet_count;
+						int64_t last_process_unit_id;
                     };
-                    map<int, StreamData> _stream_map;
+                    static map<int, StreamData> _stream_map;
                 };
             }
         }

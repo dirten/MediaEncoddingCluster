@@ -118,7 +118,7 @@ namespace org {
 
       void WebApp2::listAllEncodings() {
 //        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
-        SqlTable * tab = new SqlTable(std::string("SELECT filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
+        SqlTable * tab = new SqlTable(std::string("select filename,round((max(end_ts)-start_time)*s.time_base_num/s.time_base_den*1000000/f.duration,4)*100 as progress,min(send) as start_time,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" from process_units pu, streams s, files f where pu.source_stream =s.id and s.fileid=f.id group by f.id"));
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
