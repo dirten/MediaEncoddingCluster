@@ -6,7 +6,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 //#include "org/esb/sql/ResultSet.h"
-#include "org/esb/io/FileFilter.h"
+
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 
@@ -39,7 +39,7 @@ namespace org {
               std::string e=".";
               e+=tok;
               media_ext[e];
-              logdebug("Extension added:"<<e);
+//              logdebug("Extension added:"<<e);
             }
           }
         }
@@ -68,6 +68,8 @@ namespace org {
         _interval=300000;
         _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
         _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
 
       }
 
@@ -101,12 +103,10 @@ namespace org {
 
       void DirectoryScanner::scan() {
         while (!_halt) {
-          Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
-          Statement stmt = con.createStatement("select * from watch_folder");
-          ResultSet rs = stmt.executeQuery();
+          ResultSet rs = _stmt2->executeQuery();
           while (rs.next()) {
             if (File(rs.getString("infolder").c_str()).exists()) {
-              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), rs.getString("extension_filter"));
+              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), MyFileFilter(rs.getString("extension_filter")));
             } else {
               //            _halt = true;
             }
@@ -115,15 +115,15 @@ namespace org {
         }
       }
 
-      void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, std::string f) {
-        logdebug("Scanning Directory:" << indir);
-        MyFileFilter filter(f);
+      void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, FileFilter & filter) {
+//        logdebug("Scanning Directory:" << indir);
+//        
 
         FileList list = File(indir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())
-            scan((*it)->getPath(), outdir, profile, f);
+            scan((*it)->getPath(), outdir, profile, filter);
           else
             computeFile(*it->get(), profile, outdir);
         }

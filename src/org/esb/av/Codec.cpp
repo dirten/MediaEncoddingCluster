@@ -100,7 +100,7 @@ namespace org {
         ctx->max_qdiff = 4;
         ctx->qmin = 10;
         ctx->qmax = 51;
-        ctx->qcompress = 0.6;
+        ctx->qcompress = static_cast<float>(0.6);
 
       }
 
@@ -300,6 +300,12 @@ namespace org {
       int Codec::getFlags() {
         return ctx->flags;
       }
+	  int Codec::getBitsPerCodedSample(){
+		  return ctx->bits_per_coded_sample;
+	  }
+	  void Codec::setBitsPerCodedSample(int v){
+		  ctx->bits_per_coded_sample=v;
+	  }
 
       /*
       void Codec::setStartTime(int64_t start) {

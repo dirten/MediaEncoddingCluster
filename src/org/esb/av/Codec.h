@@ -63,6 +63,8 @@ namespace org {
                 SampleFormat getSampleFormat();
                 int getChannels();
                 int getGopSize();
+                int getBitsPerCodedSample();
+                void setBitsPerCodedSample(int);
                 AVRational getTimeBase();
 //                void setStartTime(int64_t start);
                 std::string toString(void);
@@ -87,6 +89,7 @@ namespace org {
                     ar & ctx->channels;
                     ar & ctx->sample_rate;
                     ar & ctx->sample_fmt;
+                    ar & ctx->bits_per_coded_sample;
 
                 }
 

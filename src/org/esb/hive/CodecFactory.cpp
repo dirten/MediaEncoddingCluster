@@ -17,7 +17,7 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -36,6 +36,7 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
       decoder->setSampleRate(rs.getInt("sample_rate"));
       decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       decoder->setFlag(rs.getInt("flags"));
+      decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
       //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {

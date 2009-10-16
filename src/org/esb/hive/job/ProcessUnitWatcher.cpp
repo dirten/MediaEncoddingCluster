@@ -100,6 +100,7 @@ namespace org {
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
                   _stream_map[index].last_start_ts=0;
                   _stream_map[index].packet_count=0;
+				  _stream_map[index].last_process_unit_id=0;
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     //                  * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))

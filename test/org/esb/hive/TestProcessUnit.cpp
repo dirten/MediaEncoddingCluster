@@ -20,6 +20,7 @@ void test_process_video(){
 
   std::string src_file = MEC_SOURCE_DIR;
   src_file.append("/test.dvd");
+  src_file="d:/windows/clock.avi";
   File infile(src_file);
   int stream_id = 0;
 
@@ -51,10 +52,10 @@ void test_process_video(){
     dec->ctx->request_channel_layout = 2;
     //  dec.ctx->request_channels = 2;
     dec->open();
-
-
-
     logdebug(dec->toString());
+
+
+
 
     //  Encoder enc(CODEC_ID_MSMPEG4V1);
     Encoder * enc = new Encoder(CODEC_ID_H264);
@@ -234,7 +235,7 @@ int main() {
   avcodec_init();
   avcodec_register_all();
 
-//  test_process_video();
-  test_process_audio();
+  test_process_video();
+//  test_process_audio();
 }
 

@@ -7,11 +7,19 @@
 #include "org/esb/config/config.h"
 #include "org/esb/av/Codec.h"
 #include "org/esb/io/File.h"
+#include <map>
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 
+struct JobStreamData{
+	int index;
+	int in_stream;
+	int out_stream;
+	AVRational framerate;
+};
 int jobcreator(int argc, char*argv[]) {
+	std::map<int,JobStreamData> streams;
   Connection con(Config::getProperty("db.connection"));
   int fileid = atoi(argv[2]), in_v_stream = 0, in_a_stream = 0, v_stream_idx = 0, a_stream_idx = 0;
   long long int outfileid = 0, v_stream_id = 0, a_stream_id = 0, jobid = 0;
@@ -29,7 +37,7 @@ int jobcreator(int argc, char*argv[]) {
   std::string profile_v_format = "";
   int profile_v_codec = 0;
   int profile_v_bitrate = 0;
-  int profile_v_framerate = 0;
+  std::string profile_v_framerate = "";
   int profile_v_width = 0;
   int profile_v_height = 0;
   int profile_a_channels = 0;
@@ -59,7 +67,7 @@ int jobcreator(int argc, char*argv[]) {
       profile_v_format = rs.getString("v_format");
       profile_v_codec = rs.getInt("v_codec");
       profile_v_bitrate = rs.getInt("v_bitrate");
-      profile_v_framerate = rs.getInt("v_framerate");
+      profile_v_framerate = rs.getString("v_framerate");
       profile_v_width = rs.getInt("v_width");
       profile_v_height = rs.getInt("v_height");
       profile_a_channels = rs.getInt("a_channels");
@@ -78,6 +86,16 @@ int jobcreator(int argc, char*argv[]) {
     if (rs.next()) {
       in_v_stream = rs.getInt("id");
       v_stream_idx = rs.getInt("stream_index");
+	  streams[v_stream_idx].in_stream=rs.getInt("id");
+	  float f=atof(profile_v_framerate.c_str());
+	  if(f==0){
+		AVRational r;
+		  r.num=rs.getInt("time_base_num");
+		  r.den=rs.getInt("time_base_den");
+		  streams[v_stream_idx].framerate=r;
+	  }else{
+		streams[v_stream_idx].framerate=av_d2q(f, 10000);
+	  }
     }
   }
   {
@@ -118,9 +136,9 @@ int jobcreator(int argc, char*argv[]) {
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
     stmt.setInt("codec", profile_v_codec);
-    stmt.setInt("framerate", profile_v_framerate);
-    stmt.setInt("time_base_num", 1);
-    stmt.setInt("time_base_den", profile_v_framerate);
+//	stmt.setInt("framerate", streams[v_stream_idx]);
+	stmt.setInt("time_base_num", streams[v_stream_idx].framerate.num);
+    stmt.setInt("time_base_den", streams[v_stream_idx].framerate.den);
     stmt.setInt("width", profile_v_width);
     stmt.setInt("height", profile_v_height);
     stmt.setInt("gop_size", 20);
