@@ -17,19 +17,21 @@ namespace org {
 		  _isValid = false;
         _sourceFile = source;
 		AVFormatParameters params, *ap = &params;
-		memset(ap, 0, sizeof(*ap));
-		ap->channels = 2;
+		ap->prealloced_context=1;
 		
-//		set_context_opts(ic, avformat_opts, AV_OPT_FLAG_DECODING_PARAM);
+		memset(ap, 0, sizeof(*ap));
+//		ap->channels = 2;
+//		AVFormatContext* avformat_opts = avformat_alloc_context();
+//		set_context_opts(formatCtx, avformat_opts, 2);
 
 		
-//        formatCtx = avformat_alloc_context();
+        formatCtx = avformat_alloc_context();
 		std::string filename=_sourceFile->getPath();
-        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, NULL) != 0) {
+        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
-//		formatCtx->debug=5;
+		formatCtx->debug=5;
 
 		  loginfo("find stream info: "<<source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {

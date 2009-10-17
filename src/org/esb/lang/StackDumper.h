@@ -25,7 +25,7 @@ public:
     StackDumper(std::string dmp_path);
     ~StackDumper();
 private:
-    google_breakpad::ExceptionHandler * exhandler;
+    google_breakpad::ExceptionHandler exhandler;
 #ifdef __WIN32__
     bool DumpSender(const wchar_t* dump_path,
             const wchar_t* minidump_id,

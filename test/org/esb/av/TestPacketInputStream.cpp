@@ -6,9 +6,14 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 
-int main(){
-  std::string src = MEC_SOURCE_DIR;
-	src.append("/test.dvd");
+int main(int argc, char **argv){
+  std::string src;
+  if(argc==1){
+  src= MEC_SOURCE_DIR;
+  src.append("/test.dvd");
+  }else{
+	src=argv[1];
+  }
   File f(src.c_str());
   FormatInputStream fis(&f);
   PacketInputStream pis(&fis);

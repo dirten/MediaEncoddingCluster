@@ -10,10 +10,11 @@
 using namespace org::esb::av;
 
 int main(int argc, char ** argv) {
+ avcodec_init();
 
+	avcodec_register_all();
   av_register_all();
-  avcodec_init();
-  avcodec_register_all();
+  
   if (argc < 2)return 1;
   long long int packet_start = 0;
   int packet_count = 50;

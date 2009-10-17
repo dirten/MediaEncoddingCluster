@@ -132,7 +132,7 @@ curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 #endif
 
 StackDumper::StackDumper(std::string dmp_path) :
-exhandler(new google_breakpad::ExceptionHandler(
+exhandler(
 #ifndef __WIN32__
 dmp_path,
 #elif defined __WIN32__
@@ -150,7 +150,7 @@ true
 #elif defined __WIN32__
 google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
-)) {
+) {
 //  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
 }
 #ifdef WIN32
