@@ -174,6 +174,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `channels` int(11) NOT NULL default '0',
   `sample_fmt` int(11) NOT NULL default '0',
   `flags` int(11) NOT NULL default '0',
+  `bits_per_coded_sample` int(11) NOT NULL default '0',
   `priv_data_size` int(11) default '0',
   `priv_data` blob,
   PRIMARY KEY  (`id`)
