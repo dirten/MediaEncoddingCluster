@@ -58,18 +58,14 @@ namespace org {
         _halt = true;
         _interval = interval;
         th = NULL;
-        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+//        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+//        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
       }
 
       DirectoryScanner::DirectoryScanner() {
         _halt = true;
         th = NULL;
         _interval=300000;
-        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
-        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
 
       }
 
@@ -90,6 +86,10 @@ namespace org {
           if (msg.containsProperty("interval")) {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;
           }
+        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
           boost::thread(boost::bind(&DirectoryScanner::scan, this));
           logdebug("Directory Scanner running with interval:" << _interval);
           //    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
