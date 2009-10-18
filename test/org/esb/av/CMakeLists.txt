@@ -19,8 +19,13 @@ add_executable (TestFormatInputStream TestFormatInputStream.cpp)
 add_executable (TestPacketInputStream TestPacketInputStream.cpp)
 add_executable (TestPacketOutputStream TestPacketOutputStream.cpp)
 add_executable (TestProcessAudioPacket TestProcessAudioPacket.cpp)
+add_executable (TestFfmpeg TestFfmpeg.cpp)
 
 target_link_libraries (TestPacket io av util lang avformat avcodec avutil swscale )
+target_link_libraries (TestFfmpeg    ${FFMPEG_AVFORMAT_LIBRARY}
+  ${FFMPEG_AVCODEC_LIBRARY}
+  ${FFMPEG_AVUTIL_LIBRARY}
+  ${FFMPEG_SWSCALE_LIBRARY} )
 target_link_libraries (TestSerializePacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT} )
 target_link_libraries (TestDeSerializePacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFormatInputStream io av util lang avformat avcodec avutil swscale )
@@ -40,6 +45,7 @@ target_link_libraries (TestProcessAudioPacket ${BZ2_LIB} avformat avcodec avutil
 ENDIF(NOT WIN32)
 
 ADD_TEST(LibAVPacket ${EXECUTABLE_OUTPUT_PATH}/TestPacket)
+ADD_TEST(TestFfmpeg ${EXECUTABLE_OUTPUT_PATH}/TestFfmpeg )
 ADD_TEST(LibAVSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestSerializePacket)
 ADD_TEST(LibAVDeSerializePacket ${EXECUTABLE_OUTPUT_PATH}/TestDeSerializePacket)
 ADD_TEST(LibAVFormatInputStream ${EXECUTABLE_OUTPUT_PATH}/TestFormatInputStream)

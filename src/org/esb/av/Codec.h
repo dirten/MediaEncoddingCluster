@@ -89,7 +89,7 @@ namespace org {
                     ar & ctx->channels;
                     ar & ctx->sample_rate;
                     ar & ctx->sample_fmt;
-                    ar & ctx->bits_per_coded_sample;
+//                    ar & ctx->bits_per_coded_sample;
 
                 }
 

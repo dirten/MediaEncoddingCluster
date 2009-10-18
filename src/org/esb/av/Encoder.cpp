@@ -49,7 +49,7 @@ Packet Encoder::encodeVideo(Frame & frame) {
     memcpy(pac.packet->data, &data, ret);
     //      delete []data;
   } else {
-//    logdebug("packet size = 0");
+	  logdebug("packet size < 0:"<<ret);
   //    throw lang::Exception(__FILE__, __LINE__, "Error in Encoding Video Packet");
     return pac;
   }
