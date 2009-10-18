@@ -12,7 +12,7 @@ int main(int argc, char ** argv){
 		return 0;
 	}
 	AVFormatContext * formatCtx= avformat_alloc_context();
-	AVInputFormat *file_iformat = av_find_input_format("mpeg2ts");
+	AVInputFormat *file_iformat = av_find_input_format("mp4");
 	AVFormatParameters params, *ap = &params;
 	memset(ap, 0, sizeof(*ap));
 	ap->prealloced_context = 1;
@@ -22,15 +22,20 @@ int main(int argc, char ** argv){
 		std::cout<<"could not open file" << filename <<std::endl;
 		return 0;
 	}
+	formatCtx->debug=5;
 	if (av_find_stream_info(formatCtx) < 0) {
 		std::cout<<"could not read stream info " << filename <<std::endl;
 		return 0;
 	}
-	while(true){
+	
+	for(int i=0;true;){
 		AVPacket pkt;
 		int ret= av_read_frame(formatCtx, &pkt);
 		if(pkt.stream_index==1){
-			std::cout <<pkt.stream_index;
+			std::cout <<i<<pkt.data<<std::endl;
+			i++;
+			if(i>=500)
+			exit(0);
 		}
 	}
 

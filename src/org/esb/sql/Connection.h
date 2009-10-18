@@ -6,6 +6,9 @@
 #include "my_sql.h"
 #include "org/esb/util/Depricated.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+
 namespace org {
   namespace esb {
     namespace sql {
@@ -32,6 +35,7 @@ namespace org {
         static const int USERCOMMIT = 2;
         void connect();
       private:
+		  static boost::mutex con_mutex;
         friend class Statement;
         friend class PreparedStatement;
 		std::string _constr;

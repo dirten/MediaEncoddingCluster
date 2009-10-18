@@ -9,7 +9,7 @@
 using namespace org::esb::sql;
 using namespace org::esb::util;
 int Connection::_staticCounter = 0;
-
+boost::mutex Connection::con_mutex;
 /*
 Connection::Connection() {
 
@@ -40,7 +40,7 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 }
 
 Connection::~Connection() {
-	_staticCounter--;
+//	_staticCounter--;
 //  logdebug("Connection::~Connection()");
 //	mysql_close(mysqlPtr.get());
 //  	mysql_thread_end();
@@ -57,6 +57,7 @@ Connection::~Connection() {
 void close_connection(MYSQL*d){
 }
 void Connection::connect() {
+	          boost::mutex::scoped_lock scoped_lock(con_mutex);
 //  logdebug("Connection::connect()");
   if (_staticCounter == 0) {
     std::string base_path = org::esb::config::Config::getProperty("hive.base_path");

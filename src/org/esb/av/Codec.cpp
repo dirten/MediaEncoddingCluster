@@ -25,6 +25,7 @@ namespace org {
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
         _mode = mode;
+//		ctx->codec_id=ctx->codec->id;
         findCodec(mode);
         //        ctx->codec = _codec;
         _opened = false;
@@ -100,7 +101,7 @@ namespace org {
         ctx->max_qdiff = 4;
         ctx->qmin = 10;
         ctx->qmax = 51;
-        ctx->qcompress = static_cast<float>(0.6);
+        ctx->qcompress = 0.6;
 
       }
 
