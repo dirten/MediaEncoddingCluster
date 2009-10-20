@@ -7,6 +7,6 @@ add_subdirectory (av)
 add_subdirectory (util)
 add_subdirectory (hive)
 add_subdirectory (web)
-#add_subdirectory (sql)
+add_subdirectory (sql)
 
 

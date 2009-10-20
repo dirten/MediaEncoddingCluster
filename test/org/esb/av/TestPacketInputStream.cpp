@@ -17,13 +17,16 @@ int main(int argc, char **argv){
   }else{
 	src=argv[1];
   }
+  int stream_index=0;
+  if(argc==3){
+    stream_index=atoi(argv[2]);
+  }
 
-  
   File f(src.c_str());
   FormatInputStream fis(&f);
-  AVCodecContext * c = fis.getFormatContext()->streams[0]->codec;
+  AVCodecContext * c = fis.getFormatContext()->streams[stream_index]->codec;
   Decoder *dec;
-  if(true){
+  if(false){
   dec= new Decoder(c);
   }else{
 	  std::cout<<"CodecId"<<c->codec_id<<std::endl;
@@ -86,7 +89,7 @@ int main(int argc, char **argv){
 	dec->ctx->coded_height=c->coded_height;
 	std::cout << "Codec Extradata Size:"<<c->extradata_size<<std::endl;
 	std::cout << "Codec Extradata Size:"<<dec->ctx->extradata_size<<std::endl;
-	std::cout << "Codec Extradata Size:"<<c->extradata<<std::endl;
+//	std::cout << "Codec Extradata Size:"<<c->extradata<<std::endl;
 //	std::cout << "Codec Extradata Size:"<<dec->ctx->extradata<<std::endl;
 	dec->ctx->extradata=c->extradata;
 //	dec->ctx->extradata=static_cast<uint8_t*>(av_malloc(40));
@@ -110,13 +113,13 @@ int main(int argc, char **argv){
     AVRational ar;
     ar.num = 1;
     ar.den = 25;
-	enc->setGopSize(20);
+	enc->setGopSize(100);
     enc->setTimeBase(ar);
     enc->setWidth(320);
     enc->setHeight(240);
-	enc->ctx->debug=5;
-	enc->ctx->bits_per_raw_sample=c->bits_per_raw_sample;
-	enc->ctx->chroma_sample_location=c->chroma_sample_location;
+//	enc->ctx->debug=5;
+//	enc->ctx->bits_per_raw_sample=c->bits_per_raw_sample;
+//	enc->ctx->chroma_sample_location=c->chroma_sample_location;
 //      enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
 //     enc->setPixelFormat(PIX_FMT_YUV420P);
     //  enc.ctx->bits_per_raw_sample=dec.ctx
@@ -124,15 +127,16 @@ int main(int argc, char **argv){
   PacketInputStream pis(&fis);
   Packet p;
   for(int a=0;a<1000;a++){
+//  std::cerr<<"PacketLoop"<<std::endl;
     if(pis.readPacket(p)>=0){
-		if(p.packet->stream_index==0){
+		if(p.packet->stream_index==stream_index){
 			Frame * f=dec->decode2(p);
 			if(f->isFinished()){
-				std::cout<<"frame finished"<<endl;
+				std::cerr<<"frame finished"<<std::endl;
 				 Packet pout=enc->encode(*f);
+				 std::cerr << "Packet size:"<<pout.packet->size<<std::endl;
 			}else{
-							std::cout<<"frame not finished"<<endl;
-
+				std::cerr<<"frame not finished"<<std::endl;
 			}
 		}
     }

@@ -34,6 +34,7 @@ target_link_libraries (TestPacketOutputStream io av util lang avformat avcodec a
 target_link_libraries (TestProcessAudioPacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 
 IF(NOT WIN32)
+target_link_libraries (TestFfmpeg ${BZ2_LIB} x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (TestPacket ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
 target_link_libraries (TestSerializePacket ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestDeSerializePacket ${BZ2_LIB} avformat avcodec avutil swscale  x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg ${BOOST_SERIAL_LIB_MT})
