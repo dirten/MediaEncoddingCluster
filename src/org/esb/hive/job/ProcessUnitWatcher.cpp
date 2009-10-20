@@ -34,9 +34,15 @@ namespace org {
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
         bool ProcessUnitWatcher::_isStopSignal = false;
-		map<int, ProcessUnitWatcher::StreamData> ProcessUnitWatcher::_stream_map;
+        map<int, ProcessUnitWatcher::StreamData> ProcessUnitWatcher::_stream_map;
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
+          std::string c = org::esb::config::Config::getProperty("db.connection");
+//          _con_tmp = new Connection(c);
+          _con_tmp2 = new Connection(c);
+
+//          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
+          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
 
         }
 
@@ -56,19 +62,13 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start3() {
-//          logdebug("ProcessUnitWatcher running");
-          std::string c = org::esb::config::Config::getProperty("db.connection");
-		  /*clean up previosly aborted encodings*/
-//		  Connection con(c);
-//		  con.executeNonQuery("DELETE FROM process_units where send is null or complete is null");
+          //          logdebug("ProcessUnitWatcher running");
+          /*clean up previosly aborted encodings*/
+          //		  Connection con(c);
+          //		  con.executeNonQuery("DELETE FROM process_units where send is null or complete is null");
 
-		  _con_tmp = new Connection(c);
-          _con_tmp2 = new Connection(c);
-
-          _stmt = _con_tmp->prepareStatement2("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
-          _stmt_fr = _con_tmp2->prepareStatement2("update process_units set complete = now() where id=:id");
           while (!_isStopSignal) {
-//          logdebug("ProcessUnitWatcher loop");
+            //          logdebug("ProcessUnitWatcher loop");
             //getting all jobs that not be completed
             sql::Connection con(std::string(config::Config::getProperty("db.connection")));
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
@@ -98,9 +98,9 @@ namespace org {
                   _stream_map[index].type = rs2.getInt("stream_type");
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
-                  _stream_map[index].last_start_ts=0;
-                  _stream_map[index].packet_count=0;
-				  _stream_map[index].last_process_unit_id=0;
+                  _stream_map[index].last_start_ts = 0;
+                  _stream_map[index].packet_count = 0;
+                  _stream_map[index].last_process_unit_id = 0;
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     //                  * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))
@@ -124,20 +124,20 @@ namespace org {
                 sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max(id) as last_id,max( start_ts ) as last_start_ts FROM process_units WHERE source_stream = :a GROUP BY source_stream");
                 std::map<int, StreamData>::iterator st = _stream_map.begin();
                 for (; st != _stream_map.end(); st++) {
-                  pstmt.setInt("a",(*st).second.instream);
-                  ResultSet rs_t=pstmt.executeQuery();
-                  if(rs_t.next()){
-                    logdebug("Setting last start_ts for stream"<<(*st).second.instream<<" to"<<rs_t.getLong("last_start_ts"))
-                    (*st).second.last_start_ts=rs_t.getLong("last_start_ts");
-					(*st).second.last_process_unit_id=rs_t.getLong("last_id");
+                  pstmt.setInt("a", (*st).second.instream);
+                  ResultSet rs_t = pstmt.executeQuery();
+                  if (rs_t.next()) {
+                    logdebug("Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"))
+                        (*st).second.last_start_ts = rs_t.getLong("last_start_ts");
+                    (*st).second.last_process_unit_id = rs_t.getLong("last_id");
                   }
                 }
               }
               /*
               
                */
-//              long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-//              logdebug("building seek offset -" << offset);
+              //              long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
+              //              logdebug("building seek offset -" << offset);
               //              fis->seek(offset);
               PacketInputStream pis(fis);
               q_filled = false;
@@ -151,7 +151,7 @@ namespace org {
                     _stream_map.find(packet.packet->stream_index) == _stream_map.end() ||
                     _stream_map[packet.packet->stream_index].last_start_ts > packet.packet->dts
                     ) {
-//                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
+                  //                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
                   continue;
                 }
                 //building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
@@ -257,8 +257,8 @@ namespace org {
 
         void ProcessUnitWatcher::processVideoPacket(boost::shared_ptr<Packet> pPacket) {
           //and put it in the read ahead queue
-//          if (pPacket->packet->size > 0)
-            packet_queue.push_back(pPacket);
+          //          if (pPacket->packet->size > 0)
+          packet_queue.push_back(pPacket);
 
           //getting stream index from Packet
           int sIdx = pPacket->packet->stream_index;
@@ -320,25 +320,28 @@ namespace org {
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-		  //special case after an interupted encoding session
-		  int sIdx=u->_input_packets.front()->packet->stream_index;
-		  if(_stream_map[sIdx].last_process_unit_id==0){
-			  _stmt->setInt("source_stream", u->_source_stream);
-			  _stmt->setInt("target_stream", u->_target_stream);
-			  _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
-			  _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
-			  _stmt->setInt("frame_count", u->_input_packets.size());
-			  _stmt->execute();
-			  u->_process_unit = _stmt->getLastInsertId();
-		  }else{
-			  u->_process_unit =_stream_map[sIdx].last_process_unit_id;
-			  _stream_map[sIdx].last_process_unit_id=0;
-		  }
+          //special case after an interupted encoding session
+          int sIdx = u->_input_packets.front()->packet->stream_index;
+          if (_stream_map[sIdx].last_process_unit_id == 0) {
+          std::string c = org::esb::config::Config::getProperty("db.connection");
+          Connection con(c);
+            PreparedStatement stmt=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
+            stmt.setInt("source_stream", u->_source_stream);
+            stmt.setInt("target_stream", u->_target_stream);
+            stmt.setLong("start_ts", u->_input_packets.front()->packet->dts);
+            stmt.setLong("end_ts", u->_input_packets.back()->packet->dts);
+            stmt.setInt("frame_count", u->_input_packets.size());
+            stmt.execute();
+            u->_process_unit = stmt.getLastInsertId();
+          } else {
+            u->_process_unit = _stream_map[sIdx].last_process_unit_id;
+            _stream_map[sIdx].last_process_unit_id = 0;
+          }
 
-//		  Connection con(org::esb::config::Config::getProperty("db.connection"));
-//          PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
-//          pstmt.setInt("id", pu->_process_unit);
-//          pstmt.execute();
+          //		  Connection con(org::esb::config::Config::getProperty("db.connection"));
+          //          PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
+          //          pstmt.setInt("id", pu->_process_unit);
+          //          pstmt.execute();
           return u;
         }
 

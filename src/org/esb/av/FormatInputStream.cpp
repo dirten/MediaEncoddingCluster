@@ -16,10 +16,9 @@ namespace org {
 		  loginfo("opening InputFile: "<<source->getPath());
 		  _isValid = false;
         _sourceFile = source;
-		AVFormatParameters params, *ap = &params;
-		ap->prealloced_context=1;
-		
+		AVFormatParameters params, *ap = &params;		
 		memset(ap, 0, sizeof(*ap));
+		ap->prealloced_context=1;
 
 //		ap->channels = 2;
 //		AVFormatContext* avformat_opts = avformat_alloc_context();
@@ -33,7 +32,7 @@ namespace org {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
-		formatCtx->debug=5;
+//		formatCtx->debug=5;
 
 		  loginfo("find stream info: "<<source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {

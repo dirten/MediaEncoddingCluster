@@ -23,44 +23,42 @@ Encoder::~Encoder() {
   //  av_fifo_free(fifo);
 }
 
-Packet Encoder::encode(Frame & frame) {
+int Encoder::encode(Frame & frame) {
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
     return encodeVideo(frame);
   if (ctx->codec_type == CODEC_TYPE_AUDIO)
     return encodeAudio(frame);
-  return Packet();
+  logerror("Encoder does not support type:"<<ctx->codec_type);
+  return -1;
 }
 
-Packet Encoder::encodeVideo(Frame & frame) {
-//  logdebug("VideoEncoderFrame:" << frame.toString());
+int Encoder::encode() {
+  return encodeVideo(NULL);
+}
+
+int Encoder::encodeVideo(AVFrame * inframe) {
 
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
 
-  int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, frame.getAVFrame());
-  //    pac.data=new uint8_t[ret];
-  //	cout << "ret:"<<ret<<endl;
-#ifdef DEBUG
-  logdebug("Create Packet with Size:" << ret);
-#endif
+  int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
   Packet pac(ret);
+  logdebug("PacketSize:"<<ret);
   if (ret > 0) {
     memcpy(pac.packet->data, &data, ret);
-    //      delete []data;
   } else {
-	  logdebug("packet size < 0:"<<ret);
-  //    throw lang::Exception(__FILE__, __LINE__, "Error in Encoding Video Packet");
-    return pac;
+	  logdebug("packet size <=0:"<<ret);
+    return 0;
   }
   //    pac.data=data;
-  pac.setTimeBase(frame.getTimeBase());
+//  pac.setTimeBase(frame.getTimeBase());
   pac.packet->size = ret;
-  pac.packet->pts = frame.getPts();
-  pac.packet->dts = frame.getDts();
-  pac.packet->pos = frame.pos;
-  pac.packet->stream_index = frame.stream_index;
-  pac.packet->duration = frame.duration;
+//  pac.packet->pts = frame.getPts();
+//  pac.packet->dts = frame.getDts();
+//  pac.packet->pos = frame.pos;
+//  pac.packet->stream_index = frame.stream_index;
+//  pac.packet->duration = frame.duration;
   //    pac.flags=0;
   //  logdebug("Encoder data");
   //  frame.toString();
@@ -78,7 +76,14 @@ Packet Encoder::encodeVideo(Frame & frame) {
   //  _pos->writePacket(pac);
   if (_sink != NULL)
     _sink->write(&pac);
-  return pac;
+  return ret;
+
+}
+
+int Encoder::encodeVideo(Frame & frame) {
+//  logdebug("VideoEncoderFrame:" << frame.toString());
+  return encodeVideo(frame.getAVFrame());
+//  return Packet();
 }
 
 void Encoder::setOutputStream(PacketOutputStream* pos) {
@@ -89,9 +94,7 @@ void Encoder::setSink(Sink * sink) {
   _sink = sink;
 }
 
-Packet Encoder::encodeAudio(Frame & frame) {
-//  logdebug("AudioEncodeFrame:" << frame.toString());
-
+int Encoder::encodeAudio(Frame & frame) {
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
   //  int size_out = frame._size;
@@ -184,7 +187,7 @@ Packet Encoder::encodeAudio(Frame & frame) {
   }
   av_free(audio_buf);
   av_free(audio_out);
-  return Packet();
+  return 0;
 }
 
 /**

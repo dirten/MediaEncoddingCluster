@@ -11,6 +11,7 @@ Frame::Frame() {
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   framePtr->quality = 100;
   framePtr->key_frame = 1;
+  framePtr->pts = 0;
   _buffer = NULL; //new uint8_t[1];
   _allocated = false;
   _type = CODEC_TYPE_VIDEO;
@@ -28,6 +29,7 @@ Frame::Frame() {
 
 Frame::Frame(uint8_t *buffer) {
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  framePtr->pts = 0;
   _buffer = buffer;
   _allocated = true;
   _width = 0;
@@ -137,14 +139,18 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   _size = 0;
+  _dts=0;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  framePtr->pts = 0;
   _width = width;
   _height = height;
   _pixFormat = format;
   _allocated = allocate;
   channels = 0;
   sample_rate = 0,
-      duration = 0;
+   duration = 0;
+  _time_base.num = 0;
+  _time_base.den = 0;
   /*
     quality = 100;
     channels = 0;
@@ -158,7 +164,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  avcodec_get_frame_defaults(this);
   if (allocate) {
     int numBytes = avpicture_get_size(format, width, height);
-	_size=numBytes;
+  _size=numBytes;
     _buffer = (uint8_t*)av_malloc(numBytes);
 	_allocated=true;
 
@@ -289,17 +295,18 @@ AVRational Frame::getTimeBase() {
 
 std::string Frame::toString() {
   std::ostringstream oss;
-  oss << "Frame->Size:" << getSize() <<
-      ":Pts:" << getPts() <<
-      ":Dts:" << getDts() <<
+  oss << "Frame->Size:" << _size <<
+
+      ":Pts:" << framePtr->pts <<
+      ":Dts:" << _dts <<
       ":SampleSize:" << _size <<
-      ":Width:" << getWidth() <<
-      ":Height:" << getHeight() <<
-      ":PixelFormat:" << getFormat() <<
+      ":Width:" << _width <<
+      ":Height:" << _height <<
+      ":PixelFormat:" << _pixFormat <<
       ":Channels:" << channels <<
       ":SampleRate:" << sample_rate <<
       ":Duration:" << duration <<
-      ":TimeBase:" << getTimeBase().num << ":" << getTimeBase().den;
+      ":TimeBase:" << _time_base.num << ":" <<_time_base.den;
 
   return std::string(oss.str());
 }

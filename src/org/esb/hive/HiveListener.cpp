@@ -58,8 +58,9 @@ namespace org {
             TcpSocket * clientSocket = server->accept();
             if (clientSocket != NULL || (!main_nextloop)) {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
-              Thread *thread = new Thread(protoServer);
-              thread->start();
+              boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
+//              Thread *thread = new Thread(protoServer);
+//              thread->start();
             } else {
               logerror("Client was not accepted");
               break;

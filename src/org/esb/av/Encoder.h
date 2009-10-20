@@ -20,7 +20,8 @@ namespace org {
         Encoder(CodecID id);
         Encoder();
         ~Encoder();
-        Packet encode(Frame & f);
+        int encode(Frame & f);
+        int encode();
         char * getStatistics();
         void setStatistics(char *);
         void setOutputStream(PacketOutputStream *);
@@ -43,8 +44,9 @@ namespace org {
             ar & boost::serialization::make_binary_object(extradata,extradata_size);
         }*/
       private:
-        Packet encodeVideo(Frame & f);
-        Packet encodeAudio(Frame & f);
+        int encodeVideo(Frame & f);
+        int encodeVideo(AVFrame *);
+        int encodeAudio(Frame & f);
 //        AVFifoBuffer *fifo;
         PacketOutputStream * _pos;
         Sink*_sink;

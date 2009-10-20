@@ -5,10 +5,11 @@
 #include "org/esb/av/Sink.h"
 
 #include "org/esb/util/Log.h"
+
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = false;
+bool toDebug = true;
 
 class PacketSink : public Sink {
 public:
@@ -25,6 +26,7 @@ public:
       pEnc->toString();
     }
   }
+
   std::list<boost::shared_ptr<Packet> > getList() {
     return pkts;
   }
@@ -42,19 +44,19 @@ ProcessUnit::ProcessUnit() {
   _frame_group = 0;
   _frame_count = 0;
   _process_unit = 0;
-	
+
   id = 0;
 }
 
 ProcessUnit::~ProcessUnit() {
-/*
-  if (_decoder != NULL)
-    delete _decoder;
-  if (_encoder != NULL)
-    delete _encoder;
-  _decoder = NULL;
-  _encoder = NULL;
-*/
+  /*
+    if (_decoder != NULL)
+      delete _decoder;
+    if (_encoder != NULL)
+      delete _encoder;
+    _decoder = NULL;
+    _encoder = NULL;
+   */
   //    _decoder=NULL;
   //    _encoder=NULL;
 
@@ -71,57 +73,49 @@ void ProcessUnit::process() {
     _decoder->open();
   if (_encoder != NULL)
     _encoder->open();
-  if (toDebug){
-    logdebug("Codex openned");
-	logdebug(_decoder->toString());
-	logdebug(_encoder->toString());
-  }
-  _decoder->ctx->request_channel_layout = 2;
 
+  if (toDebug) {
+    logdebug("Codex openned");
+    logdebug(_decoder->toString());
+    logdebug(_encoder->toString());
+  }
+  /*creating a packetsink for storing the encoded Packetsf from the encoder*/
   PacketSink sink;
   _encoder->setSink(&sink);
   _encoder->setOutputStream(NULL);
-
+  /*creating a frame converter*/
   FrameConverter conv(_decoder, _encoder);
+
   if (toDebug)
     logdebug("Converter created");
 
-  //	cout << "start decoding encoding"<<endl;
   list< boost::shared_ptr<Packet> >::iterator it;
-  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
-  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
-  int a = 0;
-  int counter = 0, s = 0;
+
+  /*i dont know if we need this in the Future*/
+  //  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
+  //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
+
+  /*loop over each Packet received */
   for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
     if (toDebug)
       logdebug("Loop");
+    /*get the Packet Pointer from the list*/
     boost::shared_ptr<Packet> p = *it;
+
+    /*sum the packet sizes for later output*/
     insize += p->packet->size;
     if (toDebug) {
       logdebug("inputpacket")
       p->toString();
     }
-
-    if (p->isKeyFrame()) {
-      //      cout << "KeyFrame\t";
-    }
-    //	    if(tmp._buffer==0)continue;
-    //        boost::shared_ptr<Frame> fr(new Frame(tmp));
-    //        pts_list.insert(fr);
-
-    //    cout << "PacketPts:" << p->packet->pts << "\tPacketDts:" << p->packet->dts << "\t";
-    //	    cout <<"\tFramePts:"<<tmp.getPts()<<"\tFrameDts:"<<tmp.getDts();
-    //	    cout <<"\tFrame*Pts:"<<fr->getPts()<<"\tFrame*Dts:"<<fr->getDts();
-    //        cout << endl;
-
+    /*Decoding the Packet into a Frame*/
     Frame * tmp = _decoder->decode2(*p);
-    if (toDebug){
+
+    if (toDebug) {
       logdebug("Frame Decoded");
       logdebug(tmp->toString());
     }
-    //    if (_frame_count >= counter && tmp.pict_type == FF_I_TYPE) {
-    //      break;
-    //    }
+    /*when frame not finished, then it is nothing to to and continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
       continue;
@@ -129,28 +123,28 @@ void ProcessUnit::process() {
     if (toDebug)
       logdebug("Frame Buffer > 0");
 
+    /*target frame for conversion*/
+    Frame * f = NULL;
 
-
-    //	    fr->setPts(++a);
-    //	    fr->setDts(AV_NOPTS_VALUE);
-    Frame * f;
+    /*allocation frame data for specified type*/
     if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
       f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
     if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
       f = new Frame();
     if (toDebug)
       logdebug("try Frame Convert");
+    /*converting the source frame to target frame*/
     conv.convert(*tmp, *f);
     delete tmp;
-    if (toDebug){
+
+    if (toDebug) {
       logdebug("Frame Converted");
       f->toString();
     }
 
-//    f->setPts(f->getDts());
-    //	    f.setPts(++a);
-    //	    tmp.setDts(AV_NOPTS_VALUE);
-    Packet ret = _encoder->encode(*f);
+    /*encode the frame into a packet*/
+    /*NOTE: the encoder write Packets also to Packet Sink, because some codecs duplicates frames*/
+    int ret = _encoder->encode(*f);
     delete f;
     //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)
@@ -161,81 +155,29 @@ void ProcessUnit::process() {
       logdebug("Packet Created");
 
     //	    pEnc->packet->dts=AV_NOPTS_VALUE;
-    outsize += ret.packet->size;
-    //    _output_packets.push_back(pEnc);
-    _output_packets = sink.getList();
-    if (toDebug)
-      logdebug("Packet Added");
-
-    //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
-    //	    cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;
-
-
-    //        pts_packets.insert(p);
+    outsize += ret;
   }
-
-  //	cout <<"ListSize:"<<_input_packets.size()<<"\tSetSize:"<<pts_list.size()<<endl;
-
-  //	multiset<boost::shared_ptr<Frame>, PtsComparator>::iterator pts_it;
+  /*now process the delayed Frames from the encoder*/
+  logdebug("Encode Packet delay");
+  bool have_more_frames=true;
+  while(have_more_frames){
+    if(_encoder->encode()<=0){
+      have_more_frames=0;
+    }
+  }
   /*
-          multiset<boost::shared_ptr<Packet>, PtsPacketComparator>::iterator packet_it;
-          a=0;
-
-          for(packet_it=pts_packets.begin();packet_it!=pts_packets.end();packet_it++){
-              boost::shared_ptr<Packet> p=*packet_it;
-              insize+=p->packet->size;
-              Frame tmp=_decoder->decode(*p);
-              if(tmp._buffer==0)continue;
-
-          boost::shared_ptr<Frame> fr(new Frame(tmp));
-  //	    fr->setDts(++a);
-
-          pts_list.insert(fr);
-
-      
-              tmp.setPts(++a);
-              tmp.setDts(AV_NOPTS_VALUE);
-                  Frame f=conv.convert(tmp);
-              Packet ret=_encoder->encode(f);
-              boost::shared_ptr<Packet> pEnc(new Packet(ret));
-              outsize+=pEnc->packet->size;
-              _output_packets.push_back(pEnc);
-      
-      }
+    if (_decoder != NULL)
+      delete _decoder;
+    if (_encoder != NULL)
+      delete _encoder;
+    _decoder = 0;
+    _encoder = 0;
    */
-  /*
-          a=0;
-          for(pts_it=pts_list.begin();pts_it!=pts_list.end();pts_it++){
-              boost::shared_ptr<Frame> tmp=*pts_it;
-              tmp->setPts(++a);
-  //	    tmp->setDts(AV_NOPTS_VALUE);
-	    
-                  Frame f=conv.convert(*tmp);
-  //		f.dts=f.pts;
-              Packet ret=_encoder->encode(*tmp);
-              boost::shared_ptr<Packet> pEnc(new Packet(ret));
-              outsize+=pEnc->packet->size;
-              pEnc->packet->dts=AV_NOPTS_VALUE;
-              _output_packets.push_back(pEnc);
-  //	    cout <<"FramePts:"<<f.pts<<"\tFrameDts:"<<f.dts;
-              cout <<"\tPacketPts:"<<pEnc->packet->pts<<"\tPacketDts:"<<pEnc->packet->dts<<endl;
-  //	    cout << "Frame*Pts:"<<tmp->pts<<"\tPacketPts:"<<ret.packet->pts<<"Packet*Pts"<<pEnc->packet->pts<<endl;
-          }
-   */
-//  logdebug("InputSize:" << insize << "OutputSize:" << outsize);
-/*
-  if (_decoder != NULL)
-    delete _decoder;
-  if (_encoder != NULL)
-    delete _encoder;
-  _decoder = 0;
-  _encoder = 0;
-*/
+  _output_packets = sink.getList();
 
 }
 
-
-std::string toString(){
+std::string toString() {
   std::stringstream t;
   return t.str();
 }

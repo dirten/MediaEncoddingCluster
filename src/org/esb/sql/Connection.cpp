@@ -15,6 +15,7 @@ Connection::Connection() {
 
 }
  */
+
 /*
 Connection::Connection(const char * con, bool auto_connect) {
   _constr = con;
@@ -22,7 +23,7 @@ Connection::Connection(const char * con, bool auto_connect) {
   if (auto_connect)
     connect();
 }
-*/
+ */
 Connection::Connection(const std::string con, bool auto_connect) {
   _constr = con;
   parseConnectionString(con);
@@ -40,10 +41,10 @@ Connection::Connection(std::string host, std::string db, std::string user, std::
 }
 
 Connection::~Connection() {
-//	_staticCounter--;
-//  logdebug("Connection::~Connection()");
-//	mysql_close(mysqlPtr.get());
-//  	mysql_thread_end();
+  //	_staticCounter--;
+  //  logdebug("Connection::~Connection()");
+  //	mysql_close(mysqlPtr.get());
+  //  	mysql_thread_end();
   /*
     _staticCounter--;
     if(_staticCounter==0){
@@ -54,11 +55,13 @@ Connection::~Connection() {
    */
   //  std::cout <<"Connection Object destroyed"<<std::endl;
 }
-void close_connection(MYSQL*d){
+
+void close_connection(MYSQL*d) {
 }
+
 void Connection::connect() {
-	          boost::mutex::scoped_lock scoped_lock(con_mutex);
-//  logdebug("Connection::connect()");
+  boost::mutex::scoped_lock scoped_lock(con_mutex);
+  //  logdebug("Connection::connect()");
   if (_staticCounter == 0) {
     std::string base_path = org::esb::config::Config::getProperty("hive.base_path");
 
@@ -68,24 +71,27 @@ void Connection::connect() {
 
     std::string datadir = "--datadir=";
     datadir.append(base_path);
-    static char *server_options[] = {"", const_cast<char*> (datadir.c_str()), const_cast<char*> (lang.c_str()), NULL};
+    datadir.append("/");
+    static char *server_options[] = {"mysql_test", const_cast<char*> (datadir.c_str()), const_cast<char*> (lang.c_str()), NULL};
     int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
-    static char *server_groups[] = {"embedded", "server", NULL};
-    mysql_library_init(num_elements, server_options, server_groups);
+    static char *server_groups[] = {"embedded", NULL};
+    if(mysql_library_init(num_elements, server_options, server_groups)!=0){
+//      logerror("DB Library init failed");
+    }
   }
 
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
-//  mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &close_connection);
+  //  mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &close_connection);
   //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_EMBEDDED_CONNECTION,NULL);
-//  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_REMOTE_CONNECTION, NULL);
+  //  mysql_options(mysqlPtr.get(), MYSQL_OPT_USE_REMOTE_CONNECTION, NULL);
   mysql_options(mysqlPtr.get(), MYSQL_OPT_GUESS_CONNECTION, NULL);
-//  unsigned int proto = MYSQL_PROTOCOL_TCP;
-//  mysql_options(mysqlPtr.get(), MYSQL_OPT_PROTOCOL, &proto);
-/*
-  if (mysql_thread_init()) {
-    throw SqlException(string("Failed to init mysql thread: ").append(std::string(mysql_error(mysqlPtr.get()))));
-  }
-  */
+  //  unsigned int proto = MYSQL_PROTOCOL_TCP;
+  //  mysql_options(mysqlPtr.get(), MYSQL_OPT_PROTOCOL, &proto);
+  
+    if (mysql_thread_init()) {
+      throw SqlException(string("Failed to init mysql thread: ").append(std::string(mysql_error(mysqlPtr.get()))));
+    }
+   
   if (!mysql_real_connect(mysqlPtr.get(), _host.c_str(), _username.c_str(), _passwd.c_str(), _db.c_str(), 0, NULL, 0)) {
     throw SqlException(string("Failed to connect to database: ").append(std::string(mysql_error(mysqlPtr.get()))));
   }
@@ -115,7 +121,8 @@ void Connection::close() {
 
 void Connection::executeNonQuery(std::string sql) {
   if (mysql_query(mysqlPtr.get(), sql.c_str()))
-    throw SqlException(string("Failed to execute Query -> ").append(sql).append(" -> ").append(mysql_error(mysqlPtr.get())));
+//    logerror("MysqlErrorNo:" << mysql_errno(mysqlPtr.get()));
+  throw SqlException(string("Failed to execute Query -> ").append(sql).append(" -> ").append(mysql_error(mysqlPtr.get())));
 }
 
 long long int Connection::lastInsertId() {

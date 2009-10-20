@@ -10,34 +10,33 @@
 #include <boost/shared_ptr.hpp>
 //using namespace std;
 namespace org {
-  namespace esb {
-    namespace sql {
-//      class Connection;
-      class ResultSet;
+    namespace esb {
+        namespace sql {
+            //      class Connection;
+            class ResultSet;
 
-      class Statement {
-        
-      public:
-        Statement(MYSQL * mysql, const char * sql);
-        ~Statement();
-		ResultSet executeQuery();
-		ResultSet * executeQuery(std::string sql);
-        ResultSet * executeQuery2();
-//        ResultSet executeQuery(char *);
-        bool execute();
-        void close();
-      protected:
-        friend class ResultSet;
-        MYSQL_STMT * stmt;
-        boost::shared_ptr<MYSQL_STMT> stmtPtr;
-        std::map<std::string, int> vars;
-      private:
-        std::string sql;
-        ResultSet * rs;
+            class Statement {
+            public:
+                Statement(MYSQL * mysql, const char * sql);
+                ~Statement();
+                ResultSet executeQuery();
+                ResultSet * executeQuery(std::string sql);
+                ResultSet * executeQuery2();
+                //        ResultSet executeQuery(char *);
+                bool execute();
+                void close();
+            protected:
+                friend class ResultSet;
+//                MYSQL_STMT * stmt;
+                boost::shared_ptr<MYSQL_STMT> stmtPtr;
+//                std::map<std::string, int> vars;
+            private:
+                std::string sql;
+                ResultSet * rs;
 
-      };
+            };
+        }
     }
-  }
 }
 #endif
 

@@ -86,10 +86,6 @@ namespace org {
           if (msg.containsProperty("interval")) {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;
           }
-        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
-        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
           boost::thread(boost::bind(&DirectoryScanner::scan, this));
           logdebug("Directory Scanner running with interval:" << _interval);
           //    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
@@ -102,17 +98,25 @@ namespace org {
       }
 
       void DirectoryScanner::scan() {
+        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
         while (!_halt) {
           ResultSet rs = _stmt2->executeQuery();
           while (rs.next()) {
             if (File(rs.getString("infolder").c_str()).exists()) {
-              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), MyFileFilter(rs.getString("extension_filter")));
+              FileFilter * filter=new MyFileFilter(rs.getString("extension_filter"));
+              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), *filter);
+              delete filter;
             } else {
               //            _halt = true;
             }
           }
           Thread::sleep2(_interval);
         }
+        delete _stmt2;
+        delete _con2;
       }
 
       void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, FileFilter & filter) {

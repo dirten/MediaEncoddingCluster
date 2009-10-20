@@ -90,9 +90,10 @@ namespace org {
         ctx->error_recognition = FF_ER_CAREFUL;
         ctx->error_concealment = 3;
         ctx->workaround_bugs = 1;
-        ctx->debug = 1;
+        ctx->debug = 0;
         ctx->debug_mv = 0;
         ctx->request_channels = 2;
+        ctx->request_channel_layout = 2;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
         }
