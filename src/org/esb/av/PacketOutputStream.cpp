@@ -69,8 +69,8 @@ void PacketOutputStream::writePacket(Packet & packet) {
       packet.setDuration(0);
     }
    */
-  //int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
-    int result = av_write_frame(_fmtCtx, packet.packet);
+  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+    //int result = av_write_frame(_fmtCtx, packet.packet);
   if(result!=0)logdebug("av_interleaved_write_frame Result:"<<result);
 //  logdebug("av_write_frame result:" << result);
 

@@ -167,7 +167,7 @@ void FileExporter::exportFile(int fileid) {
     //select * from packets where stream_id in(1,2) order by case when stream_id=1 then 1000/25000*pts else 1/16000*pts end;
     //select * from packets, streams s where stream_id=s.id and stream_id in (3,4)  order by s.time_base_num/s.time_base_den*pts
     //    string sql = "select data, data_size, packets.stream_index,packets.flags,packets.duration, dts, pts from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by s.time_base_num*dts/s.time_base_den";
-    std::string sql = "select * from process_units where target_stream in (:video, :audio) order by start_ts";
+    std::string sql = "select * from process_units where target_stream in (:video, :audio) order by id";
 
     //    string sql = "select * from packets, streams s where stream_id=s.id and stream_id in (:video,:audio) order by sort";
     //        string sql="select * from packets, streams s where stream_id=s.id and stream_id in (:video, :audio) order by dts";

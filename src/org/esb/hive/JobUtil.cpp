@@ -94,7 +94,10 @@ int jobcreator(int argc, char*argv[]) {
 		  r.den=rs.getInt("time_base_den");
 		  streams[v_stream_idx].framerate=r;
 	  }else{
-		streams[v_stream_idx].framerate=av_d2q(f, 10000);
+		  AVRational r=av_d2q(f, 10000);
+		  /*NOTE:values must be swapped*/
+		  streams[v_stream_idx].framerate.den=r.num;
+		  streams[v_stream_idx].framerate.num=r.den;
 	  }
     }
   }

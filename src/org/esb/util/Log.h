@@ -70,7 +70,7 @@ using namespace boost::gregorian;
 }
 #define loglevel(o1,level) {\
     std::stringstream t; \
-    t <<boost::this_thread::get_id()<<" ["<<__FUNCTION__<<":"<<__LINE__<<"]" << o1; \
+    t /*<<boost::this_thread::get_id()*/<<" ["<<__FUNCTION__<<":"<<__LINE__<<"]" << o1; \
     Log::getLogger()->log(t, level);\
 }
 #endif

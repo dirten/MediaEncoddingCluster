@@ -51,8 +51,8 @@ namespace org {
                     static org::esb::sql::PreparedStatement * _stmt;
                     void flushStreamPackets();
                     void buildProcessUnit(int sIdx);
-                    static boost::mutex m_mutex;
-                    static boost::mutex unit_list_mutex;
+                    static boost::mutex put_pu_mutex;
+                    static boost::mutex get_pu_mutex;
                     static org::esb::sql::PreparedStatement * _stmt_fr;
 
                     struct StreamData {

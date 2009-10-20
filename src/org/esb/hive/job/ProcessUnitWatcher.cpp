@@ -28,8 +28,8 @@ namespace org {
       namespace job {
 
         //        std::map<int, boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::unit_map;
-        boost::mutex ProcessUnitWatcher::m_mutex;
-        boost::mutex ProcessUnitWatcher::unit_list_mutex;
+        boost::mutex ProcessUnitWatcher::put_pu_mutex;
+        boost::mutex ProcessUnitWatcher::get_pu_mutex;
         util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::puQueue;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
@@ -39,10 +39,10 @@ namespace org {
         ProcessUnitWatcher::ProcessUnitWatcher() {
           std::string c = org::esb::config::Config::getProperty("db.connection");
 //          _con_tmp = new Connection(c);
-          _con_tmp2 = new Connection(c);
+//          _con_tmp2 = new Connection(c);
 
 //          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
-          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
+//          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
 
         }
 
@@ -66,6 +66,9 @@ namespace org {
           /*clean up previosly aborted encodings*/
           //		  Connection con(c);
           //		  con.executeNonQuery("DELETE FROM process_units where send is null or complete is null");
+          std::string c = org::esb::config::Config::getProperty("db.connection");
+          _con_tmp2 = new Connection(c);
+          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
 
           while (!_isStopSignal) {
             //          logdebug("ProcessUnitWatcher loop");
@@ -316,7 +319,7 @@ namespace org {
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(unit_list_mutex);
+          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
@@ -346,7 +349,7 @@ namespace org {
         }
 
         bool ProcessUnitWatcher::putProcessUnit(ProcessUnit & unit) {
-          boost::mutex::scoped_lock scoped_lock(m_mutex);
+          boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
 
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
