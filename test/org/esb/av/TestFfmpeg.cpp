@@ -9,22 +9,23 @@ extern "C" {
 
 int main(int argc, char ** argv) {
   av_register_all();
-  if (argc == 1) {
+  if (argc < 3) {
     return 0;
   }
   /*opening input file*/
-  AVFormatContext * formatCtx = avformat_alloc_context();
-  AVInputFormat *file_iformat = av_find_input_format("mpeg2ts");
-  AVFormatParameters params, *ap = &params;
-  memset(ap, 0, sizeof (*ap));
-  ap->prealloced_context = 1;
+  AVFormatContext * formatCtx;// = avformat_alloc_context();
+//  AVInputFormat *file_iformat = av_find_input_format("mpeg2ts");
+//  AVFormatParameters params, *ap = &params;
+//  memset(ap, 0, sizeof (*ap));
+//  ap->prealloced_context = 1;
 
   char * filename = argv[1];
-  if (av_open_input_file(&formatCtx, filename, file_iformat, 0, ap) != 0) {
+  int sid = atoi(argv[2]);
+  if (av_open_input_file(&formatCtx, filename, NULL, 0, NULL) != 0) {
     std::cout << "could not open file" << filename << std::endl;
     return 0;
   }
-  formatCtx->debug = 5;
+//  formatCtx->debug = 5;
   if (av_find_stream_info(formatCtx) < 0) {
     std::cout << "could not read stream info " << filename << std::endl;
     return 0;
@@ -33,7 +34,7 @@ int main(int argc, char ** argv) {
   /*
    * Create and open Decoder
    */
-  AVCodecContext * dec = formatCtx->streams[1]->codec;
+  AVCodecContext * dec = formatCtx->streams[sid]->codec;
   AVCodec * codec = avcodec_find_decoder(dec->codec_id);
   if (codec == NULL)
     std::cout << "Decoder not found" << std::endl;
@@ -69,7 +70,7 @@ int main(int argc, char ** argv) {
   for (int i = 0; true;) {
     AVPacket pkt;
     int ret = av_read_frame(formatCtx, &pkt);
-    if (pkt.stream_index == 1) {
+    if (pkt.stream_index == sid) {
       /*try to decode*/
       int fin = 0;
       AVFrame pic;
@@ -111,23 +112,26 @@ int main(int argc, char ** argv) {
       }
 
       std::cout << "frame finished" << std::endl;
+      if(true){
       const int buffer_size = 1024 * 256;
       uint8_t data[buffer_size];
       memset(&data, 0, buffer_size);
 
       int ret = avcodec_encode_video(enc, (uint8_t*) & data, buffer_size, &pic);
       std::cout << "Packet data size :" << ret << std::endl;
-      std::cout << "Packet pts :" << enc->coded_frame->pts << std::endl;
       if (ret < 0)
         std::cout << "Encoding failed" << std::endl;
+      }
       i++;
       if (i >= 15)
         break;
       //			exit(0);
     }
-
-
+    
+    av_free_packet(&pkt);
   }
+
+  
   std::cout << "Encoding last packets" << std::endl;
   bool have_more = true;
   while (have_more) {
@@ -136,12 +140,24 @@ int main(int argc, char ** argv) {
     memset(&data, 0, buffer_size);
     int ret = avcodec_encode_video(enc, (uint8_t*) & data, buffer_size, NULL);
     std::cout << "Packet data size :" << ret << std::endl;
-      std::cout << "Packet pts :" << enc->coded_frame->pts << std::endl;
+//    std::cout << "Packet pts :" << enc->coded_frame->pts << std::endl;
     if (ret < 0) {
       std::cout << "Encoding failed" << std::endl;
     }
     if (ret == 0)
       have_more = false;
   }
+
+//  av_freep(enc->stats_in);
+
   avcodec_close(enc);
+  avcodec_close(dec);
+
+  av_free(enc);
+//  av_free(dec);
+
+//  av_free(file_iformat);
+  av_close_input_file(formatCtx);
+//  av_free(formatCtx);
+  return 0;
 }

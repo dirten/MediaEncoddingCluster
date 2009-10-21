@@ -38,6 +38,7 @@ ResultSet * Statement::executeQuery2() {
 
 ResultSet Statement::executeQuery() {
   execute();
+  if (!rs)
     rs = new ResultSet(stmtPtr.get());
   return *rs;
 }
