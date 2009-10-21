@@ -83,6 +83,7 @@ int main(int argc, char ** argv) {
   logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
   //    Decoder dec(c);
 
+
   dec.setChannels(c->channels);
   //  dec.setChannels(2);
   dec.setBitRate(c->bit_rate);
