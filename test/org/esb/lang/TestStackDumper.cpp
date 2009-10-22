@@ -19,5 +19,5 @@ int main() {
 //	std::map<wstring, wstring> para;
 //  google_breakpad::ExceptionHandler exhandler(".",NULL, NULL, NULL, true);
 //  exhandler.DoDump()
-  die();
+//  die();
 }
