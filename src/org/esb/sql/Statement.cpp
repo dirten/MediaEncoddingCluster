@@ -38,7 +38,8 @@ ResultSet * Statement::executeQuery2() {
 
 ResultSet Statement::executeQuery() {
   execute();
-  if (!rs)
+  if (rs)
+    delete rs;
     rs = new ResultSet(stmtPtr.get());
   return *rs;
 }

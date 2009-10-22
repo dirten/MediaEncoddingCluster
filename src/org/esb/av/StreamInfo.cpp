@@ -22,75 +22,95 @@ namespace org {
   namespace esb {
     namespace av {
 
-      StreamInfo::StreamInfo(AVStream * str, int idx){
-        _s=str;
-        _idx=idx;
+      StreamInfo::StreamInfo(AVStream * str, int idx) {
+        _s = str;
+        _idx = idx;
       }
-      int StreamInfo::getIndex(){
+
+      int StreamInfo::getIndex() {
         return _idx;
       }
-      int StreamInfo::getCodecType(){
+
+      int StreamInfo::getCodecType() {
         return _s->codec->codec_type;
       }
-      int StreamInfo::getCodecId(){
+
+      int StreamInfo::getCodecId() {
         return _s->codec->codec_id;
       }
-      int StreamInfo::getCodecBitrate(){
+
+      int StreamInfo::getCodecBitrate() {
         return _s->codec->bit_rate;
       }
-      AVRational StreamInfo::getFrameRate(){
+
+      AVRational StreamInfo::getFrameRate() {
         return _s->r_frame_rate;
       }
-/*
-      AVRational StreamInfo::getCodecFrameRate(){
-        return _s->codec->frame_rate;
-      }
-*/
-      int StreamInfo::getCodecSampleRate(){
+
+            /*
+            AVRational StreamInfo::getCodecFrameRate(){
+              return _s->codec->frame_rate;
+            }
+       */
+      int StreamInfo::getCodecSampleRate() {
         return _s->codec->sample_rate;
       }
-      AVRational StreamInfo::getTimeBase(){
+
+      AVRational StreamInfo::getTimeBase() {
         return _s->time_base;
       }
-      AVRational StreamInfo::getCodecTimeBase(){
+
+      AVRational StreamInfo::getCodecTimeBase() {
         return _s->codec->time_base;
       }
-      int StreamInfo::getWidth(){
+
+      int StreamInfo::getWidth() {
         return _s->codec->width;
       }
-      int StreamInfo::getheight(){
+
+      int StreamInfo::getheight() {
         return _s->codec->height;
       }
-      int StreamInfo::getChannels(){
+
+      int StreamInfo::getChannels() {
         return _s->codec->channels;
       }
-      int StreamInfo::getGOPSize(){
+
+      int StreamInfo::getGOPSize() {
         return _s->codec->gop_size;
       }
-      int StreamInfo::getPixelFormat(){
+
+      int StreamInfo::getPixelFormat() {
         return _s->codec->pix_fmt;
       }
-      int StreamInfo::getSampleFormat(){
+
+      int StreamInfo::getSampleFormat() {
         return _s->codec->sample_fmt;
       }
-      int StreamInfo::getDuration(){
+
+      int StreamInfo::getDuration() {
         return _s->duration;
       }
-      float StreamInfo::getQuality(){
+
+      float StreamInfo::getQuality() {
         return _s->quality;
       }
-      long long int StreamInfo::getFirstPts(){
+
+      long long int StreamInfo::getFirstPts() {
         return _s->start_time;
       }
-      long long int StreamInfo::getFirstDts(){
+
+      long long int StreamInfo::getFirstDts() {
         return _s->first_dts;
       }
-      int StreamInfo::getNBIndexEntries(){
+
+      int StreamInfo::getNBIndexEntries() {
         return _s->nb_index_entries;
       }
-	  int StreamInfo::getFrameBytes(){
-		  return _s->codec->frame_size;
-	  }
+
+      int StreamInfo::getFrameBytes() {
+        return _s->codec->frame_size;
+      }
     }
   }
 }

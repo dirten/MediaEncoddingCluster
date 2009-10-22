@@ -304,7 +304,7 @@ int main(int argc, char * argv[]) {
 
   org::esb::config::Config::close();
   Log::close();
-  //  mysql_server_end();
+  mysql_server_end();
 
   return 0;
 }

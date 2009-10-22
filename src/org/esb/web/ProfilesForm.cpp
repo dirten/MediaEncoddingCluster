@@ -47,21 +47,21 @@ namespace org {
         }
         _el.getElement("v_bitrate", "Video Bitrate", "", t->elementAt(i++, 0));
         Wt::Ext::ComboBox * v_framerate = _elcb.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
-			StringTokenizer st(org::esb::config::Config::getProperty("framerates"),",");
-			
-			int c=st.countTokens();
-			v_framerate->addItem("same as source");
-			for(int a=1;a<=c;a++){
-				std::string t = st.nextToken();
-				StringTokenizer st2(t,";");
-				if(st2.countTokens()==2){
-					st2.nextToken();
-					std::string t2 = st2.nextToken();
-					v_framerate->addItem(t2);
-					framerates2idx[t2]=a;
-				}
-			}
-//        _el.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
+        StringTokenizer st(org::esb::config::Config::getProperty("framerates"), ",");
+
+        int c = st.countTokens();
+        v_framerate->addItem("same as source");
+        for (int a = 1; a <= c; a++) {
+          std::string t = st.nextToken();
+          StringTokenizer st2(t, "#");
+          if (st2.countTokens() == 2) {
+            st2.nextToken();
+            std::string t2 = st2.nextToken();
+            v_framerate->addItem(t2);
+            framerates2idx[t2] = a;
+          }
+        }
+        //        _el.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
         _el.getElement("v_width", "Video Width", "", t->elementAt(i++, 0));
         _el.getElement("v_height", "Video Height", "", t->elementAt(i++, 0));
         _el.getElement("v_height", "Video Height", "", t->elementAt(i++, 0));
@@ -111,9 +111,9 @@ namespace org {
             ((Wt::Ext::ComboBox*)_elcb.getElement("v_codec"))->setCurrentIndex(vcodecid2vcodecidx[rs.getInt("v_codec")]);
             //			((Wt::Ext::ComboBox*)elements["v_codec"])->setCurrentIndex(vcodecid2vcodecidx[rs.getInt("v_codec")]);
             _el.getElement("v_bitrate")->setText(rs.getString("v_bitrate"));
-			((Wt::Ext::ComboBox*)_elcb.getElement("v_framerate"))->setCurrentIndex(framerates2idx[rs.getString("v_framerate")]);
+            ((Wt::Ext::ComboBox*)_elcb.getElement("v_framerate"))->setCurrentIndex(framerates2idx[rs.getString("v_framerate")]);
 
-//            _el.getElement("v_framerate")->setText(rs.getString("v_framerate"));
+            //            _el.getElement("v_framerate")->setText(rs.getString("v_framerate"));
             _el.getElement("v_width")->setText(rs.getString("v_width"));
             _el.getElement("v_height")->setText(rs.getString("v_height"));
             _el.getElement("a_channels")->setText(rs.getString("a_channels"));

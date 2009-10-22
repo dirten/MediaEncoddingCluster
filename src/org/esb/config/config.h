@@ -31,6 +31,7 @@ namespace org
         static char * getProperty( const char * key, char * def="");
         static void setProperty(const char * key, const char * val);
         static Properties * getProperties();
+        static void reload();
       private:
         static void parseLine(const char*);
       };

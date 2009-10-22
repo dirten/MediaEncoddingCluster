@@ -129,7 +129,7 @@ int Encoder::encodeAudio(Frame & frame) {
     //    int osize= av_get_bits_per_sample_format(enc->sample_fmt)/8;
     //    logdebug("Frame Size:" << ctx->frame_size << " osize:" << osize);
     //    int64_t dur = av_rescale((int64_t) ctx->frame_size * ctx->time_base.den, ctx->time_base.num, ctx->sample_rate);
-    uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den));
+    uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
 //    logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
 //    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:" << dur << "::." << (((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den));
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
