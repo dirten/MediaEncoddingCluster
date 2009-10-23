@@ -189,7 +189,8 @@ add_library (hive
 #	hive/job/ClientHandler.cpp 
 	hive/job/ProcessUnit.cpp 
 	hive/DirectoryScanner.cpp 
-	hive/DatabaseUtil.cpp 
+	hive/DatabaseUtil.cpp
+	hive/DatabaseService.cpp
 	hive/FileImporter.cpp 
 	hive/JobUtil.cpp 
 	hive/HiveClient.cpp 

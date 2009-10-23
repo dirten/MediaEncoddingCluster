@@ -39,6 +39,10 @@ namespace org {
         return _s->codec->codec_id;
       }
 
+      AVCodecContext * StreamInfo::getCodec() {
+        return _s->codec;
+      }
+
       int StreamInfo::getCodecBitrate() {
         return _s->codec->bit_rate;
       }

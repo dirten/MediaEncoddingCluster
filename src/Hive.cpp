@@ -30,7 +30,7 @@
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/hive/ExportScanner.h"
-
+#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/Decimal.h"
 //#include "org/esb/hive/FileImporter.h"
 //#include "export.cpp"
@@ -304,7 +304,7 @@ int main(int argc, char * argv[]) {
 
   org::esb::config::Config::close();
   Log::close();
-  mysql_server_end();
+//  mysql_server_end();
 
   return 0;
 }
@@ -473,6 +473,8 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
    * Initializing Application Services
    *
    */
+  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
+  Messenger::getInstance().addMessageListener(dbservice);
 
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
@@ -504,6 +506,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
@@ -537,7 +540,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
      * Stopping Application Services from configuration
      *
      */
-
+    Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
@@ -609,6 +612,9 @@ void start() {
    *
    */
 
+  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
+  Messenger::getInstance().addMessageListener(dbservice);
+
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
@@ -638,6 +644,7 @@ void start() {
    */
 
 
+  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
@@ -666,7 +673,8 @@ void start() {
    * Stopping Application Services from configuration
    *
    */
-
+   /*need to call as first for committing all data to the files*/
+  Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
@@ -674,6 +682,7 @@ void start() {
   Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
 
   Messenger::free();
   //  mysql_library_end();

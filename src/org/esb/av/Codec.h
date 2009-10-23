@@ -26,7 +26,7 @@ namespace org {
                 const static int ENCODER = 2;
                 Codec(const CodecID codecId, int mode = DECODER);
                 Codec(AVCodecContext * codec, int mode = DECODER);
-                Codec();
+                Codec(int mode= DECODER);
                 ~Codec();
                 /**
                  *
@@ -43,7 +43,6 @@ namespace org {
                  */
                 CodecID getCodecId();
                 int open();
-                void close();
                 void setWidth(int w);
                 void setHeight(int h);
                 void setPixelFormat(PixelFormat pfm);
@@ -54,6 +53,7 @@ namespace org {
                 void setSampleRate(int size);
                 void setSampleFormat(SampleFormat size);
                 void setFlag(int flag);
+                void setCodecId(CodecID);
                 int getWidth();
                 int getHeight();
                 PixelFormat getPixelFormat();
@@ -104,9 +104,11 @@ namespace org {
                 bool _opened;
                 AVFifoBuffer *fifo;
             private:
+                void close();
                 void setParams();
                 void setContextDefaults();
                 bool _codec_resolved;
+                bool _pre_allocated;
             };
         }
     }

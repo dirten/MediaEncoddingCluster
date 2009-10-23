@@ -25,51 +25,44 @@ namespace org {
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
         _mode = mode;
-//		ctx->codec_id=ctx->codec->id;
+        //		ctx->codec_id=ctx->codec->id;
         findCodec(mode);
         //        ctx->codec = _codec;
         _opened = false;
+        _pre_allocated = true;
+        ctx->request_channels = 2;
+        ctx->request_channel_layout = 2;
         //		_codec_resolved=false;
       }
 
-      Codec::Codec() {
-//        logdebug("Codec::Codec()");
+      Codec::Codec(int mode) : _mode(mode) {
+        //        logdebug("Codec::Codec()");
         ctx = avcodec_alloc_context();
         setContextDefaults();
         _opened = false;
         _codec_resolved = false;
+        _pre_allocated = false;
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
-//        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
+        //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
         _codec_resolved = false;
         _mode = mode;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
         findCodec(mode);
-        if(_codec_resolved){
+        if (_codec_resolved) {
           avcodec_get_context_defaults2(ctx, _codec->type);
         }
         ctx->codec_id = codecId;
         setContextDefaults();
 
         _opened = false;
-        /*
-                _codec_id = codecId;
-                _flags = 0;
-                _mode = mode;
-                _width = 0;
-                _height = 0;
-                _bit_rate = 0;
-                _gop_size = 0;
-                _time_base.num = 0;
-                _time_base.den = 0;
-                _channels = 0;
-                _sample_rate = 0;
-                _sample_format = (SampleFormat) 0;
-                _pix_fmt = (PixelFormat) 0;
-                _opened = false;
-         */
+        _pre_allocated = false;
+      }
+
+      void Codec::setCodecId(CodecID id) {
+        ctx->codec_id = id;
       }
 
       void Codec::setContextDefaults() {
@@ -215,14 +208,17 @@ namespace org {
 
       void Codec::close() {
         if (_opened) {
-//        av_freep(&ctx->stats_in);
+          //        av_freep(&ctx->stats_in);
           avcodec_close(ctx);
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           logdebug("Codec not closed, because it was not opened:" << ctx->codec_id);
         }
-        av_free(ctx);
+        if (ctx && !_pre_allocated) {
+          av_free(ctx);
+//          ctx = NULL;
+        }
         _opened = false;
       }
 
@@ -302,12 +298,14 @@ namespace org {
       int Codec::getFlags() {
         return ctx->flags;
       }
-	  int Codec::getBitsPerCodedSample(){
-		  return ctx->bits_per_coded_sample;
-	  }
-	  void Codec::setBitsPerCodedSample(int v){
-		  ctx->bits_per_coded_sample=v;
-	  }
+
+      int Codec::getBitsPerCodedSample() {
+        return ctx->bits_per_coded_sample;
+      }
+
+      void Codec::setBitsPerCodedSample(int v) {
+        ctx->bits_per_coded_sample = v;
+      }
 
       /*
       void Codec::setStartTime(int64_t start) {

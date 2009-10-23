@@ -25,11 +25,13 @@ namespace org
       class Config
       {
       public:
-        static bool init(char*filename);
+        static bool init(const std::string & filename);
         static void close();
         static void save2db();
         static char * getProperty( const char * key, char * def="");
+        static std::string get(std::string&key, std::string & def);
         static void setProperty(const char * key, const char * val);
+
         static Properties * getProperties();
         static void reload();
       private:

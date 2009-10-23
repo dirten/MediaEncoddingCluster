@@ -5,7 +5,7 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 FormatOutputStream::FormatOutputStream(File * target_file, const char * fmt) {
-
+  _status = CLOSED;
 
   AVFormatParameters params, *ap = &params;
   memset(ap, 0, sizeof (*ap));
@@ -27,6 +27,8 @@ FormatOutputStream::FormatOutputStream(File * target_file, const char * fmt) {
     fprintf(stderr, "Invalid output format parameters\n");
     exit(1);
   }
+  _status = OPENED;
+
 }
 
 FormatOutputStream::~FormatOutputStream() {
@@ -57,12 +59,15 @@ void FormatOutputStream::open() {
 }
 
 void FormatOutputStream::close() {
-  av_write_trailer(_fmtCtx);
-  url_fclose(_fmtCtx->pb);
-  int nb_streams=_fmtCtx->nb_streams;
-  for(int a=0;a<nb_streams;a++){
-    av_free(_fmtCtx->streams[a]);
+  if (_status == OPENED) {
+    av_write_trailer(_fmtCtx);
+    url_fclose(_fmtCtx->pb);
+    int nb_streams = _fmtCtx->nb_streams;
+    for (int a = 0; a < nb_streams; a++) {
+      av_free(_fmtCtx->streams[a]);
+    }
+    av_free(_fmtCtx);
+    _status = CLOSED;
   }
-  av_free(_fmtCtx);
   //	av_close_input_file(_fmtCtx);
 };

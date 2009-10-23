@@ -41,12 +41,12 @@ void Config::close() {
   properties = NULL;
 }
 
-bool Config::init(char * filename) {
+bool Config::init(const std::string & filename) {
   //  properties = new Properties();
   loadDefaults(properties);
   FILE * fp;
   char buffer[255];
-  if ((fp = fopen(filename, "r")) == NULL) {
+  if ((fp = fopen(filename.c_str(), "r")) == NULL) {
     return false;
     //    throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
   }
@@ -98,6 +98,10 @@ void Config::save2db() {
 char * Config::getProperty(const char * key, char * def) {
   if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
+}
+std::string Config::get(std::string& key, std::string& def) {
+  if (!properties || !properties->hasProperty(key))return def;
+  return properties->getProperty(key);
 }
 
 void Config::setProperty(const char * key, const char * val) {

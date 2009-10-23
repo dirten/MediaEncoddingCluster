@@ -9,26 +9,33 @@
 //#include "AV.h"
 struct AVFormatContext;
 struct AVOutputFormat;
-namespace org{
-    namespace esb{
-	namespace av{
-	    class FormatOutputStream: public FormatBaseStream, public org::esb::io::OutputStream{
-		public:
-		    FormatOutputStream(org::esb::io::File * target,const char * fmt=NULL);
-		    ~FormatOutputStream();
-		    void write(char * buffer, int length);
-		    void write(vector<unsigned char>&buffer);
-		    void write(char * buffer);
-		    void open();
-		    void close();
-		    void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
-//		private:
-		    friend class PacketOutputStream;
-		    AVFormatContext * _fmtCtx;
-		    AVOutputFormat * _fmt;
-			org::esb::io::File * _file;
-	    };
-	}
+namespace org {
+    namespace esb {
+        namespace av {
+
+            class FormatOutputStream : public FormatBaseStream, public org::esb::io::OutputStream {
+            public:
+                FormatOutputStream(org::esb::io::File * target, const char * fmt = NULL);
+                ~FormatOutputStream();
+                void write(char * buffer, int length);
+                void write(vector<unsigned char>&buffer);
+                void write(char * buffer);
+                void open();
+                void close();
+                void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
+                //		private:
+                friend class PacketOutputStream;
+                AVFormatContext * _fmtCtx;
+                AVOutputFormat * _fmt;
+                org::esb::io::File * _file;
+            private:
+                enum STATUS{
+                    OPENED,
+                    CLOSED
+                };
+                int _status;
+            };
+        }
     }
 };
 #endif

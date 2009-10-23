@@ -91,13 +91,13 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
-        if (in_frame._type == CODEC_TYPE_VIDEO) {
+        if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
-        if (in_frame._type == CODEC_TYPE_AUDIO) {
+        if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
-        rescaleTimestamp(in_frame, out_frame);
+//        rescaleTimestamp(in_frame, out_frame);
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {

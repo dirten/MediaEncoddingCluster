@@ -17,6 +17,7 @@ namespace org {
         int getIndex();
         int getCodecType();
         int getCodecId();
+        AVCodecContext * getCodec();
         int getCodecBitrate();
         AVRational getFrameRate();
 //        AVRational getCodecFrameRate();

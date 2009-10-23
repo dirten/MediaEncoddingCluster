@@ -62,23 +62,6 @@ void close_connection(MYSQL*d) {
 void Connection::connect() {
   boost::mutex::scoped_lock scoped_lock(con_mutex);
   //  logdebug("Connection::connect()");
-  if (_staticCounter == 0) {
-    std::string base_path = org::esb::config::Config::getProperty("hive.base_path");
-
-    std::string lang = "--language=";
-    lang.append(base_path);
-    lang.append("/res");
-
-    std::string datadir = "--datadir=";
-    datadir.append(base_path);
-    datadir.append("/");
-    static char *server_options[] = {"mysql_test", const_cast<char*> (datadir.c_str()), const_cast<char*> (lang.c_str()), NULL};
-    int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
-    static char *server_groups[] = {"embedded", NULL};
-    if(mysql_library_init(num_elements, server_options, server_groups)!=0){
-//      logerror("DB Library init failed");
-    }
-  }
 
   mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &mysql_close);
   //  mysqlPtr = boost::shared_ptr<MYSQL > (mysql_init(NULL), &close_connection);

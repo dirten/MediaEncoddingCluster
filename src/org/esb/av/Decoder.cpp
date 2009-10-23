@@ -8,7 +8,7 @@
 using namespace org::esb::av;
 using namespace std;
 
-Decoder::Decoder() : Codec() {
+Decoder::Decoder() : Codec(Codec::DECODER) {
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {

@@ -53,6 +53,7 @@ namespace org {
                 //                std::map<int, int> _streamReverseMap;
                 friend class PacketInputStream;
                 AVFormatContext * formatCtx;
+                map<int, StreamInfo*> _stream_info_map;
 
             };
         }

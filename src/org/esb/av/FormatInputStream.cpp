@@ -13,28 +13,28 @@ namespace org {
     namespace av {
 
       FormatInputStream::FormatInputStream(File * source) {
-		  loginfo("opening InputFile: "<<source->getPath());
-		  _isValid = false;
+        loginfo("opening InputFile: " << source->getPath());
+        _isValid = false;
         _sourceFile = source;
-		AVFormatParameters params, *ap = &params;		
-		memset(ap, 0, sizeof(*ap));
-		ap->prealloced_context=1;
+        AVFormatParameters params, *ap = &params;
+        memset(ap, 0, sizeof (*ap));
+        ap->prealloced_context = 1;
 
-//		ap->channels = 2;
-//		AVFormatContext* avformat_opts = avformat_alloc_context();
-//		set_context_opts(formatCtx, avformat_opts, 2);
+        //		ap->channels = 2;
+        //		AVFormatContext* avformat_opts = avformat_alloc_context();
+        //		set_context_opts(formatCtx, avformat_opts, 2);
 
 
-		
+
         formatCtx = avformat_alloc_context();
-		std::string filename=_sourceFile->getPath();
+        std::string filename = _sourceFile->getPath();
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
-//		formatCtx->debug=5;
+        //		formatCtx->debug=5;
 
-		  loginfo("find stream info: "<<source->getPath());
+        loginfo("find stream info: " << source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
           return;
@@ -42,29 +42,29 @@ namespace org {
         /**
          * get the first video and audio stream
          */
-//		  loginfo("create stream map: "<<source->getPath());
-/*
-        _streamMap[0] = -1;
-        _streamMap[1] = -1;
-        for (int i = 0; i < formatCtx->nb_streams; i++) {
-          if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _streamMap[0] == -1) {
-            _streamMap[0] = i;
-            _streamReverseMap[i] = 0;
-          } else
-            if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _streamMap[1] == -1) {
-            _streamMap[1] = i;
-            _streamReverseMap[i] = 1;
-          } else
-            _streamReverseMap[i] = -1;
-        }
-        if(_streamMap[0]<0){
-            _streamMap[0] = _streamMap[1];
-            _streamReverseMap[_streamMap[1]] = 1;
-        }*/
+        //		  loginfo("create stream map: "<<source->getPath());
+        /*
+                _streamMap[0] = -1;
+                _streamMap[1] = -1;
+                for (int i = 0; i < formatCtx->nb_streams; i++) {
+                  if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO && _streamMap[0] == -1) {
+                    _streamMap[0] = i;
+                    _streamReverseMap[i] = 0;
+                  } else
+                    if (formatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO && _streamMap[1] == -1) {
+                    _streamMap[1] = i;
+                    _streamReverseMap[i] = 1;
+                  } else
+                    _streamReverseMap[i] = -1;
+                }
+                if(_streamMap[0]<0){
+                    _streamMap[0] = _streamMap[1];
+                    _streamReverseMap[_streamMap[1]] = 1;
+                }*/
         _isValid = true;
-		  loginfo("file openned: "<<source->getPath());
+        loginfo("file openned: " << source->getPath());
 
-	  }
+      }
 
       bool FormatInputStream::isValid() {
         return _isValid;
@@ -92,7 +92,10 @@ namespace org {
       }
 
       StreamInfo * FormatInputStream::getStreamInfo(int idx) {
-        return new StreamInfo(formatCtx->streams[idx], idx);
+        if (_stream_info_map.find(idx) == _stream_info_map.end()) {
+          _stream_info_map[idx] = new StreamInfo(formatCtx->streams[idx], idx);
+        }
+        return _stream_info_map[idx];
       }
 
       AVInputStream * FormatInputStream::getAVStream(int streamIndex) {
@@ -125,9 +128,17 @@ namespace org {
         //return av_seek_frame(formatCtx, stream_index, timestamp,AVSEEK_FLAG_BACKWARD	);
       }
 
+      /*closing the input file and delete all StreamInfo for that file*/
       void FormatInputStream::close() {
         if (formatCtx)
           av_close_input_file(formatCtx);
+        if(_stream_info_map.size()>0){
+          map<int, StreamInfo*>::iterator it=_stream_info_map.begin();
+          for(;it!=_stream_info_map.end();it++){
+            delete (*it).second;
+          }
+          _stream_info_map.clear();
+        }
       }
     }
   }
