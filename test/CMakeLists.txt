@@ -69,6 +69,8 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 add_executable (info info.cpp)
 add_executable (pu pu.cpp)
 
+add_executable (mytest test.cpp)
+
 target_link_libraries (info
   web
   esb

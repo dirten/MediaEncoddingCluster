@@ -135,12 +135,12 @@ void test_process_video(int argc, char ** argv) {
 
 }
 
-void test_process_audio() {
+void test_process_audio(char * file){
 
 
   std::string src_file = MEC_SOURCE_DIR;
   src_file.append("/test.dvd");
-  File infile(src_file);
+  File infile(file);
   int stream_id = 1;
 
   std::string trg_file = MEC_SOURCE_DIR;
@@ -242,14 +242,14 @@ void test_process_audio() {
 
 
 }
+int main(int argc, char**argv) {
 
-int main(int argc, char ** argv) {
 
   av_register_all();
   avcodec_init();
   avcodec_register_all();
 
-  test_process_video(argc, argv);
-  //  test_process_audio();
+//  test_process_video();
+  test_process_audio(argv[1]);
 }
 

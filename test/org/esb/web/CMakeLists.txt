@@ -19,6 +19,7 @@ target_link_libraries (TestWebServer
   wthttp
   wtext
   wt
+ssl
  )
 
 target_link_libraries (TestWebServer

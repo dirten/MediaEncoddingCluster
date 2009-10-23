@@ -124,9 +124,9 @@ int main(int argc, char ** argv) {
   FrameConverter conv(&dec, &enc);
   PacketSink sink;
   enc.setSink(&sink);
-  //	enc.setOutputStream(&pos);
-  Packet p;
-  for (int a = 0; a < 10;) {
+//	enc.setOutputStream(&pos);
+      Packet p;
+  for (int a = 0; a < 1000; ) {
 
     pis.readPacket(p);
     if (p.getStreamIndex() == stream_id) {
@@ -138,7 +138,7 @@ int main(int argc, char ** argv) {
 
       //      continue;
       if (!tmp->isFinished()) {
-        //        continue;
+        continue;
       }
       Frame * f = new Frame();
       conv.convert(*tmp, *f);
