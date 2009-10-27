@@ -1,8 +1,8 @@
 /* 
- * File:   TestFullTranscoding.cpp
- * Author: jhoelscher
+ * File:   TestNewProcessUnit.cpp
+ * Author: jholscher
  *
- * Created on 23. Oktober 2009, 10:17
+ * Created on 27. Oktober 2009, 23:27
  */
 
 #include <stdlib.h>
@@ -28,15 +28,17 @@ struct StreamData {
   Encoder * enc;
   FrameConverter * conv;
 };
-
 map<int, StreamData> _sdata;
 map<int, int> _smap;
+
 /*
  * 
  */
 int main(int argc, char** argv) {
 
-  /*open the fixed test File or the file from command line input*/
+
+
+    /*open the fixed test File or the file from command line input*/
   std::string src;
   std::string trg;
   if (argc == 1) {
@@ -105,36 +107,9 @@ int main(int argc, char** argv) {
 
   if (!pos.init())goto cleanup;
   fos.dumpFormat();
-  /*main loop to encode the packets*/
-  for (int i = 0; i < 350||true; i++) {
-    Packet p;
-    //reading a packet from the Stream
-    if (pis.readPacket(p) < 0)break; //when no more packets available then it return <0
-    if(_sdata.find(p.getStreamIndex())==_sdata.end())continue;
-    //Decoding a Video or Audio Packet
-    Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
-    if(!src_frame->isFinished())continue;
-    src_frame->stream_index=_smap[p.getStreamIndex()];
-
-    //Convert an Audio or Video Packet
-    Frame * trg_frame = NULL;
-    if (_sdata[p.getStreamIndex()].dec->getCodecType() == CODEC_TYPE_VIDEO)
-      trg_frame = new Frame(
-        _sdata[p.getStreamIndex()].enc->getPixelFormat(),
-        _sdata[p.getStreamIndex()].enc->getWidth(),
-        _sdata[p.getStreamIndex()].enc->getHeight());
-    if (_sdata[p.getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
-      trg_frame = new Frame();
-    _sdata[p.getStreamIndex()].conv->convert(*src_frame, *trg_frame);
-    int ret = _sdata[p.getStreamIndex()].enc->encode(*trg_frame);
 
 
-    delete src_frame;
-    delete trg_frame;
-
-  }
-
-
+  
 cleanup:
   fos.close();
   map<int, StreamData>::iterator streams = _sdata.begin();
@@ -144,6 +119,7 @@ cleanup:
     delete (*streams).second.conv;
   }
   Log::close();
+
   return (EXIT_SUCCESS);
 }
 

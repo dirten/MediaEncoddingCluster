@@ -169,17 +169,18 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   frame->_pixFormat = ctx->pix_fmt;
   frame->stream_index = packet.packet->stream_index;
 
-  /*@TODO: calculating the Presentation TimeStamp here*/
-//  frame->setPts(packet.packet->pts);
-
+  /* calculating the Presentation TimeStamp here*/
   frame->setPts(_last_pts);
   frame->setDts(_last_pts);
-  frame->pos = 0;//packet.packet->pos;
+
+  // calculating the duration of the decoded packet
   int64_t dur=av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
   frame->duration = dur;
+  _last_pts+=dur;
+  
+  frame->pos = 0;
   frame->_type = CODEC_TYPE_VIDEO;
   logdebug(frame->toString());
-  _last_pts+=dur;
   return frame;
 }
 

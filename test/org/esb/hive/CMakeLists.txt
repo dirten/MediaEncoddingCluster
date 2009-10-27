@@ -11,6 +11,7 @@ add_executable (TestHiveListener TestHiveListener.cpp)
 add_executable (TestAudioAC3toMP2 TestAudioAC3toMP2.cpp)
 add_executable (DeleteDatabase DeleteDatabase.cpp)
 #add_executable (TestProcessUnit TestProcessUnit.cpp)
+add_executable (TestNewProcessUnit TestNewProcessUnit.cpp)
 
 
 
@@ -23,6 +24,7 @@ target_link_libraries (TestProcessUnit esb sql hive io av util net signal  lang)
 target_link_libraries (TestDatabaseCreation esb sql util io lang )
 target_link_libraries (DeleteDatabase esb sql util )
 target_link_libraries (TestProcessUnit esb hive av io util lang )
+target_link_libraries (TestNewProcessUnit esb hive av io util lang )
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
 target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
@@ -54,4 +56,5 @@ ADD_TEST(TestHiveListener ${EXECUTABLE_OUTPUT_PATH}/TestHiveListener)
 ADD_TEST(TestAudioAC3toMP2 ${EXECUTABLE_OUTPUT_PATH}/TestAudioAC3toMP2)
 ADD_TEST(DeleteDatabase ${EXECUTABLE_OUTPUT_PATH}/DeleteDatabase)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestProcessUnit )
+ADD_TEST(TestNewProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestNewProcessUnit )
 
