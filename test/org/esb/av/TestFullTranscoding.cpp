@@ -70,11 +70,13 @@ int main(int argc, char** argv) {
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].enc = new Encoder();
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
+//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
       _sdata[i].enc->setCodecId(CODEC_ID_H264);
       _sdata[i].enc->setBitRate(1024000);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
-      _sdata[i].enc->setGopSize(10);
+      _sdata[i].enc->setGopSize(12);
       AVRational ar;
       ar.num = 1;
       ar.den = 25;
@@ -97,14 +99,14 @@ int main(int argc, char** argv) {
     _sdata[i].enc->open();
     _smap[i]=s++;
     _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
-    pos.setEncoder(*_sdata[i].enc, i);
+    pos.setEncoder(*_sdata[i].enc, _smap[i]);
     _sdata[i].enc->setOutputStream(&pos);
   }
 
   if (!pos.init())goto cleanup;
-
+  fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 15000; i++) {
+  for (int i = 0; i < 350; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available then it return <0
