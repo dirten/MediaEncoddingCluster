@@ -91,21 +91,24 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
+        logdebug(in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
-//        rescaleTimestamp(in_frame, out_frame);
+        rescaleTimestamp(in_frame, out_frame);
+        logdebug(out_frame.toString());
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
-        
+        out_frame.setTimeBase(_enc->getTimeBase());
+//        return;
         out_frame.setPts( av_rescale_q(in_frame.getPts(), _dec->getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts( av_rescale_q(in_frame.getDts(), _dec->getTimeBase(), _enc->getTimeBase()));
         out_frame.setDuration(av_rescale_q(in_frame.getDuration(), _dec->getTimeBase(), _enc->getTimeBase()));
-        out_frame.setTimeBase(in_frame.getTimeBase());
+        
       }
 
       Frame FrameConverter::convertVideo(Frame & in_frame) {

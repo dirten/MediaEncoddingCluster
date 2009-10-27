@@ -9,11 +9,15 @@ using namespace org::esb::av;
 using namespace std;
 
 Decoder::Decoder() : Codec(Codec::DECODER) {
+  _last_pts=1;
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
+  _last_pts=1;
+
 }
 Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
+  _last_pts=1;
 }
 
 Frame Decoder::decodeLast() {
@@ -82,18 +86,18 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   Frame * frame=new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   int _frameFinished = 0;
   int len = packet.packet->size;
-#ifdef DEBUG
-  logdebug("InputPacketData:");
-  packet.toString();
-#endif
+//#ifdef DEBUG
+//  logdebug("InputPacketData:");
+  logdebug(packet.toString());
+//#endif
 
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
       avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
-#ifdef DEBUG
-  logdebug("BytesDecoded:"<<bytesDecoded);
-#endif
+//#ifdef DEBUG
+//  logdebug("BytesDecoded:"<<bytesDecoded);
+//#endif
   if (bytesDecoded < 0) {
     fprintf(stderr, "Error while decoding frame\n");
   }
@@ -160,25 +164,27 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   if (!_frameFinished) {
     return frame;
   }
-  frame->setTimeBase(packet.getTimeBase());
+  frame->setTimeBase(ctx->time_base);
   frame->setFinished(_frameFinished);
   frame->_pixFormat = ctx->pix_fmt;
   frame->stream_index = packet.packet->stream_index;
-  frame->setPts(packet.packet->pts);
-  frame->setDts(packet.packet->dts);
-  frame->pos = packet.packet->pos;
-  frame->duration = packet.packet->duration;
-  frame->_type = CODEC_TYPE_VIDEO;
-#ifdef DEBUG
-  logdebug("Decoded Video Frame");
-  frame->toString();
 
-#endif
+  /*@TODO: calculating the Presentation TimeStamp here*/
+//  frame->setPts(packet.packet->pts);
+
+  frame->setPts(_last_pts);
+  frame->setDts(_last_pts);
+  frame->pos = 0;//packet.packet->pos;
+  int64_t dur=av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+  frame->duration = dur;
+  frame->_type = CODEC_TYPE_VIDEO;
+  logdebug(frame->toString());
+  _last_pts+=dur;
   return frame;
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
-// logdebug("DecodeAudio Packet:"<<packet.toString());
+ logdebug(packet.toString());
   //        Frame frame;
   int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 //  uint8_t *outbuf = new uint8_t[samples_size];
@@ -187,7 +193,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //    while (size > 0) {
 //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
-//  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
+  logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
   if (len < 0) {
     logerror("Error while decoding audio Frame");
     return new Frame();
@@ -204,17 +210,26 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   Frame * frame=new Frame(outbuf);
   frame->_allocated=true;
 //  frame._buffer = outbuf;
-  frame->setTimeBase(packet.getTimeBase());
   frame->stream_index = packet.packet->stream_index;
-  frame->setPts(packet.packet->pts);
-  frame->setDts(packet.packet->dts);
+  frame->setPts(_last_pts);
+  frame->setDts(_last_pts);
+  AVRational ar;
+  ar.num=1;
+  ar.den=ctx->sample_rate;
+  int64_t dur=av_rescale_q(samples_size, packet.getTimeBase(), ar);
+  frame->duration = dur;
+  frame->setTimeBase(ar);
+  _last_pts+=dur;
+
+//  frame->setPts(packet.packet->pts);
+//  frame->setDts(packet.packet->dts);
   frame->pos = packet.packet->pos;
-  frame->duration = packet.packet->duration;
+//  frame->duration = packet.packet->duration;
   frame->_size = samples_size;
   frame->_type = CODEC_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   frame->setFinished(true);
-//  logdebug("DecodedAudioFrame:"<<frame->toString());
+  logdebug(frame->toString());
   return frame;
 }

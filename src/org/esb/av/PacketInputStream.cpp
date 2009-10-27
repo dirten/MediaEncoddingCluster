@@ -59,7 +59,7 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   if (packet.packet->data != NULL)
     av_free_packet(packet.packet);
   int status = av_read_frame(_formatCtx, packet.packet);
-  if ( status == 0) {
+  if ( status >= 0) {
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
 /*
     if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)

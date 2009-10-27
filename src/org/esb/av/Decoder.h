@@ -31,6 +31,8 @@ namespace org {
 //                DEPRICATED(Frame decodeAudio(Packet & packet));
                 Frame * decodeVideo2(Packet & packet);
                 Frame * decodeAudio2(Packet & packet);
+            private:
+                int64_t _last_pts;
             };
         }
     }

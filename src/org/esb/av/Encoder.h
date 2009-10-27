@@ -50,6 +50,9 @@ namespace org {
 //        AVFifoBuffer *fifo;
         PacketOutputStream * _pos;
         Sink*_sink;
+        int64_t _last_dts;
+        int64_t _last_duration;
+        AVRational _last_time_base;
       };
     }
   }

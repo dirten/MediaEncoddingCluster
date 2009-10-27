@@ -74,7 +74,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
   int dur = 0;
   AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
   if (stream->codec->codec_type == CODEC_TYPE_VIDEO) {
-    dur = static_cast<int> ((((float) 1 / (float) (stream->time_base.den)))*((float) stream->time_base.den)/((float)stream->time_base.num));
+    dur = static_cast<int> ((((float) (stream->time_base.den) / (float) (stream->time_base.den)))*((float) stream->codec->time_base.den)/((float)stream->codec->time_base.num));
   } else
     if (stream->codec->codec_type == CODEC_TYPE_AUDIO) {
     AVCodecContext *ctx = stream->codec;
@@ -84,21 +84,25 @@ void PacketOutputStream::writePacket(Packet & packet) {
   }else{
       logdebug("CodecType unknown");
   }
-  packet.setDuration(dur);
+
+//  packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
+  packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
+//  packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
 
 
   /*calculating the dts*/
-  streamDts[packet.getStreamIndex()]+=dur;
+//  streamDts[packet.getStreamIndex()]+=dur;
 //  packet.packet->pts=AV_NOPTS_VALUE;
-  packet.setDts(streamDts[packet.getStreamIndex()]);
-  packet.setPts(streamDts[packet.getStreamIndex()]);
+  packet.setDuration(0);
+  packet.setDts(AV_NOPTS_VALUE);
+//  packet.setPts(streamDts[packet.getStreamIndex()]);
 
   logdebug(packet.toString());
 
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
 
-//  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
-  int result = av_write_frame(_fmtCtx, packet.packet);
+  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+//  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   //  logdebug("av_write_frame result:" << result);
 

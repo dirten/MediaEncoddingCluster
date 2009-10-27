@@ -39,6 +39,9 @@ namespace org {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
           return;
         }
+        if(formatCtx->iformat->flags&AVFMT_TS_DISCONT){
+          logdebug("TS DISCONT");
+        }
         /**
          * get the first video and audio stream
          */

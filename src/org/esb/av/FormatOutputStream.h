@@ -23,6 +23,7 @@ namespace org {
                 void open();
                 void close();
                 void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
+                void dumpFormat();
                 //		private:
                 friend class PacketOutputStream;
                 AVFormatContext * _fmtCtx;
