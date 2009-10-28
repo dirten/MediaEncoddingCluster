@@ -27,6 +27,7 @@ struct StreamData {
   Decoder * dec;
   Encoder * enc;
   FrameConverter * conv;
+  int64_t start_dts;
 };
 
 map<int, StreamData> _sdata;
@@ -68,6 +69,7 @@ int main(int argc, char** argv) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO&&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
+    _sdata[i].start_dts=fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
 //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
@@ -94,7 +96,11 @@ int main(int argc, char** argv) {
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
-
+      AVRational ar;
+      ar.num = 1;
+      ar.den = _sdata[i].dec->getSampleRate();
+      _sdata[i].dec->setTimeBase(ar);
+    
     _sdata[i].dec->open();
     _sdata[i].enc->open();
     _smap[i]=s++;
@@ -106,11 +112,12 @@ int main(int argc, char** argv) {
   if (!pos.init())goto cleanup;
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 350||true; i++) {
+  for (int i = 0; i < 20000; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available then it return <0
     if(_sdata.find(p.getStreamIndex())==_sdata.end())continue;
+    p.setDts(p.getDts()-_sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
     Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
     if(!src_frame->isFinished())continue;

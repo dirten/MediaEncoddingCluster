@@ -12,23 +12,26 @@ Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
   //  fifo = av_fifo_alloc(1024);
   _pos = NULL;
   _sink = NULL;
-  _last_dts = 1;
+  _last_dts = AV_NOPTS_VALUE;
 }
 
 Encoder::Encoder() : Codec(Codec::ENCODER) {
   _pos = NULL;
   _sink = NULL;
-  _last_dts = 1;
+  _last_dts = AV_NOPTS_VALUE;
 }
 
 Encoder::~Encoder() {
   //  av_fifo_free(fifo);
-  _last_dts = 1;
+  _last_dts = AV_NOPTS_VALUE;
 }
 
 int Encoder::encode(Frame & frame) {
   _last_time_base=frame.getTimeBase();
   _last_duration=frame.getDuration();
+  if(_last_dts==AV_NOPTS_VALUE){
+    _last_dts=frame.getDts();
+  }
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
     return encodeVideo(frame);
   if (ctx->codec_type == CODEC_TYPE_AUDIO)

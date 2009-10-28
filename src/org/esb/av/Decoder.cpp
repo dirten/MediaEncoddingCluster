@@ -9,15 +9,15 @@ using namespace org::esb::av;
 using namespace std;
 
 Decoder::Decoder() : Codec(Codec::DECODER) {
-  _last_pts=1;
+  _last_pts=AV_NOPTS_VALUE;
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
-  _last_pts=1;
+  _last_pts=AV_NOPTS_VALUE;
 
 }
 Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
-  _last_pts=1;
+  _last_pts=AV_NOPTS_VALUE;
 }
 
 Frame Decoder::decodeLast() {
@@ -60,6 +60,9 @@ Frame Decoder::decodeLast() {
 }
 
 Frame * Decoder::decode2(Packet & packet) {
+  if(_last_pts==AV_NOPTS_VALUE){
+    _last_pts=packet.getDts();
+  }
   if (!_opened)
     throw runtime_error("Codec not opened");
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
