@@ -14,7 +14,6 @@ Decoder::Decoder() : Codec(Codec::DECODER) {
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
   _last_pts=AV_NOPTS_VALUE;
-
 }
 Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
   _last_pts=AV_NOPTS_VALUE;

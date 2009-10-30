@@ -26,9 +26,9 @@ namespace org {
         _toHalt = false;
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
-		av_register_all();
-		avcodec_init();
-		avcodec_register_all();
+        av_register_all();
+        avcodec_init();
+        avcodec_register_all();
 
       }
 
@@ -84,7 +84,7 @@ namespace org {
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           loginfo("Server " << _host << " connected!!!");
         } catch (exception & ex) {
-          logerror("cant connect to \""<<_host<<":"<<_port<<"\"!!!" << ex.what());
+          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
           //		  delete _sock;
         }
       }
@@ -169,11 +169,11 @@ namespace org {
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
-                                logdebug("Command sended");
+                logdebug("Command sended");
                 _ois->readObject(*unit);
-                                logdebug("ProcessUnit received");
+                logdebug("ProcessUnit received");
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!"<<ex.what());
+                logerror("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               /*
@@ -187,11 +187,11 @@ namespace org {
                 delete unit;
                 break;
               }
-//              try {
-                unit->process();
-//              } catch (...) {
-//                logerror("Error in process");
-//              }
+              //              try {
+              unit->process();
+              //              } catch (...) {
+              //                logerror("Error in process");
+              //              }
               //				outQueue.send(unit,sizeof(job::ProcessUnit),0);
 
               char * text_out = "put process_unit";
@@ -199,13 +199,13 @@ namespace org {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!"<<ex.what());
+                logerror("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               delete unit->_decoder;
-              unit->_decoder=NULL;
+              unit->_decoder = NULL;
               delete unit->_encoder;
-              unit->_encoder=NULL;
+              unit->_encoder = NULL;
               delete unit;
 
               //		break;

@@ -31,7 +31,7 @@ namespace org {
         return _idx;
       }
 
-      int StreamInfo::getCodecType() {
+      CodecType StreamInfo::getCodecType() {
         return _s->codec->codec_type;
       }
 

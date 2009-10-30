@@ -292,21 +292,20 @@ void Frame::setTimeBase(AVRational t) {
 AVRational Frame::getTimeBase() {
   return _time_base;
 }
-
+//P->S:1732:Pts:127800:Dts:124200:Index:0:Dur:3600:Pos:-1:TBase:1/90000:F:0:KF0
 std::string Frame::toString() {
   std::ostringstream oss;
-  oss << "Frame->Size:" << _size <<
-
+  oss << "F->S:" << _size <<
       ":Pts:" << framePtr->pts <<
       ":Dts:" << _dts <<
-      ":SampleSize:" << _size <<
-      ":Width:" << _width <<
-      ":Height:" << _height <<
-      ":PixelFormat:" << _pixFormat <<
-      ":Channels:" << channels <<
-      ":SampleRate:" << sample_rate <<
-      ":Duration:" << duration <<
-      ":TimeBase:" << _time_base.num << ":" <<_time_base.den;
+      ":SmplSz:" << _size <<
+      ":W:" << _width <<
+      ":H:" << _height <<
+      ":PF:" << _pixFormat <<
+      ":Ch:" << channels <<
+      ":SmplRt:" << sample_rate <<
+      ":Dur:" << duration <<
+      ":TBase:" << _time_base.num << "/" <<_time_base.den;
 
   return std::string(oss.str());
 }

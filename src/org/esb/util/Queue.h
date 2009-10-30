@@ -77,6 +77,9 @@ namespace org {
         T operator[](int a) {
           return _q[a];
         }
+        int size(){
+            return _q.size();
+        }
 
         void setQueueListener(QueueListener * listener) {
           _listener = listener;

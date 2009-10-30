@@ -69,7 +69,7 @@ bool Config::init(const std::string & filename) {
           logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }
       }
-      //	  delete rs;
+      delete rs;
       delete stmt;
     }
   } catch (SqlException & ex) {

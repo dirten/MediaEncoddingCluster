@@ -175,17 +175,14 @@ AVRational Packet::getTimeBase(){
 
 std::string Packet::toString(){
   std::ostringstream oss;
-  oss<<"Packet->Size:"<<getSize()<<
+  oss<<"P->S:"<<getSize()<<
       ":Pts:"<<getPts()<<
       ":Dts:"<<getDts()<<
-      ":StreamIndex:"<<getStreamIndex()<<
-      ":Duration:"<<getDuration()<<
-      ":Position:"<<getPosition()<<
-      ":TimeBase:"<<getTimeBase().num<<":"<<getTimeBase().den<<
-      ":Flags:"<<getFlags()<<
-      ":KeyFrame"<<isKeyFrame();
+      ":Index:"<<getStreamIndex()<<
+      ":Dur:"<<getDuration()<<
+      ":Pos:"<<getPosition()<<
+      ":TBase:"<<getTimeBase().num<<"/"<<getTimeBase().den<<
+      ":F:"<<getFlags()<<
+      ":KF"<<isKeyFrame();
     return std::string(oss.str());
-
-
 }
-

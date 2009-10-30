@@ -9,18 +9,24 @@
 #define	_ORG_ESB_HIVE_EXPORTSCANNER_H
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
-namespace org{
-  namespace esb{
-    namespace hive{
-      class ExportScanner: public org::esb::signal::MessageListener {
-      public:
-        void onMessage(org::esb::signal::Message & msg);
-      private:
-        void start();
-        bool _run;
-      };
+#include <boost/thread/condition.hpp>
+
+namespace org {
+    namespace esb {
+        namespace hive {
+
+            class ExportScanner : public org::esb::signal::MessageListener {
+            public:
+                void onMessage(org::esb::signal::Message & msg);
+            private:
+                void start();
+                bool _run;
+                boost::mutex terminationMutex;
+                boost::condition termination_wait;
+
+            };
+        }
     }
-  }
 }
 
 

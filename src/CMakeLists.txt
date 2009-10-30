@@ -11,7 +11,7 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${MYSQL_INCLUDE_DIR}/mysql)
 include_directories (${FFMPEG_INCLUDE_DIR})
-MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
+#MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
 
@@ -47,7 +47,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #FIND_LIBRARY(avc avcodec)
 
 #MESSAGE("** AVCODEC PATH: " ${AVCODEC_LIB})
-MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
+#MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
 add_executable (mhive Hive.cpp)
@@ -109,10 +109,10 @@ ELSE(WIN32)
 #    ssl
 #    dl
 #    crypt
-#    crypto
+    crypto
 #    pthread
 #    z 
-#    ssl
+    ssl
 #    wthttp 
 #    wtext 
 #    wt 

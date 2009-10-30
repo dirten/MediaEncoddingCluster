@@ -12,6 +12,7 @@
 #include <map>
 #include <deque>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/condition.hpp>
 namespace org {
     namespace esb {
         namespace hive {
@@ -32,18 +33,22 @@ namespace org {
                 private:
                     static org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > puQueue;
                     static bool _isStopSignal;
+                    static boost::mutex terminationMutex;
+                    static boost::condition termination_wait;
+                    static bool _isRunning;
+
                     std::map<int, boost::shared_ptr<ProcessUnit> > unit_map;
-//                    std::map<int, int> idx;
-//                    std::map<int, int> inout;
-//                    std::map<int, int> stream_type;
+                    //                    std::map<int, int> idx;
+                    //                    std::map<int, int> inout;
+                    //                    std::map<int, int> stream_type;
                     void readJobs();
                     void processAudioPacket(boost::shared_ptr<Packet>);
                     void processVideoPacket(boost::shared_ptr<Packet>);
-//                    std::map<int, std::list<boost::shared_ptr<Packet> > > stream_packets;
+                    //                    std::map<int, std::list<boost::shared_ptr<Packet> > > stream_packets;
                     std::deque<boost::shared_ptr<Packet> > packet_queue;
-//                    std::map<int, int> stream_packet_counter;
-//                    int min_frame_group_count;
-//                    int b_frame_offset;
+                    //                    std::map<int, int> stream_packet_counter;
+                    //                    int min_frame_group_count;
+                    //                    int b_frame_offset;
                     bool q_filled;
                     int job_id;
                     org::esb::sql::Connection * _con_tmp;
@@ -66,7 +71,7 @@ namespace org {
                         std::list<boost::shared_ptr<Packet> > packets;
                         int packet_count;
                         int min_packet_count;
-						int64_t last_process_unit_id;
+                        int64_t last_process_unit_id;
                     };
                     static map<int, StreamData> _stream_map;
                 };

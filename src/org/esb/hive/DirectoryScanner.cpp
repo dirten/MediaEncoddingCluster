@@ -30,23 +30,23 @@ namespace org {
       public:
 
         MyFileFilter(std::string ext) {
-//          logdebug("extensions"<<ext);
-          StringTokenizer tokenizer(ext,",");
-          while(tokenizer.hasMoreTokens()){
-            std::string tok=tokenizer.nextToken();
-            tok=StringUtil::trim(tok);
-            if(tok.length()>0){
-              std::string e=".";
-              e+=tok;
+          //          logdebug("extensions"<<ext);
+          StringTokenizer tokenizer(ext, ",");
+          while (tokenizer.hasMoreTokens()) {
+            std::string tok = tokenizer.nextToken();
+            tok = StringUtil::trim(tok);
+            if (tok.length() > 0) {
+              std::string e = ".";
+              e += tok;
               media_ext[e];
-//              logdebug("Extension added:"<<e);
+              //              logdebug("Extension added:"<<e);
             }
           }
         }
 
         bool accept(File file) {
           bool result = false;
-          if (file.isDirectory()||media_ext.size()==0 || media_ext.find(file.getExtension()) != media_ext.end())
+          if (file.isDirectory() || media_ext.size() == 0 || media_ext.find(file.getExtension()) != media_ext.end())
             result = true;
           return result;
         }
@@ -55,27 +55,28 @@ namespace org {
       };
 
       DirectoryScanner::DirectoryScanner(std::string dir, int interval) {
+        _stmt = NULL;
+        _con = NULL;
         _halt = true;
         _interval = interval;
         th = NULL;
-//        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-//        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+        //        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        //        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
       }
 
       DirectoryScanner::DirectoryScanner() {
+        _stmt = NULL;
+        _con = NULL;
         _halt = true;
         th = NULL;
-        _interval=300000;
+        _interval = 300000;
 
       }
 
       DirectoryScanner::~DirectoryScanner() {
         if (th)
           delete th;
-		delete _stmt;
-		delete _con;
-		_stmt=NULL;
-		_con=NULL;
+
       }
 
       void DirectoryScanner::onMessage(org::esb::signal::Message & msg) {
@@ -92,22 +93,35 @@ namespace org {
 
         } else
           if (msg.getProperty("directoryscan") == "stop") {
-          _halt = true;
+          if (!_halt) {
+            _halt = true;
+            boost::mutex::scoped_lock terminationLock(terminationMutex);
+            termination_wait.wait(terminationLock);
+            if (_stmt)
+              delete _stmt;
+            if (_con)
+              delete _con;
+            _stmt = NULL;
+            _con = NULL;
+            delete _stmt2;
+            delete _con2;
+
+          }
           logdebug("Directory Scanner stopped:");
         }
       }
 
       void DirectoryScanner::scan() {
-        _con=new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt=new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
-        _con2=new Connection (std::string(org::esb::config::Config::getProperty("db.connection")));
+        _con = new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
+        _stmt = new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
+        _con2 = new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
         _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
         while (!_halt) {
           ResultSet rs = _stmt2->executeQuery();
           while (rs.next()) {
             if (File(rs.getString("infolder").c_str()).exists()) {
-              FileFilter * filter=new MyFileFilter(rs.getString("extension_filter"));
-              scan(rs.getString("infolder"),rs.getString("outfolder"), rs.getInt("profile"), *filter);
+              FileFilter * filter = new MyFileFilter(rs.getString("extension_filter"));
+              scan(rs.getString("infolder"), rs.getString("outfolder"), rs.getInt("profile"), *filter);
               delete filter;
             } else {
               //            _halt = true;
@@ -115,13 +129,14 @@ namespace org {
           }
           Thread::sleep2(_interval);
         }
-        delete _stmt2;
-        delete _con2;
+        boost::mutex::scoped_lock terminationLock(terminationMutex);
+        termination_wait.notify_all();
+
       }
 
-      void DirectoryScanner::scan(std::string indir,std::string outdir, int profile, FileFilter & filter) {
-//        logdebug("Scanning Directory:" << indir);
-//        
+      void DirectoryScanner::scan(std::string indir, std::string outdir, int profile, FileFilter & filter) {
+        //        logdebug("Scanning Directory:" << indir);
+        //
 
         FileList list = File(indir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
@@ -148,7 +163,7 @@ namespace org {
             if (fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
-              char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(),(char*)outdir.c_str()};
+              char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
               std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
               std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
               jobcreator(4, jobarg);

@@ -2,6 +2,7 @@
 
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+
 #include "ProcessUnitWatcher.h"
 #include "ClientHandler.h"
 
@@ -30,19 +31,23 @@ namespace org {
         //        std::map<int, boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::unit_map;
         boost::mutex ProcessUnitWatcher::put_pu_mutex;
         boost::mutex ProcessUnitWatcher::get_pu_mutex;
+        boost::mutex ProcessUnitWatcher::terminationMutex;
+        boost::condition ProcessUnitWatcher::termination_wait;
+
         util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::puQueue;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
         bool ProcessUnitWatcher::_isStopSignal = false;
+        bool ProcessUnitWatcher::_isRunning = false;
         map<int, ProcessUnitWatcher::StreamData> ProcessUnitWatcher::_stream_map;
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
           std::string c = org::esb::config::Config::getProperty("db.connection");
-//          _con_tmp = new Connection(c);
-//          _con_tmp2 = new Connection(c);
+          //          _con_tmp = new Connection(c);
+          //          _con_tmp2 = new Connection(c);
 
-//          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
-//          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
+          //          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
+          //          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
 
         }
 
@@ -52,13 +57,25 @@ namespace org {
             boost::thread t(boost::bind(&ProcessUnitWatcher::start3, this));
             logdebug("ProcessUnitWatcher started");
           } else if (msg.getProperty("processunitwatcher") == "stop") {
+            logdebug("ProcessUnitWatcher stop request");
             stop();
+            logdebug("ProcessUnitWatcher stopped");
           }
         }
 
         void ProcessUnitWatcher::stop() {
-          _isStopSignal = true;
-          puQueue.flush();
+          if (!_isStopSignal) {
+            _isStopSignal = true;
+
+            puQueue.flush();
+            if(_isRunning){
+              boost::mutex::scoped_lock terminationLock(terminationMutex);
+              termination_wait.wait(terminationLock);
+              _isRunning=false;
+              delete _con_tmp2;
+              delete _stmt_fr;
+            }
+          }
         }
 
         void ProcessUnitWatcher::start3() {
@@ -69,7 +86,7 @@ namespace org {
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp2 = new Connection(c);
           _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
-
+          _isRunning=true;
           while (!_isStopSignal) {
             //          logdebug("ProcessUnitWatcher loop");
             //getting all jobs that not be completed
@@ -167,7 +184,11 @@ namespace org {
                 } else {
                 }
               }
-              if (_isStopSignal)return;
+              if (_isStopSignal) {
+//                boost::mutex::scoped_lock terminationLock(terminationMutex);
+//                termination_wait.notify_all();
+                break;
+              }
               //              processAudioPacket(boost::shared_ptr<Packet > (new Packet()));
               //              processVideoPacket(boost::shared_ptr<Packet > (new Packet()));
               flushStreamPackets();
@@ -177,8 +198,12 @@ namespace org {
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
               pstmt2.execute();
             }
-            Thread::sleep2(1000);
+
+            Thread::sleep2(5000);
           }
+          boost::mutex::scoped_lock terminationLock(terminationMutex);
+          termination_wait.notify_all();
+
         }
 
         void ProcessUnitWatcher::buildProcessUnit(int sIdx) {
@@ -209,6 +234,7 @@ namespace org {
             if ((*st).second.packets.size() > 0)
               buildProcessUnit((*st).first);
           }
+          packet_queue.clear();
         }
 
         void ProcessUnitWatcher::processAudioPacket(boost::shared_ptr<Packet> pPacket) {
@@ -320,15 +346,17 @@ namespace org {
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
-          boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          if(puQueue.size()==0)
+            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           //special case after an interupted encoding session
           int sIdx = u->_input_packets.front()->packet->stream_index;
           if (_stream_map[sIdx].last_process_unit_id == 0) {
-          std::string c = org::esb::config::Config::getProperty("db.connection");
-          Connection con(c);
-            PreparedStatement stmt=con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
+            std::string c = org::esb::config::Config::getProperty("db.connection");
+            Connection con(c);
+            PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
             stmt.setInt("source_stream", u->_source_stream);
             stmt.setInt("target_stream", u->_target_stream);
             stmt.setLong("start_ts", u->_input_packets.front()->packet->dts);

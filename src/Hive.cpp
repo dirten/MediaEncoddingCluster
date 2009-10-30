@@ -121,6 +121,7 @@ int main(int argc, char * argv[]) {
 
 
   Config::setProperty("hive.base_path", base_path);
+  org::esb::hive::DatabaseService::start(base_path);
   try {
     //    loginit("log.properties");
     //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
@@ -301,6 +302,7 @@ int main(int argc, char * argv[]) {
   }
   delete []path;
   delete []base_path;
+  org::esb::hive::DatabaseService::stop();
 
   org::esb::config::Config::close();
   Log::close();
@@ -644,7 +646,7 @@ void start() {
    */
 
 
-  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
+//  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
@@ -674,7 +676,7 @@ void start() {
    *
    */
    /*need to call as first for committing all data to the files*/
-  Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
+//  Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));

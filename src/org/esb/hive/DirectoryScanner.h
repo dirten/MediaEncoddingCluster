@@ -4,6 +4,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileFilter.h"
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
 
 #include <string>
 
@@ -34,6 +35,9 @@ namespace org {
                 sql::PreparedStatement * _stmt;
                 sql::Connection * _con2;
                 sql::Statement * _stmt2;
+                                boost::mutex terminationMutex;
+                boost::condition termination_wait;
+
             };
         }
     }

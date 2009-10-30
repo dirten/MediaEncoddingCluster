@@ -26,12 +26,14 @@ namespace org {
 
 
 
-//        formatCtx = avformat_alloc_context();
-        std::string filename = _sourceFile->getPath();
+        //        formatCtx = avformat_alloc_context();
+//        AVInputFormat*iformat = av_find_input_format("mpegts");
+          std::string filename = _sourceFile->getPath();
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, NULL) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }
+        formatCtx->flags |= AVFMT_FLAG_GENPTS;
         //		formatCtx->debug=5;
 
         loginfo("find stream info: " << source->getPath());
@@ -39,7 +41,7 @@ namespace org {
           logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
           return;
         }
-        if(formatCtx->iformat->flags&AVFMT_TS_DISCONT){
+        if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
           logdebug("TS DISCONT");
         }
         /**
@@ -135,9 +137,9 @@ namespace org {
       void FormatInputStream::close() {
         if (formatCtx)
           av_close_input_file(formatCtx);
-        if(_stream_info_map.size()>0){
-          map<int, StreamInfo*>::iterator it=_stream_info_map.begin();
-          for(;it!=_stream_info_map.end();it++){
+        if (_stream_info_map.size() > 0) {
+          map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
+          for (; it != _stream_info_map.end(); it++) {
             delete (*it).second;
           }
           _stream_info_map.clear();

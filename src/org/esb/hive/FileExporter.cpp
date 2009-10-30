@@ -194,30 +194,30 @@ void FileExporter::exportFile(int fileid) {
     std::string path = org::esb::config::Config::getProperty("hive.base_path");
     path += "/tmp/";
     while (rs.next()) {
-      int pu_id=rs.getInt("id");
-	  logdebug("open PU with id : "<<pu_id)
+      int pu_id = rs.getInt("id");
+      logdebug("open PU with id : " << pu_id)
       std::string name = path;
-      name+=org::esb::util::Decimal(pu_id % 10).toString();
+      name += org::esb::util::Decimal(pu_id % 10).toString();
       name += "/";
       name += org::esb::util::Decimal(pu_id).toString();
       name += ".unit";
       org::esb::io::File infile(name.c_str());
-      if(!infile.exists()){
-        logerror(infile.getFilePath()<< ": not found");
+      if (!infile.exists()) {
+        logerror(infile.getFilePath() << ": not found");
         continue;
       }
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       ois.readObject(pu);
-//	  logdebug("here:"<<pu_id);
-//      logdebug(pu._process_unit);
-      std::list<boost::shared_ptr<Packet> >::iterator plist=pu._output_packets.begin();
-      for(;plist!=pu._output_packets.end();plist++){
-        Packet * p=(*plist).get();
-        p->packet->dts=0;
-        p->packet->pts=0;
-		p->packet->stream_index=stream_map[p->packet->stream_index];
+      //	  logdebug("here:"<<pu_id);
+      //      logdebug(pu._process_unit);
+      std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
+      for (; plist != pu._output_packets.end(); plist++) {
+        Packet * p = (*plist).get();
+        //        p->packet->dts=0;
+        //        p->packet->pts=0;
+        p->packet->stream_index = stream_map[p->packet->stream_index];
         pos->writePacket(*p);
       }
     }

@@ -9,7 +9,7 @@
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 
-bool toDebug = true;
+bool toDebug = false;
 
 class PacketSink : public Sink {
 public:

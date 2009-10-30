@@ -39,11 +39,11 @@ namespace org {
             public:
                 DatabaseService(std::string);
                 void onMessage(org::esb::signal::Message & msg);
+                static void start(std::string str=std::string(""));
+                static void stop();
             private:
-                void start();
-                void stop();
-                bool _running;
-                std::string _base_path;
+                static bool _running;
+                static std::string _base_path;
             };
         }
     }

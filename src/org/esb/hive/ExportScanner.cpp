@@ -23,7 +23,12 @@ namespace org {
         } else
           if (msg.getProperty("exportscanner") == "stop") {
           logdebug("Stop Request for the ExportScanner");
-          _run = false;
+          if (_run) {
+            _run = false;
+            boost::mutex::scoped_lock terminationLock(terminationMutex);
+            termination_wait.wait(terminationLock);
+          }
+          logdebug("ExportScanner stopped");
         }
       }
 
@@ -31,8 +36,8 @@ namespace org {
         while (_run) {
           {
             org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-//            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
-//            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
+            //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
+            //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
             org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path from jobs, files where jobs.outputfile= files.id and jobs.complete is not null");
             org::esb::sql::ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -50,9 +55,11 @@ namespace org {
               }
             }
           }
-          org::esb::lang::Thread::sleep2(10000);
+          org::esb::lang::Thread::sleep2(5000);
         }
-        logdebug("ExportScanner stopped");
+        boost::mutex::scoped_lock terminationLock(terminationMutex);
+        termination_wait.notify_all();
+
       }
     }
   }
