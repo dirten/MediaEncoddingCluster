@@ -7,8 +7,10 @@
 
 #include <stdlib.h>
 #include <map>
+#include <list>
 
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/FormatOutputStream.h"
@@ -21,7 +23,16 @@
 
 #include "org/esb/av/FrameConverter.h"
 #include "org/esb/av/Frame.h"
+
+#include "org/esb/hive/job/Packetizer.h"
+
+#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/FileOutputStream.h"
+
 using namespace org::esb::av;
+using namespace org::esb::io;
+using namespace org::esb::util;
+using namespace org::esb::hive::job;
 
 struct StreamData {
   Decoder * dec;
@@ -36,7 +47,7 @@ map<int, int> _smap;
  */
 int main(int argc, char** argv) {
 
-
+std::map<int, Packetizer::StreamData> stream_data;
 
     /*open the fixed test File or the file from command line input*/
   std::string src;
@@ -71,6 +82,8 @@ int main(int argc, char** argv) {
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].enc = new Encoder();
+    stream_data[i].codec_type=fis.getStreamInfo(i)->getCodecType();
+
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
 //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
 //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
@@ -83,6 +96,9 @@ int main(int argc, char** argv) {
       ar.num = 1;
       ar.den = 25;
       _sdata[i].enc->setTimeBase(ar);
+      stream_data[i].min_packet_count = 20;
+      stream_data[i].jut_size = 4;
+
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
       _sdata[i].enc->setCodecId(CODEC_ID_MP3);
       _sdata[i].enc->setBitRate(128000);
@@ -93,6 +109,8 @@ int main(int argc, char** argv) {
       ar.num = 1;
       ar.den = 44100;
       _sdata[i].enc->setTimeBase(ar);
+      stream_data[i].min_packet_count = 50;
+      stream_data[i].jut_size = 2;
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
@@ -105,9 +123,44 @@ int main(int argc, char** argv) {
     _sdata[i].enc->setOutputStream(&pos);
   }
 
+  Packetizer pti(stream_data);
+
   if (!pos.init())goto cleanup;
   fos.dumpFormat();
 
+  for (int a = 0; a < 200; a++) {
+    Packet p;
+    //reading a packet from the Stream
+    //when no more packets available(EOF) then it return <0
+    if (pis.readPacket(p) < 0)break;
+    boost::shared_ptr<Packet> pPacket(new Packet(p));
+    if (pti.putPacket(pPacket)) {
+      boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
+      u->_decoder=_sdata[pPacket->getStreamIndex()].dec;
+      u->_encoder=_sdata[pPacket->getStreamIndex()].enc;
+      std::list<boost::shared_ptr<Packet> > list;
+      PacketListPtr l=pti.removePacketList();
+      PacketListPtr::iterator it=l.begin();
+      for(;it!=l.end();it++){
+        list.push_back(*it);
+      }
+      u->_input_packets=list;
+//      u->process();
+//      delete u->_decoder;
+//      delete u->_encoder;
+
+      std::string target=MEC_SOURCE_DIR;
+      target+="/pu.";
+      target+=StringUtil::toString(a);
+      target+=".pu";
+      File out(target);
+      FileOutputStream fospu(&out);
+      ObjectOutputStream oos(&fospu);
+      oos.writeObject(*u);
+
+//      u->process();
+    }
+  }
 
   
 cleanup:

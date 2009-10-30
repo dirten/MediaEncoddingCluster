@@ -115,12 +115,15 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 20000; i++) {
     Packet p;
     //reading a packet from the Stream
-    if (pis.readPacket(p) < 0)break; //when no more packets available then it return <0
+    if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0
     if(_sdata.find(p.getStreamIndex())==_sdata.end())continue;
     p.setDts(p.getDts()-_sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
     Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
+
     if(!src_frame->isFinished())continue;
+
+    //mapping input tp output stream
     src_frame->stream_index=_smap[p.getStreamIndex()];
 
     //Convert an Audio or Video Packet
@@ -132,6 +135,7 @@ int main(int argc, char** argv) {
         _sdata[p.getStreamIndex()].enc->getHeight());
     if (_sdata[p.getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
       trg_frame = new Frame();
+
     _sdata[p.getStreamIndex()].conv->convert(*src_frame, *trg_frame);
     int ret = _sdata[p.getStreamIndex()].enc->encode(*trg_frame);
 
@@ -140,7 +144,7 @@ int main(int argc, char** argv) {
     delete trg_frame;
 
   }
-
+//int data_size=0;
 
 cleanup:
   fos.close();

@@ -14,6 +14,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 
+#include "org/esb/hive/DatabaseService.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
@@ -89,6 +90,7 @@ int main(int argc, char** argv) {
 
   std::string src = MEC_SOURCE_DIR;
   config::Config::setProperty("hive.base_path", src.c_str());
+  hive::DatabaseService::start(MEC_SOURCE_DIR);
   {
     sql::Connection con("mysql:host=;db=;user=;passwd=");
 

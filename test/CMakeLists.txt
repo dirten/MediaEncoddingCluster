@@ -33,7 +33,7 @@ ENDIF(BUILD_TESTING)
 
 
 FILE(GLOB ERLANG_INTERFACE_DIR ${ERLANG_DIR}/lib/erl_interface-*)
-MESSAGE("Erlang Interface Dir for test" ${ERLANG_INTERFACE_DIR})
+#MESSAGE("Erlang Interface Dir for test" ${ERLANG_INTERFACE_DIR})
 
 
 FIND_LIBRARY(ERL_INTERFACE_LIB
@@ -57,7 +57,7 @@ ENDIF(WIN32)
 
 
 
-ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+#ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 
 #add_executable (test test.cpp)
@@ -133,7 +133,7 @@ target_link_libraries (info
 #  ${BOOST_DT_LIB_MT}
 #)
 
-MESSAGE("BOOST FileSystem Library" ${BOOST_FS_LIB_MT})
+#MESSAGE("BOOST FileSystem Library" ${BOOST_FS_LIB_MT})
 
 
 IF(NOT WIN32)

@@ -4,7 +4,7 @@ include_directories (${MYSQL_DIR}/include)
 
 add_executable (TestSqlConnection TestSqlConnection.cpp)
 
-target_link_libraries (TestSqlConnection sql esb lang util z)
+target_link_libraries (TestSqlConnection sql hive av io net signal esb lang util z)
 ADD_TEST(TestSqlConnection ${EXECUTABLE_OUTPUT_PATH}/TestSqlConnection )
 
 
