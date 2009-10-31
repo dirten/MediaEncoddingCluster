@@ -121,7 +121,6 @@ int main(int argc, char * argv[]) {
 
 
   Config::setProperty("hive.base_path", base_path);
-  org::esb::hive::DatabaseService::start(base_path);
   try {
     //    loginit("log.properties");
     //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
@@ -475,8 +474,8 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
    * Initializing Application Services
    *
    */
-  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
-  Messenger::getInstance().addMessageListener(dbservice);
+//  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
+//  Messenger::getInstance().addMessageListener(dbservice);
 
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
@@ -508,6 +507,8 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+      org::esb::hive::DatabaseService::start(base_path);
+
     Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
@@ -614,8 +615,8 @@ void start() {
    *
    */
 
-  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
-  Messenger::getInstance().addMessageListener(dbservice);
+//  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
+//  Messenger::getInstance().addMessageListener(dbservice);
 
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
@@ -648,6 +649,7 @@ void start() {
 
 //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    org::esb::hive::DatabaseService::start(base_path);
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
