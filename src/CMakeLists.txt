@@ -128,7 +128,7 @@ target_link_libraries (mhive
 #  ${BOOST_SERIAL_LIB_MT}
 #  ${BOOST_THREAD_LIB_MT}
   ${BOOST_SYSTEM_LIB_MT}
-  ${LIBSSL}
+  ${SSL_LIB}
 #  ${BOOST_PO_LIB_MT}
 #  ${BOOST_SIGNALS_LIB_MT}
 #  ${BOOST_REGEX_LIB_MT}

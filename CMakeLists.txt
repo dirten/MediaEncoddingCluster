@@ -96,9 +96,9 @@ FIND_LIBRARY(LIBSSL
   PATHS
     /usr/lib
   )
-#IF(LIBSSL)
-#  SET(BZ2_LIB ${LIBBZ2})
-#ENDIF(LIBBZ2)
+IF(LIBSSL)
+  SET(SSL_LIB ${LIBBZ2})
+ENDIF(LIBBZ2)
 ############################################################
 #
 # Setup build Defines
