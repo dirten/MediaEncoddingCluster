@@ -97,8 +97,22 @@ FIND_LIBRARY(LIBSSL
     /usr/lib
   )
 IF(LIBSSL)
-  SET(SSL_LIB ${LIBBZ2})
+  SET(SSL_LIB ${LIBSSL})
 ENDIF(LIBSSL)
+############################################################
+#
+# Find the libcrypto, if it is needed for wt when visible
+#
+############################################################
+FIND_LIBRARY(LIBCRYPTO
+  NAMES
+    crypto
+  PATHS
+    /usr/lib
+  )
+IF(LIBCRYPTO)
+  SET(CRYPTO_LIB ${LIBCRYPTO})
+ENDIF(LIBCRYPTO)
 ############################################################
 #
 # Setup build Defines

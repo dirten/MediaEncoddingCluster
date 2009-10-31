@@ -109,7 +109,7 @@ ELSE(WIN32)
 #    ssl
 #    dl
 #    crypt
-    crypto
+#    crypto
 #    pthread
 #    z 
 #    wthttp 
@@ -129,6 +129,7 @@ target_link_libraries (mhive
 #  ${BOOST_THREAD_LIB_MT}
   ${BOOST_SYSTEM_LIB_MT}
   ${SSL_LIB}
+  ${CRYPTO_LIB}
 #  ${BOOST_PO_LIB_MT}
 #  ${BOOST_SIGNALS_LIB_MT}
 #  ${BOOST_REGEX_LIB_MT}
