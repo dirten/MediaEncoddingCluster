@@ -37,7 +37,7 @@ namespace org {
         std::string sql;
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
-		logdebug("FullSql:"<<sql);
+//		logdebug("FullSql:"<<sql);
         sql::Connection con(config::Config::getProperty("db.connection"));
         util::StringTokenizer st(sql, ";");
 
@@ -46,8 +46,8 @@ namespace org {
           std::string t = st.nextToken();
           t = StringUtil::trim(t, *new std::string("\n"));
           std::string next = StringUtil::trim(t);
-          logdebug("Create Table " << next);
-          logdebug("Create Table leng" << next.size());
+//          logdebug("Create Table " << next);
+//          logdebug("Create Table leng" << next.size());
           if (next.size() > 1)
             con.executeNonQuery(next);
         }

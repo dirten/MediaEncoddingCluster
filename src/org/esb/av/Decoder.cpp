@@ -59,9 +59,6 @@ Frame Decoder::decodeLast() {
 }
 
 Frame * Decoder::decode2(Packet & packet) {
-  if(_last_pts==AV_NOPTS_VALUE){
-    _last_pts=packet.getDts();
-  }
   if (!_opened)
     throw runtime_error("Codec not opened");
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
@@ -97,6 +94,13 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
       avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
+  //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
+  if(_last_pts==AV_NOPTS_VALUE){
+    _last_pts=av_rescale_q(packet.getDts(), packet.getTimeBase(),ctx->time_base);
+    logdebug("setting last pts to :"<<_last_pts<<"ctxtb:"<<ctx->time_base.num<<"/"<<ctx->time_base.den
+      <<"ptb:"<<packet.getTimeBase().num<<"/"<<packet.getTimeBase().den);
+  }
+
 //#ifdef DEBUG
 //  logdebug("BytesDecoded:"<<bytesDecoded);
 //#endif
@@ -189,13 +193,23 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 Frame * Decoder::decodeAudio2(Packet & packet) {
  logdebug(packet.toString());
   //        Frame frame;
-  int size = packet.packet->size, samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+  int size = packet.packet->size;
+  int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+// int bps = av_get_bits_per_sample_format(ist->st->codec->sample_fmt)>>3;
+
 //  uint8_t *outbuf = new uint8_t[samples_size];
   uint8_t *outbuf = (uint8_t*)av_malloc(samples_size);
   //    uint8_t *inbuf = packet.packet->data;
   //    while (size > 0) {
 //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
+  //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
+  if(_last_pts==AV_NOPTS_VALUE){
+    _last_pts=av_rescale_q(packet.getDts(), packet.getTimeBase(),ctx->time_base);
+    logdebug("setting last pts to :"<<_last_pts<<"ctxtb:"<<ctx->time_base.num<<"/"<<ctx->time_base.den
+      <<"ptb:"<<packet.getTimeBase().num<<"/"<<packet.getTimeBase().den);
+  }
+
   logdebug("DecodingLength:"<<len<<" PacketSize:"<<packet.getSize()<<"SampleSize:"<<samples_size<<"FrameSize:"<<ctx->frame_size*ctx->channels);
   if (len < 0) {
     logerror("Error while decoding audio Frame");
@@ -221,7 +235,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   ar.den=ctx->sample_rate;
   int64_t dur=av_rescale_q(samples_size, packet.getTimeBase(), ar);
   frame->duration = dur;
-  frame->setTimeBase(ar);
+  frame->setTimeBase(ctx->time_base);
   _last_pts+=dur;
 
 //  frame->setPts(packet.packet->pts);

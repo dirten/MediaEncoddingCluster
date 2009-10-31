@@ -152,9 +152,10 @@ int Encoder::encodeAudio(Frame & frame) {
         int frame_bytes = ctx->frame_size * osize * ctx->channels;
         dur = static_cast<int> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) stream->time_base.den) /((float)stream->time_base.num) );
      */
-    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den) / ((float) frame.getTimeBase().num));
+//    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den) / ((float) frame.getTimeBase().num));
+    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) 1) / ((float) frame.getTimeBase().num));
     //    uint64_t dur = static_cast<uint64_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
-    //    logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
+        logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
     //    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:" << dur << "::." << (((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den));
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
     //    logdebug("Duration:"<<dur2);
@@ -197,14 +198,14 @@ int Encoder::encodeAudio(Frame & frame) {
     AVRational ar;
     ar.num = 1;
     ar.den = ctx->sample_rate;
-    pak.setTimeBase(ar);
+    pak.setTimeBase(ctx->time_base);
     pak.packet->flags |= PKT_FLAG_KEY;
     pak.packet->stream_index = frame.stream_index;
 
     pak.packet->dts = _last_dts;
     pak.packet->pts = _last_dts;
-    pak.setDuration(dur);
-    _last_dts += dur;
+    pak.setDuration(((float)frame_bytes/(float)(ctx->channels * osize*ctx->sample_rate))*(float)ctx->time_base.den);
+    _last_dts += pak.getDuration();
     //	pak.packet->pos=frame.pos;
     //    pak.packet->duration = dur;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;

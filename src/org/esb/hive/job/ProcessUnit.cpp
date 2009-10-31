@@ -74,7 +74,7 @@ void ProcessUnit::process() {
   if (_encoder != NULL)
     _encoder->open();
 
-  if (toDebug) {
+  if (true) {
     logdebug("Codex openned");
     logdebug(_decoder->toString());
     logdebug(_encoder->toString());

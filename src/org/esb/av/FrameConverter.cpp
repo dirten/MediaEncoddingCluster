@@ -105,9 +105,9 @@ namespace org {
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
         out_frame.setTimeBase(_enc->getTimeBase());
 //        return;
-        out_frame.setPts( av_rescale_q(in_frame.getPts(), _dec->getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDts( av_rescale_q(in_frame.getDts(), _dec->getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), _dec->getTimeBase(), _enc->getTimeBase()));
+        out_frame.setPts( av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDts( av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
         
       }
 

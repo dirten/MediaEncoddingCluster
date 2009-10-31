@@ -37,17 +37,20 @@ void execute(char * infile, char * outfile) {
 }
 void view_packet_data(Packet * p){
     int64_t inpts=0;
+    int64_t indts=0;
     AVRational intb;
     int64_t indur=0;
     memset(&intb,0,sizeof(intb));
     bool isKey=false;
     if(p!=NULL){
       inpts=p->getPts();
+      indts=p->getDts();
       intb=p->getTimeBase();
       indur=p->getDuration();
       isKey=p->isKeyFrame();
     }
     printf("%20lld|", inpts);
+    printf("%20lld|", indts);
     printf("%6lld/", intb.num);
     printf("%6lld/", intb.den);
     printf("%6lld", indur);
@@ -60,6 +63,8 @@ void view(char * filename) {
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
+//  logdebug(pu._decoder->toString());
+//  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");
 cout << endl;
   printf("%10s|", "inframes");
@@ -77,6 +82,23 @@ cout << endl;
   int c=max(pu._input_packets.size(),pu._output_packets.size());
   std::vector<boost::shared_ptr<Packet> > in(pu._input_packets.begin(),pu._input_packets.end());
   std::vector<boost::shared_ptr<Packet> > out(pu._output_packets.begin(),pu._output_packets.end());
+    printf("%10s|", "count");
+    printf("%20s|", "pts");
+    printf("%20s|", "dts");
+    printf("%6s/", ".num");
+    printf("%6s/", ".den");
+    printf("%6s", "dur");
+    printf("%ss", "K");
+    printf("%20s|", "pts");
+    printf("%20s|", "dts");
+    printf("%6s/", ".num");
+    printf("%6s/", ".den");
+    printf("%6s", "dur");
+    printf("%ss", "K");
+  cout << endl;
+  printf("----------------------------------------------------------------------------------------------------------");
+  cout << endl;
+
   for(int a=0;a<c;a++){
     printf("%10d|", a);
     if(in.size()>a)

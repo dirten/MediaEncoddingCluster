@@ -20,6 +20,7 @@ add_executable (TestPacketInputStream TestPacketInputStream.cpp)
 add_executable (TestPacketOutputStream TestPacketOutputStream.cpp)
 add_executable (TestProcessAudioPacket TestProcessAudioPacket.cpp)
 add_executable (TestFfmpeg TestFfmpeg.cpp)
+add_executable (TestEuclid TestEuclid.cpp)
 add_executable (TestFullTranscoding TestFullTranscoding.cpp)
 
 target_link_libraries (TestPacket io av util lang avformat avcodec avutil swscale )

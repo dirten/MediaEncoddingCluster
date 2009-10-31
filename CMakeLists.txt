@@ -87,9 +87,24 @@ IF(LIBBZ2)
 ENDIF(LIBBZ2)
 ############################################################
 #
+# Find the libssl, if it is needed for wt when visible
+#
+############################################################
+FIND_LIBRARY(LIBSSL
+  NAMES
+    ssl
+  PATHS
+    /usr/lib
+  )
+#IF(LIBSSL)
+#  SET(BZ2_LIB ${LIBBZ2})
+#ENDIF(LIBBZ2)
+############################################################
+#
 # Setup build Defines
 #
 ############################################################
+SET(BUILD_SHARED_LIBS OFF)
 IF(UNIX)
   ADD_DEFINITIONS(-D__UNIX__)
   IF(APPLE)
@@ -107,10 +122,11 @@ ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 LINK_DIRECTORIES(${MYSQL_LIBRARY_PATH})
 LINK_DIRECTORIES(${WT_DIR}/lib)
 
-SET(BUILD_SHARED_LIBS OFF)
 SET(BUILD_EMBEDDED_LIBS OFF CACHE STRING "Use Embedded Dependency Libraries")
 #SET(USE_EMBEDDED_MYSQL ON CACHE STRING "Use Embedded Mysql")
 SET(USE_EMBEDDED_MYSQL ON)
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:$ORIGIN/../lib")
+
 
 
 

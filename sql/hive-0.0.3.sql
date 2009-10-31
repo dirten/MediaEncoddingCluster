@@ -212,6 +212,6 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-insert into profiles values(1,"test","AVI format",28,1024000,25,320,240,2,86016,128000,44100);
+insert into profiles values(1,"test","MP4 format",28,1024000,"same",320,240,2,86016,128000,44100);
 insert into config values("framerates","1/25#25,1/30#30");
 

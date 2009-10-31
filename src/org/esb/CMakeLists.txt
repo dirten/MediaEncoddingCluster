@@ -162,10 +162,10 @@ add_library (sql sql/Column.cpp
 )
 TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY})
 IF(UNIX AND NOT APPLE)
-  TARGET_LINK_LIBRARIES(sql crypt z)
+  TARGET_LINK_LIBRARIES(sql crypt)
 ENDIF(UNIX AND NOT APPLE)
 IF(UNIX)
-  TARGET_LINK_LIBRARIES(sql pthread util dl)
+  TARGET_LINK_LIBRARIES(sql pthread util dl z)
 ENDIF(UNIX)
 #SET_TARGET_PROPERTIES(sql
 #PROPERTIES
@@ -280,7 +280,7 @@ ENDIF(WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb)
+TARGET_LINK_LIBRARIES(esb util sql)
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS esb
     RUNTIME DESTINATION bin
