@@ -98,7 +98,7 @@ FIND_LIBRARY(LIBSSL
   )
 IF(LIBSSL)
   SET(SSL_LIB ${LIBBZ2})
-ENDIF(LIBBZ2)
+ENDIF(LIBSSL)
 ############################################################
 #
 # Setup build Defines
