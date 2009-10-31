@@ -507,6 +507,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 
 
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    string base_path = org::esb::config::Config::getProperty("hive.base_path");
       org::esb::hive::DatabaseService::start(base_path);
 
     Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
@@ -649,6 +650,7 @@ void start() {
 
 //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+    string base_path = org::esb::config::Config::getProperty("hive.base_path");
     org::esb::hive::DatabaseService::start(base_path);
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
