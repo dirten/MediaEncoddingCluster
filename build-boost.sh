@@ -11,7 +11,7 @@ echo dirname $0
 
 SYS=`uname`
 case "$SYS" in
-    LINUX*)
+    Linux*)
       JAMBIN="linux"
     ;;
     Darwin*)
@@ -22,7 +22,7 @@ case "$SYS" in
     ;;
 esac
 
-download_file "http://dfn.dl.sourceforge.net/project/boost/boost/1.35.0/boost_1_35_0.tar.bz2" "boost.src.tar.bz2" "boost.src.tar"
+download_file "http://dfn.dl.sourceforge.net/project/boost/boost/1.36.0/boost_1_36_0.tar.bz2" "boost.src.tar.bz2" "boost.src.tar"
 bunzip_file "boost.src.tar.bz2" "boost.src.tar"
 untar_file "boost.src.tar" "boost_*" "boost"
 if test ! -f source/boost/tools/jam/stage/bin.${JAMBIN}x86/bjam ; then
