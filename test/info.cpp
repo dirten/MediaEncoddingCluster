@@ -10,10 +10,9 @@
 using namespace org::esb::av;
 
 int main(int argc, char ** argv) {
- avcodec_init();
-
+	avcodec_init();
 	avcodec_register_all();
-  av_register_all();
+	av_register_all();
   
   if (argc < 2)return 1;
   long long int packet_start = 0;
@@ -110,6 +109,7 @@ int main(int argc, char ** argv) {
       logdebug("Last Packet REACHED");
       break;
     }
+//	if(p.getStreamIndex()!=1)continue;
 //	av_pkt_dump_log(NULL, AV_LOG_DEBUG, p.packet, false);
 //    if (a < packet_start)continue;
     //        cout <<a<<"\t";

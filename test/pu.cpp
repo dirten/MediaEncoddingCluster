@@ -51,9 +51,9 @@ void view_packet_data(Packet * p){
     }
     printf("%20lld|", inpts);
     printf("%20lld|", indts);
-    printf("%6lld/", intb.num);
-    printf("%6lld/", intb.den);
-    printf("%6lld", indur);
+    printf("%6d/", intb.num);
+    printf("%6d/", intb.den);
+    printf("%6d", indur);
     printf("%1s", isKey?"x":" ");
 
 }

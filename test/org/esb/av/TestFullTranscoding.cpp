@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
   if (!pos.init())goto cleanup;
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 20000; i++) {
+  for (int i = 0; i < 70000; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0

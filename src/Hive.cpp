@@ -202,6 +202,7 @@ int main(int argc, char * argv[]) {
     
     if (vm.count("daemon")) {
       logdebug("start daemon");
+	  org::esb::hive::DatabaseService::start(base_path);
       Log::open(Config::getProperty("hive.base_path"));
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
@@ -216,6 +217,7 @@ int main(int argc, char * argv[]) {
     }
     if (vm.count("run")) {
       logdebug("start console");
+	  org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
@@ -505,12 +507,10 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
    *
    */
 
-
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-      org::esb::hive::DatabaseService::start(base_path);
 
-    Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
+//    Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
@@ -649,9 +649,9 @@ void start() {
 
 
 //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
+
   if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-    org::esb::hive::DatabaseService::start(base_path);
         Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
