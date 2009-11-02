@@ -10,7 +10,7 @@ using namespace org::esb::config;
 WebServer * w;
 
 
-int main() {
+int main(int argc, char**argv) {
   //  Config::init("");
   Config::setProperty("db.connection", "mysql:host=127.0.0.1;db=hive2;user=root;passwd=");
 
@@ -19,10 +19,14 @@ int main() {
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
 
-
+  int timeout=0;
+  if(argc>1)
+    timeout=atoi(argv[1]);
   w= new WebServer();
   w->start();
-  Thread::sleep2(10000);
+  do{
+    Thread::sleep2(timeout>0?timeout:1000);
+  }while(timeout==0);
   w->stop();
   delete w;
   Config::close();
