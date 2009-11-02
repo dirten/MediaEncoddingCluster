@@ -1,4 +1,0 @@
--define(SYSPORTEXE,"@SYSPORTEXE@" ).
-
-
-%-define(SYSPORTEXE,"/usr/bin/valgrind --log-file=/tmp/erlsys  --tool=memcheck --leak-check=full --show-reachable=yes @SYSPORTEXE@" ).

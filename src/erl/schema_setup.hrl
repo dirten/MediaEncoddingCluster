@@ -1,1 +1,0 @@
--record(setup,{instance_mode, instance_start, auto_node_discovery, http_port}).
