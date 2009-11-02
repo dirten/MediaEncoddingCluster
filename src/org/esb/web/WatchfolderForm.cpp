@@ -17,19 +17,27 @@ namespace org {
     namespace web {
 
       WatchfolderForm::WatchfolderForm(Wt::WContainerWidget * parent) : Wt::WContainerWidget(parent) {
-        Wt::WTable * t = new Wt::WTable(parent);
+//        Wt::WTable * t = new Wt::WTable(parent);
         int i = 0;
-        _le.getElement("id", "Watchfolder Id", "", t->elementAt(i++, 0))->setEnabled(false);
+        Wt::WGridLayout * l = new Wt::WGridLayout();
+//        l->setVerticalSpacing(3);
+//        l->setHorizontalSpacing(0);
+//        l->setMinimumSize(Wt::WLength::Auto, 30);
+        setLayout(l);
+        _le.addElement("id", "Watchfolder Id", "", l)->setEnabled(false);
 
-        _le.getElement("infolder", "Input Folder", "", t->elementAt(i++, 0))->setEnabled(false);
-        Wt::Ext::Button * selectInDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
+        _le.addElement("infolder", "Input Folder", "", l)->setEnabled(false);
+        Wt::Ext::Button * selectInDirectory = new Wt::Ext::Button("Select Directory");
+//        selectInDirectory->resize(Wt::WLength::Auto, 30);
+        l->addWidget(selectInDirectory,1,2);
         selectInDirectory->clicked.connect(SLOT(this, WatchfolderForm::openInfolder));
 
-        _le.getElement("outfolder", "Output Folder", "", t->elementAt(i++, 0))->setEnabled(false);
-        Wt::Ext::Button * selectOutDirectory = new Wt::Ext::Button("Select Directory", t->elementAt(i - 1, 2));
+        _le.addElement("outfolder", "Output Folder", "", l)->setEnabled(false);
+        Wt::Ext::Button * selectOutDirectory = new Wt::Ext::Button("Select Directory");
+        l->addWidget(selectOutDirectory,2,2);
         selectOutDirectory->clicked.connect(SLOT(this, WatchfolderForm::openOutfolder));
 
-        Wt::Ext::ComboBox * profiles = _cb.getElement("profile", "Encoding Profile", "", t->elementAt(i++, 0));
+        Wt::Ext::ComboBox * profiles = _cb.addElement("profile", "Encoding Profile", "", l);
         org::esb::sql::Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
 
         org::esb::sql::Statement stmt = con.createStatement("select * from profiles");
@@ -42,10 +50,13 @@ namespace org {
           profileid2profileidx[rs.getInt("id")] = a++;
         }
         i++;
-        new Wt::WBreak(parent);
-        Wt::WTable * b = new Wt::WTable(parent);
-        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel", b->elementAt(0, 0));
-        Wt::Ext::Button *save = new Wt::Ext::Button("Save", b->elementAt(0, 1));
+//        new Wt::WBreak(parent);
+//        Wt::WTable * b = new Wt::WTable(parent);
+        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
+        Wt::Ext::Button *save = new Wt::Ext::Button("Save");
+        l->addWidget(cancel,4,0);
+        l->addWidget(save,4,1);
+
         cancel->clicked.connect(SLOT(this, WatchfolderForm::cancel));
         save->clicked.connect(SLOT(this, WatchfolderForm::save));
 
@@ -63,30 +74,29 @@ namespace org {
 
       void WatchfolderForm::openInfolder() {
         dc = new DirectoryChooser("Select Infolder");
-        dc->selected.connect(SLOT(this, WatchfolderForm::selectedInfolder ));
+        dc->selected.connect(SLOT(this, WatchfolderForm::selectedInfolder));
         dc->canceled.connect(SLOT(dc, Wt::Ext::Dialog::accept));
         dc->show();
       }
 
       void WatchfolderForm::selectedInfolder(std::string path) {
-        logdebug("selected Path:"<<path);
+        logdebug("selected Path:" << path);
         _le.getElement("infolder")->setText(path);
         delete dc;
       }
 
       void WatchfolderForm::openOutfolder() {
         dc = new DirectoryChooser("Select Outfolder");
-        dc->selected.connect(SLOT(this, WatchfolderForm::selectedOutfolder ));
+        dc->selected.connect(SLOT(this, WatchfolderForm::selectedOutfolder));
         dc->canceled.connect(SLOT(dc, Wt::Ext::Dialog::accept));
         dc->show();
       }
 
       void WatchfolderForm::selectedOutfolder(std::string path) {
-        logdebug("selected Path:"<<path);
+        logdebug("selected Path:" << path);
         _le.getElement("outfolder")->setText(path);
         delete dc;
       }
-
 
       void WatchfolderForm::cancel() {
         canceled.emit();

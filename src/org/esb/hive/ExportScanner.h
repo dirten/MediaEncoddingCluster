@@ -17,6 +17,7 @@ namespace org {
 
             class ExportScanner : public org::esb::signal::MessageListener {
             public:
+                ExportScanner();
                 void onMessage(org::esb::signal::Message & msg);
             private:
                 void start();

@@ -14,6 +14,10 @@ namespace org {
   namespace esb {
     namespace hive {
 
+      ExportScanner::ExportScanner() {
+        _run = false;
+      }
+
       void ExportScanner::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("exportscanner") == "start") {
           logdebug("Start Request for the ExportScanner");

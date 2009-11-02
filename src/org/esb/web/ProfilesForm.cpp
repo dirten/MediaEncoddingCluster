@@ -15,11 +15,17 @@ namespace org {
     namespace web {
 
       ProfilesForm::ProfilesForm(Wt::WContainerWidget * parent) : Wt::WContainerWidget(parent) {
-        Wt::WTable * t = new Wt::WTable(parent);
+//        Wt::WTable * t = new Wt::WTable(parent);
         int i = 0;
-        _el.getElement("id", "Profile Id", "", t->elementAt(i++, 0))->setEnabled(false);
-        _el.getElement("profile_name", "Profile Name", "", t->elementAt(i++, 0));
-        Wt::Ext::ComboBox * v_format = _elcb.getElement("v_format", "Container Fromat", "", t->elementAt(i++, 0));
+        Wt::WGridLayout * l = new Wt::WGridLayout();
+//        l->setVerticalSpacing(3);
+//        l->setHorizontalSpacing(0);
+//        l->setMinimumSize(Wt::WLength::Auto, 30);
+        setLayout(l);
+
+        _el.addElement("id", "Profile Id", "", l)->setEnabled(false);
+        _el.addElement("profile_name", "Profile Name", "", l);
+        Wt::Ext::ComboBox * v_format = _elcb.addElement("v_format", "Container Fromat", "", l);
         v_format->setTextSize(50);
         AVOutputFormat *ofmt = NULL;
         int a = 0;
@@ -31,7 +37,7 @@ namespace org {
           formatidx2formatname[a] = ofmt->long_name;
           a++;
         }
-        Wt::Ext::ComboBox * v_codec = _elcb.getElement("v_codec", "Codec", "", t->elementAt(i++, 0));
+        Wt::Ext::ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", l);
         v_codec->setTextSize(50);
         {
           AVCodec *p = NULL;
@@ -45,8 +51,8 @@ namespace org {
             }
           }
         }
-        _el.getElement("v_bitrate", "Video Bitrate", "", t->elementAt(i++, 0));
-        Wt::Ext::ComboBox * v_framerate = _elcb.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
+        _el.addElement("v_bitrate", "Video Bitrate", "", l);
+        Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", "", l);
         StringTokenizer st(org::esb::config::Config::getProperty("framerates"), ",");
 
         int c = st.countTokens();
@@ -62,10 +68,10 @@ namespace org {
           }
         }
         //        _el.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
-        _el.getElement("v_width", "Video Width", "", t->elementAt(i++, 0));
-        _el.getElement("v_height", "Video Height", "", t->elementAt(i++, 0));
-        _el.getElement("v_height", "Video Height", "", t->elementAt(i++, 0));
-        Wt::Ext::ComboBox * a_codec = _elcb.getElement("a_codec", "Audio Codec", "", t->elementAt(i++, 0));
+        _el.addElement("v_width", "Video Width", "", l);
+        _el.addElement("v_height", "Video Height", "", l);
+        _el.addElement("v_height", "Video Height", "", l);
+        Wt::Ext::ComboBox * a_codec = _elcb.addElement("a_codec", "Audio Codec", "", l);
         a_codec->setTextSize(50);
         {
           AVCodec *p = NULL;
@@ -79,13 +85,16 @@ namespace org {
             }
           }
         }
-        _el.getElement("a_channels", "Audio Channels", "", t->elementAt(i++, 0));
-        _el.getElement("a_bitrate", "Audio Bitrate", "", t->elementAt(i++, 0));
-        _el.getElement("a_samplerate", "Audio Samplerate", "", t->elementAt(i++, 0));
+        _el.addElement("a_channels", "Audio Channels", "", l);
+        _el.addElement("a_bitrate", "Audio Bitrate", "", l);
+        _el.addElement("a_samplerate", "Audio Samplerate", "", l);
         i++;
         i++;
-        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel", t->elementAt(i, 0));
-        Wt::Ext::Button *save = new Wt::Ext::Button("Save", t->elementAt(i, 1));
+        int btrow=l->rowCount();
+        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
+        l->addWidget(cancel,btrow,0);
+        Wt::Ext::Button *save = new Wt::Ext::Button("Save");
+        l->addWidget(save,btrow,1);
         cancel->clicked.connect(SLOT(this, ProfilesForm::cancelProfile));
         save->clicked.connect(SLOT(this, ProfilesForm::saveProfile));
 

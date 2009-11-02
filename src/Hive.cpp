@@ -121,6 +121,7 @@ int main(int argc, char * argv[]) {
 
 
   Config::setProperty("hive.base_path", base_path);
+//  org::esb::hive::DatabaseService::start(base_path);
   try {
     //    loginit("log.properties");
     //	std::cout<<"eclid(90000,3600)="<<euclid(194400000,375)<<" in "<<rec<<" cycles"<<std::endl;
@@ -674,6 +675,7 @@ void start() {
   }
 
   ctrlCHitWait();
+  loginfo("shutdown app, this will take some time!");
   /*
    *
    * Stopping Application Services from configuration

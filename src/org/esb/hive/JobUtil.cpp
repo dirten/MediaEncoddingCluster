@@ -186,7 +186,7 @@ int jobcreator(int argc, char*argv[]) {
   }
 
   {
-    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile, begin ) values( :inputfile, :outputfile, now())");
+    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile ) values( :inputfile, :outputfile)");
     stmtJob.setInt("inputfile", fileid);
     stmtJob.setLong("outputfile", outfileid);
     stmtJob.execute();

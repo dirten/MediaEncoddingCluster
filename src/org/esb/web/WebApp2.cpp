@@ -28,8 +28,10 @@ namespace org {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
         }
-
-        setTitle("Hive Webadmin");
+        std::string h = "MediaEncodingCluster V-";
+        h += MHIVE_VERSION;
+        h += "($Rev: 893 $-"__DATE__ "-" __TIME__")";
+        setTitle(h);
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
 
@@ -47,9 +49,7 @@ namespace org {
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
 
         north->setBorder(false);
-        std::string h = "MediaEncodingCluster V-";
-        h += MHIVE_VERSION;
-        h += "($Rev: 893 $-"__DATE__ "-" __TIME__")";
+
         Wt::WText *head = new Wt::WText(h);
         head->setStyleClass("north");
         north->setLayout(new Wt::WFitLayout());
@@ -84,7 +84,7 @@ namespace org {
         layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
 
-        useStyleSheet("ext/resources/css/xtheme-gray.css");
+        useStyleSheet("ext/resources/css/xtheme-slate.css");
 
 
       }
@@ -117,7 +117,7 @@ namespace org {
       }
 
       void WebApp2::listAllEncodings() {
-//        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
+        //        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
         SqlTable * tab = new SqlTable(std::string("select  filename,round(max((end_ts-start_time)*s.time_base_num/s.time_base_den)/(f.duration/1000000),4)*100 as progress,min(send) as start_time,sum(timestampdiff(SECOND,send,complete))\"cpu-time\" from process_units pu, streams s, files f where pu.source_stream =s.id and s.fileid=f.id group by f.id"));
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
@@ -164,7 +164,7 @@ namespace org {
       void WebApp2::createProfiles() {
         listAllProfiles();
         cpd = new Wt::Ext::Dialog("Profile");
-        cpd->resize(450, 360);
+        cpd->resize(500, 400);
         ProfilesForm * pf = new ProfilesForm(cpd->contents());
         pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
@@ -184,7 +184,7 @@ namespace org {
       void WebApp2::createWatchfolder() {
         listAllWatchfolder();
         cwd = new Wt::Ext::Dialog("Watchfolder");
-        cwd->resize(450, 360);
+        cwd->resize(450, 200);
         WatchfolderForm * pf = new WatchfolderForm(cwd->contents());
         pf->saved.connect(SLOT(this, WebApp2::watchfolderCreated));
         pf->canceled.connect(SLOT(cwd, Wt::Ext::Dialog::accept));

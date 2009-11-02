@@ -175,11 +175,7 @@ namespace org {
         stack->addWidget(createModePage());
         stack->addWidget(createClientPage());
 
-#ifndef USE_EMBEDDED_MYSQL
-        stack->addWidget(createDbPage());
-#else
         stack->addWidget(createDbEmbeddedPage());
-#endif
 
         stack->addWidget(createHivePage());
         stack->addWidget(createAdminPage());
@@ -218,11 +214,11 @@ namespace org {
         logdebug("Step=" << stack->currentIndex());
         _el.validate();
         int idx = stack->currentIndex();
-//        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
-        if (idx == 0 && (!mode->selectedButtonIndex()==1))
+        //        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 0 && (!mode->selectedButtonIndex() == 1))
           idx++;
-//        if (idx == 1 && (!_elchk.getElement("mode.server")->isChecked()))
-        if (idx == 1 && (!mode->selectedButtonIndex()==0))
+        //        if (idx == 1 && (!_elchk.getElement("mode.server")->isChecked()))
+        if (idx == 1 && (!mode->selectedButtonIndex() == 0))
           idx += 3;
         if (idx == 4)
           stack->insertWidget(5, createSavePage());
@@ -245,11 +241,11 @@ namespace org {
 
       void Setup::prevStep() {
         int idx = stack->currentIndex();
-//        if (idx == 5 && (!_elchk.getElement("mode.server")->isChecked()))
-        if (idx == 5 && (!mode->selectedButtonIndex()==0))
+        //        if (idx == 5 && (!_elchk.getElement("mode.server")->isChecked()))
+        if (idx == 5 && (!mode->selectedButtonIndex() == 0))
           idx -= 3;
-//        if (idx == 2 && (!_elchk.getElement("mode.client")->isChecked()))
-        if (idx == 2 && (!mode->selectedButtonIndex()==1))
+        //        if (idx == 2 && (!_elchk.getElement("mode.client")->isChecked()))
+        if (idx == 2 && (!mode->selectedButtonIndex() == 1))
           idx--;
         if (idx == 5) {
           Wt::WWidget * ref = stack->widget(5);
@@ -273,23 +269,30 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createModePage() {
-       Wt::WGroupBox *container = new Wt::WGroupBox("Select Mode");
+        Wt::WGroupBox *container = new Wt::WGroupBox("Select Mode");
 
-//        Wt::WTable * db_table = new Wt::WTable();
-         mode = new Wt::WButtonGroup(container);
+        //        Wt::WTable * db_table = new Wt::WTable();
+        mode = new Wt::WButtonGroup(container);
+        Wt::WGridLayout * l = new Wt::WGridLayout();
+        //        l->setVerticalSpacing(3);
+        //        l->setHorizontalSpacing(0);
+        //        l->setMinimumSize(Wt::WLength::Auto, 30);
+        container->setLayout(l);
 
-        _elradio.getElement("mode.server", "Server Mode", "", container); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _elradio.getElement("mode.client", "Client Mode", "", container); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+
+        _elradio.addElement("mode.server", "Server Mode", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _elradio.addElement("mode.client", "Client Mode", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+
         mode->addButton(_elradio.getElement("mode.server"));
         mode->addButton(_elradio.getElement("mode.client"));
         mode->setSelectedButtonIndex(0);
-/*
-        _elradio.getElement("mode.server", "Server Mode", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _elradio.getElement("mode.client", "Client Mode", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
-        group->addButton(_elradio.getElement("mode.server"));
-        group->addButton(_elradio.getElement("mode.client"));
-        group->setSelectedButtonIndex(0);
-*/
+        /*
+                _elradio.getElement("mode.server", "Server Mode", "", db_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+                _elradio.getElement("mode.client", "Client Mode", "", db_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+                group->addButton(_elradio.getElement("mode.server"));
+                group->addButton(_elradio.getElement("mode.client"));
+                group->setSelectedButtonIndex(0);
+         */
 
         wtk::Div * div_db = new wtk::Div("");
         div_db->addWidget(new Wt::WText(Wt::WString::tr("mode-setup")));
@@ -365,18 +368,23 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createHivePage() {
-        Wt::WTable * hive_table = new Wt::WTable();
-        _el.getElement("hive.hport", "Hive Listener Port", "", hive_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _el.getElement("hive.wport", "Web Listener Port", "", hive_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        //        Wt::WTable * hive_table = new Wt::WTable();
+        Wt::WGridLayout * l = new Wt::WGridLayout();
+        l->setVerticalSpacing(3);
+        l->setHorizontalSpacing(3);
+        //        l->setMinimumSize(Wt::WLength::Auto, 30);
+        wtk::Div * div_hive = new wtk::Div("");
+        div_hive->setLayout(l);
+
+        l->addWidget(new Wt::WText(Wt::WString::tr("hive-setup")), 0, 0);
+        l->addWidget(new Wt::WBreak(), 1, 0);
+        _el.addElement("hive.hport", "Hive Listener Port", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _el.addElement("hive.wport", "Web Listener Port", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
         _el.getElement("hive.hport")->setText("20200");
         _el.getElement("hive.wport")->setText("8080");
         //        _el.getElement("hive.scan_base", "Scan Base Dir", "", hive_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
         //        _el.getElement("hive.scan_int", "Scan Interval", "", hive_table->elementAt(3, 0))->setValidator(new Wt::WIntValidator(1, 300)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
-        wtk::Div * div_hive = new wtk::Div("");
-        div_hive->addWidget(new Wt::WText(Wt::WString::tr("hive-setup")));
-        div_hive->addWidget(new Wt::WBreak());
-        div_hive->addWidget(new Wt::WBreak());
-        div_hive->addWidget(hive_table);
+        //        div_hive->addWidget(hive_table);
 
         wtk::ContentBox * c_hive = new wtk::ContentBox("stepbox");
         c_hive->setContent(div_hive);
@@ -384,18 +392,23 @@ namespace org {
       }
 
       Wt::WWebWidget * Setup::createAdminPage() {
-        Wt::WTable * admin_table = new Wt::WTable();
-        _el.getElement("adm.name", "Admin Name", "", admin_table->elementAt(0, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _el.getElement("adm.login", "Admin Login", "", admin_table->elementAt(1, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
-        _el.getElement("adm.passwd", "Admin Password", "", admin_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
-        _el.getElement("adm.email", "Admin eMail", "", admin_table->elementAt(3, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
-
+//        Wt::WTable * admin_table = new Wt::WTable();
+        Wt::WGridLayout * l = new Wt::WGridLayout();
+        l->setVerticalSpacing(3);
+        l->setHorizontalSpacing(3);
+        //        l->setMinimumSize(Wt::WLength::Auto, 30);
         wtk::Div * div_admin = new wtk::Div("");
-        div_admin->addWidget(new Wt::WText(Wt::WString::tr("admin-setup")));
-        div_admin->addWidget(new Wt::WBreak());
-        div_admin->addWidget(new Wt::WBreak());
-        div_admin->addWidget(admin_table);
+        div_admin->setLayout(l);
+        l->addWidget(new Wt::WText(Wt::WString::tr("admin-setup")),0,0);
+        l->addWidget(new Wt::WBreak(),1,0);
 
+
+        _el.addElement("adm.name", "Admin Name", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _el.addElement("adm.login", "Admin Login", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        _el.addElement("adm.passwd", "Admin Password", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
+        _el.addElement("adm.email", "Admin eMail", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
+
+        
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
         c_admin->setContent(div_admin);
         return c_admin;
@@ -406,8 +419,8 @@ namespace org {
 
         wtk::Div * div_admin = new wtk::Div("");
 
-        const char * server_mode = mode->selectedButtonIndex()==0 ? "On" : "Off";
-        const char * client_mode = mode->selectedButtonIndex()==1 ? "On" : "Off";
+        const char * server_mode = mode->selectedButtonIndex() == 0 ? "On" : "Off";
+        const char * client_mode = mode->selectedButtonIndex() == 1 ? "On" : "Off";
 
 
 #ifdef USE_EMBEDDED_MYSQL
@@ -456,11 +469,11 @@ namespace org {
       Wt::WWebWidget * Setup::createClientSuccessPage() {
         wtk::Div * div_admin = new wtk::Div("");
         div_admin->addWidget(new Wt::WText(Wt::WString::tr("success-client-setup")));
-/*
-        Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
-        div_admin->addWidget(bt);
-        bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
-*/
+        /*
+                Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
+                div_admin->addWidget(bt);
+                bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
+         */
 
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
         c_admin->setContent(div_admin);
@@ -502,18 +515,18 @@ namespace org {
 
       void Setup::saveConfig() {
         org::esb::util::Properties props;
-        const char * server_mode = mode->selectedButtonIndex()==0 ? "On" : "Off";
-        const char * client_mode = mode->selectedButtonIndex()==1 ? "On" : "Off";
+        const char * server_mode = mode->selectedButtonIndex() == 0 ? "On" : "Off";
+        const char * client_mode = mode->selectedButtonIndex() == 1 ? "On" : "Off";
         props.setProperty("mode.server", server_mode);
         props.setProperty("mode.client", client_mode);
         config::Config::setProperty("mode.server", server_mode);
         config::Config::setProperty("mode.client", client_mode);
 
-        if (mode->selectedButtonIndex()==1) {
+        if (mode->selectedButtonIndex() == 1) {
           props.setProperty("client.port", _el.getElement("client.port")->text().narrow().c_str());
           props.setProperty("client.host", _el.getElement("client.host")->text().narrow().c_str());
         }
-        if (mode->selectedButtonIndex()==0) {
+        if (mode->selectedButtonIndex() == 0) {
           props.setProperty("db.connection",
               std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
               append(";db=").append(_el.getElement("db.db")->text().narrow()).
@@ -567,8 +580,8 @@ namespace org {
           config::Config::setProperty("web.start", "true");
           config::Config::save2db();
         }
-		std::string configfile=org::esb::config::Config::getProperty("hive.base_path");
-		configfile.append("/.hive.cfg");
+        std::string configfile = org::esb::config::Config::getProperty("hive.base_path");
+        configfile.append("/.hive.cfg");
         org::esb::io::File file(configfile);
         org::esb::io::FileOutputStream fos(&file);
         props.save(&fos);
@@ -578,12 +591,12 @@ namespace org {
         signal::Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
         signal::Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
         signal::Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
-//        signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
-//        signal::Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+        //        signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+        //        signal::Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
         signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
 
         if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-              Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+          Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
           //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
           signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::START));
         }
