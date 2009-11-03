@@ -403,10 +403,10 @@ namespace org {
         l->addWidget(new Wt::WBreak(),1,0);
 
 
-        _el.addElement("adm.name", "Admin Name", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
-        _el.addElement("adm.login", "Admin Login", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
-        _el.addElement("adm.passwd", "Admin Password", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
-        _el.addElement("adm.email", "Admin eMail", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
+        _el.addElement("adm.name", "Admin Name", "not used", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
+        _el.addElement("adm.login", "Admin Login", "not used", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        _el.addElement("adm.passwd", "Admin Password", "not used", l); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
+        _el.addElement("adm.email", "Admin eMail", "not used", l); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
 
         
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");

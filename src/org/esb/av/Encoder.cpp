@@ -228,7 +228,7 @@ int Encoder::encodeAudio(Frame & frame) {
 char * Encoder::getStatistics() {
   if (ctx->stats_out)
     return ctx->stats_out;
-  return NULL;
+  return "no stats\n";
 }
 
 /**

@@ -18,7 +18,7 @@
 #include "ProfilesForm.h"
 #include "WatchFolder.cpp"
 #include "WatchfolderForm.h"
-
+#include "Configuration.cpp"
 namespace org {
   namespace esb {
     namespace web {
@@ -84,7 +84,7 @@ namespace org {
         layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
 
-        useStyleSheet("ext/resources/css/xtheme-gray.css");
+        useStyleSheet("ext/resources/css/xtheme-slate.css");
 
 
       }
@@ -170,6 +170,9 @@ namespace org {
         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
         cpd->show();
       }
+      void WebApp2::openConfiguration() {
+
+      }
 
       void WebApp2::profilesCreated() {
         listAllProfiles();
@@ -197,6 +200,8 @@ namespace org {
       }
 
       void WebApp2::editSystemConfiguration() {
+         Configuration * conf=new Configuration();
+        setContent(conf);
       }
 
       void WebApp2::setContent(Wt::WWidget * w) {

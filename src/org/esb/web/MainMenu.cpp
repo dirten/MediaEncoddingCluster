@@ -42,7 +42,7 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   button = toolbar->addButton("Watchfolder", menu);
 
   menu = new Wt::Ext::Menu();
-  item = menu->addItem("Configuration...");
+  item = menu->addItem("Configuration...",parent,&org::esb::web::WebApp2::editSystemConfiguration);
 
   button = toolbar->addButton("System", menu);
 }

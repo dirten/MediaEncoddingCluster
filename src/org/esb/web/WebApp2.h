@@ -38,6 +38,8 @@ namespace org {
                 void createWatchfolder();
                 void watchfolderCreated();
                 void editSystemConfiguration();
+
+                void openConfiguration();
             private:
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;

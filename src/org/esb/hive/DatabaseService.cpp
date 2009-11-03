@@ -49,6 +49,7 @@ namespace org {
       }
 
       void DatabaseService::start(std::string base_path) {
+//        loginfo("starting Database Service");
         if (_running == false) {
           //          std::string base_path = _base_path;
           std::string lang = "--language=";
@@ -72,6 +73,7 @@ namespace org {
       }
 
       void DatabaseService::stop() {
+//        loginfo("stopping Database Service");
         if (_running)
           mysql_library_end();
         _running = false;
