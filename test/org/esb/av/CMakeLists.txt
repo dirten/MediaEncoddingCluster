@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
+#ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_DIR}/include)
@@ -22,6 +22,7 @@ add_executable (TestProcessAudioPacket TestProcessAudioPacket.cpp)
 add_executable (TestFfmpeg TestFfmpeg.cpp)
 add_executable (TestEuclid TestEuclid.cpp)
 add_executable (TestFullTranscoding TestFullTranscoding.cpp)
+add_executable (TestPass1 TestPass1.cpp)
 
 target_link_libraries (TestPacket io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestFfmpeg    ${FFMPEG_AVFORMAT_LIBRARY}
@@ -35,6 +36,7 @@ target_link_libraries (TestPacketInputStream io av util lang avformat avcodec av
 target_link_libraries (TestPacketOutputStream io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestProcessAudioPacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFullTranscoding io av util lang avformat avcodec avutil swscale )
+target_link_libraries (TestPass1 io av util lang avformat avcodec avutil swscale )
 
 IF(NOT WIN32)
 target_link_libraries (TestFfmpeg ${BZ2_LIB} x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
@@ -57,6 +59,7 @@ ADD_TEST(LibAVFormatInputStream ${EXECUTABLE_OUTPUT_PATH}/TestFormatInputStream)
 ADD_TEST(LibAVPacketInputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketInputStream)
 ADD_TEST(TestPacketOutputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketOutputStream)
 ADD_TEST(TestProcessAudioPacket ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket)
-ADD_TEST(TestFullTranscoding ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket)
+ADD_TEST(TestFullTranscoding ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding)
+ADD_TEST(TestPass1 ${EXECUTABLE_OUTPUT_PATH}/TestPass1)
 
 
