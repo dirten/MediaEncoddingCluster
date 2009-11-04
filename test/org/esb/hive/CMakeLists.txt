@@ -22,9 +22,9 @@ target_link_libraries (TestFileImporter esb sql hive net signal io av util lang 
 
 target_link_libraries (TestProcessUnit esb sql hive io av util net signal  lang)
 
-target_link_libraries (TestDatabaseCreation esb sql util io lang )
-target_link_libraries (DeleteDatabase esb sql util )
-target_link_libraries (TestProcessUnit esb hive av io util lang )
+target_link_libraries (TestDatabaseCreation esb sql hive signal util io lang )
+target_link_libraries (DeleteDatabase esb sql util hive signal)
+target_link_libraries (TestProcessUnit esb hive signal av io util lang )
 target_link_libraries (TestNewProcessUnit esb hive sql net signal av io util lang )
 target_link_libraries (TestPacketizer esb hive av sql net signal io util lang )
 

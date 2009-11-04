@@ -1,6 +1,8 @@
 #include "org/esb/config/config.h"
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
+
 using namespace org::esb;
 
 int main() {
@@ -11,6 +13,7 @@ int main() {
   config::Config::setProperty("db.connection", "mysql:host=;db=hive;user=;passwd=");
 
   src.append("/test.dvd");
+   hive::DatabaseService::start(MEC_SOURCE_DIR);
 	char * argv[] = {"", (char*) src.c_str()};
 //  logdebug("TestFileIMport");
   int fileid = import(2, argv);

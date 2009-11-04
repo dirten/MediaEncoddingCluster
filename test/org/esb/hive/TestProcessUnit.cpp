@@ -10,10 +10,13 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/hive/job/ProcessUnit.h"
+#include "org/esb/hive/DatabaseService.h"
+#include "org/esb/util/Log.h"
 #include <string>
 
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::hive;
 using namespace org::esb::hive::job;
 
 void test_process_video(int argc, char ** argv) {
@@ -38,6 +41,7 @@ void test_process_video(int argc, char ** argv) {
   std::string trg_file = MEC_SOURCE_DIR;
   trg_file.append("/test.avi");
   File outfile(trg_file);
+//   DatabaseService::start(MEC_SOURCE_DIR);
 
   if (true) {
 
@@ -140,7 +144,7 @@ void test_process_audio(char * file){
 
   std::string src_file = MEC_SOURCE_DIR;
   src_file.append("/test.dvd");
-  File infile(file);
+  File infile(src_file);
   int stream_id = 1;
 
   std::string trg_file = MEC_SOURCE_DIR;
@@ -169,6 +173,7 @@ void test_process_audio(char * file){
     dec->setWidth(c->width);
     dec->setHeight(c->height);
     dec->setSampleFormat(c->sample_fmt);
+    dec->setSampleRate(c->sample_rate);
     dec->ctx->request_channel_layout = 2;
     //  dec.ctx->request_channels = 2;
     dec->open();
@@ -234,10 +239,12 @@ void test_process_audio(char * file){
 
     // u.process();
 
-
     FileOutputStream foos("test-out.unit");
     ObjectOutputStream ooos(&foos);
     ooos.writeObject(puin);
+    ooos.close();
+    delete puin._decoder;
+    delete puin._encoder;
   }
 
 
@@ -249,7 +256,8 @@ int main(int argc, char**argv) {
   avcodec_init();
   avcodec_register_all();
 
-//  test_process_video();
+  test_process_video(argc, argv);
   test_process_audio(argv[1]);
+  Log::close();
 }
 

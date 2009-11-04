@@ -62,7 +62,7 @@ int main(int argc, char ** argv) {
   } else {
     src = argv[1];
   }
-  int stream_id = 0;
+  int stream_id = 1;
   if (argc == 3) {
     stream_id = atoi(argv[2]);
   }

@@ -60,6 +60,7 @@ ADD_TEST(LibAVPacketInputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketInputStream)
 ADD_TEST(TestPacketOutputStream ${EXECUTABLE_OUTPUT_PATH}/TestPacketOutputStream)
 ADD_TEST(TestProcessAudioPacket ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket)
 ADD_TEST(TestFullTranscoding ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding)
+ADD_TEST(TestFullTranscodingDVD2AVI ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding ${MEC_SOURCE_DIR}/test.dvd ${MEC_SOURCE_DIR}/test.avi)
 ADD_TEST(TestPass1 ${EXECUTABLE_OUTPUT_PATH}/TestPass1)
 
 

@@ -68,6 +68,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO&&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+  fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].start_dts=fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
@@ -89,10 +90,6 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
-      AVRational ar;
-      ar.num = 1;
-      ar.den = 44100;
-      _sdata[i].enc->setTimeBase(ar);
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
@@ -107,12 +104,14 @@ int main(int argc, char** argv) {
     _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
     pos.setEncoder(*_sdata[i].enc, _smap[i]);
     _sdata[i].enc->setOutputStream(&pos);
+    logdebug(_sdata[i].dec->toString());
+    logdebug(_sdata[i].enc->toString());
   }
 
   if (!pos.init())goto cleanup;
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 70000; i++) {
+  for (int i = 0; i < 100||true; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0
@@ -121,7 +120,10 @@ int main(int argc, char** argv) {
     //Decoding a Video or Audio Packet
     Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
 
-    if(!src_frame->isFinished())continue;
+    if(!src_frame->isFinished()){
+      delete src_frame;
+      continue;
+    }
 
     //mapping input tp output stream
     src_frame->stream_index=_smap[p.getStreamIndex()];

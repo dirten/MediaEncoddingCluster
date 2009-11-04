@@ -4,7 +4,7 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
-
+#include "org/esb/hive/DatabaseService.h"
 using namespace org::esb;
 
 int main() {
@@ -12,13 +12,13 @@ int main() {
   std::string sqlfile = src;
   sqlfile.append("/sql/hive-0.0.3.sql");
   logdebug("loading DB model from " << sqlfile);
-
   std::string sql;
   io::File f(sqlfile.c_str());
   io::FileInputStream(&f).read(sql);
-  logdebug("FullSql:" << sql);
+//  logdebug("FullSql:" << sql);
   config::Config::setProperty("hive.base_path", src.c_str());
   config::Config::setProperty("db.connection", "mysql:host=localhost;db=hive;user=;passwd=");
+  hive::DatabaseService::start(MEC_SOURCE_DIR);
   //config::Config::setProperty("db.connection","")
   {
     sql::Connection con_a("");
