@@ -26,10 +26,11 @@ namespace org {
 
 
 
-        //        formatCtx = avformat_alloc_context();
+        formatCtx = avformat_alloc_context();
+        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
 //        AVInputFormat*iformat = av_find_input_format("mpegts");
           std::string filename = _sourceFile->getPath();
-        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, NULL) != 0) {
+        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
           return;
         }

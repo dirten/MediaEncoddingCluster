@@ -215,16 +215,15 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
     logerror("Error while decoding audio Frame");
     return new Frame();
   }
+  Frame * frame=new Frame(outbuf,samples_size);
+
   if (samples_size > 0) {
-    /* if a frame has been decoded, output it */
-    //                fwrite(outbuf, 1, out_size, outfile);
+      frame->setFinished(true);
+  }else{
+      frame->setFinished(false);
   }
   size -= len;
-  //        inbuf += len;
-  //    }
-  //              cout << "DataSize:"<<out_size<<endl;
-  //              cout <<"PacketPts:"<<packet.pts<< "\tDecodedFramePts:"<<this->coded_frame->pts<<endl;
-  Frame * frame=new Frame(outbuf);
+
   frame->_allocated=true;
 //  frame._buffer = outbuf;
   frame->stream_index = packet.packet->stream_index;
@@ -246,7 +245,6 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->_type = CODEC_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
-  frame->setFinished(true);
   logdebug(frame->toString());
   return frame;
 }

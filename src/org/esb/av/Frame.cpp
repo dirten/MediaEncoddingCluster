@@ -27,8 +27,9 @@ Frame::Frame() {
   _dts = 0;
 }
 
-Frame::Frame(uint8_t *buffer) {
+Frame::Frame(uint8_t *buffer, int64_t size) {
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
+  _size=size;
   framePtr->pts = 0;
   _buffer = buffer;
   _allocated = true;

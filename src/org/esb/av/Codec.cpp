@@ -176,6 +176,12 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
+        if (_codec->type & CODEC_TYPE_AUDIO) {
+          AVRational ar;
+          ar.num=1;
+          ar.den=ctx->sample_rate;
+          setTimeBase(ar);
+        }
         if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
           //					    cout <<"CodecCapTruncated"<<endl;

@@ -15,7 +15,7 @@ namespace org {
       public:
         Frame();
         Frame(PixelFormat format, int width, int height, bool allocate = true);
-        Frame(uint8_t * buffer);
+        Frame(uint8_t * buffer, int64_t size);
 
         //                Frame(const Frame & source);
         //                Frame operator=(Frame & frame);
