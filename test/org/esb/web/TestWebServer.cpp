@@ -26,7 +26,7 @@ int main(int argc, char**argv) {
   w->start();
   do{
     Thread::sleep2(timeout>0?timeout:1000);
-  }while(timeout==0);
+  }while(timeout>0);
   w->stop();
   delete w;
   Config::close();
