@@ -109,7 +109,7 @@ ELSE(WIN32)
 #    ssl
 #    dl
 #    crypt
-    crypto
+#    crypto
 #    pthread
 #    z 
 #    wthttp 
