@@ -48,8 +48,8 @@ namespace org {
                 void onMessage(org::esb::signal::Message & msg);
             private:
                 void run();
-                org::esb::sql::Connection * _con;
-                org::esb::sql::PreparedStatement * _stmt;
+//                org::esb::sql::Connection * _con;
+//                org::esb::sql::PreparedStatement * _stmt;
                 boost::mutex terminationMutex;
                 boost::condition termination_wait;
 

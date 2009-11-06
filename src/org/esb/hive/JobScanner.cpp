@@ -40,8 +40,8 @@ namespace org {
       JobScanner::JobScanner() {
         _run = false;
         _running = false;
-        _con = NULL;
-        _stmt = NULL;
+//        _con = NULL;
+//        _stmt = NULL;
         _interval=10000;
       }
 
@@ -53,8 +53,8 @@ namespace org {
       void JobScanner::start() {
         if (!_run && !_running) {
           _run = true;
-          _con = new org::esb::sql::Connection(org::esb::config::Config::getProperty("db.connection"));
-          _stmt = _con->prepareStatement2("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
+//          _con = new org::esb::sql::Connection(org::esb::config::Config::getProperty("db.connection"));
+//          _stmt = _con->prepareStatement2("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
           boost::thread(boost::bind(&JobScanner::run, this));
         }
       }
@@ -65,10 +65,10 @@ namespace org {
           boost::mutex::scoped_lock terminationLock(terminationMutex);
           termination_wait.wait(terminationLock);
           _running = false;
-          if (_stmt)
-            delete _stmt;
-          if (_con)
-            delete _con;
+//          if (_stmt)
+//            delete _stmt;
+//          if (_con)
+//            delete _con;
         }
       }
 
@@ -91,7 +91,9 @@ namespace org {
 //        logdebug("run");
         while (_run) {
 //        logdebug("while");
-          org::esb::sql::ResultSet rs = _stmt->executeQuery();
+          org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
+          org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
+          org::esb::sql::ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
 //          logdebug("while rs next");
             std::string file = rs.getString("files.id");
