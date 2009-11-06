@@ -30,7 +30,8 @@ namespace org {
             public:
                 FormatInputStream(File * source);
                 ~FormatInputStream();
-                DEPRICATED(AVFormatContext * getFormatContext());
+//                DEPRICATED(AVFormatContext * getFormatContext());
+                AVFormatContext * getFormatContext();
                 long long int available(bool isBlocking = false);
                 long long int getFileSize();
                 bool isValid();
