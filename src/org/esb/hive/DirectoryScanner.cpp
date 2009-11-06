@@ -1,17 +1,40 @@
-#include "DirectoryScanner.h"
+/*----------------------------------------------------------------------
+ *  File    : JobScanner.h
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
 
-//#include <boost/thread.hpp>
+#include "DirectoryScanner.h"
 #include <boost/bind.hpp>
 #include "org/esb/lang/Thread.h"
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
-//#include "org/esb/sql/ResultSet.h"
 
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 
 #include "org/esb/hive/FileImporter.h"
-//#include "import.cpp"
 #include <boost/algorithm/string.hpp>
 #include "org/esb/util/Log.h"
 #include "org/esb/hive/JobUtil.h"
@@ -81,9 +104,7 @@ namespace org {
 
       void DirectoryScanner::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("directoryscan") == "start") {
-
           _halt = false;
-
           if (msg.containsProperty("interval")) {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;
           }
@@ -93,6 +114,7 @@ namespace org {
 
         } else
           if (msg.getProperty("directoryscan") == "stop") {
+            logdebug("Directory Scanner stop request received");
           if (!_halt) {
             _halt = true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
@@ -105,9 +127,8 @@ namespace org {
             _con = NULL;
             delete _stmt2;
             delete _con2;
-
           }
-          logdebug("Directory Scanner stopped:");
+          logdebug("Directory Scanner stopped");
         }
       }
 
@@ -160,7 +181,7 @@ namespace org {
             //		filename=name.data();
             char * argv[] = {"", (char*) name.c_str()};
             int fileid = import(2, argv);
-            if (fileid > 0 && p > 0) {
+            if (false&&fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
               char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};

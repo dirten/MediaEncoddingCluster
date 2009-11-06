@@ -1,3 +1,29 @@
+/*----------------------------------------------------------------------
+ *  File    : ProcessUnit.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
 #include "ProcessUnit.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameFormat.h"
@@ -94,7 +120,7 @@ void ProcessUnit::process() {
   /*i dont know if we need this in the Future*/
   //  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
   //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
-
+  int64_t last_pts=-1;
   /*loop over each Packet received */
   for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
     if (toDebug)
@@ -137,13 +163,26 @@ void ProcessUnit::process() {
     conv.convert(*tmp, *f);
     delete tmp;
 
+    /**
+     * this is for down rating the frame rate, e.g. from 25fps down to 15fps...
+     * there are some pictures to drop!
+     * @TODO: test out if this is ok when some Rational Framerate is given, e.g. 23.976fps?
+     */
+    if(last_pts>0&&last_pts==f->getPts()){
+      delete f;
+      continue;
+    }
+    last_pts=f->getPts();
+
+
+
     if (toDebug) {
       logdebug("Frame Converted");
       f->toString();
     }
 
     /*encode the frame into a packet*/
-    /*NOTE: the encoder write Packets also to Packet Sink, because some codecs duplicates frames*/
+    /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
     int ret = _encoder->encode(*f);
     delete f;
     //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";

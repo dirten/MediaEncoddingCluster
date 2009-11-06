@@ -17,6 +17,7 @@ struct JobStreamData {
   int in_stream;
   int out_stream;
   AVRational framerate;
+  AVRational timebase;
 };
 
 int jobcreator(int argc, char*argv[]) {
@@ -39,6 +40,7 @@ int jobcreator(int argc, char*argv[]) {
   int profile_v_codec = 0;
   int profile_v_bitrate = 0;
   std::string profile_v_framerate = "";
+  std::string duration="";
   int profile_v_width = 0;
   int profile_v_height = 0;
   int profile_a_channels = 0;
@@ -49,11 +51,12 @@ int jobcreator(int argc, char*argv[]) {
 
   //	cout << "FileId:"<<fileid<<"\tProfileId:"<<profileid<<endl;
   {
-    PreparedStatement stmt = con.prepareStatement("select id, filename from files where files.id=:id ");
+    PreparedStatement stmt = con.prepareStatement("select id, filename, duration from files where files.id=:id ");
     stmt.setInt("id", fileid);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
       filename = rs.getString("filename");
+      duration=rs.getString("duration");
     }
   }
   {
@@ -89,16 +92,18 @@ int jobcreator(int argc, char*argv[]) {
       v_stream_idx = rs.getInt("stream_index");
       streams[v_stream_idx].in_stream = rs.getInt("id");
       float f = atof(profile_v_framerate.c_str());
+      streams[v_stream_idx].timebase.num=rs.getInt("time_base_num");
+      streams[v_stream_idx].timebase.den=rs.getInt("time_base_den");
       if (f == 0) {
         AVRational r;
-        r.num = rs.getInt("time_base_num");
-        r.den = rs.getInt("time_base_den");
+        r.num = rs.getInt("framerate_num");
+        r.den = rs.getInt("framerate_den");
         streams[v_stream_idx].framerate = r;
       } else {
         AVRational r = av_d2q(f, 10000);
         /*NOTE:values must be swapped*/
-        streams[v_stream_idx].framerate.den = r.num;
-        streams[v_stream_idx].framerate.num = r.den;
+        streams[v_stream_idx].framerate.den = r.den;
+        streams[v_stream_idx].framerate.num = r.num;
       }
     }
   }
@@ -117,32 +122,38 @@ int jobcreator(int argc, char*argv[]) {
 
 
   {
-    PreparedStatement stmt = con.prepareStatement("insert into files ( path, filename, parent ) values(:path, :filename, :parent )");
+    PreparedStatement stmt = con.prepareStatement("insert into files ( path, filename, parent, container_type, duration ) values(:path, :filename, :parent,:container, :duration )");
     org::esb::io::File f(filename.c_str());
     std::string ext = f.getExtension();
     while ((ofmt = av_oformat_next(ofmt))) {
       if (profile_v_format == ofmt->long_name) {
-        f.changeExtension(ofmt->extensions);
+        if(ofmt->extensions)
+          f.changeExtension(ofmt->extensions);
+        else
+          f.changeExtension("unknown");
         break;
       }
     }
-
+//    logerror("Coldnot find the output extension for : "<<profile_v_format);
     stmt.setString("filename", profilename + "/" + f.getFileName());
     stmt.setString("path", argv[4]);
     stmt.setInt("parent", fileid);
+    stmt.setString("container", ofmt->name);
+    stmt.setString("duration", duration);
     stmt.execute();
     outfileid = con.lastInsertId();
   }
   if (in_v_stream > 0) {
-    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags)");
+    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags) values"
+        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, :framerate_den, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
     stmt.setInt("codec", profile_v_codec);
-    //	stmt.setInt("framerate", streams[v_stream_idx]);
-    stmt.setInt("time_base_num", streams[v_stream_idx].framerate.num);
-    stmt.setInt("time_base_den", streams[v_stream_idx].framerate.den);
+    stmt.setInt("framerate_num", streams[v_stream_idx].framerate.num);
+    stmt.setInt("framerate_den", streams[v_stream_idx].framerate.den);
+    stmt.setInt("time_base_num", streams[v_stream_idx].timebase.num);
+    stmt.setInt("time_base_den", streams[v_stream_idx].timebase.den);
     stmt.setInt("width", profile_v_width);
     stmt.setInt("height", profile_v_height);
     stmt.setInt("gop_size", 20);
@@ -186,9 +197,10 @@ int jobcreator(int argc, char*argv[]) {
   }
 
   {
-    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile ) values( :inputfile, :outputfile)");
+    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile, profileid, status ) values( :inputfile, :outputfile,:profileid, 'new')");
     stmtJob.setInt("inputfile", fileid);
     stmtJob.setLong("outputfile", outfileid);
+    stmtJob.setLong("profileid", profileid);
     stmtJob.execute();
     jobid = con.lastInsertId();
   }

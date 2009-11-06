@@ -98,13 +98,14 @@ int jobcreator(int argc, char*argv[]) {
     outfileid = con.lastInsertId();
   }
   {
-    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
+    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
+        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, framerate_den, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
     stmt.setInt("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
     stmt.setInt("codec", profile_v_codec);
-    stmt.setInt("framerate", profile_v_framerate);
+    stmt.setInt("framerate_num", 1);
+    stmt.setInt("framerate_den", profile_v_framerate);
     stmt.setInt("time_base_num", 1);
     stmt.setInt("time_base_den", profile_v_framerate);
     stmt.setInt("width", profile_v_width);

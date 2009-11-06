@@ -15,7 +15,7 @@
 #include "org/esb/config/config.h"
 //#include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
-//#include "org/esb/hive/job/ProcessUnit.h"
+#include "org/esb/hive/JobScanner.h"
 //#include "org/esb/io/ObjectInputStream.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/web/WebServer.h"
@@ -108,7 +108,7 @@ int main(int argc, char * argv[]) {
   
   Config::setProperty("hive.dump_path", dump_path.c_str());
 //  std::wstring wdump_path(dump_path.begin(), dump_path.end());
-  new StackDumper(dump_path);
+//  new StackDumper(dump_path);
   std::string tmp_path=sb;
   tmp_path.append("/tmp");
   org::esb::io::File tpath(tmp_path);
@@ -202,9 +202,9 @@ int main(int argc, char * argv[]) {
     avcodec_register_all();
     
     if (vm.count("daemon")) {
-      logdebug("start daemon");
-	  org::esb::hive::DatabaseService::start(base_path);
       Log::open(Config::getProperty("hive.base_path"));
+      logdebug("start daemon");
+    org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
@@ -620,6 +620,9 @@ void start() {
 //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
 //  Messenger::getInstance().addMessageListener(dbservice);
 
+  org::esb::hive::JobScanner jobscan;
+  Messenger::getInstance().addMessageListener(jobscan);
+
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
@@ -669,6 +672,8 @@ void start() {
         setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
         setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
     Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
+
   }
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
@@ -681,9 +686,8 @@ void start() {
    * Stopping Application Services from configuration
    *
    */
-   /*need to call as first for committing all data to the files*/
-//  Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));

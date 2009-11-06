@@ -34,6 +34,7 @@ void FileExporter::exportFile(int fileid) {
   //  map<int, int> dtsmap;
   logdebug("Exporting file with id:" << fileid);
   std::string filename;
+  std::string fileformat;
   Connection con(std::string(Config::getProperty("db.connection")));
 
   {
@@ -41,6 +42,7 @@ void FileExporter::exportFile(int fileid) {
     stmt.setInt("id", fileid);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
+      fileformat=rs.getString("container_type");
       if (rs.getString("path").size() == 0) {
         filename = Config::getProperty("hive.base_path");
       } else {
@@ -62,7 +64,7 @@ void FileExporter::exportFile(int fileid) {
     }
   }
   //  string stream_id = fileid;
-  FormatOutputStream * fos = new FormatOutputStream(&fout);
+  FormatOutputStream * fos = new FormatOutputStream(&fout, fileformat.c_str());
   PacketOutputStream * pos = new PacketOutputStream(fos);
 
   int video_id = 0;

@@ -1,3 +1,30 @@
+/*----------------------------------------------------------------------
+ *  File    : ProcessUnitWatcher.h
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose : here are the Packets will be bundled and received for and from the clients
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
+
 #include <string>
 
 #include <boost/thread.hpp>
@@ -79,39 +106,36 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start3() {
-          //          logdebug("ProcessUnitWatcher running");
-          /*clean up previosly aborted encodings*/
-          //		  Connection con(c);
-          //		  con.executeNonQuery("DELETE FROM process_units where send is null or complete is null");
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp2 = new Connection(c);
           _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
           _isRunning=true;
           while (!_isStopSignal) {
-            //          logdebug("ProcessUnitWatcher loop");
-            //getting all jobs that not be completed
+            /**
+             * getting all jobs that not be completed
+             */
             sql::Connection con(std::string(config::Config::getProperty("db.connection")));
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
+            while (rs.next()&&!_isStopSignal) {
               _stream_map.clear();
               string filename = rs.getString("files.path") + "/" + rs.getString("files.filename");
-              org::esb::av::FormatInputStream * fis = org::esb::av::FormatStreamFactory::getInputStream(filename);
+              org::esb::io::File fi(filename);
+              org::esb::av::FormatInputStream * fis = new org::esb::av::FormatInputStream(&fi);
               if (fis == NULL) {
                 logerror("Error Opening Input Stream from " << filename);
                 continue;
               }
-              //              stream_packet_counter.clear();
-              //              stream_packets.clear();
-
-              //getting Stream Map
+              /**
+               * building Stream information Map
+               */
               {
                 sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
                 sql::PreparedStatement pstmt = con2.prepareStatement("select * from job_details, streams where job_id=:myid and streams.id=instream");
                 pstmt.setInt("myid", rs.getInt("jobs.id"));
                 job_id = rs.getInt("jobs.id");
                 sql::ResultSet rs2 = pstmt.executeQuery();
-                while (rs2.next()) {
+                while (rs2.next()&&!_isStopSignal) {
                   int index = rs2.getInt("stream_index");
                   _stream_map[index].instream = rs2.getInt("instream");
                   _stream_map[index].outstream = rs2.getInt("outstream");
@@ -123,8 +147,6 @@ namespace org {
                   _stream_map[index].last_process_unit_id = 0;
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
-                    //                  * (stream_type[sidx] == CODEC_TYPE_AUDIO ? 1000 : 1))
-                    //                  Decoder * dec = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
                       _stream_map[index].b_frame_offset = 4;
                     } else {
@@ -132,19 +154,16 @@ namespace org {
                     }
                   } else
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
-                    _stream_map[index].min_packet_count = 500;
+                    _stream_map[index].min_packet_count = 512;
                   }
-                  //                idx[rs2.getInt("stream_index")] = rs2.getInt("instream");
-                  //                inout[rs2.getInt("instream")] = rs2.getInt("outstream");
-                  //                stream_type[rs2.getInt("stream_index")] = rs2.getInt("stream_type");
                 }
               }
               {
                 sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
-                sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max(id) as last_id,max( start_ts ) as last_start_ts FROM process_units WHERE source_stream = :a GROUP BY source_stream");
+                sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max(id) as last_id,max( start_ts ) as last_start_ts FROM process_units WHERE target_stream = :a GROUP BY target_stream");
                 std::map<int, StreamData>::iterator st = _stream_map.begin();
                 for (; st != _stream_map.end(); st++) {
-                  pstmt.setInt("a", (*st).second.instream);
+                  pstmt.setInt("a", (*st).second.outstream);
                   ResultSet rs_t = pstmt.executeQuery();
                   if (rs_t.next()) {
                     logdebug("Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"))
@@ -153,28 +172,26 @@ namespace org {
                   }
                 }
               }
-              /*
-              
-               */
-              //              long offset = 0; //(den/(type==CODEC_TYPE_VIDEO?framerate:samplerate))*gop;
-              //              logdebug("building seek offset -" << offset);
-              //              fis->seek(offset);
               PacketInputStream pis(fis);
               q_filled = false;
-              //            min_frame_group_count = 5;
 
               Packet packet;
-              //read while packets in the stream
+              /**
+               * read while packets in the stream
+               */
               while (pis.readPacket(packet) == 0 && !_isStopSignal) {
-                //if the actuall stream not mapped then discard this and continue with next packet
+                /**
+                 * if the actuall stream not mapped then discard this and continue with next packet
+                 */
                 if (
                     _stream_map.find(packet.packet->stream_index) == _stream_map.end() ||
                     _stream_map[packet.packet->stream_index].last_start_ts > packet.packet->dts
                     ) {
-                  //                   loginfo("Stream Packet dropped:stream_index#" << packet.packet->stream_index);
                   continue;
                 }
-                //building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+                /**
+                 * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+                 */
                 boost::shared_ptr<Packet> pPacket(new Packet(packet));
                 if (_stream_map[packet.packet->stream_index].type == CODEC_TYPE_AUDIO) {
                   processAudioPacket(pPacket);
@@ -184,14 +201,15 @@ namespace org {
                 } else {
                 }
               }
-              if (_isStopSignal) {
-//                boost::mutex::scoped_lock terminationLock(terminationMutex);
-//                termination_wait.notify_all();
-                break;
-              }
-              //              processAudioPacket(boost::shared_ptr<Packet > (new Packet()));
-              //              processVideoPacket(boost::shared_ptr<Packet > (new Packet()));
+              delete fis;
+              /**
+               * the rest does not executed because the file is not finisshed
+               */
+              if(_isStopSignal)continue;
               flushStreamPackets();
+              /**
+               * @TODO: at this point, here must be a check if all packets are received in case of client crash!
+               */
               logdebug("file completed:" << filename);
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now() where id=:jobid");
@@ -254,58 +272,47 @@ namespace org {
             logdebug("Building Audio ProcessUnit");
             //build ProcessUnit with Decoder and Encoder
             buildProcessUnit(sIdx);
-            /*
-             boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
-             u->_source_stream = idx[sidx];
-             u->_target_stream = inout[idx[sidx]];
-             if (u->_source_stream == 0 || u->_target_stream == 0) {
-             logdebug("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
-             }
-
-             u->_decoder = CodecFactory::getStreamDecoder(u->_source_stream);
-             u->_encoder = CodecFactory::getStreamEncoder(u->_target_stream);
-             //setting Input Packets
-             u->_input_packets = stream_packets[sidx];
-             //Put the ProcessUnit into the Queue
-
-             _stmt_pu->setInt("source_stream", u->_source_stream);
-             _stmt_pu->setInt("target_stream", u->_target_stream);
-             _stmt_pu->setLong("start_ts", u->_input_packets.front()->packet->dts);
-             _stmt_pu->setInt("frame_count", u->_input_packets.size());
-             _stmt_pu->execute();
-             ClientHandler::addProcessUnit(u);
-             logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
-             //resetting the parameter for the next ProcessUnit
-             stream_packet_counter[sidx] = 0;
-             stream_packets[sidx].clear();
-             */
-            //                    unit_map.erase(tmp_p.packet->stream_index);
           }
 
         }
 
         void ProcessUnitWatcher::processVideoPacket(boost::shared_ptr<Packet> pPacket) {
-          //and put it in the read ahead queue
-          //          if (pPacket->packet->size > 0)
+          /**
+           * put it in the read ahead queue
+           */
           packet_queue.push_back(pPacket);
 
-          //getting stream index from Packet
+          /**
+           * getting stream index from Packet
+           */
           int sIdx = pPacket->packet->stream_index;
 
           if (packet_queue.size() >= _stream_map[sIdx].b_frame_offset)
             q_filled = true;
-          //processing packets in the Queue while reading from input stream
+          
+          /**
+           * processing packets in the Queue while reading from input stream
+           */
           if (q_filled) {
-            //getting Packet from queue
+            
+            /**
+             * getting Packet from queue
+             */
             boost::shared_ptr<Packet> p = packet_queue.front();
-            //getting resource from shared Pointer
-            //            Packet pRes = *p.get();
-            //remove packet from queue
+            
+            /**
+             * remove packet from queue
+             */
             packet_queue.pop_front();
-            //increment the actuall stream counter
+            /**
+             * increment the actuall stream counter
+             * @TODO: this will be obsolete, this can be read from the size of the packets list
+             */
             _stream_map[sIdx].packet_count++;
-            //put the packet into the entire PacketList
-            //            if (pRes.packet->data != NULL)
+
+            /**
+             * put the packet into the entire PacketList
+             */
             _stream_map[sIdx].packets.push_back(p);
             //when we have enough packets for a ProcessUnit
             if (packet_queue.front()->isKeyFrame() &&
@@ -317,28 +324,6 @@ namespace org {
                 _stream_map[sIdx].packets.push_back(packet_queue[a]);
               }
               buildProcessUnit(sIdx);
-              /*
-               boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
-               u->_source_stream = idx[sidx];
-               u->_target_stream = inout[idx[sidx]];
-               u->_decoder = CodecFactory::getStreamDecoder(u->_source_stream);
-               u->_encoder = CodecFactory::getStreamEncoder(u->_target_stream);
-               //setting Input Packets
-               u->_input_packets = stream_packets[sidx];
-               //Put the ProcessUnit into the Queue
-               _stmt_pu->setInt("source_stream", u->_source_stream);
-               _stmt_pu->setInt("target_stream", u->_target_stream);
-               _stmt_pu->setLong("start_ts", u->_input_packets.front()->packet->dts);
-               _stmt_pu->setInt("frame_count", u->_input_packets.size());
-               _stmt_pu->execute();
-               ClientHandler::addProcessUnit(u);
-
-               logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
-               //resetting the parameter for the next ProcessUnit
-               stream_packet_counter[sidx] = 0;
-               stream_packets[sidx].clear();
-               */
-              //                    unit_map.erase(tmp_p.packet->stream_index);
             }
           }
 
@@ -368,11 +353,6 @@ namespace org {
             u->_process_unit = _stream_map[sIdx].last_process_unit_id;
             _stream_map[sIdx].last_process_unit_id = 0;
           }
-
-          //		  Connection con(org::esb::config::Config::getProperty("db.connection"));
-          //          PreparedStatement pstmt = con.prepareStatement("update process_units set send = now() where id=:id");
-          //          pstmt.setInt("id", pu->_process_unit);
-          //          pstmt.execute();
           return u;
         }
 

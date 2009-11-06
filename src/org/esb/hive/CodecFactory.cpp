@@ -50,7 +50,7 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
 av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, framerate_num, framerate_den, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -61,8 +61,8 @@ av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
       _encoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
       _encoder->setBitRate(rs.getInt("bit_rate"));
       AVRational r;
-      r.num = rs.getInt("time_base_num");
-      r.den = rs.getInt("time_base_den");
+      r.num = rs.getInt("framerate_den");
+      r.den = rs.getInt("framerate_num");
 
       _encoder->setTimeBase(r);
       _encoder->setGopSize(rs.getInt("gop_size"));

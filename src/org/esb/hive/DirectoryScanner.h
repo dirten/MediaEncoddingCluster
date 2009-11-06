@@ -35,7 +35,7 @@ namespace org {
                 sql::PreparedStatement * _stmt;
                 sql::Connection * _con2;
                 sql::Statement * _stmt2;
-                                boost::mutex terminationMutex;
+                boost::mutex terminationMutex;
                 boost::condition termination_wait;
 
             };

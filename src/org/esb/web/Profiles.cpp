@@ -17,7 +17,8 @@ namespace org {
         Profiles(Wt::WContainerWidget * parent = 0) : Wt::Ext::Container() {
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
-          t = new SqlTable(std::string("select * from profiles"));
+          t = new SqlTable(std::string("select id, profile_name Name, v_format Format from profiles"));
+          t->setColumnWidth(0, 10);
           t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
           t->setTopToolBar(new Wt::Ext::ToolBar());
           layout()->addWidget(t);

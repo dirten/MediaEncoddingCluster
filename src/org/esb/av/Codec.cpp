@@ -176,7 +176,7 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        if (_codec->type & CODEC_TYPE_AUDIO) {
+        if (_codec&&_codec->type & CODEC_TYPE_AUDIO) {
           AVRational ar;
           ar.num=1;
           ar.den=ctx->sample_rate;
@@ -216,6 +216,7 @@ namespace org {
         if (_opened) {
           //        av_freep(&ctx->stats_in);
           avcodec_close(ctx);
+          logdebug("recently fifo size:"<<av_fifo_size(fifo));
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {

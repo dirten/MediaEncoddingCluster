@@ -26,13 +26,13 @@ namespace org {
           logdebug("ExportScanner started");
         } else
           if (msg.getProperty("exportscanner") == "stop") {
-          logdebug("Stop Request for the ExportScanner");
+          logdebug("Export Scanner stop request received");
           if (_run) {
             _run = false;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             termination_wait.wait(terminationLock);
           }
-          logdebug("ExportScanner stopped");
+          logdebug("Export Scanner stopped");
         }
       }
 

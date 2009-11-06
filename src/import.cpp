@@ -121,9 +121,9 @@ int import(int argc, char *argv[]) {
 	PreparedStatement
 			stmt_str =
 					con.
-					prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate,start_time,duration,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, priv_data_size, priv_data) values "
+					prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time,duration,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, priv_data_size, priv_data) values "
 					//      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-						"(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate, :start_time, :duration, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt, :priv_data_size, :priv_data)");
+						"(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, framerate_den, :start_time, :duration, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt, :priv_data_size, :priv_data)");
 	for (unsigned int a = 0; a < ctx->nb_streams; a++) {
 		int field = 0;
 		duration += ctx->streams[a]->duration;
@@ -133,7 +133,8 @@ int import(int argc, char *argv[]) {
 		stmt_str.setInt("codec", ctx->streams[a]->codec->codec_id);
 		//          string tmp=ctx->streams[a]->codec->codec_name;
 		stmt_str.setString("codec_name", ctx->streams[a]->codec->codec_name);
-		stmt_str.setDouble("framerate", av_q2d(ctx->streams[a]->r_frame_rate));
+		stmt_str.setDouble("framerate_num", ctx->streams[a]->r_frame_rate.num);
+		stmt_str.setDouble("framerate_den", ctx->streams[a]->r_frame_rate.den);
 		stmt_str.setDouble("start_time", (double) ctx->streams[a]->start_time);
 		stmt_str.setDouble("duration", (double) ctx->streams[a]->duration);
 		stmt_str.setInt("time_base_num", ctx->streams[a]->time_base.num);

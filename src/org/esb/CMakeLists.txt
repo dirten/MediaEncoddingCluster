@@ -208,6 +208,7 @@ add_library (hive
 	hive/ExportScanner.cpp
 #	hive/FormatStreamFactory.cpp
   hive/job/Packetizer.cpp
+  hive/JobScanner.cpp
 	
 )
 

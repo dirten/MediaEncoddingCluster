@@ -38,6 +38,7 @@ namespace org {
         selectOutDirectory->clicked.connect(SLOT(this, WatchfolderForm::openOutfolder));
 
         Wt::Ext::ComboBox * profiles = _cb.addElement("profile", "Encoding Profile", "", l);
+        profiles->setTextSize(50);
         org::esb::sql::Connection con(std::string(org::esb::config::Config::getProperty("db.connection")));
 
         org::esb::sql::Statement stmt = con.createStatement("select * from profiles");
