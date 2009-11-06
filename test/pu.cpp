@@ -35,6 +35,15 @@ void execute(char * infile, char * outfile) {
   delete pu._decoder;
   delete pu._encoder;
 }
+void view_codec_data(Codec*c){
+  c->open();
+  printf("%10ld|", c->getCodecType());
+  printf("%10x|", c->getCodecId());
+  printf("%10s|", c->ctx->codec_name);
+  printf("%10s|", c->ctx->av_class->class_name);
+  printf("%10ld|", c->ctx->frame_size);
+
+}
 void view_packet_data(Packet * p){
     int64_t inpts=0;
     int64_t indts=0;
@@ -76,6 +85,20 @@ cout << endl;
   printf("%10ld|", pu._output_packets.size());
   printf("%10ld|", pu._decoder->getCodecId());
   printf("%10ld|", pu._encoder->getCodecId());
+  cout << endl;
+  printf("----------------------------------------------------------------------------------------------------------");
+  cout << endl;
+  printf("%10s|","Type");
+  printf("%10s|","ID");
+  printf("%10s|","CodecName");
+  printf("%10s|","AvClass");
+  printf("%10s|","FrameSize");
+  cout << endl;
+  printf("----------------------------------------------------------------------------------------------------------");
+  cout << endl;
+  view_codec_data(pu._decoder);
+  cout << endl;
+  view_codec_data(pu._encoder);
   cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
