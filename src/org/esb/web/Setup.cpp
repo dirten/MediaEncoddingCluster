@@ -589,6 +589,7 @@ namespace org {
         /*Restarting the Services after configuration*/
         using namespace org::esb::signal;
         signal::Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
         signal::Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
         signal::Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
         //        signal::Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
@@ -607,6 +608,7 @@ namespace org {
               setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
               setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
           signal::Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+        signal::Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::START));
         }
         if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
           signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));

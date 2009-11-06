@@ -88,9 +88,12 @@ namespace org {
 
       void JobScanner::run() {
         _running=true;
+//        logdebug("run");
         while (_run) {
+//        logdebug("while");
           org::esb::sql::ResultSet rs = _stmt->executeQuery();
           while (rs.next()) {
+//          logdebug("while rs next");
             std::string file = rs.getString("files.id");
             std::string profile = rs.getString("watch_folder.profile");
             std::string outdir=rs.getString("watch_folder.outfolder");
@@ -99,6 +102,7 @@ namespace org {
             std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
             jobcreator(4, jobarg);
           }
+//          logdebug("wait");
           org::esb::lang::Thread::sleep2(_interval);
         }
         boost::mutex::scoped_lock terminationLock(terminationMutex);

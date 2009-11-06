@@ -480,6 +480,9 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
 //  Messenger::getInstance().addMessageListener(dbservice);
 
+  org::esb::hive::JobScanner jobscan;
+  Messenger::getInstance().addMessageListener(jobscan);
+
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);
 
@@ -528,7 +531,8 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
         setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")).
         setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
     Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
-  }
+    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
+}
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
   }
@@ -547,6 +551,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
      */
     Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
