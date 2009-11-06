@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `outputfile` int(11) default NULL,
   `begin` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `complete` timestamp NULL default NULL,
+  `profileid` int(11) default NULL,
+  `status` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -157,7 +159,8 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `stream_type` int(11) NOT NULL default '0',
   `codec` int(11) NOT NULL default '0',
   `codec_name` varchar(255) default NULL,
-  `framerate` int(11) NOT NULL default '0',
+  `framerate_num` int(11) NOT NULL default '0',
+  `framerate_den` int(11) NOT NULL default '0',
   `start_time` double NOT NULL default '0',
   `duration` bigint NOT NULL default '0',
   `nb_frames` bigint NOT NULL default '0',
@@ -212,6 +215,11 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-insert into profiles values(1,"test","MP4 format",28,1024000,"same",320,240,2,86016,128000,44100);
-insert into config values("framerates","1/25#25,1/30#30");
+insert into config values("framerates","1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");
+insert into config values("samplerates","1/8000#8.0,1/11025#11.025,1/22050#22.05,1/32000#32.0,1/44100#44.1,1/48000#48.0");
 
+INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(1, 'MP4 H.264 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, 0, 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(2, 'MP4 H.264 15fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, 15, 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(3, 'MP4 H.264 23.97fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, '23.976', 320, 240, 2, 86017, 128000, 44100);
+INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(4, 'FLV H.263 320x240 MP3 128k 44.1Khz', 'Flash 9 (AVM2) format', 22, 1024000, 0, 320, 240, 2, 86017, 128000, 44100);
+INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(5, 'AVI MPEG4-2 320x240 MP2 128k 441.Khz', 'AVI format', 13, 1024000, 15, 320, 240, 2, 86016, 128000, 44100);
