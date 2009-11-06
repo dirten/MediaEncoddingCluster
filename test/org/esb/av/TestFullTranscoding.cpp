@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
     src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.mp4");
+    trg.append("/test2.mp4");
   } else {
     src = argv[1];
     trg = argv[2];

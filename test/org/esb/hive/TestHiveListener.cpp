@@ -3,6 +3,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
 #include "org/esb/util/Log.h"
 #if !defined(_WIN32)
 
