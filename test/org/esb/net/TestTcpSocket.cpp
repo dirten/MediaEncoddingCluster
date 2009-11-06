@@ -1,6 +1,7 @@
 
 #include "org/esb/net/TcpSocket.h"
 #include "org/esb/net/TcpServerSocket.h"
+#include "org/esb/lang/Thread.h"
 #include <boost/thread.hpp>
 
 #include "org/esb/util/Log.h"
@@ -19,6 +20,7 @@ void server_socket(){
 
 void testSimpleEcho(){
   boost::thread t(&server_socket);
+  Thread::sleep2(1000);
   org::esb::net::TcpSocket c("localhost", 20200);
   c.connect();
   std::string w="bla fasel";
@@ -33,6 +35,7 @@ void testBigData(){
   memset(data,0,data_size);
 
   boost::thread t(&server_socket);
+  Thread::sleep2(1000);
   org::esb::net::TcpSocket c("localhost", 20200);
   c.connect();
 //  std::string w="bla fasel";
@@ -45,7 +48,7 @@ void testBigData(){
 
 }
 int main(){
-  StackDumper stackd(".");
+//  StackDumper stackd(".");
   testSimpleEcho();
   testBigData();
 }
