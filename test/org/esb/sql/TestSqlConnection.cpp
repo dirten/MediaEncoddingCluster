@@ -42,7 +42,7 @@ void test_single_statement() {
   while(rs.next()){
 //    std::cout << "Rs"<<rs.getString(1)<<std::endl;
   }
-
+/*
   sql::Statement * stmt2=new sql::Statement(con.createStatement("select * from test"));
   sql::ResultSet rs2=stmt2->executeQuery();
   while(rs2.next()){
@@ -50,7 +50,7 @@ void test_single_statement() {
   }
 
 
-  delete stmt2;
+  delete stmt2;*/
 }
 void test_execute_non_query() {
   sql::Connection con("");
@@ -82,15 +82,18 @@ sql::Connection * test_con=NULL;
 sql::PreparedStatement * pstmt=NULL;
 
 void test_insert_thread(){
+  mysql_thread_init();
   pstmt->setInt("a",1);
   pstmt->setInt("b",2);
+  pstmt->execute();
+  mysql_thread_end();
 }
 
 int main(int argc, char** argv) {
-
   std::string src = MEC_SOURCE_DIR;
   config::Config::setProperty("hive.base_path", src.c_str());
   hive::DatabaseService::start(MEC_SOURCE_DIR);
+  mysql_thread_init();
   {
     sql::Connection con("mysql:host=;db=;user=;passwd=");
 
@@ -102,10 +105,12 @@ int main(int argc, char** argv) {
     pstmt=test_con->prepareStatement2("insert into test (a,b) values (:a,:b)");
     boost::thread t(boost::bind(&test_insert_thread));
     t.join();
-    for (int a = 0; a < 0; a++){
+    for (int a = 0; a < 1; a++){
       test_execute_non_query();
       test_single_statement();
     }
+
+    delete pstmt;
     delete test_con;
     //  test_multi_connections();
 
@@ -116,7 +121,8 @@ int main(int argc, char** argv) {
   org::esb::config::Config::close();
   Log::close();
 
-  mysql_library_end();
+  mysql_thread_end();
+  hive::DatabaseService::stop();
   return (EXIT_SUCCESS);
 }
 

@@ -68,6 +68,7 @@ ENDIF(WIN32)
 
 add_executable (info info.cpp)
 add_executable (pu pu.cpp)
+add_executable (pc PacketCount.cpp)
 
 add_executable (mytest test.cpp)
 
@@ -84,6 +85,17 @@ target_link_libraries (info
   lang
   )
 target_link_libraries (pu
+  esb
+  hive
+  av
+  util
+  io
+  sql
+  net
+  signal
+  lang
+  )
+target_link_libraries (pc
   esb
   hive
   av
