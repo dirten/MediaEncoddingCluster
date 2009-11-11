@@ -30,6 +30,9 @@ Log * Log::getLogger() {
   return Log::_logger;
 }
 
+void Log::log(const char * l, std::stringstream & s, const char * file, int line ){
+	std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str()<<"\r"<<std::endl;
+}
 void Log::log(std::stringstream & s, const char * l){
     std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;
 }

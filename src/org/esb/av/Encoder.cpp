@@ -178,7 +178,7 @@ int Encoder::encodeAudio(Frame & frame) {
     if (out_size < 0) {
       logerror("Error Encoding audio Frame");
     }
-    if (out_size == 0) {
+    if (audio_out_size == 0) {
       logwarn("out_size=0");
       continue;
     }

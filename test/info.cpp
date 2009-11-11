@@ -81,7 +81,7 @@ int main(int argc, char ** argv) {
   }
 
   
-  PacketInputStream pis(&fis, true, true);
+  PacketInputStream pis(&fis);
   cout << endl;
   cout << "<Packet Information>" << endl;
   //      cout << "#\tpts\tdts\tsize\tindex\tflags\tiskey\tduration\tpos"<<endl;

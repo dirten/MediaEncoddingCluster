@@ -36,6 +36,7 @@ public:
     void error(std::stringstream &);
     void fatal(std::stringstream &);
     void log(std::stringstream & s, const char * level);
+    void log(const char * level, std::stringstream & s, const char * file, int line );
     ~Log();
 private:
     Log();
@@ -68,10 +69,15 @@ using namespace boost::gregorian;
 #define loglevel2(o1,level) {\
 	std::cout<<std::dec<< "[ "<<level<< " ] "<<boost::this_thread::get_id()<<" ["<<__FILE__<<":"<<__LINE__<<"]" << o1<<"\r"<<std::endl; \
 }
-#define loglevel(o1,level) {\
+#define loglevel3(o1,level) {\
     std::stringstream t; \
     t <<boost::this_thread::get_id()<<" ["<<__FUNCTION__<<":"<<__LINE__<<"]" << o1; \
     Log::getLogger()->log(t, level);\
+}
+#define loglevel(o1,level) {\
+    std::stringstream t; \
+    t << o1; \
+    Log::getLogger()->log(level, t ,__FUNCTION__,__LINE__);\
 }
 #endif
 #endif

@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
   /*opening the input file and Packet Input Stream*/
   File f(src.c_str());
   FormatInputStream fis(&f);
-  PacketInputStream pis(&fis, true, true);
+  PacketInputStream pis(&fis);
 
 
   /*opening the output file and Packet Output Stream*/

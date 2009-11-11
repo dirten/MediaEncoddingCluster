@@ -4,8 +4,8 @@
 #include <stdexcept>
 #include "org/esb/util/Log.h"
 
-#ifdef DEBUG
-#undef DEBUG
+#ifndef DEBUG
+#define DEBUG
 #endif
 
 using namespace org::esb::av;
