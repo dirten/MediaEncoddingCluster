@@ -4,6 +4,11 @@
 #include "Packet.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
+
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 using namespace org::esb::av;
 using namespace org::esb;
 using namespace std;
@@ -27,10 +32,10 @@ Encoder::~Encoder() {
 }
 
 int Encoder::encode(Frame & frame) {
-  _last_time_base=frame.getTimeBase();
-  _last_duration=frame.getDuration();
-  if(_last_dts==AV_NOPTS_VALUE){
-    _last_dts=frame.getDts();
+  _last_time_base = frame.getTimeBase();
+  _last_duration = frame.getDuration();
+  if (_last_dts == AV_NOPTS_VALUE) {
+    _last_dts = frame.getDts();
   }
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
     return encodeVideo(frame);
@@ -78,15 +83,17 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       pac.packet->flags |= PKT_FLAG_KEY;
     }
 
-//    pac.packet->pts = av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 25});
-        pac.packet->pts = ctx->coded_frame->pts;
+    //    pac.packet->pts = av_rescale_q(ctx->coded_frame->pts, ctx->time_base, (AVRational) {1, 25});
+    pac.packet->pts = ctx->coded_frame->pts;
   }
   pac.packet->dts = _last_dts;
-  pac.setDuration(av_rescale_q(_last_duration, _last_time_base,ctx->time_base));
+  pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
   //  pac.packet->dts=_last_dts;
   _last_dts += pac.packet->duration;
   //  _pos->writePacket(pac);
+#ifdef DEBUG
   logdebug(pac.toString());
+#endif
   if (_pos != NULL) {
     _pos->writePacket(pac);
   }
@@ -97,7 +104,9 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 }
 
 int Encoder::encodeVideo(Frame & frame) {
+#ifdef DEBUG
   logdebug(frame.toString());
+#endif
   return encodeVideo(frame.getAVFrame());
   //  return Packet();
 }
@@ -111,7 +120,9 @@ void Encoder::setSink(Sink * sink) {
 }
 
 int Encoder::encodeAudio(Frame & frame) {
+#ifdef DEBUG
   logdebug(frame.toString());
+#endif
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
 
   //  int size_out = frame._size;
@@ -152,10 +163,12 @@ int Encoder::encodeAudio(Frame & frame) {
         int frame_bytes = ctx->frame_size * osize * ctx->channels;
         dur = static_cast<int> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) stream->time_base.den) /((float)stream->time_base.num) );
      */
-//    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den) / ((float) frame.getTimeBase().num));
+    //    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den) / ((float) frame.getTimeBase().num));
     uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) 1) / ((float) frame.getTimeBase().num));
     //    uint64_t dur = static_cast<uint64_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
-        logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
+#ifdef DEBUG
+    logdebug("FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
+#endif
     //    logdebug("!!!!!!!!!!!!!!!!!!!!!!!!!!Duration:" << dur << "::." << (((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den));
     //    int64_t dur2=av_rescale_q((int64_t)frame.duration,frame.getTimeBase(),_time_base);
     //    logdebug("Duration:"<<dur2);
@@ -204,13 +217,15 @@ int Encoder::encodeAudio(Frame & frame) {
 
     pak.packet->dts = _last_dts;
     pak.packet->pts = _last_dts;
-    pak.setDuration(((float)frame_bytes/(float)(ctx->channels * osize*ctx->sample_rate))*(float)ctx->time_base.den);
+    pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) ctx->time_base.den);
     _last_dts += pak.getDuration();
     //	pak.packet->pos=frame.pos;
     //    pak.packet->duration = dur;
     //	cout << "FramePts:"<<frame.pts<<"\tEncodedPts"<<pak.pts<<endl;
     //    pak.toString();
+#ifdef DEBUG
     logdebug(pak.toString());
+#endif
     if (_pos != NULL)
       _pos->writePacket(pak);
     if (_sink != NULL)

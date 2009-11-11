@@ -6,6 +6,11 @@
 #include "Frame.h"
 //#include "swscale.h"
 #include <iostream>
+
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
 namespace org {
@@ -85,13 +90,15 @@ namespace org {
           return convertVideo(in_frame);
         }
         if (in_frame._type == CODEC_TYPE_AUDIO) {
-//          return convertAudio(in_frame);
+          //          return convertAudio(in_frame);
         }
         return in_frame;
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
+#ifdef DEBUG
         logdebug(in_frame.toString());
+#endif
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
@@ -99,16 +106,18 @@ namespace org {
           convertAudio(in_frame, out_frame);
         }
         rescaleTimestamp(in_frame, out_frame);
+#ifdef DEBUG
         logdebug(out_frame.toString());
+#endif
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
         out_frame.setTimeBase(_enc->getTimeBase());
-//        return;
-        out_frame.setPts( av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDts( av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        //        return;
+        out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
-        
+
       }
 
       Frame FrameConverter::convertVideo(Frame & in_frame) {
@@ -155,7 +164,8 @@ namespace org {
         out_frame.duration = in_frame.duration;
         //        return out_frame;
       }
-/*
+
+      /*
       Frame FrameConverter::convertAudio(Frame & in_frame) {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
@@ -188,13 +198,13 @@ namespace org {
 
         return frame;
       }
-*/
+       */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
         //		return in_frame;
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
-//        uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
-        uint8_t * audio_buf = (uint8_t*)av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
+        //        uint8_t * audio_buf = new uint8_t[2 * MAX_AUDIO_PACKET_SIZE];
+        uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
         //        int delta = _dec->getSampleRate() - _enc->getSampleRate();
 
 
@@ -207,8 +217,8 @@ namespace org {
             in_frame._size / (in_frame.channels * isize)
             );
         //		audio_resample_close( reCtx );
-//		logdebug("ResampleContextInChannels:");
-//        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
+        //		logdebug("ResampleContextInChannels:");
+        //        logdebug("OutSize:"<<out_size<<":SampleSize:"<<(in_frame._size / (in_frame.channels * isize)));
         //        Frame frame(audio_buf);
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;

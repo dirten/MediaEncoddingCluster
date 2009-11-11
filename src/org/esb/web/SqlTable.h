@@ -3,6 +3,7 @@
 #include <Wt/WContainerWidget>
 #include <Wt/Ext/TableView>
 #include <Wt/Ext/ToolBar>
+#include <Wt/WTimer>
 #include "SqlTableModel.h"
 
 #include <string>
@@ -13,9 +14,16 @@ class SqlTable:public Wt::Ext::TableView {
   public:
     SqlTable(std::string sql,Wt::WContainerWidget * parent=0);
     void reload(std::string sql="");
+    Wt::Signal<void>doubleClicked;
+    Wt::Signal<void>clicked;
+    Wt::Signal<void>selectionChanged;
   private:
     std::string sql;
     SqlTableModel * mod;
+    void itemSelected();
+    void emitClickCount();
+    Wt::WTimer * doubleClickTimer;
+    int _clickCount;
 };
 }}}
 #endif

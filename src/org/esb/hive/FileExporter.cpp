@@ -162,6 +162,9 @@ void FileExporter::exportFile(int fileid) {
   //	fos.open();
   pos->init();
 
+  /**
+   * check if encoding is full finished
+   */
   {
     //    string sql="select a.data_size, a.data, a.pts, a.dts, a.duration, a.flags, a.pos, a.stream_index from packets a where a.stream_id=";
     //    sql+=stream_id;

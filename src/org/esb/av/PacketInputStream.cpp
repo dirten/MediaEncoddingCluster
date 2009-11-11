@@ -17,7 +17,7 @@ using namespace org::esb::lang;
  * Video always StreamIndex 0
  * Audio always StreamIndex 1 if video stream exist else then the Stream Index is 0
  **/
-PacketInputStream::PacketInputStream(InputStream * is) {
+PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
   _readFrom = 0;
   //  _video_idx = -1;
   //  _audio_idx = -1;
@@ -25,14 +25,31 @@ PacketInputStream::PacketInputStream(InputStream * is) {
   if (instanceOf(*is, FormatInputStream)) {
     _formatCtx = ((FormatInputStream*) is)->formatCtx;
     _fis = (FormatInputStream*) is;
-    
-    
     _readFrom = 1;
+
+    /**
+     * some calculation when packets will be truncated or the timestamp offset calculation must be done
+     */
+    int64_t max_start_dts = 0;
+    for (int a = 0; a < _formatCtx->nb_streams; a++) {
+      if (_formatCtx->streams[a]->first_dts > max_start_dts) {
+        max_start_dts = _formatCtx->streams[a]->first_dts;
+      }
+      if (calc) {
+        _streams[a].start_dts_offset = _formatCtx->streams[a]->first_dts;
+      } else {
+        _streams[a].start_dts_offset = 0;
+      }
+      _streams[a].discard = trunc;
+    }
+    std::map<int, StreamData>::iterator it = _streams.begin();
+    for (; it != _streams.end(); it++) {
+      (*it).second.min_dts = max_start_dts;
+    }
   } else {
     _source = is;
   }
 }
-
 
 PacketInputStream::~PacketInputStream() {
   if (_readFrom == 1) {
@@ -42,7 +59,7 @@ PacketInputStream::~PacketInputStream() {
 }
 
 /**
- * @deprecated Use the software.
+ * @deprecated Use int PacketInputStream::readPacket(Packet&packet) instead.
  */
 Packet PacketInputStream::readPacket() {
   //    if(_readFrom==1)
@@ -59,13 +76,21 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   if (packet.packet->data != NULL)
     av_free_packet(packet.packet);
   int status = av_read_frame(_formatCtx, packet.packet);
-  if ( status >= 0) {
+
+  if (status >= 0) {
+    if (_streams[packet.packet->stream_index].discard &&
+        _streams[packet.packet->stream_index].min_dts > packet.packet->dts) {
+      readPacketFromFormatIS(packet);
+    } else {
+      _streams[packet.packet->stream_index].discard = false;
+    }
+
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
-/*
-    if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)
-      packet.setStreamIndex(_fis->_streamReverseMap[packet.getStreamIndex()]);
-    else
-      status = readPacketFromFormatIS(packet);
+    /*
+        if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)
+          packet.setStreamIndex(_fis->_streamReverseMap[packet.getStreamIndex()]);
+        else
+          status = readPacketFromFormatIS(packet);
      */
   }
   return status;

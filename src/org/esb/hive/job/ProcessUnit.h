@@ -42,7 +42,8 @@ namespace org {
                     int _frame_count;
                     int _process_unit;
                     int id;
-
+                   
+                    bool _last_process_unit;
                     template<class Archive>
                     void serialize(Archive & ar, const unsigned int version) {
                         ar & _input_packets;
@@ -55,8 +56,10 @@ namespace org {
                         ar & _decoder;
                         ar & _encoder;
                         ar & codec;
+                        ar & _last_process_unit;
                     }
                 private:
+                    
                 };
 
                 class PtsComparator {

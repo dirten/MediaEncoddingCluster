@@ -31,6 +31,11 @@ namespace org {
           enableColumnHiding(a, true);
           setColumnSortable(a, true);
         }
+//        itemSelectionChanged.connect(SLOT(this,SqlTable::itemSelected));
+        cellClicked.connect(SLOT(this,SqlTable::itemSelected));
+        doubleClickTimer=new Wt::WTimer(this);
+        doubleClickTimer->setInterval(200);
+        doubleClickTimer->timeout.connect(SLOT(this, SqlTable::emitClickCount));
         //  setDataLocation(Wt::Ext::ServerSide);
         //  setPageSize(10);
         //      table->setBottomToolBar(table->createPagingToolBar());
@@ -39,6 +44,24 @@ namespace org {
 
       }
 
+      void SqlTable::itemSelected(){
+        if(!doubleClickTimer->isActive())
+          doubleClickTimer->start();
+        _clickCount++;
+
+      }
+
+      void SqlTable::emitClickCount(){
+        if(_clickCount>1){
+          doubleClicked.emit();
+        }else{
+          clicked.emit();
+        }
+        if(doubleClickTimer->isActive())
+          doubleClickTimer->stop();
+        _clickCount=0;
+      }
+      
       void SqlTable::reload(string sql) {
         ((SqlTableModel*) model())->clear();
         sql::Connection con(std::string(Config::getProperty("db.connection")));

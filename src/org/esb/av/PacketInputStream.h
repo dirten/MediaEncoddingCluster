@@ -11,7 +11,7 @@ namespace esb{
 namespace av{
 class PacketInputStream: public InputStream{
     public:
-        PacketInputStream(InputStream * is);
+        PacketInputStream(InputStream * is, bool truncate=false, bool calc_offset=false);
         
         ~PacketInputStream();
         int readPacket(Packet&packet);
@@ -37,6 +37,7 @@ class PacketInputStream: public InputStream{
 //	Packet _packet;
         int _streamIndex;
         int _readFrom;
+        int64_t _start_offset;
 /*        int _video_idx;
         int _audio_idx;
         int _video_idx_map;
@@ -45,6 +46,22 @@ class PacketInputStream: public InputStream{
         FormatInputStream * _fis;
         /** private CopyConstructor */
         PacketInputStream(InputStream & is);
+        struct StreamData{
+            /**
+             * the offset from Stream first dts
+             */
+            int64_t start_dts_offset;
+            /**
+             * when packet dts is lower then this and the flags discard is set, then the packet will be discard
+             */
+            int64_t min_dts;
+            /**
+             * discard flag for the stream
+             */
+            bool discard;
+
+        };
+        std::map<int, StreamData> _streams;
 };
 }}}
 #endif

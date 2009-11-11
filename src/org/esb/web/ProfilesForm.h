@@ -32,7 +32,9 @@ namespace org {
                 std::map<int, int> acodecid2acodecidx;
                 std::map<int, int> vcodecid2vcodecidx;
                 std::map<int, int> formatid2formatidx;
-				std::map<std::string, int> framerates2idx;
+                std::map<std::string, int> framerates2idx;
+                std::map<std::string, int> samplerates2idx;
+                std::map<std::string, int> audiobitrates2idx;
 
 
             };

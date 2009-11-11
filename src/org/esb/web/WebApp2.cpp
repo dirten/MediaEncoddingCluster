@@ -8,6 +8,7 @@
 #include <Wt/WVBoxLayout>
 #include <Wt/WBorderLayout>
 #include <Wt/WFitLayout>
+#include <Wt/WAccordionLayout>
 #include <Wt/WText>
 #include <Wt/WLength>
 #include <Wt/WOverlayLoadingIndicator>
@@ -73,6 +74,30 @@ namespace org {
         layout->addWidget(main_panel, Wt::WBorderLayout::Center);
         /*end Main Panel*/
 
+        /*begin Info Panel*/
+        info_panel = new Wt::Ext::Panel();
+        Wt::WAccordionLayout * info_layout = new Wt::WAccordionLayout();
+        Wt::WFitLayout * info_fit = new Wt::WFitLayout();
+        info_panel->setLayout(info_layout);
+        Wt::Ext::Panel *p=new Wt::Ext::Panel();
+        p->setTitle("File Details");
+        info_panel->layout()->addWidget(p);
+        p=new Wt::Ext::Panel();
+        p->setTitle("Video Details");
+        info_panel->layout()->addWidget(p);
+        p=new Wt::Ext::Panel();
+        p->setTitle("Audio Details");
+        info_panel->layout()->addWidget(p);
+
+        /*
+        info_layout->addWidget(new Wt::Ext::Panel());
+        info_layout->addWidget(new Wt::Ext::Panel());
+         */
+        info_panel->resize(200, Wt::WLength());
+        info_panel->setResizable(true);
+        layout->addWidget(info_panel, Wt::WBorderLayout::East);
+        /*end Info Panel*/
+
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
@@ -86,6 +111,14 @@ namespace org {
 
         useStyleSheet("ext/resources/css/xtheme-slate.css");
 
+        /**
+         * Signal Map for the SqlTables and the Detail view
+         */
+        _fileSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
+        _fileSignalMap->mapped.connect(SLOT(this, WebApp2::fileSelected));
+        _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
+        _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
+
 
       }
 
@@ -95,6 +128,10 @@ namespace org {
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
+        _fileSignalMap->mapConnect1(tab->doubleClicked, tab);
+
+        //        tab->itemSelectionChanged.connect(SLOT(this, WebApp2::itemSelected));
+
         setContent(tab);
       }
 
@@ -104,6 +141,7 @@ namespace org {
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
+        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -113,6 +151,7 @@ namespace org {
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
+        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -123,6 +162,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
+        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -132,6 +172,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
+        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -141,6 +182,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
+        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -150,6 +192,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
+        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -158,7 +201,7 @@ namespace org {
 
       void WebApp2::listAllProfiles() {
         Profiles * profiles = new Profiles();
-       
+        //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
         setContent(profiles);
       }
 
@@ -171,6 +214,7 @@ namespace org {
         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
         cpd->show();
       }
+
       void WebApp2::openConfiguration() {
 
       }
@@ -201,8 +245,27 @@ namespace org {
       }
 
       void WebApp2::editSystemConfiguration() {
-         Configuration * conf=new Configuration();
+        Configuration * conf = new Configuration();
         setContent(conf);
+      }
+
+      void WebApp2::fileSelected(SqlTable * tab) {
+        logdebug("FIle Table clicked:");
+        if (tab->selectedRows().size() > 0) {
+          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
+//          info->setData(atoi(idstr.c_str()));
+//          pSelector->setFileId(atoi(idstr.c_str()));
+          logdebug("fileSelected" << idstr);
+        }
+      }
+      void WebApp2::jobSelected(SqlTable * tab) {
+        logdebug("Job Table clicked:");
+        if (tab->selectedRows().size() > 0) {
+          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
+//          info->setData(atoi(idstr.c_str()));
+//          pSelector->setFileId(atoi(idstr.c_str()));
+          logdebug("jobSelected" << idstr);
+        }
       }
 
       void WebApp2::setContent(Wt::WWidget * w) {

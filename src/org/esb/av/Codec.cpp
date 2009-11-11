@@ -5,6 +5,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Decimal.h"
 
+#undef DEBUG
 using namespace std;
 
 //void __attribute__ ((constructor)) my_init (void);
@@ -67,7 +68,7 @@ namespace org {
 
       void Codec::setContextDefaults() {
 
-        ctx->global_quality = 1000000;
+        //        ctx->global_quality = 1000000;
         ctx->pix_fmt = (PixelFormat) 0;
         ctx->width = 0;
         ctx->height = 0;
@@ -78,11 +79,11 @@ namespace org {
         ctx->sample_rate = 0;
         ctx->sample_fmt = (SampleFormat) 0;
         ctx->channels = 0;
-        ctx->idct_algo = FF_IDCT_AUTO;
-        ctx->skip_idct = AVDISCARD_DEFAULT;
-        ctx->error_recognition = FF_ER_CAREFUL;
-        ctx->error_concealment = 3;
-        ctx->workaround_bugs = 1;
+        //        ctx->idct_algo = FF_IDCT_AUTO;
+        //        ctx->skip_idct = AVDISCARD_DEFAULT;
+        //        ctx->error_recognition = FF_ER_CAREFUL;
+        //        ctx->error_concealment = 3;
+        //        ctx->workaround_bugs = 1;
         ctx->debug = 0;
         ctx->debug_mv = 0;
         ctx->request_channels = 2;
@@ -92,9 +93,9 @@ namespace org {
         }
         /*default settings for x264*/
         ctx->me_range = 16;
-        ctx->max_qdiff = 4;
-        ctx->qmin = 10;
-        ctx->qmax = 51;
+        ctx->max_qdiff = 40;
+        ctx->qmin = 2;
+        ctx->qmax = 50;
         ctx->qcompress = 0.6;
 
       }
@@ -176,10 +177,10 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        if (_codec&&_codec->type & CODEC_TYPE_AUDIO) {
+        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
           AVRational ar;
-          ar.num=1;
-          ar.den=ctx->sample_rate;
+          ar.num = 1;
+          ar.den = ctx->sample_rate;
           setTimeBase(ar);
         }
         if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
@@ -216,7 +217,9 @@ namespace org {
         if (_opened) {
           //        av_freep(&ctx->stats_in);
           avcodec_close(ctx);
-          logdebug("recently fifo size:"<<av_fifo_size(fifo));
+#ifdef DEBUG
+          logdebug("recently fifo size:" << av_fifo_size(fifo));
+#endif
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -224,7 +227,7 @@ namespace org {
         }
         if (ctx && !_pre_allocated) {
           av_free(ctx);
-//          ctx = NULL;
+          //          ctx = NULL;
         }
         _opened = false;
       }

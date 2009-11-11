@@ -15,12 +15,12 @@ namespace org {
     namespace web {
 
       ProfilesForm::ProfilesForm(Wt::WContainerWidget * parent) : Wt::WContainerWidget(parent) {
-//        Wt::WTable * t = new Wt::WTable(parent);
+        //        Wt::WTable * t = new Wt::WTable(parent);
         int i = 0;
         Wt::WGridLayout * l = new Wt::WGridLayout();
-//        l->setVerticalSpacing(3);
-//        l->setHorizontalSpacing(0);
-//        l->setMinimumSize(Wt::WLength::Auto, 30);
+        //        l->setVerticalSpacing(3);
+        //        l->setHorizontalSpacing(0);
+        //        l->setMinimumSize(Wt::WLength::Auto, 30);
         setLayout(l);
 
         _el.addElement("id", "Profile Id", "", l)->setEnabled(false);
@@ -70,7 +70,7 @@ namespace org {
         //        _el.getElement("v_framerate", "Video Framerate", "", t->elementAt(i++, 0));
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
-        _el.addElement("v_height", "Video Height", "", l);
+        //        _el.addElement("v_height", "Video Height", "", l);
         Wt::Ext::ComboBox * a_codec = _elcb.addElement("a_codec", "Audio Codec", "", l);
         a_codec->setTextSize(50);
         {
@@ -86,15 +86,36 @@ namespace org {
           }
         }
         _el.addElement("a_channels", "Audio Channels", "", l);
-        _el.addElement("a_bitrate", "Audio Bitrate", "", l);
-        _el.addElement("a_samplerate", "Audio Samplerate", "", l);
+        //_el.addElement("a_bitrate", "Audio Bitrate", "", l);
+        Wt::Ext::ComboBox * a_bitrate = _elcb.addElement("a_bitrate", "Audio Bitrate", "", l);
+        StringTokenizer stabr(org::esb::config::Config::getProperty("audiobitrates"), ",");
+        int c3 = stabr.countTokens();
+        //        a_samplerate->addItem("same as source");
+        for (int a = 0; a < c3; a++) {
+          std::string t = stabr.nextToken();
+          a_bitrate->addItem(t);
+          audiobitrates2idx[t] = a;
+        }
+
+        //        _el.addElement("a_samplerate", "Audio Samplerate", "", l);
+        Wt::Ext::ComboBox * a_samplerate = _elcb.addElement("a_samplerate", "Audio Samplerate", "", l);
+        StringTokenizer stsr(org::esb::config::Config::getProperty("samplerates"), ",");
+        int c2 = stsr.countTokens();
+        //        a_samplerate->addItem("same as source");
+        for (int a = 0; a < c2; a++) {
+          std::string t = stsr.nextToken();
+          a_samplerate->addItem(t);
+          samplerates2idx[t] = a;
+        }
+
+
         i++;
         i++;
-        int btrow=l->rowCount();
+        int btrow = l->rowCount();
         Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
-        l->addWidget(cancel,btrow,0);
+        l->addWidget(cancel, btrow, 0);
         Wt::Ext::Button *save = new Wt::Ext::Button("Save");
-        l->addWidget(save,btrow,1);
+        l->addWidget(save, btrow, 1);
         cancel->clicked.connect(SLOT(this, ProfilesForm::cancelProfile));
         save->clicked.connect(SLOT(this, ProfilesForm::saveProfile));
 
@@ -129,7 +150,9 @@ namespace org {
             //			elements["a_codec"]->setText(codecid2codecname[rs.getInt("a_codec")]);
             ((Wt::Ext::ComboBox*)_elcb.getElement("a_codec"))->setCurrentIndex(acodecid2acodecidx[rs.getInt("a_codec")]);
             _el.getElement("a_bitrate")->setText(rs.getString("a_bitrate"));
-            _el.getElement("a_samplerate")->setText(rs.getString("a_samplerate"));
+            //            _el.getElement("a_samplerate")->setText(rs.getString("a_samplerate"));
+            ((Wt::Ext::ComboBox*)_elcb.getElement("a_bitrate"))->setCurrentIndex(audiobitrates2idx[rs.getString("a_bitrate")]);
+            ((Wt::Ext::ComboBox*)_elcb.getElement("a_samplerate"))->setCurrentIndex(samplerates2idx[rs.getString("a_samplerate")]);
             //			elements["a_codec"]->setText(rs.getString("a_codec"));
 
           }

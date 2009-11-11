@@ -8,9 +8,12 @@
 #include <Wt/WApplication>
 #include <Wt/WEnvironment>
 #include <Wt/WContainerWidget>
+#include <Wt/WSignalMapper>
+#include <Wt/WEvent>
 #include <Wt/Ext/Panel>
 #include <Wt/Ext/Container>
 #include "Wt/WBorderLayout"
+#include "SqlTable.h"
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
 namespace org {
@@ -43,10 +46,16 @@ namespace org {
             private:
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;
+                Wt::Ext::Panel * info_panel;
                 Wt::Ext::Container *viewPort;
                 Wt::WBorderLayout *layout;
                 Wt::Ext::Dialog * cwd;
                 Wt::Ext::Dialog * cpd;
+                Wt::WSignalMapper<SqlTable*> *_fileSignalMap;
+                Wt::WSignalMapper<SqlTable*> *_jobSignalMap;
+                void fileSelected(SqlTable *);
+                void jobSelected(SqlTable *);
+
             };
         }
     }

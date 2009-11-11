@@ -162,16 +162,20 @@ namespace org {
             connect();
           } else {
             while (!_toHalt) {
-
+#ifdef DEBUG
               logdebug("ProcessLoop");
-
+#endif
               char * text = "get process_unit";
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
+#ifdef DEBUG
                 logdebug("Command sended");
+#endif
                 _ois->readObject(*unit);
+#ifdef DEBUG
                 logdebug("ProcessUnit received");
+#endif
               } catch (exception & ex) {
                 logerror("Connection to Server lost!!!" << ex.what());
                 _sock->close();

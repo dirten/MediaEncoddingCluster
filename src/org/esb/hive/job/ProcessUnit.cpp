@@ -70,8 +70,9 @@ ProcessUnit::ProcessUnit() {
   _frame_group = 0;
   _frame_count = 0;
   _process_unit = 0;
-
+  _last_process_unit=false;
   id = 0;
+  
 }
 
 ProcessUnit::~ProcessUnit() {
@@ -100,7 +101,7 @@ void ProcessUnit::process() {
   if (_encoder != NULL)
     _encoder->open();
 
-  if (true) {
+  if (toDebug) {
     logdebug("Codex openned");
     logdebug(_decoder->toString());
     logdebug(_encoder->toString());
