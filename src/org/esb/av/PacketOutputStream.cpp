@@ -32,7 +32,7 @@ PacketOutputStream::~PacketOutputStream() {
   //    av_write_trailer(_fmtCtx);
   //	delete _target;
 }
-
+bool first_packet=true;
 void PacketOutputStream::writePacket(Packet & packet) {
   if (!_isInitialized)
     throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
@@ -85,7 +85,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
       logdebug("CodecType unknown");
   }
 
-//  packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
+  packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
   packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
 //  packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
 
@@ -93,15 +93,30 @@ void PacketOutputStream::writePacket(Packet & packet) {
   /*calculating the dts*/
 //  streamDts[packet.getStreamIndex()]+=dur;
 //  packet.packet->pts=AV_NOPTS_VALUE;
-  packet.setDuration(0);
+//  packet.setDuration(0);
   packet.setDts(AV_NOPTS_VALUE);
 //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
   logdebug(packet.toString());
-
+//  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
+//  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
-
-  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+  if(false&&first_packet&&packet.getStreamIndex()==0){
+    logdebug("writing first packet");
+    first_packet=false;
+    AVPacket  p;
+    av_init_packet(&p);
+    p.stream_index=0;
+    p.pts=1;
+    p.dts=1;
+    p.size=0;
+    p.data=NULL;
+    int result = av_write_frame(_fmtCtx, &p);
+    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
+  }
+//int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
+   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+//  logdebug(packet.toString());
 //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   //  logdebug("av_write_frame result:" << result);

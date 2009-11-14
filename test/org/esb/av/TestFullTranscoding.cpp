@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
   /*opening the input file and Packet Input Stream*/
   File f(src.c_str());
   FormatInputStream fis(&f);
-  PacketInputStream pis(&fis);
+  PacketInputStream pis(&fis, true, true);
 
 
   /*opening the output file and Packet Output Stream*/
@@ -67,21 +67,25 @@ int main(int argc, char** argv) {
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
   int s = 0;
+  bool audio=false, video=false;
+
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if(audio&&video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
-      //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-      //      _sdata[i].enc->setCodecId(CODEC_ID_H264);
+      video=true;
+//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      //_sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
+            _sdata[i].enc->setCodecId(CODEC_ID_H264);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
-      _sdata[i].enc->setGopSize(12);
+      _sdata[i].enc->setGopSize(20);
       AVRational ar;
       ar.num = 1;
       ar.den = 25;
@@ -89,6 +93,7 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setBitRate(60000000);
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
+      audio=true;
       _sdata[i].enc->setCodecId(CODEC_ID_MP3);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
@@ -119,7 +124,7 @@ int main(int argc, char** argv) {
   pos.init();
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 70000 ; i++) {
+  for (int i = 0; i < 50000 ; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0

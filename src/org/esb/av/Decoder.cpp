@@ -100,7 +100,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
       avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_last_pts == AV_NOPTS_VALUE) {
-    _last_pts = av_rescale_q(packet.getDts(), packet.getTimeBase(), ctx->time_base);
+    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #ifdef DEBUG
     logdebug("setting last pts to :" << _last_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
         << "ptb:" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
@@ -173,9 +173,6 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 
   //    cout << endl;
 #endif
-  if (!_frameFinished) {
-    return frame;
-  }
   frame->setTimeBase(ctx->time_base);
   frame->setFinished(_frameFinished);
   frame->_pixFormat = ctx->pix_fmt;
@@ -189,6 +186,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
   frame->duration = dur;
   _last_pts += dur;
+//  if (!_frameFinished) {
+//    return frame;
+//  }
 
   frame->pos = 0;
   frame->_type = CODEC_TYPE_VIDEO;
@@ -215,7 +215,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_last_pts == AV_NOPTS_VALUE) {
-    _last_pts = av_rescale_q(packet.getDts(), packet.getTimeBase(), ctx->time_base);
+    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #ifdef DEBUG
     logdebug("setting last pts to :" << _last_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
         << "ptb:" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);

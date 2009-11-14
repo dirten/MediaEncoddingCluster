@@ -78,13 +78,11 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   int status = av_read_frame(_formatCtx, packet.packet);
 
   if (status >= 0) {
-    if (_streams[packet.packet->stream_index].discard &&
-        _streams[packet.packet->stream_index].min_dts > packet.packet->dts) {
-      readPacketFromFormatIS(packet);
-    } else {
-      _streams[packet.packet->stream_index].discard = false;
-    }
-
+    int64_t offset=av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[packet.getStreamIndex()]->time_base);
+//    if(_formatCtx->streams[packet.getStreamIndex()]->codec->codec_type==CODEC_TYPE_VIDEO)
+//      offset-=3600*4;
+    packet.packet->pts=packet.packet->pts-offset;
+    packet.packet->dts=packet.packet->dts-offset;
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
     /*
         if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)
