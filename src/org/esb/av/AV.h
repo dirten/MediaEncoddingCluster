@@ -7,5 +7,12 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
 }
+
+
+
+#if 0
+#define DEBUG
+#endif
+
 #endif
 

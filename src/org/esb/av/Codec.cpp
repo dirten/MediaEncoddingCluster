@@ -223,7 +223,7 @@ namespace org {
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
-          logdebug("Codec not closed, because it was not opened:" << ctx->codec_id);
+          //logdebug("Codec not closed, because it was not opened:" << ctx->codec_id);
         }
         if (ctx && !_pre_allocated) {
           av_free(ctx);

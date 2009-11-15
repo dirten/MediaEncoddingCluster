@@ -62,6 +62,10 @@ const string File::getFilePath() {
 bool File::exists() {
   return fs::exists(_full_path);
 }
+bool File::deleteFile() {
+  fs::remove(_full_path);
+  return !fs::exists(_full_path);
+}
 
 bool File::mkdir() {
   return fs::create_directory(_full_path);

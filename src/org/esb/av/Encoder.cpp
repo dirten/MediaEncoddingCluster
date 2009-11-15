@@ -5,9 +5,6 @@
 #include "org/esb/lang/Exception.h"
 #include <iostream>
 
-#ifdef DEBUG
-#undef DEBUG
-#endif
 
 using namespace org::esb::av;
 using namespace org::esb;
@@ -34,6 +31,7 @@ Encoder::~Encoder() {
 int Encoder::encode(Frame & frame) {
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
+  _last_idx = frame.stream_index;
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = frame.getDts();
   }
@@ -70,7 +68,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   //  pac.packet->pts = frame.getPts();
   //  pac.packet->dts = frame.getDts();
   //  pac.packet->pos = frame.pos;
-  //  pac.packet->stream_index = frame.stream_index;
+    pac.packet->stream_index = _last_idx;
   //  pac.packet->duration = frame.duration;
   //    pac.flags=0;
   //  logdebug("Encoder data");

@@ -7,9 +7,7 @@
 //#include "swscale.h"
 #include <iostream>
 
-#ifdef DEBUG
-#undef DEBUG
-#endif
+
 
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;

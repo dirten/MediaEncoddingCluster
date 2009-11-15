@@ -16,9 +16,6 @@ target_link_libraries (TestWebServer
   signal
   io
   net
-  wthttp
-  wtext
-  wt
  )
 
 target_link_libraries (TestWebServer

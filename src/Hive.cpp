@@ -557,6 +557,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
     Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+    Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
 
     Messenger::free();
     ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);

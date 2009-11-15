@@ -52,6 +52,7 @@ namespace org {
         Sink*_sink;
         int64_t _last_dts;
         int64_t _last_duration;
+		int _last_idx;
         AVRational _last_time_base;
       };
     }

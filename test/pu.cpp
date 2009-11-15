@@ -45,19 +45,22 @@ void view_codec_data(Codec*c){
 
 }
 void view_packet_data(Packet * p){
-    int64_t inpts=0;
+	int idx=0;
+	int64_t inpts=0;
     int64_t indts=0;
     AVRational intb;
     int64_t indur=0;
     memset(&intb,0,sizeof(intb));
     bool isKey=false;
     if(p!=NULL){
+		idx=p->getStreamIndex();
       inpts=p->getPts();
       indts=p->getDts();
       intb=p->getTimeBase();
       indur=p->getDuration();
       isKey=p->isKeyFrame();
     }
+    printf("%3d|", idx);
     printf("%20lld|", inpts);
     printf("%20lld|", indts);
     printf("%6d/", intb.num);
@@ -106,12 +109,14 @@ cout << endl;
   std::vector<boost::shared_ptr<Packet> > in(pu._input_packets.begin(),pu._input_packets.end());
   std::vector<boost::shared_ptr<Packet> > out(pu._output_packets.begin(),pu._output_packets.end());
     printf("%10s|", "count");
+    printf("%3s|", "idx");
     printf("%20s|", "pts");
     printf("%20s|", "dts");
     printf("%6s/", ".num");
     printf("%6s/", ".den");
     printf("%6s", "dur");
     printf("%ss", "K");
+    printf("%3s|", "idx");
     printf("%20s|", "pts");
     printf("%20s|", "dts");
     printf("%6s/", ".num");

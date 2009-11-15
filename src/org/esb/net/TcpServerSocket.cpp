@@ -48,6 +48,9 @@ namespace org {
 
         boost::asio::socket_base::keep_alive option(true);
         //		sock->set_option(option);
+		/**
+		* @TODO: check the connection before returning
+		*/
         return new TcpSocket(sock);
       }
 

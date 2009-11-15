@@ -35,7 +35,7 @@ target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
 target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net)
 
 IF(WIN32)
-  target_link_libraries (TestDatabaseCreation ws2_32 msvcrt wt wthttp wtext)
+  target_link_libraries (TestDatabaseCreation ws2_32 msvcrt )
 ELSE(WIN32)
 	target_link_libraries (TestFileImporter x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora dl z )
 	target_link_libraries (TestDatabaseCreation pthread dl z)

@@ -23,6 +23,7 @@ using namespace org::esb::sql;
 using namespace org::esb::hive;
 using namespace org::esb::config;
 
+std::map<int, FileExporter::StreamData> FileExporter::_source_stream_map;
 void FileExporter::exportFile(int fileid) {
 
 
@@ -73,13 +74,27 @@ void FileExporter::exportFile(int fileid) {
   int video_pts = 0;
   bool build_offset = true;
   map<int, int> stream_map;
+  int64_t min_start_time=0;
+	  AVRational basear;
+	  basear.num=1;
+	  basear.den=1000000;
+
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
   {
-    PreparedStatement stmt = con.prepareStatement("select sin.stream_index inid, sout.stream_index outid from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
+    PreparedStatement stmt = con.prepareStatement("select sin.stream_index inid, sout.stream_index outid,sin.start_time in_start_time, sin.time_base_num intbnum, sin.time_base_den intbden from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
     stmt.setInt("fileid", fileid);
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
-      stream_map[rs.getInt("inid")] = rs.getInt("outid");
+		_source_stream_map[rs.getInt("inid")].out_stream_index = rs.getInt("outid");
+		_source_stream_map[rs.getInt("inid")].in_start_time=rs.getLong("in_start_time");
+	  AVRational ar;
+	  ar.num=rs.getInt("intbnum");
+	  ar.den=rs.getInt("intbden");
+	  _source_stream_map[rs.getInt("inid")].in_timebase=ar;
+
+	  if(min_start_time<av_rescale_q(rs.getLong("in_start_time"),ar,basear)){
+		  min_start_time=av_rescale_q(rs.getLong("in_start_time"),ar,basear);
+	  }
     }
   }
   {
@@ -92,7 +107,8 @@ void FileExporter::exportFile(int fileid) {
       codec->open();
       //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
       //      encoder->open();
-      enc[rs.getInt("stream_index")] = codec;
+
+	  enc[rs.getInt("stream_index")] = codec;
       ptsmap[rs.getInt("stream_index")] = 0;
       dtsmap[rs.getInt("stream_index")] = 0;
       dtsoffset[rs.getInt("stream_index")] = -1;
@@ -220,11 +236,26 @@ void FileExporter::exportFile(int fileid) {
       std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
-        //        p->packet->dts=0;
+/*
+		if(p->getStreamIndex()==0)
+			p->setStreamIndex(1);
+*/
+		int idx=p->getStreamIndex();
+		if(min_start_time>av_rescale_q(p->getPts(),p->getTimeBase(),basear))continue;
+
+		p->setPts(p->getPts()-av_rescale_q(_source_stream_map[idx].in_start_time,_source_stream_map[idx].in_timebase,p->getTimeBase()));
+		//        p->packet->dts=0;
         //        p->packet->pts=0;
-        p->packet->stream_index = stream_map[p->packet->stream_index];
+//		logdebug(p->toString());
+		p->packet->stream_index = _source_stream_map[idx].out_stream_index;
         pos->writePacket(*p);
+
       }
+      delete pu._decoder;
+      pu._decoder = NULL;
+      delete pu._encoder;
+      pu._encoder = NULL;
+//	  infile.deleteFile();
     }
   }
   pos->close();
