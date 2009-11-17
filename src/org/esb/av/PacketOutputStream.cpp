@@ -87,7 +87,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
 
   packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
   packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
-//  packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
+  //packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
 
 
   /*calculating the dts*/

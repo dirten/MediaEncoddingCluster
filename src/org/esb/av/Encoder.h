@@ -54,6 +54,7 @@ namespace org {
         int64_t _last_duration;
 		int _last_idx;
         AVRational _last_time_base;
+        int64_t _byte_counter;
       };
     }
   }

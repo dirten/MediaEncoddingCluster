@@ -110,6 +110,7 @@ void ProcessUnit::process() {
   PacketSink sink;
   _encoder->setSink(&sink);
   _encoder->setOutputStream(NULL);
+
   /*creating a frame converter*/
   FrameConverter conv(_decoder, _encoder);
 
@@ -162,7 +163,6 @@ void ProcessUnit::process() {
       logdebug("try Frame Convert");
     /*converting the source frame to target frame*/
     conv.convert(*tmp, *f);
-    delete tmp;
 
     /**
      * this is for down rating the frame rate, e.g. from 25fps down to 15fps...
@@ -171,6 +171,7 @@ void ProcessUnit::process() {
      */
     if(last_pts>0&&last_pts==f->getPts()){
       delete f;
+      delete tmp;
       continue;
     }
     last_pts=f->getPts();
@@ -185,6 +186,7 @@ void ProcessUnit::process() {
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
     int ret = _encoder->encode(*f);
+    delete tmp;
     delete f;
     //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
     if (toDebug)

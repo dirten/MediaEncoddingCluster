@@ -63,7 +63,6 @@ namespace org {
         west->resize(200, Wt::WLength());
         west->setResizable(true);
         west->collapse();
-        west->setCollapsible(true);
         west->setAnimate(true);
         west->setAutoScrollBars(true);
         layout->addWidget(west, Wt::WBorderLayout::West);

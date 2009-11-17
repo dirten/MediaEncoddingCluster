@@ -227,7 +227,7 @@ include_directories (${WT_DIR}/src)
 add_library (web
     web/WebServer.cpp
     web/MainMenu.cpp
-    web/WebApp.cpp
+#    web/WebApp.cpp
     web/WebApp2.cpp
     web/ProfilesForm.cpp
     web/WatchfolderForm.cpp

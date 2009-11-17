@@ -52,6 +52,10 @@ class PacketInputStream: public InputStream{
              */
             int64_t start_dts_offset;
             /**
+             * the offset from Stream first pts
+             */
+            int64_t start_pts_offset;
+            /**
              * when packet dts is lower then this and the flags discard is set, then the packet will be discard
              */
             int64_t min_dts;

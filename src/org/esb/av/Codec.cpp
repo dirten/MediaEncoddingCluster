@@ -5,7 +5,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Decimal.h"
 
-#undef DEBUG
+
 using namespace std;
 
 //void __attribute__ ((constructor)) my_init (void);
@@ -33,6 +33,7 @@ namespace org {
         _pre_allocated = true;
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
+        _bytes_discard = 0;
         //		_codec_resolved=false;
       }
 
@@ -43,6 +44,7 @@ namespace org {
         _opened = false;
         _codec_resolved = false;
         _pre_allocated = false;
+        _bytes_discard = 0;
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
@@ -60,6 +62,7 @@ namespace org {
 
         _opened = false;
         _pre_allocated = false;
+        _bytes_discard = 0;
       }
 
       void Codec::setCodecId(CodecID id) {
@@ -90,6 +93,7 @@ namespace org {
         ctx->request_channel_layout = 2;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
+          //          ctx->has_b_frames = 1;
         }
         /*default settings for x264*/
         ctx->me_range = 16;
@@ -220,6 +224,7 @@ namespace org {
 #ifdef DEBUG
           logdebug("recently fifo size:" << av_fifo_size(fifo));
 #endif
+
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -307,6 +312,12 @@ namespace org {
 
       int Codec::getFlags() {
         return ctx->flags;
+      }
+
+      int64_t Codec::getFrameBytes() {
+        int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
+
+        return ctx->frame_size * osize * ctx->channels;
       }
 
       int Codec::getBitsPerCodedSample() {

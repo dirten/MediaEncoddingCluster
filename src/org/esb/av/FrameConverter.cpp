@@ -110,11 +110,20 @@ namespace org {
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
+#ifdef USE_TIME_BASE_Q
+        out_frame.setTimeBase(in_frame.getTimeBase());
+        out_frame.setPts(in_frame.getPts());
+        out_frame.setDts(in_frame.getDts());
+        out_frame.setDuration(in_frame.getDuration());
+#else
         out_frame.setTimeBase(_enc->getTimeBase());
-        //        return;
         out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
+#endif
+
+//        out_frame.setTimeBase(_enc->getTimeBase());
+        //        return;
 
       }
 
@@ -221,11 +230,11 @@ namespace org {
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
         //        out_frame.setTimeBase(in_frame.getTimeBase());
-        out_frame.setPts(in_frame.getPts());
-        out_frame.setDts(in_frame.getDts());
+//        out_frame.setPts(in_frame.getPts());
+//        out_frame.setDts(in_frame.getDts());
         out_frame.pos = in_frame.pos;
         out_frame.stream_index = in_frame.stream_index;
-        out_frame.duration = in_frame.duration;
+//        out_frame.duration = in_frame.duration;
         out_frame._size = out_size * _enc->getChannels() * osize;
         out_frame._type = CODEC_TYPE_AUDIO;
         out_frame.channels = _enc->getChannels();

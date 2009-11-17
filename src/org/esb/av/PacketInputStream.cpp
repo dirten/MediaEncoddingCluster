@@ -28,24 +28,35 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
     _readFrom = 1;
 
     /**
-     * some calculation when packets will be truncated or the timestamp offset calculation must be done
+     * some calculation when the timestamp offset calculation must be done
+     * looking for the lowest start time stamp
      */
-    int64_t max_start_dts = 0;
+    int64_t min_start_dts = -1;
+    int64_t min_start_pts = -1;
     for (int a = 0; a < _formatCtx->nb_streams; a++) {
-      if (_formatCtx->streams[a]->first_dts > max_start_dts) {
-        max_start_dts = _formatCtx->streams[a]->first_dts;
+      if (_formatCtx->streams[a]->first_dts != AV_NOPTS_VALUE && (min_start_dts == -1 || _formatCtx->streams[a]->first_dts < min_start_dts)) {
+        min_start_dts = _formatCtx->streams[a]->first_dts;
       }
-      if (calc) {
-        _streams[a].start_dts_offset = _formatCtx->streams[a]->first_dts;
-      } else {
+      if (_formatCtx->streams[a]->first_dts != AV_NOPTS_VALUE && (min_start_pts == -1 || _formatCtx->streams[a]->start_time < min_start_pts)) {
+        min_start_pts = _formatCtx->streams[a]->start_time;
+      }
+      if (!calc) {
         _streams[a].start_dts_offset = 0;
+        _streams[a].start_pts_offset = 0;
       }
+      _streams[a].start_dts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
+      _streams[a].start_pts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
+
       _streams[a].discard = trunc;
     }
-    std::map<int, StreamData>::iterator it = _streams.begin();
-    for (; it != _streams.end(); it++) {
-      (*it).second.min_dts = max_start_dts;
-    }
+    /*
+        if (calc) {
+          std::map<int, StreamData>::iterator it = _streams.begin();
+          for (; it != _streams.end(); it++) {
+            (*it).second.start_dts_offset = av_rescale_q(_formatCtx->start_time,AV_TIME_BASE_Q);
+            (*it).second.start_pts_offset = _formatCtx->start_time;
+          }
+        }*/
   } else {
     _source = is;
   }

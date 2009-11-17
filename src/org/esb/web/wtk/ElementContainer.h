@@ -72,7 +72,7 @@ namespace org {
                         int nextRow=l->rowCount();
                         element->setText(value);
                         element->resize(Wt::WLength(200, Wt::WLength::Pixel), Wt::WLength::Auto);
-                        elementLabel->setBuddy(element);
+//                        elementLabel->setBuddy(element);
                         l->addWidget(elementLabel, nextRow, 0,Wt::AlignMiddle);
                         l->addWidget(element, nextRow, 1,Wt::AlignMiddle);
                         _cont[name] = element;

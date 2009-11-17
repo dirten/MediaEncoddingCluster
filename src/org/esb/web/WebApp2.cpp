@@ -14,12 +14,14 @@
 #include <Wt/WOverlayLoadingIndicator>
 #include <Wt/Ext/Panel>
 
-#include <Files.cpp>
+//#include <Files.cpp>
 #include "Profiles.cpp"
 #include "ProfilesForm.h"
 #include "WatchFolder.cpp"
 #include "WatchfolderForm.h"
 #include "Configuration.cpp"
+
+#include "FileInfo.cpp"
 namespace org {
   namespace esb {
     namespace web {
@@ -76,24 +78,33 @@ namespace org {
 
         /*begin Info Panel*/
         info_panel = new Wt::Ext::Panel();
-        Wt::WAccordionLayout * info_layout = new Wt::WAccordionLayout();
-        Wt::WFitLayout * info_fit = new Wt::WFitLayout();
-        info_panel->setLayout(info_layout);
-        Wt::Ext::Panel *p=new Wt::Ext::Panel();
-        p->setTitle("File Details");
-        info_panel->layout()->addWidget(p);
-        p=new Wt::Ext::Panel();
-        p->setTitle("Video Details");
-        info_panel->layout()->addWidget(p);
-        p=new Wt::Ext::Panel();
-        p->setTitle("Audio Details");
-        info_panel->layout()->addWidget(p);
 
+        Wt::WAccordionLayout * info_layout = new Wt::WAccordionLayout();
+        //Wt::WFitLayout * info_fit = new Wt::WFitLayout();
+
+        info_panel->setLayout(info_layout);
+        info_panel->setCollapsible(true);
+        info_panel->setAnimate(true);
+
+
+
+
+        //        Wt::Ext::Panel *p=new Wt::Ext::Panel();
+        //        p->setTitle("File Details");
+        //        info_panel->layout()->addWidget(p);
+        /*
+                p=new Wt::Ext::Panel();
+                p->setTitle("Video Details");
+                info_panel->layout()->addWidget(p);
+                p=new Wt::Ext::Panel();
+                p->setTitle("Audio Details");
+                info_panel->layout()->addWidget(p);*/
+        info_panel->expand();
         /*
         info_layout->addWidget(new Wt::Ext::Panel());
         info_layout->addWidget(new Wt::Ext::Panel());
          */
-        info_panel->resize(200, Wt::WLength());
+        info_panel->resize(250, Wt::WLength());
         info_panel->setResizable(true);
         layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
@@ -128,11 +139,14 @@ namespace org {
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
-        _fileSignalMap->mapConnect1(tab->doubleClicked, tab);
-
-        //        tab->itemSelectionChanged.connect(SLOT(this, WebApp2::itemSelected));
+        std::string t="double click to edit Meta information";
+        tab->setToolTip(t);
+        //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
+        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
 
         setContent(tab);
+        info_panel->expand();
+
       }
 
       void WebApp2::listImportedFiles() {
@@ -164,6 +178,7 @@ namespace org {
         tab->setColumnWidth(4, 10);
         _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
+        info_panel->collapse();
       }
 
       void WebApp2::listPendingEncodings() {
@@ -250,20 +265,32 @@ namespace org {
       }
 
       void WebApp2::fileSelected(SqlTable * tab) {
-        logdebug("FIle Table clicked:");
         if (tab->selectedRows().size() > 0) {
+          /**
+           * retriving selected file from grid
+           */
           std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
-//          info->setData(atoi(idstr.c_str()));
-//          pSelector->setFileId(atoi(idstr.c_str()));
-          logdebug("fileSelected" << idstr);
+          /**
+           * remove all widgets from the info_panel
+           */
+          int c = info_panel->layout()->count();
+          for (int a = 0; a < c; a++) {
+            Wt::WLayoutItem * item = info_panel->layout()->itemAt(a);
+            info_panel->layout()->removeItem(item);
+          }
+          /**
+           * adding new items to the info panel
+           */
+          info_panel->layout()->addWidget(new FileInfo(atoi(idstr.c_str())));
         }
       }
+
       void WebApp2::jobSelected(SqlTable * tab) {
         logdebug("Job Table clicked:");
         if (tab->selectedRows().size() > 0) {
           std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
-//          info->setData(atoi(idstr.c_str()));
-//          pSelector->setFileId(atoi(idstr.c_str()));
+          //          info->setData(atoi(idstr.c_str()));
+          //          pSelector->setFileId(atoi(idstr.c_str()));
           logdebug("jobSelected" << idstr);
         }
       }
