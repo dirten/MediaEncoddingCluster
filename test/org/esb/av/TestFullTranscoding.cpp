@@ -67,11 +67,11 @@ int main(int argc, char** argv) {
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
   int s = 0;
-  bool audio=false, video=false;
-
+  bool video=false, audio=false;
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
-        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO ) continue;
+    if(audio&&video)continue;
     if(audio&&video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
@@ -80,9 +80,9 @@ int main(int argc, char** argv) {
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       video=true;
-//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-      //_sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-            _sdata[i].enc->setCodecId(CODEC_ID_H264);
+      //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
+//            _sdata[i].enc->setCodecId(CODEC_ID_H264);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(20);

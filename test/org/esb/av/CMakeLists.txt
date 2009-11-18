@@ -34,7 +34,7 @@ target_link_libraries (TestDeSerializePacket io av util lang avformat avcodec av
 target_link_libraries (TestFormatInputStream io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestPacketInputStream io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestPacketOutputStream io av util lang avformat avcodec avutil swscale )
-target_link_libraries (TestProcessAudioPacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
+target_link_libraries (TestProcessAudioPacket io hive av util lang )
 target_link_libraries (TestFullTranscoding io av util lang avformat avcodec avutil swscale )
 target_link_libraries (TestPass1 io av util lang avformat avcodec avutil swscale )
 

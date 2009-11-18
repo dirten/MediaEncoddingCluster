@@ -127,7 +127,7 @@ cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
   for(int a=0;a<c;a++){
-    printf("%10d|", a);
+    printf("%10d|", a+1);
     if(in.size()>a)
       view_packet_data(in[a].get());
     else
