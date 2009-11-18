@@ -1,4 +1,3 @@
-
 SET(SQL_VERSION_SERIES 0)
 SET(SQL_VERSION_MAJOR 0)
 SET(SQL_VERSION_MINOR 1)
@@ -227,7 +226,6 @@ include_directories (${WT_DIR}/src)
 add_library (web
     web/WebServer.cpp
     web/MainMenu.cpp
-#    web/WebApp.cpp
     web/WebApp2.cpp
     web/ProfilesForm.cpp
     web/WatchfolderForm.cpp

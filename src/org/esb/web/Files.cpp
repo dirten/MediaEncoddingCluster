@@ -140,7 +140,7 @@ public:
         void fileSelected() {
           if (tab->selectedRows().size() > 0) {
             std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
-            info->setData(atoi(idstr.c_str()));
+//            info->setData(atoi(idstr.c_str()));
             pSelector->setFileId(atoi(idstr.c_str()));
             logdebug("fileSelected" << idstr);
           }
@@ -155,7 +155,7 @@ public:
         void versionSelected() {
           std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
           //      std::string idstr=boost::any_cast<string>(str->model()->data(str->selectedRows()[0],0));
-          info->setData(atoi(idstr.c_str()));
+//          info->setData(atoi(idstr.c_str()));
         }
 
 

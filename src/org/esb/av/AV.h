@@ -11,7 +11,7 @@ extern "C" {
 //#undef DEBUG
 #endif
 
-#define USE_TIME_BASE_Q
+#undef USE_TIME_BASE_Q
 
 #endif
 

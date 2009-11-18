@@ -44,8 +44,8 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
         _streams[a].start_dts_offset = 0;
         _streams[a].start_pts_offset = 0;
       }
-      _streams[a].start_dts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
-      _streams[a].start_pts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
+//      _streams[a].start_dts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
+//      _streams[a].start_pts_offset = av_rescale_q(_formatCtx->start_time, AV_TIME_BASE_Q,_formatCtx->streams[a]->time_base);
 
       _streams[a].discard = trunc;
     }

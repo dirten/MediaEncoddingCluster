@@ -267,9 +267,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->duration = dur;
   frame->setTimeBase(AV_TIME_BASE_Q);
 #else
-  AVRational ar;
-  ar.num = 1;
-  ar.den = ctx->sample_rate;
+  
   int64_t dur = av_rescale_q(samples_size, packet.getTimeBase(), ar);
   frame->duration = dur;
   frame->setTimeBase(ctx->time_base);
