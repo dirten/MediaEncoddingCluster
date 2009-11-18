@@ -33,7 +33,7 @@ namespace org {
         }
         std::string h = "MediaEncodingCluster V-";
         h += MHIVE_VERSION;
-        h += "($Rev: 893 $-"__DATE__ "-" __TIME__")";
+        h += "($Revision: 0 $-"__DATE__ "-" __TIME__")";
         setTitle(h);
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
