@@ -80,8 +80,8 @@
       <tr><td>Server Mode</td><td> : {1}</td></tr>
       <tr><td>Client Mode</td><td> : {2}</td></tr>
       <tr><td colspan=2><hr size=1/></td></tr>
-      <tr><td>Hive Listener Port</td><td> : {5}</td></tr>
-      <tr><td>Web Listener Port</td><td> : {6}</td></tr>
+      <tr><td>Hive Listener Port</td><td> : {7}</td></tr>
+      <tr><td>Web Listener Port</td><td> : {8}</td></tr>
       <tr><td colspan=2><hr size=1/></td></tr>
       <tr><td>Admin Name</td><td> : {9}</td></tr>
       <tr><td>Admin Login</td><td> : {10}</td></tr>
