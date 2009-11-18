@@ -215,11 +215,16 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-insert into config values("framerates","1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");
-insert into config values("samplerates","1/8000#8.0,1/11025#11.025,1/22050#22.05,1/32000#32.0,1/44100#44.1,1/48000#48.0");
 
-INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(1, 'MP4 H.264 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, 0, 320, 240, 2, 86016, 128000, 44100);
-INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(2, 'MP4 H.264 15fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, 15, 320, 240, 2, 86016, 128000, 44100);
-INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(3, 'MP4 H.264 23.97fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, '23.976', 320, 240, 2, 86017, 128000, 44100);
-INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(4, 'FLV H.263 320x240 MP3 128k 44.1Khz', 'Flash 9 (AVM2) format', 22, 1024000, 0, 320, 240, 2, 86017, 128000, 44100);
-INSERT INTO `profiles` (`id`, `profile_name`, `v_format`, `v_codec`, `v_bitrate`, `v_framerate`, `v_width`, `v_height`, `a_channels`, `a_codec`, `a_bitrate`, `a_samplerate`) VALUES(5, 'AVI MPEG4-2 320x240 MP2 128k 441.Khz', 'AVI format', 13, 1024000, 15, 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `config` VALUES('framerates', '1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30');
+INSERT INTO `config` VALUES('samplerates', '8000,11025,22050,32000,44100,48000');
+INSERT INTO `config` VALUES('audiobitrates', '32000,96000,128000,160000,192000,224000,256000,320000');
+
+INSERT INTO `profiles` VALUES(1, 'MP4 H.264 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, '24', 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `profiles` VALUES(2, 'MP4 H.264 15fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, '15', 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `profiles` VALUES(3, 'MP4 H.264 23.97fps 320x240 MP2 128k 44.1Khz', 'MP4 format', 28, 1024000, '23.976', 320, 240, 2, 86017, 128000, 44100);
+INSERT INTO `profiles` VALUES(4, 'FLV H.263 320x240 MP3 128k 44.1Khz', 'Flash 9 (AVM2) format', 22, 1024000, 'same as so', 320, 240, 2, 86017, 128000, 44100);
+INSERT INTO `profiles` VALUES(5, 'AVI MPEG4-2 320x240 MP2 128k 441.Khz', 'AVI format', 13, 1024000, '15', 320, 240, 2, 86016, 128000, 44100);
+INSERT INTO `profiles` VALUES(6, 'DVD MPEG2 320x240 MP3 128k 44.1Khz', 'MPEG-2 PS format (DVD VOB)', 2, 1024000, '25', 320, 240, 2, 86017, 128000, 44100);
+INSERT INTO `profiles` VALUES(7, 'DVD MPEG2 320x240 6000kbs ', 'MPEG-2 PS format (DVD VOB)', 2, 6000000, '25', 320, 240, 2, 86017, 128000, 44100);
+
