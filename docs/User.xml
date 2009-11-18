@@ -28,7 +28,42 @@
     Media Files Distributed over Nodes that reduces the Encoding Time.</para>
 
     <section>
-      <title></title>
+      <title>Motivation</title>
+
+      <para>Video encoding is highly processor intensive. While the processing
+      power available on standard PCs is continually increasing, so is the
+      complexity of modern audio/video codecs. The Media Encoding Cluster uses
+      a peer-to-peer network as a substrate for sharing the processing power
+      of regular PCs for the purpose of encoding video. This allows nodes the
+      easy construction of video encoding ‘farms’ from cheap standard
+      PCs.</para>
+    </section>
+
+    <section>
+      <title>Architecture</title>
+
+      <orderedlist>
+        <listitem>
+          <para><emphasis role="bold">Generation of process units</emphasis> -
+          the source video file is split into x chunks, where x is the number
+          of reference Frames in the video.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Distribution and encoding</emphasis> -
+          encoding specifications and Media data are sent to each participant
+          node, which decode and encodes the process unit.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Recombination</emphasis> - encoded
+          process units are returned to the distributing nodes and reassembled
+          into a complete encoded video. If process units are not returned due
+          to node failure, they are resubmitted to the network for encoding.
+          This process repeats until all work units are received by the
+          distributing node and reassembled.</para>
+        </listitem>
+      </orderedlist>
 
       <para></para>
     </section>
@@ -62,9 +97,12 @@
     <title>Installation</title>
 
     <section>
-      <title></title>
+      <title>General</title>
 
-      <para></para>
+      <para>On the Windows and Mac OS X platforms the Media Encoding Cluster
+      is installed using an installer. On Linux, Solaris and other Unix based
+      platforms, the software is installed using a self extracting binary
+      installer.</para>
     </section>
 
     <section>
@@ -127,112 +165,96 @@
     </section>
 
     <section>
-      <title>Installation on Windows XP</title>
+      <title>Windows</title>
 
-      <para>Download the Programm from <ulink
-      url="http://sourceforge.net/project/showfiles.php?group_id=39013">http://sourceforge.net/</ulink></para>
+      <para>To install Media Encoding Cluster on Windows, double-click the
+      installer file and follow the instructions on the screen.</para>
 
-      <para>Double Click on "MediaEncodingCluster-Setup-X.X.X.X.exe", where
-      "X.X.X.X" is the actual Version.</para>
+      <para>To uninstall, choose Uninstall Media Encoding Cluster from the
+      Start&gt;Programs&gt;Media Encoding Cluster menu.</para>
+    </section>
 
-      <para>This will open the Welcome Screen from the Installer.</para>
+    <section>
+      <title>Linux and Unix Systems</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/welcome.png" scale="70" />
-        </imageobject>
-      </mediaobject>
+      <para>To install the server on Linux and Unix based systems, such as
+      Solaris, open a terminal window. Download
+      MediaEncodingCluster-Linux-xxx.sh (xxx is a placeholder for the version)
+      to any directory, and execute the self extracting installer: sudo chmod
+      +x MediaEncodingCluster-Linux-xxx.sh sudo
+      ./MediaEncodingCluster-Linux-xxx.sh You will be asked to agree to the
+      End User License Agreement.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/program_dir.png" scale="70" />
-        </imageobject>
+      <para>The self-extracting installer will install the files in the
+      current directory. The server will be installed as the root user.</para>
 
-        <caption><para>After "next" Button clicked, you can enter the Target
-        Diretory location for the Programm Installation.</para><para>e.g.
-        "C:\Programms\MediaEncodingCluster"</para><para>Accept the default
-        installation location or enter a new location.</para><para>Note, there
-        must be enough Space Left for Temporary Encoded Data and the Encoded
-        Files</para></caption>
-      </mediaobject>
+      <para>To uninstall: delete the installation directory of the Media
+      Encoding Cluster</para>
+    </section>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/program_group.png" scale="70" />
-        </imageobject>
+    <section>
+      <title>Default TCP Ports</title>
 
-        <caption><para>Default Programm Group where the Tools are located in
-        the Windows Programm Menu</para><para>Accept the default location for
-        the Media Encoding Cluster program shortcuts or enter a new
-        location.</para></caption>
-      </mediaobject>
+      <para>Before using the Media Encoding Cluster it is important that you
+      open the following ports on your firewall. The table below represents
+      the defaults ports used by Media Encoding Cluster. All of these port
+      numbers are configurable through the configuration UI described later in
+      this document.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/tasks.png" scale="70" />
-        </imageobject>
+      <table>
+        <title>TCP Ports</title>
 
-        <caption><para>defining the System Configuration</para><itemizedlist>
-            <listitem>
-              <para>Server System</para>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>Web Administration</entry>
 
-              <para>System will be configured to autostart the Server as
-              System Service</para>
-            </listitem>
+              <entry>8080</entry>
+            </row>
 
-            <listitem>
-              <para>Client System</para>
+            <row>
+              <entry>Client - Server</entry>
 
-              <para>System will be configured to autostart the Client as
-              System Service</para>
-            </listitem>
-          </itemizedlist></caption>
-      </mediaobject>
+              <entry>20200</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </chapter>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/ready_to_install.png" scale="70" />
-        </imageobject>
+  <chapter>
+    <title>Starting and Stopping the Server</title>
 
-        <caption><para>Summary of the Installation Tasks.</para><para>Review
-        your installation choices. Click Back to make any necessary
-        changes.</para><para>Click Install. </para><para>Note: On Windows,
-        Microsoft Visual C++ 2008 Redistributable Package also installs.
-        </para></caption>
-      </mediaobject>
+    <para></para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/install_progress_3.png" scale="70" />
-        </imageobject>
+    <section>
+      <title>Windows: Command Prompt</title>
 
-        <caption><para>after installation</para></caption>
-      </mediaobject>
+      <para>On Windows, Media Encoding Cluster can be started and stopped from
+      a DOS command prompt, from the Start menu or from the Windows Services
+      administrative tool. To start the server from a DOS command prompt, open
+      a DOS command prompt. Change directory (cd) to the bin directory of the
+      server installation. The default location for this folder is: cd
+      MECINSTALLDIR\bin To start the server, type in .\mhive -r and hit
+      return. The startup contains all the server logging statements. To
+      shutdown the server hit "ctrl-c" on the console window. The server can
+      also be started and stopped from the Start menu using the Server Startup
+      and Server Shutdown menu items in the Programs&gt;Media Encoding Cluster
+      program group.</para>
+    </section>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/complete_setup.png" scale="70" />
-        </imageobject>
+    <section>
+      <title>Windows: Service</title>
 
-        <caption><para>you can start the Runtime System on the
-        Node</para><para> Select any final options and click Finish. The
-        installation is complete. If you configured it to start, Media
-        Encoding Cluster starts. </para></caption>
-      </mediaobject>
-
-      <para>After installation there is an new Service under the Windows
-      Services called MHiveService</para>
-
-      <para>This Service will be automatically started when the System boots
-      up.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/setup/dienste.png" scale="70" />
-        </imageobject>
-      </mediaobject>
-
-      <para>Setup finish!</para>
+      <para>To start the server as a Windows service, open the
+      Settings&gt;Control Panel&gt;Administrative Tools&gt;Services
+      administrative tool and locate the Media Encoding Cluster entry in the
+      list. Next, right click on the entry and select Start from the context
+      menu. To stop the server select Stop from the same context menu. To
+      configure the service to run each time Windows restarts, select
+      Properties from the right click context menu, set Startup type to
+      Automatic and click the OK button to close the dialog.</para>
     </section>
   </chapter>
 
@@ -242,91 +264,12 @@
     <para></para>
 
     <section>
-      <title>Configure the System </title>
+      <title>Configure the System</title>
 
       <para>the configuration is started, when you access the admin page the
       first time, you will be guided through the configuration steps. The
       Configuration will setup internal database and write the essential
       config Files.</para>
-    </section>
-
-    <section>
-      <para />
-    </section>
-  </chapter>
-
-  <chapter>
-    <title>Starting and Stopping the System</title>
-
-    <para>In condition to your Configuration, the Server and/or the Client
-    starts automatical on the Node.</para>
-
-    <section>
-      <title>Start and Stop the Server on Windows</title>
-
-      <section>
-        <title>Start the Server from the Start menu</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>Choose Start -&gt; All Programs -&gt; MediaEncodingCluster
-            -&gt; Server -&gt; start Server</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-
-      <section>
-        <title>Stop the Server from the Start menu</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>Choose Start -&gt; All Programs -&gt; MediaEncodingCluster
-            -&gt; Server -&gt; stop Server</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-
-      <section>
-        <title>Start, stop or restart the Server from the Services
-        window</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>Choose Start -&gt; Control Panel -&gt; Administrative Tools
-            -&gt; Services</para>
-          </listitem>
-
-          <listitem>
-            <para>Select MediaEncodingService from the Services list and click
-            Stop, Start or Restart.</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-    </section>
-
-    <section>
-      <title>Start and stop the server on Linux</title>
-
-      <para>On Linux, Media Encoding Cluster is installed as a service. You
-      start and stop the Media Encoding Cluster service using the mhive binary
-      itself. Use the mhive utility to perform other tasks as well, such as
-      start automatically when the system is started.</para>
-
-      <section>
-        <title>Start, stop, or restart Media Encoding CLuster</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>Log in as a root user.</para>
-          </listitem>
-
-          <listitem>
-            <para>Open a shell window, change to the directory where the
-            server is installed and type one of the following: ./bin/mhive
-            start|stop.</para>
-          </listitem>
-        </itemizedlist>
-      </section>
     </section>
   </chapter>
 
@@ -435,7 +378,7 @@
 
       <para>No! We are in the beginning time to distribute the Software, there
       are many hidden Bugs in that, that can result in an unknown behavior of
-      your System. </para>
+      your System.</para>
     </section>
   </chapter>
 </book>
