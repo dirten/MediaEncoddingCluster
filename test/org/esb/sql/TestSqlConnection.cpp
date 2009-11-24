@@ -37,10 +37,11 @@ void test_single_statement() {
   sql::Connection con("");
   con.executeNonQuery("use testdb");
   sql::Statement stmt=con.createStatement("select * from test");
+
   sql::ResultSet rs=stmt.executeQuery();
 
   while(rs.next()){
-//    std::cout << "Rs"<<rs.getString(1)<<std::endl;
+    std::cout << "Rs:"<<rs.getString(1)<<std::endl;
   }
 /*
   sql::Statement * stmt2=new sql::Statement(con.createStatement("select * from test"));
@@ -91,8 +92,8 @@ void test_insert_thread(){
 
 int main(int argc, char** argv) {
   std::string src = MEC_SOURCE_DIR;
-  config::Config::setProperty("hive.base_path", src.c_str());
   hive::DatabaseService::start(MEC_SOURCE_DIR);
+  config::Config::setProperty("hive.base_path", src.c_str());
   mysql_thread_init();
   {
     sql::Connection con("mysql:host=;db=;user=;passwd=");
@@ -105,8 +106,8 @@ int main(int argc, char** argv) {
     pstmt=test_con->prepareStatement2("insert into test (a,b) values (:a,:b)");
     boost::thread t(boost::bind(&test_insert_thread));
     t.join();
-    for (int a = 0; a < 1; a++){
-      test_execute_non_query();
+    for (int a = 0; a < 10; a++){
+//      test_execute_non_query();
       test_single_statement();
     }
 

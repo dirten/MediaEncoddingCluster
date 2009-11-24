@@ -81,8 +81,8 @@ int main(int argc, char** argv) {
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       video=true;
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-//            _sdata[i].enc->setCodecId(CODEC_ID_H264);
+//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
+            _sdata[i].enc->setCodecId(CODEC_ID_H264);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(20);
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
   pos.init();
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 50000 ; i++) {
+  for (int i = 0; i < 50000||true ; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0

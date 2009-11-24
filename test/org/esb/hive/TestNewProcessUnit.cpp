@@ -83,6 +83,7 @@ std::map<int, Packetizer::StreamData> stream_data;
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].enc = new Encoder();
     stream_data[i].codec_type=fis.getStreamInfo(i)->getCodecType();
+    stream_data[i].codec_id=fis.getStreamInfo(i)->getCodecId();
 
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
 //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
@@ -96,8 +97,6 @@ std::map<int, Packetizer::StreamData> stream_data;
       ar.num = 1;
       ar.den = 25;
       _sdata[i].enc->setTimeBase(ar);
-      stream_data[i].min_packet_count = 20;
-      stream_data[i].jut_size = 4;
 
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
       _sdata[i].enc->setCodecId(CODEC_ID_MP3);
@@ -109,8 +108,6 @@ std::map<int, Packetizer::StreamData> stream_data;
       ar.num = 1;
       ar.den = 44100;
       _sdata[i].enc->setTimeBase(ar);
-      stream_data[i].min_packet_count = 50;
-      stream_data[i].jut_size = 2;
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);

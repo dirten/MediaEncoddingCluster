@@ -22,7 +22,7 @@ using namespace org::esb::av;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
 
-int pu_count = 40;
+int pu_count = 80;
 
 void build_audio_packet(const char * filename, int sidx) {
 
@@ -68,7 +68,7 @@ void build_audio_packet(const char * filename, int sidx) {
   enc->setSampleFormat(p._decoder->getSampleFormat());
   enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
   enc->setPixelFormat(PIX_FMT_YUV420P);
-    enc->open();
+  enc->open();
   p._encoder = enc;
 
   char * outfile = new char[100];
@@ -105,7 +105,7 @@ void build_audio_packet(const char * filename, int sidx) {
       q.push_front(pPacket);
 
 
-      if(q.size()>3)
+      if (q.size() > 4)
         q.pop_back();
       packet_list.push_back(pPacket);
 
@@ -116,7 +116,7 @@ void build_audio_packet(const char * filename, int sidx) {
       //      std::cout<<"DurationCount:" << duration_count<<std::endl;
       //      std::cout<<"ByteCount:" << byte_count<<std::endl;
 
-      if (b == 40) {
+      if (b == 20) {
 
 
 
@@ -128,26 +128,31 @@ void build_audio_packet(const char * filename, int sidx) {
          * calculating decoded sample size
          */
         int64_t in_frame_size = av_rescale_q(pac.getDuration(), pac.getTimeBase(), enctb)*4;
-        int64_t out_frame_size=enc->getFrameBytes();
-        std::cout<<"Last Bytes Offset:" << last_bytes_offset<<std::endl;
-        std::cout<<"in_frame_size:" << in_frame_size<<std::endl;
-        std::cout<<"out_frame_size:" << out_frame_size<<std::endl;
+        int64_t out_frame_size = enc->getFrameBytes();
+        std::cout << "Sample Delay:" << enc->ctx->delay << std::endl;
+        std::cout << "Last Bytes Offset:" << last_bytes_offset << std::endl;
+        std::cout << "in_frame_size:" << in_frame_size << std::endl;
+        std::cout << "out_frame_size:" << out_frame_size << std::endl;
 
         /**
          * calculating number of bytes to discard
          */
-        int64_t out_packet_count=((in_frame_size*packet_list.size())-last_bytes_offset)/out_frame_size;
-        std::cout<<"_packet_count:" << packet_list.size()<<std::endl;
-        std::cout<<"out_packet_count:" << out_packet_count<<std::endl;
+        int64_t out_packet_count = ((in_frame_size * packet_list.size()) - last_bytes_offset) / out_frame_size;
+        std::cout << "in_packet_count:" << packet_list.size() << std::endl;
+        std::cout << "out_packet_count:" << out_packet_count << std::endl;
+        int64_t in_bytes=packet_list.size()*in_frame_size;
+        int64_t out_bytes=out_packet_count*out_frame_size;
+        int64_t remaining_bytes=in_bytes-out_bytes;
+        
+        last_bytes_offset = (in_frame_size - remaining_bytes);
 
-        last_bytes_offset=in_frame_size-(((in_frame_size*packet_list.size())-last_bytes_offset)-(out_frame_size*out_packet_count));
-        last_bytes_offset+=200;//(in_frame_size*q.size())-1;
+//        last_bytes_offset += (in_frame_size * (q.size()-2)) ;
 
         oos.writeObject(p);
         oos.close();
         packet_list.clear();
-        int qsize=q.size();
-        for(int a=0;a<qsize;a++){
+        int qsize = q.size();
+        for (int a = 0; a < qsize; a++) {
           packet_list.push_back(q.back());
           q.pop_back();
         }
@@ -188,7 +193,7 @@ void write_audio_to_file() {
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
   bool isInit = false;
-  for (int a = 0; a <= pu_count; a++) {
+  for (int a = 0; a < pu_count; a++) {
     sprintf(file, "packet-%d.out", a);
     org::esb::io::File infile(file);
     org::esb::io::FileInputStream fis(&infile);

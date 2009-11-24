@@ -25,6 +25,13 @@ using namespace org::esb::hive::job;
  */
 
 
+void print_packet_list(PacketListPtr list) {
+  PacketListPtr::iterator it = list.begin();
+  for (; it != list.end(); it++) {
+    logdebug((*it)->toString());
+  }
+}
+
 int main(int argc, char** argv) {
 
   std::map<int, Packetizer::StreamData> stream_data;
@@ -54,14 +61,10 @@ int main(int argc, char** argv) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+
     stream_data[i].codec_type = fis.getStreamInfo(i)->getCodecType();
-    if (stream_data[i].codec_type == CODEC_TYPE_VIDEO) {
-      stream_data[i].min_packet_count = 20;
-      stream_data[i].jut_size = 4;
-    } else if (stream_data[i].codec_type == CODEC_TYPE_AUDIO) {
-      stream_data[i].min_packet_count = 50;
-      stream_data[i].jut_size = 2;
-    }
+    stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
+
   }
 
   Packetizer pti(stream_data);
@@ -76,30 +79,46 @@ int main(int argc, char** argv) {
   }
   pti.flushStreams();
   PacketListPtr list;
+  list = pti.removePacketList();
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
+//  assert(list.size() == 27);
+//  assert(list.front()->isKeyFrame() == true);
 
   list = pti.removePacketList();
-  assert(list.size() == 27);
-  assert(list.front()->isKeyFrame()==true);
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
+//  assert(list.size() == 50);
+
 
   list = pti.removePacketList();
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
+//  assert(list.size() == 27);
+//  assert(list.front()->isKeyFrame() == true);
+
+  list = pti.removePacketList();
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
   assert(list.size() == 50);
 
   list = pti.removePacketList();
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
   assert(list.size() == 27);
-  assert(list.front()->isKeyFrame()==true);
+  assert(list.front()->isKeyFrame() == true);
+
 
   list = pti.removePacketList();
-  assert(list.size() == 27);
-  assert(list.front()->isKeyFrame()==true);
+
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
+  assert(list.size() == 12);
+  assert(list.front()->isKeyFrame() == true);
 
   list = pti.removePacketList();
-  assert(list.size() == 50);
-
-  list = pti.removePacketList();
-  assert(list.size() == 10);
-  assert(list.front()->isKeyFrame()==true);
-
-  list = pti.removePacketList();
+  logdebug("--------------------------------------------------------------------------------------------");
+  print_packet_list(list);
   assert(list.size() == 15);
 
   Log::close();
