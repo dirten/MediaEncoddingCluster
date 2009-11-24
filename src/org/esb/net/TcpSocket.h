@@ -7,7 +7,7 @@
 #include "org/esb/io/OutputStream.h"
 
 #include <boost/shared_ptr.hpp>
-
+#include <boost/asio.hpp>
 //using boost::asio::ip::tcp;
 
 namespace org {
@@ -26,6 +26,7 @@ namespace org {
                 void close();
                 void connect();
                 std::string getRemoteIpAddress();
+                boost::asio::ip::tcp::endpoint getRemoteEndpoint();
             private:
                 boost::asio::io_service _io_service;
                 boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;

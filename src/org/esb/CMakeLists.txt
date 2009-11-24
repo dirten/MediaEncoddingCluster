@@ -18,51 +18,51 @@ include_directories (D:/google-breakpad/src/)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+#LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-add_library (av av av/Init.cpp 
-            av/FrameConverter.cpp 
-            av/FrameOutputStream.cpp 
-            av/FormatInputStream.cpp 
-            av/FormatBaseStream.cpp 
-            av/FormatOutputStream.cpp 
-            av/PacketInputStream.cpp 
-            av/PacketOutputStream.cpp 
-            av/Codec.cpp 
-            av/Decoder.cpp 
-            av/Encoder.cpp 
-            av/Packet.cpp 
-            av/Frame.cpp 
-            av/PPSWriter.cpp
-            av/AVInputStream.cpp
-            av/FormatStreamFactory.cpp
-            av/StreamInfo.cpp
-
-)
-TARGET_LINK_LIBRARIES(av
-  ${FFMPEG_AVFORMAT_LIBRARY}
-  ${FFMPEG_AVCODEC_LIBRARY}
-  ${FFMPEG_AVUTIL_LIBRARY}
-  ${FFMPEG_SWSCALE_LIBRARY}
-  ${BZ2_LIB}
-)
-IF(NOT WIN32)
-	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora z )
-ENDIF(NOT WIN32)
-IF(BUILD_SHARED_LIBS)
-  INSTALL(TARGETS av
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
-
+#add_library (av av av/Init.cpp
+#            av/FrameConverter.cpp
+#            av/FrameOutputStream.cpp
+#            av/FormatInputStream.cpp
+#            av/FormatBaseStream.cpp
+#            av/FormatOutputStream.cpp
+#            av/PacketInputStream.cpp
+#            av/PacketOutputStream.cpp
+#            av/Codec.cpp
+#            av/Decoder.cpp
+#            av/Encoder.cpp
+#            av/Packet.cpp
+#            av/Frame.cpp
+#            av/PPSWriter.cpp
+#            av/AVInputStream.cpp
+#            av/FormatStreamFactory.cpp
+#            av/StreamInfo.cpp
+#
+#)
+#TARGET_LINK_LIBRARIES(av
+#  ${FFMPEG_AVFORMAT_LIBRARY}
+#  ${FFMPEG_AVCODEC_LIBRARY}
+#  ${FFMPEG_AVUTIL_LIBRARY}
+#  ${FFMPEG_SWSCALE_LIBRARY}
+#  ${BZ2_LIB}
+#)
+#IF(NOT WIN32)
+#	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora z )
+#ENDIF(NOT WIN32)
+#IF(BUILD_SHARED_LIBS)
+#  INSTALL(TARGETS av
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#ENDIF(BUILD_SHARED_LIBS)
+add_subdirectory (av)
 add_subdirectory (lang)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
@@ -201,7 +201,8 @@ add_library (hive
 	hive/DatabaseService.cpp
 	hive/FileImporter.cpp 
 	hive/JobUtil.cpp 
-	hive/HiveClient.cpp 
+	hive/HiveClient.cpp
+	hive/HiveClientAudio.cpp
 	hive/Setup.cpp 
 	hive/FileExporter.cpp
 	hive/ExportScanner.cpp

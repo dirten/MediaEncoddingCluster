@@ -317,5 +317,30 @@ void Frame::setFrame(AVFrame * frame){
     _frame=frame;
 }
  */
+void Frame::dumpHex() {
+    int len, i, j, c;
 
+    for(i=0;i<_size;i+=16) {
+        len = _size - i;
+        if (len > 16)
+            len = 16;
+        printf("%08x ", i);
+        for(j=0;j<16;j++) {
+            if (j < len)
+                printf(" %02x", _buffer[i+j]);
+            else
+                printf("   ");
+        }
+        printf(" ");
+        for(j=0;j<len;j++) {
+            c = _buffer[i+j];
+            if (c < ' ' || c > '~')
+                c = '.';
+            printf("%c", c);
+        }
+        printf("\n");
+    }
+
+
+}
 

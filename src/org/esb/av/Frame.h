@@ -40,6 +40,7 @@ namespace org {
         std::string toString();
         void setTimeBase(AVRational);
         AVRational getTimeBase();
+        void dumpHex();
 
         //	void setFrame(AVFrame * frame);
         int _height;

@@ -32,7 +32,7 @@ namespace org {
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
           _user_id = user_id;
-          tab = new SqlTable(std::string("SELECT id,infolder, outfolder, profile from watch_folder"));
+          tab = new SqlTable(std::string("SELECT watch_folder.id,infolder, outfolder, profile_name from watch_folder, profiles where profiles.id=profile"));
           tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
           tab->setTopToolBar(new Wt::Ext::ToolBar());
 

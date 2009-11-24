@@ -1,3 +1,29 @@
+/*----------------------------------------------------------------------
+ *  File    : FileInputStream.h
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
 #ifndef ORG_ESB_IO_FILEINPUTSTREAM_H
 #define ORG_ESB_IO_FILEINPUTSTREAM_H
 #include "InputStream.h"
@@ -17,11 +43,6 @@ public:
  * A new <code>FileDescriptor</code> object
  * is created to represent this file connection.
  * <p>
- * First, if there is a security manager,
- * its <code>checkRead</code> method  is called
- * with the path represented by the <code>file</code>
- * argument as its argument.
- * <p>
  * If the named file does not exist, is a directory rather than a regular
  * file, or for some other reason cannot be opened for reading then a
  * <code>FileNotFoundException</code> is thrown.
@@ -31,10 +52,8 @@ public:
  *                   is a directory rather than a regular file,
  *                   or for some other reason cannot be opened for
  *                   reading.
- * @exception  SecurityException      if a security manager exists and its
- *               <code>checkRead</code> method denies read access to the file.
- * @see        java.io.File#getPath()
- * @see        java.lang.SecurityManager#checkRead(java.lang.String)
+ * @exception  IOException
+ *               <code>read</code> method denies read access to the file.
  */
 
                 FileInputStream(File * file);

@@ -23,6 +23,7 @@ namespace org {
                 //    static const std::string DEFAULT_NAME;
                 //    ~Messenger();
                 static void free();
+                static void freeListener(std::string name = DEFAULT_NAME);
                 static Messenger & getInstance(std::string name = DEFAULT_NAME);
                 ~Messenger();
                 void addMessageListener(MessageListener &listener, std::string name = DEFAULT_NAME);

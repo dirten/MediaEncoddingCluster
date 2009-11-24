@@ -32,6 +32,7 @@ namespace org {
           setColumnSortable(a, true);
         }
 //        itemSelectionChanged.connect(SLOT(this,SqlTable::itemSelected));
+        _clickCount=0;
         cellClicked.connect(SLOT(this,SqlTable::itemSelected));
         doubleClickTimer=new Wt::WTimer(this);
         doubleClickTimer->setInterval(200);

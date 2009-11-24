@@ -5,7 +5,7 @@
 #include <boost/bind.hpp>
 namespace org {
   namespace esb {
-   
+
     namespace signal {
 
       std::map<std::string, Messenger*> Messenger::messenger;
@@ -19,6 +19,13 @@ namespace org {
 
       Messenger::~Messenger() {
         //  free();
+      }
+
+      void Messenger::freeListener( std::string name) {
+        std::list<MessageListener*>::iterator l = (listener[name]).begin();
+        for (; l != listener[name].end(); l++) {
+          delete (*l);
+        }
       }
 
       void Messenger::free() {

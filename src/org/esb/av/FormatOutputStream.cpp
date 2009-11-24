@@ -27,7 +27,7 @@ FormatOutputStream::FormatOutputStream(File * target_file, const char * fmt) {
     fprintf(stderr, "Invalid output format parameters\n");
     exit(1);
   }
-  _fmtCtx->preload=0.5*AV_TIME_BASE;
+  _fmtCtx->preload=static_cast<int>(0.5*AV_TIME_BASE);
   _fmtCtx->loop_output=AVFMT_NOOUTPUTLOOP;
   _fmtCtx->flags|=AVFMT_FLAG_NONBLOCK;
 //  logdebug("PRELOAD:"<<0.5*AV_TIME_BASE);

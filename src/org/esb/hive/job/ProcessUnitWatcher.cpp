@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
- *  File    : ProcessUnitWatcher.h
+ *  File    : ProcessUnitWatcher.cpp
  *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
  *  Purpose : here are the Packets will be bundled and received for and from the clients
  *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
@@ -33,6 +33,7 @@
 #include "ProcessUnitWatcher.h"
 #include "ClientHandler.h"
 
+
 #include "org/esb/lang/Thread.h"
 #include "org/esb/config/config.h"
 #include "org/esb/sql/Connection.h"
@@ -60,10 +61,13 @@ namespace org {
         //        std::map<int, boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::unit_map;
         boost::mutex ProcessUnitWatcher::put_pu_mutex;
         boost::mutex ProcessUnitWatcher::get_pu_mutex;
+        boost::mutex ProcessUnitWatcher::get_stream_pu_mutex;
         boost::mutex ProcessUnitWatcher::terminationMutex;
         boost::condition ProcessUnitWatcher::termination_wait;
 
-        util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::puQueue;
+        ProcessUnitWatcher::ProcessUnitQueue ProcessUnitWatcher::puQueue;
+        std::deque<boost::shared_ptr<ProcessUnit> >  ProcessUnitWatcher::audioQueue;
+        std::map<std::string, int> ProcessUnitWatcher::ip2stream;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
         bool ProcessUnitWatcher::_isStopSignal = false;
@@ -120,6 +124,8 @@ namespace org {
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
             while (rs.next() && !_isStopSignal) {
+              std::map<int, Packetizer::StreamData> stream_data;
+
               _stream_map.clear();
               string filename = rs.getString("files.path") + "/" + rs.getString("files.filename");
               org::esb::io::File fi(filename);
@@ -144,9 +150,18 @@ namespace org {
                   _stream_map[index].type = rs2.getInt("stream_type");
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
+                  _stream_map[index].decoder->open();
+                  _stream_map[index].encoder->open();
                   _stream_map[index].last_start_ts = 0;
                   _stream_map[index].packet_count = 0;
+                  _stream_map[index].last_bytes_offset = 0;
                   //                  _stream_map[index].last_process_unit_id = 0;
+                  /**
+                   * collecting data for the Packetizer
+                   */
+                  stream_data[index].codec_type = _stream_map[index].decoder->getCodecType();
+                  stream_data[index].codec_id = _stream_map[index].decoder->getCodecId();
+
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
@@ -177,7 +192,7 @@ namespace org {
                   }
                 }
                 /**
-                 * delete old packetentries
+                 * delete old packetentries after restart an unfinished encoding session
                  */
                 st = _stream_map.begin();
                 sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
@@ -188,7 +203,7 @@ namespace org {
               }
               PacketInputStream pis(fis);
               q_filled = false;
-
+              Packetizer packetizer(stream_data);
               Packet packet;
               /**
                * read while packets in the stream
@@ -207,20 +222,33 @@ namespace org {
                  * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
                  */
                 boost::shared_ptr<Packet> pPacket(new Packet(packet));
-                if (_stream_map[packet.packet->stream_index].type == CODEC_TYPE_AUDIO) {
-                  processAudioPacket(pPacket);
-                } else
-                  if (_stream_map[packet.packet->stream_index].type == CODEC_TYPE_VIDEO) {
-                  processVideoPacket(pPacket);
-                } else {
+                if (packetizer.putPacket(pPacket)) {
+                  PacketListPtr packets = packetizer.removePacketList();
+                  buildProcessUnit(packets, false);
                 }
+                /**
+                 * the next code is never used, remove this after some time
+                 */
+//                continue;
+
               }
               delete fis;
               /**
                * the rest does not executed because the file is not finisshed
                */
               if (_isStopSignal)continue;
-              flushStreamPackets();
+              /**
+               * flushing packetizer contents and put this into the Queue
+               */
+              packetizer.flushStreams();
+              int count = packetizer.getPacketListCount();
+              for (int a = 0; a < count; a++) {
+                PacketListPtr packets = packetizer.removePacketList();
+//                bool last_packet = !a < count - 1;
+                buildProcessUnit(packets, true);
+              }
+
+              //flushStreamPackets();
               /**
                * @TODO: at this point, here must be a check if all packets are received in case of client crash!
                */
@@ -240,126 +268,66 @@ namespace org {
 
         }
 
-        void ProcessUnitWatcher::buildProcessUnit(int sIdx, bool lastPackets) {
+        void ProcessUnitWatcher::buildProcessUnit(PacketListPtr list, bool lastPackets) {
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
-          logdebug("sIdx:" << sIdx);
+          int sIdx = list.front()->getStreamIndex();
+
           u->_source_stream = _stream_map[sIdx].instream;
           u->_target_stream = _stream_map[sIdx].outstream;
           if (u->_source_stream == 0 || u->_target_stream == 0) {
-            logdebug("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
+            logerror("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
           }
-
-          u->_decoder = _stream_map[sIdx].decoder; //CodecFactory::getStreamDecoder(u->_source_stream);
-          u->_encoder = _stream_map[sIdx].encoder; //CodecFactory::getStreamEncoder(u->_target_stream);
-          //setting Input Packets
-          u->_input_packets = _stream_map[sIdx].packets;
+          u->_decoder = _stream_map[sIdx].decoder;
+          u->_encoder = _stream_map[sIdx].encoder;
+          u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
+          u->_last_process_unit = lastPackets;
           /**
-           * when there are no more packets from the stream
+           * need some special calculations for Audio Packets to avoid Video/Audio drift
            */
-          if (lastPackets)
-            u->_last_process_unit = true;
-          //Put the ProcessUnit into the Queue
-          puQueue.enqueue(u);
+          u->_encoder->_bytes_discard = 0;//_stream_map[sIdx].last_bytes_offset;
+          if (false && _stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+            /**
+             * calculating decoded sample size
+             */
+            int64_t in_frame_size = av_rescale_q(list.front()->getDuration(), list.front()->getTimeBase(), u->_encoder->getTimeBase())*4;
+            int64_t out_frame_size = u->_encoder->getFrameBytes();
+            std::cout << "Last Bytes Offset:" << _stream_map[sIdx].last_bytes_offset << std::endl;
+            std::cout << "in_frame_size:" << in_frame_size << std::endl;
+            std::cout << "out_frame_size:" << out_frame_size << std::endl;
+            /**
+             * calculating number of bytes to discard
+             */
+            int64_t out_packet_count = ((in_frame_size * list.size()) - _stream_map[sIdx].last_bytes_offset) / out_frame_size;
+            std::cout << "_packet_count:" << list.size() << std::endl;
+            std::cout << "out_packet_count:" << out_packet_count << std::endl;
+            _stream_map[sIdx].last_bytes_offset = in_frame_size - (((in_frame_size * list.size()) - _stream_map[sIdx].last_bytes_offset)-(out_frame_size * out_packet_count));
+
+          }
+          /**
+           * some special handling for audio Packets, they must be currently all encoded on the same Client
+           * to avoid Video/Audio sync drift
+           */
+          if(u->_decoder->getCodecType()==CODEC_TYPE_AUDIO){
+            audioQueue.push_back(u);
+          }else{
+            puQueue.enqueue(u);
+          }
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
-          //resetting the parameter for the next ProcessUnit
-          _stream_map[sIdx].packet_count = 0;
-          _stream_map[sIdx].packets.clear();
-
         }
 
-        void ProcessUnitWatcher::flushStreamPackets() {
-          std::map<int, StreamData>::iterator st = _stream_map.begin();
-          for (; st != _stream_map.end(); st++) {
-            //            if ((*st).second.packets.size() > 0)
-            buildProcessUnit((*st).first, true);
-          }
-          packet_queue.clear();
-        }
 
-        void ProcessUnitWatcher::processAudioPacket(boost::shared_ptr<Packet> pPacket) {
-          //getting resource from shared Pointer
-          Packet pRes = *pPacket.get();
-
-          //getting stream index from Packet
-          int sIdx = pRes.packet->stream_index;
-          //increment the actuall stream counter
-          _stream_map[sIdx].packet_count++;
-          //put the packet into the entire PacketList
-          if (pRes.packet->size > 0)
-            _stream_map[sIdx].packets.push_back(pPacket);
-
-          //when we have enough packets for a ProcessUnit
-          if (_stream_map[sIdx].packet_count >= _stream_map[sIdx].min_packet_count) {
-            logdebug("Building Audio ProcessUnit");
-            //build ProcessUnit with Decoder and Encoder
-            buildProcessUnit(sIdx);
-          }
-
-        }
-
-        void ProcessUnitWatcher::processVideoPacket(boost::shared_ptr<Packet> pPacket) {
-          /**
-           * put it in the read ahead queue
-           */
-          packet_queue.push_back(pPacket);
-
-          /**
-           * getting stream index from Packet
-           */
-          int sIdx = pPacket->packet->stream_index;
-
-          if (packet_queue.size() >= _stream_map[sIdx].b_frame_offset)
-            q_filled = true;
-
-          /**
-           * processing packets in the Queue while reading from input stream
-           */
-          if (q_filled) {
-
-            /**
-             * getting Packet from queue
-             */
-            boost::shared_ptr<Packet> p = packet_queue.front();
-
-            /**
-             * remove packet from queue
-             */
-            packet_queue.pop_front();
-            /**
-             * increment the actuall stream counter
-             * @TODO: this will be obsolete, this can be read from the size of the packets list
-             */
-            _stream_map[sIdx].packet_count++;
-
-            /**
-             * put the packet into the entire PacketList
-             */
-            _stream_map[sIdx].packets.push_back(p);
-            //when we have enough packets for a ProcessUnit
-            if (packet_queue.front()->isKeyFrame() &&
-                _stream_map[sIdx].packet_count >= _stream_map[sIdx].min_packet_count) {
-              logdebug("Building Video ProcessUnit");
-              //build ProcessUnit with Decoder and Encoder
-              //setup b frame offset
-              for (int a = 0; a < packet_queue.size() && a < _stream_map[sIdx].b_frame_offset - 1; a++) {
-                _stream_map[sIdx].packets.push_back(packet_queue[a]);
-              }
-              buildProcessUnit(sIdx);
-            }
-          }
-
-        }
-
-        boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
+        boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit(boost::asio::ip::tcp::endpoint ep) {
+          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          if (puQueue.size() == 0)
+          if (audioQueue.size() == 0)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
-          //special case after an interupted encoding session
-          //          int sIdx = u->_input_packets.front()->packet->stream_index;
-          //          if (_stream_map[sIdx].last_process_unit_id == 0) {
+
+          boost::shared_ptr<ProcessUnit> u = audioQueue.front();
+
+
+          audioQueue.pop_front();
+
           std::string c = org::esb::config::Config::getProperty("db.connection");
           Connection con(c);
           PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
@@ -375,10 +343,31 @@ namespace org {
           stmt.setInt("frame_count", u->_input_packets.size());
           stmt.execute();
           u->_process_unit = stmt.getLastInsertId();
-          /*          } else {
-                      u->_process_unit = _stream_map[sIdx].last_process_unit_id;
-                      _stream_map[sIdx].last_process_unit_id = 0;
-                    }*/
+          return u;
+        }
+
+        boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
+          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
+          if (_isStopSignal)
+            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          if (puQueue.size() == 0)
+            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
+          std::string c = org::esb::config::Config::getProperty("db.connection");
+          Connection con(c);
+          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
+          stmt.setInt("source_stream", u->_source_stream);
+          stmt.setInt("target_stream", u->_target_stream);
+          if (u->_input_packets.size() > 0) {
+            stmt.setLong("start_ts", u->_input_packets.front()->packet->dts);
+            stmt.setLong("end_ts", u->_input_packets.back()->packet->dts);
+          } else {
+            stmt.setLong("start_ts", 0);
+            stmt.setLong("end_ts", 0);
+          }
+          stmt.setInt("frame_count", u->_input_packets.size());
+          stmt.execute();
+          u->_process_unit = stmt.getLastInsertId();
           return u;
         }
 

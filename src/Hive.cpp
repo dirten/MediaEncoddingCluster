@@ -12,6 +12,7 @@
 //#include "org/esb/lang/Thread.h"
 //#include "org/esb/hive/ProtocolServer.h"
 #include "org/esb/hive/HiveClient.h"
+#include "org/esb/hive/HiveClientAudio.h"
 #include "org/esb/config/config.h"
 //#include "org/esb/hive/job/JobWatcher.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
@@ -606,11 +607,18 @@ void client(int argc, char *argv[]) {
 
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
+
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+
+  org::esb::hive::HiveClientAudio clientaudio(host, port);
+  Messenger::getInstance().addMessageListener(clientaudio);
+
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   ctrlCHitWait();
 
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
 }
 
@@ -650,6 +658,9 @@ void start() {
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
 
+  org::esb::hive::HiveClientAudio clientaudio(host, port);
+  Messenger::getInstance().addMessageListener(clientaudio);
+
 
 
   /*
@@ -684,6 +695,7 @@ void start() {
   }
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+    Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
   }
 
   ctrlCHitWait();
@@ -694,6 +706,7 @@ void start() {
    *
    */
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));

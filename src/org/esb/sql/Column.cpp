@@ -332,7 +332,7 @@ double Column::getDouble(){
             return ret;
           }
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger"));      
+          throw SqlException(std::string("type-error in getInteger:").append(name));
         }
           
         case MYSQL_TYPE_VAR_STRING:
@@ -351,7 +351,7 @@ double Column::getDouble(){
 
         default:
 //          logerror("type-error in getInteger, type=" << bind.buffer_type);
-          throw SqlException(std::string("type-error in getInteger"));
+          throw SqlException(std::string("type-error in getInteger").append(name));
 //          throw SqlException("type-error in getInteger");
       }
     }

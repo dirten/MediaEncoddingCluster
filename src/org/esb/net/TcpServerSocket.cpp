@@ -21,7 +21,7 @@ namespace org {
         try {
           boost::asio::ip::tcp::resolver resolver(_io_service);
           std::string intf = "0.0.0.0";
-          std::string p=org::esb::util::Decimal(port).toString();
+          std::string p = org::esb::util::Decimal(port).toString();
           boost::asio::ip::tcp::resolver::query query(intf, p);
           boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
           acceptor_.open(endpoint.protocol());
@@ -41,17 +41,20 @@ namespace org {
 
         acceptor_.accept(*sock, ec);
         if (ec) {
-          ec.message();
           logerror("Error while accepting Socket(" << ec.message() << ")");
           return NULL;
         }
 
         boost::asio::socket_base::keep_alive option(true);
         //		sock->set_option(option);
-		/**
-		* @TODO: check the connection before returning
-		*/
-        return new TcpSocket(sock);
+        /**
+         * @TODO: check the connection before returning
+         */
+        TcpSocket * s = NULL;
+        if (sock->is_open())
+          s = new TcpSocket(sock);
+
+        return s;
       }
 
       void TcpServerSocket::bind() {

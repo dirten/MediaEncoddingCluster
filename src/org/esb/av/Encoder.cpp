@@ -1,4 +1,29 @@
-#include "Encoder.h"
+/*----------------------------------------------------------------------
+ *  File    : Encoder.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */#include "Encoder.h"
 
 #include "Frame.h"
 #include "Packet.h"
@@ -17,6 +42,7 @@ Encoder::Encoder(CodecID id) : Codec(id, Codec::ENCODER) {
   _sink = NULL;
   _last_dts = AV_NOPTS_VALUE;
   _byte_counter=0;
+  _frame_counter=0;
 }
 
 Encoder::Encoder() : Codec(Codec::ENCODER) {
@@ -24,6 +50,7 @@ Encoder::Encoder() : Codec(Codec::ENCODER) {
   _sink = NULL;
   _last_dts = AV_NOPTS_VALUE;
  _byte_counter=0;
+  _frame_counter=0;
 }
 
 Encoder::~Encoder() {
@@ -32,6 +59,7 @@ Encoder::~Encoder() {
 }
 
 int Encoder::encode(Frame & frame) {
+    _frame_counter++;
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
   _last_idx = frame.stream_index;
@@ -138,8 +166,11 @@ int Encoder::encodeAudio(Frame & frame) {
   //  memcpy(fifo_buffer, frame._buffer, frame._size);
   int frame_bytes = ctx->frame_size * osize * ctx->channels;
   //  logdebug("FrameSize:" << frame_bytes << " osize:" << osize);
-  if(frame._size<_bytes_discard){
-    _bytes_discard-=frame._size;
+ 
+  if(frame._size<=_bytes_discard){
+//    if(_frame_counter>2)
+      _bytes_discard-=frame._size;
+    _last_dts +=ctx->frame_size;
     return 0;
   }
   if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + frame._size-_bytes_discard) < 0) {
@@ -225,11 +256,12 @@ int Encoder::encodeAudio(Frame & frame) {
     pak.setTimeBase(AV_TIME_BASE_Q);
     pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) 1000000);
 #else
+/*
     AVRational ar;
     ar.num = 1;
-    ar.den = ctx->sample_rate;
+    ar.den = ctx->sample_rate;*/
     pak.setTimeBase(ctx->time_base);
-    pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) ctx->time_base.den);
+    pak.setDuration(ctx->frame_size);
 #endif
     pak.packet->stream_index = frame.stream_index;
     pak.packet->dts = _last_dts;

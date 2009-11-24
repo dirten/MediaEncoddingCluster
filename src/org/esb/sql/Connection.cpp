@@ -29,6 +29,7 @@ Connection::Connection(const std::string con, bool auto_connect) {
   parseConnectionString(con);
   if (auto_connect)
     connect();
+  logdebug("Connection()"<<this);
 }
 
 Connection::Connection(std::string host, std::string db, std::string user, std::string pass, bool auto_connect) {
@@ -54,6 +55,7 @@ Connection::~Connection() {
     delete mysqlPtr.get();
    */
   //  std::cout <<"Connection Object destroyed"<<std::endl;
+  logdebug("~Connection()"<<this);
 }
 
 void close_connection(MYSQL*d) {

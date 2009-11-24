@@ -45,7 +45,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
   logdebug("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
-  l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream()));
+  l.push_back(new DataHandler(socket));
   l.push_back(new Disconnect(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new Kill(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new ShowConfig(socket->getInputStream(), socket->getOutputStream()));

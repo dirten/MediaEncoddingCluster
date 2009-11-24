@@ -50,7 +50,7 @@ namespace org {
 
       void DatabaseService::start(std::string base_path) {
 //        loginfo("starting Database Service");
-        if (_running == false) {
+//        if (_running == false) {
           //          std::string base_path = _base_path;
           std::string lang = "--language=";
           lang.append(base_path);
@@ -61,15 +61,22 @@ namespace org {
           datadir.append(base_path);
           datadir.append("/");
 //          std::cout << datadir << std::endl;
+          char * dbdir=const_cast<char*> (datadir.c_str());
+          char * langdir= const_cast<char*> (lang.c_str());
+          std::cout << dbdir << std::endl;
+          std::cout << langdir << std::endl;
 
-          static char *server_options[] = {"dbservice", const_cast<char*> (datadir.c_str()), const_cast<char*> (lang.c_str()), NULL};
-          int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
-          static char *server_groups[] = {"embedded", NULL};
+
+          char *server_options[] = {"dbservice", dbdir,langdir, (char*)NULL};
+          int num_elements = (sizeof (server_options) / sizeof (char *))-1;
+//          std::cout << num_elements << std::endl;
+
+          static char *server_groups[] = {"embedded","server","dbservice_SERVER", (char*)NULL};
           if (mysql_library_init(num_elements, server_options, server_groups) != 0) {
             std::cerr<<"DB Library init failed"<<std::endl;
           }
           _running = true;
-        }
+//        }
       }
 
       void DatabaseService::stop() {

@@ -88,7 +88,10 @@ namespace org {
       std::string TcpSocket::getRemoteIpAddress() {
         return _socket->remote_endpoint().address().to_string();
       }
-
+      
+      boost::asio::ip::tcp::endpoint TcpSocket::getRemoteEndpoint(){
+        return _socket->remote_endpoint();
+      }
     }
   }
 }

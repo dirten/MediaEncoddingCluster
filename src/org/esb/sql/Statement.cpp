@@ -13,12 +13,13 @@ Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   sql = s;
+    logdebug("Statement::Statement()"<<this);
 }
 
 Statement::~Statement() {
-//    logdebug("Statement::~Statement()");
+    logdebug("Statement::~Statement()"<<this);
   //  delete rs;
-//    close();
+    close();
 }
 
 ResultSet * Statement::executeQuery(std::string s) {
@@ -35,13 +36,15 @@ ResultSet * Statement::executeQuery2() {
     rs = new ResultSet(stmtPtr.get());
   return rs;
 }
-
+/**
+ * @TODO: this is a memory leak and a performance issue of Object copy (aaaaargh)
+ */
 ResultSet Statement::executeQuery() {
   execute();
-  if (rs)
+/*  if (rs)
     delete rs;
-    rs = new ResultSet(stmtPtr.get());
-  return *rs;
+    rs = new ResultSet(stmtPtr.get());*/
+  return ResultSet(stmtPtr.get());
 }
 
 /*
@@ -64,10 +67,10 @@ void Statement::close() {
 
   if (mysql_stmt_free_result(stmtPtr.get())) {
     throw SqlException(std::string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
-  }
+  }/*
   if (mysql_stmt_close(stmtPtr.get())) {
     throw SqlException(std::string("failed while closing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
-  }
+  }*/
 
 }
 

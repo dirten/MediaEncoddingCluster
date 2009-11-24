@@ -35,7 +35,7 @@ namespace org {
         return _s->codec->codec_type;
       }
 
-      int StreamInfo::getCodecId() {
+      CodecID StreamInfo::getCodecId() {
         return _s->codec->codec_id;
       }
 
