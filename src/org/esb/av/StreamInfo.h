@@ -30,7 +30,7 @@ namespace org {
         int getGOPSize();
         int getPixelFormat();
         int getSampleFormat();
-        int getDuration();
+        int64_t getDuration();
 		int getFrameBytes();
         float getQuality();
         long long int getFirstPts();

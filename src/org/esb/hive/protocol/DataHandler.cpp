@@ -100,12 +100,12 @@ public:
       boost::shared_ptr<ProcessUnit> un;
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == ep) {
-          un = ProcessUnitWatcher::getStreamProcessUnit(socket->getRemoteEndpoint());
+          un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
       } else {
-        un = ProcessUnitWatcher::getStreamProcessUnit(socket->getRemoteEndpoint());
+        un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(ep);
       }
       _oos->writeObject(*un.get());

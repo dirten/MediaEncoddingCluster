@@ -41,7 +41,7 @@
 #include <deque>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/condition.hpp>
-#include <boost/asio.hpp>
+//#include <boost/asio.hpp>
 namespace org {
     namespace esb {
         namespace hive {
@@ -58,7 +58,7 @@ namespace org {
                     void stop();
                     void onMessage(org::esb::signal::Message & msg);
                     static boost::shared_ptr<ProcessUnit> getProcessUnit();
-                    static boost::shared_ptr<ProcessUnit> getStreamProcessUnit(boost::asio::ip::tcp::endpoint ep);
+                    static boost::shared_ptr<ProcessUnit> getStreamProcessUnit();
                     static bool putProcessUnit(ProcessUnit & unit);
                 private:
                     typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitQueue;

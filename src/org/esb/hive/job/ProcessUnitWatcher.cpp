@@ -27,11 +27,10 @@
 
 #include <string>
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+//#include <boost/thread.hpp>
+//#include <boost/bind.hpp>
 
 #include "ProcessUnitWatcher.h"
-#include "ClientHandler.h"
 
 
 #include "org/esb/lang/Thread.h"
@@ -40,19 +39,23 @@
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
-#include "org/esb/config/config.h"
+
 #include "org/esb/hive/CodecFactory.h"
-#include "org/esb/av/FormatStreamFactory.h"
+//#include "org/esb/av/FormatStreamFactory.h"
 #include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/PacketInputStream.h"
 
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
+//#include "ClientHandler.h"
 
 #include <deque>
 #include <list>
+using namespace org::esb::sql;
+using namespace org::esb::av;
 namespace org {
   namespace esb {
     namespace hive {
@@ -316,7 +319,7 @@ namespace org {
         }
 
 
-        boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit(boost::asio::ip::tcp::endpoint ep) {
+        boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());

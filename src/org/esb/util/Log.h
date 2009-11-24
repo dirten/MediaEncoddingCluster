@@ -7,7 +7,7 @@
 //#include "boost/date_time/gregorian/gregorian.hpp"
 //#include <boost/logging/format_fwd.hpp>
 //#include "Datetime.h"
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
 #include <fstream>
 #include <sstream>
 #include <ostream>

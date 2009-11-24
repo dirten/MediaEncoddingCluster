@@ -28,10 +28,11 @@
 #define	_PACKETIZER_H
 #include <boost/shared_ptr.hpp>
 #include "org/esb/av/Packet.h"
-#include "org/esb/hive/job/ProcessUnit.h"
+//#include "org/esb/hive/job/ProcessUnit.h"
 
 #include <deque>
 #include <map>
+#include <list>
 namespace org {
     namespace esb {
         namespace hive {

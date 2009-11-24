@@ -92,7 +92,7 @@ namespace org {
         return _s->codec->sample_fmt;
       }
 
-      int StreamInfo::getDuration() {
+      int64_t StreamInfo::getDuration() {
         return _s->duration;
       }
 
