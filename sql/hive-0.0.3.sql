@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `codec_name` varchar(255) default NULL,
   `framerate_num` int(11) NOT NULL default '0',
   `framerate_den` int(11) NOT NULL default '0',
-  `start_time` double NOT NULL default '0',
+  `start_time` bigint NOT NULL default '0',
   `duration` bigint NOT NULL default '0',
   `nb_frames` bigint NOT NULL default '0',
   `time_base_num` int(11) NOT NULL default '0',
