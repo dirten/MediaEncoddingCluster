@@ -83,9 +83,9 @@ sql::Connection * test_con=NULL;
 sql::PreparedStatement * pstmt=NULL;
 
 void test_insert_thread(){
-  mysql_thread_init();
   pstmt->setInt("a",1);
   pstmt->setInt("b",2);
+  mysql_thread_init();
   pstmt->execute();
   mysql_thread_end();
 }
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
   std::string src = MEC_SOURCE_DIR;
   hive::DatabaseService::start(MEC_SOURCE_DIR);
   config::Config::setProperty("hive.base_path", src.c_str());
-  mysql_thread_init();
+//  mysql_thread_init();
   {
     sql::Connection con("mysql:host=;db=;user=;passwd=");
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
     pstmt=test_con->prepareStatement2("insert into test (a,b) values (:a,:b)");
     boost::thread t(boost::bind(&test_insert_thread));
     t.join();
-    for (int a = 0; a < 10; a++){
+    for (int a = 0; a < 1; a++){
 //      test_execute_non_query();
       test_single_statement();
     }
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
   org::esb::config::Config::close();
   Log::close();
 
-  mysql_thread_end();
+//  mysql_thread_end();
   hive::DatabaseService::stop();
   return (EXIT_SUCCESS);
 }

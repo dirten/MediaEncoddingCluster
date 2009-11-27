@@ -72,7 +72,6 @@ int main(int argc, char** argv) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO ) continue;
     if(audio&&video)continue;
-    if(audio&&video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();

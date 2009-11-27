@@ -25,6 +25,7 @@
 #include "org/esb/av/Frame.h"
 
 #include "org/esb/hive/job/Packetizer.h"
+#include "org/esb/hive/job/ProcessUnit.h"
 
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/FileOutputStream.h"
