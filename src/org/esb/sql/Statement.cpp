@@ -13,11 +13,11 @@ Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   sql = s;
-    logdebug("Statement::Statement()"<<this);
+//    logdebug("Statement::Statement()"<<this);
 }
 
 Statement::~Statement() {
-    logdebug("Statement::~Statement()"<<this);
+//    logdebug("Statement::~Statement()"<<this);
   //  delete rs;
     close();
 }
@@ -54,12 +54,14 @@ ResultSet Statement::executeQuery(char* tmp) {
 }
  */
 bool Statement::execute() {
+//  mysql_thread_init();
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(" " + sql));
   }
   if (mysql_stmt_execute(stmtPtr.get())) {
     throw SqlException(std::string("failed while execute the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }
+//  mysql_thread_end();
   return true;
 }
 

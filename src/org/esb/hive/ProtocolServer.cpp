@@ -57,6 +57,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
+  mysql_thread_init();
   while (!socket->isClosed()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
 //#ifndef DEBUG
@@ -93,6 +94,7 @@ void ProtocolServer::run() {
     }
 //#endif
   }
+  mysql_thread_end();
   //  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
   //  	cout << "Elvis has left the Building" << endl;
 }

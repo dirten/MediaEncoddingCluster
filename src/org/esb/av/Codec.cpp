@@ -48,6 +48,7 @@ void my_init() {
 namespace org {
   namespace esb {
     namespace av {
+      boost::mutex Codec::open_close_mutex;
 
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
@@ -202,6 +203,8 @@ namespace org {
       }
 
       int Codec::open() {
+        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+
         if (_opened)return 0;
         findCodec(_mode);
         //        if (findCodec(_mode)) {
@@ -244,6 +247,8 @@ namespace org {
       }
 
       void Codec::close() {
+        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+
         if (_opened) {
           //        av_freep(&ctx->stats_in);
           avcodec_close(ctx);

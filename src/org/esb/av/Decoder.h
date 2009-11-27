@@ -57,8 +57,10 @@ namespace org {
 //                DEPRICATED(Frame decodeAudio(Packet & packet));
                 Frame * decodeVideo2(Packet & packet);
                 Frame * decodeAudio2(Packet & packet);
+                int64_t getLastTimeStamp();
             private:
                 int64_t _last_pts;
+                int64_t _next_pts;
             };
         }
     }

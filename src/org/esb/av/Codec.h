@@ -33,7 +33,7 @@
 #include "Packet.h"
 #include "org/esb/util/Log.h"
 #include <boost/shared_ptr.hpp>
-
+#include <boost/thread/condition.hpp>
 #include <list>
 namespace org {
     namespace esb {
@@ -139,6 +139,7 @@ namespace org {
                 void setContextDefaults();
                 bool _codec_resolved;
                 bool _pre_allocated;
+                static boost::mutex open_close_mutex;
             };
         }
     }

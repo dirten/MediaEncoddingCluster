@@ -69,7 +69,7 @@ namespace org {
         boost::condition ProcessUnitWatcher::termination_wait;
 
         ProcessUnitWatcher::ProcessUnitQueue ProcessUnitWatcher::puQueue;
-        std::deque<boost::shared_ptr<ProcessUnit> >  ProcessUnitWatcher::audioQueue;
+        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
         std::map<std::string, int> ProcessUnitWatcher::ip2stream;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
@@ -79,8 +79,8 @@ namespace org {
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
           std::string c = org::esb::config::Config::getProperty("db.connection");
-          //          _con_tmp = new Connection(c);
           //          _con_tmp2 = new Connection(c);
+
 
           //          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
           //          _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
@@ -110,6 +110,8 @@ namespace org {
               _isRunning = false;
               delete _con_tmp2;
               delete _stmt_fr;
+              delete _con_tmp;
+              delete _stmt;
             }
           }
         }
@@ -118,13 +120,15 @@ namespace org {
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp2 = new Connection(c);
           _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
+          _con_tmp = new Connection(c);
+          _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
           _isRunning = true;
+            sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
           while (!_isStopSignal) {
             /**
              * getting all jobs that are not being completed
              */
-            sql::Connection con(std::string(config::Config::getProperty("db.connection")));
-            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
             while (rs.next() && !_isStopSignal) {
               std::map<int, Packetizer::StreamData> stream_data;
@@ -232,7 +236,7 @@ namespace org {
                 /**
                  * the next code is never used, remove this after some time
                  */
-//                continue;
+                //                continue;
 
               }
               delete fis;
@@ -247,7 +251,7 @@ namespace org {
               int count = packetizer.getPacketListCount();
               for (int a = 0; a < count; a++) {
                 PacketListPtr packets = packetizer.removePacketList();
-//                bool last_packet = !a < count - 1;
+                //                bool last_packet = !a < count - 1;
                 buildProcessUnit(packets, true);
               }
 
@@ -287,7 +291,7 @@ namespace org {
           /**
            * need some special calculations for Audio Packets to avoid Video/Audio drift
            */
-          u->_encoder->_bytes_discard = 0;//_stream_map[sIdx].last_bytes_offset;
+          u->_encoder->_bytes_discard = 0; //_stream_map[sIdx].last_bytes_offset;
           if (false && _stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_AUDIO) {
             /**
              * calculating decoded sample size
@@ -310,17 +314,16 @@ namespace org {
            * some special handling for audio Packets, they must be currently all encoded on the same Client
            * to avoid Video/Audio sync drift
            */
-          if(u->_decoder->getCodecType()==CODEC_TYPE_AUDIO){
+          if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
             audioQueue.push_back(u);
-          }else{
+          } else {
             puQueue.enqueue(u);
           }
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
-
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex);
+          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           if (audioQueue.size() == 0)
@@ -332,20 +335,24 @@ namespace org {
           audioQueue.pop_front();
 
           std::string c = org::esb::config::Config::getProperty("db.connection");
-          Connection con(c);
-          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
-          stmt.setInt("source_stream", u->_source_stream);
-          stmt.setInt("target_stream", u->_target_stream);
+          /*
+                    Connection con(c);
+                    PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
+                    stmt.setInt("source_stream", u->_source_stream);
+                    stmt.setInt("target_stream", u->_target_stream);
+           */
+          _stmt->setInt("source_stream", u->_source_stream);
+          _stmt->setInt("target_stream", u->_target_stream);
           if (u->_input_packets.size() > 0) {
-            stmt.setLong("start_ts", u->_input_packets.front()->packet->dts);
-            stmt.setLong("end_ts", u->_input_packets.back()->packet->dts);
+            _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+            _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
           } else {
-            stmt.setLong("start_ts", 0);
-            stmt.setLong("end_ts", 0);
+            _stmt->setLong("start_ts", 0);
+            _stmt->setLong("end_ts", 0);
           }
-          stmt.setInt("frame_count", u->_input_packets.size());
-          stmt.execute();
-          u->_process_unit = stmt.getLastInsertId();
+          _stmt->setInt("frame_count", u->_input_packets.size());
+          _stmt->execute();
+          u->_process_unit = _stmt->getLastInsertId();
           return u;
         }
 
@@ -357,20 +364,20 @@ namespace org {
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           std::string c = org::esb::config::Config::getProperty("db.connection");
-          Connection con(c);
-          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
-          stmt.setInt("source_stream", u->_source_stream);
-          stmt.setInt("target_stream", u->_target_stream);
+          //          Connection con(c);
+          //          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
+          _stmt->setInt("source_stream", u->_source_stream);
+          _stmt->setInt("target_stream", u->_target_stream);
           if (u->_input_packets.size() > 0) {
-            stmt.setLong("start_ts", u->_input_packets.front()->packet->dts);
-            stmt.setLong("end_ts", u->_input_packets.back()->packet->dts);
+            _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+            _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
           } else {
-            stmt.setLong("start_ts", 0);
-            stmt.setLong("end_ts", 0);
+            _stmt->setLong("start_ts", 0);
+            _stmt->setLong("end_ts", 0);
           }
-          stmt.setInt("frame_count", u->_input_packets.size());
-          stmt.execute();
-          u->_process_unit = stmt.getLastInsertId();
+          _stmt->setInt("frame_count", u->_input_packets.size());
+          _stmt->execute();
+          u->_process_unit = _stmt->getLastInsertId();
           return u;
         }
 
@@ -392,6 +399,12 @@ namespace org {
           org::esb::io::ObjectOutputStream ous(&fos);
           logdebug("Saving ProcessUnit");
           ous.writeObject(unit);
+          ous.close();
+          delete unit._decoder;
+          unit._decoder = NULL;
+          delete unit._encoder;
+          unit._encoder = NULL;
+
           _stmt_fr->setInt("id", unit._process_unit);
           _stmt_fr->execute();
 

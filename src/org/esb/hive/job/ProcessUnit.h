@@ -29,6 +29,7 @@
 
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
+#include "org/esb/av/FrameConverter.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include <list>
@@ -62,6 +63,7 @@ namespace org {
                     Decoder * _decoder;
                     Encoder * _encoder;
                     Codec * codec;
+                    FrameConverter * _converter;
                     int _source_stream;
                     int _target_stream;
                     int _frame_group;
@@ -85,7 +87,6 @@ namespace org {
                         ar & _last_process_unit;
                     }
                 private:
-                    
                 };
 
                 class PtsComparator {

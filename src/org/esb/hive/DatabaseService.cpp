@@ -85,6 +85,14 @@ namespace org {
           mysql_library_end();
         _running = false;
       }
+
+      void DatabaseService::thread_init(){
+        mysql_thread_init();
+      }
+
+      void DatabaseService::thread_end(){
+        mysql_thread_end();
+      }
     }
   }
 }

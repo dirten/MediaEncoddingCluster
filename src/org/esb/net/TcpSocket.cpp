@@ -50,9 +50,10 @@ namespace org {
       }
 
       void TcpSocket::close() {
-
-        if (_socket.get() && _socket->is_open())
+        if (_socket.get() && _socket->is_open()){
+          _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
           _socket->close();
+        }
         _connected = false;
       }
 

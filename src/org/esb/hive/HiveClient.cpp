@@ -109,6 +109,8 @@ namespace org {
               unit->_decoder = NULL;
               delete unit->_encoder;
               unit->_encoder = NULL;
+              delete unit->_converter;
+              unit->_converter = NULL;
               delete unit;
             }
           }

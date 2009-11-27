@@ -380,8 +380,12 @@ namespace org {
         l->addWidget(new Wt::WBreak(), 1, 0);
         _el.addElement("hive.hport", "Hive Listener Port", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(0, 1));
         _el.addElement("hive.wport", "Web Listener Port", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
+        _el.addElement("hive.tmp_data_dir", "Temporary Data Directory", "", l); //new Wt::Ext::LineEdit(db_table->elementAt(1, 1));
         _el.getElement("hive.hport")->setText("20200");
         _el.getElement("hive.wport")->setText("8080");
+        std::string tmppath=config::Config::getProperty("hive.base_path");
+        tmppath+="/tmp";
+        _el.getElement("hive.tmp_data_dir")->setText(tmppath.c_str());
         //        _el.getElement("hive.scan_base", "Scan Base Dir", "", hive_table->elementAt(2, 0)); //new Wt::Ext::LineEdit(db_table->elementAt(2, 1));
         //        _el.getElement("hive.scan_int", "Scan Interval", "", hive_table->elementAt(3, 0))->setValidator(new Wt::WIntValidator(1, 300)); //new Wt::Ext::LineEdit(db_table->elementAt(3, 1));
         //        div_hive->addWidget(hive_table);

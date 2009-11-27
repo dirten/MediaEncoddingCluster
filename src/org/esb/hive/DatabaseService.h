@@ -41,6 +41,8 @@ namespace org {
                 void onMessage(org::esb::signal::Message & msg);
                 static void start(std::string str=std::string(""));
                 static void stop();
+                static void thread_init();
+                static void thread_end();
             private:
                 static bool _running;
                 static std::string _base_path;

@@ -27,6 +27,7 @@ namespace org {
         _running = false;
         _dec = NULL;
         _enc = NULL;
+        _conv=NULL;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         avcodec_register_all();
         av_register_all();
@@ -117,7 +118,14 @@ namespace org {
                 unit->_encoder = _enc;
               }
 
+              if (_conv != NULL) {
+                unit->_converter=_conv;
+              }
+
               unit->process();
+              if (_conv == NULL) {
+                _conv = unit->_converter;
+              }
 
               char * text_out = "put process_unit";
               try {
@@ -134,6 +142,9 @@ namespace org {
                 if (_enc)
                   delete _enc;
                 _enc=NULL;
+                if(_conv)
+                  delete _conv;
+                _conv=NULL;
               }
 
               delete unit;

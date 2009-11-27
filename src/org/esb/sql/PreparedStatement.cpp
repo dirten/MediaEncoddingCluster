@@ -18,6 +18,8 @@ PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
   }
   para = new Parameter(stmtPtr.get());
   rs=NULL;
+//  mutexPtr=boost::shared_ptr<boost::shared_mutex>(new boost::shared_mutex());
+//  execute_mutex=;
 }
 
 PreparedStatement::~PreparedStatement() {
@@ -94,6 +96,8 @@ int PreparedStatement::executeUpdate() {
 }
 
 bool PreparedStatement::execute() {
+//  boost::mutex::scoped_lock scoped_lock((*mutexPtr.get()));
+//  mysql_thread_init();
   if(mysql_stmt_param_count(stmtPtr.get())>0){
     if (mysql_stmt_bind_param(stmtPtr.get(), para->bind)) {
 
@@ -107,6 +111,7 @@ bool PreparedStatement::execute() {
     throw SqlException(string("failed while execute the statement: ").append(mysql_stmt_error(stmtPtr.get())));
     //    throw SqlException( mysql_stmt_error(stmt));
   }
+//  mysql_thread_end();
   return true;
 }
 

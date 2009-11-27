@@ -114,19 +114,11 @@ namespace org {
 
         } else
           if (msg.getProperty("directoryscan") == "stop") {
-            logdebug("Directory Scanner stop request received");
+          logdebug("Directory Scanner stop request received");
           if (!_halt) {
             _halt = true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             termination_wait.wait(terminationLock);
-            if (_stmt)
-              delete _stmt;
-            if (_con)
-              delete _con;
-            _stmt = NULL;
-            _con = NULL;
-            delete _stmt2;
-            delete _con2;
           }
           logdebug("Directory Scanner stopped");
         }
@@ -150,6 +142,15 @@ namespace org {
           }
           Thread::sleep2(_interval);
         }
+        if (_stmt)
+          delete _stmt;
+        if (_con)
+          delete _con;
+        _stmt = NULL;
+        _con = NULL;
+        delete _stmt2;
+        delete _con2;
+
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         termination_wait.notify_all();
 
@@ -181,7 +182,7 @@ namespace org {
             //		filename=name.data();
             char * argv[] = {"", (char*) name.c_str()};
             int fileid = import(2, argv);
-            if (false&&fileid > 0 && p > 0) {
+            if (false && fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
               char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};

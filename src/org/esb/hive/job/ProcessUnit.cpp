@@ -27,7 +27,7 @@
 #include "ProcessUnit.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameFormat.h"
-#include "org/esb/av/FrameConverter.h"
+
 #include "org/esb/av/Sink.h"
 
 #include "org/esb/util/Log.h"
@@ -64,6 +64,7 @@ private:
 ProcessUnit::ProcessUnit() {
   _decoder = NULL;
   _encoder = NULL;
+  _converter=NULL;
   codec = NULL;
   _target_stream = 0;
   _source_stream = 0;
@@ -100,7 +101,9 @@ void ProcessUnit::process() {
     _decoder->open();
   if (_encoder != NULL)
     _encoder->open();
-
+  /*creating a frame converter*/
+  if(_converter==NULL)
+    _converter=new FrameConverter(_decoder, _encoder);
   if (toDebug) {
     logdebug("Codex openned");
     logdebug(_decoder->toString());
@@ -111,8 +114,8 @@ void ProcessUnit::process() {
   _encoder->setSink(&sink);
   _encoder->setOutputStream(NULL);
 
-  /*creating a frame converter*/
-  FrameConverter conv(_decoder, _encoder);
+
+//  FrameConverter conv(_decoder, _encoder);
 
   if (toDebug)
     logdebug("Converter created");
@@ -162,7 +165,7 @@ void ProcessUnit::process() {
     if (toDebug)
       logdebug("try Frame Convert");
     /*converting the source frame to target frame*/
-    conv.convert(*tmp, *f);
+    _converter->convert(*tmp, *f);
 
     /**
      * this is for down rating the frame rate, e.g. from 25fps down to 15fps...

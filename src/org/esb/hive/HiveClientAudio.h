@@ -14,6 +14,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
+#include "org/esb/av/FrameConverter.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 //#include "org/esb/util/Queue.h"
 #include <boost/thread.hpp>
@@ -55,6 +56,7 @@ namespace org {
                 void packetWriter();
                 org::esb::av::Decoder * _dec;
                 org::esb::av::Encoder * _enc;
+                org::esb::av::FrameConverter * _conv;
             };
         }
     }

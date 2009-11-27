@@ -29,7 +29,6 @@ Connection::Connection(const std::string con, bool auto_connect) {
   parseConnectionString(con);
   if (auto_connect)
     connect();
-  logdebug("Connection()"<<this);
 }
 
 Connection::Connection(std::string host, std::string db, std::string user, std::string pass, bool auto_connect) {
@@ -45,7 +44,7 @@ Connection::~Connection() {
   //	_staticCounter--;
   //  logdebug("Connection::~Connection()");
   //	mysql_close(mysqlPtr.get());
-  //  	mysql_thread_end();
+//    	mysql_thread_end();
   /*
     _staticCounter--;
     if(_staticCounter==0){
@@ -55,7 +54,6 @@ Connection::~Connection() {
     delete mysqlPtr.get();
    */
   //  std::cout <<"Connection Object destroyed"<<std::endl;
-  logdebug("~Connection()"<<this);
 }
 
 void close_connection(MYSQL*d) {
@@ -72,7 +70,7 @@ void Connection::connect() {
   mysql_options(mysqlPtr.get(), MYSQL_OPT_GUESS_CONNECTION, NULL);
   //  unsigned int proto = MYSQL_PROTOCOL_TCP;
   //  mysql_options(mysqlPtr.get(), MYSQL_OPT_PROTOCOL, &proto);
-  
+
     if (mysql_thread_init()) {
       throw SqlException(string("Failed to init mysql thread: ").append(std::string(mysql_error(mysqlPtr.get()))));
     }

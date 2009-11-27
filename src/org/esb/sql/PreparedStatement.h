@@ -14,6 +14,7 @@
 #include "Parameter.cpp"
 
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/shared_mutex.hpp>
 using namespace std;
 //using namespace sqlite3x;
 namespace org {
@@ -49,6 +50,8 @@ namespace org {
         ResultSet * rs;
         //        MYSQL_STMT *stmt;
         boost::shared_ptr<MYSQL_STMT> stmtPtr;
+//        boost::shared_ptr<boost::shared_mutex> mutexPtr;
+        
         //				  char * psql;
         std::string sql;
         //					tntdb::Statement tntstmt;

@@ -37,14 +37,17 @@ using namespace std;
 
 Decoder::Decoder() : Codec(Codec::DECODER) {
   _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
   _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
 }
 
 Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
   _last_pts = AV_NOPTS_VALUE;
+  _next_pts = AV_NOPTS_VALUE;
 }
 
 Frame Decoder::decodeLast() {
@@ -241,7 +244,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //        Frame frame;
   int size = packet.packet->size;
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-  // int bps = av_get_bits_per_sample_format(ist->st->codec->sample_fmt)>>3;
+   int bps = av_get_bits_per_sample_format(ctx->sample_fmt)>>3;
 
   //  uint8_t *outbuf = new uint8_t[samples_size];
   uint8_t *outbuf = (uint8_t*) av_malloc(samples_size);
@@ -250,11 +253,11 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
-  if (_last_pts == AV_NOPTS_VALUE) {
+  if (_next_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
-    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
+    _next_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
-    _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
+    _next_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
 
 #ifdef DEBUG
@@ -283,8 +286,8 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->stream_index = packet.packet->stream_index;
 
 
-  frame->setPts(_last_pts);
-  frame->setDts(_last_pts);
+  frame->setPts(_next_pts);
+  frame->setDts(_next_pts);
   AVRational ar;
   ar.num = 1;
   ar.den = ctx->sample_rate;
@@ -293,13 +296,19 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->duration = dur;
   frame->setTimeBase(AV_TIME_BASE_Q);
 #else
-  int64_t dur = av_rescale_q(samples_size, packet.getTimeBase(), ar);
-  frame->duration = dur;
-  frame->setTimeBase(ctx->time_base);
+//  int64_t dur = av_rescale_q(samples_size, packet.getTimeBase(), ar);
+  int64_t dur = ((int64_t)AV_TIME_BASE/bps*samples_size)/(ctx->sample_rate * ctx->channels);
+  AVRational arbase;
+  arbase.num = 1;
+  arbase.den = AV_TIME_BASE;
+
+  frame->duration = av_rescale_q(dur, arbase, ar);
+  frame->setTimeBase(ar);
 
 //  _last_pts += frame->duration;
 #endif
-  _last_pts += frame->duration;
+  _last_pts=_next_pts;
+  _next_pts += frame->duration;
   frame->pos = packet.packet->pos;
   //  frame->duration = packet.packet->duration;
   frame->_size = samples_size;
@@ -311,4 +320,10 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 //  frame->dumpHex();
 #endif
   return frame;
+}
+/**
+ * returns the last Encoded Timestamp
+ */
+int64_t Decoder::getLastTimeStamp(){
+  return _last_pts;
 }
