@@ -147,7 +147,7 @@ int Encoder::encodeAudio(Frame & frame) {
     fprintf(stderr, "av_fifo_realloc2() failed\n");
   }
 
-  av_fifo_generic_write(fifo, frame._buffer+_bytes_discard, frame._size-_bytes_discard, NULL);
+  av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
 
   int audio_buf_size = (2 * 128 * 1024);
   uint8_t * audio_buf = static_cast<uint8_t*> (av_malloc(audio_buf_size));

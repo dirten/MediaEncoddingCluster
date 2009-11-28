@@ -223,7 +223,7 @@ namespace org {
       void WebApp2::createProfiles() {
         listAllProfiles();
         cpd = new Wt::Ext::Dialog("Profile");
-        cpd->resize(500, 400);
+        cpd->resize(500, 430);
         ProfilesForm * pf = new ProfilesForm(cpd->contents());
         pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));

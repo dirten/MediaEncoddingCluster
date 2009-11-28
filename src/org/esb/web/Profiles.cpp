@@ -50,7 +50,7 @@ namespace org {
         void editProfile() {
           int c = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
           d = new Wt::Ext::Dialog("Profile");
-          d->resize(500, 400);
+          d->resize(500, 430);
           ProfilesForm * pf = new ProfilesForm(d->contents());
           pf->profileSaved.connect(SLOT(this, Profiles::profileSaved));
           pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
