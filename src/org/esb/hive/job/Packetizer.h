@@ -64,7 +64,7 @@ namespace org {
 
                     std::list<PacketListPtr> _packet_list;
 
-                    static const int MIN_AUDIO_PACKETS = 50;
+                    static const int MIN_AUDIO_PACKETS = 500;
                     static const int MIN_VIDEO_PACKETS = 20;
 
                     std::map<int, PacketListPtr> _overlap_queue;

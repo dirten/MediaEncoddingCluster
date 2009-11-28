@@ -280,7 +280,7 @@ void FileExporter::exportFile(int fileid) {
       /*for some AudioStreams it might be pts=pts/duration */
       p.packet->pts = rs.getInt("pts"); //>0?(rs.getInt("pts")/rs.getInt("duration")):rs.getInt("pts");
       p.packet->dts = p.packet->pts; //rs.getint(3);
-      p.packet->duration = 1; //rs.getInt("duration");
+      p.packet->duration = rs.getInt("duration");
       p.packet->flags = rs.getInt("flags");
       p.packet->pos = rs.getInt("pos");
       p.packet->stream_index = 1; //rs.getint(7);

@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
       ar.num = 1;
       ar.den = 25;
       _sdata[i].enc->setTimeBase(ar);
-      _sdata[i].enc->setBitRate(60000000);
+      _sdata[i].enc->setBitRate(10240000);
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
       audio=true;

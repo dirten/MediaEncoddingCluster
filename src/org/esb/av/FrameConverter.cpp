@@ -99,7 +99,7 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-        logdebug("Resample Comensate delta:"<<delta<<" inpts:"<<inpts<<" outpts:"<<outpts<<" fifo:"<<_enc->getSamplesBufferd());
+//        logdebug("Resample Comensate delta:"<<delta<<" inpts:"<<inpts<<" outpts:"<<outpts<<" fifo:"<<_enc->getSamplesBufferd());
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
             delta,
