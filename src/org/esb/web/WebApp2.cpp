@@ -112,7 +112,7 @@ namespace org {
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
-        head = new Wt::WText("&copy; 2009 <a target=\"_blank\" href=\"http://codergrid.de/\">Jan H&ouml;lscher</a> - GPL License");
+        head = new Wt::WText("&copy; 2000 - 2009 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
         head->setStyleClass("north");
         footer->setLayout(new Wt::WFitLayout());
         footer->layout()->addWidget(head);

@@ -314,7 +314,7 @@ namespace org {
            * some special handling for audio Packets, they must be currently all encoded on the same Client
            * to avoid Video/Audio sync drift
            */
-          if (false&&u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+          if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
             audioQueue.push_back(u);
           } else {
             puQueue.enqueue(u);

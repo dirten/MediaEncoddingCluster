@@ -36,7 +36,7 @@ namespace org {
          */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
           _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
-          //          _codec_overlap[CODEC_ID_MP2] = 3;
+          _codec_overlap[CODEC_ID_MP2] = 3;
 
           _codec_min_packets[CODEC_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
           _codec_min_packets[CODEC_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
@@ -126,10 +126,13 @@ namespace org {
           /**
            * need to append some packets to the current PacketList
            */
-          addingPacketsFromQueue(stream_id);
+			if(_codec_overlap[_streams[stream_id].codec_id]>0)
+				addingPacketsFromQueue(stream_id);
           _packet_list.push_back(_streams[stream_id].packets);
 //          logdebug("Build Packet List for stream#:" << stream_id << " packet count" << _streams[stream_id].packets.size());
           _streams[stream_id].packets.clear();
+			if(_codec_overlap[_streams[stream_id].codec_id]<0)
+				addingPacketsFromQueue(stream_id);
           return true;
         }
 
