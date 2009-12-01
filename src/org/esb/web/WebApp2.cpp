@@ -171,7 +171,7 @@ namespace org {
 
       void WebApp2::listAllEncodings() {
         //        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
-        SqlTable * tab = new SqlTable(std::string("select filename,round(max((end_ts-s2.start_time)*s2.time_base_num/s2.time_base_den)/(f.duration/1000000),3)*100 as progress,min(send) as start_time,sum(timestampdiff(SECOND,send,complete))\"cpu-time\" from process_units pu, streams s, streams s2, files f where pu.target_stream =s.id and pu.source_stream=s2.id and s.fileid=f.id group by f.id"));
+        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,round(max((end_ts-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100 as progress,min(send) as start_time,sum(timestampdiff(SECOND,send,process_units.complete))\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);

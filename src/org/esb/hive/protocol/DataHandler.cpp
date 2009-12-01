@@ -23,6 +23,7 @@ using namespace org::esb;
 
 #define GET_UNIT  "get process_unit"
 #define GET_AUDIO_UNIT  "get audio_process_unit"
+#define PUT_AUDIO_UNIT  "put audio_process_unit"
 #define PUT_UNIT  "put process_unit"
 
 
@@ -76,7 +77,8 @@ public:
     if (
         strcmp(command, GET_UNIT) == 0 ||
         strcmp(command, PUT_UNIT) == 0 ||
-        strcmp(command, GET_AUDIO_UNIT) == 0) {
+        strcmp(command, GET_AUDIO_UNIT) == 0||
+        strcmp(command, PUT_AUDIO_UNIT) == 0) {
       return CMD_PROCESS;
     } else
       if (strcmp(command, "help") == 0) {
@@ -109,7 +111,13 @@ public:
         endpoint2stream.push_back(ep);
       }
       _oos->writeObject(*un.get());
-    } else {
+    } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
+      ProcessUnit un;
+      _ois->readObject(un);
+      if (!ProcessUnitWatcher::putProcessUnit(un)) {
+        logerror("error while putProcessUnit!");
+      }      
+    }else{                                                 
       logerror("unknown command received:" << command);
     }
   }

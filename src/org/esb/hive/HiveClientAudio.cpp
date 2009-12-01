@@ -94,7 +94,7 @@ namespace org {
                 _ois->readObject(*unit);
                 logdebug("pu received");
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!" << ex.what());
+                logerror("Connection to Server lost, while waiting for audio process unit!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_input_packets.size() == 0) {
@@ -127,12 +127,12 @@ namespace org {
                 _conv = unit->_converter;
               }
 
-              char * text_out = "put process_unit";
+              char * text_out = "put audio_process_unit";
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!" << ex.what());
+                logerror("Connection to Server lost, while sending audio process unit!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_last_process_unit) {

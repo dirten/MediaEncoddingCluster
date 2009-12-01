@@ -261,7 +261,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 #endif
 
 #ifdef DEBUG
-    logdebug("setting last pts to :" << _last_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
+    logdebug("setting last pts to :" << _next_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
         << "ptb:" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
 #endif
   }

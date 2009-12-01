@@ -8,7 +8,7 @@ extern "C" {
 #include <libavutil/fifo.h>
 }
 #ifdef DEBUG
-#undef DEBUG
+//#undef DEBUG
 #endif
 
 #undef USE_TIME_BASE_Q

@@ -95,15 +95,17 @@ namespace org {
         AVRational ar;
         ar.num = 1;
         ar.den = 1000000;
-        if(_dec->getLastTimeStamp()==AV_NOPTS_VALUE||_enc->getLastTimeStamp()==AV_NOPTS_VALUE)return;
+        if (_dec->getLastTimeStamp() == AV_NOPTS_VALUE || _enc->getLastTimeStamp() == AV_NOPTS_VALUE)return;
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-//        logdebug("Resample Comensate delta:"<<delta<<" inpts:"<<inpts<<" outpts:"<<outpts<<" fifo:"<<_enc->getSamplesBufferd());
+#ifdef DEBUG
+        logdebug("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+#endif
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
             delta,
-            _enc->getSampleRate()
+            _enc->getSampleRate()/2
             );
       }
 
