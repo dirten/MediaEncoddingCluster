@@ -27,8 +27,12 @@ LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
 LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
 LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
 
+
 IF(BUILD_TESTING)
-add_subdirectory (org)
+  IF(WIN32)
+    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
+  ENDIF(WIN32)
+  add_subdirectory (org)
 ENDIF(BUILD_TESTING)
 
 

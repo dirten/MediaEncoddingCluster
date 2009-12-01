@@ -7,6 +7,10 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/Packet.h"
+#include "org/esb/av/FormatInputStream.h"
+
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/hive/job/ProcessUnit.h"
@@ -35,7 +39,8 @@ void execute(char * infile, char * outfile) {
   delete pu._decoder;
   delete pu._encoder;
 }
-void view_codec_data(Codec*c){
+
+void view_codec_data(Codec*c) {
   c->open();
   printf("%10ld|", c->getCodecType());
   printf("%10x|", c->getCodecId());
@@ -44,29 +49,30 @@ void view_codec_data(Codec*c){
   printf("%10ld|", c->ctx->frame_size);
 
 }
-void view_packet_data(Packet * p){
-	int idx=0;
-	int64_t inpts=0;
-    int64_t indts=0;
-    AVRational intb;
-    int64_t indur=0;
-    memset(&intb,0,sizeof(intb));
-    bool isKey=false;
-    if(p!=NULL){
-		idx=p->getStreamIndex();
-      inpts=p->getPts();
-      indts=p->getDts();
-      intb=p->getTimeBase();
-      indur=p->getDuration();
-      isKey=p->isKeyFrame();
-    }
-    printf("%3d|", idx);
-    printf("%20lld|", inpts);
-    printf("%20lld|", indts);
-    printf("%6d/", intb.num);
-    printf("%6d/", intb.den);
-    printf("%6d", indur);
-    printf("%1s", isKey?"x":" ");
+
+void view_packet_data(Packet * p) {
+  int idx = 0;
+  int64_t inpts = 0;
+  int64_t indts = 0;
+  AVRational intb;
+  int64_t indur = 0;
+  memset(&intb, 0, sizeof (intb));
+  bool isKey = false;
+  if (p != NULL) {
+    idx = p->getStreamIndex();
+    inpts = p->getPts();
+    indts = p->getDts();
+    intb = p->getTimeBase();
+    indur = p->getDuration();
+    isKey = p->isKeyFrame();
+  }
+  printf("%3d|", idx);
+  printf("%20lld|", inpts);
+  printf("%20lld|", indts);
+  printf("%6d/", intb.num);
+  printf("%6d/", intb.den);
+  printf("%6d", indur);
+  printf("%1s", isKey ? "x" : " ");
 
 }
 
@@ -75,10 +81,10 @@ void view(char * filename) {
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
-//  logdebug(pu._decoder->toString());
-//  logdebug(pu._encoder->toString());
+  //  logdebug(pu._decoder->toString());
+  //  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");
-cout << endl;
+  cout << endl;
   printf("%10s|", "inframes");
   printf("%10s|", "outframes");
   printf("%10s|", "decoder");
@@ -91,11 +97,11 @@ cout << endl;
   cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
-  printf("%10s|","Type");
-  printf("%10s|","ID");
-  printf("%10s|","CodecName");
-  printf("%10s|","AvClass");
-  printf("%10s|","FrameSize");
+  printf("%10s|", "Type");
+  printf("%10s|", "ID");
+  printf("%10s|", "CodecName");
+  printf("%10s|", "AvClass");
+  printf("%10s|", "FrameSize");
   cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
@@ -105,40 +111,54 @@ cout << endl;
   cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
-  int c=max(pu._input_packets.size(),pu._output_packets.size());
-  std::vector<boost::shared_ptr<Packet> > in(pu._input_packets.begin(),pu._input_packets.end());
-  std::vector<boost::shared_ptr<Packet> > out(pu._output_packets.begin(),pu._output_packets.end());
-    printf("%10s|", "count");
-    printf("%3s|", "idx");
-    printf("%20s|", "pts");
-    printf("%20s|", "dts");
-    printf("%6s/", ".num");
-    printf("%6s/", ".den");
-    printf("%6s", "dur");
-    printf("%ss", "K");
-    printf("%3s|", "idx");
-    printf("%20s|", "pts");
-    printf("%20s|", "dts");
-    printf("%6s/", ".num");
-    printf("%6s/", ".den");
-    printf("%6s", "dur");
-    printf("%ss", "K");
+  int c = max(pu._input_packets.size(), pu._output_packets.size());
+  std::vector<boost::shared_ptr<Packet> > in(pu._input_packets.begin(), pu._input_packets.end());
+  std::vector<boost::shared_ptr<Packet> > out(pu._output_packets.begin(), pu._output_packets.end());
+  printf("%10s|", "count");
+  printf("%3s|", "idx");
+  printf("%20s|", "pts");
+  printf("%20s|", "dts");
+  printf("%6s/", ".num");
+  printf("%6s/", ".den");
+  printf("%6s", "dur");
+  printf("%ss", "K");
+  printf("%3s|", "idx");
+  printf("%20s|", "pts");
+  printf("%20s|", "dts");
+  printf("%6s/", ".num");
+  printf("%6s/", ".den");
+  printf("%6s", "dur");
+  printf("%ss", "K");
   cout << endl;
   printf("----------------------------------------------------------------------------------------------------------");
   cout << endl;
-  for(int a=0;a<c;a++){
-    printf("%10d|", a+1);
-    if(in.size()>a)
+  for (int a = 0; a < c; a++) {
+    printf("%10d|", a + 1);
+    if (in.size() > a)
       view_packet_data(in[a].get());
     else
       view_packet_data(NULL);
-    if(out.size()>a)
+    if (out.size() > a)
       view_packet_data(out[a].get());
     else
       view_packet_data(NULL);
     cout << endl;
   }
-cout << endl;
+  cout << endl;
+}
+
+void packet_count(char * filename, char * stream_index) {
+  int idx = atoi(stream_index);
+  File file(filename);
+  FormatInputStream fis(&file);
+  fis.dumpFormat();
+  PacketInputStream pis(&fis);
+  Packet pac;
+  int c = 0;
+  while (pis.readPacket(pac) >= 0) {
+    if (pac.getStreamIndex() == idx)c++;
+  }
+  logdebug("Packet Count from stream :" << idx << " = " << c);
 }
 
 int main(int argc, char** argv) {
@@ -153,6 +173,7 @@ int main(int argc, char** argv) {
   char * infilename = argv[2];
   if (command == "view")view(infilename);
   if (command == "execute")execute(infilename, argv[3]);
+  if (command == "pc")packet_count(infilename, argv[3]);
 
   return (EXIT_SUCCESS);
 }

@@ -14,6 +14,7 @@
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/FrameConverter.h"
 
+#include "org/esb/hive/job/Packetizer.h"
 #include <boost/shared_ptr.hpp>
 #include <list>
 #include <deque>
@@ -22,7 +23,7 @@ using namespace org::esb::av;
 using namespace org::esb::hive::job;
 using namespace org::esb::io;
 
-int pu_count = 80;
+int pu_count = 50;
 
 void build_audio_packet(const char * filename, int sidx) {
 
@@ -45,7 +46,7 @@ void build_audio_packet(const char * filename, int sidx) {
   PacketInputStream pis(&fis);
   fis.dumpFormat();
 
-
+  std::map<int, Packetizer::StreamData> stream_data;
   /*ProcessUnit*/
   ProcessUnit p;
   /*find first audio Stream,Create and open the input Codec*/
@@ -56,12 +57,18 @@ void build_audio_packet(const char * filename, int sidx) {
       p._decoder = new Decoder(fis.getStreamInfo(i)->getCodec());
       p._source_stream = fis.getStreamInfo(i)->getIndex();
       p._target_stream = 0;
+      /**
+       * collecting data for the Packetizer
+       */
+      stream_data[p._source_stream].codec_type = p._decoder->getCodecType();
+      stream_data[p._source_stream].codec_id = p._decoder->getCodecId();
+
       break;
     }
   }
 
   /*Creating the Audio Encoder*/
-  Encoder * enc = new Encoder(CODEC_ID_MP3);
+  Encoder * enc = new Encoder(CODEC_ID_MP2);
   enc->setChannels(2);
   enc->setBitRate(128000);
   enc->setSampleRate(44100);
@@ -91,16 +98,21 @@ void build_audio_packet(const char * filename, int sidx) {
   //  int frame_size=enc->ctx->frame_size;
 
   std::deque<boost::shared_ptr<Packet> > q;
-  for (int a = 0; a < pu_count; a++) {
-    sprintf(outfile, "packet-%d.pkt", a);
-    FileOutputStream fos(outfile);
-    ObjectOutputStream oos(&fos);
+  Packetizer packetizer(stream_data);
+  bool more_packets = true;
+  for (int a = 0; more_packets; a++) {
     Packet pac;
     Packet * prev_packet = NULL;
 
-    for (int b = 1; pis.readPacket(pac) >= 0;) {
+    for (int b = 1; more_packets;) {
+      boost::shared_ptr<Packet> pPacket;
+      if (pis.readPacket(pac) < 0) {
+        more_packets = false;
+        packetizer.flushStreams();
+        goto flush;
+      }
       if (pac.getStreamIndex() != p._source_stream)continue;
-      boost::shared_ptr<Packet> pPacket(new Packet(pac));
+      pPacket=boost::shared_ptr<Packet>(new Packet(pac));
 
       q.push_front(pPacket);
 
@@ -116,11 +128,12 @@ void build_audio_packet(const char * filename, int sidx) {
       //      std::cout<<"DurationCount:" << duration_count<<std::endl;
       //      std::cout<<"ByteCount:" << byte_count<<std::endl;
 
-      if (b == 20) {
+      //      if (b == 20) {
+      if (packetizer.putPacket(pPacket)) {
+        flush:
+        PacketListPtr packets = packetizer.removePacketList();
 
-
-
-        p._input_packets = packet_list;
+        p._input_packets = std::list<boost::shared_ptr<Packet> >(packets.begin(), packets.end());
 
         p._encoder->_bytes_discard = last_bytes_offset;
 
@@ -140,13 +153,16 @@ void build_audio_packet(const char * filename, int sidx) {
         int64_t out_packet_count = ((in_frame_size * packet_list.size()) - last_bytes_offset) / out_frame_size;
         std::cout << "in_packet_count:" << packet_list.size() << std::endl;
         std::cout << "out_packet_count:" << out_packet_count << std::endl;
-        int64_t in_bytes=packet_list.size()*in_frame_size;
-        int64_t out_bytes=out_packet_count*out_frame_size;
-        int64_t remaining_bytes=in_bytes-out_bytes;
-        
+        int64_t in_bytes = packet_list.size() * in_frame_size;
+        int64_t out_bytes = out_packet_count*out_frame_size;
+        int64_t remaining_bytes = in_bytes - out_bytes;
+
         last_bytes_offset = (in_frame_size - remaining_bytes);
 
-//        last_bytes_offset += (in_frame_size * (q.size()-2)) ;
+        //        last_bytes_offset += (in_frame_size * (q.size()-2)) ;
+        sprintf(outfile, "packet-%d.pkt", a);
+        FileOutputStream fos(outfile);
+        ObjectOutputStream oos(&fos);
 
         oos.writeObject(p);
         oos.close();
@@ -170,10 +186,11 @@ void compute_audio_packets() {
   char * file = new char[100];
   char * outfile = new char[100];
 
-  for (int a = 0; a < pu_count; a++) {
+  for (int a = 0; true; a++) {
     sprintf(file, "packet-%d.pkt", a);
     sprintf(outfile, "packet-%d.out", a);
     org::esb::io::File infile(file);
+    if (!infile.exists())break;
     org::esb::io::FileInputStream fis(&infile);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit pu;
@@ -193,9 +210,10 @@ void write_audio_to_file() {
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
   bool isInit = false;
-  for (int a = 0; a < pu_count; a++) {
+  for (int a = 0; true; a++) {
     sprintf(file, "packet-%d.out", a);
     org::esb::io::File infile(file);
+    if (!infile.exists())break;
     org::esb::io::FileInputStream fis(&infile);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit pu;
@@ -221,6 +239,8 @@ int main(int argc, char ** argv) {
   avcodec_register_all();
 
   char * infile = NULL;
+  if(argc>1)
+    infile=argv[1];
   int sidx = -1;
   build_audio_packet(infile, sidx);
   compute_audio_packets();
