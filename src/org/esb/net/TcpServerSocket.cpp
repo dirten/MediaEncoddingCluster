@@ -38,8 +38,11 @@ namespace org {
         if (_inShutdown)return NULL;
         boost::shared_ptr<tcp::socket> sock(new tcp::socket(_io_service));
         boost::system::error_code ec;
-
+		try{
         acceptor_.accept(*sock, ec);
+		}catch(exception & ex){
+			logerror(ex.what());
+		}
         if (ec) {
           logerror("Error while accepting Socket(" << ec.message() << ")");
           return NULL;
