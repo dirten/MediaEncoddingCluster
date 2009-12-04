@@ -138,6 +138,7 @@ namespace org {
       void FormatInputStream::close() {
         if (formatCtx)
           av_close_input_file(formatCtx);
+        
         if (_stream_info_map.size() > 0) {
           map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
           for (; it != _stream_info_map.end(); it++) {

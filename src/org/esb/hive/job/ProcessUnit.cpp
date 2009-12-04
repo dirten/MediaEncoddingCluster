@@ -62,8 +62,9 @@ private:
 };
 
 ProcessUnit::ProcessUnit() {
+/*
   _decoder = NULL;
-  _encoder = NULL;
+  _encoder = NULL;*/
   _converter=NULL;
   codec = NULL;
   _target_stream = 0;
@@ -103,7 +104,7 @@ void ProcessUnit::process() {
     _encoder->open();
   /*creating a frame converter*/
   if(_converter==NULL)
-    _converter=new FrameConverter(_decoder, _encoder);
+    _converter=new FrameConverter(_decoder.get(), _encoder.get());
   if (toDebug) {
     logdebug("Codex openned");
     logdebug(_decoder->toString());
@@ -204,7 +205,7 @@ void ProcessUnit::process() {
   }
   /*now process the delayed Frames from the encoder*/
   logdebug("Encode Packet delay");
-  bool have_more_frames=true;
+  bool have_more_frames=_encoder->getCodecType()==CODEC_TYPE_VIDEO;
   while(have_more_frames){
     if(_encoder->encode()<=0){
       have_more_frames=0;

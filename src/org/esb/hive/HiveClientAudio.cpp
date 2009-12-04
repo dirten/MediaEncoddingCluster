@@ -25,9 +25,8 @@ namespace org {
         _oos = NULL;
         _toHalt = false;
         _running = false;
-        _dec = NULL;
-        _enc = NULL;
         _conv=NULL;
+        _swap_codecs=false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         avcodec_register_all();
         av_register_all();
@@ -103,25 +102,21 @@ namespace org {
                 delete unit;
                 break;
               }
-              if (_dec == NULL) {
-                _dec = unit->_decoder;
-              } else {
-                delete unit->_decoder;
-                unit->_decoder = NULL;
+              if (_swap_codecs) {
                 unit->_decoder = _dec;
-              }
-              if (_enc == NULL) {
-                _enc = unit->_encoder;
               } else {
-                delete unit->_encoder;
-                unit->_encoder = NULL;
+                _dec = unit->_decoder;
+              }
+              if (_swap_codecs) {
                 unit->_encoder = _enc;
+              } else {
+                _enc = unit->_encoder;
               }
 
               if (_conv != NULL) {
                 unit->_converter=_conv;
               }
-
+              _swap_codecs=true;
               unit->process();
               if (_conv == NULL) {
                 _conv = unit->_converter;
@@ -136,12 +131,7 @@ namespace org {
                 _sock->close();
               }
               if (unit->_last_process_unit) {
-                if (_dec)
-                  delete _dec;
-                _dec=NULL;
-                if (_enc)
-                  delete _enc;
-                _enc=NULL;
+                _swap_codecs=false;
                 if(_conv)
                   delete _conv;
                 _conv=NULL;

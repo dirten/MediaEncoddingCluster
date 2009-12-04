@@ -26,7 +26,6 @@ using namespace org::esb;
 #define PUT_AUDIO_UNIT  "put audio_process_unit"
 #define PUT_UNIT  "put process_unit"
 
-
 class DataHandler : public ProtocolCommand {
 private:
   InputStream * _is;
@@ -37,36 +36,52 @@ private:
   //  ClientHandler* _handler;
   static std::list<boost::asio::ip::tcp::endpoint> endpoint2stream;
   boost::asio::ip::tcp::endpoint ep;
+  boost::asio::io_service io_timer;
+  boost::asio::deadline_timer t;
+  //  boost::asio::deadline_timer t2;
+
+  void remove_endpoint_from_stream(const boost::system::error_code & er) {
+    logdebug("TimerEvent received");
+    if (er == boost::asio::error::operation_aborted) {
+      logdebug("Timer Event was Canceled");
+      return;
+    }
+    logdebug("TimeOut received, removing endpoint from list to give an other client a chance!")
+    if (endpoint2stream.size() > 0) {
+      if (endpoint2stream.front() == ep) {
+        endpoint2stream.pop_front();
+      }
+    }
+  }
 public:
 
-  DataHandler(InputStream * is, OutputStream * os) {
+  DataHandler(InputStream * is, OutputStream * os) : io_timer(), t(io_timer, boost::posix_time::seconds(20)) {
     _is = is;
     _os = os;
+    //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
     //	    _pos=new PacketOutputStream(_os);
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
     //    _handler = new ClientHandler();
     ep = socket->getRemoteEndpoint();
-    logdebug("endpoint:"<<ep);
+    logdebug("endpoint:" << ep);
+    io_timer.run();
+
 
   }
 
   ~DataHandler() {
-    if (endpoint2stream.size()>0) {
-        if (endpoint2stream.front() == ep) {
-            endpoint2stream.pop_front();
-        }
-    }
   }
 
-  DataHandler(TcpSocket * s) {
+  DataHandler(TcpSocket * s) : io_timer(), t(io_timer, boost::posix_time::seconds(20)) {
     socket = s;
     _is = socket->getInputStream();
     _os = socket->getOutputStream();
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
     ep = socket->getRemoteEndpoint();
-    logdebug("endpoint:"<<ep);
+    io_timer.run();
+    logdebug("endpoint:" << ep);
   }
 
   int isResponsible(cmdId & cmid) {
@@ -77,7 +92,7 @@ public:
     if (
         strcmp(command, GET_UNIT) == 0 ||
         strcmp(command, PUT_UNIT) == 0 ||
-        strcmp(command, GET_AUDIO_UNIT) == 0||
+        strcmp(command, GET_AUDIO_UNIT) == 0 ||
         strcmp(command, PUT_AUDIO_UNIT) == 0) {
       return CMD_PROCESS;
     } else
@@ -103,6 +118,8 @@ public:
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == ep) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
+          //          t->async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this));
+          //          t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream,this, boost::asio::placeholders::error));
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
@@ -110,14 +127,18 @@ public:
         un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(ep);
       }
+      if (un->_input_packets.size() > 0)
+        t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
       ProcessUnit un;
       _ois->readObject(un);
+      t.cancel();
       if (!ProcessUnitWatcher::putProcessUnit(un)) {
         logerror("error while putProcessUnit!");
-      }      
-    }else{                                                 
+      }
+    } else {
       logerror("unknown command received:" << command);
     }
   }

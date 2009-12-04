@@ -40,6 +40,7 @@ namespace org {
             private:
                 bool _toHalt;
                 bool _running;
+                bool _swap_codecs;
                 std::string _host;
                 int _port;
                 org::esb::io::ObjectInputStream * _ois;
@@ -54,8 +55,8 @@ namespace org {
 //                boost::mutex thread_write_mutex;
                 void packetReader();
                 void packetWriter();
-                org::esb::av::Decoder * _dec;
-                org::esb::av::Encoder * _enc;
+                boost::shared_ptr<org::esb::av::Decoder> _dec;
+                boost::shared_ptr<org::esb::av::Encoder> _enc;
                 org::esb::av::FrameConverter * _conv;
             };
         }

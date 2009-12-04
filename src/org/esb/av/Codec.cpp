@@ -50,6 +50,10 @@ namespace org {
     namespace av {
       boost::mutex Codec::open_close_mutex;
 
+      /**
+       * @TODO: need to copy all attributes from context to our own context structure
+       * because of a memleak in decoder->open()
+       */
       Codec::Codec(AVCodecContext * c, int mode) {
         ctx = c;
         _mode = mode;
@@ -122,6 +126,7 @@ namespace org {
           ctx->max_b_frames = 2;
           //          ctx->has_b_frames = 1;
         }
+        ctx->extradata = NULL;
         /*default settings for x264*/
         ctx->me_range = 16;
         ctx->max_qdiff = 4;
@@ -222,6 +227,7 @@ namespace org {
         }
         //				    ctx->flags |=CODEC_FLAG_LOW_DELAY;
         try {
+
           if (avcodec_open(ctx, _codec) < 0) {
             logerror("while openning Codec" << ctx->codec_id);
 
@@ -248,10 +254,20 @@ namespace org {
 
       void Codec::close() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
-
+        //        if(ctx->extradata)
+        //          delete ctx->extradata;
+        if (ctx->extradata) {
+          logdebug("freeing extradata");
+          av_freep(&ctx->extradata);
+        }
+        //
         if (_opened) {
           //        av_freep(&ctx->stats_in);
-          avcodec_close(ctx);
+          if (ctx && !_pre_allocated) {
+            avcodec_close(ctx);
+          }
+          //          av_freep(_codec);
+
 #ifdef DEBUG
           logdebug("recently fifo size:" << av_fifo_size(fifo));
 #endif

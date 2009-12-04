@@ -60,8 +60,8 @@ namespace org {
 
                     std::list<boost::shared_ptr<Packet> > _input_packets;
                     std::list<boost::shared_ptr<Packet> > _output_packets;
-                    Decoder * _decoder;
-                    Encoder * _encoder;
+                    boost::shared_ptr<Decoder> _decoder;
+                    boost::shared_ptr<Encoder> _encoder;
                     Codec * codec;
                     FrameConverter * _converter;
                     int _source_stream;

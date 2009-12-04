@@ -75,8 +75,8 @@ namespace org {
                     //                    std::map<int, int> inout;
                     //                    std::map<int, int> stream_type;
                     void readJobs();
-//                    void processAudioPacket(boost::shared_ptr<Packet>);
-//                    void processVideoPacket(boost::shared_ptr<Packet>);
+                    //                    void processAudioPacket(boost::shared_ptr<Packet>);
+                    //                    void processVideoPacket(boost::shared_ptr<Packet>);
                     //                    std::map<int, std::list<boost::shared_ptr<Packet> > > stream_packets;
                     std::deque<boost::shared_ptr<Packet> > packet_queue;
                     //                    std::map<int, int> stream_packet_counter;
@@ -87,8 +87,8 @@ namespace org {
                     org::esb::sql::Connection * _con_tmp;
                     org::esb::sql::Connection * _con_tmp2;
                     static org::esb::sql::PreparedStatement * _stmt;
-  //                  void flushStreamPackets();
-  //                  void buildProcessUnit(int sIdx, bool lastPackets=false);
+                    //                  void flushStreamPackets();
+                    //                  void buildProcessUnit(int sIdx, bool lastPackets=false);
                     static boost::mutex put_pu_mutex;
                     static boost::mutex get_pu_mutex;
                     static boost::mutex get_stream_pu_mutex;
@@ -100,16 +100,17 @@ namespace org {
                         int type;
                         int64_t last_start_ts;
                         int b_frame_offset;
-                        Decoder * decoder;
-                        Encoder * encoder;
+
+                        boost::shared_ptr<Decoder> decoder;
+                        boost::shared_ptr<Encoder> encoder;
                         std::list<boost::shared_ptr<Packet> > packets;
                         int packet_count;
                         int min_packet_count;
                         int64_t last_bytes_offset;
-//                        int64_t last_process_unit_id;
+                        //                        int64_t last_process_unit_id;
                     };
                     static map<int, StreamData> _stream_map;
-                    void buildProcessUnit(PacketListPtr list, bool last_packet=false);
+                    void buildProcessUnit(PacketListPtr list, bool last_packet = false);
                 };
             }
         }

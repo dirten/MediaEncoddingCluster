@@ -28,7 +28,7 @@ std::map<int, FileExporter::StreamData> FileExporter::_source_stream_map;
 void FileExporter::exportFile(int fileid) {
 
 
-  map<int, Encoder*> enc;
+  map<int, boost::shared_ptr<Encoder> > enc;
   map<int, int> ptsmap;
   map<int, int> dtsmap;
   map<int, long long int> ptsoffset;
@@ -104,7 +104,7 @@ void FileExporter::exportFile(int fileid) {
     ResultSet rs = stmt.executeQuery();
 
     while (rs.next()) {
-      Encoder *codec = CodecFactory::getStreamEncoder(rs.getInt("sid"));
+      boost::shared_ptr<Encoder> codec = CodecFactory::getStreamEncoder(rs.getInt("sid"));
       codec->open();
       //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
       //      encoder->open();
@@ -252,10 +252,11 @@ void FileExporter::exportFile(int fileid) {
         pos->writePacket(*p);
 
       }
+      /*
       delete pu._decoder;
       pu._decoder = NULL;
       delete pu._encoder;
-      pu._encoder = NULL;
+      pu._encoder = NULL;*/
       //	  infile.deleteFile();
     }
   }

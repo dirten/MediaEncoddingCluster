@@ -14,7 +14,7 @@ using namespace org::esb::hive;
 std::map<int, boost::shared_ptr<org::esb::av::Decoder> > CodecFactory::decoder_map;
 std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_map;
 
-av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
+boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
     sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample from streams  where id=:id");
@@ -40,14 +40,14 @@ av::Decoder * CodecFactory::getStreamDecoder(int streamid) {
       //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
-      logerror("no Decoder found for stream id "<<streamid);
+      logerror("no Decoder found for stream id " << streamid);
       throw std::runtime_error(string("no Decoder found for stream id "));
     }
   }
-  return decoder_map[streamid].get();
+  return decoder_map[streamid];
 }
 
-av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
+boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
     sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, framerate_num, framerate_den, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
@@ -76,17 +76,28 @@ av::Encoder * CodecFactory::getStreamEncoder(int streamid) {
       throw std::runtime_error(string("no Encoder found for stream id "));
     }
   }
-  return encoder_map[streamid].get();
+  return encoder_map[streamid];
 }
-void CodecFactory::free(){
-/*
-  std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
-  for(;it_dec!=decoder_map.end();it_dec++){
-    delete (*it_dec).second;
-  }
-  std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_enc=encoder_map.begin();
-  for(;it_enc!=encoder_map.end();it_enc++){
-    delete (*it_enc).second;
-  }
+
+void CodecFactory::free() {
+  /*
+    std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
+    for(;it_dec!=decoder_map.end();it_dec++){
+      delete (*it_dec).second;
+    }
+    std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_enc=encoder_map.begin();
+    for(;it_enc!=encoder_map.end();it_enc++){
+      delete (*it_enc).second;
+    }
    */
+}
+
+void CodecFactory::clearCodec(int streamid) {
+  if (decoder_map.find(streamid) != decoder_map.end()) {
+     decoder_map.erase(streamid);
+  }
+  if (encoder_map.find(streamid) != encoder_map.end()) {
+     encoder_map.erase(streamid);
+//    delete (encoder_map.find(streamid)->second()->get());
+  }
 }

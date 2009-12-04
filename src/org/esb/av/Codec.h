@@ -52,7 +52,7 @@ namespace org {
                 const static int ENCODER = 2;
                 Codec(const CodecID codecId, int mode = DECODER);
                 Codec(AVCodecContext * codec, int mode = DECODER);
-                Codec(int mode= DECODER);
+                Codec(int mode = DECODER);
                 ~Codec();
                 /**
                  *
@@ -93,18 +93,15 @@ namespace org {
                 void setBitsPerCodedSample(int);
                 AVRational getTimeBase();
                 int64_t getFrameBytes();
-//                void setStartTime(int64_t start);
+                //                void setStartTime(int64_t start);
                 std::string toString(void);
                 //				int getCodecType ();
                 //				string getCodecName ();
 
                 template < class Archive >
-                void serialize(Archive & ar, const unsigned int version) {
-
-
+                void baseserialize(Archive & ar, const unsigned int version) {
                     ar & ctx->codec_id;
                     ar & _mode;
-//                    ar & _opened;
                     ar & ctx->flags;
                     ar & ctx->pix_fmt;
                     ar & ctx->width;
@@ -118,11 +115,59 @@ namespace org {
                     ar & ctx->sample_fmt;
                     ar & _bytes_discard;
                     ar & ctx->bits_per_coded_sample;
-
+                    ar & ctx->extradata_size;
                 }
 
-  //              CodecID _codec_id;
-                //			  protected:
+                template<class Archive>
+                void save(Archive & ar, const unsigned int version) const {
+                    ar & ctx->codec_id;
+                    ar & _mode;
+                    ar & ctx->flags;
+                    ar & ctx->pix_fmt;
+                    ar & ctx->width;
+                    ar & ctx->height;
+                    ar & ctx->time_base.num;
+                    ar & ctx->time_base.den;
+                    ar & ctx->gop_size;
+                    ar & ctx->bit_rate;
+                    ar & ctx->channels;
+                    ar & ctx->sample_rate;
+                    ar & ctx->sample_fmt;
+                    ar & _bytes_discard;
+                    ar & ctx->bits_per_coded_sample;
+                    if (_mode == Codec::DECODER) {
+                        ar & ctx->extradata_size;
+                        ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+                    }
+                };
+
+                template<class Archive>
+                void load(Archive & ar, const unsigned int version) {
+                    ar & ctx->codec_id;
+                    ar & _mode;
+                    ar & ctx->flags;
+                    ar & ctx->pix_fmt;
+                    ar & ctx->width;
+                    ar & ctx->height;
+                    ar & ctx->time_base.num;
+                    ar & ctx->time_base.den;
+                    ar & ctx->gop_size;
+                    ar & ctx->bit_rate;
+                    ar & ctx->channels;
+                    ar & ctx->sample_rate;
+                    ar & ctx->sample_fmt;
+                    ar & _bytes_discard;
+                    ar & ctx->bits_per_coded_sample;
+                    if (_mode == Codec::DECODER) {
+
+                        ar & ctx->extradata_size;
+                        logdebug("created extradata with size " << ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+                        ctx->extradata = static_cast<uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
+                        memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+                        ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+                    }
+                };
+                BOOST_SERIALIZATION_SPLIT_MEMBER();
 
                 AVCodec * _codec;
                 bool findCodec(int mode);

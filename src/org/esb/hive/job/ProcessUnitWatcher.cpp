@@ -123,8 +123,8 @@ namespace org {
           _con_tmp = new Connection(c);
           _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
           _isRunning = true;
-            sql::Connection con(std::string(config::Config::getProperty("db.connection")));
-            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
+          sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+          sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
           while (!_isStopSignal) {
             /**
              * getting all jobs that are not being completed
@@ -157,8 +157,8 @@ namespace org {
                   _stream_map[index].type = rs2.getInt("stream_type");
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
-                  _stream_map[index].decoder->open();
-                  _stream_map[index].encoder->open();
+//                  _stream_map[index].decoder->open();
+//                  _stream_map[index].encoder->open();
                   _stream_map[index].last_start_ts = 0;
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
@@ -260,7 +260,15 @@ namespace org {
                * @TODO: at this point, here must be a check if all packets are received in case of client crash!
                */
               logdebug("file completed:" << filename);
-
+              /**
+               * cleaning up allocated resources
+               */
+                  /*
+              map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+              for (; it != _stream_map.end(); it++) {
+                CodecFactory::clearCodec(it->second.instream);
+                CodecFactory::clearCodec(it->second.outstream);
+              }*/
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now() where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
@@ -314,10 +322,13 @@ namespace org {
            * some special handling for audio Packets, they must be currently all encoded on the same Client
            * to avoid Video/Audio sync drift
            */
-          if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
-            audioQueue.push_back(u);
-          } else {
-            puQueue.enqueue(u);
+          {
+            //boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
+            if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+              audioQueue.push_back(u);
+            } else {
+              puQueue.enqueue(u);
+            }
           }
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
@@ -334,7 +345,7 @@ namespace org {
 
           audioQueue.pop_front();
 
-          std::string c = org::esb::config::Config::getProperty("db.connection");
+          // std::string c = org::esb::config::Config::getProperty("db.connection");
           /*
                     Connection con(c);
                     PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
@@ -363,7 +374,7 @@ namespace org {
           if (puQueue.size() == 0)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
-          std::string c = org::esb::config::Config::getProperty("db.connection");
+          //std::string c = org::esb::config::Config::getProperty("db.connection");
           //          Connection con(c);
           //          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
           _stmt->setInt("source_stream", u->_source_stream);
@@ -400,11 +411,12 @@ namespace org {
           logdebug("Saving ProcessUnit");
           ous.writeObject(unit);
           ous.close();
+/*
           delete unit._decoder;
           unit._decoder = NULL;
           delete unit._encoder;
           unit._encoder = NULL;
-
+*/
           _stmt_fr->setInt("id", unit._process_unit);
           _stmt_fr->execute();
 

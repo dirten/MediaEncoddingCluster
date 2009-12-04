@@ -189,7 +189,7 @@ add_library (hive
 	hive/CommandOutputStream.cpp 
 	hive/PacketCollector.cpp 
 	hive/CodecFactory.cpp 
-	hive/job/Job.cpp 
+#	hive/job/Job.cpp
 	hive/job/JobDetail.cpp 
 	hive/job/JobHandler.cpp 
 	hive/job/JobWatcher.cpp 
