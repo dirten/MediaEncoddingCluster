@@ -54,7 +54,7 @@ void build_audio_packet(const char * filename, int sidx) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     if (stream_index == -1 || fis.getStreamInfo(i)->getIndex() == stream_index) {
-      p._decoder = new Decoder(fis.getStreamInfo(i)->getCodec());
+      p._decoder = boost::shared_ptr<Decoder>(new Decoder(fis.getStreamInfo(i)->getCodec()));
       p._source_stream = fis.getStreamInfo(i)->getIndex();
       p._target_stream = 0;
       /**
@@ -68,7 +68,7 @@ void build_audio_packet(const char * filename, int sidx) {
   }
 
   /*Creating the Audio Encoder*/
-  Encoder * enc = new Encoder(CODEC_ID_MP2);
+  boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_MP2));
   enc->setChannels(2);
   enc->setBitRate(128000);
   enc->setSampleRate(44100);
@@ -199,8 +199,6 @@ void compute_audio_packets() {
     FileOutputStream fos(outfile);
     ObjectOutputStream oos(&fos);
     oos.writeObject(pu);
-    delete pu._decoder;
-    delete pu._encoder;
   }
 }
 

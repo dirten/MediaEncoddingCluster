@@ -53,7 +53,7 @@ void test_process_video(int argc, char ** argv) {
     PacketOutputStream pos(&fos);
 
     AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
-    Decoder * dec = new Decoder(c->codec_id);
+    boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(c->codec_id));
     logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
     //  Decoder dec(c);
 
@@ -73,7 +73,7 @@ void test_process_video(int argc, char ** argv) {
 
 
     //  Encoder enc(CODEC_ID_MSMPEG4V1);
-    Encoder * enc = new Encoder(CODEC_ID_H264);
+    boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_H264));
     enc->setChannels(2);
     enc->setBitRate(1024000);
     //  enc.setSampleRate(44100);
@@ -112,10 +112,10 @@ void test_process_video(int argc, char ** argv) {
     oos.writeObject(u);
     oos.close();
     fs.close();
-    delete dec;
-    delete enc;
-    dec = NULL;
-    enc = NULL;
+//    delete dec;
+//    delete enc;
+//    dec = NULL;
+//    enc = NULL;
   }
 
 
@@ -133,8 +133,8 @@ void test_process_video(int argc, char ** argv) {
     FileOutputStream foos("test-out.unit");
     ObjectOutputStream ooos(&foos);
     ooos.writeObject(puin);
-    delete puin._decoder;
-    delete puin._encoder;
+//    delete puin._decoder;
+//    delete puin._encoder;
   }
 
 }
@@ -161,7 +161,7 @@ void test_process_audio(char * file){
     PacketOutputStream pos(&fos);
 
     AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
-    Decoder * dec = new Decoder(c->codec_id);
+    boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(c->codec_id));
     logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
     //  Decoder dec(c);
 
@@ -183,7 +183,7 @@ void test_process_audio(char * file){
     logdebug(dec->toString());
 
     //  Encoder enc(CODEC_ID_MSMPEG4V1);
-    Encoder * enc = new Encoder(CODEC_ID_VORBIS);
+    boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_VORBIS));
     enc->setChannels(2);
     enc->setBitRate(128000);
     enc->setSampleRate(44100);
@@ -222,10 +222,6 @@ void test_process_audio(char * file){
     oos.writeObject(u);
     oos.close();
     fs.close();
-    delete dec;
-    delete enc;
-    dec = NULL;
-    enc = NULL;
   }
 
 
@@ -243,8 +239,6 @@ void test_process_audio(char * file){
     ObjectOutputStream ooos(&foos);
     ooos.writeObject(puin);
     ooos.close();
-    delete puin._decoder;
-    delete puin._encoder;
   }
 
 

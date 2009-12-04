@@ -36,11 +36,9 @@ void execute(char * infile, char * outfile) {
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);
   oos.writeObject(pu);
-  delete pu._decoder;
-  delete pu._encoder;
 }
 
-void view_codec_data(Codec*c) {
+void view_codec_data(boost::shared_ptr<Codec>c) {
   c->open();
   printf("%10ld|", c->getCodecType());
   printf("%10x|", c->getCodecId());

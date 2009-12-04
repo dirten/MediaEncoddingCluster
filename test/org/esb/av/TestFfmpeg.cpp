@@ -1,9 +1,11 @@
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/opt.h>
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
+
 }
 #include <iostream>
 
@@ -36,6 +38,8 @@ int main(int argc, char ** argv) {
    */
   AVCodecContext * dec = formatCtx->streams[sid]->codec;
   AVCodec * codec = avcodec_find_decoder(dec->codec_id);
+//  std::cout <<"Option:"<<(*(AVClass**)dec)->option->name<<std::endl;
+//  av_opt_show(dec, NULL);
   if (codec == NULL)
     std::cout << "Decoder not found" << std::endl;
   if (avcodec_open(dec, codec) < 0) {

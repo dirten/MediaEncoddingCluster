@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   FormatInputStream fis(&f);
   AVCodecContext * c = fis.getFormatContext()->streams[stream_index]->codec;
   Decoder *dec;
-  if (false) {
+  if (true) {
     dec = new Decoder(c);
   } else {
     std::cout << "CodecId" << c->codec_id << std::endl;
@@ -39,13 +39,14 @@ int main(int argc, char **argv) {
     dec->setWidth(c->width);
     dec->setHeight(c->height);
     dec->ctx->request_channel_layout = 2;
+/*
     dec->ctx->antialias_algo = c->antialias_algo;
     dec->ctx->b_frame_strategy = c->b_frame_strategy;
     dec->ctx->b_quant_factor = c->b_quant_factor;
     dec->ctx->b_quant_offset = c->b_quant_offset;
     dec->ctx->b_sensitivity = c->b_sensitivity;
     dec->ctx->bframebias = c->bframebias;
-    //	dec->setFlag(CODEC_FLAG_GLOBAL_HEADER);
+    	dec->setFlag(CODEC_FLAG_GLOBAL_HEADER);
     dec->ctx->max_b_frames = c->max_b_frames;
     dec->ctx-> coder_type = c->coder_type;
     //	dec->ctx->flags=c->flags;
@@ -85,11 +86,16 @@ int main(int argc, char **argv) {
     dec->ctx->thread_count = c->thread_count;
     dec->ctx->coded_width = c->coded_width;
     dec->ctx->coded_height = c->coded_height;
+     */
     std::cout << "Codec Extradata Size:" << c->extradata_size << std::endl;
     std::cout << "Codec Extradata Size:" << dec->ctx->extradata_size << std::endl;
     //	std::cout << "Codec Extradata Size:"<<c->extradata<<std::endl;
     //	std::cout << "Codec Extradata Size:"<<dec->ctx->extradata<<std::endl;
-    dec->ctx->extradata = c->extradata;
+    dec->ctx->extradata=static_cast<uint8_t*>(av_malloc(c->extradata_size));
+//    memset(dec->ctx->extradata,0,c->extradata_size);
+    memcpy(dec->ctx->extradata,c->extradata,c->extradata_size);
+    av_free(c->extradata);
+//    dec->ctx->extradata = c->extradata;
     //	dec->ctx->extradata=static_cast<uint8_t*>(av_malloc(40));
     dec->ctx->extradata_size = c->extradata_size;
     std::cout << "Stream Decoder Flags " << c->flags << std::endl;
@@ -122,10 +128,10 @@ int main(int argc, char **argv) {
   //     enc->setPixelFormat(PIX_FMT_YUV420P);
   //  enc.ctx->bits_per_raw_sample=dec.ctx
   enc->open();
-  return 0;
+//  return 0;
   PacketInputStream pis(&fis);
   Packet p;
-  for (int a = 0; a < 1000; a++) {
+  for (int a = 0; a < 100; a++) {
     //  std::cerr<<"PacketLoop"<<std::endl;
     if (pis.readPacket(p) >= 0) {
       if (p.packet->stream_index == stream_index) {
