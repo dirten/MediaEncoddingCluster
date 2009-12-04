@@ -63,7 +63,8 @@ namespace org {
                 private:
                     typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitQueue;
                     static ProcessUnitQueue puQueue;
-                    static std::deque<boost::shared_ptr<ProcessUnit> > audioQueue;
+					static org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
+//                    static std::deque<boost::shared_ptr<ProcessUnit> > audioQueue;
                     static std::map<std::string, int> ip2stream;
                     static bool _isStopSignal;
                     static boost::mutex terminationMutex;

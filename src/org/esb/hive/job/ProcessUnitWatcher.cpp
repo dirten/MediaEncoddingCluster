@@ -69,7 +69,8 @@ namespace org {
         boost::condition ProcessUnitWatcher::termination_wait;
 
         ProcessUnitWatcher::ProcessUnitQueue ProcessUnitWatcher::puQueue;
-        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
+		org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > ProcessUnitWatcher::audioQueue;
+//        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
         std::map<std::string, int> ProcessUnitWatcher::ip2stream;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
@@ -325,7 +326,8 @@ namespace org {
           {
             //boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
             if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
-              audioQueue.push_back(u);
+//              audioQueue.push_back(u);
+              audioQueue.enqueue(u);
             } else {
               puQueue.enqueue(u);
             }
@@ -340,10 +342,10 @@ namespace org {
           if (audioQueue.size() == 0)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
 
-          boost::shared_ptr<ProcessUnit> u = audioQueue.front();
+          boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
 
-          audioQueue.pop_front();
+//          audioQueue.pop_front();
 
           // std::string c = org::esb::config::Config::getProperty("db.connection");
           /*
