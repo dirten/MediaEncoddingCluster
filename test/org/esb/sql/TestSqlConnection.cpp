@@ -24,17 +24,17 @@
  * 
  */
 using namespace org::esb;
-
+std::string connection="mysql:host=;db=;user=root;passwd=";
 void mysql_thread() {
   for (int a = 0; a < 1000; a++) {
-    sql::Connection con("");
+    sql::Connection con(connection);
     con.executeNonQuery("use testdb");
     con.executeNonQuery("insert into test (a,b) values (1,2)");
   }
 }
 
 void test_single_statement() {
-  sql::Connection con("");
+  sql::Connection con(connection);
   con.executeNonQuery("use testdb");
   sql::Statement stmt=con.createStatement("select * from test");
 
@@ -53,8 +53,19 @@ void test_single_statement() {
 
   delete stmt2;*/
 }
+void test_prepared_statement() {
+  sql::Connection con(connection);
+  con.executeNonQuery("use testdb");
+  sql::PreparedStatement * stmt=con.prepareStatement2("select * from test where :int");
+  stmt->setInt("int",1);
+/*  sql::ResultSet rs=stmt.executeQuery();
+  while(rs.next()){
+    std::cout << "Rs:"<<rs.getString(1)<<std::endl;
+  }*/
+  delete stmt;
+}
 void test_execute_non_query() {
-  sql::Connection con("");
+  sql::Connection con(connection);
   //  con.executeNonQuery("create database testdb");
   con.executeNonQuery("use testdb");
   //  con.executeNonQuery("create table test (a integer(11), b integer(11))");
@@ -68,7 +79,7 @@ void test_execute_non_query() {
 }
 
 void test_multi_connections() {
-  sql::Connection con("");
+  sql::Connection con(connection);
   //  con.executeNonQuery("create database testdb");
   //  con.executeNonQuery("use testdb");
   //  con.executeNonQuery("create table test (a integer(11), b integer(11))");
@@ -92,23 +103,28 @@ void test_insert_thread(){
 
 int main(int argc, char** argv) {
   std::string src = MEC_SOURCE_DIR;
-  hive::DatabaseService::start(MEC_SOURCE_DIR);
+  hive::DatabaseService::start(src);
   config::Config::setProperty("hive.base_path", src.c_str());
 //  mysql_thread_init();
   {
-    sql::Connection con("mysql:host=;db=;user=;passwd=");
+    sql::Connection con(connection);
 
     con.executeNonQuery("create database testdb;");
 
     con.executeNonQuery("use testdb");
     con.executeNonQuery("create table test (a integer(11), b integer(11))");
-    test_con=new sql::Connection("mysql:db=testdb");
-    pstmt=test_con->prepareStatement2("insert into test (a,b) values (:a,:b)");
-    boost::thread t(boost::bind(&test_insert_thread));
-    t.join();
+    test_con=new sql::Connection(connection);
+    test_con->executeNonQuery("use testdb");
+
+//    pstmt=test_con->prepareStatement2("insert into test (a,b) values (:a,:b)");
+    pstmt=test_con->prepareStatement2("select * from test where 1=:int");
+    pstmt->setInt("int",1);
+ //   boost::thread t(boost::bind(&test_insert_thread));
+ //   t.join();
     for (int a = 0; a < 1; a++){
 //      test_execute_non_query();
-      test_single_statement();
+//      test_single_statement();
+//      test_prepared_statement();
     }
 
     delete pstmt;

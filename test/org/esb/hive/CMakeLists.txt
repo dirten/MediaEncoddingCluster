@@ -13,11 +13,13 @@ add_executable (DeleteDatabase DeleteDatabase.cpp)
 #add_executable (TestProcessUnit TestProcessUnit.cpp)
 add_executable (TestNewProcessUnit TestNewProcessUnit.cpp)
 add_executable (TestPacketizer TestPacketizer.cpp)
+add_executable (TestNodeDiscovery TestNodeDiscovery.cpp)
 
 
 
 
 
+target_link_libraries (TestNodeDiscovery esb sql hive net signal io av util lang )
 target_link_libraries (TestFileImporter esb sql hive net signal io av util lang )
 
 target_link_libraries (TestProcessUnit esb sql hive io av util net signal  lang)
@@ -51,6 +53,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 ADD_TEST(TestDatabaseCreation ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
+ADD_TEST(TestNodeDiscovery ${EXECUTABLE_OUTPUT_PATH}/TestNodeDiscovery)
 ADD_TEST(TestFileImporter ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 #ADD_TEST(TestClientHandler ${EXECUTABLE_OUTPUT_PATH}/TestClientHandler)
