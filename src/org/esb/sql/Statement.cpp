@@ -9,6 +9,7 @@ Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
 //  stmt=mysql_stmt_init(mysql);
   rs = NULL;
   stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),&mysql_stmt_close);
+//  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),boost::bind(&Statement::close, this));
   if (!stmtPtr.get()) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
@@ -66,10 +67,11 @@ bool Statement::execute() {
 }
 
 void Statement::close() {
-
+  logdebug("freeing result set");
   if (mysql_stmt_free_result(stmtPtr.get())) {
     throw SqlException(std::string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
-  }/*
+  }
+  /*
   if (mysql_stmt_close(stmtPtr.get())) {
     throw SqlException(std::string("failed while closing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }*/

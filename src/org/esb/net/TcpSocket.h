@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_NET_TCPSOCKET_H
 #define ORG_ESB_NET_TCPSOCKET_H
-#include <boost/asio.hpp>
+
 #include <boost/thread.hpp>
 
 #include "org/esb/io/InputStream.h"

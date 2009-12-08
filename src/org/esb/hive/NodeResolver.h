@@ -1,0 +1,93 @@
+/*----------------------------------------------------------------------
+ *  File    : NodeResolver.h
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 8. Dezember 2009, 12:36 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
+
+
+#ifndef _NODERESOLVER_H
+#define	_NODERESOLVER_H
+#include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+#include <list>
+#include "org/esb/util/Log.h"
+namespace org {
+    namespace esb {
+        namespace hive {
+
+            class Node {
+            public:
+                Node(boost::asio::ip::udp::endpoint & ep);
+                const boost::asio::ip::address getIpAddress()const;
+                const boost::asio::ip::address getName()const;
+                boost::asio::ip::udp::endpoint _ep;
+                bool operator==(const Node & a)const;
+                bool operator==(const Node * a)const;
+
+
+            private:
+                boost::asio::ip::address _ipaddress;
+                std::string _name;
+            };
+
+            class NodeResolver {
+            public:
+                NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int);
+                void start();
+                void stop();
+
+
+            private:
+                boost::asio::io_service send_service_;
+                boost::asio::io_service recv_service_;
+
+                boost::asio::ip::udp::endpoint send_endpoint_;
+                boost::asio::ip::udp::endpoint recv_endpoint_;
+
+                boost::asio::ip::udp::socket send_socket_;
+                boost::asio::ip::udp::socket recv_socket_;
+
+                boost::asio::deadline_timer send_timer_;
+
+                enum {
+                    max_length = 1024
+                };
+                char data_[max_length];
+
+                int message_count_;
+                std::string message_;
+
+                std::list<boost::shared_ptr<Node> >_nodes;
+
+                void handle_send(const boost::system::error_code& error);
+                void handle_send_timeout(const boost::system::error_code& error);
+                void handle_receive(const boost::system::error_code& error, size_t bytes_recvd);
+
+            };
+        }
+    }
+}
+
+#endif	/* _NODERESOLVER_H */
+

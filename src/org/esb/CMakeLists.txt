@@ -209,7 +209,9 @@ add_library (hive
 #	hive/FormatStreamFactory.cpp
   hive/job/Packetizer.cpp
   hive/JobScanner.cpp
-	
+  hive/NodeSender.cpp
+	hive/NodeReceiver.cpp
+  hive/NodeResolver.cpp
 )
 
 IF(BUILD_SHARED_LIBS)

@@ -10,6 +10,7 @@
 #include "../job/JobHandler.h"
 #include "../job/ProcessUnitWatcher.h"
 #include "../job/ProcessUnit.h"
+#include "org/esb/util/StringUtil.h"
 
 #include "org/esb/net/TcpSocket.h"
 
@@ -34,8 +35,9 @@ private:
   io::ObjectOutputStream * _oos;
   io::ObjectInputStream * _ois;
   //  ClientHandler* _handler;
-  static std::list<boost::asio::ip::tcp::endpoint> endpoint2stream;
-  boost::asio::ip::tcp::endpoint ep;
+  static std::list<std::string> endpoint2stream;
+
+  std::string _own_id;
   boost::asio::io_service io_timer;
   boost::asio::deadline_timer t;
   //  boost::asio::deadline_timer t2;
@@ -48,14 +50,14 @@ private:
     }
     logdebug("TimeOut received, removing endpoint from list to give an other client a chance!")
     if (endpoint2stream.size() > 0) {
-      if (endpoint2stream.front() == ep) {
+      if (endpoint2stream.front() == _own_id) {
         endpoint2stream.pop_front();
       }
     }
   }
 public:
 
-  DataHandler(InputStream * is, OutputStream * os) : io_timer(), t(io_timer, boost::posix_time::seconds(20)) {
+  DataHandler(InputStream * is, OutputStream * os) : t(io_timer, boost::posix_time::seconds(20)) {
     _is = is;
     _os = os;
     //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
@@ -63,24 +65,40 @@ public:
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
     //    _handler = new ClientHandler();
-    ep = socket->getRemoteEndpoint();
+    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
+    _own_id = ep.address().to_string();
+    _own_id += ":";
+    _own_id += StringUtil::toString(ep.port());
     logdebug("endpoint:" << ep);
-    io_timer.run();
+    //    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+    //    io_timer.run();
+    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_timer));
 
 
   }
 
   ~DataHandler() {
+    if (endpoint2stream.size() > 0) {
+      if (endpoint2stream.front() == _own_id) {
+        endpoint2stream.pop_front();
+      }
+    }
   }
 
-  DataHandler(TcpSocket * s) : io_timer(), t(io_timer, boost::posix_time::seconds(20)) {
+  DataHandler(TcpSocket * s) :  t(io_timer, boost::posix_time::seconds(20)) {
     socket = s;
     _is = socket->getInputStream();
     _os = socket->getOutputStream();
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
-    ep = socket->getRemoteEndpoint();
-    io_timer.run();
+    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
+    _own_id = ep.address().to_string();
+    _own_id += ":";
+    _own_id += StringUtil::toString(ep.port());
+    //      t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_timer));
+
+    //    io_timer.run();
     logdebug("endpoint:" << ep);
   }
 
@@ -116,7 +134,7 @@ public:
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
       boost::shared_ptr<ProcessUnit> un;
       if (endpoint2stream.size() > 0) {
-        if (endpoint2stream.front() == ep) {
+        if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
           //          t->async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this));
           //          t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream,this, boost::asio::placeholders::error));
@@ -125,10 +143,12 @@ public:
         }
       } else {
         un = ProcessUnitWatcher::getStreamProcessUnit();
-        endpoint2stream.push_back(ep);
+        endpoint2stream.push_back(_own_id);
       }
-      if (un->_input_packets.size() > 0)
+      if (un->_input_packets.size() > 0) {
+        t.expires_from_now(boost::posix_time::seconds(20));
         t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+      }
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
@@ -146,4 +166,4 @@ public:
   void printHelp() {
   }
 };
-std::list<boost::asio::ip::tcp::endpoint> DataHandler::endpoint2stream;
+std::list<std::string> DataHandler::endpoint2stream;

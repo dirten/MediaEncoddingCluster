@@ -40,9 +40,9 @@ namespace org {
       JobScanner::JobScanner() {
         _run = false;
         _running = false;
-//        _con = NULL;
-//        _stmt = NULL;
-        _interval=10000;
+        //        _con = NULL;
+        //        _stmt = NULL;
+        _interval = 10000;
       }
 
       JobScanner::~JobScanner() {
@@ -53,8 +53,8 @@ namespace org {
       void JobScanner::start() {
         if (!_run && !_running) {
           _run = true;
-//          _con = new org::esb::sql::Connection(org::esb::config::Config::getProperty("db.connection"));
-//          _stmt = _con->prepareStatement2("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
+          //          _con = new org::esb::sql::Connection(org::esb::config::Config::getProperty("db.connection"));
+          //          _stmt = _con->prepareStatement2("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
           boost::thread(boost::bind(&JobScanner::run, this));
         }
       }
@@ -65,10 +65,10 @@ namespace org {
           boost::mutex::scoped_lock terminationLock(terminationMutex);
           termination_wait.wait(terminationLock);
           _running = false;
-//          if (_stmt)
-//            delete _stmt;
-//          if (_con)
-//            delete _con;
+          //          if (_stmt)
+          //            delete _stmt;
+          //          if (_con)
+          //            delete _con;
         }
       }
 
@@ -87,24 +87,24 @@ namespace org {
       }
 
       void JobScanner::run() {
-        _running=true;
-//        logdebug("run");
+        _running = true;
+        //        logdebug("run");
+        org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
+        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT * FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
         while (_run) {
-//        logdebug("while");
-          org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-          org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT * FROM files join watch_folder on files.path=watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
+          //        logdebug("while");
           org::esb::sql::ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
-//          logdebug("while rs next");
+            //          logdebug("while rs next");
             std::string file = rs.getString("files.id");
             std::string profile = rs.getString("watch_folder.profile");
-            std::string outdir=rs.getString("watch_folder.outfolder");
+            std::string outdir = rs.getString("watch_folder.outfolder");
             char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
             std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
             std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
             jobcreator(4, jobarg);
           }
-//          logdebug("wait");
+          //          logdebug("wait");
           org::esb::lang::Thread::sleep2(_interval);
         }
         boost::mutex::scoped_lock terminationLock(terminationMutex);

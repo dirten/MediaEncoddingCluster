@@ -52,7 +52,7 @@ namespace org {
       void TcpSocket::close() {
         if (_socket.get() && _socket->is_open()){
           try{
-            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+//            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
           }
           catch(exception & ex){
             logerror("while shutdown socket:"<<ex.what());

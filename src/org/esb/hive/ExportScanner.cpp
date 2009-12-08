@@ -63,12 +63,12 @@ namespace org {
       }
 
       void ExportScanner::start() {
-        while (_run) {
-          {
             org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
             //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path FROM jobs, files WHERE outputfile=files.id and complete is not null;");
             //            org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT f.id, filename, path FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id  group by fileid having round(count(complete)/count(*)*100,2)=100.00 order by f.id DESC");
             org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT files.id, filename, path from jobs, files where jobs.outputfile= files.id and jobs.complete is not null and status='completed'");
+        while (_run) {
+          {
             org::esb::sql::ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
               std::string filename;

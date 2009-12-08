@@ -262,6 +262,9 @@ void FileExporter::exportFile(int fileid) {
   }
   pos->close();
   fos->close();
+  delete pos;
+  delete fos;
+
   cout << endl;
 
   if (false) {
