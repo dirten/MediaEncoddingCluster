@@ -6,7 +6,7 @@
 using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
-  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)"<<this);
+//  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)"<<this);
   stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
 	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
@@ -24,7 +24,7 @@ PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
 }
 
 PreparedStatement::~PreparedStatement() {
-  logdebug("PreparedStatement::~PreparedStatement()"<<this);
+//  logdebug("PreparedStatement::~PreparedStatement()"<<this);
   delete para;
   delete rs;
 //  close();

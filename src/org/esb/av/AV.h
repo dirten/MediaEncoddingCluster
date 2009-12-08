@@ -1,5 +1,6 @@
 #ifndef ORG_ESB_AV_AV_H
 #define ORG_ESB_AV_AV_H
+#pragma warning( disable : 4005 )
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>

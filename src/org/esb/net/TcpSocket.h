@@ -1,13 +1,13 @@
 #ifndef ORG_ESB_NET_TCPSOCKET_H
 #define ORG_ESB_NET_TCPSOCKET_H
 
+#include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 
 #include <boost/shared_ptr.hpp>
-#include <boost/asio.hpp>
 //using boost::asio::ip::tcp;
 
 namespace org {

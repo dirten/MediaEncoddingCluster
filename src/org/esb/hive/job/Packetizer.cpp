@@ -102,12 +102,14 @@ namespace org {
         /**
          *
          */
-        void Packetizer::flushStreams() {
+		void Packetizer::flushStreams(){
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
+			  if(false&&_overlap_queue[(*it).first].size()>0){
             PacketPtr pac = _overlap_queue[(*it).first].front();
             _streams[(*it).first].packets.push_back(pac);
             _overlap_queue[(*it).first].pop_front();
+			  }
             buildList((*it).first);
           }
         }

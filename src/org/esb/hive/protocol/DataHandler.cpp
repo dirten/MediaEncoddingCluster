@@ -57,7 +57,7 @@ private:
   }
 public:
 
-  DataHandler(InputStream * is, OutputStream * os) : t(io_timer, boost::posix_time::seconds(20)) {
+  DataHandler(InputStream * is, OutputStream * os) : t(io_timer) {
     _is = is;
     _os = os;
     //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
@@ -85,7 +85,7 @@ public:
     }
   }
 
-  DataHandler(TcpSocket * s) :  t(io_timer, boost::posix_time::seconds(20)) {
+  DataHandler(TcpSocket * s) :  t(io_timer) {
     socket = s;
     _is = socket->getInputStream();
     _os = socket->getOutputStream();
@@ -136,8 +136,6 @@ public:
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
-          //          t->async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this));
-          //          t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream,this, boost::asio::placeholders::error));
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
@@ -146,9 +144,12 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
-        t.expires_from_now(boost::posix_time::seconds(20));
+		  logdebug("setting timer");
+		  t.expires_from_now(boost::posix_time::seconds(20));
         t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
-      }
+	  }else{
+		  logdebug("dummy audio packet");
+	  }
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
