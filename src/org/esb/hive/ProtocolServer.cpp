@@ -21,6 +21,8 @@
 //#include "protocol/CreateHive.cpp"
 #include "protocol/Unknown.cpp"
 
+#include "DatabaseService.h"
+
 
 using namespace std;
 using namespace org::esb::net;
@@ -29,6 +31,10 @@ using namespace org::esb::util;
 using namespace org::esb::hive;
 
 ProtocolServer::~ProtocolServer() {
+  close();
+}
+
+void ProtocolServer::close() {
   list < ProtocolCommand * >::iterator i;
   for (i = l.begin(); i != l.end(); ++i) {
     ProtocolCommand *tmp = (ProtocolCommand *) * i;
@@ -60,9 +66,9 @@ void ProtocolServer::run() {
   mysql_thread_init();
   while (!socket->isClosed()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
-//#ifndef DEBUG
+    //#ifndef DEBUG
     try {
-//#endif
+      //#endif
       string cmd;
       int dataLength = socket->getInputStream()->read(cmd);
       if (dataLength == 0) {
@@ -86,15 +92,17 @@ void ProtocolServer::run() {
           tmp->printHelp();
         }
       }
-//#ifndef DEBUG
+      //#ifndef DEBUG
     } catch (exception & ex) {
       logerror("ERROR in ProtocolServer:" << ex.what());
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
-//#endif
+    //#endif
   }
-  mysql_thread_end();
+  close();
+  DatabaseService::thread_end();
+//  mysql_thread_end();
   //  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
   //  	cout << "Elvis has left the Building" << endl;
 }

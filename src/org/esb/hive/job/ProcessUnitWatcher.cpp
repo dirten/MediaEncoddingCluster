@@ -69,8 +69,8 @@ namespace org {
         boost::condition ProcessUnitWatcher::termination_wait;
 
         ProcessUnitWatcher::ProcessUnitQueue ProcessUnitWatcher::puQueue;
-		org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > ProcessUnitWatcher::audioQueue;
-//        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
+        org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > ProcessUnitWatcher::audioQueue;
+        //        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
         std::map<std::string, int> ProcessUnitWatcher::ip2stream;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt_fr = NULL;
         org::esb::sql::PreparedStatement * ProcessUnitWatcher::_stmt = NULL;
@@ -138,8 +138,8 @@ namespace org {
               string filename = rs.getString("files.path") + "/" + rs.getString("files.filename");
               org::esb::io::File fi(filename);
               org::esb::av::FormatInputStream * fis = new org::esb::av::FormatInputStream(&fi);
-              if (fis == NULL) {
-                logerror("Error Opening Input Stream from " << filename);
+              if (!fis->isValid()) {
+                logerror("Error Opening Input Streams from " << filename);
                 continue;
               }
               /**
@@ -158,8 +158,8 @@ namespace org {
                   _stream_map[index].type = rs2.getInt("stream_type");
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
-//                  _stream_map[index].decoder->open();
-//                  _stream_map[index].encoder->open();
+                  //                  _stream_map[index].decoder->open();
+                  //                  _stream_map[index].encoder->open();
                   _stream_map[index].last_start_ts = 0;
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
@@ -264,12 +264,12 @@ namespace org {
               /**
                * cleaning up allocated resources
                */
-                  /*
-              map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
-              for (; it != _stream_map.end(); it++) {
-                CodecFactory::clearCodec(it->second.instream);
-                CodecFactory::clearCodec(it->second.outstream);
-              }*/
+              /*
+          map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+          for (; it != _stream_map.end(); it++) {
+            CodecFactory::clearCodec(it->second.instream);
+            CodecFactory::clearCodec(it->second.outstream);
+          }*/
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now() where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
@@ -326,7 +326,7 @@ namespace org {
           {
             //boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
             if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
-//              audioQueue.push_back(u);
+              //              audioQueue.push_back(u);
               audioQueue.enqueue(u);
             } else {
               puQueue.enqueue(u);
@@ -345,7 +345,7 @@ namespace org {
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
 
-//          audioQueue.pop_front();
+          //          audioQueue.pop_front();
 
           // std::string c = org::esb::config::Config::getProperty("db.connection");
           /*
@@ -413,12 +413,12 @@ namespace org {
           logdebug("Saving ProcessUnit");
           ous.writeObject(unit);
           ous.close();
-/*
-          delete unit._decoder;
-          unit._decoder = NULL;
-          delete unit._encoder;
-          unit._encoder = NULL;
-*/
+          /*
+                    delete unit._decoder;
+                    unit._decoder = NULL;
+                    delete unit._encoder;
+                    unit._encoder = NULL;
+           */
           _stmt_fr->setInt("id", unit._process_unit);
           _stmt_fr->execute();
 

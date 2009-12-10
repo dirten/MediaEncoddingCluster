@@ -37,9 +37,9 @@ namespace org {
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
           _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
 
-//          _codec_overlap[CODEC_ID_MP3] = 3;
-//          _codec_overlap[CODEC_ID_AC3] = 1;
-//          _codec_overlap[CODEC_ID_MP2] = 3;
+          //          _codec_overlap[CODEC_ID_MP3] = 3;
+          //          _codec_overlap[CODEC_ID_AC3] = 1;
+          //          _codec_overlap[CODEC_ID_MP2] = 3;
 
           _codec_min_packets[CODEC_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
           _codec_min_packets[CODEC_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
@@ -102,15 +102,19 @@ namespace org {
         /**
          *
          */
-		void Packetizer::flushStreams(){
+        void Packetizer::flushStreams() {
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
-			  if(false&&_overlap_queue[(*it).first].size()>0){
-            PacketPtr pac = _overlap_queue[(*it).first].front();
-            _streams[(*it).first].packets.push_back(pac);
-            _overlap_queue[(*it).first].pop_front();
-			  }
-            buildList((*it).first);
+            int stream_id=(*it).first;
+            /**
+             * adding dummy packet to mark this stream ends
+             */
+            if(_streams[stream_id].packets.size()==0){
+              PacketPtr packet=PacketPtr(new org::esb::av::Packet());
+              
+              _streams[stream_id].packets.push_back(packet);
+            }
+            buildList(stream_id);
           }
         }
 

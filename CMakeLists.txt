@@ -25,6 +25,15 @@ INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
 
+
+#add_custom_target(
+#	set_svn_revision
+#	COMMAND echo "SET\\(MHIVE_SVN_REVISION `svnversion`\\)" > svn_revision.txt
+#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#)
+#INCLUDE(svn_revision.txt)
+
+
 ############################################################
 #
 # Setup the version for MHive
@@ -186,8 +195,6 @@ IF(BUILD_EMBEDDED_LIBS)
   SET(X264_DIR ${PROJECT_SOURCE_DIR}/deps/stage/x264)
 ENDIF(BUILD_EMBEDDED_LIBS)
 
-add_subdirectory (src)
-add_subdirectory (test)
 
 
 INCLUDE(cmake/HiveBuildBoost.txt)
@@ -228,6 +235,9 @@ ENDIF(WIN32)
 
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
+
+add_subdirectory (src)
+add_subdirectory (test)
 
 INCLUDE(CPack)
 

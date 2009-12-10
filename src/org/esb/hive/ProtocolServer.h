@@ -29,6 +29,7 @@ namespace org {
         ~ProtocolServer();
         ProtocolServer(TcpSocket * socket);
         void run();
+        void close();
       };
     }
   }

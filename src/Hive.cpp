@@ -608,7 +608,7 @@ void client(int argc, char *argv[]) {
   org::esb::hive::HiveClient client(host, port);
   Messenger::getInstance().addMessageListener(client);
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+//  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
 
   org::esb::hive::HiveClientAudio clientaudio(host, port);
   Messenger::getInstance().addMessageListener(clientaudio);

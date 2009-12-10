@@ -78,14 +78,16 @@ public:
   }
 
   ~DataHandler() {
+    io_timer.stop();
     if (endpoint2stream.size() > 0) {
       if (endpoint2stream.front() == _own_id) {
+        logdebug("remove me from endpoint list for audio encoding");
         endpoint2stream.pop_front();
       }
     }
   }
 
-  DataHandler(TcpSocket * s) :  t(io_timer) {
+  DataHandler(TcpSocket * s) : t(io_timer) {
     socket = s;
     _is = socket->getInputStream();
     _os = socket->getOutputStream();
@@ -95,7 +97,7 @@ public:
     _own_id = ep.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
-    //      t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
     boost::thread t(boost::bind(&boost::asio::io_service::run, &io_timer));
 
     //    io_timer.run();
@@ -144,12 +146,12 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
-		  logdebug("setting timer");
-		  t.expires_from_now(boost::posix_time::seconds(20));
+        logdebug("setting timer");
+        t.expires_from_now(boost::posix_time::seconds(10));
         t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
-	  }else{
-		  logdebug("dummy audio packet");
-	  }
+      } else {
+        logdebug("dummy audio packet");
+      }
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
