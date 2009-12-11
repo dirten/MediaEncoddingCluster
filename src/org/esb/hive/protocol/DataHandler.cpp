@@ -41,6 +41,9 @@ private:
   boost::asio::io_service io_timer;
   boost::asio::deadline_timer t;
   //  boost::asio::deadline_timer t2;
+  void dummy_timeout(const boost::system::error_code & er) {
+
+  }
 
   void remove_endpoint_from_stream(const boost::system::error_code & er) {
     logdebug("TimerEvent received");
@@ -70,9 +73,9 @@ public:
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
     logdebug("endpoint:" << ep);
-    //    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this,  boost::asio::error::operation_aborted));
     //    io_timer.run();
-    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_timer));
+    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 
 
   }
@@ -97,8 +100,8 @@ public:
     _own_id = ep.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
-    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
-    boost::thread t(boost::bind(&boost::asio::io_service::run, &io_timer));
+    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this,  boost::asio::error::operation_aborted));
+    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 
     //    io_timer.run();
     logdebug("endpoint:" << ep);
