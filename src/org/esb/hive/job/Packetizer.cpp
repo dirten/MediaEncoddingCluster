@@ -106,15 +106,14 @@ namespace org {
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
             int stream_id=(*it).first;
+            buildList(stream_id);
             /**
              * adding dummy packet to mark this stream ends
              */
-            if(_streams[stream_id].packets.size()==0){
-              PacketPtr packet=PacketPtr(new org::esb::av::Packet());
-              
+            if(false&&_streams[stream_id].packets.size()==0){
+              PacketPtr packet=PacketPtr(new org::esb::av::Packet());              
               _streams[stream_id].packets.push_back(packet);
             }
-            buildList(stream_id);
           }
         }
 

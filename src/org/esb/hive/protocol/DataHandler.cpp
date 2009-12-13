@@ -4,6 +4,7 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/CodecOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "../job/Job.h"
@@ -11,7 +12,7 @@
 #include "../job/ProcessUnitWatcher.h"
 #include "../job/ProcessUnit.h"
 #include "org/esb/util/StringUtil.h"
-
+#include "org/esb/config/config.h"
 #include "org/esb/net/TcpSocket.h"
 
 #include <map>
@@ -20,7 +21,6 @@ using namespace org::esb::hive::job;
 using namespace org::esb::av;
 using namespace org::esb::net;
 using namespace org::esb;
-
 
 #define GET_UNIT  "get process_unit"
 #define GET_AUDIO_UNIT  "get audio_process_unit"
@@ -41,9 +41,7 @@ private:
   boost::asio::io_service io_timer;
   boost::asio::deadline_timer t;
   //  boost::asio::deadline_timer t2;
-  void dummy_timeout(const boost::system::error_code & er) {
-
-  }
+  boost::shared_ptr<ProcessUnit> un;
 
   void remove_endpoint_from_stream(const boost::system::error_code & er) {
     logdebug("TimerEvent received");
@@ -102,7 +100,7 @@ public:
     _own_id += StringUtil::toString(ep.port());
     t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this,  boost::asio::error::operation_aborted));
     boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-
+	
     //    io_timer.run();
     logdebug("endpoint:" << ep);
   }
@@ -127,24 +125,45 @@ public:
 
   void process(char * command) {
     if (strcmp(command, GET_UNIT) == 0) {
-      boost::shared_ptr<ProcessUnit> un = ProcessUnitWatcher::getProcessUnit();
+      un = ProcessUnitWatcher::getProcessUnit();
       _oos->writeObject(*un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
-      ProcessUnit un;
-      _ois->readObject(un);
-      if (!ProcessUnitWatcher::putProcessUnit(un)) {
+
+        string data;
+		_is->read(data);
+		std::string name = org::esb::config::Config::getProperty("hive.base_path");
+		name += "/tmp/";
+		name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+		org::esb::io::File dir(name.c_str());
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+		name += "/";
+		name += org::esb::util::Decimal(un->_process_unit).toString();
+		name += ".unit";
+		org::esb::io::File out(name.c_str());
+		org::esb::io::FileOutputStream fos(&out);
+		fos.write(data);
+//      un=boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+//      _ois->readObject(un.get());
+		
+	  if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         logerror("error while putProcessUnit!");
       }
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
-      boost::shared_ptr<ProcessUnit> un;
+      
+	  
       if (endpoint2stream.size() > 0) {
+		  logdebug("endpoint is > 0")
+		  logdebug(endpoint2stream.front()<<" own_id "<<_own_id)
         if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
       } else {
+		  logdebug("new client "<<_own_id)
         un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(_own_id);
       }
@@ -158,10 +177,26 @@ public:
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
-      ProcessUnit un;
-      _ois->readObject(un);
+        string data;
+        _is->read(data);
+        std::string name = org::esb::config::Config::getProperty("hive.base_path");
+        name += "/tmp/";
+        name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+        org::esb::io::File dir(name.c_str());
+        if (!dir.exists()) {
+          dir.mkdir();
+        }
+        name += "/";
+        name += org::esb::util::Decimal(un->_process_unit).toString();
+        name += ".unit";
+        org::esb::io::File out(name.c_str());
+        org::esb::io::FileOutputStream fos(&out);
+		fos.write(data);
+		
+//      _ois->readObject(un);
       t.cancel();
-      if (!ProcessUnitWatcher::putProcessUnit(un)) {
+
+	  if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         logerror("error while putProcessUnit!");
       }
     } else {

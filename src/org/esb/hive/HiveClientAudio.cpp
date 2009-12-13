@@ -121,8 +121,8 @@ namespace org {
               if (_conv == NULL) {
                 _conv = unit->_converter;
               }
-              logdebug("waiting for audio timeout");
-              org::esb::lang::Thread::sleep2(20000);
+//              logdebug("waiting for audio timeout");
+//              org::esb::lang::Thread::sleep2(20000);
               char * text_out = "put audio_process_unit";
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));

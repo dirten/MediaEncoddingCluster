@@ -59,7 +59,8 @@ namespace org {
                     void onMessage(org::esb::signal::Message & msg);
                     static boost::shared_ptr<ProcessUnit> getProcessUnit();
                     static boost::shared_ptr<ProcessUnit> getStreamProcessUnit();
-                    static bool putProcessUnit(ProcessUnit & unit);
+					static bool putProcessUnit(int pu_id);
+                    static bool putProcessUnit(boost::shared_ptr<ProcessUnit> &unit);
                 private:
                     typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitQueue;
                     static ProcessUnitQueue puQueue;
@@ -90,6 +91,7 @@ namespace org {
                     static org::esb::sql::PreparedStatement * _stmt;
                     //                  void flushStreamPackets();
                     //                  void buildProcessUnit(int sIdx, bool lastPackets=false);
+                    static boost::mutex stmt_mutex;
                     static boost::mutex put_pu_mutex;
                     static boost::mutex get_pu_mutex;
                     static boost::mutex get_stream_pu_mutex;
@@ -108,6 +110,7 @@ namespace org {
                         int packet_count;
                         int min_packet_count;
                         int64_t last_bytes_offset;
+						int process_unit_count;
                         //                        int64_t last_process_unit_id;
                     };
                     static map<int, StreamData> _stream_map;

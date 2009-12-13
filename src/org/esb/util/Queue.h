@@ -15,7 +15,7 @@ namespace org {
       private:
         std::deque<T> _q;
         QueueListener * _listener;
-//        boost::mutex queue_mutex;
+        boost::mutex condition_mutex;
         boost::mutex enqueue_mutex;
         boost::mutex dequeue_mutex;
 //        boost::mutex queue_thread_mutex;
@@ -37,7 +37,9 @@ namespace org {
         void enqueue(T obj) {
           boost::mutex::scoped_lock enqueue_lock(enqueue_mutex);
           if (_q.size() >= MAXSIZE) {
-            queue_condition.wait(enqueue_lock);
+	        boost::mutex::scoped_lock condition_lock(condition_mutex);
+            queue_condition.wait(condition_lock);
+//            queue_condition.wait(enqueue_lock);
           }
           _q.push_back(obj);
           queue_condition.notify_all();
@@ -65,7 +67,9 @@ namespace org {
         T dequeue() {
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
           if (_q.size() == 0) {
-            queue_condition.wait(dequeue_lock);
+	        boost::mutex::scoped_lock condition_lock(condition_mutex);
+            queue_condition.wait(condition_lock);
+//			  queue_condition.wait(dequeue_lock);
           }
           T object = _q.front();
           //          object = _q.front();

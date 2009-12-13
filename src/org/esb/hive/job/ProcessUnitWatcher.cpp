@@ -65,6 +65,7 @@ namespace org {
         boost::mutex ProcessUnitWatcher::put_pu_mutex;
         boost::mutex ProcessUnitWatcher::get_pu_mutex;
         boost::mutex ProcessUnitWatcher::get_stream_pu_mutex;
+        boost::mutex ProcessUnitWatcher::stmt_mutex;
         boost::mutex ProcessUnitWatcher::terminationMutex;
         boost::condition ProcessUnitWatcher::termination_wait;
 
@@ -163,6 +164,7 @@ namespace org {
                   _stream_map[index].last_start_ts = 0;
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
+				  _stream_map[index].process_unit_count=0;
                   //                  _stream_map[index].last_process_unit_id = 0;
                   /**
                    * collecting data for the Packetizer
@@ -271,7 +273,7 @@ namespace org {
             CodecFactory::clearCodec(it->second.outstream);
           }*/
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
-              sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now() where id=:jobid");
+              sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
               pstmt2.execute();
 
@@ -285,6 +287,7 @@ namespace org {
         }
 
         void ProcessUnitWatcher::buildProcessUnit(PacketListPtr list, bool lastPackets) {
+			if(list.size()==0)return;
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
           int sIdx = list.front()->getStreamIndex();
 
@@ -332,28 +335,21 @@ namespace org {
               puQueue.enqueue(u);
             }
           }
+		  
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
+          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex);//get_stream_pu_mutex
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          if (audioQueue.size() == 0)
-            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-
+//          if (audioQueue.size() == 0)
+//            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+		  logdebug("audio queue size:"<<audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
-
-          //          audioQueue.pop_front();
-
-          // std::string c = org::esb::config::Config::getProperty("db.connection");
-          /*
-                    Connection con(c);
-                    PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
-                    stmt.setInt("source_stream", u->_source_stream);
-                    stmt.setInt("target_stream", u->_target_stream);
-           */
+		  {
+          boost::mutex::scoped_lock scoped_lock(stmt_mutex);//get_stream_pu_mutex
           _stmt->setInt("source_stream", u->_source_stream);
           _stmt->setInt("target_stream", u->_target_stream);
           if (u->_input_packets.size() > 0) {
@@ -366,6 +362,7 @@ namespace org {
           _stmt->setInt("frame_count", u->_input_packets.size());
           _stmt->execute();
           u->_process_unit = _stmt->getLastInsertId();
+		  }
           return u;
         }
 
@@ -373,13 +370,12 @@ namespace org {
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          if (puQueue.size() == 0)
-            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+//          if (puQueue.size() == 0)
+//            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
-          //std::string c = org::esb::config::Config::getProperty("db.connection");
-          //          Connection con(c);
-          //          PreparedStatement stmt = con.prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)");
-          _stmt->setInt("source_stream", u->_source_stream);
+		  {
+            boost::mutex::scoped_lock scoped_lock(stmt_mutex);
+		  _stmt->setInt("source_stream", u->_source_stream);
           _stmt->setInt("target_stream", u->_target_stream);
           if (u->_input_packets.size() > 0) {
             _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
@@ -391,27 +387,33 @@ namespace org {
           _stmt->setInt("frame_count", u->_input_packets.size());
           _stmt->execute();
           u->_process_unit = _stmt->getLastInsertId();
+		  }
           return u;
         }
-
-        bool ProcessUnitWatcher::putProcessUnit(ProcessUnit & unit) {
+		bool ProcessUnitWatcher::putProcessUnit(int pu_id) {
+          boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
+          _stmt_fr->setInt("id", pu_id);
+          _stmt_fr->execute();	
+		  return true;
+		}
+        bool ProcessUnitWatcher::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
 
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
-          name += org::esb::util::Decimal(unit._process_unit % 10).toString();
+          name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
           org::esb::io::File dir(name.c_str());
           if (!dir.exists()) {
             dir.mkdir();
           }
           name += "/";
-          name += org::esb::util::Decimal(unit._process_unit).toString();
+          name += org::esb::util::Decimal(unit->_process_unit).toString();
           name += ".unit";
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
           logdebug("Saving ProcessUnit");
-          ous.writeObject(unit);
+          ous.writeObject(*unit.get());
           ous.close();
           /*
                     delete unit._decoder;
@@ -419,14 +421,14 @@ namespace org {
                     delete unit._encoder;
                     unit._encoder = NULL;
            */
-          _stmt_fr->setInt("id", unit._process_unit);
+          _stmt_fr->setInt("id", unit->_process_unit);
           _stmt_fr->execute();
 
-          if (unit._last_process_unit) {
+          if (unit->_last_process_unit) {
             sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
             sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set status='completed' where id = (select job_id from job_details where instream=:instream and outstream=:outstream)");
-            pstmt2.setInt("instream", unit._source_stream);
-            pstmt2.setInt("outstream", unit._target_stream);
+            pstmt2.setInt("instream", unit->_source_stream);
+            pstmt2.setInt("outstream", unit->_target_stream);
             pstmt2.execute();
           }
 

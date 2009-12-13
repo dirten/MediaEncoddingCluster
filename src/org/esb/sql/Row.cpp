@@ -31,10 +31,10 @@ namespace org {
         if (mysql_stmt_bind_result(stmt, bind)) {
           throw SqlException(std::string("failed while bind the result: ").append(mysql_stmt_error(stmt)));
         }
-        if (false && mysql_stmt_store_result(stmt)) {
+        if (mysql_stmt_store_result(stmt)) {
           fprintf(stderr, " mysql_stmt_store_result() failed\n");
           fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
-          exit(0);
+//          exit(0);
         }
       }
 
