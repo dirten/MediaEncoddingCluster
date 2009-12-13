@@ -141,6 +141,7 @@ namespace org {
               org::esb::av::FormatInputStream * fis = new org::esb::av::FormatInputStream(&fi);
               if (!fis->isValid()) {
                 logerror("Error Opening Input Streams from " << filename);
+				delete fis;
                 continue;
               }
               /**
@@ -217,6 +218,7 @@ namespace org {
               Packet packet;
               /**
                * read while packets in the stream
+			   * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
                */
               while (pis.readPacket(packet) == 0 && !_isStopSignal) {
                 /**

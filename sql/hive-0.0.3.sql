@@ -125,7 +125,8 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `send` timestamp NULL default NULL,
   `complete` timestamp NULL default NULL,
   `priority` tinyint(1) NOT NULL default '5',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `target_stream` (`target_stream`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `profiles` (

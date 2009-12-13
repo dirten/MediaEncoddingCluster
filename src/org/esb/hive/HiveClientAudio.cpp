@@ -118,12 +118,17 @@ namespace org {
               }
               _swap_codecs=true;
               unit->process();
+
               if (_conv == NULL) {
                 _conv = unit->_converter;
               }
-//              logdebug("waiting for audio timeout");
-//              org::esb::lang::Thread::sleep2(20000);
-              char * text_out = "put audio_process_unit";
+			  /**
+			  * clear the input packets, there are no more nedded
+			  * they only consumes Network bandwidth and cpu on the server
+			  */
+			  unit->_input_packets.clear();
+
+			  char * text_out = "put audio_process_unit";
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);

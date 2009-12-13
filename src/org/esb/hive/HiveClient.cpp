@@ -96,6 +96,11 @@ namespace org {
                 break;
               }
               unit->process();
+			  /**
+			  * clear the input packets, there are no more nedded
+			  * they only consumes Network bandwidth and cpu on the server
+			  */
+			  unit->_input_packets.clear();
 
               char * text_out = "put process_unit";
               try {

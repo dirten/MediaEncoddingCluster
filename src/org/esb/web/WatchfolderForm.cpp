@@ -50,6 +50,7 @@ namespace org {
           id2name[rs.getInt("id")] = rs.getString("profile_name");
           profileid2profileidx[rs.getInt("id")] = a++;
         }
+		_le.addElement("extension_filter", "Extension Filter", "", l);
         i++;
 //        new Wt::WBreak(parent);
 //        Wt::WTable * b = new Wt::WTable(parent);
@@ -68,6 +69,7 @@ namespace org {
         data["id"] = _le.getElement("id")->text().narrow();
         data["infolder"] = _le.getElement("infolder")->text().narrow();
         data["outfolder"] = _le.getElement("outfolder")->text().narrow();
+        data["extension_filter"] = _le.getElement("extension_filter")->text().narrow();
         data["profile"] = Decimal(name2id[_cb.getElement("profile")->text().narrow()]).toString();
         SqlUtil::map2sql("watch_folder", data);
         saved.emit();
@@ -109,6 +111,7 @@ namespace org {
         _le.getElement("id")->setText(sqldata["id"]);
         _le.getElement("infolder")->setText(sqldata["infolder"]);
         _le.getElement("outfolder")->setText(sqldata["outfolder"]);
+        _le.getElement("extension_filter")->setText(sqldata["extension_filter"]);
         _cb.getElement("profile")->setCurrentIndex(profileid2profileidx[atoi(sqldata["profile"].c_str())]);
       }
     }
