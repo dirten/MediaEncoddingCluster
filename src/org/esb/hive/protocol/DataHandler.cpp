@@ -47,14 +47,16 @@ private:
     logdebug("TimerEvent received");
     if (er == boost::asio::error::operation_aborted) {
       logdebug("Timer Event was Canceled");
-      return;
-    }
-    logdebug("TimeOut received, removing endpoint from list to give an other client a chance!")
-    if (endpoint2stream.size() > 0) {
-      if (endpoint2stream.front() == _own_id) {
-        endpoint2stream.pop_front();
+    } else {
+      logdebug("TimeOut received, removing endpoint from list to give an other client a chance!")
+      if (endpoint2stream.size() > 0) {
+        if (endpoint2stream.front() == _own_id) {
+          endpoint2stream.pop_front();
+        }
       }
     }
+//    t.expires_from_now(boost::posix_time::seconds(60));
+//    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
   }
 public:
 
@@ -71,7 +73,7 @@ public:
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
     logdebug("endpoint:" << ep);
-    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this,  boost::asio::error::operation_aborted));
+    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     //    io_timer.run();
     boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 
@@ -98,9 +100,9 @@ public:
     _own_id = ep.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
-    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this,  boost::asio::error::operation_aborted));
+    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-	
+
     //    io_timer.run();
     logdebug("endpoint:" << ep);
   }
@@ -130,40 +132,39 @@ public:
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
 
-        string data;
-		_is->read(data);
-		std::string name = org::esb::config::Config::getProperty("hive.base_path");
-		name += "/tmp/";
-		name += org::esb::util::Decimal(un->_process_unit % 10).toString();
-		org::esb::io::File dir(name.c_str());
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
-		name += "/";
-		name += org::esb::util::Decimal(un->_process_unit).toString();
-		name += ".unit";
-		org::esb::io::File out(name.c_str());
-		org::esb::io::FileOutputStream fos(&out);
-		fos.write(data);
-//      un=boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-//      _ois->readObject(un.get());
-		
-	  if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
+      string data;
+      _is->read(data);
+      std::string name = org::esb::config::Config::getProperty("hive.base_path");
+      name += "/tmp/";
+      name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+      org::esb::io::File dir(name.c_str());
+      if (!dir.exists()) {
+        dir.mkdir();
+      }
+      name += "/";
+      name += org::esb::util::Decimal(un->_process_unit).toString();
+      name += ".unit";
+      org::esb::io::File out(name.c_str());
+      org::esb::io::FileOutputStream fos(&out);
+      fos.write(data);
+      //      un=boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+      //      _ois->readObject(un.get());
+
+      if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         logerror("error while putProcessUnit!");
       }
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
-      
-	  
+
       if (endpoint2stream.size() > 0) {
-		  logdebug("endpoint is > 0")
-		  logdebug(endpoint2stream.front()<<" own_id "<<_own_id)
+        logdebug("endpoint is > 0")
+        logdebug(endpoint2stream.front() << " own_id " << _own_id)
         if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
       } else {
-		  logdebug("new client "<<_own_id)
+        logdebug("new client " << _own_id)
         un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(_own_id);
       }
@@ -177,26 +178,28 @@ public:
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
-        string data;
-        _is->read(data);
-        std::string name = org::esb::config::Config::getProperty("hive.base_path");
-        name += "/tmp/";
-        name += org::esb::util::Decimal(un->_process_unit % 10).toString();
-        org::esb::io::File dir(name.c_str());
-        if (!dir.exists()) {
-          dir.mkdir();
-        }
-        name += "/";
-        name += org::esb::util::Decimal(un->_process_unit).toString();
-        name += ".unit";
-        org::esb::io::File out(name.c_str());
-        org::esb::io::FileOutputStream fos(&out);
-		fos.write(data);
-		
-//      _ois->readObject(un);
-      t.cancel();
+      string data;
+      _is->read(data);
+      std::string name = org::esb::config::Config::getProperty("hive.base_path");
+      name += "/tmp/";
+      name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+      org::esb::io::File dir(name.c_str());
+      if (!dir.exists()) {
+        dir.mkdir();
+      }
+      name += "/";
+      name += org::esb::util::Decimal(un->_process_unit).toString();
+      name += ".unit";
+      org::esb::io::File out(name.c_str());
+      org::esb::io::FileOutputStream fos(&out);
+      fos.write(data);
 
-	  if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
+      //      _ois->readObject(un);
+      //      t.cancel();
+        t.expires_from_now(boost::posix_time::seconds(10));
+        t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+
+      if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         logerror("error while putProcessUnit!");
       }
     } else {

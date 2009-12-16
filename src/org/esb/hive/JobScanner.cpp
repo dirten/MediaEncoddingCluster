@@ -90,7 +90,7 @@ namespace org {
         _running = true;
         //        logdebug("run");
         org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT * FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid WHERE files.parent =0 and jobs.id is null");
+        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT *,concat(outfolder,\"/\",profile_name,substring( files.path, length( watch_folder.infolder )+1 )) as output_folder FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid, profiles WHERE files.parent =0 and profiles.id=profile and jobs.id is null");
         while (_run) {
           //        logdebug("while");
           org::esb::sql::ResultSet rs = stmt.executeQuery();
@@ -98,7 +98,7 @@ namespace org {
             //          logdebug("while rs next");
             std::string file = rs.getString("files.id");
             std::string profile = rs.getString("watch_folder.profile");
-            std::string outdir = rs.getString("watch_folder.outfolder");
+            std::string outdir = rs.getString("output_folder");
             char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
             std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
             std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;

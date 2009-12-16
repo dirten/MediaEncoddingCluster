@@ -19,6 +19,9 @@ using namespace org::esb::lang;
  **/
 PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
   _readFrom = 0;
+  _avpacket=static_cast<AVPacket*>(av_malloc(sizeof(AVPacket)));
+    av_init_packet(_avpacket);
+
   //  _video_idx = -1;
   //  _audio_idx = -1;
   _fis = NULL;
@@ -63,16 +66,17 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
 }
 
 PacketInputStream::~PacketInputStream() {
+  av_free(_avpacket);
   if (_readFrom == 1) {
     //        if(_packet.data!=NULL)
-    //	    av_free_packet(&_packet);
+    	    
   }
 }
 
 /**
  * @deprecated Use int PacketInputStream::readPacket(Packet&packet) instead.
  */
-Packet PacketInputStream::readPacket() {
+Packet * PacketInputStream::readPacket() {
   //    if(_readFrom==1)
   return readPacketFromFormatIS();
   //    return readPacketFromIS();
@@ -101,14 +105,16 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   return status;
 }
 
-Packet PacketInputStream::readPacketFromFormatIS() {
-  Packet pac;
-  //    av_init_packet(&pac);
-  //        if(_packet.data!=NULL)
-  //            av_free_packet(&_packet);
-  av_read_frame(_formatCtx, pac.packet);
-  logdebug("Packet Size:" << pac.packet->size)
-  return pac;
+Packet * PacketInputStream::readPacketFromFormatIS() {
+  int status = av_read_frame(_formatCtx, _avpacket);
+  Packet *pac=new Packet(_avpacket);
+  if (status >= 0) {
+    pac->setTimeBase(_formatCtx->streams[pac->getStreamIndex()]->time_base);
+//    logdebug("Packet Size:" << pac->getSize())
+    return pac;
+  }
+  delete pac;
+  return NULL;
 }
 
 int PacketInputStream::read(unsigned char * buffer, int length) {

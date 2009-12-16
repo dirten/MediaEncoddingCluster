@@ -254,24 +254,18 @@ namespace org {
 
       void Codec::close() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
-        //        if(ctx->extradata)
-        //          delete ctx->extradata;
-        if (ctx->extradata) {
+        logdebug("Codec Extradata_Size" << ctx->extradata_size)
+        if (ctx->extradata_size > 0 ) {
           logdebug("freeing extradata");
           av_freep(&ctx->extradata);
         }
-        //
         if (_opened) {
-          //        av_freep(&ctx->stats_in);
           if (ctx && !_pre_allocated) {
             avcodec_close(ctx);
           }
-          //          av_freep(_codec);
-
 #ifdef DEBUG
           logdebug("recently fifo size:" << av_fifo_size(fifo));
 #endif
-
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -279,7 +273,7 @@ namespace org {
         }
         if (ctx && !_pre_allocated) {
           av_free(ctx);
-          //          ctx = NULL;
+          ctx = NULL;
         }
         _opened = false;
       }
@@ -334,7 +328,6 @@ namespace org {
 
       PixelFormat Codec::getPixelFormat() {
         return ctx->pix_fmt;
-        //				return _pix_fmt;
       }
 
       int Codec::getSampleRate() {

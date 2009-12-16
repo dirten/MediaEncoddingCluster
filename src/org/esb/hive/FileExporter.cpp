@@ -258,10 +258,11 @@ void FileExporter::exportFile(int fileid) {
       delete pu._encoder;
       pu._encoder = NULL;*/
 
-	  /**
-	  * clean up temporary files, they are no longer needed
-	  */
-//      infile.deleteFile();
+      /**
+       * clean up temporary files, they are no longer needed
+       */
+      fis.close();
+      infile.deleteFile();
     }
   }
   pos->close();

@@ -63,14 +63,23 @@ bool File::exists() {
   return fs::exists(_full_path);
 }
 bool File::deleteFile() {
-  
-  return fs::remove(_full_path);
+  fs::remove(_full_path);
+  return !fs::exists(_full_path);
 }
 
 bool File::mkdir() {
   return fs::create_directory(_full_path);
 }
 
+bool File::createNewFile(){
+  bool result=false;
+  FILE* fh=fopen(getPath().c_str(),"a");
+  if(fh>=0){
+    result=true;
+    fclose(fh);
+  }
+  return result;
+}
 bool File::isFile() {
   return fs::is_regular(_full_path);
 }
@@ -88,7 +97,7 @@ bool File::canWrite() {
   return false;
 }
 
-std::list < boost::shared_ptr < File > >File::listFiles(FileFilter & filter) {
+FileList File::listFiles(FileFilter & filter) {
   fs::directory_iterator end_iter;
   std::list < boost::shared_ptr < File > >files;
   for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
@@ -100,7 +109,7 @@ std::list < boost::shared_ptr < File > >File::listFiles(FileFilter & filter) {
   return files;
 }
 
-std::list < boost::shared_ptr < File > >File::listFiles() {
+FileList File::listFiles() {
   fs::directory_iterator end_iter;
   std::list < boost::shared_ptr < File > >files;
   for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {

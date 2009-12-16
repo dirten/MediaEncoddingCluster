@@ -7,6 +7,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
 
+#include <boost/thread.hpp>
 #include <vector>
 #include <map>
 
@@ -55,6 +56,7 @@ namespace org {
                 friend class PacketInputStream;
                 AVFormatContext * formatCtx;
                 map<int, StreamInfo*> _stream_info_map;
+                static boost::mutex file_open_mutex;
 
             };
         }

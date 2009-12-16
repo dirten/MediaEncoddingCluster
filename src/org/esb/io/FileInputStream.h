@@ -67,7 +67,7 @@ public:
                 void close();
 private:
                 void open(const std::string name);
-                std::FILE * file;
+                std::FILE * _file_handle;
                 long _filePointer;
                 char _byte;
             };

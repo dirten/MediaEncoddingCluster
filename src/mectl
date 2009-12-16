@@ -43,7 +43,7 @@ usage(){
 }
 
 status_runtime(){
-	if checkproc "beam"; then
+	if checkproc "mhive"; then
 	    echo "Mhive Runtime is OFF"
 #      action $"Running $prog" /bin/false
 	else
@@ -74,20 +74,20 @@ stop_runtime(){
 }
 
 start_server(){
-  RELDIR=$MHIVE_HOME/releases
-  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
-  $MHIVE_HOME/bin/run_erl -daemon /tmp/ $MHIVE_HOME/logs "exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA"
+#  RELDIR=$MHIVE_HOME/releases
+#  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
+  $MHIVE_HOME/bin/mhive -d
   status_runtime
 }
 run_server(){
-  RELDIR=$MHIVE_HOME/releases
-  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
-  exec $MHIVE_HOME/bin/mectl start_erl $MHIVE_HOME $RELDIR $START_ERL_DATA
+#  RELDIR=$MHIVE_HOME/releases
+#  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
+  exec $MHIVE_HOME/bin/mhive -r
   status_runtime
 }
 
 stop_server(){
-  $BINDIR/erlexec -noshell -s mhive stopapp -s init stop
+  killproc $MHIVE_HOME/bin/mhive
 }
 
 start_client(){
@@ -116,26 +116,26 @@ cd ${script_dir}/..
 MHIVE_HOME=`pwd`
 echo $MHIVE_HOME
 
-DATA_DIR=data
+#DATA_DIR=data
 ROOTDIR=${MHIVE_HOME}
-RELDIR=$MHIVE_HOME/releases
-START_ERL_DATA=$RELDIR/start_erl.data
-ERTS_VSN=`awk '{print $1}' $START_ERL_DATA`
-MHIVE_VSN=`awk '{print $2}' $START_ERL_DATA`
-BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
-EMU=beam
+#RELDIR=$MHIVE_HOME/releases
+#START_ERL_DATA=$RELDIR/start_erl.data
+#ERTS_VSN=`awk '{print $1}' $START_ERL_DATA`
+#MHIVE_VSN=`awk '{print $2}' $START_ERL_DATA`
+#BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+#EMU=beam
 PROGNAME=`echo $0 | sed 's/.*\///'`
-export EMU
-export ROOTDIR
-export BINDIR
-export PROGNAME
+#export EMU
+#export ROOTDIR
+#export BINDIR
+#export PROGNAME
 # always start the epmd
 
-checkproc "epmd"
-if [ $? -ne 0 ]; then
-  ${BINDIR}/epmd -daemon
-fi
-${BINDIR}/epmd -daemon
+#checkproc "epmd"
+#if [ $? -ne 0 ]; then
+#  ${BINDIR}/epmd -daemon
+#fi
+#${BINDIR}/epmd -daemon
 
 case "$1" in
     'start')
@@ -151,35 +151,35 @@ case "$1" in
     'stop')
             stop_server
             ;;
-    'configure')
-            configure
-            ;;
+#    'configure')
+#            configure
+#            ;;
     'status')
             status_runtime
             ;;
-    'start_erl')
-        shift
-        ROOTDIR=$1
-        shift
-        RELDIR=$1
-        shift
-        DataFile=$1
-        shift
-
-        ERTS_VSN=`awk '{print $1}' $DataFile`
-        VSN=`awk '{print $2}' $DataFile`
-
-        BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
-        EMU=beam
-        PROGNAME=`echo $0 | sed 's/.*\///'`
-        export EMU
-        export ROOTDIR
-        export BINDIR
-        export PROGNAME
-        export RELDIR
-
-        exec $BINDIR/erlexec -boot $RELDIR/$VSN/start -config $RELDIR/$VSN/sys ${1+"$@"} -setcookie default -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'"
-            ;;
+#    'start_erl')
+#        shift
+#        ROOTDIR=$1
+#        shift
+#        RELDIR=$1
+#        shift
+#        DataFile=$1
+#        shift
+#
+#        ERTS_VSN=`awk '{print $1}' $DataFile`
+#        VSN=`awk '{print $2}' $DataFile`
+#
+#        BINDIR=$ROOTDIR/erts-$ERTS_VSN/bin
+#        EMU=beam
+#        PROGNAME=`echo $0 | sed 's/.*\///'`
+#        export EMU
+#        export ROOTDIR
+#        export BINDIR
+#        export PROGNAME
+#        export RELDIR
+#
+#        exec $BINDIR/erlexec -boot $RELDIR/$VSN/start -config $RELDIR/$VSN/sys ${1+"$@"} -setcookie default -mnesia dir "'${MHIVE_HOME}/${DATA_DIR}'"
+#            ;;
     *)
       usage
             ;;

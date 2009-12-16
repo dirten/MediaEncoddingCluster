@@ -17,24 +17,24 @@ namespace org {
     namespace web {
 
       WatchfolderForm::WatchfolderForm(Wt::WContainerWidget * parent) : Wt::WContainerWidget(parent) {
-//        Wt::WTable * t = new Wt::WTable(parent);
+        //        Wt::WTable * t = new Wt::WTable(parent);
         int i = 0;
         Wt::WGridLayout * l = new Wt::WGridLayout();
-//        l->setVerticalSpacing(3);
-//        l->setHorizontalSpacing(0);
-//        l->setMinimumSize(Wt::WLength::Auto, 30);
+        //        l->setVerticalSpacing(3);
+        //        l->setHorizontalSpacing(0);
+        //        l->setMinimumSize(Wt::WLength::Auto, 30);
         setLayout(l);
         _le.addElement("id", "Watchfolder Id", "", l)->setEnabled(false);
 
         _le.addElement("infolder", "Input Folder", "", l)->setEnabled(false);
         Wt::Ext::Button * selectInDirectory = new Wt::Ext::Button("Select Directory");
-//        selectInDirectory->resize(Wt::WLength::Auto, 30);
-        l->addWidget(selectInDirectory,1,2);
+        //        selectInDirectory->resize(Wt::WLength::Auto, 30);
+        l->addWidget(selectInDirectory, 1, 2);
         selectInDirectory->clicked.connect(SLOT(this, WatchfolderForm::openInfolder));
 
         _le.addElement("outfolder", "Output Folder", "", l)->setEnabled(false);
         Wt::Ext::Button * selectOutDirectory = new Wt::Ext::Button("Select Directory");
-        l->addWidget(selectOutDirectory,2,2);
+        l->addWidget(selectOutDirectory, 2, 2);
         selectOutDirectory->clicked.connect(SLOT(this, WatchfolderForm::openOutfolder));
 
         Wt::Ext::ComboBox * profiles = _cb.addElement("profile", "Encoding Profile", "", l);
@@ -50,14 +50,15 @@ namespace org {
           id2name[rs.getInt("id")] = rs.getString("profile_name");
           profileid2profileidx[rs.getInt("id")] = a++;
         }
-		_le.addElement("extension_filter", "Extension Filter", "", l);
+        _le.addElement("extension_filter", "Extension Filter", "", l);
+
         i++;
-//        new Wt::WBreak(parent);
-//        Wt::WTable * b = new Wt::WTable(parent);
+        //        new Wt::WBreak(parent);
+        //        Wt::WTable * b = new Wt::WTable(parent);
         Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
         Wt::Ext::Button *save = new Wt::Ext::Button("Save");
-        l->addWidget(cancel,4,0);
-        l->addWidget(save,4,1);
+        l->addWidget(cancel, 5, 0);
+        l->addWidget(save, 5, 1);
 
         cancel->clicked.connect(SLOT(this, WatchfolderForm::cancel));
         save->clicked.connect(SLOT(this, WatchfolderForm::save));

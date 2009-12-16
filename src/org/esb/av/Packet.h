@@ -19,6 +19,7 @@ namespace org {
             class Packet {
             public:
                 Packet();
+                Packet( AVPacket*);
                 Packet(int size);
                 ~Packet();
                 uint8_t * getData();

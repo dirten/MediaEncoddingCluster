@@ -3,15 +3,30 @@ include_directories (${BREAKPAD_INCLUDE_DIR})
 #include_directories (/home/jhoelscher/curl/include)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 
-add_library (lang
+SET(lang_source
     Byte.cpp
     String.cpp
     Thread.cpp
     Exception.cpp
     StackDumper.cpp
+)
+IF(NOT WIN32)
+  SET(lang_source
+    ${lang_source}
+    LinuxCpuInfo.cpp
+  )
+ELSEIF(APPLE)
+
+ELSEIF(WIN32)
+
+ENDIF(NOT WIN32)
+
+add_library (lang
+  ${lang_source}
 #      lang/NoSuchElementException.cpp
 #      lang/NullPointerException.cpp
 )
+
 FIND_LIBRARY(COCOA_LIBRARY COCOA)
 MARK_AS_ADVANCED(COCOA_LIBRARY)
 

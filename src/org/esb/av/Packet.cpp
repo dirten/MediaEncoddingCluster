@@ -19,6 +19,34 @@ Packet::Packet() {
   _time_base.den=0;
 
 }
+/**
+ * constructor to build an internal Packet directly from an AVPacket
+ */
+Packet::Packet(AVPacket * p) {
+  packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
+  packetPtr->pts=p->pts;
+  packetPtr->dts=p->dts;
+  packetPtr->pos=p->pos;
+  packetPtr->size=p->size;
+  packetPtr->duration=p->duration;
+  packetPtr->convergence_duration=p->convergence_duration;
+  packetPtr->flags=p->flags;
+  packetPtr->priv=p->priv;
+  packetPtr->stream_index=p->stream_index;
+
+  if (av_dup_packet(p)==0) {
+//    packetPtr->data = static_cast<uint8_t*>(av_malloc(p->size + FF_INPUT_BUFFER_PADDING_SIZE));
+//    memcpy(packetPtr->data, p->data, p->size);
+//    memset(packetPtr->data + packetPtr->size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    packetPtr->data=p->data;
+  }
+  packetPtr->destruct = av_destruct_packet;
+  callDestruct = false;
+  /**
+   * this must be removed in the near future, because this packet field will be hidden in the future
+   */
+  packet = packetPtr.get();
+}
 
 Packet::Packet(const Packet & p) {
 //  	cout << "Packet(const Packet & p)"<<endl;

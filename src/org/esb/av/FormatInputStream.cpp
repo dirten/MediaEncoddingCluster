@@ -11,8 +11,10 @@ using namespace org::esb::lang;
 namespace org {
   namespace esb {
     namespace av {
+      boost::mutex FormatInputStream::file_open_mutex;
 
       FormatInputStream::FormatInputStream(File * source) {
+        boost::mutex::scoped_lock scoped_lock(file_open_mutex);
         loginfo("opening InputFile: " << source->getPath());
         _isValid = false;
         _sourceFile = source;
@@ -138,7 +140,7 @@ namespace org {
       void FormatInputStream::close() {
         if (formatCtx)
           av_close_input_file(formatCtx);
-        
+
         if (_stream_info_map.size() > 0) {
           map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
           for (; it != _stream_info_map.end(); it++) {

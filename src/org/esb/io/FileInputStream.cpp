@@ -28,8 +28,8 @@ FileInputStream::FileInputStream(const std::string name) {
  */
 
 void FileInputStream::open(const std::string name) {
-  file = fopen(name.c_str(), "rb");
-  if (!file) {
+  _file_handle = fopen(name.c_str(), "rb");
+  if (!_file_handle) {
     string error = "FileInputStream::open - File not Found (";
     error += name;
     error += ")";
@@ -37,16 +37,19 @@ void FileInputStream::open(const std::string name) {
     throw Exception(__FILE__, __LINE__, error.c_str());
   }
 
-  fseek(file, 0, SEEK_END);
-  _filePointer = ftell(file);
+  fseek(_file_handle, 0, SEEK_END);
+  _filePointer = ftell(_file_handle);
 //  logdebug("FileSize1:"<<_filePointer);
-  rewind(file);
+  rewind(_file_handle);
 //  fseek(file, 0, 0);
 
 }
 
 void FileInputStream::close() {
-  fclose(file);
+  if(_file_handle){
+    fclose(_file_handle);
+    _file_handle=NULL;
+  }
 }
 
 long long int FileInputStream::available(bool isBlocking) {
@@ -58,7 +61,7 @@ int FileInputStream::read(string & str) {
 //  logdebug("FileSize2:"<<size);
   char * buffer = new char[size];
   memset(buffer,0,size);
-  int read = fread((char*) buffer, 1, size, file);
+  int read = fread((char*) buffer, 1, size, _file_handle);
 //  logdebug("FileSizeRead:"<<read);
   _filePointer -= read;
   str = string(buffer, size);
@@ -67,7 +70,7 @@ int FileInputStream::read(string & str) {
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {
-  int read = fread((char*) buffer, 1, length, file);
+  int read = fread((char*) buffer, 1, length, _file_handle);
   _filePointer -= read;
   return read;
 }
@@ -81,7 +84,7 @@ int FileInputStream::read(vector<unsigned char>&buffer) {
   size_t size = buffer.size();
   buffer.clear();
   unsigned char * tmp_buffer = new unsigned char[size];
-  size_t read = fread((char*) tmp_buffer, 1, size, file);
+  size_t read = fread((char*) tmp_buffer, 1, size, _file_handle);
   for (std::size_t ix = 0; ix < read; ++ix) {
     buffer.push_back(tmp_buffer[ix]);
   }

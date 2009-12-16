@@ -11,7 +11,7 @@ namespace org {
             class StringUtil {
             public:
                 string tmp;
-                static const std::string trim(string & s, string & drop = *new string(" "));
+                static const std::string trim(string s, string  drop = string(" "));
                 static const std::string toLower(std::string);
 
                 template <class T> static std::string toString(const T &t)

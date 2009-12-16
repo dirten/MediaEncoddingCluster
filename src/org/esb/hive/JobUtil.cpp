@@ -135,7 +135,7 @@ int jobcreator(int argc, char*argv[]) {
       }
     }
 //    logerror("Coldnot find the output extension for : "<<profile_v_format);
-    stmt.setString("filename", profilename + "/" + f.getFileName());
+    stmt.setString("filename", f.getFileName());
     stmt.setString("path", argv[4]);
     stmt.setInt("parent", fileid);
     stmt.setString("container", ofmt->name);

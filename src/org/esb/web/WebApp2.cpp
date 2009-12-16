@@ -247,7 +247,7 @@ namespace org {
       void WebApp2::createWatchfolder() {
         listAllWatchfolder();
         cwd = new Wt::Ext::Dialog("Watchfolder");
-        cwd->resize(450, 200);
+        cwd->resize(450, 250);
         WatchfolderForm * pf = new WatchfolderForm(cwd->contents());
         pf->saved.connect(SLOT(this, WebApp2::watchfolderCreated));
         pf->canceled.connect(SLOT(cwd, Wt::Ext::Dialog::accept));

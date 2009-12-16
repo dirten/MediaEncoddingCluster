@@ -15,7 +15,7 @@ class PacketInputStream: public InputStream{
         
         ~PacketInputStream();
         int readPacket(Packet&packet);
-        Packet  readPacket();
+        Packet * readPacket();
         int read(unsigned char * buffer, int length);
         int read(vector<unsigned char>&buffer);
         int read();
@@ -28,10 +28,10 @@ class PacketInputStream: public InputStream{
         Codec * _codec2;
 	AVCodecContext * _codecCtx;
         AVCodec * _codec;
-	
+        AVPacket * _avpacket;
         int readPacketFromFormatIS(Packet&packet);
         int readPacketFromIS(Packet&packet);
-        Packet readPacketFromFormatIS();
+        Packet * readPacketFromFormatIS();
 //        __attribute__((deprecated))Packet & readPacketFromIS();
         Packet & readPacketFromIS();
 //	Packet _packet;
