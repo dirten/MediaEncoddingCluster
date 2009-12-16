@@ -26,18 +26,22 @@ public:
     timer.async_wait(boost::bind(&Timer::handle_timeout, this, boost::asio::placeholders::error));
   }
 private:
+//    t.expires_from_now(boost::posix_time::seconds(60));
+//    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
 
   void handle_timeout(const boost::system::error_code & er) {
     logdebug("timeout" << er);
     if (er == boost::asio::error::operation_aborted) {
       logdebug("Timer Event was Canceled");
-      timer.expires_at(timer.expires_at() + boost::posix_time::seconds(5));
+      timer.expires_from_now(boost::posix_time::seconds(5));
+      //timer.expires_at(timer.expires_at() + boost::posix_time::seconds(5));
       timer.async_wait(boost::bind(&Timer::handle_timeout, this, boost::asio::placeholders::error));
       return;
     }
 
     if(!er){
-      timer.expires_at(timer.expires_at() + boost::posix_time::seconds(5));
+      timer.expires_from_now(boost::posix_time::seconds(5));
+      //timer.expires_at(timer.expires_at() + boost::posix_time::seconds(5));
       timer.async_wait(boost::bind(&Timer::handle_timeout, this, boost::asio::placeholders::error));
     }
   }

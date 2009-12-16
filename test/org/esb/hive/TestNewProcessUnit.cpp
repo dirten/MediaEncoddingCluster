@@ -47,7 +47,6 @@ struct StreamData {
  *
  */
 void build_process_units(int argc, char** argv) {
-map<int, StreamData> _sdata;
 map<int, int> _smap;
 
   std::map<int, Packetizer::StreamData> stream_data;
@@ -76,6 +75,7 @@ map<int, int> _smap;
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
   //  PacketOutputStream pos(&fos);
+  map<int, StreamData> _sdata;
 
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
@@ -129,11 +129,11 @@ map<int, int> _smap;
   //  if (!pos.init())goto cleanup;
   fos.dumpFormat();
   for (int a = 0; a < 200 /*|| true*/; a++) {
-    Packet p;
+    Packet * p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
-    if (pis.readPacket(p) < 0)break;
-    boost::shared_ptr<Packet> pPacket(new Packet(p));
+    if ((p=pis.readPacket()) ==NULL)break;
+    boost::shared_ptr<Packet> pPacket(p);
     if (pti.putPacket(pPacket)) {
       boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
       u->_decoder = _sdata[pPacket->getStreamIndex()].dec;
@@ -195,8 +195,8 @@ void process_units() {
   //  delete pu._encoder;
     delete pu._converter;
   }
-  delete file;
-  delete outfile;
+  delete []file;
+  delete []outfile;
 
 }
 
@@ -264,7 +264,7 @@ void write_file(int argc, char** argv) {
   fos.close();
   delete video_codec;
   delete audio_codec;
-  delete file;
+  delete []file;
 }
 
 /*

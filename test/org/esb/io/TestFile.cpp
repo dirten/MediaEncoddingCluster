@@ -7,6 +7,13 @@ int main(){
   org::esb::io::File f(path.append("/src/./CMakeLists.txt"));
   org::esb::io::File f2("./CMakeLists.txt");
   org::esb::io::File dir(f.getFilePath());
+  org::esb::io::File create("test.create");
+
+  create.createNewFile();
+  assert(create.exists());
+  create.deleteFile();
+  assert(!create.exists());
+
   assert(f.exists());
   logdebug(f.getPath());
   logdebug(f.getFilePath());
