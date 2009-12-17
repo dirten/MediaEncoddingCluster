@@ -161,7 +161,7 @@ namespace org {
                     if (_mode == Codec::DECODER) {
                         ar & ctx->extradata_size;
                         if (ctx->extradata_size > 0) {
-                            logdebug("created extradata with size " << ctx->extradata_size);
+//                            logdebug("created extradata with size " << ctx->extradata_size);
                             ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
                             memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
                             ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);

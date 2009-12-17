@@ -254,9 +254,9 @@ namespace org {
 
       void Codec::close() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
-        logdebug("Codec Extradata_Size" << ctx->extradata_size)
+
         if (ctx->extradata_size > 0 ) {
-          logdebug("freeing extradata");
+//          logdebug("freeing extradata");
           av_freep(&ctx->extradata);
         }
         if (_opened) {
