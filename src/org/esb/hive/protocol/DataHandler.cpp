@@ -36,14 +36,16 @@ private:
   io::ObjectInputStream * _ois;
   //  ClientHandler* _handler;
   static std::list<std::string> endpoint2stream;
+  static boost::mutex removeMutex;
 
   std::string _own_id;
   boost::asio::io_service io_timer;
   boost::asio::deadline_timer t;
   //  boost::asio::deadline_timer t2;
   boost::shared_ptr<ProcessUnit> un;
-
+  bool shutdown;
   void remove_endpoint_from_stream(const boost::system::error_code & er) {
+    boost::mutex::scoped_lock scoped_lock(removeMutex);
     logdebug("TimerEvent received");
     if (er == boost::asio::error::operation_aborted) {
       logdebug("Timer Event was Canceled");
@@ -55,9 +57,12 @@ private:
         }
       }
     }
-//    t.expires_from_now(boost::posix_time::seconds(60));
-//    t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    if(!er&&!shutdown){
+      t.expires_from_now(boost::posix_time::seconds(10));
+      t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    }
   }
+ 
 public:
 
   DataHandler(InputStream * is, OutputStream * os) : t(io_timer) {
@@ -73,21 +78,24 @@ public:
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
     logdebug("endpoint:" << ep);
+    shutdown=false;
     t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    //    io_timer.run();
     boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 
 
   }
 
   ~DataHandler() {
-    io_timer.stop();
+    shutdown=true;
+    remove_endpoint_from_stream(boost::asio::error::shut_down);
+//    io_timer.stop();
+/*
     if (endpoint2stream.size() > 0) {
       if (endpoint2stream.front() == _own_id) {
         logdebug("remove me from endpoint list for audio encoding");
         endpoint2stream.pop_front();
       }
-    }
+    }*/
   }
 
   DataHandler(TcpSocket * s) : t(io_timer) {
@@ -100,6 +108,7 @@ public:
     _own_id = ep.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
+    shutdown=false;
     t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 
@@ -169,10 +178,12 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
+/*
         logdebug("setting timer");
         t.expires_from_now(boost::posix_time::seconds(10));
         t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
-      } else {
+*/
+        } else {
         logdebug("dummy audio packet");
       }
 
@@ -196,9 +207,10 @@ public:
 
       //      _ois->readObject(un);
       //      t.cancel();
-        t.expires_from_now(boost::posix_time::seconds(10));
+ /*
+      t.expires_from_now(boost::posix_time::seconds(10));
         t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-
+*/
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         logerror("error while putProcessUnit!");
       }
@@ -211,3 +223,4 @@ public:
   }
 };
 std::list<std::string> DataHandler::endpoint2stream;
+boost::mutex DataHandler::removeMutex;

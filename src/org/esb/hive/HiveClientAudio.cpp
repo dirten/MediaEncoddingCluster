@@ -25,8 +25,8 @@ namespace org {
         _oos = NULL;
         _toHalt = false;
         _running = false;
-        _conv=NULL;
-        _swap_codecs=false;
+        _conv = NULL;
+        _swap_codecs = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         avcodec_register_all();
         av_register_all();
@@ -114,21 +114,21 @@ namespace org {
               }
 
               if (_conv != NULL) {
-                unit->_converter=_conv;
+                unit->_converter = _conv;
               }
-              _swap_codecs=true;
+              _swap_codecs = true;
               unit->process();
-
+              Thread::sleep2(20000);
               if (_conv == NULL) {
                 _conv = unit->_converter;
               }
-			  /**
-			  * clear the input packets, there are no more nedded
-			  * they only consumes Network bandwidth and cpu on the server
-			  */
-			  unit->_input_packets.clear();
+              /**
+               * clear the input packets, there are no more nedded
+               * they only consumes Network bandwidth and cpu on the server
+               */
+              unit->_input_packets.clear();
 
-			  char * text_out = "put audio_process_unit";
+              char * text_out = "put audio_process_unit";
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
@@ -137,10 +137,10 @@ namespace org {
                 _sock->close();
               }
               if (unit->_last_process_unit) {
-                _swap_codecs=false;
-                if(_conv)
+                _swap_codecs = false;
+                if (_conv)
                   delete _conv;
-                _conv=NULL;
+                _conv = NULL;
               }
 
               delete unit;

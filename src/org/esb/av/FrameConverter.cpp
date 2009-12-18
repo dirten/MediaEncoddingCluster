@@ -29,7 +29,7 @@ namespace org {
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           _audioCtx = av_audio_resample_init(
-              enc->getChannels(), dec->getChannels(),
+              enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
               enc->getSampleFormat(), dec->getSampleFormat(),
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg

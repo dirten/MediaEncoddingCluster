@@ -141,7 +141,7 @@ namespace org {
               org::esb::av::FormatInputStream * fis = new org::esb::av::FormatInputStream(&fi);
               if (!fis->isValid()) {
                 logerror("Error Opening Input Streams from " << filename);
-				delete fis;
+                delete fis;
                 continue;
               }
               /**
@@ -165,7 +165,7 @@ namespace org {
                   _stream_map[index].last_start_ts = 0;
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
-				  _stream_map[index].process_unit_count=0;
+                  _stream_map[index].process_unit_count = 0;
                   //                  _stream_map[index].last_process_unit_id = 0;
                   /**
                    * collecting data for the Packetizer
@@ -218,7 +218,7 @@ namespace org {
               Packet packet;
               /**
                * read while packets in the stream
-			   * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
+               * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
                */
               while (pis.readPacket(packet) == 0 && !_isStopSignal) {
                 /**
@@ -289,7 +289,7 @@ namespace org {
         }
 
         void ProcessUnitWatcher::buildProcessUnit(PacketListPtr list, bool lastPackets) {
-			if(list.size()==0)return;
+          if (list.size() == 0)return;
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
           int sIdx = list.front()->getStreamIndex();
 
@@ -337,34 +337,34 @@ namespace org {
               puQueue.enqueue(u);
             }
           }
-		  
+
           logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex);//get_stream_pu_mutex
+          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-//          if (audioQueue.size() == 0)
-//            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-		  logdebug("audio queue size:"<<audioQueue.size());
+          //          if (audioQueue.size() == 0)
+          //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          logdebug("audio queue size:" << audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
-		  {
-          boost::mutex::scoped_lock scoped_lock(stmt_mutex);//get_stream_pu_mutex
-          _stmt->setInt("source_stream", u->_source_stream);
-          _stmt->setInt("target_stream", u->_target_stream);
-          if (u->_input_packets.size() > 0) {
-            _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
-            _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
-          } else {
-            _stmt->setLong("start_ts", 0);
-            _stmt->setLong("end_ts", 0);
+          {
+            boost::mutex::scoped_lock scoped_lock(stmt_mutex); //get_stream_pu_mutex
+            _stmt->setInt("source_stream", u->_source_stream);
+            _stmt->setInt("target_stream", u->_target_stream);
+            if (u->_input_packets.size() > 0) {
+              _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+              _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
+            } else {
+              _stmt->setLong("start_ts", 0);
+              _stmt->setLong("end_ts", 0);
+            }
+            _stmt->setInt("frame_count", u->_input_packets.size());
+            _stmt->execute();
+            u->_process_unit = _stmt->getLastInsertId();
           }
-          _stmt->setInt("frame_count", u->_input_packets.size());
-          _stmt->execute();
-          u->_process_unit = _stmt->getLastInsertId();
-		  }
           return u;
         }
 
@@ -372,32 +372,34 @@ namespace org {
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-//          if (puQueue.size() == 0)
-//            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          //          if (puQueue.size() == 0)
+          //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
-		  {
+          {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex);
-		  _stmt->setInt("source_stream", u->_source_stream);
-          _stmt->setInt("target_stream", u->_target_stream);
-          if (u->_input_packets.size() > 0) {
-            _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
-            _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
-          } else {
-            _stmt->setLong("start_ts", 0);
-            _stmt->setLong("end_ts", 0);
+            _stmt->setInt("source_stream", u->_source_stream);
+            _stmt->setInt("target_stream", u->_target_stream);
+            if (u->_input_packets.size() > 0) {
+              _stmt->setLong("start_ts", u->_input_packets.front()->packet->dts);
+              _stmt->setLong("end_ts", u->_input_packets.back()->packet->dts);
+            } else {
+              _stmt->setLong("start_ts", 0);
+              _stmt->setLong("end_ts", 0);
+            }
+            _stmt->setInt("frame_count", u->_input_packets.size());
+            _stmt->execute();
+            u->_process_unit = _stmt->getLastInsertId();
           }
-          _stmt->setInt("frame_count", u->_input_packets.size());
-          _stmt->execute();
-          u->_process_unit = _stmt->getLastInsertId();
-		  }
           return u;
         }
-		bool ProcessUnitWatcher::putProcessUnit(int pu_id) {
+
+        bool ProcessUnitWatcher::putProcessUnit(int pu_id) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
           _stmt_fr->setInt("id", pu_id);
-          _stmt_fr->execute();	
-		  return true;
-		}
+          _stmt_fr->execute();
+          return true;
+        }
+
         bool ProcessUnitWatcher::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
 
