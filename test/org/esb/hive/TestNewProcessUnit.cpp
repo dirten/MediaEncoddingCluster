@@ -74,7 +74,7 @@ map<int, int> _smap;
   /*opening the output file and Packet Output Stream*/
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
-  //  PacketOutputStream pos(&fos);
+  PacketOutputStream pos(&fos);
   map<int, StreamData> _sdata;
 
   /*Create and open the input and output Codecs*/
@@ -91,7 +91,7 @@ map<int, int> _smap;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-      _sdata[i].enc->setCodecId(CODEC_ID_H264);
+      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setBitRate(1024000);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
@@ -102,7 +102,7 @@ map<int, int> _smap;
       _sdata[i].enc->setTimeBase(ar);
 
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
-      _sdata[i].enc->setCodecId(CODEC_ID_MP3);
+      _sdata[i].enc->setCodecId(CODEC_ID_VORBIS);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
@@ -119,7 +119,7 @@ map<int, int> _smap;
     _sdata[i].enc->open();
     _smap[i] = s++;
     _sdata[i].conv = new FrameConverter(_sdata[i].dec.get(), _sdata[i].enc.get());
-    //    pos.setEncoder(*_sdata[i].enc, _smap[i]);
+        pos.setEncoder(*_sdata[i].enc, _smap[i]);
     //    _sdata[i].enc->setOutputStream(&pos);
   }
 
@@ -128,7 +128,7 @@ map<int, int> _smap;
 
   //  if (!pos.init())goto cleanup;
   fos.dumpFormat();
-  for (int a = 0; a < 200 /*|| true*/; a++) {
+  for (int a = 0; a < 200 || true; a++) {
     Packet * p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
@@ -217,7 +217,7 @@ void write_file(int argc, char** argv) {
   FormatOutputStream fos(&f_out);
   PacketOutputStream pos(&fos);
   char * file = new char[100];
-  Encoder * video_codec = new Encoder(CODEC_ID_H264);
+  Encoder * video_codec = new Encoder(CODEC_ID_THEORA);
   video_codec->setBitRate(1024000);
   video_codec->setWidth(320);
   video_codec->setHeight(240);
@@ -227,7 +227,7 @@ void write_file(int argc, char** argv) {
   ar.den = 25;
   video_codec->setTimeBase(ar);
 
-  Encoder * audio_codec = new Encoder(CODEC_ID_MP3);
+  Encoder * audio_codec = new Encoder(CODEC_ID_VORBIS);
   audio_codec->setBitRate(128000);
   audio_codec->setSampleRate(44100);
   audio_codec->setChannels(2);
@@ -242,7 +242,7 @@ void write_file(int argc, char** argv) {
   audio_codec->open();
 //  video_codec->ctx->extradata_size=0;
   pos.setEncoder(*video_codec, 0);
-//  pos.setEncoder(*audio_codec, 1);
+  pos.setEncoder(*audio_codec, 1);
   pos.init();
 
   for (int a = 1; true; a++) {
@@ -255,7 +255,7 @@ void write_file(int argc, char** argv) {
     ois.readObject(pu);
     std::list<boost::shared_ptr<Packet> >::iterator it = pu._output_packets.begin();
     for (; it != pu._output_packets.end(); it++) {
-//      (*it)->setStreamIndex(0);
+      (*it)->setStreamIndex((*it)->getStreamIndex()-1);
       //        (*it)->setPts(AV_NOPTS_VALUE);
       pos.writePacket(**it);
     }

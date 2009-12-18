@@ -67,21 +67,19 @@ int main(int argc, char** argv) {
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
   int s = 0;
-  bool video=false, audio=false;
+  bool video = false, audio = false;
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
-        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO ) continue;
-    if(audio&&video)continue;
+        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if (audio && video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
-      video=true;
-      //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-//      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-            _sdata[i].enc->setCodecId(CODEC_ID_H264);
+      video = true;
+      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(20);
@@ -92,8 +90,8 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setBitRate(10240000);
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
-      audio=true;
-      _sdata[i].enc->setCodecId(CODEC_ID_MP3);
+      audio = true;
+      _sdata[i].enc->setCodecId(CODEC_ID_VORBIS);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
@@ -123,12 +121,12 @@ int main(int argc, char** argv) {
   pos.init();
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 50000||true ; i++) {
+  for (int i = 0; i < 50000 || true; i++) {
     Packet p;
     //reading a packet from the Stream
     if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0
     if (_sdata.find(p.getStreamIndex()) == _sdata.end())continue;
-//    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
+    //    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
     Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
 
@@ -160,7 +158,7 @@ int main(int argc, char** argv) {
   }
   map<int, StreamData>::iterator it = _sdata.begin();
   for (; it != _sdata.end(); it++) {
-    StreamData  s=(*it).second;
+    StreamData s = (*it).second;
     while (s.more_frames) {
       if (s.enc->encode() <= 0) {
         s.more_frames = false;
