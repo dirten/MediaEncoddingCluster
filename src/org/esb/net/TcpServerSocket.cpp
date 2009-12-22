@@ -45,7 +45,7 @@ namespace org {
 		}
         if (ec) {
           logerror("Error while accepting Socket(" << ec.message() << ")");
-          return NULL;
+//          return NULL;
         }
 
         boost::asio::socket_base::keep_alive option(true);

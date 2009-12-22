@@ -15,6 +15,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/net/TcpSocket.h"
 
+#include "org/esb/util/Timer.h"
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
@@ -39,9 +40,10 @@ private:
   static boost::mutex removeMutex;
 
   std::string _own_id;
-  boost::asio::io_service io_timer;
-  boost::asio::deadline_timer timer;
-  boost::shared_ptr<boost::thread> _timer_thread;
+//  boost::asio::io_service io_timer;
+//  boost::asio::deadline_timer timer;
+//  boost::shared_ptr<boost::thread> _timer_thread;
+  boost::shared_ptr<Timer> _timer;
   //  boost::asio::deadline_timer t2;
   boost::shared_ptr<ProcessUnit> un;
   bool shutdown;
@@ -60,15 +62,11 @@ private:
         }
       }
     }
-    if (!er||er == boost::asio::error::operation_aborted) {
-      timer.expires_from_now(boost::posix_time::seconds(10));
-      timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
-    }
   }
 
 public:
 
-  DataHandler(InputStream * is, OutputStream * os) : timer(io_timer) {
+  DataHandler(InputStream * is, OutputStream * os) {
     _is = is;
     _os = os;
     //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
@@ -82,26 +80,19 @@ public:
     _own_id += StringUtil::toString(ep.port());
     logdebug("endpoint:" << ep);
     shutdown = false;
-    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+//    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+//    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+	
+
   }
 
   ~DataHandler() {
     shutdown = true;
-    io_timer.stop();
-    _timer_thread->join();
+    _timer.reset();
     remove_endpoint_from_stream(boost::asio::error::shut_down);
-    //    io_timer.stop();
-    /*
-        if (endpoint2stream.size() > 0) {
-          if (endpoint2stream.front() == _own_id) {
-            logdebug("remove me from endpoint list for audio encoding");
-            endpoint2stream.pop_front();
-          }
-        }*/
   }
 
-  DataHandler(TcpSocket * s) : timer(io_timer) {
+  DataHandler(TcpSocket * s) {
     socket = s;
     _is = socket->getInputStream();
     _os = socket->getOutputStream();
@@ -112,10 +103,9 @@ public:
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
     shutdown = false;
-    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+//    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
-
+//    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
     //    io_timer.run();
     logdebug("endpoint:" << ep);
   }
@@ -184,7 +174,8 @@ public:
       if (un->_input_packets.size() > 0) {
         logdebug("setting timer");
 //        timer.expires_from_now(boost::posix_time::seconds(10));
-//        timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error));
+//        timer.async_wait();
+		_timer.reset(new Timer(10,boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
         logdebug("dummy audio packet");
       }
@@ -212,7 +203,8 @@ public:
       fos.write(data);
 
       //      _ois->readObject(un);
-      timer.cancel();
+	  if(_timer.get()!=NULL)
+        _timer.reset();
       /*
            t.expires_from_now(boost::posix_time::seconds(10));
              t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));

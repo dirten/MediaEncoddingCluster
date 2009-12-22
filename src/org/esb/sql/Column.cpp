@@ -374,18 +374,15 @@ namespace org {
       void Column::setString(const char* data) {
         length = ::strlen(data);
         reserve(length + 1);
-        memcpy(static_cast<char*> (bind.buffer), data, length);
-        memset(static_cast<char*> (bind.buffer)+(length+1),0,1);
+        memcpy(static_cast<char*>(bind.buffer), data, length + 1); 
         bind.buffer_type = MYSQL_TYPE_VAR_STRING;
       }
 
       void Column::setString(const std::string& data) {
-        setString(data.c_str());
-        /*
         length = data.size();
         reserve(length);
         data.copy(static_cast<char*> (bind.buffer), data.size());
-        bind.buffer_type = MYSQL_TYPE_VAR_STRING;*/
+        bind.buffer_type = MYSQL_TYPE_VAR_STRING;
       }
 
       void Column::setBlob(const std::string& data) {

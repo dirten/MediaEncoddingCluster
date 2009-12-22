@@ -79,6 +79,7 @@ add_library (util
   util/ScopedTimeCounter.cpp 
   util/IllegalFormatException.cpp
   util/Log.cpp
+  util/Timer.cpp
 #  util/Queue.cpp
 )
 
@@ -246,6 +247,7 @@ add_library (web
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
 )
+
 TARGET_LINK_LIBRARIES(web
   wtext
   wthttp
