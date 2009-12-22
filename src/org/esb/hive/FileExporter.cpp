@@ -245,9 +245,10 @@ void FileExporter::exportFile(int fileid) {
         if (min_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), basear))continue;
 
         p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
-        //        p->packet->dts=0;
-        //        p->packet->pts=0;
-        //		logdebug(p->toString());
+        //p->packet->dts=0;
+        //p->packet->pts=0;
+        //logdebug(p->toString());
+        _source_stream_map[idx].last_timestamp=p->getPts();
         p->packet->stream_index = _source_stream_map[idx].out_stream_index;
         pos->writePacket(*p);
 

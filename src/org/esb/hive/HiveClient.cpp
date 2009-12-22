@@ -72,7 +72,7 @@ namespace org {
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           loginfo("Server " << _host << " connected!!!");
         } catch (exception & ex) {
-          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
+//          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
       }
       void HiveClient::process() {

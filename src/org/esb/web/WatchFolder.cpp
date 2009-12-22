@@ -178,7 +178,7 @@ namespace org {
           d->show();
         }
         void folderSaved() {
-          tab->reload("SELECT id,infolder, outfolder, profile from watch_folder");
+          tab->reload("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile");
           delete d;
         }
         void newWatchFolder() {

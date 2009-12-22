@@ -50,12 +50,11 @@ namespace org {
       }
 
       void TcpSocket::close() {
-        if (_socket.get() && _socket->is_open()){
-          try{
-//            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-          }
-          catch(exception & ex){
-            logerror("while shutdown socket:"<<ex.what());
+        if (_socket.get() && _socket->is_open()) {
+          try {
+            //            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+          }          catch (exception & ex) {
+            logerror("while shutdown socket:" << ex.what());
           }
           _socket->close();
         }
@@ -65,25 +64,25 @@ namespace org {
       void TcpSocket::connect() {
         if (!_connected) {
           tcp::resolver resolver(_io_service);
-          tcp::resolver::query query( _host, org::esb::util::Decimal(_port).toString().c_str());
+          tcp::resolver::query query(_host, org::esb::util::Decimal(_port).toString().c_str());
           tcp::resolver::iterator iterator = resolver.resolve(query);
           tcp::resolver::iterator end;
-//		  asio::error e=boost::asio::error::host_not_found;
+          //		  asio::error e=boost::asio::error::host_not_found;
           boost::system::error_code e = boost::asio::error::host_not_found;
           while (e && iterator != end) {
-            logdebug("EndPoint to connect to:"<<iterator->endpoint());
+//            logdebug("EndPoint to connect to:" << iterator->endpoint());
             _socket->close();
             _socket->connect(*iterator++, e);
-			logdebug("Socket Message:"<<e.message());
-			logdebug("Socket status:"<<e);
+//            logdebug("Socket Message:" << e.message());
+//            logdebug("Socket status:" << e);
 
           }
-		  if (e){
-			  _socket->close();
+          if (e) {
+            _socket->close();
             throw boost::system::system_error(e);
-		  }
+          }
 
-//          _socket->connect(*iterator);
+          //          _socket->connect(*iterator);
 
           _is = new TcpSocketInputStream(_socket, net_io_mutex);
           _os = new TcpSocketOutputStream(_socket, net_io_mutex);
@@ -94,8 +93,8 @@ namespace org {
       std::string TcpSocket::getRemoteIpAddress() {
         return _socket->remote_endpoint().address().to_string();
       }
-      
-      boost::asio::ip::tcp::endpoint TcpSocket::getRemoteEndpoint(){
+
+      boost::asio::ip::tcp::endpoint TcpSocket::getRemoteEndpoint() {
         return _socket->remote_endpoint();
       }
     }

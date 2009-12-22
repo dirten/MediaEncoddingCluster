@@ -118,7 +118,7 @@ namespace org {
               }
               _swap_codecs = true;
               unit->process();
-              Thread::sleep2(20000);
+//              Thread::sleep2(20000);
               if (_conv == NULL) {
                 _conv = unit->_converter;
               }

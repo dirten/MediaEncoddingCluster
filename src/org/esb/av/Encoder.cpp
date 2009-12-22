@@ -141,7 +141,7 @@ int Encoder::encodeAudio(Frame & frame) {
   logdebug(frame.toString());
 #endif
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
-  int frame_bytes = ctx->frame_size * osize * ctx->channels;
+  int frame_bytes = ctx->frame_size>1?ctx->frame_size * osize * ctx->channels:frame._size/osize;
  
   if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + frame._size) < 0) {
     fprintf(stderr, "av_fifo_realloc2() failed\n");

@@ -343,12 +343,12 @@ namespace org {
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
-          if (_isStopSignal)
-            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           //          if (audioQueue.size() == 0)
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           logdebug("audio queue size:" << audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
+          if (_isStopSignal)
+            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
 
           {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex); //get_stream_pu_mutex

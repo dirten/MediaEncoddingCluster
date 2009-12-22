@@ -24,10 +24,9 @@ namespace org {
         std::map<std::string, std::string>::iterator elit = data.begin();
         for (; elit != data.end(); elit++) {
           if ((*elit).first == "id")continue;
-          if (update){
-              sql += " " + (*elit).first + "=:" + (*elit).first + ", ";
-          }
-          else {
+          if (update) {
+            sql += " " + (*elit).first + "=:" + (*elit).first + ", ";
+          } else {
             fields += (*elit).first + ", ";
             values += ":" + (*elit).first + ", ";
           }
@@ -37,7 +36,7 @@ namespace org {
         if (update) {
           sql = sql.substr(0, sql.length() - 2);
           sql += " where id=:id";
-        }else {
+        } else {
           sql += "(" + fields + ") VALUES (" + values + ")";
         }
         logdebug("SQL:" << sql);
@@ -47,11 +46,13 @@ namespace org {
 
         elit = data.begin();
         for (; elit != data.end(); elit++) {
-//          if((*elit).first!="id"){
-			if((*elit).second.length()>0)
-				pstmt.setString((*elit).first, (*elit).second);
-            logdebug("map2sql: "<<(*elit).first<<"="<<(*elit).second);
-//          }
+          //          if((*elit).first!="id"){
+          if ((*elit).second.length() > 0)
+            pstmt.setString((*elit).first, (*elit).second);
+          else
+            pstmt.setNull((*elit).first);
+          logdebug("map2sql: " << (*elit).first << "=" << (*elit).second);
+          //          }
         }
         pstmt.execute();
       }
