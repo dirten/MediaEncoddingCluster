@@ -69,6 +69,9 @@ namespace org {
         boost::mutex ProcessUnitWatcher::terminationMutex;
         boost::condition ProcessUnitWatcher::termination_wait;
 
+        boost::mutex ProcessUnitWatcher::queue_empty_wait_mutex;
+        boost::condition ProcessUnitWatcher::queue_empty_wait_condition;
+
         ProcessUnitWatcher::ProcessUnitQueue ProcessUnitWatcher::puQueue;
         org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > ProcessUnitWatcher::audioQueue;
         //        std::deque<boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::audioQueue;
@@ -274,6 +277,9 @@ namespace org {
             CodecFactory::clearCodec(it->second.instream);
             CodecFactory::clearCodec(it->second.outstream);
           }*/
+              boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
+              queue_empty_wait_condition.wait(queue_empty_wait_lock);
+
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
@@ -343,7 +349,8 @@ namespace org {
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
-          //          if (audioQueue.size() == 0)
+		  if (audioQueue.size()== 0&& puQueue.size()== 0)
+			queue_empty_wait_condition.notify_all();
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           logdebug("audio queue size:" << audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
@@ -370,6 +377,8 @@ namespace org {
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
+		  if (audioQueue.size()== 0&& puQueue.size()== 0)
+			queue_empty_wait_condition.notify_all();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           //          if (puQueue.size() == 0)

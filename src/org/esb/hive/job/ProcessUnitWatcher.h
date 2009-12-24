@@ -70,6 +70,8 @@ namespace org {
                     static bool _isStopSignal;
                     static boost::mutex terminationMutex;
                     static boost::condition termination_wait;
+                    static boost::condition queue_empty_wait_condition;
+                    static boost::mutex queue_empty_wait_mutex;
                     static bool _isRunning;
 
                     std::map<int, boost::shared_ptr<ProcessUnit> > unit_map;
