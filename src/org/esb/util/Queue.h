@@ -18,6 +18,7 @@ namespace org {
         boost::mutex condition_mutex;
         boost::mutex enqueue_mutex;
         boost::mutex dequeue_mutex;
+        boost::mutex queue_mutex;
 //        boost::mutex queue_thread_mutex;
         boost::condition queue_condition;
       public:
@@ -41,8 +42,11 @@ namespace org {
             queue_condition.wait(condition_lock);
 //            queue_condition.wait(enqueue_lock);
           }
-          _q.push_back(obj);
-          queue_condition.notify_all();
+		  {
+            boost::mutex::scoped_lock enqueue_lock(queue_mutex);
+			_q.push_back(obj);
+			queue_condition.notify_all();
+		  }
         }
 
         /*
@@ -65,17 +69,20 @@ namespace org {
          }
          */
         T dequeue() {
-          boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
+          boost::mutex::scoped_lock enqueue_lock(dequeue_mutex);
           if (_q.size() == 0) {
 	        boost::mutex::scoped_lock condition_lock(condition_mutex);
             queue_condition.wait(condition_lock);
 //			  queue_condition.wait(dequeue_lock);
           }
-          T object = _q.front();
-          //          object = _q.front();
-          _q.pop_front();
-          queue_condition.notify_all();
-          return object;
+		  {
+            boost::mutex::scoped_lock dequeue_lock(queue_mutex);
+            T object = _q.front();
+            //          object = _q.front();
+            _q.pop_front();
+            queue_condition.notify_all();
+            return object;
+		  }
         }
 
         T operator[](int a) {

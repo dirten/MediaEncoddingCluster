@@ -18,6 +18,10 @@ IF(NOT WIN32)
 ELSEIF(APPLE)
 
 ELSEIF(WIN32)
+  SET(lang_source
+    ${lang_source}
+    WindowsCpuInfo.cpp
+  )
 
 ENDIF(NOT WIN32)
 
