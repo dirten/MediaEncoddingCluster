@@ -120,9 +120,8 @@ void PacketOutputStream::writePacket(Packet & packet) {
 #ifdef DEBUG
   logdebug(packet.toString());
 #endif
-  //  int result = av_write_frame(_fmtCtx, packet.packet);
-  if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
-  //  logdebug("av_write_frame result:" << result);
+//  int result = av_write_frame(_fmtCtx, packet.packet);
+//  if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
 
 }
 

@@ -71,8 +71,8 @@ namespace org {
           int counter = 0, remaining = length;
 
           while (remaining > 0) {
-//            int read= boost::asio::read(*_socket,(boost::asio::buffer(buffer + (length - remaining), remaining)));
-            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
+            int read= boost::asio::read(*_socket,(boost::asio::buffer(buffer + (length - remaining), remaining)));
+//            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
             remaining -= read;
             counter += read;
 #ifdef NET_DEBUG

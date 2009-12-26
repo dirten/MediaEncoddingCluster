@@ -218,25 +218,27 @@ namespace org {
               PacketInputStream pis(fis);
               q_filled = false;
               Packetizer packetizer(stream_data);
-              Packet packet;
+              Packet * packet;
+
               /**
                * read while packets in the stream
                * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
                */
-              while (pis.readPacket(packet) == 0 && !_isStopSignal) {
-                /**
+              while ((packet=pis.readPacket()) != NULL && !_isStopSignal) {
+                boost::shared_ptr<Packet> pPacket(packet);
+				/**
                  * if the actuall stream not mapped then discard this and continue with next packet
                  */
                 if (
-                    _stream_map.find(packet.packet->stream_index) == _stream_map.end() ||
-                    _stream_map[packet.packet->stream_index].last_start_ts > packet.packet->dts
+                    _stream_map.find(packet->packet->stream_index) == _stream_map.end() ||
+                    _stream_map[packet->packet->stream_index].last_start_ts > packet->packet->dts
                     ) {
                   continue;
                 }
                 /**
                  * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
                  */
-                boost::shared_ptr<Packet> pPacket(new Packet(packet));
+                
                 if (packetizer.putPacket(pPacket)) {
                   PacketListPtr packets = packetizer.removePacketList();
                   buildProcessUnit(packets, false);
@@ -344,13 +346,13 @@ namespace org {
             }
           }
 
-          logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
+//          logdebug("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
 		  if (audioQueue.size()== 0&& puQueue.size()== 0)
 			queue_empty_wait_condition.notify_all();
+          boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           logdebug("audio queue size:" << audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
@@ -376,9 +378,9 @@ namespace org {
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getProcessUnit() {
-          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
 		  if (audioQueue.size()== 0&& puQueue.size()== 0)
 			queue_empty_wait_condition.notify_all();
+          boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           //          if (puQueue.size() == 0)

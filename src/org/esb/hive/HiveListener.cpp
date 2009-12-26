@@ -80,7 +80,7 @@ namespace org {
         server = new TcpServerSocket(port);
         server->bind();
         for (; main_nextloop;) {
-          try {
+//          try {
             TcpSocket * clientSocket = server->accept();
 			if (clientSocket->isConnected()  || (!main_nextloop)) {
               ProtocolServer *protoServer = new ProtocolServer(clientSocket);
@@ -91,9 +91,9 @@ namespace org {
               logerror("Client was not accepted");
               break;
             }
-          } catch (...) {
-            logerror("Exception in Main:" );
-          }
+//          } catch (exception & ex) {
+//            logerror("Exception in Main:" <<ex.what());
+//          }
         }
       }
 

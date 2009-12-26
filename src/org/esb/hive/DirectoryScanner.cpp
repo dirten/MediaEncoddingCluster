@@ -62,7 +62,7 @@ namespace org {
               std::string e = ".";
               e += tok;
               media_ext[e];
-                            logdebug("Extension added:"<<e);
+              //logdebug("Extension added:"<<e);
             }
           }
         }

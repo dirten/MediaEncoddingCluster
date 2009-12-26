@@ -62,7 +62,7 @@ namespace org {
 					static bool putProcessUnit(int pu_id);
                     static bool putProcessUnit(boost::shared_ptr<ProcessUnit> &unit);
                 private:
-                    typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit> > ProcessUnitQueue;
+                    typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
                     static ProcessUnitQueue puQueue;
 					static org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
 //                    static std::deque<boost::shared_ptr<ProcessUnit> > audioQueue;
