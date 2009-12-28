@@ -72,8 +72,9 @@ void PacketOutputStream::writePacket(Packet & packet) {
    */
 
   /*calculating the Duration of a Packet*/
+  /*
   int dur = 0;
-  AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
+  
   if (stream->codec->codec_type == CODEC_TYPE_VIDEO) {
     dur = static_cast<int> ((((float) (stream->time_base.den) / (float) (stream->time_base.den)))*((float) stream->codec->time_base.den) / ((float) stream->codec->time_base.num));
   } else
@@ -84,8 +85,8 @@ void PacketOutputStream::writePacket(Packet & packet) {
     dur = static_cast<int> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) stream->time_base.den) / ((float) stream->time_base.num));
   } else {
     logdebug("CodecType unknown");
-  }
-
+  }*/
+  AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
   packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
   packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
   //packet.setDts(av_rescale_q(packet.getDts(), packet.getTimeBase(), stream->time_base));
@@ -116,11 +117,11 @@ void PacketOutputStream::writePacket(Packet & packet) {
     if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+//  int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+  int result = av_write_frame(_fmtCtx, packet.packet);
 #ifdef DEBUG
   logdebug(packet.toString());
 #endif
-//  int result = av_write_frame(_fmtCtx, packet.packet);
 //  if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
 
 }
@@ -128,7 +129,9 @@ void PacketOutputStream::writePacket(Packet & packet) {
 void PacketOutputStream::setEncoder(Codec & encoder) {
   setEncoder(encoder, 0);
 }
-
+std::list<AVStream*> PacketOutputStream::getStreamList(){
+	return streams;
+}
 void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
   AVStream * st = av_new_stream(_fmtCtx, stream_id);

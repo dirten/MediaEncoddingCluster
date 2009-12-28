@@ -159,8 +159,8 @@ public:
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
 
       if (endpoint2stream.size() > 0) {
-        logdebug("endpoint is > 0")
-        logdebug(endpoint2stream.front() << " own_id " << _own_id)
+//        logdebug("endpoint is > 0")
+//        logdebug(endpoint2stream.front() << " own_id " << _own_id)
         if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
@@ -172,12 +172,12 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
-        logdebug("setting timer");
+//        logdebug("setting timer");
 //        timer.expires_from_now(boost::posix_time::seconds(10));
 //        timer.async_wait();
 		_timer.reset(new Timer(10,boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
-        logdebug("dummy audio packet");
+//        logdebug("dummy audio packet");
       }
 
       _oos->writeObject(*un.get());

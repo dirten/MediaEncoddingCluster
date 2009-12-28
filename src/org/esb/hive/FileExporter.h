@@ -15,6 +15,9 @@ private:
 		int64_t out_start_time;
                 int64_t last_timestamp;
                 int64_t next_timestamp;
+		int packet_duration;
+		AVRational packet_timebase;
+
 		int in_stream_index;
 		int out_stream_index;
 		AVRational in_timebase;

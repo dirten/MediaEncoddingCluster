@@ -106,14 +106,13 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
 }
 
 Packet * PacketInputStream::readPacketFromFormatIS() {
-  int status = av_read_frame(_formatCtx, _avpacket);
-  Packet *pac=new Packet(_avpacket);
-  if (status >= 0) {
+  if (av_read_frame(_formatCtx, _avpacket) >= 0) {
+    Packet *pac=new Packet(_avpacket);
     pac->setTimeBase(_formatCtx->streams[pac->getStreamIndex()]->time_base);
 //    logdebug("Packet Size:" << pac->getSize())
     return pac;
   }
-  delete pac;
+//  delete pac;
   return NULL;
 }
 
