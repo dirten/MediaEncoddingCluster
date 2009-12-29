@@ -10,8 +10,8 @@ namespace org {
   namespace esb {
     namespace util {
 
-      template<typename T, int MAXSIZE = 10>
-      class Queue {
+      template<typename T, int MAXSIZE = 10 >
+          class Queue {
       private:
         std::deque<T> _q;
         QueueListener * _listener;
@@ -19,17 +19,19 @@ namespace org {
         boost::mutex enqueue_mutex;
         boost::mutex dequeue_mutex;
         boost::mutex queue_mutex;
-//        boost::mutex queue_thread_mutex;
+        //        boost::mutex queue_thread_mutex;
         boost::condition queue_condition;
       public:
 
         Queue() {
           _listener = NULL;
         }
+
         void flush() {
           _q.clear();
           queue_condition.notify_all();
         }
+
         ~Queue() {
           //                    _q.clear();
           //                    queue_condition.notify_all();
@@ -38,15 +40,15 @@ namespace org {
         void enqueue(T obj) {
           boost::mutex::scoped_lock enqueue_lock(enqueue_mutex);
           if (_q.size() >= MAXSIZE) {
-	        boost::mutex::scoped_lock condition_lock(condition_mutex);
+            boost::mutex::scoped_lock condition_lock(condition_mutex);
             queue_condition.wait(condition_lock);
-//            queue_condition.wait(enqueue_lock);
+            //            queue_condition.wait(enqueue_lock);
           }
-		  {
+          {
             boost::mutex::scoped_lock enqueue_lock(queue_mutex);
-			_q.push_back(obj);
-			queue_condition.notify_all();
-		  }
+            _q.push_back(obj);
+            queue_condition.notify_all();
+          }
         }
 
         /*
@@ -71,25 +73,26 @@ namespace org {
         T dequeue() {
           boost::mutex::scoped_lock enqueue_lock(dequeue_mutex);
           if (_q.size() == 0) {
-	        boost::mutex::scoped_lock condition_lock(condition_mutex);
+            boost::mutex::scoped_lock condition_lock(condition_mutex);
             queue_condition.wait(condition_lock);
-//			  queue_condition.wait(dequeue_lock);
+            //			  queue_condition.wait(dequeue_lock);
           }
-		  {
+          {
             boost::mutex::scoped_lock dequeue_lock(queue_mutex);
             T object = _q.front();
             //          object = _q.front();
             _q.pop_front();
             queue_condition.notify_all();
             return object;
-		  }
+          }
         }
 
         T operator[](int a) {
           return _q[a];
         }
-        int size(){
-            return _q.size();
+
+        int size() {
+          return _q.size();
         }
 
         void setQueueListener(QueueListener * listener) {

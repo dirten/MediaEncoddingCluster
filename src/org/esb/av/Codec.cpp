@@ -207,10 +207,10 @@ namespace org {
         //					ctx->start_time=_start_time;
       }
 
-      int Codec::open() {
+      bool Codec::open() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
 
-        if (_opened)return 0;
+        if (_opened)return _opened;
         findCodec(_mode);
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
@@ -239,7 +239,7 @@ namespace org {
         } catch (...) {
           logerror("Exception while openning Codec" << ctx->codec_id);
         }
-        return 0;
+        return _opened;
         //        }
         //        return -1;
       }

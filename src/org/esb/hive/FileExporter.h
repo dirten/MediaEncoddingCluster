@@ -22,6 +22,7 @@ private:
 		int out_stream_index;
 		AVRational in_timebase;
 		AVRational out_timebase;
+                int stream_type;
 	};
 	static std::map<int, StreamData> _stream_map;
 	static std::map<int, StreamData> _source_stream_map;

@@ -68,7 +68,7 @@ namespace org {
                  * @return the ID of this codec, an enum CodecID
                  */
                 CodecID getCodecId();
-                int open();
+                bool open();
                 void setWidth(int w);
                 void setHeight(int h);
                 void setPixelFormat(PixelFormat pfm);

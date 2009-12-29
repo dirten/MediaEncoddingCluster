@@ -26,7 +26,7 @@ using namespace org::esb::config;
 std::map<int, FileExporter::StreamData> FileExporter::_source_stream_map;
 
 void FileExporter::exportFile(int fileid) {
-
+  _source_stream_map.clear();
 
   map<int, boost::shared_ptr<Encoder> > enc;
   map<int, int> ptsmap;
@@ -82,7 +82,7 @@ void FileExporter::exportFile(int fileid) {
 
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
   {
-    PreparedStatement stmt = con.prepareStatement("select sin.stream_index inid, sout.stream_index outid,sin.start_time in_start_time, sin.time_base_num intbnum, sin.time_base_den intbden from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
+    PreparedStatement stmt = con.prepareStatement("select sin.stream_type as type, sin.stream_index inid, sout.stream_index outid,sin.start_time in_start_time, sin.time_base_num intbnum, sin.time_base_den intbden from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
     stmt.setInt("fileid", fileid);
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
@@ -92,9 +92,9 @@ void FileExporter::exportFile(int fileid) {
       ar.num = rs.getInt("intbnum");
       ar.den = rs.getInt("intbden");
       _source_stream_map[rs.getInt("inid")].in_timebase = ar;
-	  _source_stream_map[rs.getInt("inid")].last_timestamp=0;
-	  _source_stream_map[rs.getInt("inid")].next_timestamp=0;
-
+      _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
+      _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
+      _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
       if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
         min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
       }
@@ -110,7 +110,7 @@ void FileExporter::exportFile(int fileid) {
       codec->open();
       //      Encoder *encoder=CodecFactory::getStreamEncoder(rs.getInt("sid"));
       //      encoder->open();
-//	  _source_stream_map[rs.getInt("stream_index")].duration
+      //	  _source_stream_map[rs.getInt("stream_index")].duration
       enc[rs.getInt("stream_index")] = codec;
       ptsmap[rs.getInt("stream_index")] = 0;
       dtsmap[rs.getInt("stream_index")] = 0;
@@ -181,26 +181,25 @@ void FileExporter::exportFile(int fileid) {
   //	fos.open();
   pos->init();
 
-  std::list<AVStream*> streams=pos->getStreamList();
-  std::list<AVStream*>::iterator sit=streams.begin();
-  for(;sit!=streams.end();sit++){
-	int dur=0;
-	if((*sit)->codec->codec_type == CODEC_TYPE_AUDIO){
-	  AVRational sr;
-	  sr.num=1;
-	  sr.den=(*sit)->codec->sample_rate;
-	  dur=av_rescale_q((*sit)->codec->frame_size,sr,(*sit)->time_base);
-	}
-	else if((*sit)->codec->codec_type == CODEC_TYPE_VIDEO){
-		dur=av_rescale_q(1,(*sit)->codec->time_base,(*sit)->time_base);
-	}
-	std::map<int, FileExporter::StreamData>::iterator sdit=_source_stream_map.begin();
-    for(;sdit!=_source_stream_map.end();sdit++){
-  	  if((*sdit).second.out_stream_index==(*sit)->index){
-	    (*sdit).second.packet_duration=dur;
-		(*sdit).second.packet_timebase=(*sit)->time_base;
-	  }
-	}
+  std::list<AVStream*> streams = pos->getStreamList();
+  std::list<AVStream*>::iterator sit = streams.begin();
+  for (; sit != streams.end(); sit++) {
+    int dur = 0;
+    if ((*sit)->codec->codec_type == CODEC_TYPE_AUDIO) {
+      AVRational sr;
+      sr.num = 1;
+      sr.den = (*sit)->codec->sample_rate;
+      dur = av_rescale_q((*sit)->codec->frame_size, sr, (*sit)->time_base);
+    } else if ((*sit)->codec->codec_type == CODEC_TYPE_VIDEO) {
+      dur = av_rescale_q(1, (*sit)->codec->time_base, (*sit)->time_base);
+    }
+    std::map<int, FileExporter::StreamData>::iterator sdit = _source_stream_map.begin();
+    for (; sdit != _source_stream_map.end(); sdit++) {
+      if ((*sdit).second.out_stream_index == (*sit)->index) {
+        (*sdit).second.packet_duration = dur;
+        (*sdit).second.packet_timebase = (*sit)->time_base;
+      }
+    }
   }
   /**
    * check if encoding is full finished
@@ -240,7 +239,7 @@ void FileExporter::exportFile(int fileid) {
     path += "/tmp/";
     while (rs.next()) {
       int pu_id = rs.getInt("id");
-      logdebug("open PU with id : " << pu_id)
+//      logdebug("open PU with id : " << pu_id)
       std::string name = path;
       name += org::esb::util::Decimal(pu_id % 10).toString();
       name += "/";
@@ -254,44 +253,31 @@ void FileExporter::exportFile(int fileid) {
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
-	  if(ois.readObject(pu)!=0){
-		  logerror("reading archive # "<<pu_id);
-		  continue;
-	  }
-      	  logdebug("here:"<<pu_id);
-		  logdebug("EncoderExtraSize"<<pu._encoder->ctx->extradata_size);
-		  logdebug("DecoderExtraSize"<<pu._decoder->ctx->extradata_size);
+      if (ois.readObject(pu) != 0) {
+        logerror("reading archive # " << pu_id);
+        continue;
+      }
       std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
-        /*
-                        if(p->getStreamIndex()==0)
-                                p->setStreamIndex(1);
-         */
         int idx = p->getStreamIndex();
         if (min_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), basear))continue;
+        if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
+          p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
+        } else {
+          p->setPts(_source_stream_map[idx].next_timestamp);
+          p->setTimeBase(_source_stream_map[idx].packet_timebase);
+          p->setDuration(_source_stream_map[idx].packet_duration);
+          _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
+          _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+        }
 
-//        p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
-		
-//		_source_stream_map[idx].last_timestamp=p->getPts();
 
-		p->setPts(_source_stream_map[idx].next_timestamp);
-		p->setTimeBase(_source_stream_map[idx].packet_timebase);
-		p->setDuration(_source_stream_map[idx].packet_duration);
 
-		_source_stream_map[idx].last_timestamp=_source_stream_map[idx].next_timestamp;
-		_source_stream_map[idx].next_timestamp+=_source_stream_map[idx].packet_duration;
-
-		p->packet->stream_index = _source_stream_map[idx].out_stream_index;
+        p->packet->stream_index = _source_stream_map[idx].out_stream_index;
         pos->writePacket(*p);
 
       }
-      /*
-      delete pu._decoder;
-      pu._decoder = NULL;
-      delete pu._encoder;
-      pu._encoder = NULL;*/
-
       /**
        * clean up temporary files, they are no longer needed
        */

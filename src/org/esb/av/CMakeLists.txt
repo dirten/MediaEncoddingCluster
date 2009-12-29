@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES(av
   ${BZ2_LIB}
 )
 IF(NOT WIN32)
-	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora z )
+	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora theoraenc theoradec z )
 ENDIF(NOT WIN32)
 
 IF(BUILD_SHARED_LIBS)
