@@ -28,6 +28,8 @@ namespace org {
           logerror("the Decoder and Encoder must be from the same Type");
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
+           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
+            logwarn("Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(
               enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
@@ -102,6 +104,7 @@ namespace org {
 #ifdef DEBUG
         logdebug("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
 #endif
+        
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
             delta,

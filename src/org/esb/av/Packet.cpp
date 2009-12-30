@@ -104,7 +104,7 @@ Packet Packet::operator=(Packet & p) {
 }
 
 Packet::Packet(int s) {
-  //	cout << "Packet(int s)"<<endl;
+//  logdebug("Packet(int s)"<<this);
   isCopy = false;
   _time_base.num=0;
   _time_base.den=0;
@@ -115,24 +115,25 @@ Packet::Packet(int s) {
   if (s > 0) {
 //    packet->data = new uint8_t[s];
     packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
+//    packet->data = static_cast<uint8_t*>(av_malloc(s + FF_INPUT_BUFFER_PADDING_SIZE));
     memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
     callDestruct = true;
   }else {
-//    logerror("Try to Allocate Packet buffer <0")
+    logerror("Try to Allocate Packet buffer <0")
     packet->data=NULL;
         callDestruct = false;
   }
 }
 
 Packet::~Packet() {
-  //    cout << "delete Packet"<<endl;
+//  logdebug("delete Packet"<<this);
   //  	av_free_packet(packetPtr.get());
   if (callDestruct)
     delete [] packet->data;
   else
     av_free_packet(packet);
 
-  //    packet->data=0;
+  packet->data=0;
   //    delete packet;
   //    packet=0;
 }
