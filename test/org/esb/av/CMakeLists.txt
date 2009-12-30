@@ -25,10 +25,7 @@ add_executable (TestFullTranscoding TestFullTranscoding.cpp)
 add_executable (TestPass1 TestPass1.cpp)
 
 target_link_libraries (TestPacket io av util lang avformat avcodec avutil swscale )
-target_link_libraries (TestFfmpeg    ${FFMPEG_AVFORMAT_LIBRARY}
-  ${FFMPEG_AVCODEC_LIBRARY}
-  ${FFMPEG_AVUTIL_LIBRARY}
-  ${FFMPEG_SWSCALE_LIBRARY} )
+target_link_libraries (TestFfmpeg av)
 target_link_libraries (TestSerializePacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT} )
 target_link_libraries (TestDeSerializePacket io av util lang avformat avcodec avutil swscale ${BOOST_SERIAL_LIB_MT})
 target_link_libraries (TestFormatInputStream io av util lang avformat avcodec avutil swscale )

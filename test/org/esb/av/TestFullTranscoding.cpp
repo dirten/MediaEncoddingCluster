@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       video = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
+      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(20);
@@ -91,9 +91,9 @@ int main(int argc, char** argv) {
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
       audio = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_VORBIS);
+      _sdata[i].enc->setCodecId(CODEC_ID_PCM_S16LE);
       _sdata[i].enc->setBitRate(128000);
-      _sdata[i].enc->setSampleRate(44100);
+      _sdata[i].enc->setSampleRate(48000);
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
       //          _sdata[i].enc->open();
@@ -110,7 +110,8 @@ int main(int argc, char** argv) {
     _sdata[i].dec->open();
     _sdata[i].enc->open();
     _smap[i] = s++;
-    _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
+//    if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO)
+      _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
 
     pos.setEncoder(*_sdata[i].enc, _smap[i]);
     _sdata[i].enc->setOutputStream(&pos);
@@ -121,39 +122,46 @@ int main(int argc, char** argv) {
   pos.init();
   fos.dumpFormat();
   /*main loop to encode the packets*/
-  for (int i = 0; i < 50000 || true; i++) {
-    Packet p;
+    Packet *packet;
+  for (int i = 0; i < 500 ; i++) {
     //reading a packet from the Stream
-    if (pis.readPacket(p) < 0)break; //when no more packets available(EOF) then it return <0
-    if (_sdata.find(p.getStreamIndex()) == _sdata.end())continue;
+    if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
+    boost::shared_ptr<Packet> p(packet);
+    if (_sdata.find(p->getStreamIndex()) == _sdata.end())continue;
     //    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
-    Frame * src_frame = _sdata[p.getStreamIndex()].dec->decode2(p);
+    Frame * src_frame = _sdata[p->getStreamIndex()].dec->decode2(*p);
 
     if (!src_frame->isFinished()) {
       delete src_frame;
+  
       continue;
     }
-
     //mapping input tp output stream
-    src_frame->stream_index = _smap[p.getStreamIndex()];
+    src_frame->stream_index = _smap[p->getStreamIndex()];
 
     //Convert an Audio or Video Packet
     Frame * trg_frame = NULL;
-    if (_sdata[p.getStreamIndex()].dec->getCodecType() == CODEC_TYPE_VIDEO)
+    if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_VIDEO)
       trg_frame = new Frame(
-        _sdata[p.getStreamIndex()].enc->getPixelFormat(),
-        _sdata[p.getStreamIndex()].enc->getWidth(),
-        _sdata[p.getStreamIndex()].enc->getHeight());
-    if (_sdata[p.getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
+        _sdata[p->getStreamIndex()].enc->getPixelFormat(),
+        _sdata[p->getStreamIndex()].enc->getWidth(),
+        _sdata[p->getStreamIndex()].enc->getHeight());
+    if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
       trg_frame = new Frame();
 
-    _sdata[p.getStreamIndex()].conv->convert(*src_frame, *trg_frame);
-    int ret = _sdata[p.getStreamIndex()].enc->encode(*trg_frame);
+    if (_sdata[p->getStreamIndex()].conv) {
+      _sdata[p->getStreamIndex()].conv->convert(*src_frame, *trg_frame);
+    }
+    int ret = _sdata[p->getStreamIndex()].enc->encode(*trg_frame);
 
-
-    delete src_frame;
-    delete trg_frame;
+    if(src_frame)
+      delete src_frame;
+    src_frame=NULL;
+    if(trg_frame)
+      delete trg_frame;
+    trg_frame=NULL;
+//    delete p;
 
   }
   map<int, StreamData>::iterator it = _sdata.begin();
