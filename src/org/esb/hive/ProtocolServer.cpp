@@ -64,7 +64,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 
 void ProtocolServer::run() {
   mysql_thread_init();
-  while (!socket->isClosed()) {
+  while (socket->isConnected()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
     //#ifndef DEBUG
     try {
