@@ -12,7 +12,7 @@ using boost::asio::ip::tcp;
 
 using namespace org::esb::lang;
 using namespace org::esb::io;
-using namespace org::esb::net;
+//using namespace org::esb::net;
 using namespace std;
 
 //using namespace org::esb::net;
@@ -121,7 +121,7 @@ namespace org {
           if (error)
 			  throw boost::system::system_error(error);
 		  else if(read!=10)
-			  throw std::exception("reading size is not equal 10");
+			  throw SocketException("reading size is not equal 10");
 //            return 0;
           //			else
           //				throw boost::system::system_error(error);

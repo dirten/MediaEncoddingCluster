@@ -67,7 +67,7 @@ namespace org {
 		  if(error)
 			  throw boost::system::system_error(error);
 		  else if(sent!=len)
-			  throw std::exception("writing size is not equal to len");
+			  throw SocketException("writing size is not equal to len");
 		  //            remaining -= sent;
             //            cout << "Data send:"<<sent<<endl;
 //          }
