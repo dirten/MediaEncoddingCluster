@@ -51,7 +51,7 @@ namespace org {
           }
 
           int remaining = len, byteCounter = 0, bytes = 0;
-
+		  boost::system::error_code error;
           /*
            * Send length from buffer
            */
@@ -63,11 +63,14 @@ namespace org {
           /*
            * Send buffer
            */
-          while (remaining > 0) {
-            int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer + (len - remaining), remaining));
-            remaining -= sent;
+		  int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer, len),boost::asio::transfer_all(), error);
+		  if(error)
+			  throw boost::system::system_error(error);
+		  else if(sent!=len)
+			  throw std::exception("writing size is not equal to len");
+		  //            remaining -= sent;
             //            cout << "Data send:"<<sent<<endl;
-          }
+//          }
 //          }catch(exception & ex){
 //            logerror("Writing to socket:"<<ex.what());
 //          }

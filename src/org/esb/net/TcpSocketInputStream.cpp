@@ -70,19 +70,19 @@ namespace org {
           }
           int counter = 0, remaining = length;
 
-          while (remaining > 0) {
-            int read= boost::asio::read(*_socket,(boost::asio::buffer(buffer + (length - remaining), remaining)));
+//          while (remaining > 0) {
+            int read= boost::asio::read(*_socket,boost::asio::buffer(buffer, length),boost::asio::transfer_at_least(length), error);
 //            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
-            remaining -= read;
-            counter += read;
+//            remaining -= read;
+//            counter += read;
 #ifdef NET_DEBUG
-          logdebug("readed bytes:"<<read<<":remainig bytes"<<remaining);
+          logdebug("readed bytes:"<<read);
 #endif
-          }
+//          }
 
           if (error)
             throw boost::system::system_error(error);
-          return counter;
+          return read;
         }
 
         int read(string & str) {
@@ -115,10 +115,14 @@ namespace org {
         long long int available(bool isBlocking) {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
-          int len = 0;
-          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
-          if (error == boost::asio::error::eof)
-            return 0;
+//          int len = 0;
+          int read= boost::asio::read(*_socket,boost::asio::buffer(&tmp,10), boost::asio::transfer_at_least(10));
+//          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
+          if (error)
+			  throw boost::system::system_error(error);
+		  else if(read!=10)
+			  throw std::exception("reading size is not equal 10");
+//            return 0;
           //			else
           //				throw boost::system::system_error(error);
           return atoi(tmp);

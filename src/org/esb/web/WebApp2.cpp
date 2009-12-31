@@ -143,9 +143,8 @@ namespace org {
         tab->setToolTip(t);
         //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-
-        setContent(tab);
         info_panel->expand();
+        setContent(tab);
 
       }
 
@@ -271,7 +270,7 @@ namespace org {
            */
           std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
           /**
-           * remove all widgets from the info_panel
+           * remove old widgets from the info_panel
            */
           int c = info_panel->layout()->count();
           for (int a = 0; a < c; a++) {
