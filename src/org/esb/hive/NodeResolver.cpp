@@ -1,5 +1,4 @@
 
-#include <list>
 
 /*----------------------------------------------------------------------
  *  File    : NodeResolver.h
@@ -31,32 +30,47 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
+#include <iostream>
+//#include "boost/date_time/gregorian/gregorian.hpp"
 
 namespace org {
   namespace esb {
     namespace hive {
 
-      Node::Node(boost::asio::ip::udp::endpoint & ep){
-        _ep=ep;
-        _ipaddress=ep.address();
-        _name="null";
-        _last_activity=boost::posix_time::second_clock::local_time();
+      Node::Node(boost::asio::ip::udp::endpoint & ep) {
+        _ep = ep;
+        _ipaddress = ep.address();
+        _name = "null";
+        _last_activity = boost::posix_time::second_clock::local_time();
+        _status = NODE_UP;
       }
-      const boost::asio::ip::address Node::getIpAddress()const{
+
+      std::string Node::toString() {
+        std::ostringstream oss;
+        oss << _ep.address() << ":";
+        oss << _ep.port();
+        //        oss<<":"<<_ep.protocol();
+        oss << ":" << boost::posix_time::to_simple_string(_last_activity);
+        return oss.str();
+      }
+
+      const boost::asio::ip::address Node::getIpAddress()const {
         return _ipaddress;
       }
-      
+
       bool Node::operator==(const Node&a)const {
-//        logdebug("&operator==");
-        return _ep==a._ep;
+        //        logdebug("&operator==");
+        return _ep == a._ep;
       }
+
       bool Node::operator==(const Node*a)const {
-//        logdebug("*operator==");
-        return _ep==a->_ep;
+        //        logdebug("*operator==");
+        return _ep == a->_ep;
       }
 
-
-      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address,const boost::asio::ip::address& multicast_address, int port) :
+      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port) :
+      _node_timeout(5),
+      _message(),
       send_endpoint_(multicast_address, port),
       send_socket_(send_service_, send_endpoint_.protocol()),
       send_timer_(send_service_),
@@ -97,12 +111,9 @@ namespace org {
       void NodeResolver::handle_send_timeout(const boost::system::error_code& error) {
 
         if (!error) {
-          std::ostringstream os;
-          os << "server ";
-          message_ = os.str();
 
           send_socket_.async_send_to(
-              boost::asio::buffer(message_), send_endpoint_,
+              boost::asio::buffer(_message), send_endpoint_,
               boost::bind(&NodeResolver::handle_send, this,
               boost::asio::placeholders::error));
         }
@@ -111,35 +122,37 @@ namespace org {
 
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
         if (!error) {
-          boost::shared_ptr<Node> nodePtr=boost::shared_ptr<Node>(new Node(recv_endpoint_));
-//          boost::shared_ptr<Node> nodePtr2=boost::shared_ptr<Node>(new Node(recv_endpoint_));
-//          Node n1(recv_endpoint_);
-//          Node n2(recv_endpoint_);
-          bool contains=false;
-          std::list<boost::shared_ptr<Node> >::iterator it=_nodes.begin();
-          for(;it!=_nodes.end();it++){
-            boost::posix_time::ptime actual_time=boost::posix_time::second_clock::local_time();
-            if((*it)->_last_activity+boost::posix_time::seconds(4)<actual_time){
-              logdebug("Node TimeOut:"<<(*it));
-              _nodes.remove((*it));
+          boost::shared_ptr<Node> nodePtr = boost::shared_ptr<Node > (new Node(recv_endpoint_));
+          bool contains = false;
+          std::list<boost::shared_ptr<Node> >::iterator it = _nodes.begin();
+          for (; it != _nodes.end(); it++) {
+            boost::posix_time::ptime actual_time = boost::posix_time::second_clock::local_time();
+            if ((*it)->_last_activity + boost::posix_time::seconds(_node_timeout) < actual_time) {
+              if ((*it)->_status == Node::NODE_UP) {
+                //                logdebug("Node TimeOut:" << (*it));
+                (*it)->_status = Node::NODE_DOWN;
+                notifyListener(*(*it));
+              }
             }
-            if(*(*it)==*nodePtr){
-              contains=true;
-              (*it)->_last_activity=actual_time;
-//              break;
+            if (*(*it) == *nodePtr) {
+              contains = true;
+              (*it)->_last_activity = actual_time;
+              //              break;
             }
           }
-          if(!contains){
-            logdebug("New Node found"<<recv_endpoint_);
+          if (!contains) {
+            //            logdebug("New Node found" << recv_endpoint_);
             _nodes.push_back(nodePtr);
+            notifyListener(*nodePtr);
           }
           recv_socket_.async_receive_from(
               boost::asio::buffer(data_, max_length), recv_endpoint_,
               boost::bind(&NodeResolver::handle_receive, this,
               boost::asio::placeholders::error,
               boost::asio::placeholders::bytes_transferred));
-        } else {
-          logerror( "error" << error.message());
+        } else
+          if (error != boost::system::errc::operation_canceled) {
+          logerror("error" << error.message());
         }
       }
 
@@ -148,8 +161,32 @@ namespace org {
         boost::thread send_thread(boost::bind(&boost::asio::io_service::run, &send_service_));
       }
 
-      void NodeResolver::setNodeListener(NodeListener & listener){
+      void NodeResolver::setNodeListener(NodeListener * listener) {
+        _listener.push_back(listener);
+      }
 
+      void NodeResolver::setNodeTimeout(unsigned int sec) {
+        _node_timeout = sec;
+      }
+
+      void NodeResolver::setNodeMessage(std::string message) {
+        _message = message;
+      }
+
+      NodeResolver::NodeList NodeResolver::getNodes() {
+        return _nodes;
+      }
+
+      void NodeResolver::notifyListener(Node & node) {
+        std::list<NodeListener*>::iterator it = _listener.begin();
+        for (; it != _listener.end(); it++) {
+          if (node._status == Node::NODE_UP) {
+            (*it)->onNodeUp(node);
+          }
+          if (node._status == Node::NODE_DOWN) {
+            (*it)->onNodeDown(node);
+          }
+        }
       }
     }
   }
