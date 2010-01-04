@@ -32,10 +32,10 @@
 #include <boost/shared_ptr.hpp>
 #include <list>
 #include "org/esb/util/Log.h"
+#include "boost/date_time/posix_time/posix_time_types.hpp"
 namespace org {
     namespace esb {
         namespace hive {
-
             class Node {
             public:
                 Node(boost::asio::ip::udp::endpoint & ep);
@@ -49,11 +49,20 @@ namespace org {
             private:
                 boost::asio::ip::address _ipaddress;
                 std::string _name;
+                friend class NodeResolver;
+                boost::posix_time::ptime _last_activity;
             };
+
+            class NodeListener{
+            virtual void onNodeUp(Node & node)=0;
+            virtual void onNodeDown(Node & node)=0;
+
+          };
 
             class NodeResolver {
             public:
                 NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int);
+                void setNodeListener(NodeListener & listener);
                 void start();
                 void stop();
 

@@ -1,3 +1,6 @@
+
+#include <list>
+
 /*----------------------------------------------------------------------
  *  File    : NodeResolver.h
  *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
@@ -37,6 +40,7 @@ namespace org {
         _ep=ep;
         _ipaddress=ep.address();
         _name="null";
+        _last_activity=boost::posix_time::second_clock::local_time();
       }
       const boost::asio::ip::address Node::getIpAddress()const{
         return _ipaddress;
@@ -107,17 +111,22 @@ namespace org {
 
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
         if (!error) {
-         
           boost::shared_ptr<Node> nodePtr=boost::shared_ptr<Node>(new Node(recv_endpoint_));
-          boost::shared_ptr<Node> nodePtr2=boost::shared_ptr<Node>(new Node(recv_endpoint_));
-          Node n1(recv_endpoint_);
-          Node n2(recv_endpoint_);
+//          boost::shared_ptr<Node> nodePtr2=boost::shared_ptr<Node>(new Node(recv_endpoint_));
+//          Node n1(recv_endpoint_);
+//          Node n2(recv_endpoint_);
           bool contains=false;
           std::list<boost::shared_ptr<Node> >::iterator it=_nodes.begin();
           for(;it!=_nodes.end();it++){
+            boost::posix_time::ptime actual_time=boost::posix_time::second_clock::local_time();
+            if((*it)->_last_activity+boost::posix_time::seconds(4)<actual_time){
+              logdebug("Node TimeOut:"<<(*it));
+              _nodes.remove((*it));
+            }
             if(*(*it)==*nodePtr){
               contains=true;
-              break;
+              (*it)->_last_activity=actual_time;
+//              break;
             }
           }
           if(!contains){
@@ -130,13 +139,17 @@ namespace org {
               boost::asio::placeholders::error,
               boost::asio::placeholders::bytes_transferred));
         } else {
-          std::cout << "error" << error << std::endl;
+          logerror( "error" << error.message());
         }
       }
 
       void NodeResolver::start() {
         boost::thread recv_thread(boost::bind(&boost::asio::io_service::run, &recv_service_));
         boost::thread send_thread(boost::bind(&boost::asio::io_service::run, &send_service_));
+      }
+
+      void NodeResolver::setNodeListener(NodeListener & listener){
+
       }
     }
   }
