@@ -9,6 +9,7 @@
 
 #include "org/esb/hive/NodeResolver.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/util/Log.h"
 /*
  * 
  */
@@ -18,11 +19,11 @@ class NodeAgent: public NodeListener{
 public:
 
   void onNodeUp(Node & node){
-
+    logdebug("NodeUp:"<<node.toString());
   }
   
   void onNodeDown(Node & node){
-    
+    logdebug("NodeDown:"<<node.toString());
   }
 };
 
@@ -31,10 +32,15 @@ int main(int argc, char** argv) {
 //  NodeReceiver receiver(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"));
 //  NodeSender sender(boost::asio::ip::address::from_string("239.255.0.1"));
   NodeAgent agent;
-  res.setNodeListener(agent);
+  res.setNodeListener(&agent);
   res.start();
+  Thread::sleep2(5000);
+  
+  
 
-  Thread::sleep2(15000);
+
+  Thread::sleep2(20000);
+  Log::close();
   return (EXIT_SUCCESS);
 }
 
