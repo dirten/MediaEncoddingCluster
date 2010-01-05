@@ -385,6 +385,7 @@ namespace org {
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           //          if (puQueue.size() == 0)
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+		  logdebug("video queue size:" << puQueue.size());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex);

@@ -47,11 +47,11 @@ namespace org {
         elit = data.begin();
         for (; elit != data.end(); elit++) {
           //          if((*elit).first!="id"){
-          if (true||(*elit).second.length() > 0)
+          if ((*elit).second.length() > 0)
             pstmt.setString((*elit).first, (*elit).second);
           else
             pstmt.setNull((*elit).first);
-          logdebug("map2sql: " << (*elit).first << "=" << (*elit).second);
+		  logdebug("map2sql: " << (*elit).first << "=" << (*elit).second<<":");
           //          }
         }
         pstmt.execute();
