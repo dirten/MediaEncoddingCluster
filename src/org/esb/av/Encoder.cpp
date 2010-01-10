@@ -64,6 +64,7 @@ int Encoder::encode(Frame & frame) {
   _last_idx = frame.stream_index;
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = frame.getDts();
+    logdebug("setting last_dts=" << _last_dts);
   }
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
     return encodeVideo(frame);
@@ -77,48 +78,69 @@ int Encoder::encode() {
   return encodeVideo(NULL);
 }
 
+/**
+ * @TODO: duplicate or drop frames in case of framerate conversion
+ * when frame rate will be downscaled, then frames must be dropped
+ * when frame rate will be upscaled, then frames must be duplicated
+ */
 int Encoder::encodeVideo(AVFrame * inframe) {
 
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
-
-  int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
-  Packet pac(ret);
-  if (ret > 0) {
-    memcpy(pac.packet->data, &data, ret);
-  } else {
-    return 0;
+  int frames = 1;
+  /**
+   * calculating the differences between timestamps to duplicate or drop frames
+   * when delta < 1.0 then drop a frame
+   * when delta > 1.0 then duplicate a frame
+   */
+  if (inframe != NULL) {
+    double a = static_cast<double> ((double) inframe->pts / (double) _last_time_base.den);
+    logdebug("a=" << a);
+    double delta = a / av_q2d(ctx->time_base) - _last_dts;
+    if (delta >= 1.0)
+      frames = static_cast<int> (rint(delta + 0.1));
+    logdebug("inframe.pts=" << inframe->pts << "\t_last_time_base.den=" << _last_time_base.den << "\tav_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << "\t_last_dts=" << _last_dts << "\tvdelta=" << delta << "\tframes=" << frames);
   }
-
-  pac.packet->size = ret;
-  pac.packet->stream_index = _last_idx;
-  if (ctx->coded_frame) {
-    if (ctx->coded_frame->key_frame) {
-      pac.packet->flags |= PKT_FLAG_KEY;
+  for (int i = 0; i < frames; i++) {
+    if (inframe != NULL)
+      inframe->pts = _last_dts;
+    int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
+    Packet pac(ret);
+    if (ret > 0) {
+      memcpy(pac.packet->data, &data, ret);
+    } else {
+      return 0;
     }
-    pac.packet->pts = ctx->coded_frame->pts;
-  }
+
+    pac.packet->size = ret;
+    pac.packet->stream_index = _last_idx;
+    if (ctx->coded_frame) {
+      if (ctx->coded_frame->key_frame) {
+        pac.packet->flags |= PKT_FLAG_KEY;
+      }
+      pac.packet->pts = ctx->coded_frame->pts;
+    }
 #ifdef USE_TIME_BASE_Q
-  pac.setTimeBase(AV_TIME_BASE_Q);
-  pac.setDuration(_last_duration);
+    pac.setTimeBase(AV_TIME_BASE_Q);
+    pac.setDuration(_last_duration);
 #else
-  pac.setTimeBase(ctx->time_base);
-  pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+    pac.setTimeBase(ctx->time_base);
+    pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
 #endif
 
-  pac.packet->dts = _last_dts;
-  _last_dts += pac.packet->duration;
+    pac.packet->dts = _last_dts;
+    _last_dts += pac.packet->duration;
 #ifdef DEBUG
-  logdebug(pac.toString());
+    logdebug(pac.toString());
 #endif
-  if (_pos != NULL) {
-    _pos->writePacket(pac);
+    if (_pos != NULL) {
+      _pos->writePacket(pac);
+    }
+    if (_sink != NULL)
+      _sink->write(&pac);
   }
-  if (_sink != NULL)
-    _sink->write(&pac);
-  return ret;
-
+  return frames;
 }
 
 int Encoder::encodeVideo(Frame & frame) {
@@ -222,27 +244,27 @@ int Encoder::encodeAudio(Frame & frame) {
     Packet pak(ret);
     memcpy(pak.packet->data, audio_out, ret);
 
-      pak.packet->flags |= PKT_FLAG_KEY;
+    pak.packet->flags |= PKT_FLAG_KEY;
 #ifdef USE_TIME_BASE_Q
-      pak.setTimeBase(AV_TIME_BASE_Q);
-      pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) 1000000);
+    pak.setTimeBase(AV_TIME_BASE_Q);
+    pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) 1000000);
 #else
-      pak.setTimeBase(ctx->time_base);
-//      pak.setDuration(ctx->frame_size);
-      pak.setDuration((float) frame_bytes / (float) (ctx->channels * osize ));
+    pak.setTimeBase(ctx->time_base);
+    //      pak.setDuration(ctx->frame_size);
+    pak.setDuration((float) frame_bytes / (float) (ctx->channels * osize));
 #endif
-      pak.packet->stream_index = frame.stream_index;
-      pak.packet->dts = _last_dts;
-      pak.packet->pts = _last_dts;
-      _last_dts += pak.getDuration();
+    pak.packet->stream_index = frame.stream_index;
+    pak.packet->dts = _last_dts;
+    pak.packet->pts = _last_dts;
+    _last_dts += pak.getDuration();
 #ifdef DEBUG
-      logdebug(pak.toString());
+    logdebug(pak.toString());
 #endif
-      if (_pos != NULL)
-        _pos->writePacket(pak);
-      if (_sink != NULL)
-        _sink->write(&pak);
-      //      return pak;
+    if (_pos != NULL)
+      _pos->writePacket(pak);
+    if (_sink != NULL)
+      _sink->write(&pak);
+    //      return pak;
   }
   av_free(audio_out);
   return 0;

@@ -12,7 +12,7 @@ namespace org {
   namespace esb {
     namespace web {
 
-      void SqlUtil::map2sql(std::string tablename, std::map<std::string, std::string> data) {
+      int64_t SqlUtil::map2sql(std::string tablename, std::map<std::string, std::string> data) {
         bool update = atoi(data["id"].c_str()) > 0 ? true : false;
         std::string sql;
         std::string fields;
@@ -55,6 +55,8 @@ namespace org {
           //          }
         }
         pstmt.execute();
+
+        return update?atoi(data["id"].c_str()):pstmt.getLastInsertId();
       }
 
       void SqlUtil::sql2map(std::string tablename, int key, std::map<std::string, std::string> &data) {

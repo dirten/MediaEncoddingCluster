@@ -35,7 +35,7 @@ string trim(string & s, string & drop) {
 }
 
 void Config::close() {
-//  logdebug("clear config");
+  //  logdebug("clear config");
   properties->clear();
   delete properties;
   properties = NULL;
@@ -46,14 +46,12 @@ bool Config::init(const std::string & filename) {
   loadDefaults(properties);
   FILE * fp;
   char buffer[255];
-  if ((fp = fopen(filename.c_str(), "r")) == NULL) {
-    return false;
-    //    throw Exception(__FILE__, __LINE__, string("Configurationfile \"").append(filename).append("\" not found !!!!").c_str());
+  if ((fp = fopen(filename.c_str(), "r")) != NULL) {
+    while (fgets(buffer, 255, fp) != NULL) {
+      parseLine(buffer);
+    }
+    fclose(fp);
   }
-  while (fgets(buffer, 255, fp) != NULL) {
-    parseLine(buffer);
-  }
-  fclose(fp);
   /*load params from database*/
   try {
     if (std::string(getProperty("db.connection")).length() > 0) {
@@ -61,10 +59,11 @@ bool Config::init(const std::string & filename) {
       Statement * stmt = con.createStatement();
       ResultSet * rs = stmt->executeQuery("select * from config");
       while (rs->next()) {
-        if (rs->getString("config_key") != "db.connection"&&
-            rs->getString("config_key") != "mode.client"&&
-            rs->getString("config_key") != "mode.server"&&
-			rs->getString("config_key") != "hive.mode") {
+        if (rs->getString("config_key") != "db.connection" &&
+            rs->getString("config_key") != "mode.client" &&
+            rs->getString("config_key") != "mode.server" &&
+            rs->getString("config_key") != "hive.base_path" &&
+            rs->getString("config_key") != "hive.mode") {
           properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
           logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }
@@ -99,6 +98,7 @@ char * Config::getProperty(const char * key, char * def) {
   if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
 }
+
 std::string Config::get(std::string& key, std::string& def) {
   if (!properties || !properties->hasProperty(key))return def;
   return properties->getProperty(key);

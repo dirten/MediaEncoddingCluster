@@ -102,7 +102,7 @@ namespace org {
 
       void Codec::setContextDefaults() {
 
-        //        ctx->global_quality = 1000000;
+//        ctx->global_quality = 1000000;
         ctx->pix_fmt = (PixelFormat) 0;
         ctx->width = 0;
         ctx->height = 0;
@@ -127,12 +127,23 @@ namespace org {
           //          ctx->has_b_frames = 1;
         }
         ctx->extradata = NULL;
+        ctx->me_method=ME_EPZS;
+        ctx->mb_decision=2;
+        ctx->bit_rate_tolerance=4000000;
         /*default settings for x264*/
         ctx->me_range = 16;
         ctx->max_qdiff = 4;
-        ctx->qmin = 10;
-        ctx->qmax = 51;
-        ctx->qcompress = 0.6;
+        ctx->qmin = 2;
+        ctx->qmax = 31;
+        ctx->qcompress = 0.5;
+        ctx->qblur = 0.5;
+        ctx->flags |=CODEC_FLAG_AC_PRED;
+        ctx->flags |=CODEC_FLAG_4MV;
+        ctx->flags |=CODEC_FLAG_MV0;
+        ctx->me_cmp=2;
+        ctx->me_sub_cmp=2;
+        ctx->trellis=1;
+
 
       }
 

@@ -7,6 +7,8 @@
 #include <Wt/Ext/Dialog>
 #include "SqlTable.h"
 #include "ProfilesForm.h"
+#include "ProfileCreator.h"
+
 namespace org {
   namespace esb {
     namespace web {
@@ -49,17 +51,21 @@ namespace org {
 
         void editProfile() {
           int c = atoi(boost::any_cast<string > (t->model()->data(t->selectedRows()[0], 0)).c_str());
+          ProfileCreator *pc=new ProfileCreator();
+          pc->show();
+/*
           d = new Wt::Ext::Dialog("Profile");
           d->resize(500, 430);
           ProfilesForm * pf = new ProfilesForm(d->contents());
-          pf->profileSaved.connect(SLOT(this, Profiles::profileSaved));
-          pf->profileCanceled.connect(SLOT(d, Wt::Ext::Dialog::accept));
-          pf->setProfile(c);
-          d->show();
+ */
+          pc->saved.connect(SLOT(this, Profiles::profileSaved));
+          pc->canceled.connect(SLOT(pc, Wt::Ext::Dialog::accept));
+          pc->setProfile(c);
+          pc->show();
         }
         void profileSaved(){
           t->reload("select * from profiles");
-          delete d;
+//          delete d;
         }
       private:
         Wt::Ext::Button * buttonEdit;

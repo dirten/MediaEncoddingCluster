@@ -68,6 +68,10 @@ void WebServer::start() {
   server.start();
 //  WServer::waitForShutdown();
 }
+void WebServer::run() {
+  server.start();
+  WServer::waitForShutdown();
+}
 void WebServer::stop() {
   server.stop();
 

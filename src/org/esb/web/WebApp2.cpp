@@ -22,6 +22,8 @@
 #include "Configuration.cpp"
 
 #include "FileInfo.cpp"
+
+#include "ProfileCreator.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -221,12 +223,17 @@ namespace org {
 
       void WebApp2::createProfiles() {
         listAllProfiles();
-        cpd = new Wt::Ext::Dialog("Profile");
-        cpd->resize(500, 430);
+//        cpd = new Wt::Ext::Dialog("Profile Creator");
+//        cpd->resize(500, 430);
+        ProfileCreator *pc=new ProfileCreator();
+        pc->show();
+        pc->saved.connect(SLOT(this, WebApp2::profilesCreated));
+/*
         ProfilesForm * pf = new ProfilesForm(cpd->contents());
         pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
-        cpd->show();
+ */
+//        cpd->show();
       }
 
       void WebApp2::openConfiguration() {
@@ -235,7 +242,7 @@ namespace org {
 
       void WebApp2::profilesCreated() {
         listAllProfiles();
-        delete cpd;
+//        delete cpd;
       }
 
       void WebApp2::listAllWatchfolder() {

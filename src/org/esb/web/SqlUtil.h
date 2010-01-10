@@ -11,7 +11,7 @@ namespace org {
         SqlUtil();
         ~SqlUtil();
       public:
-        static void map2sql(std::string tablename, std::map<std::string, std::string>);
+        static int64_t map2sql(std::string tablename, std::map<std::string, std::string>);
         static void sql2map(std::string tablename, int key, std::map<std::string, std::string>&);
       };
     }
