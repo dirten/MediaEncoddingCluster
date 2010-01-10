@@ -12,11 +12,13 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 
 include_directories (${MEC_SOURCE_DIR})
+include_directories (${LOG4CPLUS_DIR}/include)
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (D:/google-breakpad/src/)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
+LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 #LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
@@ -83,10 +85,12 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT} )
+TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT} log4cplusUD  )
 
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread )
+ELSEIF(WIN32)
+  TARGET_LINK_LIBRARIES(util ws2_32 advapi32 )  
 ENDIF(NOT WIN32)
 IF(BUILD_SHARED_LIBS)
   INSTALL(TARGETS util
