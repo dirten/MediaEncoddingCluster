@@ -74,7 +74,7 @@ map<int, int> _smap;
   /*opening the output file and Packet Output Stream*/
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
-  PacketOutputStream pos(&fos);
+//  PacketOutputStream pos(&fos);
   map<int, StreamData> _sdata;
 
   /*Create and open the input and output Codecs*/
@@ -119,7 +119,7 @@ map<int, int> _smap;
     _sdata[i].enc->open();
     _smap[i] = s++;
     _sdata[i].conv = new FrameConverter(_sdata[i].dec.get(), _sdata[i].enc.get());
-        pos.setEncoder(*_sdata[i].enc, _smap[i]);
+//        pos.setEncoder(*_sdata[i].enc, _smap[i]);
     //    _sdata[i].enc->setOutputStream(&pos);
   }
 
@@ -204,7 +204,7 @@ void write_file(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.mp4");
+    trg.append("/test.ogg");
   } else {
     trg = argv[2];
   }

@@ -79,19 +79,21 @@ int main(int argc, char** argv) {
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       video = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
+      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      _sdata[i].enc->setWidth(720);
+      _sdata[i].enc->setHeight(576);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
-      _sdata[i].enc->setGopSize(20);
+      _sdata[i].enc->setGopSize(200);
       AVRational ar;
       ar.num = 1;
-      ar.den = 25;
+      ar.den = 30;
       _sdata[i].enc->setTimeBase(ar);
-      _sdata[i].enc->setBitRate(10240000);
+      _sdata[i].enc->setBitRate(1500000);
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
       audio = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_PCM_S16LE);
+      _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(48000);
       _sdata[i].enc->setChannels(2);
@@ -123,7 +125,7 @@ int main(int argc, char** argv) {
   fos.dumpFormat();
   /*main loop to encode the packets*/
     Packet *packet;
-  for (int i = 0; i < 500 ; i++) {
+  for (int i = 0; i < 1500 ; i++) {
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);

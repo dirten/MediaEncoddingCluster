@@ -10,11 +10,11 @@ target_link_libraries (TestWebServer
   esb
   sql
   hive
-  lang
   av
   util
   signal
   io
+  lang
   net
  )
 
