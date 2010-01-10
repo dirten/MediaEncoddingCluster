@@ -128,7 +128,7 @@ map<int, int> _smap;
 
   //  if (!pos.init())goto cleanup;
   fos.dumpFormat();
-  for (int a = 0; a < 200 || true; a++) {
+  for (int a = 0; a < 5000 ; a++) {
     Packet * p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
@@ -179,16 +179,18 @@ void process_units() {
   char * outfile = new char[100];
 
   for (int a = 1; true; a++) {
-    sprintf(file, "../pu.%d.pu", a);
-    sprintf(outfile, "../pu.%d.out", a);
-    org::esb::io::File infile(file);
+	std::string src = MEC_SOURCE_DIR;
+	std::string trg = MEC_SOURCE_DIR;
+    sprintf(file, "/pu.%d.pu", a);
+    sprintf(outfile, "/pu.%d.out", a);
+	org::esb::io::File infile(src.append(file));
     if (!infile.exists())break;
     org::esb::io::FileInputStream fis(&infile);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit pu;
     ois.readObject(pu);
     pu.process();
-    FileOutputStream fos(outfile);
+	FileOutputStream fos(trg.append(outfile).c_str());
     ObjectOutputStream oos(&fos);
     oos.writeObject(pu);
   //  delete pu._decoder;

@@ -2,17 +2,34 @@
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <string>
+#include <log4cplus/logger.h>
+#include <log4cplus/configurator.h>
+
+
+
 using namespace boost::posix_time;
 Log * Log::_logger=NULL;
 std::string Log::_logpath="";
 Log::Log() {
-  if(Log::_logpath.length()>0){
+	log4cplus::ConfigureAndWatchThread configureThread(LOG4CPLUS_TEXT("log4cplus.properties"), 5 * 1000);
+//	log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT("log4cplus.properties"));
+//	log4cplus::BasicConfigurator config;	
+//    config.configure();
+
+debug_logger = log4cplus::Logger::getInstance("dbg");
+info_logger = log4cplus::Logger::getInstance("info");
+warn_logger = log4cplus::Logger::getInstance("warn");
+error_logger = log4cplus::Logger::getInstance("error");
+fatal_logger = log4cplus::Logger::getInstance("fatal");
+unknown_logger = log4cplus::Logger::getInstance("unknown");
+/*
+if(Log::_logpath.length()>0){
     std::string logfile=Log::_logpath;//org::esb::config::Config::getProperty("hive.base_path");
     logfile.append("/mhive.log");
     _myfile.open(logfile.c_str(), std::ios::out | std::ios::app);
     std::cout.rdbuf(_myfile.rdbuf());
     std::cerr.rdbuf(_myfile.rdbuf());
-  }
+  }*/
 }
 Log::~Log() {
   _myfile.close();
@@ -30,8 +47,26 @@ Log * Log::getLogger() {
   return Log::_logger;
 }
 
-void Log::log(const char * l, std::stringstream & s, const char * file, int line ){
-	std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str()<<"\r"<<std::endl;
+void Log::log(std::string l, std::stringstream & s, const char * file, int line ){
+	if(l=="debug"){
+		LOG4CPLUS_DEBUG(debug_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+	else if(l=="info"){
+		LOG4CPLUS_INFO(info_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+	else if(l=="warn"){
+		LOG4CPLUS_WARN(warn_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+	else if(l=="error"){
+		LOG4CPLUS_ERROR(error_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+	else if(l=="fatal"){
+		LOG4CPLUS_FATAL(fatal_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+	else{
+		LOG4CPLUS_DEBUG(unknown_logger,"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str());
+	}
+//	std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "]["<<l<< "]["<<file<<":"<<line<<"] " << s.str()<<"\r"<<std::endl;
 }
 void Log::log(std::stringstream & s, const char * l){
     std::cout<<"["<< to_simple_string(microsec_clock::local_time())<< "] [ "<<l<< " ] " << s.str()<<"\r"<<std::endl;

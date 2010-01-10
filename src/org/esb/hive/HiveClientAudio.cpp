@@ -1,5 +1,4 @@
 #include "HiveClientAudio.h"
-#include "org/esb/util/Log.h"
 //#include "org/esb/net/TcpSocket.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 //#include "org/esb/io/ObjectInputStream.h"
@@ -10,6 +9,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/shared_ptr.hpp>
+#include "org/esb/util/Log.h"
 
 
 //#include "Version.h"

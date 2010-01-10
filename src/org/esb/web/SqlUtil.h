@@ -2,6 +2,7 @@
 #define ORG_ESB_WEB_SQLUTIL
 #include <map>
 #include <string>
+#include <stdint.h>
 namespace org {
   namespace esb {
     namespace web {

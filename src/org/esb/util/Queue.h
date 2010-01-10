@@ -47,7 +47,7 @@ namespace org {
           {
             boost::mutex::scoped_lock enqueue_lock(queue_mutex);
             _q.push_back(obj);
-            queue_condition.notify_all();
+            queue_condition.notify_one();
           }
         }
 
@@ -82,7 +82,7 @@ namespace org {
             T object = _q.front();
             //          object = _q.front();
             _q.pop_front();
-            queue_condition.notify_all();
+            queue_condition.notify_one();
             return object;
           }
         }

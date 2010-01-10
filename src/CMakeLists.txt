@@ -11,6 +11,7 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${MYSQL_INCLUDE_DIR}/mysql)
 include_directories (${FFMPEG_INCLUDE_DIR})
+include_directories (${LOG4CPLUS_DIR}/include)
 #MESSAGE("**MYSQL_INCLUDE_DIR: " ${MYSQL_INCLUDE_DIR})
 
 include_directories (${BREAKPAD_INCLUDE_DIR})
@@ -19,7 +20,7 @@ include_directories (${BREAKPAD_INCLUDE_DIR})
 LINK_DIRECTORIES(${BOOST_DIR}/lib)
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
-
+LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
@@ -69,6 +70,7 @@ target_link_libraries (mhive
   io 
   net 
   ${BOOST_PO_LIB_MT}
+  log4cplusud
 )
 IF(WIN32)
 #  target_link_libraries (mhive  

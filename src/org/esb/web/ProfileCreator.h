@@ -60,6 +60,7 @@ namespace org {
         void save();
 
         Wt::Ext::TabWidget * tab;
+		void setContextText(int tab_index);
         //        wtk::ElementContainer<Wt::Ext::LineEdit> _el;
         //        wtk::ElementContainer<Wt::Ext::ComboBox> _elcb;
 

@@ -8,7 +8,7 @@
 //#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 using namespace std;
 namespace org {
     namespace esb {
@@ -37,7 +37,7 @@ namespace org {
 					try{
                     archive >> object;
 					}catch(exception & ex){
-						logerror("Exception reading archive:"<<ex.what());
+//						logerror("Exception reading archive:"<<ex.what());
 						return -1;
 					}
 					return 0;

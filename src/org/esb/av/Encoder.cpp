@@ -99,7 +99,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     logdebug("a=" << a);
     double delta = a / av_q2d(ctx->time_base) - _last_dts;
     if (delta >= 1.0)
-      frames = static_cast<int> (rint(delta + 0.1));
+      frames = static_cast<int> (floor(delta + 0.6));
     logdebug("inframe.pts=" << inframe->pts << "\t_last_time_base.den=" << _last_time_base.den << "\tav_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << "\t_last_dts=" << _last_dts << "\tvdelta=" << delta << "\tframes=" << frames);
   }
   for (int i = 0; i < frames; i++) {

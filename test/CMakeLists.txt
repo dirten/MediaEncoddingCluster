@@ -6,6 +6,7 @@
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${LOG4CPLUS_DIR}/include)
 #include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
 #INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
 
@@ -14,6 +15,7 @@ INCLUDE_DIRECTORIES (${BREAKPAD_INCLUDE_DIR})
 LINK_DIRECTORIES(${BOOST_LIB_DIRS})
 LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
+LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/test/fobs/dist/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)

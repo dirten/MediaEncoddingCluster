@@ -82,8 +82,8 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       _sdata[i].enc->setWidth(720);
       _sdata[i].enc->setHeight(576);
-      _sdata[i].enc->setWidth(320);
-      _sdata[i].enc->setHeight(240);
+//      _sdata[i].enc->setWidth(320);
+//      _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(200);
       AVRational ar;
       ar.num = 1;
@@ -99,15 +99,15 @@ int main(int argc, char** argv) {
       _sdata[i].enc->setChannels(2);
       _sdata[i].enc->setSampleFormat(_sdata[i].dec->getSampleFormat());
       //          _sdata[i].enc->open();
+    AVRational ar;
+    ar.num = 1;
+    ar.den = _sdata[i].dec->getSampleRate();
+    _sdata[i].dec->setTimeBase(ar);
 
     }
     if (fos._fmt->flags & AVFMT_GLOBALHEADER)
       _sdata[i].enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
 
-    AVRational ar;
-    ar.num = 1;
-    ar.den = _sdata[i].dec->getSampleRate();
-    _sdata[i].dec->setTimeBase(ar);
 
     _sdata[i].dec->open();
     _sdata[i].enc->open();

@@ -11,6 +11,10 @@
 #include <fstream>
 #include <sstream>
 #include <ostream>
+#include <log4cplus/logger.h>
+//#include <log4cplus/configurator.h>
+
+//log4cplus::Logger logger = log4cplus::Logger::getInstance("mhive");
 
 #define loginit(file)/*log_init(file)*/
 #define logger(name)/*log_define(name)*/
@@ -18,6 +22,7 @@
 #define logerror(o1)loglevel(o1, "error")/*log_error(o1)*/
 #define logwarn(o1)loglevel(o1, "warn")/*log_warn(o1)*/
 #define loginfo(o1)loglevel(o1, "info")/*log_info(o1)*/
+//#define logdebug(o1)LOG4CPLUS_DEBUG(logger,o1);//loglevel(o1, "debug")/*log_debug(o1)*/
 #define logdebug(o1)loglevel(o1, "debug")/*log_debug(o1)*/
 //#define logdebug(o1) { std::stringstream t; \
 //t<< o1; \
@@ -36,9 +41,16 @@ public:
     void error(std::stringstream &);
     void fatal(std::stringstream &);
     void log(std::stringstream & s, const char * level);
-    void log(const char * level, std::stringstream & s, const char * file, int line );
+	void log(std::string level, std::stringstream & s, const char * file, int line );
     ~Log();
 private:
+	log4cplus::Logger debug_logger;
+	log4cplus::Logger info_logger;
+	log4cplus::Logger warn_logger;
+	log4cplus::Logger error_logger;
+	log4cplus::Logger fatal_logger;
+	log4cplus::Logger unknown_logger;
+
     Log();
     std::ofstream _myfile;
     static std::string _logpath;
