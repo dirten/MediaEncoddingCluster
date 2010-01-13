@@ -65,15 +65,15 @@ bool Config::init(const std::string & filename) {
             rs->getString("config_key") != "hive.base_path" &&
             rs->getString("config_key") != "hive.mode") {
           properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
-          logdebug("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
+          LOGDEBUG("org.esb.config.Config","ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
         }
       }
       delete rs;
       delete stmt;
     }
   } catch (SqlException & ex) {
-    logerror("cant load configuration from database");
-    logerror(ex.what());
+    LOGERROR("org.esb.config.Config","cant load configuration from database");
+    LOGERROR("org.esb.config.Config",ex.what());
   }
   return true;
 }

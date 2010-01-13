@@ -34,7 +34,7 @@ void FileExporter::exportFile(int fileid) {
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
   //  map<int, int> dtsmap;
-  logdebug("Exporting file with id:" << fileid);
+  LOGDEBUG("org.esb.hive.FileExporter","Exporting file with id:" << fileid);
   std::string filename;
   std::string fileformat;
   Connection con(std::string(Config::getProperty("db.connection")));
@@ -57,7 +57,7 @@ void FileExporter::exportFile(int fileid) {
   org::esb::io::File fout(filename.c_str());
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
-    logdebug("creating output directory:" << outDirectory.getFilePath());
+    LOGDEBUG("org.esb.hive.FileExporter","creating output directory:" << outDirectory.getFilePath());
     try {
       outDirectory.mkdir();
     } catch (boost::filesystem::filesystem_error & e) {
@@ -117,7 +117,7 @@ void FileExporter::exportFile(int fileid) {
       dtsoffset[rs.getInt("stream_index")] = -1;
       ptsoffset[rs.getInt("stream_index")] = -1;
       pos->setEncoder(*codec, rs.getInt("stream_index"));
-      logdebug("Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
+      LOGDEBUG("org.esb.hive.FileExporter","Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
       }

@@ -1,5 +1,4 @@
 #include "HiveClient.h"
-#include "org/esb/util/Log.h"
 //#include "org/esb/net/TcpSocket.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 //#include "org/esb/io/ObjectInputStream.h"
@@ -10,6 +9,8 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/shared_ptr.hpp>
+#include "org/esb/util/Log.h"
+#include "org/esb/av/FormatBaseStream.h"
 
 
 //#include "Version.h"
@@ -26,8 +27,9 @@ namespace org {
         _toHalt = false;
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
-        avcodec_register_all();
-        av_register_all();
+        org::esb::av::FormatBaseStream::initialize();
+//        avcodec_register_all();
+//        av_register_all();
 //        avcodec_init();
 
       }
@@ -48,7 +50,7 @@ namespace org {
           if (msg.getProperty("hiveclient") == "stop") {
           _toHalt = true;
           if (_running) {
-            logdebug("StopSignal Received, waiting for all work done!")
+            LOGDEBUG("org.esb.hive.HiveClient","StopSignal Received, waiting for all work done!")
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
           }
@@ -70,7 +72,7 @@ namespace org {
           _sock->connect();
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
-          loginfo("Server " << _host << " connected!!!");
+          LOGINFO("org.esb.hive.HiveClient","Server " << _host << " connected!!!");
         } catch (exception & ex) {
 //          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
@@ -88,7 +90,7 @@ namespace org {
                 _sock->getOutputStream()->write(text, strlen(text));
                 _ois->readObject(*unit);
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!" << ex.what());
+                LOGERROR("org.esb.hive.HiveClient","Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_input_packets.size() == 0) {
@@ -107,7 +109,7 @@ namespace org {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
               } catch (exception & ex) {
-                logerror("Connection to Server lost!!!" << ex.what());
+                LOGERROR("org.esb.hive.HiveClient","Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               /*

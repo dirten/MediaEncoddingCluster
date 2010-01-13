@@ -62,7 +62,7 @@ namespace org {
                     std::list<boost::shared_ptr<Packet> > _output_packets;
                     boost::shared_ptr<Decoder> _decoder;
                     boost::shared_ptr<Encoder> _encoder;
-                    Codec * codec;
+//                    Codec * codec;
                     FrameConverter * _converter;
                     int _source_stream;
                     int _target_stream;
@@ -83,7 +83,7 @@ namespace org {
                         ar & _process_unit;
                         ar & _decoder;
                         ar & _encoder;
-                        ar & codec;
+//                        ar & codec;
                         ar & _last_process_unit;
                     }
                 private:

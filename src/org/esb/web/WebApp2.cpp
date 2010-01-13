@@ -292,12 +292,12 @@ namespace org {
       }
 
       void WebApp2::jobSelected(SqlTable * tab) {
-        logdebug("Job Table clicked:");
+//        logdebug("Job Table clicked:");
         if (tab->selectedRows().size() > 0) {
           std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
           //          info->setData(atoi(idstr.c_str()));
           //          pSelector->setFileId(atoi(idstr.c_str()));
-          logdebug("jobSelected" << idstr);
+//          logdebug("jobSelected" << idstr);
         }
       }
 

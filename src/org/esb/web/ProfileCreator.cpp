@@ -15,6 +15,11 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
+
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/PreparedStatement.h"
+#include "org/esb/sql/ResultSet.h"
+
 #include "SqlUtil.h"
 namespace org {
   namespace esb {
@@ -24,7 +29,7 @@ namespace org {
         std::string res = std::string(org::esb::config::Config::getProperty("hive.base_path"));
         res.append("/res/profile_creator");
         Wt::WApplication::instance()->messageResourceBundle().use(res.c_str(), false);
-        logdebug("loading resource bundle"<<res<<" for Locale:"<<Wt::WApplication::instance()->locale() );
+        logdebug("loading resource bundle" << res << " for Locale:" << Wt::WApplication::instance()->locale());
         resize(700, 430);
         setBorder(false);
         Wt::WBorderLayout *layout = new Wt::WBorderLayout();
@@ -35,7 +40,7 @@ namespace org {
         tab->addTab(new FilePanel(), "File");
         tab->addTab(new VideoPanel(), "Video");
         tab->addTab(new AudioPanel(), "Audio");
-        tab->currentChanged.connect(SLOT(this,ProfileCreator::setContextText));
+        tab->currentChanged.connect(SLOT(this, ProfileCreator::setContextText));
 
         layout->addWidget(tab, Wt::WBorderLayout::Center);
 
@@ -73,13 +78,15 @@ namespace org {
 
 
       }
+
       void ProfileCreator::setContextText(int tab_index) {
         logdebug(tab_index);
       }
+
       void ProfileCreator::cancel() {
 
         canceled.emit();
-        
+
         this->done(Rejected);
         delete this;
       }
@@ -164,15 +171,15 @@ namespace org {
         for (; itc != data.end(); itc++) {
           std::string key = itc->first;
           if (lec.find(key) != lec.end()) {
-            int item_count=lec[key]->count();
-            for(int a=0;a<item_count;a++){
-              if(lec[key]->itemText(a).narrow()==itc->second)
+            int item_count = lec[key]->count();
+            for (int a = 0; a < item_count; a++) {
+              if (lec[key]->itemText(a).narrow() == itc->second)
                 lec[key]->setCurrentIndex(a);
             }
-            logdebug("found key:"<<key<<" item count:"<<lec[key]->count()<<" currentIndex:"<<lec[key]->currentIndex());
-            if(lec[key]->currentIndex()==-1||lec[key]->count()==0){
+            logdebug("found key:" << key << " item count:" << lec[key]->count() << " currentIndex:" << lec[key]->currentIndex());
+            if (lec[key]->currentIndex() == -1 || lec[key]->count() == 0) {
               lec[key]->addItem(itc->second);
-              lec[key]->setCurrentIndex(lec[key]->count()-1);
+              lec[key]->setCurrentIndex(lec[key]->count() - 1);
             }
           }
         }
@@ -287,6 +294,8 @@ namespace org {
             v_codec->addItem(p->long_name);
           }
         }
+        v_codec->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setPredifinedCodeFlags));
+
         _el.addElement("v_bitrate", "Video Bitrate", "", l);
         Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", "", l);
         v_framerate->setTextSize(50);
@@ -307,11 +316,53 @@ namespace org {
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
 
+        Wt::Ext::ComboBox * vpre = _elcb.addElement("_vpre", "Predefined Flags", "", l);
+        vpre->setTextSize(50);
+
+        _el.addElement("v_extra", "Extra Flags", "", l);
+
         /**
          * this is only for the last stretching row
          */
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);
+      }
+
+      void ProfileCreator::VideoPanel::setPredifinedCodeFlags() {
+        Wt::Ext::ComboBox * v_codec = _elcb.getElement("v_codec");
+        Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
+        vpre->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags));
+        std::string longname = v_codec->currentText().narrow();
+        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "LonName=" << longname);
+        AVCodec *p = NULL;
+        int a = 0;
+        vpre->clear();
+        while ((p = av_codec_next(p))) {
+          if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
+            LOGINFO("org.esb.web.ProfileCreator.VideoPanel", "retriving extra flags for codec id " << p->id);
+            std::string sql = "SELECT * FROM codec WHERE codec_id=:id";
+            org::esb::sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+            org::esb::sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
+            pstmt.setInt("id", p->id);
+            org::esb::sql::ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+              vpre->addItem(rs.getString("name"));
+            }
+            //            std::map<std::string, std::string> data;
+            //            SqlUtil::sql2map("codec","codec_id", p->id, data);
+          }
+        }
+      }
+
+      void ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags() {
+        Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
+        std::string name = vpre->currentText().narrow();
+        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "Name=" << name);
+        std::map<std::string, std::string> data;
+        SqlUtil::sql2map("codec", "name", name, data);
+        Wt::Ext::LineEdit * v_extra = _el.getElement("v_extra");
+        v_extra->setText(data["extra"]);
+        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "extra=" << data["extra"]);
       }
 
       std::map<std::string, std::string> ProfileCreator::VideoPanel::getKeyValue() {
@@ -341,6 +392,7 @@ namespace org {
         }
 
         BasePanel::setKeyValue(data);
+        setPredifinedCodeFlags();
       }
 
       ProfileCreator::VideoPanel::~VideoPanel() {
@@ -397,6 +449,7 @@ namespace org {
           std::string t = stsr.nextToken();
           a_samplerate->addItem(t);
         }
+        _el.addElement("a_extra", "Extra Flags", "", l);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);

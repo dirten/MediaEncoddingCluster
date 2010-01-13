@@ -6,21 +6,21 @@
 using namespace org::esb::sql;
 
 Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
-//  stmt=mysql_stmt_init(mysql);
+  //  stmt=mysql_stmt_init(mysql);
   rs = NULL;
-  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),&mysql_stmt_close);
-//  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),boost::bind(&Statement::close, this));
+  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql), &mysql_stmt_close);
+  //  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),boost::bind(&Statement::close, this));
   if (!stmtPtr.get()) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   sql = s;
-//    logdebug("Statement::Statement()"<<this);
+  LOGTRACE("org.esb.sql.Statement", "Statement::Statement()" << this);
 }
 
 Statement::~Statement() {
-//    logdebug("Statement::~Statement()"<<this);
+  LOGTRACE("org.esb.sql.Statement", "Statement::~Statement()" << this);
   //  delete rs;
-    close();
+  close();
 }
 
 ResultSet * Statement::executeQuery(std::string s) {
@@ -37,14 +37,15 @@ ResultSet * Statement::executeQuery2() {
     rs = new ResultSet(stmtPtr.get());
   return rs;
 }
+
 /**
  * @TODO: this is a memory leak and a performance issue of Object copy (aaaaargh)
  */
 ResultSet Statement::executeQuery() {
   execute();
-/*  if (rs)
-    delete rs;
-    rs = new ResultSet(stmtPtr.get());*/
+  /*  if (rs)
+      delete rs;
+      rs = new ResultSet(stmtPtr.get());*/
   return ResultSet(stmtPtr.get());
 }
 
@@ -55,19 +56,19 @@ ResultSet Statement::executeQuery(char* tmp) {
 }
  */
 bool Statement::execute() {
-//  mysql_thread_init();
+  //  mysql_thread_init();
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(" " + sql));
   }
   if (mysql_stmt_execute(stmtPtr.get())) {
     throw SqlException(std::string("failed while execute the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }
-//  mysql_thread_end();
+  //  mysql_thread_end();
   return true;
 }
 
 void Statement::close() {
-  logdebug("freeing result set");
+  LOGTRACE("org.esb.sql.Statement", "freeing result set");
   if (mysql_stmt_free_result(stmtPtr.get())) {
     throw SqlException(std::string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }

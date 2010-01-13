@@ -14,6 +14,7 @@ namespace org {
       public:
         static int64_t map2sql(std::string tablename, std::map<std::string, std::string>);
         static void sql2map(std::string tablename, int key, std::map<std::string, std::string>&);
+        static void sql2map(std::string tablename,std::string keyfield, std::string key, std::map<std::string, std::string>&);
       };
     }
   }

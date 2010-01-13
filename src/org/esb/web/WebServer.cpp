@@ -24,8 +24,9 @@ using namespace Wt;
 
 WApplication *createTestApp(const WEnvironment& env) {
   //return new TestApp(env);
-	return NULL;
+  return NULL;
 }
+
 WApplication *createSetup(const WEnvironment& env) {
   return new Setup(env);
 }
@@ -38,7 +39,6 @@ WApplication *createApp(const WEnvironment& env) {
   //  return new MyApplication(env);
   return new WebApp2(env);
 }
-
 
 WebServer::WebServer() : server("test") {
   std::string log_file = org::esb::config::Config::getProperty("hive.base_path");
@@ -56,7 +56,7 @@ WebServer::WebServer() : server("test") {
 
   server.addEntryPoint(WServer::Application, &createApp);
   server.addEntryPoint(WServer::Application, &createSetup, "setup");
-//  server.addEntryPoint(WServer::Application, &createTestApp, "test");
+  //  server.addEntryPoint(WServer::Application, &createTestApp, "test");
   //  logdebug(typeid(*this).name());
 }
 
@@ -66,24 +66,25 @@ WebServer::~WebServer() {
 
 void WebServer::start() {
   server.start();
-//  WServer::waitForShutdown();
+  //  WServer::waitForShutdown();
 }
+
 void WebServer::run() {
   server.start();
   WServer::waitForShutdown();
 }
+
 void WebServer::stop() {
   server.stop();
 
 }
-
 
 void WebServer::onMessage(Message & msg) {
   if (msg.getProperty("webserver") == "start") {
     try {
       if (!server.isRunning())
         server.start();
-      logdebug("Webserver Started");
+      LOGDEBUG("org.esb.web.WebServer", "Webserver Started");
     } catch (Wt::WServer::Exception & ex) {
       logerror(ex.what());
     }
@@ -91,6 +92,6 @@ void WebServer::onMessage(Message & msg) {
     if (msg.getProperty("webserver") == "stop") {
     if (server.isRunning())
       server.stop();
-    logdebug("Webserver Stopped");
+    LOGDEBUG("org.esb.web.WebServer", "Webserver Stopped");
   }
 }

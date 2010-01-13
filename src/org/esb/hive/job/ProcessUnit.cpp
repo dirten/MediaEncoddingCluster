@@ -47,10 +47,6 @@ public:
     Packet* pt = (Packet*) p;
     boost::shared_ptr<Packet> pEnc(new Packet(*pt));
     pkts.push_back(pEnc);
-    if (toDebug) {
-      logdebug("outputpacket");
-      pEnc->toString();
-    }
   }
 
   std::list<boost::shared_ptr<Packet> > getList() {
@@ -66,7 +62,6 @@ ProcessUnit::ProcessUnit() {
   _decoder = NULL;
   _encoder = NULL;*/
   _converter=NULL;
-  codec = NULL;
   _target_stream = 0;
   _source_stream = 0;
   _frame_group = 0;
@@ -78,38 +73,28 @@ ProcessUnit::ProcessUnit() {
 }
 
 ProcessUnit::~ProcessUnit() {
-  /*
-    if (_decoder != NULL)
-      delete _decoder;
-    if (_encoder != NULL)
-      delete _encoder;
-    _decoder = NULL;
-    _encoder = NULL;
-   */
-  //    _decoder=NULL;
-  //    _encoder=NULL;
-
-  //    _target_stream=0;
-  //    _input_packets.clear();
-  //    _output_packets.clear();
-
 }
 
 void ProcessUnit::process() {
+  LOGTRACEMETHOD("org.esb.hive.job.ProcessUnit","ProcessUnit");
   int insize = 0, outsize = 0;
 
   if (_decoder != NULL)
-    _decoder->open();
+    if(!_decoder->open()){
+      LOGERROR("org.esb.hive.job.ProcessUnit","fail to open the decoder (ProcessUnitID:"<<_process_unit<<")");
+      return;
+    }
   if (_encoder != NULL)
-    _encoder->open();
+    if(!_encoder->open()){
+      LOGERROR("org.esb.hive.job.ProcessUnit","fail to open the encoder (ProcessUnitID:"<<_process_unit<<")");
+      return;
+    }
   /*creating a frame converter*/
   if(_converter==NULL)
     _converter=new FrameConverter(_decoder.get(), _encoder.get());
-  if (toDebug) {
-    logdebug("Codex openned");
-    logdebug(_decoder->toString());
-    logdebug(_encoder->toString());
-  }
+    LOGTRACE("org.esb.hive.job.ProcessUnit","Codex openned");
+    LOGTRACE("org.esb.hive.job.ProcessUnit",_decoder->toString());
+    LOGTRACE("org.esb.hive.job.ProcessUnit",_encoder->toString());
   /*creating a packetsink for storing the encoded Packetsf from the encoder*/
   PacketSink sink;
   _encoder->setSink(&sink);
@@ -117,9 +102,6 @@ void ProcessUnit::process() {
 
 
 //  FrameConverter conv(_decoder, _encoder);
-
-  if (toDebug)
-    logdebug("Converter created");
 
   list< boost::shared_ptr<Packet> >::iterator it;
 
@@ -129,31 +111,24 @@ void ProcessUnit::process() {
   int64_t last_pts=-1;
   /*loop over each Packet received */
   for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
-    if (toDebug)
-      logdebug("Loop");
+      LOGTRACE("org.esb.hive.job.ProcessUnit","Loop");
     /*get the Packet Pointer from the list*/
     boost::shared_ptr<Packet> p = *it;
 
     /*sum the packet sizes for later output*/
     insize += p->packet->size;
-    if (toDebug) {
-      logdebug("inputpacket")
+      LOGTRACE("org.esb.hive.job.ProcessUnit","Inputpacket:"<<p->toString());
       p->toString();
-    }
     /*Decoding the Packet into a Frame*/
     Frame * tmp = _decoder->decode2(*p);
 
-    if (toDebug) {
-      logdebug("Frame Decoded");
-      logdebug(tmp->toString());
-    }
-    /*when frame not finished, then it is nothing to to and continue with the next packet*/
+      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Decoded:"<<tmp->toString());
+    /*when frame not finished, then it is nothing todo, continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
       continue;
     }
-    if (toDebug)
-      logdebug("Frame Buffer > 0");
+//      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
 
     /*target frame for conversion*/
     Frame * f = NULL;
@@ -163,8 +138,7 @@ void ProcessUnit::process() {
       f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
     if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
       f = new Frame();
-    if (toDebug)
-      logdebug("try Frame Convert");
+      LOGTRACE("org.esb.hive.job.ProcessUnit","try Frame Convert");
     /*converting the source frame to target frame*/
     _converter->convert(*tmp, *f);
 
@@ -172,6 +146,7 @@ void ProcessUnit::process() {
      * this is for down rating the frame rate, e.g. from 25fps down to 15fps...
      * there are some pictures to drop!
      * @TODO: test out if this is ok when some Rational Framerate is given, e.g. 23.976fps?
+     * @TODO: is it possible to make this in the decoder or encoder or frameconverter?
      */
     if(last_pts>0&&last_pts==f->getPts()){
       delete f;
@@ -182,45 +157,26 @@ void ProcessUnit::process() {
 
 
 
-    if (toDebug) {
-      logdebug("Frame Converted");
-      f->toString();
-    }
+      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Converted"<<f->toString());
+      
 
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
     int ret = _encoder->encode(*f);
     delete tmp;
     delete f;
-    //cout << "PacketPts:" << ret.packet->pts << "\tPacketDts:" << ret.packet->dts << "\t";
-    if (toDebug)
-      logdebug("Frame Encoded");
-
-    //    boost::shared_ptr<Packet> pEnc(new Packet(ret));
-    if (toDebug)
-      logdebug("Packet Created");
-
-    //	    pEnc->packet->dts=AV_NOPTS_VALUE;
+    LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Encoded");
     outsize += ret;
   }
   /*now process the delayed Frames from the encoder*/
-  logdebug("Encode Packet delay");
+  LOGTRACE("org.esb.hive.job.ProcessUnit","Encode Packet delay");
   bool have_more_frames=_encoder->getCodecType()==CODEC_TYPE_VIDEO;
   while(have_more_frames){
     if(_encoder->encode()<=0){
       have_more_frames=0;
     }
   }
-  /*
-    if (_decoder != NULL)
-      delete _decoder;
-    if (_encoder != NULL)
-      delete _encoder;
-    _decoder = 0;
-    _encoder = 0;
-   */
   _output_packets = sink.getList();
-
 }
 
 std::string toString() {

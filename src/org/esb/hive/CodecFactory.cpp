@@ -5,6 +5,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringTokenizer.h"
 #include <stdexcept>
 
 
@@ -40,8 +41,8 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
-      logerror("no Decoder found for stream id " << streamid);
-      throw std::runtime_error(string("no Decoder found for stream id "));
+      LOGERROR("org.esb.hive.CodecFactory","no Decoder found for stream id " << streamid);
+//      throw std::runtime_error(string("no Decoder found for stream id "));
     }
   }
   return decoder_map[streamid];
@@ -50,7 +51,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, framerate_num, framerate_den, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, framerate_num, framerate_den, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,extra_profile_flags from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -70,13 +71,34 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setSampleRate(rs.getInt("sample_rate"));
       _encoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       _encoder->setFlag(rs.getInt("flags"));
+      setCodecOptions(_encoder,rs.getString("extra_profile_flags"));
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } else {
-      throw std::runtime_error(string("no Encoder found for stream id "));
+      LOGERROR("org.esb.hive.CodecFactory","no Encoder found for stream id " << streamid);
+//      throw std::runtime_error(string("no Encoder found for stream id "));
     }
   }
   return encoder_map[streamid];
+}
+
+void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,std::string options){
+  if(options.length()>0){
+    org::esb::util::StringTokenizer to(options,";");
+    while(to.hasMoreTokens()){
+      std::string line=to.nextToken();
+      org::esb::util::StringTokenizer to2(line,"=");
+      if(to2.countTokens()!=2){
+        LOGWARN("org.esb.hive.CodecFactory","Invalid CodecOptionsPair it is not a <key=value> pair");
+      }else{
+        std::string opt=to2.nextToken();
+        std::string arg=to2.nextToken();
+        if(_enc->setCodecOption(opt, arg)){
+          LOGERROR("org.esb.hive.CodecFactory","setting CodecOptionsPair (opt="<<opt<<" arg="<<arg<<")");
+        }
+      }
+    }
+  }
 }
 
 void CodecFactory::free() {

@@ -30,166 +30,184 @@
 #include "AV.h"
 
 #include <boost/serialization/serialization.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/string.hpp>
+
+
 #include "Packet.h"
 #include "org/esb/util/Log.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/condition.hpp>
 #include <list>
 namespace org {
-    namespace esb {
-        namespace av {
-            class Frame;
+  namespace esb {
+    namespace av {
+      class Frame;
 
-            /*class CodecID;
-      class AVCodecContext;
-      class PixelFormat;
-      class SampleFormat;*/
+      /*class CodecID;
+class AVCodecContext;
+class PixelFormat;
+class SampleFormat;*/
 
-            class Codec {
-                logger("hive.av.codec")
-            public:
-                const static int DECODER = 1;
-                const static int ENCODER = 2;
-                Codec(const CodecID codecId, int mode = DECODER);
-                Codec(AVCodecContext * codec, int mode = DECODER);
-                Codec(int mode = DECODER);
-                ~Codec();
-                /**
-                 *
-                 * @return The type of this Codec, as a enum Type
-                 */
-                CodecType getCodecType();
+      class Codec {
+        logger("hive.av.codec")
+      public:
+        const static int DECODER = 1;
+        const static int ENCODER = 2;
+        Codec(const CodecID codecId, int mode = DECODER);
+        Codec(AVCodecContext * codec, int mode = DECODER);
+        Codec(int mode = DECODER);
+        ~Codec();
+        /**
+         *
+         * @return The type of this Codec, as a enum Type
+         */
+        CodecType getCodecType();
 
-                /**
-                 * @return The name of the Codec.
-                 */
-                char *getCodecName();
-                /**
-                 * @return the ID of this codec, an enum CodecID
-                 */
-                CodecID getCodecId();
-                bool open();
-                void setWidth(int w);
-                void setHeight(int h);
-                void setPixelFormat(PixelFormat pfm);
-                void setBitRate(int rate);
-                void setTimeBase(AVRational tb);
-                void setGopSize(int size);
-                void setChannels(int size);
-                void setSampleRate(int size);
-                void setSampleFormat(SampleFormat size);
-                void setFlag(int flag);
-                void setCodecId(CodecID);
-                int getWidth();
-                int getHeight();
-                PixelFormat getPixelFormat();
-                int getSampleRate();
-                int getBitRate();
-                int getFlags();
-                SampleFormat getSampleFormat();
-                int getChannels();
-                int getGopSize();
-                int getBitsPerCodedSample();
-                void setBitsPerCodedSample(int);
-                AVRational getTimeBase();
-                int64_t getFrameBytes();
-                //                void setStartTime(int64_t start);
-                std::string toString(void);
-                //				int getCodecType ();
-                //				string getCodecName ();
+        /**
+         * @return The name of the Codec.
+         */
+        char *getCodecName();
+        /**
+         * @return the ID of this codec, an enum CodecID
+         */
+        CodecID getCodecId();
+        bool open();
+        void setWidth(int w);
+        void setHeight(int h);
+        void setPixelFormat(PixelFormat pfm);
+        void setBitRate(int rate);
+        void setTimeBase(AVRational tb);
+        void setGopSize(int size);
+        void setChannels(int size);
+        void setSampleRate(int size);
+        void setSampleFormat(SampleFormat size);
+        void setFlag(int flag);
+        void setCodecId(CodecID);
+        int getWidth();
+        int getHeight();
+        PixelFormat getPixelFormat();
+        int getSampleRate();
+        int getBitRate();
+        int getFlags();
+        SampleFormat getSampleFormat();
+        int getChannels();
+        int getGopSize();
+        int getBitsPerCodedSample();
+        void setBitsPerCodedSample(int);
+        AVRational getTimeBase();
+        int64_t getFrameBytes();
+        int setCodecOption(std::string opt, std::string arg);
+        //                void setStartTime(int64_t start);
+        std::string toString(void);
+        //				int getCodecType ();
+        //				string getCodecName ();
 
-                template < class Archive >
-                void baseserialize(Archive & ar, const unsigned int version) {
-                    ar & ctx->codec_id;
-                    ar & _mode;
-                    ar & ctx->flags;
-                    ar & ctx->pix_fmt;
-                    ar & ctx->width;
-                    ar & ctx->height;
-                    ar & ctx->time_base.num;
-                    ar & ctx->time_base.den;
-                    ar & ctx->gop_size;
-                    ar & ctx->bit_rate;
-                    ar & ctx->channels;
-                    ar & ctx->sample_rate;
-                    ar & ctx->sample_fmt;
-                    ar & _bytes_discard;
-                    ar & ctx->bits_per_coded_sample;
-                    ar & ctx->extradata_size;
-                }
-
-                template<class Archive>
-                void save(Archive & ar, const unsigned int version) const {
-                    ar & ctx->codec_id;
-                    ar & _mode;
-                    ar & ctx->flags;
-                    ar & ctx->pix_fmt;
-                    ar & ctx->width;
-                    ar & ctx->height;
-                    ar & ctx->time_base.num;
-                    ar & ctx->time_base.den;
-                    ar & ctx->gop_size;
-                    ar & ctx->bit_rate;
-                    ar & ctx->channels;
-                    ar & ctx->sample_rate;
-                    ar & ctx->sample_fmt;
-                    ar & _bytes_discard;
-                    ar & ctx->bits_per_coded_sample;
-                    if (_mode == Codec::DECODER) {
-                        ar & ctx->extradata_size;
-                        ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
-                    }
-                };
-
-                template<class Archive>
-                void load(Archive & ar, const unsigned int version) {
-                    ar & ctx->codec_id;
-                    ar & _mode;
-                    ar & ctx->flags;
-                    ar & ctx->pix_fmt;
-                    ar & ctx->width;
-                    ar & ctx->height;
-                    ar & ctx->time_base.num;
-                    ar & ctx->time_base.den;
-                    ar & ctx->gop_size;
-                    ar & ctx->bit_rate;
-                    ar & ctx->channels;
-                    ar & ctx->sample_rate;
-                    ar & ctx->sample_fmt;
-                    ar & _bytes_discard;
-                    ar & ctx->bits_per_coded_sample;
-                    if (_mode == Codec::DECODER) {
-                        ar & ctx->extradata_size;
-                        if (ctx->extradata_size > 0) {
-//                            logdebug("created extradata with size " << ctx->extradata_size);
-                            ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
-                            memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-                            ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
-                        }else{
-                            ctx->extradata=NULL;
-                        }
-                    }
-                };
-                BOOST_SERIALIZATION_SPLIT_MEMBER();
-
-                AVCodec * _codec;
-                bool findCodec(int mode);
-                int _mode;
-                AVCodecContext * ctx;
-                int64_t _bytes_discard;
-
-            protected:
-                bool _opened;
-                AVFifoBuffer *fifo;
-            private:
-                void close();
-                void setParams();
-                void setContextDefaults();
-                bool _codec_resolved;
-                bool _pre_allocated;
-                static boost::mutex open_close_mutex;
-            };
+        template < class Archive >
+        void baseserialize(Archive & ar, const unsigned int version) {
+          ar & ctx->codec_id;
+          ar & _mode;
+          ar & ctx->flags;
+          ar & ctx->pix_fmt;
+          ar & ctx->width;
+          ar & ctx->height;
+          ar & ctx->time_base.num;
+          ar & ctx->time_base.den;
+          ar & ctx->gop_size;
+          ar & ctx->bit_rate;
+          ar & ctx->channels;
+          ar & ctx->sample_rate;
+          ar & ctx->sample_fmt;
+          ar & _bytes_discard;
+          ar & ctx->bits_per_coded_sample;
+          ar & ctx->extradata_size;
         }
+
+        template<class Archive>
+        void save(Archive & ar, const unsigned int version) const {
+          LOGTRACE("org.esb.av.Codec","serialization save");
+          ar & ctx->codec_id;
+          ar & _mode;
+          ar & ctx->flags;
+          ar & ctx->pix_fmt;
+          ar & ctx->width;
+          ar & ctx->height;
+          ar & ctx->time_base.num;
+          ar & ctx->time_base.den;
+          ar & ctx->gop_size;
+          ar & ctx->bit_rate;
+          ar & ctx->channels;
+          ar & ctx->sample_rate;
+          ar & ctx->sample_fmt;
+          ar & _bytes_discard;
+          ar & ctx->bits_per_coded_sample;
+          ar & _options;
+          if (_mode == Codec::DECODER) {
+            ar & ctx->extradata_size;
+//            if (ctx->extradata_size > 0) {
+              ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+//            }
+          }
+
+          //                    saveCodecOption();
+        };
+
+        template<class Archive>
+        void load(Archive & ar, const unsigned int version) {
+          LOGTRACE("org.esb.av.Codec","serialization load");
+          ar & ctx->codec_id;
+          ar & _mode;
+          ar & ctx->flags;
+          ar & ctx->pix_fmt;
+          ar & ctx->width;
+          ar & ctx->height;
+          ar & ctx->time_base.num;
+          ar & ctx->time_base.den;
+          ar & ctx->gop_size;
+          ar & ctx->bit_rate;
+          ar & ctx->channels;
+          ar & ctx->sample_rate;
+          ar & ctx->sample_fmt;
+          ar & _bytes_discard;
+          ar & ctx->bits_per_coded_sample;
+          ar & _options;
+          if (_mode == Codec::DECODER) {
+            ar & ctx->extradata_size;
+            if (ctx->extradata_size > 0) {
+              //                            logdebug("created extradata with size " << ctx->extradata_size);
+              ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
+              memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+              ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+            } else {
+              ctx->extradata = NULL;
+            }
+          }
+        };
+        BOOST_SERIALIZATION_SPLIT_MEMBER();
+
+        AVCodec * _codec;
+        bool findCodec(int mode);
+        int _mode;
+        AVCodecContext * ctx;
+        int64_t _bytes_discard;
+        //                bool saveCodecOption();
+        //                bool loadCodecOption();
+
+      protected:
+        bool _opened;
+        AVFifoBuffer *fifo;
+        std::string _codec_options;
+      private:
+        void close();
+        void setParams();
+        void setContextDefaults();
+        bool _codec_resolved;
+        bool _pre_allocated;
+        static boost::mutex open_close_mutex;
+        std::map<std::string, std::string> _options;
+
+      };
     }
+  }
 }
 #endif

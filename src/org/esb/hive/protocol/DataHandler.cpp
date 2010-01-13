@@ -50,11 +50,11 @@ private:
 
   void remove_endpoint_from_stream(const boost::system::error_code & er) {
     boost::mutex::scoped_lock scoped_lock(removeMutex);
-    logdebug("TimerEvent received");
+    LOGDEBUG("org.esb.hive.protocol.DataHandler","TimerEvent received");
     if (er == boost::asio::error::operation_aborted) {
-      logdebug("Timer Event was Canceled");
+      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event was Canceled");
     } else {
-      logdebug("TimeOut received, removing endpoint from list to give an other client a chance!")
+      LOGDEBUG("org.esb.hive.protocol.DataHandler","TimeOut received, removing endpoint from list to give an other client a chance!")
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
           endpoint2stream.pop_front();
@@ -78,7 +78,7 @@ public:
     _own_id = ep.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
-    logdebug("endpoint:" << ep);
+    LOGDEBUG("org.esb.hive.protocol.DataHandler","endpoint:" << ep);
     shutdown = false;
 //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
 //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
@@ -107,7 +107,7 @@ public:
     //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
 //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
     //    io_timer.run();
-    logdebug("endpoint:" << ep);
+    LOGDEBUG("org.esb.hive.protocol.DataHandler","endpoint:" << ep);
   }
 
   int isResponsible(cmdId & cmid) {
@@ -154,7 +154,7 @@ public:
       //      _ois->readObject(un.get());
 
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
-        logerror("error while putProcessUnit!");
+       LOGERROR("org.esb.hive.protocol.DataHandler","error while putProcessUnit!");
       }
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
 
@@ -167,7 +167,7 @@ public:
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
       } else {
-        logdebug("new client " << _own_id)
+        LOGDEBUG("org.esb.hive.protocol.DataHandler","new client " << _own_id)
         un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(_own_id);
       }
@@ -185,7 +185,7 @@ public:
       string data;
       _is->read(data);
       if(un.get()==NULL){
-        logdebug("ProcessUnit timed out, discard it");
+        LOGDEBUG("org.esb.hive.protocol.DataHandler","ProcessUnit timed out, discard it");
         return;
       }
       std::string name = org::esb::config::Config::getProperty("hive.base_path");
@@ -210,10 +210,10 @@ public:
              t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
        */
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
-        logerror("error while putProcessUnit!");
+       LOGERROR("org.esb.hive.protocol.DataHandler","error while putProcessUnit!");
       }
     } else {
-      logerror("unknown command received:" << command);
+      LOGERROR("org.esb.hive.protocol.DataHandler","unknown command received:" << command);
     }
   }
 

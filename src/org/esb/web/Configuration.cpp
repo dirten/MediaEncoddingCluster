@@ -99,7 +99,7 @@ public:
         }
 
         void onClick(Wt::Ext::Button * src) {
-          logdebug("button clicked" << src->text());
+//          logdebug("button clicked" << src->text());
         }
 
         Wt::WWidget * createSystemPage(Wt::WContainerWidget * parent) {

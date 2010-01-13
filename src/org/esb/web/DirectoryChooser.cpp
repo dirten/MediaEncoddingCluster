@@ -31,10 +31,10 @@ namespace org {
         Wt::WTree::WTreeNodeSet::iterator it = set.begin();
         std::string path;
         if (it != set.end()) {
-          logdebug("Folder in set");
+//          logdebug("Folder in set");
           FileTreeTableNode * node = (FileTreeTableNode*) * it;
           path=node->path_.string();
-          logdebug(node->path_);
+//          logdebug(node->path_);
         }
 
         selected.emit(path);

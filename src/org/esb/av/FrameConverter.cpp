@@ -25,11 +25,11 @@ namespace org {
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {
-          logerror("the Decoder and Encoder must be from the same Type");
+          LOGERROR("org.esb.av.FrameConverter","the Decoder and Encoder must be from the same Type");
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
-           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
-            logwarn("Warning, using s16 intermediate sample format for resampling\n");
+          if (dec->getSampleFormat() != SAMPLE_FMT_S16)
+            LOGWARN("org.esb.av.FrameConverter","Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(
               enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
@@ -37,7 +37,7 @@ namespace org {
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
           if (!_audioCtx)
-            logerror("Could not initialize Audio Resample Context");
+            LOGERROR("org.esb.av.FrameConverter","Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
           _swsContext = sws_getContext(
@@ -45,7 +45,7 @@ namespace org {
               enc->getWidth(), enc->getHeight(), enc->getPixelFormat(),
               sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
-            logerror("Could not initialize SWSCALE");
+            LOGERROR("org.esb.av.FrameConverter","Could not initialize SWSCALE");
         }
       }
 
@@ -59,9 +59,8 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
-#ifdef DEBUG
-        logdebug(in_frame.toString());
-#endif
+
+        LOGDEBUG("org.esb.av.FrameConverter",in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
@@ -71,9 +70,7 @@ namespace org {
         rescaleTimestamp(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO)
           compensateAudioResampling(in_frame, out_frame);
-#ifdef DEBUG
-        logdebug(out_frame.toString());
-#endif
+        LOGDEBUG("org.esb.av.FrameConverter",out_frame.toString());
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
@@ -101,14 +98,12 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-#ifdef DEBUG
-        logdebug("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
-#endif
-        
+        LOGDEBUG("org.esb.av.FrameConverter","Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
             delta,
-            _enc->getSampleRate()/2
+            _enc->getSampleRate() / 2
             );
       }
 
@@ -116,6 +111,7 @@ namespace org {
        * this rescales the input Frame Data into the output Frame Data
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
+        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
         out_frame._type = in_frame._type;
         sws_scale(
             _swsContext,
@@ -138,6 +134,7 @@ namespace org {
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);

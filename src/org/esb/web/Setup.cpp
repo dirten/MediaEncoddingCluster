@@ -211,7 +211,7 @@ namespace org {
       }
 
       void Setup::nextStep() {
-        logdebug("Step=" << stack->currentIndex());
+        LOGDEBUG("org.esb.web.Setup","Step=" << stack->currentIndex());
         _el.validate();
         int idx = stack->currentIndex();
         //        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))

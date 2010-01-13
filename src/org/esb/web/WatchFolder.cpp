@@ -194,28 +194,22 @@ namespace org {
         }
 
         void selectInFolder() {
-          logdebug("Folder Selected");
 
           Wt::WTree::WTreeNodeSet set = intree->tree()->selectedNodes();
           Wt::WTree::WTreeNodeSet::iterator it = set.begin();
           if (it != set.end()) {
-            logdebug("Folder in set");
             FileTreeTableNode * node = (FileTreeTableNode*) * it;
             elements["infolder"]->setText(node->path_.string());
-            logdebug(node->path_);
           }
         }
 
         void selectOutFolder() {
-          logdebug("Folder Selected");
 
           Wt::WTree::WTreeNodeSet set = outtree->tree()->selectedNodes();
           Wt::WTree::WTreeNodeSet::iterator it = set.begin();
           if (it != set.end()) {
-            logdebug("Folder in set");
             FileTreeTableNode * node = (FileTreeTableNode*) * it;
             elements["outfolder"]->setText(node->path_.string());
-            logdebug(node->path_);
           }
         }
 

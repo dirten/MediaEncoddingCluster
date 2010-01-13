@@ -34,18 +34,18 @@ namespace org {
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
         std::string filename = _sourceFile->getPath();
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
-          logerror("Konnte Datei " << _sourceFile->getPath() << " nicht oeffnen");
+          LOGERROR("org.esb.av.FormatInputStream","could not open file:" << _sourceFile->getPath());
           return;
         }
         //		formatCtx->debug=5;
 
         loginfo("find stream info: " << source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
-          logerror("Konnte StreamInfo von " << _sourceFile->getPath() << " nicht ermitteln");
+          LOGERROR("org.esb.av.FormatInputStream","no StreamInfo from:" << _sourceFile->getPath());
           return;
         }
         if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
-          logdebug("TS DISCONT");
+          LOGDEBUG("org.esb.av.FormatInputStream","TS DISCONT");
         }
         /**
          * get the first video and audio stream
@@ -70,7 +70,7 @@ namespace org {
                     _streamReverseMap[_streamMap[1]] = 1;
                 }*/
         _isValid = true;
-        loginfo("file openned: " << source->getPath());
+        LOGDEBUG("org.esb.av.FormatInputStream","file openned: " << source->getPath());
 
       }
 

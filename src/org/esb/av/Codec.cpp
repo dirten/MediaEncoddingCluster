@@ -100,9 +100,31 @@ namespace org {
         ctx->codec_id = id;
       }
 
+      int Codec::setCodecOption(std::string opt, std::string arg) {
+        LOGTRACE("org.esb.av.Codec", "setCodecOption(" << opt << "," << arg << ")");
+        _options[opt]=arg;
+        return 0;
+      }
+/*
+      bool Codec::saveCodecOption() {
+        AVClass *c = *(AVClass**) ctx;
+        const AVOption *o = c->option;
+        for (; o && o->name; o++) {
+          int buf_len = 2000;
+          char* buf = new char[buf_len];
+          av_get_string(ctx, o->name, NULL, buf, buf_len);
+          LOGINFO("org.esb.av.Codec", "OptionName=" << o->name << " OptionString=" << buf);
+          delete buf;
+        }
+      }
+
+      bool Codec::loadCodecOption() {
+
+      }
+*/
       void Codec::setContextDefaults() {
 
-//        ctx->global_quality = 1000000;
+        //        ctx->global_quality = 1000000;
         ctx->pix_fmt = (PixelFormat) 0;
         ctx->width = 0;
         ctx->height = 0;
@@ -127,9 +149,9 @@ namespace org {
           //          ctx->has_b_frames = 1;
         }
         ctx->extradata = NULL;
-        ctx->me_method=ME_EPZS;
-        ctx->mb_decision=2;
-        ctx->bit_rate_tolerance=4000000;
+        ctx->me_method = ME_EPZS;
+        ctx->mb_decision = 2;
+        ctx->bit_rate_tolerance = 4000000;
         /*default settings for x264*/
         ctx->me_range = 16;
         ctx->max_qdiff = 4;
@@ -137,13 +159,16 @@ namespace org {
         ctx->qmax = 31;
         ctx->qcompress = 0.5;
         ctx->qblur = 0.5;
-        ctx->flags |=CODEC_FLAG_AC_PRED;
-        ctx->flags |=CODEC_FLAG_4MV;
-        ctx->flags |=CODEC_FLAG_MV0;
-        ctx->me_cmp=2;
-        ctx->me_sub_cmp=2;
-        ctx->trellis=1;
-
+        /**
+         * this will come from the codecfactory in the future*/
+        /*
+        ctx->flags |= CODEC_FLAG_AC_PRED;
+        ctx->flags |= CODEC_FLAG_4MV;
+        ctx->flags |= CODEC_FLAG_MV0;
+        ctx->me_cmp = 2;
+        ctx->me_sub_cmp = 2;
+        ctx->trellis = 1;
+         */
 
       }
 
@@ -166,24 +191,24 @@ namespace org {
         if (mode == DECODER) {
           _codec = avcodec_find_decoder(ctx->codec_id);
           if (_codec == NULL) {
-            logerror("Decoder not found for id :" << ctx->codec_id);
+            LOGERROR("org.esb.av.Codec", "Decoder not found for id :" << ctx->codec_id);
             result = false;
           }
         } else
           if (mode == ENCODER) {
           _codec = avcodec_find_encoder(ctx->codec_id);
           if (_codec == NULL) {
-            logerror("Encoder not found for id :" << ctx->codec_id);
+            LOGERROR("org.esb.av.Codec", "Encoder not found for id :" << ctx->codec_id);
             result = false;
           }
         } else {
-          logerror("Mode not set for Codec");
+          LOGERROR("org.esb.av.Codec", "Mode not set for Codec");
         }
         if (result) {
           ctx->codec_type = _codec->type;
           _codec_resolved = true;
         } else {
-          logerror("in resolving codec");
+          LOGERROR("org.esb.av.Codec", "in resolving codec");
         }
 
         return result;
@@ -236,11 +261,33 @@ namespace org {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
           //					    cout <<"CodecCapTruncated"<<endl;
         }
-        //				    ctx->flags |=CODEC_FLAG_LOW_DELAY;
+
+        std::map<std::string, std::string>::iterator opit = _options.begin();
+        for (; opit != _options.end(); opit++) {
+          std::string opt=(*opit).first;
+          std::string arg=(*opit).second;
+          LOGTRACE("org.esb.av.Codec", "av_set_string3(" << opt << "," << arg << ")");
+          int type;
+          int ret = 0;
+          const AVOption *o = NULL;
+          int opt_types[] = {AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
+          for (type = 0; type < CODEC_TYPE_NB && ret >= 0; type++) {
+            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+            if (o2)
+              ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+          }
+          if (o && ret < 0) {
+            LOGERROR("org.esb.av.Codec", "Invalid value '" << arg << "' for option '" << opt << "'\n");
+          }
+          if (!o) {
+            LOGWARN("org.esb.av.Codec", "Option not found:" << opt);
+            //          return -1;
+          }
+        }
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            logerror("while openning Codec" << ctx->codec_id);
+            LOGERROR("org.esb.av.Codec", "openning Codec" << ctx->codec_id);
 
           } else {
             //              logdebug("Codec opened:" << _codec_id);
@@ -248,7 +295,7 @@ namespace org {
             _opened = true;
           }
         } catch (...) {
-          logerror("Exception while openning Codec" << ctx->codec_id);
+          LOGERROR("org.esb.av.Codec", "Exception while openning Codec" << ctx->codec_id);
         }
         return _opened;
         //        }
@@ -266,17 +313,16 @@ namespace org {
       void Codec::close() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
 
-        if (ctx->extradata_size > 0 ) {
-//          logdebug("freeing extradata");
+        if (ctx->extradata_size > 0) {
+          //          logdebug("freeing extradata");
           av_freep(&ctx->extradata);
         }
         if (_opened) {
           if (ctx && !_pre_allocated) {
             avcodec_close(ctx);
           }
-#ifdef DEBUG
-          logdebug("recently fifo size:" << av_fifo_size(fifo));
-#endif
+
+          LOGDEBUG("org.esb.av.Codec", "recently fifo size:" << av_fifo_size(fifo));
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {

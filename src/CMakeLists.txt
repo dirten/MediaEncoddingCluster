@@ -70,7 +70,7 @@ target_link_libraries (mhive
   io 
   net 
   ${BOOST_PO_LIB_MT}
-  log4cplusud
+  log4cplus
 )
 IF(WIN32)
 #  target_link_libraries (mhive  

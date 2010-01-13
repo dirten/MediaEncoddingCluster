@@ -1,7 +1,6 @@
 #include <string.h>
 #include "IllegalFormatException.h"
-
-
+#include "org/esb/util/Log.h"
 
 
 using namespace org::esb::util;

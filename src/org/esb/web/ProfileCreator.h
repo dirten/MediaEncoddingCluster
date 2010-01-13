@@ -119,7 +119,8 @@ namespace org {
           std::map<std::string, std::string> getKeyValue();
           void setKeyValue(std::map<std::string, std::string>);
         private:
-
+          void setPredifinedCodeFlags();
+          void setSelectedPredifinedCodeFlags();
         };
 
         /**

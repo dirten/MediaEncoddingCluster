@@ -37,8 +37,9 @@ namespace org {
           //                    queue_condition.notify_all();
         }
 
-        void enqueue(T obj) {
+        bool enqueue(T obj) {
           boost::mutex::scoped_lock enqueue_lock(enqueue_mutex);
+          bool result=false;
           if (_q.size() >= MAXSIZE) {
             boost::mutex::scoped_lock condition_lock(condition_mutex);
             queue_condition.wait(condition_lock);
@@ -47,8 +48,10 @@ namespace org {
           {
             boost::mutex::scoped_lock enqueue_lock(queue_mutex);
             _q.push_back(obj);
-            queue_condition.notify_one();
+            result=true;
           }
+          queue_condition.notify_one();
+          return result;
         }
 
         /*
@@ -85,6 +88,24 @@ namespace org {
             queue_condition.notify_one();
             return object;
           }
+        }
+
+        bool dequeue(T object) {
+          boost::mutex::scoped_lock enqueue_lock(dequeue_mutex);
+          bool result=false;
+          if (_q.size() == 0) {
+            boost::mutex::scoped_lock condition_lock(condition_mutex);
+            queue_condition.wait(condition_lock);
+            //			  queue_condition.wait(dequeue_lock);
+          }
+          {
+            boost::mutex::scoped_lock dequeue_lock(queue_mutex);
+            object = _q.front();
+            _q.pop_front();
+            result=true;
+          }
+          queue_condition.notify_one();
+          return result;
         }
 
         T operator[](int a) {

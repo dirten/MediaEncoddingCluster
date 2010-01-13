@@ -84,7 +84,6 @@ namespace org {
       }
 
       void WatchfolderForm::selectedInfolder(std::string path) {
-        logdebug("selected Path:" << path);
         _le.getElement("infolder")->setText(path);
         delete dc;
       }
@@ -97,7 +96,6 @@ namespace org {
       }
 
       void WatchfolderForm::selectedOutfolder(std::string path) {
-        logdebug("selected Path:" << path);
         _le.getElement("outfolder")->setText(path);
         delete dc;
       }

@@ -48,7 +48,7 @@ void ProtocolServer::close() {
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
   this->socket = socket;
-  logdebug("New Client Arrived from:" << socket->getRemoteIpAddress());
+  LOGDEBUG("org.esb.hive.ProtocolServer","New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new DataHandler(socket));
@@ -78,7 +78,7 @@ void ProtocolServer::run() {
 
       char *command = strtok((char *) cmd.c_str(), "\n\r");
       if (command == NULL || strlen(command) <= 0) {
-        logdebug("Command is NULL, continue!");
+        LOGINFO("org.esb.hive.ProtocolServer","Command is NULL, continue!");
         continue;
       }
       //      logdebug("Command : " << command);
@@ -94,7 +94,7 @@ void ProtocolServer::run() {
       }
       //#ifndef DEBUG
     } catch (exception & ex) {
-      logerror("ERROR in ProtocolServer:" << ex.what());
+      LOGERROR("org.esb.hive.ProtocolServer","ERROR in ProtocolServer:" << ex.what());
       socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }

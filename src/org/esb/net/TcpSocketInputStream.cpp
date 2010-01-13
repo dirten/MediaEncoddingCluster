@@ -8,6 +8,7 @@
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
+#include "org/esb/util/Log.h"
 using boost::asio::ip::tcp;
 
 using namespace org::esb::lang;
@@ -70,15 +71,13 @@ namespace org {
           }
           int counter = 0, remaining = length;
 
-//          while (remaining > 0) {
-            int read= boost::asio::read(*_socket,boost::asio::buffer(buffer, length),boost::asio::transfer_at_least(length), error);
-//            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
-//            remaining -= read;
-//            counter += read;
-#ifdef NET_DEBUG
-          logdebug("readed bytes:"<<read);
-#endif
-//          }
+          //          while (remaining > 0) {
+          int read = boost::asio::read(*_socket, boost::asio::buffer(buffer, length), boost::asio::transfer_at_least(length), error);
+          //            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
+          //            remaining -= read;
+          //            counter += read;
+          LOGTRACE("org.esb.net.TcpSocketInputStream", "readed bytes:" << read);
+          //          }
 
           if (error)
             throw boost::system::system_error(error);
@@ -88,20 +87,15 @@ namespace org {
         int read(string & str) {
           /*Receive length of data*/
           int length = static_cast<int> (available(true));
-#ifdef NET_DEBUG
-          logdebug("size to read:"<<length);
-#endif
-          //          cout << "Readed Buffer length"<<length<<endl;
+          LOGTRACE("org.esb.net.TcpSocketInputStream", "size to read:" << length);
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
           counter = read(buffer, length);
-#ifdef NET_DEBUG
-          logdebug("size readed:"<<counter);
-#endif
+          LOGTRACE("org.esb.net.TcpSocketInputStream", "size readed:" << counter);
           /*If Connection is dead*/
           if (counter <= 0) {
-            cout << "Socket is brocken" << endl;
+            LOGERROR("org.esb.net.TcpSocketInputStream", "Socket is brocken");
           } else {
             str = string((char*) buffer, length);
           }
@@ -115,14 +109,14 @@ namespace org {
         long long int available(bool isBlocking) {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
-//          int len = 0;
-          int read= boost::asio::read(*_socket,boost::asio::buffer(&tmp,10), boost::asio::transfer_at_least(10));
-//          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
+          //          int len = 0;
+          int read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
+          //          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
           if (error)
-			  throw boost::system::system_error(error);
-		  else if(read!=10)
-			  throw SocketException("reading size is not equal 10");
-//            return 0;
+            throw boost::system::system_error(error);
+          else if (read != 10)
+            throw SocketException("reading size is not equal 10");
+          //            return 0;
           //			else
           //				throw boost::system::system_error(error);
           return atoi(tmp);

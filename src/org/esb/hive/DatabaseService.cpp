@@ -27,6 +27,7 @@
 #include "DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/sql/my_sql.h"
+#include "org/esb/util/Log.h"
 #include <iostream>
 namespace org {
   namespace esb {
@@ -49,38 +50,32 @@ namespace org {
       }
 
       void DatabaseService::start(std::string base_path) {
-//        loginfo("starting Database Service");
-//        if (_running == false) {
+        loginfo("starting Database Service");
+        if (_running == false) {
           //          std::string base_path = _base_path;
           std::string lang = "--language=";
           lang.append(base_path);
           lang.append("/res");
-//          std::cout << lang << std::endl;
 
           std::string datadir = "--datadir=";
           datadir.append(base_path);
           datadir.append("/");
-//          std::cout << datadir << std::endl;
           char * dbdir=const_cast<char*> (datadir.c_str());
           char * langdir= const_cast<char*> (lang.c_str());
-          std::cout << dbdir << std::endl;
-          std::cout << langdir << std::endl;
-
 
           char *server_options[] = {"dbservice", dbdir,langdir, (char*)NULL};
           int num_elements = (sizeof (server_options) / sizeof (char *))-1;
-//          std::cout << num_elements << std::endl;
 
           static char *server_groups[] = {"embedded","server","dbservice_SERVER", (char*)NULL};
           if (mysql_library_init(num_elements, server_options, server_groups) != 0) {
-            std::cerr<<"DB Library init failed"<<std::endl;
+            LOGFATAL("org.esb.hive.DatabaseService","initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
           }
           _running = true;
-//        }
+        }
       }
 
       void DatabaseService::stop() {
-//        loginfo("stopping Database Service");
+        loginfo("stopping Database Service");
         if (_running)
           mysql_library_end();
         _running = false;

@@ -18,10 +18,10 @@ namespace org {
     namespace hive {
 
       void Setup::check() {
-        logdebug("check Database Cluster Environment");
+        LOGDEBUG("org.esb.hive.Setup","check Database Cluster Environment");
 
         if (!checkDatabaseExist()) {
-          logerror("Database not exist");
+          LOGERROR("org.esb.hive.Setup","Database not exist");
           exit(-127);
         }
 
@@ -33,7 +33,7 @@ namespace org {
       }
 
       void Setup::buildDatabaseModel(std::string sqlfile) {
-        logdebug("loading DB model from " << sqlfile);
+        LOGDEBUG("org.esb.hive.Setup","loading DB model from " << sqlfile);
         std::string sql;
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
@@ -46,8 +46,6 @@ namespace org {
           std::string t = st.nextToken();
           t = StringUtil::trim(t, *new std::string("\n"));
           std::string next = StringUtil::trim(t);
-//          logdebug("Create Table " << next);
-//          logdebug("Create Table leng" << next.size());
           if (next.size() > 1)
             con.executeNonQuery(next);
         }

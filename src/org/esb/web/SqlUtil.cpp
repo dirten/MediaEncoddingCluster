@@ -6,6 +6,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/sql/ResultSetMetaData.h"
+#include "org/esb/util/StringUtil.h"
 #include <string>
 
 namespace org {
@@ -24,6 +25,11 @@ namespace org {
         std::map<std::string, std::string>::iterator elit = data.begin();
         for (; elit != data.end(); elit++) {
           if ((*elit).first == "id")continue;
+          /**
+           * special handling for fields that starts with an underscore
+           * this fields will be ignored to save to DB
+           */
+          if ((*elit).first.c_str()[0] == '_')continue;
           if (update) {
             sql += " " + (*elit).first + "=:" + (*elit).first + ", ";
           } else {
@@ -39,7 +45,7 @@ namespace org {
         } else {
           sql += "(" + fields + ") VALUES (" + values + ")";
         }
-        logdebug("SQL:" << sql);
+        LOGDEBUG("org.esb.web.SqlUtil", "SQL:" << sql);
         using namespace org::esb;
         sql::Connection con(std::string(config::Config::getProperty("db.connection")));
         sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
@@ -51,20 +57,24 @@ namespace org {
             pstmt.setString((*elit).first, (*elit).second);
           else
             pstmt.setNull((*elit).first);
-		  logdebug("map2sql: " << (*elit).first << "=" << (*elit).second<<":");
+          LOGDEBUG("org.esb.web.SqlUtil", "map2sql: " << (*elit).first << "=" << (*elit).second << ":");
           //          }
         }
         pstmt.execute();
 
-        return update?atoi(data["id"].c_str()):pstmt.getLastInsertId();
+        return update ? atoi(data["id"].c_str()) : pstmt.getLastInsertId();
       }
 
       void SqlUtil::sql2map(std::string tablename, int key, std::map<std::string, std::string> &data) {
+        return sql2map(tablename,"id", org::esb::util::StringUtil::toString(key), data);
+      }
+      
+      void SqlUtil::sql2map(std::string tablename,std::string keyfield, std::string key, std::map<std::string, std::string> &data) {
         using namespace org::esb;
-        std::string sql = "SELECT * FROM " + tablename + " WHERE id=:id";
+        std::string sql = "SELECT * FROM " + tablename + " WHERE "+keyfield+"=:id";
         sql::Connection con(std::string(config::Config::getProperty("db.connection")));
         sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
-        pstmt.setInt("id", key);
+        pstmt.setString("id", key);
         sql::ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
           sql::ResultSetMetaData * rsmd = rs.getResultSetMetaData();

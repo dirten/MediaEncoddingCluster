@@ -142,7 +142,7 @@ public:
             std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
 //            info->setData(atoi(idstr.c_str()));
             pSelector->setFileId(atoi(idstr.c_str()));
-            logdebug("fileSelected" << idstr);
+            LOGDEBUG("org.esb.web.Files","fileSelected" << idstr);
           }
           //      std::string idstr=boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0],0));
           //      std::string sql="select * from files where parent="+idstr+" or id="+idstr;

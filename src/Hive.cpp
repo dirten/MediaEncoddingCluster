@@ -111,7 +111,6 @@ int euclid(int a, int b){
 }
  */
 int main(int argc, char * argv[]) {
-
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
   
@@ -128,6 +127,9 @@ int main(int argc, char * argv[]) {
   char * base_path = new char[sb.length() + 1];
   memset(base_path, 0, sb.length() + 1);
   strcpy(base_path, sb.c_str());
+  std::string logconfigpath=sb;
+  logconfigpath.append("/res");
+  Log::open(logconfigpath);
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -160,7 +162,7 @@ int main(int argc, char * argv[]) {
 
     std::string config_path = Config::getProperty("hive.base_path");
     config_path.append("/.hive.cfg");
-    po::options_description gen;
+    po::options_description gen("General options");
 
     gen.add_options()
         ("help", "produce this message")
@@ -169,7 +171,7 @@ int main(int argc, char * argv[]) {
         ;
 
 
-    po::options_description ser("Hive options");
+    po::options_description ser("Server options");
     ser.add_options()
         ("daemon,d", "start the Hive as Daemon Process")
         ("run,r", "start the Hive as Console Process")
@@ -232,10 +234,10 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("daemon")) {
       Log::open(Config::getProperty("hive.base_path"));
-      logdebug("start daemon");
+      LOGDEBUG("Hive","start daemon");
       org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-        logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
+        LOGDEBUG("Hive","Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
@@ -246,10 +248,10 @@ int main(int argc, char * argv[]) {
       //      return 0;
     }
     if (vm.count("run")) {
-      logdebug("start console");
+      LOGDEBUG("Hive","start console");
       org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-        logdebug("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
+        LOGDEBUG("Hive","Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
@@ -356,7 +358,7 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
     case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
-      logdebug("ctlc event");
+      LOGDEBUG("Hive","ctlc event");
       ctrlCHit.notify_all(); // should be just 1
 
       //      serverStopped.wait(terminationLock);

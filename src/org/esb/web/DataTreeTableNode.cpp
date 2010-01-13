@@ -35,7 +35,7 @@ namespace org {
 
             }
             void DataTreeTableNode::selectAction(){
-                logdebug("Node selected");
+//                logdebug("Node selected");
             }
 
             void DataTreeTableNode::populate() {
