@@ -20,8 +20,11 @@ namespace org {
 /*        if (level > av_log_level)
           return;*/
 #undef fprintf
-        if (print_prefix && avc) {
-          snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
+#ifdef __WIN32__
+#define sprintf _sprintf
+#endif
+		if (print_prefix && avc) {
+			_snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
         } else
           line[0] = 0;
 

@@ -76,7 +76,7 @@ namespace org {
           //            int read = _socket->read_some(boost::asio::buffer(buffer + (length - remaining), remaining), error);
           //            remaining -= read;
           //            counter += read;
-          LOGTRACE("org.esb.net.TcpSocketInputStream", "readed bytes:" << read);
+//          LOGTRACE("org.esb.net.TcpSocketInputStream", "readed bytes:" << read);
           //          }
 
           if (error)
@@ -87,12 +87,12 @@ namespace org {
         int read(string & str) {
           /*Receive length of data*/
           int length = static_cast<int> (available(true));
-          LOGTRACE("org.esb.net.TcpSocketInputStream", "size to read:" << length);
+          LOGTRACE("org.esb.net.TcpSocketInputStream", "bytes to read:" << length);
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
           counter = read(buffer, length);
-          LOGTRACE("org.esb.net.TcpSocketInputStream", "size readed:" << counter);
+          LOGTRACE("org.esb.net.TcpSocketInputStream", "bytes readed:" << counter);
           /*If Connection is dead*/
           if (counter <= 0) {
             LOGERROR("org.esb.net.TcpSocketInputStream", "Socket is brocken");

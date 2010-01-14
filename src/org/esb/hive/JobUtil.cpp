@@ -105,7 +105,7 @@ int jobcreator(int argc, char*argv[]) {
         streams[v_stream_idx].framerate = r;
       } else {
         AVRational r = av_d2q(f, 10000);
-        /*NOTE:values must be swapped*/
+        /*NOTE:values must be swapped???*/
         streams[v_stream_idx].framerate.den = r.den;
         streams[v_stream_idx].framerate.num = r.num;
       }
