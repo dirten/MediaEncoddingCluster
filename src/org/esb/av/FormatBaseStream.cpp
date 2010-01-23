@@ -24,7 +24,7 @@ namespace org {
 #define sprintf _sprintf
 #endif
 		if (print_prefix && avc) {
-			_snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
+			snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);
         } else
           line[0] = 0;
 

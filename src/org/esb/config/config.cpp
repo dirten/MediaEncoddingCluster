@@ -51,6 +51,8 @@ bool Config::init(const std::string & filename) {
       parseLine(buffer);
     }
     fclose(fp);
+  }else{
+    return false;
   }
   /*load params from database*/
   try {

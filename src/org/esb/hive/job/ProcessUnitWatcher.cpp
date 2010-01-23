@@ -96,11 +96,11 @@ namespace org {
           if (msg.getProperty("processunitwatcher") == "start") {
             _isStopSignal = false;
             boost::thread t(boost::bind(&ProcessUnitWatcher::start3, this));
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","started");
+            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "started");
           } else if (msg.getProperty("processunitwatcher") == "stop") {
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","ProcessUnitWatcher stop request");
+            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "ProcessUnitWatcher stop request");
             stop();
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","stopped");
+            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "stopped");
           }
         }
 
@@ -111,7 +111,7 @@ namespace org {
             puQueue.flush();
             if (_isRunning) {
               boost::mutex::scoped_lock terminationLock(terminationMutex);
-              termination_wait.timed_wait(terminationLock,boost::posix_time::seconds(10));
+              termination_wait.timed_wait(terminationLock, boost::posix_time::seconds(10));
               _isRunning = false;
               delete _con_tmp2;
               delete _stmt_fr;
@@ -201,7 +201,7 @@ namespace org {
                   pstmt.setInt("a", (*st).second.outstream);
                   ResultSet rs_t = pstmt.executeQuery();
                   if (rs_t.next()) {
-                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"));
+                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"));
                     (*st).second.last_start_ts = rs_t.getLong("last_start_ts");
                   }
                 }
@@ -269,7 +269,7 @@ namespace org {
               /**
                * @TODO: at this point, here must be a check if all packets are received in case of client crash!
                */
-              LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","file completed:" << filename);
+              LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "file completed:" << filename);
               /**
                * cleaning up allocated resources
                */
@@ -346,7 +346,7 @@ namespace org {
             }
           }
 
-                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","ProcessUnit added with packet count:" << u->_input_packets.size());
+          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
@@ -354,7 +354,7 @@ namespace org {
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","audio queue size:" << audioQueue.size());
+          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "audio queue size:" << audioQueue.size());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
           if (_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
@@ -385,7 +385,7 @@ namespace org {
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           //          if (puQueue.size() == 0)
           //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-		  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","video queue size:" << puQueue.size());
+          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "video queue size:" << puQueue.size());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex);
@@ -428,7 +428,7 @@ namespace org {
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
-         LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","Saving ProcessUnit");
+          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "Saving ProcessUnit");
           ous.writeObject(*unit.get());
           ous.close();
           /*
