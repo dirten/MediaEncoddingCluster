@@ -1,6 +1,5 @@
-ï»¿
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,7 +13,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `codec`
+-- Tabellenstruktur für Tabelle `codec`
 --
 
 CREATE TABLE IF NOT EXISTS `codec` (
@@ -29,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `codec` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `config`
+-- Tabellenstruktur für Tabelle `config`
 --
 
 CREATE TABLE IF NOT EXISTS `config` (
@@ -41,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `files`
+-- Tabellenstruktur für Tabelle `files`
 --
 
 CREATE TABLE IF NOT EXISTS `files` (
@@ -70,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `files` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `frame_groups`
+-- Tabellenstruktur für Tabelle `frame_groups`
 --
 
 CREATE TABLE IF NOT EXISTS `frame_groups` (
@@ -90,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `frame_groups` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `jobs`
+-- Tabellenstruktur für Tabelle `jobs`
 --
 
 CREATE TABLE IF NOT EXISTS `jobs` (
@@ -107,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `job_details`
+-- Tabellenstruktur für Tabelle `job_details`
 --
 
 CREATE TABLE IF NOT EXISTS `job_details` (
@@ -121,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `job_details` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `job_logs`
+-- Tabellenstruktur für Tabelle `job_logs`
 --
 
 CREATE TABLE IF NOT EXISTS `job_logs` (
@@ -136,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `job_logs` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `packets`
+-- Tabellenstruktur für Tabelle `packets`
 --
 
 CREATE TABLE IF NOT EXISTS `packets` (
@@ -163,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `packets` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `process_units`
+-- Tabellenstruktur für Tabelle `process_units`
 --
 
 CREATE TABLE IF NOT EXISTS `process_units` (
@@ -182,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `process_units` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `profiles`
+-- Tabellenstruktur für Tabelle `profiles`
 --
 
 CREATE TABLE IF NOT EXISTS `profiles` (
@@ -207,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `statistics_log`
+-- Tabellenstruktur für Tabelle `statistics_log`
 --
 
 CREATE TABLE IF NOT EXISTS `statistics_log` (
@@ -220,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `statistics_log` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `streams`
+-- Tabellenstruktur für Tabelle `streams`
 --
 
 CREATE TABLE IF NOT EXISTS `streams` (
@@ -260,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `user`
+-- Tabellenstruktur für Tabelle `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -279,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `version`
+-- Tabellenstruktur für Tabelle `version`
 --
 
 CREATE TABLE IF NOT EXISTS `version` (
@@ -292,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `version` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `watch_folder`
+-- Tabellenstruktur für Tabelle `watch_folder`
 --
 
 CREATE TABLE IF NOT EXISTS `watch_folder` (
