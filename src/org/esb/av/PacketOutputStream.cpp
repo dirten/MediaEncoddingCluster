@@ -35,10 +35,13 @@ PacketOutputStream::~PacketOutputStream() {
 bool first_packet = true;
 
 void PacketOutputStream::writePacket(Packet & packet) {
-  if (!_isInitialized)
-    throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
+	if (!_isInitialized&&first_packet){
+		LOGERROR("org.esb.av.PacketOutputStream","PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
+//	    throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
+		return;
+	}
   if (streams.size() <= packet.getStreamIndex()) {
-    logerror("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
+    LOGERROR("org.esb.av.PacketOutputStream","there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
     return;
   }
 
@@ -123,7 +126,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
     LOGDEBUG("org.esb.av.PacketOutputStream","av_interleaved_write_frame Result:" << result);
     LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
   }
-
+	first_packet = false;
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {

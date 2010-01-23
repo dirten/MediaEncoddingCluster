@@ -120,6 +120,7 @@ namespace org {
               delete unit->_converter;
               unit->_converter = NULL;
               delete unit;
+			  
             }
           }
           org::esb::lang::Thread::sleep2(5000);

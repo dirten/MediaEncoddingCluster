@@ -21,7 +21,7 @@ namespace org {
           return;*/
 #undef fprintf
 #ifdef __WIN32__
-#define sprintf _sprintf
+#define snprintf _snprintf
 #endif
 		if (print_prefix && avc) {
 			snprintf(line, sizeof (line), "[%s @ %p]", avc->item_name(ptr), ptr);

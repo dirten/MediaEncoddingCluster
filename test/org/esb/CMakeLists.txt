@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(-DMEC_SOURCE_DIR="${MEC_SOURCE_DIR}")
+
 
 add_subdirectory (lang)
 add_subdirectory (net)

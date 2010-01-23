@@ -18,7 +18,7 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample, extra_data_size, extra_data from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -38,7 +38,12 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       decoder->setFlag(rs.getInt("flags"));
       decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
-      //    		decoder->open();
+	  decoder->ctx->extradata_size=rs.getInt("extra_data_size");
+	  decoder->ctx->extradata=(uint8_t*)av_malloc(decoder->ctx->extradata_size);
+	  memcpy(decoder->ctx->extradata,rs.getBlob("extra_data").data(),decoder->ctx->extradata_size);
+//      decoder->setFlag(rs.getInt("flags"));
+
+	  //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
       LOGERROR("org.esb.hive.CodecFactory","no Decoder found for stream id " << streamid);

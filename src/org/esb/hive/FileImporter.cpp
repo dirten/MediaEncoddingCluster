@@ -153,9 +153,9 @@ int import(int argc, char *argv[]) {
   PreparedStatement
   stmt_str =
       con.
-      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time,duration,nb_frames,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data) values "
+      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time,duration,nb_frames,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
       //      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :duration, :nb_frames, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data)");
+	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :duration, :nb_frames, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
   for (unsigned int a = 0; a < ctx->nb_streams; a++) {
     int field = 0;
     duration += ctx->streams[a]->duration;
@@ -182,6 +182,8 @@ int import(int argc, char *argv[]) {
     stmt_str.setInt("channels", ctx->streams[a]->codec->channels);
     stmt_str.setInt("sample_fmt", ctx->streams[a]->codec->sample_fmt);
     stmt_str.setInt("bits_per_coded_sample", ctx->streams[a]->codec->bits_per_coded_sample);
+	stmt_str.setInt("extra_data_size", ctx->streams[a]->codec->extradata_size);
+	stmt_str.setBlob("extra_data", (char*)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
 
     //    stmt_str.setLong("priv_data_size", ctx->streams[a]->codec->codec->priv_data_size);
     //    stmt_str.setBlob("priv_data", (char*)ctx->streams[a]->codec->priv_data, ctx->streams[a]->codec->codec->priv_data_size);

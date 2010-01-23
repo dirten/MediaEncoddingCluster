@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
   `infolder` varchar(255) NOT NULL,
   `profile` int(11) unsigned NOT NULL,
   `outfolder` varchar(255) NOT NULL,
-  `extension_filter` varchar(255) NOT NULL,
+  `extension_filter` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 

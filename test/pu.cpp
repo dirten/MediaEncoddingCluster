@@ -164,6 +164,9 @@ int main(int argc, char** argv) {
     help();
     exit(0);
   }
+  std::string logconfigpath=MEC_SOURCE_DIR;
+  logconfigpath.append("/res");
+  Log::open(logconfigpath);
   avcodec_register_all();
   av_register_all();
 
