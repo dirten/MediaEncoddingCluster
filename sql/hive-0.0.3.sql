@@ -1,4 +1,4 @@
-
+﻿
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 
@@ -250,6 +250,8 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `bits_per_coded_sample` int(11) NOT NULL,
   `priv_data_size` int(11) DEFAULT '0',
   `priv_data` blob,
+  `extra_data_size` int(11) NOT NULL DEFAULT '0',
+  `extra_data` blob,
   `flags` int(10) unsigned NOT NULL,
   `extra_profile_flags` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
