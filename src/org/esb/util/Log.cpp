@@ -4,6 +4,7 @@
 #include <string>
 #include <log4cplus/logger.h>
 #include <log4cplus/configurator.h>
+#include <log4cplus/helpers/loglog.h>
 #include "LogConfigurator.cpp"
 
 
@@ -32,7 +33,7 @@ Log::Log() {
    */
   //  org::esb::util::LogConfigurator config;
   log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT("logging.properties"));
-
+	
   config.configure();
 
   trace_logger = log4cplus::Logger::getInstance("trace");
@@ -61,6 +62,7 @@ void Log::open(std::string path) {
   if (path.length() > 0) {
     path.append("/logging.properties");
     globalConfigureThread = new log4cplus::ConfigureAndWatchThread(LOG4CPLUS_TEXT(path), 5 * 1000);
+	
 //    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(path));
 //    config.configure();
   } else {

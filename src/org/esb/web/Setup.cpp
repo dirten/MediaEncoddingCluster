@@ -543,7 +543,8 @@ namespace org {
           try {
             sql::Connection con_create(std::string(""));
             con_create.executeNonQuery(string("CREATE DATABASE hive"));
-          } catch (...) {
+          } catch (sql::SqlException & ex) {
+			  logerror("SqlException:" << ex.what());
             error->setText(Wt::WString::tr("create-database_failed"));
             return;
           }

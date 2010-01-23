@@ -28,7 +28,7 @@ FileInputStream::FileInputStream(const std::string name) {
  */
 
 void FileInputStream::open(const std::string name) {
-  _file_handle = fopen(name.c_str(), "rb");
+  _file_handle = fopen(name.c_str(), "r");
   if (!_file_handle) {
     string error = "FileInputStream::open - File not Found (";
     error += name;
