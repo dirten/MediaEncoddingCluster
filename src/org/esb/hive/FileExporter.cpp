@@ -257,11 +257,28 @@ void FileExporter::exportFile(int fileid) {
         logerror("reading archive # " << pu_id);
         continue;
       }
+	  /**
+	  * @TODO: need to calculate the right pts by reorder the packet list
+	  */
+	  pu._output_packets.sort(ptsComparator);
+	  std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
+      for (; ptslist != pu._output_packets.end(); ptslist++) {
+        Packet * p = (*ptslist).get();
+        int idx = p->getStreamIndex();
+        p->setPts(_source_stream_map[idx].next_timestamp);
+        p->setTimeBase(_source_stream_map[idx].packet_timebase);
+        p->setDuration(_source_stream_map[idx].packet_duration);
+        _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
+        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+	  }
+	  pu._output_packets.sort(dtsComparator);
+
       std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
         int idx = p->getStreamIndex();
         if (min_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), basear))continue;
+		/*
         if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
           p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
         } else {
@@ -270,7 +287,7 @@ void FileExporter::exportFile(int fileid) {
           p->setDuration(_source_stream_map[idx].packet_duration);
           _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
           _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
-        }
+        }*/
 
 
 
@@ -327,6 +344,13 @@ void FileExporter::exportFile(int fileid) {
 
 
 
+}
+bool FileExporter::ptsComparator(boost::shared_ptr<Packet> a,boost::shared_ptr<Packet> b){
+	return a->getPts()<b->getPts();
+}
+
+bool FileExporter::dtsComparator(boost::shared_ptr<Packet> a,boost::shared_ptr<Packet> b){
+	return a->getDts()<b->getDts();
 }
 
 FileExporter::FileExporter(void) {

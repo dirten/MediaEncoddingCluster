@@ -1,6 +1,8 @@
 #ifndef ORG_ESB_HIE_FILEEXPORTER
 #define ORG_ESB_HIE_FILEEXPORTER
 #include "org/esb/av/AV.h"
+#include "org/esb/av/Packet.h"
+#include <boost/shared_ptr.hpp>
 #include <map>
 class FileExporter
 {
@@ -26,6 +28,8 @@ private:
 	};
 	static std::map<int, StreamData> _stream_map;
 	static std::map<int, StreamData> _source_stream_map;
+	static bool ptsComparator(boost::shared_ptr<org::esb::av::Packet>,boost::shared_ptr<org::esb::av::Packet> );
+	static bool dtsComparator(boost::shared_ptr<org::esb::av::Packet>,boost::shared_ptr<org::esb::av::Packet> );
 
 };
 

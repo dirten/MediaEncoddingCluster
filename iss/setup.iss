@@ -14,6 +14,7 @@ DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
 OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.5
+RestartIfNeededByRun=no
 
 [Code]
 function MyConst(Param: String): String;

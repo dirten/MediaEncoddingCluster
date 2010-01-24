@@ -304,17 +304,10 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 
-INSERT INTO `config` VALUES('framerates', '1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30');
-INSERT INTO `config` VALUES('samplerates', '8000,11025,22050,32000,44100,48000');
-INSERT INTO `config` VALUES('audiobitrates', '32000,96000,128000,160000,192000,224000,256000,320000');
 
-INSERT INTO `profiles` VALUES(1, 'MP4 H.264 320x240 MP2 128k 44.1Khz', 'MP4 format', "mp4", 28, 1024000, '24', 320, 240,"", 2, 86016, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(2, 'MP4 H.264 15fps 320x240 MP2 128k 44.1Khz', 'MP4 format', "mp4", 28, 1024000, '15', 320, 240,"", 2, 86016, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(3, 'MP4 H.264 23.97fps 320x240 MP2 128k 44.1Khz', 'MP4 format', "mp4",28, 1024000, '23.976', 320, 240,"", 2, 86017, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(4, 'FLV H.263 320x240 MP3 128k 44.1Khz', 'Flash 9 (AVM2) format', "flv", 22, 1024000, 'same as so', 320, 240,"", 2, 86017, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(5, 'AVI MPEG4-2 320x240 MP2 128k 441.Khz', 'AVI format', "avi", 13, 1024000, '15', 320, 240,"", 2, 86016, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(6, 'DVD MPEG2 320x240 MP3 128k 44.1Khz', 'MPEG-2 PS format (DVD VOB)', "vob", 2, 1024000, '25', 320, 240,"", 2, 86017, 128000, 44100,"");
-INSERT INTO `profiles` VALUES(7, 'DVD MPEG2 320x240 6000kbs ', 'MPEG-2 PS format (DVD VOB)', "vob", 2, 6000000, '25', 320, 240,"", 2, 86017, 128000, 44100,"");
+load data infile 'sql/config.txt' into table config fields terminated by ":";
+load data infile 'sql/profiles.txt' into table profiles fields terminated by ",";
 load data infile 'sql/codec.txt' into table codec fields terminated by "#";
+
 
 
