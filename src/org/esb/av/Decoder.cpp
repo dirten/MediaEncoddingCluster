@@ -146,60 +146,6 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   }
   len -= bytesDecoded;
   //  }
-#if 0
-
-  if (_frameFinished) {
-    logdebug("Frame finished");
-  } else {
-
-    logdebug("Frame not finished !!!!!");
-    /*
-         int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
-      if (bla < 0) {
-        fprintf (stderr, "Error while decoding frame\n");
-      }
-      if(_frameFinished){
-        cout <<"Frame finished in second try"<<endl;
-      }else{
-        cout <<"Frame not finished in second try!!!!!"<<endl;
-         return Frame();
-      }
-     */
-    //        cout << endl;
-
-  }
-
-  logdebug("\tPacketFrameType:");
-  switch (frame->getAVFrame()->pict_type) {
-    case FF_B_TYPE:
-      logdebug("B");
-      break;
-    case FF_I_TYPE:
-      logdebug("I");
-      break;
-    case FF_P_TYPE:
-      logdebug("P");
-      break;
-    case FF_S_TYPE:
-      logdebug("S");
-      break;
-    case FF_SI_TYPE:
-      logdebug("SI");
-      break;
-    case FF_SP_TYPE:
-      logdebug("SP");
-      break;
-    case FF_BI_TYPE:
-      logdebug("BI");
-      break;
-    default:
-      logdebug("U:" << frame->getAVFrame()->pict_type);
-      break;
-
-  }
-
-  //    cout << endl;
-#endif
   /* calculating the Presentation TimeStamp here*/
   frame->setPts(_last_pts);
   frame->setDts(_last_pts);

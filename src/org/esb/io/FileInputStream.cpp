@@ -28,7 +28,7 @@ FileInputStream::FileInputStream(const std::string name) {
  */
 
 void FileInputStream::open(const std::string name) {
-  _file_handle = fopen(name.c_str(), "r");
+  _file_handle = fopen(name.c_str(), "rb");
   if (!_file_handle) {
     string error = "FileInputStream::open - File not Found (";
     error += name;
@@ -67,6 +67,9 @@ int FileInputStream::read(string & str) {
   str = string(buffer, size);
   delete []buffer;
   return read;
+}
+int FileInputStream::readLine(string & str) {
+
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {

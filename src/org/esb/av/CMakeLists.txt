@@ -26,6 +26,7 @@ add_library (av
   Packet.cpp 
   Frame.cpp 
   PPSWriter.cpp
+  PGMUtil.cpp
   AVInputStream.cpp
   FormatStreamFactory.cpp
   StreamInfo.cpp

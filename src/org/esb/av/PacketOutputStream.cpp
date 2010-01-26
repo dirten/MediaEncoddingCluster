@@ -23,12 +23,12 @@ PacketOutputStream::PacketOutputStream(OutputStream * os) {
 }
 
 void PacketOutputStream::close() {
-  //    av_write_trailer(_fmtCtx);
-
+  if(_isInitialized)
+    av_write_trailer(_fmtCtx);
 }
 
 PacketOutputStream::~PacketOutputStream() {
-
+  close();
   //    av_write_trailer(_fmtCtx);
   //	delete _target;
 }

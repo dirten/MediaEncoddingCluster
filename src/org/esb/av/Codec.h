@@ -125,36 +125,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void save(Archive & ar, const unsigned int version) const {
-          LOGTRACE("org.esb.av.Codec","serialization save");
-          ar & ctx->codec_id;
-          ar & _mode;
-          ar & ctx->flags;
-          ar & ctx->pix_fmt;
-          ar & ctx->width;
-          ar & ctx->height;
-          ar & ctx->time_base.num;
-          ar & ctx->time_base.den;
-          ar & ctx->gop_size;
-          ar & ctx->bit_rate;
-          ar & ctx->channels;
-          ar & ctx->sample_rate;
-          ar & ctx->sample_fmt;
-          ar & _bytes_discard;
-          ar & ctx->bits_per_coded_sample;
-          ar & _options;
-          if (_mode == Codec::DECODER) {
-            ar & ctx->extradata_size;
-//            if (ctx->extradata_size > 0) {
-              ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
-//            }
-          }
-
-          //                    saveCodecOption();
-        };
-
-        template<class Archive>
-        void load(Archive & ar, const unsigned int version) {
-          LOGTRACE("org.esb.av.Codec","serialization load");
+          LOGTRACE("org.esb.av.Codec", "serialization save");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
@@ -174,7 +145,35 @@ class SampleFormat;*/
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
             if (ctx->extradata_size > 0) {
-              //                            logdebug("created extradata with size " << ctx->extradata_size);
+              ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);
+            }
+          }
+
+          //                    saveCodecOption();
+        };
+
+        template<class Archive>
+        void load(Archive & ar, const unsigned int version) {
+          LOGTRACE("org.esb.av.Codec", "serialization load");
+          ar & ctx->codec_id;
+          ar & _mode;
+          ar & ctx->flags;
+          ar & ctx->pix_fmt;
+          ar & ctx->width;
+          ar & ctx->height;
+          ar & ctx->time_base.num;
+          ar & ctx->time_base.den;
+          ar & ctx->gop_size;
+          ar & ctx->bit_rate;
+          ar & ctx->channels;
+          ar & ctx->sample_rate;
+          ar & ctx->sample_fmt;
+          ar & _bytes_discard;
+          ar & ctx->bits_per_coded_sample;
+          ar & _options;
+          if (_mode == Codec::DECODER) {
+            ar & ctx->extradata_size;
+            if (ctx->extradata_size > 0) {
               ctx->extradata = static_cast<boost::uint8_t*> (av_malloc(ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE));
               memset(ctx->extradata, 0, ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
               ar & boost::serialization::make_binary_object(ctx->extradata, ctx->extradata_size);

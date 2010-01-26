@@ -25,6 +25,7 @@ Frame::Frame() {
   _time_base.num = 0;
   _time_base.den = 0;
   _dts = 0;
+  _frames=1;
 }
 
 Frame::Frame(uint8_t *buffer, int64_t size) {
@@ -44,6 +45,7 @@ Frame::Frame(uint8_t *buffer, int64_t size) {
   _time_base.num = 0;
   _time_base.den = 0;
   _dts = 0;
+  _frames=1;
 }
 /*
 Frame::Frame(Packet * packet, Codec * codec){
@@ -152,6 +154,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
    duration = 0;
   _time_base.num = 0;
   _time_base.den = 0;
+  _frames=1;
   /*
     quality = 100;
     channels = 0;
@@ -266,6 +269,13 @@ int Frame::getDuration() {
   return duration;
 }
 
+int Frame::getFrameCount() {
+  return _frames;
+}
+void Frame::setFrameCount(int d) {
+  _frames=d;
+}
+
 void Frame::setDuration(int d) {
   duration = d;
 }
@@ -306,7 +316,35 @@ std::string Frame::toString() {
       ":Ch:" << channels <<
       ":SmplRt:" << sample_rate <<
       ":Dur:" << duration <<
-      ":TBase:" << _time_base.num << "/" <<_time_base.den;
+      ":FrameCount"<<_frames<<
+      ":TBase:" << _time_base.num << "/" <<_time_base.den<<":";
+  switch (getAVFrame()->pict_type) {
+    case FF_B_TYPE:
+      oss <<("B");
+      break;
+    case FF_I_TYPE:
+      oss <<("I");
+      break;
+    case FF_P_TYPE:
+      oss <<("P");
+      break;
+    case FF_S_TYPE:
+      oss <<("S");
+      break;
+    case FF_SI_TYPE:
+      oss <<("SI");
+      break;
+    case FF_SP_TYPE:
+      oss <<("SP");
+      break;
+    case FF_BI_TYPE:
+      oss <<("BI");
+      break;
+    default:
+      oss <<"U=" << getAVFrame()->pict_type;
+      break;
+
+  }
 
   return std::string(oss.str());
 }

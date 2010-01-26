@@ -61,6 +61,7 @@ public:
                 ~FileInputStream();
                 long long int available(bool i=false);
                 int read(string & str);
+                int readLine(string & str);                
                 int read(unsigned char * buffer, int length);
                 int read(vector<unsigned char>&buffer);
                 int read();

@@ -67,6 +67,7 @@ namespace org {
                 AVRational _last_time_base;
                 int64_t _byte_counter;
                 int _frame_counter;
+                int _frames;
             };
         }
     }

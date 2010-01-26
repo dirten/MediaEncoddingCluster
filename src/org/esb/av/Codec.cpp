@@ -448,6 +448,10 @@ namespace org {
         data.append("PixelFormat:").append(Decimal(getPixelFormat()).toString()).append("\r\n");
         data.append("TimeBase:").append(Decimal(ctx->time_base.num).toString()).append("/");
         data.append(Decimal(ctx->time_base.den).toString()).append("\r\n");
+        data.append("BFrameStrategie:").append(Decimal(ctx->b_frame_strategy).toString()).append("\r\n");
+        data.append("MaxBFrames:").append(Decimal(ctx->max_b_frames).toString()).append("\r\n");
+        data.append("HasBFrames:").append(Decimal(ctx->has_b_frames).toString()).append("\r\n");
+        data.append("Delay:").append(Decimal(ctx->delay).toString()).append("\r\n");
         char buf[256];
         avcodec_string(buf, sizeof (buf), ctx, _mode);
         data.append("InternalData:").append(std::string(buf)).append("\r\n");

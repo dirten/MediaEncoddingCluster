@@ -47,9 +47,9 @@
 
 class Log{
 public:
-    static Log * getLogger();
+    static Log * getLogger(std::string logger="");
     static log4cplus::Logger getLog4cplusLogger();
-    static void open(std::string path);
+    static void open(std::string path="");
     static void close();
     void debug(std::stringstream &);
     void info(std::stringstream &);

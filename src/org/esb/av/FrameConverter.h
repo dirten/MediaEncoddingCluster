@@ -55,6 +55,7 @@ namespace org {
                 void convertAudio(Frame & input, Frame & out);
                 void rescaleTimestamp(Frame & input, Frame & out);
                 void compensateAudioResampling(Frame & input, Frame & out);
+                void compensateFrameRateConversion(Frame & input, Frame & out);
                 SwsContext * _swsContext;
                 FrameFormat * _inFormat;
                 FrameFormat * _outFormat;

@@ -58,19 +58,21 @@ Encoder::~Encoder() {
 }
 
 int Encoder::encode(Frame & frame) {
+  LOGTRACEMETHOD("org.esb.av.Encoder", "Encode Frame");
   _frame_counter++;
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
   _last_idx = frame.stream_index;
+  _frames=frame.getFrameCount();
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = frame.getDts();
-    LOGDEBUG("org.esb.av.Encoder","setting last_dts=" << _last_dts);
+    LOGDEBUG("org.esb.av.Encoder", "setting last_dts=" << _last_dts);
   }
   if (ctx->codec_type == CODEC_TYPE_VIDEO)
     return encodeVideo(frame);
   if (ctx->codec_type == CODEC_TYPE_AUDIO)
     return encodeAudio(frame);
-  LOGERROR("org.esb.av.Encoder","Encoder does not support type:" << ctx->codec_type);
+  LOGERROR("org.esb.av.Encoder", "Encoder does not support type:" << ctx->codec_type);
   return -1;
 }
 
@@ -88,21 +90,25 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
-  int frames = 1;
+//  int frames = 1;
+//  if (inframe != NULL)
+    
+
   /**
    * calculating the differences between timestamps to duplicate or drop frames
    * when delta < 1.0 then drop a frame
    * when delta > 1.0 then duplicate a frame
    */
-  if (inframe != NULL) {
-    double a = static_cast<double> ((double) inframe->pts / (double) _last_time_base.den);
-    LOGDEBUG("org.esb.av.Encoder","a=" << a);
-    double delta = a / av_q2d(ctx->time_base) - _last_dts;
-    if (delta >= 1.0)
-      frames = static_cast<int> (floor(delta + 0.6));
-    LOGDEBUG("org.esb.av.Encoder","inframe.pts=" << inframe->pts << "\t_last_time_base.den=" << _last_time_base.den << "\tav_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << "\t_last_dts=" << _last_dts << "\tvdelta=" << delta << "\tframes=" << frames);
-  }
-  for (int i = 0; i < frames; i++) {
+  /*
+    if (inframe != NULL) {
+      double a = static_cast<double> ((double) inframe->pts / (double) _last_time_base.den);
+      LOGDEBUG("org.esb.av.Encoder", "a=" << a);
+      double delta = a / av_q2d(ctx->time_base) - _last_dts;
+      if (delta >= 1.0)
+        frames = static_cast<int> (rint(delta + 0.1));
+      LOGDEBUG("org.esb.av.Encoder", "inframe.pts=" << inframe->pts << ":_last_time_base.den=" << _last_time_base.den << ":av_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << ":_last_dts=" << _last_dts << ":vdelta=" << delta << ":frames=" << frames);
+    }*/
+  for (int i = 0; i < _frames; i++) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
     int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
@@ -127,22 +133,23 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 #else
     pac.setTimeBase(ctx->time_base);
     pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+//    pac.setDuration(1);
 #endif
 
     pac.packet->dts = _last_dts;
     _last_dts += pac.packet->duration;
-    LOGDEBUG("org.esb.av.Encoder",pac.toString());
+    LOGDEBUG("org.esb.av.Encoder", pac.toString());
     if (_pos != NULL) {
       _pos->writePacket(pac);
     }
     if (_sink != NULL)
       _sink->write(&pac);
   }
-  return frames;
+  return _frames;
 }
 
 int Encoder::encodeVideo(Frame & frame) {
-  LOGDEBUG("org.esb.av.Encoder",frame.toString());
+  LOGDEBUG("org.esb.av.Encoder", frame.toString());
   return encodeVideo(frame.getAVFrame());
 }
 
@@ -156,7 +163,7 @@ void Encoder::setSink(Sink * sink) {
 
 int Encoder::encodeAudio(Frame & frame) {
 
-  LOGDEBUG("org.esb.av.Encoder",frame.toString());
+  LOGDEBUG("org.esb.av.Encoder", frame.toString());
   int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
   int audio_out_size = (4 * 192 * 1024);
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
@@ -168,8 +175,8 @@ int Encoder::encodeAudio(Frame & frame) {
   if (ctx->frame_size > 1) {
     int frame_bytes = ctx->frame_size * osize * ctx->channels;
     if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + frame._size) < 0) {
-      LOGERROR("org.esb.av.Encoder","av_fifo_realloc2() failed");
-//      fprintf(stderr, "av_fifo_realloc2() failed\n");
+      LOGERROR("org.esb.av.Encoder", "av_fifo_realloc2() failed");
+      //      fprintf(stderr, "av_fifo_realloc2() failed\n");
     }
     av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
 
@@ -179,7 +186,7 @@ int Encoder::encodeAudio(Frame & frame) {
     while (av_fifo_size(fifo) >= frame_bytes) {
       av_fifo_generic_read(fifo, audio_buf, frame_bytes, NULL);
       //    uint64_t dur = static_cast<uint64_t> ((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) 1) / ((float) frame.getTimeBase().num));
-      LOGDEBUG("org.esb.av.Encoder","FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
+      LOGDEBUG("org.esb.av.Encoder", "FrameBytes:" << frame_bytes << ":Channels:" << ctx->channels << ":osize:" << osize << ":sample_rate:" << ctx->sample_rate << "time_base_den:" << ctx->time_base.den);
       int out_size = avcodec_encode_audio(
           ctx,
           audio_out,
@@ -187,10 +194,10 @@ int Encoder::encodeAudio(Frame & frame) {
           (short*) audio_buf
           );
       if (out_size < 0) {
-        LOGERROR("org.esb.av.Encoder","Error Encoding audio Frame");
+        LOGERROR("org.esb.av.Encoder", "Error Encoding audio Frame");
       }
       if (out_size == 0) {
-        LOGWARN("org.esb.av.Encoder","out_size=0");
+        LOGWARN("org.esb.av.Encoder", "out_size=0");
       }
 
       Packet pak(out_size);
@@ -211,7 +218,7 @@ int Encoder::encodeAudio(Frame & frame) {
       pak.packet->dts = _last_dts;
       pak.packet->pts = _last_dts;
       _last_dts += pak.getDuration();
-      LOGDEBUG("org.esb.av.Encoder",pak.toString());
+      LOGDEBUG("org.esb.av.Encoder", pak.toString());
       if (_pos != NULL)
         _pos->writePacket(pak);
       if (_sink != NULL)
@@ -226,14 +233,14 @@ int Encoder::encodeAudio(Frame & frame) {
     if (coded_bps)
       frame_bytes = frame_bytes * coded_bps / 8;
     if (frame_bytes > audio_out_size) {
-      LOGERROR("org.esb.av.Encoder","Internal error, buffer size too small");
-//      fprintf(stderr, "Internal error, buffer size too small\n");
-//      exit(1);
+      LOGERROR("org.esb.av.Encoder", "Internal error, buffer size too small");
+      //      fprintf(stderr, "Internal error, buffer size too small\n");
+      //      exit(1);
     }
     int ret = avcodec_encode_audio(ctx, audio_out, frame_bytes, (short *) frame._buffer);
     if (ret < 0) {
-      LOGERROR("org.esb.av.Encoder","Audio Encoding failed");
-//      fprintf(stderr, "Audio encoding failed\n");
+      LOGERROR("org.esb.av.Encoder", "Audio Encoding failed");
+      //      fprintf(stderr, "Audio encoding failed\n");
     }
     Packet pak(ret);
     memcpy(pak.packet->data, audio_out, ret);
@@ -251,7 +258,7 @@ int Encoder::encodeAudio(Frame & frame) {
     pak.packet->dts = _last_dts;
     pak.packet->pts = _last_dts;
     _last_dts += pak.getDuration();
-    LOGDEBUG("org.esb.av.Encoder",pak.toString());
+    LOGDEBUG("org.esb.av.Encoder", pak.toString());
     if (_pos != NULL)
       _pos->writePacket(pak);
     if (_sink != NULL)

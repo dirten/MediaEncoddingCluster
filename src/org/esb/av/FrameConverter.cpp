@@ -59,6 +59,7 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
+        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Frame");
 
         LOGDEBUG("org.esb.av.FrameConverter",in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
@@ -70,6 +71,8 @@ namespace org {
         rescaleTimestamp(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO)
           compensateAudioResampling(in_frame, out_frame);
+        if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
+          compensateFrameRateConversion(in_frame, out_frame);
         LOGDEBUG("org.esb.av.FrameConverter",out_frame.toString());
       }
 
@@ -87,6 +90,9 @@ namespace org {
 #endif
       }
 
+      void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
+        out.setFrameCount(10);
+      }
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
         /**
          * calculating the delta between the input and the output timestamps
@@ -111,7 +117,7 @@ namespace org {
        * this rescales the input Frame Data into the output Frame Data
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
-        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
+//        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
         out_frame._type = in_frame._type;
         sws_scale(
             _swsContext,
@@ -134,7 +140,7 @@ namespace org {
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
-        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
+//        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);

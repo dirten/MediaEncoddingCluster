@@ -41,6 +41,8 @@ namespace org {
         void setTimeBase(AVRational);
         AVRational getTimeBase();
         void dumpHex();
+        int getFrameCount();
+        void setFrameCount(int d);
 
         //	void setFrame(AVFrame * frame);
         int _height;
@@ -57,6 +59,7 @@ namespace org {
         int64_t _pts;
         boost::shared_ptr<AVFrame> framePtr;
         AVRational _time_base;
+        int _frames;
       public:
         bool _allocated;
         int _frameFinished;

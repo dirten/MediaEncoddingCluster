@@ -8,11 +8,13 @@ namespace org {
         LogConfigurator() : log4cplus::PropertyConfigurator(LOG4CPLUS_TEXT(""), log4cplus::Logger::getDefaultHierarchy()) {
           std::string log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
 
-//          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("ERROR, DEBUG"));
-          properties.setProperty(LOG4CPLUS_TEXT("logger.STDOUT"), LOG4CPLUS_TEXT("INFO"));
+          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("TRACE, STDOUT"));
+//          properties.setProperty(LOG4CPLUS_TEXT("logger.STDOUT"), LOG4CPLUS_TEXT("INFO"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT"), LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
-
+//          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
+/*
           //          properties.setProperty(LOG4CPLUS_TEXT("logger.DEBUG"), LOG4CPLUS_TEXT("DEBUG"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.DEBUG"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.DEBUG.File"), LOG4CPLUS_TEXT("mhive.log"));
@@ -38,7 +40,7 @@ namespace org {
               LOG4CPLUS_TEXT(log_pattern));
           //          properties.setProperty(LOG4CPLUS_TEXT("additivity.ERROR"), LOG4CPLUS_TEXT("false"));
 
-
+*/
           /*
                     properties.setProperty(LOG4CPLUS_TEXT("appender.org"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));
                     properties.setProperty(LOG4CPLUS_TEXT("appender.org.File"), LOG4CPLUS_TEXT("mhive-error.log"));

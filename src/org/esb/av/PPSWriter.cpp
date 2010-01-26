@@ -16,5 +16,7 @@ void PPSWriter::writeFrame(Frame * frame){
     char header[200];
     sprintf(header, "P6\n%d %d\n255\n", frame->getWidth(), frame->getHeight());
     fos.write(header, strlen(header));
+    for(int i=0;i<frame->getHeight();i++)
+      fos.write((char*)frame->getData() + i * frame->getWidth(), frame->getWidth());
 
 }

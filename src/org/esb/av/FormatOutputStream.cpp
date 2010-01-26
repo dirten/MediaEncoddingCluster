@@ -66,7 +66,6 @@ void FormatOutputStream::open() {
 
 void FormatOutputStream::close() {
   if (_status == OPENED) {
-    av_write_trailer(_fmtCtx);
     url_fclose(_fmtCtx->pb);
     int nb_streams = _fmtCtx->nb_streams;
     for (int a = 0; a < nb_streams; a++) {
