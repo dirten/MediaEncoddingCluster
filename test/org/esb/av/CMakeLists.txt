@@ -23,6 +23,8 @@ add_executable (TestFfmpeg TestFfmpeg.cpp)
 add_executable (TestEuclid TestEuclid.cpp)
 add_executable (TestFullTranscoding TestFullTranscoding.cpp)
 add_executable (TestPass1 TestPass1.cpp)
+add_executable (TestDecoder TestDecoder.cpp)
+add_executable (TestEncoder TestEncoder.cpp)
 
 target_link_libraries (TestPacket io av util lang  )
 target_link_libraries (TestFfmpeg av)
@@ -34,6 +36,8 @@ target_link_libraries (TestPacketOutputStream io av util lang )
 target_link_libraries (TestProcessAudioPacket io hive av util lang )
 target_link_libraries (TestFullTranscoding io av util lang )
 target_link_libraries (TestPass1 io av util lang )
+target_link_libraries (TestDecoder av io util lang )
+target_link_libraries (TestEncoder av io util lang )
 
 IF(NOT WIN32)
 target_link_libraries (TestFfmpeg ${BZ2_LIB} x264 pthread z mp3lame theora vorbis vorbisenc xvidcore ogg)
@@ -59,5 +63,7 @@ ADD_TEST(TestProcessAudioPacket ${EXECUTABLE_OUTPUT_PATH}/TestProcessAudioPacket
 ADD_TEST(TestFullTranscoding ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding)
 ADD_TEST(TestFullTranscodingDVD2AVI ${EXECUTABLE_OUTPUT_PATH}/TestFullTranscoding ${MEC_SOURCE_DIR}/test.dvd ${MEC_SOURCE_DIR}/test.avi)
 ADD_TEST(TestPass1 ${EXECUTABLE_OUTPUT_PATH}/TestPass1)
+ADD_TEST(TestDecoder ${EXECUTABLE_OUTPUT_PATH}/TestDecoder)
+ADD_TEST(TestEncoder ${EXECUTABLE_OUTPUT_PATH}/TestEncoder)
 
 

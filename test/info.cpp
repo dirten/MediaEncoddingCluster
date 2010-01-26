@@ -66,7 +66,7 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\ttype\tcodec\tnum\tden\tquality\tduration\tFrameSize" << endl;
+  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\tticks" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
@@ -77,6 +77,7 @@ int main(int argc, char ** argv) {
     cout << s->getCodecTimeBase().num << "\t";
     cout << s->getCodecTimeBase().den << "\t";
     cout << s->getFrameBytes() << "\t";
+    cout << fis.getAVStream(a)->codec->ticks_per_frame;
     cout << endl;
   }
 

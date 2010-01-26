@@ -42,7 +42,8 @@ struct StreamData {
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
-
+CodecID video_codec_id=CODEC_ID_THEORA;
+CodecID audio_codec_id=CODEC_ID_VORBIS;
 /**
  *
  */
@@ -94,18 +95,18 @@ map<int, int> _smap;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
-      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
+      _sdata[i].enc->setCodecId(video_codec_id);
       _sdata[i].enc->setBitRate(1024000);
       _sdata[i].enc->setWidth(320);
       _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(12);
       AVRational ar;
       ar.num = 1;
-      ar.den = 25;
+      ar.den = 30;
       _sdata[i].enc->setTimeBase(ar);
 
     } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
-      _sdata[i].enc->setCodecId(CODEC_ID_VORBIS);
+      _sdata[i].enc->setCodecId(audio_codec_id);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);
       _sdata[i].enc->setChannels(2);
@@ -223,7 +224,7 @@ void write_file(int argc, char** argv) {
   FormatOutputStream fos(&f_out);
   PacketOutputStream pos(&fos);
   char * file = new char[100];
-  Encoder * video_codec = new Encoder(CODEC_ID_THEORA);
+  Encoder * video_codec = new Encoder(video_codec_id);
   video_codec->setBitRate(1024000);
   video_codec->setWidth(320);
   video_codec->setHeight(240);
@@ -233,7 +234,7 @@ void write_file(int argc, char** argv) {
   ar.den = 25;
   video_codec->setTimeBase(ar);
 
-  Encoder * audio_codec = new Encoder(CODEC_ID_VORBIS);
+  Encoder * audio_codec = new Encoder(audio_codec_id);
   audio_codec->setBitRate(128000);
   audio_codec->setSampleRate(44100);
   audio_codec->setChannels(2);
@@ -261,7 +262,7 @@ void write_file(int argc, char** argv) {
     ois.readObject(pu);
     std::list<boost::shared_ptr<Packet> >::iterator it = pu._output_packets.begin();
     for (; it != pu._output_packets.end(); it++) {
-      (*it)->setStreamIndex((*it)->getStreamIndex()-1);
+      (*it)->setStreamIndex((*it)->getStreamIndex());
       //        (*it)->setPts(AV_NOPTS_VALUE);
       pos.writePacket(**it);
     }
@@ -277,6 +278,7 @@ void write_file(int argc, char** argv) {
  * 
  */
 int main(int argc, char** argv) {
+  Log::open("");
   build_process_units(argc, argv);
   process_units();
   write_file(argc, argv);
