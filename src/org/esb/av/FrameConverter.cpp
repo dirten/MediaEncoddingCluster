@@ -68,7 +68,7 @@ namespace org {
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
-        rescaleTimestamp(in_frame, out_frame);
+//        rescaleTimestamp(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO)
           compensateAudioResampling(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
@@ -91,7 +91,7 @@ namespace org {
       }
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
-        out.setFrameCount(10);
+        out.setFrameCount(1);
       }
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
         /**

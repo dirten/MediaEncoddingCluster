@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
   enc.setGopSize(200);
   AVRational ar;
   ar.num = 1;
-  ar.den = 10;
+  ar.den = 30;
   enc.setTimeBase(ar);
   enc.setBitRate(1500000);
   enc.open();
@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
   org::esb::av::Packet * p;
   while((p=pis.readPacket())!=NULL){
     p->setTimeBase(ar);
+
     org::esb::av::Frame * f=dec.decode2(*p);
 
     if(!f->isFinished())continue;

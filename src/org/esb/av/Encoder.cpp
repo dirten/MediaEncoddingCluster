@@ -90,7 +90,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
-//  int frames = 1;
+  int frames = 1;
 //  if (inframe != NULL)
     
 
@@ -99,16 +99,17 @@ int Encoder::encodeVideo(AVFrame * inframe) {
    * when delta < 1.0 then drop a frame
    * when delta > 1.0 then duplicate a frame
    */
-  /*
+  
     if (inframe != NULL) {
+//		inframe->pts+=1;
       double a = static_cast<double> ((double) inframe->pts / (double) _last_time_base.den);
-      LOGDEBUG("org.esb.av.Encoder", "a=" << a);
+//      LOGDEBUG("org.esb.av.Encoder", "a=" << a);
       double delta = a / av_q2d(ctx->time_base) - _last_dts;
       if (delta >= 1.0)
-        frames = static_cast<int> (rint(delta + 0.1));
+        frames = static_cast<int> (floor(delta + 0.6));
       LOGDEBUG("org.esb.av.Encoder", "inframe.pts=" << inframe->pts << ":_last_time_base.den=" << _last_time_base.den << ":av_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << ":_last_dts=" << _last_dts << ":vdelta=" << delta << ":frames=" << frames);
-    }*/
-  for (int i = 0; i < _frames; i++) {
+    }
+  for (int i = 0; i < frames; i++) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
     int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
@@ -133,7 +134,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 #else
     pac.setTimeBase(ctx->time_base);
     pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
-//    pac.setDuration(1);
+	pac.setDuration(ctx->ticks_per_frame);
 #endif
 
     pac.packet->dts = _last_dts;

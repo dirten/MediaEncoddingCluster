@@ -69,7 +69,7 @@ int FileInputStream::read(string & str) {
   return read;
 }
 int FileInputStream::readLine(string & str) {
-
+ return 0;
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {
