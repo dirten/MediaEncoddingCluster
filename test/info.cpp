@@ -98,7 +98,7 @@ int main(int argc, char ** argv) {
 //  printf("%10s|", "idxentry");
   printf("%2s|", "k");
   printf("%5s|", "dur");
-  printf("%20s|", "pos");
+  printf("%2s|", "type");
   cout << endl;
   cout << "------------------------------------------------------------------------------------------------------------" << endl;
   cout << "seeking to :"<<packet_start<<endl;
@@ -128,7 +128,19 @@ int main(int argc, char ** argv) {
 //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
     printf("%s|", p.isKeyFrame()==1?"x ":"  ");
     printf("%5d|", p.packet->duration);
-    printf("%20ld|", p.packet->pos);
+	std::string type;
+	if(f->streams[p.packet->stream_index]->parser){
+	switch(f->streams[p.packet->stream_index]->parser->pict_type){
+		case FF_I_TYPE: type="I";break;
+		case FF_B_TYPE: type="B";break;
+		case FF_BI_TYPE: type="BI";break;
+		case FF_P_TYPE: type="P";break;
+		default :type="U";break;
+	}}
+	else{
+		type="NP";
+	}
+    printf("%2s|", type.c_str());
     //        cout <<p.packet->pts<<"\t";
     //        cout <<p.packet->dts<<"\t";
     //        cout <<p.packet->size<<"\t";
