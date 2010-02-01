@@ -6,6 +6,7 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 #include "org/esb/av/Codec.h"
+#include "org/esb/db/Profile.h"
 #include "org/esb/io/File.h"
 #include <map>
 using namespace org::esb::av;

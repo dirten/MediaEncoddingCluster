@@ -78,6 +78,7 @@ class SampleFormat;*/
         void setPixelFormat(PixelFormat pfm);
         void setBitRate(int rate);
         void setTimeBase(AVRational tb);
+        void setTimeBase(int num, int den);
         void setGopSize(int size);
         void setChannels(int size);
         void setSampleRate(int size);

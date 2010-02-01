@@ -41,6 +41,7 @@ namespace org {
                 std::string toString(void);
 
                 void setTimeBase(AVRational);
+                void setTimeBase(int,int);
                 AVRational getTimeBase();
                 AVRational _time_base;
 

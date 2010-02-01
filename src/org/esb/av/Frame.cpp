@@ -25,12 +25,12 @@ Frame::Frame() {
   _time_base.num = 0;
   _time_base.den = 0;
   _dts = 0;
-  _frames=1;
+  _frames = 1;
 }
 
 Frame::Frame(uint8_t *buffer, int64_t size) {
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
-  _size=size;
+  _size = size;
   framePtr->pts = 0;
   _buffer = buffer;
   _allocated = true;
@@ -45,7 +45,7 @@ Frame::Frame(uint8_t *buffer, int64_t size) {
   _time_base.num = 0;
   _time_base.den = 0;
   _dts = 0;
-  _frames=1;
+  _frames = 1;
 }
 /*
 Frame::Frame(Packet * packet, Codec * codec){
@@ -142,7 +142,7 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  logdebug("Create Frame(int format, int width, int height)");
   _isFinished = false;
   _size = 0;
-  _dts=0;
+  _dts = 0;
   framePtr = boost::shared_ptr<AVFrame > (new AVFrame());
   framePtr->pts = 0;
   _width = width;
@@ -151,10 +151,10 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   _allocated = allocate;
   channels = 0;
   sample_rate = 0,
-   duration = 0;
+      duration = 0;
   _time_base.num = 0;
   _time_base.den = 0;
-  _frames=1;
+  _frames = 1;
   /*
     quality = 100;
     channels = 0;
@@ -168,9 +168,9 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
   //  avcodec_get_frame_defaults(this);
   if (allocate) {
     int numBytes = avpicture_get_size(format, width, height);
-  _size=numBytes;
-    _buffer = (uint8_t*)av_malloc(numBytes);
-	_allocated=true;
+    _size = numBytes;
+    _buffer = (uint8_t*) av_malloc(numBytes);
+    _allocated = true;
 
     memset(_buffer, 0, numBytes);
     // Assign appropriate parts of buffer to image planes
@@ -240,8 +240,8 @@ PixelFormat Frame::getFormat() {
 }
 
 int Frame::getSize() {
-	return _size;
-//  return avpicture_get_size(getFormat(), getWidth(), getHeight());
+  return _size;
+  //  return avpicture_get_size(getFormat(), getWidth(), getHeight());
 }
 
 void Frame::setFinished(bool f) {
@@ -272,8 +272,9 @@ int Frame::getDuration() {
 int Frame::getFrameCount() {
   return _frames;
 }
+
 void Frame::setFrameCount(int d) {
-  _frames=d;
+  _frames = d;
 }
 
 void Frame::setDuration(int d) {
@@ -304,6 +305,7 @@ AVRational Frame::getTimeBase() {
   return _time_base;
 }
 //P->S:1732:Pts:127800:Dts:124200:Index:0:Dur:3600:Pos:-1:TBase:1/90000:F:0:KF0
+
 std::string Frame::toString() {
   std::ostringstream oss;
   oss << "F->S:" << _size <<
@@ -316,38 +318,39 @@ std::string Frame::toString() {
       ":Ch:" << channels <<
       ":SmplRt:" << sample_rate <<
       ":Dur:" << duration <<
-      ":FrameCount"<<_frames<<
-      ":TBase:" << _time_base.num << "/" <<_time_base.den<<":";
+      ":FrameCount" << _frames <<
+      ":TBase:" << _time_base.num << "/" << _time_base.den << ":";
   switch (getAVFrame()->pict_type) {
     case FF_B_TYPE:
-      oss <<("B");
+      oss << ("B");
       break;
     case FF_I_TYPE:
-      oss <<("I");
+      oss << ("I");
       break;
     case FF_P_TYPE:
-      oss <<("P");
+      oss << ("P");
       break;
     case FF_S_TYPE:
-      oss <<("S");
+      oss << ("S");
       break;
     case FF_SI_TYPE:
-      oss <<("SI");
+      oss << ("SI");
       break;
     case FF_SP_TYPE:
-      oss <<("SP");
+      oss << ("SP");
       break;
     case FF_BI_TYPE:
-      oss <<("BI");
+      oss << ("BI");
       break;
     default:
-      oss <<"U=" << getAVFrame()->pict_type;
+      oss << "U=" << getAVFrame()->pict_type;
       break;
 
   }
 
   return std::string(oss.str());
 }
+
 /*
 void Frame::setFrame(AVFrame * frame){
     if(_frame!=NULL)
@@ -356,28 +359,28 @@ void Frame::setFrame(AVFrame * frame){
 }
  */
 void Frame::dumpHex() {
-    int len, i, j, c;
+  int len, i, j, c;
 
-    for(i=0;i<_size;i+=16) {
-        len = _size - i;
-        if (len > 16)
-            len = 16;
-        printf("%08x ", i);
-        for(j=0;j<16;j++) {
-            if (j < len)
-                printf(" %02x", _buffer[i+j]);
-            else
-                printf("   ");
-        }
-        printf(" ");
-        for(j=0;j<len;j++) {
-            c = _buffer[i+j];
-            if (c < ' ' || c > '~')
-                c = '.';
-            printf("%c", c);
-        }
-        printf("\n");
+  for (i = 0; i < _size; i += 16) {
+    len = _size - i;
+    if (len > 16)
+      len = 16;
+    printf("%08x ", i);
+    for (j = 0; j < 16; j++) {
+      if (j < len)
+        printf(" %02x", _buffer[i + j]);
+      else
+        printf("   ");
     }
+    printf(" ");
+    for (j = 0; j < len; j++) {
+      c = _buffer[i + j];
+      if (c < ' ' || c > '~')
+        c = '.';
+      printf("%c", c);
+    }
+    printf("\n");
+  }
 
 
 }

@@ -69,6 +69,8 @@ ProcessUnit::ProcessUnit() {
   _process_unit = 0;
   _last_process_unit=false;
   id = 0;
+  _frameRateCompensateBase=0.0;
+  _gop_size=-1;
   
 }
 
@@ -92,6 +94,8 @@ void ProcessUnit::process() {
   /*creating a frame converter*/
   if(_converter==NULL)
     _converter=new FrameConverter(_decoder.get(), _encoder.get());
+  _converter->setFrameRateCompensateBase(_frameRateCompensateBase);
+  _converter->setGopSize(_gop_size);
     LOGTRACE("org.esb.hive.job.ProcessUnit","Codex openned");
     LOGTRACE("org.esb.hive.job.ProcessUnit",_decoder->toString());
     LOGTRACE("org.esb.hive.job.ProcessUnit",_encoder->toString());

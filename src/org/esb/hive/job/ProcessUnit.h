@@ -70,6 +70,8 @@ namespace org {
                     int _frame_count;
                     int _process_unit;
                     int id;
+                    double _frameRateCompensateBase;
+                    int _gop_size;
                    
                     bool _last_process_unit;
                     template<class Archive>
@@ -85,6 +87,8 @@ namespace org {
                         ar & _encoder;
 //                        ar & codec;
                         ar & _last_process_unit;
+                        ar & _frameRateCompensateBase;
+                        ar & _gop_size;
                     }
                 private:
                 };

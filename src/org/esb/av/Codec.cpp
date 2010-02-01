@@ -252,10 +252,7 @@ namespace org {
         //          ctx = avcodec_alloc_context();
         //          setParams();
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
-          AVRational ar;
-          ar.num = 1;
-          ar.den = ctx->sample_rate;
-          setTimeBase(ar);
+          setTimeBase(1,ctx->sample_rate);
         }
         if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
@@ -354,6 +351,10 @@ namespace org {
       void Codec::setTimeBase(AVRational tb) {
         ctx->time_base = tb;
       }
+      void Codec::setTimeBase(int num, int den) {
+        ctx->time_base.num=num;
+        ctx->time_base.den=den;
+      }
 
       AVRational Codec::getTimeBase() {
         return ctx->time_base;
@@ -449,7 +450,7 @@ namespace org {
         data.append("TimeBase:").append(Decimal(ctx->time_base.num).toString()).append("/");
         data.append(Decimal(ctx->time_base.den).toString()).append("\r\n");
         data.append("BFrameStrategie:").append(Decimal(ctx->b_frame_strategy).toString()).append("\r\n");
-        data.append("MaxBFrames:").append(Decimal(ctx->max_b_frames).toString()).append("\r\n");
+        data.append("MaxBFrames:").append(Decimal(!!ctx->max_b_frames).toString()).append("\r\n");
         data.append("HasBFrames:").append(Decimal(ctx->has_b_frames).toString()).append("\r\n");
         data.append("Delay:").append(Decimal(ctx->delay).toString()).append("\r\n");
         char buf[256];

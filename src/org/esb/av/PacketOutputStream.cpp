@@ -25,6 +25,7 @@ PacketOutputStream::PacketOutputStream(OutputStream * os) {
 void PacketOutputStream::close() {
   if(_isInitialized)
     av_write_trailer(_fmtCtx);
+  _isInitialized=false;
 }
 
 PacketOutputStream::~PacketOutputStream() {
@@ -120,11 +121,12 @@ void PacketOutputStream::writePacket(Packet & packet) {
 //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
+    LOGTRACE("org.esb.av.PacketOutputStream",packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
 //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0){
     LOGDEBUG("org.esb.av.PacketOutputStream","av_interleaved_write_frame Result:" << result);
-    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
+//    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
   }
 	first_packet = false;
 }

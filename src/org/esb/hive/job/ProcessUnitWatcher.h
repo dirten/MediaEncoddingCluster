@@ -43,84 +43,85 @@
 #include <boost/thread/condition.hpp>
 //#include <boost/asio.hpp>
 namespace org {
-    namespace esb {
-        namespace hive {
-            namespace job {
+  namespace esb {
+    namespace hive {
+      namespace job {
 
-                class ProcessUnitWatcher : public org::esb::signal::MessageListener {
-                    logger("hive.ProcessUnitWatcher")
-                public:
-                    ProcessUnitWatcher();
-                    //			void run();
-                    void start();
-                    void start2();
-                    void start3();
-                    void stop();
-                    void onMessage(org::esb::signal::Message & msg);
-                    static boost::shared_ptr<ProcessUnit> getProcessUnit();
-                    static boost::shared_ptr<ProcessUnit> getStreamProcessUnit();
-					static bool putProcessUnit(int pu_id);
-                    static bool putProcessUnit(boost::shared_ptr<ProcessUnit> &unit);
-                private:
-                    typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
-                    static ProcessUnitQueue puQueue;
-					static org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
-//                    static std::deque<boost::shared_ptr<ProcessUnit> > audioQueue;
-                    static std::map<std::string, int> ip2stream;
-                    static bool _isStopSignal;
-                    static boost::mutex terminationMutex;
-                    static boost::condition termination_wait;
-                    static boost::condition queue_empty_wait_condition;
-                    static boost::mutex queue_empty_wait_mutex;
-                    static bool _isRunning;
+        class ProcessUnitWatcher : public org::esb::signal::MessageListener {
+          logger("hive.ProcessUnitWatcher")
+        public:
+          ProcessUnitWatcher();
+          //			void run();
+          void start();
+          void start2();
+          void start3();
+          void stop();
+          void onMessage(org::esb::signal::Message & msg);
+          static boost::shared_ptr<ProcessUnit> getProcessUnit();
+          static boost::shared_ptr<ProcessUnit> getStreamProcessUnit();
+          static bool putProcessUnit(int pu_id);
+          static bool putProcessUnit(boost::shared_ptr<ProcessUnit> &unit);
+        private:
+          typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
+          static ProcessUnitQueue puQueue;
+          static org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
+          //                    static std::deque<boost::shared_ptr<ProcessUnit> > audioQueue;
+          static std::map<std::string, int> ip2stream;
+          static bool _isStopSignal;
+          static boost::mutex terminationMutex;
+          static boost::condition termination_wait;
+          static boost::condition queue_empty_wait_condition;
+          static boost::mutex queue_empty_wait_mutex;
+          static bool _isRunning;
 
-                    std::map<int, boost::shared_ptr<ProcessUnit> > unit_map;
-                    //                    std::map<int, int> idx;
-                    //                    std::map<int, int> inout;
-                    //                    std::map<int, int> stream_type;
-                    void readJobs();
-                    //                    void processAudioPacket(boost::shared_ptr<Packet>);
-                    //                    void processVideoPacket(boost::shared_ptr<Packet>);
-                    //                    std::map<int, std::list<boost::shared_ptr<Packet> > > stream_packets;
-                    std::deque<boost::shared_ptr<Packet> > packet_queue;
-                    //                    std::map<int, int> stream_packet_counter;
-                    //                    int min_frame_group_count;
-                    //                    int b_frame_offset;
-                    bool q_filled;
-                    int job_id;
-                    org::esb::sql::Connection * _con_tmp;
-                    org::esb::sql::Connection * _con_tmp2;
-                    static org::esb::sql::PreparedStatement * _stmt;
-                    //                  void flushStreamPackets();
-                    //                  void buildProcessUnit(int sIdx, bool lastPackets=false);
-                    static boost::mutex stmt_mutex;
-                    static boost::mutex put_pu_mutex;
-                    static boost::mutex get_pu_mutex;
-                    static boost::mutex get_stream_pu_mutex;
-                    static org::esb::sql::PreparedStatement * _stmt_fr;
+          std::map<int, boost::shared_ptr<ProcessUnit> > unit_map;
+          //                    std::map<int, int> idx;
+          //                    std::map<int, int> inout;
+          //                    std::map<int, int> stream_type;
+          void readJobs();
+          //                    void processAudioPacket(boost::shared_ptr<Packet>);
+          //                    void processVideoPacket(boost::shared_ptr<Packet>);
+          //                    std::map<int, std::list<boost::shared_ptr<Packet> > > stream_packets;
+          std::deque<boost::shared_ptr<Packet> > packet_queue;
+          //                    std::map<int, int> stream_packet_counter;
+          //                    int min_frame_group_count;
+          //                    int b_frame_offset;
+          bool q_filled;
+          int job_id;
+          org::esb::sql::Connection * _con_tmp;
+          org::esb::sql::Connection * _con_tmp2;
+          static org::esb::sql::PreparedStatement * _stmt;
+          //                  void flushStreamPackets();
+          //                  void buildProcessUnit(int sIdx, bool lastPackets=false);
+          static boost::mutex stmt_mutex;
+          static boost::mutex put_pu_mutex;
+          static boost::mutex get_pu_mutex;
+          static boost::mutex get_stream_pu_mutex;
+          static org::esb::sql::PreparedStatement * _stmt_fr;
 
-                    struct StreamData {
-                        int instream;
-                        int outstream;
-                        int type;
-                        int64_t last_start_ts;
-                        int b_frame_offset;
+          struct StreamData {
+            int instream;
+            int outstream;
+            int type;
+            int64_t last_start_ts;
+            int b_frame_offset;
 
-                        boost::shared_ptr<Decoder> decoder;
-                        boost::shared_ptr<Encoder> encoder;
-                        std::list<boost::shared_ptr<Packet> > packets;
-                        int packet_count;
-                        int min_packet_count;
-                        int64_t last_bytes_offset;
-						int process_unit_count;
-                        //                        int64_t last_process_unit_id;
-                    };
-                    static map<int, StreamData> _stream_map;
-                    void buildProcessUnit(PacketListPtr list, bool last_packet = false);
-                };
-            }
-        }
+            boost::shared_ptr<Decoder> decoder;
+            boost::shared_ptr<Encoder> encoder;
+            std::list<boost::shared_ptr<Packet> > packets;
+            int packet_count;
+            int min_packet_count;
+            int64_t last_bytes_offset;
+            int process_unit_count;
+            double frameRateCompensateBase;
+            //                        int64_t last_process_unit_id;
+          };
+          static map<int, StreamData> _stream_map;
+          void buildProcessUnit(PacketListPtr list, bool last_packet = false);
+        };
+      }
     }
+  }
 }
 #endif
 

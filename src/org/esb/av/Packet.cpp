@@ -198,6 +198,10 @@ AVPacket* Packet::getAVPacket() {
 void Packet::setTimeBase(AVRational t){
   _time_base=t;
 }
+void Packet::setTimeBase(int num, int den){
+  _time_base.num=num;
+  _time_base.den=den;
+}
 AVRational Packet::getTimeBase(){
   return _time_base;
 }

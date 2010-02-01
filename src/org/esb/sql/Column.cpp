@@ -80,7 +80,8 @@ namespace org {
 
       std::string Column::getBlob() {
         std::string ret;
-        //      if (isNull(bind))
+        if (isNull())
+          return ret;
         //        throw NullValue();
 
         switch (bind.buffer_type) {
@@ -103,7 +104,8 @@ namespace org {
 
       const std::string Column::getString() {
         std::string ret;
-        //      if (isNull(bind))
+        if (isNull())
+          return ret;
         //        throw NullValue();
 
         switch (bind.buffer_type) {
@@ -374,7 +376,7 @@ namespace org {
       void Column::setString(const char* data) {
         length = ::strlen(data);
         reserve(length + 1);
-        memcpy(static_cast<char*>(bind.buffer), data, length + 1); 
+        memcpy(static_cast<char*> (bind.buffer), data, length + 1);
         bind.buffer_type = MYSQL_TYPE_VAR_STRING;
       }
 

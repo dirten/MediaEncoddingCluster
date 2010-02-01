@@ -36,18 +36,18 @@ using namespace org::esb::av;
 using namespace std;
 
 Decoder::Decoder() : Codec(Codec::DECODER) {
-  _last_pts = AV_NOPTS_VALUE;
-  _next_pts = AV_NOPTS_VALUE;
+  _last_pts = 0;
+  _next_pts = 0;
 }
 
 Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
-  _last_pts = AV_NOPTS_VALUE;
-  _next_pts = AV_NOPTS_VALUE;
+  _last_pts = 0;
+  _next_pts = 0;
 }
 
 Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
-  _last_pts = AV_NOPTS_VALUE;
-  _next_pts = AV_NOPTS_VALUE;
+  _last_pts = 0;
+  _next_pts = 0;
 }
 
 Frame Decoder::decodeLast() {
@@ -125,26 +125,31 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   int bytesDecoded =
       avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
-  if (_last_pts == AV_NOPTS_VALUE) {
+  if (false&&_last_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
-    LOGDEBUG("org.esb.av.Decoder","setting last pts to :" << _last_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
-        << "ptb:" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
+        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
   LOGDEBUG("org.esb.av.Decoder","BytesDecoded:" << bytesDecoded);
   if (bytesDecoded < 0) {
     LOGERROR("org.esb.av.Decoder","Error while decoding frame");
-//    fprintf(stderr, "Error while decoding frame\n");
   }
-  if (_frameFinished) {
-    //      logdebug("Frame Finished");
-    //      break;
+  /**
+   * if frame is not finished, returns the blank frame
+   * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
+   */
+  if (!_frameFinished) {
+    return frame;
   }
+
   len -= bytesDecoded;
+
+
   //  }
   /* calculating the Presentation TimeStamp here*/
   frame->setPts(_last_pts);
@@ -185,11 +190,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
   int bps = av_get_bits_per_sample_format(ctx->sample_fmt) >> 3;
 
-  //  uint8_t *outbuf = new uint8_t[samples_size];
-  uint8_t *outbuf = (uint8_t*) av_malloc(samples_size);
-  //    uint8_t *inbuf = packet.packet->data;
-  //    while (size > 0) {
-  //  int len = avcodec_decode_audio2(ctx, (short *) outbuf, &samples_size, packet.packet->data, size);
+  uint8_t *outbuf = static_cast<uint8_t*>( av_malloc(samples_size));
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_next_pts == AV_NOPTS_VALUE) {
@@ -199,8 +200,8 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
     _next_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
 
-    LOGDEBUG("org.esb.av.Decoder","setting last pts to :" << _next_pts << "ctxtb:" << ctx->time_base.num << "/" << ctx->time_base.den
-        << "ptb:" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+    LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
+        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("org.esb.av.Decoder","DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {

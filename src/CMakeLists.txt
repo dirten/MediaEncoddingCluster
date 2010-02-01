@@ -1,4 +1,5 @@
 #ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
+ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR})

@@ -16,6 +16,8 @@
 #include "org/esb/hive/CodecFactory.h"
 #include <boost/filesystem/exception.hpp>
 #include <map>
+#include <algorithm>
+#include <stdint.h>
 using namespace org::esb::av;
 using namespace org::esb::io;
 using namespace org::esb::lang;
@@ -34,7 +36,7 @@ void FileExporter::exportFile(int fileid) {
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
   //  map<int, int> dtsmap;
-  LOGDEBUG("org.esb.hive.FileExporter","Exporting file with id:" << fileid);
+  LOGDEBUG("org.esb.hive.FileExporter", "Exporting file with id:" << fileid);
   std::string filename;
   std::string fileformat;
   Connection con(std::string(Config::getProperty("db.connection")));
@@ -57,7 +59,7 @@ void FileExporter::exportFile(int fileid) {
   org::esb::io::File fout(filename.c_str());
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
-    LOGDEBUG("org.esb.hive.FileExporter","creating output directory:" << outDirectory.getFilePath());
+    LOGDEBUG("org.esb.hive.FileExporter", "creating output directory:" << outDirectory.getFilePath());
     try {
       outDirectory.mkdir();
     } catch (boost::filesystem::filesystem_error & e) {
@@ -95,10 +97,26 @@ void FileExporter::exportFile(int fileid) {
       _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
       _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
       _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
-      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
-        min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
-      }
+//      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
+//        min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
+//      }
     }
+  }
+  /**
+   * Calculating start time
+   */
+  {
+    int64_t tsmin=INT64_MAX;
+    int64_t tsmax=INT64_MIN;
+    int64_t tsdiff=0;
+    std::map<int, FileExporter::StreamData>::iterator it=_source_stream_map.begin();
+    for(;it!=_source_stream_map.end();it++){
+      tsmin=std::min(tsmin,  av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+      tsmax=std::max(tsmax, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+    }
+    tsdiff=std::abs(tsmin-tsmax);
+    min_start_time=tsdiff;
+    LOGINFO("org.esb.hive.FileExporter","setting min_start_time to "<<min_start_time);
   }
   {
     PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
@@ -117,7 +135,7 @@ void FileExporter::exportFile(int fileid) {
       dtsoffset[rs.getInt("stream_index")] = -1;
       ptsoffset[rs.getInt("stream_index")] = -1;
       pos->setEncoder(*codec, rs.getInt("stream_index"));
-      LOGDEBUG("org.esb.hive.FileExporter","Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
+      LOGDEBUG("org.esb.hive.FileExporter", "Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
       }
@@ -170,12 +188,6 @@ void FileExporter::exportFile(int fileid) {
         pos.setEncoder(*encoder, rs.getInt("stream_index"));
       }
        */
-      cout << "StreamTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.num;
-      cout << "\tStreamTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->time_base.den;
-      cout << "CodecTimeBaseNum:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.num;
-      cout << "\tCodecTimeBaseDen:" << fos->_fmtCtx->streams[rs.getInt("stream_index")]->codec->time_base.den;
-      //    logdebug("neue Zeile");
-      cout.flush();
     }
   }
   //	fos.open();
@@ -239,7 +251,7 @@ void FileExporter::exportFile(int fileid) {
     path += "/tmp/";
     while (rs.next()) {
       int pu_id = rs.getInt("id");
-//      logdebug("open PU with id : " << pu_id)
+      //      logdebug("open PU with id : " << pu_id)
       std::string name = path;
       name += org::esb::util::Decimal(pu_id % 10).toString();
       name += "/";
@@ -247,21 +259,21 @@ void FileExporter::exportFile(int fileid) {
       name += ".unit";
       org::esb::io::File infile(name.c_str());
       if (!infile.exists()) {
-        logerror(infile.getFilePath() << ": not found");
+        LOGERROR("org.esb.hive.FileExporter",infile.getFileName() << ": not found, this may lead in a resulting audio/video desync");
         continue;
       }
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       if (ois.readObject(pu) != 0) {
-        logerror("reading archive # " << pu_id);
+        LOGERROR("org.esb.hive.FileExporter","reading archive # " << pu_id);
         continue;
       }
-	  /**
-	  * @TODO: need to calculate the right pts by reorder the packet list
-	  */
-	  pu._output_packets.sort(ptsComparator);
-	  std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
+      /**
+       * @TODO: need to calculate the right pts by reorder the packet list to pts
+       */
+      pu._output_packets.sort(ptsComparator);
+      std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
       for (; ptslist != pu._output_packets.end(); ptslist++) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
@@ -270,24 +282,27 @@ void FileExporter::exportFile(int fileid) {
         p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
         _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
-	  }
-	  pu._output_packets.sort(dtsComparator);
+      }
+      /**
+       * reorder right back to dts
+       */
+      pu._output_packets.sort(dtsComparator);
 
       std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
         int idx = p->getStreamIndex();
         if (min_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), basear))continue;
-		/*
-        if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
-          p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
-        } else {
-          p->setPts(_source_stream_map[idx].next_timestamp);
-          p->setTimeBase(_source_stream_map[idx].packet_timebase);
-          p->setDuration(_source_stream_map[idx].packet_duration);
-          _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
-          _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
-        }*/
+        /*
+if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
+  p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
+} else {
+  p->setPts(_source_stream_map[idx].next_timestamp);
+  p->setTimeBase(_source_stream_map[idx].packet_timebase);
+  p->setDuration(_source_stream_map[idx].packet_duration);
+  _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
+  _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+}*/
 
 
 
@@ -299,7 +314,7 @@ void FileExporter::exportFile(int fileid) {
        * clean up temporary files, they are no longer needed
        */
       fis.close();
-      infile.deleteFile();
+      //      infile.deleteFile();
     }
   }
   pos->close();
@@ -345,12 +360,13 @@ void FileExporter::exportFile(int fileid) {
 
 
 }
-bool FileExporter::ptsComparator(boost::shared_ptr<Packet> a,boost::shared_ptr<Packet> b){
-	return a->getPts()<b->getPts();
+
+bool FileExporter::ptsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
+  return a->getPts() < b->getPts();
 }
 
-bool FileExporter::dtsComparator(boost::shared_ptr<Packet> a,boost::shared_ptr<Packet> b){
-	return a->getDts()<b->getDts();
+bool FileExporter::dtsComparator(boost::shared_ptr<Packet> a, boost::shared_ptr<Packet> b) {
+  return a->getDts() < b->getDts();
 }
 
 FileExporter::FileExporter(void) {

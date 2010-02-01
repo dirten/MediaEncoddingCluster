@@ -38,16 +38,16 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       decoder->setFlag(rs.getInt("flags"));
       decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
-	  decoder->ctx->extradata_size=rs.getInt("extra_data_size");
-	  decoder->ctx->extradata=(uint8_t*)av_malloc(decoder->ctx->extradata_size);
-	  memcpy(decoder->ctx->extradata,rs.getBlob("extra_data").data(),decoder->ctx->extradata_size);
-//      decoder->setFlag(rs.getInt("flags"));
+      decoder->ctx->extradata_size = rs.getInt("extra_data_size");
+      decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
+      memcpy(decoder->ctx->extradata, rs.getBlob("extra_data").data(), decoder->ctx->extradata_size);
+      //      decoder->setFlag(rs.getInt("flags"));
 
-	  //    		decoder->open();
+      //    		decoder->open();
       decoder_map[streamid] = decoder;
     } else {
-      LOGERROR("org.esb.hive.CodecFactory","no Decoder found for stream id " << streamid);
-//      throw std::runtime_error(string("no Decoder found for stream id "));
+      LOGERROR("org.esb.hive.CodecFactory", "no Decoder found for stream id " << streamid);
+      //      throw std::runtime_error(string("no Decoder found for stream id "));
     }
   }
   return decoder_map[streamid];
@@ -76,30 +76,30 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setSampleRate(rs.getInt("sample_rate"));
       _encoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       _encoder->setFlag(rs.getInt("flags"));
-      setCodecOptions(_encoder,rs.getString("extra_profile_flags"));
+      setCodecOptions(_encoder, rs.getString("extra_profile_flags"));
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } else {
-      LOGERROR("org.esb.hive.CodecFactory","no Encoder found for stream id " << streamid);
-//      throw std::runtime_error(string("no Encoder found for stream id "));
+      LOGERROR("org.esb.hive.CodecFactory", "no Encoder found for stream id " << streamid);
+      //      throw std::runtime_error(string("no Encoder found for stream id "));
     }
   }
   return encoder_map[streamid];
 }
 
-void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,std::string options){
-  if(options.length()>0){
-    org::esb::util::StringTokenizer to(options,";");
-    while(to.hasMoreTokens()){
-      std::string line=to.nextToken();
-      org::esb::util::StringTokenizer to2(line,"=");
-      if(to2.countTokens()!=2){
-        LOGWARN("org.esb.hive.CodecFactory","Invalid CodecOptionsPair it is not a <key=value> pair");
-      }else{
-        std::string opt=to2.nextToken();
-        std::string arg=to2.nextToken();
-        if(_enc->setCodecOption(opt, arg)){
-          LOGERROR("org.esb.hive.CodecFactory","setting CodecOptionsPair (opt="<<opt<<" arg="<<arg<<")");
+void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc, std::string options) {
+  if (options.length() > 0) {
+    org::esb::util::StringTokenizer to(options, ";");
+    while (to.hasMoreTokens()) {
+      std::string line = to.nextToken();
+      org::esb::util::StringTokenizer to2(line, "=");
+      if (to2.countTokens() != 2) {
+        LOGWARN("org.esb.hive.CodecFactory", "Invalid CodecOptionsPair it is not a <key=value> pair ---" << line);
+      } else {
+        std::string opt = to2.nextToken();
+        std::string arg = to2.nextToken();
+        if (_enc->setCodecOption(opt, arg)) {
+          LOGERROR("org.esb.hive.CodecFactory", "setting CodecOptionsPair (opt=" << opt << " arg=" << arg << ")");
         }
       }
     }
@@ -121,10 +121,10 @@ void CodecFactory::free() {
 
 void CodecFactory::clearCodec(int streamid) {
   if (decoder_map.find(streamid) != decoder_map.end()) {
-     decoder_map.erase(streamid);
+    decoder_map.erase(streamid);
   }
   if (encoder_map.find(streamid) != encoder_map.end()) {
-     encoder_map.erase(streamid);
-//    delete (encoder_map.find(streamid)->second()->get());
+    encoder_map.erase(streamid);
+    //    delete (encoder_map.find(streamid)->second()->get());
   }
 }

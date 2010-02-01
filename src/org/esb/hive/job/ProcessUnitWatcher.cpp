@@ -169,6 +169,8 @@ namespace org {
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
                   _stream_map[index].process_unit_count = 0;
+                  _stream_map[index].frameRateCompensateBase=0.0;
+                  _stream_map[index].b_frame_offset=0;
                   //                  _stream_map[index].last_process_unit_id = 0;
                   /**
                    * collecting data for the Packetizer
@@ -179,9 +181,9 @@ namespace org {
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
-                      _stream_map[index].b_frame_offset = 4;
+                      _stream_map[index].b_frame_offset = 3;
                     } else {
-                      _stream_map[index].b_frame_offset = 2;
+//                      _stream_map[index].b_frame_offset = 2;
                     }
                   } else
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
@@ -308,7 +310,24 @@ namespace org {
           }
           u->_decoder = _stream_map[sIdx].decoder;
           u->_encoder = _stream_map[sIdx].encoder;
+
+
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
+
+          u->_frameRateCompensateBase=_stream_map[sIdx].frameRateCompensateBase;
+          /**
+           * Calculating frameRateCompensateBase for the next ProcessUnit
+           * this is needed in case of pull up or pull down frame rate conversion
+           * e.g. from 1/25 => 1/30 or 1/25 => 1/15
+           */
+          int packet_count=u->_input_packets.size()-_stream_map[sIdx].b_frame_offset;
+          u->_gop_size=packet_count;
+          _stream_map[sIdx].packet_count+=packet_count*u->_input_packets.front()->getDuration();
+          int base=((int)_stream_map[sIdx].packet_count*av_q2d(u->_decoder->getTimeBase())/av_q2d(u->_encoder->getTimeBase()));
+          double delta=_stream_map[sIdx].packet_count*av_q2d(u->_decoder->getTimeBase())/av_q2d(u->_encoder->getTimeBase())-base;
+          _stream_map[sIdx].frameRateCompensateBase=delta;
+
+
           u->_last_process_unit = lastPackets;
           /**
            * need some special calculations for Audio Packets to avoid Video/Audio drift
@@ -353,11 +372,10 @@ namespace org {
           if (audioQueue.size() == 0 && puQueue.size() == 0)
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
-          //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "audio queue size:" << audioQueue.size());
-          boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
-          if (_isStopSignal)
+          if (audioQueue.size() == 0||_isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+          boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
           {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex); //get_stream_pu_mutex
@@ -381,11 +399,9 @@ namespace org {
           if (audioQueue.size() == 0 && puQueue.size() == 0)
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
-          if (_isStopSignal)
-            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-          //          if (puQueue.size() == 0)
-          //            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "video queue size:" << puQueue.size());
+          if (puQueue.size() == 0||_isStopSignal)
+            return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           {
             boost::mutex::scoped_lock scoped_lock(stmt_mutex);

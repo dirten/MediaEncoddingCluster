@@ -129,7 +129,9 @@ int main(int argc, char * argv[]) {
   strcpy(base_path, sb.c_str());
   std::string logconfigpath=sb;
   logconfigpath.append("/res");
+
   Log::open(logconfigpath);
+//  Log::open();
 
   std::string dump_path = sb;
   dump_path.append("/dmp");

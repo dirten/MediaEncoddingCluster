@@ -21,15 +21,17 @@ namespace org {
       FrameConverter::FrameConverter(Decoder * dec, Encoder * enc) {
         _swsContext = NULL;
         _audioCtx = NULL;
+        _frameRateCompensateBase = 0;
+        _gop_size = -1;
         int sws_flags = 1;
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {
-          LOGERROR("org.esb.av.FrameConverter","the Decoder and Encoder must be from the same Type");
+          LOGERROR("org.esb.av.FrameConverter", "the Decoder and Encoder must be from the same Type");
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
-            LOGWARN("org.esb.av.FrameConverter","Warning, using s16 intermediate sample format for resampling\n");
+            LOGWARN("org.esb.av.FrameConverter", "Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(
               enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
@@ -37,7 +39,7 @@ namespace org {
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
           if (!_audioCtx)
-            LOGERROR("org.esb.av.FrameConverter","Could not initialize Audio Resample Context");
+            LOGERROR("org.esb.av.FrameConverter", "Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
           _swsContext = sws_getContext(
@@ -45,7 +47,7 @@ namespace org {
               enc->getWidth(), enc->getHeight(), enc->getPixelFormat(),
               sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
-            LOGERROR("org.esb.av.FrameConverter","Could not initialize SWSCALE");
+            LOGERROR("org.esb.av.FrameConverter", "Could not initialize SWSCALE");
         }
       }
 
@@ -59,21 +61,21 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
-        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Frame");
+        LOGTRACEMETHOD("org.esb.av.FrameConverter", "Convert Frame");
 
-        LOGDEBUG("org.esb.av.FrameConverter",in_frame.toString());
+        LOGDEBUG("org.esb.av.FrameConverter", in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
-//        rescaleTimestamp(in_frame, out_frame);
+        rescaleTimestamp(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO)
           compensateAudioResampling(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
           compensateFrameRateConversion(in_frame, out_frame);
-        LOGDEBUG("org.esb.av.FrameConverter",out_frame.toString());
+        LOGDEBUG("org.esb.av.FrameConverter", out_frame.toString());
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
@@ -90,9 +92,41 @@ namespace org {
 #endif
       }
 
-      void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
-        out.setFrameCount(1);
+      void FrameConverter::setFrameRateCompensateBase(double val) {
+        LOGDEBUG("org.esb.av.FrameConverter", "setFrameRateCompensateBase(" << val << ")");
+        _frameRateCompensateBase = val;
       }
+
+      void FrameConverter::setGopSize(int gop) {
+        LOGDEBUG("org.esb.av.FrameConverter", "setGopSize(" << gop << ")");
+        _gop_size = gop;
+      }
+
+      void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
+        int frames = 1;
+        if (_gop_size > 0||_gop_size==-1) {
+          double a = static_cast<double> ((double) _dec->getLastTimeStamp() / (double) _dec->getTimeBase().den);
+//          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
+          double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
+          if (delta >= 2.0)
+            frames = static_cast<int> (floor(delta + 0.5));
+          if (delta <= -0.6)
+            frames = 0; //static_cast<int> (floor(delta - 0.5));
+          LOGDEBUG(
+              "org.esb.av.FrameConverter",
+              "inframe.pts=" << input.getPts() <<
+              ":_dec->getLastTimeStamp()="<<_dec->getLastTimeStamp()<<
+              ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
+              ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
+              ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
+              ":vdelta=" << delta << ":frames=" << frames);
+          if(_gop_size>0)
+            _gop_size--;
+        }
+        out.setFrameCount(frames);
+
+      }
+
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
         /**
          * calculating the delta between the input and the output timestamps
@@ -104,7 +138,7 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-        LOGDEBUG("org.esb.av.FrameConverter","Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+        LOGDEBUG("org.esb.av.FrameConverter", "Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
 
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
@@ -117,7 +151,7 @@ namespace org {
        * this rescales the input Frame Data into the output Frame Data
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
-//        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
+        //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
         out_frame._type = in_frame._type;
         sws_scale(
             _swsContext,
@@ -140,7 +174,7 @@ namespace org {
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
-//        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
+        //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);

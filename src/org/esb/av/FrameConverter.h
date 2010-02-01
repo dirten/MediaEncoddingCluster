@@ -50,6 +50,8 @@ namespace org {
                 FrameConverter(Decoder* dec, Encoder* enc);
                 ~FrameConverter();
                 void convert(Frame & input, Frame & out);
+                void setFrameRateCompensateBase(double);
+                void setGopSize(int);
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);
@@ -63,6 +65,9 @@ namespace org {
                 Encoder * _enc;
 
                 ReSampleContext * _audioCtx;
+                double _frameRateCompensateBase;
+                int _gop_size;
+                int _frame_counter;
             };
         }
     }

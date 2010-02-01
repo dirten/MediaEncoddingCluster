@@ -63,7 +63,7 @@ int Encoder::encode(Frame & frame) {
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
   _last_idx = frame.stream_index;
-  _frames=frame.getFrameCount();
+  _frames = frame.getFrameCount();
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = frame.getDts();
     LOGDEBUG("org.esb.av.Encoder", "setting last_dts=" << _last_dts);
@@ -77,6 +77,7 @@ int Encoder::encode(Frame & frame) {
 }
 
 int Encoder::encode() {
+  _frames = 1;
   return encodeVideo(NULL);
 }
 
@@ -86,67 +87,57 @@ int Encoder::encode() {
  * when frame rate will be upscaled, then frames must be duplicated
  */
 int Encoder::encodeVideo(AVFrame * inframe) {
-
+//  LOGTRACEMETHOD("org.esb.av.Encoder", "encode Video");
   const int buffer_size = 1024 * 256;
   char data[buffer_size];
   memset(&data, 0, buffer_size);
   int frames = 1;
-//  if (inframe != NULL)
-    
+  int ret=0;
 
   /**
    * calculating the differences between timestamps to duplicate or drop frames
    * when delta < 1.0 then drop a frame
    * when delta > 1.0 then duplicate a frame
    */
-  
-    if (inframe != NULL) {
-//		inframe->pts+=1;
-      double a = static_cast<double> ((double) inframe->pts / (double) _last_time_base.den);
-//      LOGDEBUG("org.esb.av.Encoder", "a=" << a);
-      double delta = a / av_q2d(ctx->time_base) - _last_dts;
-      if (delta >= 1.0)
-        frames = static_cast<int> (floor(delta + 0.6));
-      LOGDEBUG("org.esb.av.Encoder", "inframe.pts=" << inframe->pts << ":_last_time_base.den=" << _last_time_base.den << ":av_q2d(ctx->time_base)=" << av_q2d(ctx->time_base) << ":_last_dts=" << _last_dts << ":vdelta=" << delta << ":frames=" << frames);
-    }
-  for (int i = 0; i < frames; i++) {
+  for (int i = 0; i < _frames; i++) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
-    int ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
+    ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
     Packet pac(ret);
+    if (ret < 0) {
+      LOGERROR("org.esb.av.Encoder", "Video Encoding failed")
+    }
+
     if (ret > 0) {
       memcpy(pac.packet->data, &data, ret);
-    } else {
-      return 0;
-    }
-
-    pac.packet->size = ret;
-    pac.packet->stream_index = _last_idx;
-    if (ctx->coded_frame) {
-      if (ctx->coded_frame->key_frame) {
-        pac.packet->flags |= PKT_FLAG_KEY;
+      pac.packet->size = ret;
+      pac.packet->stream_index = _last_idx;
+      if (ctx->coded_frame) {
+        if (ctx->coded_frame->key_frame) {
+          pac.packet->flags |= PKT_FLAG_KEY;
+        }
+        pac.packet->pts = ctx->coded_frame->pts;
       }
-      pac.packet->pts = ctx->coded_frame->pts;
-    }
 #ifdef USE_TIME_BASE_Q
-    pac.setTimeBase(AV_TIME_BASE_Q);
-    pac.setDuration(_last_duration);
+      pac.setTimeBase(AV_TIME_BASE_Q);
+      pac.setDuration(_last_duration);
 #else
-    pac.setTimeBase(ctx->time_base);
-    pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
-	pac.setDuration(ctx->ticks_per_frame);
+      pac.setTimeBase(ctx->time_base);
+      pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+      pac.setDuration(ctx->ticks_per_frame);
 #endif
 
-    pac.packet->dts = _last_dts;
-    _last_dts += pac.packet->duration;
-    LOGDEBUG("org.esb.av.Encoder", pac.toString());
-    if (_pos != NULL) {
-      _pos->writePacket(pac);
+      pac.packet->dts = _last_dts;
+      LOGDEBUG("org.esb.av.Encoder", pac.toString());
+      if (_pos != NULL) {
+        _pos->writePacket(pac);
+      }
+      if (_sink != NULL)
+        _sink->write(&pac);
     }
-    if (_sink != NULL)
-      _sink->write(&pac);
+    _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
-  return _frames;
+  return ret;
 }
 
 int Encoder::encodeVideo(Frame & frame) {
@@ -154,7 +145,7 @@ int Encoder::encodeVideo(Frame & frame) {
   return encodeVideo(frame.getAVFrame());
 }
 
-void Encoder::setOutputStream(PacketOutputStream* pos) {
+void Encoder::setOutputStream(PacketOutputStream * pos) {
   _pos = pos;
 }
 
@@ -274,7 +265,7 @@ int Encoder::encodeAudio(Frame & frame) {
  * returns the last Encoded Timestamp
  */
 int64_t Encoder::getLastTimeStamp() {
-  return _last_dts;
+  return _last_dts != AV_NOPTS_VALUE ? _last_dts : 0;
 }
 
 /**
