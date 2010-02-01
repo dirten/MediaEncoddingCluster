@@ -3,6 +3,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/util/Log.h"
 #include <vector>
 
 
@@ -10,6 +11,7 @@
 using namespace org::esb::av;
 
 int main(int argc, char ** argv) {
+  Log::open("");
 	avcodec_init();
 	avcodec_register_all();
 	av_register_all();
