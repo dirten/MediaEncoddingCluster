@@ -111,10 +111,10 @@ void FileExporter::exportFile(int fileid) {
     int64_t tsdiff=0;
     std::map<int, FileExporter::StreamData>::iterator it=_source_stream_map.begin();
     for(;it!=_source_stream_map.end();it++){
-      tsmin=std::min(tsmin,  av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
-      tsmax=std::max(tsmax, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+      tsmin=min(tsmin,  av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+      tsmax=max(tsmax, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
     }
-    tsdiff=std::abs(tsmin-tsmax);
+    tsdiff=(long)std::abs(static_cast<long>(tsmin-tsmax));
     min_start_time=tsdiff;
     LOGINFO("org.esb.hive.FileExporter","setting min_start_time to "<<min_start_time);
   }
