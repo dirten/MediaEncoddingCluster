@@ -130,6 +130,7 @@ class SampleFormat;*/
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
+//          ar & ctx->flags2;
           ar & ctx->pix_fmt;
           ar & ctx->width;
           ar & ctx->height;
@@ -159,6 +160,7 @@ class SampleFormat;*/
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
+//          ar & ctx->flags2;
           ar & ctx->pix_fmt;
           ar & ctx->width;
           ar & ctx->height;
