@@ -15,6 +15,7 @@ add_executable (TestNewProcessUnit TestNewProcessUnit.cpp)
 add_executable (TestPacketizer TestPacketizer.cpp)
 add_executable (TestNodeDiscovery TestNodeDiscovery.cpp)
 add_executable (TestTimer TestTimer.cpp)
+add_executable (TestHive TestHive.cpp)
 
 
 
@@ -31,6 +32,7 @@ target_link_libraries (DeleteDatabase esb sql util hive signal)
 target_link_libraries (TestProcessUnit esb hive signal av io util lang )
 target_link_libraries (TestNewProcessUnit esb hive sql net signal av io util lang )
 target_link_libraries (TestPacketizer esb hive av sql net signal io util lang )
+target_link_libraries (TestHive esb hive av sql net signal io util lang )
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
 target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net

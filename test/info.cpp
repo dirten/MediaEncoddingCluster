@@ -68,7 +68,7 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\tticks" << endl;
+  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\tticks\tbframes" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
@@ -79,7 +79,8 @@ int main(int argc, char ** argv) {
     cout << s->getCodecTimeBase().num << "\t";
     cout << s->getCodecTimeBase().den << "\t";
     cout << s->getFrameBytes() << "\t";
-    cout << fis.getAVStream(a)->codec->ticks_per_frame;
+    cout << fis.getAVStream(a)->codec->ticks_per_frame<< "\t";
+    cout << fis.getAVStream(a)->codec->has_b_frames;
     cout << endl;
   }
 
@@ -131,18 +132,15 @@ int main(int argc, char ** argv) {
     printf("%s|", p.isKeyFrame()==1?"x ":"  ");
     printf("%5d|", p.packet->duration);
 	std::string type;
-	if(f->streams[p.packet->stream_index]->parser){
-	switch(f->streams[p.packet->stream_index]->parser->pict_type){
+//	if(f->streams[p.packet->stream_index]->parser){
+	switch(p._pict_type){
 		case FF_I_TYPE: type="I";break;
 		case FF_B_TYPE: type="B";break;
 		case FF_BI_TYPE: type="BI";break;
 		case FF_P_TYPE: type="P";break;
 		default :type="U";break;
-	}}
-	else{
-		type="NP";
 	}
-    printf("%2s|", type.c_str());
+  printf("%2s|", type.c_str());
     //        cout <<p.packet->pts<<"\t";
     //        cout <<p.packet->dts<<"\t";
     //        cout <<p.packet->size<<"\t";

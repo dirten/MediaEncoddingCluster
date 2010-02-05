@@ -33,7 +33,7 @@ void print_packet_list(PacketListPtr list) {
 }
 
 int main(int argc, char** argv) {
-
+  Log::open("");
   std::map<int, Packetizer::StreamData> stream_data;
 
   /*open the fixed test File or the file from command line input*/
@@ -68,39 +68,45 @@ int main(int argc, char** argv) {
   }
 
   Packetizer pti(stream_data);
-  for (int a = 0; a < 200; a++) {
+  for (int a = 0; a < 500; a++) {
     Packet p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
     if (pis.readPacket(p) < 0)break;
+    if (stream_data[p.getStreamIndex()].codec_type != CODEC_TYPE_VIDEO)continue;
     boost::shared_ptr<Packet> pPacket(new Packet(p));
     if (pti.putPacket(pPacket)) {
+      PacketListPtr list = pti.removePacketList();
+      logdebug("--------------------------------------------------------------------------------------------");
+      print_packet_list(list);
     }
   }
+  LOGDEBUG("org.esb.hive.job.TestPacketizer", "Flush Packetitzer");
   pti.flushStreams();
   PacketListPtr list;
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
   print_packet_list(list);
-//  assert(list.size() == 27);
-//  assert(list.front()->isKeyFrame() == true);
+  return 0;
+  //  assert(list.size() == 27);
+  //  assert(list.front()->isKeyFrame() == true);
 
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
   print_packet_list(list);
-//  assert(list.size() == 50);
+  //  assert(list.size() == 50);
 
 
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
   print_packet_list(list);
-//  assert(list.size() == 27);
-//  assert(list.front()->isKeyFrame() == true);
+  //  assert(list.size() == 27);
+  //  assert(list.front()->isKeyFrame() == true);
 
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
   print_packet_list(list);
-//  assert(list.size() == 50);
+  //  assert(list.size() == 50);
 
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
@@ -119,7 +125,7 @@ int main(int argc, char** argv) {
   list = pti.removePacketList();
   logdebug("--------------------------------------------------------------------------------------------");
   print_packet_list(list);
-//  assert(list.size() == 15);
+  //  assert(list.size() == 15);
 
   Log::close();
 
