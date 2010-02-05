@@ -71,6 +71,7 @@ ProcessUnit::ProcessUnit() {
   id = 0;
   _frameRateCompensateBase=0.0;
   _gop_size=-1;
+  _expected_frame_count=-1;
   
 }
 
@@ -181,6 +182,8 @@ void ProcessUnit::process() {
     }
   }
   _output_packets = sink.getList();
+  if(_expected_frame_count!=-1&&_output_packets.size()!=_expected_frame_count)
+    LOGERROR("org.esb.hive.job.ProcessUnit","Expected Frame cont differ from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
 }
 
 std::string toString() {

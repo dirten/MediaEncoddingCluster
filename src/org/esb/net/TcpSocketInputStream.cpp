@@ -51,7 +51,7 @@ namespace org {
           for (std::size_t ix = 0; ix < counter; ++ix) {
             buffer.push_back(tmp_buffer[ix]);
           }
-          delete tmp_buffer;
+          delete []tmp_buffer;
           return counter;
         }
 

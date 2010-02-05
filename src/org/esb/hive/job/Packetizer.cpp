@@ -26,6 +26,8 @@
  */
 #include "Packetizer.h"
 
+#include "org/esb/av/Encoder.h"
+#include "org/esb/av/Decoder.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -45,7 +47,13 @@ namespace org {
           _codec_min_packets[CODEC_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
 
           _streams = stream_data;
-
+          /**
+           * init internal streams data
+           */
+          std::map<int, StreamData>::iterator it = _streams.begin();
+          for (; it != _streams.end(); it++) {
+            (*it).second.state = STATE_NOP;
+          }
         }
 
         /**
@@ -68,7 +76,7 @@ namespace org {
           if (_codec_overlap.find(_streams[ptr->getStreamIndex()].codec_id) == _codec_overlap.end()) {
             _codec_overlap[_streams[ptr->getStreamIndex()].codec_id] = 0;
           }
-          result = processPacket(ptr);
+          result = processPacket2(ptr);
           return result;
         }
 
@@ -105,13 +113,13 @@ namespace org {
         void Packetizer::flushStreams() {
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
-            int stream_id=(*it).first;
+            int stream_id = (*it).first;
             buildList(stream_id);
             /**
              * adding dummy packet to mark this stream ends
              */
-            if(false&&_streams[stream_id].packets.size()==0){
-              PacketPtr packet=PacketPtr(new org::esb::av::Packet());              
+            if (false && _streams[stream_id].packets.size() == 0) {
+              PacketPtr packet = PacketPtr(new org::esb::av::Packet());
               _streams[stream_id].packets.push_back(packet);
             }
           }
@@ -149,7 +157,7 @@ namespace org {
         /**
          *
          */
-        bool Packetizer::processPacket(PacketPtr ptr) {
+        bool Packetizer::processPacket2(PacketPtr ptr) {
           bool result = false;
           int stream_idx = ptr->getStreamIndex();
           _overlap_queue[stream_idx].push_back(ptr);
@@ -169,6 +177,38 @@ namespace org {
           return result;
         }
 
+        bool Packetizer::processPacket(PacketPtr ptr) {
+          bool result = false;
+          int stream_idx = ptr->getStreamIndex();
+
+          if (_streams[stream_idx].state == STATE_NOP && ptr->isKeyFrame()) {
+            _streams[stream_idx].state = STATE_START_I_FRAME;
+          }
+
+          if (_streams[stream_idx].state == STATE_START_I_FRAME
+              && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].codec_type]
+              && ptr->isKeyFrame()) {
+            _streams[stream_idx].state = STATE_END_I_FRAME;
+          }
+
+          if (_streams[stream_idx].state == STATE_START_I_FRAME) {
+            _streams[stream_idx].packets.push_back(ptr);
+          }
+
+          if (_streams[stream_idx].state == STATE_END_I_FRAME) {
+            _overlap_queue[stream_idx].push_back(ptr);
+          }
+
+          if (_streams[stream_idx].state == STATE_END_I_FRAME && ptr->_pict_type == FF_P_TYPE) {
+            _streams[stream_idx].state = STATE_START_I_FRAME;
+            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
+            _packet_list.push_back(_streams[stream_idx].packets);
+            _streams[stream_idx].packets.clear();
+            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
+            result = true;
+          }
+          return result;
+        }
       }
     }
   }

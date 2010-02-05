@@ -74,6 +74,7 @@ namespace org {
                     int _gop_size;
                    
                     bool _last_process_unit;
+                    int _expected_frame_count;
                     template<class Archive>
                     void serialize(Archive & ar, const unsigned int version) {
                         ar & _input_packets;
@@ -89,6 +90,7 @@ namespace org {
                         ar & _last_process_unit;
                         ar & _frameRateCompensateBase;
                         ar & _gop_size;
+                        ar & _expected_frame_count;
                     }
                 private:
                 };

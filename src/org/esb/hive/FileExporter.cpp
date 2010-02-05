@@ -95,7 +95,8 @@ void FileExporter::exportFile(int fileid) {
       ar.den = rs.getInt("intbden");
       _source_stream_map[rs.getInt("inid")].in_timebase = ar;
       _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
-      _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
+      _source_stream_map[rs.getInt("inid")].next_timestamp = -1;
+      _source_stream_map[rs.getInt("inid")].out_start_time=0;
       _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
 //      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
 //        min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
@@ -117,6 +118,16 @@ void FileExporter::exportFile(int fileid) {
     tsdiff=(long)std::abs(static_cast<long>(tsmin-tsmax));
     min_start_time=tsdiff;
     LOGINFO("org.esb.hive.FileExporter","setting min_start_time to "<<min_start_time);
+  /**
+   * setting stream start time stamp
+   */
+
+    it=_source_stream_map.begin();
+    for(;it!=_source_stream_map.end();it++){
+      (*it).second.out_start_time=av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear)-tsmax;
+      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
+      LOGINFO("org.esb.hive.FileExporter","setting out_start_time from stream "<<(*it).first<<" to "<<(*it).second.out_start_time);
+    }
   }
   {
     PreparedStatement stmt = con.prepareStatement("select *, streams.id as sid from files, streams where files.id=:id and streams.fileid=files.id and streams.id limit 2");
@@ -278,8 +289,8 @@ void FileExporter::exportFile(int fileid) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
         p->setPts(_source_stream_map[idx].next_timestamp);
-        p->setTimeBase(_source_stream_map[idx].packet_timebase);
-        p->setDuration(_source_stream_map[idx].packet_duration);
+//        p->setTimeBase(_source_stream_map[idx].packet_timebase);
+//        p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
         _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
       }
@@ -292,7 +303,7 @@ void FileExporter::exportFile(int fileid) {
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
         int idx = p->getStreamIndex();
-        if (min_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), basear))continue;
+//        if (_source_stream_map[idx].out_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), _source_stream_map[idx].in_timebase))continue;
         /*
 if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
   p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));

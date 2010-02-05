@@ -92,7 +92,7 @@ int FileInputStream::read(vector<unsigned char>&buffer) {
     buffer.push_back(tmp_buffer[ix]);
   }
   _filePointer -= read;
-  delete tmp_buffer;
+  delete []tmp_buffer;
   return read;
 }
 

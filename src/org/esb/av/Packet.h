@@ -53,6 +53,8 @@ namespace org {
                 //	AVPacket _packet;
                 bool isCopy;
                 bool callDestruct;
+                int _pict_type;
+
                 //	uint8_t _data;
                 //        friend class boost::serialization::access;
                 //		    void serialize(boost::archive::Archive & ar, const unsigned int version);

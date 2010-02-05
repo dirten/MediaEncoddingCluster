@@ -95,6 +95,9 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
   if (status >= 0) {
 //    av_dup_packet(packet.packet);
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
+    if(_formatCtx->streams[packet.getStreamIndex()]->parser){
+      packet._pict_type=_formatCtx->streams[packet.getStreamIndex()]->parser->pict_type;
+    }
     /*
         if (_fis->_streamReverseMap[packet.getStreamIndex()]>-1)
           packet.setStreamIndex(_fis->_streamReverseMap[packet.getStreamIndex()]);

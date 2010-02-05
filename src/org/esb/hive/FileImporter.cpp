@@ -153,9 +153,9 @@ int import(int argc, char *argv[]) {
   PreparedStatement
   stmt_str =
       con.
-      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time,duration,nb_frames,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
+      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time, first_dts,duration,nb_frames,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
       //      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :duration, :nb_frames, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
+	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :first_dts, :duration, :nb_frames, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
   for (unsigned int a = 0; a < ctx->nb_streams; a++) {
     int field = 0;
     duration += ctx->streams[a]->duration;
@@ -168,6 +168,7 @@ int import(int argc, char *argv[]) {
     stmt_str.setDouble("framerate_num", ctx->streams[a]->r_frame_rate.num);
     stmt_str.setDouble("framerate_den", ctx->streams[a]->r_frame_rate.den);
     stmt_str.setDouble("start_time", (double) ctx->streams[a]->start_time);
+    stmt_str.setDouble("first_dts", (double) ctx->streams[a]->first_dts);
     stmt_str.setDouble("duration", (double) ctx->streams[a]->duration);
     stmt_str.setLong("nb_frames", ctx->streams[a]->nb_frames);
     stmt_str.setInt("time_base_num", ctx->streams[a]->time_base.num);

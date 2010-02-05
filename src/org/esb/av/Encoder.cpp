@@ -102,6 +102,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   for (int i = 0; i < _frames; i++) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
+//    LOGDEBUG("org.esb.av.Encoder", frame.toString());
     ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
     Packet pac(ret);
     if (ret < 0) {

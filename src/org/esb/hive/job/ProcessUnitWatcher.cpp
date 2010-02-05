@@ -25,6 +25,9 @@
  * ----------------------------------------------------------------------
  */
 
+#include "org/esb/hive/DatabaseService.h"
+
+
 #include <string>
 
 //#include <boost/thread.hpp>
@@ -122,18 +125,19 @@ namespace org {
         }
 
         void ProcessUnitWatcher::start3() {
+          DatabaseService::thread_init();
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp2 = new Connection(c);
           _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
           _con_tmp = new Connection(c);
           _stmt = new PreparedStatement(_con_tmp->prepareStatement("insert into process_units (source_stream, target_stream, start_ts, end_ts, frame_count, send, complete) values (:source_stream, :target_stream, :start_ts, :end_ts, :frame_count, now(), null)"));
           _isRunning = true;
-          sql::Connection con(std::string(config::Config::getProperty("db.connection")));
-          sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
           while (!_isStopSignal) {
             /**
              * getting all jobs that are not being completed
              */
+            sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+            sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
             while (rs.next() && !_isStopSignal) {
               std::map<int, Packetizer::StreamData> stream_data;
@@ -150,6 +154,11 @@ namespace org {
               /**
                * building Stream information Map
                */
+              AVRational basear;
+              basear.num = 1;
+              basear.den = 1000000;
+              int64_t tsmin = INT64_MAX;
+              int64_t tsmax = INT64_MIN;
               {
                 sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
                 sql::PreparedStatement pstmt = con2.prepareStatement("select * from job_details, streams where job_id=:myid and streams.id=instream");
@@ -163,32 +172,55 @@ namespace org {
                   _stream_map[index].type = rs2.getInt("stream_type");
                   _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
+
+                  /**
+                   * this case is only for a TestCase, in normal usage this will never happen
+                   */
+                  if (_stream_map[index].decoder.get() == NULL || _stream_map[index].encoder.get() == NULL)
+                    continue;
                   //                  _stream_map[index].decoder->open();
                   //                  _stream_map[index].encoder->open();
-                  _stream_map[index].last_start_ts = 0;
+                  _stream_map[index].last_start_dts = 0;//rs2.getLong("first_dts") - 1;
+                  _stream_map[index].last_start_pts = rs2.getLong("start_time") - 1;
+                  tsmin = min(tsmin, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
+                  tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
                   _stream_map[index].process_unit_count = 0;
-                  _stream_map[index].frameRateCompensateBase=0.0;
-                  _stream_map[index].b_frame_offset=0;
+                  _stream_map[index].frameRateCompensateBase = 0.0;
+                  _stream_map[index].b_frame_offset = 0;
                   //                  _stream_map[index].last_process_unit_id = 0;
                   /**
                    * collecting data for the Packetizer
                    */
                   stream_data[index].codec_type = _stream_map[index].decoder->getCodecType();
                   stream_data[index].codec_id = _stream_map[index].decoder->getCodecId();
+                  stream_data[index].decoder=_stream_map[index].decoder;
+                  stream_data[index].encoder=_stream_map[index].encoder;
 
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
                       _stream_map[index].b_frame_offset = 3;
                     } else {
-//                      _stream_map[index].b_frame_offset = 2;
+                      //                      _stream_map[index].b_frame_offset = 2;
                     }
                   } else
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
                     _stream_map[index].min_packet_count = 512;
                   }
+                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
+
+                }
+              }
+              /**
+               * calculating the right start time of the stream when the start stamps from the audio/video streams differ
+               */
+              {
+                map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+                for (; it != _stream_map.end(); it++) {
+                  (*it).second.last_start_pts=av_rescale_q(tsmax, basear,_stream_map[(*it).first].decoder->getTimeBase());
+                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "start TS for stream id#"<<(*it).first<<" = "<<(*it).second.last_start_pts);
                 }
               }
 
@@ -204,7 +236,7 @@ namespace org {
                   ResultSet rs_t = pstmt.executeQuery();
                   if (rs_t.next()) {
                     LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"));
-                    (*st).second.last_start_ts = rs_t.getLong("last_start_ts");
+                    (*st).second.last_start_dts = rs_t.getLong("last_start_ts");
                   }
                 }
                 /**
@@ -213,7 +245,7 @@ namespace org {
                 st = _stream_map.begin();
                 sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
                 for (; st != _stream_map.end(); st++) {
-                  std::string sql = "DELETE FROM process_units where target_stream=" + org::esb::util::StringUtil::toString((*st).second.outstream) + " AND start_ts > " + org::esb::util::StringUtil::toString((*st).second.last_start_ts);
+                  std::string sql = "DELETE FROM process_units where target_stream=" + org::esb::util::StringUtil::toString((*st).second.outstream) + " AND start_ts > " + org::esb::util::StringUtil::toString((*st).second.last_start_dts);
                   con3.executeNonQuery(sql);
                 }
               }
@@ -227,29 +259,25 @@ namespace org {
                * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
                */
               while ((packet = pis.readPacket()) != NULL && !_isStopSignal) {
+                /**
+                 * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+                 */
                 boost::shared_ptr<Packet> pPacket(packet);
                 /**
                  * if the actuall stream not mapped then discard this and continue with next packet
                  */
                 if (
                     _stream_map.find(packet->packet->stream_index) == _stream_map.end() ||
-                    _stream_map[packet->packet->stream_index].last_start_ts > packet->packet->dts
+                    _stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts ||
+                    _stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts
                     ) {
                   continue;
                 }
-                /**
-                 * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
-                 */
 
                 if (packetizer.putPacket(pPacket)) {
                   PacketListPtr packets = packetizer.removePacketList();
                   buildProcessUnit(packets, false);
                 }
-                /**
-                 * the next code is never used, remove this after some time
-                 */
-                //                continue;
-
               }
               delete fis;
               /**
@@ -288,11 +316,14 @@ namespace org {
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
               pstmt2.execute();
+              LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "file completed:" << filename);
 
             }
             if (!_isStopSignal)
               Thread::sleep2(2000);
           }
+          DatabaseService::thread_end();
+
           boost::mutex::scoped_lock terminationLock(terminationMutex);
           termination_wait.notify_all();
 
@@ -313,20 +344,38 @@ namespace org {
 
 
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
-
-          u->_frameRateCompensateBase=_stream_map[sIdx].frameRateCompensateBase;
           /**
            * Calculating frameRateCompensateBase for the next ProcessUnit
            * this is needed in case of pull up or pull down frame rate conversion
            * e.g. from 1/25 => 1/30 or 1/25 => 1/15
            */
-          int packet_count=u->_input_packets.size()-_stream_map[sIdx].b_frame_offset;
-          u->_gop_size=packet_count;
-          _stream_map[sIdx].packet_count+=packet_count*u->_input_packets.front()->getDuration();
-          int base=((int)_stream_map[sIdx].packet_count*av_q2d(u->_decoder->getTimeBase())/av_q2d(u->_encoder->getTimeBase()));
-          double delta=_stream_map[sIdx].packet_count*av_q2d(u->_decoder->getTimeBase())/av_q2d(u->_encoder->getTimeBase())-base;
-          _stream_map[sIdx].frameRateCompensateBase=delta;
 
+          u->_gop_size = u->_input_packets.size() - _stream_map[sIdx].b_frame_offset;
+          /*
+                    double tmp=u->_gop_size;
+                    u->_expected_frame_count=floor(tmp+_stream_map[sIdx].frameRateCompensateBase*av_q2d(u->_encoder->getTimeBase())/av_q2d(u->_decoder->getTimeBase()));
+                    u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
+           */
+          if (_stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_VIDEO) {
+            u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
+            int dur = u->_input_packets.front()->getDuration();
+            double target = (u->_gop_size * dur) * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) + _stream_map[sIdx].frameRateCompensateBase;
+            double base = floor(target);
+            u->_expected_frame_count = base;
+            double delta = target - base;
+            _stream_map[sIdx].frameRateCompensateBase = delta;
+            /*
+                      _stream_map[sIdx].packet_count += u->_gop_size * u->_input_packets.front()->getDuration();
+                      double base = floor(_stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()));
+                      double delta = _stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) - base;
+                      _stream_map[sIdx].frameRateCompensateBase = delta;
+             * */
+            //          if(delta>=1.0)
+            //            _stream_map[sIdx].packet_count-=u->_input_packets.front()->getDuration();
+            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "gop_size=" << u->_gop_size << ":Duration=" << dur << ":target=" << target << ":Base=" << base << ":Delta=" << delta);
+            //          _stream_map[sIdx].packet_count=av_rescale_q(base,u->_encoder->getTimeBase(),u->_decoder->getTimeBase());
+            //          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","PacketCount="<<_stream_map[sIdx].packet_count<<"gop_size="<<u->_gop_size<<":Duration="<<u->_input_packets.front()->getDuration()<<":Base="<<base<<":Delta="<<delta);
+          }
 
           u->_last_process_unit = lastPackets;
           /**
@@ -373,7 +422,7 @@ namespace org {
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
           LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "audio queue size:" << audioQueue.size());
-          if (audioQueue.size() == 0||_isStopSignal)
+          if (audioQueue.size() == 0 || _isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
 
@@ -400,7 +449,7 @@ namespace org {
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "video queue size:" << puQueue.size());
-          if (puQueue.size() == 0||_isStopSignal)
+          if (puQueue.size() == 0 || _isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
           {

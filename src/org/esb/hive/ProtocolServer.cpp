@@ -42,8 +42,9 @@ void ProtocolServer::close() {
   }
   l.clear();
   delete socket;
-  socket = 0;
+  socket = NULL;
   delete _cis;
+  _cis=NULL;
 }
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
@@ -95,7 +96,7 @@ void ProtocolServer::run() {
       //#ifndef DEBUG
     } catch (exception & ex) {
       LOGERROR("org.esb.hive.ProtocolServer","ERROR in ProtocolServer:" << ex.what());
-      socket->close();
+//      socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
     //#endif

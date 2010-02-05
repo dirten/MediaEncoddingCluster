@@ -104,9 +104,11 @@ namespace org {
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
         int frames = 1;
-        if (_gop_size > 0||_gop_size==-1) {
+        if ((_gop_size > 0 || _gop_size == -1)
+            && (_dec->getTimeBase().num != _enc->getTimeBase().num || _dec->getTimeBase().den != _enc->getTimeBase().den)
+            ) {
           double a = static_cast<double> ((double) _dec->getLastTimeStamp() / (double) _dec->getTimeBase().den);
-//          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
+          //          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
           double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
           if (delta >= 2.0)
             frames = static_cast<int> (floor(delta + 0.5));
@@ -115,12 +117,12 @@ namespace org {
           LOGDEBUG(
               "org.esb.av.FrameConverter",
               "inframe.pts=" << input.getPts() <<
-              ":_dec->getLastTimeStamp()="<<_dec->getLastTimeStamp()<<
+              ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
               ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
               ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
               ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
               ":vdelta=" << delta << ":frames=" << frames);
-          if(_gop_size>0)
+          if (_gop_size > 0)
             _gop_size--;
         }
         out.setFrameCount(frames);

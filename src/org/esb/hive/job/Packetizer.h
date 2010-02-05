@@ -30,51 +30,71 @@
 #include "org/esb/av/Packet.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 
+
 #include <deque>
 #include <map>
 #include <list>
 namespace org {
-    namespace esb {
-        namespace hive {
-            namespace job {
-                typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
-                typedef std::deque<PacketPtr> PacketListPtr;
-
-                class Packetizer {
-                public:
-
-                    struct StreamData {
-                        PacketListPtr packets;
-                        CodecType codec_type;
-                        CodecID codec_id;
-                    };
-                    Packetizer(std::map<int, StreamData>);
-                    ~Packetizer();
-                    bool putPacket(PacketPtr);
-                    void flushStreams();
-                    PacketListPtr getPacketList();
-                    PacketListPtr removePacketList();
-                    int getPacketListCount();
-                private:
-                    bool processPacket(PacketPtr);
-                    bool buildList(int stream_id);
-                    void addingPacketsFromQueue(int stream_id);
-
-                    std::map<int, StreamData> _streams;
-
-                    std::list<PacketListPtr> _packet_list;
-
-                    static const int MIN_AUDIO_PACKETS = 500;
-                    static const int MIN_VIDEO_PACKETS = 20;
-
-                    std::map<int, PacketListPtr> _overlap_queue;
-                    std::map<CodecID, int> _codec_overlap;
-                    std::map<CodecType, int> _codec_min_packets;
-
-                };
-            }
-        }
+  namespace esb {
+    namespace av {
+      class Decoder;
+      class Encoder;
     }
+    namespace hive {
+      namespace job {
+        typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
+        typedef std::deque<PacketPtr> PacketListPtr;
+
+        class Packetizer {
+        private:
+
+          enum State {
+            STATE_NOP,
+            STATE_START_I_FRAME,
+            STATE_END_I_FRAME,
+            STATE_START_PACKETGROUP,
+            STATE_END_PACKETGROUP
+          };
+
+        public:
+
+          struct StreamData {
+            PacketListPtr packets;
+            CodecType codec_type;
+            CodecID codec_id;
+            boost::shared_ptr<org::esb::av::Decoder> decoder;
+            boost::shared_ptr<org::esb::av::Encoder> encoder;
+            State state;
+          };
+          Packetizer(std::map<int, StreamData>);
+          ~Packetizer();
+          bool putPacket(PacketPtr);
+          void flushStreams();
+          PacketListPtr getPacketList();
+          PacketListPtr removePacketList();
+          int getPacketListCount();
+        private:
+//          State _state;
+          bool processPacket(PacketPtr);
+          bool processPacket2(PacketPtr);
+          bool buildList(int stream_id);
+          void addingPacketsFromQueue(int stream_id);
+
+          std::map<int, StreamData> _streams;
+
+          std::list<PacketListPtr> _packet_list;
+
+          static const int MIN_AUDIO_PACKETS = 500;
+          static const int MIN_VIDEO_PACKETS = 20;
+
+          std::map<int, PacketListPtr> _overlap_queue;
+          std::map<CodecID, int> _codec_overlap;
+          std::map<CodecType, int> _codec_min_packets;
+
+        };
+      }
+    }
+  }
 }
 
 #endif	/* _PACKETIZER_H */

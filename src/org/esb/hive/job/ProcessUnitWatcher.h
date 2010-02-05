@@ -103,7 +103,8 @@ namespace org {
             int instream;
             int outstream;
             int type;
-            int64_t last_start_ts;
+            int64_t last_start_dts;
+            int64_t last_start_pts;
             int b_frame_offset;
 
             boost::shared_ptr<Decoder> decoder;
