@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `type` int(1) NOT NULL DEFAULT '0',
   `parent` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `profileid` int(11) NOT NULL,
   `status` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `process_units` (
   `complete` timestamp NULL DEFAULT NULL,
   `priority` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=111 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -232,6 +232,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `framerate_num` int(11) NOT NULL DEFAULT '0',
   `framerate_den` int(11) NOT NULL,
   `start_time` bigint(20) NOT NULL DEFAULT '0',
+  `first_dts` bigint(20) NOT NULL DEFAULT '0',
   `duration` bigint(20) NOT NULL DEFAULT '0',
   `nb_frames` bigint(20) NOT NULL,
   `time_base_num` int(11) NOT NULL DEFAULT '0',
@@ -254,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `streams` (
   `flags` int(10) unsigned NOT NULL,
   `extra_profile_flags` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
