@@ -54,7 +54,7 @@ private:
     if (er == boost::asio::error::operation_aborted) {
       LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event was Canceled");
     } else {
-      LOGDEBUG("org.esb.hive.protocol.DataHandler","TimeOut received, removing endpoint from list to give an other client a chance!")
+      LOGWARN("org.esb.hive.protocol.DataHandler","TimeOut received, removing endpoint from list to give an other client a chance!")
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
           endpoint2stream.pop_front();
@@ -175,7 +175,7 @@ public:
 //        logdebug("setting timer");
 //        timer.expires_from_now(boost::posix_time::seconds(10));
 //        timer.async_wait();
-		_timer.reset(new Timer(10,boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
+		_timer.reset(new Timer(30,boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
 //        logdebug("dummy audio packet");
       }

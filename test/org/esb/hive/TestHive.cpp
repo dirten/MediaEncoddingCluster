@@ -7,20 +7,15 @@
 
 #include <stdlib.h>
 
+#include "org/esb/hive/HiveListener.h"
+#include "org/esb/hive/HiveClient.h"
+#include "org/esb/hive/HiveClientAudio.h"
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-#include "org/esb/sql/ResultSet.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
-#include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
-#include "org/esb/hive/HiveListener.h"
-#include "org/esb/hive/HiveClient.h"
-#include "org/esb/hive/HiveClientAudio.h"
-#include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/hive/FileExporter.h"
@@ -29,27 +24,18 @@
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/config/config.h"
+
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/util/Log.h"
+
 
 /*
  * 
  */
-void ctrlCHitWait() {
-  sigset_t wait_mask2;
-  sigemptyset(&wait_mask2);
-  sigaddset(&wait_mask2, SIGINT);
-  sigaddset(&wait_mask2, SIGQUIT);
-  sigaddset(&wait_mask2, SIGTERM);
-  sigaddset(&wait_mask2, SIGCHLD);
-  pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
-  int sig = 0;
-  //sigdelset(&wait_mask, SIGCHLD);
 
-  int err;
-  do {
-    err = sigwait(&wait_mask2, &sig);
-  } while (err != 0);
-
-}
 
 void createDatabase() {
   using namespace org::esb;
@@ -116,7 +102,10 @@ int main(int argc, char** argv) {
   /**
    * opening log for stdout
    */
-  Log::open("");
+  std::string logconfigpath=MEC_SOURCE_DIR;
+  logconfigpath.append("/res");
+  Log::open(logconfigpath);
+//  Log::open("");
   /**
    * setting base directory, nedded by some libs
    */

@@ -268,8 +268,8 @@ namespace org {
                  */
                 if (
                     _stream_map.find(packet->packet->stream_index) == _stream_map.end() ||
-                    _stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts ||
-                    _stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts
+                    _stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts 
+                    ||(packet->packet->pts!= AV_NOPTS_VALUE&&_stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts)
                     ) {
                   continue;
                 }

@@ -125,7 +125,7 @@ void FileExporter::exportFile(int fileid) {
     it=_source_stream_map.begin();
     for(;it!=_source_stream_map.end();it++){
       (*it).second.out_start_time=av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear)-tsmax;
-      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
+//      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
       LOGINFO("org.esb.hive.FileExporter","setting out_start_time from stream "<<(*it).first<<" to "<<(*it).second.out_start_time);
     }
   }
