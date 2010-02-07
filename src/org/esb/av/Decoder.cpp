@@ -162,7 +162,12 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #else
   frame->setTimeBase(ctx->time_base);
   // calculating the duration of the decoded packet
-  int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+//  int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
+  AVRational ar;
+  ar.num=1;
+  ar.den=AV_TIME_BASE;
+  int64_t dur = av_rescale_q(tmp_dur, ar, ctx->time_base);
 #endif
 
   frame->setFinished(_frameFinished);

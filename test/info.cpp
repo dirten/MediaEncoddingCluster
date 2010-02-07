@@ -4,11 +4,13 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include <vector>
 
 
 
 using namespace org::esb::av;
+using namespace org::esb::util;
 
 int main(int argc, char ** argv) {
   Log::open("");
@@ -68,7 +70,7 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\tticks\tbframes" << endl;
+  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\trepeat_pict\tticks\tbframes" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
@@ -79,7 +81,9 @@ int main(int argc, char ** argv) {
     cout << s->getCodecTimeBase().num << "\t";
     cout << s->getCodecTimeBase().den << "\t";
     cout << s->getFrameBytes() << "\t";
-    cout << fis.getAVStream(a)->codec->ticks_per_frame<< "\t";
+	printf("%10d\t", fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1);
+//	cout << fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1;
+	cout << fis.getAVStream(a)->codec->ticks_per_frame<< "\t";
     cout << fis.getAVStream(a)->codec->has_b_frames;
     cout << endl;
   }

@@ -99,7 +99,7 @@ int import(int argc, char *argv[]) {
   if (!fis.isValid())return 0;
 
   PacketInputStream pis(&fis);
-  fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
+ // fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
   //      tntdb::Connection con=connect(databaseFile.getPath());
   //      sqlite3_transaction trans=con.getTransaction();
   {

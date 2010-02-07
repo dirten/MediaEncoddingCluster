@@ -95,7 +95,7 @@ void FileExporter::exportFile(int fileid) {
       ar.den = rs.getInt("intbden");
       _source_stream_map[rs.getInt("inid")].in_timebase = ar;
       _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
-      _source_stream_map[rs.getInt("inid")].next_timestamp = -1;
+      _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
       _source_stream_map[rs.getInt("inid")].out_start_time=0;
       _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
 //      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
