@@ -114,12 +114,21 @@ void ProcessUnit::process() {
   //  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
   //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
   int64_t last_pts=-1;
+  bool compute_delayed_frames=false;
   /*loop over each Packet received */
-  for (it = _input_packets.begin(); it != _input_packets.end(); it++) {
+  for (it = _input_packets.begin(); it != _input_packets.end()||compute_delayed_frames; ) {
       LOGTRACE("org.esb.hive.job.ProcessUnit","Loop");
     /*get the Packet Pointer from the list*/
-    boost::shared_ptr<Packet> p = *it;
-
+      boost::shared_ptr<Packet> p;
+      if(!compute_delayed_frames){
+        p = *it;
+        it++;
+      }
+      else{
+        p=boost::shared_ptr<Packet>(new Packet());
+        p->setTimeBase(_input_packets.front()->getTimeBase());
+        p->setDuration(_input_packets.front()->getDuration());
+      }
     /*sum the packet sizes for later output*/
     insize += p->packet->size;
       LOGTRACE("org.esb.hive.job.ProcessUnit","Inputpacket:"<<p->toString());
@@ -131,8 +140,11 @@ void ProcessUnit::process() {
     /*when frame not finished, then it is nothing todo, continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
+      compute_delayed_frames=false;
       continue;
     }
+    if(_decoder->getCodecType()==CODEC_TYPE_VIDEO&&it == _input_packets.end())
+      compute_delayed_frames=true;
 //      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
 
     /*target frame for conversion*/
@@ -153,7 +165,7 @@ void ProcessUnit::process() {
      * @TODO: test out if this is ok when some Rational Framerate is given, e.g. 23.976fps?
      * @TODO: is it possible to make this in the decoder or encoder or frameconverter?
      */
-    if(last_pts>0&&last_pts==f->getPts()){
+    if(false&&last_pts>0&&last_pts==f->getPts()){
       delete f;
       delete tmp;
       continue;

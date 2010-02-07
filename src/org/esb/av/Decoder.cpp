@@ -1,29 +1,29 @@
 /*----------------------------------------------------------------------
- *  File    : Decoder.cpp
- *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
- *  Purpose :
- *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
- *
- *
- * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
- *
- * This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- *  02111-1307 USA
- *
- * ----------------------------------------------------------------------
- */
+*  File    : Decoder.cpp
+*  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+*  Purpose :
+*  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+*
+*
+* MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+*
+* This program is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of the
+*  License, or (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*  General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+*  02111-1307 USA
+*
+* ----------------------------------------------------------------------
+*/
 #include "Decoder.h"
 #include "Frame.h"
 #include <iostream>
@@ -63,17 +63,17 @@ Frame Decoder::decodeLast() {
   } else {
     logdebug("Frame not finished !!!!!");
     /*
-         int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
-      if (bla < 0) {
-        fprintf (stderr, "Error while decoding frame\n");
-      }
-      if(_frameFinished){
-        cout <<"Frame finished in second try"<<endl;
-      }else{
-        cout <<"Frame not finished in second try!!!!!"<<endl;
-         return Frame();
-      }
-     */
+    int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
+    if (bla < 0) {
+    fprintf (stderr, "Error while decoding frame\n");
+    }
+    if(_frameFinished){
+    cout <<"Frame finished in second try"<<endl;
+    }else{
+    cout <<"Frame not finished in second try!!!!!"<<endl;
+    return Frame();
+    }
+    */
     //      return Frame();
   }
 #endif
@@ -103,15 +103,15 @@ Frame * Decoder::decode2(Packet & packet) {
 
 /*
 void Decoder::analyzePacket(Packet & packet) {
-  int _frameFinished = 0;
-  Frame frame(ctx->pix_fmt, ctx->width, ctx->height);
+int _frameFinished = 0;
+Frame frame(ctx->pix_fmt, ctx->width, ctx->height);
 
-  int bytesDecoded = avcodec_decode_video(ctx, frame.getAVFrame(), &_frameFinished, packet.packet->data, packet.packet->size);
-  if (bytesDecoded < 0) {
-    fprintf(stderr, "Error while decoding frame\n");
-  }
+int bytesDecoded = avcodec_decode_video(ctx, frame.getAVFrame(), &_frameFinished, packet.packet->data, packet.packet->size);
+if (bytesDecoded < 0) {
+fprintf(stderr, "Error while decoding frame\n");
 }
- */
+}
+*/
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("org.esb.av.Decoder","Decode Video");
@@ -123,7 +123,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
-      avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
+    avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (false&&_last_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
@@ -132,7 +132,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
     LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+      << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
   LOGDEBUG("org.esb.av.Decoder","BytesDecoded:" << bytesDecoded);
@@ -140,9 +140,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
     LOGERROR("org.esb.av.Decoder","Error while decoding frame");
   }
   /**
-   * if frame is not finished, returns the blank frame
-   * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
-   */
+  * if frame is not finished, returns the blank frame
+  * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
+  */
   if (!_frameFinished) {
     return frame;
   }
@@ -162,7 +162,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #else
   frame->setTimeBase(ctx->time_base);
   // calculating the duration of the decoded packet
-//  int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+  //  int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
   int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
   AVRational ar;
   ar.num=1;
@@ -206,7 +206,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 #endif
 
     LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+      << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("org.esb.av.Decoder","DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {
@@ -262,8 +262,8 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 }
 
 /**
- * returns the last Encoded Timestamp
- */
+* returns the last Encoded Timestamp
+*/
 int64_t Decoder::getLastTimeStamp() {
   return _last_pts;
 }

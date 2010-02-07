@@ -81,10 +81,12 @@ int main(int argc, char ** argv) {
     cout << s->getCodecTimeBase().num << "\t";
     cout << s->getCodecTimeBase().den << "\t";
     cout << s->getFrameBytes() << "\t";
-	printf("%10d\t", fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1);
+	printf("%10d\t\t", fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1);
 //	cout << fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1;
 	cout << fis.getAVStream(a)->codec->ticks_per_frame<< "\t";
-    cout << fis.getAVStream(a)->codec->has_b_frames;
+    cout << fis.getAVStream(a)->codec->has_b_frames << "\t";
+//    if(fis.getAVStream(a)->codec->flags)
+    cout << ((fis.getAVStream(a)->codec->flags&CODEC_FLAG_CLOSED_GOP)?"closedgop\t":"opengop\t");
     cout << endl;
   }
 

@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
     stream_data[i].codec_type = fis.getStreamInfo(i)->getCodecType();
     stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
-
+    stream_data[i].decoder=boost::shared_ptr<Decoder>(new Decoder(fis.getAVStream(i)->codec));
   }
 
   Packetizer pti(stream_data);

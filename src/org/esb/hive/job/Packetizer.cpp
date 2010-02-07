@@ -37,7 +37,7 @@ namespace org {
          *
          */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
-          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
+          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 2;
 
           //          _codec_overlap[CODEC_ID_MP3] = 3;
           //          _codec_overlap[CODEC_ID_AC3] = 1;
@@ -199,7 +199,8 @@ namespace org {
             _overlap_queue[stream_idx].push_back(ptr);
           }
 
-          if (_streams[stream_idx].state == STATE_END_I_FRAME && ptr->_pict_type == FF_P_TYPE) {
+          if (_streams[stream_idx].state == STATE_END_I_FRAME 
+            && (_streams[stream_idx].decoder->getCodecId()==CODEC_ID_MPEG2VIDEO?ptr->_pict_type == FF_P_TYPE:true)) {
             _streams[stream_idx].state = STATE_START_I_FRAME;
             _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
             _packet_list.push_back(_streams[stream_idx].packets);

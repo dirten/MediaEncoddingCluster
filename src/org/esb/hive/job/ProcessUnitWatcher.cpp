@@ -1,29 +1,29 @@
 /*----------------------------------------------------------------------
- *  File    : ProcessUnitWatcher.cpp
- *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
- *  Purpose : here are the Packets will be bundled and received for and from the clients
- *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
- *
- *
- * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
- *
- * This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- *  02111-1307 USA
- *
- * ----------------------------------------------------------------------
- */
+*  File    : ProcessUnitWatcher.cpp
+*  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+*  Purpose : here are the Packets will be bundled and received for and from the clients
+*  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+*
+*
+* MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+*
+* This program is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of the
+*  License, or (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*  General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+*  02111-1307 USA
+*
+* ----------------------------------------------------------------------
+*/
 
 #include "org/esb/hive/DatabaseService.h"
 
@@ -134,8 +134,8 @@ namespace org {
           _isRunning = true;
           while (!_isStopSignal) {
             /**
-             * getting all jobs that are not being completed
-             */
+            * getting all jobs that are not being completed
+            */
             sql::Connection con(std::string(config::Config::getProperty("db.connection")));
             sql::Statement stmt = con.createStatement("select * from jobs, files where jobs.inputfile=files.id and complete is null");
             sql::ResultSet rs = stmt.executeQuery();
@@ -152,8 +152,8 @@ namespace org {
                 continue;
               }
               /**
-               * building Stream information Map
-               */
+              * building Stream information Map
+              */
               AVRational basear;
               basear.num = 1;
               basear.den = 1000000;
@@ -170,12 +170,13 @@ namespace org {
                   _stream_map[index].instream = rs2.getInt("instream");
                   _stream_map[index].outstream = rs2.getInt("outstream");
                   _stream_map[index].type = rs2.getInt("stream_type");
-                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
+                  _stream_map[index].decoder=boost::shared_ptr<Decoder>(new Decoder(fis->getAVStream(index)->codec));
+//                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
 
                   /**
-                   * this case is only for a TestCase, in normal usage this will never happen
-                   */
+                  * this case is only for a TestCase, in normal usage this will never happen
+                  */
                   if (_stream_map[index].decoder.get() == NULL || _stream_map[index].encoder.get() == NULL)
                     continue;
                   //                  _stream_map[index].decoder->open();
@@ -191,8 +192,8 @@ namespace org {
                   _stream_map[index].b_frame_offset = 0;
                   //                  _stream_map[index].last_process_unit_id = 0;
                   /**
-                   * collecting data for the Packetizer
-                   */
+                  * collecting data for the Packetizer
+                  */
                   stream_data[index].codec_type = _stream_map[index].decoder->getCodecType();
                   stream_data[index].codec_id = _stream_map[index].decoder->getCodecId();
                   stream_data[index].decoder=_stream_map[index].decoder;
@@ -201,21 +202,21 @@ namespace org {
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
-                      _stream_map[index].b_frame_offset = 3;
+                      _stream_map[index].b_frame_offset = 2;
                     } else {
                       //                      _stream_map[index].b_frame_offset = 2;
                     }
                   } else
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
-                    _stream_map[index].min_packet_count = 512;
-                  }
-                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
+                      _stream_map[index].min_packet_count = 512;
+                    }
+                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
 
                 }
               }
               /**
-               * calculating the right start time of the stream when the start stamps from the audio/video streams differ
-               */
+              * calculating the right start time of the stream when the start stamps from the audio/video streams differ
+              */
               {
                 map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
                 for (; it != _stream_map.end(); it++) {
@@ -225,8 +226,8 @@ namespace org {
               }
 
               /**
-               * special part for restart an unfinished encoding session
-               */
+              * special part for restart an unfinished encoding session
+              */
               {
                 sql::Connection con2(std::string(config::Config::getProperty("db.connection")));
                 sql::PreparedStatement pstmt = con2.prepareStatement("SELECT max( start_ts ) as last_start_ts FROM process_units WHERE target_stream = :a  and complete is not null GROUP BY target_stream");
@@ -240,8 +241,8 @@ namespace org {
                   }
                 }
                 /**
-                 * delete old packetentries after restart an unfinished encoding session
-                 */
+                * delete old packetentries after restart an unfinished encoding session
+                */
                 st = _stream_map.begin();
                 sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
                 for (; st != _stream_map.end(); st++) {
@@ -255,23 +256,23 @@ namespace org {
               Packet * packet;
 
               /**
-               * read while packets in the stream
-               * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
-               */
+              * read while packets in the stream
+              * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
+              */
               while ((packet = pis.readPacket()) != NULL && !_isStopSignal) {
                 /**
-                 * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
-                 */
+                * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+                */
                 boost::shared_ptr<Packet> pPacket(packet);
                 /**
-                 * if the actuall stream not mapped then discard this and continue with next packet
-                 */
+                * if the actuall stream not mapped then discard this and continue with next packet
+                */
                 if (
-                    _stream_map.find(packet->packet->stream_index) == _stream_map.end() ||
-                    _stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts 
-                    ||(packet->packet->pts!= AV_NOPTS_VALUE&&_stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts)
-                    ) {
-                  continue;
+                  _stream_map.find(packet->packet->stream_index) == _stream_map.end() ||
+                  _stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts 
+                  ||(packet->packet->pts!= AV_NOPTS_VALUE&&_stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts)
+                  ) {
+                    continue;
                 }
 
                 if (packetizer.putPacket(pPacket)) {
@@ -281,12 +282,12 @@ namespace org {
               }
               delete fis;
               /**
-               * the rest does not executed because the file is not finisshed
-               */
+              * the rest does not executed because the file is not finisshed
+              */
               if (_isStopSignal)continue;
               /**
-               * flushing packetizer contents and put this into the Queue
-               */
+              * flushing packetizer contents and put this into the Queue
+              */
               packetizer.flushStreams();
               int count = packetizer.getPacketListCount();
               for (int a = 0; a < count; a++) {
@@ -297,18 +298,18 @@ namespace org {
 
               //flushStreamPackets();
               /**
-               * @TODO: at this point, here must be a check if all packets are received in case of client crash!
-               */
+              * @TODO: at this point, here must be a check if all packets are received in case of client crash!
+              */
               LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "file completed:" << filename);
               /**
-               * cleaning up allocated resources
-               */
+              * cleaning up allocated resources
+              */
               /*
-          map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
-          for (; it != _stream_map.end(); it++) {
-            CodecFactory::clearCodec(it->second.instream);
-            CodecFactory::clearCodec(it->second.outstream);
-          }*/
+              map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+              for (; it != _stream_map.end(); it++) {
+              CodecFactory::clearCodec(it->second.instream);
+              CodecFactory::clearCodec(it->second.outstream);
+              }*/
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
 
@@ -345,31 +346,37 @@ namespace org {
 
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
           /**
-           * Calculating frameRateCompensateBase for the next ProcessUnit
-           * this is needed in case of pull up or pull down frame rate conversion
-           * e.g. from 1/25 => 1/30 or 1/25 => 1/15
-           */
+          * Calculating frameRateCompensateBase for the next ProcessUnit
+          * this is needed in case of pull up or pull down frame rate conversion
+          * e.g. from 1/25 => 1/30 or 1/25 => 1/15
+          */
 
           u->_gop_size = u->_input_packets.size() - _stream_map[sIdx].b_frame_offset;
           /*
-                    double tmp=u->_gop_size;
-                    u->_expected_frame_count=floor(tmp+_stream_map[sIdx].frameRateCompensateBase*av_q2d(u->_encoder->getTimeBase())/av_q2d(u->_decoder->getTimeBase()));
-                    u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
-           */
+          double tmp=u->_gop_size;
+          u->_expected_frame_count=floor(tmp+_stream_map[sIdx].frameRateCompensateBase*av_q2d(u->_encoder->getTimeBase())/av_q2d(u->_decoder->getTimeBase()));
+          u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
+          */
           if (_stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_VIDEO) {
             u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
-            int dur = u->_input_packets.front()->getDuration();
+
+            int64_t tmp_dur=((int64_t)AV_TIME_BASE * u->_decoder->getTimeBase().num * u->_decoder->ctx->ticks_per_frame) / u->_decoder->ctx->time_base.den;
+            AVRational ar;
+            ar.num=1;
+            ar.den=AV_TIME_BASE;
+            int64_t dur = av_rescale_q(tmp_dur, ar, u->_decoder->getTimeBase());
+//            int dur = u->_input_packets.front()->getDuration()*u->_decoder->ctx->ticks_per_frame;
             double target = (u->_gop_size * dur) * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) + _stream_map[sIdx].frameRateCompensateBase;
             double base = floor(target);
             u->_expected_frame_count = base;
             double delta = target - base;
             _stream_map[sIdx].frameRateCompensateBase = delta;
             /*
-                      _stream_map[sIdx].packet_count += u->_gop_size * u->_input_packets.front()->getDuration();
-                      double base = floor(_stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()));
-                      double delta = _stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) - base;
-                      _stream_map[sIdx].frameRateCompensateBase = delta;
-             * */
+            _stream_map[sIdx].packet_count += u->_gop_size * u->_input_packets.front()->getDuration();
+            double base = floor(_stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()));
+            double delta = _stream_map[sIdx].packet_count * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) - base;
+            _stream_map[sIdx].frameRateCompensateBase = delta;
+            * */
             //          if(delta>=1.0)
             //            _stream_map[sIdx].packet_count-=u->_input_packets.front()->getDuration();
             LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "gop_size=" << u->_gop_size << ":Duration=" << dur << ":target=" << target << ":Base=" << base << ":Delta=" << delta);
@@ -379,21 +386,21 @@ namespace org {
 
           u->_last_process_unit = lastPackets;
           /**
-           * need some special calculations for Audio Packets to avoid Video/Audio drift
-           */
+          * need some special calculations for Audio Packets to avoid Video/Audio drift
+          */
           u->_encoder->_bytes_discard = 0; //_stream_map[sIdx].last_bytes_offset;
           if (false && _stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_AUDIO) {
             /**
-             * calculating decoded sample size
-             */
+            * calculating decoded sample size
+            */
             int64_t in_frame_size = av_rescale_q(list.front()->getDuration(), list.front()->getTimeBase(), u->_encoder->getTimeBase())*4;
             int64_t out_frame_size = u->_encoder->getFrameBytes();
             std::cout << "Last Bytes Offset:" << _stream_map[sIdx].last_bytes_offset << std::endl;
             std::cout << "in_frame_size:" << in_frame_size << std::endl;
             std::cout << "out_frame_size:" << out_frame_size << std::endl;
             /**
-             * calculating number of bytes to discard
-             */
+            * calculating number of bytes to discard
+            */
             int64_t out_packet_count = ((in_frame_size * list.size()) - _stream_map[sIdx].last_bytes_offset) / out_frame_size;
             std::cout << "_packet_count:" << list.size() << std::endl;
             std::cout << "out_packet_count:" << out_packet_count << std::endl;
@@ -401,9 +408,9 @@ namespace org {
 
           }
           /**
-           * some special handling for audio Packets, they must be currently all encoded on the same Client
-           * to avoid Video/Audio sync drift
-           */
+          * some special handling for audio Packets, they must be currently all encoded on the same Client
+          * to avoid Video/Audio sync drift
+          */
           {
             //boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
             if (u->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
@@ -497,11 +504,11 @@ namespace org {
           ous.writeObject(*unit.get());
           ous.close();
           /*
-                    delete unit._decoder;
-                    unit._decoder = NULL;
-                    delete unit._encoder;
-                    unit._encoder = NULL;
-           */
+          delete unit._decoder;
+          unit._decoder = NULL;
+          delete unit._encoder;
+          unit._encoder = NULL;
+          */
           _stmt_fr->setInt("id", unit->_process_unit);
           _stmt_fr->execute();
 

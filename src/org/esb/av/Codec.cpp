@@ -65,6 +65,10 @@ namespace org {
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
+         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
+          setTimeBase(1,ctx->sample_rate);
+        }
+
         //		_codec_resolved=false;
       }
 

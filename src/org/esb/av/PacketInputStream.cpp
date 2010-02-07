@@ -112,6 +112,9 @@ Packet * PacketInputStream::readPacketFromFormatIS() {
   if (av_read_frame(_formatCtx, _avpacket) >= 0) {
     Packet *pac=new Packet(_avpacket);
     pac->setTimeBase(_formatCtx->streams[pac->getStreamIndex()]->time_base);
+    if(_formatCtx->streams[pac->getStreamIndex()]->parser){
+      pac->_pict_type=_formatCtx->streams[pac->getStreamIndex()]->parser->pict_type;
+    }
 //    logdebug("Packet Size:" << pac->getSize())
     return pac;
   }
