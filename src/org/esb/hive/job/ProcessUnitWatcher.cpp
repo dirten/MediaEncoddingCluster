@@ -63,7 +63,10 @@ namespace org {
   namespace esb {
     namespace hive {
       namespace job {
-
+        template<typename T>
+        void dummy_deleter(T*d){
+          //do nothing
+        }
         //        std::map<int, boost::shared_ptr<ProcessUnit> > ProcessUnitWatcher::unit_map;
         boost::mutex ProcessUnitWatcher::put_pu_mutex;
         boost::mutex ProcessUnitWatcher::get_pu_mutex;
@@ -170,7 +173,7 @@ namespace org {
                   _stream_map[index].instream = rs2.getInt("instream");
                   _stream_map[index].outstream = rs2.getInt("outstream");
                   _stream_map[index].type = rs2.getInt("stream_type");
-                  _stream_map[index].decoder=boost::shared_ptr<Decoder>(new Decoder(fis->getAVStream(index)->codec));
+                  _stream_map[index].decoder=boost::shared_ptr<Decoder>(new Decoder(fis->getAVStream(index)->codec),&dummy_deleter<Decoder>);
 //                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
 
@@ -181,10 +184,11 @@ namespace org {
                     continue;
                   //                  _stream_map[index].decoder->open();
                   //                  _stream_map[index].encoder->open();
-                  _stream_map[index].last_start_dts = 0;//rs2.getLong("first_dts") - 1;
+                  _stream_map[index].last_start_dts = rs2.getLong("first_dts") - 1;
                   _stream_map[index].last_start_pts = rs2.getLong("start_time") - 1;
                   tsmin = min(tsmin, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
-                  tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
+                  if(_stream_map[index].last_start_dts>0)
+                    tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
                   _stream_map[index].process_unit_count = 0;

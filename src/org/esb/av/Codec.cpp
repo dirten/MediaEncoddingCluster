@@ -314,12 +314,11 @@ namespace org {
       void Codec::close() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
 
-        if (ctx->extradata_size > 0) {
-          //          logdebug("freeing extradata");
-          av_freep(&ctx->extradata);
-        }
         if (_opened) {
           if (ctx && !_pre_allocated) {
+            if (ctx->extradata_size > 0) {
+              av_freep(&ctx->extradata);
+            }
             avcodec_close(ctx);
           }
 
