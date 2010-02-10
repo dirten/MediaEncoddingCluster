@@ -1,6 +1,5 @@
 #include "org/esb/io/InputStream.h"
 //#include "org/esb/net/TcpSocket.h"
-#include "SocketException.h"
 #include <iostream>
 //#include "../config.h"
 #include <vector>
@@ -8,6 +7,7 @@
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
+#include "SocketException.h"
 #include "org/esb/util/Log.h"
 using boost::asio::ip::tcp;
 

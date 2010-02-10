@@ -212,7 +212,7 @@ namespace org {
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
-                      _stream_map[index].b_frame_offset = 2;
+                      _stream_map[index].b_frame_offset = 3;
                     } else {
                       //                      _stream_map[index].b_frame_offset = 2;
                     }

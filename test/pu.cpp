@@ -156,7 +156,7 @@ void packet_count(char * filename, char * stream_index) {
   while (pis.readPacket(pac) >= 0) {
     if (pac.getStreamIndex() == idx)c++;
   }
-  logdebug("Packet Count from stream :" << idx << " = " << c);
+  LOGDEBUG("Packet Count from stream :" << idx << " = " << c);
 }
 
 int main(int argc, char** argv) {
@@ -166,7 +166,8 @@ int main(int argc, char** argv) {
   }
   std::string logconfigpath=MEC_SOURCE_DIR;
   logconfigpath.append("/res");
-  Log::open(logconfigpath);
+//  Log::open(logconfigpath);
+  Log::open("");
   avcodec_register_all();
   av_register_all();
 

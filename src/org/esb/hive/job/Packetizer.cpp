@@ -37,7 +37,7 @@ namespace org {
          *
          */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
-          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 2;
+          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
 
           //          _codec_overlap[CODEC_ID_MP3] = 3;
           //          _codec_overlap[CODEC_ID_AC3] = 1;

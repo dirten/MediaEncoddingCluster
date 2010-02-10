@@ -18,7 +18,7 @@ bool MyDumpSender(const wchar_t* dump_path,
     EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion,
     bool succeeded) {
-  logdebug("Sending CrashReport");
+  LOGDEBUG("Sending CrashReport");
   std::string chkpfile = "checkpoint.txt";
 
   std::string url = "http://188.40.40.157/submit";
@@ -44,7 +44,7 @@ bool MyDumpSender(const wchar_t* dump_path,
   dumpfile.append(minidump_id);
   dumpfile.append(std::wstring(d.begin(), d.end()));
   dumpfile.append(std::wstring(dmp.begin(), dmp.end()));
-  logdebug(std::string(dumpfile.begin(), dumpfile.end()));
+  LOGDEBUG(std::string(dumpfile.begin(), dumpfile.end()));
   std::map<std::wstring, std::wstring> para;
   para[wp] = wpro;
   para[wv] = wver;
@@ -53,7 +53,7 @@ bool MyDumpSender(const wchar_t* dump_path,
   google_breakpad::CrashReportSender sender(std::wstring(chkpfile.begin(), chkpfile.end()));
   google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
   std::string result(wresult.begin(), wresult.end());
-  logdebug("CrashReport sended : " << result << ":::" << r);
+  LOGDEBUG("CrashReport sended : " << result << ":::" << r);
   return true;
 }
 #elif defined __LINUX__
@@ -161,7 +161,7 @@ bool StackDumper::DumpSender(const wchar_t* dump_path,
     EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion,
     bool succeeded) {
-  logdebug("Sending CrashReport");
+  LOGDEBUG("Sending CrashReport");
   return true;
 }
 #endif

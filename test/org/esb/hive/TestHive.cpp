@@ -6,7 +6,7 @@
  */
 
 #include <stdlib.h>
-
+#include <boost/asio.hpp>
 #include "org/esb/hive/HiveListener.h"
 #include "org/esb/hive/HiveClient.h"
 #include "org/esb/hive/HiveClientAudio.h"
@@ -206,12 +206,12 @@ int main(int argc, char** argv) {
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+  deleteDatabase();
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
 
   Messenger::free();
 
 
-  deleteDatabase();
   hive::DatabaseService::thread_end();
 
   hive::DatabaseService::stop();

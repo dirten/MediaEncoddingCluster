@@ -162,7 +162,7 @@ void FileTreeTableNode::populate() {
               paths.insert(*d);
             }
           } catch (boost::filesystem::filesystem_error & er) {
-            loginfo(er.what());
+            LOGINFO(er.what());
           }
         }
       } else
