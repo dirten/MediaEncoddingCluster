@@ -37,12 +37,12 @@ bool first_packet = true;
 
 void PacketOutputStream::writePacket(Packet & packet) {
 	if (!_isInitialized&&first_packet){
-		LOGERROR("org.esb.av.PacketOutputStream","PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
+		LOGERROR("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
 //	    throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
 		return;
 	}
   if (streams.size() <= packet.getStreamIndex()) {
-    LOGERROR("org.esb.av.PacketOutputStream","there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
+    LOGERROR("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
     return;
   }
 
@@ -121,11 +121,11 @@ void PacketOutputStream::writePacket(Packet & packet) {
 //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-    LOGTRACE("org.esb.av.PacketOutputStream",packet.toString());
+    LOGTRACE(packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
 //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0){
-    LOGDEBUG("org.esb.av.PacketOutputStream","av_interleaved_write_frame Result:" << result);
+    LOGDEBUG("av_interleaved_write_frame Result:" << result);
 //    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
   }
 	first_packet = false;
@@ -141,7 +141,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
   AVStream * st = av_new_stream(_fmtCtx, stream_id);
   if (!st) {
-    LOGERROR("org.esb.av.PacketOutputStream","Could not alloc stream");
+    LOGERROR("Could not alloc stream");
   }
   //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
@@ -221,7 +221,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
 bool PacketOutputStream::init() {
   //  cout << _fmtCtx->oformat->write_header<<endl;
   if (av_write_header(_fmtCtx) < 0) {
-    LOGERROR("org.esb.av.PacketOutputStream","av_write_header(_fmtCtx) failed");
+    LOGERROR("av_write_header(_fmtCtx) failed");
     return false;
     //    exit(1);
   }
@@ -235,8 +235,8 @@ bool PacketOutputStream::init() {
     AVStream * stream = _fmtCtx->streams[a];
     //		stream->time_base=stream->codec->time_base;
 
-    LOGDEBUG("org.esb.av.PacketOutputStream","TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
-    LOGDEBUG("org.esb.av.PacketOutputStream","TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den);
+    LOGDEBUG("TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
+    LOGDEBUG("TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den);
   }
   return true;
 }

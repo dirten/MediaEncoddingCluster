@@ -3,17 +3,21 @@
 
 #include <string.h>
 #include <stdexcept>
+#include "Log.h"
 
+namespace org {
+  namespace esb {
+    namespace util {
 
-namespace org{
-namespace esb{
-namespace util{
-class IllegalFormatException : public std::runtime_error {
-	public:
-		explicit IllegalFormatException(std::string & msg);
-		explicit IllegalFormatException(const char * msg);
+      class IllegalFormatException : public std::runtime_error {
+        classlogger("org.esb.util.IllegalFormatException")
+      public:
+        explicit IllegalFormatException(std::string & msg);
+        explicit IllegalFormatException(const char * msg);
 
-};
-}}}
+      };
+    }
+  }
+}
 #endif
 

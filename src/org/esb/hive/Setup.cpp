@@ -18,10 +18,10 @@ namespace org {
     namespace hive {
 
       void Setup::check() {
-        LOGDEBUG("org.esb.hive.Setup","check Database Cluster Environment");
+        LOGDEBUG("check Database Cluster Environment");
 
         if (!checkDatabaseExist()) {
-          LOGERROR("org.esb.hive.Setup","Database not exist");
+          LOGERROR("Database not exist");
           exit(-127);
         }
 
@@ -33,7 +33,7 @@ namespace org {
       }
 
       void Setup::buildDatabaseModel(std::string sqlfile) {
-        LOGDEBUG("org.esb.hive.Setup","loading DB model from " << sqlfile);
+        LOGDEBUG("loading DB model from " << sqlfile);
         std::string sql;
         io::File f(sqlfile.c_str());
         io::FileInputStream(&f).read(sql);
@@ -68,7 +68,7 @@ namespace org {
           sql::Connection con(parseConnectionString(conf, "host"), string(""), parseConnectionString(conf, "user"), parseConnectionString(conf, "password"));
           con.executeNonQuery(std::string("use ").append(parseConnectionString(conf, "db")));
         } catch (sql::SqlException & ex) {
-          logerror(ex.what());
+          LOGERROR(ex.what());
           if (yesNoQuestion("do you want to Create Database " + parseConnectionString(conf, "db") + " now?")) {
             buildDatabase(parseConnectionString(conf, "db"));
             result = true;
@@ -94,7 +94,7 @@ namespace org {
             result = false;
           }
         } catch (sql::SqlException & ex) {
-          logerror(ex.what());
+          LOGERROR(ex.what());
           if (yesNoQuestion("do you want to Create Database Model now?")) {
             buildDatabaseModel("../sql/hive-0.0.1.sql");
             result = true;

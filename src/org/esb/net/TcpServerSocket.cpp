@@ -29,7 +29,7 @@ namespace org {
           acceptor_.bind(endpoint);
           acceptor_.listen();
         } catch (exception & ex) {
-          logerror("Cannot create server Socket:" << ex.what());
+          LOGERROR("Cannot create server Socket:" << ex.what());
         }
         _inShutdown = false;
       }
@@ -38,14 +38,14 @@ namespace org {
         if (_inShutdown)return NULL;
         boost::shared_ptr<tcp::socket> sock(new tcp::socket(_io_service));
         boost::system::error_code ec;
-		try{
-        acceptor_.accept(*sock, ec);
-		}catch(exception & ex){
-			logerror(ex.what());
-		}
+        try {
+          acceptor_.accept(*sock, ec);
+        } catch (exception & ex) {
+          LOGERROR(ex.what());
+        }
         if (ec) {
-          logerror("Error while accepting Socket(" << ec.message() << ")");
-//          return NULL;
+          LOGERROR("Error while accepting Socket(" << ec.message() << ")");
+          //          return NULL;
         }
 
         boost::asio::socket_base::keep_alive option(true);

@@ -37,7 +37,7 @@ namespace hive{
 namespace job{
 class JobHandler{
     private:
-	logger("hive.jobhandler");
+	classlogger("hive.jobhandler");
 	static JobHandler * _handler;
 	JobHandler();
 	list<Job*>_jobList;

@@ -8,6 +8,7 @@
 #include "SqlException.h"
 
 #include <boost/shared_ptr.hpp>
+
 //using namespace std;
 namespace org {
     namespace esb {
@@ -16,6 +17,7 @@ namespace org {
             class ResultSet;
 
             class Statement {
+              classlogger("org.esb.sql.Statement")
             public:
                 Statement(MYSQL * mysql, const char * sql);
                 ~Statement();

@@ -15,7 +15,7 @@ class PacketCollector: public lang::Thread{
 		~PacketCollector();
 		void run();
 	private:
-		logger("hive.collector");
+		classlogger("hive.collector");
 
 };
 

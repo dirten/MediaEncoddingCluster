@@ -32,7 +32,7 @@ namespace org {
       }
 
       SystemCpuInfo::SystemCpuInfo() {
-        logdebug("SystemInfo");
+        LOGDEBUG("SystemInfo");
         std::string cpudata = read_proc_fs("/proc/cpuinfo");
         parseCpuInfo(cpudata);
         Log::close();
@@ -44,7 +44,7 @@ namespace org {
 
       CpuInfo SystemCpuInfo::getCpuInfo(int cpu_num) {
         if (cpu_num > _processors.size())
-          loginfo("no cpu fond for number " << cpu_num);
+          LOGINFO("no cpu fond for number " << cpu_num);
         return *_processors[cpu_num];
       }
 

@@ -5,13 +5,14 @@
  * Created on 5. November 2008, 13:25
  */
 #include <string>
-
+#include "org/esb/util/Log.h"
 #ifndef _ORG_ESB_HIVE_SETUP_H
 #define	_ORG_ESB_HIVE_SETUP_H
 namespace org{
   namespace esb{
     namespace hive{
       class Setup{
+        classlogger("org.esb.hive.Setup")
       public:
         static void check();
 //      private:

@@ -4,7 +4,7 @@
 #include <map>
 #include <list>
 #include "MessageListener.h"
-
+#include "org/esb/util/Log.h"
 #define DEFAULT_NAME "global"
 namespace org {
     namespace esb {
@@ -18,6 +18,7 @@ namespace org {
             //class MessageListener;
 
             class Messenger {
+              classlogger("org.esb.signal.Messenger")
             public:
                 //    static const char * DEFAULT_NAME="global";
                 //    static const std::string DEFAULT_NAME;

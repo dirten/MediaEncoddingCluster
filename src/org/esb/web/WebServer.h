@@ -4,12 +4,14 @@
 #include "org/esb/signal/MessageListener.h"
 #include <Wt/WServer>
 
+#include "org/esb/util/Log.h"
 namespace org{
 namespace esb{
 namespace web{
 
     using namespace org::esb::signal;
     class WebServer: public MessageListener{
+      classlogger("org.esb.web.WebServer")
 	public:
 	    WebServer();
 	    ~WebServer();

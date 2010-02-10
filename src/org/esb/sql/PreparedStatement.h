@@ -15,6 +15,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/shared_mutex.hpp>
+#include "org/esb/util/Log.h"
 using namespace std;
 //using namespace sqlite3x;
 namespace org {
@@ -24,6 +25,7 @@ namespace org {
       class ResultSet;
 
       class PreparedStatement {
+        classlogger("org.esb.sql.PreparedStatement")
       public:
         PreparedStatement(MYSQL * mysql, const char * sql);
         //				    PreparedStatement(mysqlpp::Query stmt);

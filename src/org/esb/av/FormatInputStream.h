@@ -26,7 +26,7 @@ namespace org {
             //	    	logger("hive.av")
 
             class FormatInputStream : public FormatBaseStream, public InputStream {
-                logger("hive.av.formatis");
+                classlogger("org.esb.av.FormatInputStream");
 
             public:
                 FormatInputStream(File * source);

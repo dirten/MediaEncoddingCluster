@@ -36,7 +36,7 @@ void FileExporter::exportFile(int fileid) {
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
   //  map<int, int> dtsmap;
-  LOGDEBUG("org.esb.hive.FileExporter", "Exporting file with id:" << fileid);
+  LOGDEBUG( "Exporting file with id:" << fileid);
   std::string filename;
   std::string fileformat;
   Connection con(std::string(Config::getProperty("db.connection")));
@@ -59,11 +59,11 @@ void FileExporter::exportFile(int fileid) {
   org::esb::io::File fout(filename.c_str());
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
-    LOGDEBUG("org.esb.hive.FileExporter", "creating output directory:" << outDirectory.getFilePath());
+    LOGDEBUG("creating output directory:" << outDirectory.getFilePath());
     try {
       outDirectory.mkdir();
     } catch (boost::filesystem::filesystem_error & e) {
-      logerror(e.what());
+      LOGERROR(e.what());
       return;
     }
   }
@@ -118,7 +118,7 @@ void FileExporter::exportFile(int fileid) {
     }
     tsdiff=(long)std::abs(static_cast<long>(tsmin-tsmax));
     min_start_time=tsdiff;
-    LOGINFO("org.esb.hive.FileExporter","setting min_start_time to "<<min_start_time);
+    LOGINFO("setting min_start_time to "<<min_start_time);
   /**
    * setting stream start time stamp
    */
@@ -127,7 +127,7 @@ void FileExporter::exportFile(int fileid) {
     for(;it!=_source_stream_map.end();it++){
       (*it).second.out_start_time=av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear)-tsmax;
 //      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
-      LOGINFO("org.esb.hive.FileExporter","setting out_start_time from stream "<<(*it).first<<" to "<<(*it).second.out_start_time);
+      LOGINFO("setting out_start_time from stream "<<(*it).first<<" to "<<(*it).second.out_start_time);
     }
   }
   {
@@ -147,7 +147,7 @@ void FileExporter::exportFile(int fileid) {
       dtsoffset[rs.getInt("stream_index")] = -1;
       ptsoffset[rs.getInt("stream_index")] = -1;
       pos->setEncoder(*codec, rs.getInt("stream_index"));
-      LOGDEBUG("org.esb.hive.FileExporter", "Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
+      LOGDEBUG("Added Encoder to StreamIndex:" << rs.getInt("stream_index"));
       if (rs.getInt("stream_type") == CODEC_TYPE_VIDEO) {
         video_id = rs.getInt("sid");
       }
@@ -271,27 +271,28 @@ void FileExporter::exportFile(int fileid) {
       name += ".unit";
       org::esb::io::File infile(name.c_str());
       if (!infile.exists()) {
-        LOGERROR("org.esb.hive.FileExporter",infile.getFileName() << ": not found, this may lead in a resulting audio/video desync");
+        LOGERROR(infile.getFileName() << ": not found, this may lead in a resulting audio/video desync");
         continue;
       }
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       if (ois.readObject(pu) != 0) {
-        LOGERROR("org.esb.hive.FileExporter","reading archive # " << pu_id);
+        LOGERROR("reading archive # " << pu_id);
         continue;
       }
       /**
        * @TODO: need to calculate the right pts by reorder the packet list to pts
        */
-      LOGDEBUG("org.esb.hive.FileExporter","resorting Packets");
+      LOGDEBUG("resorting Packets");
       pu._output_packets.sort(ptsComparator);
       std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
       for (; ptslist != pu._output_packets.end(); ptslist++) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
+        LOGTRACE("resorting Packets pts to "<<p->toString());
         p->setPts(_source_stream_map[idx].next_timestamp);
-//        LOGTRACE("org.esb.hive.FileExporter","resorting Packets pts to "<<_source_stream_map[idx].next_timestamp);
+        LOGTRACE("resorting Packets pts to "<<_source_stream_map[idx].next_timestamp);
         //        p->setTimeBase(_source_stream_map[idx].packet_timebase);
 //        p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;

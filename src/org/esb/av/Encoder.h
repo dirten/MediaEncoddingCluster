@@ -42,6 +42,7 @@ namespace org {
             class Packet;
 
             class Encoder : public Codec {
+              classlogger("org.esb.av.Encoder")
             public:
                 Encoder(CodecID id);
                 Encoder();

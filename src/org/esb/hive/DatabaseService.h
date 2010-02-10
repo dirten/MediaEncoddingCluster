@@ -30,12 +30,14 @@
 
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
+#include "org/esb/util/Log.h"
 #include <string>
 namespace org {
     namespace esb {
         namespace hive {
 
             class DatabaseService : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.DatabaseService")
             public:
                 DatabaseService(std::string);
                 void onMessage(org::esb::signal::Message & msg);

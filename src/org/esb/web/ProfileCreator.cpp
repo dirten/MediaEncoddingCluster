@@ -29,7 +29,7 @@ namespace org {
         std::string res = std::string(org::esb::config::Config::getProperty("hive.base_path"));
         res.append("/res/profile_creator");
         Wt::WApplication::instance()->messageResourceBundle().use(res.c_str(), false);
-        logdebug("loading resource bundle" << res << " for Locale:" << Wt::WApplication::instance()->locale());
+        LOGDEBUG("loading resource bundle" << res << " for Locale:" << Wt::WApplication::instance()->locale());
         resize(700, 430);
         setBorder(false);
         Wt::WBorderLayout *layout = new Wt::WBorderLayout();
@@ -80,7 +80,7 @@ namespace org {
       }
 
       void ProfileCreator::setContextText(int tab_index) {
-        logdebug(tab_index);
+        LOGDEBUG(tab_index);
       }
 
       void ProfileCreator::cancel() {
@@ -92,7 +92,7 @@ namespace org {
       }
 
       void ProfileCreator::save() {
-        logdebug("try saving panels");
+        LOGDEBUG("try saving panels");
 
         int tab_count = tab->count();
         std::map<std::string, std::string>data;
@@ -122,7 +122,7 @@ namespace org {
       }
 
       ProfileCreator::~ProfileCreator() {
-        logdebug("freeing ProfileCreator");
+        LOGDEBUG("freeing ProfileCreator");
       }
 
       /**
@@ -176,7 +176,7 @@ namespace org {
               if (lec[key]->itemText(a).narrow() == itc->second)
                 lec[key]->setCurrentIndex(a);
             }
-            logdebug("found key:" << key << " item count:" << lec[key]->count() << " currentIndex:" << lec[key]->currentIndex());
+            LOGDEBUG("found key:" << key << " item count:" << lec[key]->count() << " currentIndex:" << lec[key]->currentIndex());
             if (lec[key]->currentIndex() == -1 || lec[key]->count() == 0) {
               lec[key]->addItem(itc->second);
               lec[key]->setCurrentIndex(lec[key]->count() - 1);
@@ -186,7 +186,7 @@ namespace org {
       }
 
       ProfileCreator::BasePanel::~BasePanel() {
-        logdebug("freeing basePanel");
+        LOGDEBUG("freeing basePanel");
       }
 
       /**
@@ -210,7 +210,7 @@ namespace org {
       }
 
       ProfileCreator::GeneralPanel::~GeneralPanel() {
-        logdebug("freeing generalPanel");
+        LOGDEBUG("freeing generalPanel");
 
       }
 
@@ -274,8 +274,7 @@ namespace org {
       }
 
       ProfileCreator::FilePanel::~FilePanel() {
-        logdebug("freeing filePanel");
-
+        LOGDEBUG("freeing filePanel");
       }
 
       /**
@@ -333,13 +332,13 @@ namespace org {
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
         vpre->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags));
         std::string longname = v_codec->currentText().narrow();
-        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "LonName=" << longname);
+        LOGDEBUG( "LonName=" << longname);
         AVCodec *p = NULL;
         int a = 0;
         vpre->clear();
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
-            LOGINFO("org.esb.web.ProfileCreator.VideoPanel", "retriving extra flags for codec id " << p->id);
+            LOGINFO( "retriving extra flags for codec id " << p->id);
             std::string sql = "SELECT * FROM codec WHERE codec_id=:id";
             org::esb::sql::Connection con(std::string(config::Config::getProperty("db.connection")));
             org::esb::sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
@@ -357,12 +356,12 @@ namespace org {
       void ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags() {
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
         std::string name = vpre->currentText().narrow();
-        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "Name=" << name);
+        LOGDEBUG( "Name=" << name);
         std::map<std::string, std::string> data;
         SqlUtil::sql2map("codec", "name", name, data);
         Wt::Ext::LineEdit * v_extra = _el.getElement("v_extra");
         v_extra->setText(data["extra"]);
-        LOGDEBUG("org.esb.web.ProfileCreator.VideoPanel", "extra=" << data["extra"]);
+        LOGDEBUG( "extra=" << data["extra"]);
       }
 
       std::map<std::string, std::string> ProfileCreator::VideoPanel::getKeyValue() {
@@ -396,7 +395,7 @@ namespace org {
       }
 
       ProfileCreator::VideoPanel::~VideoPanel() {
-        logdebug("freeing videoPanel");
+        LOGDEBUG("freeing videoPanel");
 
       }
 
@@ -483,7 +482,7 @@ namespace org {
       }
 
       ProfileCreator::AudioPanel::~AudioPanel() {
-        logdebug("freeing audioPanel");
+        LOGDEBUG("freeing audioPanel");
 
       }
     }

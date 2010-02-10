@@ -84,14 +84,14 @@ void WebServer::onMessage(Message & msg) {
     try {
       if (!server.isRunning())
         server.start();
-      LOGDEBUG("org.esb.web.WebServer", "Webserver Started");
+      LOGDEBUG("Webserver Started");
     } catch (Wt::WServer::Exception & ex) {
-      logerror(ex.what());
+      LOGERROR(ex.what());
     }
   } else
     if (msg.getProperty("webserver") == "stop") {
     if (server.isRunning())
       server.stop();
-    LOGDEBUG("org.esb.web.WebServer", "Webserver Stopped");
+    LOGDEBUG("Webserver Stopped");
   }
 }

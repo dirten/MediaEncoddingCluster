@@ -62,7 +62,7 @@ int import(int argc, char *argv[]) {
   //	cout << LIBAVCODEC_IDENT << endl;
 
   if (argc != 2) {
-    LOGERROR("org.esb.hive.FileImporter","wrong parameter count");
+    LOGERROR("wrong parameter count");
     exit(1);
   }
   //      Config::init("./cluster.cfg");
@@ -80,9 +80,9 @@ int import(int argc, char *argv[]) {
    */
   org::esb::io::File inputFile(argv[1]);
   if (!inputFile.exists() || !inputFile.canRead()) {
-    LOGERROR("org.esb.hive.FileImporter","Source File not found:"<<inputFile.getPath());
+    LOGERROR("Source File not found:"<<inputFile.getPath());
   } else {
-    LOGDEBUG("org.esb.hive.FileImporter","File:" << inputFile.getPath());
+    LOGDEBUG("File:" << inputFile.getPath());
   }
 
   long long int fileid = 0, count = 0, frame_group = 0;

@@ -48,7 +48,7 @@ namespace org {
       namespace job {
 
         class ProcessUnitWatcher : public org::esb::signal::MessageListener {
-          logger("hive.ProcessUnitWatcher")
+          classlogger("org.esb.hive.job.ProcessUnitWatcher")
         public:
           ProcessUnitWatcher();
           //			void run();

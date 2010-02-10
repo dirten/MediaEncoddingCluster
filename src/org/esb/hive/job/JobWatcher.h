@@ -20,7 +20,7 @@ namespace org{
 		namespace hive{
 			namespace job{
 				class JobWatcher :public Runnable, public org::esb::signal::MessageListener{
-					logger("hive.JobWatcher")
+					classlogger("hive.JobWatcher")
 					public:
 						JobWatcher(JobHandler & handler);
 						void run();

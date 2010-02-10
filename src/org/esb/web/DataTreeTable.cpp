@@ -47,8 +47,6 @@ namespace org {
             void DataTreeTable::dataSelected(){
                 std::set<Wt::WTreeNode*> set=tree()->selectedNodes();
                 std::set<Wt::WTreeNode*>::iterator it=set.begin();
-                if(it!=set.end())
-                  logdebug(((DataTreeTableNode*)(*it))->getId());
             }
         }
     }

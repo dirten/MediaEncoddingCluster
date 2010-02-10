@@ -36,7 +36,7 @@
 #include "Wt/WSignal"
 
 #include "org/esb/av/AV.h"
-
+#include "org/esb/util/Log.h"
 
 #ifndef _PROFILECREATOR_H
 #define	_PROFILECREATOR_H
@@ -46,6 +46,7 @@ namespace org {
     namespace web {
 
       class ProfileCreator : public Wt::Ext::Dialog {
+        classlogger("org.esb.web.ProfileCreator")
       public:
         ProfileCreator();
         virtual ~ProfileCreator();
@@ -68,6 +69,7 @@ namespace org {
          * private class GeneralPanel
          */
         class BasePanel : public Wt::Ext::Panel {
+          classlogger("org.esb.web.ProfileCreator.BasePanel")
         public:
           BasePanel();
           virtual ~BasePanel();
@@ -86,6 +88,7 @@ namespace org {
          * private class GeneralPanel
          */
         class GeneralPanel : public BasePanel {
+          classlogger("org.esb.web.ProfileCreator.GeneralPanel")
         public:
           GeneralPanel();
           virtual ~GeneralPanel();
@@ -99,6 +102,7 @@ namespace org {
          * private class FilePanel
          */
         class FilePanel : public BasePanel {
+          classlogger("org.esb.web.ProfileCreator.FilePanel")
         public:
           FilePanel();
           virtual ~FilePanel();
@@ -113,6 +117,7 @@ namespace org {
          * private class FilePanel
          */
         class VideoPanel : public BasePanel {
+          classlogger("org.esb.web.ProfileCreator.VideoPanel")
         public:
           VideoPanel();
           virtual ~VideoPanel();
@@ -127,6 +132,7 @@ namespace org {
          * private class FilePanel
          */
         class AudioPanel : public BasePanel {
+        classlogger("org.esb.web.ProfileCreator.AudioPanel")
         public:
           AudioPanel();
           virtual ~AudioPanel();

@@ -16,7 +16,7 @@
 //#include "org/esb/util/Queue.h"
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
-
+#include "org/esb/util/Log.h"
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
@@ -24,6 +24,7 @@ namespace org {
         namespace hive {
 
             class HiveClient : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.HiveClient")
             public:
                 HiveClient(std::string host, int port);
                 // HiveClient(org::esb::net::TcpSocket & sock);

@@ -21,7 +21,9 @@
 #include "wtk/Div.h"
 
 #include "org/esb/util/Properties.h"
+#include "org/esb/util/Log.h"
 #include "wtk/ElementContainer.h"
+
 
 #ifndef _SETUP_H
 #define	_SETUP_H
@@ -30,6 +32,7 @@ namespace org {
     namespace web {
 
       class ButtonLeft : public wtk::Div {
+
       public:
 
         ButtonLeft(const char * name = "") : Div("") {
@@ -71,6 +74,7 @@ namespace org {
       };
 
       class Setup : public Wt::WApplication {
+        classlogger("org.esb.web.Setup")
       public:
         Setup(const Wt::WEnvironment & env);
         Wt::WWebWidget * createDbPage();

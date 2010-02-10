@@ -14,11 +14,11 @@ Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   sql = s;
-  LOGTRACE("org.esb.sql.Statement", "Statement::Statement()" << this);
+  LOGTRACE("Statement::Statement()" << this);
 }
 
 Statement::~Statement() {
-  LOGTRACE("org.esb.sql.Statement", "Statement::~Statement()" << this);
+  LOGTRACE( "Statement::~Statement()" << this);
   //  delete rs;
   close();
 }
@@ -68,7 +68,7 @@ bool Statement::execute() {
 }
 
 void Statement::close() {
-  LOGTRACE("org.esb.sql.Statement", "freeing result set");
+  LOGTRACE( "freeing result set");
   if (mysql_stmt_free_result(stmtPtr.get())) {
     throw SqlException(std::string("failed while freeing the statement: ").append(mysql_stmt_error(stmtPtr.get())));
   }

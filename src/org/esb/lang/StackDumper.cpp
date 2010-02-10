@@ -62,7 +62,7 @@ bool MyDumpSender(const char *dump_path,
     const char *minidump_id,
     void *context,
     bool succeeded) {
-  logdebug("Sending CrashReport");
+  LOGDEBUG("Sending CrashReport");
   std::string url = "http://188.40.40.157/submit";
 
   std::string path=dump_path;

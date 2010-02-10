@@ -52,7 +52,7 @@ namespace org {
           if (msg.getProperty("hiveclientaudio") == "stop") {
           _toHalt = true;
           if (_running) {
-            LOGDEBUG("org.esb.hive.HiveClientAudio","StopSignal Received, waiting for all work done!")
+            LOGDEBUG("StopSignal Received, waiting for all work done!")
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
           }
@@ -74,9 +74,9 @@ namespace org {
           _sock->connect();
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
-          LOGINFO("org.esb.hive.HiveClientAudio","Server " << _host << " connected!!!");
+          LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
-          LOGERROR("org.esb.hive.HiveClientAudio","cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
+          LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
       }
 
@@ -91,11 +91,11 @@ namespace org {
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
-                LOGDEBUG("org.esb.hive.HiveClientAudio","sended command");
+                LOGDEBUG("sended command");
                 _ois->readObject(*unit);
-                LOGDEBUG("org.esb.hive.HiveClientAudio","pu received");
+                LOGDEBUG("pu received");
               } catch (exception & ex) {
-                LOGERROR("org.esb.hive.HiveClientAudio","Connection to Server lost, while waiting for audio process unit!!!" << ex.what());
+                LOGERROR("Connection to Server lost, while waiting for audio process unit!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_input_packets.size() == 0) {
@@ -135,7 +135,7 @@ namespace org {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
               } catch (exception & ex) {
-                LOGERROR("org.esb.hive.HiveClientAudio","Connection to Server lost, while sending audio process unit!!!" << ex.what());
+                LOGERROR("Connection to Server lost, while sending audio process unit!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_last_process_unit) {

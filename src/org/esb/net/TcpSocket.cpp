@@ -55,7 +55,7 @@ namespace org {
           try {
             //            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
           }          catch (exception & ex) {
-            logerror("while shutdown socket:" << ex.what());
+            LOGERROR("while shutdown socket:" << ex.what());
           }
           _socket->close();
         }

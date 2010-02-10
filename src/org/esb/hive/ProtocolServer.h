@@ -18,7 +18,7 @@ namespace org {
   namespace esb {
     namespace hive {
 
-      logger("hive.core")
+      classlogger("org.esb.hive.ProtocolServer")
       class ProtocolServer : public Runnable {
       private:
         TcpSocket * socket;

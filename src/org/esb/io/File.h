@@ -293,7 +293,7 @@ namespace org {
       private:
         //                const char * _filename;
         boost::filesystem::path _full_path;
-        logger("io.file");
+        classlogger("org.esb.io.File");
         struct stat status;
         std::string _pathname;
         bool _exist;

@@ -25,7 +25,7 @@ namespace esb{
 namespace hive{
 namespace job{
 class Job{
-    logger("hive.job")
+    classlogger("hive.job")
     public:
 		Job();
 		~Job();

@@ -30,12 +30,13 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include <boost/thread/condition.hpp>
-
+#include "org/esb/util/Log.h"
 namespace org {
     namespace esb {
         namespace hive {
 
             class ExportScanner : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.ExportScanner")
             public:
                 ExportScanner();
                 void onMessage(org::esb::signal::Message & msg);

@@ -31,7 +31,7 @@ namespace org {
       void Messenger::free() {
         std::map<std::string, Messenger*>::iterator it = messenger.begin();
         for (; it != messenger.end(); it++) {
-          LOGDEBUG("org.esb.signal.Messenger","Delete Messenger:" << (*it).first);
+          LOGDEBUG("Delete Messenger:" << (*it).first);
           delete (*it).second;
         }
       }

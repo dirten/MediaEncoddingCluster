@@ -211,7 +211,7 @@ namespace org {
       }
 
       void Setup::nextStep() {
-        LOGDEBUG("org.esb.web.Setup","Step=" << stack->currentIndex());
+        LOGDEBUG("Step=" << stack->currentIndex());
         _el.validate();
         int idx = stack->currentIndex();
         //        if (idx == 0 && (!_elchk.getElement("mode.client")->isChecked()))
@@ -506,7 +506,7 @@ namespace org {
           error->setText("Database Connection Success");
           butNext->setHidden(false);
         } catch (SqlException & ex) {
-          logerror(std::string(ex.what()));
+          LOGERROR(std::string(ex.what()));
           error->setText(ex.what());
           butNext->setHidden(true);
         }
@@ -544,7 +544,7 @@ namespace org {
             sql::Connection con_create(std::string(""));
             con_create.executeNonQuery(string("CREATE DATABASE hive"));
           } catch (sql::SqlException & ex) {
-			  logerror("SqlException:" << ex.what());
+			  LOGERROR("SqlException:" << ex.what());
             error->setText(Wt::WString::tr("create-database_failed"));
             return;
           }
@@ -560,7 +560,7 @@ namespace org {
 
             hive::Setup::buildDatabaseModel(sql_script.c_str());
           } catch (sql::SqlException & ex) {
-            logerror("SqlException:" << ex.what());
+            LOGERROR("SqlException:" << ex.what());
             error->setText(ex.what());
             return;
           }

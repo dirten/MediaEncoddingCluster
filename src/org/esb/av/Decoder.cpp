@@ -45,7 +45,7 @@ Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
   _next_pts = 0;
 }
 
-Decoder::Decoder(AVCodecContext * c) : Codec(c, Codec::DECODER) {
+Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
   _last_pts = 0;
   _next_pts = 0;
 }
@@ -59,9 +59,9 @@ Frame Decoder::decodeLast() {
   }
 #if 0
   if (_frameFinished) {
-    logdebug("Frame finished");
+    LOGDEBUG("Frame finished");
   } else {
-    logdebug("Frame not finished !!!!!");
+    LOGDEBUG("Frame not finished !!!!!");
     /*
     int bla= avcodec_decode_video(ctx, &frame, &_frameFinished, NULL, 0);
     if (bla < 0) {
@@ -114,11 +114,11 @@ fprintf(stderr, "Error while decoding frame\n");
 */
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
-  LOGTRACEMETHOD("org.esb.av.Decoder","Decode Video");
+  LOGTRACEMETHOD("Decode Video");
   Frame * frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   int _frameFinished = 0;
   int len = packet.packet->size;
-  LOGDEBUG("org.esb.av.Decoder",packet.toString());
+  LOGDEBUG(packet.toString());
 
   //  while (len > 0) {
   //    logdebug("Decode Packet");
@@ -131,13 +131,13 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #else
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
-    LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
+    LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
       << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
-  LOGDEBUG("org.esb.av.Decoder","BytesDecoded:" << bytesDecoded);
+  LOGDEBUG("BytesDecoded:" << bytesDecoded);
   if (bytesDecoded < 0) {
-    LOGERROR("org.esb.av.Decoder","Error while decoding frame");
+    LOGERROR("Error while decoding frame");
   }
   /**
   * if frame is not finished, returns the blank frame
@@ -162,12 +162,12 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #else
   frame->setTimeBase(ctx->time_base);
   // calculating the duration of the decoded packet
-  //  int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
-  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
+//    int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+//  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
   AVRational ar;
-  ar.num=1;
-  ar.den=AV_TIME_BASE;
-  int64_t dur = av_rescale_q(tmp_dur, ar, ctx->time_base);
+  ar.num=_frame_rate.den;
+  ar.den=_frame_rate.num;
+  int64_t dur = av_rescale_q(ar.num, ar, ctx->time_base);
 #endif
 
   frame->setFinished(_frameFinished);
@@ -183,13 +183,13 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 
   frame->pos = 0;
   frame->_type = CODEC_TYPE_VIDEO;
-  LOGDEBUG("org.esb.av.Decoder",frame->toString());
+  LOGDEBUG(frame->toString());
   return frame;
 }
 
 Frame * Decoder::decodeAudio2(Packet & packet) {
-  LOGTRACEMETHOD("org.esb.av.Decoder","Decode Audio");
-  LOGDEBUG("org.esb.av.Decoder",packet.toString());
+  LOGTRACEMETHOD("Decode Audio");
+  LOGDEBUG(packet.toString());
   //        Frame frame;
   int size = packet.packet->size;
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
@@ -205,12 +205,12 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
     _next_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
 
-    LOGDEBUG("org.esb.av.Decoder","setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
+    LOGDEBUG("setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
       << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
-  LOGDEBUG("org.esb.av.Decoder","DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
+  LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {
-    LOGERROR("org.esb.av.Decoder","Error while decoding audio Frame");
+    LOGERROR("Error while decoding audio Frame");
     return new Frame();
   }
   Frame * frame = new Frame(outbuf, samples_size);
@@ -256,7 +256,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->_type = CODEC_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
-  LOGDEBUG("org.esb.av.Decoder",frame->toString());
+  LOGDEBUG(frame->toString());
   //  frame->dumpHex();
   return frame;
 }

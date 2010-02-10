@@ -4,7 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include "org/esb/lang/Exception.h"
-
+#include "org/esb/util/Log.h"
 
 //#include <boost/exception.hpp>
 namespace org {
@@ -12,6 +12,7 @@ namespace org {
         namespace sql {
 
             class SqlException {
+              classlogger("org.esb.sql.SqlException")
             public:
                 SqlException(std::string msg, int err = 0);
                 const char * what();

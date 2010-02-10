@@ -79,17 +79,17 @@ ProcessUnit::~ProcessUnit() {
 }
 
 void ProcessUnit::process() {
-  LOGTRACEMETHOD("org.esb.hive.job.ProcessUnit","ProcessUnit");
+  LOGTRACEMETHOD("ProcessUnit");
   int insize = 0, outsize = 0;
 
   if (_decoder != NULL)
     if(!_decoder->open()){
-      LOGERROR("org.esb.hive.job.ProcessUnit","fail to open the decoder (ProcessUnitID:"<<_process_unit<<")");
+      LOGERROR("fail to open the decoder (ProcessUnitID:"<<_process_unit<<")");
       return;
     }
   if (_encoder != NULL)
     if(!_encoder->open()){
-      LOGERROR("org.esb.hive.job.ProcessUnit","fail to open the encoder (ProcessUnitID:"<<_process_unit<<")");
+      LOGERROR("fail to open the encoder (ProcessUnitID:"<<_process_unit<<")");
       return;
     }
   /*creating a frame converter*/
@@ -97,9 +97,9 @@ void ProcessUnit::process() {
     _converter=new FrameConverter(_decoder.get(), _encoder.get());
   _converter->setFrameRateCompensateBase(_frameRateCompensateBase);
   _converter->setGopSize(_gop_size);
-    LOGTRACE("org.esb.hive.job.ProcessUnit","Codex openned");
-    LOGTRACE("org.esb.hive.job.ProcessUnit",_decoder->toString());
-    LOGTRACE("org.esb.hive.job.ProcessUnit",_encoder->toString());
+    LOGTRACE("Codex openned");
+    LOGTRACE(_decoder->toString());
+    LOGTRACE(_encoder->toString());
   /*creating a packetsink for storing the encoded Packetsf from the encoder*/
   PacketSink sink;
   _encoder->setSink(&sink);
@@ -115,28 +115,35 @@ void ProcessUnit::process() {
   //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
   int64_t last_pts=-1;
   bool compute_delayed_frames=false;
+  int stream_index=-1;
   /*loop over each Packet received */
   for (it = _input_packets.begin(); it != _input_packets.end()||compute_delayed_frames; ) {
-      LOGTRACE("org.esb.hive.job.ProcessUnit","Loop");
+      LOGTRACE("Loop");
     /*get the Packet Pointer from the list*/
       boost::shared_ptr<Packet> p;
+      /**
+       * special handling for delayed packets from the decoder
+       * @TODO: redesign needed for a simpler maintenance
+       */
       if(!compute_delayed_frames){
         p = *it;
+        stream_index=p->getStreamIndex();
         it++;
       }
       else{
         p=boost::shared_ptr<Packet>(new Packet());
         p->setTimeBase(_input_packets.front()->getTimeBase());
         p->setDuration(_input_packets.front()->getDuration());
+        p->setStreamIndex(stream_index);
       }
     /*sum the packet sizes for later output*/
     insize += p->packet->size;
-      LOGTRACE("org.esb.hive.job.ProcessUnit","Inputpacket:"<<p->toString());
+      LOGTRACE("Inputpacket:"<<p->toString());
       p->toString();
     /*Decoding the Packet into a Frame*/
     Frame * tmp = _decoder->decode2(*p);
 
-      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Decoded:"<<tmp->toString());
+      LOGTRACE("Frame Decoded:"<<tmp->toString());
     /*when frame not finished, then it is nothing todo, continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
@@ -155,7 +162,7 @@ void ProcessUnit::process() {
       f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
     if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
       f = new Frame();
-      LOGTRACE("org.esb.hive.job.ProcessUnit","try Frame Convert");
+      LOGTRACE("try Frame Convert");
     /*converting the source frame to target frame*/
     _converter->convert(*tmp, *f);
 
@@ -174,7 +181,7 @@ void ProcessUnit::process() {
 
 
 
-      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Converted"<<f->toString());
+      LOGTRACE("Frame Converted"<<f->toString());
       
 
     /*encode the frame into a packet*/
@@ -182,11 +189,11 @@ void ProcessUnit::process() {
     int ret = _encoder->encode(*f);
     delete tmp;
     delete f;
-    LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Encoded");
+    LOGTRACE("Frame Encoded");
     outsize += ret;
   }
   /*now process the delayed Frames from the encoder*/
-  LOGTRACE("org.esb.hive.job.ProcessUnit","Encode Packet delay");
+  LOGTRACE("Encode Packet delay");
   bool have_more_frames=_encoder->getCodecType()==CODEC_TYPE_VIDEO;
   while(have_more_frames){
     if(_encoder->encode()<=0){
@@ -195,7 +202,7 @@ void ProcessUnit::process() {
   }
   _output_packets = sink.getList();
   if(_expected_frame_count!=-1&&_output_packets.size()!=_expected_frame_count)
-    LOGERROR("org.esb.hive.job.ProcessUnit","PUID="<<_process_unit<<" Expected Frame count differ from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
+    LOGERROR("PUID="<<_process_unit<<" Expected Frame count differ from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
 }
 
 std::string toString() {

@@ -4,8 +4,10 @@
 #include "org/esb/av/Packet.h"
 #include <boost/shared_ptr.hpp>
 #include <map>
+#include "org/esb/util/Log.h"
 class FileExporter
 {
+  classlogger("org.esb.hive.FileExporter")
 public:
 	static void exportFile(int fileid);
 private:

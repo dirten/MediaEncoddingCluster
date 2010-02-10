@@ -109,18 +109,18 @@ namespace org {
             _interval = atoi(msg.getProperty("interval").c_str())*1000;
           }
           boost::thread(boost::bind(&DirectoryScanner::scan, this));
-          LOGDEBUG("org.esb.hive.DirectoryScanner","Directory Scanner running with interval:" << _interval);
+          LOGDEBUG("Directory Scanner running with interval:" << _interval);
           //    boost::thread t(boost::bind(&DirectoryScanner::scan, this));
 
         } else
           if (msg.getProperty("directoryscan") == "stop") {
-          LOGDEBUG("org.esb.hive.DirectoryScanner","Directory Scanner stop request received");
+          LOGDEBUG("Directory Scanner stop request received");
           if (!_halt) {
             _halt = true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             termination_wait.wait(terminationLock);
           }
-          LOGDEBUG("org.esb.hive.DirectoryScanner","Directory Scanner stopped");
+          LOGDEBUG("Directory Scanner stopped");
         }
       }
 
@@ -157,7 +157,7 @@ namespace org {
       }
 
       void DirectoryScanner::scan(std::string indir, std::string outdir, int profile, FileFilter & filter) {
-        LOGDEBUG("org.esb.hive.DirectoryScanner","Scanning Directory:" << indir);
+        LOGDEBUG("Scanning Directory:" << indir);
 
         FileList list = File(indir.c_str()).listFiles(filter);
         FileList::iterator it = list.begin();
@@ -176,7 +176,7 @@ namespace org {
         ResultSet rs = _stmt->executeQuery();
         if (!rs.next()) {
           if (file.isFile()) {
-          LOGDEBUG("org.esb.hive.DirectoryScanner","new file found:"<<file.getPath());
+          LOGDEBUG("new file found:"<<file.getPath());
             const char * filename = 0;
             std::string name = file.getPath();
             //		filename=name.data();

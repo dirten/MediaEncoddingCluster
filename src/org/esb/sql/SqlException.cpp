@@ -7,7 +7,7 @@ namespace org {
     namespace sql {
 
       SqlException::SqlException(std::string msg, int err) : message(msg) {
-        LOGTRACE("org.esb.sql.SqlException", msg);
+        LOGERROR( msg);
         _error_code = err;
       }
 

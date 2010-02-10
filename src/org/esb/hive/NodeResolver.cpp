@@ -152,7 +152,7 @@ namespace org {
               boost::asio::placeholders::bytes_transferred));
         } else
           if (error != boost::system::errc::operation_canceled) {
-          logerror("error" << error.message());
+          LOGERROR("error" << error.message());
         }
       }
 

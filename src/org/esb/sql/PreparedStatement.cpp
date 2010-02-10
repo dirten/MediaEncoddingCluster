@@ -6,7 +6,7 @@
 using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
-	LOGINFO("org.esb.sql.PreparedStatement","SQL:"<<s);
+	LOGINFO("SQL:"<<s);
 //  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)"<<this);
   stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {

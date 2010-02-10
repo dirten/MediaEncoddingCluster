@@ -15,6 +15,8 @@ namespace org {
       //boost::mutex thread_write_mutex;
 
       class TcpSocketOutputStream : public OutputStream {
+                classlogger("org.esb.net.TcpSocketIputStream")
+
       private:
         boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
         boost::mutex & _write_mutex;

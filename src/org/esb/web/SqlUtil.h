@@ -3,11 +3,13 @@
 #include <map>
 #include <string>
 #include <stdint.h>
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace web {
 
       class SqlUtil {
+        classlogger("org.esb.web.SqlUtil")
       private:
         SqlUtil();
         ~SqlUtil();

@@ -54,8 +54,8 @@ namespace org {
        * @TODO: need to copy all attributes from context to our own context structure
        * because of a memleak in decoder->open()
        */
-      Codec::Codec(AVCodecContext * c, int mode) {
-        ctx = c;
+      Codec::Codec(AVStream * s, int mode) {
+        ctx = s->codec;
         _mode = mode;
         //		ctx->codec_id=ctx->codec->id;
         findCodec(mode);
@@ -68,6 +68,8 @@ namespace org {
          if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
           setTimeBase(1,ctx->sample_rate);
         }
+        _frame_rate.num=s->r_frame_rate.num;
+        _frame_rate.den=s->r_frame_rate.den;
 
         //		_codec_resolved=false;
       }
@@ -80,6 +82,8 @@ namespace org {
         _codec_resolved = false;
         _pre_allocated = false;
         _bytes_discard = 0;
+        _frame_rate.num=0;
+        _frame_rate.den=0;
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
@@ -98,6 +102,8 @@ namespace org {
         _opened = false;
         _pre_allocated = false;
         _bytes_discard = 0;
+        _frame_rate.num=0;
+        _frame_rate.den=0;
       }
 
       void Codec::setCodecId(CodecID id) {
@@ -105,7 +111,7 @@ namespace org {
       }
 
       int Codec::setCodecOption(std::string opt, std::string arg) {
-        LOGTRACE("org.esb.av.Codec", "setCodecOption(" << opt << "," << arg << ")");
+        LOGTRACE( "setCodecOption(" << opt << "," << arg << ")");
         _options[opt]=arg;
         return 0;
       }
@@ -195,24 +201,24 @@ namespace org {
         if (mode == DECODER) {
           _codec = avcodec_find_decoder(ctx->codec_id);
           if (_codec == NULL) {
-            LOGERROR("org.esb.av.Codec", "Decoder not found for id :" << ctx->codec_id);
+            LOGERROR( "Decoder not found for id :" << ctx->codec_id);
             result = false;
           }
         } else
           if (mode == ENCODER) {
           _codec = avcodec_find_encoder(ctx->codec_id);
           if (_codec == NULL) {
-            LOGERROR("org.esb.av.Codec", "Encoder not found for id :" << ctx->codec_id);
+            LOGERROR("Encoder not found for id :" << ctx->codec_id);
             result = false;
           }
         } else {
-          LOGERROR("org.esb.av.Codec", "Mode not set for Codec");
+          LOGERROR( "Mode not set for Codec");
         }
         if (result) {
           ctx->codec_type = _codec->type;
           _codec_resolved = true;
         } else {
-          LOGERROR("org.esb.av.Codec", "in resolving codec");
+          LOGERROR("in resolving codec");
         }
 
         return result;
@@ -249,7 +255,7 @@ namespace org {
 
       bool Codec::open() {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
-
+        ctx->strict_std_compliance=FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
         //        if (findCodec(_mode)) {
@@ -267,7 +273,7 @@ namespace org {
         for (; opit != _options.end(); opit++) {
           std::string opt=(*opit).first;
           std::string arg=(*opit).second;
-          LOGTRACE("org.esb.av.Codec", "av_set_string3(" << opt << "," << arg << ")");
+          LOGTRACE( "av_set_string3(" << opt << "," << arg << ")");
           int type;
           int ret = 0;
           const AVOption *o = NULL;
@@ -278,17 +284,17 @@ namespace org {
               ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
           }
           if (o && ret < 0) {
-            LOGERROR("org.esb.av.Codec", "Invalid value '" << arg << "' for option '" << opt << "'\n");
+            LOGERROR( "Invalid value '" << arg << "' for option '" << opt << "'\n");
           }
           if (!o) {
-            LOGWARN("org.esb.av.Codec", "Option not found:" << opt);
+            LOGWARN( "Option not found:" << opt);
             //          return -1;
           }
         }
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            LOGERROR("org.esb.av.Codec", "openning Codec" << ctx->codec_id);
+            LOGERROR( "openning Codec" << ctx->codec_id);
 
           } else {
             //              logdebug("Codec opened:" << _codec_id);
@@ -296,7 +302,7 @@ namespace org {
             _opened = true;
           }
         } catch (...) {
-          LOGERROR("org.esb.av.Codec", "Exception while openning Codec" << ctx->codec_id);
+          LOGERROR( "Exception while openning Codec" << ctx->codec_id);
         }
         return _opened;
         //        }
@@ -322,7 +328,7 @@ namespace org {
             avcodec_close(ctx);
           }
 
-          LOGDEBUG("org.esb.av.Codec", "recently fifo size:" << av_fifo_size(fifo));
+          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -361,6 +367,16 @@ namespace org {
 
       AVRational Codec::getTimeBase() {
         return ctx->time_base;
+      }
+      void Codec::setFrameRate(AVRational fr) {
+        _frame_rate = fr;
+      }
+      void Codec::setFrameRate(int num, int den) {
+        _frame_rate.num=num;
+        _frame_rate.den=den;
+      }
+      AVRational Codec::getFrameRate() {
+        return _frame_rate;
       }
 
       void Codec::setGopSize(int size) {

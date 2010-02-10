@@ -46,19 +46,19 @@ namespace org {
 
       void ExportScanner::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("exportscanner") == "start") {
-          LOGDEBUG("org.esb.hive.ExportScanner","Start Request for the ExportScanner");
+          LOGDEBUG("Start Request for the ExportScanner");
           _run = true;
           boost::thread t(boost::bind(&ExportScanner::start, this));
-          LOGDEBUG("org.esb.hive.ExportScanner","ExportScanner started");
+          LOGDEBUG("ExportScanner started");
         } else
           if (msg.getProperty("exportscanner") == "stop") {
-          LOGDEBUG("org.esb.hive.ExportScanner","Export Scanner stop request received");
+          LOGDEBUG("Export Scanner stop request received");
           if (_run) {
             _run = false;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             termination_wait.wait(terminationLock);
           }
-          LOGDEBUG("org.esb.hive.ExportScanner","Export Scanner stopped");
+          LOGDEBUG("Export Scanner stopped");
         }
       }
 

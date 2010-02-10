@@ -39,9 +39,10 @@ namespace org {
             class Frame;
 
             class Decoder : public Codec {
+              classlogger("org.esb.av.Decoder")
             public:
                 Decoder(CodecID id);
-                Decoder(AVCodecContext * c);
+                Decoder(AVStream * c);
                 Decoder();
 //                DEPRICATED(Frame decode(Packet & packet));
                 Frame * decode2(Packet & packet);

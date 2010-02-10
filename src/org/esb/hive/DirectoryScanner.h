@@ -18,6 +18,7 @@ namespace org {
         namespace hive {
 
             class DirectoryScanner : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.DirectoryScanner")
             public:
                 DirectoryScanner(std::string dir, int interval);
                 DirectoryScanner();

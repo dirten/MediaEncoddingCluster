@@ -9,6 +9,7 @@
 #define ESBCONFIG_H
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/Properties.h"
+#include "org/esb/util/Log.h"
 //#include "org/esb/util/Properties.h"
 #include <iostream>
 #include <stdlib.h>
@@ -24,6 +25,7 @@ namespace org
 
       class Config
       {
+        classlogger("org.esb.config.Config")
       public:
         static bool init(const std::string & filename);
         static void close();

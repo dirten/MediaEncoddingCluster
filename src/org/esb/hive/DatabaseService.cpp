@@ -50,7 +50,7 @@ namespace org {
       }
 
       void DatabaseService::start(std::string base_path) {
-        loginfo("starting Database Service");
+        LOGINFO("starting Database Service");
         if (_running == false) {
           //          std::string base_path = _base_path;
           std::string lang = "--language=";
@@ -68,14 +68,14 @@ namespace org {
 
           static char *server_groups[] = {"embedded","server","dbservice_SERVER", (char*)NULL};
           if (mysql_library_init(num_elements, server_options, server_groups) != 0) {
-            LOGFATAL("org.esb.hive.DatabaseService","initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
+            LOGFATAL("initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
           }
           _running = true;
         }
       }
 
       void DatabaseService::stop() {
-        loginfo("stopping Database Service");
+        LOGINFO("stopping Database Service");
         if (_running)
           mysql_library_end();
         _running = false;

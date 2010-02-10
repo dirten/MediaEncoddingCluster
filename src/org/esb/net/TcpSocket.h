@@ -9,12 +9,13 @@
 
 #include <boost/shared_ptr.hpp>
 //using boost::asio::ip::tcp;
-
+#include "org/esb/util/Log.h"
 namespace org {
     namespace esb {
         namespace net {
 
             class TcpSocket {
+              classlogger("org.esb.net.TcpSocket")
             public:
                 TcpSocket(const char * host, int port);
                 TcpSocket(boost::shared_ptr<boost::asio::ip::tcp::socket> io_service);

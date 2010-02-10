@@ -50,7 +50,7 @@ namespace org {
             namespace job {
                 class ProcessUnit {
                 public:
-                    logger("hive.processunit");
+                    classlogger("org.esb.hive.job.ProcessUnit");
                     ProcessUnit();
                     ~ProcessUnit();
                     void process();

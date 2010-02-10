@@ -32,7 +32,6 @@ namespace org {
 
             }
             void FileNode::selectAction(){
-                logdebug("Node selected");
             }
 
             void FileNode::populate() {

@@ -31,7 +31,7 @@
 #include "AV.h"
 #include "Encoder.h"
 #include "Decoder.h"
-
+#include "org/esb/util/Log.h"
 //struct SwsContext;
 #ifdef WIN32
 #define DEPRICATED(func) __declspec(deprecated) func
@@ -46,6 +46,7 @@ namespace org {
             struct FrameFormat;
 
             class FrameConverter {
+              classlogger("org.esb.av.FrameConverter")
             public:
                 FrameConverter(Decoder* dec, Encoder* enc);
                 ~FrameConverter();

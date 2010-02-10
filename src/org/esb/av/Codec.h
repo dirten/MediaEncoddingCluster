@@ -50,12 +50,12 @@ class PixelFormat;
 class SampleFormat;*/
 
       class Codec {
-        logger("hive.av.codec")
+        classlogger("org.esb.av.Codec")
       public:
         const static int DECODER = 1;
         const static int ENCODER = 2;
         Codec(const CodecID codecId, int mode = DECODER);
-        Codec(AVCodecContext * codec, int mode = DECODER);
+        Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
         ~Codec();
         /**
@@ -79,6 +79,8 @@ class SampleFormat;*/
         void setBitRate(int rate);
         void setTimeBase(AVRational tb);
         void setTimeBase(int num, int den);
+        void setFrameRate(int num, int den);
+        void setFrameRate(AVRational fr);
         void setGopSize(int size);
         void setChannels(int size);
         void setSampleRate(int size);
@@ -97,6 +99,7 @@ class SampleFormat;*/
         int getBitsPerCodedSample();
         void setBitsPerCodedSample(int);
         AVRational getTimeBase();
+        AVRational getFrameRate();
         int64_t getFrameBytes();
         int setCodecOption(std::string opt, std::string arg);
         //                void setStartTime(int64_t start);
@@ -126,7 +129,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void save(Archive & ar, const unsigned int version) const {
-          LOGTRACE("org.esb.av.Codec", "serialization save");
+          LOGTRACE("serialization save");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
@@ -136,6 +139,8 @@ class SampleFormat;*/
           ar & ctx->height;
           ar & ctx->time_base.num;
           ar & ctx->time_base.den;
+          ar & _frame_rate.num;
+          ar & _frame_rate.den;
           ar & ctx->gop_size;
           ar & ctx->bit_rate;
           ar & ctx->channels;
@@ -156,7 +161,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void load(Archive & ar, const unsigned int version) {
-          LOGTRACE("org.esb.av.Codec", "serialization load");
+          LOGTRACE("serialization load");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
@@ -166,6 +171,8 @@ class SampleFormat;*/
           ar & ctx->height;
           ar & ctx->time_base.num;
           ar & ctx->time_base.den;
+          ar & _frame_rate.num;
+          ar & _frame_rate.den;
           ar & ctx->gop_size;
           ar & ctx->bit_rate;
           ar & ctx->channels;
@@ -191,6 +198,7 @@ class SampleFormat;*/
         bool findCodec(int mode);
         int _mode;
         AVCodecContext * ctx;
+        AVRational _frame_rate;
         int64_t _bytes_discard;
         //                bool saveCodecOption();
         //                bool loadCodecOption();

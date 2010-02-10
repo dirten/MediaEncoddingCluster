@@ -42,25 +42,25 @@ namespace org {
         std::string msg=org::esb::util::StringUtil::trim(line,"\n");
         switch (level) {
           case AV_LOG_DEBUG:
-            LOGDEBUG("org.esb.av.FormatBaseStream",msg);
+            LOGDEBUG(msg);
             break;
           case AV_LOG_INFO:
-            LOGINFO("org.esb.av.FormatBaseStream",msg);
+            LOGINFO(msg);
             break;
           case AV_LOG_ERROR:
-            LOGERROR("org.esb.av.FormatBaseStream",msg);
+            LOGERROR(msg);
             break;
           case AV_LOG_WARNING:
-            LOGWARN("org.esb.av.FormatBaseStream",msg);
+            LOGWARN(msg);
             break;
           case AV_LOG_PANIC:
-            LOGFATAL("org.esb.av.FormatBaseStream",msg);
+            LOGFATAL(msg);
             break;
           case AV_LOG_VERBOSE:
-            LOGTRACE("org.esb.av.FormatBaseStream",msg);
+            LOGTRACE(msg);
             break;
           default:
-            LOGERROR("org.esb.av.FormatBaseStream","Unknown LogLevel:"<<level<<" - "<<msg);
+            LOGERROR("Unknown LogLevel:"<<level<<" - "<<msg);
             break;
         }
 
@@ -75,7 +75,7 @@ namespace org {
 
       void FormatBaseStream::initialize() {
         if (!isInitialized) {
-          LOGDEBUG("org.esb.av.FormatBaseStream","Init ffmpeg Libraries");
+          LOGDEBUG("Init ffmpeg Libraries");
           /* register all codecs, demux and protocols */
           avcodec_register_all();
           av_register_all();

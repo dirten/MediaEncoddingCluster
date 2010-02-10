@@ -27,11 +27,11 @@ namespace org {
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {
-          LOGERROR("org.esb.av.FrameConverter", "the Decoder and Encoder must be from the same Type");
+          LOGERROR( "the Decoder and Encoder must be from the same Type");
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
-            LOGWARN("org.esb.av.FrameConverter", "Warning, using s16 intermediate sample format for resampling\n");
+            LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(
               enc->getChannels(), dec->ctx->request_channel_layout,
               enc->getSampleRate(), dec->getSampleRate(),
@@ -39,7 +39,7 @@ namespace org {
               16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
           if (!_audioCtx)
-            LOGERROR("org.esb.av.FrameConverter", "Could not initialize Audio Resample Context");
+            LOGERROR("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
           _swsContext = sws_getContext(
@@ -47,7 +47,7 @@ namespace org {
               enc->getWidth(), enc->getHeight(), enc->getPixelFormat(),
               sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
-            LOGERROR("org.esb.av.FrameConverter", "Could not initialize SWSCALE");
+            LOGERROR("Could not initialize SWSCALE");
         }
       }
 
@@ -61,9 +61,9 @@ namespace org {
       }
 
       void FrameConverter::convert(Frame & in_frame, Frame & out_frame) {
-        LOGTRACEMETHOD("org.esb.av.FrameConverter", "Convert Frame");
+        LOGTRACEMETHOD("Convert Frame");
 
-        LOGDEBUG("org.esb.av.FrameConverter", in_frame.toString());
+        LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
           convertVideo(in_frame, out_frame);
         }
@@ -75,7 +75,7 @@ namespace org {
           compensateAudioResampling(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
           compensateFrameRateConversion(in_frame, out_frame);
-        LOGDEBUG("org.esb.av.FrameConverter", out_frame.toString());
+        LOGDEBUG(out_frame.toString());
       }
 
       void FrameConverter::rescaleTimestamp(Frame & in_frame, Frame & out_frame) {
@@ -93,12 +93,12 @@ namespace org {
       }
 
       void FrameConverter::setFrameRateCompensateBase(double val) {
-        LOGDEBUG("org.esb.av.FrameConverter", "setFrameRateCompensateBase(" << val << ")");
+        LOGDEBUG("setFrameRateCompensateBase(" << val << ")");
         _frameRateCompensateBase = val;
       }
 
       void FrameConverter::setGopSize(int gop) {
-        LOGDEBUG("org.esb.av.FrameConverter", "setGopSize(" << gop << ")");
+        LOGDEBUG("setGopSize(" << gop << ")");
         _gop_size = gop;
       }
 
@@ -115,7 +115,6 @@ namespace org {
           if (delta <= -0.6)
             frames = 0; //static_cast<int> (floor(delta - 0.5));
           LOGDEBUG(
-              "org.esb.av.FrameConverter",
               "inframe.pts=" << input.getPts() <<
               ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
               ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
@@ -140,8 +139,8 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-        LOGDEBUG("org.esb.av.FrameConverter", "Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
-
+        LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+        
         av_resample_compensate(
             *(struct AVResampleContext**) _audioCtx,
             delta,

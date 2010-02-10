@@ -58,12 +58,12 @@ namespace org {
         if (msg.getProperty("hivelistener") == org::esb::hive::START) {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          LOGDEBUG("org.esb.hive.HiveListener", "Hive Listener running on port:" << Config::getProperty("hive.port"));
+          LOGDEBUG("Hive Listener running on port:" << Config::getProperty("hive.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
           if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
-          LOGDEBUG("org.esb.hive.HiveListener", "Hive Listener stopped:");
+          LOGDEBUG( "Hive Listener stopped:");
           main_nextloop = false;
           if (server)
             server->close();
@@ -88,7 +88,7 @@ namespace org {
             //              Thread *thread = new Thread(protoServer);
             //              thread->start();
           } else {
-            LOGERROR("org.esb.hive.HiveListener", "Client was not accepted");
+            LOGERROR("Client was not accepted");
             break;
           }
           //          } catch (exception & ex) {

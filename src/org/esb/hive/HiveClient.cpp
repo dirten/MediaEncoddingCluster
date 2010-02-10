@@ -50,7 +50,7 @@ namespace org {
           if (msg.getProperty("hiveclient") == "stop") {
           _toHalt = true;
           if (_running) {
-            LOGDEBUG("org.esb.hive.HiveClient","StopSignal Received, waiting for all work done!")
+            LOGDEBUG("StopSignal Received, waiting for all work done!")
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
           }
@@ -72,7 +72,7 @@ namespace org {
           _sock->connect();
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
-          LOGINFO("org.esb.hive.HiveClient","Server " << _host << " connected!!!");
+          LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
 //          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
@@ -90,7 +90,7 @@ namespace org {
                 _sock->getOutputStream()->write(text, strlen(text));
                 _ois->readObject(*unit);
               } catch (exception & ex) {
-                LOGERROR("org.esb.hive.HiveClient","Connection to Server lost!!!" << ex.what());
+                LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               if (unit->_input_packets.size() == 0) {
@@ -109,7 +109,7 @@ namespace org {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
               } catch (exception & ex) {
-                LOGERROR("org.esb.hive.HiveClient","Connection to Server lost!!!" << ex.what());
+                LOGERROR("Connection to Server lost!!!" << ex.what());
                 _sock->close();
               }
               /*

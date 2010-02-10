@@ -236,10 +236,10 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("daemon")) {
       Log::open(Config::getProperty("hive.base_path"));
-      LOGDEBUG("Hive","start daemon");
+      LOGDEBUG("start daemon");
       org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-        LOGDEBUG("Hive","Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
+        LOGDEBUG("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
@@ -250,10 +250,10 @@ int main(int argc, char * argv[]) {
       //      return 0;
     }
     if (vm.count("run")) {
-      LOGDEBUG("Hive","start console");
+      LOGDEBUG("start console");
       org::esb::hive::DatabaseService::start(base_path);
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-        LOGDEBUG("Hive","Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
+        LOGDEBUG("Could not open Configuration, it seems it is the first run " << vm["config"].as<std::string > ());
         Config::setProperty("hive.mode", "setup");
         std::string webroot = std::string(Config::getProperty("hive.base_path"));
         webroot.append("/web");
@@ -729,7 +729,7 @@ void start() {
   }
 
   ctrlCHitWait();
-  loginfo("shutdown app, this will take some time!");
+  LOGINFO("shutdown app, this will take some time!");
   /*
    *
    * Stopping Application Services from configuration

@@ -4,6 +4,7 @@
 
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include "org/esb/util/Log.h"
 
 namespace org {
     namespace esb {
@@ -19,6 +20,7 @@ namespace org {
         namespace hive {
 
             class CodecFactory {
+              classlogger("org.esb.hive.CodecFactory")
             public:
                 static boost::shared_ptr<org::esb::av::Decoder> getStreamDecoder(int streamid);
                 static boost::shared_ptr<org::esb::av::Encoder> getStreamEncoder(int streamid);

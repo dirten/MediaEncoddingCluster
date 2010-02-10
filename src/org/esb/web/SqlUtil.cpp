@@ -45,20 +45,19 @@ namespace org {
         } else {
           sql += "(" + fields + ") VALUES (" + values + ")";
         }
-        LOGDEBUG("org.esb.web.SqlUtil", "SQL:" << sql);
+        LOGDEBUG( "SQL:" << sql);
         using namespace org::esb;
         sql::Connection con(std::string(config::Config::getProperty("db.connection")));
         sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
 
         elit = data.begin();
         for (; elit != data.end(); elit++) {
-          //          if((*elit).first!="id"){
+          if(!update&&(*elit).first=="id")continue;
           if ((*elit).second.length() > 0)
             pstmt.setString((*elit).first, (*elit).second);
           else
             pstmt.setNull((*elit).first);
-          LOGDEBUG("org.esb.web.SqlUtil", "map2sql: " << (*elit).first << "=" << (*elit).second << ":");
-          //          }
+          LOGDEBUG( "map2sql: " << (*elit).first << "=" << (*elit).second << ":");
         }
         pstmt.execute();
 

@@ -8,6 +8,7 @@
 
 #ifndef _STACKDUMPER_H
 #define	_STACKDUMPER_H
+
 #ifndef __WIN32__
 #ifdef __APPLE__
 #include "client/mac/handler/exception_handler.h"
@@ -19,11 +20,13 @@
 #include "client/windows/handler/exception_handler.h"
 #include "client/windows/sender/crash_report_sender.h"
 #endif
-
+#include "org/esb/util/Log.h"
 class StackDumper {
 public:
     StackDumper(std::string dmp_path);
     ~StackDumper();
+      classlogger("org.esb.lang.Stackdumper")
+
 private:
     google_breakpad::ExceptionHandler exhandler;
 #ifdef __WIN32__

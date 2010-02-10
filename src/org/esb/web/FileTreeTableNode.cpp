@@ -32,7 +32,7 @@ path_(path), _filter(NULL) {
       try {
         fsize = boost::filesystem::file_size(path);
       } catch (...) {
-        LOGERROR("org.esb.web.FileTreeTableNode", "Fehler in FSIZE");
+        LOGERROR("Fehler in FSIZE");
       }
 
       setColumnWidget(1, new WText(false,
@@ -45,7 +45,7 @@ path_(path), _filter(NULL) {
     try {
       t = boost::filesystem::last_write_time(path);
     } catch (...) {
-      LOGERROR("org.esb.web.FileTreeTableNode", "last_write_time(path)");
+      LOGERROR("last_write_time(path)");
     }
     struct tm ttm;
 #if WIN32
@@ -60,7 +60,7 @@ path_(path), _filter(NULL) {
     setColumnWidget(2, new WText(c));
     columnWidget(2)->setStyleClass("date");
   } else {
-    LOGDEBUG("org.esb.web.FileTreeTableNode", "Path does not exist:" << path)
+    LOGDEBUG("Path does not exist:" << path)
   }
 }
 
@@ -76,7 +76,7 @@ path_(path), _filter(&filter) {
       try {
         fsize = boost::filesystem::file_size(path);
       } catch (...) {
-        logerror("Fehler in FSIZE");
+        LOGERROR("Fehler in FSIZE");
       }
 
       setColumnWidget(1, new WText(false,

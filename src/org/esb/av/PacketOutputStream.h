@@ -3,6 +3,7 @@
 #include "org/esb/io/OutputStream.h"
 #include "Packet.h"
 #include "Codec.h"
+#include "org/esb/util/Log.h"
 #include <list>
 #include <map>
 
@@ -12,6 +13,7 @@ namespace org {
     namespace av {
 
       class PacketOutputStream : public OutputStream {
+        classlogger("org.esb.av.PacketOutputStream")
       public:
         PacketOutputStream(OutputStream * os);
         ~PacketOutputStream();

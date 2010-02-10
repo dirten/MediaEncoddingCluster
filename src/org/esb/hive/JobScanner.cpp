@@ -74,15 +74,15 @@ namespace org {
 
       void JobScanner::onMessage(org::esb::signal::Message& msg) {
         if (msg.getProperty("jobscanner") == "start") {
-          LOGDEBUG("org.esb.hive.JobScanner","Job Scanner start Request received:");
+          LOGDEBUG("Job Scanner start Request received:");
           start();
-          LOGDEBUG("org.esb.hive.JobScanner","Job Scanner running with interval:" << _interval);
+          LOGDEBUG("Job Scanner running with interval:" << _interval);
 
         } else
           if (msg.getProperty("jobscanner") == "stop") {
-          LOGDEBUG("org.esb.hive.JobScanner","Job Scanner stop Request received:");
+          LOGDEBUG("Job Scanner stop Request received:");
           stop();
-          LOGDEBUG("org.esb.hive.JobScanner","Job Scanner stopped:");
+          LOGDEBUG("Job Scanner stopped:");
         }
       }
 

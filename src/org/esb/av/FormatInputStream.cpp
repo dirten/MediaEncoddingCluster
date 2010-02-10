@@ -15,7 +15,7 @@ namespace org {
 
       FormatInputStream::FormatInputStream(File * source) {
         boost::mutex::scoped_lock scoped_lock(file_open_mutex);
-        loginfo("opening InputFile: " << source->getPath());
+        LOGINFO("opening InputFile: " << source->getPath());
         _isValid = false;
         _sourceFile = source;
         AVFormatParameters params, *ap = &params;
@@ -34,18 +34,18 @@ namespace org {
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
         std::string filename = _sourceFile->getPath();
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
-          LOGERROR("org.esb.av.FormatInputStream","could not open file:" << _sourceFile->getPath());
+          LOGERROR("could not open file:" << _sourceFile->getPath());
           return;
         }
         //		formatCtx->debug=5;
 
-        loginfo("find stream info: " << source->getPath());
+        LOGINFO("find stream info: " << source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
-          LOGERROR("org.esb.av.FormatInputStream","no StreamInfo from:" << _sourceFile->getPath());
+          LOGERROR("no StreamInfo from:" << _sourceFile->getPath());
           return;
         }
         if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
-          LOGDEBUG("org.esb.av.FormatInputStream","TS DISCONT");
+          LOGDEBUG("TS DISCONT");
         }
         /**
          * get the first video and audio stream
@@ -70,7 +70,7 @@ namespace org {
                     _streamReverseMap[_streamMap[1]] = 1;
                 }*/
         _isValid = true;
-        LOGDEBUG("org.esb.av.FormatInputStream","file openned: " << source->getPath());
+        LOGDEBUG("file openned: " << source->getPath());
 
       }
 

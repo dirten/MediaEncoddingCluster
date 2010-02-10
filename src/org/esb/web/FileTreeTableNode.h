@@ -11,6 +11,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include "org/esb/io/FileFilter.h"
+#include "org/esb/util/Log.h"
 /**
  * @addtogroup fileexplorer
  */
@@ -27,6 +28,7 @@
  */
 class FileTreeTableNode : public Wt::WTreeTableNode
 {
+  classlogger("org.esb.web.FileTreeTableNode")
 public:
   /*! \brief Construct a new node for the given file.
    */

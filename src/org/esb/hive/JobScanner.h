@@ -31,7 +31,7 @@
 #include "org/esb/sql/PreparedStatement.h"
 //#include "boost/thread.hpp"
 #include <boost/thread/condition.hpp>
-
+#include "org/esb/util/Log.h"
 #ifndef _JOBSCANNER_H
 #define	_JOBSCANNER_H
 
@@ -40,6 +40,7 @@ namespace org {
         namespace hive {
 
             class JobScanner : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.JobScanner")
             public:
                 JobScanner();
                 ~JobScanner();

@@ -5,6 +5,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/net/TcpServerSocket.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/util/Log.h"
 //#include <boost/thread.hpp>
 #include <list>
 
@@ -13,6 +14,7 @@ namespace org {
         namespace hive {
 
             class HiveListener : public org::esb::signal::MessageListener {
+              classlogger("org.esb.hive.HiveListener")
             public:
                 HiveListener();
                 ~HiveListener();

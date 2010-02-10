@@ -38,6 +38,7 @@ namespace org {
     namespace hive {
 
       class Node {
+        classlogger("org.esb.hive.NodeResolver")
       public:
         Node(boost::asio::ip::udp::endpoint & ep);
         const boost::asio::ip::address getIpAddress()const;

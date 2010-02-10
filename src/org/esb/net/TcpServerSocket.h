@@ -2,12 +2,14 @@
 #define ORG_ESB_NET_TCPSERVERSOCKET_H
 
 #include <boost/asio.hpp>
+#include "org/esb/util/Log.h"
 using boost::asio::ip::tcp;
 namespace org{
 namespace esb{
 namespace net{
   class TcpSocket;
   class TcpServerSocket{
+    classlogger("org.esb.net.TcpServerSocket")
     public:
       TcpServerSocket(short port);
       ~TcpServerSocket();

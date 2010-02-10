@@ -102,11 +102,11 @@ namespace org {
           if (msg.getProperty("processunitwatcher") == "start") {
             _isStopSignal = false;
             boost::thread t(boost::bind(&ProcessUnitWatcher::start3, this));
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "started");
+            LOGDEBUG( "started");
           } else if (msg.getProperty("processunitwatcher") == "stop") {
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "ProcessUnitWatcher stop request");
+            LOGDEBUG("ProcessUnitWatcher stop request");
             stop();
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "stopped");
+            LOGDEBUG("stopped");
           }
         }
 
@@ -150,7 +150,7 @@ namespace org {
               org::esb::io::File fi(filename);
               org::esb::av::FormatInputStream * fis = new org::esb::av::FormatInputStream(&fi);
               if (!fis->isValid()) {
-                logerror("Error Opening Input Streams from " << filename);
+                LOGERROR("Error Opening Input Streams from " << filename);
                 delete fis;
                 continue;
               }
@@ -220,9 +220,9 @@ namespace org {
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
                       _stream_map[index].min_packet_count = 512;
                     }
-                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
+                    LOGDEBUG("StreamInformationMap sid=" << index);
 
-                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
+                  LOGDEBUG("StreamInformationMap sid=" << index);
 
                 }
               }
@@ -233,7 +233,7 @@ namespace org {
                 map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
                 for (; it != _stream_map.end(); it++) {
                   (*it).second.last_start_pts=av_rescale_q(tsmax, basear,_stream_map[(*it).first].stream_time_base);
-                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "start TS for stream id#"<<(*it).first<<" = "<<(*it).second.last_start_pts);
+                  LOGDEBUG("start TS for stream id#"<<(*it).first<<" = "<<(*it).second.last_start_pts);
                 }
               }
 
@@ -248,7 +248,7 @@ namespace org {
                   pstmt.setInt("a", (*st).second.outstream);
                   ResultSet rs_t = pstmt.executeQuery();
                   if (rs_t.next()) {
-                    LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"));
+                    LOGDEBUG("Setting last start_ts for stream" << (*st).second.instream << " to" << rs_t.getLong("last_start_ts"));
                     (*st).second.last_start_dts = rs_t.getLong("last_start_ts");
                   }
                 }
@@ -312,7 +312,7 @@ namespace org {
               /**
               * @TODO: at this point, here must be a check if all packets are received in case of client crash!
               */
-              LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "file completed:" << filename);
+              LOGDEBUG("file completed:" << filename);
               /**
               * cleaning up allocated resources
               */
@@ -329,7 +329,7 @@ namespace org {
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
               pstmt2.execute();
-              LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "file completed:" << filename);
+              LOGDEBUG("file completed:" << filename);
 
             }
             if (!_isStopSignal)
@@ -350,7 +350,7 @@ namespace org {
           u->_source_stream = _stream_map[sIdx].instream;
           u->_target_stream = _stream_map[sIdx].outstream;
           if (u->_source_stream == 0 || u->_target_stream == 0) {
-            logerror("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
+            LOGERROR("InputStream=" << u->_source_stream << ":OutputStream=" << u->_target_stream << "JobId:" << job_id);
           }
           u->_decoder = _stream_map[sIdx].decoder;
           u->_encoder = _stream_map[sIdx].encoder;
@@ -372,12 +372,13 @@ namespace org {
           if (_stream_map[sIdx].decoder->getCodecType() == CODEC_TYPE_VIDEO) {
             u->_frameRateCompensateBase = _stream_map[sIdx].frameRateCompensateBase;
 
-            int64_t tmp_dur=((int64_t)AV_TIME_BASE * u->_decoder->getTimeBase().num * u->_decoder->ctx->ticks_per_frame) / u->_decoder->ctx->time_base.den;
+//            int64_t tmp_dur=((int64_t)AV_TIME_BASE * u->_decoder->getTimeBase().num * u->_decoder->ctx->ticks_per_frame) / u->_decoder->ctx->time_base.den;
             AVRational ar;
-            ar.num=1;
-            ar.den=AV_TIME_BASE;
-            int64_t dur = av_rescale_q(tmp_dur, ar, u->_decoder->getTimeBase());
-//            int dur = u->_input_packets.front()->getDuration()*u->_decoder->ctx->ticks_per_frame;
+            ar.num=u->_decoder->getFrameRate().den;
+            ar.den=u->_decoder->getFrameRate().num;
+//            int64_t dur = av_rescale_q(tmp_dur, ar, u->_decoder->getTimeBase());
+//            Packet * tmp_pac=u->_input_packets.front().get();
+            int dur = av_rescale_q(ar.num ,ar,u->_decoder->getTimeBase());
             double target = (u->_gop_size * dur) * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) + _stream_map[sIdx].frameRateCompensateBase;
             double base = floor(target);
             u->_expected_frame_count = base;
@@ -391,7 +392,7 @@ namespace org {
             * */
             //          if(delta>=1.0)
             //            _stream_map[sIdx].packet_count-=u->_input_packets.front()->getDuration();
-            LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "gop_size=" << u->_gop_size << ":Duration=" << dur << ":target=" << target << ":Base=" << base << ":Delta=" << delta);
+            LOGDEBUG("gop_size=" << u->_gop_size << ":Duration=" << dur << ":target=" << target << ":Base=" << base << ":Delta=" << delta<<" dectb="<<u->_decoder->getTimeBase().num<<"/"<<u->_decoder->getTimeBase().den<<" enctb="<<u->_encoder->getTimeBase().num<<"/"<<u->_encoder->getTimeBase().den);
             //          _stream_map[sIdx].packet_count=av_rescale_q(base,u->_encoder->getTimeBase(),u->_decoder->getTimeBase());
             //          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher","PacketCount="<<_stream_map[sIdx].packet_count<<"gop_size="<<u->_gop_size<<":Duration="<<u->_input_packets.front()->getDuration()<<":Base="<<base<<":Delta="<<delta);
           }
@@ -433,14 +434,14 @@ namespace org {
             }
           }
 
-          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "ProcessUnit added with packet count:" << u->_input_packets.size());
+          LOGDEBUG("ProcessUnit added with packet count:" << u->_input_packets.size());
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitWatcher::getStreamProcessUnit() {
           if (audioQueue.size() == 0 && puQueue.size() == 0)
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_stream_pu_mutex); //get_stream_pu_mutex
-          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "audio queue size:" << audioQueue.size());
+          LOGDEBUG( "audio queue size:" << audioQueue.size());
           if (audioQueue.size() == 0 || _isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
@@ -467,7 +468,7 @@ namespace org {
           if (audioQueue.size() == 0 && puQueue.size() == 0)
             queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
-          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "video queue size:" << puQueue.size());
+          LOGDEBUG( "video queue size:" << puQueue.size());
           if (puQueue.size() == 0 || _isStopSignal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = puQueue.dequeue();
@@ -512,7 +513,7 @@ namespace org {
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
-          LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "Saving ProcessUnit");
+          LOGDEBUG( "Saving ProcessUnit");
           ous.writeObject(*unit.get());
           ous.close();
           /*
