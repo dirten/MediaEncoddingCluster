@@ -40,9 +40,10 @@ int main(int argc, char** argv) {
       break;
     }
   }
-  org::esb::av::Decoder dec(fis.getStreamInfo(video_stream)->getCodec());
+  org::esb::av::Decoder dec(fis.getAVStream(video_stream));
+  dec.setTimeBase(1,25);
   dec.open();
-  LOGDEBUG("org.esb.av.TestDecoder", dec.toString());
+  LOGDEBUG( dec.toString());
   org::esb::av::PacketInputStream pis(&fis);
   org::esb::av::Packet * p;
   std::list<org::esb::av::Packet*> packetlist;
@@ -53,13 +54,14 @@ int main(int argc, char** argv) {
       org::esb::av::Frame * frame = dec.decode2(*p);
       incount++;
       if (frame->isFinished()) {
-        LOGDEBUG("org.esb.av.TestDecoder", "frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        LOGDEBUG( "frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         outcount++;
 
       }
       i++;
     }
   }
+
   org::esb::av::Packet * ptmp = new org::esb::av::Packet();
   ptmp->setDuration(3600);
   ptmp->setTimeBase(1, 90000);
@@ -73,7 +75,7 @@ int main(int argc, char** argv) {
       decode_last=false;
     }
   }
-  LOGDEBUG("org.esb.av.TestDecoder", "incount=" << incount << " outcount=" << outcount);
+  LOGDEBUG( "incount=" << incount << " outcount=" << outcount);
 
   Log::close();
   return (EXIT_SUCCESS);

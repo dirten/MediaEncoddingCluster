@@ -42,7 +42,7 @@ void createDatabase() {
   std::string src = MEC_SOURCE_DIR;
   std::string sqlfile = src;
   sqlfile.append("/sql/hive-0.0.3.sql");
-  logdebug("loading DB model from " << sqlfile);
+  LOGDEBUG("loading DB model from " << sqlfile);
   std::string sql;
   io::File f(sqlfile.c_str());
   io::FileInputStream(&f).read(sql);
@@ -61,8 +61,8 @@ void createDatabase() {
     std::string t = st.nextToken();
     t = StringUtil::trim(t, del);
     std::string next = StringUtil::trim(t);
-    logdebug("Create Table " << next);
-    logdebug("Create Table leng" << next.size());
+    LOGDEBUG("Create Table " << next);
+    LOGDEBUG("Create Table leng" << next.size());
     if (next.size() > 1)
       con.executeNonQuery(next);
   }
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
     sql::Connection con(config::Config::getProperty("db.connection"));
     con.executeNonQuery(string("use hive"));
   } catch (sql::SqlException & ex) {
-    LOGERROR("org.esb.hive.TestHive", ex.what());
+    LOGERROR( ex.what());
     createDatabase();
     std::string testfile = MEC_SOURCE_DIR;
     testfile += "/test.dvd";
@@ -188,11 +188,11 @@ int main(int argc, char** argv) {
         wait = false;
       lang::Thread::sleep2(2000);
     } else {
-      LOGERROR("org.esb.hive.TestHive", "result for encoding Job not found");
+      LOGERROR("result for encoding Job not found");
       wait = false;
     }
   }
-  LOGDEBUG("org.esb.hive.TestHive", "file completed, continue to export the file");
+  LOGDEBUG("file completed, continue to export the file");
 
   FileExporter::exportFile(2);
   //  tpath.deleteFile();

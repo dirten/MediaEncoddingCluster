@@ -3,6 +3,7 @@
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Decoder.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include <vector>
@@ -11,7 +12,8 @@
 
 using namespace org::esb::av;
 using namespace org::esb::util;
-
+namespace bla{
+classlogger("info")
 int main(int argc, char ** argv) {
   Log::open("");
 	avcodec_init();
@@ -48,15 +50,16 @@ int main(int argc, char ** argv) {
   std::vector<long long int> start_pts;
   cout << endl;
   cout << "<Stream Information>" << endl;
-  cout << "#\tindex\tcodec\tnum\tden\tquality\tstart\tfirst_dts\tduration\tnb_index_entries" << endl;
+  cout << "#\tindex\tcodec\ttimebase\tframerate\tquality\tstart\tfirst_dts\tduration\tnb_index_entries" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
     StreamInfo * s = fis.getStreamInfo(a);
     cout << a << "\t";
     cout << s->getIndex() << "\t";
     cout << s->getCodecId() << "\t";
-    cout << s->getTimeBase().num << "\t";
-    cout << s->getTimeBase().den << "\t";
+    cout << s->getTimeBase().num << "/"<<s->getTimeBase().den<<"\t";
+    cout << s->getFrameRate().num << "/"<<s->getFrameRate().den<<"\t";
+//    cout << s->getTimeBase().den << "\t";
     cout << s->getQuality() << "\t";
     cout << s->getFirstPts() << "\t";
     cout << s->getFirstDts() << "\t";
@@ -70,24 +73,26 @@ int main(int argc, char ** argv) {
 
   cout << endl;
   cout << "<Codec Information>" << endl;
-  cout << "#\tindex\ttype\tcodec\tnum\tden\tFrameSize\trepeat_pict\tticks\tbframes" << endl;
+  cout << "#\tindex\ttype\tcodec\ttimebase\tframerate\tFrameSize\trepeat_pict\tticks\tbframes" << endl;
   cout << "-------------------------------------------------------------------------" << endl;
   for (int a = 0; a < streams; a++) {
+    Decoder * dec=new Decoder(fis.getAVStream(a));
     StreamInfo * s = fis.getStreamInfo(a);
     cout << a << "\t";
     cout << s->getIndex() << "\t";
     cout << s->getCodecType() << "\t";
     cout << s->getCodecId() << "\t";
-    cout << s->getCodecTimeBase().num << "\t";
-    cout << s->getCodecTimeBase().den << "\t";
+    cout << s->getCodecTimeBase().num <<"/"<<s->getCodecTimeBase().den<< "\t\t";
+    cout << dec->getFrameRate().num<<"/"<<dec->getFrameRate().den << "\t\t";
     cout << s->getFrameBytes() << "\t";
-	printf("%10d\t\t", fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1);
+	printf("%10d\t", fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1);
 //	cout << fis.getAVStream(a)->parser?fis.getAVStream(a)->parser->repeat_pict+2:-1;
 	cout << fis.getAVStream(a)->codec->ticks_per_frame<< "\t";
     cout << fis.getAVStream(a)->codec->has_b_frames << "\t";
 //    if(fis.getAVStream(a)->codec->flags)
     cout << ((fis.getAVStream(a)->codec->flags&CODEC_FLAG_CLOSED_GOP)?"closedgop\t":"opengop\t");
     cout << endl;
+    delete dec;
   }
 
   
@@ -108,6 +113,7 @@ int main(int argc, char ** argv) {
   printf("%2s|", "k");
   printf("%5s|", "dur");
   printf("%2s|", "type");
+  printf("%2s|", "tb");
   cout << endl;
   cout << "------------------------------------------------------------------------------------------------------------" << endl;
   cout << "seeking to :"<<packet_start<<endl;
@@ -116,7 +122,7 @@ int main(int argc, char ** argv) {
   for (int a = 0; a < packet_count; a++) {
     Packet p;
     if (pis.readPacket(p) != 0) {
-      logdebug("Last Packet REACHED");
+      LOGDEBUG("Last Packet REACHED");
       break;
     }
 //	if(p.getStreamIndex()!=1)continue;
@@ -147,6 +153,7 @@ int main(int argc, char ** argv) {
 		default :type="U";break;
 	}
   printf("%2s|", type.c_str());
+  printf("%d/%d|", p.getTimeBase().num,p.getTimeBase().den);
     //        cout <<p.packet->pts<<"\t";
     //        cout <<p.packet->dts<<"\t";
     //        cout <<p.packet->size<<"\t";
@@ -163,4 +170,7 @@ int main(int argc, char ** argv) {
 
   return 0;
 }
-
+}
+int main(int argc, char**argv){
+  bla::main(argc, argv);
+}

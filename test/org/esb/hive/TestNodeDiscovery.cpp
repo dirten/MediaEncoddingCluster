@@ -28,6 +28,7 @@ public:
 };
 
 int main(int argc, char** argv) {
+  Log::open("");
   NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"), 6000);
 //  NodeReceiver receiver(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"));
 //  NodeSender sender(boost::asio::ip::address::from_string("239.255.0.1"));
