@@ -84,7 +84,7 @@ void FileExporter::exportFile(int fileid) {
 
   //    int v_num=0,v_den=0,a_num=0,a_den=0;
   {
-    PreparedStatement stmt = con.prepareStatement("select sin.stream_type as type, sin.stream_index inid, sout.stream_index outid,sin.start_time in_start_time, sin.time_base_num intbnum, sin.time_base_den intbden from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
+    PreparedStatement stmt = con.prepareStatement("select sin.stream_type as type, sin.stream_index inid, sout.stream_index outid,sin.start_time in_start_time, sin.codec_time_base_num intbnum, sin.codec_time_base_den intbden from jobs, job_details, streams sin, streams sout where jobs.id=job_details.job_id and sin.id=job_details.instream and sout.id=job_details.outstream and outputfile=:fileid");
     stmt.setInt("fileid", fileid);
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
@@ -96,6 +96,7 @@ void FileExporter::exportFile(int fileid) {
       _source_stream_map[rs.getInt("inid")].in_timebase = ar;
       _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
       _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
+      _source_stream_map[rs.getInt("inid")].out_start_time=0;
       _source_stream_map[rs.getInt("inid")].out_start_time=0;
       _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
 //      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
@@ -283,16 +284,19 @@ void FileExporter::exportFile(int fileid) {
       /**
        * @TODO: need to calculate the right pts by reorder the packet list to pts
        */
+      LOGDEBUG("org.esb.hive.FileExporter","resorting Packets");
       pu._output_packets.sort(ptsComparator);
       std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
       for (; ptslist != pu._output_packets.end(); ptslist++) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
         p->setPts(_source_stream_map[idx].next_timestamp);
-//        p->setTimeBase(_source_stream_map[idx].packet_timebase);
+//        LOGTRACE("org.esb.hive.FileExporter","resorting Packets pts to "<<_source_stream_map[idx].next_timestamp);
+        //        p->setTimeBase(_source_stream_map[idx].packet_timebase);
 //        p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
-        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+//        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+        _source_stream_map[idx].next_timestamp += p->getDuration();
       }
       /**
        * reorder right back to dts

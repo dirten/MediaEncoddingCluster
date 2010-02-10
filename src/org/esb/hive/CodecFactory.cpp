@@ -18,7 +18,7 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample, extra_data_size, extra_data from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select codec, stream_type, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, codec_time_base_num, codec_time_base_den, ticks_per_frame, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample, extra_data_size, extra_data from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -27,17 +27,18 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       decoder->setHeight(rs.getInt("height"));
       decoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
       decoder->setBitRate(rs.getInt("bit_rate"));
-      AVRational r;
-      r.num = rs.getInt("time_base_num");
-      r.den = rs.getInt("time_base_den");
-
-      decoder->setTimeBase(r);
+      if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
+        decoder->setTimeBase(rs.getInt("codec_time_base_num"),rs.getInt("codec_time_base_den"));
+      }else{
+        decoder->setTimeBase(rs.getInt("time_base_num"),rs.getInt("time_base_den"));    
+      }
       decoder->setGopSize(rs.getInt("gop_size"));
       decoder->setChannels(rs.getInt("channels"));
       decoder->setSampleRate(rs.getInt("sample_rate"));
       decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       decoder->setFlag(rs.getInt("flags"));
       decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
+      decoder->ctx->ticks_per_frame=rs.getInt("ticks_per_frame");
       decoder->ctx->extradata_size = rs.getInt("extra_data_size");
       decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
       memcpy(decoder->ctx->extradata, rs.getBlob("extra_data").data(), decoder->ctx->extradata_size);
@@ -76,6 +77,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setSampleRate(rs.getInt("sample_rate"));
       _encoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
       _encoder->setFlag(rs.getInt("flags"));
+      
       setCodecOptions(_encoder, rs.getString("extra_profile_flags"));
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;

@@ -115,6 +115,7 @@ namespace org {
             int64_t last_bytes_offset;
             int process_unit_count;
             double frameRateCompensateBase;
+            AVRational stream_time_base;
             //                        int64_t last_process_unit_id;
           };
           static map<int, StreamData> _stream_map;

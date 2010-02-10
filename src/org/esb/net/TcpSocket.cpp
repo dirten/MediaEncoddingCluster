@@ -47,11 +47,11 @@ namespace org {
       }
 
       bool TcpSocket::isConnected() {
-        return _connected;
+        return _connected&&_socket->is_open();
       }
 
       void TcpSocket::close() {
-        if (_socket.get() && _socket->is_open()) {
+        if (_connected&&_socket.get() && _socket->is_open()) {
           try {
             //            _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
           }          catch (exception & ex) {

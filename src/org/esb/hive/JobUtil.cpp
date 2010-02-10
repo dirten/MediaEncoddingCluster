@@ -19,6 +19,7 @@ struct JobStreamData {
   int out_stream;
   AVRational framerate;
   AVRational timebase;
+  AVRational codectimebase;
 };
 
 int jobcreator(int argc, char*argv[]) {
@@ -99,6 +100,8 @@ int jobcreator(int argc, char*argv[]) {
       float f = atof(profile_v_framerate.c_str());
       streams[v_stream_idx].timebase.num=rs.getInt("time_base_num");
       streams[v_stream_idx].timebase.den=rs.getInt("time_base_den");
+      streams[v_stream_idx].codectimebase.num=rs.getInt("codec_time_base_num");
+      streams[v_stream_idx].codectimebase.den=rs.getInt("codec_time_base_den");
       if (f == 0) {
         AVRational r;
         r.num = rs.getInt("framerate_num");
@@ -139,6 +142,7 @@ int jobcreator(int argc, char*argv[]) {
         break;
       }
     }
+    
 //    logerror("Coldnot find the output extension for : "<<profile_v_format);
     stmt.setString("filename", f.getFileName());
     stmt.setString("path", argv[4]);
@@ -149,8 +153,8 @@ int jobcreator(int argc, char*argv[]) {
     outfileid = con.lastInsertId();
   }
   if (in_v_stream > 0) {
-    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags, extra_profile_flags) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, :framerate_den, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags, :extra_profile_flags)");
+    PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num, time_base_den, codec_time_base_num, codec_time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags, extra_profile_flags) values"
+        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, :framerate_den, :time_base_num, :time_base_den, :codec_time_base_num, :codec_time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags, :extra_profile_flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
@@ -159,6 +163,8 @@ int jobcreator(int argc, char*argv[]) {
     stmt.setInt("framerate_den", streams[v_stream_idx].framerate.den);
     stmt.setInt("time_base_num", streams[v_stream_idx].timebase.num);
     stmt.setInt("time_base_den", streams[v_stream_idx].timebase.den);
+    stmt.setInt("codec_time_base_num", streams[v_stream_idx].codectimebase.num);
+    stmt.setInt("codec_time_base_den", streams[v_stream_idx].codectimebase.den);
     stmt.setInt("width", profile_v_width);
     stmt.setInt("height", profile_v_height);
     stmt.setInt("gop_size", 20);

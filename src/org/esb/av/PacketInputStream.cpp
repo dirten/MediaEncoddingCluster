@@ -37,6 +37,9 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
     int64_t min_start_dts = -1;
     int64_t min_start_pts = -1;
     for (int a = 0; a < _formatCtx->nb_streams; a++) {
+//      if(_formatCtx->streams[a]->parser)
+//        _formatCtx->streams[a]->parser->flags|=PARSER_FLAG_COMPLETE_FRAMES;
+
       if (_formatCtx->streams[a]->first_dts != AV_NOPTS_VALUE && (min_start_dts == -1 || _formatCtx->streams[a]->first_dts < min_start_dts)) {
         min_start_dts = _formatCtx->streams[a]->first_dts;
       }

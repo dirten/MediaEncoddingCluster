@@ -153,9 +153,9 @@ int import(int argc, char *argv[]) {
   PreparedStatement
   stmt_str =
       con.
-      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time, first_dts,duration,nb_frames,time_base_num, time_base_den, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
+      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time, first_dts,duration,nb_frames,time_base_num, time_base_den,codec_time_base_num,codec_time_base_den,ticks_per_frame, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
       //      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :first_dts, :duration, :nb_frames, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
+	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :first_dts, :duration, :nb_frames, :time_base_num, :time_base_den,:codec_time_base_num,:codec_time_base_den, :ticks_per_frame, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
   for (unsigned int a = 0; a < ctx->nb_streams; a++) {
     int field = 0;
     duration += ctx->streams[a]->duration;
@@ -173,6 +173,9 @@ int import(int argc, char *argv[]) {
     stmt_str.setLong("nb_frames", ctx->streams[a]->nb_frames);
     stmt_str.setInt("time_base_num", ctx->streams[a]->time_base.num);
     stmt_str.setInt("time_base_den", ctx->streams[a]->time_base.den);
+    stmt_str.setInt("codec_time_base_num", ctx->streams[a]->codec->time_base.num);
+    stmt_str.setInt("codec_time_base_den", ctx->streams[a]->codec->time_base.den);
+    stmt_str.setInt("ticks_per_frame", ctx->streams[a]->codec->ticks_per_frame);
     stmt_str.setInt("width", ctx->streams[a]->codec->width);
     stmt_str.setInt("height", ctx->streams[a]->codec->height);
     stmt_str.setInt("gop_size", ctx->streams[a]->codec->gop_size);

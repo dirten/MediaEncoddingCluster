@@ -51,19 +51,19 @@ namespace org {
       }
 
       HiveListener::~HiveListener() {
-//        server->close();
+        //        server->close();
       }
 
       void HiveListener::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("hivelistener") == org::esb::hive::START) {
           //    cout << "Start Message Arrived:"<<endl;
           boost::thread tt(boost::bind(&HiveListener::startListener, this));
-          LOGDEBUG("org.esb.hive.HiveListener","Hive Listener running on port:" << Config::getProperty("hive.port"));
+          LOGDEBUG("org.esb.hive.HiveListener", "Hive Listener running on port:" << Config::getProperty("hive.port"));
           //    cout << "Hive Listener running:"<<endl;
           is_running = true;
         } else
           if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
-          LOGDEBUG("org.esb.hive.HiveListener","Hive Listener stopped:");
+          LOGDEBUG("org.esb.hive.HiveListener", "Hive Listener stopped:");
           main_nextloop = false;
           if (server)
             server->close();
@@ -76,24 +76,24 @@ namespace org {
       void HiveListener::startListener() {
 
         int port = atoi(Config::getProperty("hive.port"));
-//        logdebug("Listening on port "<<port);
+        //        logdebug("Listening on port "<<port);
         server = new TcpServerSocket(port);
         server->bind();
         for (; main_nextloop;) {
-//          try {
-            TcpSocket * clientSocket = server->accept();
-			if (clientSocket->isConnected()  || (!main_nextloop)) {
-              ProtocolServer *protoServer = new ProtocolServer(clientSocket);
-              boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
-//              Thread *thread = new Thread(protoServer);
-//              thread->start();
-            } else {
-              LOGERROR("org.esb.hive.HiveListener","Client was not accepted");
-              break;
-            }
-//          } catch (exception & ex) {
-//            logerror("Exception in Main:" <<ex.what());
-//          }
+          //          try {
+          TcpSocket * clientSocket = server->accept();
+          if (clientSocket&&clientSocket->isConnected() || (!main_nextloop)) {
+            ProtocolServer *protoServer = new ProtocolServer(clientSocket);
+            boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
+            //              Thread *thread = new Thread(protoServer);
+            //              thread->start();
+          } else {
+            LOGERROR("org.esb.hive.HiveListener", "Client was not accepted");
+            break;
+          }
+          //          } catch (exception & ex) {
+          //            logerror("Exception in Main:" <<ex.what());
+          //          }
         }
       }
 

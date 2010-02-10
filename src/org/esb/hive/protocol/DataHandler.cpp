@@ -53,6 +53,8 @@ private:
     LOGDEBUG("org.esb.hive.protocol.DataHandler","TimerEvent received");
     if (er == boost::asio::error::operation_aborted) {
       LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event was Canceled");
+//    }else if(er ==boost::asio::error::shut_down){
+//      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
     } else {
       LOGWARN("org.esb.hive.protocol.DataHandler","TimeOut received, removing endpoint from list to give an other client a chance!")
       if (endpoint2stream.size() > 0) {

@@ -173,22 +173,28 @@ namespace org {
                   _stream_map[index].instream = rs2.getInt("instream");
                   _stream_map[index].outstream = rs2.getInt("outstream");
                   _stream_map[index].type = rs2.getInt("stream_type");
-                  _stream_map[index].decoder=boost::shared_ptr<Decoder>(new Decoder(fis->getAVStream(index)->codec),&dummy_deleter<Decoder>);
-//                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
+//                  _stream_map[index].decoder=boost::shared_ptr<Decoder>(new Decoder(fis->getAVStream(index)->codec),&dummy_deleter<Decoder>);
+                  _stream_map[index].decoder = CodecFactory::getStreamDecoder(_stream_map[index].instream);
                   _stream_map[index].encoder = CodecFactory::getStreamEncoder(_stream_map[index].outstream);
-
+                  AVRational a;
+                  a.num=rs2.getInt("time_base_num");
+                  a.den=rs2.getInt("time_base_den");
+                  _stream_map[index].stream_time_base=a;
                   /**
                   * this case is only for a TestCase, in normal usage this will never happen
                   */
                   if (_stream_map[index].decoder.get() == NULL || _stream_map[index].encoder.get() == NULL)
                     continue;
+                  _stream_map[index].decoder->open();
+                  _stream_map[index].encoder->open();
+
                   //                  _stream_map[index].decoder->open();
                   //                  _stream_map[index].encoder->open();
                   _stream_map[index].last_start_dts = rs2.getLong("first_dts") - 1;
                   _stream_map[index].last_start_pts = rs2.getLong("start_time") - 1;
                   tsmin = min(tsmin, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
                   if(_stream_map[index].last_start_dts>0)
-                    tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
+                    tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].stream_time_base, basear));
                   _stream_map[index].packet_count = 0;
                   _stream_map[index].last_bytes_offset = 0;
                   _stream_map[index].process_unit_count = 0;
@@ -216,6 +222,8 @@ namespace org {
                     }
                     LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
 
+                  LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "StreamInformationMap sid=" << index);
+
                 }
               }
               /**
@@ -224,7 +232,7 @@ namespace org {
               {
                 map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
                 for (; it != _stream_map.end(); it++) {
-                  (*it).second.last_start_pts=av_rescale_q(tsmax, basear,_stream_map[(*it).first].decoder->getTimeBase());
+                  (*it).second.last_start_pts=av_rescale_q(tsmax, basear,_stream_map[(*it).first].stream_time_base);
                   LOGDEBUG("org.esb.hive.job.ProcessUnitWatcher", "start TS for stream id#"<<(*it).first<<" = "<<(*it).second.last_start_pts);
                 }
               }

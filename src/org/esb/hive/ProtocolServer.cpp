@@ -96,7 +96,8 @@ void ProtocolServer::run() {
       //#ifndef DEBUG
     } catch (exception & ex) {
       LOGERROR("org.esb.hive.ProtocolServer","ERROR in ProtocolServer:" << ex.what());
-      socket->close();
+      break;
+//      socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
     //#endif
