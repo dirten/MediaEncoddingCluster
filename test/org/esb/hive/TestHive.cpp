@@ -91,9 +91,9 @@ void loadTestFile(std::string testfile, std::string p) {
   outdir += "/export/";
   char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
   jobcreator(4, jobarg);
-  //  sql::Connection con_a("mysql:host=;db=hive;user=;passwd=");
-  //  con_a.executeNonQuery(string("delete from streams where fileid=2 and stream_type=1"));
-  //  con_a.executeNonQuery(string("update streams set stream_index=0 where fileid=2 and stream_type=1"));
+//  sql::Connection con_a(config::Config::getProperty("db.connection"));
+//  con_a.executeNonQuery(string("delete from streams where fileid=2 and stream_type=1"));
+//  con_a.executeNonQuery(string("update streams set stream_index=0 where fileid=2 and stream_type=1"));
 }
 
 int main(int argc, char** argv) {
@@ -123,12 +123,13 @@ int main(int argc, char** argv) {
   /**
    * starting database service
    */
+//  config::Config::setProperty("db.connection", "mysql:host=127.0.0.1;db=hive2;user=root;passwd=");
   config::Config::setProperty("db.connection", "mysql:host=;db=hive;user=;passwd=");
   hive::DatabaseService::start(MEC_SOURCE_DIR);
   hive::DatabaseService::thread_init();
 
   try {
-    sql::Connection con("");
+    sql::Connection con(config::Config::getProperty("db.connection"));
     con.executeNonQuery(string("use hive"));
   } catch (sql::SqlException & ex) {
     LOGERROR("org.esb.hive.TestHive", ex.what());
@@ -179,7 +180,7 @@ int main(int argc, char** argv) {
 
   bool wait = true;
   while (wait) {
-    sql::Connection con("mysql:host=;db=hive;user=;passwd=");
+    sql::Connection con(config::Config::getProperty("db.connection"));
     sql::Statement stmt = con.createStatement("select * from jobs where id=1");
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
