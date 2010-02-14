@@ -378,7 +378,7 @@ namespace org {
             ar.den=u->_decoder->getFrameRate().num;
 //            int64_t dur = av_rescale_q(tmp_dur, ar, u->_decoder->getTimeBase());
 //            Packet * tmp_pac=u->_input_packets.front().get();
-            int dur = av_rescale_q(ar.num ,ar,u->_decoder->getTimeBase());
+            int dur = av_rescale_q(1 ,ar,u->_decoder->getTimeBase());
             double target = (u->_gop_size * dur) * av_q2d(u->_decoder->getTimeBase()) / av_q2d(u->_encoder->getTimeBase()) + _stream_map[sIdx].frameRateCompensateBase;
             double base = floor(target);
             u->_expected_frame_count = base;

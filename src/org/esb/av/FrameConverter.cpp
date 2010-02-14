@@ -88,7 +88,8 @@ namespace org {
         out_frame.setTimeBase(_enc->getTimeBase());
         out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
+//        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        out_frame.setDuration(_enc->getTimeBase().num);
 #endif
       }
 
@@ -107,7 +108,7 @@ namespace org {
         if ((_gop_size > 0 || _gop_size == -1)
             && (_dec->getTimeBase().num != _enc->getTimeBase().num || _dec->getTimeBase().den != _enc->getTimeBase().den)
             ) {
-          double a = static_cast<double> ((double) _dec->getLastTimeStamp() / (double) _dec->getTimeBase().den);
+          double a = static_cast<double> ((double) _dec->getLastTimeStamp()*(double) _dec->getTimeBase().num / (double) _dec->getTimeBase().den);
           //          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
           double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
           if (delta > 2.0)

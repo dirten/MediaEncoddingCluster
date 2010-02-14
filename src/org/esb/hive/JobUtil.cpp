@@ -5,7 +5,8 @@
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
-#include "org/esb/av/Codec.h"
+#include "org/esb/av/Encoder.h"
+#include "org/esb/hive/CodecFactory.h"
 #include "org/esb/db/Profile.h"
 #include "org/esb/io/File.h"
 #include <map>
@@ -168,18 +169,18 @@ int jobcreator(int argc, char*argv[]) {
     stmt.setInt("width", profile_v_width);
     stmt.setInt("height", profile_v_height);
     stmt.setInt("gop_size", 20);
-    Codec codec((CodecID) profile_v_codec, Codec::ENCODER);
-    codec.setWidth(profile_v_width);
-    codec.setHeight(profile_v_height);
-    //    codec.findCodec(Codec::ENCODER);
-    codec.open();
-    int flags = codec.getFlags();
+    boost::shared_ptr<Encoder> enc(new Encoder((CodecID) profile_v_codec));
+    enc->setWidth(profile_v_width);
+    enc->setHeight(profile_v_height);
+    org::esb::hive::CodecFactory::setCodecOptions(enc,profile_v_extra);
+    enc->open();
+    int flags = enc->getFlags();
     if (ofmt->flags & AVFMT_GLOBALHEADER)
       flags |= CODEC_FLAG_GLOBAL_HEADER;
 
     stmt.setInt("flags", flags);
 
-    stmt.setInt("pix_fmt", codec.getPixelFormat());
+    stmt.setInt("pix_fmt", enc->getPixelFormat());
     stmt.setInt("bit_rate", profile_v_bitrate);
     stmt.setString("extra_profile_flags", profile_v_extra);
     stmt.execute();

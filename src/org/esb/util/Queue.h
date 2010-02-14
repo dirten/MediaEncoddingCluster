@@ -12,14 +12,11 @@ namespace org {
 
       template<typename T, int MAXSIZE = 10 >
           class Queue {
+        classlogger("org.esb.util.Queue");
       private:
         std::deque<T> _q;
         QueueListener * _listener;
-        boost::mutex condition_mutex;
-        boost::mutex enqueue_mutex;
-        boost::mutex dequeue_mutex;
         boost::mutex queue_mutex;
-        //        boost::mutex queue_thread_mutex;
         boost::condition queue_condition;
       public:
 
@@ -38,72 +35,47 @@ namespace org {
         }
 
         bool enqueue(T obj) {
-          boost::mutex::scoped_lock enqueue_lock(enqueue_mutex);
-          bool result=false;
-          if (_q.size() >= MAXSIZE) {
-            boost::mutex::scoped_lock condition_lock(condition_mutex);
-            queue_condition.wait(condition_lock);
-            //            queue_condition.wait(enqueue_lock);
+          LOGTRACEMETHOD("enqueue(T obj)")
+          boost::mutex::scoped_lock enqueue_lock(queue_mutex);
+          LOGTRACE("after mutex");
+          bool result = false;
+          while (_q.size() >= MAXSIZE) {
+            LOGTRACE("Waiting in enqueuelock");
+            queue_condition.wait(enqueue_lock);
+            LOGTRACE("condition enqueuelock");
           }
-          {
-            boost::mutex::scoped_lock enqueue_lock(queue_mutex);
-            _q.push_back(obj);
-            result=true;
-          }
+          _q.push_back(obj);
+          result = true;
+          LOGTRACE("notify condition enqueuelock");
           queue_condition.notify_one();
           return result;
         }
 
-        /*
-         T dequeue(T obj) {
-         boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
-         if (_q.size() == 0) {
-         if (_listener != NULL)
-         _listener->onQueueEvent(QEVENT_QEMPTY);
-         //            boost::mutex::scoped_lock queue_lock(queue_mutex);
-         queue_condition.wait(dequeue_lock);
-         }
-         T object;
-         object = _q.front();
-         _q.pop();
-         //          boost::mutex::scoped_lock queue_lock(queue_mutex);
-         queue_condition.notify_all();
-         if (_listener != NULL)
-         _listener->onQueueEvent(QEVENT_DEQUEUE);
-         return object;
-         }
-         */
         T dequeue() {
-          boost::mutex::scoped_lock enqueue_lock(dequeue_mutex);
-          if (_q.size() == 0) {
-            boost::mutex::scoped_lock condition_lock(condition_mutex);
-            queue_condition.wait(condition_lock);
-            //			  queue_condition.wait(dequeue_lock);
+          LOGTRACEMETHOD("T dequeue()");
+          boost::mutex::scoped_lock dequeue_lock(queue_mutex);
+          LOGTRACE("after mutex");
+          while (_q.size() == 0) {
+            LOGTRACE("Waiting in dequeuelock");
+            queue_condition.wait(dequeue_lock);
+            LOGTRACE("condition dequeuelock");
           }
-          {
-            boost::mutex::scoped_lock dequeue_lock(queue_mutex);
-            T object = _q.front();
-            //          object = _q.front();
-            _q.pop_front();
-            queue_condition.notify_one();
-            return object;
-          }
+          T object = _q.front();
+          _q.pop_front();
+          LOGTRACE("notify condition dequeuelock");
+          queue_condition.notify_one();
+          return object;
         }
 
         bool dequeue(T object) {
-          boost::mutex::scoped_lock enqueue_lock(dequeue_mutex);
-          bool result=false;
-          if (_q.size() == 0) {
-            boost::mutex::scoped_lock condition_lock(condition_mutex);
-            queue_condition.wait(condition_lock);
-            //			  queue_condition.wait(dequeue_lock);
+          boost::mutex::scoped_lock dequeue_lock(queue_mutex);
+          bool result = false;
+          while (_q.size() == 0) {
+            queue_condition.wait(dequeue_lock);
           }
-          {
-            boost::mutex::scoped_lock dequeue_lock(queue_mutex);
-            object = _q.front();
-            _q.pop_front();
-            result=true;
-          }
+          object = _q.front();
+          _q.pop_front();
+          result = true;
           queue_condition.notify_one();
           return result;
         }

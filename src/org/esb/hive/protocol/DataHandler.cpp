@@ -41,9 +41,9 @@ private:
   static boost::mutex removeMutex;
 
   std::string _own_id;
-//  boost::asio::io_service io_timer;
-//  boost::asio::deadline_timer timer;
-//  boost::shared_ptr<boost::thread> _timer_thread;
+  //  boost::asio::io_service io_timer;
+  //  boost::asio::deadline_timer timer;
+  //  boost::shared_ptr<boost::thread> _timer_thread;
   boost::shared_ptr<Timer> _timer;
   //  boost::asio::deadline_timer t2;
   boost::shared_ptr<ProcessUnit> un;
@@ -54,12 +54,14 @@ private:
     LOGDEBUG("TimerEvent received");
     if (er == boost::asio::error::operation_aborted) {
       LOGDEBUG("Timer Event was Canceled");
-//    }else if(er ==boost::asio::error::shut_down){
-//      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
-//    }else if(er ==boost::asio::error::shut_down){
-//      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
+      //    }else if(er ==boost::asio::error::shut_down){
+      //      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
+      //    }else if(er ==boost::asio::error::shut_down){
+      //      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
     } else {
       LOGWARN("TimeOut received, removing endpoint from list to give an other client a chance!")
+      if (er == boost::asio::error::shut_down)
+        LOGDEBUG("Timer Event regular shutdown");
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
           endpoint2stream.pop_front();
@@ -85,9 +87,9 @@ public:
     _own_id += StringUtil::toString(ep.port());
     LOGDEBUG("endpoint:" << ep);
     shutdown = false;
-//    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-//    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
-	
+    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+
 
   }
 
@@ -108,9 +110,9 @@ public:
     _own_id += ":";
     _own_id += StringUtil::toString(ep.port());
     shutdown = false;
-//    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-//    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
     //    io_timer.run();
     LOGDEBUG("endpoint:" << ep);
   }
@@ -159,13 +161,11 @@ public:
       //      _ois->readObject(un.get());
 
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
-       LOGERROR("error while putProcessUnit!");
+        LOGERROR("error while putProcessUnit!");
       }
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
 
       if (endpoint2stream.size() > 0) {
-//        logdebug("endpoint is > 0")
-//        logdebug(endpoint2stream.front() << " own_id " << _own_id)
         if (endpoint2stream.front() == _own_id) {
           un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
@@ -177,19 +177,19 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
-//        logdebug("setting timer");
-//        timer.expires_from_now(boost::posix_time::seconds(10));
-//        timer.async_wait();
-		_timer.reset(new Timer(30,boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
+        //        logdebug("setting timer");
+        //        timer.expires_from_now(boost::posix_time::seconds(10));
+        //        timer.async_wait();
+        _timer.reset(new Timer(30, boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
-//        logdebug("dummy audio packet");
+        //        logdebug("dummy audio packet");
       }
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
       string data;
       _is->read(data);
-      if(un.get()==NULL){
+      if (un.get() == NULL) {
         LOGDEBUG("ProcessUnit timed out, discard it");
         return;
       }
@@ -208,14 +208,14 @@ public:
       fos.write(data);
 
       //      _ois->readObject(un);
-	  if(_timer.get()!=NULL)
+      if (_timer.get() != NULL)
         _timer.reset();
       /*
            t.expires_from_now(boost::posix_time::seconds(10));
              t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
        */
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
-       LOGERROR("error while putProcessUnit!");
+        LOGERROR("error while putProcessUnit!");
       }
     } else {
       LOGERROR("unknown command received:" << command);

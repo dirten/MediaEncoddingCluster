@@ -122,6 +122,9 @@ namespace org {
           //				throw boost::system::system_error(error);
           return atoi(tmp);
         }
+        long long int internal_read(){
+
+        }
       };
     }
   }

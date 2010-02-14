@@ -38,7 +38,7 @@ namespace org {
     namespace hive {
 
       class Node {
-        classlogger("org.esb.hive.NodeResolver")
+        classlogger("org.esb.hive.Node")
       public:
         Node(boost::asio::ip::udp::endpoint & ep);
         const boost::asio::ip::address getIpAddress()const;
@@ -61,6 +61,7 @@ namespace org {
       };
 
       class NodeListener {
+        classlogger("org.esb.hive.NodeListener")
       public:
         virtual void onNodeUp(Node & node) = 0;
         virtual void onNodeDown(Node & node) = 0;
@@ -68,6 +69,7 @@ namespace org {
       };
 
       class NodeResolver {
+        classlogger("org.esb.hive.NodeResolver")
       public:
         typedef std::list<boost::shared_ptr<Node> > NodeList;
         NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int);

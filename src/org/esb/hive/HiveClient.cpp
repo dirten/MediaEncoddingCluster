@@ -28,9 +28,9 @@ namespace org {
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         org::esb::av::FormatBaseStream::initialize();
-//        avcodec_register_all();
-//        av_register_all();
-//        avcodec_init();
+        //        avcodec_register_all();
+        //        av_register_all();
+        //        avcodec_init();
 
       }
 
@@ -74,9 +74,10 @@ namespace org {
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
-//          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
+          //          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
       }
+
       void HiveClient::process() {
         int pCount = 0;
         while (!_toHalt) {
@@ -98,11 +99,11 @@ namespace org {
                 break;
               }
               unit->process();
-			  /**
-			  * clear the input packets, there are no more nedded
-			  * they only consumes Network bandwidth and cpu on the server
-			  */
-			  unit->_input_packets.clear();
+              /**
+               * clear the input packets, there are no more nedded
+               * they only consumes Network bandwidth and cpu on the server
+               */
+//              unit->_input_packets.clear();
 
               char * text_out = "put process_unit";
               try {
@@ -120,7 +121,7 @@ namespace org {
               delete unit->_converter;
               unit->_converter = NULL;
               delete unit;
-			  
+
             }
           }
           org::esb::lang::Thread::sleep2(5000);

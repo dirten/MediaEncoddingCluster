@@ -26,11 +26,12 @@ namespace org {
                 static boost::shared_ptr<org::esb::av::Encoder> getStreamEncoder(int streamid);
                 static void clearCodec(int streamid);
                 static void free();
+                static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::string options);
             private:
                 CodecFactory();
                 static std::map<int, boost::shared_ptr<org::esb::av::Decoder> > decoder_map;
                 static std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map;
-                static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::string options);
+//                static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::string options);
 
             };
         }

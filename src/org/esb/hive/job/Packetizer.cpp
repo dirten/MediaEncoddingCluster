@@ -76,7 +76,7 @@ namespace org {
           if (_codec_overlap.find(_streams[ptr->getStreamIndex()].codec_id) == _codec_overlap.end()) {
             _codec_overlap[_streams[ptr->getStreamIndex()].codec_id] = 0;
           }
-          result = processPacket2(ptr);
+          result = processPacket(ptr);
           return result;
         }
 
@@ -206,6 +206,7 @@ namespace org {
             _packet_list.push_back(_streams[stream_idx].packets);
             _streams[stream_idx].packets.clear();
             _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
+            _overlap_queue[stream_idx].clear();
             result = true;
           }
           return result;
