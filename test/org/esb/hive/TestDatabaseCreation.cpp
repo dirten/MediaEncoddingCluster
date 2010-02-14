@@ -11,7 +11,7 @@ int main() {
   std::string src = MEC_SOURCE_DIR;
   std::string sqlfile = src;
   sqlfile.append("/sql/hive-0.0.3.sql");
-  logdebug("loading DB model from " << sqlfile);
+  LOGDEBUG("loading DB model from " << sqlfile);
   std::string sql;
   io::File f(sqlfile.c_str());
   io::FileInputStream(&f).read(sql);
@@ -33,8 +33,8 @@ int main() {
     std::string t = st.nextToken();
     t = StringUtil::trim(t, del);
     std::string next = StringUtil::trim(t);
-    logdebug("Create Table " << next);
-    logdebug("Create Table leng" << next.size());
+    LOGDEBUG("Create Table " << next);
+    LOGDEBUG("Create Table leng" << next.size());
     if (next.size() > 1)
       con.executeNonQuery(next);
   }

@@ -24,13 +24,13 @@ int main(int argc, char** argv) {
    */
   org::esb::lang::SystemCpuInfo sci;
   int c = sci.getCpuCount();
-  logdebug("CpuCount:" << c);
+  LOGDEBUG("CpuCount:" << c);
   for (int i = 0; i < c; i++) {
-    logdebug(i<<"Cpu family" << sci.getCpuInfo(i).family);
-    logdebug(i<<"Cpu model" << sci.getCpuInfo(i).model);
-    logdebug(i<<"Cpu step" << sci.getCpuInfo(i).step);
-    logdebug(i<<"Cpu cores" << sci.getCpuInfo(i).cores);
-    logdebug(i<<"Cpu freq" << sci.getCpuInfo(i).freq);
+    LOGDEBUG(i<<"Cpu family" << sci.getCpuInfo(i).family);
+    LOGDEBUG(i<<"Cpu model" << sci.getCpuInfo(i).model);
+    LOGDEBUG(i<<"Cpu step" << sci.getCpuInfo(i).step);
+    LOGDEBUG(i<<"Cpu cores" << sci.getCpuInfo(i).cores);
+    LOGDEBUG(i<<"Cpu freq" << sci.getCpuInfo(i).freq);
   }
   return (EXIT_SUCCESS);
 }

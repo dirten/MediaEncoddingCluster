@@ -40,9 +40,9 @@ int main(int argc, char** argv) {
   int base=((int)frames*av_q2d(ar1)/av_q2d(ar2));
   double a=frames*av_q2d(ar1)/av_q2d(ar2)-base;
   double b=30/av_q2d(ar2);
-  LOGDEBUG("","Double val "<<t-(int)t);
-  LOGDEBUG("","a val "<<a);
-  LOGDEBUG("","b val "<<b);
+  LOGDEBUG("Double val "<<t-(int)t);
+  LOGDEBUG("a val "<<a);
+  LOGDEBUG("b val "<<b);
   exit(0);
   std::string path=MEC_SOURCE_DIR;
   org::esb::io::File file(path+"/test/images/number-%d.pgm");
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
   pos.init();
   enc.setOutputStream(&pos);
 
-  org::esb::av::Decoder dec(fis.getAVStream(0)->codec);
+  org::esb::av::Decoder dec(fis.getAVStream(0));
   dec.setTimeBase(1,10);
   dec.open();
 
@@ -119,14 +119,14 @@ int main(int argc, char** argv) {
     delete f;
     }
   }
-  LOGTRACE("org.esb.hive.job.ProcessUnit","Encode Packet delay");
+  LOGTRACE("Encode Packet delay");
   bool have_more_frames=enc.getCodecType()==CODEC_TYPE_VIDEO;
   while(have_more_frames){
     if(enc.encode()<=0){
       have_more_frames=false;
     }
   }
-  LOGTRACE("org.esb.hive.job.ProcessUnit","delay encoded");
+  LOGTRACE("delay encoded");
 
   Log::close();
   return (EXIT_SUCCESS);

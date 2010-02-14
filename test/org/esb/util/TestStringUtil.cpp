@@ -38,7 +38,7 @@ void testStringTokenizer(){
 void testTrim(){
   std::string teststring("   bla fasel   ");
   std::string trimmed=util::StringUtil::trim(teststring);
-  logdebug(":"<<trimmed<<":");
+  LOGDEBUG(":"<<trimmed<<":");
   assert(trimmed.length()==9);
 }
 int main() {

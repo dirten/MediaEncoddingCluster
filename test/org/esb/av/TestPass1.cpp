@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO) continue;
     vidx = i; //fis.getStreamInfo(i)->getStreamIndex();
-    dec = new Decoder(fis.getStreamInfo(i)->getCodec());
+    dec = new Decoder(fis.getAVStream(i));
     dec->open();
     enc = new Encoder();
     //enc->setCodecId(CODEC_ID_MPEG4);

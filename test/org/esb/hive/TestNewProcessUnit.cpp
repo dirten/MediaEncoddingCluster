@@ -89,7 +89,7 @@ void build_process_units(int argc, char** argv) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO /*&&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO*/) continue;
-    _sdata[i].dec = boost::shared_ptr<Decoder > (new Decoder(fis.getStreamInfo(i)->getCodec()));
+    _sdata[i].dec = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(i)));
     _sdata[i].enc = boost::shared_ptr<Encoder > (new Encoder());
     stream_data[i].codec_type = fis.getStreamInfo(i)->getCodecType();
     stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();

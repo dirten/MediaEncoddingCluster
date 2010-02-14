@@ -54,7 +54,7 @@ void test_process_video(int argc, char ** argv) {
 
     AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
     boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(c->codec_id));
-    logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
+    LOGDEBUG("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
     //  Decoder dec(c);
 
     //  dec.setChannels(c->channels);
@@ -67,7 +67,7 @@ void test_process_video(int argc, char ** argv) {
     dec->ctx->request_channel_layout = 2;
     //  dec.ctx->request_channels = 2;
     dec->open();
-    logdebug(dec->toString());
+    LOGDEBUG(dec->toString());
 
 
 
@@ -90,8 +90,8 @@ void test_process_video(int argc, char ** argv) {
     //  enc.ctx->bits_per_raw_sample=dec.ctx
     enc->open();
 
-    logdebug(enc->toString());
-    logdebug("Encoder Frame Size:" << enc->ctx->frame_size);
+    LOGDEBUG(enc->toString());
+    LOGDEBUG("Encoder Frame Size:" << enc->ctx->frame_size);
     Packet p;
     ProcessUnit u;
     u._decoder = dec;
@@ -101,7 +101,7 @@ void test_process_video(int argc, char ** argv) {
       pis.readPacket(p);
       if (p.getStreamIndex() == stream_id) {
         a++;
-        logdebug(p.toString());
+        LOGDEBUG(p.toString());
         boost::shared_ptr<Packet> pptr(new Packet(p));
         u._input_packets.push_back(pptr);
       }
@@ -162,7 +162,7 @@ void test_process_audio(char * file){
 
     AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
     boost::shared_ptr<Decoder> dec = boost::shared_ptr<Decoder>(new Decoder(c->codec_id));
-    logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
+    LOGDEBUG("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
     //  Decoder dec(c);
 
     //  dec.setChannels(c->channels);
@@ -180,7 +180,7 @@ void test_process_audio(char * file){
 
 
 
-    logdebug(dec->toString());
+    LOGDEBUG(dec->toString());
 
     //  Encoder enc(CODEC_ID_MSMPEG4V1);
     boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_VORBIS));
@@ -200,8 +200,8 @@ void test_process_audio(char * file){
     //  enc.ctx->bits_per_raw_sample=dec.ctx
     enc->open();
 
-    logdebug(enc->toString());
-    logdebug("Encoder Frame Size:" << enc->ctx->frame_size);
+    LOGDEBUG(enc->toString());
+    LOGDEBUG("Encoder Frame Size:" << enc->ctx->frame_size);
     Packet p;
     ProcessUnit u;
     u._decoder = dec;
@@ -211,7 +211,7 @@ void test_process_audio(char * file){
       pis.readPacket(p);
       if (p.getStreamIndex() == stream_id) {
         a++;
-        logdebug(p.toString());
+        LOGDEBUG(p.toString());
         boost::shared_ptr<Packet> pptr(new Packet(p));
         u._input_packets.push_back(pptr);
       }

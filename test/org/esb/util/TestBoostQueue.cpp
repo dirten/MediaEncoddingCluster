@@ -28,7 +28,7 @@ public:
       , 100 //max message number
       , 100 //max message size
       );
-    logdebug(mq);
+    LOGDEBUG(mq);
   }
 
   void send() {
@@ -38,9 +38,9 @@ public:
   }
 
   ~queue_sender() {
-    logdebug("remove queue")
+    LOGDEBUG("remove queue")
     message_queue::remove("message_queue");
-    logdebug("queue removed")
+    LOGDEBUG("queue removed")
       delete mq;
   }
 
@@ -65,10 +65,10 @@ public:
     try {
       mq->receive(&number, sizeof (number), recvd_size, prio);
     } catch (interprocess_exception &ex) {
-      logerror(ex.get_native_error());
+      LOGERROR(ex.get_native_error());
     }
 
-    logdebug("Received number:" << number);
+    LOGDEBUG("Received number:" << number);
   }
 
   ~queue_receiver() {

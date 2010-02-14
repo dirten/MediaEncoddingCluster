@@ -11,17 +11,17 @@
 #include "org/esb/lang/Thread.h"
 
   void handle_timeout(const boost::system::error_code & er) {
-    logdebug("handle timeout" << er);
+    LOGDEBUG("handle timeout" << er);
   }
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-	logdebug("start");
+	LOGDEBUG("start");
 	boost::shared_ptr<Timer> ti(new Timer(3,&handle_timeout));
 	org::esb::lang::Thread::sleep2(12000);
-  logdebug("resetting");
+  LOGDEBUG("resetting");
 	ti.reset();
 	ti.reset();
 	org::esb::lang::Thread::sleep2(12000);

@@ -54,7 +54,7 @@ void build_audio_packet(const char * filename, int sidx) {
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     if (stream_index == -1 || fis.getStreamInfo(i)->getIndex() == stream_index) {
-      p._decoder = boost::shared_ptr<Decoder>(new Decoder(fis.getStreamInfo(i)->getCodec()));
+      p._decoder = boost::shared_ptr<Decoder>(new Decoder(fis.getAVStream(i)));
       p._source_stream = fis.getStreamInfo(i)->getIndex();
       p._target_stream = 0;
       /**

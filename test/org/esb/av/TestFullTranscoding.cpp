@@ -73,7 +73,7 @@ Log::open("");
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     if (audio && video)continue;
     fis.dumpFormat();
-    _sdata[i].dec = new Decoder(fis.getStreamInfo(i)->getCodec());
+    _sdata[i].dec = new Decoder(fis.getAVStream(i));
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
@@ -117,8 +117,8 @@ Log::open("");
 
     pos.setEncoder(*_sdata[i].enc, _smap[i]);
     _sdata[i].enc->setOutputStream(&pos);
-    logdebug(_sdata[i].enc->toString());
-    logdebug(_sdata[i].dec->toString());
+    LOGDEBUG(_sdata[i].enc->toString());
+    LOGDEBUG(_sdata[i].dec->toString());
   }
 
   pos.init();

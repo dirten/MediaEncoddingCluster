@@ -16,14 +16,15 @@
 using namespace org::esb::hive;
 using namespace org::esb::lang;
 class NodeAgent: public NodeListener{
+  classlogger("NodeListener")
 public:
 
   void onNodeUp(Node & node){
-    logdebug("NodeUp:"<<node.toString());
+    LOGDEBUG("NodeUp:"<<node.toString());
   }
   
   void onNodeDown(Node & node){
-    logdebug("NodeDown:"<<node.toString());
+    LOGDEBUG("NodeDown:"<<node.toString());
   }
 };
 

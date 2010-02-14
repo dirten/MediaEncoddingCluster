@@ -15,8 +15,8 @@ int main(){
   assert(!create.exists());
 
   assert(f.exists());
-  logdebug(f.getPath());
-  logdebug(f.getFilePath());
+  LOGDEBUG(f.getPath());
+  LOGDEBUG(f.getFilePath());
   assert(f.getPath().length()>0);
   assert(f.getFileName().length()>0);
   assert(f.getFilePath().length()>0);
@@ -29,10 +29,10 @@ int main(){
   assert(!dir.isFile());
   assert(dir.isDirectory());
 
-  logdebug("GetPath"<<dir.getPath());
-  logdebug(dir.getFilePath()<<" GetParent"<<dir.getParent());
-  logdebug("File GetParent"<<f.getParent());
-  logdebug("Relative File . "<<f2.getPath());
+  LOGDEBUG("GetPath"<<dir.getPath());
+  LOGDEBUG(dir.getFilePath()<<" GetParent"<<dir.getParent());
+  LOGDEBUG("File GetParent"<<f.getParent());
+  LOGDEBUG("Relative File . "<<f2.getPath());
 
 //  f.getExtension();
   return 0;

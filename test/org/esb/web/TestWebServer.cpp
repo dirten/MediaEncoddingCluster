@@ -38,6 +38,6 @@ int main(int argc, char**argv) {
   delete w;
   org::esb::hive::DatabaseService::stop();
   Config::close();
-  logdebug("close log");
+  LOGDEBUG("close log");
   Log::close();
 }

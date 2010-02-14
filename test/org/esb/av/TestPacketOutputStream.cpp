@@ -40,7 +40,7 @@ trg.append("/test-out.dvd");
     dec.setHeight(c->height);
     dec.ctx->request_channel_layout = 2;
     dec.open();
-    logdebug(dec.toString());
+    LOGDEBUG(dec.toString());
 
     Encoder enc(c->codec_id);
     enc.setChannels(c->channels);
@@ -54,7 +54,7 @@ trg.append("/test-out.dvd");
     enc.setHeight(c->height);
     enc.ctx->request_channel_layout = 2;
     enc.open();
-    logdebug(enc.toString());
+    LOGDEBUG(enc.toString());
 
     pos.setEncoder(enc,0);
     pos.init();

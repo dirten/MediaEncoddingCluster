@@ -35,7 +35,7 @@ public:
 
   void write(void * p) {
 
-    logdebug("Write Packet to Term Sink");
+    LOGDEBUG("Write Packet to Term Sink");
     Packet* pt = (Packet*) p;
     boost::shared_ptr<Packet> pEnc(new Packet(*pt));
     pkts.push_back(pEnc);
@@ -80,7 +80,7 @@ int main(int argc, char ** argv) {
 
   AVCodecContext * c = fis.getFormatContext()->streams[stream_id]->codec;
   Decoder dec(c->codec_id); //CODEC_ID_EAC3
-  logdebug("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
+  LOGDEBUG("ChannelLayout:" << fis.getFormatContext()->streams[stream_id]->codec->channel_layout)
   //    Decoder dec(c);
 
 
@@ -98,7 +98,7 @@ int main(int argc, char ** argv) {
 
 
 
-  logdebug(dec.toString());
+  LOGDEBUG(dec.toString());
 
   //  Encoder enc(CODEC_ID_VORBIS);
   Encoder enc(CODEC_ID_MP3);
@@ -114,8 +114,8 @@ int main(int argc, char ** argv) {
   //  enc.setPixelFormat(PIX_FMT_YUV420P);
   //  enc.ctx->bits_per_raw_sample=dec.ctx
   enc.open();
-  logdebug(enc.toString());
-  logdebug("Encoder Frame Size:" << enc.ctx->frame_size);
+  LOGDEBUG(enc.toString());
+  LOGDEBUG("Encoder Frame Size:" << enc.ctx->frame_size);
 
 
   pos.setEncoder(enc, 0);

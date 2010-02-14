@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   AVCodecContext * c = fis.getFormatContext()->streams[stream_index]->codec;
   Decoder *dec;
   if (true) {
-    dec = new Decoder(c);
+    dec = new Decoder(fis.getAVStream(stream_index));
   } else {
     std::cout << "CodecId" << c->codec_id << std::endl;
     dec = new Decoder(c->codec_id);
