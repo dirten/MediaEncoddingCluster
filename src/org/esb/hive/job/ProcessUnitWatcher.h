@@ -98,7 +98,8 @@ namespace org {
           static boost::mutex get_pu_mutex;
           static boost::mutex get_stream_pu_mutex;
           static org::esb::sql::PreparedStatement * _stmt_fr;
-
+          static org::esb::sql::PreparedStatement * _stmt_jd;
+          static AVRational basear;
           struct StreamData {
             int instream;
             int outstream;
