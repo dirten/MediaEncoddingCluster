@@ -91,8 +91,8 @@ void loadTestFile(std::string testfile, std::string p) {
   outdir += "/export/";
   char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
   jobcreator(4, jobarg);
-  sql::Connection con_a(config::Config::getProperty("db.connection"));
-  con_a.executeNonQuery(string("delete from streams where fileid=2 and stream_type=1"));
+//  sql::Connection con_a(config::Config::getProperty("db.connection"));
+//  con_a.executeNonQuery(string("delete from streams where fileid=2 and stream_type=1"));
 //  con_a.executeNonQuery(string("update streams set stream_index=0 where fileid=2 and stream_type=1"));
 }
 
