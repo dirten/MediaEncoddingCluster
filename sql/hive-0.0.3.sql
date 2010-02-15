@@ -114,6 +114,8 @@ CREATE TABLE IF NOT EXISTS `job_details` (
   `job_id` int(11) DEFAULT NULL,
   `instream` int(11) DEFAULT NULL,
   `outstream` int(11) DEFAULT NULL,
+  `last_pts` bigint(20) DEFAULT 0,
+  `last_dts` bigint(20) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
