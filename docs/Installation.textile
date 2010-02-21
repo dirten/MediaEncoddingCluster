@@ -1,0 +1,163 @@
+= Installation =
+The Build Version comes with all dependencies included, no additional Installation or other Programms are needed, i.e. !MySql nor ffmpeg needs  to be extra installed!
+
+ The Installers will build a Directory structure on all plattforms like the following:
+{{{
+INSTALL_BASE/bin
+            /dmp
+            /hive
+            /res
+            /sql
+            /web
+            /tmp
+}}}
+ - In the "bin"  Directory will be the mhive executable directory. 
+ - In the "dmp"  Directory will be the MiniDumps when the application crashes.
+ - In the "hive" Directory will be the MySQL Tables to store the Meta Information.
+ - In the "res"  Directory will be the Message Resource Bundle for the different Langauge Packs.
+ - In the "sql"  Directory will be the SQL Scripts to create the database Tables.
+ - In the "web"  Directory will be the static Resources for Web Administration Util.
+ - In the "tmp"  Directory will be the Encoded Chunks that will be used for the Resulting Video.
+
+== Installation on Windows ==
+ 1. [http://codergrid.de/index.php/downloads Download the latest Package ]
+ 2. To install Media Encoding Cluster on Windows, double-click the installer file and follow the instructions on the screen.
+ 3. thats all, now you can go to first start the System on Windows
+ 
+== Installation on GNU/Linux ==
+ 1. first [http://codergrid.de/index.php/downloads Download the latest Package ]
+ 2. To install the server on Linux and Unix based systems, such as Ubuntu, open a terminal window. Download MediaEncodingCluster-Linux-xxx.sh (xxx is a placeholder for the version)    to any directory, and execute the self extracting installer: sudo chmod    +x MediaEncodingCluster-Linux-xxx.sh sudo    ./MediaEncodingCluster-Linux-xxx.sh
+ 3. thats all, now you can go to first start the System on GNU/Linux
+
+== Installation on Mac OS X ==
+ 1. [http://codergrid.de/index.php/downloads Download the latest Package ]
+ 2. Execute the Installer by double click on !MediaEncodingCluster-Setup-x.x.x.dmg
+ 3. thats all, now you can go to first start the System on Mac OS X
+
+= Starting and Stopping the Server =
+== Windows ==
+=== Start on Windows Command Prompt ===
+On Windows, Media Encoding Cluster can be started and stopped from
+a DOS command prompt. To start the server from a DOS command prompt, open
+a DOS command prompt. Change directory (cd) to the bin directory of the
+server installation. The default location for this folder is: cd
+MECINSTALLDIR\bin To start the server, type in .\mhive -r and hit
+return. The startup contains all the server logging statements. 
+
+=== Stop on Windows Command Prompt ===
+To shutdown the server hit "ctrl-c" on the console window. The server can
+also be started and stopped from the Start menu using the Server Startup
+and Server Shutdown menu items in the Programs > Media Encoding Cluster
+program group.
+
+=== Start as Windows Service ===
+To start the server as a Windows service, open the
+Settings>Control Panel>Administrative Tools>Services
+administrative tool and locate the Media Encoding Cluster entry in the
+list. Next, right click on the entry and select Start from the context
+menu.
+
+=== Stop the Windows Service ===
+To stop the server select Stop from the same context menu. To
+configure the service to run each time Windows restarts, select
+Properties from the right click context menu, set Startup type to
+Automatic and click the OK button to close the dialog.
+
+== GNU/Linux ==
+=== Start on GNU/Linux ===
+On GNU/Linux, Media Encoding Cluster can be started and stopped from
+a Terminal command prompt. To start the server from a Terminal command prompt, open
+a Terminal command prompt. Change directory (cd) to the bin directory of the
+server installation. The default location for this folder is: cd
+[INSTALLDIR]\bin, to start the server, type in .\mhive -r and hit
+return. The startup contains all the server logging statements. 
+
+=== Stop on GNU/Linux ===
+To shutdown the Server hit "ctrl-c" on the Terminal window.
+
+== Mac OS X ==
+=== Start on Mac OS X ===
+On Mac OS X, Media Encoding Cluster can be started and stopped from
+a Terminal command prompt. To start the server from a Terminal command prompt, open
+a Terminal command prompt. Change directory (cd) to the bin directory of the
+server installation. The default location for this folder is: cd
+[INSTALLDIR]\bin, to start the server, type in .\mhive -r and hit
+return. The startup contains all the server logging statements. 
+
+=== Stop on Mac OS X ===
+To shutdown the Server hit "ctrl-c" on the Terminal window.
+
+= Starting and Stopping the Client =
+== Windows ==
+=== Start on Windows Command Prompt ===
+On Windows, Media Encoding Cluster Client can be started and stopped from
+a DOS command prompt. To start the Client from a DOS command prompt, open
+a DOS command prompt. Change directory (cd) to the bin directory of the
+installation. The default location for this folder is: cd
+[INSTALLDIR]\bin To start the Client, type in .\mhive -i -h <hostip/hostaddress> -p <port> and hit
+return. The hostip/hostadress and port paramerter are used when you want to connect the client to a remote Server,
+hostip/hostaddress defaults to "localhost" and the port defaults to 20200.
+
+=== Stop on Windows Command Prompt ===
+To shutdown the server hit "ctrl-c" on the console window. The server can
+also be started and stopped from the Start menu using the Server Startup
+and Server Shutdown menu items in the Programs > Media Encoding Cluster
+program group.
+
+== GNU/Linux ==
+=== Start on GNU/Linux ===
+On GNU/Linux, Media Encoding Cluster Client can be started and stopped from
+a Terminal command prompt. To start the Client from a Terminal command prompt, open
+a Terminal command prompt. Change directory (cd) to the bin directory of the
+installation. The default location for this folder is: cd [INSTALLDIR]\bin To start the Client, 
+type in .\mhive -i -h <hostip/hostaddress> -p <port> and hit return. 
+The hostip/hostadress and port paramerter are used when you want to connect the client to a remote Server,
+hostip/hostaddress defaults to "localhost" and the port defaults to 20200.
+
+=== Stop on GNU/Linux ===
+To shutdown the Server hit "ctrl-c" on the Terminal window.
+
+== Mac OS X ==
+=== Start on Mac OS X ===
+On Mac OS X, Media Encoding Cluster Client can be started and stopped from
+a Terminal command prompt. To start the Client from a Terminal command prompt, open
+a Terminal command prompt. Change directory (cd) to the bin directory of the
+installation. The default location for this folder is: cd [INSTALLDIR]\bin To start the Client, 
+type in .\mhive -i -h <hostip/hostaddress> -p <port> and hit return. 
+The hostip/hostadress and port paramerter are used when you want to connect the client to a remote Server,
+hostip/hostaddress defaults to "localhost" and the port defaults to 20200.
+
+=== Stop on Mac OS X ===
+To shutdown the Server hit "ctrl-c" on the Terminal window.
+
+= Configuration =
+the configuration is started, when you access the admin page the
+first time, you will be guided through the configuration steps. The
+Configuration will setup internal database and write the essential
+config Files.
+The Configuration Procedure is the same on all Plattforms.
+
+= My first Encoding =
+
+== define a Watchfolder ==
+Create a Watchfolder, selecting a Directory from which the Files come to Encode, 
+select a Directory to write the Encoded Files to and        
+select a Profile in which the Source Files will be Encoded to.
+Optional you can define a File Filter suffix like "avi".
+every 10 sec. the Watchfolder will searched for new Files, 
+when new Files will be imported, there are visible in the Files Section under Imported Files.
+Under the Encodings Menu you can see the Encoding Processes and in which state there are.
+When the Encoding is finished then the Encoded Files will be created in the Directory which was defined in the Watchfolder Configuration.
+
+= System Description =
+== Main Concept of the Media Encoding Cluster ==
+The Media Encoding Cluster is mainly used to Transcode multiple
+Media Files from one Format into an other Format, these formats will be
+described by a Profile. To Transcode one File into an other Format, it
+will be performed over some Watchfolder, watchfolders will be
+permanently scanned and new Files found in these folders will be
+imported into the Cluster, these watchfolder can be connected to a
+Profile, a Profile is mainly the Target Format in which these files will
+be encoded to. The Watchfolder have a parameter called Output Folder,
+these folder will be used to write the successfull encoded Files
+into.

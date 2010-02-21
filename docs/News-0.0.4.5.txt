@@ -1,0 +1,12 @@
+Media Encoding Cluster 0.0.4.5 Released
+
+Media Encoding Cluster is the first Open Source Cluster Encoding Solution that is written in  C/C++ for distributed Media(Video and Audio) Encoding.
+
+Media Encoding Cluster is an extensible video encoder, which uses a lightweight peer-to-peer grid to leverage the processing power of regular PCs for the purpose of distributing the encoding of highly compressed video, for example MPEG4 and H.264
+
+It distributes Video Chunks over the Network to Client Nodes and parallelize the Encoding Task for one File over even more than one Computer to reduce the Encoding Time per File.
+
+This Release have many solved bugs and performance issues but it is allways in an alpha state, please feel free to Download the Media Encoding Cluster from http://codergrid.de/index.php/downloads and test this out.
+
+If you find something not working as expected, or you have suggestions about ways to improve the current build, please open a new Ticket or using our Forum.
+

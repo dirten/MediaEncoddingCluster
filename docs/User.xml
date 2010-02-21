@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <?altova_sps C:\Programme\Altova\Authentic2008\sps\Template\Publishing\DocBook.sps?>
 <book>
   <bookinfo>
@@ -35,7 +35,7 @@
       complexity of modern audio/video codecs. The Media Encoding Cluster uses
       a peer-to-peer network as a substrate for sharing the processing power
       of regular PCs for the purpose of encoding video. This allows nodes the
-      easy construction of video encoding ‘farms’ from cheap standard
+      easy construction of video encoding farms from cheap standard
       PCs.</para>
     </section>
 
@@ -377,7 +377,7 @@
       <title>is the Software Production Ready</title>
 
       <para>No! We are in the beginning time to distribute the Software, there
-      are many hidden Bugs in that, that can result in an unknown behavior of
+      are many unknown Bugs in there, that can result in an unknown behavior of
       your System.</para>
     </section>
   </chapter>
