@@ -21,6 +21,7 @@ public:
 
   void onNodeUp(Node & node){
     LOGDEBUG("NodeUp:"<<node.toString());
+    LOGDEBUG("NodeData "<<node.getData("type"));
   }
   
   void onNodeDown(Node & node){
@@ -30,9 +31,18 @@ public:
 
 int main(int argc, char** argv) {
   Log::open("");
-  NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"), 6000);
+
+  Node node;
+  if(argc>1)
+    node.setData("test1","test2");
+  else{
+    node.setData("test1","test1");
+  }
+
+  NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
 //  NodeReceiver receiver(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"));
 //  NodeSender sender(boost::asio::ip::address::from_string("239.255.0.1"));
+//  res.setNode(node);
   NodeAgent agent;
   res.setNodeListener(&agent);
   res.start();
