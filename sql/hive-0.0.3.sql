@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) DEFAULT NULL,
   `path` varchar(255) NOT NULL,
-  `size` int(11) NOT NULL DEFAULT '0',
+  `size` bigint(20) NOT NULL DEFAULT '0',
   `stream_count` int(2) NOT NULL DEFAULT '0',
   `container_type` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,

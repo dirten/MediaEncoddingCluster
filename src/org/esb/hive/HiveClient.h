@@ -9,18 +9,21 @@
 #include "string"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/net/TcpSocket.h"
-#include "org/esb/signal/MessageListener.h"
-#include "org/esb/signal/Message.h"
 //#include "org/esb/hive/job/ProcessUnit.h"
 //#include "org/esb/util/Queue.h"
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
+#include "org/esb/signal/MessageListener.h"
+#include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
+
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
     namespace esb {
+      namespace net{
+        class TcpSocket;
+      }
         namespace hive {
 
             class HiveClient : public org::esb::signal::MessageListener {

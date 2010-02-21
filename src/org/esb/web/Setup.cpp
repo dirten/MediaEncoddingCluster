@@ -557,7 +557,12 @@ namespace org {
           try {
             std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
             sql_script.append("/../sql/hive-0.0.3.sql");
-
+            hive::Setup::buildDatabaseModel(sql_script.c_str());
+            /**
+            * Update database model
+            */
+            sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
+            sql_script.append("/../sql/hive-0.0.4.sql");
             hive::Setup::buildDatabaseModel(sql_script.c_str());
           } catch (sql::SqlException & ex) {
             LOGERROR("SqlException:" << ex.what());

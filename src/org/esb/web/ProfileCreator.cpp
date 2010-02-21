@@ -314,14 +314,17 @@ namespace org {
             v_framerate->addItem(t2);
           }
         }
-
+        /**
+        * this will be implemented in the 0.0.4.7 Release
+        */
+        /*
         Wt::Ext::ComboBox * v_aspect = _elcb.addElement("v_aspect_ratio", "Aspect Ratio", "", l);
         v_aspect->setTextSize(50);
         v_aspect->addItem("Use Width and Height defined below");
         v_aspect->addItem("Keep Aspect Ratio from Source");
         v_aspect->addItem("Use 4:3");
         v_aspect->addItem("Use 16:9");
-
+        */
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
 

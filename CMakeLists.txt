@@ -217,6 +217,7 @@ SET(LOG4CPLUS_DIR ${USERLIB_ROOT} CACHE PATH "Log4cplus libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
+SET(ICE_DIR ${USERLIB_ROOT} CACHE PATH "Ice Grid Directory")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 
@@ -239,6 +240,7 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
 add_subdirectory (src)
 add_subdirectory (test)
+#add_subdirectory (ice)
 
 INCLUDE(CPack)
 

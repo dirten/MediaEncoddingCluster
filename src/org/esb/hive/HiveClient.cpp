@@ -1,16 +1,17 @@
-#include "HiveClient.h"
 //#include "org/esb/net/TcpSocket.h"
 //#include "org/esb/io/ObjectOutputStream.h"
 //#include "org/esb/io/ObjectInputStream.h"
+#include "org/esb/net/TcpSocket.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 #include "org/esb/lang/Thread.h"
-
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/shared_ptr.hpp>
-#include "org/esb/util/Log.h"
 #include "org/esb/av/FormatBaseStream.h"
+//#include "org/esb/util/Log.h"
+#include "HiveClient.h"
+
 
 
 //#include "Version.h"
@@ -99,11 +100,11 @@ namespace org {
                 break;
               }
               unit->process();
-              /**
-               * clear the input packets, there are no more nedded
-               * they only consumes Network bandwidth and cpu on the server
-               */
-//              unit->_input_packets.clear();
+			  /**
+			  * clear the input packets, they are no more nedded
+			  * they only consumes Network bandwidth and cpu on the server
+			  */
+			  unit->_input_packets.clear();
 
               char * text_out = "put process_unit";
               try {

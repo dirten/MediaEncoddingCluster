@@ -6,10 +6,10 @@
  */
 #ifndef _HIVECLIENTAUDIO_H
 #define	_HIVECLIENTAUDIO_H
+#include "org/esb/net/TcpSocket.h"
 #include "string"
 #include "org/esb/io/ObjectOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/net/TcpSocket.h"
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/av/Decoder.h"

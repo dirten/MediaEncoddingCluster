@@ -168,7 +168,7 @@ int Encoder::encodeAudio(Frame & frame) {
   if (ctx->frame_size > 1) {
     int frame_bytes = ctx->frame_size * osize * ctx->channels;
     if (av_fifo_realloc2(fifo, av_fifo_size(fifo) + frame._size) < 0) {
-      LOGERROR( "av_fifo_realloc2() failed");
+      LOGERROR( "av_fifo_realloc2() failed current_size="<<av_fifo_size(fifo) << " adding="<<frame._size);
       //      fprintf(stderr, "av_fifo_realloc2() failed\n");
     }
     av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
