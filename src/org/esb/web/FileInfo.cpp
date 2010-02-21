@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_WEB_FILEINFO
 #define ORG_ESB_WEB_FILEINFO
 #include <Wt/WContainerWidget>
+#include <Wt/WScrollArea>
 #include <Wt/WText>
 #include <Wt/WLength>
 #include <Wt/WTable>
@@ -37,9 +38,9 @@ namespace org {
           setTitle("File Details");
           Wt::WFitLayout * f = new Wt::WFitLayout();
           setLayout(f);
-
           Wt::WContainerWidget * p = new Wt::WContainerWidget();
-          f->addWidget(p);
+          p->setOverflow(Wt::WContainerWidget::OverflowScroll);
+
           Wt::WGridLayout * l = new Wt::WGridLayout();
           p->setLayout(l);
           wtk::ElementContainer<Wt::WText> el;

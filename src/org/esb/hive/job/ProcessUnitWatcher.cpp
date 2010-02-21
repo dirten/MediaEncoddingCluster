@@ -332,14 +332,14 @@ namespace org {
               /**
                * cleaning up allocated resources
                */
-              /*
-              map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
-              for (; it != _stream_map.end(); it++) {
-              CodecFactory::clearCodec(it->second.instream);
-              CodecFactory::clearCodec(it->second.outstream);
-              }*/
+
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
+              map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+              for (; it != _stream_map.end(); it++) {
+                CodecFactory::clearCodec(it->second.instream);
+                CodecFactory::clearCodec(it->second.outstream);
+              }
 
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");

@@ -55,7 +55,7 @@ public:
                  */
                 virtual void write(char * buffer, int length)=0;
                 virtual void write(string & str){std::cout << "OutputStream::write not implemented!!!";}
-                virtual void write(vector<unsigned char>&buffer)=0;
+                virtual void write(vector<unsigned char>&buffer){std::cout << "OutputStream::write(vector<unsigned char>&buffer) not implemented!!!";};
 
                 /**
                  * Writes <code>len</code> bytes from the specified byte array 

@@ -79,6 +79,7 @@
 #endif  // !_WIN32
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/StackDumper.h"
+#include "org/esb/hive/NodeResolver.h"
 #define TO_STRING(s) #s
 using namespace org::esb::net;
 using namespace org::esb::io;
@@ -114,8 +115,8 @@ int euclid(int a, int b){
 int main(int argc, char * argv[]) {
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
-  
-  
+
+
   //  logdebug(f.getPath());
   std::string s = f.getFilePath();
   char * path = new char[s.length() + 1];
@@ -128,11 +129,11 @@ int main(int argc, char * argv[]) {
   char * base_path = new char[sb.length() + 1];
   memset(base_path, 0, sb.length() + 1);
   strcpy(base_path, sb.c_str());
-  std::string logconfigpath=sb;
+  std::string logconfigpath = sb;
   logconfigpath.append("/res");
 
   Log::open(logconfigpath);
-//  Log::open();
+  //  Log::open();
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -341,6 +342,7 @@ int main(int argc, char * argv[]) {
   org::esb::hive::DatabaseService::stop();
 
   org::esb::config::Config::close();
+  LOGINFO("MHive is not running anymore!!!")
   Log::close();
   //  mysql_server_end();
 
@@ -361,7 +363,7 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
     case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
-      LOGDEBUG("Hive","ctlc event");
+      LOGDEBUG("Hive", "ctlc event");
       ctrlCHit.notify_all(); // should be just 1
 
       //      serverStopped.wait(terminationLock);
@@ -630,27 +632,76 @@ void ctrlCHitWait() {
 
 #endif
 
+class NodeAgent : public NodeListener {
+
+  classlogger("NodeListener")
+public:
+
+  void onNodeUp(Node & node) {
+    LOGDEBUG("NodeUp:" << node.toString());
+    LOGDEBUG("NodeData " << node.getData("type"));
+    if (node.getData("type") == "server") {
+      string host = node.getIpAddress().to_string();
+      int port = atoi(node.getData("port").c_str());
+      /**
+       * @TODO: this is a memleak here, the created objects must be deleted
+       * 
+       */
+      org::esb::hive::HiveClient *client=new org::esb::hive::HiveClient(host, port);
+      Messenger::getInstance().addMessageListener(*client);
+
+      Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+
+      org::esb::hive::HiveClientAudio *clientaudio=new org::esb::hive::HiveClientAudio(host, port);
+      Messenger::getInstance().addMessageListener(*clientaudio);
+
+      Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
+/*
+      org::esb::hive::HiveClient client(host, port);
+      client.start();
+ */
+    }
+  }
+
+  void onNodeDown(Node & node) {
+    LOGDEBUG("NodeDown:" << node.toString());
+  }
+};
+
 void client(int argc, char *argv[]) {
+  org::esb::hive::Node node;
+  node.setData("type", "client");
+  node.setData("version", "0.0.4.5");
+  org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  NodeAgent agent;
+  res.setNodeListener(&agent);
+  res.start();
+  /*
+    org::esb::hive::NodeResolver::NodeList nodes=res.getNodes();
+    org::esb::hive::NodeResolver::NodeList::iterator it=nodes.begin();
+    for(;it!=nodes.end();it++){
+      LOGDEBUG((*it)->getData("type"));
+    }
 
 
-  string host = org::esb::config::Config::getProperty("client.host", "localhost");
-  int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
+    string host = org::esb::config::Config::getProperty("client.host", "localhost");
+    int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
 
-  org::esb::hive::HiveClient client(host, port);
-  Messenger::getInstance().addMessageListener(client);
+    org::esb::hive::HiveClient client(host, port);
+    Messenger::getInstance().addMessageListener(client);
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
+    Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
 
-  org::esb::hive::HiveClientAudio clientaudio(host, port);
-  Messenger::getInstance().addMessageListener(clientaudio);
+    org::esb::hive::HiveClientAudio clientaudio(host, port);
+    Messenger::getInstance().addMessageListener(clientaudio);
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
-
+    Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
+   */
   ctrlCHitWait();
 
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
-  Messenger::free();
+  //  Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+  //  Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
+  //  Messenger::free();
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -772,6 +823,12 @@ void stop() {
 
 void listener(int argc, char *argv[]) {
 
+  org::esb::hive::Node node;
+  node.setData("type", "server");
+  node.setData("version", "0.0.4.5");
+  node.setData("port", org::esb::config::Config::getProperty("client.port", "20200"));
+  org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  res.start();
   //  Setup::check();
 #ifdef WIN32
   if (std::string(Config::getProperty("hive.start_as")) == "daemon") {

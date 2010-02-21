@@ -31,18 +31,32 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <iostream>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <fstream>
+#include <sstream>
+#include <exception>
+
+
 //#include "boost/date_time/gregorian/gregorian.hpp"
 
 namespace org {
   namespace esb {
     namespace hive {
 
-      Node::Node(boost::asio::ip::udp::endpoint & ep) {
+      Node::Node() {
+        _name = "null";
+        _status = NODE_UP;
+        _last_activity = boost::posix_time::second_clock::local_time();
+      }
+
+      Node::Node(boost::asio::ip::udp::endpoint & ep, std::string data) {
         _ep = ep;
         _ipaddress = ep.address();
         _name = "null";
         _last_activity = boost::posix_time::second_clock::local_time();
         _status = NODE_UP;
+
       }
 
       std::string Node::toString() {
@@ -54,8 +68,21 @@ namespace org {
         return oss.str();
       }
 
+      std::string Node::getData(std::string key) {
+        return _node_data[key];
+      }
+
+      void Node::setData(std::string key, std::string value) {
+        _node_data[key] = value;
+      }
+
+      void Node::setEndpoint(boost::asio::ip::udp::endpoint ep) {
+        _ep = ep;
+        //        _ipaddress = ep.address();
+      }
+
       const boost::asio::ip::address Node::getIpAddress()const {
-        return _ipaddress;
+        return _ep.address();
       }
 
       bool Node::operator==(const Node&a)const {
@@ -68,13 +95,19 @@ namespace org {
         return _ep == a->_ep;
       }
 
-      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port) :
+      NodeResolver::NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int port, Node node) :
       _node_timeout(5),
-      _message(),
       send_endpoint_(multicast_address, port),
       send_socket_(send_service_, send_endpoint_.protocol()),
       send_timer_(send_service_),
       recv_socket_(recv_service_) {
+        memset(&data_, 0, max_length);
+        _self = node;
+        std::ostringstream archive_stream;
+        boost::archive::binary_oarchive archive(archive_stream);
+        archive << _self;
+        message_ = archive_stream.str();
+
         send_socket_.async_send_to(
             boost::asio::buffer(message_), send_endpoint_,
             boost::bind(&NodeResolver::handle_send, this,
@@ -97,6 +130,10 @@ namespace org {
 
       }
 
+      void NodeResolver::setNode(Node node) {
+      }
+      
+
       void NodeResolver::handle_send(const boost::system::error_code& error) {
         if (!error) {
           send_timer_.expires_from_now(boost::posix_time::seconds(1));
@@ -113,7 +150,7 @@ namespace org {
         if (!error) {
 
           send_socket_.async_send_to(
-              boost::asio::buffer(_message), send_endpoint_,
+              boost::asio::buffer(message_), send_endpoint_,
               boost::bind(&NodeResolver::handle_send, this,
               boost::asio::placeholders::error));
         }
@@ -122,14 +159,27 @@ namespace org {
 
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
         if (!error) {
-          boost::shared_ptr<Node> nodePtr = boost::shared_ptr<Node > (new Node(recv_endpoint_));
+          boost::shared_ptr<Node> nodePtr = boost::shared_ptr<Node > (new Node());
+
+          if (bytes_recvd > 0) {
+            std::string tmp(data_, bytes_recvd);
+            std::istringstream archive_stream(tmp);
+            try {
+            boost::archive::binary_iarchive archive(archive_stream);
+              archive >> *nodePtr.get();
+            } catch (std::exception & ex) {
+
+              LOGERROR("Exception reading archive:" << ex.what());
+            }
+          }
+          nodePtr->setEndpoint(recv_endpoint_);
+
           bool contains = false;
           std::list<boost::shared_ptr<Node> >::iterator it = _nodes.begin();
           for (; it != _nodes.end(); it++) {
             boost::posix_time::ptime actual_time = boost::posix_time::second_clock::local_time();
             if ((*it)->_last_activity + boost::posix_time::seconds(_node_timeout) < actual_time) {
               if ((*it)->_status == Node::NODE_UP) {
-                //                logdebug("Node TimeOut:" << (*it));
                 (*it)->_status = Node::NODE_DOWN;
                 notifyListener(*(*it));
               }
@@ -137,11 +187,9 @@ namespace org {
             if (*(*it) == *nodePtr) {
               contains = true;
               (*it)->_last_activity = actual_time;
-              //              break;
             }
           }
           if (!contains) {
-            //            logdebug("New Node found" << recv_endpoint_);
             _nodes.push_back(nodePtr);
             notifyListener(*nodePtr);
           }

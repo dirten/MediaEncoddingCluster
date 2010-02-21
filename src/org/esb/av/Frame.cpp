@@ -304,6 +304,14 @@ void Frame::setTimeBase(AVRational t) {
 AVRational Frame::getTimeBase() {
   return _time_base;
 }
+
+AVRational Frame::getPixelAspectRatio() {
+  return _pixel_aspect_ratio;
+}
+
+void Frame::setPixelAspectRatio(AVRational par) {
+_pixel_aspect_ratio=par;
+}
 //P->S:1732:Pts:127800:Dts:124200:Index:0:Dur:3600:Pos:-1:TBase:1/90000:F:0:KF0
 
 std::string Frame::toString() {

@@ -11,6 +11,8 @@ add_library (io File.cpp
       BufferedInputStream.cpp 
       ObjectOutputStream.cpp 
       ObjectInputStream.cpp
+      StringInputStream.cpp
+      StringOutputStream.cpp
 )
 TARGET_LINK_LIBRARIES(io
   ${BOOST_FS_LIB_MT}

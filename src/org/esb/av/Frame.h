@@ -40,6 +40,8 @@ namespace org {
         std::string toString();
         void setTimeBase(AVRational);
         AVRational getTimeBase();
+        AVRational getPixelAspectRatio();
+        void setPixelAspectRatio(AVRational);
         void dumpHex();
         int getFrameCount();
         void setFrameCount(int d);
@@ -59,6 +61,7 @@ namespace org {
         int64_t _pts;
         boost::shared_ptr<AVFrame> framePtr;
         AVRational _time_base;
+        AVRational _pixel_aspect_ratio;
         int _frames;
       public:
         bool _allocated;

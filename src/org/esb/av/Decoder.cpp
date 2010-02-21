@@ -1,29 +1,29 @@
 /*----------------------------------------------------------------------
-*  File    : Decoder.cpp
-*  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
-*  Purpose :
-*  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
-*
-*
-* MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
-*
-* This program is free software; you can redistribute it and/or
-*  modify it under the terms of the GNU General Public License as
-*  published by the Free Software Foundation; either version 2 of the
-*  License, or (at your option) any later version.
-*
-*  This program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*  General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with this program; if not, write to the Free Software
-*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-*  02111-1307 USA
-*
-* ----------------------------------------------------------------------
-*/
+ *  File    : Decoder.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 6. November 2009, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
 #include "Decoder.h"
 #include "Frame.h"
 #include <iostream>
@@ -73,7 +73,7 @@ Frame Decoder::decodeLast() {
     cout <<"Frame not finished in second try!!!!!"<<endl;
     return Frame();
     }
-    */
+     */
     //      return Frame();
   }
 #endif
@@ -111,7 +111,7 @@ if (bytesDecoded < 0) {
 fprintf(stderr, "Error while decoding frame\n");
 }
 }
-*/
+ */
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("Decode Video");
@@ -123,26 +123,36 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
-    avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
+      avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
-  if (false&&_last_pts == AV_NOPTS_VALUE) {
+  if (false && _last_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
     LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-      << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
   LOGDEBUG("BytesDecoded:" << bytesDecoded);
+  frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
+  LOGDEBUG("PAR " << ctx->sample_aspect_ratio.num << "/" << ctx->sample_aspect_ratio.den);
+  LOGDEBUG("RES " << ctx->coded_width << "/" << ctx->coded_height);
+  AVRational display_aspect_ratio;
+  av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+      ctx->width * ctx->sample_aspect_ratio.num,
+      ctx->height * ctx->sample_aspect_ratio.den,
+      1024 * 1024);
+  LOGDEBUG("DAR " << display_aspect_ratio.num << "/" << display_aspect_ratio.den);
+
   if (bytesDecoded < 0) {
     LOGERROR("Error while decoding frame");
   }
   /**
-  * if frame is not finished, returns the blank frame
-  * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
-  */
+   * if frame is not finished, returns the blank frame
+   * the calling process of decode must ensure to check if the returning frame isFinished by calling the Method isFinished()
+   */
   if (!_frameFinished) {
     return frame;
   }
@@ -162,11 +172,11 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #else
   frame->setTimeBase(ctx->time_base);
   // calculating the duration of the decoded packet
-//    int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
-//  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
+  //    int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
+  //  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
   AVRational ar;
-  ar.num=_frame_rate.den;
-  ar.den=_frame_rate.num;
+  ar.num = _frame_rate.den;
+  ar.den = _frame_rate.num;
   int64_t dur = av_rescale_q(1, ar, ctx->time_base);
 #endif
 
@@ -195,7 +205,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
   int bps = av_get_bits_per_sample_format(ctx->sample_fmt) >> 3;
 
-  uint8_t *outbuf = static_cast<uint8_t*>( av_malloc(samples_size));
+  uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (_next_pts == AV_NOPTS_VALUE) {
@@ -206,7 +216,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 #endif
 
     LOGDEBUG("setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-      << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {
@@ -262,8 +272,8 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 }
 
 /**
-* returns the last Encoded Timestamp
-*/
+ * returns the last Encoded Timestamp
+ */
 int64_t Decoder::getLastTimeStamp() {
   return _last_pts;
 }

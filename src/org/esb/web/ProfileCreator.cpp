@@ -1,6 +1,7 @@
 
 #include "ProfileCreator.h"
 #include "Wt/Ext/Panel"
+#include "Wt/Ext/CheckBox"
 #include "Wt/Ext/TabWidget"
 #include "Wt/Ext/Button"
 #include "Wt/WBorderLayout"
@@ -284,6 +285,7 @@ namespace org {
       ProfileCreator::VideoPanel::VideoPanel() : BasePanel() {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
         Wt::Ext::ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", l);
+//        Wt::Ext::CheckBox * v_codec = _elchkb.addElement("v_aspect_ration", "Codec", "", l);
         v_codec->setTextSize(50);
         //        v_codec->resize(180, Wt::WLength::Auto);
         AVCodec *p = NULL;
@@ -312,6 +314,14 @@ namespace org {
             v_framerate->addItem(t2);
           }
         }
+
+        Wt::Ext::ComboBox * v_aspect = _elcb.addElement("v_aspect_ratio", "Aspect Ratio", "", l);
+        v_aspect->setTextSize(50);
+        v_aspect->addItem("Use Width and Height defined below");
+        v_aspect->addItem("Keep Aspect Ratio from Source");
+        v_aspect->addItem("Use 4:3");
+        v_aspect->addItem("Use 16:9");
+
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
 

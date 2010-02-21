@@ -124,9 +124,11 @@ void CodecFactory::free() {
 
 void CodecFactory::clearCodec(int streamid) {
   if (decoder_map.find(streamid) != decoder_map.end()) {
+    decoder_map[streamid].reset();
     decoder_map.erase(streamid);
   }
   if (encoder_map.find(streamid) != encoder_map.end()) {
+    encoder_map[streamid].reset();
     encoder_map.erase(streamid);
     //    delete (encoder_map.find(streamid)->second()->get());
   }

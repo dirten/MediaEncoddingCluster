@@ -33,6 +33,13 @@
 #include <list>
 #include "org/esb/util/Log.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
+//#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/binary_object.hpp>
+
+//#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/archive/binary_iarchive.hpp>
+#include <boost/serialization/map.hpp>
+#include <map>
 namespace org {
   namespace esb {
     namespace hive {
@@ -40,24 +47,34 @@ namespace org {
       class Node {
         classlogger("org.esb.hive.Node")
       public:
-        Node(boost::asio::ip::udp::endpoint & ep);
+        Node();
+        Node(boost::asio::ip::udp::endpoint & ep, std::string data);
         const boost::asio::ip::address getIpAddress()const;
         const boost::asio::ip::address getName()const;
         boost::asio::ip::udp::endpoint _ep;
         bool operator==(const Node & a)const;
         bool operator==(const Node * a)const;
         std::string toString();
+
         enum NODE_STATUS {
           NODE_UP,
           NODE_DOWN
         };
         NODE_STATUS _status;
-
+        std::string getData(std::string key);
+        void setData(std::string key, std::string value);
+        void setEndpoint(boost::asio::ip::udp::endpoint);
       private:
         boost::asio::ip::address _ipaddress;
         std::string _name;
+        std::map<std::string, std::string> _node_data;
         friend class NodeResolver;
         boost::posix_time::ptime _last_activity;
+      public:
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version) {
+          ar & _node_data;
+        }
       };
 
       class NodeListener {
@@ -72,12 +89,13 @@ namespace org {
         classlogger("org.esb.hive.NodeResolver")
       public:
         typedef std::list<boost::shared_ptr<Node> > NodeList;
-        NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int);
+        NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, Node);
         void setNodeListener(NodeListener * listener);
         void start();
         void stop();
         void setNodeTimeout(unsigned int sec);
         void setNodeMessage(std::string msg);
+        void setNode(Node);
         NodeList getNodes();
 
 
@@ -94,13 +112,13 @@ namespace org {
         boost::asio::deadline_timer send_timer_;
 
         enum {
-          max_length = 1024
+          max_length = 4096
         };
         char data_[max_length];
 
         int message_count_;
         std::string message_;
-
+        Node _self;
         NodeList _nodes;
         std::list<NodeListener*>_listener;
 

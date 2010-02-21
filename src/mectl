@@ -21,10 +21,12 @@ prog="MHiveService"
 #fi
 
 killproc() {            # kill the named process(es)
-        pid=`/usr/bin/ps -e |
-             /usr/bin/grep -w $1 |
-             /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-        [ "$pid" != "" ] && kill $pid
+        pid=`ps x |
+             grep -w $1 |
+             grep -v grep |
+             awk {'print $1'}`
+             echo $pid
+        [ "$pid" != "" ] && kill -15 $pid
 }
 unset COLUMNS
 checkproc(){
@@ -45,9 +47,11 @@ usage(){
 status_runtime(){
 	if checkproc "mhive"; then
 	    echo "Mhive Runtime is OFF"
+	    return 0
 #      action $"Running $prog" /bin/false
 	else
 	    echo "Mhive CLuster Runtime is ON"
+      return 1
 #      action $"Running $prog" /bin/true
 	fi
 }
@@ -74,9 +78,14 @@ stop_runtime(){
 }
 
 start_server(){
-#  RELDIR=$MHIVE_HOME/releases
-#  START_ERL_DATA=${1:-$RELDIR/start_erl.data}
-  $MHIVE_HOME/bin/mhive -d
+#    mhiveproc=checkproc "mhive"
+    if status_runtime; then
+      echo "starting mhive"
+      $MHIVE_HOME/bin/mhive -d &> /dev/null
+      else
+        echo "MHive Service is allready running!"
+        return
+    fi
   status_runtime
 }
 run_server(){

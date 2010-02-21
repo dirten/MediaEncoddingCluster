@@ -60,7 +60,7 @@ Log::~Log() {
 
 void Log::open(std::string path) {
   if (path.length() > 0) {
-    std::cout <<"logpath:"<< path<<std::endl;
+//    std::cout <<"logpath:"<< path<<std::endl;
     path.append("/logging.properties");
     globalConfigureThread = new log4cplus::ConfigureAndWatchThread(LOG4CPLUS_TEXT(path), 5 * 1000);
 	

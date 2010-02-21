@@ -93,7 +93,6 @@ namespace org {
         T * ElementContainer<T>::getRow(std::string name) {
           return _cont[name];
         }
-
         template <typename T>
         std::map<std::string, T*> ElementContainer<T>::getElements() {
           return _cont;

@@ -8,45 +8,45 @@
 //#include <sstream>
 #include "ObjectStream.h"
 #include "InputStream.h"
-//#include "org/esb/util/Log.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 namespace org {
-    namespace esb {
-        namespace io {
+  namespace esb {
+    namespace io {
 
-            class ObjectInputStream : public InputStream {
-            public:
-                ObjectInputStream(InputStream * is);
-                long long int available(bool isBlocking = false);
-                int read(unsigned char *buffer, int length);
-                int read(vector < unsigned char >&buffer);
-                int read();
+      class ObjectInputStream : public InputStream {
+        classlogger("org.esb.io.ObjectInputStream");
+      public:
+        ObjectInputStream(InputStream * is);
+        long long int available(bool isBlocking = false);
+        int read(unsigned char *buffer, int length);
+        int read(vector < unsigned char >&buffer);
+        int read();
 
-                template < typename T > int readObject(T & object) {
-                    string data;
-                    _is->read(data);
+        template < typename T > int readObject(T & object) {
+          string data;
+          _is->read(data);
 
-                    if (!(data.length() > 0)) {
-                        cout << "Fehler in der groesse INBOUND_DATA:" << data.
-                                length() << endl;
-                        return -1;
-                    }
-                    istringstream archive_stream(data);
-                    boost::archive::binary_iarchive archive(archive_stream);
-                    //boost::archive::text_iarchive archive(archive_stream);
-					try{
-                    archive >> object;
-					}catch(exception & ex){
-//						logerror("Exception reading archive:"<<ex.what());
-						return -1;
-					}
-					return 0;
+          if (!(data.length() > 0)) {
+            LOGERROR("Fehler in der groesse INBOUND_DATA:" << data.length());
+            return -1;
+          }
+          istringstream archive_stream(data);
+          boost::archive::binary_iarchive archive(archive_stream);
+          //boost::archive::text_iarchive archive(archive_stream);
+          try {
+            archive >> object;
+          } catch (exception & ex) {
+            LOGERROR("Exception reading archive:"<<ex.what());
+            return -1;
+          }
+          return 0;
 
-                }
-            private:
-                InputStream * _is;
-            };
         }
+      private:
+        InputStream * _is;
+      };
     }
+  }
 }
 #endif
