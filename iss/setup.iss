@@ -4,7 +4,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{EDC20B92-4C2B-441C-AF0B-AB3D658825D8}
 AppName=Media Encoding Cluster
-AppVerName=Media Encoding Cluster 0.0.4.5
+AppVerName=Media Encoding Cluster 0.0.4.6
 AppPublisher=CoderGrid
 AppPublisherURL=http://www.codergrid.de
 AppSupportURL=http://www.codergrid.de
@@ -13,7 +13,7 @@ DefaultDirName={pf}\MediaEncodingCluster
 DefaultGroupName=MediaEncodingCluster
 Compression=lzma
 SolidCompression=yes
-OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.5
+OutputBaseFilename=MediaEncodingCluster-Setup-0.0.4.6
 RestartIfNeededByRun=no
 
 [Code]
@@ -75,9 +75,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q"
 ;Filename: "{tmp}\vcredist_x86-2005-sp1.exe"; Parameters: "/q"
 ;Filename: "{app}/erts-/bin/epmd.exe" ; Parameters: "-daemon"
-;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-config releases/0.0.4.5/sys -eval ""setup:setup_windows_service(),init:stop()."" "; WorkingDir: "{app}"
-;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.5/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
-;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.5/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
+;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-config releases/0.0.4.6/sys -eval ""setup:setup_windows_service(),init:stop()."" "; WorkingDir: "{app}"
+;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.6/sys -eval ""setup:setup_win32(client,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseclient and not baseserver
+;Filename: "{app}/erts-/bin/erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.6/sys -eval ""setup:setup_win32(both,yes),init:stop()."" "; WorkingDir: "{app}"; Tasks: baseserver and baseclient
 ;Filename: "{app}/erts-/bin/erlsrv"; Parameters: "start MHiveService"; Description: "Start the MHiveService now?"; Flags:postinstall;
 Filename: "sc"; Parameters: "stop MHiveService"; Description: "stop MHiveService."
 Filename: "sc"; Parameters: "delete MHiveService"; Description: "delete MHive from Service DB."
@@ -88,32 +88,32 @@ Filename: "sc"; Parameters: "delete MHiveService"
 ;Filename: "{app}/erts-/bin/erlsrv"; Parameters: "remove MHiveService";
 
 [Files]
-;Source: "/releases/0.0.4.5/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "/releases/0.0.4.6/tmp/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "/wwwroot/*"; DestDir: "{app}/wwwroot"; Excludes: ".svn";Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 ;Source: "c:\vcredist_x86-2005-sp1.exe"; DestDir: "{tmp}"
 
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "H:/MediaEncodingCluster-tron-Debug-Vc\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "Y:/MediaEncodingCluster\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "Y:/MediaEncodingCluster\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "Y:/MediaEncodingCluster\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
-Source: "\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "M:/MediaEncodingCluster-build\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/MediaEncodingCluster-svn\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "M:/Programme/mysql-5.1.37-win32\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
+Source: "M:/Programme/mysql-5.1.37-win32\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-;Name: "{group}\start Runtime"; Filename: "{app}\erts-\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.5/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
-;Name: "{group}\stop Runtime"; Filename: "{app}\erts-\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.5/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\start Runtime"; Filename: "{app}\erts-\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.6/sys -name 'console' -eval ""application:start(sasl), user_default:startserver(), init:stop()."" "; WorkingDir: "{app}"
+;Name: "{group}\stop Runtime"; Filename: "{app}\erts-\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.6/sys -name 'console' -eval ""application:start(sasl), user_default:stopserver(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\start Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:startclient(), init:stop()."" "; WorkingDir: "{app}"
 ;Name: "{group}\Client\stop Client"; Filename: "{app}\erts-5.6.5\bin\erl.exe" ; Parameters: "-setcookie default -config releases/0.0.4.1/sys -name 'console' -eval ""application:start(sasl), user_default:stopclient(), init:stop()."" "; WorkingDir: "{app}"
-;Name: "{group}\start Console"; Filename: "{app}\erts-\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/0.0.4.5/sys"; WorkingDir: "{app}"
+;Name: "{group}\start Console"; Filename: "{app}\erts-\bin\werl.exe" ; Parameters: "-sname mhive_console -setcookie default -config releases/0.0.4.6/sys"; WorkingDir: "{app}"
 Name: "{group}\start MHiveService"; Filename: "sc";Parameters: "start MHiveService"
 Name: "{group}\stop MHiveService"; Filename: "sc";Parameters: "stop MHiveService"
 Name: "{group}\start Local MHive Client"; Filename: "{app}\bin\mhive.exe";Parameters: "-i";WorkingDir: "{app}"

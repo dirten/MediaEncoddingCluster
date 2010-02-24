@@ -203,7 +203,7 @@ INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res
   )
-INSTALL(FILES 
+INSTALL(FILES
 	${FFMPEG_DIR}/bin/avcodec-52.dll
 	${FFMPEG_DIR}/bin/avdevice-52.dll
 	${FFMPEG_DIR}/bin/avformat-52.dll

@@ -25,11 +25,19 @@
  * ----------------------------------------------------------------------
  */
 #include <stdlib.h>
+#if !defined(_WIN32)
 #include <unistd.h>
-#include <iostream>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#else
+#include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
+#include "client/windows/handler/exception_handler.h"
+#endif  // !_WIN32
+
+#include <iostream>
 #include <string>
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
@@ -206,6 +214,7 @@ int start(std::string executable) {
   if (!StartServiceCtrlDispatcher(DispatchTable)) {
     SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
   }
+  return 0;
 }
 #else
 int start(std::string executable) {
