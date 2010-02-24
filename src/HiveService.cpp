@@ -1,0 +1,263 @@
+/*----------------------------------------------------------------------
+ *  File    : HiveService.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose : Starter program for the hive
+ *  Created : 22.02.2010, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License as
+ *  published by the Free Software Foundation; either version 2 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307 USA
+ *
+ * ----------------------------------------------------------------------
+ */
+#include <stdlib.h>
+#include <unistd.h>
+#include <iostream>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string>
+#include "org/esb/io/File.h"
+#include "org/esb/io/FileInputStream.h"
+#include "org/esb/util/Properties.h"
+
+#ifdef WIN32
+#define SVCNAME TEXT("MHiveService")
+SERVICE_STATUS gSvcStatus;
+SERVICE_STATUS_HANDLE gSvcStatusHandle;
+HANDLE ghSvcStopEvent = NULL;
+
+//VOID SvcInstall(void);
+VOID WINAPI SvcCtrlHandler(DWORD);
+VOID WINAPI SvcMain(DWORD, LPTSTR *);
+
+VOID ReportSvcStatus(DWORD, DWORD, DWORD);
+VOID SvcInit(DWORD, LPTSTR *);
+VOID SvcReportEvent(LPTSTR);
+
+VOID SvcReportEvent(LPTSTR szFunction) {
+  HANDLE hEventSource;
+  LPCTSTR lpszStrings[2];
+  TCHAR Buffer[80];
+
+  hEventSource = RegisterEventSource(NULL, SVCNAME);
+
+  if (NULL != hEventSource) {
+    StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
+
+    lpszStrings[0] = SVCNAME;
+    lpszStrings[1] = Buffer;
+
+    ReportEvent(hEventSource, // event log handle
+        EVENTLOG_ERROR_TYPE, // event type
+        0, // event category
+        NULL, // event identifier
+        NULL, // no security identifier
+        2, // size of lpszStrings array
+        0, // no binary data
+        lpszStrings, // array of strings
+        NULL); // no binary data
+
+    DeregisterEventSource(hEventSource);
+  }
+}
+
+VOID WINAPI SvcCtrlHandler(DWORD dwCtrl) {
+  // Handle the requested control code.
+
+  switch (dwCtrl) {
+    case SERVICE_CONTROL_STOP:
+    ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+
+    // Signal the service to stop.
+
+    SetEvent(ghSvcStopEvent);
+
+    return;
+
+    case SERVICE_CONTROL_INTERROGATE:
+    // Fall through to send current status.
+    break;
+
+    default:
+    break;
+  }
+
+  ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
+}
+
+VOID ReportSvcStatus(DWORD dwCurrentState,
+    DWORD dwWin32ExitCode,
+    DWORD dwWaitHint) {
+  static DWORD dwCheckPoint = 1;
+
+  // Fill in the SERVICE_STATUS structure.
+
+  gSvcStatus.dwCurrentState = dwCurrentState;
+  gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
+  gSvcStatus.dwWaitHint = dwWaitHint;
+
+  if (dwCurrentState == SERVICE_START_PENDING)
+  gSvcStatus.dwControlsAccepted = 0;
+  else gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+
+  if ((dwCurrentState == SERVICE_RUNNING) ||
+      (dwCurrentState == SERVICE_STOPPED))
+  gSvcStatus.dwCheckPoint = 0;
+  else gSvcStatus.dwCheckPoint = dwCheckPoint++;
+
+  // Report the status of the service to the SCM.
+  SetServiceStatus(gSvcStatusHandle, &gSvcStatus);
+}
+
+VOID WINAPI SvcMain(DWORD dwArgc, LPTSTR *lpszArgv) {
+  gSvcStatusHandle = RegisterServiceCtrlHandler(
+      SVCNAME,
+      SvcCtrlHandler);
+
+  if (!gSvcStatusHandle) {
+    SvcReportEvent(TEXT("RegisterServiceCtrlHandler"));
+    return;
+  }
+  gSvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+  gSvcStatus.dwServiceSpecificExitCode = 0;
+
+  // Report initial status to the SCM
+
+  ReportSvcStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
+  SvcInit(dwArgc, lpszArgv);
+
+}
+
+VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
+  // TO_DO: Declare and set any required variables.
+  //   Be sure to periodically call ReportSvcStatus() with
+  //   SERVICE_START_PENDING. If initialization fails, call
+  //   ReportSvcStatus with SERVICE_STOPPED.
+
+  // Create an event. The control handler function, SvcCtrlHandler,
+  // signals this event when it receives the stop control code.
+
+  ghSvcStopEvent = CreateEvent(
+      NULL, // default security attributes
+      TRUE, // manual reset event
+      FALSE, // not signaled
+      NULL); // no name
+
+  if (ghSvcStopEvent == NULL) {
+    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    return;
+  }
+
+  // Report running status when initialization is complete.
+  /*
+   *
+   * Initializing Application Services
+   *
+   */
+  /**
+   *
+   * STARTING THE EXECUTALBE HERE
+   *
+   * */
+  ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
+
+  // TO_DO: Perform work until service stops.
+  while (1) {
+    // Check whether to stop the service.
+
+    WaitForSingleObject(ghSvcStopEvent, INFINITE);
+    /*
+     *
+     * Stopping Application Services from configuration
+     *
+     */
+
+    /**
+     *
+     * STOPPING THE EXECUTALBE HERE
+     *
+     * */
+
+    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    return;
+  }
+}
+
+int start(std::string executable) {
+  SERVICE_TABLE_ENTRY DispatchTable[] = {
+    { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain},
+    { NULL, NULL}
+  };
+  if (!StartServiceCtrlDispatcher(DispatchTable)) {
+    SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
+  }
+}
+#else
+int start(std::string executable) {
+  char * args[4];
+  int a = 0;
+  args[a++] = "sh";
+  args[a++] = "-c";
+  args[a++] = const_cast<char*> (executable.c_str());
+  args[a++] = NULL;
+  bool loop = true;
+  while (loop) {
+    int pid;
+    pid = fork();
+    if (pid < 0) {
+      std::cerr << "could not fork process" << std::endl;
+      exit(1);
+    }
+    if (pid == 0) {
+      int s = execv("/bin/sh", args);
+    } else {
+      /**
+       * wait for child process exit
+       * */
+      int status = 0;
+      waitpid(pid, &status, 0);
+    }
+  }
+}
+#endif
+int main(int argc, char**argv) {
+  /**
+   * needing the base path from the executable
+   * */
+  org::esb::io::File f(argv[0]);
+  std::cout << f.getParent() << std::endl;
+  std::string path=f.getParent();
+  std::string executable = path;
+  org::esb::util::Properties props;
+  org::esb::io::File file(path.append("/../.hive.cfg"));
+  if(!file.exists()){
+    std::cout<<"config file not found"<<path<<std::endl;
+    exit(1);
+  }
+  org::esb::io::FileInputStream fis(&file);
+  props.load(&fis);
+  executable.append("/mhive ");
+  if (strcmp(props.getProperty("mode.server"),"On") == 0) {
+    executable.append("-r");
+  } else if (strcmp(props.getProperty("mode.client"),"On") == 0) {
+    executable.append("-i");
+  }else{
+    exit(1);
+  }
+  start(executable);
+}

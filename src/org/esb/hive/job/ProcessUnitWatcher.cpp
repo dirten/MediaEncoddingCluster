@@ -207,6 +207,12 @@ namespace org {
                   _stream_map[index].last_start_pts = rs2.getLong("start_time") - 1;
                   LOGDEBUG("last_start_dts=" << _stream_map[index].last_start_dts)
                   LOGDEBUG("last_start_pts=" << _stream_map[index].last_start_pts)
+                  if(_stream_map[index].decoder->getTimeBase().num<=0||_stream_map[index].decoder->getTimeBase().den<=0){
+                    LOGERROR("wrong decoder timebase -> num="<<_stream_map[index].decoder->getTimeBase().num<<" den="<<_stream_map[index].decoder->getTimeBase().den);
+                    LOGERROR("skip stream #"<<_stream_map[index].instream);
+                    _stream_map.erase(index);
+                    continue;
+                  }
                   tsmin = min(tsmin, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].decoder->getTimeBase(), basear));
                   //                  if(_stream_map[index].last_start_dts>0)
                   tsmax = max(tsmax, av_rescale_q(_stream_map[index].last_start_pts, _stream_map[index].stream_time_base, basear));
@@ -349,7 +355,7 @@ namespace org {
 
             }
             if (!_isStopSignal)
-              Thread::sleep2(2000);
+              Thread::sleep2(10000);
           }
           DatabaseService::thread_end();
 

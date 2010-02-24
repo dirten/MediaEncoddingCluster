@@ -53,12 +53,15 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 add_executable (mhive Hive.cpp)
+add_executable (mhiveservice HiveService.cpp)
 SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
 #FIND_LIBRARY(COCOA_LIBRARY COCOA)
 #MARK_AS_ADVANCED(COCOA_LIBRARY)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
+target_link_libraries (mhiveservice io lang util)
+ 
 target_link_libraries (mhive 
   web 
   esb 
@@ -155,6 +158,10 @@ add_custom_target(uploadsymbols
 )
 
 INSTALL(TARGETS mhive
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+INSTALL(TARGETS mhiveservice
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})

@@ -6,6 +6,8 @@
 #  Author:     jan.hoelscher@esblab.com
 #  Resides in: /etc/rc3.d
 #
+# chkconfig: 2345 80 30
+# description: MHive Service
 
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted
@@ -120,10 +122,12 @@ configure_client(){
 
 # Start/stop processes required for MHive
 current_dir=`pwd`
-script_dir=`dirname $0`
+script_dir=`ls -l $0 | awk '{print $11}'`
+script_dir=`dirname ${script_dir}`
+echo "ScriptDir ${current_dir} ${script_dir}"
 cd ${script_dir}/..
 MHIVE_HOME=`pwd`
-echo $MHIVE_HOME
+#echo $MHIVE_HOME
 
 #DATA_DIR=data
 ROOTDIR=${MHIVE_HOME}

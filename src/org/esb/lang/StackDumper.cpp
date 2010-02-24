@@ -65,57 +65,57 @@ bool MyDumpSender(const char *dump_path,
   LOGDEBUG("Sending CrashReport");
   std::string url = "http://188.40.40.157/submit";
 
-  std::string path=dump_path;
+  std::string path = dump_path;
   path.append("/");
-  std::string file=minidump_id;
+  std::string file = minidump_id;
   file.append(".dmp");
-//  logdebug("Sending CrashReport"<<path.append(file).c_str());
+  //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
-  #ifndef OWNCURL
-  std::string buildid=__DATE__ "-" __TIME__;
-  google_breakpad::GoogleCrashdumpUploader sender("MediaEncodingCluster","0.0.4.5",__DATE__ "-" __TIME__,"","","email","comments",path.append(file).c_str(),url.c_str(),"","");
+#ifndef OWNCURL
+  std::string buildid = __DATE__ "-" __TIME__;
+  google_breakpad::GoogleCrashdumpUploader sender("MediaEncodingCluster", "0.0.4.5", __DATE__ "-" __TIME__, "", "", "email", "comments", path.append(file).c_str(), url.c_str(), "", "");
   sender.Upload();
 
 
-  #else
+#else
 
   CURL *curl;
   CURLcode res;
 
-  struct curl_httppost *formpost=NULL;
-  struct curl_httppost *lastptr=NULL;
-  struct curl_slist *headerlist=NULL;
+  struct curl_httppost *formpost = NULL;
+  struct curl_httppost *lastptr = NULL;
+  struct curl_slist *headerlist = NULL;
   static const char buf[] = "Expect:";
 
   curl_global_init(CURL_GLOBAL_ALL);
-  logdebug("Post file"<<path.append(file));
+  logdebug("Post file" << path.append(file));
   /* Fill in the file upload field */
   curl_formadd(&formpost,
-               &lastptr,
-               CURLFORM_COPYNAME, "upload_file_minidump",
-               CURLFORM_FILE, path.append(file).c_str(),
-               CURLFORM_END);
+      &lastptr,
+      CURLFORM_COPYNAME, "upload_file_minidump",
+      CURLFORM_FILE, path.append(file).c_str(),
+      CURLFORM_END);
 
   /* Fill in the filename field */
 
   curl_formadd(&formpost,
-               &lastptr,
-               CURLFORM_COPYNAME, "filename",
-               CURLFORM_COPYCONTENTS, file.c_str(),
-               CURLFORM_END);
+      &lastptr,
+      CURLFORM_COPYNAME, "filename",
+      CURLFORM_COPYCONTENTS, file.c_str(),
+      CURLFORM_END);
 
 
   curl = curl_easy_init();
   /* initalize custom header list (stating that Expect: 100-continue is not
      wanted */
   headerlist = curl_slist_append(headerlist, buf);
-  if(curl) {
+  if (curl) {
     /* what URL that receives this POST */
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-   
+
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 5);
 
-curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+    curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
     res = curl_easy_perform(curl);
 
     /* always cleanup */
@@ -124,10 +124,10 @@ curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
     /* then cleanup the formpost chain */
     curl_formfree(formpost);
     /* free slist */
-    curl_slist_free_all (headerlist);
+    curl_slist_free_all(headerlist);
   }
   logdebug("sended");
-  #endif
+#endif
 }
 #endif
 
@@ -151,7 +151,7 @@ true
 google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
 ) {
-//  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
+  //  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
 }
 #ifdef WIN32
 

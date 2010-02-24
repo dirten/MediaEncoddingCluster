@@ -337,8 +337,14 @@ if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
   fos->close();
   delete pos;
   delete fos;
+  map<int, boost::shared_ptr<Encoder> >::iterator itenc=enc.begin();
+  for(;itenc!=enc.end();itenc++){
+    int index=(*itenc).first;
+    enc.erase(index);
+    CodecFactory::clearCodec(index);
+  }
 
-  cout << endl;
+//  cout << endl;
 
   if (false) {
     Statement stmt = con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=2 order by pts limit 10000");
