@@ -311,9 +311,9 @@ CREATE TABLE IF NOT EXISTS `watch_folder` (
 
 
 
-load data infile 'sql/config.txt' into table config fields terminated by ":";
-load data infile 'sql/profiles.txt' into table profiles fields terminated by ",";
-load data infile 'sql/codec.txt' into table codec fields terminated by "#";
+load data infile 'sql/config.txt' IGNORE into table config fields terminated by ":";
+load data infile 'sql/profiles.txt' IGNORE into table profiles fields terminated by ",";
+load data infile 'sql/codec.txt' IGNORE into table codec fields terminated by "#";
 
 
 
