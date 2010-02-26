@@ -217,7 +217,34 @@ int start(std::string executable) {
   return 0;
 }
 #else
+int last_pid;
+void signalHandler(int signum){
+  std::cout <<"shutdown mhiveservice: last_pid"<<last_pid<<std::endl;
+  kill(last_pid,SIGTERM);
+  int status = 0;
+  waitpid(last_pid, &status, 0);
+  exit(0);
+}
+void signalWait() {
+  sigset_t wait_mask2;
+  sigemptyset(&wait_mask2);
+  sigaddset(&wait_mask2, SIGINT);
+  sigaddset(&wait_mask2, SIGQUIT);
+  sigaddset(&wait_mask2, SIGTERM);
+  sigaddset(&wait_mask2, SIGCHLD);
+  pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
+  int sig = 0;
+
+  int err;
+  do {
+    err = sigwait(&wait_mask2, &sig);
+  } while (err != 0);
+}
+
 int start(std::string executable) {
+  signal(SIGTERM,&signalHandler);
+  signal(SIGQUIT,&signalHandler);
+  signal(SIGINT,&signalHandler);
   char * args[4];
   int a = 0;
   args[a++] = "sh";
@@ -238,6 +265,7 @@ int start(std::string executable) {
       /**
        * wait for child process exit
        * */
+      last_pid=pid;
       int status = 0;
       waitpid(pid, &status, 0);
     }
@@ -248,22 +276,20 @@ int main(int argc, char**argv) {
   /**
    * needing the base path from the executable
    * */
+  int mode=0;
   org::esb::io::File f(argv[0]);
   std::cout << f.getParent() << std::endl;
   std::string path=f.getParent();
   std::string executable = path;
   org::esb::util::Properties props;
-  org::esb::io::File file(path.append("/../.hive.cfg"));
-  if(!file.exists()){
-    std::cout<<"config file not found"<<path<<std::endl;
-    exit(1);
+  org::esb::io::File file(path.append("/../hive"));
+  if(file.isDirectory()){
+    mode=1;
   }
-  org::esb::io::FileInputStream fis(&file);
-  props.load(&fis);
   executable.append("/mhive ");
-  if (strcmp(props.getProperty("mode.server"),"On") == 0) {
+  if (mode == 1) {
     executable.append("-r");
-  } else if (strcmp(props.getProperty("mode.client"),"On") == 0) {
+  } else if (mode == 0) {
     executable.append("-i");
   }else{
     exit(1);

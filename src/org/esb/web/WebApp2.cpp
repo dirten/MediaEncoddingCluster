@@ -32,7 +32,11 @@ namespace org {
         if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
-        }
+        }/*
+        std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
+        syslog_file.append("/sys.log");
+        Wt::WApplication::readConfigurationProperty("log-file", const_cast<char*> (syslog_file.c_str()));
+        */
         std::string h = "MediaEncodingCluster V-";
         h += MHIVE_VERSION;
         h += "($Revision: 0 $-"__DATE__ "-" __TIME__")";

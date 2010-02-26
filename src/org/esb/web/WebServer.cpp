@@ -10,6 +10,7 @@
 #include <Wt/WPushButton>
 #include <Wt/WText>
 #include <Wt/WBreak>
+#include <Wt/WLogger>
 
 
 #include <iostream>
@@ -41,17 +42,26 @@ WApplication *createApp(const WEnvironment& env) {
 }
 
 WebServer::WebServer() : server("test") {
-  std::string log_file = org::esb::config::Config::getProperty("hive.base_path");
-  log_file.append("/http.log");
+  std::string weblog_file = org::esb::config::Config::getProperty("hive.base_path");
+  weblog_file.append("/http.log");
+  std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
+  syslog_file.append("/sys.log");
   char * args[] = {
     "mhive",
     "--docroot", org::esb::config::Config::getProperty("web.docroot", "."),
     "--http-address", "0.0.0.0",
     "--http-port", org::esb::config::Config::getProperty("web.port", "8080"),
-    "--accesslog", const_cast<char*> (log_file.c_str()),
+    "--accesslog", const_cast<char*> (weblog_file.c_str()),
     "--no-compression",
     "--deploy-path", "/"
   };
+/*
+    Wt::WLogger stderrLogger;
+    stderrLogger.setFile(syslog_file);
+    ostringstream bla;
+    stderrLogger.setStream(bla);
+*/
+
   server.setServerConfiguration(10, args, WTHTTP_CONFIGURATION);
 
   server.addEntryPoint(WServer::Application, &createApp);

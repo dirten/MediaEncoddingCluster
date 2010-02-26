@@ -32,12 +32,12 @@ namespace org {
 //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
 //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
+        formatCtx->debug=5;
         std::string filename = _sourceFile->getPath();
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           LOGERROR("could not open file:" << _sourceFile->getPath());
           return;
         }
-        //		formatCtx->debug=5;
 
         LOGINFO("find stream info: " << source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {
