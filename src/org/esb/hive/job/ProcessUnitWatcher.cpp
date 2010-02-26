@@ -342,11 +342,17 @@ namespace org {
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
               map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+              list<int> codec_nums;
               for (; it != _stream_map.end(); it++) {
-                CodecFactory::clearCodec(it->second.instream);
-                CodecFactory::clearCodec(it->second.outstream);
+                codec_nums.push_back(it->second.instream);
+                codec_nums.push_back(it->second.outstream);
+//                CodecFactory::clearCodec(it->second.instream);
+//                CodecFactory::clearCodec(it->second.outstream);
               }
-
+              list<int>::iterator it_nums=codec_nums.begin();
+              for(;it_nums!=codec_nums.end();it_nums++){
+                CodecFactory::clearCodec(*it_nums);
+              }
               sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
               sql::PreparedStatement pstmt2 = con3.prepareStatement("update jobs set complete=now(), status='completed' where id=:jobid");
               pstmt2.setInt("jobid", rs.getInt("jobs.id"));
