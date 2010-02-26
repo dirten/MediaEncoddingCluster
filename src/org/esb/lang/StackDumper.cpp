@@ -18,6 +18,7 @@ bool MyDumpSender(const wchar_t* dump_path,
     EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion,
     bool succeeded) {
+  return true;
   LOGDEBUG("Sending CrashReport");
   std::string chkpfile = "checkpoint.txt";
 
@@ -62,6 +63,7 @@ bool MyDumpSender(const char *dump_path,
     const char *minidump_id,
     void *context,
     bool succeeded) {
+  return true;
   LOGDEBUG("Sending CrashReport");
   std::string url = "http://188.40.40.157/submit";
 
