@@ -52,11 +52,13 @@ bool Config::init(const std::string & filename) {
     }
     fclose(fp);
   }else{
-    return false;
+//    return false;
   }
   /*load params from database*/
+  LOGDEBUG("DbConnection:"<<getProperty("db.connection"));
   try {
     if (std::string(getProperty("db.connection")).length() > 0) {
+      LOGDEBUG("loading config from db");
       Connection con(std::string(getProperty("db.connection")));
       Statement * stmt = con.createStatement();
       ResultSet * rs = stmt->executeQuery("select * from config");
@@ -76,6 +78,7 @@ bool Config::init(const std::string & filename) {
   } catch (SqlException & ex) {
     LOGERROR("cant load configuration from database");
     LOGERROR(ex.what());
+    return false;
   }
   return true;
 }
