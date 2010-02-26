@@ -221,6 +221,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {
     LOGERROR("Error while decoding audio Frame");
+    av_free(outbuf);
     return new Frame();
   }
   Frame * frame = new Frame(outbuf, samples_size);
