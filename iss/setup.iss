@@ -95,17 +95,17 @@ Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "H:/MediaEncodingCluster-tron-Debug-Vc\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "Y:/MediaEncodingCluster\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "Y:/MediaEncodingCluster\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "Y:/MediaEncodingCluster\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
-Source: "\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "M:/MediaEncodingCluster-build\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:/MediaEncodingCluster-svn\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:/MediaEncodingCluster-svn\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "M:/Programme/mysql-5.1.37-win32\share\english\errmsg.sys"; DestDir: "{app}\res"; Flags: ignoreversion
+Source: "M:/Programme/mysql-5.1.37-win32\Embedded\DLL\release\libmysqld.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avcodec-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avdevice-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avformat-52.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\avutil-50.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "D:\MediaEncodingCluster-svn\source\build\ffmpeg\bin\swscale-0.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -114,8 +114,9 @@ namespace org {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
           //          int len = 0;
+          int read = 0;
           try{
-          int read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
+          read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
           }catch(boost::system::system_error & ex){
             LOGERROR("Error reading length from socket:"<<ex.what());
             return 0;

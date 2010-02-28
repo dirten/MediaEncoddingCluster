@@ -2,8 +2,8 @@
     <shortName>mhive</shortName>
     <fullName>Media Encoding Cluster</fullName>
     <version>0.0.4.7</version>
-    <readmeFile>../README</readmeFile>
-    <licenseFile>../LICENSE</licenseFile>
+    <readmeFile>D:/MediaEncodingCluster-svn/README</readmeFile>
+    <licenseFile>D:/MediaEncodingCluster-svn/LICENSE</licenseFile>
     <postInstallationActionList>
         <removeUnixService>
             <abortOnError>0</abortOnError>
@@ -20,7 +20,16 @@
         <substitute>
             <files>${installdir}/bin/mectl</files>
             <progressText>setting MHIVE_BASE</progressText>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <type>regexp</type>
+            <ruleList>
+                <platformTest>
+                    <type>linux</type>
+                </platformTest>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
             <substitutionList>
                 <substitution>
                     <pattern>@MHIVE_BASE@</pattern>
@@ -59,11 +68,32 @@
                 </compareText>
             </ruleList>
         </runProgram>
+        <deleteWindowsService>
+            <abortOnError>0</abortOnError>
+            <displayName>MHiveNodeService</displayName>
+            <progressText>removing previous Service Installation</progressText>
+            <serviceName>MHiveNodeService</serviceName>
+            <ruleList>
+                <windowsServiceTest>
+                    <condition>exists</condition>
+                    <service>MHiveNodeService</service>
+                </windowsServiceTest>
+            </ruleList>
+        </deleteWindowsService>
+        <createWindowsService>
+            <abortOnError>0</abortOnError>
+            <description>this is the mhive node controller</description>
+            <displayName>MHiveNodeService</displayName>
+            <program>${installdir}/bin/mhiveservice.exe</program>
+            <programArguments></programArguments>
+            <progressText>install MHiveNodeService</progressText>
+            <serviceName>MHiveNodeService</serviceName>
+            <startType>auto</startType>
+        </createWindowsService>
     </postInstallationActionList>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <saveRelativePaths>1</saveRelativePaths>
     <vendor>CoderGrid</vendor>
     <componentList>
         <component>
@@ -81,13 +111,13 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>../build/src/mhive</origin>
+                            <origin>D:/MediaEncodingCluster-svn/build/src/mhive</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../build/src/mhiveservice</origin>
+                            <origin>D:/MediaEncodingCluster-svn/build/src/mhiveservice</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../src/mectl</origin>
+                            <origin>D:/MediaEncodingCluster-svn/src/mectl</origin>
                         </distributionFile>
                     </distributionFileList>
                     <shortcutList>
@@ -108,9 +138,35 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>M:/MediaEncodingCluster-build/src/Debug/mhiveservice.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>M:/MediaEncodingCluster-build/src/Debug/mhive.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>M:/Programme/mysql-5.1.37-win32/Embedded/DLL/release/libmysqld.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>D:/ffmpeg/bin/swscale-0.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>D:/ffmpeg/bin/avcodec-52.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>D:/ffmpeg/bin/avdevice-52.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>D:/ffmpeg/bin/avformat-52.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>D:/ffmpeg/bin/avutil-50.dll</origin>
+                        </distributionFile>
+                    </distributionFileList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
@@ -119,13 +175,13 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>../src/mectl</origin>
+                            <origin>D:/MediaEncodingCluster-svn/src/mectl</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../build/src/mhive</origin>
+                            <origin>D:/MediaEncodingCluster-svn/build/src/mhive</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../build/src/mhiveservice</origin>
+                            <origin>D:/MediaEncodingCluster-svn/build/src/mhiveservice</origin>
                         </distributionFile>
                     </distributionFileList>
                     <shortcutList>
@@ -151,19 +207,19 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>../res/errmsg.sys</origin>
+                            <origin>D:/MediaEncodingCluster-svn/res/errmsg.sys</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../res/logging.properties</origin>
+                            <origin>D:/MediaEncodingCluster-svn/res/logging.properties</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../res/messages.xml</origin>
+                            <origin>D:/MediaEncodingCluster-svn/res/messages.xml</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../res/profile_creator.xml</origin>
+                            <origin>D:/MediaEncodingCluster-svn/res/profile_creator.xml</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../res/setup.xml</origin>
+                            <origin>D:/MediaEncodingCluster-svn/res/setup.xml</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -174,19 +230,19 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>../sql/codec.txt</origin>
+                            <origin>D:/MediaEncodingCluster-svn/sql/codec.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../sql/config.txt</origin>
+                            <origin>D:/MediaEncodingCluster-svn/sql/config.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../sql/hive-0.0.3.sql</origin>
+                            <origin>D:/MediaEncodingCluster-svn/sql/hive-0.0.3.sql</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../sql/hive-0.0.4.sql</origin>
+                            <origin>D:/MediaEncodingCluster-svn/sql/hive-0.0.4.sql</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>../sql/profiles.txt</origin>
+                            <origin>D:/MediaEncodingCluster-svn/sql/profiles.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -197,7 +253,7 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>../web</origin>
+                            <origin>D:/MediaEncodingCluster-svn/web</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -235,7 +291,7 @@
                     </actionList>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>vcredist_x86.exe</origin>
+                            <origin>D:/MediaEncodingCluster-svn/iss/vcredist_x86.exe</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -409,6 +465,13 @@
                     <default>localhost</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>30</width>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${use_node_discovery}</text>
+                            <value>yes</value>
+                        </compareText>
+                    </ruleList>
                 </stringParameter>
                 <stringParameter>
                     <name>host_port</name>
