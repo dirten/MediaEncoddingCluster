@@ -88,6 +88,9 @@ namespace org {
         int read(string & str) {
           /*Receive length of data*/
           int length = static_cast<int> (available(true));
+
+          if(length==0)return length;
+
           LOGTRACE("bytes to read:" << length);
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
@@ -111,8 +114,13 @@ namespace org {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
           //          int len = 0;
+          try{
           int read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
-          //          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
+          }catch(boost::system::system_error & ex){
+            LOGERROR("Error reading length from socket:"<<ex.what());
+            return 0;
+          }
+//          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
           if (error)
             throw boost::system::system_error(error);
           else if (read != 10)

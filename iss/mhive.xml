@@ -86,6 +86,9 @@
                         <distributionFile>
                             <origin>../build/src/mhiveservice</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>../src/mectl</origin>
+                        </distributionFile>
                     </distributionFileList>
                     <shortcutList>
                         <shortcut>
@@ -105,17 +108,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
-                    <name>programfileslinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>../src/mectl</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${installdir}</destination>
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
@@ -129,7 +121,28 @@
                         <distributionFile>
                             <origin>../src/mectl</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>../build/src/mhive</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../build/src/mhiveservice</origin>
+                        </distributionFile>
                     </distributionFileList>
+                    <shortcutList>
+                        <shortcut>
+                            <comment>Text that will appear on Tooltip</comment>
+                            <exec>${installdir}/${uninstallerName}</exec>
+                            <icon></icon>
+                            <name>Uninstall ${product_fullname}</name>
+                            <path>${installdir}</path>
+                            <platforms>all</platforms>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec></windowsExec>
+                            <windowsExecArgs></windowsExecArgs>
+                            <windowsIcon></windowsIcon>
+                            <windowsPath></windowsPath>
+                        </shortcut>
+                    </shortcutList>
                 </folder>
                 <folder>
                     <description>Resource Bundles</description>
