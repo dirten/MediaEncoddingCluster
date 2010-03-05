@@ -248,6 +248,7 @@ add_library (web
     web/FileNode.cpp
     web/SqlUtil.cpp
     web/Setup.cpp
+    web/StreamInfo.cpp
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp

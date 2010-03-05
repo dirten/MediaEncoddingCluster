@@ -159,16 +159,16 @@ namespace org {
           //          ctx->has_b_frames = 1;
         }
         ctx->extradata = NULL;
-        ctx->me_method = ME_EPZS;
-        ctx->mb_decision = 2;
-        ctx->bit_rate_tolerance = 4000000;
+//        ctx->me_method = ME_EPZS;
+//        ctx->mb_decision = 2;
+//        ctx->bit_rate_tolerance = 4000000;
         /*default settings for x264*/
-        ctx->me_range = 16;
-        ctx->max_qdiff = 4;
-        ctx->qmin = 2;
-        ctx->qmax = 31;
-        ctx->qcompress = 0.5;
-        ctx->qblur = 0.5;
+//        ctx->me_range = 16;
+//        ctx->max_qdiff = 4;
+//        ctx->qmin = 2;
+//        ctx->qmax = 31;
+//        ctx->qcompress = 0.5;
+//        ctx->qblur = 0.5;
         /**
          * this will come from the codecfactory in the future*/
         /*

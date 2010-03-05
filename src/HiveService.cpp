@@ -25,6 +25,7 @@
  * ----------------------------------------------------------------------
  */
 #include <stdlib.h>
+#include <boost/thread.hpp>
 #if !defined(_WIN32)
 #include <unistd.h>
 #include <errno.h>
@@ -58,7 +59,7 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
     case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
-      LOGDEBUG("Hive","ctlc event");
+      LOGDEBUG("ctlc event");
       ctrlCHit.notify_all(); // should be just 1
 
       //      serverStopped.wait(terminationLock);
@@ -87,7 +88,8 @@ VOID WINAPI SvcMain(DWORD, LPTSTR *);
 VOID ReportSvcStatus(DWORD, DWORD, DWORD);
 VOID SvcInit(DWORD, LPTSTR *);
 VOID SvcReportEvent(LPTSTR);
-
+std::string execargs;
+std::string exec;
 VOID SvcReportEvent(LPTSTR szFunction) {
   HANDLE hEventSource;
   LPCTSTR lpszStrings[2];
@@ -213,6 +215,37 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
    * STARTING THE EXECUTALBE HERE
    *
    * */
+  bool bWorked;
+  STARTUPINFO suInfo;
+  PROCESS_INFORMATION procInfo;
+  std::string m_Process = exec.c_str();
+   char *vip = const_cast<char*>(exec.append(execargs).c_str());
+
+  memset (&suInfo, 0, sizeof(suInfo));
+  memset (&procInfo, 0, sizeof(procInfo));
+  suInfo.cb = sizeof(suInfo);
+
+  bWorked = ::CreateProcess(m_Process.c_str(),
+             vip,      // can also be NULL
+
+             NULL,
+             NULL,
+             FALSE,
+             NORMAL_PRIORITY_CLASS,
+             NULL,
+             NULL,
+             &suInfo,
+             &procInfo);
+
+/*
+procInfo has these members
+    HANDLE hProcess;   // process handle
+    HANDLE hThread;    // primary thread handle
+    DWORD dwProcessId; // process PID
+    DWORD dwThreadId;  // thread ID
+*/
+
+
   ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 
   // TO_DO: Perform work until service stops.
@@ -225,6 +258,11 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
      * Stopping Application Services from configuration
      *
      */
+	
+	  HANDLE hProcess;
+	  hProcess = OpenProcess( PROCESS_TERMINATE, FALSE, procInfo.dwProcessId );
+	  TerminateProcess( hProcess, (DWORD) -1 );
+
 
     /**
      *
@@ -237,7 +275,9 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
   }
 }
 
-int start(std::string executable) {
+int start(std::string executable, std::string arguments) {
+	execargs=arguments;
+	exec=executable;
   SERVICE_TABLE_ENTRY DispatchTable[] = {
     { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain},
     { NULL, NULL}
@@ -272,7 +312,14 @@ void signalWait() {
   } while (err != 0);
 }
 
-int start(std::string executable) {
+int start(std::string executable, std::string arguments) {
+
+  /**
+   * fork this process
+   * */
+  int parentpid=fork();
+  if(parentpid>0)exit(0);
+
   signal(SIGTERM,&signalHandler);
   signal(SIGQUIT,&signalHandler);
   signal(SIGINT,&signalHandler);
@@ -280,7 +327,7 @@ int start(std::string executable) {
   int a = 0;
   args[a++] = "sh";
   args[a++] = "-c";
-  args[a++] = const_cast<char*> (executable.c_str());
+  args[a++] = const_cast<char*> (executable.append(arguments).c_str());
   args[a++] = NULL;
   bool loop = true;
   while (loop) {
@@ -304,6 +351,7 @@ int start(std::string executable) {
 }
 #endif
 int main(int argc, char**argv) {
+
   /**
    * needing the base path from the executable
    * */
@@ -312,6 +360,7 @@ int main(int argc, char**argv) {
   std::cout << f.getParent() << std::endl;
   std::string path=f.getParent();
   std::string executable = path;
+  std::string arguments;
   org::esb::util::Properties props;
   org::esb::io::File file(path.append("/../hive"));
   if(file.isDirectory()){
@@ -325,5 +374,5 @@ int main(int argc, char**argv) {
   }else{
     exit(1);
   }
-  start(executable);
+  start(executable,arguments);
 }

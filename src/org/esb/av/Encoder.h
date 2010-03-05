@@ -54,6 +54,7 @@ namespace org {
                 void setOutputStream(PacketOutputStream *);
                 void setSink(Sink*);
                 int64_t getLastTimeStamp();
+                int64_t getNextTimeStamp();
                 int64_t getSamplesBufferd();
             private:
                 int encodeVideo(Frame & f);

@@ -95,7 +95,8 @@ namespace org {
 
       void FrameConverter::setFrameRateCompensateBase(double val) {
         LOGDEBUG("setFrameRateCompensateBase(" << val << ")");
-        _frameRateCompensateBase = val;
+        /**the +0.001 is to compensate rounding error*/
+        _frameRateCompensateBase = val+0.0001;
       }
 
       void FrameConverter::setGopSize(int gop) {
@@ -106,11 +107,29 @@ namespace org {
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
         int frames = 1;
         if ((_gop_size > 0 || _gop_size == -1)
-            && (_dec->getTimeBase().num != _enc->getTimeBase().num || _dec->getTimeBase().den != _enc->getTimeBase().den)
+            && (_dec->getFrameRate().num != _enc->getFrameRate().num || _dec->getFrameRate().den != _enc->getFrameRate().den)
             ) {
-          double a = static_cast<double> ((double) _dec->getLastTimeStamp()*(double) _dec->getTimeBase().num / (double) _dec->getTimeBase().den);
+          /**
+           * calculating the framerate difference
+           * delta=(input_timestamp/decoder_framerate_num*decoder_framerate_den*encoder_framerate_num/encoder_framerate_den)-output_timestamp/encoder_framerate_den
+           *
+           * */
+
+          int64_t last_input_pts=_dec->getLastTimeStamp();
+          int64_t last_output_pts=_enc->getLastTimeStamp();
+
+          AVRational input_framerate=_dec->getFrameRate();
+          AVRational output_framerate=_enc->getFrameRate();
+          double in=(((double)last_input_pts)/input_framerate.num*input_framerate.den*output_framerate.num/output_framerate.den);
+          double out=(((double)last_output_pts)/output_framerate.den);
+          double delta=in-out;
+          delta+=_frameRateCompensateBase;
+
+
+
+//          double a = static_cast<double> ((double) _dec->getLastTimeStamp()*(double) _dec->getTimeBase().num / (double) _dec->getTimeBase().den);
           //          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
-          double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
+//          double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
           if (delta > 2.0)
             frames = static_cast<int> (floor(delta + 0.5));
           if (delta <= -0.6)

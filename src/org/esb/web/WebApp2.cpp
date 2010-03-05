@@ -22,21 +22,22 @@
 #include "Configuration.cpp"
 
 #include "FileInfo.cpp"
-
+#include "StreamInfo.h"
 #include "ProfileCreator.h"
 namespace org {
   namespace esb {
     namespace web {
 
-      WebApp2::WebApp2(const Wt::WEnvironment & env) : WApplication(env) {
+      WebApp2::WebApp2(const Wt::WEnvironment & env) :
+        WApplication(env) {
         if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
         }/*
-        std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
-        syslog_file.append("/sys.log");
-        Wt::WApplication::readConfigurationProperty("log-file", const_cast<char*> (syslog_file.c_str()));
-        */
+         std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
+         syslog_file.append("/sys.log");
+         Wt::WApplication::readConfigurationProperty("log-file", const_cast<char*> (syslog_file.c_str()));
+         */
         std::string h = "MediaEncodingCluster V-";
         h += MHIVE_VERSION;
         h += "($Revision: 0 $-"__DATE__ "-" __TIME__")";
@@ -73,7 +74,6 @@ namespace org {
         layout->addWidget(menu, Wt::WBorderLayout::North);
         /*end Menu Panel*/
 
-
         /*begin Main Panel*/
         main_panel = new Wt::Ext::Panel();
         Wt::WFitLayout * fit = new Wt::WFitLayout();
@@ -92,23 +92,20 @@ namespace org {
         info_panel->setCollapsible(true);
         info_panel->setAnimate(true);
 
-
-
-
         //        Wt::Ext::Panel *p=new Wt::Ext::Panel();
         //        p->setTitle("File Details");
         //        info_panel->layout()->addWidget(p);
         /*
-                p=new Wt::Ext::Panel();
-                p->setTitle("Video Details");
-                info_panel->layout()->addWidget(p);
-                p=new Wt::Ext::Panel();
-                p->setTitle("Audio Details");
-                info_panel->layout()->addWidget(p);*/
+         p=new Wt::Ext::Panel();
+         p->setTitle("Video Details");
+         info_panel->layout()->addWidget(p);
+         p=new Wt::Ext::Panel();
+         p->setTitle("Audio Details");
+         info_panel->layout()->addWidget(p);*/
         info_panel->expand();
         /*
-        info_layout->addWidget(new Wt::Ext::Panel());
-        info_layout->addWidget(new Wt::Ext::Panel());
+         info_layout->addWidget(new Wt::Ext::Panel());
+         info_layout->addWidget(new Wt::Ext::Panel());
          */
         info_panel->resize(250, Wt::WLength());
         info_panel->setResizable(true);
@@ -118,7 +115,7 @@ namespace org {
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
-        head = new Wt::WText("&copy; 2000 - 2009 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
+        head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
         head->setStyleClass("north");
         footer->setLayout(new Wt::WFitLayout());
         footer->layout()->addWidget(head);
@@ -136,7 +133,6 @@ namespace org {
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
 
-
       }
 
       void WebApp2::listAllFiles() {
@@ -145,7 +141,7 @@ namespace org {
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
-        std::string t="double click to edit Meta information";
+        std::string t = "double click to edit Meta information";
         tab->setToolTip(t);
         //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
@@ -176,9 +172,13 @@ namespace org {
 
       void WebApp2::listAllEncodings() {
         //        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
-//        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(max((end_ts-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
-//        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(min(((select max(end_ts) from process_units pinner where pinner.target_stream=outstreams.id)-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
-        SqlTable * tab = new SqlTable(std::string("SELECT filename ,if(min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
+        //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(max((end_ts-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
+        //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(min(((select max(end_ts) from process_units pinner where pinner.target_stream=outstreams.id)-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
+        SqlTable
+            * tab =
+                new SqlTable(
+                    std::string(
+                        "SELECT filename ,if(min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
         //SELECT filename ,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100)), begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
@@ -200,7 +200,8 @@ namespace org {
       }
 
       void WebApp2::listActiveEncodings() {
-        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) > 0 and round(count(complete)/count(*)*100,2) < 100 order by 2,f.id DESC"));
+        SqlTable * tab = new SqlTable(std::string(
+            "SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) > 0 and round(count(complete)/count(*)*100,2) < 100 order by 2,f.id DESC"));
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
@@ -230,17 +231,17 @@ namespace org {
 
       void WebApp2::createProfiles() {
         listAllProfiles();
-//        cpd = new Wt::Ext::Dialog("Profile Creator");
-//        cpd->resize(500, 430);
-        ProfileCreator *pc=new ProfileCreator();
+        //        cpd = new Wt::Ext::Dialog("Profile Creator");
+        //        cpd->resize(500, 430);
+        ProfileCreator *pc = new ProfileCreator();
         pc->show();
         pc->saved.connect(SLOT(this, WebApp2::profilesCreated));
-/*
-        ProfilesForm * pf = new ProfilesForm(cpd->contents());
-        pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
-        pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
- */
-//        cpd->show();
+        /*
+         ProfilesForm * pf = new ProfilesForm(cpd->contents());
+         pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
+         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
+         */
+        //        cpd->show();
       }
 
       void WebApp2::openConfiguration() {
@@ -249,7 +250,7 @@ namespace org {
 
       void WebApp2::profilesCreated() {
         listAllProfiles();
-//        delete cpd;
+        //        delete cpd;
       }
 
       void WebApp2::listAllWatchfolder() {
@@ -282,29 +283,40 @@ namespace org {
           /**
            * retriving selected file from grid
            */
-          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
+          std::string idstr = boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0], 0));
           /**
            * remove old widgets from the info_panel
            */
           int c = info_panel->layout()->count();
+          LOGINFO("InfoPanel have "<<c<<" widgets");
           for (int a = 0; a < c; a++) {
-            Wt::WLayoutItem * item = info_panel->layout()->itemAt(a);
+            Wt::WLayoutItem * item = info_panel->layout()->itemAt(0);
             info_panel->layout()->removeItem(item);
           }
           /**
            * adding new items to the info panel
            */
           info_panel->layout()->addWidget(new FileInfo(atoi(idstr.c_str())));
+
+          /**adding the streaminfo for the streams from the selected file*/
+          Connection con(Config::getProperty("db.connection"));
+          std::string sql = "SELECT * FROM streams WHERE fileid = ";
+          sql += StringUtil::toString(atoi(idstr.c_str()));
+          Statement st = con.createStatement(sql.c_str());
+          ResultSet rs = st.executeQuery();
+          while(rs.next()){
+            info_panel->layout()->addWidget(new StreamInfo(&rs));
+          }
         }
       }
 
       void WebApp2::jobSelected(SqlTable * tab) {
-//        logdebug("Job Table clicked:");
+        //        logdebug("Job Table clicked:");
         if (tab->selectedRows().size() > 0) {
-          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
+          std::string idstr = boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0], 0));
           //          info->setData(atoi(idstr.c_str()));
           //          pSelector->setFileId(atoi(idstr.c_str()));
-//          logdebug("jobSelected" << idstr);
+          //          logdebug("jobSelected" << idstr);
         }
       }
 

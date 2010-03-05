@@ -119,6 +119,7 @@ namespace org {
           read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
           }catch(boost::system::system_error & ex){
             LOGERROR("Error reading length from socket:"<<ex.what());
+            _socket->close();
             return 0;
           }
 //          _socket->read_some(boost::asio::buffer(&tmp, 10), error);

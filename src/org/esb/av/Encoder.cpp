@@ -268,6 +268,12 @@ int Encoder::encodeAudio(Frame & frame) {
 int64_t Encoder::getLastTimeStamp() {
   return _last_dts != AV_NOPTS_VALUE ? _last_dts : 0;
 }
+/**
+ * returns the last Encoding Timestamp
+ */
+int64_t Encoder::getNextTimeStamp() {
+  return _last_dts != AV_NOPTS_VALUE ? _last_dts : 0;
+}
 
 /**
  * returns the size from the internal fifo Buffer for the Audio Samples

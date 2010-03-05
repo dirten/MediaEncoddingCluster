@@ -58,7 +58,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, width, height, pix_fmt, bit_rate, framerate_num, framerate_den, time_base_num, time_base_den, gop_size, channels, sample_rate, sample_fmt, flags,extra_profile_flags from streams  where id=:id");
+    sql::PreparedStatement stmt = con.prepareStatement("select * from streams  where id=:id");
     stmt.setInt("id", streamid);
     sql::ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
@@ -73,6 +73,13 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       r.den = rs.getInt("framerate_num");
 
       _encoder->setTimeBase(r);
+      if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
+//        _encoder->setTimeBase(rs.getInt("codec_time_base_num"),rs.getInt("codec_time_base_den"));
+        _encoder->setFrameRate(rs.getInt("framerate_num"),rs.getInt("framerate_den"));
+      }else{
+        _encoder->setTimeBase(rs.getInt("time_base_num"),rs.getInt("time_base_den"));
+      }
+
       _encoder->setGopSize(rs.getInt("gop_size"));
       _encoder->setChannels(rs.getInt("channels"));
       _encoder->setSampleRate(rs.getInt("sample_rate"));

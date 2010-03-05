@@ -8,7 +8,7 @@
 #
 # chkconfig: 2345 80 30
 # description: MHive Service
-MHIVE_BASE=@MHIVE_BASE@
+MHIVE_BASE=%MHIVE_BASE%
 
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted
@@ -60,14 +60,17 @@ status_server(){
 }
 
 start_server(){
+#  LAST_DIR=`pwd`
+  cd $MHIVE_BASE
     if status_runtime; then
       echo "starting mhive"
-      $MHIVE_BASE/bin/mhiveservice& &> /dev/null
+      $MHIVE_BASE/bin/mhiveservice &> /dev/null
       else
         echo "MHive Service is allready running!"
         return
     fi
   status_runtime
+#  cd $LAST_DIR
 }
 run_server(){
   exec $MHIVE_BASE/bin/mhive -r
@@ -100,3 +103,4 @@ case "$1" in
             ;;
 esac
 
+exit 0

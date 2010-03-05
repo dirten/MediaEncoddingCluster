@@ -1,3 +1,20 @@
+/*----------------------------------------------------------------------
+ *  File    : FileInfo.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 2007, 12:30 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program License under the terms in the LICENSE file
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * ----------------------------------------------------------------------
+ */
 #ifndef ORG_ESB_WEB_FILEINFO
 #define ORG_ESB_WEB_FILEINFO
 #include <Wt/WContainerWidget>
@@ -39,8 +56,8 @@ namespace org {
           Wt::WFitLayout * f = new Wt::WFitLayout();
           setLayout(f);
           Wt::WContainerWidget * p = new Wt::WContainerWidget();
-          p->setOverflow(Wt::WContainerWidget::OverflowScroll);
-
+          p->setOverflow(Wt::WContainerWidget::OverflowAuto);
+          f->addWidget(p);
           Wt::WGridLayout * l = new Wt::WGridLayout();
           p->setLayout(l);
           wtk::ElementContainer<Wt::WText> el;
@@ -53,8 +70,8 @@ namespace org {
           ResultSet rs = st.executeQuery();
           if (rs.next()) {
             el.addElement("fileid", "FileId", rs.getString("id"), l);
-            el.addElement("filepath", "FilePath", rs.getString("path"), l);
-            el.addElement("filename", "FileName", rs.getString("filename"), l);
+            el.addElement("filepath", "FilePath", rs.getString("path"), l)->setWordWrap(false);
+            el.addElement("filename", "FileName", rs.getString("filename"), l)->setWordWrap(false);
             el.addElement("filesize", "FileSize", rs.getString("size"), l);
             el.addElement("streamcount", "StreamCount", rs.getString("stream_count"), l);
             el.addElement("ctype", "Type", rs.getString("container_type"), l);
