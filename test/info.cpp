@@ -150,7 +150,7 @@ namespace bla {
     printf("%10s|", "dar");
     cout << endl;
     cout << "------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "seeking to :" << packet_start << endl;
+//    cout << "seeking to :" << packet_start << endl;
     if (packet_start > 0)
       fis.seek(0, packet_start);
     for (int a = 0; a < packet_count; a++) {
@@ -175,7 +175,7 @@ namespace bla {
       //	printf("%10d|", pidx);
       //	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
       //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
-      printf("%s|", p.isKeyFrame() == 1 ? "x " : "  ");
+      printf("%s|", p.isKeyFrame() == 1 &&fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type==CODEC_TYPE_VIDEO? "x " : "  ");
       printf("%5d|", p.packet->duration);
       std::string type;
       //	if(f->streams[p.packet->stream_index]->parser){

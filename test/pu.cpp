@@ -73,12 +73,20 @@ void view_packet_data(Packet * p) {
   printf("%1s", isKey ? "x" : " ");
 
 }
+void viewPuData(ProcessUnit & pu){
+  printf("----------------------------------------------------------------------------------------------------------\n");
+  printf("%30s=%30s\n", "compensatebase",pu._frameRateCompensateBase);
+//  printf("%30s=%30s", "expected",pu._expected_frame_count);
 
+  printf("----------------------------------------------------------------------------------------------------------\n");
+
+}
 void view(char * filename) {
   FileInputStream fis(filename);
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
+  viewPuData(pu);
   //  logdebug(pu._decoder->toString());
   //  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");
