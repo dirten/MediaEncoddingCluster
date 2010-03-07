@@ -2,7 +2,7 @@
 
 
 
-X264_VERSION="-snapshot-20091224-2245"
+X264_VERSION="-snapshot-20100303-2245"
 
 DOWNLOAD_LIBS="yes"
 
@@ -57,13 +57,13 @@ untar_file(){
 configure_file(){
  	        cd "$SRCDIR/$1"
  	        echo "Configuring $1"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/$1"  $2 > configure-$1.log
+ 	        ./configure --prefix=$SRCDIR/$BUILDDIR/$1  $2 > configure-$1.log
  	        cd "$TOPDIR"
  	}
 configure_xvid(){
  	        cd "$SRCDIR/xvidcore/build/generic/"
  	        echo "Configuring xvidcore"
- 	        "./configure" --prefix="$SRCDIR/$BUILDDIR/xvidcore" $2 > configure-xvidcore.log
+ 	        ./configure --prefix=$SRCDIR/$BUILDDIR/xvidcore $2 > configure-xvidcore.log
  	        cd "$TOPDIR"
  	}
 build_file(){
@@ -95,64 +95,64 @@ rename_file(){
   cd "$TOPDIR"
 }
 
-#download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" "nasm.tar.bz2" "nasm.tar"
-#download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
-#download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
-#download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
-#download_file "http://downloads.sourceforge.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
-#download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
-#download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
-#download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
-#download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
-#download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
+download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" "nasm.tar.bz2" "nasm.tar"
+download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
+download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
+download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
+download_file "http://downloads.sourceforge.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
+download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
+download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
+download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
+download_file "http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar.gz" "libvorbis-1.2.0.tar"
+download_file "http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar.gz" "xvidcore-1.2.1.tar"
 
-#gunzip_file "yasm.tar.gz"
-#bunzip_file "nasm.tar.bz2"
-#bunzip_file "ffmpeg-export-snapshot.tar.bz2"
-#bunzip_file "x264-snapshot.tar.bz2"
-#gunzip_file "lame.src.tar.gz"
-#gunzip_file "libogg-1.1.3.tar.gz"
-#bunzip_file "libtheora-1.0.tar.bz2"
-#gunzip_file "speex-1.0.5.tar.gz"
-#gunzip_file "libvorbis-1.2.0.tar.gz"
-#gunzip_file "xvidcore-1.2.1.tar.gz"
+gunzip_file "yasm.tar.gz"
+bunzip_file "nasm.tar.bz2"
+bunzip_file "ffmpeg-export-snapshot.tar.bz2"
+bunzip_file "x264-snapshot.tar.bz2"
+gunzip_file "lame.src.tar.gz"
+gunzip_file "libogg-1.1.3.tar.gz"
+bunzip_file "libtheora-1.0.tar.bz2"
+gunzip_file "speex-1.0.5.tar.gz"
+gunzip_file "libvorbis-1.2.0.tar.gz"
+gunzip_file "xvidcore-1.2.1.tar.gz"
 
-#untar_file "nasm.tar" "nasm-*" "nasm"
-#untar_file "yasm.tar" "yasm-*" "yasm"
-#untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
-#untar_file "x264-snapshot.tar" "x264-snap*" "x264"
-#untar_file "lame.src.tar" "lame-*" "lame"
-#untar_file "libogg-1.1.3.tar" "libogg-*" "libogg"
-#untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
-#untar_file "speex-1.0.5.tar" "speex-*" "speex"
-#untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
-#untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
+untar_file "nasm.tar" "nasm-*" "nasm"
+untar_file "yasm.tar" "yasm-*" "yasm"
+untar_file "ffmpeg-export-snapshot.tar" "ffmpeg-export*" "ffmpeg"
+untar_file "x264-snapshot.tar" "x264-snap*" "x264"
+untar_file "lame.src.tar" "lame-*" "lame"
+untar_file "libogg-1.1.3.tar" "libogg-*" "libogg"
+untar_file "libtheora-1.0.tar" "libtheora-*" "libtheora"
+untar_file "speex-1.0.5.tar" "speex-*" "speex"
+untar_file "libvorbis-1.2.0.tar" "libvorbis-*" "libvorbis"
+untar_file "xvidcore-1.2.1.tar" "xvidcore" ""
 
 
 export LD_LIBRARY_PATH=$SRCDIR/$BUILDDIR/libogg/lib
 
-#configure_file "nasm"
-#build_file "nasm"
+configure_file "nasm"
+build_file "nasm"
 
 export PATH=$SRCDIR/$BUILDDIR/nasm/bin:$PATH
 
-#configure_file "yasm"
-#build_file "yasm"
+configure_file "yasm"
+build_file "yasm"
 
 export PATH=$SRCDIR/$BUILDDIR/yasm/bin:$PATH
 
-#configure_file "lame" "--enable-static --disable-shared"
-#build_file "lame"
-#configure_file "x264" "--enable-debug --enable-static --disable-shared"
-#build_file "x264"
-#configure_file "libogg" "--enable-static --disable-shared"
-#build_file "libogg"
-#configure_file "libtheora" "--with-ogg=$SRCDIR/$BUILDDIR/libogg --enable-static --disable-shared"
-#build_file "libtheora"
+configure_file "lame" "--enable-static --disable-shared"
+build_file "lame"
+configure_file "x264" "--enable-debug --enable-static --disable-shared"
+build_file "x264"
+configure_file "libogg" "--enable-static --disable-shared"
+build_file "libogg"
+configure_file "libtheora" "--with-ogg=$SRCDIR/$BUILDDIR/libogg --enable-static --disable-shared"
+build_file "libtheora"
 ##configure_file "speex" "--with-ogg-dir=$SRCDIR/$BUILDDIR/libogg --enable-static --disable-shared"
 ##build_file "speex"
-#configure_file "libvorbis" "--with-ogg=$SRCDIR/$BUILDDIR/libogg --enable-static --disable-shared"
-#build_file "libvorbis"
+configure_file "libvorbis" "--with-ogg=$SRCDIR/$BUILDDIR/libogg --enable-static --disable-shared"
+build_file "libvorbis"
 configure_xvid "" "--enable-macosx_module --disable-assembly --enable-static --disable-shared"
 build_xvid
 
