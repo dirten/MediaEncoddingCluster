@@ -26,6 +26,7 @@
  */
 #include <stdlib.h>
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
 #if !defined(_WIN32)
 #include <unistd.h>
 #include <errno.h>
@@ -218,13 +219,15 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
   bool bWorked;
   STARTUPINFO suInfo;
   PROCESS_INFORMATION procInfo;
+//  exec="d:\\Programme\\mhive-0.0.4.7\\bin\\mhive.exe ";
+//  execargs="-r";
   std::string m_Process = exec.c_str();
    char *vip = const_cast<char*>(exec.append(execargs).c_str());
 
   memset (&suInfo, 0, sizeof(suInfo));
   memset (&procInfo, 0, sizeof(procInfo));
   suInfo.cb = sizeof(suInfo);
-
+  
   bWorked = ::CreateProcess(m_Process.c_str(),
              vip,      // can also be NULL
 
@@ -236,7 +239,10 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
              NULL,
              &suInfo,
              &procInfo);
-
+  if(!bWorked){
+    ReportSvcStatus(SERVICE_ERROR_CRITICAL, ERROR_PROC_NOT_FOUND, 0);
+    
+  }
 /*
 procInfo has these members
     HANDLE hProcess;   // process handle
@@ -359,6 +365,7 @@ int main(int argc, char**argv) {
   org::esb::io::File f(argv[0]);
   std::cout << f.getParent() << std::endl;
   std::string path=f.getParent();
+  
   std::string executable = path;
   std::string arguments;
   org::esb::util::Properties props;
@@ -366,11 +373,23 @@ int main(int argc, char**argv) {
   if(file.isDirectory()){
     mode=1;
   }
+  #ifdef WIN32
+  executable.append("/mhive.exe ");
+  //replacing all slashes with backslashes
+  int position = executable.find( "/" ); // find first slash
+   while ( position != string::npos ) 
+   {
+      executable.replace( position, 1, "\\" );
+      position = executable.find( "/", position + 1 );
+   } 
+#else
   executable.append("/mhive ");
+#endif
+  std::cout << executable << std::endl;
   if (mode == 1) {
-    executable.append("-r");
+    arguments.append(" -r");
   } else if (mode == 0) {
-    executable.append("-i");
+    arguments.append(" -i");
   }else{
     exit(1);
   }

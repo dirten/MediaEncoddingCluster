@@ -35,7 +35,7 @@ BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
     case CTRL_SHUTDOWN_EVENT:
     {
       boost::mutex::scoped_lock terminationLock(terminationMutex);
-      logdebug("ctlc event");
+      LOGDEBUG("ctlc event");
       ctrlCHit.notify_all(); // should be just 1
 
       //      serverStopped.wait(terminationLock);

@@ -255,10 +255,10 @@ add_library (web
 )
 
 TARGET_LINK_LIBRARIES(web
-  wtext
-  wthttp
+  wtextd
+  wthttpd
   ${BOOST_PO_LIB_MT}
-  wt
+  wtd
   ${BOOST_SIGNALS_LIB_MT}
   ${BOOST_REGEX_LIB_MT}
   ${SSL_LIB}

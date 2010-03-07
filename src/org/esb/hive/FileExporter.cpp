@@ -340,7 +340,7 @@ if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
   map<int, boost::shared_ptr<Encoder> >::iterator itenc=enc.begin();
   for(;itenc!=enc.end();itenc++){
     int index=(*itenc).first;
-    enc.erase(index);
+//    enc.erase(index);
     CodecFactory::clearCodec(index);
   }
 

@@ -272,7 +272,6 @@ int main(int argc, char * argv[]) {
 
 #ifdef WIN32
 
-void ctrlCHitWait() {
 
   boost::mutex terminationMutex;
   boost::condition ctrlCHit;
@@ -286,7 +285,7 @@ void ctrlCHitWait() {
       case CTRL_SHUTDOWN_EVENT:
       {
         boost::mutex::scoped_lock terminationLock(terminationMutex);
-        LOGDEBUG("Hive", "ctlc event");
+        LOGDEBUG("ctlc event");
         ctrlCHit.notify_all(); // should be just 1
 
         //      serverStopped.wait(terminationLock);

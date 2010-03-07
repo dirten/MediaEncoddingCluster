@@ -202,7 +202,7 @@ void ProcessUnit::process() {
   }
   _output_packets = sink.getList();
   if(_expected_frame_count!=-1&&_output_packets.size()!=_expected_frame_count)
-    LOGERROR("PUID="<<_process_unit<<" Expected Frame count differ from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
+    LOGWARN("PUID="<<_process_unit<<" Expected Frame count diff from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
 }
 
 std::string toString() {

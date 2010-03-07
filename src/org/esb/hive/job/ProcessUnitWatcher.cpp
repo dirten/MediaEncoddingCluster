@@ -413,7 +413,7 @@ namespace org {
             AVRational input_framerate=u->_decoder->getFrameRate();
             AVRational output_framerate=u->_encoder->getFrameRate();
 
-            double in=(((double)input_framerate.den*u->_gop_size)/input_framerate.num*input_framerate.den*output_framerate.num/output_framerate.den);
+            double in=(((double)u->_gop_size)/input_framerate.num*input_framerate.den*output_framerate.num/output_framerate.den);
             in+=_stream_map[sIdx].frameRateCompensateBase;
             //+0.001 is against some rounding issues
             double out=floor(in+0.0001);
