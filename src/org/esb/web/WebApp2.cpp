@@ -178,7 +178,7 @@ namespace org {
             * tab =
                 new SqlTable(
                     std::string(
-                        "SELECT filename ,if(min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
+                        "SELECT filename ,if(min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
         //SELECT filename ,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100)), begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
