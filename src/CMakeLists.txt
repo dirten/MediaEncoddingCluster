@@ -134,10 +134,10 @@ target_link_libraries (mhive
 #  ${BOOST_SERIAL_LIB_MT}
 #  ${BOOST_THREAD_LIB_MT}
   ${BOOST_SYSTEM_LIB_MT}
-  ${SSL_LIB}
+#  ${SSL_LIB}
   ${CRYPTO_LIB}
 #  ${BOOST_PO_LIB_MT}
-#  ${BOOST_SIGNALS_LIB_MT}
+  ${BOOST_SIGNALS_LIB_MT}
 #  ${BOOST_REGEX_LIB_MT}
 #  ${BOOST_FS_LIB_MT}
 #  ${BOOST_DT_LIB_MT}
@@ -211,9 +211,14 @@ INSTALL(FILES
 	${FFMPEG_DIR}/bin/swscale-0.dll
   DESTINATION ./bin
   )
-ELSE(WIN32)
+ELSEIF(APPLE)
 INSTALL(FILES ${MYSQL_DIR}/share/mysql/english/errmsg.sys
   DESTINATION ./res
   )
+ELSE(APPLE)
+INSTALL(FILES ${MYSQL_DIR}/share/mysql/english/errmsg.sys
+  DESTINATION ./res
+  )
+
 ENDIF(WIN32)
 

@@ -198,10 +198,10 @@ ENDIF(BUILD_EMBEDDED_LIBS)
 
 
 
-INCLUDE(cmake/HiveBuildBoost.txt)
-INCLUDE(cmake/HiveBuildWT.txt)
+#INCLUDE(cmake/HiveBuildBoost.txt)
+#INCLUDE(cmake/HiveBuildWT.txt)
 #INCLUDE(cmake/HiveBuildX264.txt)
-INCLUDE(cmake/HiveBuildFfmpeg.txt)
+#INCLUDE(cmake/HiveBuildFfmpeg.txt)
 
 	
 

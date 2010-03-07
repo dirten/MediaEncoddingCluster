@@ -15,8 +15,8 @@ download_file(){
   cd "$SRCDIR"
   if test ! -f $3 ; then
     echo "Downloading $1"
-#    curl  "$1" -o $2
-    wget  -O $2 "$1" 
+    curl  "$1" -o $2
+#    wget  -O $2 "$1" 
     if test ! -f $2 ; then
       echo "Could not download $2"
  	    exit 1
@@ -95,11 +95,32 @@ rename_file(){
   cd "$TOPDIR"
 }
 
+cleanup(){
+   rm -rf $SRCDIR/$BUILDDIR/ffmpeg*
+   rm -rf $SRCDIR/$BUILDDIR/lame*
+   rm -rf $SRCDIR/$BUILDDIR/libogg* 
+   rm -rf $SRCDIR/$BUILDDIR/libtheora* 
+   rm -rf $SRCDIR/$BUILDDIR/libvorbis* 
+   rm -rf $SRCDIR/$BUILDDIR/x264*
+   rm -rf $SRCDIR/$BUILDDIR/xvidcore*
+
+   rm -rf $SRCDIR/ffmpeg*
+   rm -rf $SRCDIR/lame*
+   rm -rf $SRCDIR/libogg*
+   rm -rf $SRCDIR/libtheora*
+   rm -rf $SRCDIR/libvorbis*
+   rm -rf $SRCDIR/x264*
+   rm -rf $SRCDIR/xvidcore*
+
+}
+cleanup
+
 download_file "http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" "nasm.tar.bz2" "nasm.tar"
 download_file "http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" "yasm.tar.gz" "yasm.tar"
 download_file "http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar.bz2" "ffmpeg-export-snapshot.tar" 
 download_file "http://download.videolan.org/pub/videolan/x264/snapshots/x264$X264_VERSION.tar.bz2" "x264-snapshot.tar.bz2" "x264-snapshot.tar"
-download_file "http://downloads.sourceforge.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
+download_file "http://heanet.dl.sf.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
+#download_file "http://downloads.sourceforge.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" "lame.src.tar.gz" "lame.src.tar"
 download_file "http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" "libogg-1.1.3.tar.gz" "libogg-1.1.3.tar"
 download_file "http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" "libtheora-1.0.tar.bz2" "libtheora-1.0.tar"
 download_file "http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" "speex-1.0.5.tar.gz" "speex-1.0.5.tar"
@@ -163,6 +184,7 @@ case "$SYS" in
       MEMALIGNHACK="--enable-memalign-hack"
     ;;
     *)
+    rm -f $SRCDIR/$BUILDDIR/xvidcore/lib/*.so.*
     LIBPTHREAD="--extra-ldflags=-lpthread"
     ;;
 esac
@@ -177,7 +199,7 @@ configure_file "ffmpeg" \
 --enable-libmp3lame --extra-cflags=-I$SRCDIR/$BUILDDIR/lame/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/lame/lib  \
 --enable-libvorbis --extra-cflags=-I$SRCDIR/$BUILDDIR/libvorbis/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libvorbis/lib \
 --enable-libtheora --extra-cflags=-I$SRCDIR/$BUILDDIR/libtheora/include --extra-ldflags=-L$SRCDIR/$BUILDDIR/libtheora/lib \
---extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib --enable-shared --disable-static \
+--extra-ldflags=-L$SRCDIR/$BUILDDIR/libogg/lib --disable-shared --enable-static \
 $LIBPTHREAD --extra-cflags=-I$SRCDIR/$BUILDDIR/libogg/include --disable-devices $MEMALIGNHACK --extra-cflags=-fno-common --disable-stripping --enable-runtime-cpudetect"
 
 build_file "ffmpeg"

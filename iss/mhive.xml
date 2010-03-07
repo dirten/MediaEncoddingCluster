@@ -1,28 +1,41 @@
 <project>
-    <shortName>mhive</shortName>
+    <shortName>MediaEncodingCluster</shortName>
     <fullName>Media Encoding Cluster</fullName>
     <version>0.0.4.7</version>
     <readmeFile>${mhive_src_dir}/README</readmeFile>
     <licenseFile>${mhive_src_dir}/LICENSE</licenseFile>
-    <outputDirectory>/home/jhoelscher/MediaEncodingCluster/iss/output</outputDirectory>
+    <outputDirectory>/Users/jhoelscher/bripper/iss/output</outputDirectory>
     <preBuildActionList>
         <setInstallerVariable>
             <name>mhive_src_dir</name>
-            <value>/home/jhoelscher/MediaEncodingCluster</value>
+            <value>/Users/jhoelscher/bripper</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mhive_build_dir</name>
-            <value>/home/jhoelscher/MediaEncodingCluster/build</value>
+            <value>/Users/jhoelscher/bripper/build</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>ffmpeg_dir</name>
-            <value>/home/jhoelscher/MediaEncodingCluster/source/build/ffmpeg</value>
+            <value>/Users/jhoelscher/bripper/source/build/ffmpeg</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mysql_dir</name>
-            <value>/home/jhoelscher/MediaEncodingCluster/source/build/mysql</value>
+            <value>/Users/jhoelscher/mysql</value>
         </setInstallerVariable>
     </preBuildActionList>
+    <readyToInstallActionList>
+        <stopWindowsService>
+            <abortOnError>0</abortOnError>
+            <displayName>MHiveService</displayName>
+            <serviceName>MHiveService</serviceName>
+            <ruleList>
+                <windowsServiceTest>
+                    <condition>is_running</condition>
+                    <service>MHiveService</service>
+                </windowsServiceTest>
+            </ruleList>
+        </stopWindowsService>
+    </readyToInstallActionList>
     <postInstallationActionList>
         <removeUnixService>
             <abortOnError>0</abortOnError>
@@ -89,37 +102,56 @@
         </runProgram>
         <deleteWindowsService>
             <abortOnError>0</abortOnError>
-            <displayName>MHiveNodeService</displayName>
+            <displayName>MHiveService</displayName>
             <progressText>removing previous Service Installation</progressText>
-            <serviceName>MHiveNodeService</serviceName>
+            <serviceName>MHiveService</serviceName>
             <ruleList>
                 <windowsServiceTest>
                     <condition>exists</condition>
-                    <service>MHiveNodeService</service>
+                    <service>MHiveService</service>
                 </windowsServiceTest>
             </ruleList>
         </deleteWindowsService>
         <createWindowsService>
             <abortOnError>0</abortOnError>
             <description>this is the mhive node controller</description>
-            <displayName>MHiveNodeService</displayName>
+            <displayName>MHiveService</displayName>
             <program>${installdir}/bin/mhiveservice.exe</program>
             <programArguments></programArguments>
-            <progressText>install MHiveNodeService</progressText>
-            <serviceName>MHiveNodeService</serviceName>
+            <progressText>install MHiveService</progressText>
+            <serviceName>MHiveService</serviceName>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${install_service}</text>
+                    <value>1</value>
+                </compareText>
+            </ruleList>
             <startType>auto</startType>
         </createWindowsService>
     </postInstallationActionList>
     <preUninstallationActionList>
         <stopWindowsService>
             <abortOnError>0</abortOnError>
-            <displayName>MHiveNodeService</displayName>
-            <serviceName>MHiveNodeService</serviceName>
+            <displayName>MHiveService</displayName>
+            <serviceName>MHiveService</serviceName>
+            <ruleList>
+                <windowsServiceTest>
+                    <condition>is_running</condition>
+                    <service>MHiveService</service>
+                </windowsServiceTest>
+            </ruleList>
         </stopWindowsService>
         <deleteWindowsService>
             <abortOnError>0</abortOnError>
-            <displayName>MHiveNodeService</displayName>
-            <serviceName>MHiveNodeService</serviceName>
+            <displayName>MHiveService</displayName>
+            <serviceName>MHiveService</serviceName>
+            <ruleList>
+                <windowsServiceTest>
+                    <condition>exists</condition>
+                    <service>MHiveService</service>
+                </windowsServiceTest>
+            </ruleList>
         </deleteWindowsService>
         <removeUnixService>
             <name>${product_shortname}</name>
@@ -324,8 +356,15 @@
                     <actionList>
                         <runProgram>
                             <program>${installdir}/vcredist_x86.exe</program>
-                            <programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>
+                            <!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
+                            <programArguments>/qb!</programArguments>
                             <progressText>Installing VC++ 8 runtime</progressText>
+            <onErrorActionList>
+                <showWarning>
+                    <text>Error while installing the Microsoft redistributable!</text>
+                </showWarning>
+            </onErrorActionList>
+
                         </runProgram>
                     </actionList>
                     <distributionFileList>
@@ -352,7 +391,27 @@
             <programArguments>start</programArguments>
             <progressText>start MHive Service</progressText>
             <workingDirectory>${installdir}</workingDirectory>
+            <ruleList>
+                <platformTest>
+                    <type>linux</type>
+                </platformTest>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
         </runProgram>
+        <startWindowsService>
+            <abortOnError>0</abortOnError>
+            <delay>15000</delay>
+            <displayName>MHiveService</displayName>
+            <progressText>start MHive Service</progressText>
+            <serviceName>MHiveService</serviceName>
+            <ruleList>
+                <platformTest>
+                    <type>windows</type>
+                </platformTest>
+            </ruleList>
+        </startWindowsService>
     </finalPageActionList>
     <parameterList>
         <directoryParameter>
@@ -504,13 +563,6 @@
                     <default>localhost</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>30</width>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${use_node_discovery}</text>
-                            <value>yes</value>
-                        </compareText>
-                    </ruleList>
                 </stringParameter>
                 <stringParameter>
                     <name>host_port</name>
