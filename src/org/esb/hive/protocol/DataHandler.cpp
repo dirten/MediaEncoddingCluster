@@ -97,6 +97,12 @@ public:
     shutdown = true;
     _timer.reset();
     remove_endpoint_from_stream(boost::asio::error::shut_down);
+    if(_oos)
+      delete _oos;
+    _oos=NULL;
+    if(_ois)
+      delete _ois;
+    _ois=NULL;
   }
 
   DataHandler(TcpSocket * s) {

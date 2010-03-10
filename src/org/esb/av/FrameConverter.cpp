@@ -1,4 +1,3 @@
-
 #include "Codec.h"
 
 #include "FrameConverter.h"
@@ -6,8 +5,6 @@
 #include "Frame.h"
 //#include "swscale.h"
 #include <iostream>
-
-
 
 #define MAX_AUDIO_PACKET_SIZE (128 * 1024)
 using namespace std;
@@ -23,6 +20,9 @@ namespace org {
         _audioCtx = NULL;
         _frameRateCompensateBase = 0;
         _gop_size = -1;
+        _deinterlace = true;
+        _keep_aspect_ratio = true;
+
         int sws_flags = 1;
         _dec = dec;
         _enc = enc;
@@ -32,20 +32,13 @@ namespace org {
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
-          _audioCtx = av_audio_resample_init(
-              enc->getChannels(), dec->ctx->request_channel_layout,
-              enc->getSampleRate(), dec->getSampleRate(),
-              enc->getSampleFormat(), dec->getSampleFormat(),
-              16, 10, 0, 0.8 // this line is simple copied from ffmpeg
+          _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channel_layout, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
               );
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
-          _swsContext = sws_getContext(
-              dec->getWidth(), dec->getHeight(), dec->getPixelFormat(),
-              enc->getWidth(), enc->getHeight(), enc->getPixelFormat(),
-              sws_flags, NULL, NULL, NULL);
+          _swsContext = sws_getContext(dec->getWidth(), dec->getHeight(), dec->getPixelFormat(), enc->getWidth(), enc->getHeight(), enc->getPixelFormat(), sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
             LOGERROR("Could not initialize SWSCALE");
         }
@@ -65,6 +58,8 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
+          if(_deinterlace)
+            doDeinterlaceFrame(in_frame);
           convertVideo(in_frame, out_frame);
         }
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
@@ -75,6 +70,9 @@ namespace org {
           compensateAudioResampling(in_frame, out_frame);
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
           compensateFrameRateConversion(in_frame, out_frame);
+        out_frame.setPixelAspectRatio(in_frame.getPixelAspectRatio());
+        out_frame.setDisplayAspectRatio(in_frame.getDisplayAspectRatio());
+        out_frame.setStorageAspectRatio(in_frame.getStorageAspectRatio());
         LOGDEBUG(out_frame.toString());
       }
 
@@ -88,15 +86,21 @@ namespace org {
         out_frame.setTimeBase(_enc->getTimeBase());
         out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
-//        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
+        //        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDuration(_enc->getTimeBase().num);
 #endif
+      }
+      void FrameConverter::setDeinterlace(bool deinterlace){
+        _deinterlace=deinterlace;
+      }
+      void FrameConverter::setKeepAspectRatio(bool kar){
+        _keep_aspect_ratio=kar;
       }
 
       void FrameConverter::setFrameRateCompensateBase(double val) {
         LOGDEBUG("setFrameRateCompensateBase(" << val << ")");
         /**the +0.001 is to compensate rounding error*/
-        _frameRateCompensateBase = val+0.0001;
+        _frameRateCompensateBase = val + 0.0001;
       }
 
       void FrameConverter::setGopSize(int gop) {
@@ -106,30 +110,26 @@ namespace org {
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
         int frames = 1;
-        if ((_gop_size > 0 || _gop_size == -1)
-            && (_dec->getFrameRate().num != _enc->getFrameRate().num || _dec->getFrameRate().den != _enc->getFrameRate().den)
-            ) {
+        if ((_gop_size > 0 || _gop_size == -1) && (_dec->getFrameRate().num != _enc->getFrameRate().num || _dec->getFrameRate().den != _enc->getFrameRate().den)) {
           /**
            * calculating the framerate difference
            * delta=(input_timestamp/decoder_framerate_num*decoder_framerate_den*encoder_framerate_num/encoder_framerate_den)-output_timestamp/encoder_framerate_den
            *
            * */
 
-          int64_t last_input_pts=_dec->getLastTimeStamp();
-          int64_t last_output_pts=_enc->getLastTimeStamp();
+          int64_t last_input_pts = _dec->getLastTimeStamp();
+          int64_t last_output_pts = _enc->getLastTimeStamp();
 
-          AVRational input_framerate=_dec->getFrameRate();
-          AVRational output_framerate=_enc->getFrameRate();
-          double in=(((double)last_input_pts)/input_framerate.num*input_framerate.den*output_framerate.num/output_framerate.den);
-          double out=(((double)last_output_pts)/output_framerate.den);
-          double delta=in-out;
-          delta+=_frameRateCompensateBase;
+          AVRational input_framerate = _dec->getFrameRate();
+          AVRational output_framerate = _enc->getFrameRate();
+          double in = (((double) last_input_pts) / input_framerate.num * input_framerate.den * output_framerate.num / output_framerate.den);
+          double out = (((double) last_output_pts) / output_framerate.den);
+          double delta = in - out;
+          delta += _frameRateCompensateBase;
 
-
-
-//          double a = static_cast<double> ((double) _dec->getLastTimeStamp()*(double) _dec->getTimeBase().num / (double) _dec->getTimeBase().den);
+          //          double a = static_cast<double> ((double) _dec->getLastTimeStamp()*(double) _dec->getTimeBase().num / (double) _dec->getTimeBase().den);
           //          double a = static_cast<double> ((double) input.getPts() / (double) _dec->getTimeBase().den);
-//          double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
+          //          double delta = _frameRateCompensateBase + a / av_q2d(_enc->getTimeBase()) - _enc->getLastTimeStamp();
           if (delta > 2.0)
             frames = static_cast<int> (floor(delta + 0.5));
           if (delta <= -0.6)
@@ -148,6 +148,20 @@ namespace org {
 
       }
 
+      void FrameConverter::doDeinterlaceFrame(Frame & in_frame) {
+        LOGDEBUG("deinterlacing frame");
+        /* deinterlace : must be done before any resize */
+        if (_deinterlace) {
+          Frame frame(in_frame);
+          if (avpicture_deinterlace((AVPicture*)frame.getAVFrame(), (const AVPicture*)in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
+            /* if error, do not deinterlace */
+            fprintf(stderr, "Deinterlacing failed\n");
+          }else{
+            in_frame=frame;
+          }
+        }
+      }
+
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
         /**
          * calculating the delta between the input and the output timestamps
@@ -155,35 +169,22 @@ namespace org {
         AVRational ar;
         ar.num = 1;
         ar.den = 1000000;
-        if (_dec->getLastTimeStamp() == AV_NOPTS_VALUE || _enc->getLastTimeStamp() == AV_NOPTS_VALUE)return;
+        if (_dec->getLastTimeStamp() == AV_NOPTS_VALUE || _enc->getLastTimeStamp() == AV_NOPTS_VALUE)
+          return;
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
         LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
-        
-        av_resample_compensate(
-            *(struct AVResampleContext**) _audioCtx,
-            delta,
-            _enc->getSampleRate() / 2
-            );
+
+        av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 
       /**
        * this rescales the input Frame Data into the output Frame Data
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
-        //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Video");
         out_frame._type = in_frame._type;
-//        _swsContext->
-        sws_scale(
-            _swsContext,
-            in_frame.getAVFrame()->data,
-            in_frame.getAVFrame()->linesize,
-            0,
-            in_frame.getHeight(),
-            out_frame.getAVFrame()->data,
-            out_frame.getAVFrame()->linesize
-            );
+        sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
         out_frame.setPts(in_frame.getPts());
@@ -200,12 +201,7 @@ namespace org {
         int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
-        int out_size = audio_resample(
-            _audioCtx,
-            (short *) audio_buf,
-            (short *) in_frame._buffer,
-            in_frame._size / (in_frame.channels * isize)
-            );
+        int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
         out_frame.pos = in_frame.pos;

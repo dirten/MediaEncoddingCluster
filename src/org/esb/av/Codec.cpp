@@ -321,7 +321,7 @@ namespace org {
         boost::mutex::scoped_lock scoped_lock(open_close_mutex);
 
         if (_opened) {
-          if (ctx && !_pre_allocated) {
+          if (ctx /*&& !_pre_allocated*/) {
             if (ctx->extradata_size > 0) {
               av_freep(&ctx->extradata);
             }

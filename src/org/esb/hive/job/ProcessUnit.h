@@ -75,6 +75,9 @@ namespace org {
                    
                     bool _last_process_unit;
                     int _expected_frame_count;
+                    int _deinterlace;
+                    int _keep_aspect_ratio;
+
                     template<class Archive>
                     void serialize(Archive & ar, const unsigned int version) {
                         ar & _input_packets;
@@ -91,8 +94,11 @@ namespace org {
                         ar & _frameRateCompensateBase;
                         ar & _gop_size;
                         ar & _expected_frame_count;
+                        ar & _deinterlace;
+                        ar & _keep_aspect_ratio;
                     }
                 private:
+
                 };
 
                 class PtsComparator {

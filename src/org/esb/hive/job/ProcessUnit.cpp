@@ -97,7 +97,10 @@ void ProcessUnit::process() {
     _converter=new FrameConverter(_decoder.get(), _encoder.get());
   _converter->setFrameRateCompensateBase(_frameRateCompensateBase);
   _converter->setGopSize(_gop_size);
-    LOGTRACE("Codex openned");
+  _converter->setDeinterlace(_deinterlace>0);
+  _converter->setKeepAspectRatio(_keep_aspect_ratio>0);
+
+  LOGTRACE("Codex openned");
     LOGTRACE(_decoder->toString());
     LOGTRACE(_encoder->toString());
   /*creating a packetsink for storing the encoded Packetsf from the encoder*/

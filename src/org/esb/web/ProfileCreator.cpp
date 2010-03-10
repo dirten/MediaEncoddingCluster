@@ -315,16 +315,16 @@ namespace org {
           }
         }
         /**
-        * this will be implemented in the 0.0.4.7 Release
+        * this will be implemented in the 0.0.4.8 Release
         */
-        /*
+
         Wt::Ext::ComboBox * v_aspect = _elcb.addElement("v_aspect_ratio", "Aspect Ratio", "", l);
         v_aspect->setTextSize(50);
-        v_aspect->addItem("Use Width and Height defined below");
+        v_aspect->addItem("Rescale to width and height defined below");
         v_aspect->addItem("Keep Aspect Ratio from Source");
-        v_aspect->addItem("Use 4:3");
-        v_aspect->addItem("Use 16:9");
-        */
+//        v_aspect->addItem("Use 4:3");
+//        v_aspect->addItem("Use 16:9");
+
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
 
@@ -387,8 +387,10 @@ namespace org {
             data["v_codec"] = org::esb::util::StringUtil::toString(p->id);
           }
         }
-        return data;
 
+        int idx=_elcb.getElement("v_aspect_ratio")->currentIndex();
+        data["v_keep_aspect_ratio"]=org::esb::util::StringUtil::toString(idx);
+        return data;
       }
 
       void ProfileCreator::VideoPanel::setKeyValue(std::map<std::string, std::string> data) {
@@ -405,6 +407,7 @@ namespace org {
 
         BasePanel::setKeyValue(data);
         setPredifinedCodeFlags();
+        _elcb.getElement("v_aspect_ratio")->setCurrentIndex(atoi(data["v_keep_aspect_ratio"].c_str()));
       }
 
       ProfileCreator::VideoPanel::~VideoPanel() {

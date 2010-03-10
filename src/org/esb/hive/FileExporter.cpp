@@ -330,7 +330,7 @@ if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
        * clean up temporary files, they are no longer needed
        */
       fis.close();
-      infile.deleteFile();
+//      infile.deleteFile();
     }
   }
   pos->close();

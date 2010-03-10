@@ -48,10 +48,13 @@ int jobcreator(int argc, char*argv[]) {
   std::string duration="";
   int profile_v_width = 0;
   int profile_v_height = 0;
+  int profile_v_keep_aspect_ratio=0;
+  int profile_v_deinterlace=0;
   int profile_a_channels = 0;
   int profile_a_codec = 0;
   int profile_a_bitrate = 0;
   int profile_a_samplerate = 0;
+
   AVOutputFormat *ofmt = NULL;
 
   //	cout << "FileId:"<<fileid<<"\tProfileId:"<<profileid<<endl;
@@ -80,6 +83,8 @@ int jobcreator(int argc, char*argv[]) {
       profile_v_width = rs.getInt("v_width");
       profile_v_height = rs.getInt("v_height");
       profile_v_extra = rs.getString("v_extra");
+      profile_v_keep_aspect_ratio = rs.getInt("v_keep_aspect_ratio");
+      profile_v_deinterlace= rs.getInt("v_deinterlace");
       profile_a_extra = rs.getString("a_extra");
       profile_a_channels = rs.getInt("a_channels");
       profile_a_codec = rs.getInt("a_codec");
@@ -211,10 +216,12 @@ int jobcreator(int argc, char*argv[]) {
   }
 
   {
-    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile, profileid, status ) values( :inputfile, :outputfile,:profileid, 'new')");
+    PreparedStatement stmtJob = con.prepareStatement("insert into jobs ( inputfile, outputfile,keep_display_aspect, deinterlace, profileid, status ) values( :inputfile, :outputfile, :keep_display_aspect, :deinterlace, :profileid, 'new')");
     stmtJob.setInt("inputfile", fileid);
     stmtJob.setLong("outputfile", outfileid);
     stmtJob.setLong("profileid", profileid);
+    stmtJob.setInt("keep_display_aspect", profile_v_keep_aspect_ratio);
+    stmtJob.setInt("deinterlace", profile_v_deinterlace);
     stmtJob.execute();
     jobid = con.lastInsertId();
   }

@@ -53,12 +53,15 @@ namespace org {
                 void convert(Frame & input, Frame & out);
                 void setFrameRateCompensateBase(double);
                 void setGopSize(int);
+                void setDeinterlace(bool);
+                void setKeepAspectRatio(bool);
             private:
                 void convertVideo(Frame & input, Frame & out);
                 void convertAudio(Frame & input, Frame & out);
                 void rescaleTimestamp(Frame & input, Frame & out);
                 void compensateAudioResampling(Frame & input, Frame & out);
                 void compensateFrameRateConversion(Frame & input, Frame & out);
+                void doDeinterlaceFrame(Frame & in_frame);
                 SwsContext * _swsContext;
                 FrameFormat * _inFormat;
                 FrameFormat * _outFormat;
@@ -69,6 +72,8 @@ namespace org {
                 double _frameRateCompensateBase;
                 int _gop_size;
                 int _frame_counter;
+                bool _deinterlace;
+                bool _keep_aspect_ratio;
             };
         }
     }

@@ -182,6 +182,8 @@ namespace org {
                     pstmt2.execute();
                   }
                   int index = rs2.getInt("stream_index");
+                  _stream_map[index].deinterlace=rs.getInt("deinterlace");
+                  _stream_map[index].keep_aspect_ratio=rs.getInt("keep_display_aspect");
                   _stream_map[index].instream = rs2.getInt("instream");
                   _stream_map[index].outstream = rs2.getInt("outstream");
                   _stream_map[index].type = rs2.getInt("stream_type");
@@ -278,8 +280,8 @@ namespace org {
                  * delete old packetentries after restart an unfinished encoding session
                  */
                 st = _stream_map.begin();
-                sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
                 for (; st != _stream_map.end(); st++) {
+                sql::Connection con3(std::string(config::Config::getProperty("db.connection")));
                   std::string sql = "DELETE FROM process_units where target_stream=" + org::esb::util::StringUtil::toString((*st).second.outstream) + " AND start_ts > " + org::esb::util::StringUtil::toString((*st).second.last_start_dts);
                   con3.executeNonQuery(sql);
                 }
@@ -384,7 +386,8 @@ namespace org {
           }
           u->_decoder = _stream_map[sIdx].decoder;
           u->_encoder = _stream_map[sIdx].encoder;
-
+          u->_deinterlace=_stream_map[sIdx].deinterlace;
+          u->_keep_aspect_ratio=_stream_map[sIdx].keep_aspect_ratio;
 
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
           /**

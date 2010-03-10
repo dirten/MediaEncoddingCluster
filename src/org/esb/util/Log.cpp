@@ -77,6 +77,7 @@ void Log::open(std::string path) {
 
 void Log::close() {
   delete getLogger();
+  delete globalConfigureThread;
 }
 
 Log * Log::getLogger(std::string logger) {

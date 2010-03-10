@@ -41,11 +41,11 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
       decoder->ctx->ticks_per_frame=rs.getInt("ticks_per_frame");
       decoder->ctx->extradata_size = rs.getInt("extra_data_size");
-      decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
-      memcpy(decoder->ctx->extradata, rs.getBlob("extra_data").data(), decoder->ctx->extradata_size);
-      //      decoder->setFlag(rs.getInt("flags"));
-
-      //    		decoder->open();
+      if(decoder->ctx->extradata_size>0){
+        decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
+        memcpy(decoder->ctx->extradata, rs.getBlob("extra_data").data(), decoder->ctx->extradata_size);
+      }else
+        decoder->ctx->extradata=NULL;
       decoder_map[streamid] = decoder;
     } else {
       LOGERROR("no Decoder found for stream id " << streamid);

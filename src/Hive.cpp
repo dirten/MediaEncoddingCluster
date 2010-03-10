@@ -169,13 +169,22 @@ int main(int argc, char * argv[]) {
         if (rs.next()) {
           std::string ver = rs.getString("version");
           if (ver == "0.0.4") {
+            LOGINFO("Database version is 0.0.4, update needed!!!");
+            std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
+            sql_script.append("/../sql/hive-0.0.5.sql");
+            hive::Setup::buildDatabaseModel(sql_script.c_str());
+          }else if(ver == "0.0.5") {
             LOGINFO("Database is up to date");
           }
         } else {
           /**Update database model to ver 0.0.4*/
-          std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script.append("/../sql/hive-0.0.4.sql");
-          hive::Setup::buildDatabaseModel(sql_script.c_str());
+          std::string sql_script004 = std::string(org::esb::config::Config::getProperty("hive.path"));
+          sql_script004.append("/../sql/hive-0.0.4.sql");
+          hive::Setup::buildDatabaseModel(sql_script004.c_str());
+          /**Update database model to ver 0.0.5*/
+          std::string sql_script005 = std::string(org::esb::config::Config::getProperty("hive.path"));
+          sql_script005.append("/../sql/hive-0.0.5.sql");
+          hive::Setup::buildDatabaseModel(sql_script005.c_str());
         }
       } catch (sql::SqlException & ex) {
         /*when not exists then create it*/
@@ -195,6 +204,11 @@ int main(int argc, char * argv[]) {
           sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
           sql_script.append("/../sql/hive-0.0.4.sql");
           hive::Setup::buildDatabaseModel(sql_script.c_str());
+
+          /**Update database model to ver 0.0.5*/
+          std::string sql_script005 = std::string(org::esb::config::Config::getProperty("hive.path"));
+          sql_script005.append("/../sql/hive-0.0.5.sql");
+          hive::Setup::buildDatabaseModel(sql_script005.c_str());
 
           std::map<std::string, std::string> conf;
           conf["hive.mode"] = "server";

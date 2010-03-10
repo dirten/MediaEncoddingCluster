@@ -156,7 +156,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   if (!_frameFinished) {
     return frame;
   }
-
+  frame->setStorageAspectRatio(ctx->coded_width,ctx->coded_height);
+  frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
+  frame->setDisplayAspectRatio(display_aspect_ratio);
   len -= bytesDecoded;
 
 

@@ -3,17 +3,23 @@
 //#include "tntdb/blob.h"
 #include "Column.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 using namespace org::esb::sql;
 
 PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
-	LOGINFO("SQL:"<<s);
+	LOGTRACE("SQL:"<<s);
 //  logdebug("PreparedStatement::PreparedStatement(MYSQL & mysql, const char * s)"<<this);
   stmtPtr = boost::shared_ptr<MYSQL_STMT>(mysql_stmt_init(mysql),&mysql_stmt_close);
   if (!stmtPtr.get()) {
 	  throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }
   parseSql(s);
-  
+  LOGDEBUG(sql);
+  LOGDEBUG(StringUtil::toLower(sql));
+  LOGDEBUG(StringUtil::toLower(sql).find("select"));
+  if(StringUtil::toLower(sql).find("select")!=string::npos)
+    free(stmtPtr.get()->mem_root.free);
+
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(sql));
     //    throw SqlException( mysql_stmt_error(stmt));

@@ -17,13 +17,16 @@ namespace org {
         Frame(PixelFormat format, int width, int height, bool allocate = true);
         Frame(uint8_t * buffer, int64_t size);
 
-        //                Frame(const Frame & source);
-        //                Frame operator=(Frame & frame);
+//        Frame(const Frame & source);
+//        Frame operator=(Frame & frame);
         ~Frame();
 
         uint8_t * getData();
         int getWidth();
         int getHeight();
+        void setWidth(int);
+        void setHeight(int);
+
         int getSize();
         PixelFormat getFormat();
         AVPacket * getPacket();
@@ -35,13 +38,23 @@ namespace org {
         int getDuration();
         void setDuration(int);
         AVFrame * getAVFrame();
+        void setAVFrame(AVFrame *);
         bool isFinished();
         void setFinished(bool);
         std::string toString();
         void setTimeBase(AVRational);
+        void setTimeBase(int, int);
         AVRational getTimeBase();
         AVRational getPixelAspectRatio();
+        AVRational getDisplayAspectRatio();
+        AVRational getStorageAspectRatio();
+
         void setPixelAspectRatio(AVRational);
+        void setPixelAspectRatio(int num, int den);
+        void setDisplayAspectRatio(AVRational);
+        void setDisplayAspectRatio(int num, int den);
+        void setStorageAspectRatio(AVRational);
+        void setStorageAspectRatio(int num, int den);
         void dumpHex();
         int getFrameCount();
         void setFrameCount(int d);
@@ -62,6 +75,8 @@ namespace org {
         boost::shared_ptr<AVFrame> framePtr;
         AVRational _time_base;
         AVRational _pixel_aspect_ratio;
+        AVRational _storage_aspect_ratio;
+        AVRational _display_aspect_ratio;
         int _frames;
       public:
         bool _allocated;

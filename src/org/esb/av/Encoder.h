@@ -67,6 +67,7 @@ namespace org {
                 int64_t _last_duration;
                 int _last_idx;
                 AVRational _last_time_base;
+                AVRational _pixel_aspect_ratio;
                 int64_t _byte_counter;
                 int _frame_counter;
                 int _frames;

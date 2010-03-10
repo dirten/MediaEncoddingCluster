@@ -49,6 +49,10 @@ void ProtocolServer::close() {
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
   this->socket = socket;
+  if(socket==NULL){
+    LOGWARN("Socket seems to be NULL, returning to caller");
+    return;
+  }
   LOGDEBUG("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));

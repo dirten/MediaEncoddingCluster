@@ -64,6 +64,8 @@ int Encoder::encode(Frame & frame) {
   _last_duration = frame.getDuration();
   _last_idx = frame.stream_index;
   _frames = frame.getFrameCount();
+  ctx->sample_aspect_ratio=frame.getPixelAspectRatio();
+
   if (_last_dts == AV_NOPTS_VALUE) {
     _last_dts = frame.getDts();
     LOGDEBUG("setting last_dts=" << _last_dts);
@@ -93,6 +95,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
   memset(&data, 0, buffer_size);
   int frames = 1;
   int ret=0;
+
 
   /**
    * calculating the differences between timestamps to duplicate or drop frames
