@@ -35,13 +35,13 @@ int main(int argc, char** argv) {
   int c = fis.getStreamCount();
   int video_stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_AUDIO) {
       video_stream = a;
       break;
     }
   }
   org::esb::av::Decoder dec(fis.getAVStream(video_stream));
-  dec.setTimeBase(1,25);
+  dec.setTimeBase(1, 25);
   dec.open();
   LOGDEBUG( dec.toString());
   org::esb::av::PacketInputStream pis(&fis);
@@ -49,14 +49,16 @@ int main(int argc, char** argv) {
   std::list<org::esb::av::Packet*> packetlist;
   int incount = 0;
   int outcount = 0;
-  for (int i = 0; i < 14;) {
+  for (int i = 0; i < 25;) {
     if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == video_stream) {
-      org::esb::av::Frame * frame = dec.decode2(*p);
-      incount++;
-      if (frame->isFinished()) {
-        LOGDEBUG( "frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        outcount++;
-
+      if (i >= 19) {
+        org::esb::av::Frame * frame = dec.decode2(*p);
+        incount++;
+        if (frame->isFinished() && i >= 19) {
+          LOGDEBUG( "frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          outcount++;
+          frame->dumpHex();
+        }
       }
       i++;
     }
@@ -69,10 +71,10 @@ int main(int argc, char** argv) {
   while (decode_last) {
     org::esb::av::Frame * frame = dec.decode2(*ptmp);
     if (frame->isFinished()) {
-//      LOGDEBUG("org.esb.av.TestDecoder", frame->toString());
+      //      LOGDEBUG("org.esb.av.TestDecoder", frame->toString());
       outcount++;
-    }else{
-      decode_last=false;
+    } else {
+      decode_last = false;
     }
   }
   LOGDEBUG( "incount=" << incount << " outcount=" << outcount);

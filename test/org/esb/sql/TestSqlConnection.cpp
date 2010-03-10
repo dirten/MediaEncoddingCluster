@@ -102,6 +102,7 @@ void test_insert_thread(){
 }
 
 int main(int argc, char** argv) {
+  Log::open("");
   std::string src = MEC_SOURCE_DIR;
   hive::DatabaseService::start(src);
   config::Config::setProperty("hive.base_path", src.c_str());

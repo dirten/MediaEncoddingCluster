@@ -20,6 +20,7 @@
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/hive/JobUtil.h"
+#include "org/esb/hive/Setup.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
@@ -53,6 +54,7 @@ void createDatabase() {
     con_a.executeNonQuery(string("CREATE DATABASE hive"));
   }
   //		con.executeNonQuery(string("use hive"));
+/*
   sql::Connection con(config::Config::getProperty("db.connection"));
   util::StringTokenizer st(sql, ";");
   std::string del("\n");
@@ -65,7 +67,21 @@ void createDatabase() {
     LOGDEBUG("Create Table leng" << next.size());
     if (next.size() > 1)
       con.executeNonQuery(next);
-  }
+  }*/
+  /**Update database model to ver 0.0.4*/
+  std::string sql_script003 = std::string(org::esb::config::Config::getProperty("hive.base_path"));
+  sql_script003.append("/sql/hive-0.0.3.sql");
+  hive::Setup::buildDatabaseModel(sql_script003.c_str());
+
+  /**Update database model to ver 0.0.4*/
+  std::string sql_script004 = std::string(org::esb::config::Config::getProperty("hive.base_path"));
+  sql_script004.append("/sql/hive-0.0.4.sql");
+  hive::Setup::buildDatabaseModel(sql_script004.c_str());
+  /**Update database model to ver 0.0.5*/
+  std::string sql_script005 = std::string(org::esb::config::Config::getProperty("hive.base_path"));
+  sql_script005.append("/sql/hive-0.0.5.sql");
+  hive::Setup::buildDatabaseModel(sql_script005.c_str());
+
 }
 
 void deleteDatabase() {
