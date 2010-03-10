@@ -324,6 +324,10 @@ namespace org {
         v_aspect->addItem("Keep Aspect Ratio from Source");
 //        v_aspect->addItem("Use 4:3");
 //        v_aspect->addItem("Use 16:9");
+        Wt::Ext::ComboBox * v_deinterlace = _elcb.addElement("v_deinterlace", "Deinterlace", "", l);
+        v_deinterlace->setTextSize(50);
+        v_deinterlace->addItem("No");
+        v_deinterlace->addItem("Yes");
 
         _el.addElement("v_width", "Video Width", "", l);
         _el.addElement("v_height", "Video Height", "", l);
@@ -390,6 +394,8 @@ namespace org {
 
         int idx=_elcb.getElement("v_aspect_ratio")->currentIndex();
         data["v_keep_aspect_ratio"]=org::esb::util::StringUtil::toString(idx);
+        int idx=_elcb.getElement("v_deinterlace")->currentIndex();
+        data["v_deinterlace"]=org::esb::util::StringUtil::toString(idx);
         return data;
       }
 
@@ -408,6 +414,7 @@ namespace org {
         BasePanel::setKeyValue(data);
         setPredifinedCodeFlags();
         _elcb.getElement("v_aspect_ratio")->setCurrentIndex(atoi(data["v_keep_aspect_ratio"].c_str()));
+        _elcb.getElement("v_deinterlace")->setCurrentIndex(atoi(data["v_deinterlace"].c_str()));
       }
 
       ProfileCreator::VideoPanel::~VideoPanel() {

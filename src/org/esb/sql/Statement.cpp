@@ -10,9 +10,10 @@ Statement::Statement(MYSQL * mysql, const char * s) : rs(NULL) {
   rs = NULL;
   stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql), &mysql_stmt_close);
   //  stmtPtr = boost::shared_ptr<MYSQL_STMT > (mysql_stmt_init(mysql),boost::bind(&Statement::close, this));
+#ifndef __WIN32__
   if(StringUtil::toLower(sql).find("select")!=string::npos)
     free(stmtPtr.get()->mem_root.free);
-
+#endif
   if (!stmtPtr.get()) {
     throw SqlException(std::string("mysql_stmt_init(), out of memory"));
   }

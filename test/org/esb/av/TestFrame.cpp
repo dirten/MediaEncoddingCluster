@@ -5,21 +5,13 @@
  *      Author: jhoelscher
  */
 
-#include "TestFrame.h"
+
 
 #include "org/esb/av/Frame.h"
 
 #include <assert.h>
 #include <iostream>
 using namespace org::esb::av;
-TestFrame::TestFrame() {
-  // TODO Auto-generated constructor stub
-
-}
-
-TestFrame::~TestFrame() {
-  // TODO Auto-generated destructor stub
-}
 
 
 int main(int argc, char** argv){

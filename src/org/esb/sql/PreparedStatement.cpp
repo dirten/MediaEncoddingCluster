@@ -17,9 +17,10 @@ PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
   LOGDEBUG(sql);
   LOGDEBUG(StringUtil::toLower(sql));
   LOGDEBUG(StringUtil::toLower(sql).find("select"));
+#ifndef __WIN32__
   if(StringUtil::toLower(sql).find("select")!=string::npos)
     free(stmtPtr.get()->mem_root.free);
-
+#endif
   if (mysql_stmt_prepare(stmtPtr.get(), sql.c_str(), sql.length())) {
     throw SqlException(string("failed while prepare the statement: ").append(mysql_stmt_error(stmtPtr.get())).append(sql));
     //    throw SqlException( mysql_stmt_error(stmt));

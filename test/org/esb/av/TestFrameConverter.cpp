@@ -5,7 +5,6 @@
  *      Author: jhoelscher
  */
 
-#include "TestFrameConverter.h"
 
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
@@ -18,14 +17,6 @@
 #include "org/esb/util/Log.h"
 #include <iostream>
 
-TestFrameConverter::TestFrameConverter() {
-  // TODO Auto-generated constructor stub
-
-}
-
-TestFrameConverter::~TestFrameConverter() {
-  // TODO Auto-generated destructor stub
-}
 
 using namespace org::esb::av;
 using namespace org::esb::io;
