@@ -1,0 +1,168 @@
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Installation</title>
+  </header>
+  <body>
+    <section id="deployment">
+      <title>Designing a deployment</title>
+      <p>A Media Encoding Cluster deployment can be as simple as one computer or as complex as multiple clusters of Nodes.</p>
+<p>You must run the installer on each computer on which you want to run Media Encoding Cluster. After running the installer, you can configure the system to run as a server or a client.</p>
+<p>This Version comes with all dependencies included, no additional Installation or other Programms are needed, i.e. MySql nor ffmpeg needs extra to be installed!</p>
+<p>The Installer build a Directory structure like: </p>
+        <p class="quote">
+        INSTALL_BASE/bin<br/>
+        INSTALL_BASE/hive<br/>
+        INSTALL_BASE/res<br/>
+        INSTALL_BASE/web<br/>
+        INSTALL_BASE/tmp<br/>
+        </p>
+<p>- In the "bin" Directory will be the mhive.exe -> this is the Main Executable to start the Server and the Client.</p>
+<p>- In the "hive" Directory will be the MySQL Table to store the Meta Information.</p>
+<p>- In the "res" Directory will be the Message Resource Bundle for the different Langauge Packs.</p>
+<p>- In the "web" Directory will be the static Resources for Web Administrator.</p>
+<p>- In the "tmp" Directory will be the Encoded Chunks that will be used for the Resulting Video.</p>
+
+        <table>
+          <tr>
+            <th>Directory</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>bin</td>
+            <td>This document in HTML format. </td>
+          </tr>
+          <tr>
+            <td>hive</td>
+            <td>This document in its raw XML format.</td>
+          </tr>
+          <tr>
+            <td>res</td>
+            <td>This document as Adobe PDF</td>
+          </tr>
+          <tr>
+            <td>web</td>
+            <td>
+              <p>
+                This document as straight text.
+              </p>
+              <p>
+                For additional information see the Forrest text-output plugin.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>tmp</td>
+            <td>
+              <p>
+                This document as Perl POD (Plain Old Documentation). Text with
+                minimal formatting directives. If on a *nix system with perl
+                installed, see &#34;man perlpod&#34;.
+              </p>
+              <p>
+                For additional information see the Forrest pod-output plugin.
+              </p>
+            </td>
+          </tr>
+        </table>
+    </section>
+    <xi:include href="cocoon:///installation/win32.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/> 
+    <xi:include href="cocoon:///installation/linuxx86.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/> 
+    <xi:include href="cocoon:///installation/osx.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/> 
+
+<!--
+    <section>
+    <title>Install on Windows</title>
+    <ol>
+      <li><p>Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.</p>
+        <p><img src="/images/installation/win32/01.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Read and accept the License Agreement to continue the installation process.</p>    
+        <p><img src="/images/installation/win32/02.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Accept the default installation location or enter a new location.</p>    
+        <img src="/images/installation/win32/03.jpg" alt="testalt"/>
+      </li>
+      <li><p>Select whether to install Media Encoding Cluster as server or client. When you run the installer as Administrator then you can install the Media Encoding Cluster as Windows Service, which will start up the Media Encoding Process when the computer boots up.</p>
+        <img src="/images/installation/win32/04.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as server</strong></p><p> Accept the default server ports for Media Encoding Cluster. Alternatively, if desired, enter new values.</p>    
+        <img src="/images/installation/win32/05.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as client</strong></p><p> You can use the automatic Node Discovery Feature (prefered) or a direct connection to the server when the ip or hostaddress and the portnumber is known.</p>    
+        <img src="/images/installation/win32/07.jpg" alt="testalt"/>
+      </li>
+      <li><p>this is your last change to click Click Back and make any necessary changes.</p>    
+        <img src="/images/installation/win32/06.jpg" alt="testalt"/>
+      </li>
+      <li><p>Click Install.</p>
+        <note>On Windows, Microsoft Visual C++ 2005 Redistributable Package also installs</note>
+        <img src="/images/installation/win32/08.jpg" alt="testalt"/>
+      </li>
+    </ol>
+    </section>
+    <section>
+    <title>Install on Linux</title>
+    <ol>
+      <li><p>Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.</p>
+        <p><img src="/images/installation/linux/01.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Read and accept the License Agreement to continue the installation process.</p>    
+        <p><img src="/images/installation/linux/02.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Accept the default installation location or enter a new location.</p>    
+        <img src="/images/installation/linux/03.jpg" alt="testalt"/>
+      </li>
+      <li><p>Select whether to install Media Encoding Cluster as server or client. When you run the installer as Administrator then you can install the Media Encoding Cluster as Windows Service, which will start up the Media Encoding Process when the computer boots up.</p>
+        <img src="/images/installation/linux/04.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as server</strong></p><p> Accept the default server ports for Media Encoding Cluster. Alternatively, if desired, enter new values.</p>    
+        <img src="/images/installation/linux/05.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as client</strong></p><p> You can use the automatic Node Discovery Feature (prefered) or a direct connection to the server when the ip or hostaddress and the portnumber is known.</p>    
+        <img src="/images/installation/linux/07.jpg" alt="testalt"/>
+      </li>
+      <li><p>this is your last change to click Click Back and make any necessary changes.</p>    
+        <img src="/images/installation/linux/06.jpg" alt="testalt"/>
+      </li>
+      <li><p>Click Install.</p>
+        <note>On Windows, Microsoft Visual C++ 2005 Redistributable Package also installs</note>
+        <img src="/images/installation/linux/08.jpg" alt="testalt"/>
+      </li>
+    </ol>
+    </section>
+
+    <section>
+    <title>Install on Mac OS X</title>
+    <ol>
+      <li><p>Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.</p>
+        <p><img src="/images/installation/osx/01.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Read and accept the License Agreement to continue the installation process.</p>    
+        <p><img src="/images/installation/osx/02.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Accept the default installation location or enter a new location.</p>    
+        <img src="/images/installation/osx/03.jpg" alt="testalt"/>
+      </li>
+      <li><p>Select whether to install Media Encoding Cluster as server or client. When you run the installer as Administrator then you can install the Media Encoding Cluster as Windows Service, which will start up the Media Encoding Process when the computer boots up.</p>
+        <img src="/images/installation/osx/04.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as server</strong></p><p> Accept the default server ports for Media Encoding Cluster. Alternatively, if desired, enter new values.</p>    
+        <img src="/images/installation/osx/05.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as client</strong></p><p> You can use the automatic Node Discovery Feature (prefered) or a direct connection to the server when the ip or hostaddress and the portnumber is known.</p>    
+        <img src="/images/installation/osx/07.jpg" alt="testalt"/>
+      </li>
+      <li><p>this is your last change to click Click Back and make any necessary changes.</p>    
+        <img src="/images/installation/osx/06.jpg" alt="testalt"/>
+      </li>
+      <li><p>Click Install.</p>
+        <note>On Windows, Microsoft Visual C++ 2005 Redistributable Package also installs</note>
+        <img src="/images/installation/osx/08.jpg" alt="testalt"/>
+      </li>
+    </ol>
+    </section>
+  -->
+    
+  </body>
+</document>

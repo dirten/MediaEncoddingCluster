@@ -1,0 +1,30 @@
+    <section>
+    <title>Install on Mac OS X</title>
+    <ol>
+      <li><p>Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.</p>
+        <p><img src="/images/installation/osx/01.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Read and accept the License Agreement to continue the installation process.</p>    
+        <p><img src="/images/installation/osx/02.jpg" alt="testalt"/></p>
+      </li>
+      <li><p>Accept the default installation location or enter a new location.</p>    
+        <img src="/images/installation/osx/03.jpg" alt="testalt"/>
+      </li>
+      <li><p>Select whether to install Media Encoding Cluster as server or client. When you run the installer as Administrator then you can install the Media Encoding Cluster as Windows Service, which will start up the Media Encoding Process when the computer boots up.</p>
+        <img src="/images/installation/osx/04.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as server</strong></p><p> Accept the default server ports for Media Encoding Cluster. Alternatively, if desired, enter new values.</p>    
+        <img src="/images/installation/osx/05.jpg" alt="testalt"/>
+      </li>
+      <li><p><strong>When you install as client</strong></p><p> You can use the automatic Node Discovery Feature (prefered) or a direct connection to the server when the ip or hostaddress and the portnumber is known.</p>    
+        <img src="/images/installation/osx/07.jpg" alt="testalt"/>
+      </li>
+      <li><p>this is your last change to click Click Back and make any necessary changes.</p>    
+        <img src="/images/installation/osx/06.jpg" alt="testalt"/>
+      </li>
+      <li><p>Click Install.</p>
+        <note>On Windows, Microsoft Visual C++ 2005 Redistributable Package also installs</note>
+        <img src="/images/installation/osx/08.jpg" alt="testalt"/>
+      </li>
+    </ol>
+    </section>
