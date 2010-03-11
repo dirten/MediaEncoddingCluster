@@ -1,8 +1,8 @@
-    <section>
+    <section >
     <title>Install on Linux</title>
     <ol>
-      <li><p>Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.</p>
-        <p><img src="/images/installation/linux/01.jpg" alt="testalt"/></p>
+      <li> <p class="pageBreakBefore">Double-click the installation file, MediaEncodingCluster-version-windows-installer.exe, and follow the prompts in the installation wizard.
+    <img src="/images/installation/linux/01.jpg" alt="testalt"/></p>
       </li>
       <li><p>Read and accept the License Agreement to continue the installation process.</p>    
         <p><img src="/images/installation/linux/02.jpg" alt="testalt"/></p>

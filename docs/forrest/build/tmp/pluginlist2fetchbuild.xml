@@ -38,7 +38,7 @@
 <echo>Trying to locally get ${local-plugin-name}${local-plugin-version}</echo>
 <trycatch property="plugin-found">
 <try>
-<for param="plugin-src-dir" list="/usr/local/forrest/plugins,/usr/local/forrest/whiteboard/plugins">
+<for param="plugin-src-dir" list="/Users/jholscher/devel/apache-forrest-0.8/plugins,/Users/jholscher/devel/apache-forrest-0.8/whiteboard/plugins">
 <sequential>
 <echo>Looking in local @{plugin-src-dir}</echo>
 <if>
@@ -61,10 +61,10 @@
 </target>
 <target depends="keep-original-zip,get-from-remote-site,is-downloaded,remove-original-zip" name="download"/>
 <target if="original.zip.exists" depends="available-original-zip" name="keep-original-zip">
-<copy preservelastmodified="true" file="/usr/local/forrest/build/plugins/${download-plugin-name}.zip" tofile="/usr/local/forrest/build/plugins/${download-plugin-name}.zip.orig"/>
+<copy preservelastmodified="true" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip" tofile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
 </target>
 <target name="available-original-zip">
-<available property="original.zip.exists" file="/usr/local/forrest/build/plugins/${download-plugin-name}.zip"/>
+<available property="original.zip.exists" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
 </target>
 <target name="get-from-remote-site">
 <echo>Tying to download ${download-plugin-name}${download-plugin-version} from the distribution site ...</echo>
@@ -76,8 +76,8 @@
 <echo>Using Forrest version : ${download-forrest-version}</echo>
 </then>
 </if>
-<get ignoreerrors="true" usetimestamp="true" verbose="true" src="http://forrest.apache.org/plugins//${download-forrest-version}${download-plugin-name}${download-plugin-version}.zip" dest="/usr/local/forrest/build/plugins/${download-plugin-name}.zip"/>
-<available property="desired.plugin.zip.present" file="/usr/local/forrest/build/plugins/${download-plugin-name}.zip"/>
+<get ignoreerrors="true" usetimestamp="true" verbose="true" src="http://forrest.apache.org/plugins//${download-forrest-version}${download-plugin-name}${download-plugin-version}.zip" dest="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
+<available property="desired.plugin.zip.present" file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip"/>
 <condition property="plugin-found">
 <and>
 <isset property="desired.plugin.zip.present"/>
@@ -88,7 +88,7 @@
 </condition>
 </target>
 <target if="original.zip.exists" name="is-downloaded">
-<uptodate property="no-difference-found" srcfile="/usr/local/forrest/build/plugins/${download-plugin-name}.zip" targetfile="/usr/local/forrest/build/plugins/${download-plugin-name}.zip.orig"/>
+<uptodate property="no-difference-found" srcfile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip" targetfile="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
 <if>
 <not>
 <isset property="no-difference-found"/>
@@ -99,7 +99,7 @@
 </if>
 </target>
 <target if="original.zip.exists" name="remove-original-zip">
-<delete file="/usr/local/forrest/build/plugins/${download-plugin-name}.zip.orig"/>
+<delete file="/Users/jholscher/devel/apache-forrest-0.8/build/plugins/${download-plugin-name}.zip.orig"/>
 </target>
 <target depends="has-been-downloaded,downloaded-message,uptodate-message,not-found-message" name="final-check"/>
 <target if="desired.plugin.zip.present" name="has-been-downloaded">
@@ -139,6 +139,6 @@
   To manually install a plugin, download the plugin zip file from
   http://forrest.apache.org/plugins/ and
   extract it into
-  /usr/local/forrest/build/plugins/org.apache.forrest.plugin.output.pdf</fail>
+  /Users/jholscher/devel/apache-forrest-0.8/build/plugins/org.apache.forrest.plugin.output.pdf</fail>
 </target>
 </project>

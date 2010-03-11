@@ -17,12 +17,13 @@
         INSTALL_BASE/web<br/>
         INSTALL_BASE/tmp<br/>
         </p>
+	<!--
 <p>- In the "bin" Directory will be the mhive.exe -> this is the Main Executable to start the Server and the Client.</p>
 <p>- In the "hive" Directory will be the MySQL Table to store the Meta Information.</p>
 <p>- In the "res" Directory will be the Message Resource Bundle for the different Langauge Packs.</p>
 <p>- In the "web" Directory will be the static Resources for Web Administrator.</p>
 <p>- In the "tmp" Directory will be the Encoded Chunks that will be used for the Resulting Video.</p>
-
+-->
         <table>
           <tr>
             <th>Directory</th>
