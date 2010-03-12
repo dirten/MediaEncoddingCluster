@@ -60,23 +60,24 @@ void build_audio_packet(const char * filename, int sidx) {
       /**
        * collecting data for the Packetizer
        */
-      stream_data[p._source_stream].codec_type = p._decoder->getCodecType();
-      stream_data[p._source_stream].codec_id = p._decoder->getCodecId();
+      stream_data[p._source_stream].decoder = p._decoder;
+//      stream_data[p._source_stream].codec_id = p._decoder->getCodecId();
 
       break;
     }
   }
 
   /*Creating the Audio Encoder*/
-  boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_MP2));
+  boost::shared_ptr<Encoder> enc = boost::shared_ptr<Encoder>(new Encoder(CODEC_ID_AAC));
   enc->setChannels(2);
   enc->setBitRate(128000);
   enc->setSampleRate(44100);
+  enc->setTimeBase(1,44100);
   enc->setSampleFormat(p._decoder->getSampleFormat());
-  enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
-  enc->setPixelFormat(PIX_FMT_YUV420P);
+//  enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
   enc->open();
   p._encoder = enc;
+  stream_data[p._source_stream].encoder = p._encoder;
 
   char * outfile = new char[100];
 
@@ -204,7 +205,8 @@ void compute_audio_packets() {
 
 void write_audio_to_file() {
   char * file = new char[100];
-  org::esb::io::File outfile("test.mp3");
+  org::esb::io::File outfile("test.m4a");
+  boost::shared_ptr<Encoder> enc;
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
   bool isInit = false;
@@ -217,21 +219,24 @@ void write_audio_to_file() {
     org::esb::hive::job::ProcessUnit pu;
     ois.readObject(pu);
     if (!isInit) {
-      pu._encoder->open();
-      pos.setEncoder(*pu._encoder);
+      enc=pu._encoder;
+      enc->open();
+      pos.setEncoder(*enc);
       pos.init();
       isInit = true;
     }
+    LOGDEBUG(enc->toString());
     std::list<boost::shared_ptr<Packet> >::iterator it = pu._output_packets.begin();
     for (; it != pu._output_packets.end(); it++) {
       (*it)->setStreamIndex(0);
       (*it)->setPts(AV_NOPTS_VALUE);
-      pos.writePacket(**it);
+      pos.writePacket(*(*it));
     }
   }
 }
 
 int main(int argc, char ** argv) {
+  Log::open("");
   av_register_all();
   avcodec_init();
   avcodec_register_all();

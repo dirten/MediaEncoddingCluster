@@ -28,7 +28,14 @@ int main(int argc, char** argv) {
     filepath.append("/test.dvd");
   org::esb::io::File file(filepath.c_str());
   org::esb::av::FormatInputStream fis(&file);
-
+  int offset=0;
+  int printout=0;
+  if (argc > 2) {
+    offset = atoi(argv[2]);
+  }
+  if (argc > 3) {
+    printout = atoi(argv[3]);
+  }
   /**
    * retriving the first video stream
    */
@@ -51,10 +58,10 @@ int main(int argc, char** argv) {
   int outcount = 0;
   for (int i = 0; i < 25;) {
     if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == video_stream) {
-      if (i >= 19) {
+      if (i >= offset) {
         org::esb::av::Frame * frame = dec.decode2(*p);
         incount++;
-        if (frame->isFinished() && i >= 19) {
+        if (frame->isFinished() && i >= printout) {
           LOGDEBUG( "frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           outcount++;
           frame->dumpHex();

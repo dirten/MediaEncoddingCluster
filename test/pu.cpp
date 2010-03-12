@@ -86,6 +86,7 @@ void view(char * filename) {
   ObjectInputStream ois(&fis);
   ProcessUnit pu;
   ois.readObject(pu);
+  LOGDEBUG("readed");
   viewPuData(pu);
   //  logdebug(pu._decoder->toString());
   //  logdebug(pu._encoder->toString());
