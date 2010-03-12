@@ -60,8 +60,8 @@ namespace org {
 
           struct StreamData {
             PacketListPtr packets;
-            CodecType codec_type;
-            CodecID codec_id;
+//            CodecType codec_type;
+//            CodecID codec_id;
             boost::shared_ptr<org::esb::av::Decoder> decoder;
             boost::shared_ptr<org::esb::av::Encoder> encoder;
             State state;
@@ -84,7 +84,7 @@ namespace org {
 
           std::list<PacketListPtr> _packet_list;
 
-          static const int MIN_AUDIO_PACKETS = 500;
+          static const int MIN_AUDIO_PACKETS = 50;
           static const int MIN_VIDEO_PACKETS = 20;
 
           std::map<int, PacketListPtr> _overlap_queue;

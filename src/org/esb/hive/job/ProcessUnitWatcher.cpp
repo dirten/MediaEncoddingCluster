@@ -228,8 +228,8 @@ namespace org {
                   /**
                    * collecting data for the Packetizer
                    */
-                  stream_data[index].codec_type = _stream_map[index].decoder->getCodecType();
-                  stream_data[index].codec_id = _stream_map[index].decoder->getCodecId();
+//                  stream_data[index].codec_type = _stream_map[index].decoder->getCodecType();
+//                  stream_data[index].codec_id = _stream_map[index].decoder->getCodecId();
                   stream_data[index].decoder = _stream_map[index].decoder;
                   stream_data[index].encoder = _stream_map[index].encoder;
 

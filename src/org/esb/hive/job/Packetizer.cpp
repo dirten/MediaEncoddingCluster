@@ -52,6 +52,10 @@ namespace org {
            */
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
+            if((*it).second.decoder.get()==NULL)
+              LOGERROR("Decoder is NULL");
+            if((*it).second.encoder.get()==NULL)
+              LOGERROR("Decoder is NULL");
             (*it).second.state = STATE_NOP;
           }
         }
@@ -73,8 +77,8 @@ namespace org {
             return false;
           }
 
-          if (_codec_overlap.find(_streams[ptr->getStreamIndex()].codec_id) == _codec_overlap.end()) {
-            _codec_overlap[_streams[ptr->getStreamIndex()].codec_id] = 0;
+          if (_codec_overlap.find(_streams[ptr->getStreamIndex()].decoder->getCodecId()) == _codec_overlap.end()) {
+            _codec_overlap[_streams[ptr->getStreamIndex()].decoder->getCodecId()] = 0;
           }
           result = processPacket(ptr);
           return result;
@@ -142,14 +146,14 @@ namespace org {
           /**
            * need to append some packets to the current PacketList
            */
-          if (_codec_overlap[_streams[stream_id].codec_id] > 0)
+          if (_codec_overlap[_streams[stream_id].decoder->getCodecId()] > 0)
             addingPacketsFromQueue(stream_id);
           _packet_list.push_back(_streams[stream_id].packets);
           _streams[stream_id].packets.clear();
           /**
            * need to prepend some packets to the current PacketList
            */
-          if (_codec_overlap[_streams[stream_id].codec_id] < 0)
+          if (_codec_overlap[_streams[stream_id].decoder->getCodecId()] < 0)
             addingPacketsFromQueue(stream_id);
           return true;
         }
@@ -162,14 +166,14 @@ namespace org {
           int stream_idx = ptr->getStreamIndex();
           _overlap_queue[stream_idx].push_back(ptr);
 
-          if (_overlap_queue[stream_idx].size() > abs(_codec_overlap[_streams[stream_idx].codec_id]) + 1) {
+          if (_overlap_queue[stream_idx].size() > abs(_codec_overlap[_streams[stream_idx].decoder->getCodecId()]) + 1) {
             PacketPtr pac = _overlap_queue[stream_idx].front();
             _overlap_queue[stream_idx].pop_front();
 
             _streams[stream_idx].packets.push_back(pac);
             int size = static_cast<int> (_streams[stream_idx].packets.size());
             if (_overlap_queue[stream_idx].front()->isKeyFrame() &&
-                size >= _codec_min_packets[_streams[stream_idx].codec_type]) {
+                size >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()]) {
               result = buildList(stream_idx);
             }
           }
@@ -186,7 +190,7 @@ namespace org {
           }
 
           if (_streams[stream_idx].state == STATE_START_I_FRAME
-              && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].codec_type]
+              && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()]
               && ptr->isKeyFrame()) {
             _streams[stream_idx].state = STATE_END_I_FRAME;
           }
