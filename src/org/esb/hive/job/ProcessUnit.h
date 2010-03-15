@@ -77,7 +77,7 @@ namespace org {
                     int _expected_frame_count;
                     int _deinterlace;
                     int _keep_aspect_ratio;
-
+                    int64_t _discard_audio_bytes;
                     template<class Archive>
                     void serialize(Archive & ar, const unsigned int version) {
                         ar & _input_packets;
@@ -96,6 +96,7 @@ namespace org {
                         ar & _expected_frame_count;
                         ar & _deinterlace;
                         ar & _keep_aspect_ratio;
+                        ar & _discard_audio_bytes;
                     }
                 private:
 

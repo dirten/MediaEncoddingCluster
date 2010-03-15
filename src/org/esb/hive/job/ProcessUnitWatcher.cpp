@@ -396,7 +396,7 @@ namespace org {
            * e.g. from 1/25 => 1/30 or 1/25 => 1/15
            */
 
-          u->_gop_size = u->_input_packets.size() - _stream_map[sIdx].b_frame_offset;
+          u->_gop_size = u->_input_packets.size();
           /*
           double tmp=u->_gop_size;
           u->_expected_frame_count=floor(tmp+_stream_map[sIdx].frameRateCompensateBase*av_q2d(u->_encoder->getTimeBase())/av_q2d(u->_decoder->getTimeBase()));

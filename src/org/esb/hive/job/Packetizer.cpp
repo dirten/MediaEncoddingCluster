@@ -37,7 +37,7 @@ namespace org {
          *
          */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
-          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
+          //          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
 
           //          _codec_overlap[CODEC_ID_MP3] = 3;
           //          _codec_overlap[CODEC_ID_AC3] = 1;
@@ -52,9 +52,9 @@ namespace org {
            */
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
-            if((*it).second.decoder.get()==NULL)
+            if ((*it).second.decoder.get() == NULL)
               LOGERROR("Decoder is NULL");
-            if((*it).second.encoder.get()==NULL)
+            if ((*it).second.encoder.get() == NULL)
               LOGERROR("Decoder is NULL");
             (*it).second.state = STATE_NOP;
           }
@@ -172,8 +172,7 @@ namespace org {
 
             _streams[stream_idx].packets.push_back(pac);
             int size = static_cast<int> (_streams[stream_idx].packets.size());
-            if (_overlap_queue[stream_idx].front()->isKeyFrame() &&
-                size >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()]) {
+            if (_overlap_queue[stream_idx].front()->isKeyFrame() && size >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()]) {
               result = buildList(stream_idx);
             }
           }
@@ -185,13 +184,11 @@ namespace org {
           bool result = false;
           int stream_idx = ptr->getStreamIndex();
 
-          if (_streams[stream_idx].state == STATE_NOP && ptr->isKeyFrame()) {
+          if (_streams[stream_idx].state == STATE_NOP && (ptr->isKeyFrame() || _streams[stream_idx].decoder->getCodecType() == CODEC_TYPE_AUDIO)) {
             _streams[stream_idx].state = STATE_START_I_FRAME;
           }
 
-          if (_streams[stream_idx].state == STATE_START_I_FRAME
-              && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()]
-              && ptr->isKeyFrame()) {
+          if (_streams[stream_idx].state == STATE_START_I_FRAME && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()] && ptr->isKeyFrame()) {
             _streams[stream_idx].state = STATE_END_I_FRAME;
           }
 
@@ -202,17 +199,44 @@ namespace org {
           if (_streams[stream_idx].state == STATE_END_I_FRAME) {
             _overlap_queue[stream_idx].push_back(ptr);
           }
+          /**
+           * case handling for mpeg2 video packets(formaly streams with b frames)
+           * */
+          if (_streams[stream_idx].state == STATE_END_I_FRAME && (_streams[stream_idx].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO && ptr->_pict_type == FF_P_TYPE)) {
 
-          if (_streams[stream_idx].state == STATE_END_I_FRAME 
-            && (_streams[stream_idx].decoder->getCodecId()==CODEC_ID_MPEG2VIDEO?ptr->_pict_type == FF_P_TYPE:true)) {
             _streams[stream_idx].state = STATE_START_I_FRAME;
+            /**
+             * appending the next IBB from the IBBP order to the actual packet_list
+             * */
             _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
+            _packet_list.push_back(_streams[stream_idx].packets);
+            _streams[stream_idx].packets.clear();
+            /**
+             * appending the IP frames from the IBBP order to the actual packet_list
+             * that are the first and the last entries in the overlap queue
+             * */
+            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].begin()+1);
+            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].end()-1, _overlap_queue[stream_idx].end());
+
+
+            _overlap_queue[stream_idx].clear();
+            result = true;
+
+          } else
+          /**
+           *
+           * */
+          if (_streams[stream_idx].state == STATE_END_I_FRAME&&_streams[stream_idx].decoder->getCodecId() != CODEC_ID_MPEG2VIDEO) {
+
+            _streams[stream_idx].state = STATE_START_I_FRAME;
+//            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
             _packet_list.push_back(_streams[stream_idx].packets);
             _streams[stream_idx].packets.clear();
             _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
             _overlap_queue[stream_idx].clear();
             result = true;
           }
+
           return result;
         }
       }

@@ -37,7 +37,7 @@ using namespace org::esb::av;
 
 bool toDebug = false;
 
-class PacketSink : public Sink {
+class PacketSink: public Sink {
 public:
 
   PacketSink() {
@@ -58,21 +58,22 @@ private:
 };
 
 ProcessUnit::ProcessUnit() {
-/*
-  _decoder = NULL;
-  _encoder = NULL;*/
-  _converter=NULL;
+  /*
+   _decoder = NULL;
+   _encoder = NULL;*/
+  _converter = NULL;
   _target_stream = 0;
   _source_stream = 0;
   _frame_group = 0;
   _frame_count = 0;
   _process_unit = 0;
-  _last_process_unit=false;
+  _last_process_unit = false;
   id = 0;
-  _frameRateCompensateBase=0.0;
-  _gop_size=-1;
-  _expected_frame_count=-1;
-  
+  _frameRateCompensateBase = 0.0;
+  _gop_size = -1;
+  _expected_frame_count = -1;
+  _discard_audio_bytes=-1;
+
 }
 
 ProcessUnit::~ProcessUnit() {
@@ -83,79 +84,81 @@ void ProcessUnit::process() {
   int insize = 0, outsize = 0;
 
   if (_decoder != NULL)
-    if(!_decoder->open()){
+    if (!_decoder->open()) {
       LOGERROR("fail to open the decoder (ProcessUnitID:"<<_process_unit<<")");
       return;
     }
   if (_encoder != NULL)
-    if(!_encoder->open()){
+    if (!_encoder->open()) {
       LOGERROR("fail to open the encoder (ProcessUnitID:"<<_process_unit<<")");
       return;
     }
   /*creating a frame converter*/
-  if(_converter==NULL)
-    _converter=new FrameConverter(_decoder.get(), _encoder.get());
+  if (_converter == NULL)
+    _converter = new FrameConverter(_decoder.get(), _encoder.get());
   _converter->setFrameRateCompensateBase(_frameRateCompensateBase);
   _converter->setGopSize(_gop_size);
-  _converter->setDeinterlace(_deinterlace>0);
-  _converter->setKeepAspectRatio(_keep_aspect_ratio>0);
+  _converter->setDeinterlace(_deinterlace > 0);
+  _converter->setKeepAspectRatio(_keep_aspect_ratio > 0);
 
   LOGTRACE("Codex openned");
-    LOGTRACE(_decoder->toString());
-    LOGTRACE(_encoder->toString());
+  LOGTRACE(_decoder->toString());
+  LOGTRACE(_encoder->toString());
   /*creating a packetsink for storing the encoded Packetsf from the encoder*/
   PacketSink sink;
   _encoder->setSink(&sink);
   _encoder->setOutputStream(NULL);
 
+  //  FrameConverter conv(_decoder, _encoder);
 
-//  FrameConverter conv(_decoder, _encoder);
-
-  list< boost::shared_ptr<Packet> >::iterator it;
+  list<boost::shared_ptr<Packet> >::iterator it;
 
   /*i dont know if we need this in the Future*/
   //  multiset<boost::shared_ptr<Frame>, PtsComparator > pts_list;
   //  multiset<boost::shared_ptr<Packet>, PtsPacketComparator > pts_packets;
-  int64_t last_pts=-1;
-  bool compute_delayed_frames=false;
-  int stream_index=-1;
+  int64_t last_pts = -1;
+  bool compute_delayed_frames = false;
+  int stream_index = -1;
+  int loop_count=0;
   /*loop over each Packet received */
-  for (it = _input_packets.begin(); it != _input_packets.end()||compute_delayed_frames; ) {
-      LOGTRACE("Loop");
+  for (it = _input_packets.begin(); it != _input_packets.end() || compute_delayed_frames;) {
+    LOGTRACE("Loop:"<<++loop_count);
     /*get the Packet Pointer from the list*/
-      boost::shared_ptr<Packet> p;
-      /**
-       * special handling for delayed packets from the decoder
-       * @TODO: redesign needed for a simpler maintenance
-       */
-      if(!compute_delayed_frames){
-        p = *it;
-        stream_index=p->getStreamIndex();
-        it++;
-      }
-      else{
-        p=boost::shared_ptr<Packet>(new Packet());
-        p->setTimeBase(_input_packets.front()->getTimeBase());
-        p->setDuration(_input_packets.front()->getDuration());
-        p->setStreamIndex(stream_index);
-      }
+    boost::shared_ptr<Packet> p;
+    /**
+     * special handling for delayed packets from the decoder
+     * @TODO: redesign needed for a simpler maintenance
+     */
+    if (!compute_delayed_frames) {
+      p = *it;
+      stream_index = p->getStreamIndex();
+      it++;
+    } else {
+      LOGDEBUG("delayed frame");
+      p = boost::shared_ptr<Packet>(new Packet());
+      p->setTimeBase(_input_packets.front()->getTimeBase());
+      p->setDuration(_input_packets.front()->getDuration());
+      p->setStreamIndex(stream_index);
+    }
     /*sum the packet sizes for later output*/
     insize += p->packet->size;
-      LOGTRACE("Inputpacket:"<<p->toString());
-      p->toString();
+    LOGTRACE("Inputpacket:"<<p->toString());
+    p->toString();
     /*Decoding the Packet into a Frame*/
     Frame * tmp = _decoder->decode2(*p);
 
-      LOGTRACE("Frame Decoded:"<<tmp->toString());
+    LOGTRACE("Frame Decoded:"<<tmp->toString());
     /*when frame not finished, then it is nothing todo, continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
-      compute_delayed_frames=false;
+      compute_delayed_frames = false;
       continue;
     }
-    if(_decoder->getCodecId()!=CODEC_ID_MPEG2VIDEO&&it == _input_packets.end())
-      compute_delayed_frames=true;
-//      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
+    if (/*_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO &&*/ it == _input_packets.end()){
+      LOGDEBUG("setting compute_delayed_frames=true");
+      compute_delayed_frames = true;
+    }
+    //      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
 
     /*target frame for conversion*/
     Frame * f = NULL;
@@ -165,27 +168,26 @@ void ProcessUnit::process() {
       f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
     if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
       f = new Frame();
-      LOGTRACE("try Frame Convert");
+    LOGTRACE("try Frame Convert");
     /*converting the source frame to target frame*/
     _converter->convert(*tmp, *f);
 
     /**
-     * this is for down rating the frame rate, e.g. from 25fps down to 15fps...
-     * there are some pictures to drop!
-     * @TODO: test out if this is ok when some Rational Framerate is given, e.g. 23.976fps?
-     * @TODO: is it possible to make this in the decoder or encoder or frameconverter?
-     */
-    if(false&&last_pts>0&&last_pts==f->getPts()){
-      delete f;
-      delete tmp;
-      continue;
+     * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
+     * */
+    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO&&
+        _discard_audio_bytes>0){
+      size_t size=f->_size+_discard_audio_bytes;
+      uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
+      memset(tmp_buf,0,size);
+      memcpy(tmp_buf+_discard_audio_bytes,f->_buffer,f->_size);
+      av_free(f->_buffer);
+      f->_buffer=tmp_buf;
+      f->_size=size;
+      _discard_audio_bytes=0;
     }
-    last_pts=f->getPts();
 
-
-
-      LOGTRACE("Frame Converted"<<f->toString());
-      
+    LOGTRACE("Frame Converted"<<f->toString());
 
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
@@ -197,14 +199,14 @@ void ProcessUnit::process() {
   }
   /*now process the delayed Frames from the encoder*/
   LOGTRACE("Encode Packet delay");
-  bool have_more_frames=_encoder->getCodecType()==CODEC_TYPE_VIDEO;
-  while(have_more_frames){
-    if(_encoder->encode()<=0){
-      have_more_frames=0;
+  bool have_more_frames = _encoder->getCodecType() == CODEC_TYPE_VIDEO;
+  while (have_more_frames) {
+    if (_encoder->encode() <= 0) {
+      have_more_frames = 0;
     }
   }
   _output_packets = sink.getList();
-  if(_expected_frame_count!=-1&&_output_packets.size()!=_expected_frame_count)
+  if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
     LOGWARN("PUID="<<_process_unit<<" Expected Frame count diff from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
 }
 
