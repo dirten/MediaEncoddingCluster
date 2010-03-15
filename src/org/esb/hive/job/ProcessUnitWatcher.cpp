@@ -236,7 +236,7 @@ namespace org {
                   if (_stream_map[index].type == CODEC_TYPE_VIDEO) {
                     _stream_map[index].min_packet_count = 5;
                     if (_stream_map[index].decoder->getCodecId() == CODEC_ID_MPEG2VIDEO) {
-                      _stream_map[index].b_frame_offset = 3;
+                      _stream_map[index].b_frame_offset = 1;
                     } else {
                       //                      _stream_map[index].b_frame_offset = 2;
                     }
@@ -396,7 +396,7 @@ namespace org {
            * e.g. from 1/25 => 1/30 or 1/25 => 1/15
            */
 
-          u->_gop_size = u->_input_packets.size();
+          u->_gop_size = u->_input_packets.size()-_stream_map[sIdx].b_frame_offset;
           /*
           double tmp=u->_gop_size;
           u->_expected_frame_count=floor(tmp+_stream_map[sIdx].frameRateCompensateBase*av_q2d(u->_encoder->getTimeBase())/av_q2d(u->_decoder->getTimeBase()));

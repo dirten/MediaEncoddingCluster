@@ -178,7 +178,8 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
   AVRational ar;
   ar.num = _frame_rate.den;
-  ar.den = _frame_rate.num* ctx->ticks_per_frame;
+  ar.den = _frame_rate.num;//* ctx->ticks_per_frame;
+  LOGDEBUG("ticks:"<<ctx->ticks_per_frame);
 //  int64_t dur = av_rescale_q(ar.num , ar, ctx->time_base);
   frame->setTimeBase(ar);
   int64_t dur = 1;

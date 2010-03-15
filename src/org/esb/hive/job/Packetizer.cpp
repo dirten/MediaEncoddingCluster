@@ -208,7 +208,7 @@ namespace org {
             /**
              * appending the next IBB from the IBBP order to the actual packet_list
              * */
-            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
+            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end()-1 );
             _packet_list.push_back(_streams[stream_idx].packets);
             _streams[stream_idx].packets.clear();
             /**

@@ -154,7 +154,9 @@ void ProcessUnit::process() {
       compute_delayed_frames = false;
       continue;
     }
-    if (/*_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO &&*/ it == _input_packets.end()){
+
+
+    if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()){
       LOGDEBUG("setting compute_delayed_frames=true");
       compute_delayed_frames = true;
     }
