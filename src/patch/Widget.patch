@@ -1,0 +1,20 @@
+--- ../../../../tmp/wt-2.2.4/src/Wt/Ext/Widget.C	2009-03-04 12:00:30.000000000 +0100
++++ src/Wt/Ext/Widget.C	2010-07-06 16:12:24.362008305 +0200
+@@ -15,7 +15,7 @@
+ #include <iostream>
+ #include <sstream>
+ #include <cstring>
+-
++#include <stdio.h>
+ namespace Wt {
+ 
+   /*! \brief Namespace for \ref ext */
+@@ -159,7 +159,7 @@
+ const std::string Widget::elVar() const 
+ {
+   char buf[20];
+-  std::sprintf(buf, "elo%x", rawUniqueId());
++  sprintf(buf, "elo%x", rawUniqueId());
+   return std::string(buf);
+ }
+ 

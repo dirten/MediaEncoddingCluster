@@ -1,0 +1,11 @@
+--- ../../../../tmp/wt-2.2.4/src/Wt/WAbstractItemModel.C	2009-03-04 12:00:30.000000000 +0100
++++ src/Wt/WAbstractItemModel.C	2010-07-06 15:34:01.519008378 +0200
+@@ -14,7 +14,7 @@
+ #include "Wt/WWebWidget"
+ 
+ #include "WtException.h"
+-
++#include <stdio.h>
+ #ifdef WIN32
+ #define snprintf _snprintf
+ #endif
