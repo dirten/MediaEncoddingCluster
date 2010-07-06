@@ -199,15 +199,20 @@
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic">
+		     <arg line="clean"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/xvidcore/build/generic"><arg line="install"/>
+                <exec executable="make" dir="source/xvidcore/build/generic">
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <delete file="${mybasedir}/source/build"/>
+                <exec executable="make" dir="source/xvidcore/build/generic">
+		     <arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
                 <delete>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.so*"/>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.la"/>
+                  <fileset dir="${mybasedir}/source/build" includes="**/*.dll"/>
                 </delete>
 
                 <exec executable="sh" dir="source/ffmpeg">
@@ -235,7 +240,9 @@
                 <exec executable="make" dir="source/ffmpeg"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                
+                <move todir="source/build/lib">
+                  <mapper type="glob" from="*.a" to="*.lib"/>
+                </move>
               </tasks>
             </configuration>
             <goals>
