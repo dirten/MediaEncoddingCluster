@@ -17,6 +17,7 @@
         <target>ntx86</target>
         <jambuild>build_dist.bat</jambuild>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
     <profile>
@@ -32,6 +33,7 @@
         <target>linuxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
     <profile>
@@ -46,6 +48,7 @@
         <target>macosxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
     <profile>
@@ -60,6 +63,7 @@
         <my.family>solaris</my.family>
         <target>solaris</target>
         <jambuild>build_dist.sh</jambuild>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
   </profiles>
@@ -131,7 +135,16 @@
                 </exec>
                 <mkdir dir="source/wt-2.2.4/build"/>
                 <exec executable="cmake" dir="source/wt-2.2.4/build">
-                  <arg line="-DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/wt -DCMAKE_BUILD_TYPE=Release -DSHARED_LIBS=Off -DHTTP_WITH_SSL=OFF -DBOOST_DIR=${project.build.directory}/dependency -DBOOST_VERSION=1_36 -DBOOST_COMPILER=gcc41 .."/>
+                  <arg line="
+                    -G ${CMAKE_MAKE_PROGRAM}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/wt 
+                    -DCMAKE_BUILD_TYPE=Release 
+                    -DSHARED_LIBS=Off 
+                    -DHTTP_WITH_SSL=OFF 
+                    -DBOOST_DIR=${project.build.directory}/dependency 
+                    -DBOOST_VERSION=1_36 
+                    -DBOOST_COMPILER=gcc41 
+                    .."/>
                 </exec>
                 <patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
                 <patch patchfile="src/patch/Widget.patch" dir="source/wt-2.2.4" strip="0"/>
