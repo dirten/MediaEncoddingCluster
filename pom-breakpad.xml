@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.esb.breakpad</groupId>
+  <artifactId>breakpad</artifactId>
+  <version>1.0</version>
+  <name>google-breakpad</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <scm>
+    <connection>scm:svn:http://google-breakpad.googlecode.com/svn/trunk/</connection>
+    <tag>HEAD</tag>
+  </scm>
+  <packaging>jar</packaging>
+
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <id>scm-update</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>update</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks>
+	      <!--
+                <exec executable="${project.build.directory}/checkout/configure" dir="${project.build.directory}/checkout/">
+                  <arg line="-prefix=${project.build.directory}/build"/>
+                </exec>-->
+                <patch patchfile="src/patch/breakpad-0.0.1.patch" dir="target/checkout" strip="0"/>
+		<copy file="src/patch/breakpad_cmakelists.txt" tofile="target/checkout/CMakeLists.txt"/>
+		<mkdir dir="${project.build.directory}/checkout/build"/>
+		<mkdir dir="${project.basedir}/source"/>
+		<mkdir dir="${project.basedir}/source/build"/>
+                <exec executable="cmake" dir="${project.build.directory}/checkout/build">
+                  <arg line='-G ${CMAKE_MAKE_PROGRAM} -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/breakpad -DCMAKE_OSX_ARCHITECTURES=ppc;i386;ppc64;x86_64 ..'/>
+                </exec>
+		
+                <!--<patch patchfile="src/main/resource/jhive-0.1.0.patch" dir="xuggler" strip="0"/>-->
+        	<exec executable="${MAKE_EXECUTABLE}" dir="${project.build.directory}/checkout/build">
+                  <arg line="install"/>
+                </exec>
+<!--
+        	<exec executable="make" dir="src/main/native/src">
+                  <env key="SYSTEM" value="${my.system}"/>
+                  <env key="BREAKPADSRC" value="${project.build.directory}/checkout/src"/>
+                  <env key="BREAKPADBASE" value="${project.build.directory}/build"/>
+                  <env key="JRE_HOME" value="${java.home}"/>
+                </exec>-->
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-breakpad.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+    
+  </build>
+  <profiles>
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <my.family>win32</my.family>
+        <my.system>__WIN32__</my.system>
+        <!--<CMAKE_MAKE_PROGRAM>"Visual Studio 9 2008"</CMAKE_MAKE_PROGRAM>-->
+        <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
+        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>linux</my.family>
+        <my.system>__LINUX__</my.system>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>mac</my.family>
+        <my.system>__APPLE__</my.system>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>solaris</my.family>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+  </profiles>
+
+</project>
