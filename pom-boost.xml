@@ -14,6 +14,8 @@
       </activation>
       <properties>
         <my.family>win32</my.family>
+        <target>win32</target>
+        <jambuild>build_dist.bat</jambuild>
       </properties>
     </profile>
     <profile>
@@ -26,6 +28,8 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
+        <target>linuxx86</target>
+        <jambuild>build_dist.sh</jambuild>
       </properties>
     </profile>
     <profile>
@@ -37,6 +41,8 @@
       </activation>
       <properties>
         <my.family>mac</my.family>
+        <target>macosxx86</target>
+        <jambuild>build_dist.sh</jambuild>
       </properties>
     </profile>
     <profile>
@@ -49,6 +55,8 @@
       </activation>
       <properties>
         <my.family>solaris</my.family>
+        <target>solaris</target>
+        <jambuild>build_dist.sh</jambuild>
       </properties>
     </profile>
   </profiles>
@@ -106,7 +114,7 @@
                 <patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/build_dist.sh" dir="source/boost_1_36_0/tools/jam">
                 </exec>
-                <exec executable="tools/jam/stage/bin.${my.family}x86/bjam" dir="source/boost_1_36_0">
+                <exec executable="tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0">
                   <arg line="--prefix=${project.basedir}/source/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install"/>
                 </exec>
 
