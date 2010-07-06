@@ -212,7 +212,6 @@
                 </exec>
                 <delete>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.so*"/>
-                  <fileset dir="${mybasedir}/source/build" includes="**/*.la"/>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.dll"/>
                 </delete>
 
