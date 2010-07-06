@@ -1,0 +1,188 @@
+diff -ru boost_1_36_0_pristine/boost/mpl/apply.hpp boost_1_36_0/boost/mpl/apply.hpp
+--- boost_1_36_0_pristine/boost/mpl/apply.hpp	2004-09-02 11:41:37.000000000 -0400
++++ boost_1_36_0/boost/mpl/apply.hpp	2008-08-17 12:01:46.000000000 -0400
+@@ -135,7 +135,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ #   define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+@@ -222,4 +223,5 @@
+ 
+ #   undef i_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/apply_wrap.hpp boost_1_36_0/boost/mpl/apply_wrap.hpp
+--- boost_1_36_0_pristine/boost/mpl/apply_wrap.hpp	2004-09-03 11:56:59.000000000 -0400
++++ boost_1_36_0/boost/mpl/apply_wrap.hpp	2008-08-17 11:58:21.000000000 -0400
+@@ -78,7 +78,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ #   define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+@@ -168,9 +169,11 @@
+ 
+ #   undef i_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ ///// iteration, depth == 2
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 2
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 2
+ 
+ #   define j_ BOOST_PP_FRAME_ITERATION(2)
+ 
+@@ -197,4 +200,5 @@
+ 
+ #   undef j_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 2
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/aux_/advance_backward.hpp boost_1_36_0/boost/mpl/aux_/advance_backward.hpp
+--- boost_1_36_0_pristine/boost/mpl/aux_/advance_backward.hpp	2004-09-02 11:41:37.000000000 -0400
++++ boost_1_36_0/boost/mpl/aux_/advance_backward.hpp	2008-08-17 12:09:47.000000000 -0400
+@@ -79,7 +79,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ #define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+ template<>
+@@ -108,10 +109,12 @@
+ };
+ 
+ #undef i_
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ ///// iteration, depth == 2
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 2
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 2
+ 
+ #   define AUX778076_ITER_0 BOOST_PP_CAT(iter,BOOST_PP_DEC(BOOST_PP_FRAME_ITERATION(2)))
+ #   define AUX778076_ITER_1 BOOST_PP_CAT(iter,BOOST_PP_FRAME_ITERATION(2))
+@@ -121,4 +124,5 @@
+ #   undef AUX778076_ITER_1
+ #   undef AUX778076_ITER_0
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 2
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/aux_/advance_forward.hpp boost_1_36_0/boost/mpl/aux_/advance_forward.hpp
+--- boost_1_36_0_pristine/boost/mpl/aux_/advance_forward.hpp	2004-09-02 11:41:37.000000000 -0400
++++ boost_1_36_0/boost/mpl/aux_/advance_forward.hpp	2008-08-17 12:08:40.000000000 -0400
+@@ -79,7 +79,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ #define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+ template<>
+@@ -107,10 +108,12 @@
+ };
+ 
+ #undef i_
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ ///// iteration, depth == 2
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 2
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 2
+ 
+ #   define AUX778076_ITER_0 BOOST_PP_CAT(iter,BOOST_PP_DEC(BOOST_PP_FRAME_ITERATION(2)))
+ #   define AUX778076_ITER_1 BOOST_PP_CAT(iter,BOOST_PP_FRAME_ITERATION(2))
+@@ -120,4 +123,5 @@
+ #   undef AUX778076_ITER_1
+ #   undef AUX778076_ITER_0
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 2
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/aux_/full_lambda.hpp boost_1_36_0/boost/mpl/aux_/full_lambda.hpp
+--- boost_1_36_0_pristine/boost/mpl/aux_/full_lambda.hpp	2004-09-03 21:10:23.000000000 -0400
++++ boost_1_36_0/boost/mpl/aux_/full_lambda.hpp	2008-08-17 11:59:49.000000000 -0400
+@@ -227,7 +227,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ #define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+ #if i_ > 0
+@@ -347,4 +348,5 @@
+ };
+ 
+ #undef i_
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/aux_/numeric_op.hpp boost_1_36_0/boost/mpl/aux_/numeric_op.hpp
+--- boost_1_36_0_pristine/boost/mpl/aux_/numeric_op.hpp	2005-08-25 12:27:28.000000000 -0400
++++ boost_1_36_0/boost/mpl/aux_/numeric_op.hpp	2008-08-17 12:06:19.000000000 -0400
+@@ -286,8 +286,8 @@
+ #endif // BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+ 
+ ///// iteration, depth == 1
+-
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ #   define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+@@ -308,4 +308,5 @@
+ 
+ #   undef i_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ #endif // BOOST_PP_IS_ITERATING
+diff -ru boost_1_36_0_pristine/boost/mpl/bind.hpp boost_1_36_0/boost/mpl/bind.hpp
+--- boost_1_36_0_pristine/boost/mpl/bind.hpp	2004-10-26 10:51:08.000000000 -0400
++++ boost_1_36_0/boost/mpl/bind.hpp	2008-08-17 11:56:35.000000000 -0400
+@@ -361,7 +361,8 @@
+ 
+ ///// iteration, depth == 1
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 1
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 1
+ 
+ #   define i_ BOOST_PP_FRAME_ITERATION(1)
+ 
+@@ -526,9 +527,11 @@
+ 
+ #   undef i_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 1
+ ///// iteration, depth == 2
+ 
+-#elif BOOST_PP_ITERATION_DEPTH() == 2
++#elif defined (BOOST_PP_ITERATION_DEPTH)
++#if BOOST_PP_ITERATION_DEPTH() == 2
+ 
+ #   define j_ BOOST_PP_FRAME_ITERATION(2)
+ #   if !defined(BOOST_MPL_CFG_NO_UNNAMED_PLACEHOLDER_SUPPORT)
+@@ -544,4 +547,5 @@
+ #   endif
+ #   undef j_
+ 
++#endif // BOOST_PP_ITERATION_DEPTH() == 2
+ #endif // BOOST_PP_IS_ITERATING
