@@ -1,0 +1,18 @@
+--- ../../../jhive-crash-handler-native/target/checkout/src/processor/udp_network.cc	2010-07-05 09:57:16.001833875 +0200
++++ src/processor/udp_network.cc	2010-07-02 17:26:28.000000000 +0200
+@@ -44,11 +44,14 @@
+ #include <string>
+ 
+ #include "processor/logging.h"
+-
++                                              
+ namespace google_breakpad {
+ using std::string;
+ using std::dec;
+ 
++#define GET_SA_LEN(X) (((struct sockaddr*)&(X))->sa_family == AF_INET  ? sizeof(struct sockaddr_in) : \
++                            ((struct sockaddr*)&(X))->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr))
++
+ UDPNetwork::~UDPNetwork() {
+   if (socket_ != -1) {
+     close(socket_);
