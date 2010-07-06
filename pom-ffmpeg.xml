@@ -148,9 +148,9 @@
                 <exec executable="sh" dir="source/yasm-0.8.0">
 			<arg line="${project.basedir}/source/yasm-0.8.0/configure --prefix=${project.basedir}/source/build/yasm"/></exec>
                 <exec executable="make" dir="source/yasm-0.8.0"><arg line="install"/></exec>
-
+		    <pathconvert property="basedir" refid="project.basedir"/>
                 <exec executable="sh" dir="source/lame-398-2">
-			<arg line="${project.basedir}/source/lame-398-2/configure --prefix=${project.basedir}/source/build --enable-static --disable-shared"/></exec>
+			<arg line="${project.basedir}/source/lame-398-2/configure --prefix=${basedir}/source/build --enable-static --disable-shared"/></exec>
                 <exec executable="make" dir="source/lame-398-2"><arg line="install"/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
