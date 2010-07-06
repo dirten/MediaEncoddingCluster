@@ -144,7 +144,6 @@
                     -DBOOST_DIR=${project.build.directory}/dependency 
                     -DBOOST_VERSION=1_36 
                     -DBOOST_COMPILER=gcc41 
-                    -DBOOST_AUTO_LINK_NOMAGLE 
                     .."/>
                 </exec>
                 <patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
