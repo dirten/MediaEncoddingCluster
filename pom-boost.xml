@@ -112,7 +112,7 @@
                   <arg line="-xf boost_1_36_0.tar"/>
                 </exec>
                 <patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
-                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/build_dist.sh" dir="source/boost_1_36_0/tools/jam">
+                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam">
                 </exec>
                 <exec executable="tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0">
                   <arg line="--prefix=${project.basedir}/source/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install"/>
