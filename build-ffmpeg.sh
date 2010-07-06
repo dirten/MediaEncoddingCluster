@@ -2,7 +2,7 @@
 
 
 
-X264_VERSION="-snapshot-20100303-2245"
+X264_VERSION="-snapshot-20100705-2245"
 
 DOWNLOAD_LIBS="yes"
 

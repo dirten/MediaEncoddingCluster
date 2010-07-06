@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
 namespace org {
   namespace esb {
     namespace lang {

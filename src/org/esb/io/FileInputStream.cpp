@@ -1,7 +1,7 @@
 #include "FileInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
-
+#include <string.h>
 
 using namespace std;
 using namespace org::esb::lang;

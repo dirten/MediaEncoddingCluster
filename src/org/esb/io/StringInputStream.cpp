@@ -1,5 +1,5 @@
 #include "StringInputStream.h"
-
+#include <string.h>
 namespace org {
   namespace esb {
     namespace io {

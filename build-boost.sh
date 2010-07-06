@@ -13,9 +13,11 @@ SYS=`uname`
 case "$SYS" in
     Linux*)
       JAMBIN="linux"
+      TOOLSET=gcc
     ;;
     Darwin*)
       JAMBIN="macosx"
+      TOOLSET=darwin
     ;;
     *)
     
@@ -32,4 +34,5 @@ if test ! -f source/boost/tools/jam/stage/bin.${JAMBIN}x86/bjam ; then
 fi
 echo "Build Boost"
 cd $SRCDIR/boost
-tools/jam/stage/bin.${JAMBIN}x86/bjam --toolset=darwin --prefix=$SRCDIR/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install
+#--toolset=darwin
+tools/jam/stage/bin.${JAMBIN}x86/bjam --toolset=${TOOLSET} --prefix=$SRCDIR/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=release link=static threading=multi install

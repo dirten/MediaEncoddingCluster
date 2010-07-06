@@ -34,37 +34,37 @@
 #define DEPRICATED(f) __attribute__((deprecated)) f
 #endif
 namespace org {
-    namespace esb {
-        namespace av {
-            class Frame;
+  namespace esb {
+    namespace av {
+      class Frame;
 
-            class Decoder : public Codec {
-              classlogger("org.esb.av.Decoder")
-            public:
-                Decoder(CodecID id);
-                Decoder(AVStream * c);
-                Decoder();
-//                DEPRICATED(Frame decode(Packet & packet));
-                Frame * decode2(Packet & packet);
-                Frame decodeLast();
-//                void analyzePacket(Packet & packet);
-/*
-                template<class Archive>
-                void serialize(Archive & ar, const unsigned int version) {
-                    ar & boost::serialization::base_object<Codec > (*this);
-                }
-                 */
-//                DEPRICATED(Frame decodeVideo(Packet & packet));
-//                DEPRICATED(Frame decodeAudio(Packet & packet));
-                Frame * decodeVideo2(Packet & packet);
-                Frame * decodeAudio2(Packet & packet);
-                int64_t getLastTimeStamp();
-            private:
-                int64_t _last_pts;
-                int64_t _next_pts;
-            };
-        }
+      class Decoder : public Codec {
+        classlogger("org.esb.av.Decoder")
+      public:
+        Decoder(CodecID id);
+        Decoder(AVStream * c);
+        Decoder();
+        //                DEPRICATED(Frame decode(Packet & packet));
+        Frame * decode2(Packet & packet);
+        Frame decodeLast();
+        //                void analyzePacket(Packet & packet);
+        /*
+                        template<class Archive>
+                        void serialize(Archive & ar, const unsigned int version) {
+                            ar & boost::serialization::base_object<Codec > (*this);
+                        }
+         */
+        //                DEPRICATED(Frame decodeVideo(Packet & packet));
+        //                DEPRICATED(Frame decodeAudio(Packet & packet));
+        Frame * decodeVideo2(Packet & packet);
+        Frame * decodeAudio2(Packet & packet);
+        int64_t getLastTimeStamp();
+      private:
+        int64_t _last_pts;
+        int64_t _next_pts;
+      };
     }
+  }
 }
 
 #endif
