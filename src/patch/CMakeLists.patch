@@ -4,8 +4,8 @@
  SET(WTEXT_SOVERSION 7)
  SET(WTHTTP_SOVERSION 4)
  SET(WTFCGI_SOVERSION 4)
-+set(CMAKE_CXX_FLAGS "-DBOOST_AUTO_LINK_NOMANGLE")
-+set(CMAKE_C_FLAGS "-DBOOST_AUTO_LINK_NOMANGLE")
++add_definitions(-DBOOST_AUTO_LINK_NOMANGLE)
++
  
  #
  # Various things that must be configured by the user or packager ...
