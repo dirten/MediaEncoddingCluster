@@ -17,6 +17,7 @@
         <target>ntx86</target>
         <jambuild>build_dist.bat</jambuild>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+        <EXTRA_FFMPEG_CONFIGURATION>--enable-memalign-hack</EXTRA_FFMPEG_CONFIGURATION>
       </properties>
     </profile>
     <profile>
@@ -32,6 +33,7 @@
         <target>linuxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <EXTRA_FFMPEG_CONFIGURATION></EXTRA_FFMPEG_CONFIGURATION>
       </properties>
     </profile>
     <profile>
@@ -46,6 +48,7 @@
         <target>macosxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <EXTRA_FFMPEG_CONFIGURATION></EXTRA_FFMPEG_CONFIGURATION>
       </properties>
     </profile>
     <profile>
@@ -225,6 +228,7 @@
                     --disable-stripping
                     --enable-runtime-cpudetect
                     --enable-gpl
+		        ${EXTRA_FFMPEG_CONFIGURATION}
                     "/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
