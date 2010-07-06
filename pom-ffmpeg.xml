@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <profiles>
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <my.family>win32</my.family>
+        <target>ntx86</target>
+        <jambuild>build_dist.bat</jambuild>
+        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>linux</my.family>
+        <target>linuxx86</target>
+        <jambuild>build_dist.sh</jambuild>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>mac</my.family>
+        <target>macosxx86</target>
+        <jambuild>build_dist.sh</jambuild>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>solaris</my.family>
+        <target>solaris</target>
+        <jambuild>build_dist.sh</jambuild>
+      </properties>
+    </profile>
+  </profiles>
+  <!--
+  <parent>
+    <artifactId>JHive</artifactId>
+    <groupId>org.esb.jhive</groupId>
+    <version>0.1.0</version>
+  </parent>-->
+  <groupId>org.esb.ffmpeg</groupId>
+  <artifactId>ffmpeg</artifactId>
+  <version>0.0-SNAPSHOT</version>
+  <name>ffmpeg</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/ffmpeg"/>
+                <mkdir dir="source/x264"/>
+
+                <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.06rc16/nasm-2.06rc16.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://www.tortall.net/projects/yasm/releases/yasm-0.8.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://download.videolan.org/pub/videolan/x264/snapshots/x264${x264.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://heanet.dl.sf.net/project/lame/lame/3.98.2/lame-398-2.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xvid.org/downloads/xvidcore-1.2.1.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <bunzip2 src="source/nasm-2.06rc16.tar.bz2" dest="source"/>
+                <gunzip src="source/yasm-0.8.0.tar.gz" dest="source"/>
+                <bunzip2 src="source/ffmpeg-export-snapshot.tar.bz2" dest="source"/>
+                <bunzip2 src="source/x264${x264.version}.tar.bz2" dest="source"/>
+                <gunzip src="source/lame-398-2.tar.gz" dest="source"/>
+                <gunzip src="source/libogg-1.1.3.tar.gz" dest="source"/>
+                <bunzip2 src="source/libtheora-1.0.tar.bz2" dest="source"/>
+                <gunzip src="source/speex-1.0.5.tar.gz" dest="source"/>
+                <gunzip src="source/libvorbis-1.2.0.tar.gz" dest="source"/>
+                <gunzip src="source/xvidcore-1.2.1.tar.gz" dest="source"/>
+                <exec executable="tar" dir="source"><arg line="-xf nasm-2.06rc16.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf yasm-0.8.0.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf ffmpeg-export-snapshot.tar --strip=1 --directory=ffmpeg"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf x264${x264.version}.tar --strip=1 --directory=x264"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf lame-398-2.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf libogg-1.1.3.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf libtheora-1.0.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf speex-1.0.5.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf libvorbis-1.2.0.tar"/></exec>
+                <exec executable="tar" dir="source"><arg line="-xf xvidcore-1.2.1.tar"/></exec>
+
+                <exec executable="${project.basedir}/source/nasm-2.06rc16/configure" dir="source/nasm-2.06rc16"><arg line="--prefix=${project.basedir}/source/build/nasm"/></exec>
+                <exec executable="make" dir="source/nasm-2.06rc16"><arg line="install"/></exec>
+
+                <exec executable="${project.basedir}/source/yasm-0.8.0/configure" dir="source/yasm-0.8.0"><arg line="--prefix=${project.basedir}/source/build/yasm"/></exec>
+                <exec executable="make" dir="source/yasm-0.8.0"><arg line="install"/></exec>
+
+                <exec executable="${project.basedir}/source/lame-398-2/configure" dir="source/lame-398-2"><arg line="--prefix=${project.basedir}/source/build --enable-static --disable-shared"/></exec>
+                <exec executable="make" dir="source/lame-398-2"><arg line="install"/>
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+
+                <exec executable="${project.basedir}/source/x264/configure" dir="source/x264"><arg line="--prefix=${project.basedir}/source/build --enable-static --disable-shared"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/x264"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+
+                <exec executable="${project.basedir}/source/libogg-1.1.3/configure" dir="source/libogg-1.1.3"><arg line="--prefix=${project.basedir}/source/build --enable-static --disable-shared"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/libogg-1.1.3"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+
+                <exec executable="${project.basedir}/source/libtheora-1.0/configure" dir="source/libtheora-1.0">
+                 <arg line="--with-ogg=${project.basedir}/source/build --prefix=${project.basedir}/source/build --enable-static --disable-shared"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/libtheora-1.0"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+ 
+                <exec executable="${project.basedir}/source/libvorbis-1.2.0/configure" dir="source/libvorbis-1.2.0">
+                 <arg line="--with-ogg=${project.basedir}/source/build --prefix=${project.basedir}/source/build --enable-static --disable-shared"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/libvorbis-1.2.0"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+
+                <exec executable="${project.basedir}/source/xvidcore/build/generic/configure" dir="source/xvidcore/build/generic"><arg line="--prefix=${project.basedir}/source/build --enable-static --disable-shared"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/xvidcore/build/generic">
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/xvidcore/build/generic"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <delete file="${project.basedir}/source/build"/>
+                <delete>
+                  <fileset dir="${project.basedir}/source/build" includes="**/*.so*"/>
+                  <fileset dir="${project.basedir}/source/build" includes="**/*.la"/>
+                </delete>
+
+                <exec executable="${project.basedir}/source/ffmpeg/configure" dir="source/ffmpeg">
+                  <arg line="
+                    --prefix=${project.basedir}/source/build/ffmpeg
+                    --enable-static 
+                    --disable-shared
+                    --extra-cflags=-I${project.basedir}/source/build/include
+                    --extra-ldflags=-L${project.basedir}/source/build/lib
+                    --enable-libxvid
+                    --enable-libx264
+                    --enable-libmp3lame
+                    --enable-libvorbis
+                    --enable-libtheora
+                    --disable-devices
+                    --extra-cflags=-fno-common
+                    --disable-stripping
+                    --enable-runtime-cpudetect
+                    --enable-gpl
+                    "/>
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                <exec executable="make" dir="source/ffmpeg"><arg line="install"/>
+                 <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
+                </exec>
+                
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-ffmpeg.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <x264.version>-snapshot-20100705-2245</x264.version>
+  </properties>
+</project>
