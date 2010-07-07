@@ -214,7 +214,9 @@
                   <fileset dir="${mybasedir}/source/build" includes="**/*.so*"/>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.dll"/>
                 </delete>
-		    <move file="${mybasedir}/source/build/lib/xvidcore.a" tofile="${mybasedir}/source/build/lib/libxvidcore.a" failonerror="false"/>
+		<move file="${mybasedir}/source/build/lib/xvidcore.a" tofile="${mybasedir}/source/build/lib/libxvidcore.a" failonerror="false"/>
+                <patch patchfile="src/patch/ffmpeg_avformat_http.patch" dir="source/ffmpeg" strip="0"/>
+
                 <exec executable="sh" dir="source/ffmpeg">
                   <arg line="
 			  ${mybasedir}/source/ffmpeg/configure
