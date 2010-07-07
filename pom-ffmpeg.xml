@@ -14,6 +14,7 @@
       </activation>
       <properties>
         <my.family>win32</my.family>
+        <build_by_win32>false</build_by_win32>
         <target>ntx86</target>
         <jambuild>build_dist.bat</jambuild>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
@@ -30,6 +31,7 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
+        <build_by_unix>false</build_by_unix>
         <target>linuxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -45,6 +47,7 @@
       </activation>
       <properties>
         <my.family>mac</my.family>
+        <build_by_unix>false</build_by_unix>
         <target>macosxx86</target>
         <jambuild>build_dist.sh</jambuild>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -106,8 +109,30 @@
         <executions>
           <execution>
             <phase>compile</phase>
+            <id>first</id>
             <configuration>
-              <tasks>
+              <tasks unless="build_by_unix">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/build/ffmpeg"/>
+                <get src="http://ffmpeg.arrozcru.org/autobuilds/ffmpeg/mingw32/shared/ffmpeg-r24078-swscale-r31628-mingw32-shared.7z" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://ffmpeg.arrozcru.org/autobuilds/ffmpeg/mingw32/dev/shared/ffmpeg-r24078-swscale-r31628-mingw32-shared-dev.7z" dest="source" verbose="true" usetimestamp="true"/>
+                <exec executable="${project.basedir}/win32/7za" dir="source">
+			<arg line="x -y -obuild/ffmpeg ffmpeg-r24078-swscale-r31628-mingw32-shared.7z"/></exec>
+                <exec executable="${project.basedir}/win32/7za" dir="source">
+			<arg line="x -y -obuild/ffmpeg ffmpeg-r24078-swscale-r31628-mingw32-shared-dev.7z"/></exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <tasks unless="build_by_win32">
+                        
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/ffmpeg"/>
