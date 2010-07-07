@@ -138,7 +138,7 @@
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/wt 
-                    -DCMAKE_BUILD_TYPE=Release 
+                    -DCMAKE_BUILD_TYPE=${build_type} 
                     -DSHARED_LIBS=Off 
                     -DHTTP_WITH_SSL=OFF 
                     -DBOOST_DIR=${project.build.directory}/dependency 
@@ -192,7 +192,7 @@
       <artifactId>boost</artifactId>
       <version>1.36.0</version>
       <type>zip</type>
-      <classifier>${my.family}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
   </dependencies>
   <properties>
