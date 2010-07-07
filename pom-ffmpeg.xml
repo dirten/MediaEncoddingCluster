@@ -214,15 +214,15 @@
                   <fileset dir="${mybasedir}/source/build" includes="**/*.so*"/>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.dll"/>
                 </delete>
-
+		    <move file="${mybasedir}/source/build/xvidcore.a" tofile="${mybasedir}/source/build/libxvidcore.a"/>
                 <exec executable="sh" dir="source/ffmpeg">
                   <arg line="
 			  ${mybasedir}/source/ffmpeg/configure
                     --prefix=${mybasedir}/source/build/ffmpeg
                     --enable-static 
                     --enable-shared
-                    --extra-cflags=-I${mybasedir}/source/build/include
-                    --extra-ldflags=-L${mybasedir}/source/build/lib
+                    --extra-cflags=-I/e/hudson/workspace/ffmpeg/jdk/jdk6u20/label/win/trunk/source/build/include
+                    --extra-ldflags=-L/e/hudson/workspace/ffmpeg/jdk/jdk6u20/label/win/trunk/source/build/lib
                     --enable-libxvid
                     --enable-libx264
                     --enable-libmp3lame
