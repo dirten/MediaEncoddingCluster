@@ -4,7 +4,7 @@
  SET(WTEXT_SOVERSION 7)
  SET(WTHTTP_SOVERSION 4)
  SET(WTFCGI_SOVERSION 4)
-+add_definitions(-DBOOST_AUTO_LINK_NOMANGLE)
++add_definitions(-Dbla)
  
  #
  # Various things that must be configured by the user or packager ...

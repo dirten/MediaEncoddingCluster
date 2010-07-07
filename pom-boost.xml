@@ -115,7 +115,7 @@
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam">
                 </exec>
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0">
-                  <arg line="--prefix=${project.basedir}/source/build/boost --layout=system --without-python --without-wave --without-graph --without-test --without-mpi variant=${build_type} link=static threading=multi install"/>
+                  <arg line="--prefix=${project.basedir}/source/build/boost --without-python --without-wave --without-graph --without-test --without-mpi variant=${build_type} link=static threading=multi install"/>
                 </exec>
 
               </tasks>
