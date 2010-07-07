@@ -19,5 +19,12 @@
         <include>**/*</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>source/build/ffmpeg/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
