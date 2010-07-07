@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
         fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
 
-    stream_data[i].codec_type = fis.getStreamInfo(i)->getCodecType();
+    stream_data[i].decodercodec_type = fis.getStreamInfo(i)->getCodecType();
     stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
     stream_data[i].decoder=boost::shared_ptr<Decoder>(new Decoder(fis.getAVStream(i)));
   }
