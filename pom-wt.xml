@@ -15,7 +15,7 @@
       <properties>
         <my.family>win32</my.family>
         <target>ntx86</target>
-        <jambuild>build_dist.bat</jambuild>
+        <BOOST_COMPILER>vc90</BOOST_COMPILER>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -31,7 +31,7 @@
       <properties>
         <my.family>linux</my.family>
         <target>linuxx86</target>
-        <jambuild>build_dist.sh</jambuild>
+        <BOOST_COMPILER>gcc41</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -46,7 +46,7 @@
       <properties>
         <my.family>mac</my.family>
         <target>macosxx86</target>
-        <jambuild>build_dist.sh</jambuild>
+        <BOOST_COMPILER>gcc40</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -143,7 +143,7 @@
                     -DHTTP_WITH_SSL=OFF 
                     -DBOOST_DIR=${project.build.directory}/dependency 
                     -DBOOST_VERSION=1_36 
-                    -DBOOST_COMPILER=gcc41 
+                    -DBOOST_COMPILER=${BOOST_COMPILER}
                     .."/>
                 </exec>
                 <patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
