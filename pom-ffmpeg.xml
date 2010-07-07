@@ -214,7 +214,7 @@
                   <fileset dir="${mybasedir}/source/build" includes="**/*.so*"/>
                   <fileset dir="${mybasedir}/source/build" includes="**/*.dll"/>
                 </delete>
-		    <move file="${mybasedir}/source/build/xvidcore.a" tofile="${mybasedir}/source/build/libxvidcore.a"/>
+		    <move file="${mybasedir}/source/build/lib/xvidcore.a" tofile="${mybasedir}/source/build/lib/libxvidcore.a"/>
                 <exec executable="sh" dir="source/ffmpeg">
                   <arg line="
 			  ${mybasedir}/source/ffmpeg/configure
