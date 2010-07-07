@@ -1,0 +1,10 @@
+--- ../../../../tmp/ffmpeg-export-2010-07-06/libavformat/http.c	2010-06-27 16:16:46.000000000 +0200
++++ libavformat/http.c	2010-07-07 11:33:27.835309805 +0200
+@@ -23,6 +23,7 @@
+ #include "avformat.h"
+ #include <unistd.h>
+ #include <strings.h>
++#include <string.h>
+ #include "internal.h"
+ #include "network.h"
+ #include "http.h"
