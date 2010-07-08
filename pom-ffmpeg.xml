@@ -246,7 +246,7 @@
                   <arg line="
 			  ${mybasedir}/source/ffmpeg/configure
                     --prefix=${mybasedir}/source/build/ffmpeg
-                    --enable-static 
+                    --disable-static
                     --enable-shared
                     --extra-cflags=-I${mybasedir}/source/build/include
                     --extra-ldflags=-L${mybasedir}/source/build/lib
@@ -267,10 +267,12 @@
                 <exec executable="make" dir="source/ffmpeg" failonerror="yes"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
+                <!--
                 <delete>
                   <fileset dir="${mybasedir}/source/build/ffmpeg" includes="**/*.so*"/>
                   <fileset dir="${mybasedir}/source/build/ffmpeg" includes="**/*.dll"/>
                 </delete>
+                -->
               </tasks>
             </configuration>
             <goals>

@@ -137,7 +137,7 @@
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/build/mysql"/>
                 <get src="${mysql.file}" dest="source/mysql.zip" verbose="true" usetimestamp="true"/>
-                <unzip src="source/mysql.zip" dest="source/mysql"/>
+                <unzip src="source/mysql.zip" dest="source/build/mysql"/>
               </tasks>
             </configuration>
             <goals>
