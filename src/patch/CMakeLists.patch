@@ -1,5 +1,5 @@
 --- ../../../../tmp/wt-2.2.4/CMakeLists.txt	2009-04-24 16:20:54.000000000 +0200
-+++ CMakeLists.txt	2010-07-08 11:18:59.402930481 +0200
++++ CMakeLists.txt	2010-07-08 13:07:11.022931992 +0200
 @@ -15,6 +15,7 @@
  SET(WTEXT_SOVERSION 7)
  SET(WTHTTP_SOVERSION 4)
@@ -8,7 +8,7 @@
  
  #
  # Various things that must be configured by the user or packager ...
-@@ -82,15 +83,49 @@
+@@ -82,15 +83,50 @@
  OPTION(CONNECTOR_HTTP "Compile in stand-alone httpd connector (libwthttp) ?" ON)
  SET(EXAMPLES_CONNECTOR wthttp CACHE STRING "Connector used for examples")
  
@@ -26,6 +26,7 @@
 +   if(Boost_FOUND)
 +       MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
 +       set(BOOST_WT_FOUND true)
++       set(BOOST_WT_MT_FOUND true)
 +       set(BOOST_WTHTTP_FOUND true)
 +       set(BOOST_WTHTTP_FOUND true)
 +#       set(ASIO_FOUND true)
@@ -60,7 +61,7 @@
  FIND_PACKAGE(Qt4)
  
  # Boost is used nearly everywhere, so we can put these here
-@@ -119,7 +154,7 @@
+@@ -119,7 +155,7 @@
  INSTALL_FILES(/include/Wt FILES ${WCONFIG_H_PATH})
  
  IF(WIN32)
@@ -69,7 +70,7 @@
  ELSE(WIN32)
    SUBDIRS(src EXCLUDE_FROM_ALL examples)
  ENDIF(WIN32)
-@@ -138,4 +173,4 @@
+@@ -138,4 +174,4 @@
  INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/resources DESTINATION
      ${CMAKE_INSTALL_PREFIX}/share/Wt/)
  
