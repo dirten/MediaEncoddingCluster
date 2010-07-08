@@ -71,7 +71,12 @@
 		<mkdir dir="${project.basedir}/source"/>
 		<mkdir dir="${project.basedir}/source/build"/>
                 <exec executable="cmake" dir="${project.build.directory}/checkout/build">
-                  <arg line='-G ${CMAKE_MAKE_PROGRAM} -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/breakpad -DCMAKE_OSX_ARCHITECTURES=ppc;i386;ppc64;x86_64 ..'/>
+                  <arg line='
+                    -G ${CMAKE_MAKE_PROGRAM} 
+                    -DCMAKE_BUILD_TYPE=${build_type}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/breakpad 
+                    -DCMAKE_OSX_ARCHITECTURES=ppc;i386;ppc64;x86_64 
+                    ..'/>
                 </exec>
 		
                 <!--<patch patchfile="src/main/resource/jhive-0.1.0.patch" dir="xuggler" strip="0"/>-->
