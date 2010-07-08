@@ -13,11 +13,9 @@
         </os>
       </activation>
       <properties>
+        <zip/>
         <my.family>win32</my.family>
-        <target>ntx86</target>
-        <jambuild>build_dist.bat</jambuild>
-        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
-        <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-noinstall-5.1.48-win32.zip/from/http://ftp.gwdg.de/pub/misc/mysql//</mysql.file>
       </properties>
     </profile>
     <profile>
@@ -29,11 +27,9 @@
         </os>
       </activation>
       <properties>
+        <gz/>
         <my.family>linux</my.family>
-        <target>linuxx86</target>
-        <jambuild>build_dist.sh</jambuild>
-        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
-        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48-linux-i686-glibc23.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
       </properties>
     </profile>
     <profile>
@@ -44,11 +40,9 @@
         </os>
       </activation>
       <properties>
+        <gz/>
         <my.family>mac</my.family>
-        <target>macosxx86</target>
-        <jambuild>build_dist.sh</jambuild>
-        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
-        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48-osx10.5-x86.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
       </properties>
     </profile>
     <profile>
@@ -60,16 +54,15 @@
         </os>
       </activation>
       <properties>
+        <gz/>
         <my.family>solaris</my.family>
-        <target>solaris</target>
-        <jambuild>build_dist.sh</jambuild>
-        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48-solaris10-i386.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
       </properties>
     </profile>
   </profiles>
   <groupId>org.esb.mysql</groupId>
   <artifactId>mysql</artifactId>
-  <version>5.1.37</version>
+  <version>5.1.48</version>
   <name>mysql</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -88,6 +81,56 @@
       </extension>
     </extensions>
     <plugins>
+    
+    
+     <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>first</id>
+            <configuration>
+              <tasks unless="zip">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/build/mysql"/>
+                <mkdir dir="source/mysql"/>
+                <get src="${mysql.file}" dest="source/mysql.tar.gz" verbose="true" usetimestamp="true"/>
+                <gunzip src="source/mysql.tar.gz"/>
+                <exec executable="tar" dir="source"><arg line="-xf mysql.tar --strip=1 --directory=mysql"/></exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>second</id>
+            <configuration>
+              <tasks unless="gz">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/build/mysql"/>
+                <get src="${mysql.file}" dest="source/mysql.zip" verbose="true" usetimestamp="true"/>
+                <unzip src="source/mysql.zip" dest="source/mysql"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>

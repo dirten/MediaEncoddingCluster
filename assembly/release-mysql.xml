@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/mysql</directory>
+      <directory>source/mysql</directory>
       <outputDirectory></outputDirectory>
       <includes>
         <include>**/*.*</include>
