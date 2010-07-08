@@ -84,6 +84,13 @@
       <url>ftp://codergrid.de</url>
     </repository>
   </distributionManagement>
+  <repositories>
+    <repository>
+      <id>esb-repo</id>
+      <url>http://codergrid.de/repository</url>
+    </repository>
+  </repositories>
+                        
   <build>
     <extensions>
       <!-- Enabling the use of FTP -->
@@ -134,6 +141,10 @@
                   <arg line="-xf wt-2.2.4.tar"/>
                 </exec>
                 <mkdir dir="source/wt-2.2.4/build"/>
+                <patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
+                <patch patchfile="src/patch/Widget.patch" dir="source/wt-2.2.4" strip="0"/>
+                <patch patchfile="src/patch/CMakeLists.patch" dir="source/wt-2.2.4" strip="0"/>
+
                 <exec executable="cmake" dir="source/wt-2.2.4/build">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
@@ -146,9 +157,6 @@
                     -DBOOST_COMPILER=${BOOST_COMPILER}
                     .."/>
                 </exec>
-                <patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
-                <patch patchfile="src/patch/Widget.patch" dir="source/wt-2.2.4" strip="0"/>
-                <patch patchfile="src/patch/CMakeLists.patch" dir="source/wt-2.2.4" strip="0"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-2.2.4/build">
                   <arg line="install"/>
                 </exec>

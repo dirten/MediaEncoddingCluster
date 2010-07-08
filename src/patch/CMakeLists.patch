@@ -1,14 +1,66 @@
 --- ../../../../tmp/wt-2.2.4/CMakeLists.txt	2009-04-24 16:20:54.000000000 +0200
-+++ CMakeLists.txt	2010-07-06 19:51:10.107071669 +0200
++++ CMakeLists.txt	2010-07-08 11:18:59.402930481 +0200
 @@ -15,6 +15,7 @@
  SET(WTEXT_SOVERSION 7)
  SET(WTHTTP_SOVERSION 4)
  SET(WTFCGI_SOVERSION 4)
-+add_definitions(-Dbla)
++add_definitions(-DBOOST_AUTO_LINK_NOMANGLE)
  
  #
  # Various things that must be configured by the user or packager ...
-@@ -119,7 +120,7 @@
+@@ -82,15 +83,49 @@
+ OPTION(CONNECTOR_HTTP "Compile in stand-alone httpd connector (libwthttp) ?" ON)
+ SET(EXAMPLES_CONNECTOR wthttp CACHE STRING "Connector used for examples")
+ 
+-INCLUDE(cmake/WtFindBoost.txt)
++#INCLUDE(cmake/WtFindBoost.txt)
++#INCLUDE(FindBoost.cmake)
++
++set(Boost_DEBUG true)
++set(BOOST_ROOT ${BOOST_DIR})
++   set(Boost_USE_STATIC_LIBS   ON)
++   set(Boost_USE_MULTITHREADED ON)
++#   boost_date_time, boost_regex, and boost_program_options, boost_signals, and optionally boost_thread
++   find_package( Boost 1.36.0 COMPONENTS date_time regex program_options signals thread system)
++
++   if(Boost_FOUND)
++       MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
++       set(BOOST_WT_FOUND true)
++       set(BOOST_WTHTTP_FOUND true)
++       set(BOOST_WTHTTP_FOUND true)
++#       set(ASIO_FOUND true)
++       set(BOOST_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
++#       set(ASIO_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}/boost)
++       set(BOOST_WT_LIBRARIES ${${Boost_LIBRARIES}})
++       SET (ASIO_INCLUDE ${BOOST_ASIO_INCLUDE})
++       SET(ASIO_DEFINITIONS -DBOOST_ASIO)
++       SET(BOOST_WTHTTP_LIBRARIES
++        ${BOOST_FS_LIBRARY}
++        ${Boost_PROGRAM_OPTIONS_LIBRARY}
++        ${BOOST_DT_LIBRARY})
++       MESSAGE("*** New Boost HTTP Library" ${BOOST_WTHTTP_LIBRARIES})
++       MESSAGE("*** Boost System Library" ${Boost_SYSTEM_LIBRARY})
++       SET(BOOST_WTHTTP_SYSTEM_LIBRARY ${BOOST_SYSTEM_LIB})
++       SET(BOOST_SYSTEM_LIB ${Boost_SYSTEM_LIBRARY})
++       SET(ASIO_LIBRARIES ${BOOST_WTHTTP_SYSTEM_LIBRARY})
++       SET(ASIO_FOUND TRUE)
++   endif()
++
++
+ INCLUDE(cmake/WtFindGd.txt)
+ INCLUDE(cmake/WtFindFcgi.txt)
+ INCLUDE(cmake/WtFindMxml.txt)
+ INCLUDE(cmake/WtFindZlib.txt)
+-INCLUDE(cmake/WtFindAsio.txt)
++#INCLUDE(cmake/WtFindAsio.txt)
+ INCLUDE(cmake/WtFindSsl.txt)
+ INCLUDE(cmake/WtFindMysqlpp.txt)
+ 
++
+ FIND_PACKAGE(Qt4)
+ 
+ # Boost is used nearly everywhere, so we can put these here
+@@ -119,7 +154,7 @@
  INSTALL_FILES(/include/Wt FILES ${WCONFIG_H_PATH})
  
  IF(WIN32)
@@ -17,7 +69,7 @@
  ELSE(WIN32)
    SUBDIRS(src EXCLUDE_FROM_ALL examples)
  ENDIF(WIN32)
-@@ -138,4 +139,4 @@
+@@ -138,4 +173,4 @@
  INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/resources DESTINATION
      ${CMAKE_INSTALL_PREFIX}/share/Wt/)
  
