@@ -16,11 +16,11 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>ffmpeg_dir</name>
-            <value>/home/HoelscJ/devel/mec/source/build/ffmpeg</value>
+            <value>/home/HoelscJ/devel/mec/target/dependency</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mysql_dir</name>
-            <value>/usr</value>
+            <value>/home/HoelscJ/devel/mec/target/dependency</value>
         </setInstallerVariable>
     </preBuildActionList>
     <readyToInstallActionList>

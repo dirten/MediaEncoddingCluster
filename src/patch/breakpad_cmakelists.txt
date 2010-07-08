@@ -252,12 +252,26 @@ INSTALL(TARGETS breakpad
 
 
 IF(APPLE)
-  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/mac/handler/exception_handler.h
+  INSTALL(FILES 
+    ${PROJECT_SOURCE_DIR}/src/client/mac/handler/exception_handler.h
     DESTINATION include/client/mac/handler
   )
 ELSEIF(UNIX)
-  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/linux/handler/exception_handler.h
+  INSTALL(FILES 
+    ${PROJECT_SOURCE_DIR}/src/client/linux/handler/exception_handler.h
     DESTINATION include/client/linux/handler
+  )
+  INSTALL(FILES 
+    ${PROJECT_SOURCE_DIR}/src/client/linux/crash_generation/crash_generation_client.h
+    DESTINATION include/client/linux/crash_generation
+  )
+  INSTALL(FILES 
+    ${PROJECT_SOURCE_DIR}/src/processor/scoped_ptr.h
+    DESTINATION include/processor
+  )
+  INSTALL(FILES 
+    ${PROJECT_SOURCE_DIR}/src/common/linux/google_crashdump_uploader.h
+    DESTINATION include/common/linux
   )
 ELSEIF(WIN32)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/windows/handler/exception_handler.h

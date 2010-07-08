@@ -80,7 +80,7 @@
                 </exec>
 		
                 <!--<patch patchfile="src/main/resource/jhive-0.1.0.patch" dir="xuggler" strip="0"/>-->
-        	<exec executable="${MAKE_EXECUTABLE}" dir="${project.build.directory}/checkout/build">
+        	<exec executable="${MAKE_EXECUTABLE}" dir="${project.build.directory}/checkout/build" failonerror="yes">
                   <arg line="install"/>
                 </exec>
 <!--
