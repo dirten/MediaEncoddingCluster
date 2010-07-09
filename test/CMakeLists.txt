@@ -131,14 +131,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 target_link_libraries (info
-  ${BOOST_SERIAL_LIB_MT}
-  ${BOOST_THREAD_LIB_MT}
-  ${BOOST_SYSTEM_LIB_MT}
-  ${BOOST_PO_LIB_MT}
-  ${BOOST_SIGNALS_LIB_MT}
-  ${BOOST_REGEX_LIB_MT}
-  ${BOOST_FS_LIB_MT}
-  ${BOOST_DT_LIB_MT}
+${Boost_LIBRARIES}
 )
 #target_link_libraries (erltest
 #  ${BOOST_SERIAL_LIB_MT}

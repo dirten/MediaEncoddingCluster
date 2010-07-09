@@ -85,7 +85,7 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${BOOST_DT_LIB_MT} ${BOOST_SYSTEM_LIB_MT} ${BOOST_THREAD_LIB_MT} log4cplus rt )
+TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} log4cplus rt )
 
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread )
@@ -257,11 +257,8 @@ add_library (web
 TARGET_LINK_LIBRARIES(web
   wtextd
   wthttpd
-  ${BOOST_PO_LIB_MT}
   wtd
-  ${BOOST_SIGNALS_LIB_MT}
-  ${BOOST_REGEX_LIB_MT}
-  ${SSL_LIB}
+  ${Boost_LIBRARIES}
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)

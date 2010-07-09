@@ -21,7 +21,20 @@ set(CMAKE_CXX_FLAGS "-D_REENTRANT")
 set(CMAKE_C_FLAGS "-D_REENTRANT")
 ENDIF(UNIX)
 SET(USE_EMBEDDED_MYSQL ON)
-INCLUDE(cmake/HiveFindBoost.txt)
+#INCLUDE(cmake/HiveFindBoost.txt)
+
+#INCLUDE(FindBoost.cmake)
+
+set(Boost_DEBUG true)
+set(BOOST_ROOT ${BOOST_DIR})
+find_package( Boost 1.36.0 COMPONENTS date_time regex program_options signals thread system filesystem serialization)
+if(Boost_FOUND)
+    MESSAGE("*** New Boost found" ${Boost_LIBRARIES})
+    MESSAGE("*** Boost Date Time found" ${BOOST_DATE_TIME_LIB})
+    set(BOOST_DT_LIB_MT ${BOOST_DT_LIB})
+endif()
+       
+
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)

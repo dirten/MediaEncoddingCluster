@@ -15,9 +15,7 @@ add_library (io File.cpp
       StringOutputStream.cpp
 )
 TARGET_LINK_LIBRARIES(io
-  ${BOOST_FS_LIB_MT}
-  ${BOOST_SYSTEM_LIB_MT}
-  ${BOOST_SERIAL_LIB_MT}
+    ${Boost_LIBRARIES}
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS io

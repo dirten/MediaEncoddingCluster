@@ -73,7 +73,7 @@ target_link_libraries (mhive
   signal 
   io 
   net 
-  ${BOOST_PO_LIB_MT}
+  ${Boost_LIBRARIES}
   log4cplus
   rt
 )
@@ -131,18 +131,6 @@ ELSE(WIN32)
   )
 ENDIF(WIN32)
 
-target_link_libraries (mhive
-#  ${BOOST_SERIAL_LIB_MT}
-#  ${BOOST_THREAD_LIB_MT}
-  ${BOOST_SYSTEM_LIB_MT}
-#  ${SSL_LIB}
-  ${CRYPTO_LIB}
-#  ${BOOST_PO_LIB_MT}
-  ${BOOST_SIGNALS_LIB_MT}
-#  ${BOOST_REGEX_LIB_MT}
-#  ${BOOST_FS_LIB_MT}
-#  ${BOOST_DT_LIB_MT}
-)
 
 SET(CURL_CMD curl)
 SET(MHIVE_DBGSYM mhive)
