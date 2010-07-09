@@ -146,10 +146,11 @@
                 </pathconvert>
 		    <echo message="using basedir: ${mybasedir}"/>
 
-                <exec executable="sh" dir="source/log4cplus">
+                <exec executable="sh" dir="source/log4cplus" failonerror="on">
                  <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --enable-static --disable-shared"/>
                 </exec>
-                <exec executable="make" dir="source/log4cplus"><arg line="install"/>
+                <exec executable="make" dir="source/log4cplus" failonerror="on">
+                  <arg line="install"/>
                 </exec>
 
               </tasks>
