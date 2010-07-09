@@ -224,7 +224,7 @@ endif (UNIX)
 
 #add_executable(minidump_stackwalk ${SOURCES_PROCESSOR_STACKWALK})
 
-add_library(breakpad SHARED ${SOURCES})
+add_library(breakpad ${SOURCES})
 
 IF(UNIX AND NOT APPLE)
     SET_TARGET_PROPERTIES( breakpad PROPERTIES COMPILE_FLAGS -fPIC)
