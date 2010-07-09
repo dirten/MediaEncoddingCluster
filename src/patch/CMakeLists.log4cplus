@@ -1,11 +1,22 @@
---- ../../../../tmp/log4cplus-1.0.4-rc9/CMakeLists.txt	2010-05-31 14:13:49.000000000 +0200
-+++ CMakeLists.txt	2010-07-09 12:50:53.665685298 +0200
-@@ -144,6 +144,8 @@
-     MINSIZEREL_POSTFIX "${log4cplus_postfix}"
-     RELWITHDEBINFO_POSTFIX "${log4cplus_postfix}")
-   target_link_libraries (log4cplus ws2_32 advapi32)
-+else(WIN32)
-+    target_link_libraries (log4cplus rt)
- endif ()
- 
- add_subdirectory (loggingserver)
+132,133c132,133
+< #add_library (log4cplus STATIC ${log4cplus_all_sources})
+< add_library (log4cplus SHARED ${log4cplus_all_sources})
+---
+> add_library (log4cplus STATIC ${log4cplus_all_sources})
+> #add_library (log4cplus SHARED ${log4cplus_all_sources})
+146a147,148
+> else(WIN32)
+>     target_link_libraries (log4cplus rt)
+150a153,164
+> 
+> INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
+>   DESTINATION ./include
+>   USE_SOURCE_PERMISSIONS
+>   PATTERN ".svn" EXCLUDE
+>   )
+>   
+> INSTALL(TARGETS log4cplus
+>     RUNTIME DESTINATION bin
+>     LIBRARY DESTINATION lib
+>     ARCHIVE DESTINATION lib
+> )
