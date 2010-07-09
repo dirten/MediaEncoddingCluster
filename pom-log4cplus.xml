@@ -13,6 +13,7 @@
         </os>
       </activation>
       <properties>
+        <build.win32>1</build.win32>
         <my.family>win32</my.family>
         <target>ntx86</target>
         <BOOST_COMPILER>vc90</BOOST_COMPILER>
@@ -29,6 +30,7 @@
         </os>
       </activation>
       <properties>
+        <build.unix>1</build.unix>
         <my.family>linux</my.family>
         <target>linuxx86</target>
         <BOOST_COMPILER>gcc41</BOOST_COMPILER>
@@ -44,6 +46,7 @@
         </os>
       </activation>
       <properties>
+        <build.unix>1</build.unix>
         <my.family>mac</my.family>
         <target>macosxx86</target>
         <BOOST_COMPILER>gcc40</BOOST_COMPILER>
@@ -130,7 +133,7 @@
           <execution>
             <phase>compile</phase>
             <configuration>
-              <tasks>
+              <tasks unless="build.unix">
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
@@ -157,6 +160,42 @@
                     -DSHARED_LIBS=Off 
                     .."/>
                 </exec>
+                
+                <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
+                </exec>
+
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+	    <id>build_unix</id>
+            <configuration>
+              <tasks unless="build_win32">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/log4cplus"/>
+                <mkdir dir="source/log4cplus/build"/>
+                <get src="http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4-rc9.tar.bz2"
+                     dest="source/log4cplus-1.0.4-rc9.tar.bz2"
+                     verbose="true" usetimestamp="true"/>
+                <bunzip2 src="source/log4cplus-1.0.4-rc9.tar.bz2" dest="source"/>
+                <exec executable="tar" dir="source" failonerror="on">
+                  <arg line="-xf log4cplus-1.0.4-rc9.tar --strip=1 --directory=log4cplus"/>
+                </exec>
+
+                <patch patchfile="src/patch/CMakeLists.log4cplus" dir="source/log4cplus" strip="0"/>
+
+                <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+		<echo message="using basedir: ${mybasedir}"/>
+		<exec executable="sh" dir="source/log4cplus" failonerror="on"> 
+		    <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --enable-static --disable-shared"/> 
+		</exec>
                 
                 <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
                 </exec>
