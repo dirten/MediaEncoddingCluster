@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <profiles>
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <my.family>win32</my.family>
+        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>linux</my.family>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>mac</my.family>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>solaris</my.family>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+  </profiles>
+  <!--
+  <parent>
+    <artifactId>JHive</artifactId>
+    <groupId>org.esb.jhive</groupId>
+    <version>0.1.0</version>
+  </parent>-->
+  <groupId>org.esb.mhive</groupId>
+  <artifactId>mhive</artifactId>
+  <version>0.4.8</version>
+  <name>mhive</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>esb-repo</id>
+      <url>http://codergrid.de/repository</url>
+    </repository>
+  </repositories>
+                        
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+    <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeTypes>zip</includeTypes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="build"/>
+
+                <exec executable="cmake" dir="build" failonerror="yes">
+                  <arg line="
+                    -G ${CMAKE_MAKE_PROGRAM}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/install 
+                    -DCMAKE_BUILD_TYPE=${build_type} 
+                    -DSHARED_LIBS=Off 
+                    -DBOOST_DIR=${project.build.directory}/dependency 
+                    -DFFMPEG_DIR=${project.build.directory}/dependency 
+                    -DLOG4CPLUS_DIR=${project.build.directory}/dependency 
+                    -DMYSQL_DIR=${project.build.directory}/dependency 
+                    -DWT_DIR=${project.build.directory}/dependency 
+                    -DBUILD_TESTING=OFF
+                    -DBREAKPAD_DIR=${project.build.directory}/dependency 
+                    .."/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="install"/>
+                </exec>
+
+                <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
+                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam"/>
+                <exec executable="tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0">
+                  <arg line=""/>
+                </exec>
+-->
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-wt.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.esb.boost</groupId>
+      <artifactId>boost</artifactId>
+      <version>1.36.0</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.mysql</groupId>
+      <artifactId>mysql</artifactId>
+      <version>5.1.48</version>
+      <type>zip</type>
+      <classifier>${my.family}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.wt</groupId>
+      <artifactId>wt</artifactId>
+      <version>2.2.4</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.breakpad</groupId>
+      <artifactId>breakpad</artifactId>
+      <version>1.0</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.ffmpeg</groupId>
+      <artifactId>ffmpeg</artifactId>
+      <version>0.0</version>
+      <type>zip</type>
+      <classifier>${my.family}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.log4cplus</groupId>
+      <artifactId>log4cplus</artifactId>
+      <version>1.0.4-rc9</version>
+      <type>zip</type>
+      <classifier>${my.family}</classifier>
+    </dependency>
+  </dependencies>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
