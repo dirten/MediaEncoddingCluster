@@ -1,0 +1,41 @@
+--- ../../../../tmp/log4cplus-1.0.4-rc9/CMakeLists.txt	2010-05-31 14:13:49.000000000 +0200
++++ CMakeLists.txt	2010-07-09 15:37:26.996622579 +0200
+@@ -116,8 +116,8 @@
+     include/log4cplus/helpers/syncprims-win32.h)
+ 
+   # Comment out the following lines if you want non-Unicode version.
+-  add_definitions (-DUNICODE -D_UNICODE -UMBCS -U_MBCS)
+-  set (log4cplus_postfix "${log4cplus_postfix}U")
++#  add_definitions (-DUNICODE -D_UNICODE -UMBCS -U_MBCS)
++#  set (log4cplus_postfix "${log4cplus_postfix}U")
+   
+   #add_definitions (-DLOG4CPLUS_STATIC)
+   #set (log4cplus_postfix "${log4cplus_postfix}S")
+@@ -129,8 +129,8 @@
+ include_directories ("include")
+ set (log4cplus_all_sources ${log4cplus_sources} ${log4cplus_headers})
+ 
+-#add_library (log4cplus STATIC ${log4cplus_all_sources})
+-add_library (log4cplus SHARED ${log4cplus_all_sources})
++add_library (log4cplus STATIC ${log4cplus_all_sources})
++#add_library (log4cplus SHARED ${log4cplus_all_sources})
+ target_link_libraries (log4cplus ${CMAKE_THREAD_LIBS_INIT})
+ 
+ set_target_properties (log4cplus PROPERTIES
+@@ -148,3 +148,16 @@
+ 
+ add_subdirectory (loggingserver)
+ add_subdirectory (tests)
++
++INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
++	> DESTINATION ./include
++	> USE_SOURCE_PERMISSIONS
++	> PATTERN ".svn" EXCLUDE
++	> ) 
++	
++INSTALL(TARGETS log4cplus
++	> RUNTIME DESTINATION bin
++	> LIBRARY DESTINATION lib
++	> ARCHIVE DESTINATION lib
++	> ) 
++	
