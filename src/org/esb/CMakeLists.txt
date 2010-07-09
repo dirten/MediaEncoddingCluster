@@ -85,7 +85,7 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} log4cplus rt )
+TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} log4cplus )
 
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(util pthread )

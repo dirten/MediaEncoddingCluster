@@ -27,6 +27,7 @@ SET(USE_EMBEDDED_MYSQL ON)
 
 set(Boost_DEBUG true)
 set(BOOST_ROOT ${BOOST_DIR})
+set(Boost_COMPILER ${BOOST_COMPILER})
 find_package( Boost 1.36.0 COMPONENTS date_time regex program_options signals thread system filesystem serialization)
 if(Boost_FOUND)
     MESSAGE("*** New Boost found" ${Boost_LIBRARIES})

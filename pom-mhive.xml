@@ -14,6 +14,7 @@
       </activation>
       <properties>
         <my.family>win32</my.family>
+        <GCC_VERSION>gcc</GCC_VERSION>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -28,6 +29,7 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
+        <GCC_VERSION>gcc</GCC_VERSION>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -42,6 +44,7 @@
       <properties>
         <my.family>mac</my.family>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+        <GCC_VERSION>gcc40</GCC_VERSION>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
@@ -132,6 +135,7 @@
                     -DCMAKE_BUILD_TYPE=${build_type} 
                     -DSHARED_LIBS=Off 
                     -DBOOST_DIR=${project.build.directory}/dependency 
+                    -DBOOST_COMPILER=${GCC_VERSION} 
                     -DFFMPEG_DIR=${project.build.directory}/dependency 
                     -DLOG4CPLUS_DIR=${project.build.directory}/dependency 
                     -DMYSQL_DIR=${project.build.directory}/dependency 
