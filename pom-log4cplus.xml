@@ -163,6 +163,7 @@
                 </exec>
                 
                 <exec executable="${MAKE_EXECUTABLE}" dir="source/log4cplus/build" failonerror="on">
+                <arg line="install"/>
                 </exec>
 
               </tasks>
