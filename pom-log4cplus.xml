@@ -134,22 +134,31 @@
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/log4cplus"/>
+                <mkdir dir="source/log4cplus/build"/>
                 <get src="http://downloads.sourceforge.net/project/log4cplus/log4cplus-stable/1.0.4/log4cplus-1.0.4-rc9.tar.bz2"
                      dest="source/log4cplus-1.0.4-rc9.tar.bz2"
                      verbose="true" usetimestamp="true"/>
                 <bunzip2 src="source/log4cplus-1.0.4-rc9.tar.bz2" dest="source"/>
-                <exec executable="tar" dir="source">
+                <exec executable="tar" dir="source" failonerror="on">
                   <arg line="-xf log4cplus-1.0.4-rc9.tar --strip=1 --directory=log4cplus"/>
                 </exec>
+
+                <patch patchfile="src/patch/CMakeLists.log4cplus" dir="source/log4cplus" strip="0"/>
+
                 <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
-		    <echo message="using basedir: ${mybasedir}"/>
-
-                <exec executable="sh" dir="source/log4cplus" failonerror="on">
-                 <arg line="${mybasedir}/source/log4cplus/configure --prefix=${mybasedir}/source/build/log4cplus --enable-static --disable-shared"/>
+		<echo message="using basedir: ${mybasedir}"/>
+                <exec executable="cmake" dir="source/log4cplus/build" failonerror="on">
+                  <arg line="
+                    -G ${CMAKE_MAKE_PROGRAM}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/log4cplus 
+                    -DCMAKE_BUILD_TYPE=${build_type} 
+                    -DSHARED_LIBS=Off 
+                    .."/>
                 </exec>
-                <exec executable="make" dir="source/log4cplus" failonerror="on">
+                
+                <exec executable="make" dir="source/log4cplus/build" failonerror="on">
                   <arg line="install"/>
                 </exec>
 

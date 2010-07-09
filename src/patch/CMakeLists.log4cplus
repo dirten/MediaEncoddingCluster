@@ -1,0 +1,11 @@
+--- ../../../../tmp/log4cplus-1.0.4-rc9/CMakeLists.txt	2010-05-31 14:13:49.000000000 +0200
++++ CMakeLists.txt	2010-07-09 12:50:53.665685298 +0200
+@@ -144,6 +144,8 @@
+     MINSIZEREL_POSTFIX "${log4cplus_postfix}"
+     RELWITHDEBINFO_POSTFIX "${log4cplus_postfix}")
+   target_link_libraries (log4cplus ws2_32 advapi32)
++else(WIN32)
++    target_link_libraries (log4cplus rt)
+ endif ()
+ 
+ add_subdirectory (loggingserver)
