@@ -174,64 +174,64 @@
                 </pathconvert>
 		    <echo message="using basedir: ${mybasedir}"/>
 
-                <exec executable="sh" dir="source/nasm-2.06rc16">
+                <exec executable="sh" dir="source/nasm-2.06rc16" failonerror="yes">
 			<arg line="${mybasedir}/source/nasm-2.06rc16/configure --prefix=${mybasedir}/source/build/nasm"/></exec>
                 <exec executable="make" dir="source/nasm-2.06rc16"><arg line="install"/></exec>
 
-                <exec executable="sh" dir="source/yasm-0.8.0">
+                <exec executable="sh" dir="source/yasm-0.8.0" failonerror="yes">
 			<arg line="${mybasedir}/source/yasm-0.8.0/configure --prefix=${mybasedir}/source/build/yasm"/></exec>
                 <exec executable="make" dir="source/yasm-0.8.0"><arg line="install"/></exec>
 
-                <exec executable="sh" dir="source/lame-398-2">
+                <exec executable="sh" dir="source/lame-398-2" failonerror="yes">
 			<arg line="${mybasedir}/source/lame-398-2/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/></exec>
                 <exec executable="make" dir="source/lame-398-2"><arg line="install"/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
 
-                <exec executable="sh" dir="source/x264">
+                <exec executable="sh" dir="source/x264" failonerror="yes">
 			<arg line="${mybasedir}/source/x264/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/x264"><arg line="install"/>
+                <exec executable="make" dir="source/x264" failonerror="yes"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
 
-                <exec executable="sh" dir="source/libogg-1.1.3">
+                <exec executable="sh" dir="source/libogg-1.1.3" failonerror="yes">
 			<arg line="${mybasedir}/source/libogg-1.1.3/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/libogg-1.1.3"><arg line="install"/>
+                <exec executable="make" dir="source/libogg-1.1.3" failonerror="yes"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
 
-                <exec executable="sh" dir="source/libtheora-1.0">
+                <exec executable="sh" dir="source/libtheora-1.0" failonerror="yes">
                  <arg line="${mybasedir}/source/libtheora-1.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/libtheora-1.0"><arg line="install"/>
+                <exec executable="make" dir="source/libtheora-1.0" failonerror="yes"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
  
-                <exec executable="sh" dir="source/libvorbis-1.2.0">
+                <exec executable="sh" dir="source/libvorbis-1.2.0" failonerror="yes">
                  <arg line="${mybasedir}/source/libvorbis-1.2.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/libvorbis-1.2.0"><arg line="install"/>
+                <exec executable="make" dir="source/libvorbis-1.2.0" failonerror="yes"><arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
 
-                <exec executable="sh" dir="source/xvidcore/build/generic">
+                <exec executable="sh" dir="source/xvidcore/build/generic" failonerror="yes">
 			<arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/xvidcore/build/generic">
+                <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
 		     <arg line="clean"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/xvidcore/build/generic">
+                <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
-                <exec executable="make" dir="source/xvidcore/build/generic">
+                <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
 		     <arg line="install"/>
                  <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>

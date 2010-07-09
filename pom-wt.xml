@@ -145,7 +145,7 @@
                 <patch patchfile="src/patch/Widget.patch" dir="source/wt-2.2.4" strip="0"/>
                 <patch patchfile="src/patch/CMakeLists.patch" dir="source/wt-2.2.4" strip="0"/>
 
-                <exec executable="cmake" dir="source/wt-2.2.4/build">
+                <exec executable="cmake" dir="source/wt-2.2.4/build" failonerror="on">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/wt 
@@ -157,7 +157,7 @@
                     -DBOOST_COMPILER=${BOOST_COMPILER}
                     .."/>
                 </exec>
-                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-2.2.4/build">
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-2.2.4/build" failonerror="on">
                   <arg line="install"/>
                 </exec>
 

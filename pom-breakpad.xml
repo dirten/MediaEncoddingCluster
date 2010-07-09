@@ -70,7 +70,7 @@
 		<mkdir dir="${project.build.directory}/checkout/build"/>
 		<mkdir dir="${project.basedir}/source"/>
 		<mkdir dir="${project.basedir}/source/build"/>
-                <exec executable="cmake" dir="${project.build.directory}/checkout/build">
+                <exec executable="cmake" dir="${project.build.directory}/checkout/build" failonerror="yes">
                   <arg line='
                     -G ${CMAKE_MAKE_PROGRAM} 
                     -DCMAKE_BUILD_TYPE=${build_type}

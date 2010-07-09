@@ -75,6 +75,7 @@ target_link_libraries (mhive
   net 
   ${BOOST_PO_LIB_MT}
   log4cplus
+  rt
 )
 IF(WIN32)
 #  target_link_libraries (mhive  
@@ -87,7 +88,7 @@ IF(WIN32)
   
 ELSEIF(APPLE)
   target_link_libraries (mhive 
-    x264 
+#    x264 
     ${MYSQL_LIBRARY} 
     ${BZ2_LIB}
 #${COCOA_LIBRARY}
