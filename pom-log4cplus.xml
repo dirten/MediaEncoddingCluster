@@ -159,7 +159,6 @@
                 </exec>
                 
                 <exec executable="make" dir="source/log4cplus/build" failonerror="on">
-                  <arg line="install"/>
                 </exec>
 
               </tasks>
