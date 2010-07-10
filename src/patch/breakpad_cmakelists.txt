@@ -274,13 +274,42 @@ ELSEIF(UNIX)
     DESTINATION include/common/linux
   )
 ELSEIF(WIN32)
-  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/windows/handler/exception_handler.h
-    DESTINATION include/client/windows/handler
-  )
-ELSEIF(SOLARIS)
-  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/solaris/handler/exception_handler.h
-    DESTINATION include/client/solaris/handler
-  )
+#  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/windows/handler/exception_handler.h
+#    DESTINATION include/client/windows/handler)
+#  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/windows/common/ipc_protocol.h
+#    DESTINATION include/client/windows/common
+#  )
+#  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/common/windows/string_utils-inl.h
+#    DESTINATION include/common/windows
+#  )
+#  ELSEIF(SOLARIS)
+#  INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/client/solaris/handler/exception_handler.h
+#    DESTINATION include/client/solaris/handler
+#  )
 ENDIF(APPLE)
- 
+
+INSTALL(DIRECTORY src/
+DESTINATION include
+FILES_MATCHING PATTERN "*.h"
+PATTERN ".svn" EXCLUDE
+PATTERN "gyp" EXCLUDE
+PATTERN "testing" EXCLUDE
+PATTERN "third_party" EXCLUDE
+PATTERN "tools" EXCLUDE
+PATTERN "testdata" EXCLUDE
+PATTERN ".cc" EXCLUDE
+)
+#INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/common
+#DESTINATION include/
+##PATTERN ".svn" EXCLUDE
+#PATTERN ".cc" EXCLUDE
+#PATTERN ".h"
+#)
+#INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/src/google_breakpad
+#DESTINATION include/
+#PATTERN ".svn" EXCLUDE
+#PATTERN ".cc" EXCLUDE
+#PATTERN ".h"
+#)
+
 
