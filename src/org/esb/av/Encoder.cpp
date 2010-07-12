@@ -58,7 +58,7 @@ Encoder::~Encoder() {
 }
 
 int Encoder::encode(Frame & frame) {
-  LOGTRACEMETHOD("Encode Frame");
+  LOGTRACEMETHOD("Encode");
   _frame_counter++;
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
@@ -70,10 +70,14 @@ int Encoder::encode(Frame & frame) {
     _last_dts = frame.getDts();
     LOGDEBUG("setting last_dts=" << _last_dts);
   }
-  if (ctx->codec_type == CODEC_TYPE_VIDEO)
+  if (ctx->codec_type == CODEC_TYPE_VIDEO){
+    LOGTRACEMETHOD("Encode Video");
     return encodeVideo(frame);
-  if (ctx->codec_type == CODEC_TYPE_AUDIO)
+    }
+  if (ctx->codec_type == CODEC_TYPE_AUDIO){
+    LOGTRACEMETHOD("Encode Audio");
     return encodeAudio(frame);
+    }
   LOGERROR("Encoder does not support type:" << ctx->codec_type);
   return -1;
 }
@@ -292,7 +296,7 @@ int64_t Encoder::getSamplesBufferd() {
 char * Encoder::getStatistics() {
   if (ctx->stats_out)
     return ctx->stats_out;
-  return "no stats\n";
+  return const_cast<char*>("no stats\n");
 }
 
 /**

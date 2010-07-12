@@ -454,6 +454,7 @@ namespace org {
         using namespace org::esb::util;
         std::string data;
         data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
+        if(_opened){
         data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
         data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
         data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
@@ -475,6 +476,7 @@ namespace org {
         char buf[256];
         avcodec_string(buf, sizeof (buf), ctx, _mode);
         data.append("InternalData:").append(std::string(buf)).append("\r\n");
+        }
         return data;
       }
     }

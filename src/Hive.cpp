@@ -118,7 +118,6 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.base_path", base_path);
   try {
-
     std::string config_path = Config::getProperty("hive.base_path");
     config_path.append("/.hive.cfg");
     po::options_description gen("General options");

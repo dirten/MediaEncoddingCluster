@@ -46,7 +46,7 @@ WebServer::WebServer() : server("test") {
   weblog_file.append("/http.log");
   std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
   syslog_file.append("/sys.log");
-  char * args[] = {
+  const char * args[] = {
     "mhive",
     "--docroot", org::esb::config::Config::getProperty("web.docroot", "."),
     "--http-address", "0.0.0.0",
@@ -62,7 +62,7 @@ WebServer::WebServer() : server("test") {
     stderrLogger.setStream(bla);
 */
 
-  server.setServerConfiguration(10, args, WTHTTP_CONFIGURATION);
+  server.setServerConfiguration(10, const_cast<char**>(args), WTHTTP_CONFIGURATION);
 
   server.addEntryPoint(WServer::Application, &createApp);
   server.addEntryPoint(WServer::Application, &createSetup, "setup");

@@ -206,11 +206,11 @@ INSTALL(FILES
   DESTINATION ./bin
   )
 ELSEIF(APPLE)
-INSTALL(FILES ${MYSQL_DIR}/share/mysql/english/errmsg.sys
+INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res
   )
 ELSE(APPLE)
-INSTALL(FILES ${MYSQL_DIR}/share/mysql/english/errmsg.sys
+INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res
   )
 

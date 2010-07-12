@@ -63,12 +63,21 @@ namespace org {
           char * dbdir=const_cast<char*> (datadir.c_str());
           char * langdir= const_cast<char*> (lang.c_str());
 
-          char *server_options[] = {"dbservice", dbdir,langdir, (char*)NULL};
+         static char *server_options[] = {
+            const_cast<char*>("dbservice"), 
+            const_cast<char*> (datadir.c_str()),
+            const_cast<char*> (lang.c_str()), 
+            NULL};
           int num_elements = (sizeof (server_options) / sizeof (char *))-1;
-
-          static char *server_groups[] = {"embedded","server","dbservice_SERVER", (char*)NULL};
-          if (mysql_library_init(num_elements, server_options, server_groups) != 0) {
-            LOGFATAL("initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
+          LOGDEBUG("num elements "<<num_elements);
+          static char *server_groups[] = {
+            const_cast<char*>("embedded"),
+            const_cast<char*>("server"),
+            const_cast<char*>("dbservice_SERVER"), 
+            (char*)NULL
+          };
+          if (mysql_server_init(num_elements, server_options, NULL/*server_groups*/) > 0) {
+            LOGFATAL("error initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
           }
           _running = true;
         }

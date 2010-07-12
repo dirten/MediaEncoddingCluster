@@ -99,7 +99,13 @@ namespace org {
             std::string file = rs.getString("files.id");
             std::string profile = rs.getString("watch_folder.profile");
             std::string outdir = rs.getString("output_folder");
-            char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
+            char * jobarg[] = {
+              const_cast<char*>(""), 
+              const_cast<char*>(""), 
+              const_cast<char*>(file.c_str()), 
+              const_cast<char*>(profile.c_str()), 
+              const_cast<char*>(outdir.c_str())
+            };
 //            std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
 //            std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
             jobcreator(4, jobarg);

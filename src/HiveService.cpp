@@ -331,8 +331,8 @@ int start(std::string executable, std::string arguments) {
   signal(SIGINT,&signalHandler);
   char * args[4];
   int a = 0;
-  args[a++] = "sh";
-  args[a++] = "-c";
+  args[a++] = const_cast<char*>("sh");
+  args[a++] = const_cast<char*>("-c");
   args[a++] = const_cast<char*> (executable.append(arguments).c_str());
   args[a++] = NULL;
   bool loop = true;

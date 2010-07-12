@@ -180,12 +180,17 @@ namespace org {
             const char * filename = 0;
             std::string name = file.getPath();
             //		filename=name.data();
-            char * argv[] = {"", (char*) name.c_str()};
+            char * argv[] = {const_cast<char*>(""), (char*) name.c_str()};
             int fileid = import(2, argv);
             if (false && fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
-              char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
+              char * jobarg[] = {
+                const_cast<char*>(""), 
+                const_cast<char*>(""), 
+                const_cast<char*>(file.c_str()), 
+                const_cast<char*>(profile.c_str()), 
+                const_cast<char*>(outdir.c_str())};
               std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
               std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
               jobcreator(4, jobarg);

@@ -99,7 +99,7 @@ void Config::save2db() {
 /**
  * ermitteln des Wertes zum Schlüssel
  */
-char * Config::getProperty(const char * key, char * def) {
+const char * Config::getProperty(const char * key, const char * def) {
   if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
 }

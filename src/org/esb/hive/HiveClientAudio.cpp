@@ -87,7 +87,7 @@ namespace org {
             connect();
           } else {
             while (!_toHalt) {
-              char * text = "get audio_process_unit";
+              char * text = const_cast<char*>("get audio_process_unit");
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
@@ -130,7 +130,7 @@ namespace org {
                */
               unit->_input_packets.clear();
 
-              char * text_out = "put audio_process_unit";
+              char * text_out = const_cast<char*>("put audio_process_unit");
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);

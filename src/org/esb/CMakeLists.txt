@@ -85,12 +85,22 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} log4cplusd )
+TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} )
+
+IF(UNIX AND NOT APPLE)
+    TARGET_LINK_LIBRARIES(util rt)
+ENDIF()
+
 
 IF(NOT WIN32)
-  TARGET_LINK_LIBRARIES(util pthread )
+  TARGET_LINK_LIBRARIES(util pthread log4cplus)
 ELSEIF(WIN32)
-  TARGET_LINK_LIBRARIES(util ws2_32 advapi32 )  
+  TARGET_LINK_LIBRARIES(util ws2_32 advapi32 )
+  IF(CMAKE_BUILD_TYPE MATCHES "debug")
+    TARGET_LINK_LIBRARIES(util log4cplusd)
+    ELSE()
+    TARGET_LINK_LIBRARIES(util log4cplus)
+  ENDIF()
 ENDIF(NOT WIN32)
 IF(BUILD_SHARED_LIBS)
   INSTALL(TARGETS util
@@ -254,11 +264,23 @@ add_library (web
     web/wtk/ContentBox.cpp
 )
 
+
+IF(CMAKE_BUILD_TYPE MATCHES "debug")
+    TARGET_LINK_LIBRARIES(web
+      wtextd
+      wthttpd
+      wtd
+   )
+ELSE()
+    TARGET_LINK_LIBRARIES(web
+      wtext
+      wthttp
+      wt
+   )
+ENDIF()
+
 TARGET_LINK_LIBRARIES(web
-  wtextd
-  wthttpd
-  wtd
-  ${Boost_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)

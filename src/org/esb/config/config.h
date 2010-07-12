@@ -30,7 +30,7 @@ namespace org
         static bool init(const std::string & filename);
         static void close();
         static void save2db();
-        static char * getProperty( const char * key, char * def="");
+        static const char * getProperty( const char * key, const char * def="");
         static std::string get(std::string&key, std::string & def);
         static void setProperty(const char * key, const char * val);
 
