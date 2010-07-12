@@ -265,7 +265,7 @@ IF(BUILD_TESTING)
   IF(WIN32)
     SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
   ENDIF(WIN32)
-  add_subdirectory (tests)
+#  add_subdirectory (tests)
 ENDIF(BUILD_TESTING)
 
 
