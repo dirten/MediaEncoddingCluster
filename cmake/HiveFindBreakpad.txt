@@ -14,8 +14,6 @@ SET(BREAKPAD_INCLUDE_DIR ${BREAKPAD_DIR}/include)
 FIND_LIBRARY(BREAKPAD_LIBS
     NAMES
       breakpad
-	exception_handler
-	crash_report_sender
     PATHS
       ${BREAKPAD_LIB_DIR}
     NO_DEFAULT_PATH

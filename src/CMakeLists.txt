@@ -1,5 +1,9 @@
 #ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
+#add_definitions(/DBOOST_AUTO_LINK_NOMANGLE)
+add_definitions(-DBOOST_LIB_DIAGNOSTIC)
+#add_definitions(/DBOOST_LIB_DIAGNOSTIC)
+#add_definitions(/DBOOST_ALL_NO_LIB)
 add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR})
@@ -7,7 +11,7 @@ include_directories (${MEC_SOURCE_DIR}/src)
 
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
-include_directories (${BOOST_INCLUDE_DIRS})
+include_directories (${BOOST_INCLUDE_DIRS}/boost-1_36)
 
 include_directories (${MYSQL_INCLUDE_DIR})
 include_directories (${MYSQL_INCLUDE_DIR}/mysql)
@@ -74,7 +78,7 @@ target_link_libraries (mhive
   io 
   net 
   ${Boost_LIBRARIES}
-  log4cplus
+#  log4cplus
 )
 IF(WIN32)
 #  target_link_libraries (mhive  

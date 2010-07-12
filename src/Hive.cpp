@@ -15,6 +15,7 @@
  *
  * ----------------------------------------------------------------------
  */
+
 #include "config.h"
 #include <boost/program_options.hpp>
 #include <boost/asio.hpp>
@@ -108,7 +109,7 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.dump_path", dump_path.c_str());
   //    std::wstring wdump_path(dump_path.begin(), dump_path.end());
-  new StackDumper(dump_path);
+//  new StackDumper(dump_path);
   std::string tmp_path = sb;
   tmp_path.append("/tmp");
   org::esb::io::File tpath(tmp_path);

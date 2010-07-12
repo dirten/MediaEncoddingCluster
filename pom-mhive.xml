@@ -14,7 +14,7 @@
       </activation>
       <properties>
         <my.family>win32</my.family>
-        <GCC_VERSION>gcc</GCC_VERSION>
+        <GCC_VERSION>vc90</GCC_VERSION>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -222,7 +222,7 @@
       <artifactId>log4cplus</artifactId>
       <version>1.0.4-rc9</version>
       <type>zip</type>
-      <classifier>${my.family}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
   </dependencies>
   <properties>

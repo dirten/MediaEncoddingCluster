@@ -18,7 +18,7 @@
 #endif
 #elif defined __WIN32__
 #include "client/windows/handler/exception_handler.h"
-#include "client/windows/sender/crash_report_sender.h"
+//#include "client/windows/sender/crash_report_sender.h"
 #endif
 #include "org/esb/util/Log.h"
 class StackDumper {

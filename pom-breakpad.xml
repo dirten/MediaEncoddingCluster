@@ -39,7 +39,7 @@
             <id>scm-update</id>
             <phase>generate-sources</phase>
             <goals>
-              <goal>checkout</goal>
+              <goal>update</goal>
             </goals>
           </execution>
         </executions>
@@ -89,7 +89,8 @@
                   <env key="BREAKPADSRC" value="${project.build.directory}/checkout/src"/>
                   <env key="BREAKPADBASE" value="${project.build.directory}/build"/>
                   <env key="JRE_HOME" value="${java.home}"/>
-                </exec>-->
+                </exec>
+-->
               </tasks>
             </configuration>
             <goals>

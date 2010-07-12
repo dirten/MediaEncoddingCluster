@@ -19,7 +19,7 @@ FIND_PATH(MYSQL_INCLUDE_DIR
 
 IF(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/Embedded/DLL/debug)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
     FIND_LIBRARY(MYSQL_LIBRARY
         NAMES
           mysqld
@@ -51,11 +51,12 @@ IF(USE_EMBEDDED_MYSQL)
   ENDIF(WIN32)
 ELSE(USE_EMBEDDED_MYSQL)
   IF(WIN32)
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/debug)
+    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
     FIND_LIBRARY(MYSQL_LIBRARY
         NAMES
           mysql
           libmysql
+          libmysqld
         PATHS
           ${MYSQL_LIB_DIR}
         NO_DEFAULT_PATH
