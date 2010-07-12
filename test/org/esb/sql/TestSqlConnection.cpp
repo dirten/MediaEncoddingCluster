@@ -105,6 +105,7 @@ int main(int argc, char** argv) {
   Log::open("");
   std::string src = MEC_SOURCE_DIR;
   hive::DatabaseService::start(src);
+//  return 0;
   config::Config::setProperty("hive.base_path", src.c_str());
 //  mysql_thread_init();
   {

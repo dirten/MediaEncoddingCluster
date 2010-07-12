@@ -28,12 +28,12 @@ int main(int argc, char**argv) {
   if(argc>1)
     timeout=atoi(argv[1]);
   w= new WebServer();
-  w->run();
-/*
+  w->start();
+
   do{
     Thread::sleep2(timeout>0?timeout:1000);
   }while(timeout>0);
- */
+ 
   w->stop();
   delete w;
   org::esb::hive::DatabaseService::stop();

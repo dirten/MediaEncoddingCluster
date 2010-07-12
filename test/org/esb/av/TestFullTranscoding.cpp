@@ -178,6 +178,7 @@ Log::open("");
   //int data_size=0;
 
 cleanup:
+  pos.close();
   fos.close();
   map<int, StreamData>::iterator streams = _sdata.begin();
   for (; streams != _sdata.end(); streams++) {

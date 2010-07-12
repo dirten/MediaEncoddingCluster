@@ -246,6 +246,8 @@ void test_process_audio(char * file){
 int main(int argc, char**argv) {
 
 
+  Log::open("");
+
   av_register_all();
   avcodec_init();
   avcodec_register_all();
