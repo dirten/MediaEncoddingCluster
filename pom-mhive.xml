@@ -44,7 +44,7 @@
       <properties>
         <my.family>mac</my.family>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
-        <GCC_VERSION>gcc40</GCC_VERSION>
+        <GCC_VERSION>-gcc40</GCC_VERSION>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
