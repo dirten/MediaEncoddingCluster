@@ -114,9 +114,9 @@
                   <arg line="-xf boost_1_36_0.tar"/>
                 </exec>
                 <patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
-                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam" failonerror="yes">
+                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam" failonerror="no">
                 </exec>
-                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0"  failonerror="yes">
+                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0"  failonerror="no">
                   <arg line="--prefix=${project.basedir}/source/build/boost --without-python --without-wave --without-graph --without-test --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
                 </exec>
 
