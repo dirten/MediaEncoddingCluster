@@ -90,26 +90,26 @@ IF(WIN32)
 #  )
   
 ELSEIF(APPLE)
-  target_link_libraries (mhive 
+#  target_link_libraries (mhive 
 #    x264 
-    ${MYSQL_LIBRARY} 
-    ${BZ2_LIB}
+#    ${MYSQL_LIBRARY} 
+#    ${BZ2_LIB}
 #${COCOA_LIBRARY}
 #    crypto
-    z 
-    ssl 
-    wthttp 
-    wtext 
-    wt 
-    pthread 
-    z 
-    mp3lame 
-    theora 
-    vorbis 
-    vorbisenc 
-    xvidcore 
-    ogg
-  )
+#    z 
+#    ssl 
+#    wthttp 
+#    wtext 
+#    wt 
+#    pthread 
+#    z 
+#    mp3lame 
+#    theora 
+#    vorbis 
+#    vorbisenc 
+#    xvidcore 
+#    ogg
+#  )
 ELSE(WIN32)
   target_link_libraries (mhive 
   rt
