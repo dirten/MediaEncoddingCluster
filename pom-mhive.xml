@@ -29,7 +29,7 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
-        <GCC_VERSION>gcc</GCC_VERSION>
+        <GCC_VERSION>-gcc44</GCC_VERSION>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -140,7 +140,7 @@
                     -DLOG4CPLUS_DIR=${project.build.directory}/dependency 
                     -DMYSQL_DIR=${project.build.directory}/dependency 
                     -DWT_DIR=${project.build.directory}/dependency 
-                    -DBUILD_TESTING=OFF
+                    -DBUILD_TESTING=On
                     -DBREAKPAD_DIR=${project.build.directory}/dependency 
                     .."/>
                 </exec>
@@ -194,7 +194,7 @@
       <artifactId>mysql</artifactId>
       <version>5.1.48</version>
       <type>zip</type>
-      <classifier>${my.family}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
       <groupId>org.esb.wt</groupId>
