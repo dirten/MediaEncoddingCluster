@@ -9,7 +9,33 @@
       <directory>source/build/boost</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>**/*</include>
+        <include>include/boost/**/*</include>
+        <include>lib/*.*</include>
+
+<!--
+        <include>lib/libboost_date_time-mt-d.*</include>
+        <include>lib/libboost_date_time-mt-gd.*</include>
+
+        <include>lib/libboost_filesystem-mt-d.*</include>
+        <include>lib/libboost_filesystem-mt-gd.*</include>
+
+        <include>lib/libboost_program_options-mt-d.*</include>
+        <include>lib/libboost_program_options-mt-gd.*</include>
+
+        <include>lib/libboost_regex-mt-d.*</include>
+        <include>lib/libboost_regex-mt-gd.*</include>
+
+        <include>lib/libboost_serialization-mt-d.*</include>
+        <include>lib/libboost_serialization-mt-gd.*</include>
+
+        <include>lib/libboost_signals-mt-d.*</include>
+        <include>lib/libboost_signals-mt-gd.*</include>
+
+        <include>lib/libboost_system-mt-d.*</include>
+        <include>lib/libboost_system-mt-gd.*</include>
+
+        <include>lib/libboost_thread-mt-d.*</include>
+        <include>lib/libboost_thread-mt-gd.*</include>-->
       </includes>
     </fileSet>
   </fileSets>
