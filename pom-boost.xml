@@ -13,6 +13,7 @@
         </os>
       </activation>
       <properties>
+	  <boost.toolset>msvc</boost.toolset>
         <my.family>win32</my.family>
         <target>ntx86</target>
         <jambuild>build_dist.bat</jambuild>
@@ -27,6 +28,7 @@
         </os>
       </activation>
       <properties>
+	  <boost.toolset>gcc</boost.toolset>
         <my.family>linux</my.family>
         <target>linuxx86</target>
         <jambuild>build_dist.sh</jambuild>
@@ -40,6 +42,7 @@
         </os>
       </activation>
       <properties>
+	  <boost.toolset>darwin</boost.toolset>
         <my.family>mac</my.family>
         <target>macosxx86</target>
         <jambuild>build_dist.sh</jambuild>
@@ -117,7 +120,7 @@
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam" failonerror="no">
                 </exec>
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0"  failonerror="no">
-                  <arg line="--prefix=${project.basedir}/source/build/boost --without-python --without-wave --without-graph --without-test --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
+                  <arg line="--prefix=${project.basedir}/source/build/boost --toolset=${boost.toolset} --without-python --without-wave --without-graph --without-test --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
                 </exec>
 
               </tasks>
