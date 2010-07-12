@@ -28,14 +28,26 @@
         <include>*.*</include>
       </includes>
     </fileSet>
-        <fileSet>
+    <fileSet>
       <directory>source/build/mysql/include</directory>
       <outputDirectory>include/mysql</outputDirectory>
       <includes>
         <include>*.*</include>
       </includes>
     </fileSet>
-    
-
+    <fileSet>
+      <directory>source/build/mysql/</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>share/english/*.*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/build/mysql/share/mysql</directory>
+      <outputDirectory>share/</outputDirectory>
+      <includes>
+        <include>english/*.*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>

@@ -7,10 +7,9 @@
   <fileSets>
     <fileSet>
       <directory>source/build/boost/include/boost-1_36</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory>include</outputDirectory>
       <includes>
         <include>**/*</include>
-        <include>lib/*.*</include>
 
 
 <!--
