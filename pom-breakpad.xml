@@ -39,7 +39,7 @@
             <id>scm-update</id>
             <phase>generate-sources</phase>
             <goals>
-              <goal>update</goal>
+              <goal>checkout</goal>
             </goals>
           </execution>
         </executions>
