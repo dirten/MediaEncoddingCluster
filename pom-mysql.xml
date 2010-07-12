@@ -137,7 +137,9 @@
                 <mkdir dir="source/build"/>
                 <mkdir dir="source/build/mysql"/>
                 <get src="${mysql.file}" dest="source/mysql.zip" verbose="true" usetimestamp="true"/>
-                <unzip src="source/mysql.zip" dest="source/build/mysql"/>
+                <unzip src="source/mysql.zip" dest="source/build/mysql">
+                 <globmapper from="mysql-5.1.48-win32/*" to="*"/>
+                </unzip>
               </tasks>
             </configuration>
             <goals>

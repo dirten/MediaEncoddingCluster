@@ -1,16 +1,41 @@
 <assembly>
-  <id>${my.family}</id>
+  <id>${my.family}-${build_type}</id>
   <formats>
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/mysql</directory>
-      <outputDirectory></outputDirectory>
+      <directory>source/build/mysql/Embedded/DLL/${build_type}</directory>
+      <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/*</include>
+        <include>libmysqld.lib</include>
+        <include>libmysqld.dll</include>
+        <include>libmysqld.pdb</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>source/build/mysql/lib/mysql</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>libmysqld.a</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/build/mysql/include/mysql</directory>
+      <outputDirectory>include/mysql</outputDirectory>
+      <includes>
+        <include>*.*</include>
+      </includes>
+    </fileSet>
+        <fileSet>
+      <directory>source/build/mysql/include</directory>
+      <outputDirectory>include/mysql</outputDirectory>
+      <includes>
+        <include>*.*</include>
+      </includes>
+    </fileSet>
+    
+
   </fileSets>
 </assembly>
