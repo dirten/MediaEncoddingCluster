@@ -9,7 +9,7 @@
       <directory>source/build/boost</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>include/boost/**/*</include>
+        <include>include/boost-1_36/**/*</include>
         <include>lib/*.*</include>
 
 <!--
