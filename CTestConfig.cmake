@@ -1,5 +1,7 @@
 SET(CTEST_PROJECT_NAME "Media%20Encoding%20Cluster")
 SET(CTEST_NIGHTLY_START_TIME "00:00:00 EST")
+set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "${CTEST_MEMORYCHECK_COMMAND_OPTIONS} --num-callers=50") 
+set(VALGRIND_COMMAND_OPTIONS "-q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50")
 
 IF(NOT DEFINED CTEST_DROP_METHOD)
   SET(CTEST_DROP_METHOD "http")

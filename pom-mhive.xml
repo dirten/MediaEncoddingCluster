@@ -29,7 +29,7 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
-        <GCC_VERSION>-gcc44</GCC_VERSION>
+        <GCC_VERSION>-gcc41</GCC_VERSION>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>

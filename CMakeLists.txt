@@ -8,9 +8,12 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project (MEC)
 
 
-INCLUDE(CTest)
 
+INCLUDE(CTest)
 ENABLE_TESTING()
+#set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "${CTEST_MEMORYCHECK_COMMAND_OPTIONS} --num-callers=50") 
+set(VALGRIND_COMMAND_OPTIONS "-q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50")
+
 IF(BUILD_TESTING)
   SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
   MARK_AS_ADVANCED(BUILDNAME)
@@ -35,7 +38,7 @@ if(Boost_FOUND)
     MESSAGE("*** Boost Date Time found" ${BOOST_DATE_TIME_LIB})
     set(BOOST_DT_LIB_MT ${BOOST_DT_LIB})
 endif()
-       
+MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
@@ -258,6 +261,13 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 add_subdirectory (src)
 add_subdirectory (test)
 #add_subdirectory (ice)
+IF(BUILD_TESTING)
+  IF(WIN32)
+    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
+  ENDIF(WIN32)
+  add_subdirectory (tests)
+ENDIF(BUILD_TESTING)
+
 
 INCLUDE(CPack)
 
