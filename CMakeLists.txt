@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project (MEC)
 
 
-
 INCLUDE(CTest)
 ENABLE_TESTING()
 #set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "${CTEST_MEMORYCHECK_COMMAND_OPTIONS} --num-callers=50") 
@@ -147,7 +146,7 @@ ENDIF(LIBCRYPTO)
 # Setup build Defines
 #
 ############################################################
-SET(BUILD_SHARED_LIBS OFF)
+SET(BUILD_SHARED_LIBS On)
 IF(UNIX)
   ADD_DEFINITIONS(-D__UNIX__)
   IF(APPLE)

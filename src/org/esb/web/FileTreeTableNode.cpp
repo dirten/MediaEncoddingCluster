@@ -32,7 +32,7 @@ path_(path), _filter(NULL) {
       try {
         fsize = boost::filesystem::file_size(path);
       } catch (...) {
-        LOGERROR("Fehler in FSIZE");
+        LOGERROR("Fehler in FSIZE:"<<path);
       }
 
       setColumnWidget(1, new WText(false,

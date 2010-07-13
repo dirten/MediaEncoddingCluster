@@ -51,10 +51,13 @@ namespace org {
         previewPanel->layout()->addWidget(new Wt::WText(Wt::WString::tr("profile_creator_general")));
         layout->addWidget(previewPanel, Wt::WBorderLayout::East);
 
+
         Wt::Ext::Panel * bot = new Wt::Ext::Panel();
         bot->resize(Wt::WLength::Auto, 30);
         bot->setLayout(new Wt::WFitLayout());
         bot->layout()->setContentsMargins(0, 0, 0, 0);
+
+
         Wt::WContainerWidget * cont = new Wt::WContainerWidget();
         cont->setLayout(new Wt::WGridLayout());
         cont->layout()->setContentsMargins(2, 2, 0, 0);
@@ -67,11 +70,12 @@ namespace org {
         Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
         static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(cancel, 0, 1);
         cancel->clicked.connect(SLOT(this, ProfileCreator::cancel));
+
         Wt::Ext::Button *help = new Wt::Ext::Button("Help");
         help->setEnabled(false);
         help->setToolTip("Will be implemented soon");
-        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(help, 0, 2);
 
+        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(help, 0, 2);
         static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(new Wt::WText(), 0, 3);
         static_cast<Wt::WGridLayout*> (cont->layout())->setColumnStretch(3, -1);
 

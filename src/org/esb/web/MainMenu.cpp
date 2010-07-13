@@ -5,6 +5,8 @@
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/Button>
 
+#include "project/ProjectWizard.h"
+
 //#include "MainMenuActionHandler.h"
 MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL) {
 
@@ -12,13 +14,23 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   Wt::Ext::ToolBar * toolbar = new Wt::Ext::ToolBar(this);
 
 
-  Wt::Ext::Menu * menu = new Wt::Ext::Menu();
+  Wt::Ext::Menu * menu;
   Wt::Ext::MenuItem *item;
+  Wt::Ext::Button * button;
+
+  menu = new Wt::Ext::Menu();
+
+  org::esb::web::ProjectWizard * pro_wiz=new org::esb::web::ProjectWizard();
+  item = menu->addItem("Create New Encoding...",pro_wiz,&org::esb::web::ProjectWizard::open);
+  toolbar->addButton("Projects", menu);
+  
+  
+  menu = new Wt::Ext::Menu();
   item = menu->addItem("All Media Files...",parent,&org::esb::web::WebApp2::listAllFiles);
   item = menu->addItem("Imported Media Files...",parent,&org::esb::web::WebApp2::listImportedFiles);
   item = menu->addItem("Encoded Media Files...",parent,&org::esb::web::WebApp2::listEncodedFiles);
 
-  Wt::Ext::Button * button = toolbar->addButton("Media Files", menu);
+  button = toolbar->addButton("Media Files", menu);
 
   menu = new Wt::Ext::Menu();
   item = menu->addItem("All Encodings...",parent,&org::esb::web::WebApp2::listAllEncodings);

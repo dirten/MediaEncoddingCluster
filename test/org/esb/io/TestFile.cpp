@@ -3,6 +3,7 @@
 int main(){
 //	return 0;
   std::string path=MEC_SOURCE_DIR;
+
   
   org::esb::io::File f(path.append("/src/./CMakeLists.txt"));
   org::esb::io::File f2("./CMakeLists.txt");

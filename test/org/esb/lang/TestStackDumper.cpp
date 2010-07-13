@@ -16,8 +16,6 @@ int main() {
 
   char * t=new char[100000];
   char test[1000000];
-//	std::map<wstring, wstring> para;
-//  google_breakpad::ExceptionHandler exhandler(".",NULL, NULL, NULL, true);
-//  exhandler.DoDump()
-  die();
+  /*only for hand testing*/
+  //die();
 }

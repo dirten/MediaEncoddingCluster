@@ -178,10 +178,10 @@ namespace org {
           if (file.isFile()) {
           LOGDEBUG("new file found:"<<file.getPath());
             const char * filename = 0;
-            std::string name = file.getPath();
+//            std::string name = file.getPath();
             //		filename=name.data();
-            char * argv[] = {const_cast<char*>(""), (char*) name.c_str()};
-            int fileid = import(2, argv);
+//            char * argv[] = {const_cast<char*>(""), (char*) name.c_str()};
+            int fileid = import(file);
             if (false && fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();

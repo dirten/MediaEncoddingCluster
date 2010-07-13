@@ -18,7 +18,7 @@ ENDIF(NOT WIN32)
 ADD_TEST(LibLang ${EXECUTABLE_OUTPUT_PATH}/TestThread )
 ADD_TEST(TestSystemCpuInfo ${EXECUTABLE_OUTPUT_PATH}/TestSystemCpuInfo )
 #ADD_TEST(TestException ${EXECUTABLE_OUTPUT_PATH}/TestException )
-ADD_TEST(TestStackDumper ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
+ADD_TEST(org.esb.lang.StackDumperTest ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
 #ADD_TEST(TestLibCurl ${EXECUTABLE_OUTPUT_PATH}/TestLibCurl )
 
 

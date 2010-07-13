@@ -16,7 +16,7 @@ PreparedStatement::PreparedStatement(MYSQL * mysql, const char * s) {
   parseSql(s);
   LOGDEBUG(sql);
   LOGDEBUG(StringUtil::toLower(sql));
-  LOGDEBUG(StringUtil::toLower(sql).find("select"));
+//  LOGDEBUG(StringUtil::toLower(sql).find("select"));
 #ifndef __WIN32__
 //  if(StringUtil::toLower(sql).find("select")!=string::npos)
 //    free(stmtPtr.get()->mem_root.free);

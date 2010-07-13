@@ -206,8 +206,8 @@ add_library (hive
 	hive/CodecFactory.cpp 
 #	hive/job/Job.cpp
 	hive/job/JobDetail.cpp 
-	hive/job/JobHandler.cpp 
-	hive/job/JobWatcher.cpp 
+#	hive/job/JobHandler.cpp 
+#	hive/job/JobWatcher.cpp 
 	hive/job/ProcessUnitWatcher.cpp 
 #	hive/job/ClientHandler.cpp 
 	hive/job/ProcessUnit.cpp 
@@ -229,6 +229,8 @@ add_library (hive
   hive/NodeResolver.cpp
 )
 
+TARGET_LINK_LIBRARIES(hive sql net esb signal av lang)
+
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive
     RUNTIME DESTINATION bin
@@ -248,6 +250,7 @@ add_library (web
     web/ProfilesForm.cpp
     web/WatchfolderForm.cpp
     web/DirectoryChooser.cpp
+    web/FileChooser.cpp
     web/SqlTableModel.cpp 
     web/SqlTable.cpp
     web/FileTreeTable.cpp
@@ -262,6 +265,8 @@ add_library (web
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
+    web/project/ProjectWizard.cpp
+    web/project/InputFilePanel.cpp
 )
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE database SYSTEM "litesql.dtd"> 
 <database name="HiveDb" namespace="db">
-    <object name="Files">
+    <object name="Person">
         <field name="name" type="string"/>
         <field name="age" type="integer" default="15"/>
         <field name="sex" type="integer">

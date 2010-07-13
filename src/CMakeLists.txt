@@ -58,7 +58,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 add_executable (mhive Hive.cpp)
 add_executable (mhiveservice HiveService.cpp)
-SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
+#SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
 #FIND_LIBRARY(COCOA_LIBRARY COCOA)
@@ -173,6 +173,7 @@ INSTALL(FILES
 	${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
 	${PROJECT_SOURCE_DIR}/sql/hive-0.0.4.sql
 	${PROJECT_SOURCE_DIR}/sql/hive-0.0.5.sql
+	${PROJECT_SOURCE_DIR}/sql/hive-0.0.6.sql
   DESTINATION ./sql
   )
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/codec.txt

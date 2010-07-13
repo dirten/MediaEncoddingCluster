@@ -57,14 +57,18 @@ struct stream_group {
   int stream_type; // audio or video type
   int frame_group; // ???
 } ;
+/*
+int import(org::esb::io::File file) {
+  std::string name = file.getPath();
+  char * argv[] = {const_cast<char*>(""), const_cast<char*>(name.c_str())};
 
-int import(int argc, char *argv[]) {
+//  import(2, argv);
+   return 1;
+}
+*/
+int import(org::esb::io::File file) {
   //	cout << LIBAVCODEC_IDENT << endl;
 
-  if (argc != 2) {
-    LOGERROR("wrong parameter count");
-    exit(1);
-  }
   //      Config::init("./cluster.cfg");
 
 
@@ -78,7 +82,7 @@ int import(int argc, char *argv[]) {
           cout << "Database found";
       }
    */
-  org::esb::io::File inputFile(argv[1]);
+  org::esb::io::File inputFile=file;
   if (!inputFile.exists() || !inputFile.canRead()) {
     LOGERROR("Source File not found:"<<inputFile.getPath());
   } else {

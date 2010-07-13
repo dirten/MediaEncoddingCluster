@@ -128,7 +128,7 @@
               <tasks>
                 <mkdir dir="build"/>
 
-                <exec executable="cmake" dir="build" failonerror="yes">
+                <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/install 

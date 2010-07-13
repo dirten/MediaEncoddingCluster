@@ -25,7 +25,7 @@ using namespace org::esb::io;
  * 
  */
 int main(int argc, char** argv) {
-
+  Log::open("");
   /*open the fixed test File or the file from command line input*/
   std::string src;
   if (argc == 1) {
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     enc = new Encoder();
     //enc->setCodecId(CODEC_ID_MPEG4);
 
-    enc->setCodecId(CODEC_ID_H264);
+    enc->setCodecId(CODEC_ID_MPEG4);
     enc->setBitRate(1024000);
     enc->setWidth(320);
     enc->setHeight(240);

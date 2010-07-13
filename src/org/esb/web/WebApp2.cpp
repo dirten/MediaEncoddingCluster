@@ -124,6 +124,7 @@ namespace org {
         /*end Footer Panel*/
 
         useStyleSheet("ext/resources/css/xtheme-slate.css");
+//        useStyleSheet("ext/resources/css/xtheme-gray.css");
 
         /**
          * Signal Map for the SqlTables and the Detail view

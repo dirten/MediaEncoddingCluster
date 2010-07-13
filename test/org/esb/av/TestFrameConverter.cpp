@@ -110,6 +110,7 @@ int main(int argc, char ** argv) {
   enc.setBitRate(1500000);
   enc.open();
 
+  
 
   test_swscale(dec, enc);
   test_deinterlace(dec, enc);
