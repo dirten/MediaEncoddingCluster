@@ -2,7 +2,7 @@
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
-
+#include "org/esb/io/File.h"
 using namespace org::esb;
 
 int main() {
@@ -16,5 +16,5 @@ int main() {
    hive::DatabaseService::start(MEC_SOURCE_DIR);
 	char * argv[] = {"", (char*) src.c_str()};
 //  logdebug("TestFileIMport");
-  int fileid = import(2, argv);
+	int fileid = import(org::esb::io::File(src));
 }
