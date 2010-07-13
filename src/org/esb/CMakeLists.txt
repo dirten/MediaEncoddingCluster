@@ -115,6 +115,7 @@ add_library (signal
   signal/Messenger.cpp
   signal/Message.cpp
 )
+TARGET_LINK_LIBRARIES(signal util)
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS signal
     RUNTIME DESTINATION bin
