@@ -100,7 +100,7 @@ void loadTestFile(std::string testfile, std::string p) {
   using namespace org::esb;
   char * argv[] = {"", (char*) testfile.c_str()};
   //  logdebug("TestFileIMport");
-  int fileid = import(2, argv);
+  int fileid = import(org::esb::io::File(testfile));
   std::string file = util::StringUtil::toString(fileid);
   std::string profile = p;
   std::string outdir = MEC_SOURCE_DIR;
