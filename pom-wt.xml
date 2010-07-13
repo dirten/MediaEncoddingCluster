@@ -152,7 +152,7 @@
                     -DHTTP_WITH_SSL=OFF 
                     -DBOOST_DIR=${project.build.directory}/dependency 
                     -DBOOST_VERSION=1_36 
-                    -DBOOST_COMPILER=${BOOST_COMPILER}
+                    -DBoost_COMPILER=${BOOST_COMPILER}
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-2.2.4/build" failonerror="on">
