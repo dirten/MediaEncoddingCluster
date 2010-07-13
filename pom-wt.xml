@@ -15,7 +15,7 @@
       <properties>
         <my.family>win32</my.family>
         <target>ntx86</target>
-        <BOOST_COMPILER>vc90</BOOST_COMPILER>
+        <BOOST_COMPILER>-vc90</BOOST_COMPILER>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -31,7 +31,7 @@
       <properties>
         <my.family>linux</my.family>
         <target>linuxx86</target>
-        <BOOST_COMPILER>gcc41</BOOST_COMPILER>
+        <BOOST_COMPILER>-gcc41</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -46,7 +46,7 @@
       <properties>
         <my.family>mac</my.family>
         <target>macosxx86</target>
-        <BOOST_COMPILER>gcc40</BOOST_COMPILER>
+        <BOOST_COMPILER>-xgcc40</BOOST_COMPILER>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
