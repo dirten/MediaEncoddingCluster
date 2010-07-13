@@ -292,6 +292,7 @@ TARGET_LINK_LIBRARIES(web
     io
     esb
     av
+    hive
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)
