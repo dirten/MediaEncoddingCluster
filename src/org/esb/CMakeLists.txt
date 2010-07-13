@@ -287,6 +287,9 @@ ENDIF()
 TARGET_LINK_LIBRARIES(web
     ${Boost_LIBRARIES}
     sql
+    signal
+    io
+    esb
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)
