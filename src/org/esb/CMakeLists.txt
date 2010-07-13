@@ -291,6 +291,7 @@ TARGET_LINK_LIBRARIES(web
     signal
     io
     esb
+    av
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)
