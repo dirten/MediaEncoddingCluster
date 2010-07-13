@@ -142,6 +142,8 @@
                     -DWT_DIR=${project.build.directory}/dependency 
                     -DBUILD_TESTING=On
                     -DBREAKPAD_DIR=${project.build.directory}/dependency 
+			  -DCMAKE_OSX_ARCHITECTURES=ppc;i386;ppc64;x86_64 
+
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
