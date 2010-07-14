@@ -150,11 +150,14 @@
                     -DMYSQL_INCLUDE_DIR=${project.build.directory}/dependency/include/mysql
                     -DMYSQL_LIBRARIES=${project.build.directory}/dependency/lib/libmysqld.a
                     -DWITH_MYSQL=On
+                    -DWITH_SQLITE3=Off
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/litesql-src-0.3.8/build" failonerror="yes">
                   <arg line="install"/>
                 </exec>
+                <patch patchfile="src/patch/litesql_include.patch" dir="source/build/litesql" strip="0"/>
+
 
                 <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
                 <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam"/>

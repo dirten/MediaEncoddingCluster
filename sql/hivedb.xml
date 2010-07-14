@@ -1,48 +1,91 @@
 <?xml version="1.0"?>
 <!DOCTYPE database SYSTEM "litesql.dtd"> 
 <database name="HiveDb" namespace="db">
-    <object name="Person">
+
+    <object name="Project">
         <field name="name" type="string"/>
-        <field name="age" type="integer" default="15"/>
-        <field name="sex" type="integer">
-            <value name="Male" value="0"/>
-            <value name="Female" value="1"/>
-        </field>
-        <method name="sayHello"/>
+        <field name="created" type="date"/>
     </object>
-    <relation id="Mother" unidir="true">
-        <relate object="Person" limit="many" handle="mother"/>
-        <relate object="Person" limit="one"/>
+
+    <object name="MediaFile">
+        <field name="filename" type="string"/>
+        <field name="path" type="string"/>
+        <field name="filesize" type="double"/>
+        <field name="streamcount" type="integer"/>
+        <field name="containertype" type="string"/>
+        <field name="duration" type="double"/>
+        <field name="bitrate" type="integer"/>
+        <field name="created" type="datetime"/>
+        <field name="filetype" type="integer"/>
+        <field name="parent" type="integer"/>
+    </object>
+
+    <relation>
+        <relate object="MediaFile" handle="project"/>
+        <relate object="Project" handle="mediafiles" limit="one"/>
     </relation>
-    <relation id="Father" unidir="true">
-        <relate object="Person" limit="many" handle="father"/>
-        <relate object="Person" limit="one"/>
-    </relation>
-    <relation id="Siblings">
-        <relate object="Person" handle="siblings"/>
-        <relate object="Person"/>
-    </relation>
-    <relation id="Children" unidir="true">
-        <relate object="Person" handle="children"/>
-        <relate object="Person"/>
-    </relation>
-    <object name="Role"/>
-    <object name="Student" inherits="Role"/>
-    <object name="Employee" inherits="Role"/>
-    <relation id="Roles" name="RoleRelation">
-        <relate object="Person" handle="roles" limit="one"/>
-        <relate object="Role" handle="person"/>
-    </relation>
-    <object name="School">
+
+    <object name="Profile">
         <field name="name" type="string"/>
+        <field name="created" type="datetime"/>
+        <field name="format" type="string"/>
+        <field name="formatext" type="string"/>
+        <field name="vcodec" type="integer"/>
+        <field name="vbitrate" type="integer"/>
+        <field name="vframerate" type="integer"/>
+        <field name="vwidth" type="integer"/>
+        <field name="vheight" type="integer"/>
+        <field name="vextra" type="string"/>
+        <field name="acodec" type="integer"/>
+        <field name="achannels" type="integer"/>
+        <field name="abitrate" type="integer"/>
+        <field name="asamplerate" type="integer"/>
+        <field name="aextra" type="string"/>
+        <field name="profiletype" type="integer"/>
     </object>
+
     <relation>
-        <relate object="Student" handle="school"/>
-        <relate object="School" handle="students" limit="one"/>
+        <relate object="Profile" handle="project"/>
+        <relate object="Project" handle="profiles" limit="one"/>
     </relation>
-    <object name="Office"/>
+
+    <object name="Stream">
+        <field name="streamindex" type="integer"/>
+        <field name="streamtype" type="integer"/>
+        <field name="codecid" type="integer"/>
+        <field name="codecname" type="string"/>
+        <field name="frameratenum" type="integer"/>
+        <field name="framerateden" type="integer"/>
+        <field name="streamtimebasenum" type="integer"/>
+        <field name="streamtimebaseden" type="integer"/>
+        <field name="codectimebasenum" type="integer"/>
+        <field name="codectimebaseden" type="integer"/>
+        <field name="firstpts" type="double"/>
+        <field name="firstdts" type="double"/>
+        <field name="duration" type="double"/>
+        <field name="nbframes" type="double"/>
+        <field name="ticksperframe" type="integer"/>
+        <field name="framecount" type="integer"/>
+        <field name="width" type="integer"/>
+        <field name="height" type="integer"/>
+        <field name="gopsize" type="integer"/>
+        <field name="pixfmt" type="integer"/>
+        <field name="bitrate" type="integer"/>
+        <field name="samplerate" type="integer"/>
+        <field name="samplefmt" type="integer"/>
+        <field name="channels" type="integer"/>
+        <field name="bitspercodedsample" type="integer"/>
+        <field name="privdatasize" type="integer"/>
+        <field name="privdata" type="string"/>
+        <field name="extradatasize" type="integer"/>
+        <field name="extradata" type="string"/>
+        <field name="flags" type="integer"/>
+        <field name="extraprofileflags" type="string"/>
+    </object>
+
     <relation>
-        <relate object="Employee" handle="office"/>
-        <relate object="Office" handle="employees"/>
+        <relate object="Stream" handle="mediafile"/>
+        <relate object="MediaFile" handle="streams" limit="one"/>
     </relation>
+
 </database>

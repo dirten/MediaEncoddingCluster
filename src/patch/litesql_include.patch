@@ -1,0 +1,11 @@
+--- ../../../../tmp/litesql-src-0.3.8/include/litesql.hpp	2010-06-29 11:29:40.000000000 +0200
++++ ./include/litesql.hpp	2010-07-14 19:22:49.500890157 +0200
+@@ -18,7 +18,7 @@
+ 
+ #ifndef __litesql_hpp
+ #define __litesql_hpp
+-#include "config.h"
++#include "litesql/config.h"
+ #include "litesql/types.hpp"
+ #include "litesql/datetime.hpp"
+ #include "litesql/except.hpp"

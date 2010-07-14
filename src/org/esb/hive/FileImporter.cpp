@@ -1,16 +1,17 @@
 #ifndef IMPORT_CPP
-#  define IMPORT_CPP
+#define IMPORT_CPP
 //#include <iostream>
 //#include <fstream>
-#  include <map>
-#  include "org/esb/io/File.h"
-#  include "org/esb/io/FileOutputStream.h"
-#  include "org/esb/av/FormatInputStream.h"
-#  include "org/esb/av/PacketInputStream.h"
-#  include "org/esb/av/Packet.h"
-#  include "org/esb/av/Codec.h"
-#  include "org/esb/util/Decimal.h"
-#  include "org/esb/hive/DatabaseUtil.h"
+#include <map>
+#include "org/esb/db/hivedb.hpp"
+#include "org/esb/io/File.h"
+#include "org/esb/io/FileOutputStream.h"
+#include "org/esb/av/FormatInputStream.h"
+#include "org/esb/av/PacketInputStream.h"
+#include "org/esb/av/Packet.h"
+#include "org/esb/av/Codec.h"
+#include "org/esb/util/Decimal.h"
+#include "org/esb/hive/DatabaseUtil.h"
 //#include <boost/progress.hpp>
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/binary_iarchive.hpp>
@@ -19,15 +20,15 @@
 //#include <boost/archive/polymorphic_binary_iarchive.hpp> 
 //#include <boost/archive/polymorphic_binary_oarchive.hpp> 
 
-#  include "org/esb/io/ObjectOutputStream.h"
-#  include "org/esb/config/config.h"
+#include "org/esb/io/ObjectOutputStream.h"
+#include "org/esb/config/config.h"
 //#include "tntdb/connect.h"
 //#include "tntdb/connection.h"
 //#include "tntdb/statement.h"
 //#include "tntdb/blob.h"
-#  include "org/esb/sql/Connection.h"
-#  include "org/esb/sql/Statement.h"
-#  include "org/esb/sql/PreparedStatement.h"
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/PreparedStatement.h"
 //#include "org/esb/sql/sqlite3x.hpp"
 using namespace std;
 using namespace org::esb;
@@ -56,7 +57,8 @@ struct stream_group {
   int packet_count; // group packet count
   int stream_type; // audio or video type
   int frame_group; // ???
-} ;
+};
+
 /*
 int import(org::esb::io::File file) {
   std::string name = file.getPath();
@@ -65,15 +67,76 @@ int import(org::esb::io::File file) {
 //  import(2, argv);
    return 1;
 }
-*/
+ */
+
 int import(org::esb::io::File file) {
+  if (!file.exists() || !file.canRead()) {
+    LOGERROR("Source File not found:" << file.getPath());
+  } else {
+    LOGDEBUG("File:" << file.getPath());
+  }
+  FormatInputStream fis(&file);
+  if (!fis.isValid())return 0;
+  PacketInputStream pis(&fis);
+  db::HiveDb db("mysql", Config::getProperty("db.url"));
+
+  db::MediaFile mediafile(db);
+  mediafile.filename = file.getFileName();
+  mediafile.path = file.getFilePath();
+  mediafile.filesize = (double) fis.getFileSize();
+  mediafile.streamcount = fis.getStreamCount();
+  mediafile.containertype = fis.getFormatContext()->iformat->name;
+  mediafile.duration = (double) fis.getFormatContext()->duration;
+  mediafile.bitrate = fis.getFormatContext()->bit_rate;
+  mediafile.update();
+
+  AVFormatContext *ctx = fis.getFormatContext();
+
+  for (unsigned int a = 0; a < mediafile.streamcount; a++) {
+    db::Stream stream(db);
+    stream.streamindex = (int) a;
+    stream.streamtype = (int) ctx->streams[a]->codec->codec_type;
+    stream.codecid = (int) ctx->streams[a]->codec->codec_id;
+    stream.codecname = (const char*) ctx->streams[a]->codec->codec_name;
+    stream.frameratenum = ctx->streams[a]->r_frame_rate.num;
+    stream.framerateden = ctx->streams[a]->r_frame_rate.den;
+    stream.firstpts = (double) ctx->streams[a]->start_time;
+    stream.firstdts = (double) ctx->streams[a]->first_dts;
+    stream.duration = (double) ctx->streams[a]->duration;
+    stream.nbframes = (double) ctx->streams[a]->nb_frames;
+    stream.streamtimebasenum = ctx->streams[a]->time_base.num;
+    stream.streamtimebaseden = ctx->streams[a]->time_base.den;
+    stream.codectimebasenum = ctx->streams[a]->codec->time_base.num;
+    stream.codectimebaseden = ctx->streams[a]->codec->time_base.den;
+    stream.ticksperframe = ctx->streams[a]->codec->ticks_per_frame;
+    stream.width = ctx->streams[a]->codec->width;
+    stream.height = ctx->streams[a]->codec->height;
+    stream.gopsize = ctx->streams[a]->codec->gop_size;
+    stream.pixfmt = (int) ctx->streams[a]->codec->pix_fmt;
+    stream.bitrate = ctx->streams[a]->codec->bit_rate;
+    stream.samplerate = ctx->streams[a]->codec->sample_rate;
+    stream.samplefmt = (int) ctx->streams[a]->codec->sample_fmt;
+    stream.channels = ctx->streams[a]->codec->channels;
+    stream.bitspercodedsample = ctx->streams[a]->codec->bits_per_coded_sample;
+    stream.extradatasize = ctx->streams[a]->codec->extradata_size;
+    if (stream.extradatasize > 0)
+      stream.extradata = (const char*) (ctx->streams[a]->codec->extradata);
+    stream.update();
+    mediafile.streams().link(stream);
+  }
+
+
+  return mediafile.id;
+}
+
+int importOld(org::esb::io::File file) {
   //	cout << LIBAVCODEC_IDENT << endl;
 
   //      Config::init("./cluster.cfg");
 
 
-//  string connect_str = Config::getProperty("db.connection");
-//  logdebug("using db connection : " << connect_str);
+  //  string connect_str = Config::getProperty("db.connection");
+  //  logdebug("using db connection : " << connect_str);
   Connection con(Config::getProperty("db.connection"));
   /*
       if (!checkDatabase(con)) {
@@ -82,9 +145,9 @@ int import(org::esb::io::File file) {
           cout << "Database found";
       }
    */
-  org::esb::io::File inputFile=file;
+  org::esb::io::File inputFile = file;
   if (!inputFile.exists() || !inputFile.canRead()) {
-    LOGERROR("Source File not found:"<<inputFile.getPath());
+    LOGERROR("Source File not found:" << inputFile.getPath());
   } else {
     LOGDEBUG("File:" << inputFile.getPath());
   }
@@ -103,16 +166,16 @@ int import(org::esb::io::File file) {
   if (!fis.isValid())return 0;
 
   PacketInputStream pis(&fis);
- // fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
+  // fis.getFormatContext()->flags |= AVFMT_FLAG_GENPTS;
   //      tntdb::Connection con=connect(databaseFile.getPath());
   //      sqlite3_transaction trans=con.getTransaction();
   {
     PreparedStatement
     st =
-        con.
-        prepareStatement("INSERT INTO files(filename, path, size, type, insertdate,stream_count, container_type, title,author, copyright, comment, album, year, track, genre, duration,bitrate) values "
-        //          "(?,?,1,now(),?,?,?,?,?,?,?,?,?,?,?)");
-        "(:filename,:path, :size,1,now(),:stream_count, :container_type, :title, :author, :copyright, :comment, :album, :year, :track, :genre, :duration, :bitrate)");
+            con.
+            prepareStatement("INSERT INTO files(filename, path, size, type, insertdate,stream_count, container_type, title,author, copyright, comment, album, year, track, genre, duration,bitrate) values "
+            //          "(?,?,1,now(),?,?,?,?,?,?,?,?,?,?,?)");
+            "(:filename,:path, :size,1,now(),:stream_count, :container_type, :title, :author, :copyright, :comment, :album, :year, :track, :genre, :duration, :bitrate)");
     int field = 0;
     string tmp = "testfile.test";
     st.setString("filename", nullCheck < char *>((char *) inputFile.getFileName().c_str()));
@@ -151,15 +214,15 @@ int import(org::esb::io::File file) {
   boost::int64_t duration = 0;
 
   PreparedStatement stmt_fr = con.prepareStatement("insert into frame_groups(frame_group, startts, byte_pos, stream_id, stream_index, frame_count)"
-      " values(:frame_group, :startts, :byte_pos, :stream_id, :stream_index, :frame_count)");
+          " values(:frame_group, :startts, :byte_pos, :stream_id, :stream_index, :frame_count)");
 
 
   PreparedStatement
   stmt_str =
-      con.
-      prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time, first_dts,duration,nb_frames,time_base_num, time_base_den,codec_time_base_num,codec_time_base_den,ticks_per_frame, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
-      //      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-	  "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :first_dts, :duration, :nb_frames, :time_base_num, :time_base_den,:codec_time_base_num,:codec_time_base_den, :ticks_per_frame, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
+          con.
+          prepareStatement("insert into streams (fileid,stream_index, stream_type,codec, codec_name,framerate_num, framerate_den,start_time, first_dts,duration,nb_frames,time_base_num, time_base_den,codec_time_base_num,codec_time_base_den,ticks_per_frame, width, height, gop_size, pix_fmt,bit_rate, rate_emu, sample_rate, channels, sample_fmt, bits_per_coded_sample, priv_data_size, priv_data, extra_data_size,extra_data) values "
+          //      "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+          "(:fileid, :stream_index, :stream_type, :codec, :codec_name, :framerate_num, :framerate_den, :start_time, :first_dts, :duration, :nb_frames, :time_base_num, :time_base_den,:codec_time_base_num,:codec_time_base_den, :ticks_per_frame, :width, :height, :gop_size, :pix_fmt, :bit_rate, :rate_emu, :sample_rate, :channels, :sample_fmt,:bits_per_coded_sample, :priv_data_size, :priv_data, :extra_data_size, :extra_data)");
   for (unsigned int a = 0; a < ctx->nb_streams; a++) {
     int field = 0;
     duration += ctx->streams[a]->duration;
@@ -190,8 +253,8 @@ int import(org::esb::io::File file) {
     stmt_str.setInt("channels", ctx->streams[a]->codec->channels);
     stmt_str.setInt("sample_fmt", ctx->streams[a]->codec->sample_fmt);
     stmt_str.setInt("bits_per_coded_sample", ctx->streams[a]->codec->bits_per_coded_sample);
-	stmt_str.setInt("extra_data_size", ctx->streams[a]->codec->extradata_size);
-	stmt_str.setBlob("extra_data", (char*)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
+    stmt_str.setInt("extra_data_size", ctx->streams[a]->codec->extradata_size);
+    stmt_str.setBlob("extra_data", (char*) ctx->streams[a]->codec->extradata, ctx->streams[a]->codec->extradata_size);
 
     //    stmt_str.setLong("priv_data_size", ctx->streams[a]->codec->codec->priv_data_size);
     //    stmt_str.setBlob("priv_data", (char*)ctx->streams[a]->codec->priv_data, ctx->streams[a]->codec->codec->priv_data_size);
@@ -206,7 +269,7 @@ int import(org::esb::io::File file) {
     stream_groups[a].stream_type = ctx->streams[a]->codec->codec_type;
     stream_groups[a].start_ts = -1;
     stream_groups[a].idx = a;
-    stream_groups[a].frame_group=0;
+    stream_groups[a].frame_group = 0;
     //    streams[a] = streamid;
     //    stream_frame_group[a] = 0;
 
@@ -252,10 +315,10 @@ int import(org::esb::io::File file) {
 
   PreparedStatement
   stmt =
-      con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,sort,data_size, data) values "
-      //					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size) values "
-      //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
-      "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:sort,:data_size, :data)");
+          con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,sort,data_size, data) values "
+          //					con.prepareStatement("insert into packets(id,stream_id,pts,dts,stream_index,key_frame, frame_group,flags,duration,pos,data_size) values "
+          //    "(NULL,?,?,?,?,?,?,?,?,?,?,?)");
+          "(NULL,:stream_id,:pts,:dts,:stream_index,:key_frame, :frame_group,:flags,:duration,:pos,:sort,:data_size, :data)");
 
   int min_frame_group_count = 5; //atoi(Config::getProperty("hive.min_frame_group_count"));
   int frame_group_counter = 0, next_pts = 0;
@@ -303,8 +366,8 @@ int import(org::esb::io::File file) {
 
 
     if (packet.isKeyFrame() &&
-        stream_groups[packet.packet->stream_index].packet_count >= min_frame_group_count *
-        (stream_groups[packet.packet->stream_index].stream_type == CODEC_TYPE_AUDIO ? 100 : 1)) {
+            stream_groups[packet.packet->stream_index].packet_count >= min_frame_group_count *
+            (stream_groups[packet.packet->stream_index].stream_type == CODEC_TYPE_AUDIO ? 100 : 1)) {
       stmt_fr.setLong("frame_group", stream_groups[packet.packet->stream_index].frame_group);
       stmt_fr.setInt("frame_count", stream_groups[packet.packet->stream_index].packet_count);
       stmt_fr.setLong("startts", stream_groups[packet.packet->stream_index].start_ts);
@@ -313,13 +376,13 @@ int import(org::esb::io::File file) {
       stmt_fr.setInt("stream_index", stream_groups[packet.packet->stream_index].idx);
       stmt_fr.execute();
       stream_groups[packet.packet->stream_index].frame_group++;
-      stream_groups[packet.packet->stream_index].start_ts=packet.getDts();
+      stream_groups[packet.packet->stream_index].start_ts = packet.getDts();
       stream_groups[packet.packet->stream_index].packet_count = 0;
     }
 
     int field = 0;
     packet.packet->duration = packet.packet->duration == 0 ? 1
-        : packet.packet->duration;
+            : packet.packet->duration;
     stmt.setLong("stream_id", stream_groups[packet.packet->stream_index].id);
     stmt.setLong("pts", packet.packet->pts);
     //		stmt.setDouble("pts", (double) stream_pts[packet.packet->stream_index]);
@@ -354,17 +417,17 @@ int import(org::esb::io::File file) {
      */
 
   }
-  
-    for(unsigned int a=0;a<stream_groups.size();a++){
-      stmt_fr.setLong("frame_group", stream_groups[a].frame_group);
-      stmt_fr.setInt("frame_count", stream_groups[a].packet_count);
-      stmt_fr.setLong("startts", stream_groups[a].start_ts);
-      stmt_fr.setLong("byte_pos", 0);
-      stmt_fr.setLong("stream_id", stream_groups[a].id);
-      stmt_fr.setInt("stream_index", stream_groups[a].idx);
-      stmt_fr.execute();
-    }
-   
+
+  for (unsigned int a = 0; a < stream_groups.size(); a++) {
+    stmt_fr.setLong("frame_group", stream_groups[a].frame_group);
+    stmt_fr.setInt("frame_count", stream_groups[a].packet_count);
+    stmt_fr.setLong("startts", stream_groups[a].start_ts);
+    stmt_fr.setLong("byte_pos", 0);
+    stmt_fr.setLong("stream_id", stream_groups[a].id);
+    stmt_fr.setInt("stream_index", stream_groups[a].idx);
+    stmt_fr.execute();
+  }
+
 
   //    trans.commit();
   cout << endl;

@@ -18,6 +18,8 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (D:/google-breakpad/src/)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
+include_directories (${LOG4CPLUS_DIR}/include/litesql)
+
 LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 #LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
@@ -28,7 +30,7 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-add_library (db av db/Project.cpp
+add_library (db db/hivedb.cpp
 #            av/FrameConverter.cpp
 #            av/FrameOutputStream.cpp
 #            av/FormatInputStream.cpp
@@ -47,6 +49,8 @@ add_library (db av db/Project.cpp
 #            av/StreamInfo.cpp
 #
 )
+TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql ${MYSQL_LIBRARY} )
+
 #TARGET_LINK_LIBRARIES(av
 #  ${FFMPEG_AVFORMAT_LIBRARY}
 #  ${FFMPEG_AVCODEC_LIBRARY}
@@ -230,7 +234,7 @@ add_library (hive
   hive/NodeResolver.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive sql net esb signal av lang)
+TARGET_LINK_LIBRARIES(hive db sql net esb signal av lang)
 
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive

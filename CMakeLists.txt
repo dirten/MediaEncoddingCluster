@@ -256,6 +256,8 @@ ENDIF(WIN32)
 
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
+include_directories (${MYSQL_DIR}/include/litesql)
+#include_directories (${MYSQL_DIR}/include/litesql/litesql)
 
 add_subdirectory (src)
 add_subdirectory (test)

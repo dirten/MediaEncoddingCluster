@@ -28,6 +28,9 @@
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/sql/my_sql.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/config/config.h"
+#include "org/esb/db/hivedb.hpp"
+
 #include <iostream>
 namespace org {
   namespace esb {
@@ -60,26 +63,32 @@ namespace org {
           std::string datadir = "--datadir=";
           datadir.append(base_path);
           datadir.append("/");
-          char * dbdir=const_cast<char*> (datadir.c_str());
-          char * langdir= const_cast<char*> (lang.c_str());
+          char * dbdir = const_cast<char*> (datadir.c_str());
+          char * langdir = const_cast<char*> (lang.c_str());
 
-         static char *server_options[] = {
-            const_cast<char*>("dbservice"), 
+          static char *server_options[] = {
+            const_cast<char*> ("dbservice"),
             const_cast<char*> (datadir.c_str()),
-            const_cast<char*> (lang.c_str()), 
-            NULL};
-          int num_elements = (sizeof (server_options) / sizeof (char *))-1;
-          LOGDEBUG("num elements "<<num_elements);
+            const_cast<char*> (lang.c_str()),
+            NULL
+          };
+          int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
           static char *server_groups[] = {
-            const_cast<char*>("embedded"),
-            const_cast<char*>("server"),
-            const_cast<char*>("dbservice_SERVER"), 
-            (char*)NULL
+            const_cast<char*> ("embedded"),
+            const_cast<char*> ("server"),
+            const_cast<char*> ("dbservice_SERVER"),
+            (char*) NULL
           };
           if (mysql_server_init(num_elements, server_options, NULL/*server_groups*/) > 0) {
-            LOGFATAL("error initialising DatabaseService datadir="<<datadir<<" resource="<<lang);
+            LOGFATAL("error initialising DatabaseService datadir=" << datadir << " resource=" << lang);
           }
           _running = true;
+          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+          if (db.needsUpgrade()) {
+            LOGDEBUG("Upgrade database");
+            db.upgrade();
+          }
+
         }
       }
 
@@ -90,11 +99,11 @@ namespace org {
         _running = false;
       }
 
-      void DatabaseService::thread_init(){
+      void DatabaseService::thread_init() {
         mysql_thread_init();
       }
 
-      void DatabaseService::thread_end(){
+      void DatabaseService::thread_end() {
         mysql_thread_end();
       }
     }

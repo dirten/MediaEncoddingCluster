@@ -7,7 +7,7 @@
   <fileSets>
     <fileSet>
       <directory>source/build/litesql/include</directory>
-      <outputDirectory>include</outputDirectory>
+      <outputDirectory>include/litesql</outputDirectory>
       <includes>
         <include>**/*</include>
       </includes>

@@ -7,6 +7,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringTokenizer.h"
 #include <stdexcept>
+#include "org/esb/db/hivedb.hpp"
 
 
 using namespace org::esb;
@@ -17,39 +18,37 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
-    sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select codec, stream_type, width, height, pix_fmt, bit_rate, time_base_num, time_base_den, codec_time_base_num, codec_time_base_den, ticks_per_frame, framerate_num, framerate_den, gop_size, channels, sample_rate, sample_fmt, flags,bits_per_coded_sample, extra_data_size, extra_data from streams  where id=:id");
-    stmt.setInt("id", streamid);
-    sql::ResultSet rs = stmt.executeQuery();
-    if (rs.next()) {
-      boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) rs.getInt("codec")));
-      decoder->setWidth(rs.getInt("width"));
-      decoder->setHeight(rs.getInt("height"));
-      decoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
-      decoder->setBitRate(rs.getInt("bit_rate"));
-      if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
-        decoder->setTimeBase(rs.getInt("codec_time_base_num"),rs.getInt("codec_time_base_den"));
-        decoder->setFrameRate(rs.getInt("framerate_num"),rs.getInt("framerate_den"));
-      }else{
-        decoder->setTimeBase(rs.getInt("time_base_num"),rs.getInt("time_base_den"));    
+    try {
+      db::HiveDb db("mysql", config::Config::getProperty("db.url"));
+      db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
+
+      boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) (int) stream.codecid));
+      decoder->setWidth(stream.width);
+      decoder->setHeight(stream.height);
+      decoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
+      decoder->setBitRate(stream.bitrate);
+      if (stream.streamtype == CODEC_TYPE_VIDEO) {
+        decoder->setTimeBase(stream.codectimebasenum, stream.codectimebaseden);
+        decoder->setFrameRate(stream.frameratenum, stream.framerateden);
+      } else {
+        decoder->setTimeBase(stream.streamtimebasenum, stream.streamtimebaseden);
       }
-      decoder->setGopSize(rs.getInt("gop_size"));
-      decoder->setChannels(rs.getInt("channels"));
-      decoder->setSampleRate(rs.getInt("sample_rate"));
-      decoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
-      decoder->setFlag(rs.getInt("flags"));
-      decoder->setBitsPerCodedSample(rs.getInt("bits_per_coded_sample"));
-      decoder->ctx->ticks_per_frame=rs.getInt("ticks_per_frame");
-      decoder->ctx->extradata_size = rs.getInt("extra_data_size");
-      if(decoder->ctx->extradata_size>0){
+      decoder->setGopSize(stream.gopsize);
+      decoder->setChannels(stream.channels);
+      decoder->setSampleRate(stream.samplerate);
+      decoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
+      decoder->setFlag(stream.flags);
+      decoder->setBitsPerCodedSample(stream.bitspercodedsample);
+      decoder->ctx->ticks_per_frame = stream.ticksperframe;
+      decoder->ctx->extradata_size = stream.extradatasize;
+      if (decoder->ctx->extradata_size > 0) {
         decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
-        memcpy(decoder->ctx->extradata, rs.getBlob("extra_data").data(), decoder->ctx->extradata_size);
-      }else
-        decoder->ctx->extradata=NULL;
+        memcpy(decoder->ctx->extradata, (char*) ((std::string)stream.extradata).c_str(), decoder->ctx->extradata_size);
+      } else
+        decoder->ctx->extradata = NULL;
       decoder_map[streamid] = decoder;
-    } else {
+    } catch (litesql::NotFound e) {
       LOGERROR("no Decoder found for stream id " << streamid);
-      //      throw std::runtime_error(string("no Decoder found for stream id "));
     }
   }
   return decoder_map[streamid];
@@ -57,39 +56,34 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
-    sql::Connection con(config::Config::getProperty("db.connection"));
-    sql::PreparedStatement stmt = con.prepareStatement("select * from streams  where id=:id");
-    stmt.setInt("id", streamid);
-    sql::ResultSet rs = stmt.executeQuery();
-    if (rs.next()) {
-      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) rs.getInt("codec")));
-      _encoder->findCodec(org::esb::av::Codec::ENCODER);
-      _encoder->setWidth(rs.getInt("width"));
-      _encoder->setHeight(rs.getInt("height"));
-      _encoder->setPixelFormat((PixelFormat) rs.getInt("pix_fmt"));
-      _encoder->setBitRate(rs.getInt("bit_rate"));
-      AVRational r;
-      r.num = rs.getInt("framerate_den");
-      r.den = rs.getInt("framerate_num");
+    try {
+      db::HiveDb db("mysql", config::Config::getProperty("db.url"));
+      db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
-      _encoder->setTimeBase(r);
-      if(rs.getInt("stream_type")==CODEC_TYPE_VIDEO){
-//        _encoder->setTimeBase(rs.getInt("codec_time_base_num"),rs.getInt("codec_time_base_den"));
-        _encoder->setFrameRate(rs.getInt("framerate_num"),rs.getInt("framerate_den"));
-      }else{
-        _encoder->setTimeBase(rs.getInt("time_base_num"),rs.getInt("time_base_den"));
+      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) (int)stream.codecid));
+      _encoder->findCodec(org::esb::av::Codec::ENCODER);
+      _encoder->setWidth(stream.width);
+      _encoder->setHeight(stream.height);
+      _encoder->setPixelFormat((PixelFormat) (int)stream.pixfmt);
+      _encoder->setBitRate(stream.bitrate);
+
+      _encoder->setTimeBase(stream.framerateden, stream.frameratenum);
+      if (stream.streamtype == CODEC_TYPE_VIDEO) {
+        _encoder->setFrameRate(stream.frameratenum, stream.framerateden);
+      } else {
+        _encoder->setTimeBase(stream.streamtimebasenum, stream.streamtimebaseden);
       }
 
-      _encoder->setGopSize(rs.getInt("gop_size"));
-      _encoder->setChannels(rs.getInt("channels"));
-      _encoder->setSampleRate(rs.getInt("sample_rate"));
-      _encoder->setSampleFormat((SampleFormat) rs.getInt("sample_fmt"));
-      _encoder->setFlag(rs.getInt("flags"));
-      
-      setCodecOptions(_encoder, rs.getString("extra_profile_flags"));
+      _encoder->setGopSize(stream.gopsize);
+      _encoder->setChannels(stream.channels);
+      _encoder->setSampleRate(stream.samplerate);
+      _encoder->setSampleFormat((SampleFormat) (int)stream.samplefmt);
+      _encoder->setFlag(stream.flags);
+
+      setCodecOptions(_encoder, stream.extraprofileflags);
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
-    } else {
+    } catch (litesql::NotFound e) {
       LOGERROR("no Encoder found for stream id " << streamid);
       //      throw std::runtime_error(string("no Encoder found for stream id "));
     }
@@ -109,7 +103,7 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
         std::string opt = to2.nextToken();
         std::string arg = to2.nextToken();
         if (_enc->setCodecOption(opt, arg)) {
-          LOGERROR( "setting CodecOptionsPair (opt=" << opt << " arg=" << arg << ")");
+          LOGERROR("setting CodecOptionsPair (opt=" << opt << " arg=" << arg << ")");
         }
       }
     }

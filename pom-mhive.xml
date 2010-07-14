@@ -224,6 +224,13 @@
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.esb.litesql</groupId>
+      <artifactId>litesql</artifactId>
+      <version>0.3.8-beta</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

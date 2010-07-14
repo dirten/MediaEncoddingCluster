@@ -16,6 +16,7 @@ add_executable (TestPacketizer TestPacketizer.cpp)
 add_executable (TestNodeDiscovery TestNodeDiscovery.cpp)
 add_executable (TestTimer TestTimer.cpp)
 add_executable (TestHive TestHive.cpp)
+add_executable (CodecFactoryTest CodecFactoryTest.cpp)
 
 
 
@@ -33,6 +34,8 @@ target_link_libraries (TestProcessUnit esb hive signal av io util lang )
 target_link_libraries (TestNewProcessUnit esb hive sql net signal av io util lang )
 target_link_libraries (TestPacketizer esb hive av sql net signal io util lang )
 target_link_libraries (TestHive esb hive av sql net signal io util lang )
+target_link_libraries (CodecFactoryTest esb hive av sql net signal io util lang )
+
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
 target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
@@ -68,4 +71,5 @@ ADD_TEST(DeleteDatabase ${EXECUTABLE_OUTPUT_PATH}/DeleteDatabase)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestProcessUnit )
 ADD_TEST(TestNewProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestNewProcessUnit )
 ADD_TEST(TestPacketizer ${EXECUTABLE_OUTPUT_PATH}/TestNewProcessUnit )
+ADD_TEST(CodecFactoryTest ${EXECUTABLE_OUTPUT_PATH}/CodecFactoryTest )
 
