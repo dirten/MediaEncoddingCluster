@@ -92,7 +92,7 @@ int import(org::esb::io::File file) {
 
   AVFormatContext *ctx = fis.getFormatContext();
 
-  for (unsigned int a = 0; a < mediafile.streamcount; a++) {
+  for (int a = 0; a < mediafile.streamcount; a++) {
     db::Stream stream(db);
     stream.streamindex = (int) a;
     stream.streamtype = (int) ctx->streams[a]->codec->codec_type;

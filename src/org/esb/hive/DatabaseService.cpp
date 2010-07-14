@@ -24,12 +24,12 @@
  *
  * ----------------------------------------------------------------------
  */
+#include "org/esb/db/hivedb.hpp"
 #include "DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/sql/my_sql.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/config/config.h"
-#include "org/esb/db/hivedb.hpp"
 
 #include <iostream>
 namespace org {

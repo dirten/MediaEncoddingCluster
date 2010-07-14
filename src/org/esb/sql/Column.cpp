@@ -138,8 +138,10 @@ namespace org {
           case MYSQL_TYPE_DATETIME:
           case MYSQL_TYPE_TIMESTAMP:
           {
+
             MYSQL_TIME* ts = static_cast<MYSQL_TIME*> (bind.buffer);
-            ret.assign(Datetime(
+            
+			ret.assign(Datetime(
                 ts->year,
                 ts->month,
                 ts->day,

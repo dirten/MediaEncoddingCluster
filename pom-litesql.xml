@@ -137,9 +137,10 @@
                      dest="source/litesql-src-0.3.8.tar.gz"
                      verbose="true" usetimestamp="true"/>
                 <gunzip src="source/litesql-src-0.3.8.tar.gz" dest="source"/>
-		    <untar src="source/litesql-src-0.3.8.tar" dest="source" overwrite="false"/>
+		    <untar src="source/litesql-src-0.3.8.tar" dest="source" overwrite="true"/>
                 <mkdir dir="source/litesql-src-0.3.8/build"/>
                 <patch patchfile="src/patch/litesql_library_mysql.patch" dir="source/litesql-src-0.3.8" strip="0"/>
+                <patch patchfile="src/patch/litesql_CMakeLists.patch" dir="source/litesql-src-0.3.8" strip="0"/>
 
                 <exec executable="cmake" dir="source/litesql-src-0.3.8/build" failonerror="yes">
                   <arg line="

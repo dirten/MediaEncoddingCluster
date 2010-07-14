@@ -1,13 +1,10 @@
+#include "org/esb/db/hivedb.hpp"
 #include "CodecFactory.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringTokenizer.h"
 #include <stdexcept>
-#include "org/esb/db/hivedb.hpp"
 
 
 using namespace org::esb;

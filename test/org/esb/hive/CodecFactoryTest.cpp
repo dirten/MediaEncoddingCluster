@@ -6,8 +6,8 @@
  */
 
 #include <cstdlib>
-#include "org/esb/config/config.h"
 #include "org/esb/db/hivedb.hpp"
+#include "org/esb/config/config.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/hive/FileImporter.h"

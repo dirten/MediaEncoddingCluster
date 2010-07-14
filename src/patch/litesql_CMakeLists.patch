@@ -1,0 +1,17 @@
+--- ../tmp/litesql-src-0.3.8/CMakeLists.txt	2010-07-14 20:34:35 +0000
++++ CMakeLists.txt	2010-07-14 20:34:44 +0000
+@@ -4,10 +4,10 @@
+ enable_language(CXX)
+ 
+ if (MSVC)
+-  list(APPEND CMAKE_CXX_FLAGS_RELEASE " /MT")
+-  list(APPEND CMAKE_C_FLAGS_RELEASE " /MT")
+-  list(APPEND CMAKE_CXX_FLAGS_DEBUG " /MTd /W4")
+-  list(APPEND CMAKE_C_FLAGS_DEBUG " /MTd /W4")
++#  list(APPEND CMAKE_CXX_FLAGS_RELEASE " /MT")
++#  list(APPEND CMAKE_C_FLAGS_RELEASE " /MT")
++#  list(APPEND CMAKE_CXX_FLAGS_DEBUG " /MTd /W4")
++#  list(APPEND CMAKE_C_FLAGS_DEBUG " /MTd /W4")
+   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
+ else(MSVC)
+   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")

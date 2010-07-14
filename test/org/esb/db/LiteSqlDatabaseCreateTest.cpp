@@ -8,7 +8,6 @@
 #include <cstdlib>
 //#include "litesql.hpp"
 #include "org/esb/db/hivedb.hpp"
-#include "mysql/mysql.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/Log.h"
 using namespace std;
@@ -19,8 +18,6 @@ using namespace std;
 int main(int argc, char** argv) {
   Log::open("");
   org::esb::hive::DatabaseService::start("/home/HoelscJ/devel/mec");
-  if (mysql_library_init(0, NULL, NULL))
-    std::cout << "Error init mysql" << std::endl;
   db::HiveDb db("mysql", "host=127.0.0.1;user=root;port=3306;database=example");
 
   //  db.verbose = true;

@@ -1,9 +1,10 @@
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/io/File.h"
-#include "org/esb/db/hivedb.hpp"
+
 //#include <assert.h>
 using namespace org::esb;
 
@@ -23,7 +24,7 @@ int main() {
   db::HiveDb db("mysql", config::Config::getProperty("db.url"));
   
   db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
-  LOGDEBUG((int64_t)mediafile.filesize)
+  LOGDEBUG((long long int)mediafile.filesize)
 
   hive::DatabaseService::stop();
   

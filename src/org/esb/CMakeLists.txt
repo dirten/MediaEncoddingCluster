@@ -49,7 +49,16 @@ add_library (db db/hivedb.cpp
 #            av/StreamInfo.cpp
 #
 )
-TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql ${MYSQL_LIBRARY} )
+TARGET_LINK_LIBRARIES(db  ${MYSQL_LIBRARY} )
+IF(NOT WIN32)
+  TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
+ELSEIF(WIN32)
+  IF(CMAKE_BUILD_TYPE MATCHES "debug")
+    TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_mysqld)
+    ELSE()
+    TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
+  ENDIF()
+ENDIF(NOT WIN32)
 
 #TARGET_LINK_LIBRARIES(av
 #  ${FFMPEG_AVFORMAT_LIBRARY}
