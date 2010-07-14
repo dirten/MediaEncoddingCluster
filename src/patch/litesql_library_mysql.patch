@@ -1,0 +1,52 @@
+diff -u -r ../../../../tmp/litesql-src-0.3.8/src/examples/CMakeLists.txt ./src/examples/CMakeLists.txt
+--- ../../../../tmp/litesql-src-0.3.8/src/examples/CMakeLists.txt	2010-06-29 11:29:42.000000000 +0200
++++ ./src/examples/CMakeLists.txt	2010-07-14 12:51:43.996827417 +0200
+@@ -21,7 +21,7 @@
+  
+ add_executable(example ${example_SOURCES} ${example_HEADERS})
+ 
+-target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES})
++target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES} crypt z)
+ 
+ set_property(TARGET example APPEND PROPERTY COMPILE_DEFINITIONS ${SQLITE3_DEFINITIONS})
+ 
+Nur in ../../../../tmp/litesql-src-0.3.8/src/examples: exampledatabase.cpp.
+Nur in ../../../../tmp/litesql-src-0.3.8/src/examples: exampledatabase.dot.
+Nur in ../../../../tmp/litesql-src-0.3.8/src/examples: exampledatabase.hpp.
+diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt ./src/library/CMakeLists.txt
+--- ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt	2010-06-29 11:29:47.000000000 +0200
++++ ./src/library/CMakeLists.txt	2010-07-14 12:47:54.538827893 +0200
+@@ -81,6 +81,7 @@
+         				mysql.cpp
+    
+   )
++
+   install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/mysql.cpp ./src/library/mysql.cpp
+--- ../../../../tmp/litesql-src-0.3.8/src/library/mysql.cpp	2010-06-29 11:29:47.000000000 +0200
++++ ./src/library/mysql.cpp	2010-07-14 12:40:59.448890115 +0200
+@@ -8,7 +8,9 @@
+ #ifdef HAVE_LIBMYSQLCLIENT
+ #include <string>
+ 
++#ifdef WIN32
+ #include "config-win.h"
++#endif
+ #include <mysql.h>
+ 
+ using namespace litesql;
+Nur in ./src/library: mysql.cpp.rej.
+diff -u -r ../../../../tmp/litesql-src-0.3.8/src/tests/CMakeLists.txt ./src/tests/CMakeLists.txt
+--- ../../../../tmp/litesql-src-0.3.8/src/tests/CMakeLists.txt	2010-06-29 11:29:48.000000000 +0200
++++ ./src/tests/CMakeLists.txt	2010-07-14 12:50:59.852890323 +0200
+@@ -11,7 +11,7 @@
+ add_test(test-datetime ${EXECUTABLE_OUTPUT_PATH}/test-datetime datetime)
+ 
+ add_executable(test-update-table test-update-table.cpp)
+-target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES})
++target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES} crypt z)
+ add_test(test-update-table ${EXECUTABLE_OUTPUT_PATH}/test-update-table update-table)
+ 
+ INCLUDE_DIRECTORIES(../library)

@@ -17,8 +17,8 @@
  */
 
 #include "config.h"
-#include <boost/program_options.hpp>
-#include <boost/asio.hpp>
+#include "boost/program_options.hpp"
+#include "boost/asio.hpp"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/job/ProcessUnitWatcher.h"
 #include "org/esb/hive/JobScanner.h"
@@ -157,7 +157,9 @@ int main(int argc, char * argv[]) {
     config::Config::setProperty("db.connection", "mysql:host=;db=hive;user=;passwd=");
 
     if (vm.count("install")) {
-
+      /**
+       * @TODO: make update datebase process failsafe
+       */
       /**starting the internal database service*/
       org::esb::hive::DatabaseService::start(base_path);
 

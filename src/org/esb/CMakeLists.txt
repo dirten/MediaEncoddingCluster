@@ -28,7 +28,7 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-#add_library (av av av/Init.cpp
+add_library (db av db/Project.cpp
 #            av/FrameConverter.cpp
 #            av/FrameOutputStream.cpp
 #            av/FormatInputStream.cpp
@@ -46,7 +46,7 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 #            av/FormatStreamFactory.cpp
 #            av/StreamInfo.cpp
 #
-#)
+)
 #TARGET_LINK_LIBRARIES(av
 #  ${FFMPEG_AVFORMAT_LIBRARY}
 #  ${FFMPEG_AVCODEC_LIBRARY}

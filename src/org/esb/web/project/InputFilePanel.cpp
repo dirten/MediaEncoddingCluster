@@ -30,7 +30,7 @@ namespace org {
         Wt::Ext::Button * addVideoButton = topToolBar()->addButton("Add Video");
         Wt::Ext::Button * removeVideoButton = topToolBar()->addButton("Remove Video");
 
-        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::openFileSelector));
+        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
 
 
       }
@@ -45,12 +45,12 @@ namespace org {
       }
 
       InputFilePanel::~InputFilePanel() {
+        
       }
 
-      void InputFilePanel::openFileSelector() {
+      void InputFilePanel::addVideoButtonClicked() {
         FileChooser * chooser=new FileChooser("Add Video", "/");
         chooser->selected.connect(SLOT(this, InputFilePanel::setInputFile));
-//        chooser->canceled.connect(SLOT(chooser, Wt::Ext::Dialog::accept));
         chooser->show();
       }
     }

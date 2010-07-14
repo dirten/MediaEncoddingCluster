@@ -21,7 +21,7 @@ namespace org {
         virtual ~InputFilePanel();
         void setInputFile(org::esb::io::File path);
       private:
-        void openFileSelector();
+        void addVideoButtonClicked();
       private:
 
       };
