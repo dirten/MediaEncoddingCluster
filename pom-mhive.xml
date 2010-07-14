@@ -145,7 +145,7 @@
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="install"/>
+                  <arg line="all test install"/>
                 </exec>
 
                 <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
