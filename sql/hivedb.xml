@@ -18,6 +18,15 @@
         <field name="created" type="datetime"/>
         <field name="filetype" type="integer"/>
         <field name="parent" type="integer"/>
+        <field name="metatitle" type="string"/>
+        <field name="metaauthor" type="string"/>
+        <field name="metacopyright" type="string"/>
+        <field name="metacomment" type="string"/>
+        <field name="metaalbum" type="string"/>
+        <field name="metayear" type="integer"/>
+        <field name="metatrack" type="integer"/>
+        <field name="metagenre" type="integer"/>
+
     </object>
 
     <relation>
@@ -86,6 +95,54 @@
     <relation>
         <relate object="Stream" handle="mediafile"/>
         <relate object="MediaFile" handle="streams" limit="one"/>
+    </relation>
+
+    <object name="CodecPreset">
+        <field name="name" type="string"/>
+        <field name="created" type="date"/>
+        <field name="codecid" type="integer"/>
+        <field name="preset" type="string"/>
+    </object>
+
+    <object name="Config">
+        <field name="configkey" type="string"/>
+        <field name="configval" type="string"/>
+    </object>
+
+    <object name="Job">
+        <field name="begintime" type="datetime"/>
+        <field name="endtime" type="datetime"/>
+        <field name="status" type="string"/>
+    </object>
+
+    <relation>
+        <relate object="Job" handle="inputfile"/>
+        <relate object="MediaFile" handle="jobs"/>
+    </relation>
+
+    <relation>
+        <relate object="Job" handle="outputfile"/>
+        <relate object="MediaFile" handle="jobs"/>
+    </relation>
+
+    <object name="JobDetail">
+        <field name="lastpts" type="double"/>
+        <field name="lastdts" type="double"/>
+    </object>
+
+    <relation>
+        <relate object="Job" handle="job"/>
+        <relate object="JobDetail" handle="jobs"/>
+    </relation>
+
+    <relation>
+        <relate object="JobDetail" handle="outputstream"/>
+        <relate object="Stream" handle="jobs"/>
+    </relation>
+
+    <relation>
+        <relate object="JobDetail" handle="inputstream"/>
+        <relate object="Stream" handle="jobs"/>
     </relation>
 
 </database>
