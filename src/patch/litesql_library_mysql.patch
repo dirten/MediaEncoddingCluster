@@ -23,7 +23,7 @@ diff -u -r ../../../../tmp/litesql-src-0.3.8/src/examples/CMakeLists.txt ./src/e
  
 diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt ./src/library/CMakeLists.txt
 --- ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt	2010-06-29 11:29:47.000000000 +0200
-+++ ./src/library/CMakeLists.txt	2010-07-14 14:28:59.295890045 +0200
++++ ./src/library/CMakeLists.txt	2010-07-14 14:31:59.945890173 +0200
 @@ -47,10 +47,10 @@
  			COMPONENT devel)
  install(EXPORT ${LIBNAME} DESTINATION lib)
@@ -39,7 +39,20 @@ diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt ./src/li
  
  if (WITH_SQLITE3)
    set(${LIBNAME}_sqlite_SRC
-@@ -81,6 +81,7 @@
+@@ -71,9 +71,9 @@
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+ install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ endif (WITH_SQLITE3)
+ 
+ if (WITH_MYSQL)
+@@ -81,14 +81,15 @@
          				mysql.cpp
     
    )
@@ -47,6 +60,43 @@ diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt ./src/li
    install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
  			RUNTIME DESTINATION lib 
  			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+   install(EXPORT ${LIBNAME}_mysql DESTINATION lib)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ 
+ endif (WITH_MYSQL)
+ 
+@@ -100,9 +101,9 @@
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ endif (WITH_POSTGRES)
+ 
+ if (WITH_ODBC)
+@@ -114,9 +115,9 @@
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ 
+ endif (WITH_ODBC)
+ 
 diff -u -r ../../../../tmp/litesql-src-0.3.8/src/library/mysql.cpp ./src/library/mysql.cpp
 --- ../../../../tmp/litesql-src-0.3.8/src/library/mysql.cpp	2010-06-29 11:29:47.000000000 +0200
 +++ ./src/library/mysql.cpp	2010-07-14 14:20:32.064889922 +0200
