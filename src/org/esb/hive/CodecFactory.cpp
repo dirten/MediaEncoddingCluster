@@ -5,6 +5,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringTokenizer.h"
 #include <stdexcept>
+#include "org/esb/db/hivedb.hpp"
 
 
 using namespace org::esb;
@@ -93,6 +94,7 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
     org::esb::util::StringTokenizer to(options, ";");
     while (to.hasMoreTokens()) {
       std::string line = to.nextToken();
+      if(line.length()==0)continue;
       org::esb::util::StringTokenizer to2(line, "=");
       if (to2.countTokens() != 2) {
         LOGWARN("Invalid CodecOptionsPair it is not a <key=value> pair ---" << line);

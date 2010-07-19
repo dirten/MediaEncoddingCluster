@@ -127,6 +127,13 @@
             <configuration>
               <tasks>
                 <mkdir dir="build"/>
+                <get src="http://samples.mplayerhq.hu/MPEG2/TITLE01-ANGLE1.VOB"
+                     dest="test/fixtures"
+                     verbose="true" usetimestamp="true"/>
+                <get src="http://samples.mplayerhq.hu/MPEG2/dvd.mpeg"
+                     dest="test/fixtures"
+                     verbose="true" usetimestamp="true"/>
+
 
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
@@ -145,7 +152,13 @@
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="all test install"/>
+                  <arg line="all"/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
+                  <arg line="test"/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="install"/>
                 </exec>
 
                 <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>

@@ -54,6 +54,12 @@ namespace org {
                     ProcessUnit();
                     ~ProcessUnit();
                     void process();
+                    boost::shared_ptr<Decoder> getDecoder();
+                    boost::shared_ptr<Encoder> getEncoder();
+                    std::list<boost::shared_ptr<Packet> > getInputPacketList();
+                    std::list<boost::shared_ptr<Packet> > getOutputPacketList();
+                    int getGopSize();
+                    int getExpectedFrameCount();
                     std::string toString();
                     //	private:
                     //	        friend class boost::serialization::access;

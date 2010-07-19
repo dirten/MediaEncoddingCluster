@@ -218,6 +218,10 @@ void Packet::setTimeBase(int num, int den) {
 AVRational Packet::getTimeBase() {
   return _time_base;
 }
+void Packet::setKeyPacket(bool key){
+  if(key)
+    packet->flags |= PKT_FLAG_KEY;
+}
 
 std::string Packet::toString() {
   std::ostringstream oss;

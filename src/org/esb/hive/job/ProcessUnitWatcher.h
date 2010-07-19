@@ -41,6 +41,7 @@
 #include <deque>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/condition.hpp>
+#include "StreamData.h"
 //#include <boost/asio.hpp>
 namespace org {
   namespace esb {
@@ -100,7 +101,7 @@ namespace org {
           static org::esb::sql::PreparedStatement * _stmt_fr;
           static org::esb::sql::PreparedStatement * _stmt_jd;
           static AVRational basear;
-          struct StreamData {
+/*          struct StreamData {
             int instream;
             int outstream;
             int type;
@@ -120,7 +121,7 @@ namespace org {
             int deinterlace;
             int keep_aspect_ratio;
             //                        int64_t last_process_unit_id;
-          };
+          };*/
           static map<int, StreamData> _stream_map;
           void buildProcessUnit(PacketListPtr list, bool last_packet = false);
         };

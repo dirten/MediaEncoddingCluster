@@ -29,6 +29,8 @@
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/sql/my_sql.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringTokenizer.h"
+
 #include "org/esb/config/config.h"
 
 #include <iostream>
@@ -55,7 +57,7 @@ namespace org {
       void DatabaseService::start(std::string base_path) {
         LOGINFO("starting Database Service");
         if (_running == false) {
-          //          std::string base_path = _base_path;
+          _base_path=base_path;
           std::string lang = "--language=";
           lang.append(base_path);
           lang.append("/res");
@@ -83,13 +85,86 @@ namespace org {
             LOGFATAL("error initialising DatabaseService datadir=" << datadir << " resource=" << lang);
           }
           _running = true;
-          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-          if (db.needsUpgrade()) {
-            LOGDEBUG("Upgrade database");
-            db.upgrade();
-          }
 
         }
+      }
+      bool DatabaseService::databaseExist() {
+        bool result=true;
+        try{
+          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        }catch(...){
+          result=false;
+        }
+        return result;
+      }
+      void DatabaseService::createDatabase() {
+        using namespace org::esb::util;
+        std::string url = org::esb::config::Config::getProperty("db.url");
+        StringTokenizer tk_outer(url, ";");
+        std::string create_url;
+        std::string database_name;
+        while (tk_outer.hasMoreTokens()) {
+          std::string param = tk_outer.nextToken();
+          StringTokenizer tk_inner(param, "=");
+          if (tk_inner.nextToken() != "database") {
+            create_url += param + ";";
+          } else {
+            database_name = tk_inner.nextToken();
+          }
+        }
+        LOGDEBUG("Create Url=" + create_url);
+        LOGDEBUG("Create Database name=" + database_name);
+        db::HiveDb db("mysql", create_url);
+        db.query("CREATE DATABASE " + database_name);
+
+      }
+
+      void DatabaseService::createTables() {
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db.create();
+      }
+
+      void DatabaseService::updateTables() {
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        if (db.needsUpgrade()) {
+          LOGDEBUG("Upgrade database");
+          db.upgrade();
+        }
+      }
+
+      void DatabaseService::dropDatabase() {
+        using namespace org::esb::util;
+        std::string url = org::esb::config::Config::getProperty("db.url");
+        StringTokenizer tk_outer(url, ";");
+        std::string create_url;
+        std::string database_name;
+        while (tk_outer.hasMoreTokens()) {
+          std::string param = tk_outer.nextToken();
+          StringTokenizer tk_inner(param, "=");
+          if (tk_inner.nextToken() != "database") {
+            create_url += param + ";";
+          } else {
+            database_name = tk_inner.nextToken();
+          }
+        }
+        LOGDEBUG("Drop Url=" + create_url);
+        LOGDEBUG("Drop Database name=" + database_name);
+
+        db::HiveDb db("mysql", create_url);
+        db.query("DROP DATABASE " + database_name);
+      }
+
+      void DatabaseService::dropTables() {
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db.drop();
+      }
+
+      void DatabaseService::loadPresets() {
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        
+        db.query("load data infile '"+_base_path+"/sql/config.txt' IGNORE into table Config_ fields terminated by \":\"");
+        db.query("load data infile '"+_base_path+"/sql/profiles.txt' IGNORE into table Profile_ fields terminated by \",\"");
+        db.query("load data infile '"+_base_path+"/sql/codec.txt' IGNORE into table CodecPreset_ fields terminated by \"#\"");
       }
 
       void DatabaseService::stop() {

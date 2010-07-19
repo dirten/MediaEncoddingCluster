@@ -13,19 +13,22 @@ int main() {
   std::string src = MEC_SOURCE_DIR;
 
   config::Config::setProperty("hive.base_path", src.c_str());
-  config::Config::setProperty("db.url", "host=127.0.0.1;user=root;port=3306;database=example");
+  config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
 
   src.append("/test.dvd");
   hive::DatabaseService::start(MEC_SOURCE_DIR);
+  hive::DatabaseService::createDatabase();
+  hive::DatabaseService::createTables();
 
   int fileid = import(org::esb::io::File(src));
   assert(fileid>0);
-
+  {
   db::HiveDb db("mysql", config::Config::getProperty("db.url"));
   
   db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
   LOGDEBUG((long long int)mediafile.filesize)
-
+  }
+  hive::DatabaseService::dropDatabase();
   hive::DatabaseService::stop();
   
   Log::close();

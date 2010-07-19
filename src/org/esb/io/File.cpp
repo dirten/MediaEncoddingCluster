@@ -12,6 +12,7 @@
 //#include <boost/shared_ptr.hpp>
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/convenience.hpp"
+#include "boost/filesystem/exception.hpp"
 
 
 using namespace std;
@@ -62,6 +63,7 @@ const string File::getFilePath() {
 bool File::exists() {
   return fs::exists(_full_path);
 }
+
 bool File::deleteFile() {
   fs::remove(_full_path);
   return !fs::exists(_full_path);
@@ -71,15 +73,16 @@ bool File::mkdir() {
   return fs::create_directory(_full_path);
 }
 
-bool File::createNewFile(){
-  bool result=false;
-  FILE* fh=fopen(getPath().c_str(),"a");
-  if(fh>=0){
-    result=true;
+bool File::createNewFile() {
+  bool result = false;
+  FILE* fh = fopen(getPath().c_str(), "a");
+  if (fh >= 0) {
+    result = true;
     fclose(fh);
   }
   return result;
 }
+
 bool File::isFile() {
   return fs::is_regular(_full_path);
 }
@@ -100,11 +103,19 @@ bool File::canWrite() {
 FileList File::listFiles(FileFilter & filter) {
   fs::directory_iterator end_iter;
   std::list < boost::shared_ptr < File > >files;
-  for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
-    if (filter.accept(File(dir_itr->path().string().c_str()))) {
-      boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
-      files.push_back(f);
+  try {
+    for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
+      try {
+        if (filter.accept(File(dir_itr->path().string().c_str()))) {
+          boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
+          files.push_back(f);
+        }
+      } catch (const fs::filesystem_error & ex) {
+        std::cout << dir_itr->path().filename() << " " << ex.what() << std::endl;
+      }
     }
+  } catch (const fs::filesystem_error & ex) {
+    std::cout << _full_path.filename() << " " << ex.what() << std::endl;
   }
   return files;
 }

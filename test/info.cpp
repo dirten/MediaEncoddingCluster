@@ -30,40 +30,40 @@ namespace bla {
       packet_count = atoi(argv[3]);
     File file(argv[1]);
     FormatInputStream fis(&file);
-        fis.dumpFormat();
+    fis.dumpFormat();
     AVFormatContext * f = fis.getFormatContext();
-/*
-    for (int i = 0; i < f->nb_streams; i++) {
-      char buf[256];
-      int flags = (false ? f->oformat->flags : f->iformat->flags);
-      AVStream *st =f->streams[i];
-      int g = av_gcd(st->time_base.num, st->time_base.den);
-      AVMetadataTag *lang = av_metadata_get(st->metadata, "language", NULL, 0);
-      avcodec_string(buf, sizeof (buf), st->codec, false);
-      av_log(NULL, AV_LOG_INFO, "    Stream #%d.%d", index, i);
-      if (flags & AVFMT_SHOW_IDS)
-        av_log(NULL, AV_LOG_INFO, "[0x%x]", st->id);
-      if (lang)
-        av_log(NULL, AV_LOG_INFO, "(%s)", lang->value);
-      av_log(NULL, AV_LOG_DEBUG, ", %d/%d", st->time_base.num / g, st->time_base.den / g);
-      av_log(NULL, AV_LOG_INFO, ": %s", buf);
+    /*
+        for (int i = 0; i < f->nb_streams; i++) {
+          char buf[256];
+          int flags = (false ? f->oformat->flags : f->iformat->flags);
+          AVStream *st =f->streams[i];
+          int g = av_gcd(st->time_base.num, st->time_base.den);
+          AVMetadataTag *lang = av_metadata_get(st->metadata, "language", NULL, 0);
+          avcodec_string(buf, sizeof (buf), st->codec, false);
+          av_log(NULL, AV_LOG_INFO, "    Stream #%d.%d", index, i);
+          if (flags & AVFMT_SHOW_IDS)
+            av_log(NULL, AV_LOG_INFO, "[0x%x]", st->id);
+          if (lang)
+            av_log(NULL, AV_LOG_INFO, "(%s)", lang->value);
+          av_log(NULL, AV_LOG_DEBUG, ", %d/%d", st->time_base.num / g, st->time_base.den / g);
+          av_log(NULL, AV_LOG_INFO, ": %s", buf);
 
-//      AVStream *st = f->streams[i];
-      cout << "printing " << i << endl;
-      if (st->sample_aspect_ratio.num && // default
-          av_cmp_q(st->sample_aspect_ratio, st->codec->sample_aspect_ratio)) {
-        AVRational display_aspect_ratio;
-        av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-            st->codec->width * st->codec->sample_aspect_ratio.num,
-            st->codec->height * st->codec->sample_aspect_ratio.den,
-            1024 * 1024);
-        printf("%d/%d|", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den);
-        printf("%d/%d|", st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den);
-        printf("%d/%d", display_aspect_ratio.num, display_aspect_ratio.den);
-      }
-    }
-    cout << "printing end" << endl;
-*/
+    //      AVStream *st = f->streams[i];
+          cout << "printing " << i << endl;
+          if (st->sample_aspect_ratio.num && // default
+              av_cmp_q(st->sample_aspect_ratio, st->codec->sample_aspect_ratio)) {
+            AVRational display_aspect_ratio;
+            av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+                st->codec->width * st->codec->sample_aspect_ratio.num,
+                st->codec->height * st->codec->sample_aspect_ratio.den,
+                1024 * 1024);
+            printf("%d/%d|", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den);
+            printf("%d/%d|", st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den);
+            printf("%d/%d", display_aspect_ratio.num, display_aspect_ratio.den);
+          }
+        }
+        cout << "printing end" << endl;
+     */
     cout << endl;
     cout << "<File Information><TIME_BASE>" << AV_TIME_BASE << endl;
     //      cout <<"-----------------"<<endl;
@@ -150,7 +150,7 @@ namespace bla {
     printf("%10s|", "dar");
     cout << endl;
     cout << "------------------------------------------------------------------------------------------------------------" << endl;
-//    cout << "seeking to :" << packet_start << endl;
+    //    cout << "seeking to :" << packet_start << endl;
     if (packet_start > 0)
       fis.seek(0, packet_start);
     for (int a = 0; a < packet_count; a++) {
@@ -175,21 +175,23 @@ namespace bla {
       //	printf("%10d|", pidx);
       //	printf("%10d|", f->streams[p.packet->stream_index]->index_entries[pidx].timestamp);
       //	printf("%10d|", av_index_search_timestamp(f->streams[p.packet->stream_index], p.packet->dts, 0));
-      printf("%s|", p.isKeyFrame() == 1 &&fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type==CODEC_TYPE_VIDEO? "x " : "  ");
+      printf("%s|", p.isKeyFrame() == 1 && fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type == CODEC_TYPE_VIDEO ? "x " : "  ");
       printf("%5d|", p.packet->duration);
       std::string type;
       //	if(f->streams[p.packet->stream_index]->parser){
-      switch (p._pict_type) {
-        case FF_I_TYPE: type = "I";
-          break;
-        case FF_B_TYPE: type = "B";
-          break;
-        case FF_BI_TYPE: type = "BI";
-          break;
-        case FF_P_TYPE: type = "P";
-          break;
-        default:type = "U";
-          break;
+      if (fis.getFormatContext()->streams[p.getStreamIndex()]->codec->codec_type == CODEC_TYPE_VIDEO) {
+        switch (p._pict_type) {
+          case FF_I_TYPE: type = "I";
+            break;
+          case FF_B_TYPE: type = "B";
+            break;
+          case FF_BI_TYPE: type = "BI";
+            break;
+          case FF_P_TYPE: type = "P";
+            break;
+          default:type = "U";
+            break;
+        }
       }
       printf("%2s|", type.c_str());
       printf("%d/%d|", p.getTimeBase().num, p.getTimeBase().den);
@@ -203,14 +205,14 @@ namespace bla {
       //        cout <<p.packet->pos<<"\t";
       AVStream *st = fis.getFormatContext()->streams[p.getStreamIndex()];
 
-        AVRational display_aspect_ratio;
-        av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-            st->codec->width * st->codec->sample_aspect_ratio.num,
-            st->codec->height * st->codec->sample_aspect_ratio.den,
-            1024 * 1024);
-        printf("%d/%d|", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den);
-        printf("%d/%d|", st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den);
-        printf("%d/%d", display_aspect_ratio.num, display_aspect_ratio.den);
+      AVRational display_aspect_ratio;
+      av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+              st->codec->width * st->codec->sample_aspect_ratio.num,
+              st->codec->height * st->codec->sample_aspect_ratio.den,
+              1024 * 1024);
+      printf("%d/%d|", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den);
+      printf("%d/%d|", st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den);
+      printf("%d/%d", display_aspect_ratio.num, display_aspect_ratio.den);
       cout << endl;
     }
 

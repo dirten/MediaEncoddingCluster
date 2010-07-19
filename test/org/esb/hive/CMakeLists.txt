@@ -1,4 +1,5 @@
 include_directories (${MEC_SOURCE_DIR}/src)
+include_directories (${MEC_SOURCE_DIR})
 include_directories (${MYSQL_DIR}/include/mysql)
 include_directories (${MYSQL_DIR}/include)
 
@@ -17,8 +18,10 @@ add_executable (TestNodeDiscovery TestNodeDiscovery.cpp)
 add_executable (TestTimer TestTimer.cpp)
 add_executable (TestHive TestHive.cpp)
 add_executable (CodecFactoryTest CodecFactoryTest.cpp)
-
-
+add_executable (JobCreatorTest JobCreatorTest.cpp)
+add_executable (DirectoryScannerTest DirectoryScannerTest.cpp)
+add_executable (ProcessUnitBuilderTest ProcessUnitBuilderTest.cpp)
+add_executable (ProcessUnitControllerTest ProcessUnitControllerTest.cpp)
 
 
 
@@ -35,6 +38,10 @@ target_link_libraries (TestNewProcessUnit esb hive sql net signal av io util lan
 target_link_libraries (TestPacketizer esb hive av sql net signal io util lang )
 target_link_libraries (TestHive esb hive av sql net signal io util lang )
 target_link_libraries (CodecFactoryTest esb hive av sql net signal io util lang )
+target_link_libraries (JobCreatorTest esb hive av sql net signal io util lang )
+target_link_libraries (DirectoryScannerTest  esb hive av sql net signal io util lang )
+target_link_libraries (ProcessUnitBuilderTest  esb hive av sql net signal io util lang )
+target_link_libraries (ProcessUnitControllerTest esb hive av sql net signal io util lang )
 
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
@@ -59,17 +66,22 @@ ELSE(WIN32)
 
 ENDIF(WIN32)
 
-ADD_TEST(TestDatabaseCreation ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
+ADD_TEST(org.esb.hive.DatabaseServiceTest ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
 ADD_TEST(TestNodeDiscovery ${EXECUTABLE_OUTPUT_PATH}/TestNodeDiscovery)
 ADD_TEST(TestTimer ${EXECUTABLE_OUTPUT_PATH}/TestTimer)
-ADD_TEST(TestFileImporter ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
+ADD_TEST(org.esb.hive.FileImporterTest ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 #ADD_TEST(TestClientHandler ${EXECUTABLE_OUTPUT_PATH}/TestClientHandler)
 ADD_TEST(TestHiveListener ${EXECUTABLE_OUTPUT_PATH}/TestHiveListener)
 ADD_TEST(TestAudioAC3toMP2 ${EXECUTABLE_OUTPUT_PATH}/TestAudioAC3toMP2)
-ADD_TEST(DeleteDatabase ${EXECUTABLE_OUTPUT_PATH}/DeleteDatabase)
+#ADD_TEST(DeleteDatabase ${EXECUTABLE_OUTPUT_PATH}/DeleteDatabase)
 ADD_TEST(TestProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestProcessUnit )
 ADD_TEST(TestNewProcessUnit ${EXECUTABLE_OUTPUT_PATH}/TestNewProcessUnit )
 ADD_TEST(TestPacketizer ${EXECUTABLE_OUTPUT_PATH}/TestNewProcessUnit )
 ADD_TEST(CodecFactoryTest ${EXECUTABLE_OUTPUT_PATH}/CodecFactoryTest )
+ADD_TEST(JobCreatorTest ${EXECUTABLE_OUTPUT_PATH}/JobCreatorTest )
+ADD_TEST(DirectoryScannerTest  ${EXECUTABLE_OUTPUT_PATH}/DirectoryScannerTest  )
+ADD_TEST(ProcessUnitBuilderTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitBuilderTest)
+ADD_TEST(ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
+
 

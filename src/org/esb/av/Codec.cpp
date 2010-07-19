@@ -328,7 +328,7 @@ namespace org {
             avcodec_close(ctx);
           }
 
-          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
+//          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {

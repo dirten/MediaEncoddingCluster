@@ -1,5 +1,6 @@
 #ifndef JOB_FILE
 #define JOB_FILE
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/sql/Statement.h"
@@ -23,6 +24,112 @@ struct JobStreamData {
   AVRational codectimebase;
 };
 
+int jobcreator(int fileid, int profileid, std::string outpath) {
+  db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+//  db.verbose = true;
+
+  db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Id == fileid).one();
+  db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == profileid).one();
+  vector<db::Stream> streams = mediafile.streams().get().all();
+
+  org::esb::io::File f(mediafile.filename);
+  std::string ext = f.getExtension();
+  AVOutputFormat *ofmt = NULL;
+  while ((ofmt = av_oformat_next(ofmt))) {
+    if (profile.format == ofmt->long_name) {
+      if (ofmt->extensions)
+        f.changeExtension(ofmt->extensions);
+      else
+        f.changeExtension("unknown");
+      break;
+    }
+  }
+
+  db::MediaFile outfile(db);
+  outfile.filename = f.getFileName();
+  outfile.path = outpath;
+  outfile.parent = fileid;
+  outfile.containertype = ofmt->name;
+  outfile.duration = mediafile.duration;
+  outfile.streamcount = mediafile.streamcount;
+  outfile.update();
+
+  db::Job job(db);
+  job.begintime=0;
+  job.endtime=NULL;
+  job.update();
+  job.inputfile().link(mediafile);
+  job.outputfile().link(outfile);
+
+  vector<db::Stream>::iterator it = streams.begin();
+  int a = 0;
+  for (; it != streams.end(); it++, a++) {
+    db::Stream s(db);
+
+    s.streamindex = a;
+    s.streamtype = (*it).streamtype;
+
+    if ((*it).streamtype == CODEC_TYPE_VIDEO) {
+      s.codecid = (int) profile.vcodec;
+      float f = atof(((std::string)profile.vframerate).c_str());
+      if (f == 0) {
+        s.frameratenum = (int) (*it).frameratenum; //rs.getInt("framerate_num");
+        s.framerateden = (int) (*it).framerateden; //rs.getInt("framerate_den");
+      } else {
+        AVRational r = av_d2q(f, 10000);
+        /*NOTE:values must be swapped???*/
+        s.framerateden = r.den;
+        s.frameratenum = r.num;
+      }
+      s.streamtimebasenum = (int) (*it).streamtimebasenum;
+      s.streamtimebaseden = (int) (*it).streamtimebaseden;
+      s.codectimebasenum = (int) (*it).codectimebasenum;
+      s.codectimebaseden = (int) (*it).codectimebaseden;
+      s.width = (int) profile.vwidth;
+      s.height = (int) profile.vheight;
+      s.gopsize = 20;
+      boost::shared_ptr<Encoder> enc(new Encoder((CodecID) (int) profile.vcodec));
+      enc->setWidth(profile.vwidth);
+      enc->setHeight(profile.vheight);
+      org::esb::hive::CodecFactory::setCodecOptions(enc, profile.vextra);
+      enc->open();
+      int flags = enc->getFlags();
+      if (ofmt->flags & AVFMT_GLOBALHEADER)
+        flags |= CODEC_FLAG_GLOBAL_HEADER;
+      s.flags = flags;
+      s.pixfmt = (int) enc->getPixelFormat();
+      s.bitrate = (int) profile.vbitrate;
+      s.extraprofileflags = (std::string)profile.vextra;
+    } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
+      s.codecid = (int) profile.acodec;
+      s.streamtimebasenum = 1;
+      s.streamtimebaseden = (int) profile.asamplerate;
+      s.bitrate = (int) profile.abitrate;
+      s.samplerate = (int) profile.asamplerate;
+      boost::shared_ptr<Encoder> enc(new Encoder((CodecID) (int) profile.acodec));
+      enc->setSampleRate(profile.asamplerate);
+      enc->setChannels(profile.achannels);
+      org::esb::hive::CodecFactory::setCodecOptions(enc, profile.aextra);
+      enc->open();
+      s.samplefmt = (int) enc->getSampleFormat();
+      int flags = enc->getFlags();
+      if (ofmt->flags & AVFMT_GLOBALHEADER)
+        flags |= CODEC_FLAG_GLOBAL_HEADER;
+      s.flags = flags;
+      s.bitspercodedsample = (int) enc->getBitsPerCodedSample();
+    }
+    s.update();
+    s.mediafile().link(outfile);
+    db::JobDetail job_detail(db);
+    job_detail.update();
+    job.jobdetails().link(job_detail);
+    job_detail.inputstream().link((*it));
+    job_detail.outputstream().link(s);
+
+  }
+  return job.id;
+}
+
 int jobcreator(int argc, char*argv[]) {
   std::map<int, JobStreamData> streams;
   Connection con(Config::getProperty("db.connection"));
@@ -45,11 +152,11 @@ int jobcreator(int argc, char*argv[]) {
   std::string profile_v_framerate = "";
   std::string profile_v_extra = "";
   std::string profile_a_extra = "";
-  std::string duration="";
+  std::string duration = "";
   int profile_v_width = 0;
   int profile_v_height = 0;
-  int profile_v_keep_aspect_ratio=0;
-  int profile_v_deinterlace=0;
+  int profile_v_keep_aspect_ratio = 0;
+  int profile_v_deinterlace = 0;
   int profile_a_channels = 0;
   int profile_a_codec = 0;
   int profile_a_bitrate = 0;
@@ -64,7 +171,7 @@ int jobcreator(int argc, char*argv[]) {
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
       filename = rs.getString("filename");
-      duration=rs.getString("duration");
+      duration = rs.getString("duration");
     }
   }
   {
@@ -84,7 +191,7 @@ int jobcreator(int argc, char*argv[]) {
       profile_v_height = rs.getInt("v_height");
       profile_v_extra = rs.getString("v_extra");
       profile_v_keep_aspect_ratio = rs.getInt("v_keep_aspect_ratio");
-      profile_v_deinterlace= rs.getInt("v_deinterlace");
+      profile_v_deinterlace = rs.getInt("v_deinterlace");
       profile_a_extra = rs.getString("a_extra");
       profile_a_channels = rs.getInt("a_channels");
       profile_a_codec = rs.getInt("a_codec");
@@ -104,10 +211,10 @@ int jobcreator(int argc, char*argv[]) {
       v_stream_idx = rs.getInt("stream_index");
       streams[v_stream_idx].in_stream = rs.getInt("id");
       float f = atof(profile_v_framerate.c_str());
-      streams[v_stream_idx].timebase.num=rs.getInt("time_base_num");
-      streams[v_stream_idx].timebase.den=rs.getInt("time_base_den");
-      streams[v_stream_idx].codectimebase.num=rs.getInt("codec_time_base_num");
-      streams[v_stream_idx].codectimebase.den=rs.getInt("codec_time_base_den");
+      streams[v_stream_idx].timebase.num = rs.getInt("time_base_num");
+      streams[v_stream_idx].timebase.den = rs.getInt("time_base_den");
+      streams[v_stream_idx].codectimebase.num = rs.getInt("codec_time_base_num");
+      streams[v_stream_idx].codectimebase.den = rs.getInt("codec_time_base_den");
       if (f == 0) {
         AVRational r;
         r.num = rs.getInt("framerate_num");
@@ -141,15 +248,15 @@ int jobcreator(int argc, char*argv[]) {
     std::string ext = f.getExtension();
     while ((ofmt = av_oformat_next(ofmt))) {
       if (profile_v_format == ofmt->long_name) {
-        if(ofmt->extensions)
+        if (ofmt->extensions)
           f.changeExtension(ofmt->extensions);
         else
           f.changeExtension("unknown");
         break;
       }
     }
-    
-//    logerror("Coldnot find the output extension for : "<<profile_v_format);
+
+    //    logerror("Coldnot find the output extension for : "<<profile_v_format);
     stmt.setString("filename", f.getFileName());
     stmt.setString("path", argv[4]);
     stmt.setInt("parent", fileid);
@@ -160,7 +267,7 @@ int jobcreator(int argc, char*argv[]) {
   }
   if (in_v_stream > 0) {
     PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num, time_base_den, codec_time_base_num, codec_time_base_den, width,height,gop_size,pix_fmt,bit_rate, flags, extra_profile_flags) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, :framerate_den, :time_base_num, :time_base_den, :codec_time_base_num, :codec_time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags, :extra_profile_flags)");
+            "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, :framerate_den, :time_base_num, :time_base_den, :codec_time_base_num, :codec_time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate, :flags, :extra_profile_flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
@@ -177,7 +284,7 @@ int jobcreator(int argc, char*argv[]) {
     boost::shared_ptr<Encoder> enc(new Encoder((CodecID) profile_v_codec));
     enc->setWidth(profile_v_width);
     enc->setHeight(profile_v_height);
-    org::esb::hive::CodecFactory::setCodecOptions(enc,profile_v_extra);
+    org::esb::hive::CodecFactory::setCodecOptions(enc, profile_v_extra);
     enc->open();
     int flags = enc->getFlags();
     if (ofmt->flags & AVFMT_GLOBALHEADER)
@@ -193,7 +300,7 @@ int jobcreator(int argc, char*argv[]) {
   }
   if (in_a_stream > 0) {
     PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt, flags, extra_profile_flags) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt, :flags, :extra_profile_flags)");
+            "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt, :flags, :extra_profile_flags)");
     stmt.setLong("fileid", outfileid);
     stmt.setInt("stream_index", 1);
     stmt.setInt("stream_type", 1);

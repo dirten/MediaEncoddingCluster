@@ -152,6 +152,7 @@
                     -DMYSQL_LIBRARIES=${project.build.directory}/dependency/lib/libmysqld.a
                     -DWITH_MYSQL=On
                     -DWITH_SQLITE3=Off
+                    -DWITH_SQLITE3=Off
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/litesql-src-0.3.8/build" failonerror="yes">

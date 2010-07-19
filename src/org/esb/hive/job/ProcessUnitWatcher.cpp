@@ -89,7 +89,7 @@ namespace org {
         bool ProcessUnitWatcher::_isStopSignal = false;
         bool ProcessUnitWatcher::_isRunning = false;
         AVRational ProcessUnitWatcher::basear;
-        map<int, ProcessUnitWatcher::StreamData> ProcessUnitWatcher::_stream_map;
+        map<int, StreamData> ProcessUnitWatcher::_stream_map;
 
         ProcessUnitWatcher::ProcessUnitWatcher() {
           //          std::string c = org::esb::config::Config::getProperty("db.connection");
@@ -136,6 +136,9 @@ namespace org {
 
         void ProcessUnitWatcher::start3() {
           DatabaseService::thread_init();
+
+
+
           std::string c = org::esb::config::Config::getProperty("db.connection");
           _con_tmp2 = new Connection(c);
           _stmt_fr = new PreparedStatement(_con_tmp2->prepareStatement("update process_units set complete = now() where id=:id"));
@@ -244,7 +247,6 @@ namespace org {
                     if (_stream_map[index].type == CODEC_TYPE_AUDIO) {
                     _stream_map[index].min_packet_count = 512;
                   }
-                  LOGDEBUG("StreamInformationMap sid=" << index);
 
                   LOGDEBUG("StreamInformationMap sid=" << index);
 
@@ -254,7 +256,7 @@ namespace org {
                * calculating the right start time of the stream when the start stamps from the audio/video streams differ
                */
               {
-                map<int, ProcessUnitWatcher::StreamData>::iterator it = _stream_map.begin();
+                map<int, StreamData>::iterator it = _stream_map.begin();
                 for (; it != _stream_map.end(); it++) {
                   (*it).second.last_start_pts = av_rescale_q(tsmax, basear, _stream_map[(*it).first].stream_time_base);
                   LOGDEBUG("start TS for stream id#" << (*it).first << " = " << (*it).second.last_start_pts);

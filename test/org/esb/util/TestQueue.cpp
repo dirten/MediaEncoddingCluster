@@ -92,10 +92,10 @@ void test_multi_receiver2multi_sender(){
 }
 
 int main(){
-  Log::open("");
+//  Log::open("");
   test_single_sender2receiver();
   test_multi_sender2single_receiver();
   test_multi_receiver2single_sender();
   test_multi_receiver2multi_sender();
-  Log::close();
+//  Log::close();
 }

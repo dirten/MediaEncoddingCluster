@@ -24,8 +24,10 @@ namespace org {
                 DirectoryScanner();
                 ~DirectoryScanner();
                 void onMessage(org::esb::signal::Message & msg);
-            private:
                 void scan();
+
+            private:
+//                void scan();
                 void scan(std::string indir, std::string outdir, int profile, io::FileFilter&);
                 void computeFile(org::esb::io::File & file, int profile, std::string);
                 bool _halt;

@@ -219,7 +219,7 @@ add_library (hive
 	hive/PacketCollector.cpp 
 	hive/CodecFactory.cpp 
 #	hive/job/Job.cpp
-	hive/job/JobDetail.cpp 
+#	hive/job/JobDetail.cpp
 #	hive/job/JobHandler.cpp 
 #	hive/job/JobWatcher.cpp 
 	hive/job/ProcessUnitWatcher.cpp 
@@ -241,6 +241,9 @@ add_library (hive
   hive/NodeSender.cpp
 	hive/NodeReceiver.cpp
   hive/NodeResolver.cpp
+  hive/job/ProcessUnitBuilder.cpp
+  hive/job/ProcessUnitController.cpp
+  hive/job/JobController.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db sql net esb signal av lang)

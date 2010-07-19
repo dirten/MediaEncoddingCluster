@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
   
 
 
-  Thread::sleep2(20000);
+//  Thread::sleep2(20000);
   Log::close();
   return (EXIT_SUCCESS);
 }

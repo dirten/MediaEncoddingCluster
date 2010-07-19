@@ -37,7 +37,7 @@ using namespace org::esb::av;
 
 bool toDebug = false;
 
-class PacketSink: public Sink {
+class PacketSink : public Sink {
 public:
 
   PacketSink() {
@@ -72,7 +72,7 @@ ProcessUnit::ProcessUnit() {
   _frameRateCompensateBase = 0.0;
   _gop_size = -1;
   _expected_frame_count = -1;
-  _discard_audio_bytes=-1;
+  _discard_audio_bytes = -1;
 
 }
 
@@ -85,12 +85,12 @@ void ProcessUnit::process() {
 
   if (_decoder != NULL)
     if (!_decoder->open()) {
-      LOGERROR("fail to open the decoder (ProcessUnitID:"<<_process_unit<<")");
+      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << ")");
       return;
     }
   if (_encoder != NULL)
     if (!_encoder->open()) {
-      LOGERROR("fail to open the encoder (ProcessUnitID:"<<_process_unit<<")");
+      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << ")");
       return;
     }
   /*creating a frame converter*/
@@ -119,10 +119,10 @@ void ProcessUnit::process() {
   int64_t last_pts = -1;
   bool compute_delayed_frames = false;
   int stream_index = -1;
-  int loop_count=0;
+  int loop_count = 0;
   /*loop over each Packet received */
   for (it = _input_packets.begin(); it != _input_packets.end() || compute_delayed_frames;) {
-    LOGTRACE("Loop:"<<++loop_count);
+    LOGTRACE("Loop:" << ++loop_count);
     /*get the Packet Pointer from the list*/
     boost::shared_ptr<Packet> p;
     /**
@@ -135,19 +135,19 @@ void ProcessUnit::process() {
       it++;
     } else {
       LOGDEBUG("delayed frame");
-      p = boost::shared_ptr<Packet>(new Packet());
+      p = boost::shared_ptr<Packet > (new Packet());
       p->setTimeBase(_input_packets.front()->getTimeBase());
       p->setDuration(_input_packets.front()->getDuration());
       p->setStreamIndex(stream_index);
     }
     /*sum the packet sizes for later output*/
     insize += p->packet->size;
-    LOGTRACE("Inputpacket:"<<p->toString());
+    LOGTRACE("Inputpacket:" << p->toString());
     p->toString();
     /*Decoding the Packet into a Frame*/
     Frame * tmp = _decoder->decode2(*p);
 
-    LOGTRACE("Frame Decoded:"<<tmp->toString());
+    LOGTRACE("Frame Decoded:" << tmp->toString());
     /*when frame not finished, then it is nothing todo, continue with the next packet*/
     if (!tmp->isFinished()) {
       delete tmp;
@@ -156,7 +156,7 @@ void ProcessUnit::process() {
     }
 
 
-    if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()){
+    if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()) {
       LOGDEBUG("setting compute_delayed_frames=true");
       compute_delayed_frames = true;
     }
@@ -177,19 +177,19 @@ void ProcessUnit::process() {
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
-    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO&&
-        _discard_audio_bytes>0){
-      size_t size=f->_size+_discard_audio_bytes;
+    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
+            _discard_audio_bytes > 0) {
+      size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
-      memset(tmp_buf,0,size);
-      memcpy(tmp_buf+_discard_audio_bytes,f->_buffer,f->_size);
+      memset(tmp_buf, 0, size);
+      memcpy(tmp_buf + _discard_audio_bytes, f->_buffer, f->_size);
       av_free(f->_buffer);
-      f->_buffer=tmp_buf;
-      f->_size=size;
-      _discard_audio_bytes=0;
+      f->_buffer = tmp_buf;
+      f->_size = size;
+      _discard_audio_bytes = 0;
     }
 
-    LOGTRACE("Frame Converted"<<f->toString());
+    LOGTRACE("Frame Converted" << f->toString());
 
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
@@ -209,9 +209,28 @@ void ProcessUnit::process() {
   }
   _output_packets = sink.getList();
   if (_expected_frame_count != -1 && _output_packets.size() != _expected_frame_count)
-    LOGWARN("PUID="<<_process_unit<<" Expected Frame count diff from resulting Frame count: expected="<<_expected_frame_count<<" got="<<_output_packets.size())
+    LOGWARN("PUID=" << _process_unit << " Expected Frame count diff from resulting Frame count: expected=" << _expected_frame_count << " got=" << _output_packets.size())
+  }
+
+boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
+  return _decoder;
 }
 
+boost::shared_ptr<Encoder> ProcessUnit::getEncoder() {
+  return _encoder;
+}
+std::list<boost::shared_ptr<Packet> > ProcessUnit::getInputPacketList(){
+  return _input_packets;
+}
+std::list<boost::shared_ptr<Packet> > ProcessUnit::getOutputPacketList(){
+  return _output_packets;
+}
+int ProcessUnit::getGopSize(){
+  return _gop_size;
+}
+int ProcessUnit::getExpectedFrameCount(){
+  return _expected_frame_count;
+}
 std::string toString() {
   std::stringstream t;
   return t.str();

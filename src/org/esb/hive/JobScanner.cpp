@@ -24,6 +24,7 @@
  *
  * ----------------------------------------------------------------------
  */
+#include "org/esb/db/hivedb.hpp"
 #include "JobScanner.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
@@ -88,17 +89,18 @@ namespace org {
 
       void JobScanner::run() {
         _running = true;
-        //        logdebug("run");
-        org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT *,concat(outfolder,\"/\",profile_name,substring( files.path, length( watch_folder.infolder )+1 )) as output_folder FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid, profiles WHERE files.parent =0 and profiles.id=profile and jobs.id is null");
+
+        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+
+//        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT *,concat(outfolder,\"/\",profile_name,substring( files.path, length( watch_folder.infolder )+1 )) as output_folder FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid, profiles WHERE files.parent =0 and profiles.id=profile and jobs.id is null");
         while (_run) {
-          //        logdebug("while");
-          org::esb::sql::ResultSet rs = stmt.executeQuery();
-          while (rs.next()) {
-            //          logdebug("while rs next");
-            std::string file = rs.getString("files.id");
-            std::string profile = rs.getString("watch_folder.profile");
-            std::string outdir = rs.getString("output_folder");
+          litesql::Records records=db.query("SELECT files.id,watch_folder.profile,concat(outfolder,\"/\",profile_name,substring( files.path, length( watch_folder.infolder )+1 )) as output_folder FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid, profiles WHERE files.parent =0 and profiles.id=profile and jobs.id is null");
+//          org::esb::sql::ResultSet rs = stmt.executeQuery();
+          for (litesql::Records::iterator i=records.begin();i!=records.end();i++) {
+
+            std::string file = (*i)[0];
+            std::string profile = (*i)[1];
+            std::string outdir = (*i)[2];
             char * jobarg[] = {
               const_cast<char*>(""), 
               const_cast<char*>(""), 

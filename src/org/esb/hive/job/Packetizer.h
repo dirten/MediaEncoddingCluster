@@ -42,8 +42,8 @@ namespace org {
     }
     namespace hive {
       namespace job {
-        typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
-        typedef std::deque<PacketPtr> PacketListPtr;
+//        typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
+//        typedef std::deque<PacketPtr> PacketListPtr;
 
         class Packetizer {
         private:
@@ -59,35 +59,36 @@ namespace org {
         public:
 
           struct StreamData {
-            PacketListPtr packets;
+            org::esb::av::PacketListPtr packets;
 //            CodecType codec_type;
 //            CodecID codec_id;
             boost::shared_ptr<org::esb::av::Decoder> decoder;
             boost::shared_ptr<org::esb::av::Encoder> encoder;
             State state;
+            int min_packet_count;
           };
           Packetizer(std::map<int, StreamData>);
           ~Packetizer();
-          bool putPacket(PacketPtr);
+          bool putPacket(org::esb::av::PacketPtr);
           void flushStreams();
-          PacketListPtr getPacketList();
-          PacketListPtr removePacketList();
+          org::esb::av::PacketListPtr getPacketList();
+          org::esb::av::PacketListPtr removePacketList();
           int getPacketListCount();
         private:
 //          State _state;
-          bool processPacket(PacketPtr);
-          bool processPacket2(PacketPtr);
+          bool processPacket(org::esb::av::PacketPtr);
+          bool processPacket2(org::esb::av::PacketPtr);
           bool buildList(int stream_id);
           void addingPacketsFromQueue(int stream_id);
 
           std::map<int, StreamData> _streams;
 
-          std::list<PacketListPtr> _packet_list;
+          std::list<org::esb::av::PacketListPtr> _packet_list;
 
           static const int MIN_AUDIO_PACKETS = 500;
           static const int MIN_VIDEO_PACKETS = 20;
 
-          std::map<int, PacketListPtr> _overlap_queue;
+          std::map<int, org::esb::av::PacketListPtr> _overlap_queue;
           std::map<CodecID, int> _codec_overlap;
           std::map<CodecType, int> _codec_min_packets;
 

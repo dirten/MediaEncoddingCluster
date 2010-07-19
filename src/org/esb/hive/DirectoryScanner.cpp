@@ -125,32 +125,28 @@ namespace org {
       }
 
       void DirectoryScanner::scan() {
-        _con = new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt = new PreparedStatement(_con->prepareStatement("select * from files where filename=:name and path=:path"));
-        _con2 = new Connection(std::string(org::esb::config::Config::getProperty("db.connection")));
-        _stmt2 = new Statement(_con2->createStatement("select * from watch_folder"));
-        while (!_halt) {
-          ResultSet rs = _stmt2->executeQuery();
-          while (rs.next()) {
-            if (File(rs.getString("infolder").c_str()).exists()) {
-              FileFilter * filter = new MyFileFilter(rs.getString("extension_filter"));
-              scan(rs.getString("infolder"), rs.getString("outfolder"), rs.getInt("profile"), *filter);
+        do{
+          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+          vector<db::Watchfolder> dbfolder = litesql::select<db::Watchfolder > (db).all();
+          vector<db::Watchfolder>::iterator it = dbfolder.begin();
+          for (; it != dbfolder.end(); it++) {
+            LOGDEBUG("Scandir:" << (*it).infolder);
+            File folder((*it).infolder);
+            if (folder.exists()) {
+              FileFilter * filter = new MyFileFilter((*it).extensionfilter);
+              try {
+                scan((*it).infolder, (*it).outfolder, (*it).profile().get().one().id, *filter);
+              } catch (litesql::NotFound ex) {
+                LOGERROR(ex);
+              }
               delete filter;
             } else {
               //            _halt = true;
             }
           }
           Thread::sleep2(_interval);
-        }
-        if (_stmt)
-          delete _stmt;
-        if (_con)
-          delete _con;
-        _stmt = NULL;
-        _con = NULL;
-        delete _stmt2;
-        delete _con2;
-
+        }while (!_halt);
+        LOGDEBUG("halting directoryscanner");
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         termination_wait.notify_all();
 
@@ -170,32 +166,30 @@ namespace org {
       }
 
       void DirectoryScanner::computeFile(File & file, int p, std::string outdir) {
-
-        _stmt->setString("name", file.getFileName());
-        _stmt->setString("path", file.getFilePath());
-        ResultSet rs = _stmt->executeQuery();
-        if (!rs.next()) {
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        try {
+          db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Filename == file.getFileName() && db::MediaFile::Path == file.getFilePath()).one();
+        } catch (litesql::NotFound ex) {
           if (file.isFile()) {
-          LOGDEBUG("new file found:"<<file.getPath());
+            LOGDEBUG("new file found:" << file.getPath());
             const char * filename = 0;
-//            std::string name = file.getPath();
-            //		filename=name.data();
-//            char * argv[] = {const_cast<char*>(""), (char*) name.c_str()};
             int fileid = import(file);
             if (false && fileid > 0 && p > 0) {
               std::string file = org::esb::util::Decimal(fileid).toString();
               std::string profile = org::esb::util::Decimal(p).toString();
               char * jobarg[] = {
-                const_cast<char*>(""), 
-                const_cast<char*>(""), 
-                const_cast<char*>(file.c_str()), 
-                const_cast<char*>(profile.c_str()), 
-                const_cast<char*>(outdir.c_str())};
+                const_cast<char*> (""),
+                const_cast<char*> (""),
+                const_cast<char*> (file.c_str()),
+                const_cast<char*> (profile.c_str()),
+                const_cast<char*> (outdir.c_str())
+              };
               std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
               std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
               jobcreator(4, jobarg);
             }
           }
+
         }
       }
     }

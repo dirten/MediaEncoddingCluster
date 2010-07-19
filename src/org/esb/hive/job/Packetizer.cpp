@@ -28,6 +28,7 @@
 
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Decoder.h"
+using namespace org::esb::av;
 namespace org {
   namespace esb {
     namespace hive {
@@ -37,12 +38,6 @@ namespace org {
          *
          */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
-          //          _codec_overlap[CODEC_ID_MPEG2VIDEO] = 3;
-
-          //          _codec_overlap[CODEC_ID_MP3] = 3;
-          //          _codec_overlap[CODEC_ID_AC3] = 1;
-          //          _codec_overlap[CODEC_ID_MP2] = 3;
-
           _codec_min_packets[CODEC_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
           _codec_min_packets[CODEC_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
 
@@ -52,10 +47,12 @@ namespace org {
            */
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
+            if ((*it).second.min_packet_count==0)
+              (*it).second.min_packet_count=_codec_min_packets[(*it).second.decoder.get()->getCodecType()];
             if ((*it).second.decoder.get() == NULL)
               LOGERROR("Decoder is NULL");
             if ((*it).second.encoder.get() == NULL)
-              LOGERROR("Decoder is NULL");
+              LOGERROR("Encoder is NULL");
             (*it).second.state = STATE_NOP;
           }
         }
@@ -188,7 +185,7 @@ namespace org {
             _streams[stream_idx].state = STATE_START_I_FRAME;
           }
 
-          if (_streams[stream_idx].state == STATE_START_I_FRAME && _streams[stream_idx].packets.size() >= _codec_min_packets[_streams[stream_idx].decoder->getCodecType()] && ptr->isKeyFrame()) {
+          if (_streams[stream_idx].state == STATE_START_I_FRAME && _streams[stream_idx].packets.size() >= _streams[stream_idx].min_packet_count && ptr->isKeyFrame()) {
             _streams[stream_idx].state = STATE_END_I_FRAME;
           }
 

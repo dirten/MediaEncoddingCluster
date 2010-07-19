@@ -30,10 +30,12 @@ int main(int argc, char** argv) {
   std::string src = MEC_SOURCE_DIR;
 
   org::esb::config::Config::setProperty("hive.base_path", src.c_str());
-  org::esb::config::Config::setProperty("db.url", "host=127.0.0.1;user=root;port=3306;database=example");
+  org::esb::config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
 
   src.append("/test.dvd");
-  org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
+  org::esb::hive::DatabaseService::start("/home/HoelscJ/devel/mec");
+  org::esb::hive::DatabaseService::createDatabase();
+  org::esb::hive::DatabaseService::createTables();
 
   int fileid = import(org::esb::io::File(src));
   assert(fileid>0);
@@ -62,6 +64,7 @@ int main(int argc, char** argv) {
   assert(encoder->open());
 
   LOGDEBUG(encoder->toString());
+  org::esb::hive::DatabaseService::dropDatabase();
   return 0;
 }
 

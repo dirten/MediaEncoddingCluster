@@ -1,14 +1,20 @@
 #ifndef JOB_FILE
-#  define JOB_FILE
-#  include "org/esb/sql/Connection.h"
-#  include "org/esb/sql/PreparedStatement.h"
-#  include "org/esb/sql/Statement.h"
-#  include "org/esb/sql/ResultSet.h"
-#  include "org/esb/config/config.h"
-#  include "org/esb/av/Codec.h"
+#define JOB_FILE
+#include "org/esb/sql/Connection.h"
+#include "org/esb/sql/PreparedStatement.h"
+#include "org/esb/sql/Statement.h"
+#include "org/esb/sql/ResultSet.h"
+#include "org/esb/config/config.h"
+#include "org/esb/av/Codec.h"
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
+
+int jobcreator(int fileid, int profileid, std::string outpath) {
+  db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+  db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
+  db::Profile mediafile=litesql::select<db::Profile>(db, db::Profile::Id==profileid).one();
+}
 
 int jobcreator(int argc, char*argv[]) {
   Connection con(Config::getProperty("db.connection"));
@@ -99,7 +105,7 @@ int jobcreator(int argc, char*argv[]) {
   }
   {
     PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec,framerate_num,framerate_den, time_base_num,time_base_den, width,height,gop_size,pix_fmt,bit_rate) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, framerate_den, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
+            "(:fileid, :stream_index, :stream_type, :codec, :framerate_num, framerate_den, :time_base_num, :time_base_den, :width, :height, :gop_size, :pix_fmt, :bit_rate)");
     stmt.setInt("fileid", outfileid);
     stmt.setInt("stream_index", 0);
     stmt.setInt("stream_type", 0);
@@ -120,7 +126,7 @@ int jobcreator(int argc, char*argv[]) {
   }
   {
     PreparedStatement stmt = con.prepareStatement("insert into streams(fileid,stream_index,stream_type,codec, time_base_num,time_base_den, bit_rate, sample_rate, channels, sample_fmt) values"
-        "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt)");
+            "(:fileid, :stream_index, :stream_type, :codec, :time_base_num, :time_base_den, :bit_rate, :sample_rate, :channels, :sample_fmt)");
     stmt.setInt("fileid", outfileid);
     stmt.setInt("stream_index", 1);
     stmt.setInt("stream_type", 1);

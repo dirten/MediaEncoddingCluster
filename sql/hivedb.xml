@@ -41,12 +41,12 @@
         <field name="formatext" type="string"/>
         <field name="vcodec" type="integer"/>
         <field name="vbitrate" type="integer"/>
-        <field name="vframerate" type="integer"/>
+        <field name="vframerate" type="string"/>
         <field name="vwidth" type="integer"/>
         <field name="vheight" type="integer"/>
         <field name="vextra" type="string"/>
-        <field name="acodec" type="integer"/>
         <field name="achannels" type="integer"/>
+        <field name="acodec" type="integer"/>
         <field name="abitrate" type="integer"/>
         <field name="asamplerate" type="integer"/>
         <field name="aextra" type="string"/>
@@ -110,19 +110,20 @@
     </object>
 
     <object name="Job">
-        <field name="begintime" type="datetime"/>
-        <field name="endtime" type="datetime"/>
+        <field name="begintime" type="integer"/>
+        <field name="endtime" type="integer"/>
         <field name="status" type="string"/>
     </object>
 
-    <relation>
+    <relation id="JobInFile">
         <relate object="Job" handle="inputfile"/>
-        <relate object="MediaFile" handle="jobs"/>
+        <relate object="MediaFile" handle="jobsin"/>
     </relation>
 
-    <relation>
+
+    <relation id="JobOutFile">
         <relate object="Job" handle="outputfile"/>
-        <relate object="MediaFile" handle="jobs"/>
+        <relate object="MediaFile" handle="jobsout"/>
     </relation>
 
     <object name="JobDetail">
@@ -130,19 +131,30 @@
         <field name="lastdts" type="double"/>
     </object>
 
-    <relation>
-        <relate object="Job" handle="job"/>
-        <relate object="JobDetail" handle="jobs"/>
+    <relation id="JobJobDetail">
+        <relate object="Job" handle="jobdetails"/>
+        <relate object="JobDetail" handle="job"/>
     </relation>
 
-    <relation>
+    <relation id="JobOutStream">
         <relate object="JobDetail" handle="outputstream"/>
-        <relate object="Stream" handle="jobs"/>
+        <relate object="Stream" handle="jobsout"/>
     </relation>
 
-    <relation>
+    <relation id="JobInStream">
         <relate object="JobDetail" handle="inputstream"/>
-        <relate object="Stream" handle="jobs"/>
+        <relate object="Stream" handle="jobsin"/>
+    </relation>
+
+    <object name="Watchfolder">
+        <field name="infolder" type="string"/>
+        <field name="outfolder" type="string"/>
+        <field name="extensionfilter" type="string"/>
+    </object>
+
+    <relation id="WatchfolderProfile">
+        <relate object="Watchfolder" handle="profile"/>
+        <relate object="Profile" handle="watchfolder"/>
     </relation>
 
 </database>
