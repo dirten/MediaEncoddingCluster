@@ -20,6 +20,7 @@ namespace org {
           offset+=strlen(line)+1;
           LOGDEBUG("PGMLine:"<<line<<"e="<<e<<"len="<<strlen(line)<<"offset="<<offset);
         }
+	return NULL;
       }
 
       void PGMUtil::save(std::string file, Frame * frame) {
