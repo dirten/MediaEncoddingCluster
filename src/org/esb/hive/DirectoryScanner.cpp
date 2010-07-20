@@ -24,7 +24,7 @@
  *
  * ----------------------------------------------------------------------
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include "DirectoryScanner.h"
 #include <boost/bind.hpp>
 #include "org/esb/lang/Thread.h"
