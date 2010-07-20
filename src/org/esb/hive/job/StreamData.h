@@ -7,7 +7,7 @@
 
 #ifndef STREAMDATA_H
 #define	STREAMDATA_H
-#include "org/esb/db/hivedb.hpp"
+
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Packet.h"
