@@ -10,6 +10,8 @@ project (MEC)
 
 INCLUDE(CTest)
 ENABLE_TESTING()
+SET(DART_TESTING_TIMEOUT 100)
+
 #set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "${CTEST_MEMORYCHECK_COMMAND_OPTIONS} --num-callers=50") 
 set(VALGRIND_COMMAND_OPTIONS "-q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50")
 

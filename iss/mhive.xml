@@ -12,7 +12,7 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mhive_build_dir</name>
-            <value>D:/MediaEncodingCluster-svn/build</value>
+            <value>M:/MediaEncodingCluster-build-new</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>ffmpeg_dir</name>

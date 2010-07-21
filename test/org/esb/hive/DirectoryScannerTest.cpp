@@ -25,7 +25,9 @@ int main(int argc, char** argv) {
   config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
 
   hive::DatabaseService::start(MEC_SOURCE_DIR);
-    hive::DatabaseService::createDatabase();
+    if (!hive::DatabaseService::databaseExist()) {
+      hive::DatabaseService::createDatabase();
+    }
   hive::DatabaseService::dropTables();
   hive::DatabaseService::updateTables();
   hive::DatabaseService::loadPresets();
@@ -34,7 +36,7 @@ int main(int argc, char** argv) {
     db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
     db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
     db::Watchfolder folder(db);
-    folder.infolder = MEC_SOURCE_DIR;//"/home/HoelscJ/old/media/video/";
+    folder.infolder = "/home/HoelscJ/old/media/video/";
     folder.outfolder = "/tmp/test";
     folder.update();
     folder.profile().link(profile);

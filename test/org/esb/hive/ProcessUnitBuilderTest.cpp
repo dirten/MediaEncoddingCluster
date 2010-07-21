@@ -31,7 +31,7 @@ void testVideoSameFramerate() {
 
 
   data[0].instream=1;
-  data[0].outstream=1;
+  data[0].outstream=2;
 
   ProcessUnitBuilder builder(data);
 
