@@ -154,7 +154,11 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="all"/>
                 </exec>
+		<copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>
+		
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin"/>
+                  <env key="DYLD_LIBRARY_PATH" path="${env.PATH};${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin"/>
                   <arg line="test"/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">

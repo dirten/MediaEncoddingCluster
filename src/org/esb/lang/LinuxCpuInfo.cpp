@@ -51,7 +51,7 @@ namespace org {
       void SystemCpuInfo::parseCpuInfo(std::string& data) {
         int start = -1;
         int last_start = -1;
-        bool hasMoreProcessor = true;
+        bool hasMoreProcessor = false;
         while (hasMoreProcessor) {
           start = data.find("processor", start + 1);
           if (start == -1)break;

@@ -29,13 +29,13 @@ void queue_sender(int count,int wait){
 
 void test_single_sender2receiver(){
   boost::thread t(boost::bind(&queue_receiver, 10,0));
-  Thread::sleep2(2000);
+  Thread::sleep2(500);
   queue_sender(10,0);
   t.join();
 }
 void test_single_sender2receiver2(){
   boost::thread t(boost::bind(&queue_sender, 10,0));
-  Thread::sleep2(2000);
+  Thread::sleep2(500);
   queue_receiver(10,1000);
   t.join();
 }
@@ -43,9 +43,9 @@ void test_multi_sender2single_receiver(){
   int msgcount=100;
   boost::thread t(boost::bind(&queue_receiver, msgcount*3,10));
   Thread::sleep2(2000);
-  boost::thread ts1(boost::bind(&queue_sender,msgcount, 100));
-  boost::thread ts2(boost::bind(&queue_sender,msgcount, 200));
-  boost::thread ts3(boost::bind(&queue_sender,msgcount, 300));
+  boost::thread ts1(boost::bind(&queue_sender,msgcount, 10));
+  boost::thread ts2(boost::bind(&queue_sender,msgcount, 20));
+  boost::thread ts3(boost::bind(&queue_sender,msgcount, 30));
 
   t.join();
   ts1.join();
@@ -55,11 +55,11 @@ void test_multi_sender2single_receiver(){
 
 void test_multi_receiver2single_sender(){
   int msgcount=100;
-  boost::thread t(boost::bind(&queue_receiver, msgcount,100));
-  boost::thread t1(boost::bind(&queue_receiver, msgcount,200));
-  boost::thread t2(boost::bind(&queue_receiver, msgcount,300));
+  boost::thread t(boost::bind(&queue_receiver, msgcount,10));
+  boost::thread t1(boost::bind(&queue_receiver, msgcount,20));
+  boost::thread t2(boost::bind(&queue_receiver, msgcount,30));
   Thread::sleep2(2000);
-  boost::thread ts1(boost::bind(&queue_sender,msgcount*3, 100));
+  boost::thread ts1(boost::bind(&queue_sender,msgcount*3, 10));
 
   t.join();
   t1.join();

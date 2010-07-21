@@ -13,7 +13,10 @@ namespace org {
       namespace job {
 
         ProcessUnitBuilder::ProcessUnitBuilder(map<int, StreamData> & data):_map_data( data ){
-          
+          map<int, StreamData>::iterator it=data.begin();
+	  for(;it!=data.end();it++){
+	    (*it).second.frameRateCompensateBase=0.0;
+	  } 
         }
 
         ProcessUnitBuilder::ProcessUnitBuilder(const ProcessUnitBuilder& orig):_map_data(orig._map_data) {
@@ -30,7 +33,7 @@ namespace org {
           u->_decoder = _map_data[idx].decoder;
           u->_encoder = _map_data[idx].encoder;
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
-          u->_gop_size = list.size() - _map_data[idx].b_frame_offset;
+          u->_gop_size = list.size() ;//- _map_data[idx].b_frame_offset;
           u->_frameRateCompensateBase = _map_data[idx].frameRateCompensateBase;
 
           AVRational input_framerate = u->_decoder->getFrameRate();
