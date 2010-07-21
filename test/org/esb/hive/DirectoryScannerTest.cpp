@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
     db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
     db::Watchfolder folder(db);
-    folder.infolder = "/home/HoelscJ/old/media/video/";
+    folder.infolder = MEC_SOURCE_DIR;//"/home/HoelscJ/old/media/video/";
     folder.outfolder = "/tmp/test";
     folder.update();
     folder.profile().link(profile);

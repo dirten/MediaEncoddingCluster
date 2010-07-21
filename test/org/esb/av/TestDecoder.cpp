@@ -23,7 +23,7 @@ void testDecodeVideo() {
   std::string filepath = MEC_SOURCE_DIR;
 //  filepath.append("/test/fixtures/TITLE01-ANGLE1.VOB");
   filepath.append("/test.dvd");
-  filepath="/home/HoelscJ/old/media/video/ChocolateFactory.ts";
+//filepath="/home/HoelscJ/old/media/video/ChocolateFactory.ts";
   org::esb::io::File file(filepath.c_str());
   org::esb::av::FormatInputStream fis(&file);
   int c = fis.getStreamCount();
