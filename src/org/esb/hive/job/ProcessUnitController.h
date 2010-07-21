@@ -28,12 +28,15 @@ namespace org {
             PUT_PROCESS_UNIT,
             PUT_AUDIO_PROCESS_UNIT
           };*/
-          
+
           ProcessUnitController();
           ProcessUnitController(const ProcessUnitController& orig);
           virtual ~ProcessUnitController();
           void onMessage(org::esb::signal::Message & msg);
           void processJob(db::Job job);
+          boost::shared_ptr<ProcessUnit> getProcessUnit();
+          boost::shared_ptr<ProcessUnit> getAudioProcessUnit();
+          bool putProcessUnit(boost::shared_ptr<ProcessUnit> & unit);
         private:
           void start();
           void stop();
@@ -41,7 +44,19 @@ namespace org {
           typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
           ProcessUnitQueue puQueue;
           org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
+          boost::mutex queue_empty_wait_mutex;
+          boost::condition queue_empty_wait_condition;
+          boost::mutex put_pu_mutex;
+          boost::mutex get_pu_mutex;
+          boost::mutex db_con_mutex;
 
+          bool _isStopSignal;
+          bool _isRunning;
+
+          db::HiveDb _dbCon;
+          db::HiveDb _dbJobCon;
+
+//          boost::shared_ptr<db::Job> _actual_job;
         };
 
       }

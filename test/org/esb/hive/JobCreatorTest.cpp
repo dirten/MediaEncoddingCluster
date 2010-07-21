@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
     using namespace org::esb::hive::job;
     JobController ctrl;
     db::Job dbjob = ctrl.getJob();
-    dbjob.begintime=100;
+    dbjob.begintime=0;
     dbjob.update();
 
     //  std::cout << job << std::endl;

@@ -16,6 +16,9 @@
 #include "config.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Log.h"
+
+#include "boost/thread.hpp"
+#include "boost/bind.hpp"
 using namespace std;
 using namespace org::esb::hive::job;
 using namespace org::esb::hive;
@@ -26,7 +29,43 @@ using namespace org::esb::config;
  * 
  */
 
-void testDirect(){
+int running = true;
+
+void processUnitReader() {
+  LOGDEBUG("starting void processUnitReader()");
+  while (running) {
+    Message msg;
+    msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
+    Messenger::getInstance().sendRequest(msg);
+    boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
+
+    if (unit->_input_packets.size() == 0) {
+      org::esb::lang::Thread::sleep2(500);
+    } else {
+      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
+      Messenger::getInstance().sendRequest(msg);
+    }
+
+  }
+}
+
+void audioProcessUnitReader() {
+  LOGDEBUG("starting void audioprocessUnitReader()");
+  while (running) {
+    Message msg;
+    msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
+    Messenger::getInstance().sendRequest(msg);
+    boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
+    if (unit->_input_packets.size() == 0) {
+      org::esb::lang::Thread::sleep2(500);
+    } else {
+      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
+      Messenger::getInstance().sendRequest(msg);
+    }
+  }
+}
+
+void testDirect() {
 
 }
 
@@ -45,11 +84,16 @@ int main(int argc, char** argv) {
     DatabaseService::updateTables();
     DatabaseService::loadPresets();
 
+
+
     ProcessUnitController ctrl;
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
 
     org::esb::lang::Thread::sleep2(5000);
+    boost::thread t1(processUnitReader);
+    boost::thread t2(audioProcessUnitReader);
+
     std::string src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
 
@@ -60,9 +104,10 @@ int main(int argc, char** argv) {
 
 
     org::esb::lang::Thread::sleep2(10000);
+    running = false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
     org::esb::lang::Thread::sleep2(10000);
-    
+
     Messenger::free();
 
   }

@@ -30,6 +30,8 @@ namespace org {
           boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
           PacketPtr p = list.front();
           int idx = p->getStreamIndex();
+          u->_source_stream=_map_data[idx].instream;
+          u->_target_stream=_map_data[idx].outstream;
           u->_decoder = _map_data[idx].decoder;
           u->_encoder = _map_data[idx].encoder;
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());

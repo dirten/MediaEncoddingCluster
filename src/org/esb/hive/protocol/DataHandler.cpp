@@ -15,12 +15,15 @@
 #include "org/esb/config/config.h"
 #include "org/esb/net/TcpSocket.h"
 
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
 #include "org/esb/util/Timer.h"
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
 using namespace org::esb::net;
+using namespace org::esb::signal;
 using namespace org::esb;
 
 #define GET_UNIT  "get process_unit"
@@ -97,12 +100,12 @@ public:
     shutdown = true;
     _timer.reset();
     remove_endpoint_from_stream(boost::asio::error::shut_down);
-    if(_oos)
+    if (_oos)
       delete _oos;
-    _oos=NULL;
-    if(_ois)
+    _oos = NULL;
+    if (_ois)
       delete _ois;
-    _ois=NULL;
+    _ois = NULL;
   }
 
   DataHandler(TcpSocket * s) {
@@ -129,10 +132,10 @@ public:
 
   int isResponsible(char * command) {
     if (
-        strcmp(command, GET_UNIT) == 0 ||
-        strcmp(command, PUT_UNIT) == 0 ||
-        strcmp(command, GET_AUDIO_UNIT) == 0 ||
-        strcmp(command, PUT_AUDIO_UNIT) == 0) {
+            strcmp(command, GET_UNIT) == 0 ||
+            strcmp(command, PUT_UNIT) == 0 ||
+            strcmp(command, GET_AUDIO_UNIT) == 0 ||
+            strcmp(command, PUT_AUDIO_UNIT) == 0) {
       return CMD_PROCESS;
     } else
       if (strcmp(command, "help") == 0) {
@@ -143,43 +146,60 @@ public:
 
   void process(char * command) {
     if (strcmp(command, GET_UNIT) == 0) {
-      un = ProcessUnitWatcher::getProcessUnit();
+      Message msg;
+      msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
+      Messenger::getInstance().sendRequest(msg);
+      un = msg.getPtrProperty("processunit");
       _oos->writeObject(*un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
-
-      string data;
-      _is->read(data);
-      std::string name = org::esb::config::Config::getProperty("hive.base_path");
-      name += "/tmp/";
-      name += org::esb::util::Decimal(un->_process_unit % 10).toString();
-      org::esb::io::File dir(name.c_str());
-      if (!dir.exists()) {
-        dir.mkdir();
-      }
-      name += "/";
-      name += org::esb::util::Decimal(un->_process_unit).toString();
-      name += ".unit";
-      org::esb::io::File out(name.c_str());
-      org::esb::io::FileOutputStream fos(&out);
-      fos.write(data);
-      //      un=boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-      //      _ois->readObject(un.get());
-
+      /*
+            string data;
+            _is->read(data);
+            std::string name = org::esb::config::Config::getProperty("hive.base_path");
+            name += "/tmp/";
+            name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+            org::esb::io::File dir(name.c_str());
+            if (!dir.exists()) {
+              dir.mkdir();
+            }
+            name += "/";
+            name += org::esb::util::Decimal(un->_process_unit).toString();
+            name += ".unit";
+            org::esb::io::File out(name.c_str());
+            org::esb::io::FileOutputStream fos(&out);
+            fos.write(data);*/
+      un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+      _ois->readObject(*un.get());
+      Message msg;
+      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
+      msg.setProperty("processunit", un);
+      Messenger::getInstance().sendRequest(msg);
+      /*
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         LOGERROR("error while putProcessUnit!");
-      }
+      }*/
     } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
 
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
-          un = ProcessUnitWatcher::getStreamProcessUnit();
+          Message msg;
+          msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
+          Messenger::getInstance().sendRequest(msg);
+          un = msg.getPtrProperty("processunit");
+
+          //          un = ProcessUnitWatcher::getStreamProcessUnit();
         } else {
           un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
         }
       } else {
         LOGDEBUG("new client " << _own_id)
-        un = ProcessUnitWatcher::getStreamProcessUnit();
+        Message msg;
+        msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
+        Messenger::getInstance().sendRequest(msg);
+        un = msg.getPtrProperty("processunit");
+
+        //        un = ProcessUnitWatcher::getStreamProcessUnit();
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
@@ -193,36 +213,50 @@ public:
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {
-      string data;
-      _is->read(data);
-      if (un.get() == NULL) {
-        LOGDEBUG("ProcessUnit timed out, discard it");
-        return;
-      }
-      std::string name = org::esb::config::Config::getProperty("hive.base_path");
-      name += "/tmp/";
-      name += org::esb::util::Decimal(un->_process_unit % 10).toString();
-      org::esb::io::File dir(name.c_str());
-      if (!dir.exists()) {
-        dir.mkdir();
-      }
-      name += "/";
-      name += org::esb::util::Decimal(un->_process_unit).toString();
-      name += ".unit";
-      org::esb::io::File out(name.c_str());
-      org::esb::io::FileOutputStream fos(&out);
-      fos.write(data);
+      /*string data;
+            _is->read(data);
+            if (un.get() == NULL) {
+              LOGDEBUG("ProcessUnit timed out, discard it");
+              return;
+            }
+            std::string name = org::esb::config::Config::getProperty("hive.base_path");
+            name += "/tmp/";
+            name += org::esb::util::Decimal(un->_process_unit % 10).toString();
+            org::esb::io::File dir(name.c_str());
+            if (!dir.exists()) {
+              dir.mkdir();
+            }
+            name += "/";
+            name += org::esb::util::Decimal(un->_process_unit).toString();
+            name += ".unit";
+            org::esb::io::File out(name.c_str());
+            org::esb::io::FileOutputStream fos(&out);
+            fos.write(data);
 
-      //      _ois->readObject(un);
-      if (_timer.get() != NULL)
-        _timer.reset();
+            //      _ois->readObject(un);
+            if (_timer.get() != NULL)
+              _timer.reset();*/
       /*
            t.expires_from_now(boost::posix_time::seconds(10));
              t.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
        */
+      un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
+      _ois->readObject(*un.get());
+      if (un.get() == NULL) {
+        LOGDEBUG("ProcessUnit timed out, discard it");
+        return;
+      }
+      if (_timer.get() != NULL)
+        _timer.reset();
+
+      Message msg;
+      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
+      msg.setProperty("processunit", un);
+      Messenger::getInstance().sendRequest(msg);
+      /*
       if (!ProcessUnitWatcher::putProcessUnit(un->_process_unit)) {
         LOGERROR("error while putProcessUnit!");
-      }
+      }*/
     } else {
       LOGERROR("unknown command received:" << command);
     }

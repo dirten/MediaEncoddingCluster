@@ -58,22 +58,20 @@ private:
 };
 
 ProcessUnit::ProcessUnit() {
-  /*
-   _decoder = NULL;
-   _encoder = NULL;*/
-  _converter = NULL;
   _target_stream = 0;
   _source_stream = 0;
   _frame_group = 0;
   _frame_count = 0;
   _process_unit = 0;
   _last_process_unit = false;
-  id = 0;
   _frameRateCompensateBase = 0.0;
   _gop_size = -1;
   _expected_frame_count = -1;
+  _deinterlace=0;
+  _keep_aspect_ratio=0;
   _discard_audio_bytes = -1;
-
+  _converter = NULL;
+  id = 0;
 }
 
 ProcessUnit::~ProcessUnit() {

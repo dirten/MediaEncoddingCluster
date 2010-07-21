@@ -28,7 +28,10 @@ void testVideoSameFramerate() {
   data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
 
   data[0].encoder->setFrameRate(25, 1);
-  data[0].frameRateCompensateBase=0.0;
+
+
+  data[0].instream=1;
+  data[0].outstream=1;
 
   ProcessUnitBuilder builder(data);
 
@@ -42,6 +45,8 @@ void testVideoSameFramerate() {
 
   for (int a = 0; a < 1000; a++) {
     boost::shared_ptr<ProcessUnit> pu = builder.build(packetList);
+    assert(pu->_source_stream==1);
+    assert(pu->_target_stream==2);
 
     assert(pu->getDecoder());
     assert(pu->getDecoder()->getCodecId() == data[0].decoder->getCodecId());
@@ -82,7 +87,8 @@ void testVideoFramerateResample15to20() {
   data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
 
   data[0].encoder->setFrameRate(20, 1);
-
+  data[0].instream=1;
+  data[0].outstream=2;
 
   ProcessUnitBuilder builder(data);
 
@@ -96,7 +102,8 @@ void testVideoFramerateResample15to20() {
 
   for (int a = 0; a < 5; a++) {
     boost::shared_ptr<ProcessUnit> pu = builder.build(packetList);
-
+    assert(pu->_source_stream==1);
+    assert(pu->_target_stream==2);
     assert(pu->getDecoder());
     assert(pu->getDecoder()->getCodecId() == data[0].decoder->getCodecId());
 
@@ -135,6 +142,8 @@ void testVideoFramerateResample15to2397() {
   data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
 
   data[0].encoder->setFrameRate(2397, 100);
+  data[0].instream=1;
+  data[0].outstream=2;
 
 
   ProcessUnitBuilder builder(data);
@@ -149,6 +158,8 @@ void testVideoFramerateResample15to2397() {
 
   for (int a = 0; a < 5; a++) {
     boost::shared_ptr<ProcessUnit> pu = builder.build(packetList);
+    assert(pu->_source_stream==1);
+    assert(pu->_target_stream==2);
 
     assert(pu->getDecoder());
     assert(pu->getDecoder()->getCodecId() == data[0].decoder->getCodecId());
@@ -189,6 +200,8 @@ void testVideoFramerateResample2397to2997() {
   data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
 
   data[0].encoder->setFrameRate(2997, 100);
+  data[0].instream=1;
+  data[0].outstream=2;
 
 
   ProcessUnitBuilder builder(data);
@@ -203,6 +216,8 @@ void testVideoFramerateResample2397to2997() {
 
   for (int a = 0; a < 5; a++) {
     boost::shared_ptr<ProcessUnit> pu = builder.build(packetList);
+    assert(pu->_source_stream==1);
+    assert(pu->_target_stream==2);
 
     assert(pu->getDecoder());
     assert(pu->getDecoder()->getCodecId() == data[0].decoder->getCodecId());

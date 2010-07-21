@@ -55,9 +55,23 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
   outfile.update();
 
   db::Job job(db);
-  job.begintime=0;
-  job.endtime=NULL;
+  job.begintime=-1;
+  job.endtime=-1;
+
   job.update();
+
+  /*
+   * setting time data twice, in case of a bug in litesql
+   * it does not support zero values,
+   * it uses every time the localtime instead of the supplied value
+   * but after setting it twice it eat the values ???
+   */
+
+  job.begintime=-1;
+  job.endtime=-1;
+  job.update();
+  
+
   job.inputfile().link(mediafile);
   job.outputfile().link(outfile);
 

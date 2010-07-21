@@ -1,5 +1,6 @@
 #include "Message.h"
 
+#include "org/esb/hive/job/ProcessUnit.h"
 namespace org{
 namespace esb{
 namespace signal{
@@ -7,6 +8,14 @@ namespace signal{
 Message::Message(){
 
 }
+Message & Message::setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit> val){
+  void_props[key]=val;
+}
+
+boost::shared_ptr<org::esb::hive::job::ProcessUnit> Message::getPtrProperty(std::string key){
+  return void_props[key];
+}
+
 Message::Message(boost::shared_ptr<void *> ent){
 
 }

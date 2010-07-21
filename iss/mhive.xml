@@ -4,23 +4,23 @@
     <version>0.0.4.7</version>
     <readmeFile>${mhive_src_dir}/README</readmeFile>
     <licenseFile>${mhive_src_dir}/LICENSE</licenseFile>
-    <outputDirectory>/Users/jholscher/Documents/bripper/iss/output</outputDirectory>
+    <outputDirectory>/home/HoelscJ/devel/mec/iss/output</outputDirectory>
     <preBuildActionList>
         <setInstallerVariable>
             <name>mhive_src_dir</name>
-            <value>/Users/jholscher/Documents/bripper</value>
+            <value>/home/HoelscJ/devel/mec</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mhive_build_dir</name>
-            <value>/Users/jholscher/Documents/bripper/build</value>
+            <value>/home/HoelscJ/devel/mec/build</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>ffmpeg_dir</name>
-            <value>/Users/jholscher/Documents/bripper/target/dependency</value>
+            <value>/home/HoelscJ/devel/mec/target/dependency</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mysql_dir</name>
-            <value>/Users/jholscher/Documents/bripper/target/dependency</value>
+            <value>/home/HoelscJ/devel/mec/target/dependency</value>
         </setInstallerVariable>
     </preBuildActionList>
     <readyToInstallActionList>

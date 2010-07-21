@@ -62,7 +62,6 @@ namespace org {
       void Messenger::sendRequest(Message & msg, std::string name) {
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
-          //	boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
           (*l)->onMessage(msg);
         }
       }

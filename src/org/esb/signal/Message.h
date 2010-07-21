@@ -5,6 +5,11 @@
 #include <boost/shared_ptr.hpp>
 namespace org{
 namespace esb{
+  namespace hive{
+    namespace job{
+      class ProcessUnit;
+    }
+  }
 namespace signal{
 class Message{
   public:
@@ -12,11 +17,15 @@ class Message{
     Message(boost::shared_ptr<void *> ent);
     Message & setProperty(std::string key, std::string value);
     Message & setProperty(std::string key, int value);
+    Message & setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit> );
     std::string & getProperty(std::string key);
+    boost::shared_ptr<org::esb::hive::job::ProcessUnit> getPtrProperty(std::string key);
     bool containsProperty(std::string key);
   private:
     std::map<std::string, std::string> str_props;
     std::map<std::string, std::string> int_props;
+    std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > void_props;
+
 };
 }}}
 #endif
