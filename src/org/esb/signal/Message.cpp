@@ -9,7 +9,8 @@ Message::Message(){
 
 }
 Message & Message::setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit> val){
-  void_props[key]=val;
+ void_props[key]=val;
+ return *this;
 }
 
 boost::shared_ptr<org::esb::hive::job::ProcessUnit> Message::getPtrProperty(std::string key){
