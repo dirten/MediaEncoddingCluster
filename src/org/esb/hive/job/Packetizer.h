@@ -65,7 +65,7 @@ namespace org {
             boost::shared_ptr<org::esb::av::Decoder> decoder;
             boost::shared_ptr<org::esb::av::Encoder> encoder;
             State state;
-            int min_packet_count;
+            unsigned int min_packet_count;
           };
           Packetizer(std::map<int, StreamData>);
           ~Packetizer();

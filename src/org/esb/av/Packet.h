@@ -25,7 +25,7 @@ namespace org {
         Packet();
         Packet(AVPacket*);
         Packet(int size);
-        ~Packet();
+        virtual ~Packet();
         uint8_t * getData();
         int getSize();
         long long int getPts();

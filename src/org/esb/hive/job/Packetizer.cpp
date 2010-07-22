@@ -47,13 +47,14 @@ namespace org {
            */
           std::map<int, StreamData>::iterator it = _streams.begin();
           for (; it != _streams.end(); it++) {
-            if ((*it).second.min_packet_count==0)
+            if ((*it).second.min_packet_count<=0)
               (*it).second.min_packet_count=_codec_min_packets[(*it).second.decoder.get()->getCodecType()];
             if ((*it).second.decoder.get() == NULL)
               LOGERROR("Decoder is NULL");
             if ((*it).second.encoder.get() == NULL)
               LOGERROR("Encoder is NULL");
             (*it).second.state = STATE_NOP;
+			
           }
         }
 

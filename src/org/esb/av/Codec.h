@@ -57,7 +57,7 @@ class SampleFormat;*/
         Codec(const CodecID codecId, int mode = DECODER);
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
-        ~Codec();
+        virtual ~Codec();
         /**
          *
          * @return The type of this Codec, as a enum Type

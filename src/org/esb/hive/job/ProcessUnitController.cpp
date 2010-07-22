@@ -135,6 +135,7 @@ namespace org {
               }
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
+			  stream_data[idx].min_packet_count=0;
             }
             PacketInputStream pis(&fis);
 
@@ -230,9 +231,11 @@ namespace org {
           dbunit.framecount = (int) u->_input_packets.size();
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+			DatabaseService::thread_init();
             dbunit.update();
             dbunit.recv = -1;
             dbunit.update();
+		    DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
           return u;
@@ -240,7 +243,7 @@ namespace org {
 
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
-			return true;
+
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
           name += org::esb::util::Decimal(unit->_process_unit % 10).toString();

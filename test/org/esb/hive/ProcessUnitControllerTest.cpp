@@ -90,9 +90,6 @@ int main(int argc, char** argv) {
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
 
-    org::esb::lang::Thread::sleep2(5000);
-    boost::thread t1(processUnitReader);
-    boost::thread t2(audioProcessUnitReader);
 
     std::string src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
@@ -101,6 +98,10 @@ int main(int argc, char** argv) {
     assert(fileid > 0);
     int jobid = jobcreator(fileid, 1, "/tmp");
     assert(jobid > 0);
+
+    org::esb::lang::Thread::sleep2(5000);
+    boost::thread t1(processUnitReader);
+    boost::thread t2(audioProcessUnitReader);
 
 
     org::esb::lang::Thread::sleep2(10000);
