@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include "MessageListener.h"
+#include "boost/thread/condition.hpp"
 #include "org/esb/util/Log.h"
 #define DEFAULT_NAME "global"
 namespace org {
@@ -33,6 +34,8 @@ namespace org {
                 void sendRequest(Message & msg, std::string name = DEFAULT_NAME);
             private:
                 //    enum {DEFAULT= "global"};
+		boost::mutex request_mutex;
+
                 Messenger(std::string name);
                 static std::map<std::string, Messenger*> messenger;
                 static std::map<std::string, std::list<MessageListener*> > listener;

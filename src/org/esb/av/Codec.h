@@ -202,13 +202,13 @@ class SampleFormat;*/
         int64_t _bytes_discard;
         //                bool saveCodecOption();
         //                bool loadCodecOption();
+        void close();
 
       protected:
         bool _opened;
         AVFifoBuffer *fifo;
         std::string _codec_options;
       private:
-        void close();
         void setParams();
         void setContextDefaults();
         bool _codec_resolved;

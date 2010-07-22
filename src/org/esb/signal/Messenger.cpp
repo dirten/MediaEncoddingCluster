@@ -52,6 +52,7 @@ namespace org {
       }
 
       void Messenger::sendMessage(Message & msg, std::string name) {
+	boost::mutex::scoped_lock scoped_lock(request_mutex);
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
           boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
@@ -60,6 +61,7 @@ namespace org {
       }
 
       void Messenger::sendRequest(Message & msg, std::string name) {
+	boost::mutex::scoped_lock scoped_lock(request_mutex);
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
           (*l)->onMessage(msg);

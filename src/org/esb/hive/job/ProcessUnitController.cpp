@@ -83,9 +83,9 @@ namespace org {
           LOGTRACEMETHOD("void ProcessUnitController::start() ")
                   //          JobController job_ctrl;
                   //db::HiveDb _dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+              org::esb::hive::DatabaseService::thread_init();
           while (!_stop_signal) {
             try {
-              org::esb::hive::DatabaseService::thread_init();
               db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Begintime == -1).one();
               //db::Job job = job_ctrl.getJob();
               LOGDEBUG("new job found")
@@ -96,6 +96,7 @@ namespace org {
               org::esb::lang::Thread::sleep2(1000);
             }
           }
+	  org::esb::hive::DatabaseService::thread_end();
         }
 
         void ProcessUnitController::processJob(db::Job job) {

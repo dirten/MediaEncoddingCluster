@@ -114,6 +114,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
       s.pixfmt = (int) enc->getPixelFormat();
       s.bitrate = (int) profile.vbitrate;
       s.extraprofileflags = (std::string)profile.vextra;
+      enc->close();
     } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
       s.codecid = (int) profile.acodec;
       s.streamtimebasenum = 1;
@@ -131,6 +132,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
         flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
       s.bitspercodedsample = (int) enc->getBitsPerCodedSample();
+      enc->close();
     }
     s.update();
     s.mediafile().link(outfile);
