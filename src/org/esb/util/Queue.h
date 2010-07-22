@@ -85,6 +85,7 @@ namespace org {
         }
 
         int size() {
+		  boost::mutex::scoped_lock dequeue_lock(queue_mutex);
           return _q.size();
         }
 
