@@ -95,7 +95,7 @@ Source: "c:\vcredist_x86.exe"; DestDir: "{tmp}"
 
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
 ;Source: ""; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "D:/MediaEncodingCluster-svn/build\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "M:/MediaEncodingCluster-build-new\src\mhive.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "D:/MediaEncodingCluster-svn\res\*"; DestDir: "{app}\res"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:/MediaEncodingCluster-svn\sql\*"; DestDir: "{app}\sql"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:/MediaEncodingCluster-svn\web\*"; DestDir: "{app}\web"; Flags: ignoreversion recursesubdirs createallsubdirs
