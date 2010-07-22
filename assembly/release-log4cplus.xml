@@ -23,7 +23,7 @@
       <directory>source/log4cplus/build</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/*.pdb</include>
+        <include>**/log4cplusd.pdb</include>
       </includes>
     </fileSet>
   </fileSets>
