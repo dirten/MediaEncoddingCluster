@@ -64,7 +64,7 @@ bool File::exists() {
 	bool result=false;
 	try{
 		result = fs::exists(_full_path);
-	}catch(basic_filesystem_error & ex){
+	}catch(fs::filesystem_error & ex){
 		//return false;
 	}
 	return result;
