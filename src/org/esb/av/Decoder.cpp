@@ -49,7 +49,8 @@ Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
   _last_pts = 0;
   _next_pts = 0;
 }
-
+Decoder::~Decoder(){
+}
 Frame Decoder::decodeLast() {
   Frame frame(ctx->pix_fmt, ctx->width, ctx->height);
   int _frameFinished = 0;

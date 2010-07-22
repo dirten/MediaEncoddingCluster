@@ -44,6 +44,7 @@ namespace org {
         Decoder(CodecID id);
         Decoder(AVStream * c);
         Decoder();
+        ~Decoder();
         //                DEPRICATED(Frame decode(Packet & packet));
         Frame * decode2(Packet & packet);
         Frame decodeLast();
