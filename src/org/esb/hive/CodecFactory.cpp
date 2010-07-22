@@ -110,6 +110,8 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
 }
 
 void CodecFactory::free() {
+    decoder_map.clear();
+    encoder_map.clear();
   /*
     std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
     for(;it_dec!=decoder_map.end();it_dec++){

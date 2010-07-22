@@ -58,19 +58,18 @@ int main(int argc, char** argv) {
 
   
   LOGDEBUG(stream);
-//  boost::shared_ptr<org::esb::av::Decoder>decoder=
-{
-    org::esb::hive::CodecFactory::getStreamDecoder(stream.id);
-}
-//  assert(decoder->open());
-//  LOGDEBUG(decoder->toString());
-//  boost::shared_ptr<org::esb::av::Encoder>encoder=org::esb::hive::CodecFactory::getStreamEncoder(stream.id);
+  boost::shared_ptr<org::esb::av::Decoder>decoder= org::esb::hive::CodecFactory::getStreamDecoder(stream.id);
+
+  assert(decoder->open());
+  LOGDEBUG(decoder->toString());
+  boost::shared_ptr<org::esb::av::Encoder>encoder=org::esb::hive::CodecFactory::getStreamEncoder(stream.id);
 
 
-//  encoder->setBitRate(1024000);
-//  assert(encoder->open());
+  encoder->setBitRate(1024000);
+  assert(encoder->open());
 
-//  LOGDEBUG(encoder->toString());
+  LOGDEBUG(encoder->toString());
+  org::esb::hive::CodecFactory::free();
   org::esb::hive::DatabaseService::dropDatabase();
   
   return 0;

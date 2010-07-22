@@ -9,6 +9,7 @@
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/hive/CodecFactory.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/io/File.h"
 #include "org/esb/hive/FileImporter.h"
@@ -113,6 +114,7 @@ int main(int argc, char** argv) {
 
   }
   DatabaseService::stop();
+  CodecFactory::free();
   Log::close();
   Config::close();
 
