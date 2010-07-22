@@ -26,6 +26,7 @@
 #include "JobController.h"
 #include "StreamData.h"
 #include "org/esb/hive/CodecFactory.h"
+#include "org/esb/hive/DatabaseService.h"
 
 using namespace db;
 using namespace org::esb::av;
@@ -84,7 +85,7 @@ namespace org {
                   //db::HiveDb _dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
           while (!_stop_signal) {
             try {
-              
+              org::esb::hive::DatabaseService::thread_init();
               db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Begintime == -1).one();
               //db::Job job = job_ctrl.getJob();
               LOGDEBUG("new job found")
@@ -202,9 +203,11 @@ namespace org {
           dbunit.framecount = (int) u->_input_packets.size();
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-            dbunit.update();
+            DatabaseService::thread_init();
+	    dbunit.update();
             dbunit.recv = -1;
             dbunit.update();
+            DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
           return u;
@@ -257,9 +260,11 @@ namespace org {
           ous.close();
           try {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+	    DatabaseService::thread_init();
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
+	    DatabaseService::thread_end();
           } catch (litesql::NotFound ex) {
             LOGERROR("db::ProcessUnit not found for :" << unit->_process_unit);
           }

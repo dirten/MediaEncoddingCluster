@@ -318,7 +318,7 @@ namespace org {
       }
 
       void Codec::close() {
-        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+//        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
 
         if (_opened) {
           if (ctx /*&& !_pre_allocated*/) {
