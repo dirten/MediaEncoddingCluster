@@ -240,7 +240,7 @@ namespace org {
 
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
-
+			return true;
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
           name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
