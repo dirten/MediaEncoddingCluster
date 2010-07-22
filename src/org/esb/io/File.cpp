@@ -61,7 +61,13 @@ const string File::getFilePath() {
 }
 
 bool File::exists() {
-  return fs::exists(_full_path);
+	bool result=false;
+	try{
+		result = fs::exists(_full_path);
+	}catch(basic_filesystem_error & ex){
+		//return false;
+	}
+	return result;
 }
 
 bool File::deleteFile() {
