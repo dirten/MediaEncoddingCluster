@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
     org::esb::lang::Thread::sleep2(10000);
     running = false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
-    org::esb::lang::Thread::sleep2(10000);
+    org::esb::lang::Thread::sleep2(1000);
 
     Messenger::free();
 

@@ -32,7 +32,7 @@ add_executable (TestFrame TestFrame.cpp)
 add_executable (TestAudioEncoder TestAudioEncoder.cpp)
 add_executable (AudioDecodeMP3 AudioDecodeMP3.cpp)
 
-target_link_libraries (TestPacket io av util lang  )
+target_link_libraries (TestPacket av)
 target_link_libraries (TestFfmpeg av)
 target_link_libraries (TestSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT} )
 target_link_libraries (TestDeSerializePacket io av util lang ${BOOST_SERIAL_LIB_MT})
