@@ -41,7 +41,7 @@ target_link_libraries (CodecFactoryTest esb hive av sql net signal io util lang 
 target_link_libraries (JobCreatorTest esb hive av sql net signal io util lang )
 target_link_libraries (DirectoryScannerTest  esb hive av sql net signal io util lang )
 target_link_libraries (ProcessUnitBuilderTest  esb hive av sql net signal io util lang )
-target_link_libraries (ProcessUnitControllerTest esb hive av sql net signal io util lang )
+target_link_libraries (ProcessUnitControllerTest hive io)
 
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
@@ -66,7 +66,9 @@ ELSE(WIN32)
 
 ENDIF(WIN32)
 #ich weiﬂ es nicht warum er im debug modus nicht l‰uft
-#ADD_TEST(org.esb.hive.DatabaseServiceTest ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
+ADD_TEST(org.esb.hive.DatabaseServiceTest ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
+set_tests_properties ( org.esb.hive.DatabaseServiceTest PROPERTIES TIMEOUT 10)
+
 ADD_TEST(TestNodeDiscovery ${EXECUTABLE_OUTPUT_PATH}/TestNodeDiscovery)
 ADD_TEST(TestTimer ${EXECUTABLE_OUTPUT_PATH}/TestTimer)
 ADD_TEST(org.esb.hive.FileImporterTest ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)

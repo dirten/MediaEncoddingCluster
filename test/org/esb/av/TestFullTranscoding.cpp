@@ -38,7 +38,7 @@ map<int, int> _smap;
  * 
  */
 int main(int argc, char** argv) {
-Log::open("");
+//Log::open("");
   /*open the fixed test File or the file from command line input*/
   std::string src;
   std::string trg;
@@ -186,7 +186,7 @@ cleanup:
     delete (*streams).second.dec;
     delete (*streams).second.conv;
   }
-  Log::close();
+//  Log::close();
   return (EXIT_SUCCESS);
 }
 

@@ -233,7 +233,7 @@ void write_audio_to_file() {
 }
 
 int main(int argc, char ** argv) {
-  Log::open("");
+//  Log::open("");
   av_register_all();
   avcodec_init();
   avcodec_register_all();

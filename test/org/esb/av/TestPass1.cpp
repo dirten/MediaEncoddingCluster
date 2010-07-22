@@ -25,7 +25,7 @@ using namespace org::esb::io;
  * 
  */
 int main(int argc, char** argv) {
-  Log::open("");
+//  Log::open("");
   /*open the fixed test File or the file from command line input*/
   std::string src;
   if (argc == 1) {
