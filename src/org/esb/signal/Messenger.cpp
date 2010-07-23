@@ -37,9 +37,12 @@ namespace org {
       }
 
       Messenger & Messenger::getInstance(std::string name) {
+		  boost::mutex::scoped_lock scoped_lock(request_mutex);
         Messenger * mess = messenger[name];
-        if (mess == NULL)mess = new Messenger(name);
-        messenger[name] = mess;
+		if (mess == NULL){
+		  mess = new Messenger(name);
+		  messenger[name] = mess;
+	    }
         return *mess;
       }
 
