@@ -76,7 +76,11 @@ int main(int argc, char** argv) {
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
   Config::setProperty("db.url", host.c_str());
-  
+  std::string tmp=MEC_SOURCE_DIR;
+  tmp+="/tmp";
+  org::esb::io::File f(tmp);
+  if(!f.exists())
+	  f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
   {
@@ -103,12 +107,12 @@ int main(int argc, char** argv) {
 
 
 
-    org::esb::lang::Thread::sleep2(5000);
+//    org::esb::lang::Thread::sleep2(5000);
     boost::thread t1(processUnitReader);
-//    boost::thread t2(audioProcessUnitReader);
+    boost::thread t2(audioProcessUnitReader);
 
 
-    org::esb::lang::Thread::sleep2(100000);
+    org::esb::lang::Thread::sleep2(10000);
     running = false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
     org::esb::lang::Thread::sleep2(1000);
