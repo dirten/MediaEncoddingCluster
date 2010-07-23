@@ -8,7 +8,7 @@
 namespace org {
   namespace esb {
     namespace av {
-
+	  
       bool isInitialized = false;
       int av_log_level = AV_LOG_INFO;
 

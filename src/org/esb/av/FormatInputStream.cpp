@@ -14,7 +14,6 @@ namespace org {
       boost::mutex FormatInputStream::file_open_mutex;
 
       FormatInputStream::FormatInputStream(File * source) {
-        boost::mutex::scoped_lock scoped_lock(file_open_mutex);
         LOGINFO("opening InputFile: " << source->getPath());
         _isValid = false;
         _sourceFile = source;
@@ -34,10 +33,14 @@ namespace org {
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
 //        formatCtx->debug=5;
         std::string filename = _sourceFile->getPath();
+		{
+	        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+
         if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
           LOGERROR("could not open file:" << _sourceFile->getPath());
           return;
         }
+		}
 
         LOGINFO("find stream info: " << source->getPath());
         if (av_find_stream_info(formatCtx) < 0) {

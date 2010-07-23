@@ -254,7 +254,9 @@ namespace org {
       }
 
       bool Codec::open() {
-        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+		  
+//        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         ctx->strict_std_compliance=FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
@@ -324,7 +326,7 @@ namespace org {
             if (ctx->extradata_size > 0) {
               av_freep(&ctx->extradata);
             }
-	    boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+	    boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
             avcodec_close(ctx);
           }

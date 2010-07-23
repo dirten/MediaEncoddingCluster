@@ -11,9 +11,16 @@ extern "C" {
 #include <libavutil/fifo.h>
 
 }
+#include "boost/thread/mutex.hpp"
 
 #undef USE_TIME_BASE_Q
-
+namespace org{
+	namespace esb{
+		namespace av{
+		boost::mutex ffmpeg_mutex;
+		}
+	}
+}
 
 #endif
 
