@@ -34,7 +34,7 @@ namespace org {
                 void sendRequest(Message & msg, std::string name = DEFAULT_NAME);
             private:
                 //    enum {DEFAULT= "global"};
-		boost::mutex request_mutex;
+		static boost::mutex request_mutex;
 
                 Messenger(std::string name);
                 static std::map<std::string, Messenger*> messenger;

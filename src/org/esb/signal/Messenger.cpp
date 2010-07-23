@@ -7,7 +7,7 @@ namespace org {
   namespace esb {
 
     namespace signal {
-
+	  boost::mutex Messenger::request_mutex;
       std::map<std::string, Messenger*> Messenger::messenger;
       std::map<std::string, std::list<MessageListener*> > Messenger::listener;
       //std::string Messenger::DEFAULT_NAME="global";
