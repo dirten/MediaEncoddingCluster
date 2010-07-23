@@ -55,8 +55,9 @@ namespace org {
             msg.setProperty("processunit", unit);
           } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
             LOGDEBUG("PUT_PROCESS_UNIT request");
-			return;
+			
             boost::shared_ptr<ProcessUnit> unit = msg.getPtrProperty("processunit");
+			
             putProcessUnit(unit);
           }
         }
@@ -251,6 +252,7 @@ namespace org {
           name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
 
           org::esb::io::File dir(name.c_str());
+
           if (!dir.exists()) {
             dir.mkdir();
           }

@@ -76,6 +76,8 @@ int main(int argc, char** argv) {
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
   Config::setProperty("db.url", host.c_str());
+  
+  Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
   {
     if (!DatabaseService::databaseExist()) {
