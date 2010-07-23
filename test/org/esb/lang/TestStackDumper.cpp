@@ -11,11 +11,12 @@ int die() {
 
 using std::wstring;
 int main() {
-  StackDumper d(".");
+  StackDumper d=new StackDumper(".");
 
 
   char * t=new char[100000];
   char test[1000000];
   /*only for hand testing*/
   //die();
+  return 0;
 }
