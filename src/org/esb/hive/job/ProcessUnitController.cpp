@@ -55,6 +55,7 @@ namespace org {
             msg.setProperty("processunit", unit);
           } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
             LOGDEBUG("PUT_PROCESS_UNIT request");
+			return;
             boost::shared_ptr<ProcessUnit> unit = msg.getPtrProperty("processunit");
             putProcessUnit(unit);
           }
