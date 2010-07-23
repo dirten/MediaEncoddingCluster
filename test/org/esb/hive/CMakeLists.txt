@@ -22,6 +22,7 @@ add_executable (JobCreatorTest JobCreatorTest.cpp)
 add_executable (DirectoryScannerTest DirectoryScannerTest.cpp)
 add_executable (ProcessUnitBuilderTest ProcessUnitBuilderTest.cpp)
 add_executable (ProcessUnitControllerTest ProcessUnitControllerTest.cpp)
+add_executable (DataHandlerTest DataHandlerTest.cpp)
 
 
 
@@ -42,6 +43,7 @@ target_link_libraries (JobCreatorTest esb hive av sql net signal io util lang )
 target_link_libraries (DirectoryScannerTest  esb hive av sql net signal io util lang )
 target_link_libraries (ProcessUnitBuilderTest  esb hive av sql net signal io util lang )
 target_link_libraries (ProcessUnitControllerTest hive io)
+target_link_libraries (DataHandlerTest hive io)
 
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
@@ -85,5 +87,6 @@ ADD_TEST(JobCreatorTest ${EXECUTABLE_OUTPUT_PATH}/JobCreatorTest )
 ADD_TEST(DirectoryScannerTest  ${EXECUTABLE_OUTPUT_PATH}/DirectoryScannerTest  )
 ADD_TEST(ProcessUnitBuilderTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitBuilderTest)
 ADD_TEST(ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
+ADD_TEST(DataHandlerTest ${EXECUTABLE_OUTPUT_PATH}/DataHandlerTest)
 
 

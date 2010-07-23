@@ -1,4 +1,4 @@
-#include "../ProtocolCommand.h"
+#include "org/esb/hive/ProtocolCommand.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/av/PacketOutputStream.h"
@@ -31,7 +31,7 @@ using namespace org::esb;
 #define PUT_AUDIO_UNIT  "put audio_process_unit"
 #define PUT_UNIT  "put process_unit"
 
-class DataHandler : public ProtocolCommand {
+class DataHandler : public org::esb::hive::ProtocolCommand {
 private:
   classlogger("org.esb.hive.protocol.DataHandler")
   InputStream * _is;
@@ -75,7 +75,15 @@ private:
   }
 
 public:
-
+  DataHandler(InputStream * is, OutputStream * os,boost::asio::ip::tcp::endpoint e) {
+    _oos = new io::ObjectOutputStream(_os);
+    _ois = new io::ObjectInputStream(_is);
+    _own_id = e.address().to_string();
+    _own_id += ":";
+    _own_id += StringUtil::toString(e.port());
+    shutdown = false;
+	LOGDEBUG("endpoint:" << e);
+  }
   DataHandler(InputStream * is, OutputStream * os) {
     _is = is;
     _os = os;
@@ -84,11 +92,6 @@ public:
     _oos = new io::ObjectOutputStream(_os);
     _ois = new io::ObjectInputStream(_is);
     //    _handler = new ClientHandler();
-    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
-    _own_id = ep.address().to_string();
-    _own_id += ":";
-    _own_id += StringUtil::toString(ep.port());
-    LOGDEBUG("endpoint:" << ep);
     shutdown = false;
     //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
     //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));

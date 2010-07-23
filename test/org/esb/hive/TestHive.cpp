@@ -118,6 +118,7 @@ int main(int argc, char** argv) {
   /**
    * opening log for stdout
    */
+  boost::asio::ip::tcp::endpoint ep;
   std::string logconfigpath=MEC_SOURCE_DIR;
   logconfigpath.append("/res");
   Log::open(logconfigpath);
