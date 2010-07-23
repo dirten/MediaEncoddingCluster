@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_AV_AV_H
 #define ORG_ESB_AV_AV_H
 #pragma warning( disable : 4005 )
+#pragma warning( disable : 4244 )
 //#include "org/esb/util/Log.h"
 extern "C" {
 #include <libavformat/avformat.h>
@@ -14,13 +15,16 @@ extern "C" {
 #include "boost/thread/mutex.hpp"
 
 #undef USE_TIME_BASE_Q
+#ifndef ORG_ESB_AV_FFMPEGMUTEX_H
+#define ORG_ESB_AV_FFMPEGMUTEX_H
 namespace org{
 	namespace esb{
 		namespace av{
-		boost::mutex ffmpeg_mutex;
+		static boost::mutex ffmpeg_mutex;
 		}
 	}
 }
 
+#endif
 #endif
 
