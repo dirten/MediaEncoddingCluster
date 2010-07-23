@@ -35,7 +35,7 @@ namespace org {
   namespace esb {
     namespace hive {
       namespace job {
-
+		
         void ProcessUnitController::onMessage(org::esb::signal::Message & msg) {
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");

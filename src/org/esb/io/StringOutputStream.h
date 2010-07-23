@@ -38,6 +38,7 @@ namespace org{
         StringOutputStream(std::string &);
         void write(char * buffer, int length);
         void write(string & str);
+		void write(vector <unsigned char >& buffer);
         std::string getData();
       private:
         std::string _data;

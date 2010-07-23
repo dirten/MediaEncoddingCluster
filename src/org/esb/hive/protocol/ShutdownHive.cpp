@@ -6,11 +6,12 @@ class ShutdownHive : public ProtocolCommand{
     private:
 //	TcpSocket * socket;
     public:
+		/*
 	ShutdownHive(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
-	}
+	}*/
 	ShutdownHive(InputStream * is, OutputStream * os){
 	    this->is=is;
 	    this->os=os;

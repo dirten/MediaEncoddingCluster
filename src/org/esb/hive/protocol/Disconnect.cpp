@@ -1,15 +1,15 @@
 #include "../ProtocolCommand.h"
 class Disconnect:public ProtocolCommand {
   public:
-
+/*
 	Disconnect (TcpSocket * socket) {
 		this->socket = socket;
 		this->is = socket->getInputStream ();
 		this->os = socket->getOutputStream ();
 	} 
-	
+*/	
 	Disconnect (InputStream * is, OutputStream * os) {
-		this->socket = 0;
+
 		this->is = is;
 		this->os = os;
 	}
@@ -34,8 +34,6 @@ class Disconnect:public ProtocolCommand {
 		string error = "Disconnecting:";
 		error += "\n";
 		os->write ((char *) error.c_str (), error.length ());
-		if (socket)
-			socket->close ();
 	}
 
 	void printHelp () {

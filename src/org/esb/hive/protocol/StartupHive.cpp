@@ -7,11 +7,12 @@ class StartupHive : public ProtocolCommand{
     private:
 //	Socket * socket;
     public:
+		/*
 	StartupHive(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
-	}
+	}*/
 	StartupHive(InputStream * is, OutputStream * os){
 	    this->is=is;
 	    this->os=os;

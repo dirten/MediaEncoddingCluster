@@ -11,7 +11,7 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Queue.h"
-#include "org/esb/util/Log.h"
+//#include "org/esb/util/Log.h"
 #include "org/esb/hive/job/ProcessUnit.h"
 namespace org {
   namespace esb {

@@ -10,11 +10,12 @@ class Unknown : public ProtocolCommand{
     private:
 //	Socket * socket;
     public:
+		/*
 	Unknown(TcpSocket * socket){
 	    this->socket=socket;
 	    this->is=socket->getInputStream();
 	    this->os=socket->getOutputStream();
-	}
+	}*/
 	Unknown(InputStream * is, OutputStream * os){
 	    this->is=is;
 	    this->os=os;

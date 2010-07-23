@@ -18,6 +18,7 @@
 
 #define loginit(file)/*log_init(file)*/
 #define classlogger(name)static inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance(name);}
+#define classlogger2(CLASS,name) log4cplus::Logger CLASS##::getLogger(){return log4cplus::Logger::getInstance(name);}
 
 //#define logfatal(o1)LOG4CPLUS_FATAL(getLogger(),o1);//loglevel(o1, "fatal")/*log_fatal(o1)*/
 #define LOGFATAL(o2)LOG4CPLUS_FATAL(getLogger(),o2);//loglevel(o1, "fatal")/*log_fatal(o1)*/

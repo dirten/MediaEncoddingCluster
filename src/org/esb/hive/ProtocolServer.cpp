@@ -56,7 +56,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
   LOGDEBUG("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
-  l.push_back(new DataHandler(socket));
+  l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream(),socket->getRemoteEndpoint()));
   l.push_back(new Disconnect(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new Kill(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new ShowConfig(socket->getInputStream(), socket->getOutputStream()));
@@ -68,7 +68,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
-  mysql_thread_init();
+	org::esb::hive::DatabaseService::thread_init();
   while (socket->isConnected()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
     //#ifndef DEBUG

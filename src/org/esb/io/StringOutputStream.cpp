@@ -14,6 +14,7 @@ namespace org {
       void StringOutputStream::write(string & str) {
         _data.append(str);
       }
+	  void StringOutputStream::write(vector <unsigned char >& buffer){}
       std::string StringOutputStream::getData(){
         return _data;
       }

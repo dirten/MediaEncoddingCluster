@@ -1,28 +1,26 @@
+#include "org/esb/util/Timer.h"
 #include "org/esb/hive/ProtocolCommand.h"
+
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
-#include "org/esb/av/PacketOutputStream.h"
-#include "org/esb/av/CodecOutputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
-#include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
-#include "org/esb/av/Packet.h"
 
 
-#include "../job/ProcessUnitWatcher.h"
 #include "../job/ProcessUnit.h"
 #include "org/esb/util/StringUtil.h"
-#include "org/esb/config/config.h"
-#include "org/esb/net/TcpSocket.h"
+#include "boost/asio.hpp"
+//#include "org/esb/net/TcpSocket.h"
 
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
-#include "org/esb/util/Timer.h"
+
 #include <map>
 #include <string>
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
-using namespace org::esb::net;
+
+using namespace org::esb::util;
 using namespace org::esb::signal;
 using namespace org::esb;
 
@@ -76,8 +74,8 @@ private:
 
 public:
   DataHandler(InputStream * is, OutputStream * os,boost::asio::ip::tcp::endpoint e) {
-    _oos = new io::ObjectOutputStream(_os);
-    _ois = new io::ObjectInputStream(_is);
+    _oos = new io::ObjectOutputStream(os);
+    _ois = new io::ObjectInputStream(is);
     _own_id = e.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(e.port());
@@ -110,7 +108,7 @@ public:
       delete _ois;
     _ois = NULL;
   }
-
+/*
   DataHandler(TcpSocket * s) {
     socket = s;
     _is = socket->getInputStream();
@@ -128,7 +126,7 @@ public:
     //    io_timer.run();
     LOGDEBUG("endpoint:" << ep);
   }
-
+*/
   int isResponsible(cmdId & cmid) {
     return CMD_NA;
   }
@@ -153,7 +151,8 @@ public:
       msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
       Messenger::getInstance().sendRequest(msg);
       un = msg.getPtrProperty("processunit");
-      _oos->writeObject(*un.get());
+	  if(un.get()!=NULL)
+		_oos->writeObject(*un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
       /*

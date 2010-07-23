@@ -19,13 +19,13 @@ public:
   ~ShowConfig ()
   {
   }
-
+/*
   ShowConfig (TcpSocket * socket)
   {
     this->socket = socket;
     this->is = socket->getInputStream ();
     this->os = socket->getOutputStream ();
-  }
+  }*/
   ShowConfig (InputStream * is, OutputStream * os)
   {
     this->is = is;

@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_HIVE_PROTOCOLCOMMAND_H
 #define ORG_ESB_HIVE_PROTOCOLCOMMAND_H
-#include "org/esb/net/TcpSocket.h"
+//#include "org/esb/net/TcpSocket.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 #define CMD_NA 0
@@ -32,8 +32,7 @@ namespace org {
                                 /**
                  * @deprecated
                  */
-                ProtocolCommand(org::esb::net::TcpSocket * socket) {
-                };
+//                ProtocolCommand(org::esb::net::TcpSocket * socket) {};
 
                 virtual ~ProtocolCommand() {
                 };
@@ -44,7 +43,7 @@ namespace org {
                 virtual void printHelp() {
                 };
             protected:
-                org::esb::net::TcpSocket * socket;
+//                org::esb::net::TcpSocket * socket;
                 org::esb::io::InputStream * is;
                 org::esb::io::OutputStream * os;
             };
