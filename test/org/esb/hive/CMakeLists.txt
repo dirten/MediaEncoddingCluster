@@ -67,7 +67,7 @@ target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang ne
 #ENDIF(WIN32)
 #ich weiﬂ es nicht warum er im debug modus nicht l‰uft
 ADD_TEST(org.esb.hive.DatabaseServiceTest ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
-set_tests_properties ( org.esb.hive.DatabaseServiceTest PROPERTIES TIMEOUT 10)
+set_tests_properties ( org.esb.hive.DatabaseServiceTest PROPERTIES TIMEOUT 15)
 
 ADD_TEST(TestNodeDiscovery ${EXECUTABLE_OUTPUT_PATH}/TestNodeDiscovery)
 ADD_TEST(TestTimer ${EXECUTABLE_OUTPUT_PATH}/TestTimer)
