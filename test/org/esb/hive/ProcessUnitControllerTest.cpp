@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 
     org::esb::lang::Thread::sleep2(5000);
     boost::thread t1(processUnitReader);
-    boost::thread t2(audioProcessUnitReader);
+//    boost::thread t2(audioProcessUnitReader);
 
 
     org::esb::lang::Thread::sleep2(100000);
