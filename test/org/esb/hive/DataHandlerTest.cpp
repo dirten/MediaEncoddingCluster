@@ -34,7 +34,7 @@ int main(){
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
 
-    
+  {
     if (!DatabaseService::databaseExist()) {
       DatabaseService::createDatabase();
     }
@@ -46,12 +46,12 @@ int main(){
 
     std::string src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
-
+/*
     int fileid = import(org::esb::io::File(src));
     assert(fileid > 0);
     int jobid = jobcreator(fileid, 1, "/tmp");
     assert(jobid > 0);
-
+*/
     ProcessUnitController ctrl;
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -68,6 +68,22 @@ int main(){
 	
 	DataHandler handler(&fis, &fos, e);
 	handler.process("get process_unit");
+//	org::esb::lang::Thread::sleep2(10000);
+   
+
+	/*clear out ProcessUnitController*/
+	bool run=true;
+	while(run){
+		if(ctrl.getProcessUnit()->getInputPacketList().size()==0&&ctrl.getAudioProcessUnit()->getInputPacketList().size()==0)
+			run=false;
+	}
+
+    Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+    org::esb::lang::Thread::sleep2(1000);
+
+    Messenger::free();
+  }
+  DatabaseService::stop();
 	Log::close();
 	return 0;
 }
