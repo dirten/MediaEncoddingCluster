@@ -11,7 +11,7 @@ int die() {
 
 using std::wstring;
 int main() {
-  StackDumper d=new StackDumper(".");
+  StackDumper * d=new StackDumper(".");
 
 
   char * t=new char[100000];
