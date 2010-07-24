@@ -1,0 +1,348 @@
+diff -ur ../tmp/litesql-src-0.3.8/CMakeLists.txt ./CMakeLists.txt
+--- ../tmp/litesql-src-0.3.8/CMakeLists.txt	2010-07-14 20:34:35 +0000
++++ ./CMakeLists.txt	2010-07-24 19:16:48 +0000
+@@ -4,10 +4,10 @@
+ enable_language(CXX)
+ 
+ if (MSVC)
+-  list(APPEND CMAKE_CXX_FLAGS_RELEASE " /MT")
+-  list(APPEND CMAKE_C_FLAGS_RELEASE " /MT")
+-  list(APPEND CMAKE_CXX_FLAGS_DEBUG " /MTd /W4")
+-  list(APPEND CMAKE_C_FLAGS_DEBUG " /MTd /W4")
++#  list(APPEND CMAKE_CXX_FLAGS_RELEASE " /MT")
++#  list(APPEND CMAKE_C_FLAGS_RELEASE " /MT")
++#  list(APPEND CMAKE_CXX_FLAGS_DEBUG " /MTd /W4")
++#  list(APPEND CMAKE_C_FLAGS_DEBUG " /MTd /W4")
+   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
+ else(MSVC)
+   list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+Only in .: CMakeLists.txt.rej
+Only in .: build
+diff -ur ../tmp/litesql-src-0.3.8/src/CMakeLists.txt ./src/CMakeLists.txt
+--- ../tmp/litesql-src-0.3.8/src/CMakeLists.txt	2010-06-29 09:29:42 +0000
++++ ./src/CMakeLists.txt	2010-07-24 19:16:48 +0000
+@@ -1,4 +1,4 @@
+ add_subdirectory(library)
+-add_subdirectory(generator)
+-add_subdirectory(tests)
+-add_subdirectory(examples)
++#add_subdirectory(generator)
++#add_subdirectory(tests)
++#add_subdirectory(examples)
+diff -ur ../tmp/litesql-src-0.3.8/src/examples/CMakeLists.txt ./src/examples/CMakeLists.txt
+--- ../tmp/litesql-src-0.3.8/src/examples/CMakeLists.txt	2010-06-29 09:29:42 +0000
++++ ./src/examples/CMakeLists.txt	2010-07-24 19:16:48 +0000
+@@ -21,7 +21,7 @@
+  
+ add_executable(example ${example_SOURCES} ${example_HEADERS})
+ 
+-target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES})
++target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES} crypt z pthread)
+ 
+ set_property(TARGET example APPEND PROPERTY COMPILE_DEFINITIONS ${SQLITE3_DEFINITIONS})
+ 
+diff -ur ../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt ./src/library/CMakeLists.txt
+--- ../tmp/litesql-src-0.3.8/src/library/CMakeLists.txt	2010-06-29 09:29:48 +0000
++++ ./src/library/CMakeLists.txt	2010-07-24 19:16:48 +0000
+@@ -47,10 +47,10 @@
+ 			COMPONENT devel)
+ install(EXPORT ${LIBNAME} DESTINATION lib)
+ 
+-if (MSVC)
+-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/static
+-	COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/static
++#	COMPONENT devel)
++#endif(MSVC)
+ 
+ if (WITH_SQLITE3)
+   set(${LIBNAME}_sqlite_SRC
+@@ -71,9 +71,9 @@
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+ install(EXPORT ${LIBNAME}_sqlite DESTINATION lib)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_sqlited.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ endif (WITH_SQLITE3)
+ 
+ if (WITH_MYSQL)
+@@ -81,14 +81,15 @@
+         				mysql.cpp
+    
+   )
++
+   install(TARGETS ${LIBNAME}_mysql  EXPORT ${LIBNAME}_mysql 
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+   install(EXPORT ${LIBNAME}_mysql DESTINATION lib)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_mysqld.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ 
+ endif (WITH_MYSQL)
+ 
+@@ -100,9 +101,9 @@
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_postgresqld.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ endif (WITH_POSTGRES)
+ 
+ if (WITH_ODBC)
+@@ -114,9 +115,9 @@
+ 			RUNTIME DESTINATION lib 
+ 			ARCHIVE DESTINATION lib/static 
+ 			COMPONENT devel)
+-if (MSVC)
+-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
+-endif(MSVC)
++#if (MSVC)
++#  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/${LIBNAME}_odbcd.lib DESTINATION lib/static COMPONENT devel)
++#endif(MSVC)
+ 
+ endif (WITH_ODBC)
+ 
+diff -ur ../tmp/litesql-src-0.3.8/src/library/mysql.cpp ./src/library/mysql.cpp
+--- ../tmp/litesql-src-0.3.8/src/library/mysql.cpp	2010-06-29 09:29:48 +0000
++++ ./src/library/mysql.cpp	2010-07-24 20:18:44 +0000
+@@ -8,7 +8,11 @@
+ #ifdef HAVE_LIBMYSQLCLIENT
+ #include <string>
+ 
+-#include "config-win.h"
++#ifdef WIN32
++  #include "config-win.h"
++#else
++  #include <pthread.h>
++#endif
+ #include <mysql.h>
+ 
+ using namespace litesql;
+@@ -19,6 +23,7 @@
+ class MySQL::Result : public Backend::Result {
+   MYSQL_RES * res;
+   size_t nFields;
++ 
+ public:
+   Result(MYSQL_RES * _res) : res(_res) 
+   {     nFields = (!res) ? 0 : mysql_num_fields(res);  };
+@@ -31,6 +36,33 @@
+   const Records& recordsRef() const;
+ };
+ 
++void MySQL::threadInit() const{
++
++  #ifdef WIN32
++    long thread_id=GetCurrentThreadId();
++  #else
++    long thread_id=(long)(pthread_self());
++  #endif
++    MySQL * fake=const_cast<MySQL*>(this);
++    if(_mysql_thread_id_count.find(thread_id)==_mysql_thread_id_count.end()){
++      fake->_mysql_thread_id_count[thread_id]=0;
++      mysql_thread_init();
++      fake->_mysql_thread_id_count[thread_id]++;
++    }
++}
++void MySQL::threadEnd()const{
++  #ifdef WIN32
++    unsigned long thread_id=GetCurrentThreadId();
++  #else
++    unsigned long thread_id=(long)(pthread_self());
++  #endif
++    /*
++  MySQL * fake=const_cast<MySQL*>(this);
++
++    fake->_mysql_thread_id_count[thread_id]--;
++    if(fake->_mysql_thread_id_count[thread_id]==0)
++      mysql_thread_end();*/
++}
+ MySQL::Result::~Result() {
+     mysql_free_result(res);
+ }
+@@ -39,6 +71,7 @@
+ }
+ 
+ Record MySQL::Result::fields() const {
++//  threadInit();
+     if (!res)
+         return Record();
+     MYSQL_FIELD * flds = mysql_fetch_fields(res);
+@@ -46,17 +79,22 @@
+     Record rec(numFields);
+     for (size_t i = 0; i < numFields ; i++)
+         rec.push_back(flds[i].name);
++//    threadEnd();
+     return rec;
+ }
+ 
+ size_t MySQL::Result::recordNum() const {
+     if (!res)
+         return 0;
+-    return mysql_num_rows(res);
++//    threadInit();
++    size_t size=mysql_num_rows(res);
++//    threadEnd();
++    return size;
+ }  
+ Records MySQL::Result::records() const {
+     if (!res)
+         return Records();
++//    threadInit();
+     Records recs;
+ 
+     recs.resize(recordNum());
+@@ -71,6 +109,7 @@
+             recs[i].push_back(row[i2] ? row[i2] : "NULL");
+         }
+     }
++//    threadEnd();
+     return recs;
+ }
+ 
+@@ -93,6 +132,7 @@
+         else if (param[0] == "port")
+             port = atoi(param[1]);
+     }
++
+     conn = new MYSQL;
+     mysql_init(conn);
+     if (!mysql_real_connect(conn, host.c_str(), user.c_str(), passwd.c_str(),
+@@ -102,7 +142,9 @@
+ }
+ 
+ MySQL::~MySQL() {
++    threadInit();
+     mysql_close(conn);
++    threadEnd();
+     delete conn;
+ }
+ 
+@@ -113,7 +155,10 @@
+     return "INTEGER PRIMARY KEY AUTO_INCREMENT";
+ }
+ string MySQL::getInsertID() const {
+-    return toString(mysql_insert_id(conn));
++//    threadInit();
++    long long int insert_id=mysql_insert_id(conn);
++//    threadEnd();
++    return toString(insert_id);
+ }
+ void MySQL::begin() const {
+   delete execute("BEGIN");
+@@ -126,10 +171,13 @@
+ }
+ 
+ Backend::Result* MySQL::execute(const string& query) const {
+-    if (mysql_real_query(conn, query.c_str(), query.size())) {
++  threadInit();  
++  if (mysql_real_query(conn, query.c_str(), query.size())) {
+         throw SQLError(mysql_error(conn));    
+     }
+-    return new Result(mysql_store_result(conn));
++  Result * result=new Result(mysql_store_result(conn));
++  threadEnd();
++    return result;
+ }
+ 
+ /** MySQL - cursor, Note: because MySQL-does not support multiple
+@@ -150,16 +198,19 @@
+      : pBackend(backend),
+        res(NULL) 
+     {
++      backend->threadInit();
+       if (mysql_real_query(pBackend->conn, q.c_str(), q.size())) {
+         throw SQLError(mysql_error(pBackend->conn));
+     }
+       // TODO from here exclusive usage of connection needed
+     res = mysql_use_result(pBackend->conn);
+     fieldNum = mysql_num_fields(res);
++//    backend->threadEnd();
+ }
+                                                
+ Record MySQL::Cursor::fetchOne() {
+-    MYSQL_ROW row = mysql_fetch_row(res);
++  pBackend->threadInit();  
++  MYSQL_ROW row = mysql_fetch_row(res);
+     if (!row)
+     {
+       // TODO from here non exclusive of connection possible
+@@ -168,12 +219,15 @@
+     Record rec(fieldNum);
+     for (size_t i = 0; i < fieldNum; i++)
+         rec.push_back(row[i] ? row[i] : "NULL");
++//    pBackend->threadEnd();
+     return rec;
+ }
+ MySQL::Cursor::~Cursor() {
+-    while (mysql_fetch_row(res) != NULL) {}
++  pBackend->threadInit();
++  while (mysql_fetch_row(res) != NULL) {}
+       // TODO from here non exclusive of connection possible
+     mysql_free_result(res);
++//    pBackend->threadEnd();
+ }
+ 
+ Backend::Cursor* MySQL::cursor(const string& query) const {
+diff -ur ../tmp/litesql-src-0.3.8/src/library/mysql.hpp ./src/library/mysql.hpp
+--- ../tmp/litesql-src-0.3.8/src/library/mysql.hpp	2010-06-29 09:29:48 +0000
++++ ./src/library/mysql.hpp	2010-07-24 20:17:35 +0000
+@@ -16,7 +16,7 @@
+ #include "litesql/types.hpp"
+ #include "litesql/string.hpp"
+ #include "litesql/backend.hpp"
+-
++#include <map>
+ typedef struct st_mysql MYSQL;
+ 
+ namespace litesql {
+@@ -27,6 +27,9 @@
+     MYSQL* conn;
+     string host, user, passwd, database;
+     int port;
++//    ThreadController ctrl;    
++   std::map<long,int> _mysql_thread_id_count;
++    
+ public:
+   class Cursor;
+   class Result;
+@@ -40,8 +43,11 @@
+     virtual void begin() const;
+     virtual void commit() const;
+     virtual void rollback() const;
+-    Backend::Result* execute(const string& query) const;
++    Backend::Result* execute(const string& query)const;
+     Backend::Cursor* cursor(const string& query) const;
++    void threadInit() const;
++    void threadEnd() const;
++    void test();
+ };
+ }
+ #endif
+diff -ur ../tmp/litesql-src-0.3.8/src/tests/CMakeLists.txt ./src/tests/CMakeLists.txt
+--- ../tmp/litesql-src-0.3.8/src/tests/CMakeLists.txt	2010-06-29 09:29:48 +0000
++++ ./src/tests/CMakeLists.txt	2010-07-24 19:16:48 +0000
+@@ -11,7 +11,7 @@
+ add_test(test-datetime ${EXECUTABLE_OUTPUT_PATH}/test-datetime datetime)
+ 
+ add_executable(test-update-table test-update-table.cpp)
+-target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES})
++target_link_libraries (test-update-table litesql litesql-util ${BACKEND_LIBRARIES} crypt z pthread)
+ add_test(test-update-table ${EXECUTABLE_OUTPUT_PATH}/test-update-table update-table)
+ 
+ INCLUDE_DIRECTORIES(../library)
