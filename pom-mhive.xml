@@ -244,7 +244,7 @@
     <dependency>
       <groupId>org.esb.litesql</groupId>
       <artifactId>litesql</artifactId>
-      <version>0.3.8-beta-patch-1</version>
+      <version>0.3.8-beta-patch-2</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

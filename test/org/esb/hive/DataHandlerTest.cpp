@@ -90,8 +90,8 @@ int main(){
 	boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"),6000);
 	
 	DataHandler handler(&fis, &fos, e);
-//	handler.process("get process_unit");
-//	org::esb::lang::Thread::sleep2(10000);
+	handler.process("get process_unit");
+	org::esb::lang::Thread::sleep2(5000);
    
 
   boost::thread t1(processUnitReader);
