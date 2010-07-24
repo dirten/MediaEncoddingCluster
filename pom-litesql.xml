@@ -75,7 +75,7 @@
   </parent>-->
   <groupId>org.esb.litesql</groupId>
   <artifactId>litesql</artifactId>
-  <version>0.3.8-beta-patch-1</version>
+  <version>0.3.8-beta-patch-2</version>
   <name>litesql</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -142,7 +142,7 @@
 <!--                <patch patchfile="src/patch/litesql_library_mysql.patch" dir="source/litesql-src-0.3.8" strip="0"/>
                 <patch patchfile="src/patch/litesql_CMakeLists.patch" dir="source/litesql-src-0.3.8" strip="0"/>
                 <patch patchfile="src/patch/litesql_mysql_thread.patch" dir="source/litesql-src-0.3.8" strip="0"/>-->
-                <patch patchfile="src/patch/litesql_full.patch" dir="source/litesql-src-0.3.8" strip="0"/>
+                <patch patchfile="src/patch/litesql_full_2.patch" dir="source/litesql-src-0.3.8" strip="0"/>
 
                 <exec executable="cmake" dir="source/litesql-src-0.3.8/build" failonerror="yes">
                   <arg line="
