@@ -31,7 +31,9 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/Thread.h"
 #include <string>
+#include <map>
 namespace org {
   namespace esb {
     namespace hive {
@@ -55,6 +57,7 @@ namespace org {
       private:
         static bool _running;
         static std::string _base_path;
+        static std::map<boost::thread::id,int> _thread_map;
       };
     }
   }

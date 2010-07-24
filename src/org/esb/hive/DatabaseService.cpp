@@ -1,29 +1,29 @@
 /*----------------------------------------------------------------------
- *  File    : DatabaseService.cpp
- *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
- *  Purpose : Global Database Service for the Database Connection
- *  Created : 18 Feb 2009 by Jan Hölscher <jan.hoelscher@esblab.com>
- *
- *
- * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
- *
- * This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- *  02111-1307 USA
- *
- * ----------------------------------------------------------------------
- */
+*  File    : DatabaseService.cpp
+*  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+*  Purpose : Global Database Service for the Database Connection
+*  Created : 18 Feb 2009 by Jan Hölscher <jan.hoelscher@esblab.com>
+*
+*
+* MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+*
+* This program is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of the
+*  License, or (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*  General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+*  02111-1307 USA
+*
+* ----------------------------------------------------------------------
+*/
 #include "org/esb/db/hivedb.hpp"
 #include "DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
@@ -39,7 +39,7 @@ namespace org {
     namespace hive {
       bool DatabaseService::_running = false;
       std::string DatabaseService::_base_path;
-
+      std::map<boost::thread::id,int> DatabaseService::_thread_map;
       DatabaseService::DatabaseService(std::string base_path) {
         _base_path = base_path;
         _running = false;
@@ -161,7 +161,7 @@ namespace org {
 
       void DatabaseService::loadPresets() {
         db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-        
+
         db.query("load data infile '"+_base_path+"/sql/config.txt' IGNORE into table Config_ fields terminated by \":\"");
         db.query("load data infile '"+_base_path+"/sql/profiles.txt' IGNORE into table Profile_ fields terminated by \",\"");
         db.query("load data infile '"+_base_path+"/sql/codec.txt' IGNORE into table CodecPreset_ fields terminated by \"#\"");
@@ -175,11 +175,26 @@ namespace org {
       }
 
       void DatabaseService::thread_init() {
-        mysql_thread_init();
+        boost::thread::id id=boost::this_thread::get_id();
+        LOGDEBUG("void DatabaseService::thread_init():"<<id);
+        if(_thread_map.find(id)==_thread_map.end()){
+          _thread_map[id]=0;
+        }
+        _thread_map[id]++;
+        if(_thread_map[id]==1){
+          LOGDEBUG("mysql_thread_init()->thread_map count : "<<_thread_map[id]);
+          mysql_thread_init();
+        }
       }
 
       void DatabaseService::thread_end() {
-        mysql_thread_end();
+          boost::thread::id id=boost::this_thread::get_id();
+          LOGDEBUG("void DatabaseService::thread_end():"<<id)
+          _thread_map[id]--;
+        if(_thread_map[id]==0){
+          LOGDEBUG("mysql_thread_end()->thread_map count : "<<_thread_map[id]);
+          mysql_thread_end();
+        }
       }
     }
   }

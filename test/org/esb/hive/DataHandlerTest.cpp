@@ -20,6 +20,27 @@
 using namespace org::esb::io;
 using namespace org::esb::hive;
 using namespace org::esb::config;
+bool running=true;
+void processUnitReader() {
+  LOGDEBUG("starting void processUnitReader()");
+  while (running) {
+    Message msg;
+    msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
+    Messenger::getInstance().sendRequest(msg);
+    boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
+
+    if (unit->_input_packets.size() == 0) {
+      org::esb::lang::Thread::sleep2(500);
+    } else {
+//      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
+//      Messenger::getInstance().sendRequest(msg);
+    }
+    
+    msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
+    Messenger::getInstance().sendRequest(msg);
+
+  }
+}
 int main(){
   Log::open("");
   std::string host = "host=";
@@ -35,9 +56,11 @@ int main(){
   DatabaseService::start(MEC_SOURCE_DIR);
 
   {
+
     if (!DatabaseService::databaseExist()) {
       DatabaseService::createDatabase();
     }
+//      DatabaseService::createDatabase();
     DatabaseService::dropTables();
     DatabaseService::updateTables();
     DatabaseService::loadPresets();
@@ -46,40 +69,37 @@ int main(){
 
     std::string src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
-/*
+
     int fileid = import(org::esb::io::File(src));
     assert(fileid > 0);
     int jobid = jobcreator(fileid, 1, "/tmp");
     assert(jobid > 0);
-*/
+
     ProcessUnitController ctrl;
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+	org::esb::lang::Thread::sleep2(10000);
 	
-	org::esb::lang::Thread::sleep2(4000);
 		std::string indata;
 		std::string outdata;
 
 	StringOutputStream fos(outdata);
-	ObjectOutputStream oos(&fos);
+	
 	StringInputStream fis(indata);
-	ObjectInputStream ois(&fis);
+	
 	boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"),6000);
 	
 	DataHandler handler(&fis, &fos, e);
-	handler.process("get process_unit");
+//	handler.process("get process_unit");
 //	org::esb::lang::Thread::sleep2(10000);
    
 
-	/*clear out ProcessUnitController*/
-	bool run=true;
-	while(run){
-		if(ctrl.getProcessUnit()->getInputPacketList().size()==0&&ctrl.getAudioProcessUnit()->getInputPacketList().size()==0)
-			run=false;
-	}
+  boost::thread t1(processUnitReader);
 
+org::esb::lang::Thread::sleep2(10000);
+running=false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
-    org::esb::lang::Thread::sleep2(1000);
+    org::esb::lang::Thread::sleep2(10000);
 
     Messenger::free();
   }

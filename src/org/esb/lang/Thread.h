@@ -9,6 +9,7 @@
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Runnable.h"
+#include "boost/thread.hpp"
 #include <stdexcept>
 #include <assert.h>
 using namespace std;
