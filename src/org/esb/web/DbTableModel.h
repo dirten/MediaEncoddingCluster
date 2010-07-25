@@ -18,17 +18,35 @@ namespace org{
               std::vector<litesql::FieldType> fields;
               T tmp_model(_dbCon);
               tmp_model.getFieldTypes(fields);
-              
+              LOGDEBUG("values:"<<tmp_model.table__);
+
               insertColumns(0, fields.size());
               std::vector<litesql::FieldType>::iterator fieldit=fields.begin();
-              for(int a = 0;fieldit!=fields.end();fieldit++, a++){
+              for(int a = 0;fieldit!=fields.end();fieldit++, a++){                
                 LOGDEBUG("setting headername:"<<(*fieldit).name());
-                
                 if (!setHeaderData(a, (*fieldit).name())) {
                   std::cout << "Failed" << std::endl;
                 }
               }
+              std::string query="SELECT * from ";
+              query+=tmp_model.table__;
+              litesql::Records recs = _dbCon.query(query);
+              int a=0;
+              for (litesql::Records::iterator it = recs.begin(); it != recs.end(); it++, a++){
+                if (rowCount() <= a)
+                  insertRow(rowCount());
+                for (int b = 0; b < (*it).size(); b++)
+                  if (!setData(a, b, (*it)[b])) {
+                    //          if(!setData(a,b,boost::any(result.getString(b)))){
+                    //          if(!setData(a,b,boost::any(new string("test")))){
+                    std::cout << "set data Failed" << std::endl;
+                  }else {
+                  }
+              }
+
             }
+
+
             void clear();
             void load();
       private:
