@@ -15,12 +15,12 @@
  *
  * ----------------------------------------------------------------------
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include "config.h"
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
+#include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/config/config.h"
-#include "org/esb/hive/job/ProcessUnitWatcher.h"
 #include "org/esb/hive/JobScanner.h"
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/DirectoryScanner.h"
@@ -98,8 +98,9 @@ int main(int argc, char * argv[]) {
   strcpy(base_path, sb.c_str());
   std::string logconfigpath = sb;
   logconfigpath.append("/res");
-
-  Log::open(logconfigpath);
+  std::cout << logconfigpath <<std::endl;
+//  Log::open(logconfigpath);
+  Log::open("");
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -257,7 +258,9 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
+      LOGDEBUG("here")
       org::esb::hive::DatabaseService::start(base_path);
+      
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         LOGERROR("could not load config from Database, exiting!!!");
         exit(1);
@@ -428,7 +431,7 @@ void start() {
 
   //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
   //  Messenger::getInstance().addMessageListener(dbservice);
-
+LOGDEBUG("here")
   org::esb::hive::JobScanner jobscan;
   Messenger::getInstance().addMessageListener(jobscan);
 
@@ -444,7 +447,7 @@ void start() {
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
-  org::esb::hive::job::ProcessUnitWatcher puw;
+  org::esb::hive::job::ProcessUnitController puw;
   Messenger::getInstance().addMessageListener(puw);
 
   string host = org::esb::config::Config::getProperty("client.host", "localhost");
@@ -465,7 +468,7 @@ void start() {
 
 //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-    Messenger::getInstance().sendMessage(Message().setProperty("processunitwatcher", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
     //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
 //  }
@@ -508,6 +511,7 @@ void start() {
 }
 
 void listener(int argc, char *argv[]) {
+  LOGDEBUG("here");
   org::esb::hive::Node node;
   node.setData("type", "server");
   node.setData("version", MHIVE_VERSION);

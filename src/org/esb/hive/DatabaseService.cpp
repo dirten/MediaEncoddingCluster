@@ -85,7 +85,7 @@ namespace org {
             LOGFATAL("error initialising DatabaseService datadir=" << datadir << " resource=" << lang);
           }
           _running = true;
-
+          LOGINFO("Database Service running");
         }
       }
       bool DatabaseService::databaseExist() {
