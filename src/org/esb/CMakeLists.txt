@@ -270,6 +270,8 @@ add_library (web
     web/FileChooser.cpp
     web/SqlTableModel.cpp 
     web/SqlTable.cpp
+    web/DbTableModel.cpp 
+    web/DbTable.cpp
     web/FileTreeTable.cpp
     web/FileTreeTableNode.cpp
     web/DataTreeTable.cpp

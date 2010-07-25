@@ -30,6 +30,7 @@ namespace org {
         }
         db::Job JobController::getJob() {
           db::Job job=litesql::select<db::Job>(_dbCon,db::Job::Begintime==-1).one();
+          
           return job;
         }
       }
