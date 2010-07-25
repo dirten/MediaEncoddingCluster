@@ -75,7 +75,7 @@
   </parent>-->
   <groupId>org.esb.litesql</groupId>
   <artifactId>litesql</artifactId>
-  <version>0.3.8-beta-patch-2</version>
+  <version>0.3.8-beta-patch-3</version>
   <name>litesql</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
