@@ -1,3 +1,4 @@
+#include "org/esb/db/hivedb.hpp"
 #include "config.h"
 #include "org/esb/config/config.h"
 
@@ -39,7 +40,9 @@ int main(int argc, char**argv) {
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
   Config::init("../../mec/.hive");
-
+  db::HiveDb db("mysql",Config::getProperty("db.url"));
+  db::MediaFile file(db);
+  file.update();
   int timeout=0;
   if(argc>1)
     timeout=atoi(argv[1]);
