@@ -1,3 +1,4 @@
+#include "DbTable.h"
 #include "WebApp2.h"
 #include "config.h"
 
@@ -24,6 +25,7 @@
 #include "FileInfo.cpp"
 #include "StreamInfo.h"
 #include "ProfileCreator.h"
+
 namespace org {
   namespace esb {
     namespace web {
@@ -137,6 +139,8 @@ namespace org {
       }
 
       void WebApp2::listAllFiles() {
+        DbTable<db::MediaFile> * table= new DbTable<db::MediaFile>();
+/*
         SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
@@ -146,8 +150,8 @@ namespace org {
         tab->setToolTip(t);
         //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        info_panel->expand();
-        setContent(tab);
+        info_panel->expand();*/
+        setContent(table);
 
       }
 

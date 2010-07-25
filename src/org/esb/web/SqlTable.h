@@ -13,6 +13,7 @@ namespace web{
 class SqlTable:public Wt::Ext::TableView {
   public:
     SqlTable(std::string sql,Wt::WContainerWidget * parent=0);
+    //virtual ~SqlTable();
     void reload(std::string sql="");
     Wt::Signal<void>doubleClicked;
     Wt::Signal<void>clicked;
