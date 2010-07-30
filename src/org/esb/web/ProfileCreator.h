@@ -24,7 +24,7 @@
  *
  * ----------------------------------------------------------------------
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include <map>
 #include "Wt/Ext/Dialog"
 #include "Wt/Ext/Panel"
@@ -49,6 +49,7 @@ namespace org {
         classlogger("org.esb.web.ProfileCreator")
       public:
         ProfileCreator();
+        ProfileCreator(db::Profile&profile);
         virtual ~ProfileCreator();
 
         void show();
@@ -71,17 +72,20 @@ namespace org {
         class BasePanel : public Wt::Ext::Panel {
           classlogger("org.esb.web.ProfileCreator.BasePanel")
         public:
-          BasePanel();
+//          BasePanel();
+          BasePanel(db::Profile&profile);
           virtual ~BasePanel();
           void addWidget(Wt::WWidget *widget, int row, int col);
           virtual std::map<std::string, std::string> getKeyValue();
           virtual void setKeyValue(std::map<std::string, std::string>);
+	  virtual void changed()=0;
+	  void setChangedListener();
 
         protected:
           Wt::WContainerWidget * _cont;
           wtk::ElementContainer<Wt::Ext::LineEdit> _el;
           wtk::ElementContainer<Wt::Ext::ComboBox> _elcb;
-
+	  db::Profile & _profile;
         };
 
         /**
@@ -90,12 +94,13 @@ namespace org {
         class GeneralPanel : public BasePanel {
           classlogger("org.esb.web.ProfileCreator.GeneralPanel")
         public:
-          GeneralPanel();
+//          GeneralPanel();
+          GeneralPanel(db::Profile&profile);
           virtual ~GeneralPanel();
           std::map<std::string, std::string> getKeyValue();
           void setKeyValue(std::map<std::string, std::string>);
         private:
-
+	  void changed();
         };
 
         /**
@@ -104,12 +109,14 @@ namespace org {
         class FilePanel : public BasePanel {
           classlogger("org.esb.web.ProfileCreator.FilePanel")
         public:
-          FilePanel();
+//          FilePanel();
+	  FilePanel(db::Profile&profile);
           virtual ~FilePanel();
           std::map<std::string, std::string> getKeyValue();
           void setKeyValue(std::map<std::string, std::string>);
         private:
           void setAvailableExtensions();
+	  void changed();
 
         };
 
@@ -119,13 +126,15 @@ namespace org {
         class VideoPanel : public BasePanel {
           classlogger("org.esb.web.ProfileCreator.VideoPanel")
         public:
-          VideoPanel();
+//          VideoPanel();
+	  VideoPanel(db::Profile&profile);
           virtual ~VideoPanel();
           std::map<std::string, std::string> getKeyValue();
           void setKeyValue(std::map<std::string, std::string>);
         private:
-          void setPredifinedCodeFlags();
-          void setSelectedPredifinedCodeFlags();
+          void setPredefinedCodecFlags();
+          void setSelectedPredifinedCodecFlags();
+	  void changed();
         };
 
         /**
@@ -134,11 +143,13 @@ namespace org {
         class AudioPanel : public BasePanel {
         classlogger("org.esb.web.ProfileCreator.AudioPanel")
         public:
-          AudioPanel();
+//          AudioPanel();
+	  AudioPanel(db::Profile&profile);
           virtual ~AudioPanel();
           std::map<std::string, std::string> getKeyValue();
           void setKeyValue(std::map<std::string, std::string>);
         private:
+	  void changed();
 
         };
 

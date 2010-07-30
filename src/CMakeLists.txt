@@ -210,6 +210,14 @@ ELSEIF(APPLE)
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res
   )
+INSTALL(FILES
+	${FFMPEG_DIR}/lib/libavcodec.dylib
+	${FFMPEG_DIR}/lib/libavdevice.dylib
+	${FFMPEG_DIR}/lib/libavformat.dylib
+	${FFMPEG_DIR}/lib/libavutil.dylib
+	${FFMPEG_DIR}/lib/libswscale.dylib
+  DESTINATION ./bin
+)
 ELSE(APPLE)
 INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
   DESTINATION ./res

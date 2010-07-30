@@ -286,6 +286,7 @@ add_library (web
     web/wtk/ContentBox.cpp
     web/project/ProjectWizard.cpp
     web/project/InputFilePanel.cpp
+    web/ColumnConfig.cpp
 )
 
 

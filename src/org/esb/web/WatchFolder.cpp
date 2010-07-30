@@ -10,6 +10,8 @@
 #include "org/esb/io/File.h"
 
 #include "WatchfolderForm.h"
+#include "ColumnConfig.h"
+#include "DbTable.h"
 #include <boost/algorithm/string.hpp>
 
 namespace org {
@@ -32,7 +34,13 @@ namespace org {
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
           _user_id = user_id;
-          tab = new SqlTable(std::string("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile"));
+	  
+//          tab = new SqlTable(std::string("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile"));
+	  list<ColumnConfig> cc;
+	  cc.push_back(ColumnConfig(db::Watchfolder::Infolder,"Input Folder",200));
+	  cc.push_back(ColumnConfig(db::Watchfolder::Outfolder,"Output Folder",200));
+//	  tab=DbTable(cc, "SELECT Watchfolder.id_,infolder_, outfolder_, extensionfilter_, Profile_.name from Watchfolder_, Profile_ where Profile_.id_=profile");
+	  tab=new DbTable(cc, litesql::Expr());
           tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
           tab->setTopToolBar(new Wt::Ext::ToolBar());
 
@@ -128,7 +136,7 @@ namespace org {
         Wt::Ext::Button * selectInDirectory;
         Wt::Ext::Button * selectOutDirectory;
         Wt::Ext::Dialog * d;
-        SqlTable * tab;
+        DbTable * tab;
         Wt::WText * msg;
         int _user_id;
 //        DirectoryFileFilter filter;
@@ -170,7 +178,7 @@ namespace org {
           d = new Wt::Ext::Dialog("Watchfolder");
           d->resize(480, 200);
           WatchfolderForm * pf = new WatchfolderForm(d->contents());
-          int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
+          int id = atoi(boost::any_cast<string > (tab->getModel()->data(tab->selectedRows()[0], 0)).c_str());
           pf->setWatchfolder(id);
 //          pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
           pf->saved.connect(SLOT(this, WatchFolder::folderSaved));
@@ -178,7 +186,8 @@ namespace org {
           d->show();
         }
         void folderSaved() {
-          tab->reload("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile");
+//          tab->reload("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile");
+	    tab->reload();
           delete d;
         }
         void newWatchFolder() {

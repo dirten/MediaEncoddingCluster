@@ -1,4 +1,5 @@
 #include "DbTable.h"
+#include "ColumnConfig.h"
 #include "WebApp2.h"
 #include "config.h"
 
@@ -139,7 +140,14 @@ namespace org {
       }
 
       void WebApp2::listAllFiles() {
-        DbTable<db::MediaFile> * table= new DbTable<db::MediaFile>();
+        list<ColumnConfig> columnConfigs;
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
+        setContent(table);
+
 /*
         SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));
         tab->setColumnWidth(0, 10);
@@ -151,47 +159,72 @@ namespace org {
         //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         info_panel->expand();*/
-        setContent(table);
 
       }
 
       void WebApp2::listImportedFiles() {
+        list<ColumnConfig> columnConfigs;
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        DbTable * table= new DbTable(columnConfigs, db::MediaFile::Parent==0);
+        setContent(table);
+/*
         SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size , concat(round(duration/1000000),' sec.') as duration from files where parent=0"));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
+        setContent(tab);*/
       }
 
       void WebApp2::listEncodedFiles() {
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files where parent>0"));
+        list<ColumnConfig> columnConfigs;
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        DbTable* table= new DbTable(columnConfigs, db::MediaFile::Parent>0);
+        setContent(table);
+
+/*        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files where parent>0"));
         tab->setColumnWidth(0, 10);
         tab->setColumnWidth(2, 10);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 20);
         _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
+        setContent(tab);*/
       }
 
       void WebApp2::listAllEncodings() {
         //        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid order by 2,f.id DESC"));
         //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(max((end_ts-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
         //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(min(((select max(end_ts) from process_units pinner where pinner.target_stream=outstreams.id)-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
+        //SELECT filename ,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100)), begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id
+/*
         SqlTable
             * tab =
                 new SqlTable(
                     std::string(
                         "SELECT filename ,if(min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
-        //SELECT filename ,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100)), begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
         _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
+        setContent(tab);*/
         info_panel->collapse();
+	
+	list<ColumnConfig> columnConfigs;
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Progress" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Begin" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        DbTable * table= new DbTable(columnConfigs, "SELECT filename_ ,if(min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/Mediafile_.duration_)*100))<0,0,min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/Mediafile_.duration_)*100))) as progress, begintime_ FROM Mediafile_ join job_mediafile_jobinfile on Mediafile_.id_=job_mediafile_jobinfile.MediaFile2 join Job_ on job_mediafile_jobinfile.Job1=Job_.id_ join Jobdetail_ on Job1=Job_.id_ join jobdetail_stream_jobinstream on JobDetail_.id_=jobdetail_stream_jobinstream.JobDetail1 join Stream_ on Stream_.id_=jobdetail_stream_jobinstream.Stream2");
+        setContent(table);
+	
       }
 
       void WebApp2::listPendingEncodings() {

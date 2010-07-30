@@ -78,7 +78,7 @@ namespace org {
         }
 
         ProcessUnitController::~ProcessUnitController() {
-          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
+//          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
         }
 
         void ProcessUnitController::start() {

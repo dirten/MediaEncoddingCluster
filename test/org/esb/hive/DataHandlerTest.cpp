@@ -55,7 +55,7 @@ int main(){
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
 
-  {
+  
 
     if (!DatabaseService::databaseExist()) {
       DatabaseService::createDatabase();
@@ -75,6 +75,8 @@ int main(){
     int jobid = jobcreator(fileid, 1, "/tmp");
     assert(jobid > 0);
 
+{
+
     ProcessUnitController ctrl;
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -89,8 +91,8 @@ int main(){
 	
 	boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"),6000);
 	
-	DataHandler handler(&fis, &fos, e);
-	handler.process("get process_unit");
+//	DataHandler handler(&fis, &fos, e);
+//	handler.process("get process_unit");
 	org::esb::lang::Thread::sleep2(5000);
    
 
@@ -101,7 +103,7 @@ running=false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
     org::esb::lang::Thread::sleep2(10000);
 
-    Messenger::free();
+//    Messenger::free();
   }
   DatabaseService::stop();
 	Log::close();

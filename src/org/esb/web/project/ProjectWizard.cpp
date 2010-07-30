@@ -19,7 +19,7 @@ namespace org {
 
       ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Wizard") {
         _project_id=0;
-        resize(900, 700);
+        resize(900, 600);
         setBorder(false);
         //setSizeGripEnabled(true);
 

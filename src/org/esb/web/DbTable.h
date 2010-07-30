@@ -11,20 +11,19 @@
 namespace org{
   namespace esb{
     namespace web{
-      template <typename T>
+//      template <typename T>
       class DbTable:public Wt::Ext::TableView {
       public:
-        DbTable(Wt::WContainerWidget * parent=0){
-          model=new DbTableModel<T>(parent);
-          setModel(model);
-        }
+        DbTable(list<ColumnConfig> cc=list<ColumnConfig>(),const litesql::Expr & expr=litesql::Expr(),Wt::WContainerWidget * parent=0);
+        DbTable(list<ColumnConfig> cc=list<ColumnConfig>(),const std::string & sql=std::string(),Wt::WContainerWidget * parent=0);
+	DbTableModel * getModel();
         void reload();
         Wt::Signal<void>doubleClicked;
         Wt::Signal<void>clicked;
         Wt::Signal<void>selectionChanged;
       private:
         std::string sql;
-        DbTableModel<T> * model;
+        DbTableModel* model;
         void itemSelected();
         void emitClickCount();
         Wt::WTimer * doubleClickTimer;

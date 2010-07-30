@@ -8,6 +8,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
  * See the COPYING file for the terms of usage and distribution.
  */
 #include "config.h"
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/Statement.h"
 #include "org/esb/sql/ResultSet.h"
@@ -55,45 +56,42 @@ bool Config::init(const std::string & filename) {
 //    return false;
   }
   /*load params from database*/
-  LOGDEBUG("DbConnection:"<<getProperty("db.connection"));
+  LOGDEBUG("DbConnection:"<<getProperty("db.url"));
   try {
-    if (std::string(getProperty("db.connection")).length() > 0) {
+    if (std::string(getProperty("db.url")).length() > 0) {
       LOGDEBUG("loading config from db");
-      Connection con(std::string(getProperty("db.connection")));
-      Statement * stmt = con.createStatement();
-      ResultSet * rs = stmt->executeQuery("select * from config");
-      while (rs->next()) {
-        if (rs->getString("config_key") != "db.connection" &&
-            rs->getString("config_key") != "mode.client" &&
-            rs->getString("config_key") != "mode.server" &&
-            rs->getString("config_key") != "hive.base_path" &&
-            rs->getString("config_key") != "hive.mode") {
-          properties->setProperty(rs->getString("config_key"), rs->getString("config_val"));
-          LOGDEBUG("ConfigKey:" << rs->getString("config_key") << " ConfigVal:" << rs->getString("config_val"));
+      
+      db::HiveDb db("mysql",getProperty("db.url"));
+      vector<db::Config> configs=litesql::select<db::Config>(db).all();
+      vector<db::Config>::iterator confit=configs.begin();
+      for(;confit!=configs.end();confit++){
+        if ((*confit).configkey != "db.connection" &&
+            (*confit).configkey != "mode.client" &&
+            (*confit).configkey != "mode.server" &&
+            (*confit).configkey != "hive.base_path" &&
+            (*confit).configkey != "hive.mode") {
+          properties->setProperty((*confit).configkey, (*confit).configval);
+          LOGDEBUG("ConfigKey:" << (*confit).configkey << " ConfigVal:" << (*confit).configval);
         }
-      }
-      delete rs;
-      delete stmt;
+      } 
     }
-  } catch (SqlException & ex) {
+  } catch (...) {
     LOGERROR("cant load configuration from database");
-    LOGERROR(ex.what());
     return false;
   }
   return true;
 }
 
 void Config::save2db() {
+  db::HiveDb db("mysql",getProperty("db.url"));
+
   std::vector<std::pair<std::string, std::string > > ar = properties->toArray();
   std::vector<std::pair<std::string, std::string > >::iterator it = ar.begin();
-  Connection con(std::string(getProperty("db.connection")));
-  PreparedStatement * stmt = con.prepareStatement2("replace into config(config_key, config_val) values (:key, :val)");
   for (; it != ar.end(); it++) {
-    stmt->setString("key", it->first);
-    stmt->setString("val", it->second);
-    stmt->execute();
+    db::Config c(db);
+    c.configkey=it->first;
+    c.configval=it->second;
   }
-  delete stmt;
 }
 
 /**

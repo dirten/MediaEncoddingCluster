@@ -25,8 +25,11 @@
 namespace org {
   namespace esb {
     namespace web {
-
       ProfileCreator::ProfileCreator() : Wt::Ext::Dialog("ProfileCreator") {
+      
+      }
+      
+      ProfileCreator::ProfileCreator(db::Profile&profile) : Wt::Ext::Dialog("ProfileCreator") {
         std::string res = std::string(org::esb::config::Config::getProperty("hive.base_path"));
         res.append("/res/profile_creator");
         Wt::WApplication::instance()->messageResourceBundle().use(res.c_str(), false);
@@ -37,14 +40,13 @@ namespace org {
         setLayout(layout);
 
         tab = new Wt::Ext::TabWidget();
-        tab->addTab(new GeneralPanel(), "General");
-        tab->addTab(new FilePanel(), "File");
-        tab->addTab(new VideoPanel(), "Video");
-        tab->addTab(new AudioPanel(), "Audio");
+        tab->addTab(new GeneralPanel(profile), "General");
+        tab->addTab(new FilePanel(profile), "File");
+        tab->addTab(new VideoPanel(profile), "Video");
+        tab->addTab(new AudioPanel(profile), "Audio");
         tab->currentChanged.connect(SLOT(this, ProfileCreator::setContextText));
 
         layout->addWidget(tab, Wt::WBorderLayout::Center);
-
         Wt::Ext::Panel * previewPanel = new Wt::Ext::Panel();
         previewPanel->resize(330, Wt::WLength::Auto);
         previewPanel->setResizable(true);
@@ -63,25 +65,17 @@ namespace org {
         cont->layout()->setContentsMargins(2, 2, 0, 0);
         bot->layout()->addWidget(cont);
 
-        Wt::Ext::Button *save = new Wt::Ext::Button("Save");
-        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(save, 0, 0);
-        save->clicked.connect(SLOT(this, ProfileCreator::save));
+	addButton(new Wt::Ext::Button("Save"));
+	buttons().back()->clicked.connect(SLOT(this, ProfileCreator::save));
 
-        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel");
-        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(cancel, 0, 1);
-        cancel->clicked.connect(SLOT(this, ProfileCreator::cancel));
-
-        Wt::Ext::Button *help = new Wt::Ext::Button("Help");
-        help->setEnabled(false);
-        help->setToolTip("Will be implemented soon");
-
-        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(help, 0, 2);
-        static_cast<Wt::WGridLayout*> (cont->layout())->addWidget(new Wt::WText(), 0, 3);
-        static_cast<Wt::WGridLayout*> (cont->layout())->setColumnStretch(3, -1);
-
-        layout->addWidget(bot, Wt::WBorderLayout::South);
-
-
+	addButton(new Wt::Ext::Button("Cancel"));
+	buttons().back()->clicked.connect(SLOT(this, ProfileCreator::cancel));
+//	_el.getElement("id").setText(profile.id);
+        int tab_count = tab->count();
+        for (int a = 0; a < tab_count; a++) {
+          BasePanel * panel = static_cast<BasePanel*> (tab->panel(a));
+          panel->setChangedListener();
+        }
       }
 
       void ProfileCreator::setContextText(int tab_index) {
@@ -93,7 +87,7 @@ namespace org {
         canceled.emit();
 
         this->done(Rejected);
-        delete this;
+//        delete this;
       }
 
       void ProfileCreator::save() {
@@ -106,10 +100,10 @@ namespace org {
           std::map<std::string, std::string>pd = panel->getKeyValue();
           data.insert(pd.begin(), pd.end());
         }
-        SqlUtil::map2sql("profiles", data);
+//        SqlUtil::map2sql("profiles", data);
         saved.emit();
         this->done(Accepted);
-        delete this;
+//        delete this;
       }
 
       void ProfileCreator::setProfile(int id) {
@@ -134,6 +128,31 @@ namespace org {
        * GeneralPanel
        * @return
        */
+      ProfileCreator::BasePanel::BasePanel(db::Profile&profile) : Wt::Ext::Panel(), _profile(profile) {
+        _cont = new Wt::WContainerWidget();
+        _cont->setLayout(new Wt::WGridLayout());
+
+        setLayout(new Wt::WFitLayout());
+        layout()->addWidget(_cont);
+      }
+      void ProfileCreator::BasePanel::setChangedListener(){
+        LOGDEBUG("setChangedListener");
+        std::map<std::string, Wt::Ext::LineEdit*> lel = _el.getElements();
+        std::map<std::string, Wt::Ext::LineEdit*>::iterator it = lel.begin();
+        for (; it != lel.end(); it++) {
+	    (*it).second->keyPressed.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+	    (*it).second->keyWentUp.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+        }
+        std::map<std::string, Wt::Ext::ComboBox*> lec = _elcb.getElements();
+        std::map<std::string, Wt::Ext::ComboBox*>::iterator itc = lec.begin();
+        for (; itc != lec.end(); itc++) {
+          (*itc).second->keyPressed.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+          (*itc).second->activated.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+
+        }
+      
+      }
+/*
       ProfileCreator::BasePanel::BasePanel() : Wt::Ext::Panel() {
         _cont = new Wt::WContainerWidget();
         _cont->setLayout(new Wt::WGridLayout());
@@ -141,7 +160,7 @@ namespace org {
         setLayout(new Wt::WFitLayout());
         layout()->addWidget(_cont);
       }
-
+*/
       void ProfileCreator::BasePanel::addWidget(Wt::WWidget *widget, int row, int col) {
         static_cast<Wt::WGridLayout*> (_cont->layout())->addWidget(widget, row, col);
       }
@@ -198,12 +217,17 @@ namespace org {
        * GeneralPanel
        * @return
        */
-      ProfileCreator::GeneralPanel::GeneralPanel() : BasePanel() {
+      ProfileCreator::GeneralPanel::GeneralPanel(db::Profile&profile) : BasePanel(profile) {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
-        _el.addElement("id", "Profile Id", "", l)->setEnabled(false);
-        _el.addElement("profile_name", "Profile Name", "", l);
+        _el.addElement("id", "Profile Id", profile.id, l)->setEnabled(false);
+        _el.addElement("profile_name", "Profile Name", profile.name, l);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);
+        l->setRowStretch(l->rowCount() - 1, -1);      
+      }
+      
+      void ProfileCreator::GeneralPanel::changed(){
+	LOGDEBUG("GeneralPanel changed");
+	_profile.name=(std::string)_el.getElement("profile_name")->text().narrow();
       }
 
       std::map<std::string, std::string> ProfileCreator::GeneralPanel::getKeyValue() {
@@ -223,9 +247,10 @@ namespace org {
        * FilePanel
        * @return
        */
-      ProfileCreator::FilePanel::FilePanel() : BasePanel() {
+      
+      ProfileCreator::FilePanel::FilePanel(db::Profile & profile) : BasePanel(profile) {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
-        Wt::Ext::ComboBox * v_format = _elcb.addElement("v_format", "Container Fromat", "", l);
+        Wt::Ext::ComboBox * v_format = _elcb.addElement("v_format", "Container Fromat", profile.format, l);
         v_format->setTextSize(50);
         v_format->resize(180, Wt::WLength::Auto);
         AVOutputFormat *ofmt = NULL;
@@ -238,13 +263,19 @@ namespace org {
           //          formatidx2formatname[a] = ofmt->long_name;
           a++;
         }
-        Wt::Ext::ComboBox * v_format_ext = _elcb.addElement("v_format_ext", "File Extension", "", l);
+        Wt::Ext::ComboBox * v_format_ext = _elcb.addElement("v_format_ext", "File Extension", profile.formatext, l);
         v_format_ext->setTextSize(50);
         v_format_ext->resize(180, Wt::WLength::Auto);
         v_format_ext->setEditable(true);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);
         v_format->activated.connect(SLOT(this, ProfileCreator::FilePanel::setAvailableExtensions));
+      }
+
+      void ProfileCreator::FilePanel::changed(){
+	LOGDEBUG("FilePanel changed");
+	_profile.format=(std::string)_elcb.getElement("v_format")->text().narrow();
+	_profile.formatext=(std::string)_elcb.getElement("v_format_ext")->text().narrow();
       }
 
       void ProfileCreator::FilePanel::setAvailableExtensions() {
@@ -286,7 +317,8 @@ namespace org {
        * GeneralPanel
        * @return
        */
-      ProfileCreator::VideoPanel::VideoPanel() : BasePanel() {
+
+      ProfileCreator::VideoPanel::VideoPanel(db::Profile&profile) : BasePanel(profile) {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
         Wt::Ext::ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", l);
 //        Wt::Ext::CheckBox * v_codec = _elchkb.addElement("v_aspect_ration", "Codec", "", l);
@@ -297,12 +329,16 @@ namespace org {
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO) {
             v_codec->addItem(p->long_name);
+	    if(p->id==(int)profile.vcodec){
+		v_codec->setCurrentIndex(a);
+	    }
+	    a++;
           }
         }
-        v_codec->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setPredifinedCodeFlags));
+        v_codec->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setPredefinedCodecFlags));
 
-        _el.addElement("v_bitrate", "Video Bitrate", "", l);
-        Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", "", l);
+        _el.addElement("v_bitrate", "Video Bitrate", profile.vbitrate, l);
+        Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", profile.vframerate, l);
         v_framerate->setTextSize(50);
         //        v_codec->resize(180, Wt::WLength::Auto);
         org::esb::util::StringTokenizer st(org::esb::config::Config::getProperty("framerates"), ",");
@@ -316,42 +352,58 @@ namespace org {
             st2.nextToken();
             std::string t2 = st2.nextToken();
             v_framerate->addItem(t2);
+	    if(t2==(std::string)profile.vframerate)
+		v_framerate->setCurrentIndex(a);
           }
         }
-        /**
-        * this will be implemented in the 0.0.4.8 Release
-        */
-
+/*
         Wt::Ext::ComboBox * v_aspect = _elcb.addElement("_v_keep_aspect_ratio", "Aspect Ratio", "", l);
         v_aspect->setTextSize(50);
         v_aspect->addItem("Rescale to width and height defined below");
-        v_aspect->addItem("Keep Aspect Ratio from Source");
+        v_aspect->addItem("Keep Aspect Ratio from Source");*/
 //        v_aspect->addItem("Use 4:3");
 //        v_aspect->addItem("Use 16:9");
-        Wt::Ext::ComboBox * v_deinterlace = _elcb.addElement("_v_deinterlace", "Deinterlace", "", l);
+
+/*        Wt::Ext::ComboBox * v_deinterlace = _elcb.addElement("_v_deinterlace", "Deinterlace", "", l);
         v_deinterlace->setTextSize(50);
         v_deinterlace->addItem("No");
-        v_deinterlace->addItem("Yes");
+        v_deinterlace->addItem("Yes");*/
 
-        _el.addElement("v_width", "Video Width", "", l);
-        _el.addElement("v_height", "Video Height", "", l);
+        _el.addElement("v_width", "Video Width", profile.vwidth, l);
+        _el.addElement("v_height", "Video Height", profile.vheight, l);
 
         Wt::Ext::ComboBox * vpre = _elcb.addElement("_vpre", "Predefined Flags", "", l);
         vpre->setTextSize(50);
 
-        _el.addElement("v_extra", "Extra Flags", "", l);
+        _el.addElement("v_extra", "Extra Flags", profile.vextra, l);
 
-        /**
-         * this is only for the last stretching row
-         */
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);
+	
+	setPredefinedCodecFlags();
+      }
+      void ProfileCreator::VideoPanel::changed(){
+	LOGDEBUG("VideoPanel changed");
+//	_profile.vcodec=atoi(_el.getElement("v_codec")->text().narrow().c_str());
+        AVCodec *p = NULL;
+        int a = 0;
+        while ((p = av_codec_next(p))) {
+          if (p->encode && p->type == CODEC_TYPE_VIDEO && _elcb.getElement("v_codec")->currentText().narrow() == std::string(p->long_name)) {
+            _profile.vcodec = (int)p->id;
+          }
+        }
+	_profile.vframerate=_elcb.getElement("v_framerate")->text().narrow();
+	_profile.vbitrate=atoi(_el.getElement("v_bitrate")->text().narrow().c_str());
+	_profile.vwidth=atoi(_el.getElement("v_width")->text().narrow().c_str());
+	_profile.vheight=atoi(_el.getElement("v_height")->text().narrow().c_str());
+	_profile.vextra=_el.getElement("v_extra")->text().narrow();
+
       }
 
-      void ProfileCreator::VideoPanel::setPredifinedCodeFlags() {
+      void ProfileCreator::VideoPanel::setPredefinedCodecFlags() {
         Wt::Ext::ComboBox * v_codec = _elcb.getElement("v_codec");
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
-        vpre->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags));
+        vpre->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodecFlags));
         std::string longname = v_codec->currentText().narrow();
         LOGDEBUG( "LonName=" << longname);
         AVCodec *p = NULL;
@@ -360,13 +412,15 @@ namespace org {
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
             LOGINFO( "retriving extra flags for codec id " << p->id);
-            std::string sql = "SELECT * FROM codec WHERE codec_id=:id";
-            org::esb::sql::Connection con(std::string(config::Config::getProperty("db.connection")));
-            org::esb::sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
-            pstmt.setInt("id", p->id);
-            org::esb::sql::ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-              vpre->addItem(rs.getString("name"));
+	    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+	    vector<db::CodecPreset> presets=litesql::select<db::CodecPreset>(db, db::CodecPreset::Codecid==p->id).all();
+//            std::string sql = "SELECT * FROM codec WHERE codec_id=:id";
+//            org::esb::sql::Connection con(std::string(config::Config::getProperty("db.connection")));
+//            org::esb::sql::PreparedStatement pstmt = con.prepareStatement(sql.c_str());
+//            pstmt.setInt("id", p->id);
+//            org::esb::sql::ResultSet rs = pstmt.executeQuery();
+            for (vector<db::CodecPreset>::iterator it=presets.begin() ;it!=presets.end();it++) {
+              vpre->addItem((std::string)(*it).name);
             }
             //            std::map<std::string, std::string> data;
             //            SqlUtil::sql2map("codec","codec_id", p->id, data);
@@ -374,15 +428,18 @@ namespace org {
         }
       }
 
-      void ProfileCreator::VideoPanel::setSelectedPredifinedCodeFlags() {
+      void ProfileCreator::VideoPanel::setSelectedPredifinedCodecFlags() {
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
         std::string name = vpre->currentText().narrow();
         LOGDEBUG( "Name=" << name);
-        std::map<std::string, std::string> data;
-        SqlUtil::sql2map("codec", "name", name, data);
+	db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+	db::CodecPreset preset=litesql::select<db::CodecPreset>(db, db::CodecPreset::Name==name).one();
+
+//        std::map<std::string, std::string> data;
+//        SqlUtil::sql2map("codec", "name", name, data);
         Wt::Ext::LineEdit * v_extra = _el.getElement("v_extra");
-        v_extra->setText(data["extra"]);
-        LOGDEBUG( "extra=" << data["extra"]);
+        v_extra->setText((std::string)preset.preset);
+        LOGDEBUG( "extra=" << preset);
       }
 
       std::map<std::string, std::string> ProfileCreator::VideoPanel::getKeyValue() {
@@ -418,7 +475,7 @@ namespace org {
         }
 
         BasePanel::setKeyValue(data);
-        setPredifinedCodeFlags();
+        setPredefinedCodecFlags();
         _elcb.getElement("_v_keep_aspect_ratio")->setCurrentIndex(atoi(data["v_keep_aspect_ratio"].c_str()));
         _elcb.getElement("_v_deinterlace")->setCurrentIndex(atoi(data["v_deinterlace"].c_str()));
       }
@@ -432,11 +489,8 @@ namespace org {
        * GeneralPanel
        * @return
        */
-      ProfileCreator::AudioPanel::AudioPanel() : BasePanel() {
+      ProfileCreator::AudioPanel::AudioPanel(db::Profile&profile) : BasePanel(profile) {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
-        /**
-         * presenting the audio Codecs
-         */
         Wt::Ext::ComboBox * a_codec = _elcb.addElement("a_codec", "Audio Codec", "", l);
         a_codec->setTextSize(50);
 
@@ -445,30 +499,27 @@ namespace org {
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_AUDIO) {
             a_codec->addItem(p->long_name);
+	    if(p->id==(int)profile.acodec){
+		a_codec->setCurrentIndex(a);
+	    }
+	    a++;
           }
         }
 
-        /**
-         * presenting the audio channels
-         */
         Wt::Ext::ComboBox * a_channels = _elcb.addElement("a_channels", "Audio Channels", "", l);
         a_channels->setTextSize(50);
         a_channels->addItem("1");
         a_channels->addItem("2");
-
-        /**
-         * presenting the audio bit rates
-         */
+	a_channels->setCurrentIndex(profile.achannels==1?0:1);
         Wt::Ext::ComboBox * a_bitrate = _elcb.addElement("a_bitrate", "Audio Bitrate", "", l);
         StringTokenizer stabr(org::esb::config::Config::getProperty("audiobitrates"), ",");
         int c3 = stabr.countTokens();
         for (int a = 0; a < c3; a++) {
           std::string t = stabr.nextToken();
           a_bitrate->addItem(t);
+	  if(t==org::esb::util::StringUtil::toString(profile.abitrate))
+	    a_bitrate->setCurrentIndex(a);
         }
-        /**
-         * presenting the audio sample rates
-         */
         Wt::Ext::ComboBox * a_samplerate = _elcb.addElement("a_samplerate", "Audio Samplerate", "", l);
         StringTokenizer stsr(org::esb::config::Config::getProperty("samplerates"), ",");
         int c2 = stsr.countTokens();
@@ -476,12 +527,27 @@ namespace org {
         for (int a = 0; a < c2; a++) {
           std::string t = stsr.nextToken();
           a_samplerate->addItem(t);
+	  if(t==org::esb::util::StringUtil::toString(profile.asamplerate))
+	    a_samplerate->setCurrentIndex(a);
         }
-        _el.addElement("a_extra", "Extra Flags", "", l);
+        _el.addElement("a_extra", "Extra Flags", profile.aextra, l);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);
 
+      }
+      void ProfileCreator::AudioPanel::changed(){
+	LOGDEBUG("AudioPanel changed");
+        AVCodec *p = NULL;
+        while ((p = av_codec_next(p))) {
+          if (p->encode && p->type == CODEC_TYPE_AUDIO && _elcb.getElement("a_codec")->currentText().narrow() == p->long_name) {
+            _profile.acodec = (int)p->id;
+          }
+        }
+	_profile.achannels=atoi(_elcb.getElement("a_channels")->currentText().narrow().c_str());
+	_profile.abitrate=atoi(_elcb.getElement("a_bitrate")->currentText().narrow().c_str());
+	_profile.asamplerate=atoi(_elcb.getElement("a_samplerate")->currentText().narrow().c_str());
+	_profile.aextra=(std::string)_el.getElement("a_extra")->text().narrow();
       }
 
       std::map<std::string, std::string> ProfileCreator::AudioPanel::getKeyValue() {

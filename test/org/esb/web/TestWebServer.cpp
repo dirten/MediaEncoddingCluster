@@ -7,6 +7,8 @@
 #include <boost/thread.hpp>
 #include "org/esb/av/AV.h"
 
+#include "org/esb/hive/JobUtil.h"
+#include "org/esb/hive/FileImporter.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/hive/DatabaseService.h"
 using namespace org::esb::lang;
@@ -43,7 +45,29 @@ int main(int argc, char**argv) {
   {
   db::HiveDb db("mysql",Config::getProperty("db.url"));
   db::MediaFile file(db);
+  file.path="/tmp/test/path";
+  file.filename="testfile.avi";
   file.update();
+
+  db::Watchfolder w(db);
+  
+  w.infolder="/video";
+  w.outfolder="/tmp";
+  
+  db::Profile p =litesql::select<db::Profile>(db, db::Profile::Id==1).one();
+  
+  w.profile().link(p);
+  w.update();
+  
+  
+    std::string src = MEC_SOURCE_DIR;
+  src.append("/test.dvd");
+
+      int fileid = import(org::esb::io::File(src));
+    assert(fileid > 0);
+    int jobid = jobcreator(fileid, 1, "/tmp");
+    assert(jobid > 0);
+
   }
   int timeout=0;
   if(argc>1)
