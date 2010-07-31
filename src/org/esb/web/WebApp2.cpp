@@ -126,8 +126,8 @@ namespace org {
         layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
 
-        useStyleSheet("ext/resources/css/xtheme-slate.css");
-//        useStyleSheet("ext/resources/css/xtheme-gray.css");
+        //useStyleSheet("ext/resources/css/xtheme-slate.css");
+        useStyleSheet("ext/resources/css/xtheme-gray.css");
 
         /**
          * Signal Map for the SqlTables and the Detail view

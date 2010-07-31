@@ -17,6 +17,7 @@ class ColumnConfig{
   std::string _fieldname;
   int _width;
   public:
+    ColumnConfig(){};
   ColumnConfig(litesql::FieldType field,std::string name, int width,std::string func=std::string());
 //  ColumnConfig(const litesql::Expr & expr,std::string name, int width);
   litesql::FieldType getFieldType(){return _field;}
