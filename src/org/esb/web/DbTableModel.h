@@ -14,8 +14,8 @@ namespace org{
 //      template <typename T>
       class DbTableModel:public Wt::WStandardItemModel{
       public:
-        DbTableModel(const list<ColumnConfig> & cc=list<ColumnConfig>(),const litesql::Expr & expr=litesql::Expr(),Wt::WContainerWidget* parent=0);
-        DbTableModel(const list<ColumnConfig> & cc=list<ColumnConfig>(),const std::string & sql=std::string(),Wt::WContainerWidget* parent=0);
+        DbTableModel( list<ColumnConfig> & cc,const litesql::Expr & expr=litesql::Expr(),Wt::WContainerWidget* parent=0);
+        DbTableModel( list<ColumnConfig> & cc,const std::string & sql=std::string(),Wt::WContainerWidget* parent=0);
             void clear();
             void load();
       private:
