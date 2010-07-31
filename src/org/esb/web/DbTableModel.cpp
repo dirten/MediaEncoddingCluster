@@ -3,7 +3,7 @@
 namespace org{
 namespace esb{
 namespace web{
-        DbTableModel::DbTableModel(list<ColumnConfig> & cc,const litesql::Expr & expr,Wt::WContainerWidget* parent): 
+        DbTableModel::DbTableModel(const list<ColumnConfig> & cc,const litesql::Expr & expr,Wt::WContainerWidget* parent): 
             Wt::WStandardItemModel(0, 0, parent), _dbCon("mysql",org::esb::config::Config::getProperty("db.url")){
 //              std::vector<T> data=litesql::select<T>(_dbCon).all();
 //              std::vector<litesql::FieldType> fields;
@@ -41,7 +41,7 @@ namespace web{
                   }
               }
             }
-        DbTableModel::DbTableModel(list<ColumnConfig> & cc,const std::string & sql,Wt::WContainerWidget* parent): 
+        DbTableModel::DbTableModel(const list<ColumnConfig> & cc,const std::string & sql,Wt::WContainerWidget* parent): 
             Wt::WStandardItemModel(0, 0, parent), _dbCon("mysql",org::esb::config::Config::getProperty("db.url")){
 //              std::vector<T> data=litesql::select<T>(_dbCon).all();
 //              std::vector<litesql::FieldType> fields;
