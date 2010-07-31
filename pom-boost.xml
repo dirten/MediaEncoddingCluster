@@ -30,7 +30,7 @@
       <properties>
 	  <boost.toolset>gcc</boost.toolset>
         <my.family>linux</my.family>
-        <target>linuxx86</target>
+        <target>linuxx86*</target>
         <jambuild>build_dist.sh</jambuild>
       </properties>
     </profile>
