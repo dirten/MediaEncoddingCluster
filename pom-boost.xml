@@ -129,7 +129,7 @@
 			</fileset>   
 			<property name="bjam" refid="bjam.path"/>
 			
-                <exec executable="${bjam}" dir="source/boost_1_36_0"  failonerror="yes">
+                <exec executable="${bjam}" dir="source/boost_1_36_0"  failonerror="no">
                   <arg line="--prefix=${project.basedir}/source/build/boost --toolset=${boost.toolset} --without-python --without-wave --without-graph --without-test --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
                 </exec>
 
