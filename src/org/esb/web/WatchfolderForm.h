@@ -4,10 +4,11 @@
  *
  * Created on 2. September 2009, 14:55
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include <Wt/WContainerWidget>
 #include <Wt/Ext/LineEdit>
 #include <Wt/Ext/ComboBox>
+#include <Wt/Ext/Dialog>
 #include "wtk/ElementContainer.h"
 #include "DirectoryChooser.h"
 #include <map>
@@ -18,15 +19,17 @@ namespace org {
     namespace esb {
         namespace web {
 
-            class WatchfolderForm : public Wt::WContainerWidget {
+            class WatchfolderForm : public Wt::Ext::Dialog{
             public:
-                WatchfolderForm(Wt::WContainerWidget *);
+                WatchfolderForm(db::Watchfolder & folder);
                 void setWatchfolder(int);
                 Wt::Signal<void> saved;
                 Wt::Signal<void> canceled;
+                void setWatchfolder(db::Watchfolder & folder);
             private:
                 void save();
                 void cancel();
+                void changed();
                 void openInfolder();
                 void selectedInfolder(std::string);
                 void openOutfolder();
@@ -37,6 +40,7 @@ namespace org {
                 std::map<int, std::string> id2name;
                 std::map<int, int> profileid2profileidx;
                 DirectoryChooser * dc;
+                db::Watchfolder & _folder;
             };
 
         }

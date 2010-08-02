@@ -21,7 +21,7 @@ namespace org {
             public:
 
                 bool accept(org::esb::io::File file) {
-                    return true;
+                  return file.isDirectory()||file.isFile();
                 }
             };
 

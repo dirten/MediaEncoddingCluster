@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "org/esb/config/config.h"
 #include "WebApp2.h"
 #include <Wt/Ext/Menu>
 #include <Wt/Ext/MenuItem>
@@ -19,8 +20,11 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   Wt::Ext::Button * button;
 
   menu = new Wt::Ext::Menu();
-
+  
+  
+  
   org::esb::web::ProjectWizard * pro_wiz=new org::esb::web::ProjectWizard();
+  item = menu->addItem("All Projects...",parent,&org::esb::web::WebApp2::listProjects);
   item = menu->addItem("Create New Encoding...",pro_wiz,&org::esb::web::ProjectWizard::open);
   toolbar->addButton("Projects", menu);
   

@@ -27,6 +27,7 @@ path_(path), _filter(NULL) {
   label()->setFormatting(WText::PlainFormatting);
 
   if (boost::filesystem::exists(path)) {
+    /*
     if (!boost::filesystem::is_directory(path)) {
       long long int fsize = 0;
       try {
@@ -38,7 +39,7 @@ path_(path), _filter(NULL) {
       setColumnWidget(1, new WText(false,
           boost::lexical_cast<std::wstring > (fsize)));
       columnWidget(1)->setStyleClass("fsize");
-    }
+    }*/
     //else      
     setSelectable(true);
     std::time_t t;
@@ -71,6 +72,7 @@ path_(path), _filter(&filter) {
   label()->setFormatting(WText::PlainFormatting);
 
   if (boost::filesystem::exists(path)) {
+    /*
     if (!boost::filesystem::is_directory(path)) {
       long long int fsize = 0;
       try {
@@ -82,7 +84,7 @@ path_(path), _filter(&filter) {
       setColumnWidget(1, new WText(false,
           boost::lexical_cast<std::wstring > (fsize)));
       columnWidget(1)->setStyleClass("fsize");
-    }
+    }*/
     //else      
     setSelectable(true);
     //	std::time_t t;

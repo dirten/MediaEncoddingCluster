@@ -26,20 +26,20 @@ namespace org {
           columnConfigs.push_back(ColumnConfig(db::Profile::Id,"Id" ,20));
           columnConfigs.push_back(ColumnConfig(db::Profile::Name,"Name" ,200));
           columnConfigs.push_back(ColumnConfig(db::Profile::Format,"Format" ,200));
-//          columnConfigs.push_back(ColumnConfig(db::Profile::Containertype,"Type" ,200));
+          //          columnConfigs.push_back(ColumnConfig(db::Profile::Containertype,"Type" ,200));
 
-	  profile_table=new DbTable(columnConfigs,litesql::Expr());
+          profile_table=new DbTable(columnConfigs,litesql::Expr());
 
-//          t = new SqlTable(std::string("select id, profile_name Name, v_format Format from profiles"));
-//          t->setColumnWidth(0, 10);
-//          t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
-//          t->setTopToolBar(new Wt::Ext::ToolBar());
+          //          t = new SqlTable(std::string("select id, profile_name Name, v_format Format from profiles"));
+          //          t->setColumnWidth(0, 10);
+          //          t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
+          //          t->setTopToolBar(new Wt::Ext::ToolBar());
 
-	  profile_table->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
-	  profile_table->doubleClicked.connect(SLOT(this, Profiles::editProfile));
+          profile_table->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
+          profile_table->doubleClicked.connect(SLOT(this, Profiles::editProfile));
           profile_table->setTopToolBar(new Wt::Ext::ToolBar());
-          
-	  layout()->addWidget(profile_table);
+
+          layout()->addWidget(profile_table);
 
           buttonEdit = profile_table->topToolBar()->addButton("Edit selected Profile");
           buttonEdit->setEnabled(false);
@@ -52,7 +52,7 @@ namespace org {
 
         void enableButton() {
           if (profile_table->selectedRows().size() > 0) {
-//            int d = atoi(boost::any_cast<string > (profile_table->model()->data(profile_table->selectedRows()[0], 0)).c_str());
+            //            int d = atoi(boost::any_cast<string > (profile_table->model()->data(profile_table->selectedRows()[0], 0)).c_str());
             buttonEdit->setEnabled(true);
           }
         }
@@ -66,48 +66,64 @@ namespace org {
         }
 
         void editProfile() {
-//	  LOGDEBUG("here");
+          //	  LOGDEBUG("here");
           int c = atoi(boost::any_cast<string > (profile_table->getModel()->data(profile_table->selectedRows()[0], 0)).c_str());
 
-	  _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
-	  _db->verbose=true;
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db->verbose=true;
           profile=new db::Profile(litesql::select<db::Profile>(*_db.get(), db::Profile::Id==c).one());
-	  pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
-//          pc->show();
-/*
+          pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
+          //          pc->show();
+          /*
           d = new Wt::Ext::Dialog("Profile");
           d->resize(500, 430);
           ProfilesForm * pf = new ProfilesForm(d->contents());
- */
+          */
           pc->saved.connect(SLOT(this, Profiles::profileSaved));
           pc->canceled.connect(SLOT(this, Profiles::profileCanceled));
-//          pc->canceled.connect(SLOT(pc.get(), Wt::Ext::Dialog::accept));
-//          pc->setProfile(c);
+          //          pc->canceled.connect(SLOT(pc.get(), Wt::Ext::Dialog::accept));
+          //          pc->setProfile(c);
           pc->show();
-	    LOGDEBUG(*profile)
+          LOGDEBUG(*profile)
+        }
+        void createProfile() {
+          //	  LOGDEBUG("here");
+        
+
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db->verbose=true;
+          profile=new db::Profile(*_db.get());
+          pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
+          //          pc->show();
+          /*
+          d = new Wt::Ext::Dialog("Profile");
+          d->resize(500, 430);
+          ProfilesForm * pf = new ProfilesForm(d->contents());
+          */
+          pc->saved.connect(SLOT(this, Profiles::profileSaved));
+          pc->canceled.connect(SLOT(this, Profiles::profileCanceled));
+          //          pc->canceled.connect(SLOT(pc.get(), Wt::Ext::Dialog::accept));
+          //          pc->setProfile(c);
+          pc->show();
+          LOGDEBUG(*profile)
         }
         void profileSaved(){
           reloadProfiles();
-	  profile->update();
-//	    profile->reload("select * from profiles");
-//          delete d;
+          profile->update();
         }
         void profileCanceled(){
-	    LOGDEBUG(*profile)
-//	    pc.reset();
-//	    profile->reload("select * from profiles");
-//          delete d;
+          
         }
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonDelete;
-//        SqlTable * t;
-	DbTable * profile_table;
+        //        SqlTable * t;
+        DbTable * profile_table;
         Wt::Ext::Dialog * d;
-	db::Profile * profile;
-	boost::shared_ptr<ProfileCreator> pc;
-	boost::shared_ptr<db::HiveDb> _db;
+        db::Profile * profile;
+        boost::shared_ptr<ProfileCreator> pc;
+        boost::shared_ptr<db::HiveDb> _db;
         //        ProfilesEdit * edit;
       };
     }

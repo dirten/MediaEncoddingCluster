@@ -24,6 +24,8 @@ namespace org {
             public:
                 WebApp2(const Wt::WEnvironment & env);
                 //            private:
+                void listProjects();
+                
                 void listAllFiles();
                 void listImportedFiles();
                 void listEncodedFiles();
@@ -49,12 +51,13 @@ namespace org {
                 Wt::Ext::Panel * info_panel;
                 Wt::Ext::Container *viewPort;
                 Wt::WBorderLayout *layout;
-                Wt::Ext::Dialog * cwd;
-                Wt::Ext::Dialog * cpd;
+//                Wt::Ext::Dialog * cwd;
+//                Wt::Ext::Dialog * cpd;
                 Wt::WSignalMapper<SqlTable*> *_fileSignalMap;
                 Wt::WSignalMapper<SqlTable*> *_jobSignalMap;
                 void fileSelected(SqlTable *);
                 void jobSelected(SqlTable *);
+
 
             };
         }

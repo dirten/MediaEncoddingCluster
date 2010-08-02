@@ -132,19 +132,28 @@ namespace org {
         /**
          * Signal Map for the SqlTables and the Detail view
          */
+        /*
         _fileSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _fileSignalMap->mapped.connect(SLOT(this, WebApp2::fileSelected));
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
-
+        */
       }
 
+      void WebApp2::listProjects() {
+        list<ColumnConfig> columnConfigs;
+        columnConfigs.push_back(ColumnConfig(db::Project::Id,"Id" ,20));
+        columnConfigs.push_back(ColumnConfig(db::Project::Name,"Name" ,200));
+        columnConfigs.push_back(ColumnConfig(db::Project::Created,"Created" ,300));
+        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
+        setContent(table);
+      }
       void WebApp2::listAllFiles() {
         list<ColumnConfig> columnConfigs;
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
         DbTable * table= new DbTable(columnConfigs,litesql::Expr());
         setContent(table);
 
@@ -166,8 +175,8 @@ namespace org {
         list<ColumnConfig> columnConfigs;
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
         DbTable * table= new DbTable(columnConfigs, db::MediaFile::Parent==0);
         setContent(table);
 /*
@@ -184,8 +193,8 @@ namespace org {
         list<ColumnConfig> columnConfigs;
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
         DbTable* table= new DbTable(columnConfigs, db::MediaFile::Parent>0);
         setContent(table);
 
@@ -268,18 +277,10 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
-        listAllProfiles();
-        //        cpd = new Wt::Ext::Dialog("Profile Creator");
-        //        cpd->resize(500, 430);
-        ProfileCreator *pc = new ProfileCreator();
-        pc->show();
-        pc->saved.connect(SLOT(this, WebApp2::profilesCreated));
-        /*
-         ProfilesForm * pf = new ProfilesForm(cpd->contents());
-         pf->profileSaved.connect(SLOT(this, WebApp2::profilesCreated));
-         pf->profileCanceled.connect(SLOT(cpd, Wt::Ext::Dialog::accept));
-         */
-        //        cpd->show();
+        Profiles * profiles = new Profiles();
+        //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
+        setContent(profiles);
+        profiles->createProfile();
       }
 
       void WebApp2::openConfiguration() {
@@ -297,18 +298,14 @@ namespace org {
       }
 
       void WebApp2::createWatchfolder() {
-        listAllWatchfolder();
-        cwd = new Wt::Ext::Dialog("Watchfolder");
-        cwd->resize(450, 250);
-        WatchfolderForm * pf = new WatchfolderForm(cwd->contents());
-        pf->saved.connect(SLOT(this, WebApp2::watchfolderCreated));
-        pf->canceled.connect(SLOT(cwd, Wt::Ext::Dialog::accept));
-        cwd->show();
+        WatchFolder * wf = new WatchFolder(0);
+        setContent(wf);
+        wf->createWatchFolder();
       }
 
       void WebApp2::watchfolderCreated() {
         listAllWatchfolder();
-        delete cwd;
+//        delete cwd;
       }
 
       void WebApp2::editSystemConfiguration() {

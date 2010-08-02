@@ -7,9 +7,10 @@
 
 #ifndef PROJECTWIZARD_H
 #define	PROJECTWIZARD_H
-
+#include "org/esb/db/hivedb.hpp"
 #include "Wt/Ext/Dialog"
-
+#include "InputFilePanel.h"
+#include "org/esb/lang/Ptr.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -17,10 +18,14 @@ namespace org{
       public:
         ProjectWizard();
         void open();
+        void open(Ptr<db::Project>);
         void save();
         void cancel();
       private:
         int _project_id;
+        Ptr<db::Project> _project;
+        Ptr<InputFilePanel> _filePanel;
+        Ptr<db::HiveDb> _db;
       };
     }
   }

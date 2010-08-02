@@ -1,5 +1,5 @@
 
-
+#include "org/esb/db/hivedb.hpp"
 #include "ProjectWizard.h"
 
 #include "Wt/WBorderLayout"
@@ -7,7 +7,7 @@
 #include "Wt/WFitLayout"
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/Button"
-#include "InputFilePanel.h"
+
 
 
 #include "org/esb/sql/Connection.h"
@@ -16,34 +16,33 @@
 namespace org {
   namespace esb {
     namespace web {
-
-      ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Wizard") {
+      ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Editor") {
         _project_id=0;
         resize(900, 600);
         setBorder(false);
         //setSizeGripEnabled(true);
 
         Wt::WBorderLayout *l = new Wt::WBorderLayout();
-        
+
         setLayout(l);
 
         layout()->setContentsMargins(0, 0, 0, 0);
 
-
-        Wt::Ext::Panel * center = new InputFilePanel();
-
+        _db=Ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+        //        Wt::Ext::Panel * center = new InputFilePanel();
+        _filePanel=Ptr<InputFilePanel>(new InputFilePanel());
 
 
         //center->setLayout(new Wt::WFitLayout());
         //center->layout()->addWidget(new Wt::WText("Center"));
         //center->resize(300,300);
 
-        ((Wt::WBorderLayout*)layout())->addWidget(center, Wt::WBorderLayout::Center);
+        ((Wt::WBorderLayout*)layout())->addWidget(_filePanel.get(), Wt::WBorderLayout::Center);
 
         Wt::Ext::Panel * south_panel = new Wt::Ext::Panel();
         south_panel->setLayout(new Wt::WFitLayout());
         south_panel->layout()->addWidget(new Wt::WText("South"));
-        south_panel->resize(Wt::WLength(), 50);
+        south_panel->resize(Wt::WLength(), Wt::WLength(50,Wt::WLength::Percentage));
         south_panel->setCollapsible(true);
         south_panel->setAnimate(true);
         south_panel->setResizable(true);
@@ -55,31 +54,35 @@ namespace org {
         addButton(new Wt::Ext::Button("Save"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save));
         /*
-                ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("North"), Wt::WBorderLayout::North);
-        
-                ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("East"), Wt::WBorderLayout::East);
-                ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("West"), Wt::WBorderLayout::West);
-         */
+        ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("North"), Wt::WBorderLayout::North);
+
+        ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("East"), Wt::WBorderLayout::East);
+        ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("West"), Wt::WBorderLayout::West);
+        */
       }
 
       void ProjectWizard::open() {
+        open(Ptr<db::Project>(new db::Project(*_db.get())));
+      }
+
+      void ProjectWizard::open(Ptr<db::Project> p) {
+        _project=p;
+        _project->update();
+        _filePanel->setProject(_project);
         this->show();
       }
 
       void ProjectWizard::save() {
-        LOGDEBUG("Project save with id:"<<_project_id)
-        org::esb::sql::Connection con(org::esb::config::Config::getProperty("db.connection"));
-        org::esb::sql::PreparedStatement pstmt=con.prepareStatement("REPLACE INTO project (id,name) values (:id,:name)");
-        pstmt.setInt("id",_project_id);
-        pstmt.setString("name","dummy name");
-        pstmt.execute();
-        _project_id=pstmt.getLastInsertId();
-        LOGDEBUG("Project saved:" << _project_id)
-        this->accept();
+        LOGDEBUG("Project save with id:"<<_project->id)
+          _project->update();
+        LOGDEBUG("Project saved:" << _project->id)
+          this->done(Accepted);
       }
 
       void ProjectWizard::cancel() {
-        this->reject();
+
+        _project->del();
+        this->done(Rejected);
       }
 
     }
