@@ -1,6 +1,55 @@
 #include "hivedb.hpp"
 namespace db {
 using namespace litesql;
+FilterFilterParameterRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : filterParameter(FilterFilterParameterRelation::FilterParameter), filter(FilterFilterParameterRelation::Filter) {
+    switch(rec.size()) {
+    case 2:
+        filterParameter = rec[1];
+    case 1:
+        filter = rec[0];
+    }
+}
+const std::string FilterFilterParameterRelation::table__("Filter_FilterParameter_");
+const litesql::FieldType FilterFilterParameterRelation::Filter("Filter1","INTEGER",table__);
+const litesql::FieldType FilterFilterParameterRelation::FilterParameter("FilterParameter2","INTEGER",table__);
+void FilterFilterParameterRelation::link(const litesql::Database& db, const db::Filter& o0, const db::FilterParameter& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Filter.name());
+    values.push_back(o0.id);
+    fields.push_back(FilterParameter.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void FilterFilterParameterRelation::unlink(const litesql::Database& db, const db::Filter& o0, const db::FilterParameter& o1) {
+    db.delete_(table__, (Filter == o0.id && FilterParameter == o1.id));
+}
+void FilterFilterParameterRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<FilterFilterParameterRelation::Row> FilterFilterParameterRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Filter.fullName());
+    sel.result(FilterParameter.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<FilterFilterParameterRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Filter> FilterFilterParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Filter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Filter>(db, db::Filter::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::FilterParameter> FilterFilterParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(FilterParameter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::FilterParameter>(db, db::FilterParameter::Id.in(sel) && expr);
+}
 MediaFileProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : project(MediaFileProjectRelation::Project), mediaFile(MediaFileProjectRelation::MediaFile) {
     switch(rec.size()) {
@@ -626,6 +675,334 @@ std::ostream & operator<<(std::ostream& os, Project o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.created.name() << " = " << o.created << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType Filter::Own::Id("id_","INTEGER","Filter_");
+Filter::ParameterHandle::ParameterHandle(const Filter& owner)
+         : litesql::RelationHandle<Filter>(owner) {
+}
+void Filter::ParameterHandle::link(const FilterParameter& o0) {
+    FilterFilterParameterRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Filter::ParameterHandle::unlink(const FilterParameter& o0) {
+    FilterFilterParameterRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Filter::ParameterHandle::del(const litesql::Expr& expr) {
+    FilterFilterParameterRelation::del(owner->getDatabase(), expr && FilterFilterParameterRelation::Filter == owner->id);
+}
+litesql::DataSource<FilterParameter> Filter::ParameterHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterFilterParameterRelation::get<FilterParameter>(owner->getDatabase(), expr, (FilterFilterParameterRelation::Filter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterFilterParameterRelation::Row> Filter::ParameterHandle::getRows(const litesql::Expr& expr) {
+    return FilterFilterParameterRelation::getRows(owner->getDatabase(), expr && (FilterFilterParameterRelation::Filter == owner->id));
+}
+const std::string Filter::type__("Filter");
+const std::string Filter::table__("Filter_");
+const std::string Filter::sequence__("Filter_seq");
+const litesql::FieldType Filter::Id("id_","INTEGER",table__);
+const litesql::FieldType Filter::Type("type_","TEXT",table__);
+const litesql::FieldType Filter::Filtername("filtername_","TEXT",table__);
+const litesql::FieldType Filter::Filterid("filterid_","TEXT",table__);
+void Filter::defaults() {
+    id = 0;
+}
+Filter::Filter(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), filtername(Filtername), filterid(Filterid) {
+    defaults();
+}
+Filter::Filter(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), filtername(Filtername), filterid(Filterid) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: filterid = convert<const std::string&, std::string>(rec[3]);
+        filterid.setModified(false);
+    case 3: filtername = convert<const std::string&, std::string>(rec[2]);
+        filtername.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Filter::Filter(const Filter& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), filtername(obj.filtername), filterid(obj.filterid) {
+}
+const Filter& Filter::operator=(const Filter& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        filtername = obj.filtername;
+        filterid = obj.filterid;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+Filter::ParameterHandle Filter::parameter() {
+    return Filter::ParameterHandle(*this);
+}
+std::string Filter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(filtername.name());
+    values.push_back(filtername);
+    filtername.setModified(false);
+    fields.push_back(filterid.name());
+    values.push_back(filterid);
+    filterid.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Filter::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Filter::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, filtername);
+    updateField(updates, table__, filterid);
+}
+void Filter::addIDUpdates(Updates& updates) {
+}
+void Filter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Filtername);
+    ftypes.push_back(Filterid);
+}
+void Filter::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Filter::delRelations() {
+    FilterFilterParameterRelation::del(*db, (FilterFilterParameterRelation::Filter == id));
+}
+void Filter::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Filter::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Filter> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Filter::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Filter> Filter::upcast() {
+    return auto_ptr<Filter>(new Filter(*this));
+}
+std::auto_ptr<Filter> Filter::upcastCopy() {
+    Filter* np = new Filter(*this);
+    np->id = id;
+    np->type = type;
+    np->filtername = filtername;
+    np->filterid = filterid;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Filter>(np);
+}
+std::ostream & operator<<(std::ostream& os, Filter o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.filtername.name() << " = " << o.filtername << std::endl;
+    os << o.filterid.name() << " = " << o.filterid << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType FilterParameter::Own::Id("id_","INTEGER","FilterParameter_");
+FilterParameter::FilterHandle::FilterHandle(const FilterParameter& owner)
+         : litesql::RelationHandle<FilterParameter>(owner) {
+}
+void FilterParameter::FilterHandle::link(const Filter& o0) {
+    FilterFilterParameterRelation::link(owner->getDatabase(), o0, *owner);
+}
+void FilterParameter::FilterHandle::unlink(const Filter& o0) {
+    FilterFilterParameterRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void FilterParameter::FilterHandle::del(const litesql::Expr& expr) {
+    FilterFilterParameterRelation::del(owner->getDatabase(), expr && FilterFilterParameterRelation::FilterParameter == owner->id);
+}
+litesql::DataSource<Filter> FilterParameter::FilterHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterFilterParameterRelation::get<Filter>(owner->getDatabase(), expr, (FilterFilterParameterRelation::FilterParameter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterFilterParameterRelation::Row> FilterParameter::FilterHandle::getRows(const litesql::Expr& expr) {
+    return FilterFilterParameterRelation::getRows(owner->getDatabase(), expr && (FilterFilterParameterRelation::FilterParameter == owner->id));
+}
+const std::string FilterParameter::type__("FilterParameter");
+const std::string FilterParameter::table__("FilterParameter_");
+const std::string FilterParameter::sequence__("FilterParameter_seq");
+const litesql::FieldType FilterParameter::Id("id_","INTEGER",table__);
+const litesql::FieldType FilterParameter::Type("type_","TEXT",table__);
+const litesql::FieldType FilterParameter::Fkey("fkey_","TEXT",table__);
+const litesql::FieldType FilterParameter::Fval("fval_","TEXT",table__);
+void FilterParameter::defaults() {
+    id = 0;
+}
+FilterParameter::FilterParameter(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), fkey(Fkey), fval(Fval) {
+    defaults();
+}
+FilterParameter::FilterParameter(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), fkey(Fkey), fval(Fval) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: fval = convert<const std::string&, std::string>(rec[3]);
+        fval.setModified(false);
+    case 3: fkey = convert<const std::string&, std::string>(rec[2]);
+        fkey.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+FilterParameter::FilterParameter(const FilterParameter& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), fkey(obj.fkey), fval(obj.fval) {
+}
+const FilterParameter& FilterParameter::operator=(const FilterParameter& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        fkey = obj.fkey;
+        fval = obj.fval;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+FilterParameter::FilterHandle FilterParameter::filter() {
+    return FilterParameter::FilterHandle(*this);
+}
+std::string FilterParameter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(fkey.name());
+    values.push_back(fkey);
+    fkey.setModified(false);
+    fields.push_back(fval.name());
+    values.push_back(fval);
+    fval.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void FilterParameter::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void FilterParameter::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, fkey);
+    updateField(updates, table__, fval);
+}
+void FilterParameter::addIDUpdates(Updates& updates) {
+}
+void FilterParameter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Fkey);
+    ftypes.push_back(Fval);
+}
+void FilterParameter::delRecord() {
+    deleteFromTable(table__, id);
+}
+void FilterParameter::delRelations() {
+    FilterFilterParameterRelation::del(*db, (FilterFilterParameterRelation::FilterParameter == id));
+}
+void FilterParameter::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void FilterParameter::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<FilterParameter> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool FilterParameter::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<FilterParameter> FilterParameter::upcast() {
+    return auto_ptr<FilterParameter>(new FilterParameter(*this));
+}
+std::auto_ptr<FilterParameter> FilterParameter::upcastCopy() {
+    FilterParameter* np = new FilterParameter(*this);
+    np->id = id;
+    np->type = type;
+    np->fkey = fkey;
+    np->fval = fval;
+    np->inDatabase = inDatabase;
+    return auto_ptr<FilterParameter>(np);
+}
+std::ostream & operator<<(std::ostream& os, FilterParameter o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.fkey.name() << " = " << o.fkey << std::endl;
+    os << o.fval.name() << " = " << o.fval << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -3076,6 +3453,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("schema_","table","CREATE TABLE schema_ (name_ TEXT, type_ TEXT, sql_ TEXT);"));
     if (backend->supportsSequences()) {
         res.push_back(Database::SchemaItem("Project_seq","sequence","CREATE SEQUENCE Project_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Filter_seq","sequence","CREATE SEQUENCE Filter_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("FilterParameter_seq","sequence","CREATE SEQUENCE FilterParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("MediaFile_seq","sequence","CREATE SEQUENCE MediaFile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
@@ -3087,6 +3466,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
+    res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
@@ -3096,6 +3477,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
@@ -3105,6 +3487,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("_72915fab98e40e57ddd1495ecd15b95b","table","CREATE TABLE _72915fab98e40e57ddd1495ecd15b95b (Profile1 INTEGER,Watchfolder2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
+    res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
+    res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));

@@ -99,8 +99,12 @@ namespace org{
 
         _profile=Ptr<db::Profile>(new db::Profile(litesql::select<db::Profile>(_project->getDatabase(), db::Profile::Id==pid).one()));
         _profile_editor=Ptr<ProfileCreator>(new ProfileCreator(*_profile.get()));
+        _profile_editor->saved.connect(SLOT(this, ProfilePanel::profileSaved));
         _profile_editor->show();
         
+      }
+      void ProfilePanel::profileSaved(){
+        _profile->update();
       }
 
       void ProfilePanel::profileChooserSelected(){

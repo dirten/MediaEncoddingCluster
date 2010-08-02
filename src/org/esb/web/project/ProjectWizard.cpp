@@ -32,24 +32,34 @@ namespace org {
         _filePanel=Ptr<InputFilePanel>(new InputFilePanel());
         _profilePanel=Ptr<ProfilePanel>(new ProfilePanel());
 
-        _profilePanel->resize(400,Wt::WLength());
+        _profilePanel->resize(500,Wt::WLength());
         _profilePanel->setResizable(true);
+
+        _filterPanel=Ptr<FilterPanel>(new FilterPanel());
+        _filterPanel->resize(500, 300);
+        _filterPanel->setResizable(true);
+
+        _previewPanel=Ptr<PreviewPanel>(new PreviewPanel());
+        _previewPanel->resize(500, 300);
+        _previewPanel->setResizable(true);
+
         //center->setLayout(new Wt::WFitLayout());
         //center->layout()->addWidget(new Wt::WText("Center"));
         //center->resize(300,300);
 
         ((Wt::WBorderLayout*)layout())->addWidget(_filePanel.get(), Wt::WBorderLayout::Center);
         ((Wt::WBorderLayout*)layout())->addWidget(_profilePanel.get(), Wt::WBorderLayout::East);
-/*
+//        ((Wt::WBorderLayout*)layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::South);
+
         Wt::Ext::Panel * south_panel = new Wt::Ext::Panel();
-        south_panel->setLayout(new Wt::WFitLayout());
-        south_panel->layout()->addWidget(new Wt::WText("South"));
-        south_panel->resize(Wt::WLength(), Wt::WLength(50,Wt::WLength::Percentage));
-        south_panel->setCollapsible(true);
+        south_panel->setLayout(new Wt::WBorderLayout());
+        ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::Center);
+        ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_previewPanel.get(), Wt::WBorderLayout::East);
+        south_panel->resize(Wt::WLength(), 300);
         south_panel->setAnimate(true);
         south_panel->setResizable(true);
         ((Wt::WBorderLayout*)layout())->addWidget(south_panel, Wt::WBorderLayout::South);
-*/
+
 
         addButton(new Wt::Ext::Button("Cancel"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::cancel));

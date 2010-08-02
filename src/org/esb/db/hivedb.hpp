@@ -3,6 +3,8 @@
 #include "litesql.hpp"
 namespace db {
 class Project;
+class Filter;
+class FilterParameter;
 class MediaFile;
 class Profile;
 class Stream;
@@ -12,6 +14,25 @@ class Job;
 class JobDetail;
 class Watchfolder;
 class ProcessUnit;
+class FilterFilterParameterRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> filterParameter;
+        litesql::Field<int> filter;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Filter;
+    static const litesql::FieldType FilterParameter;
+    static void link(const litesql::Database& db, const db::Filter& o0, const db::FilterParameter& o1);
+    static void unlink(const litesql::Database& db, const db::Filter& o0, const db::FilterParameter& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<FilterFilterParameterRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class MediaFileProjectRelation {
 public:
     class Row {
@@ -245,6 +266,110 @@ public:
     std::auto_ptr<Project> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Project o);
+class Filter : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class ParameterHandle : public litesql::RelationHandle<Filter> {
+    public:
+        ParameterHandle(const Filter& owner);
+        void link(const FilterParameter& o0);
+        void unlink(const FilterParameter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<FilterParameter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterFilterParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Filtername;
+    litesql::Field<std::string> filtername;
+    static const litesql::FieldType Filterid;
+    litesql::Field<std::string> filterid;
+protected:
+    void defaults();
+public:
+    Filter(const litesql::Database& db);
+    Filter(const litesql::Database& db, const litesql::Record& rec);
+    Filter(const Filter& obj);
+    const Filter& operator=(const Filter& obj);
+    Filter::ParameterHandle parameter();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Filter> upcast();
+    std::auto_ptr<Filter> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Filter o);
+class FilterParameter : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class FilterHandle : public litesql::RelationHandle<FilterParameter> {
+    public:
+        FilterHandle(const FilterParameter& owner);
+        void link(const Filter& o0);
+        void unlink(const Filter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Filter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterFilterParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Fkey;
+    litesql::Field<std::string> fkey;
+    static const litesql::FieldType Fval;
+    litesql::Field<std::string> fval;
+protected:
+    void defaults();
+public:
+    FilterParameter(const litesql::Database& db);
+    FilterParameter(const litesql::Database& db, const litesql::Record& rec);
+    FilterParameter(const FilterParameter& obj);
+    const FilterParameter& operator=(const FilterParameter& obj);
+    FilterParameter::FilterHandle filter();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<FilterParameter> upcast();
+    std::auto_ptr<FilterParameter> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, FilterParameter o);
 class MediaFile : public litesql::Persistent {
 public:
     class Own {

@@ -276,7 +276,7 @@ add_library (web
     web/FileTreeTableNode.cpp
     web/DataTreeTable.cpp
     web/DataTreeTableNode.cpp
-    web/VersionNode.cpp
+#    web/VersionNode.cpp
     web/FileNode.cpp
     web/SqlUtil.cpp
     web/Setup.cpp
@@ -290,6 +290,8 @@ add_library (web
     web/Projects.cpp
     web/ProfileChooser.cpp
     web/project/ProfilePanel.cpp
+    web/project/FilterPanel.cpp
+    web/project/PreviewPanel.cpp
 )
 
 

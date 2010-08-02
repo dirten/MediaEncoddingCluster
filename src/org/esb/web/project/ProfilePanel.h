@@ -31,6 +31,7 @@ namespace org{
         void profileSelected();
         void removeSelectedProfile();
         void editSelectedProfile();
+        void profileSaved();
       };
     }
   }
