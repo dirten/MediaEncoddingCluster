@@ -442,55 +442,6 @@ template <> litesql::DataSource<db::Watchfolder> ProfileWatchfolderRelationWatch
     sel.where(srcExpr);
     return DataSource<db::Watchfolder>(db, db::Watchfolder::Id.in(sel) && expr);
 }
-AuftragAuftragPositionen::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : auftragPosition(AuftragAuftragPositionen::AuftragPosition), auftrag(AuftragAuftragPositionen::Auftrag) {
-    switch(rec.size()) {
-    case 2:
-        auftragPosition = rec[1];
-    case 1:
-        auftrag = rec[0];
-    }
-}
-const std::string AuftragAuftragPositionen::table__("Auftrag_AuftragPosition_");
-const litesql::FieldType AuftragAuftragPositionen::Auftrag("Auftrag1","INTEGER",table__);
-const litesql::FieldType AuftragAuftragPositionen::AuftragPosition("AuftragPosition2","INTEGER",table__);
-void AuftragAuftragPositionen::link(const litesql::Database& db, const db::Auftrag& o0, const db::AuftragPosition& o1) {
-    Record values;
-    Split fields;
-    fields.push_back(Auftrag.name());
-    values.push_back(o0.id);
-    fields.push_back(AuftragPosition.name());
-    values.push_back(o1.id);
-    db.insert(table__, values, fields);
-}
-void AuftragAuftragPositionen::unlink(const litesql::Database& db, const db::Auftrag& o0, const db::AuftragPosition& o1) {
-    db.delete_(table__, (Auftrag == o0.id && AuftragPosition == o1.id));
-}
-void AuftragAuftragPositionen::del(const litesql::Database& db, const litesql::Expr& expr) {
-    db.delete_(table__, expr);
-}
-litesql::DataSource<AuftragAuftragPositionen::Row> AuftragAuftragPositionen::getRows(const litesql::Database& db, const litesql::Expr& expr) {
-    SelectQuery sel;
-    sel.result(Auftrag.fullName());
-    sel.result(AuftragPosition.fullName());
-    sel.source(table__);
-    sel.where(expr);
-    return DataSource<AuftragAuftragPositionen::Row>(db, sel);
-}
-template <> litesql::DataSource<db::Auftrag> AuftragAuftragPositionen::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    SelectQuery sel;
-    sel.source(table__);
-    sel.result(Auftrag.fullName());
-    sel.where(srcExpr);
-    return DataSource<db::Auftrag>(db, db::Auftrag::Id.in(sel) && expr);
-}
-template <> litesql::DataSource<db::AuftragPosition> AuftragAuftragPositionen::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    SelectQuery sel;
-    sel.source(table__);
-    sel.result(AuftragPosition.fullName());
-    sel.where(srcExpr);
-    return DataSource<db::AuftragPosition>(db, db::AuftragPosition::Id.in(sel) && expr);
-}
 const litesql::FieldType Project::Own::Id("id_","INTEGER","Project_");
 Project::MediafilesHandle::MediafilesHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
@@ -3116,312 +3067,6 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
-const litesql::FieldType Auftrag::Own::Id("id_","INTEGER","Auftrag_");
-Auftrag::AuftragposHandle::AuftragposHandle(const Auftrag& owner)
-         : litesql::RelationHandle<Auftrag>(owner) {
-}
-void Auftrag::AuftragposHandle::link(const AuftragPosition& o0) {
-    AuftragAuftragPositionen::link(owner->getDatabase(), *owner, o0);
-}
-void Auftrag::AuftragposHandle::unlink(const AuftragPosition& o0) {
-    AuftragAuftragPositionen::unlink(owner->getDatabase(), *owner, o0);
-}
-void Auftrag::AuftragposHandle::del(const litesql::Expr& expr) {
-    AuftragAuftragPositionen::del(owner->getDatabase(), expr && AuftragAuftragPositionen::Auftrag == owner->id);
-}
-litesql::DataSource<AuftragPosition> Auftrag::AuftragposHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return AuftragAuftragPositionen::get<AuftragPosition>(owner->getDatabase(), expr, (AuftragAuftragPositionen::Auftrag == owner->id) && srcExpr);
-}
-litesql::DataSource<AuftragAuftragPositionen::Row> Auftrag::AuftragposHandle::getRows(const litesql::Expr& expr) {
-    return AuftragAuftragPositionen::getRows(owner->getDatabase(), expr && (AuftragAuftragPositionen::Auftrag == owner->id));
-}
-const std::string Auftrag::type__("Auftrag");
-const std::string Auftrag::table__("Auftrag_");
-const std::string Auftrag::sequence__("Auftrag_seq");
-const litesql::FieldType Auftrag::Id("id_","INTEGER",table__);
-const litesql::FieldType Auftrag::Type("type_","TEXT",table__);
-const litesql::FieldType Auftrag::Name("name_","TEXT",table__);
-void Auftrag::defaults() {
-    id = 0;
-}
-Auftrag::Auftrag(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name) {
-    defaults();
-}
-Auftrag::Auftrag(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name) {
-    defaults();
-    size_t size = (rec.size() > 3) ? 3 : rec.size();
-    switch(size) {
-    case 3: name = convert<const std::string&, std::string>(rec[2]);
-        name.setModified(false);
-    case 2: type = convert<const std::string&, std::string>(rec[1]);
-        type.setModified(false);
-    case 1: id = convert<const std::string&, int>(rec[0]);
-        id.setModified(false);
-    }
-}
-Auftrag::Auftrag(const Auftrag& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name) {
-}
-const Auftrag& Auftrag::operator=(const Auftrag& obj) {
-    if (this != &obj) {
-        id = obj.id;
-        type = obj.type;
-        name = obj.name;
-    }
-    litesql::Persistent::operator=(obj);
-    return *this;
-}
-Auftrag::AuftragposHandle Auftrag::auftragpos() {
-    return Auftrag::AuftragposHandle(*this);
-}
-std::string Auftrag::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
-    tables.push_back(table__);
-    litesql::Record fields;
-    litesql::Record values;
-    fields.push_back(id.name());
-    values.push_back(id);
-    id.setModified(false);
-    fields.push_back(type.name());
-    values.push_back(type);
-    type.setModified(false);
-    fields.push_back(name.name());
-    values.push_back(name);
-    name.setModified(false);
-    fieldRecs.push_back(fields);
-    valueRecs.push_back(values);
-    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
-}
-void Auftrag::create() {
-    litesql::Record tables;
-    litesql::Records fieldRecs;
-    litesql::Records valueRecs;
-    type = type__;
-    std::string newID = insert(tables, fieldRecs, valueRecs);
-    if (id == 0)
-        id = newID;
-}
-void Auftrag::addUpdates(Updates& updates) {
-    prepareUpdate(updates, table__);
-    updateField(updates, table__, id);
-    updateField(updates, table__, type);
-    updateField(updates, table__, name);
-}
-void Auftrag::addIDUpdates(Updates& updates) {
-}
-void Auftrag::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
-    ftypes.push_back(Id);
-    ftypes.push_back(Type);
-    ftypes.push_back(Name);
-}
-void Auftrag::delRecord() {
-    deleteFromTable(table__, id);
-}
-void Auftrag::delRelations() {
-    AuftragAuftragPositionen::del(*db, (AuftragAuftragPositionen::Auftrag == id));
-}
-void Auftrag::update() {
-    if (!inDatabase) {
-        create();
-        return;
-    }
-    Updates updates;
-    addUpdates(updates);
-    if (id != oldKey) {
-        if (!typeIsCorrect()) 
-            upcastCopy()->addIDUpdates(updates);
-    }
-    litesql::Persistent::update(updates);
-    oldKey = id;
-}
-void Auftrag::del() {
-    if (typeIsCorrect() == false) {
-        std::auto_ptr<Auftrag> p(upcastCopy());
-        p->delRelations();
-        p->onDelete();
-        p->delRecord();
-    } else {
-        onDelete();
-        delRecord();
-    }
-    inDatabase = false;
-}
-bool Auftrag::typeIsCorrect() {
-    return type == type__;
-}
-std::auto_ptr<Auftrag> Auftrag::upcast() {
-    return auto_ptr<Auftrag>(new Auftrag(*this));
-}
-std::auto_ptr<Auftrag> Auftrag::upcastCopy() {
-    Auftrag* np = new Auftrag(*this);
-    np->id = id;
-    np->type = type;
-    np->name = name;
-    np->inDatabase = inDatabase;
-    return auto_ptr<Auftrag>(np);
-}
-std::ostream & operator<<(std::ostream& os, Auftrag o) {
-    os << "-------------------------------------" << std::endl;
-    os << o.id.name() << " = " << o.id << std::endl;
-    os << o.type.name() << " = " << o.type << std::endl;
-    os << o.name.name() << " = " << o.name << std::endl;
-    os << "-------------------------------------" << std::endl;
-    return os;
-}
-const litesql::FieldType AuftragPosition::Own::Id("id_","INTEGER","AuftragPosition_");
-AuftragPosition::AuftragHandle::AuftragHandle(const AuftragPosition& owner)
-         : litesql::RelationHandle<AuftragPosition>(owner) {
-}
-void AuftragPosition::AuftragHandle::link(const Auftrag& o0) {
-    AuftragAuftragPositionen::link(owner->getDatabase(), o0, *owner);
-}
-void AuftragPosition::AuftragHandle::unlink(const Auftrag& o0) {
-    AuftragAuftragPositionen::unlink(owner->getDatabase(), o0, *owner);
-}
-void AuftragPosition::AuftragHandle::del(const litesql::Expr& expr) {
-    AuftragAuftragPositionen::del(owner->getDatabase(), expr && AuftragAuftragPositionen::AuftragPosition == owner->id);
-}
-litesql::DataSource<Auftrag> AuftragPosition::AuftragHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return AuftragAuftragPositionen::get<Auftrag>(owner->getDatabase(), expr, (AuftragAuftragPositionen::AuftragPosition == owner->id) && srcExpr);
-}
-litesql::DataSource<AuftragAuftragPositionen::Row> AuftragPosition::AuftragHandle::getRows(const litesql::Expr& expr) {
-    return AuftragAuftragPositionen::getRows(owner->getDatabase(), expr && (AuftragAuftragPositionen::AuftragPosition == owner->id));
-}
-const std::string AuftragPosition::type__("AuftragPosition");
-const std::string AuftragPosition::table__("AuftragPosition_");
-const std::string AuftragPosition::sequence__("AuftragPosition_seq");
-const litesql::FieldType AuftragPosition::Id("id_","INTEGER",table__);
-const litesql::FieldType AuftragPosition::Type("type_","TEXT",table__);
-const litesql::FieldType AuftragPosition::Position("position_","TEXT",table__);
-void AuftragPosition::defaults() {
-    id = 0;
-}
-AuftragPosition::AuftragPosition(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), position(Position) {
-    defaults();
-}
-AuftragPosition::AuftragPosition(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), position(Position) {
-    defaults();
-    size_t size = (rec.size() > 3) ? 3 : rec.size();
-    switch(size) {
-    case 3: position = convert<const std::string&, std::string>(rec[2]);
-        position.setModified(false);
-    case 2: type = convert<const std::string&, std::string>(rec[1]);
-        type.setModified(false);
-    case 1: id = convert<const std::string&, int>(rec[0]);
-        id.setModified(false);
-    }
-}
-AuftragPosition::AuftragPosition(const AuftragPosition& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), position(obj.position) {
-}
-const AuftragPosition& AuftragPosition::operator=(const AuftragPosition& obj) {
-    if (this != &obj) {
-        id = obj.id;
-        type = obj.type;
-        position = obj.position;
-    }
-    litesql::Persistent::operator=(obj);
-    return *this;
-}
-AuftragPosition::AuftragHandle AuftragPosition::auftrag() {
-    return AuftragPosition::AuftragHandle(*this);
-}
-std::string AuftragPosition::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
-    tables.push_back(table__);
-    litesql::Record fields;
-    litesql::Record values;
-    fields.push_back(id.name());
-    values.push_back(id);
-    id.setModified(false);
-    fields.push_back(type.name());
-    values.push_back(type);
-    type.setModified(false);
-    fields.push_back(position.name());
-    values.push_back(position);
-    position.setModified(false);
-    fieldRecs.push_back(fields);
-    valueRecs.push_back(values);
-    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
-}
-void AuftragPosition::create() {
-    litesql::Record tables;
-    litesql::Records fieldRecs;
-    litesql::Records valueRecs;
-    type = type__;
-    std::string newID = insert(tables, fieldRecs, valueRecs);
-    if (id == 0)
-        id = newID;
-}
-void AuftragPosition::addUpdates(Updates& updates) {
-    prepareUpdate(updates, table__);
-    updateField(updates, table__, id);
-    updateField(updates, table__, type);
-    updateField(updates, table__, position);
-}
-void AuftragPosition::addIDUpdates(Updates& updates) {
-}
-void AuftragPosition::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
-    ftypes.push_back(Id);
-    ftypes.push_back(Type);
-    ftypes.push_back(Position);
-}
-void AuftragPosition::delRecord() {
-    deleteFromTable(table__, id);
-}
-void AuftragPosition::delRelations() {
-    AuftragAuftragPositionen::del(*db, (AuftragAuftragPositionen::AuftragPosition == id));
-}
-void AuftragPosition::update() {
-    if (!inDatabase) {
-        create();
-        return;
-    }
-    Updates updates;
-    addUpdates(updates);
-    if (id != oldKey) {
-        if (!typeIsCorrect()) 
-            upcastCopy()->addIDUpdates(updates);
-    }
-    litesql::Persistent::update(updates);
-    oldKey = id;
-}
-void AuftragPosition::del() {
-    if (typeIsCorrect() == false) {
-        std::auto_ptr<AuftragPosition> p(upcastCopy());
-        p->delRelations();
-        p->onDelete();
-        p->delRecord();
-    } else {
-        onDelete();
-        delRecord();
-    }
-    inDatabase = false;
-}
-bool AuftragPosition::typeIsCorrect() {
-    return type == type__;
-}
-std::auto_ptr<AuftragPosition> AuftragPosition::upcast() {
-    return auto_ptr<AuftragPosition>(new AuftragPosition(*this));
-}
-std::auto_ptr<AuftragPosition> AuftragPosition::upcastCopy() {
-    AuftragPosition* np = new AuftragPosition(*this);
-    np->id = id;
-    np->type = type;
-    np->position = position;
-    np->inDatabase = inDatabase;
-    return auto_ptr<AuftragPosition>(np);
-}
-std::ostream & operator<<(std::ostream& os, AuftragPosition o) {
-    os << "-------------------------------------" << std::endl;
-    os << o.id.name() << " = " << o.id << std::endl;
-    os << o.type.name() << " = " << o.type << std::endl;
-    os << o.position.name() << " = " << o.position << std::endl;
-    os << "-------------------------------------" << std::endl;
-    return os;
-}
 HiveDb::HiveDb(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -3440,8 +3085,6 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("JobDetail_seq","sequence","CREATE SEQUENCE JobDetail_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("Auftrag_seq","sequence","CREATE SEQUENCE Auftrag_seq START 1 INCREMENT 1"));
-        res.push_back(Database::SchemaItem("AuftragPosition_seq","sequence","CREATE SEQUENCE AuftragPosition_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
@@ -3453,10 +3096,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Auftrag_","table","CREATE TABLE Auftrag_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
-    res.push_back(Database::SchemaItem("AuftragPosition_","table","CREATE TABLE AuftragPosition_ (id_ " + backend->getRowIDType() + ",type_ TEXT,position_ TEXT)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER UNIQUE,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
@@ -3464,7 +3105,6 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("_72915fab98e40e57ddd1495ecd15b95b","table","CREATE TABLE _72915fab98e40e57ddd1495ecd15b95b (Profile1 INTEGER,Watchfolder2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Auftrag_AuftragPosition_","table","CREATE TABLE Auftrag_AuftragPosition_ (Auftrag1 INTEGER,AuftragPosition2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));
@@ -3492,9 +3132,6 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_7a62c43900ab70f3c419ad87a6111c3a","index","CREATE INDEX _7a62c43900ab70f3c419ad87a6111c3a ON _72915fab98e40e57ddd1495ecd15b95b (Profile1)"));
     res.push_back(Database::SchemaItem("_e4fc63ccedb1d89ed94759a0260215ab","index","CREATE INDEX _e4fc63ccedb1d89ed94759a0260215ab ON _72915fab98e40e57ddd1495ecd15b95b (Watchfolder2)"));
     res.push_back(Database::SchemaItem("_cbe16244cb3e6e81e642ee01cc56214b","index","CREATE INDEX _cbe16244cb3e6e81e642ee01cc56214b ON _72915fab98e40e57ddd1495ecd15b95b (Profile1,Watchfolder2)"));
-    res.push_back(Database::SchemaItem("_f3d912aabb8e33ce78bbedd52578ad57","index","CREATE INDEX _f3d912aabb8e33ce78bbedd52578ad57 ON Auftrag_AuftragPosition_ (Auftrag1)"));
-    res.push_back(Database::SchemaItem("_c742168f283ff6d9f1bca6620f21c476","index","CREATE INDEX _c742168f283ff6d9f1bca6620f21c476 ON Auftrag_AuftragPosition_ (AuftragPosition2)"));
-    res.push_back(Database::SchemaItem("_12fa2a44bfd48223665b0eacf4423ac2","index","CREATE INDEX _12fa2a44bfd48223665b0eacf4423ac2 ON Auftrag_AuftragPosition_ (Auftrag1,AuftragPosition2)"));
     return res;
 }
 void HiveDb::initialize() {

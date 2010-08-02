@@ -18,6 +18,7 @@
 
 //#include <Files.cpp>
 #include "Profiles.cpp"
+#include "Projects.h"
 #include "ProfilesForm.h"
 #include "WatchFolder.cpp"
 #include "WatchfolderForm.h"
@@ -141,12 +142,8 @@ namespace org {
       }
 
       void WebApp2::listProjects() {
-        list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::Project::Id,"Id" ,20));
-        columnConfigs.push_back(ColumnConfig(db::Project::Name,"Name" ,200));
-        columnConfigs.push_back(ColumnConfig(db::Project::Created,"Created" ,300));
-        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
-        setContent(table);
+        Projects * p = new Projects();
+        setContent(p);
       }
       void WebApp2::listAllFiles() {
         list<ColumnConfig> columnConfigs;

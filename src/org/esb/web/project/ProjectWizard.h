@@ -10,6 +10,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "Wt/Ext/Dialog"
 #include "InputFilePanel.h"
+#include "ProfilePanel.h"
 #include "org/esb/lang/Ptr.h"
 namespace org{
   namespace esb{
@@ -18,6 +19,7 @@ namespace org{
       public:
         ProjectWizard();
         void open();
+        void open(int pid);
         void open(Ptr<db::Project>);
         void save();
         void cancel();
@@ -25,6 +27,7 @@ namespace org{
         int _project_id;
         Ptr<db::Project> _project;
         Ptr<InputFilePanel> _filePanel;
+        Ptr<ProfilePanel> _profilePanel;
         Ptr<db::HiveDb> _db;
       };
     }

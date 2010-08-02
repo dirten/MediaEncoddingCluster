@@ -18,7 +18,7 @@ namespace org {
     namespace web {
       ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Editor") {
         _project_id=0;
-        resize(900, 600);
+        resize(1200, 700);
         setBorder(false);
         //setSizeGripEnabled(true);
 
@@ -29,16 +29,18 @@ namespace org {
         layout()->setContentsMargins(0, 0, 0, 0);
 
         _db=Ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
-        //        Wt::Ext::Panel * center = new InputFilePanel();
         _filePanel=Ptr<InputFilePanel>(new InputFilePanel());
+        _profilePanel=Ptr<ProfilePanel>(new ProfilePanel());
 
-
+        _profilePanel->resize(400,Wt::WLength());
+        _profilePanel->setResizable(true);
         //center->setLayout(new Wt::WFitLayout());
         //center->layout()->addWidget(new Wt::WText("Center"));
         //center->resize(300,300);
 
         ((Wt::WBorderLayout*)layout())->addWidget(_filePanel.get(), Wt::WBorderLayout::Center);
-
+        ((Wt::WBorderLayout*)layout())->addWidget(_profilePanel.get(), Wt::WBorderLayout::East);
+/*
         Wt::Ext::Panel * south_panel = new Wt::Ext::Panel();
         south_panel->setLayout(new Wt::WFitLayout());
         south_panel->layout()->addWidget(new Wt::WText("South"));
@@ -47,7 +49,7 @@ namespace org {
         south_panel->setAnimate(true);
         south_panel->setResizable(true);
         ((Wt::WBorderLayout*)layout())->addWidget(south_panel, Wt::WBorderLayout::South);
-
+*/
 
         addButton(new Wt::Ext::Button("Cancel"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::cancel));
@@ -61,6 +63,14 @@ namespace org {
         */
       }
 
+      void ProjectWizard::open(int pid) {
+        try{
+          db::Project project=litesql::select<db::Project>(*_db.get(), db::Project::Id==pid).one();
+          open(Ptr<db::Project>(new db::Project(project)));
+        }catch(litesql::NotFound & ex){
+          LOGERROR("Project with id "<<pid<<" could not be loaded!"<<ex.what());
+        }
+      }
       void ProjectWizard::open() {
         open(Ptr<db::Project>(new db::Project(*_db.get())));
       }
@@ -69,6 +79,7 @@ namespace org {
         _project=p;
         _project->update();
         _filePanel->setProject(_project);
+        _profilePanel->setProject(_project);
         this->show();
       }
 
@@ -81,7 +92,7 @@ namespace org {
 
       void ProjectWizard::cancel() {
 
-        _project->del();
+//        _project->del();
         this->done(Rejected);
       }
 

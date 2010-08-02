@@ -12,8 +12,6 @@ class Job;
 class JobDetail;
 class Watchfolder;
 class ProcessUnit;
-class Auftrag;
-class AuftragPosition;
 class MediaFileProjectRelation {
 public:
     class Row {
@@ -181,25 +179,6 @@ public:
     static void unlink(const litesql::Database& db, const db::Profile& o0, const db::Watchfolder& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-;
-;
-};
-class AuftragAuftragPositionen {
-public:
-    class Row {
-    public:
-        litesql::Field<int> auftragPosition;
-        litesql::Field<int> auftrag;
-        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
-    };
-    static const std::string table__;
-    static const litesql::FieldType Auftrag;
-    static const litesql::FieldType AuftragPosition;
-    static void link(const litesql::Database& db, const db::Auftrag& o0, const db::AuftragPosition& o1);
-    static void unlink(const litesql::Database& db, const db::Auftrag& o0, const db::AuftragPosition& o1);
-    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<AuftragAuftragPositionen::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -940,106 +919,6 @@ public:
     std::auto_ptr<ProcessUnit> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, ProcessUnit o);
-class Auftrag : public litesql::Persistent {
-public:
-    class Own {
-    public:
-        static const litesql::FieldType Id;
-    };
-    class AuftragposHandle : public litesql::RelationHandle<Auftrag> {
-    public:
-        AuftragposHandle(const Auftrag& owner);
-        void link(const AuftragPosition& o0);
-        void unlink(const AuftragPosition& o0);
-        void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<AuftragPosition> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<AuftragAuftragPositionen::Row> getRows(const litesql::Expr& expr=litesql::Expr());
-    };
-    static const std::string type__;
-    static const std::string table__;
-    static const std::string sequence__;
-    static const litesql::FieldType Id;
-    litesql::Field<int> id;
-    static const litesql::FieldType Type;
-    litesql::Field<std::string> type;
-    static const litesql::FieldType Name;
-    litesql::Field<std::string> name;
-protected:
-    void defaults();
-public:
-    Auftrag(const litesql::Database& db);
-    Auftrag(const litesql::Database& db, const litesql::Record& rec);
-    Auftrag(const Auftrag& obj);
-    const Auftrag& operator=(const Auftrag& obj);
-    Auftrag::AuftragposHandle auftragpos();
-protected:
-    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
-    void create();
-    virtual void addUpdates(Updates& updates);
-    virtual void addIDUpdates(Updates& updates);
-public:
-    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
-protected:
-    virtual void delRecord();
-    virtual void delRelations();
-public:
-    virtual void update();
-    virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<Auftrag> upcast();
-    std::auto_ptr<Auftrag> upcastCopy();
-};
-std::ostream & operator<<(std::ostream& os, Auftrag o);
-class AuftragPosition : public litesql::Persistent {
-public:
-    class Own {
-    public:
-        static const litesql::FieldType Id;
-    };
-    class AuftragHandle : public litesql::RelationHandle<AuftragPosition> {
-    public:
-        AuftragHandle(const AuftragPosition& owner);
-        void link(const Auftrag& o0);
-        void unlink(const Auftrag& o0);
-        void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<Auftrag> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<AuftragAuftragPositionen::Row> getRows(const litesql::Expr& expr=litesql::Expr());
-    };
-    static const std::string type__;
-    static const std::string table__;
-    static const std::string sequence__;
-    static const litesql::FieldType Id;
-    litesql::Field<int> id;
-    static const litesql::FieldType Type;
-    litesql::Field<std::string> type;
-    static const litesql::FieldType Position;
-    litesql::Field<std::string> position;
-protected:
-    void defaults();
-public:
-    AuftragPosition(const litesql::Database& db);
-    AuftragPosition(const litesql::Database& db, const litesql::Record& rec);
-    AuftragPosition(const AuftragPosition& obj);
-    const AuftragPosition& operator=(const AuftragPosition& obj);
-    AuftragPosition::AuftragHandle auftrag();
-protected:
-    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
-    void create();
-    virtual void addUpdates(Updates& updates);
-    virtual void addIDUpdates(Updates& updates);
-public:
-    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
-protected:
-    virtual void delRecord();
-    virtual void delRelations();
-public:
-    virtual void update();
-    virtual void del();
-    virtual bool typeIsCorrect();
-    std::auto_ptr<AuftragPosition> upcast();
-    std::auto_ptr<AuftragPosition> upcastCopy();
-};
-std::ostream & operator<<(std::ostream& os, AuftragPosition o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

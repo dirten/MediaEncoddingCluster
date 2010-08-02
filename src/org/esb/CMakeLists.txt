@@ -287,6 +287,9 @@ add_library (web
     web/project/ProjectWizard.cpp
     web/project/InputFilePanel.cpp
     web/ColumnConfig.cpp
+    web/Projects.cpp
+    web/ProfileChooser.cpp
+    web/project/ProfilePanel.cpp
 )
 
 
