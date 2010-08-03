@@ -58,6 +58,7 @@ namespace org {
           setColumnWidth(0,50);
           setColumnWidth(1,300);
           setColumnWidth(2,300);
+          setToolTip("Click on Add Input Video to import an Input Media File!");
         }
         void setMediaFiles(std::vector<db::MediaFile> files){
           InputFileTableModel*oldptr=static_cast<InputFileTableModel*>(model());
@@ -77,7 +78,7 @@ namespace org {
         _filetable->setHighlightMouseOver(true);
         _filetable->setSelectionBehavior(Wt::SelectRows);
         _filetable->setSelectionMode(Wt::SingleSelection);
-
+        _filetable->itemSelectionChanged.connect(SLOT(this, InputFilePanel::enableButtons));
         layout()->addWidget(_filetable.get());
         layout()->setContentsMargins(0, 0, 0, 0);
 
@@ -85,8 +86,8 @@ namespace org {
         setTopToolBar(new Wt::Ext::ToolBar());
 
         Wt::Ext::Button * addVideoButton = topToolBar()->addButton("Add Input Video");
-        Wt::Ext::Button * removeVideoButton = topToolBar()->addButton("Remove Input Video");
-
+        removeVideoButton = topToolBar()->addButton("Remove Input Video");
+        removeVideoButton->setEnabled(false);
         addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
         removeVideoButton->clicked.connect(SLOT(this, InputFilePanel::removeVideo));
 
@@ -123,7 +124,7 @@ namespace org {
           dialog->buttons().back()->clicked.connect(SLOT(dialog, Wt::Ext::Dialog::accept));
           dialog->show();
           dialog->exec();
-
+          removeVideoButton->setEnabled(false);
       }
       void InputFilePanel::removeVideo(){
         
@@ -139,12 +140,20 @@ namespace org {
           }
         }
         _filetable->setMediaFiles(_project->mediafiles().get().all());
+         removeVideoButton->setEnabled(false);
       }
       InputFilePanel::InputFilePanel(const InputFilePanel& orig) {
       }
 
       InputFilePanel::~InputFilePanel() {
         
+      }
+      void InputFilePanel::enableButtons() {
+        if(_filetable->selectedRows().size()>0){
+          removeVideoButton->setEnabled(true);
+        }else{
+          removeVideoButton->setEnabled(false);
+        }
       }
 
       void InputFilePanel::addVideoButtonClicked() {

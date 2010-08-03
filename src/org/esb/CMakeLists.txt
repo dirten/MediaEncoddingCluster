@@ -291,6 +291,7 @@ add_library (web
     web/ProfileChooser.cpp
     web/project/ProfilePanel.cpp
     web/project/FilterPanel.cpp
+    web/project/FilterChooser.cpp
     web/project/PreviewPanel.cpp
 )
 

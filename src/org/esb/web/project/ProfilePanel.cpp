@@ -41,6 +41,7 @@ namespace org{
           setModel(new ProfileTableModel());
           setColumnWidth(0,50);
           setColumnWidth(1,300);
+          
          
         }
         void setProfiles(std::vector<db::Profile> profiles){
@@ -54,6 +55,7 @@ namespace org{
       ProfilePanel::ProfilePanel():Wt::Ext::Panel(){
         setTitle("Output Profiles");
         setLayout(new Wt::WFitLayout());
+        setToolTip("Click on \"Add Output Profile\" to select an Output Profile!");
         layout()->setContentsMargins(0, 0, 0, 0);
         setTopToolBar(new Wt::Ext::ToolBar());
         _profile_table=Ptr<ProfileTable>(new ProfileTable());
@@ -62,7 +64,7 @@ namespace org{
         _profile_table->setHighlightMouseOver(true);
         _profile_table->setSelectionBehavior(Wt::SelectRows);
         _profile_table->setSelectionMode(Wt::SingleSelection);
-
+        _profile_table->itemSelectionChanged.connect(SLOT(this, ProfilePanel::enableButtons));
         layout()->addWidget(_profile_table.get());
 
         Wt::Ext::Button * addProfileButton = topToolBar()->addButton("Add Output Profile");
@@ -70,9 +72,10 @@ namespace org{
 
         editProfileButton = topToolBar()->addButton("Edit Output Profile");
         editProfileButton ->clicked.connect(SLOT(this, ProfilePanel::editSelectedProfile));
-
+        editProfileButton->setEnabled(false);
         removeProfileButton = topToolBar()->addButton("Remove Output Profile");
         removeProfileButton ->clicked.connect(SLOT(this, ProfilePanel::removeSelectedProfile));
+        removeProfileButton->setEnabled(false);
       }
 
       void ProfilePanel::setProject(Ptr<db::Project> p){
@@ -92,6 +95,8 @@ namespace org{
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==pid).one();
         _project->profiles().unlink(profile);
         _profile_table->setProfiles(_project->profiles().get().all());
+        removeProfileButton->setEnabled(false);
+        editProfileButton->setEnabled(false);
       }
 
       void ProfilePanel::editSelectedProfile(){
@@ -107,6 +112,13 @@ namespace org{
         _profile->update();
       }
 
+      void ProfilePanel::enableButtons(){
+        if(_profile_table->selectedRows().size()>0){
+        removeProfileButton->setEnabled(true);
+        editProfileButton->setEnabled(true);
+        }
+      }
+
       void ProfilePanel::profileChooserSelected(){
         int c=_profile_chooser->getSelectedProfileId();
         
@@ -114,7 +126,8 @@ namespace org{
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==c).one();
         _project->profiles().link(profile);
         _profile_table->setProfiles(_project->profiles().get().all());
-        
+        removeProfileButton->setEnabled(false);
+        editProfileButton->setEnabled(false);
         LOGDEBUG("ProfileId:"<<c);
       }
     }
