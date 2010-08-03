@@ -20,7 +20,7 @@ namespace org {
             class FileChooserFilter : public org::esb::io::FileFilter {
             public:
 
-                bool accept(org::esb::io::File file) {
+                bool accept(org::esb::io::File & file) {
                   return file.isDirectory()||file.isFile();
                 }
             };
@@ -30,6 +30,7 @@ namespace org {
                 FileChooser(std::string title, std::string path = "");
                 Wt::Signal<org::esb::io::File> selected;
                 Wt::Signal<void> canceled;
+                ~FileChooser();
             private:
                 void select();
                 void cancel();

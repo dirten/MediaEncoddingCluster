@@ -39,9 +39,11 @@ namespace org {
         _filterPanel->resize(500, 300);
         _filterPanel->setResizable(true);
 
-        _previewPanel=Ptr<PreviewPanel>(new PreviewPanel());
-        _previewPanel->resize(500, 300);
-        _previewPanel->setResizable(true);
+        _propertyPanel=Ptr<ProjectPropertyPanel>(new ProjectPropertyPanel());
+        _propertyPanel->resize(500, 300);
+        _propertyPanel->setResizable(true);
+
+        
 
         //center->setLayout(new Wt::WFitLayout());
         //center->layout()->addWidget(new Wt::WText("Center"));
@@ -54,7 +56,7 @@ namespace org {
         Wt::Ext::Panel * south_panel = new Wt::Ext::Panel();
         south_panel->setLayout(new Wt::WBorderLayout());
         ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::Center);
-        ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_previewPanel.get(), Wt::WBorderLayout::East);
+        ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_propertyPanel.get(), Wt::WBorderLayout::East);
         south_panel->resize(Wt::WLength(), 300);
         south_panel->setAnimate(true);
         south_panel->setResizable(true);
@@ -90,11 +92,14 @@ namespace org {
         _project->update();
         _filePanel->setProject(_project);
         _profilePanel->setProject(_project);
+        _filterPanel->setProject(_project);
+        _propertyPanel->setProject(_project);
         this->show();
       }
 
       void ProjectWizard::save() {
         LOGDEBUG("Project save with id:"<<_project->id)
+          _propertyPanel->save();
           _project->update();
         LOGDEBUG("Project saved:" << _project->id)
           saved.emit();

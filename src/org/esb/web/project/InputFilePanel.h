@@ -10,6 +10,8 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/io/File.h"
 #include "Wt/Ext/Panel"
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/web/FileChooser.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -29,6 +31,7 @@ namespace org {
         boost::shared_ptr<InputFileTable> _filetable;
         Wt::Ext::Button * removeVideoButton ;
         void enableButtons();
+        Ptr<FileChooser> _chooser;
         
       };
 

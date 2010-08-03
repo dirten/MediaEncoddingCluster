@@ -111,7 +111,7 @@ path_(path), _filter(&filter) {
 }
 
 WIconPair *FileTreeTableNode::createIcon(const boost::filesystem::path& path) {
-
+  
   if (boost::filesystem::exists(path)
       && boost::filesystem::is_directory(path))
     return new WIconPair("icons/yellow-folder-closed.png",

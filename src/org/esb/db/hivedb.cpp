@@ -650,22 +650,36 @@ const std::string Project::sequence__("Project_seq");
 const litesql::FieldType Project::Id("id_","INTEGER",table__);
 const litesql::FieldType Project::Type("type_","TEXT",table__);
 const litesql::FieldType Project::Name("name_","TEXT",table__);
+const litesql::FieldType Project::Outdirectory("outdirectory_","TEXT",table__);
+const litesql::FieldType Project::Status("status_","TEXT",table__);
 const litesql::FieldType Project::Created("created_","INTEGER",table__);
+const litesql::FieldType Project::Started("started_","INTEGER",table__);
+const litesql::FieldType Project::Completed("completed_","INTEGER",table__);
 void Project::defaults() {
     id = 0;
     created = 0;
+    started = 0;
+    completed = 0;
 }
 Project::Project(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name), created(Created) {
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), outdirectory(Outdirectory), status(Status), created(Created), started(Started), completed(Completed) {
     defaults();
 }
 Project::Project(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), created(Created) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), outdirectory(Outdirectory), status(Status), created(Created), started(Started), completed(Completed) {
     defaults();
-    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    size_t size = (rec.size() > 8) ? 8 : rec.size();
     switch(size) {
-    case 4: created = convert<const std::string&, litesql::Date>(rec[3]);
+    case 8: completed = convert<const std::string&, litesql::Date>(rec[7]);
+        completed.setModified(false);
+    case 7: started = convert<const std::string&, litesql::Date>(rec[6]);
+        started.setModified(false);
+    case 6: created = convert<const std::string&, litesql::Date>(rec[5]);
         created.setModified(false);
+    case 5: status = convert<const std::string&, std::string>(rec[4]);
+        status.setModified(false);
+    case 4: outdirectory = convert<const std::string&, std::string>(rec[3]);
+        outdirectory.setModified(false);
     case 3: name = convert<const std::string&, std::string>(rec[2]);
         name.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
@@ -675,14 +689,18 @@ Project::Project(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Project::Project(const Project& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), created(obj.created) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), outdirectory(obj.outdirectory), status(obj.status), created(obj.created), started(obj.started), completed(obj.completed) {
 }
 const Project& Project::operator=(const Project& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
         name = obj.name;
+        outdirectory = obj.outdirectory;
+        status = obj.status;
         created = obj.created;
+        started = obj.started;
+        completed = obj.completed;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -709,9 +727,21 @@ std::string Project::insert(litesql::Record& tables, litesql::Records& fieldRecs
     fields.push_back(name.name());
     values.push_back(name);
     name.setModified(false);
+    fields.push_back(outdirectory.name());
+    values.push_back(outdirectory);
+    outdirectory.setModified(false);
+    fields.push_back(status.name());
+    values.push_back(status);
+    status.setModified(false);
     fields.push_back(created.name());
     values.push_back(created);
     created.setModified(false);
+    fields.push_back(started.name());
+    values.push_back(started);
+    started.setModified(false);
+    fields.push_back(completed.name());
+    values.push_back(completed);
+    completed.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -730,7 +760,11 @@ void Project::addUpdates(Updates& updates) {
     updateField(updates, table__, id);
     updateField(updates, table__, type);
     updateField(updates, table__, name);
+    updateField(updates, table__, outdirectory);
+    updateField(updates, table__, status);
     updateField(updates, table__, created);
+    updateField(updates, table__, started);
+    updateField(updates, table__, completed);
 }
 void Project::addIDUpdates(Updates& updates) {
 }
@@ -738,7 +772,11 @@ void Project::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
     ftypes.push_back(Name);
+    ftypes.push_back(Outdirectory);
+    ftypes.push_back(Status);
     ftypes.push_back(Created);
+    ftypes.push_back(Started);
+    ftypes.push_back(Completed);
 }
 void Project::delRecord() {
     deleteFromTable(table__, id);
@@ -785,7 +823,11 @@ std::auto_ptr<Project> Project::upcastCopy() {
     np->id = id;
     np->type = type;
     np->name = name;
+    np->outdirectory = outdirectory;
+    np->status = status;
     np->created = created;
+    np->started = started;
+    np->completed = completed;
     np->inDatabase = inDatabase;
     return auto_ptr<Project>(np);
 }
@@ -794,7 +836,11 @@ std::ostream & operator<<(std::ostream& os, Project o) {
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
+    os << o.outdirectory.name() << " = " << o.outdirectory << std::endl;
+    os << o.status.name() << " = " << o.status << std::endl;
     os << o.created.name() << " = " << o.created << std::endl;
+    os << o.started.name() << " = " << o.started << std::endl;
+    os << o.completed.name() << " = " << o.completed << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -3651,7 +3697,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
     }
-    res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
     res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));

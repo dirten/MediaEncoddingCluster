@@ -284,8 +284,16 @@ public:
     litesql::Field<std::string> type;
     static const litesql::FieldType Name;
     litesql::Field<std::string> name;
+    static const litesql::FieldType Outdirectory;
+    litesql::Field<std::string> outdirectory;
+    static const litesql::FieldType Status;
+    litesql::Field<std::string> status;
     static const litesql::FieldType Created;
     litesql::Field<litesql::Date> created;
+    static const litesql::FieldType Started;
+    litesql::Field<litesql::Date> started;
+    static const litesql::FieldType Completed;
+    litesql::Field<litesql::Date> completed;
 protected:
     void defaults();
 public:

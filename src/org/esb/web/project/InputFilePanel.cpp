@@ -15,7 +15,7 @@
 #include <Wt/Ext/TableView>
 #include <Wt/Ext/MessageBox>
 #include <Wt/WMessageBox>
-#include "org/esb/web/FileChooser.h"
+
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
@@ -86,6 +86,7 @@ namespace org {
         setTopToolBar(new Wt::Ext::ToolBar());
 
         Wt::Ext::Button * addVideoButton = topToolBar()->addButton("Add Input Video");
+        topToolBar()->addSeparator();
         removeVideoButton = topToolBar()->addButton("Remove Input Video");
         removeVideoButton->setEnabled(false);
         addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
@@ -117,6 +118,7 @@ namespace org {
           dialog->setTitle("Failed to import Media File!" );
           LOGINFO("no valid file")
         }
+          _chooser.reset();
           dialog->setLayout(new Wt::WFitLayout());
           dialog->resize(400,150);
           dialog->layout()->addWidget(new Wt::WText(message));
@@ -157,9 +159,9 @@ namespace org {
       }
 
       void InputFilePanel::addVideoButtonClicked() {
-        FileChooser * chooser=new FileChooser("Add Video", "/");
-        chooser->selected.connect(SLOT(this, InputFilePanel::setInputFile));
-        chooser->show();
+        _chooser=Ptr<FileChooser>(new FileChooser("Add Video", "/"));
+        _chooser->selected.connect(SLOT(this, InputFilePanel::setInputFile));
+        _chooser->show();
       }
     }
   }

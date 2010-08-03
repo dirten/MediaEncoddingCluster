@@ -6,7 +6,7 @@ namespace io{
 class File;
 class FileFilter{
   public:
-    virtual bool accept(File file)=0;
+    virtual bool accept(File & file)=0;
     virtual ~FileFilter(){}
 };
 

@@ -31,8 +31,6 @@
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
 
 #include "org/esb/hive/FileImporter.h"
 #include <boost/algorithm/string.hpp>
@@ -46,7 +44,6 @@ namespace org {
   namespace esb {
     namespace hive {
       using namespace org::esb::io;
-      using namespace org::esb::sql;
       using namespace org::esb::lang;
 
       class MyFileFilter : public FileFilter {
@@ -67,7 +64,7 @@ namespace org {
           }
         }
 
-        bool accept(File file) {
+        bool accept(File &file) {
           bool result = false;
           if (file.isDirectory() || media_ext.size() == 0 || media_ext.find(file.getExtension()) != media_ext.end())
             result = true;
@@ -78,8 +75,6 @@ namespace org {
       };
 
       DirectoryScanner::DirectoryScanner(std::string dir, int interval) {
-        _stmt = NULL;
-        _con = NULL;
         _halt = true;
         _interval = interval;
         th = NULL;
@@ -88,8 +83,6 @@ namespace org {
       }
 
       DirectoryScanner::DirectoryScanner() {
-        _stmt = NULL;
-        _con = NULL;
         _halt = true;
         th = NULL;
         _interval = 300000;

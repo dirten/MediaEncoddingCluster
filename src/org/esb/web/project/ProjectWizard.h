@@ -13,6 +13,7 @@
 #include "ProfilePanel.h"
 #include "FilterPanel.h"
 #include "PreviewPanel.h"
+#include "ProjectPropertyPanel.h"
 #include "org/esb/lang/Ptr.h"
 namespace org{
   namespace esb{
@@ -34,6 +35,7 @@ namespace org{
         Ptr<ProfilePanel> _profilePanel;
         Ptr<FilterPanel> _filterPanel;
         Ptr<PreviewPanel> _previewPanel;
+        Ptr<ProjectPropertyPanel> _propertyPanel;
         Ptr<db::HiveDb> _db;
       };
     }

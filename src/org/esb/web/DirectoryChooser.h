@@ -21,7 +21,7 @@ namespace org {
             class DirectoryFileFilter : public org::esb::io::FileFilter {
             public:
 
-                bool accept(org::esb::io::File file) {
+                bool accept(org::esb::io::File & file) {
                     return file.isDirectory();
                 }
             };

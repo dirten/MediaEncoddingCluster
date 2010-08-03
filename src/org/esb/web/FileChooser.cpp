@@ -29,8 +29,9 @@ namespace org {
         Wt::Ext::Button *save = new Wt::Ext::Button("Select File", b->elementAt(0, 1));
         cancel->clicked.connect(SLOT(this, FileChooser::cancel));
         save->clicked.connect(SLOT(this, FileChooser::select));
-
-
+      }
+      FileChooser::~FileChooser(){
+        delete tree;
       }
 
       void FileChooser::select() {

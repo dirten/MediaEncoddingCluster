@@ -15,7 +15,7 @@ namespace org{
       class ProfileTableModel:public Wt::WStandardItemModel{
       public:
         ProfileTableModel(){
-          insertColumns(0, 3);
+          insertColumns(0, 2);
           setHeaderData(0, std::string("Id"));
           setHeaderData(1, std::string("Name"));
 
@@ -69,10 +69,11 @@ namespace org{
 
         Wt::Ext::Button * addProfileButton = topToolBar()->addButton("Add Output Profile");
         addProfileButton ->clicked.connect(SLOT(this, ProfilePanel::addProfileButtonClicked));
-
+        topToolBar()->addSeparator();
         editProfileButton = topToolBar()->addButton("Edit Output Profile");
         editProfileButton ->clicked.connect(SLOT(this, ProfilePanel::editSelectedProfile));
         editProfileButton->setEnabled(false);
+        topToolBar()->addSeparator();
         removeProfileButton = topToolBar()->addButton("Remove Output Profile");
         removeProfileButton ->clicked.connect(SLOT(this, ProfilePanel::removeSelectedProfile));
         removeProfileButton->setEnabled(false);

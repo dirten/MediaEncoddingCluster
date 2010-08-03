@@ -49,8 +49,13 @@ namespace org {
         _table->reload();
       }
       void Projects::enableButtons(){
+        if(_table->selectedRows().size()>0){
         edit_button->setEnabled(true);
         delete_button->setEnabled(true);
+        }else{
+        edit_button->setEnabled(false);
+        delete_button->setEnabled(false);
+        }
       }
     }
   }
