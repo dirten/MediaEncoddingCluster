@@ -33,6 +33,44 @@ public:
 ;
 ;
 };
+class FilterMediaFileRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> mediaFile;
+        litesql::Field<int> filter;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Filter;
+    static const litesql::FieldType MediaFile;
+    static void link(const litesql::Database& db, const db::Filter& o0, const db::MediaFile& o1);
+    static void unlink(const litesql::Database& db, const db::Filter& o0, const db::MediaFile& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<FilterMediaFileRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class FilterProjectRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> project;
+        litesql::Field<int> filter;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Filter;
+    static const litesql::FieldType Project;
+    static void link(const litesql::Database& db, const db::Filter& o0, const db::Project& o1);
+    static void unlink(const litesql::Database& db, const db::Filter& o0, const db::Project& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<FilterProjectRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class MediaFileProjectRelation {
 public:
     class Row {
@@ -210,6 +248,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class FilterHandle : public litesql::RelationHandle<Project> {
+    public:
+        FilterHandle(const Project& owner);
+        void link(const Filter& o0);
+        void unlink(const Filter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Filter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class MediafilesHandle : public litesql::RelationHandle<Project> {
     public:
         MediafilesHandle(const Project& owner);
@@ -246,6 +293,7 @@ public:
     Project(const litesql::Database& db, const litesql::Record& rec);
     Project(const Project& obj);
     const Project& operator=(const Project& obj);
+    Project::FilterHandle filter();
     Project::MediafilesHandle mediafiles();
     Project::ProfilesHandle profiles();
 protected:
@@ -281,6 +329,24 @@ public:
         litesql::DataSource<FilterParameter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<FilterFilterParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class MediafileHandle : public litesql::RelationHandle<Filter> {
+    public:
+        MediafileHandle(const Filter& owner);
+        void link(const MediaFile& o0);
+        void unlink(const MediaFile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<MediaFile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterMediaFileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class ProjectHandle : public litesql::RelationHandle<Filter> {
+    public:
+        ProjectHandle(const Filter& owner);
+        void link(const Project& o0);
+        void unlink(const Project& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -300,6 +366,8 @@ public:
     Filter(const Filter& obj);
     const Filter& operator=(const Filter& obj);
     Filter::ParameterHandle parameter();
+    Filter::MediafileHandle mediafile();
+    Filter::ProjectHandle project();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -375,6 +443,15 @@ public:
     class Own {
     public:
         static const litesql::FieldType Id;
+    };
+    class FilterHandle : public litesql::RelationHandle<MediaFile> {
+    public:
+        FilterHandle(const MediaFile& owner);
+        void link(const Filter& o0);
+        void unlink(const Filter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Filter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterMediaFileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class ProjectHandle : public litesql::RelationHandle<MediaFile> {
     public:
@@ -462,6 +539,7 @@ public:
     MediaFile(const litesql::Database& db, const litesql::Record& rec);
     MediaFile(const MediaFile& obj);
     const MediaFile& operator=(const MediaFile& obj);
+    MediaFile::FilterHandle filter();
     MediaFile::ProjectHandle project();
     MediaFile::StreamsHandle streams();
     MediaFile::JobsinHandle jobsin();

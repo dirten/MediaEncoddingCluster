@@ -50,6 +50,104 @@ template <> litesql::DataSource<db::FilterParameter> FilterFilterParameterRelati
     sel.where(srcExpr);
     return DataSource<db::FilterParameter>(db, db::FilterParameter::Id.in(sel) && expr);
 }
+FilterMediaFileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : mediaFile(FilterMediaFileRelation::MediaFile), filter(FilterMediaFileRelation::Filter) {
+    switch(rec.size()) {
+    case 2:
+        mediaFile = rec[1];
+    case 1:
+        filter = rec[0];
+    }
+}
+const std::string FilterMediaFileRelation::table__("Filter_MediaFile_");
+const litesql::FieldType FilterMediaFileRelation::Filter("Filter1","INTEGER",table__);
+const litesql::FieldType FilterMediaFileRelation::MediaFile("MediaFile2","INTEGER",table__);
+void FilterMediaFileRelation::link(const litesql::Database& db, const db::Filter& o0, const db::MediaFile& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Filter.name());
+    values.push_back(o0.id);
+    fields.push_back(MediaFile.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void FilterMediaFileRelation::unlink(const litesql::Database& db, const db::Filter& o0, const db::MediaFile& o1) {
+    db.delete_(table__, (Filter == o0.id && MediaFile == o1.id));
+}
+void FilterMediaFileRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<FilterMediaFileRelation::Row> FilterMediaFileRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Filter.fullName());
+    sel.result(MediaFile.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<FilterMediaFileRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Filter> FilterMediaFileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Filter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Filter>(db, db::Filter::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::MediaFile> FilterMediaFileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(MediaFile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::MediaFile>(db, db::MediaFile::Id.in(sel) && expr);
+}
+FilterProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : project(FilterProjectRelation::Project), filter(FilterProjectRelation::Filter) {
+    switch(rec.size()) {
+    case 2:
+        project = rec[1];
+    case 1:
+        filter = rec[0];
+    }
+}
+const std::string FilterProjectRelation::table__("Filter_Project_");
+const litesql::FieldType FilterProjectRelation::Filter("Filter1","INTEGER",table__);
+const litesql::FieldType FilterProjectRelation::Project("Project2","INTEGER",table__);
+void FilterProjectRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Project& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Filter.name());
+    values.push_back(o0.id);
+    fields.push_back(Project.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void FilterProjectRelation::unlink(const litesql::Database& db, const db::Filter& o0, const db::Project& o1) {
+    db.delete_(table__, (Filter == o0.id && Project == o1.id));
+}
+void FilterProjectRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<FilterProjectRelation::Row> FilterProjectRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Filter.fullName());
+    sel.result(Project.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<FilterProjectRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Filter> FilterProjectRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Filter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Filter>(db, db::Filter::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Project> FilterProjectRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Project.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
+}
 MediaFileProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : project(MediaFileProjectRelation::Project), mediaFile(MediaFileProjectRelation::MediaFile) {
     switch(rec.size()) {
@@ -492,6 +590,24 @@ template <> litesql::DataSource<db::Watchfolder> ProfileWatchfolderRelationWatch
     return DataSource<db::Watchfolder>(db, db::Watchfolder::Id.in(sel) && expr);
 }
 const litesql::FieldType Project::Own::Id("id_","INTEGER","Project_");
+Project::FilterHandle::FilterHandle(const Project& owner)
+         : litesql::RelationHandle<Project>(owner) {
+}
+void Project::FilterHandle::link(const Filter& o0) {
+    FilterProjectRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Project::FilterHandle::unlink(const Filter& o0) {
+    FilterProjectRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Project::FilterHandle::del(const litesql::Expr& expr) {
+    FilterProjectRelation::del(owner->getDatabase(), expr && FilterProjectRelation::Project == owner->id);
+}
+litesql::DataSource<Filter> Project::FilterHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterProjectRelation::get<Filter>(owner->getDatabase(), expr, (FilterProjectRelation::Project == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterProjectRelation::Row> Project::FilterHandle::getRows(const litesql::Expr& expr) {
+    return FilterProjectRelation::getRows(owner->getDatabase(), expr && (FilterProjectRelation::Project == owner->id));
+}
 Project::MediafilesHandle::MediafilesHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
 }
@@ -571,6 +687,9 @@ const Project& Project::operator=(const Project& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+Project::FilterHandle Project::filter() {
+    return Project::FilterHandle(*this);
+}
 Project::MediafilesHandle Project::mediafiles() {
     return Project::MediafilesHandle(*this);
 }
@@ -625,6 +744,7 @@ void Project::delRecord() {
     deleteFromTable(table__, id);
 }
 void Project::delRelations() {
+    FilterProjectRelation::del(*db, (FilterProjectRelation::Project == id));
     MediaFileProjectRelation::del(*db, (MediaFileProjectRelation::Project == id));
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Project == id));
 }
@@ -697,6 +817,42 @@ litesql::DataSource<FilterParameter> Filter::ParameterHandle::get(const litesql:
 litesql::DataSource<FilterFilterParameterRelation::Row> Filter::ParameterHandle::getRows(const litesql::Expr& expr) {
     return FilterFilterParameterRelation::getRows(owner->getDatabase(), expr && (FilterFilterParameterRelation::Filter == owner->id));
 }
+Filter::MediafileHandle::MediafileHandle(const Filter& owner)
+         : litesql::RelationHandle<Filter>(owner) {
+}
+void Filter::MediafileHandle::link(const MediaFile& o0) {
+    FilterMediaFileRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Filter::MediafileHandle::unlink(const MediaFile& o0) {
+    FilterMediaFileRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Filter::MediafileHandle::del(const litesql::Expr& expr) {
+    FilterMediaFileRelation::del(owner->getDatabase(), expr && FilterMediaFileRelation::Filter == owner->id);
+}
+litesql::DataSource<MediaFile> Filter::MediafileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterMediaFileRelation::get<MediaFile>(owner->getDatabase(), expr, (FilterMediaFileRelation::Filter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterMediaFileRelation::Row> Filter::MediafileHandle::getRows(const litesql::Expr& expr) {
+    return FilterMediaFileRelation::getRows(owner->getDatabase(), expr && (FilterMediaFileRelation::Filter == owner->id));
+}
+Filter::ProjectHandle::ProjectHandle(const Filter& owner)
+         : litesql::RelationHandle<Filter>(owner) {
+}
+void Filter::ProjectHandle::link(const Project& o0) {
+    FilterProjectRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Filter::ProjectHandle::unlink(const Project& o0) {
+    FilterProjectRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Filter::ProjectHandle::del(const litesql::Expr& expr) {
+    FilterProjectRelation::del(owner->getDatabase(), expr && FilterProjectRelation::Filter == owner->id);
+}
+litesql::DataSource<Project> Filter::ProjectHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterProjectRelation::get<Project>(owner->getDatabase(), expr, (FilterProjectRelation::Filter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterProjectRelation::Row> Filter::ProjectHandle::getRows(const litesql::Expr& expr) {
+    return FilterProjectRelation::getRows(owner->getDatabase(), expr && (FilterProjectRelation::Filter == owner->id));
+}
 const std::string Filter::type__("Filter");
 const std::string Filter::table__("Filter_");
 const std::string Filter::sequence__("Filter_seq");
@@ -741,6 +897,12 @@ const Filter& Filter::operator=(const Filter& obj) {
 }
 Filter::ParameterHandle Filter::parameter() {
     return Filter::ParameterHandle(*this);
+}
+Filter::MediafileHandle Filter::mediafile() {
+    return Filter::MediafileHandle(*this);
+}
+Filter::ProjectHandle Filter::project() {
+    return Filter::ProjectHandle(*this);
 }
 std::string Filter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -791,6 +953,8 @@ void Filter::delRecord() {
 }
 void Filter::delRelations() {
     FilterFilterParameterRelation::del(*db, (FilterFilterParameterRelation::Filter == id));
+    FilterMediaFileRelation::del(*db, (FilterMediaFileRelation::Filter == id));
+    FilterProjectRelation::del(*db, (FilterProjectRelation::Filter == id));
 }
 void Filter::update() {
     if (!inDatabase) {
@@ -1007,6 +1171,24 @@ std::ostream & operator<<(std::ostream& os, FilterParameter o) {
     return os;
 }
 const litesql::FieldType MediaFile::Own::Id("id_","INTEGER","MediaFile_");
+MediaFile::FilterHandle::FilterHandle(const MediaFile& owner)
+         : litesql::RelationHandle<MediaFile>(owner) {
+}
+void MediaFile::FilterHandle::link(const Filter& o0) {
+    FilterMediaFileRelation::link(owner->getDatabase(), o0, *owner);
+}
+void MediaFile::FilterHandle::unlink(const Filter& o0) {
+    FilterMediaFileRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void MediaFile::FilterHandle::del(const litesql::Expr& expr) {
+    FilterMediaFileRelation::del(owner->getDatabase(), expr && FilterMediaFileRelation::MediaFile == owner->id);
+}
+litesql::DataSource<Filter> MediaFile::FilterHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterMediaFileRelation::get<Filter>(owner->getDatabase(), expr, (FilterMediaFileRelation::MediaFile == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterMediaFileRelation::Row> MediaFile::FilterHandle::getRows(const litesql::Expr& expr) {
+    return FilterMediaFileRelation::getRows(owner->getDatabase(), expr && (FilterMediaFileRelation::MediaFile == owner->id));
+}
 MediaFile::ProjectHandle::ProjectHandle(const MediaFile& owner)
          : litesql::RelationHandle<MediaFile>(owner) {
 }
@@ -1195,6 +1377,9 @@ const MediaFile& MediaFile::operator=(const MediaFile& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+MediaFile::FilterHandle MediaFile::filter() {
+    return MediaFile::FilterHandle(*this);
+}
 MediaFile::ProjectHandle MediaFile::project() {
     return MediaFile::ProjectHandle(*this);
 }
@@ -1335,6 +1520,7 @@ void MediaFile::delRecord() {
     deleteFromTable(table__, id);
 }
 void MediaFile::delRelations() {
+    FilterMediaFileRelation::del(*db, (FilterMediaFileRelation::MediaFile == id));
     MediaFileProjectRelation::del(*db, (MediaFileProjectRelation::MediaFile == id));
     MediaFileStreamRelation::del(*db, (MediaFileStreamRelation::MediaFile == id));
     JobMediaFileRelationJobInFile::del(*db, (JobMediaFileRelationJobInFile::MediaFile == id));
@@ -3478,6 +3664,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
@@ -3490,6 +3678,12 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
     res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile_Filter1idx","index","CREATE INDEX Filter_MediaFile_Filter1idx ON Filter_MediaFile_ (Filter1)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile_MediaFile2idx","index","CREATE INDEX Filter_MediaFile_MediaFile2idx ON Filter_MediaFile_ (MediaFile2)"));
+    res.push_back(Database::SchemaItem("Filter_MediaFile__all_idx","index","CREATE INDEX Filter_MediaFile__all_idx ON Filter_MediaFile_ (Filter1,MediaFile2)"));
+    res.push_back(Database::SchemaItem("Filter_Project_Filter1idx","index","CREATE INDEX Filter_Project_Filter1idx ON Filter_Project_ (Filter1)"));
+    res.push_back(Database::SchemaItem("Filter_Project_Project2idx","index","CREATE INDEX Filter_Project_Project2idx ON Filter_Project_ (Project2)"));
+    res.push_back(Database::SchemaItem("Filter_Project__all_idx","index","CREATE INDEX Filter_Project__all_idx ON Filter_Project_ (Filter1,Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));

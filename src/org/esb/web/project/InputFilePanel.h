@@ -24,6 +24,7 @@ namespace org {
         void setInputFile(org::esb::io::File path);
       private:
         void addVideoButtonClicked();
+        void removeVideo();
         boost::shared_ptr<db::Project> _project;
         boost::shared_ptr<InputFileTable> _filetable;
         

@@ -32,11 +32,21 @@ namespace org {
       void Projects::editProject(){
         int c = atoi(boost::any_cast<string > (_table->getModel()->data(_table->selectedRows()[0], 0)).c_str());
         _wizard=Ptr<ProjectWizard>(new ProjectWizard());
+        _wizard->saved.connect(SLOT(this,Projects::projectSaved));
         _wizard->open(c);
-        _wizard->show();
+//        _wizard->show();
+
+      }
+      void Projects::createProject(){
+        _wizard=Ptr<ProjectWizard>(new ProjectWizard());
+        _wizard->saved.connect(SLOT(this,Projects::projectSaved));
+        _wizard->open();
 
       }
       void Projects::deleteProject(){
+      }
+      void Projects::projectSaved(){
+        _table->reload();
       }
       void Projects::enableButtons(){
         edit_button->setEnabled(true);

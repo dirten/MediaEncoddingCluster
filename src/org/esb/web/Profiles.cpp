@@ -108,8 +108,8 @@ namespace org {
           LOGDEBUG(*profile)
         }
         void profileSaved(){
-          reloadProfiles();
           profile->update();
+          reloadProfiles();
         }
         void profileCanceled(){
           

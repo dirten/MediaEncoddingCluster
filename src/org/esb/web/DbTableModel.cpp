@@ -32,6 +32,7 @@ namespace org{
       litesql::Records recs = _dbCon.query(sel);
       int a=0;
       for (litesql::Records::iterator it = recs.begin(); it != recs.end(); it++, a++){
+        LOGDEBUG("insert row")
         if (rowCount() <= a)
           insertRow(rowCount());
         for (int b = 0; b < (*it).size(); b++)

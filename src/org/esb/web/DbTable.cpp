@@ -3,7 +3,10 @@
 namespace org{
   namespace esb{
     namespace web{
-      DbTable::DbTable(list<ColumnConfig> cc,const litesql::Expr & expr,Wt::WContainerWidget * parent): Wt::Ext::TableView(parent){
+      DbTable::DbTable(list<ColumnConfig> cc,const litesql::Expr & expr,Wt::WContainerWidget * parent): 
+      Wt::Ext::TableView(parent),
+        _column_config(cc),
+        _sql(sql){
         model=new DbTableModel(cc,expr,parent);
         setModel(model);
         setAlternatingRowColors(true);
@@ -24,7 +27,10 @@ namespace org{
         doubleClickTimer->timeout.connect(SLOT(this, DbTable::emitClickCount));
 
       }
-      DbTable::DbTable(list<ColumnConfig> cc,const std::string & sql,Wt::WContainerWidget * parent): Wt::Ext::TableView(parent){
+      DbTable::DbTable(list<ColumnConfig> cc,const std::string & sql,Wt::WContainerWidget * parent): 
+        Wt::Ext::TableView(parent),
+        _column_config(cc),
+        _sql(sql){
         model=new DbTableModel(cc,sql,parent);
         setModel(model);
         setAlternatingRowColors(true);
@@ -50,8 +56,18 @@ namespace org{
       }
 
       void DbTable::reload(){
-
+        LOGDEBUG("reloading");
+        DbTableModel *old_model=model;
+        if(_sql.length()>0){
+          model=new DbTableModel(_column_config,_sql,NULL);
+        }else{
+          model=new DbTableModel(_column_config,_expr,NULL);
+        }
+        setModel(model);
+        delete old_model;
+        LOGDEBUG("reloaded");
       }
+
       void DbTable::itemSelected(){
         
         if(!doubleClickTimer->isActive())

@@ -28,6 +28,9 @@ namespace org{
         void emitClickCount();
         Wt::WTimer * doubleClickTimer;
         int _clickCount;
+        list<ColumnConfig> _column_config;
+        litesql::Expr _expr;
+        std::string _sql;
       };
     }}}
 #endif

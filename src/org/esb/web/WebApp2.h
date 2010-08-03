@@ -25,6 +25,7 @@ namespace org {
                 WebApp2(const Wt::WEnvironment & env);
                 //            private:
                 void listProjects();
+                void createProject();
                 
                 void listAllFiles();
                 void listImportedFiles();

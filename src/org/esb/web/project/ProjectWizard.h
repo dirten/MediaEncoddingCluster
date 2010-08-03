@@ -25,6 +25,8 @@ namespace org{
         void open(Ptr<db::Project>);
         void save();
         void cancel();
+        Wt::Signal<void> saved;
+        Wt::Signal<void> canceled;
       private:
         int _project_id;
         Ptr<db::Project> _project;

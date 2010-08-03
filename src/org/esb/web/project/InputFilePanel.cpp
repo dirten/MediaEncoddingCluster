@@ -13,6 +13,8 @@
 #include "Wt/Ext/ToolBar"
 #include "Wt/Ext/Button"
 #include <Wt/Ext/TableView>
+#include <Wt/Ext/MessageBox>
+#include <Wt/WMessageBox>
 #include "org/esb/web/FileChooser.h"
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/config/config.h"
@@ -51,12 +53,17 @@ namespace org {
       class InputFileTable:public Wt::Ext::TableView{
       public:
         InputFileTable(){
+          layout()->setContentsMargins(0, 0, 0, 0);
           setModel(new InputFileTableModel());
           setColumnWidth(0,50);
           setColumnWidth(1,300);
           setColumnWidth(2,300);
         }
         void setMediaFiles(std::vector<db::MediaFile> files){
+          InputFileTableModel*oldptr=static_cast<InputFileTableModel*>(model());
+          setModel(new InputFileTableModel());
+          delete oldptr;
+   
           static_cast<InputFileTableModel*>(model())->setMediaFileData(files);          
         }
       };
@@ -65,6 +72,11 @@ namespace org {
         setTitle("Input Videos");
         setLayout(new Wt::WFitLayout());
         _filetable=boost::shared_ptr<InputFileTable>(new InputFileTable());
+
+        _filetable->setAlternatingRowColors(true);
+        _filetable->setHighlightMouseOver(true);
+        _filetable->setSelectionBehavior(Wt::SelectRows);
+        _filetable->setSelectionMode(Wt::SingleSelection);
 
         layout()->addWidget(_filetable.get());
         layout()->setContentsMargins(0, 0, 0, 0);
@@ -76,7 +88,7 @@ namespace org {
         Wt::Ext::Button * removeVideoButton = topToolBar()->addButton("Remove Input Video");
 
         addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
-
+        removeVideoButton->clicked.connect(SLOT(this, InputFilePanel::removeVideo));
 
       }
 
@@ -89,13 +101,45 @@ namespace org {
       void InputFilePanel::setInputFile(org::esb::io::File file) {
         LOGDEBUG("try import file"<<file.getPath());
         int result=import(file);
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
-        db::MediaFile mfile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==result).one();
-        _project->mediafiles().link(mfile);
-        _filetable->setMediaFiles(_project->mediafiles().get().all());
-        LOGDEBUG("File imported:"<<result);
-      }
+        Wt::Ext::Dialog * dialog=new Wt::Ext::Dialog();
+        std::string message=file.getFileName();
+          if(result>0){
+          db::MediaFile mfile=litesql::select<db::MediaFile>(_project->getDatabase(), db::MediaFile::Id==result).one();
+          _project->mediafiles().link(mfile);
+          _filetable->setMediaFiles(_project->mediafiles().get().all());
+          message+=" successfull imported!";
+          dialog->setTitle("Media File imported!" );
 
+          LOGDEBUG("File imported:"<<result);
+        }else{
+          message+=" is not a valid media file!";
+          dialog->setTitle("Failed to import Media File!" );
+          LOGINFO("no valid file")
+        }
+          dialog->setLayout(new Wt::WFitLayout());
+          dialog->resize(400,150);
+          dialog->layout()->addWidget(new Wt::WText(message));
+          dialog->addButton(new Wt::Ext::Button("Continue"));
+          dialog->buttons().back()->clicked.connect(SLOT(dialog, Wt::Ext::Dialog::accept));
+          dialog->show();
+          dialog->exec();
+
+      }
+      void InputFilePanel::removeVideo(){
+        
+        int pid=atoi(boost::any_cast<string > (_filetable->model()->data(_filetable->selectedRows()[0], 0)).c_str());
+        LOGDEBUG("remove Video File id:"<<pid);
+        vector<db::MediaFile> files=_project->mediafiles().get().all();
+        vector<db::MediaFile>::iterator it=files.begin();
+
+        for(;it!=files.end();it++){
+          if((*it).id==pid){
+            LOGDEBUG("Video File found id:"<<pid);
+            _project->mediafiles().unlink((*it));
+          }
+        }
+        _filetable->setMediaFiles(_project->mediafiles().get().all());
+      }
       InputFilePanel::InputFilePanel(const InputFilePanel& orig) {
       }
 

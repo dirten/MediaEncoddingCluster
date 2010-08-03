@@ -23,9 +23,9 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   
   
   
-  org::esb::web::ProjectWizard * pro_wiz=new org::esb::web::ProjectWizard();
+  
   item = menu->addItem("All Projects...",parent,&org::esb::web::WebApp2::listProjects);
-  item = menu->addItem("Create New Encoding...",pro_wiz,&org::esb::web::ProjectWizard::open);
+  item = menu->addItem("Create New Encoding...",parent,&org::esb::web::WebApp2::createProject);
   toolbar->addButton("Projects", menu);
   
   

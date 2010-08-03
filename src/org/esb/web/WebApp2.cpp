@@ -145,6 +145,12 @@ namespace org {
         Projects * p = new Projects();
         setContent(p);
       }
+      void WebApp2::createProject() {
+        Projects * p = new Projects();
+        setContent(p);
+        p->createProject();
+
+      }
       void WebApp2::listAllFiles() {
         list<ColumnConfig> columnConfigs;
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));

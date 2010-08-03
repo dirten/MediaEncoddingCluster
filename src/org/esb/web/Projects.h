@@ -12,11 +12,13 @@ namespace org{
       class Projects: public Wt::Ext::Container {
       public:
         Projects(Wt::WContainerWidget * parent = 0) ;
+        void createProject();
       private:
         Ptr<DbTable> _table;
         void editProject();
         void deleteProject();
         void enableButtons();
+        void projectSaved();
         Wt::Ext::Button * edit_button;
         Wt::Ext::Button * delete_button;
         Ptr<ProjectWizard> _wizard;

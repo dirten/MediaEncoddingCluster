@@ -97,12 +97,14 @@ namespace org {
         LOGDEBUG("Project save with id:"<<_project->id)
           _project->update();
         LOGDEBUG("Project saved:" << _project->id)
+          saved.emit();
           this->done(Accepted);
       }
 
       void ProjectWizard::cancel() {
 
 //        _project->del();
+        canceled.emit();
         this->done(Rejected);
       }
 

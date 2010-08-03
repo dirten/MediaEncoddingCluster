@@ -20,6 +20,7 @@ namespace org{
             void load();
       private:
         db::HiveDb _dbCon;
+        
       };
     }}}
 #endif
