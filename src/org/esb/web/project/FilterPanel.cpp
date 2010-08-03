@@ -1,7 +1,7 @@
 #include "FilterPanel.h"
 
 #include "Wt/WFitLayout"
-#include "Wt/Ext/Toolbar"
+#include "Wt/Ext/ToolBar"
 namespace org{
   namespace esb{
     namespace web{
