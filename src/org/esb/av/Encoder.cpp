@@ -94,9 +94,12 @@ int Encoder::encode() {
  */
 int Encoder::encodeVideo(AVFrame * inframe) {
   //  LOGTRACEMETHOD("org.esb.av.Encoder", "encode Video");
-  const int buffer_size = 1024 * 256;
-  char data[buffer_size];
-  memset(&data, 0, buffer_size);
+//  int buffer_size = 1024 * 256;
+  int size= ctx->width * ctx->height;
+  const int buffer_size= FFMAX(1024 * 256, 6*size + 200);
+ 
+  char * data=new char[buffer_size];
+  memset(data, 0, buffer_size);
   int frames = 1;
   int ret = 0;
 
@@ -110,14 +113,14 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
     //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
-    ret = avcodec_encode_video(ctx, (uint8_t*) & data, buffer_size, inframe);
+    ret = avcodec_encode_video(ctx, (uint8_t*)  data, buffer_size, inframe);
     Packet pac(ret);
     if (ret < 0) {
       LOGERROR("Video Encoding failed")
     }
 
     if (ret > 0) {
-      memcpy(pac.packet->data, &data, ret);
+      memcpy(pac.packet->data, data, ret);
       pac.packet->size = ret;
       pac.packet->stream_index = _last_idx;
       if (ctx->coded_frame) {
@@ -145,6 +148,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     }
     _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
+  delete [] data;
   return ret;
 }
 

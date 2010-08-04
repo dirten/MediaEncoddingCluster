@@ -1,5 +1,6 @@
 #include "PreviewPanel.h"
 #include "Wt/WFitLayout"
+#include "Wt/WDefaultLayout"
 #include "Wt/WMemoryResource"
 #include "Wt/WImage"
 #include "Wt/WText"
@@ -43,7 +44,8 @@ namespace org{
 
       PreviewPanel::PreviewPanel():Wt::Ext::Panel(){
         setTitle("Preview");
-        setLayout(new Wt::WFitLayout);
+//        setLayout(new Wt::WFitLayout);
+        setLayout(new Wt::WDefaultLayout);
         _video_stream_index=0;
         //        layout()->addWidget(new Wt::WText("bla"));
 
@@ -64,6 +66,7 @@ namespace org{
 
           int c=_fis->getStreamCount();
           _encoder=Ptr<Encoder>(new Encoder(CODEC_ID_BMP));
+          _encoder->setPixelFormat(PIX_FMT_BGR24);
           _encoder->setBitRate(1024000);
           _encoder->setGopSize(10);
           _sink=Ptr<PacketSink>(new PacketSink());
@@ -86,6 +89,7 @@ namespace org{
             }
           }
           _encoder->open();
+          _conv=Ptr<FrameConverter>(new FrameConverter(_decoder.get(), _encoder.get()));
         }
       }
       void PreviewPanel::preview(){
@@ -126,13 +130,14 @@ namespace org{
         for(int i=0;i<frame->getHeight();i++)
           data.append((char*)frame->getData() + i * frame->getAVFrame()->linesize[0], frame->getWidth());
         //        data.append((char*)frame->getData(), frame->getSize());
-        FileOutputStream fos("test.png");
-        fos.write((char*)data.data(), data.length());
-        fos.close();
-
-        _encoder->encode(*frame);
+        Frame * f= new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
+        _conv->convert(*frame, *f);
+        _encoder->encode(*f);
         std::list<boost::shared_ptr<Packet> > packets=_sink->getList();
         boost::shared_ptr<Packet> picture=packets.front();
+        FileOutputStream fos("test.bmp");
+        fos.write((char*)picture->getData(), picture->getSize());
+//        fos.close();
 
         PGMUtil::save("test2.png", frame);
         imageResource->setData((char*)picture->getData(), picture->getSize());

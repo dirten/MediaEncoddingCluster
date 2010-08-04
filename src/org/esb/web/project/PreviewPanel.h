@@ -9,6 +9,7 @@
 #include "org/esb/av/PacketInputStream.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
+#include "org/esb/av/FrameConverter.h"
 #include "Wt/Ext/Panel"
 
 namespace org{
@@ -26,6 +27,7 @@ namespace org{
         Ptr<org::esb::av::PacketInputStream> _pis;
         Ptr<org::esb::av::Decoder> _decoder;
         Ptr<org::esb::av::Encoder> _encoder;
+        Ptr<org::esb::av::FrameConverter> _conv;
         Ptr<db::Project> _project;
         Ptr<PacketSink> _sink;
         int _video_stream_index;

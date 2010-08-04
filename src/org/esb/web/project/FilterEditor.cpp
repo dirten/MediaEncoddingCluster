@@ -20,6 +20,7 @@ namespace org{
         _previewpanel=new PreviewPanel();
         _previewpanel->setProject(Ptr<db::Project>(new db::Project(filter->project().get().one())));
         _previewpanel->resize(300,Wt::WLength());
+        _previewpanel->setResizable(true);
         ((Wt::WBorderLayout*)layout())->addWidget(_previewpanel,Wt::WBorderLayout::East);
         _previewpanel->preview();
 
