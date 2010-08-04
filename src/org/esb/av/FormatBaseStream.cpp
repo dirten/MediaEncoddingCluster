@@ -80,7 +80,7 @@ namespace org {
           avcodec_register_all();
           av_register_all();
           av_log_set_callback(mhive_log_default_callback);
-          av_log_set_level(AV_LOG_DEBUG);
+          av_log_set_level(AV_LOG_VERBOSE);
 
           isInitialized = true;
         }

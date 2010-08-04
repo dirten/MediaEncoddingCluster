@@ -66,6 +66,7 @@ namespace org{
 
           addButton(new Wt::Ext::Button("Select Filter"));
           buttons().back()->clicked.connect(SLOT(this, FilterChooser::choose));
+          buttons().back()->setEnabled(false);
 
           addButton(new Wt::Ext::Button("Cancel"));
           buttons().back()->clicked.connect(SLOT(this, Wt::Ext::Dialog::reject));

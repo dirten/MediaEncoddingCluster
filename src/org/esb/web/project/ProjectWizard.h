@@ -25,6 +25,7 @@ namespace org{
         void open(int pid);
         void open(Ptr<db::Project>);
         void save();
+        void save_and_start();
         void cancel();
         Wt::Signal<void> saved;
         Wt::Signal<void> canceled;

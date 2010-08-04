@@ -12,6 +12,7 @@ namespace org{
         ~DeinterlaceFilterPanel();
         std::string getId();
         void setFilter(Ptr<db::Filter>);
+        void save();
       private:
         Ptr<db::Filter> _filter;
       };

@@ -13,6 +13,7 @@ namespace org{
         ~ResizeFilterPanel();
         std::string getId();
         void setFilter(Ptr<db::Filter>);
+        void save();
       private:
         Ptr<db::Filter> _filter;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;

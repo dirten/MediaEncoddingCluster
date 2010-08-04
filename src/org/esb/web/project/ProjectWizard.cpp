@@ -67,6 +67,8 @@ namespace org {
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::cancel));
         addButton(new Wt::Ext::Button("Save"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save));
+        addButton(new Wt::Ext::Button("Save & start Encoding"));
+        buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save_and_start));
         /*
         ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("North"), Wt::WBorderLayout::North);
 
@@ -98,6 +100,14 @@ namespace org {
       }
 
       void ProjectWizard::save() {
+        LOGDEBUG("Project save with id:"<<_project->id)
+          _propertyPanel->save();
+          _project->update();
+        LOGDEBUG("Project saved:" << _project->id)
+          saved.emit();
+          this->done(Accepted);
+      }
+      void ProjectWizard::save_and_start() {
         LOGDEBUG("Project save with id:"<<_project->id)
           _propertyPanel->save();
           _project->update();

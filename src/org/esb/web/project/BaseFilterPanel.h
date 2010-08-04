@@ -12,6 +12,7 @@ namespace org{
         virtual ~BaseFilterPanel(){};
         virtual std::string getId()=0;
         virtual void setFilter(Ptr<db::Filter>)=0;
+        virtual void save()=0;
       };
     }
   }

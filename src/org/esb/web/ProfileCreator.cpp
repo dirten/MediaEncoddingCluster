@@ -47,7 +47,7 @@ namespace org {
         }
         {
           LOGTRACEMETHOD("FilePanel")
-          tab->addTab(new FilePanel(profile), "File");
+          tab->addTab(new FilePanel(profile), "Format");
         }
         {
             LOGTRACEMETHOD("VideoPanel")

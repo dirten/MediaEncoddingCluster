@@ -17,6 +17,10 @@ namespace org{
       void DeinterlaceFilterPanel::setFilter(Ptr<db::Filter> f){
         _filter=f;
       }
+
+      void DeinterlaceFilterPanel::save(){
+        
+      }
     }
   }
 }

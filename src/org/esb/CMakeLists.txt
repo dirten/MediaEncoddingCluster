@@ -293,6 +293,7 @@ add_library (web
     web/project/FilterPanel.cpp
     web/project/FilterChooser.cpp
     web/project/PreviewPanel.cpp
+    web/project/PreviewCreator.cpp
     web/project/FilterEditor.cpp
     web/project/ResizeFilterPanel.cpp
     web/project/DeinterlaceFilterPanel.cpp
