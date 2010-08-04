@@ -64,7 +64,7 @@ namespace org {
           }
         }
 
-        bool accept(File &file) {
+        bool accept(File file) {
           bool result = false;
           if (file.isDirectory() || media_ext.size() == 0 || media_ext.find(file.getExtension()) != media_ext.end())
             result = true;

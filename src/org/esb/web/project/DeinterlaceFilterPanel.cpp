@@ -14,6 +14,9 @@ namespace org{
       std::string DeinterlaceFilterPanel::getId(){
         return "deinterlace";
       }
+      void DeinterlaceFilterPanel::setFilter(Ptr<db::Filter> f){
+        _filter=f;
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_WEB_BASEFILTERPANEL
 #define ORG_ESB_WEB_BASEFILTERPANEL
-
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 #include "Wt/Ext/Panel"
 namespace org{
@@ -11,6 +11,7 @@ namespace org{
         BaseFilterPanel():Wt::Ext::Panel(){}
         virtual ~BaseFilterPanel(){};
         virtual std::string getId()=0;
+        virtual void setFilter(Ptr<db::Filter>)=0;
       };
     }
   }
