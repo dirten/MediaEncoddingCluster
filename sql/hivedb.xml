@@ -4,8 +4,37 @@
 
     <object name="Project">
         <field name="name" type="string"/>
+        <field name="outdirectory" type="string"/>
+        <field name="status" type="string"/>
         <field name="created" type="date"/>
+        <field name="started" type="date"/>
+        <field name="completed" type="date"/>
     </object>
+    <object name="Filter">
+        <field name="filtername" type="string"/>
+        <field name="filterid" type="string"/>
+    </object>
+    <object name="FilterParameter">
+        <field name="fkey" type="string"/>
+        <field name="fval" type="string"/>
+    </object>
+
+    <relation>
+        <relate object="Filter" handle="parameter"/>
+        <relate object="FilterParameter" handle="filter"/>
+    </relation>
+
+    <relation>
+        <relate object="Filter" handle="mediafile"/>
+        <relate object="MediaFile" handle="filter"/>
+    </relation>
+
+    <relation>
+        <relate object="Filter" handle="project"/>
+        <relate object="Project" handle="filter"/>
+    </relation>
+
+
 
     <object name="MediaFile">
         <field name="filename" type="string"/>
@@ -55,7 +84,7 @@
 
     <relation>
         <relate object="Profile" handle="project"/>
-        <relate object="Project" handle="profiles" limit="one"/>
+        <relate object="Project" handle="profiles"/>
     </relation>
 
     <object name="Stream">

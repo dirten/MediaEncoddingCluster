@@ -55,7 +55,7 @@ int main(int argc, char**argv) {
   w.outfolder="/tmp";
   
   db::Profile p =litesql::select<db::Profile>(db, db::Profile::Id==1).one();
-  
+  w.update();
   w.profile().link(p);
   w.update();
   
