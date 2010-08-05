@@ -65,8 +65,10 @@ namespace org{
           _pis=Ptr<PacketInputStream>(new PacketInputStream(_fis.get()));
 
           int c=_fis->getStreamCount();
-          _encoder=Ptr<Encoder>(new Encoder(CODEC_ID_BMP));
+          _encoder=Ptr<Encoder>(new Encoder(CODEC_ID_PNG));
           _encoder->setPixelFormat(PIX_FMT_BGR24);
+          _encoder->setPixelFormat(PIX_FMT_RGB24);
+          
           _encoder->setBitRate(1024000);
           _encoder->setGopSize(10);
           _sink=Ptr<PacketSink>(new PacketSink());
@@ -88,6 +90,8 @@ namespace org{
               break;
             }
           }
+          _encoder->setWidth(160);
+          _encoder->setHeight(120);
           _encoder->open();
           _conv=Ptr<FrameConverter>(new FrameConverter(_decoder.get(), _encoder.get()));
         }
