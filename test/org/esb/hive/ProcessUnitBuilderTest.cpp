@@ -28,6 +28,8 @@ void testVideoSameFramerate() {
   data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
 
   data[0].encoder->setFrameRate(25, 1);
+  data[0].instream=1;
+  data[0].outstream=2;
 
 
   data[0].instream=1;

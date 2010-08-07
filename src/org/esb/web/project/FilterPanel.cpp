@@ -108,9 +108,10 @@ namespace org{
         _available_filters.erase(it);
 */
         _filter_table->setFilter(_project->filter().get().all());
+        _filter_editor.reset();
         _filter_editor=Ptr<FilterEditor>(new FilterEditor(filter));
         _filter_editor->show();
-
+//        _filter_editor->exec();
         LOGDEBUG(*filter);
       }
 
@@ -118,6 +119,9 @@ namespace org{
         _filter_chooser=Ptr<FilterChooser>(new FilterChooser(_available_filters));
         _filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
         _filter_chooser->show();
+        _filter_chooser->exec();
+        LOGDEBUG("_filter_chooser->exec(); returned")
+        _filter_chooser.reset();
 
       }
       void FilterPanel::removeFilter(){

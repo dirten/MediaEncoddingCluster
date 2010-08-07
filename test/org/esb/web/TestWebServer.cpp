@@ -11,6 +11,7 @@
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/hive/DatabaseService.h"
+#include "org/esb/lang/CtrlCHitWaiter.h"
 using namespace org::esb::lang;
 using namespace org::esb::web;
 using namespace org::esb::config;
@@ -69,15 +70,13 @@ int main(int argc, char**argv) {
     assert(jobid > 0);
 
   }
-  int timeout=0;
-  if(argc>1)
-    timeout=atoi(argv[1]);
+  
+
   w= new WebServer();
   w->start();
 
-  do{
-    Thread::sleep2(timeout>0?timeout:1000);
-  }while(timeout>0);
+  if(argc>1)
+    org::esb::lang::CtrlCHitWaiter::wait();
 
   w->stop();
   delete w;

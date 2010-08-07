@@ -13,6 +13,7 @@ namespace org{
       class FilterEditor:public Wt::Ext::Dialog{
       public:
         FilterEditor(Ptr<db::Filter> filter);
+        virtual ~FilterEditor();
       private:
         Ptr<db::Filter> _filter;
         BaseFilterPanel* _filterpanel;

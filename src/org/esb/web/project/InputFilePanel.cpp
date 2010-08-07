@@ -25,7 +25,7 @@ namespace org {
 
       class InputFileTableModel:public Wt::WStandardItemModel{
       public:
-        InputFileTableModel(){
+        InputFileTableModel():Wt::WStandardItemModel(){
           
           insertColumns(0, 3);
           setHeaderData(0, std::string("Id"));

@@ -53,6 +53,7 @@ namespace org{
         _available_filters(available_filter){
           setLayout(new Wt::WFitLayout());
           resize(400,300);
+          selected.setBlocked(false);
           _filter_table=Ptr<FilterTable>(new FilterTable());
           _filter_table->setFilter(available_filter);
           _filter_table->setAlternatingRowColors(true);
@@ -74,6 +75,7 @@ namespace org{
       }
 
       FilterChooser::~FilterChooser(){
+        LOGDEBUG("FilterChooser::~FilterChooser()")
       }
 
       void FilterChooser::choose(){

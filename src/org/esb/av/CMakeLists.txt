@@ -30,6 +30,7 @@ add_library (av
   AVInputStream.cpp
   FormatStreamFactory.cpp
   StreamInfo.cpp
+  FrameProcessor.cpp
 )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}

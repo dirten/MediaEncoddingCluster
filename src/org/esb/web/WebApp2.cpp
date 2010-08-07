@@ -28,6 +28,8 @@
 #include "StreamInfo.h"
 #include "ProfileCreator.h"
 
+
+#include "project/PreviewPanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -59,16 +61,16 @@ namespace org {
         layout->setContentsMargins(0, 0, 0, 0);
         viewPort->setLayout(layout);
 
+        
         /*begin Head Panel*/
+        /*
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
-
         north->setBorder(false);
-
-        Wt::WText *head = new Wt::WText(h);
+       
         head->setStyleClass("north");
         north->setLayout(new Wt::WFitLayout());
         north->layout()->addWidget(head);
-        north->resize(Wt::WLength(), 35);
+        north->resize(Wt::WLength(), 35);*/
         //        layout->addWidget(north, Wt::WBorderLayout::North);
         /*end Head Panel*/
 
@@ -119,7 +121,7 @@ namespace org {
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
-        head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
+        Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
         head->setStyleClass("north");
         footer->setLayout(new Wt::WFitLayout());
         footer->layout()->addWidget(head);
@@ -139,6 +141,20 @@ namespace org {
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
         */
+      }
+
+      void WebApp2::openPreview(){
+        Wt::Ext::Dialog *dil=new Wt::Ext::Dialog();
+        dil->contents()->addWidget(new PreviewPanel());
+
+        dil->addButton(new Wt::Ext::Button("Cancel"));
+        dil->buttons().back()->clicked.connect(SLOT(dil, Wt::Ext::Dialog::reject));
+
+        dil->show();
+
+        dil->exec();
+        delete dil;
+        
       }
 
       void WebApp2::listProjects() {
@@ -234,7 +250,7 @@ namespace org {
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Progress" ,200));
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Begin" ,200));
         columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
-        DbTable * table= new DbTable(columnConfigs, "SELECT filename_ ,if(min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/Mediafile_.duration_)*100))<0,0,min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/Mediafile_.duration_)*100))) as progress, begintime_ FROM Mediafile_ join job_mediafile_jobinfile on Mediafile_.id_=job_mediafile_jobinfile.MediaFile2 join Job_ on job_mediafile_jobinfile.Job1=Job_.id_ join Jobdetail_ on Job1=Job_.id_ join jobdetail_stream_jobinstream on JobDetail_.id_=jobdetail_stream_jobinstream.JobDetail1 join Stream_ on Stream_.id_=jobdetail_stream_jobinstream.Stream2");
+        DbTable * table= new DbTable(columnConfigs, "SELECT filename_ ,if(min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/MediaFile_.duration_)*100))<0,0,min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/MediaFile_.duration_)*100))) as progress, begintime_ FROM MediaFile_ join Job_MediaFile_JobInFile on MediaFile_.id_=Job_MediaFile_JobInFile.MediaFile2 join Job_ on Job_MediaFile_JobInFile.Job1=Job_.id_ join JobDetail_ on Job1=Job_.id_ join JobDetail_Stream_JobInStream on JobDetail_.id_=JobDetail_Stream_JobInStream.JobDetail1 join Stream_ on Stream_.id_=JobDetail_Stream_JobInStream.Stream2");
         setContent(table);
 	
       }

@@ -46,6 +46,9 @@ namespace org {
                 void editSystemConfiguration();
 
                 void openConfiguration();
+
+
+                void openPreview();
             private:
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;

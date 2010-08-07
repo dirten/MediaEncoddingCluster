@@ -1,9 +1,9 @@
 #include "PreviewPanel.h"
 #include "Wt/WFitLayout"
 #include "Wt/WDefaultLayout"
-#include "Wt/WMemoryResource"
 #include "Wt/WImage"
 #include "Wt/WText"
+#include "Wt/Ext/ToolBar"
 
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
@@ -43,16 +43,98 @@ namespace org{
       };
 
       PreviewPanel::PreviewPanel():Wt::Ext::Panel(){
+        LOGDEBUG("PreviewPanel::PreviewPanel()"<<this);
         setTitle("Preview");
-//        setLayout(new Wt::WFitLayout);
-        setLayout(new Wt::WDefaultLayout);
+        setLayout(new Wt::WDefaultLayout());
         _video_stream_index=0;
-        //        layout()->addWidget(new Wt::WText("bla"));
+        _video_preview_frame=0;
+        _scale_factor=75;
+
+        _buttonSignalMap = new Wt::WSignalMapper<Wt::Ext::Component*>(this);
+        _buttonSignalMap->mapped.connect(SLOT(this, PreviewPanel::controllerButtonClicked));
+
+        Wt::Ext::ToolBar *toolbar=new Wt::Ext::ToolBar();
+        setBottomToolBar(toolbar);
+
+
+
+        //toolbar->add(new Wt::Ext::Button("test"));
+        Wt::Ext::Button * prev10Button = new Wt::Ext::Button("prev 10");
+        Wt::Ext::Button * prevButton = new Wt::Ext::Button("prev");
+        Wt::Ext::Button * nextButton = new Wt::Ext::Button("next");
+        Wt::Ext::Button * next10Button = new Wt::Ext::Button("next 10");
+        toolbar->add(prev10Button);
+        toolbar->add(prevButton);
+        toolbar->add(nextButton);
+        toolbar->add(next10Button);
+
+
+
+        _scale_combo=new Wt::Ext::ComboBox();
+        _scale_combo->addItem("150");
+        _scale_combo->addItem("125");
+        _scale_combo->addItem("100");
+        _scale_combo->addItem("75");
+        _scale_combo->addItem("50");
+        _scale_combo->addItem("25");
+        toolbar->add(_scale_combo);
+        
+        _buttonSignalMap->mapConnect(_scale_combo->activated,_scale_combo);
+        _buttonSignalMap->mapConnect(_scale_combo->keyWentUp,_scale_combo);
+        _scale_combo->setObjectName("preview_scale");
+
+        prev10Button->setObjectName("prev10");
+        prevButton->setObjectName("prev");
+        next10Button->setObjectName("next10");
+        nextButton->setObjectName("next");
+
+//        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
+
+
+
+        _buttonSignalMap->mapConnect(prev10Button->clicked,prev10Button);
+        _buttonSignalMap->mapConnect(prevButton->clicked,prevButton);
+        _buttonSignalMap->mapConnect(nextButton->clicked,nextButton);
+        _buttonSignalMap->mapConnect(next10Button->clicked,next10Button);
+
+        image = new Wt::WImage();
+        image->setAlternateText("preview image");
+        layout()->addWidget(image);
+        
+
+      }
+
+      void PreviewPanel::controllerButtonClicked(Wt::Ext::Component * btn){
+        if(btn->objectName()=="prev10"){
+          if(_video_preview_frame>=10)
+            _video_preview_frame=10;
+          else
+            _video_preview_frame=0;
+        }else
+          if(btn->objectName()=="prev"){
+            if(_video_preview_frame>0)
+              _video_preview_frame=1;
+        }else
+          if(btn->objectName()=="next"){
+        _video_preview_frame=-1;
+        }else
+          if(btn->objectName()=="next10"){
+        _video_preview_frame=-10;
+        }else
+          if(btn->objectName()=="preview_scale"){
+            int factor=atoi(((Wt::Ext::ComboBox*)_scale_combo)->currentText().narrow().c_str());
+            LOGDEBUG("scale factor"<<factor);
+            if(factor>0)
+              _scale_factor=factor;
+        }
+        preview();
+        LOGDEBUG(btn->objectName());
 
       }
 
       PreviewPanel::~PreviewPanel(){
-
+        LOGDEBUG("PreviewPanel::~PreviewPanel()"<<this)
+        //Wt::Ext::Panel::~Panel();
       }
 
       void PreviewPanel::setProject(Ptr<db::Project>p){
@@ -90,64 +172,53 @@ namespace org{
               break;
             }
           }
-          _encoder->setWidth(160);
-          _encoder->setHeight(120);
+          _encoder->setWidth((_encoder->getWidth()*100)/_scale_factor);
+          _encoder->setHeight((_encoder->getHeight()*100)/_scale_factor);
+          LOGDEBUG(_scale_factor)
+          LOGDEBUG((_encoder->getHeight()*100)/_scale_factor);
+          LOGDEBUG((_encoder->getWidth()*100)/_scale_factor);
           _encoder->open();
           _conv=Ptr<FrameConverter>(new FrameConverter(_decoder.get(), _encoder.get()));
         }
       }
-      void PreviewPanel::preview(){
 
+      void PreviewPanel::preview(){
+        if(_fis.get()==NULL || !_fis->isValid())return;
+        
         Packet * packet;
         Frame * frame=NULL;
-        while ((packet = _pis->readPacket()) != NULL /*&& !_isStopSignal*/) {
+        int a=0;
+        while ((packet = _pis->readPacket()) != NULL ) {
           if(packet->getStreamIndex()==_video_stream_index){
             frame=_decoder->decode2(*packet);
-            if(frame->isFinished()){
+            if(frame->isFinished()&& _video_preview_frame<=a){
               break;
             }
+            delete frame;
+            frame=NULL;
+            a++;
           }
         }
-        Wt::WMemoryResource *imageResource = new Wt::WMemoryResource("image/png", this);
+        if(frame&&!frame->isFinished()){
+          delete frame;
+          return;
+        }
 
-        static const unsigned char gifData[]
-        = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
-          0x80, 0xff, 0xff, 0xdb, 0xdf, 0xef, 0xff, 0xff, 0xff, 0x21,
-          0xf9, 0x04, 0x01, 0x00, 0xff, 0xff, 0xff, 0x2c, 0x00, 0x00,
-          0x00, 0x00, 0x01, 0x00, 0x01, 0xff, 0xff, 0x02, 0x02, 0x44,
-          0x01, 0x00, 0x3b,0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
-          0x80, 0xff, 0xff, 0xdb, 0xdf, 0xef, 0xff, 0xff, 0xff, 0x21,
-          0xf9, 0x04, 0x01, 0x00, 0xff, 0xff, 0xff, 0x2c, 0x00, 0x00,
-          0x00, 0x00, 0x01, 0x00, 0x01, 0xff, 0xff, 0x02, 0x02, 0x44,
-          0x01, 0x00, 0x3b,0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
-          0x80, 0xff, 0xff, 0xdb, 0xdf, 0xef, 0xff, 0xff, 0xff, 0x21,
-          0xf9, 0x04, 0x01, 0x00, 0xff, 0xff, 0xff, 0x2c, 0x00, 0x00,
-          0x00, 0x00, 0x01, 0x00, 0x01, 0xff, 0xff, 0x02, 0x02, 0x44,
-          0x01, 0x00, 0x3b };
-        std::string data;
-        data+="P5\n";
-        data+=StringUtil::toString(frame->getWidth());
-        data+=" ";
-        data+=StringUtil::toString(frame->getHeight());
-        data+="\n";
-        data+="255\n";
-        for(int i=0;i<frame->getHeight();i++)
-          data.append((char*)frame->getData() + i * frame->getAVFrame()->linesize[0], frame->getWidth());
-        //        data.append((char*)frame->getData(), frame->getSize());
+        _imageResource = Ptr<Wt::WMemoryResource>(new Wt::WMemoryResource("image/png"));
+       
         Frame * f= new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
         _conv->convert(*frame, *f);
         _encoder->encode(*f);
         std::list<boost::shared_ptr<Packet> > packets=_sink->getList();
-        boost::shared_ptr<Packet> picture=packets.front();
-        FileOutputStream fos("test.bmp");
-        fos.write((char*)picture->getData(), picture->getSize());
-//        fos.close();
-
-        PGMUtil::save("test2.png", frame);
-        imageResource->setData((char*)picture->getData(), picture->getSize());
-        Wt::WImage *image = new Wt::WImage(imageResource, "preview image");
-        //        image->resize(100,100);
-        layout()->addWidget(image);
+        boost::shared_ptr<Packet> picture=packets.back();
+        delete f;
+        _imageResource->setData((char*)picture->getData(), picture->getSize());
+        
+        image->setResource(_imageResource.get());
+        image->resize((_encoder->getWidth()*_scale_factor)/100,(_encoder->getHeight()*_scale_factor)/100);
+       // image->refresh();
+        
+//        layout()->removeItem(layout()->itemAt(0));
       }
     }
   }
