@@ -30,7 +30,12 @@ namespace org {
       }
 
 #ifdef WIN32
+      boost::mutex terminationMutex;
+        boost::condition ctrlCHit;
+        boost::condition serverStopped;
+
         BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
+          
           switch (ctrl_type) {
             case CTRL_C_EVENT:
             case CTRL_BREAK_EVENT:
@@ -38,7 +43,7 @@ namespace org {
             case CTRL_SHUTDOWN_EVENT:
             {
               boost::mutex::scoped_lock terminationLock(terminationMutex);
-              LOGDEBUG("ctlc event");
+              
               ctrlCHit.notify_all(); // should be just 1
 
               //      serverStopped.wait(terminationLock);
@@ -54,12 +59,7 @@ namespace org {
 #ifdef WIN32
 
 
-        boost::mutex terminationMutex;
-        boost::condition ctrlCHit;
-        boost::condition serverStopped;
-
-
-        
+   
           SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
           boost::mutex::scoped_lock terminationLock(terminationMutex);
           ctrlCHit.wait(terminationLock);
