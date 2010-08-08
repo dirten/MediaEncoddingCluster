@@ -90,11 +90,12 @@ namespace org{
         _buttons["prev"]->setObjectName("prev");
         _buttons["next10"]->setObjectName("next10");
         _buttons["next"]->setObjectName("next");
+        /*
         _buttons["prev10"]->clicked.setBlocked(true);
         _buttons["prev"]->clicked.setBlocked(true);
         _buttons["next"]->clicked.setBlocked(true);
         _buttons["next10"]->clicked.setBlocked(true);
-
+*/
         //        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
 
 

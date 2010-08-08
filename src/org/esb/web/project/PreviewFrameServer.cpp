@@ -44,7 +44,7 @@ namespace org{
           if(packet->getStreamIndex()==_stream_info->getIndex()){
             frame=_decoder->decode2(*packet);
             if(frame->isFinished()&& width<=a){
-              _last_packet=Ptr<org::esb::av::Packet>(new Packet(*packet));
+              _last_packet=Ptr<org::esb::av::Packet>(packet);
               break;
             }
             delete frame;
