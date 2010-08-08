@@ -18,6 +18,10 @@
 #include "Wt/WMemoryResource"
 #include "Wt/WSignalMapper"
 #include "Wt/WImage"
+
+#include "PreviewFrameServer.h"
+
+#include <map>
 namespace org{
   namespace esb{
     namespace web{
@@ -33,22 +37,23 @@ namespace org{
 
         void preview();
       private:
-        Ptr<org::esb::av::FormatInputStream> _fis;
-        Ptr<org::esb::av::PacketInputStream> _pis;
-        Ptr<org::esb::av::Decoder> _decoder;
         Ptr<org::esb::av::Encoder> _encoder;
         Ptr<org::esb::av::FrameConverter> _conv;
         Ptr<db::Project> _project;
         Ptr<PacketSink> _sink;
         Ptr<db::MediaFile> mediafile;
+        Ptr<PreviewFrameServer> _frameserver;
         Ptr<Wt::WMemoryResource> _imageResource;
         Wt::WSignalMapper<Wt::Ext::Component*> *_buttonSignalMap;
         Wt::Ext::ComboBox *_scale_combo;
         void controllerButtonClicked(Wt::Ext::Component * btn);
+        void imageLoaded();
         int _video_stream_index;
         int _video_preview_frame;
         int _scale_factor;
         Wt::WImage *image;
+
+        std::map<std::string,Ptr<Wt::Ext::Button> >_buttons;
       };
     }
   }

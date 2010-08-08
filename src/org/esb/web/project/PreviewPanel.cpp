@@ -13,6 +13,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/PGMUtil.h"
+#include "org/esb/lang/Thread.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -59,73 +60,94 @@ namespace org{
 
 
         //toolbar->add(new Wt::Ext::Button("test"));
-        Wt::Ext::Button * prev10Button = new Wt::Ext::Button("prev 10");
-        Wt::Ext::Button * prevButton = new Wt::Ext::Button("prev");
-        Wt::Ext::Button * nextButton = new Wt::Ext::Button("next");
-        Wt::Ext::Button * next10Button = new Wt::Ext::Button("next 10");
-        toolbar->add(prev10Button);
-        toolbar->add(prevButton);
-        toolbar->add(nextButton);
-        toolbar->add(next10Button);
+        _buttons["prev10"]=Ptr<Wt::Ext::Button>(new Wt::Ext::Button("prev 10"));
+        _buttons["prev"]=Ptr<Wt::Ext::Button>(new Wt::Ext::Button("prev"));
+        _buttons["next"]=Ptr<Wt::Ext::Button>(new Wt::Ext::Button("next"));
+        _buttons["next10"]=Ptr<Wt::Ext::Button>(new Wt::Ext::Button("next 10"));
+
+        toolbar->add(_buttons["prev10"].get());
+        toolbar->add(_buttons["prev"].get());
+        toolbar->add(_buttons["next"].get());
+        toolbar->add(_buttons["next10"].get());
 
 
 
         _scale_combo=new Wt::Ext::ComboBox();
-        _scale_combo->addItem("150");
-        _scale_combo->addItem("125");
-        _scale_combo->addItem("100");
-        _scale_combo->addItem("75");
-        _scale_combo->addItem("50");
-        _scale_combo->addItem("25");
+        _scale_combo->addItem("150%");
+        _scale_combo->addItem("125%");
+        _scale_combo->addItem("100%");
+        _scale_combo->addItem("75%");
+        _scale_combo->addItem("50%");
+        _scale_combo->addItem("25%");
+        _scale_combo->setCurrentIndex(3);
         toolbar->add(_scale_combo);
-        
+
         _buttonSignalMap->mapConnect(_scale_combo->activated,_scale_combo);
         _buttonSignalMap->mapConnect(_scale_combo->keyWentUp,_scale_combo);
         _scale_combo->setObjectName("preview_scale");
 
-        prev10Button->setObjectName("prev10");
-        prevButton->setObjectName("prev");
-        next10Button->setObjectName("next10");
-        nextButton->setObjectName("next");
+        _buttons["prev10"]->setObjectName("prev10");
+        _buttons["prev"]->setObjectName("prev");
+        _buttons["next10"]->setObjectName("next10");
+        _buttons["next"]->setObjectName("next");
+        _buttons["prev10"]->clicked.setBlocked(true);
+        _buttons["prev"]->clicked.setBlocked(true);
+        _buttons["next"]->clicked.setBlocked(true);
+        _buttons["next10"]->clicked.setBlocked(true);
 
-//        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
+        //        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
 
 
 
-        _buttonSignalMap->mapConnect(prev10Button->clicked,prev10Button);
-        _buttonSignalMap->mapConnect(prevButton->clicked,prevButton);
-        _buttonSignalMap->mapConnect(nextButton->clicked,nextButton);
-        _buttonSignalMap->mapConnect(next10Button->clicked,next10Button);
+        _buttonSignalMap->mapConnect(_buttons["prev10"]->clicked,_buttons["prev10"].get());
+        _buttonSignalMap->mapConnect(_buttons["prev"]->clicked,_buttons["prev"].get());
+        _buttonSignalMap->mapConnect(_buttons["next"]->clicked,_buttons["next"].get());
+        _buttonSignalMap->mapConnect(_buttons["next10"]->clicked,_buttons["next10"].get());
 
         image = new Wt::WImage();
         image->setAlternateText("preview image");
+        image->loaded.connect(SLOT(this,PreviewPanel::imageLoaded));      
         layout()->addWidget(image);
-        
+        _frameserver=Ptr<PreviewFrameServer>(new PreviewFrameServer());
+
 
       }
+      void PreviewPanel::imageLoaded(){
 
+        LOGDEBUG("image loaded")
+          std::map<std::string,Ptr<Wt::Ext::Button> >::iterator it=_buttons.begin();
+        for(;it!=_buttons.end();it++){
+          (*it).second->setEnabled(true);
+        }
+      }
       void PreviewPanel::controllerButtonClicked(Wt::Ext::Component * btn){
+
+        std::map<std::string,Ptr<Wt::Ext::Button> >::iterator it=_buttons.begin();
+        for(;it!=_buttons.end();it++){
+          (*it).second->setEnabled(false);
+        }
+        org::esb::lang::Thread::sleep2(200);
         if(btn->objectName()=="prev10"){
-          if(_video_preview_frame>=10)
-            _video_preview_frame=10;
-          else
-            _video_preview_frame=0;
-        }else
-          if(btn->objectName()=="prev"){
-            if(_video_preview_frame>0)
-              _video_preview_frame=1;
-        }else
-          if(btn->objectName()=="next"){
-        _video_preview_frame=-1;
-        }else
-          if(btn->objectName()=="next10"){
-        _video_preview_frame=-10;
-        }else
-          if(btn->objectName()=="preview_scale"){
-            int factor=atoi(((Wt::Ext::ComboBox*)_scale_combo)->currentText().narrow().c_str());
-            LOGDEBUG("scale factor"<<factor);
-            if(factor>0)
-              _scale_factor=factor;
+          if(_video_preview_frame>=10){
+            _frameserver->jumpPrevious(PreviewFrameServer::JUMP_TEN);
+          }
+        }else if(btn->objectName()=="prev"){
+          if(_video_preview_frame>0){
+            _frameserver->jumpPrevious(PreviewFrameServer::JUMP_ONE);
+          }
+        }else if(btn->objectName()=="next"){
+          _frameserver->jumpForward(PreviewFrameServer::JUMP_ONE);
+        }else if(btn->objectName()=="next10"){
+          _frameserver->jumpForward(PreviewFrameServer::JUMP_TEN);
+        }else if(btn->objectName()=="preview_scale"){
+          std::string value=((Wt::Ext::ComboBox*)_scale_combo)->currentText().narrow();
+
+          LOGDEBUG("scale factor"<<value);
+
+          int factor=atoi(value.c_str());
+          LOGDEBUG("scale factor"<<factor);
+          if(factor>0)
+            _scale_factor=factor;
         }
         preview();
         LOGDEBUG(btn->objectName());
@@ -134,7 +156,7 @@ namespace org{
 
       PreviewPanel::~PreviewPanel(){
         LOGDEBUG("PreviewPanel::~PreviewPanel()"<<this)
-        //Wt::Ext::Panel::~Panel();
+          //Wt::Ext::Panel::~Panel();
       }
 
       void PreviewPanel::setProject(Ptr<db::Project>p){
@@ -142,83 +164,47 @@ namespace org{
         if(_project->mediafiles().get().count()>0){
           db::MediaFile file=_project->mediafiles().get().one();
           std::string filename=file.path+"/"+file.filename;
-          File infile(filename);
-          _fis=Ptr<FormatInputStream>(new FormatInputStream(&infile));
-          _pis=Ptr<PacketInputStream>(new PacketInputStream(_fis.get()));
+          _frameserver->setFileName(filename);
 
-          int c=_fis->getStreamCount();
           _encoder=Ptr<Encoder>(new Encoder(CODEC_ID_PNG));
-          _encoder->setPixelFormat(PIX_FMT_BGR24);
           _encoder->setPixelFormat(PIX_FMT_RGB24);
-          
-          _encoder->setBitRate(1024000);
+
+          _encoder->setBitRate(512000);
           _encoder->setGopSize(10);
           _sink=Ptr<PacketSink>(new PacketSink());
           _encoder->setSink(_sink.get());
-          _encoder->setTimeBase(1,25);
-          AVRational ar;
-          ar.num=1;
-          ar.den=25;
-          _encoder->setFrameRate(ar);
-          for(int a = 0;a<c;a++){
-            StreamInfo * info=_fis->getStreamInfo(a);
-            if(info->getCodecType()==CODEC_TYPE_VIDEO){
-              _video_stream_index=info->getIndex();
-              _decoder=Ptr<Decoder>(new Decoder(_fis->getAVStream(_video_stream_index)));
-              _encoder->setWidth(info->getWidth());
-              _encoder->setHeight(info->getheight());
-              _decoder->open();
-              LOGDEBUG("Video Stream found!");
-              break;
-            }
-          }
-          _encoder->setWidth((_encoder->getWidth()*100)/_scale_factor);
-          _encoder->setHeight((_encoder->getHeight()*100)/_scale_factor);
-          LOGDEBUG(_scale_factor)
-          LOGDEBUG((_encoder->getHeight()*100)/_scale_factor);
-          LOGDEBUG((_encoder->getWidth()*100)/_scale_factor);
+          Ptr<org::esb::av::Decoder>dec=_frameserver->getDecoder();
+          _encoder->setFrameRate(dec->getFrameRate());
+          _encoder->setTimeBase(dec->getTimeBase());
+          _encoder->setWidth(dec->getWidth());
+          _encoder->setHeight(dec->getHeight());
           _encoder->open();
-          _conv=Ptr<FrameConverter>(new FrameConverter(_decoder.get(), _encoder.get()));
+          _conv=Ptr<FrameConverter>(new FrameConverter(_frameserver->getDecoder().get(), _encoder.get()));
         }
       }
 
       void PreviewPanel::preview(){
-        if(_fis.get()==NULL || !_fis->isValid())return;
-        
-        Packet * packet;
-        Frame * frame=NULL;
-        int a=0;
-        while ((packet = _pis->readPacket()) != NULL ) {
-          if(packet->getStreamIndex()==_video_stream_index){
-            frame=_decoder->decode2(*packet);
-            if(frame->isFinished()&& _video_preview_frame<=a){
-              break;
-            }
-            delete frame;
-            frame=NULL;
-            a++;
-          }
-        }
-        if(frame&&!frame->isFinished()){
-          delete frame;
-          return;
-        }
+        LOGDEBUG("PreviewPanel::preview");
+        if(!_frameserver->isOpen())return;
 
-        _imageResource = Ptr<Wt::WMemoryResource>(new Wt::WMemoryResource("image/png"));
-       
+        Ptr<org::esb::av::Frame> frame=_frameserver->getFrame();
+        if(!frame->isFinished())return;
+
         Frame * f= new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
         _conv->convert(*frame, *f);
         _encoder->encode(*f);
         std::list<boost::shared_ptr<Packet> > packets=_sink->getList();
         boost::shared_ptr<Packet> picture=packets.back();
         delete f;
-        _imageResource->setData((char*)picture->getData(), picture->getSize());
-        
-        image->setResource(_imageResource.get());
-        image->resize((_encoder->getWidth()*_scale_factor)/100,(_encoder->getHeight()*_scale_factor)/100);
-       // image->refresh();
-        
-//        layout()->removeItem(layout()->itemAt(0));
+        if(picture->getSize()>0){
+          _imageResource = Ptr<Wt::WMemoryResource>(new Wt::WMemoryResource("image/png"));
+          _imageResource->setData((char*)picture->getData(), picture->getSize());
+          image->setResource(_imageResource.get());
+          image->resize((_encoder->getWidth()*_scale_factor)/100,(_encoder->getHeight()*_scale_factor)/100);
+        }
+        // image->refresh();
+
+        //        layout()->removeItem(layout()->itemAt(0));
       }
     }
   }
