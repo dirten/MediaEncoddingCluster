@@ -3,6 +3,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 #include "Wt/Ext/Panel"
+#include "Wt/WSignal"
 namespace org{
   namespace esb{
     namespace web{
@@ -13,6 +14,7 @@ namespace org{
         virtual std::string getId()=0;
         virtual void setFilter(Ptr<db::Filter>)=0;
         virtual void save()=0;
+        Wt::Signal<void> changed;
       };
     }
   }

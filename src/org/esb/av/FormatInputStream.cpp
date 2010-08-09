@@ -135,9 +135,9 @@ namespace org {
         return 0;
       }
 
-      int FormatInputStream::seek(int stream_index, int64_t timestamp) {
+      int FormatInputStream::seek(int stream_index, int64_t timestamp, int flags) {
         //return av_seek_frame(formatCtx, stream_index, timestamp, AVSEEK_FLAG_ANY);
-        return av_seek_frame(formatCtx, stream_index, timestamp,AVSEEK_FLAG_BACKWARD);
+        return av_seek_frame(formatCtx, stream_index, timestamp,flags);
       }
 
       /*closing the input file and delete all StreamInfo for that file*/

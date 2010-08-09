@@ -13,6 +13,8 @@
 #include "org/esb/util/Queue.h"
 //#include "org/esb/util/Log.h"
 #include "org/esb/hive/job/ProcessUnit.h"
+
+#include "org/esb/lang/Ptr.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -55,7 +57,7 @@ namespace org {
 
           db::HiveDb _dbCon;
           db::HiveDb _dbJobCon;
-
+          Ptr<db::Job> current_job;
 //          boost::shared_ptr<db::Job> _actual_job;
         };
 

@@ -13,6 +13,7 @@
 #include "org/esb/av/FormatOutputStream.h"
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
+#include "org/esb/util/StringUtil.h"
 #include "org/esb/hive/CodecFactory.h"
 #include <boost/filesystem/exception.hpp>
 #include <map>
@@ -20,12 +21,142 @@
 #include <stdint.h>
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::util;
 using namespace org::esb::lang;
 using namespace org::esb::sql;
 using namespace org::esb::hive;
 using namespace org::esb::config;
 
 std::map<int, FileExporter::StreamData> FileExporter::_source_stream_map;
+
+void FileExporter::exportFile(db::MediaFile outfile) {
+  /*creatign the filename*/
+  std::string filename;
+  if (outfile.path.value().size() == 0) {
+    filename = org::esb::config::Config::getProperty("hive.base_path");
+  } else {
+    filename = outfile.path;
+  }
+  filename += "/";
+  filename += outfile.filename;
+
+  org::esb::io::File fout(filename.c_str());
+  if(fout.exists()){
+    LOGDEBUG("File exist:"<<filename);
+    return;
+  }
+
+  /*creating output Directory*/
+  org::esb::io::File outDirectory(fout.getFilePath().c_str());
+  if (!outDirectory.exists()) {
+    try {
+      outDirectory.mkdir();
+    } catch (boost::filesystem::filesystem_error & e) {
+      LOGERROR(e.what());
+      return;
+    }
+  }
+  /*openning the OutputStreams*/
+  FormatOutputStream * fos = new FormatOutputStream(&fout, outfile.containertype.value().c_str());
+  PacketOutputStream * pos = new PacketOutputStream(fos);
+
+  vector<db::Stream> streams=outfile.streams().get().all();
+  vector<db::Stream>::iterator stream_it=streams.begin();
+  litesql::Or expr((db::ProcessUnit::Targetstream>0),litesql::Expr());
+  std::string sql_expr="ProcessUnit_.targetstream_ IN(";
+
+  for(int a=0;stream_it!=streams.end();stream_it++, a++){
+    db::Stream stream=(*stream_it);
+    boost::shared_ptr<Encoder> codec = CodecFactory::getStreamEncoder(stream.id);
+    if(codec->open()){
+      pos->setEncoder(*codec, stream.streamindex);
+      sql_expr+=StringUtil::toString(stream.id.value());
+      sql_expr+=", ";
+      
+      _source_stream_map[stream.streamindex].last_timestamp = 0;
+      _source_stream_map[stream.streamindex].next_timestamp = 0;
+      _source_stream_map[stream.streamindex].out_stream_index=a;
+    }
+  }
+  sql_expr=sql_expr.erase(sql_expr.length()-2,2);
+  sql_expr+=")";
+  LOGDEBUG("expression="<<sql_expr);
+  pos->init();
+  litesql::Cursor<db::ProcessUnit> units=litesql::select<db::ProcessUnit>(outfile.getDatabase(),litesql::RawExpr(sql_expr)).cursor();
+  
+
+
+
+
+
+  std::string path = org::esb::config::Config::getProperty("hive.base_path");
+    path += "/tmp/";
+    for(;units.rowsLeft();units++) {
+      db::ProcessUnit unit=(*units);
+
+      int pu_id = unit.id;
+      //      logdebug("open PU with id : " << pu_id)
+      std::string name = path;
+      name += org::esb::util::Decimal(pu_id % 10).toString();
+      name += "/";
+      name += org::esb::util::Decimal(pu_id).toString();
+      name += ".unit";
+      org::esb::io::File infile(name.c_str());
+      if (!infile.exists()) {
+        LOGERROR(infile.getFileName() << ": not found, this may lead in a resulting audio/video desync");
+        continue;
+      }
+      org::esb::io::FileInputStream fis(&infile);
+      org::esb::io::ObjectInputStream ois(&fis);
+      org::esb::hive::job::ProcessUnit pu;
+      if (ois.readObject(pu) != 0) {
+        LOGERROR("reading archive # " << pu_id);
+        continue;
+      }
+
+
+      LOGDEBUG("resorting Packets");
+      pu._output_packets.sort(ptsComparator);
+      std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
+      for (; ptslist != pu._output_packets.end(); ptslist++) {
+        Packet * p = (*ptslist).get();
+        int idx = p->getStreamIndex();
+        LOGTRACE("resorting Packets pts to " << p->toString());
+        p->setPts(_source_stream_map[idx].next_timestamp);
+        LOGTRACE("resorting Packets pts to " << _source_stream_map[idx].next_timestamp);
+        //        p->setTimeBase(_source_stream_map[idx].packet_timebase);
+        //        p->setDuration(_source_stream_map[idx].packet_duration);
+        _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
+        //        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+        _source_stream_map[idx].next_timestamp += p->getDuration();
+      }
+      /**
+       * reorder right back to dts
+       */
+      pu._output_packets.sort(dtsComparator);
+
+      std::list<boost::shared_ptr<Packet> >::iterator plist = pu._output_packets.begin();
+      for (; plist != pu._output_packets.end(); plist++) {
+        Packet * p = (*plist).get();
+        int idx = p->getStreamIndex();
+        p->packet->stream_index = _source_stream_map[idx].out_stream_index;
+        pos->writePacket(*p);
+      }
+
+/**
+       * clean up temporary files, they are no longer needed
+       */
+      fis.close();
+//      infile.deleteFile();
+    }
+
+  pos->close();
+  fos->close();
+  delete pos;
+  delete fos;
+
+
+}
 
 void FileExporter::exportFile(int fileid) {
   _source_stream_map.clear();
@@ -36,7 +167,7 @@ void FileExporter::exportFile(int fileid) {
   map<int, long long int> ptsoffset;
   map<int, long long int> dtsoffset;
   //  map<int, int> dtsmap;
-  LOGDEBUG( "Exporting file with id:" << fileid);
+  LOGDEBUG("Exporting file with id:" << fileid);
   std::string filename;
   std::string fileformat;
   Connection con(std::string(Config::getProperty("db.connection")));
@@ -96,38 +227,38 @@ void FileExporter::exportFile(int fileid) {
       _source_stream_map[rs.getInt("inid")].in_timebase = ar;
       _source_stream_map[rs.getInt("inid")].last_timestamp = 0;
       _source_stream_map[rs.getInt("inid")].next_timestamp = 0;
-      _source_stream_map[rs.getInt("inid")].out_start_time=0;
-      _source_stream_map[rs.getInt("inid")].out_start_time=0;
+      _source_stream_map[rs.getInt("inid")].out_start_time = 0;
+      _source_stream_map[rs.getInt("inid")].out_start_time = 0;
       _source_stream_map[rs.getInt("inid")].stream_type = rs.getInt("type");
-//      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
-//        min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
-//      }
+      //      if (min_start_time < av_rescale_q(rs.getLong("in_start_time"), ar, basear)) {
+      //        min_start_time = av_rescale_q(rs.getLong("in_start_time"), ar, basear);
+      //      }
     }
   }
   /**
    * Calculating start time
    */
   {
-    int64_t tsmin=INT64_MAX;
-    int64_t tsmax=INT64_MIN;
-    int64_t tsdiff=0;
-    std::map<int, FileExporter::StreamData>::iterator it=_source_stream_map.begin();
-    for(;it!=_source_stream_map.end();it++){
-      tsmin=min(tsmin,  av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
-      tsmax=max(tsmax, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+    int64_t tsmin = INT64_MAX;
+    int64_t tsmax = INT64_MIN;
+    int64_t tsdiff = 0;
+    std::map<int, FileExporter::StreamData>::iterator it = _source_stream_map.begin();
+    for (; it != _source_stream_map.end(); it++) {
+      tsmin = min(tsmin, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
+      tsmax = max(tsmax, av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear));
     }
-    tsdiff=(long)std::abs(static_cast<long>(tsmin-tsmax));
-    min_start_time=tsdiff;
-    LOGINFO("setting min_start_time to "<<min_start_time);
-  /**
-   * setting stream start time stamp
-   */
+    tsdiff = (long) std::abs(static_cast<long> (tsmin - tsmax));
+    min_start_time = tsdiff;
+    LOGINFO("setting min_start_time to " << min_start_time);
+    /**
+     * setting stream start time stamp
+     */
 
-    it=_source_stream_map.begin();
-    for(;it!=_source_stream_map.end();it++){
-      (*it).second.out_start_time=av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear)-tsmax;
-//      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
-      LOGINFO("setting out_start_time from stream "<<(*it).first<<" to "<<(*it).second.out_start_time);
+    it = _source_stream_map.begin();
+    for (; it != _source_stream_map.end(); it++) {
+      (*it).second.out_start_time = av_rescale_q((*it).second.in_start_time, (*it).second.in_timebase, basear) - tsmax;
+      //      (*it).second.out_start_time=std::abs(av_rescale_q((*it).second.out_start_time, basear,(*it).second.in_timebase));
+      LOGINFO("setting out_start_time from stream " << (*it).first << " to " << (*it).second.out_start_time);
     }
   }
   {
@@ -290,13 +421,13 @@ void FileExporter::exportFile(int fileid) {
       for (; ptslist != pu._output_packets.end(); ptslist++) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
-        LOGTRACE("resorting Packets pts to "<<p->toString());
+        LOGTRACE("resorting Packets pts to " << p->toString());
         p->setPts(_source_stream_map[idx].next_timestamp);
-        LOGTRACE("resorting Packets pts to "<<_source_stream_map[idx].next_timestamp);
+        LOGTRACE("resorting Packets pts to " << _source_stream_map[idx].next_timestamp);
         //        p->setTimeBase(_source_stream_map[idx].packet_timebase);
-//        p->setDuration(_source_stream_map[idx].packet_duration);
+        //        p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
-//        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
+        //        _source_stream_map[idx].next_timestamp += _source_stream_map[idx].packet_duration;
         _source_stream_map[idx].next_timestamp += p->getDuration();
       }
       /**
@@ -308,7 +439,7 @@ void FileExporter::exportFile(int fileid) {
       for (; plist != pu._output_packets.end(); plist++) {
         Packet * p = (*plist).get();
         int idx = p->getStreamIndex();
-//        if (_source_stream_map[idx].out_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), _source_stream_map[idx].in_timebase))continue;
+        //        if (_source_stream_map[idx].out_start_time > av_rescale_q(p->getPts(), p->getTimeBase(), _source_stream_map[idx].in_timebase))continue;
         /*
 if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
   p->setPts(p->getPts() - av_rescale_q(_source_stream_map[idx].in_start_time, _source_stream_map[idx].in_timebase, p->getTimeBase()));
@@ -337,14 +468,14 @@ if (false&&_source_stream_map[idx].stream_type == CODEC_TYPE_VIDEO) {
   fos->close();
   delete pos;
   delete fos;
-  map<int, boost::shared_ptr<Encoder> >::iterator itenc=enc.begin();
-  for(;itenc!=enc.end();itenc++){
-    int index=(*itenc).first;
-//    enc.erase(index);
+  map<int, boost::shared_ptr<Encoder> >::iterator itenc = enc.begin();
+  for (; itenc != enc.end(); itenc++) {
+    int index = (*itenc).first;
+    //    enc.erase(index);
     CodecFactory::clearCodec(index);
   }
 
-//  cout << endl;
+  //  cout << endl;
 
   if (false) {
     Statement stmt = con.createStatement("select data_size, data, pts, dts, duration, flags, pos, stream_index from packets where stream_id=2 order by pts limit 10000");

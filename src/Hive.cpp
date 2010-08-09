@@ -98,8 +98,8 @@ int main(int argc, char * argv[]) {
   strcpy(base_path, sb.c_str());
   std::string logconfigpath = sb;
   logconfigpath.append("/res");
-  std::cout << logconfigpath <<std::endl;
-//  Log::open(logconfigpath);
+  std::cout << logconfigpath << std::endl;
+  //  Log::open(logconfigpath);
   Log::open("");
 
   std::string dump_path = sb;
@@ -131,6 +131,7 @@ int main(int argc, char * argv[]) {
     po::options_description inst("Install options");
     inst.add_options()
             ("install", "install the server instance on this node")
+            ("reset-to-factory-settings", "reset the server instance to factory defaults, this will delete all data!!!")
             ("hiveport", po::value<int>()->default_value(20200), "on which port will the hive be listen on")
             ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
             ;
@@ -155,7 +156,42 @@ int main(int argc, char * argv[]) {
     av_register_all();
     avcodec_init();
     avcodec_register_all();
-    config::Config::setProperty("db.connection", "mysql:host=;db=hive;user=;passwd=");
+    config::Config::setProperty("db.url", "host=127.0.0.1;database=hive;user=root;port=3306");
+
+    if (vm.count("reset-to-factory-settings")) {
+      org::esb::hive::DatabaseService::start(base_path);
+      if (DatabaseService::databaseExist()) {
+        DatabaseService::dropDatabase();
+      }
+      DatabaseService::createDatabase();
+      DatabaseService::updateTables();
+      DatabaseService::loadPresets();
+      {
+        db::HiveDb db("mysql", Config::getProperty("db.url"));
+        std::map<std::string, std::string> conf;
+        conf["hive.mode"] = "server";
+        conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
+        conf["web.port"] = StringUtil::toString(vm["webport"].as<int> ());
+
+        conf["hive.start"] = "true";
+        conf["web.start"] = "true";
+        conf["hive.autoscan"] = "true";
+        conf["hive.scaninterval"] = "30";
+        std::string webroot = std::string(Config::getProperty("hive.base_path"));
+        webroot.append("/web");
+        conf["web.docroot"] = webroot;
+
+        std::map<std::string, std::string>::iterator it = conf.begin();
+        for (; it != conf.end(); it++) {
+          db::Config cfg(db);
+          cfg.configkey = it->first;
+          cfg.configval = it->second;
+          cfg.update();
+          LOGDEBUG("key=" << it->first << " val=" << it->second);
+        }
+      }
+      org::esb::hive::DatabaseService::stop();
+    }
 
     if (vm.count("install")) {
       /**
@@ -163,104 +199,45 @@ int main(int argc, char * argv[]) {
        */
       /**starting the internal database service*/
       org::esb::hive::DatabaseService::start(base_path);
-
-      /*creating the database */
-      try {
-        /*check if database exists*/
-        sql::Connection con(config::Config::getProperty("db.connection"));
-        con.executeNonQuery(string("use hive"));
-        /*if database exists the try to select the model version*/
-        sql::Statement stmt = con.createStatement("SELECT * FROM version WHERE component='database.model'");
-        sql::ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-          std::string ver = rs.getString("version");
-          if (ver == "0.0.4") {
-            LOGINFO("Database version is 0.0.4, update needed!!!");
-            std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-            sql_script.append("/../sql/hive-0.0.5.sql");
-            hive::Setup::buildDatabaseModel(sql_script.c_str());
-          } else if (ver == "0.0.5") {
-            LOGINFO("Database is up to date");
-          }
-        } else {
-          /**Update database model to ver 0.0.4*/
-          std::string sql_script004 = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script004.append("/../sql/hive-0.0.4.sql");
-          hive::Setup::buildDatabaseModel(sql_script004.c_str());
-          /**Update database model to ver 0.0.5*/
-          std::string sql_script005 = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script005.append("/../sql/hive-0.0.5.sql");
-          hive::Setup::buildDatabaseModel(sql_script005.c_str());
-          /**Update database model to ver 0.0.6*/
-          std::string sql_script006 = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script006.append("/../sql/hive-0.0.6.sql");
-          hive::Setup::buildDatabaseModel(sql_script006.c_str());
-        }
-      } catch (sql::SqlException & ex) {
-        /*when not exists then create it*/
-        LOGERROR("seems to be the first installation, creating the database now");
-        try {
-          sql::Connection con_create(std::string(""));
-          con_create.executeNonQuery(string("CREATE DATABASE hive"));
-          con_create.executeNonQuery(string("use hive"));
-          /** retrieving the database schema name from filesystem* */
-          std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script.append("/../sql/hive-0.0.3.sql");
-
-          /**build database model*/
-          hive::Setup::buildDatabaseModel(sql_script.c_str());
-
-          /**Update database model to ver 0.0.4*/
-          sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script.append("/../sql/hive-0.0.4.sql");
-          hive::Setup::buildDatabaseModel(sql_script.c_str());
-
-          /**Update database model to ver 0.0.5*/
-          std::string sql_script005 = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script005.append("/../sql/hive-0.0.5.sql");
-          hive::Setup::buildDatabaseModel(sql_script005.c_str());
-
-          /**Update database model to ver 0.0.6*/
-          std::string sql_script006 = std::string(org::esb::config::Config::getProperty("hive.path"));
-          sql_script006.append("/../sql/hive-0.0.6.sql");
-          hive::Setup::buildDatabaseModel(sql_script006.c_str());
-
-          std::map<std::string, std::string> conf;
-          conf["hive.mode"] = "server";
-          conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
-          conf["web.port"] = StringUtil::toString(vm["webport"].as<int> ());
-
-          conf["hive.start"] = "true";
-          conf["web.start"] = "true";
-          conf["hive.autoscan"] = "true";
-          conf["hive.scaninterval"] = "30";
-          std::string webroot = std::string(Config::getProperty("hive.base_path"));
-          webroot.append("/web");
-          conf["web.docroot"] = webroot;
-
-          sql::PreparedStatement * pstmt = con_create.prepareStatement2("replace into config(config_key, config_val) values (:key, :val)");
-          std::map<std::string, std::string>::iterator it = conf.begin();
-          for (; it != conf.end(); it++) {
-            pstmt->setString("key", it->first);
-            pstmt->setString("val", it->second);
-            pstmt->execute();
-            LOGDEBUG("key=" << it->first << " val=" << it->second);
-          }
-          delete pstmt;
-        } catch (sql::SqlException & ex) {
-          LOGERROR("SqlException:" << ex.what());
-          return -1;
-        }
-        /**stopping the internal database service*/
-        org::esb::hive::DatabaseService::stop();
+      if (!DatabaseService::databaseExist()) {
+        DatabaseService::createDatabase();
       }
+      DatabaseService::updateTables();
+      DatabaseService::loadPresets();
+      {
+        db::HiveDb db("mysql", Config::getProperty("db.url"));
+        std::map<std::string, std::string> conf;
+        conf["hive.mode"] = "server";
+        conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
+        conf["web.port"] = StringUtil::toString(vm["webport"].as<int> ());
+
+        conf["hive.start"] = "true";
+        conf["web.start"] = "true";
+        conf["hive.autoscan"] = "true";
+        conf["hive.scaninterval"] = "30";
+        std::string webroot = std::string(Config::getProperty("hive.base_path"));
+        webroot.append("/web");
+        conf["web.docroot"] = webroot;
+
+        std::map<std::string, std::string>::iterator it = conf.begin();
+        for (; it != conf.end(); it++) {
+          db::Config cfg(db);
+          cfg.configkey = it->first;
+          cfg.configval = it->second;
+          cfg.update();
+          LOGDEBUG("key=" << it->first << " val=" << it->second);
+        }
+      }
+      /**stopping the internal database service*/
+      org::esb::hive::DatabaseService::stop();
+      return 0;
     }
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
       LOGDEBUG("here")
       org::esb::hive::DatabaseService::start(base_path);
-      
+
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         LOGERROR("could not load config from Database, exiting!!!");
         exit(1);
@@ -431,7 +408,7 @@ void start() {
 
   //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
   //  Messenger::getInstance().addMessageListener(dbservice);
-LOGDEBUG("here")
+  LOGDEBUG("here")
   org::esb::hive::JobScanner jobscan;
   Messenger::getInstance().addMessageListener(jobscan);
 
@@ -466,23 +443,23 @@ LOGDEBUG("here")
 
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
 
-//  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-    string base_path = org::esb::config::Config::getProperty("hive.base_path");
-    Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
-    //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
-    Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
-//  }
+  //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+  string base_path = org::esb::config::Config::getProperty("hive.base_path");
+  Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+  //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
+  Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
+  //  }
 
-//  if (string(org::esb::config::Config::getProperty("web.start")) == "true" || string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
-    Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
-//  }
+  //  if (string(org::esb::config::Config::getProperty("web.start")) == "true" || string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+  //  }
 
-//  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
-    Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
-    Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
-    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
+  //  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
+  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
+      Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+  //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
-//  }
+  //  }
   if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
     Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));

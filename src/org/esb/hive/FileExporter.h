@@ -1,5 +1,6 @@
 #ifndef ORG_ESB_HIE_FILEEXPORTER
 #define ORG_ESB_HIE_FILEEXPORTER
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/av/AV.h"
 #include "org/esb/av/Packet.h"
 #include <boost/shared_ptr.hpp>
@@ -10,6 +11,7 @@ class FileExporter
   classlogger("org.esb.hive.FileExporter")
 public:
 	static void exportFile(int fileid);
+        static void exportFile(db::MediaFile);
 private:
 	FileExporter(void);
 	~FileExporter(void);

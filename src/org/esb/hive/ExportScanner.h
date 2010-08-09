@@ -27,6 +27,7 @@
 
 #ifndef _ORG_ESB_HIVE_EXPORTSCANNER_H
 #define	_ORG_ESB_HIVE_EXPORTSCANNER_H
+
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include <boost/thread/condition.hpp>

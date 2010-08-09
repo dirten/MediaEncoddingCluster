@@ -246,11 +246,11 @@ namespace org {
         info_panel->collapse();
 	
 	list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Progress" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Begin" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,200));
-        DbTable * table= new DbTable(columnConfigs, "SELECT filename_ ,if(min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/MediaFile_.duration_)*100))<0,0,min(round(((lastdts_-(((firstdts_/streamtimebaseden_)*streamtimebasenum_)*1000000))/MediaFile_.duration_)*100))) as progress, begintime_ FROM MediaFile_ join Job_MediaFile_JobInFile on MediaFile_.id_=Job_MediaFile_JobInFile.MediaFile2 join Job_ on Job_MediaFile_JobInFile.Job1=Job_.id_ join JobDetail_ on Job1=Job_.id_ join JobDetail_Stream_JobInStream on JobDetail_.id_=JobDetail_Stream_JobInStream.JobDetail1 join Stream_ on Stream_.id_=JobDetail_Stream_JobInStream.Stream2");
+        columnConfigs.push_back(ColumnConfig(db::Job::Id,"Id" ,200));
+        columnConfigs.push_back(ColumnConfig(db::Job::Begintime,"BeginTime" ,200));
+        columnConfigs.push_back(ColumnConfig(db::Job::Endtime,"EndTime" ,200));
+        columnConfigs.push_back(ColumnConfig(db::Job::Progress,"Progress" ,200));
+        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
         setContent(table);
 	
       }

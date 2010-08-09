@@ -17,6 +17,7 @@ namespace org{
         resize(900,560);
         _filterpanel=FilterPanelFactory::getFilterPanel(_filter->filterid);
         _filterpanel->setFilter(filter);
+        _filterpanel->changed.connect(SLOT(this,FilterEditor::filterChanged));
 //        _filterpanel->resize(300,Wt::WLength());
         ((Wt::WBorderLayout*)layout())->addWidget(_filterpanel,Wt::WBorderLayout::Center);
         
@@ -39,6 +40,11 @@ namespace org{
         LOGDEBUG("FilterEditor::~FilterEditor()");
         delete _previewpanel;
       }
+
+      void FilterEditor::filterChanged(){
+        _previewpanel->filterChanged();
+      }
+
       void FilterEditor::save(){
         _filterpanel->save();
         accept();

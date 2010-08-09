@@ -2929,20 +2929,24 @@ const litesql::FieldType Job::Type("type_","TEXT",table__);
 const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
 const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
 const litesql::FieldType Job::Status("status_","TEXT",table__);
+const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
 void Job::defaults() {
     id = 0;
     begintime = -1;
     endtime = -1;
+    progress = 0;
 }
 Job::Job(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status) {
+     : litesql::Persistent(db), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status), progress(Progress) {
     defaults();
 }
 Job::Job(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status), progress(Progress) {
     defaults();
-    size_t size = (rec.size() > 5) ? 5 : rec.size();
+    size_t size = (rec.size() > 6) ? 6 : rec.size();
     switch(size) {
+    case 6: progress = convert<const std::string&, int>(rec[5]);
+        progress.setModified(false);
     case 5: status = convert<const std::string&, std::string>(rec[4]);
         status.setModified(false);
     case 4: endtime = convert<const std::string&, litesql::DateTime>(rec[3]);
@@ -2956,7 +2960,7 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Job::Job(const Job& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), begintime(obj.begintime), endtime(obj.endtime), status(obj.status) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), progress(obj.progress) {
 }
 const Job& Job::operator=(const Job& obj) {
     if (this != &obj) {
@@ -2965,6 +2969,7 @@ const Job& Job::operator=(const Job& obj) {
         begintime = obj.begintime;
         endtime = obj.endtime;
         status = obj.status;
+        progress = obj.progress;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -2997,6 +3002,9 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(status.name());
     values.push_back(status);
     status.setModified(false);
+    fields.push_back(progress.name());
+    values.push_back(progress);
+    progress.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -3017,6 +3025,7 @@ void Job::addUpdates(Updates& updates) {
     updateField(updates, table__, begintime);
     updateField(updates, table__, endtime);
     updateField(updates, table__, status);
+    updateField(updates, table__, progress);
 }
 void Job::addIDUpdates(Updates& updates) {
 }
@@ -3026,6 +3035,7 @@ void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Begintime);
     ftypes.push_back(Endtime);
     ftypes.push_back(Status);
+    ftypes.push_back(Progress);
 }
 void Job::delRecord() {
     deleteFromTable(table__, id);
@@ -3074,6 +3084,7 @@ std::auto_ptr<Job> Job::upcastCopy() {
     np->begintime = begintime;
     np->endtime = endtime;
     np->status = status;
+    np->progress = progress;
     np->inDatabase = inDatabase;
     return auto_ptr<Job>(np);
 }
@@ -3084,6 +3095,7 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << o.begintime.name() << " = " << o.begintime << std::endl;
     os << o.endtime.name() << " = " << o.endtime << std::endl;
     os << o.status.name() << " = " << o.status << std::endl;
+    os << o.progress.name() << " = " << o.progress << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -3705,7 +3717,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,progress_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));

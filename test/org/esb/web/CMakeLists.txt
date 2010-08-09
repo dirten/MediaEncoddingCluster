@@ -5,11 +5,24 @@ include_directories (${MYSQL_DIR}/include)
 include_directories (${WT_DIR}/include)
 
 add_executable (TestWebServer TestWebServer.cpp)
+add_executable (TestPreviewFrameServer TestPreviewFrameServer.cpp)
+
 
 target_link_libraries (TestWebServer
   web
   esb
   sql
+  hive
+  av
+  util
+  signal
+  io
+  lang
+  net
+ )
+target_link_libraries (TestPreviewFrameServer
+  web
+  esb
   hive
   av
   util
@@ -30,4 +43,5 @@ target_link_libraries (TestWebServer
   ${BOOST_DT_LIB_MT}
 )
 ADD_TEST(TestWebServer ${EXECUTABLE_OUTPUT_PATH}/TestWebServer)
+ADD_TEST(TestPreviewFrameServer ${EXECUTABLE_OUTPUT_PATH}/TestPreviewFrameServer)
 

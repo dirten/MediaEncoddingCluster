@@ -17,6 +17,7 @@ namespace org{
       private:
         Ptr<db::Filter> _filter;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
+        void filterChanged();
       };
     }
   }

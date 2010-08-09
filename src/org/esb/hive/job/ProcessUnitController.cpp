@@ -88,10 +88,12 @@ namespace org {
 //              org::esb::hive::DatabaseService::thread_init();
           while (!_stop_signal) {
             try {
-              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Begintime == -1).one();
+              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime == -1).one();
               //db::Job job = job_ctrl.getJob();
-              LOGDEBUG("new job found")
-              processJob(job);
+              LOGDEBUG("new job found");
+              current_job=Ptr<db::Job>(new db::Job(job));
+
+              processJob(*current_job.get());
 
             } catch (litesql::NotFound ex) {
               LOGDEBUG("no new job found");
@@ -138,7 +140,7 @@ namespace org {
               }
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
-			  stream_data[idx].min_packet_count=0;
+              stream_data[idx].min_packet_count=0;
             }
             PacketInputStream pis(&fis);
 
@@ -163,7 +165,7 @@ namespace org {
                       ) {
                 continue;
               }
-
+              //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
               if (packetizer.putPacket(pPacket)) {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
                 PacketListPtr packets = packetizer.removePacketList();
@@ -181,9 +183,11 @@ namespace org {
           } else {
             LOGERROR("Error Opening Input Streams from " << filename);
           }
-
+          boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
+          queue_empty_wait_condition.wait(queue_empty_wait_lock);
           LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           job.endtime = 0;
+          job.status="completed";
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
             job.update();
@@ -191,8 +195,6 @@ namespace org {
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitController::getProcessUnit() {
-          if (audioQueue.size() == 0 && puQueue.size() == 0)
-            queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           LOGDEBUG("video queue size:" << puQueue.size());
           if (puQueue.size() == 0 || _stop_signal)
@@ -218,8 +220,6 @@ namespace org {
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitController::getAudioProcessUnit() {
-          if (audioQueue.size() == 0 && puQueue.size() == 0)
-            queue_empty_wait_condition.notify_all();
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           LOGDEBUG("audio queue size:" << audioQueue.size());
           if (audioQueue.size() == 0 || _stop_signal)
@@ -271,10 +271,18 @@ namespace org {
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
+
+            /** calculate current progress from the Job*/
+            current_job->progress=(int)dbunit.endts;
+            current_job->update();
+
 //	    DatabaseService::thread_end();
           } catch (litesql::NotFound ex) {
             LOGERROR("db::ProcessUnit not found for :" << unit->_process_unit);
           }
+          if (audioQueue.size() == 0 && puQueue.size() == 0)
+            queue_empty_wait_condition.notify_all();
+
           /*
           delete unit._decoder;
           unit._decoder = NULL;

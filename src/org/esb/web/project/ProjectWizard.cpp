@@ -13,11 +13,15 @@
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/config/config.h"
+
+#include "org/esb/hive/JobUtil.h"
+
 namespace org {
   namespace esb {
     namespace web {
+
       ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Editor") {
-        _project_id=0;
+        _project_id = 0;
         resize(1200, 700);
         setBorder(false);
         //setSizeGripEnabled(true);
@@ -28,22 +32,22 @@ namespace org {
 
         layout()->setContentsMargins(0, 0, 0, 0);
 
-        _db=Ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
-        _filePanel=Ptr<InputFilePanel>(new InputFilePanel());
-        _profilePanel=Ptr<ProfilePanel>(new ProfilePanel());
+        _db = Ptr<db::HiveDb > (new db::HiveDb("mysql", org::esb::config::Config::getProperty("db.url")));
+        _filePanel = Ptr<InputFilePanel > (new InputFilePanel());
+        _profilePanel = Ptr<ProfilePanel > (new ProfilePanel());
 
-        _profilePanel->resize(500,Wt::WLength());
+        _profilePanel->resize(500, Wt::WLength());
         _profilePanel->setResizable(true);
 
-        _filterPanel=Ptr<FilterPanel>(new FilterPanel());
+        _filterPanel = Ptr<FilterPanel > (new FilterPanel());
         _filterPanel->resize(500, 300);
         _filterPanel->setResizable(true);
 
-        _propertyPanel=Ptr<ProjectPropertyPanel>(new ProjectPropertyPanel());
+        _propertyPanel = Ptr<ProjectPropertyPanel > (new ProjectPropertyPanel());
         _propertyPanel->resize(500, 300);
         _propertyPanel->setResizable(true);
 
-        
+
 
         //center->setLayout(new Wt::WFitLayout());
         //center->layout()->addWidget(new Wt::WText("Center"));
@@ -51,7 +55,7 @@ namespace org {
 
         ((Wt::WBorderLayout*)layout())->addWidget(_filePanel.get(), Wt::WBorderLayout::Center);
         ((Wt::WBorderLayout*)layout())->addWidget(_profilePanel.get(), Wt::WBorderLayout::East);
-//        ((Wt::WBorderLayout*)layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::South);
+        //        ((Wt::WBorderLayout*)layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::South);
 
         Wt::Ext::Panel * south_panel = new Wt::Ext::Panel();
         south_panel->setLayout(new Wt::WBorderLayout());
@@ -74,23 +78,24 @@ namespace org {
 
         ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("East"), Wt::WBorderLayout::East);
         ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("West"), Wt::WBorderLayout::West);
-        */
+         */
       }
 
       void ProjectWizard::open(int pid) {
-        try{
-          db::Project project=litesql::select<db::Project>(*_db.get(), db::Project::Id==pid).one();
-          open(Ptr<db::Project>(new db::Project(project)));
-        }catch(litesql::NotFound & ex){
-          LOGERROR("Project with id "<<pid<<" could not be loaded!"<<ex.what());
+        try {
+          db::Project project = litesql::select<db::Project > (*_db.get(), db::Project::Id == pid).one();
+          open(Ptr<db::Project > (new db::Project(project)));
+        } catch (litesql::NotFound & ex) {
+          LOGERROR("Project with id " << pid << " could not be loaded!" << ex.what());
         }
       }
+
       void ProjectWizard::open() {
-        open(Ptr<db::Project>(new db::Project(*_db.get())));
+        open(Ptr<db::Project > (new db::Project(*_db.get())));
       }
 
       void ProjectWizard::open(Ptr<db::Project> p) {
-        _project=p;
+        _project = p;
         _project->update();
         _filePanel->setProject(_project);
         _profilePanel->setProject(_project);
@@ -100,25 +105,27 @@ namespace org {
       }
 
       void ProjectWizard::save() {
-        LOGDEBUG("Project save with id:"<<_project->id)
-          _propertyPanel->save();
-          _project->update();
+        LOGDEBUG("Project save with id:" << _project->id)
+        _propertyPanel->save();
+        _project->update();
         LOGDEBUG("Project saved:" << _project->id)
-          saved.emit();
-          this->done(Accepted);
+        saved.emit();
+        this->done(Accepted);
       }
+
       void ProjectWizard::save_and_start() {
-        LOGDEBUG("Project save with id:"<<_project->id)
-          _propertyPanel->save();
-          _project->update();
-        LOGDEBUG("Project saved:" << _project->id)
-          saved.emit();
-          this->done(Accepted);
+        LOGDEBUG("Project save with id:" << _project->id);
+        _propertyPanel->save();
+        _project->update();
+        LOGDEBUG("Project saved:" << _project->id);
+        org::esb::hive::JobUtil::createJob(_project);
+        saved.emit();
+        this->done(Accepted);
       }
 
       void ProjectWizard::cancel() {
 
-//        _project->del();
+        //        _project->del();
         canceled.emit();
         this->done(Rejected);
       }

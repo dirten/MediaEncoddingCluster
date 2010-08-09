@@ -1,5 +1,6 @@
 #ifndef JOB_FILE
 #define JOB_FILE
+#include "JobUtil.h"
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
@@ -8,7 +9,7 @@
 #include "org/esb/config/config.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/hive/CodecFactory.h"
-#include "org/esb/db/Profile.h"
+//#include "org/esb/db/Profile.h"
 #include "org/esb/io/File.h"
 #include <map>
 using namespace org::esb::av;
@@ -26,7 +27,7 @@ struct JobStreamData {
 
 int jobcreator(int fileid, int profileid, std::string outpath) {
   db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-//  db.verbose = true;
+  //  db.verbose = true;
 
   db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Id == fileid).one();
   db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == profileid).one();
@@ -55,8 +56,8 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
   outfile.update();
 
   db::Job job(db);
-  job.begintime=-1;
-  job.endtime=-1;
+  job.begintime = -1;
+  job.endtime = -1;
 
   job.update();
 
@@ -67,10 +68,10 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
    * but after setting it twice it eat the values ???
    */
 
-  job.begintime=-1;
-  job.endtime=-1;
+  job.begintime = -1;
+  job.endtime = -1;
   job.update();
-  
+
 
   job.inputfile().link(mediafile);
   job.outputfile().link(outfile);
@@ -78,6 +79,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
   vector<db::Stream>::iterator it = streams.begin();
   int a = 0;
   for (; it != streams.end(); it++, a++) {
+//    if((*it).streamtype != CODEC_TYPE_VIDEO&&(*it).streamtype != CODEC_TYPE_AUDIO)continue;
     db::Stream s(db);
 
     s.streamindex = a;
@@ -126,6 +128,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
       enc->setChannels(profile.achannels);
       org::esb::hive::CodecFactory::setCodecOptions(enc, profile.aextra);
       enc->open();
+      s.channels=profile.achannels.value();
       s.samplefmt = (int) enc->getSampleFormat();
       int flags = enc->getFlags();
       if (ofmt->flags & AVFMT_GLOBALHEADER)
@@ -394,6 +397,43 @@ int jobcreator(int argc, char*argv[]) {
   }
   return 0;
 }
+
+
+namespace org {
+  namespace esb {
+    namespace hive {
+
+      JobUtil::JobUtil() {
+
+      }
+
+      JobUtil::~JobUtil() {
+
+      }
+
+      void JobUtil::createJob(Ptr<db::Project> p) {
+        vector<db::MediaFile> files = p->mediafiles().get().all();
+        vector<db::Profile> profiles = p->profiles().get().all();
+        vector<db::Filter> filters = p->filter().get().all();
+
+        vector<db::MediaFile>::iterator file_it = files.begin();
+        for(;file_it!=files.end();file_it++){
+          db::MediaFile file=(*file_it);
+          vector<db::Profile>::iterator profile_it = profiles.begin();
+          for(;profile_it!=profiles.end();profile_it++){
+            db::Profile profile=(*profile_it);
+            createJob(file,profile, filters, p->outdirectory);
+          }
+        }
+      }
+
+      void JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::vector<db::Filter> filter_vector, std::string outpath) {
+         jobcreator(infile.id, profile.id, outpath);
+      }
+    }
+  }
+}
+
 #endif
 
 

@@ -34,7 +34,7 @@ namespace org{
         void setProject(Ptr<db::Project>p);
         void setMediaFile(Ptr<db::MediaFile> mediafile);
         void setFilterList(std::list<Ptr<db::Filter> >filters);
-
+        void filterChanged();
         void preview();
       private:
         Ptr<org::esb::av::Encoder> _encoder;

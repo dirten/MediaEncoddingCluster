@@ -39,11 +39,11 @@ namespace org{
       void PreviewFrameServer::jumpForward(JUMP_WIDTH width){
         Packet * packet;
         Frame * frame=NULL;
-        int a=0;
+        int a=1;
         while ((packet = _pis->readPacket()) != NULL ) {
           if(packet->getStreamIndex()==_stream_info->getIndex()){
             frame=_decoder->decode2(*packet);
-            if(frame->isFinished()&& width<=a){
+            if(frame->isFinished()&& a>=width){
               _last_packet=Ptr<org::esb::av::Packet>(packet);
               break;
             }
@@ -51,6 +51,7 @@ namespace org{
             frame=NULL;
             a++;
           }
+          delete packet;
         }
         if(frame&&!frame->isFinished()){
           delete frame;
@@ -59,7 +60,40 @@ namespace org{
           _frame=Ptr<org::esb::av::Frame>(frame);
         }
       }
+
       void PreviewFrameServer::jumpPrevious(JUMP_WIDTH width){
+        AVRational frame_rate;
+        frame_rate.num=_stream_info->getFrameRate().den;
+        frame_rate.den=_stream_info->getFrameRate().num;
+        AVRational time_base=_stream_info->getTimeBase();
+        int duration=av_rescale_q(1,frame_rate, time_base);
+        int64_t seek_ts=_last_packet->getDts()-(duration*width);
+        _fis->seek(_stream_info->getIndex(), seek_ts);
+
+
+
+        Packet * packet;
+        Frame * frame=NULL;
+        int a=1;
+        while ((packet = _pis->readPacket()) != NULL ) {
+          if(packet->getStreamIndex()==_stream_info->getIndex()){
+            frame=_decoder->decode2(*packet);
+            if(frame->isFinished()&& packet->getDts()>=seek_ts){
+              _last_packet=Ptr<org::esb::av::Packet>(packet);
+              break;
+            }
+            delete frame;
+            frame=NULL;
+            a++;
+          }
+          delete packet;
+        }
+        if(frame&&!frame->isFinished()){
+          delete frame;
+          _frame=Ptr<org::esb::av::Frame>(new org::esb::av::Frame());
+        }else{
+          _frame=Ptr<org::esb::av::Frame>(frame);
+        }
 
       }
     }

@@ -142,6 +142,7 @@
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
         <field name="status" type="string"/>
+        <field name="progress" type="integer"/>
     </object>
 
     <relation id="JobInFile">

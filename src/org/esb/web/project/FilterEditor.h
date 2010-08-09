@@ -20,6 +20,9 @@ namespace org{
         PreviewPanel * _previewpanel;
 
         void save();
+
+
+        void filterChanged();
       };
     }
   }

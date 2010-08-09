@@ -45,7 +45,7 @@ namespace org {
                 DEPRICATED(AVInputStream * getAVStream(int sNumber));
                 void close();
                 void dumpFormat();
-                int seek(int stream_index, int64_t timestamp);
+                int seek(int stream_index, int64_t timestamp, int flags=AVSEEK_FLAG_BACKWARD);
                 int selectedStream;
                 StreamInfo * getStreamInfo(int idx);
             private:

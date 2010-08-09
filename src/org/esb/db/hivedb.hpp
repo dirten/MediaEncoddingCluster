@@ -924,6 +924,8 @@ public:
     litesql::Field<litesql::DateTime> endtime;
     static const litesql::FieldType Status;
     litesql::Field<std::string> status;
+    static const litesql::FieldType Progress;
+    litesql::Field<int> progress;
 protected:
     void defaults();
 public:
