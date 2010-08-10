@@ -4,7 +4,7 @@
  *
  * Created on 2. Februar 2010, 11:07
  */
-
+#include "org/esb/db/hivedb.hpp"
 #include <stdlib.h>
 #include <boost/asio.hpp>
 #include "org/esb/hive/HiveListener.h"
