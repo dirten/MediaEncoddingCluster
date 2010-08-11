@@ -99,8 +99,8 @@ int main(int argc, char * argv[]) {
   std::string logconfigpath = sb;
   logconfigpath.append("/res");
   std::cout << logconfigpath << std::endl;
-  //  Log::open(logconfigpath);
-  Log::open("");
+  Log::open(logconfigpath);
+  //Log::open("");
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -110,7 +110,7 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.dump_path", dump_path.c_str());
   //    std::wstring wdump_path(dump_path.begin(), dump_path.end());
-  new StackDumper(dump_path);
+  //new StackDumper(dump_path);
   std::string tmp_path = sb;
   tmp_path.append("/tmp");
   org::esb::io::File tpath(tmp_path);
@@ -156,7 +156,7 @@ int main(int argc, char * argv[]) {
     av_register_all();
     avcodec_init();
     avcodec_register_all();
-    config::Config::setProperty("db.url", "host=127.0.0.1;database=hive;user=root;port=3306");
+    config::Config::setProperty("db.url", "host=localhost;database=hive;user=root;port=3306");
 
     if (vm.count("reset-to-factory-settings")) {
       org::esb::hive::DatabaseService::start(base_path);
