@@ -49,12 +49,12 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   /*creating output Directory*/
   org::esb::io::File outDirectory(fout.getFilePath().c_str());
   if (!outDirectory.exists()) {
-    try {
+//    try {
       outDirectory.mkdir();
-    } catch (boost::filesystem::filesystem_error & e) {
-      LOGERROR(e.what());
-      return;
-    }
+//    } catch (boost::filesystem::filesystem_error & e) {
+//      LOGERROR(e.what());
+//      return;
+//    }
   }
   /*openning the OutputStreams*/
   FormatOutputStream * fos = new FormatOutputStream(&fout, outfile.containertype.value().c_str());
@@ -65,17 +65,18 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   litesql::Or expr((db::ProcessUnit::Targetstream>0),litesql::Expr());
   std::string sql_expr="ProcessUnit_.targetstream_ IN(";
 
-  for(int a=0;stream_it!=streams.end();stream_it++, a++){
+  for(int a=0;stream_it!=streams.end();stream_it++){
     db::Stream stream=(*stream_it);
     boost::shared_ptr<Encoder> codec = CodecFactory::getStreamEncoder(stream.id);
     if(codec->open()){
-      pos->setEncoder(*codec, stream.streamindex);
+      pos->setEncoder(*codec, a);
       sql_expr+=StringUtil::toString(stream.id.value());
       sql_expr+=", ";
       
       _source_stream_map[stream.streamindex].last_timestamp = 0;
       _source_stream_map[stream.streamindex].next_timestamp = 0;
       _source_stream_map[stream.streamindex].out_stream_index=a;
+      a++;
     }
   }
   sql_expr=sql_expr.erase(sql_expr.length()-2,2);
@@ -152,6 +153,10 @@ void FileExporter::exportFile(db::MediaFile outfile) {
 
   pos->close();
   fos->close();
+
+  outfile.filesize=(double)fos->_fmtCtx->file_size;
+  outfile.update();
+
   delete pos;
   delete fos;
 

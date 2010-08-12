@@ -516,6 +516,8 @@ public:
     litesql::Field<std::string> containertype;
     static const litesql::FieldType Duration;
     litesql::Field<double> duration;
+    static const litesql::FieldType Starttime;
+    litesql::Field<double> starttime;
     static const litesql::FieldType Bitrate;
     litesql::Field<int> bitrate;
     static const litesql::FieldType Created;
@@ -918,12 +920,18 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static const litesql::FieldType Created;
+    litesql::Field<litesql::DateTime> created;
     static const litesql::FieldType Begintime;
     litesql::Field<litesql::DateTime> begintime;
     static const litesql::FieldType Endtime;
     litesql::Field<litesql::DateTime> endtime;
     static const litesql::FieldType Status;
     litesql::Field<std::string> status;
+    static const litesql::FieldType Starttime;
+    litesql::Field<double> starttime;
+    static const litesql::FieldType Duration;
+    litesql::Field<double> duration;
     static const litesql::FieldType Progress;
     litesql::Field<int> progress;
 protected:
@@ -1097,6 +1105,10 @@ public:
     litesql::Field<int> sorcestream;
     static const litesql::FieldType Targetstream;
     litesql::Field<int> targetstream;
+    static const litesql::FieldType Timebasenum;
+    litesql::Field<int> timebasenum;
+    static const litesql::FieldType Timebaseden;
+    litesql::Field<int> timebaseden;
     static const litesql::FieldType Startts;
     litesql::Field<double> startts;
     static const litesql::FieldType Endts;

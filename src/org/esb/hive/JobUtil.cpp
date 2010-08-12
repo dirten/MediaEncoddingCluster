@@ -12,6 +12,7 @@
 //#include "org/esb/db/Profile.h"
 #include "org/esb/io/File.h"
 #include <map>
+#include <vector>
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
@@ -27,10 +28,14 @@ struct JobStreamData {
 
 int jobcreator(int fileid, int profileid, std::string outpath) {
   db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-  //  db.verbose = true;
-
   db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Id == fileid).one();
   db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == profileid).one();
+  return jobcreator(mediafile, profile, outpath);
+}
+
+int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath) {
+  //  db.verbose = true;
+
   vector<db::Stream> streams = mediafile.streams().get().all();
 
   org::esb::io::File f(mediafile.filename);
@@ -46,20 +51,29 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
     }
   }
 
-  db::MediaFile outfile(db);
-  outfile.filename = f.getFileName();
-  outfile.path = outpath;
-  outfile.parent = fileid;
+  f.changeExtension(profile.formatext);
+
+
+  db::Job job(mediafile.getDatabase());
+  job.created = 0;
+  job.begintime = -1;
+  job.endtime = -1;
+  job.starttime=mediafile.starttime;
+  job.duration=mediafile.duration;
+  job.status="queued";
+  job.update();
+
+  db::MediaFile outfile(mediafile.getDatabase());
+  std::string filename=job.id;
+  filename+="#";
+  filename+=f.getFileName();
+  outfile.filename = filename;
+  outfile.path = outpath+"/"+profile.name;
+  outfile.parent = mediafile.id.value();
   outfile.containertype = ofmt->name;
   outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
-
-  db::Job job(db);
-  job.begintime = -1;
-  job.endtime = -1;
-
-  job.update();
 
   /*
    * setting time data twice, in case of a bug in litesql
@@ -79,8 +93,8 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
   vector<db::Stream>::iterator it = streams.begin();
   int a = 0;
   for (; it != streams.end(); it++, a++) {
-//    if((*it).streamtype != CODEC_TYPE_VIDEO&&(*it).streamtype != CODEC_TYPE_AUDIO)continue;
-    db::Stream s(db);
+    if((*it).streamtype != CODEC_TYPE_VIDEO&&(*it).streamtype != CODEC_TYPE_AUDIO)continue;
+    db::Stream s(mediafile.getDatabase());
 
     s.streamindex = a;
     s.streamtype = (*it).streamtype;
@@ -129,7 +143,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
       org::esb::hive::CodecFactory::setCodecOptions(enc, profile.aextra);
       enc->open();
       s.channels=profile.achannels.value();
-      s.samplefmt = (int) enc->getSampleFormat();
+      s.samplefmt = 1;//(int) enc->getSampleFormat();
       int flags = enc->getFlags();
       if (ofmt->flags & AVFMT_GLOBALHEADER)
         flags |= CODEC_FLAG_GLOBAL_HEADER;
@@ -139,7 +153,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
     }
     s.update();
     s.mediafile().link(outfile);
-    db::JobDetail job_detail(db);
+    db::JobDetail job_detail(mediafile.getDatabase());
     job_detail.update();
     job.jobdetails().link(job_detail);
     job_detail.inputstream().link((*it));
@@ -428,7 +442,21 @@ namespace org {
       }
 
       void JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::vector<db::Filter> filter_vector, std::string outpath) {
-         jobcreator(infile.id, profile.id, outpath);
+
+        if(filter_vector.size()>0){
+          for(int a=0;a<filter_vector.size();a++){
+            db::Filter filter=filter_vector[a];
+//            filter.getDatabase().verbose = true;
+            if(filter.filterid=="resize"){
+              profile.vwidth=atoi(filter.parameter().get(db::FilterParameter::Fkey=="width").one().fval.value().c_str());
+              profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one().fval.value().c_str());
+            }
+            if(filter.filterid=="deinterlace"){
+              //profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one());
+            }
+          }
+        }
+         jobcreator(infile, profile, outpath);
       }
     }
   }

@@ -45,6 +45,8 @@ namespace org {
         LOGDEBUG("PreviewPanel::PreviewPanel()" << this);
         setTitle("Preview");
         setLayout(new Wt::WDefaultLayout());
+        setAutoScrollBars(true);
+
         _video_stream_index = 0;
         _video_preview_frame = 0;
         _scale_factor = 75;
@@ -53,22 +55,25 @@ namespace org {
         _buttonSignalMap->mapped.connect(SLOT(this, PreviewPanel::controllerButtonClicked));
 
         Wt::Ext::ToolBar *toolbar = new Wt::Ext::ToolBar();
-        setBottomToolBar(toolbar);
+        setTopToolBar(toolbar);
 
 
 
         //toolbar->add(new Wt::Ext::Button("test"));
-        _buttons["prev10"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button("prev 10"));
-        _buttons["prev"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button("prev"));
-        _buttons["next"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button("next"));
-        _buttons["next10"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button("next 10"));
+        _buttons["prev10"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button(""));
+        _buttons["prev"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button(""));
+        _buttons["next"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button(""));
+        _buttons["next10"] = Ptr<Wt::Ext::Button > (new Wt::Ext::Button(""));
 
         toolbar->add(_buttons["prev10"].get());
         toolbar->add(_buttons["prev"].get());
         toolbar->add(_buttons["next"].get());
         toolbar->add(_buttons["next10"].get());
 
-
+        _buttons["next"]->setIcon("icons/preview-next.png");
+        _buttons["prev"]->setIcon("icons/preview-prev.png");
+        _buttons["next10"]->setIcon("icons/preview-next-10.png");
+        _buttons["prev10"]->setIcon("icons/preview-prev-10.png");
 
         _scale_combo = new Wt::Ext::ComboBox();
         _scale_combo->addItem("150%");

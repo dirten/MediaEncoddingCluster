@@ -53,6 +53,7 @@ namespace org {
                 void setContent(Wt::WWidget * w);
                 Wt::Ext::Panel * main_panel;
                 Wt::Ext::Panel * info_panel;
+                Wt::Ext::Panel * object_panel;
                 Wt::Ext::Container *viewPort;
                 Wt::WBorderLayout *layout;
 //                Wt::Ext::Dialog * cwd;

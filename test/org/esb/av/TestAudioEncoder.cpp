@@ -63,7 +63,7 @@ int main(int argc, char** argv){
   int c = fis.getStreamCount();
   int stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_AUDIO) {
+    if (fis.getAVStream(a)->codec->codec_type == CODEC_TYPE_AUDIO) {
       stream = a;
       break;
     }
@@ -80,8 +80,8 @@ int main(int argc, char** argv){
   Encoder enc (CODEC_ID_MP2);
   enc.setChannels(2);
   enc.setBitRate(128000);
-  enc.setSampleRate(dec.getSampleRate());
-//  enc.setSampleRate(44100);
+//  enc.setSampleRate(dec.getSampleRate());
+  enc.setSampleRate(44100);
   enc.setSampleFormat(dec.getSampleFormat());
 //  enc.setFlag(CODEC_FLAG_GLOBAL_HEADER);
 //  enc.setPixelFormat(PIX_FMT_YUV420P);
@@ -101,6 +101,8 @@ int main(int argc, char** argv){
     if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == stream) {
       packetlist.push_back(boost::shared_ptr<org::esb::av::Packet>(p));
       i++;
+    }else{
+      delete p;
     }
   }
   decode(dec, enc, conv, packetlist);
@@ -114,6 +116,7 @@ void decode(Decoder & dec,Encoder & enc,FrameConverter& conv, std::list<boost::s
     Frame * frame=dec.decode2(*(*it));
     Frame * f2=convert(conv,frame);
     encode(enc, f2);
+    delete f2;
   }
 }
 

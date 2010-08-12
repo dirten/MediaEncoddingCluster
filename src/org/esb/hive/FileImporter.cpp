@@ -87,6 +87,7 @@ int import(org::esb::io::File file) {
   mediafile.streamcount = fis.getStreamCount();
   mediafile.containertype = fis.getFormatContext()->iformat->name;
   mediafile.duration = (double) fis.getFormatContext()->duration;
+  mediafile.starttime = (double) fis.getFormatContext()->start_time;
   mediafile.bitrate = fis.getFormatContext()->bit_rate;
   mediafile.update();
 

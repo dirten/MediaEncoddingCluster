@@ -2,11 +2,13 @@
 #define ORG_ESB_HIVE_JOBUTIL_H
 
 #include <string>
-int jobcreator(int fileid, int profileid, std::string outpath);
-int jobcreator(int argc, char*argv[]);
-
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
+
+int jobcreator(int fileid, int profileid, std::string outpath);
+int jobcreator(db::MediaFile, db::Profile, std::string outpath);
+int jobcreator(int argc, char*argv[]);
+
 namespace org {
   namespace esb {
     namespace hive {

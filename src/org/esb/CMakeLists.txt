@@ -288,7 +288,9 @@ add_library (web
     web/project/InputFilePanel.cpp
     web/ColumnConfig.cpp
     web/Projects.cpp
+    web/TreeMainMenu.cpp
     web/ProfileChooser.cpp
+    web/JobTableModel.cpp
     web/project/ProfilePanel.cpp
     web/project/FilterPanel.cpp
     web/project/FilterChooser.cpp

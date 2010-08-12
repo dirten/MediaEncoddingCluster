@@ -19,15 +19,14 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   Wt::Ext::MenuItem *item;
   Wt::Ext::Button * button;
 
-  menu = new Wt::Ext::Menu();
-
+/*  menu = new Wt::Ext::Menu();
   item = menu->addItem("Preview...",parent,&org::esb::web::WebApp2::openPreview);
-  toolbar->addButton("Test", menu);
+  toolbar->addButton("Test", menu);*/
 
   menu = new Wt::Ext::Menu();
   
-  item = menu->addItem("All Projects...",parent,&org::esb::web::WebApp2::listProjects);
-  item = menu->addItem("Create New Encoding...",parent,&org::esb::web::WebApp2::createProject);
+  item = menu->addItem("icons/encoding-project-list-icon.png","All Projects...",parent,&org::esb::web::WebApp2::listProjects);
+  item = menu->addItem("icons/encoding-project-add-icon.png","Create New Encoding...",parent,&org::esb::web::WebApp2::createProject);
   toolbar->addButton("Projects", menu);
   
   

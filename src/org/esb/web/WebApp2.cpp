@@ -16,6 +16,7 @@
 #include <Wt/WOverlayLoadingIndicator>
 #include <Wt/Ext/Panel>
 
+#include <Wt/Ext/Splitter>
 //#include <Files.cpp>
 #include "Profiles.cpp"
 #include "Projects.h"
@@ -30,12 +31,15 @@
 
 
 #include "project/PreviewPanel.h"
+#include "JobTableModel.h"
+
+#include "TreeMainMenu.h"
 namespace org {
   namespace esb {
     namespace web {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) :
-        WApplication(env) {
+      WApplication(env) {
         if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
@@ -61,7 +65,7 @@ namespace org {
         layout->setContentsMargins(0, 0, 0, 0);
         viewPort->setLayout(layout);
 
-        
+
         /*begin Head Panel*/
         /*
         Wt::Ext::Panel *north = new Wt::Ext::Panel();
@@ -80,10 +84,13 @@ namespace org {
         layout->addWidget(menu, Wt::WBorderLayout::North);
         /*end Menu Panel*/
 
+
+
         /*begin Main Panel*/
         main_panel = new Wt::Ext::Panel();
         Wt::WFitLayout * fit = new Wt::WFitLayout();
         main_panel->setLayout(fit);
+
         //        main_panel->setBorder(true);
         layout->addWidget(main_panel, Wt::WBorderLayout::Center);
         /*end Main Panel*/
@@ -95,8 +102,8 @@ namespace org {
         //Wt::WFitLayout * info_fit = new Wt::WFitLayout();
 
         info_panel->setLayout(info_layout);
-        info_panel->setCollapsible(true);
-        info_panel->setAnimate(true);
+        //        info_panel->setCollapsible(true);
+        //        info_panel->setAnimate(true);
 
         //        Wt::Ext::Panel *p=new Wt::Ext::Panel();
         //        p->setTitle("File Details");
@@ -118,17 +125,26 @@ namespace org {
         layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
 
+        //        TreeMainMenu * mainmenu=new TreeMainMenu(this);
+        //        mainmenu->resize(200, Wt::WLength());
+        //        layout->addWidget(mainmenu, Wt::WBorderLayout::West);
+
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
         footer->setBorder(false);
         Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
         head->setStyleClass("north");
+        footer->setResizable(true);
         footer->setLayout(new Wt::WFitLayout());
         footer->layout()->addWidget(head);
         footer->resize(Wt::WLength(), 35);
-        layout->addWidget(footer, Wt::WBorderLayout::South);
+        //layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
-
+        object_panel = new Wt::Ext::Panel();
+        object_panel->setResizable(true);
+        object_panel->setLayout(new Wt::WFitLayout());
+        object_panel->resize(Wt::WLength(), 300);
+        layout->addWidget(object_panel, Wt::WBorderLayout::South);
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
         useStyleSheet("ext/resources/css/xtheme-gray.css");
 
@@ -140,11 +156,11 @@ namespace org {
         _fileSignalMap->mapped.connect(SLOT(this, WebApp2::fileSelected));
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
-        */
+         */
       }
 
-      void WebApp2::openPreview(){
-        Wt::Ext::Dialog *dil=new Wt::Ext::Dialog();
+      void WebApp2::openPreview() {
+        Wt::Ext::Dialog *dil = new Wt::Ext::Dialog();
         dil->contents()->addWidget(new PreviewPanel());
 
         dil->addButton(new Wt::Ext::Button("Cancel"));
@@ -154,76 +170,80 @@ namespace org {
 
         dil->exec();
         delete dil;
-        
+
       }
 
       void WebApp2::listProjects() {
         Projects * p = new Projects();
         setContent(p);
       }
+
       void WebApp2::createProject() {
         Projects * p = new Projects();
         setContent(p);
         p->createProject();
 
       }
+
       void WebApp2::listAllFiles() {
         list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
-        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id, "Id", 20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path, "Path", 200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename, "Filename", 300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filesize, "Size", 40));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Duration, "Duration", 40));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype, "Type", 40));
+        DbTable * table = new DbTable(columnConfigs, litesql::Expr());
         setContent(table);
 
-/*
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));
-        tab->setColumnWidth(0, 10);
-        tab->setColumnWidth(2, 10);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 20);
-        std::string t = "double click to edit Meta information";
-        tab->setToolTip(t);
-        //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
-        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        info_panel->expand();*/
+        /*
+                SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));
+                tab->setColumnWidth(0, 10);
+                tab->setColumnWidth(2, 10);
+                tab->setColumnWidth(3, 20);
+                tab->setColumnWidth(4, 20);
+                std::string t = "double click to edit Meta information";
+                tab->setToolTip(t);
+                //_fileSignalMap->mapConnect(tab->doubleClicked, tab);
+                _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+                info_panel->expand();*/
 
       }
 
       void WebApp2::listImportedFiles() {
         list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
-        DbTable * table= new DbTable(columnConfigs, db::MediaFile::Parent==0);
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id, "Id", 20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path, "Path", 200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename, "Filename", 300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype, "Type", 40));
+        DbTable * table = new DbTable(columnConfigs, db::MediaFile::Parent == 0);
         setContent(table);
-/*
-        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size , concat(round(duration/1000000),' sec.') as duration from files where parent=0"));
-        tab->setColumnWidth(0, 10);
-        tab->setColumnWidth(2, 10);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 20);
-        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);*/
+        /*
+                SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size , concat(round(duration/1000000),' sec.') as duration from files where parent=0"));
+                tab->setColumnWidth(0, 10);
+                tab->setColumnWidth(2, 10);
+                tab->setColumnWidth(3, 20);
+                tab->setColumnWidth(4, 20);
+                _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+                setContent(tab);*/
       }
 
       void WebApp2::listEncodedFiles() {
         list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id,"Id" ,20));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path,"Path" ,200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename,"Filename" ,300));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype,"Type" ,40));
-        DbTable* table= new DbTable(columnConfigs, db::MediaFile::Parent>0);
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id, "Id", 20));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path, "Path", 200));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename, "Filename", 300));
+        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype, "Type", 40));
+        DbTable* table = new DbTable(columnConfigs, db::MediaFile::Parent > 0);
         setContent(table);
 
-/*        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files where parent>0"));
-        tab->setColumnWidth(0, 10);
-        tab->setColumnWidth(2, 10);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 20);
-        _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);*/
+        /*        SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files where parent>0"));
+                tab->setColumnWidth(0, 10);
+                tab->setColumnWidth(2, 10);
+                tab->setColumnWidth(3, 20);
+                tab->setColumnWidth(4, 20);
+                _fileSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+                setContent(tab);*/
       }
 
       void WebApp2::listAllEncodings() {
@@ -231,28 +251,68 @@ namespace org {
         //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(max((end_ts-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
         //        SqlTable * tab = new SqlTable(std::string("select outfiles.filename,ifnull(round(min(((select max(end_ts) from process_units pinner where pinner.target_stream=outstreams.id)-instreams.start_time)*instreams.time_base_num/instreams.time_base_den)/(infiles.duration/1000000),3)*100,0) as progress,ifnull(min(send),0) as start_time,ifnull(sum(timestampdiff(SECOND,send,process_units.complete)),0)\"cpu-time\" from jobs, files infiles, files outfiles, job_details, streams instreams, streams outstreams left join process_units on(process_units.target_stream=outstreams.id) where inputfile=infiles.id and outputfile=outfiles.id and jobs.id=job_details.job_id and instream=instreams.id and outstream=outstreams.id group by outfiles.id"));
         //SELECT filename ,min(round(((last_pts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100)), begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id
-/*
-        SqlTable
-            * tab =
-                new SqlTable(
-                    std::string(
-                        "SELECT filename ,if(min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
-        tab->setColumnWidth(1, 10);
-        tab->setColumnWidth(2, 20);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 10);
-        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);*/
-        info_panel->collapse();
-	
-	list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::Job::Id,"Id" ,200));
-        columnConfigs.push_back(ColumnConfig(db::Job::Begintime,"BeginTime" ,200));
-        columnConfigs.push_back(ColumnConfig(db::Job::Endtime,"EndTime" ,200));
-        columnConfigs.push_back(ColumnConfig(db::Job::Progress,"Progress" ,200));
-        DbTable * table= new DbTable(columnConfigs,litesql::Expr());
-        setContent(table);
-	
+        /*
+                SqlTable
+         * tab =
+                        new SqlTable(
+                            std::string(
+                                "SELECT filename ,if(min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))<0,0,min(round(((last_dts-(((start_time/time_base_den)*time_base_num)*1000000))/files.duration)*100))) as progress, begin FROM files, jobs, job_details, streams where files.id=jobs.outputfile and jobs.id=job_details.job_id and job_details.instream=streams.id group by files.id"));
+                tab->setColumnWidth(1, 10);
+                tab->setColumnWidth(2, 20);
+                tab->setColumnWidth(3, 20);
+                tab->setColumnWidth(4, 10);
+                _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+                setContent(tab);*/
+        /*
+                list<ColumnConfig> columnConfigs;
+                columnConfigs.push_back(ColumnConfig(db::Job::Id,"Id" ,200));
+                columnConfigs.push_back(ColumnConfig(db::Job::Begintime,"BeginTime" ,200));
+                columnConfigs.push_back(ColumnConfig(db::Job::Endtime,"EndTime" ,200));
+                columnConfigs.push_back(ColumnConfig(db::Job::Progress,"Progress" ,200));
+                DbTable * table= new DbTable(columnConfigs,litesql::Expr());
+         */
+
+        Wt::Ext::TableView *view = new Wt::Ext::TableView();
+
+        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
+        view->setModel(new JobTableModel(jobs));
+        view->setAlternatingRowColors(true);
+        view->resizeColumnsToContents(true);
+        view->setHighlightMouseOver(true);
+        view->setSelectionBehavior(Wt::SelectRows);
+        view->setSelectionMode(Wt::SingleSelection);
+        view->setColumnWidth(2,30);
+        view->setColumnWidth(3,30);
+        view->setColumnWidth(4,30);
+        view->setColumnWidth(5,25);
+        view->setColumnWidth(6,15);
+        
+        std::string renderer= "function change(val) {"
+                "if (val > 0){"
+                "return '<span style=\"color:green;\">' + val + '</span>';"
+                "} else if(val < 0) {"
+                "return '<span style=\"color:red;\">' + val + '</span>';"
+                "}"
+                "return val;"
+                "}";
+        view->setRenderer(5, renderer);
+        renderer= "function change(val) {"
+                "if (val == \"running\"){"
+                "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
+                "} else if(val == \"failed\") {"
+                "return '<img src=\"/icons/remove-icon.png\"/>';"
+                "} else if(val == \"exported\") {"
+                "return '<img src=\"/icons/accept-icon.png\"/>';"
+                "} else if(val == \"queued\") {"
+                "return '<img src=\"/icons/queued-icon.png\"/>';"
+                "}"
+                "return val;"
+                "}";
+        view->setRenderer(6, renderer);
+       
+        setContent(view);
+
       }
 
       void WebApp2::listPendingEncodings() {
@@ -267,7 +327,7 @@ namespace org {
 
       void WebApp2::listActiveEncodings() {
         SqlTable * tab = new SqlTable(std::string(
-            "SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) > 0 and round(count(complete)/count(*)*100,2) < 100 order by 2,f.id DESC"));
+                "SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) > 0 and round(count(complete)/count(*)*100,2) < 100 order by 2,f.id DESC"));
         tab->setColumnWidth(1, 10);
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
@@ -324,7 +384,7 @@ namespace org {
 
       void WebApp2::watchfolderCreated() {
         listAllWatchfolder();
-//        delete cwd;
+        //        delete cwd;
       }
 
       void WebApp2::editSystemConfiguration() {
@@ -337,12 +397,12 @@ namespace org {
           /**
            * retriving selected file from grid
            */
-          std::string idstr = boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0], 0));
+          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
           /**
            * remove old widgets from the info_panel
            */
           int c = info_panel->layout()->count();
-          LOGINFO("InfoPanel have "<<c<<" widgets");
+          LOGINFO("InfoPanel have " << c << " widgets");
           for (int a = 0; a < c; a++) {
             Wt::WLayoutItem * item = info_panel->layout()->itemAt(0);
             info_panel->layout()->removeItem(item);
@@ -358,7 +418,7 @@ namespace org {
           sql += StringUtil::toString(atoi(idstr.c_str()));
           Statement st = con.createStatement(sql.c_str());
           ResultSet rs = st.executeQuery();
-          while(rs.next()){
+          while (rs.next()) {
             info_panel->layout()->addWidget(new StreamInfo(&rs));
           }
         }
@@ -367,7 +427,7 @@ namespace org {
       void WebApp2::jobSelected(SqlTable * tab) {
         //        logdebug("Job Table clicked:");
         if (tab->selectedRows().size() > 0) {
-          std::string idstr = boost::any_cast<string>(tab->model()->data(tab->selectedRows()[0], 0));
+          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
           //          info->setData(atoi(idstr.c_str()));
           //          pSelector->setFileId(atoi(idstr.c_str()));
           //          logdebug("jobSelected" << idstr);

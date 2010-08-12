@@ -37,6 +37,7 @@ namespace org {
       namespace job {
 		
         void ProcessUnitController::onMessage(org::esb::signal::Message & msg) {
+          LOGDEBUG("Message received:"<<msg.getProperty("processunitcontroller"));
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");
             boost::thread t(boost::bind(&ProcessUnitController::start, this));
@@ -106,6 +107,7 @@ namespace org {
         void ProcessUnitController::processJob(db::Job job) {
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
           job.begintime = 0;
+          job.status="running";
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
             job.update();
@@ -204,6 +206,8 @@ namespace org {
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;
           dbunit.targetstream = u->_target_stream;
+          dbunit.timebasenum=u->_input_packets.front()->getTimeBase().num;
+          dbunit.timebaseden=u->_input_packets.front()->getTimeBase().den;
           dbunit.startts = (double) u->_input_packets.front()->getDts();
           dbunit.endts = (double) u->_input_packets.back()->getDts();
           dbunit.framecount = (int) u->_input_packets.size();
@@ -229,6 +233,8 @@ namespace org {
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;
           dbunit.targetstream = u->_target_stream;
+          dbunit.timebasenum=u->_input_packets.front()->getTimeBase().num;
+          dbunit.timebaseden=u->_input_packets.front()->getTimeBase().den;
           dbunit.startts = (double) u->_input_packets.front()->getDts();
           dbunit.endts = (double) u->_input_packets.back()->getDts();
           dbunit.framecount = (int) u->_input_packets.size();
@@ -273,8 +279,23 @@ namespace org {
             dbunit.update();
 
             /** calculate current progress from the Job*/
-            current_job->progress=(int)dbunit.endts;
-            current_job->update();
+            if(unit->getOutputPacketList().size()>0){
+              AVRational ar_target;
+              ar_target.num=1;
+              ar_target.den=1000000;
+              AVRational ar_source;
+              ar_source.num=dbunit.timebasenum;
+              ar_source.den=dbunit.timebaseden;
+              int64_t lastdb=dbunit.endts.value();
+              int64_t last=unit->getOutputPacketList().back()->getDts();
+
+              int64_t ts=av_rescale_q(lastdb, ar_source, ar_target);
+              int64_t starttime=current_job->starttime.value();
+              int64_t duration=current_job->duration.value();
+              int progress=(ts-starttime)*100/duration;
+              current_job->progress=progress;
+              current_job->update();              
+            }
 
 //	    DatabaseService::thread_end();
           } catch (litesql::NotFound ex) {

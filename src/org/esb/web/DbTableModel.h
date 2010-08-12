@@ -16,8 +16,8 @@ namespace org{
       public:
         DbTableModel( list<ColumnConfig> & cc,const litesql::Expr & expr=litesql::Expr(),Wt::WContainerWidget* parent=0);
         DbTableModel( list<ColumnConfig> & cc,const std::string & sql=std::string(),Wt::WContainerWidget* parent=0);
-            void clear();
-            void load();
+        void clear();
+        void load();
       private:
         db::HiveDb _dbCon;
         

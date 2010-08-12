@@ -16,8 +16,8 @@ namespace org{
         setSelectionMode(Wt::SingleSelection);
         std::list<ColumnConfig>::iterator confit=cc.begin();
         for(int a=0;confit!=cc.end();confit++, a++){
-          enableColumnHiding(a, true);
-          setColumnSortable(a, true);
+//          enableColumnHiding(a, true);
+//          setColumnSortable(a, true);
           setColumnWidth(a,(*confit).getWidth());
         }
         _clickCount=0;
@@ -40,8 +40,8 @@ namespace org{
         setSelectionMode(Wt::SingleSelection);
         std::list<ColumnConfig>::iterator confit=cc.begin();
         for(int a=0;confit!=cc.end();confit++, a++){
-          enableColumnHiding(a, true);
-          setColumnSortable(a, true);
+//          enableColumnHiding(a, true);
+//          setColumnSortable(a, true);
           setColumnWidth(a,(*confit).getWidth());
         }
         _clickCount=0;

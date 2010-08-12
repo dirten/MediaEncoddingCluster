@@ -65,7 +65,7 @@ bool Config::init(const std::string & filename) {
       vector<db::Config> configs=litesql::select<db::Config>(db).all();
       vector<db::Config>::iterator confit=configs.begin();
       for(;confit!=configs.end();confit++){
-        if ((*confit).configkey != "db.connection" &&
+        if ((*confit).configkey != "db.url" &&
             (*confit).configkey != "mode.client" &&
             (*confit).configkey != "mode.server" &&
             (*confit).configkey != "hive.base_path" &&

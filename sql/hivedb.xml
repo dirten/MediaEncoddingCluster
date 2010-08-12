@@ -43,6 +43,7 @@
         <field name="streamcount" type="integer"/>
         <field name="containertype" type="string"/>
         <field name="duration" type="double"/>
+        <field name="starttime" type="double"/>
         <field name="bitrate" type="integer"/>
         <field name="created" type="datetime"/>
         <field name="filetype" type="integer"/>
@@ -139,9 +140,12 @@
     </object>
 
     <object name="Job">
+        <field name="created" type="datetime" default="-1"/>
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
         <field name="status" type="string"/>
+        <field name="starttime" type="double"/>
+        <field name="duration" type="double"/>
         <field name="progress" type="integer"/>
     </object>
 
@@ -189,6 +193,8 @@
     <object name="ProcessUnit">
         <field name="sorcestream" type="integer"/>
         <field name="targetstream" type="integer"/>
+        <field name="timebasenum" type="integer"/>
+        <field name="timebaseden" type="integer"/>
         <field name="startts" type="double"/>
         <field name="endts" type="double"/>
         <field name="framecount" type="integer"/>

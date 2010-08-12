@@ -13,7 +13,7 @@ namespace org {
       namespace job {
 
         ProcessUnitBuilder::ProcessUnitBuilder(map<int, StreamData> & data):_map_data( data ){
-          map<int, StreamData>::iterator it=data.begin();
+          map<int, StreamData>::iterator it=_map_data.begin();
 	  for(;it!=data.end();it++){
 	    (*it).second.frameRateCompensateBase=0.0;
 	  } 

@@ -2,7 +2,7 @@
 #include "DbTable.h"
 #include "Wt/WFitLayout"
 #include "project/ProjectWizard.h"
-
+#include "Wt/Ext/MessageBox"
 namespace org {
   namespace esb {
     namespace web {
@@ -23,7 +23,9 @@ namespace org {
         _table->setTopToolBar(new Wt::Ext::ToolBar());
 
         edit_button=_table->topToolBar()->addButton("Edit selected Project");
+        edit_button->setIcon("icons/encoding-project-edit-icon.png");
         delete_button=_table->topToolBar()->addButton("Delete selected Project");
+        delete_button->setIcon("icons/encoding-project-remove-icon.png");
         edit_button->setEnabled(false);
         delete_button->setEnabled(false);
         edit_button->clicked.connect(SLOT(this, Projects::editProject));
@@ -44,6 +46,16 @@ namespace org {
 
       }
       void Projects::deleteProject(){
+        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("really delete this Project?", "really",Wt::Warning,Wt::Ok|Wt::Cancel);
+        box->show();
+        if(box->exec()==Wt::Ext::Dialog::Accepted){
+          int c = atoi(boost::any_cast<string > (_table->getModel()->data(_table->selectedRows()[0], 0)).c_str());
+          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+          db::Project project = litesql::select<db::Project > (db, db::Project::Id == c).one();
+          project.del();
+          _table->reload();
+        }
+
       }
       void Projects::projectSaved(){
         _table->reload();

@@ -30,17 +30,21 @@ using namespace org::esb::config;
  * 
  */
 
-int running = true;
+int running_video = true;
+int running_audio = true;
 
 void processUnitReader() {
   LOGDEBUG("starting void processUnitReader()");
-  while (running) {
+  while (running_video) {
     Message msg;
     msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
     Messenger::getInstance().sendRequest(msg);
     boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
 
     if (unit->_input_packets.size() == 0) {
+      LOGDEBUG("unit->_input_packets.size() == 0");
+      running_video=false;
+
       org::esb::lang::Thread::sleep2(500);
     } else {
       msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
@@ -52,12 +56,14 @@ void processUnitReader() {
 
 void audioProcessUnitReader() {
   LOGDEBUG("starting void audioprocessUnitReader()");
-  while (running) {
+  while (running_audio) {
     Message msg;
     msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
     Messenger::getInstance().sendRequest(msg);
     boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
     if (unit->_input_packets.size() == 0) {
+      LOGDEBUG("unit->_input_packets.size() == 0");
+      running_audio=false;
       org::esb::lang::Thread::sleep2(500);
     } else {
       msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
@@ -76,11 +82,11 @@ int main(int argc, char** argv) {
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
   Config::setProperty("db.url", host.c_str());
-  std::string tmp=MEC_SOURCE_DIR;
-  tmp+="/tmp";
+  std::string tmp = MEC_SOURCE_DIR;
+  tmp += "/tmp";
   org::esb::io::File f(tmp);
-  if(!f.exists())
-	  f.mkdir();
+  if (!f.exists())
+    f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
   {
@@ -107,13 +113,14 @@ int main(int argc, char** argv) {
 
 
 
-//    org::esb::lang::Thread::sleep2(5000);
+    org::esb::lang::Thread::sleep2(3000);
     boost::thread t1(processUnitReader);
     boost::thread t2(audioProcessUnitReader);
 
 
     org::esb::lang::Thread::sleep2(10000);
-    running = false;
+    running_video = false;
+    running_audio = false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
     org::esb::lang::Thread::sleep2(1000);
 

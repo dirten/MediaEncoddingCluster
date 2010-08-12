@@ -23,7 +23,7 @@ public:
 
   queue_sender() {
     mq = new message_queue
-      (open_or_create //open or create
+      (create_only //open or create
       , "message_queue" //name
       , 100 //max message number
       , 100 //max message size
@@ -33,7 +33,7 @@ public:
 
   void send() {
     for (int a = 4; a < 10; a++) {
-  //    mq->send(&a, sizeof (a), 0);
+      mq->send(&a, sizeof (a), 0);
     }
   }
 
@@ -65,7 +65,7 @@ public:
     try {
       mq->receive(&number, sizeof (number), recvd_size, prio);
     } catch (interprocess_exception &ex) {
-      LOGERROR(ex.get_native_error());
+      LOGERROR(ex.what());
     }
 
     LOGDEBUG("Received number:" << number);
@@ -80,6 +80,7 @@ private:
 };
 
 int main(int argc, char** argv) {
+  Log::open("");
   message_queue::remove("message_queue");
   queue_sender s;
   boost::thread sender_th(boost::bind(&queue_sender::send, &s));

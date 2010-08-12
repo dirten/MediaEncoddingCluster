@@ -72,10 +72,16 @@ namespace org {
               std::vector<db::Job>::iterator job_it=completed_jobs.begin();
               for(;job_it!=completed_jobs.end();job_it++){
                 db::MediaFile mfile=(*job_it).outputfile().get().one();
+                try{
                 FileExporter::exportFile(mfile);
+                (*job_it).status="exported";
+                }catch(boost::filesystem::filesystem_error & e){
+                  (*job_it).status="failed";
+                }
+                (*job_it).update();
               }
             } catch (litesql::NotFound ex) {
-              LOGDEBUG("now new File to export Found");
+              LOGDEBUG("no new File to export Found");
               org::esb::lang::Thread::sleep2(1000);
             }
           }

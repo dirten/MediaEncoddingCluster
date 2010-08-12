@@ -167,19 +167,8 @@ namespace org {
             LOGDEBUG("new file found:" << file.getPath());
             const char * filename = 0;
             int fileid = import(file);
-            if (false && fileid > 0 && p > 0) {
-              std::string file = org::esb::util::Decimal(fileid).toString();
-              std::string profile = org::esb::util::Decimal(p).toString();
-              char * jobarg[] = {
-                const_cast<char*> (""),
-                const_cast<char*> (""),
-                const_cast<char*> (file.c_str()),
-                const_cast<char*> (profile.c_str()),
-                const_cast<char*> (outdir.c_str())
-              };
-              std::cout << "FileId:" << jobarg[2] << ":" << std::endl;
-              std::cout << "ProfileId:" << jobarg[3] << ":" << std::endl;
-              jobcreator(4, jobarg);
+            if (fileid > 0 && p > 0) {
+              jobcreator(fileid,p, outdir);
             }
           }
 

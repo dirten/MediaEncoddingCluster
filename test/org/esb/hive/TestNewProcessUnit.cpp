@@ -43,7 +43,8 @@ struct StreamData {
   FrameConverter * conv;
 };
 CodecID video_codec_id = CODEC_ID_THEORA;
-CodecID audio_codec_id = CODEC_ID_VORBIS;
+//CodecID audio_codec_id = CODEC_ID_VORBIS;
+CodecID audio_codec_id = CODEC_ID_MP2;
 
 /**
  *
@@ -63,7 +64,7 @@ void build_process_units(int argc, char** argv) {
     src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.mp4");
+    trg.append("/test.mkv");
   } else {
     src = argv[1];
     trg = argv[2];
@@ -87,11 +88,12 @@ void build_process_units(int argc, char** argv) {
   int s = 0;
 
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO /*&&
-        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO*/) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
+        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
     _sdata[i].dec = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(i)));
     _sdata[i].enc = boost::shared_ptr<Encoder > (new Encoder());
-//    stream_data[i].codec_type = fis.getStreamInfo(i)->getCodecType();
+    stream_data[i].decoder=_sdata[i].dec;
+    stream_data[i].encoder=_sdata[i].enc;
 //    stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
 
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
@@ -134,7 +136,7 @@ void build_process_units(int argc, char** argv) {
 
   //  if (!pos.init())goto cleanup;
   fos.dumpFormat();
-  for (int a = 0; a < 500; a++) {
+  for (int a = 0; a < 5000; a++) {
     Packet * p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0

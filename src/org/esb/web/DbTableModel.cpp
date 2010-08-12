@@ -21,6 +21,7 @@ namespace org{
         if (!setHeaderData(a, (*confit).getHeader())) {
           std::cout << "Failed" << std::endl;
         }
+         LOGDEBUG("FieldType:"<<(*confit).getFieldType().type());
       }
       table_list.unique();
       std::list<std::string>::iterator it=table_list.begin();

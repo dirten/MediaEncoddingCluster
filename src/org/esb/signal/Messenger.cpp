@@ -7,10 +7,10 @@ namespace org {
   namespace esb {
 
     namespace signal {
-	  boost::mutex Messenger::messenger_mutex;
-	  boost::mutex Messenger::request_mutex;
+      boost::mutex Messenger::messenger_mutex;
+      boost::mutex Messenger::request_mutex;
       std::map<std::string, Messenger*> Messenger::messenger;
-      std::map<std::string, std::list<MessageListener*> > Messenger::listener;
+//      std::map<std::string, std::list<MessageListener*> > Messenger::listener;
       //std::string Messenger::DEFAULT_NAME="global";
       //std::map<std::string, std::list<int> > Messenger::listener;
 
@@ -22,7 +22,7 @@ namespace org {
         //  free();
       }
 
-      void Messenger::freeListener( std::string name) {
+      void Messenger::freeListener(std::string name) {
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
           delete (*l);
@@ -34,16 +34,17 @@ namespace org {
         for (; it != messenger.end(); it++) {
           LOGDEBUG("Delete Messenger:" << (*it).first);
           delete (*it).second;
+          (*it).second=NULL;
         }
       }
 
       Messenger & Messenger::getInstance(std::string name) {
-		  boost::mutex::scoped_lock scoped_lock(messenger_mutex);
+        boost::mutex::scoped_lock scoped_lock(messenger_mutex);
         Messenger * mess = messenger[name];
-		if (mess == NULL){
-		  mess = new Messenger(name);
-		  messenger[name] = mess;
-	    }
+        if (mess == NULL) {
+          mess = new Messenger(name);
+          messenger[name] = mess;
+        }
         return *mess;
       }
 
@@ -56,7 +57,7 @@ namespace org {
       }
 
       void Messenger::sendMessage(Message & msg, std::string name) {
-		boost::mutex::scoped_lock scoped_lock(request_mutex);
+        boost::mutex::scoped_lock scoped_lock(request_mutex);
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
           boost::thread t(boost::bind(&MessageListener::onMessage, (*l), msg));
@@ -65,7 +66,7 @@ namespace org {
       }
 
       void Messenger::sendRequest(Message & msg, std::string name) {
-		boost::mutex::scoped_lock scoped_lock(request_mutex);
+        boost::mutex::scoped_lock scoped_lock(request_mutex);
         std::list<MessageListener*>::iterator l = (listener[name]).begin();
         for (; l != listener[name].end(); l++) {
           (*l)->onMessage(msg);

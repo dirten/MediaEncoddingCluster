@@ -99,8 +99,8 @@ int main(int argc, char * argv[]) {
   std::string logconfigpath = sb;
   logconfigpath.append("/res");
   std::cout << logconfigpath << std::endl;
-  Log::open(logconfigpath);
-  //Log::open("");
+  //Log::open(logconfigpath);
+  Log::open("");
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -136,11 +136,17 @@ int main(int argc, char * argv[]) {
             ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
             ;
     po::options_description ser("Server options");
-    ser.add_options()("daemon,d", "start the Hive as Daemon Process")("run,r", "start the Hive as Console Process")
+    ser.add_options()
+            ("daemon,d", "start the Hive as Daemon Process")
+            ("run,r", "start the Hive as Console Process")
+            ("db",po::value<std::string > ()->default_value("host=localhost;database=hive;user=root;port=3306"), "connect to the db")
             ;
 
     po::options_description cli("Client options");
-    cli.add_options()("client,i", "start the Hive Client")("host,h", po::value<std::string > ()->default_value("localhost"), "Host to connect")("port,p", po::value<int>()->default_value(20200), "Port to connect");
+    cli.add_options()
+            ("client,i", "start the Hive Client")
+            ("host,h", po::value<std::string > ()->default_value("localhost"), "Host to connect")
+            ("port,p", po::value<int>()->default_value(20200), "Port to connect");
 
     po::options_description all("all");
     all. add(gen). add(ser). add(cli).add(inst);
@@ -156,7 +162,7 @@ int main(int argc, char * argv[]) {
     av_register_all();
     avcodec_init();
     avcodec_register_all();
-    config::Config::setProperty("db.url", "host=localhost;database=hive;user=root;port=3306");
+    config::Config::setProperty("db.url", vm["db"].as<std::string>().c_str());
 
     if (vm.count("reset-to-factory-settings")) {
       org::esb::hive::DatabaseService::start(base_path);
@@ -350,14 +356,14 @@ public:
        * @TODO: this is a memleak here, the created objects must be deleted
        *
        */
-      org::esb::hive::HiveClient *client = new org::esb::hive::HiveClient(host, port);
-      Messenger::getInstance().addMessageListener(*client);
+      _client = Ptr<org::esb::hive::HiveClient>(new org::esb::hive::HiveClient(host, port));
+      Messenger::getInstance().addMessageListener(*_client.get());
 
-      org::esb::hive::HiveClientAudio *clientaudio = new org::esb::hive::HiveClientAudio(host, port);
-      Messenger::getInstance().addMessageListener(*clientaudio);
+      _clientaudio=Ptr<org::esb::hive::HiveClientAudio>(new org::esb::hive::HiveClientAudio(host, port));
+      Messenger::getInstance().addMessageListener(*_clientaudio.get());
 
-      Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
-      Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
+      Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
+      Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
       having_server = true;
       /*
        org::esb::hive::HiveClient client(host, port);
@@ -369,17 +375,20 @@ public:
   void onNodeDown(Node & node) {
     LOGWARN("NodeDown:" << node.toString());
     if (node.getData("type") == "server") {
-      //      LOGWARN("ServerNode is Down freeing client:" << node.toString());
-      /*
-       Messenger::getInstance().sendRequest(Message().setProperty("hiveclient",
-       org::esb::hive::STOP));
-       Messenger::getInstance().sendRequest(Message().setProperty(
-       "hiveclientaudio", org::esb::hive::STOP));
-       Messenger::free();*/
+      LOGWARN("ServerNode is Down, let the client sleep!:" << node.toString());
+      
+       Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
+       Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
+       _client.reset();
+       _clientaudio.reset();
+       Messenger::free();
+       having_server=false;
     }
   }
 private:
   bool having_server;
+  Ptr<org::esb::hive::HiveClient> _client;
+  Ptr<org::esb::hive::HiveClientAudio> _clientaudio;
 };
 
 void client(int argc, char *argv[]) {
@@ -456,7 +465,7 @@ void start() {
 
   //  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
   Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
-      Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+  Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
   //  }

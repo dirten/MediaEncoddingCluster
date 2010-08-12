@@ -52,9 +52,11 @@ namespace org {
           if (msg.getProperty("hiveclientaudio") == "stop") {
           _toHalt = true;
           if (_running) {
-            LOGDEBUG("StopSignal Received, waiting for all work done!")
+            LOGDEBUG("StopSignal Received, waiting for all work done!");
+            _toHalt=true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
+            LOGDEBUG("stopping done!")
           }
         }
       }

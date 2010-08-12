@@ -1318,6 +1318,7 @@ const litesql::FieldType MediaFile::Filesize("filesize_","DOUBLE",table__);
 const litesql::FieldType MediaFile::Streamcount("streamcount_","INTEGER",table__);
 const litesql::FieldType MediaFile::Containertype("containertype_","TEXT",table__);
 const litesql::FieldType MediaFile::Duration("duration_","DOUBLE",table__);
+const litesql::FieldType MediaFile::Starttime("starttime_","DOUBLE",table__);
 const litesql::FieldType MediaFile::Bitrate("bitrate_","INTEGER",table__);
 const litesql::FieldType MediaFile::Created("created_","INTEGER",table__);
 const litesql::FieldType MediaFile::Filetype("filetype_","INTEGER",table__);
@@ -1335,6 +1336,7 @@ void MediaFile::defaults() {
     filesize = 0.0;
     streamcount = 0;
     duration = 0.0;
+    starttime = 0.0;
     bitrate = 0;
     created = 0;
     filetype = 0;
@@ -1344,38 +1346,40 @@ void MediaFile::defaults() {
     metagenre = 0;
 }
 MediaFile::MediaFile(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), filename(Filename), path(Path), filesize(Filesize), streamcount(Streamcount), containertype(Containertype), duration(Duration), bitrate(Bitrate), created(Created), filetype(Filetype), parent(Parent), metatitle(Metatitle), metaauthor(Metaauthor), metacopyright(Metacopyright), metacomment(Metacomment), metaalbum(Metaalbum), metayear(Metayear), metatrack(Metatrack), metagenre(Metagenre) {
+     : litesql::Persistent(db), id(Id), type(Type), filename(Filename), path(Path), filesize(Filesize), streamcount(Streamcount), containertype(Containertype), duration(Duration), starttime(Starttime), bitrate(Bitrate), created(Created), filetype(Filetype), parent(Parent), metatitle(Metatitle), metaauthor(Metaauthor), metacopyright(Metacopyright), metacomment(Metacomment), metaalbum(Metaalbum), metayear(Metayear), metatrack(Metatrack), metagenre(Metagenre) {
     defaults();
 }
 MediaFile::MediaFile(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), filename(Filename), path(Path), filesize(Filesize), streamcount(Streamcount), containertype(Containertype), duration(Duration), bitrate(Bitrate), created(Created), filetype(Filetype), parent(Parent), metatitle(Metatitle), metaauthor(Metaauthor), metacopyright(Metacopyright), metacomment(Metacomment), metaalbum(Metaalbum), metayear(Metayear), metatrack(Metatrack), metagenre(Metagenre) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), filename(Filename), path(Path), filesize(Filesize), streamcount(Streamcount), containertype(Containertype), duration(Duration), starttime(Starttime), bitrate(Bitrate), created(Created), filetype(Filetype), parent(Parent), metatitle(Metatitle), metaauthor(Metaauthor), metacopyright(Metacopyright), metacomment(Metacomment), metaalbum(Metaalbum), metayear(Metayear), metatrack(Metatrack), metagenre(Metagenre) {
     defaults();
-    size_t size = (rec.size() > 20) ? 20 : rec.size();
+    size_t size = (rec.size() > 21) ? 21 : rec.size();
     switch(size) {
-    case 20: metagenre = convert<const std::string&, int>(rec[19]);
+    case 21: metagenre = convert<const std::string&, int>(rec[20]);
         metagenre.setModified(false);
-    case 19: metatrack = convert<const std::string&, int>(rec[18]);
+    case 20: metatrack = convert<const std::string&, int>(rec[19]);
         metatrack.setModified(false);
-    case 18: metayear = convert<const std::string&, int>(rec[17]);
+    case 19: metayear = convert<const std::string&, int>(rec[18]);
         metayear.setModified(false);
-    case 17: metaalbum = convert<const std::string&, std::string>(rec[16]);
+    case 18: metaalbum = convert<const std::string&, std::string>(rec[17]);
         metaalbum.setModified(false);
-    case 16: metacomment = convert<const std::string&, std::string>(rec[15]);
+    case 17: metacomment = convert<const std::string&, std::string>(rec[16]);
         metacomment.setModified(false);
-    case 15: metacopyright = convert<const std::string&, std::string>(rec[14]);
+    case 16: metacopyright = convert<const std::string&, std::string>(rec[15]);
         metacopyright.setModified(false);
-    case 14: metaauthor = convert<const std::string&, std::string>(rec[13]);
+    case 15: metaauthor = convert<const std::string&, std::string>(rec[14]);
         metaauthor.setModified(false);
-    case 13: metatitle = convert<const std::string&, std::string>(rec[12]);
+    case 14: metatitle = convert<const std::string&, std::string>(rec[13]);
         metatitle.setModified(false);
-    case 12: parent = convert<const std::string&, int>(rec[11]);
+    case 13: parent = convert<const std::string&, int>(rec[12]);
         parent.setModified(false);
-    case 11: filetype = convert<const std::string&, int>(rec[10]);
+    case 12: filetype = convert<const std::string&, int>(rec[11]);
         filetype.setModified(false);
-    case 10: created = convert<const std::string&, litesql::DateTime>(rec[9]);
+    case 11: created = convert<const std::string&, litesql::DateTime>(rec[10]);
         created.setModified(false);
-    case 9: bitrate = convert<const std::string&, int>(rec[8]);
+    case 10: bitrate = convert<const std::string&, int>(rec[9]);
         bitrate.setModified(false);
+    case 9: starttime = convert<const std::string&, double>(rec[8]);
+        starttime.setModified(false);
     case 8: duration = convert<const std::string&, double>(rec[7]);
         duration.setModified(false);
     case 7: containertype = convert<const std::string&, std::string>(rec[6]);
@@ -1395,7 +1399,7 @@ MediaFile::MediaFile(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 MediaFile::MediaFile(const MediaFile& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), filename(obj.filename), path(obj.path), filesize(obj.filesize), streamcount(obj.streamcount), containertype(obj.containertype), duration(obj.duration), bitrate(obj.bitrate), created(obj.created), filetype(obj.filetype), parent(obj.parent), metatitle(obj.metatitle), metaauthor(obj.metaauthor), metacopyright(obj.metacopyright), metacomment(obj.metacomment), metaalbum(obj.metaalbum), metayear(obj.metayear), metatrack(obj.metatrack), metagenre(obj.metagenre) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), filename(obj.filename), path(obj.path), filesize(obj.filesize), streamcount(obj.streamcount), containertype(obj.containertype), duration(obj.duration), starttime(obj.starttime), bitrate(obj.bitrate), created(obj.created), filetype(obj.filetype), parent(obj.parent), metatitle(obj.metatitle), metaauthor(obj.metaauthor), metacopyright(obj.metacopyright), metacomment(obj.metacomment), metaalbum(obj.metaalbum), metayear(obj.metayear), metatrack(obj.metatrack), metagenre(obj.metagenre) {
 }
 const MediaFile& MediaFile::operator=(const MediaFile& obj) {
     if (this != &obj) {
@@ -1407,6 +1411,7 @@ const MediaFile& MediaFile::operator=(const MediaFile& obj) {
         streamcount = obj.streamcount;
         containertype = obj.containertype;
         duration = obj.duration;
+        starttime = obj.starttime;
         bitrate = obj.bitrate;
         created = obj.created;
         filetype = obj.filetype;
@@ -1466,6 +1471,9 @@ std::string MediaFile::insert(litesql::Record& tables, litesql::Records& fieldRe
     fields.push_back(duration.name());
     values.push_back(duration);
     duration.setModified(false);
+    fields.push_back(starttime.name());
+    values.push_back(starttime);
+    starttime.setModified(false);
     fields.push_back(bitrate.name());
     values.push_back(bitrate);
     bitrate.setModified(false);
@@ -1525,6 +1533,7 @@ void MediaFile::addUpdates(Updates& updates) {
     updateField(updates, table__, streamcount);
     updateField(updates, table__, containertype);
     updateField(updates, table__, duration);
+    updateField(updates, table__, starttime);
     updateField(updates, table__, bitrate);
     updateField(updates, table__, created);
     updateField(updates, table__, filetype);
@@ -1549,6 +1558,7 @@ void MediaFile::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Streamcount);
     ftypes.push_back(Containertype);
     ftypes.push_back(Duration);
+    ftypes.push_back(Starttime);
     ftypes.push_back(Bitrate);
     ftypes.push_back(Created);
     ftypes.push_back(Filetype);
@@ -1614,6 +1624,7 @@ std::auto_ptr<MediaFile> MediaFile::upcastCopy() {
     np->streamcount = streamcount;
     np->containertype = containertype;
     np->duration = duration;
+    np->starttime = starttime;
     np->bitrate = bitrate;
     np->created = created;
     np->filetype = filetype;
@@ -1639,6 +1650,7 @@ std::ostream & operator<<(std::ostream& os, MediaFile o) {
     os << o.streamcount.name() << " = " << o.streamcount << std::endl;
     os << o.containertype.name() << " = " << o.containertype << std::endl;
     os << o.duration.name() << " = " << o.duration << std::endl;
+    os << o.starttime.name() << " = " << o.starttime << std::endl;
     os << o.bitrate.name() << " = " << o.bitrate << std::endl;
     os << o.created.name() << " = " << o.created << std::endl;
     os << o.filetype.name() << " = " << o.filetype << std::endl;
@@ -2926,33 +2938,45 @@ const std::string Job::table__("Job_");
 const std::string Job::sequence__("Job_seq");
 const litesql::FieldType Job::Id("id_","INTEGER",table__);
 const litesql::FieldType Job::Type("type_","TEXT",table__);
+const litesql::FieldType Job::Created("created_","INTEGER",table__);
 const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
 const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
 const litesql::FieldType Job::Status("status_","TEXT",table__);
+const litesql::FieldType Job::Starttime("starttime_","DOUBLE",table__);
+const litesql::FieldType Job::Duration("duration_","DOUBLE",table__);
 const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
 void Job::defaults() {
     id = 0;
+    created = -1;
     begintime = -1;
     endtime = -1;
+    starttime = 0.0;
+    duration = 0.0;
     progress = 0;
 }
 Job::Job(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status), progress(Progress) {
+     : litesql::Persistent(db), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), starttime(Starttime), duration(Duration), progress(Progress) {
     defaults();
 }
 Job::Job(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), begintime(Begintime), endtime(Endtime), status(Status), progress(Progress) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), starttime(Starttime), duration(Duration), progress(Progress) {
     defaults();
-    size_t size = (rec.size() > 6) ? 6 : rec.size();
+    size_t size = (rec.size() > 9) ? 9 : rec.size();
     switch(size) {
-    case 6: progress = convert<const std::string&, int>(rec[5]);
+    case 9: progress = convert<const std::string&, int>(rec[8]);
         progress.setModified(false);
-    case 5: status = convert<const std::string&, std::string>(rec[4]);
+    case 8: duration = convert<const std::string&, double>(rec[7]);
+        duration.setModified(false);
+    case 7: starttime = convert<const std::string&, double>(rec[6]);
+        starttime.setModified(false);
+    case 6: status = convert<const std::string&, std::string>(rec[5]);
         status.setModified(false);
-    case 4: endtime = convert<const std::string&, litesql::DateTime>(rec[3]);
+    case 5: endtime = convert<const std::string&, litesql::DateTime>(rec[4]);
         endtime.setModified(false);
-    case 3: begintime = convert<const std::string&, litesql::DateTime>(rec[2]);
+    case 4: begintime = convert<const std::string&, litesql::DateTime>(rec[3]);
         begintime.setModified(false);
+    case 3: created = convert<const std::string&, litesql::DateTime>(rec[2]);
+        created.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
         type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
@@ -2960,15 +2984,18 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Job::Job(const Job& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), progress(obj.progress) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), starttime(obj.starttime), duration(obj.duration), progress(obj.progress) {
 }
 const Job& Job::operator=(const Job& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
+        created = obj.created;
         begintime = obj.begintime;
         endtime = obj.endtime;
         status = obj.status;
+        starttime = obj.starttime;
+        duration = obj.duration;
         progress = obj.progress;
     }
     litesql::Persistent::operator=(obj);
@@ -2993,6 +3020,9 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(type.name());
     values.push_back(type);
     type.setModified(false);
+    fields.push_back(created.name());
+    values.push_back(created);
+    created.setModified(false);
     fields.push_back(begintime.name());
     values.push_back(begintime);
     begintime.setModified(false);
@@ -3002,6 +3032,12 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(status.name());
     values.push_back(status);
     status.setModified(false);
+    fields.push_back(starttime.name());
+    values.push_back(starttime);
+    starttime.setModified(false);
+    fields.push_back(duration.name());
+    values.push_back(duration);
+    duration.setModified(false);
     fields.push_back(progress.name());
     values.push_back(progress);
     progress.setModified(false);
@@ -3022,9 +3058,12 @@ void Job::addUpdates(Updates& updates) {
     prepareUpdate(updates, table__);
     updateField(updates, table__, id);
     updateField(updates, table__, type);
+    updateField(updates, table__, created);
     updateField(updates, table__, begintime);
     updateField(updates, table__, endtime);
     updateField(updates, table__, status);
+    updateField(updates, table__, starttime);
+    updateField(updates, table__, duration);
     updateField(updates, table__, progress);
 }
 void Job::addIDUpdates(Updates& updates) {
@@ -3032,9 +3071,12 @@ void Job::addIDUpdates(Updates& updates) {
 void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
+    ftypes.push_back(Created);
     ftypes.push_back(Begintime);
     ftypes.push_back(Endtime);
     ftypes.push_back(Status);
+    ftypes.push_back(Starttime);
+    ftypes.push_back(Duration);
     ftypes.push_back(Progress);
 }
 void Job::delRecord() {
@@ -3081,9 +3123,12 @@ std::auto_ptr<Job> Job::upcastCopy() {
     Job* np = new Job(*this);
     np->id = id;
     np->type = type;
+    np->created = created;
     np->begintime = begintime;
     np->endtime = endtime;
     np->status = status;
+    np->starttime = starttime;
+    np->duration = duration;
     np->progress = progress;
     np->inDatabase = inDatabase;
     return auto_ptr<Job>(np);
@@ -3092,9 +3137,12 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << "-------------------------------------" << std::endl;
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
+    os << o.created.name() << " = " << o.created << std::endl;
     os << o.begintime.name() << " = " << o.begintime << std::endl;
     os << o.endtime.name() << " = " << o.endtime << std::endl;
     os << o.status.name() << " = " << o.status << std::endl;
+    os << o.starttime.name() << " = " << o.starttime << std::endl;
+    os << o.duration.name() << " = " << o.duration << std::endl;
     os << o.progress.name() << " = " << o.progress << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
@@ -3492,6 +3540,8 @@ const litesql::FieldType ProcessUnit::Id("id_","INTEGER",table__);
 const litesql::FieldType ProcessUnit::Type("type_","TEXT",table__);
 const litesql::FieldType ProcessUnit::Sorcestream("sorcestream_","INTEGER",table__);
 const litesql::FieldType ProcessUnit::Targetstream("targetstream_","INTEGER",table__);
+const litesql::FieldType ProcessUnit::Timebasenum("timebasenum_","INTEGER",table__);
+const litesql::FieldType ProcessUnit::Timebaseden("timebaseden_","INTEGER",table__);
 const litesql::FieldType ProcessUnit::Startts("startts_","DOUBLE",table__);
 const litesql::FieldType ProcessUnit::Endts("endts_","DOUBLE",table__);
 const litesql::FieldType ProcessUnit::Framecount("framecount_","INTEGER",table__);
@@ -3501,6 +3551,8 @@ void ProcessUnit::defaults() {
     id = 0;
     sorcestream = 0;
     targetstream = 0;
+    timebasenum = 0;
+    timebaseden = 0;
     startts = 0.0;
     endts = 0.0;
     framecount = 0;
@@ -3508,24 +3560,28 @@ void ProcessUnit::defaults() {
     recv = 0;
 }
 ProcessUnit::ProcessUnit(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv) {
+     : litesql::Persistent(db), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv) {
     defaults();
 }
 ProcessUnit::ProcessUnit(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), sorcestream(Sorcestream), targetstream(Targetstream), timebasenum(Timebasenum), timebaseden(Timebaseden), startts(Startts), endts(Endts), framecount(Framecount), send(Send), recv(Recv) {
     defaults();
-    size_t size = (rec.size() > 9) ? 9 : rec.size();
+    size_t size = (rec.size() > 11) ? 11 : rec.size();
     switch(size) {
-    case 9: recv = convert<const std::string&, litesql::DateTime>(rec[8]);
+    case 11: recv = convert<const std::string&, litesql::DateTime>(rec[10]);
         recv.setModified(false);
-    case 8: send = convert<const std::string&, litesql::DateTime>(rec[7]);
+    case 10: send = convert<const std::string&, litesql::DateTime>(rec[9]);
         send.setModified(false);
-    case 7: framecount = convert<const std::string&, int>(rec[6]);
+    case 9: framecount = convert<const std::string&, int>(rec[8]);
         framecount.setModified(false);
-    case 6: endts = convert<const std::string&, double>(rec[5]);
+    case 8: endts = convert<const std::string&, double>(rec[7]);
         endts.setModified(false);
-    case 5: startts = convert<const std::string&, double>(rec[4]);
+    case 7: startts = convert<const std::string&, double>(rec[6]);
         startts.setModified(false);
+    case 6: timebaseden = convert<const std::string&, int>(rec[5]);
+        timebaseden.setModified(false);
+    case 5: timebasenum = convert<const std::string&, int>(rec[4]);
+        timebasenum.setModified(false);
     case 4: targetstream = convert<const std::string&, int>(rec[3]);
         targetstream.setModified(false);
     case 3: sorcestream = convert<const std::string&, int>(rec[2]);
@@ -3537,7 +3593,7 @@ ProcessUnit::ProcessUnit(const litesql::Database& db, const litesql::Record& rec
     }
 }
 ProcessUnit::ProcessUnit(const ProcessUnit& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), sorcestream(obj.sorcestream), targetstream(obj.targetstream), startts(obj.startts), endts(obj.endts), framecount(obj.framecount), send(obj.send), recv(obj.recv) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), sorcestream(obj.sorcestream), targetstream(obj.targetstream), timebasenum(obj.timebasenum), timebaseden(obj.timebaseden), startts(obj.startts), endts(obj.endts), framecount(obj.framecount), send(obj.send), recv(obj.recv) {
 }
 const ProcessUnit& ProcessUnit::operator=(const ProcessUnit& obj) {
     if (this != &obj) {
@@ -3545,6 +3601,8 @@ const ProcessUnit& ProcessUnit::operator=(const ProcessUnit& obj) {
         type = obj.type;
         sorcestream = obj.sorcestream;
         targetstream = obj.targetstream;
+        timebasenum = obj.timebasenum;
+        timebaseden = obj.timebaseden;
         startts = obj.startts;
         endts = obj.endts;
         framecount = obj.framecount;
@@ -3570,6 +3628,12 @@ std::string ProcessUnit::insert(litesql::Record& tables, litesql::Records& field
     fields.push_back(targetstream.name());
     values.push_back(targetstream);
     targetstream.setModified(false);
+    fields.push_back(timebasenum.name());
+    values.push_back(timebasenum);
+    timebasenum.setModified(false);
+    fields.push_back(timebaseden.name());
+    values.push_back(timebaseden);
+    timebaseden.setModified(false);
     fields.push_back(startts.name());
     values.push_back(startts);
     startts.setModified(false);
@@ -3604,6 +3668,8 @@ void ProcessUnit::addUpdates(Updates& updates) {
     updateField(updates, table__, type);
     updateField(updates, table__, sorcestream);
     updateField(updates, table__, targetstream);
+    updateField(updates, table__, timebasenum);
+    updateField(updates, table__, timebaseden);
     updateField(updates, table__, startts);
     updateField(updates, table__, endts);
     updateField(updates, table__, framecount);
@@ -3617,6 +3683,8 @@ void ProcessUnit::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Type);
     ftypes.push_back(Sorcestream);
     ftypes.push_back(Targetstream);
+    ftypes.push_back(Timebasenum);
+    ftypes.push_back(Timebaseden);
     ftypes.push_back(Startts);
     ftypes.push_back(Endts);
     ftypes.push_back(Framecount);
@@ -3666,6 +3734,8 @@ std::auto_ptr<ProcessUnit> ProcessUnit::upcastCopy() {
     np->type = type;
     np->sorcestream = sorcestream;
     np->targetstream = targetstream;
+    np->timebasenum = timebasenum;
+    np->timebaseden = timebaseden;
     np->startts = startts;
     np->endts = endts;
     np->framecount = framecount;
@@ -3680,6 +3750,8 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.sorcestream.name() << " = " << o.sorcestream << std::endl;
     os << o.targetstream.name() << " = " << o.targetstream << std::endl;
+    os << o.timebasenum.name() << " = " << o.timebasenum << std::endl;
+    os << o.timebaseden.name() << " = " << o.timebaseden << std::endl;
     os << o.startts.name() << " = " << o.startts << std::endl;
     os << o.endts.name() << " = " << o.endts << std::endl;
     os << o.framecount.name() << " = " << o.framecount << std::endl;
@@ -3712,15 +3784,15 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
     res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
-    res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
+    res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,progress_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
-    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
+    res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));

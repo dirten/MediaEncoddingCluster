@@ -25,7 +25,7 @@ namespace org {
                 //    static const std::string DEFAULT_NAME;
                 //    ~Messenger();
                 static void free();
-                static void freeListener(std::string name = DEFAULT_NAME);
+                void freeListener(std::string name = DEFAULT_NAME);
                 static Messenger & getInstance(std::string name = DEFAULT_NAME);
                 ~Messenger();
                 void addMessageListener(MessageListener &listener, std::string name = DEFAULT_NAME);
@@ -38,7 +38,7 @@ namespace org {
 				static boost::mutex messenger_mutex;
                 Messenger(std::string name);
                 static std::map<std::string, Messenger*> messenger;
-                static std::map<std::string, std::list<MessageListener*> > listener;
+                std::map<std::string, std::list<MessageListener*> > listener;
                 //    static std::map<std::string,std::list<int> > listener;
             };
 

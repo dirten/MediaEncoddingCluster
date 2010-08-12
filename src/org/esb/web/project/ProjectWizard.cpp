@@ -7,6 +7,7 @@
 #include "Wt/WFitLayout"
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/Button"
+#include "Wt/Ext/MessageBox"
 
 
 
@@ -22,7 +23,7 @@ namespace org {
 
       ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Editor") {
         _project_id = 0;
-        resize(1200, 700);
+        resize(1000, 550);
         setBorder(false);
         //setSizeGripEnabled(true);
 
@@ -33,18 +34,19 @@ namespace org {
         layout()->setContentsMargins(0, 0, 0, 0);
 
         _db = Ptr<db::HiveDb > (new db::HiveDb("mysql", org::esb::config::Config::getProperty("db.url")));
+        _db->verbose=true;
         _filePanel = Ptr<InputFilePanel > (new InputFilePanel());
-        _profilePanel = Ptr<ProfilePanel > (new ProfilePanel());
 
-        _profilePanel->resize(500, Wt::WLength());
+        _profilePanel = Ptr<ProfilePanel > (new ProfilePanel());
+        _profilePanel->resize(450, Wt::WLength());
         _profilePanel->setResizable(true);
 
         _filterPanel = Ptr<FilterPanel > (new FilterPanel());
-        _filterPanel->resize(500, 300);
+        _filterPanel->resize(450, 200);
         _filterPanel->setResizable(true);
 
         _propertyPanel = Ptr<ProjectPropertyPanel > (new ProjectPropertyPanel());
-        _propertyPanel->resize(500, 300);
+        _propertyPanel->resize(450, 200);
         _propertyPanel->setResizable(true);
 
 
@@ -61,7 +63,7 @@ namespace org {
         south_panel->setLayout(new Wt::WBorderLayout());
         ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_filterPanel.get(), Wt::WBorderLayout::Center);
         ((Wt::WBorderLayout*)south_panel->layout())->addWidget(_propertyPanel.get(), Wt::WBorderLayout::East);
-        south_panel->resize(Wt::WLength(), 300);
+        south_panel->resize(Wt::WLength(), 200);
         south_panel->setAnimate(true);
         south_panel->setResizable(true);
         ((Wt::WBorderLayout*)layout())->addWidget(south_panel, Wt::WBorderLayout::South);
@@ -69,10 +71,13 @@ namespace org {
 
         addButton(new Wt::Ext::Button("Cancel"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::cancel));
+        buttons().back()->setIcon("icons/remove-icon.png");
         addButton(new Wt::Ext::Button("Save"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save));
+        buttons().back()->setIcon("icons/accept-icon.png");
         addButton(new Wt::Ext::Button("Save & start Encoding"));
         buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save_and_start));
+        buttons().back()->setIcon("icons/process-accept-icon.png");
         /*
         ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("North"), Wt::WBorderLayout::North);
 
@@ -119,6 +124,9 @@ namespace org {
         _project->update();
         LOGDEBUG("Project saved:" << _project->id);
         org::esb::hive::JobUtil::createJob(_project);
+        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Encodings successfull created", "Encodings successfull created<br/>please look in the \"Encodings->All Encodings\"  Menu<br/>to see the running Encodings",Wt::Warning,Wt::Ok);
+        box->show();
+
         saved.emit();
         this->done(Accepted);
       }
