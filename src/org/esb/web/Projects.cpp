@@ -1,8 +1,11 @@
+#include "Wt/Ext/MessageBox"
 #include "Projects.h"
 #include "DbTable.h"
 #include "Wt/WFitLayout"
 #include "project/ProjectWizard.h"
-#include "Wt/Ext/MessageBox"
+#ifdef MessageBox
+#undef MessageBox
+#endif
 namespace org {
   namespace esb {
     namespace web {
@@ -46,7 +49,9 @@ namespace org {
 
       }
       void Projects::deleteProject(){
+
         Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("really delete this Project?", "really",Wt::Warning,Wt::Ok|Wt::Cancel);
+//        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox();
         box->show();
         if(box->exec()==Wt::Ext::Dialog::Accepted){
           int c = atoi(boost::any_cast<string > (_table->getModel()->data(_table->selectedRows()[0], 0)).c_str());

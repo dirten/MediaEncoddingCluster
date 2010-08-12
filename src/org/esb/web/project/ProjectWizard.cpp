@@ -7,7 +7,7 @@
 #include "Wt/WFitLayout"
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/Button"
-#include "Wt/Ext/MessageBox"
+
 
 
 
@@ -16,7 +16,10 @@
 #include "org/esb/config/config.h"
 
 #include "org/esb/hive/JobUtil.h"
-
+#ifdef MessageBox
+#undef MessageBox
+#endif
+#include "Wt/Ext/MessageBox"
 namespace org {
   namespace esb {
     namespace web {
