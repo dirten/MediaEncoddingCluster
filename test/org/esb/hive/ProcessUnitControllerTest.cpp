@@ -69,6 +69,7 @@ void audioProcessUnitReader() {
       msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
       Messenger::getInstance().sendRequest(msg);
     }
+    org::esb::lang::Thread::sleep2(100);
   }
 }
 
