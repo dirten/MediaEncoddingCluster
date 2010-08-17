@@ -284,9 +284,9 @@ namespace org {
         view->setHighlightMouseOver(true);
         view->setSelectionBehavior(Wt::SelectRows);
         view->setSelectionMode(Wt::SingleSelection);
-        view->setColumnWidth(2,30);
-        view->setColumnWidth(3,30);
-        view->setColumnWidth(4,30);
+        view->setColumnWidth(2,35);
+        view->setColumnWidth(3,35);
+        view->setColumnWidth(4,35);
         view->setColumnWidth(5,25);
         view->setColumnWidth(6,15);
         

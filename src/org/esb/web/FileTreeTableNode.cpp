@@ -191,7 +191,7 @@ void FileTreeTableNode::populate() {
         }
       }
 
-    for (std::set<boost::filesystem::path>::iterator i = paths.begin();
+    for (std::set<boost::filesystem::path,FileComparator>::iterator i = paths.begin();
             i != paths.end(); ++i) {
       try {
 

@@ -1,5 +1,6 @@
 
 #include "org/esb/db/hivedb.hpp"
+#include "Wt/Ext/MessageBox"
 #include "ProjectWizard.h"
 
 #include "Wt/WBorderLayout"
@@ -20,7 +21,6 @@
 #ifdef MessageBox
 #undef MessageBox
 #endif
-#include "Wt/Ext/MessageBox"
 namespace org {
   namespace esb {
     namespace web {
