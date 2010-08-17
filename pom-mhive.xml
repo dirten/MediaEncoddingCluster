@@ -127,14 +127,6 @@
             <configuration>
               <tasks>
                 <mkdir dir="build"/>
-                <get src="http://samples.mplayerhq.hu/MPEG2/TITLE01-ANGLE1.VOB"
-                     dest="test/fixtures"
-                     verbose="true" usetimestamp="true"/>
-                <get src="http://samples.mplayerhq.hu/MPEG2/dvd.mpeg"
-                     dest="test/fixtures"
-                     verbose="true" usetimestamp="true"/>
-
-
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
