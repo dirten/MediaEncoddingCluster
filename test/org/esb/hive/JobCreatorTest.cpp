@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     //db.verbose = true;
 
     db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
-
+    
     db::MediaFile infile = job.inputfile().get().one();
     db::MediaFile outfile = job.outputfile().get().one();
 

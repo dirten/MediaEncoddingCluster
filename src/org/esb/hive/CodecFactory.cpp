@@ -5,7 +5,6 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringTokenizer.h"
 #include <stdexcept>
-#include "org/esb/db/hivedb.hpp"
 
 
 using namespace org::esb;

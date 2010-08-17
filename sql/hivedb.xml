@@ -144,10 +144,22 @@
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
         <field name="status" type="string"/>
+        <field name="infile" type="string"/>
+        <field name="outfile" type="string"/>
         <field name="starttime" type="double"/>
         <field name="duration" type="double"/>
         <field name="progress" type="integer"/>
     </object>
+
+    <object name="JobLog">
+        <field name="created" type="datetime" default="0"/>
+        <field name="message" type="string"/>
+    </object>
+
+    <relation id="JobJobLog">
+        <relate object="Job" handle="joblog"/>
+        <relate object="JobLog" handle="logjob"/>
+    </relation>
 
     <relation id="JobInFile">
         <relate object="Job" handle="inputfile"/>

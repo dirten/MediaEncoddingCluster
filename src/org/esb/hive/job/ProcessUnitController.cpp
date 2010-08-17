@@ -35,9 +35,9 @@ namespace org {
   namespace esb {
     namespace hive {
       namespace job {
-		
+
         void ProcessUnitController::onMessage(org::esb::signal::Message & msg) {
-          LOGDEBUG("Message received:"<<msg.getProperty("processunitcontroller"));
+          LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");
             boost::thread t(boost::bind(&ProcessUnitController::start, this));
@@ -56,58 +56,58 @@ namespace org {
             msg.setProperty("processunit", unit);
           } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
             LOGDEBUG("PUT_PROCESS_UNIT request");
-			
+
             boost::shared_ptr<ProcessUnit> unit = msg.getPtrProperty("processunit");
-			
+
             putProcessUnit(unit);
           }
         }
 
-        ProcessUnitController::ProcessUnitController() : 
-          _dbCon("mysql", org::esb::config::Config::getProperty("db.url")),
-          _dbJobCon("mysql", org::esb::config::Config::getProperty("db.url")){
+        ProcessUnitController::ProcessUnitController() :
+        _dbCon("mysql", org::esb::config::Config::getProperty("db.url")),
+        _dbJobCon("mysql", org::esb::config::Config::getProperty("db.url")) {
           LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
           _stop_signal = false;
           _isRunning = false;
 
         }
 
-        ProcessUnitController::ProcessUnitController(const ProcessUnitController& orig) : 
-          _dbCon(orig._dbCon),
-          _dbJobCon(orig._dbJobCon){
+        ProcessUnitController::ProcessUnitController(const ProcessUnitController& orig) :
+        _dbCon(orig._dbCon),
+        _dbJobCon(orig._dbJobCon) {
 
         }
 
         ProcessUnitController::~ProcessUnitController() {
-//          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
+          //          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
         }
 
         void ProcessUnitController::start() {
           LOGTRACEMETHOD("void ProcessUnitController::start() ")
                   //          JobController job_ctrl;
                   //db::HiveDb _dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
-//              org::esb::hive::DatabaseService::thread_init();
+                  //              org::esb::hive::DatabaseService::thread_init();
           while (!_stop_signal) {
             try {
-              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime == -1).one();
+              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1).one();
               //db::Job job = job_ctrl.getJob();
-              LOGDEBUG("new job found");
-              current_job=Ptr<db::Job>(new db::Job(job));
+              //LOGDEBUG("new job found");
+              current_job = Ptr<db::Job > (new db::Job(job));
 
               processJob(*current_job.get());
 
             } catch (litesql::NotFound ex) {
-              LOGDEBUG("no new job found");
+              //LOGDEBUG("no new job found");
               org::esb::lang::Thread::sleep2(1000);
             }
           }
-//	  org::esb::hive::DatabaseService::thread_end();
+          //	  org::esb::hive::DatabaseService::thread_end();
         }
 
         void ProcessUnitController::processJob(db::Job job) {
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
           job.begintime = 0;
-          job.status="running";
+          job.status = "running";
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
             job.update();
@@ -119,6 +119,15 @@ namespace org {
           org::esb::io::File fi(filename);
           org::esb::av::FormatInputStream fis(&fi);
           if (fis.isValid()) {
+            {
+            db::JobLog log(job.getDatabase());
+            std::string message="Encoding started for ";
+            message+=filename;
+            log.message=message;
+            log.update();
+
+            job.joblog().link(log);
+            }
             map<int, StreamData> stream_map;
             std::map<int, Packetizer::StreamData> stream_data;
             vector<JobDetail>details = job.jobdetails().get().all();
@@ -131,8 +140,8 @@ namespace org {
               stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
               stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
 
-              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
-              stream_map[idx].last_start_dts = detail.inputstream().get().one().firstdts;
+//              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
+              stream_map[idx].last_start_dts = detail.lastdts;
 
               if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
                 LOGERROR("wrong decoder timebase -> num=" << stream_map[idx].decoder->getTimeBase().num << " den=" << stream_map[idx].decoder->getTimeBase().den);
@@ -142,7 +151,7 @@ namespace org {
               }
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
-              stream_data[idx].min_packet_count=0;
+              stream_data[idx].min_packet_count = 0;
             }
             PacketInputStream pis(&fis);
 
@@ -161,12 +170,10 @@ namespace org {
               /**
                * if the actuall stream not mapped then discard this and continue with next packet
                */
-              if (stream_map.find(packet->packet->stream_index) == stream_map.end() ||
-                      stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts
-                      || (packet->packet->pts != AV_NOPTS_VALUE && stream_map[packet->packet->stream_index].last_start_pts > packet->packet->pts)
-                      ) {
+              if (stream_map.find(packet->packet->stream_index) == stream_map.end())
                 continue;
-              }
+              if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
+                continue;
               //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
               if (packetizer.putPacket(pPacket)) {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
@@ -182,17 +189,42 @@ namespace org {
                 }
               }
             }
+            boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
+            queue_empty_wait_condition.wait(queue_empty_wait_lock);
+            LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            job.endtime = 0;
+            job.status = "completed";
+            {
+            db::JobLog log(job.getDatabase());
+            std::string message="Encoding completed for the file ";
+            message+=filename;
+            log.message=message;
+            log.update();
+
+            job.joblog().link(log);
+            }
+            {
+              boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+              job.update();
+            }
+
           } else {
             LOGERROR("Error Opening Input Streams from " << filename);
-          }
-          boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
-          queue_empty_wait_condition.wait(queue_empty_wait_lock);
-          LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-          job.endtime = 0;
-          job.status="completed";
-          {
-            boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-            job.update();
+            job.endtime = 0;
+            job.status = "failed";
+            db::JobLog log(job.getDatabase());
+            std::string message="failed to open the file ";
+            message+=filename;
+            log.message=message;
+            log.update();
+
+            job.joblog().link(log);
+
+            {
+              boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+              job.update();
+            }
+
           }
         }
 
@@ -206,18 +238,18 @@ namespace org {
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;
           dbunit.targetstream = u->_target_stream;
-          dbunit.timebasenum=u->_input_packets.front()->getTimeBase().num;
-          dbunit.timebaseden=u->_input_packets.front()->getTimeBase().den;
+          dbunit.timebasenum = u->_input_packets.front()->getTimeBase().num;
+          dbunit.timebaseden = u->_input_packets.front()->getTimeBase().den;
           dbunit.startts = (double) u->_input_packets.front()->getDts();
           dbunit.endts = (double) u->_input_packets.back()->getDts();
           dbunit.framecount = (int) u->_input_packets.size();
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-//            DatabaseService::thread_init();
-	    dbunit.update();
+            //            DatabaseService::thread_init();
+            dbunit.update();
             dbunit.recv = -1;
             dbunit.update();
-//            DatabaseService::thread_end();
+            //            DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
           return u;
@@ -229,22 +261,23 @@ namespace org {
           if (audioQueue.size() == 0 || _stop_signal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
-
+          if (audioQueue.size() == 0 || _stop_signal)
+            u->_last_process_unit=true;
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;
           dbunit.targetstream = u->_target_stream;
-          dbunit.timebasenum=u->_input_packets.front()->getTimeBase().num;
-          dbunit.timebaseden=u->_input_packets.front()->getTimeBase().den;
+          dbunit.timebasenum = u->_input_packets.front()->getTimeBase().num;
+          dbunit.timebaseden = u->_input_packets.front()->getTimeBase().den;
           dbunit.startts = (double) u->_input_packets.front()->getDts();
           dbunit.endts = (double) u->_input_packets.back()->getDts();
           dbunit.framecount = (int) u->_input_packets.size();
           {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-//			DatabaseService::thread_init();
+            //			DatabaseService::thread_init();
             dbunit.update();
             dbunit.recv = -1;
             dbunit.update();
-//		    DatabaseService::thread_end();
+            //		    DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
           return u;
@@ -268,36 +301,48 @@ namespace org {
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
-          LOGDEBUG("Saving ProcessUnit:"<<unit->_process_unit);
+          LOGDEBUG("Saving ProcessUnit:" << unit->_process_unit);
           ous.writeObject(*unit.get());
           ous.close();
           try {
             boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-//	    DatabaseService::thread_init();
+            //	    DatabaseService::thread_init();
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
 
-            /** calculate current progress from the Job*/
-            if(unit->getOutputPacketList().size()>0){
-              AVRational ar_target;
-              ar_target.num=1;
-              ar_target.den=1000000;
-              AVRational ar_source;
-              ar_source.num=dbunit.timebasenum;
-              ar_source.den=dbunit.timebaseden;
-              int64_t lastdb=dbunit.endts.value();
-              int64_t last=unit->getOutputPacketList().back()->getDts();
-
-              int64_t ts=av_rescale_q(lastdb, ar_source, ar_target);
-              int64_t starttime=current_job->starttime.value();
-              int64_t duration=current_job->duration.value();
-              int progress=(ts-starttime)*100/duration;
-              current_job->progress=progress;
-              current_job->update();              
+            vector<db::JobDetail> details = current_job->jobdetails().get().all();
+            for (int a = 0; a < details.size(); a++) {
+              if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
+                details[a].lastdts = (double) dbunit.endts;
+                details[a].update();
+              }
             }
 
-//	    DatabaseService::thread_end();
+            /** calculate current progress from the Job*/
+            if (unit->getOutputPacketList().size() > 0) {
+              if (audioQueue.size() == 0 && puQueue.size() == 0) {
+                current_job->progress = 100;
+              } else {
+                AVRational ar_target;
+                ar_target.num = 1;
+                ar_target.den = 1000000;
+                AVRational ar_source;
+                ar_source.num = dbunit.timebasenum;
+                ar_source.den = dbunit.timebaseden;
+                int64_t lastdb = dbunit.endts.value();
+                int64_t last = unit->getOutputPacketList().back()->getDts();
+
+                int64_t ts = av_rescale_q(lastdb, ar_source, ar_target);
+                int64_t starttime = current_job->starttime.value();
+                int64_t duration = current_job->duration.value();
+                int progress = (ts - starttime)*100 / duration;
+                current_job->progress = progress;
+              }
+              current_job->update();
+            }
+
+            //	    DatabaseService::thread_end();
           } catch (litesql::NotFound ex) {
             LOGERROR("db::ProcessUnit not found for :" << unit->_process_unit);
           }

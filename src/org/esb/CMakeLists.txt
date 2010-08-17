@@ -291,6 +291,11 @@ add_library (web
     web/TreeMainMenu.cpp
     web/ProfileChooser.cpp
     web/JobTableModel.cpp
+    web/JobTable.cpp
+    web/job/JobInfoPanel.cpp
+    web/job/JobDetailPanel.cpp
+    web/job/JobLogPanel.cpp
+    web/job/JobLogTableModel.cpp
     web/project/ProfilePanel.cpp
     web/project/FilterPanel.cpp
     web/project/FilterChooser.cpp

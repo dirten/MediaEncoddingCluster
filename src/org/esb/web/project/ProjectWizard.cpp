@@ -7,6 +7,7 @@
 #include "Wt/WFitLayout"
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/Button"
+#include "Wt/Ext/MessageBox"
 
 
 

@@ -29,9 +29,9 @@ namespace org {
         _conv = NULL;
         _swap_codecs = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
-                org::esb::av::FormatBaseStream::initialize();
-//        avcodec_register_all();
-//        av_register_all();
+        org::esb::av::FormatBaseStream::initialize();
+        //        avcodec_register_all();
+        //        av_register_all();
         //        avcodec_init();
 
       }
@@ -53,7 +53,7 @@ namespace org {
           _toHalt = true;
           if (_running) {
             LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _toHalt=true;
+            _toHalt = true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
             LOGDEBUG("stopping done!")
@@ -89,7 +89,7 @@ namespace org {
             connect();
           } else {
             while (!_toHalt) {
-              char * text = const_cast<char*>("get audio_process_unit");
+              char * text = const_cast<char*> ("get audio_process_unit");
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
@@ -106,33 +106,32 @@ namespace org {
                 delete unit;
                 break;
               }
-              if (_swap_codecs) {
-                unit->_decoder = _dec;
-              } else {
-                _dec = unit->_decoder;
+              if(_swap_codec_list.find(unit->_source_stream)==_swap_codec_list.end()){
+                _swap_codec_list[unit->_source_stream]=false;
               }
-              if (_swap_codecs) {
-                unit->_encoder = _enc;
-              } else {
-                _enc = unit->_encoder;
+              
+              if (_swap_codec_list[unit->_source_stream]) {
+                unit->_decoder = _decoder_list[unit->_source_stream];
+                unit->_encoder = _encoder_list[unit->_target_stream];
+                unit->_converter = _converter_list[unit->_target_stream];
+              }
+              _swap_codec_list[unit->_source_stream]=true;
+              
+              unit->process();
+
+              if (_swap_codec_list[unit->_source_stream]) {
+                _decoder_list[unit->_source_stream] = unit->_decoder;
+                _encoder_list[unit->_target_stream] = unit->_encoder;
+                _converter_list[unit->_target_stream] = unit->_converter;
               }
 
-              if (_conv != NULL) {
-                unit->_converter = _conv;
-              }
-              _swap_codecs = true;
-              unit->process();
-//              Thread::sleep2(20000);
-              if (_conv == NULL) {
-                _conv = unit->_converter;
-              }
               /**
                * clear the input packets, there are no more nedded
                * they only consumes Network bandwidth and cpu on the server
                */
               unit->_input_packets.clear();
 
-              char * text_out = const_cast<char*>("put audio_process_unit");
+              char * text_out = const_cast<char*> ("put audio_process_unit");
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
@@ -141,12 +140,15 @@ namespace org {
                 _sock->close();
               }
               if (unit->_last_process_unit) {
-                _swap_codecs = false;
-                if (_conv)
-                  delete _conv;
-                _conv = NULL;
+                _swap_codec_list.clear();
+                _decoder_list.clear();
+                _encoder_list.clear();
+                std::map<int, org::esb::av::FrameConverter *  >::iterator it=_converter_list.begin();
+                for(;it!=_converter_list.end();it++){
+                  delete (*it).second;
+                }
+                _converter_list.clear();
               }
-
               delete unit;
             }
           }

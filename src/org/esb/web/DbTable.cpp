@@ -54,7 +54,9 @@ namespace org{
       DbTableModel * DbTable::getModel(){
         return model;
       }
+      void DbTable::refresh(){
 
+      }
       void DbTable::reload(){
         LOGDEBUG("reloading");
         DbTableModel *old_model=model;

@@ -31,9 +31,10 @@
 
 
 #include "project/PreviewPanel.h"
-#include "JobTableModel.h"
+#include "JobTable.h"
 
 #include "TreeMainMenu.h"
+#include "job/JobInfoPanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -120,7 +121,7 @@ namespace org {
          info_layout->addWidget(new Wt::Ext::Panel());
          info_layout->addWidget(new Wt::Ext::Panel());
          */
-        info_panel->resize(250, Wt::WLength());
+        info_panel->resize(Wt::WLength(), 250);
         info_panel->setResizable(true);
         layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
@@ -155,8 +156,9 @@ namespace org {
         _fileSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
         _fileSignalMap->mapped.connect(SLOT(this, WebApp2::fileSelected));
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
-        _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
          */
+        _jobSignalMap = new Wt::WSignalMapper<JobTable *>(this);
+        _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
       }
 
       void WebApp2::openPreview() {
@@ -271,7 +273,7 @@ namespace org {
                 columnConfigs.push_back(ColumnConfig(db::Job::Progress,"Progress" ,200));
                 DbTable * table= new DbTable(columnConfigs,litesql::Expr());
          */
-
+         /*
         Wt::Ext::TableView *view = new Wt::Ext::TableView();
 
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
@@ -310,8 +312,10 @@ namespace org {
                 "return val;"
                 "}";
         view->setRenderer(6, renderer);
-       
-        setContent(view);
+       */
+        JobTable *table=new JobTable();
+        _jobSignalMap->mapConnect(table->itemSelectionChanged, table);
+        setContent(table);
 
       }
 
@@ -321,7 +325,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
-        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -332,7 +336,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
-        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -342,7 +346,7 @@ namespace org {
         tab->setColumnWidth(2, 20);
         tab->setColumnWidth(3, 20);
         tab->setColumnWidth(4, 10);
-        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
+//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
         setContent(tab);
       }
 
@@ -424,20 +428,24 @@ namespace org {
         }
       }
 
-      void WebApp2::jobSelected(SqlTable * tab) {
-        //        logdebug("Job Table clicked:");
-        if (tab->selectedRows().size() > 0) {
-          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
-          //          info->setData(atoi(idstr.c_str()));
-          //          pSelector->setFileId(atoi(idstr.c_str()));
-          //          logdebug("jobSelected" << idstr);
+      void WebApp2::jobSelected(JobTable * tab) {
+        if(tab==NULL)return;
+        JobInfoPanel * panel=new JobInfoPanel();
+        if(object_panel->layout()->count()>0){
+          Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
+          object_panel->layout()->removeItem(item);
+          delete item->widget();
         }
+        int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
+        object_panel->layout()->addWidget(panel);
+        panel->setJob(id);
       }
 
       void WebApp2::setContent(Wt::WWidget * w) {
         if (main_panel->layout()->count() > 0) {
           Wt::WLayoutItem * item = main_panel->layout()->itemAt(0);
           main_panel->layout()->removeItem(item);
+          delete item->widget();
         }
         main_panel->layout()->addWidget(w);
 

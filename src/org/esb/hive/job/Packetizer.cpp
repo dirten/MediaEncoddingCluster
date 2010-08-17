@@ -113,18 +113,7 @@ namespace org {
          *
          */
         void Packetizer::flushStreams() {
-          std::map<int, StreamData>::iterator it = _streams.begin();
-          for (; it != _streams.end(); it++) {
-            int stream_id = (*it).first;
-            buildList(stream_id);
-            /**
-             * adding dummy packet to mark this stream ends
-             */
-            if (false && _streams[stream_id].packets.size() == 0) {
-              PacketPtr packet = PacketPtr(new org::esb::av::Packet());
-              _streams[stream_id].packets.push_back(packet);
-            }
-          }
+          
         }
 
         /**
@@ -177,7 +166,25 @@ namespace org {
 
           return result;
         }
-
+        /***
+         * this function packetizes the GOPs in chunks between the IFrames
+         * i normal cases the order of the Pictures are
+         * here will be each group of Picture chunked into(all of them cutted in the position of an I-Frame)
+         * IPPPPPPPPIPPPPPPPPIPPPPPPPP
+         * IPPPPPPPP
+         *          IPPPPPPPP
+         *                   IPPPPPPPP
+         *
+         * in a MPeg Stream there is a reorder with BFrames
+         * each group will be also chunked in the position of the I-Frame, but in the case of the delay from the Decoder
+         * we will append the next packets until a P-Frame arrived.
+         * IPBBPBBPBBIBBPBBPBBIBBPBBPBBIBBP
+         * IPBBPBBPBBIBB
+         *           I  PBBPBBIBB
+         *                    I  PBBPBBIBB
+         *
+         *
+         */
         bool Packetizer::processPacket(PacketPtr ptr) {
           bool result = false;
           int stream_idx = ptr->getStreamIndex();
@@ -222,19 +229,20 @@ namespace org {
 
           } else
           /**
-           *
+           * this is used for all stream type except MPEG2 Video Streams
            * */
           if (_streams[stream_idx].state == STATE_END_I_FRAME&&_streams[stream_idx].decoder->getCodecId() != CODEC_ID_MPEG2VIDEO) {
-
             _streams[stream_idx].state = STATE_START_I_FRAME;
-//            _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end() - 1);
+            /**copying all Packets into the actual ProcessUnit*/
             _packet_list.push_back(_streams[stream_idx].packets);
+            /**clear out the PacketList, because they are in the ProcessUnit*/
             _streams[stream_idx].packets.clear();
+            /**bring in the first I-Frame for the next Process Unit*/
             _streams[stream_idx].packets.insert(_streams[stream_idx].packets.end(), _overlap_queue[stream_idx].begin(), _overlap_queue[stream_idx].end());
+            /**clear out the overlap queue, because there is only an I-Frame packet and this is now in the next ProcessUnit*/
             _overlap_queue[stream_idx].clear();
             result = true;
           }
-
           return result;
         }
       }

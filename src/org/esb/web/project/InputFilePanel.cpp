@@ -86,8 +86,10 @@ namespace org {
         setTopToolBar(new Wt::Ext::ToolBar());
 
         Wt::Ext::Button * addVideoButton = topToolBar()->addButton("Add Input Video");
+        addVideoButton->setIcon("icons/add-icon.png");
         topToolBar()->addSeparator();
         removeVideoButton = topToolBar()->addButton("Remove Input Video");
+        removeVideoButton->setIcon("icons/remove-icon.png");
         removeVideoButton->setEnabled(false);
         addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
         removeVideoButton->clicked.connect(SLOT(this, InputFilePanel::removeVideo));

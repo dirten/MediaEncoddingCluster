@@ -99,8 +99,7 @@ int main(int argc, char * argv[]) {
   std::string logconfigpath = sb;
   logconfigpath.append("/res");
   std::cout << logconfigpath << std::endl;
-  //Log::open(logconfigpath);
-  Log::open("");
+ 
 
   std::string dump_path = sb;
   dump_path.append("/dmp");
@@ -110,7 +109,6 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.dump_path", dump_path.c_str());
   //    std::wstring wdump_path(dump_path.begin(), dump_path.end());
-  //new StackDumper(dump_path);
   std::string tmp_path = sb;
   tmp_path.append("/tmp");
   org::esb::io::File tpath(tmp_path);
@@ -126,7 +124,8 @@ int main(int argc, char * argv[]) {
     gen.add_options()
             ("help", "produce this message")
             ("config", po::value<std::string > ()->default_value(config_path), "use Configuration File")
-            ("version", "Prints the Version");
+            ("version", "Prints the Version")
+            ("debugmode", "switch of the StackDumper and logging goes to the console instead of file");
 
     po::options_description inst("Install options");
     inst.add_options()
@@ -154,6 +153,13 @@ int main(int argc, char * argv[]) {
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, all), vm);
     po::notify(vm);
+    new StackDumper(dump_path);
+    if (vm.count("debugmode")) {
+      Log::open("");
+    }else{
+       Log::open(logconfigpath);
+    }
+
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";

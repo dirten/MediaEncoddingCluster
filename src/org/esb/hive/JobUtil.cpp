@@ -56,13 +56,19 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
 
   db::Job job(mediafile.getDatabase());
   job.created = 0;
-  job.begintime = -1;
-  job.endtime = -1;
+  job.begintime = 1;
+  job.endtime = 1;
   job.starttime=mediafile.starttime;
   job.duration=mediafile.duration;
   job.status="queued";
+  job.infile=mediafile.filename.value();
   job.update();
 
+  db::JobLog log(job.getDatabase());
+  log.message="Job Enqueued, is waiting for the next free Encoding slot";
+  log.update();
+  job.joblog().link(log);
+  
   db::MediaFile outfile(mediafile.getDatabase());
   std::string filename=job.id;
   filename+="#";
@@ -74,7 +80,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
-
+  job.outfile=outfile.filename.value();
   /*
    * setting time data twice, in case of a bug in litesql
    * it does not support zero values,
@@ -82,8 +88,8 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
    * but after setting it twice it eat the values ???
    */
 
-  job.begintime = -1;
-  job.endtime = -1;
+  job.begintime = 1;
+  job.endtime = 1;
   job.update();
 
 
@@ -92,11 +98,12 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
 
   vector<db::Stream>::iterator it = streams.begin();
   int a = 0;
-  for (; it != streams.end(); it++, a++) {
+  for (; it != streams.end(); it++) {
     if((*it).streamtype != CODEC_TYPE_VIDEO&&(*it).streamtype != CODEC_TYPE_AUDIO)continue;
+
     db::Stream s(mediafile.getDatabase());
 
-    s.streamindex = a;
+    s.streamindex = a++;
     s.streamtype = (*it).streamtype;
 
     if ((*it).streamtype == CODEC_TYPE_VIDEO) {

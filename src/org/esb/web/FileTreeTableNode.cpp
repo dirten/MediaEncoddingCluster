@@ -21,6 +21,20 @@
 #include "org/esb/io/File.h"
 using namespace Wt;
 
+struct FileComparator {
+
+  bool operator() (const boost::filesystem::path& lhs, const boost::filesystem::path & rhs) const {
+    org::esb::io::File a(lhs.string().c_str());
+    org::esb::io::File b(rhs.string().c_str());
+    if (a.isFile() && b.isDirectory())
+      return false;
+    if (a.isDirectory() && b.isFile())
+      return true;
+    return lhs.string() < rhs.string();
+  }
+
+};
+
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 : WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
 path_(path), _filter(NULL) {
@@ -111,75 +125,83 @@ path_(path), _filter(&filter) {
 }
 
 WIconPair *FileTreeTableNode::createIcon(const boost::filesystem::path& path) {
-  
+
   if (boost::filesystem::exists(path)
-      && boost::filesystem::is_directory(path))
+          && boost::filesystem::is_directory(path))
     return new WIconPair("icons/yellow-folder-closed.png",
-      "icons/yellow-folder-open.png", false);
+          "icons/yellow-folder-open.png", false);
   else
     return new WIconPair("icons/document.png",
-      "icons/yellow-folder-open.png", false);
+          "icons/yellow-folder-open.png", false);
 }
 
 void FileTreeTableNode::populate() {
-  try {
 
-    if (boost::filesystem::is_directory(path_)) {
-      std::set<boost::filesystem::path> paths;
-      boost::filesystem::directory_iterator end_itr;
+  if (boost::filesystem::is_directory(path_)) {
+    std::set<boost::filesystem::path, FileComparator> paths;
+    boost::filesystem::directory_iterator end_itr;
+
 #ifdef WIN32
-      if (path_ == "/") {
-        std::set<std::string> drives;
-        drives.insert("A:\\");
-        drives.insert("B:\\");
-        drives.insert("C:\\");
-        drives.insert("D:\\");
-        drives.insert("E:\\");
-        drives.insert("F:\\");
-        drives.insert("G:\\");
-        drives.insert("H:\\");
-        drives.insert("I:\\");
-        drives.insert("J:\\");
-        drives.insert("K:\\");
-        drives.insert("L:\\");
-        drives.insert("M:\\");
-        drives.insert("N:\\");
-        drives.insert("O:\\");
-        drives.insert("P:\\");
-        drives.insert("Q:\\");
-        drives.insert("R:\\");
-        drives.insert("S:\\");
-        drives.insert("T:\\");
-        drives.insert("U:\\");
-        drives.insert("V:\\");
-        drives.insert("W:\\");
-        drives.insert("X:\\");
-        drives.insert("Y:\\");
-        drives.insert("Z:\\");
-        for (std::set<std::string>::iterator d = drives.begin(); d != drives.end(); d++) {
-          try {
-            boost::filesystem::file_status fs = boost::filesystem::status(*d);
+    if (path_ == "/") {
+      std::set<std::string> drives;
+      drives.insert("A:\\");
+      drives.insert("B:\\");
+      drives.insert("C:\\");
+      drives.insert("D:\\");
+      drives.insert("E:\\");
+      drives.insert("F:\\");
+      drives.insert("G:\\");
+      drives.insert("H:\\");
+      drives.insert("I:\\");
+      drives.insert("J:\\");
+      drives.insert("K:\\");
+      drives.insert("L:\\");
+      drives.insert("M:\\");
+      drives.insert("N:\\");
+      drives.insert("O:\\");
+      drives.insert("P:\\");
+      drives.insert("Q:\\");
+      drives.insert("R:\\");
+      drives.insert("S:\\");
+      drives.insert("T:\\");
+      drives.insert("U:\\");
+      drives.insert("V:\\");
+      drives.insert("W:\\");
+      drives.insert("X:\\");
+      drives.insert("Y:\\");
+      drives.insert("Z:\\");
+      for (std::set<std::string>::iterator d = drives.begin(); d != drives.end(); d++) {
+        try {
+          boost::filesystem::file_status fs = boost::filesystem::status(*d);
 
-            if (boost::filesystem::status_known(fs) && boost::filesystem::exists(*d)) {
-              paths.insert(*d);
-            }
-          } catch (boost::filesystem::filesystem_error & er) {
-            LOGINFO(er.what());
+          if (boost::filesystem::status_known(fs) && boost::filesystem::exists(*d)) {
+            paths.insert(*d);
           }
+        } catch (boost::filesystem::filesystem_error & er) {
+          LOGINFO(er.what());
         }
-      } else
+      }
+    } else
 #endif
-        for (boost::filesystem::directory_iterator i(path_); i != end_itr; ++i)
+      for (boost::filesystem::directory_iterator i(path_); i != end_itr; ++i) {
+        try {
           paths.insert(*i);
+        } catch (boost::filesystem::filesystem_error& e) {
+          std::cerr << e.what() << std::endl;
+        }
+      }
 
-      for (std::set<boost::filesystem::path>::iterator i = paths.begin();
-          i != paths.end(); ++i) {
+    for (std::set<boost::filesystem::path>::iterator i = paths.begin();
+            i != paths.end(); ++i) {
+      try {
+
         if (_filter != NULL && _filter->accept(org::esb::io::File(i->string().c_str())))
           addChildNode(new FileTreeTableNode(*i, (org::esb::io::FileFilter&) * _filter));
+      } catch (boost::filesystem::filesystem_error& e) {
+        std::cerr << e.what() << std::endl;
       }
+
     }
-  } catch (boost::filesystem::filesystem_error& e) {
-    std::cerr << e.what() << std::endl;
   }
 
 

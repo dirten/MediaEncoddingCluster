@@ -295,6 +295,55 @@ template <> litesql::DataSource<db::Stream> MediaFileStreamRelation::get(const l
     sel.where(srcExpr);
     return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
 }
+JobJobLogRelationJobJobLog::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : jobLog(JobJobLogRelationJobJobLog::JobLog), job(JobJobLogRelationJobJobLog::Job) {
+    switch(rec.size()) {
+    case 2:
+        jobLog = rec[1];
+    case 1:
+        job = rec[0];
+    }
+}
+const std::string JobJobLogRelationJobJobLog::table__("Job_JobLog_JobJobLog");
+const litesql::FieldType JobJobLogRelationJobJobLog::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobJobLogRelationJobJobLog::JobLog("JobLog2","INTEGER",table__);
+void JobJobLogRelationJobJobLog::link(const litesql::Database& db, const db::Job& o0, const db::JobLog& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Job.name());
+    values.push_back(o0.id);
+    fields.push_back(JobLog.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void JobJobLogRelationJobJobLog::unlink(const litesql::Database& db, const db::Job& o0, const db::JobLog& o1) {
+    db.delete_(table__, (Job == o0.id && JobLog == o1.id));
+}
+void JobJobLogRelationJobJobLog::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<JobJobLogRelationJobJobLog::Row> JobJobLogRelationJobJobLog::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Job.fullName());
+    sel.result(JobLog.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<JobJobLogRelationJobJobLog::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Job> JobJobLogRelationJobJobLog::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Job.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::JobLog> JobJobLogRelationJobJobLog::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(JobLog.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::JobLog>(db, db::JobLog::Id.in(sel) && expr);
+}
 JobMediaFileRelationJobInFile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : mediaFile(JobMediaFileRelationJobInFile::MediaFile), job(JobMediaFileRelationJobInFile::Job) {
     switch(rec.size()) {
@@ -2879,6 +2928,24 @@ std::ostream & operator<<(std::ostream& os, Config o) {
     return os;
 }
 const litesql::FieldType Job::Own::Id("id_","INTEGER","Job_");
+Job::JoblogHandle::JoblogHandle(const Job& owner)
+         : litesql::RelationHandle<Job>(owner) {
+}
+void Job::JoblogHandle::link(const JobLog& o0) {
+    JobJobLogRelationJobJobLog::link(owner->getDatabase(), *owner, o0);
+}
+void Job::JoblogHandle::unlink(const JobLog& o0) {
+    JobJobLogRelationJobJobLog::unlink(owner->getDatabase(), *owner, o0);
+}
+void Job::JoblogHandle::del(const litesql::Expr& expr) {
+    JobJobLogRelationJobJobLog::del(owner->getDatabase(), expr && JobJobLogRelationJobJobLog::Job == owner->id);
+}
+litesql::DataSource<JobLog> Job::JoblogHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobJobLogRelationJobJobLog::get<JobLog>(owner->getDatabase(), expr, (JobJobLogRelationJobJobLog::Job == owner->id) && srcExpr);
+}
+litesql::DataSource<JobJobLogRelationJobJobLog::Row> Job::JoblogHandle::getRows(const litesql::Expr& expr) {
+    return JobJobLogRelationJobJobLog::getRows(owner->getDatabase(), expr && (JobJobLogRelationJobJobLog::Job == owner->id));
+}
 Job::InputfileHandle::InputfileHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -2942,6 +3009,8 @@ const litesql::FieldType Job::Created("created_","INTEGER",table__);
 const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
 const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
 const litesql::FieldType Job::Status("status_","TEXT",table__);
+const litesql::FieldType Job::Infile("infile_","TEXT",table__);
+const litesql::FieldType Job::Outfile("outfile_","TEXT",table__);
 const litesql::FieldType Job::Starttime("starttime_","DOUBLE",table__);
 const litesql::FieldType Job::Duration("duration_","DOUBLE",table__);
 const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
@@ -2955,20 +3024,24 @@ void Job::defaults() {
     progress = 0;
 }
 Job::Job(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), starttime(Starttime), duration(Duration), progress(Progress) {
+     : litesql::Persistent(db), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress) {
     defaults();
 }
 Job::Job(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), starttime(Starttime), duration(Duration), progress(Progress) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress) {
     defaults();
-    size_t size = (rec.size() > 9) ? 9 : rec.size();
+    size_t size = (rec.size() > 11) ? 11 : rec.size();
     switch(size) {
-    case 9: progress = convert<const std::string&, int>(rec[8]);
+    case 11: progress = convert<const std::string&, int>(rec[10]);
         progress.setModified(false);
-    case 8: duration = convert<const std::string&, double>(rec[7]);
+    case 10: duration = convert<const std::string&, double>(rec[9]);
         duration.setModified(false);
-    case 7: starttime = convert<const std::string&, double>(rec[6]);
+    case 9: starttime = convert<const std::string&, double>(rec[8]);
         starttime.setModified(false);
+    case 8: outfile = convert<const std::string&, std::string>(rec[7]);
+        outfile.setModified(false);
+    case 7: infile = convert<const std::string&, std::string>(rec[6]);
+        infile.setModified(false);
     case 6: status = convert<const std::string&, std::string>(rec[5]);
         status.setModified(false);
     case 5: endtime = convert<const std::string&, litesql::DateTime>(rec[4]);
@@ -2984,7 +3057,7 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Job::Job(const Job& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), starttime(obj.starttime), duration(obj.duration), progress(obj.progress) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), infile(obj.infile), outfile(obj.outfile), starttime(obj.starttime), duration(obj.duration), progress(obj.progress) {
 }
 const Job& Job::operator=(const Job& obj) {
     if (this != &obj) {
@@ -2994,12 +3067,17 @@ const Job& Job::operator=(const Job& obj) {
         begintime = obj.begintime;
         endtime = obj.endtime;
         status = obj.status;
+        infile = obj.infile;
+        outfile = obj.outfile;
         starttime = obj.starttime;
         duration = obj.duration;
         progress = obj.progress;
     }
     litesql::Persistent::operator=(obj);
     return *this;
+}
+Job::JoblogHandle Job::joblog() {
+    return Job::JoblogHandle(*this);
 }
 Job::InputfileHandle Job::inputfile() {
     return Job::InputfileHandle(*this);
@@ -3032,6 +3110,12 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(status.name());
     values.push_back(status);
     status.setModified(false);
+    fields.push_back(infile.name());
+    values.push_back(infile);
+    infile.setModified(false);
+    fields.push_back(outfile.name());
+    values.push_back(outfile);
+    outfile.setModified(false);
     fields.push_back(starttime.name());
     values.push_back(starttime);
     starttime.setModified(false);
@@ -3062,6 +3146,8 @@ void Job::addUpdates(Updates& updates) {
     updateField(updates, table__, begintime);
     updateField(updates, table__, endtime);
     updateField(updates, table__, status);
+    updateField(updates, table__, infile);
+    updateField(updates, table__, outfile);
     updateField(updates, table__, starttime);
     updateField(updates, table__, duration);
     updateField(updates, table__, progress);
@@ -3075,6 +3161,8 @@ void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Begintime);
     ftypes.push_back(Endtime);
     ftypes.push_back(Status);
+    ftypes.push_back(Infile);
+    ftypes.push_back(Outfile);
     ftypes.push_back(Starttime);
     ftypes.push_back(Duration);
     ftypes.push_back(Progress);
@@ -3083,6 +3171,7 @@ void Job::delRecord() {
     deleteFromTable(table__, id);
 }
 void Job::delRelations() {
+    JobJobLogRelationJobJobLog::del(*db, (JobJobLogRelationJobJobLog::Job == id));
     JobMediaFileRelationJobInFile::del(*db, (JobMediaFileRelationJobInFile::Job == id));
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
     JobJobDetailRelationJobJobDetail::del(*db, (JobJobDetailRelationJobJobDetail::Job == id));
@@ -3127,6 +3216,8 @@ std::auto_ptr<Job> Job::upcastCopy() {
     np->begintime = begintime;
     np->endtime = endtime;
     np->status = status;
+    np->infile = infile;
+    np->outfile = outfile;
     np->starttime = starttime;
     np->duration = duration;
     np->progress = progress;
@@ -3141,9 +3232,176 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << o.begintime.name() << " = " << o.begintime << std::endl;
     os << o.endtime.name() << " = " << o.endtime << std::endl;
     os << o.status.name() << " = " << o.status << std::endl;
+    os << o.infile.name() << " = " << o.infile << std::endl;
+    os << o.outfile.name() << " = " << o.outfile << std::endl;
     os << o.starttime.name() << " = " << o.starttime << std::endl;
     os << o.duration.name() << " = " << o.duration << std::endl;
     os << o.progress.name() << " = " << o.progress << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType JobLog::Own::Id("id_","INTEGER","JobLog_");
+JobLog::LogjobHandle::LogjobHandle(const JobLog& owner)
+         : litesql::RelationHandle<JobLog>(owner) {
+}
+void JobLog::LogjobHandle::link(const Job& o0) {
+    JobJobLogRelationJobJobLog::link(owner->getDatabase(), o0, *owner);
+}
+void JobLog::LogjobHandle::unlink(const Job& o0) {
+    JobJobLogRelationJobJobLog::unlink(owner->getDatabase(), o0, *owner);
+}
+void JobLog::LogjobHandle::del(const litesql::Expr& expr) {
+    JobJobLogRelationJobJobLog::del(owner->getDatabase(), expr && JobJobLogRelationJobJobLog::JobLog == owner->id);
+}
+litesql::DataSource<Job> JobLog::LogjobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobJobLogRelationJobJobLog::get<Job>(owner->getDatabase(), expr, (JobJobLogRelationJobJobLog::JobLog == owner->id) && srcExpr);
+}
+litesql::DataSource<JobJobLogRelationJobJobLog::Row> JobLog::LogjobHandle::getRows(const litesql::Expr& expr) {
+    return JobJobLogRelationJobJobLog::getRows(owner->getDatabase(), expr && (JobJobLogRelationJobJobLog::JobLog == owner->id));
+}
+const std::string JobLog::type__("JobLog");
+const std::string JobLog::table__("JobLog_");
+const std::string JobLog::sequence__("JobLog_seq");
+const litesql::FieldType JobLog::Id("id_","INTEGER",table__);
+const litesql::FieldType JobLog::Type("type_","TEXT",table__);
+const litesql::FieldType JobLog::Created("created_","INTEGER",table__);
+const litesql::FieldType JobLog::Message("message_","TEXT",table__);
+void JobLog::defaults() {
+    id = 0;
+    created = 0;
+}
+JobLog::JobLog(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), created(Created), message(Message) {
+    defaults();
+}
+JobLog::JobLog(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), created(Created), message(Message) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: message = convert<const std::string&, std::string>(rec[3]);
+        message.setModified(false);
+    case 3: created = convert<const std::string&, litesql::DateTime>(rec[2]);
+        created.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+JobLog::JobLog(const JobLog& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), created(obj.created), message(obj.message) {
+}
+const JobLog& JobLog::operator=(const JobLog& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        created = obj.created;
+        message = obj.message;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+JobLog::LogjobHandle JobLog::logjob() {
+    return JobLog::LogjobHandle(*this);
+}
+std::string JobLog::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(created.name());
+    values.push_back(created);
+    created.setModified(false);
+    fields.push_back(message.name());
+    values.push_back(message);
+    message.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void JobLog::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void JobLog::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, created);
+    updateField(updates, table__, message);
+}
+void JobLog::addIDUpdates(Updates& updates) {
+}
+void JobLog::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Created);
+    ftypes.push_back(Message);
+}
+void JobLog::delRecord() {
+    deleteFromTable(table__, id);
+}
+void JobLog::delRelations() {
+    JobJobLogRelationJobJobLog::del(*db, (JobJobLogRelationJobJobLog::JobLog == id));
+}
+void JobLog::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void JobLog::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<JobLog> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool JobLog::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<JobLog> JobLog::upcast() {
+    return auto_ptr<JobLog>(new JobLog(*this));
+}
+std::auto_ptr<JobLog> JobLog::upcastCopy() {
+    JobLog* np = new JobLog(*this);
+    np->id = id;
+    np->type = type;
+    np->created = created;
+    np->message = message;
+    np->inDatabase = inDatabase;
+    return auto_ptr<JobLog>(np);
+}
+std::ostream & operator<<(std::ostream& os, JobLog o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.created.name() << " = " << o.created << std::endl;
+    os << o.message.name() << " = " << o.message << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -3777,6 +4035,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("CodecPreset_seq","sequence","CREATE SEQUENCE CodecPreset_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Config_seq","sequence","CREATE SEQUENCE Config_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Job_seq","sequence","CREATE SEQUENCE Job_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("JobLog_seq","sequence","CREATE SEQUENCE JobLog_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("JobDetail_seq","sequence","CREATE SEQUENCE JobDetail_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
@@ -3789,7 +4048,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
+    res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
@@ -3799,6 +4059,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
@@ -3823,6 +4084,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJob1idx","index","CREATE INDEX Job_JobLog_JobJobLogJob1idx ON Job_JobLog_JobJobLog (Job1)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJobLog2idx","index","CREATE INDEX Job_JobLog_JobJobLogJobLog2idx ON Job_JobLog_JobJobLog (JobLog2)"));
+    res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1,JobLog2)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFileJob1idx","index","CREATE INDEX Job_MediaFile_JobInFileJob1idx ON Job_MediaFile_JobInFile (Job1)"));
     res.push_back(Database::SchemaItem("_75bd42a54265ee2791a61f8bfd916820","index","CREATE INDEX _75bd42a54265ee2791a61f8bfd916820 ON Job_MediaFile_JobInFile (MediaFile2)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile_all_idx","index","CREATE INDEX Job_MediaFile_JobInFile_all_idx ON Job_MediaFile_JobInFile (Job1,MediaFile2)"));

@@ -11,6 +11,7 @@ class Stream;
 class CodecPreset;
 class Config;
 class Job;
+class JobLog;
 class JobDetail;
 class Watchfolder;
 class ProcessUnit;
@@ -124,6 +125,25 @@ public:
     static void unlink(const litesql::Database& db, const db::MediaFile& o0, const db::Stream& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<MediaFileStreamRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class JobJobLogRelationJobJobLog {
+public:
+    class Row {
+    public:
+        litesql::Field<int> jobLog;
+        litesql::Field<int> job;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Job;
+    static const litesql::FieldType JobLog;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::JobLog& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::JobLog& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobJobLogRelationJobJobLog::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -886,6 +906,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class JoblogHandle : public litesql::RelationHandle<Job> {
+    public:
+        JoblogHandle(const Job& owner);
+        void link(const JobLog& o0);
+        void unlink(const JobLog& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<JobLog> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobJobLogRelationJobJobLog::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class InputfileHandle : public litesql::RelationHandle<Job> {
     public:
         InputfileHandle(const Job& owner);
@@ -928,6 +957,10 @@ public:
     litesql::Field<litesql::DateTime> endtime;
     static const litesql::FieldType Status;
     litesql::Field<std::string> status;
+    static const litesql::FieldType Infile;
+    litesql::Field<std::string> infile;
+    static const litesql::FieldType Outfile;
+    litesql::Field<std::string> outfile;
     static const litesql::FieldType Starttime;
     litesql::Field<double> starttime;
     static const litesql::FieldType Duration;
@@ -941,6 +974,7 @@ public:
     Job(const litesql::Database& db, const litesql::Record& rec);
     Job(const Job& obj);
     const Job& operator=(const Job& obj);
+    Job::JoblogHandle joblog();
     Job::InputfileHandle inputfile();
     Job::OutputfileHandle outputfile();
     Job::JobdetailsHandle jobdetails();
@@ -962,6 +996,58 @@ public:
     std::auto_ptr<Job> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Job o);
+class JobLog : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class LogjobHandle : public litesql::RelationHandle<JobLog> {
+    public:
+        LogjobHandle(const JobLog& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobJobLogRelationJobJobLog::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Created;
+    litesql::Field<litesql::DateTime> created;
+    static const litesql::FieldType Message;
+    litesql::Field<std::string> message;
+protected:
+    void defaults();
+public:
+    JobLog(const litesql::Database& db);
+    JobLog(const litesql::Database& db, const litesql::Record& rec);
+    JobLog(const JobLog& obj);
+    const JobLog& operator=(const JobLog& obj);
+    JobLog::LogjobHandle logjob();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<JobLog> upcast();
+    std::auto_ptr<JobLog> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, JobLog o);
 class JobDetail : public litesql::Persistent {
 public:
     class Own {

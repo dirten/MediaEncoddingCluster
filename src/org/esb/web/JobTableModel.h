@@ -19,8 +19,9 @@ namespace org {
         JobTableModel(std::vector<db::Job> jobs);
         JobTableModel(const JobTableModel& orig);
         virtual ~JobTableModel();
+        void refresh(std::vector<db::Job> jobs);
       private:
-
+        void setModelData(std::vector<db::Job> jobs);
       };
 
     }

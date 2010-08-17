@@ -13,6 +13,7 @@
 #include <Wt/WBreak>
 #include <Wt/Ext/Button>
 #include <Wt/WTree>
+#include <Wt/WFitLayout>
 
 namespace org {
   namespace esb {
@@ -20,15 +21,16 @@ namespace org {
 
       FileChooser::FileChooser(std::string title, std::string path) : Wt::Ext::Dialog(title) {
         resize(400, 400);
-
+        //setLayout(new Wt::WFitLayout());
         tree = new FileTreeTable("/", filter, contents());
-        tree->resize(380, 300);
-        new Wt::WBreak(contents());
-        Wt::WTable * b = new Wt::WTable(contents());
-        Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel", b->elementAt(0, 0));
-        Wt::Ext::Button *save = new Wt::Ext::Button("Select File", b->elementAt(0, 1));
-        cancel->clicked.connect(SLOT(this, FileChooser::cancel));
-        save->clicked.connect(SLOT(this, FileChooser::select));
+//        tree->resize(380, 300);
+        setAutoScrollBars(true);
+        addButton(new Wt::Ext::Button("Select File"));
+        buttons().back()->clicked.connect(SLOT(this, FileChooser::select));
+
+        addButton(new Wt::Ext::Button("Cancel"));
+        buttons().back()->clicked.connect(SLOT(this, FileChooser::cancel));
+
       }
       FileChooser::~FileChooser(){
         delete tree;

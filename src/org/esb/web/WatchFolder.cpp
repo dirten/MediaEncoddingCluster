@@ -33,14 +33,12 @@ namespace org {
           using namespace org::esb::config;
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
-          _user_id = user_id;
 
-          //          tab = new SqlTable(std::string("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile"));
           list<ColumnConfig> cc;
           cc.push_back(ColumnConfig(db::Watchfolder::Id,"Id",20));
           cc.push_back(ColumnConfig(db::Watchfolder::Infolder,"Input Folder",200));
           cc.push_back(ColumnConfig(db::Watchfolder::Outfolder,"Output Folder",200));
-          //	  tab=DbTable(cc, "SELECT Watchfolder.id_,infolder_, outfolder_, extensionfilter_, Profile_.name from Watchfolder_, Profile_ where Profile_.id_=profile");
+
           tab=new DbTable(cc, litesql::Expr());
           tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
           tab->setTopToolBar(new Wt::Ext::ToolBar());
@@ -123,9 +121,7 @@ namespace org {
           */
         }
 
-        ~WatchFolder() {
-
-        }
+       
       void createWatchFolder() {
           _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
           _db->verbose=true;
@@ -139,65 +135,23 @@ namespace org {
       }
       private:
         Wt::Ext::Button * buttonEdit;
-        Wt::Ext::Button * buttonNew;
         Wt::Ext::Button * buttonDelete;
-        Wt::Ext::Button * buttonSave;
-        Wt::Ext::Dialog * indirectoryChooser;
-        Wt::Ext::Dialog * outdirectoryChooser;
-        Wt::Ext::Button * selectInDirectory;
-        Wt::Ext::Button * selectOutDirectory;
-//        Wt::Ext::Dialog * d;
         DbTable * tab;
-        Wt::WText * msg;
-        int _user_id;
-        //        DirectoryFileFilter filter;
-        FileTreeTable * intree;
-        FileTreeTable * outtree;
-        std::map<std::string, std::string> sqldata;
-        std::map<std::string, Wt::Ext::LineEdit*> elements;
 
-        map<std::string, int> name2id;
-        map<int, std::string> id2name;
-        std::map<int, int> profileid2profileidx;
-        Wt::Ext::ComboBox * profiles;
-        Wt::Ext::Button * encode;
         boost::shared_ptr<db::Watchfolder> _wf;
         boost::shared_ptr<db::HiveDb> _db;
 
-        void openInDirectoryChooser() {
-          indirectoryChooser->show();
-        }
-
-        void openOutDirectoryChooser() {
-          outdirectoryChooser->show();
-        }
-
         void enableEditButton() {
-          //          logdebug("Tab" << tab->selectedRows()[0]);
-          /*
-          int d = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
-          SqlUtil::sql2map("watch_folder", d, sqldata);
-          std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
-          for (; it != elements.end(); it++) {
-          if((*it).first == "profile")
-          ((Wt::Ext::ComboBox*)(*it).second)->setCurrentIndex(profileid2profileidx[atoi(sqldata[(*it).first].c_str())]);
-          else
-          (*it).second->setText(sqldata[(*it).first]);
-          }*/
           buttonEdit->setEnabled(true);
         }
 
         void editWatchFolder() {
-//          d = new Wt::Ext::Dialog("Watchfolder");
-//          d->resize(480, 200);
           int id = atoi(boost::any_cast<string > (tab->getModel()->data(tab->selectedRows()[0], 0)).c_str());
           _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
           
           _db->verbose=true;
           _wf=boost::shared_ptr<db::Watchfolder>(new db::Watchfolder(litesql::select<db::Watchfolder>(*_db.get(),db::Watchfolder::Id==id).one()));
           WatchfolderForm * pf = new WatchfolderForm(*_wf.get());
-//          pf->setWatchfolder(*_wf.get());
-          //          pf->saved.connect(SLOT(d, Wt::Ext::Dialog::accept));
           pf->saved.connect(SLOT(this, WatchFolder::folderSaved));
           pf->canceled.connect(SLOT(pf, Wt::Ext::Dialog::accept));
 
@@ -205,16 +159,14 @@ namespace org {
         }
         void folderSaved() {
           LOGDEBUG("save");
-          //          tab->reload("SELECT watch_folder.id,infolder, outfolder, extension_filter, profile_name from watch_folder, profiles where profiles.id=profile");
           _wf->update();
-          tab->reload();
-          
+          tab->reload();          
         }
+        /*
         void newWatchFolder() {
           std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
           for (; it != elements.end(); it++) {
             (*it).second->setText("");
-            //            (*it).second->setEnabled(true);
           }
           buttonSave->setEnabled(true);
           selectInDirectory->setEnabled(true);
@@ -240,35 +192,8 @@ namespace org {
             FileTreeTableNode * node = (FileTreeTableNode*) * it;
             elements["outfolder"]->setText(node->path_.string());
           }
-        }
+        }*/
 
-        void saveMap() {
-          std::map<std::string, std::string> data;
-          std::map<std::string, Wt::Ext::LineEdit*>::iterator it = elements.begin();
-          data["id"] = elements["id"]->text().narrow();
-          data["infolder"] = elements["infolder"]->text().narrow();
-          data["outfolder"] = elements["outfolder"]->text().narrow();
-          data["profile"] = Decimal(name2id[elements["profile"]->text().narrow()]).toString();
-          /*
-          for (; it != elements.end(); it++) {
-          data[(*it).first] = (*it).second->text().narrow();
-          }
-          */
-          SqlUtil::map2sql("watch_folder", data);
-          msg->setText("Data Saved");
-        }
-
-        Wt::Ext::LineEdit * buildElement(std::string name, std::string label, Wt::WTable * table, int row) {
-          Wt::WLabel * elementLabel = new Wt::WLabel(label, table->elementAt(row, 0));
-          table->elementAt(row, 0)->resize(Wt::WLength(14, Wt::WLength::FontEx), Wt::WLength());
-          Wt::Ext::LineEdit * element = new Wt::Ext::LineEdit(table->elementAt(row, 1));
-          element->setText(config::Config::getProperty((char*) name.c_str()));
-          element->resize(Wt::WLength(50, Wt::WLength::FontEx), Wt::WLength());
-          elementLabel->setBuddy(element);
-          element->setText(sqldata[name]);
-          elements[name] = element;
-          return element;
-        }
       };
     }
   }

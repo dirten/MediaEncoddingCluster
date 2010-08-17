@@ -19,13 +19,13 @@ PacketOutputStream::PacketOutputStream(OutputStream * os) {
   _fmtCtx->preload = (int) (0.5 * AV_TIME_BASE);
   _fmtCtx->max_delay = (int) (0.7 * AV_TIME_BASE);
   _fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
-  _isInitialized=false;
+  _isInitialized = false;
 }
 
 void PacketOutputStream::close() {
-  if(_isInitialized)
+  if (_isInitialized)
     av_write_trailer(_fmtCtx);
-  _isInitialized=false;
+  _isInitialized = false;
 }
 
 PacketOutputStream::~PacketOutputStream() {
@@ -36,11 +36,11 @@ PacketOutputStream::~PacketOutputStream() {
 bool first_packet = true;
 
 void PacketOutputStream::writePacket(Packet & packet) {
-	if (!_isInitialized&&first_packet){
-		LOGERROR("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
-//	    throw runtime_error("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
-		return;
-	}
+  if (!_isInitialized) {
+    if (first_packet)
+      LOGERROR("PacketOutputStream not initialized!!! You must call init() before using writePacket(Packet & packet)");
+    return;
+  }
   if (streams.size() <= packet.getStreamIndex()) {
     LOGERROR("there is no stream associated to packet.stream_index #" << packet.getStreamIndex());
     return;
@@ -108,7 +108,7 @@ void PacketOutputStream::writePacket(Packet & packet) {
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
   if (false && first_packet && packet.getStreamIndex() == 0) {
-//    logdebug("writing first packet");
+    //    logdebug("writing first packet");
     first_packet = false;
     AVPacket p;
     av_init_packet(&p);
@@ -118,25 +118,27 @@ void PacketOutputStream::writePacket(Packet & packet) {
     p.size = 0;
     p.data = NULL;
     int result = av_write_frame(_fmtCtx, &p);
-//    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
+    //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-    LOGTRACE(packet.toString());
+  LOGTRACE(packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
-//  int result = av_write_frame(_fmtCtx, packet.packet);
-  if (result != 0){
+  //  int result = av_write_frame(_fmtCtx, packet.packet);
+  if (result != 0) {
     LOGDEBUG("av_interleaved_write_frame Result:" << result);
-//    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
+    //    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
   }
-	first_packet = false;
+  first_packet = false;
 }
 
 void PacketOutputStream::setEncoder(Codec & encoder) {
   setEncoder(encoder, 0);
 }
-std::list<AVStream*> PacketOutputStream::getStreamList(){
-	return streams;
+
+std::list<AVStream*> PacketOutputStream::getStreamList() {
+  return streams;
 }
+
 void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   //    AVStream * st=av_new_stream(_fmtCtx,_fmtCtx->nb_streams);
   AVStream * st = av_new_stream(_fmtCtx, stream_id);

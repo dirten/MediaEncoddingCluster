@@ -66,11 +66,15 @@ namespace org{
         setTopToolBar(new Wt::Ext::ToolBar());
 
         Wt::Ext::Button * addFilterButton = topToolBar()->addButton("Add Filter");
+        addFilterButton->setIcon("icons/add-icon.png");
         topToolBar()->addSeparator();
         editFilterButton = topToolBar()->addButton("Edit Filter");
+        editFilterButton->setIcon("icons/edit-icon.png");
         editFilterButton->setEnabled(false);
         topToolBar()->addSeparator();
         removeFilterButton = topToolBar()->addButton("Remove Filter");
+        removeFilterButton->setIcon("icons/remove-icon.png");
+
         removeFilterButton->setEnabled(false);
 
         addFilterButton->clicked.connect(SLOT(this, FilterPanel::addFilter));

@@ -58,6 +58,10 @@ namespace org {
                 void packetWriter();
                 boost::shared_ptr<org::esb::av::Decoder> _dec;
                 boost::shared_ptr<org::esb::av::Encoder> _enc;
+                std::map<int, boost::shared_ptr<org::esb::av::Decoder> > _decoder_list;
+                std::map<int, boost::shared_ptr<org::esb::av::Encoder> > _encoder_list;
+                std::map<int, org::esb::av::FrameConverter *  > _converter_list;
+                std::map<int, bool> _swap_codec_list;
                 org::esb::av::FrameConverter * _conv;
             };
         }

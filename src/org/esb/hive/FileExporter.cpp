@@ -39,10 +39,20 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   }
   filename += "/";
   filename += outfile.filename;
-
+  db::Job job=outfile.jobsout().get().one();
   org::esb::io::File fout(filename.c_str());
   if(fout.exists()){
     LOGDEBUG("File exist:"<<filename);
+
+    db::JobLog log(job.getDatabase());
+    std::string message="could not export the file ";
+    message+=filename;
+    message+=" -- file allready exist on the traget!";
+    log.message=message;
+    log.update();
+    job.joblog().link(log);
+    job.status="failed";
+    job.update();
     return;
   }
 
@@ -59,7 +69,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   /*openning the OutputStreams*/
   FormatOutputStream * fos = new FormatOutputStream(&fout, outfile.containertype.value().c_str());
   PacketOutputStream * pos = new PacketOutputStream(fos);
-
+  
   vector<db::Stream> streams=outfile.streams().get().all();
   vector<db::Stream>::iterator stream_it=streams.begin();
   litesql::Or expr((db::ProcessUnit::Targetstream>0),litesql::Expr());
@@ -67,15 +77,19 @@ void FileExporter::exportFile(db::MediaFile outfile) {
 
   for(int a=0;stream_it!=streams.end();stream_it++){
     db::Stream stream=(*stream_it);
+    db::JobDetail d=stream.jobsout().get().one();
+    LOGDEBUG(d);
+    db::Stream inStream=d.inputstream().get().one();
+
     boost::shared_ptr<Encoder> codec = CodecFactory::getStreamEncoder(stream.id);
     if(codec->open()){
       pos->setEncoder(*codec, a);
       sql_expr+=StringUtil::toString(stream.id.value());
       sql_expr+=", ";
       
-      _source_stream_map[stream.streamindex].last_timestamp = 0;
-      _source_stream_map[stream.streamindex].next_timestamp = 0;
-      _source_stream_map[stream.streamindex].out_stream_index=a;
+      _source_stream_map[inStream.streamindex].last_timestamp = 0;
+      _source_stream_map[inStream.streamindex].next_timestamp = 0;
+      _source_stream_map[inStream.streamindex].out_stream_index=stream.streamindex;
       a++;
     }
   }
@@ -105,12 +119,28 @@ void FileExporter::exportFile(db::MediaFile outfile) {
       org::esb::io::File infile(name.c_str());
       if (!infile.exists()) {
         LOGERROR(infile.getFileName() << ": not found, this may lead in a resulting audio/video desync");
+        if(false){
+        db::JobLog log(job.getDatabase());
+        std::string message=infile.getFileName();
+        message+=": not found, this may lead in a resulting audio/video desync";
+        log.message=message;
+        log.update();
+        job.joblog().link(log);
+        }
         continue;
       }
       org::esb::io::FileInputStream fis(&infile);
       org::esb::io::ObjectInputStream ois(&fis);
       org::esb::hive::job::ProcessUnit pu;
       if (ois.readObject(pu) != 0) {
+        if(false){
+        db::JobLog log(job.getDatabase());
+        std::string message=infile.getFileName();
+        message+=": error reading archive!";
+        log.message=message;
+        log.update();
+        job.joblog().link(log);
+        }
         LOGERROR("reading archive # " << pu_id);
         continue;
       }
@@ -150,7 +180,14 @@ void FileExporter::exportFile(db::MediaFile outfile) {
       fis.close();
 //      infile.deleteFile();
     }
-
+    if(true){
+    db::JobLog log(job.getDatabase());
+    std::string message=filename;
+    message+=" exported.";
+    log.message=message;
+    log.update();
+    job.joblog().link(log);
+    }
   pos->close();
   fos->close();
 

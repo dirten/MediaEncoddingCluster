@@ -37,7 +37,6 @@ namespace org {
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
           u->_gop_size = list.size() ;//- _map_data[idx].b_frame_offset;
           u->_frameRateCompensateBase = _map_data[idx].frameRateCompensateBase;
-
           AVRational input_framerate = u->_decoder->getFrameRate();
           AVRational output_framerate = u->_encoder->getFrameRate();
 

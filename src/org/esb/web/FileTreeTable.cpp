@@ -38,7 +38,7 @@ FileTreeTable::FileTreeTable(const boost::filesystem::path& path,org::esb::io::F
     setTreeRoot(new FileTreeTableNode(path, filter), "File");
     using namespace Wt;
     
-    tree()->setSelectionMode(SingleSelection);
+    tree()->setSelectionMode(ExtendedSelection);
     treeRoot()->setImagePack("icons/");
     treeRoot()->expand();
     

@@ -21,6 +21,7 @@ namespace org{
         Wt::Signal<void>doubleClicked;
         Wt::Signal<void>clicked;
         Wt::Signal<void>selectionChanged;
+        void refresh();
       private:
         std::string sql;
         DbTableModel* model;
