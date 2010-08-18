@@ -272,6 +272,7 @@
                 </delete>
                 <move file="${mybasedir}/source/build/lib/xvidcore.a" tofile="${mybasedir}/source/build/lib/libxvidcore.a" failonerror="false"/>
                 <patch patchfile="src/patch/ffmpeg_avformat_http.patch" dir="source/ffmpeg" strip="0"/>
+                <patch patchfile="src/patch/ffmpeg_configure.patch" dir="source/ffmpeg" strip="0"/>
 
                 <exec executable="sh" dir="source/ffmpeg" failonerror="yes">
                   <arg line="
