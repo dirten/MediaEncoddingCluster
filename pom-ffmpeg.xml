@@ -294,7 +294,8 @@
                     --enable-runtime-cpudetect
                     --enable-gpl
 		        ${EXTRA_FFMPEG_CONFIGURATION}
-		        ${EXTRA_CONFIGURATION}
+		        --disable-shared
+                --enable-static
                     "/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>
