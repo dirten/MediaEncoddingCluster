@@ -16,14 +16,21 @@
       <directory>source/build/ffmpeg/lib</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/*</include>
+        <include>**/*.so</include>
+        <include>**/libavcodec.dylib</include>
+        <include>**/libavcore.dylib</include>
+        <include>**/libavdevice.dylib</include>
+        <include>**/libavfilter.dylib</include>
+        <include>**/libavformat.dylib</include>
+        <include>**/libavutil.dylib</include>
+        <include>**/libavswscale.dylib</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>source/build/lib</directory>
+      <directory>source/build/bin</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/*.a</include>
+        <include>**/*.dll</include>
       </includes>
     </fileSet>
 <!--    <fileSet>

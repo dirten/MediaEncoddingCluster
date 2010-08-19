@@ -129,8 +129,8 @@
                 <get src="http://downloads.xvid.org/downloads/xvidcore-1.2.2.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://webm.googlecode.com/files/libvpx-0.9.1.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
 
-                <bunzip2 src="source/nasm-2.06rc16.tar.bz2" dest="source"/>
-                <gunzip src="source/yasm-0.8.0.tar.gz" dest="source"/>
+                <bunzip2 src="source/nasm-2.09rc6.tar.bz2" dest="source"/>
+                <gunzip src="source/yasm-1.1.0.tar.gz" dest="source"/>
                 <bunzip2 src="source/ffmpeg-export-snapshot.tar.bz2" dest="source"/>
                 <bunzip2 src="source/x264${x264.version}.tar.bz2" dest="source"/>
                 <gunzip src="source/lame-398-2.tar.gz" dest="source"/>
@@ -138,13 +138,13 @@
                 <bunzip2 src="source/libtheora-1.0.tar.bz2" dest="source"/>
                 <gunzip src="source/speex-1.0.5.tar.gz" dest="source"/>
                 <gunzip src="source/libvorbis-1.2.0.tar.gz" dest="source"/>
-                <gunzip src="source/xvidcore-1.2.1.tar.gz" dest="source"/>
+                <gunzip src="source/xvidcore-1.2.2.tar.gz" dest="source"/>
                 <bunzip2 src="source/libvpx-0.9.1.tar.bz2" dest="source"/>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf nasm-2.06rc16.tar"/>
+                  <arg line="-xf nasm-2.09rc6.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf yasm-0.8.0.tar"/>
+                  <arg line="-xf yasm-1.1.0.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf ffmpeg-export-snapshot.tar --strip=1 --directory=ffmpeg"/>
@@ -168,7 +168,7 @@
                   <arg line="-xf libvorbis-1.2.0.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf xvidcore-1.2.1.tar"/>
+                  <arg line="-xf xvidcore-1.2.2.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf libvpx-0.9.1.tar"/>
@@ -179,17 +179,17 @@
                 </pathconvert>
                 <echo message="using basedir: ${mybasedir}"/>
 
-                <exec executable="sh" dir="source/nasm-2.06rc16" failonerror="yes">
-                  <arg line="${mybasedir}/source/nasm-2.06rc16/configure --prefix=${mybasedir}/source/build/nasm"/>
+                <exec executable="sh" dir="source/nasm-2.09rc6" failonerror="yes">
+                  <arg line="${mybasedir}/source/nasm-2.09rc6/configure --prefix=${mybasedir}/source/build/nasm"/>
                 </exec>
-                <exec executable="make" dir="source/nasm-2.06rc16">
+                <exec executable="make" dir="source/nasm-2.09rc6">
                   <arg line="install"/>
                 </exec>
 
-                <exec executable="sh" dir="source/yasm-0.8.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/yasm-0.8.0/configure --prefix=${mybasedir}/source/build/yasm"/>
+                <exec executable="sh" dir="source/yasm-1.1.0" failonerror="yes">
+                  <arg line="${mybasedir}/source/yasm-1.1.0/configure --prefix=${mybasedir}/source/build/yasm"/>
                 </exec>
-                <exec executable="make" dir="source/yasm-0.8.0">
+                <exec executable="make" dir="source/yasm-1.1.0">
                   <arg line="install"/>
                 </exec>
 
