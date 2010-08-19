@@ -49,7 +49,7 @@ add_library (db db/hivedb.cpp
 #            av/StreamInfo.cpp
 #
 )
-TARGET_LINK_LIBRARIES(db  ${MYSQL_LIBRARY} )
+TARGET_LINK_LIBRARIES(db z ${MYSQL_LIBRARY} )
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
 ELSEIF(WIN32)
