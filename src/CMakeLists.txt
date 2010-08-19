@@ -226,7 +226,6 @@ ELSE(APPLE)
     )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
-      ${BREAKPAD_DIR}/lib/libbreakpad.so
       ${FFMPEG_DIR}/lib/libavdevice.so.52
       ${FFMPEG_DIR}/lib/libavformat.so.52
       ${FFMPEG_DIR}/lib/libavutil.so.50

@@ -147,7 +147,7 @@ bool MyDumpSender(const char *dump_path,
 
 StackDumper::StackDumper(std::string dmp_path) 
  {
-exhandler=new google_breakpad::ExceptionHandler(
+exhandler=boost::shared_ptr<google_breakpad::ExceptionHandler>(new google_breakpad::ExceptionHandler(
 #ifndef __WIN32__
 dmp_path,
 #elif defined __WIN32__
@@ -168,7 +168,7 @@ google_breakpad::ExceptionHandler::HANDLER_ALL
 #if defined(__APPLE__)
 ,NULL
 #endif
-);
+));
 }
 #ifdef WIN32
 

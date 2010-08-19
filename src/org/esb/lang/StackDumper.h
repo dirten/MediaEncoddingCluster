@@ -8,7 +8,8 @@
 
 #ifndef _STACKDUMPER_H
 #define	_STACKDUMPER_H
-#include "org/esb/lang/Ptr.h"
+
+#include "boost/shared_ptr.hpp"
 #include "org/esb/util/Log.h"
 namespace google_breakpad{
   class ExceptionHandler;
@@ -20,7 +21,7 @@ public:
       classlogger("org.esb.lang.Stackdumper")
 
 private:
-    Ptr<google_breakpad::ExceptionHandler> exhandler;
+    boost::shared_ptr<google_breakpad::ExceptionHandler> exhandler;
 #ifdef __WIN32__
     bool DumpSender(const wchar_t* dump_path,
             const wchar_t* minidump_id,
