@@ -127,7 +127,7 @@
             <id>clean</id>
             <configuration>
               <tasks>
-                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="no">
                   <arg line="clean"/>
                 </exec>
               </tasks>
@@ -234,7 +234,7 @@
     <dependency>
       <groupId>org.esb.ffmpeg</groupId>
       <artifactId>ffmpeg</artifactId>
-      <version>0.3</version>
+      <version>0.4</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

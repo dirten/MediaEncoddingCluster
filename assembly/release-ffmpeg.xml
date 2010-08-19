@@ -16,7 +16,8 @@
       <directory>source/build/ffmpeg/lib</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/libavcodec.52.dylib</include>
+        <include>**/*</include>
+<!--        <include>**/libavcodec.52.dylib</include>
         <include>**/libavcore.0.dylib</include>
         <include>**/libavdevice.52.dylib</include>
         <include>**/libavfilter.1.dylib</include>
@@ -30,7 +31,7 @@
         <include>**/libavfilter.so.1</include>
         <include>**/libavformat.so.52</include>
         <include>**/libavutil.so.50</include>
-        <include>**/libavswscale.so.0</include>
+        <include>**/libavswscale.so.0</include>-->
       </includes>
     </fileSet>
     <fileSet>
