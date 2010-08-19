@@ -152,6 +152,9 @@ true
 #elif defined __WIN32__
 google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
+#if defined(__APPLE__)
+NULL;
+#endif
 ) {
   //  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
 }

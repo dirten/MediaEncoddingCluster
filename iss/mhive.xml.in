@@ -190,6 +190,29 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/mectl</origin>
                         </distributionFile>
+                    </distributionFileList>
+                    <shortcutList>
+                        <shortcut>
+                            <comment>Uninstall</comment>
+                            <exec>${installdir}/${uninstallerName}</exec>
+                            <icon></icon>
+                            <name>Uninstall ${product_fullname}</name>
+                            <path>${installdir}</path>
+                            <platforms>all</platforms>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                            <windowsExecArgs></windowsExecArgs>
+                            <windowsIcon></windowsIcon>
+                            <windowsPath>${installdir}</windowsPath>
+                        </shortcut>
+                    </shortcutList>
+                </folder>
+                <folder>
+                    <description>Program Libraries</description>
+                    <destination>${installdir}/lib</destination>
+                    <name>programlibraries</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libswscale.so.0</origin>
                         </distributionFile>
@@ -208,24 +231,10 @@
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavcore.so.0</origin>
                         </distributionFile>
-
                     </distributionFileList>
-                    <shortcutList>
-                        <shortcut>
-                            <comment>Uninstall</comment>
-                            <exec>${installdir}/${uninstallerName}</exec>
-                            <icon></icon>
-                            <name>Uninstall ${product_fullname}</name>
-                            <path>${installdir}</path>
-                            <platforms>all</platforms>
-                            <runInTerminal>0</runInTerminal>
-                            <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
-                            <windowsExecArgs></windowsExecArgs>
-                            <windowsIcon></windowsIcon>
-                            <windowsPath>${installdir}</windowsPath>
-                        </shortcut>
-                    </shortcutList>
                 </folder>
+                
+
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
