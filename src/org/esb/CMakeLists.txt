@@ -368,7 +368,7 @@ ENDIF(WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb util sql)
+TARGET_LINK_LIBRARIES(esb util db)
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS esb
     RUNTIME DESTINATION bin
