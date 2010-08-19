@@ -32,9 +32,10 @@ LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
 
 IF(BUILD_TESTING)
   IF(WIN32)
-    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
+    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/lib" )
   ELSEIF(APPLE)
-    SET( ENV{DYLD_LIBRARY_PATH} "${FFMPEG_DIR}/lib" )  
+    SET( ENV{DYLD_LIBRARY_PATH} "${FFMPEG_DIR}/lib" )
+  
   ENDIF(WIN32)
   add_subdirectory (org)
 ENDIF(BUILD_TESTING)
