@@ -153,7 +153,7 @@ true
 google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
 #if defined(__APPLE__)
-NULL;
+,NULL;
 #endif
 ) {
   //  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
