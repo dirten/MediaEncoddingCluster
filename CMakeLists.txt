@@ -148,7 +148,7 @@ ENDIF(LIBCRYPTO)
 # Setup build Defines
 #
 ############################################################
-SET(BUILD_SHARED_LIBS On)
+SET(BUILD_SHARED_LIBS Off)
 IF(UNIX)
   ADD_DEFINITIONS(-D__UNIX__)
   IF(APPLE)

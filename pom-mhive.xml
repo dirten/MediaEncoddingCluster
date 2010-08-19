@@ -130,6 +130,9 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="no">
                   <arg line="clean"/>
                 </exec>
+                <exec executable="rm" dir="${project.basedir}" failonerror="no">
+                  <arg line=" -rf build"/>
+                </exec>
               </tasks>
             </configuration>
             <goals>
@@ -234,7 +237,7 @@
     <dependency>
       <groupId>org.esb.ffmpeg</groupId>
       <artifactId>ffmpeg</artifactId>
-      <version>0.4</version>
+      <version>0.5</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
