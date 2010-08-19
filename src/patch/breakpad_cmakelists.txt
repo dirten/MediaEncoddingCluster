@@ -170,6 +170,7 @@ if (UNIX)
             src/client/mac/handler/exception_handler.cc
             src/client/mac/handler/minidump_generator.cc
             src/client/mac/handler/protected_memory_allocator.cc
+	    src/client/mac/crash_generation/crash_generation_client.cc
 #            src/common/mac/dump_syms.mm
 #            src/common/mac/macho_reader.cc
 #            src/common/module.cc
