@@ -159,6 +159,7 @@
                     -DWT_DIR=${project.build.directory}/dependency
                     -DBUILD_TESTING=On
                     -DBREAKPAD_DIR=${project.build.directory}/dependency
+                    -DINSTALLBUILDER_EXE=${env.INSTALLBUILDER_EXE}
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
@@ -188,12 +189,26 @@
             </goals>
           </execution>
           <execution>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <id>install</id>
             <configuration>
               <tasks>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="install"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>package</phase>
+            <id>package</id>
+            <configuration>
+              <tasks>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="release"/>
                 </exec>
               </tasks>
             </configuration>
@@ -230,7 +245,7 @@
     <dependency>
       <groupId>org.esb.breakpad</groupId>
       <artifactId>breakpad</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

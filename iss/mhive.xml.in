@@ -182,14 +182,33 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhive</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhive</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhiveservice</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhiveservice</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/src/mectl</origin>
+                            <origin>${mhive_src_dir}/install/bin/mectl</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libswscale.so.0</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavcodec.so.52</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavdevice.so.52</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavformat.so.52</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavutil.so.50</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavcore.so.0</origin>
+                        </distributionFile>
+
                     </distributionFileList>
                     <shortcutList>
                         <shortcut>
@@ -214,28 +233,31 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhiveservice.exe</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhiveservice.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhive.exe</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mysql_dir}/Embedded/DLL/release/libmysqld.dll</origin>
+                            <origin>${mysql_dir}/lib/libmysqld.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/bin/swscale-0.dll</origin>
+                            <origin>${ffmpeg_dir}/lib/swscale-0.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/bin/avcodec-52.dll</origin>
+                            <origin>${ffmpeg_dir}/lib/avcodec-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/bin/avdevice-52.dll</origin>
+                            <origin>${ffmpeg_dir}/lib/avdevice-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/bin/avformat-52.dll</origin>
+                            <origin>${ffmpeg_dir}/lib/avformat-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/bin/avutil-50.dll</origin>
+                            <origin>${ffmpeg_dir}/lib/avutil-50.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/avcore-0.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -254,6 +276,25 @@
                         <distributionFile>
                             <origin>${mhive_build_dir}/src/mhiveservice</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libswscale.0.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavcodec.52.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavdevice.52.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavformat.52.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavutil.50.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${ffmpeg_dir}/lib/libavcore.0.dylib</origin>
+                        </distributionFile>
+
                     </distributionFileList>
                     <shortcutList>
                         <shortcut>
@@ -305,12 +346,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/sql/config.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/sql/hive-0.0.3.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/sql/hive-0.0.4.sql</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/sql/profiles.txt</origin>
