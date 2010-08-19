@@ -1,6 +1,18 @@
 #include <string>
 
 #include "StackDumper.h"
+#ifndef __WIN32__
+#ifdef __APPLE__
+#include "client/mac/handler/exception_handler.h"
+#else
+#include "client/linux/handler/exception_handler.h"
+#include "common/linux/google_crashdump_uploader.h"
+#endif
+#elif defined __WIN32__
+#include "client/windows/handler/exception_handler.h"
+//#include "client/windows/sender/crash_report_sender.h"
+#endif
+
 #include "org/esb/util/Log.h"
 #ifndef __WIN32__
 
@@ -133,8 +145,9 @@ bool MyDumpSender(const char *dump_path,
 }
 #endif
 
-StackDumper::StackDumper(std::string dmp_path) :
-exhandler(
+StackDumper::StackDumper(std::string dmp_path) 
+ {
+exhandler=new google_breakpad::ExceptionHandler(
 #ifndef __WIN32__
 dmp_path,
 #elif defined __WIN32__
@@ -155,8 +168,7 @@ google_breakpad::ExceptionHandler::HANDLER_ALL
 #if defined(__APPLE__)
 ,NULL
 #endif
-) {
-  //  exhandler->WriteMinidump(".",&MyDumpSender,NULL);
+);
 }
 #ifdef WIN32
 
