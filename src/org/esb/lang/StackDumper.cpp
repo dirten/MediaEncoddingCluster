@@ -170,18 +170,6 @@ google_breakpad::ExceptionHandler::HANDLER_ALL
 #endif
 ));
 }
-#ifdef WIN32
-
-bool StackDumper::DumpSender(const wchar_t* dump_path,
-    const wchar_t* minidump_id,
-    void* context,
-    EXCEPTION_POINTERS* exinfo,
-    MDRawAssertionInfo* assertion,
-    bool succeeded) {
-  LOGDEBUG("Sending CrashReport");
-  return true;
-}
-#endif
 
 StackDumper::~StackDumper() {
 
