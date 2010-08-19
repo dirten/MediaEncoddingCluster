@@ -38,16 +38,6 @@ TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVUTIL_LIBRARY}
   ${FFMPEG_SWSCALE_LIBRARY}
   ${BZ2_LIB}
-  avcore
-  vorbis
-  vorbisenc
-  ogg
-  vpx
-  xvidcore
-  x264
-  mp3lame
-  theoradec
-  theoraenc
 )
 IF(NOT WIN32)
 #	target_link_libraries (av x264 pthread vorbis vorbisenc ogg xvidcore mp3lame theora theoraenc theoradec z )
