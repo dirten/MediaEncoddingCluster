@@ -1,8 +1,7 @@
 #ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 #add_definitions(/DBOOST_AUTO_LINK_NOMANGLE)
-add_definitions(-DBOOST_LIB_DIAGNOSTIC)
-#add_definitions(/DBOOST_LIB_DIAGNOSTIC)
+#add_definitions(-DBOOST_LIB_DIAGNOSTIC)
 #add_definitions(/DBOOST_ALL_NO_LIB)
 add_subdirectory (org)
 
