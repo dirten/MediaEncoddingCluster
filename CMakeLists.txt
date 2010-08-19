@@ -148,7 +148,7 @@ ENDIF(LIBCRYPTO)
 # Setup build Defines
 #
 ############################################################
-SET(BUILD_SHARED_LIBS Off)
+SET(BUILD_SHARED_LIBS On)
 IF(UNIX)
   ADD_DEFINITIONS(-D__UNIX__)
   IF(APPLE)
@@ -237,7 +237,7 @@ SET(LOG4CPLUS_DIR ${USERLIB_ROOT} CACHE PATH "Log4cplus libraries")
 SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
-SET(ICE_DIR ${USERLIB_ROOT} CACHE PATH "Ice Grid Directory")
+SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 
@@ -252,12 +252,13 @@ ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
 IF(WIN32)
   INSTALL(FILES "c:/vcredist_x86.exe" DESTINATION . )
   SET( ISS_SOURCE_PATH ${CMAKE_INSTALL_PREFIX})
-  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/setup.iss.in ${PROJECT_SOURCE_DIR}/iss/setup.iss)
+#  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/setup.iss.in ${PROJECT_SOURCE_DIR}/iss/setup.iss)
 ENDIF(WIN32)
-  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/mhive.xml @ONLY)
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/mhive.xml @ONLY)
 
 
-SET(DEFAULT_DATABASE_HOST "localhost")
+SET(DEFAULT_DATABASE_HOST "127.0.0.1")
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 include_directories (${MYSQL_DIR}/include/litesql)
 #include_directories (${MYSQL_DIR}/include/litesql/litesql)
@@ -265,12 +266,12 @@ include_directories (${MYSQL_DIR}/include/litesql)
 add_subdirectory (src)
 add_subdirectory (test)
 #add_subdirectory (ice)
-IF(BUILD_TESTING)
-  IF(WIN32)
-    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
-  ENDIF(WIN32)
+#IF(BUILD_TESTING)
+#  IF(WIN32)
+#    SET( ENV{PATH} "$ENV{PATH}\;${MYSQL_DIR}/Embedded/DLL/release\;${FFMPEG_DIR}/bin" )
+#  ENDIF(WIN32)
 #  add_subdirectory (tests)
-ENDIF(BUILD_TESTING)
+#ENDIF(BUILD_TESTING)
 
 
 INCLUDE(CPack)

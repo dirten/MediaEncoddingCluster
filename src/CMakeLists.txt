@@ -27,12 +27,12 @@ LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavcodec)
 ##LINK_DIRECTORIES(${FFMPEG_DIR}/libavutil)
@@ -149,6 +149,9 @@ add_custom_target(uploadsymbols
   COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
   COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://${SOCORRO_HOST}/symupload.php
 )
+add_custom_target(release
+  COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
+)
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin
@@ -191,46 +194,57 @@ IF(NOT WIN32)
   )
 ENDIF(NOT WIN32)
 
-IF(WIN32)
-INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
-  DESTINATION ./bin
-  )
-INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-  DESTINATION ./res
-  )
-INSTALL(FILES
-	${FFMPEG_DIR}/bin/avcodec-52.dll
-	${FFMPEG_DIR}/bin/avdevice-52.dll
-	${FFMPEG_DIR}/bin/avformat-52.dll
-	${FFMPEG_DIR}/bin/avutil-50.dll
-	${FFMPEG_DIR}/bin/swscale-0.dll
-  DESTINATION ./bin
-  )
+IF(NOT WIN32)
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/lib/libavcodec.so.52
+#      ${BREAKPAD_DIR}/lib/libbreakpad.so
+#      ${FFMPEG_DIR}/lib/libavdevice.so.52
+#      ${FFMPEG_DIR}/lib/libavformat.so.52
+#      ${FFMPEG_DIR}/lib/libavutil.so.50
+#      ${FFMPEG_DIR}/lib/libswscale.so.0
+#    DESTINATION ./lib
+#    )
+ENDIF(NOT WIN32)
+  IF(WIN32)
+  INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
+    DESTINATION ./bin
+    )
+  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+    DESTINATION ./res
+    )
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/bin/avcodec-52.dll
+#      ${FFMPEG_DIR}/bin/avdevice-52.dll
+#      ${FFMPEG_DIR}/bin/avformat-52.dll
+#      ${FFMPEG_DIR}/bin/avutil-50.dll
+#      ${FFMPEG_DIR}/bin/swscale-0.dll
+#    DESTINATION ./bin
+#    )
 ELSEIF(APPLE)
-INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-  DESTINATION ./res
-  )
-INSTALL(FILES
-	${FFMPEG_DIR}/lib/libavcodec.dylib
-	${FFMPEG_DIR}/lib/libavdevice.dylib
-	${FFMPEG_DIR}/lib/libavformat.dylib
-	${FFMPEG_DIR}/lib/libavutil.dylib
-	${FFMPEG_DIR}/lib/libswscale.dylib
-  DESTINATION ./bin
-)
+  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+    DESTINATION ./res
+    )
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/lib/libavcodec.dylib
+#      ${FFMPEG_DIR}/lib/libavdevice.dylib
+#      ${FFMPEG_DIR}/lib/libavformat.dylib
+#      ${FFMPEG_DIR}/lib/libavutil.dylib
+#      ${FFMPEG_DIR}/lib/libswscale.dylib
+#    DESTINATION ./bin
+#  )
 ELSE(APPLE)
-INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-  DESTINATION ./res
-  )
-INSTALL(FILES 
-	${FFMPEG_DIR}/lib/libavcodec.so.52
-	${BREAKPAD_DIR}/lib/libbreakpad.so
-	${FFMPEG_DIR}/lib/libavdevice.so.52
-	${FFMPEG_DIR}/lib/libavformat.so.52
-	${FFMPEG_DIR}/lib/libavutil.so.50
-	${FFMPEG_DIR}/lib/libswscale.so.0
-  DESTINATION ./lib
-  )
+  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+    DESTINATION ./res
+    )
+#  INSTALL(FILES
+#      ${FFMPEG_DIR}/lib/libavcodec.so.52
+#      ${BREAKPAD_DIR}/lib/libbreakpad.so
+#      ${FFMPEG_DIR}/lib/libavdevice.so.52
+#      ${FFMPEG_DIR}/lib/libavformat.so.52
+#      ${FFMPEG_DIR}/lib/libavutil.so.50
+#      ${FFMPEG_DIR}/lib/libswscale.so.0
+#    DESTINATION ./lib
+#    )
 
 ENDIF(WIN32)
 

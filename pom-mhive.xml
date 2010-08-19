@@ -123,68 +123,80 @@
         </dependencies>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <phase>clean</phase>
+            <id>clean</id>
             <configuration>
               <tasks>
-                <mkdir dir="build"/>
-                <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="
-                    -G ${CMAKE_MAKE_PROGRAM}
-                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/install 
-                    -DCMAKE_BUILD_TYPE=${build_type} 
-                    -DSHARED_LIBS=Off 
-                    -DBOOST_DIR=${project.build.directory}/dependency 
-                    -DBOOST_COMPILER=${GCC_VERSION} 
-                    -DFFMPEG_DIR=${project.build.directory}/dependency 
-                    -DLOG4CPLUS_DIR=${project.build.directory}/dependency 
-                    -DMYSQL_DIR=${project.build.directory}/dependency 
-                    -DWT_DIR=${project.build.directory}/dependency 
-                    -DBUILD_TESTING=On
-                    -DBREAKPAD_DIR=${project.build.directory}/dependency  
-                    .."/>
-                </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="all"/>
+                  <arg line="clean"/>
                 </exec>
-		<copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>
-		
-                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
-                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin"/>
-                  <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin"/>
-                  <arg line="test"/>
-                </exec>
-                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="install"/>
-                </exec>
-
-                <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
-                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam"/>
-                <exec executable="tools/jam/stage/bin.${target}/bjam" dir="source/boost_1_36_0">
-                  <arg line=""/>
-                </exec>
--->
               </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
           <execution>
-            <id>build-release</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attached</goal>
-            </goals>
+            <phase>compile</phase>
+            <id>compile</id>
             <configuration>
-              <descriptors>
-                <descriptor>assembly/release-wt.xml</descriptor>
-              </descriptors>
+              <tasks>
+                <mkdir dir="build"/>
+                <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="
+                    -G ${CMAKE_MAKE_PROGRAM}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/install
+                    -DCMAKE_BUILD_TYPE=${build_type}
+                    -DSHARED_LIBS=Off
+                    -DBOOST_DIR=${project.build.directory}/dependency
+                    -DBOOST_COMPILER=${GCC_VERSION}
+                    -DFFMPEG_DIR=${project.build.directory}/dependency
+                    -DLOG4CPLUS_DIR=${project.build.directory}/dependency
+                    -DMYSQL_DIR=${project.build.directory}/dependency
+                    -DWT_DIR=${project.build.directory}/dependency
+                    -DBUILD_TESTING=On
+                    -DBREAKPAD_DIR=${project.build.directory}/dependency
+                    .."/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="all"/>
+                </exec>
+              </tasks>
             </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>test</phase>
+            <id>test</id>
+            <configuration>
+              <tasks>
+                <copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
+                  <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin"/>
+                  <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin"/>
+                  <arg line="test"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>install</phase>
+            <id>install</id>
+            <configuration>
+              <tasks>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="install"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -222,9 +234,9 @@
     <dependency>
       <groupId>org.esb.ffmpeg</groupId>
       <artifactId>ffmpeg</artifactId>
-      <version>0.0</version>
+      <version>0.1</version>
       <type>zip</type>
-      <classifier>${my.family}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
       <groupId>org.esb.log4cplus</groupId>

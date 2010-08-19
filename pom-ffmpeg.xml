@@ -278,8 +278,6 @@
                   <arg line="
 			  ${mybasedir}/source/ffmpeg/configure
                     --prefix=${mybasedir}/source/build/ffmpeg
-                    --disable-static
-                    --enable-shared
                     --extra-cflags=-I${mybasedir}/source/build/include
                     --extra-ldflags=-L${mybasedir}/source/build/lib
                     --enable-libxvid

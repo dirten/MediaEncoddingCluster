@@ -20,11 +20,18 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>source/build/lib</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>**/*.a</include>
+      </includes>
+    </fileSet>
+<!--    <fileSet>
       <directory>source/build/ffmpeg/bin</directory>
       <outputDirectory>bin</outputDirectory>
       <includes>
         <include>**/*</include>
       </includes>
-    </fileSet>
+    </fileSet>-->
   </fileSets>
 </assembly>
