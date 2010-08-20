@@ -18,7 +18,6 @@
       <includes>
         <include>**/*.so*</include>
         <include>**/*.dylib*</include>
-        <include>**/*.lib</include>
 <!--        <include>**/libavcodec.52.dylib</include>
         <include>**/libavcore.0.dylib</include>
         <include>**/libavdevice.52.dylib</include>
@@ -41,6 +40,7 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <include>**/*.dll</include>
+        <include>**/*.lib</include>
       </includes>
     </fileSet>
 <!--    <fileSet>
