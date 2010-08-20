@@ -74,7 +74,9 @@ SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PAT
 IF(CMAKE_BUILD_TYPE MATCHES "Debug")
   ADD_DEFINITIONS(-DDEBUG)
 ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
-
+IF(CMAKE_BUILD_TYPE MATCHES "release")
+  SET(CMAKE_BUILD_TYPE RelWithDebInfo)
+ENDIF(NOT CMAKE_BUILD_TYPE)
 ############################################################
 #
 # Settings for the CPAck Packaging
