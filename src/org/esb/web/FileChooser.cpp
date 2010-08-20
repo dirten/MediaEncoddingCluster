@@ -44,7 +44,7 @@ namespace org {
           //          logdebug("Folder in set");
           FileTreeTableNode * node = (FileTreeTableNode*) * it;
           org::esb::io::File path = org::esb::io::File(node->path_.string());
-          this->accept();
+//          this->accept();
           selected.emit(path);
           
           //          logdebug(node->path_);

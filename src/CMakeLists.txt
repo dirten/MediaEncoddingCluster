@@ -201,12 +201,12 @@ IF(WIN32)
     DESTINATION ./res
     )
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/avcodec-52.dll
-      ${FFMPEG_DIR}/lib/avcore-0.dll
-      ${FFMPEG_DIR}/lib/avdevice-52.dll
-      ${FFMPEG_DIR}/lib/avformat-52.dll
-      ${FFMPEG_DIR}/lib/avutil-50.dll
-      ${FFMPEG_DIR}/lib/swscale-0.dll
+      ${FFMPEG_DIR}/bin/avcodec-52.dll
+#      ${FFMPEG_DIR}/bin/avcore-0.dll
+      ${FFMPEG_DIR}/bin/avdevice-52.dll
+      ${FFMPEG_DIR}/bin/avformat-52.dll
+      ${FFMPEG_DIR}/bin/avutil-50.dll
+      ${FFMPEG_DIR}/bin/swscale-0.dll
     DESTINATION ./bin
     )
 ELSEIF(APPLE)

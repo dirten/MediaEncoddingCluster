@@ -77,7 +77,7 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
 IF(CMAKE_BUILD_TYPE MATCHES "release")
   SET(CMAKE_BUILD_TYPE RelWithDebInfo)
   MESSAGE(${CMAKE_BUILD_TYPE})
-ENDIF(NOT CMAKE_BUILD_TYPE)
+ENDIF(CMAKE_BUILD_TYPE MATCHES "release")
 ############################################################
 #
 # Settings for the CPAck Packaging

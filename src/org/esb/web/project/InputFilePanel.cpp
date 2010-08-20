@@ -105,6 +105,7 @@ namespace org {
       void InputFilePanel::setInputFile(org::esb::io::File file) {
         LOGDEBUG("try import file"<<file.getPath());
         int result=import(file);
+        _chooser->accept();
         Wt::Ext::Dialog * dialog=new Wt::Ext::Dialog();
         std::string message=file.getFileName();
           if(result>0){
