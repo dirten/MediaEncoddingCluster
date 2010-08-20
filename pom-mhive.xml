@@ -13,6 +13,7 @@
         </os>
       </activation>
       <properties>
+        <win32/>
         <my.family>win32</my.family>
         <GCC_VERSION>-vc90</GCC_VERSION>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
@@ -141,10 +142,24 @@
           </execution>
           <execution>
             <phase>compile</phase>
+            <id>dowload-support</id>
+            <configuration>
+              <tasks if="win32">
+                <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
+                <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
             <id>compile</id>
             <configuration>
               <tasks>
                 <mkdir dir="build"/>
+
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
