@@ -34,6 +34,8 @@
 #ifndef COMMON_WINDOWS_HTTP_UPLOAD_H__
 #define COMMON_WINDOWS_HTTP_UPLOAD_H__
 
+
+#ifdef __WIN32__
 #pragma warning( push )
 // Disable exception handler warnings.
 #pragma warning( disable : 4530 ) 
@@ -127,4 +129,5 @@ class StackDumpUploader {
 
 #pragma warning( pop )
 
-#endif  // COMMON_WINDOWS_HTTP_UPLOAD_H__
+#endif
+#endif
