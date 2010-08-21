@@ -222,6 +222,11 @@
             <id>package</id>
             <configuration>
               <tasks>
+			<chmod>
+			      <fileset>
+			        <include dir="${project.build.directory}/dependency/bin" name="dump_syms" perm="+x" />
+			      </fileset>
+		    </chmod>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="uploadsymbols"/>
                 </exec>
