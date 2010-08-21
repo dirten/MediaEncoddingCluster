@@ -251,6 +251,8 @@ ADD_DEFINITIONS(-DHAVE_A_OUT_H)
 
     endif (APPLE)
     add_executable(dump_syms ${SOURCES_DUMPSYMS})
+    target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad)
+
 endif (UNIX)
 
 
