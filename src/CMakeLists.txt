@@ -136,17 +136,20 @@ ENDIF(WIN32)
 
 
 SET(CURL_CMD curl)
+SET(ZIP_CMD gzip)
 SET(MHIVE_DBGSYM mhive)
 SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
 IF(WIN32)
   SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+  SET(ZIP_CMD "${PROJECT_SOURCE_DIR}/win32/gzip.exe")
   SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
   SET(MHIVE_DBGSYM mhive.pdb)
 ENDIF(WIN32)
 
 add_custom_target(uploadsymbols
   COMMAND ${DUMPSYM_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${MHIVE_DBGSYM} > ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
-  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym -F system=linux http://${SOCORRO_HOST}/symupload.php
+  COMMAND ${ZIP_CMD} -f ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
+  COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym.gz -F system=linux http://codergrid.de/symupload.php
 )
 add_custom_target(release
   COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
