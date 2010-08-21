@@ -10,7 +10,7 @@
 #endif
 #elif defined __WIN32__
 #include "client/windows/handler/exception_handler.h"
-//#include "client/windows/sender/crash_report_sender.h"
+#include "client/windows/sender/crash_report_sender.h"
 #endif
 
 #include "org/esb/util/Log.h"
@@ -23,7 +23,7 @@
 #endif
 
 #ifdef __WIN32__
-/*
+
 bool MyDumpSender(const wchar_t* dump_path,
     const wchar_t* minidump_id,
     void* context,
@@ -68,7 +68,7 @@ bool MyDumpSender(const wchar_t* dump_path,
   std::string result(wresult.begin(), wresult.end());
   LOGDEBUG("CrashReport sended : " << result << ":::" << r);
   return true;
-}*/
+}
 #elif defined __LINUX__
 
 bool MyDumpSender(const char *dump_path,
@@ -155,7 +155,7 @@ std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 NULL,
 #if defined(__LINUX__) || defined(__WIN32__)
-NULL,
+&MyDumpSender,
 #else
 NULL,
 #endif

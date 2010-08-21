@@ -189,10 +189,10 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     job.joblog().link(log);
     }
   pos->close();
-  fos->close();
 
   outfile.filesize=(double)fos->_fmtCtx->file_size;
   outfile.update();
+  fos->close();
 
   delete pos;
   delete fos;
