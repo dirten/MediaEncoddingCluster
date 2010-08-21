@@ -248,26 +248,26 @@
                             <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mysql_dir}/lib/libmysqld.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/libmysqld.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/swscale-0.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/swscale-0.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/avcodec-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avcodec-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/avdevice-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avdevice-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/avformat-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avformat-52.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/avutil-50.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/avcore-0.dll</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
