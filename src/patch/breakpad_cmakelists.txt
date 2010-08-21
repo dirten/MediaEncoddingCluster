@@ -202,7 +202,7 @@ if (UNIX)
         )
     else (APPLE)
         SET(SOURCES  ${SOURCES}
-           src/client/linux/sender/google_crash_report_sender.cc
+           src/common/linux/google_crashdump_uploader.cc
            src/client/linux/crash_generation/crash_generation_client.cc 
 	   src/client/linux/crash_generation/crash_generation_server.cc 
 	   src/client/linux/handler/exception_handler.cc 
