@@ -264,7 +264,7 @@
     <dependency>
       <groupId>org.esb.breakpad</groupId>
       <artifactId>breakpad</artifactId>
-      <version>1.3</version>
+      <version>1.4</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
