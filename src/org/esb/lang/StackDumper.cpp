@@ -10,7 +10,7 @@
 #endif
 #elif defined __WIN32__
 #include "client/windows/handler/exception_handler.h"
-#include "client/windows/sender/crash_report_sender.h"
+#include "StackDumpUploader.h"
 #endif
 
 #include "org/esb/util/Log.h"
@@ -63,10 +63,13 @@ bool MyDumpSender(const wchar_t* dump_path,
   para[wv] = wver;
   para[wb] = wbid;
   std::wstring wresult;
-  google_breakpad::CrashReportSender sender(std::wstring(chkpfile.begin(), chkpfile.end()));
-  google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
+  int report_code;
+//  org::esb::lang::StackDumpUploader sender(std::wstring(chkpfile.begin(), chkpfile.end()));
+  org::esb::lang::StackDumpUploader::SendRequest(std::wstring(url.begin(), url.end()), para, dumpfile, L"upload_file_minidump", NULL, &wresult, &report_code);
+
+//  google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
   std::string result(wresult.begin(), wresult.end());
-  LOGDEBUG("CrashReport sended : " << result << ":::" << r);
+  LOGDEBUG("CrashReport sended : " << result << ":::" << report_code);
   return true;
 }
 #elif defined __LINUX__

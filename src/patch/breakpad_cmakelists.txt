@@ -128,9 +128,13 @@ if (UNIX)
 endif(UNIX)
 
 if (WIN32)
+INCLUDE_DIRECTORIES(
+    src/third_party/glog/glog/src/windows
+)
+
     SET(SOURCES  ${SOURCES}
         src/common/windows/guid_string.cc
-#        src/common/windows/http_upload.cc
+        src/common/windows/http_upload.cc
         src/client/windows/crash_generation/client_info.cc
         src/client/windows/crash_generation/crash_generation_client.cc
         src/client/windows/crash_generation/crash_generation_server.cc

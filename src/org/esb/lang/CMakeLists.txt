@@ -9,6 +9,7 @@ SET(lang_source
     Thread.cpp
     Exception.cpp
     StackDumper.cpp
+    StackDumpUploader.cpp
     CtrlCHitWaiter.cpp
 )
 IF(NOT WIN32)
