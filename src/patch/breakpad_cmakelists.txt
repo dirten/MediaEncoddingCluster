@@ -149,18 +149,31 @@ if (UNIX)
      
                 INCLUDE_DIRECTORIES(/Developer/Headers/FlatCarbon)
         INCLUDE_DIRECTORIES(src/common/mac)
+    ADD_DEFINITIONS(-DHAVE_MACH_O_NLIST_H)
 
         FIND_LIBRARY(COCOA_LIBRARY COCOA)
         MARK_AS_ADVANCED(COCOA_LIBRARY)
         SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
         set(SOURCES_DUMPSYMS ${SOURCES_DUMPSYMS}
-          src/common/mac/dwarf/bytereader.cc
-          src/common/mac/dwarf/functioninfo.cc
-          src/common/mac/dwarf/dwarf2reader.cc
+          src/common/dwarf/bytereader.cc
+          src/common/dwarf/functioninfo.cc
+          src/common/dwarf/dwarf2reader.cc
+          src/common/dwarf/dwarf2reader.cc
           src/common/mac/macho_utilities.cc
-            src/common/mac/file_id.cc
+          src/common/mac/file_id.cc
+          src/common/dwarf_cfi_to_module.cc
+          src/common/dwarf/dwarf2reader.cc
+          src/common/dwarf/dwarf2diehandler.cc
+          src/common/dwarf_cu_to_module.cc
+          src/common/dwarf_line_to_module.cc
           src/common/mac/macho_id.cc
+          src/common/module.cc
+          src/common/stabs_reader.cc
+          src/common/language.cc
+          src/common/stabs_to_module.cc
+          src/common/mac/macho_reader.cc
           src/common/mac/macho_walker.cc
+          src/common/mac/dump_syms.mm
           src/tools/mac/dump_syms/dump_syms_tool.mm
         )
 
@@ -232,7 +245,7 @@ IF(UNIX AND NOT APPLE)
 ENDIF(UNIX AND NOT APPLE)
 
 target_link_libraries(breakpad ${EXTRA_LIBS})
-#target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad)
+target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad)
 
 INSTALL(TARGETS breakpad
   RUNTIME DESTINATION bin
