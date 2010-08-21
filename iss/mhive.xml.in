@@ -228,9 +228,9 @@
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavutil.so.50</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavcore.so.0</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 
@@ -300,9 +300,9 @@
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavutil.50.dylib</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavcore.0.dylib</origin>
-                        </distributionFile>
+                        </distributionFile>-->
 
                     </distributionFileList>
                     <shortcutList>
