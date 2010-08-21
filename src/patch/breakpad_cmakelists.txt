@@ -234,6 +234,8 @@ if (UNIX)
 
     endif (APPLE)
     add_executable(dump_syms ${SOURCES_DUMPSYMS})
+    target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad)
+
 endif (UNIX)
 
 
@@ -245,7 +247,6 @@ IF(UNIX AND NOT APPLE)
 ENDIF(UNIX AND NOT APPLE)
 
 target_link_libraries(breakpad ${EXTRA_LIBS})
-target_link_libraries(dump_syms ${EXTRA_LIBS} breakpad)
 
 INSTALL(TARGETS breakpad
   RUNTIME DESTINATION bin
