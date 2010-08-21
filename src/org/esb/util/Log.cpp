@@ -59,6 +59,7 @@ Log::~Log() {
 }
 
 void Log::open(std::string path) {
+  //Log::logger= log4cplus::Logger::getInstance("trace");
   if (path.length() > 0) {
 //    std::cout <<"logpath:"<< path<<std::endl;
     path.append("/logging.properties");

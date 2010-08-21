@@ -79,7 +79,7 @@ class StackDumpUploader::AutoInternetHandle {
 };
 
 // static
-bool StackDumpUploader::SendRequest(const wstring &url,
+bool StackDumpUploader::SendRequest(const string &url,
                              const map<wstring, wstring> &parameters,
                              const wstring &upload_file,
                              const wstring &file_part_name,
@@ -98,6 +98,7 @@ bool StackDumpUploader::SendRequest(const wstring &url,
   if (true) {
     for (std::map<wstring, wstring>::const_iterator it = parameters.begin();
       it != parameters.end(); ++it) {
+        std::wcout<<"\t\t" << it->first.c_str() << " = " << it->second.c_str() <<std::endl;
         LOGDEBUG("\t\t" << it->first.c_str() << " = " << it->second.c_str());
     }
   }

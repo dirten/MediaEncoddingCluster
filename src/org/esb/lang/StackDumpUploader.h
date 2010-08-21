@@ -69,7 +69,7 @@ class StackDumpUploader {
   // the response body will be returned in response_body.
   // If response_code is non-NULL, it will be set to the HTTP response code
   // received (or 0 if the request failed before getting an HTTP response).
-  static bool SendRequest(const wstring &url,
+  static bool SendRequest(const string &url,
                           const map<wstring, wstring> &parameters,
                           const wstring &upload_file,
                           const wstring &file_part_name,

@@ -30,11 +30,11 @@ bool MyDumpSender(const wchar_t* dump_path,
     EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion,
     bool succeeded) {
-  return true;
+//  return true;
   LOGDEBUG("Sending CrashReport");
   std::string chkpfile = "checkpoint.txt";
 
-  std::string url = "http://188.40.40.157/submit";
+  std::string url = "http://188.40.40.157/submit.php";
   std::wstring dumpfile = dump_path;
   std::string t = "/";
   std::string d = ".";
@@ -63,13 +63,16 @@ bool MyDumpSender(const wchar_t* dump_path,
   para[wv] = wver;
   para[wb] = wbid;
   std::wstring wresult;
-  int report_code;
+  int report_code=0;
+  int timeout=10;
+  std::wstring wurl=std::wstring(url.begin(), url.end());
+  std::wcout << url.data() << std::endl;
 //  org::esb::lang::StackDumpUploader sender(std::wstring(chkpfile.begin(), chkpfile.end()));
-  org::esb::lang::StackDumpUploader::SendRequest(std::wstring(url.begin(), url.end()), para, dumpfile, L"upload_file_minidump", NULL, &wresult, &report_code);
+  int ret=org::esb::lang::StackDumpUploader::SendRequest(url, para, dumpfile, L"upload_file_minidump", &timeout, &wresult, &report_code);
 
 //  google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
   std::string result(wresult.begin(), wresult.end());
-  LOGDEBUG("CrashReport sended : " << result << ":::" << report_code);
+  LOGDEBUG("CrashReport sended : " << result << ":::" << report_code <<":"<<ret);
   return true;
 }
 #elif defined __LINUX__
@@ -158,8 +161,10 @@ std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 NULL,
 #if defined(__LINUX__) || defined(__WIN32__)
+#pragma message("compile with dumphandler")
 &MyDumpSender,
 #else
+#pragma message("compile without dumphandler")
 NULL,
 #endif
 NULL,
