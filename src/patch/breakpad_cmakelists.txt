@@ -154,9 +154,9 @@ if (UNIX)
         MARK_AS_ADVANCED(COCOA_LIBRARY)
         SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
         set(SOURCES_DUMPSYMS ${SOURCES_DUMPSYMS}
-#          src/common/mac/dwarf/bytereader.cc
-#          src/common/mac/dwarf/functioninfo.cc
-#          src/common/mac/dwarf/dwarf2reader.cc
+          src/common/mac/dwarf/bytereader.cc
+          src/common/mac/dwarf/functioninfo.cc
+          src/common/mac/dwarf/dwarf2reader.cc
           src/common/mac/macho_utilities.cc
             src/common/mac/file_id.cc
           src/common/mac/macho_id.cc
