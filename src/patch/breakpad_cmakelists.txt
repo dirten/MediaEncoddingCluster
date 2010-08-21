@@ -208,22 +208,22 @@ if (UNIX)
 #            src/common/md5.c
            )
 
-#    set(SOURCES_DUMPSYMS ${SOURCES_DUMPSYMS}
-#      src/common/linux/dump_symbols.cc
-#      src/common/linux/stabs_reader.cc
-#      src/common/linux/module.cc
-#      src/common/linux/guid_creator.cc
-#      src/common/linux/file_id.cc
-#      src/common/md5.c
-#      src/tools/linux/dump_syms/dump_syms.cc
-#    )
+    set(SOURCES_DUMPSYMS ${SOURCES_DUMPSYMS}
+      src/common/linux/dump_symbols.cc
+      src/common/linux/stabs_reader.cc
+      src/common/linux/module.cc
+      src/common/linux/guid_creator.cc
+      src/common/linux/file_id.cc
+      src/common/md5.c
+      src/tools/linux/dump_syms/dump_syms.cc
+    )
+    add_executable(minidump_stackwalk ${SOURCES_PROCESSOR_STACKWALK})
 
     endif (APPLE)
+    add_executable(dump_syms ${SOURCES_DUMPSYMS})
 endif (UNIX)
 
-#add_executable(dump_syms ${SOURCES_DUMPSYMS})
 
-#add_executable(minidump_stackwalk ${SOURCES_PROCESSOR_STACKWALK})
 
 add_library(breakpad ${SOURCES})
 
