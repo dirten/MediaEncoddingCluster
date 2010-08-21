@@ -223,6 +223,9 @@
             <configuration>
               <tasks>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
+                  <arg line="uploadsymbols"/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="release"/>
                 </exec>
               </tasks>
