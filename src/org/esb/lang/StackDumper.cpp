@@ -98,6 +98,7 @@ bool MyDumpSender(const char *dump_path,
     curl_slist_free_all(headerlist);
   }
   LOGDEBUG("sended");
+  return true;
 }
 
 StackDumper::StackDumper(std::string dmp_path) 
