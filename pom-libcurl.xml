@@ -69,7 +69,7 @@
   </profiles>
   <groupId>org.esb.libcurl</groupId>
   <artifactId>libcurl</artifactId>
-  <version>7.21.1</version>
+  <version>7.21.1-1</version>
   <name>libcurl</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -139,7 +139,7 @@
                 </pathconvert>
 
                 <exec executable="sh" dir="source/curl-7.21.1" failonerror="yes">
-                  <arg line="${mybasedir}/source/curl-7.21.1/configure --prefix=${mybasedir}/source/build/curl --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/curl-7.21.1/configure --prefix=${mybasedir}/source/build/curl --disable-static --enable-shared"/>
                 </exec>
                 <exec executable="make" dir="${project.basedir}/source/curl-7.21.1" failonerror="yes">
                 </exec>
