@@ -41,7 +41,7 @@ bool MyDumpSender(const char *dump_path,
   std::string file(id.begin(), id.end());
   file.append(".dmp");
 #else
-  std::wstring wpath=dump_path;
+  
   std::string path=dump_path;
   path.append("/");
   std::string file=minidump_id;
