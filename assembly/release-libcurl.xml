@@ -16,7 +16,7 @@
       <directory>source/build/curl/lib</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>**/*.a</include>
+        <include>**/*</include>
       </includes>
     </fileSet>
     <fileSet>
