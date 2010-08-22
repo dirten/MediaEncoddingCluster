@@ -10,6 +10,7 @@ FIND_LIBRARY(CURL_LIBRARY
       curldll
       libcurldll
       libcurl
+      curl
     PATHS
       ${CURL_DIR}/lib
     NO_DEFAULT_PATH
