@@ -30,7 +30,7 @@ bool MyDumpSender(const char *dump_path,
     void *context,
     bool succeeded) {
 #endif
-  return true;
+  
   LOGDEBUG("Sending CrashReport");
   std::string url = "http://188.40.40.157/submit.php";
 #ifdef __WIN32__
