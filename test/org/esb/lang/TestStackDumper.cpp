@@ -1,6 +1,6 @@
 #include "org/esb/lang/StackDumper.h"
 //#include "client/linux/handler/exception_handler.h"
-
+#include "org/esb/util/Log.h"
 int die() {
   char * t;
   sprintf(t,"%s", "bla");
@@ -11,12 +11,14 @@ int die() {
 
 using std::wstring;
 int main() {
+  Log::open("");
   StackDumper * d=new StackDumper(".");
 
 
   char * t=new char[100000];
   char test[1000000];
   /*only for hand testing*/
-  //die();
+  
+  die();
   return 0;
 }
