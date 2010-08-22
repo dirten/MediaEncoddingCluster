@@ -147,7 +147,8 @@
               <tasks if="win32">
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
-              </tasks>
+                <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurldll.lib"/>
+		  </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -174,6 +175,7 @@
                     -DWT_DIR=${project.build.directory}/dependency
                     -DBUILD_TESTING=On
                     -DBREAKPAD_DIR=${project.build.directory}/dependency
+                    -DCURL_DIR=${project.build.directory}/dependency
                     -DINSTALLBUILDER_EXE=${env.INSTALLBUILDER_EXE}
                     .."/>
                 </exec>
@@ -286,6 +288,13 @@
       <groupId>org.esb.litesql</groupId>
       <artifactId>litesql</artifactId>
       <version>0.3.8-beta-patch-2</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.libcurl</groupId>
+      <artifactId>libcurl</artifactId>
+      <version>7.21.1-1</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

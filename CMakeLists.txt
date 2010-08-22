@@ -42,6 +42,7 @@ endif()
 MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
 INCLUDE(cmake/HiveFindMysql.txt)
+INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
 
@@ -241,6 +242,7 @@ SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
 SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
 SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
+SET(CURL_DIR "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 

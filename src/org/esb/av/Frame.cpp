@@ -164,10 +164,11 @@ Frame::Frame(PixelFormat format, int width, int height, bool allocate) {
     _size = numBytes;
     _buffer = (uint8_t*) av_malloc(numBytes);
     _allocated = true;
-
-    memset(_buffer, 0, numBytes);
+    if(numBytes>0){
+      memset(_buffer, 0, numBytes);
     // Assign appropriate parts of buffer to image planes
-    avpicture_fill((AVPicture*) framePtr.get(), _buffer, format, width, height);
+      avpicture_fill((AVPicture*) framePtr.get(), _buffer, format, width, height);
+    }
   }
 }
 /*
@@ -323,6 +324,10 @@ AVRational Frame::getStorageAspectRatio(){
 }
 
 void Frame::setPixelAspectRatio(AVRational par) {
+  if(par.num<1)
+    par.num=1;
+  if(par.den<1)
+    par.den=1;
   _pixel_aspect_ratio = par;
 }
 

@@ -1,5 +1,7 @@
 #include <string>
 
+#include <curl/curl.h>
+
 #include "StackDumper.h"
 #ifndef __WIN32__
 #ifdef __APPLE__
@@ -10,17 +12,9 @@
 #endif
 #elif defined __WIN32__
 #include "client/windows/handler/exception_handler.h"
-#include "StackDumpUploader.h"
 #endif
 
 #include "org/esb/util/Log.h"
-#ifndef __WIN32__
-
-#include <curl/curl.h>
-#include <curl/types.h>
-#include <curl/easy.h>
-//#define OWNCURL
-#endif
 
 #ifdef __WIN32__
 
@@ -30,74 +24,24 @@ bool MyDumpSender(const wchar_t* dump_path,
     EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion,
     bool succeeded) {
-//  return true;
-  LOGDEBUG("Sending CrashReport");
-  std::string chkpfile = "checkpoint.txt";
-
-  std::string url = "http://188.40.40.157/submit.php";
-  std::wstring dumpfile = dump_path;
-  std::string t = "/";
-  std::string d = ".";
-  std::string dmp = "dmp";
-  std::string p = "ProductName";
-  std::string v = "Version";
-  std::string b = "BuildID";
-  std::string product = "MediaEncodingCluster";
-  std::string version = "0.0.4.5";
-  std::string buildid = __DATE__ "-" __TIME__;
-
-  std::wstring wpro(product.begin(), product.end());
-  std::wstring wver(version.begin(), version.end());
-  std::wstring wbid(buildid.begin(), buildid.end());
-  std::wstring wp(p.begin(), p.end());
-  std::wstring wv(v.begin(), v.end());
-  std::wstring wb(b.begin(), b.end());
-
-  dumpfile.append(std::wstring(t.begin(), t.end()));
-  dumpfile.append(minidump_id);
-  dumpfile.append(std::wstring(d.begin(), d.end()));
-  dumpfile.append(std::wstring(dmp.begin(), dmp.end()));
-  LOGDEBUG(std::string(dumpfile.begin(), dumpfile.end()));
-  std::map<std::wstring, std::wstring> para;
-  para[wp] = wpro;
-  para[wv] = wver;
-  para[wb] = wbid;
-  std::wstring wresult;
-  int report_code=0;
-  int timeout=10;
-  std::wstring wurl=std::wstring(url.begin(), url.end());
-  std::wcout << url.data() << std::endl;
-//  org::esb::lang::StackDumpUploader sender(std::wstring(chkpfile.begin(), chkpfile.end()));
-  int ret=org::esb::lang::StackDumpUploader::SendRequest(url, para, dumpfile, L"upload_file_minidump", &timeout, &wresult, &report_code);
-
-//  google_breakpad::ReportResult r = sender.SendCrashReport(std::wstring(url.begin(), url.end()), para, dumpfile, &wresult);
-  std::string result(wresult.begin(), wresult.end());
-  LOGDEBUG("CrashReport sended : " << result << ":::" << report_code <<":"<<ret);
-  return true;
-}
-#elif defined __LINUX__
-
+#else
 bool MyDumpSender(const char *dump_path,
     const char *minidump_id,
     void *context,
     bool succeeded) {
+#endif
   return true;
   LOGDEBUG("Sending CrashReport");
   std::string url = "http://188.40.40.157/submit";
 
-  std::string path = dump_path;
+  std::wstring wpath=dump_path;
+  std::string path(wpath.begin(),wpath.end());
   path.append("/");
-  std::string file = minidump_id;
+  std::wstring id=minidump_id;
+  std::string file(id.begin(), id.end());
   file.append(".dmp");
   //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
-#ifndef OWNCURL
-  std::string buildid = __DATE__ "-" __TIME__;
-  google_breakpad::GoogleCrashdumpUploader sender("MediaEncodingCluster", "0.0.4.5", __DATE__ "-" __TIME__, "", "", "email", "comments", path.append(file).c_str(), url.c_str(), "", "");
-  sender.Upload();
-
-
-#else
 
   CURL *curl;
   CURLcode res;
@@ -108,7 +52,7 @@ bool MyDumpSender(const char *dump_path,
   static const char buf[] = "Expect:";
 
   curl_global_init(CURL_GLOBAL_ALL);
-  logdebug("Post file" << path.append(file));
+  LOGDEBUG("Post file" << path.append(file));
   /* Fill in the file upload field */
   curl_formadd(&formpost,
       &lastptr,
@@ -146,10 +90,8 @@ bool MyDumpSender(const char *dump_path,
     /* free slist */
     curl_slist_free_all(headerlist);
   }
-  logdebug("sended");
-#endif
+  LOGDEBUG("sended");
 }
-#endif
 
 StackDumper::StackDumper(std::string dmp_path) 
  {
