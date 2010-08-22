@@ -19,6 +19,6 @@ int main() {
   char test[1000000];
   /*only for hand testing*/
   
-  die();
+  //die();
   return 0;
 }
