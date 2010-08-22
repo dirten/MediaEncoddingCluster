@@ -32,14 +32,21 @@ bool MyDumpSender(const char *dump_path,
 #endif
   return true;
   LOGDEBUG("Sending CrashReport");
-  std::string url = "http://188.40.40.157/submit";
-
+  std::string url = "http://188.40.40.157/submit.php";
+#ifdef __WIN32__
   std::wstring wpath=dump_path;
   std::string path(wpath.begin(),wpath.end());
   path.append("/");
   std::wstring id=minidump_id;
   std::string file(id.begin(), id.end());
   file.append(".dmp");
+#else
+  std::wstring wpath=dump_path;
+  std::string path=dump_path;
+  path.append("/");
+  std::string file=minidump_id;
+  file.append(".dmp");
+#endif
   //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
 
