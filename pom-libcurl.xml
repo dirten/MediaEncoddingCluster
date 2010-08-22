@@ -136,7 +136,7 @@
                 <mkdir dir="source/curl-7.21.1/build"/>
 
                 <exec executable="sh" dir="source/curl-7.21.1/build" failonerror="yes">
-                  <arg line="${project.basedir}/source/curl-7.21.1/configure --prefix=${mybasedir}/source/build/curl --enable-static --disable-shared"/>
+                  <arg line="${project.basedir}/source/curl-7.21.1/configure --prefix=${project.basedir}/source/build/curl --enable-static --disable-shared"/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/curl-7.21.1/build" failonerror="yes">
                   <arg line="install"/>
