@@ -1,0 +1,15 @@
+FIND_PATH(CURL_INCLUDE_DIR
+    curl/curl.h
+  PATHS
+    ${CURL_DIR}/include
+  NO_DEFAULT_PATH
+)
+
+FIND_LIBRARY(CURL_LIBRARY
+    NAMES
+      curldll
+      libcurldll
+    PATHS
+      ${CURL_DIR}/lib
+    NO_DEFAULT_PATH
+  )
