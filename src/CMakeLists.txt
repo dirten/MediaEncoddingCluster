@@ -156,7 +156,7 @@ add_custom_target(uploadsymbols
 )
 MESSAGE("InstallBuilderExe $ENV{INSTALLBUILDER_EXE}")
 add_custom_target(release
-  COMMAND $ENV{INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
+  COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
 )
 
 INSTALL(TARGETS mhive
