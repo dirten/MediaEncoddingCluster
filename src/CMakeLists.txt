@@ -214,7 +214,7 @@ IF(WIN32)
       ${FFMPEG_DIR}/bin/avformat-52.dll
       ${FFMPEG_DIR}/bin/avutil-50.dll
       ${FFMPEG_DIR}/bin/swscale-0.dll
-      ${CURL_DIR}/bin/libcurl-4.dll
+      ${CURL_DIR}/lib/libcurl-4.dll
     DESTINATION ./bin
     )
 ELSEIF(APPLE)
