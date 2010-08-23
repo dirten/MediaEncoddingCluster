@@ -273,7 +273,7 @@
                             <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_lib_dir}/libcurl-4.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/libcurl-4.dll</origin>
                         </distributionFile>
                         <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/avcore-0.dll</origin>
@@ -309,9 +309,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavutil.50.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_lib_dir}/lib/libavutil.50.dylib</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_lib_dir}/libcurl.4.dylib</origin>
