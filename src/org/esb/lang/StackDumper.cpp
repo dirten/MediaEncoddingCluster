@@ -32,7 +32,7 @@ bool MyDumpSender(const char *dump_path,
 #endif
   
 //  LOGDEBUG("Sending CrashReport");
-  std::string url = "http://188.40.40.157/dump.php";
+  std::string url = "http://codergrid.de/dump.php";
 #ifdef __WIN32__
   std::wstring wpath=dump_path;
   std::string path(wpath.begin(),wpath.end());
