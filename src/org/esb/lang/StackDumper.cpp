@@ -31,8 +31,8 @@ bool MyDumpSender(const char *dump_path,
     bool succeeded) {
 #endif
   
-  LOGDEBUG("Sending CrashReport");
-  std::string url = "http://188.40.40.157/submit.php";
+//  LOGDEBUG("Sending CrashReport");
+  std::string url = "http://188.40.40.157/dump.php";
 #ifdef __WIN32__
   std::wstring wpath=dump_path;
   std::string path(wpath.begin(),wpath.end());
@@ -59,12 +59,14 @@ bool MyDumpSender(const char *dump_path,
   static const char buf[] = "Expect:";
 
   curl_global_init(CURL_GLOBAL_ALL);
-  LOGDEBUG("Post file" << path.append(file));
+  path.append(file);
   /* Fill in the file upload field */
+  LOGDEBUG("Post file from Path" << path);
+
   curl_formadd(&formpost,
       &lastptr,
       CURLFORM_COPYNAME, "upload_file_minidump",
-      CURLFORM_FILE, path.append(file).c_str(),
+      CURLFORM_FILE, path.c_str(),
       CURLFORM_END);
 
   /* Fill in the filename field */
@@ -98,6 +100,7 @@ bool MyDumpSender(const char *dump_path,
     curl_slist_free_all(headerlist);
   }
   LOGDEBUG("sended");
+
   return true;
 }
 
@@ -111,11 +114,9 @@ std::wstring(dmp_path.begin(), dmp_path.end()),
 #endif
 NULL,
 #if defined(__LINUX__) || defined(__WIN32__)
-#pragma message("compile with dumphandler")
 &MyDumpSender,
 #else
-#pragma message("compile without dumphandler")
-NULL,
+&MyDumpSender,
 #endif
 NULL,
 #ifndef __WIN32__

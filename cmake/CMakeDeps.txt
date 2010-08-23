@@ -1,0 +1,26 @@
+
+IF(NOT EXISTS ${PROJECT_SOURCE_DIR}/target1/dependency1)
+  FILE(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/target1/dependency1)
+ENDIF()
+
+#file(DOWNLOAD url file [TIMEOUT timeout] [STATUS status] [LOG log])
+
+
+
+MACRO (DOWNLOAD infile outfile)
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
+	           COMMAND ${FILE_TO_STRING_EXE}
+                   ARGS ${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}
+                        ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
+                        ${var}
+		   MAIN_DEPENDENCY
+		        ${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}
+                   DEPENDS
+		        filetostring)
+ENDMACRO (FILE_TO_STRING)
+
+FILE_TO_STRING(Plain.html    Plain_html.C    Plain_html)
+add_custom_target(deps
+  DOWNLOAD_PACKAGE test_src testtarget
+#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source
+)
