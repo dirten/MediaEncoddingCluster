@@ -13,6 +13,7 @@
 
 #include "org/esb/io/File.h"
 #include "org/esb/hive/FileImporter.h"
+#include "org/esb/hive/CodecFactory.h"
 #include "org/esb/hive/JobUtil.h"
 #include "config.h"
 #include "org/esb/config/config.h"
@@ -20,7 +21,8 @@
 using namespace org::esb::io;
 using namespace org::esb::hive;
 using namespace org::esb::config;
-bool running=true;
+bool running = true;
+
 void processUnitReader() {
   LOGDEBUG("starting void processUnitReader()");
   while (running) {
@@ -38,6 +40,7 @@ void processUnitReader() {
     }
   }
 }
+
 void processUnitAudioReader() {
   while (running) {
     Message msg;
@@ -56,73 +59,75 @@ void processUnitAudioReader() {
 
   }
 }
-int main(){
+
+int main() {
   Log::open("");
   std::string host = "host=";
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
   Config::setProperty("db.url", host.c_str());
-  std::string tmp=MEC_SOURCE_DIR;
-  tmp+="/tmp";
+  std::string tmp = MEC_SOURCE_DIR;
+  tmp += "/tmp";
   org::esb::io::File f(tmp);
-  if(!f.exists())
-	  f.mkdir();
+  if (!f.exists())
+    f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   DatabaseService::start(MEC_SOURCE_DIR);
 
-  
-
-    if (!DatabaseService::databaseExist()) {
-      DatabaseService::createDatabase();
-    }
-//      DatabaseService::createDatabase();
-    DatabaseService::dropTables();
-    DatabaseService::updateTables();
-    DatabaseService::loadPresets();
 
 
+  if (!DatabaseService::databaseExist()) {
+    DatabaseService::createDatabase();
+  }
+  //      DatabaseService::createDatabase();
+  DatabaseService::dropTables();
+  DatabaseService::updateTables();
+  DatabaseService::loadPresets();
 
-    std::string src = MEC_SOURCE_DIR;
-    src.append("/test.dvd");
 
-    int fileid = import(org::esb::io::File(src));
-    assert(fileid > 0);
-    int jobid = jobcreator(fileid, 1, "/tmp");
-    assert(jobid > 0);
 
-{
+  std::string src = MEC_SOURCE_DIR;
+  src.append("/test.dvd");
+
+  int fileid = import(org::esb::io::File(src));
+  assert(fileid > 0);
+  int jobid = jobcreator(fileid, 1, "/tmp");
+  assert(jobid > 0);
+
+  {
 
     ProcessUnitController ctrl;
     Messenger::getInstance().addMessageListener(ctrl);
     Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
     org::esb::lang::Thread::sleep2(3000);
-	
-		std::string indata;
-		std::string outdata;
 
-	StringOutputStream fos(outdata);
-	
-	StringInputStream fis(indata);
-	
-	boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"),6000);
-	
-//	DataHandler handler(&fis, &fos, e);
-//	handler.process("get process_unit");
-	org::esb::lang::Thread::sleep2(5000);
-   
+    std::string indata;
+    std::string outdata;
 
-  boost::thread t1(processUnitReader);
-  boost::thread t2(processUnitAudioReader);
+    StringOutputStream fos(outdata);
 
-org::esb::lang::Thread::sleep2(10000);
-running=false;
-org::esb::lang::Thread::sleep2(1000);
+    StringInputStream fis(indata);
+
+    boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
+
+    //	DataHandler handler(&fis, &fos, e);
+    //	handler.process("get process_unit");
+    org::esb::lang::Thread::sleep2(5000);
+
+
+    boost::thread t1(processUnitReader);
+    boost::thread t2(processUnitAudioReader);
+
+    org::esb::lang::Thread::sleep2(10000);
+    running = false;
+    org::esb::lang::Thread::sleep2(1000);
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
     org::esb::lang::Thread::sleep2(10000);
+    CodecFactory::free();
 
-//    Messenger::free();
+    //    Messenger::free();
   }
   DatabaseService::stop();
-	Log::close();
-	return 0;
+  Log::close();
+  return 0;
 }

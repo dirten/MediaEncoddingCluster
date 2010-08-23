@@ -35,7 +35,6 @@ IF(BUILD_TESTING)
     SET( ENV{PATH} "$ENV{PATH}\;${FFMPEG_DIR}/lib" )
   ELSEIF(APPLE)
     SET( ENV{DYLD_LIBRARY_PATH} "${FFMPEG_DIR}/lib" )
-  
   ENDIF(WIN32)
   add_subdirectory (org)
 ENDIF(BUILD_TESTING)
