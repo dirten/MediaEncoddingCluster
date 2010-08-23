@@ -153,7 +153,9 @@ int main(int argc, char * argv[]) {
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, all), vm);
     po::notify(vm);
+#ifdef NDEBUG
     new StackDumper(dump_path);
+#endif
     if (vm.count("debugmode")) {
       Log::open("");
     }else{

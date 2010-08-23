@@ -154,8 +154,9 @@ add_custom_target(uploadsymbols
   COMMAND ${ZIP_CMD} -f ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
   COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym.gz -F system=linux http://codergrid.de/symupload.php
 )
+MESSAGE("InstallBuilderExe $ENV{INSTALLBUILDER_EXE}")
 add_custom_target(release
-  COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
+  COMMAND $ENV{INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
 )
 
 INSTALL(TARGETS mhive
@@ -213,6 +214,7 @@ IF(WIN32)
       ${FFMPEG_DIR}/bin/avformat-52.dll
       ${FFMPEG_DIR}/bin/avutil-50.dll
       ${FFMPEG_DIR}/bin/swscale-0.dll
+      ${CURL_DIR}/lib/libcurl.dll
     DESTINATION ./bin
     )
 ELSEIF(APPLE)
@@ -225,6 +227,7 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavformat.dylib
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
+      ${CURL_DIR}/lib/libcurl.dylib
     DESTINATION ./bin
   )
 ELSE(APPLE)
@@ -238,6 +241,7 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.so.50
 #      ${FFMPEG_DIR}/lib/libavcore.so.0
       ${FFMPEG_DIR}/lib/libswscale.so.0
+      ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ./lib
     )
 

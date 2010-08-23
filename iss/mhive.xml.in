@@ -15,6 +15,10 @@
             <value>@CMAKE_BINARY_DIR@</value>
         </setInstallerVariable>
         <setInstallerVariable>
+            <name>mhive_lib_dir</name>
+            <value>@CMAKE_SOURCE_DIR@/install/lib</value>
+        </setInstallerVariable>
+        <setInstallerVariable>
             <name>ffmpeg_dir</name>
             <value>@FFMPEG_DIR@</value>
         </setInstallerVariable>
@@ -228,6 +232,9 @@
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavutil.so.50</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_lib_dir}/libcurl.so.4</origin>
+                        </distributionFile>
                         <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavcore.so.0</origin>
                         </distributionFile>-->
@@ -265,6 +272,9 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_lib_dir}/libcurl-4.dll</origin>
+                        </distributionFile>
                         <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/avcore-0.dll</origin>
                         </distributionFile>-->
@@ -299,6 +309,12 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavutil.50.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_lib_dir}/lib/libavutil.50.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_lib_dir}/libcurl.4.dylib</origin>
                         </distributionFile>
                         <!--<distributionFile>
                             <origin>${ffmpeg_dir}/lib/libavcore.0.dylib</origin>

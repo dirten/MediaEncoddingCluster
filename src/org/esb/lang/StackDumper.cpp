@@ -49,7 +49,7 @@ bool MyDumpSender(const char *dump_path,
 #endif
   //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
-
+  for(int a=0;a<10000;a++);
   CURL *curl;
   CURLcode res;
 
@@ -89,7 +89,7 @@ bool MyDumpSender(const char *dump_path,
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
 
     curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-    LOGDEBUG("Data present, try to send dump");
+    std::cout<<"Data present, try to send dump"<<std::endl;
     res = curl_easy_perform(curl);
    std::cout<<"dump sended, result="<<res<<std::endl;;
 

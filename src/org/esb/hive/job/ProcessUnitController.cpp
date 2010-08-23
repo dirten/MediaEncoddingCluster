@@ -149,6 +149,7 @@ namespace org {
                 stream_map.erase(idx);
                 continue;
               }
+              stream_map[idx].encoder->open();
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
               stream_data[idx].min_packet_count = 0;
