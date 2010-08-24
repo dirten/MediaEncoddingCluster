@@ -228,7 +228,7 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
       ${CURL_DIR}/lib/libcurl.4.dylib
-    DESTINATION ./bin
+    DESTINATION ./lib
   )
 ELSE(APPLE)
   INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
