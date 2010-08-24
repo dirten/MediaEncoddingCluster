@@ -352,6 +352,7 @@ int start(std::string executable, std::string arguments) {
       last_pid=pid;
       int status = 0;
       waitpid(pid, &status, 0);
+      std::cout << "client exited, restarting"<<std::endl;
     }
   }
 }

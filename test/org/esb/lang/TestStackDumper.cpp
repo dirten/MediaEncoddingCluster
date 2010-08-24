@@ -21,5 +21,8 @@ int main() {
 #ifdef NDEBUG
   //die();
 #endif
+  delete []t;
+  delete d;
   return 0;
+  Log::close();
 }

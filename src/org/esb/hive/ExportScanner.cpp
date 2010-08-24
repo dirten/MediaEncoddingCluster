@@ -64,21 +64,40 @@ namespace org {
       }
 
       void ExportScanner::start() {
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
         while (_run) {
           {
             try {
-              std::vector<db::Job> completed_jobs=litesql::select<db::Job>(db, db::Job::Status=="completed").all();
-              std::vector<db::Job>::iterator job_it=completed_jobs.begin();
-              for(;job_it!=completed_jobs.end();job_it++){
-                db::MediaFile mfile=(*job_it).outputfile().get().one();
-                try{
-                FileExporter::exportFile(mfile);
-                (*job_it).status="exported";
-                }catch(boost::filesystem::filesystem_error & e){
-                  (*job_it).status="failed";
+              std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == "completed").all();
+              std::vector<db::Job>::iterator job_it = completed_jobs.begin();
+              for (; job_it != completed_jobs.end(); job_it++) {
+                db::MediaFile mfile = (*job_it).outputfile().get().one();
+                try {
+                  db::JobLog log((*job_it).getDatabase());
+                  std::string message = "exporting file";
+                  message += mfile.path+"/"+mfile.filename;
+                  log.message = message;
+                  log.update();
+
+                  (*job_it).joblog().link(log);
+
+                  (*job_it).status = "exporting";
+                  (*job_it).update();
+                  FileExporter::exportFile(mfile);
+                } catch (boost::filesystem::filesystem_error & e) {
+                  db::JobLog log((*job_it).getDatabase());
+                  std::string message = "failed to write the outputfile to ";
+                  message += mfile.path+"/"+mfile.filename;
+                  message+=": ";
+                  message+=e.what();
+                  log.message = message;
+                  log.update();
+
+                  (*job_it).joblog().link(log);
+
+                  (*job_it).status = "failed";
+                  (*job_it).update();
                 }
-                (*job_it).update();
               }
             } catch (litesql::NotFound ex) {
               LOGDEBUG("no new File to export Found");

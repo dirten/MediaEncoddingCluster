@@ -14,7 +14,8 @@ namespace org {
       JobLogPanel::JobLogPanel():Wt::Ext::TableView() {
         setModel(new JobLogTableModel());
         setColumnWidth(0, 140);
-        setColumnWidth(1, 600);
+        setColumnWidth(1, 900);
+        setAutoExpandColumn(1);
 
       }
 

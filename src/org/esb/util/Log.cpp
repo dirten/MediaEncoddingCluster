@@ -11,7 +11,7 @@
 using namespace boost::posix_time;
 Log * Log::_logger = NULL;
 std::string Log::_logpath = "";
-log4cplus::Logger Log::logger = log4cplus::Logger::getInstance("trace");
+log4cplus::Logger Log::logger ;
 log4cplus::ConfigureAndWatchThread * globalConfigureThread ;
 Log::Log() {
   std::string logconfig = "logging.properties";
@@ -59,7 +59,7 @@ Log::~Log() {
 }
 
 void Log::open(std::string path) {
-  //Log::logger= log4cplus::Logger::getInstance("trace");
+  Log::logger = log4cplus::Logger::getInstance("trace");
   if (path.length() > 0) {
 //    std::cout <<"logpath:"<< path<<std::endl;
     path.append("/logging.properties");
@@ -77,6 +77,7 @@ void Log::open(std::string path) {
 }
 
 void Log::close() {
+  Log::logger.shutdown();
   delete getLogger();
   delete globalConfigureThread;
 }

@@ -1,6 +1,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
 int main(){
+  Log::open("");
 //	return 0;
   std::string path=MEC_SOURCE_DIR;
 
@@ -36,5 +37,6 @@ int main(){
   LOGDEBUG("Relative File . "<<f2.getPath());
 
 //  f.getExtension();
+  Log::close();
   return 0;
 }

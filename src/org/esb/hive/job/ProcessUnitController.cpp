@@ -105,6 +105,7 @@ namespace org {
         }
 
         void ProcessUnitController::processJob(db::Job job) {
+          bool wait_for_queue=false;
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
           job.begintime = 0;
           job.status = "running";
@@ -188,10 +189,13 @@ namespace org {
                   LOGDEBUG("puQueue.enqueue(unit);")
                   puQueue.enqueue(unit);
                 }
+                wait_for_queue=true;
               }
             }
-            boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
-            queue_empty_wait_condition.wait(queue_empty_wait_lock);
+            if(wait_for_queue){
+              boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
+              queue_empty_wait_condition.wait(queue_empty_wait_lock);
+            }
             LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             job.endtime = 0;
             job.status = "completed";

@@ -18,6 +18,7 @@
 #include "org/esb/config/config.h"
 
 #include "org/esb/hive/JobUtil.h"
+/*on windows there is a macro defined with name MessageBox*/
 #ifdef MessageBox
 #undef MessageBox
 #endif
@@ -125,6 +126,10 @@ namespace org {
       void ProjectWizard::save_and_start() {
         LOGDEBUG("Project save with id:" << _project->id);
         _propertyPanel->save();
+        if(_project->outdirectory.value().length()<=0){
+        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties",Wt::Warning,Wt::Ok);
+        box->show();
+        }else{
         _project->update();
         LOGDEBUG("Project saved:" << _project->id);
         org::esb::hive::JobUtil::createJob(_project);
@@ -133,6 +138,7 @@ namespace org {
 
         saved.emit();
         this->done(Accepted);
+        }
       }
 
       void ProjectWizard::cancel() {

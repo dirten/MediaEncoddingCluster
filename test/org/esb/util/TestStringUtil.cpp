@@ -28,7 +28,7 @@ void testStringTokenizer(){
   int tok = st.countTokens();
   for (int i = 0; i < tok - 1; i++) {
     std::string t = st.nextToken();
-    t = util::StringUtil::trim(t, *new std::string("\n"));
+    t = util::StringUtil::trim(t, std::string("\n"));
     std::string next = util::StringUtil::trim(t);
 //    logdebug("Create Table " << next);
 //    logdebug("Create Table leng" << next.size());
@@ -42,7 +42,9 @@ void testTrim(){
   assert(trimmed.length()==9);
 }
 int main() {
+  Log::open("");
   testStringTokenizer();
   testToString();
   testTrim();
+  Log::close();
 }

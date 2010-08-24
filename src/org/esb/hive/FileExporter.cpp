@@ -51,7 +51,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     log.message=message;
     log.update();
     job.joblog().link(log);
-    job.status="failed";
+    job.status="warning";
     job.update();
     return;
   }
@@ -187,6 +187,9 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     log.message=message;
     log.update();
     job.joblog().link(log);
+
+    job.status="exported";
+    job.update();
     }
   pos->close();
 

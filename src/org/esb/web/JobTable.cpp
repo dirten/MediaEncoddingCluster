@@ -52,6 +52,8 @@ namespace org {
                 "return '<img src=\"/icons/accept-icon.png\"/>';"
                 "} else if(val == \"queued\") {"
                 "return '<img src=\"/icons/queued-icon.png\"/>';"
+                "} else if(val == \"warning\") {"
+                "return '<img src=\"/icons/warning-icon.png\"/>';"
                 "}"
                 "return val;"
                 "}";

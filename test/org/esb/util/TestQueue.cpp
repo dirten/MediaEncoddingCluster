@@ -28,7 +28,7 @@ void queue_sender(int count,int wait){
 }
 
 void test_single_sender2receiver(){
-  boost::thread t(boost::bind(&queue_receiver, 10,0));
+  boost::thread t(boost::bind(&queue_receiver, 10,1));
   Thread::sleep2(100);
   queue_sender(10,0);
   t.join();

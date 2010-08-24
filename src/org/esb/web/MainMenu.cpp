@@ -51,13 +51,13 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   item = menu->addItem("Create Profile...",parent,&org::esb::web::WebApp2::createProfiles);
 
   button = toolbar->addButton("Profiles", menu);
-
+/*
   menu = new Wt::Ext::Menu();
   item = menu->addItem("View Watchfolder...",parent,&org::esb::web::WebApp2::listAllWatchfolder);
   item = menu->addItem("Create Watchfolder...",parent,&org::esb::web::WebApp2::createWatchfolder);
 
   button = toolbar->addButton("Watchfolder", menu);
-
+*/
   menu = new Wt::Ext::Menu();
   item = menu->addItem("Configuration...",parent,&org::esb::web::WebApp2::editSystemConfiguration);
 

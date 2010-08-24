@@ -73,11 +73,32 @@
                 </substitution>
             </substitutionList>
         </substitute>
+        <substitute>
+            <files>${installdir}/res/logging.properties</files>
+            <progressText>setting MHIVE_BASE</progressText>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <type>regexp</type>
+            <ruleList>
+                <platformTest>
+                    <type>linux</type>
+                </platformTest>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
+            <substitutionList>
+                <substitution>
+                    <pattern>%MHIVE_BASE%</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
         <addUnixService>
             <description>Product description</description>
             <name>${product_shortname}</name>
             <program>${installdir}/bin/mectl</program>
             <progressText>installing System Service</progressText>
+            <run>0</run>
             <onErrorActionList>
                 <showWarning>
                     <text>Service could not be installed</text>
@@ -93,16 +114,9 @@
         </addUnixService>
         <runProgram>
             <program>${installdir}/bin/mhive</program>
-            <programArguments>--install --hiveport ${mhive_port} --webport ${web_port}</programArguments>
+            <programArguments>--install --hiveport 20200 --webport 8080</programArguments>
             <progressText>creating MHive Server Database</progressText>
             <workingDirectory>${installdir}</workingDirectory>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${mhive_mode}</text>
-                    <value>server</value>
-                </compareText>
-            </ruleList>
         </runProgram>
         <deleteWindowsService>
             <abortOnError>0</abortOnError>
@@ -120,6 +134,7 @@
             <abortOnError>0</abortOnError>
             <description>this is the mhive node controller</description>
             <displayName>MHiveService</displayName>
+            <run>0</run>
             <program>${installdir}/bin/mhiveservice.exe</program>
             <programArguments></programArguments>
             <progressText>install MHiveService</progressText>
@@ -178,7 +193,72 @@
             <requiredSize>1620</requiredSize>
             <selected>1</selected>
             <show>1</show>
+            <desktopShortcutList>
+                <shortcut>
+                    <comment>starting the Media Encoding Cluster Server</comment>
+                    <exec>${installdir}/bin/mhive -r</exec>
+                    <icon></icon>
+                    <name>start Server</name>
+                    <path>${installdir}</path>
+                    <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>1</runInTerminal>
+                    <windowsExec>${installdir}/bin/mhive</windowsExec>
+                    <windowsExecArgs>-r</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>starting the Media Encoding Cluster Client</comment>
+                    <exec>${installdir}/bin/mhive -i</exec>
+                    <icon></icon>
+                    <name>start Client</name>
+                    <path>${installdir}</path>
+                    <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>1</runInTerminal>
+                    <windowsExec>${installdir}/bin/mhive</windowsExec>
+                    <windowsExecArgs>-i</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+                <linkShortcut>
+                    <comment>open the Administration Interface in the Webbrowser</comment>
+                    <icon></icon>
+                    <name>Media Encoding Cluster Admin</name>
+                    <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <url>http://localhost:8080</url>
+                    <windowsIcon></windowsIcon>
+                </linkShortcut>
+            </desktopShortcutList>
             <folderList>
+                <folder>
+                    <description>vcredistributable</description>
+                    <destination>${installdir}</destination>
+                    <name>vcfiles</name>
+                    <platforms>windows</platforms>
+                    <actionList>
+                        <runProgram>
+                            <program>${installdir}/vcredist_x86.exe</program>
+                            <!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
+                            <programArguments>/qb!</programArguments>
+                            <progressText>Installing VC++ 8 runtime</progressText>
+        		    <onErrorActionList>
+            		    <showWarning>
+                		<text>Error while installing the Microsoft redistributable!</text>
+            		    </showWarning>
+        		    </onErrorActionList>
+                        </runProgram>
+                    </actionList>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/iss/vcredist_x86.exe</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
@@ -218,30 +298,25 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libswscale.so.0</origin>
+                            <origin>${mhive_src_dir}/install/lib/libswscale.so.0</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavcodec.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcodec.so.52</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavdevice.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavdevice.so.52</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavformat.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavformat.so.52</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavutil.so.50</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavutil.so.50</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_lib_dir}/libcurl.so.4</origin>
+                            <origin>${mhive_src_dir}/install/lib/libcurl.so.4</origin>
                         </distributionFile>
-                        <!--<distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavcore.so.0</origin>
-                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
-                
-
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
@@ -275,9 +350,6 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/libcurl-4.dll</origin>
                         </distributionFile>
-                        <!--<distributionFile>
-                            <origin>${ffmpeg_dir}/lib/avcore-0.dll</origin>
-                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -290,33 +362,29 @@
                             <origin>${mhive_src_dir}/src/mectl</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhive</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhive</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_build_dir}/src/mhiveservice</origin>
+                            <origin>${mhive_src_dir}/install/bin/mhiveservice</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libswscale.0.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libswscale.0.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavcodec.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcodec.52.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavdevice.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavdevice.52.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavformat.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavformat.52.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavutil.50.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavutil.50.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_lib_dir}/libcurl.4.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libcurl.4.dylib</origin>
                         </distributionFile>
-                        <!--<distributionFile>
-                            <origin>${ffmpeg_dir}/lib/libavcore.0.dylib</origin>
-                        </distributionFile>-->
-
                     </distributionFileList>
                     <shortcutList>
                         <shortcut>
@@ -396,52 +464,34 @@
                     <windowsIcon></windowsIcon>
                     <windowsPath>${installdir}/</windowsPath>
                 </startMenuShortcut>
+                <startMenuLinkShortcut>
+                    <comment>open the Administration Interface in the Webbrowser</comment>
+                    <name>Administration</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>http://localhost:8080/</url>
+                    <windowsIcon></windowsIcon>
+                </startMenuLinkShortcut>
+                <startMenuShortcut>
+                    <comment>starting the Media Encoding Cluster Server</comment>
+                    <name>start Server</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/bin/mhive</windowsExec>
+                    <windowsExecArgs>-r</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>start the Media Encoding Cluster Client</comment>
+                    <name>start Client</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/bin/mhive</windowsExec>
+                    <windowsExecArgs>-i</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
             </startMenuShortcutList>
         </component>
-        <component>
-            <name>vcruntime</name>
-            <description>Windows extras</description>
-            <canBeEdited>1</canBeEdited>
-            <selected>1</selected>
-            <show>1</show>
-            <folderList>
-                <folder>
-                    <description>vcredistributable</description>
-                    <destination>${installdir}</destination>
-                    <name>vcfiles</name>
-                    <platforms>windows</platforms>
-                    <actionList>
-                        <runProgram>
-                            <program>${installdir}/vcredist_x86.exe</program>
-                            <!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
-                            <programArguments>/qb!</programArguments>
-                            <progressText>Installing VC++ 8 runtime</progressText>
-            <onErrorActionList>
-                <showWarning>
-                    <text>Error while installing the Microsoft redistributable!</text>
-                </showWarning>
-            </onErrorActionList>
-
-                        </runProgram>
-                    </actionList>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/iss/vcredist_x86.exe</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-            </folderList>
-        </component>
-
-	<!--        <component>
-            <name>windowsextras</name>
-            <description>Windows extras</description>
-            <canBeEdited>1</canBeEdited>
-            <detailedDescription>this install the Windows specific C++ Redistributable reqiered by the Media Encoding Cluster</detailedDescription>
-            <selected>1</selected>
-            <show>1</show>
-        </component>-->
-	    </componentList>
+    </componentList>
     <finalPageActionList>
         <runProgram>
             <program>${installdir}/bin/mectl</program>
@@ -489,6 +539,7 @@
             <title>Install Client or Server instance</title>
             <explanation>how should this node act as?</explanation>
             <value></value>
+            <ask>0</ask>
             <default></default>
             <parameterList>
                 <choiceParameter>
@@ -538,6 +589,7 @@
             <title>install Server instance</title>
             <explanation></explanation>
             <value></value>
+            <ask>0</ask>
             <default></default>
             <parameterList>
                 <stringParameter>
@@ -586,6 +638,7 @@
             <title>install Client instance</title>
             <explanation></explanation>
             <value></value>
+            <ask>0</ask>
             <default></default>
             <parameterList>
                 <choiceParameter>
