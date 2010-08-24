@@ -222,11 +222,11 @@ ELSEIF(APPLE)
     DESTINATION ./res
     )
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.dylib
-      ${FFMPEG_DIR}/lib/libavdevice.dylib
-      ${FFMPEG_DIR}/lib/libavformat.dylib
-      ${FFMPEG_DIR}/lib/libavutil.dylib
-      ${FFMPEG_DIR}/lib/libswscale.dylib
+      ${FFMPEG_DIR}/lib/libavcodec.52.dylib
+      ${FFMPEG_DIR}/lib/libavdevice.52.dylib
+      ${FFMPEG_DIR}/lib/libavformat.52.dylib
+      ${FFMPEG_DIR}/lib/libavutil.50.dylib
+      ${FFMPEG_DIR}/lib/libswscale.0.dylib
       ${CURL_DIR}/lib/libcurl.4.dylib
     DESTINATION ./lib
   )
