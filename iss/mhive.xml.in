@@ -78,14 +78,6 @@
             <progressText>setting MHIVE_BASE</progressText>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <type>regexp</type>
-            <ruleList>
-                <platformTest>
-                    <type>linux</type>
-                </platformTest>
-                <platformTest>
-                    <type>osx</type>
-                </platformTest>
-            </ruleList>
             <substitutionList>
                 <substitution>
                     <pattern>%MHIVE_BASE%</pattern>
@@ -497,6 +489,7 @@
             <program>${installdir}/bin/mectl</program>
             <programArguments>start</programArguments>
             <progressText>start MHive Service</progressText>
+            <run>0</run>
             <workingDirectory>${installdir}</workingDirectory>
             <ruleList>
                 <platformTest>
@@ -512,6 +505,7 @@
             <delay>15000</delay>
             <displayName>MHiveService</displayName>
             <progressText>start MHive Service</progressText>
+            <run>0</run>
             <serviceName>MHiveService</serviceName>
             <ruleList>
                 <platformTest>

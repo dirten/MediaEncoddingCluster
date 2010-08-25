@@ -448,6 +448,7 @@ namespace org {
           delete item->widget();
         }
         main_panel->layout()->addWidget(w);
+        main_panel->refresh();
 
         //        main_panel->layout()->addWidget(w);
       }
