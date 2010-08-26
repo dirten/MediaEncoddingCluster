@@ -382,8 +382,8 @@ namespace org {
         v_deinterlace->addItem("No");
         v_deinterlace->addItem("Yes");*/
 
-        _el.addElement("v_width", "Video Width", profile.vwidth, l);
-        _el.addElement("v_height", "Video Height", profile.vheight, l);
+        //_el.addElement("v_width", "Video Width", profile.vwidth, l);
+        //_el.addElement("v_height", "Video Height", profile.vheight, l);
 
         Wt::Ext::ComboBox * vpre = _elcb.addElement("_vpre", "Predefined Flags", "", l);
         vpre->setTextSize(50);

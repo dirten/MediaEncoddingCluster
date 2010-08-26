@@ -1773,6 +1773,7 @@ const litesql::FieldType Profile::Abitrate("abitrate_","INTEGER",table__);
 const litesql::FieldType Profile::Asamplerate("asamplerate_","INTEGER",table__);
 const litesql::FieldType Profile::Aextra("aextra_","TEXT",table__);
 const litesql::FieldType Profile::Profiletype("profiletype_","INTEGER",table__);
+const litesql::FieldType Profile::Deinterlace("deinterlace_","INTEGER",table__);
 void Profile::defaults() {
     id = 0;
     created = 0;
@@ -1785,16 +1786,19 @@ void Profile::defaults() {
     abitrate = 0;
     asamplerate = 0;
     profiletype = 0;
+    deinterlace = 0;
 }
 Profile::Profile(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name), created(Created), format(Format), formatext(Formatext), vcodec(Vcodec), vbitrate(Vbitrate), vframerate(Vframerate), vwidth(Vwidth), vheight(Vheight), vextra(Vextra), achannels(Achannels), acodec(Acodec), abitrate(Abitrate), asamplerate(Asamplerate), aextra(Aextra), profiletype(Profiletype) {
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), created(Created), format(Format), formatext(Formatext), vcodec(Vcodec), vbitrate(Vbitrate), vframerate(Vframerate), vwidth(Vwidth), vheight(Vheight), vextra(Vextra), achannels(Achannels), acodec(Acodec), abitrate(Abitrate), asamplerate(Asamplerate), aextra(Aextra), profiletype(Profiletype), deinterlace(Deinterlace) {
     defaults();
 }
 Profile::Profile(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), created(Created), format(Format), formatext(Formatext), vcodec(Vcodec), vbitrate(Vbitrate), vframerate(Vframerate), vwidth(Vwidth), vheight(Vheight), vextra(Vextra), achannels(Achannels), acodec(Acodec), abitrate(Abitrate), asamplerate(Asamplerate), aextra(Aextra), profiletype(Profiletype) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), created(Created), format(Format), formatext(Formatext), vcodec(Vcodec), vbitrate(Vbitrate), vframerate(Vframerate), vwidth(Vwidth), vheight(Vheight), vextra(Vextra), achannels(Achannels), acodec(Acodec), abitrate(Abitrate), asamplerate(Asamplerate), aextra(Aextra), profiletype(Profiletype), deinterlace(Deinterlace) {
     defaults();
-    size_t size = (rec.size() > 18) ? 18 : rec.size();
+    size_t size = (rec.size() > 19) ? 19 : rec.size();
     switch(size) {
+    case 19: deinterlace = convert<const std::string&, int>(rec[18]);
+        deinterlace.setModified(false);
     case 18: profiletype = convert<const std::string&, int>(rec[17]);
         profiletype.setModified(false);
     case 17: aextra = convert<const std::string&, std::string>(rec[16]);
@@ -1834,7 +1838,7 @@ Profile::Profile(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Profile::Profile(const Profile& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), created(obj.created), format(obj.format), formatext(obj.formatext), vcodec(obj.vcodec), vbitrate(obj.vbitrate), vframerate(obj.vframerate), vwidth(obj.vwidth), vheight(obj.vheight), vextra(obj.vextra), achannels(obj.achannels), acodec(obj.acodec), abitrate(obj.abitrate), asamplerate(obj.asamplerate), aextra(obj.aextra), profiletype(obj.profiletype) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), created(obj.created), format(obj.format), formatext(obj.formatext), vcodec(obj.vcodec), vbitrate(obj.vbitrate), vframerate(obj.vframerate), vwidth(obj.vwidth), vheight(obj.vheight), vextra(obj.vextra), achannels(obj.achannels), acodec(obj.acodec), abitrate(obj.abitrate), asamplerate(obj.asamplerate), aextra(obj.aextra), profiletype(obj.profiletype), deinterlace(obj.deinterlace) {
 }
 const Profile& Profile::operator=(const Profile& obj) {
     if (this != &obj) {
@@ -1856,6 +1860,7 @@ const Profile& Profile::operator=(const Profile& obj) {
         asamplerate = obj.asamplerate;
         aextra = obj.aextra;
         profiletype = obj.profiletype;
+        deinterlace = obj.deinterlace;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -1924,6 +1929,9 @@ std::string Profile::insert(litesql::Record& tables, litesql::Records& fieldRecs
     fields.push_back(profiletype.name());
     values.push_back(profiletype);
     profiletype.setModified(false);
+    fields.push_back(deinterlace.name());
+    values.push_back(deinterlace);
+    deinterlace.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -1957,6 +1965,7 @@ void Profile::addUpdates(Updates& updates) {
     updateField(updates, table__, asamplerate);
     updateField(updates, table__, aextra);
     updateField(updates, table__, profiletype);
+    updateField(updates, table__, deinterlace);
 }
 void Profile::addIDUpdates(Updates& updates) {
 }
@@ -1979,6 +1988,7 @@ void Profile::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Asamplerate);
     ftypes.push_back(Aextra);
     ftypes.push_back(Profiletype);
+    ftypes.push_back(Deinterlace);
 }
 void Profile::delRecord() {
     deleteFromTable(table__, id);
@@ -2039,6 +2049,7 @@ std::auto_ptr<Profile> Profile::upcastCopy() {
     np->asamplerate = asamplerate;
     np->aextra = aextra;
     np->profiletype = profiletype;
+    np->deinterlace = deinterlace;
     np->inDatabase = inDatabase;
     return auto_ptr<Profile>(np);
 }
@@ -2062,6 +2073,7 @@ std::ostream & operator<<(std::ostream& os, Profile o) {
     os << o.asamplerate.name() << " = " << o.asamplerate << std::endl;
     os << o.aextra.name() << " = " << o.aextra << std::endl;
     os << o.profiletype.name() << " = " << o.profiletype << std::endl;
+    os << o.deinterlace.name() << " = " << o.deinterlace << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -3467,20 +3479,24 @@ const litesql::FieldType JobDetail::Id("id_","INTEGER",table__);
 const litesql::FieldType JobDetail::Type("type_","TEXT",table__);
 const litesql::FieldType JobDetail::Lastpts("lastpts_","DOUBLE",table__);
 const litesql::FieldType JobDetail::Lastdts("lastdts_","DOUBLE",table__);
+const litesql::FieldType JobDetail::Deinterlace("deinterlace_","INTEGER",table__);
 void JobDetail::defaults() {
     id = 0;
     lastpts = 0.0;
     lastdts = 0.0;
+    deinterlace = 0;
 }
 JobDetail::JobDetail(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), lastpts(Lastpts), lastdts(Lastdts) {
+     : litesql::Persistent(db), id(Id), type(Type), lastpts(Lastpts), lastdts(Lastdts), deinterlace(Deinterlace) {
     defaults();
 }
 JobDetail::JobDetail(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), lastpts(Lastpts), lastdts(Lastdts) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), lastpts(Lastpts), lastdts(Lastdts), deinterlace(Deinterlace) {
     defaults();
-    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    size_t size = (rec.size() > 5) ? 5 : rec.size();
     switch(size) {
+    case 5: deinterlace = convert<const std::string&, int>(rec[4]);
+        deinterlace.setModified(false);
     case 4: lastdts = convert<const std::string&, double>(rec[3]);
         lastdts.setModified(false);
     case 3: lastpts = convert<const std::string&, double>(rec[2]);
@@ -3492,7 +3508,7 @@ JobDetail::JobDetail(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 JobDetail::JobDetail(const JobDetail& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), lastpts(obj.lastpts), lastdts(obj.lastdts) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), lastpts(obj.lastpts), lastdts(obj.lastdts), deinterlace(obj.deinterlace) {
 }
 const JobDetail& JobDetail::operator=(const JobDetail& obj) {
     if (this != &obj) {
@@ -3500,6 +3516,7 @@ const JobDetail& JobDetail::operator=(const JobDetail& obj) {
         type = obj.type;
         lastpts = obj.lastpts;
         lastdts = obj.lastdts;
+        deinterlace = obj.deinterlace;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -3529,6 +3546,9 @@ std::string JobDetail::insert(litesql::Record& tables, litesql::Records& fieldRe
     fields.push_back(lastdts.name());
     values.push_back(lastdts);
     lastdts.setModified(false);
+    fields.push_back(deinterlace.name());
+    values.push_back(deinterlace);
+    deinterlace.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -3548,6 +3568,7 @@ void JobDetail::addUpdates(Updates& updates) {
     updateField(updates, table__, type);
     updateField(updates, table__, lastpts);
     updateField(updates, table__, lastdts);
+    updateField(updates, table__, deinterlace);
 }
 void JobDetail::addIDUpdates(Updates& updates) {
 }
@@ -3556,6 +3577,7 @@ void JobDetail::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Type);
     ftypes.push_back(Lastpts);
     ftypes.push_back(Lastdts);
+    ftypes.push_back(Deinterlace);
 }
 void JobDetail::delRecord() {
     deleteFromTable(table__, id);
@@ -3603,6 +3625,7 @@ std::auto_ptr<JobDetail> JobDetail::upcastCopy() {
     np->type = type;
     np->lastpts = lastpts;
     np->lastdts = lastdts;
+    np->deinterlace = deinterlace;
     np->inDatabase = inDatabase;
     return auto_ptr<JobDetail>(np);
 }
@@ -3612,6 +3635,7 @@ std::ostream & operator<<(std::ostream& os, JobDetail o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.lastpts.name() << " = " << o.lastpts << std::endl;
     os << o.lastdts.name() << " = " << o.lastdts << std::endl;
+    os << o.deinterlace.name() << " = " << o.deinterlace << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -4044,13 +4068,13 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
     res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
-    res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE)"));
+    res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));

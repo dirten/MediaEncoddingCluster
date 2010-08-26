@@ -14,11 +14,7 @@ namespace org {
         Wt::WFitLayout * l = new Wt::WFitLayout();
         setLayout(l);
         
-        list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::Project::Id,"Id" ,20));
-        columnConfigs.push_back(ColumnConfig(db::Project::Name,"Name" ,200));
-        columnConfigs.push_back(ColumnConfig(db::Project::Created,"Created" ,300));
-        _table=Ptr<DbTable>(new DbTable(columnConfigs,litesql::Expr()));
+        _table=new ProjectTable();
         layout()->addWidget(_table.get());
 
         _table->itemSelectionChanged.connect(SLOT(this, Projects::enableButtons));
@@ -35,7 +31,7 @@ namespace org {
         delete_button->clicked.connect(SLOT(this, Projects::deleteProject));        
       }
       void Projects::editProject(){
-        int c = atoi(boost::any_cast<string > (_table->getModel()->data(_table->selectedRows()[0], 0)).c_str());
+        int c = atoi(boost::any_cast<string > (_table->model()->data(_table->selectedRows()[0], 0)).c_str());
         _wizard=Ptr<ProjectWizard>(new ProjectWizard());
         _wizard->saved.connect(SLOT(this,Projects::projectSaved));
         _wizard->open(c);
@@ -54,16 +50,16 @@ namespace org {
 //        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox();
         box->show();
         if(box->exec()==Wt::Ext::Dialog::Accepted){
-          int c = atoi(boost::any_cast<string > (_table->getModel()->data(_table->selectedRows()[0], 0)).c_str());
+          int c = atoi(boost::any_cast<string > (_table->model()->data(_table->selectedRows()[0], 0)).c_str());
           db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
           db::Project project = litesql::select<db::Project > (db, db::Project::Id == c).one();
           project.del();
-          _table->reload();
+          _table->refresh();
         }
 
       }
       void Projects::projectSaved(){
-        _table->reload();
+        _table->refresh();
       }
       void Projects::enableButtons(){
         if(_table->selectedRows().size()>0){

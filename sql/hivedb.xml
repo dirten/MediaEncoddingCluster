@@ -81,6 +81,7 @@
         <field name="asamplerate" type="integer"/>
         <field name="aextra" type="string"/>
         <field name="profiletype" type="integer"/>
+        <field name="deinterlace" type="integer"/>
     </object>
 
     <relation>
@@ -175,6 +176,7 @@
     <object name="JobDetail">
         <field name="lastpts" type="double"/>
         <field name="lastdts" type="double"/>
+        <field name="deinterlace" type="integer"/>
     </object>
 
     <relation id="JobJobDetail">

@@ -32,8 +32,8 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   
   menu = new Wt::Ext::Menu();
   item = menu->addItem("All Media Files...",parent,&org::esb::web::WebApp2::listAllFiles);
-  item = menu->addItem("Imported Media Files...",parent,&org::esb::web::WebApp2::listImportedFiles);
-  item = menu->addItem("Encoded Media Files...",parent,&org::esb::web::WebApp2::listEncodedFiles);
+//  item = menu->addItem("Imported Media Files...",parent,&org::esb::web::WebApp2::listImportedFiles);
+//  item = menu->addItem("Encoded Media Files...",parent,&org::esb::web::WebApp2::listEncodedFiles);
 
   button = toolbar->addButton("Media Files", menu);
 

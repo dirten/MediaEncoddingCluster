@@ -20,6 +20,7 @@
 //#include <Files.cpp>
 #include "Profiles.cpp"
 #include "Projects.h"
+
 #include "ProfilesForm.h"
 #include "WatchFolder.cpp"
 #include "WatchfolderForm.h"
@@ -32,6 +33,7 @@
 
 #include "project/PreviewPanel.h"
 #include "JobTable.h"
+#include "MediaFileTable.h"
 
 #include "TreeMainMenu.h"
 #include "job/JobInfoPanel.h"
@@ -126,9 +128,9 @@ namespace org {
         layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
 
-        //        TreeMainMenu * mainmenu=new TreeMainMenu(this);
-        //        mainmenu->resize(200, Wt::WLength());
-        //        layout->addWidget(mainmenu, Wt::WBorderLayout::West);
+                TreeMainMenu * mainmenu=new TreeMainMenu(this);
+                mainmenu->resize(200, Wt::WLength());
+                layout->addWidget(mainmenu, Wt::WBorderLayout::West);
 
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();
@@ -188,15 +190,8 @@ namespace org {
       }
 
       void WebApp2::listAllFiles() {
-        list<ColumnConfig> columnConfigs;
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Id, "Id", 20));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Path, "Path", 200));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filename, "Filename", 300));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Filesize, "Size", 40));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Duration, "Duration", 40));
-        columnConfigs.push_back(ColumnConfig(db::MediaFile::Containertype, "Type", 40));
-        DbTable * table = new DbTable(columnConfigs, litesql::Expr());
-        setContent(table);
+        MediaFileTable * t=new MediaFileTable();
+        setContent(t);
 
         /*
                 SqlTable * tab = new SqlTable(std::string("select id, filename, container_type type, concat(round(size/1024/1024,2),' MB') as size, concat(round(duration/1000000),' sec.') as duration from files "));

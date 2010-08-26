@@ -37,6 +37,9 @@ void File::changeExtension(const std::string & ext) {
   _full_path = fs::change_extension(_full_path, "." + ext);
 }
 
+long File::length(){
+  return fs::file_size(_full_path);
+}
 const string File::getPath() {
   return _full_path.string();
 }

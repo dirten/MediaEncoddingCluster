@@ -102,8 +102,10 @@ namespace org {
         _filetable->setMediaFiles(p->mediafiles().get().all());
       }
 
-      void InputFilePanel::setInputFile(org::esb::io::File file) {
-        LOGDEBUG("try import file"<<file.getPath());
+      void InputFilePanel::setInputFile(std::list<Ptr<org::esb::io::File> > files) {
+
+        LOGDEBUG("try import file count"<<files.size());
+        org::esb::io::File file=*files.front().get();
         int result=import(file);
         _chooser->accept();
         Wt::Ext::Dialog * dialog=new Wt::Ext::Dialog();

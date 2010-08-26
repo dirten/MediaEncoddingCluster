@@ -77,7 +77,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   outfile.path = outpath+"/"+profile.name;
   outfile.parent = mediafile.id.value();
   outfile.containertype = ofmt->name;
-  outfile.duration = mediafile.duration;
+//  outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
   job.outfile=outfile.filename.value();
@@ -122,21 +122,33 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       s.streamtimebaseden = (int) (*it).streamtimebaseden;
       s.codectimebasenum = (int) (*it).codectimebasenum;
       s.codectimebaseden = (int) (*it).codectimebaseden;
-      s.width = (int) profile.vwidth;
-      s.height = (int) profile.vheight;
+
+      if(profile.vwidth.value()>0){
+        s.width = (int) profile.vwidth;
+      }else{
+        s.width =(*it).width.value();
+      }
+
+      if(profile.vheight.value()>0){
+        s.height = (int) profile.vheight;
+      }else{
+        s.height = (*it).height.value();
+      }
+
       s.gopsize = 20;
-      boost::shared_ptr<Encoder> enc(new Encoder((CodecID) (int) profile.vcodec));
-      enc->setWidth(profile.vwidth);
-      enc->setHeight(profile.vheight);
-      org::esb::hive::CodecFactory::setCodecOptions(enc, profile.vextra);
+      s.bitrate = (int) profile.vbitrate;
+      s.extraprofileflags = (std::string)profile.vextra;
+
+      boost::shared_ptr<Encoder> enc(new Encoder((CodecID) (int) s.codecid.value()));
+      enc->setWidth(s.width);
+      enc->setHeight(s.height);
+      org::esb::hive::CodecFactory::setCodecOptions(enc, s.extraprofileflags.value());
       enc->open();
+      s.pixfmt = (int) enc->getPixelFormat();
       int flags = enc->getFlags();
       if (ofmt->flags & AVFMT_GLOBALHEADER)
         flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
-      s.pixfmt = (int) enc->getPixelFormat();
-      s.bitrate = (int) profile.vbitrate;
-      s.extraprofileflags = (std::string)profile.vextra;
       enc->close();
     } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
       s.codecid = (int) profile.acodec;
@@ -161,6 +173,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
     s.update();
     s.mediafile().link(outfile);
     db::JobDetail job_detail(mediafile.getDatabase());
+    job_detail.deinterlace=profile.deinterlace.value();
     job_detail.update();
     job.jobdetails().link(job_detail);
     job_detail.inputstream().link((*it));
@@ -449,7 +462,8 @@ namespace org {
       }
 
       void JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::vector<db::Filter> filter_vector, std::string outpath) {
-
+        profile.vwidth=0;
+        profile.vheight=0;
         if(filter_vector.size()>0){
           for(int a=0;a<filter_vector.size();a++){
             db::Filter filter=filter_vector[a];
@@ -459,6 +473,7 @@ namespace org {
               profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one().fval.value().c_str());
             }
             if(filter.filterid=="deinterlace"){
+              profile.deinterlace=1;
               //profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one());
             }
           }

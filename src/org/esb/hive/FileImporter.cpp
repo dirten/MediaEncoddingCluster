@@ -79,55 +79,62 @@ int import(org::esb::io::File file) {
   if (!fis.isValid())return 0;
   PacketInputStream pis(&fis);
   db::HiveDb db("mysql", Config::getProperty("db.url"));
+  int id = 0;
+//  try {
+//    db::MediaFile mfile=litesql::select<db::MediaFile>(db, db::MediaFile::Path==file.getFilePath() && db::MediaFile::Filename==file.getFileName()).one();
+//    id=mfile.id;
+//  } catch (litesql::NotFound ex) {
 
-  db::MediaFile mediafile(db);
-  mediafile.filename = file.getFileName();
-  mediafile.path = file.getFilePath();
-  mediafile.filesize = (double) fis.getFileSize();
-  mediafile.streamcount = fis.getStreamCount();
-  mediafile.containertype = fis.getFormatContext()->iformat->name;
-  mediafile.duration = (double) fis.getFormatContext()->duration;
-  mediafile.starttime = (double) fis.getFormatContext()->start_time;
-  mediafile.bitrate = fis.getFormatContext()->bit_rate;
-  mediafile.update();
+    db::MediaFile mediafile(db);
+    mediafile.filename = file.getFileName();
+    mediafile.path = file.getFilePath();
+    mediafile.filesize = (double) fis.getFileSize();
+    mediafile.streamcount = fis.getStreamCount();
+    mediafile.containertype = fis.getFormatContext()->iformat->name;
+    mediafile.duration = (double) fis.getFormatContext()->duration;
+    mediafile.starttime = (double) fis.getFormatContext()->start_time;
+    mediafile.bitrate = fis.getFormatContext()->bit_rate;
+    mediafile.update();
 
-  AVFormatContext *ctx = fis.getFormatContext();
+    AVFormatContext *ctx = fis.getFormatContext();
 
-  for (int a = 0; a < mediafile.streamcount; a++) {
-    db::Stream stream(db);
-    stream.streamindex = (int) a;
-    stream.streamtype = (int) ctx->streams[a]->codec->codec_type;
-    stream.codecid = (int) ctx->streams[a]->codec->codec_id;
-    stream.codecname = (const char*) ctx->streams[a]->codec->codec_name;
-    stream.frameratenum = ctx->streams[a]->r_frame_rate.num;
-    stream.framerateden = ctx->streams[a]->r_frame_rate.den;
-    stream.firstpts = (double) ctx->streams[a]->start_time;
-    stream.firstdts = (double) ctx->streams[a]->first_dts;
-    stream.duration = (double) ctx->streams[a]->duration;
-    stream.nbframes = (double) ctx->streams[a]->nb_frames;
-    stream.streamtimebasenum = ctx->streams[a]->time_base.num;
-    stream.streamtimebaseden = ctx->streams[a]->time_base.den;
-    stream.codectimebasenum = ctx->streams[a]->codec->time_base.num;
-    stream.codectimebaseden = ctx->streams[a]->codec->time_base.den;
-    stream.ticksperframe = ctx->streams[a]->codec->ticks_per_frame;
-    stream.width = ctx->streams[a]->codec->width;
-    stream.height = ctx->streams[a]->codec->height;
-    stream.gopsize = ctx->streams[a]->codec->gop_size;
-    stream.pixfmt = (int) ctx->streams[a]->codec->pix_fmt;
-    stream.bitrate = ctx->streams[a]->codec->bit_rate;
-    stream.samplerate = ctx->streams[a]->codec->sample_rate;
-    stream.samplefmt = (int) ctx->streams[a]->codec->sample_fmt;
-    stream.channels = ctx->streams[a]->codec->channels;
-    stream.bitspercodedsample = ctx->streams[a]->codec->bits_per_coded_sample;
-    stream.extradatasize = ctx->streams[a]->codec->extradata_size;
-    if (stream.extradatasize > 0)
-      stream.extradata = (const char*) (ctx->streams[a]->codec->extradata);
-    stream.update();
-    mediafile.streams().link(stream);
-  }
+    for (int a = 0; a < mediafile.streamcount; a++) {
+      db::Stream stream(db);
+      stream.streamindex = (int) a;
+      stream.streamtype = (int) ctx->streams[a]->codec->codec_type;
+      stream.codecid = (int) ctx->streams[a]->codec->codec_id;
+      stream.codecname = (const char*) ctx->streams[a]->codec->codec_name;
+      stream.frameratenum = ctx->streams[a]->r_frame_rate.num;
+      stream.framerateden = ctx->streams[a]->r_frame_rate.den;
+      stream.firstpts = (double) ctx->streams[a]->start_time;
+      stream.firstdts = (double) ctx->streams[a]->first_dts;
+      stream.duration = (double) ctx->streams[a]->duration;
+      stream.nbframes = (double) ctx->streams[a]->nb_frames;
+      stream.streamtimebasenum = ctx->streams[a]->time_base.num;
+      stream.streamtimebaseden = ctx->streams[a]->time_base.den;
+      stream.codectimebasenum = ctx->streams[a]->codec->time_base.num;
+      stream.codectimebaseden = ctx->streams[a]->codec->time_base.den;
+      stream.ticksperframe = ctx->streams[a]->codec->ticks_per_frame;
+      stream.width = ctx->streams[a]->codec->width;
+      stream.height = ctx->streams[a]->codec->height;
+      stream.gopsize = ctx->streams[a]->codec->gop_size;
+      stream.pixfmt = (int) ctx->streams[a]->codec->pix_fmt;
+      stream.bitrate = ctx->streams[a]->codec->bit_rate;
+      stream.samplerate = ctx->streams[a]->codec->sample_rate;
+      stream.samplefmt = (int) ctx->streams[a]->codec->sample_fmt;
+      stream.channels = ctx->streams[a]->codec->channels;
+      stream.bitspercodedsample = ctx->streams[a]->codec->bits_per_coded_sample;
+      stream.extradatasize = ctx->streams[a]->codec->extradata_size;
+      if (stream.extradatasize > 0)
+        stream.extradata = (const char*) (ctx->streams[a]->codec->extradata);
+      stream.update();
+      mediafile.streams().link(stream);
+    }
 
 
-  return mediafile.id;
+    id = mediafile.id;
+//  }
+  return id;
 }
 
 int importOld(org::esb::io::File file) {

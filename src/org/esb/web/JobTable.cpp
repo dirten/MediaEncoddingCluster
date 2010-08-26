@@ -18,7 +18,7 @@ namespace org {
       JobTable::JobTable() : Wt::Ext::TableView() {
         LOGDEBUG("JobTable::JobTable()");
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
-        dbCon.verbose=true;
+        
         std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
         _model=Ptr<JobTableModel>(new JobTableModel(jobs));
         setModel(_model.get());

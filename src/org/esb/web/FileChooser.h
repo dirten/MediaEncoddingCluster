@@ -12,6 +12,7 @@
 
 #include "org/esb/io/FileFilter.h"
 #include "org/esb/io/File.h"
+#include "org/esb/lang/Ptr.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -27,7 +28,7 @@ namespace org {
       class FileChooser : public Wt::Ext::Dialog {
       public:
         FileChooser(std::string title, std::string path = "");
-        Wt::Signal<org::esb::io::File> selected;
+        Wt::Signal<std::list<Ptr<org::esb::io::File> > > selected;
         Wt::Signal<void> canceled;
         ~FileChooser();
       private:

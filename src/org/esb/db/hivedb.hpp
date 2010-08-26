@@ -655,6 +655,8 @@ public:
     litesql::Field<std::string> aextra;
     static const litesql::FieldType Profiletype;
     litesql::Field<int> profiletype;
+    static const litesql::FieldType Deinterlace;
+    litesql::Field<int> deinterlace;
 protected:
     void defaults();
 public:
@@ -1092,6 +1094,8 @@ public:
     litesql::Field<double> lastpts;
     static const litesql::FieldType Lastdts;
     litesql::Field<double> lastdts;
+    static const litesql::FieldType Deinterlace;
+    litesql::Field<int> deinterlace;
 protected:
     void defaults();
 public:

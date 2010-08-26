@@ -37,19 +37,14 @@ namespace org {
       }
 
       void FileChooser::select() {
+        std::list<Ptr<org::esb::io::File> > result;
         Wt::WTree::WTreeNodeSet set = tree->tree()->selectedNodes();
         Wt::WTree::WTreeNodeSet::iterator it = set.begin();
-
-        if (it != set.end()) {
-          //          logdebug("Folder in set");
+        for(;it != set.end();it++) {
           FileTreeTableNode * node = (FileTreeTableNode*) * it;
-          org::esb::io::File path = org::esb::io::File(node->path_.string());
-//          this->accept();
-          selected.emit(path);
-          
-          //          logdebug(node->path_);
+          result.push_back(new org::esb::io::File(node->path_.string()));
+          selected.emit(result);
         }
-
       }
 
       void FileChooser::cancel() {

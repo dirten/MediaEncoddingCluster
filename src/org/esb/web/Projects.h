@@ -4,6 +4,7 @@
 #include <Wt/Ext/Container>
 #include <Wt/Ext/Button>
 #include "org/esb/lang/Ptr.h"
+#include "ProjectTable.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -14,7 +15,7 @@ namespace org{
         Projects(Wt::WContainerWidget * parent = 0) ;
         void createProject();
       private:
-        Ptr<DbTable> _table;
+        Ptr<ProjectTable> _table;
         void editProject();
         void deleteProject();
         void enableButtons();

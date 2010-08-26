@@ -11,6 +11,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/FormatOutputStream.h"
+#include "org/esb/av/FormatInputStream.h"
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
@@ -193,9 +194,12 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     }
   pos->close();
 
-  outfile.filesize=(double)fos->_fmtCtx->file_size;
-  outfile.update();
   fos->close();
+  FormatInputStream fis(&fout);
+
+  outfile.filesize=(double)fis.getFileSize();
+  outfile.duration=(double)fis.getFormatContext()->duration;
+  outfile.update();
 
   delete pos;
   delete fos;

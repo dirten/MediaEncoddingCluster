@@ -23,7 +23,7 @@ namespace org {
         InputFilePanel(const InputFilePanel& orig);
         virtual ~InputFilePanel();
         void setProject(boost::shared_ptr<db::Project>);
-        void setInputFile(org::esb::io::File path);
+        void setInputFile(std::list<Ptr<org::esb::io::File> >path);
       private:
         void addVideoButtonClicked();
         void removeVideo();

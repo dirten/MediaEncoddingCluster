@@ -299,6 +299,8 @@ add_library (web
     web/ProfileChooser.cpp
     web/JobTableModel.cpp
     web/JobTable.cpp
+    web/ProjectTable.cpp
+    web/MediaFileTable.cpp
     web/job/JobInfoPanel.cpp
     web/job/JobDetailPanel.cpp
     web/job/JobLogPanel.cpp
