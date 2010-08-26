@@ -147,7 +147,7 @@
               <tasks if="win32">
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
-                <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurldll.lib"/>
+                <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
 		  </tasks>
             </configuration>
             <goals>

@@ -8,7 +8,9 @@ FIND_PATH(CURL_INCLUDE_DIR
 FIND_LIBRARY(CURL_LIBRARY
     NAMES
       curldll
+      curl.dll
       libcurldll
+      libcurl.dll
       libcurl
       curl
     PATHS
