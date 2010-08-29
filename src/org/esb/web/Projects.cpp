@@ -21,15 +21,22 @@ namespace org {
         
         _table->setTopToolBar(new Wt::Ext::ToolBar());
 
+        create_button=_table->topToolBar()->addButton("Create a new Project");
+        create_button->setIcon("icons/encoding-project-add-icon.png");
+        _table->topToolBar()->addSeparator();
         edit_button=_table->topToolBar()->addButton("Edit selected Project");
         edit_button->setIcon("icons/encoding-project-edit-icon.png");
+        _table->topToolBar()->addSeparator();
         delete_button=_table->topToolBar()->addButton("Delete selected Project");
         delete_button->setIcon("icons/encoding-project-remove-icon.png");
+        create_button->setEnabled(true);
         edit_button->setEnabled(false);
         delete_button->setEnabled(false);
+        create_button->clicked.connect(SLOT(this, Projects::createProject));
         edit_button->clicked.connect(SLOT(this, Projects::editProject));
         delete_button->clicked.connect(SLOT(this, Projects::deleteProject));        
       }
+
       void Projects::editProject(){
         int c = atoi(boost::any_cast<string > (_table->model()->data(_table->selectedRows()[0], 0)).c_str());
         _wizard=Ptr<ProjectWizard>(new ProjectWizard());
@@ -61,6 +68,7 @@ namespace org {
       void Projects::projectSaved(){
         _table->refresh();
       }
+
       void Projects::enableButtons(){
         if(_table->selectedRows().size()>0){
         edit_button->setEnabled(true);

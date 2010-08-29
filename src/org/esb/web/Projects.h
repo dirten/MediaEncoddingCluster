@@ -20,6 +20,7 @@ namespace org{
         void deleteProject();
         void enableButtons();
         void projectSaved();
+        Wt::Ext::Button * create_button;
         Wt::Ext::Button * edit_button;
         Wt::Ext::Button * delete_button;
         Ptr<ProjectWizard> _wizard;

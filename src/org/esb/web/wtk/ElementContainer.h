@@ -36,6 +36,7 @@ namespace org {
             delete _table;
           }
           T * getElement(std::string name, std::string label = "", std::string value = "", Wt::WContainerWidget * parent = 0);
+          bool contains(std::string name);
           T * addElement(std::string name, std::string label = "", std::string value = "", Wt::WGridLayout * l = 0);
           T * getRow(std::string name);
           void validate();
@@ -45,7 +46,10 @@ namespace org {
           std::map<std::string, T*> _cont;
           int _nextRow;
         };
-
+        template <typename T >
+          bool ElementContainer<T>::contains(std::string name){
+          return _cont.find(name) != _cont.end();
+        }
         template <typename T >
         T * ElementContainer<T>::getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent) {
           if (_cont.find(name) == _cont.end()) {

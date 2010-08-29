@@ -17,10 +17,12 @@ namespace org {
       public:
 
         ProjectTableModel(std::vector<db::Project> projects) : Wt::WStandardItemModel(0, 0, NULL) {
-          insertColumns(0, 3);
+          insertColumns(0, 5);
           setHeaderData(0, std::string("Id"));
           setHeaderData(1, std::string("Name"));
-          setHeaderData(2, std::string("Created"));
+          setHeaderData(2, std::string("#Files"));
+          setHeaderData(3, std::string("#Profiles"));
+          setHeaderData(4, std::string("Created"));
           setModelData(projects);
         }
 
@@ -38,7 +40,9 @@ namespace org {
             db::Project pro = projects[a];
             setData(a, 0, org::esb::util::StringUtil::toString(pro.id.value()));
             setData(a, 1, pro.name.value());
-            setData(a, 2, pro.created.value().asString("%d-%m-%y %h:%M:%s"));
+            setData(a, 2, pro.mediafiles().get().count());
+            setData(a, 3, pro.profiles().get().count());
+            setData(a, 4, pro.created.value().asString("%d-%m-%y %h:%M:%s"));
           }
         }
       };
@@ -55,7 +59,9 @@ namespace org {
         setSelectionMode(Wt::SingleSelection);
         setColumnWidth(0, 3);
         setAutoExpandColumn(1);
-        setColumnWidth(2, 30);
+        setColumnWidth(2, 20);
+        setColumnWidth(3, 20);
+        setColumnWidth(4, 30);
       }
 
       void ProjectTable::refresh() {

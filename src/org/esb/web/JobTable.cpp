@@ -19,7 +19,7 @@ namespace org {
         LOGDEBUG("JobTable::JobTable()");
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
         
-        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
+        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).orderBy(db::Job::Id, false).all();
         _model=Ptr<JobTableModel>(new JobTableModel(jobs));
         setModel(_model.get());
         setAlternatingRowColors(true);
@@ -68,7 +68,7 @@ namespace org {
         LOGDEBUG("JobTable::refresh()")
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
 
-        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
+        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).orderBy(db::Job::Id, false).all();
         _model->refresh(jobs);
       }
 

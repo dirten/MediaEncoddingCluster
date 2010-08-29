@@ -221,6 +221,7 @@ namespace org {
         LOGDEBUG(_encoder->toString());
         _conv = Ptr<FrameConverter > (new FrameConverter(_frameserver->getDecoder().get(), _encoder.get()));
         _conv->setDeinterlace(deinterlace);
+        preview();
       }
 
       void PreviewPanel::preview() {

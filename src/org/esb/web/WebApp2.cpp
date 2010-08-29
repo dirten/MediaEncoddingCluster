@@ -128,9 +128,9 @@ namespace org {
         layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
 
-                TreeMainMenu * mainmenu=new TreeMainMenu(this);
-                mainmenu->resize(200, Wt::WLength());
-                layout->addWidget(mainmenu, Wt::WBorderLayout::West);
+        //TreeMainMenu * mainmenu=new TreeMainMenu(this);
+        //mainmenu->resize(200, Wt::WLength());
+        //layout->addWidget(mainmenu, Wt::WBorderLayout::West);
 
         /*begin Footer Panel*/
         Wt::Ext::Panel *footer = new Wt::Ext::Panel();

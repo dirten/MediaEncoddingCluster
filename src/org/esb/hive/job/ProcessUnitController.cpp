@@ -174,6 +174,10 @@ namespace org {
                */
               if (stream_map.find(packet->packet->stream_index) == stream_map.end())
                 continue;
+              /**
+               * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
+               * this is for the behaviour that the server process restarts an unfinished encoding
+               */
               if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
                 continue;
               //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
@@ -192,6 +196,8 @@ namespace org {
                 wait_for_queue=true;
               }
             }
+            /*@TODO: need to implements the flush Method in the Packetizer*/
+
             if(wait_for_queue){
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
