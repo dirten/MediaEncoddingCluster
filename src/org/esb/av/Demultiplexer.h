@@ -11,6 +11,9 @@
 #include "Track.h"
 #include "DataSource.h"
 #include <list>
+#include "org/esb/lang/Ptr.h"
+#include "boost/thread/condition.hpp"
+#include "boost/thread/mutex.hpp"
 namespace org {
   namespace esb {
     namespace av {
@@ -21,12 +24,20 @@ namespace org {
         virtual ~Demultiplexer();
         Duration getDuration();
         TimeStamp getMediaTime();
-        std::list<Track> getTracks();
+        std::list<Ptr<Track> > getTracks();
         bool isPositionable();
         bool isRandomAccess();
         TimeStamp setPosition(TimeStamp, int);
       private:
         DataSource & _source;
+        std::list<Ptr<Track> > _track_list;
+        friend class Track;
+        void readFrame(Buffer&, int );
+        Ptr<AVPacket>_next_packet;
+        boost::mutex _read_frame_mutex;
+        boost::mutex _next_packet_wait_mutex;
+        boost::condition _next_packet_wait_condition;
+        void readFrameFromContext();
       };
     }
   }

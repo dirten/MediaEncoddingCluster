@@ -8,12 +8,14 @@
 #include "Track.h"
 #include "VideoFormat.h"
 #include "AudioFormat.h"
+#include "Demultiplexer.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      Track::Track(AVStream * s):_str(s) {
-
+      Track::Track(AVStream * s, Demultiplexer *plexer):_str(s),_plexer(plexer) {
+        _enabled=true;
+        _seq=0;
       }
 
 
@@ -25,7 +27,7 @@ namespace org {
         if(_str->codec->codec_type==CODEC_TYPE_VIDEO)
           return VideoFormat(_str->codec->pix_fmt,_str->codec->width,_str->codec->height,Rational(_str->time_base.num,_str->time_base.den));
         if(_str->codec->codec_type==CODEC_TYPE_AUDIO){
-          int sample_size=1;
+          int sample_size=av_get_bits_per_sample_format(_str->codec->sample_fmt) / 8;
           return AudioFormat(_str->codec->sample_fmt,_str->codec->sample_rate,sample_size, _str->codec->channels,0,_str->codec->frame_size);
         }
         return Format();
@@ -36,12 +38,16 @@ namespace org {
       }
 
       bool Track::isEnabled() {
+        return _enabled;
       }
 
-      void Track::readFrame(Buffer) {
+      void Track::readFrame(Buffer & buf) {
+        _plexer->readFrame(buf,_str->index);
+        buf.setSequenceNumber(_seq++);
       }
 
       void Track::setEnabled(bool) {
+        _enabled=false;
       }
     }
   }

@@ -16,7 +16,7 @@ using namespace org::esb::io;
  * 
  */
 int main(int argc, char** argv) {
-  return 1;
+
 
   std::string basepath = MEC_SOURCE_DIR;
   std::string path="file://";
