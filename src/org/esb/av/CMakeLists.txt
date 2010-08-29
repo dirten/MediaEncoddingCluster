@@ -31,7 +31,18 @@ add_library (av
   FormatStreamFactory.cpp
   StreamInfo.cpp
   FrameProcessor.cpp
-)
+  MediaLocator.cpp
+  DataSource.cpp
+  Rational.cpp
+  TimeStamp.cpp
+  Buffer.cpp
+  Format.cpp
+  VideoFormat.cpp
+  AudioFormat.cpp
+  Duration.cpp
+  Demultiplexer.cpp
+  Track.cpp
+  )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}
   ${FFMPEG_AVCODEC_LIBRARY}

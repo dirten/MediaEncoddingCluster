@@ -10,6 +10,7 @@ extern "C" {
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 #include <libavutil/fifo.h>
+#include <libavutil/rational.h>
 
 }
 #include "boost/thread/mutex.hpp"
