@@ -44,20 +44,20 @@ namespace org {
 
       void Demultiplexer::readFrame(Buffer &buf, int stream_index) {
         LOGDEBUG("try reading stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-        _next_packet_wait_condition.notify_all();
         while (true) {
           if (_next_packet->stream_index != stream_index) {
             LOGDEBUG("Lock stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
             boost::mutex::scoped_lock next_packet_wait_lock(_next_packet_wait_mutex);
             _next_packet_wait_condition.wait(next_packet_wait_lock);
             LOGDEBUG("Lock released : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
+          }else{
+            LOGDEBUG("Readed stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
+            buf.setAVPacket(_next_packet);
+            readFrameFromContext();
+            LOGDEBUG("notify");
+            _next_packet_wait_condition.notify_all();
+            return;
           }
-          LOGDEBUG("Readed stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-          buf.setAVPacket(_next_packet);
-          readFrameFromContext();
-          LOGDEBUG("notify");
-          _next_packet_wait_condition.notify_all();
-          return;
         }
 
       }
