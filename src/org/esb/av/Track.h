@@ -22,6 +22,7 @@ namespace org {
         bool isEnabled();
         void readFrame(Buffer&);
         void setEnabled(bool);
+        int getStreamIndex();
       private:
         friend class Demultiplexer;
         Track(AVStream * str, Demultiplexer *);

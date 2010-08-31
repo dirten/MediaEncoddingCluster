@@ -80,6 +80,12 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
 //  outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
+//  outfile.project().link(mediafile.project().get().one());
+  vector<db::Filter> filters=mediafile.project().get().one().filter().get().all();
+  vector<db::Filter>::iterator filter_it=filters.begin();
+  for(;filter_it!=filters.end();filter_it++){
+    outfile.filter().link((*filter_it));
+  }
   job.outfile=outfile.filename.value();
   /*
    * setting time data twice, in case of a bug in litesql

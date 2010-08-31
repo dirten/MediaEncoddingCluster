@@ -18,17 +18,15 @@ namespace org {
         _seq=0;
       }
 
-
       Track::~Track() {
       }
 
       Format Track::getFormat() {
 
         if(_str->codec->codec_type==CODEC_TYPE_VIDEO)
-          return VideoFormat(_str->codec->pix_fmt,_str->codec->width,_str->codec->height,Rational(_str->time_base.num,_str->time_base.den));
+          return VideoFormat(_str->codec);
         if(_str->codec->codec_type==CODEC_TYPE_AUDIO){
-          int sample_size=av_get_bits_per_sample_format(_str->codec->sample_fmt) / 8;
-          return AudioFormat(_str->codec->sample_fmt,_str->codec->sample_rate,sample_size, _str->codec->channels,0,_str->codec->frame_size);
+          return AudioFormat(_str->codec);
         }
         return Format();
       }
@@ -36,18 +34,29 @@ namespace org {
       TimeStamp Track::getStartTime() {
         return TimeStamp(_str->first_dts, Rational(_str->time_base.num,_str->time_base.den));
       }
+      
+      int Track::getStreamIndex(){
+        return _str->index;
+      }
 
       bool Track::isEnabled() {
         return _enabled;
       }
 
       void Track::readFrame(Buffer & buf) {
+        if(!_enabled)return;
         _plexer->readFrame(buf,_str->index);
         buf.setSequenceNumber(_seq++);
+        buf.setFormat(getFormat());
       }
 
-      void Track::setEnabled(bool) {
-        _enabled=false;
+      void Track::setEnabled(bool en) {
+        _enabled=en;
+        if(en==false){
+          _str->discard=AVDISCARD_ALL;
+        }else{
+          _str->discard=AVDISCARD_NONE;
+        }
       }
     }
   }

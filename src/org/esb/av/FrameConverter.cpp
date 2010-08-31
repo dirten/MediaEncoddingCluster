@@ -27,13 +27,13 @@ namespace org {
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {
-          LOGERROR( "the Decoder and Encoder must be from the same Type");
+          LOGERROR("the Decoder and Encoder must be from the same Type");
         }
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channel_layout, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
-              );
+                  );
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
         }
@@ -58,7 +58,7 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
-          if(_deinterlace)
+          if (_deinterlace)
             doDeinterlaceFrame(in_frame);
           convertVideo(in_frame, out_frame);
         }
@@ -90,11 +90,13 @@ namespace org {
         out_frame.setDuration(_enc->getTimeBase().num);
 #endif
       }
-      void FrameConverter::setDeinterlace(bool deinterlace){
-        _deinterlace=deinterlace;
+
+      void FrameConverter::setDeinterlace(bool deinterlace) {
+        _deinterlace = deinterlace;
       }
-      void FrameConverter::setKeepAspectRatio(bool kar){
-        _keep_aspect_ratio=kar;
+
+      void FrameConverter::setKeepAspectRatio(bool kar) {
+        _keep_aspect_ratio = kar;
       }
 
       void FrameConverter::setFrameRateCompensateBase(double val) {
@@ -135,12 +137,12 @@ namespace org {
           if (delta <= -0.6)
             frames = 0; //static_cast<int> (floor(delta - 0.5));
           LOGDEBUG(
-              "inframe.pts=" << input.getPts() <<
-              ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
-              ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
-              ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
-              ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
-              ":vdelta=" << delta << ":frames=" << frames);
+                  "inframe.pts=" << input.getPts() <<
+                  ":_dec->getLastTimeStamp()=" << _dec->getLastTimeStamp() <<
+                  ":_dec->getTimeBase().den=" << _dec->getTimeBase().den <<
+                  ":av_q2d(_enc->getTimeBase())=" << av_q2d(_enc->getTimeBase()) <<
+                  ":_enc->getLastTimeStamp()=" << _enc->getLastTimeStamp() <<
+                  ":vdelta=" << delta << ":frames=" << frames);
           if (_gop_size > 0)
             _gop_size--;
         }
@@ -153,11 +155,11 @@ namespace org {
         /* deinterlace : must be done before any resize */
         if (_deinterlace) {
           Frame frame(in_frame);
-          if (avpicture_deinterlace((AVPicture*)frame.getAVFrame(), (const AVPicture*)in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
+          if (avpicture_deinterlace((AVPicture*) frame.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
             /* if error, do not deinterlace */
             fprintf(stderr, "Deinterlacing failed\n");
-          }else{
-            in_frame=frame;
+          } else {
+            in_frame = frame;
           }
         }
       }
@@ -184,7 +186,7 @@ namespace org {
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
         out_frame._type = in_frame._type;
-        if(!_swsContext)return;
+        if (!_swsContext)return;
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;

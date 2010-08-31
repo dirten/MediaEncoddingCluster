@@ -56,7 +56,6 @@
         <field name="metayear" type="integer"/>
         <field name="metatrack" type="integer"/>
         <field name="metagenre" type="integer"/>
-
     </object>
 
     <relation>
@@ -119,6 +118,7 @@
         <field name="privdata" type="string"/>
         <field name="extradatasize" type="integer"/>
         <field name="extradata" type="string"/>
+        <field name="aspect_ratio" type="string"/>
         <field name="flags" type="integer"/>
         <field name="extraprofileflags" type="string"/>
     </object>

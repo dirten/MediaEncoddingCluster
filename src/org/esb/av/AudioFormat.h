@@ -16,6 +16,7 @@ namespace org {
       class AudioFormat:public Format {
       public:
         AudioFormat(SampleFormat fmt,int samplerate, int sampleSizeInBits, int channels, int signedd, int frameSizeInBits);
+        AudioFormat(AVCodecContext*);
         AudioFormat(const Format& orig);
         bool operator==(const AudioFormat&);
         SampleFormat getSampleFormat();

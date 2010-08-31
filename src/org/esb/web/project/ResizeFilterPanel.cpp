@@ -19,12 +19,12 @@ namespace org{
         Wt::WGridLayout * l = new Wt::WGridLayout();
         cont->setLayout(l);
         layout()->addWidget(cont);
-        /*
+        
         Wt::Ext::ComboBox * v_aspect = _elcb.addElement("aspect_ratio", "Aspect Ratio", "", l);
         v_aspect->setTextSize(50);
         v_aspect->addItem("Rescale to width and height defined below");
         v_aspect->addItem("Keep Aspect Ratio from Source");
-        */
+        
         _el.addElement("width", "Output Width", "", l);
         _el.addElement("height", "Output Height", "", l);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);

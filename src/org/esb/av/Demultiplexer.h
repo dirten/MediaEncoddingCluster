@@ -37,7 +37,8 @@ namespace org {
         boost::mutex _read_frame_mutex;
         boost::mutex _next_packet_wait_mutex;
         boost::condition _next_packet_wait_condition;
-        void readFrameFromContext();
+        bool readFrameFromContext();
+        bool _end_of_media;
       };
     }
   }

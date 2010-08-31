@@ -59,6 +59,8 @@ namespace org {
 
       void Buffer::setAVPacket(Ptr<AVPacket> p ) {
         _packet=p;
+        _data=p->data;
+        _flags=p->flags;
       }
 
       void Buffer::setDiscard(bool d) {
@@ -95,6 +97,8 @@ namespace org {
 
 
       Buffer::~Buffer() {
+        if(_packet.get()!=NULL)
+          av_free_packet(_packet.get());
       }
     }
   }

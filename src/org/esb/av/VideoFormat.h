@@ -16,14 +16,21 @@ namespace org {
 
       class VideoFormat: public Format {
       public:
-        VideoFormat(PixelFormat pxfm, int width, int height, Rational framerate);
+        VideoFormat(std::string encoding);
+        VideoFormat(PixelFormat, int width, int height, Rational framerate);
         VideoFormat(const Format&);
         bool operator==(VideoFormat t);
         std::string toString();
         PixelFormat getPixelFormat();
         int getWidth();
         int getHeight();
+        void setFormatOption(std::string key, std::string val);
       private:
+        friend class Track;
+        /*this is only for internal usage*/
+        VideoFormat(AVCodecContext * ctx);
+        std::map<std::string, std::string> _options;
+
       };
     }
   }

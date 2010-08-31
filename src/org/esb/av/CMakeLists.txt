@@ -42,6 +42,7 @@ add_library (av
   Duration.cpp
   Demultiplexer.cpp
   Track.cpp
+  CCodec.cpp
   )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}

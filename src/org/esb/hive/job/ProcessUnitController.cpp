@@ -115,7 +115,9 @@ namespace org {
           }
 
           MediaFile infile = job.inputfile().get().one();
-
+          if(job.outputfile().get().one().filter().get().count()>0)
+            vector<db::Filter> filters=job.outputfile().get().one().filter().get().all();
+          
           string filename = infile.path + "/" + infile.filename;
           org::esb::io::File fi(filename);
           org::esb::av::FormatInputStream fis(&fi);

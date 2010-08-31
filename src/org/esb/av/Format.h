@@ -15,15 +15,19 @@ namespace org {
 
       class Format {
       public:
+        
         enum FormatType{
           FORMAT_UNKNOWN,
           FORMAT_VIDEO,
           FORMAT_AUDIO
         } ;
         Format();
+        Format(FormatType);
+        Format(CodecID);
         FormatType getType()const ;
+        void setFormatOption(std::string key, std::string val);
       protected:
-
+        CodecID _codec_id;
         friend class VideoFormat;
         PixelFormat _pix_fmt;
         int _width;
@@ -38,6 +42,8 @@ namespace org {
         int _channels;
         int _signedd;
         int _frame_size_in_bits;
+
+        
       };
     }
   }

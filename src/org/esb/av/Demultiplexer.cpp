@@ -15,7 +15,7 @@ namespace org {
           Ptr<Track> track = new Track(_source.formatCtx->streams[a], this);
           _track_list.push_back(track);
         }
-        readFrameFromContext();
+        _end_of_media=!readFrameFromContext();
       }
 
       Duration Demultiplexer::getDuration() {
@@ -43,37 +43,28 @@ namespace org {
       }
 
       void Demultiplexer::readFrame(Buffer &buf, int stream_index) {
-        LOGDEBUG("try reading stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-        while (true) {
-          if (_next_packet->stream_index != stream_index) {
-            LOGDEBUG("Lock stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-            boost::mutex::scoped_lock next_packet_wait_lock(_next_packet_wait_mutex);
-            _next_packet_wait_condition.wait(next_packet_wait_lock);
-            LOGDEBUG("Lock released : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-          }else{
-            LOGDEBUG("Readed stream : " << stream_index << "when next packt have index : " << _next_packet->stream_index);
-            buf.setAVPacket(_next_packet);
-            readFrameFromContext();
-            LOGDEBUG("notify");
-            _next_packet_wait_condition.notify_all();
-            return;
-          }
+        boost::mutex::scoped_lock next_packet_wait_lock(_next_packet_wait_mutex);
+        while (_next_packet->stream_index != stream_index&&!_end_of_media) {
+          _next_packet_wait_condition.wait(next_packet_wait_lock);
         }
-
+        buf.setAVPacket(_next_packet);
+        buf.setEOM(_end_of_media);
+        _end_of_media=!readFrameFromContext();
+        _next_packet_wait_condition.notify_all();
       }
 
-      void Demultiplexer::readFrameFromContext() {
-        LOGTRACEMETHOD(" Demultiplexer::readFrameFromContext()");
+      bool Demultiplexer::readFrameFromContext() {
+        bool result=true;
         boost::mutex::scoped_lock scoped_lock(_read_frame_mutex);
         _next_packet = new AVPacket();
         av_init_packet(_next_packet.get());
         if (av_read_frame(_source.formatCtx, _next_packet.get()) >= 0) {
           av_dup_packet(_next_packet.get());
         } else {
-          LOGDEBUG("End Of File");
+          result=false;
         }
+        return result;
       }
-
       Demultiplexer::~Demultiplexer() {
       }
     }

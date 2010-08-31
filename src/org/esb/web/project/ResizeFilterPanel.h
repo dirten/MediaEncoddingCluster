@@ -3,7 +3,7 @@
 
 #include "org/esb/lang/Ptr.h"
 #include "BaseFilterPanel.h"
-#include "wtk/ElementContainer.h"
+#include "org/esb/web/wtk/ElementContainer.h"
 #include "Wt/Ext/ComboBox"
 #include <map>
 namespace org{

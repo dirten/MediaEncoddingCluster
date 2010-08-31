@@ -10,12 +10,14 @@
 #include "org/esb/av/Buffer.h"
 #include "org/esb/av/VideoFormat.h"
 #include "org/esb/av/AudioFormat.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::av;
 /*
  * 
  */
 int main(int argc, char** argv) {
+  Log::open("");
   Buffer b;
   
   b.setAVPacket(Ptr<AVPacket>(new AVPacket()));
@@ -23,7 +25,7 @@ int main(int argc, char** argv) {
   b.setDiscard(false);
   b.setDuration(Duration(100,Rational()));
   b.setFlags(1);
-  b.setFormat(VideoFormat(PIX_FMT_BGR24, 320,240,Rational(25,1)));
+  b.setFormat(VideoFormat(PIX_FMT_RGB32, 320,240,Rational(25,1)));
   b.setLength(10000);
   b.setSequenceNumber(1212);
   b.setTimeStamp(TimeStamp(12000));
@@ -42,7 +44,7 @@ int main(int argc, char** argv) {
     assert(false);
   }
   VideoFormat vf=(VideoFormat)f;
-  assert(vf==VideoFormat(PIX_FMT_BGR24, 320,240,Rational(25,1)));
+  assert(vf==VideoFormat(PIX_FMT_RGB32, 320,240,Rational(25,1)));
 
   delete []b.getData();
   
