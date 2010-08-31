@@ -24,6 +24,8 @@ namespace org {
             }
 
             std::string MediaLocator::getRemainder() {
+              size_t pos=_file.find_first_of(":");
+              return _file.substr(pos+3);
               org::esb::util::StringTokenizer tok(_file,":");
               if(tok.countTokens()!=2)return "";
               tok.nextToken();
