@@ -58,35 +58,37 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   job.created = 0;
   job.begintime = 1;
   job.endtime = 1;
-  job.starttime=mediafile.starttime;
-  job.duration=mediafile.duration;
-  job.status="queued";
-  job.infile=mediafile.filename.value();
+  job.starttime = mediafile.starttime;
+  job.duration = mediafile.duration;
+  job.status = "queued";
+  job.infile = mediafile.filename.value();
   job.update();
 
   db::JobLog log(job.getDatabase());
-  log.message="Job Enqueued, is waiting for the next free Encoding slot";
+  log.message = "Job Enqueued, is waiting for the next free Encoding slot";
   log.update();
   job.joblog().link(log);
-  
+
   db::MediaFile outfile(mediafile.getDatabase());
-  std::string filename=job.id;
-  filename+="#";
-  filename+=f.getFileName();
+  std::string filename = job.id;
+  filename += "#";
+  filename += f.getFileName();
   outfile.filename = filename;
-  outfile.path = outpath+"/"+profile.name;
+  outfile.path = outpath + "/" + profile.name;
   outfile.parent = mediafile.id.value();
   outfile.containertype = ofmt->name;
-//  outfile.duration = mediafile.duration;
+  //  outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
-//  outfile.project().link(mediafile.project().get().one());
-  vector<db::Filter> filters=mediafile.project().get().one().filter().get().all();
-  vector<db::Filter>::iterator filter_it=filters.begin();
-  for(;filter_it!=filters.end();filter_it++){
-    outfile.filter().link((*filter_it));
+  //  outfile.project().link(mediafile.project().get().one());
+  if (mediafile.project().get().count()>0&& mediafile.project().get().one().filter().get().count() > 0) {
+    vector<db::Filter> filters = mediafile.project().get().one().filter().get().all();
+    vector<db::Filter>::iterator filter_it = filters.begin();
+    for (; filter_it != filters.end(); filter_it++) {
+      outfile.filter().link((*filter_it));
+    }
   }
-  job.outfile=outfile.filename.value();
+  job.outfile = outfile.filename.value();
   /*
    * setting time data twice, in case of a bug in litesql
    * it does not support zero values,
@@ -105,7 +107,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   vector<db::Stream>::iterator it = streams.begin();
   int a = 0;
   for (; it != streams.end(); it++) {
-    if((*it).streamtype != CODEC_TYPE_VIDEO&&(*it).streamtype != CODEC_TYPE_AUDIO)continue;
+    if ((*it).streamtype != CODEC_TYPE_VIDEO && (*it).streamtype != CODEC_TYPE_AUDIO)continue;
 
     db::Stream s(mediafile.getDatabase());
 
@@ -129,15 +131,15 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       s.codectimebasenum = (int) (*it).codectimebasenum;
       s.codectimebaseden = (int) (*it).codectimebaseden;
 
-      if(profile.vwidth.value()>0){
+      if (profile.vwidth.value() > 0) {
         s.width = (int) profile.vwidth;
-      }else{
-        s.width =(*it).width.value();
+      } else {
+        s.width = (*it).width.value();
       }
 
-      if(profile.vheight.value()>0){
+      if (profile.vheight.value() > 0) {
         s.height = (int) profile.vheight;
-      }else{
+      } else {
         s.height = (*it).height.value();
       }
 
@@ -167,8 +169,8 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       enc->setChannels(profile.achannels);
       org::esb::hive::CodecFactory::setCodecOptions(enc, profile.aextra);
       enc->open();
-      s.channels=profile.achannels.value();
-      s.samplefmt = 1;//(int) enc->getSampleFormat();
+      s.channels = profile.achannels.value();
+      s.samplefmt = 1; //(int) enc->getSampleFormat();
       int flags = enc->getFlags();
       if (ofmt->flags & AVFMT_GLOBALHEADER)
         flags |= CODEC_FLAG_GLOBAL_HEADER;
@@ -179,7 +181,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
     s.update();
     s.mediafile().link(outfile);
     db::JobDetail job_detail(mediafile.getDatabase());
-    job_detail.deinterlace=profile.deinterlace.value();
+    job_detail.deinterlace = profile.deinterlace.value();
     job_detail.update();
     job.jobdetails().link(job_detail);
     job_detail.inputstream().link((*it));
@@ -457,34 +459,34 @@ namespace org {
         vector<db::Filter> filters = p->filter().get().all();
 
         vector<db::MediaFile>::iterator file_it = files.begin();
-        for(;file_it!=files.end();file_it++){
-          db::MediaFile file=(*file_it);
+        for (; file_it != files.end(); file_it++) {
+          db::MediaFile file = (*file_it);
           vector<db::Profile>::iterator profile_it = profiles.begin();
-          for(;profile_it!=profiles.end();profile_it++){
-            db::Profile profile=(*profile_it);
-            createJob(file,profile, filters, p->outdirectory);
+          for (; profile_it != profiles.end(); profile_it++) {
+            db::Profile profile = (*profile_it);
+            createJob(file, profile, filters, p->outdirectory);
           }
         }
       }
 
       void JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::vector<db::Filter> filter_vector, std::string outpath) {
-        profile.vwidth=0;
-        profile.vheight=0;
-        if(filter_vector.size()>0){
-          for(int a=0;a<filter_vector.size();a++){
-            db::Filter filter=filter_vector[a];
-//            filter.getDatabase().verbose = true;
-            if(filter.filterid=="resize"){
-              profile.vwidth=atoi(filter.parameter().get(db::FilterParameter::Fkey=="width").one().fval.value().c_str());
-              profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one().fval.value().c_str());
+        profile.vwidth = 0;
+        profile.vheight = 0;
+        if (filter_vector.size() > 0) {
+          for (int a = 0; a < filter_vector.size(); a++) {
+            db::Filter filter = filter_vector[a];
+            //            filter.getDatabase().verbose = true;
+            if (filter.filterid == "resize") {
+              profile.vwidth = atoi(filter.parameter().get(db::FilterParameter::Fkey == "width").one().fval.value().c_str());
+              profile.vheight = atoi(filter.parameter().get(db::FilterParameter::Fkey == "height").one().fval.value().c_str());
             }
-            if(filter.filterid=="deinterlace"){
-              profile.deinterlace=1;
+            if (filter.filterid == "deinterlace") {
+              profile.deinterlace = 1;
               //profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one());
             }
           }
         }
-         jobcreator(infile, profile, outpath);
+        jobcreator(infile, profile, outpath);
       }
     }
   }

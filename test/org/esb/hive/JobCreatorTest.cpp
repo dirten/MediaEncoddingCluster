@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     assert(fileid > 0);
     int jobid = jobcreator(fileid, 1, "/tmp");
     assert(jobid > 0);
-
+    
 
     db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
     //db.verbose = true;

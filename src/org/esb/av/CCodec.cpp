@@ -26,26 +26,33 @@ namespace org {
       }
 
       std::string CCodec::getName() {
+        return "";
       }
 
       void CCodec::reset() {
       }
 
       std::list<Format> CCodec::getSupportedInputFormats() {
+        std::list<Format> result;
+      
+        return result;
       }
 
       std::list<Format> CCodec::getSupportedOutputFormats(Format in ) {
       }
 
       int CCodec::process(Buffer & in, Buffer & out) {
+        return 0;
       }
 
       Format CCodec::setInputFormat(Format f) {
         f.getType();
+        return f;
       }
 
       Format CCodec::setOutputFormat(Format f) {
         f.getType();
+        return f;
       }
     }
   }
