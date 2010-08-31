@@ -39,6 +39,9 @@ namespace org {
       }
 
       std::list<Format> CCodec::getSupportedOutputFormats(Format in ) {
+        std::list<Format> result;
+
+        return result;
       }
 
       int CCodec::process(Buffer & in, Buffer & out) {
