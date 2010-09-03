@@ -22,12 +22,6 @@ namespace org {
       }
 
       Format Track::getFormat() {
-
-        if(_str->codec->codec_type==CODEC_TYPE_VIDEO)
-          return VideoFormat(_str->codec);
-        if(_str->codec->codec_type==CODEC_TYPE_AUDIO){
-          return AudioFormat(_str->codec);
-        }
         return Format();
       }
 

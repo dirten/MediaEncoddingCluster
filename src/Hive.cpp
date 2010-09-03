@@ -495,7 +495,7 @@ void start() {
   Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("processunitwatcher", org::esb::hive::STOP));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));

@@ -10,8 +10,7 @@
 #include "org/esb/av/MediaLocator.h"
 #include "org/esb/av/DataSource.h"
 #include "org/esb/av/CCodec.h"
-#include "org/esb/av/VideoFormat.h"
-#include "org/esb/av/AudioFormat.h"
+#include "org/esb/av/Format.h"
 #include "org/esb/av/Track.h"
 #include "org/esb/av/Demultiplexer.h"
 using namespace std;
@@ -39,13 +38,14 @@ int main(int argc, char** argv) {
 
   Ptr<Track> video_track = plex.getTracks().front();
 
-  VideoFormat out(PIX_FMT_RGB32, 320, 240, Rational(25,1));
+  Format out(CODEC_ID_H264);
 
   CCodec codec;
-  VideoFormat in=video_track->getFormat();
+  Format in=video_track->getFormat();
 //  VideoFormat test=in;
   
   in.setFormatOption("test", "test");
+
   codec.setInputFormat(in);
   codec.setOutputFormat(out);
   codec.open();

@@ -37,8 +37,6 @@ add_library (av
   TimeStamp.cpp
   Buffer.cpp
   Format.cpp
-  VideoFormat.cpp
-  AudioFormat.cpp
   Duration.cpp
   Demultiplexer.cpp
   Track.cpp

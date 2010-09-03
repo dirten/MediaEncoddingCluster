@@ -30,7 +30,7 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-add_library (db db/hivedb.cpp
+add_library (db db/hivedb.cpp orm/hivedb.cpp
 #            av/FrameConverter.cpp
 #            av/FrameOutputStream.cpp
 #            av/FormatInputStream.cpp
@@ -61,6 +61,26 @@ ELSEIF(WIN32)
 ENDIF(NOT WIN32)
 IF(BUILD_SHARED_LIBS)
   INSTALL(TARGETS db
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_SHARED_LIBS)
+
+
+add_library (orm orm/hivedb.cpp)
+TARGET_LINK_LIBRARIES(orm ${MYSQL_LIBRARY} )
+IF(NOT WIN32)
+  TARGET_LINK_LIBRARIES(orm litesql litesql-util litesql_mysql)
+ELSEIF(WIN32)
+  IF(CMAKE_BUILD_TYPE MATCHES "debug")
+    TARGET_LINK_LIBRARIES(orm litesqld litesql-utild litesql_mysqld)
+    ELSE()
+    TARGET_LINK_LIBRARIES(orm litesql litesql-util litesql_mysql)
+  ENDIF()
+ENDIF(NOT WIN32)
+IF(BUILD_SHARED_LIBS)
+  INSTALL(TARGETS orm
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}

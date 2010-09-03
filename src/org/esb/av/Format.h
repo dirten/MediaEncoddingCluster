@@ -27,23 +27,9 @@ namespace org {
         FormatType getType()const ;
         void setFormatOption(std::string key, std::string val);
       protected:
+        std::map<std::string, std::string> _options;
         CodecID _codec_id;
-        friend class VideoFormat;
-        PixelFormat _pix_fmt;
-        int _width;
-        int _height;
-        Rational _framerate;
-        FormatType _type;
-
-        friend class AudioFormat;
-        SampleFormat _sample_format;
-        int _sample_rate;
-        int _sample_size_in_bits;
-        int _channels;
-        int _signedd;
-        int _frame_size_in_bits;
-
-        
+        FormatType _type;        
       };
     }
   }

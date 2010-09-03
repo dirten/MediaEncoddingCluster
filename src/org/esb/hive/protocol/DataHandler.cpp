@@ -146,6 +146,7 @@ public:
   }
 
   void process(char * command) {
+    if(_oos==NULL||_ois==NULL)return;
     if (strcmp(command, GET_UNIT) == 0) {
       Message msg;
       msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");

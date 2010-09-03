@@ -63,12 +63,15 @@ namespace org {
           is_running = true;
         } else
           if (msg.getProperty("hivelistener") == org::esb::hive::STOP) {
-          LOGDEBUG( "Hive Listener stopped:");
+          LOGDEBUG( "Hive Listener stopp signal:");
           main_nextloop = false;
-          if (server)
+          if (server){
+            
             server->close();
+          }
           delete server;
           server = NULL;
+          LOGDEBUG( "Hive Listener stopped:");
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
@@ -82,7 +85,7 @@ namespace org {
         for (; main_nextloop;) {
           //          try {
           TcpSocket * clientSocket = server->accept();
-          if (clientSocket&&clientSocket->isConnected() || (!main_nextloop)) {
+          if (clientSocket&&clientSocket->isConnected() &&(main_nextloop)) {
             ProtocolServer *protoServer = new ProtocolServer(clientSocket);
             boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
             //              Thread *thread = new Thread(protoServer);

@@ -8,8 +8,7 @@
 #include <cstdlib>
 #include <valarray>
 #include "org/esb/av/Buffer.h"
-#include "org/esb/av/VideoFormat.h"
-#include "org/esb/av/AudioFormat.h"
+#include "org/esb/av/Format.h"
 #include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::av;
@@ -25,7 +24,7 @@ int main(int argc, char** argv) {
   b.setDiscard(false);
   b.setDuration(Duration(100,Rational()));
   b.setFlags(1);
-  b.setFormat(VideoFormat(PIX_FMT_RGB32, 320,240,Rational(25,1)));
+  b.setFormat(Format(CODEC_ID_CINEPAK));
   b.setLength(10000);
   b.setSequenceNumber(1212);
   b.setTimeStamp(TimeStamp(12000));
@@ -43,18 +42,17 @@ int main(int argc, char** argv) {
   if(!f.getType()==Format::FORMAT_VIDEO){
     assert(false);
   }
-  VideoFormat vf=(VideoFormat)f;
-  assert(vf==VideoFormat(PIX_FMT_RGB32, 320,240,Rational(25,1)));
+//  const Format ft(CODEC_ID_CINEPAK);
+//  assert(f==ft);
 
   delete []b.getData();
   
-  b.setFormat(AudioFormat(SAMPLE_FMT_S16,44100,8,2,1,1152));
+  b.setFormat(Format(CODEC_ID_AC3));
   const Format f2=b.getFormat();
   if(!f2.getType()==Format::FORMAT_AUDIO){
     assert(false);
   }
-  AudioFormat af=(AudioFormat)f2;
-  assert(af==AudioFormat(SAMPLE_FMT_S16,44100,8,2,1,1152));
+//  assert(f==Format(CODEC_ID_AC3));
   return 0;
 }
 

@@ -8,6 +8,6 @@ add_subdirectory (net)
 add_subdirectory (av)
 add_subdirectory (hive)
 add_subdirectory (web)
-#add_subdirectory (sql)
+add_subdirectory (orm)
 
 

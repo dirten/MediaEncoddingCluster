@@ -33,7 +33,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
 
-
+#include "Format.h"
 #include "Packet.h"
 #include "org/esb/util/Log.h"
 #include <boost/shared_ptr.hpp>
@@ -102,6 +102,11 @@ class SampleFormat;*/
         AVRational getFrameRate();
         int64_t getFrameBytes();
         int setCodecOption(std::string opt, std::string arg);
+        Format getOutputFormat();
+        Format getInputFormat();
+        void setOutputFormat(Format);
+        void setInputFormat(Format);
+        std::list<Format> getSupportedInputFormats();
         //                void setStartTime(int64_t start);
         std::string toString(void);
         //				int getCodecType ();
@@ -215,7 +220,8 @@ class SampleFormat;*/
         bool _pre_allocated;
         static boost::mutex open_close_mutex;
         std::map<std::string, std::string> _options;
-
+        Format _input_format;
+        Format _output_format;
       };
     }
   }

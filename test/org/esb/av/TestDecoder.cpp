@@ -17,12 +17,9 @@
 
 #include "org/esb/util/Log.h"
 
-void testDecodeVideo() {
+void testDecodeVideo(std::string filepath) {
   int offset = 0;
   int printout = 0;
-  std::string filepath = MEC_SOURCE_DIR;
-//  filepath.append("/test/fixtures/TITLE01-ANGLE1.VOB");
-  filepath.append("/test.dvd");
 //filepath="/home/HoelscJ/old/media/video/ChocolateFactory.ts";
   org::esb::io::File file(filepath.c_str());
   org::esb::av::FormatInputStream fis(&file);
@@ -36,9 +33,10 @@ void testDecodeVideo() {
   }
   org::esb::av::Decoder dec(fis.getAVStream(video_stream));
   //  dec.setTimeBase(1, 25);
-  dec.open();
+  //dec.open();
+  LOGDEBUG(dec.getPixelFormat());
   LOGDEBUG(dec.toString());
-
+  return ;
 
   org::esb::av::PacketInputStream pis(&fis);
   org::esb::av::Packet * p;
@@ -153,7 +151,12 @@ void testDecodeAudio(){
 
 int main(int argc, char** argv) {
   Log::open("");
-  testDecodeVideo();
+  std::string filename=MEC_SOURCE_DIR;
+  filename.append("/test.dvd");
+  if(argc>1){
+    filename=argv[1];
+  }
+  testDecodeVideo(filename);
 //  testDecodeAudio();
   Log::close();
   return (EXIT_SUCCESS);

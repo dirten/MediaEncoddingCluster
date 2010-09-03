@@ -65,12 +65,12 @@ namespace org {
       }
 
       void TcpServerSocket::close() {
+        if (acceptor_.is_open()) {
+          acceptor_.cancel();
+          acceptor_.close();
+          LOGDEBUG("TcpServerSocket closed");
+        }
         _io_service.stop();
-        //        if (acceptor_.is_open()) {
-        //          acceptor_.cancel();
-        //          acceptor_.close();
-        //          logdebug("TcpServerSocket closed");
-        //        }
         _inShutdown = true;
 
       }

@@ -447,6 +447,21 @@ namespace org {
       void Codec::setBitsPerCodedSample(int v) {
         ctx->bits_per_coded_sample = v;
       }
+        Format Codec::getOutputFormat(){
+
+        }
+        Format Codec::getInputFormat(){
+
+        }
+        void Codec::setOutputFormat(Format f){
+
+        }
+        void Codec::setInputFormat(Format f){
+
+        }
+        std::list<Format> Codec::getSupportedInputFormats(){
+
+        }
 
       /*
       void Codec::setStartTime(int64_t start) {

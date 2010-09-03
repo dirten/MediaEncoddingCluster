@@ -68,7 +68,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
-	org::esb::hive::DatabaseService::thread_init();
+  org::esb::hive::DatabaseService::thread_init();
   while (socket->isConnected()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
     //#ifndef DEBUG
@@ -76,7 +76,7 @@ void ProtocolServer::run() {
       //#endif
       string cmd;
       int dataLength = socket->getInputStream()->read(cmd);
-      if (dataLength == 0) {
+      if (dataLength <= 0) {
         if (socket->isClosed())
           break;
       }
