@@ -9,4 +9,5 @@ ScopedTimeCounter::ScopedTimeCounter(std::string name) {
 ScopedTimeCounter::~ScopedTimeCounter(void) {
   _end = microsec_clock::local_time();
   LOGDEBUG(_name << " duration: " << to_simple_string(_end - _start));
+  std::cout<<_name << " duration: " << to_simple_string(_end - _start)<<std::endl;
 }

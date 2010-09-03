@@ -448,9 +448,10 @@ namespace org {
         ctx->bits_per_coded_sample = v;
       }
         Format Codec::getOutputFormat(){
-
+          return Format();
         }
         Format Codec::getInputFormat(){
+          return Format();
 
         }
         void Codec::setOutputFormat(Format f){
@@ -460,7 +461,9 @@ namespace org {
 
         }
         std::list<Format> Codec::getSupportedInputFormats(){
+        std::list<Format> result;
 
+        return result;
         }
 
       /*

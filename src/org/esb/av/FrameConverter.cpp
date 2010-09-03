@@ -61,6 +61,7 @@ namespace org {
           if (_deinterlace)
             doDeinterlaceFrame(in_frame);
           convertVideo(in_frame, out_frame);
+          
         }
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
