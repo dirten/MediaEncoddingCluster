@@ -23,6 +23,6 @@ int main() {
 #endif
   delete []t;
   delete d;
-  return 0;
   Log::close();
+  return 0;
 }
