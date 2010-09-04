@@ -11,19 +11,12 @@
 namespace org {
   namespace esb {
     namespace av {
-
+      typedef TimeStamp Duration;
+/*
       class Duration:public TimeStamp {
       public:
-        Duration(int64_t timestamp=1, Rational base=Rational());
-        
-        /*
-        virtual ~Duration();
-        Duration rescaleTo(Rational );
-        Rational getTimeBase();
-        int64_t getDuration();
-        bool operator==(Duration t);
-        */
-      };
+        Duration(int64_t timestamp=1, Rational base=Rational());        
+      };*/
     }
   }
 }

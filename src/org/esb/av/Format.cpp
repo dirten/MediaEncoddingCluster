@@ -15,11 +15,15 @@ namespace org {
         _type=Format::FORMAT_UNKNOWN;
       }
 
-      Format::Format(FormatType type){
+      Format::Format(FormatType type):
+        _codec_id(CODEC_ID_NONE),
+        _type(type){
         _type=type;
       }
 
-      Format::Format(CodecID id){
+      Format::Format(CodecID id):
+        _codec_id(id),
+        _type(Format::FORMAT_UNKNOWN){
         _codec_id=id;
       }
 

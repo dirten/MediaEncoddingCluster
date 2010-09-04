@@ -9,11 +9,11 @@
 namespace org {
   namespace esb {
     namespace av {
-
+/*
       Duration::Duration(int64_t timestamp, Rational base):TimeStamp(timestamp, base) {
         
       }
-
+*/
 
     }
   }
