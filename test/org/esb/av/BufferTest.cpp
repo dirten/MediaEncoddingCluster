@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
   b.setDiscard(false);
   b.setDuration(Duration(100,Rational()));
   b.setFlags(1);
-  b.setFormat(Format(CODEC_ID_CINEPAK));
+  b.setFormat(Format(Format::FORMAT_VIDEO));
   b.setLength(10000);
   b.setSequenceNumber(1212);
   b.setTimeStamp(TimeStamp(12000));
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
   assert(b.getTimeStamp()==TimeStamp(12000));
 
   const Format f=b.getFormat();
-  if(!f.getType()==Format::FORMAT_VIDEO){
+  if(f.getType()!=Format::FORMAT_VIDEO){
     assert(false);
   }
 //  const Format ft(CODEC_ID_CINEPAK);
@@ -47,9 +47,9 @@ int main(int argc, char** argv) {
 
   delete []b.getData();
   
-  b.setFormat(Format(CODEC_ID_AC3));
+  b.setFormat(Format(Format::FORMAT_AUDIO));
   const Format f2=b.getFormat();
-  if(!f2.getType()==Format::FORMAT_AUDIO){
+  if(f2.getType()!=Format::FORMAT_AUDIO){
     assert(false);
   }
 //  assert(f==Format(CODEC_ID_AC3));

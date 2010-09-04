@@ -76,7 +76,7 @@ Encoder enc(CODEC_ID_MPEG4);
   enc.setBitRate(1500000);
   enc.open();
 std::cout << enc.toString()<<std::endl;
-enc.setPixelFormat(PIX_FMT_RGB32);
+enc.setPixelFormat(PIX_FMT_RGB24);
 std::cout << enc.toString()<<std::endl;
   org::esb::av::PacketInputStream pis(&fis);
   org::esb::av::Packet * p;
