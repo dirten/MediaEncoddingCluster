@@ -11,6 +11,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/PGMUtil.h"
+#include "org/esb/av/BMPUtil.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -33,10 +34,10 @@ void testDecodeVideo(std::string filepath) {
   }
   org::esb::av::Decoder dec(fis.getAVStream(video_stream));
   //  dec.setTimeBase(1, 25);
-  //dec.open();
+  dec.open();
   LOGDEBUG(dec.getPixelFormat());
   LOGDEBUG(dec.toString());
-  return ;
+  
 
   org::esb::av::PacketInputStream pis(&fis);
   org::esb::av::Packet * p;
@@ -53,8 +54,8 @@ void testDecodeVideo(std::string filepath) {
         if (frame->isFinished() && i >= printout) {
           LOGDEBUG("frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           outcount++;
-          sprintf(outfile,"test-%i.pgm", i);
-          org::esb::av::PGMUtil::save(outfile, frame);
+          sprintf(outfile,"test-%i.bmp", i);
+          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
 //          frame->dumpHex();
         }
         delete frame;
