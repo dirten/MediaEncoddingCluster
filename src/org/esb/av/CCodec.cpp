@@ -6,6 +6,7 @@
  */
 
 #include "CCodec.h"
+#include "Frame.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -46,6 +47,9 @@ namespace org {
 
       int CCodec::process(Buffer & in, Buffer & out) {
         return 0;
+      }
+      CCodec::ProcessStatus CCodec::process(Frame & in, Frame & out) {
+        return CCodec::BUFFER_PROCESSED_FAILED;
       }
 
       Format CCodec::setInputFormat(Format f) {

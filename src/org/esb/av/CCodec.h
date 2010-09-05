@@ -29,6 +29,7 @@ namespace org {
         std::list<Format> getSupportedInputFormats();
         std::list<Format> getSupportedOutputFormats(Format in=Format());
         int process(Buffer & in, Buffer & out);
+        ProcessStatus process(Frame & in, Frame & out);
         Format setInputFormat(Format f);
         Format setOutputFormat(Format f);
 
