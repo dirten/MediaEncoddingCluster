@@ -13,6 +13,9 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Frame.h"
 #include "org/esb/av/PGMUtil.h"
+#include "org/esb/av/Format.h"
+#include "org/esb/av/ResizeFilter.h"
+#include "org/esb/av/DeinterlaceFilter.h"
 #include "org/esb/lang/Thread.h"
 namespace org {
   namespace esb {
@@ -182,7 +185,7 @@ namespace org {
         std::vector<db::Filter>::iterator it = filters.begin();
         int width = dec->getWidth();
         int height = dec->getHeight();
-        int deinterlace = false;
+        bool deinterlace = false;
         for (; it != filters.end(); it++) {
 //          LOGDEBUG((*it))
           if ((*it).filterid == "resize") {
@@ -220,6 +223,19 @@ namespace org {
         _encoder->open();
         LOGDEBUG(_encoder->toString());
         _conv = Ptr<FrameConverter > (new FrameConverter(_frameserver->getDecoder().get(), _encoder.get()));
+        Format in=dec->getOutputFormat();
+        Format out=_encoder->getInputFormat();
+        _plugin=new org::esb::av::ResizeFilter(in, out);
+        //_plugin->open();
+        if(deinterlace){
+          _plugin_chain.push_back(new org::esb::av::DeinterlaceFilter(in, out));
+        }
+        _plugin_chain.push_back(new org::esb::av::ResizeFilter(in, out));
+
+        std::list<Ptr<org::esb::av::PlugIn> >::iterator plugin_it=_plugin_chain.begin();
+        for(;plugin_it!=_plugin_chain.end();plugin_it++){
+          (*plugin_it)->open();
+        }
         _conv->setDeinterlace(deinterlace);
         preview();
       }
@@ -231,12 +247,20 @@ namespace org {
         Ptr<org::esb::av::Frame> frame = _frameserver->getFrame();
         if (!frame->isFinished())return;
 
-        Frame * f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
-        _conv->convert(*frame, *f);
-        _encoder->encode(*f);
+//        Frame * f = new Frame(PIX_FMT_RGB32, _encoder->getWidth(), _encoder->getHeight());
+        std::list<Ptr<org::esb::av::PlugIn> >::iterator plugin_it=_plugin_chain.begin();
+        for(;plugin_it!=_plugin_chain.end();plugin_it++){
+          Frame * f = new Frame(PIX_FMT_YUV444P, _encoder->getWidth(), _encoder->getHeight());
+          (*plugin_it)->process(*frame, *f);
+//          delete frame;
+          frame.reset(f);
+        }
+//        _plugin->process(*frame, *f);
+        //_conv->convert(*frame, *f);
+        _encoder->encode(*frame);
         std::list<boost::shared_ptr<Packet> > packets = _sink->getList();
         boost::shared_ptr<Packet> picture = packets.back();
-        delete f;
+        //delete f;
         if (picture->getSize() > 0) {
           _imageResource = Ptr<Wt::WMemoryResource > (new Wt::WMemoryResource("image/png"));
           _imageResource->setData((char*) picture->getData(), picture->getSize());

@@ -65,7 +65,7 @@ void FormatOutputStream::open() {
 }
 
 void FormatOutputStream::close() {
-  if (_status == OPENED) {
+  if (!(_fmt->flags & AVFMT_NOFILE)&&_status == OPENED) {
     url_fclose(_fmtCtx->pb);
     int nb_streams = _fmtCtx->nb_streams;
     for (int a = 0; a < nb_streams; a++) {

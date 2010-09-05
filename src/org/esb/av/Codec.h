@@ -213,6 +213,9 @@ class SampleFormat;*/
         bool _opened;
         AVFifoBuffer *fifo;
         std::string _codec_options;
+        Format _input_format;
+        Format _output_format;
+        static const PixelFormat STD_PIX_FMT=PIX_FMT_YUV444P;
       private:
         void setParams();
         void setContextDefaults();
@@ -220,8 +223,6 @@ class SampleFormat;*/
         bool _pre_allocated;
         static boost::mutex open_close_mutex;
         std::map<std::string, std::string> _options;
-        Format _input_format;
-        Format _output_format;
       };
     }
   }

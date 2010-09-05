@@ -28,6 +28,7 @@
 
 #include "Frame.h"
 #include "Packet.h"
+#include "org/esb/lang/Ptr.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
 
@@ -154,7 +155,19 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 
 int Encoder::encodeVideo(Frame & frame) {
   LOGDEBUG(frame.toString());
-  return encodeVideo(frame.getAVFrame());
+  if(!_pix_fmt_converter){
+    _input_format.width=ctx->width;
+    _input_format.height=ctx->height;
+    _input_format.pixel_format=STD_PIX_FMT;
+    Format out=_input_format;
+    out.pixel_format=ctx->pix_fmt;
+    _pix_fmt_converter=new PixelFormatConverter(_input_format, out);
+    _pix_fmt_converter->open();
+  }
+  Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
+  _pix_fmt_converter->process(frame,*tmp_frame);
+  LOGDEBUG(tmp_frame->toString());
+  return encodeVideo(tmp_frame->getAVFrame());
 }
 
 void Encoder::setOutputStream(PacketOutputStream * pos) {

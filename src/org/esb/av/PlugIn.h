@@ -8,6 +8,9 @@
 #ifndef PLUGIN_H
 #define	PLUGIN_H
 #include <string>
+#include "Frame.h"
+#include "Format.h"
+
 namespace org {
   namespace esb {
     namespace av {
@@ -25,6 +28,7 @@ namespace org {
         virtual std::string getName() = 0;
         virtual void open() = 0;
         virtual void reset() = 0;
+        virtual ProcessStatus process(Frame & in, Frame & out) = 0;
       };
     }
   }

@@ -27,6 +27,7 @@ add_library (av
   Frame.cpp 
   PPSWriter.cpp
   PGMUtil.cpp
+  BMPUtil.cpp
   AVInputStream.cpp
   FormatStreamFactory.cpp
   StreamInfo.cpp
@@ -37,10 +38,13 @@ add_library (av
   TimeStamp.cpp
   Buffer.cpp
   Format.cpp
-  Duration.cpp
+#  Duration.cpp
   Demultiplexer.cpp
   Track.cpp
   CCodec.cpp
+  PixelFormatConverter.cpp
+  ResizeFilter.cpp
+  DeinterlaceFilter.cpp
   )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}

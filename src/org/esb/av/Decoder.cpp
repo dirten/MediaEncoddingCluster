@@ -26,6 +26,7 @@
  */
 #include "Decoder.h"
 #include "Frame.h"
+#include "Format.h"
 #include <iostream>
 #include <stdexcept>
 #include "org/esb/util/Log.h"
@@ -116,7 +117,18 @@ fprintf(stderr, "Error while decoding frame\n");
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("Decode Video");
-  Frame * frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
+  if(!_pix_fmt_converter){
+    Format in;
+    in.width=ctx->width;
+    in.height=ctx->height;
+    in.pixel_format=ctx->pix_fmt;
+    _output_format=in;
+    _output_format.pixel_format=STD_PIX_FMT;
+    _pix_fmt_converter=new PixelFormatConverter(in, _output_format);
+    _pix_fmt_converter->open();
+  }
+  Ptr<Frame>  tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
+  Frame * frame = new Frame(_output_format.pixel_format, ctx->width, ctx->height);
   int _frameFinished = 0;
   int len = packet.packet->size;
   LOGDEBUG(packet.toString());
@@ -124,7 +136,11 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded =
-      avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
+      avcodec_decode_video2(ctx, tmp_frame->getAVFrame(), &_frameFinished, packet.packet);
+   if (_frameFinished) {
+    _pix_fmt_converter->process(*tmp_frame,*frame);
+    
+  }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (false && _last_pts == AV_NOPTS_VALUE) {
 #ifdef USE_TIME_BASE_Q
@@ -187,7 +203,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 #endif
 
   frame->setFinished(_frameFinished);
-  frame->_pixFormat = ctx->pix_fmt;
+//  frame->_pixFormat = ctx->pix_fmt;
   frame->stream_index = packet.packet->stream_index;
 
 

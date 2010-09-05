@@ -28,6 +28,8 @@
 #define ORG_ESB_AV_DECODER
 #include "Codec.h"
 #include "AV.h"
+#include "PixelFormatConverter.h"
+#include "org/esb/lang/Ptr.h"
 #ifdef WIN32
 #define DEPRICATED(func) __declspec(deprecated) func
 #else
@@ -63,6 +65,7 @@ namespace org {
       private:
         int64_t _last_pts;
         int64_t _next_pts;
+        Ptr<PixelFormatConverter> _pix_fmt_converter;
       };
     }
   }

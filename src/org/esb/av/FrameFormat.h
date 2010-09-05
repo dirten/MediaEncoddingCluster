@@ -13,7 +13,7 @@ struct FrameFormat{
 	int height;
 	int channels;
 	int samplerate;
-        SampleFormat sampleformat;
+  SampleFormat sampleformat;
 	/*
 	FrameFormat(){
 		pixel_format=(PixelFormat)0;

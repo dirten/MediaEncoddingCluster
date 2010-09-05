@@ -448,10 +448,16 @@ namespace org {
         ctx->bits_per_coded_sample = v;
       }
         Format Codec::getOutputFormat(){
-          return Format();
+          _output_format.width=ctx->width;
+          _output_format.height=ctx->height;
+          _output_format.pixel_format=STD_PIX_FMT;
+          return _output_format;
         }
         Format Codec::getInputFormat(){
-          return Format();
+          _input_format.width=ctx->width;
+          _input_format.height=ctx->height;
+          _input_format.pixel_format=STD_PIX_FMT;
+          return _input_format;
 
         }
         void Codec::setOutputFormat(Format f){

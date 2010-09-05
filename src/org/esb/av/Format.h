@@ -26,10 +26,17 @@ namespace org {
         Format(CodecID);
         FormatType getType()const ;
         void setFormatOption(std::string key, std::string val);
-      protected:
+//      protected:
         std::map<std::string, std::string> _options;
         CodecID _codec_id;
-        FormatType _type;        
+        FormatType _type; 
+        PixelFormat pixel_format;
+      	int width;
+	      int height;
+	      int channels;
+	      int samplerate;
+        SampleFormat sampleformat;
+
       };
     }
   }

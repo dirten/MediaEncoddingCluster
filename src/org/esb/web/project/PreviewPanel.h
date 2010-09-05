@@ -20,8 +20,9 @@
 #include "Wt/WImage"
 
 #include "PreviewFrameServer.h"
-
+#include "org/esb/av/PlugIn.h"
 #include <map>
+#include <list>
 namespace org{
   namespace esb{
     namespace web{
@@ -39,6 +40,8 @@ namespace org{
       private:
         Ptr<org::esb::av::Encoder> _encoder;
         Ptr<org::esb::av::FrameConverter> _conv;
+        Ptr<org::esb::av::PlugIn> _plugin;
+        std::list<Ptr<org::esb::av::PlugIn> > _plugin_chain;
         Ptr<db::Project> _project;
         Ptr<PacketSink> _sink;
         Ptr<db::MediaFile> mediafile;

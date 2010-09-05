@@ -31,6 +31,8 @@
 #include "Codec.h"
 #include "PacketOutputStream.h"
 #include "Sink.h"
+#include "PixelFormatConverter.h"
+#include "org/esb/lang/Ptr.h"
 //#include "AV.h"
 
 
@@ -71,6 +73,8 @@ namespace org {
                 int64_t _byte_counter;
                 int _frame_counter;
                 int _frames;
+                Ptr<PixelFormatConverter> _pix_fmt_converter;
+
             };
         }
     }
