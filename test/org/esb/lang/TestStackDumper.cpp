@@ -18,9 +18,9 @@ int main() {
   char * t=new char[100000];
   char test[1000000];
   /*only for hand testing*/
-#ifdef NDEBUG
-  //die();
-#endif
+//#ifdef NDEBUG
+  die();
+//#endif
   delete []t;
   delete d;
   Log::close();

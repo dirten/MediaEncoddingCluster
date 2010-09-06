@@ -165,7 +165,7 @@ void ProcessUnit::process() {
 
     /*allocation frame data for specified type*/
     if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
-      f = new Frame(_encoder->getPixelFormat(), _encoder->getWidth(), _encoder->getHeight());
+      f = new Frame(_encoder->getInputFormat().pixel_format, _encoder->getWidth(), _encoder->getHeight());
     if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
       f = new Frame();
     LOGTRACE("try Frame Convert");

@@ -38,7 +38,9 @@ namespace org {
             LOGERROR("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
-          _swsContext = sws_getContext(dec->getWidth(), dec->getHeight(), dec->getPixelFormat(), enc->getWidth(), enc->getHeight(), enc->getPixelFormat(), sws_flags, NULL, NULL, NULL);
+          Format in=dec->getOutputFormat();
+          Format out=enc->getInputFormat();
+          _swsContext = sws_getContext(in.width, in.height, in.pixel_format, out.width, out.height, out.pixel_format, sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
             LOGERROR("Could not initialize SWSCALE");
         }

@@ -60,6 +60,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 add_executable (mhive Hive.cpp)
 add_executable (mhiveservice HiveService.cpp)
+add_executable (mhiveclient MhiveClient.cpp)
 #SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
@@ -137,6 +138,18 @@ ELSE(WIN32)
   )
 ENDIF(WIN32)
 
+target_link_libraries (mhiveclient
+  web
+  esb
+  sql
+  hive
+  lang
+  av
+  util
+  signal
+  io
+  net
+)
 
 SET(CURL_CMD curl)
 SET(ZIP_CMD gzip)

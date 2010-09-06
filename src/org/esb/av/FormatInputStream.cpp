@@ -146,10 +146,10 @@ namespace org {
           av_close_input_file(formatCtx);
         formatCtx=NULL;
         if (_stream_info_map.size() > 0) {
-/*          map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
+          map<int, StreamInfo*>::iterator it = _stream_info_map.begin();
           for (; it != _stream_info_map.end(); it++) {
             delete (*it).second;
-          }*/
+          }
           _stream_info_map.clear();
         }
       }

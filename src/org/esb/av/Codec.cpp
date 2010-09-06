@@ -322,8 +322,8 @@ namespace org {
       void Codec::close() {
 
         if (_opened) {
-          if (ctx /*&& !_pre_allocated*/) {
-            if (ctx->extradata_size > 0) {
+          if (ctx ) {
+            if (ctx->extradata_size > 0&& !_pre_allocated) {
               av_freep(&ctx->extradata);
             }
 	    boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);

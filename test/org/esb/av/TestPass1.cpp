@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
   FormatInputStream fis(&f);
   PacketInputStream pis(&fis);
 
-  Decoder * dec;
-  Encoder * enc;
-  FrameConverter * conv;
+  Ptr<Decoder> dec;
+  Ptr<Encoder> enc;
+  Ptr<FrameConverter> conv;
   /*Create and open the input and output Codecs*/
   int c = fis.getStreamCount();
   int vidx = 0;
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     enc->setTimeBase(ar);
     enc->setFlag(CODEC_FLAG_PASS1);
     enc->open();
-    conv = new FrameConverter(dec, enc);
+    conv = new FrameConverter(dec.get(), enc.get());
 
   }
 
@@ -86,12 +86,15 @@ int main(int argc, char** argv) {
     //Decoding a Video Packet
     Frame * src_frame = dec->decode2(p);
 
-    if (!src_frame->isFinished())continue;
+    if (!src_frame->isFinished()){
+      delete src_frame;
+      continue;
+    }
 
 
     //Convert an Audio or Video Packet
     Frame * trg_frame = new Frame(
-        enc->getPixelFormat(),
+        enc->getInputFormat().pixel_format,
         enc->getWidth(),
         enc->getHeight());
 

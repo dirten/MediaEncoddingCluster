@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
     Frame * trg_frame = NULL;
     if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_VIDEO)
       trg_frame = new Frame(
-        _sdata[p->getStreamIndex()].enc->getPixelFormat(),
+        _sdata[p->getStreamIndex()].enc->getInputFormat().pixel_format,
         _sdata[p->getStreamIndex()].enc->getWidth(),
         _sdata[p->getStreamIndex()].enc->getHeight());
     if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
