@@ -1,0 +1,15 @@
+--- ../../../wt-3.1.4/src/Wt/Chart/WAxis.C	2010-07-14 09:53:10.000000000 +0200
++++ src/Wt/Chart/WAxis.C	2010-09-06 17:30:06.573744109 +0200
+@@ -17,6 +17,12 @@
+ #include "Wt/Chart/WChart2DRenderer"
+ 
+ #include "Utils.h"
++#ifdef max
++#undex max
++#endif
++#ifdef min
++#undex min
++#endif
+ 
+ namespace {
+   const int AXIS_MARGIN = 4;
