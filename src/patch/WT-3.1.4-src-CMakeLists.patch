@@ -1,0 +1,13 @@
+--- ../../../wt-3.1.4/src/CMakeLists.txt	2010-08-12 17:06:00.000000000 +0200
++++ src/CMakeLists.txt	2010-09-06 15:18:08.342743865 +0200
+@@ -57,8 +57,8 @@
+ MACRO (FILE_TO_STRING infile outfile var)
+ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
+ 	           COMMAND ${CMAKE_COMMAND}
+-                   ARGS -Dinfile:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}
+-                        -Doutfile:FILEPATH=${CMAKE_CURRENT_BINARY_DIR}/${outfile}
++                   ARGS -Dinfile:FILEPATH="${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}"
++                        -Doutfile:FILEPATH="${CMAKE_CURRENT_BINARY_DIR}/${outfile}"
+                         -Dvar:STRING=${var}
+                         -P ${CMAKE_CURRENT_SOURCE_DIR}/filetostring.cmake
+ 		   MAIN_DEPENDENCY
