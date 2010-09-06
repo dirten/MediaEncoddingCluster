@@ -158,6 +158,7 @@
                     -DBoost_COMPILER=${BOOST_COMPILER}
                     -DBUILD_TESTS=Off
                     -DCONFIGDIR=${project.basedir}/source/build/wt/etc
+		    -DCMAKE_CXX_FLAGS=-DWIN32_LEAN_AND_MEAN
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-3.1.4/build" failonerror="on">
