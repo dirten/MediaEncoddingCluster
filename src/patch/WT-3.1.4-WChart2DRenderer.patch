@@ -1,0 +1,15 @@
+--- ../../../wt-3.1.4/src/Wt/Chart/WChart2DRenderer.C	2010-07-22 12:53:51.000000000 +0200
++++ src/Wt/Chart/WChart2DRenderer.C	2010-09-06 18:00:36.950681551 +0200
+@@ -17,6 +17,12 @@
+ 
+ #include <limits>
+ #include <float.h>
++#ifdef max
++#undex max
++#endif
++#ifdef min
++#undex min
++#endif
+ 
+ namespace {
+   const int TICK_LENGTH = 5;

@@ -145,6 +145,7 @@
                 <patch patchfile="src/patch/WT-3.1.4-src-CMakeLists.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch/WT-3.1.4-WStandardItem.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch/WT-3.1.4-WAxis.patch" dir="source/wt-3.1.4" strip="0"/>
+                <patch patchfile="src/patch//WT-3.1.4-WChart2DRenderer.patch" dir="source/wt-3.1.4" strip="0"/>
 
                 <exec executable="cmake" dir="source/wt-3.1.4/build" failonerror="on">
                   <arg line="
