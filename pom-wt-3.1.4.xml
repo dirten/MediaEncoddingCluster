@@ -137,11 +137,12 @@
                      dest="source/wt-3.1.4.tar.gz"
                      verbose="true" usetimestamp="true"/>
                 <gunzip src="source/wt-3.1.4.tar.gz" dest="source"/>
-		    <untar src="source/wt-3.1.4.tar" dest="source" overwrite="false"/>
+		    <untar src="source/wt-3.1.4.tar" dest="source" overwrite="true"/>
                 <mkdir dir="source/wt-3.1.4/build"/>
                 <!--<patch patchfile="src/patch/WAbstractItemModel.patch" dir="source/wt-2.2.4" strip="0"/>
                 <patch patchfile="src/patch/Widget.patch" dir="source/wt-2.2.4" strip="0"/>
                 <patch patchfile="src/patch/CMakeLists.patch" dir="source/wt-2.2.4" strip="0"/>-->
+                <patch patchfile="src/patch/WT-3.1.4-src-CMakeLists.patch" dir="source/wt-3.1.4" strip="0"/>
 
                 <exec executable="cmake" dir="source/wt-3.1.4/build" failonerror="on">
                   <arg line="
