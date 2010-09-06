@@ -1,11 +1,11 @@
 #include "org/esb/lang/Exception.h"
 #include <iostream>
-#include <execinfo.h>
+//#include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 using namespace org::esb::lang;
-
+/*
 void signal_handler(int signo) {
   void *stack[20];
   char **functions;
@@ -24,7 +24,7 @@ void signal_handler(int signo) {
   free(functions);
   exit(1);
 }
-
+*/
 int die() {
   char * t;
   sprintf(t, "%s", "bla");
