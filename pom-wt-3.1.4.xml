@@ -151,7 +151,7 @@
                     -DSHARED_LIBS=Off 
                     -DHTTP_WITH_SSL=OFF 
                     -DBOOST_DIR=${project.build.directory}/dependency 
-                    -DBoost_COMPILER=-gcc41
+                    -DBoost_COMPILER=${BOOST_COMPILER}
                     -DBUILD_TESTS=Off
                     -DCONFIGDIR=${project.basedir}/source/build/wt/etc
                     .."/>
