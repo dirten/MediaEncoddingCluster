@@ -1,0 +1,22 @@
+--- ../../../wt-3.1.4/src/Wt/WStandardItem.C	2010-08-02 14:13:39.000000000 +0200
++++ src/Wt/WStandardItem.C	2010-09-06 16:16:37.759744084 +0200
+@@ -18,7 +18,7 @@
+ namespace {
+ 
+   using namespace Wt;
+-
++  using namespace std;
+   struct WStandardItemCompare W_JAVA_COMPARATOR(int)
+   {
+     WStandardItemCompare(WStandardItem *anItem, int aColumn, SortOrder anOrder)
+@@ -130,8 +130,9 @@
+     columns_(0)
+ {
+   // create at least one column if we have at least one row
++  
+   if (rows > 0)
+-    columns = std::max(columns, 1);
++    columns = max(columns, 1);
+ 
+   if (columns > 0) {
+     columns_ = new ColumnList();
