@@ -5,10 +5,10 @@
  #include <limits>
  #include <float.h>
 +#ifdef max
-+#undex max
++#undef max
 +#endif
 +#ifdef min
-+#undex min
++#undef min
 +#endif
  
  namespace {
