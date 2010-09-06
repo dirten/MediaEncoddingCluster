@@ -35,10 +35,12 @@ int die() {
 
 int second() {
   die();
+  return 0;
 }
 
 int first() {
   second();
+  return 0;
 }
 
 int main() {
