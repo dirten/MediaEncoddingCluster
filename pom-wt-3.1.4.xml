@@ -16,6 +16,9 @@
         <my.family>win32</my.family>
         <target>ntx86</target>
         <BOOST_COMPILER>-vc90</BOOST_COMPILER>
+	  <CXX_FLAGS>"-DWIN32 -D_WINDOWS -W3 -Zm1000 -EHsc -GR -DWIN32_LEAN_AND_MEAN"</CXX_FLAGS>
+	<!--_WINSOCKAPI_-->
+	<!--WIN32_LEAN_AND_MEAN-->
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -32,6 +35,7 @@
         <my.family>linux</my.family>
         <target>linuxx86</target>
         <BOOST_COMPILER>-gcc41</BOOST_COMPILER>
+	  <CXX_FLAGS></CXX_FLAGS>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -47,6 +51,7 @@
         <my.family>mac</my.family>
         <target>macosxx86</target>
         <BOOST_COMPILER>-xgcc40</BOOST_COMPILER>
+	  <CXX_FLAGS></CXX_FLAGS>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -62,6 +67,7 @@
       <properties>
         <my.family>solaris</my.family>
         <target>solaris</target>
+	  <CXX_FLAGS></CXX_FLAGS>
         <jambuild>build_dist.sh</jambuild>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
@@ -146,6 +152,9 @@
                 <patch patchfile="src/patch/WT-3.1.4-WStandardItem.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch/WT-3.1.4-WAxis.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch//WT-3.1.4-WChart2DRenderer.patch" dir="source/wt-3.1.4" strip="0"/>
+                <patch patchfile="src/patch//WT-3.1.4-TimeUtil.patch" dir="source/wt-3.1.4" strip="0"/>
+                <patch patchfile="src/patch//WT-3.1.4-CMakeLists.patch" dir="source/wt-3.1.4" strip="0"/>
+                <patch patchfile="src/patch//WT-3.1.4-TableView.patch" dir="source/wt-3.1.4" strip="0"/>
 
                 <exec executable="cmake" dir="source/wt-3.1.4/build" failonerror="on">
                   <arg line="
@@ -158,6 +167,7 @@
                     -DBoost_COMPILER=${BOOST_COMPILER}
                     -DBUILD_TESTS=Off
                     -DCONFIGDIR=${project.basedir}/source/build/wt/etc
+			  -DCMAKE_CXX_FLAGS=${CXX_FLAGS}
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/wt-3.1.4/build" failonerror="on">
