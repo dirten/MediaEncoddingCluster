@@ -1,0 +1,22 @@
+--- ../wt-3.1.4-orig/wt-3.1.4/src/Wt/Ext/TableView.C	2010-08-10 11:06:52 +0000
++++ src/Wt/Ext/TableView.C	2010-09-08 22:59:23 +0000
+@@ -16,7 +16,7 @@
+ #include "Wt/Ext/PagingToolBar"
+ 
+ #include "Utils.h"
+-
++using namespace std;
+ namespace {
+   void parseNumberList(const std::string& s, std::vector<int>& numbers)
+   {
+@@ -149,8 +149,8 @@
+ 
+ void TableView::setCurrentCell(int row, int column)
+ {
+-  currentRow_ = std::max(-1, std::min(model_->rowCount(), row));
+-  currentColumn_ = std::max(-1, std::min(model_->columnCount(), column));
++  currentRow_ = max(-1, min(model_->rowCount(), row));
++  currentColumn_ = max(-1, min(model_->columnCount(), column));
+ 
+   if (isRendered()) {
+     if (currentRow_ == -1) {

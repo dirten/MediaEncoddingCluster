@@ -1,0 +1,10 @@
+--- ../wt-3.1.4-orig/wt-3.1.4/src/web/TimeUtil.C	2010-05-20 12:02:24 +0000
++++ src/web/TimeUtil.C	2010-09-08 22:53:18 +0000
+@@ -2,6 +2,7 @@
+ 
+ #ifdef _MSC_VER
+ #include "Winsock2.h"
++#include "Mmsystem.h"
+ #pragma comment (lib, "winmm.lib")
+ namespace {
+ #include <windows.h>
