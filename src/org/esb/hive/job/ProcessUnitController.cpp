@@ -44,7 +44,7 @@ namespace org {
             LOGDEBUG("started");
           } else if (msg.getProperty("processunitcontroller") == "stop") {
             LOGDEBUG("stop request");
-            _stop_signal = true;
+            stop();
             LOGDEBUG("stopped");
           } else if (msg.getProperty("processunitcontroller") == "GET_PROCESS_UNIT") {
             LOGDEBUG("GET_PROCESS_UNIT request");
@@ -79,7 +79,16 @@ namespace org {
         }
 
         ProcessUnitController::~ProcessUnitController() {
-          //          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
+          LOGTRACEMETHOD("ProcessUnitController::~ProcessUnitController()")
+          stop();
+          Thread::sleep2(1000);
+        }
+
+        void ProcessUnitController::stop() {
+          _stop_signal = true;
+          audioQueue.flush();
+          puQueue.flush();
+          queue_empty_wait_condition.notify_all();
         }
 
         void ProcessUnitController::start() {
@@ -105,7 +114,7 @@ namespace org {
         }
 
         void ProcessUnitController::processJob(db::Job job) {
-          bool wait_for_queue=false;
+          bool wait_for_queue = false;
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
           job.begintime = 0;
           job.status = "running";
@@ -115,21 +124,21 @@ namespace org {
           }
 
           MediaFile infile = job.inputfile().get().one();
-          if(job.outputfile().get().one().filter().get().count()>0)
-            vector<db::Filter> filters=job.outputfile().get().one().filter().get().all();
-          
+          if (job.outputfile().get().one().filter().get().count() > 0)
+            vector<db::Filter> filters = job.outputfile().get().one().filter().get().all();
+
           string filename = infile.path + "/" + infile.filename;
           org::esb::io::File fi(filename);
           org::esb::av::FormatInputStream fis(&fi);
           if (fis.isValid()) {
             {
-            db::JobLog log(job.getDatabase());
-            std::string message="Encoding started for ";
-            message+=filename;
-            log.message=message;
-            log.update();
+              db::JobLog log(job.getDatabase());
+              std::string message = "Encoding started for ";
+              message += filename;
+              log.message = message;
+              log.update();
 
-            job.joblog().link(log);
+              job.joblog().link(log);
             }
             map<int, StreamData> stream_map;
             std::map<int, Packetizer::StreamData> stream_data;
@@ -142,8 +151,8 @@ namespace org {
               stream_map[idx].outstream = detail.outputstream().get().one().id;
               stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
               stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
-              stream_map[idx].deinterlace=detail.deinterlace.value();
-//              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
+              stream_map[idx].deinterlace = detail.deinterlace.value();
+              //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
               stream_map[idx].last_start_dts = detail.lastdts;
 
               if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
@@ -166,7 +175,7 @@ namespace org {
              * read while packets in the stream
              * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
              */
-            while ((packet = pis.readPacket()) != NULL /*&& !_isStopSignal*/) {
+            while (!_stop_signal && (packet = pis.readPacket()) != NULL) {
               /**
                * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
                */
@@ -195,26 +204,32 @@ namespace org {
                   LOGDEBUG("puQueue.enqueue(unit);")
                   puQueue.enqueue(unit);
                 }
-                wait_for_queue=true;
+                wait_for_queue = true;
               }
             }
             /*@TODO: need to implements the flush Method in the Packetizer*/
 
-            if(wait_for_queue){
+            if (wait_for_queue) {
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
             }
+
+            if (_stop_signal){
+              LOGDEBUG("stop signal, returning here");
+              return;
+            }
+
             LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             job.endtime = 0;
             job.status = "completed";
             {
-            db::JobLog log(job.getDatabase());
-            std::string message="Encoding completed for the file ";
-            message+=filename;
-            log.message=message;
-            log.update();
+              db::JobLog log(job.getDatabase());
+              std::string message = "Encoding completed for the file ";
+              message += filename;
+              log.message = message;
+              log.update();
 
-            job.joblog().link(log);
+              job.joblog().link(log);
             }
             {
               boost::mutex::scoped_lock scoped_lock(db_con_mutex);
@@ -226,9 +241,9 @@ namespace org {
             job.endtime = 0;
             job.status = "failed";
             db::JobLog log(job.getDatabase());
-            std::string message="failed to open the file ";
-            message+=filename;
-            log.message=message;
+            std::string message = "failed to open the file ";
+            message += filename;
+            log.message = message;
             log.update();
 
             job.joblog().link(log);
@@ -275,7 +290,7 @@ namespace org {
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
           if (audioQueue.size() == 0 || _stop_signal)
-            u->_last_process_unit=true;
+            u->_last_process_unit = true;
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;
           dbunit.targetstream = u->_target_stream;
@@ -323,12 +338,13 @@ namespace org {
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
-
+            LOGDEBUG(""<<dbunit);
             vector<db::JobDetail> details = current_job->jobdetails().get().all();
             for (int a = 0; a < details.size(); a++) {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();
+                LOGDEBUG(""<<details[a]);
               }
             }
 

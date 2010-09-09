@@ -111,12 +111,12 @@ bool File::canWrite() {
 
 FileList File::listFiles(FileFilter & filter) {
   fs::directory_iterator end_iter;
-  std::list < boost::shared_ptr < File > >files;
+  FileList files;
   try {
     for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
       try {
         if (filter.accept(File(dir_itr->path().string().c_str()))) {
-          boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
+          Ptr< File > f(new File(dir_itr->path().string().c_str()));
           files.push_back(f);
         }
       } catch (const fs::filesystem_error & ex) {
@@ -131,9 +131,9 @@ FileList File::listFiles(FileFilter & filter) {
 
 FileList File::listFiles() {
   fs::directory_iterator end_iter;
-  std::list < boost::shared_ptr < File > >files;
+  FileList files;
   for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
-    boost::shared_ptr < File > f(new File(dir_itr->path().string().c_str()));
+    Ptr < File > f(new File(dir_itr->path().string().c_str()));
     files.push_back(f);
   }
   return files;

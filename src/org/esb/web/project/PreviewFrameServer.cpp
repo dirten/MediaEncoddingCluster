@@ -15,9 +15,11 @@ namespace org{
       Ptr<org::esb::av::Decoder> PreviewFrameServer::getDecoder(){
         return _decoder;
       }
+
       bool PreviewFrameServer::isOpen(){
         return(_fis.get()!=NULL && _fis->isValid());
       }
+
       void PreviewFrameServer::setFileName(std::string filename){
         File infile(filename);
         _fis=Ptr<FormatInputStream>(new FormatInputStream(&infile));
@@ -36,65 +38,55 @@ namespace org{
         if(isOpen())
           jumpForward(JUMP_NONE);
       }
+
       void PreviewFrameServer::jumpForward(JUMP_WIDTH width){
-        Packet * packet;
-        Frame * frame=NULL;
         int a=1;
-        while ((packet = _pis->readPacket()) != NULL ) {
-          if(packet->getStreamIndex()==_stream_info->getIndex()){
-            frame=_decoder->decode2(*packet);
-            if(frame->isFinished()&& a>=width){
-              _last_packet=Ptr<org::esb::av::Packet>(packet);
+        while ((_last_packet = _pis->readPacket()) != NULL ) {
+          if(_last_packet->getStreamIndex()==_stream_info->getIndex()){
+            _frame=_decoder->decode2(*_last_packet.get());
+            if(_frame->isFinished()&& a>=width){
               break;
             }
-            delete frame;
-            frame=NULL;
             a++;
           }
-          delete packet;
         }
-        if(frame&&!frame->isFinished()){
-          delete frame;
-          _frame=Ptr<org::esb::av::Frame>(new org::esb::av::Frame());
-        }else{
-          _frame=Ptr<org::esb::av::Frame>(frame);
+        if(_frame&&!_frame->isFinished()){
+          _frame=new org::esb::av::Frame(_decoder->getOutputFormat().pixel_format,_decoder->getWidth(), _decoder->getHeight());
         }
       }
 
+      /**
+       *
+       * @TODO: tracking a list of keyframes is needed for the seeking back to the previous keyframe in MPEG2 Streams.
+       * AVSEEK_FLAG_BACKWARD seems not to be seeking correctly
+       */
       void PreviewFrameServer::jumpPrevious(JUMP_WIDTH width){
         AVRational frame_rate;
         frame_rate.num=_stream_info->getFrameRate().den;
         frame_rate.den=_stream_info->getFrameRate().num;
         AVRational time_base=_stream_info->getTimeBase();
         int duration=av_rescale_q(1,frame_rate, time_base);
+        LOGDEBUG("Seek duration:"<<duration<<" seek width:"<<width);
         int64_t seek_ts=_last_packet->getDts()-(duration*width);
+        LOGDEBUG("seek stream "<<_stream_info->getIndex()<<" to ts "<<seek_ts);
         _fis->seek(_stream_info->getIndex(), seek_ts);
 
 
 
-        Packet * packet;
-        Frame * frame=NULL;
         int a=1;
-        while ((packet = _pis->readPacket()) != NULL ) {
-          if(packet->getStreamIndex()==_stream_info->getIndex()){
-            frame=_decoder->decode2(*packet);
-            if(frame->isFinished()&& packet->getDts()>=seek_ts){
-              _last_packet=Ptr<org::esb::av::Packet>(packet);
+        while ((_last_packet = _pis->readPacket()) != NULL ) {
+          if(_last_packet->getStreamIndex()==_stream_info->getIndex()){
+            LOGDEBUG(_last_packet->toString());
+            _frame=_decoder->decode2(*_last_packet.get());
+            if(_frame->isFinished()&& _last_packet->getDts()>=seek_ts){
               break;
             }
-            delete frame;
-            frame=NULL;
             a++;
           }
-          delete packet;
         }
-        if(frame&&!frame->isFinished()){
-          delete frame;
+        if(_frame&&!_frame->isFinished()){
           _frame=Ptr<org::esb::av::Frame>(new org::esb::av::Frame());
-        }else{
-          _frame=Ptr<org::esb::av::Frame>(frame);
         }
-
       }
     }
   }

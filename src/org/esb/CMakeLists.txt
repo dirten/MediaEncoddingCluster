@@ -336,6 +336,7 @@ add_library (web
     web/project/DeinterlaceFilterPanel.cpp
     web/project/FilterPanelFactory.cpp
     web/project/ProjectPropertyPanel.cpp
+    web/project_v2/ProjectWizard.cpp
 	
 )
 

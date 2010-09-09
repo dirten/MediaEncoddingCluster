@@ -57,6 +57,7 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/StackDumper.h"
 #include "org/esb/hive/NodeResolver.h"
+#include "org/esb/hive/CodecFactory.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -472,7 +473,7 @@ void start() {
   //  }
 
   //  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
-  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
+//  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
@@ -492,14 +493,14 @@ void start() {
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
-  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
+//  Messenger::getInstance().sendRequest(Message().setProperty("directoryscan", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobwatcher", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
-
+  CodecFactory::free();
   Messenger::free();
   //  mysql_library_end();
 }

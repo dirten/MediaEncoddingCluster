@@ -30,10 +30,13 @@ namespace org {
         FileChooser(std::string title, std::string path = "");
         Wt::Signal<std::list<Ptr<org::esb::io::File> > > selected;
         Wt::Signal<void> canceled;
+        std::list<Ptr<org::esb::io::File> > getSelectedFiles();
         ~FileChooser();
+        void accept();
       private:
         void select();
         void cancel();
+        void ownrefresh();
         //                org::esb::io::File _path;
         FileChooserFilter filter;
         FileTreeTable * tree;

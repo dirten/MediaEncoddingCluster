@@ -222,11 +222,12 @@ namespace org {
         _encoder->setHeight(height);
         _encoder->open();
         LOGDEBUG(_encoder->toString());
-        _conv = Ptr<FrameConverter > (new FrameConverter(_frameserver->getDecoder().get(), _encoder.get()));
+
         Format in=dec->getOutputFormat();
         Format out=_encoder->getInputFormat();
         _plugin=new org::esb::av::ResizeFilter(in, out);
         //_plugin->open();
+        _plugin_chain.clear();
         if(deinterlace){
           _plugin_chain.push_back(new org::esb::av::DeinterlaceFilter(in, out));
         }
@@ -236,7 +237,7 @@ namespace org {
         for(;plugin_it!=_plugin_chain.end();plugin_it++){
           (*plugin_it)->open();
         }
-        _conv->setDeinterlace(deinterlace);
+        
         preview();
       }
 
@@ -247,16 +248,15 @@ namespace org {
         Ptr<org::esb::av::Frame> frame = _frameserver->getFrame();
         if (!frame->isFinished())return;
 
-//        Frame * f = new Frame(PIX_FMT_RGB32, _encoder->getWidth(), _encoder->getHeight());
+
         std::list<Ptr<org::esb::av::PlugIn> >::iterator plugin_it=_plugin_chain.begin();
         for(;plugin_it!=_plugin_chain.end();plugin_it++){
-          Frame * f = new Frame(PIX_FMT_YUV444P, _encoder->getWidth(), _encoder->getHeight());
+          Ptr<Frame> f = new Frame(PIX_FMT_YUV444P, _encoder->getWidth(), _encoder->getHeight());
           (*plugin_it)->process(*frame, *f);
-//          delete frame;
-          frame.reset(f);
+          frame=f;
         }
-//        _plugin->process(*frame, *f);
-        //_conv->convert(*frame, *f);
+
+        
         _encoder->encode(*frame);
         std::list<boost::shared_ptr<Packet> > packets = _sink->getList();
         boost::shared_ptr<Packet> picture = packets.back();

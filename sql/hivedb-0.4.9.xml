@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "litesql.dtd"> 
+<database name="HiveDb" namespace="orm">
+  <!--<include name="othermodel.xml" />-->
+
+    <object name="MediaFile">
+        <field name="filepath" type="string"/>
+        <field name="filename" type="string"/>
+        <field name="filesize" type="double"/>
+        <field name="streamcount" type="integer"/>
+        <field name="containertype" type="string"/>
+        <field name="duration" type="double"/>
+        <field name="starttime" type="double"/>
+        <field name="bitrate" type="integer"/>
+        <field name="filetype" type="integer"/>
+        <field name="parent" type="integer"/>
+        <field name="created" type="datetime"/>
+    </object>
+
+    <object name="MetaData">
+        <field name="metakey" type="string"/>
+        <field name="metavalue" type="string"/>
+    </object>
+
+    <relation id="MediaFile2MetaData">
+        <relate object="MediaFile" handle="metadata"/>
+        <relate object="MetaData" handle="mediafile"/>
+    </relation>
+
+    <object name="Project">
+        <field name="name" type="string"/>
+        <field name="outdirectory" type="string"/>
+        <field name="status" type="string"/>
+        <field name="created" type="date"/>
+        <field name="started" type="date"/>
+        <field name="completed" type="date"/>
+    </object>
+
+    <relation id="Project2OutMediaFile">
+        <relate object="Project" handle="outmediafiles"/>
+        <relate object="MediaFile" handle="projectoutfile"/>
+    </relation>
+
+    <relation id="Project2InMediaFile">
+        <relate object="Project" handle="inmediafiles"/>
+        <relate object="MediaFile" handle="projectinfile"/>
+    </relation>
+
+    <object name="Job">
+        <field name="created" type="datetime" default="-1"/>
+        <field name="begintime" type="datetime" default="-1"/>
+        <field name="endtime" type="datetime" default="-1"/>
+        <field name="status" type="string"/>
+        <field name="infile" type="string"/>
+        <field name="outfile" type="string"/>
+        <field name="starttime" type="double"/>
+        <field name="duration" type="double"/>
+        <field name="progress" type="integer"/>
+    </object>
+
+    <relation id="Project2Job">
+        <relate object="Project" handle="jobs"/>
+        <relate object="Job" handle="project"/>
+    </relation>
+
+    <object name="JobLog">
+        <field name="created" type="datetime" default="0"/>
+        <field name="messagetype" type="integer"/>
+        <field name="message" type="string"/>
+    </object>
+
+    <relation id="Job2JobLog">
+        <relate object="Job" handle="logs"/>
+        <relate object="JobLog" handle="job"/>
+    </relation>
+
+    <object name="Preset">
+        <field name="presetname" type="string"/>
+        <field name="description" type="string"/>
+        <field name="presettype" type="integer"/>
+        <field name="created" type="datetime" default="1"/>
+    </object>
+
+    <relation id="Project2Preset">
+        <relate object="Project" handle="presets"/>
+        <relate object="Preset" handle="project"/>
+    </relation>
+
+    <object name="CodecPreset">
+        <field name="presetname" type="string"/>
+        <field name="description" type="string"/>
+        <field name="presettype" type="integer"/>
+        <field name="created" type="datetime" default="1"/>
+    </object>
+
+    <relation id="Preset2CodecPreset">
+        <relate object="Preset" handle="codecpresets"/>
+        <relate object="CodecPreset" handle="preset"/>
+    </relation>
+
+    <object name="Filter">
+        <field name="filterid" type="string"/>
+        <field name="filtername" type="string"/>
+    </object>
+
+    <relation id="Preset2Filter">
+        <relate object="Preset" handle="filters"/>
+        <relate object="Filter" handle="preset"/>
+    </relation>
+
+    <object name="FilterParameter">
+        <field name="fkey" type="string"/>
+        <field name="fval" type="string"/>
+    </object>
+
+    <relation id="Filter2FilterParameter">
+        <relate object="Filter" handle="parameter"/>
+        <relate object="FilterParameter" handle="filter"/>
+    </relation>
+
+    <object name="Format">
+        <field name="formattype" type="integer"/>
+        <field name="formatid" type="integer"/>
+        <field name="mimetype" type="string"/>
+    </object>
+
+    <relation id="Preset2Format">
+        <relate object="Preset" handle="format"/>
+        <relate object="Format" handle="preset"/>
+    </relation>
+
+    <object name="FormatParameter">
+        <field name="paramkey" type="string"/>
+        <field name="paramvalue" type="string"/>
+    </object>
+
+    <relation id="Format2FormatParameter">
+        <relate object="Format" handle="parameter"/>
+        <relate object="FormatParameter" handle="format"/>
+    </relation>
+
+    <object name="Stream">
+        <field name="streamtype" type="integer"/>
+        <field name="streamindex" type="integer"/>
+        <field name="duration" type="double"/>
+    </object>
+
+    <relation id="MediaFile2Stream">
+        <relate object="MediaFile" handle="streams"/>
+        <relate object="Stream" handle="mediafile"/>
+    </relation>
+
+    <relation id="Stream2Format">
+        <relate object="Stream" handle="format"/>
+        <relate object="Format" handle="stream"/>
+    </relation>
+
+    <object name="ProcessUnit">
+        <field name="startts" type="double"/>
+        <field name="endts" type="double"/>
+        <field name="framecount" type="integer"/>
+        <field name="send" type="datetime"/>
+        <field name="recv" type="datetime"/>
+    </object>
+
+    <relation id="Stream2ProcessUnit">
+        <relate object="Stream" handle="processunits"/>
+        <relate object="ProcessUnit" handle="stream"/>
+    </relation>
+
+</database>

@@ -63,6 +63,11 @@
         <relate object="Project" handle="mediafiles" limit="one"/>
     </relation>
 
+    <object name="ProfileGroup">
+        <field name="name" type="string"/>
+
+    </object>
+
     <object name="Profile">
         <field name="name" type="string"/>
         <field name="created" type="datetime"/>
@@ -82,6 +87,16 @@
         <field name="profiletype" type="integer"/>
         <field name="deinterlace" type="integer"/>
     </object>
+
+    <relation id="ProfileGroup2Profile">
+        <relate object="Profile" handle="group"/>
+        <relate object="ProfileGroup" handle="profiles"/>
+    </relation>
+
+    <relation id="ProfileGroup2ProfileGroupChildren" unidir="true">
+        <relate object="ProfileGroup"  handle="childrens"/>
+        <relate object="ProfileGroup" handle="parent"/>
+    </relation>
 
     <relation>
         <relate object="Profile" handle="project"/>
@@ -118,7 +133,7 @@
         <field name="privdata" type="string"/>
         <field name="extradatasize" type="integer"/>
         <field name="extradata" type="string"/>
-        <field name="aspect_ratio" type="string"/>
+        <field name="aspectratio" type="string"/>
         <field name="flags" type="integer"/>
         <field name="extraprofileflags" type="string"/>
     </object>
@@ -204,6 +219,7 @@
         <relate object="Watchfolder" handle="profile"/>
         <relate object="Profile" handle="watchfolder"/>
     </relation>
+
     <object name="ProcessUnit">
         <field name="sorcestream" type="integer"/>
         <field name="targetstream" type="integer"/>

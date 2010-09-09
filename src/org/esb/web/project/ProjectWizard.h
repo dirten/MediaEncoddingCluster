@@ -21,6 +21,7 @@ namespace org{
       class ProjectWizard : public Wt::Ext::Dialog{
       public:
         ProjectWizard();
+        ~ProjectWizard();
         void open();
         void open(int pid);
         void open(Ptr<db::Project>);

@@ -132,12 +132,14 @@ Packet::Packet(int s) {
 Packet::~Packet() {
   //  logdebug("delete Packet"<<this);
   //  	av_free_packet(packetPtr.get());
-  if (callDestruct)
-    delete [] packet->data;
+  if (callDestruct){
+    if(packet->data)
+      delete [] packet->data;
+  }
   else
     av_free_packet(packet);
 
-  packet->data = 0;
+  packet->data = NULL;
   //    delete packet;
   //    packet=0;
 }

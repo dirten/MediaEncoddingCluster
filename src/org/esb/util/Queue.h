@@ -25,13 +25,19 @@ namespace org {
         }
 
         void flush() {
+          LOGDEBUG("flushing queue");
+         boost::mutex::scoped_lock enqueue_lock(queue_mutex);
+          LOGDEBUG("clear Queue");
+
           _q.clear();
-          queue_condition.notify_all();
+          LOGDEBUG("Queue cleared");
+          queue_condition.notify_one();
+          LOGDEBUG("waiting Threads notified");
         }
 
         ~Queue() {
-          //                    _q.clear();
-          //                    queue_condition.notify_all();
+          _q.clear();
+          queue_condition.notify_all();
         }
 
         bool enqueue(T obj) {

@@ -14,7 +14,8 @@
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/av/Decoder.h"
-#include "org/esb/av/FrameConverter.h"
+#include "org/esb/av/PixelFormatConverter.h"
+#include "org/esb/av/ResizeFilter.h"
 #include "org/esb/av/Frame.h"
 
 #include "org/esb/av/PGMUtil.h"
@@ -43,7 +44,7 @@ int main(int argc, char** argv) {
   LOGDEBUG("Double val "<<t-(int)t);
   LOGDEBUG("a val "<<a);
   LOGDEBUG("b val "<<b);
-  exit(0);
+  
   std::string path=MEC_SOURCE_DIR;
   org::esb::io::File file(path+"/test/images/number-%d.pgm");
   org::esb::av::FormatInputStream fis(&file);
@@ -98,7 +99,9 @@ int main(int argc, char** argv) {
   dec.open();
 
 
-  org::esb::av::FrameConverter conv(&dec,&enc);
+//  org::esb::av::PixelFormatConverter conv(dec.getOutputFormat(),enc.getInputFormat());
+  org::esb::av::ResizeFilter resizer(dec.getOutputFormat(),enc.getInputFormat());
+  resizer.open();
 //  conv.setFrameRateCompensateBase(-0.6);
   org::esb::av::Packet * p;
   std::list<boost::shared_ptr<org::esb::av::Packet> > packet_list;
@@ -112,8 +115,8 @@ int main(int argc, char** argv) {
     for(;it!=packet_list.end();it++){
     org::esb::av::Frame * f=dec.decode2(*(*it).get());
     if(!f->isFinished())continue;
-    org::esb::av::Frame out(enc.getPixelFormat(),enc.getWidth(),enc.getHeight());
-    conv.convert(*f, out);
+    org::esb::av::Frame out(enc.getInputFormat().pixel_format,enc.getWidth(),enc.getHeight());
+    resizer.process(*f, out);
     enc.encode(out);
 //    delete p;
     delete f;
@@ -127,7 +130,9 @@ int main(int argc, char** argv) {
     }
   }
   LOGTRACE("delay encoded");
-
+  resizer.close();
+  pos.close();
+  fos.close();
   Log::close();
   return (EXIT_SUCCESS);
 }

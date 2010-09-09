@@ -91,6 +91,10 @@ namespace org {
          */
       }
 
+      ProjectWizard::~ProjectWizard() {
+        LOGDEBUG("ProjectWizard::~ProjectWizard() ");
+      }
+
       void ProjectWizard::open(int pid) {
         try {
           db::Project project = litesql::select<db::Project > (*_db.get(), db::Project::Id == pid).one();
@@ -126,24 +130,24 @@ namespace org {
       void ProjectWizard::save_and_start() {
         LOGDEBUG("Project save with id:" << _project->id);
         _propertyPanel->save();
-        if(_project->outdirectory.value().length()<=0){
-          Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties",Wt::Warning,Wt::Ok);
+        if (_project->outdirectory.value().length() <= 0) {
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties", Wt::Warning, Wt::Ok);
           box->show();
-        }else if(_project->profiles().get().count()<=0){
-          Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Missing Output Profile", "please add an output Profile in the Output Profiles Panel ",Wt::Warning,Wt::Ok);
+        } else if (_project->profiles().get().count() <= 0) {
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Profile", "please add an output Profile in the Output Profiles Panel ", Wt::Warning, Wt::Ok);
           box->show();
-        }else if(_project->mediafiles().get().count()<=0){
-          Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Missing Input Files", "please add an Input Video in the Input Videos Panel ",Wt::Warning,Wt::Ok);
+        } else if (_project->mediafiles().get().count() <= 0) {
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Input Files", "please add an Input Video in the Input Videos Panel ", Wt::Warning, Wt::Ok);
           box->show();
-        }else{
-        _project->update();
-        LOGDEBUG("Project saved:" << _project->id);
-        org::esb::hive::JobUtil::createJob(_project);
-        Wt::Ext::MessageBox *box=new Wt::Ext::MessageBox("Encodings successfull created", "Encodings successfull created<br/>please look in the \"Encodings->All Encodings\"  Menu<br/>to see the running Encodings",Wt::Warning,Wt::Ok);
-        box->show();
+        } else {
+          _project->update();
+          LOGDEBUG("Project saved:" << _project->id);
+          org::esb::hive::JobUtil::createJob(_project);
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Encodings successfull created", "Encodings successfull created<br/>please look in the \"Encodings->All Encodings\"  Menu<br/>to see the running Encodings", Wt::Warning, Wt::Ok);
+          box->show();
 
-        saved.emit();
-        this->done(Accepted);
+          saved.emit();
+          this->done(Accepted);
         }
       }
 

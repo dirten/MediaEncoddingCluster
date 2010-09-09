@@ -4,10 +4,12 @@
 #include "Frame.h"
 #include "Format.h"
 #include "AV.h"
+#include "org/esb/util/Log.h"
 namespace org{
   namespace esb{
     namespace av{
       class ResizeFilter: public PlugIn{
+        classlogger("org.esb.av.ResizeFilter");
       public:
         ResizeFilter(Format in, Format out);
         void close();

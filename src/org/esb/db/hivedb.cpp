@@ -197,6 +197,104 @@ template <> litesql::DataSource<db::Project> MediaFileProjectRelation::get(const
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
+ProfileProfileGroupRelationProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profileGroup(ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup), profile(ProfileProfileGroupRelationProfileGroup2Profile::Profile) {
+    switch(rec.size()) {
+    case 2:
+        profileGroup = rec[1];
+    case 1:
+        profile = rec[0];
+    }
+}
+const std::string ProfileProfileGroupRelationProfileGroup2Profile::table__("_60a643d384d1f6c6ddeba5bb8ac0fc3e");
+const litesql::FieldType ProfileProfileGroupRelationProfileGroup2Profile::Profile("Profile1","INTEGER",table__);
+const litesql::FieldType ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup("ProfileGroup2","INTEGER",table__);
+void ProfileProfileGroupRelationProfileGroup2Profile::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Profile.name());
+    values.push_back(o0.id);
+    fields.push_back(ProfileGroup.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void ProfileProfileGroupRelationProfileGroup2Profile::unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
+    db.delete_(table__, (Profile == o0.id && ProfileGroup == o1.id));
+}
+void ProfileProfileGroupRelationProfileGroup2Profile::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> ProfileProfileGroupRelationProfileGroup2Profile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Profile.fullName());
+    sel.result(ProfileGroup.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Profile> ProfileProfileGroupRelationProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::ProfileGroup> ProfileProfileGroupRelationProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(ProfileGroup.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::ProfileGroup>(db, db::ProfileGroup::Id.in(sel) && expr);
+}
+ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profileGroup2(ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2), profileGroup1(ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1) {
+    switch(rec.size()) {
+    case 2:
+        profileGroup2 = rec[1];
+    case 1:
+        profileGroup1 = rec[0];
+    }
+}
+const std::string ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::table__("_2d57c481daf84ed6d04cd9e705469b3f");
+const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1("ProfileGroup1","INTEGER",table__);
+const litesql::FieldType ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2("ProfileGroup2","INTEGER",table__);
+void ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::link(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(ProfileGroup1.name());
+    values.push_back(o0.id);
+    fields.push_back(ProfileGroup2.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::unlink(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1) {
+    db.delete_(table__, (ProfileGroup1 == o0.id && ProfileGroup2 == o1.id));
+}
+void ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(ProfileGroup1.fullName());
+    sel.result(ProfileGroup2.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row>(db, sel);
+}
+litesql::DataSource<db::ProfileGroup> ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getProfileGroup1(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(ProfileGroup1.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::ProfileGroup>(db, db::ProfileGroup::Id.in(sel) && expr);
+}
+litesql::DataSource<db::ProfileGroup> ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getProfileGroup2(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(ProfileGroup2.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::ProfileGroup>(db, db::ProfileGroup::Id.in(sel) && expr);
+}
 ProfileProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : project(ProfileProjectRelation::Project), profile(ProfileProjectRelation::Profile) {
     switch(rec.size()) {
@@ -1715,7 +1813,221 @@ std::ostream & operator<<(std::ostream& os, MediaFile o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType ProfileGroup::Own::Id("id_","INTEGER","ProfileGroup_");
+ProfileGroup::ProfilesHandle::ProfilesHandle(const ProfileGroup& owner)
+         : litesql::RelationHandle<ProfileGroup>(owner) {
+}
+void ProfileGroup::ProfilesHandle::link(const Profile& o0) {
+    ProfileProfileGroupRelationProfileGroup2Profile::link(owner->getDatabase(), o0, *owner);
+}
+void ProfileGroup::ProfilesHandle::unlink(const Profile& o0) {
+    ProfileProfileGroupRelationProfileGroup2Profile::unlink(owner->getDatabase(), o0, *owner);
+}
+void ProfileGroup::ProfilesHandle::del(const litesql::Expr& expr) {
+    ProfileProfileGroupRelationProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id);
+}
+litesql::DataSource<Profile> ProfileGroup::ProfilesHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileProfileGroupRelationProfileGroup2Profile::get<Profile>(owner->getDatabase(), expr, (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> ProfileGroup::ProfilesHandle::getRows(const litesql::Expr& expr) {
+    return ProfileProfileGroupRelationProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id));
+}
+ProfileGroup::ChildrensHandle::ChildrensHandle(const ProfileGroup& owner)
+         : litesql::RelationHandle<ProfileGroup>(owner) {
+}
+void ProfileGroup::ChildrensHandle::link(const ProfileGroup& o0) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::link(owner->getDatabase(), *owner, o0);
+}
+void ProfileGroup::ChildrensHandle::unlink(const ProfileGroup& o0) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::unlink(owner->getDatabase(), *owner, o0);
+}
+void ProfileGroup::ChildrensHandle::del(const litesql::Expr& expr) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::del(owner->getDatabase(), expr && ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1 == owner->id);
+}
+litesql::DataSource<ProfileGroup> ProfileGroup::ChildrensHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getProfileGroup2(owner->getDatabase(), expr, (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1 == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> ProfileGroup::ChildrensHandle::getRows(const litesql::Expr& expr) {
+    return ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getRows(owner->getDatabase(), expr && (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1 == owner->id));
+}
+ProfileGroup::ParentHandle::ParentHandle(const ProfileGroup& owner)
+         : litesql::RelationHandle<ProfileGroup>(owner) {
+}
+void ProfileGroup::ParentHandle::link(const ProfileGroup& o0) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::link(owner->getDatabase(), o0, *owner);
+}
+void ProfileGroup::ParentHandle::unlink(const ProfileGroup& o0) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::unlink(owner->getDatabase(), o0, *owner);
+}
+void ProfileGroup::ParentHandle::del(const litesql::Expr& expr) {
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::del(owner->getDatabase(), expr && ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2 == owner->id);
+}
+litesql::DataSource<ProfileGroup> ProfileGroup::ParentHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getProfileGroup1(owner->getDatabase(), expr, (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2 == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> ProfileGroup::ParentHandle::getRows(const litesql::Expr& expr) {
+    return ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::getRows(owner->getDatabase(), expr && (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2 == owner->id));
+}
+const std::string ProfileGroup::type__("ProfileGroup");
+const std::string ProfileGroup::table__("ProfileGroup_");
+const std::string ProfileGroup::sequence__("ProfileGroup_seq");
+const litesql::FieldType ProfileGroup::Id("id_","INTEGER",table__);
+const litesql::FieldType ProfileGroup::Type("type_","TEXT",table__);
+const litesql::FieldType ProfileGroup::Name("name_","TEXT",table__);
+void ProfileGroup::defaults() {
+    id = 0;
+}
+ProfileGroup::ProfileGroup(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name) {
+    defaults();
+}
+ProfileGroup::ProfileGroup(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name) {
+    defaults();
+    size_t size = (rec.size() > 3) ? 3 : rec.size();
+    switch(size) {
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+ProfileGroup::ProfileGroup(const ProfileGroup& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name) {
+}
+const ProfileGroup& ProfileGroup::operator=(const ProfileGroup& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+ProfileGroup::ProfilesHandle ProfileGroup::profiles() {
+    return ProfileGroup::ProfilesHandle(*this);
+}
+ProfileGroup::ChildrensHandle ProfileGroup::childrens() {
+    return ProfileGroup::ChildrensHandle(*this);
+}
+ProfileGroup::ParentHandle ProfileGroup::parent() {
+    return ProfileGroup::ParentHandle(*this);
+}
+std::string ProfileGroup::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void ProfileGroup::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void ProfileGroup::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+}
+void ProfileGroup::addIDUpdates(Updates& updates) {
+}
+void ProfileGroup::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+}
+void ProfileGroup::delRecord() {
+    deleteFromTable(table__, id);
+}
+void ProfileGroup::delRelations() {
+    ProfileProfileGroupRelationProfileGroup2Profile::del(*db, (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == id));
+    ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::del(*db, (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1 == id) || (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2 == id));
+}
+void ProfileGroup::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void ProfileGroup::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<ProfileGroup> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool ProfileGroup::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<ProfileGroup> ProfileGroup::upcast() {
+    return auto_ptr<ProfileGroup>(new ProfileGroup(*this));
+}
+std::auto_ptr<ProfileGroup> ProfileGroup::upcastCopy() {
+    ProfileGroup* np = new ProfileGroup(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->inDatabase = inDatabase;
+    return auto_ptr<ProfileGroup>(np);
+}
+std::ostream & operator<<(std::ostream& os, ProfileGroup o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 const litesql::FieldType Profile::Own::Id("id_","INTEGER","Profile_");
+Profile::GroupHandle::GroupHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::GroupHandle::link(const ProfileGroup& o0) {
+    ProfileProfileGroupRelationProfileGroup2Profile::link(owner->getDatabase(), *owner, o0);
+}
+void Profile::GroupHandle::unlink(const ProfileGroup& o0) {
+    ProfileProfileGroupRelationProfileGroup2Profile::unlink(owner->getDatabase(), *owner, o0);
+}
+void Profile::GroupHandle::del(const litesql::Expr& expr) {
+    ProfileProfileGroupRelationProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id);
+}
+litesql::DataSource<ProfileGroup> Profile::GroupHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileProfileGroupRelationProfileGroup2Profile::get<ProfileGroup>(owner->getDatabase(), expr, (ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> Profile::GroupHandle::getRows(const litesql::Expr& expr) {
+    return ProfileProfileGroupRelationProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id));
+}
 Profile::ProjectHandle::ProjectHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
@@ -1865,6 +2177,9 @@ const Profile& Profile::operator=(const Profile& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+Profile::GroupHandle Profile::group() {
+    return Profile::GroupHandle(*this);
+}
 Profile::ProjectHandle Profile::project() {
     return Profile::ProjectHandle(*this);
 }
@@ -1994,6 +2309,7 @@ void Profile::delRecord() {
     deleteFromTable(table__, id);
 }
 void Profile::delRelations() {
+    ProfileProfileGroupRelationProfileGroup2Profile::del(*db, (ProfileProfileGroupRelationProfileGroup2Profile::Profile == id));
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
     ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Profile == id));
 }
@@ -2166,6 +2482,7 @@ const litesql::FieldType Stream::Privdatasize("privdatasize_","INTEGER",table__)
 const litesql::FieldType Stream::Privdata("privdata_","TEXT",table__);
 const litesql::FieldType Stream::Extradatasize("extradatasize_","INTEGER",table__);
 const litesql::FieldType Stream::Extradata("extradata_","TEXT",table__);
+const litesql::FieldType Stream::Aspectratio("aspectratio_","TEXT",table__);
 const litesql::FieldType Stream::Flags("flags_","INTEGER",table__);
 const litesql::FieldType Stream::Extraprofileflags("extraprofileflags_","TEXT",table__);
 void Stream::defaults() {
@@ -2199,18 +2516,20 @@ void Stream::defaults() {
     flags = 0;
 }
 Stream::Stream(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), streamindex(Streamindex), streamtype(Streamtype), codecid(Codecid), codecname(Codecname), frameratenum(Frameratenum), framerateden(Framerateden), streamtimebasenum(Streamtimebasenum), streamtimebaseden(Streamtimebaseden), codectimebasenum(Codectimebasenum), codectimebaseden(Codectimebaseden), firstpts(Firstpts), firstdts(Firstdts), duration(Duration), nbframes(Nbframes), ticksperframe(Ticksperframe), framecount(Framecount), width(Width), height(Height), gopsize(Gopsize), pixfmt(Pixfmt), bitrate(Bitrate), samplerate(Samplerate), samplefmt(Samplefmt), channels(Channels), bitspercodedsample(Bitspercodedsample), privdatasize(Privdatasize), privdata(Privdata), extradatasize(Extradatasize), extradata(Extradata), flags(Flags), extraprofileflags(Extraprofileflags) {
+     : litesql::Persistent(db), id(Id), type(Type), streamindex(Streamindex), streamtype(Streamtype), codecid(Codecid), codecname(Codecname), frameratenum(Frameratenum), framerateden(Framerateden), streamtimebasenum(Streamtimebasenum), streamtimebaseden(Streamtimebaseden), codectimebasenum(Codectimebasenum), codectimebaseden(Codectimebaseden), firstpts(Firstpts), firstdts(Firstdts), duration(Duration), nbframes(Nbframes), ticksperframe(Ticksperframe), framecount(Framecount), width(Width), height(Height), gopsize(Gopsize), pixfmt(Pixfmt), bitrate(Bitrate), samplerate(Samplerate), samplefmt(Samplefmt), channels(Channels), bitspercodedsample(Bitspercodedsample), privdatasize(Privdatasize), privdata(Privdata), extradatasize(Extradatasize), extradata(Extradata), aspectratio(Aspectratio), flags(Flags), extraprofileflags(Extraprofileflags) {
     defaults();
 }
 Stream::Stream(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), streamindex(Streamindex), streamtype(Streamtype), codecid(Codecid), codecname(Codecname), frameratenum(Frameratenum), framerateden(Framerateden), streamtimebasenum(Streamtimebasenum), streamtimebaseden(Streamtimebaseden), codectimebasenum(Codectimebasenum), codectimebaseden(Codectimebaseden), firstpts(Firstpts), firstdts(Firstdts), duration(Duration), nbframes(Nbframes), ticksperframe(Ticksperframe), framecount(Framecount), width(Width), height(Height), gopsize(Gopsize), pixfmt(Pixfmt), bitrate(Bitrate), samplerate(Samplerate), samplefmt(Samplefmt), channels(Channels), bitspercodedsample(Bitspercodedsample), privdatasize(Privdatasize), privdata(Privdata), extradatasize(Extradatasize), extradata(Extradata), flags(Flags), extraprofileflags(Extraprofileflags) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), streamindex(Streamindex), streamtype(Streamtype), codecid(Codecid), codecname(Codecname), frameratenum(Frameratenum), framerateden(Framerateden), streamtimebasenum(Streamtimebasenum), streamtimebaseden(Streamtimebaseden), codectimebasenum(Codectimebasenum), codectimebaseden(Codectimebaseden), firstpts(Firstpts), firstdts(Firstdts), duration(Duration), nbframes(Nbframes), ticksperframe(Ticksperframe), framecount(Framecount), width(Width), height(Height), gopsize(Gopsize), pixfmt(Pixfmt), bitrate(Bitrate), samplerate(Samplerate), samplefmt(Samplefmt), channels(Channels), bitspercodedsample(Bitspercodedsample), privdatasize(Privdatasize), privdata(Privdata), extradatasize(Extradatasize), extradata(Extradata), aspectratio(Aspectratio), flags(Flags), extraprofileflags(Extraprofileflags) {
     defaults();
-    size_t size = (rec.size() > 33) ? 33 : rec.size();
+    size_t size = (rec.size() > 34) ? 34 : rec.size();
     switch(size) {
-    case 33: extraprofileflags = convert<const std::string&, std::string>(rec[32]);
+    case 34: extraprofileflags = convert<const std::string&, std::string>(rec[33]);
         extraprofileflags.setModified(false);
-    case 32: flags = convert<const std::string&, int>(rec[31]);
+    case 33: flags = convert<const std::string&, int>(rec[32]);
         flags.setModified(false);
+    case 32: aspectratio = convert<const std::string&, std::string>(rec[31]);
+        aspectratio.setModified(false);
     case 31: extradata = convert<const std::string&, std::string>(rec[30]);
         extradata.setModified(false);
     case 30: extradatasize = convert<const std::string&, int>(rec[29]);
@@ -2276,7 +2595,7 @@ Stream::Stream(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Stream::Stream(const Stream& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), streamindex(obj.streamindex), streamtype(obj.streamtype), codecid(obj.codecid), codecname(obj.codecname), frameratenum(obj.frameratenum), framerateden(obj.framerateden), streamtimebasenum(obj.streamtimebasenum), streamtimebaseden(obj.streamtimebaseden), codectimebasenum(obj.codectimebasenum), codectimebaseden(obj.codectimebaseden), firstpts(obj.firstpts), firstdts(obj.firstdts), duration(obj.duration), nbframes(obj.nbframes), ticksperframe(obj.ticksperframe), framecount(obj.framecount), width(obj.width), height(obj.height), gopsize(obj.gopsize), pixfmt(obj.pixfmt), bitrate(obj.bitrate), samplerate(obj.samplerate), samplefmt(obj.samplefmt), channels(obj.channels), bitspercodedsample(obj.bitspercodedsample), privdatasize(obj.privdatasize), privdata(obj.privdata), extradatasize(obj.extradatasize), extradata(obj.extradata), flags(obj.flags), extraprofileflags(obj.extraprofileflags) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), streamindex(obj.streamindex), streamtype(obj.streamtype), codecid(obj.codecid), codecname(obj.codecname), frameratenum(obj.frameratenum), framerateden(obj.framerateden), streamtimebasenum(obj.streamtimebasenum), streamtimebaseden(obj.streamtimebaseden), codectimebasenum(obj.codectimebasenum), codectimebaseden(obj.codectimebaseden), firstpts(obj.firstpts), firstdts(obj.firstdts), duration(obj.duration), nbframes(obj.nbframes), ticksperframe(obj.ticksperframe), framecount(obj.framecount), width(obj.width), height(obj.height), gopsize(obj.gopsize), pixfmt(obj.pixfmt), bitrate(obj.bitrate), samplerate(obj.samplerate), samplefmt(obj.samplefmt), channels(obj.channels), bitspercodedsample(obj.bitspercodedsample), privdatasize(obj.privdatasize), privdata(obj.privdata), extradatasize(obj.extradatasize), extradata(obj.extradata), aspectratio(obj.aspectratio), flags(obj.flags), extraprofileflags(obj.extraprofileflags) {
 }
 const Stream& Stream::operator=(const Stream& obj) {
     if (this != &obj) {
@@ -2311,6 +2630,7 @@ const Stream& Stream::operator=(const Stream& obj) {
         privdata = obj.privdata;
         extradatasize = obj.extradatasize;
         extradata = obj.extradata;
+        aspectratio = obj.aspectratio;
         flags = obj.flags;
         extraprofileflags = obj.extraprofileflags;
     }
@@ -2423,6 +2743,9 @@ std::string Stream::insert(litesql::Record& tables, litesql::Records& fieldRecs,
     fields.push_back(extradata.name());
     values.push_back(extradata);
     extradata.setModified(false);
+    fields.push_back(aspectratio.name());
+    values.push_back(aspectratio);
+    aspectratio.setModified(false);
     fields.push_back(flags.name());
     values.push_back(flags);
     flags.setModified(false);
@@ -2475,6 +2798,7 @@ void Stream::addUpdates(Updates& updates) {
     updateField(updates, table__, privdata);
     updateField(updates, table__, extradatasize);
     updateField(updates, table__, extradata);
+    updateField(updates, table__, aspectratio);
     updateField(updates, table__, flags);
     updateField(updates, table__, extraprofileflags);
 }
@@ -2512,6 +2836,7 @@ void Stream::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Privdata);
     ftypes.push_back(Extradatasize);
     ftypes.push_back(Extradata);
+    ftypes.push_back(Aspectratio);
     ftypes.push_back(Flags);
     ftypes.push_back(Extraprofileflags);
 }
@@ -2588,6 +2913,7 @@ std::auto_ptr<Stream> Stream::upcastCopy() {
     np->privdata = privdata;
     np->extradatasize = extradatasize;
     np->extradata = extradata;
+    np->aspectratio = aspectratio;
     np->flags = flags;
     np->extraprofileflags = extraprofileflags;
     np->inDatabase = inDatabase;
@@ -2626,6 +2952,7 @@ std::ostream & operator<<(std::ostream& os, Stream o) {
     os << o.privdata.name() << " = " << o.privdata << std::endl;
     os << o.extradatasize.name() << " = " << o.extradatasize << std::endl;
     os << o.extradata.name() << " = " << o.extradata << std::endl;
+    os << o.aspectratio.name() << " = " << o.aspectratio << std::endl;
     os << o.flags.name() << " = " << o.flags << std::endl;
     os << o.extraprofileflags.name() << " = " << o.extraprofileflags << std::endl;
     os << "-------------------------------------" << std::endl;
@@ -4054,6 +4381,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("Filter_seq","sequence","CREATE SEQUENCE Filter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("FilterParameter_seq","sequence","CREATE SEQUENCE FilterParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("MediaFile_seq","sequence","CREATE SEQUENCE MediaFile_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("ProfileGroup_seq","sequence","CREATE SEQUENCE ProfileGroup_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("CodecPreset_seq","sequence","CREATE SEQUENCE CodecPreset_seq START 1 INCREMENT 1"));
@@ -4068,8 +4396,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
     res.push_back(Database::SchemaItem("FilterParameter_","table","CREATE TABLE FilterParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,fkey_ TEXT,fval_ TEXT)"));
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
+    res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
+    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
@@ -4081,6 +4410,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
@@ -4102,6 +4433,12 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));
+    res.push_back(Database::SchemaItem("_45a47288d87922bc777077268af27020","index","CREATE INDEX _45a47288d87922bc777077268af27020 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1)"));
+    res.push_back(Database::SchemaItem("_6a97b2aa9540e958c966e2f87f06e44e","index","CREATE INDEX _6a97b2aa9540e958c966e2f87f06e44e ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_8908dcab0ecb35cd3b5541aedac93a26","index","CREATE INDEX _8908dcab0ecb35cd3b5541aedac93a26 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1,ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_d033fe244fc6121cb707149536449c0a","index","CREATE INDEX _d033fe244fc6121cb707149536449c0a ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1)"));
+    res.push_back(Database::SchemaItem("_5a70b3265b33aac73fe8210afa3ad2d5","index","CREATE INDEX _5a70b3265b33aac73fe8210afa3ad2d5 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_9bf4a7c83dd76c8ecc83bccd327d7d17","index","CREATE INDEX _9bf4a7c83dd76c8ecc83bccd327d7d17 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1,ProfileGroup2)"));
     res.push_back(Database::SchemaItem("Profile_Project_Profile1idx","index","CREATE INDEX Profile_Project_Profile1idx ON Profile_Project_ (Profile1)"));
     res.push_back(Database::SchemaItem("Profile_Project_Project2idx","index","CREATE INDEX Profile_Project_Project2idx ON Profile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1,Project2)"));

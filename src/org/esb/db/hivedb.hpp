@@ -6,6 +6,7 @@ class Project;
 class Filter;
 class FilterParameter;
 class MediaFile;
+class ProfileGroup;
 class Profile;
 class Stream;
 class CodecPreset;
@@ -90,6 +91,43 @@ public:
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
+};
+class ProfileProfileGroupRelationProfileGroup2Profile {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profileGroup;
+        litesql::Field<int> profile;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Profile;
+    static const litesql::FieldType ProfileGroup;
+    static void link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1);
+    static void unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profileGroup2;
+        litesql::Field<int> profileGroup1;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType ProfileGroup1;
+    static const litesql::FieldType ProfileGroup2;
+    static void link(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1);
+    static void unlink(const litesql::Database& db, const db::ProfileGroup& o0, const db::ProfileGroup& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<db::ProfileGroup> getProfileGroup1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+    static litesql::DataSource<db::ProfileGroup> getProfileGroup2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 };
 class ProfileProjectRelation {
 public:
@@ -592,11 +630,90 @@ public:
     std::auto_ptr<MediaFile> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, MediaFile o);
+class ProfileGroup : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class ProfilesHandle : public litesql::RelationHandle<ProfileGroup> {
+    public:
+        ProfilesHandle(const ProfileGroup& owner);
+        void link(const Profile& o0);
+        void unlink(const Profile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class ChildrensHandle : public litesql::RelationHandle<ProfileGroup> {
+    public:
+        ChildrensHandle(const ProfileGroup& owner);
+        void link(const ProfileGroup& o0);
+        void unlink(const ProfileGroup& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileGroup> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class ParentHandle : public litesql::RelationHandle<ProfileGroup> {
+    public:
+        ParentHandle(const ProfileGroup& owner);
+        void link(const ProfileGroup& o0);
+        void unlink(const ProfileGroup& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileGroup> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+protected:
+    void defaults();
+public:
+    ProfileGroup(const litesql::Database& db);
+    ProfileGroup(const litesql::Database& db, const litesql::Record& rec);
+    ProfileGroup(const ProfileGroup& obj);
+    const ProfileGroup& operator=(const ProfileGroup& obj);
+    ProfileGroup::ProfilesHandle profiles();
+    ProfileGroup::ChildrensHandle childrens();
+    ProfileGroup::ParentHandle parent();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<ProfileGroup> upcast();
+    std::auto_ptr<ProfileGroup> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, ProfileGroup o);
 class Profile : public litesql::Persistent {
 public:
     class Own {
     public:
         static const litesql::FieldType Id;
+    };
+    class GroupHandle : public litesql::RelationHandle<Profile> {
+    public:
+        GroupHandle(const Profile& owner);
+        void link(const ProfileGroup& o0);
+        void unlink(const ProfileGroup& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileGroup> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class ProjectHandle : public litesql::RelationHandle<Profile> {
     public:
@@ -664,6 +781,7 @@ public:
     Profile(const litesql::Database& db, const litesql::Record& rec);
     Profile(const Profile& obj);
     const Profile& operator=(const Profile& obj);
+    Profile::GroupHandle group();
     Profile::ProjectHandle project();
     Profile::WatchfolderHandle watchfolder();
 protected:
@@ -782,6 +900,8 @@ public:
     litesql::Field<int> extradatasize;
     static const litesql::FieldType Extradata;
     litesql::Field<std::string> extradata;
+    static const litesql::FieldType Aspectratio;
+    litesql::Field<std::string> aspectratio;
     static const litesql::FieldType Flags;
     litesql::Field<int> flags;
     static const litesql::FieldType Extraprofileflags;

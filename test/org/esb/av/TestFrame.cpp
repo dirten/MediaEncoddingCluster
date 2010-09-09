@@ -43,8 +43,12 @@ int main(int argc, char** argv){
     Frame frame4(frame1);
     assert(frame1.getHeight()==frame4.getHeight());
     assert(frame1.getWidth()==frame4.getWidth());
-
   }
 
+  Frame *frame5=new Frame(PIX_FMT_YUV422P, 320,240);
+  Frame * frame6=new Frame(*frame5);
+  delete frame5;
+  delete frame6;
+  
   return 0;
 }

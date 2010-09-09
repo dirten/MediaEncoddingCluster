@@ -30,28 +30,36 @@ using namespace org::esb::config;
  * 
  */
 
-int running_video = true;
 int running_audio = true;
+int running_threads = 0;
 
-void processUnitReader() {
+void processUnitReader(std::string data, int wait) {
   LOGDEBUG("starting void processUnitReader()");
-  while (running_video) {
+  std::string get = "GET_";
+  get += data;
+  get += "PROCESS_UNIT";
+  running_threads++;
+  bool running = true;
+  int try_count = 5;
+  while (running) {
     Message msg;
-    msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
+    msg.setProperty("processunitcontroller", get);
     Messenger::getInstance().sendRequest(msg);
     boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
 
-    if (unit->_input_packets.size() == 0) {
+    if ((!unit) || unit->_input_packets.size() == 0) {
       LOGDEBUG("unit->_input_packets.size() == 0");
-      running_video=false;
-
-      org::esb::lang::Thread::sleep2(500);
+      if (try_count-- == 0)
+        running = false;
     } else {
       msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
       Messenger::getInstance().sendRequest(msg);
+      try_count = 5;
     }
-
+    org::esb::lang::Thread::sleep2(wait);
   }
+  LOGDEBUG("exiting reader thread");
+  running_threads--;
 }
 
 void audioProcessUnitReader() {
@@ -63,7 +71,7 @@ void audioProcessUnitReader() {
     boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
     if (unit->_input_packets.size() == 0) {
       LOGDEBUG("unit->_input_packets.size() == 0");
-      running_audio=false;
+      running_audio = false;
       org::esb::lang::Thread::sleep2(500);
     } else {
       msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
@@ -74,6 +82,70 @@ void audioProcessUnitReader() {
 }
 
 void testDirect() {
+
+}
+
+void testInterruptedEncoding() {
+  DatabaseService::start(MEC_SOURCE_DIR);
+
+  if (!DatabaseService::databaseExist()) {
+    DatabaseService::createDatabase();
+  }
+  DatabaseService::dropTables();
+  DatabaseService::updateTables();
+  DatabaseService::loadPresets();
+
+  std::string src = MEC_SOURCE_DIR;
+  src.append("/test.dvd");
+
+  int fileid = import(org::esb::io::File(src));
+  assert(fileid > 0);
+  int jobid = jobcreator(fileid, 1, "/tmp");
+  assert(jobid > 0);
+  {
+    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    {
+      db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
+      vector<db::JobDetail>details=job.jobdetails().get().all();
+      assert(details.size()==2);
+        vector<db::JobDetail>::iterator it=details.begin();
+      for(;it!=details.end();it++){
+        LOGDEBUG((*it));
+      }
+    }
+    ProcessUnitController ctrl;
+    Messenger::getInstance().addMessageListener(ctrl);
+    Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+
+    org::esb::lang::Thread::sleep2(1000);
+
+    boost::thread t1(boost::bind(&processUnitReader, "", 100));
+    boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500));
+
+    org::esb::lang::Thread::sleep2(10000);
+
+    Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+    org::esb::lang::Thread::sleep2(500);
+
+    {
+      db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
+      vector<db::JobDetail>details=job.jobdetails().get().all();
+      assert(details.size()==2);
+        vector<db::JobDetail>::iterator it=details.begin();
+      for(;it!=details.end();it++){
+        LOGDEBUG((*it));
+      }
+    }
+
+
+
+
+    Messenger::free();
+  }
+  DatabaseService::stop();
+  CodecFactory::free();
+  Log::close();
+  Config::close();
 
 }
 
@@ -89,6 +161,9 @@ int main(int argc, char** argv) {
   if (!f.exists())
     f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
+  testInterruptedEncoding();
+  return 0;
+
   DatabaseService::start(MEC_SOURCE_DIR);
   {
     if (!DatabaseService::databaseExist()) {
@@ -115,15 +190,16 @@ int main(int argc, char** argv) {
 
 
     org::esb::lang::Thread::sleep2(3000);
-    boost::thread t1(processUnitReader);
-    boost::thread t2(audioProcessUnitReader);
+    boost::thread t1(boost::bind(&processUnitReader, "", 100));
+    boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500));
+    //    boost::thread t2(audioProcessUnitReader);
 
 
     org::esb::lang::Thread::sleep2(10000);
-    running_video = false;
+    //    running_video = false;
     running_audio = false;
     Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
-    org::esb::lang::Thread::sleep2(1000);
+    org::esb::lang::Thread::sleep2(100);
 
     Messenger::free();
 

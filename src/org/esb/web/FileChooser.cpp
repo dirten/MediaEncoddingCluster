@@ -25,26 +25,46 @@ namespace org {
         tree = new FileTreeTable("/", filter, contents());
 //        tree->resize(380, 300);
         setAutoScrollBars(true);
+        addButton(new Wt::Ext::Button("Refresh"));
+        buttons().back()->clicked.connect(SLOT(this, FileChooser::ownrefresh));
         addButton(new Wt::Ext::Button("Select File"));
-        buttons().back()->clicked.connect(SLOT(this, FileChooser::select));
+        buttons().back()->clicked.connect(SLOT(this, FileChooser::accept));
 
         addButton(new Wt::Ext::Button("Cancel"));
         buttons().back()->clicked.connect(SLOT(this, FileChooser::cancel));
 
       }
       FileChooser::~FileChooser(){
-        delete tree;
+        LOGDEBUG("FileChooser::~FileChooser()");
+        //delete tree;
       }
 
-      void FileChooser::select() {
+      void FileChooser::ownrefresh() {
+        delete tree;
+        tree = new FileTreeTable("/", filter, contents());
+        this->refresh();
+      }
+      void FileChooser::accept() {
+        LOGDEBUG("accept");
+        Wt::Ext::Dialog::accept();
+      }
+      
+      std::list<Ptr<org::esb::io::File> > FileChooser::getSelectedFiles() {
         std::list<Ptr<org::esb::io::File> > result;
         Wt::WTree::WTreeNodeSet set = tree->tree()->selectedNodes();
         Wt::WTree::WTreeNodeSet::iterator it = set.begin();
         for(;it != set.end();it++) {
           FileTreeTableNode * node = (FileTreeTableNode*) * it;
+          LOGDEBUG(node->path_.string());
           result.push_back(new org::esb::io::File(node->path_.string()));
-          selected.emit(result);
         }
+        return result;
+      }
+
+      void FileChooser::select() {
+        std::list<Ptr<org::esb::io::File> > result=getSelectedFiles();
+        selected.emit(result);
+        LOGDEBUG("after emit");
       }
 
       void FileChooser::cancel() {

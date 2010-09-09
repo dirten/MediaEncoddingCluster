@@ -6,7 +6,7 @@
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/Button>
 
-#include "project/ProjectWizard.h"
+#include "project_v2/ProjectWizard.h"
 
 //#include "MainMenuActionHandler.h"
 MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL) {
@@ -19,9 +19,10 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   Wt::Ext::MenuItem *item;
   Wt::Ext::Button * button;
 
-/*  menu = new Wt::Ext::Menu();
-  item = menu->addItem("Preview...",parent,&org::esb::web::WebApp2::openPreview);
-  toolbar->addButton("Test", menu);*/
+  menu = new Wt::Ext::Menu();
+  org::esb::web::v2::ProjectWizard *wiz=new org::esb::web::v2::ProjectWizard();
+  item = menu->addItem("ProjectWizard...",wiz,&org::esb::web::v2::ProjectWizard::open);
+  toolbar->addButton("V2 Gui", menu);
 
   menu = new Wt::Ext::Menu();
   

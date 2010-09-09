@@ -14,8 +14,12 @@
 #include "org/esb/web/FileChooser.h"
 namespace org {
   namespace esb {
+    namespace io{
+      class File;
+    }
     namespace web {
       class InputFileTable;
+      
       class InputFilePanel : public Wt::Ext::Panel {
         classlogger("org.esb.web.project.InputFilePanel")
       public:
@@ -32,6 +36,7 @@ namespace org {
         Wt::Ext::Button * removeVideoButton ;
         void enableButtons();
         Ptr<FileChooser> _chooser;
+        void importFile(Ptr<org::esb::io::File> file);
         
       };
 

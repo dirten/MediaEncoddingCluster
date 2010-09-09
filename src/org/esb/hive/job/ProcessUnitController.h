@@ -43,6 +43,7 @@ namespace org {
           void start();
           void stop();
           bool _stop_signal;
+          
           typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
           ProcessUnitQueue puQueue;
           org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
@@ -52,7 +53,7 @@ namespace org {
           boost::mutex get_pu_mutex;
           boost::mutex db_con_mutex;
 
-          bool _isStopSignal;
+          //bool _isStopSignal;
           bool _isRunning;
 
           db::HiveDb _dbCon;

@@ -8,10 +8,11 @@
 #include "org/esb/util/Log.h"
 
 #include "FileFilter.h"
+#include "org/esb/lang/Ptr.h"
 namespace org {
   namespace esb {
     namespace io {
-      typedef std::list<boost::shared_ptr<File> > FileList;
+      typedef std::list<Ptr<File> > FileList;
 
       class File {
       public:

@@ -66,7 +66,7 @@ namespace org {
 
         int read(unsigned char * buffer, int length) {
           boost::mutex::scoped_lock lock(_read_mutex);
-          if (!_socket->is_open()) {
+          if (_socket&&!_socket->is_open()) {
             _socket->close();
             throw SocketException("SocketOutputStream::read - can not Read, because Socket is not open");
           }

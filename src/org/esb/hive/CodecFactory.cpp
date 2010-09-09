@@ -109,18 +109,18 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
 }
 
 void CodecFactory::free() {
-    decoder_map.clear();
-    encoder_map.clear();
-  /*
+  
     std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
     for(;it_dec!=decoder_map.end();it_dec++){
-      delete (*it_dec).second;
+      (*it_dec).second.reset();
     }
-    std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_enc=encoder_map.begin();
+    std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it_enc=encoder_map.begin();
     for(;it_enc!=encoder_map.end();it_enc++){
-      delete (*it_enc).second;
+      (*it_enc).second.reset();
     }
-   */
+    decoder_map.clear();
+    encoder_map.clear();
+   
 }
 
 void CodecFactory::clearCodec(int streamid) {

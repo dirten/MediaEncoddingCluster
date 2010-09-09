@@ -7,6 +7,7 @@ include_directories (${WT_DIR}/include)
 add_executable (TestWebServer TestWebServer.cpp)
 add_executable (TestPreviewFrameServer TestPreviewFrameServer.cpp)
 add_executable (JobTableTest JobTableTest.cpp)
+add_executable (PreviewFrameServerTest PreviewFrameServer.cpp)
 
 
 target_link_libraries (TestWebServer
@@ -44,6 +45,17 @@ target_link_libraries (JobTableTest
   lang
   net
  )
+target_link_libraries (PreviewFrameServerTest
+  web
+  esb
+  hive
+  av
+  util
+  signal
+  io
+  lang
+  net
+ )
 
 target_link_libraries (TestWebServer
   ${BOOST_SERIAL_LIB_MT}
@@ -58,4 +70,5 @@ target_link_libraries (TestWebServer
 ADD_TEST(TestWebServer ${EXECUTABLE_OUTPUT_PATH}/TestWebServer)
 ADD_TEST(TestPreviewFrameServer ${EXECUTABLE_OUTPUT_PATH}/TestPreviewFrameServer)
 #ADD_TEST(JobTableTest ${EXECUTABLE_OUTPUT_PATH}/JobTableTest)
+ADD_TEST(web.PreviewFrameServerTest ${EXECUTABLE_OUTPUT_PATH}/PreviewFrameServerTest)
 

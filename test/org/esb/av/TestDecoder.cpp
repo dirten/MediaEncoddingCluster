@@ -18,6 +18,36 @@
 
 #include "org/esb/util/Log.h"
 
+org::esb::av::Frame * getRawFrame(){
+  int height=240;
+  int width=320;
+  int i=0;
+  org::esb::av::Frame * frame =new org::esb::av::Frame(PIX_FMT_YUV422P, width, height);
+  /* prepare a dummy image */
+        /* Y */
+        for(int y=0;y<height;y++) {
+            for(int x=0;x<width;x++) {
+                frame->getAVFrame()->data[0][y * frame->getAVFrame()->linesize[0] + x] = x + y + i * 3;
+            }
+        }
+
+        /* Cb and Cr */
+        for(int y=0;y<height/2;y++) {
+            for(int x=0;x<width/2;x++) {
+                frame->getAVFrame()->data[1][y * frame->getAVFrame()->linesize[1] + x] = 128 + y + i * 2;
+                frame->getAVFrame()->data[2][y * frame->getAVFrame()->linesize[2] + x] = 64 + x + i * 5;
+            }
+        }
+  return frame;
+}
+
+void testDecodeRawVideo(){
+  org::esb::av::Decoder dec(CODEC_ID_FFV1);
+  dec.setTimeBase(1, 25);
+  dec.open();
+
+}
+
 void testDecodeVideo(std::string filepath) {
   int offset = 0;
   int printout = 0;
@@ -54,8 +84,9 @@ void testDecodeVideo(std::string filepath) {
         if (frame->isFinished() && i >= printout) {
           LOGDEBUG("frame finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
           outcount++;
-          sprintf(outfile,"test-%i.bmp", i);
-          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
+          assert(frame->_pixFormat==PIX_FMT_YUV444P);
+//          sprintf(outfile,"test-%i.bmp", i);
+//          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
 //          frame->dumpHex();
         }
         delete frame;
@@ -64,6 +95,7 @@ void testDecodeVideo(std::string filepath) {
     }
     delete p;
   }
+  delete [] outfile;
   LOGDEBUG("decoding delay")
   org::esb::av::Packet * ptmp = new org::esb::av::Packet();
   ptmp->setDuration(3600);
@@ -157,8 +189,9 @@ int main(int argc, char** argv) {
   if(argc>1){
     filename=argv[1];
   }
+//  testDecodeRawVideo();
   testDecodeVideo(filename);
-//  testDecodeAudio();
+  testDecodeAudio();
   Log::close();
   return (EXIT_SUCCESS);
 

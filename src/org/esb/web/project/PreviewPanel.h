@@ -39,7 +39,7 @@ namespace org{
         void preview();
       private:
         Ptr<org::esb::av::Encoder> _encoder;
-        Ptr<org::esb::av::FrameConverter> _conv;
+        
         Ptr<org::esb::av::PlugIn> _plugin;
         std::list<Ptr<org::esb::av::PlugIn> > _plugin_chain;
         Ptr<db::Project> _project;
