@@ -3,6 +3,7 @@
 namespace org{
   namespace esb{
     namespace av{
+      using namespace std;
       ResizeFilter::ResizeFilter(Format in, Format out):_in_format(in),_out_format(out){
         _swsContext = NULL;
       }
@@ -20,14 +21,14 @@ namespace org{
         int sws_flags = 1;
         if(_in_format.width<4||_in_format.height<1){
           LOGWARN("input format has invalid scaling dimensions "<<_in_format.width<<"*"<<_in_format.height);
-          _in_format.width=std::max(4,_in_format.width);
-          _in_format.height=std::max(1,_in_format.height);
+          _in_format.width=max(4,_in_format.width);
+          _in_format.height=max(1,_in_format.height);
           LOGDEBUG("input format rescaled to "<<_in_format.width<<"*"<<_in_format.height);
         }
         if(_out_format.width<8||_out_format.height<1){
           LOGWARN("output format has invalid scaling dimensions "<<_out_format.width<<"*"<<_out_format.height);
-          _out_format.width=std::max(8,_out_format.width);
-          _out_format.height=std::max(1,_out_format.height);
+          _out_format.width=max(8,_out_format.width);
+          _out_format.height=max(1,_out_format.height);
           LOGDEBUG("output format rescaled to "<<_out_format.width<<"*"<<_out_format.height);
         }
 
