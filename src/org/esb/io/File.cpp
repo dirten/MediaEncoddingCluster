@@ -37,9 +37,10 @@ void File::changeExtension(const std::string & ext) {
   _full_path = fs::change_extension(_full_path, "." + ext);
 }
 
-long File::length(){
+long File::length() {
   return fs::file_size(_full_path);
 }
+
 const string File::getPath() {
   return _full_path.string();
 }
@@ -64,13 +65,13 @@ const string File::getFilePath() {
 }
 
 bool File::exists() {
-	bool result=false;
-	try{
-		result = fs::exists(_full_path);
-	}catch(fs::filesystem_error & ex){
-		//return false;
-	}
-	return result;
+  bool result = false;
+  try {
+    result = fs::exists(_full_path);
+  } catch (fs::filesystem_error & ex) {
+    //return false;
+  }
+  return result;
 }
 
 bool File::deleteFile() {
@@ -132,10 +133,19 @@ FileList File::listFiles(FileFilter & filter) {
 FileList File::listFiles() {
   fs::directory_iterator end_iter;
   FileList files;
-  for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
-    Ptr < File > f(new File(dir_itr->path().string().c_str()));
-    files.push_back(f);
+  try {
+    for (fs::directory_iterator dir_itr(_full_path); dir_itr != end_iter; ++dir_itr) {
+      try {
+        Ptr < File > f(new File(dir_itr->path().string().c_str()));
+        files.push_back(f);
+      } catch (const fs::filesystem_error & ex) {
+        std::cout << dir_itr->path().filename() << " " << ex.what() << std::endl;
+      }
+    }
+  } catch (const fs::filesystem_error & ex) {
+    std::cout << _full_path.filename() << " " << ex.what() << std::endl;
   }
+
   return files;
 }
 

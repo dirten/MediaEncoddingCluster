@@ -9,7 +9,9 @@ namespace org{
   namespace esb{
     namespace web{
       class DbTable;
-      class ProjectWizard;
+      namespace v2{
+        class ProjectWizard;
+      }
       class Projects: public Wt::Ext::Container {
       public:
         Projects(Wt::WContainerWidget * parent = 0) ;
@@ -23,7 +25,7 @@ namespace org{
         Wt::Ext::Button * create_button;
         Wt::Ext::Button * edit_button;
         Wt::Ext::Button * delete_button;
-        Ptr<ProjectWizard> _wizard;
+        Ptr<v2::ProjectWizard> _wizard;
       };
     }
   }

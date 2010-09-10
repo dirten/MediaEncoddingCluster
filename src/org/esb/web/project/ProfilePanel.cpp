@@ -23,10 +23,14 @@ namespace org{
 
         void setProfileData(std::vector<db::Profile> profiles){
           std::vector<db::Profile>::iterator it=profiles.begin();
-          /*
+          
           if(rowCount()>profiles.size()){
-            removeRow(profiles.size()-1);
-          }*/
+            if(profiles.size()>0)
+              removeRow(profiles.size()-1);
+            else{
+              removeRows(0,rowCount());
+            }
+          }
           for(int a = 0;it!=profiles.end();it++, a++){
             if (rowCount() <= a)
               insertRow(rowCount());
@@ -44,10 +48,14 @@ namespace org{
           
          
         }
+        void refresh(){
+          Wt::Ext::TableView::refresh();
+        }
+
         void setProfiles(std::vector<db::Profile> profiles){
-          ProfileTableModel*oldptr=static_cast<ProfileTableModel*>(model());
-          setModel(new ProfileTableModel());
-          delete oldptr;
+//          ProfileTableModel*oldptr=static_cast<ProfileTableModel*>(model());
+//          setModel(new ProfileTableModel());
+//          delete oldptr;
           static_cast<ProfileTableModel*>(model())->setProfileData(profiles);
         }
       };
@@ -83,8 +91,8 @@ namespace org{
       }
 
       void ProfilePanel::setProject(Ptr<db::Project> p){
+        _profile_table->setProfiles(p->profiles().get().all());
         _project=p;
-        _profile_table->setProfiles(_project->profiles().get().all());
       }
 
       void ProfilePanel::addProfileButtonClicked(){
@@ -128,7 +136,8 @@ namespace org{
         
         db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==c).one();
-        _project->profiles().link(profile);
+        if(_project)
+          _project->profiles().link(profile);
         _profile_table->setProfiles(_project->profiles().get().all());
         removeProfileButton->setEnabled(false);
         editProfileButton->setEnabled(false);

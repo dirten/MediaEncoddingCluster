@@ -15,6 +15,11 @@ namespace org {
         den = d;
       }
 
+      Rational::Rational(AVRational r) {
+        num = r.num;
+        den = r.den;
+      }
+
       bool Rational::operator==(const Rational & r) {
         return r.num==num&&r.den==den;
       }

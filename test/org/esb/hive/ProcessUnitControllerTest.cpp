@@ -30,10 +30,10 @@ using namespace org::esb::config;
  * 
  */
 
-int running_audio = true;
+//int running_audio = true;
 int running_threads = 0;
 
-void processUnitReader(std::string data, int wait) {
+void processUnitReader(std::string data, int wait, int b) {
   LOGDEBUG("starting void processUnitReader()");
   std::string get = "GET_";
   get += data;
@@ -41,7 +41,7 @@ void processUnitReader(std::string data, int wait) {
   running_threads++;
   bool running = true;
   int try_count = 5;
-  while (running) {
+  while (running && (b-- != 0)) {
     Message msg;
     msg.setProperty("processunitcontroller", get);
     Messenger::getInstance().sendRequest(msg);
@@ -62,31 +62,12 @@ void processUnitReader(std::string data, int wait) {
   running_threads--;
 }
 
-void audioProcessUnitReader() {
-  LOGDEBUG("starting void audioprocessUnitReader()");
-  while (running_audio) {
-    Message msg;
-    msg.setProperty("processunitcontroller", "GET_AUDIO_PROCESS_UNIT");
-    Messenger::getInstance().sendRequest(msg);
-    boost::shared_ptr<ProcessUnit>unit = msg.getPtrProperty("processunit");
-    if (unit->_input_packets.size() == 0) {
-      LOGDEBUG("unit->_input_packets.size() == 0");
-      running_audio = false;
-      org::esb::lang::Thread::sleep2(500);
-    } else {
-      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
-      Messenger::getInstance().sendRequest(msg);
-    }
-    org::esb::lang::Thread::sleep2(100);
-  }
-}
-
 void testDirect() {
 
 }
 
 void testInterruptedEncoding() {
-  DatabaseService::start(MEC_SOURCE_DIR);
+  //  DatabaseService::start(MEC_SOURCE_DIR);
 
   if (!DatabaseService::databaseExist()) {
     DatabaseService::createDatabase();
@@ -102,55 +83,102 @@ void testInterruptedEncoding() {
   assert(fileid > 0);
   int jobid = jobcreator(fileid, 1, "/tmp");
   assert(jobid > 0);
+  db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
   {
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-    {
-      db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
-      vector<db::JobDetail>details=job.jobdetails().get().all();
-      assert(details.size()==2);
-        vector<db::JobDetail>::iterator it=details.begin();
-      for(;it!=details.end();it++){
-        LOGDEBUG((*it));
-      }
+    db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
+    vector<db::JobDetail>details = job.jobdetails().get().all();
+    assert(details.size() == 2);
+    vector<db::JobDetail>::iterator it = details.begin();
+    for (; it != details.end(); it++) {
+      LOGDEBUG((*it));
     }
-    ProcessUnitController ctrl;
-    Messenger::getInstance().addMessageListener(ctrl);
-    Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+  }
+  ProcessUnitController ctrl;
+  Messenger::getInstance().addMessageListener(ctrl);
+  Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
 
+  org::esb::lang::Thread::sleep2(3000);
+
+  boost::thread t1(boost::bind(&processUnitReader, "", 100, 1));
+  boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500, 1));
+
+  org::esb::lang::Thread::sleep2(1000);
+
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+  org::esb::lang::Thread::sleep2(500);
+
+  {
+    db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
+    LOGDEBUG("" << job);
+    vector<db::JobDetail>details = job.jobdetails().get().all();
+
+    assert(details.size() == 2);
+    
+    assert(details[0].lastdts==127800);
+    assert(((int64_t)details[1].lastdts)==1218160);
+  }
+
+  Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+  org::esb::lang::Thread::sleep2(3000);
+
+  boost::thread(boost::bind(&processUnitReader, "", 100, 1));
+  boost::thread(boost::bind(&processUnitReader, "AUDIO_", 500, 1));
+  org::esb::lang::Thread::sleep2(1000);
+
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+  org::esb::lang::Thread::sleep2(500);
+
+
+
+
+  Messenger::free();
+  CodecFactory::free();
+
+}
+
+void testFullFile() {
+  if (!DatabaseService::databaseExist()) {
+    DatabaseService::createDatabase();
+  }
+  DatabaseService::dropTables();
+  DatabaseService::updateTables();
+  DatabaseService::loadPresets();
+
+
+
+  std::string src = MEC_SOURCE_DIR;
+  src.append("/test.dvd");
+
+  int fileid = import(org::esb::io::File(src));
+  assert(fileid > 0);
+  int jobid = jobcreator(fileid, 1, "/tmp");
+  assert(jobid > 0);
+
+  ProcessUnitController ctrl;
+  Messenger::getInstance().addMessageListener(ctrl);
+  Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+
+
+
+  org::esb::lang::Thread::sleep2(3000);
+  boost::thread t1(boost::bind(&processUnitReader, "", 100, -1));
+  boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500, -1));
+  
+  org::esb::lang::Thread::sleep2(500);
+
+  while(running_threads>0)
     org::esb::lang::Thread::sleep2(1000);
 
-    boost::thread t1(boost::bind(&processUnitReader, "", 100));
-    boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500));
+  Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+  org::esb::lang::Thread::sleep2(100);
 
-    org::esb::lang::Thread::sleep2(10000);
-
-    Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
-    org::esb::lang::Thread::sleep2(500);
-
-    {
-      db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
-      vector<db::JobDetail>details=job.jobdetails().get().all();
-      assert(details.size()==2);
-        vector<db::JobDetail>::iterator it=details.begin();
-      for(;it!=details.end();it++){
-        LOGDEBUG((*it));
-      }
-    }
-
-
-
-
-    Messenger::free();
-  }
-  DatabaseService::stop();
-  CodecFactory::free();
-  Log::close();
-  Config::close();
+  Messenger::free();
 
 }
 
 int main(int argc, char** argv) {
   Log::open("");
+  DatabaseService::start(MEC_SOURCE_DIR);
   std::string host = "host=";
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
@@ -162,48 +190,9 @@ int main(int argc, char** argv) {
     f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   testInterruptedEncoding();
-  return 0;
+//  testFullFile();
+  //  return 0;
 
-  DatabaseService::start(MEC_SOURCE_DIR);
-  {
-    if (!DatabaseService::databaseExist()) {
-      DatabaseService::createDatabase();
-    }
-    DatabaseService::dropTables();
-    DatabaseService::updateTables();
-    DatabaseService::loadPresets();
-
-
-
-    std::string src = MEC_SOURCE_DIR;
-    src.append("/test.dvd");
-
-    int fileid = import(org::esb::io::File(src));
-    assert(fileid > 0);
-    int jobid = jobcreator(fileid, 1, "/tmp");
-    assert(jobid > 0);
-
-    ProcessUnitController ctrl;
-    Messenger::getInstance().addMessageListener(ctrl);
-    Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
-
-
-
-    org::esb::lang::Thread::sleep2(3000);
-    boost::thread t1(boost::bind(&processUnitReader, "", 100));
-    boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500));
-    //    boost::thread t2(audioProcessUnitReader);
-
-
-    org::esb::lang::Thread::sleep2(10000);
-    //    running_video = false;
-    running_audio = false;
-    Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
-    org::esb::lang::Thread::sleep2(100);
-
-    Messenger::free();
-
-  }
   DatabaseService::stop();
   CodecFactory::free();
   Log::close();

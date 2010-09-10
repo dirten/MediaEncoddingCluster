@@ -7,6 +7,12 @@ body, div, p, td, span {
 .stepbox {
   background: #f7f7f7;
 }
+x-accordion-hd {
+	font-weight: bold;
+}
+.x-panel-header-text {
+	font-weight: bold;
+}
 
 div.t, div.b {
   height: 6px;

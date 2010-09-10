@@ -121,6 +121,7 @@ namespace org {
 
       void DatabaseService::createTables() {
         db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        LOGDEBUG("Create Tables");
         db.create();
       }
 
@@ -165,6 +166,47 @@ namespace org {
         db.query("load data infile '"+_base_path+"/sql/config.txt' IGNORE into table Config_ fields terminated by \":\"");
         db.query("load data infile '"+_base_path+"/sql/profiles.txt' IGNORE into table Profile_ fields terminated by \",\"");
         db.query("load data infile '"+_base_path+"/sql/codec.txt' IGNORE into table CodecPreset_ fields terminated by \"#\"");
+
+        db::ProfileGroup g(db);
+        g.name="root";
+        g.update();
+
+        db::ProfileGroup avi(db);
+        avi.name="Avi";
+        avi.update();
+
+        g.childrens().link(avi);
+
+        /**
+         * linking Profiles to ProfileGroup
+         */
+        avi.profiles().link(litesql::select<db::Profile>(db,db::Profile::Id==5).one());
+        avi.profiles().link(litesql::select<db::Profile>(db,db::Profile::Id==6).one());
+
+        db::ProfileGroup mpeg(db);
+        mpeg.name="MPeg";
+        mpeg.update();
+        g.childrens().link(mpeg);
+
+        db::ProfileGroup mp4(db);
+        mp4.name="MP4";
+        mp4.update();
+        g.childrens().link(mp4);
+        mp4.profiles().link(litesql::select<db::Profile>(db,db::Profile::Id==1).one());
+        mp4.profiles().link(litesql::select<db::Profile>(db,db::Profile::Id==2).one());
+        mp4.profiles().link(litesql::select<db::Profile>(db,db::Profile::Id==3).one());
+        
+        db::ProfileGroup web(db);
+        web.name="Web";
+        web.update();
+        g.childrens().link(web);
+        
+        db::ProfileGroup flash(db);
+        flash.name="Flash";
+        flash.update();
+        web.childrens().link(flash);
+
+
       }
 
       void DatabaseService::stop() {

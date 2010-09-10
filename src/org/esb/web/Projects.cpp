@@ -2,7 +2,8 @@
 #include "Projects.h"
 #include "DbTable.h"
 #include "Wt/WFitLayout"
-#include "project/ProjectWizard.h"
+
+#include "project_v2/ProjectWizard.h"
 #ifdef MessageBox
 #undef MessageBox
 #endif
@@ -39,14 +40,14 @@ namespace org {
 
       void Projects::editProject(){
         int c = atoi(boost::any_cast<string > (_table->model()->data(_table->selectedRows()[0], 0)).c_str());
-        _wizard=Ptr<ProjectWizard>(new ProjectWizard());
+        _wizard=Ptr<org::esb::web::v2::ProjectWizard>(new org::esb::web::v2::ProjectWizard());
         _wizard->saved.connect(SLOT(this,Projects::projectSaved));
         _wizard->open(c);
 //        _wizard->show();
 
       }
       void Projects::createProject(){
-        _wizard=Ptr<ProjectWizard>(new ProjectWizard());
+        _wizard=Ptr<v2::ProjectWizard>(new v2::ProjectWizard());  
         _wizard->saved.connect(SLOT(this,Projects::projectSaved));
         _wizard->open();
 

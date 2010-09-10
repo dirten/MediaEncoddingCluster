@@ -28,6 +28,7 @@ namespace org {
           void cancel();
           Wt::Signal<void> saved;
           Wt::Signal<void> canceled;
+          void refresh();
         private:
           int _project_id;
           Ptr<db::Project> _project;

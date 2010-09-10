@@ -15,6 +15,7 @@ namespace org {
       class Rational:public AVRational {
       public:
         Rational(int num=1, int den=1000000);
+        Rational(AVRational r);
         virtual ~Rational();
         bool operator==(const Rational &);
       private:

@@ -3,6 +3,7 @@
 #include "FormatBaseStream.h"
 #include "AVInputStream.h"
 #include "StreamInfo.h"
+#include "TimeStamp.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
@@ -46,6 +47,7 @@ namespace org {
                 void close();
                 void dumpFormat();
                 int seek(int stream_index, int64_t timestamp, int flags=AVSEEK_FLAG_BACKWARD);
+                int seek(int stream_index, TimeStamp timestamp, int flags=AVSEEK_FLAG_BACKWARD);
                 int selectedStream;
                 StreamInfo * getStreamInfo(int idx);
             private:

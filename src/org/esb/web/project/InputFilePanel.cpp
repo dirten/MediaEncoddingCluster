@@ -20,6 +20,9 @@
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/io/File.h"
+#include "org/esb/lang/Thread.h"
+#include "boost/bind.hpp"
+#include "Wt/WApplication"
 namespace org {
   namespace esb {
     namespace web {
@@ -39,6 +42,14 @@ namespace org {
           std::vector<db::MediaFile>::iterator it = files.begin();
           //          if(files.size()==0)
           //            this->removeRows(0,rowCount());
+          if(rowCount()>files.size()){
+            if(files.size()>0)
+              removeRow(files.size()-1);
+            else{
+              removeRows(0,rowCount());
+            }
+          }
+
           for (int a = 0; it != files.end(); it++, a++) {
             if (rowCount() <= a)
               insertRow(rowCount());
@@ -64,11 +75,13 @@ namespace org {
           setColumnWidth(2, 300);
           setToolTip("Click on Add Input Video to import an Input Media File!");
         }
-
+        void refresh(){
+          Wt::Ext::TableView::refresh();
+        }
         void setMediaFiles(std::vector<db::MediaFile> files) {
-          InputFileTableModel*oldptr = static_cast<InputFileTableModel*> (model());
-          setModel(new InputFileTableModel());
-          delete oldptr;
+//          InputFileTableModel*oldptr = static_cast<InputFileTableModel*> (model());
+//          setModel(new InputFileTableModel());
+//          delete oldptr;
 
           static_cast<InputFileTableModel*> (model())->setMediaFileData(files);
         }
@@ -102,19 +115,19 @@ namespace org {
       }
 
       void InputFilePanel::setProject(boost::shared_ptr<db::Project> p) {
-        _project = p;
-        _filetable->setModel(new InputFileTableModel());
         _filetable->setMediaFiles(p->mediafiles().get().all());
+        _project = p;
       }
 
       void InputFilePanel::setInputFile(std::list<Ptr<org::esb::io::File> > files) {
+        /*
         LOGDEBUG("try import file count" << files.size());
         std::list<Ptr<org::esb::io::File> >::iterator fit = files.begin();
         _chooser->accept();
         _chooser.reset();
         for (; fit != files.end(); fit++) {
           importFile(*fit);
-        }
+        }*/
 
 
         /*
@@ -128,14 +141,51 @@ namespace org {
         removeVideoButton->setEnabled(false);
       }
 
+      void InputFilePanel::countFiles(Ptr<org::esb::io::File> path) {
+        if(_cycle%100==0){
+          std::string message="<br/>Calculating the Files to import:<br/>";
+          progressText->setText(message+org::esb::util::StringUtil::toString(_fileCount)+std::string(" Files found and keeps counting."));
+          Wt::WApplication::instance()->processEvents();
+        }
+        _cycle++;
+        if (!path->exists())return;
+        if (path->isDirectory()) {
+          org::esb::io::FileList flist = path->listFiles();
+          org::esb::io::FileList::iterator fit = flist.begin();
+          for (; fit != flist.end(); fit++)
+            countFiles(*fit);
+        } else {
+          _fileCount++;
+        }
+      }
+
+      void InputFilePanel::importFiles(std::list<Ptr<org::esb::io::File> > files) {
+        std::list<Ptr<org::esb::io::File> >::iterator cit = files.begin();
+        _cycle=0;
+        for (; cit != files.end(); cit++) {
+          countFiles(*cit);
+        }
+        std::list<Ptr<org::esb::io::File> >::iterator fit = files.begin();
+        for (; fit != files.end(); fit++) {
+          importFile(*fit);
+        }
+        _filetable->setMediaFiles(_project->mediafiles().get().all());
+      }
+
       void InputFilePanel::importFile(Ptr<org::esb::io::File> file) {
+          std::string message="<br/>Importing the Files :<br/>";
+          progressText->setText(message+org::esb::util::StringUtil::toString(_importCount)+"/"+org::esb::util::StringUtil::toString(_allCount)+std::string(" Files from")+org::esb::util::StringUtil::toString(_fileCount)+" imported.");
+          Wt::WApplication::instance()->processEvents();
+        //importFile(*fit);
         if (file->exists()) {
           if (file->isFile()) {
+            _allCount++;
+            progressText->setText(file->getFileName());
             int result = import(*file.get());
             if (result > 0) {
               db::MediaFile mfile = litesql::select<db::MediaFile > (_project->getDatabase(), db::MediaFile::Id == result).one();
               _project->mediafiles().link(mfile);
-              _filetable->setMediaFiles(_project->mediafiles().get().all());
+              _importCount++;
               LOGDEBUG("File imported:" << result);
             } else {
               LOGINFO("no valid file")
@@ -150,7 +200,6 @@ namespace org {
             }
           }
         }
-
       }
 
       void InputFilePanel::removeVideo() {
@@ -187,17 +236,31 @@ namespace org {
 
       void InputFilePanel::addVideoButtonClicked() {
         _chooser = Ptr<FileChooser > (new FileChooser("Add Video", "/"));
-//        _chooser->selected.connect(SLOT(this, InputFilePanel::setInputFile));
+        //        _chooser->selected.connect(SLOT(this, InputFilePanel::setInputFile));
         _chooser->show();
         if (_chooser->exec() == Wt::Ext::Dialog::Accepted) {
           std::list<Ptr<org::esb::io::File> > files = _chooser->getSelectedFiles();
-          std::list<Ptr<org::esb::io::File> >::iterator fit = files.begin();
+          //          boost::thread(boost::bind(&InputFilePanel::importFiles, this, files));
           _chooser->setHidden(true);
-          _chooser.reset();
-          for (; fit != files.end(); fit++) {
-            importFile(*fit);
-          }
+          dial = new Wt::Ext::Dialog("bla");
+          dial->resize(300, 200);
+          dial->setLayout(new Wt::WFitLayout());
+          progressMessageText = new Wt::WText();
+          progressText = new Wt::WText();
+          dial->layout()->addWidget(progressText);
+          dial->show();
+
+          //dial->exec();
+          //Wt::WMessageBox::show("really", "Wtf", Wt::Ok|Wt::Cancel);
+          //org::esb::lang::Thread::sleep2(10000);
+          LOGDEBUG("importing");
+          importFiles(files);
+          dial->accept();
+          delete dial;
+
+
         }
+        removeVideoButton->setEnabled(false);
       }
     }
   }

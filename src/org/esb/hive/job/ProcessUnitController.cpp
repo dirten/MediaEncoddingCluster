@@ -40,6 +40,8 @@ namespace org {
           LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");
+          _stop_signal = false;
+          _isRunning = false;
             boost::thread t(boost::bind(&ProcessUnitController::start, this));
             LOGDEBUG("started");
           } else if (msg.getProperty("processunitcontroller") == "stop") {
@@ -89,6 +91,7 @@ namespace org {
           audioQueue.flush();
           puQueue.flush();
           queue_empty_wait_condition.notify_all();
+          _isRunning = false;
         }
 
         void ProcessUnitController::start() {
@@ -154,7 +157,7 @@ namespace org {
               stream_map[idx].deinterlace = detail.deinterlace.value();
               //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
               stream_map[idx].last_start_dts = detail.lastdts;
-
+              LOGDEBUG("Last start DTS:"<<stream_map[idx].last_start_dts);
               if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
                 LOGERROR("wrong decoder timebase -> num=" << stream_map[idx].decoder->getTimeBase().num << " den=" << stream_map[idx].decoder->getTimeBase().den);
                 LOGERROR("skip stream #" << stream_map[idx].instream);
@@ -191,6 +194,7 @@ namespace org {
                */
               if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
                 continue;
+//              LOGTRACE("Packet DTS:"<<packet->toString());
               //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
               if (packetizer.putPacket(pPacket)) {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
@@ -338,7 +342,7 @@ namespace org {
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
-            LOGDEBUG(""<<dbunit);
+//            LOGDEBUG(""<<dbunit);
             vector<db::JobDetail> details = current_job->jobdetails().get().all();
             for (int a = 0; a < details.size(); a++) {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {

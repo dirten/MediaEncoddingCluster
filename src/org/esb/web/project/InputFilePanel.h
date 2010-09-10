@@ -36,8 +36,16 @@ namespace org {
         Wt::Ext::Button * removeVideoButton ;
         void enableButtons();
         Ptr<FileChooser> _chooser;
-        void importFile(Ptr<org::esb::io::File> file);
-        
+        void importFiles(std::list<Ptr<org::esb::io::File> > files);
+        void importFile(Ptr<org::esb::io::File>  file);
+        void countFiles(Ptr<org::esb::io::File>  file);
+        Wt::Ext::Dialog *dial;
+        Wt::WText * progressMessageText;
+        Wt::WText * progressText;
+        int64_t _fileCount;
+        int64_t _importCount;
+        int64_t _allCount;
+        int64_t _cycle;
       };
 
     }

@@ -32,7 +32,7 @@
 #include "org/esb/av/AV.h"
 namespace org{
   namespace esb{
-    namespace db{
+    namespace dbold{
       struct Profile{
         int id;
         std::string name;

@@ -36,10 +36,12 @@ namespace org{
       ProjectPropertyPanel::~ProjectPropertyPanel(){
         
       }
+      
       void ProjectPropertyPanel::save(){
         _project->name=_el.getElement("name")->text().narrow();
         _project->outdirectory=_el.getElement("outdir")->text().narrow();        
       }
+
       void ProjectPropertyPanel::setProject(Ptr<db::Project> p){
         _project=p;
         _el.getElement("id")->setText(org::esb::util::StringUtil::toString(p->id));

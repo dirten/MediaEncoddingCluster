@@ -1,6 +1,33 @@
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
-int main(){
+
+
+int64_t dircount=0;
+int64_t filecount=0;
+
+void print_file_counter(){
+  std::cout << "\r Directories="<<dircount<<"\t\t\t FileCount"<<filecount;
+}
+
+void fileCounter(Ptr<org::esb::io::File> path){
+  if(!path->exists())return;
+  if(path->isDirectory()){
+    dircount++;
+    org::esb::io::FileList flist=path->listFiles();
+    org::esb::io::FileList::iterator fit=flist.begin();
+    for(;fit!=flist.end();fit++)
+      fileCounter(*fit);
+  }else{
+    filecount++;
+  }
+  print_file_counter();
+}
+
+int main(int argc, char**argv){
+  Ptr<org::esb::io::File> file=new org::esb::io::File(argv[1]);
+  fileCounter(file);
+  std::cout << std::endl;
+  return 0;
   Log::open("");
 //	return 0;
   std::string path=MEC_SOURCE_DIR;
