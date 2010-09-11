@@ -1,6 +1,6 @@
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
-
+#include "inttypes.h"
 
 int64_t dircount=0;
 int64_t filecount=0;
@@ -24,10 +24,10 @@ void fileCounter(Ptr<org::esb::io::File> path){
 }
 
 int main(int argc, char**argv){
-  Ptr<org::esb::io::File> file=new org::esb::io::File(argv[1]);
-  fileCounter(file);
-  std::cout << std::endl;
-  return 0;
+//  Ptr<org::esb::io::File> file=new org::esb::io::File(argv[1]);
+//  fileCounter(file);
+//  std::cout << std::endl;
+//  return 0;
   Log::open("");
 //	return 0;
   std::string path=MEC_SOURCE_DIR;

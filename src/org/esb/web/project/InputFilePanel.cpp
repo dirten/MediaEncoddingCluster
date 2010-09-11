@@ -162,6 +162,8 @@ namespace org {
       void InputFilePanel::importFiles(std::list<Ptr<org::esb::io::File> > files) {
         std::list<Ptr<org::esb::io::File> >::iterator cit = files.begin();
         _cycle=0;
+        _fileCount=0;
+        _importCount=0;
         for (; cit != files.end(); cit++) {
           countFiles(*cit);
         }

@@ -8,6 +8,6 @@ target_link_libraries (TestFile io lang util)
 target_link_libraries (TestStringInputStream io lang util)
 target_link_libraries (TestStringOutputStream io lang util)
 
-ADD_TEST(org.esb.io.FileTest ${EXECUTABLE_OUTPUT_PATH}/TestFile)
+ADD_TEST(org.esb.io.FileTest ${EXECUTABLE_OUTPUT_PATH}/TestFile .)
 
 
