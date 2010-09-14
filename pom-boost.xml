@@ -118,7 +118,8 @@
                 </exec>-->
                 <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>-->
 			
-			
+		<chmod file="${project.basedir}/source/boost_1_44_0/tools/jam/${jambuild}" perm="ugo+rx"/>
+		
                 <exec executable="${project.basedir}/source/boost_1_44_0/tools/jam/${jambuild}" dir="source/boost_1_44_0/tools/jam" failonerror="no">
                 </exec>
 			<path id="bjam.path">
