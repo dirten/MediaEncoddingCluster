@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/boost/include</directory>
+      <directory>source/build/boost/include/boost-1_44</directory>
       <outputDirectory>include</outputDirectory>
       <includes>
         <include>**/*</include>
@@ -38,8 +38,16 @@
         <include>lib/libboost_thread-mt-gd.*</include>-->
       </includes>
     </fileSet>
+
+    <fileSet>
+      <directory>source/build/boost/include/boost</directory>
+      <outputDirectory>include/boost</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
     
-        <fileSet>
+    <fileSet>
       <directory>source/build/boost</directory>
       <outputDirectory></outputDirectory>
       <includes>
