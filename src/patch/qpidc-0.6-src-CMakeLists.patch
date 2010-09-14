@@ -1,6 +1,15 @@
 --- ../../../tmp/qpidc-0.6/src/CMakeLists.txt	2009-12-17 17:03:54.000000000 +0100
-+++ ./src/CMakeLists.txt	2010-09-14 17:26:01.505289928 +0200
-@@ -136,7 +136,7 @@
++++ ./src/CMakeLists.txt	2010-09-14 18:20:18.065227876 +0200
+@@ -22,6 +22,8 @@
+   set(${r}_force ON)
+   message(STATUS "Forcing ${r} to ${${r}_force}")
+ endforeach(r)
++add_definitions(-DBOOST_AUTO_LINK_NOMANGLE)
++
+ 
+ include(CheckFunctionExists)
+ include(CheckIncludeFileCXX)
+@@ -136,7 +138,7 @@
     # -Wunreachable-code -Wpadded -Winline
     # -Wshadow - warns about boost headers.
     set (WARNING_FLAGS
@@ -9,7 +18,7 @@
  endif (CMAKE_COMPILER_IS_GNUCXX)
  
  if (CMAKE_CXX_COMPILER_ID STREQUAL SunPro)
-@@ -579,7 +579,8 @@
+@@ -579,7 +581,8 @@
  endif (CLOCK_GETTIME_IN_RT)
  target_link_libraries (qpidcommon
                         ${qpidcommon_platform_LIBS}
