@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/boost/include/boost-1_36</directory>
+      <directory>source/build/boost/include</directory>
       <outputDirectory>include</outputDirectory>
       <includes>
         <include>**/*</include>
