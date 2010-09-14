@@ -1,0 +1,21 @@
+--- ../../../tmp/qpidc-0.6/src/CMakeLists.txt	2009-12-17 17:03:54.000000000 +0100
++++ ./src/CMakeLists.txt	2010-09-14 17:26:01.505289928 +0200
+@@ -136,7 +136,7 @@
+    # -Wunreachable-code -Wpadded -Winline
+    # -Wshadow - warns about boost headers.
+    set (WARNING_FLAGS
+-        "-Werror -pedantic -Wall -Wextra -Wno-shadow -Wpointer-arith -Wcast-qual -Wcast-align -Wno-long-long -Wvolatile-register-var -Winvalid-pch -Wno-system-headers -Woverloaded-virtual")
++        "-pedantic -Wall -Wextra -Wno-shadow -Wpointer-arith -Wcast-qual -Wcast-align -Wno-long-long -Wvolatile-register-var -Winvalid-pch -Wno-system-headers -Woverloaded-virtual")
+ endif (CMAKE_COMPILER_IS_GNUCXX)
+ 
+ if (CMAKE_CXX_COMPILER_ID STREQUAL SunPro)
+@@ -579,7 +579,8 @@
+ endif (CLOCK_GETTIME_IN_RT)
+ target_link_libraries (qpidcommon
+                        ${qpidcommon_platform_LIBS}
+-                       ${qpidcommon_sasl_lib})
++                       ${qpidcommon_sasl_lib}
++                       ${Boost_SYSTEM_LIBRARY})
+ set_target_properties (qpidcommon PROPERTIES
+                        VERSION ${qpidc_version})
+ install (TARGETS qpidcommon

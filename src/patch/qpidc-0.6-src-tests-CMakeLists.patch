@@ -1,0 +1,28 @@
+--- ../../../tmp/qpidc-0.6/src/tests/CMakeLists.txt	2009-12-17 12:14:57.000000000 +0100
++++ ./src/tests/CMakeLists.txt	2010-09-14 17:40:40.109227433 +0200
+@@ -154,8 +154,8 @@
+ # 	amqp_0_10/Map.cpp \
+ # 	amqp_0_10/handlers.cpp 
+ 
+-add_executable (unit_test unit_test
+-                ${unit_tests_to_build} ${platform_test_additions})
++#add_executable (unit_test unit_test
++#                ${unit_tests_to_build} ${platform_test_additions})
+ # The generally recommended way to add macro settings is to use
+ # COMPILE_DEFINITIONS, but it's a rough go to add more than one definition
+ # with a value; in this case, assuming that -D works everywhere is easier.
+@@ -163,10 +163,10 @@
+                              PROPERTIES
+                              COMPILE_FLAGS
+                              "-DQPID_MODULE_SUFFIX=\\\"${CMAKE_SHARED_MODULE_SUFFIX}\\\" -DQPID_MODULE_PREFIX=\\\"${CMAKE_SHARED_MODULE_PREFIX}\\\"")
+-target_link_libraries (unit_test
+-                       ${qpid_test_boost_libs}
+-                       qpidclient qpidbroker qmfconsole)
+-remember_location(unit_test)
++#target_link_libraries (unit_test
++#                       ${qpid_test_boost_libs}
++#                       qpidclient qpidbroker qmfconsole)
++#remember_location(unit_test)
+ 
+ add_library (shlibtest MODULE shlibtest.cpp)
+ 
