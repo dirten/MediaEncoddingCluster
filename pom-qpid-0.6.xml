@@ -157,7 +157,8 @@
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/qpid
                     -DCMAKE_BUILD_TYPE=${build_type} 
                     -DSHARED_LIBS=Off 
-                    -DBOOST_ROOT=${project.build.directory}/dependency 
+                    -DBOOST_ROOT=${project.build.directory}/dependency
+                    -DBoost_USE_STATIC_LIBS=On
                     -DBUILD_TESTS=Off
 		    -DCMAKE_CXX_FLAGS=${CXX_FLAGS}"/>
                 </exec>
