@@ -71,7 +71,7 @@
   </parent>-->
   <groupId>org.esb.boost</groupId>
   <artifactId>boost</artifactId>
-  <version>1.36.0-1</version>
+  <version>1.44.0</version>
   <name>boost</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -107,29 +107,30 @@
               <tasks>
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
-                <get src="http://dfn.dl.sourceforge.net/project/boost/boost/1.36.0/boost_1_36_0.tar.bz2"
-                     dest="source/boost_1_36_0.tar.bz2"
+                <get src="http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.zip"
+                     dest="source/boost_1_44_0.zip"
                      verbose="true" usetimestamp="true"/>
-                <bunzip2 src="source/boost_1_36_0.tar.bz2" dest="source"/>
+                <unzip src="source/boost_1_44_0.zip" dest="source"/>
                 <!-- the untar task does not preserve the file attributes like execution flags-->
 		    <!--<untar src="source/boost_1_36_0.tar" dest="source" overwrite="false"/>-->
-                <exec executable="tar" dir="source">
-                  <arg line="-xf boost_1_36_0.tar"/>
-                </exec>
-                <patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>
+                <!--<exec executable="tar" dir="source">
+                  <arg line="-xf boost_1_44_0.tar"/>
+                </exec>-->
+                <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>-->
 			
-			
-                <exec executable="${project.basedir}/source/boost_1_36_0/tools/jam/${jambuild}" dir="source/boost_1_36_0/tools/jam" failonerror="no">
+		<chmod file="${project.basedir}/source/boost_1_44_0/tools/jam/${jambuild}" perm="ugo+rx"/>
+		
+                <exec executable="${project.basedir}/source/boost_1_44_0/tools/jam/${jambuild}" dir="source/boost_1_44_0/tools/jam" failonerror="no">
                 </exec>
 			<path id="bjam.path">
-    				<fileset dir="${project.basedir}/source/boost_1_36_0/tools/jam/stage/" includes="bin.*/bjam*"/>
+    				<fileset dir="${project.basedir}/source/boost_1_44_0/tools/jam/stage/" includes="bin.*/bjam*"/>
   			</path>
-			<fileset dir="${project.basedir}/source/boost_1_36_0/tools/jam/stage/" id="libs" >
+			<fileset dir="${project.basedir}/source/boost_1_44_0/tools/jam/stage/" id="libs" >
 			<include name="**/bjam*"/>
 			</fileset>   
 			<property name="bjam" refid="bjam.path"/>
 			
-                <exec executable="${bjam}" dir="source/boost_1_36_0"  failonerror="no">
+                <exec executable="${bjam}" dir="source/boost_1_44_0"  failonerror="no">
                   <arg line="--prefix=${project.basedir}/source/build/boost --toolset=${boost.toolset} --without-python --without-wave --without-graph --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
                 </exec>
 
