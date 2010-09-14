@@ -107,15 +107,15 @@
               <tasks>
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
-                <get src="http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.tar.bz2"
-                     dest="source/boost_1_44_0.tar.bz2"
+                <get src="http://dfn.dl.sourceforge.net/project/boost/boost/1.44.0/boost_1_44_0.zip"
+                     dest="source/boost_1_44_0.zip"
                      verbose="true" usetimestamp="true"/>
-                <bunzip2 src="source/boost_1_44_0.tar.bz2" dest="source"/>
+                <unzip src="source/boost_1_44_0.zip" dest="source"/>
                 <!-- the untar task does not preserve the file attributes like execution flags-->
 		    <!--<untar src="source/boost_1_36_0.tar" dest="source" overwrite="false"/>-->
-                <exec executable="tar" dir="source">
+                <!--<exec executable="tar" dir="source">
                   <arg line="-xf boost_1_44_0.tar"/>
-                </exec>
+                </exec>-->
                 <!--<patch patchfile="src/patch/boost_1_36_0_c++0x.patch" dir="source" strip="0"/>-->
 			
 			
