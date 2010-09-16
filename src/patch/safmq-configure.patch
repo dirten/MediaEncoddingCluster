@@ -1,0 +1,11 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/configure	2010-09-16 19:34:24 +0000
++++ ./configure	2010-09-16 20:02:52 +0000
+@@ -252,7 +252,7 @@
+ 			else
+ 				echo "no"
+ 				echo "Unable to continue, _timezone required for use"
+-				exit
++				#exit
+ 			fi
+ 		fi
+ 	else
