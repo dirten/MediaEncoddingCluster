@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <profiles>
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <win32/>
+        <my.family>win32</my.family>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-noinstall-5.1.48-win32.zip/from/http://ftp.gwdg.de/pub/misc/mysql//</mysql.file>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <gz/>
+        <my.family>linux</my.family>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <gz/>
+        <my.family>mac</my.family>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <gz/>
+        <my.family>solaris</my.family>
+        <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48-solaris10-i386.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
+      </properties>
+    </profile>
+  </profiles>
+  <groupId>org.esb.safmq</groupId>
+  <artifactId>safmq</artifactId>
+  <version>0.8.3</version>
+  <name>safmq</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+    
+    
+     <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>download</id>
+            <configuration>
+              <tasks>
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/build/safmq"/>
+                <mkdir dir="source/safmq"/>
+                <get src="http://heanet.dl.sf.net/project/safmq/SAFMQ/SAFMQ%200.8.3/safmq.0.8.3.zip" dest="source/safmq.0.8.3.zip" verbose="true" usetimestamp="true"/>
+                <unzip src="source/safmq.0.8.3.zip" dest="source"/>
+
+		  </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>win32</id>
+            <configuration>
+              <tasks if="win32">
+			<patch patchfile="src/patch/safmq-makefile.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-shared-bufstream.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-shared-winnt-regutil.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-utilities-makefile.patch" dir="source/safmq.0.8.3" strip="0"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>second</id>
+            <configuration>
+              <tasks if="linux">
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="source/build/mysql"/>
+                <get src="${mysql.file}" dest="source/mysql.zip" verbose="true" usetimestamp="true"/>
+                <unzip src="source/mysql.zip" dest="source/build/mysql">
+                 <globmapper from="mysql-5.1.48-win32/*" to="*"/>
+                </unzip>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>compile</id>
+            <configuration>
+              <tasks>
+                <pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+                <exec executable="sh" dir="source/safmq.0.8.3" failonerror="yes">
+                  <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq"/>
+                </exec>
+                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes">
+                  <arg line="all install"/>
+                </exec>
+		  </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-mysql.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
+
