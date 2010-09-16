@@ -132,13 +132,7 @@
             <id>second</id>
             <configuration>
               <tasks if="linux">
-                <mkdir dir="source"/>
-                <mkdir dir="source/build"/>
-                <mkdir dir="source/build/mysql"/>
-                <get src="${mysql.file}" dest="source/mysql.zip" verbose="true" usetimestamp="true"/>
-                <unzip src="source/mysql.zip" dest="source/build/mysql">
-                 <globmapper from="mysql-5.1.48-win32/*" to="*"/>
-                </unzip>
+			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
               </tasks>
             </configuration>
             <goals>
