@@ -1,0 +1,24 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/shared/bufstream.h	2010-09-16 18:21:18 +0000
++++ ./shared/bufstream.h	2010-09-16 17:43:40 +0000
+@@ -24,9 +24,9 @@
+ 
+ #ifdef _WIN32
+ 	#undef min
+-	#define min _cpp_min
++//	#define min _cpp_min
+ 	#undef max
+-	#define max _cpp_max
++//	#define max _cpp_max
+ #endif
+ 
+ 
+@@ -124,7 +124,8 @@
+ 	virtual std::streamsize showmanyc()		{ return 0; }
+ 
+ 	virtual std::streamsize xsgetn(_E *s, std::streamsize n) {
+-		int ln = std::min(n, (std::streamsize)(ppos-gpos));
++    using namespace std;
++		int ln = min(n, (std::streamsize)(ppos-gpos));
+ 
+ 		memcpy(s,buf+gpos, bytesize(ln));
+ 		gpos += ln;

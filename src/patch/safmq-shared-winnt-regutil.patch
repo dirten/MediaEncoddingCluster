@@ -1,0 +1,47 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/shared/winnt/regutil.h	2010-09-16 18:21:19 +0000
++++ ./shared/winnt/regutil.h	2010-09-16 18:15:48 +0000
+@@ -57,7 +57,7 @@
+ 			char buffer[1024];
+ 			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,
+ 							GetLastError(),MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL);
+-			throw CRegKeyException(buffer);
++      throw CRegKeyException();
+ 		}
+ 	}
+ 
+@@ -76,7 +76,7 @@
+ 			char buffer[1024];
+ 			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,
+ 							GetLastError(),MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL);
+-			throw CRegKeyException(buffer);
++			throw CRegKeyException();
+ 		}
+ 		return value;
+ 	}
+@@ -89,7 +89,7 @@
+ 			char buffer[1024];
+ 			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,
+ 							GetLastError(),MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL);
+-			throw CRegKeyException(buffer);
++			throw CRegKeyException();
+ 		}
+ 	}
+ 
+@@ -103,7 +103,7 @@
+ 			char buffer[1024];
+ 			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,
+ 							GetLastError(),MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL);
+-			throw CRegKeyException(buffer);
++			throw CRegKeyException();
+ 		}
+ 		return value;
+ 	}
+@@ -117,7 +117,7 @@
+ 			char buffer[1024];
+ 			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,NULL,
+ 							GetLastError(),MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL);
+-			throw CRegKeyException(buffer);
++			throw CRegKeyException();
+ 		}
+ 	}
+ };

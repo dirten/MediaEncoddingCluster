@@ -1,0 +1,11 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/utilities/makefile	2010-09-16 19:34:28 +0000
++++ ./utilities/makefile	2010-09-16 19:34:56 +0000
+@@ -23,7 +23,7 @@
+ DEST=bin.$(GPP_VER)
+ 
+ CFLAGS= -I.. -I../shared
+-LDFLAGS=-L../lib/$(DEST) -lsafmqclient
++LDFLAGS=-L../lib/$(DEST) -lsafmqclient -lws2_32
+ 
+ TARGET=$(DEST)/safmqc
+ 
