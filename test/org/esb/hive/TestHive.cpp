@@ -98,15 +98,19 @@ void deleteDatabase() {
 
 void loadTestFile(std::string testfile, std::string p) {
   using namespace org::esb;
-  char * argv[] = {"", (char*) testfile.c_str()};
+
   //  logdebug("TestFileIMport");
-  int fileid = import(org::esb::io::File(testfile));
-  std::string file = util::StringUtil::toString(fileid);
-  std::string profile = p;
+    org::esb::hive::FileImporter imp;
+
+  db::MediaFile mediafile = imp.import(org::esb::io::File(testfile));
   std::string outdir = MEC_SOURCE_DIR;
   outdir += "/export/";
-  char * jobarg[] = {"", "", (char*) file.c_str(), (char*) profile.c_str(), (char*) outdir.c_str()};
-  jobcreator(4, jobarg);
+  db::Profile pro = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 0).one();
+
+  int jobid = jobcreator(mediafile, pro, outdir);
+  assert(jobid > 0);
+
+//  jobcreator(4, jobarg);
 //  sql::Connection con_a(config::Config::getProperty("db.connection"));
 //  con_a.executeNonQuery(string("delete from streams where fileid=2 and stream_type=1"));
 //  con_a.executeNonQuery(string("update streams set stream_index=0 where fileid=2 and stream_type=1"));

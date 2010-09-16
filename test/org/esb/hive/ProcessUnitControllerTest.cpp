@@ -75,13 +75,16 @@ void testInterruptedEncoding() {
   DatabaseService::dropTables();
   DatabaseService::updateTables();
   DatabaseService::loadPresets();
-
+  {
   std::string src = MEC_SOURCE_DIR;
   src.append("/test.dvd");
+  org::esb::hive::FileImporter imp;
 
-  int fileid = import(org::esb::io::File(src));
-  assert(fileid > 0);
-  int jobid = jobcreator(fileid, 1, "/tmp");
+  db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+  assert(mediafile.id > 0);
+  db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
+
+  int jobid = jobcreator(mediafile, p, "/tmp");
   assert(jobid > 0);
   db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
   {
@@ -113,9 +116,9 @@ void testInterruptedEncoding() {
     vector<db::JobDetail>details = job.jobdetails().get().all();
 
     assert(details.size() == 2);
-    
-    assert(details[0].lastdts==127800);
-    assert(((int64_t)details[1].lastdts)==1218160);
+
+    assert(details[0].lastdts == 127800);
+    assert(((int64_t) details[1].lastdts) == 1218160);
   }
 
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -133,7 +136,7 @@ void testInterruptedEncoding() {
 
   Messenger::free();
   CodecFactory::free();
-
+  }
 }
 
 void testFullFile() {
@@ -144,14 +147,17 @@ void testFullFile() {
   DatabaseService::updateTables();
   DatabaseService::loadPresets();
 
-
+  {
 
   std::string src = MEC_SOURCE_DIR;
   src.append("/test.dvd");
+  org::esb::hive::FileImporter imp;
 
-  int fileid = import(org::esb::io::File(src));
-  assert(fileid > 0);
-  int jobid = jobcreator(fileid, 1, "/tmp");
+  db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+  assert(mediafile.id > 0);
+  db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
+
+  int jobid = jobcreator(mediafile, p, "/tmp");
   assert(jobid > 0);
 
   ProcessUnitController ctrl;
@@ -163,17 +169,17 @@ void testFullFile() {
   org::esb::lang::Thread::sleep2(3000);
   boost::thread t1(boost::bind(&processUnitReader, "", 100, -1));
   boost::thread t2(boost::bind(&processUnitReader, "AUDIO_", 500, -1));
-  
+
   org::esb::lang::Thread::sleep2(500);
 
-  while(running_threads>0)
+  while (running_threads > 0)
     org::esb::lang::Thread::sleep2(1000);
 
   Messenger::getInstance().sendRequest(Message().setProperty("processunitcontroller", org::esb::hive::STOP));
   org::esb::lang::Thread::sleep2(100);
 
   Messenger::free();
-
+  }
 }
 
 int main(int argc, char** argv) {
@@ -190,7 +196,7 @@ int main(int argc, char** argv) {
     f.mkdir();
   Config::setProperty("hive.base_path", MEC_SOURCE_DIR);
   testInterruptedEncoding();
-//  testFullFile();
+  //  testFullFile();
   //  return 0;
 
   DatabaseService::stop();

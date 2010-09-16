@@ -44,9 +44,9 @@ namespace org {
 
           //          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
           ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
-          ((Wt::WBorderLayout*)layout())->addWidget(new PropertyPanel(), Wt::WBorderLayout::West);
-          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::West))->resize(450, Wt::WLength());
-          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::West))->setResizable(true);
+          ((Wt::WBorderLayout*)layout())->addWidget(new PropertyPanel(), Wt::WBorderLayout::East);
+          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(450, Wt::WLength());
+          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setResizable(true);
 
 
           addButton(new Wt::Ext::Button("Cancel"));
@@ -84,14 +84,14 @@ namespace org {
         void ProjectWizard::open(Ptr<db::Project> p) {
           _project = p;
           _project->update();
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::West))->setProject(_project);
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setProject(_project);
           ((org::esb::web::InputFilePanel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
           this->show();
         }
 
         void ProjectWizard::save() {
           LOGDEBUG("Project save with id:" << _project->id)
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::West))->save();
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->save();
           _project->update();
           LOGDEBUG("Project saved:" << _project->id)
           saved.emit();
@@ -100,7 +100,7 @@ namespace org {
 
         void ProjectWizard::save_and_start() {
           LOGDEBUG("Project save with id:" << _project->id);
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::West))->save();
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->save();
           if (_project->outdirectory.value().length() <= 0) {
             Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties", Wt::Warning, Wt::Ok);
             box->show();

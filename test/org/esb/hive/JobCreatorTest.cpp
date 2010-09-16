@@ -74,70 +74,74 @@ int main(int argc, char** argv) {
     hive::DatabaseService::dropTables();
     hive::DatabaseService::updateTables();
     hive::DatabaseService::loadPresets();
+    {
+      org::esb::hive::FileImporter imp;
 
-    int fileid = import(org::esb::io::File(src));
-    assert(fileid > 0);
-    int jobid = jobcreator(fileid, 1, "/tmp");
-    assert(jobid > 0);
-    
-
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-    //db.verbose = true;
-
-    db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
-    
-    db::MediaFile infile = job.inputfile().get().one();
-    db::MediaFile outfile = job.outputfile().get().one();
-
-    assert(infile.id > 0);
-    assert(outfile.id > 0);
-
-    assert(infile.id == 1);
-    assert(outfile.id == 2);
-
-    vector<db::JobDetail> details = job.jobdetails().get().all();
-    assert(details.size() == 2);
+      db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+      assert(mediafile.id > 0);
+      db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
+      int jobid = jobcreator(mediafile, p, "/tmp");
+      assert(jobid > 0);
 
 
-    db::JobDetail detail1 = details[0];
+      db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+      //db.verbose = true;
 
-    db::Stream stream1input = detail1.inputstream().get().one();
-    db::Stream stream1output = detail1.outputstream().get().one();
+      db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
 
-    vector<db::Stream> istrs = infile.streams().get().all();
-    vector<db::Stream> ostrs = outfile.streams().get().all();
+      db::MediaFile infile = job.inputfile().get().one();
+      db::MediaFile outfile = job.outputfile().get().one();
 
-    assertStreams(stream1input, istrs[0]);
-    assertStreams(stream1output, ostrs[0]);
+      assert(infile.id > 0);
+      assert(outfile.id > 0);
 
+      assert(infile.id == 1);
+      assert(outfile.id == 2);
 
-
-
-    db::JobDetail detail2 = details[1];
-
-    db::Stream stream2input = detail2.inputstream().get().one();
-    db::Stream stream2output = detail2.outputstream().get().one();
-
-    assertStreams(stream2input, istrs[1]);
-    assertStreams(stream2output, ostrs[1]);
+      vector<db::JobDetail> details = job.jobdetails().get().all();
+      assert(details.size() == 2);
 
 
-    using namespace org::esb::hive::job;
-    JobController ctrl;
-    db::Job dbjob = ctrl.getJob();
-    dbjob.begintime=0;
-    dbjob.update();
+      db::JobDetail detail1 = details[0];
 
-    //  std::cout << job << std::endl;
+      db::Stream stream1input = detail1.inputstream().get().one();
+      db::Stream stream1output = detail1.outputstream().get().one();
+
+      vector<db::Stream> istrs = infile.streams().get().all();
+      vector<db::Stream> ostrs = outfile.streams().get().all();
+
+      assertStreams(stream1input, istrs[0]);
+      assertStreams(stream1output, ostrs[0]);
 
 
 
 
+      db::JobDetail detail2 = details[1];
+
+      db::Stream stream2input = detail2.inputstream().get().one();
+      db::Stream stream2output = detail2.outputstream().get().one();
+
+      assertStreams(stream2input, istrs[1]);
+      assertStreams(stream2output, ostrs[1]);
+
+
+      using namespace org::esb::hive::job;
+      JobController ctrl;
+      db::Job dbjob = ctrl.getJob();
+      dbjob.begintime = 0;
+      dbjob.update();
+
+      //  std::cout << job << std::endl;
 
 
 
 
-    //hive::DatabaseService::dropDatabase();
+
+
+
+
+      //hive::DatabaseService::dropDatabase();
+    }
   }
   hive::DatabaseService::stop();
   Log::close();

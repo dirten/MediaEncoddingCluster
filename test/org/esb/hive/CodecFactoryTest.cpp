@@ -34,44 +34,46 @@ int main(int argc, char** argv) {
 
   src.append("/test.dvd");
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
-    if (org::esb::hive::DatabaseService::databaseExist()) {
-      org::esb::hive::DatabaseService::dropDatabase();
-    }
+  if (org::esb::hive::DatabaseService::databaseExist()) {
+    org::esb::hive::DatabaseService::dropDatabase();
+  }
 
   org::esb::hive::DatabaseService::createDatabase();
   org::esb::hive::DatabaseService::createTables();
-
-  int fileid = import(org::esb::io::File(src));
-  assert(fileid>0);
-
-
-  db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-
-  db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
-
-  
-  vector<db::Stream> streams=mediafile.streams().get().all();
-
-  assert(streams.size()==2);
-
-  db::Stream stream=streams[0];
-
-  
-  LOGDEBUG(stream);
-  boost::shared_ptr<org::esb::av::Decoder>decoder= org::esb::hive::CodecFactory::getStreamDecoder(stream.id);
-
-  assert(decoder->open());
-  LOGDEBUG(decoder->toString());
-  boost::shared_ptr<org::esb::av::Encoder>encoder=org::esb::hive::CodecFactory::getStreamEncoder(stream.id);
+  {
+    org::esb::hive::FileImporter imp;
+    db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+    assert(mediafile.id > 0);
 
 
-  encoder->setBitRate(1024000);
-  assert(encoder->open());
 
-  LOGDEBUG(encoder->toString());
+    //mediafile=litesql::select<db::MediaFile>(mediafile.getDatabase(), db::MediaFile::Id==(int)mediafile.id).one();
+
+
+    vector<db::Stream> streams = mediafile.streams().get().all();
+
+    assert(streams.size() == 2);
+
+    db::Stream stream = streams[0];
+
+
+    LOGDEBUG(stream);
+    boost::shared_ptr<org::esb::av::Decoder>decoder = org::esb::hive::CodecFactory::getStreamDecoder(stream.id);
+
+    assert(decoder->open());
+    LOGDEBUG(decoder->toString());
+    boost::shared_ptr<org::esb::av::Encoder>encoder = org::esb::hive::CodecFactory::getStreamEncoder(stream.id);
+
+
+    encoder->setBitRate(1024000);
+    assert(encoder->open());
+
+    LOGDEBUG(encoder->toString());
+  }
   org::esb::hive::CodecFactory::free();
   org::esb::hive::DatabaseService::dropDatabase();
-  
+  org::esb::hive::DatabaseService::stop();
+
   return 0;
 }
 

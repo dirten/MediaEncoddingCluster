@@ -10,7 +10,7 @@
 
 #include <Wt/Ext/TableView>
 #include "org/esb/lang/Ptr.h"
-
+#include "Wt/WJavaScript"
 namespace org {
   namespace esb {
     namespace web {
@@ -20,10 +20,14 @@ namespace org {
         JobTable();
         JobTable(const JobTable& orig);
         virtual ~JobTable();
+        Wt::JSignal<std::string,int>& doSome();
 
       private:
         Ptr<JobTableModel> _model;
         void refresh();
+        void rowSelected();
+        Wt::JSignal<std::string,int> doSome_;
+
       };
 
     }

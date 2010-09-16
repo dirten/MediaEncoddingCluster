@@ -24,7 +24,6 @@
 *
 * ----------------------------------------------------------------------
 */
-#include "org/esb/db/hivedb.hpp"
 #include "DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/sql/my_sql.h"
@@ -238,6 +237,7 @@ namespace org {
           mysql_thread_end();
         }
       }
+      
     }
   }
 }

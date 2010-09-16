@@ -23,6 +23,7 @@ add_executable (DirectoryScannerTest DirectoryScannerTest.cpp)
 add_executable (ProcessUnitBuilderTest ProcessUnitBuilderTest.cpp)
 add_executable (ProcessUnitControllerTest ProcessUnitControllerTest.cpp)
 add_executable (DataHandlerTest DataHandlerTest.cpp)
+add_executable (PresetTest PresetTest.cpp)
 
 
 
@@ -44,6 +45,7 @@ target_link_libraries (DirectoryScannerTest  esb hive av sql net signal io util 
 target_link_libraries (ProcessUnitBuilderTest  esb hive av sql net signal io util lang )
 target_link_libraries (ProcessUnitControllerTest hive io)
 target_link_libraries (DataHandlerTest hive io)
+target_link_libraries (PresetTest hive io)
 
 
 #target_link_libraries (TestClientHandler   hive esb sql av io util lang )
@@ -67,7 +69,7 @@ target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang ne
  # target_link_libraries(TestProcessUnit pthread dl)
 
 #ENDIF(WIN32)
-#ich weiß es nicht warum er im debug modus nicht läuft
+#ich weiï¿½ es nicht warum er im debug modus nicht lï¿½uft
 ADD_TEST(org.esb.hive.DatabaseServiceTest ${EXECUTABLE_OUTPUT_PATH}/TestDatabaseCreation)
 set_tests_properties ( org.esb.hive.DatabaseServiceTest PROPERTIES TIMEOUT 30)
 
@@ -88,5 +90,6 @@ ADD_TEST(DirectoryScannerTest  ${EXECUTABLE_OUTPUT_PATH}/DirectoryScannerTest  )
 ADD_TEST(ProcessUnitBuilderTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitBuilderTest)
 ADD_TEST(ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
 ADD_TEST(DataHandlerTest ${EXECUTABLE_OUTPUT_PATH}/DataHandlerTest)
+ADD_TEST(PresetTest ${EXECUTABLE_OUTPUT_PATH}/PresetTest)
 
 

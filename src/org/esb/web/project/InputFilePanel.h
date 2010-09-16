@@ -12,6 +12,7 @@
 #include "Wt/Ext/Panel"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/web/FileChooser.h"
+#include "org/esb/hive/FileImporter.h"
 namespace org {
   namespace esb {
     namespace io{
@@ -46,6 +47,7 @@ namespace org {
         int64_t _importCount;
         int64_t _allCount;
         int64_t _cycle;
+        org::esb::hive::FileImporter _importer;
       };
 
     }

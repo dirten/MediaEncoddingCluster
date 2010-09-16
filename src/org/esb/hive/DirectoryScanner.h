@@ -5,6 +5,7 @@
 #include "org/esb/io/FileFilter.h"
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
+#include "org/esb/hive/FileImporter.h"
 
 #include <string>
 
@@ -32,7 +33,7 @@ namespace org {
                 int _level;
                 boost::mutex terminationMutex;
                 boost::condition termination_wait;
-
+                FileImporter _importer;
             };
         }
     }

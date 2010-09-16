@@ -77,7 +77,7 @@
   </parent>-->
   <groupId>org.esb.ffmpeg</groupId>
   <artifactId>ffmpeg</artifactId>
-  <version>0.7</version>
+  <version>20100913</version>
   <name>ffmpeg</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -291,9 +291,9 @@
                     --disable-stripping
                     --enable-runtime-cpudetect
                     --enable-gpl
-		        ${EXTRA_FFMPEG_CONFIGURATION}
-		        --enable-shared
-                --disable-static
+		    ${EXTRA_FFMPEG_CONFIGURATION}
+		    --enable-shared
+            	    --disable-static
                     "/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin"/>
                 </exec>

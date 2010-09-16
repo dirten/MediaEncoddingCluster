@@ -17,21 +17,27 @@ int main() {
 
   src.append("/test.dvd");
   hive::DatabaseService::start(MEC_SOURCE_DIR);
-  hive::DatabaseService::createDatabase();
-  hive::DatabaseService::createTables();
-
-  int fileid = import(org::esb::io::File(src));
-  assert(fileid>0);
+  if (!hive::DatabaseService::databaseExist()) {
+    hive::DatabaseService::createDatabase();
+  }
+  hive::DatabaseService::dropTables();
+  hive::DatabaseService::updateTables();
+  hive::DatabaseService::loadPresets();
   {
-  db::HiveDb db("mysql", config::Config::getProperty("db.url"));
-  
-  db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
-  LOGDEBUG((long long int)mediafile.filesize)
+    org::esb::hive::FileImporter imp;
+    db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+    assert(mediafile.id > 0);
+    {
+      //  db::HiveDb db("mysql", config::Config::getProperty("db.url"));
+
+
+      LOGDEBUG((long long int) mediafile.filesize)
+    }
   }
   hive::DatabaseService::dropDatabase();
   hive::DatabaseService::stop();
-  
+
   Log::close();
   config::Config::close();
-  
+
 }

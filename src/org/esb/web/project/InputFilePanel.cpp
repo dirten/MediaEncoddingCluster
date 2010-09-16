@@ -183,12 +183,12 @@ namespace org {
           if (file->isFile()) {
             _allCount++;
             progressText->setText(file->getFileName());
-            int result = import(*file.get());
-            if (result > 0) {
-              db::MediaFile mfile = litesql::select<db::MediaFile > (_project->getDatabase(), db::MediaFile::Id == result).one();
+            db::MediaFile mfile = _importer.import(*file.get());
+            if (mfile.id > 0) {
+//              db::MediaFile mfile = litesql::select<db::MediaFile > (_project->getDatabase(), db::MediaFile::Id == result).one();
               _project->mediafiles().link(mfile);
               _importCount++;
-              LOGDEBUG("File imported:" << result);
+              LOGDEBUG("File imported:" << mfile.id);
             } else {
               LOGINFO("no valid file")
             }

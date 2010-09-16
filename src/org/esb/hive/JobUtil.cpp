@@ -25,16 +25,15 @@ struct JobStreamData {
   AVRational timebase;
   AVRational codectimebase;
 };
-
+/*
 int jobcreator(int fileid, int profileid, std::string outpath) {
   db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
   db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Id == fileid).one();
   db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == profileid).one();
   return jobcreator(mediafile, profile, outpath);
-}
+}*/
 
 int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath) {
-  //  db.verbose = true;
 
   vector<db::Stream> streams = mediafile.streams().get().all();
 

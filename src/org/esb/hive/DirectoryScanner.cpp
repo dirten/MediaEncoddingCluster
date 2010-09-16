@@ -166,9 +166,9 @@ namespace org {
           if (file.isFile()) {
             LOGDEBUG("new file found:" << file.getPath());
             const char * filename = 0;
-            int fileid = import(file);
-            if (fileid > 0 && p > 0) {
-              jobcreator(fileid,p, outdir);
+            db::MediaFile mediafile = _importer.import(file);
+            if (mediafile.id > 0 && p > 0) {
+              //jobcreator(fileid,p, outdir);
             }
           }
 

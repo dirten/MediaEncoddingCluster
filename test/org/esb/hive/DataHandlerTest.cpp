@@ -88,12 +88,16 @@ int main() {
 
   std::string src = MEC_SOURCE_DIR;
   src.append("/test.dvd");
+  {
+  org::esb::hive::FileImporter imp;
 
-  int fileid = import(org::esb::io::File(src));
-  assert(fileid > 0);
-  int jobid = jobcreator(fileid, 1, "/tmp");
+  db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+  assert(mediafile.id > 0);
+  //db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+  db::Profile p=litesql::select<db::Profile>(mediafile.getDatabase(),db::Profile::Id==1).one();
+  int jobid = jobcreator(mediafile, p, "/tmp");
   assert(jobid > 0);
-
+  }
   {
 
     ProcessUnitController ctrl;

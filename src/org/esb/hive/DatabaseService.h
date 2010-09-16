@@ -27,13 +27,14 @@
 
 #ifndef _DATABASESERVICE_H
 #define	_DATABASESERVICE_H
-
+#include "org/esb/db/hivedb.hpp"
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Thread.h"
 #include <string>
 #include <map>
+#include "org/esb/lang/Ptr.h"
 namespace org {
   namespace esb {
     namespace hive {
