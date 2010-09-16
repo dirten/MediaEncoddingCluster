@@ -1,0 +1,11 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/shared/uuidgen/uuidgen.c	2010-09-16 19:34:28 +0000
++++ ./shared/uuidgen/uuidgen.c	2010-09-16 20:12:16 +0000
+@@ -309,7 +309,7 @@
+ 	}
+ 	return err;
+ #else
+-#error No Mac Address Locator defined
++//#error No Mac Address Locator defined
+ #endif
+ 
+ /* Not implemented platforms */
