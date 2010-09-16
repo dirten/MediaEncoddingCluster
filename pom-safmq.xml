@@ -165,9 +165,15 @@
                 <exec executable="sh" dir="source/safmq.0.8.3" failonerror="yes">
                   <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq"/>
                 </exec>
+                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes"/>
                 <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="all install"/>
+                  <arg line="install"/>
                 </exec>
+                <mkdir dir="source/tmp"/>
+
+		    <copy todir="source/tmp" flatten="true">
+                  <fileset dir="source/safmq.0.8.3"/>
+                </copy>
 		  </tasks>
             </configuration>
             <goals>
@@ -189,7 +195,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>assembly/release-mysql.xml</descriptor>
+                <descriptor>assembly/release-safmq.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
