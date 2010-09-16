@@ -1,0 +1,23 @@
+--- ../../safmq-orig/safmq.0.8.3/safmq.0.8.3/makefile	2010-09-16 19:34:26 +0000
++++ ./makefile	2010-09-16 20:20:01 +0000
+@@ -45,6 +45,11 @@
+ 		$(DEST)/Command.o \
+ 		$(DEST)/AddressParser.o \
+ 		$(DEST)/Stats.o
++LIBMQ_OBJS=$(OBJS)
++LIBMQ=$(DEST)/libsafmq.a
++$(LIBMQ): $(DEST) $(LIBMQ_OBJS)
++	@echo + Building $@
++	@ar -rc $@ $(LIBMQ_OBJS)
+ 
+ INCFILES=	\
+ 			safmq.h \
+@@ -80,7 +85,7 @@
+ 
+ include makefile.in
+ 
+-$(TARGET): $(DEST) $(OBJS) lib/$(DEST)/libsafmqclient.a utilities/$(DEST)/safmqc $(PHP_SAFMQ_TARGET)
++$(TARGET): $(DEST) $(OBJS) lib/$(DEST)/libsafmqclient.a utilities/$(DEST)/safmqc $(LIBMQ_OBJS)
+ 	@echo + Linking $@
+ 	@g++ $(OBJS) $(LDFLAGS) -o $@
+ 	@echo Build Complete =============================
