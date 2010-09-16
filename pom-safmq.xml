@@ -133,6 +133,7 @@
             <configuration>
               <tasks if="linux">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-makefile-unix.patch" dir="source/safmq.0.8.3" strip="0"/>
               </tasks>
             </configuration>
             <goals>
@@ -146,6 +147,7 @@
               <tasks if="mac">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-shared-uuidgen.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-makefile-unix.patch" dir="source/safmq.0.8.3" strip="0"/>
               </tasks>
             </configuration>
             <goals>
