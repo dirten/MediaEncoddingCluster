@@ -141,7 +141,7 @@
           </execution>
           <execution>
             <phase>generate-sources</phase>
-            <id>second</id>
+            <id>patchmac</id>
             <configuration>
               <tasks if="mac">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
