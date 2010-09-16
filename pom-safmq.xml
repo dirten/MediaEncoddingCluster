@@ -40,7 +40,7 @@
         </os>
       </activation>
       <properties>
-        <gz/>
+        <mac/>
         <my.family>mac</my.family>
         <mysql.file>http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.48.tar.gz/from/http://ftp.gwdg.de/pub/misc/mysql/</mysql.file>
       </properties>
@@ -132,6 +132,18 @@
             <id>second</id>
             <configuration>
               <tasks if="linux">
+			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>second</id>
+            <configuration>
+              <tasks if="mac">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
               </tasks>
             </configuration>
