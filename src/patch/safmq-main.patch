@@ -1,0 +1,13 @@
+--- /m/safmq-orig/safmq.0.8.3/safmq.0.8.3/main.h	2010-09-16 19:34:26 +0000
++++ main.h	2010-09-17 23:22:10 +0000
+@@ -76,8 +76,8 @@
+ 
+ extern	Config* pcfg;
+ 
+-extern const std::string system_user;
+-extern const std::string safmq_all_users;
++const std::string system_user("safmq_system");
++const std::string safmq_all_users("safmq_all_users");
+ 
+ 
+ int startSafmq();

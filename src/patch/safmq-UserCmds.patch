@@ -1,0 +1,11 @@
+--- /m/safmq-orig/safmq.0.8.3/safmq.0.8.3/UserCmds.h	2010-09-16 19:34:28 +0000
++++ UserCmds.h	2010-09-17 23:20:41 +0000
+@@ -7,7 +7,7 @@
+ #include "server_operators.h"
+ #include "QAccessControl.h"
+ #include "Log.h"
+-
++#undef min;
+ namespace safmq {
+ 	
+ extern const char* EC_Decode(ErrorCode);

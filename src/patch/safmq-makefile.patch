@@ -339,7 +339,7 @@
 +LIBMQ=$(DEST)/libsafmq.a
 +$(LIBMQ): $(DEST) $(LIBMQ_OBJS)
 +	@echo + Building $@
-+	@ar -rc $@ $(LIBMQ_OBJS)
++	@ar -rcs $@ $(LIBMQ_OBJS)
 +
 +INCFILES=	\
 +			safmq.h \
