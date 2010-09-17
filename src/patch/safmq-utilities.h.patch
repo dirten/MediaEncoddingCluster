@@ -1,0 +1,11 @@
+--- ../../../safmq-orig/shared/utilities.h	2008-11-24 23:25:19.000000000 +0100
++++ shared/utilities.h	2010-09-17 11:07:20.181139042 +0200
+@@ -27,6 +27,8 @@
+ #include <string>
+ #include <exception>
+ #include <vector>
++
++#include <stdio.h>
+ 
+ #define SAFESTRCPY(dest,src) (strncpy(dest,src,sizeof(dest)-1), dest[sizeof(dest)-1]='\0')
+ 

@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include "org/esb/av/MediaLocator.h"
 #include "org/esb/io/File.h"
+#include <iostream>
 using namespace std;
 using namespace org::esb::av;
 using namespace org::esb::io;
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
   std::string path="file://";
   MediaLocator locator(path+basepath+"/test.dvd");
   assert(locator.getProtocol()=="file");
-  cout<< locator.getRemainder()<<endl;
+  std::cout<< locator.getRemainder()<<std::endl;
   return 0;
 }
 

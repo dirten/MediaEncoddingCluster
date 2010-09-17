@@ -30,6 +30,7 @@
 #include "File.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
+#include <stdio.h>
 namespace org {
     namespace esb {
         namespace io {
@@ -68,7 +69,7 @@ public:
                 void close();
 private:
                 void open(const std::string name);
-                std::FILE * _file_handle;
+                FILE * _file_handle;
                 long _filePointer;
                 char _byte;
             };

@@ -106,6 +106,7 @@ ENDIF(BUILD_SHARED_LIBS)
 #ENDIF(BUILD_SHARED_LIBS)
 add_subdirectory (av)
 add_subdirectory (lang)
+add_subdirectory (mq)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
@@ -271,6 +272,7 @@ add_library (hive
   hive/job/ProcessUnitBuilder.cpp
   hive/job/ProcessUnitController.cpp
   hive/job/JobController.cpp
+  hive/ProcessManager.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db sql net esb signal av lang)

@@ -1,5 +1,6 @@
 #include "FileOutputStream.h"
 #include <iostream>
+#include <stdio.h>
 using namespace org::esb::io;
 using namespace std;
 FileOutputStream::FileOutputStream(const char * pathname) {

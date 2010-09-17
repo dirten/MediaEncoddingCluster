@@ -5,7 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/exception.hpp>
-#include "org/esb/util/Log.h"
+
 
 #include "FileFilter.h"
 #include "org/esb/lang/Ptr.h"
@@ -294,7 +294,7 @@ namespace org {
       private:
         //                const char * _filename;
         boost::filesystem::path _full_path;
-        classlogger("org.esb.io.File");
+        
         struct stat status;
         std::string _pathname;
         bool _exist;

@@ -7,9 +7,33 @@
   <fileSets>
     <fileSet>
       <directory>source/build/safmq/include</directory>
-      <outputDirectory>include</outputDirectory>
+      <outputDirectory>include/safmq</outputDirectory>
       <includes>
         <include>**/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/tmp</directory>
+      <outputDirectory>include/safmq</outputDirectory>
+      <includes>
+        <include>ForwardThread.h</include>
+        <include>Log.h</include>
+        <include>Mutex.h</include>
+        <include>QManager.h</include>
+        <include>ServerThread.h</include>
+        <include>StreamCache.h</include>
+        <include>SystemConnection.h</include>
+        <include>SystemDelivery.h</include>
+        <include>param_config.h</include>
+        <include>safmq-Signal.h</include>
+        <include>thdlib.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/tmp</directory>
+      <outputDirectory>include/safmq/lib</outputDirectory>
+      <includes>
+        <include>MQConnection.h</include>
       </includes>
     </fileSet>
     <fileSet>

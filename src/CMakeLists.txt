@@ -10,6 +10,7 @@ add_subdirectory (org)
 
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
@@ -61,6 +62,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 add_executable (mhive Hive.cpp)
 add_executable (mhiveservice HiveService.cpp)
 add_executable (mhiveclient MhiveClient.cpp)
+add_executable (mhivemaster MHiveMaster.cpp)
 #SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
@@ -151,6 +153,19 @@ target_link_libraries (mhiveclient
   net
 )
 
+target_link_libraries (mhivemaster
+  web
+  esb
+  sql
+  hive
+  lang
+  av
+  util
+  signal
+  io
+  net
+  mq
+)
 SET(CURL_CMD curl)
 SET(ZIP_CMD gzip)
 SET(MHIVE_DBGSYM mhive)

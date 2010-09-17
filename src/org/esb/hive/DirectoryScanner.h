@@ -6,7 +6,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include "org/esb/hive/FileImporter.h"
-
+#include "org/esb/util/Log.h"
 #include <string>
 
 namespace org {

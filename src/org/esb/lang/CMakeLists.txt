@@ -11,11 +11,13 @@ SET(lang_source
     StackDumper.cpp
     StackDumpUploader.cpp
     CtrlCHitWaiter.cpp
+    ProcessException.cpp
 )
 IF(NOT WIN32)
   SET(lang_source
     ${lang_source}
     LinuxCpuInfo.cpp
+    posix/Process.cpp
   )
 ELSEIF(APPLE)
 
@@ -23,6 +25,7 @@ ELSEIF(WIN32)
   SET(lang_source
     ${lang_source}
     WindowsCpuInfo.cpp
+    win/Process.cpp
   )
 
 ENDIF(NOT WIN32)

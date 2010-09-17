@@ -10,8 +10,8 @@ target_link_libraries (TestBoostQueue lang util )
 IF(NOT WIN32 AND NOT APPLE)
 target_link_libraries (TestBoostQueue rt)
 ENDIF(NOT WIN32 AND NOT APPLE)
-ADD_TEST(TestStringUtil ${EXECUTABLE_OUTPUT_PATH}/TestStringUtil )
-ADD_TEST(TestQueue ${EXECUTABLE_OUTPUT_PATH}/TestQueue )
-ADD_TEST(TestBoostQueue ${EXECUTABLE_OUTPUT_PATH}/TestBoostQueue )
+ADD_TEST(util.StringUtilTest ${EXECUTABLE_OUTPUT_PATH}/TestStringUtil )
+ADD_TEST(util.QueueTest ${EXECUTABLE_OUTPUT_PATH}/TestQueue )
+#ADD_TEST(TestBoostQueue ${EXECUTABLE_OUTPUT_PATH}/TestBoostQueue )
 
 

@@ -222,7 +222,7 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 //  exec="d:\\Programme\\mhive-0.0.4.7\\bin\\mhive.exe ";
 //  execargs="-r";
   std::string m_Process = exec.c_str();
-   char *vip = const_cast<char*>(exec.append(execargs).c_str());
+  char *vip = const_cast<char*>(exec.append(execargs).c_str());
 
   memset (&suInfo, 0, sizeof(suInfo));
   memset (&procInfo, 0, sizeof(procInfo));

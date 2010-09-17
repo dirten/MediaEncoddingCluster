@@ -13,6 +13,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/web/FileChooser.h"
 #include "org/esb/hive/FileImporter.h"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace io{

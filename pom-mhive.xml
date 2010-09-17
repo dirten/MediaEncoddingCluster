@@ -148,7 +148,8 @@
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
-		  </tasks>
+                <copy file="${project.build.directory}/dependency/lib/libsafmq.a" tofile="${project.build.directory}/dependency/lib/libsafmq.lib"/>
+  	    </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -295,6 +296,13 @@
       <groupId>org.esb.libcurl</groupId>
       <artifactId>libcurl</artifactId>
       <version>7.21.1-1</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.safmq</groupId>
+      <artifactId>safmq</artifactId>
+      <version>0.8.3</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

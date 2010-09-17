@@ -134,6 +134,9 @@
               <tasks if="linux">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-makefile-unix.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-utilities.h.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-utilities-safmqc.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<patch patchfile="src/patch/safmq-SystemConnection.patch" dir="source/safmq.0.8.3" strip="0"/>
               </tasks>
             </configuration>
             <goals>
@@ -163,7 +166,7 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
                 <exec executable="sh" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq"/>
+                  <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq --without-ssl" />
                 </exec>
                 <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes"/>
                 <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes">
