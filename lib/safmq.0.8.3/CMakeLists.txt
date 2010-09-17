@@ -1,0 +1,39 @@
+project (safmq)
+
+SET(BUILD_SHARED_LIBS Off)
+include_directories (.)
+include_directories (./shared)
+set(/DCONFIG_ENVIRONMENT_VARIABLE "test")
+
+add_library (safmq
+		Signal.cpp 
+		SystemDelivery.cpp 
+		Log.cpp 
+		logger.cpp 
+		DirectoryList.cpp 
+		Mutex.cpp 
+		NTSysLogger.cpp 
+		QStorage.cpp 
+		ServiceThread.cpp 
+		QManager.cpp 
+		ServerThread.cpp 
+		shared/thdlib.cpp 
+		shared/uuidgen/uuidgenwin.c
+		QAccessControl.cpp 
+		param_config.cpp 
+		ForwardThread.cpp 
+		TransactionManager.cpp 
+		SystemConnection.cpp 
+		Command.cpp 
+		AddressParser.cpp 
+		ntservice.cpp 
+		Stats.cpp
+shared/tcpsocket/tcpsocket.cpp
+lib/MQConnection.cpp
+lib/MQFactory.cpp
+lib/MessageQueue.cpp
+)
+target_link_libraries (safmq ws2_32 rpcrt4)
+
+
+
