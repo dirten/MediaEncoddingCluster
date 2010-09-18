@@ -45,7 +45,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/Properties.h"
-
+#include "org/esb/util/Log.h"
 #ifdef WIN32
 
 boost::mutex terminationMutex;
