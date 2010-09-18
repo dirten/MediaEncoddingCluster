@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     LOGDEBUG("cycle");org::esb::lang::Thread::sleep2(500);
   }
   LOGDEBUG("and now die myself");
-//  die();
+  die();
 
   org::esb::lang::Thread::sleep2(10000);
   LOGDEBUG("returning child");

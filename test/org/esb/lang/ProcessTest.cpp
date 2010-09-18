@@ -12,9 +12,10 @@
 #include "org/esb/util/Log.h"
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
-
+#include "org/esb/io/File.h"
 using namespace std;
 using namespace org::esb::lang;
+using namespace org::esb::io;
 /*
  * 
  */
@@ -25,8 +26,13 @@ int main(int argc, char** argv) {
   args.push_back("-b");
   args.push_back("-c");
   args.push_back("-d a");
-
-  Process p("test/org/esb/lang/ProcessTestExecutable", args);
+  File f(".");
+  LOGDEBUG(f.getPath());
+  std::string exe=f.getPath()+"/ProcessTestExecutable";
+#ifdef WIN32
+  exe.append(".exe");
+#endif
+  Process p(exe, args);
   boost::thread(boost::bind(&Process::start, &p));
   //p.start();
   LOGDEBUG("start returned");
