@@ -25,6 +25,7 @@ namespace org {
         QueueManager();
         QueueManager(const QueueManager& orig);
         virtual ~QueueManager();
+        void createQueue(std::string name);
         void start();
         void stop();
       private:

@@ -69,6 +69,9 @@ namespace org {
         }
         _processId = procInfo.dwProcessId;
         _running=true;
+        WaitForSingleObject( procInfo.hProcess, INFINITE );
+        CloseHandle( procInfo.hProcess );
+        _running=false;
       }
 
       void Process::stop() {
@@ -82,6 +85,7 @@ namespace org {
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
+        CloseHandle( hProcess );
         _running=false;
       }
 

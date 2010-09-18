@@ -72,6 +72,8 @@ namespace org {
         delete pcfg;
         pcfg=NULL;
       }
+      void QueueManager::createQueue(std::string name) {
+      }
 
       void QueueManager::start() {
         sysdeliver.start();
