@@ -128,20 +128,7 @@
 			<patch patchfile="src/patch/safmq-main.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-UserCmds.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-param_config.patch" dir="source/safmq.0.8.3" strip="0"/>
-			<copy file="src/patch/safmq-CMakeLists.txt" tofile="source/safmq.0.8.3/CMakeLists.txt"/>
-			<mkdir dir="source/safmq.0.8.3/build"/>
 
-                <exec executable="cmake" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
-                  <arg line="
-                    -G ${CMAKE_MAKE_PROGRAM}
-                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/safmq.0.8.3/install
-                    -DCMAKE_BUILD_TYPE=${build_type}
-                    .."/>
-                </exec>
-                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
-                  <arg line="all"/>
-                </exec>
-		    <copy file="${project.basedir}/source/safmq.0.8.3/build/safmq.lib" tofile="source/build/safmq/lib/safmq.lib"/>
               </tasks>
             </configuration>
             <goals>
@@ -155,16 +142,6 @@
               <tasks if="linux">
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-makefile-unix.patch" dir="source/safmq.0.8.3" strip="0"/>
-                <pathconvert property="mybasedir" targetos="unix">
-                  <path location="${project.basedir}"/>
-                </pathconvert>
-                <exec executable="sh" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq"/>
-                </exec>
-                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes"/>
-                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="install"/>
-                </exec>
               </tasks>
             </configuration>
             <goals>
@@ -179,16 +156,6 @@
 			<patch patchfile="src/patch/safmq-configure.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-shared-uuidgen.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-makefile-unix.patch" dir="source/safmq.0.8.3" strip="0"/>
-                <pathconvert property="mybasedir" targetos="unix">
-                  <path location="${project.basedir}"/>
-                </pathconvert>
-                <exec executable="sh" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="${mybasedir}/source/safmq.0.8.3/configure --prefix=${mybasedir}/source/build/safmq"/>
-                </exec>
-                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes"/>
-                <exec executable="make" dir="source/safmq.0.8.3" failonerror="yes">
-                  <arg line="install"/>
-                </exec>
               </tasks>
             </configuration>
             <goals>
@@ -200,6 +167,20 @@
             <id>copy</id>
             <configuration>
               <tasks>
+		    <copy file="src/patch/safmq-CMakeLists.txt" tofile="source/safmq.0.8.3/CMakeLists.txt"/>
+  		    <mkdir dir="source/safmq.0.8.3/build"/>
+                <exec executable="cmake" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
+                  <arg line="
+                    -G ${CMAKE_MAKE_PROGRAM}
+                    -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/safmq.0.8.3/install
+                    -DCMAKE_BUILD_TYPE=${build_type}
+                    .."/>
+                </exec>
+                <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
+                  <arg line="all"/>
+                </exec>
+		    <copy file="${project.basedir}/source/safmq.0.8.3/build/safmq.lib" tofile="source/build/safmq/lib/safmq.lib"/>
+
                 <mkdir dir="source/tmp"/>
 		    <copy todir="source/tmp" flatten="true">
                   <fileset dir="source/safmq.0.8.3"/>
