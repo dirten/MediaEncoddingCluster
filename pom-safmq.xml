@@ -65,7 +65,7 @@
   </profiles>
   <groupId>org.esb.safmq</groupId>
   <artifactId>safmq</artifactId>
-  <version>0.8.3-2</version>
+  <version>0.8.3-3</version>
   <name>safmq</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -125,7 +125,6 @@
 			<patch patchfile="src/patch/safmq-shared-winnt-regutil.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-utilities-makefile.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-QManager.patch" dir="source/safmq.0.8.3" strip="0"/>
-			<patch patchfile="src/patch/safmq-main.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-UserCmds.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<!--patch patchfile="src/patch/safmq-param_config.patch" dir="source/safmq.0.8.3" strip="0"/-->
 
@@ -167,6 +166,7 @@
             <id>copy</id>
             <configuration>
               <tasks>
+  		    <patch patchfile="src/patch/safmq-main.patch" dir="source/safmq.0.8.3" strip="0"/>
 		    <copy file="src/patch/safmq-CMakeLists.txt" tofile="source/safmq.0.8.3/CMakeLists.txt"/>
   		    <mkdir dir="source/safmq.0.8.3/build"/>
                 <exec executable="cmake" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
