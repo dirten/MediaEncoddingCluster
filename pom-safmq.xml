@@ -127,7 +127,7 @@
 			<patch patchfile="src/patch/safmq-QManager.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-main.patch" dir="source/safmq.0.8.3" strip="0"/>
 			<patch patchfile="src/patch/safmq-UserCmds.patch" dir="source/safmq.0.8.3" strip="0"/>
-			<patch patchfile="src/patch/safmq-param_config.patch" dir="source/safmq.0.8.3" strip="0"/>
+			<!--patch patchfile="src/patch/safmq-param_config.patch" dir="source/safmq.0.8.3" strip="0"/-->
 
               </tasks>
             </configuration>
