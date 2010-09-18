@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
   boost::thread(boost::bind(&Process::start, &p));
   //p.start();
   LOGDEBUG("start returned");
-  Thread::sleep2(2000);
+  Thread::sleep2(10000);
   LOGDEBUG("stop child Process");
   p.stop();
   Thread::sleep2(5000);
