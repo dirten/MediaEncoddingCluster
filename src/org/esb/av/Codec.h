@@ -154,6 +154,7 @@ class SampleFormat;*/
           ar & _bytes_discard;
           ar & ctx->bits_per_coded_sample;
           ar & _options;
+
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
             if (ctx->extradata_size > 0) {
@@ -186,6 +187,7 @@ class SampleFormat;*/
           ar & _bytes_discard;
           ar & ctx->bits_per_coded_sample;
           ar & _options;
+          
           if (_mode == Codec::DECODER) {
             ar & ctx->extradata_size;
             if (ctx->extradata_size > 0) {

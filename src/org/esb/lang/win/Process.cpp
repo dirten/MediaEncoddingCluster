@@ -17,6 +17,7 @@ namespace org {
 
       Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
         _processId = 0;
+        _running=false;
       }
 
       Process::Process(const Process& orig) {
@@ -34,7 +35,16 @@ namespace org {
         for (; arg_it != _arguments.end(); arg_it++) {
           args.append((*arg_it)).append(" ");
         }
-        char *vip = const_cast<char*> (_executable.append(" ").append(args).c_str());
+          //replacing all slashes with backslashes
+        int position = _executable.find( "/" ); // find first slash
+        while ( position != std::string::npos ) 
+        {
+          _executable.replace( position, 1, "\\" );
+          position = _executable.find( "/", position + 1 );
+        } 
+
+        std::string a=(_executable+" "+args);
+        char *vip = const_cast<char*>(a.c_str());
 
         BOOL bWorked;
         STARTUPINFO suInfo;
@@ -58,6 +68,7 @@ namespace org {
           throw ProcessException(std::string("could not start the process: ").append(_executable));
         }
         _processId = procInfo.dwProcessId;
+        _running=true;
       }
 
       void Process::stop() {
@@ -66,11 +77,12 @@ namespace org {
          * Stopping Application Services from configuration
          *
          */
-
+        if(!_running)
+          throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
-
+        _running=false;
       }
 
       void Process::kill() {
@@ -79,11 +91,13 @@ namespace org {
          * Stopping Application Services from configuration
          *
          */
+        if(!_running)
+          throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
 
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
-
+        _running=false;
       }
     }
   }

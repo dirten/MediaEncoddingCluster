@@ -14,10 +14,6 @@ namespace org {
 
       }
 
-      ProcessException::ProcessException(const ProcessException& orig) {
-
-      }
-
       ProcessException::~ProcessException()  throw(){
 
       }

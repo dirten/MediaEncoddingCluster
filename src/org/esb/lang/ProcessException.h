@@ -16,7 +16,7 @@ namespace org {
       class ProcessException:public std::exception {
       public:
         ProcessException(std::string cause);
-        ProcessException(const ProcessException& orig);
+        
         virtual ~ProcessException() throw();
         const char* what() const throw();
       private:

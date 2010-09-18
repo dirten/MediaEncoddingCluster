@@ -67,9 +67,10 @@ namespace org {
 
         ProcessUnitController::ProcessUnitController() :
         _dbCon("mysql", org::esb::config::Config::getProperty("db.url")),
-        _dbJobCon("mysql", org::esb::config::Config::getProperty("db.url")),
-        _queue("safmq://admin:@localhost:9000/testqueue"),
-        _oos(&_queue){
+        _dbJobCon("mysql", org::esb::config::Config::getProperty("db.url"))
+//        _queue("safmq://admin:@localhost:9000/testqueue"),
+//        _oos(&_queue)
+        {
           LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
           _stop_signal = false;
           _isRunning = false;
@@ -78,9 +79,10 @@ namespace org {
 
         ProcessUnitController::ProcessUnitController(const ProcessUnitController& orig) :
         _dbCon(orig._dbCon),
-        _dbJobCon(orig._dbJobCon),
-        _queue(orig._queue),
-        _oos(orig._oos){
+        _dbJobCon(orig._dbJobCon)
+//        _queue(orig._queue),
+//        _oos(orig._oos)
+        {
 
         }
 
@@ -204,7 +206,7 @@ namespace org {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
                 PacketListPtr packets = packetizer.removePacketList();
                 boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
-                _oos.writeObject(*unit.get());
+                //_oos.writeObject(*unit.get());
                 if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
                   LOGDEBUG("audioQueue.enqueue(unit);")
                   audioQueue.enqueue(unit);

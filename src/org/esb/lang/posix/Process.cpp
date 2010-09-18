@@ -19,6 +19,7 @@ namespace org {
 
       Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
         _processId = 0;
+        _running=false;
       }
 
       Process::Process(const Process& orig) {
@@ -53,6 +54,8 @@ namespace org {
           /**
            * wait for child process exit
            * */
+          _running=true;
+
           LOGDEBUG("pid=" << _processId);
           int status = 0;
           waitpid(_processId, &status, 0);
@@ -64,12 +67,15 @@ namespace org {
         int result = ::kill(_processId, 15);
         if (result != 0)
           throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        _running=false;
+
       }
 
       void Process::kill() {
         int result = ::kill(_processId, 9);
         if (result != 0)
           throw ProcessException(std::string("could not kill the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        _running=false;
       }
     }
   }

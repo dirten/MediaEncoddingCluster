@@ -26,6 +26,7 @@ namespace org {
         std::string _executable;
         std::list<std::string> _arguments;
         int32_t _processId;
+        bool _running;
       };
     }
   }
