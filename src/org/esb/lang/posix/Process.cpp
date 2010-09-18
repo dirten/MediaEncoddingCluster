@@ -9,6 +9,7 @@
 #include "org/esb/lang/ProcessException.h"
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Thread.h"
