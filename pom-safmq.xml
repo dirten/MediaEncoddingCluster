@@ -65,7 +65,7 @@
   </profiles>
   <groupId>org.esb.safmq</groupId>
   <artifactId>safmq</artifactId>
-  <version>0.8.3</version>
+  <version>0.8.3-1</version>
   <name>safmq</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
