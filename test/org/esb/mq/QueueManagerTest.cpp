@@ -32,6 +32,7 @@ int main(int argc, char** argv) {
     f.createNewFile();
   QueueManager man;
   man.start();
+  org::esb::lang::Thread::sleep2(1000);
   {
   QueueConnection con("safmq://admin:@localhost:9000");
   if(!con.queueExist("testqueue"))
