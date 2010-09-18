@@ -179,7 +179,8 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/safmq.0.8.3/build" failonerror="yes">
                   <arg line="all"/>
                 </exec>
-		    <copy file="${project.basedir}/source/safmq.0.8.3/build/safmq.lib" tofile="source/build/safmq/lib/safmq.lib"/>
+		    <copy file="${project.basedir}/source/safmq.0.8.3/build/safmq.lib" tofile="source/build/safmq/lib/safmq.lib" failonerror="no"/>
+		    <copy file="${project.basedir}/source/safmq.0.8.3/build/libsafmq.a" tofile="source/build/safmq/lib/libsafmq.a" failonerror="no"/>
 
                 <mkdir dir="source/tmp"/>
 		    <copy todir="source/tmp" flatten="true">
