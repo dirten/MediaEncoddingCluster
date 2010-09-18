@@ -43,12 +43,5 @@
         <include>**/*</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>source/tmp/</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>libsafmq.a</include>
-      </includes>
-    </fileSet>
   </fileSets>
 </assembly>
