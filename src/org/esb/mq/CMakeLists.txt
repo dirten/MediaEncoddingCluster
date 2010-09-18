@@ -6,6 +6,12 @@ include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 add_library (mq
       QueueManager.cpp
 )
+IF(WIN32)
+	set(EXTRA_LIBS 
+		ws2_32
+		rpcrt4
+	)
+ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(mq
     ${Boost_LIBRARIES}
@@ -13,8 +19,7 @@ TARGET_LINK_LIBRARIES(mq
     safmq
     util
     io
-    ws2_32
-rpcrt4
+    ${EXTRA_LIBS}
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS mq
