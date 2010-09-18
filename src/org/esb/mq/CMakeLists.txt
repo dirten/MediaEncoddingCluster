@@ -11,7 +11,6 @@ TARGET_LINK_LIBRARIES(mq
     ${Boost_LIBRARIES}
     lang
     safmq
-    safmqclient
     util
     io
     ws2_32
