@@ -20,6 +20,7 @@ namespace org {
       Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
         _processId = 0;
         _running=false;
+        _restartable=false;
       }
 
       Process::Process(const Process& orig) {
@@ -61,6 +62,11 @@ namespace org {
           waitpid(_processId, &status, 0);
           LOGDEBUG("client exited:" << status);
         }
+      }
+
+      void Process::run(bool restart) {
+        _restartable=restart;
+        boost::thread(boost::bind(&Process::start, this));
       }
 
       void Process::stop() {

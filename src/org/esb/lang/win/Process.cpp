@@ -10,7 +10,9 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
-
+#include "org/esb/util/Log.h"
+#include "boost/thread.hpp"
+#include "boost/bind.hpp"
 namespace org {
   namespace esb {
     namespace lang {
@@ -18,6 +20,7 @@ namespace org {
       Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
         _processId = 0;
         _running=false;
+        _restartable=false;
       }
 
       Process::Process(const Process& orig) {
@@ -69,9 +72,17 @@ namespace org {
         }
         _processId = procInfo.dwProcessId;
         _running=true;
+        LOGDEBUG("Waiting for process");
         WaitForSingleObject( procInfo.hProcess, INFINITE );
         CloseHandle( procInfo.hProcess );
+        LOGDEBUG("process ended ");
         _running=false;
+        if(_restartable)
+          run(_restartable);
+      }
+      void Process::run(bool restartable) {
+        _restartable=restartable;
+        boost::thread(boost::bind(&Process::start, this));
       }
 
       void Process::stop() {
@@ -82,11 +93,15 @@ namespace org {
          */
         if(!_running)
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
+        _restartable=false;
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
         CloseHandle( hProcess );
         _running=false;
+      }
+      bool Process::isRunning() {
+        return _running;
       }
 
       void Process::kill() {
@@ -98,6 +113,7 @@ namespace org {
         if(!_running)
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
 
+        _restartable=false;
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);

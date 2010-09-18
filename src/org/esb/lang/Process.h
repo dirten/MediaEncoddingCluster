@@ -20,13 +20,16 @@ namespace org {
         Process(const Process& orig);
         virtual ~Process();
         void start();
+        void run(bool restartable=false);
         void stop();
         void kill();
+        bool isRunning();
       private:
         std::string _executable;
         std::list<std::string> _arguments;
         int32_t _processId;
         bool _running;
+        bool _restartable;
       };
     }
   }
