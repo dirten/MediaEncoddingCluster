@@ -1,3 +1,4 @@
+#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/FileInputStream.h"
@@ -10,7 +11,7 @@
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
 #include "org/esb/hive/job/ProcessUnit.h"
-#include "org/esb/hive/DatabaseService.h"
+
 #include "org/esb/util/Log.h"
 #include <string>
 

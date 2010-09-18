@@ -1,5 +1,5 @@
 include_directories (${LOG4CPLUS_DIR}/include/safmq)
-
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 
 add_executable (SimpleEnqueue SimpleEnqueue.cpp)
 target_link_libraries (SimpleEnqueue io)
@@ -14,9 +14,9 @@ target_link_libraries (QueueInputStreamTest io hive )
 ADD_TEST(mq.QueueInputStreamTest ${EXECUTABLE_OUTPUT_PATH}/QueueInputStreamTest)
 
 add_executable (StartSafmqTest StartSafmqTest.cpp)
-target_link_libraries (StartSafmqTest io hive safmq )
+target_link_libraries (StartSafmqTest io hive mq )
 ADD_TEST(mq.StartSafmqTest ${EXECUTABLE_OUTPUT_PATH}/StartSafmqTest)
 
 add_executable (QueueManagerTest QueueManagerTest.cpp)
-target_link_libraries (QueueManagerTest mq )
+target_link_libraries (QueueManagerTest mq safmq)
 ADD_TEST(mq.QueueManagerTest ${EXECUTABLE_OUTPUT_PATH}/QueueManagerTest)

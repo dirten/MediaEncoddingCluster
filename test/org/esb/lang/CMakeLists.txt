@@ -22,7 +22,7 @@ ENDIF(NOT WIN32)
 ADD_TEST(lang.ThreadTest ${EXECUTABLE_OUTPUT_PATH}/TestThread )
 #ADD_TEST(TestSystemCpuInfo ${EXECUTABLE_OUTPUT_PATH}/TestSystemCpuInfo )
 ADD_TEST(lang.ExceptionTest ${EXECUTABLE_OUTPUT_PATH}/TestException )
-ADD_TEST(org.esb.lang.StackDumperTest ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
+ADD_TEST(lang.StackDumperTest ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
 ADD_TEST(lang.ProcessTest ${EXECUTABLE_OUTPUT_PATH}/ProcessTest )
 #ADD_TEST(TestLibCurl ${EXECUTABLE_OUTPUT_PATH}/TestLibCurl )
 
