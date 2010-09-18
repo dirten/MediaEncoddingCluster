@@ -14,6 +14,8 @@ TARGET_LINK_LIBRARIES(mq
     safmqclient
     util
     io
+    ws2_32
+rpcrt4
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS mq

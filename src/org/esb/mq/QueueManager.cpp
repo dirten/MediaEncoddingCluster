@@ -21,8 +21,10 @@
 #include "org/esb/io/File.h"
 Config * pcfg = NULL;
 QManager * theQueueManager = NULL;
-std::string system_user;
-std::string safmq_all_users;
+const std::string			system_user("safmq_system");
+
+/// Global group including all users
+const std::string			safmq_all_users("safmq_all_users");
 namespace org {
   namespace esb {
     namespace mq {

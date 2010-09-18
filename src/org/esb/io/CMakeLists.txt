@@ -19,7 +19,9 @@ add_library (io File.cpp
 TARGET_LINK_LIBRARIES(io
     ${Boost_LIBRARIES}
     lang
-    safmqclient util
+    safmqclient 
+    safmq
+    util
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS io

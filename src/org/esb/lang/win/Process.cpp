@@ -6,6 +6,7 @@
  */
 
 #include "org/esb/lang/Process.h"
+#include "org/esb/lang/ProcessException.h"
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
@@ -35,7 +36,7 @@ namespace org {
         }
         char *vip = const_cast<char*> (_executable.append(" ").append(args).c_str());
 
-        bool bWorked;
+        BOOL bWorked;
         STARTUPINFO suInfo;
         PROCESS_INFORMATION procInfo;
 
@@ -43,7 +44,7 @@ namespace org {
         memset(&procInfo, 0, sizeof (procInfo));
         suInfo.cb = sizeof (suInfo);
 
-        bWorked = ::CreateProcess(m_Process.c_str(),
+        bWorked = ::CreateProcess(_executable.c_str(),
                 vip, // can also be NULL
                 NULL,
                 NULL,

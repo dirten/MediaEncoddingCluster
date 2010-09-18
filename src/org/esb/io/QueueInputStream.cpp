@@ -31,6 +31,7 @@ namespace org {
       }
 
       long long int QueueInputStream::available(bool isBlocking) {
+        return 0;
       }
 
       int QueueInputStream::read(string & str) {
@@ -43,15 +44,19 @@ namespace org {
         
         str=std::string(data,length);
         delete []data;
+        return 1;
       }
 
       int QueueInputStream::read(unsigned char *buffer, int length) {
+        return 0;
       }
 
       int QueueInputStream::read(vector < unsigned char >&buffer) {
+        return 0;
       }
 
       int QueueInputStream::read() {
+        return 0;
       }
 
     }

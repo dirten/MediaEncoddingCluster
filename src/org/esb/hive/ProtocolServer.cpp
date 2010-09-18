@@ -1,3 +1,4 @@
+#include "org/esb/db/hivedb.hpp"
 #include "ProtocolServer.h"
 #include <iostream>
 #include "org/esb/lang/Runnable.h"
