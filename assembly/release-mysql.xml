@@ -22,6 +22,20 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>source/build/mysql/libexec/</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>mysqld</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/build/mysql/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>mysqld.exe</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>source/build/mysql/include/mysql</directory>
       <outputDirectory>include/mysql</outputDirectory>
       <includes>
