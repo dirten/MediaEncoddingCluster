@@ -148,7 +148,6 @@
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
-                <copy file="${project.build.directory}/dependency/lib/libsafmq.a" tofile="${project.build.directory}/dependency/lib/libsafmq.lib"/>
   	    </tasks>
             </configuration>
             <goals>
