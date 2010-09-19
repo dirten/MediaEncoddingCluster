@@ -134,7 +134,7 @@
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="win32"/>
-                <get src="http://downloads.sourceforge.net/project/litesql/litesql/0.3.8-beta/litesql-src-0.3.8.tar.gz"
+                <get src="http://downloads.sourceforge.net/project/litesql/litesql/0.3.8/litesql-src-0.3.8.tar.gz"
                      dest="source/litesql-src-0.3.8.tar.gz"
                      verbose="true" usetimestamp="true"/>
                 <gunzip src="source/litesql-src-0.3.8.tar.gz" dest="source"/>
