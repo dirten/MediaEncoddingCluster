@@ -33,10 +33,10 @@ int main(int argc, char** argv) {
   exe.append(".exe");
 #endif
   Process p(exe, args);
-  boost::thread(boost::bind(&Process::start, &p));
-  //p.start();
+  //boost::thread(boost::bind(&Process::start, &p));
+  p.run(true);
   LOGDEBUG("start returned");
-  Thread::sleep2(10000);
+  Thread::sleep2(100000);
   LOGDEBUG("stop child Process");
   p.stop();
   Thread::sleep2(5000);
