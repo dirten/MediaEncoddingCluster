@@ -34,10 +34,13 @@ namespace org {
         if(!file.exists()){
           file.mkdir();
         }
+        org::esb::io::File f("dummy.cfg");
+        if(!f.exists())
+          f.createNewFile();
         numForwardThreads = 1;
         _running=false;
         try {
-          pcfg = new Config("test.cfg");
+          pcfg = new Config("dummy.cfg");
         } catch (int) {
           safmq::Log::getLog()->Startup(safmq::Log::error, "Unable to load configuration file.");
         }
@@ -90,7 +93,7 @@ namespace org {
         server.start();
         plog->Startup();
         _running=true;
-
+        
       }
 
       void QueueManager::stop() {

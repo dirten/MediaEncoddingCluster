@@ -439,7 +439,6 @@ int jobcreator(int argc, char*argv[]) {
   return 0;
 }
 
-
 namespace org {
   namespace esb {
     namespace hive {

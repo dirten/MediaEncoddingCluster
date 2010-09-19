@@ -216,7 +216,7 @@ add_library (sql sql/Column.cpp
       sql/ConnectionManager.cpp
       sql/Row.cpp
 )
-TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY})
+TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY} util)
 IF(UNIX AND NOT APPLE)
   TARGET_LINK_LIBRARIES(sql crypt)
 ENDIF(UNIX AND NOT APPLE)
@@ -308,7 +308,7 @@ add_library (web
 #    web/VersionNode.cpp
     web/FileNode.cpp
     web/SqlUtil.cpp
-    web/Setup.cpp
+#    web/Setup.cpp
     web/StreamInfo.cpp
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
@@ -360,13 +360,13 @@ ELSE()
 ENDIF()
 
 TARGET_LINK_LIBRARIES(web
+    hive
     ${Boost_LIBRARIES}
     sql
     signal
     io
     esb
     av
-    hive
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)

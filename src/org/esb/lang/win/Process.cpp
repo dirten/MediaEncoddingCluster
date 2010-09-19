@@ -72,13 +72,15 @@ namespace org {
         }
         _processId = procInfo.dwProcessId;
         _running=true;
-        LOGDEBUG("Waiting for process");
+//        LOGDEBUG("Waiting for process");
         WaitForSingleObject( procInfo.hProcess, INFINITE );
         CloseHandle( procInfo.hProcess );
-        LOGDEBUG("process ended ");
+        LOGDEBUG("process ended:"<<_executable);
         _running=false;
-        if(_restartable)
+        if(_restartable){
+          LOGDEBUG("restarting!!!");
           run(_restartable);
+        }
       }
       void Process::run(bool restartable) {
         _restartable=restartable;

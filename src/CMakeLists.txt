@@ -63,6 +63,24 @@ add_executable (mhive Hive.cpp)
 add_executable (mhiveservice HiveService.cpp)
 add_executable (mhiveclient MhiveClient.cpp)
 add_executable (mhivemaster MHiveMaster.cpp)
+target_link_libraries (mhivemaster
+  lang
+  util
+  io
+)
+add_executable (mhivequeue MHiveQueue.cpp)
+target_link_libraries (mhivequeue mq)
+
+
+add_executable (mhivereader MHiveReader.cpp)
+target_link_libraries (mhivereader lang)
+
+add_executable (mhivewriter MHiveWriter.cpp)
+target_link_libraries (mhivewriter lang)
+
+add_executable (mhivecore MHiveCore.cpp)
+target_link_libraries (mhivecore lang hive web)
+
 #SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
 
@@ -153,19 +171,7 @@ target_link_libraries (mhiveclient
   net
 )
 
-target_link_libraries (mhivemaster
-  web
-  esb
-  sql
-  hive
-  lang
-  av
-  util
-  signal
-  io
-  net
-  mq
-)
+
 SET(CURL_CMD curl)
 SET(ZIP_CMD gzip)
 SET(MHIVE_DBGSYM mhive)
@@ -191,12 +197,38 @@ INSTALL(TARGETS mhive
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
 INSTALL(TARGETS mhiveservice
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 INSTALL(TARGETS mhiveclient
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+INSTALL(TARGETS mhivemaster
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+INSTALL(TARGETS mhivequeue
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+INSTALL(TARGETS mhivereader
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+INSTALL(TARGETS mhivewriter
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
+INSTALL(TARGETS mhivecore
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
