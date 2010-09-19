@@ -1,11 +1,11 @@
---- ../../../../tmp/ffmpeg-export-2010-08-18/configure	2010-08-17 16:59:12.000000000 +0200
-+++ ./configure	2010-08-18 15:44:05.698785667 +0200
-@@ -2871,7 +2871,7 @@
+--- ../tmp/configure	2010-09-19 20:20:28 +0000
++++ configure	2010-09-19 20:42:45 +0000
+@@ -2910,7 +2910,7 @@
  elif enabled gcc; then
      check_cflags -fno-tree-vectorize
      check_cflags -Werror=implicit-function-declaration
 -    check_cflags -Werror=missing-prototypes
 +#    check_cflags -Werror=missing-prototypes
+ elif enabled llvm_gcc; then
+     check_cflags -mllvm -stack-alignment=16
  elif enabled clang; then
-     check_cflags -Qunused-arguments
- elif enabled armcc; then
