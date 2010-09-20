@@ -22,10 +22,10 @@ int main(int argc, char** argv) {
   if (!org::esb::hive::DatabaseService::databaseExist()) {
     org::esb::hive::DatabaseService::createDatabase();
     org::esb::hive::DatabaseService::createTables();
-    org::esb::hive::DatabaseService::loadPresets();
+    
   }
   org::esb::hive::DatabaseService::updateTables();
-
+  org::esb::hive::DatabaseService::loadPresets();
   org::esb::web::WebServer webserver;
   org::esb::signal::Messenger::getInstance().addMessageListener(webserver);
 

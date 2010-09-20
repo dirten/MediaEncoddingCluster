@@ -216,9 +216,9 @@ int main(int argc, char * argv[]) {
       org::esb::hive::DatabaseService::start(base_path);
       if (!DatabaseService::databaseExist()) {
         DatabaseService::createDatabase();
-      DatabaseService::loadPresets();
       }
       DatabaseService::updateTables();
+      DatabaseService::loadPresets();
       {
         db::HiveDb db("mysql", Config::getProperty("db.url"));
         std::map<std::string, std::string> conf;
