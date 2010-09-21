@@ -13,7 +13,7 @@
         </os>
       </activation>
       <properties>
-	  <boost.toolset>msvc</boost.toolset>
+	<boost.toolset>msvc</boost.toolset>
         <my.family>win32</my.family>
         <target>ntx86</target>
         <jambuild>build_dist.bat</jambuild>
@@ -131,7 +131,7 @@
 			<property name="bjam" refid="bjam.path"/>
 			
                 <exec executable="${bjam}" dir="source/boost_1_44_0"  failonerror="no">
-                  <arg line="--prefix=${project.basedir}/source/build/boost --toolset=${boost.toolset} --without-python --without-wave --without-graph --without-mpi --without-math variant=${build_type} link=static threading=multi install"/>
+                  <arg line="--prefix=${project.basedir}/source/build/boost --toolset=${boost.toolset} --without-python --without-wave --without-graph --without-mpi --without-math variant=${build_type} link=static threading=multi architecture=combined address-model=32_64 install"/>
                 </exec>
 
               </tasks>

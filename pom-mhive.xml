@@ -161,8 +161,6 @@
               <tasks>
                 <mkdir dir="build"/>
                 
-                <patch patchfile="src/patch/mysql_system_tables.patch" dir="target/dependency/share" strip="1"/>
-                <patch patchfile="src/patch/mysql_system_tables_data.patch" dir="target/dependency/share" strip="1"/>
                 
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
@@ -248,7 +246,7 @@
     <dependency>
       <groupId>org.esb.boost</groupId>
       <artifactId>boost</artifactId>
-      <version>1.36.0</version>
+      <version>1.44.0</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

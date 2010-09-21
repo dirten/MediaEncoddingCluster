@@ -366,7 +366,6 @@ ENDIF()
 TARGET_LINK_LIBRARIES(web
     hive
     ${Boost_LIBRARIES}
-    sql
     signal
     io
     esb
