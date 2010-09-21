@@ -82,6 +82,7 @@ namespace org {
           run(_restartable);
         }
       }
+
       void Process::run(bool restartable) {
         _restartable=restartable;
         boost::thread(boost::bind(&Process::start, this));

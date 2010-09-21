@@ -60,17 +60,17 @@ namespace org{
           _filter_table->setHighlightMouseOver(true);
           _filter_table->setSelectionBehavior(Wt::SelectRows);
           _filter_table->setSelectionMode(Wt::SingleSelection);
-          _filter_table->itemSelectionChanged.connect(SLOT(this, FilterChooser::enableButtons));
+          _filter_table->itemSelectionChanged().connect(SLOT(this, FilterChooser::enableButtons));
 
           layout()->addWidget(_filter_table.get());
 
 
           addButton(new Wt::Ext::Button("Select Filter"));
-          buttons().back()->clicked.connect(SLOT(this, FilterChooser::choose));
+          buttons().back()->clicked().connect(SLOT(this, FilterChooser::choose));
           buttons().back()->setEnabled(false);
 
           addButton(new Wt::Ext::Button("Cancel"));
-          buttons().back()->clicked.connect(SLOT(this, Wt::Ext::Dialog::reject));
+          buttons().back()->clicked().connect(SLOT(this, Wt::Ext::Dialog::reject));
 
       }
 

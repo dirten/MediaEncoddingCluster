@@ -1,4 +1,10 @@
 
+include_directories (${MEC_SOURCE_DIR})
+add_executable (DatabaseBootstrapTest db/DatabaseBootstrapTest.cpp)
+
+target_link_libraries (DatabaseBootstrapTest db ${MYSQL_LIBRARY} esb)
+ADD_TEST(db.DatabaseBootstrapTest ${EXECUTABLE_OUTPUT_PATH}/DatabaseBootstrapTest)
+
 
 add_subdirectory (lang)
 add_subdirectory (io)

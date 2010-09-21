@@ -30,10 +30,10 @@ namespace org{
         _previewpanel->preview();
 
         addButton(new Wt::Ext::Button("Save"));
-        buttons().back()->clicked.connect(SLOT(this, FilterEditor::save));
+        buttons().back()->clicked().connect(SLOT(this, FilterEditor::save));
 
         addButton(new Wt::Ext::Button("Cancel"));
-        buttons().back()->clicked.connect(SLOT(this, Wt::Ext::Dialog::reject));
+        buttons().back()->clicked().connect(SLOT(this, Wt::Ext::Dialog::reject));
 
       }
       FilterEditor::~FilterEditor(){

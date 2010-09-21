@@ -15,14 +15,14 @@ namespace org {
 
             DataTreeTableNode::DataTreeTableNode(org::esb::sql::ResultSet & rs)
             : WTreeTableNode(Wt::widen(rs.getString("filename")), createIcon(rs.getInt("type"))),_id(rs.getInt("id")),_parentid(rs.getInt("parent")) {
-              label()->setFormatting(Wt::WText::PlainFormatting);
+              label()->setTextFormat(Wt::PlainText);
               Wt::WTreeTableNode::setStyleClass("datatreenode");
 //              this->selected.connect(SLOT(this, DataTreeTableNode::selectAction));
             }
             
             DataTreeTableNode::DataTreeTableNode(const std::string & name, const int type, const int parentid, const bool pop)
             : WTreeTableNode(Wt::widen(name), createIcon(type)),_id(parentid) {
-              label()->setFormatting(Wt::WText::PlainFormatting);
+              label()->setTextFormat(Wt::PlainText);
               Wt::WTreeTableNode::setStyleClass("datatreenode");
               _withPopulate=pop;
 //              this->selected.connect(SLOT(this, DataTreeTableNode::selectAction));

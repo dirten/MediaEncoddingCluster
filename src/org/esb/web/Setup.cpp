@@ -93,8 +93,8 @@ namespace org {
         butNext->setHidden(true);
 
 
-        butPrev->clicked.connect(SLOT(this, Setup::prevStep));
-        butNext->clicked.connect(SLOT(this, Setup::nextStep));
+        butPrev->clicked().connect(SLOT(this, Setup::prevStep));
+        butNext->clicked().connect(SLOT(this, Setup::nextStep));
 
         northRight->layout()->addWidget(butPrev);
         northRight->layout()->addWidget(butNext);
@@ -360,7 +360,7 @@ namespace org {
         div_db->addWidget(new Wt::WBreak());
         div_db->addWidget(db_table);
         Wt::Ext::Button * checkDb = new Wt::Ext::Button("check Connection", db_table->elementAt(4, 0));
-        checkDb->clicked.connect(SLOT(this, Setup::checkConnection));
+        checkDb->clicked().connect(SLOT(this, Setup::checkConnection));
 
         wtk::ContentBox * c_db = new wtk::ContentBox("stepbox");
         c_db->setContent(div_db);
@@ -447,7 +447,7 @@ namespace org {
             ));
         Wt::Ext::Button * save = new Wt::Ext::Button("Save Config");
         div_admin->addWidget(save);
-        save->clicked.connect(SLOT(this, Setup::saveConfig));
+        save->clicked().connect(SLOT(this, Setup::saveConfig));
 
 
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
@@ -462,7 +462,7 @@ namespace org {
 
         Wt::Ext::Button * bt = new Wt::Ext::Button(Wt::WString::tr("go-to-login-screen"));
         div_admin->addWidget(bt);
-        bt->clicked.connect(SLOT(this, Setup::setLoginScreen));
+        bt->clicked().connect(SLOT(this, Setup::setLoginScreen));
 
         wtk::ContentBox * c_admin = new wtk::ContentBox("stepbox");
         c_admin->setContent(div_admin);

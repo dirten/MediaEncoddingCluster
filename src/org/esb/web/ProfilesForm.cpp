@@ -116,8 +116,8 @@ namespace org {
         l->addWidget(cancel, btrow, 0);
         Wt::Ext::Button *save = new Wt::Ext::Button("Save");
         l->addWidget(save, btrow, 1);
-        cancel->clicked.connect(SLOT(this, ProfilesForm::cancelProfile));
-        save->clicked.connect(SLOT(this, ProfilesForm::saveProfile));
+        cancel->clicked().connect(SLOT(this, ProfilesForm::cancelProfile));
+        save->clicked().connect(SLOT(this, ProfilesForm::saveProfile));
 
       }
 

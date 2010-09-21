@@ -33,10 +33,10 @@ namespace org {
         }
 //        itemSelectionChanged.connect(SLOT(this,SqlTable::itemSelected));
         _clickCount=0;
-        cellClicked.connect(SLOT(this,SqlTable::itemSelected));
+        cellClicked().connect(SLOT(this,SqlTable::itemSelected));
         doubleClickTimer=new Wt::WTimer(this);
         doubleClickTimer->setInterval(200);
-        doubleClickTimer->timeout.connect(SLOT(this, SqlTable::emitClickCount));
+        doubleClickTimer->timeout().connect(SLOT(this, SqlTable::emitClickCount));
         //  setDataLocation(Wt::Ext::ServerSide);
         //  setPageSize(10);
         //      table->setBottomToolBar(table->createPagingToolBar());

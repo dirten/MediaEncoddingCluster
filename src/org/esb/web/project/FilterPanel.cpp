@@ -61,7 +61,7 @@ namespace org{
         _filter_table->setHighlightMouseOver(true);
         _filter_table->setSelectionBehavior(Wt::SelectRows);
         _filter_table->setSelectionMode(Wt::SingleSelection);
-        _filter_table->itemSelectionChanged.connect(SLOT(this, FilterPanel::enableButtons));
+        _filter_table->itemSelectionChanged().connect(SLOT(this, FilterPanel::enableButtons));
         layout()->addWidget(_filter_table.get());
         setTopToolBar(new Wt::Ext::ToolBar());
 
@@ -77,9 +77,9 @@ namespace org{
 
         removeFilterButton->setEnabled(false);
 
-        addFilterButton->clicked.connect(SLOT(this, FilterPanel::addFilter));
-        removeFilterButton->clicked.connect(SLOT(this, FilterPanel::removeFilter));
-        editFilterButton->clicked.connect(SLOT(this, FilterPanel::editFilter));
+        addFilterButton->clicked().connect(SLOT(this, FilterPanel::addFilter));
+        removeFilterButton->clicked().connect(SLOT(this, FilterPanel::removeFilter));
+        editFilterButton->clicked().connect(SLOT(this, FilterPanel::editFilter));
       }
 
       FilterPanel::~FilterPanel(){
@@ -123,9 +123,9 @@ namespace org{
         _filter_chooser=Ptr<FilterChooser>(new FilterChooser(_available_filters));
         _filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
         _filter_chooser->show();
-        _filter_chooser->exec();
-        LOGDEBUG("_filter_chooser->exec(); returned")
-        _filter_chooser.reset();
+//        _filter_chooser->exec();
+//        LOGDEBUG("_filter_chooser->exec(); returned")
+        //_filter_chooser.reset();
 
       }
       void FilterPanel::removeFilter(){

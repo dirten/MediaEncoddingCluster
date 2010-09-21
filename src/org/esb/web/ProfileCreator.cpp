@@ -79,10 +79,10 @@ namespace org {
         bot->layout()->addWidget(cont);
 
         addButton(new Wt::Ext::Button("Save"));
-        buttons().back()->clicked.connect(SLOT(this, ProfileCreator::save));
+        buttons().back()->clicked().connect(SLOT(this, ProfileCreator::save));
 
         addButton(new Wt::Ext::Button("Cancel"));
-        buttons().back()->clicked.connect(SLOT(this, ProfileCreator::cancel));
+        buttons().back()->clicked().connect(SLOT(this, ProfileCreator::cancel));
         //	_el.getElement("id").setText(profile.id);
         int tab_count = tab->count();
         for (int a = 0; a < tab_count; a++) {
@@ -153,14 +153,14 @@ namespace org {
         std::map<std::string, Wt::Ext::LineEdit*> lel = _el.getElements();
         std::map<std::string, Wt::Ext::LineEdit*>::iterator it = lel.begin();
         for (; it != lel.end(); it++) {
-          (*it).second->keyPressed.connect(SLOT(this,ProfileCreator::BasePanel::changed));
-          (*it).second->keyWentUp.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+          (*it).second->keyPressed().connect(SLOT(this,ProfileCreator::BasePanel::changed));
+          (*it).second->keyWentUp().connect(SLOT(this,ProfileCreator::BasePanel::changed));
         }
         std::map<std::string, Wt::Ext::ComboBox*> lec = _elcb.getElements();
         std::map<std::string, Wt::Ext::ComboBox*>::iterator itc = lec.begin();
         for (; itc != lec.end(); itc++) {
-          (*itc).second->keyPressed.connect(SLOT(this,ProfileCreator::BasePanel::changed));
-          (*itc).second->activated.connect(SLOT(this,ProfileCreator::BasePanel::changed));
+          (*itc).second->keyPressed().connect(SLOT(this,ProfileCreator::BasePanel::changed));
+          (*itc).second->activated().connect(SLOT(this,ProfileCreator::BasePanel::changed));
 
         }
 
@@ -282,7 +282,7 @@ namespace org {
         v_format_ext->setEditable(true);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
         l->setRowStretch(l->rowCount() - 1, -1);
-        v_format->activated.connect(SLOT(this, ProfileCreator::FilePanel::setAvailableExtensions));
+        v_format->activated().connect(SLOT(this, ProfileCreator::FilePanel::setAvailableExtensions));
       }
 
       void ProfileCreator::FilePanel::changed(){
@@ -348,7 +348,7 @@ namespace org {
             a++;
           }
         }
-        v_codec->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setPredefinedCodecFlags));
+        v_codec->activated().connect(SLOT(this, ProfileCreator::VideoPanel::setPredefinedCodecFlags));
 
         _el.addElement("v_bitrate", "Video Bitrate", profile.vbitrate, l);
         Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", profile.vframerate, l);
@@ -416,7 +416,7 @@ namespace org {
       void ProfileCreator::VideoPanel::setPredefinedCodecFlags() {
         Wt::Ext::ComboBox * v_codec = _elcb.getElement("v_codec");
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
-        vpre->activated.connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodecFlags));
+        vpre->activated().connect(SLOT(this, ProfileCreator::VideoPanel::setSelectedPredifinedCodecFlags));
         std::string longname = v_codec->currentText().narrow();
         LOGDEBUG( "LonName=" << longname);
         AVCodec *p = NULL;
@@ -525,6 +525,7 @@ namespace org {
         a_channels->addItem("2");
         a_channels->setCurrentIndex(profile.achannels==1?0:1);
         Wt::Ext::ComboBox * a_bitrate = _elcb.addElement("a_bitrate", "Audio Bitrate", "", l);
+        LOGDEBUG("AudioBitrates="<<org::esb::config::Config::getProperty("audiobitrates"));
         StringTokenizer stabr(org::esb::config::Config::getProperty("audiobitrates"), ",");
         int c3 = stabr.countTokens();
         for (int a = 0; a < c3; a++) {

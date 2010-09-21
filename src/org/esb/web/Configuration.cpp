@@ -41,7 +41,7 @@ public:
           Wt::Ext::TabWidget *exampleTabs = new Wt::Ext::TabWidget(this);
           exampleTabs->setBorder(false);
           saveButton = new Wt::Ext::Button("Save Configuration", this);
-          saveButton->clicked.connect(SLOT(this, Configuration::saveConfig));
+          saveButton->clicked().connect(SLOT(this, Configuration::saveConfig));
 
 #ifndef USE_EMBEDDED_MYSQL
           exampleTabs->addTab(createDbConfigPage(), "Database Config");
@@ -51,7 +51,7 @@ public:
           log = new Wt::WTextArea(this);
           log->decorationStyle().setBackgroundColor(Wt::WColor(255, 255, 255));
           log->decorationStyle().setForegroundColor(Wt::WColor(0, 0, 0));
-          log->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Hidden), WWidget::All);
+//          log->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Hidden), WWidget::All);
           log->setColumns(100);
           log->setRows(30);
           log->disable();
@@ -65,7 +65,7 @@ public:
 
         Wt::WWidget * createServicePage(Wt::WContainerWidget * parent) {
           Wt::WSignalMapper<Wt::Ext::Button*> *myMap = new Wt::WSignalMapper<Wt::Ext::Button*>();
-          myMap->mapped.connect(SLOT(this, Configuration::onClick));
+          myMap->mapped().connect(SLOT(this, Configuration::onClick));
 
           //          Wt::WContainerWidget * cont = new Wt::WContainerWidget();
           wtk::ContentBox * cont = new wtk::ContentBox("stepbox");
@@ -87,13 +87,13 @@ public:
           //          Wt::Ext::Button * b1=new Wt::Ext::Button("",result->elementAt(3, 0))
 
 
-          myMap->mapConnect(b1->clicked, b1);
-          myMap->mapConnect(b2->clicked, b2);
-          myMap->mapConnect(b4->clicked, b4);
-          myMap->mapConnect(b5->clicked, b5);
-          myMap->mapConnect(b7->clicked, b7);
-          myMap->mapConnect(b8->clicked, b8);
-          myMap->mapConnect(b9->clicked, b9);
+          myMap->mapConnect(b1->clicked(), b1);
+          myMap->mapConnect(b2->clicked(), b2);
+          myMap->mapConnect(b4->clicked(), b4);
+          myMap->mapConnect(b5->clicked(), b5);
+          myMap->mapConnect(b7->clicked(), b7);
+          myMap->mapConnect(b8->clicked(), b8);
+          myMap->mapConnect(b9->clicked(), b9);
 
           return cont;
         }
@@ -127,7 +127,7 @@ public:
         Wt::WWidget * createDbConfigPage() {
 
           Wt::WTable * result = new Wt::WTable();
-          result->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Dotted, Wt::WBorder::Thin), WWidget::All);
+          result->decorationStyle().setBorder(Wt::WBorder(Wt::WBorder::Dotted, Wt::WBorder::Thin));
           buildElement("host", "Host1:", result, 0);
           buildElement("user", "Username:", result, 1);
           buildElement("passwd", "Password:", result, 2);

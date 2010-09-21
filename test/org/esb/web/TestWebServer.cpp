@@ -22,6 +22,7 @@ WebServer * w;
 
 int main(int argc, char**argv) {
   Log::open("");
+  Config::init("../../mec/.hive");
   av_register_all();
   std::string base_path = MEC_SOURCE_DIR;
   Config::setProperty("db.connection", "mysql:host=127.0.0.1;db=hive2;user=root;passwd=");
@@ -42,7 +43,6 @@ int main(int argc, char**argv) {
   DatabaseService::loadPresets();
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
-  Config::init("../../mec/.hive");
   {
   db::HiveDb db("mysql",Config::getProperty("db.url"));
   db::MediaFile file(db);

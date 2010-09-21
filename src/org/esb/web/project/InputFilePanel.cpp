@@ -96,7 +96,7 @@ namespace org {
         _filetable->setHighlightMouseOver(true);
         _filetable->setSelectionBehavior(Wt::SelectRows);
         _filetable->setSelectionMode(Wt::SingleSelection);
-        _filetable->itemSelectionChanged.connect(SLOT(this, InputFilePanel::enableButtons));
+        _filetable->itemSelectionChanged().connect(SLOT(this, InputFilePanel::enableButtons));
         layout()->addWidget(_filetable.get());
         layout()->setContentsMargins(0, 0, 0, 0);
 
@@ -109,8 +109,8 @@ namespace org {
         removeVideoButton = topToolBar()->addButton("Remove Input Video");
         removeVideoButton->setIcon("icons/remove-icon.png");
         removeVideoButton->setEnabled(false);
-        addVideoButton->clicked.connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
-        removeVideoButton->clicked.connect(SLOT(this, InputFilePanel::removeVideo));
+        addVideoButton->clicked().connect(SLOT(this, InputFilePanel::addVideoButtonClicked));
+        removeVideoButton->clicked().connect(SLOT(this, InputFilePanel::removeVideo));
 
       }
 

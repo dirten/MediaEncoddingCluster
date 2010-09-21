@@ -32,6 +32,7 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Thread.h"
+#include "org/esb/lang/Process.h"
 #include <string>
 #include <map>
 #include "org/esb/lang/Ptr.h"
@@ -59,6 +60,7 @@ namespace org {
         static bool _running;
         static std::string _base_path;
         static std::map<boost::thread::id,int> _thread_map;
+        static Ptr<org::esb::lang::Process> _dbServer;
       };
     }
   }

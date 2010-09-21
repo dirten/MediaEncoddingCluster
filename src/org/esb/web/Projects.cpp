@@ -18,7 +18,7 @@ namespace org {
         _table=new ProjectTable();
         layout()->addWidget(_table.get());
 
-        _table->itemSelectionChanged.connect(SLOT(this, Projects::enableButtons));
+        _table->itemSelectionChanged().connect(SLOT(this, Projects::enableButtons));
         
         _table->setTopToolBar(new Wt::Ext::ToolBar());
 
@@ -33,9 +33,9 @@ namespace org {
         create_button->setEnabled(true);
         edit_button->setEnabled(false);
         delete_button->setEnabled(false);
-        create_button->clicked.connect(SLOT(this, Projects::createProject));
-        edit_button->clicked.connect(SLOT(this, Projects::editProject));
-        delete_button->clicked.connect(SLOT(this, Projects::deleteProject));        
+        create_button->clicked().connect(SLOT(this, Projects::createProject));
+        edit_button->clicked().connect(SLOT(this, Projects::editProject));
+        delete_button->clicked().connect(SLOT(this, Projects::deleteProject));
       }
 
       void Projects::editProject(){

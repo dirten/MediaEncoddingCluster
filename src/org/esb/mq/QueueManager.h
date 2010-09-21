@@ -28,6 +28,7 @@ namespace org {
         void createQueue(std::string name);
         void start();
         void stop();
+        std::string getUrl();
       private:
 
         /// The global instance of the network serevr thread

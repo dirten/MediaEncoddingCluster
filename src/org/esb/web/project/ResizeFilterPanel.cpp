@@ -31,8 +31,8 @@ namespace org{
         l->setRowStretch(l->rowCount() - 1, -1);
 
 
-        _el.getElement("height")->keyWentUp.connect(SLOT(this,ResizeFilterPanel::filterChanged));
-        _el.getElement("width")->keyWentUp.connect(SLOT(this,ResizeFilterPanel::filterChanged));
+        _el.getElement("height")->keyWentUp().connect(SLOT(this,ResizeFilterPanel::filterChanged));
+        _el.getElement("width")->keyWentUp().connect(SLOT(this,ResizeFilterPanel::filterChanged));
 
       }
 

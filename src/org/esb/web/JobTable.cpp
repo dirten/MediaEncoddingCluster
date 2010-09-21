@@ -10,7 +10,6 @@
 #include "JobTableModel.h"
 
 #include "org/esb/config/config.h"
-#include "Wt/WTimer"
 #include "Wt/WCompositeWidget"
 namespace org {
   namespace esb {
@@ -59,6 +58,7 @@ namespace org {
                 "return val;"
                 "}";
         setRenderer(7, renderer);
+        /*
         std::string element=doSome_.createCall("'test'","42");
         //element.replace("\'","\\\'");
         LOGDEBUG("Element:"<<element);
@@ -66,11 +66,11 @@ namespace org {
                 "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', 42);\\\">val</a>\""
                 "}";
         setRenderer(2, renderer);
-
-       Wt::WTimer *timer = new Wt::WTimer();
+        */
+      timer = new Wt::WTimer();
       timer->setInterval(2000);
-      timer->timeout.connect(SLOT(this, JobTable::refresh));
-//      timer->start();
+      timer->timeout().connect(SLOT(this, JobTable::refresh));
+      timer->start();
       
       }
       /*
@@ -85,7 +85,7 @@ namespace org {
         LOGDEBUG("JobTable::refresh()")
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
 
-        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).orderBy(db::Job::Id, false).all();
+        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
 //        _model->refresh(jobs);
       }
 
@@ -95,6 +95,8 @@ namespace org {
 
       JobTable::~JobTable() {
         LOGDEBUG("JobTable::~JobTable()");
+        delete timer;
+        timer=NULL;
       }
 
     }

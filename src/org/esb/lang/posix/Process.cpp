@@ -19,8 +19,8 @@ namespace org {
 
       Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
         _processId = 0;
-        _running=false;
-        _restartable=false;
+        _running = false;
+        _restartable = false;
       }
 
       Process::Process(const Process& orig) {
@@ -55,33 +55,43 @@ namespace org {
           /**
            * wait for child process exit
            * */
-          _running=true;
+          _running = true;
 
           LOGDEBUG("pid=" << _processId);
           int status = 0;
           waitpid(_processId, &status, 0);
-          LOGDEBUG("client exited:" << status);
+          LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
+          _running = false;
+          if (_restartable) {
+            run(_restartable);
+          }
         }
       }
 
       void Process::run(bool restart) {
-        _restartable=restart;
+        _restartable = restart;
         boost::thread(boost::bind(&Process::start, this));
       }
 
       void Process::stop() {
+        if (!_running)
+          throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
+        _restartable = false;
         int result = ::kill(_processId, 15);
         if (result != 0)
           throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
-        _running=false;
+        _running = false;
 
       }
 
       void Process::kill() {
+        if (!_running)
+          throw ProcessException(std::string("could not kill the process: ").append(_executable).append(" - process not running"));
+        _restartable = false;
         int result = ::kill(_processId, 9);
         if (result != 0)
           throw ProcessException(std::string("could not kill the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
-        _running=false;
+        _running = false;
       }
     }
   }

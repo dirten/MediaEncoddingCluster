@@ -16,6 +16,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 #include "org/esb/lang/Exception.h"
 #include "org/esb/util/Log.h"
 #include "Defaults.cpp"
+#include <stdlib.h>
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
@@ -55,43 +56,10 @@ bool Config::init(const std::string & filename) {
   }else{
 //    return false;
   }
-  /*load params from database*/
-  LOGDEBUG("DbConnection:"<<getProperty("db.url"));
-  try {
-    if (std::string(getProperty("db.url")).length() > 0) {
-      LOGDEBUG("loading config from db");
-      
-      db::HiveDb db("mysql",getProperty("db.url"));
-      vector<db::Config> configs=litesql::select<db::Config>(db).all();
-      vector<db::Config>::iterator confit=configs.begin();
-      for(;confit!=configs.end();confit++){
-        if ((*confit).configkey != "db.url" &&
-            (*confit).configkey != "mode.client" &&
-            (*confit).configkey != "mode.server" &&
-            (*confit).configkey != "hive.base_path" &&
-            (*confit).configkey != "hive.mode") {
-          properties->setProperty((*confit).configkey, (*confit).configval);
-          LOGDEBUG("ConfigKey:" << (*confit).configkey << " ConfigVal:" << (*confit).configval);
-        }
-      } 
-    }
-  } catch (...) {
-    LOGERROR("cant load configuration from database");
-    return false;
-  }
   return true;
 }
 
 void Config::save2db() {
-  db::HiveDb db("mysql",getProperty("db.url"));
-
-  std::vector<std::pair<std::string, std::string > > ar = properties->toArray();
-  std::vector<std::pair<std::string, std::string > >::iterator it = ar.begin();
-  for (; it != ar.end(); it++) {
-    db::Config c(db);
-    c.configkey=it->first;
-    c.configval=it->second;
-  }
 }
 
 /**
@@ -102,12 +70,13 @@ const char * Config::getProperty(const char * key, const char * def) {
   return (char*) properties->getProperty(key);
 }
 
-std::string Config::get(std::string& key, std::string& def) {
+std::string Config::get(std::string key, std::string def) {
+  if(getenv(key.c_str())!=NULL)return getenv(key.c_str());
   if (!properties || !properties->hasProperty(key))return def;
   return properties->getProperty(key);
 }
 
-void Config::setProperty(const char * key, const char * val) {
+void Config::setProperty(std::string key, std::string val) {
   properties->setProperty(key, val);
 }
 
@@ -139,3 +108,24 @@ void Config::parseLine(const char*line) {
 //}}}
 
 
+/*
+
+ #include <stdio.h>
+
+int main(int argc, char *argv[], char *envp[])
+{
+  char **next = envp;
+
+  while (*next)
+  {
+    printf("%s\n", *next);
+    next++;
+  }
+  return 0;
+
+
+}
+
+
+
+ */

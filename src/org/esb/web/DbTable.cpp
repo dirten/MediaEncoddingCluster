@@ -21,10 +21,10 @@ namespace org{
           setColumnWidth(a,(*confit).getWidth());
         }
         _clickCount=0;
-        cellClicked.connect(SLOT(this,DbTable::itemSelected));
+        cellClicked().connect(SLOT(this,DbTable::itemSelected));
         doubleClickTimer=new Wt::WTimer(this);
         doubleClickTimer->setInterval(200);
-        doubleClickTimer->timeout.connect(SLOT(this, DbTable::emitClickCount));
+        doubleClickTimer->timeout().connect(SLOT(this, DbTable::emitClickCount));
 
       }
       DbTable::DbTable(list<ColumnConfig> cc,const std::string & sql,Wt::WContainerWidget * parent): 
@@ -45,10 +45,10 @@ namespace org{
           setColumnWidth(a,(*confit).getWidth());
         }
         _clickCount=0;
-        cellClicked.connect(SLOT(this,DbTable::itemSelected));
+        cellClicked().connect(SLOT(this,DbTable::itemSelected));
         doubleClickTimer=new Wt::WTimer(this);
         doubleClickTimer->setInterval(200);
-        doubleClickTimer->timeout.connect(SLOT(this, DbTable::emitClickCount));
+        doubleClickTimer->timeout().connect(SLOT(this, DbTable::emitClickCount));
 
       }
       DbTableModel * DbTable::getModel(){

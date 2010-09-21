@@ -10,21 +10,23 @@
 
 #include <Wt/Ext/TableView>
 #include "org/esb/lang/Ptr.h"
-#include "Wt/WJavaScript"
+#include "Wt/WTimer"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace web {
       class JobTableModel;
       class JobTable:public Wt::Ext::TableView {
+        classlogger("org.esb.web.JobTable");
       public:
         JobTable();
         JobTable(const JobTable& orig);
         virtual ~JobTable();
+        void refresh();
         Wt::JSignal<std::string,int>& doSome();
-
       private:
         Ptr<JobTableModel> _model;
-        void refresh();
+        Wt::WTimer *timer;
         void rowSelected();
         Wt::JSignal<std::string,int> doSome_;
 

@@ -35,7 +35,7 @@ namespace org {
           //          t->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
           //          t->setTopToolBar(new Wt::Ext::ToolBar());
 
-          profile_table->itemSelectionChanged.connect(SLOT(this, Profiles::enableButton));
+          profile_table->itemSelectionChanged().connect(SLOT(this, Profiles::enableButton));
           profile_table->doubleClicked.connect(SLOT(this, Profiles::editProfile));
           profile_table->setTopToolBar(new Wt::Ext::ToolBar());
 
@@ -43,11 +43,11 @@ namespace org {
 
           buttonEdit = profile_table->topToolBar()->addButton("Edit selected Profile");
           buttonEdit->setEnabled(false);
-          buttonEdit->clicked.connect(SLOT(this, Profiles::editProfile));
+          buttonEdit->clicked().connect(SLOT(this, Profiles::editProfile));
           profile_table->topToolBar()->addSeparator();
           buttonDelete = profile_table->topToolBar()->addButton("Delete selected Profile");
           buttonDelete->setEnabled(false);
-          buttonDelete->clicked.connect(SLOT(this, Profiles::deleteProfile));
+          buttonDelete->clicked().connect(SLOT(this, Profiles::deleteProfile));
         }
 
         void enableButton() {

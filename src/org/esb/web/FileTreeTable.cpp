@@ -8,7 +8,7 @@
 #include "FileTreeTable.h"
 #include "FileTreeTableNode.h"
 
-#include <Wt/WMessage>
+//#include <Wt/WMessage>
 #include <Wt/WWidget>
 #include <Wt/WText>
 #include <Wt/WTree>

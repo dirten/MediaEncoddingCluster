@@ -19,10 +19,10 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   Wt::Ext::MenuItem *item;
   Wt::Ext::Button * button;
 
-  menu = new Wt::Ext::Menu();
-  org::esb::web::v2::ProjectWizard *wiz=new org::esb::web::v2::ProjectWizard();
-  item = menu->addItem("ProjectWizard...",wiz,&org::esb::web::v2::ProjectWizard::open);
-  toolbar->addButton("V2 Gui", menu);
+//  menu = new Wt::Ext::Menu();
+//  org::esb::web::v2::ProjectWizard *wiz=new org::esb::web::v2::ProjectWizard();
+//  item = menu->addItem("ProjectWizard...",wiz,&org::esb::web::v2::ProjectWizard::open);
+//  toolbar->addButton("V2 Gui", menu);
 
   menu = new Wt::Ext::Menu();
   

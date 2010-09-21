@@ -72,21 +72,21 @@ namespace org{
         _profile_table->setHighlightMouseOver(true);
         _profile_table->setSelectionBehavior(Wt::SelectRows);
         _profile_table->setSelectionMode(Wt::SingleSelection);
-        _profile_table->itemSelectionChanged.connect(SLOT(this, ProfilePanel::enableButtons));
+        _profile_table->itemSelectionChanged().connect(SLOT(this, ProfilePanel::enableButtons));
         layout()->addWidget(_profile_table.get());
 
         Wt::Ext::Button * addProfileButton = topToolBar()->addButton("Add Output Profile");
         addProfileButton->setIcon("icons/add-icon.png");
-        addProfileButton ->clicked.connect(SLOT(this, ProfilePanel::addProfileButtonClicked));
+        addProfileButton ->clicked().connect(SLOT(this, ProfilePanel::addProfileButtonClicked));
         topToolBar()->addSeparator();
         editProfileButton = topToolBar()->addButton("Edit Output Profile");
         editProfileButton->setIcon("icons/edit-icon.png");
-        editProfileButton ->clicked.connect(SLOT(this, ProfilePanel::editSelectedProfile));
+        editProfileButton ->clicked().connect(SLOT(this, ProfilePanel::editSelectedProfile));
         editProfileButton->setEnabled(false);
         topToolBar()->addSeparator();
         removeProfileButton = topToolBar()->addButton("Remove Output Profile");
         removeProfileButton->setIcon("icons/remove-icon.png");
-        removeProfileButton ->clicked.connect(SLOT(this, ProfilePanel::removeSelectedProfile));
+        removeProfileButton ->clicked().connect(SLOT(this, ProfilePanel::removeSelectedProfile));
         removeProfileButton->setEnabled(false);
       }
 

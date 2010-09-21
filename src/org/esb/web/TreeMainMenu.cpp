@@ -42,10 +42,10 @@ namespace org {
 //        labelIcon->icon1()->resize(30, 30);
 //        labelIcon->icon2()->resize(30, 30);
         Wt::WTreeNode *node = new Wt::WTreeNode(label, labelIcon, parentNode);
-        node->label()->setFormatting(Wt::WText::PlainFormatting);
-        node->label()->clicked.connect(_parent, f);
-        node->labelIcon()->icon1Clicked.connect(_parent, f);
-        node->labelIcon()->icon2Clicked.connect(_parent, f);
+        node->label()->setTextFormat(Wt::PlainText);
+        node->label()->clicked().connect(_parent, f);
+        node->labelIcon()->icon1Clicked().connect(_parent, f);
+        node->labelIcon()->icon2Clicked().connect(_parent, f);
         node->labelIcon()->setStyleClass("licon");
         node->setSelectable(true);
         return node;

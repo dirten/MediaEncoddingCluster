@@ -38,7 +38,7 @@ struct FileComparator {
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
 : WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
 path_(path), _filter(NULL) {
-  label()->setFormatting(WText::PlainFormatting);
+  label()->setTextFormat(PlainText);
 
   if (boost::filesystem::exists(path)) {
     /*
@@ -83,7 +83,7 @@ FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::e
 : WTreeTableNode(Wt::widen(path.leaf() == "/" ? path.root_name() : path.leaf()), createIcon(path)),
 path_(path), _filter(&filter) {
   //	std::cout <<"Path:"<<path_.root_name()<<std::endl;
-  label()->setFormatting(WText::PlainFormatting);
+  label()->setTextFormat(PlainText);
 
   if (boost::filesystem::exists(path)) {
     /*

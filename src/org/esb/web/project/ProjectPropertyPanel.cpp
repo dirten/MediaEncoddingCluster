@@ -25,7 +25,7 @@ namespace org{
         _el.addElement("outdir", "Output Directory", "", static_cast<Wt::WGridLayout*>(cont->layout()))->setEnabled(false);
 
         Wt::Ext::Button * selectOutDirectory = new Wt::Ext::Button("Select Directory");
-        selectOutDirectory->clicked.connect(SLOT(this, ProjectPropertyPanel::openOutfolder));
+        selectOutDirectory->clicked().connect(SLOT(this, ProjectPropertyPanel::openOutfolder));
         l->addWidget(selectOutDirectory, 2, 2);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);

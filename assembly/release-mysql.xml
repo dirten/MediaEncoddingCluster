@@ -18,7 +18,7 @@
       <directory>source/build/mysql/lib/mysql</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>libmysqld.a</include>
+        <include>libmysqlclient.a</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -61,6 +61,8 @@
       <outputDirectory>share/</outputDirectory>
       <includes>
         <include>english/*.*</include>
+        <include>mysql_system_tables.sql</include>
+        <include>mysql_system_tables_data.sql</include>
       </includes>
     </fileSet>
   </fileSets>

@@ -24,6 +24,8 @@ namespace org {
             class WebApp2 : public Wt::WApplication {
             public:
                 WebApp2(const Wt::WEnvironment & env);
+                //~WebApp2();
+
                 //            private:
                 void listProjects();
                 void createProject();

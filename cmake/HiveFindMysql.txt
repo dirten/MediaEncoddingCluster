@@ -17,52 +17,7 @@ FIND_PATH(MYSQL_INCLUDE_DIR
   NO_DEFAULT_PATH
 )
 
-IF(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
     SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
-    FIND_LIBRARY(MYSQL_LIBRARY
-        NAMES
-          mysqld
-          libmysqld
-          mysqlserver
-        PATHS
-          ${MYSQL_LIB_DIR}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/mysql)
-    FIND_LIBRARY(MYSQL_LIBRARY
-        NAMES
-          mysqld
-          libmysqld
-        PATHS
-          ${MYSQL_LIB_DIR}
-        NO_DEFAULT_PATH
-      )
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
-    FIND_LIBRARY(MYSQL_LIBRARY
-        NAMES
-          mysqld
-          libmysqld
-        PATHS
-          ${MYSQL_LIB_DIR}
-        NO_DEFAULT_PATH
-      )
-  ENDIF(WIN32)
-ELSE(USE_EMBEDDED_MYSQL)
-  IF(WIN32)
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib)
-    FIND_LIBRARY(MYSQL_LIBRARY
-        NAMES
-          mysql
-          libmysql
-          libmysqld
-        PATHS
-          ${MYSQL_LIB_DIR}
-        NO_DEFAULT_PATH
-      )
-  ELSE(WIN32)
-    SET(MYSQL_LIB_DIR ${MYSQL_DIR}/lib/mysql)
     FIND_LIBRARY(MYSQL_LIBRARY
         NAMES
           mysqlclient
@@ -71,9 +26,7 @@ ELSE(USE_EMBEDDED_MYSQL)
           ${MYSQL_LIB_DIR}
         NO_DEFAULT_PATH
       )
-  ENDIF(WIN32)
 
-ENDIF(USE_EMBEDDED_MYSQL)
 #MESSAGE("MysqlLibDir" ${MYSQL_LIB_DIR})
 SET(MYSQL_LIBRARY_DIR ${MYSQL_LIB_DIR})
 #MESSAGE("MysqlLibDir" ${MYSQL_LIBRARY_DIR})

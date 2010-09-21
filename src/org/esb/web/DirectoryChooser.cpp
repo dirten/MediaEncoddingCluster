@@ -20,8 +20,8 @@ namespace org {
         Wt::WTable * b = new Wt::WTable(contents());
         Wt::Ext::Button *cancel = new Wt::Ext::Button("Cancel", b->elementAt(0, 0));
         Wt::Ext::Button *save = new Wt::Ext::Button("Select Directory", b->elementAt(0, 1));
-        cancel->clicked.connect(SLOT(this, DirectoryChooser::cancel));
-        save->clicked.connect(SLOT(this, DirectoryChooser::select));
+        cancel->clicked().connect(SLOT(this, DirectoryChooser::cancel));
+        save->clicked().connect(SLOT(this, DirectoryChooser::select));
 
 
       }

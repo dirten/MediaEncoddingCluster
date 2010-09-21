@@ -26,12 +26,12 @@ namespace org {
 //        tree->resize(380, 300);
         setAutoScrollBars(true);
         addButton(new Wt::Ext::Button("Refresh"));
-        buttons().back()->clicked.connect(SLOT(this, FileChooser::ownrefresh));
+        buttons().back()->clicked().connect(SLOT(this, FileChooser::ownrefresh));
         addButton(new Wt::Ext::Button("Select File"));
-        buttons().back()->clicked.connect(SLOT(this, FileChooser::accept));
+        buttons().back()->clicked().connect(SLOT(this, FileChooser::accept));
 
         addButton(new Wt::Ext::Button("Cancel"));
-        buttons().back()->clicked.connect(SLOT(this, FileChooser::cancel));
+        buttons().back()->clicked().connect(SLOT(this, FileChooser::cancel));
 
       }
       FileChooser::~FileChooser(){

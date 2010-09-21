@@ -4,6 +4,7 @@
  *
  * Created on 14. Juli 2010, 14:36
  */
+#include "config.h"
 
 #include <cstdlib>
 //#include "litesql.hpp"
@@ -18,7 +19,10 @@ using namespace std;
  */
 int main(int argc, char** argv) {
   Log::open("");
-  org::esb::config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
+   std::string host = "host=";
+  host += DEFAULT_DATABASE_HOST;
+  host += ";user=root;port=3306;database=example";
+  org::esb::config::Config::setProperty("db.url", host.c_str());
 
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
   if(org::esb::hive::DatabaseService::databaseExist()){

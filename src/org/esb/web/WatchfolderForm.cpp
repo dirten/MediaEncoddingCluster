@@ -40,12 +40,12 @@ namespace org {
         Wt::Ext::Button * selectInDirectory = new Wt::Ext::Button("Select Directory");
         //        selectInDirectory->resize(Wt::WLength::Auto, 30);
         l->addWidget(selectInDirectory, 1, 2);
-        selectInDirectory->clicked.connect(SLOT(this, WatchfolderForm::openInfolder));
+        selectInDirectory->clicked().connect(SLOT(this, WatchfolderForm::openInfolder));
 
         _le.addElement("outfolder", "Output Folder", folder.outfolder, l)->setEnabled(false);
         Wt::Ext::Button * selectOutDirectory = new Wt::Ext::Button("Select Directory");
         l->addWidget(selectOutDirectory, 2, 2);
-        selectOutDirectory->clicked.connect(SLOT(this, WatchfolderForm::openOutfolder));
+        selectOutDirectory->clicked().connect(SLOT(this, WatchfolderForm::openOutfolder));
 
         Wt::Ext::ComboBox * profiles = _cb.addElement("profile", "Encoding Profile", "", l);
         profiles->setTextSize(50);
@@ -79,22 +79,22 @@ namespace org {
         //        new Wt::WBreak(parent);
         //        Wt::WTable * b = new Wt::WTable(parent);
         addButton(new Wt::Ext::Button("Save"));
-        buttons().back()->clicked.connect(SLOT(this, WatchfolderForm::save));
+        buttons().back()->clicked().connect(SLOT(this, WatchfolderForm::save));
 
         addButton(new Wt::Ext::Button("Cancel"));
-        buttons().back()->clicked.connect(SLOT(this, WatchfolderForm::cancel));
+        buttons().back()->clicked().connect(SLOT(this, WatchfolderForm::cancel));
         std::map<std::string, Wt::Ext::LineEdit*> lel = _le.getElements();
         std::map<std::string, Wt::Ext::LineEdit*>::iterator it = lel.begin();
         for (; it != lel.end(); it++) {
-          (*it).second->keyPressed.connect(SLOT(this,WatchfolderForm::changed));
-          (*it).second->keyWentUp.connect(SLOT(this,WatchfolderForm::changed));
+          (*it).second->keyPressed().connect(SLOT(this,WatchfolderForm::changed));
+          (*it).second->keyWentUp().connect(SLOT(this,WatchfolderForm::changed));
           
         }
         std::map<std::string, Wt::Ext::ComboBox*> lec = _cb.getElements();
         std::map<std::string, Wt::Ext::ComboBox*>::iterator itc = lec.begin();
         for (; itc != lec.end(); itc++) {
-          (*itc).second->keyPressed.connect(SLOT(this,WatchfolderForm::changed));
-          (*itc).second->activated.connect(SLOT(this,WatchfolderForm::changed));
+          (*itc).second->keyPressed().connect(SLOT(this,WatchfolderForm::changed));
+          (*itc).second->activated().connect(SLOT(this,WatchfolderForm::changed));
 
         }
 

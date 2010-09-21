@@ -50,13 +50,13 @@ namespace org {
 
 
           addButton(new Wt::Ext::Button("Cancel"));
-          buttons().back()->clicked.connect(SLOT(this, ProjectWizard::cancel));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::cancel));
           buttons().back()->setIcon("icons/remove-icon.png");
           addButton(new Wt::Ext::Button("Save"));
-          buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save));
           buttons().back()->setIcon("icons/accept-icon.png");
           addButton(new Wt::Ext::Button("Save & start Encoding"));
-          buttons().back()->clicked.connect(SLOT(this, ProjectWizard::save_and_start));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save_and_start));
           buttons().back()->setIcon("icons/process-accept-icon.png");
         }
 

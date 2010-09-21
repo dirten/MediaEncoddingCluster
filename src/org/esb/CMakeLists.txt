@@ -30,7 +30,10 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-add_library (db db/hivedb.cpp orm/hivedb.cpp
+add_library (db 
+  db/hivedb.cpp
+  db/DatabaseConfigLoader.cpp
+  db/DatabaseBootstrap.cpp
 #            av/FrameConverter.cpp
 #            av/FrameOutputStream.cpp
 #            av/FormatInputStream.cpp
@@ -49,7 +52,7 @@ add_library (db db/hivedb.cpp orm/hivedb.cpp
 #            av/StreamInfo.cpp
 #
 )
-TARGET_LINK_LIBRARIES(db ${MYSQL_LIBRARY} )
+TARGET_LINK_LIBRARIES(db lang esb)
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
 ELSEIF(WIN32)
@@ -66,6 +69,7 @@ IF(BUILD_SHARED_LIBS)
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
+TARGET_LINK_LIBRARIES(db ${MYSQL_LIBRARY})
 
 
 add_library (orm orm/hivedb.cpp)
@@ -395,7 +399,7 @@ ENDIF(WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb util db)
+TARGET_LINK_LIBRARIES(esb util)
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS esb
     RUNTIME DESTINATION bin

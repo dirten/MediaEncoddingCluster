@@ -40,7 +40,7 @@ namespace org {
           cc.push_back(ColumnConfig(db::Watchfolder::Outfolder,"Output Folder",200));
 
           tab=new DbTable(cc, litesql::Expr());
-          tab->itemSelectionChanged.connect(SLOT(this, WatchFolder::enableEditButton));
+          tab->itemSelectionChanged().connect(SLOT(this, WatchFolder::enableEditButton));
           tab->setTopToolBar(new Wt::Ext::ToolBar());
           tab->doubleClicked.connect(SLOT(this, WatchFolder::editWatchFolder));
           layout()->addWidget(tab);
@@ -49,7 +49,7 @@ namespace org {
           //          tab->resize(Wt::WLength(), 300);
 
           buttonEdit = tab->topToolBar()->addButton("Edit selected Watch Folder");
-          buttonEdit->clicked.connect(SLOT(this, WatchFolder::editWatchFolder));
+          buttonEdit->clicked().connect(SLOT(this, WatchFolder::editWatchFolder));
           tab->topToolBar()->addSeparator();
           buttonDelete = tab->topToolBar()->addButton("Delete selected Watch Folder");
           buttonEdit->setEnabled(false);

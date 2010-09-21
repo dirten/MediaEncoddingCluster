@@ -9,12 +9,16 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/hive/ExportScanner.h"
+#include "org/esb/hive/CodecFactory.h"
+#include "org/esb/av/FormatBaseStream.h"
+
 int main(int argc, char** argv) {
   Log::open("");
   org::esb::io::File base("..");
-  LOGDEBUG("BasePath="<<base.getPath());
+  LOGDEBUG("BasePath=" << base.getPath());
   string base_path = base.getPath();
-  org::esb::config::Config::setProperty("hive.base_path",base_path.c_str());
+  org::esb::av::FormatBaseStream::initialize();
+  org::esb::config::Config::setProperty("hive.base_path", base_path.c_str());
   /**setting internal db url*/
   org::esb::config::Config::setProperty("db.url", "host=localhost;database=hive;user=root;port=3306");
   /**starting the internal database service*/
@@ -22,10 +26,15 @@ int main(int argc, char** argv) {
   if (!org::esb::hive::DatabaseService::databaseExist()) {
     org::esb::hive::DatabaseService::createDatabase();
     org::esb::hive::DatabaseService::createTables();
-    
+    org::esb::hive::DatabaseService::loadPresets();
   }
   org::esb::hive::DatabaseService::updateTables();
-  org::esb::hive::DatabaseService::loadPresets();
+  
+  if (!org::esb::config::Config::init("")) {
+    LOGERROR("could not load config from Database, exiting!!!");
+    exit(1);
+  }
+
   org::esb::web::WebServer webserver;
   org::esb::signal::Messenger::getInstance().addMessageListener(webserver);
 
@@ -41,4 +50,17 @@ int main(int argc, char** argv) {
   org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("exportscanner", org::esb::hive::START));
 
   org::esb::lang::CtrlCHitWaiter::wait();
+  LOGINFO("shutdown app, this will take some time!");
+  /*
+   *
+   * Stopping Application Services from configuration
+   *
+   */
+  org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("exportscanner", org::esb::hive::STOP));
+  org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("processunitcontroller", org::esb::hive::STOP));
+  org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("webserver", org::esb::hive::STOP));
+  org::esb::hive::CodecFactory::free();
+  org::esb::hive::DatabaseService::stop();
+  org::esb::signal::Messenger::free();
+
 }

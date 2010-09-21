@@ -133,14 +133,14 @@ namespace org {
         //layout->addWidget(mainmenu, Wt::WBorderLayout::West);
 
         /*begin Footer Panel*/
-        Wt::Ext::Panel *footer = new Wt::Ext::Panel();
-        footer->setBorder(false);
-        Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
-        head->setStyleClass("north");
-        footer->setResizable(true);
-        footer->setLayout(new Wt::WFitLayout());
-        footer->layout()->addWidget(head);
-        footer->resize(Wt::WLength(), 35);
+//        Wt::Ext::Panel *footer = new Wt::Ext::Panel();
+//        footer->setBorder(false);
+        //Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
+        //head->setStyleClass("north");
+//        footer->setResizable(true);
+//        footer->setLayout(new Wt::WFitLayout());
+//        footer->layout()->addWidget(head);
+//        footer->resize(Wt::WLength(), 35);
         //layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
         object_panel = new Wt::Ext::Panel();
@@ -161,7 +161,7 @@ namespace org {
         _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
          */
         _jobSignalMap = new Wt::WSignalMapper<JobTable *>(this);
-        _jobSignalMap->mapped.connect(SLOT(this, WebApp2::jobSelected));
+        _jobSignalMap->mapped().connect(SLOT(this, WebApp2::jobSelected));
       }
 
       void WebApp2::openPreview() {
@@ -169,7 +169,7 @@ namespace org {
         dil->contents()->addWidget(new PreviewPanel());
 
         dil->addButton(new Wt::Ext::Button("Cancel"));
-        dil->buttons().back()->clicked.connect(SLOT(dil, Wt::Ext::Dialog::reject));
+        dil->buttons().back()->clicked().connect(SLOT(dil, Wt::Ext::Dialog::reject));
 
         dil->show();
 
@@ -310,7 +310,7 @@ namespace org {
         view->setRenderer(6, renderer);
        */
         JobTable *table=new JobTable();
-        _jobSignalMap->mapConnect(table->itemSelectionChanged, table);
+        _jobSignalMap->mapConnect(table->itemSelectionChanged(), table);
         setContent(table);
 
       }

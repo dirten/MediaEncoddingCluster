@@ -206,7 +206,7 @@ if (UNIX)
         )
     else (APPLE)
         SET(SOURCES  ${SOURCES}
-           src/common/linux/google_crashdump_uploader.cc
+#           src/common/linux/google_crashdump_uploader.cc
            src/client/linux/crash_generation/crash_generation_client.cc 
 	   src/client/linux/crash_generation/crash_generation_server.cc 
 	   src/client/linux/handler/exception_handler.cc 

@@ -38,6 +38,7 @@ namespace org {
     namespace hive {
       bool DatabaseService::_running = false;
       std::string DatabaseService::_base_path;
+      Ptr<org::esb::lang::Process> DatabaseService::_dbServer;
       std::map<boost::thread::id,int> DatabaseService::_thread_map;
       DatabaseService::DatabaseService(std::string base_path) {
         _base_path = base_path;
@@ -54,7 +55,26 @@ namespace org {
       }
 
       void DatabaseService::start(std::string base_path) {
+        _base_path=base_path;
         LOGINFO("starting Database Service");
+        std::string mysql_bin=org::esb::config::Config::get("MYSQLD_BIN");
+        std::string mysql_data=org::esb::config::Config::get("MYSQL_DATA");
+        std::string mysql_lang=org::esb::config::Config::get("MYSQL_LANG");
+
+        std::list<std::string> args;
+//        args.push_back(std::string("-c"));
+//        args.push_back(std::string("../target/dependency/bin/mysqld --verbose --bootstrap --datadir=. < /home/HoelscJ/devel/mec/sql/CreateDatabase.sql.sql"));
+        args.push_back(std::string("--verbose"));
+//        args.push_back(std::string("--bootstrap"));
+        args.push_back("--datadir="+mysql_data);
+        args.push_back("--language="+mysql_lang);
+        args.push_back(std::string("--socket=/tmp/mysql.sock"));
+//        args.push_back(std::string("</home/HoelscJ/devel/mec/sql/CreateDatabase.sql"));
+
+        _dbServer=new org::esb::lang::Process(mysql_bin, args);
+        _dbServer->run();
+        org::esb::lang::Thread::sleep2(1000);
+        return;
         if (_running == false) {
           _base_path=base_path;
           std::string lang = "--language=";
@@ -212,7 +232,9 @@ namespace org {
         LOGINFO("stopping Database Service");
         if (_running)
           mysql_library_end();
+        _dbServer->stop();
         _running = false;
+        org::esb::lang::Thread::sleep2(1000);
       }
 
       void DatabaseService::thread_init() {

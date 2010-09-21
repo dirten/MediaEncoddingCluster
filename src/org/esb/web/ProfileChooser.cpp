@@ -59,10 +59,10 @@ namespace org{
         _profile_table->setSelectionBehavior(Wt::SelectRows);
         _profile_table->setSelectionMode(Wt::SingleSelection);
         addButton(new Wt::Ext::Button("Select Profile"));
-        buttons().back()->clicked.connect(SLOT(this, ProfileChooser::choose));
+        buttons().back()->clicked().connect(SLOT(this, ProfileChooser::choose));
 
         addButton(new Wt::Ext::Button("Cancel"));
-        buttons().back()->clicked.connect(SLOT(this, ProfileChooser::cancel));
+        buttons().back()->clicked().connect(SLOT(this, ProfileChooser::cancel));
 
       }
 

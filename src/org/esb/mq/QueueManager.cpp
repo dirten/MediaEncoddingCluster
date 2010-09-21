@@ -19,6 +19,8 @@
 
 #include "QueueManager.h"
 #include "org/esb/io/File.h"
+#include "org/esb/io/FileOutputStream.h"
+#include "org/esb/config/config.h"
 Config * pcfg = NULL;
 QManager * theQueueManager = NULL;
 const std::string			system_user("safmq_system");
@@ -30,17 +32,27 @@ namespace org {
     namespace mq {
 
       QueueManager::QueueManager() {
-        org::esb::io::File file("queues");
+        org::esb::io::File file("../queues");
         if(!file.exists()){
           file.mkdir();
         }
-        org::esb::io::File f("dummy.cfg");
-        if(!f.exists())
-          f.createNewFile();
+        org::esb::io::File f("mq.cfg");
+        if(!f.exists()){
+          org::esb::io::FileOutputStream fos(&f);
+          std::string line;
+          line="port:";
+          line+="20200\n";
+          fos.write(line);
+          line="queue_dir:";
+          line+="../queues\n";
+          fos.write(line);
+          fos.close();          
+        }
         numForwardThreads = 1;
         _running=false;
         try {
-          pcfg = new Config("dummy.cfg");
+          pcfg = new Config("mq.cfg");
+//          std::string port=pcfg->getParam("port");
         } catch (int) {
           safmq::Log::getLog()->Startup(safmq::Log::error, "Unable to load configuration file.");
         }
@@ -76,6 +88,12 @@ namespace org {
         pcfg=NULL;
       }
       void QueueManager::createQueue(std::string name) {
+      }
+
+      std::string QueueManager::getUrl() {
+        std::string url="safmq://admin:@localhost:";
+        url+=pcfg->getParam("port", "9000");
+        return url;
       }
 
       void QueueManager::start() {
@@ -114,7 +132,7 @@ namespace org {
         //Log::getLog()->Info("Shutting down SAFMQ, freeing theQueueManager");
         //delete theQueueManager;
 
-        Log::getLog()->Shutdown();
+        safmq::Log::getLog()->Shutdown();
         _running=false;
       }
     }

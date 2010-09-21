@@ -66,8 +66,8 @@ WebServer::WebServer() : server("test") {
 
   server.setServerConfiguration(10, const_cast<char**>(args), WTHTTP_CONFIGURATION);
 
-  server.addEntryPoint(WServer::Application, &createApp);
-//  server.addEntryPoint(WServer::Application, &createSetup, "setup");
+  server.addEntryPoint(Application, &createApp, "/");
+  //server.addEntryPoint(Application, &createSetup, "/setup");
   //  server.addEntryPoint(WServer::Application, &createTestApp, "test");
   //  logdebug(typeid(*this).name());
 }

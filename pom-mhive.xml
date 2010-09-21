@@ -148,7 +148,7 @@
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
-  	    </tasks>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -160,7 +160,10 @@
             <configuration>
               <tasks>
                 <mkdir dir="build"/>
-
+                
+                <patch patchfile="src/patch/mysql_system_tables.patch" dir="target/dependency/share" strip="1"/>
+                <patch patchfile="src/patch/mysql_system_tables_data.patch" dir="target/dependency/share" strip="1"/>
+                
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
@@ -224,7 +227,7 @@
             <id>package</id>
             <configuration>
               <tasks>
-		    <chmod file="${project.build.directory}/dependency/bin/dump_syms" perm="ugo+rx"/>
+                <chmod file="${project.build.directory}/dependency/bin/dump_syms" perm="ugo+rx"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="uploadsymbols"/>
                 </exec>
@@ -259,7 +262,7 @@
     <dependency>
       <groupId>org.esb.wt</groupId>
       <artifactId>wt</artifactId>
-      <version>2.2.4</version>
+      <version>3.1.4</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

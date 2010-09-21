@@ -55,7 +55,7 @@ namespace org {
         _scale_factor = 75;
 
         _buttonSignalMap = new Wt::WSignalMapper<Wt::Ext::Component*>(this);
-        _buttonSignalMap->mapped.connect(SLOT(this, PreviewPanel::controllerButtonClicked));
+        _buttonSignalMap->mapped().connect(SLOT(this, PreviewPanel::controllerButtonClicked));
 
         Wt::Ext::ToolBar *toolbar = new Wt::Ext::ToolBar();
         setTopToolBar(toolbar);
@@ -88,8 +88,8 @@ namespace org {
         _scale_combo->setCurrentIndex(3);
         toolbar->add(_scale_combo);
 
-        _buttonSignalMap->mapConnect(_scale_combo->activated, _scale_combo);
-        _buttonSignalMap->mapConnect(_scale_combo->keyWentUp, _scale_combo);
+        _buttonSignalMap->mapConnect(_scale_combo->activated(), _scale_combo);
+        _buttonSignalMap->mapConnect(_scale_combo->keyWentUp(), _scale_combo);
         _scale_combo->setObjectName("preview_scale");
 
         _buttons["prev10"]->setObjectName("prev10");
@@ -106,14 +106,14 @@ namespace org {
 
 
 
-        _buttonSignalMap->mapConnect(_buttons["prev10"]->clicked, _buttons["prev10"].get());
-        _buttonSignalMap->mapConnect(_buttons["prev"]->clicked, _buttons["prev"].get());
-        _buttonSignalMap->mapConnect(_buttons["next"]->clicked, _buttons["next"].get());
-        _buttonSignalMap->mapConnect(_buttons["next10"]->clicked, _buttons["next10"].get());
+        _buttonSignalMap->mapConnect(_buttons["prev10"]->clicked(), _buttons["prev10"].get());
+        _buttonSignalMap->mapConnect(_buttons["prev"]->clicked(), _buttons["prev"].get());
+        _buttonSignalMap->mapConnect(_buttons["next"]->clicked(), _buttons["next"].get());
+        _buttonSignalMap->mapConnect(_buttons["next10"]->clicked(), _buttons["next10"].get());
 
         image = new Wt::WImage();
         image->setAlternateText("preview image");
-        image->loaded.connect(SLOT(this, PreviewPanel::imageLoaded));
+        image->imageLoaded().connect(SLOT(this, PreviewPanel::imageLoaded));
         layout()->addWidget(image);
         _frameserver = Ptr<PreviewFrameServer > (new PreviewFrameServer());
 
@@ -263,7 +263,7 @@ namespace org {
         //delete f;
         if (picture->getSize() > 0) {
           _imageResource = Ptr<Wt::WMemoryResource > (new Wt::WMemoryResource("image/png"));
-          _imageResource->setData((char*) picture->getData(), picture->getSize());
+          _imageResource->setData( picture->getData(), picture->getSize());
           image->setResource(_imageResource.get());
           image->resize((_encoder->getWidth() * _scale_factor) / 100, (_encoder->getHeight() * _scale_factor) / 100);
         }

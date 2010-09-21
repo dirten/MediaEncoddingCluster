@@ -34,12 +34,12 @@ int main(int argc, char** argv) {
   man.start();
   org::esb::lang::Thread::sleep2(1000);
   {
-  QueueConnection con("safmq://admin:@localhost:9000");
+  QueueConnection con(man.getUrl());
   if(!con.queueExist("testqueue"))
     con.createQueue("testqueue");
   }
   {
-  QueueOutputStream q("safmq://admin:@localhost:9000/testqueue");
+  QueueOutputStream q(man.getUrl()+"/testqueue");
   ObjectOutputStream oos(&q);
   LOGDEBUG("writing 1000 ProcessUnits to the queue");
   ProcessUnit unit;
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     oos.writeObject(unit);
   }
   {
-  QueueInputStream qin("safmq://admin:@localhost:9000/testqueue");
+  QueueInputStream qin(man.getUrl()+"/testqueue");
   ObjectInputStream ois(&qin);
   LOGDEBUG("reading 1000 ProcessUnits to the queue");
     ProcessUnit unit;
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 //  org::esb::lang::Thread::sleep2(10000);
 //  CtrlCHitWaiter::wait();
   {
-  QueueConnection con("safmq://admin:@localhost:9000");
+  QueueConnection con(man.getUrl());
 
   con.deleteQueue("testqueue");
   }

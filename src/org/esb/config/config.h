@@ -31,8 +31,8 @@ namespace org
         static void close();
         static void save2db();
         static const char * getProperty( const char * key, const char * def="");
-        static std::string get(std::string&key, std::string & def);
-        static void setProperty(const char * key, const char * val);
+        static std::string get(std::string key, std::string def=std::string());
+        static void setProperty(std::string key, std::string val);
 
         static Properties * getProperties();
         static void reload();
