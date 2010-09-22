@@ -22,6 +22,7 @@ FIND_PATH(MYSQL_INCLUDE_DIR
         NAMES
           mysqlclient
           libmysqlclient
+          libmysql
         PATHS
           ${MYSQL_LIB_DIR}
         NO_DEFAULT_PATH
