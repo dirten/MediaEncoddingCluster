@@ -19,6 +19,28 @@
       </properties>
     </profile>
     <profile>
+        <activation>
+          <property>
+            <name>build_type</name>
+            <value>debug</value>
+          </property>
+        </activation>
+      <properties>
+        <mysql.lib.dir>Debug</mysql.lib.dir>
+      </properties>
+    </profile>
+    <profile>
+        <activation>
+          <property>
+            <name>build_type</name>
+            <value>release</value>
+          </property>
+        </activation>
+      <properties>
+        <mysql.lib.dir>opt</mysql.lib.dir>
+      </properties>
+    </profile>
+    <profile>
       <id>linux</id>
       <activation>
         <os>
