@@ -19,6 +19,7 @@
       </properties>
     </profile>
     <profile>
+	<id>debug</id>
         <activation>
           <property>
             <name>build_type</name>
@@ -30,6 +31,7 @@
       </properties>
     </profile>
     <profile>
+	<id>relase</id>
         <activation>
           <property>
             <name>build_type</name>
