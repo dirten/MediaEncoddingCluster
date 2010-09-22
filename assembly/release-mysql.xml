@@ -9,8 +9,9 @@
       <directory>source/build/mysql/lib/${mysql.lib.dir}</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>mysqlclient.lib</include>
-        <include>mysqlclient.pdb</include>
+        <include>libmysql.lib</include>
+        <include>libmysql.pdb</include>
+        <include>libmysql.dll</include>
       </includes>
     </fileSet>
     <fileSet>
