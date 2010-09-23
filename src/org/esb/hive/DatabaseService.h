@@ -56,6 +56,7 @@ namespace org {
         static void dropDatabase();
         static void dropTables();
         static void loadPresets();
+        static void bootstrap();
       private:
         static bool _running;
         static std::string _base_path;

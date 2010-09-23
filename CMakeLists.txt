@@ -41,7 +41,7 @@ if(Boost_FOUND)
 endif()
 #MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
-#INCLUDE(cmake/CMakeDeps.txt)
+INCLUDE(cmake/CMakeDeps.txt)
 INCLUDE(cmake/HiveFindMysql.txt)
 INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)

@@ -17,7 +17,7 @@ namespace org {
   namespace esb {
     namespace lang {
 
-      Process::Process(std::string exe, std::list<std::string> args) : _executable(exe), _arguments(args) {
+      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args),_name(name) {
         _processId = 0;
         _running=false;
         _restartable=false;
@@ -46,7 +46,12 @@ namespace org {
           position = _executable.find( "/", position + 1 );
         } 
 
-        std::string a=(_executable+" "+args);
+        std::string a;
+        if(_name.length()==0){
+          a+=(_executable+" "+args);
+        }else{
+          _name+" "+args;
+        }
         char *vip = const_cast<char*>(a.c_str());
 
         BOOL bWorked;

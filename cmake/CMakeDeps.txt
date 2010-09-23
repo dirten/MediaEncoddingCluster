@@ -6,21 +6,22 @@ ENDIF()
 #file(DOWNLOAD url file [TIMEOUT timeout] [STATUS status] [LOG log])
 
 
+set(WGET wget)
+MACRO (DOWNLOAD_PACKAGE infile outfile)
+MESSAGE("Downloading ${infile} with ${WGET}")
+ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_SOURCE_DIR}/${outfile}
+	           COMMAND ${WGET}
+                   ARGS ${infile}
+                        ${PROJECT_SOURCE_DIR}/${outfile}
+                   MAIN_DEPENDENCY
+		        ${PROJECT_SOURCE_DIR}/${outfile}
 
-MACRO (DOWNLOAD infile outfile)
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
-	           COMMAND ${FILE_TO_STRING_EXE}
-                   ARGS ${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}
-                        ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
-                        ${var}
-		   MAIN_DEPENDENCY
-		        ${CMAKE_CURRENT_SOURCE_DIR}/web/skeleton/${infile}
-                   DEPENDS
-		        filetostring)
-ENDMACRO (FILE_TO_STRING)
+)
+ENDMACRO (DOWNLOAD_PACKAGE)
 
-FILE_TO_STRING(Plain.html    Plain_html.C    Plain_html)
+#FILE_TO_STRING(Plain.html    Plain_html.C    Plain_html)
 add_custom_target(deps
-  DOWNLOAD_PACKAGE test_src testtarget
+  wget http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-noinstall-5.1.48-win32.zip/from/http://ftp.gwdg.de/pub/misc/mysql// testtarget
 #  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/source
 )
+DOWNLOAD_PACKAGE(http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-noinstall-5.1.48-win32.zip/from/http://ftp.gwdg.de/pub/misc/mysql// testtarget)

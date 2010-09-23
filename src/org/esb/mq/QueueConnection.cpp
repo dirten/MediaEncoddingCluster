@@ -12,8 +12,9 @@ namespace org{
           /*url="safmq://admin:@localhost:9000/testqueue"*/
           _connection = safmq::MQFactory::BuildConnection(url, "", "");
         } catch (tcpsocket::SocketException & ex) {
-          LOGERROR(ex.what());
-          LOGERROR(ex.getError());
+          //LOGERROR(ex.what());
+          //LOGERROR(ex.getError());
+          throw ex;
         }
       }
       QueueConnection::~QueueConnection(){

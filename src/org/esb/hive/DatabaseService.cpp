@@ -29,9 +29,10 @@
 #include "org/esb/sql/my_sql.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
+#include "org/esb/io/File.h"
 
 #include "org/esb/config/config.h"
-
+#include "HiveException.h"
 #include <iostream>
 namespace org {
   namespace esb {
@@ -55,11 +56,29 @@ namespace org {
       }
 
       void DatabaseService::start(std::string base_path) {
-        _base_path=base_path;
+        _base_path=org::esb::config::Config::get("mhive.base_path");
         LOGINFO("starting Database Service");
         std::string mysql_bin=org::esb::config::Config::get("MYSQLD_BIN");
         std::string mysql_data=org::esb::config::Config::get("MYSQL_DATA");
         std::string mysql_lang=org::esb::config::Config::get("MYSQL_LANG");
+
+        /*sanity checks*/
+        org::esb::io::File mysql_bin_file(mysql_bin);
+        org::esb::io::File mysql_data_dir(mysql_data);
+        org::esb::io::File mysql_lang_dir(mysql_lang);
+        if(!mysql_bin_file.exists()){
+          throw HiveException("could not find mysqld executable: ");
+        }
+        if(!mysql_data_dir.exists()){
+          throw HiveException("could not find database directory: ");
+        }
+        if(!mysql_lang_dir.exists()){
+          throw HiveException("could not find database resource directory: ");
+          org::esb::io::File res_file(mysql_lang_dir.getPath()+"/errmsg.sys");
+          if(!res_file.exists())
+            throw HiveException("could not find database resource file: ");
+        }
+
 
         std::list<std::string> args;
 //        args.push_back(std::string("-c"));
@@ -68,10 +87,10 @@ namespace org {
 //        args.push_back(std::string("--bootstrap"));
         args.push_back("--datadir="+mysql_data);
         args.push_back("--language="+mysql_lang);
-        args.push_back(std::string("--socket=/tmp/mysql.sock"));
+        args.push_back("--socket=/tmp/mysql.sock");
 //        args.push_back(std::string("</home/HoelscJ/devel/mec/sql/CreateDatabase.sql"));
 
-        _dbServer=new org::esb::lang::Process(mysql_bin, args);
+        _dbServer=new org::esb::lang::Process(mysql_bin, args, "mhivedatabase");
         _dbServer->run();
         org::esb::lang::Thread::sleep2(1000);
         return;
@@ -180,6 +199,7 @@ namespace org {
       }
 
       void DatabaseService::loadPresets() {
+        _base_path=org::esb::config::Config::get("hive.base_path");
         db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
 
         db.query("load data infile '"+_base_path+"/sql/config.txt' IGNORE into table Config_ fields terminated by \":\"");
@@ -230,9 +250,11 @@ namespace org {
 
       void DatabaseService::stop() {
         LOGINFO("stopping Database Service");
+        try{
+        _dbServer->stop();
+        }catch(...){}
         if (_running)
           mysql_library_end();
-        _dbServer->stop();
         _running = false;
         org::esb::lang::Thread::sleep2(1000);
       }
@@ -258,6 +280,22 @@ namespace org {
           LOGDEBUG("mysql_thread_end()->thread_map count : "<<_thread_map[id]);
           mysql_thread_end();
         }
+      }
+       void DatabaseService::bootstrap() {
+        std::string mysql_bin=org::esb::config::Config::get("MYSQLD_BIN");
+        std::string mysql_data=org::esb::config::Config::get("MYSQL_DATA");
+        std::string mysql_lang=org::esb::config::Config::get("MYSQL_LANG");
+        std::string mysql_boot=org::esb::config::Config::get("MYSQL_BOOT");
+        std::list<std::string> args;
+        args.push_back(mysql_bin+" --verbose --bootstrap --datadir="+mysql_data+" --language="+mysql_lang+" < "+mysql_boot);
+#ifdef __WIN32__
+        args.push_front("/c");
+        Process p1("cmd", args);
+#else
+        args.push_front("-c");
+        Process p1("/bin/sh", args);
+#endif
+        p1.start();
       }
       
     }

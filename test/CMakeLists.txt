@@ -30,12 +30,17 @@ LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
 LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
 
 
+
+
 IF(BUILD_TESTING)
   IF(WIN32)
     SET( ENV{PATH} "$ENV{PATH}\;${FFMPEG_DIR}/lib" )
   ELSEIF(APPLE)
     SET( ENV{DYLD_LIBRARY_PATH} "${MEC_SOURCE_DIR}/target/dependency/lib" )
   ENDIF(WIN32)
+  IF(UNIX)
+    execute_process(COMMAND chmod +x ${MEC_SOURCE_DIR}/target/dependency/bin/mysqld)
+  ENDIF(UNIX)
   add_subdirectory (org)
 ENDIF(BUILD_TESTING)
 

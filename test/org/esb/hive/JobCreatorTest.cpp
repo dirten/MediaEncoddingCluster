@@ -65,6 +65,8 @@ int main(int argc, char** argv) {
 
 
   std::string src = MEC_SOURCE_DIR;
+  config::Config::setProperty("hive.base_path", src.c_str());
+
   src.append("/test.dvd");
   hive::DatabaseService::start(MEC_SOURCE_DIR);
   {

@@ -20,11 +20,11 @@
 int main(int argc, char** argv) {
 	LOGDEBUG("start");
 	boost::shared_ptr<Timer> ti(new Timer(3,&handle_timeout));
-	org::esb::lang::Thread::sleep2(12000);
-  LOGDEBUG("resetting");
+	org::esb::lang::Thread::sleep2(5000);
+        LOGDEBUG("resetting");
 	ti.reset();
 	ti.reset();
-	org::esb::lang::Thread::sleep2(12000);
+	org::esb::lang::Thread::sleep2(5000);
 //  t.cancel();
 //  t.next();
 //  org::esb::lang::Thread::sleep2(6000);

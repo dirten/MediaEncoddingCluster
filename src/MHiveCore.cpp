@@ -14,15 +14,13 @@
 
 int main(int argc, char** argv) {
   Log::open("");
-  org::esb::io::File base("..");
-  LOGDEBUG("BasePath=" << base.getPath());
-  string base_path = base.getPath();
+    /*initialise the config class*/
+  org::esb::config::Config::init("");
+
   org::esb::av::FormatBaseStream::initialize();
-  org::esb::config::Config::setProperty("hive.base_path", base_path.c_str());
   /**setting internal db url*/
   org::esb::config::Config::setProperty("db.url", "host=localhost;database=hive;user=root;port=3306");
   /**starting the internal database service*/
-  org::esb::hive::DatabaseService::start(base.getPath());
   if (!org::esb::hive::DatabaseService::databaseExist()) {
     org::esb::hive::DatabaseService::createDatabase();
     org::esb::hive::DatabaseService::createTables();
@@ -60,7 +58,7 @@ int main(int argc, char** argv) {
   org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("processunitcontroller", org::esb::hive::STOP));
   org::esb::signal::Messenger::getInstance().sendRequest(org::esb::signal::Message().setProperty("webserver", org::esb::hive::STOP));
   org::esb::hive::CodecFactory::free();
-  org::esb::hive::DatabaseService::stop();
+//  org::esb::hive::DatabaseService::stop();
   org::esb::signal::Messenger::free();
 
 }

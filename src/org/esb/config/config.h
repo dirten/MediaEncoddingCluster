@@ -38,6 +38,7 @@ namespace org
         static void reload();
       private:
         static void parseLine(const char*);
+        static bool _isInitialized;
       };
     }
   }

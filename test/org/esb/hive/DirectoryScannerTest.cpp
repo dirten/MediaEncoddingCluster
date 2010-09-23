@@ -23,7 +23,8 @@ using namespace org::esb;
 int main(int argc, char** argv) {
   Log::open("");
   config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
-
+  std::string src = MEC_SOURCE_DIR;
+  config::Config::setProperty("hive.base_path", src.c_str());
   hive::DatabaseService::start(MEC_SOURCE_DIR);
     if (!hive::DatabaseService::databaseExist()) {
       hive::DatabaseService::createDatabase();

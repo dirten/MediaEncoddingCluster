@@ -14,9 +14,9 @@ int main(int argc, char** argv) {
   ::Log::open("");
   org::esb::mq::QueueManager man;
   man.start();
-  org::esb::lang::Thread::sleep2(1000);
+  org::esb::lang::Thread::sleep2(500);
   {
-    LOGDEBUG("QueueUrl:"<<man.getUrl())
+//    LOGDEBUG("QueueUrl:"<<man.getUrl())
     org::esb::mq::QueueConnection con(man.getUrl());
     if(!con.queueExist("punitin"))
       con.createQueue("punitin");

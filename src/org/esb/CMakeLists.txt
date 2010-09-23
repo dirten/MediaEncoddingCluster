@@ -277,6 +277,7 @@ add_library (hive
   hive/job/ProcessUnitController.cpp
   hive/job/JobController.cpp
   hive/ProcessManager.cpp
+  hive/HiveException.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db sql net esb signal av lang)
@@ -398,7 +399,7 @@ ENDIF(WIN32)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
 add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb util)
+TARGET_LINK_LIBRARIES(esb util io)
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS esb
     RUNTIME DESTINATION bin

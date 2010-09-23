@@ -67,6 +67,8 @@ target_link_libraries (mhivemaster
   lang
   util
   io
+  hive
+  mq
 )
 add_executable (mhivequeue MHiveQueue.cpp)
 target_link_libraries (mhivequeue mq)
@@ -308,6 +310,11 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libswscale.so.0
       ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ./lib
+    )
+  INSTALL(FILES
+      ${MYSQL_DIR}/bin/mysqld
+    DESTINATION ./bin
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
     )
 
 ENDIF(WIN32)

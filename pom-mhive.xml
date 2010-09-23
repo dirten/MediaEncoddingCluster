@@ -15,6 +15,7 @@
       <properties>
         <win32/>
         <my.family>win32</my.family>
+        <exe>.exe</exe>
         <GCC_VERSION>-vc90</GCC_VERSION>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"NMake Makefiles"</CMAKE_MAKE_PROGRAM>
@@ -30,6 +31,7 @@
       </activation>
       <properties>
         <my.family>linux</my.family>
+        <exe></exe>
         <GCC_VERSION>-gcc41</GCC_VERSION>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
@@ -44,6 +46,7 @@
       </activation>
       <properties>
         <my.family>mac</my.family>
+        <exe></exe>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <GCC_VERSION>-xgcc40</GCC_VERSION>
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
@@ -196,6 +199,10 @@
               <tasks>
                 <copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
+                  <env key="MYSQLD_BIN" path="${project.basedir}/target/dependency/bin/mysqld${exe}"/>
+                  <env key="MYSQL_DATA" path="${project.basedir}"/>
+                  <env key="MYSQL_LANG" path="${project.basedir}/res"/>
+                  <env key="MYSQL_BOOT" path="${project.basedir}/sql/CreateDatabase.sql.sql"/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin"/>
                   <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin"/>
                   <arg line="test"/>

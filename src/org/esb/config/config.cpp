@@ -30,7 +30,7 @@ using namespace org::esb::lang;
  * @param filename 
  */
 Properties * properties = new Properties();
-
+bool Config::_isInitialized=false;
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
   return r.erase(0, r.find_first_not_of(drop));
@@ -56,6 +56,7 @@ bool Config::init(const std::string & filename) {
   }else{
 //    return false;
   }
+  _isInitialized=true;
   return true;
 }
 
@@ -66,11 +67,13 @@ void Config::save2db() {
  * ermitteln des Wertes zum Schlüssel
  */
 const char * Config::getProperty(const char * key, const char * def) {
+  if(!_isInitialized)init("");
   if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
 }
 
 std::string Config::get(std::string key, std::string def) {
+  if(!_isInitialized)init("");
   if(getenv(key.c_str())!=NULL)return getenv(key.c_str());
   if (!properties || !properties->hasProperty(key))return def;
   return properties->getProperty(key);
