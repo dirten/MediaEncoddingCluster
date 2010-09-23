@@ -184,6 +184,9 @@ void testFullFile() {
 
 int main(int argc, char** argv) {
   Log::open("");
+  std::string src = MEC_SOURCE_DIR;
+  org::esb::config::Config::setProperty("hive.base_path", src.c_str());
+
   DatabaseService::start(MEC_SOURCE_DIR);
   std::string host = "host=";
   host += DEFAULT_DATABASE_HOST;

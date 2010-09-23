@@ -3,6 +3,7 @@
 #include "safmq.h"
 #include "org/esb/util/Log.h"
 #include <exception>
+#include "org/esb/hive/HiveException.h"
 namespace org{
   namespace esb{
     namespace mq{
@@ -14,7 +15,7 @@ namespace org{
         } catch (tcpsocket::SocketException & ex) {
           //LOGERROR(ex.what());
           //LOGERROR(ex.getError());
-          throw ex;
+          throw org::esb::hive::HiveException("could not connect to QueueManager");
         }
       }
       QueueConnection::~QueueConnection(){

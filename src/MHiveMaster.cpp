@@ -6,12 +6,12 @@
  */
 
 #include <cstdlib>
+#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/io/File.h"
-#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/config/config.h"
 #include "org/esb/mq/QueueConnection.h"
 using namespace std;

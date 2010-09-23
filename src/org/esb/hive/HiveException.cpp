@@ -23,7 +23,7 @@ namespace org {
       }
 
       const char * HiveException::what() throw () {
-        return "";
+        return _what.c_str();
       }
     }
   }

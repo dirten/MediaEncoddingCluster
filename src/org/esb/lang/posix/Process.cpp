@@ -33,6 +33,8 @@ namespace org {
       }
 
       void Process::start() {
+        /*waiting 0,5 sec for the mutext condition*/
+        org::esb::lang::Thread::sleep2(500);
         if (_executable.length() == 0) {
           LOGDEBUG("no executable given");
           throw ProcessException("no executable given");

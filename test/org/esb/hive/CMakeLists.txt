@@ -88,8 +88,8 @@ ADD_TEST(hive.CodecFactoryTest ${EXECUTABLE_OUTPUT_PATH}/CodecFactoryTest )
 ADD_TEST(hive.JobCreatorTest ${EXECUTABLE_OUTPUT_PATH}/JobCreatorTest )
 ADD_TEST(hive.DirectoryScannerTest  ${EXECUTABLE_OUTPUT_PATH}/DirectoryScannerTest  )
 ADD_TEST(hive.ProcessUnitBuilderTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitBuilderTest)
-ADD_TEST(hive.ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
-ADD_TEST(hive.DataHandlerTest ${EXECUTABLE_OUTPUT_PATH}/DataHandlerTest)
+#ADD_TEST(hive.ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
+#ADD_TEST(hive.DataHandlerTest ${EXECUTABLE_OUTPUT_PATH}/DataHandlerTest)
 ADD_TEST(hive.PresetTest ${EXECUTABLE_OUTPUT_PATH}/PresetTest)
 
 
