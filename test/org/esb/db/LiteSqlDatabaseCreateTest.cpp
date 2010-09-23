@@ -23,6 +23,8 @@ int main(int argc, char** argv) {
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
   org::esb::config::Config::setProperty("db.url", host.c_str());
+  std::string src = MEC_SOURCE_DIR;
+  org::esb::config::Config::setProperty("hive.base_path", src.c_str());
 
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
   if(org::esb::hive::DatabaseService::databaseExist()){
