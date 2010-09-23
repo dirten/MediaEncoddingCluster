@@ -202,7 +202,7 @@
                   <env key="MYSQLD_BIN" path="${project.basedir}/target/dependency/bin/mysqld${exe}"/>
                   <env key="MYSQL_DATA" path="${project.basedir}"/>
                   <env key="MYSQL_LANG" path="${project.basedir}/res"/>
-                  <env key="MYSQL_BOOT" path="${project.basedir}/sql/CreateDatabase.sql.sql"/>
+                  <env key="MYSQL_BOOT" path="${project.basedir}/sql/CreateDatabase.sql"/>
                   <env key="PATH" path="${env.PATH}:${project.basedir}/target/dependency/lib:${project.basedir}/target/dependency/bin"/>
                   <env key="DYLD_LIBRARY_PATH" path="${project.basedir}/target/dependency/lib;${project.basedir}/target/dependency/bin"/>
                   <arg line="test"/>

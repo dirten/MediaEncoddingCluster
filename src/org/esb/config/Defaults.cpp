@@ -19,7 +19,7 @@ namespace org {
         props->setProperty("MYSQLD_BIN","./mysqld");
         props->setProperty("MYSQL_DATA","../data");
         props->setProperty("MYSQL_LANG","../res");
-        props->setProperty("MYSQL_BOOT","../sql/CreateDatabase.sql.sql");
+        props->setProperty("MYSQL_BOOT","../sql/CreateDatabase.sql");
         /*setting up the base path*/
         if(props->getProperty("hive.base_path")==NULL){
         org::esb::io::File base("..");
