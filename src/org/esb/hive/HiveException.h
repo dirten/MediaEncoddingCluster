@@ -16,7 +16,6 @@ namespace org {
       class HiveException : public std::exception {
       public:
         HiveException(std::string what);
-        HiveException(const HiveException& orig);
         virtual ~HiveException() throw();
         const char * what() throw();
       private:

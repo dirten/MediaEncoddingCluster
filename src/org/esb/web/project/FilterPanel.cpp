@@ -6,21 +6,23 @@
 #include "Wt/Ext/ToolBar"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
-namespace org{
-  namespace esb{
-    namespace web{
-      class FilterTableModel:public Wt::WStandardItemModel{
+namespace org {
+  namespace esb {
+    namespace web {
+
+      class FilterTableModel : public Wt::WStandardItemModel {
       public:
-        FilterTableModel(){
+
+        FilterTableModel() {
           insertColumns(0, 2);
           setHeaderData(0, std::string("Id"));
           setHeaderData(1, std::string("Name"));
 
         }
 
-        void setFilterData(std::vector<db::Filter> filters){
-          std::vector<db::Filter>::iterator it=filters.begin();
-          for(int a = 0;it!=filters.end();it++, a++){
+        void setFilterData(std::vector<db::Filter> filters) {
+          std::vector<db::Filter>::iterator it = filters.begin();
+          for (int a = 0; it != filters.end(); it++, a++) {
             if (rowCount() <= a)
               insertRow(rowCount());
 
@@ -30,32 +32,31 @@ namespace org{
           }
         }
       };
-      class FilterTable:public Wt::Ext::TableView{
+
+      class FilterTable : public Wt::Ext::TableView {
       public:
-        FilterTable(){
+
+        FilterTable() {
           setModel(new FilterTableModel());
-          setColumnWidth(0,50);
-          setColumnWidth(1,300);
+          setColumnWidth(0, 50);
+          setColumnWidth(1, 300);
         }
 
-        void setFilter(std::vector<db::Filter> filters){
-          FilterTableModel*oldptr=static_cast<FilterTableModel*>(model());
+        void setFilter(std::vector<db::Filter> filters) {
+          FilterTableModel*oldptr = static_cast<FilterTableModel*> (model());
           setModel(new FilterTableModel());
           delete oldptr;
 
-          static_cast<FilterTableModel*>(model())->setFilterData(filters);
+          static_cast<FilterTableModel*> (model())->setFilterData(filters);
         }
       };
 
-
-
-
-      FilterPanel::FilterPanel():Wt::Ext::Panel(){
+      FilterPanel::FilterPanel() : Wt::Ext::Panel() {
         setTitle("Filter");
         setLayout(new Wt::WFitLayout());
         layout()->setContentsMargins(0, 0, 0, 0);
 
-        _filter_table=Ptr<FilterTable>(new FilterTable());
+        _filter_table = Ptr<FilterTable > (new FilterTable());
 
         _filter_table->setAlternatingRowColors(true);
         _filter_table->setHighlightMouseOver(true);
@@ -82,72 +83,64 @@ namespace org{
         editFilterButton->clicked().connect(SLOT(this, FilterPanel::editFilter));
       }
 
-      FilterPanel::~FilterPanel(){
+      FilterPanel::~FilterPanel() {
 
       }
 
-      void FilterPanel::setProject(Ptr<db::Project> p){
-        _project=p;
-        Ptr<db::Filter> filter=Ptr<db::Filter>(new db::Filter(p->getDatabase()));
-        filter->filtername="Resize Filter";
-        filter->filterid="resize";
+      void FilterPanel::setProject(Ptr<db::Project> p) {
+        _project = p;
+        Ptr<db::Filter> filter = Ptr<db::Filter > (new db::Filter(p->getDatabase()));
+        filter->filtername = "Resize Filter";
+        filter->filterid = "resize";
         _available_filters.push_back(filter);
-        filter=Ptr<db::Filter>(new db::Filter(p->getDatabase()));
-        filter->filtername="Deinterlace Filter";
-        filter->filterid="deinterlace";
+        filter = Ptr<db::Filter > (new db::Filter(p->getDatabase()));
+        filter->filtername = "Deinterlace Filter";
+        filter->filterid = "deinterlace";
         _available_filters.push_back(filter);
         _filter_table->setFilter(_project->filter().get().all());
 
       }
-      void FilterPanel::filterSelected(Ptr<db::Filter> filter){
-        filter->update();
-        _project->filter().link(*filter);
-/*
-        std::vector<Ptr<db::Filter> >::iterator it=_available_filters.begin();
-        for(;it!=_available_filters.end();it++){
-          if((*it)->filtername==filter->filtername){
-            break;
+
+      void FilterPanel::addFilter() {
+        _filter_chooser = Ptr<FilterChooser > (new FilterChooser(_available_filters));
+        _filter_chooser->show();
+        if (_filter_chooser->exec() == Wt::Ext::Dialog::Accepted) {
+          std::list<Ptr<db::Filter> > filters = _filter_chooser->getSelectedFilter();
+          std::list<Ptr<db::Filter> >::iterator filter_it = filters.begin();
+          for (; filter_it != filters.end(); filter_it++) {
+            Ptr<db::Filter> filter=(*filter_it);
+            filter->update();
+            _project->filter().link(*filter);
+                    _filter_editor.reset();
+        _filter_editor = Ptr<FilterEditor > (new FilterEditor(filter));
+        _filter_editor->show();
+
           }
         }
-        _available_filters.erase(it);
-*/
         _filter_table->setFilter(_project->filter().get().all());
-        _filter_editor.reset();
-        _filter_editor=Ptr<FilterEditor>(new FilterEditor(filter));
-        _filter_editor->show();
-//        _filter_editor->exec();
-        LOGDEBUG(*filter);
       }
 
-      void FilterPanel::addFilter(){
-        _filter_chooser=Ptr<FilterChooser>(new FilterChooser(_available_filters));
-        _filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
-        _filter_chooser->show();
-//        _filter_chooser->exec();
-//        LOGDEBUG("_filter_chooser->exec(); returned")
-        //_filter_chooser.reset();
-
-      }
-      void FilterPanel::removeFilter(){
-        int fid=atoi(boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 0)).c_str());
-        db::Filter filter=litesql::select<db::Filter>(_project->getDatabase(), db::Filter::Id==fid).one();
+      void FilterPanel::removeFilter() {
+        int fid = atoi(boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 0)).c_str());
+        db::Filter filter = litesql::select<db::Filter > (_project->getDatabase(), db::Filter::Id == fid).one();
         _project->filter().unlink(filter);
         _filter_table->setFilter(_project->filter().get().all());
-//        removeFilterButton->setEnabled(false);
-      }
-      void FilterPanel::editFilter(){
-        int fid=atoi(boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 0)).c_str());
-        Ptr<db::Filter> filter=Ptr<db::Filter>(new db::Filter(litesql::select<db::Filter>(_project->getDatabase(), db::Filter::Id==fid).one()));
-        _filter_editor=Ptr<FilterEditor>(new FilterEditor(filter));
-        _filter_editor->show();
-//        removeFilterButton->setEnabled(false);
+        //        removeFilterButton->setEnabled(false);
       }
 
-      void FilterPanel::enableButtons(){
-        if(_filter_table->selectedRows().size()>0){
+      void FilterPanel::editFilter() {
+        int fid = atoi(boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 0)).c_str());
+        Ptr<db::Filter> filter = Ptr<db::Filter > (new db::Filter(litesql::select<db::Filter > (_project->getDatabase(), db::Filter::Id == fid).one()));
+        _filter_editor = Ptr<FilterEditor > (new FilterEditor(filter));
+        _filter_editor->show();
+        //        removeFilterButton->setEnabled(false);
+      }
+
+      void FilterPanel::enableButtons() {
+        if (_filter_table->selectedRows().size() > 0) {
           removeFilterButton->setEnabled(true);
           editFilterButton->setEnabled(true);
-        }else{
+        } else {
           removeFilterButton->setEnabled(false);
           editFilterButton->setEnabled(false);
         }

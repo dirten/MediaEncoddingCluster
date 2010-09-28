@@ -17,6 +17,7 @@ namespace org{
         ~FilterChooser();
         Wt::Signal<Ptr<db::Filter> > selected;
         Wt::Signal<void> canceled;
+        std::list<Ptr<db::Filter> > getSelectedFilter();
       private:
         void choose();
         void cancel();

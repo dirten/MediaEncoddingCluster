@@ -15,7 +15,7 @@ namespace org {
   namespace esb {
     namespace web {
 
-      JobTable::JobTable() :doSome_(new Wt::WCompositeWidget(), "doSome"), Wt::Ext::TableView() {
+      JobTable::JobTable() :doSome_(this, "doSome"), Wt::Ext::TableView() {
         LOGDEBUG("JobTable::JobTable()");
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
         
@@ -58,15 +58,19 @@ namespace org {
                 "return val;"
                 "}";
         setRenderer(7, renderer);
-        /*
-        std::string element=doSome_.createCall("'test'","42");
+        
+//        std::string element=doSome_.createCall("'test'","42");
+//        LOGDEBUG("Element:"<<element);
+        doSome_.connect(this, &JobTable::doSome);
+        //std::string element=doSome_.createCall("'test'","42");
         //element.replace("\'","\\\'");
-        LOGDEBUG("Element:"<<element);
+        //LOGDEBUG("Element:"<<element);
+
         renderer = "function change(val) {"
-                "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', 42);\\\">val</a>\""
+                "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/pause.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/up.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/down.png\\\"/></a>\""
                 "}";
-        setRenderer(2, renderer);
-        */
+        setRenderer(0, renderer);
+
       timer = new Wt::WTimer();
       timer->setInterval(2000);
       timer->timeout().connect(SLOT(this, JobTable::refresh));
@@ -77,16 +81,16 @@ namespace org {
       void JobTable::rowSelected(){
 
       }*/
-      Wt::JSignal<std::string,int>& JobTable::doSome() {
-        LOGDEBUG("Wt::JSignal<std::string, int>& JobTable::doSome()");
-        return doSome_;
+      void JobTable::doSome(int t) {
+        LOGDEBUG("Wt::JSignal<std::string, int>& JobTable::doSome()"<<t);
+//        return doSome_;
       }
       void JobTable::refresh() {
         LOGDEBUG("JobTable::refresh()")
         db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
 
         std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
-//        _model->refresh(jobs);
+        _model->refresh(jobs);
       }
 
       JobTable::JobTable(const JobTable& orig): doSome_(this, "doSome") {

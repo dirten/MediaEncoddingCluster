@@ -77,6 +77,17 @@ namespace org{
       FilterChooser::~FilterChooser(){
         LOGDEBUG("FilterChooser::~FilterChooser()")
       }
+      std::list<Ptr<db::Filter> > FilterChooser::getSelectedFilter(){
+        std::list<Ptr<db::Filter> > result;
+        std::string filtername=boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 1));
+        std::vector<Ptr<db::Filter> >::iterator it=_available_filters.begin();
+        for(;it!=_available_filters.end();it++){
+          if((*it)->filtername==filtername){
+            result.push_back((*it));
+          }
+        }
+        return result;
+      }
 
       void FilterChooser::choose(){
         std::string filtername=boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 1));

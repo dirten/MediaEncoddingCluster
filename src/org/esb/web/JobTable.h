@@ -23,12 +23,12 @@ namespace org {
         JobTable(const JobTable& orig);
         virtual ~JobTable();
         void refresh();
-        Wt::JSignal<std::string,int>& doSome();
+        void /*Wt::JSignal<std::string,int>&*/ doSome(int);
       private:
         Ptr<JobTableModel> _model;
         Wt::WTimer *timer;
         void rowSelected();
-        Wt::JSignal<std::string,int> doSome_;
+        Wt::JSignal<int> doSome_;
 
       };
 

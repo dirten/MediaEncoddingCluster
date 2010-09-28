@@ -16,9 +16,6 @@ namespace org {
         
       }
 
-      HiveException::HiveException(const HiveException& orig) {
-      }
-
       HiveException::~HiveException() throw(){
       }
 

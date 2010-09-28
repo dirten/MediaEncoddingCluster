@@ -14,6 +14,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/config/config.h"
 #include "org/esb/mq/QueueConnection.h"
+#include "org/esb/hive/HiveException.h"
 using namespace std;
 
 /*
@@ -25,15 +26,20 @@ int main(int argc, char** argv) {
   org::esb::config::Config::init("");
 
 
-  /*check if database directory exist*/
+  /*check if database data directory exist*/
   org::esb::io::File datadir(org::esb::config::Config::get("MYSQL_DATA"));
   if (!datadir.exists()) {
     datadir.mkdir();
+  }
+  /*check if mysql directory exist*/
+  org::esb::io::File mysqldir(org::esb::config::Config::get("MYSQL_DATA")+"/mysql");
+  if (!mysqldir.exists()) {
     /**
      * need to create a mysql database bootstrap
      */
     org::esb::hive::DatabaseService::bootstrap();
   }
+
   /*starting the bundled Database Server*/
   org::esb::hive::DatabaseService::start(org::esb::config::Config::get("mhive.base_path"));
 
@@ -50,9 +56,9 @@ int main(int argc, char** argv) {
   bool waiting=true;
   while(waiting){
     try{
-    org::esb::mq::QueueConnection("safmq://admin:@localhost:20200");
-    waiting=false;
-    }catch(tcpsocket::SocketException & ex){
+      org::esb::mq::QueueConnection("safmq://admin:@localhost:20200");
+      waiting=false;
+    }catch(org::esb::hive::HiveException & ex){
       LOGERROR("waiting for queue manager:" << ex.what());
       org::esb::lang::Thread::sleep2(1000);
     }

@@ -34,7 +34,7 @@
         <exe></exe>
         <GCC_VERSION>-gcc41</GCC_VERSION>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
-        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <CMAKE_MAKE_PROGRAM>'Unix Makefiles'</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
     <profile>
