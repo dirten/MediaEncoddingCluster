@@ -61,6 +61,8 @@ namespace org {
         memset(&suInfo, 0, sizeof (suInfo));
         memset(&procInfo, 0, sizeof (procInfo));
         suInfo.cb = sizeof (suInfo);
+        LOGDEBUG("start executable:"<<_executable);
+        LOGDEBUG("start command line:"<<vip);
 
         bWorked = ::CreateProcess(_executable.c_str(),
                 vip, // can also be NULL
@@ -73,6 +75,7 @@ namespace org {
                 &suInfo,
                 &procInfo);
         if (!bWorked) {
+          LOGERROR("could not start the process: "<<_executable);
           throw ProcessException(std::string("could not start the process: ").append(_executable));
         }
         _processId = procInfo.dwProcessId;

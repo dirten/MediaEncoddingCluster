@@ -88,6 +88,7 @@ namespace org {
         args.push_back("--datadir="+mysql_data);
         args.push_back("--language="+mysql_lang);
         args.push_back("--socket=/tmp/mysql.sock");
+        args.push_back("--user=root");
 //        args.push_back(std::string("</home/HoelscJ/devel/mec/sql/CreateDatabase.sql"));
 
         _dbServer=new org::esb::lang::Process(mysql_bin, args, "mhivedatabase");
@@ -290,7 +291,9 @@ namespace org {
         args.push_back(mysql_bin+" --verbose --bootstrap --datadir="+mysql_data+" --language="+mysql_lang+" < "+mysql_boot);
 #ifdef __WIN32__
         args.push_front("/c");
-        Process p1("cmd", args);
+//        Process p1("C:\\Windows\\system32\\cmd.exe", args);
+        Process p1("cmd.exe", args);
+//        Process p1("D:\\Windows\\system32\\cmd.exe", args);
 #else
         args.push_front("-c");
         Process p1("/bin/sh", args);
