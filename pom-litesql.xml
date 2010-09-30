@@ -156,9 +156,8 @@
                     -DSHARED_LIBS=Off 
                     -DMYSQL_INCLUDE_DIR=${project.build.directory}/dependency/include/mysql
                     -DMYSQL_LIBRARIES=${project.build.directory}/dependency/lib/libmysqld.a
-                    -DWITH_MYSQL=On
-                    -DWITH_SQLITE3=Off
-                    -DWITH_SQLITE3=Off
+                    -DWITH_MYSQL=Off
+                    -DWITH_SQLITE3=On
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/source/litesql-src-0.3.8/build" failonerror="yes">
@@ -212,6 +211,13 @@
       <groupId>org.esb.expat</groupId>
       <artifactId>expat</artifactId>
       <version>2.0.1</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.sqlite</groupId>
+      <artifactId>sqlite</artifactId>
+      <version>3.7.2</version>
+      <classifier>${my.family}-${build_type}</classifier>
       <type>zip</type>
     </dependency>
   </dependencies>
