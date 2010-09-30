@@ -120,12 +120,12 @@
                      verbose="true" usetimestamp="true"/>
                 <gunzip src="source/sqlite-amalgamation-3.7.2.tar.gz" dest="source"/>
                 <untar src="source/sqlite-amalgamation-3.7.2.tar" dest="source" overwrite="true"/>
-                <mkdir dir="source/sqlite-3.7.2/build"/>
+
               <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
 
-                <exec executable="sh" dir="source/sqlite-3.7.2/build" failonerror="yes">
+                <exec executable="sh" dir="source/sqlite-3.7.2" failonerror="yes">
                   <arg line="
   		    ${mybasedir}/source/sqlite-3.7.2/configure
                     --prefix=${mybasedir}/source/build/sqlite-3.7.2
@@ -134,7 +134,7 @@
                     "/>
                 </exec>
 		<chmod file="${project.basedir}/source/sqlite-3.7.2/install-sh" perm="ugo+rx"/>
-                <exec executable="make" dir="${project.basedir}/source/sqlite-3.7.2/build" failonerror="on">
+                <exec executable="make" dir="${project.basedir}/source/sqlite-3.7.2" failonerror="on">
                   <arg line="install"/>
                 </exec>
 
