@@ -154,8 +154,8 @@
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/source/build/litesql 
                     -DCMAKE_BUILD_TYPE=${build_type} 
                     -DSHARED_LIBS=Off 
-                    -DMYSQL_INCLUDE_DIR=${project.build.directory}/dependency/include/mysql
-                    -DMYSQL_LIBRARIES=${project.build.directory}/dependency/lib/libmysqld.a
+                    -DSQLITE3_INCLUDE_DIR=${project.build.directory}/dependency/include/
+                    -DSQLITE3_LIBRARIES=${project.build.directory}/dependency/lib/libsqlite3.a
                     -DWITH_MYSQL=Off
                     -DWITH_SQLITE3=On
                     .."/>
