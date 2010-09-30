@@ -133,7 +133,7 @@
             	    --enable-static
                     "/>
                 </exec>
-
+		<chmod file="${project.basedir}/source/sqlite-3.7.2/install-sh" perm="ugo+rx"/>
                 <exec executable="make" dir="${project.basedir}/source/sqlite-3.7.2/build" failonerror="on">
                   <arg line="install"/>
                 </exec>
