@@ -1,0 +1,32 @@
+############################################################
+#
+# Find the sqlite library
+#
+# This file sets:
+# - SQLITE_INCLUDE_DIR
+# - SQLITE_LIB_DIR
+# - SQLITE_LIBRARY
+# - SQLITE_LIBRARY_DIR
+############################################################
+
+FIND_PATH(SQLITE_INCLUDE_DIR
+    sqlite3.h
+  PATHS
+    ${SQLITE_DIR}/include
+  NO_DEFAULT_PATH
+)
+
+    SET(SQLITE_LIB_DIR ${SQLITE_DIR}/lib)
+    FIND_LIBRARY(SQLITE_LIBRARY
+        NAMES
+          sqlite3
+          libsqlite3
+        PATHS
+          ${SQLITE_LIB_DIR}
+        NO_DEFAULT_PATH
+      )
+
+#MESSAGE("MysqlLibDir" ${MYSQL_LIB_DIR})
+SET(SQLITE_LIBRARY_DIR ${SQLITE_LIB_DIR})
+#MESSAGE("MysqlLibDir" ${MYSQL_LIBRARY_DIR})
+
