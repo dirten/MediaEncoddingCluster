@@ -1,10 +1,11 @@
 #include "DbTableModel.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org{
   namespace esb{
     namespace web{
       DbTableModel::DbTableModel( list<ColumnConfig> & cc,const litesql::Expr & expr,Wt::WContainerWidget* parent): 
-    Wt::WStandardItemModel(0, 0, parent), _dbCon("mysql",org::esb::config::Config::getProperty("db.url")){
+    Wt::WStandardItemModel(0, 0, parent), _dbCon(org::esb::hive::DatabaseService::getDatabase()){
       //              std::vector<T> data=litesql::select<T>(_dbCon).all();
       //              std::vector<litesql::FieldType> fields;
       //              T tmp_model(_dbCon);
@@ -44,7 +45,7 @@ namespace org{
       }
     }
     DbTableModel::DbTableModel(list<ColumnConfig> & cc,const std::string & sql,Wt::WContainerWidget* parent): 
-    Wt::WStandardItemModel(0, 0, parent), _dbCon("mysql",org::esb::config::Config::getProperty("db.url")){
+    Wt::WStandardItemModel(0, 0, parent), _dbCon(org::esb::hive::DatabaseService::getDatabase()){
       //              std::vector<T> data=litesql::select<T>(_dbCon).all();
       //              std::vector<litesql::FieldType> fields;
       //              T tmp_model(_dbCon);

@@ -16,7 +16,7 @@ add_executable (TestNewProcessUnit TestNewProcessUnit.cpp)
 add_executable (TestPacketizer TestPacketizer.cpp)
 add_executable (TestNodeDiscovery TestNodeDiscovery.cpp)
 add_executable (TestTimer TestTimer.cpp)
-add_executable (TestHive TestHive.cpp)
+#add_executable (TestHive TestHive.cpp)
 add_executable (CodecFactoryTest CodecFactoryTest.cpp)
 add_executable (JobCreatorTest JobCreatorTest.cpp)
 add_executable (DirectoryScannerTest DirectoryScannerTest.cpp)
@@ -27,32 +27,32 @@ add_executable (PresetTest PresetTest.cpp)
 
 
 
-target_link_libraries (TestNodeDiscovery esb sql hive net signal io av util lang )
-target_link_libraries (TestTimer esb sql hive net signal io av util lang )
-target_link_libraries (TestFileImporter esb sql hive net signal io av util lang )
+target_link_libraries (TestNodeDiscovery esb hive net signal io av util lang )
+target_link_libraries (TestTimer esb hive net signal io av util lang )
+target_link_libraries (TestFileImporter esb hive net signal io av util lang )
 
-target_link_libraries (TestProcessUnit esb sql hive io av util net signal  lang)
+target_link_libraries (TestProcessUnit esb hive io av util net signal  lang)
 
 target_link_libraries (TestDatabaseCreation hive )
-target_link_libraries (DeleteDatabase esb sql util hive signal)
+target_link_libraries (DeleteDatabase esb util hive signal)
 target_link_libraries (TestProcessUnit esb hive signal av io util lang )
-target_link_libraries (TestNewProcessUnit esb hive sql net signal av io util lang )
-target_link_libraries (TestPacketizer esb hive av sql net signal io util lang )
-target_link_libraries (TestHive esb hive av sql net signal io util lang )
-target_link_libraries (CodecFactoryTest esb hive av sql net signal io util lang )
-target_link_libraries (JobCreatorTest esb hive av sql net signal io util lang )
-target_link_libraries (DirectoryScannerTest  esb hive av sql net signal io util lang )
-target_link_libraries (ProcessUnitBuilderTest  esb hive av sql net signal io util lang )
+target_link_libraries (TestNewProcessUnit esb hive net signal av io util lang )
+target_link_libraries (TestPacketizer esb hive av net signal io util lang )
+#target_link_libraries (TestHive esb hive av net signal io util lang )
+target_link_libraries (CodecFactoryTest esb hive av net signal io util lang )
+target_link_libraries (JobCreatorTest esb hive av net signal io util lang )
+target_link_libraries (DirectoryScannerTest  esb hive av net signal io util lang )
+target_link_libraries (ProcessUnitBuilderTest  esb hive av net signal io util lang )
 target_link_libraries (ProcessUnitControllerTest hive io)
 target_link_libraries (DataHandlerTest hive io)
 target_link_libraries (PresetTest hive io)
 
 
-#target_link_libraries (TestClientHandler   hive esb sql av io util lang )
-target_link_libraries (TestHiveListener  hive signal esb sql av io util lang net
+#target_link_libraries (TestClientHandler   hive esb av io util lang )
+target_link_libraries (TestHiveListener  hive signal esb av io util lang net
   ${BOOST_SERIAL_LIB_MT}
 )
-target_link_libraries (TestAudioAC3toMP2  hive signal esb sql av io util lang net)
+target_link_libraries (TestAudioAC3toMP2  hive signal esb av io util lang net)
 
 #IF(WIN32)
 #  target_link_libraries (TestDatabaseCreation ws2_32 msvcrt )

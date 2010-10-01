@@ -29,14 +29,12 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
 #include "org/esb/io/File.h"
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
+#include "DatabaseService.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -64,7 +62,7 @@ namespace org {
       }
 
       void ExportScanner::start() {
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         while (_run) {
           {
             try {

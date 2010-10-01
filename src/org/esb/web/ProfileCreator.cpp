@@ -16,12 +16,8 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/hive/DatabaseService.h"
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
-
-#include "SqlUtil.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -120,13 +116,6 @@ namespace org {
       }
 
       void ProfileCreator::setProfile(int id) {
-        std::map<std::string, std::string> sqldata;
-        SqlUtil::sql2map("profiles", id, sqldata);
-        int tab_count = tab->count();
-        for (int a = 0; a < tab_count; a++) {
-          BasePanel * panel = static_cast<BasePanel*> (tab->panel(a));
-          panel->setKeyValue(sqldata);
-        }
       }
 
       void ProfileCreator::show() {
@@ -425,7 +414,7 @@ namespace org {
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
             LOGINFO( "retriving extra flags for codec id " << p->id);
-            db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+            db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
             vector<db::CodecPreset> presets=litesql::select<db::CodecPreset>(db, db::CodecPreset::Codecid==p->id).all();
             //            std::string sql = "SELECT * FROM codec WHERE codec_id=:id";
             //            org::esb::sql::Connection con(std::string(config::Config::getProperty("db.connection")));
@@ -445,7 +434,7 @@ namespace org {
         Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
         std::string name = vpre->currentText().narrow();
         LOGDEBUG( "Name=" << name);
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         db::CodecPreset preset=litesql::select<db::CodecPreset>(db, db::CodecPreset::Name==name).one();
 
         //        std::map<std::string, std::string> data;

@@ -15,7 +15,6 @@
 #include <Wt/WLengthValidator>
 #include <Wt/WSignalMapper>
 
-#include "org/esb/sql/Connection.h"
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/util/Properties.h"
@@ -228,12 +227,6 @@ private:
         void checkDbConnection() {
           //      if(host->validate()==Wt::WValidator::Valid){
           log->setText(log->text() + "check Connection : ");
-          try
-          {
-            sql::Connection con(elements["host"]->text().narrow(),
-                elements["database"]->text().narrow(),
-                elements["user"]->text().narrow(),
-                elements["passwd"]->text().narrow());
 
             log->setText(log->text() + " successfull connected to Database\n");
             props.setProperty("host", elements["host"]->text().narrow());
@@ -241,12 +234,6 @@ private:
             props.setProperty("passwd", elements["passwd"]->text().narrow());
             props.setProperty("database", elements["database"]->text().narrow());
             saveButton->enable();
-          }
-
-          catch(sql::SqlException & ex) {
-            log->setText(log->text() + ex.what() + "\n");
-            saveButton->disable();
-          }
           //      }else{
           //        log->setText("Hostname cannot be null\n");
           //      }

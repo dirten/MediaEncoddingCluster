@@ -1,6 +1,7 @@
 #include "FileInputStream.h"
 #include "org/esb/lang/Exception.h"
 #include <iostream>
+#include <stdio.h>
 #include <string.h>
 
 using namespace std;
@@ -69,7 +70,14 @@ int FileInputStream::read(string & str) {
   return read;
 }
 int FileInputStream::readLine(string & str) {
- return 0;
+  char * line=NULL;
+  size_t size=0;
+  int read=getline(&line, &size, _file_handle);
+  _filePointer -= read;
+  if(read>0)
+    str.assign(line, read-1);
+  free(line);
+ return read;
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {

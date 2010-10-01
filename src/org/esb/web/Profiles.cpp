@@ -7,10 +7,11 @@
 #include <Wt/Ext/Button>
 #include <Wt/Ext/ToolBar>
 #include <Wt/Ext/Dialog>
-#include "SqlTable.h"
+//#include "SqlTable.h"
 #include "ProfilesForm.h"
 #include "ProfileCreator.h"
 #include "DbTable.h"
+#include "org/esb/hive/DatabaseService.h"
 //#include "org/esb/lang/Object.h"
 namespace org {
   namespace esb {
@@ -69,7 +70,7 @@ namespace org {
           //	  LOGDEBUG("here");
           int c = atoi(boost::any_cast<string > (profile_table->getModel()->data(profile_table->selectedRows()[0], 0)).c_str());
 
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           _db->verbose=true;
           profile=new db::Profile(litesql::select<db::Profile>(*_db.get(), db::Profile::Id==c).one());
           pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
@@ -90,7 +91,7 @@ namespace org {
           //	  LOGDEBUG("here");
         
 
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           _db->verbose=true;
           profile=new db::Profile(*_db.get());
           pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));

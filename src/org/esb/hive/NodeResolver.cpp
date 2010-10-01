@@ -43,7 +43,7 @@
 namespace org {
   namespace esb {
     namespace hive {
-
+      NodeResolver::NodeList NodeResolver::_nodes;
       Node::Node() {
         _name = "null";
         _status = NODE_UP;
@@ -67,6 +67,9 @@ namespace org {
         oss << ":" << boost::posix_time::to_simple_string(_last_activity);
         return oss.str();
       }
+        Node::NodeStatus Node::getStatus(){
+          return _status;
+        }
 
       std::string Node::getData(std::string key) {
         return _node_data[key];
@@ -107,11 +110,11 @@ namespace org {
         boost::archive::binary_oarchive archive(archive_stream);
         archive << _self;
         message_ = archive_stream.str();
-
+        LOGDEBUG("Message size:"<<message_.size());
         send_socket_.async_send_to(
             boost::asio::buffer(message_), send_endpoint_,
-            boost::bind(&NodeResolver::handle_send, this,
-            boost::asio::placeholders::error));
+            boost::bind(&NodeResolver::handle_send_size, this,
+            boost::asio::placeholders::error,boost::asio::placeholders::bytes_transferred));
 
         boost::asio::ip::udp::endpoint listen_endpoint(listen_address, port);
         recv_socket_.open(listen_endpoint.protocol());
@@ -141,8 +144,16 @@ namespace org {
               boost::bind(&NodeResolver::handle_send_timeout, this,
               boost::asio::placeholders::error));
         }
+      }
 
-
+      void NodeResolver::handle_send_size(const boost::system::error_code& error,std::size_t bytes_transferred) {
+        //LOGDEBUG("bytes transfered:"<<bytes_transferred);
+        if (!error) {
+          send_timer_.expires_from_now(boost::posix_time::seconds(1));
+          send_timer_.async_wait(
+              boost::bind(&NodeResolver::handle_send_timeout, this,
+              boost::asio::placeholders::error));
+        }
       }
 
       void NodeResolver::handle_send_timeout(const boost::system::error_code& error) {
@@ -151,15 +162,15 @@ namespace org {
 
           send_socket_.async_send_to(
               boost::asio::buffer(message_), send_endpoint_,
-              boost::bind(&NodeResolver::handle_send, this,
-              boost::asio::placeholders::error));
+              boost::bind(&NodeResolver::handle_send_size, this,boost::asio::placeholders::error,boost::asio::placeholders::bytes_transferred));
         }
 
       }
 
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
+        //LOGDEBUG("Bytes received"<<bytes_recvd);
         if (!error) {
-          boost::shared_ptr<Node> nodePtr = boost::shared_ptr<Node > (new Node());
+          Ptr<Node> nodePtr = Ptr<Node > (new Node());
 
           if (bytes_recvd > 0) {
             std::string tmp(data_, bytes_recvd);
@@ -175,7 +186,7 @@ namespace org {
           nodePtr->setEndpoint(recv_endpoint_);
 
           bool contains = false;
-          std::list<boost::shared_ptr<Node> >::iterator it = _nodes.begin();
+          std::list<Ptr<Node> >::iterator it = _nodes.begin();
           for (; it != _nodes.end(); it++) {
             boost::posix_time::ptime actual_time = boost::posix_time::second_clock::local_time();
             if ((*it)->_last_activity + boost::posix_time::seconds(_node_timeout) < actual_time) {

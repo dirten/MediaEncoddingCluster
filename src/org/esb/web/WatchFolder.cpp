@@ -12,6 +12,7 @@
 #include "WatchfolderForm.h"
 #include "ColumnConfig.h"
 #include "DbTable.h"
+#include "org/esb/hive/DatabaseService.h"
 #include <boost/algorithm/string.hpp>
 
 namespace org {
@@ -123,7 +124,7 @@ namespace org {
 
        
       void createWatchFolder() {
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           _db->verbose=true;
           _wf=boost::shared_ptr<db::Watchfolder>(new db::Watchfolder(*_db.get()));
           WatchfolderForm * pf = new WatchfolderForm(*_wf.get());
@@ -147,7 +148,7 @@ namespace org {
 
         void editWatchFolder() {
           int id = atoi(boost::any_cast<string > (tab->getModel()->data(tab->selectedRows()[0], 0)).c_str());
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb("mysql",org::esb::config::Config::getProperty("db.url")));
+          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           
           _db->verbose=true;
           _wf=boost::shared_ptr<db::Watchfolder>(new db::Watchfolder(litesql::select<db::Watchfolder>(*_db.get(),db::Watchfolder::Id==id).one()));

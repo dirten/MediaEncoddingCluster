@@ -4,6 +4,7 @@
 #include "Wt/WFitLayout"
 
 #include "project_v2/ProjectWizard.h"
+#include "org/esb/hive/DatabaseService.h"
 #ifdef MessageBox
 #undef MessageBox
 #endif
@@ -59,7 +60,7 @@ namespace org {
         box->show();
         if(box->exec()==Wt::Ext::Dialog::Accepted){
           int c = atoi(boost::any_cast<string > (_table->model()->data(_table->selectedRows()[0], 0)).c_str());
-          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+          db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
           db::Project project = litesql::select<db::Project > (db, db::Project::Id == c).one();
           project.del();
           _table->refresh();

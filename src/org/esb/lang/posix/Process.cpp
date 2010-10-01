@@ -21,7 +21,7 @@ namespace org {
         _processId = 0;
         _running = false;
         _restartable = false;
-        _stop=false;
+        _stop = false;
       }
 
       Process::Process(const Process& orig) {
@@ -40,23 +40,23 @@ namespace org {
           throw ProcessException("no executable given");
         }
         //        std::cout << "starting process"<<std::endl;
-        char * args[2+_arguments.size()];
+        char * args[2 + _arguments.size()];
         int a = 0;
-//        args[a++] = "/bin/sh";
-//        args[a++] = "-c";
-//        std::string prg = "";//_executable;
-        if(_name.length()==0){
+        //        args[a++] = "/bin/sh";
+        //        args[a++] = "-c";
+        //        std::string prg = "";//_executable;
+        if (_name.length() == 0) {
           _name = _executable.c_str();
         }
         args[a++] = const_cast<char*> (_name.c_str());
         std::list<std::string>::iterator arg_it = _arguments.begin();
-        LOGDEBUG("Using Executable: "<<_executable);
+        LOGDEBUG("Using Executable: " << _executable);
         for (; arg_it != _arguments.end(); arg_it++) {
-          LOGDEBUG("Arguments:"<<(*arg_it));
+          LOGDEBUG("Arguments:" << (*arg_it));
           args[a++] = const_cast<char*> ((*arg_it).c_str());
-//          prg += " " + (*arg_it);
+          //          prg += " " + (*arg_it);
         }
-//        args[a++] = const_cast<char*> (prg.c_str());
+        //        args[a++] = const_cast<char*> (prg.c_str());
         args[a++] = NULL;
         _processId = fork();
         if (_processId < 0) {
@@ -69,8 +69,8 @@ namespace org {
           //          int s=system(args[2]);
           int s = execv(_executable.c_str(), args);
           if (s != 0) {
-            LOGERROR("could not start the process: " << _executable)
-                    throw ProcessException(std::string("could not start the process: ").append(_executable));
+            LOGERROR("could not start the process: " << _executable);
+            throw ProcessException(std::string("could not start the process: ").append(_executable));
           }
         } else {
           /*parent process here*/
@@ -85,9 +85,9 @@ namespace org {
 
           int status = 0;
           waitpid(_processId, &status, 0);
-          if(!_stop&&status!=0){
-//            throw ProcessException("Process with pid ended unexepcted");
-            LOGERROR("Process with pid "<<_processId<<" ended unexepcted -> "<<_name);
+          if (!_stop && status != 0) {
+            //            throw ProcessException("Process with pid ended unexepcted");
+            LOGERROR("Process with pid " << _processId << " ended unexepcted -> " << _name);
           }
           LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
           process_shutdown_wait_condition.notify_one();
@@ -114,7 +114,7 @@ namespace org {
       void Process::stop() {
         if (!_running)
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
-        _stop=true;
+        _stop = true;
         _restartable = false;
         int result = ::kill(_processId, 15);
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);

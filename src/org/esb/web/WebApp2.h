@@ -13,7 +13,7 @@
 #include <Wt/Ext/Panel>
 #include <Wt/Ext/Container>
 #include "Wt/WBorderLayout"
-#include "SqlTable.h"
+//#include "SqlTable.h"
 #include "JobTable.h"
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
@@ -47,6 +47,7 @@ namespace org {
                 void createWatchfolder();
                 void watchfolderCreated();
                 void editSystemConfiguration();
+                void viewNodes();
 
                 void openConfiguration();
 
@@ -61,9 +62,9 @@ namespace org {
                 Wt::WBorderLayout *layout;
 //                Wt::Ext::Dialog * cwd;
 //                Wt::Ext::Dialog * cpd;
-                Wt::WSignalMapper<SqlTable*> *_fileSignalMap;
+                //Wt::WSignalMapper<SqlTable*> *_fileSignalMap;
                 Wt::WSignalMapper<JobTable*> *_jobSignalMap;
-                void fileSelected(SqlTable *);
+                //void fileSelected(SqlTable *);
                 void jobSelected(JobTable *);
 
 

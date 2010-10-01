@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 
   {
 
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
     db::ProfileGroup root(db);
     root.name = "root group";
     root.update();
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
   }
   {
 
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
     db::ProfileGroup root=litesql::select<db::ProfileGroup>(db,db::ProfileGroup::Name=="root group").one();
     vector<db::ProfileGroup> childs=root.childrens().get().all();
     assert(childs.size()==3);

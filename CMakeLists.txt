@@ -41,8 +41,8 @@ if(Boost_FOUND)
 endif()
 #MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
-INCLUDE(cmake/CMakeDeps.txt)
-INCLUDE(cmake/HiveFindMysql.txt)
+#INCLUDE(cmake/CMakeDeps.txt)
+INCLUDE(cmake/HiveFindSQLite.txt)
 INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
@@ -265,6 +265,7 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/
 
 
 SET(DEFAULT_DATABASE_HOST "127.0.0.1")
+SET(DEFAULT_DATABASE "sqlite3")
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 include_directories (${MYSQL_DIR}/include/litesql)
 #include_directories (${MYSQL_DIR}/include/litesql/litesql)

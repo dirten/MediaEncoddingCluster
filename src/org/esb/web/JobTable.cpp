@@ -11,13 +11,14 @@
 
 #include "org/esb/config/config.h"
 #include "Wt/WCompositeWidget"
+#include "org/esb/hive/DatabaseService.h"
 namespace org {
   namespace esb {
     namespace web {
 
       JobTable::JobTable() :doSome_(this, "doSome"), Wt::Ext::TableView() {
         LOGDEBUG("JobTable::JobTable()");
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         
         std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).orderBy(db::Job::Id, false).all();
         _model=Ptr<JobTableModel>(new JobTableModel(jobs));
@@ -87,7 +88,7 @@ namespace org {
       }
       void JobTable::refresh() {
         LOGDEBUG("JobTable::refresh()")
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
 
         std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
         _model->refresh(jobs);

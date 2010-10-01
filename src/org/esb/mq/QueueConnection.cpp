@@ -2,6 +2,7 @@
 #include "MQFactory.h"
 #include "safmq.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include <exception>
 #include "org/esb/hive/HiveException.h"
 namespace org{
@@ -11,6 +12,19 @@ namespace org{
       QueueConnection::QueueConnection(std::string url){
         try {
           /*url="safmq://admin:@localhost:9000/testqueue"*/
+          _connection = safmq::MQFactory::BuildConnection(url, "", "");
+        } catch (tcpsocket::SocketException & ex) {
+          //LOGERROR(ex.what());
+          //LOGERROR(ex.getError());
+          throw org::esb::hive::HiveException("could not connect to QueueManager");
+        }
+      }
+      QueueConnection::QueueConnection(std::string host, int port){
+        try {
+          /*url="safmq://admin:@localhost:9000/testqueue"*/
+          std::string url="safmq://admin:@";
+          url+=host;
+          url+=org::esb::util::StringUtil::toString(port);
           _connection = safmq::MQFactory::BuildConnection(url, "", "");
         } catch (tcpsocket::SocketException & ex) {
           //LOGERROR(ex.what());

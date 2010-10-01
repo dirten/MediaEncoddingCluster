@@ -44,7 +44,7 @@ int main(int argc, char**argv) {
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
   {
-  db::HiveDb db("mysql",Config::getProperty("db.url"));
+  db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
   db::MediaFile file(db);
   file.path="/tmp/test/path";
   file.filename="testfile.avi";

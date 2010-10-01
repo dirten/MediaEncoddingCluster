@@ -18,6 +18,7 @@
 #include "PresetTree.h"
 #include "org/esb/web/project/InputFilePanel.h"
 #include "org/esb/hive/JobUtil.h"
+#include "org/esb/hive/DatabaseService.h"
 /*on windows there is a macro defined with name MessageBox*/
 #ifdef MessageBox
 #undef MessageBox
@@ -40,7 +41,7 @@ namespace org {
 
           layout()->setContentsMargins(0, 0, 0, 0);
 
-          _db = Ptr<db::HiveDb > (new db::HiveDb("mysql", org::esb::config::Config::getProperty("db.url")));
+          _db = Ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
 
           //          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
           ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);

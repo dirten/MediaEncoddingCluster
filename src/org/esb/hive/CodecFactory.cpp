@@ -4,6 +4,7 @@
 #include "org/esb/av/Encoder.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringTokenizer.h"
+#include "DatabaseService.h"
 #include <stdexcept>
 
 
@@ -16,7 +17,7 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     try {
-      db::HiveDb db("mysql", config::Config::getProperty("db.url"));
+      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
       boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) (int) stream.codecid));
@@ -54,7 +55,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     try {
-      db::HiveDb db("mysql", config::Config::getProperty("db.url"));
+      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
       boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) (int)stream.codecid));

@@ -62,8 +62,8 @@ namespace org {
           db::HiveDb _dbCon;
           db::HiveDb _dbJobCon;
           Ptr<db::Job> current_job;
-          org::esb::io::QueueOutputStream _queue;
-          org::esb::io::ObjectOutputStream _oos;
+//          org::esb::io::QueueOutputStream _queue;
+//          org::esb::io::ObjectOutputStream _oos;
 //          boost::shared_ptr<db::Job> _actual_job;
         };
 

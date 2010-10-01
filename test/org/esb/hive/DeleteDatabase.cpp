@@ -1,5 +1,4 @@
 #include "org/esb/hive/DatabaseService.h"
-#include "org/esb/sql/Connection.h"
 #include "org/esb/config/config.h"
 
 
@@ -14,9 +13,5 @@ int main() {
   hive::DatabaseService::start(MEC_SOURCE_DIR);
 
   //config::Config::setProperty("db.connection","")
-  {
-    sql::Connection con_a("");
-    con_a.executeNonQuery(string("DROP DATABASE hive"));
-  }
 
 }

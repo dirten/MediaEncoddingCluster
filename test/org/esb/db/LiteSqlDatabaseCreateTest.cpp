@@ -22,19 +22,22 @@ int main(int argc, char** argv) {
    std::string host = "host=";
   host += DEFAULT_DATABASE_HOST;
   host += ";user=root;port=3306;database=example";
-  org::esb::config::Config::setProperty("db.url", host.c_str());
+//  org::esb::config::Config::setProperty("db.url", host.c_str());
+  org::esb::config::Config::setProperty("db.url", "database=example.db");
   std::string src = MEC_SOURCE_DIR;
   org::esb::config::Config::setProperty("hive.base_path", src.c_str());
 
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
   if(org::esb::hive::DatabaseService::databaseExist()){
-    org::esb::hive::DatabaseService::dropDatabase();
+    org::esb::hive::DatabaseService::updateTables();
+  }else{
+    org::esb::hive::DatabaseService::createTables();
   }
-  org::esb::hive::DatabaseService::createDatabase();
-  org::esb::hive::DatabaseService::createTables();
+    org::esb::hive::DatabaseService::loadPresets();
+
   {
 
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 
     db::MediaFile file(db);
     file.filename = "test";
@@ -69,7 +72,7 @@ int main(int argc, char** argv) {
       }
     }
   }
-  org::esb::hive::DatabaseService::dropDatabase();
+//  org::esb::hive::DatabaseService::dropDatabase();
   org::esb::hive::DatabaseService::stop();
   Log::close();
   return 0;

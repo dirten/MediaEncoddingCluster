@@ -11,6 +11,7 @@ add_subdirectory (org)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 include_directories (${WT_DIR}/include)
 include_directories (${WT_DIR})
@@ -63,12 +64,16 @@ add_executable (mhive Hive.cpp)
 add_executable (mhiveservice HiveService.cpp)
 add_executable (mhiveclient MhiveClient.cpp)
 add_executable (mhivemaster MHiveMaster.cpp)
+add_executable (mhivegridnode MHiveGridNode.cpp)
 target_link_libraries (mhivemaster
   lang
   util
   io
   hive
   mq
+)
+target_link_libraries (mhivegridnode
+  grid
 )
 add_executable (mhivequeue MHiveQueue.cpp)
 target_link_libraries (mhivequeue mq)
@@ -94,7 +99,6 @@ target_link_libraries (mhiveservice io lang util)
 target_link_libraries (mhive 
   web 
   esb 
-  sql 
   hive 
   lang 
   av 
@@ -163,7 +167,6 @@ ENDIF(WIN32)
 target_link_libraries (mhiveclient
   web
   esb
-  sql
   hive
   lang
   av
@@ -252,7 +255,9 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
 #	${PROJECT_SOURCE_DIR}/sql/hive-0.0.6.sql
 # DESTINATION ./sql
 #  )
-INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/codec.txt
+INSTALL(FILES 
+  ${PROJECT_SOURCE_DIR}/sql/codec.txt
+  ${PROJECT_SOURCE_DIR}/sql/CreateDatabase.sql
   DESTINATION ./sql
   )
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/config.txt
@@ -268,12 +273,12 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 IF(WIN32)
-  INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
-    DESTINATION ./bin
-    )
-  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-    DESTINATION ./res
-    )
+#  INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
+#    DESTINATION ./bin
+#    )
+#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+#    DESTINATION ./res
+#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/bin/avcodec-52.dll
 #      ${FFMPEG_DIR}/bin/avcore-0.dll
@@ -285,9 +290,9 @@ IF(WIN32)
     DESTINATION ./bin
     )
 ELSEIF(APPLE)
-  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-    DESTINATION ./res
-    )
+#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+#    DESTINATION ./res
+#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.52.dylib
       ${FFMPEG_DIR}/lib/libavdevice.52.dylib
@@ -298,9 +303,9 @@ ELSEIF(APPLE)
     DESTINATION ./lib
   )
 ELSE(APPLE)
-  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-    DESTINATION ./res
-    )
+#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
+#    DESTINATION ./res
+#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
       ${FFMPEG_DIR}/lib/libavdevice.so.52
@@ -311,11 +316,11 @@ ELSE(APPLE)
       ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ./lib
     )
-  INSTALL(FILES
-      ${MYSQL_DIR}/bin/mysqld
-    DESTINATION ./bin
-    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-    )
+#  INSTALL(FILES
+#      ${MYSQL_DIR}/bin/mysqld
+#    DESTINATION ./bin
+#    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+#    )
 
 ENDIF(WIN32)
 

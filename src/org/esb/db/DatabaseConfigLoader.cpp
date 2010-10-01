@@ -7,6 +7,7 @@
 #include "hivedb.hpp"
 #include "org/esb/config/config.h"
 #include "DatabaseConfigLoader.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org {
   namespace esb {
@@ -16,7 +17,7 @@ namespace org {
         /*load params from database*/
         try {
           if (std::string(org::esb::config::Config::getProperty("db.url")).length() > 0) {
-            ::db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+            ::db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
             vector< ::db::Config> configs = litesql::select< ::db::Config > (db).all();
             vector< ::db::Config>::iterator confit = configs.begin();
             for (; confit != configs.end(); confit++) {

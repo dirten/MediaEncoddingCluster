@@ -63,6 +63,10 @@ namespace org {
       void TcpServerSocket::bind() {
 
       }
+      
+      void TcpServerSocket::setConnectionListener(Ptr<TcpConnectionListener> l) {
+
+      }
 
       void TcpServerSocket::close() {
         if (acceptor_.is_open()) {

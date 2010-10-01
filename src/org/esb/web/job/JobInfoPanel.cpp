@@ -9,6 +9,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -26,7 +27,7 @@ namespace org {
 
       }
       void JobInfoPanel::setJob(int id) {
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         db::Job job=litesql::select<db::Job>(dbCon, db::Job::Id==id).one();
         //_detail_panel->setJob(job);
         _log_panel->setJob(job);

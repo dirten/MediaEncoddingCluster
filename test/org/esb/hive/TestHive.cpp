@@ -21,15 +21,12 @@
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/hive/Setup.h"
-#include "org/esb/hive/job/ProcessUnitWatcher.h"
+//#include "org/esb/hive/job/ProcessUnitWatcher.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/config/config.h"
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-#include "org/esb/sql/ResultSet.h"
 #include "org/esb/util/Log.h"
 
 

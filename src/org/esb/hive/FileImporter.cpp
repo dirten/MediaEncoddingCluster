@@ -11,7 +11,7 @@
 #include "org/esb/av/Packet.h"
 #include "org/esb/av/Codec.h"
 #include "org/esb/util/Decimal.h"
-#include "org/esb/hive/DatabaseUtil.h"
+//#include "org/esb/hive/DatabaseUtil.h"
 //#include <boost/progress.hpp>
 //#include <boost/archive/binary_oarchive.hpp>
 //#include <boost/archive/binary_iarchive.hpp>
@@ -31,7 +31,6 @@
 #include "FileImporter.h"
 using namespace std;
 using namespace org::esb;
-using namespace org::esb::sql;
 using namespace org::esb::config;
 //using namespace tntdb;
 using namespace org::esb::av;
@@ -75,7 +74,7 @@ namespace org {
 
       FileImporter::FileImporter() {
         if (!_connection) {
-          _connection = new db::HiveDb("mysql", org::esb::config::Config::getProperty("db.url"));
+          _connection = new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
         }
 
       }

@@ -36,10 +36,10 @@ int main(int argc, char** argv) {
   //boost::thread(boost::bind(&Process::start, &p));
   p.run(true);
   LOGDEBUG("start returned");
-  Thread::sleep2(10000);
+  Thread::sleep2(3000);
   LOGDEBUG("stop child Process");
   p.stop();
-  Thread::sleep2(5000);
+  Thread::sleep2(2000);
   LOGDEBUG("kill child Process");
   try{
     p.kill();
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
   }catch(org::esb::lang::ProcessException & ex){
     LOGERROR("Exception:"<<ex.what());
   }
-  Thread::sleep2(5000);
+  Thread::sleep2(1000);
   Log::close();
   return 0;
 }

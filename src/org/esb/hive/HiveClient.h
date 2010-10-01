@@ -17,6 +17,10 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/Log.h"
 
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/io/QueueInputStream.h"
+#include "org/esb/io/QueueOutputStream.h"
+
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
@@ -55,6 +59,9 @@ namespace org {
 //                boost::mutex thread_write_mutex;
                 void packetReader();
                 void packetWriter();
+
+                Ptr<org::esb::io::QueueInputStream> _qis;
+                Ptr<org::esb::io::QueueOutputStream> _qos;
             };
         }
     }

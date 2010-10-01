@@ -33,6 +33,7 @@
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/sql/Connection.h"
 #include "org/esb/sql/PreparedStatement.h"
+#include "DatabaseService.h"
 
 namespace org {
   namespace esb {
@@ -90,7 +91,7 @@ namespace org {
       void JobScanner::run() {
         _running = true;
 
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 
 //        org::esb::sql::PreparedStatement stmt = con.prepareStatement("SELECT *,concat(outfolder,\"/\",profile_name,substring( files.path, length( watch_folder.infolder )+1 )) as output_folder FROM files join watch_folder on substring( files.path, 1, length( watch_folder.infolder ) ) =watch_folder.infolder left join jobs on files.id=jobs.inputfile and watch_folder.profile=jobs.profileid, profiles WHERE files.parent =0 and profiles.id=profile and jobs.id is null");
         while (_run) {

@@ -19,6 +19,7 @@
 #include "org/esb/web/project/ProfilePanel.h"
 #include "org/esb/web/project/FilterPanel.h"
 #include "org/esb/web/project/ProjectPropertyPanel.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org {
   namespace esb {
@@ -92,7 +93,7 @@ namespace org {
         class PresetTreeView : public Wt::WTreeView {
         public:
 
-          PresetTreeView(Wt::WContainerWidget *parent = 0) : _db("mysql", org::esb::config::Config::getProperty("db.url")), Wt::WTreeView(parent) {
+          PresetTreeView(Wt::WContainerWidget *parent = 0) : _db(org::esb::hive::DatabaseService::getDatabase()), Wt::WTreeView(parent) {
             LOGDEBUG("void PresetTreeView::PresetTreeView(Wt::WContainerWidget *parent = 0)");
 
             Wt::WStandardItemModel * model = new Wt::WStandardItemModel(0, 2, this);
@@ -155,7 +156,7 @@ namespace org {
           }
         };
 
-        PresetTree::PresetTree() :_db("mysql",org::esb::config::Config::getProperty("db.url")), Wt::Ext::Panel() {
+        PresetTree::PresetTree() :_db(org::esb::hive::DatabaseService::getDatabase()), Wt::Ext::Panel() {
           LOGDEBUG("PresetTree::PresetTree() ");
           //setTitle("Presets");
           setLayout(new Wt::WAccordionLayout());

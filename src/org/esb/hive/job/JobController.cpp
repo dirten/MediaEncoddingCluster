@@ -7,13 +7,14 @@
 
 #include "JobController.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
           using namespace org::esb::config;
 namespace org {
   namespace esb {
     namespace hive {
       namespace job {
         
-        JobController::JobController():_dbCon("mysql",Config::getProperty("db.url")) {
+        JobController::JobController():_dbCon(org::esb::hive::DatabaseService::getDatabase()) {
           LOGTRACEMETHOD("JobController::JobController():_dbCon(\"mysql\",Config::getProperty(\"db.url\"))")
           
         }

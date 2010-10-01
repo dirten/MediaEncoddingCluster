@@ -20,7 +20,7 @@ int main() {
   org::esb::hive::DatabaseService::createTables();
   {
 
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 
     db::MediaFile file(db);
     file.filename = "test";

@@ -13,7 +13,6 @@ add_executable (PreviewFrameServerTest PreviewFrameServer.cpp)
 target_link_libraries (TestWebServer
   web
   esb
-  sql
   hive
   av
   util

@@ -21,7 +21,7 @@
 #include "boost/asio.hpp"
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/config/config.h"
-#include "org/esb/hive/JobScanner.h"
+
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/DirectoryScanner.h"
 #include "org/esb/av/AV.h"
@@ -37,10 +37,6 @@
 #include "org/esb/hive/Setup.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
 #include "org/esb/util/StringUtil.h"
 #if !defined(_WIN32)
 
@@ -82,7 +78,7 @@ void start();
 int rec = 0;
 
 int main(int argc, char * argv[]) {
-
+  org::esb::config::Config::init("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
 
@@ -139,7 +135,7 @@ int main(int argc, char * argv[]) {
     ser.add_options()
             ("daemon,d", "start the Hive as Daemon Process")
             ("run,r", "start the Hive as Console Process")
-            ("db",po::value<std::string > ()->default_value("host=localhost;database=hive;user=root;port=3306"), "connect to the db")
+            ("db",po::value<std::string > ()->default_value("database="+sb+"/data/hive.db"), "connect to the db")
             ;
 
     po::options_description cli("Client options");
@@ -182,7 +178,7 @@ int main(int argc, char * argv[]) {
       DatabaseService::updateTables();
       DatabaseService::loadPresets();
       {
-        db::HiveDb db("mysql", Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         std::map<std::string, std::string> conf;
         conf["hive.mode"] = "server";
         conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
@@ -220,7 +216,7 @@ int main(int argc, char * argv[]) {
       DatabaseService::updateTables();
       DatabaseService::loadPresets();
       {
-        db::HiveDb db("mysql", Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         std::map<std::string, std::string> conf;
         conf["hive.mode"] = "server";
         conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
@@ -427,8 +423,6 @@ void start() {
   //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
   //  Messenger::getInstance().addMessageListener(dbservice);
   LOGDEBUG("here")
-  org::esb::hive::JobScanner jobscan;
-  Messenger::getInstance().addMessageListener(jobscan);
 
   org::esb::hive::DirectoryScanner dirscan;
   Messenger::getInstance().addMessageListener(dirscan);

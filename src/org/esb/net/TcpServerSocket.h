@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include "org/esb/util/Log.h"
+#include "TcpConnectionListener.h"
 using boost::asio::ip::tcp;
 namespace org{
 namespace esb{
@@ -16,6 +17,7 @@ namespace net{
       void bind();
       void close();
       TcpSocket * accept();
+      void setConnectionListener(Ptr<TcpConnectionListener> l);
     private:
       TcpServerSocket();
 //      boost::asio::io_service& io_service_;

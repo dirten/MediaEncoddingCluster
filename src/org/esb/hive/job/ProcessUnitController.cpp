@@ -40,8 +40,8 @@ namespace org {
           LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");
-          _stop_signal = false;
-          _isRunning = false;
+            _stop_signal = false;
+            _isRunning = false;
             boost::thread t(boost::bind(&ProcessUnitController::start, this));
             LOGDEBUG("started");
           } else if (msg.getProperty("processunitcontroller") == "stop") {
@@ -66,11 +66,10 @@ namespace org {
         }
 
         ProcessUnitController::ProcessUnitController() :
-        _dbCon("mysql", org::esb::config::Config::getProperty("db.url")),
-        _dbJobCon("mysql", org::esb::config::Config::getProperty("db.url")),
+        _dbCon(org::esb::hive::DatabaseService::getDatabase()),
+        _dbJobCon(org::esb::hive::DatabaseService::getDatabase())/*,
         _queue("safmq://admin:@localhost:20200/punitout"),
-        _oos(&_queue)
-        {
+        _oos(&_queue)*/ {
           LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
           _stop_signal = false;
           _isRunning = false;
@@ -79,10 +78,9 @@ namespace org {
 
         ProcessUnitController::ProcessUnitController(const ProcessUnitController& orig) :
         _dbCon(orig._dbCon),
-        _dbJobCon(orig._dbJobCon),
+        _dbJobCon(orig._dbJobCon)/*,
         _queue(orig._queue),
-        _oos(orig._oos)
-        {
+        _oos(orig._oos)*/ {
 
         }
 
@@ -163,7 +161,7 @@ namespace org {
               stream_map[idx].deinterlace = detail.deinterlace.value();
               //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
               stream_map[idx].last_start_dts = detail.lastdts;
-              LOGDEBUG("Last start DTS:"<<stream_map[idx].last_start_dts);
+              LOGDEBUG("Last start DTS:" << stream_map[idx].last_start_dts);
               if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
                 LOGERROR("wrong decoder timebase -> num=" << stream_map[idx].decoder->getTimeBase().num << " den=" << stream_map[idx].decoder->getTimeBase().den);
                 LOGERROR("skip stream #" << stream_map[idx].instream);
@@ -200,22 +198,40 @@ namespace org {
                */
               if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
                 continue;
-//              LOGTRACE("Packet DTS:"<<packet->toString());
+              //              LOGTRACE("Packet DTS:"<<packet->toString());
               //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
               if (packetizer.putPacket(pPacket)) {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
                 PacketListPtr packets = packetizer.removePacketList();
                 boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
-                _oos.writeObject(*unit.get());
-                /*
-                if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
-                  LOGDEBUG("audioQueue.enqueue(unit);")
-                  audioQueue.enqueue(unit);
+                if (false) {
+                  db::ProcessUnit dbunit(_dbCon);
+                  dbunit.sorcestream = unit->_source_stream;
+                  dbunit.targetstream = unit->_target_stream;
+                  dbunit.timebasenum = unit->_input_packets.front()->getTimeBase().num;
+                  dbunit.timebaseden = unit->_input_packets.front()->getTimeBase().den;
+                  dbunit.startts = (double) unit->_input_packets.front()->getDts();
+                  dbunit.endts = (double) unit->_input_packets.back()->getDts();
+                  dbunit.framecount = (int) unit->_input_packets.size();
+                  {
+                    boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+                    dbunit.update();
+                    dbunit.recv = -1;
+                    dbunit.update();
+                  }
+                  unit->_process_unit = dbunit.id;
+
+                  //_oos.writeObject(*unit.get());
                 } else {
-                  LOGDEBUG("puQueue.enqueue(unit);")
-                  puQueue.enqueue(unit);
-                }*/
-//                wait_for_queue = true;
+                  if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+                    LOGDEBUG("audioQueue.enqueue(unit);")
+                    audioQueue.enqueue(unit);
+                  } else {
+                    LOGDEBUG("puQueue.enqueue(unit);")
+                    puQueue.enqueue(unit);
+                  }
+                }
+                                wait_for_queue = true;
               }
             }
             /*@TODO: need to implements the flush Method in the Packetizer*/
@@ -225,7 +241,7 @@ namespace org {
               queue_empty_wait_condition.wait(queue_empty_wait_lock);
             }
 
-            if (_stop_signal){
+            if (_stop_signal) {
               LOGDEBUG("stop signal, returning here");
               return;
             }
@@ -349,13 +365,13 @@ namespace org {
             db::ProcessUnit dbunit = litesql::select<db::ProcessUnit > (_dbCon, db::ProcessUnit::Id == unit->_process_unit).one();
             dbunit.recv = 0;
             dbunit.update();
-//            LOGDEBUG(""<<dbunit);
+            //            LOGDEBUG(""<<dbunit);
             vector<db::JobDetail> details = current_job->jobdetails().get().all();
             for (int a = 0; a < details.size(); a++) {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();
-                LOGDEBUG(""<<details[a]);
+                LOGDEBUG("" << details[a]);
               }
             }
 

@@ -175,7 +175,7 @@
                     -DBOOST_COMPILER=${GCC_VERSION}
                     -DFFMPEG_DIR=${project.build.directory}/dependency
                     -DLOG4CPLUS_DIR=${project.build.directory}/dependency
-                    -DMYSQL_DIR=${project.build.directory}/dependency
+                    -DSQLITE_DIR=${project.build.directory}/dependency
                     -DWT_DIR=${project.build.directory}/dependency
                     -DBUILD_TESTING=On
                     -DBREAKPAD_DIR=${project.build.directory}/dependency
@@ -258,13 +258,6 @@
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
-      <groupId>org.esb.mysql</groupId>
-      <artifactId>mysql</artifactId>
-      <version>5.1.48</version>
-      <type>zip</type>
-      <classifier>${my.family}-${build_type}</classifier>
-    </dependency>
-    <dependency>
       <groupId>org.esb.wt</groupId>
       <artifactId>wt</artifactId>
       <version>3.1.4</version>
@@ -310,6 +303,13 @@
       <groupId>org.esb.safmq</groupId>
       <artifactId>safmq</artifactId>
       <version>0.8.3-3</version>
+      <type>zip</type>
+      <classifier>${my.family}-${build_type}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.esb.sqlite</groupId>
+      <artifactId>sqlite</artifactId>
+      <version>3.7.2</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>

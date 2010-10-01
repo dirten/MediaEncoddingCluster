@@ -22,12 +22,12 @@
 #include "Projects.h"
 
 #include "ProfilesForm.h"
-#include "WatchFolder.cpp"
-#include "WatchfolderForm.h"
+//#include "WatchFolder.cpp"
+//#include "WatchfolderForm.h"
 #include "Configuration.cpp"
 
-#include "FileInfo.cpp"
-#include "StreamInfo.h"
+//#include "FileInfo.cpp"
+//#include "StreamInfo.h"
 #include "ProfileCreator.h"
 
 
@@ -37,6 +37,7 @@
 
 #include "TreeMainMenu.h"
 #include "job/JobInfoPanel.h"
+#include "system/NodeListPanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -316,34 +317,12 @@ namespace org {
       }
 
       void WebApp2::listPendingEncodings() {
-        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) = 0 order by 2,f.id DESC"));
-        tab->setColumnWidth(1, 10);
-        tab->setColumnWidth(2, 20);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 10);
-//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
       }
 
       void WebApp2::listActiveEncodings() {
-        SqlTable * tab = new SqlTable(std::string(
-                "SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) > 0 and round(count(complete)/count(*)*100,2) < 100 order by 2,f.id DESC"));
-        tab->setColumnWidth(1, 10);
-        tab->setColumnWidth(2, 20);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 10);
-//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
       }
 
       void WebApp2::listSuccessfullEncodings() {
-        SqlTable * tab = new SqlTable(std::string("SELECT   filename, round(count(complete)/count(*)*100,2) progress,min(send) start, max(complete) complete,sum(timestampdiff(SECOND,send,complete)) \"cpu-time\" FROM process_units pu, streams s, files f where pu.target_stream=s.id and s.fileid=f.id group by fileid having round(count(complete)/count(*)*100,2) = 100 order by 2,f.id DESC"));
-        tab->setColumnWidth(1, 10);
-        tab->setColumnWidth(2, 20);
-        tab->setColumnWidth(3, 20);
-        tab->setColumnWidth(4, 10);
-//        _jobSignalMap->mapConnect(tab->itemSelectionChanged, tab);
-        setContent(tab);
       }
 
       void WebApp2::listFailureEncodings() {
@@ -372,14 +351,14 @@ namespace org {
       }
 
       void WebApp2::listAllWatchfolder() {
-        WatchFolder * wf = new WatchFolder(0);
-        setContent(wf);
+//        WatchFolder * wf = new WatchFolder(0);
+//        setContent(wf);
       }
 
       void WebApp2::createWatchfolder() {
-        WatchFolder * wf = new WatchFolder(0);
-        setContent(wf);
-        wf->createWatchFolder();
+//        WatchFolder * wf = new WatchFolder(0);
+//        setContent(wf);
+//        wf->createWatchFolder();
       }
 
       void WebApp2::watchfolderCreated() {
@@ -391,38 +370,11 @@ namespace org {
         Configuration * conf = new Configuration();
         setContent(conf);
       }
-
-      void WebApp2::fileSelected(SqlTable * tab) {
-        if (tab->selectedRows().size() > 0) {
-          /**
-           * retriving selected file from grid
-           */
-          std::string idstr = boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0));
-          /**
-           * remove old widgets from the info_panel
-           */
-          int c = info_panel->layout()->count();
-          LOGINFO("InfoPanel have " << c << " widgets");
-          for (int a = 0; a < c; a++) {
-            Wt::WLayoutItem * item = info_panel->layout()->itemAt(0);
-            info_panel->layout()->removeItem(item);
-          }
-          /**
-           * adding new items to the info panel
-           */
-          info_panel->layout()->addWidget(new FileInfo(atoi(idstr.c_str())));
-
-          /**adding the streaminfo for the streams from the selected file*/
-          Connection con(Config::getProperty("db.connection"));
-          std::string sql = "SELECT * FROM streams WHERE fileid = ";
-          sql += StringUtil::toString(atoi(idstr.c_str()));
-          Statement st = con.createStatement(sql.c_str());
-          ResultSet rs = st.executeQuery();
-          while (rs.next()) {
-            info_panel->layout()->addWidget(new StreamInfo(&rs));
-          }
-        }
+      void WebApp2::viewNodes() {
+        org::esb::web::NodeListPanel * panel = new org::esb::web::NodeListPanel();
+        setContent(panel);
       }
+
 
       void WebApp2::jobSelected(JobTable * tab) {
         if(tab==NULL)return;

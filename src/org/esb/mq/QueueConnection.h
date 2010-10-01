@@ -8,6 +8,8 @@ namespace org{
       class QueueConnection{
       public:
         QueueConnection(std::string url);
+        QueueConnection(std::string host, int port);
+
         ~QueueConnection();
         void createQueue(std::string name);
         void deleteQueue(std::string name);

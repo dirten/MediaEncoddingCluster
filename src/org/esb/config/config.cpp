@@ -9,18 +9,15 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
  */
 #include "org/esb/db/hivedb.hpp"
 #include "config.h"
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/Statement.h"
-#include "org/esb/sql/ResultSet.h"
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/util/Log.h"
 #include "Defaults.cpp"
 #include <stdlib.h>
+#include <string.h>
 using namespace std;
 using namespace org::esb::config;
 using namespace org::esb::util;
-using namespace org::esb::sql;
 using namespace org::esb::lang;
 //namespace org{
 //namespace esb{

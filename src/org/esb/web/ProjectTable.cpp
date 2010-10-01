@@ -9,6 +9,7 @@
 #include "Wt/WStandardItemModel"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -48,7 +49,7 @@ namespace org {
       };
 
       ProjectTable::ProjectTable() : Wt::Ext::TableView() {
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         std::vector<db::Project> projects = litesql::select<db::Project > (dbCon).all();
         _model = Ptr<ProjectTableModel > (new ProjectTableModel(projects));
         setModel(_model.get());
@@ -67,7 +68,7 @@ namespace org {
       void ProjectTable::refresh() {
         LOGDEBUG("ProjectTable::refresh()");
 
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
 
         std::vector<db::Project> projects = litesql::select<db::Project > (dbCon).all();
         _model->refresh(projects);

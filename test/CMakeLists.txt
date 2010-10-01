@@ -9,6 +9,8 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${LOG4CPLUS_DIR}/include)
 #include_directories (${MEC_SOURCE_DIR}/test/fobs/dist/include)
 #INCLUDE_DIRECTORIES (${ERLANG_INTERFACE_DIR}/include)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
+
 
 INCLUDE_DIRECTORIES (${BREAKPAD_INCLUDE_DIR})
 
@@ -88,7 +90,6 @@ add_executable (mytest test.cpp)
 target_link_libraries (info
   web
   esb
-  sql
   hive
   av
   util
@@ -103,7 +104,6 @@ target_link_libraries (pu
   av
   util
   io
-  sql
   net
   signal
   lang
@@ -114,7 +114,6 @@ target_link_libraries (pc
   av
   util
   io
-  sql
   net
   signal
   lang

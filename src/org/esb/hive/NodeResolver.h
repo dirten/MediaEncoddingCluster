@@ -32,6 +32,8 @@
 #include <boost/shared_ptr.hpp>
 #include <list>
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/Ptr.h"
+
 #include "boost/date_time/posix_time/posix_time.hpp"
 //#include <boost/serialization/serialization.hpp>
 #include <boost/serialization/binary_object.hpp>
@@ -56,11 +58,12 @@ namespace org {
         bool operator==(const Node * a)const;
         std::string toString();
 
-        enum NODE_STATUS {
+        enum NodeStatus {
           NODE_UP,
           NODE_DOWN
         };
-        NODE_STATUS _status;
+        NodeStatus _status;
+        NodeStatus getStatus();
         std::string getData(std::string key);
         void setData(std::string key, std::string value);
         void setEndpoint(boost::asio::ip::udp::endpoint);
@@ -88,7 +91,7 @@ namespace org {
       class NodeResolver {
         classlogger("org.esb.hive.NodeResolver")
       public:
-        typedef std::list<boost::shared_ptr<Node> > NodeList;
+        typedef std::list<Ptr<Node> > NodeList;
         NodeResolver(const boost::asio::ip::address& listen_address, const boost::asio::ip::address& multicast_address, int, Node);
         void setNodeListener(NodeListener * listener);
         void start();
@@ -96,7 +99,7 @@ namespace org {
         void setNodeTimeout(unsigned int sec);
         void setNodeMessage(std::string msg);
         void setNode(Node);
-        NodeList getNodes();
+        static NodeList getNodes();
 
 
       private:
@@ -112,19 +115,20 @@ namespace org {
         boost::asio::deadline_timer send_timer_;
 
         enum {
-          max_length = 4096
+          max_length = 10000000
         };
         char data_[max_length];
 
         int message_count_;
         std::string message_;
         Node _self;
-        NodeList _nodes;
+        static NodeList _nodes;
         std::list<NodeListener*>_listener;
 
         std::string _message;
         unsigned int _node_timeout;
         void handle_send(const boost::system::error_code& error);
+        void handle_send_size(const boost::system::error_code& error,std::size_t bytes_transferred);
         void handle_send_timeout(const boost::system::error_code& error);
         void handle_receive(const boost::system::error_code& error, size_t bytes_recvd);
 

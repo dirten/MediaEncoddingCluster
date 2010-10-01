@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 //#include "litesql.hpp"
-#include "org/esb/orm/hivedb.hpp"
+//#include "org/esb/orm/hivedb.hpp"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/config/config.h"
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
   org::esb::hive::DatabaseService::createTables();
   {
 
-    HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 //    db.create();
     db.upgrade();
     MediaFile file(db);

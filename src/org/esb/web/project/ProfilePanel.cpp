@@ -9,6 +9,7 @@
 #include "ProfileCreator.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -103,7 +104,7 @@ namespace org{
 
       void ProfilePanel::removeSelectedProfile(){
         int pid=atoi(boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str());
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==pid).one();
         _project->profiles().unlink(profile);
         _profile_table->setProfiles(_project->profiles().get().all());
@@ -134,7 +135,7 @@ namespace org{
       void ProfilePanel::profileChooserSelected(){
         int c=_profile_chooser->getSelectedProfileId();
         
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==c).one();
         if(_project)
           _project->profiles().link(profile);

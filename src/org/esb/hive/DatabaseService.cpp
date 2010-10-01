@@ -25,14 +25,16 @@
 * ----------------------------------------------------------------------
 */
 #include "DatabaseService.h"
+#include "config.h"
 #include "org/esb/signal/Messenger.h"
-#include "org/esb/sql/my_sql.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/io/File.h"
 
 #include "org/esb/config/config.h"
 #include "HiveException.h"
+#include "org/esb/io/FileInputStream.h"
+#include "org/esb/util/StringUtil.h"
 #include <iostream>
 namespace org {
   namespace esb {
@@ -58,85 +60,31 @@ namespace org {
       void DatabaseService::start(std::string base_path) {
         _base_path=org::esb::config::Config::get("mhive.base_path");
         LOGINFO("starting Database Service");
-        std::string mysql_bin=org::esb::config::Config::get("MYSQLD_BIN");
-        std::string mysql_data=org::esb::config::Config::get("MYSQL_DATA");
-        std::string mysql_lang=org::esb::config::Config::get("MYSQL_LANG");
-
-        /*sanity checks*/
-        org::esb::io::File mysql_bin_file(mysql_bin);
-        org::esb::io::File mysql_data_dir(mysql_data);
-        org::esb::io::File mysql_lang_dir(mysql_lang);
-        if(!mysql_bin_file.exists()){
-          throw HiveException("could not find mysqld executable: ");
-        }
-        if(!mysql_data_dir.exists()){
-          throw HiveException("could not find database directory: ");
-        }
-        if(!mysql_lang_dir.exists()){
-          throw HiveException("could not find database resource directory: ");
-          org::esb::io::File res_file(mysql_lang_dir.getPath()+"/errmsg.sys");
-          if(!res_file.exists())
-            throw HiveException("could not find database resource file: ");
-        }
-
-
-        std::list<std::string> args;
-//        args.push_back(std::string("-c"));
-//        args.push_back(std::string("../target/dependency/bin/mysqld --verbose --bootstrap --datadir=. < /home/HoelscJ/devel/mec/sql/CreateDatabase.sql.sql"));
-        args.push_back(std::string("--verbose"));
-//        args.push_back(std::string("--bootstrap"));
-        args.push_back("--datadir="+mysql_data);
-        args.push_back("--language="+mysql_lang);
-        args.push_back("--socket=/tmp/mysql.sock");
-        args.push_back("--user=root");
-//        args.push_back(std::string("</home/HoelscJ/devel/mec/sql/CreateDatabase.sql"));
-
-        _dbServer=new org::esb::lang::Process(mysql_bin, args, "mhivedatabase");
-        _dbServer->run();
-        org::esb::lang::Thread::sleep2(1000);
-        return;
-        if (_running == false) {
-          _base_path=base_path;
-          std::string lang = "--language=";
-          lang.append(base_path);
-          lang.append("/res");
-
-          std::string datadir = "--datadir=";
-          datadir.append(base_path);
-          datadir.append("/");
-          char * dbdir = const_cast<char*> (datadir.c_str());
-          char * langdir = const_cast<char*> (lang.c_str());
-
-          static char *server_options[] = {
-            const_cast<char*> ("dbservice"),
-            const_cast<char*> (datadir.c_str()),
-            const_cast<char*> (lang.c_str()),
-            NULL
-          };
-          int num_elements = (sizeof (server_options) / sizeof (char *)) - 1;
-          static char *server_groups[] = {
-            const_cast<char*> ("embedded"),
-            const_cast<char*> ("server"),
-            const_cast<char*> ("dbservice_SERVER"),
-            (char*) NULL
-          };
-          if (mysql_server_init(num_elements, server_options, NULL/*server_groups*/) > 0) {
-            LOGFATAL("error initialising DatabaseService datadir=" << datadir << " resource=" << lang);
-          }
-          _running = true;
-          LOGINFO("Database Service running");
-        }
+        _running=true;
       }
       bool DatabaseService::databaseExist() {
-        bool result=true;
-        try{
-          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
-        }catch(...){
-          result=false;
+        bool result=false;
+        using namespace org::esb::util;
+        std::string url = org::esb::config::Config::getProperty("db.url");
+        StringTokenizer tk_outer(url, ";");
+        std::string create_url;
+        std::string database_name;
+        while (tk_outer.hasMoreTokens()) {
+          std::string param = tk_outer.nextToken();
+          StringTokenizer tk_inner(param, "=");
+          if (tk_inner.nextToken() != "database") {
+            create_url += param + ";";
+          } else {
+            database_name = tk_inner.nextToken();
+          }
         }
+        org::esb::io::File dbfile(database_name);
+        if(dbfile.exists())
+          result=true;
         return result;
       }
       void DatabaseService::createDatabase() {
+        return;
         using namespace org::esb::util;
         std::string url = org::esb::config::Config::getProperty("db.url");
         StringTokenizer tk_outer(url, ";");
@@ -153,19 +101,19 @@ namespace org {
         }
         LOGDEBUG("Create Url=" + create_url);
         LOGDEBUG("Create Database name=" + database_name);
-        db::HiveDb db("mysql", create_url);
+        db::HiveDb db=getDatabase();
         db.query("CREATE DATABASE " + database_name);
 
       }
 
       void DatabaseService::createTables() {
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=getDatabase();
         LOGDEBUG("Create Tables");
         db.create();
       }
 
       void DatabaseService::updateTables() {
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=getDatabase();
         if (db.needsUpgrade()) {
           LOGDEBUG("Upgrade database");
           db.upgrade();
@@ -189,24 +137,63 @@ namespace org {
         }
         LOGDEBUG("Drop Url=" + create_url);
         LOGDEBUG("Drop Database name=" + database_name);
-
-        db::HiveDb db("mysql", create_url);
-        db.query("DROP DATABASE " + database_name);
+        org::esb::io::File dbfile(database_name);
+        if(dbfile.exists())
+          dbfile.deleteFile();
+//        db::HiveDb db=getDatabase();
+//        db.query("DROP DATABASE " + database_name);
       }
 
       void DatabaseService::dropTables() {
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=getDatabase();
         db.drop();
       }
 
       void DatabaseService::loadPresets() {
         _base_path=org::esb::config::Config::get("hive.base_path");
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=getDatabase();
 
-        db.query("load data infile '"+_base_path+"/sql/config.txt' IGNORE into table Config_ fields terminated by \":\"");
-        db.query("load data infile '"+_base_path+"/sql/profiles.txt' IGNORE into table Profile_ fields terminated by \",\"");
-        db.query("load data infile '"+_base_path+"/sql/codec.txt' IGNORE into table CodecPreset_ fields terminated by \"#\"");
+        if(true){
+//          db.query("DELETE FROM Config_ ");
+          org::esb::io::FileInputStream fis(_base_path+"/sql/config.txt");
+          std::string line;
+          while((fis.readLine(line))>0){
+            std::string sql="INSERT OR REPLACE INTO Config_ values (";
+            LOGDEBUG(line);
+            sql+=org::esb::util::StringUtil::replace(line,":",",");
+            sql+=")";
+            LOGDEBUG(sql);
+            db.query(sql);
+          }
+        }
+        if(true){
+//          db.query("DELETE FROM Profile_ ");
+          org::esb::io::FileInputStream fis(_base_path+"/sql/profiles.txt");
+          std::string line;
+          while((fis.readLine(line))>0){
+            std::string sql="INSERT OR REPLACE INTO Profile_ values (";
+            LOGDEBUG(line);
+            sql+=org::esb::util::StringUtil::replace(line,":",",");
+            sql+=")";
+            LOGDEBUG(sql);
+            db.query(sql);
+          }
+        }
+        if(true){
+          org::esb::io::FileInputStream fis(_base_path+"/sql/codec.txt");
+          std::string line;
+          while((fis.readLine(line))>0){
+            std::string sql="INSERT OR REPLACE INTO CodecPreset_ values (";
+            LOGDEBUG(line);
+            sql+=org::esb::util::StringUtil::replace(line,"#",",");
+            sql+=")";
+            LOGDEBUG(sql);
+            db.query(sql);
+          }
+        }
 
+
+        return;
         db::ProfileGroup g(db);
         g.name="root";
         g.update();
@@ -250,12 +237,13 @@ namespace org {
       }
 
       void DatabaseService::stop() {
+        return;
         LOGINFO("stopping Database Service");
         try{
         _dbServer->stop();
         }catch(...){}
-        if (_running)
-          mysql_library_end();
+//        if (_running)
+//          mysql_library_end();
         _running = false;
         org::esb::lang::Thread::sleep2(1000);
       }
@@ -269,7 +257,7 @@ namespace org {
         _thread_map[id]++;
         if(_thread_map[id]==1){
           LOGDEBUG("mysql_thread_init()->thread_map count : "<<_thread_map[id]);
-          mysql_thread_init();
+//          mysql_thread_init();
         }
       }
 
@@ -279,10 +267,11 @@ namespace org {
           _thread_map[id]--;
         if(_thread_map[id]==0){
           LOGDEBUG("mysql_thread_end()->thread_map count : "<<_thread_map[id]);
-          mysql_thread_end();
+//          mysql_thread_end();
         }
       }
        void DatabaseService::bootstrap() {
+         return;
         std::string mysql_bin=org::esb::config::Config::get("MYSQLD_BIN");
         std::string mysql_data=org::esb::config::Config::get("MYSQL_DATA");
         std::string mysql_lang=org::esb::config::Config::get("MYSQL_LANG");
@@ -299,6 +288,12 @@ namespace org {
         Process p1("/bin/sh", args);
 #endif
         p1.start();
+      }
+      db::HiveDb DatabaseService::getDatabase() {
+        if(!_running){
+          start();
+        }
+        return db::HiveDb(DEFAULT_DATABASE, org::esb::config::Config::getProperty("db.url"));
       }
       
     }

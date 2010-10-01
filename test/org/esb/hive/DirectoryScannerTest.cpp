@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   hive::DatabaseService::loadPresets();
 
   {
-    db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
     db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
     db::Watchfolder folder(db);
     folder.infolder = "/home/HoelscJ/old/media/video/";

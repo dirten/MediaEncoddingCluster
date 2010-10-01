@@ -40,6 +40,7 @@
 //#include "org/esb/av/AV.h"
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/util/StringUtil.h"
+#include "DatabaseService.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -119,7 +120,7 @@ namespace org {
 
       void DirectoryScanner::scan() {
         do{
-          db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+          db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
           vector<db::Watchfolder> dbfolder = litesql::select<db::Watchfolder > (db).all();
           vector<db::Watchfolder>::iterator it = dbfolder.begin();
           for (; it != dbfolder.end(); it++) {
@@ -159,7 +160,7 @@ namespace org {
       }
 
       void DirectoryScanner::computeFile(File & file, int p, std::string outdir) {
-        db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         try {
           db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Filename == file.getFileName() && db::MediaFile::Path == file.getFilePath()).one();
         } catch (litesql::NotFound ex) {

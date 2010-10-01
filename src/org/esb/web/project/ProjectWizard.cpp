@@ -13,11 +13,10 @@
 
 
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
 #include "org/esb/config/config.h"
 
 #include "org/esb/hive/JobUtil.h"
+#include "org/esb/hive/DatabaseService.h"
 /*on windows there is a macro defined with name MessageBox*/
 #ifdef MessageBox
 #undef MessageBox
@@ -38,7 +37,7 @@ namespace org {
 
         layout()->setContentsMargins(0, 0, 0, 0);
 
-        _db = Ptr<db::HiveDb > (new db::HiveDb("mysql", org::esb::config::Config::getProperty("db.url")));
+        _db = Ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
         //_db->verbose=true;
         _filePanel = Ptr<InputFilePanel > (new InputFilePanel());
 

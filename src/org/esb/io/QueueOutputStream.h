@@ -19,6 +19,7 @@ namespace org {
       class QueueOutputStream : public OutputStream {
       public:
         QueueOutputStream(std::string url);
+        QueueOutputStream(std::string host, int port, std::string queuename);
         QueueOutputStream(const QueueOutputStream& orig);
         virtual ~QueueOutputStream();
         void write(char buffer);

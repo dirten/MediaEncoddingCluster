@@ -22,6 +22,7 @@ public:
   void onNodeUp(Node & node){
     LOGDEBUG("NodeUp:"<<node.toString());
     LOGDEBUG("NodeData "<<node.getData("type"));
+    LOGDEBUG("NodeDataLength "<<node.getData("big_data").size());
   }
   
   void onNodeDown(Node & node){
@@ -38,7 +39,12 @@ int main(int argc, char** argv) {
   else{
     node.setData("test1","test1");
   }
-
+  node.setData("type","test1");
+  int len=65350;
+  char * data =new char[len];
+//  std::string str(data, 10000);
+  memset(data,1,len);
+  node.setData("big_data", data);
   NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
 //  NodeReceiver receiver(boost::asio::ip::address::from_string("0.0.0.0"),boost::asio::ip::address::from_string("239.255.0.1"));
 //  NodeSender sender(boost::asio::ip::address::from_string("239.255.0.1"));
@@ -46,8 +52,8 @@ int main(int argc, char** argv) {
   NodeAgent agent;
   res.setNodeListener(&agent);
   res.start();
-  Thread::sleep2(5000);
-  
+  Thread::sleep2(15000);
+//  res.stop();
   
 
 

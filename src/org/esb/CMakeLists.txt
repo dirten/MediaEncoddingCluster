@@ -54,12 +54,12 @@ add_library (db
 )
 TARGET_LINK_LIBRARIES(db lang esb)
 IF(NOT WIN32)
-  TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
+  TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite)
 ELSEIF(WIN32)
   IF(CMAKE_BUILD_TYPE MATCHES "debug")
-    TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_mysqld)
+    TARGET_LINK_LIBRARIES(db litesqld litesql-utild litesql_sqlited)
     ELSE()
-    TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_mysql)
+    TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite)
   ENDIF()
 ENDIF(NOT WIN32)
 IF(BUILD_SHARED_LIBS)
@@ -69,7 +69,7 @@ IF(BUILD_SHARED_LIBS)
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
-TARGET_LINK_LIBRARIES(db ${MYSQL_LIBRARY})
+TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
 
 
 add_library (orm orm/hivedb.cpp)
@@ -111,6 +111,7 @@ ENDIF(BUILD_SHARED_LIBS)
 add_subdirectory (av)
 add_subdirectory (lang)
 add_subdirectory (mq)
+add_subdirectory (grid)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
@@ -189,7 +190,8 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/net)
 add_library (net net/SocketException.cpp 
 #      net/ServerSocket.cpp 
 #      net/Socket.cpp 
-      net/TcpServerSocket.cpp 
+      net/UdpServerSocket.cpp
+      net/TcpServerSocket.cpp
       net/TcpSocket.cpp 
 #      net/SocketInputStream.cpp 
 #      net/SocketOutputStream.cpp
@@ -205,40 +207,40 @@ IF(BUILD_SHARED_LIBS)
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
 
-include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
-include_directories (${MYSQL_DIR}/include/mysql)
-include_directories (${MYSQL_DIR}/include)
-include_directories (${MYSQL_INC_DIR})
-include_directories (${MYSQL_INCLUDE_DIR})
-add_library (sql sql/Column.cpp 
-      sql/Connection.cpp 
-      sql/Statement.cpp 
-      sql/PreparedStatement.cpp 
-      sql/ResultSet.cpp 
-      sql/ResultSetMetaData.cpp 
-      sql/SqlException.cpp
-      sql/ConnectionManager.cpp
-      sql/Row.cpp
-)
-TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY} util)
-IF(UNIX AND NOT APPLE)
-  TARGET_LINK_LIBRARIES(sql crypt)
-ENDIF(UNIX AND NOT APPLE)
-IF(UNIX)
-  TARGET_LINK_LIBRARIES(sql pthread util dl z)
-ENDIF(UNIX)
+#include_directories (${MEC_SOURCE_DIR}/src/org/esb/sql)
+#include_directories (${MYSQL_DIR}/include/mysql)
+#include_directories (${MYSQL_DIR}/include)
+#include_directories (${MYSQL_INC_DIR})
+#include_directories (${MYSQL_INCLUDE_DIR})
+#add_library (sql sql/Column.cpp 
+#      sql/Connection.cpp 
+#      sql/Statement.cpp 
+#      sql/PreparedStatement.cpp 
+#      sql/ResultSet.cpp 
+#      sql/ResultSetMetaData.cpp 
+#      sql/SqlException.cpp
+#      sql/ConnectionManager.cpp
+#      sql/Row.cpp
+#)
+#TARGET_LINK_LIBRARIES(sql ${MYSQL_LIBRARY} util)
+#IF(UNIX AND NOT APPLE)
+#  TARGET_LINK_LIBRARIES(sql crypt)
+#ENDIF(UNIX AND NOT APPLE)
+#IF(UNIX)
+#  TARGET_LINK_LIBRARIES(sql pthread util dl z)
+#ENDIF(UNIX)
 #SET_TARGET_PROPERTIES(sql
 #PROPERTIES
 #  VERSION ${SQL_VERSION_SERIES}.${SQL_VERSION_MAJOR}.${SQL_VERSION_MINOR}
 #  DEBUG_POSTFIX "d"
 #)
-IF(BUILD_SHARED_LIBS)
-  INSTALL(TARGETS sql
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
+#IF(BUILD_SHARED_LIBS)
+#  INSTALL(TARGETS sql
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#ENDIF(BUILD_SHARED_LIBS)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
 add_library (hive 
@@ -248,28 +250,28 @@ add_library (hive
 	hive/HiveListener.cpp 
 	hive/CommandInputStream.cpp 
 	hive/CommandOutputStream.cpp 
-	hive/PacketCollector.cpp 
+#	hive/PacketCollector.cpp
 	hive/CodecFactory.cpp 
 #	hive/job/Job.cpp
 #	hive/job/JobDetail.cpp
 #	hive/job/JobHandler.cpp 
 #	hive/job/JobWatcher.cpp 
-	hive/job/ProcessUnitWatcher.cpp 
+#	hive/job/ProcessUnitWatcher.cpp
 #	hive/job/ClientHandler.cpp 
 	hive/job/ProcessUnit.cpp 
 	hive/DirectoryScanner.cpp 
-	hive/DatabaseUtil.cpp
+#	hive/DatabaseUtil.cpp
 	hive/DatabaseService.cpp
 	hive/FileImporter.cpp 
 	hive/JobUtil.cpp 
 	hive/HiveClient.cpp
 	hive/HiveClientAudio.cpp
-	hive/Setup.cpp 
+#	hive/Setup.cpp
 	hive/FileExporter.cpp
 	hive/ExportScanner.cpp
 #	hive/FormatStreamFactory.cpp
   hive/job/Packetizer.cpp
-  hive/JobScanner.cpp
+#  hive/JobScanner.cpp
   hive/NodeSender.cpp
 	hive/NodeReceiver.cpp
   hive/NodeResolver.cpp
@@ -280,7 +282,7 @@ add_library (hive
   hive/HiveException.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db sql net esb signal av lang)
+TARGET_LINK_LIBRARIES(hive db net esb signal av lang)
 
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive
@@ -298,23 +300,23 @@ add_library (web
     web/WebServer.cpp
     web/MainMenu.cpp
     web/WebApp2.cpp
-    web/ProfilesForm.cpp
-    web/WatchfolderForm.cpp
+#    web/ProfilesForm.cpp
+#    web/WatchfolderForm.cpp
     web/DirectoryChooser.cpp
     web/FileChooser.cpp
-    web/SqlTableModel.cpp 
-    web/SqlTable.cpp
+#    web/SqlTableModel.cpp
+#    web/SqlTable.cpp
     web/DbTableModel.cpp 
     web/DbTable.cpp
     web/FileTreeTable.cpp
     web/FileTreeTableNode.cpp
-    web/DataTreeTable.cpp
-    web/DataTreeTableNode.cpp
+#    web/DataTreeTable.cpp
+#    web/DataTreeTableNode.cpp
 #    web/VersionNode.cpp
-    web/FileNode.cpp
-    web/SqlUtil.cpp
+#    web/FileNode.cpp
+#    web/SqlUtil.cpp
 #    web/Setup.cpp
-    web/StreamInfo.cpp
+#    web/StreamInfo.cpp
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
@@ -346,7 +348,7 @@ add_library (web
     web/project_v2/ProjectWizard.cpp
     web/project_v2/PresetTree.cpp
     web/project_v2/PropertyPanel.cpp
-	
+    web/system/NodeListPanel.cpp
 )
 
 

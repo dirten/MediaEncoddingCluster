@@ -14,6 +14,7 @@
 #include <Wt/Ext/Dialog>
 
 #include "DirectoryChooser.h"
+#include "org/esb/hive/DatabaseService.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -53,7 +54,7 @@ namespace org {
           int pid=-1;
           if(folder.isInDatabase()&&folder.profile().get().count()>0)
             pid=folder.profile().get().one().id;
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         vector<db::Profile> plist=litesql::select<db::Profile>(db).all();
         vector<db::Profile>::iterator it=plist.begin();
         for(int a = 0;it!=plist.end();it++, a++){
@@ -122,7 +123,7 @@ namespace org {
         _folder.extensionfilter=_le.getElement("extension_filter")->text().narrow();
         _folder.profile().del();
         _folder.update();
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         int pid=name2id[_cb.getElement("profile")->text().narrow()];
         try{
           db::Profile pr=litesql::select<db::Profile>(db, db::Profile::Id==pid).one();

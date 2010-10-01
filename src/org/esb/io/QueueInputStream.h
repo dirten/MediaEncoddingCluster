@@ -19,6 +19,7 @@ namespace org {
       class QueueInputStream : public InputStream {
       public:
         QueueInputStream(std::string url);
+        QueueInputStream(std::string host, int port, std::string queuename);
         QueueInputStream(const QueueInputStream& orig);
         virtual ~QueueInputStream();
         long long int available(bool isBlocking = false);

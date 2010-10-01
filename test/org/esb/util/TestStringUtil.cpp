@@ -41,10 +41,21 @@ void testTrim(){
   LOGDEBUG(":"<<trimmed<<":");
   assert(trimmed.length()==9);
 }
+
+void testReplace(){
+  std::string target=util::StringUtil::replace("bla fasel", "bla", "hier");
+  LOGDEBUG(target);
+  assert(target=="hier fasel");
+
+  target=util::StringUtil::replace("bla:fasel:test:test2", ":", ",");
+  LOGDEBUG(target);
+  assert(target=="bla,fasel,test,test2");
+}
 int main() {
   Log::open("");
   testStringTokenizer();
   testToString();
   testTrim();
+  testReplace();
   Log::close();
 }

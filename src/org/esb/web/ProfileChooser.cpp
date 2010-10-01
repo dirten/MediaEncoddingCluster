@@ -6,6 +6,7 @@
 #include "Wt/Ext/TableView"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org{
   namespace esb{
@@ -50,7 +51,7 @@ namespace org{
         resize(400,300);
         _profile_table=Ptr<ProfileTable>(new ProfileTable());
         layout()->addWidget(_profile_table.get());
-        db::HiveDb db("mysql",org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         vector<db::Profile> profiles=litesql::select<db::Profile>(db).all();
         _profile_table->setProfiles(profiles);
         _profile_table->setAlternatingRowColors(true);

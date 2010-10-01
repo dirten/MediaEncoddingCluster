@@ -9,6 +9,7 @@
 #include "Wt/WStandardItemModel"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
+#include "org/esb/hive/DatabaseService.h"
 
 namespace org {
   namespace esb {
@@ -56,7 +57,7 @@ namespace org {
       };
 
       MediaFileTable::MediaFileTable() : Wt::Ext::TableView() {
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         std::vector<db::MediaFile> files = litesql::select<db::MediaFile > (dbCon).all();
         _model = Ptr<MediaFileTableModel > (new MediaFileTableModel(files));
         setModel(_model.get());
@@ -75,7 +76,7 @@ namespace org {
 
       void MediaFileTable::refresh() {
         LOGDEBUG("MediaFileTable::refresh()");
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         std::vector<db::MediaFile> files = litesql::select<db::MediaFile > (dbCon).all();
         _model->refresh(files);
       }

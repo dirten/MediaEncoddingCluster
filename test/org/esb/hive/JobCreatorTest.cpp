@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
       assert(jobid > 0);
 
 
-      db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
       //db.verbose = true;
 
       db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();

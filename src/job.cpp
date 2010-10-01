@@ -6,12 +6,13 @@
 #include "org/esb/sql/ResultSet.h"
 #include "org/esb/config/config.h"
 #include "org/esb/av/Codec.h"
+#include "org/esb/hive/DatabaseService.h"
 using namespace org::esb::av;
 using namespace org::esb::sql;
 using namespace org::esb::config;
 
 int jobcreator(int fileid, int profileid, std::string outpath) {
-  db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
+  db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
   db::MediaFile mediafile=litesql::select<db::MediaFile>(db, db::MediaFile::Id==fileid).one();
   db::Profile mediafile=litesql::select<db::Profile>(db, db::Profile::Id==profileid).one();
 }
