@@ -322,9 +322,6 @@
                             <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libmysqld.dll</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/swscale-0.dll</origin>
                         </distributionFile>
                         <distributionFile>
