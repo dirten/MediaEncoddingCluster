@@ -44,7 +44,8 @@ namespace org {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) :
       WApplication(env){
-        if (string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
+        
+        if (string(org::esb::config::Config::getProperty("hive.mode","no")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
         }/*

@@ -150,6 +150,7 @@ namespace org {
       }
 
       void DatabaseService::loadPresets() {
+        LOGDEBUG("LOAD PRESETS");
         _base_path=org::esb::config::Config::get("hive.base_path");
         db::HiveDb db=getDatabase();
 

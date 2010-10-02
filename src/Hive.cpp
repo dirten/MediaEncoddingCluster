@@ -213,6 +213,7 @@ int main(int argc, char * argv[]) {
       org::esb::hive::DatabaseService::start(base_path);
       if (!DatabaseService::databaseExist()) {
         DatabaseService::createDatabase();
+        DatabaseService::createTables();
       }
       DatabaseService::updateTables();
       DatabaseService::loadPresets();
@@ -424,15 +425,15 @@ void start() {
 
   //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
   //  Messenger::getInstance().addMessageListener(dbservice);
-//  org::esb::hive::DirectoryScanner dirscan;
-//  Messenger::getInstance().addMessageListener(dirscan);
+  org::esb::hive::DirectoryScanner dirscan;
+  Messenger::getInstance().addMessageListener(dirscan);
 
-//  org::esb::hive::ExportScanner expscan;
-//  Messenger::getInstance().addMessageListener(expscan);
+  org::esb::hive::ExportScanner expscan;
+  Messenger::getInstance().addMessageListener(expscan);
 
 
   org::esb::web::WebServer webserver;
-//  Messenger::getInstance().addMessageListener(webserver);
+  Messenger::getInstance().addMessageListener(webserver);
 
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
@@ -449,7 +450,7 @@ void start() {
    */
 
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
-  /*
+  
   //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
   string base_path = org::esb::config::Config::getProperty("hive.base_path");
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -467,7 +468,7 @@ void start() {
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
   //  }
-  */
+  
   LOGINFO("wait for shutdown!");
 
   org::esb::lang::CtrlCHitWaiter::wait();

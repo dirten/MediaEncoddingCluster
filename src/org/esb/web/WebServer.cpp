@@ -38,6 +38,7 @@ WApplication *createApp(const WEnvironment& env) {
    * the user has permission to start a new application
    */
   //  return new MyApplication(env);
+
   return new WebApp2(env);
 }
 
@@ -66,10 +67,16 @@ WebServer::WebServer() : server("test") {
     ostringstream bla;
     stderrLogger.setStream(bla);
 */
-//  return;
+  for(int a=0;a<12;a++){
+    LOGDEBUG(args[a]);
+  }
   server.setServerConfiguration(12, const_cast<char**>(args), WTHTTP_CONFIGURATION);
-
-  server.addEntryPoint(Application, &createApp, "/");
+//  return;
+  try{
+    server.addEntryPoint(Application, &createApp, "/");
+  }catch(std::exception ex){
+    LOGERROR("error configure webserver:"<<ex.what());
+  }
   //server.addEntryPoint(Application, &createSetup, "/setup");
   //  server.addEntryPoint(WServer::Application, &createTestApp, "test");
   //  logdebug(typeid(*this).name());
