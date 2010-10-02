@@ -7,9 +7,9 @@
 
 #ifndef GRIDNODESERVER_H
 #define	GRIDNODESERVER_H
-#include "org/esb/util/Log.h"
 #include "boost/asio.hpp"
 #include "org/esb/grid/protocol/ProtocolDispatcher.h"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace grid {

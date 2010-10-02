@@ -10,6 +10,10 @@ using namespace org::esb;
 
 int main() {
   Log::open("");
+  std::string src = MEC_SOURCE_DIR;
+
+  config::Config::setProperty("hive.base_path", src.c_str());
+
   org::esb::config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
 
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);

@@ -70,14 +70,15 @@ int FileInputStream::read(string & str) {
   return read;
 }
 int FileInputStream::readLine(string & str) {
-  char * line=NULL;
+/*  char * line=NULL;
   size_t size=0;
-  int read=getline(&line, &size, _file_handle);
+  int read=std::getline(&line, &size, _file_handle);
   _filePointer -= read;
   if(read>0)
     str.assign(line, read-1);
   free(line);
- return read;
+ return read;*/
+  return 0;
 }
 
 int FileInputStream::read(unsigned char * buffer, int length) {

@@ -156,8 +156,11 @@ namespace org {
         if(true){
 //          db.query("DELETE FROM Config_ ");
           org::esb::io::FileInputStream fis(_base_path+"/sql/config.txt");
-          std::string line;
-          while((fis.readLine(line))>0){
+          std::string lines;
+          fis.read(lines);
+          org::esb::util::StringTokenizer t(lines,"\n");
+          while(t.hasMoreTokens()){
+            std::string line=t.nextToken();
             std::string sql="INSERT OR REPLACE INTO Config_ values (";
             LOGDEBUG(line);
             sql+=org::esb::util::StringUtil::replace(line,":",",");
@@ -169,8 +172,11 @@ namespace org {
         if(true){
 //          db.query("DELETE FROM Profile_ ");
           org::esb::io::FileInputStream fis(_base_path+"/sql/profiles.txt");
-          std::string line;
-          while((fis.readLine(line))>0){
+          std::string lines;
+          fis.read(lines);
+          org::esb::util::StringTokenizer t(lines,"\n");
+          while(t.hasMoreTokens()){
+            std::string line=t.nextToken();
             std::string sql="INSERT OR REPLACE INTO Profile_ values (";
             LOGDEBUG(line);
             sql+=org::esb::util::StringUtil::replace(line,":",",");
@@ -181,8 +187,11 @@ namespace org {
         }
         if(true){
           org::esb::io::FileInputStream fis(_base_path+"/sql/codec.txt");
-          std::string line;
-          while((fis.readLine(line))>0){
+          std::string lines;
+          fis.read(lines);
+          org::esb::util::StringTokenizer t(lines,"\n");
+          while(t.hasMoreTokens()){
+            std::string line=t.nextToken();
             std::string sql="INSERT OR REPLACE INTO CodecPreset_ values (";
             LOGDEBUG(line);
             sql+=org::esb::util::StringUtil::replace(line,"#",",");

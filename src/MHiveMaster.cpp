@@ -6,6 +6,7 @@
  */
 
 #include <cstdlib>
+#include "org/esb/hive/NodeResolver.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "config.h"
 #include "org/esb/lang/Process.h"
@@ -16,7 +17,6 @@
 #include "org/esb/config/config.h"
 #include "org/esb/mq/QueueConnection.h"
 #include "org/esb/hive/HiveException.h"
-#include "org/esb/hive/NodeResolver.h"
 
 using namespace std;
 
