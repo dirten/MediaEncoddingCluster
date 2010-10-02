@@ -7,7 +7,7 @@ namespace org {
         /*setting up the base path*/
         if(props->getProperty("hive.base_path")==NULL){
         org::esb::io::File base("..");
-        LOGDEBUG("BasePath=" << base.getPath());
+//        LOGDEBUG("BasePath=" << base.getPath());
         string base_path = base.getPath();
         props->setProperty("hive.base_path", base_path.c_str());
         props->setProperty("hive.data_path", base_path+"/data");

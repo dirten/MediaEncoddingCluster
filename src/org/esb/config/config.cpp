@@ -11,7 +11,6 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 #include "config.h"
 
 #include "org/esb/lang/Exception.h"
-#include "org/esb/util/Log.h"
 #include "Defaults.cpp"
 #include <stdlib.h>
 #include <string.h>
@@ -43,6 +42,7 @@ void Config::close() {
 bool Config::init(const std::string & filename) {
   //  properties = new Properties();
   loadDefaults(properties);
+  return true;
   FILE * fp;
   char buffer[255];
   if ((fp = fopen(filename.c_str(), "r")) != NULL) {

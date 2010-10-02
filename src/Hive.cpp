@@ -21,7 +21,7 @@
 #include "boost/asio.hpp"
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/config/config.h"
-
+#include "org/esb/lang/CtrlCHitWaiter.h"
 #include "org/esb/web/WebServer.h"
 #include "org/esb/hive/DirectoryScanner.h"
 #include "org/esb/av/AV.h"
@@ -78,6 +78,7 @@ void start();
 int rec = 0;
 
 int main(int argc, char * argv[]) {
+  Log::open("");
   org::esb::config::Config::init("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
@@ -246,17 +247,18 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
-      LOGDEBUG("here")
+      
       org::esb::hive::DatabaseService::start(base_path);
-
       if (!Config::init((char*) vm["config"].as<std::string > ().c_str())) {
         LOGERROR("could not load config from Database, exiting!!!");
-        exit(1);
+        //exit(1);
       }
       std::string webroot = std::string(Config::getProperty("hive.base_path"));
       webroot.append("/web");
       Config::setProperty("web.docroot", webroot.c_str());
-      listener(argc, argv);
+      LOGDEBUG("here 123")
+//     org::esb::lang::Thread::sleep2(5000);
+     listener(argc, argv);
     }
 
     if (vm.count("client")) {
@@ -422,30 +424,23 @@ void start() {
 
   //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
   //  Messenger::getInstance().addMessageListener(dbservice);
-  LOGDEBUG("here")
+//  org::esb::hive::DirectoryScanner dirscan;
+//  Messenger::getInstance().addMessageListener(dirscan);
 
-  org::esb::hive::DirectoryScanner dirscan;
-  Messenger::getInstance().addMessageListener(dirscan);
+//  org::esb::hive::ExportScanner expscan;
+//  Messenger::getInstance().addMessageListener(expscan);
 
-  org::esb::hive::ExportScanner expscan;
-  Messenger::getInstance().addMessageListener(expscan);
 
   org::esb::web::WebServer webserver;
-  Messenger::getInstance().addMessageListener(webserver);
+//  Messenger::getInstance().addMessageListener(webserver);
 
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);
 
   org::esb::hive::job::ProcessUnitController puw;
   Messenger::getInstance().addMessageListener(puw);
+  LOGDEBUG("here")
 
-  string host = org::esb::config::Config::getProperty("client.host", "localhost");
-  int port = atoi(org::esb::config::Config::getProperty("client.port", "20200"));
-  org::esb::hive::HiveClient client(host, port);
-  Messenger::getInstance().addMessageListener(client);
-
-  org::esb::hive::HiveClientAudio clientaudio(host, port);
-  Messenger::getInstance().addMessageListener(clientaudio);
 
   /*
    *
@@ -454,7 +449,7 @@ void start() {
    */
 
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
-
+  /*
   //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
   string base_path = org::esb::config::Config::getProperty("hive.base_path");
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -472,12 +467,10 @@ void start() {
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
   //  }
-  if (string(org::esb::config::Config::getProperty("mode.client")) == "On") {
-    Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
-    Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::START));
-  }
+  */
+  LOGINFO("wait for shutdown!");
 
-  ctrlCHitWait();
+  org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
   /*
    *
@@ -501,6 +494,7 @@ void start() {
 
 void listener(int argc, char *argv[]) {
   LOGDEBUG("here");
+//  org::esb::lang::Thread::sleep2(5000);
   org::esb::hive::Node node;
   node.setData("type", "server");
   node.setData("version", MHIVE_VERSION);

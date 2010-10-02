@@ -42,12 +42,15 @@ WApplication *createApp(const WEnvironment& env) {
 }
 
 WebServer::WebServer() : server("test") {
-  std::string weblog_file = org::esb::config::Config::getProperty("hive.base_path");
+  std::string weblog_file = org::esb::config::Config::get("hive.base_path");
   weblog_file.append("/http.log");
-  std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
+  std::string syslog_file = org::esb::config::Config::get("hive.base_path");
   syslog_file.append("/sys.log");
-  std::string doc_root=org::esb::config::Config::getProperty("hive.base_path");
+  std::string doc_root=org::esb::config::Config::get("hive.base_path");
   doc_root+="/web";
+  LOGDEBUG("weblog="<<weblog_file);
+  LOGDEBUG("syslog="<<syslog_file);
+  LOGDEBUG("docroot="<<doc_root);
   const char * args[] = {
     "mhive",
     "--docroot", const_cast<char*> (doc_root.c_str()),
@@ -63,8 +66,8 @@ WebServer::WebServer() : server("test") {
     ostringstream bla;
     stderrLogger.setStream(bla);
 */
-
-  server.setServerConfiguration(10, const_cast<char**>(args), WTHTTP_CONFIGURATION);
+//  return;
+  server.setServerConfiguration(12, const_cast<char**>(args), WTHTTP_CONFIGURATION);
 
   server.addEntryPoint(Application, &createApp, "/");
   //server.addEntryPoint(Application, &createSetup, "/setup");
