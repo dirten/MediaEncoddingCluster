@@ -137,6 +137,7 @@ namespace org {
         setLayout(new Wt::WFitLayout());
         layout()->addWidget(_cont);
       }
+      
       void ProfileCreator::BasePanel::setChangedListener(){
         LOGDEBUG("setChangedListener");
         std::map<std::string, Wt::Ext::LineEdit*> lel = _el.getElements();
@@ -224,7 +225,7 @@ namespace org {
         _el.addElement("id", "Profile Id", profile.id, l)->setEnabled(false);
         _el.addElement("profile_name", "Profile Name", profile.name, l);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);      
+        l->setRowStretch(l->rowCount() - 1, 1);      
       }
 
       void ProfileCreator::GeneralPanel::changed(){
@@ -254,7 +255,7 @@ namespace org {
         Wt::WGridLayout*l = static_cast<Wt::WGridLayout*> (_cont->layout());
         Wt::Ext::ComboBox * v_format = _elcb.addElement("v_format", "Container Fromat", profile.format, l);
         v_format->setTextSize(50);
-        v_format->resize(180, Wt::WLength::Auto);
+        v_format->resize(150, Wt::WLength::Auto);
         AVOutputFormat *ofmt = NULL;
         int a = 0;
 
@@ -267,10 +268,10 @@ namespace org {
         }
         Wt::Ext::ComboBox * v_format_ext = _elcb.addElement("v_format_ext", "File Extension", profile.formatext, l);
         v_format_ext->setTextSize(50);
-        v_format_ext->resize(180, Wt::WLength::Auto);
+        v_format_ext->resize(150, Wt::WLength::Auto);
         v_format_ext->setEditable(true);
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);
+        l->setRowStretch(l->rowCount() - 1, 1);
         v_format->activated().connect(SLOT(this, ProfileCreator::FilePanel::setAvailableExtensions));
       }
 
@@ -380,7 +381,7 @@ namespace org {
         _el.addElement("v_extra", "Extra Flags", profile.vextra, l);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);
+        l->setRowStretch(l->rowCount() - 1, 1);
 
         setPredefinedCodecFlags();
       }
@@ -536,7 +537,7 @@ namespace org {
         _el.addElement("a_extra", "Extra Flags", profile.aextra, l);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);
+        l->setRowStretch(l->rowCount() - 1, 1);
 
       }
       void ProfileCreator::AudioPanel::changed(){

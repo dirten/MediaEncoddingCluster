@@ -81,12 +81,13 @@ namespace org {
             T * element = new T();
             int nextRow = l->rowCount();
             element->setText(value);
-            element->resize(Wt::WLength(200, Wt::WLength::Pixel), Wt::WLength::Auto);
+            element->resize(Wt::WLength(180, Wt::WLength::Pixel), Wt::WLength::Auto);
             //                        elementLabel->setBuddy(element);
             l->addWidget(elementLabel, nextRow, 0, Wt::AlignMiddle);
+            l->setColumnStretch(l->columnCount()-1,1);
             l->addWidget(element, nextRow, 1, Wt::AlignMiddle);
-            l->addWidget(new Wt::WText(), nextRow, 2, Wt::AlignMiddle);
-            l->setColumnStretch(l->columnCount()-1,-1);
+//            l->addWidget(new Wt::WText(), nextRow, 2, Wt::AlignMiddle);
+            l->setColumnStretch(l->columnCount()-1,2);
 
             _cont[name] = element;
           }

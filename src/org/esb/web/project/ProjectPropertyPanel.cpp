@@ -29,7 +29,7 @@ namespace org{
         l->addWidget(selectOutDirectory, 2, 2);
 
         l->addWidget(new Wt::WText(), l->rowCount(), 0);
-        l->setRowStretch(l->rowCount() - 1, -1);
+        l->setRowStretch(l->rowCount() - 1, 1);
 
         layout()->addWidget(cont);
       }

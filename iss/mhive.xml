@@ -4,27 +4,27 @@
     <version>0.0.4.8</version>
     <readmeFile>${mhive_src_dir}/README</readmeFile>
     <licenseFile>${mhive_src_dir}/LICENSE</licenseFile>
-    <outputDirectory>D:/MediaEncodingCluster-svn/iss/output</outputDirectory>
+    <outputDirectory>/Users/jholscher/Documents/bripper/iss/output</outputDirectory>
     <preBuildActionList>
         <setInstallerVariable>
             <name>mhive_src_dir</name>
-            <value>D:/MediaEncodingCluster-svn</value>
+            <value>/Users/jholscher/Documents/bripper</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mhive_build_dir</name>
-            <value>D:/MediaEncodingCluster-svn/build</value>
+            <value>/Users/jholscher/Documents/bripper/build</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mhive_lib_dir</name>
-            <value>D:/MediaEncodingCluster-svn/install/lib</value>
+            <value>/Users/jholscher/Documents/bripper/install/lib</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>ffmpeg_dir</name>
-            <value>D:/MediaEncodingCluster-svn/target/dependency</value>
+            <value>/Users/jholscher/Documents/bripper/target/dependency</value>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>mysql_dir</name>
-            <value>D:/MediaEncodingCluster-svn/target/dependency</value>
+            <value></value>
         </setInstallerVariable>
     </preBuildActionList>
     <readyToInstallActionList>
@@ -320,9 +320,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libmysqld.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/swscale-0.dll</origin>
