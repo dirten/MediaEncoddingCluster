@@ -152,6 +152,17 @@
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
                 <copy file="${project.build.directory}/dependency/lib/libsqlite3.a" tofile="${project.build.directory}/dependency/lib/libsqlite3.lib"/>
+
+                <copy file="${project.build.directory}/dependency/lib/wtd.lib" tofile="${project.build.directory}/dependency/lib/wt.lib"/>
+                <copy file="${project.build.directory}/dependency/lib/wtextd.lib" tofile="${project.build.directory}/dependency/lib/wtext.lib"/>
+                <copy file="${project.build.directory}/dependency/lib/wthttpd.lib" tofile="${project.build.directory}/dependency/lib/wthttp.lib"/>
+
+                <copy file="${project.build.directory}/dependency/lib/litesqld.lib" tofile="${project.build.directory}/dependency/lib/litesql.lib"/>
+                <copy file="${project.build.directory}/dependency/lib/litesql_sqlited.lib" tofile="${project.build.directory}/dependency/lib/litesql_sqlite.lib"/>
+                <copy file="${project.build.directory}/dependency/lib/litesql-utild.lib" tofile="${project.build.directory}/dependency/lib/litesql-util.lib"/>
+
+                <copy file="${project.build.directory}/dependency/lib/log4cplusd.lib" tofile="${project.build.directory}/dependency/lib/log4cplus.lib"/>
+
               </tasks>
             </configuration>
             <goals>

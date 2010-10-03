@@ -78,7 +78,7 @@ void start();
 int rec = 0;
 
 int main(int argc, char * argv[]) {
-  Log::open("");
+//  Log::open("");
   org::esb::config::Config::init("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);

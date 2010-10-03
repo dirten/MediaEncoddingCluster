@@ -195,6 +195,7 @@ namespace org {
               /**
                * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
                * this is for the behaviour that the server process restarts an unfinished encoding
+               * @TODO: writing detailed tests for this !!!
                */
               if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
                 continue;
@@ -204,37 +205,19 @@ namespace org {
                 LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
                 PacketListPtr packets = packetizer.removePacketList();
                 boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
-                if (false) {
-                  db::ProcessUnit dbunit(_dbCon);
-                  dbunit.sorcestream = unit->_source_stream;
-                  dbunit.targetstream = unit->_target_stream;
-                  dbunit.timebasenum = unit->_input_packets.front()->getTimeBase().num;
-                  dbunit.timebaseden = unit->_input_packets.front()->getTimeBase().den;
-                  dbunit.startts = (double) unit->_input_packets.front()->getDts();
-                  dbunit.endts = (double) unit->_input_packets.back()->getDts();
-                  dbunit.framecount = (int) unit->_input_packets.size();
-                  {
-                    boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-                    dbunit.update();
-                    dbunit.recv = -1;
-                    dbunit.update();
-                  }
-                  unit->_process_unit = dbunit.id;
-
-                  //_oos.writeObject(*unit.get());
-                } else {
-                  if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
-                    LOGDEBUG("audioQueue.enqueue(unit);")
-                    audioQueue.enqueue(unit);
-                  } else {
-                    LOGDEBUG("puQueue.enqueue(unit);")
-                    puQueue.enqueue(unit);
-                  }
-                }
-                                wait_for_queue = true;
+                putToQueue(unit);
+                wait_for_queue = true;
               }
             }
-            /*@TODO: need to implements the flush Method in the Packetizer*/
+            /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
+            packetizer.flushStreams();
+            int pc=packetizer.getPacketListCount();
+            for(int a=0;a<pc;a++){
+                PacketListPtr packets = packetizer.removePacketList();
+                boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
+                putToQueue(unit);
+                wait_for_queue = true;
+            }
 
             if (wait_for_queue) {
               boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
@@ -282,7 +265,35 @@ namespace org {
 
           }
         }
+        void ProcessUnitController::putToQueue(boost::shared_ptr<ProcessUnit>unit){
+                if (false) {
+                  db::ProcessUnit dbunit(_dbCon);
+                  dbunit.sorcestream = unit->_source_stream;
+                  dbunit.targetstream = unit->_target_stream;
+                  dbunit.timebasenum = unit->_input_packets.front()->getTimeBase().num;
+                  dbunit.timebaseden = unit->_input_packets.front()->getTimeBase().den;
+                  dbunit.startts = (double) unit->_input_packets.front()->getDts();
+                  dbunit.endts = (double) unit->_input_packets.back()->getDts();
+                  dbunit.framecount = (int) unit->_input_packets.size();
+                  {
+                    boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+                    dbunit.update();
+                    dbunit.recv = -1;
+                    dbunit.update();
+                  }
+                  unit->_process_unit = dbunit.id;
 
+                  //_oos.writeObject(*unit.get());
+                } else {
+                  if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+                    LOGDEBUG("audioQueue.enqueue(unit);")
+                    audioQueue.enqueue(unit);
+                  } else {
+                    LOGDEBUG("puQueue.enqueue(unit);")
+                    puQueue.enqueue(unit);
+                  }
+                }                    
+        }
         boost::shared_ptr<ProcessUnit> ProcessUnitController::getProcessUnit() {
           boost::mutex::scoped_lock scoped_lock(get_pu_mutex);
           LOGDEBUG("video queue size:" << puQueue.size());
@@ -367,7 +378,7 @@ namespace org {
             dbunit.update();
             //            LOGDEBUG(""<<dbunit);
             vector<db::JobDetail> details = current_job->jobdetails().get().all();
-            for (int a = 0; a < details.size(); a++) {
+            for (uint8_t a = 0; a < details.size(); a++) {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();

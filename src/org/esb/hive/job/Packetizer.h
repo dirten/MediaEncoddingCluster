@@ -77,9 +77,9 @@ namespace org {
         private:
 //          State _state;
           bool processPacket(org::esb::av::PacketPtr);
-          bool processPacket2(org::esb::av::PacketPtr);
-          bool buildList(int stream_id);
-          void addingPacketsFromQueue(int stream_id);
+//          bool processPacket2(org::esb::av::PacketPtr);
+//          bool buildList(int stream_id);
+//          void addingPacketsFromQueue(int stream_id);
 
           std::map<int, StreamData> _streams;
 

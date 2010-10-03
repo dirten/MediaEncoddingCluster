@@ -147,7 +147,7 @@ namespace org {
       }
 
       void NodeResolver::handle_send_size(const boost::system::error_code& error,std::size_t bytes_transferred) {
-        LOGDEBUG("bytes transfered:"<<bytes_transferred);
+        //LOGDEBUG("bytes transfered:"<<bytes_transferred);
         if (!error) {
           send_timer_.expires_from_now(boost::posix_time::seconds(1));
           send_timer_.async_wait(
@@ -168,7 +168,7 @@ namespace org {
       }
 
       void NodeResolver::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
-        LOGDEBUG("Bytes received"<<bytes_recvd);
+        //LOGDEBUG("Bytes received"<<bytes_recvd);
         if (!error) {
           Ptr<Node> nodePtr = Ptr<Node > (new Node());
 

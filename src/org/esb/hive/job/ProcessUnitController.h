@@ -46,7 +46,7 @@ namespace org {
           void start();
           void stop();
           bool _stop_signal;
-          
+          void putToQueue(boost::shared_ptr<ProcessUnit>unit);
           typedef org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 50 > ProcessUnitQueue;
           ProcessUnitQueue puQueue;
           org::esb::util::Queue<boost::shared_ptr<ProcessUnit>, 500 > audioQueue;
