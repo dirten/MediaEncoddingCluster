@@ -1,3 +1,4 @@
+#include "WebApp2.h"
 #include "WebServer.h"
 #include "org/esb/config/config.h"
 #include <Wt/WApplication>
@@ -16,7 +17,6 @@
 #include <iostream>
 
 //#include "WebApp.h"
-#include "WebApp2.h"
 //#include "Setup.h"
 #include "org/esb/util/Log.h"
 //#include "TestApp.cpp"
