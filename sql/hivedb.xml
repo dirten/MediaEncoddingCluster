@@ -65,7 +65,6 @@
 
     <object name="ProfileGroup">
         <field name="name" type="string"/>
-
     </object>
 
     <object name="Profile">
@@ -88,7 +87,7 @@
         <field name="deinterlace" type="integer"/>
     </object>
 
-    <relation id="ProfileGroup2Profile">
+    <relation id="ProfileGroup2Profile" name="ProfileGroup2Profile">
         <relate object="Profile" handle="group"/>
         <relate object="ProfileGroup" handle="profiles"/>
     </relation>
@@ -96,6 +95,16 @@
     <relation id="ProfileGroup2ProfileGroupChildren" unidir="true">
         <relate object="ProfileGroup"  handle="childrens"/>
         <relate object="ProfileGroup" handle="parent"/>
+    </relation>
+
+    <object name="ProfileParameter">
+        <field name="name" type="string"/>
+        <field name="val" type="string"/>
+    </object>
+
+    <relation>
+        <relate object="ProfileParameter" handle="profile"/>
+        <relate object="Profile" handle="params"/>
     </relation>
 
     <relation>
@@ -149,6 +158,26 @@
         <field name="codecid" type="integer"/>
         <field name="preset" type="string"/>
     </object>
+
+    <object name="CodecPresetParameter">
+        <field name="name" type="string"/>
+        <field name="val" type="string"/>
+    </object>
+
+    <relation id="CodecPreset2Parameter">
+        <relate object="CodecPresetParameter" handle="preset"/>
+        <relate object="CodecPreset" handle="params"/>
+    </relation>
+
+    <relation id="VideoCodecPreset2Profile">
+        <relate object="CodecPreset" handle="vprofile"/>
+        <relate object="Profile" handle="vpreset"/>
+    </relation>
+    
+    <relation id="AudioCodecPreset2Profile">
+        <relate object="CodecPreset" handle="aprofile"/>
+        <relate object="Profile" handle="apreset"/>
+    </relation>
 
     <object name="Config">
         <field name="configkey" type="string"/>

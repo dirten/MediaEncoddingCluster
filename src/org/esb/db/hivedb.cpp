@@ -197,8 +197,8 @@ template <> litesql::DataSource<db::Project> MediaFileProjectRelation::get(const
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
-ProfileProfileGroupRelationProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : profileGroup(ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup), profile(ProfileProfileGroupRelationProfileGroup2Profile::Profile) {
+ProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profileGroup(ProfileGroup2Profile::ProfileGroup), profile(ProfileGroup2Profile::Profile) {
     switch(rec.size()) {
     case 2:
         profileGroup = rec[1];
@@ -206,10 +206,10 @@ ProfileProfileGroupRelationProfileGroup2Profile::Row::Row(const litesql::Databas
         profile = rec[0];
     }
 }
-const std::string ProfileProfileGroupRelationProfileGroup2Profile::table__("_60a643d384d1f6c6ddeba5bb8ac0fc3e");
-const litesql::FieldType ProfileProfileGroupRelationProfileGroup2Profile::Profile("Profile1","INTEGER",table__);
-const litesql::FieldType ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup("ProfileGroup2","INTEGER",table__);
-void ProfileProfileGroupRelationProfileGroup2Profile::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
+const std::string ProfileGroup2Profile::table__("_60a643d384d1f6c6ddeba5bb8ac0fc3e");
+const litesql::FieldType ProfileGroup2Profile::Profile("Profile1","INTEGER",table__);
+const litesql::FieldType ProfileGroup2Profile::ProfileGroup("ProfileGroup2","INTEGER",table__);
+void ProfileGroup2Profile::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
     Record values;
     Split fields;
     fields.push_back(Profile.name());
@@ -218,28 +218,28 @@ void ProfileProfileGroupRelationProfileGroup2Profile::link(const litesql::Databa
     values.push_back(o1.id);
     db.insert(table__, values, fields);
 }
-void ProfileProfileGroupRelationProfileGroup2Profile::unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
+void ProfileGroup2Profile::unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1) {
     db.delete_(table__, (Profile == o0.id && ProfileGroup == o1.id));
 }
-void ProfileProfileGroupRelationProfileGroup2Profile::del(const litesql::Database& db, const litesql::Expr& expr) {
+void ProfileGroup2Profile::del(const litesql::Database& db, const litesql::Expr& expr) {
     db.delete_(table__, expr);
 }
-litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> ProfileProfileGroupRelationProfileGroup2Profile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+litesql::DataSource<ProfileGroup2Profile::Row> ProfileGroup2Profile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
     SelectQuery sel;
     sel.result(Profile.fullName());
     sel.result(ProfileGroup.fullName());
     sel.source(table__);
     sel.where(expr);
-    return DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row>(db, sel);
+    return DataSource<ProfileGroup2Profile::Row>(db, sel);
 }
-template <> litesql::DataSource<db::Profile> ProfileProfileGroupRelationProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::Profile> ProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
     sel.result(Profile.fullName());
     sel.where(srcExpr);
     return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
 }
-template <> litesql::DataSource<db::ProfileGroup> ProfileProfileGroupRelationProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::ProfileGroup> ProfileGroup2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
     sel.result(ProfileGroup.fullName());
@@ -294,6 +294,55 @@ litesql::DataSource<db::ProfileGroup> ProfileGroupProfileGroupRelationProfileGro
     sel.result(ProfileGroup2.fullName());
     sel.where(srcExpr);
     return DataSource<db::ProfileGroup>(db, db::ProfileGroup::Id.in(sel) && expr);
+}
+ProfileProfileParameterRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profileParameter(ProfileProfileParameterRelation::ProfileParameter), profile(ProfileProfileParameterRelation::Profile) {
+    switch(rec.size()) {
+    case 2:
+        profileParameter = rec[1];
+    case 1:
+        profile = rec[0];
+    }
+}
+const std::string ProfileProfileParameterRelation::table__("Profile_ProfileParameter_");
+const litesql::FieldType ProfileProfileParameterRelation::Profile("Profile1","INTEGER",table__);
+const litesql::FieldType ProfileProfileParameterRelation::ProfileParameter("ProfileParameter2","INTEGER",table__);
+void ProfileProfileParameterRelation::link(const litesql::Database& db, const db::Profile& o0, const db::ProfileParameter& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Profile.name());
+    values.push_back(o0.id);
+    fields.push_back(ProfileParameter.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void ProfileProfileParameterRelation::unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileParameter& o1) {
+    db.delete_(table__, (Profile == o0.id && ProfileParameter == o1.id));
+}
+void ProfileProfileParameterRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<ProfileProfileParameterRelation::Row> ProfileProfileParameterRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Profile.fullName());
+    sel.result(ProfileParameter.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<ProfileProfileParameterRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Profile> ProfileProfileParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::ProfileParameter> ProfileProfileParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(ProfileParameter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::ProfileParameter>(db, db::ProfileParameter::Id.in(sel) && expr);
 }
 ProfileProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : project(ProfileProjectRelation::Project), profile(ProfileProjectRelation::Profile) {
@@ -392,6 +441,153 @@ template <> litesql::DataSource<db::Stream> MediaFileStreamRelation::get(const l
     sel.result(Stream.fullName());
     sel.where(srcExpr);
     return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
+}
+CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : codecPresetParameter(CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter), codecPreset(CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset) {
+    switch(rec.size()) {
+    case 2:
+        codecPresetParameter = rec[1];
+    case 1:
+        codecPreset = rec[0];
+    }
+}
+const std::string CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::table__("_165bce89be0b4f99d8ddeba7a26a23a7");
+const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset("CodecPreset1","INTEGER",table__);
+const litesql::FieldType CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter("CodecPresetParameter2","INTEGER",table__);
+void CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::link(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(CodecPreset.name());
+    values.push_back(o0.id);
+    fields.push_back(CodecPresetParameter.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1) {
+    db.delete_(table__, (CodecPreset == o0.id && CodecPresetParameter == o1.id));
+}
+void CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(CodecPreset.fullName());
+    sel.result(CodecPresetParameter.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row>(db, sel);
+}
+template <> litesql::DataSource<db::CodecPreset> CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(CodecPreset.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::CodecPreset>(db, db::CodecPreset::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::CodecPresetParameter> CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(CodecPresetParameter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::CodecPresetParameter>(db, db::CodecPresetParameter::Id.in(sel) && expr);
+}
+CodecPresetProfileRelationVideoCodecPreset2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profile(CodecPresetProfileRelationVideoCodecPreset2Profile::Profile), codecPreset(CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset) {
+    switch(rec.size()) {
+    case 2:
+        profile = rec[1];
+    case 1:
+        codecPreset = rec[0];
+    }
+}
+const std::string CodecPresetProfileRelationVideoCodecPreset2Profile::table__("_b477e426317c3764439827c70cd95621");
+const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
+const litesql::FieldType CodecPresetProfileRelationVideoCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
+void CodecPresetProfileRelationVideoCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(CodecPreset.name());
+    values.push_back(o0.id);
+    fields.push_back(Profile.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void CodecPresetProfileRelationVideoCodecPreset2Profile::unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
+    db.delete_(table__, (CodecPreset == o0.id && Profile == o1.id));
+}
+void CodecPresetProfileRelationVideoCodecPreset2Profile::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> CodecPresetProfileRelationVideoCodecPreset2Profile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(CodecPreset.fullName());
+    sel.result(Profile.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row>(db, sel);
+}
+template <> litesql::DataSource<db::CodecPreset> CodecPresetProfileRelationVideoCodecPreset2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(CodecPreset.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::CodecPreset>(db, db::CodecPreset::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Profile> CodecPresetProfileRelationVideoCodecPreset2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+}
+CodecPresetProfileRelationAudioCodecPreset2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profile(CodecPresetProfileRelationAudioCodecPreset2Profile::Profile), codecPreset(CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset) {
+    switch(rec.size()) {
+    case 2:
+        profile = rec[1];
+    case 1:
+        codecPreset = rec[0];
+    }
+}
+const std::string CodecPresetProfileRelationAudioCodecPreset2Profile::table__("_c47426250800c92cff81a427efb64c83");
+const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset("CodecPreset1","INTEGER",table__);
+const litesql::FieldType CodecPresetProfileRelationAudioCodecPreset2Profile::Profile("Profile2","INTEGER",table__);
+void CodecPresetProfileRelationAudioCodecPreset2Profile::link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(CodecPreset.name());
+    values.push_back(o0.id);
+    fields.push_back(Profile.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void CodecPresetProfileRelationAudioCodecPreset2Profile::unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1) {
+    db.delete_(table__, (CodecPreset == o0.id && Profile == o1.id));
+}
+void CodecPresetProfileRelationAudioCodecPreset2Profile::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(CodecPreset.fullName());
+    sel.result(Profile.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row>(db, sel);
+}
+template <> litesql::DataSource<db::CodecPreset> CodecPresetProfileRelationAudioCodecPreset2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(CodecPreset.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::CodecPreset>(db, db::CodecPreset::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Profile> CodecPresetProfileRelationAudioCodecPreset2Profile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
 }
 JobJobLogRelationJobJobLog::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : jobLog(JobJobLogRelationJobJobLog::JobLog), job(JobJobLogRelationJobJobLog::Job) {
@@ -1818,19 +2014,19 @@ ProfileGroup::ProfilesHandle::ProfilesHandle(const ProfileGroup& owner)
          : litesql::RelationHandle<ProfileGroup>(owner) {
 }
 void ProfileGroup::ProfilesHandle::link(const Profile& o0) {
-    ProfileProfileGroupRelationProfileGroup2Profile::link(owner->getDatabase(), o0, *owner);
+    ProfileGroup2Profile::link(owner->getDatabase(), o0, *owner);
 }
 void ProfileGroup::ProfilesHandle::unlink(const Profile& o0) {
-    ProfileProfileGroupRelationProfileGroup2Profile::unlink(owner->getDatabase(), o0, *owner);
+    ProfileGroup2Profile::unlink(owner->getDatabase(), o0, *owner);
 }
 void ProfileGroup::ProfilesHandle::del(const litesql::Expr& expr) {
-    ProfileProfileGroupRelationProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id);
+    ProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileGroup2Profile::ProfileGroup == owner->id);
 }
 litesql::DataSource<Profile> ProfileGroup::ProfilesHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return ProfileProfileGroupRelationProfileGroup2Profile::get<Profile>(owner->getDatabase(), expr, (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id) && srcExpr);
+    return ProfileGroup2Profile::get<Profile>(owner->getDatabase(), expr, (ProfileGroup2Profile::ProfileGroup == owner->id) && srcExpr);
 }
-litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> ProfileGroup::ProfilesHandle::getRows(const litesql::Expr& expr) {
-    return ProfileProfileGroupRelationProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == owner->id));
+litesql::DataSource<ProfileGroup2Profile::Row> ProfileGroup::ProfilesHandle::getRows(const litesql::Expr& expr) {
+    return ProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileGroup2Profile::ProfileGroup == owner->id));
 }
 ProfileGroup::ChildrensHandle::ChildrensHandle(const ProfileGroup& owner)
          : litesql::RelationHandle<ProfileGroup>(owner) {
@@ -1958,7 +2154,7 @@ void ProfileGroup::delRecord() {
     deleteFromTable(table__, id);
 }
 void ProfileGroup::delRelations() {
-    ProfileProfileGroupRelationProfileGroup2Profile::del(*db, (ProfileProfileGroupRelationProfileGroup2Profile::ProfileGroup == id));
+    ProfileGroup2Profile::del(*db, (ProfileGroup2Profile::ProfileGroup == id));
     ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::del(*db, (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup1 == id) || (ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::ProfileGroup2 == id));
 }
 void ProfileGroup::update() {
@@ -2014,19 +2210,37 @@ Profile::GroupHandle::GroupHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
 void Profile::GroupHandle::link(const ProfileGroup& o0) {
-    ProfileProfileGroupRelationProfileGroup2Profile::link(owner->getDatabase(), *owner, o0);
+    ProfileGroup2Profile::link(owner->getDatabase(), *owner, o0);
 }
 void Profile::GroupHandle::unlink(const ProfileGroup& o0) {
-    ProfileProfileGroupRelationProfileGroup2Profile::unlink(owner->getDatabase(), *owner, o0);
+    ProfileGroup2Profile::unlink(owner->getDatabase(), *owner, o0);
 }
 void Profile::GroupHandle::del(const litesql::Expr& expr) {
-    ProfileProfileGroupRelationProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id);
+    ProfileGroup2Profile::del(owner->getDatabase(), expr && ProfileGroup2Profile::Profile == owner->id);
 }
 litesql::DataSource<ProfileGroup> Profile::GroupHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return ProfileProfileGroupRelationProfileGroup2Profile::get<ProfileGroup>(owner->getDatabase(), expr, (ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id) && srcExpr);
+    return ProfileGroup2Profile::get<ProfileGroup>(owner->getDatabase(), expr, (ProfileGroup2Profile::Profile == owner->id) && srcExpr);
 }
-litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> Profile::GroupHandle::getRows(const litesql::Expr& expr) {
-    return ProfileProfileGroupRelationProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileProfileGroupRelationProfileGroup2Profile::Profile == owner->id));
+litesql::DataSource<ProfileGroup2Profile::Row> Profile::GroupHandle::getRows(const litesql::Expr& expr) {
+    return ProfileGroup2Profile::getRows(owner->getDatabase(), expr && (ProfileGroup2Profile::Profile == owner->id));
+}
+Profile::ParamsHandle::ParamsHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::ParamsHandle::link(const ProfileParameter& o0) {
+    ProfileProfileParameterRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Profile::ParamsHandle::unlink(const ProfileParameter& o0) {
+    ProfileProfileParameterRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Profile::ParamsHandle::del(const litesql::Expr& expr) {
+    ProfileProfileParameterRelation::del(owner->getDatabase(), expr && ProfileProfileParameterRelation::Profile == owner->id);
+}
+litesql::DataSource<ProfileParameter> Profile::ParamsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileProfileParameterRelation::get<ProfileParameter>(owner->getDatabase(), expr, (ProfileProfileParameterRelation::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileProfileParameterRelation::Row> Profile::ParamsHandle::getRows(const litesql::Expr& expr) {
+    return ProfileProfileParameterRelation::getRows(owner->getDatabase(), expr && (ProfileProfileParameterRelation::Profile == owner->id));
 }
 Profile::ProjectHandle::ProjectHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
@@ -2045,6 +2259,42 @@ litesql::DataSource<Project> Profile::ProjectHandle::get(const litesql::Expr& ex
 }
 litesql::DataSource<ProfileProjectRelation::Row> Profile::ProjectHandle::getRows(const litesql::Expr& expr) {
     return ProfileProjectRelation::getRows(owner->getDatabase(), expr && (ProfileProjectRelation::Profile == owner->id));
+}
+Profile::VpresetHandle::VpresetHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::VpresetHandle::link(const CodecPreset& o0) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::link(owner->getDatabase(), o0, *owner);
+}
+void Profile::VpresetHandle::unlink(const CodecPreset& o0) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::unlink(owner->getDatabase(), o0, *owner);
+}
+void Profile::VpresetHandle::del(const litesql::Expr& expr) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::del(owner->getDatabase(), expr && CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == owner->id);
+}
+litesql::DataSource<CodecPreset> Profile::VpresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetProfileRelationVideoCodecPreset2Profile::get<CodecPreset>(owner->getDatabase(), expr, (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> Profile::VpresetHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetProfileRelationVideoCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == owner->id));
+}
+Profile::ApresetHandle::ApresetHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::ApresetHandle::link(const CodecPreset& o0) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::link(owner->getDatabase(), o0, *owner);
+}
+void Profile::ApresetHandle::unlink(const CodecPreset& o0) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::unlink(owner->getDatabase(), o0, *owner);
+}
+void Profile::ApresetHandle::del(const litesql::Expr& expr) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::del(owner->getDatabase(), expr && CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id);
+}
+litesql::DataSource<CodecPreset> Profile::ApresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetProfileRelationAudioCodecPreset2Profile::get<CodecPreset>(owner->getDatabase(), expr, (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Profile::ApresetHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id));
 }
 Profile::WatchfolderHandle::WatchfolderHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
@@ -2180,8 +2430,17 @@ const Profile& Profile::operator=(const Profile& obj) {
 Profile::GroupHandle Profile::group() {
     return Profile::GroupHandle(*this);
 }
+Profile::ParamsHandle Profile::params() {
+    return Profile::ParamsHandle(*this);
+}
 Profile::ProjectHandle Profile::project() {
     return Profile::ProjectHandle(*this);
+}
+Profile::VpresetHandle Profile::vpreset() {
+    return Profile::VpresetHandle(*this);
+}
+Profile::ApresetHandle Profile::apreset() {
+    return Profile::ApresetHandle(*this);
 }
 Profile::WatchfolderHandle Profile::watchfolder() {
     return Profile::WatchfolderHandle(*this);
@@ -2309,8 +2568,11 @@ void Profile::delRecord() {
     deleteFromTable(table__, id);
 }
 void Profile::delRelations() {
-    ProfileProfileGroupRelationProfileGroup2Profile::del(*db, (ProfileProfileGroupRelationProfileGroup2Profile::Profile == id));
+    ProfileGroup2Profile::del(*db, (ProfileGroup2Profile::Profile == id));
+    ProfileProfileParameterRelation::del(*db, (ProfileProfileParameterRelation::Profile == id));
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
+    CodecPresetProfileRelationVideoCodecPreset2Profile::del(*db, (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == id));
+    CodecPresetProfileRelationAudioCodecPreset2Profile::del(*db, (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == id));
     ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Profile == id));
 }
 void Profile::update() {
@@ -2390,6 +2652,170 @@ std::ostream & operator<<(std::ostream& os, Profile o) {
     os << o.aextra.name() << " = " << o.aextra << std::endl;
     os << o.profiletype.name() << " = " << o.profiletype << std::endl;
     os << o.deinterlace.name() << " = " << o.deinterlace << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType ProfileParameter::Own::Id("id_","INTEGER","ProfileParameter_");
+ProfileParameter::ProfileHandle::ProfileHandle(const ProfileParameter& owner)
+         : litesql::RelationHandle<ProfileParameter>(owner) {
+}
+void ProfileParameter::ProfileHandle::link(const Profile& o0) {
+    ProfileProfileParameterRelation::link(owner->getDatabase(), o0, *owner);
+}
+void ProfileParameter::ProfileHandle::unlink(const Profile& o0) {
+    ProfileProfileParameterRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void ProfileParameter::ProfileHandle::del(const litesql::Expr& expr) {
+    ProfileProfileParameterRelation::del(owner->getDatabase(), expr && ProfileProfileParameterRelation::ProfileParameter == owner->id);
+}
+litesql::DataSource<Profile> ProfileParameter::ProfileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return ProfileProfileParameterRelation::get<Profile>(owner->getDatabase(), expr, (ProfileProfileParameterRelation::ProfileParameter == owner->id) && srcExpr);
+}
+litesql::DataSource<ProfileProfileParameterRelation::Row> ProfileParameter::ProfileHandle::getRows(const litesql::Expr& expr) {
+    return ProfileProfileParameterRelation::getRows(owner->getDatabase(), expr && (ProfileProfileParameterRelation::ProfileParameter == owner->id));
+}
+const std::string ProfileParameter::type__("ProfileParameter");
+const std::string ProfileParameter::table__("ProfileParameter_");
+const std::string ProfileParameter::sequence__("ProfileParameter_seq");
+const litesql::FieldType ProfileParameter::Id("id_","INTEGER",table__);
+const litesql::FieldType ProfileParameter::Type("type_","TEXT",table__);
+const litesql::FieldType ProfileParameter::Name("name_","TEXT",table__);
+const litesql::FieldType ProfileParameter::Val("val_","TEXT",table__);
+void ProfileParameter::defaults() {
+    id = 0;
+}
+ProfileParameter::ProfileParameter(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+}
+ProfileParameter::ProfileParameter(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: val = convert<const std::string&, std::string>(rec[3]);
+        val.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+ProfileParameter::ProfileParameter(const ProfileParameter& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), val(obj.val) {
+}
+const ProfileParameter& ProfileParameter::operator=(const ProfileParameter& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        val = obj.val;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+ProfileParameter::ProfileHandle ProfileParameter::profile() {
+    return ProfileParameter::ProfileHandle(*this);
+}
+std::string ProfileParameter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(val.name());
+    values.push_back(val);
+    val.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void ProfileParameter::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void ProfileParameter::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, val);
+}
+void ProfileParameter::addIDUpdates(Updates& updates) {
+}
+void ProfileParameter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Val);
+}
+void ProfileParameter::delRecord() {
+    deleteFromTable(table__, id);
+}
+void ProfileParameter::delRelations() {
+    ProfileProfileParameterRelation::del(*db, (ProfileProfileParameterRelation::ProfileParameter == id));
+}
+void ProfileParameter::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void ProfileParameter::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<ProfileParameter> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool ProfileParameter::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<ProfileParameter> ProfileParameter::upcast() {
+    return auto_ptr<ProfileParameter>(new ProfileParameter(*this));
+}
+std::auto_ptr<ProfileParameter> ProfileParameter::upcastCopy() {
+    ProfileParameter* np = new ProfileParameter(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->val = val;
+    np->inDatabase = inDatabase;
+    return auto_ptr<ProfileParameter>(np);
+}
+std::ostream & operator<<(std::ostream& os, ProfileParameter o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.val.name() << " = " << o.val << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -2959,6 +3385,60 @@ std::ostream & operator<<(std::ostream& os, Stream o) {
     return os;
 }
 const litesql::FieldType CodecPreset::Own::Id("id_","INTEGER","CodecPreset_");
+CodecPreset::ParamsHandle::ParamsHandle(const CodecPreset& owner)
+         : litesql::RelationHandle<CodecPreset>(owner) {
+}
+void CodecPreset::ParamsHandle::link(const CodecPresetParameter& o0) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::link(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::ParamsHandle::unlink(const CodecPresetParameter& o0) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::unlink(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::ParamsHandle::del(const litesql::Expr& expr) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::del(owner->getDatabase(), expr && CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset == owner->id);
+}
+litesql::DataSource<CodecPresetParameter> CodecPreset::ParamsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::get<CodecPresetParameter>(owner->getDatabase(), expr, (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> CodecPreset::ParamsHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::getRows(owner->getDatabase(), expr && (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset == owner->id));
+}
+CodecPreset::VprofileHandle::VprofileHandle(const CodecPreset& owner)
+         : litesql::RelationHandle<CodecPreset>(owner) {
+}
+void CodecPreset::VprofileHandle::link(const Profile& o0) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::link(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::VprofileHandle::unlink(const Profile& o0) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::unlink(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::VprofileHandle::del(const litesql::Expr& expr) {
+    CodecPresetProfileRelationVideoCodecPreset2Profile::del(owner->getDatabase(), expr && CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset == owner->id);
+}
+litesql::DataSource<Profile> CodecPreset::VprofileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetProfileRelationVideoCodecPreset2Profile::get<Profile>(owner->getDatabase(), expr, (CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> CodecPreset::VprofileHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetProfileRelationVideoCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset == owner->id));
+}
+CodecPreset::AprofileHandle::AprofileHandle(const CodecPreset& owner)
+         : litesql::RelationHandle<CodecPreset>(owner) {
+}
+void CodecPreset::AprofileHandle::link(const Profile& o0) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::link(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::AprofileHandle::unlink(const Profile& o0) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::unlink(owner->getDatabase(), *owner, o0);
+}
+void CodecPreset::AprofileHandle::del(const litesql::Expr& expr) {
+    CodecPresetProfileRelationAudioCodecPreset2Profile::del(owner->getDatabase(), expr && CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset == owner->id);
+}
+litesql::DataSource<Profile> CodecPreset::AprofileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetProfileRelationAudioCodecPreset2Profile::get<Profile>(owner->getDatabase(), expr, (CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> CodecPreset::AprofileHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset == owner->id));
+}
 const std::string CodecPreset::type__("CodecPreset");
 const std::string CodecPreset::table__("CodecPreset_");
 const std::string CodecPreset::sequence__("CodecPreset_seq");
@@ -3010,6 +3490,15 @@ const CodecPreset& CodecPreset::operator=(const CodecPreset& obj) {
     }
     litesql::Persistent::operator=(obj);
     return *this;
+}
+CodecPreset::ParamsHandle CodecPreset::params() {
+    return CodecPreset::ParamsHandle(*this);
+}
+CodecPreset::VprofileHandle CodecPreset::vprofile() {
+    return CodecPreset::VprofileHandle(*this);
+}
+CodecPreset::AprofileHandle CodecPreset::aprofile() {
+    return CodecPreset::AprofileHandle(*this);
 }
 std::string CodecPreset::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -3069,6 +3558,9 @@ void CodecPreset::delRecord() {
     deleteFromTable(table__, id);
 }
 void CodecPreset::delRelations() {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::del(*db, (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPreset == id));
+    CodecPresetProfileRelationVideoCodecPreset2Profile::del(*db, (CodecPresetProfileRelationVideoCodecPreset2Profile::CodecPreset == id));
+    CodecPresetProfileRelationAudioCodecPreset2Profile::del(*db, (CodecPresetProfileRelationAudioCodecPreset2Profile::CodecPreset == id));
 }
 void CodecPreset::update() {
     if (!inDatabase) {
@@ -3121,6 +3613,170 @@ std::ostream & operator<<(std::ostream& os, CodecPreset o) {
     os << o.created.name() << " = " << o.created << std::endl;
     os << o.codecid.name() << " = " << o.codecid << std::endl;
     os << o.preset.name() << " = " << o.preset << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType CodecPresetParameter::Own::Id("id_","INTEGER","CodecPresetParameter_");
+CodecPresetParameter::PresetHandle::PresetHandle(const CodecPresetParameter& owner)
+         : litesql::RelationHandle<CodecPresetParameter>(owner) {
+}
+void CodecPresetParameter::PresetHandle::link(const CodecPreset& o0) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::link(owner->getDatabase(), o0, *owner);
+}
+void CodecPresetParameter::PresetHandle::unlink(const CodecPreset& o0) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::unlink(owner->getDatabase(), o0, *owner);
+}
+void CodecPresetParameter::PresetHandle::del(const litesql::Expr& expr) {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::del(owner->getDatabase(), expr && CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter == owner->id);
+}
+litesql::DataSource<CodecPreset> CodecPresetParameter::PresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::get<CodecPreset>(owner->getDatabase(), expr, (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter == owner->id) && srcExpr);
+}
+litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> CodecPresetParameter::PresetHandle::getRows(const litesql::Expr& expr) {
+    return CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::getRows(owner->getDatabase(), expr && (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter == owner->id));
+}
+const std::string CodecPresetParameter::type__("CodecPresetParameter");
+const std::string CodecPresetParameter::table__("CodecPresetParameter_");
+const std::string CodecPresetParameter::sequence__("CodecPresetParameter_seq");
+const litesql::FieldType CodecPresetParameter::Id("id_","INTEGER",table__);
+const litesql::FieldType CodecPresetParameter::Type("type_","TEXT",table__);
+const litesql::FieldType CodecPresetParameter::Name("name_","TEXT",table__);
+const litesql::FieldType CodecPresetParameter::Val("val_","TEXT",table__);
+void CodecPresetParameter::defaults() {
+    id = 0;
+}
+CodecPresetParameter::CodecPresetParameter(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+}
+CodecPresetParameter::CodecPresetParameter(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: val = convert<const std::string&, std::string>(rec[3]);
+        val.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+CodecPresetParameter::CodecPresetParameter(const CodecPresetParameter& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), val(obj.val) {
+}
+const CodecPresetParameter& CodecPresetParameter::operator=(const CodecPresetParameter& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        val = obj.val;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+CodecPresetParameter::PresetHandle CodecPresetParameter::preset() {
+    return CodecPresetParameter::PresetHandle(*this);
+}
+std::string CodecPresetParameter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(val.name());
+    values.push_back(val);
+    val.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void CodecPresetParameter::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void CodecPresetParameter::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, val);
+}
+void CodecPresetParameter::addIDUpdates(Updates& updates) {
+}
+void CodecPresetParameter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Val);
+}
+void CodecPresetParameter::delRecord() {
+    deleteFromTable(table__, id);
+}
+void CodecPresetParameter::delRelations() {
+    CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::del(*db, (CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::CodecPresetParameter == id));
+}
+void CodecPresetParameter::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void CodecPresetParameter::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<CodecPresetParameter> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool CodecPresetParameter::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcast() {
+    return auto_ptr<CodecPresetParameter>(new CodecPresetParameter(*this));
+}
+std::auto_ptr<CodecPresetParameter> CodecPresetParameter::upcastCopy() {
+    CodecPresetParameter* np = new CodecPresetParameter(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->val = val;
+    np->inDatabase = inDatabase;
+    return auto_ptr<CodecPresetParameter>(np);
+}
+std::ostream & operator<<(std::ostream& os, CodecPresetParameter o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.val.name() << " = " << o.val << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -4383,8 +5039,10 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("MediaFile_seq","sequence","CREATE SEQUENCE MediaFile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProfileGroup_seq","sequence","CREATE SEQUENCE ProfileGroup_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("ProfileParameter_seq","sequence","CREATE SEQUENCE ProfileParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("CodecPreset_seq","sequence","CREATE SEQUENCE CodecPreset_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("CodecPresetParameter_seq","sequence","CREATE SEQUENCE CodecPresetParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Config_seq","sequence","CREATE SEQUENCE Config_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Job_seq","sequence","CREATE SEQUENCE Job_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("JobLog_seq","sequence","CREATE SEQUENCE JobLog_seq START 1 INCREMENT 1"));
@@ -4398,8 +5056,10 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
+    res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
+    res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
@@ -4412,8 +5072,12 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
+    res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_c47426250800c92cff81a427efb64c83","table","CREATE TABLE _c47426250800c92cff81a427efb64c83 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
@@ -4439,12 +5103,24 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_d033fe244fc6121cb707149536449c0a","index","CREATE INDEX _d033fe244fc6121cb707149536449c0a ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1)"));
     res.push_back(Database::SchemaItem("_5a70b3265b33aac73fe8210afa3ad2d5","index","CREATE INDEX _5a70b3265b33aac73fe8210afa3ad2d5 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup2)"));
     res.push_back(Database::SchemaItem("_9bf4a7c83dd76c8ecc83bccd327d7d17","index","CREATE INDEX _9bf4a7c83dd76c8ecc83bccd327d7d17 ON _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1,ProfileGroup2)"));
+    res.push_back(Database::SchemaItem("_5b0f6997cb61137fb1d90143364b343c","index","CREATE INDEX _5b0f6997cb61137fb1d90143364b343c ON Profile_ProfileParameter_ (Profile1)"));
+    res.push_back(Database::SchemaItem("_6ca171948a9b22f1822facae47f47f6c","index","CREATE INDEX _6ca171948a9b22f1822facae47f47f6c ON Profile_ProfileParameter_ (ProfileParameter2)"));
+    res.push_back(Database::SchemaItem("_511e5af2def498717dc8291922087d47","index","CREATE INDEX _511e5af2def498717dc8291922087d47 ON Profile_ProfileParameter_ (Profile1,ProfileParameter2)"));
     res.push_back(Database::SchemaItem("Profile_Project_Profile1idx","index","CREATE INDEX Profile_Project_Profile1idx ON Profile_Project_ (Profile1)"));
     res.push_back(Database::SchemaItem("Profile_Project_Project2idx","index","CREATE INDEX Profile_Project_Project2idx ON Profile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1,Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));
+    res.push_back(Database::SchemaItem("_5697497d506d6edf93e83e3fbf0a0ee9","index","CREATE INDEX _5697497d506d6edf93e83e3fbf0a0ee9 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_d4cde276820154e4e61105dcbcfbe40e","index","CREATE INDEX _d4cde276820154e4e61105dcbcfbe40e ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPresetParameter2)"));
+    res.push_back(Database::SchemaItem("_42ff4e66c92a6178a970678924797e73","index","CREATE INDEX _42ff4e66c92a6178a970678924797e73 ON _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1,CodecPresetParameter2)"));
+    res.push_back(Database::SchemaItem("_e948e228c256df8f173e4c449809f8cb","index","CREATE INDEX _e948e228c256df8f173e4c449809f8cb ON _b477e426317c3764439827c70cd95621 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_6a8fa36e548d1af747073ed110e7cea4","index","CREATE INDEX _6a8fa36e548d1af747073ed110e7cea4 ON _b477e426317c3764439827c70cd95621 (Profile2)"));
+    res.push_back(Database::SchemaItem("_9f5803a6308e06a00ee8c60d76e40ca5","index","CREATE INDEX _9f5803a6308e06a00ee8c60d76e40ca5 ON _b477e426317c3764439827c70cd95621 (CodecPreset1,Profile2)"));
+    res.push_back(Database::SchemaItem("_efe8a74240af68bddaa5a9c3ba3b73ed","index","CREATE INDEX _efe8a74240af68bddaa5a9c3ba3b73ed ON _c47426250800c92cff81a427efb64c83 (CodecPreset1)"));
+    res.push_back(Database::SchemaItem("_09971e97639d319f4ec1431219d6bd95","index","CREATE INDEX _09971e97639d319f4ec1431219d6bd95 ON _c47426250800c92cff81a427efb64c83 (Profile2)"));
+    res.push_back(Database::SchemaItem("_28d7cd21f284513124537c322d33330b","index","CREATE INDEX _28d7cd21f284513124537c322d33330b ON _c47426250800c92cff81a427efb64c83 (CodecPreset1,Profile2)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJob1idx","index","CREATE INDEX Job_JobLog_JobJobLogJob1idx ON Job_JobLog_JobJobLog (Job1)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLogJobLog2idx","index","CREATE INDEX Job_JobLog_JobJobLogJobLog2idx ON Job_JobLog_JobJobLog (JobLog2)"));
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog_all_idx","index","CREATE INDEX Job_JobLog_JobJobLog_all_idx ON Job_JobLog_JobJobLog (Job1,JobLog2)"));

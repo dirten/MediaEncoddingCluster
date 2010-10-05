@@ -38,12 +38,15 @@
 #include "TreeMainMenu.h"
 #include "job/JobInfoPanel.h"
 #include "system/NodeListPanel.h"
+#include "presets/PresetsEditorWindow.h"
+#include "org/esb/hive/DatabaseService.h"
 namespace org {
   namespace esb {
     namespace web {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) :
-      WApplication(env){
+      WApplication(env),
+      _db(org::esb::hive::DatabaseService::getDatabase()){
         
         if (string(org::esb::config::Config::getProperty("hive.mode","no")) == "setup") {
           WApplication::instance()->redirect("/setup");
@@ -56,11 +59,11 @@ namespace org {
         std::string h = "MediaEncodingCluster V-";
         h += MHIVE_VERSION;
         h += "($Revision: 0 $-"__DATE__ "-" __TIME__")";
+        setLoadingIndicator(new Wt::WOverlayLoadingIndicator());
         setTitle(h);
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
 
-        setLoadingIndicator(new Wt::WOverlayLoadingIndicator());
         viewPort = new Wt::Ext::Container(root());
         //        viewPort->resize(Wt::WLength::Auto, 600);
 
@@ -336,6 +339,9 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
+        PresetsEditorWindow * edit=new PresetsEditorWindow(Ptr<db::Profile>(new db::Profile(_db)));
+        edit->show();
+        return;
         Profiles * profiles = new Profiles();
         //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
         setContent(profiles);

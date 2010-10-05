@@ -12,6 +12,7 @@
 #include "ProfileCreator.h"
 #include "DbTable.h"
 #include "org/esb/hive/DatabaseService.h"
+#include "presets/PresetsEditorWindow.h"
 //#include "org/esb/lang/Object.h"
 namespace org {
   namespace esb {
@@ -24,12 +25,12 @@ namespace org {
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
           list<ColumnConfig> columnConfigs;
-          columnConfigs.push_back(ColumnConfig(db::Profile::Id,"Id" ,20));
-          columnConfigs.push_back(ColumnConfig(db::Profile::Name,"Name" ,200));
-          columnConfigs.push_back(ColumnConfig(db::Profile::Format,"Format" ,200));
+          columnConfigs.push_back(ColumnConfig(db::Profile::Id, "Id", 20));
+          columnConfigs.push_back(ColumnConfig(db::Profile::Name, "Name", 200));
+          columnConfigs.push_back(ColumnConfig(db::Profile::Format, "Format", 200));
           //          columnConfigs.push_back(ColumnConfig(db::Profile::Containertype,"Type" ,200));
 
-          profile_table=new DbTable(columnConfigs,litesql::Expr());
+          profile_table = new DbTable(columnConfigs, litesql::Expr());
 
           //          t = new SqlTable(std::string("select id, profile_name Name, v_format Format from profiles"));
           //          t->setColumnWidth(0, 10);
@@ -37,7 +38,7 @@ namespace org {
           //          t->setTopToolBar(new Wt::Ext::ToolBar());
 
           profile_table->itemSelectionChanged().connect(SLOT(this, Profiles::enableButton));
-          profile_table->doubleClicked.connect(SLOT(this, Profiles::editProfile));
+          //profile_table->doubleClicked.connect(SLOT(this, Profiles::editProfile));
           profile_table->setTopToolBar(new Wt::Ext::ToolBar());
 
           layout()->addWidget(profile_table);
@@ -70,50 +71,39 @@ namespace org {
           //	  LOGDEBUG("here");
           int c = atoi(boost::any_cast<string > (profile_table->getModel()->data(profile_table->selectedRows()[0], 0)).c_str());
 
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
-          _db->verbose=true;
-          profile=new db::Profile(litesql::select<db::Profile>(*_db.get(), db::Profile::Id==c).one());
-          pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
-          //          pc->show();
-          /*
-          d = new Wt::Ext::Dialog("Profile");
-          d->resize(500, 430);
-          ProfilesForm * pf = new ProfilesForm(d->contents());
-          */
-          pc->saved.connect(SLOT(this, Profiles::profileSaved));
-          pc->canceled.connect(SLOT(this, Profiles::profileCanceled));
-          //          pc->canceled.connect(SLOT(pc.get(), Wt::Ext::Dialog::accept));
-          //          pc->setProfile(c);
+          _db = boost::shared_ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
+          //_db->verbose = true;
+          profile = new db::Profile(litesql::select<db::Profile > (*_db.get(), db::Profile::Id == c).one());
+          pc = new PresetsEditorWindow(profile);
           pc->show();
+          if (pc->exec() == Wt::Ext::Dialog::Accepted) {
+            profile->update();
+          }
           LOGDEBUG(*profile)
         }
+
         void createProfile() {
           //	  LOGDEBUG("here");
-        
 
-          _db=boost::shared_ptr<db::HiveDb>(new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
-          _db->verbose=true;
-          profile=new db::Profile(*_db.get());
-          pc=boost::shared_ptr<ProfileCreator>(new ProfileCreator(*profile));
-          //          pc->show();
-          /*
-          d = new Wt::Ext::Dialog("Profile");
-          d->resize(500, 430);
-          ProfilesForm * pf = new ProfilesForm(d->contents());
-          */
-          pc->saved.connect(SLOT(this, Profiles::profileSaved));
-          pc->canceled.connect(SLOT(this, Profiles::profileCanceled));
-          //          pc->canceled.connect(SLOT(pc.get(), Wt::Ext::Dialog::accept));
-          //          pc->setProfile(c);
+
+          _db = boost::shared_ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
+          _db->verbose = true;
+          profile = new db::Profile(*_db.get());
+          pc = new PresetsEditorWindow(profile);
           pc->show();
+          if (pc->exec() == Wt::Ext::Dialog::Accepted) {
+            profile->update();
+          }
           LOGDEBUG(*profile)
         }
-        void profileSaved(){
+
+        void profileSaved() {
           profile->update();
           reloadProfiles();
         }
-        void profileCanceled(){
-          
+
+        void profileCanceled() {
+
         }
       private:
         Wt::Ext::Button * buttonEdit;
@@ -123,7 +113,7 @@ namespace org {
         DbTable * profile_table;
         Wt::Ext::Dialog * d;
         db::Profile * profile;
-        boost::shared_ptr<ProfileCreator> pc;
+        Ptr<PresetsEditorWindow> pc;
         boost::shared_ptr<db::HiveDb> _db;
         //        ProfilesEdit * edit;
       };

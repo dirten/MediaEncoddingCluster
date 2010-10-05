@@ -4,7 +4,8 @@
  *
  * Created on 26. August 2009, 13:13
  */
-
+#include "org/esb/db/hivedb.hpp"
+#include "org/esb/lang/Ptr.h"
 #include <Wt/WApplication>
 #include <Wt/WEnvironment>
 #include <Wt/WContainerWidget>
@@ -66,7 +67,7 @@ namespace org {
                 Wt::WSignalMapper<JobTable*> *_jobSignalMap;
                 //void fileSelected(SqlTable *);
                 void jobSelected(JobTable *);
-
+                db::HiveDb _db;
 
             };
         }

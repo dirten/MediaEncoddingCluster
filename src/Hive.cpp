@@ -440,7 +440,7 @@ void start() {
 
   org::esb::hive::job::ProcessUnitController puw;
   Messenger::getInstance().addMessageListener(puw);
-  LOGDEBUG("here")
+//  LOGDEBUG("here")
 
 
   /*
@@ -469,7 +469,7 @@ void start() {
 
   //  }
   
-  LOGINFO("wait for shutdown!");
+//  LOGINFO("wait for shutdown!");
 
   org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
@@ -494,7 +494,7 @@ void start() {
 }
 
 void listener(int argc, char *argv[]) {
-  LOGDEBUG("here");
+//  LOGDEBUG("here");
 //  org::esb::lang::Thread::sleep2(5000);
   org::esb::hive::Node node;
   node.setData("type", "server");

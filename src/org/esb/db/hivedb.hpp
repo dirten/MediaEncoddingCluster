@@ -8,8 +8,10 @@ class FilterParameter;
 class MediaFile;
 class ProfileGroup;
 class Profile;
+class ProfileParameter;
 class Stream;
 class CodecPreset;
+class CodecPresetParameter;
 class Config;
 class Job;
 class JobLog;
@@ -92,7 +94,7 @@ public:
 ;
 ;
 };
-class ProfileProfileGroupRelationProfileGroup2Profile {
+class ProfileGroup2Profile {
 public:
     class Row {
     public:
@@ -106,7 +108,7 @@ public:
     static void link(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1);
     static void unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileGroup& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<ProfileGroup2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -128,6 +130,25 @@ public:
     static litesql::DataSource<ProfileGroupProfileGroupRelationProfileGroup2ProfileGroupChildren::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<db::ProfileGroup> getProfileGroup1(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
     static litesql::DataSource<db::ProfileGroup> getProfileGroup2(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+};
+class ProfileProfileParameterRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profileParameter;
+        litesql::Field<int> profile;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Profile;
+    static const litesql::FieldType ProfileParameter;
+    static void link(const litesql::Database& db, const db::Profile& o0, const db::ProfileParameter& o1);
+    static void unlink(const litesql::Database& db, const db::Profile& o0, const db::ProfileParameter& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<ProfileProfileParameterRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
 };
 class ProfileProjectRelation {
 public:
@@ -163,6 +184,63 @@ public:
     static void unlink(const litesql::Database& db, const db::MediaFile& o0, const db::Stream& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<MediaFileStreamRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class CodecPresetCodecPresetParameterRelationCodecPreset2Parameter {
+public:
+    class Row {
+    public:
+        litesql::Field<int> codecPresetParameter;
+        litesql::Field<int> codecPreset;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType CodecPreset;
+    static const litesql::FieldType CodecPresetParameter;
+    static void link(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1);
+    static void unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::CodecPresetParameter& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class CodecPresetProfileRelationVideoCodecPreset2Profile {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profile;
+        litesql::Field<int> codecPreset;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType CodecPreset;
+    static const litesql::FieldType Profile;
+    static void link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1);
+    static void unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class CodecPresetProfileRelationAudioCodecPreset2Profile {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profile;
+        litesql::Field<int> codecPreset;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType CodecPreset;
+    static const litesql::FieldType Profile;
+    static void link(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1);
+    static void unlink(const litesql::Database& db, const db::CodecPreset& o0, const db::Profile& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -643,7 +721,7 @@ public:
         void unlink(const Profile& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class ChildrensHandle : public litesql::RelationHandle<ProfileGroup> {
     public:
@@ -713,7 +791,16 @@ public:
         void unlink(const ProfileGroup& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<ProfileGroup> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<ProfileProfileGroupRelationProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileGroup2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class ParamsHandle : public litesql::RelationHandle<Profile> {
+    public:
+        ParamsHandle(const Profile& owner);
+        void link(const ProfileParameter& o0);
+        void unlink(const ProfileParameter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<ProfileParameter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileProfileParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class ProjectHandle : public litesql::RelationHandle<Profile> {
     public:
@@ -723,6 +810,24 @@ public:
         void del(const litesql::Expr& expr=litesql::Expr());
         litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<ProfileProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class VpresetHandle : public litesql::RelationHandle<Profile> {
+    public:
+        VpresetHandle(const Profile& owner);
+        void link(const CodecPreset& o0);
+        void unlink(const CodecPreset& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<CodecPreset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class ApresetHandle : public litesql::RelationHandle<Profile> {
+    public:
+        ApresetHandle(const Profile& owner);
+        void link(const CodecPreset& o0);
+        void unlink(const CodecPreset& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<CodecPreset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class WatchfolderHandle : public litesql::RelationHandle<Profile> {
     public:
@@ -782,7 +887,10 @@ public:
     Profile(const Profile& obj);
     const Profile& operator=(const Profile& obj);
     Profile::GroupHandle group();
+    Profile::ParamsHandle params();
     Profile::ProjectHandle project();
+    Profile::VpresetHandle vpreset();
+    Profile::ApresetHandle apreset();
     Profile::WatchfolderHandle watchfolder();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -802,6 +910,58 @@ public:
     std::auto_ptr<Profile> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Profile o);
+class ProfileParameter : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class ProfileHandle : public litesql::RelationHandle<ProfileParameter> {
+    public:
+        ProfileHandle(const ProfileParameter& owner);
+        void link(const Profile& o0);
+        void unlink(const Profile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<ProfileProfileParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Val;
+    litesql::Field<std::string> val;
+protected:
+    void defaults();
+public:
+    ProfileParameter(const litesql::Database& db);
+    ProfileParameter(const litesql::Database& db, const litesql::Record& rec);
+    ProfileParameter(const ProfileParameter& obj);
+    const ProfileParameter& operator=(const ProfileParameter& obj);
+    ProfileParameter::ProfileHandle profile();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<ProfileParameter> upcast();
+    std::auto_ptr<ProfileParameter> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, ProfileParameter o);
 class Stream : public litesql::Persistent {
 public:
     class Own {
@@ -940,6 +1100,33 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class ParamsHandle : public litesql::RelationHandle<CodecPreset> {
+    public:
+        ParamsHandle(const CodecPreset& owner);
+        void link(const CodecPresetParameter& o0);
+        void unlink(const CodecPresetParameter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<CodecPresetParameter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class VprofileHandle : public litesql::RelationHandle<CodecPreset> {
+    public:
+        VprofileHandle(const CodecPreset& owner);
+        void link(const Profile& o0);
+        void unlink(const Profile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetProfileRelationVideoCodecPreset2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    class AprofileHandle : public litesql::RelationHandle<CodecPreset> {
+    public:
+        AprofileHandle(const CodecPreset& owner);
+        void link(const Profile& o0);
+        void unlink(const Profile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -962,6 +1149,9 @@ public:
     CodecPreset(const litesql::Database& db, const litesql::Record& rec);
     CodecPreset(const CodecPreset& obj);
     const CodecPreset& operator=(const CodecPreset& obj);
+    CodecPreset::ParamsHandle params();
+    CodecPreset::VprofileHandle vprofile();
+    CodecPreset::AprofileHandle aprofile();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -980,6 +1170,58 @@ public:
     std::auto_ptr<CodecPreset> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, CodecPreset o);
+class CodecPresetParameter : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class PresetHandle : public litesql::RelationHandle<CodecPresetParameter> {
+    public:
+        PresetHandle(const CodecPresetParameter& owner);
+        void link(const CodecPreset& o0);
+        void unlink(const CodecPreset& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<CodecPreset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<CodecPresetCodecPresetParameterRelationCodecPreset2Parameter::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Val;
+    litesql::Field<std::string> val;
+protected:
+    void defaults();
+public:
+    CodecPresetParameter(const litesql::Database& db);
+    CodecPresetParameter(const litesql::Database& db, const litesql::Record& rec);
+    CodecPresetParameter(const CodecPresetParameter& obj);
+    const CodecPresetParameter& operator=(const CodecPresetParameter& obj);
+    CodecPresetParameter::PresetHandle preset();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<CodecPresetParameter> upcast();
+    std::auto_ptr<CodecPresetParameter> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, CodecPresetParameter o);
 class Config : public litesql::Persistent {
 public:
     class Own {

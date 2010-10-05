@@ -349,6 +349,12 @@ add_library (web
     web/project_v2/PresetTree.cpp
     web/project_v2/PropertyPanel.cpp
     web/system/NodeListPanel.cpp
+    web/presets/PresetsEditor.cpp
+    web/presets/PresetsEditorWindow.cpp
+    web/presets/FormatPanel.cpp
+    web/presets/VideoPanel.cpp
+    web/presets/AudioPanel.cpp
+    web/presets/PresetFilterPanel.cpp
 )
 
 

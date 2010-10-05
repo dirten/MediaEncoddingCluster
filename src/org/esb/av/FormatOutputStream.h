@@ -12,7 +12,7 @@ struct AVOutputFormat;
 namespace org {
     namespace esb {
         namespace av {
-
+          typedef std::list<Ptr<AVOutputFormat> > OutputFormatList;
             class FormatOutputStream : public FormatBaseStream, public org::esb::io::OutputStream {
             public:
                 FormatOutputStream(org::esb::io::File * target, const char * fmt = NULL);
@@ -24,6 +24,7 @@ namespace org {
                 void close();
                 void addPacketStream(PacketOutputStream & stream, Encoder & encoder);
                 void dumpFormat();
+                static OutputFormatList getOutputFormats();
                 //		private:
                 friend class PacketOutputStream;
                 AVFormatContext * _fmtCtx;
