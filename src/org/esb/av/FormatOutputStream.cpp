@@ -82,12 +82,14 @@ namespace org {
       };
 
       OutputFormatList FormatOutputStream::getOutputFormats() {
+
         AVOutputFormat *ofmt = NULL;
         int a = 0;
         while ((ofmt = av_oformat_next(ofmt))) {
 //          v_format->addItem(ofmt->long_name);
           a++;
         }
+        return OutputFormatList();
       }
     }
   }
