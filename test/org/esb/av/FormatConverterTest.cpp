@@ -24,7 +24,7 @@
 using namespace org::esb::av;
 int main(){
   {
-  ScopedTimeCounter runtimetest("runtimetest");
+  org::esb::util::ScopedTimeCounter runtimetest("runtimetest");
 //  Log::open("");
   std::string filepath = MEC_SOURCE_DIR;
   filepath.append("/test.dvd");
