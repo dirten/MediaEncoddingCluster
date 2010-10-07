@@ -1,1 +1,2 @@
-  wget http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-noinstall-5.1.48-win32.zip/from/http://ftp.gwdg.de/pub/misc/mysql// testtarget
+curl ${url} -o ${target}
+

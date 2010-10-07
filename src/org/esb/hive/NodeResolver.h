@@ -115,7 +115,7 @@ namespace org {
         boost::asio::deadline_timer send_timer_;
 
         enum {
-          max_length = 4096
+          max_length = 10000000
         };
         char data_[max_length];
 

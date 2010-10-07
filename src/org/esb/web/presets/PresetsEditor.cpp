@@ -64,6 +64,11 @@ namespace org {
         tab->addTab(new Wt::Ext::Panel(), "Filter");
         return tab;
       }
+      
+      void PresetsEditor::save(){
+        Wt::Ext::TabWidget *tab=static_cast<Wt::Ext::TabWidget *>(((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center));
+        ((org::esb::web::VideoPanel*)tab->panel(1))->save();
+      }
     }
   }
 }

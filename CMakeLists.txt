@@ -9,6 +9,8 @@ project (MEC)
 
 
 INCLUDE(CTest)
+INCLUDE(cmake/CMakeDeps.txt)
+
 ENABLE_TESTING()
 SET(DART_TESTING_TIMEOUT 100)
 
@@ -41,7 +43,6 @@ if(Boost_FOUND)
 endif()
 #MESSAGE("Boost Include Dir" ${BOOST_INCLUDE_DIRS})       
 
-#INCLUDE(cmake/CMakeDeps.txt)
 INCLUDE(cmake/HiveFindSQLite.txt)
 INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)

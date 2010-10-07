@@ -13,11 +13,14 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/util/ScopedTimeCounter.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "Wt/Ext/Button"
+#include "Wt/WStandardItemModel"
 namespace org {
   namespace esb {
     namespace web {
+
 
       VideoPanel::VideoPanel(Ptr<db::Profile> p) : _profile(p), Wt::Ext::Panel() {
         setLayout(new Wt::WFitLayout());
@@ -65,6 +68,7 @@ namespace org {
           if(_parameter["v_methode"]==(*metit))
             v_methode->setCurrentIndex(a);
         }
+        _parameter["v_methode"]=v_methode->currentText().narrow();
 
         /*
          * Combobox for the Bitrate Selector
@@ -76,12 +80,12 @@ namespace org {
         _bitrates.push_back(2048);
         _bitrates.push_back(4096);
 
-        Wt::Ext::ComboBox * v_bitrate = _elcb.addElement("v_bitrate", "Video Bitrate", "please select a Bitrate", grid);
+        Wt::Ext::ComboBox * v_bitrate = _elcb.addElement("b", "Video Bitrate", "please select a Bitrate", grid);
         v_bitrate->setEditable(true);
         std::list<int>::iterator bitit = _bitrates.begin();
         for (int a = 0; bitit != _bitrates.end(); bitit++, a++) {
           v_bitrate->addItem(org::esb::util::StringUtil::toString((*bitit)) + " kb/s");
-          if ((*bitit) == _profile->vbitrate.value()) {
+          if ((*bitit) == atoi(_parameter["b"].c_str())) {
             v_bitrate->setCurrentIndex(a);
           }
         }
@@ -132,23 +136,35 @@ namespace org {
         _keyframes.push_back(200);
         _keyframes.push_back(300);
 
-        Wt::Ext::ComboBox * v_keyframes = _elcb.addElement("v_keyframes", "Key Frame every", "100 Frames", grid);
+        Wt::Ext::ComboBox * v_keyframes = _elcb.addElement("g", "Key Frame every", "100 Frames", grid);
         v_keyframes->setEditable(true);
         std::list<int>::iterator keyit = _keyframes.begin();
         for (int a = 0; keyit != _keyframes.end(); keyit++, a++) {
           v_keyframes->addItem(org::esb::util::StringUtil::toString((*keyit)) + " Frames");
-          if(_parameter["v_keyframes"]==org::esb::util::StringUtil::toString(*keyit))
+          if(_parameter["g"]==org::esb::util::StringUtil::toString(*keyit))
             v_keyframes->setCurrentIndex(a);
         }
+        _parameter["g"]=v_keyframes->currentText().narrow();
+         v_keyframes->activated().connect(SLOT(this, VideoPanel::dataChanged));
+
+//        _advance_table->load();
+//        _advance_table->setEnabled(false);
 
         /*these are alwyays the last widget(except Advanced Button) to stretch to the buttom of the Page*/
-        grid->addWidget(new Wt::WText(), grid->rowCount(), 0);
+        grid->addWidget(new Wt::WText(), grid->rowCount(), 0,0,3);
         grid->setRowStretch(grid->rowCount() - 1, 1);
+
+        _advance_table=new VideoAdvanceTableView(_parameter);
+        grid->addWidget(_advance_table,0,2,8,0,Wt::AlignRight);
+        _advance_table->setCollapsible(true);
+        _advance_table->setCollapsed(true);
+        _advance_table->changed.connect(SLOT(this,VideoPanel::refresh));
+
+        
         _advanced = new Wt::Ext::Button("Advanced>>>");
         _advanced->resize(100, Wt::WLength());
-        grid->addWidget(_advanced, grid->rowCount(), 0, 0, 1);
+        grid->addWidget(_advanced, grid->rowCount(), 0, 0, 1,Wt::AlignRight);
         _advanced->clicked().connect(SLOT(this, VideoPanel::switchAdvanced));
-
       }
 
       void VideoPanel::setPredefinedCodecFlags() {
@@ -191,9 +207,49 @@ namespace org {
       void VideoPanel::switchAdvanced() {
         if (_advanced->text() == "Advanced>>>") {
           _advanced->setText("Simple<<<");
+          //_advance_table->setEnabled(true);
+        _advance_table->setCollapsed(false);
         } else {
           _advanced->setText("Advanced>>>");
+          //_advance_table->setEnabled(false);
+        _advance_table->setCollapsed(true);
         }
+      }
+
+
+      void VideoPanel::dataChanged() {
+      }
+
+      void VideoPanel::refresh() {
+
+      }
+      
+      void VideoPanel::save() {
+        org::esb::util::ScopedTimeCounter t("database profile update");
+        _profile->getDatabase().begin();
+        std::map<std::string, Wt::Ext::ComboBox*> boxes=_elcb.getElements();
+        std::map<std::string, Wt::Ext::ComboBox*>::iterator bit=boxes.begin();
+        for(;bit!=boxes.end();bit++){
+          _parameter[(*bit).first]=(*bit).second->currentText().narrow();
+        }
+
+//        _parameter["v_keyframes"]=_elcb.getElement("v_keyframes")->currentText().narrow();
+//        _parameter["v_methode"]=_elcb.getElement("v_methode")->currentText().narrow();
+        //_advance_table->refresh();
+        vector<db::ProfileParameter> params=_profile->params().get().all();
+        vector<db::ProfileParameter>::iterator par=params.begin();
+        for(;par!=params.end();par++){
+          (*par).del();
+        }
+        std::map<std::string, std::string>::iterator it=_parameter.begin();
+        for(;it!=_parameter.end();it++){
+          db::ProfileParameter p(_profile->getDatabase());
+          p.name=(*it).first;
+          p.val=(*it).second;
+          p.update();
+          _profile->params().link(p);
+        }
+        _profile->getDatabase().commit();
       }
 
       VideoPanel::~VideoPanel() {

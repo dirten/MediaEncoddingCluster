@@ -15,7 +15,7 @@ namespace org {
     namespace web {
 
       PresetsEditorWindow::PresetsEditorWindow(Ptr<db::Profile> p) :_profile(p), Wt::Ext::Dialog("Preset Editor") {
-        resize(900, 650);
+        resize(830, 500);
         setBorder(false);
         setLayout(new Wt::WFitLayout());
         addButton(new Wt::Ext::Button("Cancel"));
@@ -27,7 +27,7 @@ namespace org {
         buttons().back()->setIcon("icons/accept-icon.png");
         //_profile=new db::Profile(_db);
         
-        PresetsEditor * editor=new PresetsEditor(_profile);
+        editor=new PresetsEditor(_profile);
 
         layout()->addWidget(editor);
 
@@ -43,6 +43,7 @@ namespace org {
       }
 
       void PresetsEditorWindow::save() {
+        editor->save();
         _profile->update();
         this->accept();
       }

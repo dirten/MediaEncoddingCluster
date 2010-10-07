@@ -18,6 +18,7 @@ namespace org {
       public:
         PresetsEditor(Ptr<db::Profile>);
         virtual ~PresetsEditor();
+        void save();
       private:
         Wt::WWidget * createTop();
         Wt::WWidget * createContent();

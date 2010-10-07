@@ -12,6 +12,8 @@
 
 #include "Wt/Ext/Dialog"
 #include "Wt/WWidget"
+#include "PresetsEditor.h"
+
 namespace org {
   namespace esb {
     namespace web {
@@ -26,6 +28,7 @@ namespace org {
 
         //db::HiveDb _db;
         Ptr<db::Profile>_profile;
+        PresetsEditor * editor;
 
       };
     }

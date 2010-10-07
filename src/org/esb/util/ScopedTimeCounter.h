@@ -3,18 +3,24 @@
 #include <string>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "Log.h"
-using namespace boost::posix_time;
+namespace org {
+  namespace esb {
+    namespace util {
 
-class ScopedTimeCounter
-{
-  classlogger("org.esb.util.ScopedTimeCounter")
-public:
-	ScopedTimeCounter(std::string name);
-	~ScopedTimeCounter(void);
-private:
-	ptime _start;
-	ptime _end;
-	std::string _name;
-};
+      using namespace boost::posix_time;
+
+      class ScopedTimeCounter {
+        classlogger("org.esb.util.ScopedTimeCounter")
+      public:
+        ScopedTimeCounter(std::string name);
+        ~ScopedTimeCounter(void);
+      private:
+        ptime _start;
+        ptime _end;
+        std::string _name;
+      };
+    }
+  }
+}
 #endif
 

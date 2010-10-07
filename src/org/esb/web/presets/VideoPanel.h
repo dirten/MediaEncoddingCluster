@@ -15,6 +15,8 @@
 #include "Wt/Ext/ComboBox"
 #include "../wtk/ElementContainer.h"
 #include <map>
+#include "VideoAdvanceTableView.h"
+
 namespace org {
   namespace esb {
     namespace web {
@@ -23,6 +25,7 @@ namespace org {
       public:
         VideoPanel(Ptr<db::Profile>);
         virtual ~VideoPanel();
+        void save();
       private:
         Ptr<db::Profile>_profile;
         Wt::Ext::Button *_advanced;
@@ -35,6 +38,9 @@ namespace org {
         void setPredefinedCodecFlags();
         void setSelectedPredifinedCodecFlags();
         void switchAdvanced();
+        VideoAdvanceTableView*_advance_table;
+        void dataChanged();
+        void refresh();
       };
     }
   }

@@ -79,7 +79,7 @@ namespace org {
           if (pc->exec() == Wt::Ext::Dialog::Accepted) {
             profile->update();
           }
-          LOGDEBUG(*profile)
+//          LOGDEBUG(*profile)
         }
 
         void createProfile() {
