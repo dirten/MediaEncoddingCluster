@@ -2681,18 +2681,22 @@ const litesql::FieldType ProfileParameter::Id("id_","INTEGER",table__);
 const litesql::FieldType ProfileParameter::Type("type_","TEXT",table__);
 const litesql::FieldType ProfileParameter::Name("name_","TEXT",table__);
 const litesql::FieldType ProfileParameter::Val("val_","TEXT",table__);
+const litesql::FieldType ProfileParameter::Mediatype("mediatype_","INTEGER",table__);
 void ProfileParameter::defaults() {
     id = 0;
+    mediatype = 0;
 }
 ProfileParameter::ProfileParameter(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name), val(Val) {
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), val(Val), mediatype(Mediatype) {
     defaults();
 }
 ProfileParameter::ProfileParameter(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), val(Val) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), val(Val), mediatype(Mediatype) {
     defaults();
-    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    size_t size = (rec.size() > 5) ? 5 : rec.size();
     switch(size) {
+    case 5: mediatype = convert<const std::string&, int>(rec[4]);
+        mediatype.setModified(false);
     case 4: val = convert<const std::string&, std::string>(rec[3]);
         val.setModified(false);
     case 3: name = convert<const std::string&, std::string>(rec[2]);
@@ -2704,7 +2708,7 @@ ProfileParameter::ProfileParameter(const litesql::Database& db, const litesql::R
     }
 }
 ProfileParameter::ProfileParameter(const ProfileParameter& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), val(obj.val) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), val(obj.val), mediatype(obj.mediatype) {
 }
 const ProfileParameter& ProfileParameter::operator=(const ProfileParameter& obj) {
     if (this != &obj) {
@@ -2712,6 +2716,7 @@ const ProfileParameter& ProfileParameter::operator=(const ProfileParameter& obj)
         type = obj.type;
         name = obj.name;
         val = obj.val;
+        mediatype = obj.mediatype;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -2735,6 +2740,9 @@ std::string ProfileParameter::insert(litesql::Record& tables, litesql::Records& 
     fields.push_back(val.name());
     values.push_back(val);
     val.setModified(false);
+    fields.push_back(mediatype.name());
+    values.push_back(mediatype);
+    mediatype.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -2754,6 +2762,7 @@ void ProfileParameter::addUpdates(Updates& updates) {
     updateField(updates, table__, type);
     updateField(updates, table__, name);
     updateField(updates, table__, val);
+    updateField(updates, table__, mediatype);
 }
 void ProfileParameter::addIDUpdates(Updates& updates) {
 }
@@ -2762,6 +2771,7 @@ void ProfileParameter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Type);
     ftypes.push_back(Name);
     ftypes.push_back(Val);
+    ftypes.push_back(Mediatype);
 }
 void ProfileParameter::delRecord() {
     deleteFromTable(table__, id);
@@ -2807,6 +2817,7 @@ std::auto_ptr<ProfileParameter> ProfileParameter::upcastCopy() {
     np->type = type;
     np->name = name;
     np->val = val;
+    np->mediatype = mediatype;
     np->inDatabase = inDatabase;
     return auto_ptr<ProfileParameter>(np);
 }
@@ -2816,6 +2827,7 @@ std::ostream & operator<<(std::ostream& os, ProfileParameter o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.val.name() << " = " << o.val << std::endl;
+    os << o.mediatype.name() << " = " << o.mediatype << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -5056,7 +5068,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
+    res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));

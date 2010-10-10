@@ -100,6 +100,7 @@
     <object name="ProfileParameter">
         <field name="name" type="string"/>
         <field name="val" type="string"/>
+        <field name="mediatype" type="integer"/>
     </object>
 
     <relation>

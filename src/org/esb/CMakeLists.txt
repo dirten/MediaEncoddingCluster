@@ -69,7 +69,7 @@ IF(BUILD_SHARED_LIBS)
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
-TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
+#TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
 
 
 add_library (orm orm/hivedb.cpp)
@@ -320,6 +320,8 @@ add_library (web
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
     web/wtk/ContentBox.cpp
+    web/wtk/KeyValueModel.cpp
+    web/wtk/ComboBox.cpp
     web/project/ProjectWizard.cpp
     web/project/InputFilePanel.cpp
     web/ColumnConfig.cpp

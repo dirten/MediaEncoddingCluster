@@ -9,16 +9,31 @@
 #define	AUDIOPANEL_H
 #include "org/esb/db/hivedb.hpp"
 #include "Wt/Ext/Panel"
+#include "Wt/Ext/Button"
+#include "org/esb/lang/Ptr.h"
+#include "../wtk/ComboBox.h"
+#include "../wtk/ElementContainer.h"
+#include "VideoAdvanceTableView.h"
+#include <map>
 namespace org {
   namespace esb {
     namespace web {
 
       class AudioPanel:public Wt::Ext::Panel {
       public:
-        AudioPanel(db::Profile&);
+        AudioPanel(Ptr<db::Profile>);
         virtual ~AudioPanel();
+        void save();
       private:
-        db::Profile & _profile;
+        Ptr<db::Profile> _profile;
+        std::map<std::string, std::string> _parameter;
+        wtk::ElementContainer<ComboBox> _elcb;
+        Wt::Ext::Button *_advanced;
+        VideoAdvanceTableView*_advance_table;
+        void switchAdvanced();
+        void dataChanged();
+        void refresh();
+
       };
     }
   }

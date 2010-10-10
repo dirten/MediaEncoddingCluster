@@ -9,29 +9,31 @@
 #define	VIDEOADVANCETABLEVIEW_H
 #include "Wt/Ext/TableView"
 #include "Wt/Ext/Button"
-#include "Wt/Ext/ComboBox"
+#include "../wtk/ComboBox.h"
 #include "Wt/Ext/LineEdit"
+#include "org/esb/util/Log.h"
 
 namespace org {
   namespace esb {
     namespace web {
 
       class VideoAdvanceTableView : public Wt::Ext::TableView {
+        classlogger("org.esb.web.VideoAdvanceTableView")
       public:
-        VideoAdvanceTableView(std::map<std::string, std::string>&);
+        VideoAdvanceTableView(std::map<std::string, std::string>&, int flag);
         virtual ~VideoAdvanceTableView();
         void refresh();
         Wt::Signal<void> changed;
       private:
         std::map<std::string, std::string>&_dat;
         std::map<std::string, std::string> _options;
-        void dataChanged(Wt::WModelIndex old, Wt::WModelIndex newdata);
+        void dataChanged(int data);
         void itemChanged(Wt::WStandardItem *data);
         void itemSelectionChangedMethod();
         void addOption();
         void removeOption();
         Wt::Ext::Button * removeOptionButton ;
-        Wt::Ext::ComboBox * options;
+        ComboBox * options;
         Wt::Ext::LineEdit * line;
         bool _dontChangeModel;
       };

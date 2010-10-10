@@ -936,6 +936,8 @@ public:
     litesql::Field<std::string> name;
     static const litesql::FieldType Val;
     litesql::Field<std::string> val;
+    static const litesql::FieldType Mediatype;
+    litesql::Field<int> mediatype;
 protected:
     void defaults();
 public:

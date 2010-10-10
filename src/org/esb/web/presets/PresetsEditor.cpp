@@ -19,6 +19,7 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "FormatPanel.h"
 #include "VideoPanel.h"
+#include "AudioPanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -60,7 +61,7 @@ namespace org {
         tab->resize(Wt::WLength(), Wt::WLength());
         tab->addTab(new org::esb::web::FormatPanel(_profile), "Format");
         tab->addTab(new org::esb::web::VideoPanel(_profile), "Video");
-        tab->addTab(new Wt::Ext::Panel(), "Audio");
+        tab->addTab(new org::esb::web::AudioPanel(_profile), "Audio");
         tab->addTab(new Wt::Ext::Panel(), "Filter");
         return tab;
       }
@@ -68,6 +69,7 @@ namespace org {
       void PresetsEditor::save(){
         Wt::Ext::TabWidget *tab=static_cast<Wt::Ext::TabWidget *>(((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center));
         ((org::esb::web::VideoPanel*)tab->panel(1))->save();
+        ((org::esb::web::AudioPanel*)tab->panel(2))->save();
       }
     }
   }

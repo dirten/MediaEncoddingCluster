@@ -16,6 +16,7 @@
 #include "../wtk/ElementContainer.h"
 #include <map>
 #include "VideoAdvanceTableView.h"
+#include "../wtk/ComboBox.h"
 
 namespace org {
   namespace esb {
@@ -34,7 +35,7 @@ namespace org {
         std::list<std::string> _methods;
         std::map<std::string, std::string> _parameter;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
-        wtk::ElementContainer<Wt::Ext::ComboBox> _elcb;
+        wtk::ElementContainer<ComboBox> _elcb;
         void setPredefinedCodecFlags();
         void setSelectedPredifinedCodecFlags();
         void switchAdvanced();

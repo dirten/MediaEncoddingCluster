@@ -11,6 +11,8 @@
 #include "org/esb/av/AV.h"
 #include "org/esb/util/Log.h"
 #include "Wt/WStandardItem"
+#include "../wtk/ComboBox.h"
+#include "../wtk/KeyValueModel.h"
 
 namespace org {
   namespace esb {
@@ -34,7 +36,7 @@ namespace org {
               removeRows(0, rowCount());
             }
           }
-          
+
           for (int a = 0; it != data.end(); it++, a++) {
             if (rowCount() <= a)
               insertRow(rowCount());
@@ -50,7 +52,7 @@ namespace org {
         }
       };
 
-      VideoAdvanceTableView::VideoAdvanceTableView(std::map<std::string, std::string>&dat) : _dat(dat), Wt::Ext::TableView() {
+      VideoAdvanceTableView::VideoAdvanceTableView(std::map<std::string, std::string>&dat, int flag) : _dat(dat), Wt::Ext::TableView() {
         setModel(new VideoAdvanceTableModel());
         resize(400, 300);
         setColumnWidth(0, 200);
@@ -70,55 +72,57 @@ namespace org {
         /*
          * here now the Column Editor for the Options Table
          */
-        options = new Wt::Ext::ComboBox();
-        //        options->activated().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
+        options = new ComboBox();
+        //options->activated().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
         //model()->dataChanged().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
         (static_cast<Wt::WStandardItemModel*> (model()))->itemChanged().connect(SLOT(this, VideoAdvanceTableView::itemChanged));
         //itemSelectionChanged().connect(SLOT(this, VideoAdvanceTableView::itemSelectionChangedMethod));
         line = new Wt::Ext::LineEdit();
+        //line->changed().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
 
         /*
          * fill up options -> help map
          */
+        KeyValueModel * options_model = new KeyValueModel();
         const AVOption * option = NULL;
         AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_VIDEO);
         while (option = av_next_option(codec, option)) {
           if (option->offset > 0 &&
                   option->flags & AV_OPT_FLAG_ENCODING_PARAM &&
-                  option->flags & AV_OPT_FLAG_VIDEO_PARAM
+                  option->flags & flag
                   ) {
 
             std::string name = option->name;
-            std::string help=name;
-            help+="(";
+            std::string help = name;
+            help += "(";
             if (option->help) {
               help += option->help;
             }
-            help+=")";
-            _options[help] = name;
+            help += ")";
+            options_model->addModelData(name, help);
+            //            _options[help] = name;
           }
         }
-        std::map<std::string, std::string>::iterator op_it = _options.begin();
-        for (; op_it != _options.end(); op_it++) {
-          std::string op = (*op_it).first;
-          options->addItem(op);
-        }
+        options_model->sort(1, Wt::AscendingOrder);
+        options->setModel(options_model);
+        options->setModelColumn(1);
+
         setEditor(0, options);
         setEditor(1, line);
-        static_cast<VideoAdvanceTableModel*> (model())->setTableData(_dat);
-        _dontChangeModel=false;
+        refresh();
       }
 
       VideoAdvanceTableView::~VideoAdvanceTableView() {
       }
 
       void VideoAdvanceTableView::refresh() {
-        _dontChangeModel=true;
+        LOGDEBUG("refresh");
+        _dontChangeModel = true;
         static_cast<VideoAdvanceTableModel*> (model())->setTableData(_dat);
-        _dontChangeModel=false;
+        _dontChangeModel = false;
       }
-      
-      void VideoAdvanceTableView::itemSelectionChangedMethod(){
+
+      void VideoAdvanceTableView::itemSelectionChangedMethod() {
         LOGDEBUG("void VideoAdvanceTableView::itemSelectionChanged()");
       }
 
@@ -126,49 +130,30 @@ namespace org {
         /*_dontChangeModel will be used in the resulting event of ModelChanged
          * when the model will be refeshed, this shuffles the _dat variable
          */
-        if(_dontChangeModel)return;
+        if (_dontChangeModel)return;
         if (item->row() >= 0 && item->column() >= 0 && !model()->data(item->row(), 0).empty()) {
           std::string name = boost::any_cast<std::string > (model()->data(item->row(), 0));
           std::string value;
+
           if (!model()->data(item->row(), 1).empty())
             value = boost::any_cast<std::string > (model()->data(item->row(), 1));
-
-          std::string key;
-          if(_options.find(name)!=_options.end()){
-            std::string key=(*_options.find(name)).second;
-            if(_dat.find(key)==_dat.end()||value.length()>0){
-              _dat[key]=value;
-              LOGDEBUG(" item changed name=" << (*_options.find(name)).second << " value=" << value);
-              changed.emit();
-            }
+          int count=options->count();
+          for(int a=0;a<count;a++){
+            if(options->data(a,1)==name)
+              name=options->data(a,0);
           }
+          _dat[name] = value;
+          LOGDEBUG(" item changed name=" << name << " value=" << value);
+          changed.emit();
         }
       }
 
-      void VideoAdvanceTableView::dataChanged(Wt::WModelIndex old, Wt::WModelIndex newdata) {
-        LOGDEBUG("data changed");
+      void VideoAdvanceTableView::dataChanged(int data) {
+        LOGDEBUG("data changed" << options->data(data, 0));
+        std::string key = options->data(data, 0);
+        model()->setData(currentRow(), 0, key);
 
-        std::string newd = newdata.data().empty() ? "" : boost::any_cast<std::string > (newdata.data());
-        std::string oldd = old.data().empty() ? "" : boost::any_cast<std::string > (old.data());
-        LOGDEBUG("boost any " << oldd);
-        LOGDEBUG("boost any " << newd);
-        if (old.data().empty())return;
-        std::string name = boost::any_cast<std::string > (static_cast<VideoAdvanceTableModel*> (model())->data(old.row(), 0));
-        LOGDEBUG("setting name=" << name);
-        if (!model()->data(old.row(), 1).empty()) {
-          std::string value = boost::any_cast<std::string > (static_cast<VideoAdvanceTableModel*> (model())->data(old.row(), 1));
-          LOGDEBUG("setting value=" << value);
-        }
-
-
-        /*
-        std::string name=options->currentText().narrow();
-        std::string value=line->text().narrow();
-        _dat[name]=value;
-        LOGDEBUG("setting name="<<name<<" value="<<value<<" index "<<options->currentIndex());
-         */
-        //refresh();
-        changed.emit();
+        LOGDEBUG("key=" << key);
       }
 
       void VideoAdvanceTableView::addOption() {

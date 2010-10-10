@@ -17,10 +17,11 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "Wt/Ext/Button"
 #include "Wt/WStandardItemModel"
+#include "../wtk/KeyValueModel.h"
+
 namespace org {
   namespace esb {
     namespace web {
-
 
       VideoPanel::VideoPanel(Ptr<db::Profile> p) : _profile(p), Wt::Ext::Panel() {
         setLayout(new Wt::WFitLayout());
@@ -28,224 +29,190 @@ namespace org {
         Wt::WGridLayout * grid = new Wt::WGridLayout();
         main->setLayout(grid);
         layout()->addWidget(main);
-        if(_profile->params().get().count()>0){
-          vector<db::ProfileParameter> params=_profile->params().get().all();
-          vector<db::ProfileParameter>::iterator it=params.begin();
-          for(;it!=params.end();it++)
-          _parameter[(*it).name.value()]=(*it).val.value();
+
+
+        if (_profile->params().get().count() > 0) {
+          vector<db::ProfileParameter> params = _profile->params().get().all();
+          vector<db::ProfileParameter>::iterator it = params.begin();
+          for (; it != params.end(); it++)
+            if ((*it).mediatype.value() == AVMEDIA_TYPE_VIDEO)
+              _parameter[(*it).name.value()] = (*it).val.value();
         }
+
         /*
          * Combobox for the Codec Selector
          */
-        Wt::Ext::ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", grid);
-        v_codec->setTextSize(50);
+        KeyValueModel * codec_model = new KeyValueModel();
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
-            v_codec->addItem(codec->long_name);
-            if (codec->id == _profile->vcodec.value()) {
-              v_codec->setCurrentIndex(a);
-            }
-            a++;
+            codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
           }
         }
-        v_codec->activated().connect(SLOT(this, VideoPanel::setPredefinedCodecFlags));
 
-         /*
+        ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", grid);
+        v_codec->setModel(codec_model);
+        v_codec->setModelColumn(1);
+        v_codec->setSelectedEntry(_parameter["v_codec"]);
+        v_codec->setTextSize(50);
+//        v_codec->activated().connect(SLOT(this, VideoPanel::setPredefinedCodecFlags));
+
+        /*
          * Combobox for the Encoding Methode Selector
          */
-        _methods.push_back("1 Pass Variable Bitrate");
-        _methods.push_back("1 Pass Constant Bitrate");
-        _methods.push_back("1 Pass Constant Quality");
+        KeyValueModel * model = new KeyValueModel();
+        model->addModelData("pass1vbr", "1 Pass Variable Bitrate");
+        model->addModelData("pass1cbr", "1 Pass Constant Bitrate");
+        model->addModelData("pass1cq", "1 Pass Constant Quality");
 
-        Wt::Ext::ComboBox * v_methode = _elcb.addElement("v_methode", "Methode", "1 Pass Variable Bitrate", grid);
+        ComboBox * v_methode = _elcb.addElement("v_methode", "Methode", "", grid);
+        v_methode->setModel(model);
+        v_methode->setModelColumn(1);
+        v_methode->setSelectedEntry(_parameter["v_methode"]);
         v_methode->setTextSize(50);
         v_methode->setEditable(false);
-        std::list<std::string>::iterator metit = _methods.begin();
-        for (int a = 0; metit != _methods.end(); metit++, a++) {
-          v_methode->addItem((*metit) );
-          if(_parameter["v_methode"]==(*metit))
-            v_methode->setCurrentIndex(a);
-        }
-        _parameter["v_methode"]=v_methode->currentText().narrow();
 
         /*
          * Combobox for the Bitrate Selector
          */
-        _bitrates.push_back(128);
-        _bitrates.push_back(256);
-        _bitrates.push_back(512);
-        _bitrates.push_back(1024);
-        _bitrates.push_back(2048);
-        _bitrates.push_back(4096);
+        KeyValueModel * bitrate_model = new KeyValueModel();
+        bitrate_model->addModelData("128000", "128 kb/s");
+        bitrate_model->addModelData("256000", "256 kb/s");
+        bitrate_model->addModelData("512000", "512 kb/s");
+        bitrate_model->addModelData("1024000", "1024 kb/s");
+        bitrate_model->addModelData("2048000", "2048 kb/s");
+        bitrate_model->addModelData("4096000", "4096 kb/s");
 
-        Wt::Ext::ComboBox * v_bitrate = _elcb.addElement("b", "Video Bitrate", "please select a Bitrate", grid);
+        ComboBox * v_bitrate = _elcb.addElement("b", "Video Bitrate", "please select a Bitrate", grid);
+        v_bitrate->setModel(bitrate_model);
+        v_bitrate->setModelColumn(1);
+        v_bitrate->setSelectedEntry(_parameter["b"]);
         v_bitrate->setEditable(true);
-        std::list<int>::iterator bitit = _bitrates.begin();
-        for (int a = 0; bitit != _bitrates.end(); bitit++, a++) {
-          v_bitrate->addItem(org::esb::util::StringUtil::toString((*bitit)) + " kb/s");
-          if ((*bitit) == atoi(_parameter["b"].c_str())) {
-            v_bitrate->setCurrentIndex(a);
-          }
-        }
 
 
         /*
          * Combobox for the Framerate Selector
          */
-        Wt::Ext::ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", _profile->vframerate.value(), grid);
+        KeyValueModel * framerate_model = new KeyValueModel();
+        framerate_model->addModelData("1:1", "1:1 same as source");
+        framerate_model->addModelData("2:1", "2:1 half as source");
+        framerate_model->addModelData("1/10", "10 Frames/s");
+        framerate_model->addModelData("1/15", "15 Frames/s");
+        framerate_model->addModelData("1000/23976", "23,97 Frames/s");
+        framerate_model->addModelData("1/24", "24 Frames/s");
+        framerate_model->addModelData("1/25", "25 Frames/s");
+        framerate_model->addModelData("100/2997", "29,97 Frames/s");
+        framerate_model->addModelData("1/30", "30 Frames/s");
+
+        ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", _profile->vframerate.value(), grid);
+        v_framerate->setModel(framerate_model);
+        v_framerate->setModelColumn(1);
+        v_framerate->setSelectedEntry(_parameter["v_framerate"]);
         v_framerate->setTextSize(50);
-        org::esb::util::StringTokenizer st(org::esb::config::Config::getProperty("framerates"), ",");
 
-        int c = st.countTokens();
-        v_framerate->addItem("same as source");
-        for (int a = 1; a <= c; a++) {
-          std::string t = st.nextToken();
-          org::esb::util::StringTokenizer st2(t, "#");
-          if (st2.countTokens() == 2) {
-            st2.nextToken();
-            std::string t2 = st2.nextToken();
-            v_framerate->addItem(t2 + " Frames/Sec.");
-            if (t2 == _profile->vframerate.value())
-              v_framerate->setCurrentIndex(a);
-          }
-        }
-
-        /*
-         * Combobox for the Codec Preset Selector
-         */
-
-        Wt::Ext::ComboBox * vpre = _elcb.addElement("_vpre", "Predefined Flags", "", grid);
-        vpre->setTextSize(50);
-
-        /*
-         * Input field for the Codec Preset
-         * @TODO: this should be removed
-         */
-        _el.addElement("v_extra", "Extra Flags", _profile->vextra.value(), grid);
-        setPredefinedCodecFlags();
 
 
         /*
          * Combobox for the Bitrate Selector
          */
-        _keyframes.push_back(20);
-        _keyframes.push_back(50);
-        _keyframes.push_back(100);
-        _keyframes.push_back(200);
-        _keyframes.push_back(300);
+        KeyValueModel * keyframe_model = new KeyValueModel();
+        keyframe_model->addModelData("20", "20 Frames");
+        keyframe_model->addModelData("50", "50 Frames");
+        keyframe_model->addModelData("100", "100 Frames");
+        keyframe_model->addModelData("200", "200 Frames");
+        keyframe_model->addModelData("300", "300 Frames");
 
-        Wt::Ext::ComboBox * v_keyframes = _elcb.addElement("g", "Key Frame every", "100 Frames", grid);
+        ComboBox * v_keyframes = _elcb.addElement("g", "Key Frame every", "100 Frames", grid);
+        v_keyframes->setModel(keyframe_model);
+        v_keyframes->setModelColumn(1);
+        v_keyframes->setSelectedEntry(_parameter["g"]);
         v_keyframes->setEditable(true);
-        std::list<int>::iterator keyit = _keyframes.begin();
-        for (int a = 0; keyit != _keyframes.end(); keyit++, a++) {
-          v_keyframes->addItem(org::esb::util::StringUtil::toString((*keyit)) + " Frames");
-          if(_parameter["g"]==org::esb::util::StringUtil::toString(*keyit))
-            v_keyframes->setCurrentIndex(a);
-        }
-        _parameter["g"]=v_keyframes->currentText().narrow();
-         v_keyframes->activated().connect(SLOT(this, VideoPanel::dataChanged));
 
-//        _advance_table->load();
-//        _advance_table->setEnabled(false);
+        //        v_keyframes->activated().connect(SLOT(this, VideoPanel::dataChanged));
+        std::map<std::string, ComboBox*> boxes = _elcb.getElements();
+        std::map<std::string, ComboBox*>::iterator bit = boxes.begin();
+        for (; bit != boxes.end(); bit++) {
+          (*bit).second->activated().connect(SLOT(this, VideoPanel::dataChanged));
+        }
+
+        //        _advance_table->load();
+        //        _advance_table->setEnabled(false);
 
         /*these are alwyays the last widget(except Advanced Button) to stretch to the buttom of the Page*/
-        grid->addWidget(new Wt::WText(), grid->rowCount(), 0,0,3);
+        grid->addWidget(new Wt::WText(), grid->rowCount(), 0, 0, 3);
         grid->setRowStretch(grid->rowCount() - 1, 1);
 
-        _advance_table=new VideoAdvanceTableView(_parameter);
-        grid->addWidget(_advance_table,0,2,8,0,Wt::AlignRight);
+        _advance_table = new VideoAdvanceTableView(_parameter, AV_OPT_FLAG_VIDEO_PARAM);
+        grid->addWidget(_advance_table, 0, 2, 6, 0, Wt::AlignRight);
         _advance_table->setCollapsible(true);
         _advance_table->setCollapsed(true);
-        _advance_table->changed.connect(SLOT(this,VideoPanel::refresh));
+        _advance_table->changed.connect(SLOT(this, VideoPanel::refresh));
 
-        
+
         _advanced = new Wt::Ext::Button("Advanced>>>");
         _advanced->resize(100, Wt::WLength());
-        grid->addWidget(_advanced, grid->rowCount(), 0, 0, 1,Wt::AlignRight);
+        grid->addWidget(_advanced, grid->rowCount(), 0, 0, 1, Wt::AlignRight);
         _advanced->clicked().connect(SLOT(this, VideoPanel::switchAdvanced));
       }
 
-      void VideoPanel::setPredefinedCodecFlags() {
-        Wt::Ext::ComboBox * v_codec = _elcb.getElement("v_codec");
-        Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
-        vpre->activated().connect(SLOT(this, VideoPanel::setSelectedPredifinedCodecFlags));
-        std::string longname = v_codec->currentText().narrow();
-        AVCodec *p = NULL;
-        int a = 0;
-        vpre->clear();
-        while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
-            std::string codecpresetname = "";
-            if (_profile->vpreset().get().count() > 0) {
-              codecpresetname = _profile->vpreset().get().one().name;
-            }
-            vector<db::CodecPreset> presets = litesql::select<db::CodecPreset > (_profile->getDatabase(), db::CodecPreset::Codecid == p->id).all();
-            int a = 0;
-            for (vector<db::CodecPreset>::iterator it = presets.begin(); it != presets.end(); it++, a++) {
-              vpre->addItem((std::string)(*it).name);
-              if ((*it).name.value() == codecpresetname)
-                vpre->setCurrentIndex(a);
-            }
-          }
-        }
-      }
-
-      void VideoPanel::setSelectedPredifinedCodecFlags() {
-        Wt::Ext::ComboBox * vpre = _elcb.getElement("_vpre");
-        std::string name = vpre->currentText().narrow();
-        db::CodecPreset preset = litesql::select<db::CodecPreset > (_profile->getDatabase(), db::CodecPreset::Name == name).one();
-        Wt::Ext::LineEdit * v_extra = _el.getElement("v_extra");
-        if (_profile->vpreset().get().count() > 0) {
-          _profile->vpreset().unlink(_profile->vpreset().get().one());
-        }
-        _profile->vpreset().link(preset);
-        v_extra->setText((std::string)preset.preset);
-      }
 
       void VideoPanel::switchAdvanced() {
         if (_advanced->text() == "Advanced>>>") {
           _advanced->setText("Simple<<<");
           //_advance_table->setEnabled(true);
-        _advance_table->setCollapsed(false);
+          _advance_table->setCollapsed(false);
         } else {
           _advanced->setText("Advanced>>>");
           //_advance_table->setEnabled(false);
-        _advance_table->setCollapsed(true);
+          _advance_table->setCollapsed(true);
         }
       }
 
-
       void VideoPanel::dataChanged() {
+        std::map<std::string, ComboBox*> boxes = _elcb.getElements();
+        std::map<std::string, ComboBox*>::iterator bit = boxes.begin();
+        for (; bit != boxes.end(); bit++) {
+          LOGDEBUG((*bit).first);
+          _parameter[(*bit).first] = (*bit).second->currentSelected();
+          LOGDEBUG("=" << _parameter[(*bit).first]);
+        }
+        _advance_table->refresh();
       }
 
       void VideoPanel::refresh() {
-
+        std::map<std::string, ComboBox*> boxes = _elcb.getElements();
+        std::map<std::string, ComboBox*>::iterator bit = boxes.begin();
+        for (; bit != boxes.end(); bit++) {
+          LOGDEBUG((*bit).first);
+          (*bit).second->setSelectedEntry(_parameter[(*bit).first]);
+          //          _parameter[(*bit).first]=(*bit).second->currentSelected();
+          LOGDEBUG("=" << _parameter[(*bit).first]);
+        }
       }
-      
+
       void VideoPanel::save() {
         org::esb::util::ScopedTimeCounter t("database profile update");
         _profile->getDatabase().begin();
-        std::map<std::string, Wt::Ext::ComboBox*> boxes=_elcb.getElements();
-        std::map<std::string, Wt::Ext::ComboBox*>::iterator bit=boxes.begin();
-        for(;bit!=boxes.end();bit++){
-          _parameter[(*bit).first]=(*bit).second->currentText().narrow();
+        std::map<std::string, ComboBox*> boxes = _elcb.getElements();
+        std::map<std::string, ComboBox*>::iterator bit = boxes.begin();
+        for (; bit != boxes.end(); bit++) {
+          LOGDEBUG((*bit).first);
+          _parameter[(*bit).first] = (*bit).second->currentSelected();
+          LOGDEBUG("=" << _parameter[(*bit).first]);
         }
 
-//        _parameter["v_keyframes"]=_elcb.getElement("v_keyframes")->currentText().narrow();
-//        _parameter["v_methode"]=_elcb.getElement("v_methode")->currentText().narrow();
-        //_advance_table->refresh();
-        vector<db::ProfileParameter> params=_profile->params().get().all();
-        vector<db::ProfileParameter>::iterator par=params.begin();
-        for(;par!=params.end();par++){
+        vector<db::ProfileParameter> params = _profile->params().get(db::ProfileParameter::Mediatype==(int)AVMEDIA_TYPE_VIDEO).all();
+        vector<db::ProfileParameter>::iterator par = params.begin();
+        for (; par != params.end(); par++) {
           (*par).del();
         }
-        std::map<std::string, std::string>::iterator it=_parameter.begin();
-        for(;it!=_parameter.end();it++){
+        std::map<std::string, std::string>::iterator it = _parameter.begin();
+        for (; it != _parameter.end(); it++) {
           db::ProfileParameter p(_profile->getDatabase());
-          p.name=(*it).first;
-          p.val=(*it).second;
+          p.name = (*it).first;
+          p.val = (*it).second;
+          p.mediatype = (int)AVMEDIA_TYPE_VIDEO;
           p.update();
           _profile->params().link(p);
         }
