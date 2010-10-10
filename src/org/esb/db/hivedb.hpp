@@ -10,6 +10,7 @@ class ProfileGroup;
 class Profile;
 class ProfileParameter;
 class Stream;
+class StreamParameter;
 class CodecPreset;
 class CodecPresetParameter;
 class Config;
@@ -165,6 +166,25 @@ public:
     static void unlink(const litesql::Database& db, const db::Profile& o0, const db::Project& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<ProfileProjectRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class StreamStreamParameterRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> streamParameter;
+        litesql::Field<int> stream;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Stream;
+    static const litesql::FieldType StreamParameter;
+    static void link(const litesql::Database& db, const db::Stream& o0, const db::StreamParameter& o1);
+    static void unlink(const litesql::Database& db, const db::Stream& o0, const db::StreamParameter& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<StreamStreamParameterRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -970,6 +990,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class ParamsHandle : public litesql::RelationHandle<Stream> {
+    public:
+        ParamsHandle(const Stream& owner);
+        void link(const StreamParameter& o0);
+        void unlink(const StreamParameter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<StreamParameter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<StreamStreamParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class MediafileHandle : public litesql::RelationHandle<Stream> {
     public:
         MediafileHandle(const Stream& owner);
@@ -1075,6 +1104,7 @@ public:
     Stream(const litesql::Database& db, const litesql::Record& rec);
     Stream(const Stream& obj);
     const Stream& operator=(const Stream& obj);
+    Stream::ParamsHandle params();
     Stream::MediafileHandle mediafile();
     Stream::JobsoutHandle jobsout();
     Stream::JobsinHandle jobsin();
@@ -1096,6 +1126,58 @@ public:
     std::auto_ptr<Stream> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Stream o);
+class StreamParameter : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class StreamHandle : public litesql::RelationHandle<StreamParameter> {
+    public:
+        StreamHandle(const StreamParameter& owner);
+        void link(const Stream& o0);
+        void unlink(const Stream& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Stream> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<StreamStreamParameterRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Val;
+    litesql::Field<std::string> val;
+protected:
+    void defaults();
+public:
+    StreamParameter(const litesql::Database& db);
+    StreamParameter(const litesql::Database& db, const litesql::Record& rec);
+    StreamParameter(const StreamParameter& obj);
+    const StreamParameter& operator=(const StreamParameter& obj);
+    StreamParameter::StreamHandle stream();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<StreamParameter> upcast();
+    std::auto_ptr<StreamParameter> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, StreamParameter o);
 class CodecPreset : public litesql::Persistent {
 public:
     class Own {

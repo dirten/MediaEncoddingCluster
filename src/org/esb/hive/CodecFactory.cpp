@@ -77,8 +77,12 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setSampleRate(stream.samplerate);
       _encoder->setSampleFormat((SampleFormat) (int)stream.samplefmt);
       _encoder->setFlag(stream.flags);
-
-      setCodecOptions(_encoder, stream.extraprofileflags);
+      vector<db::StreamParameter> params=stream.params().get().all();
+      vector<db::StreamParameter>::iterator pit=params.begin();
+      for(;pit!=params.end();pit++){
+        _encoder->setCodecOption((*pit).name.value(),(*pit).val.value());
+      }
+//      setCodecOptions(_encoder, stream.extraprofileflags);
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } catch (litesql::NotFound e) {

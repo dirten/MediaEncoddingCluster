@@ -393,6 +393,55 @@ template <> litesql::DataSource<db::Project> ProfileProjectRelation::get(const l
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
+StreamStreamParameterRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : streamParameter(StreamStreamParameterRelation::StreamParameter), stream(StreamStreamParameterRelation::Stream) {
+    switch(rec.size()) {
+    case 2:
+        streamParameter = rec[1];
+    case 1:
+        stream = rec[0];
+    }
+}
+const std::string StreamStreamParameterRelation::table__("Stream_StreamParameter_");
+const litesql::FieldType StreamStreamParameterRelation::Stream("Stream1","INTEGER",table__);
+const litesql::FieldType StreamStreamParameterRelation::StreamParameter("StreamParameter2","INTEGER",table__);
+void StreamStreamParameterRelation::link(const litesql::Database& db, const db::Stream& o0, const db::StreamParameter& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Stream.name());
+    values.push_back(o0.id);
+    fields.push_back(StreamParameter.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void StreamStreamParameterRelation::unlink(const litesql::Database& db, const db::Stream& o0, const db::StreamParameter& o1) {
+    db.delete_(table__, (Stream == o0.id && StreamParameter == o1.id));
+}
+void StreamStreamParameterRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<StreamStreamParameterRelation::Row> StreamStreamParameterRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Stream.fullName());
+    sel.result(StreamParameter.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<StreamStreamParameterRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Stream> StreamStreamParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Stream.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::StreamParameter> StreamStreamParameterRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(StreamParameter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::StreamParameter>(db, db::StreamParameter::Id.in(sel) && expr);
+}
 MediaFileStreamRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : stream(MediaFileStreamRelation::Stream), mediaFile(MediaFileStreamRelation::MediaFile) {
     switch(rec.size()) {
@@ -2832,6 +2881,24 @@ std::ostream & operator<<(std::ostream& os, ProfileParameter o) {
     return os;
 }
 const litesql::FieldType Stream::Own::Id("id_","INTEGER","Stream_");
+Stream::ParamsHandle::ParamsHandle(const Stream& owner)
+         : litesql::RelationHandle<Stream>(owner) {
+}
+void Stream::ParamsHandle::link(const StreamParameter& o0) {
+    StreamStreamParameterRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Stream::ParamsHandle::unlink(const StreamParameter& o0) {
+    StreamStreamParameterRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Stream::ParamsHandle::del(const litesql::Expr& expr) {
+    StreamStreamParameterRelation::del(owner->getDatabase(), expr && StreamStreamParameterRelation::Stream == owner->id);
+}
+litesql::DataSource<StreamParameter> Stream::ParamsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return StreamStreamParameterRelation::get<StreamParameter>(owner->getDatabase(), expr, (StreamStreamParameterRelation::Stream == owner->id) && srcExpr);
+}
+litesql::DataSource<StreamStreamParameterRelation::Row> Stream::ParamsHandle::getRows(const litesql::Expr& expr) {
+    return StreamStreamParameterRelation::getRows(owner->getDatabase(), expr && (StreamStreamParameterRelation::Stream == owner->id));
+}
 Stream::MediafileHandle::MediafileHandle(const Stream& owner)
          : litesql::RelationHandle<Stream>(owner) {
 }
@@ -3075,6 +3142,9 @@ const Stream& Stream::operator=(const Stream& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+Stream::ParamsHandle Stream::params() {
+    return Stream::ParamsHandle(*this);
+}
 Stream::MediafileHandle Stream::mediafile() {
     return Stream::MediafileHandle(*this);
 }
@@ -3282,6 +3352,7 @@ void Stream::delRecord() {
     deleteFromTable(table__, id);
 }
 void Stream::delRelations() {
+    StreamStreamParameterRelation::del(*db, (StreamStreamParameterRelation::Stream == id));
     MediaFileStreamRelation::del(*db, (MediaFileStreamRelation::Stream == id));
     JobDetailStreamRelationJobOutStream::del(*db, (JobDetailStreamRelationJobOutStream::Stream == id));
     JobDetailStreamRelationJobInStream::del(*db, (JobDetailStreamRelationJobInStream::Stream == id));
@@ -3393,6 +3464,170 @@ std::ostream & operator<<(std::ostream& os, Stream o) {
     os << o.aspectratio.name() << " = " << o.aspectratio << std::endl;
     os << o.flags.name() << " = " << o.flags << std::endl;
     os << o.extraprofileflags.name() << " = " << o.extraprofileflags << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType StreamParameter::Own::Id("id_","INTEGER","StreamParameter_");
+StreamParameter::StreamHandle::StreamHandle(const StreamParameter& owner)
+         : litesql::RelationHandle<StreamParameter>(owner) {
+}
+void StreamParameter::StreamHandle::link(const Stream& o0) {
+    StreamStreamParameterRelation::link(owner->getDatabase(), o0, *owner);
+}
+void StreamParameter::StreamHandle::unlink(const Stream& o0) {
+    StreamStreamParameterRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void StreamParameter::StreamHandle::del(const litesql::Expr& expr) {
+    StreamStreamParameterRelation::del(owner->getDatabase(), expr && StreamStreamParameterRelation::StreamParameter == owner->id);
+}
+litesql::DataSource<Stream> StreamParameter::StreamHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return StreamStreamParameterRelation::get<Stream>(owner->getDatabase(), expr, (StreamStreamParameterRelation::StreamParameter == owner->id) && srcExpr);
+}
+litesql::DataSource<StreamStreamParameterRelation::Row> StreamParameter::StreamHandle::getRows(const litesql::Expr& expr) {
+    return StreamStreamParameterRelation::getRows(owner->getDatabase(), expr && (StreamStreamParameterRelation::StreamParameter == owner->id));
+}
+const std::string StreamParameter::type__("StreamParameter");
+const std::string StreamParameter::table__("StreamParameter_");
+const std::string StreamParameter::sequence__("StreamParameter_seq");
+const litesql::FieldType StreamParameter::Id("id_","INTEGER",table__);
+const litesql::FieldType StreamParameter::Type("type_","TEXT",table__);
+const litesql::FieldType StreamParameter::Name("name_","TEXT",table__);
+const litesql::FieldType StreamParameter::Val("val_","TEXT",table__);
+void StreamParameter::defaults() {
+    id = 0;
+}
+StreamParameter::StreamParameter(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+}
+StreamParameter::StreamParameter(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), val(Val) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: val = convert<const std::string&, std::string>(rec[3]);
+        val.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+StreamParameter::StreamParameter(const StreamParameter& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), val(obj.val) {
+}
+const StreamParameter& StreamParameter::operator=(const StreamParameter& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        val = obj.val;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+StreamParameter::StreamHandle StreamParameter::stream() {
+    return StreamParameter::StreamHandle(*this);
+}
+std::string StreamParameter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(val.name());
+    values.push_back(val);
+    val.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void StreamParameter::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void StreamParameter::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, val);
+}
+void StreamParameter::addIDUpdates(Updates& updates) {
+}
+void StreamParameter::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Val);
+}
+void StreamParameter::delRecord() {
+    deleteFromTable(table__, id);
+}
+void StreamParameter::delRelations() {
+    StreamStreamParameterRelation::del(*db, (StreamStreamParameterRelation::StreamParameter == id));
+}
+void StreamParameter::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void StreamParameter::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<StreamParameter> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool StreamParameter::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<StreamParameter> StreamParameter::upcast() {
+    return auto_ptr<StreamParameter>(new StreamParameter(*this));
+}
+std::auto_ptr<StreamParameter> StreamParameter::upcastCopy() {
+    StreamParameter* np = new StreamParameter(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->val = val;
+    np->inDatabase = inDatabase;
+    return auto_ptr<StreamParameter>(np);
+}
+std::ostream & operator<<(std::ostream& os, StreamParameter o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.val.name() << " = " << o.val << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -5053,6 +5288,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProfileParameter_seq","sequence","CREATE SEQUENCE ProfileParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("StreamParameter_seq","sequence","CREATE SEQUENCE StreamParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("CodecPreset_seq","sequence","CREATE SEQUENCE CodecPreset_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("CodecPresetParameter_seq","sequence","CREATE SEQUENCE CodecPresetParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Config_seq","sequence","CREATE SEQUENCE Config_seq START 1 INCREMENT 1"));
@@ -5070,6 +5306,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
+    res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
@@ -5086,6 +5323,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Stream_StreamParameter_","table","CREATE TABLE Stream_StreamParameter_ (Stream1 INTEGER,StreamParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
@@ -5121,6 +5359,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Profile_Project_Profile1idx","index","CREATE INDEX Profile_Project_Profile1idx ON Profile_Project_ (Profile1)"));
     res.push_back(Database::SchemaItem("Profile_Project_Project2idx","index","CREATE INDEX Profile_Project_Project2idx ON Profile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("Profile_Project__all_idx","index","CREATE INDEX Profile_Project__all_idx ON Profile_Project_ (Profile1,Project2)"));
+    res.push_back(Database::SchemaItem("_eb5384d2471a9430428b71b05ad67df2","index","CREATE INDEX _eb5384d2471a9430428b71b05ad67df2 ON Stream_StreamParameter_ (Stream1)"));
+    res.push_back(Database::SchemaItem("_fa13711a6fd2c1b03d436f1959beb886","index","CREATE INDEX _fa13711a6fd2c1b03d436f1959beb886 ON Stream_StreamParameter_ (StreamParameter2)"));
+    res.push_back(Database::SchemaItem("Stream_StreamParameter__all_idx","index","CREATE INDEX Stream_StreamParameter__all_idx ON Stream_StreamParameter_ (Stream1,StreamParameter2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));

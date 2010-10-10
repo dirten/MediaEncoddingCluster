@@ -51,10 +51,10 @@ namespace org {
           }
         }
 
-        ComboBox * v_codec = _elcb.addElement("v_codec", "Codec", "", grid);
+        ComboBox * v_codec = _elcb.addElement("codec", "Codec", "", grid);
         v_codec->setModel(codec_model);
         v_codec->setModelColumn(1);
-        v_codec->setSelectedEntry(_parameter["v_codec"]);
+        v_codec->setSelectedEntry(_parameter["codec"]);
         v_codec->setTextSize(50);
 //        v_codec->activated().connect(SLOT(this, VideoPanel::setPredefinedCodecFlags));
 
@@ -66,10 +66,10 @@ namespace org {
         model->addModelData("pass1cbr", "1 Pass Constant Bitrate");
         model->addModelData("pass1cq", "1 Pass Constant Quality");
 
-        ComboBox * v_methode = _elcb.addElement("v_methode", "Methode", "", grid);
+        ComboBox * v_methode = _elcb.addElement("methode", "Methode", "", grid);
         v_methode->setModel(model);
         v_methode->setModelColumn(1);
-        v_methode->setSelectedEntry(_parameter["v_methode"]);
+        v_methode->setSelectedEntry(_parameter["methode"]);
         v_methode->setTextSize(50);
         v_methode->setEditable(false);
 
@@ -105,10 +105,10 @@ namespace org {
         framerate_model->addModelData("100/2997", "29,97 Frames/s");
         framerate_model->addModelData("1/30", "30 Frames/s");
 
-        ComboBox * v_framerate = _elcb.addElement("v_framerate", "Video Framerate", _profile->vframerate.value(), grid);
+        ComboBox * v_framerate = _elcb.addElement("framerate", "Video Framerate", _profile->vframerate.value(), grid);
         v_framerate->setModel(framerate_model);
         v_framerate->setModelColumn(1);
-        v_framerate->setSelectedEntry(_parameter["v_framerate"]);
+        v_framerate->setSelectedEntry(_parameter["framerate"]);
         v_framerate->setTextSize(50);
 
 

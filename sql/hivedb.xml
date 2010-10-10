@@ -148,6 +148,17 @@
         <field name="extraprofileflags" type="string"/>
     </object>
 
+    <object name="StreamParameter">
+        <field name="name" type="string"/>
+        <field name="val" type="string"/>
+    </object>
+
+    <relation>
+        <relate object="StreamParameter" handle="stream"/>
+        <relate object="Stream" handle="params"/>
+    </relation>
+
+
     <relation>
         <relate object="Stream" handle="mediafile"/>
         <relate object="MediaFile" handle="streams" limit="one"/>
