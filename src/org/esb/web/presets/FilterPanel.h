@@ -21,7 +21,7 @@ namespace org {
         PresetFilterPanel(Ptr<db::Profile>);
         virtual ~PresetFilterPanel();
       private:
-
+          std::vector<Ptr<db::Filter> > _available_filter;
       };
     }
   }

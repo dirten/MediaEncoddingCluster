@@ -17,7 +17,7 @@ namespace org {
 
       class PresetFilterTable: public Wt::Ext::TableView {
       public:
-        PresetFilterTable(Ptr<db::Profile> p);
+        PresetFilterTable(std::vector<Ptr<db::Filter> > p);
         virtual ~PresetFilterTable();
       private:
 

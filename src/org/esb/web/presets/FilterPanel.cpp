@@ -19,8 +19,6 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/web/presets/FilterTable.h"
 #include "org/esb/util/Log.h"
-#include "litesql/persistent.hpp"
-#include "litesql/datasource.hpp"
 namespace org {
   namespace esb {
     namespace web {
@@ -34,20 +32,16 @@ namespace org {
         main->setLayout(grid);
         layout()->addWidget(main);
 
-        if (p->filter().get().count() == 0) {
-          db::Filter f(p->getDatabase());
-          f.filterid = "resize";
-          f.filtername = "Resize Filter";
-          f.update();
-          p->filter().link(f);
-          db::Filter f2(p->getDatabase());
-          f2.filterid = "deinterlace";
-          f2.filtername = "Deinterlace Filter";
-          f2.update();
-          p->filter().link(f2);
-        }
+        Ptr<db::Filter> f = new db::Filter(p->getDatabase());
+        f->filterid = "resize";
+        f->filtername = "Resize Filter";
+        _available_filter.push_back(f);
+        Ptr<db::Filter> f2 = new db::Filter(p->getDatabase());
+        f2->filterid = "deinterlace";
+        f2->filtername = "Deinterlace Filter";
+        _available_filter.push_back(f2);
 
-        org::esb::web::PresetFilterTable * filter_table = new PresetFilterTable( p);
+        org::esb::web::PresetFilterTable * filter_table = new PresetFilterTable(_available_filter);
 
         grid->addWidget(filter_table, 0, 0);
       }

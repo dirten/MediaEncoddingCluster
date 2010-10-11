@@ -9,6 +9,7 @@
 #include "Wt/WStandardItemModel"
 #include "org/esb/util/Log.h"
 #include "litesql/datasource.hpp"
+#include "Wt/Ext/CheckBox"
 namespace org {
   namespace esb {
     namespace web {
@@ -16,26 +17,28 @@ namespace org {
       class PresetFilterTableModel : public Wt::WStandardItemModel {
       public:
 
-        PresetFilterTableModel(Ptr<db::Profile> p) : Wt::WStandardItemModel() {
+        PresetFilterTableModel(std::vector<Ptr<db::Filter> > filter) : Wt::WStandardItemModel() {
           LOGDEBUG("FilterTableModel():Wt::WStandardItemModel()");
           insertColumns(0, 2);
           setHeaderData(0, std::string("Enabled"));
           setHeaderData(1, std::string("Filter"));
-          std::vector<db::Filter> filters=p->filter().get().all();
-          std::vector<db::Filter>::iterator it=filters.begin();
-          for(;it!=filters.end();it++){
+          std::vector<Ptr<db::Filter> >::iterator it=filter.begin();
+          for(;it!=filter.end();it++){
             insertRow(rowCount());
-            setData(rowCount()-1,1,(*it).filtername.value());
+            setData(rowCount()-1,1,(*it)->filtername.value());
           }
         }
       };
 
-      PresetFilterTable::PresetFilterTable(Ptr<db::Profile> p) {
+      PresetFilterTable::PresetFilterTable(std::vector<Ptr<db::Filter> > filter) {
         LOGDEBUG("FilterTable::FilterTable() : Wt::Ext::TableView()");
-        setModel(new PresetFilterTableModel( p));
+        setModel(new PresetFilterTableModel( filter));
         resize(300, 300);
         setColumnWidth(0, 50);
         setAutoExpandColumn(1);
+        Wt::Ext::CheckBox * check=new Wt::Ext::CheckBox();
+        
+        setEditor(0, check);
         
       }
 
