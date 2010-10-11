@@ -197,6 +197,55 @@ template <> litesql::DataSource<db::Project> MediaFileProjectRelation::get(const
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
+FilterProfileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profile(FilterProfileRelation::Profile), filter(FilterProfileRelation::Filter) {
+    switch(rec.size()) {
+    case 2:
+        profile = rec[1];
+    case 1:
+        filter = rec[0];
+    }
+}
+const std::string FilterProfileRelation::table__("Filter_Profile_");
+const litesql::FieldType FilterProfileRelation::Filter("Filter1","INTEGER",table__);
+const litesql::FieldType FilterProfileRelation::Profile("Profile2","INTEGER",table__);
+void FilterProfileRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Profile& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Filter.name());
+    values.push_back(o0.id);
+    fields.push_back(Profile.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void FilterProfileRelation::unlink(const litesql::Database& db, const db::Filter& o0, const db::Profile& o1) {
+    db.delete_(table__, (Filter == o0.id && Profile == o1.id));
+}
+void FilterProfileRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<FilterProfileRelation::Row> FilterProfileRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Filter.fullName());
+    sel.result(Profile.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<FilterProfileRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Filter> FilterProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Filter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Filter>(db, db::Filter::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Profile> FilterProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+}
 ProfileGroup2Profile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : profileGroup(ProfileGroup2Profile::ProfileGroup), profile(ProfileGroup2Profile::Profile) {
     switch(rec.size()) {
@@ -1291,6 +1340,24 @@ litesql::DataSource<Project> Filter::ProjectHandle::get(const litesql::Expr& exp
 litesql::DataSource<FilterProjectRelation::Row> Filter::ProjectHandle::getRows(const litesql::Expr& expr) {
     return FilterProjectRelation::getRows(owner->getDatabase(), expr && (FilterProjectRelation::Filter == owner->id));
 }
+Filter::ProfileHandle::ProfileHandle(const Filter& owner)
+         : litesql::RelationHandle<Filter>(owner) {
+}
+void Filter::ProfileHandle::link(const Profile& o0) {
+    FilterProfileRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Filter::ProfileHandle::unlink(const Profile& o0) {
+    FilterProfileRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Filter::ProfileHandle::del(const litesql::Expr& expr) {
+    FilterProfileRelation::del(owner->getDatabase(), expr && FilterProfileRelation::Filter == owner->id);
+}
+litesql::DataSource<Profile> Filter::ProfileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterProfileRelation::get<Profile>(owner->getDatabase(), expr, (FilterProfileRelation::Filter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterProfileRelation::Row> Filter::ProfileHandle::getRows(const litesql::Expr& expr) {
+    return FilterProfileRelation::getRows(owner->getDatabase(), expr && (FilterProfileRelation::Filter == owner->id));
+}
 const std::string Filter::type__("Filter");
 const std::string Filter::table__("Filter_");
 const std::string Filter::sequence__("Filter_seq");
@@ -1341,6 +1408,9 @@ Filter::MediafileHandle Filter::mediafile() {
 }
 Filter::ProjectHandle Filter::project() {
     return Filter::ProjectHandle(*this);
+}
+Filter::ProfileHandle Filter::profile() {
+    return Filter::ProfileHandle(*this);
 }
 std::string Filter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -1393,6 +1463,7 @@ void Filter::delRelations() {
     FilterFilterParameterRelation::del(*db, (FilterFilterParameterRelation::Filter == id));
     FilterMediaFileRelation::del(*db, (FilterMediaFileRelation::Filter == id));
     FilterProjectRelation::del(*db, (FilterProjectRelation::Filter == id));
+    FilterProfileRelation::del(*db, (FilterProfileRelation::Filter == id));
 }
 void Filter::update() {
     if (!inDatabase) {
@@ -2255,6 +2326,24 @@ std::ostream & operator<<(std::ostream& os, ProfileGroup o) {
     return os;
 }
 const litesql::FieldType Profile::Own::Id("id_","INTEGER","Profile_");
+Profile::FilterHandle::FilterHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::FilterHandle::link(const Filter& o0) {
+    FilterProfileRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Profile::FilterHandle::unlink(const Filter& o0) {
+    FilterProfileRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Profile::FilterHandle::del(const litesql::Expr& expr) {
+    FilterProfileRelation::del(owner->getDatabase(), expr && FilterProfileRelation::Profile == owner->id);
+}
+litesql::DataSource<Filter> Profile::FilterHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterProfileRelation::get<Filter>(owner->getDatabase(), expr, (FilterProfileRelation::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterProfileRelation::Row> Profile::FilterHandle::getRows(const litesql::Expr& expr) {
+    return FilterProfileRelation::getRows(owner->getDatabase(), expr && (FilterProfileRelation::Profile == owner->id));
+}
 Profile::GroupHandle::GroupHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
@@ -2476,6 +2565,9 @@ const Profile& Profile::operator=(const Profile& obj) {
     litesql::Persistent::operator=(obj);
     return *this;
 }
+Profile::FilterHandle Profile::filter() {
+    return Profile::FilterHandle(*this);
+}
 Profile::GroupHandle Profile::group() {
     return Profile::GroupHandle(*this);
 }
@@ -2617,6 +2709,7 @@ void Profile::delRecord() {
     deleteFromTable(table__, id);
 }
 void Profile::delRelations() {
+    FilterProfileRelation::del(*db, (FilterProfileRelation::Profile == id));
     ProfileGroup2Profile::del(*db, (ProfileGroup2Profile::Profile == id));
     ProfileProfileParameterRelation::del(*db, (ProfileProfileParameterRelation::Profile == id));
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
@@ -5319,6 +5412,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
@@ -5347,6 +5441,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));
+    res.push_back(Database::SchemaItem("Filter_Profile_Filter1idx","index","CREATE INDEX Filter_Profile_Filter1idx ON Filter_Profile_ (Filter1)"));
+    res.push_back(Database::SchemaItem("Filter_Profile_Profile2idx","index","CREATE INDEX Filter_Profile_Profile2idx ON Filter_Profile_ (Profile2)"));
+    res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1,Profile2)"));
     res.push_back(Database::SchemaItem("_45a47288d87922bc777077268af27020","index","CREATE INDEX _45a47288d87922bc777077268af27020 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1)"));
     res.push_back(Database::SchemaItem("_6a97b2aa9540e958c966e2f87f06e44e","index","CREATE INDEX _6a97b2aa9540e958c966e2f87f06e44e ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (ProfileGroup2)"));
     res.push_back(Database::SchemaItem("_8908dcab0ecb35cd3b5541aedac93a26","index","CREATE INDEX _8908dcab0ecb35cd3b5541aedac93a26 ON _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1,ProfileGroup2)"));

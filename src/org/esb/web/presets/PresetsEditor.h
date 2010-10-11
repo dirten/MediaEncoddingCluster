@@ -10,6 +10,8 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 #include "Wt/Ext/Panel"
+#include "Wt/Ext/LineEdit"
+
 namespace org {
   namespace esb {
     namespace web {
@@ -23,6 +25,7 @@ namespace org {
         Wt::WWidget * createTop();
         Wt::WWidget * createContent();
         Ptr<db::Profile>_profile;
+        Wt::Ext::LineEdit * name;
       };
     }
   }

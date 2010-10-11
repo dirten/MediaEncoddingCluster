@@ -12,6 +12,7 @@ namespace org {
 
       ComboBox::ComboBox() : Wt::Ext::ComboBox() {
         _model = NULL;
+        _isEditable=false;
       }
 
       ComboBox::~ComboBox() {
@@ -22,12 +23,14 @@ namespace org {
         Wt::Ext::ComboBox::setModel(model);
       }
 
-      void ComboBox::setSelectedEntry(std::string key, int index) { 
-        if (_model) {
+      bool ComboBox::setSelectedEntry(std::string key, int index) {
+        bool result=false;
+        if (_model) {          
           for (int a = 0; a < _model->rowCount(); a++) {
             std::string k = boost::any_cast<std::string > (_model->data(a, index));
             if (k == key) {
               setCurrentIndex(a);
+              result=true;
             }
           }
         }
@@ -36,6 +39,13 @@ namespace org {
       std::string ComboBox::currentSelected(int col) {
         std::string result=data(currentIndex(), col);
         return result;
+      }
+      void ComboBox::setEditable(bool how) {
+        _isEditable=how;
+        Wt::Ext::ComboBox::setEditable(how);
+      }
+      bool ComboBox::isEditable() {
+        return _isEditable;
       }
 
       std::string ComboBox::data(int row,int col) {

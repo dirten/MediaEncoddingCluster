@@ -12,7 +12,6 @@
 #include "Wt/WLabel"
 #include "Wt/WText"
 
-#include "Wt/Ext/LineEdit"
 #include "Wt/Ext/TabWidget"
 #include "Wt/WFitLayout"
 #include "Wt/WBorderLayout"
@@ -20,6 +19,7 @@
 #include "FormatPanel.h"
 #include "VideoPanel.h"
 #include "AudioPanel.h"
+#include "FilterPanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -45,7 +45,7 @@ namespace org {
         top->resize(Wt::WLength(), 40);
         Wt::WLabel * label = new Wt::WLabel("Preset Name:");
 
-        Wt::Ext::LineEdit * name = new Wt::Ext::LineEdit();
+        name = new Wt::Ext::LineEdit();
         name->setText(_profile->name.value());
         name->resize(400, Wt::WLength());
         label->setBuddy(name);
@@ -62,7 +62,7 @@ namespace org {
         tab->addTab(new org::esb::web::FormatPanel(_profile), "Format");
         tab->addTab(new org::esb::web::VideoPanel(_profile), "Video");
         tab->addTab(new org::esb::web::AudioPanel(_profile), "Audio");
-        tab->addTab(new Wt::Ext::Panel(), "Filter");
+        tab->addTab(new org::esb::web::PresetFilterPanel(_profile), "Filter");
         return tab;
       }
       
@@ -70,7 +70,10 @@ namespace org {
         Wt::Ext::TabWidget *tab=static_cast<Wt::Ext::TabWidget *>(((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center));
         ((org::esb::web::VideoPanel*)tab->panel(1))->save();
         ((org::esb::web::AudioPanel*)tab->panel(2))->save();
+        _profile->name=name->text().narrow();
+        _profile->update();
       }
+
     }
   }
 }

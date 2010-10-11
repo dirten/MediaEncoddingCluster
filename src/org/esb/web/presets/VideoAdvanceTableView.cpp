@@ -76,7 +76,7 @@ namespace org {
         //options->activated().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
         //model()->dataChanged().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
         (static_cast<Wt::WStandardItemModel*> (model()))->itemChanged().connect(SLOT(this, VideoAdvanceTableView::itemChanged));
-        //itemSelectionChanged().connect(SLOT(this, VideoAdvanceTableView::itemSelectionChangedMethod));
+        cellClicked().connect(SLOT(this, VideoAdvanceTableView::itemSelectionChangedMethod));
         line = new Wt::Ext::LineEdit();
         //line->changed().connect(SLOT(this, VideoAdvanceTableView::dataChanged));
 
@@ -124,6 +124,7 @@ namespace org {
 
       void VideoAdvanceTableView::itemSelectionChangedMethod() {
         LOGDEBUG("void VideoAdvanceTableView::itemSelectionChanged()");
+        removeOptionButton->setEnabled(true);
       }
 
       void VideoAdvanceTableView::itemChanged(Wt::WStandardItem * item) {
@@ -149,21 +150,20 @@ namespace org {
       }
 
       void VideoAdvanceTableView::dataChanged(int data) {
-        LOGDEBUG("data changed" << options->data(data, 0));
         std::string key = options->data(data, 0);
         model()->setData(currentRow(), 0, key);
-
-        LOGDEBUG("key=" << key);
       }
 
       void VideoAdvanceTableView::addOption() {
-        //        _dat["please select an option"]="";
-        //        refresh();
         model()->insertRow(model()->rowCount());
+        model()->setData(model()->rowCount()-1,0,std::string("double click to edit"));
+        //model()->setData(model()->rowCount()-1,1,std::string("to edit"));
       }
 
       void VideoAdvanceTableView::removeOption() {
-
+        std::string key=boost::any_cast<std::string>(model()->data(this->currentRow(),0));
+        model()->removeRow(this->currentRow());
+        _dat.erase(key);
       }
     }
   }

@@ -16,6 +16,7 @@
 #include "Wt/Ext/LineEdit"
 #include "Wt/WContainerWidget"
 
+#include "Wt/WTable"
 #ifndef _ELEMENTCONTAINER_H
 #define	_ELEMENTCONTAINER_H
 namespace org {
@@ -37,7 +38,8 @@ namespace org {
           }
           T * getElement(std::string name, std::string label = "", std::string value = "", Wt::WContainerWidget * parent = 0);
           bool contains(std::string name);
-          T * addElement(std::string name, std::string label = "", std::string value = "", Wt::WGridLayout * l = 0);
+          T * addElement(std::string name, std::string label = "", std::string value = "", Wt::WGridLayout * l=0 );
+          Wt::WObject * addElement(std::string name, std::string label = "", std::string value = "", std::string right = "");
           T * getRow(std::string name);
           void validate();
           std::map<std::string, T*> getElements();
@@ -46,10 +48,12 @@ namespace org {
           std::map<std::string, T*> _cont;
           int _nextRow;
         };
+
         template <typename T >
-          bool ElementContainer<T>::contains(std::string name){
+        bool ElementContainer<T>::contains(std::string name) {
           return _cont.find(name) != _cont.end();
         }
+
         template <typename T >
         T * ElementContainer<T>::getElement(std::string name, std::string label, std::string value, Wt::WContainerWidget * parent) {
           if (_cont.find(name) == _cont.end()) {
@@ -59,7 +63,7 @@ namespace org {
             l->setVerticalSpacing(0);
             l->setHorizontalSpacing(0);
             Wt::WLabel * elementLabel = new Wt::WLabel(label);
-//            elementLabel->resize(Wt::WLength(50, Wt::WLength::FontEx), 20);
+            //            elementLabel->resize(Wt::WLength(50, Wt::WLength::FontEx), 20);
             T * element = new T();
             l->addWidget(elementLabel, 0, 0);
             l->addWidget(element, 0, 1);
@@ -76,18 +80,18 @@ namespace org {
         T * ElementContainer<T>::addElement(std::string name, std::string label, std::string value, Wt::WGridLayout * l) {
           if (_cont.find(name) == _cont.end()) {
             Wt::WLabel * elementLabel = new Wt::WLabel(label);
-//            elementLabel->resize(30, Wt::WLength::Auto);
-            
+            //            elementLabel->resize(30, Wt::WLength::Auto);
+
             T * element = new T();
             int nextRow = l->rowCount();
             element->setText(value);
             element->resize(Wt::WLength(250, Wt::WLength::Pixel), Wt::WLength::Auto);
             //                        elementLabel->setBuddy(element);
             l->addWidget(elementLabel, nextRow, 0, Wt::AlignRight);
-//            l->setColumnStretch(l->columnCount()-1,1);
+            //            l->setColumnStretch(l->columnCount()-1,1);
             l->addWidget(element, nextRow, 1, Wt::AlignMiddle);
-//            l->addWidget(new Wt::WText(), nextRow, 2, Wt::AlignMiddle);
-            l->setColumnStretch(l->columnCount()-1,2);
+            //l->addWidget(new Wt::WText(right), nextRow, 2, Wt::AlignMiddle);
+            l->setColumnStretch(l->columnCount() - 1, 2);
 
             _cont[name] = element;
           }
@@ -95,9 +99,24 @@ namespace org {
         }
 
         template <typename T >
+        Wt::WObject * ElementContainer<T>::addElement(std::string name, std::string label, std::string value, std::string right) {
+          Wt::WTable * table = new Wt::WTable();
+          Wt::WLabel * elementLabel = new Wt::WLabel(label);
+          T * element = new T();
+          element->setText(value);
+          element->resize(Wt::WLength(250, Wt::WLength::Pixel), Wt::WLength::Auto);
+          table->elementAt(0, 0)->addWidget(elementLabel);
+          table->elementAt(0, 1)->addWidget(element);
+
+          _cont[name] = element;
+          return table;
+        }
+
+        template <typename T >
         T * ElementContainer<T>::getRow(std::string name) {
           return _cont[name];
         }
+
         template <typename T>
         std::map<std::string, T*> ElementContainer<T>::getElements() {
           return _cont;

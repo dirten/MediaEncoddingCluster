@@ -29,6 +29,8 @@
 //#include "org/esb/sql/sqlite3x.hpp"
 #include "org/esb/hive/DatabaseService.h"
 #include "FileImporter.h"
+#include "litesql/persistent.hpp"
+#include "litesql/database.hpp"
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::config;
@@ -85,10 +87,10 @@ namespace org {
         } else {
           LOGDEBUG("File:" << file.getPath());
         }
-        
         db::MediaFile mediafile(*_connection);
         FormatInputStream fis(&file);
         if (!fis.isValid())return mediafile;
+        _connection->begin();
         PacketInputStream pis(&fis);
         int id = 0;
         //  try {
@@ -138,8 +140,26 @@ namespace org {
           if (stream.extradatasize > 0)
             stream.extradata = (const char*) (ctx->streams[a]->codec->extradata);
           stream.update();
+                  const AVOption * option = NULL;
+
+          while (option = av_next_option(ctx->streams[a]->codec, option)) {
+          if (option->offset > 0 ) {
+            db::StreamParameter sp(stream.getDatabase());
+            sp.name=option->name;
+            int len=1000;
+            char data[len];
+            av_get_string(ctx->streams[a]->codec, option->name,NULL,data, len);
+            if(strlen(data)>0){
+              sp.val=std::string(data);
+            }
+            sp.update();
+            stream.params().link(sp);
+          }
+        }
           mediafile.streams().link(stream);
         }
+        _connection->commit();
+
         return mediafile;
 
       }

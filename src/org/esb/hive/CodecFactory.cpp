@@ -1,4 +1,3 @@
-#include "org/esb/db/hivedb.hpp"
 #include "CodecFactory.h"
 #include "org/esb/av/Decoder.h"
 #include "org/esb/av/Encoder.h"
@@ -17,7 +16,7 @@ std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_m
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
   if (decoder_map.find(streamid) == decoder_map.end()) {
     try {
-      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+      db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
       boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) (int) stream.codecid));
@@ -55,14 +54,14 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   if (encoder_map.find(streamid) == encoder_map.end()) {
     try {
-      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+      db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
-      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) (int)stream.codecid));
+      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) (int) stream.codecid));
       _encoder->findCodec(org::esb::av::Codec::ENCODER);
       _encoder->setWidth(stream.width);
       _encoder->setHeight(stream.height);
-      _encoder->setPixelFormat((PixelFormat) (int)stream.pixfmt);
+      _encoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
       _encoder->setBitRate(stream.bitrate);
 
       _encoder->setTimeBase(stream.framerateden, stream.frameratenum);
@@ -75,14 +74,11 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setGopSize(stream.gopsize);
       _encoder->setChannels(stream.channels);
       _encoder->setSampleRate(stream.samplerate);
-      _encoder->setSampleFormat((SampleFormat) (int)stream.samplefmt);
+      _encoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
       _encoder->setFlag(stream.flags);
-      vector<db::StreamParameter> params=stream.params().get().all();
-      vector<db::StreamParameter>::iterator pit=params.begin();
-      for(;pit!=params.end();pit++){
-        _encoder->setCodecOption((*pit).name.value(),(*pit).val.value());
-      }
-//      setCodecOptions(_encoder, stream.extraprofileflags);
+//      vector<db::StreamParameter> params = stream.params().get().all();
+
+      setCodecOptions(_encoder, stream.params().get().all());
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } catch (litesql::NotFound e) {
@@ -93,12 +89,19 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
   return encoder_map[streamid];
 }
 
+void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc, std::vector<db::StreamParameter> p) {
+  vector<db::StreamParameter>::iterator pit = p.begin();
+  for (; pit != p.end(); pit++) {
+    _enc->setCodecOption((*pit).name.value(), (*pit).val.value());
+  }
+}
+
 void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc, std::string options) {
   if (options.length() > 0) {
     org::esb::util::StringTokenizer to(options, ";");
     while (to.hasMoreTokens()) {
       std::string line = to.nextToken();
-      if(line.length()==0)continue;
+      if (line.length() == 0)continue;
       org::esb::util::StringTokenizer to2(line, "=");
       if (to2.countTokens() != 2) {
         LOGWARN("Invalid CodecOptionsPair it is not a <key=value> pair ---" << line);
@@ -114,18 +117,18 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
 }
 
 void CodecFactory::free() {
-  
-    std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec=decoder_map.begin();
-    for(;it_dec!=decoder_map.end();it_dec++){
-      (*it_dec).second.reset();
-    }
-    std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it_enc=encoder_map.begin();
-    for(;it_enc!=encoder_map.end();it_enc++){
-      (*it_enc).second.reset();
-    }
-    decoder_map.clear();
-    encoder_map.clear();
-   
+
+  std::map<int, boost::shared_ptr<org::esb::av::Decoder> >::iterator it_dec = decoder_map.begin();
+  for (; it_dec != decoder_map.end(); it_dec++) {
+    (*it_dec).second.reset();
+  }
+  std::map<int, boost::shared_ptr<org::esb::av::Encoder> >::iterator it_enc = encoder_map.begin();
+  for (; it_enc != encoder_map.end(); it_enc++) {
+    (*it_enc).second.reset();
+  }
+  decoder_map.clear();
+  encoder_map.clear();
+
 }
 
 void CodecFactory::clearCodec(int streamid) {

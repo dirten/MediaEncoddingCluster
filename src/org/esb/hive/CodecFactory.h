@@ -1,6 +1,7 @@
 #ifndef ORG_ESB_HIVE_CODECFACTORY_H
 #define ORG_ESB_HIVE_CODECFACTORY_H
 
+#include "org/esb/db/hivedb.hpp"
 
 #include <map>
 #include <boost/shared_ptr.hpp>
@@ -27,6 +28,7 @@ namespace org {
                 static void clearCodec(int streamid);
                 static void free();
                 static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::string options);
+                static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::vector<db::StreamParameter>p);
             private:
                 CodecFactory();
                 static std::map<int, boost::shared_ptr<org::esb::av::Decoder> > decoder_map;

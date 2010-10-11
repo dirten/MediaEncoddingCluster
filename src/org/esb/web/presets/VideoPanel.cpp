@@ -18,6 +18,7 @@
 #include "Wt/Ext/Button"
 #include "Wt/WStandardItemModel"
 #include "../wtk/KeyValueModel.h"
+#include "litesql/persistent.hpp"
 
 namespace org {
   namespace esb {
@@ -25,6 +26,7 @@ namespace org {
 
       VideoPanel::VideoPanel(Ptr<db::Profile> p) : _profile(p), Wt::Ext::Panel() {
         setLayout(new Wt::WFitLayout());
+
         Wt::WContainerWidget * main = new Wt::WContainerWidget();
         Wt::WGridLayout * grid = new Wt::WGridLayout();
         main->setLayout(grid);
@@ -58,9 +60,31 @@ namespace org {
         v_codec->setTextSize(50);
 //        v_codec->activated().connect(SLOT(this, VideoPanel::setPredefinedCodecFlags));
 
+
+         /*
+         * Combobox for the Preset Selector
+         */
+        /*
+        KeyValueModel * preset_model = new KeyValueModel();
+        vector<db::CodecPreset> cPresets=litesql::select<db::CodecPreset>(p->getDatabase(),db::CodecPreset::Codecid==_parameter["codec"]).all();
+        vector<db::CodecPreset>::iterator presetit=cPresets.begin();
+        for(;presetit!=cPresets.end();presetit++){
+          preset_model->addModelData((*presetit).preset,(*presetit).name);
+        }
+
+
+        ComboBox * presets = _elcb.addElement("preset", "Codec Preset", "", grid);
+
+        presets->setModel(preset_model);
+        presets->setModelColumn(1);
+        presets->setSelectedEntry(_parameter["preset"]);
+         */
+//        v_keyframes->setEditable(true);
+
         /*
          * Combobox for the Encoding Methode Selector
          */
+        /*
         KeyValueModel * model = new KeyValueModel();
         model->addModelData("pass1vbr", "1 Pass Variable Bitrate");
         model->addModelData("pass1cbr", "1 Pass Constant Bitrate");
@@ -72,17 +96,21 @@ namespace org {
         v_methode->setSelectedEntry(_parameter["methode"]);
         v_methode->setTextSize(50);
         v_methode->setEditable(false);
-
+        */
         /*
          * Combobox for the Bitrate Selector
          */
         KeyValueModel * bitrate_model = new KeyValueModel();
-        bitrate_model->addModelData("128000", "128 kb/s");
-        bitrate_model->addModelData("256000", "256 kb/s");
-        bitrate_model->addModelData("512000", "512 kb/s");
-        bitrate_model->addModelData("1024000", "1024 kb/s");
-        bitrate_model->addModelData("2048000", "2048 kb/s");
-        bitrate_model->addModelData("4096000", "4096 kb/s");
+        bitrate_model->addModelData("128000", "128 kbit/s");
+        bitrate_model->addModelData("256000", "256 kbit/s");
+        bitrate_model->addModelData("512000", "512 kbit/s");
+        bitrate_model->addModelData("1024000", "1 Mbit/s");
+        bitrate_model->addModelData("2048000", "2 Mbit/s");
+        bitrate_model->addModelData("4096000", "4 Mbit/s");
+        bitrate_model->addModelData("8192000", "8 Mbit/s");
+        bitrate_model->addModelData("16384000", "16 Mbit/s");
+        bitrate_model->addModelData("25600000", "25 Mbit/s");
+        bitrate_model->addModelData("51200000", "50 Mbit/s");
 
         ComboBox * v_bitrate = _elcb.addElement("b", "Video Bitrate", "please select a Bitrate", grid);
         v_bitrate->setModel(bitrate_model);
@@ -110,6 +138,7 @@ namespace org {
         v_framerate->setModelColumn(1);
         v_framerate->setSelectedEntry(_parameter["framerate"]);
         v_framerate->setTextSize(50);
+        v_framerate->setEditable(true);
 
 
 
@@ -124,6 +153,7 @@ namespace org {
         keyframe_model->addModelData("300", "300 Frames");
 
         ComboBox * v_keyframes = _elcb.addElement("g", "Key Frame every", "100 Frames", grid);
+
         v_keyframes->setModel(keyframe_model);
         v_keyframes->setModelColumn(1);
         v_keyframes->setSelectedEntry(_parameter["g"]);
@@ -140,11 +170,14 @@ namespace org {
         //        _advance_table->setEnabled(false);
 
         /*these are alwyays the last widget(except Advanced Button) to stretch to the buttom of the Page*/
-        grid->addWidget(new Wt::WText(), grid->rowCount(), 0, 0, 3);
+        Wt::WText* text=new Wt::WText("");
+        text->resize(Wt::WLength(), 500);
+        grid->addWidget(text, grid->rowCount(), 0, 0, 3);
+
         grid->setRowStretch(grid->rowCount() - 1, 1);
 
         _advance_table = new VideoAdvanceTableView(_parameter, AV_OPT_FLAG_VIDEO_PARAM);
-        grid->addWidget(_advance_table, 0, 2, 6, 0, Wt::AlignRight);
+        grid->addWidget(_advance_table, 0, 2, 7, 0, Wt::AlignRight);
         _advance_table->setCollapsible(true);
         _advance_table->setCollapsed(true);
         _advance_table->changed.connect(SLOT(this, VideoPanel::refresh));
@@ -185,7 +218,9 @@ namespace org {
         std::map<std::string, ComboBox*>::iterator bit = boxes.begin();
         for (; bit != boxes.end(); bit++) {
           LOGDEBUG((*bit).first);
-          (*bit).second->setSelectedEntry(_parameter[(*bit).first]);
+          if(!(*bit).second->setSelectedEntry(_parameter[(*bit).first])){
+            //(*bit).second->
+          }
           //          _parameter[(*bit).first]=(*bit).second->currentSelected();
           LOGDEBUG("=" << _parameter[(*bit).first]);
         }

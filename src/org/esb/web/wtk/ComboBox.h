@@ -18,11 +18,15 @@ namespace org {
         ComboBox();
         virtual ~ComboBox();
         void setModel(Wt::WAbstractItemModel *model);
-        void setSelectedEntry(std::string key, int index=0);
+        Wt::WAbstractItemModel * getModel();
+        bool setSelectedEntry(std::string key, int index=0);
         std::string currentSelected(int col=0);
         std::string data(int row,int col=0);
+        void setEditable(bool how);
+        bool isEditable();
       private:
         Wt::WAbstractItemModel * _model;
+        bool _isEditable;
       };
     }
   }

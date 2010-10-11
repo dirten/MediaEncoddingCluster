@@ -95,6 +95,25 @@ public:
 ;
 ;
 };
+class FilterProfileRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> profile;
+        litesql::Field<int> filter;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Filter;
+    static const litesql::FieldType Profile;
+    static void link(const litesql::Database& db, const db::Filter& o0, const db::Profile& o1);
+    static void unlink(const litesql::Database& db, const db::Filter& o0, const db::Profile& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<FilterProfileRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class ProfileGroup2Profile {
 public:
     class Row {
@@ -511,6 +530,15 @@ public:
         litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<FilterProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class ProfileHandle : public litesql::RelationHandle<Filter> {
+    public:
+        ProfileHandle(const Filter& owner);
+        void link(const Profile& o0);
+        void unlink(const Profile& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterProfileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -532,6 +560,7 @@ public:
     Filter::ParameterHandle parameter();
     Filter::MediafileHandle mediafile();
     Filter::ProjectHandle project();
+    Filter::ProfileHandle profile();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -804,6 +833,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class FilterHandle : public litesql::RelationHandle<Profile> {
+    public:
+        FilterHandle(const Profile& owner);
+        void link(const Filter& o0);
+        void unlink(const Filter& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Filter> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<FilterProfileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class GroupHandle : public litesql::RelationHandle<Profile> {
     public:
         GroupHandle(const Profile& owner);
@@ -906,6 +944,7 @@ public:
     Profile(const litesql::Database& db, const litesql::Record& rec);
     Profile(const Profile& obj);
     const Profile& operator=(const Profile& obj);
+    Profile::FilterHandle filter();
     Profile::GroupHandle group();
     Profile::ParamsHandle params();
     Profile::ProjectHandle project();

@@ -69,7 +69,7 @@ IF(BUILD_SHARED_LIBS)
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
-TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
+#TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
 
 
 add_library (orm orm/hivedb.cpp)
@@ -356,6 +356,8 @@ add_library (web
     web/presets/FormatPanel.cpp
     web/presets/VideoPanel.cpp
     web/presets/AudioPanel.cpp
+    web/presets/FilterPanel.cpp
+    web/presets/FilterTable.cpp
     web/presets/PresetFilterPanel.cpp
     web/presets/VideoAdvanceTableView.cpp
 )
