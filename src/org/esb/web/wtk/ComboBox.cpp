@@ -34,6 +34,7 @@ namespace org {
             }
           }
         }
+        return result;
       }
 
       std::string ComboBox::currentSelected(int col) {

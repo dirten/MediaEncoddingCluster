@@ -20,7 +20,7 @@ namespace org{
         cont->setLayout(l);
         layout()->addWidget(cont);
         
-        Wt::Ext::ComboBox * v_aspect = _elcb.addElement("aspect_ratio", "Aspect Ratio", "", l);
+        ComboBox * v_aspect = _elcb.addElement("aspect_ratio", "Aspect Ratio", "", l);
         v_aspect->setTextSize(50);
         v_aspect->addItem("Rescale to width and height defined below");
         v_aspect->addItem("Keep Aspect Ratio from Source");
@@ -33,6 +33,7 @@ namespace org{
 
         _el.getElement("height")->keyWentUp().connect(SLOT(this,ResizeFilterPanel::filterChanged));
         _el.getElement("width")->keyWentUp().connect(SLOT(this,ResizeFilterPanel::filterChanged));
+        _elcb.getElement("aspect_ratio")->activated().connect(SLOT(this,ResizeFilterPanel::filterChanged));
 
       }
 
@@ -45,6 +46,7 @@ namespace org{
       }
 
       void ResizeFilterPanel::filterChanged(){
+        LOGDEBUG("void ResizeFilterPanel::filterChanged()");
         save();
         changed.emit();
       }

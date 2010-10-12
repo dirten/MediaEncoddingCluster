@@ -44,6 +44,7 @@ namespace org{
 
       void ProjectPropertyPanel::setProject(Ptr<db::Project> p){
         _project=p;
+
         _el.getElement("id")->setText(org::esb::util::StringUtil::toString(p->id));
         _el.getElement("name")->setText(static_cast<std::string>(p->name));
         _el.getElement("outdir")->setText(static_cast<std::string>(p->outdirectory));

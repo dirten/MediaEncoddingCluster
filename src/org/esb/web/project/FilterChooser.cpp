@@ -90,16 +90,17 @@ namespace org{
       }
 
       void FilterChooser::choose(){
+        /*
         std::string filtername=boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 1));
         std::vector<Ptr<db::Filter> >::iterator it=_available_filters.begin();
         for(;it!=_available_filters.end();it++){
           if((*it)->filtername==filtername){
-            selected.emit((*it));
           }
-        }
-
-        LOGDEBUG("filtername:"<<filtername);
-        this->accept();
+        }*/
+  //      selected.setBlocked(true);
+        selected.emit();
+        //LOGDEBUG("filtername:"<<filtername);
+//        this->accept();
       }
 
       void FilterChooser::cancel(){

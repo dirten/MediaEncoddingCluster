@@ -8,6 +8,9 @@
 #ifndef PROPERTYPANEL_H
 #define	PROPERTYPANEL_H
 #include "org/esb/db/hivedb.hpp"
+#include "org/esb/web/project/ProfilePanel.h"
+//#include "org/esb/web/project/FilterPanel.h"
+#include "org/esb/web/project/ProjectPropertyPanel.h"
 
 #include "Wt/Ext/Panel"
 #include "org/esb/lang/Ptr.h"
@@ -22,6 +25,9 @@ namespace org {
         void setProject(Ptr<db::Project>);
         void save();
       private:
+        Wt::Ext::TabWidget *tab;
+        org::esb::web::ProfilePanel * _profile_panel;
+        org::esb::web::ProjectPropertyPanel * _prop_panel;
       };
     }
   }

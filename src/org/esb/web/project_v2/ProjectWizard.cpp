@@ -46,7 +46,7 @@ namespace org {
           //          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
           ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
           ((Wt::WBorderLayout*)layout())->addWidget(new PropertyPanel(), Wt::WBorderLayout::East);
-          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(450, Wt::WLength());
+          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(470, Wt::WLength());
           ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setResizable(true);
 
 

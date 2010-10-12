@@ -11,6 +11,7 @@
 #include "org/esb/lang/Ptr.h"
 
 #include "Wt/Ext/Panel"
+#include "org/esb/web/presets/FilterTable.h"
 
 namespace org {
   namespace esb {
@@ -21,7 +22,12 @@ namespace org {
         PresetFilterPanel(Ptr<db::Profile>);
         virtual ~PresetFilterPanel();
       private:
-          std::vector<Ptr<db::Filter> > _available_filter;
+        Ptr<db::Profile>_profile;
+        Ptr<org::esb::web::PresetFilterTable >filter_table;
+        Wt::Ext::Panel* _props;
+        Wt::WContainerWidget* _cont;
+        void filterSelected();
+        Wt::WGridLayout * grid;
       };
     }
   }

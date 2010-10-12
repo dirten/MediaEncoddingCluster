@@ -15,7 +15,7 @@ namespace org{
       public:
         FilterChooser(std::vector<Ptr<db::Filter> > available_filter);
         ~FilterChooser();
-        Wt::Signal<Ptr<db::Filter> > selected;
+        Wt::Signal<void> selected;
         Wt::Signal<void> canceled;
         std::list<Ptr<db::Filter> > getSelectedFilter();
       private:

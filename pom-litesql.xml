@@ -156,7 +156,7 @@
                     -DSHARED_LIBS=Off 
                     -DSQLITE3_INCLUDE_DIR=${project.basedir}/dependency/include/
                     -DSQLITE3_LIBRARIES=${project.basedir}/dependency/lib/libsqlite3.a
-			  -DSQLITE3_FOUND=On
+		    -DSQLITE3_FOUND=On
                     -DWITH_MYSQL=Off
                     -DWITH_SQLITE3=On
                     .."/>

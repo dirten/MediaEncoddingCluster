@@ -23,7 +23,7 @@ namespace org{
         void removeFilter();
         void editFilter();
         void enableButtons();
-        void filterSelected(Ptr<db::Filter> filter);
+        void filterSelected();
         Ptr<FilterTable> _filter_table;
         Ptr<FilterChooser> _filter_chooser;
         Ptr<db::Project> _project;

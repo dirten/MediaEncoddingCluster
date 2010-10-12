@@ -4,7 +4,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "BaseFilterPanel.h"
 #include "org/esb/web/wtk/ElementContainer.h"
-#include "Wt/Ext/ComboBox"
+#include "../wtk/ComboBox.h"
 #include <map>
 namespace org{
   namespace esb{
@@ -19,7 +19,7 @@ namespace org{
       private:
         Ptr<db::Filter> _filter;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
-        wtk::ElementContainer<Wt::Ext::ComboBox> _elcb;
+        wtk::ElementContainer<ComboBox> _elcb;
         /*@TODO dat iss nicht schön, muss ausgetauscht werden*/
         std::map<std::string, int> _attribute_list;
         void filterChanged();

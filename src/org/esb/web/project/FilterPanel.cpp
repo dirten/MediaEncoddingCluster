@@ -101,23 +101,26 @@ namespace org {
 
       }
 
-      void FilterPanel::addFilter() {
-        _filter_chooser = Ptr<FilterChooser > (new FilterChooser(_available_filters));
-        _filter_chooser->show();
-        if (_filter_chooser->exec() == Wt::Ext::Dialog::Accepted) {
-          std::list<Ptr<db::Filter> > filters = _filter_chooser->getSelectedFilter();
-          std::list<Ptr<db::Filter> >::iterator filter_it = filters.begin();
-          for (; filter_it != filters.end(); filter_it++) {
-            Ptr<db::Filter> filter=(*filter_it);
-            filter->update();
-            _project->filter().link(*filter);
-                    _filter_editor.reset();
-        _filter_editor = Ptr<FilterEditor > (new FilterEditor(filter));
-        _filter_editor->show();
-
-          }
+      void FilterPanel::filterSelected() {
+        std::list<Ptr<db::Filter> > filters = _filter_chooser->getSelectedFilter();
+        std::list<Ptr<db::Filter> >::iterator filter_it = filters.begin();
+        for (; filter_it != filters.end(); filter_it++) {
+          Ptr<db::Filter> filter = (*filter_it);
+          filter->update();
+          _project->filter().link(*filter);
+          _filter_editor.reset();
+          _filter_editor = Ptr<FilterEditor > (new FilterEditor(filter));
+          _filter_editor->show();
         }
         _filter_table->setFilter(_project->filter().get().all());
+        _filter_chooser->accept();
+        _filter_chooser.reset();
+      }
+
+      void FilterPanel::addFilter() {
+        _filter_chooser = Ptr<FilterChooser > (new FilterChooser(_available_filters));
+        _filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
+        _filter_chooser->show();
       }
 
       void FilterPanel::removeFilter() {

@@ -9,21 +9,25 @@
 
 #include "PropertyPanel.h"
 #include "Wt/WAccordionLayout"
-#include "org/esb/web/project/ProfilePanel.h"
-#include "org/esb/web/project/FilterPanel.h"
-#include "org/esb/web/project/ProjectPropertyPanel.h"
+#include "Wt/WFitLayout"
+#include "Wt/Ext/TabWidget"
 namespace org {
   namespace esb {
     namespace web {
 
       PropertyPanel::PropertyPanel() : Wt::Ext::Panel() {
-        setLayout(new Wt::WAccordionLayout());
+        setLayout(new Wt::WFitLayout());
+        //setLayout(new Wt::WAccordionLayout());
+        tab=new Wt::Ext::TabWidget();
 
-        this->layout()->addWidget(new org::esb::web::ProfilePanel());
+        this->layout()->addWidget(tab);
+        tab->addTab(_profile_panel=new org::esb::web::ProfilePanel(),"Output Profiles");
+        tab->addTab(_prop_panel=new org::esb::web::ProjectPropertyPanel(),"Project Properties");
+//        this->layout()->addWidget(new org::esb::web::ProfilePanel());
 
-        this->layout()->addWidget(new org::esb::web::FilterPanel());
+        //this->layout()->addWidget(new org::esb::web::FilterPanel());
 
-        this->layout()->addWidget(new org::esb::web::ProjectPropertyPanel());
+//        this->layout()->addWidget(new org::esb::web::ProjectPropertyPanel());
       }
 
       PropertyPanel::PropertyPanel(const PropertyPanel& orig) {
@@ -33,13 +37,12 @@ namespace org {
       }
 
       void PropertyPanel::save() {
-        ((org::esb::web::ProjectPropertyPanel*)this->layout()->itemAt(2)->widget())->save();
+        _prop_panel->save();
       }
 
       void PropertyPanel::setProject(Ptr<db::Project> p) {
-        ((org::esb::web::ProfilePanel*)this->layout()->itemAt(0)->widget())->setProject(p);
-        ((org::esb::web::FilterPanel*)this->layout()->itemAt(1)->widget())->setProject(p);
-        ((org::esb::web::ProjectPropertyPanel*)this->layout()->itemAt(2)->widget())->setProject(p);
+        _profile_panel->setProject(p);
+        _prop_panel->setProject(p);
       }
     }
   }

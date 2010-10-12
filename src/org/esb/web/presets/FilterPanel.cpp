@@ -17,36 +17,49 @@
 #include "org/esb/web/wtk/KeyValueModel.h"
 #include "org/esb/av/AV.h"
 #include "org/esb/util/StringUtil.h"
-#include "org/esb/web/presets/FilterTable.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/web/project/FilterPanelFactory.h"
+#include "Wt/WBorderLayout"
 namespace org {
   namespace esb {
     namespace web {
 
-      PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p) : Wt::Ext::Panel() {
+      PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p) :_profile(p),  Wt::Ext::Panel() {
         LOGDEBUG("PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p):Wt::Ext::Panel()");
         setLayout(new Wt::WFitLayout());
 
         Wt::WContainerWidget * main = new Wt::WContainerWidget();
-        Wt::WGridLayout * grid = new Wt::WGridLayout();
+        grid = new Wt::WGridLayout();
         main->setLayout(grid);
         layout()->addWidget(main);
 
-        Ptr<db::Filter> f = new db::Filter(p->getDatabase());
-        f->filterid = "resize";
-        f->filtername = "Resize Filter";
-        _available_filter.push_back(f);
-        Ptr<db::Filter> f2 = new db::Filter(p->getDatabase());
-        f2->filterid = "deinterlace";
-        f2->filtername = "Deinterlace Filter";
-        _available_filter.push_back(f2);
-
-        org::esb::web::PresetFilterTable * filter_table = new PresetFilterTable(_available_filter);
-
-        grid->addWidget(filter_table, 0, 0);
+        
+        grid->addWidget((filter_table = new PresetFilterTable(p)).get(), 0, 0);
+        _cont=new Wt::WContainerWidget();
+        _cont->setLayout(new Wt::WBorderLayout());
+        _cont->resize(500,300);
+        grid->addWidget(_cont, 0, 1);
+        //filter_table->itemSelectionChanged().connect(SLOT(this,PresetFilterPanel::filterSelected));
+        filter_table->cellClicked().connect(SLOT(this,PresetFilterPanel::filterSelected));
       }
 
       PresetFilterPanel::~PresetFilterPanel() {
+        LOGDEBUG("PresetFilterPanel::~PresetFilterPanel()");
+      }
+
+      void PresetFilterPanel::filterSelected() {
+        std::string filtername=boost::any_cast<std::string > (filter_table->model()->data(filter_table->selectedRows()[0], 1));
+        Ptr<db::Filter> filter=new db::Filter(_profile->filter().get(db::Filter::Filtername==filtername).one());
+        if(_cont->layout()->count()>0){
+          Wt::WLayoutItem * item =((Wt::WBorderLayout*)_cont->layout())->itemAt(Wt::WBorderLayout::Center);
+          _cont->layout()->removeItem(item);
+        }
+        _props=FilterPanelFactory::getFilterPanel(filter->filterid);
+        ((Wt::WBorderLayout*)_cont->layout())->addWidget(_props, Wt::WBorderLayout::Center);
+//        _cont->layout()->addWidget(_props.get());
+//        grid->addWidget((_props=FilterPanelFactory::getFilterPanel(filter->filterid)).get(), 0, 1);
+        //_props-> =FilterPanelFactory::getFilterPanel(filter->filterid);
+        ((BaseFilterPanel *)_props)->setFilter(filter);
       }
     }
   }
