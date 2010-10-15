@@ -75,8 +75,8 @@ namespace org {
         char * testdata = const_cast<char*> (data.c_str());
         try {
           _doc.parse < 0 > (testdata);
-        } catch (rapidxml::parse_error exception) {
-          LOGERROR("Parser Exception :" << exception.what());
+        } catch (rapidxml::parse_error ex) {
+          LOGERROR("Parser Exception :" << ex.what());
           return;
         }
         xml_node<>*node = _doc.first_node("guis");
