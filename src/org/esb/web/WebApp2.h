@@ -67,7 +67,7 @@ namespace org {
                 Wt::WSignalMapper<JobTable*> *_jobSignalMap;
                 //void fileSelected(SqlTable *);
                 void jobSelected(JobTable *);
-                db::HiveDb _db;
+                //db::HiveDb _db;
 
             };
         }

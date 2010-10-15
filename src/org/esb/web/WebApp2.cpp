@@ -45,8 +45,8 @@ namespace org {
     namespace web {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) :
-      WApplication(env),
-      _db(org::esb::hive::DatabaseService::getDatabase()){
+      WApplication(env)
+      {
         
         if (string(org::esb::config::Config::getProperty("hive.mode","no")) == "setup") {
           WApplication::instance()->redirect("/setup");
@@ -339,7 +339,7 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
-        PresetsEditorWindow * edit=new PresetsEditorWindow(Ptr<db::Profile>(new db::Profile(_db)));
+        PresetsEditorWindow * edit=new PresetsEditorWindow(Ptr<db::Profile>(new db::Profile(org::esb::hive::DatabaseService::getDatabase())));
         edit->show();
         return;
         Profiles * profiles = new Profiles();

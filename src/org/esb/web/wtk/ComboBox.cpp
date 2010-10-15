@@ -16,6 +16,9 @@ namespace org {
       }
 
       ComboBox::~ComboBox() {
+        if(_model)
+          delete _model;
+        _model=NULL;
       }
 
       void ComboBox::setModel(Wt::WAbstractItemModel* model) {

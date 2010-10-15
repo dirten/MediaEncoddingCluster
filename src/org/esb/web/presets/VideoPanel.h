@@ -18,6 +18,7 @@
 #include "VideoAdvanceTableView.h"
 #include "../wtk/ComboBox.h"
 
+
 namespace org {
   namespace esb {
     namespace web {
@@ -42,6 +43,11 @@ namespace org {
         VideoAdvanceTableView*_advance_table;
         void dataChanged();
         void refresh();
+
+        void codecSelected();
+        std::map<std::string, std::string> _data;
+        Wt::Ext::Panel * main_panel;
+        ComboBox * _codec;
       };
     }
   }

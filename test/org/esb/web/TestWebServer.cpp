@@ -19,7 +19,6 @@ using namespace org::esb::hive;
 
 WebServer * w;
 
-
 int main(int argc, char**argv) {
   Log::open("");
   Config::init("");
@@ -44,41 +43,41 @@ int main(int argc, char**argv) {
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
   {
-  db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
-  db::MediaFile file(db);
-  file.path="/tmp/test/path";
-  file.filename="testfile.avi";
-  file.update();
+    db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+    db::MediaFile file(db);
+    file.path = "/tmp/test/path";
+    file.filename = "testfile.avi";
+    file.update();
 
-  db::Watchfolder w(db);
-  
-  w.infolder="/video";
-  w.outfolder="/tmp";
-  
-  db::Profile p =litesql::select<db::Profile>(db, db::Profile::Id==1).one();
-  w.update();
-  w.profile().link(p);
-  w.update();
-  
-  
+    db::Watchfolder w(db);
+
+    w.infolder = "/video";
+    w.outfolder = "/tmp";
+
+    db::Profile p = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
+    w.update();
+    w.profile().link(p);
+    w.update();
+
+
     std::string src = MEC_SOURCE_DIR;
-  src.append("/test.dvd");
-  org::esb::hive::FileImporter imp;
+    src.append("/test.dvd");
+    org::esb::hive::FileImporter imp;
 
-      db::MediaFile mediafile = imp.import(org::esb::io::File(src));
+    db::MediaFile mediafile = imp.import(org::esb::io::File(src));
     assert(mediafile.id > 0);
-      db::Profile pro = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
+    db::Profile pro = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
 
     int jobid = jobcreator(mediafile, pro, "/tmp");
     assert(jobid > 0);
 
   }
-  
 
-  w= new WebServer();
+
+  w = new WebServer();
   w->start();
 
-  if(argc>1)
+  if (argc > 1)
     org::esb::lang::CtrlCHitWaiter::wait();
 
   w->stop();

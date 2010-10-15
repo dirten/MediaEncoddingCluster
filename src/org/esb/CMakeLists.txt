@@ -128,6 +128,7 @@ add_library (util
   util/IllegalFormatException.cpp
   util/Log.cpp
   util/Timer.cpp
+  util/PropertyTree.cpp
 #  util/Queue.cpp
 )
 
@@ -322,6 +323,7 @@ add_library (web
     web/wtk/ContentBox.cpp
     web/wtk/KeyValueModel.cpp
     web/wtk/ComboBox.cpp
+    web/wtk/GroupBox.cpp
     web/project/ProjectWizard.cpp
     web/project/InputFilePanel.cpp
     web/ColumnConfig.cpp
@@ -331,6 +333,7 @@ add_library (web
     web/JobTableModel.cpp
     web/JobTable.cpp
     web/ProjectTable.cpp
+    web/GuiBuilder.cpp
     web/MediaFileTable.cpp
     web/job/JobInfoPanel.cpp
     web/job/JobDetailPanel.cpp
