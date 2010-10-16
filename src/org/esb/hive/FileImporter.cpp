@@ -147,7 +147,7 @@ namespace org {
             db::StreamParameter sp(stream.getDatabase());
             sp.name=option->name;
             int len=1000;
-            char data[len];
+            char data[1000];
             av_get_string(ctx->streams[a]->codec, option->name,NULL,data, len);
             if(strlen(data)>0){
               sp.val=std::string(data);
