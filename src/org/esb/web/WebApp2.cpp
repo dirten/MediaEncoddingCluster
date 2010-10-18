@@ -30,16 +30,20 @@
 //#include "StreamInfo.h"
 #include "ProfileCreator.h"
 
-
+#include "introspec.h"
 #include "project/PreviewPanel.h"
 #include "JobTable.h"
+#include "ProjectTable.h"
+#include "project_v2/ProjectWizard.h"
 #include "MediaFileTable.h"
 
 #include "TreeMainMenu.h"
 #include "job/JobInfoPanel.h"
 #include "system/NodeListPanel.h"
 #include "presets/PresetsEditorWindow.h"
+#include "presets/PresetsEditor.h"
 #include "org/esb/hive/DatabaseService.h"
+#include "project/ProjectWizard.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -63,7 +67,7 @@ namespace org {
         setTitle(h);
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
-
+        _db=new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
         viewPort = new Wt::Ext::Container(root());
         //        viewPort->resize(Wt::WLength::Auto, 600);
 
@@ -130,7 +134,7 @@ namespace org {
          */
         info_panel->resize(Wt::WLength(), 250);
         info_panel->setResizable(true);
-        layout->addWidget(info_panel, Wt::WBorderLayout::East);
+//        layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
 
         //TreeMainMenu * mainmenu=new TreeMainMenu(this);
@@ -151,8 +155,8 @@ namespace org {
         object_panel = new Wt::Ext::Panel();
         object_panel->setResizable(true);
         object_panel->setLayout(new Wt::WFitLayout());
-        object_panel->resize(Wt::WLength(), 300);
-        layout->addWidget(object_panel, Wt::WBorderLayout::South);
+        object_panel->resize(600,Wt::WLength());
+        layout->addWidget(object_panel, Wt::WBorderLayout::East);
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
         useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("main.css");
@@ -167,6 +171,8 @@ namespace org {
          */
         _jobSignalMap = new Wt::WSignalMapper<JobTable *>(this);
         _jobSignalMap->mapped().connect(SLOT(this, WebApp2::jobSelected));
+        _projectSignalMap = new Wt::WSignalMapper<ProjectTable *>(this);
+        _projectSignalMap->mapped().connect(SLOT(this, WebApp2::projectSelected));
       }
 
       void WebApp2::openPreview() {
@@ -184,7 +190,9 @@ namespace org {
       }
 
       void WebApp2::listProjects() {
-        Projects * p = new Projects();
+//        Projects * p = new Projects();
+        ProjectTable * p = new ProjectTable();
+        _projectSignalMap->mapConnect(p->itemSelectionChanged(), p);
         setContent(p);
       }
 
@@ -334,6 +342,7 @@ namespace org {
 
       void WebApp2::listAllProfiles() {
         Profiles * profiles = new Profiles();
+        profiles->profileSelected.connect(SLOT(this, WebApp2::presetSelected));
         //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
         setContent(profiles);
       }
@@ -394,6 +403,43 @@ namespace org {
         int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
         object_panel->layout()->addWidget(panel);
         panel->setJob(id);
+      }
+
+      void WebApp2::projectSelected(ProjectTable * tab) {
+        LOGDEBUG("void WebApp2::projectSelected(ProjectTable * tab)");
+        if(tab==NULL)return;
+        v2::ProjectWizard * panel=NULL;
+        if(object_panel->layout()->count()>0){
+          Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
+          LOGDEBUG("Item name"<<typeid(*item->widget()).name());
+          if(!instanceOf(*item->widget(),org::esb::web::v2::ProjectWizard)){
+            object_panel->layout()->removeItem(item);
+            delete item->widget();
+            panel=new v2::ProjectWizard();
+            object_panel->layout()->addWidget(panel);        
+          }else{
+            panel=static_cast<org::esb::web::v2::ProjectWizard*>(item->widget());
+            if(!panel)
+              LOGERROR("could not cast item to org::esb::web::v2::ProjectWizard*");
+          }
+        }else{
+            panel=new v2::ProjectWizard();
+            object_panel->layout()->addWidget(panel);
+        }
+        int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
+        panel->open(id);
+
+      }
+
+      void WebApp2::presetSelected(int presetid) {
+        Ptr<db::Profile> profile = new db::Profile(litesql::select<db::Profile > (*_db.get(), db::Profile::Id == presetid).one());
+        PresetsEditor * editor=new PresetsEditor(profile);
+        if(object_panel->layout()->count()>0){
+          Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
+          object_panel->layout()->removeItem(item);
+          delete item->widget();
+        }
+        object_panel->layout()->addWidget(editor);
       }
 
       void WebApp2::setContent(Wt::WWidget * w) {

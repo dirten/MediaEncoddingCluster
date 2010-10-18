@@ -83,6 +83,10 @@ namespace org {
         node = node->first_node("gui");
         node = node->first_node("options");
 
+        xml_node<>*grouptab = node->first_node("optiontab");
+        for (; grouptab; grouptab = grouptab->next_sibling("optiontab")) {
+          handleOptionGroupTab(grouptab);
+        }
         xml_node<>*groupnode = node->first_node("optiongroup");
         for (; groupnode; groupnode = groupnode->next_sibling("optiongroup")) {
           handleOptionGroup(groupnode);
@@ -155,7 +159,11 @@ namespace org {
 
       }
 
-      void GuiBuilder::handleOptionGroupTab(rapidxml::xml_node<> *) {
+      void GuiBuilder::handleOptionGroupTab(rapidxml::xml_node<> * ogn) {
+        std::map<std::string, std::string> data;
+        for (xml_attribute<> *attr = ogn->first_attribute(); attr; attr = attr->next_attribute()) {
+          data[attr->name()] = attr->value();
+        }
 
       }
 

@@ -21,6 +21,7 @@ namespace org {
         tab=new Wt::Ext::TabWidget();
 
         this->layout()->addWidget(tab);
+        tab->addTab(_file_panel=new org::esb::web::InputFilePanel(),"Input Files");
         tab->addTab(_profile_panel=new org::esb::web::ProfilePanel(),"Output Profiles");
         tab->addTab(_prop_panel=new org::esb::web::ProjectPropertyPanel(),"Project Properties");
 //        this->layout()->addWidget(new org::esb::web::ProfilePanel());
@@ -41,6 +42,7 @@ namespace org {
       }
 
       void PropertyPanel::setProject(Ptr<db::Project> p) {
+        _file_panel->setProject(p);
         _profile_panel->setProject(p);
         _prop_panel->setProject(p);
       }

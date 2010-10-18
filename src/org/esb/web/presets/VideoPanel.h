@@ -43,7 +43,7 @@ namespace org {
         VideoAdvanceTableView*_advance_table;
         void dataChanged();
         void refresh();
-
+        void setCodecGui(std::string codecid);
         void codecSelected();
         std::map<std::string, std::string> _data;
         Wt::Ext::Panel * main_panel;

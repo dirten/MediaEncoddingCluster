@@ -14,6 +14,7 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "presets/PresetsEditorWindow.h"
 //#include "org/esb/lang/Object.h"
+#include "Wt/WSignal"
 namespace org {
   namespace esb {
     namespace web {
@@ -54,8 +55,10 @@ namespace org {
 
         void enableButton() {
           if (profile_table->selectedRows().size() > 0) {
-            //            int d = atoi(boost::any_cast<string > (profile_table->model()->data(profile_table->selectedRows()[0], 0)).c_str());
+            //            
             buttonEdit->setEnabled(true);
+            int d = atoi(boost::any_cast<string > (profile_table->getModel()->data(profile_table->selectedRows()[0], 0)).c_str());
+            profileSelected.emit(d);
           }
         }
 
@@ -105,6 +108,7 @@ namespace org {
         void profileCanceled() {
 
         }
+        Wt::Signal<int> profileSelected;
       private:
         Wt::Ext::Button * buttonEdit;
         Wt::Ext::Button * buttonNew;

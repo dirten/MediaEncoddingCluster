@@ -14,6 +14,7 @@
 
 #include "Wt/Ext/Panel"
 #include "org/esb/lang/Ptr.h"
+#include "../project/InputFilePanel.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -27,6 +28,7 @@ namespace org {
       private:
         Wt::Ext::TabWidget *tab;
         org::esb::web::ProfilePanel * _profile_panel;
+        org::esb::web::InputFilePanel * _file_panel;
         org::esb::web::ProjectPropertyPanel * _prop_panel;
       };
     }

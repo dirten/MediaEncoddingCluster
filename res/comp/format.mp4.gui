@@ -3,17 +3,13 @@
   <gui helpLink="encoder_mp4v.html">
     <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
     <options>
-      <!--Tabs-->
-      <optiontab id="general" title="General"/>
-      <optiontab id="advance" title="Advanced"/>
       <!--Groups-->
       <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
       <optiongroup id="keyframe_settings" title="Keyframe settings"/>
       <optiongroup id="profile_settings" title="Profile Settings"/>
       <optiongroup id="encoding_settings" title="Encoding Settings"/>
-      <optiongroup id="profile_partition_settings" title="Encoding Partition Settings"/>
       <!--Bandwidth settings-->
-      <option id="bitrate" title="Average Bit Rate x264" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
+      <option id="bitrate" title="Average Bit Rate" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
         <control type="TextBox"></control>
       </option>
       <option id="frameSkipProbability" title="Frame Skip Probability" type="float" min="0" max="1" default="0" optionGroupId="bandwidth_settings">
@@ -70,8 +66,6 @@
             <optiondata>
                 <data option="keyFramePeriod" value="250"/>
                 <data option="B-VOP-Distance" value="2"/>
-		<!-- this throws currently a typeid error in th gui-->
-                <!--data option="codeMode" value="1"/-->
             </optiondata>
             <object>
               <dict>
@@ -124,18 +118,6 @@
         </list>
       </option>
       <option id="SVPL-0" title="Simple Profile Level 0" type="bool" default="0" optionGroupId="profile_settings">
-        <control type="CheckBox"></control>
-      </option>
-      <option id="parti4x4" title="Part I 4x4" type="bool" default="0" optionGroupId="profile_partition_settings">
-        <control type="CheckBox"></control>
-      </option>
-      <option id="parti8x8" title="Part I 8x8" type="bool" default="0" optionGroupId="profile_partition_settings">
-        <control type="CheckBox"></control>
-      </option>
-      <option id="partp4x4" title="Part P 4x4" type="bool" default="0" optionGroupId="profile_partition_settings">
-        <control type="CheckBox"></control>
-      </option>
-      <option id="partp8x8" title="Part P 8x8" type="bool" default="0" optionGroupId="profile_partition_settings">
         <control type="CheckBox"></control>
       </option>
       <option id="motionEstimationAccuracy" title="Motion Estimation Accuracy" type="string" min="2" max="4" default="2" optionGroupId="profile_settings">

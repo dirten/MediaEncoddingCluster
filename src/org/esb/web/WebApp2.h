@@ -16,6 +16,7 @@
 #include "Wt/WBorderLayout"
 //#include "SqlTable.h"
 #include "JobTable.h"
+#include "ProjectTable.h"
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
 namespace org {
@@ -67,7 +68,12 @@ namespace org {
                 Wt::WSignalMapper<JobTable*> *_jobSignalMap;
                 //void fileSelected(SqlTable *);
                 void jobSelected(JobTable *);
-                //db::HiveDb _db;
+                Wt::WSignalMapper<ProjectTable*> *_projectSignalMap;
+                //void fileSelected(SqlTable *);
+                void projectSelected(ProjectTable *);
+                //void fileSelected(SqlTable *);
+                void presetSelected(int);
+                Ptr<db::HiveDb> _db;
 
             };
         }

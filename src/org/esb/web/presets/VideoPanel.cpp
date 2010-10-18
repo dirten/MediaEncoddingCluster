@@ -75,13 +75,12 @@ namespace org {
         top_panel->setLayout(new Wt::WFitLayout());
         top_panel->layout()->addWidget(_codec);
         l->addWidget(top_panel, Wt::WBorderLayout::North);
-
+        setCodecGui(_parameter["codec"]);
         //l->addWidget(builder,Wt::WBorderLayout::Center);
         //        return;
       }
 
-      void VideoPanel::codecSelected() {
-        std::string codecid = _codec->data(_codec->currentIndex());
+      void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
         _parameter["codec"]=codecid;
         std::string codecname;
@@ -112,6 +111,10 @@ namespace org {
         main_panel->layout()->addWidget(builder);
         main_panel->refresh();
 
+      }
+      void VideoPanel::codecSelected() {
+        std::string codecid = _codec->data(_codec->currentIndex());
+        setCodecGui(codecid);
       }
 
       void VideoPanel::switchAdvanced() {

@@ -10,6 +10,7 @@
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/Button"
 #include "Wt/Ext/MessageBox"
+#include "Wt/Ext/ToolBar"
 
 
 
@@ -28,11 +29,12 @@ namespace org {
     namespace web {
       namespace v2 {
 
-        ProjectWizard::ProjectWizard() : Wt::Ext::Dialog("Project Editor") {
+        ProjectWizard::ProjectWizard() : Wt::Ext::Panel() {
           LOGDEBUG("ProjectWizard::ProjectWizard() ");
           _project_id = 0;
           resize(1200, 650);
           setBorder(false);
+          setTitle("Project Editor");
           //setSizeGripEnabled(true);
 
           Wt::WBorderLayout *l = new Wt::WBorderLayout();
@@ -44,21 +46,22 @@ namespace org {
           _db = Ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
 
           //          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
-          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
-          ((Wt::WBorderLayout*)layout())->addWidget(new PropertyPanel(), Wt::WBorderLayout::East);
-          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(470, Wt::WLength());
-          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setResizable(true);
+//          ((Wt::WBorderLayout*)layout())->addWidget(new org::esb::web::InputFilePanel(), Wt::WBorderLayout::Center);
+          ((Wt::WBorderLayout*)layout())->addWidget(new PropertyPanel(), Wt::WBorderLayout::Center);
+//          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(470, Wt::WLength());
+//          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setResizable(true);
 
-
-          addButton(new Wt::Ext::Button("Cancel"));
-          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::cancel));
-          buttons().back()->setIcon("icons/remove-icon.png");
-          addButton(new Wt::Ext::Button("Save"));
-          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save));
-          buttons().back()->setIcon("icons/accept-icon.png");
-          addButton(new Wt::Ext::Button("Save & start Encoding"));
-          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save_and_start));
-          buttons().back()->setIcon("icons/process-accept-icon.png");
+          setBottomToolBar(new Wt::Ext::ToolBar());
+          Wt::Ext::Button*button=NULL;
+          button= bottomToolBar()->addButton("Cancel");
+          button->clicked().connect(SLOT(this, ProjectWizard::cancel));
+          button->setIcon("icons/remove-icon.png");
+          button=bottomToolBar()->addButton("Save");
+          button->clicked().connect(SLOT(this, ProjectWizard::save));
+          button->setIcon("icons/accept-icon.png");
+          button=bottomToolBar()->addButton("Save & start Encoding");
+          button->clicked().connect(SLOT(this, ProjectWizard::save_and_start));
+          button->setIcon("icons/process-accept-icon.png");
         }
 
         void ProjectWizard::refresh() {
@@ -85,23 +88,23 @@ namespace org {
         void ProjectWizard::open(Ptr<db::Project> p) {
           _project = p;
           _project->update();
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setProject(_project);
-          ((org::esb::web::InputFilePanel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
+//          ((org::esb::web::InputFilePanel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
           this->show();
         }
 
         void ProjectWizard::save() {
           LOGDEBUG("Project save with id:" << _project->id)
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->save();
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->save();
           _project->update();
           LOGDEBUG("Project saved:" << _project->id)
           saved.emit();
-          this->done(Accepted);
+ //         this->done(Accepted);
         }
 
         void ProjectWizard::save_and_start() {
           LOGDEBUG("Project save with id:" << _project->id);
-          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->save();
+          ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->save();
           if (_project->outdirectory.value().length() <= 0) {
             Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties", Wt::Warning, Wt::Ok);
             box->show();
@@ -119,7 +122,7 @@ namespace org {
             box->show();
 
             saved.emit();
-            this->done(Accepted);
+//            this->done(Accepted);
           }
 
         }
@@ -128,7 +131,7 @@ namespace org {
 
           //        _project->del();
           canceled.emit();
-          this->done(Rejected);
+//          this->done(Rejected);
         }
 
       }
