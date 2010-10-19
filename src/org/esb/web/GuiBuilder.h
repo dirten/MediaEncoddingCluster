@@ -45,7 +45,7 @@ namespace org {
         Wt::WSignalMapper<Wt::WObject*> *_enablerSignalMap;
         Wt::WSignalMapper<Wt::WObject*> _dataChangedSignalMap;
         Wt::WSignalMapper<Reference*> *_sliderSignalMap;
-        Wt::WSignalMapper<Wt::Ext::ComboBox*> *_comboSignalMap;
+        //Wt::WSignalMapper<Wt::Ext::ComboBox*> *_comboSignalMap;
         void internalDataChanged(Wt::WObject*);
         void sliderChanged(Reference*);
         void comboChanged(Wt::Ext::ComboBox*);

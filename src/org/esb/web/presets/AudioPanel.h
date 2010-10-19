@@ -19,21 +19,17 @@ namespace org {
   namespace esb {
     namespace web {
 
-      class AudioPanel:public Wt::Ext::Panel {
+      class AudioPanel : public Wt::Ext::Panel {
       public:
-        AudioPanel(Ptr<db::Profile>);
+        AudioPanel(std::map<std::string, std::string>&);
         virtual ~AudioPanel();
-        void save();
       private:
-        Ptr<db::Profile> _profile;
-        std::map<std::string, std::string> _parameter;
-        wtk::ElementContainer<ComboBox> _elcb;
-        Wt::Ext::Button *_advanced;
-        VideoAdvanceTableView*_advance_table;
-        void switchAdvanced();
+        std::map<std::string, std::string>&_parameter;
         void dataChanged();
-        void refresh();
-
+        void setCodecGui(std::string codecid);
+        Wt::Ext::Panel * main_panel;
+        ComboBox * _codec;
+        void codecSelected();
       };
     }
   }

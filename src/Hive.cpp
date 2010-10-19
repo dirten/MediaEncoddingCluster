@@ -79,7 +79,6 @@ int rec = 0;
 
 int main(int argc, char * argv[]) {
 //  Log::open("");
-  org::esb::config::Config::init("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
 
@@ -88,7 +87,9 @@ int main(int argc, char * argv[]) {
   memset(path, 0, s.length() + 1);
   strcpy(path, s.c_str());
 
-  Config::setProperty("hive.path", path);
+  Config::setProperty("hive.base_path", path);
+  org::esb::config::Config::init("");
+
 
   std::string sb = org::esb::io::File(f.getParent()).getParent();
   char * base_path = new char[sb.length() + 1];

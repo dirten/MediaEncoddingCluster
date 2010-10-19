@@ -25,7 +25,7 @@ namespace org {
 
       class VideoPanel : public Wt::Ext::Panel {
       public:
-        VideoPanel(Ptr<db::Profile>);
+        VideoPanel(std::map<std::string, std::string>&);
         virtual ~VideoPanel();
         void save();
       private:
@@ -34,7 +34,6 @@ namespace org {
         std::list<int> _bitrates;
         std::list<int> _keyframes;
         std::list<std::string> _methods;
-        std::map<std::string, std::string> _parameter;
         wtk::ElementContainer<Wt::Ext::LineEdit> _el;
         wtk::ElementContainer<ComboBox> _elcb;
         void setPredefinedCodecFlags();
@@ -46,6 +45,7 @@ namespace org {
         void setCodecGui(std::string codecid);
         void codecSelected();
         std::map<std::string, std::string> _data;
+        std::map<std::string, std::string>&_parameter;
         Wt::Ext::Panel * main_panel;
         ComboBox * _codec;
       };

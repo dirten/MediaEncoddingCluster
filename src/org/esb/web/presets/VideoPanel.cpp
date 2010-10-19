@@ -26,20 +26,10 @@ namespace org {
   namespace esb {
     namespace web {
 
-      VideoPanel::VideoPanel(Ptr<db::Profile> p) : _profile(p), Wt::Ext::Panel() {
+      VideoPanel::VideoPanel(std::map<std::string, std::string>& p) : _parameter(p), Wt::Ext::Panel() {
         //        setLayout(new Wt::WFitLayout());
         Wt::WBorderLayout*l = new Wt::WBorderLayout();
         setLayout(l);
-
-        if (_profile->params().get().count() > 0) {
-          vector<db::ProfileParameter> params = _profile->params().get().all();
-          vector<db::ProfileParameter>::iterator it = params.begin();
-          for (; it != params.end(); it++)
-            if ((*it).mediatype.value() == AVMEDIA_TYPE_VIDEO){
-              _parameter[(*it).name.value()] = (*it).val.value();
-              LOGDEBUG("name="<<(*it).name.value()<<" value="<<(*it).val.value())
-            }
-        }
 
         /*
          * Combobox for the Codec Selector
@@ -67,14 +57,34 @@ namespace org {
         main_panel = new Wt::Ext::Panel();
         Wt::WFitLayout * fit = new Wt::WFitLayout();
         main_panel->setLayout(fit);
+        main_panel->setBorder(false);
 
         l->addWidget(main_panel, Wt::WBorderLayout::Center);
 
         Wt::Ext::Panel * top_panel = new Wt::Ext::Panel();
-        top_panel->resize(Wt::WLength(), 25);
+        top_panel->resize(Wt::WLength(), 40);
         top_panel->setLayout(new Wt::WFitLayout());
-        top_panel->layout()->addWidget(_codec);
+        top_panel->setBorder(false);
+//        top_panel->layout()->addWidget(_codec);
+
+        Wt::WContainerWidget *top = new Wt::WContainerWidget();
+        top_panel->layout()->addWidget(top);
+        Wt::WGridLayout * grid=new Wt::WGridLayout();
+        top->setLayout(grid);
+        top->resize(Wt::WLength(), 40);
+
         l->addWidget(top_panel, Wt::WBorderLayout::North);
+        Wt::WLabel * label = new Wt::WLabel("Codec:");
+        label->setBuddy(_codec);
+
+        grid->addWidget(label,0,0);
+        grid->addWidget(_codec,0,1);
+        grid->addWidget(new Wt::WText(""),0,2);
+        grid->setColumnStretch(1,1);
+
+
+
+
         setCodecGui(_parameter["codec"]);
         //l->addWidget(builder,Wt::WBorderLayout::Center);
         //        return;
@@ -94,11 +104,11 @@ namespace org {
         }
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
-        file += "/res/comp/";
+        file += "/res/comp/encoder.video.";
         file += codecname;
         file += ".gui";
         if (!org::esb::io::File(file).exists()) {
-          file = path + "/res/comp/test.gui";
+          file = path + "/res/comp/encoder.video.default.gui";
         }
         LOGDEBUG("Gui File:" << file);
         GuiBuilder * builder = new GuiBuilder(file, _parameter);
@@ -154,6 +164,7 @@ namespace org {
       }
 
       void VideoPanel::save() {
+        return;
         org::esb::util::ScopedTimeCounter t("database profile update");
         _profile->getDatabase().begin();
         std::map<std::string, ComboBox*> boxes = _elcb.getElements();

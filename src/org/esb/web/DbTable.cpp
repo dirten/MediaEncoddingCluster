@@ -7,6 +7,7 @@ namespace org{
       Wt::Ext::TableView(parent),
         _column_config(cc),
         _sql(sql){
+        setBorder(false);
         model=new DbTableModel(cc,expr,parent);
         setModel(model);
         setAlternatingRowColors(true);

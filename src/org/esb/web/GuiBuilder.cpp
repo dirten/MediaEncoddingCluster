@@ -51,11 +51,13 @@ namespace org {
       GuiBuilder::GuiBuilder(std::string filename, std::map<std::string, std::string> & data_map) : _data_map(data_map), Wt::Ext::Panel() {
         setLayout(new Wt::WFitLayout());
         setAutoScrollBars(true);
+        setBorder(false);
 
         _main = new Wt::WContainerWidget();
         layout()->addWidget(_main);
         _grid = new Wt::WGridLayout();
         _main->setLayout(_grid);
+        
 
         _enablerSignalMap = new Wt::WSignalMapper<Wt::WObject*>(this);
         _enablerSignalMap->mapped().connect(SLOT(this, GuiBuilder::enabler));
@@ -63,8 +65,8 @@ namespace org {
         _sliderSignalMap = new Wt::WSignalMapper<Reference*>(this);
         _sliderSignalMap->mapped().connect(SLOT(this, GuiBuilder::sliderChanged));
 
-        _comboSignalMap = new Wt::WSignalMapper<Wt::Ext::ComboBox*>(this);
-        _comboSignalMap->mapped().connect(SLOT(this, GuiBuilder::comboChanged));
+//        _comboSignalMap = new Wt::WSignalMapper<Wt::Ext::ComboBox*>(this);
+//        _comboSignalMap->mapped().connect(SLOT(this, GuiBuilder::comboChanged));
 
         _dataChangedSignalMap.mapped().connect(SLOT(this, GuiBuilder::internalDataChanged));
 
@@ -81,6 +83,17 @@ namespace org {
         }
         xml_node<>*node = _doc.first_node("guis");
         node = node->first_node("gui");
+
+        xml_node<>*codecs = node->first_node("codecs");
+        if(codecs){
+        xml_node<>*codec = codecs->first_node("codec");
+        std::string codeclist;
+        for (; codec; codec = codec->next_sibling("codec")) {
+          codeclist+=codec->first_attribute("id")->value();
+          codeclist+=",";
+        }
+        LOGDEBUG("CodecList:"<<codeclist);
+        }
         node = node->first_node("options");
 
         xml_node<>*grouptab = node->first_node("optiontab");
@@ -111,19 +124,20 @@ namespace org {
           data[attr->name()] = attr->value();
         }
         xml_node<>*control = ogn->first_node("control");
-        if (strcmp(control->first_attribute("type")->value(), "TextBox") == 0) {
+        std::string type=control->first_attribute("type")->value();
+        if (type== "TextBox") {
           handleOptionTextBox(ogn);
         } else
-          if (strcmp(control->first_attribute("type")->value(), "ComboBox") == 0) {
+          if (type=="ComboBox") {
           handleOptionComboBox(ogn);
         } else
-          if (strcmp(control->first_attribute("type")->value(), "TrackBar") == 0) {
+          if (type== "TrackBar") {
           handleOptionSlider(ogn);
         } else
-          if (strcmp(control->first_attribute("type")->value(), "CheckBox") == 0) {
+          if (type== "CheckBox") {
           handleOptionCheckBox(ogn);
         } else
-          LOGDEBUG("Unknown Control=" << control->first_attribute("type")->value());
+          LOGDEBUG("Unknown Control=" <<type);
 
       }
 
@@ -356,7 +370,7 @@ namespace org {
       }
 
       void GuiBuilder::enabler(Wt::WObject*obj) {
-        //        LOGDEBUG("Enabler Object Id=" << obj->objectName());
+         LOGDEBUG("Enabler Object Id=" << obj->objectName());
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
           std::string id = obj->objectName();
@@ -385,6 +399,8 @@ namespace org {
               if (instanceOf(*obj, ComboBox)) {
                 ComboBox * box = static_cast<ComboBox*> (obj);
                 box->setSelectedEntry((*mapit).second, 1);
+                box->activated().emit(0);
+                LOGDEBUG("Setting combo data from "<<box->objectName()<< " to " <<(*mapit).second);
               } else
                 if (instanceOf(*obj, Wt::Ext::LineEdit)) {
                 Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
@@ -476,7 +492,7 @@ namespace org {
           if (instanceOf(*obj, Wt::Ext::LineEdit)) {
           Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
           std::string data = box->text().narrow();
-          _data_map[box->objectName()] = org::esb::util::StringUtil::toString(atoi(data.c_str()));
+          _data_map[box->objectName()] = data.c_str();
         } else
           if (instanceOf(*obj, Wt::WSlider)) {
           Wt::WSlider * box = static_cast<Wt::WSlider*> (obj);

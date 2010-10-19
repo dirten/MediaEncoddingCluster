@@ -25,6 +25,7 @@ namespace org {
         Profiles(Wt::WContainerWidget * parent = 0) : Wt::Ext::Container() {
           Wt::WFitLayout * l = new Wt::WFitLayout();
           setLayout(l);
+          
           list<ColumnConfig> columnConfigs;
           columnConfigs.push_back(ColumnConfig(db::Profile::Id, "Id", 20));
           columnConfigs.push_back(ColumnConfig(db::Profile::Name, "Name", 200));

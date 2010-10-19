@@ -42,6 +42,7 @@ void Config::close() {
 bool Config::init(const std::string & filename) {
   //  properties = new Properties();
   loadDefaults(properties);
+  _isInitialized=true;
   return true;
   FILE * fp;
   char buffer[255];
@@ -53,7 +54,6 @@ bool Config::init(const std::string & filename) {
   }else{
 //    return false;
   }
-  _isInitialized=true;
   return true;
 }
 

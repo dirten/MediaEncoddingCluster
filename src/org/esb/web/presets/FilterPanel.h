@@ -21,6 +21,7 @@ namespace org {
       public:
         PresetFilterPanel(Ptr<db::Profile>);
         virtual ~PresetFilterPanel();
+        void save();
       private:
         Ptr<db::Profile>_profile;
         Ptr<org::esb::web::PresetFilterTable >filter_table;
@@ -28,6 +29,7 @@ namespace org {
         Wt::WContainerWidget* _cont;
         void filterSelected();
         Wt::WGridLayout * grid;
+        std::map<std::string, std::string> _parameter;
       };
     }
   }

@@ -12,6 +12,7 @@
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/LineEdit"
 
+#include <map>
 namespace org {
   namespace esb {
     namespace web {
@@ -26,6 +27,7 @@ namespace org {
         Wt::WWidget * createContent();
         Ptr<db::Profile>_profile;
         Wt::Ext::LineEdit * name;
+        std::map<std::string, std::string> _parameter;
       };
     }
   }

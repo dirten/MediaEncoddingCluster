@@ -102,9 +102,11 @@ namespace org {
         main_panel = new Wt::Ext::Panel();
         Wt::WFitLayout * fit = new Wt::WFitLayout();
         main_panel->setLayout(fit);
+        main_panel->resize(600, Wt::WLength());
+        main_panel->setResizable(true);
 
         //        main_panel->setBorder(true);
-        layout->addWidget(main_panel, Wt::WBorderLayout::Center);
+        layout->addWidget(main_panel, Wt::WBorderLayout::West);
         /*end Main Panel*/
 
         /*begin Info Panel*/
@@ -155,8 +157,9 @@ namespace org {
         object_panel = new Wt::Ext::Panel();
         object_panel->setResizable(true);
         object_panel->setLayout(new Wt::WFitLayout());
-        object_panel->resize(600,Wt::WLength());
-        layout->addWidget(object_panel, Wt::WBorderLayout::East);
+        object_panel->setBorder(false);
+//        object_panel->resize(600,Wt::WLength());
+        layout->addWidget(object_panel, Wt::WBorderLayout::Center);
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
         useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("main.css");

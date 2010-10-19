@@ -61,32 +61,92 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 add_executable (mhive Hive.cpp)
-add_executable (mhiveservice HiveService.cpp)
-add_executable (mhiveclient MhiveClient.cpp)
-add_executable (mhivemaster MHiveMaster.cpp)
-add_executable (mhivegridnode MHiveGridNode.cpp)
-target_link_libraries (mhivemaster
-  lang
-  util
-  io
-  hive
-  mq
-)
-target_link_libraries (mhivegridnode
-  grid
-)
-add_executable (mhivequeue MHiveQueue.cpp)
-target_link_libraries (mhivequeue mq)
+IF(BUILD_MHIVESERVICE)
+    add_executable (mhiveservice HiveService.cpp)
+    target_link_libraries (mhiveservice io lang util)
+    INSTALL(TARGETS mhiveservice
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
+ENDIF(BUILD_MHIVESERVICE)
 
-add_executable (mhivereader MHiveReader.cpp)
-target_link_libraries (mhivereader lang)
+IF(BUILD_MHIVECLIENT)
+    add_executable (mhiveclient MhiveClient.cpp)
+    target_link_libraries (mhiveclient
+      web
+      esb
+      hive
+      lang
+      av
+      util
+      signal
+      io
+      net
+    )
+    INSTALL(TARGETS mhiveclient
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVECLIENT)
 
-add_executable (mhivewriter MHiveWriter.cpp)
-target_link_libraries (mhivewriter lang)
+IF(BUILD_MHIVEMASTER)
+    add_executable (mhivemaster MHiveMaster.cpp)
+    target_link_libraries (mhivemaster
+      lang
+      util
+      io
+      hive
+      mq
+    )
+    INSTALL(TARGETS mhivemaster
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVEMASTER)
 
-add_executable (mhivecore MHiveCore.cpp)
-target_link_libraries (mhivecore lang hive web)
+IF(BUILD_MHIVEGRIDNODE)
+    add_executable (mhivegridnode MHiveGridNode.cpp)
+    target_link_libraries (mhivegridnode
+      grid
+    )
+ENDIF(BUILD_MHIVEGRIDNODE)
+
+IF(BUILD_MHIVEQUEUE)
+    add_executable (mhivequeue MHiveQueue.cpp)
+    target_link_libraries (mhivequeue mq)
+    INSTALL(TARGETS mhivequeue
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVEQUEUE)
+
+IF(BUILD_MHIVEREADER)
+    add_executable (mhivereader MHiveReader.cpp)
+    target_link_libraries (mhivereader lang)
+    INSTALL(TARGETS mhivereader
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVEREADER)
+
+IF(BUILD_MHIVEWRITER)
+    add_executable (mhivewriter MHiveWriter.cpp)
+    target_link_libraries (mhivewriter lang)
+    INSTALL(TARGETS mhivewriter
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVEWRITER)
+
+IF(BUILD_MHIVECORE)
+    add_executable (mhivecore MHiveCore.cpp)
+    target_link_libraries (mhivecore lang hive web)
+    INSTALL(TARGETS mhivecore
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVECORE)
 
 #SET_TARGET_PROPERTIES(mhive PROPERTIES INSTALL_RPATH lib)
 
@@ -94,7 +154,6 @@ target_link_libraries (mhivecore lang hive web)
 #FIND_LIBRARY(COCOA_LIBRARY COCOA)
 #MARK_AS_ADVANCED(COCOA_LIBRARY)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
-target_link_libraries (mhiveservice io lang util)
  
 target_link_libraries (mhive 
   web 
@@ -164,17 +223,6 @@ ELSE(WIN32)
   )
 ENDIF(WIN32)
 
-target_link_libraries (mhiveclient
-  web
-  esb
-  hive
-  lang
-  av
-  util
-  signal
-  io
-  net
-)
 
 
 SET(CURL_CMD curl)
@@ -203,40 +251,12 @@ INSTALL(TARGETS mhive
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhiveservice
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhiveclient
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhivemaster
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhivequeue
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhivereader
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhivewriter
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-INSTALL(TARGETS mhivecore
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web/
   DESTINATION ./web
