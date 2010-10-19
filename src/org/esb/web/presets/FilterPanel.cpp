@@ -42,8 +42,8 @@ namespace org {
         _cont->setLayout(new Wt::WBorderLayout());
         _cont->resize(500,300);
         grid->addWidget(_cont, 0, 1);
-        //filter_table->itemSelectionChanged().connect(SLOT(this,PresetFilterPanel::filterSelected));
-        filter_table->cellClicked().connect(SLOT(this,PresetFilterPanel::filterSelected));
+        filter_table->itemSelectionChanged().connect(SLOT(this,PresetFilterPanel::filterSelected));
+        //filter_table->cellClicked().connect(SLOT(this,PresetFilterPanel::filterSelected));
       }
 
       PresetFilterPanel::~PresetFilterPanel() {
@@ -74,6 +74,7 @@ namespace org {
         for(;it!=params.end();it++){
           _parameter[(*it).fkey]=(*it).fval;
         }
+//        return;
         GuiBuilder * builder = new GuiBuilder(file, _parameter);
         builder->dataChanged.connect(SLOT(this,PresetFilterPanel::save));
 //        if (main_panel->layout()->count() > 0) {
