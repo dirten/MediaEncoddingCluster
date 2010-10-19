@@ -31,7 +31,7 @@ namespace org {
          std::vector<Ptr<db::Filter> > _available_filter;
          Ptr<db::Profile> _profile;
          void itemSelectionChangedMethod();
-         Ptr<PresetFilterTableModel> _model;
+         PresetFilterTableModel* _model;
       };
     }
   }

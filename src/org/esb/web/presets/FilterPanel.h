@@ -24,7 +24,7 @@ namespace org {
         void save();
       private:
         Ptr<db::Profile>_profile;
-        Ptr<org::esb::web::PresetFilterTable >filter_table;
+        org::esb::web::PresetFilterTable *filter_table;
         Wt::Ext::Panel* _props;
         Wt::WContainerWidget* _cont;
         void filterSelected();

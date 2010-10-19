@@ -22,7 +22,7 @@ namespace org{
         void choose();
         void cancel();
         void enableButtons();
-        Ptr<FilterTable> _filter_table;
+        FilterTable* _filter_table;
         std::vector<Ptr<db::Filter> > _available_filters;
       };
     }

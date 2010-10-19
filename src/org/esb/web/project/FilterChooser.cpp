@@ -54,7 +54,7 @@ namespace org{
           setLayout(new Wt::WFitLayout());
           resize(400,300);
           selected.setBlocked(false);
-          _filter_table=Ptr<FilterTable>(new FilterTable());
+          _filter_table=new FilterTable();
           _filter_table->setFilter(available_filter);
           _filter_table->setAlternatingRowColors(true);
           _filter_table->setHighlightMouseOver(true);
@@ -62,7 +62,7 @@ namespace org{
           _filter_table->setSelectionMode(Wt::SingleSelection);
           _filter_table->itemSelectionChanged().connect(SLOT(this, FilterChooser::enableButtons));
 
-          layout()->addWidget(_filter_table.get());
+          layout()->addWidget(_filter_table);
 
 
           addButton(new Wt::Ext::Button("Select Filter"));

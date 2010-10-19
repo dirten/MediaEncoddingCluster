@@ -44,7 +44,7 @@ namespace org {
         Ptr<db::Profile> _profile;
       };
 
-      PresetFilterTable::PresetFilterTable(Ptr<db::Profile> p) : _profile(p) {
+      PresetFilterTable::PresetFilterTable(Ptr<db::Profile> p) : _profile(p),Wt::Ext::TableView() {
         LOGDEBUG("FilterTable::FilterTable() : Wt::Ext::TableView()");
 
         Ptr<db::Filter> f = new db::Filter(p->getDatabase());
@@ -57,7 +57,7 @@ namespace org {
         f2->filtername = "Deinterlace Filter";
         _available_filter.push_back(f2);
 
-        setModel((_model=new PresetFilterTableModel(p)).get());
+        setModel(_model=new PresetFilterTableModel(p));
         cellClicked().connect(SLOT(this, PresetFilterTable::itemSelectionChangedMethod));
         resize(300, 300);
         setColumnWidth(0, 50);
@@ -90,6 +90,7 @@ namespace org {
         _chooser = new FilterChooser(_available_filter);
         _chooser->selected.connect(SLOT(this, PresetFilterTable::filterSelected));
         _chooser->show();
+        //if(_chooser->exec()==Wt::Ext::Dialog::Accepted){}
       }
 
       void PresetFilterTable::filterSelected() {

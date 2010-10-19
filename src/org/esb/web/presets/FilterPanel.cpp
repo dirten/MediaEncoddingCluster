@@ -37,7 +37,7 @@ namespace org {
         layout()->addWidget(main);
 
         
-        grid->addWidget((filter_table = new PresetFilterTable(p)).get(), 0, 0);
+        grid->addWidget(filter_table = new PresetFilterTable(p), 0, 0);
         _cont=new Wt::WContainerWidget();
         _cont->setLayout(new Wt::WBorderLayout());
         _cont->resize(500,300);
@@ -56,7 +56,7 @@ namespace org {
         if(_cont->layout()->count()>0){
           Wt::WLayoutItem * item =((Wt::WBorderLayout*)_cont->layout())->itemAt(Wt::WBorderLayout::Center);
           _cont->layout()->removeItem(item);
-          delete item;
+          //delete item;
         }
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
