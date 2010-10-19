@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<guis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://storm/schema/gui.xsd">
+  <gui helpLink="encoder_mp4v.html">
+    <options>
+      <optiongroup id="general_settings" title="General settings"/>
+      <option id="channels" title="Audio Channels" type="int" min="1" max="8" default="2" optionGroupId="general_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Mono" value="1"/>
+          <item title="Stereo" value="2"/>
+          <item title="Surround" value="3"/>
+          <item title="Quad" value="4"/>
+          <item title="5.0" value="5"/>
+          <item title="5.1" value="6"/>
+          <item title="7.1" value="8"/>
+        </list>
+      </option>
+      <option id="audio_bitrate" title="Audio Bitrate" type="int" min="32000" max="320000" default="128000" optionGroupId="general_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="32 kb/s" value="32000"/>
+          <item title="96 kb/s" value="96000"/>
+          <item title="128 kb/s" value="128000"/>
+          <item title="160 kb/s" value="160000"/>
+          <item title="192 kb/s" value="192000"/>
+          <item title="224 kb/s" value="224000"/>
+          <item title="256 kb/s" value="256000"/>
+          <item title="320 kb/s" value="320000"/>
+        </list>
+      </option>
+      <option id="samplerate" title="Audio Samplerate" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="8 kHz" value="8000"/>
+          <item title="11.025 kHz" value="11025"/>
+          <item title="22.05 kHz" value="22050"/>
+          <item title="32 kHz" value="32000"/>
+          <item title="44.1 kHz" value="44100"/>
+          <item title="48 kHz" value="48000"/>
+        </list>
+      </option>
+    </options>
+  </gui>
+</guis>
