@@ -143,7 +143,7 @@
 <!--                <patch patchfile="src/patch/litesql_library_mysql.patch" dir="source/litesql-src-0.3.8" strip="0"/>
                 <patch patchfile="src/patch/litesql_CMakeLists.patch" dir="source/litesql-src-0.3.8" strip="0"/>
                 <patch patchfile="src/patch/litesql_mysql_thread.patch" dir="source/litesql-src-0.3.8" strip="0"/>-->
-                <!--<patch patchfile="src/patch/litesql_full_2.patch" dir="source/litesql-src-0.3.8" strip="0"/>-->
+                <patch patchfile="src/patch/litesql_full_2.patch" dir="source/litesql-src-0.3.8" strip="0"/>
 		    <copy todir="${project.basedir}/win32">
                   <fileset dir="${project.basedir}/target/dependency/win32"/>
                 </copy>
