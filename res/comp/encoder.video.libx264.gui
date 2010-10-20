@@ -1,17 +1,38 @@
 <?xml version="1.0"?>
-<guis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://storm/schema/gui.xsd">
-  <gui helpLink="encoder_mp4v.html">
-    <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
+<guis>
+  <gui>
     <options>
       <!--Tabs-->
       <optiontab id="general" title="General"/>
       <optiontab id="advance" title="Advanced"/>
       <!--Groups-->
+      <optiongroup id="frametype_settings" title="Bandwidth settings"/>
+
       <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
       <optiongroup id="keyframe_settings" title="Keyframe settings"/>
       <optiongroup id="profile_settings" title="Profile Settings"/>
       <optiongroup id="encoding_settings" title="Encoding Settings"/>
       <optiongroup id="profile_partition_settings" title="Encoding Partition Settings"/>
+
+      <!--FrameType settings-->
+      <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="frametype_settings">
+        <control type="TrackBar">
+          <controlparameter name="startLabel" value="0"/>
+          <controlparameter name="endLabel" value="1"/>
+          <controlparameter name="hasTextBox" value="true"/>
+          <controlparameter name="textBoxPosition" value="start"/>
+        </control>
+        <format	value="%.2f" />
+      </option>
+
+
+
+
+
+
+
+
+
       <!--Bandwidth settings-->
       <option id="bitrate" title="Average Bit Rate x264" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
         <control type="TextBox"></control>

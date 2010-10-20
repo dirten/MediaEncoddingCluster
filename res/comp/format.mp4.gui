@@ -3,7 +3,7 @@
   <gui helpLink="encoder_mp4v.html">
     <codecs>
       <codec id="libx264"/>
-      <codec id="xvid"/>
+      <codec id="libxvid"/>
     </codecs>
     <options>
       <!--Groups-->

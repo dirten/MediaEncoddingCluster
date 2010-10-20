@@ -30,6 +30,16 @@ namespace org {
         //        setLayout(new Wt::WFitLayout());
         Wt::WBorderLayout*l = new Wt::WBorderLayout();
         setLayout(l);
+        std::set<std::string> avail_codecs;
+        if(_parameter.count("available_codecs")>0){
+          LOGDEBUG("Available codes"<<_parameter["available_codecs"]);
+          org::esb::util::StringTokenizer st(_parameter["available_codecs"],",");
+          while(st.hasMoreTokens()){
+            std::string codec_id=st.nextToken();
+            avail_codecs.insert(codec_id);
+            LOGDEBUG("avalable codec list"<<codec_id);
+          }
+        }
 
         /*
          * Combobox for the Codec Selector
@@ -39,9 +49,11 @@ namespace org {
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
-            codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
+            if(avail_codecs.count(codec->name)>0)
+              codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
           }
         }
+        codec_model->sort(1);
 
         _codec = new ComboBox();
         _codec->setModel(codec_model);

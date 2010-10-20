@@ -14,6 +14,7 @@
 #include "org/esb/util/Log.h"
 #include "Wt/WFitLayout"
 #include "Wt/WTable"
+#include "Wt/WLabel"
 #include "Wt/WText"
 #include "wtk/GroupBox.h"
 #include "Wt/Ext/LineEdit"
@@ -92,7 +93,8 @@ namespace org {
           codeclist+=codec->first_attribute("id")->value();
           codeclist+=",";
         }
-        LOGDEBUG("CodecList:"<<codeclist);
+          _data_map["available_codecs"]=codeclist;
+          LOGDEBUG("CodecList:" << codeclist);
         }
         node = node->first_node("options");
 
@@ -137,6 +139,13 @@ namespace org {
           if (type== "CheckBox") {
           handleOptionCheckBox(ogn);
         } else
+          if (type == "FileSelect") {
+        } else
+          if (type == "Label") {
+            handleOptionLabel(ogn);
+        } else
+          LOGDEBUG("Unknown Control=" << type);
+
           LOGDEBUG("Unknown Control=" <<type);
 
       }
@@ -180,6 +189,36 @@ namespace org {
         }
 
       }
+      void GuiBuilder::handleOptionLabel(rapidxml::xml_node<> *ogn) {
+        std::map<std::string, std::string> data;
+        for (xml_attribute<> *attr = ogn->first_attribute(); attr; attr = attr->next_attribute()) {
+          data[attr->name()] = attr->value();
+        }
+        Wt::WLabel * text = new Wt::WLabel();
+        _elements[data["id"]] = text;
+        Wt::WTable * table = new Wt::WTable();
+        table->elementAt(0, 0)->addWidget(new Wt::WText(""));
+        table->elementAt(0, 0)->resize(200, Wt::WLength());
+        table->elementAt(0, 1)->addWidget(text);
+        if (data.count("optionGroupId") > 0) {
+          if (_elements.count(data["optionGroupId"]) > 0) {
+            ((GroupBox*) _elements[data["optionGroupId"]])->addWidget(table);
+          } else {
+            LOGERROR("no groupbox found with id " << data["optionGroupId"]);
+          }
+        } else {
+          _grid->addWidget(table, _grid->rowCount(), 0);
+        }
+        text->setObjectName(data["id"]);
+        text->resize(200, Wt::WLength());
+        if (_data_map.count(data["id"]) > 0) {
+          text->setText(_data_map[data["id"]] + " " + data["unit"]);
+        } else {
+          text->setText(data["default"] + " " + data["unit"]);
+          _data_map[data["id"]] = data["default"];
+        }
+      }
+
 
       void GuiBuilder::handleOptionTextBox(rapidxml::xml_node<> *ogn) {
         std::map<std::string, std::string> data;
@@ -236,6 +275,15 @@ namespace org {
         } else {
           _grid->addWidget(table, _grid->rowCount(), 0);
         }
+
+         xml_node<>*enables = ogn->first_node("enables");
+          if (enables) {
+            xml_node<>*option = enables->first_node("option");
+            for (; option; option = option->next_sibling("option")) {
+              _enablerMap[data["id"]]["1"].push_back(option->value());
+            }
+          }
+
         box->setObjectName(data["id"]);
         if (_data_map.count(data["id"]) > 0) {
           box->setChecked(atoi(_data_map[data["id"]].c_str()));
@@ -405,6 +453,7 @@ namespace org {
                 if (instanceOf(*obj, Wt::Ext::LineEdit)) {
                 Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
                 box->setText((*mapit).second);
+                box->changed().emit();
               } else
                 if (instanceOf(*obj, Wt::WSlider)) {
                 Wt::WSlider * box = static_cast<Wt::WSlider*> (obj);

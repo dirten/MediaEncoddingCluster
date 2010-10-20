@@ -81,26 +81,19 @@ int main(int argc, char * argv[]) {
 //  Log::open("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
+  std::string base_path = org::esb::io::File(f.getParent()).getParent();
 
-  std::string s = f.getFilePath();
-  char * path = new char[s.length() + 1];
-  memset(path, 0, s.length() + 1);
-  strcpy(path, s.c_str());
 
-  Config::setProperty("hive.base_path", path);
+  Config::setProperty("hive.base_path", base_path);
   org::esb::config::Config::init("");
 
 
-  std::string sb = org::esb::io::File(f.getParent()).getParent();
-  char * base_path = new char[sb.length() + 1];
-  memset(base_path, 0, sb.length() + 1);
-  strcpy(base_path, sb.c_str());
-  std::string logconfigpath = sb;
+  std::string logconfigpath = base_path;
   logconfigpath.append("/res");
   std::cout << logconfigpath << std::endl;
  
 
-  std::string dump_path = sb;
+  std::string dump_path = base_path;
   dump_path.append("/dmp");
   org::esb::io::File dpath(dump_path);
   if (!dpath.exists())
@@ -108,13 +101,13 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.dump_path", dump_path.c_str());
   //    std::wstring wdump_path(dump_path.begin(), dump_path.end());
-  std::string tmp_path = sb;
+  std::string tmp_path = base_path;
   tmp_path.append("/tmp");
   org::esb::io::File tpath(tmp_path);
   if (!tpath.exists())
     tpath.mkdir();
 
-  Config::setProperty("hive.base_path", base_path);
+//  Config::setProperty("hive.base_path", base_path);
   try {
     std::string config_path = Config::getProperty("hive.base_path");
     config_path.append("/.hive.cfg");
@@ -137,7 +130,7 @@ int main(int argc, char * argv[]) {
     ser.add_options()
             ("daemon,d", "start the Hive as Daemon Process")
             ("run,r", "start the Hive as Console Process")
-            ("db",po::value<std::string > ()->default_value("database="+sb+"/data/hive.db"), "connect to the db")
+            ("db",po::value<std::string > ()->default_value("database="+base_path+"/data/hive.db"), "connect to the db")
             ;
 
     po::options_description cli("Client options");
@@ -283,8 +276,8 @@ int main(int argc, char * argv[]) {
     return 1;
 
   }
-  delete[] path;
-  delete[] base_path;
+//  delete[] path;
+//  delete[] base_path;
   org::esb::hive::DatabaseService::stop();
 
   org::esb::config::Config::close();
