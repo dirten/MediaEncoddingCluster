@@ -5,7 +5,6 @@
  * Created on 13. Oktober 2010, 12:44
  */
 
-#include <unistd.h>
 #include <map>
 
 #include "GuiBuilder.h"
@@ -145,8 +144,6 @@ namespace org {
             handleOptionLabel(ogn);
         } else
           LOGDEBUG("Unknown Control=" << type);
-
-          LOGDEBUG("Unknown Control=" <<type);
 
       }
 
@@ -291,6 +288,8 @@ namespace org {
           box->setChecked(atoi(data["default"].c_str()));
           _data_map[data["id"]] = data["default"];
         }
+        _enablerSignalMap->mapConnect(box->checked(), box);
+        _enablerSignalMap->mapConnect(box->unChecked(), box);
         _dataChangedSignalMap.mapConnect(box->checked(), box);
         _dataChangedSignalMap.mapConnect(box->unChecked(), box);
       }
