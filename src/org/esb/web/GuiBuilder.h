@@ -18,11 +18,13 @@
 
 #include "boost/property_tree/detail/rapidxml.hpp"
 #include <map>
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace web {
       class Reference;
       class GuiBuilder :public Wt::Ext::Panel{
+        classlogger("org.esb.web.GuiBuilder");
       public:
         GuiBuilder(std::string filename,std::map<std::string, std::string> & data_map);
         virtual ~GuiBuilder();
@@ -36,6 +38,7 @@ namespace org {
         void handleOptionCheckBox(rapidxml::xml_node<> *);
         void handleOptionComboBox(rapidxml::xml_node<> *);
         void handleOptionSlider(rapidxml::xml_node<> *);
+        void handleOptionLabel(rapidxml::xml_node<> *);
 
         rapidxml::xml_document<> _doc;
         std::map<std::string, Wt::WWidget *> _elements;
