@@ -38,7 +38,8 @@ namespace org {
           LOGDEBUG("Processing Property "<<(*it).first);
           if(_prop2parent.count((*it).first)>0){
             LOGDEBUG("Properyt parent found : "<<_prop2parent[(*it).first]);
-            _result[_prop2parent[(*it).first]].append("+").append((*it).first);
+            if((*it).second.length()>0&&(*it).second!="0")
+              _result[_prop2parent[(*it).first]].append("+").append((*it).first);
           }else
           if(_result.count((*it).first)>0){
             _result[(*it).first]=(*it).second;

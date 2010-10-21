@@ -122,10 +122,12 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
+          if((*it).name.value()=="video_codec")
+            s.codecid=(*it).val.value();
         }
       }
 
-      s.codecid = (int) profile.vcodec;
+//      s.codecid = (int) profile.vcodec;
       float f = atof(((std::string)profile.vframerate).c_str());
       if (f == 0) {
         s.frameratenum = (int) (*it).frameratenum; //rs.getInt("framerate_num");
@@ -178,9 +180,11 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
-        }
+          if((*it).name.value()=="audio_codec")
+            s.codecid=(*it).val.value();
       }
-      s.codecid = (int) profile.acodec;
+      }
+//      s.codecid = (int) profile.acodec;
       s.streamtimebasenum = 1;
       s.streamtimebaseden = (int) profile.asamplerate;
       s.bitrate = (int) profile.abitrate;

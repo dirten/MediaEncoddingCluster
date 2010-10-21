@@ -5,11 +5,11 @@
  * Created on 13. Oktober 2010, 12:40
  */
 
+#include "org/esb/web/WebApp2.h"
 #include "org/esb/web/GuiBuilder.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "Wt/Test/WTestEnvironment"
-#include "org/esb/web/WebApp2.h"
 #include "org/esb/config/config.h"
 using namespace org::esb::web;
 /*

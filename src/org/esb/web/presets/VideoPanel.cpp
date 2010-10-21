@@ -58,7 +58,7 @@ namespace org {
         _codec = new ComboBox();
         _codec->setModel(codec_model);
         _codec->setModelColumn(1);
-        _codec->setSelectedEntry(_parameter["codec"]);
+        _codec->setSelectedEntry(_parameter["video_codec_id"]);
         _codec->setTextSize(50);
         _codec->resize(300,Wt::WLength());
 

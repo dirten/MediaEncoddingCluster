@@ -62,7 +62,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setWidth(stream.width);
       _encoder->setHeight(stream.height);
       _encoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
-      _encoder->setBitRate(stream.bitrate);
+//      _encoder->setBitRate(stream.bitrate);
 
       _encoder->setTimeBase(stream.framerateden, stream.frameratenum);
       if (stream.streamtype == CODEC_TYPE_VIDEO) {
@@ -71,18 +71,20 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
         _encoder->setTimeBase(stream.streamtimebasenum, stream.streamtimebaseden);
       }
 
-      _encoder->setGopSize(stream.gopsize);
-      _encoder->setChannels(stream.channels);
-      _encoder->setSampleRate(stream.samplerate);
+//      _encoder->setGopSize(stream.gopsize);
+//      _encoder->setChannels(stream.channels);
+//      _encoder->setSampleRate(stream.samplerate);
       _encoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
-      _encoder->setFlag(stream.flags);
+//      _encoder->setFlag(stream.flags);
 //      vector<db::StreamParameter> params = stream.params().get().all();
       CodecPropertyTransformer transformer(stream.params().get().all());
       std::map<std::string, std::string> params=transformer.getCodecProperties();
       std::map<std::string, std::string>::iterator it=params.begin();
       for(;it!=params.end();it++){
-        if (_encoder->setCodecOption((*it).first, (*it).second)) {
-          LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
+        if((*it).second.length()>0){
+          if (_encoder->setCodecOption((*it).first, (*it).second)) {
+            LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
+          }
         }
       }
 //      setCodecOptions(_encoder, stream.params().get().all());
