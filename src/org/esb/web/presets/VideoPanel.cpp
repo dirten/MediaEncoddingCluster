@@ -49,7 +49,7 @@ namespace org {
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
-            if(avail_codecs.count(codec->name)>0)
+            //if(avail_codecs.count(codec->name)>0)
               codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
           }
         }
@@ -104,7 +104,7 @@ namespace org {
 
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        _parameter["codec"]=codecid;
+        _parameter["video_codec_id"]=codecid;
         std::string codecname;
         AVCodec *codec = NULL;
         int a = 0;

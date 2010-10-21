@@ -286,9 +286,9 @@
     <dependency>
       <groupId>org.esb.ffmpeg</groupId>
       <artifactId>ffmpeg</artifactId>
-      <version>0.0</version>
+      <version>20101020</version>
       <type>zip</type>
-      <classifier>${my.family}</classifier>
+      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
     <dependency>
       <groupId>org.esb.log4cplus</groupId>

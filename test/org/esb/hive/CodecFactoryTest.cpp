@@ -64,7 +64,9 @@ int main(int argc, char** argv) {
     boost::shared_ptr<org::esb::av::Encoder>encoder = org::esb::hive::CodecFactory::getStreamEncoder(stream.id);
 
 
-    encoder->setBitRate(1024000);
+    encoder->setCodecOption("b","1024000");
+//    encoder->ctx->rc_buffer_size=3000000;
+    LOGDEBUG("VBV="<<encoder->ctx->rc_buffer_size);
     assert(encoder->open());
 
     LOGDEBUG(encoder->toString());
