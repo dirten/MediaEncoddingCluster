@@ -5,7 +5,7 @@
 #include "org/esb/util/StringTokenizer.h"
 #include "DatabaseService.h"
 #include <stdexcept>
-
+#include "CodecPropertyTransformer.h"
 
 using namespace org::esb;
 using namespace org::esb::hive;
@@ -77,8 +77,15 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       _encoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
       _encoder->setFlag(stream.flags);
 //      vector<db::StreamParameter> params = stream.params().get().all();
-
-      setCodecOptions(_encoder, stream.params().get().all());
+      CodecPropertyTransformer transformer(stream.params().get().all());
+      std::map<std::string, std::string> params=transformer.getCodecProperties();
+      std::map<std::string, std::string>::iterator it=params.begin();
+      for(;it!=params.end();it++){
+        if (_encoder->setCodecOption((*it).first, (*it).second)) {
+          LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
+        }
+      }
+//      setCodecOptions(_encoder, stream.params().get().all());
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
     } catch (litesql::NotFound e) {

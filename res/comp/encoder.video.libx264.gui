@@ -164,7 +164,7 @@
       <option id="wpred" title="Weighted Prediction" type="bool" default="1" optionGroupId="analysis_settings">
         <control type="CheckBox"></control>
       </option>
-      <option id="me_method" type="string" default="2" title="Motion Estemination" optionGroupId="rate_settings">
+      <option id="me_method" type="string" default="epzs" title="Motion Estemination" optionGroupId="rate_settings">
         <control type="ComboBox"></control>
         <list>
           <item title="epzs" value="epzs"/>

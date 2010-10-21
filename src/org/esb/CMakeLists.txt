@@ -281,6 +281,7 @@ add_library (hive
   hive/job/JobController.cpp
   hive/ProcessManager.cpp
   hive/HiveException.cpp
+  hive/CodecPropertyTransformer.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db net esb signal av lang)

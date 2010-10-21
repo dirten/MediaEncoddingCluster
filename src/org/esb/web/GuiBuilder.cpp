@@ -549,7 +549,7 @@ namespace org {
         } else
           if (instanceOf(*obj, Wt::WCheckBox)) {
           Wt::WCheckBox * box = static_cast<Wt::WCheckBox*> (obj);
-          _data_map[box->objectName()] = box->isChecked() ? "1" : "0";
+          _data_map[box->objectName()] = box->isChecked() ? box->objectName() : "";
         }
         dataChanged.emit();
       }
