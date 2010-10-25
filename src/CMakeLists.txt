@@ -8,6 +8,11 @@ add_definitions(/DCURL_STATICLIB)
 
 add_subdirectory (org)
 
+SET(BUILD_MHIVESERVICE On)
+SET(BUILD_MHIVEQUEUE On)
+SET(BUILD_MHIVEWRITER On)
+SET(BUILD_MHIVEREADER On)
+SET(BUILD_MHIVECLIENT On)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
