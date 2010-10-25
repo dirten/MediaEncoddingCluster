@@ -36,13 +36,13 @@ namespace org {
         std::map<std::string, std::string>::iterator it=data.begin();
         for(;it!=data.end();it++){
           LOGDEBUG("Processing Property "<<(*it).first);
+          if(_result.count((*it).first)>0){
+            _result[(*it).first]=(*it).second;
+          }else
           if(_prop2parent.count((*it).first)>0){
             LOGDEBUG("Properyt parent found : "<<_prop2parent[(*it).first]);
             if((*it).second.length()>0&&(*it).second!="0")
               _result[_prop2parent[(*it).first]].append("+").append((*it).first);
-          }else
-          if(_result.count((*it).first)>0){
-            _result[(*it).first]=(*it).second;
           }else{
             LOGWARN("Property \""<<(*it).first<< "\" with value \""<<(*it).second<<"\" is unknown!");
           }
@@ -53,7 +53,7 @@ namespace org {
         const AVOption * option = NULL;
         AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
         while (option = av_next_option(codec, option)) {
-          if (option->flags & AV_OPT_FLAG_ENCODING_PARAM) {
+          if (option->flags & AV_OPT_FLAG_ENCODING_PARAM||option->flags==0) {
             std::string name = option->name;
             std::string unit = option->unit != NULL ? option->unit : "";
             if (option->offset == 0)

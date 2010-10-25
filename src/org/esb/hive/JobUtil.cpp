@@ -122,7 +122,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
-          if((*it).name.value()=="video_codec")
+          if((*it).name.value()=="video_codec_id")
             s.codecid=(*it).val.value();
         }
       }
@@ -180,7 +180,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
-          if((*it).name.value()=="audio_codec")
+          if((*it).name.value()=="audio_codec_id")
             s.codecid=(*it).val.value();
       }
       }

@@ -71,7 +71,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   vector<db::Stream>::iterator stream_it=streams.begin();
   litesql::Or expr((db::ProcessUnit::Targetstream>0),litesql::Expr());
   std::string sql_expr="ProcessUnit_.targetstream_ IN(";
-
+  bool success=true;
   for(int a=0;stream_it!=streams.end();stream_it++){
     db::Stream stream=(*stream_it);
     db::JobDetail d=stream.jobsout().get().one();
@@ -88,11 +88,24 @@ void FileExporter::exportFile(db::MediaFile outfile) {
       _source_stream_map[inStream.streamindex].next_timestamp = 0;
       _source_stream_map[inStream.streamindex].out_stream_index=stream.streamindex;
       a++;
+    }else{
+      success=false;
     }
   }
   sql_expr=sql_expr.erase(sql_expr.length()-2,2);
   sql_expr+=")";
   LOGDEBUG("expression="<<sql_expr);
+  if(!success){
+    db::JobLog log(job.getDatabase());
+    std::string message="could not create all codecs to write the output file ";
+    message+=filename;
+    log.message=message;
+    log.update();
+    job.joblog().link(log);
+    job.status="warning";
+    job.update();
+//    return;
+  }
   pos->init();
   litesql::Cursor<db::ProcessUnit> units=litesql::select<db::ProcessUnit>(outfile.getDatabase(),litesql::RawExpr(sql_expr)).cursor();
   

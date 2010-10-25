@@ -29,6 +29,7 @@ namespace org {
          * Combobox for the Codec Selector
          */
         KeyValueModel * codec_model = new KeyValueModel();
+        codec_model->addModelData("","No Audio");
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
@@ -83,7 +84,7 @@ namespace org {
 
       void AudioPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        _parameter["audio_codec"] = codecid;
+        _parameter["audio_codec_id"] = codecid;
         std::string codecname;
         AVCodec *codec = NULL;
         int a = 0;

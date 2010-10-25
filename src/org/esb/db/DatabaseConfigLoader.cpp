@@ -15,7 +15,7 @@ namespace org {
 
       void DatabaseConfigLoader::load() {
         /*load params from database*/
-        try {
+        /*try {
           if (std::string(org::esb::config::Config::getProperty("db.url")).length() > 0) {
             ::db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
             vector< ::db::Config> configs = litesql::select< ::db::Config > (db).all();
@@ -32,7 +32,7 @@ namespace org {
           }
         } catch (...) {
           
-        }
+        }*/
       }
 
       void DatabaseConfigLoader::save() {

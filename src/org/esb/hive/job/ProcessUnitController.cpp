@@ -27,6 +27,7 @@
 #include "StreamData.h"
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/hive/DatabaseService.h"
+#include "org/esb/util/StringUtil.h"
 
 using namespace db;
 using namespace org::esb::av;
@@ -168,10 +169,26 @@ namespace org {
                 stream_map.erase(idx);
                 continue;
               }
-              stream_map[idx].encoder->open();
+              if(!stream_map[idx].encoder->open()){
+              db::JobLog log(job.getDatabase());
+              std::string message = "Could not open Encoder for Stream#";
+              message += org::esb::util::StringUtil::toString(idx);
+              message+=" for file ";
+              message+=filename;
+
+              log.message = message;
+              log.update();
+
+              job.joblog().link(log);
+                stream_map.erase(idx);
+                continue;
+              }
               stream_data[idx].decoder = stream_map[idx].decoder;
               stream_data[idx].encoder = stream_map[idx].encoder;
-              stream_data[idx].min_packet_count = 0;
+              if(stream_map[idx].encoder->getCodecType()==AVMEDIA_TYPE_VIDEO)
+                stream_data[idx].min_packet_count = stream_map[idx].encoder->getGopSize();
+              else
+                stream_data[idx].min_packet_count = 0;
             }
             PacketInputStream pis(&fis);
 

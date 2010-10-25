@@ -14,8 +14,8 @@ namespace org {
       }
 
 
-      FilterPanel::~FilterPanel() {
-      }
+      //FilterPanel::~FilterPanel() {
+      //}
     }
   }
 }

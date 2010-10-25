@@ -65,11 +65,11 @@ namespace org {
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
-         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
-          setTimeBase(1,ctx->sample_rate);
+        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
+          setTimeBase(1, ctx->sample_rate);
         }
-        _frame_rate.num=s->r_frame_rate.num;
-        _frame_rate.den=s->r_frame_rate.den;
+        _frame_rate.num = s->r_frame_rate.num;
+        _frame_rate.den = s->r_frame_rate.den;
 
         //		_codec_resolved=false;
       }
@@ -82,8 +82,8 @@ namespace org {
         _codec_resolved = false;
         _pre_allocated = false;
         _bytes_discard = 0;
-        _frame_rate.num=0;
-        _frame_rate.den=0;
+        _frame_rate.num = 0;
+        _frame_rate.den = 0;
       }
 
       Codec::Codec(const CodecID codecId, int mode) {
@@ -102,8 +102,8 @@ namespace org {
         _opened = false;
         _pre_allocated = false;
         _bytes_discard = 0;
-        _frame_rate.num=0;
-        _frame_rate.den=0;
+        _frame_rate.num = 0;
+        _frame_rate.den = 0;
       }
 
       void Codec::setCodecId(CodecID id) {
@@ -111,27 +111,28 @@ namespace org {
       }
 
       int Codec::setCodecOption(std::string opt, std::string arg) {
-        LOGTRACE( "setCodecOption(" << opt << "," << arg << ")");
-        _options[opt]=arg;
+        LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
+        _options[opt] = arg;
         return 0;
       }
-/*
-      bool Codec::saveCodecOption() {
-        AVClass *c = *(AVClass**) ctx;
-        const AVOption *o = c->option;
-        for (; o && o->name; o++) {
-          int buf_len = 2000;
-          char* buf = new char[buf_len];
-          av_get_string(ctx, o->name, NULL, buf, buf_len);
-          LOGINFO("org.esb.av.Codec", "OptionName=" << o->name << " OptionString=" << buf);
-          delete buf;
-        }
-      }
 
-      bool Codec::loadCodecOption() {
+            /*
+            bool Codec::saveCodecOption() {
+              AVClass *c = *(AVClass**) ctx;
+              const AVOption *o = c->option;
+              for (; o && o->name; o++) {
+                int buf_len = 2000;
+                char* buf = new char[buf_len];
+                av_get_string(ctx, o->name, NULL, buf, buf_len);
+                LOGINFO("org.esb.av.Codec", "OptionName=" << o->name << " OptionString=" << buf);
+                delete buf;
+              }
+            }
 
-      }
-*/
+            bool Codec::loadCodecOption() {
+
+            }
+       */
       void Codec::setContextDefaults() {
 
         //        ctx->global_quality = 1000000;
@@ -159,16 +160,16 @@ namespace org {
           //          ctx->has_b_frames = 1;
         }
         ctx->extradata = NULL;
-//        ctx->me_method = ME_EPZS;
-//        ctx->mb_decision = 2;
-//        ctx->bit_rate_tolerance = 4000000;
+        //        ctx->me_method = ME_EPZS;
+        //        ctx->mb_decision = 2;
+        //        ctx->bit_rate_tolerance = 4000000;
         /*default settings for x264*/
-//        ctx->me_range = 16;
-//        ctx->max_qdiff = 4;
-//        ctx->qmin = 2;
-//        ctx->qmax = 31;
-//        ctx->qcompress = 0.5;
-//        ctx->qblur = 0.5;
+        //        ctx->me_range = 16;
+        //        ctx->max_qdiff = 4;
+        //        ctx->qmin = 2;
+        //        ctx->qmax = 31;
+        //        ctx->qcompress = 0.5;
+        //        ctx->qblur = 0.5;
         /**
          * this will come from the codecfactory in the future*/
         /*
@@ -201,7 +202,7 @@ namespace org {
         if (mode == DECODER) {
           _codec = avcodec_find_decoder(ctx->codec_id);
           if (_codec == NULL) {
-            LOGERROR( "Decoder not found for id :" << ctx->codec_id);
+            LOGERROR("Decoder not found for id :" << ctx->codec_id);
             result = false;
           }
         } else
@@ -212,7 +213,7 @@ namespace org {
             result = false;
           }
         } else {
-          LOGERROR( "Mode not set for Codec");
+          LOGERROR("Mode not set for Codec");
         }
         if (result) {
           ctx->codec_type = _codec->type;
@@ -254,17 +255,17 @@ namespace org {
       }
 
       bool Codec::open() {
-		  
-//        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
+
+        //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-        ctx->strict_std_compliance=FF_COMPLIANCE_VERY_STRICT;
+        ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
-          setTimeBase(1,ctx->sample_rate);
+          setTimeBase(1, ctx->sample_rate);
         }
         if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
@@ -273,30 +274,36 @@ namespace org {
 
         std::map<std::string, std::string>::iterator opit = _options.begin();
         for (; opit != _options.end(); opit++) {
-          std::string opt=(*opit).first;
-          std::string arg=(*opit).second;
-          LOGTRACE( "av_set_string3(" << opt << "," << arg << ")");
-          int type;
+          std::string opt = (*opit).first;
+          std::string arg = (*opit).second;
+          LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
+    //      int type;
           int ret = 0;
           const AVOption *o = NULL;
-          int opt_types[] = {AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
-          for (type = 0; type < CODEC_TYPE_NB && ret >= 0; type++) {
-            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
-            if (o2)
-              ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-          }
+          //int opt_types[]={0};
+          //if(_codec->type==CODEC_TYPE_VIDEO)
+  //         int opt_types[] = {AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
+//          for (type = 0; type < CODEC_TYPE_NB && ret >= 0; type++) {
+//            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+//            if (o2) {
+//              if(opt_types[type]==AV_OPT_FLAG_VIDEO_PARAM&&_codec->type==AVMEDIA_TYPE_VIDEO)
+//                ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+//              if(opt_types[type]==AV_OPT_FLAG_AUDIO_PARAM&&_codec->type==AVMEDIA_TYPE_AUDIO)
+                ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+//            }
+//          }
           if (o && ret < 0) {
-            LOGERROR( "Invalid value '" << arg << "' for option '" << opt << "'\n");
+            LOGERROR("Invalid value '" << arg << "' for option '" << opt << "'\n");
           }
           if (!o) {
-            LOGWARN( "Option not found:" << opt);
+            LOGWARN("Option not found:" << opt);
             //          return -1;
           }
         }
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            LOGERROR( "openning Codec" << ctx->codec_id);
+            LOGERROR("openning Codec" << ctx->codec_id);
 
           } else {
             //              logdebug("Codec opened:" << _codec_id);
@@ -304,7 +311,7 @@ namespace org {
             _opened = true;
           }
         } catch (...) {
-          LOGERROR( "Exception while openning Codec" << ctx->codec_id);
+          LOGERROR("Exception while openning Codec" << ctx->codec_id);
         }
         return _opened;
         //        }
@@ -322,16 +329,16 @@ namespace org {
       void Codec::close() {
 
         if (_opened) {
-          if (ctx ) {
-            if (ctx->extradata_size > 0&& !_pre_allocated) {
+          if (ctx) {
+            if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);
             }
-	    boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+            boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
             avcodec_close(ctx);
           }
 
-//          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
+          //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
           av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -363,21 +370,25 @@ namespace org {
       void Codec::setTimeBase(AVRational tb) {
         ctx->time_base = tb;
       }
+
       void Codec::setTimeBase(int num, int den) {
-        ctx->time_base.num=num;
-        ctx->time_base.den=den;
+        ctx->time_base.num = num;
+        ctx->time_base.den = den;
       }
 
       AVRational Codec::getTimeBase() {
         return ctx->time_base;
       }
+
       void Codec::setFrameRate(AVRational fr) {
         _frame_rate = fr;
       }
+
       void Codec::setFrameRate(int num, int den) {
-        _frame_rate.num=num;
-        _frame_rate.den=den;
+        _frame_rate.num = num;
+        _frame_rate.den = den;
       }
+
       AVRational Codec::getFrameRate() {
         return _frame_rate;
       }
@@ -447,30 +458,35 @@ namespace org {
       void Codec::setBitsPerCodedSample(int v) {
         ctx->bits_per_coded_sample = v;
       }
-        Format Codec::getOutputFormat(){
-          _output_format.width=ctx->width;
-          _output_format.height=ctx->height;
-          _output_format.pixel_format=STD_PIX_FMT;
-          return _output_format;
-        }
-        Format Codec::getInputFormat(){
-          _input_format.width=ctx->width;
-          _input_format.height=ctx->height;
-          _input_format.pixel_format=STD_PIX_FMT;
-          return _input_format;
 
-        }
-        void Codec::setOutputFormat(Format f){
+      Format Codec::getOutputFormat() {
+        _output_format.width = ctx->width;
+        _output_format.height = ctx->height;
+        _output_format.pixel_format = STD_PIX_FMT;
+        return _output_format;
+      }
 
-        }
-        void Codec::setInputFormat(Format f){
+      Format Codec::getInputFormat() {
+        _input_format.width = ctx->width;
+        _input_format.height = ctx->height;
+        _input_format.pixel_format = STD_PIX_FMT;
+        return _input_format;
 
-        }
-        std::list<Format> Codec::getSupportedInputFormats(){
+      }
+
+      void Codec::setOutputFormat(Format f) {
+
+      }
+
+      void Codec::setInputFormat(Format f) {
+
+      }
+
+      std::list<Format> Codec::getSupportedInputFormats() {
         std::list<Format> result;
 
         return result;
-        }
+      }
 
       /*
       void Codec::setStartTime(int64_t start) {
@@ -481,28 +497,28 @@ namespace org {
         using namespace org::esb::util;
         std::string data;
         data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
-        if(_opened){
-        data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
-        data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
-        data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
-        data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
-        data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
-        data.append("RequestChannelLayout:").append(Decimal(ctx->request_channel_layout).toString()).append("\r\n");
-        data.append("ChannelLayout:").append(Decimal(ctx->channel_layout).toString()).append("\r\n");
-        data.append("BitRate:").append(Decimal(ctx->bit_rate).toString()).append("\r\n");
-        data.append("GOP:").append(Decimal(ctx->gop_size).toString()).append("\r\n");
-        data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
-        data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
-        data.append("PixelFormat:").append(Decimal(getPixelFormat()).toString()).append("\r\n");
-        data.append("TimeBase:").append(Decimal(ctx->time_base.num).toString()).append("/");
-        data.append(Decimal(ctx->time_base.den).toString()).append("\r\n");
-        data.append("BFrameStrategie:").append(Decimal(ctx->b_frame_strategy).toString()).append("\r\n");
-        data.append("MaxBFrames:").append(Decimal(!!ctx->max_b_frames).toString()).append("\r\n");
-        data.append("HasBFrames:").append(Decimal(ctx->has_b_frames).toString()).append("\r\n");
-        data.append("Delay:").append(Decimal(ctx->delay).toString()).append("\r\n");
-        char buf[256];
-        avcodec_string(buf, sizeof (buf), ctx, _mode);
-        data.append("InternalData:").append(std::string(buf)).append("\r\n");
+        if (_opened) {
+          data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
+          data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
+          data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
+          data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
+          data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
+          data.append("RequestChannelLayout:").append(Decimal(ctx->request_channel_layout).toString()).append("\r\n");
+          data.append("ChannelLayout:").append(Decimal(ctx->channel_layout).toString()).append("\r\n");
+          data.append("BitRate:").append(Decimal(ctx->bit_rate).toString()).append("\r\n");
+          data.append("GOP:").append(Decimal(ctx->gop_size).toString()).append("\r\n");
+          data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
+          data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
+          data.append("PixelFormat:").append(Decimal(getPixelFormat()).toString()).append("\r\n");
+          data.append("TimeBase:").append(Decimal(ctx->time_base.num).toString()).append("/");
+          data.append(Decimal(ctx->time_base.den).toString()).append("\r\n");
+          data.append("BFrameStrategie:").append(Decimal(ctx->b_frame_strategy).toString()).append("\r\n");
+          data.append("MaxBFrames:").append(Decimal(!!ctx->max_b_frames).toString()).append("\r\n");
+          data.append("HasBFrames:").append(Decimal(ctx->has_b_frames).toString()).append("\r\n");
+          data.append("Delay:").append(Decimal(ctx->delay).toString()).append("\r\n");
+          char buf[256];
+          avcodec_string(buf, sizeof (buf), ctx, _mode);
+          data.append("InternalData:").append(std::string(buf)).append("\r\n");
         }
         return data;
       }
