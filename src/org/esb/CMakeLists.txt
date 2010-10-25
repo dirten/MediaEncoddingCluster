@@ -383,6 +383,7 @@ ENDIF()
 
 TARGET_LINK_LIBRARIES(web
     hive
+    db
     ${Boost_LIBRARIES}
     signal
     io
