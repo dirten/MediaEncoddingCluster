@@ -74,7 +74,8 @@ namespace org {
         grid->addWidget(_format,0,1);
         grid->addWidget(new Wt::WText(""),0,2);
         grid->setColumnStretch(1,1);
-        setSelectedFormat();
+//        setSelectedFormat();
+        setFormatGui(_parameter["file_format"]);
 
       }
       void FormatPanel::setSelectedFormat(){

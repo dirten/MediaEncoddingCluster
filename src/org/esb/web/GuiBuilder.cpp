@@ -15,6 +15,7 @@
 #include "Wt/WTable"
 #include "Wt/WLabel"
 #include "Wt/WText"
+#include "Wt/WLabel"
 #include "wtk/GroupBox.h"
 #include "Wt/Ext/LineEdit"
 //#include "Wt/Ext/CheckBox"
@@ -58,6 +59,7 @@ namespace org {
         _grid = new Wt::WGridLayout();
         _main->setLayout(_grid);
         
+
 
         _enablerSignalMap = new Wt::WSignalMapper<Wt::WObject*>(this);
         _enablerSignalMap->mapped().connect(SLOT(this, GuiBuilder::enabler));
@@ -475,7 +477,7 @@ namespace org {
       }
 
       void GuiBuilder::elementEnable(Wt::WWidget * element, bool enable) {
-        if(!element)return;
+        if (!element)return;
         //element->setDisabled(!enable);
         if (instanceOf(*element, ComboBox)) {
           ComboBox * b = static_cast<ComboBox*> (element);
@@ -484,7 +486,7 @@ namespace org {
         if (instanceOf(*element, Wt::WCheckBox)) {
           Wt::WCheckBox * b = static_cast<Wt::WCheckBox*> (element);
           //if (!enable)
-            //b->setChecked(false);
+          //b->setChecked(false);
           b->setEnabled(enable);
         }
         if (instanceOf(*element, Wt::Ext::LineEdit)) {
@@ -534,8 +536,8 @@ namespace org {
       void GuiBuilder::internalDataChanged(Wt::WObject*obj) {
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
-          _data_map[box->objectName()] = box->data(box->currentIndex(),1);
-          LOGDEBUG("Combo key:"<<box->objectName()<<" val:"<<box->data(box->currentIndex(),1));
+          _data_map[box->objectName()] = box->data(box->currentIndex(), 1);
+          LOGDEBUG("Combo key:" << box->objectName() << " val:" << box->data(box->currentIndex(), 1));
         } else
           if (instanceOf(*obj, Wt::Ext::LineEdit)) {
           Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
@@ -549,7 +551,7 @@ namespace org {
         } else
           if (instanceOf(*obj, Wt::WCheckBox)) {
           Wt::WCheckBox * box = static_cast<Wt::WCheckBox*> (obj);
-          _data_map[box->objectName()] = box->isChecked() ? box->objectName() : "";
+          _data_map[box->objectName()] = box->isChecked() ? "1" : "0";
         }
         dataChanged.emit();
       }

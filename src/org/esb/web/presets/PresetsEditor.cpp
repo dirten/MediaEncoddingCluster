@@ -92,7 +92,7 @@ namespace org {
       void PresetsEditor::save() {
         Wt::Ext::TabWidget *tab = static_cast<Wt::Ext::TabWidget *> (((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center));
         ((org::esb::web::FormatPanel*)tab->panel(0))->save();
-        ((org::esb::web::VideoPanel*)tab->panel(1))->save();
+        //((org::esb::web::VideoPanel*)tab->panel(1))->save();
         //((org::esb::web::AudioPanel*)tab->panel(2))->save();
         _profile->getDatabase().begin();
 

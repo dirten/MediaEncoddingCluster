@@ -11,6 +11,7 @@
 #include "org/esb/util/Log.h"
 using namespace std;
 
+
 /*
  * 
  */
@@ -21,6 +22,7 @@ int main(int argc, char** argv) {
   data["parti8x8"]="1";
   data["partb8x8"]="1";
   data["parti4x4"]="1";
+  data["partp4x4"]="0";
   data["ac"]="2";
   data["g"]="250";
   data["bt"]="300000";

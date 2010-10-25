@@ -40,7 +40,6 @@ namespace org {
             LOGDEBUG("avalable codec list"<<codec_id);
           }
         }
-
         /*
          * Combobox for the Codec Selector
          */
@@ -56,6 +55,7 @@ namespace org {
         codec_model->sort(1);
 
         _codec = new ComboBox();
+        
         _codec->setModel(codec_model);
         _codec->setModelColumn(1);
         _codec->setSelectedEntry(_parameter["video_codec_id"]);
@@ -97,7 +97,7 @@ namespace org {
 
 
 
-        setCodecGui(_parameter["codec"]);
+        setCodecGui(_parameter["video_codec_id"]);
         //l->addWidget(builder,Wt::WBorderLayout::Center);
         //        return;
       }

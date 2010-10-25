@@ -74,7 +74,7 @@ namespace org {
         grid->addWidget(_codec, 0, 1);
         grid->addWidget(new Wt::WText(""), 0, 2);
         grid->setColumnStretch(1, 1);
-        setCodecGui(_parameter["audio_codec"]);
+        setCodecGui(_parameter["audio_codec_id"]);
       }
 
       void AudioPanel::codecSelected() {

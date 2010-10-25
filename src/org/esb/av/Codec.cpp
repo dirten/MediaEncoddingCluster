@@ -271,25 +271,32 @@ namespace org {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
           //					    cout <<"CodecCapTruncated"<<endl;
         }
-
+        if(_codec->type == AVMEDIA_TYPE_VIDEO)
+          LOGDEBUG("Video Codec open");
+        if(_codec->type == AVMEDIA_TYPE_AUDIO)
+          LOGDEBUG("Audio Codec open");
         std::map<std::string, std::string>::iterator opit = _options.begin();
         for (; opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
           LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
-    //      int type;
+          if(_codec->type==AVMEDIA_TYPE_AUDIO&&opt=="b"){
+            LOGWARN("Option b is not valid for Audio Codecs, it overwrites the Option ab");
+            LOGINFO("dropping Option b for this Codec");
+            continue;
+          }
+          int type;
           int ret = 0;
           const AVOption *o = NULL;
           //int opt_types[]={0};
           //if(_codec->type==CODEC_TYPE_VIDEO)
-  //         int opt_types[] = {AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
-//          for (type = 0; type < CODEC_TYPE_NB && ret >= 0; type++) {
+//           int opt_types[] = {AV_OPT_FLAG_AUDIO_PARAM,AV_OPT_FLAG_VIDEO_PARAM, 0};
+//          for (type = 0; type < 3 && ret >= 0; type++) {
 //            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
 //            if (o2) {
-//              if(opt_types[type]==AV_OPT_FLAG_VIDEO_PARAM&&_codec->type==AVMEDIA_TYPE_VIDEO)
-//                ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-//              if(opt_types[type]==AV_OPT_FLAG_AUDIO_PARAM&&_codec->type==AVMEDIA_TYPE_AUDIO)
                 ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+//            }else{
+//              LOGWARN("Option not found")
 //            }
 //          }
           if (o && ret < 0) {

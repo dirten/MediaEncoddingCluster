@@ -31,7 +31,7 @@ int jobcreator(int fileid, int profileid, std::string outpath) {
 }*/
 
 int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath) {
-
+  mediafile.getDatabase().begin();
   vector<db::Stream> streams = mediafile.streams().get().all();
 
   org::esb::io::File f(mediafile.filename);
@@ -122,12 +122,12 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
-          if((*it).name.value()=="video_codec_id")
-            s.codecid=(*it).val.value();
+          if ((*it).name.value() == "video_codec_id")
+            s.codecid = (*it).val.value();
         }
       }
 
-//      s.codecid = (int) profile.vcodec;
+      //      s.codecid = (int) profile.vcodec;
       float f = atof(((std::string)profile.vframerate).c_str());
       if (f == 0) {
         s.frameratenum = (int) (*it).frameratenum; //rs.getInt("framerate_num");
@@ -166,8 +166,14 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       enc->open();
       s.pixfmt = (int) enc->getPixelFormat();
       int flags = enc->getFlags();
-      if (ofmt->flags & AVFMT_GLOBALHEADER)
-        flags |= CODEC_FLAG_GLOBAL_HEADER;
+      if (ofmt->flags & AVFMT_GLOBALHEADER){
+        db::StreamParameter sp(s.getDatabase());
+        sp.name = "global_header";
+        sp.val = "1";
+        sp.update();
+        s.params().link(sp);
+      }
+        //flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
       enc->close();
     } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
@@ -180,11 +186,11 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
           sp.val = (*it).val.value();
           sp.update();
           s.params().link(sp);
-          if((*it).name.value()=="audio_codec_id")
-            s.codecid=(*it).val.value();
+          if ((*it).name.value() == "audio_codec_id")
+            s.codecid = (*it).val.value();
+        }
       }
-      }
-//      s.codecid = (int) profile.acodec;
+      //      s.codecid = (int) profile.acodec;
       s.streamtimebasenum = 1;
       s.streamtimebaseden = (int) profile.asamplerate;
       s.bitrate = (int) profile.abitrate;
@@ -197,8 +203,14 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       s.channels = profile.achannels.value();
       s.samplefmt = 1; //(int) enc->getSampleFormat();
       int flags = enc->getFlags();
-      if (ofmt->flags & AVFMT_GLOBALHEADER)
-        flags |= CODEC_FLAG_GLOBAL_HEADER;
+      if (ofmt->flags & AVFMT_GLOBALHEADER) {
+        db::StreamParameter sp(s.getDatabase());
+        sp.name = "global_header";
+        sp.val = "1";
+        sp.update();
+        s.params().link(sp);
+      }
+      //flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
       s.bitspercodedsample = (int) enc->getBitsPerCodedSample();
       enc->close();
@@ -213,6 +225,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
     job_detail.outputstream().link(s);
 
   }
+  mediafile.getDatabase().commit();
   return job.id;
 }
 
@@ -232,6 +245,7 @@ namespace org {
       void JobUtil::createJob(Ptr<db::Project> p) {
         vector<db::MediaFile> files = p->mediafiles().get().all();
         vector<db::Profile> profiles = p->profiles().get().all();
+
         vector<db::Filter> filters = p->filter().get().all();
 
         vector<db::MediaFile>::iterator file_it = files.begin();
@@ -240,7 +254,7 @@ namespace org {
           vector<db::Profile>::iterator profile_it = profiles.begin();
           for (; profile_it != profiles.end(); profile_it++) {
             db::Profile profile = (*profile_it);
-            createJob(file, profile, filters, p->outdirectory);
+            createJob(file, profile, profile.filter().get().all(), p->outdirectory);
           }
         }
       }

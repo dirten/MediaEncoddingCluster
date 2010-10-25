@@ -3,41 +3,56 @@
   <gui helpLink="encoder_mp4v.html">
     <options>
       <optiongroup id="general_settings" title="General settings"/>
-      <option id="channels" title="Audio Channels" type="int" min="1" max="8" default="2" optionGroupId="general_settings">
+      <option id="rescale_mode" title="Rescale Mode" type="int" min="1" max="8" default="0" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="Mono" value="1"/>
-          <item title="Stereo" value="2"/>
-          <item title="Surround" value="3"/>
-          <item title="Quad" value="4"/>
-          <item title="5.0" value="5"/>
-          <item title="5.1" value="6"/>
-          <item title="7.1" value="8"/>
+          <item title="Fast Bilinear" value="1"/>
+          <item title="Bilinear" value="2"/>
+          <item title="Bicubic" value="4"/>
+          <item title="X ???" value="8"/>
+          <item title="Point" value="16"/>
+          <item title="Area" value="32"/>
+          <item title="Bicubic Linear" value="64"/>
+          <item title="Gaussian" value="128"/>
+          <item title="Sinc" value="256"/>
+          <item title="Lanczos" value="512"/>
+          <item title="Splie" value="1024"/>
         </list>
       </option>
-      <option id="audio_bitrate" title="Audio Bitrate" type="int" min="32000" max="320000" default="128000" optionGroupId="general_settings">
+      <option id="scales" title="Scale To" type="int" min="32000" max="320000" default="128000" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="32 kb/s" value="32000"/>
-          <item title="96 kb/s" value="96000"/>
-          <item title="128 kb/s" value="128000"/>
-          <item title="160 kb/s" value="160000"/>
-          <item title="192 kb/s" value="192000"/>
-          <item title="224 kb/s" value="224000"/>
-          <item title="256 kb/s" value="256000"/>
-          <item title="320 kb/s" value="320000"/>
+          <item title="Custom" value="0">
+            <enables>
+              <option>width</option>
+              <option>height</option>
+            </enables>
+          </item>
+          <item title="320x240(4:3)" value="1">
+            <optiondata>
+              <data option="width" value="320"/>
+              <data option="height" value="240"/>
+            </optiondata>
+          </item>
+          <item title="320x400(4:3)" value="2">
+            <optiondata>
+              <data option="width" value="400"/>
+              <data option="height" value="320"/>
+            </optiondata>
+          </item>
+          <item title="1080x1980(16:9)" value="3">
+            <optiondata>
+              <data option="width" value="1980"/>
+              <data option="height" value="1080"/>
+            </optiondata>
+          </item>
         </list>
       </option>
-      <option id="samplerate" title="Audio Samplerate" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
-        <control type="ComboBox"></control>
-        <list>
-          <item title="8 kHz" value="8000"/>
-          <item title="11.025 kHz" value="11025"/>
-          <item title="22.05 kHz" value="22050"/>
-          <item title="32 kHz" value="32000"/>
-          <item title="44.1 kHz" value="44100"/>
-          <item title="48 kHz" value="48000"/>
-        </list>
+      <option id="width" title="Width" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="height" title="Height" type="int" min="8000" max="48000" default="44100" optionGroupId="general_settings">
+        <control type="TextBox"></control>
       </option>
     </options>
   </gui>

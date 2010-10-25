@@ -331,7 +331,7 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavdevice.so.52
       ${FFMPEG_DIR}/lib/libavformat.so.52
       ${FFMPEG_DIR}/lib/libavutil.so.50
-#      ${FFMPEG_DIR}/lib/libavcore.so.0
+      ${FFMPEG_DIR}/lib/libavcore.so.0
       ${FFMPEG_DIR}/lib/libswscale.so.0
       ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ./lib

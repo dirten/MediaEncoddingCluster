@@ -107,7 +107,9 @@ void FileExporter::exportFile(db::MediaFile outfile) {
 //    return;
   }
   pos->init();
+  
   litesql::Cursor<db::ProcessUnit> units=litesql::select<db::ProcessUnit>(outfile.getDatabase(),litesql::RawExpr(sql_expr)).cursor();
+
   
 
 
