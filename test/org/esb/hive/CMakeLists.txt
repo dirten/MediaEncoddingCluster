@@ -24,6 +24,7 @@ add_executable (ProcessUnitBuilderTest ProcessUnitBuilderTest.cpp)
 add_executable (ProcessUnitControllerTest ProcessUnitControllerTest.cpp)
 add_executable (DataHandlerTest DataHandlerTest.cpp)
 add_executable (PresetTest PresetTest.cpp)
+add_executable (PresetReaderTest PresetReaderTest.cpp)
 add_executable (CodecPropertyTransformerTest CodecPropertyTransformerTest.cpp)
 
 
@@ -47,6 +48,7 @@ target_link_libraries (ProcessUnitBuilderTest  esb hive av net signal io util la
 target_link_libraries (ProcessUnitControllerTest hive io)
 target_link_libraries (DataHandlerTest hive io)
 target_link_libraries (PresetTest hive io)
+target_link_libraries (PresetReaderTest hive io)
 target_link_libraries (CodecPropertyTransformerTest hive io)
 
 

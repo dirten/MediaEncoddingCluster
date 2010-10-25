@@ -282,6 +282,7 @@ add_library (hive
   hive/ProcessManager.cpp
   hive/HiveException.cpp
   hive/CodecPropertyTransformer.cpp
+  hive/PresetReader.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db net esb signal av lang)

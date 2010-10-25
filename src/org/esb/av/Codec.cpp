@@ -261,6 +261,11 @@ namespace org {
         ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
+        if (!_codec){
+          LOGERROR("_codec not initialized!");
+          return false;
+        
+        }
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
@@ -271,10 +276,6 @@ namespace org {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
           //					    cout <<"CodecCapTruncated"<<endl;
         }
-        if(_codec->type == AVMEDIA_TYPE_VIDEO)
-          LOGDEBUG("Video Codec open");
-        if(_codec->type == AVMEDIA_TYPE_AUDIO)
-          LOGDEBUG("Audio Codec open");
         std::map<std::string, std::string>::iterator opit = _options.begin();
         for (; opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
