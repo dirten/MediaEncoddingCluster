@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<preset name="x264-high-quality">
+    <format id="mp4">
+	<param name="ext" value="mp4"/>
+    </format>
+    <codec type="video" id="libx264">
+	<param name="b" value="1000"/>
+    </codec>
+    <codec type="audio" id="mp2">
+	<param name="ab" value="128000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="44100"/>
+    </codec>
+    <filters>
+	<filter id="resize">
+    	    <param name="" value=""/>
+	</filter>
+    </filters>
+</preset>
