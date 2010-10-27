@@ -29,7 +29,8 @@ namespace org {
          * Combobox for the Codec Selector
          */
         KeyValueModel * codec_model = new KeyValueModel();
-        codec_model->addModelData("","No Audio");
+        codec_model->addModelData("0","No Audio");
+        codec_model->addModelData("-1","Stream Copy");
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {

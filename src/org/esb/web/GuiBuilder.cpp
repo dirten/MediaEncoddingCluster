@@ -170,6 +170,8 @@ namespace org {
               ((GroupBox*) _elements[data["parentId"]])->addWidget(w);
             } else {
               LOGERROR("no groupbox found with id " << data["parentId"]);
+              LOGINFO("adding it to the normal panel");
+              _grid->addWidget(w, _grid->rowCount(), 0);
             }
           } else {
             _grid->addWidget(w, _grid->rowCount(), 0);
@@ -397,7 +399,7 @@ namespace org {
 
         slider->setTickInterval(1);
         slider->setTickPosition(Wt::WSlider::TicksBelow);
-        slider->resize(200, 30);
+        slider->resize(208,  25);
 
         _sliderSignalMap->mapConnect(slider->valueChanged(), new Reference(slider, line));
         _dataChangedSignalMap.mapConnect(slider->valueChanged(), slider);

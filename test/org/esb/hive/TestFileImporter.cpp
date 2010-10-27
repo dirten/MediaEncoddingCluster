@@ -38,7 +38,7 @@ int main() {
       LOGDEBUG((long long int) mediafile.filesize)
     }
   }
-  hive::DatabaseService::dropDatabase();
+  //hive::DatabaseService::dropDatabase();
   hive::DatabaseService::stop();
 
   Log::close();

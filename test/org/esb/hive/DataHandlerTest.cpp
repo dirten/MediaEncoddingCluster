@@ -95,7 +95,7 @@ int main() {
   assert(mediafile.id > 0);
   //db::HiveDb db("mysql", org::esb::config::Config::getProperty("db.url"));
   db::Profile p=litesql::select<db::Profile>(mediafile.getDatabase(),db::Profile::Id==1).one();
-  int jobid = jobcreator(mediafile, p, "/tmp");
+  int jobid = org::esb::hive::JobUtil::createJob(mediafile, p, "/tmp");
   assert(jobid > 0);
   }
   {

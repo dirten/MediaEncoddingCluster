@@ -31,6 +31,7 @@
 #include "FileImporter.h"
 #include "litesql/persistent.hpp"
 #include "litesql/database.hpp"
+#include "org/esb/util/StringUtil.h"
 using namespace std;
 using namespace org::esb;
 using namespace org::esb::config;
@@ -72,7 +73,6 @@ int import(org::esb::io::File file) {
 namespace org {
   namespace esb {
     namespace hive {
-      
 
       FileImporter::FileImporter() {
         if (!_connection) {
@@ -140,22 +140,27 @@ namespace org {
           if (stream.extradatasize > 0)
             stream.extradata = (const char*) (ctx->streams[a]->codec->extradata);
           stream.update();
-                  const AVOption * option = NULL;
+          const AVOption * option = NULL;
 
           while (option = av_next_option(ctx->streams[a]->codec, option)) {
-          if (option->offset > 0 ) {
-            db::StreamParameter sp(stream.getDatabase());
-            sp.name=option->name;
-            int len=1000;
-            char data[1000];
-            av_get_string(ctx->streams[a]->codec, option->name,NULL,data, len);
-            if(strlen(data)>0){
-              sp.val=std::string(data);
+            if (option->offset > 0) {
+              db::StreamParameter sp(stream.getDatabase());
+              sp.name = option->name;
+              int len = 1000;
+              char data[1000];
+              av_get_string(ctx->streams[a]->codec, option->name, NULL, data, len);
+              if (strlen(data) > 0) {
+                sp.val = std::string(data);
+              }
+              sp.update();
+              stream.params().link(sp);
             }
-            sp.update();
-            stream.params().link(sp);
           }
-        }
+          db::StreamParameter sp(stream.getDatabase());
+          sp.name = "codec_id";
+          sp.val = org::esb::util::StringUtil::toString(ctx->streams[a]->codec->codec_id);
+          sp.update();
+          stream.params().link(sp);
           mediafile.streams().link(stream);
         }
         _connection->commit();

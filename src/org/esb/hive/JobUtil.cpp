@@ -8,6 +8,7 @@
 //#include "org/esb/db/Profile.h"
 #include "org/esb/io/File.h"
 #include "litesql/datasource.hpp"
+#include "CodecPropertyTransformer.h"
 #include <map>
 #include <vector>
 using namespace org::esb::av;
@@ -34,20 +35,20 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   mediafile.getDatabase().begin();
   vector<db::Stream> streams = mediafile.streams().get().all();
 
-  org::esb::io::File f(mediafile.filename);
-  std::string ext = f.getExtension();
+  vector<db::ProfileParameter>vparams = profile.params().get().all();
+  std::map<std::string, Ptr<db::ProfileParameter> > parameter;
+  vector<db::ProfileParameter>::iterator vp = vparams.begin();
+  for (; vp != vparams.end(); vp++) {
+    parameter[(*vp).name] = new db::ProfileParameter(*vp);
+  }
   AVOutputFormat *ofmt = NULL;
   while ((ofmt = av_oformat_next(ofmt))) {
-    if (profile.format == ofmt->long_name) {
-      if (ofmt->extensions)
-        f.changeExtension(ofmt->extensions);
-      else
-        f.changeExtension("unknown");
+    if (parameter["file_format"]->val == ofmt->name) {
       break;
     }
   }
-
-  f.changeExtension(profile.formatext);
+  org::esb::io::File f(mediafile.filename);
+  f.changeExtension(parameter["fileExtension"]->val);
 
 
   db::Job job(mediafile.getDatabase());
@@ -72,7 +73,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   outfile.filename = filename;
   outfile.path = outpath + "/" + profile.name;
   outfile.parent = mediafile.id.value();
-  outfile.containertype = ofmt->name;
+  outfile.containertype = parameter["file_format"]->val;
   //  outfile.duration = mediafile.duration;
   outfile.streamcount = mediafile.streamcount;
   outfile.update();
@@ -94,6 +95,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
 
   job.begintime = 1;
   job.endtime = 1;
+  job.outfile=outfile.filename.value();
   job.update();
 
 
@@ -111,8 +113,6 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
     s.streamtype = (*it).streamtype;
 
     if ((*it).streamtype == CODEC_TYPE_VIDEO) {
-      //            if (profile.params().get(db::ProfileParameter::Type == AVMEDIA_TYPE_VIDEO).count() > 0) {
-      //                vector<db::ProfileParameter> params = profile.params().get(db::ProfileParameter::Type == AVMEDIA_TYPE_VIDEO).all();
       if (profile.params().get().count() > 0) {
         vector<db::ProfileParameter> params = profile.params().get().all();
         vector<db::ProfileParameter>::iterator it = params.begin();
@@ -127,8 +127,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
         }
       }
 
-      //      s.codecid = (int) profile.vcodec;
-      float f = atof(((std::string)profile.vframerate).c_str());
+      float f = atof(((std::string)parameter["frame_rate"]->val).c_str());
       if (f == 0) {
         s.frameratenum = (int) (*it).frameratenum; //rs.getInt("framerate_num");
         s.framerateden = (int) (*it).framerateden; //rs.getInt("framerate_den");
@@ -166,14 +165,13 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       enc->open();
       s.pixfmt = (int) enc->getPixelFormat();
       int flags = enc->getFlags();
-      if (ofmt->flags & AVFMT_GLOBALHEADER){
+      if (ofmt->flags & AVFMT_GLOBALHEADER) {
         db::StreamParameter sp(s.getDatabase());
         sp.name = "global_header";
         sp.val = "1";
         sp.update();
         s.params().link(sp);
       }
-        //flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
       enc->close();
     } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
@@ -210,7 +208,6 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
         sp.update();
         s.params().link(sp);
       }
-      //flags |= CODEC_FLAG_GLOBAL_HEADER;
       s.flags = flags;
       s.bitspercodedsample = (int) enc->getBitsPerCodedSample();
       enc->close();
@@ -254,29 +251,200 @@ namespace org {
           vector<db::Profile>::iterator profile_it = profiles.begin();
           for (; profile_it != profiles.end(); profile_it++) {
             db::Profile profile = (*profile_it);
-            createJob(file, profile, profile.filter().get().all(), p->outdirectory);
+            createJob(file, profile, p->outdirectory);
           }
         }
       }
 
-      void JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::vector<db::Filter> filter_vector, std::string outpath) {
-        profile.vwidth = 0;
-        profile.vheight = 0;
-        if (filter_vector.size() > 0) {
-          for (int a = 0; a < filter_vector.size(); a++) {
-            db::Filter filter = filter_vector[a];
-            //            filter.getDatabase().verbose = true;
-            if (filter.filterid == "resize") {
-              profile.vwidth = atoi(filter.parameter().get(db::FilterParameter::Fkey == "width").one().fval.value().c_str());
-              profile.vheight = atoi(filter.parameter().get(db::FilterParameter::Fkey == "height").one().fval.value().c_str());
-            }
-            if (filter.filterid == "deinterlace") {
-              profile.deinterlace = 1;
-              //profile.vheight=atoi(filter.parameter().get(db::FilterParameter::Fkey=="height").one());
+      int JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::string outpath) {
+
+        const litesql::Database db = infile.getDatabase();
+        db.begin();
+
+
+        db::Job job(db);
+        job.created = 0;
+        job.begintime = 1;
+        job.endtime = 1;
+        job.starttime = infile.starttime;
+        job.duration = infile.duration;
+        job.status = "queued";
+        job.infile = infile.filename.value();
+        job.update();
+
+
+        /**
+         * copy the profile for the new Job
+         */
+        db::Profile newProfile(db);
+        newProfile.name = profile.name.value();
+        newProfile.update();
+
+        /**
+         * copy the profile parameter for the new Job
+         */
+        {
+          vector<db::ProfileParameter>params = profile.params().get().all();
+          vector<db::ProfileParameter>::iterator it = params.begin();
+          for (; it != params.end(); it++) {
+            db::ProfileParameter p(db);
+            p.name = (*it).name.value();
+            p.val = (*it).val.value();
+            p.mediatype = (*it).mediatype.value();
+            p.update();
+            newProfile.params().link(p);
+          }
+        }
+        /**
+         * copy the Filter from the profile for the new Job
+         */
+        {
+          vector<db::Filter> filters = profile.filter().get().all();
+          vector<db::Filter>::iterator it = filters.begin();
+          for (; it != filters.end(); it++) {
+            db::Filter f(db);
+            f.filterid = (*it).filterid.value();
+            f.filtername = (*it).filtername.value();
+            f.update();
+            newProfile.filter().link(f);
+            /**
+             * copy the FilterParameter from the Filter for the new Job
+             */
+            vector<db::FilterParameter>params = (*it).parameter().get().all();
+            vector<db::FilterParameter>::iterator it_p = params.begin();
+            for (; it_p != params.end(); it_p++) {
+              db::FilterParameter fp(db);
+              fp.fkey = (*it_p).fkey.value();
+              fp.fval = (*it_p).fval.value();
+              fp.update();
+              f.parameter().link(fp);
             }
           }
         }
-        jobcreator(infile, profile, outpath);
+        job.profile().link(newProfile);
+
+        /**
+         * preparing the profile data into a map
+         */
+        vector<db::ProfileParameter>vparams = profile.params().get().all();
+        std::map<std::string, Ptr<db::ProfileParameter> > parameter;
+        vector<db::ProfileParameter>::iterator vp = vparams.begin();
+        for (; vp != vparams.end(); vp++) {
+          parameter[(*vp).name] = new db::ProfileParameter(*vp);
+        }
+
+        AVOutputFormat *ofmt = NULL;
+        while ((ofmt = av_oformat_next(ofmt))) {
+          if (parameter["file_format"]->val.value() == ofmt->name) {
+            break;
+          }
+        }
+
+        /**
+         * creating the output media file
+         */
+        org::esb::io::File f(infile.filename);
+        if(parameter.count("fileExtension")>0)
+          f.changeExtension(parameter["fileExtension"]->val);
+        else
+          f.changeExtension("unknown");
+
+
+        db::MediaFile outfile(db);
+        std::string filename = job.id;
+        filename += "#";
+        filename += f.getFileName();
+        outfile.filename = filename;
+        outfile.path = outpath + "/" + profile.name;
+        outfile.parent = infile.id.value();
+        outfile.containertype = parameter["file_format"]->val.value();
+        outfile.streamcount = 0;
+        outfile.update();
+
+
+        vector<db::Stream>streams = infile.streams().get().all();
+        vector<db::Stream>::iterator sit = streams.begin();
+        org::esb::hive::CodecPropertyTransformer trans;
+        for (int a = 0; sit != streams.end(); sit++, a++) {
+          db::Stream s(db);
+          s.streamindex = a;
+          s.streamtype = (*sit).streamtype.value();
+          s.update();
+          outfile.streams().link(s);
+          /**
+           * creating the streamparameter from the profile
+           */
+          {
+            std::map<std::string, AVMediaType> type_map;
+            type_map["width"]=AVMEDIA_TYPE_VIDEO;
+            type_map["height"]=AVMEDIA_TYPE_VIDEO;
+            vector<db::ProfileParameter>params = profile.params().get().all();
+            vector<db::ProfileParameter>::iterator it = params.begin();
+            for (; it != params.end(); it++) {
+              bool create = false;
+              const AVOption * option = trans.getOption((*it).name.value());
+              if (option && option->flags & ((*sit).streamtype.value() == AVMEDIA_TYPE_VIDEO ? AV_OPT_FLAG_VIDEO_PARAM : AV_OPT_FLAG_AUDIO_PARAM)) {
+                create = true;
+              } else
+                if (option && option->flags == 0) {
+                create = true;
+              }else
+                if((*it).name.value()=="audio_codec_id"&&(*sit).streamtype.value() == AVMEDIA_TYPE_AUDIO){
+                  (*it).name="codec_id";
+                  create=true;
+              }else
+                if((*it).name.value()=="video_codec_id"&&(*sit).streamtype.value() == AVMEDIA_TYPE_VIDEO){
+                  (*it).name="codec_id";
+                  create=true;
+              }else
+                if(type_map.count((*it).name.value())>0&&(*sit).streamtype.value() == type_map[(*it).name.value()]){
+                  create=true;
+                }
+              if (create) {
+                db::StreamParameter sp(db);
+                sp.name = (*it).name.value();
+                sp.val = (*it).val.value();
+                sp.update();
+                s.params().link(sp);
+              }
+            }
+          }
+          if (ofmt->flags & AVFMT_GLOBALHEADER) {
+            db::StreamParameter sp(s.getDatabase());
+            sp.name = "global_header";
+            sp.val = "1";
+            sp.update();
+            s.params().link(sp);
+          }
+          try{
+            if(false&&profile.filter().get(db::Filter::Filterid=="resize").count()>0){
+              db::StreamParameter spw(s.getDatabase());
+              spw.name = "width";
+              spw.val = profile.filter().get(db::Filter::Filterid=="resize").one().parameter().get(db::FilterParameter::Fkey=="width").one().fval.value();
+              spw.update();
+              s.params().link(spw);
+              db::StreamParameter sph(s.getDatabase());
+              sph.name = "height";
+              sph.val = profile.filter().get(db::Filter::Filterid=="resize").one().parameter().get(db::FilterParameter::Fkey=="height").one().fval.value();
+              sph.update();
+              s.params().link(sph);
+            }
+          }catch(litesql::NotFound ex){
+            LOGERROR(ex.what());
+          }
+          db::JobDetail jd(db);
+          
+          jd.update();
+          jd.inputstream().link((*sit));
+          jd.outputstream().link(s);
+          job.jobdetails().link(jd);
+        }
+
+        job.inputfile().link(infile);
+        job.outputfile().link(outfile);
+
+        db.commit();
+        return job.id.value();
       }
     }
   }

@@ -84,7 +84,7 @@ void testInterruptedEncoding() {
   assert(mediafile.id > 0);
   db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
 
-  int jobid = jobcreator(mediafile, p, "/tmp");
+  int jobid = org::esb::hive::JobUtil::createJob(mediafile, p, "/tmp");
   assert(jobid > 0);
   db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
   {
@@ -157,7 +157,7 @@ void testFullFile() {
   assert(mediafile.id > 0);
   db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
 
-  int jobid = jobcreator(mediafile, p, "/tmp");
+  int jobid = org::esb::hive::JobUtil::createJob(mediafile, p, "/tmp");
   assert(jobid > 0);
 
   ProcessUnitController ctrl;

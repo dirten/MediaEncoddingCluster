@@ -68,7 +68,7 @@ int main(int argc, char**argv) {
     assert(mediafile.id > 0);
     db::Profile pro = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
 
-    int jobid = jobcreator(mediafile, pro, "/tmp");
+    int jobid = org::esb::hive::JobUtil::createJob(mediafile, pro, "/tmp");
     assert(jobid > 0);
 
   }

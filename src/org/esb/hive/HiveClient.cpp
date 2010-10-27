@@ -45,6 +45,7 @@ namespace org {
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("hiveclient") == "start") {
+          
           boost::thread t(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
@@ -124,7 +125,7 @@ namespace org {
               delete unit->_converter;
               unit->_converter = NULL;
               delete unit;
-
+              
             }
           }
           org::esb::lang::Thread::sleep2(5000);

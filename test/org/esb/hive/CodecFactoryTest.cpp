@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
 
   org::esb::hive::DatabaseService::createDatabase();
   org::esb::hive::DatabaseService::createTables();
+  org::esb::hive::DatabaseService::loadPresets();
   {
     org::esb::hive::FileImporter imp;
     db::MediaFile mediafile = imp.import(org::esb::io::File(src));

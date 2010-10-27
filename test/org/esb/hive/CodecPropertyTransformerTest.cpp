@@ -32,6 +32,8 @@ int main(int argc, char** argv) {
   data["mixed_refs"]="1";
   data["dct8x8"]="1";
   data["blafasel"]="test unknown";
+  data["frame_rate_num"]="1";
+  data["frame_rate_den"]="25";
   org::esb::hive::CodecPropertyTransformer * trans=new org::esb::hive::CodecPropertyTransformer(data);
 //  trans.getCodecProperties();
   LOGDEBUG(trans->toString());

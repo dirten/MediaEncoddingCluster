@@ -7,10 +7,119 @@
       <optiontab id="advance" title="Advanced"/>
       <!--Groups-->
 
-      <optiongroup id="frametype_settings" title="Frame Type settings"/>
-      <optiongroup id="rate_settings" title="Rate Control"/>
-      <optiongroup id="analysis_settings" title="Analysis"/>
+      <optiongroup id="picture_settings" title="Picture settings" parentId="general"/>
+      <optiongroup id="frametype_settings" title="Frame Type settings" parentId="advance"/>
+      <optiongroup id="rate_settings" title="Rate Control" parentId="general"/>
+      <optiongroup id="analysis_settings" title="Analysis" parentId="advance"/>
 
+
+      <option id="time_base" type="string" default="2" title="Frame Rate" optionGroupId="picture_settings" unit="fps">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="1/10" value="1/10">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="10"/>
+            </optiondata>
+          </item>
+          <item title="1/15" value="1/15">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="15"/>
+            </optiondata>
+          </item>
+          <item title="23,97" value="1000/23976">
+            <optiondata>
+              <data option="frame_rate_num" value="1000"/>
+              <data option="frame_rate_den" value="23976"/>
+            </optiondata>
+          </item>
+          <item title="1/24" value="1/24">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="24"/>
+            </optiondata>
+          </item>
+          <item title="1/25" value="1/25">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="25"/>
+            </optiondata>
+          </item>
+          <item title="29,97" value="100/2997">
+            <optiondata>
+              <data option="frame_rate_num" value="100"/>
+              <data option="frame_rate_den" value="2997"/>
+            </optiondata>
+          </item>
+          <item title="1/30" value="1/30">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="30"/>
+            </optiondata>
+          </item>
+          <item title="Custom" value="0">
+          <enables>
+            <option>frame_rate_num</option>
+            <option>frame_rate_den</option>
+          </enables>
+          </item>
+        </list>
+      </option>
+      <option id="frame_rate_num" title="Frame Rate Numerator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="frame_rate_den" title="Frame Rate Denuminator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
+        <control type="TextBox"></control>
+      </option>
+
+      <option id="picture_frame_size" type="string" default="2" title="Frame Size" optionGroupId="picture_settings" unit="pixel">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="VCD (320x240)" value="320x240">
+            <optiondata>
+              <data option="width" value="320"/>
+              <data option="height" value="240"/>
+            </optiondata>
+          </item>
+          <item title="SVCD (430x576)" value="430x576">
+            <optiondata>
+              <data option="width" value="430"/>
+              <data option="height" value="576"/>
+            </optiondata>
+          </item>
+          <item title="DVD (720x576)" value="720x576">
+            <optiondata>
+              <data option="width" value="720"/>
+              <data option="height" value="576"/>
+            </optiondata>
+          </item>
+          <item title="720p (1280x720)" value="720p">
+            <optiondata>
+              <data option="width" value="1280"/>
+              <data option="height" value="720"/>
+            </optiondata>
+          </item>
+          <item title="1080p (1920x1080)" value="1080p">
+            <optiondata>
+              <data option="width" value="1920"/>
+              <data option="height" value="1080"/>
+            </optiondata>
+          </item>
+          <item title="Custom" value="0">
+            <enables>
+              <option>width</option>
+              <option>height</option>
+            </enables>
+          </item>
+        </list>
+      </option>
+      <option id="width" title="Picture Width" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel">
+        <control type="TextBox"></control>
+      </option>
+      <option id="height" title="Picture Height" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel">
+        <control type="TextBox"></control>
+      </option>
 
       <!--FrameType settings-->
       <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="frametype_settings">
@@ -78,13 +187,13 @@
       <option id="b" title="Bitrate" type="float" min="0" max="100000" default="1000" optionGroupId="rate_settings" unit="kbps">
         <control type="TextBox"></control>
       </option>
-      <option id="crf" title="CRF (Constant Quality)" type="float" min="0" max="100000" default="300" optionGroupId="rate_settings" unit="q">
+      <option id="crf" title="CRF (Constant Quality)" type="float" min="0" max="100000" default="23" optionGroupId="rate_settings" unit="q">
         <control type="TextBox"></control>
       </option>
       <option id="maxrate" title="MaxRate" type="float" min="0" max="100000" default="300" optionGroupId="rate_settings" unit="kbps">
         <control type="TextBox"></control>
       </option>
-      <option id="bufsize" title="Bufsize" type="float" min="0" max="100000" default="300" optionGroupId="rate_settings" unit="kb">
+      <option id="bufsize" title="Bufsize" type="float" min="0" max="100000" default="30000" optionGroupId="rate_settings" unit="kb">
         <control type="TextBox"></control>
       </option>
       <option id="qmin" title="Min. Quantizer" type="float" min="0" max="51" default="10" optionGroupId="rate_settings">
@@ -108,12 +217,13 @@
       <option id="chromaoffset" title="Chroma Offset" type="float" min="0" max="1" default="0.0" optionGroupId="rate_settings" unit="">
         <control type="TextBox"></control>
       </option>
-      <option id="pass" type="string" default="2" title="Pass" optionGroupId="rate_settings">
+      <option id="pass" type="string" default="0" title="Pass" optionGroupId="rate_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="Pass 1" value="1"/>
+          <item title="Single Pass" value="0"/>
+         <!-- <item title="Pass 1" value="1"/>
           <item title="Pass 2" value="2"/>
-          <item title="Pass 3" value="3"/>
+          <item title="Pass 3" value="3"/>-->
         </list>
       </option>
       <!--<option id="rc_eq" type="string" default="2" title="Rate Equation" optionGroupId="rate_settings">

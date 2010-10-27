@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<preset name="x264-high-quality">
+<preset name="x264-high-quality new">
     <format id="mp4">
-	<param name="ext" value="mp4"/>
+	<param name="fileExtension" value="mp4"/>
     </format>
     <codec type="video" id="libx264">
 	<param name="b" value="1000"/>
@@ -13,7 +13,8 @@
     </codec>
     <filters>
 	<filter id="resize">
-    	    <param name="" value=""/>
+    	    <param name="width" value="320"/>
+    	    <param name="height" value="240"/>
 	</filter>
     </filters>
 </preset>

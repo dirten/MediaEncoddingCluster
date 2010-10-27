@@ -168,6 +168,7 @@ int Encoder::encodeVideo(Frame & frame) {
   _pix_fmt_converter->process(frame,*tmp_frame);
   LOGDEBUG(tmp_frame->toString());
   return encodeVideo(tmp_frame->getAVFrame());
+//  return encodeVideo(frame.getAVFrame());
 }
 
 void Encoder::setOutputStream(PacketOutputStream * pos) {

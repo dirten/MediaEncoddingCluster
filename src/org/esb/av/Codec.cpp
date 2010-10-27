@@ -116,22 +116,22 @@ namespace org {
         return 0;
       }
 
-            /*
-            bool Codec::saveCodecOption() {
-              AVClass *c = *(AVClass**) ctx;
-              const AVOption *o = c->option;
-              for (; o && o->name; o++) {
-                int buf_len = 2000;
-                char* buf = new char[buf_len];
-                av_get_string(ctx, o->name, NULL, buf, buf_len);
-                LOGINFO("org.esb.av.Codec", "OptionName=" << o->name << " OptionString=" << buf);
-                delete buf;
-              }
-            }
+      /*
+      bool Codec::saveCodecOption() {
+        AVClass *c = *(AVClass**) ctx;
+        const AVOption *o = c->option;
+        for (; o && o->name; o++) {
+          int buf_len = 2000;
+          char* buf = new char[buf_len];
+          av_get_string(ctx, o->name, NULL, buf, buf_len);
+          LOGINFO("org.esb.av.Codec", "OptionName=" << o->name << " OptionString=" << buf);
+          delete buf;
+        }
+      }
 
-            bool Codec::loadCodecOption() {
+      bool Codec::loadCodecOption() {
 
-            }
+      }
        */
       void Codec::setContextDefaults() {
 
@@ -261,17 +261,14 @@ namespace org {
         ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
-        if (!_codec){
+        if (!_codec) {
           LOGERROR("_codec not initialized!");
           return false;
-        
+
         }
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
-          setTimeBase(1, ctx->sample_rate);
-        }
         if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
           //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
           //					    cout <<"CodecCapTruncated"<<endl;
@@ -281,7 +278,7 @@ namespace org {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
           LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
-          if(_codec->type==AVMEDIA_TYPE_AUDIO&&opt=="b"){
+          if (_codec->type == AVMEDIA_TYPE_AUDIO && opt == "b") {
             LOGWARN("Option b is not valid for Audio Codecs, it overwrites the Option ab");
             LOGINFO("dropping Option b for this Codec");
             continue;
@@ -291,15 +288,15 @@ namespace org {
           const AVOption *o = NULL;
           //int opt_types[]={0};
           //if(_codec->type==CODEC_TYPE_VIDEO)
-//           int opt_types[] = {AV_OPT_FLAG_AUDIO_PARAM,AV_OPT_FLAG_VIDEO_PARAM, 0};
-//          for (type = 0; type < 3 && ret >= 0; type++) {
-//            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
-//            if (o2) {
-                ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-//            }else{
-//              LOGWARN("Option not found")
-//            }
-//          }
+          //           int opt_types[] = {AV_OPT_FLAG_AUDIO_PARAM,AV_OPT_FLAG_VIDEO_PARAM, 0};
+          //          for (type = 0; type < 3 && ret >= 0; type++) {
+          //            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+          //            if (o2) {
+          ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+          //            }else{
+          //              LOGWARN("Option not found")
+          //            }
+          //          }
           if (o && ret < 0) {
             LOGERROR("Invalid value '" << arg << "' for option '" << opt << "'\n");
           }
@@ -308,6 +305,16 @@ namespace org {
             //          return -1;
           }
         }
+        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
+          setTimeBase(1, ctx->sample_rate);
+        }
+        if (_codec && _codec->type == CODEC_TYPE_VIDEO) {
+          if (_frame_rate.num == 0 && _frame_rate.den == 0) {
+            _frame_rate.num = ctx->time_base.den;
+            _frame_rate.den = ctx->time_base.num;
+          }
+        }
+
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {

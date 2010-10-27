@@ -57,25 +57,36 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
     try {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
-
-      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) (int) stream.codecid));
+      vector<db::StreamParameter> params = stream.params().get().all();
+      vector<db::StreamParameter>::iterator it=params.begin();
+      std::map<std::string, std::string> pmap;
+      for(;it!=params.end();it++){
+        pmap[(*it).name.value()]=(*it).val.value();
+      }
+      boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) atoi(pmap["codec_id"].c_str())));
       _encoder->findCodec(org::esb::av::Codec::ENCODER);
-      _encoder->setWidth(stream.width);
-      _encoder->setHeight(stream.height);
-      _encoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
+      _encoder->setWidth(atoi(pmap["width"].c_str()));
+      _encoder->setHeight(atoi(pmap["height"].c_str()));
+      _encoder->setPixelFormat((PixelFormat) 0);
+      if(_encoder->_codec->pix_fmts){
+        _encoder->setPixelFormat(_encoder->_codec->pix_fmts[0]);
+      }
+      if(_encoder->_codec->sample_fmts){
+        _encoder->setSampleFormat(_encoder->_codec->sample_fmts[0]);
+      }
       //      _encoder->setBitRate(stream.bitrate);
-
+      /*
       _encoder->setTimeBase(stream.framerateden, stream.frameratenum);
       if (stream.streamtype == CODEC_TYPE_VIDEO) {
         _encoder->setFrameRate(stream.frameratenum, stream.framerateden);
       } else {
         _encoder->setTimeBase(stream.streamtimebasenum, stream.streamtimebaseden);
-      }
+      }*/
 
       //      _encoder->setGopSize(stream.gopsize);
       //      _encoder->setChannels(stream.channels);
       //      _encoder->setSampleRate(stream.samplerate);
-      _encoder->setSampleFormat((SampleFormat) (int) stream.samplefmt);
+      _encoder->setSampleFormat((SampleFormat) 1);
       //      _encoder->setFlag(stream.flags);
       //      vector<db::StreamParameter> params = stream.params().get().all();
       setCodecOptions(_encoder,stream.params().get().all());

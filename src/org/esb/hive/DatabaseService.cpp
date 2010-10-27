@@ -36,6 +36,7 @@
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/StringUtil.h"
 #include <iostream>
+#include "org/esb/hive/PresetLoader.h"
 namespace org {
   namespace esb {
     namespace hive {
@@ -170,7 +171,7 @@ namespace org {
             db.query(sql);
           }
         }
-        if(true){
+        if(false){
 //          db.query("DELETE FROM Profile_ ");
           org::esb::io::FileInputStream fis(_base_path+"/sql/profiles.txt");
           std::string lines;
@@ -186,6 +187,27 @@ namespace org {
             db.query(sql);
           }
         }
+        if(true){
+          {
+            org::esb::hive::PresetReader reader(_base_path+"/res/presets/x264-hq.preset");
+            LOGDEBUG(reader.toString());
+            org::esb::hive::PresetLoader loader(reader);
+            loader.load();
+          }
+          {
+            org::esb::hive::PresetReader reader(_base_path+"/res/presets/x264-ipod320.preset");
+            LOGDEBUG(reader.toString());
+            org::esb::hive::PresetLoader loader(reader);
+            loader.load();
+          }
+          {
+            org::esb::hive::PresetReader reader(_base_path+"/res/presets/x264-ipod640.preset");
+            LOGDEBUG(reader.toString());
+            org::esb::hive::PresetLoader loader(reader);
+            loader.load();
+          }
+        }
+
         if(true){
           org::esb::io::FileInputStream fis(_base_path+"/sql/codec.txt");
           std::string lines;

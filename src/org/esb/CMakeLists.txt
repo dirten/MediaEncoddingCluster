@@ -69,7 +69,7 @@ IF(BUILD_SHARED_LIBS)
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
-TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
+#TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
 
 
 #add_library (orm orm/hivedb.cpp)
@@ -283,6 +283,7 @@ add_library (hive
   hive/HiveException.cpp
   hive/CodecPropertyTransformer.cpp
   hive/PresetReader.cpp
+  hive/PresetLoader.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db net esb signal av lang)

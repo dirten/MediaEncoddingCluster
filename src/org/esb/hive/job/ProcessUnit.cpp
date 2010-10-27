@@ -175,7 +175,7 @@ void ProcessUnit::process() {
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
-    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
+    if (false&&_decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
             _discard_audio_bytes > 0) {
       size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);

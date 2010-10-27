@@ -491,6 +491,55 @@ template <> litesql::DataSource<db::StreamParameter> StreamStreamParameterRelati
     sel.where(srcExpr);
     return DataSource<db::StreamParameter>(db, db::StreamParameter::Id.in(sel) && expr);
 }
+FilterStreamRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : stream(FilterStreamRelation::Stream), filter(FilterStreamRelation::Filter) {
+    switch(rec.size()) {
+    case 2:
+        stream = rec[1];
+    case 1:
+        filter = rec[0];
+    }
+}
+const std::string FilterStreamRelation::table__("Filter_Stream_");
+const litesql::FieldType FilterStreamRelation::Filter("Filter1","INTEGER",table__);
+const litesql::FieldType FilterStreamRelation::Stream("Stream2","INTEGER",table__);
+void FilterStreamRelation::link(const litesql::Database& db, const db::Filter& o0, const db::Stream& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Filter.name());
+    values.push_back(o0.id);
+    fields.push_back(Stream.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void FilterStreamRelation::unlink(const litesql::Database& db, const db::Filter& o0, const db::Stream& o1) {
+    db.delete_(table__, (Filter == o0.id && Stream == o1.id));
+}
+void FilterStreamRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<FilterStreamRelation::Row> FilterStreamRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Filter.fullName());
+    sel.result(Stream.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<FilterStreamRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Filter> FilterStreamRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Filter.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Filter>(db, db::Filter::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Stream> FilterStreamRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Stream.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
+}
 MediaFileStreamRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : stream(MediaFileStreamRelation::Stream), mediaFile(MediaFileStreamRelation::MediaFile) {
     switch(rec.size()) {
@@ -833,6 +882,55 @@ template <> litesql::DataSource<db::MediaFile> JobMediaFileRelationJobOutFile::g
     sel.result(MediaFile.fullName());
     sel.where(srcExpr);
     return DataSource<db::MediaFile>(db, db::MediaFile::Id.in(sel) && expr);
+}
+JobProfileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : profile(JobProfileRelation::Profile), job(JobProfileRelation::Job) {
+    switch(rec.size()) {
+    case 2:
+        profile = rec[1];
+    case 1:
+        job = rec[0];
+    }
+}
+const std::string JobProfileRelation::table__("Job_Profile_");
+const litesql::FieldType JobProfileRelation::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobProfileRelation::Profile("Profile2","INTEGER",table__);
+void JobProfileRelation::link(const litesql::Database& db, const db::Job& o0, const db::Profile& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Job.name());
+    values.push_back(o0.id);
+    fields.push_back(Profile.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void JobProfileRelation::unlink(const litesql::Database& db, const db::Job& o0, const db::Profile& o1) {
+    db.delete_(table__, (Job == o0.id && Profile == o1.id));
+}
+void JobProfileRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<JobProfileRelation::Row> JobProfileRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Job.fullName());
+    sel.result(Profile.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<JobProfileRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Job> JobProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Job.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Profile> JobProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Profile.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
 }
 JobJobDetailRelationJobJobDetail::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : jobDetail(JobJobDetailRelationJobJobDetail::JobDetail), job(JobJobDetailRelationJobJobDetail::Job) {
@@ -1358,6 +1456,24 @@ litesql::DataSource<Profile> Filter::ProfileHandle::get(const litesql::Expr& exp
 litesql::DataSource<FilterProfileRelation::Row> Filter::ProfileHandle::getRows(const litesql::Expr& expr) {
     return FilterProfileRelation::getRows(owner->getDatabase(), expr && (FilterProfileRelation::Filter == owner->id));
 }
+Filter::StreamHandle::StreamHandle(const Filter& owner)
+         : litesql::RelationHandle<Filter>(owner) {
+}
+void Filter::StreamHandle::link(const Stream& o0) {
+    FilterStreamRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Filter::StreamHandle::unlink(const Stream& o0) {
+    FilterStreamRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Filter::StreamHandle::del(const litesql::Expr& expr) {
+    FilterStreamRelation::del(owner->getDatabase(), expr && FilterStreamRelation::Filter == owner->id);
+}
+litesql::DataSource<Stream> Filter::StreamHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterStreamRelation::get<Stream>(owner->getDatabase(), expr, (FilterStreamRelation::Filter == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterStreamRelation::Row> Filter::StreamHandle::getRows(const litesql::Expr& expr) {
+    return FilterStreamRelation::getRows(owner->getDatabase(), expr && (FilterStreamRelation::Filter == owner->id));
+}
 const std::string Filter::type__("Filter");
 const std::string Filter::table__("Filter_");
 const std::string Filter::sequence__("Filter_seq");
@@ -1412,6 +1528,9 @@ Filter::ProjectHandle Filter::project() {
 Filter::ProfileHandle Filter::profile() {
     return Filter::ProfileHandle(*this);
 }
+Filter::StreamHandle Filter::stream() {
+    return Filter::StreamHandle(*this);
+}
 std::string Filter::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
     litesql::Record fields;
@@ -1464,6 +1583,7 @@ void Filter::delRelations() {
     FilterMediaFileRelation::del(*db, (FilterMediaFileRelation::Filter == id));
     FilterProjectRelation::del(*db, (FilterProjectRelation::Filter == id));
     FilterProfileRelation::del(*db, (FilterProfileRelation::Filter == id));
+    FilterStreamRelation::del(*db, (FilterStreamRelation::Filter == id));
 }
 void Filter::update() {
     if (!inDatabase) {
@@ -2434,6 +2554,24 @@ litesql::DataSource<CodecPreset> Profile::ApresetHandle::get(const litesql::Expr
 litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Profile::ApresetHandle::getRows(const litesql::Expr& expr) {
     return CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id));
 }
+Profile::JobHandle::JobHandle(const Profile& owner)
+         : litesql::RelationHandle<Profile>(owner) {
+}
+void Profile::JobHandle::link(const Job& o0) {
+    JobProfileRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Profile::JobHandle::unlink(const Job& o0) {
+    JobProfileRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Profile::JobHandle::del(const litesql::Expr& expr) {
+    JobProfileRelation::del(owner->getDatabase(), expr && JobProfileRelation::Profile == owner->id);
+}
+litesql::DataSource<Job> Profile::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobProfileRelation::get<Job>(owner->getDatabase(), expr, (JobProfileRelation::Profile == owner->id) && srcExpr);
+}
+litesql::DataSource<JobProfileRelation::Row> Profile::JobHandle::getRows(const litesql::Expr& expr) {
+    return JobProfileRelation::getRows(owner->getDatabase(), expr && (JobProfileRelation::Profile == owner->id));
+}
 Profile::WatchfolderHandle::WatchfolderHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
@@ -2583,6 +2721,9 @@ Profile::VpresetHandle Profile::vpreset() {
 Profile::ApresetHandle Profile::apreset() {
     return Profile::ApresetHandle(*this);
 }
+Profile::JobHandle Profile::job() {
+    return Profile::JobHandle(*this);
+}
 Profile::WatchfolderHandle Profile::watchfolder() {
     return Profile::WatchfolderHandle(*this);
 }
@@ -2715,6 +2856,7 @@ void Profile::delRelations() {
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
     CodecPresetProfileRelationVideoCodecPreset2Profile::del(*db, (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == id));
     CodecPresetProfileRelationAudioCodecPreset2Profile::del(*db, (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == id));
+    JobProfileRelation::del(*db, (JobProfileRelation::Profile == id));
     ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Profile == id));
 }
 void Profile::update() {
@@ -2992,6 +3134,24 @@ litesql::DataSource<StreamParameter> Stream::ParamsHandle::get(const litesql::Ex
 litesql::DataSource<StreamStreamParameterRelation::Row> Stream::ParamsHandle::getRows(const litesql::Expr& expr) {
     return StreamStreamParameterRelation::getRows(owner->getDatabase(), expr && (StreamStreamParameterRelation::Stream == owner->id));
 }
+Stream::FiltersHandle::FiltersHandle(const Stream& owner)
+         : litesql::RelationHandle<Stream>(owner) {
+}
+void Stream::FiltersHandle::link(const Filter& o0) {
+    FilterStreamRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Stream::FiltersHandle::unlink(const Filter& o0) {
+    FilterStreamRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Stream::FiltersHandle::del(const litesql::Expr& expr) {
+    FilterStreamRelation::del(owner->getDatabase(), expr && FilterStreamRelation::Stream == owner->id);
+}
+litesql::DataSource<Filter> Stream::FiltersHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return FilterStreamRelation::get<Filter>(owner->getDatabase(), expr, (FilterStreamRelation::Stream == owner->id) && srcExpr);
+}
+litesql::DataSource<FilterStreamRelation::Row> Stream::FiltersHandle::getRows(const litesql::Expr& expr) {
+    return FilterStreamRelation::getRows(owner->getDatabase(), expr && (FilterStreamRelation::Stream == owner->id));
+}
 Stream::MediafileHandle::MediafileHandle(const Stream& owner)
          : litesql::RelationHandle<Stream>(owner) {
 }
@@ -3238,6 +3398,9 @@ const Stream& Stream::operator=(const Stream& obj) {
 Stream::ParamsHandle Stream::params() {
     return Stream::ParamsHandle(*this);
 }
+Stream::FiltersHandle Stream::filters() {
+    return Stream::FiltersHandle(*this);
+}
 Stream::MediafileHandle Stream::mediafile() {
     return Stream::MediafileHandle(*this);
 }
@@ -3446,6 +3609,7 @@ void Stream::delRecord() {
 }
 void Stream::delRelations() {
     StreamStreamParameterRelation::del(*db, (StreamStreamParameterRelation::Stream == id));
+    FilterStreamRelation::del(*db, (FilterStreamRelation::Stream == id));
     MediaFileStreamRelation::del(*db, (MediaFileStreamRelation::Stream == id));
     JobDetailStreamRelationJobOutStream::del(*db, (JobDetailStreamRelationJobOutStream::Stream == id));
     JobDetailStreamRelationJobInStream::del(*db, (JobDetailStreamRelationJobInStream::Stream == id));
@@ -4317,6 +4481,24 @@ litesql::DataSource<MediaFile> Job::OutputfileHandle::get(const litesql::Expr& e
 litesql::DataSource<JobMediaFileRelationJobOutFile::Row> Job::OutputfileHandle::getRows(const litesql::Expr& expr) {
     return JobMediaFileRelationJobOutFile::getRows(owner->getDatabase(), expr && (JobMediaFileRelationJobOutFile::Job == owner->id));
 }
+Job::ProfileHandle::ProfileHandle(const Job& owner)
+         : litesql::RelationHandle<Job>(owner) {
+}
+void Job::ProfileHandle::link(const Profile& o0) {
+    JobProfileRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Job::ProfileHandle::unlink(const Profile& o0) {
+    JobProfileRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Job::ProfileHandle::del(const litesql::Expr& expr) {
+    JobProfileRelation::del(owner->getDatabase(), expr && JobProfileRelation::Job == owner->id);
+}
+litesql::DataSource<Profile> Job::ProfileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobProfileRelation::get<Profile>(owner->getDatabase(), expr, (JobProfileRelation::Job == owner->id) && srcExpr);
+}
+litesql::DataSource<JobProfileRelation::Row> Job::ProfileHandle::getRows(const litesql::Expr& expr) {
+    return JobProfileRelation::getRows(owner->getDatabase(), expr && (JobProfileRelation::Job == owner->id));
+}
 Job::JobdetailsHandle::JobdetailsHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
@@ -4420,6 +4602,9 @@ Job::InputfileHandle Job::inputfile() {
 Job::OutputfileHandle Job::outputfile() {
     return Job::OutputfileHandle(*this);
 }
+Job::ProfileHandle Job::profile() {
+    return Job::ProfileHandle(*this);
+}
 Job::JobdetailsHandle Job::jobdetails() {
     return Job::JobdetailsHandle(*this);
 }
@@ -4509,6 +4694,7 @@ void Job::delRelations() {
     JobJobLogRelationJobJobLog::del(*db, (JobJobLogRelationJobJobLog::Job == id));
     JobMediaFileRelationJobInFile::del(*db, (JobMediaFileRelationJobInFile::Job == id));
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
+    JobProfileRelation::del(*db, (JobProfileRelation::Job == id));
     JobJobDetailRelationJobJobDetail::del(*db, (JobJobDetailRelationJobJobDetail::Job == id));
 }
 void Job::update() {
@@ -5418,6 +5604,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Profile_ProfileParameter_","table","CREATE TABLE Profile_ProfileParameter_ (Profile1 INTEGER,ProfileParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Profile_Project_","table","CREATE TABLE Profile_Project_ (Profile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_StreamParameter_","table","CREATE TABLE Stream_StreamParameter_ (Stream1 INTEGER,StreamParameter2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Filter_Stream_","table","CREATE TABLE Filter_Stream_ (Filter1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_","table","CREATE TABLE MediaFile_Stream_ (MediaFile1 INTEGER,Stream2 INTEGER UNIQUE)"));
     res.push_back(Database::SchemaItem("_165bce89be0b4f99d8ddeba7a26a23a7","table","CREATE TABLE _165bce89be0b4f99d8ddeba7a26a23a7 (CodecPreset1 INTEGER,CodecPresetParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("_b477e426317c3764439827c70cd95621","table","CREATE TABLE _b477e426317c3764439827c70cd95621 (CodecPreset1 INTEGER,Profile2 INTEGER)"));
@@ -5425,6 +5612,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_Profile_","table","CREATE TABLE Job_Profile_ (Job1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
@@ -5459,6 +5647,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_eb5384d2471a9430428b71b05ad67df2","index","CREATE INDEX _eb5384d2471a9430428b71b05ad67df2 ON Stream_StreamParameter_ (Stream1)"));
     res.push_back(Database::SchemaItem("_fa13711a6fd2c1b03d436f1959beb886","index","CREATE INDEX _fa13711a6fd2c1b03d436f1959beb886 ON Stream_StreamParameter_ (StreamParameter2)"));
     res.push_back(Database::SchemaItem("Stream_StreamParameter__all_idx","index","CREATE INDEX Stream_StreamParameter__all_idx ON Stream_StreamParameter_ (Stream1,StreamParameter2)"));
+    res.push_back(Database::SchemaItem("Filter_Stream_Filter1idx","index","CREATE INDEX Filter_Stream_Filter1idx ON Filter_Stream_ (Filter1)"));
+    res.push_back(Database::SchemaItem("Filter_Stream_Stream2idx","index","CREATE INDEX Filter_Stream_Stream2idx ON Filter_Stream_ (Stream2)"));
+    res.push_back(Database::SchemaItem("Filter_Stream__all_idx","index","CREATE INDEX Filter_Stream__all_idx ON Filter_Stream_ (Filter1,Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_MediaFile1idx","index","CREATE INDEX MediaFile_Stream_MediaFile1idx ON MediaFile_Stream_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream_Stream2idx","index","CREATE INDEX MediaFile_Stream_Stream2idx ON MediaFile_Stream_ (Stream2)"));
     res.push_back(Database::SchemaItem("MediaFile_Stream__all_idx","index","CREATE INDEX MediaFile_Stream__all_idx ON MediaFile_Stream_ (MediaFile1,Stream2)"));
@@ -5480,6 +5671,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFileJob1idx","index","CREATE INDEX Job_MediaFile_JobOutFileJob1idx ON Job_MediaFile_JobOutFile (Job1)"));
     res.push_back(Database::SchemaItem("_25cc5418e8e8e4440a05457be79c6e6c","index","CREATE INDEX _25cc5418e8e8e4440a05457be79c6e6c ON Job_MediaFile_JobOutFile (MediaFile2)"));
     res.push_back(Database::SchemaItem("_d9d2d6c9fa1fb063c88ce1c8efda4f10","index","CREATE INDEX _d9d2d6c9fa1fb063c88ce1c8efda4f10 ON Job_MediaFile_JobOutFile (Job1,MediaFile2)"));
+    res.push_back(Database::SchemaItem("Job_Profile_Job1idx","index","CREATE INDEX Job_Profile_Job1idx ON Job_Profile_ (Job1)"));
+    res.push_back(Database::SchemaItem("Job_Profile_Profile2idx","index","CREATE INDEX Job_Profile_Profile2idx ON Job_Profile_ (Profile2)"));
+    res.push_back(Database::SchemaItem("Job_Profile__all_idx","index","CREATE INDEX Job_Profile__all_idx ON Job_Profile_ (Job1,Profile2)"));
     res.push_back(Database::SchemaItem("_d42e07c973df5c1aa22424f96e07d102","index","CREATE INDEX _d42e07c973df5c1aa22424f96e07d102 ON Job_JobDetail_JobJobDetail (Job1)"));
     res.push_back(Database::SchemaItem("_f7ff1861fc4c003b6fc460836dea52b3","index","CREATE INDEX _f7ff1861fc4c003b6fc460836dea52b3 ON Job_JobDetail_JobJobDetail (JobDetail2)"));
     res.push_back(Database::SchemaItem("_cce4f09c9234ab0eb75047f7dd450a33","index","CREATE INDEX _cce4f09c9234ab0eb75047f7dd450a33 ON Job_JobDetail_JobJobDetail (Job1,JobDetail2)"));

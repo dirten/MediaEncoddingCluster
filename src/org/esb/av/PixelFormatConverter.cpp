@@ -28,7 +28,10 @@ namespace org{
 
       void PixelFormatConverter::process(Frame & in_frame, Frame & out_frame){
         out_frame._type = in_frame._type;
-        if (!_swsContext)return;
+        if (!_swsContext){
+          LOGERROR("swsContext not initialized!!!");
+          return;
+        }
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;

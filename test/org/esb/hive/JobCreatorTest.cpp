@@ -14,6 +14,8 @@
 #include "org/esb/io/File.h"
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/hive/FileImporter.h"
+#include "org/esb/hive/PresetLoader.h"
+#include "org/esb/hive/PresetReader.h"
 
 #include "config.h"
 using namespace std;
@@ -75,19 +77,28 @@ int main(int argc, char** argv) {
     }
     hive::DatabaseService::dropTables();
     hive::DatabaseService::updateTables();
-    hive::DatabaseService::loadPresets();
+//    hive::DatabaseService::loadPresets();
     {
+      std::string path = MEC_SOURCE_DIR;
+      org::esb::hive::PresetReader reader(path + "/res/presets/test.preset");
+      LOGDEBUG(reader.toString());
+      org::esb::hive::PresetLoader loader(reader);
+      loader.load();
+  //    return 0;
+
+
+
       org::esb::hive::FileImporter imp;
 
       db::MediaFile mediafile = imp.import(org::esb::io::File(src));
       assert(mediafile.id > 0);
       db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
-      int jobid = jobcreator(mediafile, p, "/tmp");
+      int jobid = org::esb::hive::JobUtil::createJob(mediafile, p, "/tmp");
       assert(jobid > 0);
 
 
-      db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
-      //db.verbose = true;
+      db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+      db.verbose = true;
 
       db::Job job = litesql::select<db::Job > (db, db::Job::Id == jobid).one();
 
