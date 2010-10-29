@@ -14,6 +14,7 @@ namespace org {
         namespace av {
           typedef std::list<Ptr<AVOutputFormat> > OutputFormatList;
             class FormatOutputStream : public FormatBaseStream, public org::esb::io::OutputStream {
+              classlogger("org.esb.av.FormatOutputStream");
             public:
                 FormatOutputStream(org::esb::io::File * target, const char * fmt = NULL);
                 ~FormatOutputStream();

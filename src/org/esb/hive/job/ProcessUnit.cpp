@@ -162,7 +162,6 @@ void ProcessUnit::process() {
 
     /*target frame for conversion*/
     Frame * f = NULL;
-
     /*allocation frame data for specified type*/
     if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
       f = new Frame(_encoder->getInputFormat().pixel_format, _encoder->getWidth(), _encoder->getHeight());

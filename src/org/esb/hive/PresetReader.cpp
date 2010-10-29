@@ -96,7 +96,9 @@ namespace org {
           AVCodec * codec=avcodec_find_encoder_by_name(id.c_str());
           if(codec){
             std::string t=type+"_codec_id";
-            _codecs[type][t] = org::esb::util::StringUtil::toString(codec->id);
+            _codecs[type].insert(std::pair<std::string, std::string>(t,org::esb::util::StringUtil::toString(codec->id)));
+            _codecs[type].insert(std::pair<std::string, std::string>("codec_id",org::esb::util::StringUtil::toString(codec->id)));
+            
           }else{
             LOGWARN("could not find encoder for name "<<id);
           }
@@ -114,7 +116,7 @@ namespace org {
           }
           std::string value = param->first_attribute("value")->value();
           LOGDEBUG("type=" << type << " name=" << name << " value=" << value);
-          _codecs[type][name] = value;
+          _codecs[type].insert(std::pair<std::string, std::string>(name, value));
         }
       }
 
@@ -140,7 +142,7 @@ namespace org {
           }
           std::string value = param->first_attribute("value")->value();
           LOGDEBUG("filter id=" << id << " name=" << name << " value=" << value);
-          _filters[id][name] = value;
+          _filters[id].insert(std::pair<std::string, std::string>(name,value));
         }
 
       }
@@ -175,10 +177,10 @@ namespace org {
         }
         if (_filters.size() > 0) {
           result += "Filter:\n";
-          std::map<std::string, std::map<std::string, std::string> >::iterator it = _filters.begin();
+          std::map<std::string, std::multimap<std::string, std::string> >::iterator it = _filters.begin();
           for (; it != _filters.end(); it++) {
             result += "  " + (*it).first + "\n";
-            std::map<std::string, std::string>::iterator params = (*it).second.begin();
+            std::multimap<std::string, std::string>::iterator params = (*it).second.begin();
             for (; params != (*it).second.end(); params++) {
               result += "    " + (*params).first + "=" + (*params).second + "\n";
             }

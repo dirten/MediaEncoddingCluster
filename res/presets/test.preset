@@ -5,6 +5,7 @@
     </format>
     <codec type="video" id="libx264">
 	<param name="b" value="1000"/>
+	<param name="b" value="1000"/>
     </codec>
     <codec type="audio" id="mp2">
 	<param name="ab" value="128000"/>

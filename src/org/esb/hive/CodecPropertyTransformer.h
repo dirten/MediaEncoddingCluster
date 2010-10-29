@@ -18,7 +18,7 @@ namespace org {
       public:
         CodecPropertyTransformer();
         CodecPropertyTransformer(std::vector<db::StreamParameter> p);
-        CodecPropertyTransformer(std::map<std::string, std::string> p);
+        CodecPropertyTransformer(std::multimap<std::string, std::string> p);
         virtual ~CodecPropertyTransformer();
         std::map<std::string, std::string> getCodecProperties();
         std::string toString();
@@ -28,7 +28,7 @@ namespace org {
         std::map<std::string, std::string> _prop2parent;
         std::map<std::string, const AVOption*> _options;
         void init();
-        void process(std::map<std::string, std::string>);
+        void process(std::multimap<std::string, std::string>);
       };
     }
   }

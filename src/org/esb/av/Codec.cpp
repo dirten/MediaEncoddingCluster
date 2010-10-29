@@ -258,7 +258,7 @@ namespace org {
 
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-        ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
+        //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
         if (!_codec) {
@@ -297,12 +297,11 @@ namespace org {
           //              LOGWARN("Option not found")
           //            }
           //          }
-          if (o && ret < 0) {
+          if (o && ret != 0) {
             LOGERROR("Invalid value '" << arg << "' for option '" << opt << "'\n");
           }
           if (!o) {
             LOGWARN("Option not found:" << opt);
-            //          return -1;
           }
         }
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
@@ -344,6 +343,7 @@ namespace org {
       void Codec::close() {
 
         if (_opened) {
+          LOGINFO("Closing codec"<<ctx->codec_id);
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);

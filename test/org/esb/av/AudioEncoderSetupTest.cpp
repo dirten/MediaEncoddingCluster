@@ -20,21 +20,21 @@ using namespace std;
 int main(int argc, char** argv) {
   Log::open("");
   org::esb::av::FormatBaseStream::initialize();
-  std::map<std::string, std::string> data;
-  data["parti8x8"] = "1";
-  data["partb8x8"] = "1";
-  data["parti4x4"] = "1";
-  data["partp4x4"] = "0";
-  data["ac"] = "2";
-  data["ar"] = "44100";
-  data["g"] = "250";
-  data["bt"] = "300000";
-  data["b"] = "1024000";
-  data["ab"] = "128000";
-  data["chroma"] = "1";
-  data["mixed_refs"] = "1";
-  data["dct8x8"] = "1";
-  data["blafasel"] = "test unknown";
+  std::multimap<std::string, std::string> data;
+  data.insert(std::pair<std::string, std::string>("parti8x8","1"));
+  data.insert(std::pair<std::string, std::string>("partb8x8","1"));
+  data.insert(std::pair<std::string, std::string>("parti4x4","1"));
+  data.insert(std::pair<std::string, std::string>("partp4x4", "0"));
+  data.insert(std::pair<std::string, std::string>("ac", "2"));
+  data.insert(std::pair<std::string, std::string>("ar", "44100"));
+  data.insert(std::pair<std::string, std::string>("g", "250"));
+  data.insert(std::pair<std::string, std::string>("bt", "300000"));
+  data.insert(std::pair<std::string, std::string>("b", "1024000"));
+  data.insert(std::pair<std::string, std::string>("ab", "128000"));
+  data.insert(std::pair<std::string, std::string>("chroma", "1"));
+  data.insert(std::pair<std::string, std::string>("mixed_refs", "1"));
+  data.insert(std::pair<std::string, std::string>("dct8x8", "1"));
+  
   org::esb::hive::CodecPropertyTransformer * trans = new org::esb::hive::CodecPropertyTransformer(data);
 
 

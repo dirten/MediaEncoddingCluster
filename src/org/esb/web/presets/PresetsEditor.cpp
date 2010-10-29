@@ -28,7 +28,7 @@ namespace org {
 
       PresetsEditor::PresetsEditor(Ptr<db::Profile> profile) : Wt::Ext::Panel(), _profile(profile) {
         setLayout(new Wt::WBorderLayout());
-        /*loading parameters from the database for the Video Codec only*/
+        /*loading parameters from the database*/
         if (_profile->params().get().count() > 0) {
           vector<db::ProfileParameter> params = _profile->params().get().all();
           vector<db::ProfileParameter>::iterator it = params.begin();

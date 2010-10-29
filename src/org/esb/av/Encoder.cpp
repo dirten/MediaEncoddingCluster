@@ -119,8 +119,9 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     if (ret < 0) {
       LOGERROR("Video Encoding failed")
     }
-
     if (ret > 0) {
+      if(ctx->coded_frame&&ctx->coded_frame->quality>0)
+        LOGDEBUG("EnCodedFrameQuality:"<<ctx->coded_frame->quality/(float)FF_QP2LAMBDA);
       memcpy(pac.packet->data, data, ret);
       pac.packet->size = ret;
       pac.packet->stream_index = _last_idx;
@@ -150,6 +151,8 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
   delete [] data;
+
+  
   return ret;
 }
 

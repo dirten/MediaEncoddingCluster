@@ -23,13 +23,29 @@ PacketOutputStream::PacketOutputStream(OutputStream * os) {
 }
 
 void PacketOutputStream::close() {
-  if (_isInitialized)
+  if (_isInitialized){
+    LOGINFO("writing trailer");
     av_write_trailer(_fmtCtx);
+  }
   _isInitialized = false;
 }
 
 PacketOutputStream::~PacketOutputStream() {
+  list<AVStream*>::iterator it=streams.begin();
+
+  for(;it!=streams.end();it++){
+    if((*it)->codec==NULL){
+      LOGERROR("Codecs are closed, this can result in an unknown behavior!");
+    }
+  }
+
   close();
+  
+  it=streams.begin();
+  
+  for(;it!=streams.end();it++){
+    av_free((*it));
+  }
   //    av_write_trailer(_fmtCtx);
   //	delete _target;
 }
@@ -145,6 +161,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   if (!st) {
     LOGERROR("Could not alloc stream");
   }
+  
   //  logdebug( "Setting Codec_Id:" << encoder.ctx->codec_id);
   streams.push_back(st);
   /*freeing allocated codec from av_new_stream
@@ -152,6 +169,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   av_free(st->codec);
   st->codec = encoder.ctx;
   st->time_base = encoder.ctx->time_base;
+  st->sample_aspect_ratio = encoder.ctx->sample_aspect_ratio;
   //  st->time_base = encoder.ctx->time_base;
   return;
   //  	st->time_base.den=90000;

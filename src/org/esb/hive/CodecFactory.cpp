@@ -51,18 +51,37 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
   return decoder_map[streamid];
 }
 
+boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::multimap<std::string, std::string> pmap) {
+  boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) atoi((*pmap.find("codec_id")).second.c_str())));
+  _encoder->findCodec(org::esb::av::Codec::ENCODER);
+  _encoder->setWidth(atoi((*pmap.find("width")).second.c_str()));
+  _encoder->setHeight(atoi((*pmap.find("height")).second.c_str()));
+  _encoder->setPixelFormat((PixelFormat) 0);
+  if (_encoder->_codec->pix_fmts) {
+    _encoder->setPixelFormat(_encoder->_codec->pix_fmts[0]);
+  }
+  if (_encoder->_codec->sample_fmts) {
+    _encoder->setSampleFormat(_encoder->_codec->sample_fmts[0]);
+  }
+  setCodecOptions(_encoder, pmap);
+  return _encoder;
+}
+
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   LOGTRACEMETHOD("CodecFactory::getStreamEncoder(int streamid)")
   if (encoder_map.find(streamid) == encoder_map.end()) {
     try {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
+
       vector<db::StreamParameter> params = stream.params().get().all();
-      vector<db::StreamParameter>::iterator it=params.begin();
-      std::map<std::string, std::string> pmap;
-      for(;it!=params.end();it++){
-        pmap[(*it).name.value()]=(*it).val.value();
+      vector<db::StreamParameter>::iterator it = params.begin();
+      std::multimap<std::string, std::string> pmap;
+      for (; it != params.end(); it++) {
+        pmap.insert(std::pair<std::string, std::string>((*it).name.value(),(*it).val.value()));
       }
+      boost::shared_ptr<av::Encoder> _encoder = getStreamEncoder(pmap);
+      /*
       boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) atoi(pmap["codec_id"].c_str())));
       _encoder->findCodec(org::esb::av::Codec::ENCODER);
       _encoder->setWidth(atoi(pmap["width"].c_str()));
@@ -73,7 +92,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       }
       if(_encoder->_codec->sample_fmts){
         _encoder->setSampleFormat(_encoder->_codec->sample_fmts[0]);
-      }
+      }*/
       //      _encoder->setBitRate(stream.bitrate);
       /*
       _encoder->setTimeBase(stream.framerateden, stream.frameratenum);
@@ -86,13 +105,13 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       //      _encoder->setGopSize(stream.gopsize);
       //      _encoder->setChannels(stream.channels);
       //      _encoder->setSampleRate(stream.samplerate);
-      _encoder->setSampleFormat((SampleFormat) 1);
+      //_encoder->setSampleFormat((SampleFormat) 1);
       //      _encoder->setFlag(stream.flags);
       //      vector<db::StreamParameter> params = stream.params().get().all();
-      setCodecOptions(_encoder,stream.params().get().all());
+//      setCodecOptions(_encoder, stream.params().get().all());
 
 
-      
+
       //      setCodecOptions(_encoder, stream.params().get().all());
       //    		_encoder->open();
       encoder_map[streamid] = _encoder;
@@ -106,6 +125,18 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
 
 void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc, std::vector<db::StreamParameter> p) {
   CodecPropertyTransformer transformer(p);
+  std::map<std::string, std::string> params = transformer.getCodecProperties();
+  std::map<std::string, std::string>::iterator it = params.begin();
+  for (; it != params.end(); it++) {
+    if ((*it).second.length() > 0) {
+      if (_enc->setCodecOption((*it).first, (*it).second)) {
+        LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
+      }
+    }
+  }
+}
+void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,std::multimap<std::string, std::string> param) {
+  CodecPropertyTransformer transformer(param);
   std::map<std::string, std::string> params = transformer.getCodecProperties();
   std::map<std::string, std::string>::iterator it = params.begin();
   for (; it != params.end(); it++) {

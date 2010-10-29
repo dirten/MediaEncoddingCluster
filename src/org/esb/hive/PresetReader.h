@@ -17,7 +17,7 @@ namespace org {
       class PresetReader {
         classlogger("org.esb.hive.PresetReader")
       public:
-        typedef std::map<std::string, std::map<std::string, std::string> > CodecList;
+        typedef std::map<std::string, std::multimap<std::string, std::string> > CodecList;
         typedef CodecList FilterList;
         typedef std::map<std::string, std::string> Preset;
         PresetReader(std::string filename);

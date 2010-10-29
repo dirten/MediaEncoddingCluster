@@ -70,10 +70,11 @@ namespace org {
 
       void FormatOutputStream::close() {
         if (!(_fmt->flags & AVFMT_NOFILE) && _status == OPENED) {
+          LOGINFO("closing format context");
           url_fclose(_fmtCtx->pb);
           int nb_streams = _fmtCtx->nb_streams;
           for (int a = 0; a < nb_streams; a++) {
-            av_free(_fmtCtx->streams[a]);
+//            av_free(_fmtCtx->streams[a]);
           }
           av_free(_fmtCtx);
           _status = CLOSED;

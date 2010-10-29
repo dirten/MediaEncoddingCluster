@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <preset name="x264-ipod-640">
     <format id="mp4">
-	<param name="ext" value="mp4"/>
+	<param name="fileExtension" value="mp4"/>
     </format>
     <codec type="video" id="libx264">
 	<param name="coder" value="0"/>
