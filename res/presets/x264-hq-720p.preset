@@ -5,7 +5,7 @@
 	<param name="author" value="MediaEncodingCluster"/>
     </format>
     <codec type="video" id="libx264">
-	<param name="b" value="6768000"/>
+	<param name="b" value="768000"/>
 	<param name="coder" value="1"/>
 	<param name="psnr" value="1"/>
 	<param name="loop" value="1"/>

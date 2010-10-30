@@ -317,7 +317,7 @@ namespace org {
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            LOGERROR("openning Codec" << ctx->codec_id);
+            LOGERROR("openning Codec (" << ctx->codec_id<<")");
 
           } else {
             //              logdebug("Codec opened:" << _codec_id);
@@ -325,7 +325,7 @@ namespace org {
             _opened = true;
           }
         } catch (...) {
-          LOGERROR("Exception while openning Codec" << ctx->codec_id);
+          LOGERROR("Exception while openning Codec (" << ctx->codec_id<<")");
         }
         return _opened;
         //        }
@@ -341,14 +341,14 @@ namespace org {
       }
 
       void Codec::close() {
+        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-          LOGINFO("Closing codec"<<ctx->codec_id);
+                    LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);
             }
-            boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
             avcodec_close(ctx);
           }

@@ -83,12 +83,12 @@ void ProcessUnit::process() {
 
   if (_decoder != NULL)
     if (!_decoder->open()) {
-      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << ")");
+      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << " CodecID:"<<_decoder->getCodecId()<<")");
       return;
     }
   if (_encoder != NULL)
     if (!_encoder->open()) {
-      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << ")");
+      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:"<<_decoder->getCodecId()<<")");
       return;
     }
   /*creating a frame converter*/

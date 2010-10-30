@@ -178,6 +178,8 @@ int main(int argc, char** argv) {
   }
   pos.close();
   fos.close();
+  encoder.clear();
+  decoder.clear();
 
 /*
   std::list<boost::shared_ptr<Packet> > packets=sink.getList();
