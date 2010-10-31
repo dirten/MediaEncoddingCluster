@@ -37,13 +37,13 @@ namespace org {
         }
         PresetReader::CodecList clist=_preset.getCodecList();
         
-        it=clist["video"].begin();
-        for(;it!=clist["video"].end();it++){
-          setParameter(profile,(*it).first,(*it).second);
+        std::multimap<std::string, std::string>::iterator it_c=clist["video"].begin();
+        for(;it_c!=clist["video"].end();it_c++){
+          setParameter(profile,(*it_c).first,(*it_c).second);
         }
-        it=clist["audio"].begin();
-        for(;it!=clist["audio"].end();it++){
-          setParameter(profile,(*it).first,(*it).second);
+        it_c=clist["audio"].begin();
+        for(;it_c!=clist["audio"].end();it_c++){
+          setParameter(profile,(*it_c).first,(*it_c).second);
         }
         PresetReader::FilterList flist=_preset.getFilterList();
         PresetReader::FilterList::iterator flist_it=flist.begin();
@@ -56,7 +56,7 @@ namespace org {
           filter.filtername=filter_name[filter.filterid];
           filter.update();
           profile.filter().link(filter);
-          std::map<std::string, std::string>::iterator param=(*flist_it).second.begin();
+          std::multimap<std::string, std::string>::iterator param=(*flist_it).second.begin();
           for(;param!=(*flist_it).second.end();param++){
             db::FilterParameter fp(db);
             fp.fkey=(*param).first;
