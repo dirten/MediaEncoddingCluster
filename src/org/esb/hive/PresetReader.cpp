@@ -132,17 +132,19 @@ namespace org {
         }
         for (xml_node<>*param = filter->first_node("param"); param; param = param->next_sibling("param")) {
           if (!param->first_attribute("name")) {
-            LOGDEBUG("could not resolve name for the codec parameter");
+            LOGDEBUG("could not resolve name for the filter parameter");
             continue;
           }
           std::string name = param->first_attribute("name")->value();
           if (!param->first_attribute("value")) {
-            LOGDEBUG("could not resolve value for the codec parameter name : " << name);
+            LOGDEBUG("could not resolve value for the filter parameter name : " << name);
             continue;
           }
           std::string value = param->first_attribute("value")->value();
           LOGDEBUG("filter id=" << id << " name=" << name << " value=" << value);
           _filters[id].insert(std::pair<std::string, std::string>(name,value));
+          if(id=="resize")
+            _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
         }
 
       }
