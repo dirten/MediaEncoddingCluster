@@ -97,7 +97,7 @@ ADD_TEST(hive.DirectoryScannerTest  ${EXECUTABLE_OUTPUT_PATH}/DirectoryScannerTe
 ADD_TEST(hive.ProcessUnitBuilderTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitBuilderTest)
 #ADD_TEST(hive.ProcessUnitControllerTest ${EXECUTABLE_OUTPUT_PATH}/ProcessUnitControllerTest)
 #ADD_TEST(hive.DataHandlerTest ${EXECUTABLE_OUTPUT_PATH}/DataHandlerTest)
-ADD_TEST(hive.PresetTest ${EXECUTABLE_OUTPUT_PATH}/PresetTest ${MEC_SOURCE_DIR}/res/presets/test.preset ${MEC_SOURCE_DIR}/test.dvd)
+ADD_TEST(hive.PresetTest ${EXECUTABLE_OUTPUT_PATH}/PresetTest ${MEC_SOURCE_DIR}/res/presets/x264-hq.preset ${MEC_SOURCE_DIR}/test.dvd)
 ADD_TEST(hive.PresetReaderTest ${EXECUTABLE_OUTPUT_PATH}/PresetReaderTest )
 ADD_TEST(hive.PresetLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PresetLoaderTest )
 ADD_TEST(hive.CodecPropertyTransformerTest ${EXECUTABLE_OUTPUT_PATH}/CodecPropertyTransformerTest)

@@ -36,7 +36,7 @@ namespace org {
       }
 
       void CodecPropertyTransformer::process(std::multimap<std::string, std::string> data) {
-        std::map<std::string, std::string>::iterator it = data.begin();
+        std::multimap<std::string, std::string>::iterator it = data.begin();
         /**special handling for the time_base*/
         std::string frame_rate_num = "0";
         std::string frame_rate_den = "0";
