@@ -55,8 +55,10 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::mul
   boost::shared_ptr<av::Encoder> _encoder(new av::Encoder((CodecID) atoi((*pmap.find("codec_id")).second.c_str())));
   _encoder->findCodec(org::esb::av::Codec::ENCODER);
   if(_encoder->getCodecType()==CODEC_TYPE_VIDEO){
-    _encoder->setWidth(atoi((*pmap.find("width")).second.c_str()));
-    _encoder->setHeight(atoi((*pmap.find("height")).second.c_str()));
+    if(pmap.count("width"))
+      _encoder->setWidth(atoi((*pmap.find("width")).second.c_str()));
+    if(pmap.count("height"))
+      _encoder->setHeight(atoi((*pmap.find("height")).second.c_str()));
     _encoder->setPixelFormat((PixelFormat) 0);
     if (_encoder->_codec->pix_fmts) {
       _encoder->setPixelFormat(_encoder->_codec->pix_fmts[0]);
