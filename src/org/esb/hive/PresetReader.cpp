@@ -163,14 +163,14 @@ namespace org {
         }
         if (_codecs.count("video") > 0) {
           result += "VideoCodec:\n";
-          std::map<std::string, std::string>::iterator it = _codecs["video"].begin();
+          std::multimap<std::string, std::string>::iterator it = _codecs["video"].begin();
           for (; it != _codecs["video"].end(); it++) {
             result += "  " + (*it).first + "=" + (*it).second + "\n";
           }
         }
         if (_codecs.count("audio") > 0) {
           result += "AudioCodec:\n";
-          std::map<std::string, std::string>::iterator it = _codecs["audio"].begin();
+          std::multimap<std::string, std::string>::iterator it = _codecs["audio"].begin();
           for (; it != _codecs["audio"].end(); it++) {
             result += "  " + (*it).first + "=" + (*it).second + "\n";
           }
