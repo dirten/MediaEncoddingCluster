@@ -143,8 +143,11 @@ namespace org {
           std::string value = param->first_attribute("value")->value();
           LOGDEBUG("filter id=" << id << " name=" << name << " value=" << value);
           _filters[id].insert(std::pair<std::string, std::string>(name,value));
-          if(id=="resize")
-            _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
+          /*this is a special case for the codec to know the size of the encode frames*/
+          if(id=="resize"){
+            if(name=="width"||name=="height")
+              _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
+          }
         }
 
       }
