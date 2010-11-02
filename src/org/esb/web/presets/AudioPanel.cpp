@@ -42,7 +42,7 @@ namespace org {
         _codec = new ComboBox();
         _codec->setModel(codec_model);
         _codec->setModelColumn(1);
-        _codec->setSelectedEntry(_parameter["audio_codec_id"]);
+        _codec->setSelectedEntry(_parameter["codec_id"]);
         _codec->setTextSize(50);
         _codec->resize(300, Wt::WLength());
         _codec->activated().connect(SLOT(this, AudioPanel::codecSelected));
@@ -75,7 +75,7 @@ namespace org {
         grid->addWidget(_codec, 0, 1);
         grid->addWidget(new Wt::WText(""), 0, 2);
         grid->setColumnStretch(1, 1);
-        setCodecGui(_parameter["audio_codec_id"]);
+        setCodecGui(_parameter["codec_id"]);
       }
 
       void AudioPanel::codecSelected() {
@@ -85,7 +85,6 @@ namespace org {
 
       void AudioPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        _parameter["audio_codec_id"] = codecid;
         std::string codecname;
         AVCodec *codec = NULL;
         int a = 0;
@@ -95,6 +94,7 @@ namespace org {
             codecname = codec->name;
           }
         }
+        _parameter["codec_id"] = codecname;
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/encoder.audio.";

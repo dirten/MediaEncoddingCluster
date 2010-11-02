@@ -61,7 +61,7 @@ namespace org {
         
         _codec->setModel(codec_model);
         _codec->setModelColumn(1);
-        _codec->setSelectedEntry(_parameter["video_codec_id"]);
+        _codec->setSelectedEntry(_parameter["codec_id"]);
         _codec->setTextSize(50);
         _codec->resize(300,Wt::WLength());
 
@@ -100,14 +100,13 @@ namespace org {
 
 
 
-        setCodecGui(_parameter["video_codec_id"]);
+        setCodecGui(_parameter["codec_id"]);
         //l->addWidget(builder,Wt::WBorderLayout::Center);
         //        return;
       }
 
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        _parameter["video_codec_id"]=codecid;
         std::string codecname;
         AVCodec *codec = NULL;
         int a = 0;
@@ -117,6 +116,8 @@ namespace org {
             codecname = codec->name;
           }
         }
+        _parameter["codec_id"]=codecname;
+
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/encoder.video.";

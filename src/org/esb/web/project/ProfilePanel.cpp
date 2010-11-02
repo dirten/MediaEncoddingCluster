@@ -10,6 +10,8 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
+#include "org/esb/web/ProfileChooser.h"
+#include "org/esb/hive/PresetReader.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -22,24 +24,26 @@ namespace org{
 
         }
 
-        void setProfileData(std::vector<db::Profile> profiles){
-          std::vector<db::Profile>::iterator it=profiles.begin();
+        void setPresetData(std::vector<db::Preset> presets){
+          std::vector<db::Preset>::iterator it=presets.begin();
           
-          if(rowCount()>profiles.size()){
-            if(profiles.size()>0)
-              removeRow(profiles.size()-1);
+          if(rowCount()>presets.size()){
+            if(presets.size()>0)
+              removeRow(presets.size()-1);
             else{
               removeRows(0,rowCount());
             }
           }
-          for(int a = 0;it!=profiles.end();it++, a++){
+          for(int a = 0;it!=presets.end();it++, a++){
             if (rowCount() <= a)
               insertRow(rowCount());
-            setData(a, 0, org::esb::util::StringUtil::toString((*it).id));
-            setData(a, 1, (std::string)(*it).name);
+            setData(a, 0, (*it).filename.value());
+            setData(a, 1, (*it).name.value());
           }
         }
       };
+
+
       class ProfileTable:public Wt::Ext::TableView{
       public:
         ProfileTable(){
@@ -53,11 +57,8 @@ namespace org{
           Wt::Ext::TableView::refresh();
         }
 
-        void setProfiles(std::vector<db::Profile> profiles){
-//          ProfileTableModel*oldptr=static_cast<ProfileTableModel*>(model());
-//          setModel(new ProfileTableModel());
-//          delete oldptr;
-          static_cast<ProfileTableModel*>(model())->setProfileData(profiles);
+        void setPresets(std::vector<db::Preset> presets){
+          static_cast<ProfileTableModel*>(model())->setPresetData(presets);
         }
       };
 
@@ -92,7 +93,7 @@ namespace org{
       }
 
       void ProfilePanel::setProject(Ptr<db::Project> p){
-        _profile_table->setProfiles(p->profiles().get().all());
+        _profile_table->setPresets(p->presets().get().all());
         _project=p;
       }
 
@@ -103,26 +104,27 @@ namespace org{
       }
 
       void ProfilePanel::removeSelectedProfile(){
-        int pid=atoi(boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str());
+        std::string pfile=boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str();
+        LOGDEBUG("PresetFilename="<<pfile);
         db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
-        db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==pid).one();
-        _project->profiles().unlink(profile);
-        _profile_table->setProfiles(_project->profiles().get().all());
+        db::Preset preset=litesql::select<db::Preset>(db, db::Preset::Filename==pfile).one();
+        _project->presets().unlink(preset);
+        _profile_table->setPresets(_project->presets().get().all());
         removeProfileButton->setEnabled(false);
         editProfileButton->setEnabled(false);
       }
 
       void ProfilePanel::editSelectedProfile(){
-        int pid=atoi(boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str());
+        std::string pfile=boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str();
+        LOGDEBUG("PresetFilename="<<pfile);
 
-        _profile=Ptr<db::Profile>(new db::Profile(litesql::select<db::Profile>(_project->getDatabase(), db::Profile::Id==pid).one()));
-        _profile_editor=Ptr<ProfileCreator>(new ProfileCreator(*_profile.get()));
-        _profile_editor->saved.connect(SLOT(this, ProfilePanel::profileSaved));
+        _profile_editor=new PresetsEditorWindow(pfile);
+        //_profile_editor->saved.connect(SLOT(this, ProfilePanel::profileSaved));
         _profile_editor->show();
         
       }
       void ProfilePanel::profileSaved(){
-        _profile->update();
+        //_profile->update();
       }
 
       void ProfilePanel::enableButtons(){
@@ -133,16 +135,25 @@ namespace org{
       }
 
       void ProfilePanel::profileChooserSelected(){
+        std::string p=_profile_chooser->getSelectedProfile();
+        org::esb::hive::PresetReader reader(p);
+        db::Preset preset(_project->getDatabase());
+        preset.filename=p;
+        preset.name=reader.getPreset()["name"];
+        preset.update();
+        _project->presets().link(preset);
+        _profile_table->setPresets(_project->presets().get().all());
+        /*
         int c=_profile_chooser->getSelectedProfileId();
-        
         db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         db::Profile profile=litesql::select<db::Profile>(db, db::Profile::Id==c).one();
         if(_project)
           _project->profiles().link(profile);
         _profile_table->setProfiles(_project->profiles().get().all());
+         */
         removeProfileButton->setEnabled(false);
         editProfileButton->setEnabled(false);
-        LOGDEBUG("ProfileId:"<<c);
+        
       }
     }
   }

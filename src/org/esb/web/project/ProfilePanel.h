@@ -6,6 +6,7 @@
 #include "Wt/Ext/Panel"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/web/presets/PresetsEditorWindow.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -19,7 +20,7 @@ namespace org{
         void setProject(Ptr<db::Project>);
       private:
         Ptr<ProfileTable> _profile_table;
-        Ptr<ProfileCreator> _profile_editor;
+        Ptr<PresetsEditorWindow> _profile_editor;
         Ptr<ProfileChooser> _profile_chooser;
 
         Ptr<db::Project> _project;

@@ -50,7 +50,11 @@ namespace org{
         setLayout(new Wt::WFitLayout());
         resize(400,300);
         _profile_table=Ptr<ProfileTable>(new ProfileTable());
-        layout()->addWidget(_profile_table.get());
+        _presetList=new PresetList();
+        _presetList->presetSelected.connect(SLOT(this, ProfileChooser::presetSelected));
+        layout()->addWidget(_presetList.get());
+
+        /*
         db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         vector<db::Profile> profiles=litesql::select<db::Profile>(db).all();
         _profile_table->setProfiles(profiles);
@@ -59,6 +63,7 @@ namespace org{
         _profile_table->setHighlightMouseOver(true);
         _profile_table->setSelectionBehavior(Wt::SelectRows);
         _profile_table->setSelectionMode(Wt::SingleSelection);
+         */
         addButton(new Wt::Ext::Button("Select Profile"));
         buttons().back()->clicked().connect(SLOT(this, ProfileChooser::choose));
 
@@ -74,9 +79,17 @@ namespace org{
       int ProfileChooser::getSelectedProfileId(){
         return selected_profile_id;
       }
+      
+      std::string ProfileChooser::getSelectedProfile(){
+        return _current_selected_preset;
+      }
+
+      void ProfileChooser::presetSelected(std::string filename){
+        _current_selected_preset=filename;
+      }
 
       void ProfileChooser::choose(){
-        selected_profile_id = atoi(boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str());
+        //selected_profile_id = atoi(boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str());
         selected.emit();
         this->done(Accepted);
       }

@@ -6,7 +6,7 @@
 #include "Wt/Ext/Dialog"
 #include "Wt/WSignal"
 #include "org/esb/lang/Ptr.h"
-
+#include "org/esb/web/presets/PresetList.h"
 namespace org{
   namespace esb{
     namespace web{
@@ -16,6 +16,7 @@ namespace org{
         ProfileChooser();
         ~ProfileChooser();
         int getSelectedProfileId();
+        std::string getSelectedProfile();
         Wt::Signal<void> selected;
         Wt::Signal<void> canceled;
       private:
@@ -23,6 +24,9 @@ namespace org{
         void cancel();
         int selected_profile_id;
         Ptr<ProfileTable> _profile_table;
+        Ptr<PresetList> _presetList;
+        void presetSelected(std::string);
+        std::string _current_selected_preset;
 
       };
     }

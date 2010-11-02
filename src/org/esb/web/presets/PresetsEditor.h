@@ -33,6 +33,8 @@ namespace org {
         std::map<std::string, std::string> _formatparameter;
         std::map<std::string, std::string> _audioparameter;
         std::map<std::string, std::string> _videoparameter;
+
+        std::string _filename;
       };
     }
   }

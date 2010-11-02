@@ -283,6 +283,7 @@ add_library (hive
   hive/HiveException.cpp
   hive/CodecPropertyTransformer.cpp
   hive/PresetReader.cpp
+  hive/PresetFileWriter.cpp
   hive/PresetLoader.cpp
 )
 

@@ -87,6 +87,16 @@
         <field name="deinterlace" type="integer"/>
     </object>
 
+    <object name="Preset">
+        <field name="name" type="string"/>
+        <field name="filename" type="string"/>
+    </object>
+
+    <relation>
+        <relate object="Preset" handle="project"/>
+        <relate object="Project" handle="presets"/>
+    </relation>
+
     <relation>
         <relate object="Filter" handle="profile"/>
         <relate object="Profile" handle="filter"/>

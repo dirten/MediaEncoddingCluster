@@ -12,7 +12,7 @@ namespace org {
         }else{
           base_path = props->getProperty("hive.base_path");
         }
-        std::cout<<"BasePath=" << base_path<<std::endl;
+        //std::cout<<"BasePath=" << base_path<<std::endl;
         props->setProperty("hive.base_path", base_path.c_str());
         props->setProperty("hive.data_path", base_path+"/data");
 
@@ -28,6 +28,9 @@ namespace org {
           datadir.mkdir();
         /*default url for the Database Server*/
         props->setProperty("db.url", "database="+base_path+"/data/hive.db");
+
+        /*default path for the presets*/
+        props->setProperty("preset.path", base_path+"/res/presets");
 
         /*default parameter for the encoding profiles*/
         props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");

@@ -13,7 +13,7 @@
       <optiongroup id="analysis_settings" title="Analysis" parentId="advance"/>
 
 
-      <option id="time_base" type="string" default="2" title="Frame Rate" optionGroupId="picture_settings" unit="fps">
+      <option id="time_base" type="string" default="1/25" title="Frame Rate" optionGroupId="picture_settings" unit="fps">
         <control type="ComboBox"></control>
         <list>
           <item title="1/10" value="1/10">
@@ -73,7 +73,7 @@
         <control type="TextBox"></control>
       </option>
 
-      <option id="picture_frame_size" type="string" default="2" title="Frame Size" optionGroupId="picture_settings" unit="pixel">
+      <option id="picture_frame_size" type="string" default="720x576" title="Frame Size" optionGroupId="picture_settings" unit="pixel">
         <control type="ComboBox"></control>
         <list>
           <item title="VCD (320x240)" value="320x240">
@@ -166,10 +166,10 @@
               <option>deblockbeta</option>
             </enables>-->
       </option>
-      <option id="deblockalpha" title="Deblock Alpha" type="int" min="0" max="16" default="0" optionGroupId="frametype_settings">
+      <option id="deblockalpha" title="Deblock Alpha" type="int" min="-8" max="8" default="0" optionGroupId="frametype_settings">
         <control type="TrackBar"/>
       </option>
-      <option id="deblockbeta" title="Deblock Beta" type="int" min="0" max="16" default="0" optionGroupId="frametype_settings">
+      <option id="deblockbeta" title="Deblock Beta" type="int" min="-8" max="8" default="0" optionGroupId="frametype_settings">
         <control type="TrackBar"/>
       </option>
 
@@ -306,17 +306,6 @@
       <option id="fastskip" title="FastSkip" type="bool" default="1" optionGroupId="analysis_settings">
         <control type="CheckBox"></control>
       </option>
-
-
-
-
-
-
-
-
-
-
-
     </options>
   </gui>
 </guis>

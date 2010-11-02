@@ -42,7 +42,7 @@ namespace org {
       };
 
       PresetList::PresetList() : Wt::Ext::TableView() {
-        File presetdir(org::esb::config::Config::get("hive.base_path") + "/res/presets");
+        File presetdir(org::esb::config::Config::get("preset.path"));
         if (presetdir.exists()) {
           FileList files = presetdir.listFiles();
           std::list<std::list<std::string> > data;
@@ -58,6 +58,7 @@ namespace org {
           setModel(new PresetListTableModel(data));
           setAlternatingRowColors(true);
           resizeColumnsToContents(true);
+          setColumnHidden(0, true);
           setHighlightMouseOver(true);
           setSelectionBehavior(Wt::SelectRows);
           setSelectionMode(Wt::SingleSelection);
@@ -74,9 +75,8 @@ namespace org {
 
       void PresetList::selectionChanged() {
         if (selectedRows().size() > 0) {
-          std::string file = boost::any_cast<string > (model()->data(selectedRows()[0], 0));
-          
-          presetSelected.emit(org::esb::config::Config::get("hive.base_path") + "/res/presets/"+file);
+          std::string file = boost::any_cast<string > (model()->data(selectedRows()[0], 0));          
+          presetSelected.emit(org::esb::config::Config::get("preset.path") + "/"+file);
         }
       }
     }

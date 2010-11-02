@@ -42,7 +42,7 @@ namespace org {
             setData(a, 0, org::esb::util::StringUtil::toString(pro.id.value()));
             setData(a, 1, pro.name.value());
             setData(a, 2, pro.mediafiles().get().count());
-            setData(a, 3, pro.profiles().get().count());
+            setData(a, 3, pro.presets().get().count());
             setData(a, 4, pro.created.value().asString("%d-%m-%y %h:%M:%s"));
           }
         }

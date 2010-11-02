@@ -22,7 +22,7 @@ namespace org {
 
       PresetsEditorWindow::PresetsEditorWindow(std::string filename) : Wt::Ext::Dialog("Preset Editor") {
         buildGui();
-        editor=new PresetsEditor(_profile);
+        editor=new PresetsEditor(filename);
         layout()->addWidget(editor);
       }
 

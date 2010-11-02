@@ -8,6 +8,7 @@ class FilterParameter;
 class MediaFile;
 class ProfileGroup;
 class Profile;
+class Preset;
 class ProfileParameter;
 class Stream;
 class StreamParameter;
@@ -91,6 +92,25 @@ public:
     static void unlink(const litesql::Database& db, const db::MediaFile& o0, const db::Project& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<MediaFileProjectRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class PresetProjectRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> project;
+        litesql::Field<int> preset;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Preset;
+    static const litesql::FieldType Project;
+    static void link(const litesql::Database& db, const db::Preset& o0, const db::Project& o1);
+    static void unlink(const litesql::Database& db, const db::Preset& o0, const db::Project& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<PresetProjectRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -479,6 +499,15 @@ public:
         litesql::DataSource<MediaFile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<MediaFileProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class PresetsHandle : public litesql::RelationHandle<Project> {
+    public:
+        PresetsHandle(const Project& owner);
+        void link(const Preset& o0);
+        void unlink(const Preset& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Preset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<PresetProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class ProfilesHandle : public litesql::RelationHandle<Project> {
     public:
         ProfilesHandle(const Project& owner);
@@ -516,6 +545,7 @@ public:
     const Project& operator=(const Project& obj);
     Project::FilterHandle filter();
     Project::MediafilesHandle mediafiles();
+    Project::PresetsHandle presets();
     Project::ProfilesHandle profiles();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -1027,6 +1057,58 @@ public:
     std::auto_ptr<Profile> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Profile o);
+class Preset : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class ProjectHandle : public litesql::RelationHandle<Preset> {
+    public:
+        ProjectHandle(const Preset& owner);
+        void link(const Project& o0);
+        void unlink(const Project& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<PresetProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Filename;
+    litesql::Field<std::string> filename;
+protected:
+    void defaults();
+public:
+    Preset(const litesql::Database& db);
+    Preset(const litesql::Database& db, const litesql::Record& rec);
+    Preset(const Preset& obj);
+    const Preset& operator=(const Preset& obj);
+    Preset::ProjectHandle project();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Preset> upcast();
+    std::auto_ptr<Preset> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Preset o);
 class ProfileParameter : public litesql::Persistent {
 public:
     class Own {

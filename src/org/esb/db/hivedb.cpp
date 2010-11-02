@@ -197,6 +197,55 @@ template <> litesql::DataSource<db::Project> MediaFileProjectRelation::get(const
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
+PresetProjectRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : project(PresetProjectRelation::Project), preset(PresetProjectRelation::Preset) {
+    switch(rec.size()) {
+    case 2:
+        project = rec[1];
+    case 1:
+        preset = rec[0];
+    }
+}
+const std::string PresetProjectRelation::table__("Preset_Project_");
+const litesql::FieldType PresetProjectRelation::Preset("Preset1","INTEGER",table__);
+const litesql::FieldType PresetProjectRelation::Project("Project2","INTEGER",table__);
+void PresetProjectRelation::link(const litesql::Database& db, const db::Preset& o0, const db::Project& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Preset.name());
+    values.push_back(o0.id);
+    fields.push_back(Project.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void PresetProjectRelation::unlink(const litesql::Database& db, const db::Preset& o0, const db::Project& o1) {
+    db.delete_(table__, (Preset == o0.id && Project == o1.id));
+}
+void PresetProjectRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<PresetProjectRelation::Row> PresetProjectRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Preset.fullName());
+    sel.result(Project.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<PresetProjectRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Preset> PresetProjectRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Preset.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Preset>(db, db::Preset::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Project> PresetProjectRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Project.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
+}
 FilterProfileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : profile(FilterProfileRelation::Profile), filter(FilterProfileRelation::Filter) {
     switch(rec.size()) {
@@ -1165,6 +1214,24 @@ litesql::DataSource<MediaFile> Project::MediafilesHandle::get(const litesql::Exp
 litesql::DataSource<MediaFileProjectRelation::Row> Project::MediafilesHandle::getRows(const litesql::Expr& expr) {
     return MediaFileProjectRelation::getRows(owner->getDatabase(), expr && (MediaFileProjectRelation::Project == owner->id));
 }
+Project::PresetsHandle::PresetsHandle(const Project& owner)
+         : litesql::RelationHandle<Project>(owner) {
+}
+void Project::PresetsHandle::link(const Preset& o0) {
+    PresetProjectRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Project::PresetsHandle::unlink(const Preset& o0) {
+    PresetProjectRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Project::PresetsHandle::del(const litesql::Expr& expr) {
+    PresetProjectRelation::del(owner->getDatabase(), expr && PresetProjectRelation::Project == owner->id);
+}
+litesql::DataSource<Preset> Project::PresetsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetProjectRelation::get<Preset>(owner->getDatabase(), expr, (PresetProjectRelation::Project == owner->id) && srcExpr);
+}
+litesql::DataSource<PresetProjectRelation::Row> Project::PresetsHandle::getRows(const litesql::Expr& expr) {
+    return PresetProjectRelation::getRows(owner->getDatabase(), expr && (PresetProjectRelation::Project == owner->id));
+}
 Project::ProfilesHandle::ProfilesHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
 }
@@ -1250,6 +1317,9 @@ Project::FilterHandle Project::filter() {
 Project::MediafilesHandle Project::mediafiles() {
     return Project::MediafilesHandle(*this);
 }
+Project::PresetsHandle Project::presets() {
+    return Project::PresetsHandle(*this);
+}
 Project::ProfilesHandle Project::profiles() {
     return Project::ProfilesHandle(*this);
 }
@@ -1323,6 +1393,7 @@ void Project::delRecord() {
 void Project::delRelations() {
     FilterProjectRelation::del(*db, (FilterProjectRelation::Project == id));
     MediaFileProjectRelation::del(*db, (MediaFileProjectRelation::Project == id));
+    PresetProjectRelation::del(*db, (PresetProjectRelation::Project == id));
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Project == id));
 }
 void Project::update() {
@@ -2936,6 +3007,170 @@ std::ostream & operator<<(std::ostream& os, Profile o) {
     os << o.aextra.name() << " = " << o.aextra << std::endl;
     os << o.profiletype.name() << " = " << o.profiletype << std::endl;
     os << o.deinterlace.name() << " = " << o.deinterlace << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType Preset::Own::Id("id_","INTEGER","Preset_");
+Preset::ProjectHandle::ProjectHandle(const Preset& owner)
+         : litesql::RelationHandle<Preset>(owner) {
+}
+void Preset::ProjectHandle::link(const Project& o0) {
+    PresetProjectRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Preset::ProjectHandle::unlink(const Project& o0) {
+    PresetProjectRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Preset::ProjectHandle::del(const litesql::Expr& expr) {
+    PresetProjectRelation::del(owner->getDatabase(), expr && PresetProjectRelation::Preset == owner->id);
+}
+litesql::DataSource<Project> Preset::ProjectHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetProjectRelation::get<Project>(owner->getDatabase(), expr, (PresetProjectRelation::Preset == owner->id) && srcExpr);
+}
+litesql::DataSource<PresetProjectRelation::Row> Preset::ProjectHandle::getRows(const litesql::Expr& expr) {
+    return PresetProjectRelation::getRows(owner->getDatabase(), expr && (PresetProjectRelation::Preset == owner->id));
+}
+const std::string Preset::type__("Preset");
+const std::string Preset::table__("Preset_");
+const std::string Preset::sequence__("Preset_seq");
+const litesql::FieldType Preset::Id("id_","INTEGER",table__);
+const litesql::FieldType Preset::Type("type_","TEXT",table__);
+const litesql::FieldType Preset::Name("name_","TEXT",table__);
+const litesql::FieldType Preset::Filename("filename_","TEXT",table__);
+void Preset::defaults() {
+    id = 0;
+}
+Preset::Preset(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), filename(Filename) {
+    defaults();
+}
+Preset::Preset(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), filename(Filename) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: filename = convert<const std::string&, std::string>(rec[3]);
+        filename.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Preset::Preset(const Preset& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), filename(obj.filename) {
+}
+const Preset& Preset::operator=(const Preset& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        filename = obj.filename;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+Preset::ProjectHandle Preset::project() {
+    return Preset::ProjectHandle(*this);
+}
+std::string Preset::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(filename.name());
+    values.push_back(filename);
+    filename.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Preset::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Preset::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, filename);
+}
+void Preset::addIDUpdates(Updates& updates) {
+}
+void Preset::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Filename);
+}
+void Preset::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Preset::delRelations() {
+    PresetProjectRelation::del(*db, (PresetProjectRelation::Preset == id));
+}
+void Preset::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Preset::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Preset> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Preset::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Preset> Preset::upcast() {
+    return auto_ptr<Preset>(new Preset(*this));
+}
+std::auto_ptr<Preset> Preset::upcastCopy() {
+    Preset* np = new Preset(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->filename = filename;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Preset>(np);
+}
+std::ostream & operator<<(std::ostream& os, Preset o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.filename.name() << " = " << o.filename << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -5565,6 +5800,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("MediaFile_seq","sequence","CREATE SEQUENCE MediaFile_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProfileGroup_seq","sequence","CREATE SEQUENCE ProfileGroup_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Profile_seq","sequence","CREATE SEQUENCE Profile_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Preset_seq","sequence","CREATE SEQUENCE Preset_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProfileParameter_seq","sequence","CREATE SEQUENCE ProfileParameter_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Stream_seq","sequence","CREATE SEQUENCE Stream_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("StreamParameter_seq","sequence","CREATE SEQUENCE StreamParameter_seq START 1 INCREMENT 1"));
@@ -5583,6 +5819,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,filename_ TEXT)"));
     res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
@@ -5598,6 +5835,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
@@ -5629,6 +5867,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_Project_MediaFile1idx","index","CREATE INDEX MediaFile_Project_MediaFile1idx ON MediaFile_Project_ (MediaFile1)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_Project2idx","index","CREATE INDEX MediaFile_Project_Project2idx ON MediaFile_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("MediaFile_Project__all_idx","index","CREATE INDEX MediaFile_Project__all_idx ON MediaFile_Project_ (MediaFile1,Project2)"));
+    res.push_back(Database::SchemaItem("Preset_Project_Preset1idx","index","CREATE INDEX Preset_Project_Preset1idx ON Preset_Project_ (Preset1)"));
+    res.push_back(Database::SchemaItem("Preset_Project_Project2idx","index","CREATE INDEX Preset_Project_Project2idx ON Preset_Project_ (Project2)"));
+    res.push_back(Database::SchemaItem("Preset_Project__all_idx","index","CREATE INDEX Preset_Project__all_idx ON Preset_Project_ (Preset1,Project2)"));
     res.push_back(Database::SchemaItem("Filter_Profile_Filter1idx","index","CREATE INDEX Filter_Profile_Filter1idx ON Filter_Profile_ (Filter1)"));
     res.push_back(Database::SchemaItem("Filter_Profile_Profile2idx","index","CREATE INDEX Filter_Profile_Profile2idx ON Filter_Profile_ (Profile2)"));
     res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1,Profile2)"));

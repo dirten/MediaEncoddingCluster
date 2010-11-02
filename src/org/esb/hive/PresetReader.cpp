@@ -22,6 +22,7 @@ namespace org {
           LOGERROR("Preset File does not exist!");
           return;
         }
+        LOGINFO("reading presets from "<<filename);
         org::esb::av::FormatBaseStream::initialize();
         org::esb::io::FileInputStream fis(filename);
         std::string data;
@@ -95,12 +96,19 @@ namespace org {
         }else{
           std::string id = codec->first_attribute("id")->value();
           AVCodec * codec=avcodec_find_encoder_by_name(id.c_str());
+          std::string t=type+"_codec_id";
           if(codec){
-            std::string t=type+"_codec_id";
             _codecs[type].insert(std::pair<std::string, std::string>(t,org::esb::util::StringUtil::toString(codec->id)));
             _codecs[type].insert(std::pair<std::string, std::string>("codec_id",org::esb::util::StringUtil::toString(codec->id)));
-            
           }else{
+            /*handle stream disabled and stream copy here*/
+            if(id=="copy"){/*stream copy*/
+              _codecs[type].insert(std::pair<std::string, std::string>(t,"-1"));
+              _codecs[type].insert(std::pair<std::string, std::string>("codec_id","-1"));
+            }else{/*handle stream disabled*/
+              _codecs[type].insert(std::pair<std::string, std::string>(t,"0"));
+              _codecs[type].insert(std::pair<std::string, std::string>("codec_id","0"));
+            }
             LOGWARN("could not find encoder for name "<<id);
           }
         }

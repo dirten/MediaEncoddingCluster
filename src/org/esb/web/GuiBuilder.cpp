@@ -115,6 +115,13 @@ namespace org {
         _grid->addWidget(new Wt::WText(), _grid->rowCount(), 0);
         _grid->setRowStretch(_grid->rowCount() - 1, 1);
         init();
+        /*after the complete gui is builded, fire an activated event on all elements*/
+        std::map<std::string, Wt::WWidget *>::iterator elem=_elements.begin();
+        for(;elem!=_elements.end();elem++){
+          if(instanceOf(*(*elem).second,ComboBox)){
+            static_cast<ComboBox*>((*elem).second)->activated().emit(0);
+          }
+        }
       }
 
       GuiBuilder::~GuiBuilder() {
@@ -359,6 +366,8 @@ namespace org {
         }
         _enablerSignalMap->mapConnect(combo->activated(), combo);
         _dataChangedSignalMap.mapConnect(combo->activated(), combo);
+//        _dataChangedSignalMap.mapped().emit(combo);
+        //combo->activated().emit(0);
       }
 
       void GuiBuilder::handleOptionSlider(rapidxml::xml_node<> *ogn) {
@@ -447,6 +456,10 @@ namespace org {
             std::map<std::string, std::string>::iterator mapit = (*ods).begin();
             for (; mapit != (*ods).end(); mapit++) {
               Wt::WObject * obj = _elements[(*mapit).first];
+              if(obj==NULL){
+                LOGERROR("could not set the values for "<<(*mapit).first<< ", it is not in the element list");
+                continue;
+              }
               if (instanceOf(*obj, ComboBox)) {
                 ComboBox * box = static_cast<ComboBox*> (obj);
                 box->setSelectedEntry((*mapit).second, 1);
@@ -536,6 +549,7 @@ namespace org {
       }
 
       void GuiBuilder::internalDataChanged(Wt::WObject*obj) {
+        LOGDEBUG("Object"<<obj);
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
           _data_map[box->objectName()] = box->data(box->currentIndex(), 1);
