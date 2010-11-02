@@ -1,0 +1,13 @@
+--- ../../CMakeLists.txt	2010-11-02 22:23:34 +0000
++++ CMakeLists.txt	2010-11-02 22:21:05 +0000
+@@ -13,8 +13,8 @@
+ MACRO (FILE_TO_STRING infile outfile var)
+ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
+ 	           COMMAND ${CMAKE_COMMAND}
+-                   ARGS -Dinfile:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/${infile}
+-                        -Doutfile:FILEPATH=${CMAKE_CURRENT_BINARY_DIR}/${outfile}
++                   ARGS -Dinfile:FILEPATH="${CMAKE_CURRENT_SOURCE_DIR}/${infile}"
++                        -Doutfile:FILEPATH="${CMAKE_CURRENT_BINARY_DIR}/${outfile}"
+                         -Dvar:STRING=${var}
+                         -P ${CMAKE_CURRENT_SOURCE_DIR}/filetostring.cmake
+ 		   MAIN_DEPENDENCY
