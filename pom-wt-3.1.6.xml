@@ -156,7 +156,9 @@
                 <patch patchfile="src/patch//WT-3.1.4-TimeUtil.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch//WT-3.1.4-CMakeLists.patch" dir="source/wt-3.1.4" strip="0"/>
                 <patch patchfile="src/patch//WT-3.1.4-TableView.patch" dir="source/wt-3.1.4" strip="0"/>
-		-->
+
+		-->
+                <patch patchfile="src/patch/WT-3.1.6-src-CMakeLists.patch" dir="source/wt-3.1.6/src" strip="0"/>
                 <exec executable="cmake" dir="source/wt-3.1.6/build" failonerror="on">
                   <arg line="
                     -G ${CMAKE_MAKE_PROGRAM}
