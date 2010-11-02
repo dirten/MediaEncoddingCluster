@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<preset name="x264-high-quality">
+<preset name="x264-high-quality-720p">
     <format id="mp4">
 	<param name="fileExtension" value="mp4"/>
 	<param name="author" value="MediaEncodingCluster"/>

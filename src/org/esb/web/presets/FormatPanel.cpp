@@ -44,7 +44,8 @@ namespace org {
         _format->resize(150, Wt::WLength::Auto);
         _format->setModel(format_model);
         _format->setModelColumn(1);
-        _format->setSelectedEntry(_parameter["file_format"]);
+//        _format->setSelectedEntry(_parameter["file_format"]);
+        _format->setSelectedEntry(_parameter["id"]);
         _format->activated().connect(SLOT(this, FormatPanel::setSelectedFormat));
         
         main_panel = new Wt::Ext::Panel();
@@ -75,7 +76,7 @@ namespace org {
         grid->addWidget(new Wt::WText(""),0,2);
         grid->setColumnStretch(1,1);
 //        setSelectedFormat();
-        setFormatGui(_parameter["file_format"]);
+        setFormatGui(_parameter["id"]);
 
       }
       void FormatPanel::setSelectedFormat(){

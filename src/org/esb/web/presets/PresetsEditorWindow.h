@@ -21,10 +21,12 @@ namespace org {
       class PresetsEditorWindow: public Wt::Ext::Dialog {
       public:
         PresetsEditorWindow(Ptr<db::Profile>);
+        PresetsEditorWindow(std::string filename);
         virtual ~PresetsEditorWindow();
       private:
         void cancel();
         void save();
+        void buildGui();
 
         //db::HiveDb _db;
         Ptr<db::Profile>_profile;

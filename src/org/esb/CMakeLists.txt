@@ -365,6 +365,7 @@ add_library (web
     web/presets/FilterPanel.cpp
     web/presets/FilterTable.cpp
     web/presets/PresetFilterPanel.cpp
+    web/presets/PresetList.cpp
     web/presets/VideoAdvanceTableView.cpp
 )
 

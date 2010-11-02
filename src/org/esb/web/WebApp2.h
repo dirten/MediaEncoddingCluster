@@ -73,6 +73,7 @@ namespace org {
                 void projectSelected(ProjectTable *);
                 //void fileSelected(SqlTable *);
                 void presetSelected(int);
+                void presetSelected2(std::string);
                 Ptr<db::HiveDb> _db;
 
             };

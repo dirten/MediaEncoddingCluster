@@ -22,28 +22,46 @@
 #include "FilterPanel.h"
 #include "Wt/Ext/ToolBar"
 #include "Wt/Ext/Button"
+#include "org/esb/hive/PresetReader.h"
 namespace org {
   namespace esb {
     namespace web {
 
+      PresetsEditor::PresetsEditor(std::string filename) : Wt::Ext::Panel() {
+        org::esb::hive::PresetReader reader(filename);
+        org::esb::hive::PresetReader::Preset preset=reader.getPreset();
+        _presetparameter.insert(preset.begin(),preset.end());
+
+        org::esb::hive::PresetReader::CodecList codecparam=reader.getCodecList();
+        _videoparameter.insert(codecparam["video"].begin(),codecparam["video"].end());
+        _audioparameter.insert(codecparam["audio"].begin(),codecparam["audio"].end());
+
+        //org::esb::hive::PresetReader::FilterList filer=reader.getFilterList();
+        buildGui();
+
+      }
+      
       PresetsEditor::PresetsEditor(Ptr<db::Profile> profile) : Wt::Ext::Panel(), _profile(profile) {
-        setLayout(new Wt::WBorderLayout());
         /*loading parameters from the database*/
         if (_profile->params().get().count() > 0) {
           vector<db::ProfileParameter> params = _profile->params().get().all();
           vector<db::ProfileParameter>::iterator it = params.begin();
           for (; it != params.end(); it++) {
-            _parameter[(*it).name.value()] = (*it).val.value();
+//            _parameter[(*it).name.value()] = (*it).val.value();
             LOGDEBUG("name=" << (*it).name.value() << " value=" << (*it).val.value())
           }
         }
+//        ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("Bottom"),Wt::WBorderLayout::South);
+        buildGui();
+      }
+
+      void PresetsEditor::buildGui() {
+        setLayout(new Wt::WBorderLayout());
 
         ((Wt::WBorderLayout*)layout())->addWidget(createTop(), Wt::WBorderLayout::North);
         ((Wt::WBorderLayout*)layout())->addWidget(createContent(), Wt::WBorderLayout::Center);
-        //        ((Wt::WBorderLayout*)layout())->addWidget(new Wt::WText("Bottom"),Wt::WBorderLayout::South);
 
       }
-
       PresetsEditor::~PresetsEditor() {
       }
 
@@ -59,7 +77,7 @@ namespace org {
         Wt::WLabel * label = new Wt::WLabel("Preset Name:");
 
         name = new Wt::Ext::LineEdit();
-        name->setText(_profile->name.value());
+        name->setText(_presetparameter["name"]);
         name->resize(400, Wt::WLength());
         label->setBuddy(name);
         grid->addWidget(label, 0, 0);
@@ -72,10 +90,10 @@ namespace org {
       Wt::WWidget * PresetsEditor::createContent() {
         Wt::Ext::TabWidget *tab = new Wt::Ext::TabWidget();
         tab->resize(Wt::WLength(), Wt::WLength());
-        tab->addTab(new org::esb::web::FormatPanel(_parameter), "Format");
-        tab->addTab(new org::esb::web::VideoPanel(_parameter), "Video");
-        tab->addTab(new org::esb::web::AudioPanel(_parameter), "Audio");
-        tab->addTab(new org::esb::web::PresetFilterPanel(_profile), "Filter");
+        tab->addTab(new org::esb::web::FormatPanel(_presetparameter), "Format");
+        tab->addTab(new org::esb::web::VideoPanel(_videoparameter), "Video");
+        tab->addTab(new org::esb::web::AudioPanel(_audioparameter), "Audio");
+//        tab->addTab(new org::esb::web::PresetFilterPanel(_profile), "Filter");
 
         Wt::Ext::ToolBar * tb = NULL;
         tab->setTopToolBar(tb = new Wt::Ext::ToolBar());
@@ -91,30 +109,6 @@ namespace org {
 
       void PresetsEditor::save() {
         Wt::Ext::TabWidget *tab = static_cast<Wt::Ext::TabWidget *> (((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center));
-        ((org::esb::web::FormatPanel*)tab->panel(0))->save();
-        //((org::esb::web::VideoPanel*)tab->panel(1))->save();
-        //((org::esb::web::AudioPanel*)tab->panel(2))->save();
-        _profile->getDatabase().begin();
-
-        vector<db::ProfileParameter> params = _profile->params().get().all();
-        vector<db::ProfileParameter>::iterator par = params.begin();
-        for (; par != params.end(); par++) {
-          _profile->params().unlink((*par));
-          (*par).del();
-        }
-        std::map<std::string, std::string>::iterator it = _parameter.begin();
-        for (; it != _parameter.end(); it++) {
-          db::ProfileParameter p(_profile->getDatabase());
-          p.name = (*it).first;
-          p.val = (*it).second;
-          p.update();
-          LOGDEBUG(p);
-          _profile->params().link(p);
-        }
-
-        _profile->name = name->text().narrow();
-        _profile->update();
-        _profile->getDatabase().commit();
 
       }
 

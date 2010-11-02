@@ -20,14 +20,19 @@ namespace org {
       class PresetsEditor:public Wt::Ext::Panel {
       public:
         PresetsEditor(Ptr<db::Profile>);
+        PresetsEditor(std::string filename);
         virtual ~PresetsEditor();
         void save();
       private:
+        void buildGui();
         Wt::WWidget * createTop();
         Wt::WWidget * createContent();
         Ptr<db::Profile>_profile;
         Wt::Ext::LineEdit * name;
-        std::map<std::string, std::string> _parameter;
+        std::map<std::string, std::string> _presetparameter;
+        std::map<std::string, std::string> _formatparameter;
+        std::map<std::string, std::string> _audioparameter;
+        std::map<std::string, std::string> _videoparameter;
       };
     }
   }

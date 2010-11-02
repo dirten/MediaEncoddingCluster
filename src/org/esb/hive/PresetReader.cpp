@@ -31,6 +31,7 @@ namespace org {
           _doc.parse < 0 > (const_cast<char*> (data.c_str()));
         } catch (rapidxml::parse_error ex) {
           LOGERROR("Parser Exception :" << ex.what());
+          LOGERROR("Parser Exception :" << ex.where<char>());
           return;
         }
         xml_node<>*preset = _doc.first_node("preset");

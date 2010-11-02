@@ -44,6 +44,7 @@
 #include "presets/PresetsEditor.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "project/ProjectWizard.h"
+#include "presets/PresetList.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -344,10 +345,12 @@ namespace org {
       }
 
       void WebApp2::listAllProfiles() {
-        Profiles * profiles = new Profiles();
-        profiles->profileSelected.connect(SLOT(this, WebApp2::presetSelected));
-        //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
-        setContent(profiles);
+        PresetList * list=new PresetList();
+        setContent(list);
+        list->presetSelected.connect(SLOT(this, WebApp2::presetSelected2));
+        //Profiles * profiles = new Profiles();
+        //profiles->profileSelected.connect(SLOT(this, WebApp2::presetSelected));
+        //setContent(profiles);
       }
 
       void WebApp2::createProfiles() {
@@ -437,6 +440,16 @@ namespace org {
       void WebApp2::presetSelected(int presetid) {
         Ptr<db::Profile> profile = new db::Profile(litesql::select<db::Profile > (*_db.get(), db::Profile::Id == presetid).one());
         PresetsEditor * editor=new PresetsEditor(profile);
+        if(object_panel->layout()->count()>0){
+          Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
+          object_panel->layout()->removeItem(item);
+          delete item->widget();
+        }
+        object_panel->layout()->addWidget(editor);
+      }
+      void WebApp2::presetSelected2(std::string filename) {
+        LOGDEBUG("preset selected");
+        PresetsEditor * editor=new PresetsEditor(filename);
         if(object_panel->layout()->count()>0){
           Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
           object_panel->layout()->removeItem(item);

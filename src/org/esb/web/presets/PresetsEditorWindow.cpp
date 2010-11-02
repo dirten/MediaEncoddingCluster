@@ -15,6 +15,18 @@ namespace org {
     namespace web {
 
       PresetsEditorWindow::PresetsEditorWindow(Ptr<db::Profile> p) :_profile(p), Wt::Ext::Dialog("Preset Editor") {
+        buildGui();
+        editor=new PresetsEditor(_profile);
+        layout()->addWidget(editor);
+      }
+
+      PresetsEditorWindow::PresetsEditorWindow(std::string filename) : Wt::Ext::Dialog("Preset Editor") {
+        buildGui();
+        editor=new PresetsEditor(_profile);
+        layout()->addWidget(editor);
+      }
+
+      void PresetsEditorWindow::buildGui() {
         resize(830, 500);
         setBorder(false);
         setLayout(new Wt::WFitLayout());
@@ -25,15 +37,7 @@ namespace org {
         addButton(new Wt::Ext::Button("Save"));
         buttons().back()->clicked().connect(SLOT(this, PresetsEditorWindow::save));
         buttons().back()->setIcon("icons/accept-icon.png");
-        //_profile=new db::Profile(_db);
-        
-        editor=new PresetsEditor(_profile);
-
-        layout()->addWidget(editor);
-
-
       }
-
       PresetsEditorWindow::~PresetsEditorWindow() {
       }
 
@@ -44,7 +48,8 @@ namespace org {
 
       void PresetsEditorWindow::save() {
         editor->save();
-        _profile->update();
+        if(_profile)
+          _profile->update();
         this->accept();
       }
 
