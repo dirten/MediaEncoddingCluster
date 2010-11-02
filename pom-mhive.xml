@@ -150,7 +150,8 @@
               <tasks if="win32">
                 <get src="http://codergrid.de/repository/inttypes/inttypes.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
                 <get src="http://codergrid.de/repository/inttypes/stdint.h" dest="${project.build.directory}/dependency/include" verbose="true" usetimestamp="true"/>
-                <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
+
+	        <copy file="${project.build.directory}/dependency/lib/libcurl.dll.a" tofile="${project.build.directory}/dependency/lib/libcurl.dll.lib"/>
                 <copy file="${project.build.directory}/dependency/lib/libsqlite3.a" tofile="${project.build.directory}/dependency/lib/libsqlite3.lib"/>
 
                 <copy file="${project.build.directory}/dependency/lib/wtd.lib" tofile="${project.build.directory}/dependency/lib/wt.lib" failonerror="no"/>
@@ -163,6 +164,19 @@
 
                 <copy file="${project.build.directory}/dependency/lib/log4cplusd.lib" tofile="${project.build.directory}/dependency/lib/log4cplus.lib" failonerror="no"/>
 
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>dowload-rapidxml</id>
+            <configuration>
+              <tasks>
+                <get src="http://downloads.sourceforge.net/project/rapidxml/rapidxml/rapidxml%201.13/rapidxml-1.13.zip" dest="${project.build.directory}/dependency/" verbose="true" usetimestamp="true"/>
+                <unzip src="${project.build.directory}/dependency/rapidxml-1.13.zip" dest="${project.build.directory}/dependency/include"/>
               </tasks>
             </configuration>
             <goals>

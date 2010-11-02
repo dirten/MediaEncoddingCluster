@@ -30,6 +30,7 @@ namespace org {
       private:
         std::string _filename;
         xml_document<> _doc;
+        std::string _xml;
         CodecList _codecList;
         FilterList _filterList;
         Preset _preset;
