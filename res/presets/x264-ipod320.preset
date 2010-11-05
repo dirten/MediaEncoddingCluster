@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <preset name="x264-ipod-320">
     <format id="ipod">
-	<param name="fileExtension" value="mov"/>
+	<param name="fileExtension" value="m4v"/>
     </format>
     <codec type="video" id="libx264">
 	<param name="b" value="768000"/>
@@ -21,8 +21,9 @@
 	<param name="time_base" value="1/25"/>
 	<param name="global_header" value="1"/>
 	<param name="aspect" value="64/45"/>
+	<param name="picture_frame_size" value="320x240"/>
     </codec>
-    <codec type="audio" id="libmp3lame">
+    <codec type="audio" id="aac">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
 	<param name="ar" value="44100"/>

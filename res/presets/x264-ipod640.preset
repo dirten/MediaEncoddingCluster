@@ -1,21 +1,33 @@
 <?xml version="1.0"?>
 <preset name="x264-ipod-640">
-    <format id="mp4">
-	<param name="fileExtension" value="mp4"/>
+    <format id="ipod">
+	<param name="fileExtension" value="m4v"/>
     </format>
     <codec type="video" id="libx264">
+	<param name="b" value="1000000"/>
+	<param name="g" value="250"/>
+	<param name="qmin" value="10"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
 	<param name="coder" value="0"/>
 	<param name="coder" value="0"/>
 	<param name="bf" value="0"/>
 	<param name="refs" value="1"/>
 	<param name="wpred" value="0"/>
 	<param name="dct8x8" value="0"/>
-	<param name="level" value="30"/>
+	<param name="level" value="13"/>
 	<param name="maxrate" value="10000000"/>
 	<param name="bufsize" value="10000000"/>
 	<param name="wpredp" value="0"/>
+	<param name="me_range" value="16"/>
+	<param name="time_base" value="1/25"/>
+	<param name="global_header" value="1"/>
+	<param name="aspect" value="64/45"/>
+	<param name="picture_frame_size" value="0"/>
+        <param name="width" value="640"/>
+	<param name="height" value="480"/>
     </codec>
-    <codec type="audio" id="mp2">
+    <codec type="audio" id="aac">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
 	<param name="ar" value="44100"/>

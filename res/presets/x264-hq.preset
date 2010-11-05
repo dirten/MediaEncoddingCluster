@@ -5,10 +5,10 @@
 	<param name="author" value="MediaEncodingCluster"/>
     </format>
     <codec type="video" id="libx264">
-	<param name="b" value="768000"/>
-	<param name="coder" value="1"/>
-	<param name="psnr" value="1"/>
-	<param name="loop" value="1"/>
+	<param name="b" value="512000"/>
+	<param name="coder" value="0"/>
+	<param name="psnr" value="0"/>
+	<param name="loop" value="0"/>
 	<param name="cmp" value="chroma"/>
 	<param name="me_method" value="chroma"/>
 	<param name="parti8x8" value="1"/>
@@ -40,7 +40,7 @@
 	<param name="time_base" value="1/25"/>
 	<param name="global_header" value="1"/>
     </codec>
-    <codec type="audio" id="mp2">
+    <codec type="audio" id="libmp3lame">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
 	<param name="ar" value="44100"/>
