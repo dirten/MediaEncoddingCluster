@@ -93,7 +93,10 @@ int main(int argc, char** argv) {
       db::MediaFile mediafile = imp.import(org::esb::io::File(src));
       assert(mediafile.id > 0);
       db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
-      int jobid = org::esb::hive::JobUtil::createJob(mediafile, p, "/tmp");
+
+      db::Preset preset(mediafile.getDatabase());
+      preset.filename=path + "/res/presets/test.preset";
+      int jobid = org::esb::hive::JobUtil::createJob(mediafile, preset, "/tmp");
       assert(jobid > 0);
 
 

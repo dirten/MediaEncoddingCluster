@@ -43,8 +43,8 @@ struct StreamData {
   FrameConverter * conv;
 };
 CodecID video_codec_id = CODEC_ID_THEORA;
-//CodecID audio_codec_id = CODEC_ID_VORBIS;
-CodecID audio_codec_id = CODEC_ID_MP2;
+CodecID audio_codec_id = CODEC_ID_VORBIS;
+//CodecID audio_codec_id = CODEC_ID_MP2;
 
 /**
  *
@@ -253,7 +253,7 @@ void write_file(int argc, char** argv) {
   audio_codec->open();
   //  video_codec->ctx->extradata_size=0;
   pos.setEncoder(*video_codec, 0);
-//  pos.setEncoder(*audio_codec, 1);
+  pos.setEncoder(*audio_codec, 1);
   pos.init();
   int pts = 0;
   for (int a = 1; true; a++) {
@@ -267,8 +267,8 @@ void write_file(int argc, char** argv) {
     std::list<boost::shared_ptr<Packet> >::iterator it = pu._output_packets.begin();
     for (; it != pu._output_packets.end(); it++) {
 //      (*it)->setStreamIndex((*it)->getStreamIndex());
-//      (*it)->setPts(pts++);
-//      (*it)->setDts(AV_NOPTS_VALUE);
+      (*it)->setPts(pts++);
+      (*it)->setDts(AV_NOPTS_VALUE);
       pos.writePacket(*((*it).get()));
     }
   }
