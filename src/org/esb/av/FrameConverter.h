@@ -74,6 +74,10 @@ namespace org {
                 int _frame_counter;
                 bool _deinterlace;
                 bool _keep_aspect_ratio;
+                int64_t insamples;
+                int64_t outsamples;
+                int64_t last_insamples;
+                int64_t last_outsamples;
             };
         }
     }

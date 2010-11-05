@@ -245,7 +245,7 @@ namespace org {
           std::list<Ptr<org::esb::io::File> > files = _chooser->getSelectedFiles();
           //          boost::thread(boost::bind(&InputFilePanel::importFiles, this, files));
           _chooser->setHidden(true);
-          dial = new Wt::Ext::Dialog("bla");
+          dial = new Wt::Ext::Dialog("Importing Files");
           dial->resize(300, 200);
           dial->setLayout(new Wt::WFitLayout());
           progressMessageText = new Wt::WText();

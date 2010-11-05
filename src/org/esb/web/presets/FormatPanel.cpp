@@ -84,6 +84,7 @@ namespace org {
       }
 
       void FormatPanel::setFormatGui(std::string formatid){
+        _parameter["id"]=formatid;
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/format.";

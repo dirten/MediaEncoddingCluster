@@ -9,6 +9,7 @@
 #include "org/esb/io/File.h"
 #include "litesql/datasource.hpp"
 #include "CodecPropertyTransformer.h"
+#include "PresetReader.h"
 #include <map>
 #include <vector>
 using namespace org::esb::av;
@@ -95,7 +96,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
 
   job.begintime = 1;
   job.endtime = 1;
-  job.outfile=outfile.filename.value();
+  job.outfile = outfile.filename.value();
   job.update();
 
 
@@ -241,19 +242,130 @@ namespace org {
 
       void JobUtil::createJob(Ptr<db::Project> p) {
         vector<db::MediaFile> files = p->mediafiles().get().all();
-        vector<db::Profile> profiles = p->profiles().get().all();
-
+        vector<db::Preset> presets = p->presets().get().all();
         vector<db::Filter> filters = p->filter().get().all();
 
         vector<db::MediaFile>::iterator file_it = files.begin();
         for (; file_it != files.end(); file_it++) {
           db::MediaFile file = (*file_it);
-          vector<db::Profile>::iterator profile_it = profiles.begin();
-          for (; profile_it != profiles.end(); profile_it++) {
-            db::Profile profile = (*profile_it);
-            createJob(file, profile, p->outdirectory);
+          vector<db::Preset>::iterator preset_it = presets.begin();
+          for (; preset_it != presets.end(); preset_it++) {
+            db::Preset preset = (*preset_it);
+            createJob(file, preset, p->outdirectory);
           }
         }
+      }
+
+      int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
+        LOGDEBUG("Create new Job");
+        const litesql::Database db = infile.getDatabase();
+        db.begin();
+
+        db::Job job(db);
+        job.created = 0;
+        job.begintime = 1;
+        job.endtime = 1;
+        job.starttime = infile.starttime;
+        job.duration = infile.duration;
+        job.status = "queued";
+        job.infile = infile.filename.value();
+        job.update();
+
+        /**
+         * reading the preset from the file
+         */
+        PresetReader reader(preset.filename);
+        PresetReader::CodecList codecs = reader.getCodecList();
+        PresetReader::FilterList filters = reader.getFilterList();
+        PresetReader::Preset pre = reader.getPreset();
+
+        /*resolving the outputformat to have knowledge of the global header flag*/
+        AVOutputFormat *ofmt = NULL;
+        while ((ofmt = av_oformat_next(ofmt))) {
+          if (pre["id"] == ofmt->name) {
+            break;
+          }
+        }
+
+        /**
+         * creating the output media file
+         */
+        org::esb::io::File f(infile.filename);
+        if (pre.count("fileExtension") > 0)
+          f.changeExtension(pre["fileExtension"]);
+        else
+          f.changeExtension("unknown");
+
+        db::MediaFile outfile(db);
+        std::string filename = job.id;
+        filename += "#";
+        filename += f.getFileName();
+        outfile.filename = filename;
+        outfile.path = outpath + "/" + pre["name"];
+        outfile.parent = infile.id.value();
+        outfile.containertype = ofmt->name;
+        outfile.streamcount = 0;
+        outfile.update();
+
+        job.outfile = outfile.filename.value();
+        /*
+         * setting time data twice, in case of a bug in litesql
+         * it does not support zero values,
+         * it uses every time the localtime instead of the supplied value
+         * but after setting it twice it eat the values ???
+         */
+
+//        job.begintime = 1;
+//        job.endtime = 1;
+        job.outfile = outfile.filename.value();
+        job.update();
+
+
+
+        vector<db::Stream>streams = infile.streams().get().all();
+        vector<db::Stream>::iterator sit = streams.begin();
+        org::esb::hive::CodecPropertyTransformer trans;
+        for (int a = 0; sit != streams.end(); sit++) {
+          AVMediaType type = static_cast<AVMediaType> ((*sit).streamtype.value());
+          if (type != AVMEDIA_TYPE_VIDEO && type != AVMEDIA_TYPE_AUDIO)continue;
+          db::Stream s(db);
+          s.streamindex = a;
+          s.streamtype = (*sit).streamtype.value();
+          s.update();
+          outfile.streams().link(s);
+
+          /**
+           * creating the streamparameter from the profile
+           */
+          {
+            std::map<std::string, AVMediaType> type_map;
+            type_map["width"] = AVMEDIA_TYPE_VIDEO;
+            type_map["height"] = AVMEDIA_TYPE_VIDEO;
+
+            std::string stype = type == AVMEDIA_TYPE_VIDEO ? "video" : "audio";
+            std::multimap<std::string, std::string> codec = codecs[stype];
+            std::multimap<std::string, std::string>::iterator sdata = codec.begin();
+            for (; sdata != codec.end(); sdata++) {
+              db::StreamParameter sp(db);
+              sp.name = (*sdata).first;
+              sp.val = (*sdata).second;
+              sp.update();
+              s.params().link(sp);
+            }
+          }
+          db::JobDetail jd(db);
+
+          jd.update();
+          jd.inputstream().link((*sit));
+          jd.outputstream().link(s);
+          job.jobdetails().link(jd);
+
+          a++;
+        }
+        job.inputfile().link(infile);
+        job.outputfile().link(outfile);
+        db.commit();
+        return job.id.value();
       }
 
       int JobUtil::createJob(db::MediaFile infile, db::Profile profile, std::string outpath) {
@@ -344,7 +456,7 @@ namespace org {
          * creating the output media file
          */
         org::esb::io::File f(infile.filename);
-        if(parameter.count("fileExtension")>0)
+        if (parameter.count("fileExtension") > 0)
           f.changeExtension(parameter["fileExtension"]->val);
         else
           f.changeExtension("unknown");
@@ -376,8 +488,8 @@ namespace org {
            */
           {
             std::map<std::string, AVMediaType> type_map;
-            type_map["width"]=AVMEDIA_TYPE_VIDEO;
-            type_map["height"]=AVMEDIA_TYPE_VIDEO;
+            type_map["width"] = AVMEDIA_TYPE_VIDEO;
+            type_map["height"] = AVMEDIA_TYPE_VIDEO;
             vector<db::ProfileParameter>params = profile.params().get().all();
             vector<db::ProfileParameter>::iterator it = params.begin();
             for (; it != params.end(); it++) {
@@ -388,18 +500,18 @@ namespace org {
               } else
                 if (option && option->flags == 0) {
                 create = true;
-              }else
-                if((*it).name.value()=="audio_codec_id"&&(*sit).streamtype.value() == AVMEDIA_TYPE_AUDIO){
-                  (*it).name="codec_id";
-                  create=true;
-              }else
-                if((*it).name.value()=="video_codec_id"&&(*sit).streamtype.value() == AVMEDIA_TYPE_VIDEO){
-                  (*it).name="codec_id";
-                  create=true;
-              }else
-                if(type_map.count((*it).name.value())>0&&(*sit).streamtype.value() == type_map[(*it).name.value()]){
-                  create=true;
-                }
+              } else
+                if ((*it).name.value() == "audio_codec_id" && (*sit).streamtype.value() == AVMEDIA_TYPE_AUDIO) {
+                (*it).name = "codec_id";
+                create = true;
+              } else
+                if ((*it).name.value() == "video_codec_id" && (*sit).streamtype.value() == AVMEDIA_TYPE_VIDEO) {
+                (*it).name = "codec_id";
+                create = true;
+              } else
+                if (type_map.count((*it).name.value()) > 0 && (*sit).streamtype.value() == type_map[(*it).name.value()]) {
+                create = true;
+              }
               if (create) {
                 db::StreamParameter sp(db);
                 sp.name = (*it).name.value();
@@ -416,24 +528,24 @@ namespace org {
             sp.update();
             s.params().link(sp);
           }
-          try{
-            if(false&&profile.filter().get(db::Filter::Filterid=="resize").count()>0){
+          try {
+            if (false && profile.filter().get(db::Filter::Filterid == "resize").count() > 0) {
               db::StreamParameter spw(s.getDatabase());
               spw.name = "width";
-              spw.val = profile.filter().get(db::Filter::Filterid=="resize").one().parameter().get(db::FilterParameter::Fkey=="width").one().fval.value();
+              spw.val = profile.filter().get(db::Filter::Filterid == "resize").one().parameter().get(db::FilterParameter::Fkey == "width").one().fval.value();
               spw.update();
               s.params().link(spw);
               db::StreamParameter sph(s.getDatabase());
               sph.name = "height";
-              sph.val = profile.filter().get(db::Filter::Filterid=="resize").one().parameter().get(db::FilterParameter::Fkey=="height").one().fval.value();
+              sph.val = profile.filter().get(db::Filter::Filterid == "resize").one().parameter().get(db::FilterParameter::Fkey == "height").one().fval.value();
               sph.update();
               s.params().link(sph);
             }
-          }catch(litesql::NotFound ex){
+          } catch (litesql::NotFound ex) {
             LOGERROR(ex.what());
           }
           db::JobDetail jd(db);
-          
+
           jd.update();
           jd.inputstream().link((*sit));
           jd.outputstream().link(s);

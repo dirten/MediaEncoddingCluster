@@ -34,7 +34,7 @@ namespace org {
         for(int a=0;a<jobs.size();a++){
           db::Job job=jobs[a];
           setData(a,0,org::esb::util::StringUtil::toString(job.id.value()));
-          setData(a,1,job.infile.value());
+          setData(a,1,"         &nbsp;"+job.infile.value()+"");
           setData(a,2,job.outfile.value());
           setData(a,3,job.created.value().asString("%d-%m-%y %h:%M:%s"));
           if(job.begintime!=1){

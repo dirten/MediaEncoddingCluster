@@ -16,7 +16,7 @@ namespace org {
     namespace web {
       namespace v2 {
 
-        class ProjectWizard : public Wt::Ext::Panel {
+        class ProjectWizard : public Wt::Ext::Dialog {
         public:
           ProjectWizard();
           ~ProjectWizard();

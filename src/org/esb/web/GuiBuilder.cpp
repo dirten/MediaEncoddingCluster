@@ -58,7 +58,7 @@ namespace org {
         layout()->addWidget(_main);
         _grid = new Wt::WGridLayout();
         _main->setLayout(_grid);
-        
+
 
 
         _enablerSignalMap = new Wt::WSignalMapper<Wt::WObject*>(this);
@@ -67,8 +67,8 @@ namespace org {
         _sliderSignalMap = new Wt::WSignalMapper<Reference*>(this);
         _sliderSignalMap->mapped().connect(SLOT(this, GuiBuilder::sliderChanged));
 
-//        _comboSignalMap = new Wt::WSignalMapper<Wt::Ext::ComboBox*>(this);
-//        _comboSignalMap->mapped().connect(SLOT(this, GuiBuilder::comboChanged));
+        //        _comboSignalMap = new Wt::WSignalMapper<Wt::Ext::ComboBox*>(this);
+        //        _comboSignalMap->mapped().connect(SLOT(this, GuiBuilder::comboChanged));
 
         _dataChangedSignalMap.mapped().connect(SLOT(this, GuiBuilder::internalDataChanged));
 
@@ -87,39 +87,40 @@ namespace org {
         node = node->first_node("gui");
 
         xml_node<>*codecs = node->first_node("codecs");
-        if(codecs){
-        xml_node<>*codec = codecs->first_node("codec");
-        std::string codeclist;
-        for (; codec; codec = codec->next_sibling("codec")) {
-          codeclist+=codec->first_attribute("id")->value();
-          codeclist+=",";
-        }
-          _data_map["available_codecs"]=codeclist;
+        if (codecs) {
+          xml_node<>*codec = codecs->first_node("codec");
+          std::string codeclist;
+          for (; codec; codec = codec->next_sibling("codec")) {
+            codeclist += codec->first_attribute("id")->value();
+            codeclist += ",";
+          }
+          _data_map["available_codecs"] = codeclist;
           LOGDEBUG("CodecList:" << codeclist);
         }
         node = node->first_node("options");
+        if (node) {
+          xml_node<>*grouptab = node->first_node("optiontab");
+          for (; grouptab; grouptab = grouptab->next_sibling("optiontab")) {
+            handleOptionGroupTab(grouptab);
+          }
+          xml_node<>*groupnode = node->first_node("optiongroup");
+          for (; groupnode; groupnode = groupnode->next_sibling("optiongroup")) {
+            handleOptionGroup(groupnode);
+          }
 
-        xml_node<>*grouptab = node->first_node("optiontab");
-        for (; grouptab; grouptab = grouptab->next_sibling("optiontab")) {
-          handleOptionGroupTab(grouptab);
-        }
-        xml_node<>*groupnode = node->first_node("optiongroup");
-        for (; groupnode; groupnode = groupnode->next_sibling("optiongroup")) {
-          handleOptionGroup(groupnode);
-        }
-
-        xml_node<>*optionnode = node->first_node("option");
-        for (; optionnode; optionnode = optionnode->next_sibling("option")) {
-          handleOption(optionnode);
-        }
-        _grid->addWidget(new Wt::WText(), _grid->rowCount(), 0);
-        _grid->setRowStretch(_grid->rowCount() - 1, 1);
-        init();
-        /*after the complete gui is builded, fire an activated event on all elements*/
-        std::map<std::string, Wt::WWidget *>::iterator elem=_elements.begin();
-        for(;elem!=_elements.end();elem++){
-          if(instanceOf(*(*elem).second,ComboBox)){
-            static_cast<ComboBox*>((*elem).second)->activated().emit(0);
+          xml_node<>*optionnode = node->first_node("option");
+          for (; optionnode; optionnode = optionnode->next_sibling("option")) {
+            handleOption(optionnode);
+          }
+          _grid->addWidget(new Wt::WText(), _grid->rowCount(), 0);
+          _grid->setRowStretch(_grid->rowCount() - 1, 1);
+          init();
+          /*after the complete gui is builded, fire an activated event on all elements*/
+          std::map<std::string, Wt::WWidget *>::iterator elem = _elements.begin();
+          for (; elem != _elements.end(); elem++) {
+            if (instanceOf(*(*elem).second, ComboBox)) {
+              static_cast<ComboBox*> ((*elem).second)->activated().emit(0);
+            }
           }
         }
       }
@@ -134,23 +135,23 @@ namespace org {
           data[attr->name()] = attr->value();
         }
         xml_node<>*control = ogn->first_node("control");
-        std::string type=control->first_attribute("type")->value();
-        if (type== "TextBox") {
+        std::string type = control->first_attribute("type")->value();
+        if (type == "TextBox") {
           handleOptionTextBox(ogn);
         } else
-          if (type=="ComboBox") {
+          if (type == "ComboBox") {
           handleOptionComboBox(ogn);
         } else
-          if (type== "TrackBar") {
+          if (type == "TrackBar") {
           handleOptionSlider(ogn);
         } else
-          if (type== "CheckBox") {
+          if (type == "CheckBox") {
           handleOptionCheckBox(ogn);
         } else
           if (type == "FileSelect") {
         } else
           if (type == "Label") {
-            handleOptionLabel(ogn);
+          handleOptionLabel(ogn);
         } else
           LOGDEBUG("Unknown Control=" << type);
 
@@ -197,6 +198,7 @@ namespace org {
         }
 
       }
+
       void GuiBuilder::handleOptionLabel(rapidxml::xml_node<> *ogn) {
         std::map<std::string, std::string> data;
         for (xml_attribute<> *attr = ogn->first_attribute(); attr; attr = attr->next_attribute()) {
@@ -226,7 +228,6 @@ namespace org {
           _data_map[data["id"]] = data["default"];
         }
       }
-
 
       void GuiBuilder::handleOptionTextBox(rapidxml::xml_node<> *ogn) {
         std::map<std::string, std::string> data;
@@ -284,13 +285,13 @@ namespace org {
           _grid->addWidget(table, _grid->rowCount(), 0);
         }
 
-         xml_node<>*enables = ogn->first_node("enables");
-          if (enables) {
-            xml_node<>*option = enables->first_node("option");
-            for (; option; option = option->next_sibling("option")) {
-              _enablerMap[data["id"]]["1"].push_back(option->value());
-            }
+        xml_node<>*enables = ogn->first_node("enables");
+        if (enables) {
+          xml_node<>*option = enables->first_node("option");
+          for (; option; option = option->next_sibling("option")) {
+            _enablerMap[data["id"]]["1"].push_back(option->value());
           }
+        }
 
         box->setObjectName(data["id"]);
         if (_data_map.count(data["id"]) > 0) {
@@ -366,7 +367,7 @@ namespace org {
         }
         _enablerSignalMap->mapConnect(combo->activated(), combo);
         _dataChangedSignalMap.mapConnect(combo->activated(), combo);
-//        _dataChangedSignalMap.mapped().emit(combo);
+        //        _dataChangedSignalMap.mapped().emit(combo);
         //combo->activated().emit(0);
       }
 
@@ -408,7 +409,7 @@ namespace org {
 
         slider->setTickInterval(1);
         slider->setTickPosition(Wt::WSlider::TicksBelow);
-        slider->resize(208,  25);
+        slider->resize(208, 25);
 
         _sliderSignalMap->mapConnect(slider->valueChanged(), new Reference(slider, line));
         _dataChangedSignalMap.mapConnect(slider->valueChanged(), slider);
@@ -430,7 +431,7 @@ namespace org {
       }
 
       void GuiBuilder::enabler(Wt::WObject*obj) {
-         LOGDEBUG("Enabler Object Id=" << obj->objectName());
+        LOGDEBUG("Enabler Object Id=" << obj->objectName());
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
           std::string id = obj->objectName();
@@ -456,15 +457,15 @@ namespace org {
             std::map<std::string, std::string>::iterator mapit = (*ods).begin();
             for (; mapit != (*ods).end(); mapit++) {
               Wt::WObject * obj = _elements[(*mapit).first];
-              if(obj==NULL){
-                LOGERROR("could not set the values for "<<(*mapit).first<< ", it is not in the element list");
+              if (obj == NULL) {
+                LOGERROR("could not set the values for " << (*mapit).first << ", it is not in the element list");
                 continue;
               }
               if (instanceOf(*obj, ComboBox)) {
                 ComboBox * box = static_cast<ComboBox*> (obj);
                 box->setSelectedEntry((*mapit).second, 1);
                 box->activated().emit(0);
-                LOGDEBUG("Setting combo data from "<<box->objectName()<< " to " <<(*mapit).second);
+                LOGDEBUG("Setting combo data from " << box->objectName() << " to " << (*mapit).second);
               } else
                 if (instanceOf(*obj, Wt::Ext::LineEdit)) {
                 Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
@@ -511,7 +512,8 @@ namespace org {
         if (instanceOf(*element, Wt::WSlider)) {
           Wt::WSlider * b = static_cast<Wt::WSlider*> (element);
           //          LOGDEBUG("Slider Parent Hidden:"<<b->parent()->parent()->parent()->isHidden());
-          b->setHidden(!enable || b->parent()->parent()->parent()->isHidden());
+          //b->setHidden(!enable || b->parent()->parent()->parent()->isHidden());
+          b->setDisabled(!enable || b->parent()->parent()->parent()->isHidden());
           b->setHiddenKeepsGeometry(true);
         }
         if (instanceOf(*element, GroupBox)) {
@@ -549,7 +551,7 @@ namespace org {
       }
 
       void GuiBuilder::internalDataChanged(Wt::WObject*obj) {
-        LOGDEBUG("Object"<<obj);
+        LOGDEBUG("Object" << obj);
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
           _data_map[box->objectName()] = box->data(box->currentIndex(), 1);

@@ -114,6 +114,11 @@ namespace org {
 
         _presetparameter["name"] = name->text().narrow();
 //        std::string path=org::esb::config::Config::get("preset.path");
+        if(_filename.length()==0){
+          _filename=org::esb::config::Config::get("preset.path");
+          _filename+="/";
+          _filename+=_presetparameter["name"];
+        }
         org::esb::hive::PresetFileWriter writer(_filename);
         writer.setPreset(_presetparameter);
 

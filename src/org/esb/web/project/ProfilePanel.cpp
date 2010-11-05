@@ -106,8 +106,7 @@ namespace org{
       void ProfilePanel::removeSelectedProfile(){
         std::string pfile=boost::any_cast<string > (_profile_table->model()->data(_profile_table->selectedRows()[0], 0)).c_str();
         LOGDEBUG("PresetFilename="<<pfile);
-        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
-        db::Preset preset=litesql::select<db::Preset>(db, db::Preset::Filename==pfile).one();
+        db::Preset preset=_project->presets().get(db::Preset::Filename==pfile).one();
         _project->presets().unlink(preset);
         _profile_table->setPresets(_project->presets().get().all());
         removeProfileButton->setEnabled(false);

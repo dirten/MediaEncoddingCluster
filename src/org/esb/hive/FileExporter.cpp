@@ -72,6 +72,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   litesql::Or expr((db::ProcessUnit::Targetstream>0),litesql::Expr());
   std::string sql_expr="ProcessUnit_.targetstream_ IN(";
   bool success=true;
+  _source_stream_map.clear();
   for(int a=0;stream_it!=streams.end();stream_it++){
     db::Stream stream=(*stream_it);
     db::JobDetail d=stream.jobsout().get().one();
@@ -106,6 +107,8 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     job.update();
 //    return;
   }
+  
+  if(_source_stream_map.size()==0)return;
   pos->init();
   
   litesql::Cursor<db::ProcessUnit> units=litesql::select<db::ProcessUnit>(outfile.getDatabase(),litesql::RawExpr(sql_expr)).cursor();

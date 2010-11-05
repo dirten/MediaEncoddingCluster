@@ -62,9 +62,25 @@ namespace org {
         //        ctx->codec = _codec;
         _opened = false;
         _pre_allocated = true;
+
+
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
+        const AVOption * option = NULL;
+        while (option = av_next_option(s->codec, option)) {
+          if (option->offset > 0) {
+            int len = 1000;
+            char data[1000];
+            av_get_string(s->codec, option->name, NULL, data, len);
+            if (strlen(data) > 0) {
+              LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
+              _options[option->name] = std::string(data);
+            }else{
+              LOGDEBUG("No data for Context Option "<<option->name);
+            }
+          }
+        }
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
           setTimeBase(1, ctx->sample_rate);
         }
@@ -317,7 +333,7 @@ namespace org {
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            LOGERROR("openning Codec (" << ctx->codec_id<<")");
+            LOGERROR("openning Codec (" << ctx->codec_id << ")");
 
           } else {
             //              logdebug("Codec opened:" << _codec_id);
@@ -325,7 +341,7 @@ namespace org {
             _opened = true;
           }
         } catch (...) {
-          LOGERROR("Exception while openning Codec (" << ctx->codec_id<<")");
+          LOGERROR("Exception while openning Codec (" << ctx->codec_id << ")");
         }
         return _opened;
         //        }
@@ -344,7 +360,7 @@ namespace org {
         boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-                    LOGINFO("Closing codec ("<<ctx->codec_id<<")");
+          //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);

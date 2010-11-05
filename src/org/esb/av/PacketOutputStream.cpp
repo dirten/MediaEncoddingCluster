@@ -257,6 +257,8 @@ bool PacketOutputStream::init() {
 
     LOGDEBUG("TimeBase #" << a << "\tnum:" << stream->codec->time_base.num << "\tden" << stream->codec->time_base.den);
     LOGDEBUG("TimeBase Stream#" << a << "\tnum:" << stream->time_base.num << "\tden" << stream->time_base.den);
+    if(stream->parser)
+      LOGDEBUG("Stream repeast_pict:"<<stream->parser->repeat_pict);
   }
   return true;
 }

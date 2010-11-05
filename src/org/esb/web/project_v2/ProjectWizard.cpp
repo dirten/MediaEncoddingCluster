@@ -29,10 +29,10 @@ namespace org {
     namespace web {
       namespace v2 {
 
-        ProjectWizard::ProjectWizard() : Wt::Ext::Panel() {
-          LOGDEBUG("ProjectWizard::ProjectWizard() ");
+        ProjectWizard::ProjectWizard() : Wt::Ext::Dialog() {
+          LOGDEBUG("ProjectWizard::ProjectWizard() :"<<this);
           _project_id = 0;
-          resize(1200, 650);
+          resize(900, 650);
           setBorder(false);
           setTitle("Project Editor");
           //setSizeGripEnabled(true);
@@ -69,7 +69,7 @@ namespace org {
         }
 
         ProjectWizard::~ProjectWizard() {
-          LOGDEBUG("ProjectWizard::~ProjectWizard() ");
+          LOGDEBUG("ProjectWizard::~ProjectWizard() :"<<this);
         }
 
         void ProjectWizard::open(int pid) {
@@ -99,7 +99,7 @@ namespace org {
           _project->update();
           LOGDEBUG("Project saved:" << _project->id)
           saved.emit();
- //         this->done(Accepted);
+          this->done(Accepted);
         }
 
         void ProjectWizard::save_and_start() {
@@ -108,7 +108,7 @@ namespace org {
           if (_project->outdirectory.value().length() <= 0) {
             Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Directory", "please define an output Directory in the Project Properties", Wt::Warning, Wt::Ok);
             box->show();
-          } else if (_project->profiles().get().count() <= 0) {
+          } else if (_project->presets().get().count() <= 0) {
             Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Output Profile", "please add an output Profile in the Output Profiles Panel ", Wt::Warning, Wt::Ok);
             box->show();
           } else if (_project->mediafiles().get().count() <= 0) {
@@ -122,7 +122,7 @@ namespace org {
             box->show();
 
             saved.emit();
-//            this->done(Accepted);
+            this->done(Accepted);
           }
 
         }
@@ -131,7 +131,7 @@ namespace org {
 
           //        _project->del();
           canceled.emit();
-//          this->done(Rejected);
+          this->done(Rejected);
         }
 
       }

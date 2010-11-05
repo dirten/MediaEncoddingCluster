@@ -196,7 +196,7 @@ namespace org {
       void WebApp2::listProjects() {
 //        Projects * p = new Projects();
         ProjectTable * p = new ProjectTable();
-        _projectSignalMap->mapConnect(p->itemSelectionChanged(), p);
+        //_projectSignalMap->mapConnect(p->itemSelectionChanged(), p);
         setContent(p);
       }
 
@@ -354,7 +354,7 @@ namespace org {
       }
 
       void WebApp2::createProfiles() {
-        PresetsEditorWindow * edit=new PresetsEditorWindow(Ptr<db::Profile>(new db::Profile(org::esb::hive::DatabaseService::getDatabase())));
+        PresetsEditorWindow * edit=new PresetsEditorWindow("");
         edit->show();
         return;
         Profiles * profiles = new Profiles();

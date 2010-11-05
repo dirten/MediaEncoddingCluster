@@ -22,6 +22,10 @@ namespace org {
         _gop_size = -1;
         _deinterlace = true;
         _keep_aspect_ratio = true;
+        insamples = 0;
+        outsamples = 0;
+        last_insamples = 0;
+        last_outsamples = 0;
 
         int sws_flags = 1;
         _dec = dec;
@@ -32,14 +36,14 @@ namespace org {
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
-          _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channel_layout, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
+          _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channels, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
                   );
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
         }
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
-          Format in=dec->getOutputFormat();
-          Format out=enc->getInputFormat();
+          Format in = dec->getOutputFormat();
+          Format out = enc->getInputFormat();
           _swsContext = sws_getContext(in.width, in.height, in.pixel_format, out.width, out.height, out.pixel_format, sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
             LOGERROR("Could not initialize SWSCALE");
@@ -60,10 +64,10 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
-          if (_deinterlace)
-            doDeinterlaceFrame(in_frame);
-          convertVideo(in_frame, out_frame);
           
+          doDeinterlaceFrame(in_frame);
+          convertVideo(in_frame, out_frame);
+
         }
         if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
@@ -89,8 +93,12 @@ namespace org {
         out_frame.setTimeBase(_enc->getTimeBase());
         out_frame.setPts(av_rescale_q(in_frame.getPts(), in_frame.getTimeBase(), _enc->getTimeBase()));
         out_frame.setDts(av_rescale_q(in_frame.getDts(), in_frame.getTimeBase(), _enc->getTimeBase()));
+
         //        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
-        out_frame.setDuration(_enc->getTimeBase().num);
+        //if(_enc->getCodecType()==CODEC_TYPE_VIDEO)
+          //out_frame.setDuration(_enc->getTimeBase().num);
+        //if(_enc->getCodecType()==CODEC_TYPE_AUDIO)
+          //out_frame.setDuration(_enc->getTimeBase().num);
 #endif
       }
 
@@ -156,15 +164,13 @@ namespace org {
       void FrameConverter::doDeinterlaceFrame(Frame & in_frame) {
         LOGDEBUG("deinterlacing frame");
         /* deinterlace : must be done before any resize */
-        if (_deinterlace) {
           Frame frame(in_frame);
           if (avpicture_deinterlace((AVPicture*) frame.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
             /* if error, do not deinterlace */
-            fprintf(stderr, "Deinterlacing failed\n");
+            //fprintf(stderr, "Deinterlacing failed\n");
           } else {
             in_frame = frame;
           }
-        }
       }
 
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
@@ -179,8 +185,13 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-        LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
 
+        last_insamples=av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
+        LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+        insamples+=last_insamples;
+        outsamples+=last_outsamples;
+        delta=insamples-outsamples;
+        LOGDEBUG("new Resample Comensate delta:"<<delta<<" last_insamples:" << last_insamples<<" last_outsamples:"<<last_outsamples<< " all_insamples"<<insamples<<" alloutsamples:"<<outsamples <<" lastdiff:"<<(last_insamples-last_outsamples)<<" alldiff:"<<(insamples-outsamples));
         av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 
@@ -216,6 +227,9 @@ namespace org {
         out_frame._type = CODEC_TYPE_AUDIO;
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
+        out_frame.setDuration(out_size);
+        last_insamples=in_frame._size/ ((in_frame.channels/_enc->getChannels()) * isize);
+        last_outsamples=out_frame._size/osize;
       }
     }
   }

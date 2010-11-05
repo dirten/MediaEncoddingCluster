@@ -17,6 +17,7 @@ namespace org {
       public:
         static void createJob(Ptr<db::Project> p);
         static int createJob(db::MediaFile, db::Profile, std::string outpath);
+        static int createJob(db::MediaFile, db::Preset, std::string outpath);
       private:
         JobUtil();
         ~JobUtil();

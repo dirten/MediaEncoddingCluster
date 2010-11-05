@@ -218,9 +218,13 @@ int Encoder::encodeAudio(Frame & frame) {
         LOGERROR("Error Encoding audio Frame");
       }
       if (out_size == 0) {
-        LOGWARN("out_size=0");
+        continue;
+        //LOGWARN("out_size=0");
       }
+      if(out_size>0&&ctx->coded_frame&&ctx->coded_frame->pts!=AV_NOPTS_VALUE){
+        LOGDEBUG("Encoded Audio Frame PTS:"<<ctx->coded_frame->pts);
 
+      }
       Packet pak(out_size);
       pak.packet->size = out_size;
       memcpy(pak.packet->data, audio_out, out_size);
@@ -238,6 +242,10 @@ int Encoder::encodeAudio(Frame & frame) {
       pak.packet->stream_index = frame.stream_index;
       pak.packet->dts = _last_dts;
       pak.packet->pts = _last_dts;
+       if (ctx->coded_frame) {
+          pak.setDts(ctx->coded_frame->pts);
+          pak.setPts(ctx->coded_frame->pts);
+      }
       _last_dts += pak.getDuration();
       LOGDEBUG(pak.toString());
       if (_pos != NULL)
