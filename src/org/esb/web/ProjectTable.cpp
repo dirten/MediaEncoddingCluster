@@ -5,13 +5,13 @@
  * Created on 26. August 2010, 11:41
  */
 #include "org/esb/db/hivedb.hpp"
+#include "Wt/Ext/MessageBox"
 #include "ProjectTable.h"
 #include "Wt/WStandardItemModel"
 #include "Wt/Ext/ToolBar"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
-#include "Wt/Ext/MessageBox"
 /*this is a windows hack*/
 #ifdef MessageBox
 #undef MessageBox
