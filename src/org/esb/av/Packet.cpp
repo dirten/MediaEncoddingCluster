@@ -61,6 +61,7 @@ Packet::Packet(const Packet & p) {
   _pict_type = p._pict_type;
   _ptsTimeStamp = p._ptsTimeStamp;
   _dtsTimeStamp = p._dtsTimeStamp;
+  _duration=p._duration;
   //_time_base=p.getTimeBase();
 
   av_init_packet(packet);

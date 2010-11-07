@@ -34,6 +34,7 @@ namespace org {
         long long int getDts();
         void setPts(int64_t);
         void setDts(int64_t);
+        
         void setPtsTimeStamp(TimeStamp);
         void setDtsTimeStamp(TimeStamp);
         TimeStamp getPtsTimeStamp();

@@ -67,6 +67,7 @@ namespace org {
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
+        
         const AVOption * option = NULL;
         while (option = av_next_option(s->codec, option)) {
           if (option->offset > 0) {

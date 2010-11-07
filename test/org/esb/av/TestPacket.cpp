@@ -23,8 +23,8 @@ int main(){
 
 
   Packet pac2=pac;
-  assert(pac.getPtsTimeStamp()==pac.getPtsTimeStamp());
-  assert(pac.getDtsTimeStamp()==pac.getDtsTimeStamp());
-  assert(pac.getDtsTimeStamp()!=pac.getPtsTimeStamp());
+  assert(pac.getPtsTimeStamp()==pac2.getPtsTimeStamp());
+  assert(pac.getDtsTimeStamp()==pac2.getDtsTimeStamp());
+  assert(pac.getTimeDuration()==pac2.getTimeDuration());
   
 }

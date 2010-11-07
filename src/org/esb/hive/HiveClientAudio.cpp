@@ -46,6 +46,7 @@ namespace org {
 
       void HiveClientAudio::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("hiveclientaudio") == "start") {
+
           boost::thread t(boost::bind(&HiveClientAudio::start, this));
           _running = true;
         } else

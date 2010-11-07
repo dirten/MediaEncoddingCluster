@@ -45,7 +45,6 @@ namespace org {
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("hiveclient") == "start") {
-          
           boost::thread t(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
