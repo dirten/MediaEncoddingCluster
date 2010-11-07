@@ -42,6 +42,7 @@ add_executable (FormatTest FormatTest.cpp)
 add_executable (FormatConverterTest FormatConverterTest.cpp)
 add_executable (SeekTest SeekTest.cpp)
 add_executable (AudioEncoderSetupTest AudioEncoderSetupTest.cpp)
+add_executable (DecoderSerializerTest DecoderSerializerTest.cpp)
 
 target_link_libraries (TestPacket av)
 target_link_libraries (TestFfmpeg av)
