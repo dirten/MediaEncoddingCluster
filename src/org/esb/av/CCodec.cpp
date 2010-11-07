@@ -26,6 +26,10 @@ namespace org {
       void CCodec::close() {
       }
 
+      void CCodec::setParameter(std::map<std::string, std::string>) {
+
+      }
+
       std::string CCodec::getName() {
         return "";
       }
@@ -35,11 +39,11 @@ namespace org {
 
       std::list<Format> CCodec::getSupportedInputFormats() {
         std::list<Format> result;
-      
+
         return result;
       }
 
-      std::list<Format> CCodec::getSupportedOutputFormats(Format in ) {
+      std::list<Format> CCodec::getSupportedOutputFormats(Format in) {
         std::list<Format> result;
 
         return result;
@@ -48,6 +52,7 @@ namespace org {
       int CCodec::process(Buffer & in, Buffer & out) {
         return 0;
       }
+
       CCodec::ProcessStatus CCodec::process(Frame & in, Frame & out) {
         return CCodec::BUFFER_PROCESSED_FAILED;
       }

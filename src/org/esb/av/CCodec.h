@@ -25,6 +25,8 @@ namespace org {
         void close();
         std::string getName();
         void reset();
+        void setParameter(std::map<std::string, std::string>);
+
         /*functions for codec*/
         std::list<Format> getSupportedInputFormats();
         std::list<Format> getSupportedOutputFormats(Format in=Format());

@@ -17,7 +17,7 @@ namespace org {
       }
 
       TimeStamp TimeStamp::rescaleTo(Rational r) {
-        return TimeStamp(av_rescale_q(_timestamp, _timebase, r),r);
+        return TimeStamp(av_rescale_q(_timestamp, _timebase, r), r);
       }
 
       Rational TimeStamp::getTimeBase() {
@@ -25,12 +25,17 @@ namespace org {
       }
 
       bool TimeStamp::operator==(TimeStamp ts) {
-        return ts._timestamp==_timestamp&&ts._timebase.num==_timebase.num&&ts._timebase.den==_timebase.den;
+        return ts._timestamp == _timestamp && ts._timebase.num == _timebase.num && ts._timebase.den == _timebase.den;
       }
-        std::string TimeStamp::toString(){
-          std::stringstream t;
-          t << "TimeStamp=";
-        t<<_timestamp;
+
+      bool TimeStamp::operator!=(TimeStamp ts) {
+        return !(*this==ts);
+      }
+
+      std::string TimeStamp::toString() {
+        std::stringstream t;
+        t << "TimeStamp=";
+        t << _timestamp;
         return t.str();
       }
 

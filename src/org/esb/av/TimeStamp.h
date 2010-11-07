@@ -20,6 +20,7 @@ namespace org {
         Rational getTimeBase();
         int64_t getTime();
         bool operator==(TimeStamp t);
+        bool operator!=(TimeStamp t);
         std::string toString();
       private:
         int64_t _timestamp;
