@@ -16,6 +16,7 @@ namespace org{
         std::string getName();
         void open();
         void reset();
+        void setParameter(std::map<std::string, std::string>);
         ProcessStatus process(Frame & in, Frame & out);
       private:
         SwsContext * _swsContext;

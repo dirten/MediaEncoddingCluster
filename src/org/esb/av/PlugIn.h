@@ -28,6 +28,7 @@ namespace org {
         virtual std::string getName() = 0;
         virtual void open() = 0;
         virtual void reset() = 0;
+        virtual void setParameter(std::map<std::string, std::string>) = 0;
         virtual ProcessStatus process(Frame & in, Frame & out) = 0;
       };
     }

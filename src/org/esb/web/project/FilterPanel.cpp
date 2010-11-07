@@ -102,6 +102,7 @@ namespace org {
       }
 
       void FilterPanel::filterSelected() {
+        /*
         std::list<Ptr<db::Filter> > filters = _filter_chooser->getSelectedFilter();
         std::list<Ptr<db::Filter> >::iterator filter_it = filters.begin();
         for (; filter_it != filters.end(); filter_it++) {
@@ -114,13 +115,13 @@ namespace org {
         }
         _filter_table->setFilter(_project->filter().get().all());
         _filter_chooser->accept();
-        _filter_chooser.reset();
+        _filter_chooser.reset();*/
       }
 
       void FilterPanel::addFilter() {
-        _filter_chooser = Ptr<FilterChooser > (new FilterChooser(_available_filters));
-        _filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
-        _filter_chooser->show();
+        //_filter_chooser = Ptr<FilterChooser > (new FilterChooser(_available_filters));
+        //_filter_chooser->selected.connect(SLOT(this, FilterPanel::filterSelected));
+        //_filter_chooser->show();
       }
 
       void FilterPanel::removeFilter() {

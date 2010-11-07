@@ -51,7 +51,7 @@ namespace org {
         main_panel = new Wt::Ext::Panel();
         Wt::WFitLayout * fit = new Wt::WFitLayout();
         main_panel->setLayout(fit);
-        main_panel->setBorder(false);
+        //main_panel->setBorder(false);
 
         l->addWidget(main_panel, Wt::WBorderLayout::Center);
 

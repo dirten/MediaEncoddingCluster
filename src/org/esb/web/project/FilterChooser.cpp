@@ -21,14 +21,14 @@ namespace org{
 
         }
 
-        void setFilterData(std::vector<Ptr<db::Filter> > filters){
-          std::vector<Ptr<db::Filter> >::iterator it=filters.begin();
+        void setFilterData(std::map<std::string, std::string > filters){
+          std::map<std::string, std::string >::iterator it=filters.begin();
           for(int a = 0;it!=filters.end();it++, a++){
             if (rowCount() <= a)
               insertRow(rowCount());
 
-            setData(a, 0, org::esb::util::StringUtil::toString((*it)->id));
-            setData(a, 1, (std::string)(*it)->filtername);
+            setData(a, 0, (*it).first);
+            setData(a, 1, (*it).second);
 
           }
         }
@@ -41,14 +41,14 @@ namespace org{
           setColumnWidth(1,300);
         }
 
-        void setFilter(std::vector<Ptr<db::Filter> > filters){
+        void setFilter(std::map<std::string, std::string > filters){
           static_cast<FilterTableModel*>(model())->setFilterData(filters);
         }
       };
 
 
 
-      FilterChooser::FilterChooser(std::vector<Ptr<db::Filter> > available_filter):
+      FilterChooser::FilterChooser(std::map<std::string, std::string > available_filter):
       Wt::Ext::Dialog("Filter Chooser"),
         _available_filters(available_filter){
           setLayout(new Wt::WFitLayout());
@@ -77,15 +77,10 @@ namespace org{
       FilterChooser::~FilterChooser(){
         LOGDEBUG("FilterChooser::~FilterChooser()")
       }
-      std::list<Ptr<db::Filter> > FilterChooser::getSelectedFilter(){
-        std::list<Ptr<db::Filter> > result;
-        std::string filtername=boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 1));
-        std::vector<Ptr<db::Filter> >::iterator it=_available_filters.begin();
-        for(;it!=_available_filters.end();it++){
-          if((*it)->filtername==filtername){
-            result.push_back((*it));
-          }
-        }
+      std::list<std::string> FilterChooser::getSelectedFilter(){
+        std::list<string> result;
+        std::string filtername=boost::any_cast<string > (_filter_table->model()->data(_filter_table->selectedRows()[0], 0));
+        result.push_back(filtername);
         return result;
       }
 

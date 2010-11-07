@@ -7,6 +7,9 @@ namespace org{
       ResizeFilter::ResizeFilter(Format in, Format out):_in_format(in),_out_format(out){
         _swsContext = NULL;
       }
+        void ResizeFilter::setParameter(std::map<std::string, std::string>){
+          
+        }
       void ResizeFilter::close(){
         if (_swsContext)
           sws_freeContext(_swsContext);

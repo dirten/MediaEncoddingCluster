@@ -19,47 +19,46 @@ namespace org {
       class PresetFilterTableModel : public Wt::WStandardItemModel {
       public:
 
-        PresetFilterTableModel(Ptr<db::Profile> p) : _profile(p), Wt::WStandardItemModel() {
+        PresetFilterTableModel(org::esb::hive::PresetReader::FilterList & filter,std::map<std::string, std::string > available_filter) : _filter(filter), _available_filter(available_filter), Wt::WStandardItemModel() {
           LOGDEBUG("FilterTableModel():Wt::WStandardItemModel()");
           insertColumns(0, 2);
-          setHeaderData(0, std::string("Enabled"));
+          setHeaderData(0, std::string("Id"));
           setHeaderData(1, std::string("Filter"));
         }
 
         void refresh() {
-          std::vector<db::Filter> filter = _profile->filter().get().all();
-          std::vector<db::Filter>::iterator it = filter.begin();
-          for (; it != filter.end(); it++) {
-            if(rowCount()<filter.size())
+          org::esb::hive::PresetReader::FilterList::iterator it = _filter.begin();
+          for (int a=0; it != _filter.end(); it++, a++) {
+            if (rowCount() < _filter.size()){
+            LOGDEBUG("insert filter:"<<(*it).first);
               insertRow(rowCount());
-            if(rowCount()>filter.size())
-              removeRow(rowCount()-1);
-            setData(rowCount() - 1, 1, (*it).filtername.value());
+              }
+            if (rowCount() > _filter.size()){
+            LOGDEBUG("remove filter:"<<(*it).first);
+              removeRow(rowCount() - 1);
+              }
+            setData(a, 0, (*it).first);
+            setData(a, 1, _available_filter[(*it).first]);
           }
         }
-        ~PresetFilterTableModel(){
+
+        ~PresetFilterTableModel() {
           LOGDEBUG("~PresetFilterTableModel()");
         }
       private:
-        Ptr<db::Profile> _profile;
+        org::esb::hive::PresetReader::FilterList & _filter;
+        std::map<std::string, std::string > _available_filter;
       };
 
-      PresetFilterTable::PresetFilterTable(Ptr<db::Profile> p) : _profile(p),Wt::Ext::TableView() {
+      PresetFilterTable::PresetFilterTable(org::esb::hive::PresetReader::FilterList & filter) : _filter(filter), Wt::Ext::TableView() {
         LOGDEBUG("FilterTable::FilterTable() : Wt::Ext::TableView()");
 
-        Ptr<db::Filter> f = new db::Filter(p->getDatabase());
-        f->filterid = "resize";
-        f->filtername = "Resize Filter";
-        _available_filter.push_back(f);
+        _available_filter["resize"] = "Resize Filter";
+        _available_filter["deinterlace"] = "Deinterlace Filter";
 
-        Ptr<db::Filter> f2 = new db::Filter(p->getDatabase());
-        f2->filterid = "deinterlace";
-        f2->filtername = "Deinterlace Filter";
-        _available_filter.push_back(f2);
-
-        setModel(_model=new PresetFilterTableModel(p));
+        setModel(_model = new PresetFilterTableModel(filter, _available_filter));
         cellClicked().connect(SLOT(this, PresetFilterTable::itemSelectionChangedMethod));
-        resize(300, 300);
+        resize(500, 200);
         setColumnWidth(0, 50);
         setAutoExpandColumn(1);
         setSelectionBehavior(Wt::SelectRows);
@@ -94,10 +93,12 @@ namespace org {
       }
 
       void PresetFilterTable::filterSelected() {
-        std::list<Ptr<db::Filter> > result = _chooser->getSelectedFilter();
-        LOGDEBUG("Filter selected:"<<result.front()->filtername);
-        result.front()->update();
-        _profile->filter().link(*result.front().get());
+        std::list<std::string> result = _chooser->getSelectedFilter();
+        std::string filtername=result.front();
+        _filter[filtername];
+        //LOGDEBUG("Filter selected:"<<result.front()->filtername);
+        //result.front()->update();
+        //_profile->filter().link(*result.front().get());
         static_cast<PresetFilterTableModel*> (model())->refresh();
         _chooser->accept();
         _chooser.reset();
@@ -106,13 +107,14 @@ namespace org {
       void PresetFilterTable::itemSelectionChangedMethod() {
         removeOptionButton->setEnabled(true);
       }
-      
+
       void PresetFilterTable::refresh() {
-        
+
       }
 
       void PresetFilterTable::removeFilter() {
         LOGDEBUG("remove filter");
+        /*
         std::string filtername=boost::any_cast<std::string > (model()->data(selectedRows()[0], 1));
         std::vector<db::Filter> filter=_profile->filter().get().all();
         std::vector<db::Filter>::iterator it=filter.begin();
@@ -122,7 +124,7 @@ namespace org {
             LOGDEBUG("filter removed:"<<(*it).filtername);
           }
         }
-
+         */
         static_cast<PresetFilterTableModel*> (model())->refresh();
       }
     }

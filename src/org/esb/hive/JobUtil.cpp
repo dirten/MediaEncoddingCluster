@@ -317,7 +317,7 @@ namespace org {
 
 //        job.begintime = 1;
 //        job.endtime = 1;
-        job.outfile = outfile.filename.value();
+        //job.outfile = outfile.filename.value();
         job.update();
 
 
@@ -354,7 +354,7 @@ namespace org {
             }
           }
           db::JobDetail jd(db);
-
+          
           jd.update();
           jd.inputstream().link((*sit));
           jd.outputstream().link(s);
@@ -362,6 +362,28 @@ namespace org {
 
           a++;
         }
+        /*handling filter for the output media file*/
+        PresetReader::FilterList::iterator filter_it=filters.begin();
+        for(;filter_it!=filters.end();filter_it++){
+          std::string filterid=(*filter_it).first;
+          db::Filter f(db);
+          f.filterid=filterid;
+          f.update();
+          outfile.filter().link(f);
+          /*if the filter has paramater*/
+          if(filters[filterid].size()>0){
+            std::map<std::string, std::string> parameter(filters[filterid].begin(),filters[filterid].end());
+            std::map<std::string, std::string>::iterator pa_it=parameter.begin();
+            for(;pa_it!=parameter.end();pa_it++){
+              db::FilterParameter pa(db);
+              pa.fkey=(*pa_it).first;
+              pa.fval=(*pa_it).second;
+              pa.update();
+              f.parameter().link(pa);
+            }
+          }
+        }
+
         job.inputfile().link(infile);
         job.outputfile().link(outfile);
         db.commit();

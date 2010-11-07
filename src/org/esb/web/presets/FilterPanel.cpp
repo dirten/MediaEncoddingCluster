@@ -27,14 +27,24 @@ namespace org {
   namespace esb {
     namespace web {
 
-      PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p) :_profile(p),  Wt::Ext::Panel() {
-        LOGDEBUG("PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p):Wt::Ext::Panel()");
+      PresetFilterPanel::PresetFilterPanel(org::esb::hive::PresetReader::FilterList &filter) :_filterlist(filter),  Wt::Ext::Panel() {
         setLayout(new Wt::WFitLayout());
 
         Wt::WContainerWidget * main = new Wt::WContainerWidget();
         grid = new Wt::WGridLayout();
         main->setLayout(grid);
         layout()->addWidget(main);
+
+        grid->addWidget(filter_table = new PresetFilterTable(filter), 0, 0);
+        _cont=new Wt::WContainerWidget();
+        _cont->setLayout(new Wt::WBorderLayout());
+        _cont->resize(600,500);
+        grid->addWidget(_cont, 1, 0);
+        filter_table->itemSelectionChanged().connect(SLOT(this,PresetFilterPanel::filterSelected));
+      }
+/*
+      PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p) :_profile(p),  Wt::Ext::Panel() {
+        LOGDEBUG("PresetFilterPanel::PresetFilterPanel(Ptr<db::Profile> p):Wt::Ext::Panel()");
 
         
         grid->addWidget(filter_table = new PresetFilterTable(p), 0, 0);
@@ -44,15 +54,17 @@ namespace org {
         grid->addWidget(_cont, 0, 1);
         filter_table->itemSelectionChanged().connect(SLOT(this,PresetFilterPanel::filterSelected));
         //filter_table->cellClicked().connect(SLOT(this,PresetFilterPanel::filterSelected));
-      }
+      }*/
+      void PresetFilterPanel::buildGui(){
 
+      }
       PresetFilterPanel::~PresetFilterPanel() {
         LOGDEBUG("PresetFilterPanel::~PresetFilterPanel()");
       }
 
       void PresetFilterPanel::filterSelected() {
-        std::string filtername=boost::any_cast<std::string > (filter_table->model()->data(filter_table->selectedRows()[0], 1));
-        Ptr<db::Filter> filter=new db::Filter(_profile->filter().get(db::Filter::Filtername==filtername).one());
+        std::string filtername=boost::any_cast<std::string > (filter_table->model()->data(filter_table->selectedRows()[0], 0));
+        _current_selected_filter=filtername;
         if(_cont->layout()->count()>0){
           Wt::WLayoutItem * item =((Wt::WBorderLayout*)_cont->layout())->itemAt(Wt::WBorderLayout::Center);
           _cont->layout()->removeItem(item);
@@ -61,21 +73,16 @@ namespace org {
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/filter.video.";
-        file += filter->filterid;
+        file += filtername;
         file += ".gui";
         if (!org::esb::io::File(file).exists()) {
           LOGDEBUG("Gui File does not exist:" << file);
           file = path + "/res/comp/test.gui";
         }
         LOGDEBUG("Gui File:" << file);
-        _parameter.clear();
-        std::vector<db::FilterParameter> params=filter->parameter().get().all();
-        std::vector<db::FilterParameter>::iterator it=params.begin();
-        for(;it!=params.end();it++){
-          _parameter[(*it).fkey]=(*it).fval;
-        }
 //        return;
-        GuiBuilder * builder = new GuiBuilder(file, _parameter);
+        _filtermap.insert(_filterlist[filtername].begin(),_filterlist[filtername].end());
+        GuiBuilder * builder = new GuiBuilder(file, _filtermap);
         builder->dataChanged.connect(SLOT(this,PresetFilterPanel::save));
 //        if (main_panel->layout()->count() > 0) {
 //          Wt::WLayoutItem * item = main_panel->layout()->itemAt(0);
@@ -94,24 +101,8 @@ namespace org {
       }
       void PresetFilterPanel::save(){
         LOGDEBUG("Save Filter Parameter");
-        _profile->getDatabase().begin();
-        std::string filtername=boost::any_cast<std::string > (filter_table->model()->data(filter_table->selectedRows()[0], 1));
-        Ptr<db::Filter> filter=new db::Filter(_profile->filter().get(db::Filter::Filtername==filtername).one());
-        std::vector<db::FilterParameter> params=filter->parameter().get().all();
-        std::vector<db::FilterParameter>::iterator it=params.begin();
-        for(;it!=params.end();it++){
-          filter->parameter().unlink((*it));
-          (*it).del();
-        }
-        std::map<std::string, std::string>::iterator itout=_parameter.begin();
-        for(;itout!=_parameter.end();itout++){
-          db::FilterParameter p(_profile->getDatabase());
-          p.fkey=(*itout).first;
-          p.fval=(*itout).second;
-          p.update();
-          filter->parameter().link(p);
-        }
-        _profile->getDatabase().commit();
+        _filterlist[_current_selected_filter].clear();
+        _filterlist[_current_selected_filter].insert(_filtermap.begin(), _filtermap.end());
       }
     }
   }

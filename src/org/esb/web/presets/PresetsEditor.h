@@ -11,6 +11,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "Wt/Ext/Panel"
 #include "Wt/Ext/LineEdit"
+#include "org/esb/hive/PresetReader.h"
 
 #include <map>
 namespace org {
@@ -30,7 +31,7 @@ namespace org {
         Ptr<db::Profile>_profile;
         Wt::Ext::LineEdit * name;
         std::map<std::string, std::string> _presetparameter;
-        std::map<std::string, std::string> _formatparameter;
+        org::esb::hive::PresetReader::FilterList _filterparameter;
         std::map<std::string, std::string> _audioparameter;
         std::map<std::string, std::string> _videoparameter;
 

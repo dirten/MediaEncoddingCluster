@@ -66,6 +66,11 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 add_executable (mhive Hive.cpp)
+SET_TARGET_PROPERTIES (mhive
+  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
+               INSTALL_NAME_DIR "@executable_path/../lib"
+	         )
+		 
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
     target_link_libraries (mhiveservice io lang util)
@@ -319,11 +324,12 @@ ELSEIF(APPLE)
 #    DESTINATION ./res
 #    )
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.52.dylib
-      ${FFMPEG_DIR}/lib/libavdevice.52.dylib
-      ${FFMPEG_DIR}/lib/libavformat.52.dylib
-      ${FFMPEG_DIR}/lib/libavutil.50.dylib
-      ${FFMPEG_DIR}/lib/libswscale.0.dylib
+      ${FFMPEG_DIR}/lib/libavcodec.dylib
+      ${FFMPEG_DIR}/lib/libavcore.dylib
+      ${FFMPEG_DIR}/lib/libavdevice.dylib
+      ${FFMPEG_DIR}/lib/libavformat.dylib
+      ${FFMPEG_DIR}/lib/libavutil.dylib
+      ${FFMPEG_DIR}/lib/libswscale.dylib
       ${CURL_DIR}/lib/libcurl.4.dylib
     DESTINATION ./lib
   )

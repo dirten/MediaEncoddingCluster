@@ -135,10 +135,13 @@ namespace org {
           return;
         }
         std::string id = filter->first_attribute("id")->value();
+
         if (_filters.count(id) > 0) {
           LOGWARN("multiple filter with the same id " << id << " defined in the preset");
           LOGWARN("it could be only one filter of one id available in the preset");
         }
+        _filters[id];
+        
         for (xml_node<>*param = filter->first_node("param"); param; param = param->next_sibling("param")) {
           if (!param->first_attribute("name")) {
             LOGDEBUG("could not resolve name for the filter parameter");

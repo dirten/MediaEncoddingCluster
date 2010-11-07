@@ -22,7 +22,6 @@
 #include "FilterPanel.h"
 #include "Wt/Ext/ToolBar"
 #include "Wt/Ext/Button"
-#include "org/esb/hive/PresetReader.h"
 #include "org/esb/hive/PresetFileWriter.h"
 #include "org/esb/config/config.h"
 namespace org {
@@ -38,7 +37,7 @@ namespace org {
         _videoparameter.insert(codecparam["video"].begin(), codecparam["video"].end());
         _audioparameter.insert(codecparam["audio"].begin(), codecparam["audio"].end());
 
-        //org::esb::hive::PresetReader::FilterList filer=reader.getFilterList();
+        _filterparameter=reader.getFilterList();
         buildGui();
 
       }
@@ -96,7 +95,7 @@ namespace org {
         tab->addTab(new org::esb::web::FormatPanel(_presetparameter), "Format");
         tab->addTab(new org::esb::web::VideoPanel(_videoparameter), "Video");
         tab->addTab(new org::esb::web::AudioPanel(_audioparameter), "Audio");
-        //        tab->addTab(new org::esb::web::PresetFilterPanel(_profile), "Filter");
+        tab->addTab(new org::esb::web::PresetFilterPanel(_filterparameter), "Filter");
 
         Wt::Ext::ToolBar * tb = NULL;
         tab->setTopToolBar(tb = new Wt::Ext::ToolBar());
@@ -132,7 +131,7 @@ namespace org {
         tmp_audio_map.insert(_audioparameter.begin(), _audioparameter.end());
         codecs.insert(std::pair<std::string, std::multimap<std::string, std::string> >("audio", tmp_audio_map));
         writer.setCodecList(codecs);
-
+        writer.setFilterList(_filterparameter);
         writer.write();
 
       }

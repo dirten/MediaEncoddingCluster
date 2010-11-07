@@ -13,13 +13,15 @@
 #include "Wt/Ext/Button"
 #include "org/esb/lang/Ptr.h"
 #include "../project/FilterChooser.h"
+#include "org/esb/hive/PresetReader.h"
 namespace org {
   namespace esb {
     namespace web {
       class PresetFilterTableModel;
-      class PresetFilterTable: public Wt::Ext::TableView {
+
+      class PresetFilterTable : public Wt::Ext::TableView {
       public:
-        PresetFilterTable(Ptr<db::Profile> p);
+        PresetFilterTable(org::esb::hive::PresetReader::FilterList &);
         virtual ~PresetFilterTable();
         void refresh();
       private:
@@ -28,10 +30,12 @@ namespace org {
         void removeFilter();
         Ptr<FilterChooser> _chooser;
         void filterSelected();
-         std::vector<Ptr<db::Filter> > _available_filter;
-         Ptr<db::Profile> _profile;
-         void itemSelectionChangedMethod();
-         PresetFilterTableModel* _model;
+        std::map<std::string, std::string > _available_filter;
+        Ptr<db::Profile> _profile;
+        void itemSelectionChangedMethod();
+        PresetFilterTableModel* _model;
+        org::esb::hive::PresetReader::FilterList & _filter;
+       
       };
     }
   }
