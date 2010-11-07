@@ -13,7 +13,7 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-  Log::open("");
+  //Log::open("");
   std::string filename=MEC_SOURCE_DIR;
   filename.append("/test.dvd");
   if(argc>1){
