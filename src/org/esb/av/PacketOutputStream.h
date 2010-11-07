@@ -17,12 +17,12 @@ namespace org {
       public:
         PacketOutputStream(OutputStream * os);
         ~PacketOutputStream();
-        void writePacket(Packet * packet);
+        //int writePacket(Packet * packet);
         void setEncoder(Codec & code);
         void setEncoder(Codec & code, int stream_id);
 		std::list<AVStream*> getStreamList();
         bool init();
-        void writePacket(Packet & packet);
+        int writePacket(Packet & packet);
         void write(char * buffer, int length);
         void write(vector<unsigned char>&buffer);
         void flush();

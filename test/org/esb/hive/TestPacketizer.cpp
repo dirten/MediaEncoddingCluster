@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
-    src.append("/test/fixtures/dvd.mpeg");
+    src.append("/target/dependency/fixtures/mpeg2_mp2.ts");
     //    src.append("/test.dvd");
   } else {
     src = argv[1];

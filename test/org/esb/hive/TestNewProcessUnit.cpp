@@ -269,7 +269,7 @@ void write_file(int argc, char** argv) {
 //      (*it)->setStreamIndex((*it)->getStreamIndex());
       (*it)->setPts(pts++);
       (*it)->setDts(AV_NOPTS_VALUE);
-      pos.writePacket(*((*it).get()));
+      assert(pos.writePacket(*((*it).get()))==0);
     }
   }
   pos.close();
