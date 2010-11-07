@@ -59,6 +59,8 @@ Packet::Packet(const Packet & p) {
   //  _time_base.den=p._time_base.num;
   _time_base = p._time_base;
   _pict_type = p._pict_type;
+  _ptsTimeStamp = p._ptsTimeStamp;
+  _dtsTimeStamp = p._dtsTimeStamp;
   //_time_base=p.getTimeBase();
 
   av_init_packet(packet);
@@ -132,11 +134,10 @@ Packet::Packet(int s) {
 Packet::~Packet() {
   //  logdebug("delete Packet"<<this);
   //  	av_free_packet(packetPtr.get());
-  if (callDestruct){
-    if(packet->data)
+  if (callDestruct) {
+    if (packet->data)
       delete [] packet->data;
-  }
-  else
+  } else
     av_free_packet(packet);
 
   packet->data = NULL;
@@ -220,22 +221,47 @@ void Packet::setTimeBase(int num, int den) {
 AVRational Packet::getTimeBase() {
   return _time_base;
 }
-void Packet::setKeyPacket(bool key){
-  if(key)
+
+void Packet::setKeyPacket(bool key) {
+  if (key)
     packet->flags |= PKT_FLAG_KEY;
+}
+
+void Packet::setPtsTimeStamp(TimeStamp t) {
+  _ptsTimeStamp = t;
+}
+
+void Packet::setDtsTimeStamp(TimeStamp t) {
+  _dtsTimeStamp = t;
+}
+
+TimeStamp Packet::getPtsTimeStamp() {
+  return _ptsTimeStamp;
+}
+
+TimeStamp Packet::getDtsTimeStamp() {
+  return _dtsTimeStamp;
+}
+
+void Packet::setTimeDuration(TimeStamp d) {
+  _duration = d;
+}
+
+TimeStamp Packet::getTimeDuration() {
+  return _duration;
 }
 
 std::string Packet::toString() {
   std::ostringstream oss;
   oss << "P->S:" << getSize() <<
-      ":Pts:" << getPts() <<
-      ":Dts:" << getDts() <<
-      ":Index:" << getStreamIndex() <<
-      ":Dur:" << getDuration() <<
-      ":Pos:" << getPosition() <<
-      ":TBase:" << getTimeBase().num << "/" << getTimeBase().den <<
-      ":F:" << getFlags() <<
-      ":KF" << isKeyFrame();
+          ":Pts:" << getPts() <<
+          ":Dts:" << getDts() <<
+          ":Index:" << getStreamIndex() <<
+          ":Dur:" << getDuration() <<
+          ":Pos:" << getPosition() <<
+          ":TBase:" << getTimeBase().num << "/" << getTimeBase().den <<
+          ":F:" << getFlags() <<
+          ":KF" << isKeyFrame();
   std::string type;
   switch (_pict_type) {
     case FF_I_TYPE: type = "I";

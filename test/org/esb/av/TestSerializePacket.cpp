@@ -16,6 +16,10 @@ int main(){
   p.setStreamIndex(2);
   p.setDuration(3600);
 
+  p.setPtsTimeStamp(TimeStamp(1, Rational(1,25)));
+  p.setDtsTimeStamp(TimeStamp(3, Rational(1,25)));
+  p.setTimeDuration(TimeStamp(5, Rational(3,25)));
+
   memcpy(p.packet->data,"12345",5);
   
   assert(strcmp((const char*)p.getData(),"12345")==0);
@@ -25,6 +29,10 @@ int main(){
   assert(p.getFlags()==5);
   assert(p.getStreamIndex()==2);
   assert(p.getDuration()==3600);
+
+  assert(p.getPtsTimeStamp()==TimeStamp(1, Rational(1,25)));
+  assert(p.getDtsTimeStamp()==TimeStamp(3, Rational(1,25)));
+  assert(p.getTimeDuration()==TimeStamp(5, Rational(3,25)));
 
   FileOutputStream fos("test.packet");
   ObjectOutputStream oos(&fos);
@@ -45,6 +53,9 @@ int main(){
   assert(pr.getFlags()==5);
   assert(pr.getStreamIndex()==2);
   assert(pr.getDuration()==3600);
+  assert(pr.getPtsTimeStamp()==TimeStamp(1, Rational(1,25)));
+  assert(pr.getDtsTimeStamp()==TimeStamp(3, Rational(1,25)));
+  assert(pr.getTimeDuration()==TimeStamp(5, Rational(3,25)));
 
   
 

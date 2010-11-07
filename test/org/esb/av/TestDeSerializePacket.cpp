@@ -21,6 +21,9 @@ int main() {
   assert(p.getFlags()==5);
   assert(p.getStreamIndex()==2);
   assert(p.getDuration()==3600);
+  assert(pr.getPtsTimeStamp()==TimeStamp(1, Rational(1,25)));
+  assert(pr.getDtsTimeStamp()==TimeStamp(3, Rational(1,25)));
+  assert(pr.getTimeDuration()==TimeStamp(5, Rational(3,25)));
   }
   {
   FileInputStream fis("../../../../../test_data/packet-1-1032.pkt");

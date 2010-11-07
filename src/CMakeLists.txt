@@ -66,10 +66,10 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 add_executable (mhive Hive.cpp)
-SET_TARGET_PROPERTIES (mhive
-  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
-               INSTALL_NAME_DIR "@executable_path/../lib"
-	         )
+#SET_TARGET_PROPERTIES (mhive
+#  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
+#               INSTALL_NAME_DIR "@executable_path/../lib"
+#	         )
 		 
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)

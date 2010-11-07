@@ -99,6 +99,9 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
     //LOGDEBUG("DecodeStreamQuality:"<<_formatCtx->streams[packet.getStreamIndex()]->quality*100.0f);
 //    av_dup_packet(packet.packet);
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
+    packet.setPtsTimeStamp(TimeStamp(packet.getPts(), Rational(packet.getTimeBase())));
+    packet.setDtsTimeStamp(TimeStamp(packet.getDts(), Rational(packet.getTimeBase())));
+    packet.setTimeDuration(TimeStamp(packet.getDuration(), Rational(packet.getTimeBase())));
     if(_formatCtx->streams[packet.getStreamIndex()]->parser){
       packet._pict_type=_formatCtx->streams[packet.getStreamIndex()]->parser->pict_type;
     }
@@ -116,6 +119,8 @@ Packet * PacketInputStream::readPacketFromFormatIS() {
   if (av_read_frame(_formatCtx, _avpacket) >= 0) {
     Packet *pac=new Packet(_avpacket);
     pac->setTimeBase(_formatCtx->streams[pac->getStreamIndex()]->time_base);
+    pac->setPtsTimeStamp(TimeStamp(pac->getPts(), Rational(pac->getTimeBase())));
+    pac->setDtsTimeStamp(TimeStamp(pac->getDts(), Rational(pac->getTimeBase())));
     if(_formatCtx->streams[pac->getStreamIndex()]->parser){
       pac->_pict_type=_formatCtx->streams[pac->getStreamIndex()]->parser->pict_type;
     }

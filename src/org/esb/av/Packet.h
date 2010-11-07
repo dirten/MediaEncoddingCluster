@@ -12,6 +12,8 @@
 #include <boost/serialization/split_member.hpp>
 #include <deque>
 #include "org/esb/util/Log.h"
+#include "TimeStamp.h"
+#include "Duration.h"
 //using namespace boost;
 //    class AVPacket;
 namespace org {
@@ -32,6 +34,12 @@ namespace org {
         long long int getDts();
         void setPts(int64_t);
         void setDts(int64_t);
+        void setPtsTimeStamp(TimeStamp);
+        void setDtsTimeStamp(TimeStamp);
+        TimeStamp getPtsTimeStamp();
+        TimeStamp getDtsTimeStamp();
+        void setTimeDuration(TimeStamp);
+        TimeStamp getTimeDuration();
         int getFlags();
         void setFlags(int);
         int getStreamIndex();
@@ -59,7 +67,9 @@ namespace org {
         bool isCopy;
         bool callDestruct;
         int _pict_type;
-
+        TimeStamp _dtsTimeStamp;
+        TimeStamp _ptsTimeStamp;
+        Duration _duration;
         //	uint8_t _data;
         //        friend class boost::serialization::access;
         //		    void serialize(boost::archive::Archive & ar, const unsigned int version);
@@ -97,8 +107,9 @@ namespace org {
           ar & packet->pos;
           ar & _time_base.num;
           ar & _time_base.den;
-
-
+          ar & _ptsTimeStamp;
+          ar & _dtsTimeStamp;
+          ar & _duration;
         }
 
         template<class Archive>
@@ -117,6 +128,9 @@ namespace org {
           ar & packet->pos;
           ar & _time_base.num;
           ar & _time_base.den;
+          ar & _ptsTimeStamp;
+          ar & _dtsTimeStamp;
+          ar & _duration;
 
         }
 

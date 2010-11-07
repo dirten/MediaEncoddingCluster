@@ -13,6 +13,7 @@ using namespace org::esb::av;
 using namespace org::esb::io;
 
 int main(int argc, char **argv) {
+  Log::open("");
   std::string src;
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
@@ -106,7 +107,7 @@ int main(int argc, char **argv) {
     std::cout << "Stream Decoder Flags " << c->flags << std::endl;
     std::cout << "Own Decoder Flags " << dec->ctx->flags << std::endl;
   }
-//  dec->open();
+  dec->open();
   std::cout << "Codec Extradata Size:" << c->extradata_size << std::endl;
   std::cout << "Codec Extradata Size:" << dec->ctx->extradata_size << std::endl;
   std::cout << "Codec Extradata Size:" << c->extradata << std::endl;
@@ -132,21 +133,21 @@ int main(int argc, char **argv) {
   //      enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
   //     enc->setPixelFormat(PIX_FMT_YUV420P);
   //  enc.ctx->bits_per_raw_sample=dec.ctx
-  enc->open();
+//  enc->open();
   //  return 0;
   PacketInputStream pis(&fis);
   if (true) {
     Packet * p = NULL;
 //    for (int a = 0; a < 100; a++) {
     for (int a = 0; (p = pis.readPacket()) != NULL; a++) {
-      //  std::cerr<<"PacketLoop"<<std::endl;
+        //std::cerr<<"PacketLoop"<<std::endl;
 //      if ((p = pis.readPacket()) != NULL) {
-        if (false&&p->getStreamIndex() == stream_index) {
+        if (p->getStreamIndex() == stream_index) {
           Frame * f = dec->decode2(*p);
           if (f->isFinished()) {
             std::cerr << "frame finished" << std::endl;
-            Packet pout = enc->encode(*f);
-            std::cerr << "Packet size:" << pout.packet->size << std::endl;
+            //Packet pout = enc->encode(*f);
+            //std::cerr << "Packet size:" << pout.packet->size << std::endl;
           } else {
             std::cerr << "frame not finished" << std::endl;
           }

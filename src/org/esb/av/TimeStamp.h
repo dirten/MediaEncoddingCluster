@@ -8,6 +8,8 @@
 #ifndef TIMESTAMP_H
 #define	TIMESTAMP_H
 #include "Rational.h"
+#include <boost/serialization/serialization.hpp>
+
 namespace org {
   namespace esb {
     namespace av {
@@ -25,6 +27,14 @@ namespace org {
       private:
         int64_t _timestamp;
         Rational _timebase;
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version) {
+          ar & _timestamp;
+          ar & _timebase;
+        }
+
       };
     }
   }

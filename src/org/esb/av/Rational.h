@@ -8,18 +8,27 @@
 #ifndef RATIONAL_H
 #define	RATIONAL_H
 #include "AV.h"
+#include <boost/serialization/serialization.hpp>
+
+
 namespace org {
   namespace esb {
     namespace av {
-      
-      class Rational:public AVRational {
+
+      class Rational : public AVRational {
       public:
-        Rational(int num=1, int den=1000000);
+        Rational(int num = 1, int den = 1000000);
         Rational(AVRational r);
         virtual ~Rational();
         bool operator==(const Rational &);
       private:
+        friend class boost::serialization::access;
 
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version) {
+          ar & num;
+          ar & den;
+        }
       };
     }
   }
