@@ -74,7 +74,7 @@ int main(int argc, char ** argv) {
   for (int i = 0; true;) {
     AVPacket pkt;
     int ret = av_read_frame(formatCtx, &pkt);
-    if (pkt.stream_index == sid) {
+    if (pkt.stream_index == sid&&pkt.dts>=3760056833) {
       /*try to decode*/
       int fin = 0;
       AVFrame pic;

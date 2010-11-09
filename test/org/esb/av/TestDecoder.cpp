@@ -78,7 +78,9 @@ void testDecodeVideo(std::string filepath) {
   memset(outfile,0,100);
   for (int i = 0; i < 200;) {
     if ((p = pis.readPacket()) != NULL && p->getStreamIndex() == video_stream) {
-      if (i >= offset) {
+      //3760002833
+      //3760056833 = IFrame
+      if (i >= offset&& p->getDts()>=3760002833) {
         org::esb::av::Frame * frame = dec.decode2(*p);
         incount++;
         if (frame->isFinished() && i >= printout) {
@@ -89,7 +91,7 @@ void testDecodeVideo(std::string filepath) {
 //          org::esb::av::BMPUtil::save("test-%d.bmp", frame);
 //          frame->dumpHex();
         }
-        delete frame;
+        //delete frame;
       }
       i++;
     }

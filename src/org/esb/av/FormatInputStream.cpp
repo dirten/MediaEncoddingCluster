@@ -32,7 +32,7 @@ namespace org {
 //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
 //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
-//        formatCtx->debug=5;
+        //formatCtx->debug=5;
         std::string filename = _sourceFile->getPath();
 		{
 	        
