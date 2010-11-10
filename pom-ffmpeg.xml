@@ -77,7 +77,7 @@
   </parent>-->
   <groupId>org.esb.ffmpeg</groupId>
   <artifactId>ffmpeg</artifactId>
-  <version>20101020</version>
+  <version>20101110</version>
   <name>ffmpeg</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>

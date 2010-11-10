@@ -286,12 +286,12 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        if (_codec->capabilities & CODEC_CAP_TRUNCATED) {
-          //			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
-          //					    cout <<"CodecCapTruncated"<<endl;
+        if (false&&_codec->capabilities & CODEC_CAP_TRUNCATED) {
+          			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
+          					    cout <<"CodecCapTruncated"<<endl;
         }
         std::map<std::string, std::string>::iterator opit = _options.begin();
-        for (; opit != _options.end(); opit++) {
+        for (; false&&opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
           LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
