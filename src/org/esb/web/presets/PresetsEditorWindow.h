@@ -7,7 +7,6 @@
 
 #ifndef PRESETSEDITORWINDOW_H
 #define	PRESETSEDITORWINDOW_H
-//#include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 
 #include "Wt/Ext/Dialog"
