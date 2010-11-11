@@ -4,6 +4,7 @@
  * 
  * Created on 31. Oktober 2010, 22:42
  */
+#include "org/esb/db/hivedb.hpp"
 
 #include "PresetList.h"
 #include "Wt/WStandardItemModel"
