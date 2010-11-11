@@ -357,19 +357,19 @@
                             <origin>${mhive_src_dir}/install/bin/mhiveservice</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libswscale.0.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libswscale.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcodec.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcodec.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavdevice.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavdevice.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavformat.52.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavformat.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavutil.50.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libcurl.4.dylib</origin>
