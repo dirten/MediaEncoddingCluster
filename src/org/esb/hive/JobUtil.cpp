@@ -10,6 +10,7 @@
 #include "litesql/datasource.hpp"
 #include "CodecPropertyTransformer.h"
 #include "PresetReader.h"
+#include "org/esb/util/StringUtil.h"
 #include <map>
 #include <vector>
 using namespace org::esb::av;
@@ -258,19 +259,6 @@ namespace org {
 
       int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
         LOGDEBUG("Create new Job");
-        const litesql::Database db = infile.getDatabase();
-        db.begin();
-
-        db::Job job(db);
-        job.created = 0;
-        job.begintime = 1;
-        job.endtime = 1;
-        job.starttime = infile.starttime;
-        job.duration = infile.duration;
-        job.status = "queued";
-        job.infile = infile.filename.value();
-        job.update();
-
         /**
          * reading the preset from the file
          */
@@ -286,6 +274,23 @@ namespace org {
             break;
           }
         }
+        if(!ofmt){
+          LOGERROR("Could not find Output Format");
+          return -1;
+        }
+
+        const litesql::Database db = infile.getDatabase();
+        db.begin();
+
+        db::Job job(db);
+        job.created = 0;
+        job.begintime = 1;
+        job.endtime = 1;
+        job.starttime = infile.starttime;
+        job.duration = infile.duration;
+        job.status = "queued";
+        job.infile = infile.filename.value();
+        job.update();
 
         /**
          * creating the output media file
@@ -347,6 +352,11 @@ namespace org {
             std::multimap<std::string, std::string>::iterator sdata = codec.begin();
             for (; sdata != codec.end(); sdata++) {
               db::StreamParameter sp(db);
+              if((*sdata).first=="codec_id"){
+                 AVCodec * codec=avcodec_find_encoder_by_name((*sdata).second.c_str());
+                 if(codec)
+                   (*sdata).second=org::esb::util::StringUtil::toString(codec->id);
+              }
               sp.name = (*sdata).first;
               sp.val = (*sdata).second;
               sp.update();

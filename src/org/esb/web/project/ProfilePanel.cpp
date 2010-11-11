@@ -93,7 +93,8 @@ namespace org{
       }
 
       void ProfilePanel::setProject(Ptr<db::Project> p){
-        _profile_table->setPresets(p->presets().get().all());
+        if(p->presets().get().count()>0)
+          _profile_table->setPresets(p->presets().get().all());
         _project=p;
       }
 
@@ -109,8 +110,10 @@ namespace org{
         db::Preset preset=_project->presets().get(db::Preset::Filename==pfile).one();
         _project->presets().unlink(preset);
         _profile_table->setPresets(_project->presets().get().all());
-        removeProfileButton->setEnabled(false);
-        editProfileButton->setEnabled(false);
+        if(_profile_table->selectedRows().size()==0){
+          removeProfileButton->setEnabled(false);
+          editProfileButton->setEnabled(false);
+        }
       }
 
       void ProfilePanel::editSelectedProfile(){

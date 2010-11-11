@@ -9,6 +9,7 @@
 #define	PRESETLIST_H
 #include "Wt/WSignal"
 #include "Wt/Ext/TableView"
+#include "Wt/Ext/Button"
 namespace org {
   namespace esb {
     namespace web {
@@ -18,8 +19,20 @@ namespace org {
         PresetList();
         virtual ~PresetList();
         Wt::Signal<std::string> presetSelected;
+        void createPreset();
+        void refresh();
+
       private:
         void selectionChanged();
+        Wt::Ext::Button * create_button;
+        Wt::Ext::Button * edit_button;
+        Wt::Ext::Button * delete_button;
+
+        void editPreset();
+        void deletePreset();
+        void enableButtons();
+        void presetSaved();
+
       };
     }
   }

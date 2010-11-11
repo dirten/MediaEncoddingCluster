@@ -25,17 +25,29 @@ namespace org {
         Wt::WBorderLayout*l = new Wt::WBorderLayout();
         setLayout(l);
 
+        std::set<std::string> avail_codecs;
+        if(_parameter.count("available_codecs")>0){
+          LOGDEBUG("Available codes"<<_parameter["available_codecs"]);
+          org::esb::util::StringTokenizer st(_parameter["available_codecs"],",");
+          while(st.hasMoreTokens()){
+            std::string codec_id=st.nextToken();
+            avail_codecs.insert(codec_id);
+            LOGDEBUG("avalable codec list"<<codec_id);
+          }
+        }
+
         /*
          * Combobox for the Codec Selector
          */
         KeyValueModel * codec_model = new KeyValueModel();
-        codec_model->addModelData("0","No Audio");
-        codec_model->addModelData("-1","Stream Copy");
+        codec_model->addModelData("noaudio","No Audio");
+        codec_model->addModelData("copy","Stream Copy");
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_AUDIO) {
-            codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
+            //if(avail_codecs.count(codec->name)>0)
+              codec_model->addModelData(codec->name, codec->long_name);
           }
         }
 
@@ -85,20 +97,12 @@ namespace org {
 
       void AudioPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        std::string codecname;
-        AVCodec *codec = NULL;
-        int a = 0;
-        while ((codec = av_codec_next(codec))) {
-          if (codec->encode && codec->type == CODEC_TYPE_AUDIO && org::esb::util::StringUtil::toString(codec->id) == codecid) {
-            LOGDEBUG("found codec : " << codec->name);
-            codecname = codec->name;
-          }
-        }
-        _parameter["codec_id"] = codecname;
+        
+        _parameter["codec_id"] = codecid;
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/encoder.audio.";
-        file += codecname;
+        file += codecid;
         file += ".gui";
         if (!org::esb::io::File(file).exists()) {
           file = path + "/res/comp/encoder.audio.default.gui";

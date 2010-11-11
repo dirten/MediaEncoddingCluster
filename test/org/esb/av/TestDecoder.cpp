@@ -13,11 +13,13 @@
 #include "org/esb/av/PGMUtil.h"
 #include "org/esb/av/BMPUtil.h"
 #include "org/esb/av/Decoder.h"
+#include "org/esb/av/Encoder.h"
+#include "org/esb/av/FormatBaseStream.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
 
 #include "org/esb/util/Log.h"
-
+using namespace org::esb::av;
 org::esb::av::Frame * getRawFrame(){
   int height=240;
   int width=320;
@@ -38,13 +40,38 @@ org::esb::av::Frame * getRawFrame(){
                 frame->getAVFrame()->data[2][y * frame->getAVFrame()->linesize[2] + x] = 64 + x + i * 5;
             }
         }
+  frame->setDuration(1);
+  frame->setTimeBase(1,25);
   return frame;
 }
 
 void testDecodeRawVideo(){
-  org::esb::av::Decoder dec(CODEC_ID_FFV1);
+  /*to test the decoding, first we generate some encoded packets*/
+  org::esb::av::Encoder enc(CODEC_ID_RAWVIDEO);
+  enc.setTimeBase(1, 25);
+  enc.setWidth(320);
+  enc.setHeight(240);
+
+  enc.open();
+  Frame * frame=getRawFrame();
+  enc.encode(*frame);
+  enc.encode(*frame);
+  enc.encode(*frame);
+  enc.encode(*frame);
+  return;
+  org::esb::av::Decoder dec(CODEC_ID_RAWVIDEO);
   dec.setTimeBase(1, 25);
+  dec.setWidth(320);
+  dec.setHeight(240);
   dec.open();
+
+  org::esb::av::Packet p;
+  
+  org::esb::av::Frame * f;
+  f=dec.decode2(p);
+  if(f->isFinished())
+    LOGDEBUG("frame finished");
+  dec.decode2(p);
 
 }
 
@@ -62,6 +89,7 @@ void testDecodeVideo(std::string filepath) {
       break;
     }
   }
+  
   org::esb::av::Decoder dec(fis.getAVStream(video_stream));
   //  dec.setTimeBase(1, 25);
   dec.open();
@@ -184,16 +212,44 @@ void testDecodeAudio(){
   delete ptmp;
 }
 
+
+
+void testVideoDecoderTimings(){
+  Decoder dec((CodecID)-1);
+  dec.setTimeBase(1,25);
+  dec.setWidth(320);
+  dec.setHeight(240);
+
+  /*setting manually a codec type*/
+  dec.ctx->codec_type=CODEC_TYPE_VIDEO;
+  /*setting manually a picture type*/
+  dec.ctx->pix_fmt=PIX_FMT_UYVY422;
+  /*openning the test decoder*/
+  dec.open();
+
+
+  Packet p;
+  Frame * frame=NULL;
+  frame=dec.decode2(p);
+  
+  delete frame;
+  frame=dec.decode2(p);
+  delete frame;
+  frame=dec.decode2(p);
+  delete frame;
+}
 int main(int argc, char** argv) {
   Log::open("");
+  org::esb::av::FormatBaseStream::initialize();
   std::string filename=MEC_SOURCE_DIR;
   filename.append("/test.dvd");
   if(argc>1){
     filename=argv[1];
   }
+  testVideoDecoderTimings();
 //  testDecodeRawVideo();
-  testDecodeVideo(filename);
-  testDecodeAudio();
+//  testDecodeVideo(filename);
+//  testDecodeAudio();
   Log::close();
   return (EXIT_SUCCESS);
 

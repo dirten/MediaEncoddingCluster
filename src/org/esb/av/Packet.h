@@ -108,9 +108,12 @@ namespace org {
           ar & packet->pos;
           ar & _time_base.num;
           ar & _time_base.den;
+          
           ar & _ptsTimeStamp;
           ar & _dtsTimeStamp;
           ar & _duration;
+          ar & _pict_type;
+           
         }
 
         template<class Archive>
@@ -129,10 +132,11 @@ namespace org {
           ar & packet->pos;
           ar & _time_base.num;
           ar & _time_base.den;
+          
           ar & _ptsTimeStamp;
           ar & _dtsTimeStamp;
           ar & _duration;
-
+          ar & _pict_type;
         }
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()

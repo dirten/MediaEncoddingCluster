@@ -32,7 +32,7 @@ namespace org {
     namespace mq {
 
       QueueManager::QueueManager() {
-        org::esb::io::File file("../queues");
+        org::esb::io::File file(org::esb::config::Config::get("hive.data_path")+"/queues");
         if(!file.exists()){
           file.mkdir();
         }
@@ -44,7 +44,7 @@ namespace org {
           line+="20200\n";
           fos.write(line);
           line="queue_dir:";
-          line+="../queues\n";
+          line+=file.getFilePath()+"\n";
           fos.write(line);
           fos.close();          
         }

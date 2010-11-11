@@ -20,15 +20,14 @@ namespace org {
         classlogger("org.esb.web.JobTable");
       public:
         JobTable();
-        JobTable(const JobTable& orig);
         virtual ~JobTable();
         void refresh();
-        void /*Wt::JSignal<std::string,int>&*/ doSome(int);
+        void /*Wt::JSignal<std::string,int>&*/ stopEncoding(int);
       private:
         Ptr<JobTableModel> _model;
         Wt::WTimer *timer;
         void rowSelected();
-        Wt::JSignal<int> doSome_;
+        Wt::JSignal<int> _stopEncoding;
 
       };
 

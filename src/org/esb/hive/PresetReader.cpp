@@ -19,7 +19,7 @@ namespace org {
       PresetReader::PresetReader(std::string filename) {
         org::esb::io::File file(filename);
         if (!file.exists()) {
-          LOGERROR("Preset File does not exist!");
+          LOGERROR("Preset File does not exist! " <<filename);
           return;
         }
         LOGINFO("reading presets from "<<filename);
@@ -95,20 +95,10 @@ namespace org {
           LOGERROR("no codec id found for "<<type<<" codec");
         }else{
           std::string id = codec->first_attribute("id")->value();
-          AVCodec * codec=avcodec_find_encoder_by_name(id.c_str());
-          std::string t=type+"_codec_id";
-          if(codec){
-            _codecs[type].insert(std::pair<std::string, std::string>(t,org::esb::util::StringUtil::toString(codec->id)));
-            _codecs[type].insert(std::pair<std::string, std::string>("codec_id",org::esb::util::StringUtil::toString(codec->id)));
+          if(id.length()>0){
+            //_codecs[type].insert(std::pair<std::string, std::string>(t,id));
+            _codecs[type].insert(std::pair<std::string, std::string>("codec_id",id));
           }else{
-            /*handle stream disabled and stream copy here*/
-            if(id=="copy"){/*stream copy*/
-              _codecs[type].insert(std::pair<std::string, std::string>(t,"-1"));
-              _codecs[type].insert(std::pair<std::string, std::string>("codec_id","-1"));
-            }else{/*handle stream disabled*/
-              _codecs[type].insert(std::pair<std::string, std::string>(t,"0"));
-              _codecs[type].insert(std::pair<std::string, std::string>("codec_id","0"));
-            }
             LOGWARN("could not find encoder for name "<<id);
           }
         }
@@ -157,11 +147,22 @@ namespace org {
           _filters[id].insert(std::pair<std::string, std::string>(name,value));
           /*this is a special case for the codec to know the size of the encode frames*/
           if(id=="resize"){
-            if(name=="width"||name=="height")
-              _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
+            if(name=="width"){
+              if(_codecs["video"].count("width")>0){
+                (*_codecs["video"].find("width")).second=value;
+              }else{
+                _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
+              }
+            }
+            if(name=="height"){
+              if(_codecs["video"].count("height")>0){
+                (*_codecs["video"].find("height")).second=value;
+              }else{
+                _codecs["video"].insert(std::pair<std::string, std::string>(name,value));
+              }
+            }
           }
         }
-
       }
 
       PresetReader::~PresetReader() {

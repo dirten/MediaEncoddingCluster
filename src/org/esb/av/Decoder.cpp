@@ -50,8 +50,10 @@ Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
   _last_pts = 0;
   _next_pts = 0;
 }
-Decoder::~Decoder(){
+
+Decoder::~Decoder() {
 }
+
 Frame Decoder::decodeLast() {
   Frame frame(ctx->pix_fmt, ctx->width, ctx->height);
   int _frameFinished = 0;
@@ -117,17 +119,17 @@ fprintf(stderr, "Error while decoding frame\n");
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("Decode Video");
-  if(!_pix_fmt_converter){
-    Format in;
-    in.width=ctx->width;
-    in.height=ctx->height;
-    in.pixel_format=ctx->pix_fmt;
-    _output_format=in;
-    _output_format.pixel_format=STD_PIX_FMT;
-    _pix_fmt_converter=new PixelFormatConverter(in, _output_format);
-    _pix_fmt_converter->open();
-  }
-  Ptr<Frame>  tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
+    if (!_pix_fmt_converter) {
+      Format in;
+      in.width = ctx->width;
+      in.height = ctx->height;
+      in.pixel_format = ctx->pix_fmt;
+      _output_format = in;
+      _output_format.pixel_format = STD_PIX_FMT;
+      _pix_fmt_converter = new PixelFormatConverter(in, _output_format);
+      _pix_fmt_converter->open();
+    }
+  Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   Frame * frame = new Frame(_output_format.pixel_format, ctx->width, ctx->height);
   int _frameFinished = 0;
   int len = packet.packet->size;
@@ -135,16 +137,18 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
 
   //  while (len > 0) {
   //    logdebug("Decode Packet");
-  int bytesDecoded =
-      avcodec_decode_video2(ctx, tmp_frame->getAVFrame(), &_frameFinished, packet.packet);
-   if (_frameFinished) {
-    _pix_fmt_converter->process(*tmp_frame,*frame);
-    if(ctx->coded_frame){
-      LOGDEBUG("DeCodedFrameQuality:"<<ctx->coded_frame->quality);
-      LOGDEBUG("Interlaced:"<<ctx->coded_frame->interlaced_frame);
-      LOGDEBUG("topfieldfirst:"<<ctx->coded_frame->top_field_first);
-    }
+  int bytesDecoded = 0;
+  if(ctx->codec_id>-1){
+    bytesDecoded = avcodec_decode_video2(ctx, tmp_frame->getAVFrame(), &_frameFinished, packet.packet);
+  }
+  if (_frameFinished) {
 
+    _pix_fmt_converter->process(*tmp_frame, *frame);
+    if (ctx->coded_frame) {
+      LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
+      LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
+      LOGDEBUG("topfieldfirst:" << ctx->coded_frame->top_field_first);
+    }
   }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
   if (false && _last_pts == AV_NOPTS_VALUE) {
@@ -154,7 +158,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
     _last_pts = av_rescale_q(packet.getPts(), packet.getTimeBase(), ctx->time_base);
 #endif
     LOGDEBUG("setting last pts to " << _last_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
 
   LOGDEBUG("BytesDecoded:" << bytesDecoded);
@@ -163,9 +167,9 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGDEBUG("RES " << ctx->coded_width << "/" << ctx->coded_height);
   AVRational display_aspect_ratio;
   av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-      ctx->width * ctx->sample_aspect_ratio.num,
-      ctx->height * ctx->sample_aspect_ratio.den,
-      1024 * 1024);
+          ctx->width * ctx->sample_aspect_ratio.num,
+          ctx->height * ctx->sample_aspect_ratio.den,
+          1024 * 1024);
   LOGDEBUG("DAR " << display_aspect_ratio.num << "/" << display_aspect_ratio.den);
 
   if (bytesDecoded < 0) {
@@ -178,7 +182,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   if (!_frameFinished) {
     return frame;
   }
-  frame->setStorageAspectRatio(ctx->coded_width,ctx->coded_height);
+  frame->setStorageAspectRatio(ctx->coded_width, ctx->coded_height);
   frame->setPixelAspectRatio(ctx->sample_aspect_ratio);
   frame->setDisplayAspectRatio(display_aspect_ratio);
   len -= bytesDecoded;
@@ -194,21 +198,21 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   // calculating the duration of the decoded packet
   int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), AV_TIME_BASE_Q);
 #else
-//  frame->setTimeBase(ctx->time_base);
+  //  frame->setTimeBase(ctx->time_base);
   // calculating the duration of the decoded packet
   //    int64_t dur = av_rescale_q(packet.packet->duration, packet.getTimeBase(), ctx->time_base);
   //  int64_t tmp_dur=((int64_t)AV_TIME_BASE * ctx->time_base.num * ctx->ticks_per_frame) / ctx->time_base.den;
   AVRational ar;
   ar.num = _frame_rate.den;
-  ar.den = _frame_rate.num;//* ctx->ticks_per_frame;
-  LOGDEBUG("ticks:"<<ctx->ticks_per_frame);
-//  int64_t dur = av_rescale_q(ar.num , ar, ctx->time_base);
+  ar.den = _frame_rate.num; //* ctx->ticks_per_frame;
+  LOGDEBUG("ticks:" << ctx->ticks_per_frame);
+  //  int64_t dur = av_rescale_q(ar.num , ar, ctx->time_base);
   frame->setTimeBase(ar);
   int64_t dur = 1;
 #endif
 
   frame->setFinished(_frameFinished);
-//  frame->_pixFormat = ctx->pix_fmt;
+  //  frame->_pixFormat = ctx->pix_fmt;
   frame->stream_index = packet.packet->stream_index;
 
 
@@ -243,7 +247,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 #endif
 
     LOGDEBUG("setting last pts to " << _next_pts << " ctxtb=" << ctx->time_base.num << "/" << ctx->time_base.den
-        << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
+            << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
   if (len < 0) {

@@ -21,10 +21,10 @@ WebServer * w;
 
 int main(int argc, char**argv) {
   Log::open("");
-  Config::init("");
   av_register_all();
   std::string base_path = MEC_SOURCE_DIR;
   Config::setProperty("hive.base_path", base_path.c_str());
+  Config::init("");
   Config::setProperty("db.connection", "mysql:host=127.0.0.1;db=hive2;user=root;passwd=");
 
   std::string host = "host=";
@@ -54,22 +54,8 @@ int main(int argc, char**argv) {
     w.infolder = "/video";
     w.outfolder = "/tmp";
 
-    db::Profile p = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
-    w.update();
-    w.profile().link(p);
     w.update();
 
-
-    std::string src = MEC_SOURCE_DIR;
-    src.append("/test.dvd");
-    org::esb::hive::FileImporter imp;
-
-    db::MediaFile mediafile = imp.import(org::esb::io::File(src));
-    assert(mediafile.id > 0);
-    db::Profile pro = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
-
-    int jobid = org::esb::hive::JobUtil::createJob(mediafile, pro, "/tmp");
-    assert(jobid > 0);
 
   }
 

@@ -17,7 +17,7 @@ int main() {
 
   char * t=new char[100000];
   char test[1000000];
-  /*only for hand testing*/
+  /*only for manual testing*/
 #ifdef NDEBUG
 //  die();
 #endif

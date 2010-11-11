@@ -52,11 +52,15 @@ namespace org {
       }
 
       void QueueOutputStream::write(char * buffer, int length) {
+        if(!_queue)throw std::exception();
         safmq::QueueMessage msg;
         msg.setLabel("nolabel");
         msg.getBufferStream()->write(buffer, length);
-        _queue->Enqueue(msg);
-
+        safmq::ErrorCode er;
+        if((er=_queue->Enqueue(msg))!=safmq::EC_NOERROR){
+          LOGERROR(er);
+          throw std::exception();
+        }
       }
 
       void QueueOutputStream::write(vector <unsigned char >& buffer) {

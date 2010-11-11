@@ -29,15 +29,14 @@ int i = 0;
 void decode_packet_list(PacketListPtr list, std::map<int, Packetizer::StreamData> & stream_data) {
   PacketListPtr::iterator it = list.begin();
   char * outfile = new char[100];
-
   for (; it != list.end(); it++) {
     Frame * frame = stream_data[(*it)->getStreamIndex()].decoder->decodeVideo2(*(*it).get());
     if(frame->isFinished()){
       sprintf(outfile, "test-%i-%i.pgm", ++i, (*it)->getDts());
+      LOGDEBUG("writing file # "<<outfile);
       PGMUtil::save(outfile, frame);
     }
   }
-
 }
 
 void print_packet_list(PacketListPtr list) {
@@ -67,7 +66,7 @@ int main(int argc, char** argv) {
   File f(src.c_str());
   FormatInputStream fis(&f);
   PacketInputStream pis(&fis);
-
+  return 0;
 
 
   /*get input format parameter*/
@@ -83,13 +82,14 @@ int main(int argc, char** argv) {
   }
 
   Packetizer pti(stream_data);
-  for (int a = 0; a < 800; a++) {
+  for (int a = 0; a < 40;) {
     Packet p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
     if (pis.readPacket(p) < 0)break;
     if (stream_data.find(p.getStreamIndex()) == stream_data.end())continue;
     if (stream_data[p.getStreamIndex()].decoder->getCodecType() != CODEC_TYPE_VIDEO)continue;
+    if(p.getDts()<3760262033)continue;
     boost::shared_ptr<Packet> pPacket(new Packet(p));
     if (pti.putPacket(pPacket)) {
       PacketListPtr list = pti.removePacketList();
@@ -98,6 +98,7 @@ int main(int argc, char** argv) {
       print_packet_list(list);
       decode_packet_list(list, stream_data);
     }
+    a++;
   }
   LOGDEBUG("Flush Packetitzer");
   pti.flushStreams();

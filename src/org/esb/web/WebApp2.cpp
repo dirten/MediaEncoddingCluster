@@ -107,7 +107,7 @@ namespace org {
         main_panel->setResizable(true);
 
         //        main_panel->setBorder(true);
-        layout->addWidget(main_panel, Wt::WBorderLayout::West);
+        layout->addWidget(main_panel, Wt::WBorderLayout::Center);
         /*end Main Panel*/
 
         /*begin Info Panel*/
@@ -159,8 +159,8 @@ namespace org {
         object_panel->setResizable(true);
         object_panel->setLayout(new Wt::WFitLayout());
         object_panel->setBorder(false);
-//        object_panel->resize(600,Wt::WLength());
-        layout->addWidget(object_panel, Wt::WBorderLayout::Center);
+        object_panel->resize(Wt::WLength(), 200);
+        layout->addWidget(object_panel, Wt::WBorderLayout::South);
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
         useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("main.css");
@@ -347,20 +347,22 @@ namespace org {
       void WebApp2::listAllProfiles() {
         PresetList * list=new PresetList();
         setContent(list);
-        list->presetSelected.connect(SLOT(this, WebApp2::presetSelected2));
+//        list->presetSelected.connect(SLOT(this, WebApp2::presetSelected2));
         //Profiles * profiles = new Profiles();
         //profiles->profileSelected.connect(SLOT(this, WebApp2::presetSelected));
         //setContent(profiles);
       }
 
       void WebApp2::createProfiles() {
+        PresetList * list=new PresetList();
+        setContent(list);
+        
         PresetsEditorWindow * edit=new PresetsEditorWindow("");
         edit->show();
-        return;
-        Profiles * profiles = new Profiles();
-        //       _sqlTableSignalMap->mapConnect(profiles->itemSelectionChanged, profiles);
-        setContent(profiles);
-        profiles->createProfile();
+        if(edit->exec()==Wt::Ext::Dialog::Accepted){
+          list->refresh();
+        }
+        delete edit;
       }
 
       void WebApp2::openConfiguration() {
@@ -447,6 +449,7 @@ namespace org {
         }
         object_panel->layout()->addWidget(editor);
       }
+
       void WebApp2::presetSelected2(std::string filename) {
         LOGDEBUG("preset selected");
         PresetsEditor * editor=new PresetsEditor(filename);

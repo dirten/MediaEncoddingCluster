@@ -70,12 +70,13 @@ int main(int argc, char ** argv) {
   }
   std::cout << "EncDelay" << enc->delay << std::endl;
   std::cout << "DecDelay" << dec->delay << std::endl;
-
+  int out=0;
   for (int i = 0; true;) {
     AVPacket pkt;
     int ret = av_read_frame(formatCtx, &pkt);
-    if (pkt.stream_index == sid&&pkt.dts>=3760056833) {
+    if (pkt.stream_index == sid&&pkt.dts>=3760262033) {
       /*try to decode*/
+      std::cout << "PacketDts:"<<pkt.dts<<std::endl;
       int fin = 0;
       AVFrame pic;
       avcodec_get_frame_defaults(&pic);
@@ -109,14 +110,15 @@ int main(int argc, char ** argv) {
           break;
 
       }
+      out++;
 
       if (!fin) {
         std::cout << "frame not finished" << std::endl;
         continue;
       }
-
+      
       std::cout << "frame finished" << std::endl;
-      if(true){
+      if(false){
       const int buffer_size = 1024 * 256;
       uint8_t data[buffer_size];
       memset(&data, 0, buffer_size);
@@ -127,14 +129,17 @@ int main(int argc, char ** argv) {
         std::cout << "Encoding failed" << std::endl;
       }
       i++;
-      if (i >= 15)
+      if (i >= 15){
+        std::cout << "Decoded Packets:"<<i<<std::endl;
+        std::cout << "Decoded Frames:"<<out<<std::endl;
+
         break;
+      }
       //			exit(0);
     }
     
     av_free_packet(&pkt);
   }
-
   
   std::cout << "Encoding last packets" << std::endl;
   bool have_more = true;

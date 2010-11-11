@@ -5,6 +5,7 @@
  * Created on 29. September 2009, 13:33
  */
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/FormatBaseStream.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -177,8 +178,7 @@ int main(int argc, char** argv) {
   logconfigpath.append("/res");
 //  Log::open(logconfigpath);
   Log::open("");
-  avcodec_register_all();
-  av_register_all();
+  org::esb::av::FormatBaseStream::initialize();
 
   std::string command = argv[1];
   char * infilename = argv[2];

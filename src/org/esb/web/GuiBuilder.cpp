@@ -24,6 +24,7 @@
 #include "wtk/KeyValueModel.h"
 #include "wtk/ComboBox.h"
 #include "introspec.h"
+#include "Wt/WImage"
 using namespace org::esb::io;
 using namespace rapidxml;
 namespace org {
@@ -126,6 +127,7 @@ namespace org {
       }
 
       GuiBuilder::~GuiBuilder() {
+        LOGDEBUG("GuiBuilder::~GuiBuilder()");
       }
 
       void GuiBuilder::handleOption(rapidxml::xml_node<> * ogn) {
@@ -240,7 +242,14 @@ namespace org {
         table->elementAt(0, 0)->addWidget(new Wt::WText(data["title"] + ":"));
         table->elementAt(0, 0)->resize(200, Wt::WLength());
         table->elementAt(0, 1)->addWidget(text);
+        Wt::WLabel * label = new Wt::WLabel();
 
+        label->resize(50,Wt::WLength());
+        table->elementAt(0, 2)->addWidget(label);
+        Wt::WImage * spacer=new Wt::WImage("icons/s.gif");
+        spacer->resize(10,10);
+        label->setImage(spacer);
+        label->setText(""+data["unit"]);
         if (data.count("optionGroupId") > 0) {
           if (_elements.count(data["optionGroupId"]) > 0) {
             ((GroupBox*) _elements[data["optionGroupId"]])->addWidget(table);
@@ -254,10 +263,11 @@ namespace org {
         text->resize(200, Wt::WLength());
         //_dataChangedSignalMap.mapConnect(text->keyWentUp(),text);
         _dataChangedSignalMap.mapConnect(text->changed(), text);
+        
         if (_data_map.count(data["id"]) > 0) {
-          text->setText(_data_map[data["id"]] + " " + data["unit"]);
+          text->setText(_data_map[data["id"]]);
         } else {
-          text->setText(data["default"] + " " + data["unit"]);
+          text->setText(data["default"]);
           _data_map[data["id"]] = data["default"];
         }
       }
@@ -268,6 +278,7 @@ namespace org {
           data[attr->name()] = attr->value();
         }
         Wt::WCheckBox *box = new Wt::WCheckBox();
+        box->resize(Wt::WLength(), 30);
         //box->checked().connect(SLOT(this,GuiBuilder::internalCheckboxDataChanged));
         //LOGDEBUG("CheckBox Signal connected:"<<data["id"]);
         _elements[data["id"]] = box;

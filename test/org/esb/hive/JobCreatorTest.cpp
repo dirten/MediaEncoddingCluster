@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 //    hive::DatabaseService::loadPresets();
     {
       std::string path = MEC_SOURCE_DIR;
-      org::esb::hive::PresetReader reader(path + "/res/presets/test.preset");
+      org::esb::hive::PresetReader reader(path + "/presets/test.preset");
       LOGDEBUG(reader.toString());
       org::esb::hive::PresetLoader loader(reader);
       loader.load();
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
       db::Profile p = litesql::select<db::Profile > (mediafile.getDatabase(), db::Profile::Id == 1).one();
 
       db::Preset preset(mediafile.getDatabase());
-      preset.filename=path + "/res/presets/test.preset";
+      preset.filename=path + "/presets/test.preset";
       int jobid = org::esb::hive::JobUtil::createJob(mediafile, preset, "/tmp");
       assert(jobid > 0);
 

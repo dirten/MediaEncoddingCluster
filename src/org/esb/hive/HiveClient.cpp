@@ -52,7 +52,7 @@ namespace org {
           _toHalt = true;
           if (_running) {
             LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _toHalt=true;
+            _toHalt = true;
             boost::mutex::scoped_lock terminationLock(terminationMutex);
             ctrlCHit.wait(terminationLock);
             LOGDEBUG("stopping done!")
@@ -88,7 +88,7 @@ namespace org {
             connect();
           } else {
             while (!_toHalt) {
-              char * text = const_cast<char*>("get process_unit");
+              char * text = const_cast<char*> ("get process_unit");
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
@@ -102,13 +102,13 @@ namespace org {
                 break;
               }
               unit->process();
-			  /**
-			  * clear the input packets, they are no more nedded
-			  * they only consumes Network bandwidth and cpu on the server
-			  */
-			  unit->_input_packets.clear();
+              /**
+               * clear the input packets, they are no more nedded
+               * they only consumes Network bandwidth and cpu on the server
+               */
+              unit->_input_packets.clear();
 
-              char * text_out = const_cast<char*>("put process_unit");
+              char * text_out = const_cast<char*> ("put process_unit");
               try {
                 _sock->getOutputStream()->write(text_out, strlen(text_out));
                 _oos->writeObject(*unit);
@@ -124,7 +124,7 @@ namespace org {
               delete unit->_converter;
               unit->_converter = NULL;
               delete unit;
-              
+
             }
           }
           org::esb::lang::Thread::sleep2(5000);

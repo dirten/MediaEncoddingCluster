@@ -6,6 +6,7 @@
  */
 
 #include "PresetsEditor.h"
+#include "Wt/Ext/MessageBox"
 #include "Wt/WContainerWidget"
 #include "Wt/WCompositeWidget"
 #include "Wt/WBoxLayout"
@@ -22,13 +23,21 @@
 #include "FilterPanel.h"
 #include "Wt/Ext/ToolBar"
 #include "Wt/Ext/Button"
+#include "Wt/WDateTime"
 #include "org/esb/hive/PresetFileWriter.h"
 #include "org/esb/config/config.h"
+#include "org/esb/io/File.h"
+#include "org/esb/util/StringUtil.h"
+/*on windows there is a macro defined with name MessageBox*/
+#ifdef MessageBox
+#undef MessageBox
+#endif
+
 namespace org {
   namespace esb {
     namespace web {
 
-      PresetsEditor::PresetsEditor(std::string filename) :_filename(filename), Wt::Ext::Panel() {
+      PresetsEditor::PresetsEditor(std::string filename) : _filename(filename), Wt::Ext::Panel() {
         org::esb::hive::PresetReader reader(filename);
         org::esb::hive::PresetReader::Preset preset = reader.getPreset();
         _presetparameter.insert(preset.begin(), preset.end());
@@ -37,7 +46,7 @@ namespace org {
         _videoparameter.insert(codecparam["video"].begin(), codecparam["video"].end());
         _audioparameter.insert(codecparam["audio"].begin(), codecparam["audio"].end());
 
-        _filterparameter=reader.getFilterList();
+        _filterparameter = reader.getFilterList();
         buildGui();
 
       }
@@ -81,6 +90,7 @@ namespace org {
         name = new Wt::Ext::LineEdit();
         name->setText(_presetparameter["name"]);
         name->resize(400, Wt::WLength());
+        name->setMaxLength(100);
         label->setBuddy(name);
         grid->addWidget(label, 0, 0);
         grid->addWidget(name, 0, 1);
@@ -97,6 +107,7 @@ namespace org {
         tab->addTab(new org::esb::web::AudioPanel(_audioparameter), "Audio");
         tab->addTab(new org::esb::web::PresetFilterPanel(_filterparameter), "Filter");
 
+        /*
         Wt::Ext::ToolBar * tb = NULL;
         tab->setTopToolBar(tb = new Wt::Ext::ToolBar());
 
@@ -105,18 +116,59 @@ namespace org {
         save->setIcon("icons/accept-icon.png");
         tb->addSeparator();
         Wt::Ext::Button * cancel = tb->addButton("Open Preview");
-
+         */
         return tab;
       }
 
-      void PresetsEditor::save() {
-
+      bool PresetsEditor::save() {
+        if (name->text().narrow().size()==0) {
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Missing Preset Name", "please define a Preset Name in the top of the Window", Wt::Warning, Wt::Ok);
+          box->show();
+          return false;
+        }
         _presetparameter["name"] = name->text().narrow();
-//        std::string path=org::esb::config::Config::get("preset.path");
-        if(_filename.length()==0){
-          _filename=org::esb::config::Config::get("preset.path");
-          _filename+="/";
-          _filename+=_presetparameter["name"];
+        //        std::string path=org::esb::config::Config::get("preset.path");
+
+        /*this is a new Preset, ask for a filename*/
+        if (_filename.length() == 0) {
+          /*
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Define a File Name", "please define a File Name for the new Preset", Wt::Question, Wt::Ok);
+          box->enablePrompt(true);
+          box->show();
+          box->exec();
+          std::string filename=box->value().narrow();
+          delete box;
+          if(filename.length()==0){
+            Wt::Ext::MessageBox *boxf = new Wt::Ext::MessageBox("Setting Filename", "Filename could not be empty", Wt::Warning, Wt::Ok);
+            boxf->show();
+            boxf->exec();
+            delete boxf;
+            return false;
+          }*/
+          std::string filename=_presetparameter["name"];
+          filename=org::esb::util::StringUtil::replace(filename," ","_");
+          filename=org::esb::util::StringUtil::replace(filename,"*","_");
+          filename=org::esb::util::StringUtil::replace(filename,"@","_");
+          //filename=org::esb::util::StringUtil::replace(filename,".","_");
+
+          /*cutting out filename to 150 chars*/
+
+          filename=filename.substr(0,filename.length()>100?100:filename.length());
+          _filename = org::esb::config::Config::get("preset.path");
+          _filename += "/";
+          _filename += filename;
+          _filename+=".preset";
+          if(org::esb::io::File(_filename).exists()){
+            /*make an unique file name to avoid overwriting exising files*/
+            Wt::WDateTime cur=Wt::WDateTime::currentDateTime();
+            std::string ts=cur.toString("yyyyMMddhhmmss").narrow();
+            
+            filename+="-"+ts;
+            _filename = org::esb::config::Config::get("preset.path");
+            _filename += "/";
+            _filename += filename;
+            _filename+=".preset";
+          }
         }
         org::esb::hive::PresetFileWriter writer(_filename);
         writer.setPreset(_presetparameter);
@@ -133,7 +185,7 @@ namespace org {
         writer.setCodecList(codecs);
         writer.setFilterList(_filterparameter);
         writer.write();
-
+        return true;
       }
     }
   }

@@ -51,17 +51,17 @@ namespace org {
 //          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->resize(470, Wt::WLength());
 //          ((Wt::Ext::Panel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::East))->setResizable(true);
 
-          setBottomToolBar(new Wt::Ext::ToolBar());
-          Wt::Ext::Button*button=NULL;
-          button= bottomToolBar()->addButton("Cancel");
-          button->clicked().connect(SLOT(this, ProjectWizard::cancel));
-          button->setIcon("icons/remove-icon.png");
-          button=bottomToolBar()->addButton("Save");
-          button->clicked().connect(SLOT(this, ProjectWizard::save));
-          button->setIcon("icons/accept-icon.png");
-          button=bottomToolBar()->addButton("Save & start Encoding");
-          button->clicked().connect(SLOT(this, ProjectWizard::save_and_start));
-          button->setIcon("icons/process-accept-icon.png");
+          //setBottomToolBar(new Wt::Ext::ToolBar());
+          //Wt::Ext::Button*button=NULL;
+          addButton(new Wt::Ext::Button("Cancel"));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::cancel));
+          buttons().back()->setIcon("icons/remove-icon.png");
+          addButton(new Wt::Ext::Button("Save"));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save));
+          buttons().back()->setIcon("icons/accept-icon.png");
+          addButton(new Wt::Ext::Button("Save & start Encoding"));
+          buttons().back()->clicked().connect(SLOT(this, ProjectWizard::save_and_start));
+          buttons().back()->setIcon("icons/process-accept-icon.png");
         }
 
         void ProjectWizard::refresh() {
@@ -75,19 +75,23 @@ namespace org {
         void ProjectWizard::open(int pid) {
           try {
             db::Project project = litesql::select<db::Project > (*_db.get(), db::Project::Id == pid).one();
-            open(Ptr<db::Project > (new db::Project(project)));
+            _project=new db::Project(project);
+            open(_project);
           } catch (litesql::NotFound & ex) {
             LOGERROR("Project with id " << pid << " could not be loaded!" << ex.what());
           }
         }
 
         void ProjectWizard::open() {
-          open(Ptr<db::Project > (new db::Project(*_db.get())));
+          _project=new db::Project(*_db.get());
+          _project->update();
+          open(_project);
         }
 
         void ProjectWizard::open(Ptr<db::Project> p) {
-          _project = p;
-          _project->update();
+          LOGTRACEMETHOD("void ProjectWizard::open(Ptr<db::Project> p)");
+          
+          //p->update();
           ((PropertyPanel*) ((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
 //          ((org::esb::web::InputFilePanel*)((Wt::WBorderLayout*)layout())->widgetAt(Wt::WBorderLayout::Center))->setProject(_project);
           this->show();

@@ -99,9 +99,11 @@ int PacketInputStream::readPacketFromFormatIS(Packet & packet) {
     //LOGDEBUG("DecodeStreamQuality:"<<_formatCtx->streams[packet.getStreamIndex()]->quality*100.0f);
 //    av_dup_packet(packet.packet);
     packet.setTimeBase(_formatCtx->streams[packet.getStreamIndex()]->time_base);
+
     packet.setPtsTimeStamp(TimeStamp(packet.getPts(), Rational(packet.getTimeBase())));
     packet.setDtsTimeStamp(TimeStamp(packet.getDts(), Rational(packet.getTimeBase())));
     packet.setTimeDuration(Duration(packet.getDuration(), Rational(packet.getTimeBase())));
+
     if(_formatCtx->streams[packet.getStreamIndex()]->parser){
       packet._pict_type=_formatCtx->streams[packet.getStreamIndex()]->parser->pict_type;
     }

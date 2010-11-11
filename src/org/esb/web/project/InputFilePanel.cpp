@@ -115,7 +115,8 @@ namespace org {
       }
 
       void InputFilePanel::setProject(boost::shared_ptr<db::Project> p) {
-        _filetable->setMediaFiles(p->mediafiles().get().all());
+        if(p->mediafiles().get().count()>0)
+          _filetable->setMediaFiles(p->mediafiles().get().all());
         _project = p;
       }
 

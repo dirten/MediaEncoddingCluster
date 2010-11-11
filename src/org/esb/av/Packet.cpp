@@ -25,6 +25,8 @@ Packet::Packet() {
  * constructor to build an internal Packet directly from an AVPacket
  */
 Packet::Packet(AVPacket * p) {
+  //cout << "Packet::Packet(AVPacket * p)"<<endl;
+
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packetPtr->pts = p->pts;
   packetPtr->dts = p->dts;
@@ -51,7 +53,7 @@ Packet::Packet(AVPacket * p) {
 }
 
 Packet::Packet(const Packet & p) {
-  //  	cout << "Packet(const Packet & p)"<<endl;
+    	//cout << "Packet(const Packet & p)"<<endl;
   //	callDestruct=false;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
@@ -73,6 +75,8 @@ Packet::Packet(const Packet & p) {
     packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE];
     //    memset(packet->data, 0, packet->size + FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy(packet->data, p.packet->data, p.packet->size);
+    memset(packet->data + p.packet->size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    packet->destruct = av_destruct_packet;
   }
   packet->size = p.packet->size;
   packet->stream_index = p.packet->stream_index;
@@ -93,6 +97,10 @@ Packet Packet::operator=(Packet & p) {
   av_init_packet(packet);
   packet->pts = p.packet->pts;
   packet->dts = p.packet->dts;
+  _pict_type = p._pict_type;
+  _ptsTimeStamp = p._ptsTimeStamp;
+  _dtsTimeStamp = p._dtsTimeStamp;
+  _duration=p._duration;
   packet->data = 0;
   packet->data = new uint8_t[p.packet->size];
   //  packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE ];

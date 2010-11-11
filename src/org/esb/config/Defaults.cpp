@@ -30,7 +30,7 @@ namespace org {
         props->setProperty("db.url", "database="+base_path+"/data/hive.db");
 
         /*default path for the presets*/
-        props->setProperty("preset.path", base_path+"/res/presets");
+        props->setProperty("preset.path", base_path+"/presets");
 
         /*default parameter for the encoding profiles*/
         props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");

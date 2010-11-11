@@ -54,7 +54,7 @@ namespace org {
         LOGDEBUG("FilterTable::FilterTable() : Wt::Ext::TableView()");
 
         _available_filter["resize"] = "Resize Filter";
-        _available_filter["deinterlace"] = "Deinterlace Filter";
+        //_available_filter["deinterlace"] = "Deinterlace Filter";
 
         setModel(_model = new PresetFilterTableModel(filter, _available_filter));
         cellClicked().connect(SLOT(this, PresetFilterTable::itemSelectionChangedMethod));

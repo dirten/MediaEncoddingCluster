@@ -85,6 +85,7 @@ namespace org{
       }
 
       void ProfileChooser::presetSelected(std::string filename){
+        LOGDEBUG("Selected Preset Filename = "<<filename);
         _current_selected_preset=filename;
       }
 

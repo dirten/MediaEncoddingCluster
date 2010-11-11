@@ -21,6 +21,7 @@
 
 #include "org/esb/io/File.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Ptr.h"
 
 #include "org/esb/hive/PresetReader.h"
@@ -125,14 +126,19 @@ int main(int argc, char** argv) {
       //clist["video"]["height"]=param["height"];
     }
   }
+  AVCodec * vcodec=avcodec_find_encoder_by_name((*clist["video"].find("codec_id")).second.c_str());
+  AVCodec * acodec=avcodec_find_encoder_by_name((*clist["audio"].find("codec_id")).second.c_str());
+
+  (*clist["video"].find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
+  (*clist["audio"].find("codec_id")).second=org::esb::util::StringUtil::toString(acodec->id);
   boost::shared_ptr<Encoder> videoEncoder2 = CodecFactory::getStreamEncoder(clist["video"]);
   if(!videoEncoder2->open())
     exit(1);
   boost::shared_ptr<Encoder> audioEncoder2 = CodecFactory::getStreamEncoder(clist["audio"]);
   if(!audioEncoder2->open())
     exit(1);
-
-
+  
+  
   /*creating the decoder*/
   bool have_audio=false, have_video=false;
   int i=0;
@@ -146,13 +152,15 @@ int main(int argc, char** argv) {
       if(decoder[a]->getCodecType()==AVMEDIA_TYPE_VIDEO){
         encoder[a]=videoEncoder2;
         have_video=true;
+       stream_map[a]=0;
       }
       if(decoder[a]->getCodecType()==AVMEDIA_TYPE_AUDIO){
         encoder[a]=audioEncoder2;
         have_audio=true;
+        stream_map[a]=1;
       }
       converter[a]=new FrameConverter(decoder[a].get(),encoder[a].get());
-      stream_map[a]=i++;
+      //stream_map[a]=i++;
       LOGDEBUG("Decoder:"<<decoder[a]->toString());
       LOGDEBUG("Encoder:"<<encoder[a]->toString());
       /*only encoding the first audio and video stream here*/

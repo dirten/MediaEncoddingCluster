@@ -16,11 +16,16 @@ using namespace org::esb::hive::job;
  * 
  */
 int main(int argc, char** argv) {
-  QueueOutputStream q("safmq://admin:@localhost:9000/testqueue");
+  Log::open("");
+  QueueOutputStream q("safmq://admin:@localhost:20200/punitout");
   ObjectOutputStream oos(&q);
   ProcessUnit unit;
-  for(int a=0;a<1000;a++)
-  oos.writeObject(unit);
+  try{
+  for(int a=0;a<1000000;a++)
+    oos.writeObject(unit);
+  }catch(std::exception ex){
+    LOGERROR("Exception:"<<ex.what());
+  }
   return 0;
 }
 

@@ -54,7 +54,20 @@ namespace org {
        * @TODO: need to copy all attributes from context to our own context structure
        * because of a memleak in decoder->open()
        */
+      /**
+       * @WARNING: this construcotr is dangerous because ffmpeg would try to decode the first frames
+       * in case to resolve stream information,
+       * that may cause in an error like mpegvideo@warning: first frame is no keyframe
+       * it seems that ffmpeg does not cleanly close the openned coded or what ever???
+       *
+       * also, please dont try to decode Chunks from the Packetizer with a Decoder constructed by this Method!!!
+       *
+       * !!!!!!!!!!!!!!!!!!!! please be carefull, that take me some days to find it out !!!!!!!!!!!!!!!!!!!
+       * @param s
+       * @param mode
+       */
       Codec::Codec(AVStream * s, int mode) {
+        LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
         ctx = s->codec;
         _mode = mode;
         //		ctx->codec_id=ctx->codec->id;
@@ -67,7 +80,7 @@ namespace org {
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
-        /*
+        
         const AVOption * option = NULL;
         while (option = av_next_option(s->codec, option)) {
           if (option->offset > 0) {
@@ -81,7 +94,7 @@ namespace org {
               LOGDEBUG("No data for Context Option "<<option->name);
             }
           }
-        }*/
+        }
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
           setTimeBase(1, ctx->sample_rate);
         }
@@ -109,18 +122,27 @@ namespace org {
         _mode = mode;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
-        findCodec(mode);
-        if (_codec_resolved) {
-          avcodec_get_context_defaults2(ctx, _codec->type);
+        if(codecId>-1){
+          findCodec(mode);
+          if (_codec_resolved) {
+            avcodec_get_context_defaults2(ctx, _codec->type);
+          }
+          ctx->codec_id = codecId;
+          setContextDefaults();
         }
-        ctx->codec_id = codecId;
-        setContextDefaults();
 
-        _opened = false;
+        /*
+         * special handling of the test decoder,
+         * in that case a CodecId of -1 is entered,
+         * see test/org/esb/av/TestDecoder
+         */
+        _opened = codecId>-1?false:true;
+
         _pre_allocated = false;
         _bytes_discard = 0;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
+        fifo=NULL;
       }
 
       void Codec::setCodecId(CodecID id) {
@@ -128,7 +150,7 @@ namespace org {
       }
 
       int Codec::setCodecOption(std::string opt, std::string arg) {
-        LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
+        //LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
         _options[opt] = arg;
         return 0;
       }
@@ -176,7 +198,7 @@ namespace org {
           ctx->max_b_frames = 2;
           //          ctx->has_b_frames = 1;
         }
-        ctx->extradata = NULL;
+        //ctx->extradata = NULL;
         //        ctx->me_method = ME_EPZS;
         //        ctx->mb_decision = 2;
         //        ctx->bit_rate_tolerance = 4000000;
@@ -236,7 +258,7 @@ namespace org {
           ctx->codec_type = _codec->type;
           _codec_resolved = true;
         } else {
-          LOGERROR("in resolving codec");
+          LOGERROR("in resolving codec id:"<<ctx->codec_id);
         }
 
         return result;
@@ -291,7 +313,7 @@ namespace org {
           					    cout <<"CodecCapTruncated"<<endl;
         }
         std::map<std::string, std::string>::iterator opit = _options.begin();
-        for (; false&&opit != _options.end(); opit++) {
+        for (; opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
           LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
@@ -371,7 +393,8 @@ namespace org {
           }
 
           //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
-          av_fifo_free(fifo);
+          if(fifo)
+            av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
           //logdebug("Codec not closed, because it was not opened:" << ctx->codec_id);

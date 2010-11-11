@@ -6,17 +6,26 @@
  */
 
 #include "org/esb/db/hivedb.hpp"
+#include "Wt/Ext/MessageBox"
+
 #include "JobTable.h"
 #include "JobTableModel.h"
 
 #include "org/esb/config/config.h"
 #include "Wt/WCompositeWidget"
 #include "org/esb/hive/DatabaseService.h"
+#include "org/esb/util/StringUtil.h"
+#include "org/esb/signal/Messenger.h"
+#include "org/esb/signal/Message.h"
+/*on windows there is a macro defined with name MessageBox*/
+#ifdef MessageBox
+#undef MessageBox
+#endif
 namespace org {
   namespace esb {
     namespace web {
 
-      JobTable::JobTable() :doSome_(this, "doSome"), Wt::Ext::TableView() {
+      JobTable::JobTable() :_stopEncoding(this, "stopEncoding"), Wt::Ext::TableView() {
         LOGDEBUG("JobTable::JobTable()");
         db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         
@@ -28,12 +37,13 @@ namespace org {
         setHighlightMouseOver(true);
         setSelectionBehavior(Wt::SelectRows);
         setSelectionMode(Wt::SingleSelection);
-        setColumnWidth(0, 3);
-        setColumnWidth(3, 30);
+        setColumnHidden(0, true);
+        setColumnWidth(1, 10);
         setColumnWidth(4, 30);
         setColumnWidth(5, 30);
-        setColumnWidth(6, 25);
-        setColumnWidth(7, 15);
+        setColumnWidth(6, 30);
+        setColumnWidth(7, 25);
+        setColumnWidth(8, 15);
 
         std::string renderer = "function change(val) {"
                 "if (val > 0){"
@@ -43,7 +53,7 @@ namespace org {
                 "}"
                 "return val;"
                 "}";
-        setRenderer(6, renderer);
+        setRenderer(7, renderer);
         renderer = "function change(val) {"
                 "if (val == \"running\"){"
                 "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
@@ -58,19 +68,20 @@ namespace org {
                 "}"
                 "return val;"
                 "}";
-        setRenderer(7, renderer);
+        setRenderer(8, renderer);
         
 //        std::string element=doSome_.createCall("'test'","42");
 //        LOGDEBUG("Element:"<<element);
-        doSome_.connect(this, &JobTable::doSome);
+        _stopEncoding.connect(this, &JobTable::stopEncoding);
         //std::string element=doSome_.createCall("'test'","42");
         //element.replace("\'","\\\'");
         //LOGDEBUG("Element:"<<element);
 
         renderer = "function change(val) {"
-                "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/pause.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/up.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/down.png\\\"/></a>\""
+//                "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/pause.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/up.png\\\"/></a><a href=\\\"javascript:Wt.emit('"+id()+"','"+doSome_.name()+"', \"+val+\");\\\"><img src=\\\"/icons/down.png\\\"/></a>\""
+                "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+_stopEncoding.name()+"', \"+val+\");\\\"><img src=\\\"/icons/delete-icon.png\\\" alt=\\\"stop Encoding\\\nit can not be restarted!!! \\\"/></a>\""
                 "}";
-        setRenderer(0, renderer);
+        setRenderer(1, renderer);
 
       timer = new Wt::WTimer();
       timer->setInterval(2000);
@@ -82,9 +93,24 @@ namespace org {
       void JobTable::rowSelected(){
 
       }*/
-      void JobTable::doSome(int t) {
-        LOGDEBUG("Wt::JSignal<std::string, int>& JobTable::doSome()"<<t);
-//        return doSome_;
+      void JobTable::stopEncoding(int t) {
+        using namespace org::esb::signal;
+
+        LOGDEBUG("Wt::JSignal<std::string, int>& JobTable::stopEncoding()"<<t);
+        db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
+        if(litesql::select<db::Job > (dbCon,db::Job::Id==t).count()>0){
+          db::Job job = litesql::select<db::Job > (dbCon,db::Job::Id==t).one();
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Stopping the Encoding Job", "Do you really want to stop this Job?", Wt::Warning, Wt::Ok|Wt::Cancel);
+          box->show();
+
+          if(box->exec()==Wt::Ext::Dialog::Accepted&&job.status!="stopped"){
+            job.status=job.status=="queued"?"stopped":"stopping";
+            job.update();
+            std::string job_id=org::esb::util::StringUtil::toString(t);
+            Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller","STOP_JOB").setProperty("job_id",job_id));
+          }
+          delete box;
+        }
       }
       void JobTable::refresh() {
         LOGDEBUG("JobTable::refresh()")
@@ -94,9 +120,6 @@ namespace org {
         _model->refresh(jobs);
       }
 
-      JobTable::JobTable(const JobTable& orig): doSome_(this, "doSome") {
-        LOGDEBUG("JobTable::JobTable(const JobTable& orig)")
-      }
 
       JobTable::~JobTable() {
         LOGDEBUG("JobTable::~JobTable()");

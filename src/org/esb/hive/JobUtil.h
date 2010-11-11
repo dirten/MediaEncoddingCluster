@@ -4,7 +4,7 @@
 #include <string>
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
-
+#include "org/esb/util/Log.h"
 //int jobcreator(int fileid, int profileid, std::string outpath);
 //int jobcreator(db::MediaFile, db::Profile, std::string outpath);
 //int jobcreator(int argc, char*argv[]);
@@ -14,6 +14,7 @@ namespace org {
     namespace hive {
 
       class JobUtil {
+        classlogger("org::esb::hive::JobUtil");
       public:
         static void createJob(Ptr<db::Project> p);
         static int createJob(db::MediaFile, db::Profile, std::string outpath);

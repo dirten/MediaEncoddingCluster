@@ -43,8 +43,8 @@ struct StreamData {
   FrameConverter * conv;
 };
 CodecID video_codec_id = CODEC_ID_THEORA;
-CodecID audio_codec_id = CODEC_ID_VORBIS;
-//CodecID audio_codec_id = CODEC_ID_MP2;
+//CodecID audio_codec_id = CODEC_ID_VORBIS;
+CodecID audio_codec_id = CODEC_ID_MP2;
 
 /**
  *
@@ -59,7 +59,7 @@ void build_process_units(int argc, char** argv) {
   std::string trg;
   std::string logconfigpath = MEC_SOURCE_DIR;
   logconfigpath.append("/res");
-  Log::open(logconfigpath);
+  //Log::open(logconfigpath);
   if (argc == 1) {
     src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
@@ -194,10 +194,12 @@ void process_units() {
     sprintf(outfile, "/pu.%d.out", a);
     org::esb::io::File infile(src.append(file));
     if (!infile.exists())break;
+    LOGDEBUG("Loading ProcessUnit #"<<infile.getFileName());
     org::esb::io::FileInputStream fis(&infile);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit pu;
     ois.readObject(pu);
+    LOGDEBUG(pu._decoder);
     pu.process();
     FileOutputStream fos(trg.append(outfile).c_str());
     ObjectOutputStream oos(&fos);

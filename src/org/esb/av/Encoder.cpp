@@ -120,6 +120,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       LOGERROR("Video Encoding failed")
     }
     if (ret > 0) {
+      LOGDEBUG("Frame encoded");
       if(ctx->coded_frame&&ctx->coded_frame->quality>0)
         LOGDEBUG("EnCodedFrameQuality:"<<ctx->coded_frame->quality/(float)FF_QP2LAMBDA);
       memcpy(pac.packet->data, data, ret);
@@ -136,7 +137,11 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       pac.setDuration(_last_duration);
 #else
       pac.setTimeBase(ctx->time_base);
-      pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+      if(_last_duration>0&&_last_time_base.num>0&&_last_time_base.den>0){
+        pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
+      }else{
+        LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
+      }
       pac.setDuration(ctx->ticks_per_frame);
 #endif
 

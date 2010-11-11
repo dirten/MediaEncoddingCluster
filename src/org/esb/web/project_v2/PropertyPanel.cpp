@@ -42,6 +42,7 @@ namespace org {
       }
 
       void PropertyPanel::setProject(Ptr<db::Project> p) {
+        LOGTRACEMETHOD("void PropertyPanel::setProject(Ptr<db::Project> p)");
         _file_panel->setProject(p);
         _profile_panel->setProject(p);
         _prop_panel->setProject(p);

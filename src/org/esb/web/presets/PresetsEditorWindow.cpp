@@ -43,14 +43,15 @@ namespace org {
 
       void PresetsEditorWindow::cancel() {
         this->reject();
-
+        
       }
 
       void PresetsEditorWindow::save() {
-        editor->save();
+
         if(_profile)
           _profile->update();
-        this->accept();
+        if(editor->save())
+          this->accept();
       }
 
     }

@@ -23,7 +23,7 @@ namespace org {
         PresetsEditor(Ptr<db::Profile>);
         PresetsEditor(std::string filename);
         virtual ~PresetsEditor();
-        void save();
+        bool save();
       private:
         void buildGui();
         Wt::WWidget * createTop();

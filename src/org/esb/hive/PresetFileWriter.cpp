@@ -50,7 +50,7 @@ namespace org {
         format->append_attribute(format_id);
         Preset::iterator pit=_preset.begin();
         for(;pit!=_preset.end();pit++){
-          if((*pit).first!="id"&&(*pit).first!="name"&&(*pit).first!="available_codecs"){
+          if((*pit).first!="id"&&(*pit).first!="name"&&(*pit).first!="available_codecs"&&(*pit).first!="nooption"){
             buildParam(format,(*pit).first,(*pit).second);
           }
         }
@@ -89,7 +89,7 @@ namespace org {
         }
         std::multimap<std::string, std::string>::iterator vit=video.begin();
         for(;vit!=video.end();vit++){
-          if((*vit).first!="codec_id"){
+          if((*vit).first!="codec_id"&&(*vit).first!="nooption"){
             buildParam(videoCodec,(*vit).first,(*vit).second);
           }
         }

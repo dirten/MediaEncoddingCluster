@@ -44,15 +44,15 @@ namespace org {
          * Combobox for the Codec Selector
          */
         KeyValueModel * codec_model = new KeyValueModel();
-        codec_model->addModelData("0","No Video");
-        codec_model->addModelData("-1","Stream Copy");
+        codec_model->addModelData("novideo","No Video");
+        codec_model->addModelData("copy","Stream Copy");
 
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
             //if(avail_codecs.count(codec->name)>0)
-              codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
+              codec_model->addModelData(codec->name, codec->long_name);
           }
         }
         codec_model->sort(1);
@@ -107,21 +107,12 @@ namespace org {
 
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        std::string codecname;
-        AVCodec *codec = NULL;
-        int a = 0;
-        while ((codec = av_codec_next(codec))) {
-          if (codec->encode && codec->type == CODEC_TYPE_VIDEO && org::esb::util::StringUtil::toString(codec->id) == codecid) {
-            LOGDEBUG("found codec : " << codec->name);
-            codecname = codec->name;
-          }
-        }
-        _parameter["codec_id"]=codecname;
+        _parameter["codec_id"]=codecid;
 
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/encoder.video.";
-        file += codecname;
+        file += codecid;
         file += ".gui";
         if (!org::esb::io::File(file).exists()) {
           file = path + "/res/comp/encoder.video.default.gui";

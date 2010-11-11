@@ -417,10 +417,8 @@ void start() {
    *
    */
 
-  //  org::esb::hive::DatabaseService dbservice(org::esb::config::Config::getProperty("hive.base_path"));
-  //  Messenger::getInstance().addMessageListener(dbservice);
-  org::esb::hive::DirectoryScanner dirscan;
-  Messenger::getInstance().addMessageListener(dirscan);
+  //org::esb::hive::DirectoryScanner dirscan;
+  //Messenger::getInstance().addMessageListener(dirscan);
 
   org::esb::hive::ExportScanner expscan;
   Messenger::getInstance().addMessageListener(expscan);

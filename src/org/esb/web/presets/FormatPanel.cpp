@@ -92,7 +92,7 @@ namespace org {
         file += ".gui";
         if (!org::esb::io::File(file).exists()) {
           LOGDEBUG("Gui File does not exist:" << file);
-          file = path + "/res/comp/test.gui";
+          file = path + "/res/comp/format.default.gui";
         }
         LOGDEBUG("Gui File:" << file);
         GuiBuilder * builder = new GuiBuilder(file, _parameter);
@@ -113,6 +113,7 @@ namespace org {
       }
       
       FormatPanel::~FormatPanel() {
+        LOGDEBUG("FormatPanel::~FormatPanel()");
       }
     }
   }
