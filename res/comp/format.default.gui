@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<guis>
+  <gui>
+    <options>
+      <option id="nooption" title="" default="There are currently no Options to set for this Output Format with the GUI.<br/>
+    		It is allways possible to set the Codec through the preset file!<br/>
+    		have a look at <a href='http://codergrid.de/trac/wiki/How%20to%20write%20a%20Preset%20File' target='_blank'>How to write a Preset File</a>">
+        <control type="Label"></control>
+      </option>
+    </options>
+  </gui>
+</guis>

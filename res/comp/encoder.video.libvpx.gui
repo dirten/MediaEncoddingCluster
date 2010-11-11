@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<guis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://storm/schema/gui.xsd">
+  <gui helpLink="encoder_mp4v.html">
+    <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
+    <options>
+      <!--Tabs-->
+      <optiontab id="general" title="General"/>
+      <optiontab id="advance" title="Advanced"/>
+      <!--Groups-->
+      <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
+      <optiongroup id="keyframe_settings" title="Keyframe settings"/>
+     <!-- <optiongroup id="profile_settings" title="Profile Settings"/>
+      <optiongroup id="encoding_settings" title="Encoding Settings"/>
+      <optiongroup id="profile_partition_settings" title="Encoding Partition Settings"/>-->
+      <!--Bandwidth settings-->
+      <option id="bitrate" title="Average Bit Rate x264" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
+        <control type="TextBox"></control>
+      </option>
+
+
+      <!--Keyframe settings-->
+      <option id="periodType" type="string" default="1" title="Keyframe Control" optionGroupId="keyframe_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Natural" value="0"/>
+          <item title="Forced Keyframes" value="1">
+            <enables>
+              <option>g</option>
+              <option>keyint_min</option>
+            </enables>
+          </item>
+        </list>
+      </option>
+
+
+      <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="keyframe_settings">
+        <control type="TrackBar"/>
+        <format	value="%.2f" />
+      </option>
+      <option id="keyint_min" title="Min. GOP Length" type="int" min="0" max="250" default="25" optionGroupId="keyframe_settings">
+        <control type="TrackBar"/>
+      </option>
+
+
+      <option id="buffer" title="Number of B-Frames" type="int" min="0" max="4" default="2" optionGroupId="keyframe_settings" unit="Frames">
+        <control type="TrackBar">
+          <controlparameter name="startLabel" value="0"/>
+          <controlparameter name="endLabel" value="4"/>
+          <controlparameter name="hasTextBox" value="true"/>
+          <controlparameter name="textBoxPosition" value="start"/>
+        </control>
+      </option>
+
+      <!--Encoding settings-->
+      <option id="useTwoPassEncoding" title="Two-pass encoding" type="bool" default="0" optionGroupId="encoding_settings">
+        <control type="CheckBox"></control>
+      </option>
+      
+
+    </options>
+  </gui>
+</guis>
