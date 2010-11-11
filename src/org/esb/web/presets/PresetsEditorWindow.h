@@ -7,7 +7,7 @@
 
 #ifndef PRESETSEDITORWINDOW_H
 #define	PRESETSEDITORWINDOW_H
-#include "org/esb/db/hivedb.hpp"
+//#include "org/esb/db/hivedb.hpp"
 #include "org/esb/lang/Ptr.h"
 
 #include "Wt/Ext/Dialog"
@@ -20,7 +20,7 @@ namespace org {
 
       class PresetsEditorWindow: public Wt::Ext::Dialog {
       public:
-        PresetsEditorWindow(Ptr<db::Profile>);
+        //PresetsEditorWindow(Ptr<db::Profile>);
         PresetsEditorWindow(std::string filename);
         virtual ~PresetsEditorWindow();
       private:
@@ -29,7 +29,7 @@ namespace org {
         void buildGui();
 
         //db::HiveDb _db;
-        Ptr<db::Profile>_profile;
+//        Ptr<db::Profile>_profile;
         PresetsEditor * editor;
 
       };

@@ -10,10 +10,10 @@
       <optiongroup id="general_settings" title="General settings"/>
       <optiongroup id="metadata_settings" title="Metadata"/>
       <!--Keyframe settings-->
-      <option id="fileExtension" type="string" default="mp4" title="File Extension" optionGroupId="general_settings">
+      <option id="fileExtension" type="string" default="ogg" title="File Extension" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="ogg" value="mp4"/>
+          <item title="ogg" value="ogg"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

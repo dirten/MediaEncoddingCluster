@@ -78,11 +78,11 @@ namespace org {
           _db = boost::shared_ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           //_db->verbose = true;
           profile = new db::Profile(litesql::select<db::Profile > (*_db.get(), db::Profile::Id == c).one());
-          pc = new PresetsEditorWindow(profile);
-          pc->show();
-          if (pc->exec() == Wt::Ext::Dialog::Accepted) {
-            profile->update();
-          }
+          //pc = new PresetsEditorWindow(profile);
+          //pc->show();
+          //if (pc->exec() == Wt::Ext::Dialog::Accepted) {
+          //  profile->update();
+          //}
 //          LOGDEBUG(*profile)
         }
 
@@ -93,11 +93,11 @@ namespace org {
           _db = boost::shared_ptr<db::HiveDb > (new db::HiveDb(org::esb::hive::DatabaseService::getDatabase()));
           _db->verbose = true;
           profile = new db::Profile(*_db.get());
-          pc = new PresetsEditorWindow(profile);
-          pc->show();
-          if (pc->exec() == Wt::Ext::Dialog::Accepted) {
-            profile->update();
-          }
+          //pc = new PresetsEditorWindow(profile);
+          //pc->show();
+          //if (pc->exec() == Wt::Ext::Dialog::Accepted) {
+          //  profile->update();
+          //}
           LOGDEBUG(*profile)
         }
 

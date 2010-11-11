@@ -107,6 +107,7 @@ namespace org {
 
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
+        _parameter.clear();
         _parameter["codec_id"]=codecid;
 
         std::string path = org::esb::config::Config::get("hive.base_path");

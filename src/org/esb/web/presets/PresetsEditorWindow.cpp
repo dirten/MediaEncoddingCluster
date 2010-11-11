@@ -13,13 +13,13 @@
 namespace org {
   namespace esb {
     namespace web {
-
+    /*
       PresetsEditorWindow::PresetsEditorWindow(Ptr<db::Profile> p) :_profile(p), Wt::Ext::Dialog("Preset Editor") {
         buildGui();
         editor=new PresetsEditor(_profile);
         layout()->addWidget(editor);
       }
-
+      */
       PresetsEditorWindow::PresetsEditorWindow(std::string filename) : Wt::Ext::Dialog("Preset Editor") {
         buildGui();
         editor=new PresetsEditor(filename);
@@ -47,9 +47,6 @@ namespace org {
       }
 
       void PresetsEditorWindow::save() {
-
-        if(_profile)
-          _profile->update();
         if(editor->save())
           this->accept();
       }
