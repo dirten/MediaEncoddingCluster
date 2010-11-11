@@ -2,6 +2,7 @@
 #include "Exception.h"
 #ifndef __WIN32__
 #include <execinfo.h>
+#include <cxxabi.h>
 #endif
 using namespace org::esb::lang;
 using namespace std;
@@ -83,11 +84,14 @@ const char * Exception::what()const throw () {
   int count, i2;
 
   // Shouldn't use printf . . . oh well
-  printf("Caught signal %d\n");
+  //printf("Caught signal \n");
 
   count = backtrace(stack, 20);
+  char ** strings = backtrace_symbols((void *const *) stack, count);
   for (i2 = 0; i2 < count; i2++) {
-    printf("Frame %2d: %p\n", i2 + 1, stack[i2]);
+    //int status=-1;
+    //char *demangledName = abi::__cxa_demangle( strings[i2], NULL, NULL, &status );
+    printf("Frame %2d: %p %s\n", i2 + 1, stack[i2], strings[i2]);
   }
 
   //       free (strings);
