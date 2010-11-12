@@ -153,7 +153,8 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       if (_sink != NULL)
         _sink->write(&pac);
     }
-    _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
+    if(_last_duration>0&&_last_time_base.num>0&&_last_time_base.den>0)
+      _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
   delete [] data;
 

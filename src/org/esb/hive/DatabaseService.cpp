@@ -187,7 +187,7 @@ namespace org {
             db.query(sql);
           }
         }
-        if(true){
+        if(false){
           {
             org::esb::hive::PresetReader reader(_base_path+"/res/presets/x264-hq.preset");
             LOGDEBUG(reader.toString());

@@ -37,12 +37,25 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       decoder->setFlag(stream.flags);
       decoder->setBitsPerCodedSample(stream.bitspercodedsample);
       decoder->ctx->ticks_per_frame = stream.ticksperframe;
+
+      //db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+      //db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
+
+      vector<db::StreamParameter> params = stream.params().get().all();
+      vector<db::StreamParameter>::iterator it = params.begin();
+      std::multimap<std::string, std::string> pmap;
+      for (; it != params.end(); it++) {
+        pmap.insert(std::pair<std::string, std::string>((*it).name.value(),(*it).val.value()));
+      }
+      setCodecOptions(decoder, pmap);
+
       decoder->ctx->extradata_size = stream.extradatasize;
       if (decoder->ctx->extradata_size > 0) {
         decoder->ctx->extradata = (uint8_t*) av_malloc(decoder->ctx->extradata_size);
-        memcpy(decoder->ctx->extradata, (char*) ((std::string)stream.extradata).c_str(), decoder->ctx->extradata_size);
+        memcpy(decoder->ctx->extradata, ((std::string)stream.extradata).c_str(), decoder->ctx->extradata_size);
       } else
         decoder->ctx->extradata = NULL;
+
       decoder_map[streamid] = decoder;
     } catch (litesql::NotFound e) {
       LOGERROR("no Decoder found for stream id " << streamid);
@@ -148,6 +161,18 @@ void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>_enc,
   for (; it != params.end(); it++) {
     if ((*it).second.length() > 0) {
       if (_enc->setCodecOption((*it).first, (*it).second)) {
+        LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
+      }
+    }
+  }
+}
+void CodecFactory::setCodecOptions(boost::shared_ptr<org::esb::av::Decoder>_dec,std::multimap<std::string, std::string> param) {
+  CodecPropertyTransformer transformer(param);
+  std::map<std::string, std::string> params = transformer.getCodecProperties();
+  std::map<std::string, std::string>::iterator it = params.begin();
+  for (; it != params.end(); it++) {
+    if ((*it).second.length() > 0) {
+      if (_dec->setCodecOption((*it).first, (*it).second)) {
         LOGERROR("setting CodecOptionsPair (opt=" << (*it).first << " arg=" << (*it).second << ")");
       }
     }

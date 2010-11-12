@@ -3474,7 +3474,7 @@ const litesql::FieldType Stream::Bitspercodedsample("bitspercodedsample_","INTEG
 const litesql::FieldType Stream::Privdatasize("privdatasize_","INTEGER",table__);
 const litesql::FieldType Stream::Privdata("privdata_","TEXT",table__);
 const litesql::FieldType Stream::Extradatasize("extradatasize_","INTEGER",table__);
-const litesql::FieldType Stream::Extradata("extradata_","TEXT",table__);
+const litesql::FieldType Stream::Extradata("extradata_","BLOB",table__);
 const litesql::FieldType Stream::Aspectratio("aspectratio_","TEXT",table__);
 const litesql::FieldType Stream::Flags("flags_","INTEGER",table__);
 const litesql::FieldType Stream::Extraprofileflags("extraprofileflags_","TEXT",table__);
@@ -3506,6 +3506,7 @@ void Stream::defaults() {
     bitspercodedsample = 0;
     privdatasize = 0;
     extradatasize = 0;
+    extradata = Blob::nil;
     flags = 0;
 }
 Stream::Stream(const litesql::Database& db)
@@ -3523,7 +3524,7 @@ Stream::Stream(const litesql::Database& db, const litesql::Record& rec)
         flags.setModified(false);
     case 32: aspectratio = convert<const std::string&, std::string>(rec[31]);
         aspectratio.setModified(false);
-    case 31: extradata = convert<const std::string&, std::string>(rec[30]);
+    case 31: extradata = convert<const std::string&, litesql::Blob>(rec[30]);
         extradata.setModified(false);
     case 30: extradatasize = convert<const std::string&, int>(rec[29]);
         extradatasize.setModified(false);
@@ -5821,7 +5822,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,filename_ TEXT)"));
     res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ TEXT,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
+    res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ BLOB,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));

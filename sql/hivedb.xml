@@ -157,7 +157,7 @@
         <field name="privdatasize" type="integer"/>
         <field name="privdata" type="string"/>
         <field name="extradatasize" type="integer"/>
-        <field name="extradata" type="string"/>
+        <field name="extradata" type="blob"/>
         <field name="aspectratio" type="string"/>
         <field name="flags" type="integer"/>
         <field name="extraprofileflags" type="string"/>

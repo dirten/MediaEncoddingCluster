@@ -7,6 +7,7 @@
 
 #include "Wt/Ext/MessageBox"
 #include "PresetsEditor.h"
+#include "Wt/Ext/MessageBox"
 #include "Wt/WContainerWidget"
 #include "Wt/WCompositeWidget"
 #include "Wt/WBoxLayout"

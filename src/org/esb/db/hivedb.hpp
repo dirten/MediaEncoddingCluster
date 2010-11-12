@@ -1278,7 +1278,7 @@ public:
     static const litesql::FieldType Extradatasize;
     litesql::Field<int> extradatasize;
     static const litesql::FieldType Extradata;
-    litesql::Field<std::string> extradata;
+    litesql::Field<litesql::Blob> extradata;
     static const litesql::FieldType Aspectratio;
     litesql::Field<std::string> aspectratio;
     static const litesql::FieldType Flags;
