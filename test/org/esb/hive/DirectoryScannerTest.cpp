@@ -35,12 +35,12 @@ int main(int argc, char** argv) {
 
   {
     db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
-    db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
+//    db::Profile profile = litesql::select<db::Profile > (db, db::Profile::Id == 1).one();
     db::Watchfolder folder(db);
     folder.infolder = "/home/HoelscJ/old/media/video/";
     folder.outfolder = "/tmp/test";
     folder.update();
-    folder.profile().link(profile);
+//    folder.profile().link(profile);
     org::esb::hive::DirectoryScanner dirscan("", 1000);
     dirscan.scan();
   }
