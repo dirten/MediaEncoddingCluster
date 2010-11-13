@@ -15,7 +15,7 @@ namespace org {
         insertColumns(0, 9);
         int i=0;
         setHeaderData(i++, std::string("Id"));
-        setHeaderData(i++, std::string("Pause"));
+        setHeaderData(i++, std::string("Stop"));
         setHeaderData(i++, std::string("Input File"));
         setHeaderData(i++, std::string("Output File"));
         setHeaderData(i++, std::string("Enqueue Time"));

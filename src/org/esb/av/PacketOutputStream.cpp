@@ -137,7 +137,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
     //    if (result != 0)logdebug("av_interleaved_write_frame Result:" << result);
   }
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
-  LOGTRACE(packet.toString());
+  //LOGTRACE(packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {

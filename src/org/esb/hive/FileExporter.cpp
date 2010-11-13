@@ -163,15 +163,15 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     /*when it is video, there is a need to set the timestamps new*/
     if (pu._output_packets.size()>0&&
             _source_stream_map[pu._output_packets.front()->getStreamIndex()].stream_type == CODEC_TYPE_VIDEO) {
-      LOGDEBUG("resorting Packets");
+      //LOGDEBUG("resorting Packets");
       pu._output_packets.sort(ptsComparator);
       std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();
       for (; ptslist != pu._output_packets.end(); ptslist++) {
         Packet * p = (*ptslist).get();
         int idx = p->getStreamIndex();
-        LOGTRACE("resorting Packets pts to " << p->toString());
+        //LOGTRACE("resorting Packets pts to " << p->toString());
         p->setPts(_source_stream_map[idx].next_timestamp);
-        LOGTRACE("resorting Packets pts to " << _source_stream_map[idx].next_timestamp);
+        //LOGTRACE("resorting Packets pts to " << _source_stream_map[idx].next_timestamp);
         //        p->setTimeBase(_source_stream_map[idx].packet_timebase);
         //        p->setDuration(_source_stream_map[idx].packet_duration);
         _source_stream_map[idx].last_timestamp = _source_stream_map[idx].next_timestamp;
