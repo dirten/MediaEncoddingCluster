@@ -137,10 +137,10 @@ namespace org {
           stream.channels = ctx->streams[a]->codec->channels;
           stream.bitspercodedsample = ctx->streams[a]->codec->bits_per_coded_sample;
           stream.extradatasize = 0;
-          //stream.extradatasize = ctx->streams[a]->codec->extradata_size;
-          //std::string data((char *)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
-          //if (stream.extradatasize > 0)
-          //  stream.extradata = litesql::Blob(data);
+          stream.extradatasize = ctx->streams[a]->codec->extradata_size;
+//          std::string data((char *)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
+          if (stream.extradatasize > 0)
+            stream.extradata = litesql::Blob((char *)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
           stream.update();
           const AVOption * option = NULL;
 
