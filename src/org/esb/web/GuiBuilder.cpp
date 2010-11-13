@@ -278,7 +278,7 @@ namespace org {
           data[attr->name()] = attr->value();
         }
         Wt::WCheckBox *box = new Wt::WCheckBox();
-        box->resize(Wt::WLength(), 30);
+        box->resize(Wt::WLength(), 20);
         //box->checked().connect(SLOT(this,GuiBuilder::internalCheckboxDataChanged));
         //LOGDEBUG("CheckBox Signal connected:"<<data["id"]);
         _elements[data["id"]] = box;
