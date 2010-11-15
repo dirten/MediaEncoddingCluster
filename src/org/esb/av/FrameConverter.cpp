@@ -26,7 +26,9 @@ namespace org {
         outsamples = 0;
         last_insamples = 0;
         last_outsamples = 0;
-
+        inframes=0;
+        outframes=0;
+        duplicatedframes=0;
         int sws_flags = 1;
         _dec = dec;
         _enc = enc;
@@ -123,6 +125,8 @@ namespace org {
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
         int frames = 1;
+        AVRational input_framerate = _dec->getFrameRate();
+        AVRational output_framerate = _enc->getFrameRate();
         if ((_gop_size > 0 || _gop_size == -1) && (_dec->getFrameRate().num != _enc->getFrameRate().num || _dec->getFrameRate().den != _enc->getFrameRate().den)) {
           /**
            * calculating the framerate difference
@@ -133,8 +137,6 @@ namespace org {
           int64_t last_input_pts = _dec->getLastTimeStamp();
           int64_t last_output_pts = _enc->getLastTimeStamp();
 
-          AVRational input_framerate = _dec->getFrameRate();
-          AVRational output_framerate = _enc->getFrameRate();
           double in = (((double) last_input_pts) / input_framerate.num * input_framerate.den * output_framerate.num / output_framerate.den);
           double out = (((double) last_output_pts) / output_framerate.den);
           double delta = in - out;
@@ -157,7 +159,28 @@ namespace org {
           if (_gop_size > 0)
             _gop_size--;
         }
-        out.setFrameCount(frames);
+        inframes++;
+
+        outframes=av_rescale_q(inframes,  output_framerate,input_framerate);
+        outframes=((((inframes*_dec->getFrameRate().den)/_dec->getFrameRate().num)/_enc->getFrameRate().den)*_enc->getFrameRate().num);
+        outframes+=_frameRateCompensateBase;
+        LOGDEBUG("inframes="<<inframes<<" outframes="<<outframes<<" duplicates="<<duplicatedframes);
+        LOGDEBUG("DecoderFrameRate="<<_dec->getFrameRate().num<<"/"<<_dec->getFrameRate().den);
+        LOGDEBUG("DecoderTimeBase="<<_dec->getTimeBase().num<<"/"<<_dec->getTimeBase().den);
+        LOGDEBUG("EncoderFrameRate="<<_enc->getFrameRate().num<<"/"<<_enc->getFrameRate().den);
+        LOGDEBUG("EncoderTimeBase="<<_enc->getTimeBase().num<<"/"<<_enc->getTimeBase().den);
+        if((outframes-inframes-duplicatedframes)>=1.0){
+          out.setFrameCount(outframes-inframes-duplicatedframes+1);
+          duplicatedframes=outframes-inframes;
+          //inframes+=outframes-inframes;
+        }else
+        if((outframes-inframes-duplicatedframes)<=-1.0){
+          out.setFrameCount(0);
+          duplicatedframes=outframes-inframes;
+          //inframes+=outframes-inframes;
+        }
+
+        //out.setFrameCount(frames);
 
       }
 

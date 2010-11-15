@@ -78,6 +78,9 @@ namespace org {
                 int64_t outsamples;
                 int64_t last_insamples;
                 int64_t last_outsamples;
+                double inframes;
+                double outframes;
+                int64_t duplicatedframes;
             };
         }
     }

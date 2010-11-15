@@ -106,7 +106,7 @@ namespace org {
                * clear the input packets, they are no more nedded
                * they only consumes Network bandwidth and cpu on the server
                */
-              unit->_input_packets.clear();
+              //unit->_input_packets.clear();
 
               char * text_out = const_cast<char*> ("put process_unit");
               try {

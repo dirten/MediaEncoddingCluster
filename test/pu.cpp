@@ -76,7 +76,7 @@ void view_packet_data(Packet * p) {
 }
 void viewPuData(ProcessUnit & pu){
   printf("----------------------------------------------------------------------------------------------------------\n");
-  printf("%30s=%30s\n", "compensatebase",pu._frameRateCompensateBase);
+  //printf("%30s=%30s\n", "compensatebase",pu._frameRateCompensateBase);
 //  printf("%30s=%30s", "expected",pu._expected_frame_count);
 
   printf("----------------------------------------------------------------------------------------------------------\n");
