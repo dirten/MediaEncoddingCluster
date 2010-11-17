@@ -36,7 +36,7 @@ struct FileComparator {
 };
 
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path)
-: WTreeTableNode(Wt::widen(path.leaf()), createIcon(path)),
+: WTreeTableNode(Wt::fromUTF8(path.leaf()), createIcon(path)),
 path_(path), _filter(NULL) {
   LOGDEBUG(path);
   label()->setTextFormat(PlainText);
@@ -81,7 +81,7 @@ path_(path), _filter(NULL) {
 }
 
 FileTreeTableNode::FileTreeTableNode(const boost::filesystem::path& path, org::esb::io::FileFilter & filter)
-: WTreeTableNode(Wt::widen(path.leaf() == "/" ? path.root_name() : path.leaf()), createIcon(path)),
+: WTreeTableNode(Wt::fromUTF8(path.leaf() == "/" ? path.root_name() : path.leaf()), createIcon(path)),
 path_(path), _filter(&filter) {
   //	std::cout <<"Path:"<<path_.root_name()<<std::endl;
   LOGDEBUG(path);

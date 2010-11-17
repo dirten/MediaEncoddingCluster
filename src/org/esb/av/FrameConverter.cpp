@@ -159,13 +159,18 @@ namespace org {
           if (_gop_size > 0)
             _gop_size--;
         }
-        inframes++;
+        out.setFrameCount(frames);
+        return;
+        inframes++;//=_dec->getLastTimeStamp();
 
-        outframes=av_rescale_q(inframes,  output_framerate,input_framerate);
+        //outframes=av_rescale_q(inframes,  output_framerate,input_framerate);
         outframes=((((inframes*_dec->getFrameRate().den)/_dec->getFrameRate().num)/_enc->getFrameRate().den)*_enc->getFrameRate().num);
         outframes+=_frameRateCompensateBase;
+        outframes-=1;
+        
         LOGDEBUG("inframes="<<inframes<<" outframes="<<outframes<<" duplicates="<<duplicatedframes);
-        LOGDEBUG("DecoderFrameRate="<<_dec->getFrameRate().num<<"/"<<_dec->getFrameRate().den);
+        LOGDEBUG("CompensateBase="<<_frameRateCompensateBase);
+        LOGDEBUG("calculated_value="<<outframes-inframes-duplicatedframes);
         LOGDEBUG("DecoderTimeBase="<<_dec->getTimeBase().num<<"/"<<_dec->getTimeBase().den);
         LOGDEBUG("EncoderFrameRate="<<_enc->getFrameRate().num<<"/"<<_enc->getFrameRate().den);
         LOGDEBUG("EncoderTimeBase="<<_enc->getTimeBase().num<<"/"<<_enc->getTimeBase().den);
@@ -174,11 +179,13 @@ namespace org {
           duplicatedframes=outframes-inframes;
           //inframes+=outframes-inframes;
         }else
-        if((outframes-inframes-duplicatedframes)<=-1.0){
+        if((outframes-inframes-duplicatedframes-0.0001)<=-1.0){
           out.setFrameCount(0);
-          duplicatedframes=outframes-inframes;
+          duplicatedframes=outframes-inframes-0.0001;
           //inframes+=outframes-inframes;
         }
+        double tmp=0;
+        _frameRateCompensateBase=modf(outframes,&tmp);
 
         //out.setFrameCount(frames);
 

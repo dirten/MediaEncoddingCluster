@@ -88,7 +88,7 @@ namespace org {
             char data[1000];
             av_get_string(s->codec, option->name, NULL, data, len);
             if (strlen(data) > 0) {
-              LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
+              //LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
               _options[option->name] = std::string(data);
             }else{
               LOGDEBUG("No data for Context Option "<<option->name);
@@ -154,7 +154,13 @@ namespace org {
         _options[opt] = arg;
         return 0;
       }
-
+      std::string Codec::getCodecOption(std::string opt){
+        std::string result;
+        if(_options.count(opt)>0){
+          result=_options[opt];
+        }
+        return result;
+      }
       /*
       bool Codec::saveCodecOption() {
         AVClass *c = *(AVClass**) ctx;
@@ -316,7 +322,7 @@ namespace org {
         for (; opit != _options.end(); opit++) {
           std::string opt = (*opit).first;
           std::string arg = (*opit).second;
-          LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
+          //LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
           if (_codec->type == AVMEDIA_TYPE_AUDIO && opt == "b") {
             LOGWARN("Option b is not valid for Audio Codecs, it overwrites the Option ab");
             LOGINFO("dropping Option b for this Codec");
@@ -359,7 +365,7 @@ namespace org {
             LOGERROR("openning Codec (" << ctx->codec_id << ")");
 
           } else {
-            //              logdebug("Codec opened:" << _codec_id);
+            LOGDEBUG("Codec opened:" << ctx->codec_id);
             fifo = av_fifo_alloc(1024);
             _opened = true;
           }

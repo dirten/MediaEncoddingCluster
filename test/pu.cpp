@@ -34,6 +34,8 @@ void execute(char * infile, char * outfile) {
   ProcessUnit pu;
   ois.readObject(pu);
   pu.process();
+  delete pu._converter;
+
   FileOutputStream fos(outfile);
   ObjectOutputStream oos(&fos);
   oos.writeObject(pu);
@@ -77,7 +79,8 @@ void view_packet_data(Packet * p) {
 void viewPuData(ProcessUnit & pu){
   printf("----------------------------------------------------------------------------------------------------------\n");
   //printf("%30s=%30s\n", "compensatebase",pu._frameRateCompensateBase);
-//  printf("%30s=%30s", "expected",pu._expected_frame_count);
+  //printf("%30s=%30s", "gop",pu._gop_size);
+  //printf("%30s=%30s", "expected",pu._expected_frame_count);
 
   printf("----------------------------------------------------------------------------------------------------------\n");
 
@@ -85,10 +88,11 @@ void viewPuData(ProcessUnit & pu){
 void view(char * filename) {
   FileInputStream fis(filename);
   ObjectInputStream ois(&fis);
-  ProcessUnit pu;
-  ois.readObject(pu);
+  ProcessUnit * pu_get=new ProcessUnit();
+  ois.readObject(*pu_get);
   LOGDEBUG("readed");
-  viewPuData(pu);
+  viewPuData(*pu_get);
+  ProcessUnit pu=*pu_get;
   //  logdebug(pu._decoder->toString());
   //  logdebug(pu._encoder->toString());
   printf("----------------------------------------------------------------------------------------------------------");

@@ -325,7 +325,9 @@ namespace org {
         if(!_running){
           start();
         }
-        return db::HiveDb(DEFAULT_DATABASE, org::esb::config::Config::getProperty("db.url"));
+        LOGDEBUG("DatabasePath:"<<org::esb::config::Config::getProperty("db.url"));
+        
+        return db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
       }
       
     }

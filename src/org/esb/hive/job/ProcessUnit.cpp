@@ -79,6 +79,7 @@ ProcessUnit::~ProcessUnit() {
 
 void ProcessUnit::process() {
   LOGTRACEMETHOD("ProcessUnit");
+  LOGDEBUG("CompensateBase"<<_frameRateCompensateBase);
   int insize = 0, outsize = 0;
 
   if (_decoder != NULL)
@@ -156,7 +157,7 @@ void ProcessUnit::process() {
 
     if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()) {
       LOGDEBUG("setting compute_delayed_frames=true");
-      compute_delayed_frames = true;
+      compute_delayed_frames = false;
     }
     //      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
 

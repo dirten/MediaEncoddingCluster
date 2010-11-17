@@ -102,6 +102,7 @@ class SampleFormat;*/
         AVRational getFrameRate();
         int64_t getFrameBytes();
         int setCodecOption(std::string opt, std::string arg);
+        std::string getCodecOption(std::string opt);
         Format getOutputFormat();
         Format getInputFormat();
         void setOutputFormat(Format);
@@ -134,7 +135,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void save(Archive & ar, const unsigned int version) const {
-          LOGTRACE("serialization save");
+          //LOGTRACE("serialization save");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;
@@ -167,7 +168,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void load(Archive & ar, const unsigned int version) {
-          LOGTRACE("serialization load");
+          //LOGTRACE("serialization load");
           ar & ctx->codec_id;
           ar & _mode;
           ar & ctx->flags;

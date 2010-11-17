@@ -80,6 +80,7 @@ namespace org {
           LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
           _stop_signal = false;
           _isRunning = false;
+          _isWaitingForFinish=false;
 
         }
 
@@ -147,6 +148,7 @@ namespace org {
 
         void ProcessUnitController::processJob(db::Job job) {
           bool wait_for_queue = false;
+          _isWaitingForFinish=false;
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
 
           MediaFile infile = job.inputfile().get().one();
@@ -276,6 +278,7 @@ namespace org {
               }
 
               if (wait_for_queue) {
+                _isWaitingForFinish=true;
                 boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
                 queue_empty_wait_condition.wait(queue_empty_wait_lock);
               }
@@ -421,7 +424,7 @@ namespace org {
           if (audioQueue.size() == 0 || _stop_signal)
             return boost::shared_ptr<ProcessUnit > (new ProcessUnit());
           boost::shared_ptr<ProcessUnit> u = audioQueue.dequeue();
-          if (audioQueue.size() == 0 || _stop_signal)
+          if ((audioQueue.size() == 0&&_isWaitingForFinish) || _stop_signal)
             u->_last_process_unit = true;
           db::ProcessUnit dbunit(_dbCon);
           dbunit.sorcestream = u->_source_stream;

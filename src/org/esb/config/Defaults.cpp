@@ -27,7 +27,8 @@ namespace org {
         if(!datadir.exists())
           datadir.mkdir();
         /*default url for the Database Server*/
-        props->setProperty("db.url", "database="+base_path+"/data/hive.db");
+        if(!props->hasProperty("db.url"))
+          props->setProperty("db.url", "database="+base_path+"/data/hive.db");
 
         /*default path for the presets*/
         props->setProperty("preset.path", base_path+"/presets");

@@ -145,6 +145,8 @@ void FileExporter::exportFile(db::MediaFile outfile) {
       }
       continue;
     }
+    LOGDEBUG("reading archive # " << pu_id);
+
     org::esb::io::FileInputStream fis(&infile);
     org::esb::io::ObjectInputStream ois(&fis);
     org::esb::hive::job::ProcessUnit pu;

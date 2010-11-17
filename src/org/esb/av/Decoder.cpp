@@ -148,6 +148,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
       LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
       LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
       LOGDEBUG("topfieldfirst:" << ctx->coded_frame->top_field_first);
+      LOGDEBUG("PictureType:"<<av_get_pict_type_char(ctx->coded_frame->pict_type));
     }
   }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded

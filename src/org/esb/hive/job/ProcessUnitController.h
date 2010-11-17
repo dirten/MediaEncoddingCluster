@@ -58,7 +58,7 @@ namespace org {
 
           //bool _isStopSignal;
           bool _isRunning;
-
+          bool _isWaitingForFinish;
           db::HiveDb _dbCon;
           db::HiveDb _dbJobCon;
           Ptr<db::Job> current_job;

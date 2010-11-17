@@ -28,6 +28,8 @@ add_executable (PresetFileWriterTest PresetFileWriterTest.cpp)
 add_executable (PresetReaderTest PresetReaderTest.cpp)
 add_executable (PresetLoaderTest PresetLoaderTest.cpp)
 add_executable (CodecPropertyTransformerTest CodecPropertyTransformerTest.cpp)
+add_executable (FileExporterTest FileExporterTest.cpp)
+add_executable (AnalyzeFrameCount AnalyzeFrameCount.cpp)
 
 
 
@@ -55,6 +57,8 @@ target_link_libraries (PresetReaderTest hive io)
 
 target_link_libraries (PresetLoaderTest hive io)
 target_link_libraries (CodecPropertyTransformerTest hive io)
+target_link_libraries (FileExporterTest hive)
+target_link_libraries (AnalyzeFrameCount hive)
 
 
 #target_link_libraries (TestClientHandler   hive esb av io util lang )

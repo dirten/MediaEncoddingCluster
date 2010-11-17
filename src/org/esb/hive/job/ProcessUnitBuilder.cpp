@@ -38,20 +38,35 @@ namespace org {
           u->_encoder = _map_data[idx].encoder;
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
           u->_gop_size = list.size(); //- _map_data[idx].b_frame_offset;
+          int cou=u->_gop_size;
           u->_frameRateCompensateBase = _map_data[idx].frameRateCompensateBase;
           if (u->_decoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
             AVRational input_framerate = u->_decoder->getFrameRate();
             AVRational output_framerate = u->_encoder->getFrameRate();
-
+              //
             double in = (((double) u->_gop_size) / input_framerate.num * input_framerate.den * output_framerate.num / output_framerate.den);
+            //double in = ((((((double) u->_gop_size)*u->_decoder->getFrameRate().den)/u->_decoder->getFrameRate().num)/u->_encoder->getFrameRate().den)*u->_encoder->getFrameRate().num);
             in += _map_data[idx].frameRateCompensateBase;
             //+0.001 is against some rounding issues
             double out;
             double delta = modf(in, &out);
-            //= floor(in + 0.0001);
+
+            /*in case to BFrames the resulting frame count is -1 
+             * because there 1 I-Frame to much at the end
+             * 
+             * e.g. IBBPBBPBBPBBPBBIBBP
+             *                     |
+             *            this i-frame is to much
+             *    it is always the last i-frame in a ProcessUnit
+             * 
+             * this only happend when the decoder has B-Frames
+             */
+            if(u->_decoder->getCodecId()==CODEC_ID_MPEG2VIDEO&&u->_decoder->getCodecOption("has_b_frames")=="1")
+              out-=1;
 
             u->_expected_frame_count = static_cast<int> (out);
-            _map_data[idx].frameRateCompensateBase = delta;
+            
+            _map_data[idx].frameRateCompensateBase = delta;//*out<in?-1.0:1.0;
           }
           if (u->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             AVRational input_timebase = u->_decoder->getTimeBase();
@@ -76,7 +91,7 @@ namespace org {
             int rest=raw_out_samples%output_framesize;
             double out;
             double delta = modf(raw_out_samples/output_framesize, &out);
-            u->_expected_frame_count = static_cast<int> (out);
+            u->_expected_frame_count = -1;//static_cast<int> (out);
             _map_data[idx].frameRateCompensateBase =rest;
 //            LOGDEBUG(rest);
           }

@@ -141,9 +141,9 @@ int PacketOutputStream::writePacket(Packet & packet) {
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {
-    LOGDEBUG("av_interleaved_write_frame Result:" << result);
-    //    LOGDEBUG("org.esb.av.PacketOutputStream",packet.toString());
+    LOGERROR("av_interleaved_write_frame Result:" << result);
   }
+  LOGDEBUG(packet.toString());
   first_packet = false;
   return result;
 }

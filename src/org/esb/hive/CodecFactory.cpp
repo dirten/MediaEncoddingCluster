@@ -88,7 +88,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::mul
 
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int streamid) {
   LOGTRACEMETHOD("CodecFactory::getStreamEncoder(int streamid)")
-  if (encoder_map.find(streamid) == encoder_map.end()) {
+//  if (encoder_map.find(streamid) == encoder_map.end() || !encoder_map.find(streamid)->second) {
     try {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
@@ -138,7 +138,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(int stre
       LOGERROR("no Encoder found for stream id " << streamid);
       //      throw std::runtime_error(string("no Encoder found for stream id "));
     }
-  }
+  //}
   return encoder_map[streamid];
 }
 

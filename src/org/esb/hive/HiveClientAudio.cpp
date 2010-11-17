@@ -141,6 +141,7 @@ namespace org {
                 _sock->close();
               }
               if (unit->_last_process_unit) {
+                LOGDEBUG("Last ProcessUnit for Audio received, clear out");
                 _swap_codec_list.clear();
                 _decoder_list.clear();
                 _encoder_list.clear();
