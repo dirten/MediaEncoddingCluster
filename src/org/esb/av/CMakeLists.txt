@@ -45,6 +45,7 @@ add_library (av
   PixelFormatConverter.cpp
   ResizeFilter.cpp
   DeinterlaceFilter.cpp
+  FrameRateFilter.cpp
   )
 TARGET_LINK_LIBRARIES(av
   ${FFMPEG_AVFORMAT_LIBRARY}
