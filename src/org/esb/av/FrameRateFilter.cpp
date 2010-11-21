@@ -28,6 +28,7 @@ namespace org {
       }
 
       std::string FrameRateFilter::getName() {
+        return "";
       }
 
       void FrameRateFilter::open() {
