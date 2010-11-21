@@ -22,10 +22,18 @@ namespace org {
         void open();
         void reset();
         void setParameter(std::map<std::string, std::string>);
+        void setCompensateBase(double);
         ProcessStatus process(Frame & in, Frame & out);
       private:
         Rational _src;
         Rational _trg;
+        double inframes;
+        int64_t outframes;
+        double coutframes;
+        int64_t duplicatedframes;
+        double _frameRateCompensateBase;
+        int64_t _prev_time;
+        double sync_out_pts;
       };
     }
   }

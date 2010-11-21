@@ -7,23 +7,36 @@
 
 #include <cstdlib>
 #include "org/esb/av/FrameRateFilter.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::av;
 /*
  * 
  */
 int main(int argc, char** argv) {
-  Rational src(30,1);
-  Rational trg(25,1);
+  Log::open();
+  Rational trg(100,2397);
+  Rational src(1,24);
+//  Rational trg(1,24);
+  std::map<std::string, std::string> param;
+  //param["frameratecompensate"]="0.66666667";
+  //param["frameratecompensate"]="-0.166667";
 
   FrameRateFilter filter(src, trg);
+  filter.setParameter(param);
   Frame in;
   Frame out;
-
-
-  filter.process(in, out);
-
-  
+  int outcount=0;
+  int count=0;
+  for(int a=0;a<800;a++){
+    
+    filter.process(in, out);
+    outcount+=out.getFrameCount();
+    LOGDEBUG("FrameCount:"<<out.getFrameCount());
+    count++;
+  }
+  LOGDEBUG("outframes="<<outcount);
+  LOGDEBUG("inframes="<<count);
   return 0;
 }
 

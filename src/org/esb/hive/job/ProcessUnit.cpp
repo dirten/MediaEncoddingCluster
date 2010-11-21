@@ -157,7 +157,7 @@ void ProcessUnit::process() {
 
     if (_decoder->getCodecId() != CODEC_ID_MPEG2VIDEO && it == _input_packets.end()) {
       LOGDEBUG("setting compute_delayed_frames=true");
-      compute_delayed_frames = false;
+      compute_delayed_frames = true;
     }
     //      LOGTRACE("org.esb.hive.job.ProcessUnit","Frame Buffer > 0");
 

@@ -10,6 +10,12 @@ namespace org {
   namespace esb {
     namespace av {
 
+      Rational::Rational(double val) {
+        AVRational tmp = av_d2q(val, INT_MAX);
+        num = tmp.num;
+        den = tmp.den;
+      }
+
       Rational::Rational(int n, int d) {
         num = n;
         den = d;
@@ -21,7 +27,19 @@ namespace org {
       }
 
       bool Rational::operator==(const Rational & r) {
-        return r.num==num&&r.den==den;
+        return av_cmp_q(*this, r) == 0;
+      }
+
+      bool Rational::operator!=(const Rational &r) {
+        return !(*this == r);
+      }
+
+      bool Rational::operator>(const Rational &r) {
+        return av_cmp_q(*this, r) == -1;
+      }
+
+      bool Rational::operator<(const Rational &r) {
+        return av_cmp_q(*this, r) == 1;
       }
 
       Rational::~Rational() {

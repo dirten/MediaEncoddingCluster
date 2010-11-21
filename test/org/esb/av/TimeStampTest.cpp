@@ -6,13 +6,16 @@
  */
 
 #include <cstdlib>
+#include <iostream>
 #include "org/esb/av/TimeStamp.h"
+#include "org/esb/util/Log.h"
 using namespace std;
 using namespace org::esb::av;
 /*
  * 
  */
 int main(int argc, char** argv) {
+  Log::open();
   Rational r;
   assert(r.num=1);
   assert(r.den=1000000);
@@ -34,6 +37,33 @@ int main(int argc, char** argv) {
   assert(t1==t3);
 
   assert(t1!=t3.rescaleTo(Rational()));
+
+  {
+    TimeStamp tlower(1,Rational(1,25));
+    TimeStamp tupper(1,Rational(2,25));
+
+    assert(tlower<tupper);
+    assert(tupper>tlower);
+  }
+
+  {
+    TimeStamp tt1(1,Rational(2,25));
+    TimeStamp tt2(1,Rational(1,25));
+
+    assert(tt2<tt1);
+    assert(tt1>tt2);
+
+    assert(!(tt2>tt1));
+    assert(!(tt1<tt2));
+  }
+  {
+    TimeStamp tt1(1,Rational(2,25));
+    TimeStamp tt2(5,Rational(1,25));
+    assert(fabs(tt1.toDouble() - 0.08) < 0.00001);
+    assert(fabs(tt2.toDouble() - 0.2) < 0.00001);
+  }
+
+
 
   return 0;
 }

@@ -17,10 +17,16 @@ namespace org {
 
       class Rational : public AVRational {
       public:
+
+        Rational(double);
         Rational(int num = 1, int den = 1000000);
         Rational(AVRational r);
         virtual ~Rational();
         bool operator==(const Rational &);
+        bool operator!=(const Rational &);
+        bool operator>(const Rational &);
+        bool operator<(const Rational &);
+
       private:
         friend class boost::serialization::access;
 

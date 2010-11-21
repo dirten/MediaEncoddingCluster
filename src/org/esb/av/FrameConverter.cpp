@@ -35,6 +35,7 @@ namespace org {
         if (dec->getCodecType() != enc->getCodecType()) {
           LOGERROR("the Decoder and Encoder must be from the same Type");
         }
+        
         if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
@@ -43,9 +44,16 @@ namespace org {
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
         }
+          Rational r;
+          r.num=dec->getFrameRate().den;
+          r.den=dec->getFrameRate().num;
+
+          _frame_rate_filter=new FrameRateFilter(r, enc->getTimeBase());
+
         if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
           Format in = dec->getOutputFormat();
           Format out = enc->getInputFormat();
+          
           _swsContext = sws_getContext(in.width, in.height, in.pixel_format, out.width, out.height, out.pixel_format, sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
             LOGERROR("Could not initialize SWSCALE");
@@ -116,6 +124,7 @@ namespace org {
         LOGDEBUG("setFrameRateCompensateBase(" << val << ")");
         /**the +0.001 is to compensate rounding error*/
         _frameRateCompensateBase = val + 0.0001;
+        _frame_rate_filter->setCompensateBase(val);
       }
 
       void FrameConverter::setGopSize(int gop) {
@@ -124,6 +133,8 @@ namespace org {
       }
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
+        _frame_rate_filter->process(input,out);
+        return;
         int frames = 1;
         AVRational input_framerate = _dec->getFrameRate();
         AVRational output_framerate = _enc->getFrameRate();
@@ -215,13 +226,14 @@ namespace org {
         int64_t inpts = av_rescale_q(_dec->getLastTimeStamp(), _dec->getTimeBase(), _enc->getTimeBase());
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
-
-        last_insamples=av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
         LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
+        /*
+        last_insamples=av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
         insamples+=last_insamples;
         outsamples+=last_outsamples;
         delta=insamples-outsamples;
         LOGDEBUG("new Resample Comensate delta:"<<delta<<" last_insamples:" << last_insamples<<" last_outsamples:"<<last_outsamples<< " all_insamples"<<insamples<<" alloutsamples:"<<outsamples <<" lastdiff:"<<(last_insamples-last_outsamples)<<" alldiff:"<<(insamples-outsamples));
+        */
         av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 

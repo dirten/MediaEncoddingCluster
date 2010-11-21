@@ -21,8 +21,11 @@ namespace org {
         TimeStamp rescaleTo(Rational );
         Rational getTimeBase();
         int64_t getTime();
+        double toDouble();
         bool operator==(TimeStamp t);
         bool operator!=(TimeStamp t);
+        bool operator>(TimeStamp t);
+        bool operator<(TimeStamp t);
         std::string toString();
       private:
         int64_t _timestamp;

@@ -349,6 +349,65 @@ void testVideoFramerateResample2397to2997() {
     assert(fabs(data[0].frameRateCompensateBase - comp_map[a]) < 0.00001);
   }
 }
+void testVideoFramerateResample30to25() {
+
+  map<int, float> comp_map;
+  map<int, int> count_map;
+  comp_map[0] = 0.3333333333333357;
+  comp_map[1] = 0.6666666666666714;
+  comp_map[2] = 0.0;
+  comp_map[3] = 0.33333333333334281;
+  comp_map[4] = 0.6666666666666714;
+
+  count_map[0] = 33;
+  count_map[1] = 33;
+  count_map[2] = 34;
+  count_map[3] = 33;
+  count_map[4] = 33;
+
+  int packet_count = 40;
+  map<int, StreamData> data;
+  data[0] = StreamData();
+  data[0].decoder = boost::shared_ptr<Decoder > (new Decoder((CodecID) 13));
+  data[0].decoder->setFrameRate(30, 1);
+
+  data[0].encoder = boost::shared_ptr<Encoder > (new Encoder((CodecID) 13));
+
+  data[0].encoder->setFrameRate(25, 1);
+  data[0].instream=1;
+  data[0].outstream=2;
+  data[0].min_packet_count=39;
+
+
+  ProcessUnitBuilder builder(data);
+
+  PacketListPtr packetList;
+  for (int a = 0; a < packet_count; a++) {
+    boost::shared_ptr<Packet > p = boost::shared_ptr<Packet > (new Packet());
+    if (a % 10 == 0)
+      p->setKeyPacket(true);
+    packetList.push_back(p);
+  }
+
+  for (int a = 0; a < 5; a++) {
+    boost::shared_ptr<ProcessUnit> pu = builder.build(packetList);
+    assert(pu->_source_stream==1);
+    assert(pu->_target_stream==2);
+
+    assert(pu->getDecoder());
+    assert(pu->getDecoder()->getCodecId() == data[0].decoder->getCodecId());
+
+    assert(pu->getEncoder());
+    assert(pu->getEncoder()->getCodecId() == data[0].encoder->getCodecId());
+
+    assert(pu->getInputPacketList().size() == packet_count);
+    assert(pu->getGopSize() == packet_count);
+    LOGDEBUG("Expected Frames" << pu->getExpectedFrameCount());
+    assert(pu->getExpectedFrameCount() == count_map[a]);
+    LOGDEBUG("Compesate:" << data[0].frameRateCompensateBase)
+    assert(fabs(data[0].frameRateCompensateBase - comp_map[a]) < 0.00001);
+  }
+}
 
 int main(int argc, char** argv) {
   av_register_all();
@@ -361,7 +420,7 @@ int main(int argc, char** argv) {
   testVideoFramerateResample15to20();
   testVideoFramerateResample15to2397();
   testVideoFramerateResample2397to2997();
-
+  testVideoFramerateResample30to25();
   
   Log::close();
   return 0;

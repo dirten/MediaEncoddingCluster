@@ -19,7 +19,7 @@ int euclid(int a, int b) {
 }
 
 int main(int argc, char** argv) {
-  std::cout <<"a=48000,b=44100:"<<euclid(5000,4000)<<std::endl;
+  std::cout <<"a=48000,b=44100:"<<euclid(120,100)<<std::endl;
   return (EXIT_SUCCESS);
 }
 

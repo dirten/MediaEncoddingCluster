@@ -6,6 +6,7 @@
  */
 
 #include "TimeStamp.h"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -25,22 +26,36 @@ namespace org {
       }
 
       bool TimeStamp::operator==(TimeStamp ts) {
-        return ts._timestamp == _timestamp && ts._timebase.num == _timebase.num && ts._timebase.den == _timebase.den;
+        return ts._timestamp == _timestamp && av_cmp_q(ts._timebase, _timebase)==0;
       }
 
       bool TimeStamp::operator!=(TimeStamp ts) {
         return !(*this==ts);
       }
 
+      bool TimeStamp::operator>(TimeStamp ts) {
+        return av_compare_ts(_timestamp, _timebase,ts._timestamp,ts._timebase)==1;
+      }
+
+      bool TimeStamp::operator<(TimeStamp ts) {
+        return av_compare_ts(_timestamp, _timebase,ts._timestamp,ts._timebase)==-1;
+      }
+
       std::string TimeStamp::toString() {
         std::stringstream t;
         t << "TimeStamp=";
         t << _timestamp;
+        t << " TimeBase=";
+        t<< _timebase.num<<"/"<<_timebase.den;
         return t.str();
       }
 
       int64_t TimeStamp::getTime() {
         return _timestamp;
+      }
+
+      double TimeStamp::toDouble() {
+        return av_q2d(_timebase)*_timestamp;
       }
 
       TimeStamp::~TimeStamp() {
