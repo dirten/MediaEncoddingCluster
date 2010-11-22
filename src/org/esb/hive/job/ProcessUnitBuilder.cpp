@@ -7,6 +7,7 @@
 
 #include "ProcessUnitBuilder.h"
 #include "StreamData.h"
+#include "org/esb/util/Decimal.h"
 #include <math.h>
 namespace org {
   namespace esb {
@@ -47,11 +48,14 @@ namespace org {
             double in = (((double) u->_gop_size) / input_framerate.num * input_framerate.den * output_framerate.num / output_framerate.den);
             //double in = ((((((double) u->_gop_size)*u->_decoder->getFrameRate().den)/u->_decoder->getFrameRate().num)/u->_encoder->getFrameRate().den)*u->_encoder->getFrameRate().num);
             in += _map_data[idx].frameRateCompensateBase;
-            //+0.001 is against some rounding issues
-            LOGDEBUG("IN="<<in);
-            long double out;
-            long double delta = modfl(in, &out);
-            LOGDEBUG("OUT="<<out)
+
+            /*spliting the double value into Integral and Fractional parts*/
+            org::esb::util::Decimal dec(in);
+            org::esb::util::Decimal::MantissaType i;
+            org::esb::util::Decimal::MantissaType f;
+            org::esb::util::Decimal::ExponentType exp = 0;
+            dec.getIntegralFractionalExponent<org::esb::util::Decimal::MantissaType>(i,f,exp,org::esb::util::Decimal::ExponentType(dec.getExponent()));
+
             /*in case to BFrames the resulting frame count is -1 
              * because there 1 I-Frame to much at the end
              * 
@@ -63,11 +67,11 @@ namespace org {
              * this only happend when the decoder has B-Frames
              */
             if(u->_decoder->getCodecId()==CODEC_ID_MPEG2VIDEO&&u->_decoder->getCodecOption("has_b_frames")=="1")
-              out-=1;
+              i-=1;
 
-            u->_expected_frame_count = static_cast<int> (out);
+            u->_expected_frame_count = static_cast<int> (i);
             
-            _map_data[idx].frameRateCompensateBase = delta;//*out<in?-1.0:1.0;
+            _map_data[idx].frameRateCompensateBase = f/pow(10, dec.getExponent()*-1);
           }
           if (u->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             AVRational input_timebase = u->_decoder->getTimeBase();

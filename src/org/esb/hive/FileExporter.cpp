@@ -215,11 +215,22 @@ void FileExporter::exportFile(db::MediaFile outfile) {
 
   fos->close();
   FormatInputStream fis(&fout);
+  if(fis.isValid()){
+    outfile.filesize = (double) fis.getFileSize();
+    outfile.duration = (double) fis.getFormatContext()->duration;
+  }else{
+    db::JobLog log(job.getDatabase());
+    std::string message = filename;
+    message += " have an unknown error.";
+    log.message = message;
+    log.update();
+    job.joblog().link(log);
 
-  outfile.filesize = (double) fis.getFileSize();
-  outfile.duration = (double) fis.getFormatContext()->duration;
+    job.status = "warning";
+    job.update();
+
+  }
   outfile.update();
-
   delete pos;
   delete fos;
 

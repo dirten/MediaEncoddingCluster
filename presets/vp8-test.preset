@@ -25,7 +25,7 @@
     <codec type="audio" id="libvorbis">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
-	<param name="ar" value="48000"/>
+	<param name="ar" value="44100"/>
 	<param name="maxrate" value="128000"/>
 	<param name="minrate" value="128000"/>
 	<param name="qscale" value="0"/>

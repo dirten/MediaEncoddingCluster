@@ -4,6 +4,7 @@
  * 
  * Created on 4. Oktober 2010, 17:12
  */
+#include "Wt/Ext/MessageBox"
 
 #include "VideoPanel.h"
 #include "Wt/WFitLayout"
@@ -22,6 +23,10 @@
 #include "../GuiBuilder.h"
 #include "Wt/WBorderLayout"
 #include "org/esb/io/File.h"
+/*on windows there is a macro defined with name MessageBox*/
+#ifdef MessageBox
+#undef MessageBox
+#endif
 namespace org {
   namespace esb {
     namespace web {
@@ -107,8 +112,18 @@ namespace org {
 
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        _parameter.clear();
-        _parameter["codec_id"]=codecid;
+
+        if(_parameter["codec_id"]!=codecid){
+          Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Data will be lost", "when the codec changed, all previous data set will be lost", Wt::Warning, Wt::Ok|Wt::Cancel);
+          box->show();
+          if(box->exec()==Wt::Ext::Dialog::Accepted){
+            _parameter["codec_id"]=codecid;
+            _parameter.clear();
+          }else{
+            _codec->setSelectedEntry(_parameter["codec_id"]);
+            return;
+          }
+        }
 
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;

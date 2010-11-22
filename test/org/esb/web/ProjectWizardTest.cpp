@@ -33,8 +33,8 @@ int main(int argc, char** argv) {
   }
   DatabaseService::dropTables();
   DatabaseService::updateTables();
-  Wt::Test::WTestEnvironment env;
-  org::esb::web::WebApp2 app(env);
+  Wt::Test::WTestEnvironment * env=new Wt::Test::WTestEnvironment();
+  org::esb::web::WebApp2 app(*env);
   {
     org::esb::web::v2::ProjectWizard wizard;
 

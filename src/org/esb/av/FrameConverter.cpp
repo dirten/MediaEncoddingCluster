@@ -227,13 +227,13 @@ namespace org {
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
         LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
-        /*
+        
         last_insamples=av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
         insamples+=last_insamples;
         outsamples+=last_outsamples;
-        delta=insamples-outsamples;
+        delta=last_insamples-last_outsamples;
         LOGDEBUG("new Resample Comensate delta:"<<delta<<" last_insamples:" << last_insamples<<" last_outsamples:"<<last_outsamples<< " all_insamples"<<insamples<<" alloutsamples:"<<outsamples <<" lastdiff:"<<(last_insamples-last_outsamples)<<" alldiff:"<<(insamples-outsamples));
-        */
+        
         av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 

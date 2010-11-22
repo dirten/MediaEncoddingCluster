@@ -13,7 +13,7 @@
       <optiongroup id="encoding_settings" title="Encoding Settings"/>
       <optiongroup id="profile_partition_settings" title="Encoding Partition Settings"/>-->
       <!--Bandwidth settings-->
-      <option id="bitrate" title="Average Bit Rate x264" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="kbps">
+      <option id="b" title="Average Bit Rate" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="bps">
         <control type="TextBox"></control>
       </option>
 
@@ -35,7 +35,7 @@
 
       <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="keyframe_settings">
         <control type="TrackBar"/>
-        <format	value="%.2f" />
+        <format value="%.2f" />
       </option>
       <option id="keyint_min" title="Min. GOP Length" type="int" min="0" max="250" default="25" optionGroupId="keyframe_settings">
         <control type="TrackBar"/>

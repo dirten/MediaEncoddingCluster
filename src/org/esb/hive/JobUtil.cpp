@@ -267,6 +267,7 @@ namespace org {
         PresetReader::FilterList filters = reader.getFilterList();
         PresetReader::Preset pre = reader.getPreset();
 
+
         /*resolving the outputformat to have knowledge of the global header flag*/
         AVOutputFormat *ofmt = NULL;
         while ((ofmt = av_oformat_next(ofmt))) {
@@ -343,13 +344,19 @@ namespace org {
            * creating the streamparameter from the profile
            */
           {
-            std::map<std::string, AVMediaType> type_map;
-            type_map["width"] = AVMEDIA_TYPE_VIDEO;
-            type_map["height"] = AVMEDIA_TYPE_VIDEO;
-
             std::string stype = type == AVMEDIA_TYPE_VIDEO ? "video" : "audio";
             std::multimap<std::string, std::string> codec = codecs[stype];
             std::multimap<std::string, std::string>::iterator sdata = codec.begin();
+            /*
+             * handling width and height
+             */
+            if(type == AVMEDIA_TYPE_VIDEO){
+              /*search for width and height*/
+              if(codec.count("width")==0||codec.count("height")==0){
+                codec.insert(std::pair<std::string, std::string>("width",org::esb::util::StringUtil::toString((*sit).width.value())));
+                codec.insert(std::pair<std::string, std::string>("height",org::esb::util::StringUtil::toString((*sit).height.value())));
+              }              
+            }
             for (; sdata != codec.end(); sdata++) {
               db::StreamParameter sp(db);
               if((*sdata).first=="codec_id"){

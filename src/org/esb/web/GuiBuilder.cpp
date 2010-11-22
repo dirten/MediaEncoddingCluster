@@ -306,7 +306,7 @@ namespace org {
 
         box->setObjectName(data["id"]);
         if (_data_map.count(data["id"]) > 0) {
-          box->setChecked(atoi(_data_map[data["id"]].c_str()));
+          box->setChecked(atoi(_data_map[data["id"]].c_str())!=0);
         } else {
           box->setChecked(atoi(data["default"].c_str()));
           _data_map[data["id"]] = data["default"];
