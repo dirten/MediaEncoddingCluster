@@ -49,6 +49,8 @@ namespace org {
             //double in = ((((((double) u->_gop_size)*u->_decoder->getFrameRate().den)/u->_decoder->getFrameRate().num)/u->_encoder->getFrameRate().den)*u->_encoder->getFrameRate().num);
             in += _map_data[idx].frameRateCompensateBase;
 
+            /*this against some round issues*/
+            in+=0.000000001;
             /*spliting the double value into Integral and Fractional parts*/
             org::esb::util::Decimal dec(in);
             org::esb::util::Decimal::MantissaType i;
@@ -71,7 +73,7 @@ namespace org {
 
             u->_expected_frame_count = static_cast<int> (i);
             
-            _map_data[idx].frameRateCompensateBase = f/pow(10, dec.getExponent()*-1);
+            _map_data[idx].frameRateCompensateBase = f/pow((double)10, dec.getExponent()*-1);
           }
           if (u->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             AVRational input_timebase = u->_decoder->getTimeBase();
