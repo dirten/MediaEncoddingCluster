@@ -73,6 +73,7 @@ namespace org {
             outframes += out.getFrameCount();
           }
         }
+        return PlugIn::BUFFER_PROCESSED_OK;
       }
     }
   }

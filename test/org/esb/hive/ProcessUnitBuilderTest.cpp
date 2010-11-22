@@ -403,8 +403,8 @@ void testVideoFramerateResample30to25() {
     assert(pu->getInputPacketList().size() == packet_count);
     assert(pu->getGopSize() == packet_count);
     LOGDEBUG("Expected Frames" << pu->getExpectedFrameCount());
-    assert(pu->getExpectedFrameCount() == count_map[a]);
     LOGDEBUG("Compesate:" << data[0].frameRateCompensateBase)
+    assert(pu->getExpectedFrameCount() == count_map[a]);
     assert(fabs(data[0].frameRateCompensateBase - comp_map[a]) < 0.00001);
   }
 }

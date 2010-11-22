@@ -48,9 +48,10 @@ namespace org {
             //double in = ((((((double) u->_gop_size)*u->_decoder->getFrameRate().den)/u->_decoder->getFrameRate().num)/u->_encoder->getFrameRate().den)*u->_encoder->getFrameRate().num);
             in += _map_data[idx].frameRateCompensateBase;
             //+0.001 is against some rounding issues
-            double out;
-            double delta = modf(in, &out);
-
+            LOGDEBUG("IN="<<in);
+            long double out;
+            long double delta = modfl(in, &out);
+            LOGDEBUG("OUT="<<out)
             /*in case to BFrames the resulting frame count is -1 
              * because there 1 I-Frame to much at the end
              * 
