@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   dec.getIntegralFractionalExponent<Decimal::MantissaType>(i,f,exp,Decimal::ExponentType(dec.getExponent()));
   std::cout<<setprecision(19) <<i<<"-"<<f/pow(10, dec.getExponent()*-1)<<std::endl;
   std::cout << "digits="<<dec.numberOfDigits<Decimal::MantissaType>(dec.getMantissa())<<std::endl;
-  std::cout << "digits="<<pow(10, dec.getExponent()*-1)<<std::endl;
+  std::cout << "digits="<<pow((double)10, dec.getExponent()*-1)<<std::endl;
 //  LOGDEBUG();
   return 0;
 }
