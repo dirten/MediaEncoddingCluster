@@ -90,7 +90,6 @@ int main(int argc, char * argv[]) {
 
   std::string logconfigpath = base_path;
   logconfigpath.append("/res");
-  std::cout << logconfigpath << std::endl;
  
 
   std::string dump_path = base_path;

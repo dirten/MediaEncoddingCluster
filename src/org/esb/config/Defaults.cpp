@@ -32,11 +32,12 @@ namespace org {
 
         /*default path for the presets*/
         props->setProperty("preset.path", base_path+"/presets");
+        props->setProperty("log.path", base_path+"/logs");
 
         /*default parameter for the encoding profiles*/
-        props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");
-        props->setProperty("samplerates", "8000,11025,22050,32000,44100,48000");
-        props->setProperty("audiobitrates", "32000,96000,128000,160000,192000,224000,256000,320000");
+        //props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");
+        //props->setProperty("samplerates", "8000,11025,22050,32000,44100,48000");
+        //props->setProperty("audiobitrates", "32000,96000,128000,160000,192000,224000,256000,320000");
 
         
 

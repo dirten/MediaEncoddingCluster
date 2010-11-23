@@ -41,6 +41,7 @@ namespace org {
               setData(a, b, (*cols));
             }
           }
+          sort(1);
         }
       };
 
@@ -67,6 +68,7 @@ namespace org {
           setSelectionMode(Wt::SingleSelection);
           setColumnWidth(0, 50);
           setAutoExpandColumn(1);
+
           itemSelectionChanged().connect(SLOT(this, PresetList::selectionChanged));
 
 

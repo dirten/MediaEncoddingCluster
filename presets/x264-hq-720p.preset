@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<preset name="x264-high-quality-720p">
+<preset name="MP4 x264(1280x720 786kb hq) mp2(128kb 44.1kHz stereo)">
     <format id="mp4">
 	<param name="fileExtension" value="mp4"/>
 	<param name="author" value="MediaEncodingCluster"/>
@@ -10,7 +10,6 @@
 	<param name="psnr" value="1"/>
 	<param name="loop" value="1"/>
 	<param name="cmp" value="chroma"/>
-	<param name="me_method" value="chroma"/>
 	<param name="parti8x8" value="1"/>
 	<param name="parti4x4" value="1"/>
 	<param name="partp8x8" value="1"/>

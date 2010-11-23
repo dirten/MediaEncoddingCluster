@@ -10,8 +10,8 @@ add_subdirectory (org)
 
 SET(BUILD_MHIVESERVICE On)
 SET(BUILD_MHIVEQUEUE On)
-SET(BUILD_MHIVEWRITER On)
-SET(BUILD_MHIVEREADER On)
+SET(BUILD_MHIVEWRITER Off)
+SET(BUILD_MHIVEREADER Off)
 SET(BUILD_MHIVECLIENT On)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
@@ -133,7 +133,7 @@ ENDIF(BUILD_MHIVEQUEUE)
 
 IF(BUILD_MHIVEREADER)
     add_executable (mhivereader MHiveReader.cpp)
-    target_link_libraries (mhivereader lang)
+    target_link_libraries (mhivereader lang esb util)
     INSTALL(TARGETS mhivereader
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
@@ -292,17 +292,17 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/presets/
 #	${PROJECT_SOURCE_DIR}/sql/hive-0.0.6.sql
 # DESTINATION ./sql
 #  )
-INSTALL(FILES 
-  ${PROJECT_SOURCE_DIR}/sql/codec.txt
-  ${PROJECT_SOURCE_DIR}/sql/CreateDatabase.sql
-  DESTINATION ./sql
-  )
-INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/config.txt
-  DESTINATION ./sql
-  )
-INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/profiles.txt
-  DESTINATION ./sql
-  )
+#INSTALL(FILES 
+#  ${PROJECT_SOURCE_DIR}/sql/codec.txt
+#  ${PROJECT_SOURCE_DIR}/sql/CreateDatabase.sql
+#  DESTINATION ./sql
+#  )
+#INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/config.txt
+#  DESTINATION ./sql
+#  )
+#INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/profiles.txt
+#  DESTINATION ./sql
+#  )
 IF(NOT WIN32)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/mectl
     DESTINATION ./bin

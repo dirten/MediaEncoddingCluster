@@ -70,6 +70,9 @@ void Log::open(std::string path) {
   } else {
     org::esb::util::LogConfigurator config;
     config.configure();
+    //config.reconfigure();
+    //config.configure();
+
   }
 
 

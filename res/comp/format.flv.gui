@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<guis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://storm/schema/gui.xsd">
+<guis>
   <gui helpLink="encoder_mp4v.html">
     <codecs>
       <codec id="libx264"/>
@@ -10,12 +10,10 @@
       <optiongroup id="general_settings" title="General settings"/>
       <optiongroup id="metadata_settings" title="Metadata"/>
       <!--Keyframe settings-->
-      <option id="fileExtension" type="string" default="mp4" title="File Extension" optionGroupId="general_settings">
+      <option id="fileExtension" type="string" default="flv" title="File Extension" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="mp4" value="mp4"/>
-          <item title="mp4test" value="mp4test"/>
-          <item title="mp4test2" value="mp4test2"/>
+          <item title="flv" value="flv"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

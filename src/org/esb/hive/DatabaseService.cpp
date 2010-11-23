@@ -155,7 +155,7 @@ namespace org {
         _base_path=org::esb::config::Config::get("hive.base_path");
         db::HiveDb db=getDatabase();
 
-        if(true){
+        if(false){
 //          db.query("DELETE FROM Config_ ");
           org::esb::io::FileInputStream fis(_base_path+"/sql/config.txt");
           std::string lines;
@@ -208,7 +208,7 @@ namespace org {
           }
         }
 
-        if(true){
+        if(false){
           org::esb::io::FileInputStream fis(_base_path+"/sql/codec.txt");
           std::string lines;
           fis.read(lines);
@@ -325,11 +325,8 @@ namespace org {
         if(!_running){
           start();
         }
-        LOGDEBUG("DatabasePath:"<<org::esb::config::Config::getProperty("db.url"));
-        
         return db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
-      }
-      
+      }      
     }
   }
 }

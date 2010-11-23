@@ -17,11 +17,13 @@ namespace org {
       class NodeListTableModel: public Wt::WStandardItemModel{
       public:
         NodeListTableModel(org::esb::hive::NodeResolver::NodeList data): Wt::WStandardItemModel(0, 0, NULL) {
-          insertColumns(0, 4);
+          insertColumns(0, 6);
           setHeaderData(0, std::string("#"));
           setHeaderData(1, std::string("Name"));
           setHeaderData(2, std::string("IP"));
           setHeaderData(3, std::string("Status"));
+          setHeaderData(4, std::string("Type"));
+          setHeaderData(5, std::string("Version"));
 
           setModelData(data);
         }
@@ -41,6 +43,8 @@ namespace org {
 //            setData(a, 1, node->getName().to_string());
             setData(a, 2, node->getIpAddress().to_string());
             setData(a, 3, node->getStatus()==org::esb::hive::Node::NODE_UP?"up":"down");
+            setData(a, 4, node->getData("type"));
+            setData(a, 5, node->getData("version"));
           }
         }
       };

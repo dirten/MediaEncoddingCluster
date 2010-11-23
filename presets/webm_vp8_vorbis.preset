@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<preset name="Ipod x264(320x240) aac(128kb 44.1kHz stereo)">
-    <format id="ipod">
-	<param name="fileExtension" value="m4v"/>
+<preset name="Webm VP8(320x240) Vorbis(128kb 44.1kHz stereo) ">
+    <format id="webm">
+	<param name="fileExtension" value="webm"/>
     </format>
-    <codec type="video" id="libx264">
+    <codec type="video" id="libvpx">
 	<param name="b" value="768000"/>
 	<param name="g" value="250"/>
 	<param name="qmin" value="10"/>
@@ -19,18 +19,21 @@
 	<param name="wpredp" value="0"/>
 	<param name="me_range" value="16"/>
 	<param name="time_base" value="1/25"/>
-	<param name="global_header" value="1"/>
 	<param name="aspect" value="64/45"/>
+	<param name="global_header" value="1"/>
     </codec>
-    <codec type="audio" id="aac">
+    <codec type="audio" id="libvorbis">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
 	<param name="ar" value="44100"/>
+	<param name="maxrate" value="128000"/>
+	<param name="minrate" value="128000"/>
+	<param name="qscale" value="0"/>
 	<param name="global_header" value="1"/>
     </codec>
     <filters>
 	<filter id="resize">
-	    <param name="scales" value="320x240"/>
+    	    <param name="scales" value="320x240"/>
     	    <param name="width" value="320"/>
     	    <param name="height" value="240"/>
 	</filter>

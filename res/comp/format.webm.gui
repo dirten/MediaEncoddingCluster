@@ -13,7 +13,7 @@
       <option id="fileExtension" type="string" default="mp4" title="File Extension" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="webm" value="mp4"/>
+          <item title="webm" value="webm"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

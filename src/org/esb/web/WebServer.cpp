@@ -43,9 +43,9 @@ WApplication *createApp(const WEnvironment& env) {
 }
 
 WebServer::WebServer() : server("test") {
-  std::string weblog_file = org::esb::config::Config::get("hive.base_path");
+  std::string weblog_file = org::esb::config::Config::get("log.path");
   weblog_file.append("/http.log");
-  std::string syslog_file = org::esb::config::Config::get("hive.base_path");
+  std::string syslog_file = org::esb::config::Config::get("log.path");
   syslog_file.append("/sys.log");
   std::string doc_root=org::esb::config::Config::get("hive.base_path");
   doc_root+="/web";
@@ -59,7 +59,8 @@ WebServer::WebServer() : server("test") {
     "--http-port", org::esb::config::Config::getProperty("web.port", "8080"),
     "--accesslog", const_cast<char*> (weblog_file.c_str()),
     "--no-compression",
-    "--deploy-path", "/"
+    "--deploy-path", "/",
+    "--max-memory-request-size", "1000000"
   };
 /*
     Wt::WLogger stderrLogger;
@@ -70,7 +71,7 @@ WebServer::WebServer() : server("test") {
   for(int a=0;a<12;a++){
     LOGDEBUG(args[a]);
   }
-  server.setServerConfiguration(12, const_cast<char**>(args), WTHTTP_CONFIGURATION);
+  server.setServerConfiguration(14, const_cast<char**>(args), WTHTTP_CONFIGURATION);
 //  return;
   try{
     server.addEntryPoint(Application, &createApp, "/");

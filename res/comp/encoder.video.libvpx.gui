@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<guis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://storm/schema/gui.xsd">
+<guis>
   <gui helpLink="encoder_mp4v.html">
     <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
     <options>
