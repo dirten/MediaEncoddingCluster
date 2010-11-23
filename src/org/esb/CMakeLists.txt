@@ -132,7 +132,7 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} )
+TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} esb )
 
 IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(util rt)

@@ -102,7 +102,7 @@ IF(WIN32)
 #      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive.lnk" "$INSTDIR\\\\bin\\\\mhive.exe -s\\\"
 #  ")
 ELSEIF(APPLE)
-  SET(CPACK_GENERATOR "TGZ;PackageMaker;TZ;TBZ2" )
+  SET(CPACK_GENERATOR "TGZ;PackageMaker;Bundle;TZ;TBZ2" )
 ELSE(WIN32)
   SET(CPACK_GENERATOR "TGZ;TBZ2;STGZ" )
 ENDIF(WIN32)
