@@ -281,6 +281,7 @@ namespace org {
       }
 
       void DatabaseService::thread_init() {
+        return;
         boost::thread::id id=boost::this_thread::get_id();
         LOGDEBUG("void DatabaseService::thread_init():"<<id);
         if(_thread_map.find(id)==_thread_map.end()){
@@ -294,6 +295,7 @@ namespace org {
       }
 
       void DatabaseService::thread_end() {
+        return;
           boost::thread::id id=boost::this_thread::get_id();
           LOGDEBUG("void DatabaseService::thread_end():"<<id)
           _thread_map[id]--;
