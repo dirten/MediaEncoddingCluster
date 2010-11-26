@@ -1,4 +1,4 @@
-#include "SystemCpuInfo.h"
+#include "../SystemCpuInfo.h"
 
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringTokenizer.h"
@@ -14,6 +14,7 @@ namespace org {
       std::string read_proc_fs(std::string filename) {
         std::ifstream is;
         is.open(filename.c_str(), std::ifstream::in);
+        
         std::string cpudata;
         while (!is.eof()) {
           char buffer[101];
@@ -51,10 +52,13 @@ namespace org {
       void SystemCpuInfo::parseCpuInfo(std::string& data) {
         int start = -1;
         int last_start = -1;
-        bool hasMoreProcessor = false;
+        bool hasMoreProcessor = true;
         while (hasMoreProcessor) {
           start = data.find("processor", start + 1);
-          if (start == -1)break;
+          if (start == -1){
+            //hasMoreProcessor=false;
+            break;
+          }
           last_start = start;
           int end = data.find("processor", start + 1);
           parseProcessor(data.substr(start, end - start));

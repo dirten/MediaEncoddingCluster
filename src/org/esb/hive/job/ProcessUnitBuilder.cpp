@@ -88,7 +88,7 @@ namespace org {
              * calculation on the base of the packet->duration and packet->timebase
              */
             int64_t input_framesize=av_rescale_q(p->getDuration(),p->getTimeBase(),input_timebase);
-            int osize = av_get_bits_per_sample_format(u->_decoder->getSampleFormat()) / 8;
+            int osize = av_get_bits_per_sample_fmt(u->_decoder->getSampleFormat()) / 8;
             input_framesize*=osize;
             input_framesize*=u->_decoder->ctx->request_channel_layout;
 

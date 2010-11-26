@@ -3,23 +3,67 @@
   <gui helpLink="encoder_mp4v.html">
     <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
     <options>
+
       <!--Tabs-->
       <optiontab id="general" title="General"/>
       <optiontab id="advance" title="Advanced"/>
+
       <!--Groups-->
+      <optiongroup id="picture_settings" title="picture settings"/>
       <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
       <optiongroup id="keyframe_settings" title="Keyframe settings"/>
-     <!-- <optiongroup id="profile_settings" title="Profile Settings"/>
-      <optiongroup id="encoding_settings" title="Encoding Settings"/>
-      <optiongroup id="profile_partition_settings" title="Encoding Partition Settings"/>-->
+
       <!--Bandwidth settings-->
-      <option id="b" title="Average Bit Rate" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="bps">
+      <option id="time_base" type="string" default="1/25" title="Frame Rate" optionGroupId="picture_settings" unit="fps">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="1/10" value="1/10"/>
+          <item title="1/15" value="1/15"/>
+          <item title="23,97" value="1000/23976"/>
+          <item title="1/24" value="1/24"/>
+          <item title="1/25" value="1/25"/>
+          <item title="29,97" value="100/2997"/>
+          <item title="1/30" value="1/30"/>
+        </list>
+      </option>
+	<!--
+      <option id="ratecontrol" type="string" default="0" title="Rate Control" optionGroupId="picture_settings" unit="">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Constant Bitrate" value="0"/>
+          <item title="Constant Quality" value="1"/>
+        </list>
+      </option>
+	-->
+      <option id="b" title="Average Bit Rate" type="float" min="0" max="100000000" default="768000" optionGroupId="bandwidth_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="minrate" title="Min. Bit Rate" type="float" min="0" max="100000000" default="768000" optionGroupId="bandwidth_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="maxrate" title="Max. Bit Rate" type="float" min="0" max="100000000" default="768000" optionGroupId="bandwidth_settings" unit="bps">
         <control type="TextBox"></control>
       </option>
 
+      <option id="qmin" title="Min. Quantizer" type="int" min="0" max="51" default="4" optionGroupId="bandwidth_settings">
+        <control type="TrackBar"/>
+      </option>
+      <option id="qmax" title="Max. Quantizer" type="int" min="0" max="51" default="51" optionGroupId="bandwidth_settings">
+        <control type="TrackBar"/>
+      </option>
 
+      <option id="skip_threshold" title="Dropping Frames" type="bool" default="0" optionGroupId="bandwidth_settings">
+        <control type="CheckBox"/>
+      </option>
+    <!-- this is only for 2Pass Encoding-->
+    <!--
+      <option id="qcomp" title="0.0=>CBR 1.0=>VBR" type="float" min="0.0" max="1.0" default="0.7" optionGroupId="bandwidth_settings" unit="">
+        <control type="TextBox"></control>
+      </option>
+    -->
+    
       <!--Keyframe settings-->
-      <option id="periodType" type="string" default="1" title="Keyframe Control" optionGroupId="keyframe_settings">
+      <!--<option id="periodType" type="string" default="1" title="Keyframe Control" optionGroupId="keyframe_settings">
         <control type="ComboBox"></control>
         <list>
           <item title="Natural" value="0"/>
@@ -30,7 +74,7 @@
             </enables>
           </item>
         </list>
-      </option>
+      </option>-->
 
 
       <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="keyframe_settings">
@@ -41,7 +85,7 @@
         <control type="TrackBar"/>
       </option>
 
-
+    <!--
       <option id="buffer" title="Number of B-Frames" type="int" min="0" max="4" default="2" optionGroupId="keyframe_settings" unit="Frames">
         <control type="TrackBar">
           <controlparameter name="startLabel" value="0"/>
@@ -50,13 +94,7 @@
           <controlparameter name="textBoxPosition" value="start"/>
         </control>
       </option>
-
-      <!--Encoding settings-->
-      <option id="useTwoPassEncoding" title="Two-pass encoding" type="bool" default="0" optionGroupId="encoding_settings">
-        <control type="CheckBox"></control>
-      </option>
-      
-
+      -->
     </options>
   </gui>
 </guis>

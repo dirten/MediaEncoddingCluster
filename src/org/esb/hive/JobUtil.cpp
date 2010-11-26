@@ -292,7 +292,7 @@ namespace org {
         job.status = "queued";
         job.infile = infile.filename.value();
         job.update();
-
+        job.preset().link(preset);
         /**
          * creating the output media file
          */
@@ -472,7 +472,7 @@ namespace org {
             }
           }
         }
-        job.profile().link(newProfile);
+        //job.profile().link(newProfile);
 
         /**
          * preparing the profile data into a map

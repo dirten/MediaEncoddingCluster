@@ -38,7 +38,7 @@ namespace org {
       namespace job {
 
         void ProcessUnitController::onMessage(org::esb::signal::Message & msg) {
-          LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
+          //LOGDEBUG("Message received:" << msg.getProperty("processunitcontroller"));
           if (msg.getProperty("processunitcontroller") == "start") {
             LOGDEBUG("start request");
             _stop_signal = false;
@@ -50,15 +50,15 @@ namespace org {
             stop();
             LOGDEBUG("stopped");
           } else if (msg.getProperty("processunitcontroller") == "GET_PROCESS_UNIT") {
-            LOGDEBUG("GET_PROCESS_UNIT request");
+            //LOGDEBUG("GET_PROCESS_UNIT request");
             boost::shared_ptr<ProcessUnit> unit = getProcessUnit();
             msg.setProperty("processunit", unit);
           } else if (msg.getProperty("processunitcontroller") == "GET_AUDIO_PROCESS_UNIT") {
-            LOGDEBUG("GET_AUDIO_PROCESS_UNIT request");
+            //LOGDEBUG("GET_AUDIO_PROCESS_UNIT request");
             boost::shared_ptr<ProcessUnit> unit = getAudioProcessUnit();
             msg.setProperty("processunit", unit);
           } else if (msg.getProperty("processunitcontroller") == "PUT_PROCESS_UNIT") {
-            LOGDEBUG("PUT_PROCESS_UNIT request");
+            //LOGDEBUG("PUT_PROCESS_UNIT request");
 
             boost::shared_ptr<ProcessUnit> unit = msg.getPtrProperty("processunit");
 
@@ -465,7 +465,7 @@ namespace org {
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
           org::esb::io::ObjectOutputStream ous(&fos);
-          LOGDEBUG("Saving ProcessUnit:" << unit->_process_unit);
+          //LOGDEBUG("Saving ProcessUnit:" << unit->_process_unit);
           ous.writeObject(*unit.get());
           ous.close();
           try {
@@ -480,7 +480,7 @@ namespace org {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();
-                LOGDEBUG("" << details[a]);
+                //LOGDEBUG("" << details[a]);
               }
             }
 

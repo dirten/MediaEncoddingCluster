@@ -41,34 +41,34 @@ namespace org {
         }
 
         bool enqueue(T obj) {
-          LOGTRACEMETHOD("enqueue(T obj)")
+          //LOGTRACEMETHOD("enqueue(T obj)")
           boost::mutex::scoped_lock enqueue_lock(queue_mutex);
-          LOGTRACE("after mutex");
+          //LOGTRACE("after mutex");
           bool result = false;
           while (_q.size() >= MAXSIZE) {
-            LOGTRACE("Waiting in enqueuelock");
+            //LOGTRACE("Waiting in enqueuelock");
             queue_condition.wait(enqueue_lock);
-            LOGTRACE("condition enqueuelock");
+            //LOGTRACE("condition enqueuelock");
           }
           _q.push_back(obj);
           result = true;
-          LOGTRACE("notify condition enqueuelock");
+          //LOGTRACE("notify condition enqueuelock");
           queue_condition.notify_one();
           return result;
         }
 
         T dequeue() {
-          LOGTRACEMETHOD("T dequeue()");
+          //LOGTRACEMETHOD("T dequeue()");
           boost::mutex::scoped_lock dequeue_lock(queue_mutex);
-          LOGTRACE("after mutex");
+          //LOGTRACE("after mutex");
           while (_q.size() == 0) {
-            LOGTRACE("Waiting in dequeuelock");
+            //LOGTRACE("Waiting in dequeuelock");
             queue_condition.wait(dequeue_lock);
-            LOGTRACE("condition dequeuelock");
+            //LOGTRACE("condition dequeuelock");
           }
           T object = _q.front();
           _q.pop_front();
-          LOGTRACE("notify condition dequeuelock");
+          //LOGTRACE("notify condition dequeuelock");
           queue_condition.notify_one();
           return object;
         }

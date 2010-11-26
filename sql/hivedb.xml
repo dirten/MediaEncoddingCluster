@@ -250,8 +250,8 @@
     </relation>
 
     <relation>
-        <relate object="Job" handle="profile"/>
-        <relate object="Profile" handle="job"/>
+        <relate object="Job" handle="preset"/>
+        <relate object="Preset" handle="job"/>
     </relation>
 
     <object name="JobDetail">

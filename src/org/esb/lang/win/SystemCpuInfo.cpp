@@ -1,4 +1,4 @@
-#include "SystemCpuInfo.h"
+#include "../SystemCpuInfo.h"
 
 namespace org {
   namespace esb {

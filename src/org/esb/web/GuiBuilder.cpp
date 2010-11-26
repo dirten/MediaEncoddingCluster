@@ -526,6 +526,7 @@ namespace org {
           //b->setHidden(!enable || b->parent()->parent()->parent()->isHidden());
           b->setDisabled(!enable || b->parent()->parent()->parent()->isHidden());
           b->setHiddenKeepsGeometry(true);
+          
         }
         if (instanceOf(*element, GroupBox)) {
           GroupBox * b = static_cast<GroupBox*> (element);

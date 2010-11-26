@@ -12,10 +12,11 @@ namespace org {
     namespace web {
 
       JobTableModel::JobTableModel(std::vector<db::Job> jobs):Wt::WStandardItemModel(0, 0, NULL) {
-        insertColumns(0, 9);
+        insertColumns(0, 10);
         int i=0;
         setHeaderData(i++, std::string("Id"));
         setHeaderData(i++, std::string("Stop"));
+        setHeaderData(i++, std::string("Preset"));
         setHeaderData(i++, std::string("Input File"));
         setHeaderData(i++, std::string("Output File"));
         setHeaderData(i++, std::string("Enqueue Time"));
@@ -39,6 +40,10 @@ namespace org {
           int col=0;
           setData(a,col++,org::esb::util::StringUtil::toString(job.id.value()));
           setData(a,col++,org::esb::util::StringUtil::toString(job.id.value()));
+          if(job.preset().get().count()>0)
+            setData(a,col++,""+job.preset().get().one().name.value()+"");
+          else
+            setData(a,col++,std::string(""));
           setData(a,col++,""+job.infile.value()+"");
           setData(a,col++,job.outfile.value());
           setData(a,col++,job.created.value().asString("%d-%m-%y %h:%M:%s"));

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<preset name="Adobe Flash flv(320x240 500kb) mp3(128kb 44.1kHz stereo) ">
+    <format id="flv">
+	<param name="fileExtension" value="flv"/>
+    </format>
+    <codec type="video" id="flv">
+	<param name="b" value="500000"/>
+	<param name="g" value="250"/>
+	<param name="qmin" value="2"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="time_base" value="1/25"/>
+	<param name="aspect" value="64/45"/>
+    </codec>
+    <codec type="audio" id="libmp3lame">
+	<param name="ab" value="128000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="44100"/>
+	<param name="global_header" value="1"/>
+    </codec>
+    <filters>
+	<filter id="resize">
+    	    <param name="scales" value="320x240"/>
+    	    <param name="width" value="320"/>
+    	    <param name="height" value="240"/>
+	</filter>
+    </filters>
+</preset>

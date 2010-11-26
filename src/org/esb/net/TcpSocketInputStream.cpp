@@ -91,12 +91,12 @@ namespace org {
 
           if(length==0)return length;
 
-          LOGTRACE("bytes to read:" << length);
+          //LOGTRACE("bytes to read:" << length);
           unsigned char * buffer = new unsigned char[length];
           int counter = 0;
           /*Receive data into buffer*/
           counter = read(buffer, length);
-          LOGTRACE( "bytes readed:" << counter);
+          //LOGTRACE( "bytes readed:" << counter);
           /*If Connection is dead*/
           if (counter <= 0) {
             LOGERROR( "Socket is brocken");

@@ -56,7 +56,7 @@ target_link_libraries (PresetFileWriterTest hive io)
 target_link_libraries (PresetReaderTest hive io)
 
 target_link_libraries (PresetLoaderTest hive io)
-target_link_libraries (CodecPropertyTransformerTest hive io)
+target_link_libraries (CodecPropertyTransformerTest io hive lang)
 target_link_libraries (FileExporterTest hive)
 target_link_libraries (AnalyzeFrameCount hive)
 

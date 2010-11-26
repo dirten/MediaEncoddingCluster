@@ -22,6 +22,7 @@ namespace org{
         SwsContext * _swsContext;
         Format _in_format;
         Format _out_format;
+        std::map<std::string, std::string> _params;
       };
     }
   }

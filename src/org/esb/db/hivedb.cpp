@@ -932,54 +932,54 @@ template <> litesql::DataSource<db::MediaFile> JobMediaFileRelationJobOutFile::g
     sel.where(srcExpr);
     return DataSource<db::MediaFile>(db, db::MediaFile::Id.in(sel) && expr);
 }
-JobProfileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : profile(JobProfileRelation::Profile), job(JobProfileRelation::Job) {
+JobPresetRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : preset(JobPresetRelation::Preset), job(JobPresetRelation::Job) {
     switch(rec.size()) {
     case 2:
-        profile = rec[1];
+        preset = rec[1];
     case 1:
         job = rec[0];
     }
 }
-const std::string JobProfileRelation::table__("Job_Profile_");
-const litesql::FieldType JobProfileRelation::Job("Job1","INTEGER",table__);
-const litesql::FieldType JobProfileRelation::Profile("Profile2","INTEGER",table__);
-void JobProfileRelation::link(const litesql::Database& db, const db::Job& o0, const db::Profile& o1) {
+const std::string JobPresetRelation::table__("Job_Preset_");
+const litesql::FieldType JobPresetRelation::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobPresetRelation::Preset("Preset2","INTEGER",table__);
+void JobPresetRelation::link(const litesql::Database& db, const db::Job& o0, const db::Preset& o1) {
     Record values;
     Split fields;
     fields.push_back(Job.name());
     values.push_back(o0.id);
-    fields.push_back(Profile.name());
+    fields.push_back(Preset.name());
     values.push_back(o1.id);
     db.insert(table__, values, fields);
 }
-void JobProfileRelation::unlink(const litesql::Database& db, const db::Job& o0, const db::Profile& o1) {
-    db.delete_(table__, (Job == o0.id && Profile == o1.id));
+void JobPresetRelation::unlink(const litesql::Database& db, const db::Job& o0, const db::Preset& o1) {
+    db.delete_(table__, (Job == o0.id && Preset == o1.id));
 }
-void JobProfileRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+void JobPresetRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
     db.delete_(table__, expr);
 }
-litesql::DataSource<JobProfileRelation::Row> JobProfileRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+litesql::DataSource<JobPresetRelation::Row> JobPresetRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
     SelectQuery sel;
     sel.result(Job.fullName());
-    sel.result(Profile.fullName());
+    sel.result(Preset.fullName());
     sel.source(table__);
     sel.where(expr);
-    return DataSource<JobProfileRelation::Row>(db, sel);
+    return DataSource<JobPresetRelation::Row>(db, sel);
 }
-template <> litesql::DataSource<db::Job> JobProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::Job> JobPresetRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
     sel.result(Job.fullName());
     sel.where(srcExpr);
     return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
 }
-template <> litesql::DataSource<db::Profile> JobProfileRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::Preset> JobPresetRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
-    sel.result(Profile.fullName());
+    sel.result(Preset.fullName());
     sel.where(srcExpr);
-    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+    return DataSource<db::Preset>(db, db::Preset::Id.in(sel) && expr);
 }
 JobJobDetailRelationJobJobDetail::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : jobDetail(JobJobDetailRelationJobJobDetail::JobDetail), job(JobJobDetailRelationJobJobDetail::Job) {
@@ -2625,24 +2625,6 @@ litesql::DataSource<CodecPreset> Profile::ApresetHandle::get(const litesql::Expr
 litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Profile::ApresetHandle::getRows(const litesql::Expr& expr) {
     return CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id));
 }
-Profile::JobHandle::JobHandle(const Profile& owner)
-         : litesql::RelationHandle<Profile>(owner) {
-}
-void Profile::JobHandle::link(const Job& o0) {
-    JobProfileRelation::link(owner->getDatabase(), o0, *owner);
-}
-void Profile::JobHandle::unlink(const Job& o0) {
-    JobProfileRelation::unlink(owner->getDatabase(), o0, *owner);
-}
-void Profile::JobHandle::del(const litesql::Expr& expr) {
-    JobProfileRelation::del(owner->getDatabase(), expr && JobProfileRelation::Profile == owner->id);
-}
-litesql::DataSource<Job> Profile::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return JobProfileRelation::get<Job>(owner->getDatabase(), expr, (JobProfileRelation::Profile == owner->id) && srcExpr);
-}
-litesql::DataSource<JobProfileRelation::Row> Profile::JobHandle::getRows(const litesql::Expr& expr) {
-    return JobProfileRelation::getRows(owner->getDatabase(), expr && (JobProfileRelation::Profile == owner->id));
-}
 Profile::WatchfolderHandle::WatchfolderHandle(const Profile& owner)
          : litesql::RelationHandle<Profile>(owner) {
 }
@@ -2792,9 +2774,6 @@ Profile::VpresetHandle Profile::vpreset() {
 Profile::ApresetHandle Profile::apreset() {
     return Profile::ApresetHandle(*this);
 }
-Profile::JobHandle Profile::job() {
-    return Profile::JobHandle(*this);
-}
 Profile::WatchfolderHandle Profile::watchfolder() {
     return Profile::WatchfolderHandle(*this);
 }
@@ -2927,7 +2906,6 @@ void Profile::delRelations() {
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
     CodecPresetProfileRelationVideoCodecPreset2Profile::del(*db, (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == id));
     CodecPresetProfileRelationAudioCodecPreset2Profile::del(*db, (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == id));
-    JobProfileRelation::del(*db, (JobProfileRelation::Profile == id));
     ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Profile == id));
 }
 void Profile::update() {
@@ -3029,6 +3007,24 @@ litesql::DataSource<Project> Preset::ProjectHandle::get(const litesql::Expr& exp
 litesql::DataSource<PresetProjectRelation::Row> Preset::ProjectHandle::getRows(const litesql::Expr& expr) {
     return PresetProjectRelation::getRows(owner->getDatabase(), expr && (PresetProjectRelation::Preset == owner->id));
 }
+Preset::JobHandle::JobHandle(const Preset& owner)
+         : litesql::RelationHandle<Preset>(owner) {
+}
+void Preset::JobHandle::link(const Job& o0) {
+    JobPresetRelation::link(owner->getDatabase(), o0, *owner);
+}
+void Preset::JobHandle::unlink(const Job& o0) {
+    JobPresetRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void Preset::JobHandle::del(const litesql::Expr& expr) {
+    JobPresetRelation::del(owner->getDatabase(), expr && JobPresetRelation::Preset == owner->id);
+}
+litesql::DataSource<Job> Preset::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobPresetRelation::get<Job>(owner->getDatabase(), expr, (JobPresetRelation::Preset == owner->id) && srcExpr);
+}
+litesql::DataSource<JobPresetRelation::Row> Preset::JobHandle::getRows(const litesql::Expr& expr) {
+    return JobPresetRelation::getRows(owner->getDatabase(), expr && (JobPresetRelation::Preset == owner->id));
+}
 const std::string Preset::type__("Preset");
 const std::string Preset::table__("Preset_");
 const std::string Preset::sequence__("Preset_seq");
@@ -3073,6 +3069,9 @@ const Preset& Preset::operator=(const Preset& obj) {
 }
 Preset::ProjectHandle Preset::project() {
     return Preset::ProjectHandle(*this);
+}
+Preset::JobHandle Preset::job() {
+    return Preset::JobHandle(*this);
 }
 std::string Preset::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -3123,6 +3122,7 @@ void Preset::delRecord() {
 }
 void Preset::delRelations() {
     PresetProjectRelation::del(*db, (PresetProjectRelation::Preset == id));
+    JobPresetRelation::del(*db, (JobPresetRelation::Preset == id));
 }
 void Preset::update() {
     if (!inDatabase) {
@@ -4717,23 +4717,23 @@ litesql::DataSource<MediaFile> Job::OutputfileHandle::get(const litesql::Expr& e
 litesql::DataSource<JobMediaFileRelationJobOutFile::Row> Job::OutputfileHandle::getRows(const litesql::Expr& expr) {
     return JobMediaFileRelationJobOutFile::getRows(owner->getDatabase(), expr && (JobMediaFileRelationJobOutFile::Job == owner->id));
 }
-Job::ProfileHandle::ProfileHandle(const Job& owner)
+Job::PresetHandle::PresetHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
 }
-void Job::ProfileHandle::link(const Profile& o0) {
-    JobProfileRelation::link(owner->getDatabase(), *owner, o0);
+void Job::PresetHandle::link(const Preset& o0) {
+    JobPresetRelation::link(owner->getDatabase(), *owner, o0);
 }
-void Job::ProfileHandle::unlink(const Profile& o0) {
-    JobProfileRelation::unlink(owner->getDatabase(), *owner, o0);
+void Job::PresetHandle::unlink(const Preset& o0) {
+    JobPresetRelation::unlink(owner->getDatabase(), *owner, o0);
 }
-void Job::ProfileHandle::del(const litesql::Expr& expr) {
-    JobProfileRelation::del(owner->getDatabase(), expr && JobProfileRelation::Job == owner->id);
+void Job::PresetHandle::del(const litesql::Expr& expr) {
+    JobPresetRelation::del(owner->getDatabase(), expr && JobPresetRelation::Job == owner->id);
 }
-litesql::DataSource<Profile> Job::ProfileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return JobProfileRelation::get<Profile>(owner->getDatabase(), expr, (JobProfileRelation::Job == owner->id) && srcExpr);
+litesql::DataSource<Preset> Job::PresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobPresetRelation::get<Preset>(owner->getDatabase(), expr, (JobPresetRelation::Job == owner->id) && srcExpr);
 }
-litesql::DataSource<JobProfileRelation::Row> Job::ProfileHandle::getRows(const litesql::Expr& expr) {
-    return JobProfileRelation::getRows(owner->getDatabase(), expr && (JobProfileRelation::Job == owner->id));
+litesql::DataSource<JobPresetRelation::Row> Job::PresetHandle::getRows(const litesql::Expr& expr) {
+    return JobPresetRelation::getRows(owner->getDatabase(), expr && (JobPresetRelation::Job == owner->id));
 }
 Job::JobdetailsHandle::JobdetailsHandle(const Job& owner)
          : litesql::RelationHandle<Job>(owner) {
@@ -4838,8 +4838,8 @@ Job::InputfileHandle Job::inputfile() {
 Job::OutputfileHandle Job::outputfile() {
     return Job::OutputfileHandle(*this);
 }
-Job::ProfileHandle Job::profile() {
-    return Job::ProfileHandle(*this);
+Job::PresetHandle Job::preset() {
+    return Job::PresetHandle(*this);
 }
 Job::JobdetailsHandle Job::jobdetails() {
     return Job::JobdetailsHandle(*this);
@@ -4930,7 +4930,7 @@ void Job::delRelations() {
     JobJobLogRelationJobJobLog::del(*db, (JobJobLogRelationJobJobLog::Job == id));
     JobMediaFileRelationJobInFile::del(*db, (JobMediaFileRelationJobInFile::Job == id));
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
-    JobProfileRelation::del(*db, (JobProfileRelation::Job == id));
+    JobPresetRelation::del(*db, (JobPresetRelation::Job == id));
     JobJobDetailRelationJobJobDetail::del(*db, (JobJobDetailRelationJobJobDetail::Job == id));
 }
 void Job::update() {
@@ -5851,7 +5851,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_JobLog_JobJobLog","table","CREATE TABLE Job_JobLog_JobJobLog (Job1 INTEGER,JobLog2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobInFile","table","CREATE TABLE Job_MediaFile_JobInFile (Job1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFile","table","CREATE TABLE Job_MediaFile_JobOutFile (Job1 INTEGER,MediaFile2 INTEGER)"));
-    res.push_back(Database::SchemaItem("Job_Profile_","table","CREATE TABLE Job_Profile_ (Job1 INTEGER,Profile2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_Preset_","table","CREATE TABLE Job_Preset_ (Job1 INTEGER,Preset2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
@@ -5913,9 +5913,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_MediaFile_JobOutFileJob1idx","index","CREATE INDEX Job_MediaFile_JobOutFileJob1idx ON Job_MediaFile_JobOutFile (Job1)"));
     res.push_back(Database::SchemaItem("_25cc5418e8e8e4440a05457be79c6e6c","index","CREATE INDEX _25cc5418e8e8e4440a05457be79c6e6c ON Job_MediaFile_JobOutFile (MediaFile2)"));
     res.push_back(Database::SchemaItem("_d9d2d6c9fa1fb063c88ce1c8efda4f10","index","CREATE INDEX _d9d2d6c9fa1fb063c88ce1c8efda4f10 ON Job_MediaFile_JobOutFile (Job1,MediaFile2)"));
-    res.push_back(Database::SchemaItem("Job_Profile_Job1idx","index","CREATE INDEX Job_Profile_Job1idx ON Job_Profile_ (Job1)"));
-    res.push_back(Database::SchemaItem("Job_Profile_Profile2idx","index","CREATE INDEX Job_Profile_Profile2idx ON Job_Profile_ (Profile2)"));
-    res.push_back(Database::SchemaItem("Job_Profile__all_idx","index","CREATE INDEX Job_Profile__all_idx ON Job_Profile_ (Job1,Profile2)"));
+    res.push_back(Database::SchemaItem("Job_Preset_Job1idx","index","CREATE INDEX Job_Preset_Job1idx ON Job_Preset_ (Job1)"));
+    res.push_back(Database::SchemaItem("Job_Preset_Preset2idx","index","CREATE INDEX Job_Preset_Preset2idx ON Job_Preset_ (Preset2)"));
+    res.push_back(Database::SchemaItem("Job_Preset__all_idx","index","CREATE INDEX Job_Preset__all_idx ON Job_Preset_ (Job1,Preset2)"));
     res.push_back(Database::SchemaItem("_d42e07c973df5c1aa22424f96e07d102","index","CREATE INDEX _d42e07c973df5c1aa22424f96e07d102 ON Job_JobDetail_JobJobDetail (Job1)"));
     res.push_back(Database::SchemaItem("_f7ff1861fc4c003b6fc460836dea52b3","index","CREATE INDEX _f7ff1861fc4c003b6fc460836dea52b3 ON Job_JobDetail_JobJobDetail (JobDetail2)"));
     res.push_back(Database::SchemaItem("_cce4f09c9234ab0eb75047f7dd450a33","index","CREATE INDEX _cce4f09c9234ab0eb75047f7dd450a33 ON Job_JobDetail_JobJobDetail (Job1,JobDetail2)"));

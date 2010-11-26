@@ -39,11 +39,12 @@ namespace org {
         setSelectionMode(Wt::SingleSelection);
         setColumnHidden(0, true);
         setColumnWidth(1, 10);
-        setColumnWidth(4, 30);
+        
         setColumnWidth(5, 30);
         setColumnWidth(6, 30);
-        setColumnWidth(7, 25);
-        setColumnWidth(8, 15);
+        setColumnWidth(7, 30);
+        setColumnWidth(8, 25);
+        setColumnWidth(9, 15);
 
         std::string renderer = "function change(val) {"
                 "if (val > 0){"
@@ -53,7 +54,7 @@ namespace org {
                 "}"
                 "return val;"
                 "}";
-        setRenderer(7, renderer);
+        setRenderer(8, renderer);
         renderer = "function change(val) {"
                 "if (val == \"running\"){"
                 "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
@@ -68,7 +69,7 @@ namespace org {
                 "}"
                 "return val;"
                 "}";
-        setRenderer(8, renderer);
+        setRenderer(9, renderer);
         
 //        std::string element=doSome_.createCall("'test'","42");
 //        LOGDEBUG("Element:"<<element);

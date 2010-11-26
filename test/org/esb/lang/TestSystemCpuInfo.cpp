@@ -7,13 +7,16 @@
 
 #include <stdlib.h>
 
-#include "org/esb/lang/SystemCpuInfo.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/SystemCpuInfo.h"
 
 /*
  * 
  */
+
 int main(int argc, char** argv) {
+
+  Log::open("");
 
   /**
    *         info->family=atoi(std::string("cpu family").c_str());
@@ -24,13 +27,13 @@ int main(int argc, char** argv) {
    */
   org::esb::lang::SystemCpuInfo sci;
   int c = sci.getCpuCount();
-  LOGDEBUG("CpuCount:" << c);
+  std::cout<<"CpuCount:" << c<<std::endl;
   for (int i = 0; i < c; i++) {
-    LOGDEBUG(i<<"Cpu family" << sci.getCpuInfo(i).family);
-    LOGDEBUG(i<<"Cpu model" << sci.getCpuInfo(i).model);
-    LOGDEBUG(i<<"Cpu step" << sci.getCpuInfo(i).step);
-    LOGDEBUG(i<<"Cpu cores" << sci.getCpuInfo(i).cores);
-    LOGDEBUG(i<<"Cpu freq" << sci.getCpuInfo(i).freq);
+    std::cout<<i<<"Cpu family" << sci.getCpuInfo(i).family<<std::endl;
+    std::cout<<i<<"Cpu model" << sci.getCpuInfo(i).model<<std::endl;
+    std::cout<<i<<"Cpu step" << sci.getCpuInfo(i).step<<std::endl;
+    std::cout<<i<<"Cpu cores" << sci.getCpuInfo(i).cores<<std::endl;
+    std::cout<<i<<"Cpu freq" << sci.getCpuInfo(i).freq<<std::endl;
   }
   return (EXIT_SUCCESS);
 }

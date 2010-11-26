@@ -257,8 +257,8 @@ namespace org {
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
         //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
-        int isize = av_get_bits_per_sample_format(_dec->getSampleFormat()) / 8;
-        int osize = av_get_bits_per_sample_format(_enc->getSampleFormat()) / 8;
+        int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
+        int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
         int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
         out_frame._allocated = true;

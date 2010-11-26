@@ -17,7 +17,6 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-  Log::open("");
   if(argc<4)
     std::cout << "usage : FileExporterTest outputfilepath<string> basepath<string> fileid<int> "<<std::endl;
   std::string filepath=argv[1];
@@ -25,6 +24,7 @@ int main(int argc, char** argv) {
   int fileid=atoi(argv[3]);
 
   org::esb::config::Config::setProperty("hive.base_path",path);
+  Log::open("");
   org::esb::hive::DatabaseService::start(path);
   db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
   db::MediaFile outfile=litesql::select<db::MediaFile>(db,db::MediaFile::Id==fileid).one();

@@ -380,21 +380,21 @@ public:
 ;
 ;
 };
-class JobProfileRelation {
+class JobPresetRelation {
 public:
     class Row {
     public:
-        litesql::Field<int> profile;
+        litesql::Field<int> preset;
         litesql::Field<int> job;
         Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
     };
     static const std::string table__;
     static const litesql::FieldType Job;
-    static const litesql::FieldType Profile;
-    static void link(const litesql::Database& db, const db::Job& o0, const db::Profile& o1);
-    static void unlink(const litesql::Database& db, const db::Job& o0, const db::Profile& o1);
+    static const litesql::FieldType Preset;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::Preset& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::Preset& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
-    static litesql::DataSource<JobProfileRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobPresetRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -965,15 +965,6 @@ public:
         litesql::DataSource<CodecPreset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
-    class JobHandle : public litesql::RelationHandle<Profile> {
-    public:
-        JobHandle(const Profile& owner);
-        void link(const Job& o0);
-        void unlink(const Job& o0);
-        void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<JobProfileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
-    };
     class WatchfolderHandle : public litesql::RelationHandle<Profile> {
     public:
         WatchfolderHandle(const Profile& owner);
@@ -1037,7 +1028,6 @@ public:
     Profile::ProjectHandle project();
     Profile::VpresetHandle vpreset();
     Profile::ApresetHandle apreset();
-    Profile::JobHandle job();
     Profile::WatchfolderHandle watchfolder();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -1072,6 +1062,15 @@ public:
         litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<PresetProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class JobHandle : public litesql::RelationHandle<Preset> {
+    public:
+        JobHandle(const Preset& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobPresetRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -1091,6 +1090,7 @@ public:
     Preset(const Preset& obj);
     const Preset& operator=(const Preset& obj);
     Preset::ProjectHandle project();
+    Preset::JobHandle job();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -1570,14 +1570,14 @@ public:
         litesql::DataSource<MediaFile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobMediaFileRelationJobOutFile::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
-    class ProfileHandle : public litesql::RelationHandle<Job> {
+    class PresetHandle : public litesql::RelationHandle<Job> {
     public:
-        ProfileHandle(const Job& owner);
-        void link(const Profile& o0);
-        void unlink(const Profile& o0);
+        PresetHandle(const Job& owner);
+        void link(const Preset& o0);
+        void unlink(const Preset& o0);
         void del(const litesql::Expr& expr=litesql::Expr());
-        litesql::DataSource<Profile> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
-        litesql::DataSource<JobProfileRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Preset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobPresetRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
     class JobdetailsHandle : public litesql::RelationHandle<Job> {
     public:
@@ -1623,7 +1623,7 @@ public:
     Job::JoblogHandle joblog();
     Job::InputfileHandle inputfile();
     Job::OutputfileHandle outputfile();
-    Job::ProfileHandle profile();
+    Job::PresetHandle preset();
     Job::JobdetailsHandle jobdetails();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);

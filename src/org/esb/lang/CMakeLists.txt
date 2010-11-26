@@ -16,7 +16,7 @@ SET(lang_source
 IF(NOT WIN32)
   SET(lang_source
     ${lang_source}
-    LinuxCpuInfo.cpp
+    posix/SystemCpuInfo.cpp
     posix/Process.cpp
   )
 ELSEIF(APPLE)
@@ -24,7 +24,7 @@ ELSEIF(APPLE)
 ELSEIF(WIN32)
   SET(lang_source
     ${lang_source}
-    WindowsCpuInfo.cpp
+    win/SystemCpuInfo.cpp
     win/Process.cpp
   )
 

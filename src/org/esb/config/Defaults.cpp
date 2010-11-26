@@ -12,7 +12,7 @@ namespace org {
         }else{
           base_path = props->getProperty("hive.base_path");
         }
-        //std::cout<<"BasePath=" << base_path<<std::endl;
+        std::cout<<"BasePath=" << base_path<<std::endl;
         props->setProperty("hive.base_path", base_path.c_str());
         props->setProperty("hive.data_path", base_path+"/data");
 

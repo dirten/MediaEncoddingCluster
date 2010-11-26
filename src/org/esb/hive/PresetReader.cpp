@@ -78,7 +78,22 @@ namespace org {
         }
       }
 
-      void PresetReader::handleFormat(rapidxml::xml_node<> *) {
+      void PresetReader::handleFormat(rapidxml::xml_node<> *node) {
+        /*resolving the outputformat to have knowledge of the global header flag*/
+        AVOutputFormat *ofmt = NULL;
+        while ((ofmt = av_oformat_next(ofmt))) {
+          if (_preset["id"] == ofmt->name) {
+            break;
+          }
+        }
+        if(!ofmt){
+          LOGERROR("Could not find Output Format");
+          return;
+        }
+        if(ofmt->flags & AVFMT_GLOBALHEADER) {
+          _codecs["video"].insert(std::pair<std::string, std::string>("global_header", "1"));
+          _codecs["audio"].insert(std::pair<std::string, std::string>("global_header", "1"));
+        }
       }
 
       void PresetReader::handleCodec(rapidxml::xml_node<> *codec) {

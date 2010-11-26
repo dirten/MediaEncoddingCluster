@@ -143,7 +143,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   if (result != 0) {
     LOGERROR("av_interleaved_write_frame Result:" << result);
   }
-  LOGDEBUG(packet.toString());
+  //LOGDEBUG(packet.toString());
   first_packet = false;
   return result;
 }

@@ -35,11 +35,6 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
 //struct SwsContext;
-#ifdef WIN32
-#define DEPRICATED(func) __declspec(deprecated) func
-#else
-#define DEPRICATED(f) __attribute__((deprecated)) f
-#endif
 namespace org {
     namespace esb {
         namespace av {
