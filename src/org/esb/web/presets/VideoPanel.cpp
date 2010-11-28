@@ -113,7 +113,7 @@ namespace org {
       void VideoPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
 
-        if(_parameter["codec_id"]!=codecid){
+        if(_parameter["codec_id"].length()>0&&_parameter["codec_id"]!=codecid){
           Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Data will be lost", "when the codec changed, all previous data set will be lost", Wt::Warning, Wt::Ok|Wt::Cancel);
           box->show();
           if(box->exec()==Wt::Ext::Dialog::Accepted){
@@ -124,7 +124,7 @@ namespace org {
             return;
           }
         }
-
+        _parameter["codec_id"]=codecid;
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;
         file += "/res/comp/encoder.video.";

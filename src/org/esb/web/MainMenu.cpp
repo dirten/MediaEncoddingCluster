@@ -48,10 +48,10 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   button = toolbar->addButton("Encodings", menu);
 
   menu = new Wt::Ext::Menu();
-  item = menu->addItem("View Profiles...",parent,&org::esb::web::WebApp2::listAllProfiles);
-  item = menu->addItem("Create Profile...",parent,&org::esb::web::WebApp2::createProfiles);
+  item = menu->addItem("View Presets...",parent,&org::esb::web::WebApp2::listAllProfiles);
+  item = menu->addItem("Create Preset...",parent,&org::esb::web::WebApp2::createProfiles);
 
-  button = toolbar->addButton("Profiles", menu);
+  button = toolbar->addButton("Presets", menu);
 /*
   menu = new Wt::Ext::Menu();
   item = menu->addItem("View Watchfolder...",parent,&org::esb::web::WebApp2::listAllWatchfolder);

@@ -102,8 +102,8 @@ namespace org {
           return;
         }
         std::string type = codec->first_attribute("type")->value();
-        if (_codecs.count(type) > 0) {
-          LOGWARN("multiple codes type " << type << " defined in the preset");
+        if (false&&_codecs.count(type) > 0) {
+          LOGWARN("multiple codecs type " << type << " defined in the preset");
           LOGWARN("it could be only one codec of one type available in the preset");
         }
         if (!codec->first_attribute("id")) {

@@ -315,8 +315,8 @@ namespace org {
         //          ctx = avcodec_alloc_context();
         //          setParams();
         if (false&&_codec->capabilities & CODEC_CAP_TRUNCATED) {
-          			        	ctx->flags |= CODEC_FLAG_TRUNCATED;
-          					    cout <<"CodecCapTruncated"<<endl;
+          ctx->flags=0;// |= CODEC_FLAG_TRUNCATED;
+          cout <<"CodecCapTruncated"<<endl;
         }
         std::map<std::string, std::string>::iterator opit = _options.begin();
         for (; opit != _options.end(); opit++) {
