@@ -44,6 +44,7 @@ namespace org {
   namespace esb {
     namespace hive {
       NodeResolver::NodeList NodeResolver::_nodes;
+
       Node::Node() {
         _name = "null";
         _status = NODE_UP;
@@ -67,9 +68,10 @@ namespace org {
         oss << ":" << boost::posix_time::to_simple_string(_last_activity);
         return oss.str();
       }
-        Node::NodeStatus Node::getStatus(){
-          return _status;
-        }
+
+      Node::NodeStatus Node::getStatus() {
+        return _status;
+      }
 
       std::string Node::getData(std::string key) {
         return _node_data[key];
@@ -110,11 +112,11 @@ namespace org {
         boost::archive::binary_oarchive archive(archive_stream);
         archive << _self;
         message_ = archive_stream.str();
-//        LOGDEBUG("Message size:"<<message_.size());
+        //        LOGDEBUG("Message size:"<<message_.size());
         send_socket_.async_send_to(
-            boost::asio::buffer(message_), send_endpoint_,
-            boost::bind(&NodeResolver::handle_send_size, this,
-            boost::asio::placeholders::error,boost::asio::placeholders::bytes_transferred));
+                boost::asio::buffer(message_), send_endpoint_,
+                boost::bind(&NodeResolver::handle_send_size, this,
+                boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 
         boost::asio::ip::udp::endpoint listen_endpoint(listen_address, port);
         recv_socket_.open(listen_endpoint.protocol());
@@ -123,36 +125,35 @@ namespace org {
 
         // Join the multicast group.
         recv_socket_.set_option(
-            boost::asio::ip::multicast::join_group(multicast_address));
+                boost::asio::ip::multicast::join_group(multicast_address));
 
         recv_socket_.async_receive_from(
-            boost::asio::buffer(data_, max_length), recv_endpoint_,
-            boost::bind(&NodeResolver::handle_receive, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+                boost::asio::buffer(data_, max_length), recv_endpoint_,
+                boost::bind(&NodeResolver::handle_receive, this,
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
 
       }
 
       void NodeResolver::setNode(Node node) {
       }
-      
 
       void NodeResolver::handle_send(const boost::system::error_code& error) {
         if (!error) {
           send_timer_.expires_from_now(boost::posix_time::seconds(1));
           send_timer_.async_wait(
-              boost::bind(&NodeResolver::handle_send_timeout, this,
-              boost::asio::placeholders::error));
+                  boost::bind(&NodeResolver::handle_send_timeout, this,
+                  boost::asio::placeholders::error));
         }
       }
 
-      void NodeResolver::handle_send_size(const boost::system::error_code& error,std::size_t bytes_transferred) {
+      void NodeResolver::handle_send_size(const boost::system::error_code& error, std::size_t bytes_transferred) {
         //LOGDEBUG("bytes transfered:"<<bytes_transferred);
         if (!error) {
           send_timer_.expires_from_now(boost::posix_time::seconds(1));
           send_timer_.async_wait(
-              boost::bind(&NodeResolver::handle_send_timeout, this,
-              boost::asio::placeholders::error));
+                  boost::bind(&NodeResolver::handle_send_timeout, this,
+                  boost::asio::placeholders::error));
         }
       }
 
@@ -161,8 +162,8 @@ namespace org {
         if (!error) {
 
           send_socket_.async_send_to(
-              boost::asio::buffer(message_), send_endpoint_,
-              boost::bind(&NodeResolver::handle_send_size, this,boost::asio::placeholders::error,boost::asio::placeholders::bytes_transferred));
+                  boost::asio::buffer(message_), send_endpoint_,
+                  boost::bind(&NodeResolver::handle_send_size, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         }
 
       }
@@ -176,7 +177,7 @@ namespace org {
             std::string tmp(data_, bytes_recvd);
             std::istringstream archive_stream(tmp);
             try {
-            boost::archive::binary_iarchive archive(archive_stream);
+              boost::archive::binary_iarchive archive(archive_stream);
               archive >> *nodePtr.get();
             } catch (std::exception & ex) {
 
@@ -205,10 +206,10 @@ namespace org {
             notifyListener(*nodePtr);
           }
           recv_socket_.async_receive_from(
-              boost::asio::buffer(data_, max_length), recv_endpoint_,
-              boost::bind(&NodeResolver::handle_receive, this,
-              boost::asio::placeholders::error,
-              boost::asio::placeholders::bytes_transferred));
+                  boost::asio::buffer(data_, max_length), recv_endpoint_,
+                  boost::bind(&NodeResolver::handle_receive, this,
+                  boost::asio::placeholders::error,
+                  boost::asio::placeholders::bytes_transferred));
         } else
           if (error != boost::system::errc::operation_canceled) {
           LOGERROR("error" << error.message());

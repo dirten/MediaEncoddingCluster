@@ -269,8 +269,8 @@ namespace org {
       }
 
       void DatabaseService::stop() {
-        return;
         LOGINFO("stopping Database Service");
+        return;
         try{
         _dbServer->stop();
         }catch(...){}

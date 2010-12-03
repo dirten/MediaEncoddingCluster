@@ -1,21 +1,15 @@
 <?xml version="1.0"?>
 <guis>
   <gui helpLink="encoder_mp4v.html">
-    <codecs>
-      <codec id="libx264"/>
-      <codec id="xvid"/>
-    </codecs>
     <options>
       <!--Groups-->
       <optiongroup id="general_settings" title="General settings"/>
       <optiongroup id="metadata_settings" title="Metadata"/>
       <!--Keyframe settings-->
-      <option id="fileExtension" type="string" default="mp4" title="File Extension" optionGroupId="general_settings">
+      <option id="fileExtension" type="string" default="vcd" title="File Extension" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="mp4" value="mp4"/>
-          <item title="mp4test" value="mp4test"/>
-          <item title="mp4test2" value="mp4test2"/>
+          <item title="vcd" value="vcd"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

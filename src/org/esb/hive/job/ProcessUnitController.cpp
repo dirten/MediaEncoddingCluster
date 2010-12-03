@@ -449,7 +449,7 @@ namespace org {
 
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
-
+          int stream_type=CODEC_TYPE_UNKNOWN;
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
           name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
@@ -480,7 +480,9 @@ namespace org {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();
-                //LOGDEBUG("" << details[a]);
+                stream_type=details[a].outputstream().get().one().streamtype.value();
+                LOGDEBUG("" << details[a]);
+                LOGDEBUG("StreamType="<<stream_type);
               }
             }
 
@@ -489,20 +491,23 @@ namespace org {
               if (audioQueue.size() == 0 && puQueue.size() == 0) {
                 current_job->progress = 100;
               } else {
-                AVRational ar_target;
-                ar_target.num = 1;
-                ar_target.den = 1000000;
-                AVRational ar_source;
-                ar_source.num = dbunit.timebasenum;
-                ar_source.den = dbunit.timebaseden;
-                int64_t lastdb = dbunit.endts.value();
-                int64_t last = unit->getOutputPacketList().back()->getDts();
+                if(stream_type==CODEC_TYPE_VIDEO){
+                  LOGDEBUG("Calculating Progress!");
+                  AVRational ar_target;
+                  ar_target.num = 1;
+                  ar_target.den = 1000000;
+                  AVRational ar_source;
+                  ar_source.num = dbunit.timebasenum;
+                  ar_source.den = dbunit.timebaseden;
+                  int64_t lastdb = dbunit.endts.value();
+                  int64_t last = unit->getOutputPacketList().back()->getDts();
 
-                int64_t ts = av_rescale_q(lastdb, ar_source, ar_target);
-                int64_t starttime = current_job->starttime.value();
-                int64_t duration = current_job->duration.value();
-                int progress = (ts - starttime)*100 / duration;
-                current_job->progress = progress;
+                  int64_t ts = av_rescale_q(lastdb, ar_source, ar_target);
+                  int64_t starttime = current_job->starttime.value();
+                  int64_t duration = current_job->duration.value();
+                  int progress = (ts - starttime)*100 / duration;
+                  current_job->progress = progress;
+                }
               }
               current_job->update();
             }

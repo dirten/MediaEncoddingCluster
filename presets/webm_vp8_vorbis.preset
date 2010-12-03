@@ -21,6 +21,9 @@
 	<param name="time_base" value="1/25"/>
 	<param name="aspect" value="64/45"/>
 	<param name="global_header" value="1"/>
+    	<param name="picture_frame_size" value="320x240"/>
+    	<param name="width" value="320"/>
+    	<param name="height" value="240"/>
     </codec>
     <codec type="audio" id="libvorbis">
 	<param name="ab" value="128000"/>
@@ -31,11 +34,4 @@
 	<param name="qscale" value="0"/>
 	<param name="global_header" value="1"/>
     </codec>
-    <filters>
-	<filter id="resize">
-    	    <param name="scales" value="320x240"/>
-    	    <param name="width" value="320"/>
-    	    <param name="height" value="240"/>
-	</filter>
-    </filters>
 </preset>

@@ -22,17 +22,13 @@
 	<param name="level" value="21"/>
 	<param name="wpredp" value="0"/>
 	<param name="me_range" value="16"/>
+    	<param name="picture_frame_size" value="0"/>
+    	<param name="width" value="480"/>
+    	<param name="height" value="272"/>
     </codec>
     <codec type="audio" id="aac">
 	<param name="ab" value="128000"/>
 	<param name="ac" value="2"/>
 	<param name="ar" value="44100"/>
     </codec>
-    <filters>
-	<filter id="resize">
-    	    <param name="scales" value="0"/>
-    	    <param name="width" value="480"/>
-    	    <param name="height" value="272"/>
-	</filter>
-    </filters>
 </preset>

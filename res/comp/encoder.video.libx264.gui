@@ -18,61 +18,51 @@
         <list>
           <item title="1/10" value="1/10">
             <optiondata>
-              <data option="frame_rate_num" value="1"/>
-              <data option="frame_rate_den" value="10"/>
+              <data option="time_base" value="1"/>
             </optiondata>
           </item>
           <item title="1/15" value="1/15">
             <optiondata>
-              <data option="frame_rate_num" value="1"/>
-              <data option="frame_rate_den" value="15"/>
+              <data option="time_base" value="1/15"/>
             </optiondata>
           </item>
           <item title="23,97" value="1000/23976">
             <optiondata>
-              <data option="frame_rate_num" value="1000"/>
-              <data option="frame_rate_den" value="23976"/>
+              <data option="time_base" value="1000/23976"/>
             </optiondata>
           </item>
           <item title="1/24" value="1/24">
             <optiondata>
-              <data option="frame_rate_num" value="1"/>
-              <data option="frame_rate_den" value="24"/>
+              <data option="time_base" value="1/24"/>
             </optiondata>
           </item>
           <item title="1/25" value="1/25">
             <optiondata>
-              <data option="frame_rate_num" value="1"/>
-              <data option="frame_rate_den" value="25"/>
+              <data option="time_base" value="1/25"/>
             </optiondata>
           </item>
           <item title="29,97" value="100/2997">
             <optiondata>
-              <data option="frame_rate_num" value="100"/>
-              <data option="frame_rate_den" value="2997"/>
+              <data option="time_base" value="100/2997"/>
             </optiondata>
           </item>
           <item title="1/30" value="1/30">
             <optiondata>
-              <data option="frame_rate_num" value="1"/>
-              <data option="frame_rate_den" value="30"/>
+              <data option="time_base" value="1/30"/>
             </optiondata>
           </item>
           <item title="Custom" value="0">
           <enables>
-            <option>frame_rate_num</option>
-            <option>frame_rate_den</option>
+            <option>time_base</option>
           </enables>
           </item>
         </list>
       </option>
-      <option id="frame_rate_num" title="Frame Rate Numerator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
+      -
+      <option id="time_base" title="Frame Rate" default="" optionGroupId="picture_settings" required="true">
         <control type="TextBox"></control>
       </option>
-      <option id="frame_rate_den" title="Frame Rate Denuminator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
-        <control type="TextBox"></control>
-      </option>
-    <!--
+      
       <option id="picture_frame_size" type="string" default="720x576" title="Frame Size" optionGroupId="picture_settings" unit="pixel">
         <control type="ComboBox"></control>
         <list>
@@ -114,13 +104,13 @@
           </item>
         </list>
       </option>
-      <option id="width" title="Picture Width" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel">
+      <option id="width" title="Picture Width" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel" required="true">
         <control type="TextBox"></control>
       </option>
-      <option id="height" title="Picture Height" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel">
+      <option id="height" title="Picture Height" type="int" min="2" max="10000" default="20" optionGroupId="picture_settings" unit="pixel" required="true">
         <control type="TextBox"></control>
       </option>
-    -->
+
       <!--FrameType settings-->
       <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="frametype_settings">
         <control type="TrackBar"/>
@@ -135,7 +125,7 @@
       <option id="bf" title="B-Frames" type="int" min="0" max="16" default="16" optionGroupId="frametype_settings">
         <control type="TrackBar"/>
       </option>
-      <option id="bf" title="B-Frame Bias" type="int" min="0" max="16" default="0" optionGroupId="frametype_settings">
+      <option id="bframebias" title="B-Frame Bias" type="int" min="0" max="16" default="0" optionGroupId="frametype_settings">
         <control type="TrackBar"/>
       </option>
       <option id="b_strategy" type="string" default="2" title="B-Frame strategy" optionGroupId="frametype_settings">
@@ -173,27 +163,52 @@
         <control type="TrackBar"/>
       </option>
 
-
-
-
-
-
-
-
       <!--Rate settings-->
+      <!--
+      <option id="rate_type_control" type="string" default="0" title="Rate Control" optionGroupId="rate_settings" unit="">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Constant Bitrate" value="0">
+            <enables>
+              <option>b</option>
+              <option>maxrate</option>
+              <option>bufsize</option>
+            </enables>
+          </item>
+          <item title="Constant Quantizer" value="1">
+            <enables>
+              <option>cqp</option>
+            </enables>
+          </item>
+          <item title="Constant Quality" value="2">
+            <enables>
+              <option>crf</option>
+            </enables>
+          </item>
+          <item title="Variable Quality" value="3">
+            <enables>
+              <option>qmin</option>
+              <option>qmax</option>
+              <option>qdiff</option>
+              <option>b</option>
+            </enables>
+          </item>
+        </list>
+      </option>-->
+
+      <option id="b" title="Bitrate" type="int" min="0" max="10000000" default="1000000" optionGroupId="rate_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="maxrate" title="MaxRate" type="float" min="0" max="100000" default="3000000" optionGroupId="rate_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="bufsize" title="Bufsize" type="float" min="0" max="100000" default="500000" optionGroupId="rate_settings" unit="kb">
+        <control type="TextBox"></control>
+      </option>
       <option id="cqp" title="CQP (Constant Quantizer)" type="int" min="0" max="51" default="6" optionGroupId="rate_settings">
         <control type="TrackBar"/>
       </option>
-      <option id="b" title="Bitrate" type="float" min="0" max="100000" default="1000" optionGroupId="rate_settings" unit="kbps">
-        <control type="TextBox"></control>
-      </option>
-      <option id="crf" title="CRF (Constant Quality)" type="float" min="0" max="100000" default="23" optionGroupId="rate_settings" unit="q">
-        <control type="TextBox"></control>
-      </option>
-      <option id="maxrate" title="MaxRate" type="float" min="0" max="100000" default="300" optionGroupId="rate_settings" unit="kbps">
-        <control type="TextBox"></control>
-      </option>
-      <option id="bufsize" title="Bufsize" type="float" min="0" max="100000" default="30000" optionGroupId="rate_settings" unit="kb">
+      <option id="crf" title="CRF (Constant Quality)" type="int" min="0" max="51" default="23" optionGroupId="rate_settings">
         <control type="TextBox"></control>
       </option>
       <option id="qmin" title="Min. Quantizer" type="float" min="0" max="51" default="10" optionGroupId="rate_settings">
@@ -295,7 +310,7 @@
       <option id="dct8x8" title="dct8x8" type="bool" default="1" optionGroupId="analysis_settings">
         <control type="CheckBox"></control>
       </option>
-      <option id="trellis" type="string" default="2" title="Motion Estemination" optionGroupId="rate_settings">
+      <option id="trellis" type="string" default="2" title="Trellis" optionGroupId="rate_settings">
         <control type="ComboBox"></control>
         <list>
           <item title="Disabled" value="0"/>

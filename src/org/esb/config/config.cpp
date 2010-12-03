@@ -33,7 +33,7 @@ string trim(string & s, string & drop) {
 }
 
 void Config::close() {
-  //  logdebug("clear config");
+  LOGDEBUG("void Config::close()");
   properties->clear();
   delete properties;
   properties = NULL;

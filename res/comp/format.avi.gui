@@ -2,8 +2,11 @@
 <guis>
   <gui>
     <codecs>
+      <codec id="msmpeg4"/>
+      <codec id="wmv1"/>
+      <codec id="wmv2"/>
+      <codec id="libxvid"/>
       <codec id="libx264"/>
-      <codec id="xvid"/>
     </codecs>
     <options>
       <!--Groups-->
@@ -13,7 +16,7 @@
       <option id="fileExtension" type="string" default="avi" title="File Extension" optionGroupId="general_settings">
         <control type="ComboBox"></control>
         <list>
-          <item title="avi" value="mp4"/>
+          <item title="avi" value="avi"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

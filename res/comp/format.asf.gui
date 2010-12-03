@@ -2,8 +2,11 @@
 <guis>
   <gui helpLink="encoder_mp4v.html">
     <codecs>
+      <codec id="msmpeg4"/>
+      <codec id="wmv1"/>
+      <codec id="wmv2"/>
+      <codec id="libxvid"/>
       <codec id="libx264"/>
-      <codec id="xvid"/>
     </codecs>
     <options>
       <!--Groups-->
@@ -14,6 +17,8 @@
         <control type="ComboBox"></control>
         <list>
           <item title="asf" value="asf"/>
+          <item title="wmv" value="wmv"/>
+          <item title="wma" value="wma"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">

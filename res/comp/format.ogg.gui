@@ -2,8 +2,11 @@
 <guis>
   <gui docLink="ogg-format.html">
     <codecs>
-      <codec id="libx264"/>
-      <codec id="xvid"/>
+      <codec id="libvorbis"/>
+      <codec id="vorbis"/>
+      <codec id="libtheora"/>
+      <codec id="flac"/>
+      <codec id="speex"/>
     </codecs>
     <options>
       <!--Groups-->

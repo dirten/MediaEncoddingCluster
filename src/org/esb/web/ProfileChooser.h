@@ -16,7 +16,7 @@ namespace org{
         ProfileChooser();
         ~ProfileChooser();
         int getSelectedProfileId();
-        std::string getSelectedProfile();
+        std::list<std::string> getSelectedProfile();
         Wt::Signal<void> selected;
         Wt::Signal<void> canceled;
       private:
@@ -25,8 +25,8 @@ namespace org{
         int selected_profile_id;
         Ptr<ProfileTable> _profile_table;
         Ptr<PresetList> _presetList;
-        void presetSelected(std::string);
-        std::string _current_selected_preset;
+        void presetSelected(std::list<std::string>);
+        std::list<std::string> _current_selected_preset;
 
       };
     }

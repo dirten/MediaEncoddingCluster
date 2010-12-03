@@ -18,7 +18,7 @@ namespace org {
       public:
         PresetList();
         virtual ~PresetList();
-        Wt::Signal<std::string> presetSelected;
+        Wt::Signal<std::list<std::string> > presetSelected;
         void createPreset();
         void refresh();
 

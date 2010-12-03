@@ -27,6 +27,7 @@ namespace org {
         void setCodecList(CodecList&);
         void setFilterList(FilterList&);
         void write();
+        //std::string toString();
       private:
         std::string _filename;
         xml_document<> _doc;

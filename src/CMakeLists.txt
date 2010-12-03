@@ -1,3 +1,31 @@
+SET(LIB_INSTALL_DIR lib)
+SET(BIN_INSTALL_DIR bin)
+SET(WEB_INSTALL_DIR web)
+SET(RES_INSTALL_DIR res)
+SET(PRESETS_INSTALL_DIR presets)
+
+
+IF(WIN32)
+    SET(LIB_INSTALL_DIR bin)
+    SET(BIN_INSTALL_DIR bin)
+    SET(WEB_INSTALL_DIR web)
+    SET(RES_INSTALL_DIR res)
+    SET(PRESETS_INSTALL_DIR presets)
+ELSEIF(APPLE)
+    SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/lib)
+    SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/bin)
+    SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
+    SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
+    SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
+ELSE(APPLE)
+    #SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Frameworks)
+    #SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/MacOS)
+    #SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
+    #SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
+    #SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
+ENDIF(WIN32)
+
+
 #ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
 ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 #add_definitions(/DBOOST_AUTO_LINK_NOMANGLE)
@@ -256,66 +284,38 @@ add_custom_target(release
   COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
 )
 
+
+
 INSTALL(TARGETS mhive
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
-
-
-
-
-
-
-
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web/
-  DESTINATION ./web
+  DESTINATION ${WEB_INSTALL_DIR}
   USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE)
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
-  DESTINATION ./res
+  DESTINATION ${RES_INSTALL_DIR}
   USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE
   )
 #CONFIGURE_FILE(${CMAKE_INSTALL_PREFIX}/res/logging.properties ${CMAKE_INSTALL_PREFIX}/res/logging.properties)
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/presets/
-  DESTINATION ./presets
+  DESTINATION ${PRESETS_INSTALL_DIR}
 #  USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE)
 
-#INSTALL(FILES 
-#	${PROJECT_SOURCE_DIR}/sql/hive-0.0.3.sql
-#	${PROJECT_SOURCE_DIR}/sql/hive-0.0.4.sql
-#	${PROJECT_SOURCE_DIR}/sql/hive-0.0.5.sql
-#	${PROJECT_SOURCE_DIR}/sql/hive-0.0.6.sql
-# DESTINATION ./sql
-#  )
-#INSTALL(FILES 
-#  ${PROJECT_SOURCE_DIR}/sql/codec.txt
-#  ${PROJECT_SOURCE_DIR}/sql/CreateDatabase.sql
-#  DESTINATION ./sql
-#  )
-#INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/config.txt
-#  DESTINATION ./sql
-#  )
-#INSTALL(FILES ${PROJECT_SOURCE_DIR}/sql/profiles.txt
-#  DESTINATION ./sql
-#  )
 IF(NOT WIN32)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/mectl
-    DESTINATION ./bin
+    DESTINATION ${BIN_INSTALL_DIR}
+    PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
   )
 ENDIF(NOT WIN32)
 
 IF(WIN32)
-#  INSTALL(FILES ${MYSQL_LIBRARY_DIR}/libmysqld.dll
-#    DESTINATION ./bin
-#    )
-#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-#    DESTINATION ./res
-#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/avcodec-52.dll
       ${FFMPEG_DIR}/lib/avcore-0.dll
@@ -324,12 +324,9 @@ IF(WIN32)
       ${FFMPEG_DIR}/lib/avutil-50.dll
       ${FFMPEG_DIR}/lib/swscale-0.dll
       ${CURL_DIR}/lib/libcurl-4.dll
-    DESTINATION ./bin
+    DESTINATION ${LIB_INSTALL_DIR}
     )
 ELSEIF(APPLE)
-#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-#    DESTINATION ./res
-#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.dylib
       ${FFMPEG_DIR}/lib/libavcore.dylib
@@ -338,12 +335,9 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
       ${CURL_DIR}/lib/libcurl.4.dylib
-    DESTINATION ./lib
+    DESTINATION ${LIB_INSTALL_DIR}
   )
 ELSE(APPLE)
-#  INSTALL(FILES ${MYSQL_DIR}/share/english/errmsg.sys
-#    DESTINATION ./res
-#    )
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
       ${FFMPEG_DIR}/lib/libavdevice.so.52
@@ -352,13 +346,7 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavcore.so.0
       ${FFMPEG_DIR}/lib/libswscale.so.0
       ${CURL_DIR}/lib/libcurl.so.4
-    DESTINATION ./lib
+    DESTINATION ${LIB_INSTALL_DIR}
     )
-#  INSTALL(FILES
-#      ${MYSQL_DIR}/bin/mysqld
-#    DESTINATION ./bin
-#    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-#    )
-
 ENDIF(WIN32)
 

@@ -141,8 +141,14 @@ namespace org {
 
       void PresetList::selectionChanged() {
         if (selectedRows().size() > 0) {
-          std::string file = boost::any_cast<string > (model()->data(selectedRows()[0], 0));
-          presetSelected.emit(org::esb::config::Config::get("preset.path") + "/" + file);
+          std::vector<int> rows=selectedRows();
+          std::vector<int>::iterator ids=rows.begin();
+          std::list<std::string> files;
+          for(;ids!=rows.end();ids++){
+            std::string file = boost::any_cast<string > (model()->data((*ids), 0));
+            files.push_back(org::esb::config::Config::get("preset.path") + "/" + file);
+          }
+          presetSelected.emit(files);
           edit_button->setEnabled(true);
           //delete_button->setEnabled(true);
         }

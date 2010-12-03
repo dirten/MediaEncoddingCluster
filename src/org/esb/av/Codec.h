@@ -103,6 +103,7 @@ class SampleFormat;*/
         int64_t getFrameBytes();
         int setCodecOption(std::string opt, std::string arg);
         std::string getCodecOption(std::string opt);
+        std::map<std::string, std::string> getCodecOptions();
         Format getOutputFormat();
         Format getInputFormat();
         void setOutputFormat(Format);

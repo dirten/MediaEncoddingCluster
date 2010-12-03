@@ -22,7 +22,7 @@ namespace org {
           LOGERROR("Preset File does not exist! " <<filename);
           return;
         }
-        LOGINFO("reading presets from "<<filename);
+        //LOGINFO("reading presets from "<<filename);
         org::esb::av::FormatBaseStream::initialize();
         org::esb::io::FileInputStream fis(filename);
         std::string data;
@@ -62,7 +62,7 @@ namespace org {
             continue;
           }
           std::string value = param->first_attribute("value")->value();
-          LOGDEBUG(" name=" << name << " value=" << value);
+          //LOGDEBUG(" name=" << name << " value=" << value);
           _preset[name] = value;
         }
 
@@ -73,8 +73,10 @@ namespace org {
           handleCodec(codec);
         }
         xml_node<>*filters = preset->first_node("filters");
-        for (xml_node<>*filter = filters->first_node("filter"); filter; filter = filter->next_sibling("filter")) {
-          handleFilter(filter);
+        if(filters){
+          for (xml_node<>*filter = filters->first_node("filter"); filter; filter = filter->next_sibling("filter")) {
+            handleFilter(filter);
+          }
         }
       }
 
@@ -129,7 +131,7 @@ namespace org {
             continue;
           }
           std::string value = param->first_attribute("value")->value();
-          LOGDEBUG("type=" << type << " name=" << name << " value=" << value);
+          //LOGDEBUG("type=" << type << " name=" << name << " value=" << value);
           _codecs[type].insert(std::pair<std::string, std::string>(name, value));
         }
       }

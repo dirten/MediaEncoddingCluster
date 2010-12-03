@@ -136,6 +136,15 @@ namespace org {
         for (xml_attribute<> *attr = ogn->first_attribute(); attr; attr = attr->next_attribute()) {
           data[attr->name()] = attr->value();
         }
+        if(data.count("required")){
+          if(data["required"]=="true"){
+            LOGDEBUG("setting "<<data["id"]<< " to true");
+            _require_map[data["id"]]="true";
+          }else{
+            LOGDEBUG("setting "<<data["id"]<< " to false");
+            _require_map[data["id"]]="false";
+          }
+        }
         xml_node<>*control = ogn->first_node("control");
         std::string type = control->first_attribute("type")->value();
         if (type == "TextBox") {
@@ -239,17 +248,20 @@ namespace org {
         Wt::Ext::LineEdit * text = new Wt::Ext::LineEdit();
         _elements[data["id"]] = text;
         Wt::WTable * table = new Wt::WTable();
-        table->elementAt(0, 0)->addWidget(new Wt::WText(data["title"] + ":"));
+        Wt::WText * text_tmp=new Wt::WText(data["title"] + ":");
+        //text_tmp->setToolTip("bla fasel");
+        table->elementAt(0, 0)->addWidget(text_tmp);
         table->elementAt(0, 0)->resize(200, Wt::WLength());
         table->elementAt(0, 1)->addWidget(text);
         Wt::WLabel * label = new Wt::WLabel();
 
-        label->resize(50,Wt::WLength());
+        label->resize(50, Wt::WLength());
+        //label->setToolTip(std::string("tooltip now"));
         table->elementAt(0, 2)->addWidget(label);
-        Wt::WImage * spacer=new Wt::WImage("icons/s.gif");
-        spacer->resize(10,10);
+        Wt::WImage * spacer = new Wt::WImage("icons/s.gif");
+        spacer->resize(10, 10);
         label->setImage(spacer);
-        label->setText(""+data["unit"]);
+        label->setText("" + data["unit"]);
         if (data.count("optionGroupId") > 0) {
           if (_elements.count(data["optionGroupId"]) > 0) {
             ((GroupBox*) _elements[data["optionGroupId"]])->addWidget(table);
@@ -260,10 +272,11 @@ namespace org {
           _grid->addWidget(table, _grid->rowCount(), 0);
         }
         text->setObjectName(data["id"]);
+        table->setObjectName(data["id"]);
         text->resize(200, Wt::WLength());
         //_dataChangedSignalMap.mapConnect(text->keyWentUp(),text);
         _dataChangedSignalMap.mapConnect(text->changed(), text);
-        
+
         if (_data_map.count(data["id"]) > 0) {
           text->setText(_data_map[data["id"]]);
         } else {
@@ -305,8 +318,9 @@ namespace org {
         }
 
         box->setObjectName(data["id"]);
+        table->setObjectName(data["id"]);
         if (_data_map.count(data["id"]) > 0) {
-          box->setChecked(atoi(_data_map[data["id"]].c_str())!=0);
+          box->setChecked(atoi(_data_map[data["id"]].c_str()) != 0);
         } else {
           box->setChecked(atoi(data["default"].c_str()));
           _data_map[data["id"]] = data["default"];
@@ -368,6 +382,7 @@ namespace org {
         }
         combo->setModel(model);
         combo->setObjectName(data["id"]);
+        table->setObjectName(data["id"]);
         combo->resize(200, Wt::WLength());
         combo->setTextSize(len);
         if (_data_map.count(data["id"]) > 0) {
@@ -407,6 +422,7 @@ namespace org {
           _grid->addWidget(table, _grid->rowCount(), 0);
         }
         slider->setObjectName(data["id"]);
+        table->setObjectName(data["id"]);
         slider->setMinimum(atoi(data["min"].c_str()));
         slider->setMaximum(atoi(data["max"].c_str()));
         if (_data_map.count(data["id"]) > 0) {
@@ -526,13 +542,43 @@ namespace org {
           //b->setHidden(!enable || b->parent()->parent()->parent()->isHidden());
           b->setDisabled(!enable || b->parent()->parent()->parent()->isHidden());
           b->setHiddenKeepsGeometry(true);
-          
+
         }
         if (instanceOf(*element, GroupBox)) {
+          LOGDEBUG("GroupBox Instance");
           GroupBox * b = static_cast<GroupBox*> (element);
           b->setHidden(!enable);
           b->setHiddenKeepsGeometry(true);
+          std::list<std::string> names=b->getChildrenObjectNames();
+          /**iterate over all childs*/
+          std::list<std::string>::iterator cit=names.begin();
+          for(;cit!=names.end();cit++){
+            std::string name = *cit;
+            if (!enable) {
+              if(_require_map[name]!="true"){
+                //_full_data_map[name]=_data_map[name];
+                int elements_removed = _data_map.erase(name);
+                LOGDEBUG("disabled elements removed count = " << elements_removed);
+              }
+            } else {
+              internalDataChanged(_elements[name]);
+            }
+          }
         }
+        /**
+         * removing disabled or adding enabled data from/to element map
+         */
+        if (!enable) {
+          std::string name = element->objectName();
+          if(_require_map[name]!="true"){
+            _full_data_map[name]=_data_map[name];
+            int elements_removed = _data_map.erase(name);
+            LOGDEBUG("disabled elements removed count = " << elements_removed);
+          }
+        } else {
+          internalDataChanged(element);
+        }
+
       }
 
       void GuiBuilder::init() {
@@ -566,23 +612,32 @@ namespace org {
         LOGDEBUG("Object" << obj);
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
-          _data_map[box->objectName()] = box->data(box->currentIndex(), 1);
+          //_full_data_map[obj->objectName()]=box->data(box->currentIndex(), 1);
+          if (box->isEnabled())
+            _data_map[box->objectName()] = box->data(box->currentIndex(), 1);
           LOGDEBUG("Combo key:" << box->objectName() << " val:" << box->data(box->currentIndex(), 1));
         } else
           if (instanceOf(*obj, Wt::Ext::LineEdit)) {
           Wt::Ext::LineEdit * box = static_cast<Wt::Ext::LineEdit*> (obj);
           std::string data = box->text().narrow();
-          _data_map[box->objectName()] = data.c_str();
+          //_full_data_map[obj->objectName()]=data.c_str();
+          if (box->isEnabled())
+            _data_map[box->objectName()] = data.c_str();
         } else
           if (instanceOf(*obj, Wt::WSlider)) {
           Wt::WSlider * box = static_cast<Wt::WSlider*> (obj);
-          _data_map[box->objectName()] = org::esb::util::StringUtil::toString(box->value());
+          //_full_data_map[obj->objectName()]=org::esb::util::StringUtil::toString(box->value());
+          if (box->isEnabled())
+            _data_map[box->objectName()] = org::esb::util::StringUtil::toString(box->value());
 
         } else
           if (instanceOf(*obj, Wt::WCheckBox)) {
           Wt::WCheckBox * box = static_cast<Wt::WCheckBox*> (obj);
-          _data_map[box->objectName()] = box->isChecked() ? "1" : "0";
-        }
+          //_full_data_map[obj->objectName()]=box->isChecked() ? "1" : "0";
+          if (box->isEnabled())
+            _data_map[box->objectName()] = box->isChecked() ? "1" : "0";
+          }
+
         dataChanged.emit();
       }
     }

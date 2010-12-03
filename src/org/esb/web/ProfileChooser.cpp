@@ -52,6 +52,7 @@ namespace org{
         _profile_table=Ptr<ProfileTable>(new ProfileTable());
         _presetList=new PresetList();
         _presetList->presetSelected.connect(SLOT(this, ProfileChooser::presetSelected));
+        _presetList->setSelectionMode(Wt::ExtendedSelection);
         layout()->addWidget(_presetList.get());
 
         /*
@@ -80,13 +81,13 @@ namespace org{
         return selected_profile_id;
       }
       
-      std::string ProfileChooser::getSelectedProfile(){
+      std::list<std::string> ProfileChooser::getSelectedProfile(){
         return _current_selected_preset;
       }
 
-      void ProfileChooser::presetSelected(std::string filename){
-        LOGDEBUG("Selected Preset Filename = "<<filename);
-        _current_selected_preset=filename;
+      void ProfileChooser::presetSelected(std::list<std::string> filenames){
+        //LOGDEBUG("Selected Preset Filename = "<<filenames);
+        _current_selected_preset=filenames;
       }
 
       void ProfileChooser::choose(){

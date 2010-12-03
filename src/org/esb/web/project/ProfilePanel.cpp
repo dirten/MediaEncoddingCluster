@@ -50,7 +50,7 @@ namespace org{
           setModel(new ProfileTableModel());
           setColumnWidth(0,50);
           setColumnWidth(1,300);
-          
+          setColumnHidden(0, true);
          
         }
         void refresh(){
@@ -75,6 +75,8 @@ namespace org{
         _profile_table->setSelectionBehavior(Wt::SelectRows);
         _profile_table->setSelectionMode(Wt::SingleSelection);
         _profile_table->itemSelectionChanged().connect(SLOT(this, ProfilePanel::enableButtons));
+        _profile_table->resizeColumnsToContents(true);
+        _profile_table->setAutoExpandColumn(1);
         layout()->addWidget(_profile_table.get());
 
         Wt::Ext::Button * addProfileButton = topToolBar()->addButton("Add Output Profile");
@@ -137,13 +139,18 @@ namespace org{
       }
 
       void ProfilePanel::profileChooserSelected(){
-        std::string p=_profile_chooser->getSelectedProfile();
-        org::esb::hive::PresetReader reader(p);
-        db::Preset preset(_project->getDatabase());
-        preset.filename=p;
-        preset.name=reader.getPreset()["name"];
-        preset.update();
-        _project->presets().link(preset);
+        _project->getDatabase().begin();
+        std::list<std::string> p=_profile_chooser->getSelectedProfile();
+        std::list<std::string>::iterator profiles=p.begin();
+        for(;profiles!=p.end();profiles++){
+          org::esb::hive::PresetReader reader((*profiles));
+          db::Preset preset(_project->getDatabase());
+          preset.filename=(*profiles);
+          preset.name=reader.getPreset()["name"];
+          preset.update();
+          _project->presets().link(preset);
+        }
+        _project->getDatabase().commit();
         _profile_table->setPresets(_project->presets().get().all());
         /*
         int c=_profile_chooser->getSelectedProfileId();

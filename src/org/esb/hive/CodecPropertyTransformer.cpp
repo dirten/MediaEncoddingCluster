@@ -41,7 +41,7 @@ namespace org {
         std::string frame_rate_num = "0";
         std::string frame_rate_den = "0";
         for (; it != data.end(); it++) {
-          LOGDEBUG("Processing Property " << (*it).first);
+          //LOGDEBUG("Processing Property " << (*it).first);
           std::string key;
           std::string value;
           if (_result.count((*it).first) > 0) {
@@ -50,7 +50,7 @@ namespace org {
             //_result[(*it).first] = (*it).second;
           } else
             if (_prop2parent.count((*it).first) > 0) {
-            LOGDEBUG("Properyt parent found : " << _prop2parent[(*it).first]);
+            //LOGDEBUG("Properyt parent found : " << _prop2parent[(*it).first]);
               key=_prop2parent[(*it).first];
               value=(*it).first;
             if ((*it).second.length() > 0 && (*it).second != "0"){
@@ -61,7 +61,7 @@ namespace org {
                 //_result[_prop2parent[(*it).first]].append("-").append((*it).first);
               }
           } else {
-            LOGWARN("Property \"" << (*it).first << "\" with value \"" << (*it).second << "\" is unknown!");
+            //LOGWARN("Property \"" << (*it).first << "\" with value \"" << (*it).second << "\" is unknown!");
           }
 
           if(_options.count(key)&&_options[key]->type==FF_OPT_TYPE_FLAGS){

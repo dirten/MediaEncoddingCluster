@@ -10,6 +10,7 @@
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/Thread.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
 using namespace org::esb::lang;
@@ -42,31 +43,16 @@ int main(int argc, char**argv) {
   DatabaseService::loadPresets();
   std::string docroot = base_path.append("/web");
   Config::setProperty("web.docroot", docroot.c_str());
-  {
-    db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-    db::MediaFile file(db);
-    file.path = "/tmp/test/path";
-    file.filename = "testfile.avi";
-    file.update();
-
-    db::Watchfolder w(db);
-
-    w.infolder = "/video";
-    w.outfolder = "/tmp";
-
-    w.update();
-
-
-  }
 
 
   w = new WebServer();
   w->start();
-
+  org::esb::lang::Thread::sleep2(1000);
   if (argc > 1)
     org::esb::lang::CtrlCHitWaiter::wait();
 
   w->stop();
+  org::esb::lang::Thread::sleep2(1000);
   delete w;
   org::esb::hive::DatabaseService::stop();
   Config::close();

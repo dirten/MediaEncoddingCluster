@@ -4,6 +4,7 @@
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include)
 
 add_library (grid
+  GridNode.cpp
   GridNodeServer.cpp
   protocol/ProtocolDispatcher.cpp
 )

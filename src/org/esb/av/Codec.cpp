@@ -549,6 +549,18 @@ namespace org {
         return result;
       }
 
+      std::map<std::string, std::string> Codec::getCodecOptions(){
+        std::map<std::string, std::string> result;
+        const AVOption *opt = NULL;
+        while ((opt = av_next_option(ctx, opt)) != NULL) {
+          int len = 1000;
+          char data[1000];
+          av_get_string(ctx, opt->name, NULL, data, len);
+          result[opt->name]=data;
+        }
+        return result;
+      }
+
       /*
       void Codec::setStartTime(int64_t start) {
         _start_time = start;

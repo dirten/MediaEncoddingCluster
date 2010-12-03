@@ -106,7 +106,7 @@ namespace org {
         tab->addTab(new org::esb::web::FormatPanel(_presetparameter), "Format");
         tab->addTab(new org::esb::web::VideoPanel(_videoparameter), "Video");
         tab->addTab(new org::esb::web::AudioPanel(_audioparameter), "Audio");
-        tab->addTab(new org::esb::web::PresetFilterPanel(_filterparameter), "Filter");
+        //tab->addTab(new org::esb::web::PresetFilterPanel(_filterparameter), "Filter");
 
         /*
         Wt::Ext::ToolBar * tb = NULL;

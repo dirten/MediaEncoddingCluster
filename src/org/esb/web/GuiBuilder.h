@@ -45,6 +45,7 @@ namespace org {
         Wt::WContainerWidget * _main;
         Wt::WGridLayout * _grid;
         std::map<std::string, std::string> & _data_map;
+        std::map<std::string, std::string>  _full_data_map;
         Wt::WSignalMapper<Wt::WObject*> *_enablerSignalMap;
         Wt::WSignalMapper<Wt::WObject*> _dataChangedSignalMap;
         Wt::WSignalMapper<Reference*> *_sliderSignalMap;
@@ -58,6 +59,7 @@ namespace org {
         void elementEnable(Wt::WWidget * element,bool enable);
         std::map<std::string,std::map<std::string,std::list<std::string> > > _enablerMap;
         std::map<std::string,std::map<std::string,std::list<std::map<std::string, std::string> > > > _optionDataMap;
+        std::map<std::string, std::string> _require_map;
       };
     }
   }

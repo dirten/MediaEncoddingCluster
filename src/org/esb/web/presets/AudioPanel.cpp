@@ -26,13 +26,13 @@ namespace org {
         setLayout(l);
 
         std::set<std::string> avail_codecs;
-        if(_parameter.count("available_codecs")>0){
-          LOGDEBUG("Available codes"<<_parameter["available_codecs"]);
-          org::esb::util::StringTokenizer st(_parameter["available_codecs"],",");
-          while(st.hasMoreTokens()){
-            std::string codec_id=st.nextToken();
+        if (_parameter.count("available_codecs") > 0) {
+          LOGDEBUG("Available codes" << _parameter["available_codecs"]);
+          org::esb::util::StringTokenizer st(_parameter["available_codecs"], ",");
+          while (st.hasMoreTokens()) {
+            std::string codec_id = st.nextToken();
             avail_codecs.insert(codec_id);
-            LOGDEBUG("avalable codec list"<<codec_id);
+            LOGDEBUG("avalable codec list" << codec_id);
           }
         }
 
@@ -40,14 +40,18 @@ namespace org {
          * Combobox for the Codec Selector
          */
         KeyValueModel * codec_model = new KeyValueModel();
-        codec_model->addModelData("noaudio","No Audio");
-        codec_model->addModelData("copy","Stream Copy");
+        codec_model->addModelData("noaudio", "No Audio");
+        codec_model->addModelData("copy", "Stream Copy");
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == CODEC_TYPE_AUDIO) {
-            //if(avail_codecs.count(codec->name)>0)
+            if (avail_codecs.count(codec->name) > 0) {
               codec_model->addModelData(codec->name, codec->long_name);
+            } else {
+              if (avail_codecs.size() == 0)
+                codec_model->addModelData(codec->name, codec->long_name);
+            }
           }
         }
 
@@ -97,7 +101,7 @@ namespace org {
 
       void AudioPanel::setCodecGui(std::string codecid) {
         LOGDEBUG("CodecId=" << codecid);
-        
+
         _parameter["codec_id"] = codecid;
         std::string path = org::esb::config::Config::get("hive.base_path");
         std::string file = path;

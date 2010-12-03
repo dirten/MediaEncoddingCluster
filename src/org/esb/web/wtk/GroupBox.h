@@ -16,6 +16,8 @@ namespace org {
       public:
         GroupBox();
         virtual ~GroupBox();
+        void setHidden(bool);
+        std::list<std::string> getChildrenObjectNames();
       private:
 
       };
