@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <profiles>
+    <profile>
+      <id>win32</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <my.family>win32</my.family>
+        <target>ntx86</target>
+        <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>Linux</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>linux</my.family>
+        <target>linuxx86</target>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>mac</my.family>
+        <target>macosxx86</target>
+        <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <name>Solaris</name>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <my.family>solaris</my.family>
+        <target>solaris</target>
+        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+      </properties>
+    </profile>
+  </profiles>
+  <groupId>org.esb.wxwidgets</groupId>
+  <artifactId>wxwidgets</artifactId>
+  <version>2.9.1</version>
+  <name>wxwidgets</name>
+  <url>http://maven.apache.org</url>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>esb-repo</id>
+      <url>http://codergrid.de/repository</url>
+    </repository>
+  </repositories>
+                        
+  <build>
+    <extensions>
+      <!-- Enabling the use of FTP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-beta-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+    <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeTypes>zip</includeTypes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="source"/>
+                <mkdir dir="source/build"/>
+                <mkdir dir="win32"/>
+                <get src="http://prdownloads.sourceforge.net/wxwindows/wxWidgets-2.9.1.tar.bz2"
+                     dest="source/wxWidgets-2.9.1.tar.bz2"
+                     verbose="true" usetimestamp="true"/>
+                <bunzip2 src="source/wxWidgets-2.9.1.tar.bz2" dest="source"/>
+		<untar src="source/wxWidgets-2.9.1.tar" dest="source" overwrite="false"/>
+                <mkdir dir="source/wxWidgets-2.9.1/build"/>
+		<pathconvert property="mybasedir" targetos="unix">
+                  <path location="${project.basedir}"/>
+                </pathconvert>
+
+                <exec executable="sh" dir="source/wxWidgets-2.9.1" failonerror="yes">
+                  <arg line="${mybasedir}/source/wxWidgets-2.9.1/configure --prefix=${mybasedir}/source/build/wxwidgets --disable-shared --enable-static"/>
+                </exec>
+                <exec executable="make" dir="${project.basedir}/source/wxWidgets-2.9.1" failonerror="yes">
+                </exec>
+                <exec executable="make" dir="${project.basedir}/source/wxWidgets-2.9.1" failonerror="yes">
+                  <arg line="install"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-wxwidgets.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
