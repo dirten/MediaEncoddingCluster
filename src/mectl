@@ -32,7 +32,9 @@ MHIVE_BASE=$BASE_PATH
 #when we are on a mac then all is installed into the Resource subdirectory
 if [ `uname` == Darwin ]
 then
-    MHIVE_BASE=$MHIVE_BASE/Resources
+    export DYLD_LIBRARY_PATH=$BASE_PATH/lib
+    MHIVE_BASE=$MHIVE_BASE/../Resources
+    
 fi
 
 if [ ! -d /usr/bin ]
@@ -137,6 +139,11 @@ case "$1" in
             ;;
     'status')
             status_runtime
+            ;;
+    'install')
+            # Start the MHive Runtime
+            #
+            exec $MHIVE_BASE/bin/mhive --install
             ;;
     *)
       usage

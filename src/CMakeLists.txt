@@ -103,7 +103,7 @@ IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
     target_link_libraries (mhiveservice io lang util)
     INSTALL(TARGETS mhiveservice
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
@@ -123,7 +123,7 @@ IF(BUILD_MHIVECLIENT)
       net
     )
     INSTALL(TARGETS mhiveclient
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVECLIENT)
@@ -138,7 +138,7 @@ IF(BUILD_MHIVEMASTER)
       mq
     )
     INSTALL(TARGETS mhivemaster
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVEMASTER)
@@ -154,7 +154,7 @@ IF(BUILD_MHIVEQUEUE)
     add_executable (mhivequeue MHiveQueue.cpp)
     target_link_libraries (mhivequeue mq)
     INSTALL(TARGETS mhivequeue
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVEQUEUE)
@@ -163,7 +163,7 @@ IF(BUILD_MHIVEREADER)
     add_executable (mhivereader MHiveReader.cpp)
     target_link_libraries (mhivereader lang esb util)
     INSTALL(TARGETS mhivereader
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVEREADER)
@@ -172,7 +172,7 @@ IF(BUILD_MHIVEWRITER)
     add_executable (mhivewriter MHiveWriter.cpp)
     target_link_libraries (mhivewriter lang)
     INSTALL(TARGETS mhivewriter
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVEWRITER)
@@ -181,7 +181,7 @@ IF(BUILD_MHIVECORE)
     add_executable (mhivecore MHiveCore.cpp)
     target_link_libraries (mhivecore lang hive web)
     INSTALL(TARGETS mhivecore
-        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVECORE)
@@ -340,6 +340,10 @@ ELSEIF(APPLE)
       ${CURL_DIR}/lib/libcurl.4.dylib
     DESTINATION ${LIB_INSTALL_DIR}
   )
+  #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink ${BIN_INSTALL_DIR}/mectl ${BIN_INSTALL_DIR}/mectl123)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND mkdir ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../MacOS)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND ln -s ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mectl ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../MacOS/mectl)")
+  INSTALL(CODE "MESSAGE(\"test Message\")")
 ELSE(APPLE)
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
