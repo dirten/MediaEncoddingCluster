@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<preset name="Apple TV x264(720p) aac(160kb 48kHz stereo)">
+    <format id="ipod">
+	<param name="fileExtension" value="m4v"/>
+    </format>
+    <codec type="video" id="libx264">
+	<param name="b" value="4400000"/>
+	<param name="maxrate" value="5280000"/>
+	<param name="g" value="66"/>
+	<param name="loop" value="1"/>
+	<param name="qmin" value="10"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="coder" value="0"/>
+	<param name="bf" value="2"/>
+	<param name="refs" value="3"/>
+	<param name="wpred" value="0"/>
+	<param name="dct8x8" value="0"/>
+	<param name="level" value="13"/>
+	<param name="wpredp" value="0"/>
+	<param name="me_range" value="16"/>
+	<param name="time_base" value="1/25"/>
+	<param name="aspect" value="64/45"/>
+	<param name="picture_frame_size" value="720p"/>
+        <param name="width" value="1280"/>
+	<param name="height" value="720"/>
+    </codec>
+    <codec type="audio" id="aac">
+	<param name="ab" value="160000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="48000"/>
+    </codec>
+</preset>

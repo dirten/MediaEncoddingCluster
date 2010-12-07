@@ -8,7 +8,32 @@
 #
 # chkconfig: 2345 80 30
 # description: MHive Service
-MHIVE_BASE=%MHIVE_BASE%
+
+SELF=$0
+STATUS=-100
+# check if self is a symlink
+if [ -h $SELF  ]
+then
+    SELF=`ls -l $FELF | awk '{print $11}'`
+    BASE_PATH=`dirname $SELF`/..
+    
+else
+
+    if [ `expr index "$SELF" /` -gt 1 ]; then
+        BASE_PATH=`pwd`/
+    fi
+    BASE_PATH=$BASE_PATH`dirname $SELF`/..
+    cd $BASE_PATH
+    BASE_PATH=`pwd`
+fi
+
+MHIVE_BASE=$BASE_PATH
+
+#when we are on a mac then all is installed into the Resource subdirectory
+if [ `uname` == Darwin ]
+then
+    MHIVE_BASE=$MHIVE_BASE/Resources
+fi
 
 if [ ! -d /usr/bin ]
 then                    # /usr not mounted
@@ -64,7 +89,8 @@ start_server(){
   cd $MHIVE_BASE
     if status_runtime; then
       echo "starting mhive"
-      $MHIVE_BASE/bin/mhiveservice &> /dev/null
+      $MHIVE_BASE/bin/mhiveservice & > /dev/null
+      STATUS=$?
       else
         echo "MHive Service is allready running!"
         return
@@ -78,6 +104,7 @@ run_server(){
 
 stop_server(){
   killproc $MHIVE_BASE/bin/mhiveservice
+  STATUS=$?
 }
 
 
@@ -86,6 +113,12 @@ case "$1" in
             # Start the MHive Runtime
             #
             start_server
+            if [ $STATUS == 0 ]
+	    then
+	        kdialog --msgbox "Media Encoding Cluster Server is running\nopen the webpage on http://localhost:8080 now"
+	    else
+	        kdialog --error "failed to start Media Encoding Cluster Server\nhave a look into the generated logfiles under $MHIVE_BASE"
+	    fi
             ;;
     'run')
             # Start the MHive Runtime
@@ -94,6 +127,13 @@ case "$1" in
             ;;
     'stop')
             stop_server
+            if [ $STATUS == 0 ]
+	    then
+	        kdialog --msgbox "Media Encoding Cluster Server is stopped now!"
+	    else
+	        kdialog --error "failed to stop Media Encoding Cluster Server\nhave a look into the generated logfiles under $MHIVE_BASE"
+	    fi
+
             ;;
     'status')
             status_runtime

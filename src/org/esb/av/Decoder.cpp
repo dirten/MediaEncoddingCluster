@@ -251,7 +251,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
             << " ptb=" << packet.getTimeBase().num << "/" << packet.getTimeBase().den);
   }
   LOGDEBUG("DecodingLength:" << len << " PacketSize:" << packet.getSize() << "SampleSize:" << samples_size << "FrameSize:" << ctx->frame_size * ctx->channels);
-  if (len < 0) {
+  if (len < 0 ||ctx->channels<=0||samples_size<=0) {
     LOGERROR("Error while decoding audio Frame");
     av_free(outbuf);
     return new Frame();
@@ -281,6 +281,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->setTimeBase(AV_TIME_BASE_Q);
 #else
   //  int64_t dur = av_rescale_q(samples_size, packet.getTimeBase(), ar);
+  //samples_size=max(1,samples_size);
   int64_t dur = ((int64_t) AV_TIME_BASE / bps * samples_size) / (ctx->sample_rate * ctx->channels);
   AVRational arbase;
   arbase.num = 1;

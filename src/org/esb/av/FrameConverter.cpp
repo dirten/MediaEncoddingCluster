@@ -270,7 +270,7 @@ namespace org {
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
         out_frame.setDuration(out_size);
-        last_insamples=in_frame._size/ ((in_frame.channels/_enc->getChannels()) * isize);
+        last_insamples=in_frame._size/ (/*(in_frame.channels/_enc->getChannels()) */ isize);
         last_outsamples=out_frame._size/osize;
       }
     }

@@ -75,6 +75,7 @@ void listener(int argc, char * argv[]);
 void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 void start();
+void start_auto(int argc, char * argv[]);
 int rec = 0;
 
 int main(int argc, char * argv[]) {
@@ -129,6 +130,7 @@ int main(int argc, char * argv[]) {
     ser.add_options()
             ("daemon,d", "start the Hive as Daemon Process")
             ("run,r", "start the Hive as Console Process")
+            ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
             ("db",po::value<std::string > ()->default_value("database="+base_path+"/data/hive.db"), "connect to the db")
             ;
 
@@ -259,6 +261,10 @@ int main(int argc, char * argv[]) {
       Config::setProperty("client.port", Decimal(vm["port"].as<int> ()).toString().c_str());
       Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
       client(argc, argv);
+    }
+    if (vm.count("auto")) {
+      LOGDEBUG("start mhive server in auto mode, first node will be startup as server");
+      start_auto(argc, argv);
     }
 
     if (vm.count("version")) {
@@ -497,5 +503,39 @@ void listener(int argc, char *argv[]) {
   /**starting the server main services*/
   start();
 
+}
+
+void start_auto(int argc, char *argv[]){
+  /*first find out if there is running a server*/
+  org::esb::hive::Node node;
+  node.setData("type", "searcher");
+  org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  res.start();
+  LOGDEBUG("Waiting 3 secs. to find all online nodes");
+  org::esb::lang::Thread::sleep2(3000);
+  org::esb::hive::NodeResolver::NodeList nodes=res.getNodes();
+  org::esb::hive::NodeResolver::NodeList::iterator nodeit=nodes.begin();
+  bool server_running=false;
+  int client_count=0;
+  for(;nodeit!=nodes.end();nodeit++){
+    LOGDEBUG((*nodeit)->toString());
+    LOGDEBUG("NodeType"<<(*nodeit)->getData("type"));
+    if((*nodeit)->getData("type")=="server")
+      server_running=true;
+    if((*nodeit)->getData("type")=="client")
+      client_count++;
+  }
+  res.stop();
+  if(server_running){
+    LOGDEBUG("server found, starting a new client");
+    client(argc, argv);
+  }else{
+    LOGDEBUG("server not found, starting a server");
+    if(client_count < 3){
+      LOGDEBUG("starting client too!");
+      boost::thread t(&client, argc, argv);
+    }
+    listener(argc, argv);
+  }
 }
 

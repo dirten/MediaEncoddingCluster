@@ -132,7 +132,7 @@
                 </pathconvert>
 
                 <exec executable="sh" dir="source/wxWidgets-2.9.1" failonerror="yes">
-                  <arg line="${mybasedir}/source/wxWidgets-2.9.1/configure --prefix=${mybasedir}/source/build/wxwidgets --disable-shared --enable-static"/>
+                  <arg line="${mybasedir}/source/wxWidgets-2.9.1/configure --prefix=${mybasedir}/source/build/wxwidgets --disable-shared --enable-static --enable-monolithic"/>
                 </exec>
                 <exec executable="make" dir="${project.basedir}/source/wxWidgets-2.9.1" failonerror="yes">
                 </exec>

@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<guis>
+  <gui helpLink="encoder_mp4v.html">
+    <plugin impl="pw_encoder_video_mc_mpeg4_handler.so" class="Mpeg4Handler"/>
+    <options>
+      <!--Tabs-->
+      <optiontab id="general" title="General"/>
+      <optiontab id="advance" title="Advanced"/>
+      <!--Groups-->
+      <optiongroup id="picture_settings" title="Picture settings"/>
+      <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
+
+      <option id="time_base" type="string" default="1/25" title="Frame Rate" optionGroupId="picture_settings" unit="fps">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="1/10" value="1/10">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="10"/>
+            </optiondata>
+          </item>
+          <item title="1/15" value="1/15">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="15"/>
+            </optiondata>
+          </item>
+          <item title="23,97" value="1000/23976">
+            <optiondata>
+              <data option="frame_rate_num" value="1000"/>
+              <data option="frame_rate_den" value="23976"/>
+            </optiondata>
+          </item>
+          <item title="1/24" value="1/24">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="24"/>
+            </optiondata>
+          </item>
+          <item title="1/25" value="1/25">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="25"/>
+            </optiondata>
+          </item>
+          <item title="29,97" value="100/2997">
+            <optiondata>
+              <data option="frame_rate_num" value="100"/>
+              <data option="frame_rate_den" value="2997"/>
+            </optiondata>
+          </item>
+          <item title="1/30" value="1/30">
+            <optiondata>
+              <data option="frame_rate_num" value="1"/>
+              <data option="frame_rate_den" value="30"/>
+            </optiondata>
+          </item>
+          <item title="Custom" value="0">
+          <enables>
+            <option>frame_rate_num</option>
+            <option>frame_rate_den</option>
+          </enables>
+          </item>
+        </list>
+      </option>
+      <option id="frame_rate_num" title="Frame Rate Numerator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
+        <control type="TextBox"></control>
+      </option>
+      <option id="frame_rate_den" title="Frame Rate Denuminator" type="int" min="1" max="10000" default="20" optionGroupId="picture_settings">
+        <control type="TextBox"></control>
+      </option>
+
+      <option id="qscale" type="string" default="0" title="Rate Control" optionGroupId="bandwidth_settings" unit="fps">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Bitrate Control" value="0">
+          <enables>
+            <option>b</option>
+          </enables>
+          </item>
+          <item title="Quality Control" value="1">
+          <enables>
+            <option>global_quality</option>
+          </enables>
+          </item>
+        </list>
+      </option>
+
+      <option id="b" title="Average Bit Rate" type="float" min="0" max="100000" default="300" optionGroupId="bandwidth_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+
+      <option id="g" title="GOP Length" type="int" min="25" max="500" default="250" optionGroupId="bandwidth_settings">
+        <control type="TrackBar"/>
+        <format value="%.2f" />
+      </option>
+      <option id="global_quality" title="Quality" type="int" min="0" max="10" default="4" optionGroupId="bandwidth_settings">
+        <control type="TrackBar"/>
+      </option>
+
+    </options>
+  </gui>
+</guis>

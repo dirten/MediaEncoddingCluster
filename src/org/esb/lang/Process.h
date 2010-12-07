@@ -22,7 +22,7 @@ namespace org {
         classlogger("org.esb.lang.Process");
       public:
         Process(std::string e, std::list<std::string> args=std::list<std::string>(), std::string name=std::string());
-        Process(const Process& orig);
+        //Process(const Process& orig);
         virtual ~Process();
         void start();
         void run(bool restartable=false);

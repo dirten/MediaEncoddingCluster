@@ -30,6 +30,7 @@
 #define	_NODERESOLVER_H
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/mutex.hpp>
 #include <list>
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
@@ -137,7 +138,7 @@ namespace org {
           NODE_DOWN
         };
         void notifyListener(Node & n);
-
+        boost::mutex notify_mutex;
       };
     }
   }

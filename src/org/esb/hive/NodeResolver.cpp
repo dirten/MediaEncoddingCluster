@@ -217,6 +217,10 @@ namespace org {
       }
 
       void NodeResolver::start() {
+        std::list<Ptr<Node> >::iterator it = _nodes.begin();
+        for (; it != _nodes.end(); it++) {
+              notifyListener(*(*it));
+        }
         boost::thread recv_thread(boost::bind(&boost::asio::io_service::run, &recv_service_));
         boost::thread send_thread(boost::bind(&boost::asio::io_service::run, &send_service_));
       }
@@ -237,13 +241,22 @@ namespace org {
         return _nodes;
       }
 
+      void NodeResolver::stop() {
+        recv_service_.stop();
+        send_service_.stop();
+      }
+
       void NodeResolver::notifyListener(Node & node) {
+        //LOGDEBUG("Notify:"<<node.toString()<<":"<<node.getData("type"))
+        boost::mutex::scoped_lock lock(notify_mutex);
         std::list<NodeListener*>::iterator it = _listener.begin();
         for (; it != _listener.end(); it++) {
           if (node._status == Node::NODE_UP) {
+            LOGDEBUG("NotifyNodeUp:"<<node.toString())
             (*it)->onNodeUp(node);
           }
           if (node._status == Node::NODE_DOWN) {
+            LOGDEBUG("NotifyNodeDown:"<<node.toString())
             (*it)->onNodeDown(node);
           }
         }

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<preset name="MP4 x264(1280x720 786kb hq) mp3(128kb 44.1kHz stereo)">
+    <format id="mp4">
+	<param name="fileExtension" value="mp4"/>
+	<param name="author" value="MediaEncodingCluster"/>
+    </format>
+    <codec type="video" id="libx264">
+	<param name="b" value="768000"/>
+	<param name="coder" value="1"/>
+	<param name="psnr" value="1"/>
+	<param name="loop" value="1"/>
+	<param name="cmp" value="chroma"/>
+	<param name="parti8x8" value="1"/>
+	<param name="parti4x4" value="1"/>
+	<param name="partp8x8" value="1"/>
+	<param name="partb8x8" value="1"/>
+	<param name="me_method" value="umh"/>
+	<param name="subq" value="8"/>
+	<param name="me_range" value="16"/>
+	<param name="g" value="250"/>
+	<param name="keyint_min" value="25"/>
+	<param name="sc_threshold" value="40"/>
+	<param name="i_qfactor" value="0.71"/>
+	<param name="b_strategy" value="2"/>
+	<param name="qcomp" value="0.6"/>
+	<param name="qmin" value="2"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="bf" value="3"/>
+	<param name="refs" value="4"/>
+	<param name="directpred" value="3"/>
+	<param name="trellis" value="1"/>
+	<param name="wpred" value="1"/>
+	<param name="mixed_refs" value="1"/>
+	<param name="dct8x8" value="1"/>
+	<param name="fastpskip" value="1"/>
+	<param name="wpredp" value="2"/>
+	<param name="picture_frame_size" value="720p"/>
+	<param name="time_base" value="1/25"/>
+	<param name="global_header" value="1"/>
+    	<param name="width" value="1280"/>
+    	<param name="height" value="720"/>
+    </codec>
+    <codec type="audio" id="libmp3lame">
+	<param name="ab" value="128000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="44100"/>
+	<param name="global_header" value="1"/>
+    </codec>
+</preset>

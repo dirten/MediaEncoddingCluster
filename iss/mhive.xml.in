@@ -68,7 +68,7 @@
             </ruleList>
             <substitutionList>
                 <substitution>
-                    <pattern>%MHIVE_BASE%</pattern>
+                    <pattern>@MHIVE_BASE@</pattern>
                     <value>${installdir}</value>
                 </substitution>
             </substitutionList>
@@ -80,7 +80,7 @@
             <type>regexp</type>
             <substitutionList>
                 <substitution>
-                    <pattern>%MHIVE_BASE%</pattern>
+                    <pattern>@MHIVE_BASE@</pattern>
                     <value>${installdir}</value>
                 </substitution>
             </substitutionList>

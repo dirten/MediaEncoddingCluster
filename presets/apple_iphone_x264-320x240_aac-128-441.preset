@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<preset name="Apple Iphone x264(320x240) aac(128kb 44.1kHz stereo)">
+    <format id="ipod">
+	<param name="fileExtension" value="m4v"/>
+    </format>
+    <codec type="video" id="libx264">
+	<param name="b" value="600000"/>
+	<param name="maxrate" value="760000"/>
+	<param name="bufsize" value="244000"/>
+	<param name="g" value="250"/>
+	<param name="qmin" value="10"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="coder" value="0"/>
+	<param name="bf" value="2"/>
+	<param name="wpred" value="1"/>
+	<param name="dct8x8" value="0"/>
+	<param name="level" value="13"/>
+	<param name="wpredp" value="0"/>
+	<param name="me_range" value="16"/>
+	<param name="me_method" value="full"/>
+	<param name="time_base" value="1/25"/>
+	<param name="aspect" value="64/45"/>
+	<param name="picture_frame_size" value="320x240"/>
+    	<param name="width" value="320"/>
+    	<param name="height" value="240"/>
+    	<param name="refs" value="1"/>
+    	<param name="subq" value="6"/>
+    </codec>
+    <codec type="audio" id="aac">
+	<param name="ab" value="128000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="44100"/>
+    </codec>
+</preset>

@@ -27,372 +27,64 @@
 #include <stdlib.h>
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
-#if !defined(_WIN32)
-#include <unistd.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <signal.h>
-#else
-#include <windows.h>
-#include <tchar.h>
-#include <strsafe.h>
-#include "client/windows/handler/exception_handler.h"
-#endif  // !_WIN32
-
+#include "org/esb/lang/CtrlCHitWaiter.h"
+#include "org/esb/lang/ProcessException.h"
 #include <iostream>
 #include <string>
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/Properties.h"
 #include "org/esb/util/Log.h"
-#ifdef WIN32
+#include "org/esb/lang/Process.h"
+//#include < linux/kernel.h >
+//#include < linux/sched.h >
+//#include < linux/module.h >
 
-boost::mutex terminationMutex;
-boost::condition ctrlCHit;
-boost::condition serverStopped;
-
-BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
-  switch (ctrl_type) {
-    case CTRL_C_EVENT:
-    case CTRL_BREAK_EVENT:
-    case CTRL_CLOSE_EVENT:
-    case CTRL_SHUTDOWN_EVENT:
-    {
-      boost::mutex::scoped_lock terminationLock(terminationMutex);
-      LOGDEBUG("ctlc event");
-      ctrlCHit.notify_all(); // should be just 1
-
-      //      serverStopped.wait(terminationLock);
-      return TRUE;
-    }
-    default:
-      return FALSE;
-  }
-}
-
-void ctrlCHitWait() {
-  SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
-  boost::mutex::scoped_lock terminationLock(terminationMutex);
-  ctrlCHit.wait(terminationLock);
-}
-
-#define SVCNAME TEXT("MHiveService")
-SERVICE_STATUS gSvcStatus;
-SERVICE_STATUS_HANDLE gSvcStatusHandle;
-HANDLE ghSvcStopEvent = NULL;
-
-//VOID SvcInstall(void);
-VOID WINAPI SvcCtrlHandler(DWORD);
-VOID WINAPI SvcMain(DWORD, LPTSTR *);
-
-VOID ReportSvcStatus(DWORD, DWORD, DWORD);
-VOID SvcInit(DWORD, LPTSTR *);
-VOID SvcReportEvent(LPTSTR);
-std::string execargs;
-std::string exec;
-VOID SvcReportEvent(LPTSTR szFunction) {
-  HANDLE hEventSource;
-  LPCTSTR lpszStrings[2];
-  TCHAR Buffer[80];
-
-  hEventSource = RegisterEventSource(NULL, SVCNAME);
-
-  if (NULL != hEventSource) {
-    StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
-
-    lpszStrings[0] = SVCNAME;
-    lpszStrings[1] = Buffer;
-
-    ReportEvent(hEventSource, // event log handle
-        EVENTLOG_ERROR_TYPE, // event type
-        0, // event category
-        NULL, // event identifier
-        NULL, // no security identifier
-        2, // size of lpszStrings array
-        0, // no binary data
-        lpszStrings, // array of strings
-        NULL); // no binary data
-
-    DeregisterEventSource(hEventSource);
-  }
-}
-
-VOID WINAPI SvcCtrlHandler(DWORD dwCtrl) {
-  // Handle the requested control code.
-
-  switch (dwCtrl) {
-    case SERVICE_CONTROL_STOP:
-    ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-
-    // Signal the service to stop.
-
-    SetEvent(ghSvcStopEvent);
-
-    return;
-
-    case SERVICE_CONTROL_INTERROGATE:
-    // Fall through to send current status.
-    break;
-
-    default:
-    break;
-  }
-
-  ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
-}
-
-VOID ReportSvcStatus(DWORD dwCurrentState,
-    DWORD dwWin32ExitCode,
-    DWORD dwWaitHint) {
-  static DWORD dwCheckPoint = 1;
-
-  // Fill in the SERVICE_STATUS structure.
-
-  gSvcStatus.dwCurrentState = dwCurrentState;
-  gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
-  gSvcStatus.dwWaitHint = dwWaitHint;
-
-  if (dwCurrentState == SERVICE_START_PENDING)
-  gSvcStatus.dwControlsAccepted = 0;
-  else gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
-
-  if ((dwCurrentState == SERVICE_RUNNING) ||
-      (dwCurrentState == SERVICE_STOPPED))
-  gSvcStatus.dwCheckPoint = 0;
-  else gSvcStatus.dwCheckPoint = dwCheckPoint++;
-
-  // Report the status of the service to the SCM.
-  SetServiceStatus(gSvcStatusHandle, &gSvcStatus);
-}
-
-VOID WINAPI SvcMain(DWORD dwArgc, LPTSTR *lpszArgv) {
-  gSvcStatusHandle = RegisterServiceCtrlHandler(
-      SVCNAME,
-      SvcCtrlHandler);
-
-  if (!gSvcStatusHandle) {
-    SvcReportEvent(TEXT("RegisterServiceCtrlHandler"));
-    return;
-  }
-  gSvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
-  gSvcStatus.dwServiceSpecificExitCode = 0;
-
-  // Report initial status to the SCM
-
-  ReportSvcStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
-  SvcInit(dwArgc, lpszArgv);
-
-}
-
-VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
-  // TO_DO: Declare and set any required variables.
-  //   Be sure to periodically call ReportSvcStatus() with
-  //   SERVICE_START_PENDING. If initialization fails, call
-  //   ReportSvcStatus with SERVICE_STOPPED.
-
-  // Create an event. The control handler function, SvcCtrlHandler,
-  // signals this event when it receives the stop control code.
-
-  ghSvcStopEvent = CreateEvent(
-      NULL, // default security attributes
-      TRUE, // manual reset event
-      FALSE, // not signaled
-      NULL); // no name
-
-  if (ghSvcStopEvent == NULL) {
-    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
-    return;
-  }
-
-  // Report running status when initialization is complete.
-  /*
-   *
-   * Initializing Application Services
-   *
-   */
-  /**
-   *
-   * STARTING THE EXECUTALBE HERE
-   *
-   * */
-  bool bWorked;
-  STARTUPINFO suInfo;
-  PROCESS_INFORMATION procInfo;
-//  exec="d:\\Programme\\mhive-0.0.4.7\\bin\\mhive.exe ";
-//  execargs="-r";
-  std::string m_Process = exec.c_str();
-  char *vip = const_cast<char*>(exec.append(execargs).c_str());
-
-  memset (&suInfo, 0, sizeof(suInfo));
-  memset (&procInfo, 0, sizeof(procInfo));
-  suInfo.cb = sizeof(suInfo);
-  
-  bWorked = ::CreateProcess(m_Process.c_str(),
-             vip,      // can also be NULL
-
-             NULL,
-             NULL,
-             FALSE,
-             NORMAL_PRIORITY_CLASS,
-             NULL,
-             NULL,
-             &suInfo,
-             &procInfo);
-  if(!bWorked){
-    ReportSvcStatus(SERVICE_ERROR_CRITICAL, ERROR_PROC_NOT_FOUND, 0);
-    
-  }
-/*
-procInfo has these members
-    HANDLE hProcess;   // process handle
-    HANDLE hThread;    // primary thread handle
-    DWORD dwProcessId; // process PID
-    DWORD dwThreadId;  // thread ID
-*/
-
-
-  ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
-
-  // TO_DO: Perform work until service stops.
-  while (1) {
-    // Check whether to stop the service.
-
-    WaitForSingleObject(ghSvcStopEvent, INFINITE);
-    /*
-     *
-     * Stopping Application Services from configuration
-     *
-     */
-	
-	  HANDLE hProcess;
-	  hProcess = OpenProcess( PROCESS_TERMINATE, FALSE, procInfo.dwProcessId );
-	  TerminateProcess( hProcess, (DWORD) -1 );
-
-
-    /**
-     *
-     * STOPPING THE EXECUTALBE HERE
-     *
-     * */
-
-    ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
-    return;
-  }
-}
-
-int start(std::string executable, std::string arguments) {
-	execargs=arguments;
-	exec=executable;
-  SERVICE_TABLE_ENTRY DispatchTable[] = {
-    { SVCNAME, (LPSERVICE_MAIN_FUNCTION) SvcMain},
-    { NULL, NULL}
-  };
-  if (!StartServiceCtrlDispatcher(DispatchTable)) {
-    SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
-  }
-  return 0;
-}
-#else
-int last_pid;
-void signalHandler(int signum){
-  std::cout <<"shutdown mhiveservice: last_pid"<<last_pid<<std::endl;
-  kill(last_pid,SIGTERM);
-  int status = 0;
-  waitpid(last_pid, &status, 0);
-  exit(0);
-}
-void signalWait() {
-  sigset_t wait_mask2;
-  sigemptyset(&wait_mask2);
-  sigaddset(&wait_mask2, SIGINT);
-  sigaddset(&wait_mask2, SIGQUIT);
-  sigaddset(&wait_mask2, SIGTERM);
-  sigaddset(&wait_mask2, SIGCHLD);
-  pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
-  int sig = 0;
-
-  int err;
-  do {
-    err = sigwait(&wait_mask2, &sig);
-  } while (err != 0);
-}
-
-int start(std::string executable, std::string arguments) {
-
-  /**
-   * fork this process
-   * */
-  int parentpid=fork();
-  if(parentpid>0)exit(0);
-
-  signal(SIGTERM,&signalHandler);
-  signal(SIGQUIT,&signalHandler);
-  signal(SIGINT,&signalHandler);
-  char * args[4];
-  int a = 0;
-  args[a++] = const_cast<char*>("sh");
-  args[a++] = const_cast<char*>("-c");
-  args[a++] = const_cast<char*> (executable.append(arguments).c_str());
-  args[a++] = NULL;
-  bool loop = true;
-  while (loop) {
-    int pid;
-    pid = fork();
-    if (pid < 0) {
-      std::cerr << "could not fork process" << std::endl;
-      exit(1);
-    }
-    if (pid == 0) {
-      int s = execv("/bin/sh", args);
-    } else {
-      /**
-       * wait for child process exit
-       * */
-      last_pid=pid;
-      int status = 0;
-      waitpid(pid, &status, 0);
-      std::cout << "client exited, restarting"<<std::endl;
-    }
-  }
-}
-#endif
 int main(int argc, char**argv) {
-
+  Log::open();
   /**
    * needing the base path from the executable
    * */
-  int mode=0;
+  int mode = 0;
   org::esb::io::File f(argv[0]);
   std::cout << f.getParent() << std::endl;
-  std::string path=f.getParent();
-  
+  std::string path = f.getParent();
+
   std::string executable = path;
-  std::string arguments;
+  std::list<std::string> arguments;
   org::esb::util::Properties props;
   org::esb::io::File file(path.append("/../hive"));
-  if(file.isDirectory()){
-    mode=1;
+  if (file.isDirectory()) {
+    mode = 1;
   }
-  #ifdef WIN32
+#ifdef WIN32
   executable.append("/mhive.exe ");
   //replacing all slashes with backslashes
-  int position = executable.find( "/" ); // find first slash
-   while ( position != string::npos ) 
-   {
-      executable.replace( position, 1, "\\" );
-      position = executable.find( "/", position + 1 );
-   } 
-#else
-  executable.append("/mhive ");
-#endif
-  std::cout << executable << std::endl;
-  if (mode == 1) {
-    arguments.append(" -r");
-  } else if (mode == 0) {
-    arguments.append(" -i");
-  }else{
-    exit(1);
+  int position = executable.find("/"); // find first slash
+  while (position != string::npos) {
+    executable.replace(position, 1, "\\");
+    position = executable.find("/", position + 1);
   }
-  start(executable,arguments);
+#else
+  executable.append("/mhive");
+#endif
+  arguments.push_back("-a");
+  //arguments.push_back("--debugmode");
+  /*
+  struct task_struct *task;
+    for_each_process(task)
+    {
+    printk("%s [%d]\n",task->comm , task->pid);
+    }*/
+
+  org::esb::lang::Process pr(executable, arguments);
+  pr.run();
+  org::esb::lang::CtrlCHitWaiter::wait();
+  pr.stop();
+  org::esb::lang::Thread::sleep2(5000);
+  try {
+    pr.kill();
+  } catch (org::esb::lang::ProcessException & ex) {
+    LOGERROR("Exception:" << ex.what());
+  }
 }
