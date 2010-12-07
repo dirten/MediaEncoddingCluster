@@ -23,8 +23,6 @@ namespace org {
         _restartable=false;
       }
 
-      Process::Process(const Process& orig) {
-      }
 
       Process::~Process() {
       }

@@ -24,9 +24,6 @@ namespace org {
         _stop = false;
       }
 
-      Process::Process(const Process& orig) {
-
-      }
 
       Process::~Process() {
 
