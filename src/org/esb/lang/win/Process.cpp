@@ -79,9 +79,11 @@ namespace org {
         _processId = procInfo.dwProcessId;
         _running=true;
 //        LOGDEBUG("Waiting for process");
+        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_STARTED));
         WaitForSingleObject( procInfo.hProcess, INFINITE );
         CloseHandle( procInfo.hProcess );
         LOGDEBUG("process ended:"<<_executable);
+        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_STOPPED));
         _running=false;
         if(_restartable){
           LOGDEBUG("restarting!!!");
@@ -127,7 +129,17 @@ namespace org {
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
         _running=false;
+        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_KILLED));
       }
+      /*
+      void Process::addProcessListener(ProcessListener listener){
+
+      }
+
+      void Process::notifyProcessListener(ProcessEvent&){
+
+      }*/
+
     }
   }
 }
