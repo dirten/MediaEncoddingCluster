@@ -10,11 +10,12 @@
 # description: MHive Service
 
 SELF=$0
+echo $SELF
 STATUS=-100
 # check if self is a symlink
 if [ -h $SELF  ]
 then
-    SELF=`ls -l $FELF | awk '{print $11}'`
+    SELF=`ls -l $SELF | awk '{print $11}'`
     BASE_PATH=`dirname $SELF`/..
     
 else
@@ -91,7 +92,9 @@ start_server(){
   cd $MHIVE_BASE
     if status_runtime; then
       echo "starting mhive"
-      $MHIVE_BASE/bin/mhiveservice & > /dev/null
+      #echo $MHIVE_BASE/bin/mhiveservice >$BASE_PATH/mhivetest
+
+      $MHIVE_BASE/bin/mhiveservice > $BASE_PATH/log/startup.log
       STATUS=$?
       else
         echo "MHive Service is allready running!"

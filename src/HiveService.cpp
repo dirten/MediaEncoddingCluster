@@ -61,7 +61,7 @@ void open_webadmin(){
   arguments.push_back("http://localhost:8080");
 #elif __APPLE__
 
-  executable="";
+  executable="/bin/sh";
   arguments.push_back("http://localhost:8080");
 #else
   executable="/usr/bin/xdg-open";
@@ -82,9 +82,13 @@ void open_dialog(std::string message, std::string type) {
   executable="C:\\Windows\\system32\\msg.exe";
 #elif __APPLE__
   //std::list<std::string> arguments;
-  arguments.push_back("'tell app \"Finder\" to display dialog \""+message+"\" buttons{\"Ok\"} with icon 1'");
+  //arguments.push_back("/usr/bin/osascript");
+  arguments.push_back("-e");
+//  arguments.push_back("tell app \"Finder\" to display dialog \"test\"");
+  arguments.push_back("tell app \"Finder\" to display dialog \""+message+"\" buttons{\"Ok\"} with icon 1");
   //org::esb::lang::Process("/usr/bin/osascript", arguments).start();
   executable="/usr/bin/osascript";
+  //executable="/bin/sh";
 #else
   //std::list<std::string> arguments;
   arguments.push_back("--"+type);
@@ -142,7 +146,8 @@ int main(int argc, char**argv) {
   pr.addProcessListener(&listener);
   pr.run();
 
-  open_dialog("Media Encoding Cluster Server is running\nplease open the webpage on http://localhost:8080 now","msgbox");
+
+  open_dialog("Media Encoding Cluster Server is running please open the webpage on http://localhost:8080 now","msgbox");
   arguments.clear();
   arguments.push_back("http://localhost:8080");
   org::esb::lang::Thread::sleep2(3500);
