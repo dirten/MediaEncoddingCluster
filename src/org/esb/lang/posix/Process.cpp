@@ -66,6 +66,7 @@ namespace org {
           //          int s=system(args[2]);
           int s = execv(_executable.c_str(), args);
           if (s != 0) {
+            notifyProcessListener(ProcessEvent(_processId,s,ProcessEvent::PROCESS_START_FAILED));
             LOGERROR("could not start the process: " << _executable);
             throw ProcessException(std::string("could not start the process: ").append(_executable));
           }
@@ -81,12 +82,14 @@ namespace org {
           process_started_wait_condition.notify_one();
 
           int status = 0;
+          notifyProcessListener(ProcessEvent(_processId,status,ProcessEvent::PROCESS_STARTED));
           waitpid(_processId, &status, 0);
           if (!_stop && status != 0) {
             //            throw ProcessException("Process with pid ended unexepcted");
             LOGERROR("Process with pid " << _processId << " ended unexepcted -> " << _name);
           }
           LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
+          notifyProcessListener(ProcessEvent(_processId,status,ProcessEvent::PROCESS_STOPPED));
           process_shutdown_wait_condition.notify_one();
           _running = false;
           if (_restartable) {
@@ -99,12 +102,12 @@ namespace org {
         _restartable = restart;
         boost::mutex::scoped_lock process_started_lock(process_started_wait_mutex);
         boost::thread t(boost::bind(&Process::start, this));
-        LOGDEBUG("waiting 30 sec. for process to start");
-        if (process_started_wait_condition.timed_wait(process_started_lock, boost::posix_time::seconds(30))) {
+        LOGDEBUG("waiting 5 sec. for process to start");
+        if (process_started_wait_condition.timed_wait(process_started_lock, boost::posix_time::seconds(5))) {
           LOGDEBUG("process started");
         } else {
           LOGERROR("Process start timeout of 30 sec. reached");
-          throw ProcessException("Process start timeout of 30 sec. reached");
+          throw ProcessException("Process start timeout of 5 sec. reached");
         }
       }
 
@@ -115,11 +118,11 @@ namespace org {
         _restartable = false;
         int result = ::kill(_processId, 15);
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);
-        process_shutdown_wait_condition.wait(process_shutdown_lock);
-        if (result != 0)
-          throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))){
+          //if (result != 0)
+            throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        }
         _running = false;
-
       }
 
       void Process::kill() {
@@ -130,7 +133,16 @@ namespace org {
         if (result != 0)
           throw ProcessException(std::string("could not kill the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
         _running = false;
+        notifyProcessListener(ProcessEvent(_processId,-9,ProcessEvent::PROCESS_KILLED));
       }
+      /*
+      void Process::addProcessListener(ProcessListener listener){
+
+      }
+
+      void Process::notifyProcessListener(ProcessEvent&){
+
+      }*/
     }
   }
 }
