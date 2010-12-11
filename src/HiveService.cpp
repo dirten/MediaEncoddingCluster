@@ -61,7 +61,7 @@ void open_webadmin(){
   arguments.push_back("http://localhost:8080");
 #elif __APPLE__
 
-  executable="/bin/sh";
+  executable="/usr/bin/open";
   arguments.push_back("http://localhost:8080");
 #else
   executable="/usr/bin/xdg-open";
