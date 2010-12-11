@@ -67,8 +67,8 @@ ProcessUnit::ProcessUnit() {
   _frameRateCompensateBase = 0.0;
   _gop_size = -1;
   _expected_frame_count = -1;
-  _deinterlace=0;
-  _keep_aspect_ratio=0;
+  _deinterlace = 0;
+  _keep_aspect_ratio = 0;
   _discard_audio_bytes = -1;
   _converter = NULL;
   id = 0;
@@ -79,17 +79,17 @@ ProcessUnit::~ProcessUnit() {
 
 void ProcessUnit::process() {
   LOGTRACEMETHOD("ProcessUnit");
-  LOGDEBUG("CompensateBase"<<_frameRateCompensateBase);
+  LOGDEBUG("CompensateBase" << _frameRateCompensateBase);
   int insize = 0, outsize = 0;
 
   if (_decoder != NULL)
     if (!_decoder->open()) {
-      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << " CodecID:"<<_decoder->getCodecId()<<")");
+      LOGERROR("fail to open the decoder (ProcessUnitID:" << _process_unit << " CodecID:" << _decoder->getCodecId() << ")");
       return;
     }
   if (_encoder != NULL)
     if (!_encoder->open()) {
-      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:"<<_decoder->getCodecId()<<")");
+      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:" << _decoder->getCodecId() << ")");
       return;
     }
   /*creating a frame converter*/
@@ -108,6 +108,28 @@ void ProcessUnit::process() {
   _encoder->setSink(&sink);
   _encoder->setOutputStream(NULL);
 
+  /*configure the reference decoder to compute the psnr for video mages*/
+  if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+    std::map<std::string, std::string>opt = _encoder->getCodecOptions();
+    _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
+    std::map<std::string, std::string>::iterator opit = opt.begin();
+    _refdecoder->setWidth(_encoder->getWidth());
+    _refdecoder->setHeight(_encoder->getHeight());
+    _refdecoder->setPixelFormat(_encoder->getPixelFormat());
+
+    for (; opit != opt.end(); opit++) {
+      if ((*opit).first != "extradata"||(*opit).first != "extradata_size")
+        _refdecoder->setCodecOption((*opit).first, (*opit).second);
+    }
+    LOGDEBUG("EncoderExtrdataSize:"<<_encoder->ctx->extradata_size);
+    LOGDEBUG("RefDecoderExtrdataSize:"<<_refdecoder->ctx->extradata_size);
+    //std::cout << _encoder->ctx->extradata;
+    _refdecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(_encoder->ctx->extradata_size));
+    memcpy(_refdecoder->ctx->extradata,_encoder->ctx->extradata,_encoder->ctx->extradata_size);
+    //_refdecoder->ctx->extradata[0] = 2;
+    //_refdecoder->ctx->extradata_size=0;
+    _refdecoder->open();
+  }
   //  FrameConverter conv(_decoder, _encoder);
 
   list<boost::shared_ptr<Packet> >::iterator it;
@@ -175,7 +197,7 @@ void ProcessUnit::process() {
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
-    if (false&&_decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
+    if (false && _decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
             _discard_audio_bytes > 0) {
       size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
@@ -191,7 +213,15 @@ void ProcessUnit::process() {
 
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
+
     int ret = _encoder->encode(*f);
+    if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+      boost::shared_ptr<Packet>enc_packet = sink.getList().back();
+      Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
+      if (tmpf->isFinished()) {
+        LOGDEBUG("Reference Frame Decoded!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+      }
+    }
     delete tmp;
     delete f;
     LOGTRACE("Frame Encoded");
@@ -217,18 +247,31 @@ boost::shared_ptr<Decoder> ProcessUnit::getDecoder() {
 boost::shared_ptr<Encoder> ProcessUnit::getEncoder() {
   return _encoder;
 }
-std::list<boost::shared_ptr<Packet> > ProcessUnit::getInputPacketList(){
+
+std::list<boost::shared_ptr<Packet> > ProcessUnit::getInputPacketList() {
   return _input_packets;
 }
-std::list<boost::shared_ptr<Packet> > ProcessUnit::getOutputPacketList(){
+
+std::list<boost::shared_ptr<Packet> > ProcessUnit::getOutputPacketList() {
   return _output_packets;
 }
-int ProcessUnit::getGopSize(){
+
+int ProcessUnit::getGopSize() {
   return _gop_size;
 }
-int ProcessUnit::getExpectedFrameCount(){
+
+int ProcessUnit::getExpectedFrameCount() {
   return _expected_frame_count;
 }
+
+void ProcessUnit::processPsnr(Frame * ref, Frame * cmp) {
+
+}
+
+Frame * ProcessUnit::convertToRgb(Frame * ref) {
+  return NULL;
+}
+
 std::string toString() {
   std::stringstream t;
   return t.str();

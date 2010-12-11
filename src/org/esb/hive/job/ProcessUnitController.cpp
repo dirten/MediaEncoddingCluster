@@ -191,6 +191,7 @@ namespace org {
                 }
                 //stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
                 stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
+
                 stream_map[idx].deinterlace = detail.deinterlace.value();
                 //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
                 stream_map[idx].last_start_dts = detail.lastdts;

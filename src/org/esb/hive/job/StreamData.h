@@ -29,6 +29,7 @@ namespace org {
           int b_frame_offset;
           boost::shared_ptr<org::esb::av::Decoder> decoder;
           boost::shared_ptr<org::esb::av::Encoder> encoder;
+          
           std::list<boost::shared_ptr<org::esb::av::Packet> > packets;
           int packet_count;
           int min_packet_count;

@@ -11,6 +11,8 @@
 #include <Wt/Ext/TableView>
 #include "org/esb/lang/Ptr.h"
 #include "Wt/WTimer"
+#include "Wt/Ext/ComboBox"
+
 #include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
@@ -28,7 +30,8 @@ namespace org {
         Wt::WTimer *timer;
         void rowSelected();
         Wt::JSignal<int> _stopEncoding;
-
+        void refreshTimerChanged();
+        Wt::Ext::ComboBox * _timerBox;
       };
 
     }

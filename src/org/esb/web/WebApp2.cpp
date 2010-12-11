@@ -1,8 +1,10 @@
 #include "DbTable.h"
+#include "Wt/Ext/MessageBox"
+
 #include "ColumnConfig.h"
 #include "WebApp2.h"
 #include "config.h"
-
+#include <signal.h>
 #include "MainMenu.h"
 #include <Wt/Ext/Container>
 #include <Wt/WContainerWidget>
@@ -45,15 +47,18 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "project/ProjectWizard.h"
 #include "presets/PresetList.h"
+/*on windows there is a macro defined with name MessageBox*/
+#ifdef MessageBox
+#undef MessageBox
+#endif
 namespace org {
   namespace esb {
     namespace web {
 
       WebApp2::WebApp2(const Wt::WEnvironment & env) :
-      WApplication(env)
-      {
-        
-        if (string(org::esb::config::Config::getProperty("hive.mode","no")) == "setup") {
+      WApplication(env) {
+
+        if (string(org::esb::config::Config::getProperty("hive.mode", "no")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
         }/*
@@ -68,7 +73,7 @@ namespace org {
         setTitle(h);
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
-        _db=new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
+        _db = new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
         viewPort = new Wt::Ext::Container(root());
         //        viewPort->resize(Wt::WLength::Auto, 600);
 
@@ -137,7 +142,7 @@ namespace org {
          */
         info_panel->resize(Wt::WLength(), 250);
         info_panel->setResizable(true);
-//        layout->addWidget(info_panel, Wt::WBorderLayout::East);
+        //        layout->addWidget(info_panel, Wt::WBorderLayout::East);
         /*end Info Panel*/
 
         //TreeMainMenu * mainmenu=new TreeMainMenu(this);
@@ -145,14 +150,14 @@ namespace org {
         //layout->addWidget(mainmenu, Wt::WBorderLayout::West);
 
         /*begin Footer Panel*/
-//        Wt::Ext::Panel *footer = new Wt::Ext::Panel();
-//        footer->setBorder(false);
+        //        Wt::Ext::Panel *footer = new Wt::Ext::Panel();
+        //        footer->setBorder(false);
         //Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
         //head->setStyleClass("north");
-//        footer->setResizable(true);
-//        footer->setLayout(new Wt::WFitLayout());
-//        footer->layout()->addWidget(head);
-//        footer->resize(Wt::WLength(), 35);
+        //        footer->setResizable(true);
+        //        footer->setLayout(new Wt::WFitLayout());
+        //        footer->layout()->addWidget(head);
+        //        footer->resize(Wt::WLength(), 35);
         //layout->addWidget(footer, Wt::WBorderLayout::South);
         /*end Footer Panel*/
         object_panel = new Wt::Ext::Panel();
@@ -194,7 +199,7 @@ namespace org {
       }
 
       void WebApp2::listProjects() {
-//        Projects * p = new Projects();
+        //        Projects * p = new Projects();
         ProjectTable * p = new ProjectTable();
         //_projectSignalMap->mapConnect(p->itemSelectionChanged(), p);
         setContent(p);
@@ -208,7 +213,7 @@ namespace org {
       }
 
       void WebApp2::listAllFiles() {
-        MediaFileTable * t=new MediaFileTable();
+        MediaFileTable * t = new MediaFileTable();
         setContent(t);
 
         /*
@@ -286,47 +291,47 @@ namespace org {
                 columnConfigs.push_back(ColumnConfig(db::Job::Progress,"Progress" ,200));
                 DbTable * table= new DbTable(columnConfigs,litesql::Expr());
          */
-         /*
-        Wt::Ext::TableView *view = new Wt::Ext::TableView();
+        /*
+       Wt::Ext::TableView *view = new Wt::Ext::TableView();
 
-        db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
-        std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
-        view->setModel(new JobTableModel(jobs));
-        view->setAlternatingRowColors(true);
-        view->resizeColumnsToContents(true);
-        view->setHighlightMouseOver(true);
-        view->setSelectionBehavior(Wt::SelectRows);
-        view->setSelectionMode(Wt::SingleSelection);
-        view->setColumnWidth(2,35);
-        view->setColumnWidth(3,35);
-        view->setColumnWidth(4,35);
-        view->setColumnWidth(5,25);
-        view->setColumnWidth(6,15);
+       db::HiveDb dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
+       std::vector<db::Job> jobs = litesql::select<db::Job > (dbCon).all();
+       view->setModel(new JobTableModel(jobs));
+       view->setAlternatingRowColors(true);
+       view->resizeColumnsToContents(true);
+       view->setHighlightMouseOver(true);
+       view->setSelectionBehavior(Wt::SelectRows);
+       view->setSelectionMode(Wt::SingleSelection);
+       view->setColumnWidth(2,35);
+       view->setColumnWidth(3,35);
+       view->setColumnWidth(4,35);
+       view->setColumnWidth(5,25);
+       view->setColumnWidth(6,15);
         
-        std::string renderer= "function change(val) {"
-                "if (val > 0){"
-                "return '<span style=\"color:green;\">' + val + '</span>';"
-                "} else if(val < 0) {"
-                "return '<span style=\"color:red;\">' + val + '</span>';"
-                "}"
-                "return val;"
-                "}";
-        view->setRenderer(5, renderer);
-        renderer= "function change(val) {"
-                "if (val == \"running\"){"
-                "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
-                "} else if(val == \"failed\") {"
-                "return '<img src=\"/icons/remove-icon.png\"/>';"
-                "} else if(val == \"exported\") {"
-                "return '<img src=\"/icons/accept-icon.png\"/>';"
-                "} else if(val == \"queued\") {"
-                "return '<img src=\"/icons/queued-icon.png\"/>';"
-                "}"
-                "return val;"
-                "}";
-        view->setRenderer(6, renderer);
-       */
-        JobTable *table=new JobTable();
+       std::string renderer= "function change(val) {"
+               "if (val > 0){"
+               "return '<span style=\"color:green;\">' + val + '</span>';"
+               "} else if(val < 0) {"
+               "return '<span style=\"color:red;\">' + val + '</span>';"
+               "}"
+               "return val;"
+               "}";
+       view->setRenderer(5, renderer);
+       renderer= "function change(val) {"
+               "if (val == \"running\"){"
+               "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
+               "} else if(val == \"failed\") {"
+               "return '<img src=\"/icons/remove-icon.png\"/>';"
+               "} else if(val == \"exported\") {"
+               "return '<img src=\"/icons/accept-icon.png\"/>';"
+               "} else if(val == \"queued\") {"
+               "return '<img src=\"/icons/queued-icon.png\"/>';"
+               "}"
+               "return val;"
+               "}";
+       view->setRenderer(6, renderer);
+         */
+        JobTable *table = new JobTable();
         _jobSignalMap->mapConnect(table->itemSelectionChanged(), table);
         setContent(table);
 
@@ -345,21 +350,21 @@ namespace org {
       }
 
       void WebApp2::listAllProfiles() {
-        PresetList * list=new PresetList();
+        PresetList * list = new PresetList();
         setContent(list);
-//        list->presetSelected.connect(SLOT(this, WebApp2::presetSelected2));
+        //        list->presetSelected.connect(SLOT(this, WebApp2::presetSelected2));
         //Profiles * profiles = new Profiles();
         //profiles->profileSelected.connect(SLOT(this, WebApp2::presetSelected));
         //setContent(profiles);
       }
 
       void WebApp2::createProfiles() {
-        PresetList * list=new PresetList();
+        PresetList * list = new PresetList();
         setContent(list);
-        
-        PresetsEditorWindow * edit=new PresetsEditorWindow("");
+
+        PresetsEditorWindow * edit = new PresetsEditorWindow("");
         edit->show();
-        if(edit->exec()==Wt::Ext::Dialog::Accepted){
+        if (edit->exec() == Wt::Ext::Dialog::Accepted) {
           list->refresh();
         }
         delete edit;
@@ -375,14 +380,14 @@ namespace org {
       }
 
       void WebApp2::listAllWatchfolder() {
-//        WatchFolder * wf = new WatchFolder(0);
-//        setContent(wf);
+        //        WatchFolder * wf = new WatchFolder(0);
+        //        setContent(wf);
       }
 
       void WebApp2::createWatchfolder() {
-//        WatchFolder * wf = new WatchFolder(0);
-//        setContent(wf);
-//        wf->createWatchFolder();
+        //        WatchFolder * wf = new WatchFolder(0);
+        //        setContent(wf);
+        //        wf->createWatchFolder();
       }
 
       void WebApp2::watchfolderCreated() {
@@ -394,16 +399,16 @@ namespace org {
         Configuration * conf = new Configuration();
         setContent(conf);
       }
+
       void WebApp2::viewNodes() {
         org::esb::web::NodeListPanel * panel = new org::esb::web::NodeListPanel();
         setContent(panel);
       }
 
-
       void WebApp2::jobSelected(JobTable * tab) {
-        if(tab==NULL)return;
-        JobInfoPanel * panel=new JobInfoPanel();
-        if(object_panel->layout()->count()>0){
+        if (tab == NULL)return;
+        JobInfoPanel * panel = new JobInfoPanel();
+        if (object_panel->layout()->count() > 0) {
           Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
           object_panel->layout()->removeItem(item);
           delete item->widget();
@@ -415,24 +420,24 @@ namespace org {
 
       void WebApp2::projectSelected(ProjectTable * tab) {
         LOGDEBUG("void WebApp2::projectSelected(ProjectTable * tab)");
-        if(tab==NULL)return;
-        v2::ProjectWizard * panel=NULL;
-        if(object_panel->layout()->count()>0){
+        if (tab == NULL)return;
+        v2::ProjectWizard * panel = NULL;
+        if (object_panel->layout()->count() > 0) {
           Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
-          LOGDEBUG("Item name"<<typeid(*item->widget()).name());
-          if(!instanceOf(*item->widget(),org::esb::web::v2::ProjectWizard)){
+          LOGDEBUG("Item name" << typeid (*item->widget()).name());
+          if (!instanceOf(*item->widget(), org::esb::web::v2::ProjectWizard)) {
             object_panel->layout()->removeItem(item);
             delete item->widget();
-            panel=new v2::ProjectWizard();
-            object_panel->layout()->addWidget(panel);        
-          }else{
-            panel=static_cast<org::esb::web::v2::ProjectWizard*>(item->widget());
-            if(!panel)
+            panel = new v2::ProjectWizard();
+            object_panel->layout()->addWidget(panel);
+          } else {
+            panel = static_cast<org::esb::web::v2::ProjectWizard*> (item->widget());
+            if (!panel)
               LOGERROR("could not cast item to org::esb::web::v2::ProjectWizard*");
           }
-        }else{
-            panel=new v2::ProjectWizard();
-            object_panel->layout()->addWidget(panel);
+        } else {
+          panel = new v2::ProjectWizard();
+          object_panel->layout()->addWidget(panel);
         }
         int id = atoi(boost::any_cast<string > (tab->model()->data(tab->selectedRows()[0], 0)).c_str());
         panel->open(id);
@@ -441,8 +446,8 @@ namespace org {
 
       void WebApp2::presetSelected(int presetid) {
         Ptr<db::Profile> profile = new db::Profile(litesql::select<db::Profile > (*_db.get(), db::Profile::Id == presetid).one());
-        PresetsEditor * editor=new PresetsEditor(profile);
-        if(object_panel->layout()->count()>0){
+        PresetsEditor * editor = new PresetsEditor(profile);
+        if (object_panel->layout()->count() > 0) {
           Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
           object_panel->layout()->removeItem(item);
           delete item->widget();
@@ -452,8 +457,8 @@ namespace org {
 
       void WebApp2::presetSelected2(std::string filename) {
         LOGDEBUG("preset selected");
-        PresetsEditor * editor=new PresetsEditor(filename);
-        if(object_panel->layout()->count()>0){
+        PresetsEditor * editor = new PresetsEditor(filename);
+        if (object_panel->layout()->count() > 0) {
           Wt::WLayoutItem * item = object_panel->layout()->itemAt(0);
           object_panel->layout()->removeItem(item);
           delete item->widget();
@@ -472,6 +477,22 @@ namespace org {
 
         //        main_panel->layout()->addWidget(w);
       }
+
+      void WebApp2::shutdown() {
+        Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Shutdown Media Encoding Cluster", "do you really want to shutdown the Media Encoding Cluster<br/>this will abort all currently running operations!!!", Wt::Warning, Wt::Ok|Wt::Cancel);
+        if(!box->exec()==Wt::Ext::Dialog::Accepted)
+          return;
+
+#ifdef __WIN32__
+        HANDLE hProcess;
+        hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, GetCurrentProcessId());
+        TerminateProcess(hProcess, (DWORD) - 1);
+        CloseHandle(hProcess);
+#else
+        ::kill(getpid(), 9);
+#endif
+      }
+
     }
   }
 }

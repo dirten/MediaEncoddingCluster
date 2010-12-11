@@ -62,6 +62,7 @@ MainMenu::MainMenu(org::esb::web::WebApp2 * parent) : Wt::WContainerWidget(NULL)
   menu = new Wt::Ext::Menu();
   item = menu->addItem("Nodes...",parent,&org::esb::web::WebApp2::viewNodes);
   item = menu->addItem("Configuration...",parent,&org::esb::web::WebApp2::editSystemConfiguration);
+  item = menu->addItem("Shutdown...",parent,&org::esb::web::WebApp2::shutdown);
 
   button = toolbar->addButton("System", menu);
 }

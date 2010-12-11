@@ -35,6 +35,7 @@ namespace org {
                 void logout();
                 void setContent(Wt::WWidget *example);
                 void authenticated();
+                void shutdown();
                 Wt::WWidget * introduction();
                 Wt::WWidget * createMenuTree();
                 Wt::WTreeNode * createMenuNode(const Wt::WString& label,

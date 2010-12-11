@@ -115,12 +115,6 @@ case "$1" in
             # Start the MHive Runtime
             #
             start_server
-            if [ $STATUS == 0 ]
-	    then
-	        kdialog --msgbox "Media Encoding Cluster Server is running\nopen the webpage on http://localhost:8080 now"
-	    else
-	        kdialog --error "failed to start Media Encoding Cluster Server\nhave a look into the generated logfiles under $MHIVE_BASE"
-	    fi
             ;;
     'run')
             # Start the MHive Runtime
@@ -129,13 +123,6 @@ case "$1" in
             ;;
     'stop')
             stop_server
-            if [ $STATUS == 0 ]
-	    then
-	        kdialog --msgbox "Media Encoding Cluster Server is stopped now!"
-	    else
-	        kdialog --error "failed to stop Media Encoding Cluster Server\nhave a look into the generated logfiles under $MHIVE_BASE"
-	    fi
-
             ;;
     'status')
             status_runtime
@@ -146,7 +133,7 @@ case "$1" in
             exec $MHIVE_BASE/bin/mhive --install
             ;;
     *)
-      usage
+            start_server
             ;;
 esac
 

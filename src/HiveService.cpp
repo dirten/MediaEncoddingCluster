@@ -36,9 +36,64 @@
 #include "org/esb/util/Properties.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Process.h"
+#include "org/esb/lang/ProcessListener.h"
+#include <signal.h>
+
+class PListener:public org::esb::lang::ProcessListener{
+public:
+  void onEvent(ProcessEvent&ev){
+    LOGDEBUG("ProcessEvent received");
+    if(ev.getEventType()==ProcessEvent::PROCESS_STOPPED){
+      ::kill(getpid(),15);
+    }
+  }
+};
 //#include < linux/kernel.h >
 //#include < linux/sched.h >
 //#include < linux/module.h >
+void open_webadmin(){
+  std::list<std::string> arguments;
+  std::string executable;
+#ifdef __WIN32__
+  executable="cmd.exe";
+  //arguments.push_back("/c");
+  arguments.push_back("start");
+  arguments.push_back("http://localhost:8080");
+#elif __APPLE__
+
+  executable="";
+  arguments.push_back("http://localhost:8080");
+#else
+  executable="/usr/bin/xdg-open";
+  arguments.push_back("http://localhost:8080");
+#endif
+  org::esb::lang::Process(executable, arguments).start();
+}
+
+void open_dialog(std::string message, std::string type) {
+  std::list<std::string> arguments;
+  std::string executable;
+#ifdef __WIN32__
+  //std::list<std::string> arguments;
+  std::string username=getenv("username");
+  arguments.push_back(username);
+  arguments.push_back(message);
+  //Process p1("C:\\Windows\\system32\\msg.exe", args);
+  executable="C:\\Windows\\system32\\msg.exe";
+#elif __APPLE__
+  //std::list<std::string> arguments;
+  arguments.push_back("'tell app \"Finder\" to display dialog \""+message+"\" buttons{\"Ok\"} with icon 1'");
+  //org::esb::lang::Process("/usr/bin/osascript", arguments).start();
+  executable="/usr/bin/osascript";
+#else
+  //std::list<std::string> arguments;
+  arguments.push_back("--"+type);
+  arguments.push_back(message);
+  executable="/usr/bin/kdialog";
+//  org::esb::lang::Process("/usr/bin/kdialog", arguments).start();
+#endif
+  org::esb::lang::Process(executable, arguments).start();
+}
 
 int main(int argc, char**argv) {
   Log::open();
@@ -57,6 +112,11 @@ int main(int argc, char**argv) {
   if (file.isDirectory()) {
     mode = 1;
   }
+  org::esb::io::File logdir(path.append("/../log"));
+  if (!logdir.exists()) {
+    logdir.mkdir();
+  }
+
 #ifdef WIN32
   executable.append("/mhive.exe ");
   //replacing all slashes with backslashes
@@ -78,13 +138,26 @@ int main(int argc, char**argv) {
     }*/
 
   org::esb::lang::Process pr(executable, arguments);
+  PListener listener;
+  pr.addProcessListener(&listener);
   pr.run();
+
+  open_dialog("Media Encoding Cluster Server is running\nplease open the webpage on http://localhost:8080 now","msgbox");
+  arguments.clear();
+  arguments.push_back("http://localhost:8080");
+  org::esb::lang::Thread::sleep2(3500);
+  open_webadmin();
   org::esb::lang::CtrlCHitWaiter::wait();
-  pr.stop();
-  org::esb::lang::Thread::sleep2(5000);
+  open_dialog("Media Encoding Cluster\nStop signal received!\nhalting now","msgbox");
   try {
-    pr.kill();
+    pr.stop();
   } catch (org::esb::lang::ProcessException & ex) {
-    LOGERROR("Exception:" << ex.what());
+    try {
+      //open_dialog("timeout received while halting Media Encoding Cluster \ntry to kill the process now\n","error");
+      pr.kill();
+    } catch (org::esb::lang::ProcessException & ex) {
+      LOGERROR("Exception:" << ex.what());
+    }
   }
+  open_dialog("Media Encoding Cluster stopped!","msgbox");
 }

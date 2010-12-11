@@ -7,6 +7,7 @@
 
 #include "org/esb/db/hivedb.hpp"
 #include "Wt/Ext/MessageBox"
+#include "Wt/Ext/ToolBar"
 
 #include "JobTable.h"
 #include "JobTableModel.h"
@@ -83,11 +84,21 @@ namespace org {
                 "return \"<a href=\\\"javascript:Wt.emit('"+id()+"','"+_stopEncoding.name()+"', \"+val+\");\\\"><img src=\\\"/icons/delete-icon.png\\\" alt=\\\"stop Encoding\\\nit can not be restarted!!! \\\"/></a>\""
                 "}";
         setRenderer(1, renderer);
-
+      setTopToolBar(new Wt::Ext::ToolBar());
+      _timerBox=new Wt::Ext::ComboBox();
+      _timerBox->addItem("no auto refresh");
+      _timerBox->addItem("5 sec.");
+      _timerBox->addItem("10 sec.");
+      _timerBox->addItem("30 sec.");
+      _timerBox->addItem("60 sec.");
+      _timerBox->addItem("120 sec.");
+      _timerBox->setCurrentIndex(0);
+      _timerBox->activated().connect(SLOT(this,JobTable::refreshTimerChanged));
+      topToolBar()->add(_timerBox);
       timer = new Wt::WTimer();
-      timer->setInterval(2000);
+      //timer->setInterval(2000);
       timer->timeout().connect(SLOT(this, JobTable::refresh));
-      timer->start();
+      //timer->start();
       
       }
       /*
@@ -113,6 +124,22 @@ namespace org {
           delete box;
         }
       }
+
+      void JobTable::refreshTimerChanged() {
+        std::string sec=_timerBox->currentText().narrow();
+        int isec=atoi(sec.c_str());
+        LOGINFO("Setting refreshTimer to"<<isec);
+        timer->stop();
+        delete timer;
+        if(isec>0){
+          isec*=1000;
+          timer = new Wt::WTimer();
+          timer->timeout().connect(SLOT(this, JobTable::refresh));
+          timer->setInterval(isec);
+          timer->start();
+        }
+      }
+
       void JobTable::refresh() {
         LOGDEBUG("JobTable::refresh()")
         db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();

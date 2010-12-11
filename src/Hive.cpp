@@ -399,6 +399,7 @@ private:
 };
 
 void client(int argc, char *argv[]) {
+  org::esb::lang::Thread::sleep2(3000);
   org::esb::hive::Node node;
   node.setData("type", "client");
   node.setData("version", MHIVE_VERSION);
@@ -449,6 +450,7 @@ void start() {
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
   
   //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   string base_path = org::esb::config::Config::getProperty("hive.base_path");
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
@@ -456,7 +458,6 @@ void start() {
   //  }
 
   //  if (string(org::esb::config::Config::getProperty("web.start")) == "true" || string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
-  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   //  }
 
   //  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {

@@ -68,6 +68,7 @@ namespace org {
                     std::list<boost::shared_ptr<Packet> > _output_packets;
                     boost::shared_ptr<Decoder> _decoder;
                     boost::shared_ptr<Encoder> _encoder;
+                    boost::shared_ptr<Decoder> _refdecoder;
 //                    Codec * codec;
                     FrameConverter * _converter;
                     int _source_stream;
@@ -105,6 +106,9 @@ namespace org {
                         ar & _discard_audio_bytes;
                     }
                 private:
+                  Frame * convertToRgb(Frame *);
+                  void processPsnr(Frame * ref, Frame * cmp);
+                  void decodeLastPacket(Packet * pac);
 
                 };
 

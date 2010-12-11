@@ -52,7 +52,7 @@ namespace org {
                 void viewNodes();
 
                 void openConfiguration();
-
+                void shutdown();
 
                 void openPreview();
             private:

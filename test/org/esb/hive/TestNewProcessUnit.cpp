@@ -43,8 +43,8 @@ struct StreamData {
   FrameConverter * conv;
 };
 CodecID video_codec_id = CODEC_ID_THEORA;
-//CodecID audio_codec_id = CODEC_ID_VORBIS;
-CodecID audio_codec_id = CODEC_ID_MP2;
+CodecID audio_codec_id = CODEC_ID_VORBIS;
+//CodecID audio_codec_id = CODEC_ID_MP2;
 
 /**
  *

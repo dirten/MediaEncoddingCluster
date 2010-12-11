@@ -13,7 +13,7 @@
 #include "org/esb/lang/Thread.h"
 #include <boost/thread/condition.hpp>
 #include "org/esb/util/Log.h"
-
+#include "ProcessListener.h"
 namespace org {
   namespace esb {
     namespace lang {
@@ -29,6 +29,9 @@ namespace org {
         void stop();
         void kill();
         bool isRunning();
+        void addProcessListener(ProcessListener * l){
+          _listener.push_back(l);
+        }
       private:
         std::string _executable;
         std::string _name;
@@ -42,6 +45,15 @@ namespace org {
 
         boost::condition process_started_wait_condition;
         boost::mutex process_started_wait_mutex;
+        std::list<ProcessListener*> _listener;
+        void notifyProcessListener(ProcessEvent ev){
+          //LOGDEBUG("notify Listener:"<<_listener.size());
+          std::list<ProcessListener*>::iterator it=_listener.begin();
+          for(;it!=_listener.end();it++){
+            //LOGDEBUG("notify!!!!")
+            (*it)->onEvent(ev);
+          }
+        }
       };
     }
   }

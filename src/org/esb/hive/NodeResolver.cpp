@@ -144,6 +144,8 @@ namespace org {
           send_timer_.async_wait(
                   boost::bind(&NodeResolver::handle_send_timeout, this,
                   boost::asio::placeholders::error));
+        }else{
+          LOGERROR("Error send:"<<error.message());
         }
       }
 
@@ -154,6 +156,8 @@ namespace org {
           send_timer_.async_wait(
                   boost::bind(&NodeResolver::handle_send_timeout, this,
                   boost::asio::placeholders::error));
+        }else{
+          LOGERROR("Error send_size:"<<error.message());
         }
       }
 
@@ -164,6 +168,8 @@ namespace org {
           send_socket_.async_send_to(
                   boost::asio::buffer(message_), send_endpoint_,
                   boost::bind(&NodeResolver::handle_send_size, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+        }else{
+          LOGERROR("Error send_timeout:"<<error.message());
         }
 
       }

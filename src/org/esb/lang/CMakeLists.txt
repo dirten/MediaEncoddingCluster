@@ -12,6 +12,7 @@ SET(lang_source
     StackDumpUploader.cpp
     CtrlCHitWaiter.cpp
     ProcessException.cpp
+    ProcessListener.cpp
 )
 IF(NOT WIN32)
   SET(lang_source

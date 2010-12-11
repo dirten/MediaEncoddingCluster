@@ -349,6 +349,7 @@ namespace org {
             LOGWARN("Option not found:" << opt);
           }
         }
+        setFlag(CODEC_FLAG_PSNR);
         if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
           setTimeBase(1, ctx->sample_rate);
         }

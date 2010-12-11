@@ -169,6 +169,9 @@ namespace org {
         login->setHidden(true);
         currentExample_ = container;
       }
+      void WebApp::shutdown() {
+        ::kill(getpid(),15);
+      }
 
       void WebApp::setContent(Wt::WWidget * example) {
 
