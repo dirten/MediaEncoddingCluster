@@ -11,7 +11,7 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace av {
-
+    boost::mutex FrameConverter::ctx_mutex;
       /**
        * initialize the FrameConverter with the parameters from the De/Encoder
        */
@@ -212,6 +212,7 @@ namespace org {
           } else {
             in_frame = frame;
           }
+        LOGDEBUG("deinterlacing frame ready");
       }
 
       void FrameConverter::compensateAudioResampling(Frame & input, Frame & out) {
@@ -241,8 +242,13 @@ namespace org {
        * this rescales the input Frame Data into the output Frame Data
        */
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
+        boost::mutex::scoped_lock scoped_lock(ctx_mutex);
         out_frame._type = in_frame._type;
-        if (!_swsContext)return;
+        if (!_swsContext){
+	    LOGERROR("sws Context not initialised");
+	    return;
+	}
+	LOGDEBUG("CONVERT VIDEO");
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
@@ -250,6 +256,7 @@ namespace org {
         out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
+	LOGDEBUG("CONVERT video READY");
       }
 
       /**
@@ -257,9 +264,16 @@ namespace org {
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
         //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
-        int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
+        boost::mutex::scoped_lock scoped_lock(ctx_mutex);
+        if(!_audioCtx){
+	    LOGERROR("_audioCtx not initialised");
+	    return;
+	}
+	LOGDEBUG("convert audio")
+	int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
+	
         int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
@@ -272,6 +286,7 @@ namespace org {
         out_frame.setDuration(out_size);
         last_insamples=in_frame._size/ (/*(in_frame.channels/_enc->getChannels()) */ isize);
         last_outsamples=out_frame._size/osize;
+	LOGDEBUG("convert audio ready")
       }
     }
   }

@@ -6,17 +6,17 @@ SET(PRESETS_INSTALL_DIR presets)
 
 
 IF(WIN32)
-    SET(LIB_INSTALL_DIR bin)
-    SET(BIN_INSTALL_DIR bin)
-    SET(WEB_INSTALL_DIR web)
-    SET(RES_INSTALL_DIR res)
-    SET(PRESETS_INSTALL_DIR presets)
+#    SET(LIB_INSTALL_DIR bin)
+#    SET(BIN_INSTALL_DIR bin)
+#    SET(WEB_INSTALL_DIR web)
+#    SET(RES_INSTALL_DIR res)
+#    SET(PRESETS_INSTALL_DIR presets)
 ELSEIF(APPLE)
-    SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/lib)
-    SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/bin)
-    SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
-    SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
-    SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
+#    SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/lib)
+#    SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/bin)
+#    SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
+#    SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
+#    SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
 ELSE(APPLE)
     #SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Frameworks)
     #SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/MacOS)
@@ -37,6 +37,8 @@ add_definitions(/DCURL_STATICLIB)
 add_subdirectory (org)
 
 SET(BUILD_MHIVESERVICE On)
+SET(BUILD_MHIVECLIENTAUDIO On)
+SET(BUILD_MHIVECLIENTVIDEO On)
 SET(BUILD_MHIVEQUEUE On)
 SET(BUILD_MHIVEWRITER Off)
 SET(BUILD_MHIVEREADER Off)
@@ -101,9 +103,11 @@ add_executable (mhive Hive.cpp)
 		 
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
+    
     target_link_libraries (mhiveservice io lang util)
     INSTALL(TARGETS mhiveservice
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+        #BUNDLE DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
@@ -127,6 +131,43 @@ IF(BUILD_MHIVECLIENT)
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
         ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_MHIVECLIENT)
+
+IF(BUILD_MHIVECLIENTAUDIO)
+    add_executable (mhiveca HiveClientAudio.cpp)
+    target_link_libraries (mhiveca
+      web
+      esb
+      hive
+      lang
+      av
+      util
+      signal
+      io
+      net
+    )
+    INSTALL(TARGETS mhiveca
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVECLIENTAUDIO)
+IF(BUILD_MHIVECLIENTVIDEO)
+    add_executable (mhivecv HiveClientVideo.cpp)
+    target_link_libraries (mhivecv
+      web
+      esb
+      hive
+      lang
+      av
+      util
+      signal
+      io
+      net
+    )
+    INSTALL(TARGETS mhivecv
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(BUILD_MHIVECLIENTVIDEO)
 
 IF(BUILD_MHIVEMASTER)
     add_executable (mhivemaster MHiveMaster.cpp)

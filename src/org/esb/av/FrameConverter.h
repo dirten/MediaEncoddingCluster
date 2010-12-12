@@ -31,6 +31,7 @@
 #include "AV.h"
 #include "Encoder.h"
 #include "Decoder.h"
+#include "FrameFormat.h"
 #include "FrameRateFilter.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
@@ -39,8 +40,8 @@ namespace org {
     namespace esb {
         namespace av {
 
-            class Frame;
-            struct FrameFormat;
+            //class Frame;
+            //struct FrameFormat;
 
             class FrameConverter {
               classlogger("org.esb.av.FrameConverter")
@@ -79,6 +80,8 @@ namespace org {
                 double inframes;
                 double outframes;
                 int64_t duplicatedframes;
+                static boost::mutex ctx_mutex;
+
             };
         }
     }

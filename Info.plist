@@ -5,7 +5,7 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>English</string>
         <key>CFBundleExecutable</key>
-        <string>mectl.sh -test=bla</string>
+        <string>MediaEncodingCluster</string>
         <key>CFBundleGetInfoString</key>
         <string>Media Encoding CLuster</string>
         <key>CFBundleIconFile</key>

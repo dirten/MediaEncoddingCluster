@@ -33,8 +33,8 @@ MHIVE_BASE=$BASE_PATH
 #when we are on a mac then all is installed into the Resource subdirectory
 if [ `uname` == Darwin ]
 then
-    export DYLD_LIBRARY_PATH=$BASE_PATH/lib
-    MHIVE_BASE=$MHIVE_BASE/../Resources
+    MHIVE_BASE=$MHIVE_BASE/Resources
+    export DYLD_LIBRARY_PATH=$MHIVE_BASE/lib
     
 fi
 
@@ -93,8 +93,9 @@ start_server(){
     if status_runtime; then
       echo "starting mhive"
       #echo $MHIVE_BASE/bin/mhiveservice >$BASE_PATH/mhivetest
-
-      $MHIVE_BASE/bin/mhiveservice > $BASE_PATH/log/startup.log
+      mkdir $MHIVE_BASE/log
+      $MHIVE_BASE/bin/mhive --install > $MHIVE_BASE/log/startup.log
+      $MHIVE_BASE/bin/mhiveservice > $MHIVE_BASE/log/startup.log
       STATUS=$?
       else
         echo "MHive Service is allready running!"

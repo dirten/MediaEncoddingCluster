@@ -1,5 +1,5 @@
-#include "DbTable.h"
 #include "Wt/Ext/MessageBox"
+#include "DbTable.h"
 
 #include "ColumnConfig.h"
 #include "WebApp2.h"

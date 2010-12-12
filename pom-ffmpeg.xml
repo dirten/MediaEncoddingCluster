@@ -77,7 +77,7 @@
   </parent>-->
   <groupId>org.esb.ffmpeg</groupId>
   <artifactId>ffmpeg</artifactId>
-  <version>20101110</version>
+  <version>20101212</version>
   <name>ffmpeg</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -336,6 +336,6 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <x264.version>-snapshot-20100705-2245</x264.version>
+    <x264.version>-snapshot-20101211-2245</x264.version>
   </properties>
 </project>
