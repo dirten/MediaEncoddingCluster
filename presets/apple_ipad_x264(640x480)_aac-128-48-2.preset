@@ -4,10 +4,9 @@
 	<param name="fileExtension" value="m4v"/>
     </format>
     <codec type="video" id="libx264">
-	<param name="b" value="4400000"/>
-	<param name="b" value="400000"/>
-	<param name="maxrate" value="5000000"/>
-	<param name="bufsize" value="200000"/>
+	<param name="b" value="2400000"/>
+	<param name="maxrate" value="10000000"/>
+	<param name="bufsize" value="10000000"/>
 	<param name="g" value="66"/>
 	<param name="loop" value="1"/>
 	<param name="qmin" value="10"/>

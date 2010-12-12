@@ -246,10 +246,10 @@
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="clean"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="install"/>

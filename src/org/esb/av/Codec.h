@@ -219,7 +219,7 @@ class SampleFormat;*/
         std::string _codec_options;
         Format _input_format;
         Format _output_format;
-        static const PixelFormat STD_PIX_FMT=PIX_FMT_YUV444P;
+        static const PixelFormat STD_PIX_FMT=PIX_FMT_YUV420P;
       private:
         void setParams();
         void setContextDefaults();
