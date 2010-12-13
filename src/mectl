@@ -17,7 +17,10 @@ if [ -h $SELF  ]
 then
     SELF=`ls -l $SELF | awk '{print $11}'`
     BASE_PATH=`dirname $SELF`/..
-    
+    if [ `uname` == Darwin ]
+    then
+        BASE_PATH=$BASE_PATH/..
+    fi    
 else
 
     if [ `expr index "$SELF" /` -gt 1 ]; then
@@ -27,7 +30,7 @@ else
     cd $BASE_PATH
     BASE_PATH=`pwd`
 fi
-
+echo $BASE_PATH
 MHIVE_BASE=$BASE_PATH
 
 #when we are on a mac then all is installed into the Resource subdirectory
@@ -93,9 +96,9 @@ start_server(){
     if status_runtime; then
       echo "starting mhive"
       #echo $MHIVE_BASE/bin/mhiveservice >$BASE_PATH/mhivetest
-      mkdir $MHIVE_BASE/log
-      $MHIVE_BASE/bin/mhive --install > $MHIVE_BASE/log/startup.log
-      $MHIVE_BASE/bin/mhiveservice > $MHIVE_BASE/log/startup.log
+      mkdir $MHIVE_BASE/logs
+      $MHIVE_BASE/bin/mhive --install > $MHIVE_BASE/logs/startup.log
+      $MHIVE_BASE/bin/mhiveservice > $MHIVE_BASE/logs/startup.log
       STATUS=$?
       else
         echo "MHive Service is allready running!"

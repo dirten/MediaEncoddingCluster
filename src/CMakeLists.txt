@@ -12,11 +12,11 @@ IF(WIN32)
 #    SET(RES_INSTALL_DIR res)
 #    SET(PRESETS_INSTALL_DIR presets)
 ELSEIF(APPLE)
-#    SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/lib)
-#    SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/bin)
-#    SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
-#    SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
-#    SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
+    SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/lib)
+    SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/bin)
+    SET(WEB_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/web)
+    SET(RES_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/res)
+    SET(PRESETS_INSTALL_DIR MediaEncodingCluster.app/Contents/Resources/presets)
 ELSE(APPLE)
     #SET(LIB_INSTALL_DIR MediaEncodingCluster.app/Contents/Frameworks)
     #SET(BIN_INSTALL_DIR MediaEncodingCluster.app/Contents/MacOS)
@@ -95,7 +95,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
-add_executable (mhive MACOSX_BUNDLE Hive.cpp)
+add_executable (mhive Hive.cpp)
 #SET_TARGET_PROPERTIES (mhive
 #  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
 #               INSTALL_NAME_DIR "@executable_path/../lib"
@@ -325,15 +325,11 @@ add_custom_target(release
   COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
 )
 
-add_custom_target(hallo depends on install
-  MESSAGE("Hello Package")
-)
 
 
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-    BUNDLE DESTINATION "Applications"
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
@@ -386,9 +382,17 @@ ELSEIF(APPLE)
       ${CURL_DIR}/lib/libcurl.4.dylib
     DESTINATION ${LIB_INSTALL_DIR}
   )
+  SET_SOURCE_FILES_PROPERTIES(
+  ${PROJECT_SOURCE_DIR}/src/mectl
+  PROPERTIES
+  MACOSX_PACKAGE_LOCATION MacOS
+  
+  )
   #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink ${BIN_INSTALL_DIR}/mectl ${BIN_INSTALL_DIR}/mectl123)")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND mkdir ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../MacOS)")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND ln -s ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mectl ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../MacOS/mectl)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../..)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../Resources/res/tmp.list)")
 ELSE(APPLE)
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
