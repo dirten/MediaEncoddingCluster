@@ -14,6 +14,7 @@
 	<param name="picture_frame_size" value="320x240"/>
     	<param name="width" value="320"/>
     	<param name="height" value="240"/>
+    	<param name="flags" value="psnr"/>
     </codec>
     <codec type="audio" id="libmp3lame">
 	<param name="ab" value="128000"/>

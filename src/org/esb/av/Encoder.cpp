@@ -147,8 +147,12 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 
       pac.packet->dts = _last_dts;
       LOGDEBUG(pac.toString());
-      if(ctx->flags&CODEC_FLAG_PSNR)
-        LOGDEBUG("ERROR========"<<ctx->coded_frame->error[0]);
+      if(ctx->flags&CODEC_FLAG_PSNR){
+        LOGDEBUG("ERROR0========"<<ctx->coded_frame->error[0]);
+        LOGDEBUG("ERROR1========"<<ctx->coded_frame->error[1]);
+        LOGDEBUG("ERROR2========"<<ctx->coded_frame->error[2]);
+        LOGDEBUG("ERROR3========"<<ctx->coded_frame->error[3]);
+      }
       LOGDEBUG("PSNR========="<<((double)ctx->coded_frame->error[0])/((double)ctx->width*ctx->height*255.0*255.0));
       if (_pos != NULL) {
         _pos->writePacket(pac);

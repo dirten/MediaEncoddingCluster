@@ -79,7 +79,6 @@ void start_auto(int argc, char * argv[]);
 int rec = 0;
 
 int main(int argc, char * argv[]) {
-//  Log::open("");
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
@@ -87,6 +86,7 @@ int main(int argc, char * argv[]) {
 
   Config::setProperty("hive.base_path", base_path);
   org::esb::config::Config::init("");
+  Log::open("");
 
 
   std::string logconfigpath = base_path;
@@ -152,7 +152,7 @@ int main(int argc, char * argv[]) {
     if (vm.count("debugmode")) {
       Log::open("");
     }else{
-       Log::open(logconfigpath);
+       //Log::open(logconfigpath);
     }
 
 

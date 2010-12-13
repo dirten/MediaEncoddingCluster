@@ -24,6 +24,7 @@
 	<param name="picture_frame_size" value="0"/>
         <param name="width" value="640"/>
 	<param name="height" value="480"/>
+	<param name="flags" value="psnr"/>
     </codec>
     <codec type="audio" id="aac">
 	<param name="ab" value="160000"/>
