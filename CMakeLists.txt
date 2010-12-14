@@ -9,8 +9,21 @@ project (MEC)
 
 
 INCLUDE(CTest)
-INCLUDE(cmake/CMakeDeps.txt)
+#INCLUDE(cmake/CMakeDeps.txt)
 #INCLUDE(cmake/DownloadDeps.txt)
+
+SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+#SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
+SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+#SET(BOOST_COMPILER gcc )
+#SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
+SET(SQLITE_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
+SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
+SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
+SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
+SET(CURL_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 
 ENABLE_TESTING()
 SET(DART_TESTING_TIMEOUT 100)
@@ -113,7 +126,7 @@ ELSEIF(APPLE)
   SET(CPACK_POSTFLIGHT_SCRIPT ${PROJECT_SOURCE_DIR}/install.osx)
   SET(CPACK_GENERATOR "PackageMaker" )
 ELSE(WIN32)
-  SET(CPACK_GENERATOR "TGZ;TBZ2;STGZ" )
+#  SET(CPACK_GENERATOR "TGZ;TBZ2;STGZ" )
 ENDIF(WIN32)
 
 ############################################################
@@ -241,19 +254,20 @@ ENDIF(BUILD_EMBEDDED_LIBS)
 
 
 
+
 IF(NOT BUILD_EMBEDDED_LIBS)
-SET(FFMPEG_DIR ${USERLIB_ROOT} CACHE PATH "Use ffmpeg in directory")
-#SET(X264_DIR ${USERLIB_ROOT} CACHE PATH "Use x264 codec in directory")
-SET(BOOST_DIR /usr CACHE PATH "Boost installation path prefix")
+SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use ffmpeg in directory")
+#SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Use x264 codec in directory")
+SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Boost installation path prefix")
 SET(BOOST_COMPILER gcc CACHE STRING "Boost libraries compiler signature")
 SET(BOOST_VERSION "1_35" CACHE STRING "Boost libraries version signature")
 SET(MYSQL_DIR ${USERLIB_ROOT} CACHE PATH "Mysql libraries")
-SET(LOG4CPLUS_DIR ${USERLIB_ROOT} CACHE PATH "Log4cplus libraries")
-SET(WT_DIR ${USERLIB_ROOT} CACHE PATH "WebToolKit libraries")
-SET(BREAKPAD_DIR ${USERLIB_ROOT} CACHE PATH "Google Breakpad libraries")
+SET(LOG4CPLUS_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Log4cplus libraries")
+SET(WT_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "WebToolKit libraries")
+SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Google Breakpad libraries")
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
 SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
-SET(CURL_DIR "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
+SET(CURL_DIR ${PROJECT_SOURCE_DIR}/target/dependency CACHE PATH "Path to the Bitrock Installbuilder Executable")
 ENDIF(NOT BUILD_EMBEDDED_LIBS)
 
 

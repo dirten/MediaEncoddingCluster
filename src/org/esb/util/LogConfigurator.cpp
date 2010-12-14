@@ -43,7 +43,7 @@ namespace org {
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1"), LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.LogLevelMin"), LOG4CPLUS_TEXT("Info"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.LogLevelMin"), LOG4CPLUS_TEXT("Warn"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.LogLevelMax"), LOG4CPLUS_TEXT("Fatal"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.AcceptOnMatch"), LOG4CPLUS_TEXT("true"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.2"), LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter"));

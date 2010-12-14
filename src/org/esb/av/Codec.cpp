@@ -508,7 +508,7 @@ namespace org {
       }
 
       int64_t Codec::getFrameBytes() {
-        int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
+        int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
 
         return ctx->frame_size * osize * ctx->channels;
       }
@@ -524,14 +524,17 @@ namespace org {
       Format Codec::getOutputFormat() {
         _output_format.width = ctx->width;
         _output_format.height = ctx->height;
-        _output_format.pixel_format = STD_PIX_FMT;
+        //_output_format.pixel_format = STD_PIX_FMT;
+        _output_format.pixel_format = ctx->pix_fmt;
         return _output_format;
       }
 
       Format Codec::getInputFormat() {
         _input_format.width = ctx->width;
         _input_format.height = ctx->height;
-        _input_format.pixel_format = STD_PIX_FMT;
+
+        //_input_format.pixel_format = STD_PIX_FMT;
+        _input_format.pixel_format = ctx->pix_fmt;
         return _input_format;
 
       }

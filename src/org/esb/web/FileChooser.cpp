@@ -14,16 +14,35 @@
 #include <Wt/Ext/Button>
 #include <Wt/WTree>
 #include <Wt/WFitLayout>
+#include <Wt/WBorderLayout>
 
 namespace org {
   namespace esb {
     namespace web {
 
       FileChooser::FileChooser(std::string title, std::string path) : Wt::Ext::Dialog(title) {
-        resize(400, 400);
+        contents()->setLayout(new Wt::WBorderLayout());
         //setLayout(new Wt::WFitLayout());
-        tree = new FileTreeTable("/", filter, contents());
+        //this->setMargin(0);
+        tree = new FileTreeTable("/", filter);
+        Wt::Ext::Panel * comp=new Wt::Ext::Panel();
+        Wt::Ext::Panel * view=new Wt::Ext::Panel();
+        view->setLayout(new Wt::WFitLayout());
+        view->setTitle("Files");
+        view->layout()->addWidget(tree);
+        view->setAutoScrollBars(true);
+        comp->setTitle("Sources");
+        comp->layout()->addWidget(new Wt::Ext::Button("File Source"));
+        comp->layout()->addWidget(new Wt::Ext::Button("FTP Source"));
+        comp->layout()->addWidget(new Wt::Ext::Button("Upload Source"));
+
+        static_cast<Wt::WBorderLayout*>(contents()->layout())->setSpacing(3);
+        static_cast<Wt::WBorderLayout*>(contents()->layout())->setContentsMargins(0,0,0,0);
+        //static_cast<Wt::WBorderLayout*>(contents()->layout())->addWidget(comp, Wt::WBorderLayout::West);
+        static_cast<Wt::WBorderLayout*>(contents()->layout())->addWidget(tree, Wt::WBorderLayout::Center);
+
 //        tree->resize(380, 300);
+        resize(600, 400);
         setAutoScrollBars(true);
         addButton(new Wt::Ext::Button("Refresh"));
         buttons().back()->clicked().connect(SLOT(this, FileChooser::ownrefresh));

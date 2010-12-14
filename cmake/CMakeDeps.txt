@@ -1,7 +1,9 @@
 SET(DOWNLOAD_CMD curl)
-SET(DOWNLOAD_OPTION -C - -o)
+SET(DOWNLOAD_OPTION -C - -o )
 SET(UNZIP_CMD unzip)
-
+SET(CMAKE_BUILD_TYPE debug)
+SET(PROJECT_SOURCE_DIR .)
+SET(TARGET_DIR testtarget)
 IF(WIN32)
     SET(DOWNLOAD_CMD ${PROJECT_SOURCE_DIR}/win32/curl.exe)
     SET(UNZIP_CMD ${PROJECT_SOURCE_DIR}/win32/unzip.exe)
@@ -11,31 +13,24 @@ ELSEIF(APPLE)
 ELSE(APPLE)
     SET(SYSTEM linux)
 ENDIF(WIN32)
-add_custom_target(deps
-    COMMAND echo "Downloading Boost Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/boost/boost/1.44.0/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading Breakpad Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/breakpad/breakpad/1.5/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading ffmpeg Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/ffmpeg/ffmpeg/20100913/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading curl Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/libcurl/libcurl/7.21.1-1/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading litesql Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/litesql/litesql/0.3.8-beta-patch-3/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading log4cplus Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/log4cplus/log4cplus/1.0.4-rc9/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading safmq Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/safmq/safmq/0.8.3-3/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading sqlite Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/sqlite/sqlite/3.7.2/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND echo "Downloading wt Library"
-    COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/wt/wt/3.1.4/wt-3.1.4-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/testtarget/wt-3.1.4-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip||true
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-    COMMAND ${UNZIP_CMD} -o ${PROJECT_SOURCE_DIR}/testtarget/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/testtarget/ > ${PROJECT_SOURCE_DIR}/testtarget/unzip.log
-)
+FILE(MAKE_DIRECTORY ${TARGET_DIR})
+
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/boost/boost/1.44.0/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip )
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/breakpad/breakpad/1.5/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/ffmpeg/ffmpeg/20100913/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/libcurl/libcurl/7.21.1-1/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/litesql/litesql/0.3.8-beta-patch-3/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/log4cplus/log4cplus/1.0.4-rc9/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/safmq/safmq/0.8.3-3/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/sqlite/sqlite/3.7.2/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/wt/wt/3.1.4/wt-3.1.4-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/wt-3.1.4-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o testtarget/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d testtarget/ )
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/ffmpeg-20100913-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/litesql-0.3.8-beta-patch-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/sqlite-3.7.2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/testtarget/wt-3.1.4-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)

@@ -12,6 +12,7 @@
 #include <Wt/WWidget>
 #include <Wt/WText>
 #include <Wt/WTree>
+#include <Wt/WFitLayout>
 
 using namespace Wt;
 
@@ -21,7 +22,7 @@ FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidg
 
 //    header(1)->setStyleClass("fsize");
 //    header(2)->setStyleClass("date");
-
+  
     setTreeRoot(new FileTreeTableNode(path), "File");
     
     treeRoot()->setImagePack("icons/");

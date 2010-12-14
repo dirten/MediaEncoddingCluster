@@ -15,7 +15,7 @@ namespace org {
 
         _file = target_file;
         _fmtCtx = avformat_alloc_context();
-        _fmt = guess_format(fmt, target_file->getPath().c_str(), NULL);
+        _fmt = av_guess_format(fmt, target_file->getPath().c_str(), NULL);
         _fmtCtx->oformat = _fmt;
 
         if (!(_fmt->flags & AVFMT_NOFILE)) {

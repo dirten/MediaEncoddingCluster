@@ -119,7 +119,7 @@ fprintf(stderr, "Error while decoding frame\n");
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("Decode Video");
-    if (!_pix_fmt_converter) {
+    if (false&&!_pix_fmt_converter) {
       Format in;
       in.width = ctx->width;
       in.height = ctx->height;
@@ -129,7 +129,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
       _pix_fmt_converter = new PixelFormatConverter(in, _output_format);
       _pix_fmt_converter->open();
     }
-  Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
+  //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   Frame * frame = new Frame(_output_format.pixel_format, ctx->width, ctx->height);
   int _frameFinished = 0;
   int len = packet.packet->size;
@@ -139,11 +139,11 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //    logdebug("Decode Packet");
   int bytesDecoded = 0;
   if(ctx->codec_id>-1){
-    bytesDecoded = avcodec_decode_video2(ctx, tmp_frame->getAVFrame(), &_frameFinished, packet.packet);
+    bytesDecoded = avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   }
   if (_frameFinished) {
 
-    _pix_fmt_converter->process(*tmp_frame, *frame);
+    //_pix_fmt_converter->process(*tmp_frame, *frame);
     if (ctx->coded_frame) {
       LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
       LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
@@ -235,7 +235,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   //        Frame frame;
   int size = packet.packet->size;
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-  int bps = av_get_bits_per_sample_format(ctx->sample_fmt) >> 3;
+  int bps = av_get_bits_per_sample_fmt(ctx->sample_fmt) >> 3;
 
   uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);

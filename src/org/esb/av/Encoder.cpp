@@ -170,8 +170,8 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 }
 
 int Encoder::encodeVideo(Frame & frame) {
-  LOGDEBUG(frame.toString());
-  if(!_pix_fmt_converter){
+  //LOGDEBUG(frame.toString());
+  if(false&&!_pix_fmt_converter){
     _input_format.width=ctx->width;
     _input_format.height=ctx->height;
     _input_format.pixel_format=STD_PIX_FMT;
@@ -180,10 +180,10 @@ int Encoder::encodeVideo(Frame & frame) {
     _pix_fmt_converter=new PixelFormatConverter(_input_format, out);
     _pix_fmt_converter->open();
   }
-  Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
-  _pix_fmt_converter->process(frame,*tmp_frame);
-  LOGDEBUG(tmp_frame->toString());
-  return encodeVideo(tmp_frame->getAVFrame());
+  //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
+  //_pix_fmt_converter->process(frame,*tmp_frame);
+  LOGDEBUG(frame.toString());
+  return encodeVideo(frame.getAVFrame());
 //  return encodeVideo(frame.getAVFrame());
 }
 
@@ -198,7 +198,7 @@ void Encoder::setSink(Sink * sink) {
 int Encoder::encodeAudio(Frame & frame) {
 
   LOGDEBUG(frame.toString());
-  int osize = av_get_bits_per_sample_format(ctx->sample_fmt) / 8;
+  int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
   int audio_out_size = (4 * 192 * 1024);
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
 
