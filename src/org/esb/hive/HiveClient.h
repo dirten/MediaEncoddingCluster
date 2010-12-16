@@ -59,9 +59,10 @@ namespace org {
 //                boost::mutex thread_write_mutex;
                 void packetReader();
                 void packetWriter();
-
+#ifdef USE_SAFMQ
                 Ptr<org::esb::io::QueueInputStream> _qis;
                 Ptr<org::esb::io::QueueOutputStream> _qos;
+#endif
             };
         }
     }

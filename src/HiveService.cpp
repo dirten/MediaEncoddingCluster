@@ -37,7 +37,10 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessListener.h"
+#include "org/esb/grid/NodeResolver.h"
+#include "org/esb/util/StringUtil.h"
 #include <signal.h>
+
 
 class PListener:public org::esb::lang::ProcessListener{
 public:
@@ -108,6 +111,34 @@ void open_dialog(std::string message, std::string type) {
 
 int main(int argc, char**argv) {
   Log::open();
+
+
+    /*first find out if there is running a server*/
+  org::esb::grid::Node node;
+  node.setData("type", "searcher");
+  org::esb::grid::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+  res.start();
+  LOGDEBUG("Waiting 3 secs. to find all online nodes");
+  org::esb::lang::Thread::sleep2(3000);
+  org::esb::grid::NodeResolver::NodeList nodes = res.getNodes();
+  org::esb::grid::NodeResolver::NodeList::iterator nodeit = nodes.begin();
+  bool server_running = false;
+  int client_count = 0;
+  std::string host;
+  int port=0;
+  for (; nodeit != nodes.end(); nodeit++) {
+    LOGDEBUG((*nodeit)->toString());
+    LOGDEBUG("NodeType" << (*nodeit)->getData("type"));
+    if ((*nodeit)->getData("type") == "server"){
+      server_running = true;
+      host = (*nodeit)->getIpAddress().to_string();
+      port = atoi((*nodeit)->getData("port").c_str());
+    }
+    if ((*nodeit)->getData("type") == "client")
+      client_count++;
+  }
+  res.stop();
+
   /**
    * needing the base path from the executable
    * */
@@ -115,17 +146,15 @@ int main(int argc, char**argv) {
   org::esb::io::File f(argv[0]);
   std::cout << f.getParent() << std::endl;
   std::string path = f.getParent();
-
+  std::string bpath = f.getParent();
+  bpath.append("/..");
   std::string executable = path;
   std::list<std::string> arguments;
   org::esb::util::Properties props;
   org::esb::io::File file(path.append("/../hive"));
-  if (file.isDirectory()) {
+  if (!file.exists()) {
+    file.mkdir();
     mode = 1;
-  }
-  org::esb::io::File logdir(path.append("/../log"));
-  if (!logdir.exists()) {
-    logdir.mkdir();
   }
 
 #ifdef WIN32
@@ -139,37 +168,124 @@ int main(int argc, char**argv) {
 #else
   executable.append("/mhive");
 #endif
-  arguments.push_back("-a");
-  //arguments.push_back("--debugmode");
-  /*
-  struct task_struct *task;
-    for_each_process(task)
-    {
-    printk("%s [%d]\n",task->comm , task->pid);
-    }*/
-
-  org::esb::lang::Process pr(executable, arguments);
   PListener listener;
-  pr.addProcessListener(&listener);
-  pr.run();
+
+  /*create internal database*/
+  if(mode==1){
+    arguments.clear();
+    arguments.push_back("--install");
+    arguments.push_back("--base="+bpath);
+    LOGINFO("Create mhive database")
+    org::esb::lang::Process prinst(executable, arguments, "mhiveinstaller");
+    prinst.start();
+  }
+#ifdef USE_SAFMQ
+  arguments.clear();
+  arguments.push_back("-q");
+  arguments.push_back("--base="+bpath);
+  //arguments.push_back("--debugmode");
+  LOGINFO("Starting mhive queue")
+  org::esb::lang::Process prq(executable, arguments, "mhivequeue");
+//  PListener listener;
+  //prq.addProcessListener(&listener);
+  prq.run();
+#endif
+  LOGINFO("Starting mhive webadmin")
+  arguments.clear();
+  arguments.push_back("-w");
+  arguments.push_back("--base="+bpath);
+  org::esb::lang::Process prw(executable, arguments,"mhiveweb");
+  //prw.addProcessListener(&listener);
+  prw.run();
+  org::esb::lang::Process * pra=NULL;
+  org::esb::lang::Process * prc=NULL;
+  if(!server_running){
+    LOGINFO("Starting mhive core service")
+    arguments.clear();
+    arguments.push_back("-r");
+    arguments.push_back("--base="+bpath);
+    //arguments.push_back("--debugmode");
+    pra=new org::esb::lang::Process(executable, arguments,"mhivecore");
+    //PListener listener;
+    //pra.addProcessListener(&listener);
+    pra->run();
+    org::esb::lang::Thread::sleep2(2000);
+    LOGINFO("Starting mhive client")
+    LOGINFO("Client host="<<host<<" port="<<port);
+    arguments.clear();
+    arguments.push_back("-i");
+//    arguments.push_back("-h 127.0.0.1");
+    //arguments.push_back("-p "+org::esb::util::StringUtil::toString(port));
+    //arguments.push_back("--base="+bpath);
+    //arguments.push_back("--debugmode");
+    prc=new org::esb::lang::Process(executable, arguments,"mhiveclient");
+    //PListener listener;
+    //pra.addProcessListener(&listener);
+    prc->run();
+
+  }else{
+    LOGINFO("Starting mhive client")
+    arguments.clear();
+    arguments.push_back("-i");
+//    arguments.push_back("-h "+host);
+//    arguments.push_back("-p "+org::esb::util::StringUtil::toString(port));
+    arguments.push_back("--base="+bpath);
+    //arguments.push_back("--debugmode");
+    prc=new org::esb::lang::Process(executable, arguments,"mhiveclient");
+    //PListener listener;
+    //pra.addProcessListener(&listener);
+    prc->run();
+  }
+
 
 
   open_dialog("Media Encoding Cluster Server is running please open the webpage on http://localhost:8080 now","msgbox");
   arguments.clear();
   arguments.push_back("http://localhost:8080");
-  org::esb::lang::Thread::sleep2(3500);
+//  org::esb::lang::Thread::sleep2(1000);
   open_webadmin();
   org::esb::lang::CtrlCHitWaiter::wait();
   open_dialog("Media Encoding Cluster\nStop signal received!\nhalting now","msgbox");
   try {
-    pr.stop();
+    pra->stop();
   } catch (org::esb::lang::ProcessException & ex) {
     try {
-      //open_dialog("timeout received while halting Media Encoding Cluster \ntry to kill the process now\n","error");
-      pr.kill();
+      pra->kill();
     } catch (org::esb::lang::ProcessException & ex) {
       LOGERROR("Exception:" << ex.what());
     }
   }
+  delete pra;
+  try {
+    prc->stop();
+  } catch (org::esb::lang::ProcessException & ex) {
+    try {
+      prc->kill();
+    } catch (org::esb::lang::ProcessException & ex) {
+      LOGERROR("Exception:" << ex.what());
+    }
+  }
+  delete prc;
+
+  try {
+    prw.stop();
+  } catch (org::esb::lang::ProcessException & ex) {
+    try {
+      prw.kill();
+    } catch (org::esb::lang::ProcessException & ex) {
+      LOGERROR("Exception:" << ex.what());
+    }
+  }
+#ifdef USE_SAFMQ
+  try {
+    prq.stop();
+  } catch (org::esb::lang::ProcessException & ex) {
+    try {
+      prq.kill();
+    } catch (org::esb::lang::ProcessException & ex) {
+      LOGERROR("Exception:" << ex.what());
+    }
+  }
+#endif
   open_dialog("Media Encoding Cluster stopped!","msgbox");
 }

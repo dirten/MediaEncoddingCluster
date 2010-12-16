@@ -31,7 +31,6 @@
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Properties.h"
-#include "org/esb/sql/Connection.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/hive/Setup.h"
@@ -44,11 +43,7 @@ namespace org {
 
       Setup::Setup(const Wt::WEnvironment & env) : WApplication(env) {
         using namespace wtk;
-        if (!(string(org::esb::config::Config::getProperty("hive.mode")) == "setup")) {
-          WApplication::instance()->redirect("/");
-          WApplication::instance()->quit();
-        }
-        setTitle("Hive Websetup");
+        setTitle("Hive WebSetup");
         Wt::Ext::Container *viewPort = new Wt::Ext::Container(root());
         Wt::WBorderLayout * border = new Wt::WBorderLayout();
         viewPort->setLayout(border);
@@ -490,11 +485,11 @@ namespace org {
       }
 
       void Setup::checkConnection() {
-        using namespace org::esb::sql;
         std::string constr = std::string("mysql:host=").append(_el.getElement("db.host")->text().narrow()).
             append(";db=").append(_el.getElement("db.db")->text().narrow()).
             append(";user=").append(_el.getElement("db.user")->text().narrow()).
             append(";passwd=").append(_el.getElement("db.pass")->text().narrow());
+            /*
         Connection con(constr, false);
         try {
           if (_el.getElement("db.db")->text().narrow().length() == 0) {
@@ -510,6 +505,7 @@ namespace org {
           error->setText(ex.what());
           butNext->setHidden(true);
         }
+        */
       }
 
       void Setup::setLoginScreen() {
@@ -539,45 +535,17 @@ namespace org {
               );
           //        error->setText(Wt::WString::tr("setup-saved"));
           //        using namespace org::esb;
-#ifdef USE_EMBEDDED_MYSQL
-          try {
-            sql::Connection con_create(std::string(""));
-            con_create.executeNonQuery(string("CREATE DATABASE hive"));
-          } catch (sql::SqlException & ex) {
-			  LOGERROR("SqlException:" << ex.what());
-            error->setText(Wt::WString::tr("create-database_failed"));
-            return;
-          }
-#endif
           config::Config::setProperty("db.connection", props.getProperty("db.connection"));
           config::Config::setProperty("host", _el.getElement("db.host")->text().narrow().c_str());
           config::Config::setProperty("user", _el.getElement("db.user")->text().narrow().c_str());
           config::Config::setProperty("passwd", _el.getElement("db.pass")->text().narrow().c_str());
           config::Config::setProperty("database", _el.getElement("db.db")->text().narrow().c_str());
-          try {
-            std::string sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-            sql_script.append("/../sql/hive-0.0.3.sql");
-            hive::Setup::buildDatabaseModel(sql_script.c_str());
-            /**
-            * Update database model
-            */
-            sql_script = std::string(org::esb::config::Config::getProperty("hive.path"));
-            sql_script.append("/../sql/hive-0.0.4.sql");
-            hive::Setup::buildDatabaseModel(sql_script.c_str());
-          } catch (sql::SqlException & ex) {
-            LOGERROR("SqlException:" << ex.what());
-            error->setText(ex.what());
-            return;
-          }
-
-          sql::Connection con(std::string(props.getProperty("db.connection")));
           /*
                   con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('host','") + _el.getElement("db.host")->text().narrow() + "')");
                   con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('database','") + _el.getElement("db.db")->text().narrow() + "')");
                   con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('user','") + _el.getElement("db.user")->text().narrow() + "')");
                   con.executeNonQuery(std::string("insert into config (config_key, config_val) values ('passwd','") + _el.getElement("db.pass")->text().narrow() + "')");
            **/
-          con.executeNonQuery(std::string("INSERT INTO `user` ( `auth_name`, `auth_passwd`, `first_name`, `last_name`, `email`, `user_type`, `created`, `updated`) VALUES ( '").append(_el.getElement("adm.login")->text().narrow()).append("', '").append(_el.getElement("adm.passwd")->text().narrow()).append("', 'Admin', 'User', 'hiveadmin@localhost', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00')"));
 
           error->setText("Database Model created!");
           config::Config::setProperty("hive.mode", "server");

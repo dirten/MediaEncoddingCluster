@@ -48,7 +48,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     log.message = message;
     log.update();
     job.joblog().link(log);
-    job.status = "warning";
+    job.status = "exists";
     job.update();
     return;
   }
@@ -198,7 +198,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
      * clean up temporary files, they are no longer needed
      */
     fis.close();
-    //      infile.deleteFile();
+    infile.deleteFile();
   }
   if (true) {
     db::JobLog log(job.getDatabase());

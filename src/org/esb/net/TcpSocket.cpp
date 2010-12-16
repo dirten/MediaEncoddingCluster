@@ -71,11 +71,11 @@ namespace org {
           //		  asio::error e=boost::asio::error::host_not_found;
           boost::system::error_code e = boost::asio::error::host_not_found;
           while (e && iterator != end) {
-//            logdebug("EndPoint to connect to:" << iterator->endpoint());
+            LOGDEBUG("EndPoint to connect to:" << iterator->endpoint());
             _socket->close();
             _socket->connect(*iterator++, e);
-//            logdebug("Socket Message:" << e.message());
-//            logdebug("Socket status:" << e);
+            LOGDEBUG("Socket Message:" << e.message());
+            LOGDEBUG("Socket status:" << e);
 
           }
           if (e) {

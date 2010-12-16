@@ -98,7 +98,7 @@ namespace org {
         }
       }
 
-      void Process::run(bool restart) {
+      void Process::run(bool restart, int count) {
         _restartable = restart;
         boost::mutex::scoped_lock process_started_lock(process_started_wait_mutex);
         boost::thread t(boost::bind(&Process::start, this));

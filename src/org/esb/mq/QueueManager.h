@@ -7,14 +7,8 @@
 
 #ifndef QMANAGER_H
 #define	QMANAGER_H
-#include <inttypes.h>
-#include "param_config.h"
-#include "QManager.h"
-#include "ServerThread.h"
-#include "SystemDelivery.h"
-#include "ForwardThread.h"
+#include <string>
 #include "Log.h"
-
 
 namespace org {
   namespace esb {
@@ -31,14 +25,7 @@ namespace org {
         std::string getUrl();
       private:
 
-        /// The global instance of the network serevr thread
-        ServerThread server;
-        /// The global instance of the TTL Error Delivery thread
-        SystemDelivery sysdeliver;
-        /// The global instance of the message forwarding thread
-        ForwardThread* forwardthds;
         int numForwardThreads;
-        safmq::Log* plog;
         bool _running;
       };
     }

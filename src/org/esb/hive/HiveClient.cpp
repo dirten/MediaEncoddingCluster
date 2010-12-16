@@ -28,6 +28,10 @@ namespace org {
         _toHalt = false;
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+#ifdef USE_SAFMQ
+        _qis=new QueueInputStream(_host, _port);
+        _qos=new QueueOutputStream(_host, _port);
+#endif
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
         //        av_register_all();
@@ -73,10 +77,12 @@ namespace org {
       void HiveClient::connect() {
         try {
           _sock->connect();
+
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
+          LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
           //          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
       }

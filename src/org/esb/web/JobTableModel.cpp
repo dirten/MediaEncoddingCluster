@@ -7,12 +7,13 @@
 
 #include "JobTableModel.h"
 #include "org/esb/util/StringUtil.h"
+#include <time.h>
 namespace org {
   namespace esb {
     namespace web {
 
       JobTableModel::JobTableModel(std::vector<db::Job> jobs):Wt::WStandardItemModel(0, 0, NULL) {
-        insertColumns(0, 10);
+        insertColumns(0, 11);
         int i=0;
         setHeaderData(i++, std::string("Id"));
         setHeaderData(i++, std::string("Stop"));
@@ -22,6 +23,7 @@ namespace org {
         setHeaderData(i++, std::string("Enqueue Time"));
         setHeaderData(i++, std::string("Start Time"));
         setHeaderData(i++, std::string("End Time"));
+        setHeaderData(i++, std::string("Duration"));
         setHeaderData(i++, std::string("Progress %"));
         setHeaderData(i++, std::string("Status"));
         setModelData(jobs);
@@ -54,6 +56,12 @@ namespace org {
           }
           if(job.endtime!=1){
             setData(a,col++,job.endtime.value().asString("%d-%m-%y %h:%M:%s"));
+          }else{
+            setData(a,col++,std::string(""));
+          }
+          if(job.endtime!=1){
+            float dt=difftime(job.endtime.value().timeStamp(),job.begintime.value().timeStamp());
+            setData(a,col++,dt);
           }else{
             setData(a,col++,std::string(""));
           }

@@ -34,6 +34,18 @@ namespace org {
         _model=Ptr<JobTableModel>(new JobTableModel(jobs));
         setModel(_model.get());
         setAlternatingRowColors(true);
+        setColumnSortable(1,true);
+        setColumnSortable(2,true);
+        setColumnSortable(3,true);
+        setColumnSortable(4,true);
+        setColumnSortable(5,true);
+        setColumnSortable(6,true);
+        setColumnSortable(7,true);
+        setColumnSortable(8,true);
+        setColumnSortable(9,true);
+        setColumnSortable(10,true);
+        setColumnSortable(11,true);
+
         resizeColumnsToContents(true);
         setHighlightMouseOver(true);
         setSelectionBehavior(Wt::SelectRows);
@@ -41,11 +53,12 @@ namespace org {
         setColumnHidden(0, true);
         setColumnWidth(1, 10);
         
-        setColumnWidth(5, 30);
-        setColumnWidth(6, 30);
-        setColumnWidth(7, 30);
+        setColumnWidth(5, 35);
+        setColumnWidth(6, 35);
+        setColumnWidth(7, 35);
         setColumnWidth(8, 25);
-        setColumnWidth(9, 15);
+        setColumnWidth(9, 25);
+        setColumnWidth(10, 15);
 
         std::string renderer = "function change(val) {"
                 "if (val > 0){"
@@ -55,7 +68,7 @@ namespace org {
                 "}"
                 "return val;"
                 "}";
-        setRenderer(8, renderer);
+        setRenderer(9, renderer);
         renderer = "function change(val) {"
                 "if (val == \"running\"){"
                 "return '<img src=\"/icons/encoding-in-progress.gif\"/>';"
@@ -67,10 +80,12 @@ namespace org {
                 "return '<img src=\"/icons/queued-icon.png\"/>';"
                 "} else if(val == \"warning\") {"
                 "return '<img src=\"/icons/warning-icon.png\"/>';"
+                "} else if(val == \"exists\") {"
+                "return '<img src=\"/icons/warning-icon.png\"/>';"
                 "}"
                 "return val;"
                 "}";
-        setRenderer(9, renderer);
+        setRenderer(10, renderer);
         
 //        std::string element=doSome_.createCall("'test'","42");
 //        LOGDEBUG("Element:"<<element);

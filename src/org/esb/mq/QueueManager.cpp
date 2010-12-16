@@ -21,8 +21,24 @@
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/config/config.h"
+#include <inttypes.h>
+#include "param_config.h"
+#include "QManager.h"
+
+#include "SystemDelivery.h"
+#include "ServerThread.h"
+#include "SystemDelivery.h"
+#include "ForwardThread.h"
 Config * pcfg = NULL;
 QManager * theQueueManager = NULL;
+        /// The global instance of the network serevr thread
+ServerThread* server;
+        /// The global instance of the TTL Error Delivery thread
+SystemDelivery* sysdeliver;
+        /// The global instance of the message forwarding thread
+ForwardThread* forwardthds;
+        safmq::Log* plog;
+
 const std::string			system_user("safmq_system");
 
 /// Global group including all users
@@ -32,6 +48,8 @@ namespace org {
     namespace mq {
 
       QueueManager::QueueManager() {
+        sysdeliver=new SystemDelivery();
+        server=new ServerThread();
         org::esb::io::File file(org::esb::config::Config::get("hive.data_path")+"/queues");
         if(!file.exists()){
           file.mkdir();
@@ -52,6 +70,7 @@ namespace org {
         _running=false;
         try {
           pcfg = new Config("mq.cfg");
+
 //          std::string port=pcfg->getParam("port");
         } catch (int) {
           safmq::Log::getLog()->Startup(safmq::Log::error, "Unable to load configuration file.");
@@ -97,7 +116,7 @@ namespace org {
       }
 
       void QueueManager::start() {
-        sysdeliver.start();
+        sysdeliver->start();
         theQueueManager->start();
 
 
@@ -108,7 +127,7 @@ namespace org {
         for (int x = 0; x < numForwardThreads; ++x) {
           forwardthds[x].start();
         }
-        server.start();
+        server->start();
         plog->Startup();
         _running=true;
         
@@ -116,17 +135,17 @@ namespace org {
 
       void QueueManager::stop() {
         if(!_running)return;
-        server.stop();
+        server->stop();
         for (int x = 0; x < numForwardThreads; ++x)
           forwardthds[x].stop();
-        sysdeliver.stop();
+        sysdeliver->stop();
         if (theQueueManager)
           theQueueManager->stop();
-        server.join();
+        server->join();
         for (int x = 0; x < numForwardThreads; ++x)
           forwardthds[x].join();
         delete [] forwardthds;
-        sysdeliver.join();
+        sysdeliver->join();
         theQueueManager->join();
 
         //Log::getLog()->Info("Shutting down SAFMQ, freeing theQueueManager");

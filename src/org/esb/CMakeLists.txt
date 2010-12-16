@@ -322,7 +322,7 @@ add_library (web
 #    web/VersionNode.cpp
 #    web/FileNode.cpp
 #    web/SqlUtil.cpp
-#    web/Setup.cpp
+    web/Setup.cpp
 #    web/StreamInfo.cpp
     web/ProfileCreator.cpp
     web/wtk/Div.cpp
@@ -360,6 +360,7 @@ add_library (web
     web/project_v2/PresetTree.cpp
     web/project_v2/PropertyPanel.cpp
     web/system/NodeListPanel.cpp
+    web/Overview.cpp
     web/presets/PresetsEditor.cpp
     web/presets/PresetsEditorWindow.cpp
     web/presets/FormatPanel.cpp

@@ -43,6 +43,7 @@ namespace org {
                 void onMessage(org::esb::signal::Message & msg);
             private:
                 void start();
+                void restart_failed_exports();
                 bool _run;
                 boost::mutex terminationMutex;
                 boost::condition termination_wait;

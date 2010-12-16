@@ -17,7 +17,7 @@
 #include <iostream>
 
 //#include "WebApp.h"
-//#include "Setup.h"
+#include "Setup.h"
 #include "org/esb/util/Log.h"
 //#include "TestApp.cpp"
 using namespace org::esb::web;
@@ -27,11 +27,11 @@ WApplication *createTestApp(const WEnvironment& env) {
   //return new TestApp(env);
   return NULL;
 }
-/*
+
 WApplication *createSetup(const WEnvironment& env) {
   return new Setup(env);
 }
-*/
+
 WApplication *createApp(const WEnvironment& env) {
   /*
    * You could read information from the environment to decide whether
@@ -75,10 +75,10 @@ WebServer::WebServer() : server("test") {
 //  return;
   try{
     server.addEntryPoint(Application, &createApp, "/");
+    server.addEntryPoint(Application, &createSetup, "/setup");
   }catch(std::exception ex){
     LOGERROR("error configure webserver:"<<ex.what());
   }
-  //server.addEntryPoint(Application, &createSetup, "/setup");
   //  server.addEntryPoint(WServer::Application, &createTestApp, "test");
   //  logdebug(typeid(*this).name());
 }

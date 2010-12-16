@@ -25,7 +25,7 @@ namespace org {
         //Process(const Process& orig);
         virtual ~Process();
         void start();
-        void run(bool restartable=false);
+        void run(bool restartable=false, int restart_count=3);
         void stop();
         void kill();
         bool isRunning();

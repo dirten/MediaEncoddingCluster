@@ -104,7 +104,7 @@ add_executable (mhive Hive.cpp)
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
     
-    target_link_libraries (mhiveservice io lang util)
+    target_link_libraries (mhiveservice io lang util grid)
     INSTALL(TARGETS mhiveservice
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         #BUNDLE DESTINATION ${BIN_INSTALL_DIR}
@@ -243,7 +243,8 @@ target_link_libraries (mhive
   util 
   signal 
   io 
-  net 
+  net
+  mq
   ${Boost_LIBRARIES}
 #  log4cplus
 )
@@ -404,5 +405,7 @@ ELSE(APPLE)
       ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ${LIB_INSTALL_DIR}
     )
+    #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")
+
 ENDIF(WIN32)
 

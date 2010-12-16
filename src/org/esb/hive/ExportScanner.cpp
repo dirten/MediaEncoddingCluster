@@ -48,6 +48,7 @@ namespace org {
           LOGDEBUG("Start Request for the ExportScanner");
           _run = true;
           boost::thread t(boost::bind(&ExportScanner::start, this));
+          boost::thread(boost::bind(&ExportScanner::restart_failed_exports, this));
           LOGDEBUG("ExportScanner started");
         } else
           if (msg.getProperty("exportscanner") == "stop") {
@@ -62,7 +63,7 @@ namespace org {
       }
 
       void ExportScanner::start() {
-        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+        db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
         while (_run) {
           {
             try {
@@ -73,7 +74,7 @@ namespace org {
                 try {
                   db::JobLog log((*job_it).getDatabase());
                   std::string message = "exporting file";
-                  message += mfile.path+"/"+mfile.filename;
+                  message += mfile.path + "/" + mfile.filename;
                   log.message = message;
                   log.update();
 
@@ -85,9 +86,9 @@ namespace org {
                 } catch (boost::filesystem::filesystem_error & e) {
                   db::JobLog log((*job_it).getDatabase());
                   std::string message = "failed to write the outputfile to ";
-                  message += mfile.path+"/"+mfile.filename;
-                  message+=": ";
-                  message+=e.what();
+                  message += mfile.path + "/" + mfile.filename;
+                  message += ": ";
+                  message += e.what();
                   log.message = message;
                   log.update();
 
@@ -106,7 +107,23 @@ namespace org {
         }
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         termination_wait.notify_all();
+      }
 
+      void ExportScanner::restart_failed_exports() {
+        db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+        while (_run) {
+          std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == "exists").all();
+          std::vector<db::Job>::iterator job_it = completed_jobs.begin();
+          for (; job_it != completed_jobs.end(); job_it++) {
+            db::MediaFile mfile = (*job_it).outputfile().get().one();
+            org::esb::io::File f(mfile.path + "/" + mfile.filename);
+            if (!f.exists()) {
+              (*job_it).status = "completed";
+              (*job_it).update();
+            }
+          }
+          org::esb::lang::Thread::sleep2(5000);
+        }
       }
     }
   }
