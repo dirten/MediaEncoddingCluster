@@ -25,6 +25,7 @@
  * ----------------------------------------------------------------------
  */
 #include <stdlib.h>
+#include "org/esb/grid/NodeResolver.h"
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include "org/esb/lang/CtrlCHitWaiter.h"
@@ -37,7 +38,6 @@
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessListener.h"
-#include "org/esb/grid/NodeResolver.h"
 #include "org/esb/util/StringUtil.h"
 #include <signal.h>
 
