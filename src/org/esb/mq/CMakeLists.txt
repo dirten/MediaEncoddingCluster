@@ -6,6 +6,8 @@ include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
 add_library (mq
       QueueManager.cpp
       QueueConnection.cpp
+      QueueMessage.cpp
+      QueueException.cpp
 )
 IF(WIN32)
 	set(EXTRA_LIBS 
