@@ -73,15 +73,17 @@ private:
   }
 
 public:
-  DataHandler(InputStream * is, OutputStream * os,boost::asio::ip::tcp::endpoint e) {
+
+  DataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
     _oos = new io::ObjectOutputStream(os);
     _ois = new io::ObjectInputStream(is);
     _own_id = e.address().to_string();
     _own_id += ":";
     _own_id += StringUtil::toString(e.port());
     shutdown = false;
-	LOGDEBUG("endpoint:" << e);
+    LOGDEBUG("endpoint:" << e);
   }
+
   DataHandler(InputStream * is, OutputStream * os) {
     _is = is;
     _os = os;
@@ -108,25 +110,26 @@ public:
       delete _ois;
     _ois = NULL;
   }
-/*
-  DataHandler(TcpSocket * s) {
-    socket = s;
-    _is = socket->getInputStream();
-    _os = socket->getOutputStream();
-    _oos = new io::ObjectOutputStream(_os);
-    _ois = new io::ObjectInputStream(_is);
-    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
-    _own_id = ep.address().to_string();
-    _own_id += ":";
-    _own_id += StringUtil::toString(ep.port());
-    shutdown = false;
-    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
-    //    io_timer.run();
-    LOGDEBUG("endpoint:" << ep);
-  }
-*/
+
+    /*
+    DataHandler(TcpSocket * s) {
+      socket = s;
+      _is = socket->getInputStream();
+      _os = socket->getOutputStream();
+      _oos = new io::ObjectOutputStream(_os);
+      _ois = new io::ObjectInputStream(_is);
+      boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
+      _own_id = ep.address().to_string();
+      _own_id += ":";
+      _own_id += StringUtil::toString(ep.port());
+      shutdown = false;
+      //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+      //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
+      //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+      //    io_timer.run();
+      LOGDEBUG("endpoint:" << ep);
+    }
+   */
   int isResponsible(cmdId & cmid) {
     return CMD_NA;
   }
@@ -146,14 +149,14 @@ public:
   }
 
   void process(char * command) {
-    if(_oos==NULL||_ois==NULL)return;
+    if (_oos == NULL || _ois == NULL)return;
     if (strcmp(command, GET_UNIT) == 0) {
       Message msg;
       msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
       Messenger::getInstance().sendRequest(msg);
       un = msg.getPtrProperty("processunit");
-	  if(un.get()!=NULL)
-		_oos->writeObject(*un.get());
+      if (un.get() != NULL)
+        _oos->writeObject(*un.get());
     } else
       if (strcmp(command, PUT_UNIT) == 0) {
       un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
@@ -182,9 +185,9 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un->_input_packets.size() > 0) {
-       _timer.reset(new Timer(300, boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
+        _timer.reset(new Timer(300, boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
-     }
+      }
 
       _oos->writeObject(*un.get());
     } else if (strcmp(command, PUT_AUDIO_UNIT) == 0) {

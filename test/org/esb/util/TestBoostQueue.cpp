@@ -22,13 +22,17 @@ class queue_sender {
 public:
 
   queue_sender() {
+    try{
     mq = new message_queue
-      (create_only //open or create
+      (open_or_create //open or create
       , "message_queue" //name
       , 100 //max message number
-      , 100 //max message size
+      , 1000000 //max message size
       );
-    LOGDEBUG(mq);
+    LOGDEBUG(mq->get_max_msg());
+    }catch(interprocess_exception &ex){
+	LOGERROR(ex.what());
+    }
   }
 
   void send() {
@@ -39,9 +43,11 @@ public:
 
   ~queue_sender() {
     LOGDEBUG("remove queue")
-    message_queue::remove("message_queue");
+    if(!message_queue::remove("message_queue")){
+	LOGERROR("removing queue")
+    }
     LOGDEBUG("queue removed")
-      delete mq;
+//      delete mq;
   }
 
 private:
@@ -56,6 +62,8 @@ public:
       (open_only //only open
       , "message_queue" //name
       );
+    LOGDEBUG(mq->get_max_msg());
+    LOGDEBUG(mq->get_num_msg());
   }
 
   void receive() {
@@ -90,7 +98,7 @@ int main(int argc, char** argv) {
   r.receive();
   r.receive();
   r.receive();
-  Thread::sleep2(10000);
+  Thread::sleep2(1000);
   return (EXIT_SUCCESS);
 }
 
