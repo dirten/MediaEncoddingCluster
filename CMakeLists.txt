@@ -9,7 +9,7 @@ project (MEC)
 
 
 INCLUDE(CTest)
-#INCLUDE(cmake/CMakeDeps.txt)
+INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)

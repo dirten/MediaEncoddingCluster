@@ -42,7 +42,7 @@ struct StreamData {
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
-CodecID video_codec_id = CODEC_ID_THEORA;
+CodecID video_codec_id = CODEC_ID_XVID;
 CodecID audio_codec_id = CODEC_ID_VORBIS;
 //CodecID audio_codec_id = CODEC_ID_MP2;
 
@@ -144,6 +144,7 @@ void build_process_units(int argc, char** argv) {
     boost::shared_ptr<Packet> pPacket(p);
     if (pti.putPacket(pPacket)) {
       boost::shared_ptr<ProcessUnit> u(new ProcessUnit());
+      //u->setProperty("2pass", "true");
       u->_decoder = _sdata[pPacket->getStreamIndex()].dec;
       u->_encoder = _sdata[pPacket->getStreamIndex()].enc;
       std::list<boost::shared_ptr<Packet> > list;
@@ -217,7 +218,7 @@ void write_file(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.ogg");
+    trg.append("/test.mkv");
   } else {
     trg = argv[2];
   }
@@ -269,8 +270,10 @@ void write_file(int argc, char** argv) {
     std::list<boost::shared_ptr<Packet> >::iterator it = pu._output_packets.begin();
     for (; it != pu._output_packets.end(); it++) {
 //      (*it)->setStreamIndex((*it)->getStreamIndex());
-      (*it)->setPts(pts++);
-      (*it)->setDts(AV_NOPTS_VALUE);
+      if((*it)->getStreamIndex()==0){
+        (*it)->setPts(pts++);
+        (*it)->setDts(AV_NOPTS_VALUE);
+      }
       assert(pos.writePacket(*((*it).get()))==0);
     }
   }

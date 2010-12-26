@@ -16,7 +16,6 @@
 namespace org {
   namespace esb {
     namespace lang {
-
       Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args),_name(name) {
         _processId = 0;
         _running=false;

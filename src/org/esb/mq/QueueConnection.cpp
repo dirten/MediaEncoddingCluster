@@ -144,7 +144,7 @@ namespace org{
 
 
       QueueMessage QueueConnection::dequeue(std::string q_name,std::string msgid){
-
+        return QueueMessage();
       }
     }
   }

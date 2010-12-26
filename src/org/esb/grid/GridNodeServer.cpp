@@ -35,7 +35,7 @@ namespace org {
 
       void GridNodeServer::handle_receive(const boost::system::error_code& error, size_t bytes_recvd) {
         LOGDEBUG("Bytes recv:"<<bytes_recvd<<" Data:"<<data_);
-        _dispatcher.dispatch(data_);
+        
         recv_socket_.async_receive_from(
                 boost::asio::buffer(data_, max_length), recv_endpoint_,
                 boost::bind(&GridNodeServer::handle_receive, this,

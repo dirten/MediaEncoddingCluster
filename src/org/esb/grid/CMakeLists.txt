@@ -8,6 +8,7 @@ add_library (grid
   GridNodeServer.cpp
   NodeResolver.cpp
   protocol/ProtocolDispatcher.cpp
+  protocol/ServerHandler.cpp
 )
 TARGET_LINK_LIBRARIES(grid
     ${Boost_LIBRARIES}
@@ -22,10 +23,16 @@ INSTALL(TARGETS grid
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
 add_executable (gridconsole   GridNodeConsole.cpp)
+add_executable (gridservice   GridService.cpp)
 
 
 TARGET_LINK_LIBRARIES(gridconsole
     ${Boost_LIBRARIES}
     lang
     util
+    net
+)
+TARGET_LINK_LIBRARIES(gridservice
+    net
+    grid
 )

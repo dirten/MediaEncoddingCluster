@@ -57,6 +57,8 @@
 #include "org/esb/lang/StackDumper.h"
 #include "org/esb/hive/NodeResolver.h"
 #include "org/esb/hive/CodecFactory.h"
+#include "org/esb/lang/Process.h"
+#include "org/esb/lang/ProcessException.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -112,6 +114,7 @@ int main(int argc, char * argv[]) {
             ("run,r", "start the Hive as Console Process")
             ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
             ("base,b", po::value<std::string > (), "defining a base path")
+            ("stop", po::value<int > (), "stopping a Process defined by the process id")
             ;
 
     po::options_description cli("Client options");
@@ -147,6 +150,25 @@ int main(int argc, char * argv[]) {
 
     config::Config::init("");
     Log::open("");
+    if (vm.count("stop")) {
+      if(vm["stop"].as<int> ()<=0){
+        LOGERROR("please provide a Process Id to stop");
+        return 1;
+      }
+      org::esb::lang::Process p(vm["stop"].as<int> ());
+      try{
+        p.stop();
+      }catch(org::esb::lang::ProcessException & ex){
+        LOGERROR("failed stopping process with id: "<<vm["stop"].as<int> ());
+      }
+      try{
+      p.kill();
+      }catch(org::esb::lang::ProcessException & ex){
+        LOGERROR("failed killing process with id: "<<vm["stop"].as<int> ());
+      }
+
+      return 0;
+    }
 
     std::string config_path = config::Config::getProperty("hive.base_path");
     config_path.append("/.hive.cfg");

@@ -198,8 +198,8 @@ add_library (net net/SocketException.cpp
       net/TcpSocket.cpp 
 #      net/SocketInputStream.cpp 
 #      net/SocketOutputStream.cpp
-      net/TcpSocketInputStream.cpp 
-      net/TcpSocketOutputStream.cpp
+#      net/TcpSocketInputStream.cpp
+#      net/TcpSocketOutputStream.cpp
 )
 TARGET_LINK_LIBRARIES(net util)
 IF(BUILD_SHARED_LIBS)
@@ -371,6 +371,7 @@ add_library (web
     web/presets/PresetFilterPanel.cpp
     web/presets/PresetList.cpp
     web/presets/VideoAdvanceTableView.cpp
+    web/setup/SetupPage.cpp
 )
 
 

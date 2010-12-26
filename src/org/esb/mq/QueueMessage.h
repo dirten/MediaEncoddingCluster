@@ -16,6 +16,7 @@ namespace org {
       class QueueMessage:public safmq::QueueMessage{
       public:
         QueueMessage();
+        QueueMessage(const QueueMessage&);
         virtual ~QueueMessage();
       private:
 

@@ -103,7 +103,7 @@ public:
                  *             output stream has been closed.
                  */
 
-                virtual void write(char * buffer){};
+                virtual void write(char * buffer){std::cout << "OutputStream::write(char * buffer) not implemented!!!"<<std::endl;};
 
                 virtual ~OutputStream() {}
                 ;

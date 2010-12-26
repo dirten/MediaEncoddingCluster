@@ -17,12 +17,6 @@ namespace org {
         GridNodeConsole();
         virtual ~GridNodeConsole();
       private:
-        boost::asio::io_service send_service_;
-
-        boost::asio::ip::udp::endpoint send_endpoint_;
-
-        boost::asio::ip::udp::socket send_socket_;
-        void handle_send(const boost::system::error_code& error,std::size_t bytes_transferred);
 
       };
     }

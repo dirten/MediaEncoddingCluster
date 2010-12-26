@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <boost/asio.hpp>
+#include <boost/asio/error.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include "SocketException.h"
@@ -113,23 +114,24 @@ namespace org {
         long long int available(bool isBlocking) {
           char tmp[11];
           memset(&tmp, 0, sizeof (tmp));
-          //          int len = 0;
+          
           int read = 0;
           try{
-          read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
+            read = boost::asio::read(*_socket, boost::asio::buffer(&tmp, 10), boost::asio::transfer_at_least(10));
           }catch(boost::system::system_error & ex){
-            LOGERROR("Error reading length from socket:"<<ex.what());
+            if(ex.code()==boost::asio::error::eof){
+              LOGERROR("socket closed by foreign host: "<<ex.code());
+            }else{
+              LOGERROR("Error reading length from socket:"<<ex.what()<<" code="<<ex.code());
+            }
             _socket->close();
             return 0;
           }
-//          _socket->read_some(boost::asio::buffer(&tmp, 10), error);
+
           if (error)
             throw boost::system::system_error(error);
           else if (read != 10)
             throw SocketException("reading size is not equal 10");
-          //            return 0;
-          //			else
-          //				throw boost::system::system_error(error);
           return atoi(tmp);
         }
         long long int internal_read(){

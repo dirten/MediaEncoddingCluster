@@ -15,7 +15,7 @@ namespace org {
       //boost::mutex thread_write_mutex;
 
       class TcpSocketOutputStream : public OutputStream {
-                classlogger("org.esb.net.TcpSocketIputStream")
+        classlogger("org.esb.net.TcpSocketIputStream")
 
       private:
         boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
@@ -53,29 +53,29 @@ namespace org {
           }
 
           int remaining = len, byteCounter = 0, bytes = 0;
-		  boost::system::error_code error;
+          boost::system::error_code error;
           /*
            * Send length from buffer
            */
-//          try{
+          //          try{
           char size[11];
           sprintf((char*) & size, "%010d", len);
           boost::asio::write(*_socket, boost::asio::buffer(&size, 10));
-          //          logdebug("sended size: "<<size);
+          LOGDEBUG("sended size: " << size);
           /*
            * Send buffer
            */
-		  int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer, len),boost::asio::transfer_all(), error);
-		  if(error)
-			  throw boost::system::system_error(error);
-		  else if(sent!=len)
-			  throw SocketException("writing size is not equal to len");
-		  //            remaining -= sent;
-            //            cout << "Data send:"<<sent<<endl;
-//          }
-//          }catch(exception & ex){
-//            logerror("Writing to socket:"<<ex.what());
-//          }
+          int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer, len), boost::asio::transfer_all(), error);
+          if (error)
+            throw boost::system::system_error(error);
+          else if (sent != len)
+            throw SocketException("writing size is not equal to len");
+          //            remaining -= sent;
+          //            cout << "Data send:"<<sent<<endl;
+          //          }
+          //          }catch(exception & ex){
+          //            logerror("Writing to socket:"<<ex.what());
+          //          }
         }
       };
     }

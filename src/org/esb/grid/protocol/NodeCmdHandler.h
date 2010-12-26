@@ -7,17 +7,22 @@
 
 #ifndef NODECMDHANDLER_H
 #define	NODECMDHANDLER_H
+
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/net/TcpSocket.h"
+
 namespace org {
   namespace esb {
     namespace grid {
 
       class NodeCmdHandler {
       public:
-        NodeCmdHandler();
-        bool handleCommand(std::string & cmddata);
-        virtual ~NodeCmdHandler();
+        NodeCmdHandler(Ptr<org::esb::net::TcpSocket> s):_socket(s){};
+        virtual bool handleCommand(std::string & cmddata)=0;
+        virtual ~NodeCmdHandler(){};
       private:
-
+      protected:
+        Ptr<org::esb::net::TcpSocket> _socket;
       };
     }
   }

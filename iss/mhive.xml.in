@@ -4,7 +4,6 @@
     <version>@MHIVE_VERSION@</version>
     <readmeFile>${mhive_src_dir}/README</readmeFile>
     <licenseFile>${mhive_src_dir}/LICENSE</licenseFile>
-    <outputDirectory>@CMAKE_SOURCE_DIR@/iss/output</outputDirectory>
     <preBuildActionList>
         <setInstallerVariable>
             <name>mhive_src_dir</name>
@@ -30,6 +29,7 @@
     <readyToInstallActionList>
         <stopWindowsService>
             <abortOnError>0</abortOnError>
+            <delay>15000</delay>
             <displayName>MHiveService</displayName>
             <serviceName>MHiveService</serviceName>
             <ruleList>
@@ -126,11 +126,12 @@
             <abortOnError>0</abortOnError>
             <description>this is the mhive node controller</description>
             <displayName>MHiveService</displayName>
-            <run>0</run>
             <program>${installdir}/bin/mhiveservice.exe</program>
             <programArguments></programArguments>
             <progressText>install MHiveService</progressText>
+            <run>0</run>
             <serviceName>MHiveService</serviceName>
+            <startType>auto</startType>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -138,12 +139,12 @@
                     <value>1</value>
                 </compareText>
             </ruleList>
-            <startType>auto</startType>
         </createWindowsService>
     </postInstallationActionList>
     <preUninstallationActionList>
         <stopWindowsService>
             <abortOnError>0</abortOnError>
+            <delay>15000</delay>
             <displayName>MHiveService</displayName>
             <serviceName>MHiveService</serviceName>
             <ruleList>
@@ -176,6 +177,7 @@
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>/home/HoelscJ/devel/mec/iss/@CMAKE_SOURCE_DIR@/iss/output</outputDirectory>
     <vendor>CoderGrid</vendor>
     <componentList>
         <component>
@@ -234,14 +236,15 @@
                     <actionList>
                         <runProgram>
                             <program>${installdir}/vcredist_x86.exe</program>
-                            <!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
-                            <programArguments>/qb!</programArguments>
+
+	<!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
+	<programArguments>/qb!</programArguments>
                             <progressText>Installing VC++ 8 runtime</progressText>
-        		    <onErrorActionList>
-            		    <showWarning>
-                		<text>Error while installing the Microsoft redistributable!</text>
-            		    </showWarning>
-        		    </onErrorActionList>
+                            <onErrorActionList>
+                                <showWarning>
+                                    <text>Error while installing the Microsoft redistributable!</text>
+                                </showWarning>
+                            </onErrorActionList>
                         </runProgram>
                     </actionList>
                     <distributionFileList>
@@ -250,7 +253,6 @@
                         </distributionFile>
                     </distributionFileList>
                 </folder>
-
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
@@ -275,6 +277,7 @@
                             <name>Uninstall ${product_fullname}</name>
                             <path>${installdir}</path>
                             <platforms>all</platforms>
+                            <runAsAdmin>0</runAsAdmin>
                             <runInTerminal>0</runInTerminal>
                             <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
                             <windowsExecArgs></windowsExecArgs>
@@ -383,6 +386,7 @@
                             <name>Uninstall ${product_fullname}</name>
                             <path>${installdir}</path>
                             <platforms>all</platforms>
+                            <runAsAdmin>0</runAsAdmin>
                             <runInTerminal>0</runInTerminal>
                             <windowsExec></windowsExec>
                             <windowsExecArgs></windowsExecArgs>
@@ -398,12 +402,6 @@
                     <platforms>all</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/res/errmsg.sys</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/res/logging.properties</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>${mhive_src_dir}/res/messages.xml</origin>
                         </distributionFile>
                         <distributionFile>
@@ -411,23 +409,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/res/setup.xml</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Database Resources</description>
-                    <destination>${installdir}/sql</destination>
-                    <name>sql</name>
-                    <platforms>all</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/sql/codec.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/sql/config.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/sql/profiles.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -447,6 +428,7 @@
                 <startMenuShortcut>
                     <comment>Uninstall ${product_fullname}</comment>
                     <name>Uninstall ${product_fullname}</name>
+                    <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
@@ -456,6 +438,7 @@
                 <startMenuLinkShortcut>
                     <comment>open the Administration Interface in the Webbrowser</comment>
                     <name>Administration</name>
+                    <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <url>http://localhost:8080/</url>
                     <windowsIcon></windowsIcon>
@@ -463,6 +446,7 @@
                 <startMenuShortcut>
                     <comment>starting the Media Encoding Cluster Server</comment>
                     <name>start Server</name>
+                    <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/bin/mhive</windowsExec>
                     <windowsExecArgs>-r</windowsExecArgs>
@@ -472,6 +456,7 @@
                 <startMenuShortcut>
                     <comment>start the Media Encoding Cluster Client</comment>
                     <name>start Client</name>
+                    <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/bin/mhive</windowsExec>
                     <windowsExecArgs>-i</windowsExecArgs>
@@ -500,8 +485,8 @@
             <title>Install Client or Server instance</title>
             <explanation>how should this node act as?</explanation>
             <value></value>
-            <ask>0</ask>
             <default></default>
+            <ask>0</ask>
             <parameterList>
                 <choiceParameter>
                     <name>mhive_mode</name>
@@ -550,8 +535,8 @@
             <title>install Server instance</title>
             <explanation></explanation>
             <value></value>
-            <ask>0</ask>
             <default></default>
+            <ask>0</ask>
             <parameterList>
                 <stringParameter>
                     <name>mhive_port</name>
@@ -599,8 +584,8 @@
             <title>install Client instance</title>
             <explanation></explanation>
             <value></value>
-            <ask>0</ask>
             <default></default>
+            <ask>0</ask>
             <parameterList>
                 <choiceParameter>
                     <name>use_node_discovery</name>

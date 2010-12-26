@@ -78,6 +78,21 @@ ProcessUnit::~ProcessUnit() {
 }
 
 void ProcessUnit::process() {
+  if(hasProperty("2pass")){
+    _encoder->setCodecOption("flags","pass1");
+  }
+  processInternal();
+  if(hasProperty("2pass")){
+    delete _converter;
+    _converter=NULL;
+    _encoder->close();
+    _encoder->setCodecOption("flags","pass2");
+    processInternal();
+  }
+}
+
+void ProcessUnit::processInternal() {
+
   LOGTRACEMETHOD("ProcessUnit");
   LOGDEBUG("CompensateBase" << _frameRateCompensateBase);
   int insize = 0, outsize = 0;
@@ -109,7 +124,7 @@ void ProcessUnit::process() {
   _encoder->setOutputStream(NULL);
 
   /*configure the reference decoder to compute the psnr for video mages*/
-  if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+  if (false && _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
     std::map<std::string, std::string>opt = _encoder->getCodecOptions();
     _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
     std::map<std::string, std::string>::iterator opit = opt.begin();
@@ -118,14 +133,14 @@ void ProcessUnit::process() {
     _refdecoder->setPixelFormat(_encoder->getPixelFormat());
 
     for (; opit != opt.end(); opit++) {
-      if ((*opit).first != "extradata"||(*opit).first != "extradata_size")
+      if ((*opit).first != "extradata" || (*opit).first != "extradata_size")
         _refdecoder->setCodecOption((*opit).first, (*opit).second);
     }
-    LOGDEBUG("EncoderExtrdataSize:"<<_encoder->ctx->extradata_size);
-    LOGDEBUG("RefDecoderExtrdataSize:"<<_refdecoder->ctx->extradata_size);
+    LOGDEBUG("EncoderExtrdataSize:" << _encoder->ctx->extradata_size);
+    LOGDEBUG("RefDecoderExtrdataSize:" << _refdecoder->ctx->extradata_size);
     //std::cout << _encoder->ctx->extradata;
     _refdecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(_encoder->ctx->extradata_size));
-    memcpy(_refdecoder->ctx->extradata,_encoder->ctx->extradata,_encoder->ctx->extradata_size);
+    memcpy(_refdecoder->ctx->extradata, _encoder->ctx->extradata, _encoder->ctx->extradata_size);
     //_refdecoder->ctx->extradata[0] = 2;
     //_refdecoder->ctx->extradata_size=0;
     _refdecoder->open();
@@ -215,7 +230,7 @@ void ProcessUnit::process() {
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
 
     int ret = _encoder->encode(*f);
-    if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (false && _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
       if (tmpf->isFinished()) {
@@ -275,4 +290,16 @@ Frame * ProcessUnit::convertToRgb(Frame * ref) {
 std::string toString() {
   std::stringstream t;
   return t.str();
+}
+
+void ProcessUnit::setProperty(std::string k, std::string v) {
+  _properties[k] = v;
+}
+
+std::string ProcessUnit::getProperty(std::string k) {
+  return _properties[k];
+}
+
+bool ProcessUnit::hasProperty(std::string k) {
+  return _properties.count(k) > 0;
 }

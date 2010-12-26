@@ -28,7 +28,7 @@ namespace org {
           max_length = 50000
         };
         char data_[max_length];
-        ProtocolDispatcher _dispatcher;
+       
       };
     }
   }

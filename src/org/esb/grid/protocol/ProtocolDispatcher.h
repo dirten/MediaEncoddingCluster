@@ -8,18 +8,23 @@
 #ifndef PROTOCOLDISPATCHER_H
 #define	PROTOCOLDISPATCHER_H
 #include <string>
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/net/TcpSocket.h"
+#include "NodeCmdHandler.h"
+#include <list>
 namespace org {
   namespace esb {
     namespace grid {
 
       class ProtocolDispatcher {
       public:
-        ProtocolDispatcher();
-        ProtocolDispatcher(const ProtocolDispatcher& orig);
+        ProtocolDispatcher(Ptr<org::esb::net::TcpSocket>);
         void dispatch(std::string datacmd);
         virtual ~ProtocolDispatcher();
+        void run();
       private:
-
+        Ptr<org::esb::net::TcpSocket> _socket;
+        std::list<Ptr<NodeCmdHandler> > _handler_list;
       };
     }
   }

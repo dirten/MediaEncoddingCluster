@@ -61,6 +61,9 @@ namespace org {
                     int getGopSize();
                     int getExpectedFrameCount();
                     std::string toString();
+                    void setProperty(std::string, std::string);
+                    std::string getProperty(std::string);
+                    bool hasProperty(std::string);
                     //	private:
                     //	        friend class boost::serialization::access;
 
@@ -104,11 +107,14 @@ namespace org {
                         ar & _deinterlace;
                         ar & _keep_aspect_ratio;
                         ar & _discard_audio_bytes;
+                        ar & _properties;
                     }
                 private:
                   Frame * convertToRgb(Frame *);
+                  void processInternal();
                   void processPsnr(Frame * ref, Frame * cmp);
                   void decodeLastPacket(Packet * pac);
+                  std::map<std::string, std::string> _properties;
 
                 };
 

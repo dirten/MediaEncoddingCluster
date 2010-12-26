@@ -35,10 +35,14 @@ namespace org {
       }
 
       org::esb::io::InputStream * TcpSocket::getInputStream() {
+        if(!isConnected())
+          throw SocketException("Socket is not connected");
         return _is;
       }
 
       org::esb::io::OutputStream * TcpSocket::getOutputStream() {
+        if(!isConnected())
+          throw SocketException("Socket is not connected");
         return _os;
       }
 
