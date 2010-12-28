@@ -9,6 +9,7 @@ project (MEC)
 
 
 INCLUDE(CTest)
+INCLUDE(cmake/HiveFindGo.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
