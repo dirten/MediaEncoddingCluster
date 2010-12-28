@@ -1,0 +1,21 @@
+SET(GOROOT $ENV{GOROOT})
+FIND_PROGRAM(GO_COMPILER
+    bin/6g
+    bin/7g
+    bin/8g
+  PATHS
+    ${GOROOT}
+  NO_DEFAULT_PATH
+)
+FIND_PROGRAM(GO_LINKER
+    bin/6l
+    bin/7l
+    bin/8l
+  PATHS
+    ${GOROOT}
+  NO_DEFAULT_PATH
+)
+
+MESSAGE("Go Root" ${GOROOT})
+MESSAGE("Go Compiler" ${GO_COMPILER})
+MESSAGE("Go Linker" ${GO_LINKER})
