@@ -8,6 +8,9 @@
 #ifndef SERVERHANDLER_H
 #define	SERVERHANDLER_H
 #include "NodeCmdHandler.h"
+#include "org/esb/lang/Process.h"
+#include "org/esb/lang/Ptr.h"
+
 namespace org {
   namespace esb {
     namespace grid {
@@ -18,7 +21,9 @@ namespace org {
         virtual ~ServerHandler();
         bool handleCommand(std::string & cmddata);
       private:
-
+        static Ptr<org::esb::lang::Process> _ps;
+        static Ptr<org::esb::lang::Process> _pc;
+        static Ptr<org::esb::lang::Process> _pw;
       };
     }
   }

@@ -135,6 +135,9 @@ namespace org {
         _running = false;
         notifyProcessListener(ProcessEvent(_processId,-9,ProcessEvent::PROCESS_KILLED));
       }
+      bool Process::isRunning() {
+        return _running;
+      }
       /*
       void Process::addProcessListener(ProcessListener listener){
 

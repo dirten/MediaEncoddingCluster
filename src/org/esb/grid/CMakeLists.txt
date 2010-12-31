@@ -9,6 +9,7 @@ add_library (grid
   NodeResolver.cpp
   protocol/ProtocolDispatcher.cpp
   protocol/ServerHandler.cpp
+  command/ServerCommand.cpp
 )
 TARGET_LINK_LIBRARIES(grid
     ${Boost_LIBRARIES}
@@ -31,6 +32,7 @@ TARGET_LINK_LIBRARIES(gridconsole
     lang
     util
     net
+    grid
 )
 TARGET_LINK_LIBRARIES(gridservice
     net

@@ -11,6 +11,8 @@
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/net/TcpSocket.h"
 #include "NodeCmdHandler.h"
+#include "org/esb/io/ObjectInputStream.h"
+
 #include <list>
 namespace org {
   namespace esb {
@@ -25,6 +27,7 @@ namespace org {
       private:
         Ptr<org::esb::net::TcpSocket> _socket;
         std::list<Ptr<NodeCmdHandler> > _handler_list;
+        Ptr<org::esb::io::ObjectInputStream> _ois;
       };
     }
   }

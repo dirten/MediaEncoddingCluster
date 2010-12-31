@@ -9,6 +9,8 @@
 #include <iostream>
 #include "org/esb/net/TcpSocket.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/io/ObjectOutputStream.h"
+#include "command/ServerCommand.h"
 namespace org {
   namespace esb {
     namespace grid {
@@ -16,11 +18,12 @@ namespace org {
       GridNodeConsole::GridNodeConsole() {
         org::esb::net::TcpSocket socket("localhost", 2020);
         socket.connect();
-        std::string data="test";
-        socket.getOutputStream()->write(data);
+        std::string data = "stop server";
+        org::esb::io::ObjectOutputStream oos(socket.getOutputStream());
+        ServerCommand cmd(ServerCommand::START);
+        oos.writeObject(&cmd);
         socket.close();
-    }
-
+      }
 
       GridNodeConsole::~GridNodeConsole() {
       }

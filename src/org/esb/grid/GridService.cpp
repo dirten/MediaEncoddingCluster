@@ -27,8 +27,8 @@ namespace org {
         org::esb::net::TcpServerSocket *server = new org::esb::net::TcpServerSocket(2020);
         server->bind();
         while(true) {
-          LOGDEBUG("new client");
           Ptr<org::esb::net::TcpSocket> clientSocket = server->accept();
+          LOGDEBUG("new client");
           Ptr<ProtocolDispatcher> dispatcher=new ProtocolDispatcher(clientSocket);
           boost::thread(boost::bind(&ProtocolDispatcher::run, dispatcher));
         }
