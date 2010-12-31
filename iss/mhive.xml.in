@@ -177,7 +177,7 @@
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <outputDirectory>/home/HoelscJ/devel/mec/iss/@CMAKE_SOURCE_DIR@/iss/output</outputDirectory>
+    <outputDirectory>@CMAKE_SOURCE_DIR@/iss/output</outputDirectory>
     <vendor>CoderGrid</vendor>
     <componentList>
         <component>
