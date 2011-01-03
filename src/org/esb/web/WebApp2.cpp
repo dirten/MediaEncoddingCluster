@@ -47,6 +47,7 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "project/ProjectWizard.h"
 #include "presets/PresetList.h"
+#include "Login.cpp"
 /*on windows there is a macro defined with name MessageBox*/
 #ifdef MessageBox
 #undef MessageBox
@@ -61,7 +62,10 @@ namespace org {
         if (string(org::esb::config::Config::getProperty("hive.mode", "no")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
-        }/*
+
+        }
+        _isAuthenticated = false;
+        /*
          std::string syslog_file = org::esb::config::Config::getProperty("hive.base_path");
          syslog_file.append("/sys.log");
          Wt::WApplication::readConfigurationProperty("log-file", const_cast<char*> (syslog_file.c_str()));
@@ -74,98 +78,14 @@ namespace org {
         useStyleSheet("filetree.css");
         useStyleSheet("main.css");
         _db = new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
-        viewPort = new Wt::Ext::Container(root());
-        //        viewPort->resize(Wt::WLength::Auto, 600);
 
-        //        Wt::WVBoxLayout *layout = new Wt::WVBoxLayout();
+        viewPort = new Wt::Ext::Container(root());
         layout = new Wt::WBorderLayout();
-        //        layout->setSpacing(0);
         layout->setContentsMargins(0, 0, 0, 0);
         viewPort->setLayout(layout);
+        
 
 
-        /*begin Head Panel*/
-        /*
-        Wt::Ext::Panel *north = new Wt::Ext::Panel();
-        north->setBorder(false);
-       
-        head->setStyleClass("north");
-        north->setLayout(new Wt::WFitLayout());
-        north->layout()->addWidget(head);
-        north->resize(Wt::WLength(), 35);*/
-        //        layout->addWidget(north, Wt::WBorderLayout::North);
-        /*end Head Panel*/
-
-        /*begin Menu Panel*/
-        MainMenu * menu = new MainMenu(this);
-        menu->resize(Wt::WLength::Auto, 30);
-        layout->addWidget(menu, Wt::WBorderLayout::North);
-        /*end Menu Panel*/
-
-
-
-        /*begin Main Panel*/
-        main_panel = new Wt::Ext::Panel();
-        Wt::WFitLayout * fit = new Wt::WFitLayout();
-        main_panel->setLayout(fit);
-        main_panel->resize(600, Wt::WLength());
-        main_panel->setResizable(true);
-
-        //        main_panel->setBorder(true);
-        layout->addWidget(main_panel, Wt::WBorderLayout::Center);
-        /*end Main Panel*/
-
-        /*begin Info Panel*/
-        info_panel = new Wt::Ext::Panel();
-
-        Wt::WAccordionLayout * info_layout = new Wt::WAccordionLayout();
-        //Wt::WFitLayout * info_fit = new Wt::WFitLayout();
-
-        info_panel->setLayout(info_layout);
-        //        info_panel->setCollapsible(true);
-        //        info_panel->setAnimate(true);
-
-        //        Wt::Ext::Panel *p=new Wt::Ext::Panel();
-        //        p->setTitle("File Details");
-        //        info_panel->layout()->addWidget(p);
-        /*
-         p=new Wt::Ext::Panel();
-         p->setTitle("Video Details");
-         info_panel->layout()->addWidget(p);
-         p=new Wt::Ext::Panel();
-         p->setTitle("Audio Details");
-         info_panel->layout()->addWidget(p);*/
-        info_panel->expand();
-        /*
-         info_layout->addWidget(new Wt::Ext::Panel());
-         info_layout->addWidget(new Wt::Ext::Panel());
-         */
-        info_panel->resize(Wt::WLength(), 250);
-        info_panel->setResizable(true);
-        //        layout->addWidget(info_panel, Wt::WBorderLayout::East);
-        /*end Info Panel*/
-
-        //TreeMainMenu * mainmenu=new TreeMainMenu(this);
-        //mainmenu->resize(200, Wt::WLength());
-        //layout->addWidget(mainmenu, Wt::WBorderLayout::West);
-
-        /*begin Footer Panel*/
-        //        Wt::Ext::Panel *footer = new Wt::Ext::Panel();
-        //        footer->setBorder(false);
-        //Wt::WText *head = new Wt::WText("&copy; 2000 - 2010 <a target=\"_blank\" href=\"http://codergrid.de/\">CoderGrid.de</a> - GPL License");
-        //head->setStyleClass("north");
-        //        footer->setResizable(true);
-        //        footer->setLayout(new Wt::WFitLayout());
-        //        footer->layout()->addWidget(head);
-        //        footer->resize(Wt::WLength(), 35);
-        //layout->addWidget(footer, Wt::WBorderLayout::South);
-        /*end Footer Panel*/
-        object_panel = new Wt::Ext::Panel();
-        object_panel->setResizable(true);
-        object_panel->setLayout(new Wt::WFitLayout());
-        object_panel->setBorder(false);
-        object_panel->resize(Wt::WLength(), 200);
-        layout->addWidget(object_panel, Wt::WBorderLayout::South);
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
         useStyleSheet("ext/resources/css/xtheme-gray.css");
         useStyleSheet("main.css");
@@ -173,17 +93,54 @@ namespace org {
         /**
          * Signal Map for the SqlTables and the Detail view
          */
-        /*
-        _fileSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
-        _fileSignalMap->mapped.connect(SLOT(this, WebApp2::fileSelected));
-        _jobSignalMap = new Wt::WSignalMapper<SqlTable *>(this);
-         */
         _jobSignalMap = new Wt::WSignalMapper<JobTable *>(this);
         _jobSignalMap->mapped().connect(SLOT(this, WebApp2::jobSelected));
         _projectSignalMap = new Wt::WSignalMapper<ProjectTable *>(this);
         _projectSignalMap->mapped().connect(SLOT(this, WebApp2::projectSelected));
+        /*begin Menu Panel*/
+        MainMenu * menu = new MainMenu(this);
+        menu->resize(Wt::WLength::Auto, 30);
+        menu->disable();
+        layout->addWidget(menu, Wt::WBorderLayout::North);
+        /*end Menu Panel*/
+
+        /*begin Main Panel*/
+        main_panel = new Wt::Ext::Panel();
+        Wt::WFitLayout * fit = new Wt::WFitLayout();
+        main_panel->setLayout(fit);
+        main_panel->resize(600, Wt::WLength());
+        main_panel->setResizable(true);
+        layout->addWidget(main_panel, Wt::WBorderLayout::Center);
+        /*end Main Panel*/
+
+        object_panel = new Wt::Ext::Panel();
+        object_panel->setResizable(true);
+        object_panel->setLayout(new Wt::WFitLayout());
+        object_panel->setBorder(false);
+        object_panel->resize(Wt::WLength(), 200);
+        layout->addWidget(object_panel, Wt::WBorderLayout::South);
+        object_panel->collapse();
+        if(org::esb::config::Config::get("authentication")=="true"){
+          login = new Login();
+          login->authenticated.connect(SLOT(this, WebApp2::authenticated));
+          login->show();
+        }else{
+          buildGui();
+        }
       }
 
+      void WebApp2::buildGui() {
+
+        object_panel->expand();
+
+
+      }
+
+      void WebApp2::authenticated(db::User user){
+        login->accept();
+        buildGui();
+      }
+      
       void WebApp2::openPreview() {
         Wt::Ext::Dialog *dil = new Wt::Ext::Dialog();
         dil->contents()->addWidget(new PreviewPanel());
@@ -479,8 +436,8 @@ namespace org {
       }
 
       void WebApp2::shutdown() {
-        Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Shutdown Media Encoding Cluster", "do you really want to shutdown the Media Encoding Cluster<br/>this will abort all currently running operations!!!", Wt::Warning, Wt::Ok|Wt::Cancel);
-        if(!box->exec()==Wt::Ext::Dialog::Accepted)
+        Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Shutdown Media Encoding Cluster", "do you really want to shutdown the Media Encoding Cluster<br/>this will abort all currently running operations!!!", Wt::Warning, Wt::Ok | Wt::Cancel);
+        if (!box->exec() == Wt::Ext::Dialog::Accepted)
           return;
 
 #ifdef __WIN32__

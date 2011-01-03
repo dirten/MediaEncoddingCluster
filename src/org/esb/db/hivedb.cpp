@@ -1177,6 +1177,55 @@ template <> litesql::DataSource<db::Watchfolder> ProfileWatchfolderRelationWatch
     sel.where(srcExpr);
     return DataSource<db::Watchfolder>(db, db::Watchfolder::Id.in(sel) && expr);
 }
+UserUserGroupRelationUser2UserGroup::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : userGroup(UserUserGroupRelationUser2UserGroup::UserGroup), user(UserUserGroupRelationUser2UserGroup::User) {
+    switch(rec.size()) {
+    case 2:
+        userGroup = rec[1];
+    case 1:
+        user = rec[0];
+    }
+}
+const std::string UserUserGroupRelationUser2UserGroup::table__("User_UserGroup_User2UserGroup");
+const litesql::FieldType UserUserGroupRelationUser2UserGroup::User("User1","INTEGER",table__);
+const litesql::FieldType UserUserGroupRelationUser2UserGroup::UserGroup("UserGroup2","INTEGER",table__);
+void UserUserGroupRelationUser2UserGroup::link(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(User.name());
+    values.push_back(o0.id);
+    fields.push_back(UserGroup.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void UserUserGroupRelationUser2UserGroup::unlink(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1) {
+    db.delete_(table__, (User == o0.id && UserGroup == o1.id));
+}
+void UserUserGroupRelationUser2UserGroup::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> UserUserGroupRelationUser2UserGroup::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(User.fullName());
+    sel.result(UserGroup.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<UserUserGroupRelationUser2UserGroup::Row>(db, sel);
+}
+template <> litesql::DataSource<db::User> UserUserGroupRelationUser2UserGroup::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(User.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::User>(db, db::User::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::UserGroup> UserUserGroupRelationUser2UserGroup::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(UserGroup.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::UserGroup>(db, db::UserGroup::Id.in(sel) && expr);
+}
 const litesql::FieldType Project::Own::Id("id_","INTEGER","Project_");
 Project::FilterHandle::FilterHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
@@ -5787,6 +5836,336 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType User::Own::Id("id_","INTEGER","User_");
+User::UserGroupHandle::UserGroupHandle(const User& owner)
+         : litesql::RelationHandle<User>(owner) {
+}
+void User::UserGroupHandle::link(const UserGroup& o0) {
+    UserUserGroupRelationUser2UserGroup::link(owner->getDatabase(), *owner, o0);
+}
+void User::UserGroupHandle::unlink(const UserGroup& o0) {
+    UserUserGroupRelationUser2UserGroup::unlink(owner->getDatabase(), *owner, o0);
+}
+void User::UserGroupHandle::del(const litesql::Expr& expr) {
+    UserUserGroupRelationUser2UserGroup::del(owner->getDatabase(), expr && UserUserGroupRelationUser2UserGroup::User == owner->id);
+}
+litesql::DataSource<UserGroup> User::UserGroupHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return UserUserGroupRelationUser2UserGroup::get<UserGroup>(owner->getDatabase(), expr, (UserUserGroupRelationUser2UserGroup::User == owner->id) && srcExpr);
+}
+litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> User::UserGroupHandle::getRows(const litesql::Expr& expr) {
+    return UserUserGroupRelationUser2UserGroup::getRows(owner->getDatabase(), expr && (UserUserGroupRelationUser2UserGroup::User == owner->id));
+}
+const std::string User::type__("User");
+const std::string User::table__("User_");
+const std::string User::sequence__("User_seq");
+const litesql::FieldType User::Id("id_","INTEGER",table__);
+const litesql::FieldType User::Type("type_","TEXT",table__);
+const litesql::FieldType User::Authname("authname_","TEXT",table__);
+const litesql::FieldType User::Authpass("authpass_","TEXT",table__);
+const litesql::FieldType User::Registered("registered_","INTEGER",table__);
+void User::defaults() {
+    id = 0;
+    registered = 0;
+}
+User::User(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), authname(Authname), authpass(Authpass), registered(Registered) {
+    defaults();
+}
+User::User(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), authname(Authname), authpass(Authpass), registered(Registered) {
+    defaults();
+    size_t size = (rec.size() > 5) ? 5 : rec.size();
+    switch(size) {
+    case 5: registered = convert<const std::string&, litesql::Date>(rec[4]);
+        registered.setModified(false);
+    case 4: authpass = convert<const std::string&, std::string>(rec[3]);
+        authpass.setModified(false);
+    case 3: authname = convert<const std::string&, std::string>(rec[2]);
+        authname.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+User::User(const User& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), authname(obj.authname), authpass(obj.authpass), registered(obj.registered) {
+}
+const User& User::operator=(const User& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        authname = obj.authname;
+        authpass = obj.authpass;
+        registered = obj.registered;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+User::UserGroupHandle User::userGroup() {
+    return User::UserGroupHandle(*this);
+}
+std::string User::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(authname.name());
+    values.push_back(authname);
+    authname.setModified(false);
+    fields.push_back(authpass.name());
+    values.push_back(authpass);
+    authpass.setModified(false);
+    fields.push_back(registered.name());
+    values.push_back(registered);
+    registered.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void User::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void User::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, authname);
+    updateField(updates, table__, authpass);
+    updateField(updates, table__, registered);
+}
+void User::addIDUpdates(Updates& updates) {
+}
+void User::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Authname);
+    ftypes.push_back(Authpass);
+    ftypes.push_back(Registered);
+}
+void User::delRecord() {
+    deleteFromTable(table__, id);
+}
+void User::delRelations() {
+    UserUserGroupRelationUser2UserGroup::del(*db, (UserUserGroupRelationUser2UserGroup::User == id));
+}
+void User::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void User::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<User> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool User::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<User> User::upcast() {
+    return auto_ptr<User>(new User(*this));
+}
+std::auto_ptr<User> User::upcastCopy() {
+    User* np = new User(*this);
+    np->id = id;
+    np->type = type;
+    np->authname = authname;
+    np->authpass = authpass;
+    np->registered = registered;
+    np->inDatabase = inDatabase;
+    return auto_ptr<User>(np);
+}
+std::ostream & operator<<(std::ostream& os, User o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.authname.name() << " = " << o.authname << std::endl;
+    os << o.authpass.name() << " = " << o.authpass << std::endl;
+    os << o.registered.name() << " = " << o.registered << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
+const litesql::FieldType UserGroup::Own::Id("id_","INTEGER","UserGroup_");
+UserGroup::UserHandle::UserHandle(const UserGroup& owner)
+         : litesql::RelationHandle<UserGroup>(owner) {
+}
+void UserGroup::UserHandle::link(const User& o0) {
+    UserUserGroupRelationUser2UserGroup::link(owner->getDatabase(), o0, *owner);
+}
+void UserGroup::UserHandle::unlink(const User& o0) {
+    UserUserGroupRelationUser2UserGroup::unlink(owner->getDatabase(), o0, *owner);
+}
+void UserGroup::UserHandle::del(const litesql::Expr& expr) {
+    UserUserGroupRelationUser2UserGroup::del(owner->getDatabase(), expr && UserUserGroupRelationUser2UserGroup::UserGroup == owner->id);
+}
+litesql::DataSource<User> UserGroup::UserHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return UserUserGroupRelationUser2UserGroup::get<User>(owner->getDatabase(), expr, (UserUserGroupRelationUser2UserGroup::UserGroup == owner->id) && srcExpr);
+}
+litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> UserGroup::UserHandle::getRows(const litesql::Expr& expr) {
+    return UserUserGroupRelationUser2UserGroup::getRows(owner->getDatabase(), expr && (UserUserGroupRelationUser2UserGroup::UserGroup == owner->id));
+}
+const std::string UserGroup::type__("UserGroup");
+const std::string UserGroup::table__("UserGroup_");
+const std::string UserGroup::sequence__("UserGroup_seq");
+const litesql::FieldType UserGroup::Id("id_","INTEGER",table__);
+const litesql::FieldType UserGroup::Type("type_","TEXT",table__);
+const litesql::FieldType UserGroup::Name("name_","INTEGER",table__);
+void UserGroup::defaults() {
+    id = 0;
+    name = 0;
+}
+UserGroup::UserGroup(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name) {
+    defaults();
+}
+UserGroup::UserGroup(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name) {
+    defaults();
+    size_t size = (rec.size() > 3) ? 3 : rec.size();
+    switch(size) {
+    case 3: name = convert<const std::string&, litesql::Date>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+UserGroup::UserGroup(const UserGroup& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name) {
+}
+const UserGroup& UserGroup::operator=(const UserGroup& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+UserGroup::UserHandle UserGroup::user() {
+    return UserGroup::UserHandle(*this);
+}
+std::string UserGroup::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void UserGroup::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void UserGroup::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+}
+void UserGroup::addIDUpdates(Updates& updates) {
+}
+void UserGroup::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+}
+void UserGroup::delRecord() {
+    deleteFromTable(table__, id);
+}
+void UserGroup::delRelations() {
+    UserUserGroupRelationUser2UserGroup::del(*db, (UserUserGroupRelationUser2UserGroup::UserGroup == id));
+}
+void UserGroup::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void UserGroup::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<UserGroup> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool UserGroup::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<UserGroup> UserGroup::upcast() {
+    return auto_ptr<UserGroup>(new UserGroup(*this));
+}
+std::auto_ptr<UserGroup> UserGroup::upcastCopy() {
+    UserGroup* np = new UserGroup(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->inDatabase = inDatabase;
+    return auto_ptr<UserGroup>(np);
+}
+std::ostream & operator<<(std::ostream& os, UserGroup o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 HiveDb::HiveDb(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -5813,6 +6192,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("JobDetail_seq","sequence","CREATE SEQUENCE JobDetail_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Watchfolder_seq","sequence","CREATE SEQUENCE Watchfolder_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("User_seq","sequence","CREATE SEQUENCE User_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("UserGroup_seq","sequence","CREATE SEQUENCE UserGroup_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
@@ -5832,6 +6213,8 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
+    res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,registered_ INTEGER)"));
+    res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
@@ -5856,6 +6239,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("_72915fab98e40e57ddd1495ecd15b95b","table","CREATE TABLE _72915fab98e40e57ddd1495ecd15b95b (Profile1 INTEGER,Watchfolder2 INTEGER)"));
+    res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
     res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
@@ -5928,6 +6312,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_7a62c43900ab70f3c419ad87a6111c3a","index","CREATE INDEX _7a62c43900ab70f3c419ad87a6111c3a ON _72915fab98e40e57ddd1495ecd15b95b (Profile1)"));
     res.push_back(Database::SchemaItem("_e4fc63ccedb1d89ed94759a0260215ab","index","CREATE INDEX _e4fc63ccedb1d89ed94759a0260215ab ON _72915fab98e40e57ddd1495ecd15b95b (Watchfolder2)"));
     res.push_back(Database::SchemaItem("_cbe16244cb3e6e81e642ee01cc56214b","index","CREATE INDEX _cbe16244cb3e6e81e642ee01cc56214b ON _72915fab98e40e57ddd1495ecd15b95b (Profile1,Watchfolder2)"));
+    res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
+    res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
+    res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));
     return res;
 }
 void HiveDb::initialize() {

@@ -458,7 +458,7 @@ namespace org {
       }
 
       void GuiBuilder::enabler(Wt::WObject*obj) {
-        LOGDEBUG("Enabler Object Id=" << obj->objectName());
+        //LOGDEBUG("Enabler Object Id=" << obj->objectName());
         if (instanceOf(*obj, ComboBox)) {
           ComboBox * box = static_cast<ComboBox*> (obj);
           std::string id = obj->objectName();

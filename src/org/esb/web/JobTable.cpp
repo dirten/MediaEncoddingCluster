@@ -146,6 +146,7 @@ namespace org {
         LOGINFO("Setting refreshTimer to"<<isec);
         timer->stop();
         delete timer;
+        timer=NULL;
         if(isec>0){
           isec*=1000;
           timer = new Wt::WTimer();

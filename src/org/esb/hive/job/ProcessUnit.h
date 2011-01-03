@@ -71,6 +71,8 @@ namespace org {
                     std::list<boost::shared_ptr<Packet> > _output_packets;
                     boost::shared_ptr<Decoder> _decoder;
                     boost::shared_ptr<Encoder> _encoder;
+                    boost::shared_ptr<Decoder> _2passdecoder;
+                    boost::shared_ptr<Encoder> _2passencoder;
                     boost::shared_ptr<Decoder> _refdecoder;
 //                    Codec * codec;
                     FrameConverter * _converter;
@@ -99,7 +101,8 @@ namespace org {
                         ar & _process_unit;
                         ar & _decoder;
                         ar & _encoder;
-//                        ar & codec;
+                        ar & _2passdecoder;
+                        ar & _2passencoder;
                         ar & _last_process_unit;
                         ar & _frameRateCompensateBase;
                         ar & _gop_size;

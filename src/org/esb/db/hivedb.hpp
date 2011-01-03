@@ -20,6 +20,8 @@ class JobLog;
 class JobDetail;
 class Watchfolder;
 class ProcessUnit;
+class User;
+class UserGroup;
 class FilterFilterParameterRelation {
 public:
     class Row {
@@ -471,6 +473,25 @@ public:
     static void unlink(const litesql::Database& db, const db::Profile& o0, const db::Watchfolder& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class UserUserGroupRelationUser2UserGroup {
+public:
+    class Row {
+    public:
+        litesql::Field<int> userGroup;
+        litesql::Field<int> user;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType User;
+    static const litesql::FieldType UserGroup;
+    static void link(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1);
+    static void unlink(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -1879,6 +1900,110 @@ public:
     std::auto_ptr<ProcessUnit> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, ProcessUnit o);
+class User : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class UserGroupHandle : public litesql::RelationHandle<User> {
+    public:
+        UserGroupHandle(const User& owner);
+        void link(const UserGroup& o0);
+        void unlink(const UserGroup& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<UserGroup> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Authname;
+    litesql::Field<std::string> authname;
+    static const litesql::FieldType Authpass;
+    litesql::Field<std::string> authpass;
+    static const litesql::FieldType Registered;
+    litesql::Field<litesql::Date> registered;
+protected:
+    void defaults();
+public:
+    User(const litesql::Database& db);
+    User(const litesql::Database& db, const litesql::Record& rec);
+    User(const User& obj);
+    const User& operator=(const User& obj);
+    User::UserGroupHandle userGroup();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<User> upcast();
+    std::auto_ptr<User> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, User o);
+class UserGroup : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class UserHandle : public litesql::RelationHandle<UserGroup> {
+    public:
+        UserHandle(const UserGroup& owner);
+        void link(const User& o0);
+        void unlink(const User& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<User> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<litesql::Date> name;
+protected:
+    void defaults();
+public:
+    UserGroup(const litesql::Database& db);
+    UserGroup(const litesql::Database& db, const litesql::Record& rec);
+    UserGroup(const UserGroup& obj);
+    const UserGroup& operator=(const UserGroup& obj);
+    UserGroup::UserHandle user();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<UserGroup> upcast();
+    std::auto_ptr<UserGroup> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, UserGroup o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

@@ -298,5 +298,19 @@
         <field name="recv" type="datetime"/>
     </object>
 
+    <object name="User">
+        <field name="authname" type="string"/>
+        <field name="authpass" type="string"/>
+        <field name="registered" type="date"/>
+    </object>
+
+    <object name="UserGroup">
+        <field name="name" type="date"/>
+    </object>
+
+    <relation id="User2UserGroup">
+        <relate object="User" handle="userGroup"/>
+        <relate object="UserGroup" handle="user"/>
+    </relation>
 
 </database>

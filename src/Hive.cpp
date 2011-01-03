@@ -148,7 +148,7 @@ int main(int argc, char * argv[]) {
       config::Config::setProperty("hive.base_path", base_path);
     }
 
-    config::Config::init("");
+    config::Config::init("hive.cfg");
     Log::open("");
     if (vm.count("stop")) {
       if(vm["stop"].as<int> ()<=0){
@@ -543,7 +543,7 @@ void start() {
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
 
   //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-  //Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+  Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   string base_path = org::esb::config::Config::getProperty("hive.base_path");
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));

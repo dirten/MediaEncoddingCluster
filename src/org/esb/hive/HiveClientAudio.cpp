@@ -93,9 +93,9 @@ namespace org {
               org::esb::hive::job::ProcessUnit * unit = new org::esb::hive::job::ProcessUnit();
               try {
                 _sock->getOutputStream()->write(text, strlen(text));
-                LOGDEBUG("sended command");
+                //LOGDEBUG("sended command");
                 _ois->readObject(*unit);
-                LOGDEBUG("pu received");
+                //LOGDEBUG("pu received");
               } catch (exception & ex) {
                 LOGERROR("Connection to Server lost, while waiting for audio process unit!!!" << ex.what());
                 _sock->close();

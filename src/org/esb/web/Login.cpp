@@ -1,35 +1,36 @@
 #ifndef ORG_ESB_WEB_LOGIN
 #define ORG_ESB_WEB_LOGIN
-
+#include "org/esb/db/hivedb.hpp"
+#include "org/esb/hive/DatabaseService.h"
 #include "Wt/WContainerWidget"
 #include <Wt/Ext/Button>
+#include <Wt/Ext/LineEdit>
 
-#include "org/esb/sql/Connection.h"
-#include "org/esb/sql/PreparedStatement.h"
-#include "org/esb/sql/ResultSet.h"
+#include "Wt/Ext/Dialog"
 
 namespace org {
   namespace esb {
     namespace web {
 
-      class Login : public Wt::WContainerWidget {
+      class Login : public Wt::Ext::Dialog {
       public:
 
-        Login(Wt::WContainerWidget*parent = 0) : Wt::WContainerWidget(parent) {
+        Login() : Wt::Ext::Dialog("Login") {
           _authenticated = false;
-          Wt::WGroupBox * group = new Wt::WGroupBox("Login", this);
+          resize(300, 200);
+          Wt::WGroupBox * group = new Wt::WGroupBox("Login", this->contents());
           Wt::WTable *t = new Wt::WTable(group);
           int i = 0;
           buildElement("auth_name", "Authentication Name", t, i++);
           Wt::Ext::LineEdit * pass=buildElement("auth_passwd", "Authentication Password", t, i++);
           pass->setEchoMode(Wt::Ext::LineEdit::Password);
-          pass->keyWentUp.connect(SLOT(this, Login::enter));
+          pass->keyWentUp().connect(SLOT(this, Login::enter));
 
 
          
           msg=new Wt::WText(t->elementAt(i, 0));
           Wt::Ext::Button * saveBut = new Wt::Ext::Button("Login", t->elementAt(i, 1));
-          saveBut->clicked.connect(SLOT(this, Login::authenticate));
+          saveBut->clicked().connect(SLOT(this, Login::authenticate));
           
         }
         void enter(Wt::WKeyEvent ev) {
@@ -40,6 +41,22 @@ namespace org {
         }
         void authenticate() {
           using namespace org::esb;
+          db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+          std::string name=elements["auth_name"]->text().narrow();
+          std::string pass=elements["auth_passwd"]->text().narrow();
+          if(litesql::select<db::User>(db,db::User::Authname==name&&db::User::Authpass==pass).count()>0){
+            db::User user=litesql::select<db::User>(db,db::User::Authname==name&&db::User::Authpass==pass).one();
+            _authenticated = true;
+            user_id = user.id;
+            LOGDEBUG("User authenticated");
+            authenticated.emit(user);
+            msg->setText("Login successfull");
+          }else{
+            msg->setText("Name or Password are invalid");
+            LOGDEBUG("User not authenticated");
+          }
+          /*
+          User user
           std::string sql = "select * from user where auth_name=:name and auth_passwd=:passwd";
           sql::Connection con(std::string(config::Config::getProperty("db.connection")));
           sql::PreparedStatement stmt = con.prepareStatement(sql.c_str());
@@ -55,7 +72,7 @@ namespace org {
           }else {
             msg->setText("Name or Password are invalid");
             logdebug("User not authenticated");
-          }
+          }*/
         }
 
         bool isAuthenticated() {
@@ -66,7 +83,7 @@ namespace org {
           return user_id;
         }
 
-        Wt::Signal<void>authenticated;
+        Wt::Signal<db::User>authenticated;
       private:
         std::map<std::string, Wt::Ext::LineEdit*> elements;
         int user_id;

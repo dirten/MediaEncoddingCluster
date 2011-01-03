@@ -15,7 +15,7 @@ namespace org {
       //boost::mutex thread_write_mutex;
 
       class TcpSocketOutputStream : public OutputStream {
-        classlogger("org.esb.net.TcpSocketIputStream")
+        classlogger("org.esb.net.TcpSocketOututStream")
 
       private:
         boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
@@ -61,7 +61,7 @@ namespace org {
           char size[11];
           sprintf((char*) & size, "%010d", len);
           boost::asio::write(*_socket, boost::asio::buffer(&size, 10));
-          LOGDEBUG("sended size: " << size);
+          //LOGDEBUG("sended size: " << size);
           /*
            * Send buffer
            */

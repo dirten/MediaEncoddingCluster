@@ -43,7 +43,7 @@ bool Config::init(const std::string & filename) {
   //  properties = new Properties();
   loadDefaults(properties);
   _isInitialized=true;
-  return true;
+  //return true;
   FILE * fp;
   char buffer[255];
   if ((fp = fopen(filename.c_str(), "r")) != NULL) {
