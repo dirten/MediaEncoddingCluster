@@ -8,7 +8,7 @@ import "log"
 import "http"
 import "os"
 import "exec"
-import "syscall"
+//import "syscall"
 //import "bytes"
 
 var processMap map[string]*Command = make(map[string]*Command)
@@ -30,7 +30,7 @@ func (p*ProcessStarter)Stop(com *Command, reply*string) os.Error {
         }else{
 	    if(data.cmd!=nil&&data.cmd.Pid>0){
 		fmt.Printf("kill pid server %d:", data.cmd.Pid)
-		syscall.Kill(data.cmd.Pid, 15)
+//		syscall.Kill(data.cmd.Pid, 15)
 		data.cmd.Pid=-1;
 	    }
 	}
