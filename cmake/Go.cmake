@@ -47,14 +47,14 @@ MACRO (add_go_executable exefile infiles)
     ADD_CUSTOM_COMMAND(OUTPUT ${exefile}.8
                        COMMAND ${GO_COMPILER}
                        ARGS -I ${CMAKE_CURRENT_BINARY_DIR}/pkg -o ${CMAKE_CURRENT_BINARY_DIR}/${exefile}.8 ${testparam}
-                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infile}
+                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infiles}
                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                        COMMENT "do $ENV{GOROOT}/bin/8g -o ${CMAKE_CURRENT_BINARY_DIR}/${exefile}.8 ${testparam}"
     )
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${exefile}
                        COMMAND ${GO_LINKER}
                        ARGS -L ${CMAKE_CURRENT_BINARY_DIR}/pkg -o ${CMAKE_CURRENT_BINARY_DIR}/${exefile} ${exefile}.8
-                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infile}
+                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infiles}
                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                        COMMENT "do $ENV{GOROOT}/bin/8l -o ${CMAKE_CURRENT_BINARY_DIR}/${exefile} ${exefile}.8"
     )
@@ -93,7 +93,7 @@ MACRO (add_go_library libfile infiles)
     ADD_CUSTOM_COMMAND(OUTPUT ${libfile}.8
                        COMMAND ${GO_COMPILER}
                        ARGS -o ${CMAKE_CURRENT_BINARY_DIR}/${libfile}.8 ${testparam}
-                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infile}
+                       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${infiles}
                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                        COMMENT "do $ENV{GOROOT}/bin/8g -o ${CMAKE_CURRENT_BINARY_DIR}/${libfile}.8 ${testparam}"
     )
