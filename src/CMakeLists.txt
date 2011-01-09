@@ -34,7 +34,7 @@ ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 add_definitions(-DCURL_STATICLIB)
 add_definitions(/DCURL_STATICLIB)
 
-#add_subdirectory (go)
+add_subdirectory (go)
 add_subdirectory (org)
 
 SET(BUILD_MHIVESERVICE On)
