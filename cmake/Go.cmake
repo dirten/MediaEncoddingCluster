@@ -3,6 +3,9 @@ FIND_PROGRAM(GO_COMPILER
     bin/6g
     bin/7g
     bin/8g
+    bin/6g.exe
+    bin/7g.exe
+    bin/8g.exe
   PATHS
     ${GOROOT}
   NO_DEFAULT_PATH
@@ -11,6 +14,9 @@ FIND_PROGRAM(GO_LINKER
     bin/6l
     bin/7l
     bin/8l
+    bin/6l.exe
+    bin/7l.exe
+    bin/8l.exe
   PATHS
     ${GOROOT}
   NO_DEFAULT_PATH
@@ -18,6 +24,7 @@ FIND_PROGRAM(GO_LINKER
 
 FIND_PROGRAM(GO_PACK
     bin/gopack
+    bin/gopack.exe
   PATHS
     ${GOROOT}
   NO_DEFAULT_PATH
