@@ -128,7 +128,7 @@
 		<untar src="source/protobuf-2.3.0.tar" dest="source" overwrite="true"/>
                 <mkdir dir="source/protobuf-2.3.0/build"/>
                 <patch patchfile="src/patch/protobuf-subprocess.h.patch" dir="source/protobuf-2.3.0" strip="0"/>
-
+		<chmod file="source/protobuf-2.3.0/install-sh" perm="+x"/>
 		<pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
