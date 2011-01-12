@@ -125,8 +125,10 @@
                      dest="source/protobuf-2.3.0.tar.bz2"
                      verbose="true" usetimestamp="true"/>
                 <bunzip2 src="source/protobuf-2.3.0.tar.bz2" dest="source"/>
-		<untar src="source/protobuf-2.3.0.tar" dest="source" overwrite="false"/>
+		<untar src="source/protobuf-2.3.0.tar" dest="source" overwrite="true"/>
                 <mkdir dir="source/protobuf-2.3.0/build"/>
+                <patch patchfile="src/patch/protobuf-subprocess.h.patch" dir="source/protobuf-2.3.0" strip="0"/>
+
 		<pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>

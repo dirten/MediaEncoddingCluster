@@ -1,0 +1,11 @@
+--- ../../../protobuf-2.3.0/src/google/protobuf/compiler/subprocess.h	2010-01-08 20:19:09.000000000 +0100
++++ src/google/protobuf/compiler/subprocess.h	2011-01-12 16:29:26.320517562 +0100
+@@ -76,7 +76,7 @@
+ #ifdef _WIN32
+   // Given an error code, returns a human-readable error message.  This is
+   // defined here so that CommandLineInterface can share it.
+-  static string Subprocess::Win32ErrorMessage(DWORD error_code);
++  static string Win32ErrorMessage(DWORD error_code);
+ #endif
+ 
+  private:
