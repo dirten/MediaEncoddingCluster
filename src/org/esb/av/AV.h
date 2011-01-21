@@ -18,12 +18,12 @@ extern "C" {
 #undef USE_TIME_BASE_Q
 #ifndef ORG_ESB_AV_FFMPEGMUTEX_H
 #define ORG_ESB_AV_FFMPEGMUTEX_H
-namespace org{
-	namespace esb{
-		namespace av{
-		static boost::mutex ffmpeg_mutex;
-		}
-	}
+namespace org {
+  namespace esb {
+    namespace av {
+      static boost::mutex ffmpeg_mutex;
+    }
+  }
 }
 
 #endif

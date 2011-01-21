@@ -14,12 +14,13 @@ std::map<int, boost::shared_ptr<org::esb::av::Decoder> > CodecFactory::decoder_m
 std::map<int, boost::shared_ptr<org::esb::av::Encoder> > CodecFactory::encoder_map;
 
 boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int streamid) {
-  if (decoder_map.find(streamid) == decoder_map.end()) {
+  //if (decoder_map.find(streamid) == decoder_map.end()) {
+  boost::shared_ptr<av::Decoder> decoder;
     try {
       db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
       db::Stream stream = litesql::select<db::Stream > (db, db::Stream::Id == streamid).one();
 
-      boost::shared_ptr<av::Decoder> decoder(new av::Decoder((CodecID) (int) stream.codecid));
+      decoder=boost::shared_ptr<av::Decoder>(new av::Decoder((CodecID) (int) stream.codecid));
       decoder->setWidth(stream.width);
       decoder->setHeight(stream.height);
       decoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
@@ -56,12 +57,12 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
       } else
         decoder->ctx->extradata = NULL;
 
-      decoder_map[streamid] = decoder;
+      
     } catch (litesql::NotFound e) {
       LOGERROR("no Decoder found for stream id " << streamid);
     }
-  }
-  return decoder_map[streamid];
+  //}
+  return decoder;
 }
 
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::multimap<std::string, std::string> pmap) {

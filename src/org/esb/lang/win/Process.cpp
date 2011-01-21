@@ -16,14 +16,16 @@
 namespace org {
   namespace esb {
     namespace lang {
-      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args),_name(name) {
+      std::list<Process*> Process::_process_list;
+
+      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args), _name(name) {
         _processId = 0;
-        _running=false;
-        _restartable=false;
+        _running = false;
+        _restartable = false;
       }
 
-
       Process::~Process() {
+        
       }
 
       void Process::start() {
@@ -35,21 +37,20 @@ namespace org {
         for (; arg_it != _arguments.end(); arg_it++) {
           args.append((*arg_it)).append(" ");
         }
-          //replacing all slashes with backslashes
-        int position = _executable.find( "/" ); // find first slash
-        while ( position != std::string::npos ) 
-        {
-          _executable.replace( position, 1, "\\" );
-          position = _executable.find( "/", position + 1 );
-        } 
+        //replacing all slashes with backslashes
+        int position = _executable.find("/"); // find first slash
+        while (position != std::string::npos) {
+          _executable.replace(position, 1, "\\");
+          position = _executable.find("/", position + 1);
+        }
 
         std::string a;
-        if(_name.length()==0){
-          a+=(_executable+" "+args);
-        }else{
-          _name+" "+args;
+        if (_name.length() == 0) {
+          a += (_executable + " " + args);
+        } else {
+          _name + " " + args;
         }
-        char *vip = const_cast<char*>(a.c_str());
+        char *vip = const_cast<char*> (a.c_str());
 
         BOOL bWorked;
         STARTUPINFO suInfo;
@@ -58,8 +59,8 @@ namespace org {
         memset(&suInfo, 0, sizeof (suInfo));
         memset(&procInfo, 0, sizeof (procInfo));
         suInfo.cb = sizeof (suInfo);
-        LOGDEBUG("start executable:"<<_executable);
-        LOGDEBUG("start command line:"<<vip);
+        LOGDEBUG("start executable:" << _executable);
+        LOGDEBUG("start command line:" << vip);
 
         bWorked = ::CreateProcess(_executable.c_str(),
                 vip, // can also be NULL
@@ -72,26 +73,26 @@ namespace org {
                 &suInfo,
                 &procInfo);
         if (!bWorked) {
-          LOGERROR("could not start the process: "<<_executable);
+          LOGERROR("could not start the process: " << _executable);
           throw ProcessException(std::string("could not start the process: ").append(_executable));
         }
         _processId = procInfo.dwProcessId;
-        _running=true;
-//        LOGDEBUG("Waiting for process");
-        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_STARTED));
-        WaitForSingleObject( procInfo.hProcess, INFINITE );
-        CloseHandle( procInfo.hProcess );
-        LOGDEBUG("process ended:"<<_executable);
-        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_STOPPED));
-        _running=false;
-        if(_restartable){
+        _running = true;
+        //        LOGDEBUG("Waiting for process");
+        notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_STARTED));
+        WaitForSingleObject(procInfo.hProcess, INFINITE);
+        CloseHandle(procInfo.hProcess);
+        LOGDEBUG("process ended:" << _executable);
+        notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_STOPPED));
+        _running = false;
+        if (_restartable) {
           LOGDEBUG("restarting!!!");
           run(_restartable);
         }
       }
 
       void Process::run(bool restartable, int count) {
-        _restartable=restartable;
+        _restartable = restartable;
         boost::thread(boost::bind(&Process::start, this));
       }
 
@@ -101,15 +102,16 @@ namespace org {
          * Stopping Application Services from configuration
          *
          */
-        if(!_running)
+        if (!_running)
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
-        _restartable=false;
+        _restartable = false;
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
-        CloseHandle( hProcess );
-        _running=false;
+        CloseHandle(hProcess);
+        _running = false;
       }
+
       bool Process::isRunning() {
         return _running;
       }
@@ -120,15 +122,15 @@ namespace org {
          * Stopping Application Services from configuration
          *
          */
-        if(!_running)
+        if (!_running)
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
 
-        _restartable=false;
+        _restartable = false;
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, _processId);
         TerminateProcess(hProcess, (DWORD) - 1);
-        _running=false;
-        notifyProcessListener(ProcessEvent(_processId,0,ProcessEvent::PROCESS_KILLED));
+        _running = false;
+        notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_KILLED));
       }
       /*
       void Process::addProcessListener(ProcessListener listener){

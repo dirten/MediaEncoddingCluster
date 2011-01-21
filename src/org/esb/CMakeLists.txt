@@ -113,7 +113,7 @@ add_subdirectory (av)
 add_subdirectory (lang)
 add_subdirectory (mq)
 add_subdirectory (grid)
-#add_subdirectory (ui)
+add_subdirectory (rpc)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
@@ -372,6 +372,9 @@ add_library (web
     web/presets/PresetList.cpp
     web/presets/VideoAdvanceTableView.cpp
     web/setup/SetupPage.cpp
+
+    web/api/xml/XmlApp.cpp
+    web/api/xml/Project.cpp
 )
 
 

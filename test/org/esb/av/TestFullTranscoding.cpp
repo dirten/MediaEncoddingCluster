@@ -38,7 +38,7 @@ map<int, int> _smap;
  * 
  */
 int main(int argc, char** argv) {
-//Log::open("");
+Log::open("");
   /*open the fixed test File or the file from command line input*/
   std::string src;
   std::string trg;
@@ -79,12 +79,13 @@ int main(int argc, char** argv) {
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       video = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setWidth(720);
       _sdata[i].enc->setHeight(576);
 //      _sdata[i].enc->setWidth(320);
 //      _sdata[i].enc->setHeight(240);
       _sdata[i].enc->setGopSize(200);
+      _sdata[i].enc->setCodecOption("flags","+psnr");
       AVRational ar;
       ar.num = 1;
       ar.den = 30;

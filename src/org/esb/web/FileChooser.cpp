@@ -44,8 +44,8 @@ namespace org {
 //        tree->resize(380, 300);
         resize(600, 400);
         setAutoScrollBars(true);
-        addButton(new Wt::Ext::Button("Refresh"));
-        buttons().back()->clicked().connect(SLOT(this, FileChooser::ownrefresh));
+        //addButton(new Wt::Ext::Button("Refresh"));
+        //buttons().back()->clicked().connect(SLOT(this, FileChooser::ownrefresh));
         addButton(new Wt::Ext::Button("Select File"));
         buttons().back()->clicked().connect(SLOT(this, FileChooser::accept));
 
@@ -59,8 +59,11 @@ namespace org {
       }
 
       void FileChooser::ownrefresh() {
-        delete tree;
-        tree = new FileTreeTable("/", filter, contents());
+        Wt::WLayoutItem * item=static_cast<Wt::WBorderLayout*>(contents()->layout())->itemAt(Wt::WBorderLayout::Center);
+        static_cast<Wt::WBorderLayout*>(contents()->layout())->removeItem(item);
+        delete item;
+        static_cast<Wt::WBorderLayout*>(contents()->layout())->addWidget(new FileTreeTable("/", filter), Wt::WBorderLayout::Center);
+        //tree = new FileTreeTable("/", filter);
         this->refresh();
       }
       void FileChooser::accept() {

@@ -9,7 +9,7 @@ namespace org {
   namespace esb {
     namespace net {
 
-      TcpSocket::TcpSocket(const char * host, int port) {
+      TcpSocket::TcpSocket(std::string host, int port) {
         _connected = false;
         _host = host;
         _port = port;

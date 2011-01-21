@@ -301,11 +301,28 @@
     <object name="User">
         <field name="authname" type="string"/>
         <field name="authpass" type="string"/>
+        <field name="company" type="string"/>
+        <field name="firstname" type="string"/>
+        <field name="lastname" type="string"/>
+        <field name="street" type="string"/>
+        <field name="city" type="string"/>
+        <field name="zip" type="string"/>
+        <field name="country" type="string"/>
+        <field name="state" type="string"/>
+        <field name="telefone" type="string"/>
+        <field name="fax" type="string"/>
+        <field name="email" type="string"/>
+        <field name="www" type="string"/>
+        <field name="language" type="string"/>
+        <field name="licensekey" type="string"/>
+        <field name="apikey" type="string"/>
         <field name="registered" type="date"/>
+        <field name="fileroot" type="string"/>
     </object>
 
     <object name="UserGroup">
         <field name="name" type="date"/>
+        <field name="nodecount" type="integer"/>
     </object>
 
     <relation id="User2UserGroup">

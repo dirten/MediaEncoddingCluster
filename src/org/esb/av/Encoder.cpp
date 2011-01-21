@@ -58,8 +58,34 @@ Encoder::~Encoder() {
   _last_dts = AV_NOPTS_VALUE;
 }
 
+bool Encoder::open() {
+  bool result=Codec::open();
+  if (result && getCodecType() == CODEC_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
+    /*initialize the refDecoder*/
+    std::map<std::string, std::string>opt = getCodecOptions();
+    _refDecoder = new Decoder(getCodecId());
+    std::map<std::string, std::string>::iterator opit = opt.begin();
+    for (; opit != opt.end(); opit++) {
+      if ((*opit).first != "extradata" || (*opit).first != "extradata_size")
+        _refDecoder->setCodecOption((*opit).first, (*opit).second);
+    }
+    _refDecoder->setWidth(getWidth());
+    _refDecoder->setHeight(getHeight());
+    _refDecoder->setPixelFormat((PixelFormat)0);
+    LOGDEBUG("EncoderExtrdataSize:" << ctx->extradata_size);
+    LOGDEBUG("RefDecoderExtrdataSize:" << ctx->extradata_size);
+    _refDecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(ctx->extradata_size));
+    memcpy(_refDecoder->ctx->extradata, ctx->extradata, ctx->extradata_size);
+    if(_refDecoder->open()){
+      LOGDEBUG("Reference Decoder openned"<<_refDecoder->toString());
+    }
+  }
+  return result;
+}
+
 int Encoder::encode(Frame & frame) {
   LOGTRACEMETHOD("Encode");
+  _actualFrame=&frame;
   _frame_counter++;
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
@@ -71,14 +97,14 @@ int Encoder::encode(Frame & frame) {
     _last_dts = frame.getDts();
     LOGDEBUG("setting last_dts=" << _last_dts);
   }
-  if (ctx->codec_type == CODEC_TYPE_VIDEO){
+  if (ctx->codec_type == CODEC_TYPE_VIDEO) {
     LOGTRACEMETHOD("Encode Video");
     return encodeVideo(frame);
-    }
-  if (ctx->codec_type == CODEC_TYPE_AUDIO){
+  }
+  if (ctx->codec_type == CODEC_TYPE_AUDIO) {
     LOGTRACEMETHOD("Encode Audio");
     return encodeAudio(frame);
-    }
+  }
   LOGERROR("Encoder does not support type:" << ctx->codec_type);
   return -1;
 }
@@ -95,11 +121,11 @@ int Encoder::encode() {
  */
 int Encoder::encodeVideo(AVFrame * inframe) {
   //  LOGTRACEMETHOD("org.esb.av.Encoder", "encode Video");
-//  int buffer_size = 1024 * 256;
-  int size= ctx->width * ctx->height;
-  const int buffer_size= FFMAX(1024 * 256, 6*size + 200);
- 
-  char * data=new char[buffer_size];
+  //  int buffer_size = 1024 * 256;
+  int size = ctx->width * ctx->height;
+  const int buffer_size = FFMAX(1024 * 256, 6 * size + 200);
+
+  char * data = new char[buffer_size];
   memset(data, 0, buffer_size);
   int frames = 1;
   int ret = 0;
@@ -114,15 +140,17 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     if (inframe != NULL)
       inframe->pts = _last_dts;
     //    LOGDEBUG("org.esb.av.Encoder", frame.toString());
-    ret = avcodec_encode_video(ctx, (uint8_t*)  data, buffer_size, inframe);
+    ret = avcodec_encode_video(ctx, (uint8_t*) data, buffer_size, inframe);
     Packet pac(ret);
     if (ret < 0) {
       LOGERROR("Video Encoding failed")
     }
     if (ret > 0) {
       LOGDEBUG("Frame encoded");
-      if(ctx->coded_frame&&ctx->coded_frame->quality>0)
-        LOGDEBUG("EnCodedFrameQuality:"<<ctx->coded_frame->quality/(float)FF_QP2LAMBDA);
+      if (ctx->coded_frame && ctx->coded_frame->quality > 0)
+        LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
+      if (ctx->stats_out)
+        LOGDEBUG("stats available:" << ctx->stats_out);
       memcpy(pac.packet->data, data, ret);
       pac.packet->size = ret;
       pac.packet->stream_index = _last_idx;
@@ -137,9 +165,9 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       pac.setDuration(_last_duration);
 #else
       pac.setTimeBase(ctx->time_base);
-      if(_last_duration>0&&_last_time_base.num>0&&_last_time_base.den>0){
+      if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0) {
         pac.setDuration(av_rescale_q(_last_duration, _last_time_base, ctx->time_base));
-      }else{
+      } else {
         LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
       }
       pac.setDuration(ctx->ticks_per_frame);
@@ -147,44 +175,56 @@ int Encoder::encodeVideo(AVFrame * inframe) {
 
       pac.packet->dts = _last_dts;
       LOGDEBUG(pac.toString());
-      if(ctx->flags&CODEC_FLAG_PSNR){
-        LOGDEBUG("ERROR0========"<<ctx->coded_frame->error[0]);
-        LOGDEBUG("ERROR1========"<<ctx->coded_frame->error[1]);
-        LOGDEBUG("ERROR2========"<<ctx->coded_frame->error[2]);
-        LOGDEBUG("ERROR3========"<<ctx->coded_frame->error[3]);
+      if (ctx->flags & CODEC_FLAG_PSNR) {
+        LOGDEBUG("ERROR0========" << ctx->coded_frame->error[0]);
+        LOGDEBUG("ERROR1========" << ctx->coded_frame->error[1]);
+        LOGDEBUG("ERROR2========" << ctx->coded_frame->error[2]);
+        LOGDEBUG("ERROR3========" << ctx->coded_frame->error[3]);
       }
-      LOGDEBUG("PSNR========="<<((double)ctx->coded_frame->error[0])/((double)ctx->width*ctx->height*255.0*255.0));
+      LOGDEBUG("PSNR=========" << ((double) ctx->coded_frame->error[0]) / ((double) ctx->width * ctx->height * 255.0 * 255.0));
+      /**
+       * calculate the psnr here
+       */
+      if (_refDecoder) {
+        Frame * tmpf = _refDecoder->decode2(pac);
+        if (tmpf->isFinished()) {
+          LOGDEBUG("Reference Frame Decoded:"<<tmpf->toString());
+          processPsnr(_actualFrame, tmpf);
+        }
+        delete tmpf;
+      }
+
       if (_pos != NULL) {
         _pos->writePacket(pac);
       }
       if (_sink != NULL)
         _sink->write(&pac);
     }
-    if(_last_duration>0&&_last_time_base.num>0&&_last_time_base.den>0)
+    if (_last_duration > 0 && _last_time_base.num > 0 && _last_time_base.den > 0)
       _last_dts += av_rescale_q(_last_duration, _last_time_base, ctx->time_base);
   }
   delete [] data;
 
-  
+
   return ret;
 }
 
 int Encoder::encodeVideo(Frame & frame) {
   //LOGDEBUG(frame.toString());
-  if(false&&!_pix_fmt_converter){
-    _input_format.width=ctx->width;
-    _input_format.height=ctx->height;
-    _input_format.pixel_format=STD_PIX_FMT;
-    Format out=_input_format;
-    out.pixel_format=ctx->pix_fmt;
-    _pix_fmt_converter=new PixelFormatConverter(_input_format, out);
+  if (false && !_pix_fmt_converter) {
+    _input_format.width = ctx->width;
+    _input_format.height = ctx->height;
+    _input_format.pixel_format = STD_PIX_FMT;
+    Format out = _input_format;
+    out.pixel_format = ctx->pix_fmt;
+    _pix_fmt_converter = new PixelFormatConverter(_input_format, out);
     _pix_fmt_converter->open();
   }
   //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height);
   //_pix_fmt_converter->process(frame,*tmp_frame);
   LOGDEBUG(frame.toString());
   return encodeVideo(frame.getAVFrame());
-//  return encodeVideo(frame.getAVFrame());
+  //  return encodeVideo(frame.getAVFrame());
 }
 
 void Encoder::setOutputStream(PacketOutputStream * pos) {
@@ -234,8 +274,8 @@ int Encoder::encodeAudio(Frame & frame) {
         continue;
         //LOGWARN("out_size=0");
       }
-      if(out_size>0&&ctx->coded_frame&&ctx->coded_frame->pts!=AV_NOPTS_VALUE){
-        LOGDEBUG("Encoded Audio Frame PTS:"<<ctx->coded_frame->pts);
+      if (out_size > 0 && ctx->coded_frame && ctx->coded_frame->pts != AV_NOPTS_VALUE) {
+        LOGDEBUG("Encoded Audio Frame PTS:" << ctx->coded_frame->pts);
 
       }
       Packet pak(out_size);
@@ -255,9 +295,9 @@ int Encoder::encodeAudio(Frame & frame) {
       pak.packet->stream_index = frame.stream_index;
       pak.packet->dts = _last_dts;
       pak.packet->pts = _last_dts;
-       if (ctx->coded_frame) {
-          pak.setDts(ctx->coded_frame->pts);
-          pak.setPts(ctx->coded_frame->pts);
+      if (ctx->coded_frame) {
+        pak.setDts(ctx->coded_frame->pts);
+        pak.setPts(ctx->coded_frame->pts);
       }
       _last_dts += pak.getDuration();
       LOGDEBUG(pak.toString());
@@ -338,7 +378,7 @@ int64_t Encoder::getSamplesBufferd() {
 char * Encoder::getStatistics() {
   if (ctx->stats_out)
     return ctx->stats_out;
-  return const_cast<char*>("no stats\n");
+  return const_cast<char*> ("no stats\n");
 }
 
 /**
@@ -347,4 +387,6 @@ char * Encoder::getStatistics() {
 void Encoder::setStatistics(char * stats) {
   ctx->stats_in = stats;
 }
+void Encoder::processPsnr(Frame * ref, Frame * cmp){
 
+}

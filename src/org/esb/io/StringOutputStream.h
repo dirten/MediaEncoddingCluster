@@ -41,7 +41,7 @@ namespace org{
 		void write(vector <unsigned char >& buffer);
         std::string getData();
       private:
-        std::string _data;
+        std::string & _data;
       };
     }
   }

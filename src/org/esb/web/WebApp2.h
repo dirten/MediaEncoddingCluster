@@ -55,9 +55,12 @@ namespace org {
         void shutdown();
 
         void openPreview();
+        void logout();
+        bool authorize();
       private:
         void buildGui();
         void setContent(Wt::WWidget * w);
+        Wt::Ext::Panel * menu_panel;
         Wt::Ext::Panel * main_panel;
         Wt::Ext::Panel * info_panel;
         Wt::Ext::Panel * object_panel;
@@ -79,6 +82,8 @@ namespace org {
         void authenticated(db::User);
         bool _isAuthenticated;
         Login * login;
+        Ptr<db::User> _user;
+        void showLogin();
       };
     }
   }

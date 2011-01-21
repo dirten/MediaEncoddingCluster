@@ -8,6 +8,7 @@ import "log"
 import "http"
 import "os"
 import "exec"
+import "path"
 //import "syscall"
 //import "bytes"
 
@@ -24,14 +25,27 @@ var processChannel=make(chan *Command)
 type ProcessStarter int
 
 func (p*ProcessStarter)Stop(com *Command, reply*string) os.Error {
+	fmt.Printf("try stopping process\n")
         data, ok:=processMap[com.name]
         if(!ok){
             fmt.Printf("server unknown:%s", com.name)
         }else{
 	    if(data.cmd!=nil&&data.cmd.Pid>0){
 		fmt.Printf("kill pid server %d:", data.cmd.Pid)
+		var pid string=fmt.Sprintf("%d", data.cmd.Pid)
+		println(pid)
+		args := []string{com.command, "--stop", pid}
+    		env := []string{"DYLD_LIBRARY_PATH=/Users/jholscher/Documents/bripper/install/lib/"}
+		_, err := exec.Run(com.command, args, env,com.dir,exec.DevNull, exec.Pipe, exec.PassThrough)
+		if err != nil {
+        	    fmt.Println("error stop process")
+    		}else{
+        	    //fmt.Println("process stopped")
+        	}
+
 //		syscall.Kill(data.cmd.Pid, 15)
-		data.cmd.Pid=-1;
+	    }else{
+		fmt.Printf("failed to stop the process, because one of the following data is nil or lower 0 [%s,%d]", data.cmd, data.cmd.Pid)
 	    }
 	}
 
@@ -51,9 +65,11 @@ func (p*ProcessStarter)Start(com *Command, reply*string) os.Error {
             fmt.Println("error start process")
         }else{
     	    com.cmd=prc
+    	    pid:=com.cmd.Pid
     	    processListener(com)
     	    prc.Close()
-    	    fmt.Println("Process Stopped ")
+    	    fmt.Printf("Process Stopped with pid=%d\n", pid)
+    	    com.cmd=nil;
 	}
     }()
     return nil
@@ -109,7 +125,7 @@ func processListener(command *Command){
             fmt.Printf("setze server %s:", command.name)
         }else{
 	    if(data.cmd==nil){
-		fmt.Printf("setze server %s:", data.cmd)
+		fmt.Printf("setze data.cmd server %s:", data.cmd)
 		data.cmd=command.cmd
 	    }else{
 		fmt.Printf("last pid server %d:", data.cmd.Pid)
@@ -119,9 +135,17 @@ func processListener(command *Command){
 }
 
 func main(){
-    processMap["server"]=&Command{name:"server",command:"mhive",dir:"/Users/jholscher/Documents/bripper/install/bin",args:[]string{"mhive","-r"} }
-    processMap["client"]=&Command{name:"client",command:"mhive",dir:"/Users/jholscher/Documents/bripper/install/bin",args:[]string{"mhive","-i"} }
-    processMap["web"]=   &Command{name:"web",command:"mhive",dir:"/Users/jholscher/Documents/bripper/install/bin",args:[]string{"mhive","-w"} }
+    mypath,_:=os.Getwd()
+    println(mypath+":"+os.Args[0])
+    d, _ := path.Split(os.Args[0])
+    os.Chdir(d)
+    fmt.Println(os.Getwd()) 
+    mypath,_=os.Getwd()
+    println(mypath+":"+os.Args[0])
+
+    processMap["server"]=&Command{name:"server",command:"mhive",dir:mypath,args:[]string{"mhive","-r"} }
+    processMap["client"]=&Command{name:"client",command:"mhive",dir:mypath,args:[]string{"mhive","-i"} }
+    processMap["web"]=   &Command{name:"web",command:"mhive",dir:mypath,args:[]string{"mhive","-w"} }
 
     flag.Parse()
     if(flag.Arg(0)=="s") {

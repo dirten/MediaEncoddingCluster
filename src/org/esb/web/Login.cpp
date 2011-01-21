@@ -17,8 +17,9 @@ namespace org {
 
         Login() : Wt::Ext::Dialog("Login") {
           _authenticated = false;
-          resize(300, 200);
+          resize(400, 215);
           Wt::WGroupBox * group = new Wt::WGroupBox("Login", this->contents());
+          group->resize(Wt::WLength(),140);
           Wt::WTable *t = new Wt::WTable(group);
           int i = 0;
           buildElement("auth_name", "Authentication Name", t, i++);
@@ -29,7 +30,10 @@ namespace org {
 
          
           msg=new Wt::WText(t->elementAt(i, 0));
-          Wt::Ext::Button * saveBut = new Wt::Ext::Button("Login", t->elementAt(i, 1));
+          
+          t->elementAt(i, 0)->setAttributeValue("colspan","2");
+          Wt::Ext::Button * saveBut = new Wt::Ext::Button("Login");
+          this->addButton(saveBut);
           saveBut->clicked().connect(SLOT(this, Login::authenticate));
           
         }
@@ -50,9 +54,9 @@ namespace org {
             user_id = user.id;
             LOGDEBUG("User authenticated");
             authenticated.emit(user);
-            msg->setText("Login successfull");
+            msg->setText("<b>Login successfull!</b>");
           }else{
-            msg->setText("Name or Password are invalid");
+            msg->setText("<b>Name or Password are invalid!</b>");
             LOGDEBUG("User not authenticated");
           }
           /*

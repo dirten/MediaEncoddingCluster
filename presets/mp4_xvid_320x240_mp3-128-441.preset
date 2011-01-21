@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<preset name="Mp4 xvid(320x240 hq) mp3(128kb 44.1kHz stereo)">
+    <format id="mp4">
+	<param name="fileExtension" value="mp4"/>
+	<param name="author" value="MediaEncodingCluster"/>
+    </format>
+    <codec type="video" id="libxvid">
+	<param name="b" value="512000"/>
+	<param name="cmp" value="chroma"/>
+	<param name="me_method" value="chroma"/>
+	<param name="g" value="250"/>
+	<param name="keyint_min" value="25"/>
+	<param name="qmin" value="2"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="bf" value="0"/>
+	<param name="picture_frame_size" value="320x240"/>
+	<param name="time_base" value="1/25"/>
+	<param name="global_header" value="1"/>
+    	<param name="width" value="320"/>
+    	<param name="height" value="240"/>
+    </codec>
+    <codec type="audio" id="libmp3lame">
+	<param name="ab" value="128000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="44100"/>
+	<param name="global_header" value="1"/>
+    </codec>
+</preset>

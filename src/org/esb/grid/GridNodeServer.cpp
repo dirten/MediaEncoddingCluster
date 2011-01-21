@@ -11,6 +11,7 @@ namespace org {
   namespace esb {
     namespace grid {
 
+      
       GridNodeServer::GridNodeServer() : recv_socket_(recv_service_) {
         boost::asio::ip::udp::endpoint listen_endpoint(boost::asio::ip::address::from_string("0.0.0.0"), 20200);
         recv_socket_.open(listen_endpoint.protocol());

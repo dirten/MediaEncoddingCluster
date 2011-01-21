@@ -54,6 +54,7 @@ namespace org {
        * @TODO: need to copy all attributes from context to our own context structure
        * because of a memleak in decoder->open()
        */
+
       /**
        * @WARNING: this construcotr is dangerous because ffmpeg would try to decode the first frames
        * in case to resolve stream information,
@@ -80,7 +81,7 @@ namespace org {
         ctx->request_channels = 2;
         ctx->request_channel_layout = 2;
         _bytes_discard = 0;
-        
+
         const AVOption * option = NULL;
         while (option = av_next_option(s->codec, option)) {
           if (option->offset > 0) {
@@ -90,8 +91,8 @@ namespace org {
             if (strlen(data) > 0) {
               //LOGDEBUG("Setting Context Option "<<option->name<<"="<<data);
               _options[option->name] = std::string(data);
-            }else{
-              LOGDEBUG("No data for Context Option "<<option->name);
+            } else {
+              LOGDEBUG("No data for Context Option " << option->name);
             }
           }
         }
@@ -122,7 +123,7 @@ namespace org {
         _mode = mode;
         ctx = avcodec_alloc_context();
         ctx->codec_id = codecId;
-        if(codecId>-1){
+        if (codecId>-1) {
           findCodec(mode);
           if (_codec_resolved) {
             avcodec_get_context_defaults2(ctx, _codec->type);
@@ -136,13 +137,13 @@ namespace org {
          * in that case a CodecId of -1 is entered,
          * see test/org/esb/av/TestDecoder
          */
-        _opened = codecId>-1?false:true;
+        _opened = codecId>-1 ? false : true;
 
         _pre_allocated = false;
         _bytes_discard = 0;
         _frame_rate.num = 0;
         _frame_rate.den = 0;
-        fifo=NULL;
+        fifo = NULL;
       }
 
       void Codec::setCodecId(CodecID id) {
@@ -154,13 +155,15 @@ namespace org {
         _options[opt] = arg;
         return 0;
       }
-      std::string Codec::getCodecOption(std::string opt){
+
+      std::string Codec::getCodecOption(std::string opt) {
         std::string result;
-        if(_options.count(opt)>0){
-          result=_options[opt];
+        if (_options.count(opt) > 0) {
+          result = _options[opt];
         }
         return result;
       }
+
       /*
       bool Codec::saveCodecOption() {
         AVClass *c = *(AVClass**) ctx;
@@ -178,6 +181,11 @@ namespace org {
 
       }
        */
+      void Codec::reset() {
+        if(_opened)
+        avcodec_flush_buffers(ctx);
+      }
+
       void Codec::setContextDefaults() {
 
         //        ctx->global_quality = 1000000;
@@ -264,7 +272,7 @@ namespace org {
           ctx->codec_type = _codec->type;
           _codec_resolved = true;
         } else {
-          LOGERROR("in resolving codec id:"<<ctx->codec_id);
+          LOGERROR("in resolving codec id:" << ctx->codec_id);
         }
 
         return result;
@@ -314,9 +322,9 @@ namespace org {
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
-        if (false&&_codec->capabilities & CODEC_CAP_TRUNCATED) {
-          ctx->flags=0;// |= CODEC_FLAG_TRUNCATED;
-          cout <<"CodecCapTruncated"<<endl;
+        if (false && _codec->capabilities & CODEC_CAP_TRUNCATED) {
+          ctx->flags = 0; // |= CODEC_FLAG_TRUNCATED;
+          cout << "CodecCapTruncated" << endl;
         }
         std::map<std::string, std::string>::iterator opit = _options.begin();
         for (; opit != _options.end(); opit++) {
@@ -395,12 +403,11 @@ namespace org {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
               av_freep(&ctx->extradata);
             }
-
             avcodec_close(ctx);
           }
 
           //          LOGDEBUG( "recently fifo size:" << av_fifo_size(fifo));
-          if(fifo)
+          if (fifo)
             av_fifo_free(fifo);
           //          logdebug("Codec closed:" << _codec_id);
         } else {
@@ -553,14 +560,14 @@ namespace org {
         return result;
       }
 
-      std::map<std::string, std::string> Codec::getCodecOptions(){
+      std::map<std::string, std::string> Codec::getCodecOptions() {
         std::map<std::string, std::string> result;
         const AVOption *opt = NULL;
         while ((opt = av_next_option(ctx, opt)) != NULL) {
           int len = 1000;
           char data[1000];
           av_get_string(ctx, opt->name, NULL, data, len);
-          result[opt->name]=data;
+          result[opt->name] = data;
         }
         return result;
       }

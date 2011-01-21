@@ -59,6 +59,8 @@
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessException.h"
+#include "org/esb/rpc/Server.h"
+#include "org/esb/rpc/rpc.pb.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -86,10 +88,9 @@ std::string _hostname;
 int _port=0;
 int main(int argc, char * argv[]) {
   /*setting default path to Program*/
+  std::cout <<"arg0:"<<argv[0]<<std::endl;
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
-
-
   config::Config::setProperty("hive.base_path", base_path);
 
   //  Config::setProperty("hive.base_path", base_path);
@@ -309,6 +310,8 @@ int main(int argc, char * argv[]) {
     }
     if (vm.count("auto")) {
       LOGDEBUG("start mhive server in auto mode, first node will be startup as server");
+      config::Config::setProperty("client.port", Decimal(vm["port"].as<int> ()).toString().c_str());
+      config::Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
       start_auto(argc, argv);
     }
 
@@ -561,7 +564,8 @@ void start() {
   //  }
 
   //  LOGINFO("wait for shutdown!");
-
+  org::esb::rpc::Server server(6000);
+  
   org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
   /*

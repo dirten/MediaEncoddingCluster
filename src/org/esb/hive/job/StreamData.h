@@ -29,6 +29,8 @@ namespace org {
           int b_frame_offset;
           boost::shared_ptr<org::esb::av::Decoder> decoder;
           boost::shared_ptr<org::esb::av::Encoder> encoder;
+          boost::shared_ptr<org::esb::av::Decoder> pass2decoder;
+          boost::shared_ptr<org::esb::av::Encoder> pass2encoder;
           
           std::list<boost::shared_ptr<org::esb::av::Packet> > packets;
           int packet_count;

@@ -78,15 +78,28 @@ ProcessUnit::~ProcessUnit() {
 }
 
 void ProcessUnit::process() {
-  if(hasProperty("2pass")){
-    _encoder->setCodecOption("flags","pass1");
+  if(_encoder->getCodecOption("multipass")=="1"){
+    LOGDEBUG("Two Pass Enabled");
+    setProperty("2pass","true");
   }
-  processInternal();
+
   if(hasProperty("2pass")){
+    LOGDEBUG("Performing Pass 1");
+    _encoder->setCodecOption("flags","pass1");
+    _encoder->setFlag(CODEC_FLAG_PASS1);
+  }
+
+  processInternal();
+  
+  if(hasProperty("2pass")){
+    LOGDEBUG("Performing Pass 2");
     delete _converter;
+    _output_packets.clear();
     _converter=NULL;
-    _encoder->close();
+    _decoder=_2passdecoder;
+    _encoder=_2passencoder;
     _encoder->setCodecOption("flags","pass2");
+    _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
   }
 }
@@ -124,7 +137,7 @@ void ProcessUnit::processInternal() {
   _encoder->setOutputStream(NULL);
 
   /*configure the reference decoder to compute the psnr for video mages*/
-  if (false && _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+  if ( _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
     std::map<std::string, std::string>opt = _encoder->getCodecOptions();
     _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
     std::map<std::string, std::string>::iterator opit = opt.begin();
@@ -229,13 +242,19 @@ void ProcessUnit::processInternal() {
     /*encode the frame into a packet*/
     /*NOTE: the encoder write Packets to the PacketSink, because some codecs duplicates frames*/
 
+    /**
+     * @TODO: simply it is better to calculate the psnr in the encoder!!!
+     */
+
     int ret = _encoder->encode(*f);
-    if (false && _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (_encoder->getCodecType() == CODEC_TYPE_VIDEO&&sink.getList().size()>0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
       if (tmpf->isFinished()) {
         LOGDEBUG("Reference Frame Decoded!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+        processPsnr(f, tmpf);
       }
+      delete tmpf;
     }
     delete tmp;
     delete f;
@@ -303,3 +322,4 @@ std::string ProcessUnit::getProperty(std::string k) {
 bool ProcessUnit::hasProperty(std::string k) {
   return _properties.count(k) > 0;
 }
+

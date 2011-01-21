@@ -72,7 +72,7 @@ class SampleFormat;*/
          * @return the ID of this codec, an enum CodecID
          */
         CodecID getCodecId();
-        bool open();
+        virtual bool open();
         void setWidth(int w);
         void setHeight(int h);
         void setPixelFormat(PixelFormat pfm);
@@ -212,7 +212,7 @@ class SampleFormat;*/
         //                bool saveCodecOption();
         //                bool loadCodecOption();
         void close();
-
+        void reset();
       protected:
         bool _opened;
         AVFifoBuffer *fifo;

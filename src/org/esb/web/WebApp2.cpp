@@ -62,7 +62,6 @@ namespace org {
         if (string(org::esb::config::Config::getProperty("hive.mode", "no")) == "setup") {
           WApplication::instance()->redirect("/setup");
           WApplication::instance()->quit();
-
         }
         _isAuthenticated = false;
         /*
@@ -83,7 +82,7 @@ namespace org {
         layout = new Wt::WBorderLayout();
         layout->setContentsMargins(0, 0, 0, 0);
         viewPort->setLayout(layout);
-        
+
 
 
         //useStyleSheet("ext/resources/css/xtheme-slate.css");
@@ -98,10 +97,11 @@ namespace org {
         _projectSignalMap = new Wt::WSignalMapper<ProjectTable *>(this);
         _projectSignalMap->mapped().connect(SLOT(this, WebApp2::projectSelected));
         /*begin Menu Panel*/
-        MainMenu * menu = new MainMenu(this);
-        menu->resize(Wt::WLength::Auto, 30);
-        menu->disable();
-        layout->addWidget(menu, Wt::WBorderLayout::North);
+        menu_panel = new Wt::Ext::Panel();
+        menu_panel->setLayout(new Wt::WFitLayout());
+        menu_panel->resize(Wt::WLength::Auto, 30);
+        menu_panel->hiddenKeepsGeometry();
+        layout->addWidget(menu_panel, Wt::WBorderLayout::North);
         /*end Menu Panel*/
 
         /*begin Main Panel*/
@@ -120,27 +120,52 @@ namespace org {
         object_panel->resize(Wt::WLength(), 200);
         layout->addWidget(object_panel, Wt::WBorderLayout::South);
         object_panel->collapse();
-        if(org::esb::config::Config::get("authentication")=="true"){
-          login = new Login();
-          login->authenticated.connect(SLOT(this, WebApp2::authenticated));
-          login->show();
-        }else{
+        login = NULL;
+        if (org::esb::config::Config::get("authentication") == "true") {
+          showLogin();
+        } else {
           buildGui();
         }
       }
 
-      void WebApp2::buildGui() {
-
-        object_panel->expand();
-
-
+      void WebApp2::showLogin() {
+        delete login;
+        login = new Login();
+        login->authenticated.connect(SLOT(this, WebApp2::authenticated));
+        login->show();
       }
 
-      void WebApp2::authenticated(db::User user){
+      void WebApp2::logout() {
+        WApplication::instance()->redirect("/");
+        WApplication::instance()->quit();
+        /*
+        _isAuthenticated = false;
+        menu_panel->layout()->removeItem(menu_panel->layout()->itemAt(0));
+        showLogin();*/
+      }
+
+      void WebApp2::buildGui() {
+
+        //Wt::WLayoutItem * item = layout->itemAt(Wt::WBorderLayout::North);
+        /*begin Menu Panel*/
+        MainMenu * menu = new MainMenu(this);
+        menu->resize(Wt::WLength::Auto, 30);
+        menu->hiddenKeepsGeometry();
+        menu->setUser(_user);
+        menu_panel->layout()->addWidget(menu);
+        //layout->addWidget(menu, Wt::WBorderLayout::North);
+        /*end Menu Panel*/
+
+        object_panel->expand();
+      }
+
+      void WebApp2::authenticated(db::User user) {
+        _isAuthenticated=true;
+        _user = new db::User(user);
         login->accept();
         buildGui();
       }
-      
+
       void WebApp2::openPreview() {
         Wt::Ext::Dialog *dil = new Wt::Ext::Dialog();
         dil->contents()->addWidget(new PreviewPanel());
@@ -424,14 +449,17 @@ namespace org {
       }
 
       void WebApp2::setContent(Wt::WWidget * w) {
-        if (main_panel->layout()->count() > 0) {
-          Wt::WLayoutItem * item = main_panel->layout()->itemAt(0);
-          main_panel->layout()->removeItem(item);
-          delete item->widget();
+        if (org::esb::config::Config::get("authentication") == "true" && !_isAuthenticated) {
+          showLogin();
+        } else {
+          if (main_panel->layout()->count() > 0) {
+            Wt::WLayoutItem * item = main_panel->layout()->itemAt(0);
+            main_panel->layout()->removeItem(item);
+            delete item->widget();
+          }
+          main_panel->layout()->addWidget(w);
+          main_panel->refresh();
         }
-        main_panel->layout()->addWidget(w);
-        main_panel->refresh();
-
         //        main_panel->layout()->addWidget(w);
       }
 

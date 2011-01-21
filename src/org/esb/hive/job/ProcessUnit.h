@@ -118,6 +118,7 @@ namespace org {
                   void processPsnr(Frame * ref, Frame * cmp);
                   void decodeLastPacket(Packet * pac);
                   std::map<std::string, std::string> _properties;
+                  int calculatePsnr(Frame * ref, Frame * enc);
 
                 };
 

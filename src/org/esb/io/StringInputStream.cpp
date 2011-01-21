@@ -24,7 +24,7 @@ namespace org {
       }
 
       int StringInputStream::read(string & str) {
-        str = _data.substr(_position,_data.length());
+        str.assign(_data.substr(_position,_data.length()));
         return 0;
       }
 

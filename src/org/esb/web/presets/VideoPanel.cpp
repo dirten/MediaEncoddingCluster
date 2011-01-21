@@ -122,6 +122,7 @@ namespace org {
           box->show();
           if (box->exec() == Wt::Ext::Dialog::Accepted) {
             _parameter["codec_id"] = codecid;
+            LOGDEBUG("found codec_id="<<codecid);
             _parameter.clear();
           } else {
             _codec->setSelectedEntry(_parameter["codec_id"]);

@@ -13,6 +13,9 @@ INCLUDE(cmake/HiveFindGo.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
+
+
+
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
@@ -25,6 +28,13 @@ SET(BREAKPAD_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(SOCORRO_HOST localhost CACHE PATH "Socorro Host")
 SET(INSTALLBUILDER_EXE "/usr/bin/builder" CACHE PATH "Path to the Bitrock Installbuilder Executable")
 SET(CURL_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
+
+SET(LIBRARY_DIR ${PROJECT_SOURCE_DIR}/target/dependency/lib)
+SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/target/dependency/include)
+IF(UNIX)
+    EXECUTE_PROCESS(COMMAND chmod +x ${PROJECT_SOURCE_DIR}/target/dependency/bin/protoc)
+ENDIF(UNIX)
+
 
 ENABLE_TESTING()
 SET(DART_TESTING_TIMEOUT 100)
@@ -62,6 +72,7 @@ INCLUDE(cmake/HiveFindSQLite.txt)
 INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
+INCLUDE(cmake/HiveFindProtobuf.txt)
 
 
 #add_custom_target(

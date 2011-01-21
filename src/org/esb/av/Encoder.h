@@ -33,7 +33,7 @@
 #include "Sink.h"
 #include "PixelFormatConverter.h"
 #include "org/esb/lang/Ptr.h"
-//#include "AV.h"
+#include "Decoder.h"
 
 
 
@@ -49,6 +49,7 @@ namespace org {
                 Encoder(CodecID id);
                 Encoder();
                 ~Encoder();
+                virtual bool open();
                 int encode(Frame & f);
                 int encode();
                 char * getStatistics();
@@ -75,6 +76,13 @@ namespace org {
                 int _frames;
                 Ptr<PixelFormatConverter> _pix_fmt_converter;
 
+                /**
+                 * this decoder will be used to calculate the psnr/ssim
+                 * it can be enabled by setting the codecOption psnr=1 ot ssim=1
+                 */
+                Ptr<Decoder>_refDecoder;
+                void processPsnr(Frame *ref, Frame * cmp);
+                Frame * _actualFrame;
             };
         }
     }

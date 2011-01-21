@@ -108,6 +108,7 @@ namespace org {
                 break;
               }
               unit->process();
+
               /**
                * clear the input packets, they are no more nedded
                * they only consumes Network bandwidth and cpu on the server

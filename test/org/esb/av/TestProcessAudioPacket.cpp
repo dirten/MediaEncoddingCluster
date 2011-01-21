@@ -75,7 +75,10 @@ void build_audio_packet(const char * filename, int sidx) {
   enc->setTimeBase(1,48000);
   enc->setSampleFormat(p._decoder->getSampleFormat());
 //  enc->setFlag(CODEC_FLAG_GLOBAL_HEADER);
-  enc->open();
+  if(!enc->open()){
+    assert(false);
+  }
+
   p._encoder = enc;
   stream_data[p._source_stream].encoder = p._encoder;
 
@@ -233,7 +236,7 @@ void write_audio_to_file() {
 }
 
 int main(int argc, char ** argv) {
-//  Log::open("");
+  Log::open("");
   av_register_all();
   avcodec_init();
   avcodec_register_all();

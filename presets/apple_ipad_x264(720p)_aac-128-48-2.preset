@@ -7,6 +7,7 @@
 	<param name="b" value="4400000"/>
 	<param name="maxrate" value="5000000"/>
 	<param name="g" value="66"/>
+	<param name="multipass" value="1"/>
 	<param name="loop" value="1"/>
 	<param name="qmin" value="10"/>
 	<param name="qmax" value="51"/>

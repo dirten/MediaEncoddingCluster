@@ -37,6 +37,8 @@ namespace org {
           u->_deinterlace=_map_data[idx].deinterlace;
           u->_decoder = _map_data[idx].decoder;
           u->_encoder = _map_data[idx].encoder;
+          u->_2passdecoder = _map_data[idx].pass2decoder;
+          u->_2passencoder = _map_data[idx].pass2encoder;
           u->_input_packets = std::list<boost::shared_ptr<Packet> >(list.begin(), list.end());
           u->_gop_size = list.size(); //- _map_data[idx].b_frame_offset;
           int cou=u->_gop_size;
@@ -56,7 +58,7 @@ namespace org {
             org::esb::util::Decimal::MantissaType i;
             org::esb::util::Decimal::MantissaType f;
             org::esb::util::Decimal::ExponentType exp = 0;
-            dec.getIntegralFractionalExponent<org::esb::util::Decimal::MantissaType>(i,f,exp,org::esb::util::Decimal::ExponentType(dec.getExponent()));
+            dec.getIntegralFractionalExponent<org::esb::util::Decimal::MantissaType>(i,f,exp,dec.getExponent());
 
             /*in case to BFrames the resulting frame count is -1 
              * because there 1 I-Frame to much at the end

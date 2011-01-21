@@ -6,6 +6,7 @@
 #include <boost/shared_ptr.hpp>
 #include "org/esb/util/Log.h"
 #include "org/esb/util/Decimal.h"
+#include "SocketException.h"
 namespace org {
   namespace esb {
     namespace net {
@@ -30,6 +31,7 @@ namespace org {
           acceptor_.listen();
         } catch (exception & ex) {
           LOGERROR("Cannot create server Socket:" << ex.what());
+          throw SocketException(ex.what());
         }
         _inShutdown = false;
       }

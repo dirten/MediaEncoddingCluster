@@ -17,7 +17,7 @@ namespace org {
             class TcpSocket {
               classlogger("org.esb.net.TcpSocket")
             public:
-                TcpSocket(const char * host, int port);
+                TcpSocket(std::string host, int port);
                 TcpSocket(boost::shared_ptr<boost::asio::ip::tcp::socket> io_service);
                 ~TcpSocket();
                 org::esb::io::InputStream * getInputStream();
@@ -36,7 +36,7 @@ namespace org {
                 org::esb::io::InputStream * _is;
                 org::esb::io::OutputStream * _os;
 
-                const char * _host;
+                std::string _host;
                 int _port;
                 bool _connected;
             };

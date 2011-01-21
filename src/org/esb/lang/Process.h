@@ -33,12 +33,15 @@ namespace org {
         void run(bool restartable=false, int restart_count=3);
         void stop();
         void kill();
-        bool isRunning();
-        int32_t getPid(){return _processId;}
+        void addProcessListener(ProcessListener * l){_listener.push_back(l);}
 
-        void addProcessListener(ProcessListener * l){
-          _listener.push_back(l);
-        }
+        bool isRunning(){return _running;};
+        int32_t getPid(){return _processId;}
+        std::list<Process*> getProcessList(){return _process_list;}
+        std::string getName(){return _name;}
+        std::string getExecutable(){return _executable;}
+        std::list<std::string> getArguments(){return _arguments;}
+        bool isRestartable(){return _restartable;}
       private:
         std::string _executable;
         std::string _name;
@@ -61,6 +64,7 @@ namespace org {
             (*it)->onEvent(ev);
           }
         }
+        static std::list<Process*> _process_list;
       };
     }
   }

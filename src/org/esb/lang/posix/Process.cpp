@@ -17,16 +17,27 @@ namespace org {
   namespace esb {
     namespace lang {
 
+      std::list<Process*> Process::_process_list;
+
       Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args), _name(name) {
         _processId = 0;
         _running = false;
         _restartable = false;
         _stop = false;
+        _process_list.push_back(this);
       }
 
-
       Process::~Process() {
-
+        try {
+          stop();
+        } catch (ProcessException & ex) {
+          LOGERROR(ex.what());
+          try {
+            kill();
+          } catch (ProcessException& ex2) {
+            LOGERROR(ex2.what());
+          }
+        }
       }
 
       void Process::start() {
@@ -66,7 +77,7 @@ namespace org {
           //          int s=system(args[2]);
           int s = execv(_executable.c_str(), args);
           if (s != 0) {
-            notifyProcessListener(ProcessEvent(_processId,s,ProcessEvent::PROCESS_START_FAILED));
+            notifyProcessListener(ProcessEvent(_processId, s, ProcessEvent::PROCESS_START_FAILED));
             LOGERROR("could not start the process: " << _executable);
             throw ProcessException(std::string("could not start the process: ").append(_executable));
           }
@@ -82,14 +93,14 @@ namespace org {
           process_started_wait_condition.notify_one();
 
           int status = 0;
-          notifyProcessListener(ProcessEvent(_processId,status,ProcessEvent::PROCESS_STARTED));
+          notifyProcessListener(ProcessEvent(_processId, status, ProcessEvent::PROCESS_STARTED));
           waitpid(_processId, &status, 0);
           if (!_stop && status != 0) {
             //            throw ProcessException("Process with pid ended unexepcted");
             LOGERROR("Process with pid " << _processId << " ended unexepcted -> " << _name);
           }
           LOGDEBUG("client Process with pid=" << _processId << " exited:" << status);
-          notifyProcessListener(ProcessEvent(_processId,status,ProcessEvent::PROCESS_STOPPED));
+          notifyProcessListener(ProcessEvent(_processId, status, ProcessEvent::PROCESS_STOPPED));
           process_shutdown_wait_condition.notify_one();
           _running = false;
           if (_restartable) {
@@ -118,9 +129,9 @@ namespace org {
         _restartable = false;
         int result = ::kill(_processId, 15);
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);
-        if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))){
+        if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))) {
           //if (result != 0)
-            throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+          throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
         }
         _running = false;
       }
@@ -133,10 +144,7 @@ namespace org {
         if (result != 0)
           throw ProcessException(std::string("could not kill the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
         _running = false;
-        notifyProcessListener(ProcessEvent(_processId,-9,ProcessEvent::PROCESS_KILLED));
-      }
-      bool Process::isRunning() {
-        return _running;
+        notifyProcessListener(ProcessEvent(_processId, -9, ProcessEvent::PROCESS_KILLED));
       }
       /*
       void Process::addProcessListener(ProcessListener listener){

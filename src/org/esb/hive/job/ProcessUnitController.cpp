@@ -186,11 +186,14 @@ namespace org {
                 stream_map[idx].outstream = detail.outputstream().get().one().id;
                 if(fis.getAVStream(idx)->codec->codec_id!=CODEC_ID_MPEG2VIDEO){
                   stream_map[idx].decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
+                  stream_map[idx].pass2decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
                 }else{
                   stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
+                  stream_map[idx].pass2decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
                 }
                 //stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
                 stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
+                stream_map[idx].pass2encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
 
                 stream_map[idx].deinterlace = detail.deinterlace.value();
                 //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;

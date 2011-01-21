@@ -246,6 +246,7 @@ target_link_libraries (mhive
   io 
   net
   mq
+  rpc
   ${Boost_LIBRARIES}
 #  log4cplus
 )

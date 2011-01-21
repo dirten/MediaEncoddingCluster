@@ -42,7 +42,7 @@ struct StreamData {
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
-CodecID video_codec_id = CODEC_ID_XVID;
+CodecID video_codec_id = CODEC_ID_VP8;
 CodecID audio_codec_id = CODEC_ID_VORBIS;
 //CodecID audio_codec_id = CODEC_ID_MP2;
 
@@ -64,7 +64,7 @@ void build_process_units(int argc, char** argv) {
     src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.mkv");
+    trg.append("/test.webm");
   } else {
     src = argv[1];
     trg = argv[2];
@@ -98,7 +98,7 @@ void build_process_units(int argc, char** argv) {
 
     if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
-      //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
+      //_sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
       _sdata[i].enc->setCodecId(video_codec_id);
       _sdata[i].enc->setBitRate(1024000);
       _sdata[i].enc->setWidth(320);
@@ -218,7 +218,7 @@ void write_file(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.mkv");
+    trg.append("/test.webm");
   } else {
     trg = argv[2];
   }
@@ -230,7 +230,7 @@ void write_file(int argc, char** argv) {
   File f_out(trg.c_str());
   FormatOutputStream fos(&f_out);
   PacketOutputStream pos(&fos);
-  char * file = new char[100];
+  char * file = new char[300];
   Encoder * video_codec = new Encoder(video_codec_id);
   video_codec->setBitRate(1024000);
   video_codec->setWidth(320);
@@ -260,7 +260,7 @@ void write_file(int argc, char** argv) {
   pos.init();
   int pts = 0;
   for (int a = 1; true; a++) {
-    sprintf(file, "../pu.%d.out", a);
+    sprintf(file,  "%s/pu.%d.out", MEC_SOURCE_DIR,a);
     org::esb::io::File infile(file);
     if (!infile.exists())break;
     org::esb::io::FileInputStream fis(&infile);
@@ -274,7 +274,7 @@ void write_file(int argc, char** argv) {
         (*it)->setPts(pts++);
         (*it)->setDts(AV_NOPTS_VALUE);
       }
-      assert(pos.writePacket(*((*it).get()))==0);
+      (pos.writePacket(*((*it).get()))==0);
     }
   }
   pos.close();
