@@ -1,0 +1,17 @@
+MESSAGE("Library dir" ${LIBRARY_DIR})
+MESSAGE("Include dir" ${INCLUDE_DIR})
+FIND_PATH(PROTOBUF_INCLUDE_DIR
+    google/protobuf/descriptor.h
+  PATHS
+    ${INCLUDE_DIR}
+  NO_DEFAULT_PATH
+)
+
+FIND_LIBRARY(PROTOBUF_LIBRARY
+    NAMES
+      libprotobuf
+      protobuf
+    PATHS
+      ${LIBRARY_DIR}
+    NO_DEFAULT_PATH
+)
