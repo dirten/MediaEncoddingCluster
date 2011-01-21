@@ -1,0 +1,125 @@
+package org.esb.rpc;
+
+message Request {
+
+  // RPC service full name
+  required string service_name = 1;
+
+  // RPC method name
+  required string method_name = 2;
+
+  // RPC request proto
+  required bytes request_proto = 3;
+}
+
+message Response {
+
+  // RPC response proto
+  optional bytes response_proto = 1;
+
+  // Error, if any
+  optional string error = 2;
+
+  // Was callback invoked
+  optional bool callback = 3 [default = false];
+
+  // Error Reason
+  optional ErrorReason error_reason = 4;
+}
+
+// Possible error reasons
+// The server-side errors are returned in the response from the server.
+// The client-side errors are returned by the client-side code when it doesn't
+// have a response from the server.
+enum ErrorReason {
+
+  NO_ERROR_OCCURRED = 0;         // No error has occurred
+  // Server-side errors
+  BAD_REQUEST_DATA = 1; // Server received bad request data
+  BAD_REQUEST_PROTO = 2; // Server received bad request proto
+  SERVICE_NOT_FOUND = 3; // Service not found on server
+  METHOD_NOT_FOUND = 4; // Method not found on server
+  RPC_ERROR = 5; // Rpc threw exception on server
+  RPC_FAILED = 6; // Rpc failed on server
+
+  // Client-side errors (these are returned by the client-side code)
+  INVALID_REQUEST_PROTO = 7; // Rpc was called with invalid request proto
+  BAD_RESPONSE_PROTO = 8; // Server returned a bad response proto
+  UNKNOWN_HOST = 9; // Could not find supplied host
+  IO_ERROR = 10; // I/O error while communicating with server
+}
+
+message QueryForServiceRequest {
+   // RPC Service full name
+   required string service_name = 1;
+}
+
+message QueryForServiceResponse {
+   // RPC Service full name
+   optional string service_name = 1;
+
+   // Service is registered with RPC server
+   required bool registered = 2 [default = false];
+}
+
+
+message Node {
+    required string address = 1;
+    required string name = 2;
+}
+message NodeList {
+    repeated Node nodes = 1;
+}
+
+
+service DiscoveryService {
+  rpc QueryForService (QueryForServiceRequest) returns (QueryForServiceResponse);
+}
+
+service NodeService {
+  rpc registerNode (Node) returns (NodeList);
+  rpc unregisterNode (Node) returns (NodeList);
+}
+
+message ProcessUnit {
+    required bytes serialized_data = 1;
+}
+
+message ProcessUnitRequest {
+    required Node node =1;
+    optional ProcessUnit unit_data=2;
+}
+
+
+message ProcessUnitResponse {
+    optional ProcessUnit unit_data=2;
+    required string status = 3;
+}
+
+
+service ProcessUnitService {
+  rpc getProcessUnit (ProcessUnitRequest) returns (ProcessUnitResponse);
+  rpc putProcessUnit (ProcessUnitRequest) returns (ProcessUnitResponse);
+}
+
+message Process{
+    required string process_name = 1;
+}
+
+message ProcessRequest {
+    required Node node =1;
+    optional Process process_data=2;
+}
+
+
+message ProcessResponse {
+    optional Process process_data=2;
+    required string status_message = 3;
+    required int32 status_code = 4;
+}
+
+service ProcessService {
+  rpc startProcess (ProcessRequest) returns (ProcessResponse);
+  rpc stopProcess (ProcessRequest) returns (ProcessResponse);
+  rpc getProcessList (ProcessRequest) returns (ProcessResponse);
+}
