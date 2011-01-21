@@ -111,11 +111,11 @@ namespace org {
         CloseHandle(hProcess);
         _running = false;
       }
-
+/*
       bool Process::isRunning() {
         return _running;
       }
-
+*/
       void Process::kill() {
         /*
          *
