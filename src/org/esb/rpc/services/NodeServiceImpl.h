@@ -30,7 +30,8 @@ namespace org {
           }
         };
 
-        std::set<org::esb::rpc::Node, nodecomp> _node_set;
+        typedef std::set<org::esb::rpc::Node, nodecomp> NodeSet;
+        NodeSet _node_set;
         void propagateNewNode(const org::esb::rpc::Node&);
         void propagateLostNode(const org::esb::rpc::Node&);
       };

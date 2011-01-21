@@ -75,6 +75,7 @@ namespace org {
       // final "done" callback.
 
       bool Controller::IsCanceled() const {
+        return false;
       }
 
       // Asks that the given callback be called when the RPC is canceled.  The

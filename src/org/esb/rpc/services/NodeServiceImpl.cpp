@@ -5,8 +5,8 @@
  * Created on 14. Januar 2011, 16:08
  */
 
-#include "NodeServiceImpl.h"
 #include "org/esb/net/TcpSocket.h"
+#include "NodeServiceImpl.h"
 #include "../Channel.h"
 #include "../Controller.h"
 
@@ -30,8 +30,10 @@ namespace org {
         } else {
           LOGDEBUG("node allready present\n" << request->DebugString());
         }
+
         //org::esb::rpc::Node *newnode = request;
-        std::set<org::esb::rpc::Node>::iterator it = _node_set.begin();
+        
+        NodeSet::iterator it = _node_set.begin();
         for (; it != _node_set.end(); it++) {
           org::esb::rpc::Node *node = response->add_nodes();
           node->MergeFrom((*it));
@@ -45,9 +47,9 @@ namespace org {
           _node_set.erase(*request);
           propagateLostNode(*request);
         } else {
-          LOGDEBUG("node not present\n" << request->DebugString());
+          //LOGDEBUG("node not present\n" << request->DebugString());
         }
-        std::set<org::esb::rpc::Node>::iterator it = _node_set.begin();
+        NodeSet::iterator it = _node_set.begin();
         for (; it != _node_set.end(); it++) {
           org::esb::rpc::Node *node = response->add_nodes();
           node->MergeFrom((*it));
@@ -55,7 +57,7 @@ namespace org {
       }
 
       void NodeServiceImpl::propagateNewNode(const org::esb::rpc::Node & node) {
-        std::set<org::esb::rpc::Node>::iterator it = _node_set.begin();
+        NodeSet::iterator it = _node_set.begin();
         for (; it != _node_set.end(); it++) {
           try {
             org::esb::net::TcpSocket socket(node.address(), 6000);
@@ -74,7 +76,7 @@ namespace org {
       }
 
       void NodeServiceImpl::propagateLostNode(const org::esb::rpc::Node& node) {
-        std::set<org::esb::rpc::Node>::iterator it = _node_set.begin();
+        NodeSet::iterator it = _node_set.begin();
         for (; it != _node_set.end(); it++) {
           try {
             org::esb::net::TcpSocket socket(node.address(), 6000);
