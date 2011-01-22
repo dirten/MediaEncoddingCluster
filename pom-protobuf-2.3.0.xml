@@ -13,6 +13,7 @@
         </os>
       </activation>
       <properties>
+	  <win32/>
         <my.family>win32</my.family>
         <target>ntx86</target>
         <MAKE_EXECUTABLE>nmake</MAKE_EXECUTABLE>
@@ -27,6 +28,7 @@
         </os>
       </activation>
       <properties>
+	  <unix/>
         <my.family>linux</my.family>
         <target>linuxx86</target>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -40,6 +42,7 @@
         </os>
       </activation>
       <properties>
+	  <unix/>
         <my.family>mac</my.family>
         <target>macosxx86</target>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
@@ -133,6 +136,18 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
 
+              </tasks>
+		  <tasks if="unix">
+                <exec executable="sh" dir="source/protobuf-2.3.0" failonerror="yes">
+                  <arg line="${mybasedir}/source/protobuf-2.3.0/configure --prefix=${mybasedir}/source/build/protobuf --disable-shared --enable-static"/>
+                </exec>
+                <exec executable="make" dir="${project.basedir}/source/protobuf-2.3.0" failonerror="yes">
+                </exec>
+                <exec executable="make" dir="${project.basedir}/source/protobuf-2.3.0" failonerror="yes">
+                  <arg line="install"/>
+                </exec>
+              </tasks>
+		  <tasks if="win32">
                 <exec executable="vcbuild.exe" dir="source/protobuf-2.3.0/vsprojects" failonerror="yes">
                   <arg line="protobuf.sln '${build_type}|win32'"/>
                 </exec>
