@@ -69,7 +69,7 @@
   </profiles>
   <groupId>org.esb.libcurl</groupId>
   <artifactId>libcurl</artifactId>
-  <version>7.21.1-1</version>
+  <version>7.21.3-1</version>
   <name>libcurl</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -128,26 +128,26 @@
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
                 <mkdir dir="win32"/>
-                <get src="http://curl.haxx.se/download/curl-7.21.1.tar.gz"
-                     dest="source/curl-7.21.1.tar.gz"
+                <get src="http://curl.haxx.se/download/curl-7.21.3.tar.gz"
+                     dest="source/curl-7.21.3.tar.gz"
                      verbose="true" usetimestamp="true"/>
-                <gunzip src="source/curl-7.21.1.tar.gz" dest="source"/>
-		    <untar src="source/curl-7.21.1.tar" dest="source" overwrite="true"/>
-                <mkdir dir="source/curl-7.21.1/build"/>
+                <gunzip src="source/curl-7.21.3.tar.gz" dest="source"/>
+		    <untar src="source/curl-7.21.3.tar" dest="source" overwrite="true"/>
+                <mkdir dir="source/curl-7.21.3/build"/>
 		    <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
 
-                <exec executable="sh" dir="source/curl-7.21.1" failonerror="yes">
-                  <arg line="${mybasedir}/source/curl-7.21.1/configure --prefix=${mybasedir}/source/build/curl --disable-static --enable-shared"/>
+                <exec executable="sh" dir="source/curl-7.21.3" failonerror="yes">
+                  <arg line="${mybasedir}/source/curl-7.21.3/configure --prefix=${mybasedir}/source/build/curl --disable-static --enable-shared"/>
                 </exec>
-                <exec executable="make" dir="${project.basedir}/source/curl-7.21.1" failonerror="yes">
+                <exec executable="make" dir="${project.basedir}/source/curl-7.21.3" failonerror="yes">
                 </exec>
-                <exec executable="make" dir="${project.basedir}/source/curl-7.21.1" failonerror="yes">
+                <exec executable="make" dir="${project.basedir}/source/curl-7.21.3" failonerror="yes">
                   <arg line="install"/>
                 </exec>
               </tasks>
-            </configuration>
+                </configuration>
             <goals>
               <goal>run</goal>
             </goals>

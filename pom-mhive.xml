@@ -49,7 +49,7 @@
         <exe></exe>
         <MAKE_EXECUTABLE>make</MAKE_EXECUTABLE>
         <GCC_VERSION>-xgcc40</GCC_VERSION>
-        <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
+        <CMAKE_MAKE_PROGRAM>'Unix Makefiles'</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
     <profile>
@@ -192,8 +192,7 @@
                 
                 
                 <exec executable="cmake" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="
-                    -G ${CMAKE_MAKE_PROGRAM}
+                  <arg line="-G ${CMAKE_MAKE_PROGRAM}
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/install
                     -DCMAKE_BUILD_TYPE=${build_type}
                     -DSHARED_LIBS=Off
@@ -321,7 +320,7 @@
     <dependency>
       <groupId>org.esb.libcurl</groupId>
       <artifactId>libcurl</artifactId>
-      <version>7.21.1-1</version>
+      <version>7.21.3-1</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
