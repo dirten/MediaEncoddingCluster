@@ -133,13 +133,8 @@
                   <path location="${project.basedir}"/>
                 </pathconvert>
 
-                <exec executable="sh" dir="source/protobuf-2.3.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/protobuf-2.3.0/configure --prefix=${mybasedir}/source/build/protobuf --disable-shared --enable-static"/>
-                </exec>
-                <exec executable="make" dir="${project.basedir}/source/protobuf-2.3.0" failonerror="yes">
-                </exec>
-                <exec executable="make" dir="${project.basedir}/source/protobuf-2.3.0" failonerror="yes">
-                  <arg line="install"/>
+                <exec executable="vcbuild.exe" dir="source/protobuf-2.3.0/vsprojects" failonerror="yes">
+                  <arg line="protobuf.sln '${build_type}|win32'"/>
                 </exec>
               </tasks>
             </configuration>
