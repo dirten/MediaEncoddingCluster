@@ -117,7 +117,7 @@
                 <mkdir dir="source/ffmpeg"/>
                 <mkdir dir="source/x264"/>
 
-                <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09rc6/nasm-2.09rc6.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://www.tortall.net/projects/yasm/releases/yasm-1.1.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://download.videolan.org/pub/videolan/x264/snapshots/x264${x264.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
@@ -126,10 +126,10 @@
                 <get src="http://downloads.xiph.org/releases/theora/libtheora-1.0.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
-                <get src="http://downloads.xvid.org/downloads/xvidcore-1.2.2.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://downloads.xvid.org/downloads/xvidcore-${xvid.version}.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://webm.googlecode.com/files/libvpx-v${vpx.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
 
-                <bunzip2 src="source/nasm-2.09rc6.tar.bz2" dest="source"/>
+                <bunzip2 src="source/nasm-2.09.04.tar.bz2" dest="source"/>
                 <gunzip src="source/yasm-1.1.0.tar.gz" dest="source"/>
                 <bunzip2 src="source/ffmpeg-export-snapshot.tar.bz2" dest="source"/>
                 <bunzip2 src="source/x264${x264.version}.tar.bz2" dest="source"/>
@@ -138,10 +138,10 @@
                 <bunzip2 src="source/libtheora-1.0.tar.bz2" dest="source"/>
                 <gunzip src="source/speex-1.0.5.tar.gz" dest="source"/>
                 <gunzip src="source/libvorbis-1.2.0.tar.gz" dest="source"/>
-                <gunzip src="source/xvidcore-1.2.2.tar.gz" dest="source"/>
+                <gunzip src="source/xvidcore-${xvid.version}.tar.gz" dest="source"/>
                 <bunzip2 src="source/libvpx-v${vpx.version}.tar.bz2" dest="source"/>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf nasm-2.09rc6.tar"/>
+                  <arg line="-xf nasm-2.09.04.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf yasm-1.1.0.tar"/>
@@ -168,7 +168,7 @@
                   <arg line="-xf libvorbis-1.2.0.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf xvidcore-1.2.2.tar"/>
+                  <arg line="-xf xvidcore-${xvid.version}.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf libvpx-v${vpx.version}.tar"/>
@@ -179,10 +179,10 @@
                 </pathconvert>
                 <echo message="using basedir: ${mybasedir}"/>
 
-                <exec executable="sh" dir="source/nasm-2.09rc6" failonerror="yes">
-                  <arg line="${mybasedir}/source/nasm-2.09rc6/configure --prefix=${mybasedir}/source/build/nasm"/>
+                <exec executable="sh" dir="source/nasm-2.09.04" failonerror="yes">
+                  <arg line="${mybasedir}/source/nasm-2.09.04/configure --prefix=${mybasedir}/source/build/nasm"/>
                 </exec>
-                <exec executable="make" dir="source/nasm-2.09rc6">
+                <exec executable="make" dir="source/nasm-2.09.04">
                   <arg line="install"/>
                 </exec>
 
@@ -341,5 +341,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <x264.version>-snapshot-20110121-2245</x264.version>
     <vpx.version>0.9.5</vpx.version>
+    <xvid.version>1.3.0-rc1</xvid.version>
   </properties>
 </project>
