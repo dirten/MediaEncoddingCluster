@@ -119,6 +119,7 @@
         <executions>
           <execution>
             <phase>compile</phase>
+            <id>dowload-support</id>
             <configuration>
               <tasks>
                 <mkdir dir="source"/>
@@ -137,6 +138,15 @@
                 </pathconvert>
 
               </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>build-unix</id>
+            <configuration>
 		  <tasks if="unix">
                 <exec executable="sh" dir="source/protobuf-2.3.0" failonerror="yes">
                   <arg line="${mybasedir}/source/protobuf-2.3.0/configure --prefix=${mybasedir}/source/build/protobuf --disable-shared --enable-static"/>
@@ -147,6 +157,15 @@
                   <arg line="install"/>
                 </exec>
               </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>compile</phase>
+            <id>build-win32</id>
+            <configuration>
 		  <tasks if="win32">
                 <exec executable="vcbuild.exe" dir="source/protobuf-2.3.0/vsprojects" failonerror="yes">
                   <arg line="protobuf.sln '${build_type}|win32'"/>
