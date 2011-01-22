@@ -6,12 +6,12 @@
  */
 
 #include <cstdlib>
+#include "org/esb/net/TcpSocket.h"
 #include "org/esb/rpc/Client.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/av/FormatBaseStream.h"
 
 #include "org/esb/rpc/Channel.h"
-#include "org/esb/net/TcpSocket.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "org/esb/rpc/Controller.h"
 using namespace std;
