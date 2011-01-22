@@ -33,6 +33,10 @@ ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
 #add_definitions(/DBOOST_ALL_NO_LIB)
 add_definitions(-DCURL_STATICLIB)
 add_definitions(/DCURL_STATICLIB)
+#add_definitions(-m32)
+#add_definitions(-arch i386)
+#SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
+
 
 add_subdirectory (go)
 add_subdirectory (org)

@@ -49,7 +49,7 @@ FILE(MAKE_DIRECTORY ${TARGET_DIR})
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/boost/boost/1.44.0/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/boost-1.44.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip )
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/breakpad/breakpad/1.5/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/breakpad-1.5-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/ffmpeg/ffmpeg/20101212/ffmpeg-${FFMPEG_VERSION}-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/ffmpeg-${FFMPEG_VERSION}-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
-EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/libcurl/libcurl/7.21.1-1/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/libcurl/libcurl/7.21.3-1/libcurl-7.21.3-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libcurl-7.21.3-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/litesql/litesql/0.3.8-beta-patch-2/litesql-0.3.8-beta-patch-2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/litesql-0.3.8-beta-patch-2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/log4cplus/log4cplus/1.0.4-rc9/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/log4cplus-1.0.4-rc9-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/safmq/safmq/0.8.3-3/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/safmq-0.8.3-3-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
@@ -75,7 +75,7 @@ EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/b
 MESSAGE("Extracting ffmpeg")
 EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/ffmpeg-${FFMPEG_VERSION}-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
 MESSAGE("Extracting libcurl")
-EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libcurl-7.21.1-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libcurl-7.21.3-1-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
 MESSAGE("Extracting litesql")
 EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/litesql-0.3.8-beta-patch-2-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
 MESSAGE("Extracting log4cplus")
@@ -116,8 +116,8 @@ EXECUTE_PROCESS(COMMAND cmake
                     -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/install
                     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 		    -DCMAKE_OSX_ARCHITECTURES=i386
-		    -DCMAKE_C_FLAGS=-m32 
-		    -DCMAKE_CXX_FLAGS=-m32
+		    -DCMAKE_C_FLAGS=-m32 -arch i386 
+		    -DCMAKE_CXX_FLAGS=-m32 -arch i386
                     -DSHARED_LIBS=Off
                     -DBOOST_DIR=${PROJECT_SOURCE_DIR}/${TARGET_DIR}
                     #-DBOOST_COMPILER=${GCC_VERSION}

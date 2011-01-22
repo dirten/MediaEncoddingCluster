@@ -187,7 +187,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/yasm-1.1.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/yasm-1.1.0/configure --prefix=${mybasedir}/source/build/yasm"/>
+                  <arg line="${mybasedir}/source/yasm-1.1.0/configure --prefix=${mybasedir}/source/build/yasm "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/yasm-1.1.0">
@@ -196,7 +196,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/lame-3.98.4" failonerror="yes">
-                  <arg line="${mybasedir}/source/lame-3.98.4/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/lame-3.98.4/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/lame-3.98.4" failonerror="yes">
@@ -205,7 +205,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/x264" failonerror="yes">
-                  <arg line="${mybasedir}/source/x264/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/x264/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/x264" failonerror="yes">
@@ -214,7 +214,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/libogg-1.1.3" failonerror="yes">
-                  <arg line="${mybasedir}/source/libogg-1.1.3/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/libogg-1.1.3/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libogg-1.1.3" failonerror="yes">
@@ -223,7 +223,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/libtheora-1.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/libtheora-1.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/libtheora-1.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libtheora-1.0" failonerror="yes">
@@ -232,7 +232,7 @@
                 </exec>
  
                 <exec executable="sh" dir="source/libvorbis-1.2.0" failonerror="yes">
-                  <arg line="${mybasedir}/source/libvorbis-1.2.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/libvorbis-1.2.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libvorbis-1.2.0" failonerror="yes">
@@ -241,7 +241,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/xvidcore/build/generic" failonerror="yes">
-                  <arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared"/>
+                  <arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
@@ -257,7 +257,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/libvpx-v${vpx.version}" failonerror="yes">
-                  <arg line="${mybasedir}/source/libvpx-v${vpx.version}/configure --prefix=${mybasedir}/source/build"/>
+                  <arg line="${mybasedir}/source/libvpx-v${vpx.version}/configure --prefix=${mybasedir}/source/build "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libvpx-v${vpx.version}" failonerror="yes">
@@ -297,6 +297,7 @@
 		    ${EXTRA_FFMPEG_CONFIGURATION}
 		    --enable-shared
             	    --disable-static
+		    --arch=i386
                     "/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>

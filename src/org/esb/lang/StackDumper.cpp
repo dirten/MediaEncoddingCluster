@@ -1,6 +1,6 @@
 #include <string>
 
-#include <curl/curl.h>
+//#include <curl/curl.h>
 
 #include "StackDumper.h"
 #ifndef __WIN32__
@@ -50,6 +50,7 @@ bool MyDumpSender(const char *dump_path,
   //  logdebug("Sending CrashReport"<<path.append(file).c_str());
 
   for(int a=0;a<10000;a++);
+/*
   CURL *curl;
   CURLcode res;
 
@@ -60,7 +61,6 @@ bool MyDumpSender(const char *dump_path,
 
   curl_global_init(CURL_GLOBAL_ALL);
   path.append(file);
-  /* Fill in the file upload field */
   LOGDEBUG("Post file from Path" << path);
 
   curl_formadd(&formpost,
@@ -69,7 +69,6 @@ bool MyDumpSender(const char *dump_path,
       CURLFORM_FILE, path.c_str(),
       CURLFORM_END);
 
-  /* Fill in the filename field */
 
   curl_formadd(&formpost,
       &lastptr,
@@ -79,11 +78,8 @@ bool MyDumpSender(const char *dump_path,
 
 
   curl = curl_easy_init();
-  /* initalize custom header list (stating that Expect: 100-continue is not
-     wanted */
   //headerlist = curl_slist_append(headerlist, buf);
   if (curl) {
-    /* what URL that receives this POST */
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
@@ -93,15 +89,13 @@ bool MyDumpSender(const char *dump_path,
     res = curl_easy_perform(curl);
    std::cout<<"dump sended, result="<<res<<std::endl;;
 
-    /* always cleanup */
     curl_easy_cleanup(curl);
     std::cout << "curl cleaned up"<<std::endl;
-    /* then cleanup the formpost chain */
 //    curl_formfree(formpost);
     std::cout << "form cleaned up"<<std::endl;
-    /* free slist */
     //curl_slist_free_all(headerlist);
-  }
+
+  }*/
   std::cout<<"sended"<<std::endl;
 
   return true;
