@@ -42,7 +42,7 @@ struct StreamData {
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
-CodecID video_codec_id = CODEC_ID_VP8;
+CodecID video_codec_id = CODEC_ID_XVID;
 CodecID audio_codec_id = CODEC_ID_VORBIS;
 //CodecID audio_codec_id = CODEC_ID_MP2;
 
