@@ -77,7 +77,7 @@
   </parent>-->
   <groupId>org.esb.ffmpeg</groupId>
   <artifactId>ffmpeg</artifactId>
-  <version>20101212</version>
+  <version>20110122</version>
   <name>ffmpeg</name>
   <url>http://maven.apache.org</url>
   <distributionManagement>
@@ -117,7 +117,7 @@
                 <mkdir dir="source/ffmpeg"/>
                 <mkdir dir="source/x264"/>
 
-                <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09rc6/nasm-2.09rc6.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://www.tortall.net/projects/yasm/releases/yasm-1.1.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://download.videolan.org/pub/videolan/x264/snapshots/x264${x264.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
@@ -127,7 +127,7 @@
                 <get src="http://downloads.xiph.org/releases/speex/speex-1.0.5.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://downloads.xvid.org/downloads/xvidcore-1.2.2.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
-                <get src="http://webm.googlecode.com/files/libvpx-0.9.1.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://webm.googlecode.com/files/libvpx-v${vpx.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
 
                 <bunzip2 src="source/nasm-2.09rc6.tar.bz2" dest="source"/>
                 <gunzip src="source/yasm-1.1.0.tar.gz" dest="source"/>
@@ -139,7 +139,7 @@
                 <gunzip src="source/speex-1.0.5.tar.gz" dest="source"/>
                 <gunzip src="source/libvorbis-1.2.0.tar.gz" dest="source"/>
                 <gunzip src="source/xvidcore-1.2.2.tar.gz" dest="source"/>
-                <bunzip2 src="source/libvpx-0.9.1.tar.bz2" dest="source"/>
+                <bunzip2 src="source/libvpx-v${vpx.version}.tar.bz2" dest="source"/>
                 <exec executable="tar" dir="source">
                   <arg line="-xf nasm-2.09rc6.tar"/>
                 </exec>
@@ -171,7 +171,7 @@
                   <arg line="-xf xvidcore-1.2.2.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf libvpx-0.9.1.tar"/>
+                  <arg line="-xf libvpx-v${vpx.version}.tar"/>
                 </exec>
 
                 <pathconvert property="mybasedir" targetos="unix">
@@ -246,24 +246,24 @@
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="clean"/>
-                  <env key="PATH" path="${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
-                  <env key="PATH" path="${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="install"/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
-                <exec executable="sh" dir="source/libvpx-0.9.1" failonerror="yes">
-                  <arg line="${mybasedir}/source/libvpx-0.9.1/configure --prefix=${mybasedir}/source/build"/>
+                <exec executable="sh" dir="source/libvpx-v${vpx.version}" failonerror="yes">
+                  <arg line="${mybasedir}/source/libvpx-v${vpx.version}/configure --prefix=${mybasedir}/source/build"/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
-                <exec executable="make" dir="source/libvpx-0.9.1" failonerror="yes">
+                <exec executable="make" dir="source/libvpx-v${vpx.version}" failonerror="yes">
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
-                <exec executable="make" dir="source/libvpx-0.9.1" failonerror="yes">
+                <exec executable="make" dir="source/libvpx-v${vpx.version}" failonerror="yes">
                   <arg line="install"/>
                   <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
@@ -339,6 +339,7 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <x264.version>-snapshot-20101211-2245</x264.version>
+    <x264.version>-snapshot-20110121-2245</x264.version>
+    <vpx.version>0.9.5</vpx.version>
   </properties>
 </project>
