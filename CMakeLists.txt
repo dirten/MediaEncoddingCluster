@@ -13,10 +13,11 @@ INCLUDE(cmake/HiveFindGo.txt)
 INCLUDE(cmake/Go.cmake)
 #INCLUDE(cmake/DownloadDeps.txt)
 
-
+if(APPLE)
 add_definitions(-m32)
 add_definitions(-arch i386)
 SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
+ENDIF(APPLE)
 
 
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
