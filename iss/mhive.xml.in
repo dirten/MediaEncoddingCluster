@@ -375,7 +375,7 @@
                             <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libcore.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcore.dylib</origin>
                         </distributionFile>
                     </distributionFileList>
                     <shortcutList>
