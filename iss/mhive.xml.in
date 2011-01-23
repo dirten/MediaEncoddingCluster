@@ -308,7 +308,7 @@
                             <origin>${mhive_src_dir}/install/lib/libavutil.so.50</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libcurl.so.4</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcore.so.0</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -340,7 +340,7 @@
                             <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libcurl-4.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avcore-0.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -375,7 +375,7 @@
                             <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libcurl.4.dylib</origin>
+                            <origin>${mhive_src_dir}/install/lib/libcore.dylib</origin>
                         </distributionFile>
                     </distributionFileList>
                     <shortcutList>
@@ -420,6 +420,17 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>${mhive_src_dir}/web</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Presets</description>
+                    <destination>${installdir}</destination>
+                    <name>presets</name>
+                    <platforms>all</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>${mhive_src_dir}/presets</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
