@@ -14,12 +14,19 @@ namespace org {
 
       ProcessServiceImpl::ProcessServiceImpl() : ProcessService() {
         std::string path = org::esb::config::Config::get("hive.base_path");
-        _exec_map["core"] = path + "/bin/mhive";
-        _args_map["core"].push_back("-r");
+
         std::list<std::string> args;
 
         args.push_back("-r");
         _process_map["core"] = new org::esb::lang::Process(path + "/bin/mhive", args);
+
+        args.clear();
+        args.push_back("-i");
+        _process_map["client"] = new org::esb::lang::Process(path + "/bin/mhive", args);
+
+        args.clear();
+        args.push_back("-q");
+        _process_map["queue"] = new org::esb::lang::Process(path + "/bin/mhive", args);
       }
 
       ProcessServiceImpl::~ProcessServiceImpl() {

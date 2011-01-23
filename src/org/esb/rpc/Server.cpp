@@ -83,7 +83,7 @@ namespace org {
       }
 
       void Server::handleClient(org::esb::net::TcpSocket* s) {
-        while (true) {
+        while (s->isConnected()) {
           std::string buffer;
           s->getInputStream()->read(buffer);
           if (!s->isConnected())return;
