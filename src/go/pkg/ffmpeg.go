@@ -110,6 +110,11 @@ type Demultiplexer struct{
     Packet * C.AVPacket
 }
 
+func (dpx * Demultiplexer)GetDecoder(streamid int)Coder{
+    coder:=NewCoder()
+    coder.Ctx=dpx.Ds.Ctx.streams[streamid].codec
+    return coder
+}
 
 func (dpx * Demultiplexer)GetDuration() Duration {
     return Duration{int64(dpx.Ds.Ctx.duration),Rational{1,1000000}}
@@ -121,6 +126,7 @@ func (dpx * Demultiplexer)GetTimestamp() Timestamp{
 
 func (dpx * Demultiplexer)ReadPacket(re * Packet) bool{
     dpx.Packet=new(C.AVPacket)
+
     C.av_init_packet(dpx.Packet)
     defer C.av_free_packet(dpx.Packet)
     if(C.av_read_frame(dpx.Ds.Ctx, dpx.Packet)>=0){

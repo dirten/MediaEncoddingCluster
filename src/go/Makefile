@@ -8,8 +8,7 @@ TARG=testffmpeg
 #CGO_CFLAGS=-I/home/HoelscJ/devel/mec/target/dependency/include/
 
 DIRS=\
-	pkg \
-	pkg/rpc
+	pkg
 
 GOFILES=\
         mainffmpeg.go \
@@ -25,14 +24,12 @@ clean: myclean
 
 deps : 
 	cd pkg; $(MAKE) $(MFLAGS); $(MAKE) install
-	cd pkg/rpc; $(MAKE) $(MFLAGS); $(MAKE) install
+
 
 myclean :
 #	echo cleaning up in .
 #	-$(RM) -f $(EXE) $(OBJS) $(OBJLIBS)
-	-for d in pkg; do (cd $$d; $(MAKE) clean ); done
-	-for d in pkg/rpc; do (cd $$d; $(MAKE) clean ); done
-	    
+	-for d in pkg; do (cd $$d; $(MAKE) clean ); done	    
 
 include $(GOROOT)/src/Make.cmd
 

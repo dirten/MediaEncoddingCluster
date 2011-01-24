@@ -135,6 +135,8 @@ func processListener(command *Command){
 //    }
 }
 
+type TestBytes []byte;
+
 func main(){
     mypath,_:=os.Getwd()
     println(mypath+":"+os.Args[0])
@@ -143,7 +145,8 @@ func main(){
     fmt.Println(os.Getwd()) 
     mypath,_=os.Getwd()
     println(mypath+":"+os.Args[0])
-
+    mybytes:=make(TestBytes,100)
+    println(mybytes)
     processMap["server"]=&Command{name:"server",command:"mhive",dir:mypath,args:[]string{"mhive","-r"} }
     processMap["client"]=&Command{name:"client",command:"mhive",dir:mypath,args:[]string{"mhive","-i"} }
     processMap["web"]=   &Command{name:"web",command:"mhive",dir:mypath,args:[]string{"mhive","-w"} }

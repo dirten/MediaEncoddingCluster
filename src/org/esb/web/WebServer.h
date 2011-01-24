@@ -24,5 +24,8 @@ namespace web{
     };
 }}}
 
+extern "C"{
+void start_webserver();
+}
 #endif
 

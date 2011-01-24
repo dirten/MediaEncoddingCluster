@@ -48,6 +48,8 @@ func main(){
         var p Packet
         var i int=0
         var count int64=0
+	coder:=dem.GetDecoder(0)
+	coder.Open()
         for(dem.ReadPacket(&p)==true){
     	    i++
     	    count+=int64(p.Size)
@@ -59,6 +61,7 @@ func main(){
 		println("nil packet reached")
 		return
 	    }
+	    coder.Decode(p)
 
 	if(false){
 	filename:=fmt.Sprintf("data/test.%d.data",i)

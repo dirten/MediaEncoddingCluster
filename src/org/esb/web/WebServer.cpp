@@ -122,3 +122,9 @@ void WebServer::onMessage(Message & msg) {
     LOGDEBUG("Webserver Stopped");
   }
 }
+extern "C"{
+void start_webserver(){
+    org::esb::web::WebServer * s=new org::esb::web::WebServer();
+    s->run();
+}
+}

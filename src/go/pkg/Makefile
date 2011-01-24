@@ -8,11 +8,11 @@ TARG=ffmpeg
 
 CGOFILES=ffmpeg.go Timestamp.go Rational.go Coder.go 
 #Buffer.go
-PROTOPATH=../../org/esb/rpc/
-GOFILES=net.go 
+#PROTOPATH=../../org/esb/rpc/
+#GOFILES=net.go 
 
-CGO_LDFLAGS=-L/home/HoelscJ/devel/mec/target/dependency/lib/ -lavcodec -lavutil -lavformat -lavcore -lswscale
-CGO_CFLAGS=-I/home/HoelscJ/devel/mec/target/dependency/include/
+CGO_LDFLAGS=-L../../../target/dependency/lib/ -L../../../build/src/org/esb/ -lavcodec -lavutil -lavformat -lavcore -lswscale -lweb
+CGO_CFLAGS=-I../../../target/dependency/include/ -I../../../src
 
 #include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
 
