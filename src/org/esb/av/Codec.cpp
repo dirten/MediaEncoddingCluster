@@ -182,8 +182,8 @@ namespace org {
       }
        */
       void Codec::reset() {
-        if(_opened)
-        avcodec_flush_buffers(ctx);
+        if (_opened)
+          avcodec_flush_buffers(ctx);
       }
 
       void Codec::setContextDefaults() {
@@ -341,17 +341,29 @@ namespace org {
           const AVOption *o = NULL;
           //int opt_types[]={0};
           //if(_codec->type==CODEC_TYPE_VIDEO)
-          //           int opt_types[] = {AV_OPT_FLAG_AUDIO_PARAM,AV_OPT_FLAG_VIDEO_PARAM, 0};
-          //          for (type = 0; type < 3 && ret >= 0; type++) {
-          //            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
-          //            if (o2) {
-          ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-          //            }else{
-          //              LOGWARN("Option not found")
-          //            }
-          //          }
+          int optflags=0;
+          if(_codec->type == AVMEDIA_TYPE_AUDIO){
+            optflags=AV_OPT_FLAG_AUDIO_PARAM;
+          }else if(_codec->type == AVMEDIA_TYPE_VIDEO){
+            optflags=AV_OPT_FLAG_VIDEO_PARAM;
+          }
+          if (_mode == ENCODER) {
+            optflags|=AV_OPT_FLAG_ENCODING_PARAM;
+          }else if (_mode == DECODER) {
+            optflags|=AV_OPT_FLAG_DECODING_PARAM;
+          }
+          int opt_types[] = {optflags, 0};
+          for (type = 0; type < 2 && ret >= 0; type++) {
+            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+            if (o2 && (o2->flags & _mode||o2->flags==0)) {
+              ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+            } else {
+              if(type==2)
+                LOGWARN("Option not found: "<<opt.c_str())
+            }
+          }
           if (o && ret != 0) {
-            LOGERROR("Invalid value '" << arg << "' for option '" << opt << "'\n");
+            LOGERROR("Invalid value '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
           }
           if (!o) {
             LOGWARN("Option not found:" << opt);

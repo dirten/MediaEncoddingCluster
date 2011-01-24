@@ -247,7 +247,7 @@ void ProcessUnit::processInternal() {
      */
 
     int ret = _encoder->encode(*f);
-    if (_encoder->getCodecType() == CODEC_TYPE_VIDEO&&sink.getList().size()>0) {
+    if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO&&sink.getList().size()>0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
       if (tmpf->isFinished()) {

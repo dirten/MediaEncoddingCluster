@@ -29,7 +29,8 @@ namespace org {
                 google::protobuf::Closure* done) {
           assert(mServer);
           LOGDEBUG("getProcessUnit");
-          
+          LOGDEBUG(request->node().DebugString());
+
           org::esb::signal::Message msg;
           msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
           org::esb::signal::Messenger::getInstance().sendRequest(msg);

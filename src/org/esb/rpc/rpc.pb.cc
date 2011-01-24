@@ -134,8 +134,9 @@ void protobuf_AssignDesc_rpc_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(QueryForServiceResponse));
   Node_descriptor_ = file->message_type(4);
-  static const int Node_offsets_[2] = {
+  static const int Node_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Node, address_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Node, port_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Node, name_),
   };
   Node_reflection_ =
@@ -346,44 +347,44 @@ void protobuf_AddDesc_rpc_2eproto() {
     "\030.org.esb.rpc.ErrorReason\".\n\026QueryForSer"
     "viceRequest\022\024\n\014service_name\030\001 \002(\t\"J\n\027Que"
     "ryForServiceResponse\022\024\n\014service_name\030\001 \001"
-    "(\t\022\031\n\nregistered\030\002 \002(\010:\005false\"%\n\004Node\022\017\n"
-    "\007address\030\001 \002(\t\022\014\n\004name\030\002 \002(\t\",\n\010NodeList"
-    "\022 \n\005nodes\030\001 \003(\0132\021.org.esb.rpc.Node\"&\n\013Pr"
-    "ocessUnit\022\027\n\017serialized_data\030\001 \002(\014\"b\n\022Pr"
-    "ocessUnitRequest\022\037\n\004node\030\001 \002(\0132\021.org.esb"
-    ".rpc.Node\022+\n\tunit_data\030\002 \001(\0132\030.org.esb.r"
-    "pc.ProcessUnit\"R\n\023ProcessUnitResponse\022+\n"
-    "\tunit_data\030\002 \001(\0132\030.org.esb.rpc.ProcessUn"
-    "it\022\016\n\006status\030\003 \002(\t\"\037\n\007Process\022\024\n\014process"
-    "_name\030\001 \002(\t\"]\n\016ProcessRequest\022\037\n\004node\030\001 "
-    "\002(\0132\021.org.esb.rpc.Node\022*\n\014process_data\030\002"
-    " \001(\0132\024.org.esb.rpc.Process\"j\n\017ProcessRes"
-    "ponse\022*\n\014process_data\030\002 \001(\0132\024.org.esb.rp"
-    "c.Process\022\026\n\016status_message\030\003 \002(\t\022\023\n\013sta"
-    "tus_code\030\004 \002(\005*\360\001\n\013ErrorReason\022\025\n\021NO_ERR"
-    "OR_OCCURRED\020\000\022\024\n\020BAD_REQUEST_DATA\020\001\022\025\n\021B"
-    "AD_REQUEST_PROTO\020\002\022\025\n\021SERVICE_NOT_FOUND\020"
-    "\003\022\024\n\020METHOD_NOT_FOUND\020\004\022\r\n\tRPC_ERROR\020\005\022\016"
-    "\n\nRPC_FAILED\020\006\022\031\n\025INVALID_REQUEST_PROTO\020"
-    "\007\022\026\n\022BAD_RESPONSE_PROTO\020\010\022\020\n\014UNKNOWN_HOS"
-    "T\020\t\022\014\n\010IO_ERROR\020\n2p\n\020DiscoveryService\022\\\n"
-    "\017QueryForService\022#.org.esb.rpc.QueryForS"
-    "erviceRequest\032$.org.esb.rpc.QueryForServ"
-    "iceResponse2\203\001\n\013NodeService\0228\n\014registerN"
-    "ode\022\021.org.esb.rpc.Node\032\025.org.esb.rpc.Nod"
-    "eList\022:\n\016unregisterNode\022\021.org.esb.rpc.No"
-    "de\032\025.org.esb.rpc.NodeList2\276\001\n\022ProcessUni"
-    "tService\022S\n\016getProcessUnit\022\037.org.esb.rpc"
-    ".ProcessUnitRequest\032 .org.esb.rpc.Proces"
-    "sUnitResponse\022S\n\016putProcessUnit\022\037.org.es"
-    "b.rpc.ProcessUnitRequest\032 .org.esb.rpc.P"
-    "rocessUnitResponse2\362\001\n\016ProcessService\022I\n"
-    "\014startProcess\022\033.org.esb.rpc.ProcessReque"
-    "st\032\034.org.esb.rpc.ProcessResponse\022H\n\013stop"
-    "Process\022\033.org.esb.rpc.ProcessRequest\032\034.o"
-    "rg.esb.rpc.ProcessResponse\022K\n\016getProcess"
-    "List\022\033.org.esb.rpc.ProcessRequest\032\034.org."
-    "esb.rpc.ProcessResponse", 1823);
+    "(\t\022\031\n\nregistered\030\002 \002(\010:\005false\"3\n\004Node\022\017\n"
+    "\007address\030\001 \002(\t\022\014\n\004port\030\002 \001(\005\022\014\n\004name\030\003 \001"
+    "(\t\",\n\010NodeList\022 \n\005nodes\030\001 \003(\0132\021.org.esb."
+    "rpc.Node\"&\n\013ProcessUnit\022\027\n\017serialized_da"
+    "ta\030\001 \002(\014\"b\n\022ProcessUnitRequest\022\037\n\004node\030\001"
+    " \002(\0132\021.org.esb.rpc.Node\022+\n\tunit_data\030\002 \001"
+    "(\0132\030.org.esb.rpc.ProcessUnit\"R\n\023ProcessU"
+    "nitResponse\022+\n\tunit_data\030\002 \001(\0132\030.org.esb"
+    ".rpc.ProcessUnit\022\016\n\006status\030\003 \002(\t\"\037\n\007Proc"
+    "ess\022\024\n\014process_name\030\001 \002(\t\"]\n\016ProcessRequ"
+    "est\022\037\n\004node\030\001 \002(\0132\021.org.esb.rpc.Node\022*\n\014"
+    "process_data\030\002 \001(\0132\024.org.esb.rpc.Process"
+    "\"j\n\017ProcessResponse\022*\n\014process_data\030\002 \001("
+    "\0132\024.org.esb.rpc.Process\022\026\n\016status_messag"
+    "e\030\003 \002(\t\022\023\n\013status_code\030\004 \002(\005*\360\001\n\013ErrorRe"
+    "ason\022\025\n\021NO_ERROR_OCCURRED\020\000\022\024\n\020BAD_REQUE"
+    "ST_DATA\020\001\022\025\n\021BAD_REQUEST_PROTO\020\002\022\025\n\021SERV"
+    "ICE_NOT_FOUND\020\003\022\024\n\020METHOD_NOT_FOUND\020\004\022\r\n"
+    "\tRPC_ERROR\020\005\022\016\n\nRPC_FAILED\020\006\022\031\n\025INVALID_"
+    "REQUEST_PROTO\020\007\022\026\n\022BAD_RESPONSE_PROTO\020\010\022"
+    "\020\n\014UNKNOWN_HOST\020\t\022\014\n\010IO_ERROR\020\n2p\n\020Disco"
+    "veryService\022\\\n\017QueryForService\022#.org.esb"
+    ".rpc.QueryForServiceRequest\032$.org.esb.rp"
+    "c.QueryForServiceResponse2\203\001\n\013NodeServic"
+    "e\0228\n\014registerNode\022\021.org.esb.rpc.Node\032\025.o"
+    "rg.esb.rpc.NodeList\022:\n\016unregisterNode\022\021."
+    "org.esb.rpc.Node\032\025.org.esb.rpc.NodeList2"
+    "\276\001\n\022ProcessUnitService\022S\n\016getProcessUnit"
+    "\022\037.org.esb.rpc.ProcessUnitRequest\032 .org."
+    "esb.rpc.ProcessUnitResponse\022S\n\016putProces"
+    "sUnit\022\037.org.esb.rpc.ProcessUnitRequest\032 "
+    ".org.esb.rpc.ProcessUnitResponse2\362\001\n\016Pro"
+    "cessService\022I\n\014startProcess\022\033.org.esb.rp"
+    "c.ProcessRequest\032\034.org.esb.rpc.ProcessRe"
+    "sponse\022H\n\013stopProcess\022\033.org.esb.rpc.Proc"
+    "essRequest\032\034.org.esb.rpc.ProcessResponse"
+    "\022K\n\016getProcessList\022\033.org.esb.rpc.Process"
+    "Request\032\034.org.esb.rpc.ProcessResponse", 1837);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "rpc.proto", &protobuf_RegisterTypes);
   Request::default_instance_ = new Request();
@@ -1631,6 +1632,7 @@ const ::std::string Node::_default_address_;
 const ::std::string Node::_default_name_;
 #ifndef _MSC_VER
 const int Node::kAddressFieldNumber;
+const int Node::kPortFieldNumber;
 const int Node::kNameFieldNumber;
 #endif  // !_MSC_VER
 
@@ -1651,6 +1653,7 @@ Node::Node(const Node& from)
 void Node::SharedCtor() {
   _cached_size_ = 0;
   address_ = const_cast< ::std::string*>(&_default_address_);
+  port_ = 0;
   name_ = const_cast< ::std::string*>(&_default_name_);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -1697,7 +1700,8 @@ void Node::Clear() {
         address_->clear();
       }
     }
-    if (_has_bit(1)) {
+    port_ = 0;
+    if (_has_bit(2)) {
       if (name_ != &_default_name_) {
         name_->clear();
       }
@@ -1725,12 +1729,28 @@ bool Node::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_name;
+        if (input->ExpectTag(16)) goto parse_port;
         break;
       }
       
-      // required string name = 2;
+      // optional int32 port = 2;
       case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_port:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &port_)));
+          _set_bit(1);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_name;
+        break;
+      }
+      
+      // optional string name = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_name:
@@ -1773,13 +1793,18 @@ void Node::SerializeWithCachedSizes(
       1, this->address(), output);
   }
   
-  // required string name = 2;
+  // optional int32 port = 2;
   if (_has_bit(1)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->port(), output);
+  }
+  
+  // optional string name = 3;
+  if (_has_bit(2)) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->name(), output);
+      3, this->name(), output);
   }
   
   if (!unknown_fields().empty()) {
@@ -1800,14 +1825,19 @@ void Node::SerializeWithCachedSizes(
         1, this->address(), target);
   }
   
-  // required string name = 2;
+  // optional int32 port = 2;
   if (_has_bit(1)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->port(), target);
+  }
+  
+  // optional string name = 3;
+  if (_has_bit(2)) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->name(), target);
+        3, this->name(), target);
   }
   
   if (!unknown_fields().empty()) {
@@ -1828,7 +1858,14 @@ int Node::ByteSize() const {
           this->address());
     }
     
-    // required string name = 2;
+    // optional int32 port = 2;
+    if (has_port()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->port());
+    }
+    
+    // optional string name = 3;
     if (has_name()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -1866,6 +1903,9 @@ void Node::MergeFrom(const Node& from) {
       set_address(from.address());
     }
     if (from._has_bit(1)) {
+      set_port(from.port());
+    }
+    if (from._has_bit(2)) {
       set_name(from.name());
     }
   }
@@ -1885,7 +1925,7 @@ void Node::CopyFrom(const Node& from) {
 }
 
 bool Node::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
   
   return true;
 }
@@ -1893,6 +1933,7 @@ bool Node::IsInitialized() const {
 void Node::Swap(Node* other) {
   if (other != this) {
     std::swap(address_, other->address_);
+    std::swap(port_, other->port_);
     std::swap(name_, other->name_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

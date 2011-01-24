@@ -465,6 +465,7 @@ public:
 
   void onNodeDown(Node & node) {
     LOGWARN("NodeDown:" << node.toString());
+    /*
     if (node.getData("type") == "server") {
       LOGWARN("ServerNode is Down, let the client sleep!:" << node.toString());
 
@@ -474,7 +475,7 @@ public:
       _clientaudio.reset();
       Messenger::free();
       having_server = false;
-    }
+    }*/
   }
 private:
   bool having_server;

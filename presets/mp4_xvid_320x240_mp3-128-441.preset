@@ -9,6 +9,7 @@
 	<param name="cmp" value="chroma"/>
 	<param name="me_method" value="chroma"/>
 	<param name="g" value="250"/>
+	<param name="flags" value="psnr"/>
 	<param name="keyint_min" value="25"/>
 	<param name="qmin" value="2"/>
 	<param name="qmax" value="51"/>

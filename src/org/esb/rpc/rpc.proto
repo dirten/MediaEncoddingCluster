@@ -65,8 +65,10 @@ message QueryForServiceResponse {
 
 message Node {
     required string address = 1;
-    required string name = 2;
+    optional int32 port = 2;
+    optional string name = 3;
 }
+
 message NodeList {
     repeated Node nodes = 1;
 }

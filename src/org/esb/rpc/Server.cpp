@@ -114,7 +114,9 @@ namespace org {
 
             google::protobuf::Message *request = service->GetRequestPrototype(method).New();
             google::protobuf::Message *response = service->GetResponsePrototype(method).New();
-            request->ParseFromString(rpcRequest.request_proto());
+            if(!request->ParseFromString(rpcRequest.request_proto())){
+              LOGERROR("an error occoured");
+            }
             LOGDEBUG("RequestProto:" << rpcRequest.request_proto());
             /*
             RPCCompletionStatus *completionStatus = new RPCCompletionStatus;

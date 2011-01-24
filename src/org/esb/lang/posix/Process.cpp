@@ -28,6 +28,7 @@ namespace org {
       }
 
       Process::~Process() {
+        if(_running){
         try {
           stop();
         } catch (ProcessException & ex) {
@@ -37,6 +38,7 @@ namespace org {
           } catch (ProcessException& ex2) {
             LOGERROR(ex2.what());
           }
+        }
         }
       }
 

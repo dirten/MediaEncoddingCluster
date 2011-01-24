@@ -52,8 +52,8 @@ class SampleFormat;*/
       class Codec {
         classlogger("org.esb.av.Codec")
       public:
-        const static int DECODER = 1;
-        const static int ENCODER = 2;
+        const static int ENCODER = 1;
+        const static int DECODER = 2;
         Codec(const CodecID codecId, int mode = DECODER);
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);

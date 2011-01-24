@@ -574,10 +574,17 @@ class Node : public ::google::protobuf::Message {
   inline void set_address(const char* value, size_t size);
   inline ::std::string* mutable_address();
   
-  // required string name = 2;
+  // optional int32 port = 2;
+  inline bool has_port() const;
+  inline void clear_port();
+  static const int kPortFieldNumber = 2;
+  inline ::google::protobuf::int32 port() const;
+  inline void set_port(::google::protobuf::int32 value);
+  
+  // optional string name = 3;
   inline bool has_name() const;
   inline void clear_name();
-  static const int kNameFieldNumber = 2;
+  static const int kNameFieldNumber = 3;
   inline const ::std::string& name() const;
   inline void set_name(const ::std::string& value);
   inline void set_name(const char* value);
@@ -591,13 +598,14 @@ class Node : public ::google::protobuf::Message {
   
   ::std::string* address_;
   static const ::std::string _default_address_;
+  ::google::protobuf::int32 port_;
   ::std::string* name_;
   static const ::std::string _default_name_;
   friend void  protobuf_AddDesc_rpc_2eproto();
   friend void protobuf_AssignDesc_rpc_2eproto();
   friend void protobuf_ShutdownFile_rpc_2eproto();
   
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
   
   // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
   inline bool _has_bit(int index) const {
@@ -1973,42 +1981,58 @@ inline ::std::string* Node::mutable_address() {
   return address_;
 }
 
-// required string name = 2;
-inline bool Node::has_name() const {
+// optional int32 port = 2;
+inline bool Node::has_port() const {
   return _has_bit(1);
+}
+inline void Node::clear_port() {
+  port_ = 0;
+  _clear_bit(1);
+}
+inline ::google::protobuf::int32 Node::port() const {
+  return port_;
+}
+inline void Node::set_port(::google::protobuf::int32 value) {
+  _set_bit(1);
+  port_ = value;
+}
+
+// optional string name = 3;
+inline bool Node::has_name() const {
+  return _has_bit(2);
 }
 inline void Node::clear_name() {
   if (name_ != &_default_name_) {
     name_->clear();
   }
-  _clear_bit(1);
+  _clear_bit(2);
 }
 inline const ::std::string& Node::name() const {
   return *name_;
 }
 inline void Node::set_name(const ::std::string& value) {
-  _set_bit(1);
+  _set_bit(2);
   if (name_ == &_default_name_) {
     name_ = new ::std::string;
   }
   name_->assign(value);
 }
 inline void Node::set_name(const char* value) {
-  _set_bit(1);
+  _set_bit(2);
   if (name_ == &_default_name_) {
     name_ = new ::std::string;
   }
   name_->assign(value);
 }
 inline void Node::set_name(const char* value, size_t size) {
-  _set_bit(1);
+  _set_bit(2);
   if (name_ == &_default_name_) {
     name_ = new ::std::string;
   }
   name_->assign(reinterpret_cast<const char*>(value), size);
 }
 inline ::std::string* Node::mutable_name() {
-  _set_bit(1);
+  _set_bit(2);
   if (name_ == &_default_name_) {
     name_ = new ::std::string;
   }
