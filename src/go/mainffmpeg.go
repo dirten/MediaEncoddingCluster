@@ -5,12 +5,29 @@ import "gob"
 import "os"
 import "fmt"
 import "flag"
+import "time"
 //import "io/ioutil"
 
 type sometype struct {
     n    int
     name string
 } 
+
+
+
+func decoder(track * Track){
+    decoder:=track.GetDecoder()
+    decoder.Open()
+    var p Packet
+    for true {
+	if(!track.ReadPacket(&p)){
+	    println("stream end reached")
+	    return
+	}
+	decoder.Decode(p)
+    }
+}
+
 func main(){
     ///media/video/big_buck_bunny_480p_surround-fix.avi
     //ffmpeg.OpenMediaFile("/media/video/ChocolateFactory.ts")
@@ -44,11 +61,21 @@ func main(){
         //println(m.GetReminder())
 	d:=DataSource{Locator:m}
         d.Connect();
-        dem:=Demultiplexer{d,nil}
+        dem:=NewDemultiplexer(d)
         var p Packet
         var i int=0
         var count int64=0
-	coder:=dem.GetDecoder(0)
+        tracks:=*dem.GetTracks()
+        for i:=0;i<len(tracks);i++ {
+    	    go decoder(&tracks[i])
+        }
+        dem.Start()
+        println("waiting 5 sec. to complete")
+        time.Sleep(5*1000000000)
+	return 
+        //decoder(&tracks[1])
+        println(len(tracks))
+	coder:=(tracks)[1].GetDecoder()
 	coder.Open()
         for(dem.ReadPacket(&p)==true){
     	    i++
@@ -61,7 +88,10 @@ func main(){
 		println("nil packet reached")
 		return
 	    }
+	if(p.Stream==1){
 	    coder.Decode(p)
+	    //println(frame.GetPts())
+	}
 
 	if(false){
 	filename:=fmt.Sprintf("data/test.%d.data",i)
@@ -81,14 +111,17 @@ func main(){
 	}
     	//ioutil.WriteFile("test.data", p.Data,0755)
 
-    	    if(i==11){
-//    		return
+    	    if(i==5510){
+    		//return
     	    }
     	    //println(p.Dts)
         }
         println(i)
         println(count)
         println(dem.GetDuration().String())
+        dur:=dem.GetDuration()
+        println(dur.String())
+	println(dur.RescaleTo(Rational{1,25}).String())
         println(dem.GetTimestamp().String())
         println(i)
         d.Disconnect()

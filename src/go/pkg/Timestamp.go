@@ -13,7 +13,9 @@ type Timestamp struct{
 
 
 func (time * Timestamp) RescaleTo(base Rational) Timestamp{
-    var result Timestamp
+    result:=Timestamp{0, base}
+    cresult:=C.av_rescale_q(C.int64_t(time.Time),*time.Timebase.GetAVRational(), *base.GetAVRational())
+    result.Time=int64(cresult)
     return result
 }
 
@@ -34,11 +36,12 @@ func (time Timestamp) String () string{
     return fmt.Sprintf("%d:%d/%d", time.Time,time.Timebase.Numerator, time.Timebase.Denominator)
 }
 
-type Duration Timestamp
-
+type Duration struct{
+    Timestamp
+    }
+/*
 func (time * Duration) RescaleTo(base Rational) Timestamp{
     var result Timestamp
-    
     return result
 }
 
@@ -58,4 +61,4 @@ func (time * Duration) Equals (ts Duration) bool{
 func (time Duration) String () string{
     return fmt.Sprintf("%d:%d/%d", time.Time,time.Timebase.Numerator, time.Timebase.Denominator)
 }
-
+*/

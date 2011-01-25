@@ -6,13 +6,13 @@ PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 TARG=ffmpeg
 
-CGOFILES=ffmpeg.go Timestamp.go Rational.go Coder.go 
+CGOFILES=ffmpeg.go Timestamp.go Rational.go 
 #Buffer.go
 #PROTOPATH=../../org/esb/rpc/
 #GOFILES=net.go 
 
-CGO_LDFLAGS=-L../../../target/dependency/lib/ -L../../../build/src/org/esb/ -lavcodec -lavutil -lavformat -lavcore -lswscale -lweb
-CGO_CFLAGS=-I../../../target/dependency/include/ -I../../../src
+CGO_LDFLAGS=-L../../../target/dependency/lib/ -L../../../build/src/org/esb/ -lavcodec -lavutil -lavformat -lavcore -lswscale
+CGO_CFLAGS=-I../../../target/dependency/include/
 
 #include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
 
