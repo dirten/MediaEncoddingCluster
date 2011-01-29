@@ -2,6 +2,7 @@ package ffmpeg
 
 //#include "libavutil/rational.h"
 import "C"
+import "fmt"
 
 type Rational struct{
     Numerator int
@@ -19,15 +20,19 @@ func(r * Rational) GetAVRational() *C.AVRational{
     a.den=_Ctype_int(r.Denominator);
     return a;
 }
+func(r * Rational) String() string{
+    a:=r.GetAVRational()
+    return fmt.Sprintf("%d/%d",a.num, a.den)
+}
 
 func (r*Rational) Equals(r2 Rational)bool{
     return C.av_cmp_q(*r.GetAVRational(), *r2.GetAVRational())==0
 }
 
 func (r*Rational) Greater(r2 Rational)bool{
-    return C.av_cmp_q(*r.GetAVRational(), *r2.GetAVRational())==-1
+    return C.av_cmp_q(*r.GetAVRational(), *r2.GetAVRational())>0
 }
 
 func (r*Rational) Lower(r2 Rational)bool{
-    return C.av_cmp_q(*r.GetAVRational(), *r2.GetAVRational())==1
+    return C.av_cmp_q(*r.GetAVRational(), *r2.GetAVRational())<0
 }

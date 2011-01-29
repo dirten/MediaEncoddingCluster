@@ -35,10 +35,12 @@ func (time * Timestamp) Equals (ts Timestamp) bool{
 func (time Timestamp) String () string{
     return fmt.Sprintf("%d:%d/%d", time.Time,time.Timebase.Numerator, time.Timebase.Denominator)
 }
+//type Duration Timestamp
 
 type Duration struct{
     Timestamp
     }
+
 /*
 func (time * Duration) RescaleTo(base Rational) Timestamp{
     var result Timestamp

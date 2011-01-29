@@ -6,7 +6,7 @@ PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 TARG=ffmpeg
 
-CGOFILES=ffmpeg.go Timestamp.go Rational.go 
+CGOFILES=ffmpeg.go Timestamp.go Rational.go Coder.go Encoder.go
 #Buffer.go
 #PROTOPATH=../../org/esb/rpc/
 #GOFILES=net.go 

@@ -9,8 +9,12 @@ import "unsafe"
 import "sync"
 //import "os"
 import "strings"
-import "math"
+//import "math"
 import "strconv"
+import "log"
+
+var CODEC_TYPE_VIDEO uint32 = C.CODEC_TYPE_VIDEO
+var CODEC_TYPE_AUDIO uint32 = C.CODEC_TYPE_AUDIO
 
 func init(){
   C.avcodec_register_all();
@@ -59,13 +63,14 @@ func (loc * MediaLocator) GetReminder()string{
   }
   return lines[1][2:]
 }
-
+//export DataSource
 type DataSource struct{
   Locator MediaLocator;
   Ctx *C.AVFormatContext
   //Parameter * C.AVFormatParameters 
   Valid bool
 }
+
 
 func (src * DataSource) Connect() bool{
   src.Valid=false
@@ -157,6 +162,7 @@ func (self * Track)GetDecoder()Decoder{
   coder.Ctx=self.codec//dpx.Ds.Ctx.streams[streamid].codec
   return coder
 }
+
 
 func NewDemultiplexer(d DataSource)*Demultiplexer{
   return &Demultiplexer{d,nil,nil}
@@ -284,7 +290,7 @@ func(c * Coder)Open(){
   c.prepare()
   c.Codec=C.avcodec_find_decoder(c.Ctx.codec_id)
   if(c.Codec==nil){
-    println("could not find Codec")
+    log.Printf("could not find Codec for id %d",c.Ctx.codec_id)
     return
   }
   avcodec_mutex.Lock()
@@ -323,10 +329,10 @@ func(self*Coder)setCodecParams(){
 type Decoder struct{
   Coder
 }
-
+/*
 type Encoder struct{
   Coder
-}
+}*/
 
 func(c * Decoder)Decode(p Packet)*Frame{
   if(c.Ctx.codec_type==C.CODEC_TYPE_VIDEO){
@@ -459,7 +465,7 @@ func(c * Decoder)decodeVideo(p Packet)*Frame{
   //println(*frameFinished)
   return frame
 }
-
+/*
 func(self * Encoder)Encode(frame * Frame)*[]Packet{
   if(self.Ctx.codec_type==C.CODEC_TYPE_VIDEO){
     return self.encodeVideo(frame)
@@ -488,7 +494,7 @@ func(self * Encoder)encodeAudio(frame * Frame)*[]Packet{
   
   return result
   
-}
+}*/
 func(c * Coder)Close(){
   
 }
