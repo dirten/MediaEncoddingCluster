@@ -7,7 +7,7 @@ PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 TARG=gmf
 
 CGOFILES=ffmpeg.go
-GOFILES=Datasource.go MediaLocator.go Demultiplexer.go Track.go Format.go Rational.go Timestamp.go Decoder.go Encoder.go Coder.go Datasink.go Multiplexer.go
+GOFILES=Datasource.go MediaLocator.go Demultiplexer.go Track.go Format.go Rational.go Timestamp.go Decoder.go Encoder.go Coder.go Datasink.go Multiplexer.go Resizer.go
 #Buffer.go
 #PROTOPATH=../../org/esb/rpc/
 #GOFILES=net.go 

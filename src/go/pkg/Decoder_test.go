@@ -5,6 +5,6 @@ import "testing"
 
 func TestDecoder(t*testing.T){
     dec:=Decoder{}
-    println(dec)
+    println(&dec)
 }
 

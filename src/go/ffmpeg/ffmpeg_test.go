@@ -2,7 +2,9 @@ package gmf
 
 import "testing"
 
-var filename string="/media/video/ChocolateFactory.ts"
+//var filename string="/media/video/ChocolateFactory.ts"
+var filename="../../../target/dependency/fixtures/testfile.flv"
+
 func TestAVcodecAllocContext(t * testing.T){
     ctx:=avcodec_alloc_context()
     if(ctx==nil){
@@ -42,7 +44,7 @@ func TestAVFindStreamInfo(t*testing.T){
     }
     
     result=av_find_stream_info(ctx)
-    if(result!=0){
+    if(result<0){
 	t.Fatalf("error while find stream info")
     }
     av_close_input_file(ctx)
@@ -55,7 +57,7 @@ func TestAVReadPacket(t*testing.T){
     }
     
     result=av_find_stream_info(ctx)
-    if(result!=0){
+    if(result<0){
 	t.Fatalf("error while find stream info")
     }
     
@@ -63,5 +65,36 @@ func TestAVReadPacket(t*testing.T){
     av_init_packet(packet)
     av_read_frame(ctx, packet)
     av_close_input_file(ctx)
+}
+func TestUrlFopen(t*testing.T){
+    ctx:=avformat_alloc_context()
+    result:=url_fopen(ctx,"test.mp4")
+    if(result<0){
+	t.Fatalf("could not open output file : %s")
+    }
+
+}
+func TestUrlClose(t*testing.T){
+    ctx:=avformat_alloc_context()
+    result:=url_fopen(ctx,"test.mp4")
+    if(result<0){
+	t.Fatalf("could not open output file : %s")
+    }
+    url_fclose(ctx)
+    av_free(ctx)
+}
+
+func TestSwsContext(t*testing.T){
+    var ctx SwsContext
+    sws_scale_getcontext(&ctx, 100,100,0,100,100,0,1)
+}
+func TestSwsScale(t*testing.T){
+    var ctx SwsContext
+    sws_scale_getcontext(&ctx, 100,100,0,100,100,0,1)
+    var in, out * Frame=new(Frame),new(Frame)
+    alloc_avframe(in)
+    alloc_avframe(out)
+    
+    sws_scale(&ctx, in, out)
 }
 

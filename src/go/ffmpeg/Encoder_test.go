@@ -39,8 +39,8 @@ func encoder_test(track * Track){
 	//println("frame finished")
 	//ppsWriter(frame)
 	if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
-	    frame.avframe.pict_type=0
-	    frame.avframe.key_frame=1
+	    //frame.avframe.pict_type=0
+	    //frame.avframe.key_frame=1
 	    encoder.Encode(*frame)
 	}
 
@@ -50,10 +50,13 @@ func encoder_test(track * Track){
 
 func TestEncoder(t*testing.T){
     println("starting encoder test")
-    loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
+    //loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
     //loc:=MediaLocator{"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
+    loc:=MediaLocator{Filename:"../../../test.dvd"}
     source:=DataSource{Locator:loc}
-    source.Connect()
+    if(!source.Connect()){
+    	t.Fatalf("cold not open file : %s", loc.Filename)
+    }
     plex:=Demultiplexer{Ds:source}
     //tracks:=plex.GetTracks()
     tracks:=*plex.GetTracks()

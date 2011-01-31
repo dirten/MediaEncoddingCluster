@@ -2,9 +2,6 @@ package gmf
 
 
 import "testing"
-import "fmt"
-import "os"
-import "unsafe"
 
 //import "runtime"
 func read(track * Track){
@@ -22,10 +19,13 @@ func read(track * Track){
 
 func TestReadTracks(t*testing.T){
 println("start func TestReadTracks(t*testing.T){")
-    loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
+    //loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
+    loc:=MediaLocator{Filename:"../../../target/dependency/fixtures/testfile.flv"}
     //loc:=MediaLocator{"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
     source:=DataSource{Locator:loc}
-    source.Connect()
+    if(!source.Connect()){
+    	t.Fatalf("cold not open file : %s", loc.Filename)
+    }
     plex:=Demultiplexer{Ds:source}
     //tracks:=plex.GetTracks()
     tracks:=*plex.GetTracks()
@@ -41,6 +41,7 @@ println("start func TestReadTracks(t*testing.T){")
     println("end func TestReadTracks(t*testing.T){")
     //println("successful reader test")
 }
+/*
 var number int=0
 func ppsWriter(frame * Frame){
    header:=fmt.Sprintf("P5\n%d %d\n255\n",frame.width,frame.height)
@@ -72,3 +73,5 @@ func ppsWriter(frame * Frame){
     }
     number++
 }
+*/
+

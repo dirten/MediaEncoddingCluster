@@ -27,5 +27,6 @@ func (src * DataSink) Disconnect() bool{
   if(src.Valid){
     url_fclose(src.ctx);
   }
+  av_free(src.ctx)
   return true;
 }

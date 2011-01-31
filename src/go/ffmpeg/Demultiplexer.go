@@ -4,7 +4,6 @@ package gmf
 
 type Demultiplexer struct{
   Ds DataSource;
-  Packet * Packet
   tracks *[]Track
 }
 
@@ -59,7 +58,11 @@ func (dpx * Demultiplexer)Start(){
     re.Duration=int(packet.avpacket.duration)
     re.Pos=int64(packet.avpacket.pos)
     av_free_packet(packet)*/
-    (*dpx.tracks)[packet.avpacket.stream_index].stream<-*packet
+    track:=(*dpx.tracks)[packet.avpacket.stream_index]
+    packet.Pts=Timestamp{int64(packet.avpacket.pts),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Dts=Timestamp{int64(packet.avpacket.dts),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Duration=Timestamp{int64(packet.avpacket.duration),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    track.stream<-*packet
   }
   //re * Packet
 }

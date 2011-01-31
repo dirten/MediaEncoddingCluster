@@ -57,6 +57,10 @@ func(c * Decoder)decodeVideo(p Packet)*Frame{
     frame.width=int(width)
     frame.height=int(height)
     frame.size=numBytes
+    frame.Pts=p.Pts
+    frame.Duration=p.Duration
   }
+//  println("frame decoder")
+//  println(frame.avframe)
   return frame
 }

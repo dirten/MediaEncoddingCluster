@@ -4,15 +4,20 @@ package gmf
 //#include "libavcodec/avcodec.h"
 //#include "libavcodec/opt.h"
 //#include "libavformat/avformat.h"
+//#include "libswscale/swscale.h"
+//#include "libavutil/avutil.h"
+//typedef void * SwsContext;
 import "C"
 import "unsafe"
 import "fmt"
 import "sync"
+//import "log"
 var CODEC_TYPE_VIDEO uint32=C.CODEC_TYPE_VIDEO
 var CODEC_TYPE_AUDIO uint32=C.CODEC_TYPE_AUDIO
 var CODEC_TYPE_ENCODER int=1
 var CODEC_TYPE_DECODER int=2
 var AVCODEC_MAX_AUDIO_FRAME_SIZE int=C.AVCODEC_MAX_AUDIO_FRAME_SIZE
+var TIME_BASE_Q = Rational{1,1000000}
 
 func init(){
   C.avcodec_register_all();
@@ -27,6 +32,10 @@ type Rational struct{
 
 type Packet struct{
     avpacket * C.AVPacket
+    time_base Rational
+    Dts Timestamp
+    Pts Timestamp
+    Duration Timestamp
 /*
     Pts int64
   Dts int64
@@ -38,11 +47,20 @@ type Packet struct{
   Pos int64
 */
 }
-
+func NewPacket()*Packet{
+    result:=new(Packet)
+    result.avpacket=new(C.AVPacket)
+    av_init_packet(result)
+    return result
+}
 func (p * Packet)free(){
     av_free_packet(p)
     //C.av_free(unsafe.Pointer(&p.avpacket))
     //println("object destroyed")
+}
+func (p * Packet)destroy(){
+    //C.av_free(unsafe.Pointer(&p.avpacket))
+    println("object destroyed")
 }
 
 
@@ -53,22 +71,43 @@ type Frame struct{
     width int
     height int
     size int
+    duration int
+    Pts Timestamp
+    Duration Timestamp
+}
+func (p * Frame)destroy(){
+    //C.av_free(unsafe.Pointer(&p.avpacket))
+    println("Frame object destroyed")
 }
 
 type Stream struct{
     *C.AVStream
 }
 
+func (s * Stream)free(){
+    C.av_free(unsafe.Pointer(s))
+    //C.av_free(unsafe.Pointer(&p.avpacket))
+    //println("object destroyed")
+}
+
 type FormatContext struct {
     ctx *C.AVFormatContext
 }
-
+func av_free(ctx*FormatContext){
+    C.av_free(unsafe.Pointer(ctx.ctx))
+}
 type Codec struct{
     codec *C.AVCodec
 }
 
 type CodecContext struct{
     ctx *C.AVCodecContext
+}
+
+type SwsContext struct{
+//    sws unsafe.Pointer
+    sws *C.struct_SwsContext
+    //sws *[0]uint8
 }
 
 type Option struct{
@@ -85,6 +124,34 @@ type OutputFormat struct {
 
 type FormatParameters struct {
     params * C.AVFormatParameters
+}
+
+func sws_scale_getcontext(ctx * SwsContext, srcwidth, srcheight, srcfmt, trgwidth,trgheight,trgfmt,flags int){
+          _swsContext :=C.sws_getContext(C.int(srcwidth), C.int(srcheight), uint32(srcfmt), C.int(trgwidth), C.int(trgheight),uint32(trgfmt), C.int(flags), nil, nil, nil)
+	if(_swsContext==nil){
+	    println("error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	}
+	println("init sclae")
+	println(_swsContext)
+	ctx.sws=_swsContext
+	//size []int
+}
+
+func sws_scale(ctx * SwsContext,src * Frame, trg * Frame)int{
+    in_data:=(**C.uint8_t)(unsafe.Pointer(&src.avframe.data))
+    in_line:=(*_Ctype_int)(unsafe.Pointer(&src.avframe.linesize))
+    out_data:=(**_Ctypedef_uint8_t)(unsafe.Pointer(&trg.avframe.data))
+    out_line:=(*_Ctype_int)(unsafe.Pointer(&trg.avframe.linesize))
+	return int(C.sws_scale(ctx.sws, 
+	    in_data, 
+	    in_line, 
+	    0, 
+	    C.int(src.height), 
+	    out_data, 
+	    out_line));
+
+        //sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
+
 }
 
 func av_set_string(ctx * CodecContext, key, val string)bool{
@@ -187,6 +254,17 @@ func av_interleaved_write_frame(ctx * FormatContext, packet * Packet)int{
     return int(C.av_interleaved_write_frame(ctx.ctx, packet.avpacket))
 }
 
+func av_write_header(ctx * FormatContext)int{
+    return int(C.av_write_header(ctx.ctx))
+}
+func dump_format(ctx * FormatContext){
+    C.dump_format(ctx.ctx,0,nil,1)
+}
+
+func av_new_stream(ctx * FormatContext, stream_id int)*Stream{
+    return &Stream{C.av_new_stream(ctx.ctx, C.int(stream_id))}
+}
+
 func av_pup_packet(packet * Packet){
       C.av_dup_packet(packet.avpacket)
 }
@@ -215,12 +293,44 @@ func avpicture_get_size(fmt uint32, width, height int)int{
     return int(C.avpicture_get_size(fmt, C.int(width), C.int(height)))
 }
 
-func avpicture_fill(frame * Frame, buffer *[] byte, fmt, width, height int)int{
-    //var pbuffer * byte=buffer[0]
-    frame.avframe=new(C.AVFrame)
-    return int(C.avpicture_fill((*C.AVPicture)(unsafe.Pointer(frame.avframe)), (*C.uint8_t)(unsafe.Pointer(buffer)), 0, C.int(width), C.int(height)))
+func avcodec_get_frame_defaults(frame * Frame){
+  alloc_avframe(frame)
+  C.avcodec_get_frame_defaults((*C.AVFrame)(unsafe.Pointer(frame.avframe)))
 }
 
+func avpicture_alloc(frame * Frame, fmt, width, height int)int{
+    return int(C.avpicture_alloc((*C.AVPicture)(unsafe.Pointer(frame.avframe)),uint32(fmt),C.int(width),C.int(height)))
+}
+
+type Void interface {}
+
+func av_malloc(size int)*[]byte{
+  outbuf := make([]byte, size+128)//(C.av_malloc(C.uint(size)));
+  return &outbuf
+}
+
+func avpicture_fill(frame * Frame, buffer *[] byte, format, width, height int)int{
+    //var pbuffer * byte=buffer[0]
+  alloc_avframe(frame)
+  
+  outbuf := (*C.uint8_t) (C.av_malloc(C.uint(len(*buffer))));
+  defer C.av_free(unsafe.Pointer(outbuf))
+  data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:len(*buffer)]
+  //array:=*buffer
+  *buffer=data
+  /*for i:= 0; i < len(*buffer); i++ {
+    array[i] = data[i];
+  }*/
+  //fmt.Printf("buffer address %d", &buffer)
+  result:= int(C.avpicture_fill((*C.AVPicture)(unsafe.Pointer(frame.avframe)), (*C.uint8_t)(unsafe.Pointer(outbuf)), uint32(format), C.int(width), C.int(height)))
+  return result
+}
+
+func alloc_avframe(frame * Frame){
+    if(frame.avframe==nil){
+	frame.avframe=new(C.AVFrame)
+    }
+}
 var avcodec_mutex sync.Mutex
 
 func avcodec_open(cctx CodecContext, codec Codec)int{
@@ -243,23 +353,38 @@ func avcodec_decode_video(ctx * CodecContext, frame * Frame, finished * int, pac
     packet.avpacket)
 }
 
-func avcodec_decode_audio(ctx * CodecContext, buffer * []byte, size * int, packet * Packet){
+func avcodec_decode_audio(ctx * CodecContext, buffer * []byte, size * int, packet * Packet)int{
     if(packet.avpacket==nil){
 	println("null packet received!!!")
-	return
+	return 0
     }
   outbuf := (*C.uint8_t) (C.av_malloc(C.uint(*size)));
   defer C.av_free(unsafe.Pointer(outbuf))
-  C.avcodec_decode_audio3(
+  result:=int(C.avcodec_decode_audio3(
     ctx.ctx,
     (*C.int16_t)(unsafe.Pointer(outbuf)),
     (*C.int)(unsafe.Pointer(size)),
-    packet.avpacket)
+    packet.avpacket))
+/*    data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
+    array:=*buffer
+    //log.Printf("audio result size %d", result)
+    for i:= 0; i < result; i++ {
+	array[i] = data[i];
+    }*/
+    return result
 }
+
 func avcodec_encode_video(ctx * CodecContext,buffer * []byte, size * int,frame * Frame)int{
 //  return 0
   outbuf := (*C.uint8_t) (C.av_malloc(C.uint(*size)));
   defer C.av_free(unsafe.Pointer(outbuf))
-  return int(C.avcodec_encode_video(ctx.ctx, (*C.uint8_t) (unsafe.Pointer(outbuf)), C.int(*size), (*C.AVFrame)(unsafe.Pointer(frame.avframe))));
+  result:=int(C.avcodec_encode_video(ctx.ctx, (*C.uint8_t) (unsafe.Pointer(outbuf)), C.int(*size), (*C.AVFrame)(unsafe.Pointer(frame.avframe))));
+  data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
+  array:=*buffer
+  for i:= 0; i < result; i++ {
+    array[i] = data[i];
+  }
+  return result
+  
   //ret := C.avcodec_encode_video(c.Ctx, buffer, buffer_size, frame);
  }

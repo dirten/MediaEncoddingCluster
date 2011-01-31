@@ -1,7 +1,30 @@
 package gmf
-
+import "log"
 type Multiplexer struct{
-  Ds DataSource;
-  Packet * Packet
+  Ds DataSink;
   tracks *[]Track
+  ch chan Packet
+}
+
+func(self * Multiplexer)AddTrack(enc * Encoder)*Track{
+    if(self.ch==nil){
+	self.ch=make(chan Packet)
+    }
+    result:=Track{av_new_stream(self.Ds.ctx,0),self.ch}
+    result.codec=enc.Ctx.ctx
+    log.Printf("TrackData %s",result)
+    return &result
+    //stream.codec=track.codec
+//    track.stream=self.ch
+}
+
+func(self * Multiplexer)Start(){
+    av_write_header(self.Ds.ctx)
+    dump_format(self.Ds.ctx)
+    for true {
+	var p Packet=<-self.ch
+	//println(p.avpacket.dts)
+	//println(self.Ds.ctx.ctx.preload)
+	av_interleaved_write_frame(self.Ds.ctx,&p)
+    }
 }
