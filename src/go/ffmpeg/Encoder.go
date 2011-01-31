@@ -23,16 +23,16 @@ func(c * Encoder)encodeVideo(f Frame)*Packet{
   av_init_packet(result)
   size := c.Ctx.ctx.width * c.Ctx.ctx.height;
   buffer_size := int(math.Fmax(float64(1024 * 256), float64(6 * size + 200)));
-  var buffer []byte=make([]byte,buffer_size)
-  esize:=avcodec_encode_video(&c.Ctx, &buffer, &buffer_size, &f);
+  var buffer =av_malloc(buffer_size)//byte=make([]byte,buffer_size)
+  esize:=avcodec_encode_video(&c.Ctx, buffer, &buffer_size, &f);
   
   if(esize>0){
-  result.avpacket.size=(_Ctype_int)(esize)
-  result.avpacket.data=(*_Ctypedef_uint8_t)(unsafe.Pointer(&buffer))
-  result.avpacket.stream_index=0
-  result.avpacket.duration=0
-  result.avpacket.flags=0
-  return result
+    result.avpacket.size=(_Ctype_int)(esize)
+    result.avpacket.data=(*_Ctypedef_uint8_t)(unsafe.Pointer(&buffer))
+    result.avpacket.stream_index=0
+    result.avpacket.duration=0
+    result.avpacket.flags=0
+    return result
   }
 return nil 
 }

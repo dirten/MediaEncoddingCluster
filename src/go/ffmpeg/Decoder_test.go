@@ -20,7 +20,6 @@ func decoder_test(track * Track){
     //fmt.Printf("frame:%d codecid:%d\n",frame,decoder.Ctx.ctx.codec_id)
     if(frame!=nil&&frame.isFinished){
 	 if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
-
 	    ppsWriter(frame)
 	}
     }
@@ -29,8 +28,8 @@ func decoder_test(track * Track){
 
 func TestDecoderTracks(t*testing.T){
     println("starting decoder test")
-    //loc:=MediaLocator{"/media/video/ChocolateFactory.ts"}
-    loc:=MediaLocator{Filename:"../../../target/dependency/fixtures/testfile.flv"}
+    loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
+    //loc:=MediaLocator{Filename:"../../../target/dependency/fixtures/testfile.flv"}
 
     //loc:=MediaLocator{Filename:"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
     source:=DataSource{Locator:loc}

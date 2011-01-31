@@ -23,7 +23,7 @@ func(self * Multiplexer)Start(){
     dump_format(self.Ds.ctx)
     for true {
 	var p Packet=<-self.ch
-	//println(p.avpacket.dts)
+	println(p.avpacket.dts)
 	//println(self.Ds.ctx.ctx.preload)
 	av_interleaved_write_frame(self.Ds.ctx,&p)
     }
