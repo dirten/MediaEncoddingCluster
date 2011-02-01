@@ -64,6 +64,7 @@ func multiplex_encoder_test(track * Track){
 func TestMultiplexer(t*testing.T){
     
     println("starting encoder test")
+    /*
     go func (){
     err := http.ListenAndServe(":6060", nil)
     if err != nil {
@@ -72,7 +73,7 @@ func TestMultiplexer(t*testing.T){
 
 	} 
 	println("listen")
-    }()
+    }()*/
     //loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
     //loc:=MediaLocator{"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
     loc:=MediaLocator{Filename:"../../../test.dvd"}
