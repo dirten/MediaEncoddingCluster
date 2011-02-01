@@ -42,9 +42,10 @@ struct StreamData {
   boost::shared_ptr<Encoder> enc;
   FrameConverter * conv;
 };
-CodecID video_codec_id = CODEC_ID_VP8;
-CodecID audio_codec_id = CODEC_ID_VORBIS;
-//CodecID audio_codec_id = CODEC_ID_MP2;
+//CodecID video_codec_id = CODEC_ID_VP8;
+CodecID video_codec_id = CODEC_ID_MPEG4;
+//CodecID audio_codec_id = CODEC_ID_VORBIS;
+CodecID audio_codec_id = CODEC_ID_MP2;
 
 /**
  *
@@ -64,7 +65,7 @@ void build_process_units(int argc, char** argv) {
     src = MEC_SOURCE_DIR;
     src.append("/test.dvd");
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.webm");
+    trg.append("/test.mp4");
   } else {
     src = argv[1];
     trg = argv[2];
@@ -218,7 +219,7 @@ void write_file(int argc, char** argv) {
   std::string trg;
   if (argc == 1) {
     trg = MEC_SOURCE_DIR;
-    trg.append("/test.webm");
+    trg.append("/test.mp4");
   } else {
     trg = argv[2];
   }
