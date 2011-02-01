@@ -375,7 +375,6 @@ IF(WIN32)
       ${FFMPEG_DIR}/lib/avformat-52.dll
       ${FFMPEG_DIR}/lib/avutil-50.dll
       ${FFMPEG_DIR}/lib/swscale-0.dll
-      ${CURL_DIR}/lib/libcurl-4.dll
     DESTINATION ${LIB_INSTALL_DIR}
     )
 ELSEIF(APPLE)
@@ -386,7 +385,6 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavformat.dylib
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
-      ${CURL_DIR}/lib/libcurl.4.dylib
     DESTINATION ${LIB_INSTALL_DIR}
   )
   SET_SOURCE_FILES_PROPERTIES(
@@ -408,7 +406,6 @@ ELSE(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.so.50
       ${FFMPEG_DIR}/lib/libavcore.so.0
       ${FFMPEG_DIR}/lib/libswscale.so.0
-      ${CURL_DIR}/lib/libcurl.so.4
     DESTINATION ${LIB_INSTALL_DIR}
     )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")
