@@ -1,13 +1,14 @@
 package gmf
 
 import "log"
+//import "unsafe"
 type Resizer struct{
     ctx * SwsContext
     width int
     height int
     fmt int
-    frame Frame
-    buffer *[]byte
+//    frame Frame
+//    buffer []byte
 }
 
 
@@ -18,7 +19,6 @@ func (self * Resizer)Init(dec * Decoder, enc * Encoder){
     self.height=int(enc.Ctx.ctx.height)
     self.fmt=int(enc.Ctx.ctx.pix_fmt)
     log.Printf("setting swscale from %d/%d:%d to %d/%d:%d",int(dec.Ctx.ctx.width),int(dec.Ctx.ctx.height),int(dec.Ctx.ctx.pix_fmt),int(enc.Ctx.ctx.width),int(enc.Ctx.ctx.height),int(enc.Ctx.ctx.pix_fmt))
-    self.frame = Frame{}
     /*
     numBytes:= avpicture_get_size(uint32(self.fmt), self.width, self.height)
     if(numBytes>0){
@@ -30,24 +30,41 @@ func (self * Resizer)Init(dec * Decoder, enc * Encoder){
 }
 
 func(self*Resizer)Resize(in* Frame)*Frame{
-    
-    /*avcodec_get_frame_defaults(&self.frame)
-    if(avpicture_alloc(&self.frame, self.fmt, self.width, self.height)!=0){
+    frame := NewFrame(self.fmt, self.width, self.height)
+    /*avcodec_get_frame_defaults(frame)
+    if(avpicture_alloc(frame, self.fmt, self.width, self.height)!=0){
 	log.Printf("can not allocate tmp picture, check pixel format")
-    }
-    */
+    }*/
     
+/*
     numBytes:= avpicture_get_size(uint32(self.fmt), self.width, self.height)
     if(numBytes>0){
-	self.buffer =av_malloc(numBytes)//make([]byte,numBytes)
-	//log.Printf("memory address %i", &self.buffer)
-	avpicture_fill(&self.frame, self.buffer, 0, self.width, self.height);
-    }
+	log.Printf("Number Bytes:%d", numBytes)
+	var buffer []byte=make([]byte,numBytes)
+	//buffer :=av_malloc(numBytes)//make([]byte,numBytes)
+	//log.Printf("memory address %i", buffer)
+	avpicture_fill(frame, &buffer,self.fmt , self.width, self.height);
+	//log.Printf("memory address %i", buffer)
+    }else{
+	
+    }*/
+    //println(frame.avframe.data[0])
+    //return in
     
-    if(sws_scale(self.ctx, in, &self.frame)==0){
+    if result:=sws_scale(self.ctx, in, frame);result<=0 {
 	log.Printf("failed to resize the image")
+    }else{
+	//log.Printf("swsscale result=%d", result)
     }
-    self.frame.avframe.pts=in.avframe.pts
-    return & self.frame
+    //log.Printf("in frame size %d", in.size)
+    //log.Printf("number bytes %d", numBytes)
+    //frame.size=numBytes
+    frame.avframe.pts=in.avframe.pts
+    //frame.width=self.width
+    //frame.height=self.height
+    //println("data pointer")
+    //println(&frame.avframe.data)
+    return frame
+    //return in
 }
 

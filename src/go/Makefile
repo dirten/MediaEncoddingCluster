@@ -2,7 +2,7 @@ include $(GOROOT)/src/Make.inc
 PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 
-TARG=testffmpeg
+TARG=transcoder
 #CGOFILES=ffmpegtest.go
 #CGO_LDFLAGS=-L/home/HoelscJ/devel/mec/target/dependency/lib/ -lavcodec -lavutil -lavformat -lavcore -lswscale
 #CGO_CFLAGS=-I/home/HoelscJ/devel/mec/target/dependency/include/
@@ -12,7 +12,7 @@ DIRS=\
 	ffmpeg
 
 GOFILES=\
-        main.go
+        transcoder.go
         
 #        mainffmpeg.go 
         

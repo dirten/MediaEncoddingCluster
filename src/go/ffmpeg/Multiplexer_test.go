@@ -2,7 +2,7 @@ package gmf
 
 
 import _ "http/pprof"
-import  "http"
+//import  "http"
 
 
 
@@ -10,7 +10,7 @@ import "testing"
 
 func multiplex_encoder_test(track * Track){
     var encoder Encoder
-    var loc=MediaLocator{Filename:"testmultiplexer.flv"}
+    var loc=MediaLocator{Filename:"testmultiplexer.flv",Format:"flv"}
     var sink =DataSink{Locator:loc}
     sink.Connect()
     var multiplexer =Multiplexer{Ds:sink}
@@ -33,8 +33,9 @@ func multiplex_encoder_test(track * Track){
     encoder.SetParameter("flags","+global_header")
     encoder.Open()
     outvideoTrack=multiplexer.AddTrack(&encoder)
+    print(outvideoTrack)
     resizer=new(Resizer)
-    resizer.Init(&decoder, &encoder)
+    resizer.Init(decoder, &encoder)
     go multiplexer.Start()
   }
 
@@ -42,10 +43,11 @@ func multiplex_encoder_test(track * Track){
   for true {
     if(!track.ReadPacket(&p)){
 	println("stream end reached")
+	multiplexer.Stop()
 	return
     }
-    frame:=decoder.Decode(p)
-    p.free()
+    frame:=decoder.Decode(&p)
+    p.Free()
     //fmt.Printf("frame:%d codecid:%d\n",frame,decoder.Ctx.ctx.codec_id)
     if(frame!=nil&&frame.isFinished){
 	//println("frame finished")
@@ -53,9 +55,10 @@ func multiplex_encoder_test(track * Track){
 	if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
 	    frame.avframe.pict_type=0
 	    frame.avframe.key_frame=1
-	    //of:=resizer.Resize(frame)
-	    opacket:=encoder.Encode(*frame)
-	    outvideoTrack.WritePacket(opacket)
+	    of:=resizer.Resize(frame)
+	    op:=encoder.Encode(of)
+	    outvideoTrack.WritePacket(op)
+	    //op.destroy()
 	}
     }
   }
@@ -63,7 +66,7 @@ func multiplex_encoder_test(track * Track){
 
 func TestMultiplexer(t*testing.T){
     
-    println("starting encoder test")
+    println("starting func TestMultiplexer(t*testing.T){")
     /*
     go func (){
     err := http.ListenAndServe(":6060", nil)
@@ -75,7 +78,7 @@ func TestMultiplexer(t*testing.T){
 	println("listen")
     }()*/
     //loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
-    //loc:=MediaLocator{"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
+    //loc:=MediaLocator{Filename:"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
     loc:=MediaLocator{Filename:"../../../test.dvd"}
     //loc:=MediaLocator{Filename:"/Users/jholscher/Movies/39,90.avi.divx"}
     source:=DataSource{Locator:loc}
@@ -91,10 +94,11 @@ func TestMultiplexer(t*testing.T){
       go multiplex_encoder_test(&tracks[i])
     }
     plex.Start()
+    //plex.Stop()
     //println(len(tracks))
     //println(plexer.GetTimestamp().String())
     source.Disconnect()
-    println(" encoder test finished")
+    println(" encoder func TestMultiplexer(t*testing.T){")
 }
 
 

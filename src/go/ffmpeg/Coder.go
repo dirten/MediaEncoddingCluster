@@ -56,10 +56,11 @@ func(c * Coder)open(t int){
     log.Printf("could not find Codec for id %d",c.Ctx.ctx.codec_id)
     return
   }
+  //avcodec_get_context_defaults2(c.Ctx, c.Codec);
     //c.Ctx.ctx.codec_id=c.Codec.codec.codec_id
-    if(c.Ctx.ctx.codec_id<0x10000){
+    //if(c.Ctx.ctx.codec_id<0x10000){
 	c.Ctx.ctx.codec_type=c.Codec.codec._type
-    }
+    //}
     c.Ctx.ctx.pix_fmt=uint32(c.Pixelformat)
     //c.Ctx.ctx.width=320
     //c.Ctx.ctx.height=240
@@ -95,6 +96,13 @@ func(self* Coder)prepare(){
   if(err==nil){
     self.Ctx.ctx.height=_Ctype_int(height)
     log.Printf("setting height to %d",self.Ctx.ctx.height)
+  }else{
+//    println(err.String())
+  }
+  channels,err:=strconv.Atoi(self.Parameter["channels"])
+  if(err==nil){
+    self.Ctx.ctx.channels=_Ctype_int(channels)
+    log.Printf("setting channels to %d",self.Ctx.ctx.channels)
   }else{
 //    println(err.String())
   }

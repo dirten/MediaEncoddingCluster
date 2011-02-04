@@ -35,8 +35,8 @@ func (self * Track)WritePacket(p * Packet)bool{
   return true
 }
 
-func (self * Track)GetDecoder()Decoder{
+func (self * Track)GetDecoder()*Decoder{
   coder:=Decoder{}//NewCoder()
   coder.Ctx.ctx=self.codec//dpx.Ds.Ctx.streams[streamid].codec
-  return coder
+  return &coder
 }

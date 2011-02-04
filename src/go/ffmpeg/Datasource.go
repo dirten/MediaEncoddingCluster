@@ -34,3 +34,6 @@ func (src * DataSource) Disconnect() bool{
 func (src * DataSource) GetContentType() string{
   return "video/ffmpeg";
 }
+func NewDataSource(loc MediaLocator)*DataSource{
+    return &DataSource{Locator:loc}
+}

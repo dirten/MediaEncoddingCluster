@@ -1,6 +1,6 @@
 package gmf
 
-
+import "unsafe"
 
 type DataSink struct{
   Locator MediaLocator;
@@ -12,7 +12,7 @@ func (src * DataSink) Connect() bool{
   src.Valid=false
   src.ctx=avformat_alloc_context();
   format:=av_guess_format(src.Locator.Format,src.Locator.Filename)
-  src.ctx.ctx.oformat=(*_Ctype_struct_AVOutputFormat)(format.format)
+  src.ctx.ctx.oformat=(*_Ctype_struct_AVOutputFormat)(unsafe.Pointer(format.format))
 
   result:=url_fopen(src.ctx, src.Locator.Filename);
 
@@ -29,4 +29,8 @@ func (src * DataSink) Disconnect() bool{
   }
   av_free(src.ctx)
   return true;
+}
+
+func NewDatasink(loc MediaLocator)*DataSink{
+    return &DataSink{Locator:loc,ctx:nil,Valid:false}
 }

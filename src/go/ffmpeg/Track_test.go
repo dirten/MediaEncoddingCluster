@@ -12,7 +12,7 @@ func read(track * Track){
         return
     }else{
 	//println("packet readed")
-	p.free()
+	p.Free()
     }
   }
 }

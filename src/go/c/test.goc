@@ -1,0 +1,22 @@
+package myruntime
+
+#include "runtime.h"
+#include "malloc.h"
+//#include "defs.h"
+#include "type.h"
+
+
+static uint32
+fastrand1(void)
+{
+	static uint32 x = 0x49f6428aUL;
+
+	x += x;
+	if(x & 0x80000000L)
+		x ^= 0x88888eefUL;
+	return x;
+}
+
+func MySetFinalizer(obj Eface, finalizer Eface) {
+
+}

@@ -6,7 +6,7 @@ PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 TARG=gmf
 
-CGOFILES=ffmpeg.go
+CGOFILES=ffmpeg.go avformat.go
 GOFILES=Datasource.go MediaLocator.go Demultiplexer.go Track.go Format.go Rational.go Timestamp.go Decoder.go Encoder.go Coder.go Datasink.go Multiplexer.go Resizer.go
 #Buffer.go
 #PROTOPATH=../../org/esb/rpc/
@@ -14,6 +14,7 @@ GOFILES=Datasource.go MediaLocator.go Demultiplexer.go Track.go Format.go Ration
 
 CGO_LDFLAGS=-L../../../target/dependency/lib/ -L../../../build/src/org/esb/ -lavcodec -lavutil -lavformat -lavcore -lswscale
 CGO_CFLAGS=-I../../../target/dependency/include/
+
 
 #include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
 
@@ -31,5 +32,13 @@ CGO_CFLAGS=-I../../../target/dependency/include/
 	    
 
 include $(GOROOT)/src/Make.pkg
+
+# this hack is for the wrong handling of the cgo executable to generate the required header on windows
+ifeq ($(GOOS),windows)
+_cgo_import.c: _cgo1_.o
+	cp cgo_import.orig.c _cgo_import.c
+#	cgo -dynimport _cgo1_.o >_$@ && mv -f _$@ $@
+endif
+
 
 

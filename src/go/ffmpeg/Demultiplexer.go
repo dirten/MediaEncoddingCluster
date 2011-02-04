@@ -66,3 +66,6 @@ func (dpx * Demultiplexer)Start(){
   }
   //re * Packet
 }
+func NewDemultiplexer(ds * DataSource)*Demultiplexer{
+    return &Demultiplexer{Ds:*ds}
+}

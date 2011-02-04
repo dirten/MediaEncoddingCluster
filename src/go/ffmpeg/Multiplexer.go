@@ -23,8 +23,27 @@ func(self * Multiplexer)Start(){
     dump_format(self.Ds.ctx)
     for true {
 	var p Packet=<-self.ch
-	println(p.avpacket.dts)
+	//println(p.avpacket.dts)
 	//println(self.Ds.ctx.ctx.preload)
-	av_interleaved_write_frame(self.Ds.ctx,&p)
+	if(p.avpacket.data==nil){
+	    println("nil packet")
+	    return
+	}
+	//println("try writing frame")
+	result:=av_interleaved_write_frame(self.Ds.ctx,&p)
+	if(result!=0){
+	    log.Printf("failed write packet to stream")
+	}
+	p.Free()
+	//println("frame written")
+
     }
+}
+
+func(self * Multiplexer)Stop(){
+    log.Printf("Writing Trailer")
+    //av_write_trailer(self.Ds.ctx);
+}
+func NewMultiplexer(sink *DataSink)*Multiplexer{
+    return &Multiplexer{Ds:*sink}
 }

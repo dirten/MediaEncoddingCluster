@@ -17,12 +17,20 @@ func encoder_test(track * Track){
   
  if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
     println("Create encoder")
-    encoder.SetParameter("codecid","17")
+    encoder.SetParameter("codecid","13")
     encoder.SetParameter("time_base","1/25")
     encoder.SetParameter("width","320")
     encoder.SetParameter("height","240")
     encoder.SetParameter("bf","0")
     encoder.SetParameter("b","512000")
+    encoder.Open()
+  }
+ if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
+    println("Create encoder")
+    encoder.SetParameter("codecid","86016")
+    encoder.SetParameter("channels","2")
+    encoder.SetParameter("ar","44100")
+    encoder.SetParameter("ab","128000")
     encoder.Open()
   }
 
@@ -32,17 +40,18 @@ func encoder_test(track * Track){
 	println("stream end reached")
 	return
     }
-    frame:=decoder.Decode(p)
-    p.free()
+    frame:=decoder.Decode(&p)
+    
     //fmt.Printf("frame:%d codecid:%d\n",frame,decoder.Ctx.ctx.codec_id)
     if(frame!=nil&&frame.isFinished){
 	//println("frame finished")
 	//ppsWriter(frame)
-	if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
+	//if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
 	    //frame.avframe.pict_type=0
 	    //frame.avframe.key_frame=1
-	    encoder.Encode(*frame)
-	}
+	    encoder.Encode(frame)
+	    //println(packet.avpacket.size)
+	//}
 
     }
   }
