@@ -12,6 +12,7 @@ DIRS=\
 
 GOFILES=\
         transcoder.go
+#	alloc_data.go
         
 #        mainffmpeg.go 
         

@@ -8,6 +8,8 @@ type Encoder struct {
     last_dts int64
     stream_index int
     Track * Track
+    buffer_size int
+    buffer []byte
 }
 
 func(c * Encoder)Open(){
@@ -16,6 +18,9 @@ func(c * Encoder)Open(){
     c.audio_fifo=av_fifo_alloc(1024)
     log.Printf("Codec Oppened")
     c.stream_index=0
+    size := c.Ctx.ctx.width * c.Ctx.ctx.height;
+    c.buffer_size = int(math.Fmax(float64(1024 * 256), float64(6 * size + 200)));
+    c.buffer/*[]byte*/ =make([]byte,c.buffer_size)
 }
 
 func(c * Encoder)Encode(f * Frame)*Packet{
@@ -29,24 +34,19 @@ func(c * Encoder)Encode(f * Frame)*Packet{
 }
 
 func(c * Encoder)encodeVideo(f * Frame)*Packet{
-  size := c.Ctx.ctx.width * c.Ctx.ctx.height;
-  buffer_size := int(math.Fmax(float64(1024 * 256), float64(6 * size + 200)));
-  //println("buffer size")
-  //println(buffer_size)
-  //var buffer =new ([]byte)
-  buffer/*[]byte*/ :=make([]byte,buffer_size)
   f.avframe.pts=_Ctypedef_int64_t(f.Pts.Time)
+  //  return nil
   //log.Printf("Encoder Frame %s", f.String())
-  esize:=avcodec_encode_video(&c.Ctx, buffer, &buffer_size, f);
+  esize:=avcodec_encode_video(&c.Ctx, c.buffer, &c.buffer_size, f);
   //println("encode ready")
   //println(esize)
   if(esize>0){
-    var result *Packet=new(Packet)
-    av_init_packet(result)
+    var result Packet//=new(Packet)
+    av_init_packet(&result)
     //result.avpacket.size=(_Ctype_int)(esize)
     //result.avpacket.data=(*_Ctypedef_uint8_t)(unsafe.Pointer(&buffer[0]))
     result.Size=esize
-    result.Data=buffer
+    result.Data=c.buffer
     result.Stream=c.stream_index
     result.Duration=Timestamp{int64(c.Ctx.ctx.ticks_per_frame),Rational{int(c.Ctx.ctx.time_base.num),int(c.Ctx.ctx.time_base.den)}}
     result.Flags=0
@@ -60,7 +60,7 @@ func(c * Encoder)encodeVideo(f * Frame)*Packet{
         //result.avpacket.pts = c.Ctx.ctx.coded_frame.pts;
         //result.avpacket.duration = 1
         if(c.Track!=nil){
-            c.Track.WritePacket(result)
+            c.Track.WritePacket(&result)
         }
     }
     //return result

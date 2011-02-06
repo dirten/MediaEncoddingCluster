@@ -7,11 +7,24 @@ package gmf
 //#include "libswscale/swscale.h"
 //#include "libavutil/avutil.h"
 //#include "libavutil/fifo.h"
+////#include <stdint.h>
+//int myaudio_resample(ReSampleContext *s, short *output, int osize, short *input, int isize, int nb_samples){
+//  int8_t* tmpoutbuf=(int8_t*)av_malloc(osize);
+//  int8_t* tmpinbuf=(int8_t*)av_malloc(isize);
+//  memcpy(tmpinbuf,input,isize);
+//  int result=audio_resample(s, (short*)tmpoutbuf, (short*)tmpinbuf, nb_samples);
+//  memcpy(tmpoutbuf,output,osize);
+//return result;
+//}
 import "C"
 import "unsafe"
 import "fmt"
 import "sync"
 import "os"
+//audio_resample(ctx.ctx,
+//            (*C.short)(unsafe.Pointer(&outbuffer[0])),
+//            (*C.short)(unsafe.Pointer(&inbuffer[0])),
+//            C.int(size))
 //import "runtime"
 //import "log"
 var CODEC_TYPE_VIDEO int32=C.CODEC_TYPE_VIDEO
@@ -87,12 +100,13 @@ type Frame struct{
     Duration Timestamp
 }
 func (p * Frame)String()string{
-    return fmt.Sprintf("Size:%d:pts:%d", p.size,p.Pts)
+    return fmt.Sprintf("Size:%d:pts:%s", p.size,p.Pts)
 }
 
 func (p * Frame)destroy(){
     if(p.avframe!=nil){
 	C.av_free(unsafe.Pointer(p.avframe))
+        p.avframe=nil
     }
     //C.av_free(unsafe.Pointer(&p.avpacket))
     println("Frame object destroyed")
@@ -105,7 +119,7 @@ func (p * Frame)IsFinished()bool{
 
 func free_frame(frame * Frame){
     println("free_frame Frame object destroyed")
-    //frame.destroy()
+    frame.destroy()
 }
 func NewFrame(fmt, width, height int)*Frame{
   var frame * Frame=new(Frame)
@@ -116,11 +130,11 @@ func NewFrame(fmt, width, height int)*Frame{
     b:=make([]byte,numBytes)
     frame.buffer =b
     avpicture_fill(frame, frame.buffer, fmt, width, height);
+    //runtime.SetFinalizer(frame, free_frame)
   }
   frame.size=numBytes
   frame.width=width
   frame.height=height
-  //runtime.SetFinalizer(frame, free_frame)
   return frame
 }
 
@@ -157,6 +171,10 @@ type SwsContext struct{
 type Option struct{
     C.AVOption
 }
+
+type ResampleContext struct{
+    ctx *C.ReSampleContext
+}
 /*
 type InputFormat struct {
     format * C.AVInputFormat
@@ -170,6 +188,48 @@ type FormatParameters struct {
     params * C.AVFormatParameters
 }
 */
+func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int)*ResampleContext{
+    return &ResampleContext{ctx:C.av_audio_resample_init(
+        C.int(srcch),
+        C.int(trgch),
+        C.int(srcrate),
+        C.int(trgrate),
+        int32(srcfmt),
+        int32(trgfmt),
+        16, 10, 0, 0.8)}
+}
+
+func audio_resample(ctx * ResampleContext, outbuffer, inbuffer []byte, size int)int{    
+//   outbuf := (*C.short) (C.av_malloc(C.uint(len(outbuffer))));
+//  defer C.av_free(unsafe.Pointer(outbuf))
+/*
+  inbuf := (uintptr) (C.av_malloc(C.uint(len(inbuffer))));
+  defer C.av_free(unsafe.Pointer(inbuf))
+  for i:=0;i<len(inbuffer);i++{
+      *(*byte)(unsafe.Pointer(uintptr(inbuf) + uintptr(i)))=inbuffer[i]
+  }
+  */
+  //*(*byte)(unsafe.Pointer(uintptr(buf) + uintptr(i)))
+  //println(len(inbuffer))
+/*
+  result:= int(C.myaudio_resample(ctx.ctx,
+            (*C.short)(unsafe.Pointer(&outbuffer[0])),
+            C.int(len(outbuffer)),
+            (*C.short)(unsafe.Pointer(&inbuffer[0])),
+            C.int(len(inbuffer)),
+            C.int(size)))*/
+    result:= int(C.audio_resample(ctx.ctx,
+            (*C.short)(unsafe.Pointer(&outbuffer[0])),
+            (*C.short)(unsafe.Pointer(&inbuffer[0])),
+            C.int(size)))
+/*
+  data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
+  for i:= 0; i < result; i++ {
+    outbuffer[i] = data[i];
+  }*/
+  return result
+}
+
 func sws_scale_getcontext(ctx * SwsContext, srcwidth, srcheight, srcfmt, trgwidth,trgheight,trgfmt,flags int){
         ctx.sws=C.sws_getContext(C.int(srcwidth), C.int(srcheight), int32(srcfmt), C.int(trgwidth), C.int(trgheight),int32(trgfmt), C.int(flags), nil, nil, nil)
 	if(ctx.sws==nil){
