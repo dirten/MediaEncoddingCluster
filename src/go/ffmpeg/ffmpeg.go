@@ -14,8 +14,9 @@ import "sync"
 import "os"
 //import "runtime"
 //import "log"
-var CODEC_TYPE_VIDEO uint32=C.CODEC_TYPE_VIDEO
-var CODEC_TYPE_AUDIO uint32=C.CODEC_TYPE_AUDIO
+var CODEC_TYPE_VIDEO int32=C.CODEC_TYPE_VIDEO
+var CODEC_TYPE_AUDIO int32=C.CODEC_TYPE_AUDIO
+var AV_NOPTS_VALUE int64=C.AV_NOPTS_VALUE
 var CODEC_TYPE_ENCODER int=1
 var CODEC_TYPE_DECODER int=2
 var AVCODEC_MAX_AUDIO_FRAME_SIZE int=C.AVCODEC_MAX_AUDIO_FRAME_SIZE
@@ -38,16 +39,16 @@ type Packet struct{
     Dts Timestamp
     Pts Timestamp
     Duration Timestamp
-/*
-    Pts int64
-  Dts int64
+
+  //Pts int64
+  //Dts int64
   Data [] byte
   Size int
   Stream int
   Flags int
-  Duration int
+  //Duration int
   Pos int64
-*/
+
 }
 func NewPacket()*Packet{
     result:=new(Packet)
@@ -55,7 +56,9 @@ func NewPacket()*Packet{
     av_init_packet(result)
     return result
 }
-
+func (p*Packet)String()string{
+    return fmt.Sprintf("S:%d;Pts:%s;Dts:%s;Idx:%d;Dur:%s|avp|S:%d;Pts:%d;Dts:%d;Idx:%d;Dur:%d",p.Size,p.Pts,p.Dts,p.Stream,p.Duration,p.avpacket.size,int64(p.avpacket.pts),int64(p.avpacket.dts),p.avpacket.stream_index,int(p.avpacket.duration))
+}
 func (p * Packet)Free(){
 
     av_free_packet(p)
@@ -83,6 +86,9 @@ type Frame struct{
     Pts Timestamp
     Duration Timestamp
 }
+func (p * Frame)String()string{
+    return fmt.Sprintf("Size:%d:pts:%d", p.size,p.Pts)
+}
 
 func (p * Frame)destroy(){
     if(p.avframe!=nil){
@@ -92,21 +98,24 @@ func (p * Frame)destroy(){
     println("Frame object destroyed")
     
 }
+
 func (p * Frame)IsFinished()bool{
     return p.isFinished
 }
+
 func free_frame(frame * Frame){
     println("free_frame Frame object destroyed")
     //frame.destroy()
 }
 func NewFrame(fmt, width, height int)*Frame{
   var frame * Frame=new(Frame)
+  frame.avframe=new(C.AVFrame)
   frame.isFinished=false
-  numBytes:= avpicture_get_size(0, width, height)
+  numBytes:= avpicture_get_size(int32(fmt), width, height)
   if(numBytes>0){
     b:=make([]byte,numBytes)
     frame.buffer =b
-    avpicture_fill(frame, frame.buffer, 0, width, height);
+    avpicture_fill(frame, frame.buffer, fmt, width, height);
   }
   frame.size=numBytes
   frame.width=width
@@ -162,7 +171,7 @@ type FormatParameters struct {
 }
 */
 func sws_scale_getcontext(ctx * SwsContext, srcwidth, srcheight, srcfmt, trgwidth,trgheight,trgfmt,flags int){
-        ctx.sws=C.sws_getContext(C.int(srcwidth), C.int(srcheight), uint32(srcfmt), C.int(trgwidth), C.int(trgheight),uint32(trgfmt), C.int(flags), nil, nil, nil)
+        ctx.sws=C.sws_getContext(C.int(srcwidth), C.int(srcheight), int32(srcfmt), C.int(trgwidth), C.int(trgheight),int32(trgfmt), C.int(flags), nil, nil, nil)
 	if(ctx.sws==nil){
 	    println("error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	}
@@ -228,11 +237,13 @@ func av_free_packet(p * Packet){
 }
 
 func avcodec_alloc_context()*CodecContext{
-    return &CodecContext{C.avcodec_alloc_context()}
+    return &CodecContext{ctx:C.avcodec_alloc_context()}
 }
 
-func avcodec_get_context_defaults2(ctx  CodecContext,codec  Codec ){
+func avcodec_get_context_defaults2(ctx * CodecContext,codec  Codec ){
     C.avcodec_get_context_defaults2(ctx.ctx,codec.codec._type);
+    //ctx.ctx.sample_fmt=0//C.AV_SAMPLE_FMT_NONE
+    //ctx.ctx.pix_fmt=0//C.AV_SAMPLE_PIX_NONE
 }
 
 func av_pup_packet(packet * Packet){
@@ -250,19 +261,19 @@ func av_dup_packet(packet * Packet){
     C.av_dup_packet(packet.avpacket)
 }
 
-func avcodec_find_decoder(codec_id uint32)Codec{
+func avcodec_find_decoder(codec_id int32)Codec{
     var codec Codec
   codec.codec=C.avcodec_find_decoder(codec_id)
   return codec
 }
 
-func avcodec_find_encoder(codec_id uint32)Codec{
+func avcodec_find_encoder(codec_id int32)Codec{
   var codec Codec
   codec.codec=C.avcodec_find_encoder(codec_id)
   return codec
 }
 
-func avpicture_get_size(fmt uint32, width, height int)int{
+func avpicture_get_size(fmt int32, width, height int)int{
     return int(C.avpicture_get_size(fmt, C.int(width), C.int(height)))
 }
 
@@ -272,7 +283,7 @@ func avcodec_get_frame_defaults(frame * Frame){
 }
 
 func avpicture_alloc(frame * Frame, fmt, width, height int)int{
-    return int(C.avpicture_alloc((*C.AVPicture)(unsafe.Pointer(frame.avframe)),uint32(fmt),C.int(width),C.int(height)))
+    return int(C.avpicture_alloc((*C.AVPicture)(unsafe.Pointer(frame.avframe)),int32(fmt),C.int(width),C.int(height)))
 }
 
 func av_malloc_dont_use_this(size int)(*C.uint8_t){
@@ -281,12 +292,12 @@ func av_malloc_dont_use_this(size int)(*C.uint8_t){
 
 func avpicture_fill(frame * Frame, buffer [] byte, format, width, height int)int{
     //var pbuffer * byte=buffer[0]
-  avcodec_get_frame_defaults(frame)
+  //avcodec_get_frame_defaults(frame)
   //alloc_avframe(frame)
   //outbuf := (*C.uint8_t) (C.av_malloc(C.uint(len(*buffer))));
   //defer C.av_free(unsafe.Pointer(outbuf))
   //fmt.Printf("buffer address %d", &buffer)
-  result:= int(C.avpicture_fill((*C.AVPicture)(unsafe.Pointer(frame.avframe)), (*C.uint8_t)(unsafe.Pointer(&buffer[0])), uint32(format), C.int(width), C.int(height)))
+  result:= int(C.avpicture_fill((*C.AVPicture)(unsafe.Pointer(frame.avframe)), (*C.uint8_t)(unsafe.Pointer(&buffer[0])), int32(format), C.int(width), C.int(height)))
   //data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
   //array:=*buffer
   //*buffer=data
@@ -336,8 +347,14 @@ func avcodec_encode_video(ctx * CodecContext,buffer []byte, size * int,frame * F
     (*C.AVFrame)(frame.avframe)))
  }
 
-func avcodec_encode_audio(ctx * CodecContext,buffer []byte, size * int,frame * Frame)int{
-    return 0
+func avcodec_encode_audio(ctx * CodecContext,outbuffer []byte, size * int,inbuffer []byte)int{
+      out_size := C.avcodec_encode_audio(
+              ctx.ctx,
+              (*C.uint8_t)(unsafe.Pointer(&outbuffer[0])),
+              C.int(*size),
+              (*C.short)(unsafe.Pointer(&inbuffer[0])))
+
+    return int(out_size)
 }
 
 func av_fifo_alloc(size uint)*AVFifoBuffer{
@@ -373,9 +390,7 @@ func av_fifo_generic_read(fifo * AVFifoBuffer,buffer []byte, size int)int{
 	C.int(size),nil))
 }
 
-func av_get_bits_per_sample_fmt(fmt uint32)int{
-    print("sample fmt")
-    println(fmt)
+func av_get_bits_per_sample_fmt(fmt int32)int{
     return int(C.av_get_bits_per_sample_fmt(fmt))
 }
 

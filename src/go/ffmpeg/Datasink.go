@@ -19,6 +19,9 @@ func (src * DataSink) Connect() bool{
   if(result!=0){
     return src.Valid
   }
+  src.ctx.ctx.preload=500000
+  src.ctx.ctx.loop_output=-1
+  src.ctx.ctx.flags|=0x0004  
   src.Valid=true
   return src.Valid;
 }

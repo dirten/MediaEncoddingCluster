@@ -4,8 +4,8 @@ package gmf
 import "testing"
 import "unsafe"
 //import "time"
-//var filename="../../../target/dependency/fixtures/testfile.flv"
-var filename = "/media/video/big_buck_bunny_480p_surround-fix.avi"
+var filename="../../../target/dependency/fixtures/testfile.flv"
+//var filename = "/media/video/big_buck_bunny_480p_surround-fix.avi"
 
 func TestCopyStream(t*testing.T){
     /*openning input file*/
@@ -34,7 +34,7 @@ func TestCopyStream(t*testing.T){
     /*add new output stream*/
     stream:=av_new_stream(outctx,0)
     //decoder:=ctx.ctx.streams[0]
-     coder:=Decoder{Coder{Ctx:CodecContext{ctx:ctx.ctx.streams[0].codec}}}
+     coder:=Decoder{Coder{Ctx:CodecContext{ctx:ctx.ctx.streams[0].codec}},0,Rational{},Rational{}}
      coder.Open()
     //coder.Ctx.ctx=self.codec//dpx.Ds.Ctx.streams[streamid].codec
 
@@ -76,7 +76,7 @@ func TestCopyStream(t*testing.T){
 	if(packet.avpacket.stream_index==0){
 	
 	    frame:=coder.Decode(packet)
-	    if(frame!=nil&&frame.isFinished){
+	    if(frame!=nil&&frame.isFinished&&coder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
 		of:=resizer.Resize(frame)
 		//ppsWriter(of)
 		//continue
@@ -89,7 +89,7 @@ func TestCopyStream(t*testing.T){
     		    sumout+=int(op.avpacket.size)
 		    sumin+=int(packet.avpacket.size)
 		    av_interleaved_write_frame(outctx,op)
-		    op.destroy()
+		    //op.destroy()
 		}
 
 		}

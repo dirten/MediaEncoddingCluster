@@ -14,7 +14,8 @@ func encoder_test(track * Track){
     var encoder Encoder
   decoder:=track.GetDecoder()
   decoder.Open()
-  
+      var resizer * Resizer
+
  if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
     println("Create encoder")
     encoder.SetParameter("codecid","13")
@@ -24,6 +25,9 @@ func encoder_test(track * Track){
     encoder.SetParameter("bf","0")
     encoder.SetParameter("b","512000")
     encoder.Open()
+    resizer=new(Resizer)
+    resizer.Init(decoder, &encoder)
+
   }
  if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
     println("Create encoder")
@@ -44,15 +48,10 @@ func encoder_test(track * Track){
     
     //fmt.Printf("frame:%d codecid:%d\n",frame,decoder.Ctx.ctx.codec_id)
     if(frame!=nil&&frame.isFinished){
-	//println("frame finished")
-	//ppsWriter(frame)
-	//if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
-	    //frame.avframe.pict_type=0
-	    //frame.avframe.key_frame=1
-	    encoder.Encode(frame)
-	    //println(packet.avpacket.size)
-	//}
-
+	if(decoder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
+            frame=resizer.Resize(frame)
+	}
+        encoder.Encode(frame)
     }
   }
 }

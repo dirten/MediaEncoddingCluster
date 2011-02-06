@@ -2,18 +2,15 @@ package gmf
 
 
 import _ "http/pprof"
+import "time"
 //import  "http"
 
 
 
 import "testing"
 
-func multiplex_encoder_test(track * Track){
+func multiplex_encoder_test(track * Track, multiplexer * Multiplexer){
     var encoder Encoder
-    var loc=MediaLocator{Filename:"testmultiplexer.flv",Format:"flv"}
-    var sink =DataSink{Locator:loc}
-    sink.Connect()
-    var multiplexer =Multiplexer{Ds:sink}
   decoder:=track.GetDecoder()
   decoder.Open()
     var outvideoTrack * Track
@@ -36,15 +33,13 @@ func multiplex_encoder_test(track * Track){
     print(outvideoTrack)
     resizer=new(Resizer)
     resizer.Init(decoder, &encoder)
-    go multiplexer.Start()
   }
 
   var p Packet
   for true {
     if(!track.ReadPacket(&p)){
 	println("stream end reached")
-	multiplexer.Stop()
-	return
+        break
     }
     frame:=decoder.Decode(&p)
     p.Free()
@@ -85,15 +80,26 @@ func TestMultiplexer(t*testing.T){
     if(!source.Connect()){
     	t.Fatalf("cold not open file : %s", loc.Filename)
     }
+
+    var mloc=MediaLocator{Filename:"testmultiplexer.flv",Format:"flv"}
+    var sink =DataSink{Locator:mloc}
+    sink.Connect()
+    var multiplexer =Multiplexer{Ds:sink}
+
     plex:=Demultiplexer{Ds:source}
     //tracks:=plex.GetTracks()
     tracks:=*plex.GetTracks()
     for i:=0;i<len(tracks);i++ {
 	//dec:=tracks[i].GetDecoder()
 	//dec.Open()
-      go multiplex_encoder_test(&tracks[i])
+      go multiplex_encoder_test(&tracks[i], &multiplexer)
     }
+    time.Sleep(10000000)
+    go multiplexer.Start()
     plex.Start()
+    time.Sleep(10000000)
+    multiplexer.Stop()
+
     //plex.Stop()
     //println(len(tracks))
     //println(plexer.GetTimestamp().String())

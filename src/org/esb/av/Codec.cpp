@@ -366,7 +366,7 @@ namespace org {
             LOGERROR("Invalid value '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
           }
           if (!o) {
-            LOGWARN("Option not found:" << opt);
+            //LOGWARN("Option not found:" << opt);
           }
         }
         //setFlag(CODEC_FLAG_PSNR);

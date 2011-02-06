@@ -31,6 +31,8 @@ int main(int argc, char** argv) {
   int64_t start_pts=0;
   int64_t end_dts=0;
   int64_t end_pts=0;
+  int64_t all_size=0;
+  int64_t key_frames=0;
   Packet p;
 
   while(pis.readPacket(p)>=0){
@@ -41,8 +43,12 @@ int main(int argc, char** argv) {
       if(start_pts==0){
         start_pts=p.packet->pts;
       }
+      if(p.isKeyFrame()){
+        key_frames++;
+      }
       end_dts=p.packet->dts;
       end_pts=p.packet->pts;
+      all_size+=p.packet->size;
       count++;
     }
   }
@@ -51,6 +57,8 @@ int main(int argc, char** argv) {
   printf("Stream # %d have as start DTS %lld \n",str_idx, start_dts);
   printf("Stream # %d have as end PTS %lld \n",str_idx, end_pts);
   printf("Stream # %d have as end DTS %lld \n",str_idx, end_dts);
+  printf("Stream # %d have %lld Bytes\n",str_idx, all_size);
+  printf("Stream # %d have %lld Key Frames\n",str_idx, key_frames);
   return (EXIT_SUCCESS);
 }
 

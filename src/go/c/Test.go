@@ -1,6 +1,14 @@
 package mytest
 
-
+//enum TestEnum {
+//	NONE=-1,
+//	ZERO,
+//	ONE,
+//	TWO
+//};
+//typedef struct tests{
+//	enum TestEnum enumvar;
+//}tests;
 //void test_int_p(int * size);
 //void test_char_p(char * size);
 //#include <string.h>
@@ -40,7 +48,10 @@ func test_char_p_by_p(data []byte){
     fmt.Printf("data %s\n",data)
 //    println(d)
 }
-
+func test_enum(){
+    var teststruct * C.tests=new(C.tests)
+    teststruct.enumvar=C.NONE
+}
 func test_uint8t_p_by_p(data []byte){
     println("test_char_p")
     //var d=make([]byte, 20)

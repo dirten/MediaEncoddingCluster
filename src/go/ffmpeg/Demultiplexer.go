@@ -20,7 +20,7 @@ func (dpx * Demultiplexer)GetTracks()*[]Track{
   scount:=dpx.Ds.ctx.ctx.nb_streams
   var result []Track=make([]Track,int(scount))
   for i:=0;i<int(scount);i++ {
-    result[i]=Track{&Stream{dpx.Ds.ctx.ctx.streams[i]}, make(chan  Packet)}
+    result[i]=Track{&Stream{dpx.Ds.ctx.ctx.streams[i]}, make(chan  Packet),0}
   }
   dpx.tracks=&result;
   return &result
@@ -57,11 +57,15 @@ func (dpx * Demultiplexer)Start(){
     re.Flags=int(packet.avpacket.flags)
     re.Duration=int(packet.avpacket.duration)
     re.Pos=int64(packet.avpacket.pos)
-    av_free_packet(packet)*/
+    av_free_packet(packet)
+    */
+
     track:=(*dpx.tracks)[packet.avpacket.stream_index]
+    packet.Size=int(packet.avpacket.size)
     packet.Pts=Timestamp{int64(packet.avpacket.pts),Rational{int(track.time_base.num),int(track.time_base.den)}}
     packet.Dts=Timestamp{int64(packet.avpacket.dts),Rational{int(track.time_base.num),int(track.time_base.den)}}
     packet.Duration=Timestamp{int64(packet.avpacket.duration),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    //println(packet.String())
     track.stream<-*packet
   }
   //re * Packet

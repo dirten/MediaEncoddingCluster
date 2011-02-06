@@ -31,35 +31,19 @@ func (self * Resizer)Init(dec * Decoder, enc * Encoder){
 
 func(self*Resizer)Resize(in* Frame)*Frame{
     frame := NewFrame(self.fmt, self.width, self.height)
-    /*avcodec_get_frame_defaults(frame)
-    if(avpicture_alloc(frame, self.fmt, self.width, self.height)!=0){
-	log.Printf("can not allocate tmp picture, check pixel format")
-    }*/
-    
-/*
-    numBytes:= avpicture_get_size(uint32(self.fmt), self.width, self.height)
-    if(numBytes>0){
-	log.Printf("Number Bytes:%d", numBytes)
-	var buffer []byte=make([]byte,numBytes)
-	//buffer :=av_malloc(numBytes)//make([]byte,numBytes)
-	//log.Printf("memory address %i", buffer)
-	avpicture_fill(frame, &buffer,self.fmt , self.width, self.height);
-	//log.Printf("memory address %i", buffer)
-    }else{
-	
-    }*/
-    //println(frame.avframe.data[0])
-    //return in
+    //return frame
     
     if result:=sws_scale(self.ctx, in, frame);result<=0 {
 	log.Printf("failed to resize the image")
     }else{
-	//log.Printf("swsscale result=%d", result)
+	//log.Printf("frame result=%d", result)
     }
     //log.Printf("in frame size %d", in.size)
     //log.Printf("number bytes %d", numBytes)
     //frame.size=numBytes
-    frame.avframe.pts=in.avframe.pts
+    frame.Pts=in.Pts
+    frame.Duration=in.Duration
+    //frame.avframe.pts=in.avframe.pts
     //frame.width=self.width
     //frame.height=self.height
     //println("data pointer")
