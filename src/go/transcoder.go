@@ -16,8 +16,8 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer){
     encoder.SetParameter("codecid","13")
     encoder.SetParameter("time_base","1/25")
     //encoder.SetParameter("aspect","64/45")
-    encoder.SetParameter("width","1080")
-    encoder.SetParameter("height","1920")
+    encoder.SetParameter("height","1080")
+    encoder.SetParameter("width","1920")
     //encoder.SetParameter("bf","0")
     encoder.SetParameter("b","500000")
     encoder.SetParameter("g","250")
@@ -74,9 +74,9 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer){
 func main(){
     //loc:=MediaLocator{Filename:"/media/video/ChocolateFactory.ts"}
     //loc:=MediaLocator{Filename:"/media/TREKSTOR/videos/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).ts"}
-    loc:=MediaLocator{Filename:"/Users/jholscher/Movies/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).mp4"}
+    //loc:=MediaLocator{Filename:"/Users/jholscher/Movies/20070401 0140 - PREMIERE 3 - Ein Duke kommt selten allein (The Dukes of Hazzard).mp4"}
     //loc:=MediaLocator{Filename:"/Users/jholscher/Movies/39,90.avi.divx"}
-    //loc:=MediaLocator{Filename:"/Users/jholscher/Movies/ChocolateFactory.ts"}
+    loc:=MediaLocator{Filename:"/Users/jholscher/Movies/ChocolateFactory.ts"}
     //loc:=MediaLocator{Filename:"/home/HoelscJ/39,90.avi.divx"}
     source:=NewDataSource(loc)
     if(!source.Connect()){

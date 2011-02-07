@@ -39,7 +39,7 @@ func(self*Resampler)Resample(f * Frame)*Frame{
     frame.size=out_size*self.channels*self.osize
     frame.Duration=Timestamp{int64(out_size),Rational{1,self.sample_rate}}
     //println("outframe"+frame.String())
-    return f
+    //return f
             /*
     int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
