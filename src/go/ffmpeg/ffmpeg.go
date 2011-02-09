@@ -7,7 +7,6 @@ package gmf
 //#include "libswscale/swscale.h"
 //#include "libavutil/avutil.h"
 //#include "libavutil/fifo.h"
-////#include <stdint.h>
 //int myaudio_resample(ReSampleContext *s, short *output, int osize, short *input, int isize, int nb_samples){
 //  int8_t* tmpoutbuf=(int8_t*)av_malloc(osize);
 //  int8_t* tmpinbuf=(int8_t*)av_malloc(isize);
@@ -19,33 +18,32 @@ package gmf
 import "C"
 import "unsafe"
 import "fmt"
-import "sync"
+//import "sync"
 import "os"
-//audio_resample(ctx.ctx,
-//            (*C.short)(unsafe.Pointer(&outbuffer[0])),
-//            (*C.short)(unsafe.Pointer(&inbuffer[0])),
-//            C.int(size))
 //import "runtime"
 //import "log"
+/*
 var CODEC_TYPE_VIDEO int32=C.CODEC_TYPE_VIDEO
 var CODEC_TYPE_AUDIO int32=C.CODEC_TYPE_AUDIO
-var AV_NOPTS_VALUE int64=C.AV_NOPTS_VALUE
+var AV_NOPTS_VALUE int64=-9223372036854775808//C.AV_NOPTS_VALUE
 var CODEC_TYPE_ENCODER int=1
 var CODEC_TYPE_DECODER int=2
 var AVCODEC_MAX_AUDIO_FRAME_SIZE int=C.AVCODEC_MAX_AUDIO_FRAME_SIZE
 var TIME_BASE_Q = Rational{1,1000000}
-
+*/
+/*
 func init(){
   C.avcodec_register_all();
   C.av_register_all();
   C.av_log_set_level(C.AV_LOG_VERBOSE);
-}
-
+}*/
+/*
 type Rational struct{
     Num int
     Den int
 }
-
+*/
+/*
 type Packet struct{
     avpacket * C.AVPacket
     time_base Rational
@@ -71,7 +69,8 @@ func NewPacket()*Packet{
 }
 func (p*Packet)String()string{
     return fmt.Sprintf("S:%d;Pts:%s;Dts:%s;Idx:%d;Dur:%s|avp|S:%d;Pts:%d;Dts:%d;Idx:%d;Dur:%d",p.Size,p.Pts,p.Dts,p.Stream,p.Duration,p.avpacket.size,int64(p.avpacket.pts),int64(p.avpacket.dts),p.avpacket.stream_index,int(p.avpacket.duration))
-}
+}*/
+/*
 func (p * Packet)Free(){
 
     av_free_packet(p)
@@ -82,12 +81,13 @@ func (p * Packet)destroy(){
     av_free_packet(p)
     //C.av_free(unsafe.Pointer(&p.avpacket))
     //println("packet object destroyed")
-}
-
+}*/
+/*
 type AVFifoBuffer struct{
     av_fifo *C.AVFifoBuffer
 }
-
+*/
+/*
 type Frame struct{
     avframe * C.AVFrame
     buffer []byte
@@ -121,6 +121,7 @@ func free_frame(frame * Frame){
     println("free_frame Frame object destroyed")
     frame.destroy()
 }
+
 func NewFrame(fmt, width, height int)*Frame{
   var frame * Frame=new(Frame)
   frame.avframe=new(C.AVFrame)
@@ -140,20 +141,22 @@ func NewFrame(fmt, width, height int)*Frame{
 
 type Stream struct{
     *C.AVStream
-}
-
+}*/
+/*
 func (s * Stream)free(){
     C.av_free(unsafe.Pointer(s))
     //C.av_free(unsafe.Pointer(&p.avpacket))
     //println("object destroyed")
-}
+}*/
 /*
 type FormatContext struct {
     ctx *C.AVFormatContext
 }*/
+/*
 func av_free(ctx*FormatContext){
     C.av_free(unsafe.Pointer(ctx.ctx))
-}
+}*/
+/*
 type Codec struct{
     codec *C.AVCodec
 }
@@ -161,20 +164,20 @@ type Codec struct{
 type CodecContext struct{
     ctx *C.AVCodecContext
 }
-
+*/
 type SwsContext struct{
 //    sws unsafe.Pointer
     sws *C.struct_SwsContext
     //sws *[0]uint8
 }
-
+/*
 type Option struct{
     C.AVOption
-}
-
+}*/
+/*
 type ResampleContext struct{
     ctx *C.ReSampleContext
-}
+}*/
 /*
 type InputFormat struct {
     format * C.AVInputFormat
@@ -188,6 +191,7 @@ type FormatParameters struct {
     params * C.AVFormatParameters
 }
 */
+/*
 func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int)*ResampleContext{
     return &ResampleContext{ctx:C.av_audio_resample_init(
         C.int(srcch),
@@ -202,34 +206,13 @@ func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int)*
 func audio_resample(ctx * ResampleContext, outbuffer, inbuffer []byte, size int)int{    
 //   outbuf := (*C.short) (C.av_malloc(C.uint(len(outbuffer))));
 //  defer C.av_free(unsafe.Pointer(outbuf))
-/*
-  inbuf := (uintptr) (C.av_malloc(C.uint(len(inbuffer))));
-  defer C.av_free(unsafe.Pointer(inbuf))
-  for i:=0;i<len(inbuffer);i++{
-      *(*byte)(unsafe.Pointer(uintptr(inbuf) + uintptr(i)))=inbuffer[i]
-  }
-  */
-  //*(*byte)(unsafe.Pointer(uintptr(buf) + uintptr(i)))
-  //println(len(inbuffer))
-/*
-  result:= int(C.myaudio_resample(ctx.ctx,
-            (*C.short)(unsafe.Pointer(&outbuffer[0])),
-            C.int(len(outbuffer)),
-            (*C.short)(unsafe.Pointer(&inbuffer[0])),
-            C.int(len(inbuffer)),
-            C.int(size)))*/
     result:= int(C.audio_resample(ctx.ctx,
             (*C.short)(unsafe.Pointer(&outbuffer[0])),
             (*C.short)(unsafe.Pointer(&inbuffer[0])),
             C.int(size)))
-/*
-  data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
-  for i:= 0; i < result; i++ {
-    outbuffer[i] = data[i];
-  }*/
   return result
 }
-
+*/
 func sws_scale_getcontext(ctx * SwsContext, srcwidth, srcheight, srcfmt, trgwidth,trgheight,trgfmt,flags int){
         ctx.sws=C.sws_getContext(C.int(srcwidth), C.int(srcheight), int32(srcfmt), C.int(trgwidth), C.int(trgheight),int32(trgfmt), C.int(flags), nil, nil, nil)
 	if(ctx.sws==nil){
@@ -251,7 +234,7 @@ func sws_scale(ctx * SwsContext,src * Frame, trg * Frame)int{
 	    out_line));
    return result
 }
-
+/*
 func av_set_string(ctx * CodecContext, key, val string)bool{
     result:=true
     ckey:=C.CString(key)
@@ -268,7 +251,8 @@ func av_set_string(ctx * CodecContext, key, val string)bool{
     }
     return result
 }
-
+*/
+/*
 func av_cmp_q(left, right Rational) int {
     var a C.AVRational=C.AVRational{C.int(left.Num), C.int(left.Den)}
     var b C.AVRational=C.AVRational{C.int(right.Num), C.int(right.Den)}
@@ -288,8 +272,8 @@ func av_compare_ts(leftts int64, leftbase Rational, rightts int64, rightbase Rat
     var b C.AVRational=C.AVRational{C.int(rightbase.Num), C.int(rightbase.Den)}
     return int(C.av_compare_ts(C.int64_t(leftts), a,C.int64_t(rightts),b))
 }
-
-
+*/
+/*
 func av_free_packet(p * Packet){
     if(p.avpacket!=nil){
 	C.av_free_packet(p.avpacket)
@@ -345,11 +329,12 @@ func avcodec_get_frame_defaults(frame * Frame){
 func avpicture_alloc(frame * Frame, fmt, width, height int)int{
     return int(C.avpicture_alloc((*C.AVPicture)(unsafe.Pointer(frame.avframe)),int32(fmt),C.int(width),C.int(height)))
 }
-
+*/
+/*
 func av_malloc_dont_use_this(size int)(*C.uint8_t){
     return (*C.uint8_t) (C.av_malloc(C.uint(size)));
-}
-
+}*/
+/*
 func avpicture_fill(frame * Frame, buffer [] byte, format, width, height int)int{
     //var pbuffer * byte=buffer[0]
   //avcodec_get_frame_defaults(frame)
@@ -371,8 +356,8 @@ func alloc_avframe(frame * Frame){
     if(frame.avframe==nil){
 	frame.avframe=new(C.AVFrame)
     }
-}
-
+}*/
+/*
 var avcodec_mutex sync.Mutex
 
 func avcodec_open(cctx CodecContext, codec Codec)int{
@@ -416,7 +401,8 @@ func avcodec_encode_audio(ctx * CodecContext,outbuffer []byte, size * int,inbuff
 
     return int(out_size)
 }
-
+*/
+/*
 func av_fifo_alloc(size uint)*AVFifoBuffer{
     return &AVFifoBuffer{av_fifo:C.av_fifo_alloc(C.uint(size))}
 }
@@ -453,7 +439,7 @@ func av_fifo_generic_read(fifo * AVFifoBuffer,buffer []byte, size int)int{
 func av_get_bits_per_sample_fmt(fmt int32)int{
     return int(C.av_get_bits_per_sample_fmt(fmt))
 }
-
+*/
 var number int=0
 
 func ppsWriter(frame * Frame){

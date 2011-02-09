@@ -8,7 +8,8 @@ TARG=transcoder
 #CGO_CFLAGS=-I/home/HoelscJ/devel/mec/target/dependency/include/
 
 DIRS=\
-	ffmpeg
+	ffmpeg \
+	hive
 
 GOFILES=\
         transcoder.go

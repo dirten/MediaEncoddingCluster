@@ -20,8 +20,11 @@ func (src * DataSink) Connect() bool{
     return src.Valid
   }
   src.ctx.ctx.preload=500000
+  src.ctx.ctx.max_delay=700000
   src.ctx.ctx.loop_output=-1
   src.ctx.ctx.flags|=0x0004  
+  src.ctx.ctx.mux_rate=0
+  src.ctx.ctx.packet_size=0
   src.Valid=true
   return src.Valid;
 }

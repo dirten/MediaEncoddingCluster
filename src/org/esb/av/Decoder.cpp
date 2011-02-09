@@ -236,7 +236,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   int size = packet.packet->size;
   int samples_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
   int bps = av_get_bits_per_sample_fmt(ctx->sample_fmt) >> 3;
-
+  uint8_t* t=(uint8_t*)av_malloc(100);
   uint8_t *outbuf = static_cast<uint8_t*> (av_malloc(samples_size));
   int len = avcodec_decode_audio3(ctx, (short *) outbuf, &samples_size, packet.packet);
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded

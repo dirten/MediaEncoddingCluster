@@ -2,12 +2,15 @@ package gmf
 
 import "fmt"
 
+type Rational struct{
+    Num int
+    Den int
+}
 
 func NewRational() Rational {
     var result Rational=Rational{1,1000000}
     return result
 }
-
 
 func(r * Rational) String() string{
     return fmt.Sprintf("%d/%d",r.Num, r.Den)

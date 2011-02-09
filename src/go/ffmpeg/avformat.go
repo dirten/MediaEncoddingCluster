@@ -4,6 +4,16 @@ package gmf
 //#include "libavformat/avformat.h"
 import "C"
 import "unsafe"
+
+func init(){
+  C.av_register_all();
+//  C.av_log_set_level(48);
+}
+
+type Stream struct{
+    *C.AVStream
+}
+
 type FormatContext struct {
     ctx *C.AVFormatContext
 }
@@ -89,4 +99,7 @@ func dump_format(ctx * FormatContext){
 
 func av_new_stream(ctx * FormatContext, stream_id int)*Stream{
     return &Stream{C.av_new_stream(ctx.ctx, C.int(stream_id))}
+}
+func av_free(ctx*FormatContext){
+    C.av_free(unsafe.Pointer(ctx.ctx))
 }

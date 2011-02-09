@@ -1,5 +1,5 @@
 package gmf
-import "log"
+//import "log"
 import "fmt"
 type Track struct{
   *Stream
@@ -7,10 +7,8 @@ type Track struct{
   next_pts  int64
 }
 func (self * Track)String()string{
-    
     return fmt.Sprintf("Idx:%d;CTB:%d/%d;STB:%d/%d",self.index, self.codec.time_base.num,self.codec.time_base.den,self.time_base.num,self.time_base.den)
-    
-    }
+}
 func (self * Track)GetFormat()Format{
   return Format{}
 }
@@ -36,8 +34,9 @@ func (self * Track)WritePacket(p * Packet)bool{
     return false;
   }
   p.Stream=int(self.index)
+  
   if(self.next_pts>0&&p.Pts.Time!=self.next_pts){
-      log.Printf("Fail: next_pts=%d incoming pts=", self.next_pts, p.Pts.Time)
+      //log.Printf("Fail: next_pts=%d incoming pts=%d", self.next_pts, p.Pts.Time)
   }else{
       self.next_pts=p.Pts.Time
   }

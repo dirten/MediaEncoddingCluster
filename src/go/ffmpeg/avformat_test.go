@@ -98,7 +98,7 @@ func TestCopyStream(t*testing.T){
 
 	    }
 	}
-	packet.destroy()
+	packet.Free()
 
     }
     println("size")
