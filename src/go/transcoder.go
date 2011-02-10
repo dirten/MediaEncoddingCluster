@@ -9,11 +9,22 @@ import "fmt"
 import "os"
 import "runtime"
 
+
+func close_encoder(c * Encoder){
+    c.Free()
+}
 func close_decoder(c * Decoder){
     c.Free()
 }
-func close_encoder(c * Encoder){
-    c.Free()
+func copyCodec(dec * Decoder)*Decoder{
+	params:=dec.GetParameters()
+	//fmt.Printf("Source Decoder%s\n", params)
+	dec2:=new(Decoder)
+	for k,v:=range params {
+	    dec2.SetParameter(k,v)
+	}
+	dec2.ExtraData=dec.GetExtraData()
+    return dec2
 }
 //var encoder_map=make(map[int32]*Encoder)
 func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * hive.Preset){
@@ -21,11 +32,16 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
     var resizer * Resizer
     var resampler * Resampler
     var rate_converter * FrameRateConverter
+    var deinterlacer * Deinterlacer
 
-    decoder:=track.GetDecoder()
+    decoder:=copyCodec(track.GetDecoder())
+    //decoder:=track.GetDecoder()
     decoder.SetParameter("request_channels","2")
     decoder.SetParameter("request_channel_layout","2")
     decoder.Open()
+    //t.Printf("Target Decoder before open%s\n", decoder.GetParameters())
+    //coder.SetParameter("time_base","1/24")
+    //t.Printf("Target Decoder after open%s\n", decoder.GetParameters())
     
     
     for i:=0;i<len(preset.Codec);i++{
@@ -36,6 +52,8 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
 	    resizer.Init(decoder, encoder)
 	    rate_converter=new(FrameRateConverter)
 	    rate_converter.Init(decoder.GetFrameRate(), encoder.GetFrameRate())
+	    deinterlacer=new(Deinterlacer)
+	    deinterlacer.Init(decoder)
 	    multiplexer.AddTrack(encoder)
 	    break
 	}
@@ -48,9 +66,9 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
 	    break
 	}
     }
-    //runtime.SetFinalizer(decoder, close_decoder)
+    runtime.SetFinalizer(decoder, close_decoder)
     if(encoder!=nil){
-    runtime.SetFinalizer(encoder, close_encoder)
+	runtime.SetFinalizer(encoder, close_encoder)
     }
   var bytecounter=0
   var p * Packet=new(Packet)
@@ -61,18 +79,17 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
     }
     var frame * Frame
     frame=decoder.Decode(p)
-    p.Free()
+    //p.Free()
     if(frame!=nil&&frame.IsFinished()&&encoder!=nil){
-	if(decoder.GetCodecType()==CODEC_TYPE_VIDEO){
-	    frame=resizer.Resize(frame)
-	    frame=rate_converter.Convert(frame)
-	}else{
-            if(decoder.GetCodecType()==CODEC_TYPE_AUDIO){
+	typ:=decoder.GetCodecType()
+        switch typ{
+	    case CODEC_TYPE_VIDEO:
+		frame=deinterlacer.Deinterlace(frame)
+		frame=resizer.Resize(frame)
+		frame=rate_converter.Convert(frame)
+	    case CODEC_TYPE_AUDIO:
                 frame=resampler.Resample(frame)
-            }else{
-                continue
-            }
-        }
+	}
         encoder.Encode(frame)
     }
   }
@@ -82,6 +99,12 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
   decoder.Close()
   if(encoder!=nil){
     encoder.Close()
+  }
+  if(resampler!=nil){
+    resampler.Close()
+  }
+  if(resizer!=nil){
+    resizer.Close()
   }
 }
 var presetfile *string = flag.String("p", "", "preset file name")
@@ -129,7 +152,7 @@ func main(){
     time.Sleep(1000000000)
     go multiplexer.Start()
     plex.Start()
-    time.Sleep(5000000000)
+    time.Sleep(1000000000)
     multiplexer.Stop()
     //plex.Stop()
     source.Disconnect()
