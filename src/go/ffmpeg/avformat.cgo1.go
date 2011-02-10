@@ -76,8 +76,8 @@ func av_find_stream_info(ctx *FormatContext) int {
 	return int(_Cfunc_av_find_stream_info(ctx.ctx))
 }
 
-func av_read_frame(ctx *FormatContext, packet *Packet) int {
-	return int(_Cfunc_av_read_frame(ctx.ctx, packet.avpacket))
+func av_read_frame(ctx *FormatContext, packet *AVPacket) int {
+	return int(_Cfunc_av_read_frame(ctx.ctx, (*_Ctypedef_AVPacket)(unsafe.Pointer(packet))))
 }
 
 func av_interleaved_write_frame(ctx *FormatContext, packet *Packet) int {

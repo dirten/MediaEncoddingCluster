@@ -2,6 +2,8 @@ package gmf
 
 import "log"
 import "strconv"
+import "fmt"
+import "unsafe"
 
 type Coder struct {
   Parameter map[string]string
@@ -14,6 +16,7 @@ type Coder struct {
   Pixelformat int
   Sampleformat int
   pre_allocated bool
+  ExtraData []byte
 }
 
 
@@ -21,6 +24,7 @@ func (self * Coder)init(){
     if(self.Parameter==nil){
 	println("creating Parameter map")
 	self.Parameter=make(map[string]string)
+	self.pre_allocated=true
     }
     self.initialized=true
 }
@@ -37,7 +41,36 @@ func (self * Coder)GetParameter(key string)string{
 
 func (self * Coder)GetParameters()map[string]string{
   self.init()
+  var op =new(AVOption)
+  for true{
+    op=av_next_option(&self.Ctx, op)
+    if(op.opt==nil){
+	break
+    }
+    self.Parameter[op.Name]=av_get_string(&self.Ctx, op.Name)
+  }
+  self.Parameter["codecid"]=fmt.Sprintf("%d",self.Ctx.ctx.codec_id)
+  self.Parameter["width"]=fmt.Sprintf("%d",self.Ctx.ctx.width)
+  self.Parameter["height"]=fmt.Sprintf("%d",self.Ctx.ctx.height)
+  self.Parameter["channels"]=fmt.Sprintf("%d",self.Ctx.ctx.channels)
+  //self.Parameter["sample_rate"]=fmt.Sprintf("%d",self.Ctx.ctx.sample_rate)
   return self.Parameter
+}
+
+func (self*Coder)GetExtraData()[]byte{
+    if(self.Ctx.ctx.extradata_size>0){
+	self.ExtraData=make([]byte, self.Ctx.ctx.extradata_size+8)
+	data:=(*(*[1<<30]byte)(unsafe.Pointer(self.Ctx.ctx.extradata)))[0:self.Ctx.ctx.extradata_size]
+	for i:= 0; i < int(self.Ctx.ctx.extradata_size); i++ {
+    	    self.ExtraData[i] = data[i];
+	}
+    }
+    return self.ExtraData
+}
+
+func (self*Coder)SetExtraData(extra []byte){
+    self.ExtraData=extra
+    self.Ctx.ctx.extradata=(*_Ctypedef_uint8_t)(unsafe.Pointer(&self.ExtraData[0]))
 }
 
 func(c*Coder)Close(){
@@ -51,7 +84,7 @@ func(c*Coder)Close(){
 }
 
 func(c*Coder)Free(){
-    log.Printf("Closing Coder")
+    log.Printf("Freeing Coder")
     if(c.Valid){
 	//avcodec_close(c.Ctx)
 	if(!c.pre_allocated){
@@ -64,21 +97,18 @@ func(c * Coder)open(t int){
   c.codec_type=t
     
   c.init()
-  
+  c.prepare()
   if(c.codec_type==CODEC_TYPE_DECODER){
-    c.Codec=avcodec_find_decoder(c.Ctx.ctx.codec_id)
-    c.pre_allocated=false
+    c.Codec=avcodec_find_decoder(int32(c.Ctx.ctx.codec_id))
+//    c.pre_allocated=false
   }
   
   if(c.codec_type==CODEC_TYPE_ENCODER){
-    log.Printf("first prepare")
+    //log.Printf("first prepare")
+    //c.prepare()
+    c.Codec=avcodec_find_encoder(int32(c.Ctx.ctx.codec_id))
+    //c.Ctx.ctx.sample_fmt=0
     c.prepare()
-    c.Codec=avcodec_find_encoder(c.Ctx.ctx.codec_id)
-    c.Ctx.ctx.sample_fmt=0
-    avcodec_get_context_defaults2(&c.Ctx, c.Codec);
-    c.prepare()
-    c.Ctx.ctx.pix_fmt=0//int32(c.Pixelformat)
-    c.Ctx.ctx.sample_fmt=1//int32(c.Pixelformat)
 //    c.Ctx.ctx.time_base.num=1//int32(c.Pixelformat)
 //    c.Ctx.ctx.time_base.den=44100//int32(c.Pixelformat)
 
@@ -94,16 +124,18 @@ func(c * Coder)open(t int){
     //c.Ctx.ctx.codec_id=c.Codec.codec.codec_id
     //if(c.Ctx.ctx.codec_id<0x10000){
     c.Ctx.ctx.codec_type=c.Codec.codec._type
-    log.Printf("CodecType!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %d", c.Ctx.ctx.codec_type)
     
     //}
     //c.Ctx.ctx.width=320
     //c.Ctx.ctx.height=240
-    
+    //avcodec_get_context_defaults2(&c.Ctx, c.Codec);
+
   c.setCodecParams()
   //c.Ctx.ctx.time_base.num=1
   //c.Ctx.ctx.time_base.den=25
-  
+  //c.GetParameters()
+    c.Ctx.ctx.pix_fmt=0//int32(c.Pixelformat)
+    c.Ctx.ctx.sample_fmt=1//int32(c.Pixelformat)
   res:=avcodec_open(c.Ctx,c.Codec)
   
   if(res<0){
@@ -119,14 +151,26 @@ func(self* Coder)prepare(){
     println("Alloc Encoder Context")
     cid,_:=strconv.Atoui64(self.Parameter["codecid"])
     if(cid==0){
-	c:=avcodec_find_encoder_by_name(self.Parameter["codecid"])
-	if(c.codec!=nil){
-	    cid=uint64(c.codec.id)//,_:=strconv.Atoui64(self.Parameter["codecid"])
+      if(self.codec_type==CODEC_TYPE_ENCODER){
+	    self.Codec=avcodec_find_encoder_by_name(self.Parameter["codecid"])
+	}
+      if(self.codec_type==CODEC_TYPE_DECODER){
+	    self.Codec=avcodec_find_decoder_by_name(self.Parameter["codecid"])
+	}
+	if(self.Codec.codec!=nil){
+	    cid=uint64(self.Codec.codec.id)//,_:=strconv.Atoui64(self.Parameter["codecid"])
 	}
     }
     log.Printf("searching for codec id %d", cid)
     self.Ctx=*avcodec_alloc_context();
-    self.Ctx.ctx.codec_id=int32(cid)
+    if(len(self.ExtraData)>0){
+	self.Ctx.ctx.extradata=(*_Ctypedef_uint8_t)(unsafe.Pointer(&self.ExtraData[0]))
+    }
+
+    self.pre_allocated=false
+    self.Ctx.ctx.codec_id=uint32(cid)
+  }else{
+    //c.pre_allocated=true
   }
   width,err:=strconv.Atoi(self.Parameter["width"])
   if(err==nil){
@@ -151,7 +195,6 @@ func(self* Coder)prepare(){
   }
   self.Ctx.ctx.debug = 0
   self.Ctx.ctx.debug_mv = 0
-                
   /**
   * @TODO: settng the fixed params like width, height, channels...
   */
@@ -159,8 +202,13 @@ func(self* Coder)prepare(){
 
 func(self*Coder)setCodecParams(){
   for mkey,mval:=range self.Parameter {
-    if(mkey!="width"&&mkey!="height"&&mkey!="codecid"&&mkey!="channels"){
+    if(mval!=""&&mkey!="width"&&mkey!="height"&&mkey!="codecid"&&mkey!="channels"){
+	//fmt.Printf("Setting Context String '%s' = '%s' len(val)=%d\n",mkey,mval,len(mval))
 	av_set_string(&self.Ctx, mkey, mval);
     }
+  }
+  if(self.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
+    self.Ctx.ctx.time_base.num=1
+    self.Ctx.ctx.time_base.den=self.Ctx.ctx.sample_rate
   }
 }

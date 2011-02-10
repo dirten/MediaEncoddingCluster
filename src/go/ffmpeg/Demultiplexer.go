@@ -1,7 +1,7 @@
 package gmf
 
-//import "unsafe"
-
+import "unsafe"
+//import "runtime"
 type Demultiplexer struct{
   Ds DataSource;
   tracks *[]Track
@@ -27,12 +27,12 @@ func (dpx * Demultiplexer)GetTracks()*[]Track{
 }
 
 func (dpx * Demultiplexer)Start(){
+    avpacket:=new(AVPacket)
+    av_init_packet2(avpacket)
   for true {
-    packet:=new(Packet)
-    av_init_packet(packet)
     //defer av_free_packet(packet)
-    if(av_read_frame(dpx.Ds.ctx, packet)>=0){
-      av_dup_packet(packet)
+    if(av_read_frame(dpx.Ds.ctx, avpacket)>=0){
+      //av_dup_packet(avpacket)
     }else{
       println("end of file reached, closing channels")
       for i:=0;i<len(*dpx.tracks);i++ {
@@ -42,30 +42,36 @@ func (dpx * Demultiplexer)Start(){
       }
       break
     }
-    /*
-    var re Packet
     
-    re.Pts=int64(packet.avpacket.pts)
-    re.Dts=int64(packet.avpacket.dts)
-    re.Size=int(packet.avpacket.size)
-    re.Data=make([]byte, re.Size)
-    data:=(*(*[1<<30]byte)(unsafe.Pointer(packet.avpacket.data)))[0:packet.avpacket.size]
-    for i:= 0; i < re.Size; i++ {
-      re.Data[i] = data[i];
-    }
-    re.Stream=int(packet.avpacket.stream_index)
-    re.Flags=int(packet.avpacket.flags)
-    re.Duration=int(packet.avpacket.duration)
-    re.Pos=int64(packet.avpacket.pos)
-    av_free_packet(packet)
-    */
+    //var re Packet
+    
+    //re.Pts=int64(packet.avpacket.pts)
+    //re.Dts=int64(packet.avpacket.dts)
+    //re.Size=int(packet.avpacket.size)
+    //re.Stream=int(packet.avpacket.stream_index)
+    //re.Flags=int(packet.avpacket.flags)
+    //re.Duration=int(packet.avpacket.duration)
+    //re.Pos=int64(packet.avpacket.pos)
+    //av_free_packet(packet)
+    //runtime.SetFinalizer(packet, av_free_packet)
+    track:=(*dpx.tracks)[avpacket.stream_index]
+    
+    packet:=new(Packet)
+    //av_init_packet(packet)
 
-    track:=(*dpx.tracks)[packet.avpacket.stream_index]
-    packet.Size=int(packet.avpacket.size)
-    packet.Pts=Timestamp{int64(packet.avpacket.pts),Rational{int(track.time_base.num),int(track.time_base.den)}}
-    packet.Dts=Timestamp{int64(packet.avpacket.dts),Rational{int(track.time_base.num),int(track.time_base.den)}}
-    packet.Duration=Timestamp{int64(packet.avpacket.duration),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Size=int(avpacket.size)
+    packet.Pts=Timestamp{int64(avpacket.pts),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Dts=Timestamp{int64(avpacket.dts),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Duration=Timestamp{int64(avpacket.duration),Rational{int(track.time_base.num),int(track.time_base.den)}}
+    packet.Data=make([]byte, packet.Size+8)
+    //packet.Data=(*(*[1<<30]byte)(unsafe.Pointer(packet.avpacket.data)))[0:packet.Size+8]
+
+    data:=(*(*[1<<30]byte)(unsafe.Pointer(avpacket.data)))[0:packet.Size]
+    for i:= 0; i < packet.Size; i++ {
+      packet.Data[i] = data[i];
+    }
     //println(packet.String())
+    av_free_packet2(avpacket)
     track.stream<-*packet
   }
   //re * Packet
@@ -73,3 +79,4 @@ func (dpx * Demultiplexer)Start(){
 func NewDemultiplexer(ds * DataSource)*Demultiplexer{
     return &Demultiplexer{Ds:*ds}
 }
+

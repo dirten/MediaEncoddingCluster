@@ -62,8 +62,8 @@ func TestCopyStream(t*testing.T){
 	t.Fatalf("error while write output header")
     }
     
-    var packet * Packet=new(Packet)
-    av_init_packet(packet)
+    var packet * AVPacket=new(AVPacket)
+    //av_init_packet(packet)
     var sumout=0
     var sumin=0
     resizer:=new(Resizer)
@@ -73,8 +73,8 @@ func TestCopyStream(t*testing.T){
 	//time.Sleep(500000)
 	//packet.destroy()
 	//continue
-	if(packet.avpacket.stream_index==0){
-	
+	/*
+	if(packet.stream_index==0){
 	    frame:=coder.Decode(packet)
 	    if(frame!=nil&&frame.isFinished&&coder.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
 		of:=resizer.Resize(frame)
@@ -97,8 +97,8 @@ func TestCopyStream(t*testing.T){
 		//frame.destroy()
 
 	    }
-	}
-	packet.Free()
+	}*/
+	//packet.Free()
 
     }
     println("size")

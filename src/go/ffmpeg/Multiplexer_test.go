@@ -51,8 +51,8 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer){
 	    frame.avframe.pict_type=0
 	    frame.avframe.key_frame=1
 	    of:=resizer.Resize(frame)
-	    op:=encoder.Encode(of)
-	    outvideoTrack.WritePacket(op)
+	    encoder.Encode(of)
+	    //outvideoTrack.WritePacket(op)
 	    //op.destroy()
 	}
     }

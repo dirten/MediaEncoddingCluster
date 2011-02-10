@@ -49,3 +49,7 @@ func(self*Resampler)Resample(f * Frame)*Frame{
 
     return frame
 }
+
+func (self*Resampler)Close(){
+    audio_resample_close(self.ctx)
+}

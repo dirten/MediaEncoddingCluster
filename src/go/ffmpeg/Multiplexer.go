@@ -92,6 +92,7 @@ func(self * Multiplexer)Stop(){
     log.Printf("Writing Trailer")
     av_write_trailer(self.Ds.ctx);
 }
+
 func NewMultiplexer(sink *DataSink)*Multiplexer{
     return &Multiplexer{Ds:*sink}
 }

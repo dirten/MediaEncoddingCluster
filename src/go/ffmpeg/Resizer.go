@@ -52,3 +52,6 @@ func(self*Resizer)Resize(in* Frame)*Frame{
     //return in
 }
 
+func (self*Resizer)Close(){
+    sws_free_context(self.ctx)
+}

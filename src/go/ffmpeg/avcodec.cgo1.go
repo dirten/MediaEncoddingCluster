@@ -22,6 +22,9 @@ func init() {
 
 }
 
+type AVPacket struct {
+	_Ctypedef_AVPacket
+}
 
 type Packet struct {
 	avpacket	*_Ctypedef_AVPacket
@@ -34,6 +37,9 @@ type Packet struct {
 	Stream		int
 	Flags		int
 	Pos		int64
+}
+type AVFrame struct {
+	_Ctypedef_AVFrame
 }
 
 type Frame struct {
@@ -67,6 +73,7 @@ func NewPacket() *Packet {
 	av_init_packet(result)
 	return result
 }
+
 func (p *Packet) String() string {
 	return fmt.Sprintf("S:%d;Pts:%s;Dts:%s;Idx:%d;Dur:%s|avp|S:%d;Pts:%d;Dts:%d;Idx:%d;Dur:%d", p.Size, p.Pts, p.Dts, p.Stream, p.Duration, p.avpacket.size, int64(p.avpacket.pts), int64(p.avpacket.dts), p.avpacket.stream_index, int(p.avpacket.duration))
 }
@@ -84,9 +91,6 @@ func (p *Frame) destroy() {
 		_Cfunc_av_free(unsafe.Pointer(p.avframe))
 		p.avframe = nil
 	}
-
-	println("Frame object destroyed")
-
 }
 
 func (p *Frame) IsFinished() bool {
@@ -94,7 +98,6 @@ func (p *Frame) IsFinished() bool {
 }
 
 func free_frame(frame *Frame) {
-	println("free_frame Frame object destroyed")
 	frame.destroy()
 }
 
@@ -137,6 +140,13 @@ func avcodec_close(cctx CodecContext) {
 func av_free_packet(p *Packet) {
 	if p.avpacket != nil {
 		_Cfunc_av_free_packet(p.avpacket)
+		p.avpacket = nil
+	}
+}
+func av_free_packet2(p *AVPacket) {
+	if p != nil {
+		_Cfunc_av_free_packet((*_Ctypedef_AVPacket)(unsafe.Pointer(p)))
+		p = nil
 	}
 }
 
@@ -163,9 +173,6 @@ func alloc_avframe(frame *Frame) {
 		frame.avframe = new(_Ctypedef_AVFrame)
 	}
 }
-func av_pup_packet(packet *Packet) {
-	_Cfunc_av_dup_packet((*_Ctypedef_AVPacket)(unsafe.Pointer(packet.avpacket)))
-}
 
 func av_init_packet(packet *Packet) {
 	if packet.avpacket == nil {
@@ -173,27 +180,36 @@ func av_init_packet(packet *Packet) {
 	}
 	_Cfunc_av_init_packet(packet.avpacket)
 }
+func av_init_packet2(packet *AVPacket) {
+	_Cfunc_av_init_packet((*_Ctypedef_AVPacket)(unsafe.Pointer(packet)))
+}
 
-func av_dup_packet(packet *Packet) {
-	_Cfunc_av_dup_packet(packet.avpacket)
+func av_dup_packet(packet *AVPacket) {
+	_Cfunc_av_dup_packet((*_Ctypedef_AVPacket)(unsafe.Pointer(packet)))
 }
 
 func avcodec_find_decoder(codec_id int32) Codec {
 	var codec Codec
-	codec.codec = _Cfunc_avcodec_find_decoder(codec_id)
+	codec.codec = _Cfunc_avcodec_find_decoder(uint32(codec_id))
+	return codec
+}
+func avcodec_find_decoder_by_name(name string) Codec {
+	cname := _Cfunc_CString(name)
+	defer _Cfunc_free(unsafe.Pointer(cname))
+	return Codec{codec: _Cfunc_avcodec_find_decoder_by_name(cname)}
+}
+func avcodec_find_encoder(codec_id int32) Codec {
+	var codec Codec
+	codec.codec = _Cfunc_avcodec_find_encoder(uint32(codec_id))
 	return codec
 }
 
-func avcodec_find_encoder(codec_id int32) Codec {
-	var codec Codec
-	codec.codec = _Cfunc_avcodec_find_encoder(codec_id)
-	return codec
-}
 func avcodec_find_encoder_by_name(name string) Codec {
 	cname := _Cfunc_CString(name)
 	defer _Cfunc_free(unsafe.Pointer(cname))
 	return Codec{codec: _Cfunc_avcodec_find_encoder_by_name(cname)}
 }
+
 func avpicture_get_size(fmt int32, width, height int) int {
 	return int(_Cfunc_avpicture_get_size(fmt, _Ctype_int(width), _Ctype_int(height)))
 }
@@ -207,20 +223,20 @@ func avpicture_alloc(frame *Frame, fmt, width, height int) int {
 	return int(_Cfunc_avpicture_alloc((*_Ctypedef_AVPicture)(unsafe.Pointer(frame.avframe)), int32(fmt), _Ctype_int(width), _Ctype_int(height)))
 }
 
-func avcodec_decode_video(ctx *CodecContext, frame *Frame, finished *int, packet *Packet) int {
+func avcodec_decode_video(ctx *CodecContext, frame *Frame, finished *int, packet *AVPacket) int {
 	return int(_Cfunc_avcodec_decode_video2(
 		ctx.ctx,
 		(*_Ctypedef_AVFrame)(unsafe.Pointer(frame.avframe)),
 		(*_Ctype_int)(unsafe.Pointer(finished)),
-		packet.avpacket))
+		(*_Ctypedef_AVPacket)(unsafe.Pointer(packet))))
 }
 
-func avcodec_decode_audio(ctx *CodecContext, buffer []byte, size *int, packet *Packet) int {
+func avcodec_decode_audio(ctx *CodecContext, buffer []byte, size *int, packet *AVPacket) int {
 	return int(_Cfunc_avcodec_decode_audio3(
 		ctx.ctx,
 		(*_Ctypedef_int16_t)(unsafe.Pointer(&buffer[0])),
 		(*_Ctype_int)(unsafe.Pointer(size)),
-		packet.avpacket))
+		(*_Ctypedef_AVPacket)(unsafe.Pointer(packet))))
 }
 
 func avcodec_encode_video(ctx *CodecContext, buffer []byte, size *int, frame *Frame) int {
@@ -244,12 +260,14 @@ func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int) 
 }
 
 func audio_resample(ctx *ResampleContext, outbuffer, inbuffer []byte, size int) int {
-
 	result := int(_Cfunc_audio_resample(ctx.ctx,
 		(*_Ctype_short)(unsafe.Pointer(&outbuffer[0])),
 		(*_Ctype_short)(unsafe.Pointer(&inbuffer[0])), _Ctype_int(size)))
-
 	return result
+}
+
+func audio_resample_close(ctx *ResampleContext) {
+	_Cfunc_audio_resample_close(ctx.ctx)
 }
 
 func av_resample_compensate(ctx *ResampleContext, delta, distance int) {

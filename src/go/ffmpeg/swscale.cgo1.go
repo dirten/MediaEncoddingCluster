@@ -6,9 +6,12 @@ package gmf
 
 import "unsafe"
 
-
 type SwsContext struct {
 	sws *[0]byte
+}
+
+func sws_free_context(ctx *SwsContext) {
+	_Cfunc_sws_freeContext(ctx.sws)
 }
 
 func sws_scale_getcontext(ctx *SwsContext, srcwidth, srcheight, srcfmt, trgwidth, trgheight, trgfmt, flags int) {

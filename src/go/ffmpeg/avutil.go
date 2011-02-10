@@ -7,12 +7,7 @@ package gmf
 import "C"
 import "unsafe"
 import "fmt"
-
-/*
-type Rational struct{
-    Num int
-    Den int
-}*/
+//import "strings"
 
 type AVFifoBuffer struct{
     av_fifo *C.AVFifoBuffer
@@ -20,6 +15,11 @@ type AVFifoBuffer struct{
 
 type Option struct{
     C.AVOption
+}
+type AVOption struct{
+    opt*C.AVOption
+    Name string
+    Offset int
 }
 
 func av_set_string(ctx * CodecContext, key, val string)bool{
@@ -34,10 +34,29 @@ func av_set_string(ctx * CodecContext, key, val string)bool{
 	if(o==nil){
 	    fmt.Printf("option for %s not found!\n", key)
 	}
-	fmt.Printf("Error while setting option '%s' = '%s'\n", key, val)
+	//fmt.Printf("Error while setting option '%s' = '%s'\n", key, val)
     }
     return result
 }
+
+func av_get_string(ctx * CodecContext, name string)string{
+    cname:=C.CString(name)
+    defer C.free(unsafe.Pointer(cname))
+    value:=make([]byte, 1000)
+    C.av_get_string(unsafe.Pointer(ctx.ctx), cname, nil,(*C.char)(unsafe.Pointer(&value[0])), C.int(len(value)))
+    //return string(value[0:len(value)-cap(value)])
+    return string(value)
+}
+
+func av_next_option(ctx * CodecContext,option * AVOption)*AVOption{
+    out:= AVOption{opt:C.av_next_option(unsafe.Pointer(ctx.ctx), option.opt)}
+    if(out.opt!=nil){
+	out.Name=C.GoString(out.opt.name)
+	out.Offset=int(out.opt.offset)
+    }
+    return &out
+}
+
 
 func av_clip(a, amin, amax int)int{
     if(a < amin){

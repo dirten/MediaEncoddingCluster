@@ -1,7 +1,8 @@
 package gmf
 
 import "log"
-
+import "unsafe"
+import "fmt"
 type Decoder struct {
     Coder
     pts int64
@@ -10,22 +11,44 @@ type Decoder struct {
 }
 
 func(c * Decoder)Open(){
-    c.open(CODEC_TYPE_DECODER)
+    c.Coder.open(CODEC_TYPE_DECODER)
     c.pts=0
+}
+func (self * Decoder)SetParameter(key, val string){
+    if(key=="frame_rate"){
+	fmt.Sscanf(val,"%d/%d",&self.frame_rate.Num,&self.frame_rate.Den)
+    }else{
+        self.Coder.SetParameter(key,val)
+    }
+}
+
+func (self * Decoder)GetParameters()map[string]string{
+    self.Coder.GetParameters()
+    self.Parameter["frame_rate"]=fmt.Sprintf("%d/%d",self.frame_rate.Num,self.frame_rate.Den)
+    return self.Parameter
 }
 
 func(c * Decoder)Decode(p * Packet)*Frame{
-  //println(p.avpacket)
+  p2:=new(AVPacket)
+  av_init_packet2(p2)
+  p2.size=(_Ctype_int)(p.Size)
+  p2.data=(*_Ctypedef_uint8_t)(unsafe.Pointer(&p.Data[0]))
+  p2.pts=(_Ctypedef_int64_t)(p.Pts.Time)
+  p2.duration=(_Ctype_int)(p.Duration.Time)
+  p2.flags=_Ctype_int(p.Flags)
+  p2.stream_index=_Ctype_int(p.Stream)
+  p2.dts=_Ctypedef_int64_t(AV_NOPTS_VALUE)
+
   if(c.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
-    return c.decodeVideo(p)
+    return c.decodeVideo(p2)
   }
   if(c.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
-    return c.decodeAudio(p)
+    return c.decodeAudio(p2)
   }
   return nil
 }
 
-func(c * Decoder)decodeAudio(p * Packet)*Frame{
+func(c * Decoder)decodeAudio(p * AVPacket)*Frame{
   if(!c.Valid){
     return nil
   }
@@ -44,12 +67,13 @@ func(c * Decoder)decodeAudio(p * Packet)*Frame{
   }
   return frame
 }
+
 func (c*Decoder)GetCodecType()int32{
     return c.Ctx.ctx.codec_type
 }
 
 func (c*Decoder)GetCodecId()int32{
-    return c.Ctx.ctx.codec_id
+    return int32(c.Ctx.ctx.codec_id)
 }
 
 func (c*Decoder)GetTimeBase()Rational{
@@ -57,10 +81,14 @@ func (c*Decoder)GetTimeBase()Rational{
 }
 
 func (c*Decoder)GetFrameRate()Rational{
+    if(c.frame_rate.Den==0&&c.frame_rate.Num==0){
+	c.frame_rate.Den=int(c.Ctx.ctx.time_base.num)
+	c.frame_rate.Num=int(c.Ctx.ctx.time_base.den)
+    }
     return Rational{c.frame_rate.Den,c.frame_rate.Num}
 }
 
-func(c * Decoder)decodeVideo(p * Packet)*Frame{
+func(c * Decoder)decodeVideo(p * AVPacket)*Frame{
   if(!c.Valid){
     return nil
   }
@@ -70,6 +98,7 @@ func(c * Decoder)decodeVideo(p * Packet)*Frame{
   var frame * Frame=NewFrame(int(c.Ctx.ctx.pix_fmt), int(c.Ctx.ctx.width), int(c.Ctx.ctx.height))
 
   var frameFinished int=0
+  //println(p.avpacket.data)
   avcodec_decode_video(&c.Ctx,frame,&frameFinished,p)
   if(frameFinished>0){
     frame.isFinished=true

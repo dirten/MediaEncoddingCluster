@@ -40,3 +40,4 @@ func (src * DataSink) Disconnect() bool{
 func NewDatasink(loc MediaLocator)*DataSink{
     return &DataSink{Locator:loc,ctx:nil,Valid:false}
 }
+

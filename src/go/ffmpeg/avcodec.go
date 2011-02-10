@@ -1,6 +1,9 @@
 package gmf
 
 
+/*go could not map the memory correct from ReSampleContext to AVResampleContext*/
+/*for that case we build this wrapper function with gmf_resample_compensate*/
+
 //#include "libavcodec/avcodec.h"
 //void gmf_resample_compensate(ReSampleContext *s, int delta, int distance){
 //av_resample_compensate(*(struct AVResampleContext**)s, delta, distance);
@@ -21,9 +24,12 @@ var TIME_BASE_Q = Rational{1,1000000}
 
 func init(){
   C.avcodec_register_all();
-//  C.av_log_set_level(48);
+ // C.av_log_set_level(48);
 }
 
+type AVPacket struct{
+    C.AVPacket
+}
 
 type Packet struct{
     avpacket * C.AVPacket
@@ -37,6 +43,9 @@ type Packet struct{
     Flags int
     Pos int64
 
+}
+type AVFrame struct{
+    C.AVFrame
 }
 
 type Frame struct{
@@ -70,6 +79,7 @@ func NewPacket()*Packet{
     av_init_packet(result)
     return result
 }
+
 func (p*Packet)String()string{
     return fmt.Sprintf("S:%d;Pts:%s;Dts:%s;Idx:%d;Dur:%s|avp|S:%d;Pts:%d;Dts:%d;Idx:%d;Dur:%d",p.Size,p.Pts,p.Dts,p.Stream,p.Duration,p.avpacket.size,int64(p.avpacket.pts),int64(p.avpacket.dts),p.avpacket.stream_index,int(p.avpacket.duration))
 }
@@ -87,9 +97,6 @@ func (p * Frame)destroy(){
 	C.av_free(unsafe.Pointer(p.avframe))
         p.avframe=nil
     }
-    //C.av_free(unsafe.Pointer(&p.avpacket))
-    println("Frame object destroyed")
-    
 }
 
 func (p * Frame)IsFinished()bool{
@@ -97,7 +104,6 @@ func (p * Frame)IsFinished()bool{
 }
 
 func free_frame(frame * Frame){
-    println("free_frame Frame object destroyed")
     frame.destroy()
 }
 
@@ -140,6 +146,13 @@ func avcodec_close(cctx CodecContext){
 func av_free_packet(p * Packet){
     if(p.avpacket!=nil){
 	C.av_free_packet(p.avpacket)
+	p.avpacket=nil
+    }
+}
+func av_free_packet2(p * AVPacket){
+    if(p!=nil){
+	C.av_free_packet((*C.AVPacket)(unsafe.Pointer(p)))
+	p=nil
     }
 }
 
@@ -166,9 +179,6 @@ func alloc_avframe(frame * Frame){
 	frame.avframe=new(C.AVFrame)
     }
 }
-func av_pup_packet(packet * Packet){
-      C.av_dup_packet((*C.AVPacket)(unsafe.Pointer(packet.avpacket)))
-}
 
 func av_init_packet(packet * Packet){
     if(packet.avpacket==nil){
@@ -176,27 +186,39 @@ func av_init_packet(packet * Packet){
     }
     C.av_init_packet(packet.avpacket)
 }
+func av_init_packet2(packet * AVPacket){
+    //if(packet==nil){
+	//packet=new(AVPacket)
+    //}
+    C.av_init_packet((*C.AVPacket)(unsafe.Pointer(packet)))
+}
 
-func av_dup_packet(packet * Packet){
-    C.av_dup_packet(packet.avpacket)
+func av_dup_packet(packet * AVPacket){
+    C.av_dup_packet((*C.AVPacket)(unsafe.Pointer(packet)))
 }
 
 func avcodec_find_decoder(codec_id int32)Codec{
     var codec Codec
-  codec.codec=C.avcodec_find_decoder(codec_id)
+  codec.codec=C.avcodec_find_decoder(uint32(codec_id))
+  return codec
+}
+func avcodec_find_decoder_by_name(name string)Codec{
+  cname:=C.CString(name)
+  defer C.free(unsafe.Pointer(cname))
+  return Codec{codec:C.avcodec_find_decoder_by_name(cname)}
+}
+func avcodec_find_encoder(codec_id int32)Codec{
+  var codec Codec
+  codec.codec=C.avcodec_find_encoder(uint32(codec_id))
   return codec
 }
 
-func avcodec_find_encoder(codec_id int32)Codec{
-  var codec Codec
-  codec.codec=C.avcodec_find_encoder(codec_id)
-  return codec
-}
 func avcodec_find_encoder_by_name(name string)Codec{
   cname:=C.CString(name)
   defer C.free(unsafe.Pointer(cname))
   return Codec{codec:C.avcodec_find_encoder_by_name(cname)}
 }
+
 func avpicture_get_size(fmt int32, width, height int)int{
     return int(C.avpicture_get_size(fmt, C.int(width), C.int(height)))
 }
@@ -210,20 +232,20 @@ func avpicture_alloc(frame * Frame, fmt, width, height int)int{
     return int(C.avpicture_alloc((*C.AVPicture)(unsafe.Pointer(frame.avframe)),int32(fmt),C.int(width),C.int(height)))
 }
 
-func avcodec_decode_video(ctx * CodecContext, frame * Frame, finished * int, packet * Packet)int{
+func avcodec_decode_video(ctx * CodecContext, frame * Frame, finished * int, packet * AVPacket)int{
   return int(C.avcodec_decode_video2(
     ctx.ctx,
     (*C.AVFrame)(unsafe.Pointer(frame.avframe)),
     (*C.int)(unsafe.Pointer(finished)),
-    packet.avpacket))
+    (*C.AVPacket)(unsafe.Pointer(packet))))
 }
 
-func avcodec_decode_audio(ctx * CodecContext, buffer []byte, size * int, packet * Packet)int{
+func avcodec_decode_audio(ctx * CodecContext, buffer []byte, size * int, packet * AVPacket)int{
   return int(C.avcodec_decode_audio3(
     ctx.ctx,
     (*C.int16_t)(unsafe.Pointer(&buffer[0])),
     (*C.int)(unsafe.Pointer(size)),
-    packet.avpacket))
+    (*C.AVPacket)(unsafe.Pointer(packet))))
 }
 
 func avcodec_encode_video(ctx * CodecContext,buffer []byte, size * int,frame * Frame)int{
@@ -256,34 +278,15 @@ func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int)*
 }
 
 func audio_resample(ctx * ResampleContext, outbuffer, inbuffer []byte, size int)int{    
-//   outbuf := (*C.short) (C.av_malloc(C.uint(len(outbuffer))));
-//  defer C.av_free(unsafe.Pointer(outbuf))
-/*
-  inbuf := (uintptr) (C.av_malloc(C.uint(len(inbuffer))));
-  defer C.av_free(unsafe.Pointer(inbuf))
-  for i:=0;i<len(inbuffer);i++{
-      *(*byte)(unsafe.Pointer(uintptr(inbuf) + uintptr(i)))=inbuffer[i]
-  }
-  */
-  //*(*byte)(unsafe.Pointer(uintptr(buf) + uintptr(i)))
-  //println(len(inbuffer))
-/*
-  result:= int(C.myaudio_resample(ctx.ctx,
-            (*C.short)(unsafe.Pointer(&outbuffer[0])),
-            C.int(len(outbuffer)),
-            (*C.short)(unsafe.Pointer(&inbuffer[0])),
-            C.int(len(inbuffer)),
-            C.int(size)))*/
     result:= int(C.audio_resample(ctx.ctx,
             (*C.short)(unsafe.Pointer(&outbuffer[0])),
             (*C.short)(unsafe.Pointer(&inbuffer[0])),
             C.int(size)))
-/*
-  data:=(*(*[1<<30]byte)(unsafe.Pointer(outbuf)))[0:result]
-  for i:= 0; i < result; i++ {
-    outbuffer[i] = data[i];
-  }*/
   return result
+}
+
+func audio_resample_close(ctx * ResampleContext){
+    C.audio_resample_close(ctx.ctx)
 }
 
 func av_resample_compensate(ctx * ResampleContext, delta, distance int){

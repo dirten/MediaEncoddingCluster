@@ -4,20 +4,12 @@ package gmf
 import "C"
 import "unsafe"
 
-
-
-
-
-
-
-
-
-
-
 type SwsContext struct{
-//    sws unsafe.Pointer
     sws *C.struct_SwsContext
-    //sws *[0]uint8
+}
+
+func sws_free_context(ctx * SwsContext){
+    C.sws_freeContext(ctx.sws)
 }
 
 func sws_scale_getcontext(ctx * SwsContext, srcwidth, srcheight, srcfmt, trgwidth,trgheight,trgfmt,flags int){

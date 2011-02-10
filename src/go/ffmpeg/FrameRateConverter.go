@@ -1,6 +1,6 @@
 package gmf
 
-//import "log"
+import "log"
 type FrameRateConverter struct{
     src Rational
     trg Rational
@@ -15,10 +15,10 @@ func (self*FrameRateConverter)Init(src, trg Rational){
     self.src=src
     self.trg=trg
     self.frame_list=make([]*Frame,100)
+    log.Printf("FrameRateConverter src = %s trg = %s", self.src, self.trg)
 }
 
 func (self*FrameRateConverter)Convert(in * Frame)*Frame{
-    //log.Printf("src = %s trg = %s", self.src, self.trg)
     if(self.src.Equals(self.trg)){
 	return in
     }

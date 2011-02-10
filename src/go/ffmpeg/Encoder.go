@@ -16,11 +16,11 @@ func(c * Encoder)Open(){
     c.open(CODEC_TYPE_ENCODER)
     c.last_dts=0
     c.audio_fifo=av_fifo_alloc(1024)
-    log.Printf("Codec Oppened")
+    log.Printf("Encoder Oppened")
     c.stream_index=0
     size := c.Ctx.ctx.width * c.Ctx.ctx.height;
-    c.buffer_size = int(math.Fmax(float64(1024 * 256), float64(6 * size + 200)));
-    c.buffer/*[]byte*/ =make([]byte,c.buffer_size)
+    c.buffer_size = int(math.Fmax(float64(4 * 192 * 1024), float64(6 * size + 200)));
+    c.buffer/*[]byte*/ =make([]byte,c.buffer_size+8)
 }
 
 func(c * Encoder)Encode(f * Frame)*Packet{
@@ -88,10 +88,11 @@ return nil
 
 func(c * Encoder)encodeAudio(f * Frame)*Packet{
     bpsf:=av_get_bits_per_sample_fmt(c.Ctx.ctx.sample_fmt)/8
-    audio_out_size := (4 * 192 * 1024)
-    out_buffer:=make([]byte,audio_out_size+8)
+    //audio_out_size := (4 * 192 * 1024)
+    //out_buffer:=make([]byte,audio_out_size+8)
     //print("frame buffer size ")
     //println(f.size)
+    //return nil
     if(c.Ctx.ctx.frame_size>1){
 	frame_bytes := int(c.Ctx.ctx.frame_size) * bpsf * int(c.Ctx.ctx.channels);
         if(av_fifo_realloc(c.audio_fifo,uint(av_fifo_size(c.audio_fifo) + f.size))<0){
@@ -105,8 +106,8 @@ func(c * Encoder)encodeAudio(f * Frame)*Packet{
             av_fifo_generic_read(c.audio_fifo, audio_buf, frame_bytes);
               out_size := avcodec_encode_audio(
               &c.Ctx,
-              out_buffer,
-              &audio_out_size,
+              c.buffer,
+              &c.buffer_size,
               audio_buf)
             if (out_size < 0) {
               log.Printf("Error Encoding Audio Frame")
@@ -121,9 +122,9 @@ func(c * Encoder)encodeAudio(f * Frame)*Packet{
             var result *Packet=new(Packet)
             av_init_packet(result)
             result.Size=out_size
-            result.Data=make([]byte,audio_out_size+8)
+            result.Data=make([]byte,c.buffer_size+8)
             for i:=0;i<out_size;i++{
-        	result.Data[i]=out_buffer[i]
+        	result.Data[i]=c.buffer[i]
             }
             result.Duration=Timestamp{int64(c.Ctx.ctx.frame_size),Rational{1,int(c.Ctx.ctx.sample_rate)}}
             result.Pts=Timestamp{int64(c.last_dts),Rational{1,int(c.Ctx.ctx.sample_rate)}}

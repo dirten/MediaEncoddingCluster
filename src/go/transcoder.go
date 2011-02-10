@@ -105,7 +105,7 @@ func main(){
 	fmt.Printf("no outputfile given")
 	os.Exit(1)
     }
-    for true {
+    if true {
     loc:=MediaLocator{Filename:*inputfile}
     source:=NewDataSource(loc)
     if(!source.Connect()){
@@ -129,7 +129,7 @@ func main(){
     time.Sleep(1000000000)
     go multiplexer.Start()
     plex.Start()
-    time.Sleep(1000000000)
+    time.Sleep(5000000000)
     multiplexer.Stop()
     //plex.Stop()
     source.Disconnect()
