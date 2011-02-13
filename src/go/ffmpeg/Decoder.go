@@ -39,10 +39,10 @@ func(c * Decoder)Decode(p * Packet)*Frame{
   p2.stream_index=_Ctype_int(p.Stream)
   p2.dts=_Ctypedef_int64_t(AV_NOPTS_VALUE)
 
-  if(c.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
+  if(int32(c.Ctx.ctx.codec_type)==CODEC_TYPE_VIDEO){
     return c.decodeVideo(p2)
   }
-  if(c.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
+  if(int32(c.Ctx.ctx.codec_type)==CODEC_TYPE_AUDIO){
     return c.decodeAudio(p2)
   }
   return nil
@@ -69,7 +69,7 @@ func(c * Decoder)decodeAudio(p * AVPacket)*Frame{
 }
 
 func (c*Decoder)GetCodecType()int32{
-    return c.Ctx.ctx.codec_type
+    return int32(c.Ctx.ctx.codec_type)
 }
 
 func (c*Decoder)GetCodecId()int32{
