@@ -5,8 +5,52 @@ package gmf
 /*for that case we build this wrapper function with gmf_resample_compensate*/
 
 //#include "libavcodec/avcodec.h"
+//ReSampleContext * gmf_audio_resample_init(int output_channels, int input_channels,
+//                                         int output_rate, int input_rate,
+//                                         int sample_fmt_out,
+//                                         int sample_fmt_in,
+//                                         int filter_length, int log2_phase_count,
+//                                         int linear){
+//  void * ctx=av_audio_resample_init(output_channels,input_channels,
+//                                         output_rate, input_rate,
+//                                         sample_fmt_out,
+//                                         sample_fmt_in,
+//                                         filter_length, log2_phase_count,
+//                                         linear, 0.8);
+//						return ctx;
+//}
+//void * gmf_audio_resample_init2(){
+//  void * testmalloc=(void*)malloc(sizeof(10));
+//  void * ctx=av_audio_resample_init(2,2,
+//                                         48000, 44100,
+//                                         1,
+//                                         1,
+//                                         10, 10,
+//                                         0, 0.8);
+//  printf("malloc pointer %p\n", testmalloc);
+////  return ctx;
+//     printf("allocation Resample Context %p\n", ctx);
+////     printf("test allocation Resample Context %p\n", testmalloc);
+////     printf("Resample Context input_format %d\n", ctx->sample_fmt[0]);
+////     printf("Resample Context output_format %d\n", ctx->sample_fmt[1]);
+////     printf("Resample Context input_channels %d\n", ctx->input_channels);
+////     printf("Resample Context output_channels %d\n", ctx->output_channels);
+//						return testmalloc;
+//}
+//ReSampleContext * check_context(void * ctx){
+//     printf("allocation Resample Context %p\n", ctx);
+////     printf("Resample Context input_format %d\n", ctx->sample_fmt[0]);
+////     printf("Resample Context output_format %d\n", ctx->sample_fmt[1]);
+////     printf("Resample Context input_channels %d\n", ctx->input_channels);
+////     printf("Resample Context output_channels %d\n", ctx->output_channels);
+// return 0;
+//}
+//
 //void gmf_resample_compensate(ReSampleContext *s, int delta, int distance){
 //av_resample_compensate(*(struct AVResampleContext**)s, delta, distance);
+//}
+//void gmf_audio_resample_close(ReSampleContext *s){
+//audio_resample_close(s);
 //}
 import "C"
 import "unsafe"
@@ -23,12 +67,57 @@ var AVCODEC_MAX_AUDIO_FRAME_SIZE int=C.AVCODEC_MAX_AUDIO_FRAME_SIZE
 var TIME_BASE_Q = Rational{1,1000000}
 
 func init(){
+  	fmt.Println("Register all Codecs")
   C.avcodec_register_all();
- // C.av_log_set_level(48);
+  //C.av_log_set_level(48);
 }
 
 type AVPacket struct{
     C.AVPacket
+}
+
+var av_resample_mutex sync.Mutex
+
+func av_audio_resample_init( trgch, srcch, trgrate, srcrate, trgfmt, srcfmt int)*ResampleContext{
+data:=C.gmf_audio_resample_init(
+        C.int(trgch),
+        C.int(srcch),
+        C.int(trgrate),
+        C.int(srcrate),
+        C.int(1),
+        C.int(1),
+        16, 10, 0)
+		//C.check_context(data)
+        fmt.Printf("ReSampleContext Data =%p\n",data)
+        //fmt.Printf("ReSampleContext inputchannels =%d\n",data.input_channels)
+		ctx:=ResampleContext{ctx:data}	
+        //fmt.Printf("ReSampleContext ctx= %d\n",ctx.ctx)
+		
+        return &ctx
+}
+
+func audio_resample(ctx * ResampleContext, outbuffer, inbuffer []byte, size int)int{ 
+	av_resample_mutex.Lock()
+	if(ctx.ctx==nil){
+		fmt.Printf("no ReSampleContext here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		return 0
+	}   
+    result:= int(C.audio_resample(ctx.ctx,
+            (*C.short)(unsafe.Pointer(&outbuffer[0])),
+            (*C.short)(unsafe.Pointer(&inbuffer[0])),
+            C.int(size)))
+    av_resample_mutex.Unlock()
+  return result
+}
+
+func audio_resample_close(ctx * ResampleContext){
+    C.gmf_audio_resample_close(ctx.ctx)
+}
+
+func av_resample_compensate(ctx * ResampleContext, delta, distance int){
+/*go could not map the memory correct from ReSampleContext to AVResampleContext*/
+/*for that case we build a wrapper function on top of this file with gmf_resample_compensate*/
+    C.gmf_resample_compensate(ctx.ctx, C.int(delta), C.int(distance))
 }
 
 type Packet struct{
@@ -266,34 +355,6 @@ func avcodec_encode_audio(ctx * CodecContext,outbuffer []byte, size * int,inbuff
     return int(out_size)
 }
 
-func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int)*ResampleContext{
-    return &ResampleContext{ctx:C.av_audio_resample_init(
-        C.int(srcch),
-        C.int(trgch),
-        C.int(srcrate),
-        C.int(trgrate),
-        int32(srcfmt),
-        int32(trgfmt),
-        16, 10, 0, C.double(0.8))}
-}
-
-func audio_resample(ctx * ResampleContext, outbuffer, inbuffer []byte, size int)int{    
-    result:= int(C.audio_resample(ctx.ctx,
-            (*C.short)(unsafe.Pointer(&outbuffer[0])),
-            (*C.short)(unsafe.Pointer(&inbuffer[0])),
-            C.int(size)))
-  return result
-}
-
-func audio_resample_close(ctx * ResampleContext){
-    C.audio_resample_close(ctx.ctx)
-}
-
-func av_resample_compensate(ctx * ResampleContext, delta, distance int){
-/*go could not map the memory correct from ReSampleContext to AVResampleContext*/
-/*for that case we build a wrapper function on top of this file with gmf_resample_compensate*/
-    C.gmf_resample_compensate(ctx.ctx, C.int(delta), C.int(distance))
-}
 
 func avpicture_deinterlace(outframe, inframe * Frame, fmt, width, height int)int{
     return int(C.avpicture_deinterlace(
