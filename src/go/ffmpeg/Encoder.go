@@ -24,10 +24,10 @@ func(c * Encoder)Open(){
 }
 
 func(c * Encoder)Encode(f * Frame)*Packet{
-  if(c.Ctx.ctx.codec_type==CODEC_TYPE_VIDEO){
+  if(int32(c.Ctx.ctx.codec_type)==CODEC_TYPE_VIDEO){
     return c.encodeVideo(f)
   }
-  if(c.Ctx.ctx.codec_type==CODEC_TYPE_AUDIO){
+  if(int32(c.Ctx.ctx.codec_type)==CODEC_TYPE_AUDIO){
     return c.encodeAudio(f)
   }
   return nil
