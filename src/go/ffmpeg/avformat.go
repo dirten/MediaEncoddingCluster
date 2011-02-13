@@ -4,9 +4,11 @@ package gmf
 //#include "libavformat/avformat.h"
 import "C"
 import "unsafe"
-
+import "fmt"
 func init(){
+	fmt.Println("Register all Formats")
   C.av_register_all();
+
 //  C.av_log_set_level(48);
 }
 
@@ -100,6 +102,7 @@ func dump_format(ctx * FormatContext){
 func av_new_stream(ctx * FormatContext, stream_id int)*Stream{
     return &Stream{C.av_new_stream(ctx.ctx, C.int(stream_id))}
 }
-func av_free(ctx*FormatContext){
+
+func av_free_format_context(ctx*FormatContext){
     C.av_free(unsafe.Pointer(ctx.ctx))
 }
