@@ -189,84 +189,84 @@
 
                 <exec executable="sh" dir="source/yasm-1.1.0" failonerror="yes">
                   <arg line="${mybasedir}/source/yasm-1.1.0/configure --prefix=${mybasedir}/source/build/yasm "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/yasm-1.1.0">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/lame-3.98.4" failonerror="yes">
                   <arg line="${mybasedir}/source/lame-3.98.4/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/lame-3.98.4" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/x264" failonerror="yes">
                   <arg line="${mybasedir}/source/x264/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/x264" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/libogg-1.1.3" failonerror="yes">
                   <arg line="${mybasedir}/source/libogg-1.1.3/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libogg-1.1.3" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/libtheora-1.1.1" failonerror="yes">
                   <arg line="${mybasedir}/source/libtheora-1.1.1/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libtheora-1.1.1" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
  
                 <exec executable="sh" dir="source/libvorbis-1.2.0" failonerror="yes">
                   <arg line="${mybasedir}/source/libvorbis-1.2.0/configure --with-ogg=${mybasedir}/source/build --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libvorbis-1.2.0" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --target=x86_64 --enable-static --disable-shared "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="clean"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <exec executable="sh" dir="source/libvpx-v${vpx.version}" failonerror="yes">
                   <arg line="${mybasedir}/source/libvpx-v${vpx.version}/configure --prefix=${mybasedir}/source/build "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libvpx-v${vpx.version}" failonerror="yes">
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/libvpx-v${vpx.version}" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
 
                 <delete>
@@ -300,11 +300,11 @@
             	    --disable-static
 		    --arch=x86_64
                     "/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/ffmpeg" failonerror="yes">
                   <arg line="install"/>
-                  <env key="PATH" path="${project.basedir}/source/build/nasm/bin:${project.basedir}/source/build/yasm/bin:${env.PATH}:"/>
+                  <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <!--
                 <delete>
