@@ -242,7 +242,7 @@
                 </exec>
 
                 <exec executable="sh" dir="source/xvidcore/build/generic" failonerror="yes">
-                  <arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --target=x86_64 --enable-static --disable-shared "/>
+                  <arg line="${mybasedir}/source/xvidcore/build/generic/configure --prefix=${mybasedir}/source/build --enable-static --disable-shared "/>
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
                 <exec executable="make" dir="source/xvidcore/build/generic" failonerror="yes">
@@ -298,7 +298,6 @@
 		    ${EXTRA_FFMPEG_CONFIGURATION}
 		    --enable-shared
             	    --disable-static
-		    --arch=x86_64
                     "/>
                   <env key="PATH" path="${mybasedir}/source/build/nasm/bin:${mybasedir}/source/build/yasm/bin:${env.PATH}:"/>
                 </exec>
