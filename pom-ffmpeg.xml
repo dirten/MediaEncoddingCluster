@@ -151,7 +151,7 @@
                   <arg line="-xf ffmpeg-export-snapshot.tar --strip=1 --directory=ffmpeg"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf x264${x264.version}.tar --strip=1 --directory=x264"/>
+                  <arg line="-xf last_x264.tar --strip=1 --directory=x264"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf lame-3.98.4.tar"/>
