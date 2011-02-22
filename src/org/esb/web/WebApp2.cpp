@@ -188,10 +188,9 @@ namespace org {
       }
 
       void WebApp2::createProject() {
-        Projects * p = new Projects();
+        ProjectTable * p = new ProjectTable();
         setContent(p);
         p->createProject();
-
       }
 
       void WebApp2::listAllFiles() {

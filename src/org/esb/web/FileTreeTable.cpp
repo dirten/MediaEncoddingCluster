@@ -17,7 +17,8 @@
 using namespace Wt;
 
 FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidget *parent) : WTreeTable(parent) {
-//    addColumn("Size", 80);
+  this->setLayoutSizeAware(true);
+  //    addColumn("Size", 80);
 //    addColumn("Modified", 110);
 
 //    header(1)->setStyleClass("fsize");
@@ -30,6 +31,7 @@ FileTreeTable::FileTreeTable(const boost::filesystem::path& path, WContainerWidg
 }
 
 FileTreeTable::FileTreeTable(const boost::filesystem::path& path,org::esb::io::FileFilter & filter, WContainerWidget *parent) : WTreeTable(parent) {
+  this->setLayoutSizeAware(true);
 //    addColumn("Size", 80);
 //    addColumn("Modified", 110);
 

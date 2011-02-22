@@ -25,17 +25,23 @@ namespace org {
         //setLayout(new Wt::WFitLayout());
         //this->setMargin(0);
         tree = new FileTreeTable("/", filter);
+        /*
         Wt::Ext::Panel * comp=new Wt::Ext::Panel();
         Wt::Ext::Panel * view=new Wt::Ext::Panel();
+        //view->setLayout(new Wt::WBorderLayout());
         view->setLayout(new Wt::WFitLayout());
         view->setTitle("Files");
+        view->resize(Wt::WLength::Auto,Wt::WLength::Auto);
         view->layout()->addWidget(tree);
+        //view->layout()->addWidget(new Wt::Ext::Button("testbutton"));
         view->setAutoScrollBars(true);
+        //view->setLayoutSizeAware(true);
+
         comp->setTitle("Sources");
         comp->layout()->addWidget(new Wt::Ext::Button("File Source"));
-        comp->layout()->addWidget(new Wt::Ext::Button("FTP Source"));
+        comp->layout()->addWidget(new Wt::Ext::Button("HTTP Source"));
         comp->layout()->addWidget(new Wt::Ext::Button("Upload Source"));
-
+        */
         static_cast<Wt::WBorderLayout*>(contents()->layout())->setSpacing(3);
         static_cast<Wt::WBorderLayout*>(contents()->layout())->setContentsMargins(0,0,0,0);
         //static_cast<Wt::WBorderLayout*>(contents()->layout())->addWidget(comp, Wt::WBorderLayout::West);
@@ -43,7 +49,7 @@ namespace org {
 
 //        tree->resize(380, 300);
         resize(600, 400);
-        setAutoScrollBars(true);
+        //setAutoScrollBars(true);
         //addButton(new Wt::Ext::Button("Refresh"));
         //buttons().back()->clicked().connect(SLOT(this, FileChooser::ownrefresh));
         addButton(new Wt::Ext::Button("Select File"));
