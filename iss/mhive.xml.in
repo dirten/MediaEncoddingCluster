@@ -53,7 +53,7 @@
                 </showWarning>
             </onErrorActionList>
         </removeUnixService>
-        <substitute>
+        <!--<substitute>
             <files>${installdir}/bin/mectl</files>
             <progressText>setting MHIVE_BASE</progressText>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -72,7 +72,7 @@
                     <value>${installdir}</value>
                 </substitution>
             </substitutionList>
-        </substitute>
+        </substitute>-->
         <substitute>
             <files>${installdir}/res/logging.properties</files>
             <progressText>setting MHIVE_BASE</progressText>
@@ -410,6 +410,9 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/res/setup.xml</origin>
                         </distributionFile>
+                        <distributionDirectory>
+                            <origin>${mhive_src_dir}/res/comp</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
