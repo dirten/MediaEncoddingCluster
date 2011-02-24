@@ -38,7 +38,7 @@ add_definitions(/DCURL_STATICLIB)
 #SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 
 
-add_subdirectory (go)
+#add_subdirectory (go)
 add_subdirectory (org)
 
 SET(BUILD_MHIVESERVICE On)
@@ -398,6 +398,19 @@ ELSEIF(APPLE)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND ln -s ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mectl ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../MacOS/mectl)")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../..)")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/../../Resources/res/tmp.list)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcodec.dylib @executable_path/../lib/libavcodec.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavformat.dylib @executable_path/../lib/libavformat.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libswscale.dylib @executable_path/../lib/libswscale.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcodec.dylib @executable_path/../lib/libavcodec.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavformat.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavcore.dylib @executable_path/../lib/libavcore.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcore.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libswscale.dylib)")
+
 ELSE(APPLE)
   INSTALL(FILES
       ${FFMPEG_DIR}/lib/libavcodec.so.52
