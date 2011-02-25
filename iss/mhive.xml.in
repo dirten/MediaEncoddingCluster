@@ -396,6 +396,32 @@
                     </shortcutList>
                 </folder>
                 <folder>
+                    <description>Mac OSX Library Files</description>
+                    <destination>${installdir}/lib</destination>
+                    <name>libraryfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libswscale.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libavcodec.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libavdevice.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libavformat.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libavcore.dylib</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Resource Bundles</description>
                     <destination>${installdir}/res</destination>
                     <name>res</name>
