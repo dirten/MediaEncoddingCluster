@@ -128,10 +128,11 @@ Packet::Packet(int s) {
   av_init_packet(packet);
   packet->size = s;
   if (s > 0) {
-    //    packet->data = new uint8_t[s];
+    //packet->data = new uint8_t[s];
     packet->data = new uint8_t[s + FF_INPUT_BUFFER_PADDING_SIZE];
     //    packet->data = static_cast<uint8_t*>(av_malloc(s + FF_INPUT_BUFFER_PADDING_SIZE));
     memset(packet->data, 0, s + FF_INPUT_BUFFER_PADDING_SIZE);
+    //memset(packet->data, 0, s);
     callDestruct = true;
   } else {
     //    logerror("Try to Allocate Packet buffer <0")

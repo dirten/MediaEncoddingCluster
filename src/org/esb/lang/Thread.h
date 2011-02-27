@@ -10,11 +10,12 @@
 #include "org/esb/lang/Exception.h"
 #include "org/esb/lang/Runnable.h"
 #include "boost/thread.hpp"
+#include "boost/bind.hpp"
 #include <stdexcept>
 #include <assert.h>
 using namespace std;
 //using namespace org::esb::lang;
-
+#define go(func,...)boost::thread (boost::bind(&func,__VA_ARGS__))
 namespace org{
 namespace esb{
 namespace lang{   
