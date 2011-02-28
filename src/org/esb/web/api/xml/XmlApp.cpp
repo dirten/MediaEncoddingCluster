@@ -15,8 +15,11 @@ namespace org {
     namespace web {
 
       XmlApp::XmlApp() : Wt::WResource() {
-        //dataReceived().connect(SLOT(this, XmlApp::getData));
+        dataReceived().connect(SLOT(this, XmlApp::getData));
         //setUploadProgress(true);
+        
+        setRequestTooLarge(10000);
+
       }
 
       XmlApp::~XmlApp() {
@@ -28,7 +31,7 @@ namespace org {
         }
 
       void XmlApp::handleRequest(const Wt::Http::Request&req, Wt::Http::Response&res) {
-        
+        LOGDEBUG("Request Path"<<req.path());
         Wt::Http::ParameterMap map=req.getParameterMap();
         Wt::Http::ParameterMap::iterator mapit=map.begin();
         //Wt::Http::UploadedFileMap map=req.uploadedFiles();
@@ -36,7 +39,16 @@ namespace org {
         for(;mapit!=map.end();mapit++){
           LOGDEBUG("Key="<<(*mapit).first);
         }
+        Wt::Http::UploadedFileMap uploads= req.uploadedFiles();
+        Wt::Http::UploadedFileMap::iterator upit=uploads.begin();
+        for(;upit!=uploads.end();upit++){
+          LOGDEBUG("Upload?:"<<upit->second.clientFileName());
+          LOGDEBUG("SpoolUpload?:"<<upit->second.spoolFileName());
+          upit->second.stealSpoolFile();
+        }
+        
         //const Wt::Http::ParameterMap map=req.getParameterMap();
+        //LOGDEBUG("Upload?:"<<req.uploadedFiles());
         LOGDEBUG("TooLarge?:"<<req.tooLarge());
         LOGDEBUG("DataLength:"<<req.contentLength());
         LOGDEBUG("DataType:"<<req.contentType());

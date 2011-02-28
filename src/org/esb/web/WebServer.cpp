@@ -39,7 +39,6 @@ WApplication *createApp(const WEnvironment& env) {
    * the user has permission to start a new application
    */
   //  return new MyApplication(env);
-
   return new WebApp2(env);
 }
 
@@ -60,7 +59,8 @@ WebServer::WebServer() : server("test") {
     "--http-port", org::esb::config::Config::getProperty("web.port", "8080"),
     "--accesslog", const_cast<char*> (weblog_file.c_str()),
     "--no-compression",
-    "--deploy-path", "/"
+    "--deploy-path", "/",
+    "--config","/home/HoelscJ/devel/mec/install/wt.config"
     //"--max-memory-request-size", "10000000000"
   };
 /*
@@ -69,11 +69,11 @@ WebServer::WebServer() : server("test") {
     ostringstream bla;
     stderrLogger.setStream(bla);
 */
-  for(int a=0;a<12;a++){
+  for(int a=0;a<14;a++){
     LOGDEBUG(args[a]);
   }
   //LOGDEBUG("#serverargs:"<<sizeof(args));
-  server.setServerConfiguration(12, const_cast<char**>(args), WTHTTP_CONFIGURATION);
+  server.setServerConfiguration(14, const_cast<char**>(args), WTHTTP_CONFIGURATION);
 //  return;
   try{
     server.addEntryPoint(Application, &createApp, "/");

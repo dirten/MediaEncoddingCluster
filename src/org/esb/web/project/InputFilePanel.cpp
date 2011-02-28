@@ -244,8 +244,9 @@ namespace org {
         _chooser->show();
         if (_chooser->exec() == Wt::Ext::Dialog::Accepted) {
           std::list<Ptr<org::esb::io::File> > files = _chooser->getSelectedFiles();
-          //          boost::thread(boost::bind(&InputFilePanel::importFiles, this, files));
           _chooser->setHidden(true);
+          if(files.size()>0){
+          //          boost::thread(boost::bind(&InputFilePanel::importFiles, this, files));
           dial = new Wt::Ext::Dialog("Importing Files");
           dial->resize(300, 200);
           dial->setLayout(new Wt::WFitLayout());
@@ -261,8 +262,7 @@ namespace org {
           importFiles(files);
           dial->accept();
           delete dial;
-
-
+          }
         }
         removeVideoButton->setEnabled(false);
       }

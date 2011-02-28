@@ -287,6 +287,7 @@ add_library (hive
   hive/PresetReader.cpp
   hive/PresetFileWriter.cpp
   hive/PresetLoader.cpp
+  hive/xml/Project.cpp
 )
 
 TARGET_LINK_LIBRARIES(hive db net esb signal av lang)
