@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<project name="test project">
+    <input url="file:///media/video/Chocolate.ts"/>
+    <input url="file:///media/video/big.avi"/>
+    <preset id="test"/>
+    <preset id="test_ipod"/>
+    <output url="file::///home/HoelscJ/tmp"/>
+<project>
