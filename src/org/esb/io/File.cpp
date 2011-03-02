@@ -252,6 +252,6 @@ bool File::http_url_exist(std::string url) {
 }
 
 size_t File::http_url_size(std::string url) {
-
+	return 0;
 }
 

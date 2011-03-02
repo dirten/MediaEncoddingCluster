@@ -26,7 +26,7 @@ namespace org {
   namespace esb {
     namespace web {
 
-      JobTable::JobTable() :_stopEncoding(this, "stopEncoding"), Wt::Ext::TableView() {
+      JobTable::JobTable() : Wt::Ext::TableView(),_stopEncoding(this, "stopEncoding") {
         LOGDEBUG("JobTable::JobTable()");
         db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
         

@@ -87,7 +87,7 @@ namespace org {
       }
 
       void HiveClientAudio::process() {
-        int pCount = 0;
+        //int pCount = 0;
         while (!_toHalt) {
           if (!_sock->isConnected()) {
             connect();

@@ -166,7 +166,7 @@ namespace org {
         } catch (litesql::NotFound ex) {
           if (file.isFile()) {
             LOGDEBUG("new file found:" << file.getPath());
-            const char * filename = 0;
+            //const char * filename = 0;
             db::MediaFile mediafile = _importer.import(file);
             if (mediafile.id > 0 && p > 0) {
               //jobcreator(fileid,p, outdir);

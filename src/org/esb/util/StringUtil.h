@@ -34,7 +34,7 @@ namespace org {
         }
 
         static std::string replace(std::string s, const std::string& needle,const std::string& replace) {
-          int position = s.find(needle); 
+          unsigned int position = s.find(needle); 
           while (position != std::string::npos) {
             s.erase(position, needle.length());
             s.insert(position, replace);

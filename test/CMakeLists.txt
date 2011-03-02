@@ -14,22 +14,22 @@ include_directories (${MEC_SOURCE_DIR}/target/dependency/include/litesql)
 
 INCLUDE_DIRECTORIES (${BREAKPAD_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${BOOST_LIB_DIRS})
-LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
-LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
+#LINK_DIRECTORIES(${BOOST_LIB_DIRS})
+#LINK_DIRECTORIES(${FFMPEG_LIB_DIR})
+#LINK_DIRECTORIES(${BREAKPAD_LIB_DIR})
 LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/test/fobs/dist/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
-LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/x264/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
+#LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
 
-LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
-LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
-LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
+#LINK_DIRECTORIES(${MYSQL_DIR}/lib/mysql)
+#LINK_DIRECTORIES(${MYSQL_DIR}/Embedded/DLL/debug)
+#LINK_DIRECTORIES(${MYSQL_DIR}/lib/debug)
 
 
 

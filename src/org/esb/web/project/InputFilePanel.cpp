@@ -42,7 +42,7 @@ namespace org {
           std::vector<db::MediaFile>::iterator it = files.begin();
           //          if(files.size()==0)
           //            this->removeRows(0,rowCount());
-          if(rowCount()>files.size()){
+          if(static_cast<unsigned int>(rowCount())>files.size()){
             if(files.size()>0)
               removeRow(files.size()-1);
             else{

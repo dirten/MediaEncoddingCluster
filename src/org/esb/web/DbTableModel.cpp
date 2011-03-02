@@ -37,7 +37,7 @@ namespace org{
         LOGDEBUG("insert row")
         if (rowCount() <= a)
           insertRow(rowCount());
-        for (int b = 0; b < (*it).size(); b++)
+        for (unsigned int b = 0; b < (*it).size(); b++)
           if (!setData(a, b, (*it)[b])) {
             std::cout << "set data Failed" << std::endl;
           }else {
@@ -75,7 +75,7 @@ namespace org{
       for (litesql::Records::iterator it = recs.begin(); it != recs.end(); it++, a++){
         if (rowCount() <= a)
           insertRow(rowCount());
-        for (int b = 0; b < (*it).size(); b++)
+        for (unsigned int b = 0; b < (*it).size(); b++)
           if (!setData(a, b, (*it)[b])) {
             std::cout << "set data Failed" << std::endl;
           }else {

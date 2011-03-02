@@ -30,7 +30,7 @@ namespace org {
         private:
           db::Profile profile;
         public:
-          ProfileTreeTableNode(db::Profile g) : profile(g), Wt::WTreeTableNode(g.name.value()) {
+          ProfileTreeTableNode(db::Profile g) :  Wt::WTreeTableNode(g.name.value()),profile(g) {
             
           }
 
@@ -48,7 +48,7 @@ namespace org {
           db::ProfileGroup group;
         public:
 
-          PresetTreeTableNode(db::ProfileGroup g) : group(g), Wt::WTreeTableNode(g.name.value()) {
+          PresetTreeTableNode(db::ProfileGroup g) :  Wt::WTreeTableNode(g.name.value()),group(g) {
 
           }
 
@@ -93,7 +93,7 @@ namespace org {
         class PresetTreeView : public Wt::WTreeView {
         public:
 
-          PresetTreeView(Wt::WContainerWidget *parent = 0) : _db(org::esb::hive::DatabaseService::getDatabase()), Wt::WTreeView(parent) {
+          PresetTreeView(Wt::WContainerWidget *parent = 0) :  Wt::WTreeView(parent),_db(org::esb::hive::DatabaseService::getDatabase()) {
             LOGDEBUG("void PresetTreeView::PresetTreeView(Wt::WContainerWidget *parent = 0)");
 
             Wt::WStandardItemModel * model = new Wt::WStandardItemModel(0, 2, this);

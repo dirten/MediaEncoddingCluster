@@ -40,7 +40,7 @@ namespace org {
           if (rowCount() > files.size()) {
             removeRows(0, rowCount() - files.size());
           }
-          for (int a = 0; a < files.size(); a++) {
+          for (unsigned int a = 0; a < files.size(); a++) {
             db::MediaFile file = files[a];
             setData(a, 0, org::esb::util::StringUtil::toString(file.id.value()));
             setData(a, 1, file.path.value());

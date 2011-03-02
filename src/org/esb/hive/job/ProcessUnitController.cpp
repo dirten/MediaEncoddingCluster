@@ -504,7 +504,7 @@ namespace org {
                   ar_source.num = dbunit.timebasenum;
                   ar_source.den = dbunit.timebaseden;
                   int64_t lastdb = dbunit.endts.value();
-                  int64_t last = unit->getOutputPacketList().back()->getDts();
+                  //int64_t last = unit->getOutputPacketList().back()->getDts();
 
                   int64_t ts = av_rescale_q(lastdb, ar_source, ar_target);
                   int64_t starttime = current_job->starttime.value();

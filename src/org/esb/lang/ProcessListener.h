@@ -24,9 +24,9 @@ namespace org {
         int getExitCode();
         int getPid();
       private:
-        ProcessEventType _eventType;
-        int _exitCode;
         int _pid;
+		int _exitCode;
+		ProcessEventType _eventType;
       };
 
       class ProcessListener {

@@ -96,7 +96,7 @@ namespace org {
         if (!fis.isValid())return mediafile;
         _connection->begin();
         PacketInputStream pis(&fis);
-        int id = 0;
+        //int id = 0;
         //  try {
         //    db::MediaFile mfile=litesql::select<db::MediaFile>(db, db::MediaFile::Path==file.getFilePath() && db::MediaFile::Filename==file.getFileName()).one();
         //    id=mfile.id;

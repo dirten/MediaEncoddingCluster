@@ -43,7 +43,7 @@ namespace org {
         return _processors.size();
       }
 
-      CpuInfo SystemCpuInfo::getCpuInfo(int cpu_num) {
+      CpuInfo SystemCpuInfo::getCpuInfo(unsigned int cpu_num) {
         if (cpu_num > _processors.size())
           LOGINFO("no cpu fond for number " << cpu_num);
         return *_processors[cpu_num];

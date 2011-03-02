@@ -389,7 +389,7 @@ namespace org {
         LOGDEBUG("VideoPanel changed");
         //	_profile.vcodec=atoi(_el.getElement("v_codec")->text().narrow().c_str());
         AVCodec *p = NULL;
-        int a = 0;
+        //int a = 0;
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && _elcb.getElement("v_codec")->currentText().narrow() == std::string(p->long_name)) {
             _profile.vcodec = (int)p->id;
@@ -410,7 +410,7 @@ namespace org {
         std::string longname = v_codec->currentText().narrow();
         LOGDEBUG( "LonName=" << longname);
         AVCodec *p = NULL;
-        int a = 0;
+        //int a = 0;
         vpre->clear();
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
@@ -449,7 +449,7 @@ namespace org {
         std::map<std::string, std::string> data = BasePanel::getKeyValue();
         std::string vcodec = data["v_codec"];
         AVCodec *p = NULL;
-        int a = 0;
+        //int a = 0;
         while ((p = av_codec_next(p))) {
           if (p->encode && p->type == CODEC_TYPE_VIDEO && vcodec == p->long_name) {
             data["v_codec"] = org::esb::util::StringUtil::toString(p->id);
@@ -468,7 +468,7 @@ namespace org {
       void ProfileCreator::VideoPanel::setKeyValue(std::map<std::string, std::string> data) {
         std::string vcodec = data["v_codec"];
         AVCodec *p = NULL;
-        int a = 0;
+        //int a = 0;
         while ((p = av_codec_next(p))) {
           if (p->encode &&
             p->type == CODEC_TYPE_VIDEO &&

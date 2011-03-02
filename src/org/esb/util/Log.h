@@ -40,9 +40,6 @@
 
 //#define logtracemethod(o1)LOG4CPLUS_TRACE_METHOD(getLogger(),o1);//loglevel(o1, "trace")/*log_debug(o1)*/
 #define LOGTRACEMETHOD(o2)LOG4CPLUS_TRACE_METHOD(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
-//#define logdebug(o1) { std::stringstream t; \
-//t<< o1; \
-//Log::getLogger()->debug(t);}
 
 #include <iostream>
 inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance("global");}

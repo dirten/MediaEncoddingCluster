@@ -44,7 +44,7 @@ namespace org {
           if (rowCount() > projects.size()) {
             removeRows(0, rowCount() - projects.size());
           }
-          for (int a = 0; a < projects.size(); a++) {
+          for (unsigned int a = 0; a < projects.size(); a++) {
             db::Project pro = projects[a];
             setData(a, 0, org::esb::util::StringUtil::toString(pro.id.value()));
             setData(a, 1, pro.name.value());

@@ -19,7 +19,7 @@ namespace org {
 
       std::list<Process*> Process::_process_list;
 
-      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _arguments(args), _name(name) {
+      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _name(name),_arguments(args) {
         _processId = 0;
         _running = false;
         _restartable = false;
@@ -129,7 +129,7 @@ namespace org {
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
         _stop = true;
         _restartable = false;
-        int result = ::kill(_processId, 15);
+        ::kill(_processId, 15);
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);
         if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))) {
           //if (result != 0)

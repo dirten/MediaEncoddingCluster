@@ -50,7 +50,7 @@ namespace org {
                 SystemCpuInfo();
                 ~SystemCpuInfo();
                 int getCpuCount();
-                CpuInfo getCpuInfo(int cpu_num);
+                CpuInfo getCpuInfo(unsigned int cpu_num);
             private:
                 void parseCpuInfo(std::string&);
                 void parseProcessor(std::string);
