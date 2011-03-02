@@ -14,7 +14,7 @@ namespace org {
 		  return 0;
       }
 
-      CpuInfo SystemCpuInfo::getCpuInfo(int cpu_num) {
+      CpuInfo SystemCpuInfo::getCpuInfo(unsigned int cpu_num) {
 		  return CpuInfo();
       }
 

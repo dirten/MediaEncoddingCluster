@@ -4,6 +4,7 @@
 #include "TcpSocketOutputStream.cpp"
 
 #include "org/esb/util/Decimal.h"
+#include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
@@ -69,7 +70,7 @@ namespace org {
       void TcpSocket::connect() {
         if (!_connected) {
           tcp::resolver resolver(_io_service);
-          tcp::resolver::query query(_host, org::esb::util::Decimal(_port).toString().c_str());
+			tcp::resolver::query query(_host, org::esb::util::StringUtil::toString(_port).c_str());
           tcp::resolver::iterator iterator = resolver.resolve(query);
           tcp::resolver::iterator end;
           //		  asio::error e=boost::asio::error::host_not_found;

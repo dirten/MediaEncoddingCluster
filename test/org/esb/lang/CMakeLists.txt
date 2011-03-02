@@ -9,7 +9,7 @@ add_executable (TestSystemCpuInfo TestSystemCpuInfo.cpp)
 add_executable (ProcessTest ProcessTest.cpp)
 add_executable (ProcessTestExecutable ProcessTestExecutable.cpp)
 
-target_link_libraries (TestSystemCpuInfo io lang util )
+target_link_libraries (TestSystemCpuInfo io lang util net )
 target_link_libraries (TestThread lang util)
 target_link_libraries (TestException lang)
 target_link_libraries (TestStackDumper lang util)
