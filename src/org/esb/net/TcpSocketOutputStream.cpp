@@ -40,6 +40,18 @@ namespace org {
           write((char*) & buffer[0], buffer.size());
         }
 
+        void writeRaw(string&buffer) {
+          /*
+           * Send buffer
+           */
+          boost::system::error_code error;
+          int sent = boost::asio::write(*_socket, boost::asio::buffer(buffer, buffer.length()), boost::asio::transfer_all(), error);
+          if (error)
+            throw boost::system::system_error(error);
+          else if (sent != buffer.length())
+            throw SocketException("writing size is not equal to len");
+
+        }
         void write(string&buffer) {
           write((char*) buffer.c_str(), buffer.length());
         }

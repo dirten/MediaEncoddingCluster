@@ -76,8 +76,11 @@ namespace org {
 
       void HiveClient::connect() {
         try {
+          delete _sock;
+          _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
           _sock->connect();
-
+          delete _ois;
+          delete _oos;
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           LOGINFO("Server " << _host << " connected!!!");

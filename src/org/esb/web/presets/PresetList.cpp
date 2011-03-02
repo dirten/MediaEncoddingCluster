@@ -25,6 +25,7 @@ namespace org {
           insertColumns(0, 2);
           setHeaderData(0, std::string("File"));
           setHeaderData(1, std::string("Name"));
+          //setHeaderData(2, std::string("Id"));
           setModelData(data);
         }
 
@@ -57,6 +58,7 @@ namespace org {
             std::list<std::string> line;
             line.push_back((*file_it)->getFileName());
             line.push_back(reader.getPreset()["name"]);
+            //line.push_back(reader.getPreset()["id"]);
             data.push_back(line);
           }
           setModel(new PresetListTableModel(data));

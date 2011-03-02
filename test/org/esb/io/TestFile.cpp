@@ -64,6 +64,20 @@ int main(int argc, char**argv){
   LOGDEBUG("Relative File . "<<f2.getPath());
 
 //  f.getExtension();
+
+
+  org::esb::io::File url("http://samples.mplayerhq.hu/FLV/Ogg Theora(320x240) Vorbis(128kb 48kHz stereo)/IFTlhxwwkKE.flv");
+  LOGDEBUG("Path:"<<url.getPath());
+  LOGDEBUG("Ext:"<<url.getExtension());
+  LOGDEBUG("FileName:"<<url.getFileName());
+  LOGDEBUG("FilePath:"<<url.getFilePath());
+  LOGDEBUG("Fileexist:"<<url.exists());
+  url=url.getParent();
+  LOGDEBUG("Path:"<<url.getPath());
+  LOGDEBUG("Ext:"<<url.getExtension());
+  LOGDEBUG("FileName:"<<url.getFileName());
+  LOGDEBUG("FilePath:"<<url.getFilePath());
+  
   Log::close();
   return 0;
 }

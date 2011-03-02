@@ -86,6 +86,16 @@ namespace org {
           return read;
         }
 
+        int readUntil(string & str, std::string del) {
+          // Read the response status line.
+          boost::asio::streambuf response;
+          boost::asio::read_until(*_socket, response, del);
+          std::istream response_stream(&response);
+          std::stringstream sstr;
+          sstr<<response_stream.rdbuf();
+          str.append(sstr.str());
+        }
+
         int read(string & str) {
           /*Receive length of data*/
           int length = static_cast<int> (available(true));

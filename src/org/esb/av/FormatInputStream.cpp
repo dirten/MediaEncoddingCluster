@@ -14,8 +14,15 @@ namespace org {
       boost::mutex FormatInputStream::file_open_mutex;
 
       FormatInputStream::FormatInputStream(File * source) {
-		boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
-        LOGINFO("opening InputFile: " << source->getPath());
+        init(source->getPath());
+      }
+
+      FormatInputStream::FormatInputStream(std::string source) {
+        init(source);
+      }
+      void FormatInputStream::init(std::string source) {
+	boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        LOGINFO("opening InputFile: " << source);
         _isValid = false;
         _sourceFile = source;
         AVFormatParameters params, *ap = &params;
@@ -33,19 +40,19 @@ namespace org {
 //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
         //        AVInputFormat*iformat = av_find_input_format("mpegts");
         //formatCtx->debug=5;
-        std::string filename = _sourceFile->getPath();
+        //std::string filename = _sourceFile->getPath();
 		{
 	        
 
-        if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
-          LOGERROR("could not open file:" << _sourceFile->getPath());
+        if (av_open_input_file(&formatCtx, _sourceFile.c_str(), NULL, 0, ap) != 0) {
+          LOGERROR("could not open file:" << _sourceFile);
           return;
         }
 		}
 
-        LOGINFO("find stream info: " << source->getPath());
+        LOGINFO("find stream info: " << source);
         if (av_find_stream_info(formatCtx) < 0) {
-          LOGERROR("no StreamInfo from:" << _sourceFile->getPath());
+          LOGERROR("no StreamInfo from:" << _sourceFile);
           return;
         }
         if (formatCtx->iformat->flags & AVFMT_TS_DISCONT) {
@@ -74,7 +81,7 @@ namespace org {
                     _streamReverseMap[_streamMap[1]] = 1;
                 }*/
         _isValid = true;
-        LOGDEBUG("file openned: " << source->getPath());
+        LOGDEBUG("file openned: " << source);
 
       }
 
@@ -87,7 +94,7 @@ namespace org {
       }
 
       void FormatInputStream::dumpFormat() {
-        dump_format(formatCtx, 0, _sourceFile->getPath().c_str(), false);
+        dump_format(formatCtx, 0, _sourceFile.c_str(), false);
       }
 
       FormatInputStream::~FormatInputStream() {

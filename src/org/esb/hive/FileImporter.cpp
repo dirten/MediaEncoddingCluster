@@ -80,13 +80,17 @@ namespace org {
         }
 
       }
-
+      /*
       db::MediaFile FileImporter::import(org::esb::io::File file) {
         if (!file.exists() || !file.canRead()) {
           LOGERROR("Source File not found:" << file.getPath());
         } else {
           LOGDEBUG("File:" << file.getPath());
         }
+        return import(file.getPath());
+      }*/
+      
+      db::MediaFile FileImporter::import(org::esb::io::File  file) {
         db::MediaFile mediafile(*_connection);
         FormatInputStream fis(&file);
         if (!fis.isValid())return mediafile;
@@ -97,7 +101,7 @@ namespace org {
         //    db::MediaFile mfile=litesql::select<db::MediaFile>(db, db::MediaFile::Path==file.getFilePath() && db::MediaFile::Filename==file.getFileName()).one();
         //    id=mfile.id;
         //  } catch (litesql::NotFound ex) {
-
+        //org::esb::io::File tmpFile(file);
         mediafile.filename = file.getFileName();
         mediafile.path = file.getFilePath();
         mediafile.filesize = (double) fis.getFileSize();

@@ -12,8 +12,8 @@ namespace org {
   namespace esb {
     namespace util {
 
-      template <typename T, int size=1>
-      class Channel:public Queue<T, size> {
+      template <typename T>
+      class Channel:public Queue<T, 1> {
       private:
         bool _closed;
 
@@ -27,7 +27,7 @@ namespace org {
           //Queue<T, size>::flush();
         }
         void close(){
-          Queue<T, size>::flush();
+          this->flush();
           _closed=true;
         }
 

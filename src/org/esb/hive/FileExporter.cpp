@@ -38,6 +38,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   filename += outfile.filename;
   db::Job job = outfile.jobsout().get().one();
   org::esb::io::File fout(filename.c_str());
+  LOGDEBUG("Export file to : "<<fout.getPath());
   if (fout.exists()) {
     LOGDEBUG("File exist:" << filename);
 

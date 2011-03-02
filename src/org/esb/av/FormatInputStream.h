@@ -35,6 +35,7 @@ namespace org {
 
       public:
         FormatInputStream(File * source);
+        FormatInputStream(std::string );
         ~FormatInputStream();
         //                DEPRICATED(AVFormatContext * getFormatContext());
         AVFormatContext * getFormatContext();
@@ -54,8 +55,9 @@ namespace org {
         int seek(int stream_index, TimeStamp timestamp, int flags = AVSEEK_FLAG_BACKWARD);
         int selectedStream;
         StreamInfo * getStreamInfo(int idx);
+        void init(std::string filename);
       private:
-        org::esb::io::File * _sourceFile;
+        std::string _sourceFile;
         bool _isValid;
         //                std::map<int, int> _streamMap;
         //                std::map<int, int> _streamReverseMap;

@@ -21,6 +21,7 @@
 	<param name="time_base" value="1/25"/>
 	<param name="aspect" value="64/45"/>
 	<param name="global_header" value="1"/>
+	<param name="flags" value="+global_header"/>
     	<param name="picture_frame_size" value="320x240"/>
     	<param name="width" value="320"/>
     	<param name="height" value="240"/>
@@ -33,5 +34,7 @@
 	<param name="minrate" value="128000"/>
 	<param name="qscale" value="0"/>
 	<param name="global_header" value="1"/>
+	<param name="time_base" value="1/44100"/>
+	<param name="flags" value="+global_header"/>
     </codec>
 </preset>

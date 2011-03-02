@@ -173,7 +173,7 @@ int main(int argc, char * argv[]) {
 
     std::string config_path = config::Config::getProperty("hive.base_path");
     config_path.append("/.hive.cfg");
-
+    config::Config::init(config_path);
 
 
     std::string logconfigpath = base_path;

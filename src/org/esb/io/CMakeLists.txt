@@ -21,6 +21,7 @@ TARGET_LINK_LIBRARIES(io
     lang
     safmq
     util
+    net
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS io

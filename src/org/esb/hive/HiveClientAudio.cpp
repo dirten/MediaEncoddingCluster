@@ -28,7 +28,7 @@ namespace org {
         _running = false;
         _conv = NULL;
         _swap_codecs = false;
-        _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
+        _sock = NULL;//new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
         //        av_register_all();
@@ -73,7 +73,11 @@ namespace org {
 
       void HiveClientAudio::connect() {
         try {
+          delete _sock;
+          _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
           _sock->connect();
+          delete _ois;
+          delete _oos;
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
           LOGINFO("Server " << _host << " connected!!!");

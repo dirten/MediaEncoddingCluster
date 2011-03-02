@@ -25,7 +25,7 @@ namespace org {
           buildElement("auth_name", "Authentication Name", t, i++);
           Wt::Ext::LineEdit * pass=buildElement("auth_passwd", "Authentication Password", t, i++);
           pass->setEchoMode(Wt::Ext::LineEdit::Password);
-          pass->keyWentUp().connect(SLOT(this, Login::enter));
+          pass->enterPressed().connect(SLOT(this, Login::enter));
 
 
          
@@ -37,11 +37,11 @@ namespace org {
           saveBut->clicked().connect(SLOT(this, Login::authenticate));
           
         }
-        void enter(Wt::WKeyEvent ev) {
+        void enter() {
 //          logdebug("KeyCode"<<ev.keyCode());
-          if(ev.keyCode()==13){
+          //if(ev.keyCode()==13){
             authenticate();
-          }
+          //}
         }
         void authenticate() {
           using namespace org::esb;

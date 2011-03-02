@@ -259,6 +259,26 @@ namespace org {
 
       int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
         LOGDEBUG("Create new Job");
+        if(preset.filename.value().length()==0){
+          LOGDEBUG("resolving Preset by Name : "<<preset.name);
+          org::esb::io::File presetdir(org::esb::config::Config::get("preset.path"));
+          if (presetdir.exists()) {
+            FileList files = presetdir.listFiles();
+            FileList::iterator file_it = files.begin();
+            for (; file_it != files.end(); file_it++) {
+              org::esb::hive::PresetReader reader((*file_it)->getPath());
+              if(reader.getPreset()["name"]==preset.name.value()){
+                preset.filename=(*file_it)->getPath();
+                LOGDEBUG("Preset File found : "<<(*file_it)->getPath());
+                preset.update();
+                break;
+              }
+            }
+          }else{
+            LOGWARN("preset directory does not exist:"<<presetdir.getPath());
+          }
+
+        }
         /**
          * reading the preset from the file
          */

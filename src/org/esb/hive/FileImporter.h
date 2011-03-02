@@ -13,6 +13,7 @@ namespace org {
       public:
         FileImporter();
         db::MediaFile import(org::esb::io::File);
+        
         Ptr<db::HiveDb> getConnection();
       private:
         Ptr<db::HiveDb> _connection;

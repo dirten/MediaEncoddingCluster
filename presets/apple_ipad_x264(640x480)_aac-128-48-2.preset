@@ -1,29 +1,34 @@
-MHive XML API
-
 <?xml version="1.0"?>
-<project>
-
-<!-- Main fields -->
-
-    <userid>[UserID]</userid>
-    <apikey>[UserKey]</apikey>
-    <action>[Action]</action>
-    <projectid>[Project ID]</projectid>
-    <input>
-      <source>[Source File]</source>
-      ...
-    </input>
-    <notify>[Notify URL/eMail]</notify>
-
-    <format id="[Output format]">
-      <param name="[Format Parameter Name]" value="[Format Parameter Value]"/>
-      ...
-      <codec type="[Codec Type]" id="[Video Codec]">
-	  <param name="[Codec Parameter Name]" value="[Codec Parameter Value]"/>
-	  ...
-      </codec>
-      <destination>[Destination File]</destination>
-      ...
+<preset name="Apple Ipad x264(640x480) aac(160kb 48kHz stereo)" id="ipad_0815">
+    <format id="ipod">
+	<param name="fileExtension" value="m4v"/>
     </format>
-</query>
-
+    <codec type="video" id="libx264">
+	<param name="b" value="2400000"/>
+	<param name="maxrate" value="10000000"/>
+	<param name="bufsize" value="10000000"/>
+	<param name="g" value="66"/>
+	<param name="loop" value="1"/>
+	<param name="qmin" value="10"/>
+	<param name="qmax" value="51"/>
+	<param name="qdiff" value="4"/>
+	<param name="coder" value="0"/>
+	<param name="bf" value="2"/>
+	<param name="refs" value="2"/>
+	<param name="wpred" value="0"/>
+	<param name="dct8x8" value="0"/>
+	<param name="wpredp" value="0"/>
+	<param name="me_range" value="16"/>
+	<param name="time_base" value="1/25"/>
+	<param name="aspect" value="64/45"/>
+	<param name="picture_frame_size" value="0"/>
+        <param name="width" value="640"/>
+	<param name="height" value="480"/>
+	<param name="flags" value="psnr"/>
+    </codec>
+    <codec type="audio" id="aac">
+	<param name="ab" value="160000"/>
+	<param name="ac" value="2"/>
+	<param name="ar" value="48000"/>
+    </codec>
+</preset>

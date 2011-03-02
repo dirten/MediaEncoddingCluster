@@ -10,10 +10,12 @@
         <field name="started" type="date"/>
         <field name="completed" type="date"/>
     </object>
+
     <object name="Filter">
         <field name="filtername" type="string"/>
         <field name="filterid" type="string"/>
     </object>
+
     <object name="FilterParameter">
         <field name="fkey" type="string"/>
         <field name="fval" type="string"/>
@@ -92,7 +94,7 @@
         <field name="filename" type="string"/>
     </object>
 
-    <relation>
+    <relation object="Preset">
         <relate object="Preset" handle="project"/>
         <relate object="Project" handle="presets"/>
     </relation>
