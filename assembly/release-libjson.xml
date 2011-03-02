@@ -1,0 +1,23 @@
+<assembly>
+  <id>${my.family}-${build_type}</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>source/libjson</directory>
+      <outputDirectory>include/</outputDirectory>
+      <includes>
+        <include>**/libjson.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>source/libjson</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>**/libjson.a</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
