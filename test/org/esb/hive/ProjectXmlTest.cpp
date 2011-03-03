@@ -6,8 +6,8 @@
  */
 
 #include <cstdlib>
-#include "org/esb/util/Log.h"
 #include "org/esb/db/hivedb.hpp"
+#include "org/esb/util/Log.h"
 #include "org/esb/hive/xml/Project.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/io/File.h"
