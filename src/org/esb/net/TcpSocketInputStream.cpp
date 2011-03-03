@@ -94,6 +94,7 @@ namespace org {
           std::stringstream sstr;
           sstr<<response_stream.rdbuf();
           str.append(sstr.str());
+			return 0
         }
 
         int read(string & str) {
