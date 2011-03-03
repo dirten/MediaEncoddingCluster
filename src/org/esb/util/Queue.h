@@ -48,12 +48,12 @@ namespace org {
 
         virtual ~Queue() {
           if (_is_waiting) {
-            LOGDEBUG("is wating")
+            //LOGDEBUG("is wating")
             org::esb::lang::Thread::sleep2(5150);
             //boost::mutex::scoped_lock enqueue_lock(queue_mutex);
             //stop_condition.wait(enqueue_lock);
           }
-          LOGDEBUG("~Queue()")
+          //LOGDEBUG("~Queue()")
           _q.clear();
           //queue_condition.notify_all();
         }
