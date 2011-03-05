@@ -74,7 +74,7 @@ namespace org {
         org::esb::hive::FileImporter imp;
         org::esb::io::File infile(input_url);
         db::MediaFile mfile=imp.import(infile);
-
+	if(mfile.id==0)return;
         db::Preset pre(mfile.getDatabase());
         pre.name=preset_name;
         
