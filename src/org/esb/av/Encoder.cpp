@@ -241,8 +241,8 @@ int Encoder::encodeAudio(Frame & frame) {
   int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
   LOGDEBUG("bits per sample format:"<<osize<<" fmt:"<<ctx->sample_fmt)
   int audio_out_size = (4 * 192 * 1024);
-  //uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
-  uint8_t * audio_out = new uint8_t[audio_out_size];//static_cast<uint8_t*> (av_malloc(audio_out_size));
+  uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
+  //uint8_t * audio_out = new uint8_t[audio_out_size];//static_cast<uint8_t*> (av_malloc(audio_out_size));
 
 
   /**
