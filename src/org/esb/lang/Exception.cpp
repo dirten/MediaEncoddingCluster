@@ -60,7 +60,7 @@ void Exception::setMark(const char* file, const int lineNumber) {
 }
 
 #ifdef BACKTRACE
-#ifndef WIN32
+#ifndef __WIN32__
 
 const char * Exception::what()const throw () {
   string msg = getStackTraceString();

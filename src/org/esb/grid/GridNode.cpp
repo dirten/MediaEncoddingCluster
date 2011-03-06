@@ -6,7 +6,7 @@
  */
 
 #include "GridNode.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
+//#include "boost/date_time/posix_time/posix_time.hpp"
 namespace org {
   namespace esb {
     namespace grid {
@@ -14,14 +14,14 @@ namespace org {
       GridNode::GridNode() {
         _name = "null";
         _status = NODE_UP;
-        _last_activity = boost::posix_time::second_clock::local_time();
+        //_last_activity = boost::posix_time::second_clock::local_time();
       }
 
       GridNode::GridNode(boost::asio::ip::udp::endpoint & ep, std::string data) {
         _ep = ep;
         _ipaddress = ep.address();
         _name = "null";
-        _last_activity = boost::posix_time::second_clock::local_time();
+        //_last_activity = boost::posix_time::second_clock::local_time();
         _status = NODE_UP;
       }
       
@@ -30,7 +30,7 @@ namespace org {
         oss << _ep.address() << ":";
         oss << _ep.port();
         //        oss<<":"<<_ep.protocol();
-        oss << ":" << boost::posix_time::to_simple_string(_last_activity);
+        //oss << ":" << boost::posix_time::to_simple_string(_last_activity);
         return oss.str();
       }
         GridNode::NodeStatus GridNode::getStatus(){

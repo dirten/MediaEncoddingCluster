@@ -18,23 +18,27 @@ namespace org {
 
       PresetReader::PresetReader(std::string filename) {
         org::esb::io::File file(filename);
-        if (!file.exists()) {
+		if (!file.exists()) {
           LOGERROR("Preset File does not exist! " <<filename);
+          return;
+        }
+		if (!file.isDirectory()) {
+          LOGERROR("Preset could not be a Directory! " <<filename);
           return;
         }
         //LOGINFO("reading presets from "<<filename);
         org::esb::av::FormatBaseStream::initialize();
-        org::esb::io::FileInputStream fis(filename);
-        std::string data;
-        fis.read(data);
         rapidxml::xml_document<> _doc;
         try {
+			org::esb::io::FileInputStream fis(filename);
+			std::string data;
+			fis.read(data);
           _doc.parse < 0 > (const_cast<char*> (data.c_str()));
         } catch (rapidxml::parse_error ex) {
           LOGERROR("Parser Exception :" << ex.what());
           LOGERROR("Parser Exception :" << ex.where<char>());
           return;
-        }
+		}catch(...){}
         xml_node<>*preset = _doc.first_node("preset");
         if (!preset) {
           LOGERROR("first element must be a preset");

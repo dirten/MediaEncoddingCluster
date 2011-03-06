@@ -19,6 +19,11 @@ add_definitions(-arch i386)
 SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 ENDIF(APPLE)
 
+if(WIN32)
+add_definitions(/GX)
+add_definitions(/EHsc)
+ENDIF(WIN32)
+
 
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )

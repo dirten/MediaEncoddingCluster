@@ -64,7 +64,7 @@ path_(path), _filter(NULL) {
       LOGERROR("last_write_time(path)");
     }
     struct tm ttm;
-#if WIN32
+#if __WIN32__
     ttm = *localtime(&t);
 #else
     localtime_r(&t, &ttm);
