@@ -22,7 +22,7 @@ namespace org {
           LOGERROR("Preset File does not exist! " <<filename);
           return;
         }
-		if (!file.isDirectory()) {
+	if (file.isDirectory()) {
           LOGERROR("Preset could not be a Directory! " <<filename);
           return;
         }
