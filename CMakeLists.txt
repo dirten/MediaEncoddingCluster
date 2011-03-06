@@ -20,7 +20,7 @@ SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 ENDIF(APPLE)
 
 if(WIN32)
-add_definitions(/GX)
+#add_definitions(/GX)
 add_definitions(/EHsc)
 ENDIF(WIN32)
 
