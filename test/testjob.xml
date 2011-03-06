@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <job>
-    <input url="http://localhost/HorizontalStripesDivX.avi"/>
+    <!--<input url="http://localhost/HorizontalStripesDivX.avi"/>-->
     <!--<input url="http://samples.mplayerhq.hu/Divx4-bugs/Fight.Club.Trailer.avi"/>-->
+    <!--<input url="http://samples.mplayerhq.hu/MPEG-VOB/interlaced/uruseiyatsura.vob"/>-->
+    <input url="http://old.codergrid.de/downloads/ED_HD.avi"/>
     <!--<preset name="Apple Ipad x264(640x480) aac(160kb 48kHz stereo)"/>-->
     <preset name="Ogg Theora(320x240) Vorbis(128kb 48kHz stereo)"/>
     <!--<target url="/home/HoelscJ/tmp" overwrite="false"/>-->
-    <target url="http://localhost/upload.php" overwrite="false"/>
+    <target url="/root" overwrite="false"/>
 </job>

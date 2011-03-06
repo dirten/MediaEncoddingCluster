@@ -257,8 +257,8 @@ int Encoder::encodeAudio(Frame & frame) {
     av_fifo_generic_write(fifo, frame._buffer, frame._size, NULL);
 
     int audio_buf_size = (2 * 128 * 1024);
-    //uint8_t * audio_buf = static_cast<uint8_t*> (av_malloc(audio_buf_size));
-    uint8_t * audio_buf = new uint8_t[audio_buf_size];
+    uint8_t * audio_buf = static_cast<uint8_t*> (av_malloc(audio_buf_size));
+    //uint8_t * audio_buf = new uint8_t[audio_buf_size];
 
     while (av_fifo_size(fifo) >= frame_bytes) {
       av_fifo_generic_read(fifo, audio_buf, frame_bytes, NULL);
