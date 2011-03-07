@@ -29,9 +29,9 @@ namespace org {
         //LOGINFO("reading presets from "<<filename);
         org::esb::av::FormatBaseStream::initialize();
         rapidxml::xml_document<> _doc;
+		std::string data;
         try {
 			org::esb::io::FileInputStream fis(filename);
-			std::string data;
 			fis.read(data);
           _doc.parse < 0 > (const_cast<char*> (data.c_str()));
         } catch (rapidxml::parse_error ex) {
