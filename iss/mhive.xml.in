@@ -4,7 +4,7 @@
     <version>@MHIVE_VERSION@</version>
     <readmeFile>${mhive_src_dir}/README</readmeFile>
     <licenseFile>${mhive_src_dir}/LICENSE</licenseFile>
-    <requestedExecutionLevel>asInvoker<requestedExecutionLevel>
+    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
     <preBuildActionList>
         <setInstallerVariable>
             <name>mhive_src_dir</name>
