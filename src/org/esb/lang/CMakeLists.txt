@@ -13,6 +13,7 @@ SET(lang_source
     CtrlCHitWaiter.cpp
     ProcessException.cpp
     ProcessListener.cpp
+#    Object.cpp
 )
 IF(NOT WIN32)
   SET(lang_source

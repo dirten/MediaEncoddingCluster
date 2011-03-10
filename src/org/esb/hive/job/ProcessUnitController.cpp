@@ -153,9 +153,9 @@ namespace org {
 
           MediaFile infile = job.inputfile().get().one();
           string filename = infile.path + "/" + infile.filename;
-          org::esb::io::File fi(filename);
-          if (fi.exists()) {
-            org::esb::av::FormatInputStream fis(&fi);
+          //org::esb::io::File fi(filename);
+          //if (fi.exists()) {
+            org::esb::av::FormatInputStream fis(filename);
             if (fis.isValid()) {
               job.begintime = 0;
               job.status = "running";
@@ -329,7 +329,7 @@ namespace org {
               }
 
             }
-          } else {
+          /*} else {
 
             LOGERROR("Error Opening Input File : " << filename);
             job.endtime = 0;
@@ -347,7 +347,7 @@ namespace org {
               job.update();
             }
 
-          }
+          }*/
         }
 
         void ProcessUnitController::putToQueue(boost::shared_ptr<ProcessUnit>unit) {

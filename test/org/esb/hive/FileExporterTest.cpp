@@ -11,6 +11,7 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/hive/FileExporter.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/io/File.h"
 using namespace std;
 
 /*
@@ -29,7 +30,13 @@ int main(int argc, char** argv) {
   db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
   db::MediaFile outfile=litesql::select<db::MediaFile>(db,db::MediaFile::Id==fileid).one();
   outfile.path=filepath;
-  FileExporter::exportFile(outfile);
+  for(int a=0;a<100;a++){
+    LOGDEBUG("Roundup:"<<a);
+    org::esb::io::File file( outfile.path+"/"+outfile.filename);
+    if(file.exists())
+      file.deleteFile();
+    FileExporter::exportFile(outfile);
+  }
   return 0;
 }
 

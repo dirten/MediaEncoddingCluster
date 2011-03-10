@@ -8,6 +8,7 @@ add_executable (TestStackDumper TestStackDumper.cpp)
 add_executable (TestSystemCpuInfo TestSystemCpuInfo.cpp)
 add_executable (ProcessTest ProcessTest.cpp)
 add_executable (ProcessTestExecutable ProcessTestExecutable.cpp)
+#add_executable (ObjectTest ObjectTest.cpp)
 
 target_link_libraries (TestSystemCpuInfo io lang util net )
 target_link_libraries (TestThread lang util)
@@ -19,11 +20,14 @@ target_link_libraries (ProcessTestExecutable lang)
 if(NOT WIN32)
   target_link_libraries (TestThread pthread)
 ENDIF(NOT WIN32)
+#target_link_libraries (ObjectTest lang)
+
 ADD_TEST(lang.ThreadTest ${EXECUTABLE_OUTPUT_PATH}/TestThread )
 #ADD_TEST(TestSystemCpuInfo ${EXECUTABLE_OUTPUT_PATH}/TestSystemCpuInfo )
 ADD_TEST(lang.ExceptionTest ${EXECUTABLE_OUTPUT_PATH}/TestException )
 ADD_TEST(lang.StackDumperTest ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
 ADD_TEST(lang.ProcessTest ${EXECUTABLE_OUTPUT_PATH}/ProcessTest )
 #ADD_TEST(TestLibCurl ${EXECUTABLE_OUTPUT_PATH}/TestLibCurl )
+#ADD_TEST(ObjectTest ${EXECUTABLE_OUTPUT_PATH}/ObjectTest )
 
 

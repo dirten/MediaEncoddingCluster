@@ -4,14 +4,13 @@
 using namespace org::esb::av;
 using namespace org::esb::io;
 
-
-int main(){
-	std::string src = MEC_SOURCE_DIR;
-	src.append("/test.dvd");
+int main() {
+  std::string src = MEC_SOURCE_DIR;
+  src.append("/test.dvd");
   File f(src.c_str());
   FormatInputStream fis(&f);
-  assert(fis.isValid()==true);
-  assert(fis.getFileSize()==3409920);
-  assert(fis.getStreamCount()==2);
+  assert(fis.isValid() == true);
+  assert(fis.getFileSize() == 3409920);
+  assert(fis.getStreamCount() == 2);
   return 0;
 }

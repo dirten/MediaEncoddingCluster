@@ -20,6 +20,7 @@ namespace org {
       FormatInputStream::FormatInputStream(std::string source) {
         init(source);
       }
+      
       void FormatInputStream::init(std::string source) {
 	boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << source);
@@ -45,7 +46,7 @@ namespace org {
 	        
 
         if (av_open_input_file(&formatCtx, _sourceFile.c_str(), NULL, 0, ap) != 0) {
-          LOGERROR("could not open file:" << _sourceFile);
+          LOGERROR("could not open " << _sourceFile);
           return;
         }
 		}

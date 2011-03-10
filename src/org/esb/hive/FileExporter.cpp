@@ -199,7 +199,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
      * clean up temporary files, they are no longer needed
      */
     fis.close();
-    infile.deleteFile();
+    //infile.deleteFile();
   }
   if (true) {
     db::JobLog log(job.getDatabase());

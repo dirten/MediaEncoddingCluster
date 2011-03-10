@@ -217,6 +217,7 @@ bool File::http_url_exist(std::string url) {
     host = host.substr(0, host.find(":"));
 
     LOGDEBUG("try connect to host:" << host);
+    LOGDEBUG("getFilePath().substr(getFilePath().find(\"/\", 7)) von : "<<getFilePath())
     std::string url = getFilePath().substr(getFilePath().find("/", 7));
     LOGDEBUG("RulPath:" << urlencode(url))
     std::string port = "80";
@@ -246,7 +247,10 @@ bool File::http_url_exist(std::string url) {
     LOGDEBUG(header);
     LOGDEBUG(status);
     result = (status == "200" || status == "302");
-  } catch (...) {
+  } catch (std::exception & ex) {
+    LOGERROR(ex.what());
+  }catch(...){
+    LOGERROR("Unknown Exception")
   }
   return result;
 }

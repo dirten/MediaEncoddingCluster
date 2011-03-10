@@ -319,13 +319,13 @@
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
     </dependency>
-<!--    <dependency>
+    <dependency>
       <groupId>org.esb.libcurl</groupId>
       <artifactId>libcurl</artifactId>
       <version>7.21.3-1</version>
       <type>zip</type>
       <classifier>${my.family}-${build_type}</classifier>
-    </dependency>-->
+    </dependency>
     <dependency>
       <groupId>org.esb.safmq</groupId>
       <artifactId>safmq</artifactId>
