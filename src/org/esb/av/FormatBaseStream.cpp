@@ -5,9 +5,7 @@
 #include <iostream>
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
-extern "C" {
-  extern URLProtocol test_protocol;
-}
+extern URLProtocol test_protocol;
 namespace org {
   namespace esb {
     namespace av {
