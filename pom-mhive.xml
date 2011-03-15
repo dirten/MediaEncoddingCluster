@@ -208,6 +208,7 @@
                     -DBREAKPAD_DIR=${project.build.directory}/dependency
                     -DCURL_DIR=${project.build.directory}/dependency
                     -DINSTALLBUILDER_EXE=${env.INSTALLBUILDER_EXE}
+                    -DSVN_VERSION=${env.SVN_REVISION}
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
