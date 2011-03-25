@@ -27,7 +27,6 @@ namespace org
       {
         classlogger("org.esb.config.Config")
       public:
-        static bool init(const std::string & filename);
         static void close();
         static void save2db();
         static const char * getProperty( const char * key, const char * def="");
@@ -36,7 +35,9 @@ namespace org
 
         static Properties * getProperties();
         static void reload();
+        static void loadConfigFile(const std::string filename);
       private:
+        static bool init();
         static void parseLine(const char*);
         static bool _isInitialized;
       };

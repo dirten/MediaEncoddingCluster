@@ -344,6 +344,9 @@
                             <origin>${mhive_src_dir}/install/bin/avcore-0.dll</origin>
                         </distributionFile>
                     </distributionFileList>
+                    <actionList>
+                        <changePermissions permissions="0755" files="${installdir}/bin/*"/>
+                    </actionList>
                 </folder>
                 <folder>
                     <description>Program Files</description>

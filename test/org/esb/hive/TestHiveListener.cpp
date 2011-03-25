@@ -71,7 +71,7 @@ void ctrlCHitWait() {
 }
 #endif
 int main(){
-  Config::init("");
+  
   Config::setProperty("db.connection","mysql:host=;db=hive;user=;passwd=");
    org::esb::hive::HiveListener hive;
 //   hive.startListener();

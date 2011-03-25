@@ -30,7 +30,8 @@ void runner(int num, Channel<int> * ch){
   LOGDEBUG("exiting runner")
 }
 
-void sender(int num,Channel<int> * ch){
+void sender(int num,Channel<int> * ch, int id){
+  LOGDEBUG("starting sender id:"<<id)
   for(int a=0;a<num&&!ch->isClosed();a++){
     //LOGDEBUG("try write")
     *ch << a;
@@ -51,7 +52,8 @@ int main(int argc, char** argv) {
   }
 
   for(int a=0;a<100;a++){
-    go(sender,1000,&ch);
+    go(sender,1000,&ch, a);
+    //org::esb::lang::Thread::sleep2(10);
   }
   org::esb::lang::Thread::sleep2(5000);
 /*

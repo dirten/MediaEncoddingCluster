@@ -592,7 +592,7 @@ namespace org {
           signal::Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::START));
         }
 
-        config::Config::init(configfile);
+        //config::Config::init(configfile);
 
         int idx = stack->currentIndex();
         stack->setCurrentIndex(++idx);

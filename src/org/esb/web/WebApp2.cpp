@@ -69,9 +69,8 @@ namespace org {
          syslog_file.append("/sys.log");
          Wt::WApplication::readConfigurationProperty("log-file", const_cast<char*> (syslog_file.c_str()));
          */
-        std::string h = "MediaEncodingCluster V-";
-        h += MHIVE_VERSION;
-        h += "($Revision: 0 $-"__DATE__ "-" __TIME__")";
+        std::string h = "MediaEncodingCluster ";
+        h.append("( ").append(MHIVE_VERSION).append(" " __DATE__ "-" __TIME__ ")");
         setLoadingIndicator(new Wt::WOverlayLoadingIndicator());
         setTitle(h);
         useStyleSheet("filetree.css");
@@ -466,7 +465,7 @@ namespace org {
         Wt::Ext::MessageBox *box = new Wt::Ext::MessageBox("Shutdown Media Encoding Cluster", "do you really want to shutdown the Media Encoding Cluster<br/>this will abort all currently running operations!!!", Wt::Warning, Wt::Ok | Wt::Cancel);
         if (!box->exec() == Wt::Ext::Dialog::Accepted)
           return;
-
+        LOGDEBUG("shutdown from webinterface!");
 #ifdef __WIN32__
         HANDLE hProcess;
         hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, GetCurrentProcessId());

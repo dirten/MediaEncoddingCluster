@@ -29,8 +29,8 @@ namespace org {
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
 #ifdef USE_SAFMQ
-        _qis=new QueueInputStream(_host, _port);
-        _qos=new QueueOutputStream(_host, _port);
+        _qis=new QueueInputStream(_host, _port,"punitout");
+        _qos=new QueueOutputStream(_host, _port,"punitin");
 #endif
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
@@ -40,11 +40,9 @@ namespace org {
       }
 
       HiveClient::~HiveClient() {
-        delete _ois;
-        delete _oos;
         if (_sock)
           _sock->close();
-        delete _sock;
+        //delete _sock;
       }
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
@@ -76,13 +74,19 @@ namespace org {
 
       void HiveClient::connect() {
         try {
-          delete _sock;
+          //delete _sock;
           _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
           _sock->connect();
-          delete _ois;
-          delete _oos;
+#ifdef USE_SAFMQ
+
+          _qis=new QueueInputStream(_host, _port,"punitout");
+          _qos=new QueueOutputStream(_host, _port,"punitin");
+          _ois=new org::esb::io::ObjectInputStream(_qis.get());
+          _oos = new org::esb::io::ObjectOutputStream(_qos.get());
+#else
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
+#endif
           LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
           LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());

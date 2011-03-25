@@ -11,46 +11,32 @@
 namespace org {
   namespace esb {
     namespace util {
-
       template <typename T>
       class Channel:public Queue<T, 1> {
-      private:
-        bool _closed;
-
       public:
         Channel(){
-          _closed=false;
         }
         virtual ~Channel() {
          std::cout << " ~Channel()"<<std::endl;
-
-          //Queue<T, size>::flush();
         }
         void close(){
           this->flush();
-          _closed=true;
         }
 
         bool operator<<(T data)
         {
-          if(_closed)return false;
           return enqueue(data);
-            //return true;
         }
 
         bool operator>>(  T & data)
         {
-          if(_closed)return false;
           return dequeue(data);
-          //return true;
         }
 
         bool isClosed(){
-          return _closed;
+          return Queue<T, 1>::closed();
         }
       };
-      //typedef Queue<typename, int> Channel;
-
     }
   }
 }

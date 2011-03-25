@@ -113,7 +113,6 @@ message ProcessRequest {
     optional Process process_data=2;
 }
 
-
 message ProcessResponse {
     optional Process process_data=2;
     required string status_message = 3;
@@ -124,4 +123,40 @@ service ProcessService {
   rpc startProcess (ProcessRequest) returns (ProcessResponse);
   rpc stopProcess (ProcessRequest) returns (ProcessResponse);
   rpc getProcessList (ProcessRequest) returns (ProcessResponse);
+}
+
+//import "api.proto";
+message ApiRequest {
+}
+
+message Stream {
+
+}
+
+message Mediafile{
+    required int32 id=1;
+    required string filename=2;
+    required int64 size=3;
+    required int64 duration=4;
+    required int32 stream_count=5;
+    repeated Stream streams=6;
+}
+
+message MediafileList{
+    repeated Mediafile mediafiles=1;
+}
+
+message MediafileRequest{
+    required Mediafile file=1;
+}
+
+message MediafileResponse{
+    repeated Mediafile mediafiles=1;
+    required int32 status=2;
+}
+
+service ApiService{
+    rpc getMediafile(MediafileRequest)returns(MediafileResponse);
+    rpc addMediafile(MediafileRequest)returns(MediafileResponse);
+    rpc getMediafileList(MediafileRequest) returns (MediafileResponse);
 }

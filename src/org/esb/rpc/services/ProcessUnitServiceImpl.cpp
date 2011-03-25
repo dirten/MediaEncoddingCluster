@@ -15,44 +15,43 @@ namespace org {
   namespace esb {
     namespace rpc {
 
-      ProcessUnitServiceImpl::ProcessUnitServiceImpl(Server *aServer) : ProcessUnitService(), mServer(aServer){
+      ProcessUnitServiceImpl::ProcessUnitServiceImpl(Server *aServer) : ProcessUnitService(), mServer(aServer) {
 
       }
-
 
       ProcessUnitServiceImpl::~ProcessUnitServiceImpl() {
       }
 
       void ProcessUnitServiceImpl::getProcessUnit(google::protobuf::RpcController* controller,
-                const org::esb::rpc::ProcessUnitRequest* request,
-                org::esb::rpc::ProcessUnitResponse* response,
-                google::protobuf::Closure* done) {
-          assert(mServer);
-          LOGDEBUG("getProcessUnit");
-          LOGDEBUG(request->node().DebugString());
+              const org::esb::rpc::ProcessUnitRequest* request,
+              org::esb::rpc::ProcessUnitResponse* response,
+              google::protobuf::Closure* done) {
+        assert(mServer);
+        LOGDEBUG("getProcessUnit");
+        LOGDEBUG(request->node().DebugString());
 
-          org::esb::signal::Message msg;
-          msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
-          org::esb::signal::Messenger::getInstance().sendRequest(msg);
-          boost::shared_ptr<org::esb::hive::job::ProcessUnit >un = msg.getPtrProperty("processunit");
-          if(!un){
-            controller->SetFailed("could not get the ProcessUnit from the ProcessUnitController");
-            return;
-          }
-          std::string data;
-          org::esb::io::StringOutputStream sos(data);
-          org::esb::io::ObjectOutputStream oos(&sos);
-          oos.writeObject(*un.get());
-          response->mutable_unit_data()->set_serialized_data(data.c_str(), data.length());
-          response->set_status("OK");
-          LOGDEBUG("sended data length="<<data.length());
+        org::esb::signal::Message msg;
+        msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
+        org::esb::signal::Messenger::getInstance().sendRequest(msg);
+        boost::shared_ptr<org::esb::hive::job::ProcessUnit >un = msg.getPtrProperty("processunit");
+        if (!un) {
+          controller->SetFailed("could not get the ProcessUnit from the ProcessUnitController");
+          return;
         }
+        std::string data;
+        org::esb::io::StringOutputStream sos(data);
+        org::esb::io::ObjectOutputStream oos(&sos);
+        oos.writeObject(*un.get());
+        response->mutable_unit_data()->set_serialized_data(data.c_str(), data.length());
+        response->set_status("OK");
+        LOGDEBUG("sended data length=" << data.length());
+      }
 
       void ProcessUnitServiceImpl::putProcessUnit(google::protobuf::RpcController* controller,
-                const org::esb::rpc::ProcessUnitRequest* request,
-                org::esb::rpc::ProcessUnitResponse* response,
-                google::protobuf::Closure* done) {
-          LOGDEBUG("putProcessUnit");
+              const org::esb::rpc::ProcessUnitRequest* request,
+              org::esb::rpc::ProcessUnitResponse* response,
+              google::protobuf::Closure* done) {
+        LOGDEBUG("putProcessUnit");
 
       }
 

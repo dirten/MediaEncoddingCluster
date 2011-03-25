@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 //  if(mysqldatadir.exists())
 //    mysqldatadir.deleteFile();
   /*initialise the config class*/
-  org::esb::config::Config::init("");
+  
   org::esb::hive::DatabaseService::bootstrap();
   return 0;
 }

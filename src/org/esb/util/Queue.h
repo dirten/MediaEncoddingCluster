@@ -25,6 +25,7 @@ namespace org {
         boost::condition dequeue_condition;
         boost::condition stop_condition;
         bool _is_waiting;
+        public:
         bool _closed;
       public:
 
@@ -44,6 +45,9 @@ namespace org {
           dequeue_condition.notify_all();
           enqueue_condition.notify_all();
           LOGDEBUG("waiting Threads notified" << &queue_condition);
+        }
+        bool closed(){
+          return _closed;
         }
 
         virtual ~Queue() {

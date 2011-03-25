@@ -47,6 +47,12 @@ class ProcessUnitResponse;
 class Process;
 class ProcessRequest;
 class ProcessResponse;
+class ApiRequest;
+class Stream;
+class Mediafile;
+class MediafileList;
+class MediafileRequest;
+class MediafileResponse;
 
 enum ErrorReason {
   NO_ERROR_OCCURRED = 0,
@@ -1305,6 +1311,591 @@ class ProcessResponse : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static ProcessResponse* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class ApiRequest : public ::google::protobuf::Message {
+ public:
+  ApiRequest();
+  virtual ~ApiRequest();
+  
+  ApiRequest(const ApiRequest& from);
+  
+  inline ApiRequest& operator=(const ApiRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ApiRequest& default_instance();
+  
+  void Swap(ApiRequest* other);
+  
+  // implements Message ----------------------------------------------
+  
+  ApiRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ApiRequest& from);
+  void MergeFrom(const ApiRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.ApiRequest)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[1];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static ApiRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Stream : public ::google::protobuf::Message {
+ public:
+  Stream();
+  virtual ~Stream();
+  
+  Stream(const Stream& from);
+  
+  inline Stream& operator=(const Stream& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Stream& default_instance();
+  
+  void Swap(Stream* other);
+  
+  // implements Message ----------------------------------------------
+  
+  Stream* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Stream& from);
+  void MergeFrom(const Stream& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.Stream)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[1];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static Stream* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Mediafile : public ::google::protobuf::Message {
+ public:
+  Mediafile();
+  virtual ~Mediafile();
+  
+  Mediafile(const Mediafile& from);
+  
+  inline Mediafile& operator=(const Mediafile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Mediafile& default_instance();
+  
+  void Swap(Mediafile* other);
+  
+  // implements Message ----------------------------------------------
+  
+  Mediafile* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Mediafile& from);
+  void MergeFrom(const Mediafile& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // required int32 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::int32 id() const;
+  inline void set_id(::google::protobuf::int32 value);
+  
+  // required string filename = 2;
+  inline bool has_filename() const;
+  inline void clear_filename();
+  static const int kFilenameFieldNumber = 2;
+  inline const ::std::string& filename() const;
+  inline void set_filename(const ::std::string& value);
+  inline void set_filename(const char* value);
+  inline void set_filename(const char* value, size_t size);
+  inline ::std::string* mutable_filename();
+  
+  // required int64 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::int64 size() const;
+  inline void set_size(::google::protobuf::int64 value);
+  
+  // required int64 duration = 4;
+  inline bool has_duration() const;
+  inline void clear_duration();
+  static const int kDurationFieldNumber = 4;
+  inline ::google::protobuf::int64 duration() const;
+  inline void set_duration(::google::protobuf::int64 value);
+  
+  // required int32 stream_count = 5;
+  inline bool has_stream_count() const;
+  inline void clear_stream_count();
+  static const int kStreamCountFieldNumber = 5;
+  inline ::google::protobuf::int32 stream_count() const;
+  inline void set_stream_count(::google::protobuf::int32 value);
+  
+  // repeated .org.esb.rpc.Stream streams = 6;
+  inline int streams_size() const;
+  inline void clear_streams();
+  static const int kStreamsFieldNumber = 6;
+  inline const ::org::esb::rpc::Stream& streams(int index) const;
+  inline ::org::esb::rpc::Stream* mutable_streams(int index);
+  inline ::org::esb::rpc::Stream* add_streams();
+  inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream >&
+      streams() const;
+  inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream >*
+      mutable_streams();
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.Mediafile)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::google::protobuf::int32 id_;
+  ::std::string* filename_;
+  static const ::std::string _default_filename_;
+  ::google::protobuf::int64 size_;
+  ::google::protobuf::int64 duration_;
+  ::google::protobuf::int32 stream_count_;
+  ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream > streams_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static Mediafile* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MediafileList : public ::google::protobuf::Message {
+ public:
+  MediafileList();
+  virtual ~MediafileList();
+  
+  MediafileList(const MediafileList& from);
+  
+  inline MediafileList& operator=(const MediafileList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MediafileList& default_instance();
+  
+  void Swap(MediafileList* other);
+  
+  // implements Message ----------------------------------------------
+  
+  MediafileList* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MediafileList& from);
+  void MergeFrom(const MediafileList& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  inline int mediafiles_size() const;
+  inline void clear_mediafiles();
+  static const int kMediafilesFieldNumber = 1;
+  inline const ::org::esb::rpc::Mediafile& mediafiles(int index) const;
+  inline ::org::esb::rpc::Mediafile* mutable_mediafiles(int index);
+  inline ::org::esb::rpc::Mediafile* add_mediafiles();
+  inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >&
+      mediafiles() const;
+  inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >*
+      mutable_mediafiles();
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.MediafileList)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile > mediafiles_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static MediafileList* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MediafileRequest : public ::google::protobuf::Message {
+ public:
+  MediafileRequest();
+  virtual ~MediafileRequest();
+  
+  MediafileRequest(const MediafileRequest& from);
+  
+  inline MediafileRequest& operator=(const MediafileRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MediafileRequest& default_instance();
+  
+  void Swap(MediafileRequest* other);
+  
+  // implements Message ----------------------------------------------
+  
+  MediafileRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MediafileRequest& from);
+  void MergeFrom(const MediafileRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // required .org.esb.rpc.Mediafile file = 1;
+  inline bool has_file() const;
+  inline void clear_file();
+  static const int kFileFieldNumber = 1;
+  inline const ::org::esb::rpc::Mediafile& file() const;
+  inline ::org::esb::rpc::Mediafile* mutable_file();
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.MediafileRequest)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::org::esb::rpc::Mediafile* file_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static MediafileRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MediafileResponse : public ::google::protobuf::Message {
+ public:
+  MediafileResponse();
+  virtual ~MediafileResponse();
+  
+  MediafileResponse(const MediafileResponse& from);
+  
+  inline MediafileResponse& operator=(const MediafileResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MediafileResponse& default_instance();
+  
+  void Swap(MediafileResponse* other);
+  
+  // implements Message ----------------------------------------------
+  
+  MediafileResponse* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MediafileResponse& from);
+  void MergeFrom(const MediafileResponse& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  inline int mediafiles_size() const;
+  inline void clear_mediafiles();
+  static const int kMediafilesFieldNumber = 1;
+  inline const ::org::esb::rpc::Mediafile& mediafiles(int index) const;
+  inline ::org::esb::rpc::Mediafile* mutable_mediafiles(int index);
+  inline ::org::esb::rpc::Mediafile* add_mediafiles();
+  inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >&
+      mediafiles() const;
+  inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >*
+      mutable_mediafiles();
+  
+  // required int32 status = 2;
+  inline bool has_status() const;
+  inline void clear_status();
+  static const int kStatusFieldNumber = 2;
+  inline ::google::protobuf::int32 status() const;
+  inline void set_status(::google::protobuf::int32 value);
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.MediafileResponse)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile > mediafiles_;
+  ::google::protobuf::int32 status_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static MediafileResponse* default_instance_;
+};
 // ===================================================================
 
 class DiscoveryService_Stub;
@@ -1570,6 +2161,81 @@ class ProcessService_Stub : public ProcessService {
   ::google::protobuf::RpcChannel* channel_;
   bool owns_channel_;
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ProcessService_Stub);
+};
+
+
+// -------------------------------------------------------------------
+
+class ApiService_Stub;
+
+class ApiService : public ::google::protobuf::Service {
+ protected:
+  // This class should be treated as an abstract interface.
+  inline ApiService() {};
+ public:
+  virtual ~ApiService();
+  
+  typedef ApiService_Stub Stub;
+  
+  static const ::google::protobuf::ServiceDescriptor* descriptor();
+  
+  virtual void getMediafile(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void addMediafile(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void getMediafileList(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+  
+  // implements Service ----------------------------------------------
+  
+  const ::google::protobuf::ServiceDescriptor* GetDescriptor();
+  void CallMethod(const ::google::protobuf::MethodDescriptor* method,
+                  ::google::protobuf::RpcController* controller,
+                  const ::google::protobuf::Message* request,
+                  ::google::protobuf::Message* response,
+                  ::google::protobuf::Closure* done);
+  const ::google::protobuf::Message& GetRequestPrototype(
+    const ::google::protobuf::MethodDescriptor* method) const;
+  const ::google::protobuf::Message& GetResponsePrototype(
+    const ::google::protobuf::MethodDescriptor* method) const;
+
+ private:
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ApiService);
+};
+
+class ApiService_Stub : public ApiService {
+ public:
+  ApiService_Stub(::google::protobuf::RpcChannel* channel);
+  ApiService_Stub(::google::protobuf::RpcChannel* channel,
+                   ::google::protobuf::Service::ChannelOwnership ownership);
+  ~ApiService_Stub();
+  
+  inline ::google::protobuf::RpcChannel* channel() { return channel_; }
+  
+  // implements ApiService ------------------------------------------
+  
+  void getMediafile(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+  void addMediafile(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+  void getMediafileList(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::MediafileRequest* request,
+                       ::org::esb::rpc::MediafileResponse* response,
+                       ::google::protobuf::Closure* done);
+ private:
+  ::google::protobuf::RpcChannel* channel_;
+  bool owns_channel_;
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ApiService_Stub);
 };
 
 
@@ -2376,6 +3042,244 @@ inline ::google::protobuf::int32 ProcessResponse::status_code() const {
 inline void ProcessResponse::set_status_code(::google::protobuf::int32 value) {
   _set_bit(2);
   status_code_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// ApiRequest
+
+// -------------------------------------------------------------------
+
+// Stream
+
+// -------------------------------------------------------------------
+
+// Mediafile
+
+// required int32 id = 1;
+inline bool Mediafile::has_id() const {
+  return _has_bit(0);
+}
+inline void Mediafile::clear_id() {
+  id_ = 0;
+  _clear_bit(0);
+}
+inline ::google::protobuf::int32 Mediafile::id() const {
+  return id_;
+}
+inline void Mediafile::set_id(::google::protobuf::int32 value) {
+  _set_bit(0);
+  id_ = value;
+}
+
+// required string filename = 2;
+inline bool Mediafile::has_filename() const {
+  return _has_bit(1);
+}
+inline void Mediafile::clear_filename() {
+  if (filename_ != &_default_filename_) {
+    filename_->clear();
+  }
+  _clear_bit(1);
+}
+inline const ::std::string& Mediafile::filename() const {
+  return *filename_;
+}
+inline void Mediafile::set_filename(const ::std::string& value) {
+  _set_bit(1);
+  if (filename_ == &_default_filename_) {
+    filename_ = new ::std::string;
+  }
+  filename_->assign(value);
+}
+inline void Mediafile::set_filename(const char* value) {
+  _set_bit(1);
+  if (filename_ == &_default_filename_) {
+    filename_ = new ::std::string;
+  }
+  filename_->assign(value);
+}
+inline void Mediafile::set_filename(const char* value, size_t size) {
+  _set_bit(1);
+  if (filename_ == &_default_filename_) {
+    filename_ = new ::std::string;
+  }
+  filename_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Mediafile::mutable_filename() {
+  _set_bit(1);
+  if (filename_ == &_default_filename_) {
+    filename_ = new ::std::string;
+  }
+  return filename_;
+}
+
+// required int64 size = 3;
+inline bool Mediafile::has_size() const {
+  return _has_bit(2);
+}
+inline void Mediafile::clear_size() {
+  size_ = GOOGLE_LONGLONG(0);
+  _clear_bit(2);
+}
+inline ::google::protobuf::int64 Mediafile::size() const {
+  return size_;
+}
+inline void Mediafile::set_size(::google::protobuf::int64 value) {
+  _set_bit(2);
+  size_ = value;
+}
+
+// required int64 duration = 4;
+inline bool Mediafile::has_duration() const {
+  return _has_bit(3);
+}
+inline void Mediafile::clear_duration() {
+  duration_ = GOOGLE_LONGLONG(0);
+  _clear_bit(3);
+}
+inline ::google::protobuf::int64 Mediafile::duration() const {
+  return duration_;
+}
+inline void Mediafile::set_duration(::google::protobuf::int64 value) {
+  _set_bit(3);
+  duration_ = value;
+}
+
+// required int32 stream_count = 5;
+inline bool Mediafile::has_stream_count() const {
+  return _has_bit(4);
+}
+inline void Mediafile::clear_stream_count() {
+  stream_count_ = 0;
+  _clear_bit(4);
+}
+inline ::google::protobuf::int32 Mediafile::stream_count() const {
+  return stream_count_;
+}
+inline void Mediafile::set_stream_count(::google::protobuf::int32 value) {
+  _set_bit(4);
+  stream_count_ = value;
+}
+
+// repeated .org.esb.rpc.Stream streams = 6;
+inline int Mediafile::streams_size() const {
+  return streams_.size();
+}
+inline void Mediafile::clear_streams() {
+  streams_.Clear();
+}
+inline const ::org::esb::rpc::Stream& Mediafile::streams(int index) const {
+  return streams_.Get(index);
+}
+inline ::org::esb::rpc::Stream* Mediafile::mutable_streams(int index) {
+  return streams_.Mutable(index);
+}
+inline ::org::esb::rpc::Stream* Mediafile::add_streams() {
+  return streams_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream >&
+Mediafile::streams() const {
+  return streams_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream >*
+Mediafile::mutable_streams() {
+  return &streams_;
+}
+
+// -------------------------------------------------------------------
+
+// MediafileList
+
+// repeated .org.esb.rpc.Mediafile mediafiles = 1;
+inline int MediafileList::mediafiles_size() const {
+  return mediafiles_.size();
+}
+inline void MediafileList::clear_mediafiles() {
+  mediafiles_.Clear();
+}
+inline const ::org::esb::rpc::Mediafile& MediafileList::mediafiles(int index) const {
+  return mediafiles_.Get(index);
+}
+inline ::org::esb::rpc::Mediafile* MediafileList::mutable_mediafiles(int index) {
+  return mediafiles_.Mutable(index);
+}
+inline ::org::esb::rpc::Mediafile* MediafileList::add_mediafiles() {
+  return mediafiles_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >&
+MediafileList::mediafiles() const {
+  return mediafiles_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >*
+MediafileList::mutable_mediafiles() {
+  return &mediafiles_;
+}
+
+// -------------------------------------------------------------------
+
+// MediafileRequest
+
+// required .org.esb.rpc.Mediafile file = 1;
+inline bool MediafileRequest::has_file() const {
+  return _has_bit(0);
+}
+inline void MediafileRequest::clear_file() {
+  if (file_ != NULL) file_->::org::esb::rpc::Mediafile::Clear();
+  _clear_bit(0);
+}
+inline const ::org::esb::rpc::Mediafile& MediafileRequest::file() const {
+  return file_ != NULL ? *file_ : *default_instance_->file_;
+}
+inline ::org::esb::rpc::Mediafile* MediafileRequest::mutable_file() {
+  _set_bit(0);
+  if (file_ == NULL) file_ = new ::org::esb::rpc::Mediafile;
+  return file_;
+}
+
+// -------------------------------------------------------------------
+
+// MediafileResponse
+
+// repeated .org.esb.rpc.Mediafile mediafiles = 1;
+inline int MediafileResponse::mediafiles_size() const {
+  return mediafiles_.size();
+}
+inline void MediafileResponse::clear_mediafiles() {
+  mediafiles_.Clear();
+}
+inline const ::org::esb::rpc::Mediafile& MediafileResponse::mediafiles(int index) const {
+  return mediafiles_.Get(index);
+}
+inline ::org::esb::rpc::Mediafile* MediafileResponse::mutable_mediafiles(int index) {
+  return mediafiles_.Mutable(index);
+}
+inline ::org::esb::rpc::Mediafile* MediafileResponse::add_mediafiles() {
+  return mediafiles_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >&
+MediafileResponse::mediafiles() const {
+  return mediafiles_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Mediafile >*
+MediafileResponse::mutable_mediafiles() {
+  return &mediafiles_;
+}
+
+// required int32 status = 2;
+inline bool MediafileResponse::has_status() const {
+  return _has_bit(1);
+}
+inline void MediafileResponse::clear_status() {
+  status_ = 0;
+  _clear_bit(1);
+}
+inline ::google::protobuf::int32 MediafileResponse::status() const {
+  return status_;
+}
+inline void MediafileResponse::set_status(::google::protobuf::int32 value) {
+  _set_bit(1);
+  status_ = value;
 }
 
 

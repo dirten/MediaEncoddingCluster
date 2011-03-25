@@ -83,15 +83,20 @@ void client(int argc, char * argv[]);
 void shell(int argc, char * argv[]);
 void start();
 void start_auto(int argc, char * argv[]);
+void setupConfig(po::variables_map vm);
+bool setupDatabase();
+void setupDefaults();
+void checkDirs();
 int rec = 0;
 std::string _hostname;
-int _port=0;
+int _port = 0;
+
 int main(int argc, char * argv[]) {
   /*setting default path to Program*/
-  std::cout <<"arg0:"<<argv[0]<<std::endl;
+  //std::cout << "arg0:" << argv[0] << std::endl;
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
-  config::Config::setProperty("hive.base_path", base_path);
+  //config::Config::setProperty("hive.base_path", base_path);
 
   //  Config::setProperty("hive.base_path", base_path);
   try {
@@ -104,8 +109,6 @@ int main(int argc, char * argv[]) {
 
     po::options_description inst("Install options");
     inst.add_options()
-            ("install", "install the server instance on this node")
-            ("reset-to-factory-settings", "reset the server instance to factory defaults, this will delete all data!!!")
             ("hiveport", po::value<int>()->default_value(20200), "on which port will the hive be listen on")
             ("webport", po::value<int>()->default_value(8080), "on which port will the web admin be listen on")
             ;
@@ -114,7 +117,7 @@ int main(int argc, char * argv[]) {
             ("daemon,d", "start the Hive as Daemon Process")
             ("run,r", "start the Hive as Console Process")
             ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
-            ("base,b", po::value<std::string > (), "defining a base path")
+            ("base,b", po::value<std::string > ()->default_value(base_path), "defining a base path")
             ("stop", po::value<int > (), "stopping a Process defined by the process id")
             ;
 
@@ -144,147 +147,49 @@ int main(int argc, char * argv[]) {
       cout << all << "\n";
       return 1;
     }
-    if (vm.count("base")) {
-      base_path = vm["base"].as<std::string > ();
-      config::Config::setProperty("hive.base_path", base_path);
-    }
-
-    config::Config::init("hive.cfg");
+    //config::Config::init("hive.cfg");
     Log::open("");
+    setupDefaults();
+    setupConfig(vm);
+    checkDirs();
+    setupDatabase();
     if (vm.count("stop")) {
-      if(vm["stop"].as<int> ()<=0){
+      if (vm["stop"].as<int> () <= 0) {
         LOGERROR("please provide a Process Id to stop");
         return 1;
       }
       org::esb::lang::Process p(vm["stop"].as<int> ());
-      try{
+      try {
         p.stop();
-      }catch(org::esb::lang::ProcessException & ex){
-        LOGERROR("failed stopping process with id: "<<vm["stop"].as<int> ());
+      } catch (org::esb::lang::ProcessException & ex) {
+        LOGERROR("failed stopping process with id: " << vm["stop"].as<int> ());
       }
-      try{
-      p.kill();
-      }catch(org::esb::lang::ProcessException & ex){
-        LOGERROR("failed killing process with id: "<<vm["stop"].as<int> ());
+      try {
+        p.kill();
+      } catch (org::esb::lang::ProcessException & ex) {
+        LOGERROR("failed killing process with id: " << vm["stop"].as<int> ());
       }
 
       return 0;
     }
 
-    std::string config_path = config::Config::getProperty("hive.base_path");
-    config_path.append("/.hive.cfg");
-    config::Config::init(config_path);
+    //config::Config::init(config_path);
 
 
-    std::string logconfigpath = base_path;
-    logconfigpath.append("/res");
+    //std::string logconfigpath = base_path;
+    //logconfigpath.append("/res");
 
 
-    std::string dump_path = base_path;
-    dump_path.append("/dmp");
-    org::esb::io::File dpath(dump_path);
-    if (!dpath.exists())
-      dpath.mkdir();
-
-    config::Config::setProperty("hive.dump_path", dump_path.c_str());
-    //    std::wstring wdump_path(dump_path.begin(), dump_path.end());
-    std::string tmp_path = base_path;
-    tmp_path.append("/tmp");
-    org::esb::io::File tpath(tmp_path);
-    if (!tpath.exists())
-      tpath.mkdir();
 
 #ifdef NDEBUG
-    new StackDumper(dump_path);
+    new StackDumper(config::Config::get("hive.dump_path"));
 #endif
-    if (vm.count("debugmode")) {
-      Log::open("");
-    } else {
-      //Log::open(logconfigpath);
-    }
-
 
 
     av_register_all();
     avcodec_init();
     avcodec_register_all();
-    config::Config::setProperty("db.url", "database=" + base_path + "/data/hive.db");
 
-    if (vm.count("reset-to-factory-settings")) {
-      org::esb::hive::DatabaseService::start(base_path);
-      if (DatabaseService::databaseExist()) {
-        DatabaseService::dropDatabase();
-      }
-      DatabaseService::createDatabase();
-      DatabaseService::updateTables();
-      DatabaseService::loadPresets();
-      {
-        db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-        std::map<std::string, std::string> conf;
-        conf["hive.mode"] = "server";
-        conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
-        conf["web.port"] = StringUtil::toString(vm["webport"].as<int> ());
-
-        conf["hive.start"] = "true";
-        conf["web.start"] = "true";
-        conf["hive.autoscan"] = "true";
-        conf["hive.scaninterval"] = "30";
-        std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
-        webroot.append("/web");
-        conf["web.docroot"] = webroot;
-
-        std::map<std::string, std::string>::iterator it = conf.begin();
-        for (; it != conf.end(); it++) {
-          db::Config cfg(db);
-          cfg.configkey = it->first;
-          cfg.configval = it->second;
-          cfg.update();
-          LOGDEBUG("key=" << it->first << " val=" << it->second);
-        }
-      }
-      org::esb::hive::DatabaseService::stop();
-    }
-
-    if (vm.count("install")) {
-      /**
-       * @TODO: make update datebase process failsafe
-       */
-      /**starting the internal database service*/
-      org::esb::hive::DatabaseService::start(base_path);
-      if (!DatabaseService::databaseExist()) {
-        DatabaseService::createDatabase();
-        DatabaseService::createTables();
-      }
-      DatabaseService::updateTables();
-      DatabaseService::loadPresets();
-      {
-        db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-        std::map<std::string, std::string> conf;
-        conf["hive.mode"] = "server";
-        conf["hive.port"] = StringUtil::toString(vm["hiveport"].as<int> ());
-        conf["web.port"] = StringUtil::toString(vm["webport"].as<int> ());
-
-        conf["hive.start"] = "true";
-        conf["web.start"] = "true";
-        conf["hive.autoscan"] = "true";
-        conf["hive.scaninterval"] = "30";
-        std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
-        webroot.append("/web");
-        conf["web.docroot"] = webroot;
-
-        std::map<std::string, std::string>::iterator it = conf.begin();
-        for (; it != conf.end(); it++) {
-          db::Config cfg(db);
-          cfg.configkey = it->first;
-          cfg.configval = it->second;
-          cfg.update();
-          LOGDEBUG("key=" << it->first << " val=" << it->second);
-        }
-      }
-      /**stopping the internal database service*/
-      org::esb::hive::DatabaseService::stop();
-      return 0;
-    }
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
@@ -308,6 +213,7 @@ int main(int argc, char * argv[]) {
       config::Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
       client(argc, argv);
     }
+
     if (vm.count("auto")) {
       LOGDEBUG("start mhive server in auto mode, first node will be startup as server");
       config::Config::setProperty("client.port", Decimal(vm["port"].as<int> ()).toString().c_str());
@@ -376,57 +282,6 @@ int main(int argc, char * argv[]) {
   return 0;
 }
 
-#ifdef WIN32
-
-
-boost::mutex terminationMutex;
-boost::condition ctrlCHit;
-boost::condition serverStopped;
-
-BOOL WINAPI console_ctrl_handler(DWORD ctrl_type) {
-  switch (ctrl_type) {
-    case CTRL_C_EVENT:
-    case CTRL_BREAK_EVENT:
-    case CTRL_CLOSE_EVENT:
-    case CTRL_SHUTDOWN_EVENT:
-    {
-      boost::mutex::scoped_lock terminationLock(terminationMutex);
-      LOGDEBUG("ctlc event");
-      ctrlCHit.notify_all(); // should be just 1
-
-      //      serverStopped.wait(terminationLock);
-      return TRUE;
-    }
-    default:
-      return FALSE;
-  }
-}
-
-void ctrlCHitWait() {
-  SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
-  boost::mutex::scoped_lock terminationLock(terminationMutex);
-  ctrlCHit.wait(terminationLock);
-}
-#else
-
-void ctrlCHitWait() {
-  sigset_t wait_mask2;
-  sigemptyset(&wait_mask2);
-  sigaddset(&wait_mask2, SIGINT);
-  sigaddset(&wait_mask2, SIGQUIT);
-  sigaddset(&wait_mask2, SIGTERM);
-  sigaddset(&wait_mask2, SIGCHLD);
-  pthread_sigmask(SIG_BLOCK, &wait_mask2, 0);
-  int sig = 0;
-  //sigdelset(&wait_mask, SIGCHLD);
-
-  int err;
-  do {
-    err = sigwait(&wait_mask2, &sig);
-  } while (err != 0);
-
-}
-#endif
 
 class NodeAgent : public NodeListener {
 
@@ -489,26 +344,26 @@ void client(int argc, char *argv[]) {
   node.setData("type", "client");
   node.setData("version", MHIVE_VERSION);
   org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
-  if(config::Config::get("client.host")=="auto"){
+  if (config::Config::get("client.host") == "auto") {
     NodeAgent agent;
     res.setNodeListener(&agent);
     res.start();
-  }else{
-      string host = config::Config::get("client.host");
-      int port = atoi(config::Config::get("client.port").c_str());
+  } else {
+    string host = config::Config::get("client.host");
+    int port = atoi(config::Config::get("client.port").c_str());
 
-      Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
-      Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
+    Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
+    Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
 
-      Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
-      Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
+    Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
-  ctrlCHitWait();
-
+  org::esb::lang::CtrlCHitWaiter::wait();
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
+  res.stop();
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -566,7 +421,7 @@ void start() {
 
   //  LOGINFO("wait for shutdown!");
   org::esb::rpc::Server server(6000);
-  
+
   org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
   /*
@@ -601,6 +456,7 @@ void listener(int argc, char *argv[]) {
 
   /**starting the server main services*/
   start();
+  res.stop();
 
 }
 
@@ -636,5 +492,78 @@ void start_auto(int argc, char *argv[]) {
     }
     listener(argc, argv);
   }
+  res.stop();
 }
 
+bool setupDatabase() {
+  org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
+  if (!DatabaseService::databaseExist()) {
+    DatabaseService::createDatabase();
+    DatabaseService::createTables();
+    DatabaseService::updateTables();
+    DatabaseService::loadPresets();
+    {
+      db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+      std::map<std::string, std::string> conf;
+      conf["hive.mode"] = "server";
+      conf["hive.port"] = config::Config::getProperty("hive.port"); //StringUtil::toString(vm["hiveport"].as<int> ());
+      conf["web.port"] = config::Config::getProperty("web.port"); //StringUtil::toString(vm["webport"].as<int> ());
+
+      conf["hive.start"] = "true";
+      conf["web.start"] = "true";
+      conf["hive.autoscan"] = "true";
+      conf["hive.scaninterval"] = "30";
+      std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
+      webroot.append("/web");
+      conf["web.docroot"] = webroot;
+
+      std::map<std::string, std::string>::iterator it = conf.begin();
+      db.begin();
+      for (; it != conf.end(); it++) {
+        db::Config cfg(db);
+        cfg.configkey = it->first;
+        cfg.configval = it->second;
+        cfg.update();
+        LOGDEBUG("key=" << it->first << " val=" << it->second);
+      }
+      db.commit();
+    }
+  }
+  /**stopping the internal database service*/
+  org::esb::hive::DatabaseService::stop();
+}
+
+void checkDirs() {
+    org::esb::io::File dpath(config::Config::get("hive.dump_path"));
+    if (!dpath.exists())
+      dpath.mkdir();
+
+    org::esb::io::File tpath(config::Config::get("hive.tmp_path"));
+    if (!tpath.exists())
+      tpath.mkdir();
+
+    org::esb::io::File datadir(config::Config::get("hive.data_path"));
+    if(!datadir.exists())
+      datadir.mkdir();
+
+}
+
+void setupDefaults() {
+
+}
+
+void setupConfig(po::variables_map vm) {
+  if (vm.count("base")) {
+    config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
+  }
+  std::string bpath=config::Config::get("hive.base_path");
+  org::esb::config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
+  org::esb::config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
+  config::Config::setProperty("hive.config_path", bpath+"/.mhive.cfg");
+  config::Config::setProperty("hive.dump_path", bpath+"/dmp");
+  config::Config::setProperty("hive.tmp_path", bpath+"/tmp");
+  config::Config::setProperty("hive.data_path", bpath+"/data");
+  config::Config::setProperty("preset.path", bpath+"/presets");
+  config::Config::setProperty("log.path", bpath+"/logs");
+  config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
+}

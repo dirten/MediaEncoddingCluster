@@ -14,8 +14,6 @@ namespace org {
     namespace rpc {
 
       Channel::Channel(org::esb::net::TcpSocket * s):_socket(s) {
-	char * test=new char[10];
-	memcpy(test, "123", 3);
       }
 
       Channel::~Channel() {

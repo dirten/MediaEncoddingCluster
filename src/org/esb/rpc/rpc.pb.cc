@@ -52,11 +52,30 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ProcessResponse_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ProcessResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* ApiRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  ApiRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Stream_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Stream_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Mediafile_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Mediafile_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MediafileList_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MediafileList_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MediafileRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MediafileRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MediafileResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MediafileResponse_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* ErrorReason_descriptor_ = NULL;
 const ::google::protobuf::ServiceDescriptor* DiscoveryService_descriptor_ = NULL;
 const ::google::protobuf::ServiceDescriptor* NodeService_descriptor_ = NULL;
 const ::google::protobuf::ServiceDescriptor* ProcessUnitService_descriptor_ = NULL;
 const ::google::protobuf::ServiceDescriptor* ProcessService_descriptor_ = NULL;
+const ::google::protobuf::ServiceDescriptor* ApiService_descriptor_ = NULL;
 
 }  // namespace
 
@@ -260,11 +279,106 @@ void protobuf_AssignDesc_rpc_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ProcessResponse));
+  ApiRequest_descriptor_ = file->message_type(12);
+  static const int ApiRequest_offsets_[1] = {
+  };
+  ApiRequest_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      ApiRequest_descriptor_,
+      ApiRequest::default_instance_,
+      ApiRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ApiRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ApiRequest, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(ApiRequest));
+  Stream_descriptor_ = file->message_type(13);
+  static const int Stream_offsets_[1] = {
+  };
+  Stream_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      Stream_descriptor_,
+      Stream::default_instance_,
+      Stream_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Stream, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Stream, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(Stream));
+  Mediafile_descriptor_ = file->message_type(14);
+  static const int Mediafile_offsets_[6] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, filename_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, size_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, duration_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, stream_count_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, streams_),
+  };
+  Mediafile_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      Mediafile_descriptor_,
+      Mediafile::default_instance_,
+      Mediafile_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Mediafile, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(Mediafile));
+  MediafileList_descriptor_ = file->message_type(15);
+  static const int MediafileList_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileList, mediafiles_),
+  };
+  MediafileList_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      MediafileList_descriptor_,
+      MediafileList::default_instance_,
+      MediafileList_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileList, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileList, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(MediafileList));
+  MediafileRequest_descriptor_ = file->message_type(16);
+  static const int MediafileRequest_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileRequest, file_),
+  };
+  MediafileRequest_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      MediafileRequest_descriptor_,
+      MediafileRequest::default_instance_,
+      MediafileRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileRequest, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(MediafileRequest));
+  MediafileResponse_descriptor_ = file->message_type(17);
+  static const int MediafileResponse_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileResponse, mediafiles_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileResponse, status_),
+  };
+  MediafileResponse_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      MediafileResponse_descriptor_,
+      MediafileResponse::default_instance_,
+      MediafileResponse_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileResponse, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MediafileResponse, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(MediafileResponse));
   ErrorReason_descriptor_ = file->enum_type(0);
   DiscoveryService_descriptor_ = file->service(0);
   NodeService_descriptor_ = file->service(1);
   ProcessUnitService_descriptor_ = file->service(2);
   ProcessService_descriptor_ = file->service(3);
+  ApiService_descriptor_ = file->service(4);
 }
 
 namespace {
@@ -301,6 +415,18 @@ void protobuf_RegisterTypes(const ::std::string&) {
     ProcessRequest_descriptor_, &ProcessRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ProcessResponse_descriptor_, &ProcessResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    ApiRequest_descriptor_, &ApiRequest::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    Stream_descriptor_, &Stream::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    Mediafile_descriptor_, &Mediafile::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MediafileList_descriptor_, &MediafileList::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MediafileRequest_descriptor_, &MediafileRequest::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MediafileResponse_descriptor_, &MediafileResponse::default_instance());
 }
 
 }  // namespace
@@ -330,6 +456,18 @@ void protobuf_ShutdownFile_rpc_2eproto() {
   delete ProcessRequest_reflection_;
   delete ProcessResponse::default_instance_;
   delete ProcessResponse_reflection_;
+  delete ApiRequest::default_instance_;
+  delete ApiRequest_reflection_;
+  delete Stream::default_instance_;
+  delete Stream_reflection_;
+  delete Mediafile::default_instance_;
+  delete Mediafile_reflection_;
+  delete MediafileList::default_instance_;
+  delete MediafileList_reflection_;
+  delete MediafileRequest::default_instance_;
+  delete MediafileRequest_reflection_;
+  delete MediafileResponse::default_instance_;
+  delete MediafileResponse_reflection_;
 }
 
 void protobuf_AddDesc_rpc_2eproto() {
@@ -361,7 +499,16 @@ void protobuf_AddDesc_rpc_2eproto() {
     "process_data\030\002 \001(\0132\024.org.esb.rpc.Process"
     "\"j\n\017ProcessResponse\022*\n\014process_data\030\002 \001("
     "\0132\024.org.esb.rpc.Process\022\026\n\016status_messag"
-    "e\030\003 \002(\t\022\023\n\013status_code\030\004 \002(\005*\360\001\n\013ErrorRe"
+    "e\030\003 \002(\t\022\023\n\013status_code\030\004 \002(\005\"\014\n\nApiReque"
+    "st\"\010\n\006Stream\"\205\001\n\tMediafile\022\n\n\002id\030\001 \002(\005\022\020"
+    "\n\010filename\030\002 \002(\t\022\014\n\004size\030\003 \002(\003\022\020\n\010durati"
+    "on\030\004 \002(\003\022\024\n\014stream_count\030\005 \002(\005\022$\n\007stream"
+    "s\030\006 \003(\0132\023.org.esb.rpc.Stream\";\n\rMediafil"
+    "eList\022*\n\nmediafiles\030\001 \003(\0132\026.org.esb.rpc."
+    "Mediafile\"8\n\020MediafileRequest\022$\n\004file\030\001 "
+    "\002(\0132\026.org.esb.rpc.Mediafile\"O\n\021Mediafile"
+    "Response\022*\n\nmediafiles\030\001 \003(\0132\026.org.esb.r"
+    "pc.Mediafile\022\016\n\006status\030\002 \002(\005*\360\001\n\013ErrorRe"
     "ason\022\025\n\021NO_ERROR_OCCURRED\020\000\022\024\n\020BAD_REQUE"
     "ST_DATA\020\001\022\025\n\021BAD_REQUEST_PROTO\020\002\022\025\n\021SERV"
     "ICE_NOT_FOUND\020\003\022\024\n\020METHOD_NOT_FOUND\020\004\022\r\n"
@@ -384,7 +531,14 @@ void protobuf_AddDesc_rpc_2eproto() {
     "sponse\022H\n\013stopProcess\022\033.org.esb.rpc.Proc"
     "essRequest\032\034.org.esb.rpc.ProcessResponse"
     "\022K\n\016getProcessList\022\033.org.esb.rpc.Process"
-    "Request\032\034.org.esb.rpc.ProcessResponse", 1837);
+    "Request\032\034.org.esb.rpc.ProcessResponse2\375\001"
+    "\n\nApiService\022M\n\014getMediafile\022\035.org.esb.r"
+    "pc.MediafileRequest\032\036.org.esb.rpc.Mediaf"
+    "ileResponse\022M\n\014addMediafile\022\035.org.esb.rp"
+    "c.MediafileRequest\032\036.org.esb.rpc.Mediafi"
+    "leResponse\022Q\n\020getMediafileList\022\035.org.esb"
+    ".rpc.MediafileRequest\032\036.org.esb.rpc.Medi"
+    "afileResponse", 2453);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "rpc.proto", &protobuf_RegisterTypes);
   Request::default_instance_ = new Request();
@@ -399,6 +553,12 @@ void protobuf_AddDesc_rpc_2eproto() {
   Process::default_instance_ = new Process();
   ProcessRequest::default_instance_ = new ProcessRequest();
   ProcessResponse::default_instance_ = new ProcessResponse();
+  ApiRequest::default_instance_ = new ApiRequest();
+  Stream::default_instance_ = new Stream();
+  Mediafile::default_instance_ = new Mediafile();
+  MediafileList::default_instance_ = new MediafileList();
+  MediafileRequest::default_instance_ = new MediafileRequest();
+  MediafileResponse::default_instance_ = new MediafileResponse();
   Request::default_instance_->InitAsDefaultInstance();
   Response::default_instance_->InitAsDefaultInstance();
   QueryForServiceRequest::default_instance_->InitAsDefaultInstance();
@@ -411,6 +571,12 @@ void protobuf_AddDesc_rpc_2eproto() {
   Process::default_instance_->InitAsDefaultInstance();
   ProcessRequest::default_instance_->InitAsDefaultInstance();
   ProcessResponse::default_instance_->InitAsDefaultInstance();
+  ApiRequest::default_instance_->InitAsDefaultInstance();
+  Stream::default_instance_->InitAsDefaultInstance();
+  Mediafile::default_instance_->InitAsDefaultInstance();
+  MediafileList::default_instance_->InitAsDefaultInstance();
+  MediafileRequest::default_instance_->InitAsDefaultInstance();
+  MediafileResponse::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_rpc_2eproto);
 }
 
@@ -3716,6 +3882,1415 @@ void ProcessResponse::Swap(ProcessResponse* other) {
 
 // ===================================================================
 
+#ifndef _MSC_VER
+#endif  // !_MSC_VER
+
+ApiRequest::ApiRequest()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void ApiRequest::InitAsDefaultInstance() {
+}
+
+ApiRequest::ApiRequest(const ApiRequest& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void ApiRequest::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+ApiRequest::~ApiRequest() {
+  SharedDtor();
+}
+
+void ApiRequest::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void ApiRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* ApiRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ApiRequest_descriptor_;
+}
+
+const ApiRequest& ApiRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+ApiRequest* ApiRequest::default_instance_ = NULL;
+
+ApiRequest* ApiRequest::New() const {
+  return new ApiRequest;
+}
+
+void ApiRequest::Clear() {
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool ApiRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      return true;
+    }
+    DO_(::google::protobuf::internal::WireFormat::SkipField(
+          input, tag, mutable_unknown_fields()));
+  }
+  return true;
+#undef DO_
+}
+
+void ApiRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* ApiRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int ApiRequest::ByteSize() const {
+  int total_size = 0;
+  
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ApiRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const ApiRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const ApiRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void ApiRequest::MergeFrom(const ApiRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void ApiRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ApiRequest::CopyFrom(const ApiRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ApiRequest::IsInitialized() const {
+  
+  return true;
+}
+
+void ApiRequest::Swap(ApiRequest* other) {
+  if (other != this) {
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata ApiRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = ApiRequest_descriptor_;
+  metadata.reflection = ApiRequest_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+#endif  // !_MSC_VER
+
+Stream::Stream()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void Stream::InitAsDefaultInstance() {
+}
+
+Stream::Stream(const Stream& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void Stream::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Stream::~Stream() {
+  SharedDtor();
+}
+
+void Stream::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Stream::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Stream::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Stream_descriptor_;
+}
+
+const Stream& Stream::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+Stream* Stream::default_instance_ = NULL;
+
+Stream* Stream::New() const {
+  return new Stream;
+}
+
+void Stream::Clear() {
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool Stream::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      return true;
+    }
+    DO_(::google::protobuf::internal::WireFormat::SkipField(
+          input, tag, mutable_unknown_fields()));
+  }
+  return true;
+#undef DO_
+}
+
+void Stream::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* Stream::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int Stream::ByteSize() const {
+  int total_size = 0;
+  
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Stream::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const Stream* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const Stream*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Stream::MergeFrom(const Stream& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void Stream::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Stream::CopyFrom(const Stream& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Stream::IsInitialized() const {
+  
+  return true;
+}
+
+void Stream::Swap(Stream* other) {
+  if (other != this) {
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata Stream::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Stream_descriptor_;
+  metadata.reflection = Stream_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+const ::std::string Mediafile::_default_filename_;
+#ifndef _MSC_VER
+const int Mediafile::kIdFieldNumber;
+const int Mediafile::kFilenameFieldNumber;
+const int Mediafile::kSizeFieldNumber;
+const int Mediafile::kDurationFieldNumber;
+const int Mediafile::kStreamCountFieldNumber;
+const int Mediafile::kStreamsFieldNumber;
+#endif  // !_MSC_VER
+
+Mediafile::Mediafile()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void Mediafile::InitAsDefaultInstance() {
+}
+
+Mediafile::Mediafile(const Mediafile& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void Mediafile::SharedCtor() {
+  _cached_size_ = 0;
+  id_ = 0;
+  filename_ = const_cast< ::std::string*>(&_default_filename_);
+  size_ = GOOGLE_LONGLONG(0);
+  duration_ = GOOGLE_LONGLONG(0);
+  stream_count_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Mediafile::~Mediafile() {
+  SharedDtor();
+}
+
+void Mediafile::SharedDtor() {
+  if (filename_ != &_default_filename_) {
+    delete filename_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Mediafile::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Mediafile::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Mediafile_descriptor_;
+}
+
+const Mediafile& Mediafile::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+Mediafile* Mediafile::default_instance_ = NULL;
+
+Mediafile* Mediafile::New() const {
+  return new Mediafile;
+}
+
+void Mediafile::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    id_ = 0;
+    if (_has_bit(1)) {
+      if (filename_ != &_default_filename_) {
+        filename_->clear();
+      }
+    }
+    size_ = GOOGLE_LONGLONG(0);
+    duration_ = GOOGLE_LONGLONG(0);
+    stream_count_ = 0;
+  }
+  streams_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool Mediafile::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required int32 id = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &id_)));
+          _set_bit(0);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_filename;
+        break;
+      }
+      
+      // required string filename = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_filename:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_filename()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->filename().data(), this->filename().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_size;
+        break;
+      }
+      
+      // required int64 size = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_size:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &size_)));
+          _set_bit(2);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_duration;
+        break;
+      }
+      
+      // required int64 duration = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_duration:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &duration_)));
+          _set_bit(3);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_stream_count;
+        break;
+      }
+      
+      // required int32 stream_count = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_stream_count:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &stream_count_)));
+          _set_bit(4);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_streams;
+        break;
+      }
+      
+      // repeated .org.esb.rpc.Stream streams = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_streams:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_streams()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_streams;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void Mediafile::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required int32 id = 1;
+  if (_has_bit(0)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->id(), output);
+  }
+  
+  // required string filename = 2;
+  if (_has_bit(1)) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->filename().data(), this->filename().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->filename(), output);
+  }
+  
+  // required int64 size = 3;
+  if (_has_bit(2)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->size(), output);
+  }
+  
+  // required int64 duration = 4;
+  if (_has_bit(3)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->duration(), output);
+  }
+  
+  // required int32 stream_count = 5;
+  if (_has_bit(4)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->stream_count(), output);
+  }
+  
+  // repeated .org.esb.rpc.Stream streams = 6;
+  for (int i = 0; i < this->streams_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, this->streams(i), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* Mediafile::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required int32 id = 1;
+  if (_has_bit(0)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+  }
+  
+  // required string filename = 2;
+  if (_has_bit(1)) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->filename().data(), this->filename().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->filename(), target);
+  }
+  
+  // required int64 size = 3;
+  if (_has_bit(2)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->size(), target);
+  }
+  
+  // required int64 duration = 4;
+  if (_has_bit(3)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->duration(), target);
+  }
+  
+  // required int32 stream_count = 5;
+  if (_has_bit(4)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->stream_count(), target);
+  }
+  
+  // repeated .org.esb.rpc.Stream streams = 6;
+  for (int i = 0; i < this->streams_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        6, this->streams(i), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int Mediafile::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required int32 id = 1;
+    if (has_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->id());
+    }
+    
+    // required string filename = 2;
+    if (has_filename()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->filename());
+    }
+    
+    // required int64 size = 3;
+    if (has_size()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->size());
+    }
+    
+    // required int64 duration = 4;
+    if (has_duration()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->duration());
+    }
+    
+    // required int32 stream_count = 5;
+    if (has_stream_count()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->stream_count());
+    }
+    
+  }
+  // repeated .org.esb.rpc.Stream streams = 6;
+  total_size += 1 * this->streams_size();
+  for (int i = 0; i < this->streams_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->streams(i));
+  }
+  
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Mediafile::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const Mediafile* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const Mediafile*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Mediafile::MergeFrom(const Mediafile& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  streams_.MergeFrom(from.streams_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from._has_bit(0)) {
+      set_id(from.id());
+    }
+    if (from._has_bit(1)) {
+      set_filename(from.filename());
+    }
+    if (from._has_bit(2)) {
+      set_size(from.size());
+    }
+    if (from._has_bit(3)) {
+      set_duration(from.duration());
+    }
+    if (from._has_bit(4)) {
+      set_stream_count(from.stream_count());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void Mediafile::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Mediafile::CopyFrom(const Mediafile& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Mediafile::IsInitialized() const {
+  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
+  
+  return true;
+}
+
+void Mediafile::Swap(Mediafile* other) {
+  if (other != this) {
+    std::swap(id_, other->id_);
+    std::swap(filename_, other->filename_);
+    std::swap(size_, other->size_);
+    std::swap(duration_, other->duration_);
+    std::swap(stream_count_, other->stream_count_);
+    streams_.Swap(&other->streams_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata Mediafile::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Mediafile_descriptor_;
+  metadata.reflection = Mediafile_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int MediafileList::kMediafilesFieldNumber;
+#endif  // !_MSC_VER
+
+MediafileList::MediafileList()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void MediafileList::InitAsDefaultInstance() {
+}
+
+MediafileList::MediafileList(const MediafileList& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void MediafileList::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+MediafileList::~MediafileList() {
+  SharedDtor();
+}
+
+void MediafileList::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void MediafileList::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MediafileList::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MediafileList_descriptor_;
+}
+
+const MediafileList& MediafileList::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+MediafileList* MediafileList::default_instance_ = NULL;
+
+MediafileList* MediafileList::New() const {
+  return new MediafileList;
+}
+
+void MediafileList::Clear() {
+  mediafiles_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool MediafileList::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_mediafiles:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_mediafiles()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(10)) goto parse_mediafiles;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void MediafileList::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->mediafiles(i), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* MediafileList::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->mediafiles(i), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int MediafileList::ByteSize() const {
+  int total_size = 0;
+  
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  total_size += 1 * this->mediafiles_size();
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->mediafiles(i));
+  }
+  
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MediafileList::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const MediafileList* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MediafileList*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void MediafileList::MergeFrom(const MediafileList& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  mediafiles_.MergeFrom(from.mediafiles_);
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void MediafileList::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MediafileList::CopyFrom(const MediafileList& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MediafileList::IsInitialized() const {
+  
+  for (int i = 0; i < mediafiles_size(); i++) {
+    if (!this->mediafiles(i).IsInitialized()) return false;
+  }
+  return true;
+}
+
+void MediafileList::Swap(MediafileList* other) {
+  if (other != this) {
+    mediafiles_.Swap(&other->mediafiles_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata MediafileList::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MediafileList_descriptor_;
+  metadata.reflection = MediafileList_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int MediafileRequest::kFileFieldNumber;
+#endif  // !_MSC_VER
+
+MediafileRequest::MediafileRequest()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void MediafileRequest::InitAsDefaultInstance() {
+  file_ = const_cast< ::org::esb::rpc::Mediafile*>(&::org::esb::rpc::Mediafile::default_instance());
+}
+
+MediafileRequest::MediafileRequest(const MediafileRequest& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void MediafileRequest::SharedCtor() {
+  _cached_size_ = 0;
+  file_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+MediafileRequest::~MediafileRequest() {
+  SharedDtor();
+}
+
+void MediafileRequest::SharedDtor() {
+  if (this != default_instance_) {
+    delete file_;
+  }
+}
+
+void MediafileRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MediafileRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MediafileRequest_descriptor_;
+}
+
+const MediafileRequest& MediafileRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+MediafileRequest* MediafileRequest::default_instance_ = NULL;
+
+MediafileRequest* MediafileRequest::New() const {
+  return new MediafileRequest;
+}
+
+void MediafileRequest::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (_has_bit(0)) {
+      if (file_ != NULL) file_->::org::esb::rpc::Mediafile::Clear();
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool MediafileRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .org.esb.rpc.Mediafile file = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_file()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void MediafileRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required .org.esb.rpc.Mediafile file = 1;
+  if (_has_bit(0)) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->file(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* MediafileRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required .org.esb.rpc.Mediafile file = 1;
+  if (_has_bit(0)) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->file(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int MediafileRequest::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .org.esb.rpc.Mediafile file = 1;
+    if (has_file()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->file());
+    }
+    
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MediafileRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const MediafileRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MediafileRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void MediafileRequest::MergeFrom(const MediafileRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from._has_bit(0)) {
+      mutable_file()->::org::esb::rpc::Mediafile::MergeFrom(from.file());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void MediafileRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MediafileRequest::CopyFrom(const MediafileRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MediafileRequest::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  
+  if (has_file()) {
+    if (!this->file().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void MediafileRequest::Swap(MediafileRequest* other) {
+  if (other != this) {
+    std::swap(file_, other->file_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata MediafileRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MediafileRequest_descriptor_;
+  metadata.reflection = MediafileRequest_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int MediafileResponse::kMediafilesFieldNumber;
+const int MediafileResponse::kStatusFieldNumber;
+#endif  // !_MSC_VER
+
+MediafileResponse::MediafileResponse()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void MediafileResponse::InitAsDefaultInstance() {
+}
+
+MediafileResponse::MediafileResponse(const MediafileResponse& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void MediafileResponse::SharedCtor() {
+  _cached_size_ = 0;
+  status_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+MediafileResponse::~MediafileResponse() {
+  SharedDtor();
+}
+
+void MediafileResponse::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void MediafileResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MediafileResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MediafileResponse_descriptor_;
+}
+
+const MediafileResponse& MediafileResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_rpc_2eproto();  return *default_instance_;
+}
+
+MediafileResponse* MediafileResponse::default_instance_ = NULL;
+
+MediafileResponse* MediafileResponse::New() const {
+  return new MediafileResponse;
+}
+
+void MediafileResponse::Clear() {
+  if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    status_ = 0;
+  }
+  mediafiles_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool MediafileResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_mediafiles:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_mediafiles()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(10)) goto parse_mediafiles;
+        if (input->ExpectTag(16)) goto parse_status;
+        break;
+      }
+      
+      // required int32 status = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &status_)));
+          _set_bit(1);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void MediafileResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->mediafiles(i), output);
+  }
+  
+  // required int32 status = 2;
+  if (_has_bit(1)) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->status(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* MediafileResponse::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->mediafiles(i), target);
+  }
+  
+  // required int32 status = 2;
+  if (_has_bit(1)) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->status(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int MediafileResponse::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    // required int32 status = 2;
+    if (has_status()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->status());
+    }
+    
+  }
+  // repeated .org.esb.rpc.Mediafile mediafiles = 1;
+  total_size += 1 * this->mediafiles_size();
+  for (int i = 0; i < this->mediafiles_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->mediafiles(i));
+  }
+  
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MediafileResponse::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const MediafileResponse* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MediafileResponse*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void MediafileResponse::MergeFrom(const MediafileResponse& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  mediafiles_.MergeFrom(from.mediafiles_);
+  if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    if (from._has_bit(1)) {
+      set_status(from.status());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void MediafileResponse::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MediafileResponse::CopyFrom(const MediafileResponse& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MediafileResponse::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000002) != 0x00000002) return false;
+  
+  for (int i = 0; i < mediafiles_size(); i++) {
+    if (!this->mediafiles(i).IsInitialized()) return false;
+  }
+  return true;
+}
+
+void MediafileResponse::Swap(MediafileResponse* other) {
+  if (other != this) {
+    mediafiles_.Swap(&other->mediafiles_);
+    std::swap(status_, other->status_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata MediafileResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MediafileResponse_descriptor_;
+  metadata.reflection = MediafileResponse_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
 DiscoveryService::~DiscoveryService() {}
 
 const ::google::protobuf::ServiceDescriptor* DiscoveryService::descriptor() {
@@ -4142,6 +5717,139 @@ void ProcessService_Stub::stopProcess(::google::protobuf::RpcController* control
 void ProcessService_Stub::getProcessList(::google::protobuf::RpcController* controller,
                               const ::org::esb::rpc::ProcessRequest* request,
                               ::org::esb::rpc::ProcessResponse* response,
+                              ::google::protobuf::Closure* done) {
+  channel_->CallMethod(descriptor()->method(2),
+                       controller, request, response, done);
+}
+// ===================================================================
+
+ApiService::~ApiService() {}
+
+const ::google::protobuf::ServiceDescriptor* ApiService::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ApiService_descriptor_;
+}
+
+const ::google::protobuf::ServiceDescriptor* ApiService::GetDescriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ApiService_descriptor_;
+}
+
+void ApiService::getMediafile(::google::protobuf::RpcController* controller,
+                         const ::org::esb::rpc::MediafileRequest*,
+                         ::org::esb::rpc::MediafileResponse*,
+                         ::google::protobuf::Closure* done) {
+  controller->SetFailed("Method getMediafile() not implemented.");
+  done->Run();
+}
+
+void ApiService::addMediafile(::google::protobuf::RpcController* controller,
+                         const ::org::esb::rpc::MediafileRequest*,
+                         ::org::esb::rpc::MediafileResponse*,
+                         ::google::protobuf::Closure* done) {
+  controller->SetFailed("Method addMediafile() not implemented.");
+  done->Run();
+}
+
+void ApiService::getMediafileList(::google::protobuf::RpcController* controller,
+                         const ::org::esb::rpc::MediafileRequest*,
+                         ::org::esb::rpc::MediafileResponse*,
+                         ::google::protobuf::Closure* done) {
+  controller->SetFailed("Method getMediafileList() not implemented.");
+  done->Run();
+}
+
+void ApiService::CallMethod(const ::google::protobuf::MethodDescriptor* method,
+                             ::google::protobuf::RpcController* controller,
+                             const ::google::protobuf::Message* request,
+                             ::google::protobuf::Message* response,
+                             ::google::protobuf::Closure* done) {
+  GOOGLE_DCHECK_EQ(method->service(), ApiService_descriptor_);
+  switch(method->index()) {
+    case 0:
+      getMediafile(controller,
+             ::google::protobuf::down_cast<const ::org::esb::rpc::MediafileRequest*>(request),
+             ::google::protobuf::down_cast< ::org::esb::rpc::MediafileResponse*>(response),
+             done);
+      break;
+    case 1:
+      addMediafile(controller,
+             ::google::protobuf::down_cast<const ::org::esb::rpc::MediafileRequest*>(request),
+             ::google::protobuf::down_cast< ::org::esb::rpc::MediafileResponse*>(response),
+             done);
+      break;
+    case 2:
+      getMediafileList(controller,
+             ::google::protobuf::down_cast<const ::org::esb::rpc::MediafileRequest*>(request),
+             ::google::protobuf::down_cast< ::org::esb::rpc::MediafileResponse*>(response),
+             done);
+      break;
+    default:
+      GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
+      break;
+  }
+}
+
+const ::google::protobuf::Message& ApiService::GetRequestPrototype(
+    const ::google::protobuf::MethodDescriptor* method) const {
+  GOOGLE_DCHECK_EQ(method->service(), descriptor());
+  switch(method->index()) {
+    case 0:
+      return ::org::esb::rpc::MediafileRequest::default_instance();
+    case 1:
+      return ::org::esb::rpc::MediafileRequest::default_instance();
+    case 2:
+      return ::org::esb::rpc::MediafileRequest::default_instance();
+    default:
+      GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
+      return *reinterpret_cast< ::google::protobuf::Message*>(NULL);
+  }
+}
+
+const ::google::protobuf::Message& ApiService::GetResponsePrototype(
+    const ::google::protobuf::MethodDescriptor* method) const {
+  GOOGLE_DCHECK_EQ(method->service(), descriptor());
+  switch(method->index()) {
+    case 0:
+      return ::org::esb::rpc::MediafileResponse::default_instance();
+    case 1:
+      return ::org::esb::rpc::MediafileResponse::default_instance();
+    case 2:
+      return ::org::esb::rpc::MediafileResponse::default_instance();
+    default:
+      GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
+      return *reinterpret_cast< ::google::protobuf::Message*>(NULL);
+  }
+}
+
+ApiService_Stub::ApiService_Stub(::google::protobuf::RpcChannel* channel)
+  : channel_(channel), owns_channel_(false) {}
+ApiService_Stub::ApiService_Stub(
+    ::google::protobuf::RpcChannel* channel,
+    ::google::protobuf::Service::ChannelOwnership ownership)
+  : channel_(channel),
+    owns_channel_(ownership == ::google::protobuf::Service::STUB_OWNS_CHANNEL) {}
+ApiService_Stub::~ApiService_Stub() {
+  if (owns_channel_) delete channel_;
+}
+
+void ApiService_Stub::getMediafile(::google::protobuf::RpcController* controller,
+                              const ::org::esb::rpc::MediafileRequest* request,
+                              ::org::esb::rpc::MediafileResponse* response,
+                              ::google::protobuf::Closure* done) {
+  channel_->CallMethod(descriptor()->method(0),
+                       controller, request, response, done);
+}
+void ApiService_Stub::addMediafile(::google::protobuf::RpcController* controller,
+                              const ::org::esb::rpc::MediafileRequest* request,
+                              ::org::esb::rpc::MediafileResponse* response,
+                              ::google::protobuf::Closure* done) {
+  channel_->CallMethod(descriptor()->method(1),
+                       controller, request, response, done);
+}
+void ApiService_Stub::getMediafileList(::google::protobuf::RpcController* controller,
+                              const ::org::esb::rpc::MediafileRequest* request,
+                              ::org::esb::rpc::MediafileResponse* response,
                               ::google::protobuf::Closure* done) {
   channel_->CallMethod(descriptor()->method(2),
                        controller, request, response, done);

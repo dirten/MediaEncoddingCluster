@@ -47,9 +47,9 @@ namespace org {
                 bool _running;
                 std::string _host;
                 int _port;
-                org::esb::io::ObjectInputStream * _ois;
-                org::esb::io::ObjectOutputStream * _oos;
-                org::esb::net::TcpSocket * _sock;
+                Ptr<org::esb::io::ObjectInputStream> _ois;
+                Ptr<org::esb::io::ObjectOutputStream> _oos;
+                Ptr<org::esb::net::TcpSocket> _sock;
                 //        org::esb::net::TcpSocket * _outsock;
                 //		org::esb::util::Queue<boost::shared_ptr<job::ProcessUnit> ,10> inQueue;
                 //		org::esb::util::Queue<boost::shared_ptr<job::ProcessUnit> ,10> outQueue;

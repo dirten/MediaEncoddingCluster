@@ -87,7 +87,9 @@ namespace org {
           TcpSocket * clientSocket = server->accept();
           if (clientSocket&&clientSocket->isConnected() &&(main_nextloop)) {
             ProtocolServer *protoServer = new ProtocolServer(clientSocket);
-            boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
+            go(ProtocolServer::run, protoServer);
+            
+            //boost::thread tt(boost::bind(&ProtocolServer::run, protoServer));
             //              Thread *thread = new Thread(protoServer);
             //              thread->start();
           } else {

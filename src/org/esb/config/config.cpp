@@ -39,11 +39,13 @@ void Config::close() {
   properties = NULL;
 }
 
-bool Config::init(const std::string & filename) {
-  //  properties = new Properties();
+bool Config::init() {
   loadDefaults(properties);
   _isInitialized=true;
-  //return true;
+  return true;
+}
+
+void Config::loadConfigFile(const std::string filename) {
   FILE * fp;
   char buffer[255];
   if ((fp = fopen(filename.c_str(), "r")) != NULL) {
@@ -54,7 +56,6 @@ bool Config::init(const std::string & filename) {
   }else{
 //    return false;
   }
-  return true;
 }
 
 void Config::save2db() {
@@ -64,19 +65,20 @@ void Config::save2db() {
  * ermitteln des Wertes zum Schlüssel
  */
 const char * Config::getProperty(const char * key, const char * def) {
-  if(!_isInitialized)init("");
+  if(!_isInitialized)init();
   if (!properties || !properties->hasProperty(key))return def;
   return (char*) properties->getProperty(key);
 }
 
 std::string Config::get(std::string key, std::string def) {
-  if(!_isInitialized)init("");
+  if(!_isInitialized)init();
   if(getenv(key.c_str())!=NULL)return getenv(key.c_str());
   if (!properties || !properties->hasProperty(key))return def;
   return properties->getProperty(key);
 }
 
 void Config::setProperty(std::string key, std::string val) {
+  if(!_isInitialized)init();
   properties->setProperty(key, val);
 }
 

@@ -7,6 +7,7 @@
       <optiontab id="general" title="General"/>
       <optiontab id="advance" title="Advanced"/>
       <!--Groups-->
+      <optiongroup id="profile_settings" title="Profile settings"/>
       <optiongroup id="bandwidth_settings" title="Bandwidth settings"/>
       <optiongroup id="keyframe_settings" title="Keyframe settings"/>
      <!-- <optiongroup id="profile_settings" title="Profile Settings"/>
@@ -18,7 +19,7 @@
       </option>
 
 
-      <!--Keyframe settings-->
+      <!--keyframe settings-->
       <option id="periodType" type="string" default="1" title="Keyframe Control" optionGroupId="keyframe_settings">
         <control type="ComboBox"></control>
         <list>
@@ -30,6 +31,45 @@
             </enables>
           </item>
         </list>
+      </option>
+      <!--profile settings-->
+      <option id="periodType" type="string" default="1" title="Keyframe Control" optionGroupId="profile_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="Natural" value="0"/>
+          <item title="Forced Keyframes" value="1">
+            <enables>
+              <option>g</option>
+              <option>keyint_min</option>
+            </enables>
+            <optiondata>
+              <data option="frame_rate_num" value="1001"/>
+              <data option="frame_rate_den" value="30000"/>
+              <data option="width" value="720"/>
+              <data option="height" value="576"/>
+            </optiondata>
+          </item>
+        </list>
+      </option>
+      <option id="pix_fmt" type="string" default="1" title="PixelFormat" optionGroupId="profile_settings">
+        <control type="ComboBox"></control>
+        <list>
+          <item title="YUV 411 P" value="0"/>
+          <item title="Forced Keyframes" value="1">
+          </item>
+        </list>
+      </option>
+      <option id="width" title="Picture Width" type="int" min="0" max="100000" default="0" optionGroupId="profile_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="height" title="Picture Width" type="int" min="0" max="100000" default="0" optionGroupId="profile_settings" unit="bps">
+        <control type="TextBox"></control>
+      </option>
+      <option id="frame_rate_num" title="" type="int" min="0" max="100000" default="0" optionGroupId="profile_settings" unit="">
+        <control type="TextBox"></control>
+      </option>
+      <option id="frame_rate_den" title="" type="int" min="0" max="100000" default="0" optionGroupId="profile_settings" unit="">
+        <control type="TextBox"></control>
       </option>
 
 
