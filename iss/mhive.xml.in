@@ -230,31 +230,6 @@
             </desktopShortcutList>
             <folderList>
                 <folder>
-                    <description>vcredistributable</description>
-                    <destination>${installdir}</destination>
-                    <name>vcfiles</name>
-                    <platforms>windows</platforms>
-                    <actionList>
-                        <runProgram>
-                            <program>${installdir}/vcredist_x86.exe</program>
-
-	<!--<programArguments>/q:a /c:"msiexec /i vcredist.msi /qn /l*v ${system_temp_directory.dos}\vcredist_x86.log"</programArguments>-->
-	<programArguments>/qb!</programArguments>
-                            <progressText>Installing VC++ 8 runtime</progressText>
-                            <onErrorActionList>
-                                <showWarning>
-                                    <text>Error while installing the Microsoft redistributable!</text>
-                                </showWarning>
-                            </onErrorActionList>
-                        </runProgram>
-                    </actionList>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/iss/vcredist_x86.exe</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
                     <name>programfiles</name>

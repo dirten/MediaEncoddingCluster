@@ -531,6 +531,7 @@ bool setupDatabase() {
   }
   /**stopping the internal database service*/
   org::esb::hive::DatabaseService::stop();
+  return true;
 }
 
 void checkDirs() {
