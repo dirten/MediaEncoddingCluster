@@ -66,6 +66,7 @@
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
+                                              
   </profiles>
   <!--
   <parent>
@@ -73,23 +74,23 @@
     <groupId>org.esb.jhive</groupId>
     <version>0.1.0</version>
   </parent>-->
-  <groupId>org.esb.mhive</groupId>
+  <groupId>nightly</groupId>
   <artifactId>mhive</artifactId>
-  <version>0.4.8</version>
-  <name>mhive</name>
+  <version>0.0.4.9</version>
+  <name></name>
   <url>http://maven.apache.org</url>
-  <distributionManagement>
-    <repository>
-      <id>ftp-repository</id>
-      <url>ftp://codergrid.de</url>
-    </repository>
-  </distributionManagement>
   <repositories>
     <repository>
       <id>esb-repo</id>
       <url>http://codergrid.de/repository</url>
     </repository>
   </repositories>
+  <distributionManagement>
+    <repository>
+      <id>ftp-repository</id>
+      <url>ftp://codergrid.de</url>
+    </repository>
+  </distributionManagement>
                         
   <build>
     <extensions>
@@ -264,6 +265,7 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="uploadsymbols"/>
                 </exec>
+                <delete dir="${project.basedir}/iss/output"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="release"/>
                 </exec>
@@ -272,6 +274,23 @@
             <goals>
               <goal>run</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly/release-mhive.xml</descriptor>
+              </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>
