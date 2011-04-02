@@ -342,6 +342,13 @@ namespace org {
         table->elementAt(0, 0)->addWidget(new Wt::WText(data["title"] + ":"));
         table->elementAt(0, 0)->resize(200, Wt::WLength());
         table->elementAt(0, 1)->addWidget(combo);
+         Wt::WLabel * label = new Wt::WLabel();
+        label->resize(50, Wt::WLength());
+        table->elementAt(0, 2)->addWidget(label);
+        Wt::WImage * spacer = new Wt::WImage("icons/s.gif");
+        spacer->resize(28, 10);
+        label->setImage(spacer);
+        label->setText("" + data["unit"]);
         if (data.count("optionGroupId") > 0) {
           if (_elements.count(data["optionGroupId"]) > 0) {
             ((GroupBox*) _elements[data["optionGroupId"]])->addWidget(table);
@@ -409,7 +416,7 @@ namespace org {
         table->elementAt(0, 0)->resize(200, Wt::WLength());
         table->elementAt(0, 1)->addWidget(slider);
         Wt::Ext::LineEdit * line = new Wt::Ext::LineEdit();
-        line->setEnabled(false);
+        //line->setEnabled(false);
         table->elementAt(0, 2)->addWidget(line);
 
         if (data.count("optionGroupId") > 0) {

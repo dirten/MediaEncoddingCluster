@@ -193,18 +193,7 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
-
-      org::esb::hive::DatabaseService::start(base_path);
-      /*
-      if (!config::Config::init((char*) vm["config"].as<std::string > ().c_str())) {
-        LOGERROR("could not load config from Database, exiting!!!");
-        //exit(1);
-      }*/
-      std::string webroot = std::string(config::Config::getProperty("hive.base_path"));
-      webroot.append("/web");
-      config::Config::setProperty("web.docroot", webroot.c_str());
-      LOGDEBUG("here 123")
-      //     org::esb::lang::Thread::sleep2(5000);
+      org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
       listener(argc, argv);
     }
 
@@ -237,6 +226,7 @@ int main(int argc, char * argv[]) {
       LOGINFO("shutdown app, this will take some time!");
       Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
     }
+
     if (vm.count("queue")) {
       LOGDEBUG("start mhive Queue Server");
       org::esb::mq::QueueManager man;
@@ -558,8 +548,9 @@ void setupConfig(po::variables_map vm) {
     config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
   }
   std::string bpath=config::Config::get("hive.base_path");
-  org::esb::config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
-  org::esb::config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
+  config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
+  config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
+  config::Config::setProperty("web.docroot", bpath+"/web");
   config::Config::setProperty("hive.config_path", bpath+"/.mhive.cfg");
   config::Config::setProperty("hive.dump_path", bpath+"/dmp");
   config::Config::setProperty("hive.tmp_path", bpath+"/tmp");
