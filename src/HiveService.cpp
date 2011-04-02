@@ -86,10 +86,12 @@ void open_dialog(std::string message, std::string type) {
 #ifdef __WIN32__
   //std::list<std::string> arguments;
   std::string username=getenv("username");
+  std::string windie=getenv("windir");
   arguments.push_back(username);
   arguments.push_back(message);
   //Process p1("C:\\Windows\\system32\\msg.exe", args);
-  executable="C:\\Windows\\system32\\msg.exe";
+
+  executable=windir+"\\system32\\msg.exe";
 #elif __APPLE__
   //std::list<std::string> arguments;
   //arguments.push_back("/usr/bin/osascript");

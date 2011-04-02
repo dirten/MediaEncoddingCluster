@@ -46,9 +46,9 @@ namespace org {
 
         std::string a;
         if (_name.length() == 0) {
-          a += (_executable + " " + args);
+          a = (_executable + " " + args);
         } else {
-          _name + " " + args;
+          a = _name + " " + args;
         }
         char *vip = const_cast<char*> (a.c_str());
 
