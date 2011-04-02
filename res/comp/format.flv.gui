@@ -4,6 +4,7 @@
     <codecs>
       <codec id="libx264"/>
       <codec id="xvid"/>
+      <cardinality audio="1" video="1"/>
     </codecs>
     <options>
       <!--Groups-->
@@ -14,6 +15,7 @@
         <control type="ComboBox"></control>
         <list>
           <item title="flv" value="flv"/>
+          <item title="flv" value="f4v"/>
         </list>
       </option>
       <option id="title" title="Title" optionGroupId="metadata_settings">
