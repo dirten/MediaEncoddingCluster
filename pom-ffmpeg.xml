@@ -119,7 +119,7 @@
 
                 <get src="http://www.nasm.us/pub/nasm/releasebuilds/2.09.04/nasm-2.09.04.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://www.tortall.net/projects/yasm/releases/yasm-1.1.0.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
-                <get src="http://ffmpeg.org/releases/ffmpeg-export-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
+                <get src="http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <!--<get src="http://download.videolan.org/pub/videolan/x264/snapshots/x264${x264.version}.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>-->
                 <get src="http://download.videolan.org/pub/videolan/x264/snapshots/last_x264.tar.bz2" dest="source" verbose="true" usetimestamp="true"/>
                 <get src="http://heanet.dl.sf.net/project/lame/lame/3.98.4/lame-3.98.4.tar.gz" dest="source" verbose="true" usetimestamp="true"/>
@@ -132,7 +132,7 @@
 
                 <bunzip2 src="source/nasm-2.09.04.tar.bz2" dest="source"/>
                 <gunzip src="source/yasm-1.1.0.tar.gz" dest="source"/>
-                <bunzip2 src="source/ffmpeg-export-snapshot.tar.bz2" dest="source"/>
+                <bunzip2 src="source/ffmpeg-snapshot.tar.bz2" dest="source"/>
                 <bunzip2 src="source/last_x264.tar.bz2" dest="source"/>
                 <gunzip src="source/lame-3.98.4.tar.gz" dest="source"/>
                 <gunzip src="source/libogg-1.1.3.tar.gz" dest="source"/>
@@ -148,7 +148,7 @@
                   <arg line="-xf yasm-1.1.0.tar"/>
                 </exec>
                 <exec executable="tar" dir="source">
-                  <arg line="-xf ffmpeg-export-snapshot.tar --strip=1 --directory=ffmpeg"/>
+                  <arg line="-xf ffmpeg-snapshot.tar --strip=1 --directory=ffmpeg"/>
                 </exec>
                 <exec executable="tar" dir="source">
                   <arg line="-xf last_x264.tar --strip=1 --directory=x264"/>
