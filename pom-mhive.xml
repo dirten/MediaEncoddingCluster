@@ -321,7 +321,7 @@
     <dependency>
       <groupId>org.esb.ffmpeg</groupId>
       <artifactId>ffmpeg</artifactId>
-      <version>20101212</version>
+      <version>daily</version>
       <type>zip</type>
      <classifier>${my.family}-${build_type}</classifier>
     </dependency>
