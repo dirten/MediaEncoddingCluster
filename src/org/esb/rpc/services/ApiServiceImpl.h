@@ -7,9 +7,9 @@
 
 #ifndef APISERVICE_H
 #define	APISERVICE_H
+#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "org/esb/util/Log.h"
-#include "org/esb/hive/DatabaseService.h"
 
 namespace org {
   namespace esb {
