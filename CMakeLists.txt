@@ -334,12 +334,12 @@ add_subdirectory (test)
 #  add_subdirectory (tests)
 #ENDIF(BUILD_TESTING)
 
-add_custom_target(svnversion ALL
-  COMMAND echo "SET\\(MHIVE_SVN_REVISION"`svnversion ${PROJECT_SOURCE_DIR}`"\\)" > ${PROJECT_SOURCE_DIR}/svnrevision
-)
-INCLUDE(${MEC_SOURCE_DIR}/svnrevision)
-add_dependencies(lang svnversion)
-SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${MHIVE_SVN_REVISION})
+#add_custom_target(svnversion ALL
+#  COMMAND echo "SET\\(MHIVE_SVN_REVISION"`svnversion ${PROJECT_SOURCE_DIR}`"\\)" > ${PROJECT_SOURCE_DIR}/svnrevision
+#)
+#INCLUDE(${MEC_SOURCE_DIR}/svnrevision)
+#add_dependencies(lang svnversion)
+SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${SVN_VERSION})
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
