@@ -35,7 +35,6 @@ namespace org {
         //		set_context_opts(formatCtx, avformat_opts, 2);
 
 
-
         formatCtx = avformat_alloc_context();
 //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
 //        formatCtx->flags |= AVFMT_FLAG_NONBLOCK;
@@ -95,7 +94,7 @@ namespace org {
       }
 
       void FormatInputStream::dumpFormat() {
-        dump_format(formatCtx, 0, _sourceFile.c_str(), false);
+        av_dump_format(formatCtx, 0, _sourceFile.c_str(), false);
       }
 
       FormatInputStream::~FormatInputStream() {

@@ -108,7 +108,6 @@ SET(PATCH_VERSION 4)
 SET(MINOR_PATCH_VERSION 9)
 SET(REV ${SVN_VERSION})
 
-SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${REV})
 
 ############################################################
 #
@@ -321,12 +320,12 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/iss/mhive.xml.in ${PROJECT_SOURCE_DIR}/iss/
 
 SET(DEFAULT_DATABASE_HOST "127.0.0.1")
 SET(DEFAULT_DATABASE "sqlite3")
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 include_directories (${MYSQL_DIR}/include/litesql)
 #include_directories (${MYSQL_DIR}/include/litesql/litesql)
 
 add_subdirectory (src)
 add_subdirectory (test)
+
 #add_subdirectory (ice)
 #IF(BUILD_TESTING)
 #  IF(WIN32)
@@ -334,6 +333,15 @@ add_subdirectory (test)
 #  ENDIF(WIN32)
 #  add_subdirectory (tests)
 #ENDIF(BUILD_TESTING)
+
+add_custom_target(svnversion ALL
+  COMMAND echo "SET\\(MHIVE_SVN_REVISION"`svnversion ${PROJECT_SOURCE_DIR}`"\\)" > ${PROJECT_SOURCE_DIR}/svnrevision
+)
+INCLUDE(${MEC_SOURCE_DIR}/svnrevision)
+add_dependencies(lang svnversion)
+SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PATCH_VERSION}-${MHIVE_SVN_REVISION})
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
 
 INCLUDE(CPack)

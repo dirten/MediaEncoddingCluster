@@ -10,7 +10,8 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
 #include "org/esb/hive/DatabaseService.h"
-
+#include <Wt/WApplication>
+#include "WebApp2.h"
 namespace org {
   namespace esb {
     namespace web {
@@ -58,6 +59,7 @@ namespace org {
 
       MediaFileTable::MediaFileTable() : Wt::Ext::TableView() {
         db::HiveDb dbCon=org::esb::hive::DatabaseService::getDatabase();
+        LOGDEBUG("WebAppInstance"<<static_cast<WebApp2*>(Wt::WApplication::instance())->getUser()->authname);
         std::vector<db::MediaFile> files = litesql::select<db::MediaFile > (dbCon).all();
         _model = Ptr<MediaFileTableModel > (new MediaFileTableModel(files));
         setModel(_model.get());

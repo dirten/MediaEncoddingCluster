@@ -248,7 +248,7 @@ bool PacketOutputStream::init() {
   }
 
   _isInitialized = true;
-  dump_format(_fmtCtx, 0, NULL, 1);
+  av_dump_format(_fmtCtx, 0, NULL, 1);
 
   int streams = _fmtCtx->nb_streams;
 

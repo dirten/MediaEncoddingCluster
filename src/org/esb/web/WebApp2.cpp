@@ -164,7 +164,9 @@ namespace org {
         login->accept();
         buildGui();
       }
-
+        Ptr<db::User> WebApp2::getUser(){
+          return _user;
+        }
       void WebApp2::openPreview() {
         Wt::Ext::Dialog *dil = new Wt::Ext::Dialog();
         dil->contents()->addWidget(new PreviewPanel());

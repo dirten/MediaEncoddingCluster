@@ -31,6 +31,7 @@ add_library (rpc
     services/ProcessUnitServiceImpl.cpp
     services/ProcessServiceImpl.cpp
     services/NodeServiceImpl.cpp
+    services/ApiServiceImpl.cpp
 )
 
 TARGET_LINK_LIBRARIES(rpc ${PROTOBUF_LIBRARY} net)

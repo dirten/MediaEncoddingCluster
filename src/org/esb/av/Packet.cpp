@@ -187,7 +187,7 @@ void Packet::setFlags(int f) {
   packet->flags = f;
 }
 
-int Packet::getStreamIndex() {
+unsigned int Packet::getStreamIndex() {
   return packet->stream_index;
 }
 

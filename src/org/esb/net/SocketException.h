@@ -5,11 +5,12 @@
 #include <stdexcept>
 
 #include "org/esb/util/Log.h"
+#include "org/esb/lang/Exception.h"
 
 namespace org{
 namespace esb{
 namespace net{
-class SocketException : public std::runtime_error {
+class SocketException : public org::esb::lang::Exception {
   classlogger("org.esb.net.SocketException")
 	public:
 		explicit SocketException(std::string & msg);

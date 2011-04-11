@@ -17,6 +17,7 @@
 //#include "SqlTable.h"
 #include "JobTable.h"
 #include "ProjectTable.h"
+
 #ifndef _WEBAPP2_H
 #define	_WEBAPP2_H
 namespace org {
@@ -57,6 +58,7 @@ namespace org {
         void openPreview();
         void logout();
         bool authorize();
+        Ptr<db::User> getUser();
       private:
         void buildGui();
         void setContent(Wt::WWidget * w);

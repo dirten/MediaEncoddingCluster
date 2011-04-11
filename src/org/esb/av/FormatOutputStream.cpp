@@ -19,7 +19,7 @@ namespace org {
         _fmtCtx->oformat = _fmt;
 
         if (!(_fmt->flags & AVFMT_NOFILE)) {
-          if (url_fopen(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
+          if (avio_open(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
             fprintf(stderr, "Could not open '%s'\n", _file->getPath().c_str());
             //            exit(1);
           }
@@ -42,7 +42,7 @@ namespace org {
       }
 
       void FormatOutputStream::dumpFormat() {
-        dump_format(_fmtCtx, 0, _file->getPath().c_str(), 1);
+        av_dump_format(_fmtCtx, 0, _file->getPath().c_str(), 1);
       }
 
       void FormatOutputStream::addPacketStream(PacketOutputStream & pos, Encoder & encoder) {
@@ -71,7 +71,7 @@ namespace org {
       void FormatOutputStream::close() {
         if (!(_fmt->flags & AVFMT_NOFILE) && _status == OPENED) {
           LOGINFO("closing format context");
-          url_fclose(_fmtCtx->pb);
+          avio_close(_fmtCtx->pb);
           int nb_streams = _fmtCtx->nb_streams;
           for (int a = 0; a < nb_streams; a++) {
 //            av_free(_fmtCtx->streams[a]);

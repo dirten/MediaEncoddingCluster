@@ -11,7 +11,7 @@ namespace org {
     namespace av {
 
       Demultiplexer::Demultiplexer(DataSource& s) : _source(s) {
-        for (int a = 0; a < _source.formatCtx->nb_streams; a++) {
+        for (unsigned int a = 0; a < _source.formatCtx->nb_streams; a++) {
           Ptr<Track> track = new Track(_source.formatCtx->streams[a], this);
           _track_list.push_back(track);
         }

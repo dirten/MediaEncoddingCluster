@@ -139,7 +139,8 @@ message Mediafile{
     required int64 size=3;
     required int64 duration=4;
     required int32 stream_count=5;
-    repeated Stream streams=6;
+    required string format=6;
+    repeated Stream streams=7;
 }
 
 message MediafileList{
@@ -147,7 +148,7 @@ message MediafileList{
 }
 
 message MediafileRequest{
-    required Mediafile file=1;
+    optional Mediafile file=1;
 }
 
 message MediafileResponse{
@@ -155,7 +156,17 @@ message MediafileResponse{
     required int32 status=2;
 }
 
+message User{
+    required string name=1;
+    required string pass=2;
+}
+
+message AuthToken{
+    required string token=1;
+}
+
 service ApiService{
+    rpc authenticate(User)returns (AuthToken);
     rpc getMediafile(MediafileRequest)returns(MediafileResponse);
     rpc addMediafile(MediafileRequest)returns(MediafileResponse);
     rpc getMediafileList(MediafileRequest) returns (MediafileResponse);

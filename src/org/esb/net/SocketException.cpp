@@ -6,10 +6,10 @@
 
 using namespace org::esb::net;
 
-SocketException::SocketException(std::string & msg):std::runtime_error(msg){
+SocketException::SocketException(std::string & msg):org::esb::lang::Exception(msg){
 	LOGERROR(msg.c_str());
 }
-SocketException::SocketException(const char * msg):std::runtime_error(msg){
+SocketException::SocketException(const char * msg):org::esb::lang::Exception(msg){
 	LOGERROR(msg);
 }
 

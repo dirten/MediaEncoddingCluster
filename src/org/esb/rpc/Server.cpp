@@ -16,6 +16,7 @@
 #include "org/esb/io/ObjectOutputStream.h"
 
 #include "org/esb/hive/job/ProcessUnit.h"
+#include "services/ApiServiceImpl.h"
 namespace org {
   namespace esb {
     namespace rpc {
@@ -49,7 +50,7 @@ namespace org {
 
       Server::Server(int port) : _port(port) {
         registerService(new ConcreteDiscoveryService(this));
-        //registerService(new NodeServiceImpl());
+        registerService(new ApiServiceImpl(this));
         //registerService(new ProcessUnitServiceImpl(this));
       }
 
@@ -67,7 +68,7 @@ namespace org {
         try {
           _server = new org::esb::net::TcpServerSocket(_port);
           _server->bind();
-
+          LOGDEBUG("RpcServer started and listen in "<<_port);
           for (; true;) {
             org::esb::net::TcpSocket * clientSocket = _server->accept();
             boost::thread(boost::bind(&Server::handleClient, this, clientSocket));
@@ -84,6 +85,8 @@ namespace org {
 
       void Server::handleClient(org::esb::net::TcpSocket* s) {
         while (s->isConnected()) {
+          LOGDEBUG(boost::this_thread::get_id());
+
           std::string buffer;
           s->getInputStream()->read(buffer);
           if (!s->isConnected())return;
@@ -117,7 +120,7 @@ namespace org {
             if(!request->ParseFromString(rpcRequest.request_proto())){
               LOGERROR("an error occoured");
             }
-            LOGDEBUG("RequestProto:" << rpcRequest.request_proto());
+            //LOGDEBUG("RequestProto:" << rpcRequest.request_proto());
             /*
             RPCCompletionStatus *completionStatus = new RPCCompletionStatus;
             completionStatus->rpcController = &controller;

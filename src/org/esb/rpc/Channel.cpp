@@ -13,6 +13,8 @@ namespace org {
   namespace esb {
     namespace rpc {
 
+      Channel::Channel() {
+      }
       Channel::Channel(org::esb::net::TcpSocket * s):_socket(s) {
       }
 

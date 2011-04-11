@@ -11,6 +11,7 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 #include "config.h"
 
 #include "org/esb/lang/Exception.h"
+#include "org/esb/hive/DatabaseService.h"
 #include "Defaults.cpp"
 #include <stdlib.h>
 #include <string.h>
@@ -42,9 +43,21 @@ void Config::close() {
 bool Config::init() {
   loadDefaults(properties);
   _isInitialized=true;
+  //loadFromDb();
   return true;
 }
-
+/*
+void Config::loadFromDb() {
+  if(org::esb::hive::DatabaseService::databaseExist()){
+    db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+    vector<db::Config> cfg=litesql::select<db::Config>(db).all();
+    vector<db::Config>::iterator it=cfg.begin();
+    for(;it!=cfg.end();it++){
+      properties->setProperty((*it).configkey,(*it).configval);
+    }
+  }
+}
+*/
 void Config::loadConfigFile(const std::string filename) {
   FILE * fp;
   char buffer[255];

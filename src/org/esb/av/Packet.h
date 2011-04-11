@@ -43,7 +43,7 @@ namespace org {
         TimeStamp getTimeDuration();
         int getFlags();
         void setFlags(int);
-        int getStreamIndex();
+        unsigned int getStreamIndex();
         void setStreamIndex(int);
         void setDuration(int);
         int getDuration();

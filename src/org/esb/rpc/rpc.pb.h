@@ -53,6 +53,8 @@ class Mediafile;
 class MediafileList;
 class MediafileRequest;
 class MediafileResponse;
+class User;
+class AuthToken;
 
 enum ErrorReason {
   NO_ERROR_OCCURRED = 0,
@@ -1567,10 +1569,20 @@ class Mediafile : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 stream_count() const;
   inline void set_stream_count(::google::protobuf::int32 value);
   
-  // repeated .org.esb.rpc.Stream streams = 6;
+  // required string format = 6;
+  inline bool has_format() const;
+  inline void clear_format();
+  static const int kFormatFieldNumber = 6;
+  inline const ::std::string& format() const;
+  inline void set_format(const ::std::string& value);
+  inline void set_format(const char* value);
+  inline void set_format(const char* value, size_t size);
+  inline ::std::string* mutable_format();
+  
+  // repeated .org.esb.rpc.Stream streams = 7;
   inline int streams_size() const;
   inline void clear_streams();
-  static const int kStreamsFieldNumber = 6;
+  static const int kStreamsFieldNumber = 7;
   inline const ::org::esb::rpc::Stream& streams(int index) const;
   inline ::org::esb::rpc::Stream* mutable_streams(int index);
   inline ::org::esb::rpc::Stream* add_streams();
@@ -1590,12 +1602,14 @@ class Mediafile : public ::google::protobuf::Message {
   ::google::protobuf::int64 size_;
   ::google::protobuf::int64 duration_;
   ::google::protobuf::int32 stream_count_;
+  ::std::string* format_;
+  static const ::std::string _default_format_;
   ::google::protobuf::RepeatedPtrField< ::org::esb::rpc::Stream > streams_;
   friend void  protobuf_AddDesc_rpc_2eproto();
   friend void protobuf_AssignDesc_rpc_2eproto();
   friend void protobuf_ShutdownFile_rpc_2eproto();
   
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
   
   // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
   inline bool _has_bit(int index) const {
@@ -1761,7 +1775,7 @@ class MediafileRequest : public ::google::protobuf::Message {
   
   // accessors -------------------------------------------------------
   
-  // required .org.esb.rpc.Mediafile file = 1;
+  // optional .org.esb.rpc.Mediafile file = 1;
   inline bool has_file() const;
   inline void clear_file();
   static const int kFileFieldNumber = 1;
@@ -1895,6 +1909,204 @@ class MediafileResponse : public ::google::protobuf::Message {
   
   void InitAsDefaultInstance();
   static MediafileResponse* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class User : public ::google::protobuf::Message {
+ public:
+  User();
+  virtual ~User();
+  
+  User(const User& from);
+  
+  inline User& operator=(const User& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const User& default_instance();
+  
+  void Swap(User* other);
+  
+  // implements Message ----------------------------------------------
+  
+  User* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const User& from);
+  void MergeFrom(const User& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  
+  // required string pass = 2;
+  inline bool has_pass() const;
+  inline void clear_pass();
+  static const int kPassFieldNumber = 2;
+  inline const ::std::string& pass() const;
+  inline void set_pass(const ::std::string& value);
+  inline void set_pass(const char* value);
+  inline void set_pass(const char* value, size_t size);
+  inline ::std::string* mutable_pass();
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.User)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::std::string* name_;
+  static const ::std::string _default_name_;
+  ::std::string* pass_;
+  static const ::std::string _default_pass_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static User* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AuthToken : public ::google::protobuf::Message {
+ public:
+  AuthToken();
+  virtual ~AuthToken();
+  
+  AuthToken(const AuthToken& from);
+  
+  inline AuthToken& operator=(const AuthToken& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AuthToken& default_instance();
+  
+  void Swap(AuthToken* other);
+  
+  // implements Message ----------------------------------------------
+  
+  AuthToken* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AuthToken& from);
+  void MergeFrom(const AuthToken& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // required string token = 1;
+  inline bool has_token() const;
+  inline void clear_token();
+  static const int kTokenFieldNumber = 1;
+  inline const ::std::string& token() const;
+  inline void set_token(const ::std::string& value);
+  inline void set_token(const char* value);
+  inline void set_token(const char* value, size_t size);
+  inline ::std::string* mutable_token();
+  
+  // @@protoc_insertion_point(class_scope:org.esb.rpc.AuthToken)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::std::string* token_;
+  static const ::std::string _default_token_;
+  friend void  protobuf_AddDesc_rpc_2eproto();
+  friend void protobuf_AssignDesc_rpc_2eproto();
+  friend void protobuf_ShutdownFile_rpc_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static AuthToken* default_instance_;
 };
 // ===================================================================
 
@@ -2179,6 +2391,10 @@ class ApiService : public ::google::protobuf::Service {
   
   static const ::google::protobuf::ServiceDescriptor* descriptor();
   
+  virtual void authenticate(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::User* request,
+                       ::org::esb::rpc::AuthToken* response,
+                       ::google::protobuf::Closure* done);
   virtual void getMediafile(::google::protobuf::RpcController* controller,
                        const ::org::esb::rpc::MediafileRequest* request,
                        ::org::esb::rpc::MediafileResponse* response,
@@ -2220,6 +2436,10 @@ class ApiService_Stub : public ApiService {
   
   // implements ApiService ------------------------------------------
   
+  void authenticate(::google::protobuf::RpcController* controller,
+                       const ::org::esb::rpc::User* request,
+                       ::org::esb::rpc::AuthToken* response,
+                       ::google::protobuf::Closure* done);
   void getMediafile(::google::protobuf::RpcController* controller,
                        const ::org::esb::rpc::MediafileRequest* request,
                        ::org::esb::rpc::MediafileResponse* response,
@@ -3162,7 +3382,49 @@ inline void Mediafile::set_stream_count(::google::protobuf::int32 value) {
   stream_count_ = value;
 }
 
-// repeated .org.esb.rpc.Stream streams = 6;
+// required string format = 6;
+inline bool Mediafile::has_format() const {
+  return _has_bit(5);
+}
+inline void Mediafile::clear_format() {
+  if (format_ != &_default_format_) {
+    format_->clear();
+  }
+  _clear_bit(5);
+}
+inline const ::std::string& Mediafile::format() const {
+  return *format_;
+}
+inline void Mediafile::set_format(const ::std::string& value) {
+  _set_bit(5);
+  if (format_ == &_default_format_) {
+    format_ = new ::std::string;
+  }
+  format_->assign(value);
+}
+inline void Mediafile::set_format(const char* value) {
+  _set_bit(5);
+  if (format_ == &_default_format_) {
+    format_ = new ::std::string;
+  }
+  format_->assign(value);
+}
+inline void Mediafile::set_format(const char* value, size_t size) {
+  _set_bit(5);
+  if (format_ == &_default_format_) {
+    format_ = new ::std::string;
+  }
+  format_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Mediafile::mutable_format() {
+  _set_bit(5);
+  if (format_ == &_default_format_) {
+    format_ = new ::std::string;
+  }
+  return format_;
+}
+
+// repeated .org.esb.rpc.Stream streams = 7;
 inline int Mediafile::streams_size() const {
   return streams_.size();
 }
@@ -3220,7 +3482,7 @@ MediafileList::mutable_mediafiles() {
 
 // MediafileRequest
 
-// required .org.esb.rpc.Mediafile file = 1;
+// optional .org.esb.rpc.Mediafile file = 1;
 inline bool MediafileRequest::has_file() const {
   return _has_bit(0);
 }
@@ -3280,6 +3542,140 @@ inline ::google::protobuf::int32 MediafileResponse::status() const {
 inline void MediafileResponse::set_status(::google::protobuf::int32 value) {
   _set_bit(1);
   status_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// User
+
+// required string name = 1;
+inline bool User::has_name() const {
+  return _has_bit(0);
+}
+inline void User::clear_name() {
+  if (name_ != &_default_name_) {
+    name_->clear();
+  }
+  _clear_bit(0);
+}
+inline const ::std::string& User::name() const {
+  return *name_;
+}
+inline void User::set_name(const ::std::string& value) {
+  _set_bit(0);
+  if (name_ == &_default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void User::set_name(const char* value) {
+  _set_bit(0);
+  if (name_ == &_default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void User::set_name(const char* value, size_t size) {
+  _set_bit(0);
+  if (name_ == &_default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* User::mutable_name() {
+  _set_bit(0);
+  if (name_ == &_default_name_) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+
+// required string pass = 2;
+inline bool User::has_pass() const {
+  return _has_bit(1);
+}
+inline void User::clear_pass() {
+  if (pass_ != &_default_pass_) {
+    pass_->clear();
+  }
+  _clear_bit(1);
+}
+inline const ::std::string& User::pass() const {
+  return *pass_;
+}
+inline void User::set_pass(const ::std::string& value) {
+  _set_bit(1);
+  if (pass_ == &_default_pass_) {
+    pass_ = new ::std::string;
+  }
+  pass_->assign(value);
+}
+inline void User::set_pass(const char* value) {
+  _set_bit(1);
+  if (pass_ == &_default_pass_) {
+    pass_ = new ::std::string;
+  }
+  pass_->assign(value);
+}
+inline void User::set_pass(const char* value, size_t size) {
+  _set_bit(1);
+  if (pass_ == &_default_pass_) {
+    pass_ = new ::std::string;
+  }
+  pass_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* User::mutable_pass() {
+  _set_bit(1);
+  if (pass_ == &_default_pass_) {
+    pass_ = new ::std::string;
+  }
+  return pass_;
+}
+
+// -------------------------------------------------------------------
+
+// AuthToken
+
+// required string token = 1;
+inline bool AuthToken::has_token() const {
+  return _has_bit(0);
+}
+inline void AuthToken::clear_token() {
+  if (token_ != &_default_token_) {
+    token_->clear();
+  }
+  _clear_bit(0);
+}
+inline const ::std::string& AuthToken::token() const {
+  return *token_;
+}
+inline void AuthToken::set_token(const ::std::string& value) {
+  _set_bit(0);
+  if (token_ == &_default_token_) {
+    token_ = new ::std::string;
+  }
+  token_->assign(value);
+}
+inline void AuthToken::set_token(const char* value) {
+  _set_bit(0);
+  if (token_ == &_default_token_) {
+    token_ = new ::std::string;
+  }
+  token_->assign(value);
+}
+inline void AuthToken::set_token(const char* value, size_t size) {
+  _set_bit(0);
+  if (token_ == &_default_token_) {
+    token_ = new ::std::string;
+  }
+  token_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AuthToken::mutable_token() {
+  _set_bit(0);
+  if (token_ == &_default_token_) {
+    token_ = new ::std::string;
+  }
+  return token_;
 }
 
 

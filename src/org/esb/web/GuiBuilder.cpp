@@ -322,7 +322,7 @@ namespace org {
         if (_data_map.count(data["id"]) > 0) {
           box->setChecked(atoi(_data_map[data["id"]].c_str()) != 0);
         } else {
-          box->setChecked(atoi(data["default"].c_str()));
+          box->setChecked(atoi(data["default"].c_str())>0);
           _data_map[data["id"]] = data["default"];
         }
         _enablerSignalMap->mapConnect(box->checked(), box);
@@ -360,7 +360,7 @@ namespace org {
         }
         xml_node<>*itemlist = ogn->first_node("list");
         xml_node<>*item = itemlist->first_node("item");
-        int len = 10;
+        unsigned int len = 10;
         KeyValueModel * model = new KeyValueModel();
         for (; item; item = item->next_sibling("item")) {
           len = strlen(item->first_attribute("title")->value()) > len ? strlen(item->first_attribute("title")->value()) : len;

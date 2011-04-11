@@ -411,6 +411,7 @@ void start() {
 
   //  LOGINFO("wait for shutdown!");
   org::esb::rpc::Server server(6000);
+  boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
 
   org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
@@ -558,4 +559,6 @@ void setupConfig(po::variables_map vm) {
   config::Config::setProperty("preset.path", bpath+"/presets");
   config::Config::setProperty("log.path", bpath+"/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
+  config::Config::setProperty("authentication", "true");
+
 }

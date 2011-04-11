@@ -9,12 +9,14 @@
 #define	CHANNEL_H
 #include "google/protobuf/service.h"
 #include "org/esb/net/TcpSocket.h"
+#include "org/esb/lang/Ptr.h"
 namespace org {
   namespace esb {
     namespace rpc {
 
       class Channel : public google::protobuf::RpcChannel {
       public:
+        Channel();
         Channel(org::esb::net::TcpSocket *);
         virtual ~Channel();
         // Call the given method of the remote service.  The signature of this

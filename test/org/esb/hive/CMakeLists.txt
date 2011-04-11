@@ -36,7 +36,7 @@ add_executable (XmlJobTest XmlJobTest.cpp)
 
 
 
-target_link_libraries (TestNodeDiscovery esb hive net signal io av util lang )
+target_link_libraries (TestNodeDiscovery esb hive io net signal av util lang )
 target_link_libraries (TestTimer esb hive net signal io av util lang )
 target_link_libraries (TestFileImporter esb hive net signal io av util lang )
 
@@ -57,7 +57,7 @@ target_link_libraries (DataHandlerTest hive io)
 target_link_libraries (PresetTest hive io)
 target_link_libraries (PresetTool hive io)
 target_link_libraries (PresetFileWriterTest hive io)
-target_link_libraries (PresetReaderTest hive io)
+target_link_libraries (PresetReaderTest  io esb hive db)
 
 target_link_libraries (PresetLoaderTest hive io)
 target_link_libraries (CodecPropertyTransformerTest io hive lang)
@@ -71,7 +71,7 @@ target_link_libraries (XmlJobTest hive)
 target_link_libraries (TestHiveListener  hive signal esb av io util lang net
   ${BOOST_SERIAL_LIB_MT}
 )
-target_link_libraries (TestAudioAC3toMP2  hive signal esb av io util lang net)
+target_link_libraries (TestAudioAC3toMP2    esb hive signal av io util lang net)
 
 #IF(WIN32)
 #  target_link_libraries (TestDatabaseCreation ws2_32 msvcrt )

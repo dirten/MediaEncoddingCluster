@@ -43,7 +43,7 @@ namespace org {
         long long int available(bool blocked=false);
       private:
         std::string _data;
-        long long int _position;
+        unsigned int _position;
       };
     }
   }

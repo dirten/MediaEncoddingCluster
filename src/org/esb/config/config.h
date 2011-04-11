@@ -36,6 +36,7 @@ namespace org
         static Properties * getProperties();
         static void reload();
         static void loadConfigFile(const std::string filename);
+        //static void loadFromDb();
       private:
         static bool init();
         static void parseLine(const char*);

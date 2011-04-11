@@ -67,10 +67,14 @@ int main(int argc, char** argv) {
     cout << "MediaEncodingCluster " << MHIVE_VERSION << endl;
   }
 
-  org::esb::api::MHiveServerConnection server("jh","jh");
+  org::esb::api::MHiveServerConnection server("localhost","jh","jh");
   server.connect();
-  std::list<org::esb::api::MediaFile>files=server.getMediaFiles();
+  std::list<org::esb::rpc::Mediafile>files=server.getMediaFiles();
+  std::list<org::esb::rpc::Mediafile>::iterator it=files.begin();
 
+  for(;it!=files.end();it++){
+    it->PrintDebugString();
+  }
 
   LOGDEBUG("shutdown");
   Log::close();

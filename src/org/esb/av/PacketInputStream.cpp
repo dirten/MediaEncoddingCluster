@@ -36,7 +36,7 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
      */
     int64_t min_start_dts = -1;
     int64_t min_start_pts = -1;
-    for (int a = 0; a < _formatCtx->nb_streams; a++) {
+    for (unsigned int a = 0; a < _formatCtx->nb_streams; a++) {
 //      if(_formatCtx->streams[a]->parser)
 //        _formatCtx->streams[a]->parser->flags|=PARSER_FLAG_COMPLETE_FRAMES;
 
