@@ -213,7 +213,7 @@
                     .."/>
                 </exec>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="all"/>
+                  <arg line="all install"/>
                 </exec>
               </tasks>
             </configuration>
@@ -246,11 +246,11 @@
             <phase>prepare-package</phase>
             <id>install</id>
             <configuration>
-              <tasks>
+             <!-- <tasks>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="install"/>
                 </exec>
-              </tasks>
+              </tasks>-->
             </configuration>
             <goals>
               <goal>run</goal>
