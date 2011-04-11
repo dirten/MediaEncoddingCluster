@@ -242,20 +242,20 @@
               <goal>run</goal>
             </goals>
           </execution>
-          <execution>
+          <!--<execution>
             <phase>prepare-package</phase>
             <id>install</id>
             <configuration>
-             <!-- <tasks>
+              <tasks>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="install"/>
                 </exec>
-              </tasks>-->
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
+          </execution>-->
           <execution>
             <phase>package</phase>
             <id>package</id>
