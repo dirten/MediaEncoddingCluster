@@ -283,9 +283,6 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libavutil.so.50</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcore.so.0</origin>
-                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -315,9 +312,6 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avcore-0.dll</origin>
-                        </distributionFile>
                     </distributionFileList>
                     <actionList>
                         <changePermissions permissions="0755" files="${installdir}/bin/*"/>
@@ -337,24 +331,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/mhiveservice</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libswscale.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcodec.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavdevice.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavformat.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcore.dylib</origin>
                         </distributionFile>
                     </distributionFileList>
                     <shortcutList>
@@ -394,9 +370,6 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcore.dylib</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
