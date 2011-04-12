@@ -293,7 +293,6 @@
                     --disable-devices
                     --extra-cflags=-fno-common
                     --disable-stripping
-                    --enable-runtime-cpudetect
                     --enable-gpl
 		    ${EXTRA_FFMPEG_CONFIGURATION}
 		    --enable-shared
