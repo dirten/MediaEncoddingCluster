@@ -169,7 +169,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
    because we will using our own codec context*/
   av_free(st->codec);
   st->codec = encoder.ctx;
-  st->time_base = encoder.ctx->time_base;
+  //st->time_base = encoder.ctx->time_base;
   st->sample_aspect_ratio = encoder.ctx->sample_aspect_ratio;
   //  st->time_base = encoder.ctx->time_base;
   return;
