@@ -357,6 +357,9 @@ namespace org {
             const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
             if (o2 && (o2->flags & _mode||o2->flags==0)) {
               ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
+              LOGDEBUG("Set Codec param '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
+              if(ret)
+                LOGERROR("Invalid value '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
             } else {
               if(type==2)
                 LOGWARN("Option not found: "<<opt.c_str())
@@ -410,6 +413,7 @@ namespace org {
         boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
+          LOGTRACE("void Codec::close("<<this<<"");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {

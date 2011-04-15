@@ -34,8 +34,8 @@ namespace org {
                 static void setCodecOptions(boost::shared_ptr<org::esb::av::Decoder>,std::multimap<std::string, std::string>);
             private:
                 CodecFactory();
-                static std::map<int, boost::shared_ptr<org::esb::av::Decoder> > decoder_map;
-                static std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map;
+                //static std::map<int, boost::shared_ptr<org::esb::av::Decoder> > decoder_map;
+                //static std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map;
 //                static void setCodecOptions(boost::shared_ptr<org::esb::av::Encoder>,std::string options);
 
             };

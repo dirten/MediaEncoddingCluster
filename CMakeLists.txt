@@ -335,7 +335,7 @@ add_subdirectory (test)
 #ENDIF(BUILD_TESTING)
 
 #add_custom_target(svnversion ALL
-#  COMMAND echo "SET\\(MHIVE_SVN_REVISION"`svnversion ${PROJECT_SOURCE_DIR}`"\\)" > ${PROJECT_SOURCE_DIR}/svnrevision
+#  COMMAND echo "define MHIVE_VERSION MHIVE_SVN_REVISION `svnversion ${PROJECT_SOURCE_DIR}`" > ${PROJECT_SOURCE_DIR}/version.h
 #)
 #INCLUDE(${MEC_SOURCE_DIR}/svnrevision)
 #add_dependencies(lang svnversion)

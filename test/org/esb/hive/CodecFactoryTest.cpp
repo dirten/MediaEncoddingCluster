@@ -32,6 +32,7 @@ int main(int argc, char** argv) {
   org::esb::config::Config::setProperty("db.url", "host=localhost;user=root;port=3306;database=example");
 
   src.append("/test.dvd");
+  src="/home/jan.hoelscher/tmp/Apple Ipad x264(720p) aac(160kb 48kHz stereo)/3#ChocolateFactory.m4v";
   org::esb::hive::DatabaseService::start(MEC_SOURCE_DIR);
   if (org::esb::hive::DatabaseService::databaseExist()) {
     org::esb::hive::DatabaseService::dropDatabase();
@@ -49,7 +50,7 @@ int main(int argc, char** argv) {
 
     //mediafile=litesql::select<db::MediaFile>(mediafile.getDatabase(), db::MediaFile::Id==(int)mediafile.id).one();
 
-
+    for(int a=0;a<10;a++){
     vector<db::Stream> streams = mediafile.streams().get().all();
 
     assert(streams.size() == 2);
@@ -71,6 +72,7 @@ int main(int argc, char** argv) {
     assert(encoder->open());
 
     LOGDEBUG(encoder->toString());
+    }
   }
   org::esb::hive::CodecFactory::free();
   org::esb::hive::DatabaseService::dropDatabase();

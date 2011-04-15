@@ -123,6 +123,8 @@ namespace org {
         if (org::esb::config::Config::get("authentication") == "true") {
           showLogin();
         } else {
+          _user = new db::User(*_db.get());
+          _user->authname="none";
           buildGui();
         }
       }

@@ -29,7 +29,7 @@ namespace org {
         inframes=0;
         outframes=0;
         duplicatedframes=0;
-        int sws_flags = 0;
+        int sws_flags = 1;
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {

@@ -170,7 +170,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       } else {
         LOGERROR("frame has no duration and no timebase, could not recalculate the duration of the encoded packet!!!");
       }
-      pac.setDuration(ctx->ticks_per_frame);
+      //pac.setDuration(ctx->ticks_per_frame);
 #endif
 
       pac.packet->dts = _last_dts;

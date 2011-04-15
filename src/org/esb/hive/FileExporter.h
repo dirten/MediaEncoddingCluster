@@ -3,6 +3,7 @@
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/av/AV.h"
 #include "org/esb/av/Packet.h"
+#include "org/esb/av/Encoder.h"
 #include <boost/shared_ptr.hpp>
 #include <map>
 #include "org/esb/util/Log.h"
@@ -34,6 +35,7 @@ private:
 	static std::map<int, StreamData> _source_stream_map;
 	static bool ptsComparator(boost::shared_ptr<org::esb::av::Packet>,boost::shared_ptr<org::esb::av::Packet> );
 	static bool dtsComparator(boost::shared_ptr<org::esb::av::Packet>,boost::shared_ptr<org::esb::av::Packet> );
+        static std::map<int, boost::shared_ptr<org::esb::av::Encoder> > encoder_map;
 
 };
 

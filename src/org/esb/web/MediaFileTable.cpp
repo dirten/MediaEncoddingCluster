@@ -46,7 +46,7 @@ namespace org {
             setData(a, 0, org::esb::util::StringUtil::toString(file.id.value()));
             setData(a, 1, file.path.value());
             setData(a, 2, file.filename.value());
-            setData(a, 3, org::esb::util::StringUtil::toString(file.filesize.value()/1024/1024)+" MB");
+            setData(a, 3, org::esb::util::StringUtil::toString(round((file.filesize.value()/1024/1024)*100)/100)+" MB");
             setData(a, 4, org::esb::util::StringUtil::toString(file.duration.value()/1000000)+" sec.");
 
             setData(a, 5, file.containertype.value());

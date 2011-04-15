@@ -4,6 +4,14 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_DIR}/include)
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${XUGGLE}/include)
+include_directories (/usr/include/gstreamer-0.10)
+include_directories (/usr/include/glib-2.0/)
+include_directories (/usr/include/glib-2.0/glib)
+include_directories (/usr/lib/glib-2.0/include/)
+include_directories (/usr/include/libxml2/)
+
+
+
 
 LINK_DIRECTORIES(${FFMPEG_DIR}/lib)
 #LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libogg/lib)
@@ -45,6 +53,7 @@ add_executable (AudioEncoderSetupTest AudioEncoderSetupTest.cpp)
 add_executable (DecoderSerializerTest DecoderSerializerTest.cpp)
 add_executable (FrameRateFilterTest FrameRateFilterTest.cpp)
 add_executable (TestOwnFFMpegUrl TestOwnFFMpegUrl.cpp)
+add_executable (gs gstreamer.cpp)
 
 target_link_libraries (TestPacket av)
 target_link_libraries (TestFfmpeg av)
@@ -75,6 +84,7 @@ target_link_libraries (SeekTest av io util lang)
 target_link_libraries (AudioEncoderSetupTest esb hive )
 target_link_libraries (FrameRateFilterTest av io util lang)
 target_link_libraries (TestOwnFFMpegUrl av io util lang)
+target_link_libraries (gs gstreamer-0.10)
 
 #IF(NOT WIN32)
 #target_link_libraries (TestFfmpeg ${BZ2_LIB} pthread z )

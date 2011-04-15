@@ -25,7 +25,7 @@ using namespace org::esb::hive;
 using namespace org::esb::config;
 
 std::map<int, FileExporter::StreamData> FileExporter::_source_stream_map;
-
+std::map<int, boost::shared_ptr<org::esb::av::Encoder> > FileExporter::encoder_map;
 void FileExporter::exportFile(db::MediaFile outfile) {
   /*creatign the filename*/
   std::string filename;
@@ -81,6 +81,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     db::Stream inStream = d.inputstream().get().one();
 
     boost::shared_ptr<Encoder> codec = CodecFactory::getStreamEncoder(stream.id);
+    encoder_map[stream.id.value()]=codec;
     if (codec->open()) {
       pos->setEncoder(*codec, a);
       sql_expr += StringUtil::toString(stream.id.value());
@@ -215,6 +216,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   pos->close();
 
   fos->close();
+  encoder_map.clear();
   FormatInputStream fis(&fout);
   if(fis.isValid()){
     outfile.filesize = (double) fis.getFileSize();
