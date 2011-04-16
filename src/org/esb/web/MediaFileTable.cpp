@@ -13,7 +13,7 @@
 #include <Wt/WApplication>
 #include "WebApp2.h"
 #ifdef __WIN32__
-double round(double x) { return (x-floor(x))>0.5 ? ceil(x) : floor(x); }
+double round(double x) { return floor(x+0.5); }
 #endif
 namespace org {
   namespace esb {
