@@ -12,6 +12,9 @@
 #include "org/esb/hive/DatabaseService.h"
 #include <Wt/WApplication>
 #include "WebApp2.h"
+#ifdef WIN32
+double round(double x) { return (x-floor(x))>0.5 ? ceil(x) : floor(x); }
+#endif
 namespace org {
   namespace esb {
     namespace web {
