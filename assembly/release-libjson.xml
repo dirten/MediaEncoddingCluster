@@ -6,10 +6,10 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/libjson</directory>
+      <directory>source/build/include</directory>
       <outputDirectory>include/</outputDirectory>
       <includes>
-        <include>**/libjson.h</include>
+        <include>**/*</include>
       </includes>
     </fileSet>
     <fileSet>
