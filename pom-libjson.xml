@@ -125,7 +125,7 @@
                 </pathconvert>
 
                 <exec executable="make" dir="source/libjson" failonerror="yes">
-            	    <arg line="-e prefix=${project.basedir}/source/build"/>
+            	    <arg line="-e prefix=${mybasedir}/source/build"/>
             	    <arg line="install"/>
                 </exec>
               </tasks>
