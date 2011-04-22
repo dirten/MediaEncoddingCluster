@@ -28,7 +28,7 @@ namespace org{
         int c=_fis->getStreamCount();
         for(int a = 0;a<c;a++){
           _stream_info=Ptr<org::esb::av::StreamInfo>(_fis->getStreamInfo(a));
-          if(_stream_info->getCodecType()==CODEC_TYPE_VIDEO){
+          if(_stream_info->getCodecType()==AVMEDIA_TYPE_VIDEO){
             _decoder=Ptr<Decoder>(new Decoder(_fis->getAVStream(_stream_info->getIndex())));
             _decoder->open();
             LOGDEBUG("Video Stream found!");

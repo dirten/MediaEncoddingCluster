@@ -25,7 +25,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
     decoder->setHeight(stream.height);
     decoder->setPixelFormat((PixelFormat) (int) stream.pixfmt);
     decoder->setBitRate(stream.bitrate);
-    if (stream.streamtype == CODEC_TYPE_VIDEO) {
+    if (stream.streamtype == AVMEDIA_TYPE_VIDEO) {
       decoder->setTimeBase(stream.codectimebasenum, stream.codectimebaseden);
       decoder->setFrameRate(stream.frameratenum, stream.framerateden);
     } else {
@@ -68,7 +68,7 @@ boost::shared_ptr<org::esb::av::Decoder> CodecFactory::getStreamDecoder(int stre
 boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::multimap<std::string, std::string> pmap) {
   boost::shared_ptr<av::Encoder> encoder(new av::Encoder((CodecID) atoi((*pmap.find("codec_id")).second.c_str())));
   encoder->findCodec(org::esb::av::Codec::ENCODER);
-  if (encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+  if (encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
     if (pmap.count("width"))
       encoder->setWidth(atoi((*pmap.find("width")).second.c_str()));
     if (pmap.count("height"))
@@ -78,7 +78,7 @@ boost::shared_ptr<org::esb::av::Encoder> CodecFactory::getStreamEncoder(std::mul
       encoder->setPixelFormat(encoder->_codec->pix_fmts[0]);
     }
   }
-  if (encoder->getCodecType() == CODEC_TYPE_AUDIO) {
+  if (encoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
     if (encoder->_codec->sample_fmts) {
       encoder->setSampleFormat(encoder->_codec->sample_fmts[0]);
     }

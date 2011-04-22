@@ -50,7 +50,7 @@ int main(int argc, char ** argv) {
    */
   AVCodecContext * enc = avcodec_alloc_context();
   enc->codec_id = CODEC_ID_H264;
-  enc->codec_type = CODEC_TYPE_VIDEO;
+  enc->codec_type = AVMEDIA_TYPE_VIDEO;
   enc->bit_rate = 1024000;
   enc->gop_size = 12;
   enc->max_b_frames = 2;

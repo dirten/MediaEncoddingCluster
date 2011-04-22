@@ -33,7 +33,7 @@ int main(){
   int c = fis.getStreamCount();
   int video_stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (fis.getStreamInfo(a)->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       video_stream = a;
       break;
     }

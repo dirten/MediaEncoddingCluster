@@ -14,7 +14,7 @@ Frame::Frame() {
   framePtr->pts = 0;
   _buffer = NULL; //new uint8_t[1];
   _allocated = false;
-  _type = CODEC_TYPE_VIDEO;
+  _type = AVMEDIA_TYPE_VIDEO;
   channels = 0;
   sample_rate = 0;
   _width = 0;

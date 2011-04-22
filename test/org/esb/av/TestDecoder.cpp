@@ -84,7 +84,7 @@ void testDecodeVideo(std::string filepath) {
   int c = fis.getStreamCount();
   int video_stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (fis.getStreamInfo(a)->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       video_stream = a;
       break;
     }
@@ -162,7 +162,7 @@ void testDecodeAudio(){
   int c = fis.getStreamCount();
   int video_stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getStreamInfo(a)->getCodecType() == CODEC_TYPE_AUDIO) {
+    if (fis.getStreamInfo(a)->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       video_stream = a;
       break;
     }
@@ -221,7 +221,7 @@ void testVideoDecoderTimings(){
   dec.setHeight(240);
 
   /*setting manually a codec type*/
-  dec.ctx->codec_type=CODEC_TYPE_VIDEO;
+  dec.ctx->codec_type=AVMEDIA_TYPE_VIDEO;
   /*setting manually a picture type*/
   dec.ctx->pix_fmt=PIX_FMT_UYVY422;
   /*openning the test decoder*/

@@ -52,7 +52,7 @@ void build_audio_packet(const char * filename, int sidx) {
   /*find first audio Stream,Create and open the input Codec*/
   int c = fis.getStreamCount();
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     if (stream_index == -1 || fis.getStreamInfo(i)->getIndex() == stream_index) {
       p._decoder = boost::shared_ptr<Decoder>(new Decoder(fis.getAVStream(i)));
       p._source_stream = fis.getStreamInfo(i)->getIndex();

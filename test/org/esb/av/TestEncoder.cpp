@@ -90,26 +90,34 @@ int main(int argc, char** argv) {
 //  enc.setTimeBase(100,2997);
   enc.setBitRate(1500000);
   enc.open();
+  LOGDEBUG("encoder ready")
+
   pos.setEncoder(enc);
+  LOGDEBUG("pos setencoder ready")
   pos.init();
+  LOGDEBUG("pos ready")
   enc.setOutputStream(&pos);
 
   org::esb::av::Decoder dec(fis.getAVStream(0));
   dec.setTimeBase(1,10);
   dec.open();
+  LOGDEBUG("dec ready")
 
 
 //  org::esb::av::PixelFormatConverter conv(dec.getOutputFormat(),enc.getInputFormat());
   org::esb::av::ResizeFilter resizer(dec.getOutputFormat(),enc.getInputFormat());
   resizer.open();
+  LOGDEBUG("resizer ready")
 //  conv.setFrameRateCompensateBase(-0.6);
   org::esb::av::Packet * p;
   std::list<boost::shared_ptr<org::esb::av::Packet> > packet_list;
+  LOGDEBUG("reading Packet")
   while((p=pis.readPacket())!=NULL){
     p->setTimeBase(dec.getTimeBase());
     boost::shared_ptr<org::esb::av::Packet> packet(p);
     packet_list.push_back(packet);
   }
+  LOGDEBUG("reading Packet finished")
   for(int a=0;a<1;a++){
     std::list<boost::shared_ptr<org::esb::av::Packet> >::iterator it=packet_list.begin();
     for(;it!=packet_list.end();it++){
@@ -123,7 +131,7 @@ int main(int argc, char** argv) {
     }
   }
   LOGTRACE("Encode Packet delay");
-  bool have_more_frames=enc.getCodecType()==CODEC_TYPE_VIDEO;
+  bool have_more_frames=enc.getCodecType()==AVMEDIA_TYPE_VIDEO;
   while(have_more_frames){
     if(enc.encode()<=0){
       have_more_frames=false;

@@ -330,7 +330,7 @@ namespace org {
         AVCodec *p = NULL;
         int a = 0;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_VIDEO) {
+          if (p->encode && p->type == AVMEDIA_TYPE_VIDEO) {
             v_codec->addItem(p->long_name);
             if(p->id==(int)profile.vcodec){
               v_codec->setCurrentIndex(a);
@@ -391,7 +391,7 @@ namespace org {
         AVCodec *p = NULL;
         //int a = 0;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_VIDEO && _elcb.getElement("v_codec")->currentText().narrow() == std::string(p->long_name)) {
+          if (p->encode && p->type == AVMEDIA_TYPE_VIDEO && _elcb.getElement("v_codec")->currentText().narrow() == std::string(p->long_name)) {
             _profile.vcodec = (int)p->id;
           }
         }
@@ -413,7 +413,7 @@ namespace org {
         //int a = 0;
         vpre->clear();
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_VIDEO && longname == p->long_name) {
+          if (p->encode && p->type == AVMEDIA_TYPE_VIDEO && longname == p->long_name) {
             LOGINFO( "retriving extra flags for codec id " << p->id);
             db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
             vector<db::CodecPreset> presets=litesql::select<db::CodecPreset>(db, db::CodecPreset::Codecid==p->id).all();
@@ -451,7 +451,7 @@ namespace org {
         AVCodec *p = NULL;
         //int a = 0;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_VIDEO && vcodec == p->long_name) {
+          if (p->encode && p->type == AVMEDIA_TYPE_VIDEO && vcodec == p->long_name) {
             data["v_codec"] = org::esb::util::StringUtil::toString(p->id);
           }
         }
@@ -471,7 +471,7 @@ namespace org {
         //int a = 0;
         while ((p = av_codec_next(p))) {
           if (p->encode &&
-            p->type == CODEC_TYPE_VIDEO &&
+            p->type == AVMEDIA_TYPE_VIDEO &&
             vcodec == org::esb::util::StringUtil::toString(p->id)) {
               data["v_codec"] = p->long_name;
           }
@@ -500,7 +500,7 @@ namespace org {
         AVCodec *p = NULL;
         int a = 0;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_AUDIO) {
+          if (p->encode && p->type == AVMEDIA_TYPE_AUDIO) {
             a_codec->addItem(p->long_name);
             if(p->id==(int)profile.acodec){
               a_codec->setCurrentIndex(a);
@@ -544,7 +544,7 @@ namespace org {
         LOGDEBUG("AudioPanel changed");
         AVCodec *p = NULL;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_AUDIO && _elcb.getElement("a_codec")->currentText().narrow() == p->long_name) {
+          if (p->encode && p->type == AVMEDIA_TYPE_AUDIO && _elcb.getElement("a_codec")->currentText().narrow() == p->long_name) {
             _profile.acodec = (int)p->id;
           }
         }
@@ -559,7 +559,7 @@ namespace org {
         std::string acodec = data["a_codec"];
         AVCodec *p = NULL;
         while ((p = av_codec_next(p))) {
-          if (p->encode && p->type == CODEC_TYPE_AUDIO && acodec == p->long_name) {
+          if (p->encode && p->type == AVMEDIA_TYPE_AUDIO && acodec == p->long_name) {
             data["a_codec"] = org::esb::util::StringUtil::toString(p->id);
           }
         }
@@ -572,7 +572,7 @@ namespace org {
         AVCodec *p = NULL;
         while ((p = av_codec_next(p))) {
           if (p->encode &&
-            p->type == CODEC_TYPE_AUDIO &&
+            p->type == AVMEDIA_TYPE_AUDIO &&
             acodec == org::esb::util::StringUtil::toString(p->id)) {
               data["a_codec"] = p->long_name;
           }

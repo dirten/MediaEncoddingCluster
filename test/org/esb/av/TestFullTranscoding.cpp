@@ -69,15 +69,15 @@ Log::open("");
   int s = 0;
   bool video = false, audio = false;
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
-        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
+        fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     if (audio && video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getAVStream(i));
     _sdata[i].start_dts = fis.getStreamInfo(i)->getFirstDts();
     _sdata[i].enc = new Encoder();
     _sdata[i].more_frames = true;
-    if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       video = true;
       _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setWidth(720);
@@ -92,7 +92,7 @@ Log::open("");
       _sdata[i].enc->setTimeBase(ar);
       _sdata[i].enc->setBitRate(1500000);
       // logdebug(_sdata[i].enc->toString());
-    } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
+    } else if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       audio = true;
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
@@ -145,12 +145,12 @@ Log::open("");
 
     //Convert an Audio or Video Packet
     Frame * trg_frame = NULL;
-    if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_VIDEO)
+    if (_sdata[p->getStreamIndex()].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       trg_frame = new Frame(
         _sdata[p->getStreamIndex()].enc->getInputFormat().pixel_format,
         _sdata[p->getStreamIndex()].enc->getWidth(),
         _sdata[p->getStreamIndex()].enc->getHeight());
-    if (_sdata[p->getStreamIndex()].dec->getCodecType() == CODEC_TYPE_AUDIO)
+    if (_sdata[p->getStreamIndex()].dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
       trg_frame = new Frame();
 
     if (_sdata[p->getStreamIndex()].conv) {

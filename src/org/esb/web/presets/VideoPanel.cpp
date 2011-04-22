@@ -55,7 +55,7 @@ namespace org {
         AVCodec *codec = NULL;
         int a = 0;
         while ((codec = av_codec_next(codec))) {
-          if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
+          if (codec->encode && codec->type == AVMEDIA_TYPE_VIDEO) {
             if (avail_codecs.count(codec->name) > 0) {
               codec_model->addModelData(codec->name, codec->long_name);
             } else {

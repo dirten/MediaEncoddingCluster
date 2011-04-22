@@ -60,7 +60,7 @@ Encoder::~Encoder() {
 
 bool Encoder::open() {
   bool result=Codec::open();
-  if (false&&result && getCodecType() == CODEC_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
+  if (false&&result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
     /*initialize the refDecoder*/
     std::map<std::string, std::string>opt = getCodecOptions();
     _refDecoder = new Decoder(getCodecId());
@@ -97,11 +97,11 @@ int Encoder::encode(Frame & frame) {
     _last_dts = frame.getDts();
     LOGDEBUG("setting last_dts=" << _last_dts);
   }
-  if (ctx->codec_type == CODEC_TYPE_VIDEO) {
+  if (ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
     LOGTRACEMETHOD("Encode Video");
     return encodeVideo(frame);
   }
-  if (ctx->codec_type == CODEC_TYPE_AUDIO) {
+  if (ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
     LOGTRACEMETHOD("Encode Audio");
     return encodeAudio(frame);
   }
@@ -156,7 +156,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       pac.packet->stream_index = _last_idx;
       if (ctx->coded_frame) {
         if (ctx->coded_frame->key_frame) {
-          pac.packet->flags |= PKT_FLAG_KEY;
+          pac.packet->flags |= AV_PKT_FLAG_KEY;
         }
         pac.packet->pts = ctx->coded_frame->pts;
       }
@@ -287,7 +287,7 @@ int Encoder::encodeAudio(Frame & frame) {
       if (ctx->coded_frame) {
         pak.packet->pts = ctx->coded_frame->pts;
       }
-      pak.packet->flags |= PKT_FLAG_KEY;
+      pak.packet->flags |= AV_PKT_FLAG_KEY;
 #ifdef USE_TIME_BASE_Q
       pak.setTimeBase(AV_TIME_BASE_Q);
       pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) 1000000);
@@ -330,7 +330,7 @@ int Encoder::encodeAudio(Frame & frame) {
     Packet pak(ret);
     memcpy(pak.packet->data, audio_out, ret);
 
-    pak.packet->flags |= PKT_FLAG_KEY;
+    pak.packet->flags |= AV_PKT_FLAG_KEY;
 #ifdef USE_TIME_BASE_Q
     pak.setTimeBase(AV_TIME_BASE_Q);
     pak.setDuration(((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate))*(float) 1000000);

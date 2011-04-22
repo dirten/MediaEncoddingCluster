@@ -370,7 +370,7 @@ namespace org {
 
           _oos.writeObject(*unit.get());
 #else
-          if (unit->_decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+          if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             LOGDEBUG("audioQueue.enqueue(unit);")
             audioQueue.enqueue(unit);
           } else {
@@ -454,7 +454,7 @@ namespace org {
 
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
-          int stream_type=CODEC_TYPE_UNKNOWN;
+          int stream_type=AVMEDIA_TYPE_UNKNOWN;
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
           name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
@@ -496,7 +496,7 @@ namespace org {
               if (audioQueue.size() == 0 && puQueue.size() == 0) {
                 current_job->progress = 100;
               } else {
-                if(stream_type==CODEC_TYPE_VIDEO){
+                if(stream_type==AVMEDIA_TYPE_VIDEO){
                   LOGDEBUG("Calculating Progress!");
                   AVRational ar_target;
                   ar_target.num = 1;

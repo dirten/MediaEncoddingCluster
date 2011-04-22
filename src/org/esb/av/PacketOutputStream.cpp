@@ -187,7 +187,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
   st->codec->codec_type = encoder.ctx->codec_type;
   st->codec->flags = encoder.ctx->flags;
 
-  if (encoder.ctx->codec_type == CODEC_TYPE_AUDIO) {
+  if (encoder.ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
     st->codec->strict_std_compliance = 0;
     st->codec->channels = encoder.ctx->channels;
     st->codec->sample_rate = encoder.ctx->sample_rate;
@@ -197,7 +197,7 @@ void PacketOutputStream::setEncoder(Codec & encoder, int stream_id) {
     ar.den = encoder.ctx->sample_rate;
     st->codec->time_base = ar; //(AVRational){1,encoder.ctx->sample_rate};
   }
-  if (encoder.ctx->codec_type == CODEC_TYPE_VIDEO) {
+  if (encoder.ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
     st->codec->time_base = encoder.ctx->time_base;
 
   }

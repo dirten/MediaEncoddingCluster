@@ -166,7 +166,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
     }
     /*when it is video, there is a need to set the timestamps new*/
     if (pu._output_packets.size()>0&&
-            _source_stream_map[pu._output_packets.front()->getStreamIndex()].stream_type == CODEC_TYPE_VIDEO) {
+            _source_stream_map[pu._output_packets.front()->getStreamIndex()].stream_type == AVMEDIA_TYPE_VIDEO) {
       //LOGDEBUG("resorting Packets");
       pu._output_packets.sort(ptsComparator);
       std::list<boost::shared_ptr<Packet> >::iterator ptslist = pu._output_packets.begin();

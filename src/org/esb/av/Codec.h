@@ -62,7 +62,7 @@ class SampleFormat;*/
          *
          * @return The type of this Codec, as a enum Type
          */
-        CodecType getCodecType();
+        AVMediaType getCodecType();
 
         /**
          * @return The name of the Codec.

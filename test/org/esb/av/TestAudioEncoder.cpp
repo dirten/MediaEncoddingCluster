@@ -63,7 +63,7 @@ int main(int argc, char** argv){
   int c = fis.getStreamCount();
   int stream = -1;
   for (int a = 0; a < c; a++) {
-    if (fis.getAVStream(a)->codec->codec_type == CODEC_TYPE_AUDIO) {
+    if (fis.getAVStream(a)->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
       stream = a;
       break;
     }

@@ -36,7 +36,7 @@ namespace org {
           LOGERROR("the Decoder and Encoder must be from the same Type");
         }
         
-        if (dec->getCodecType() == CODEC_TYPE_AUDIO && enc->getCodecType() == CODEC_TYPE_AUDIO) {
+        if (dec->getCodecType() == AVMEDIA_TYPE_AUDIO && enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
           _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channels, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
@@ -50,7 +50,7 @@ namespace org {
 
           _frame_rate_filter=new FrameRateFilter(r, enc->getTimeBase());
 
-        if (dec->getCodecType() == CODEC_TYPE_VIDEO && enc->getCodecType() == CODEC_TYPE_VIDEO) {
+        if (dec->getCodecType() == AVMEDIA_TYPE_VIDEO && enc->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           Format in = dec->getOutputFormat();
           Format out = enc->getInputFormat();
           
@@ -73,19 +73,19 @@ namespace org {
         LOGTRACEMETHOD("Convert Frame");
 
         LOGDEBUG(in_frame.toString());
-        if (_dec->getCodecType() == CODEC_TYPE_VIDEO) {
+        if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           
           doDeinterlaceFrame(in_frame);
           convertVideo(in_frame, out_frame);
 
         }
-        if (_dec->getCodecType() == CODEC_TYPE_AUDIO) {
+        if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           convertAudio(in_frame, out_frame);
         }
         rescaleTimestamp(in_frame, out_frame);
-        if (_dec->getCodecType() == CODEC_TYPE_AUDIO)
+        if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO)
           compensateAudioResampling(in_frame, out_frame);
-        if (_dec->getCodecType() == CODEC_TYPE_VIDEO)
+        if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
           compensateFrameRateConversion(in_frame, out_frame);
         out_frame.setPixelAspectRatio(in_frame.getPixelAspectRatio());
         out_frame.setDisplayAspectRatio(in_frame.getDisplayAspectRatio());
@@ -280,7 +280,7 @@ namespace org {
         out_frame.pos = in_frame.pos;
         out_frame.stream_index = in_frame.stream_index;
         out_frame._size = out_size * _enc->getChannels() * osize;
-        out_frame._type = CODEC_TYPE_AUDIO;
+        out_frame._type = AVMEDIA_TYPE_AUDIO;
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
         out_frame.setDuration(out_size);

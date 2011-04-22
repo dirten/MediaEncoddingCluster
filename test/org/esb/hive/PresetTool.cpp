@@ -76,9 +76,9 @@ Packet * convert(Packet & p) {
       /*target frame for conversion*/
     Frame * f = NULL;
     /*allocation frame data for specified type*/
-    if (decoder[idx]->ctx->codec_type == CODEC_TYPE_VIDEO)
+    if (decoder[idx]->ctx->codec_type == AVMEDIA_TYPE_VIDEO)
       f = new Frame(encoder[idx]->getInputFormat().pixel_format, encoder[idx]->getWidth(), encoder[idx]->getHeight());
-    if (decoder[idx]->ctx->codec_type == CODEC_TYPE_AUDIO)
+    if (decoder[idx]->ctx->codec_type == AVMEDIA_TYPE_AUDIO)
       f = new Frame();
     LOGTRACE("try Frame Convert");
     /*converting the source frame to target frame*/

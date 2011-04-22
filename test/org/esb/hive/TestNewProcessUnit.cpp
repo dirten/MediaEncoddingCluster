@@ -89,15 +89,15 @@ void build_process_units(int argc, char** argv) {
   int s = 0;
 
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
-        fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
+        fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     _sdata[i].dec = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(i)));
     _sdata[i].enc = boost::shared_ptr<Encoder > (new Encoder());
     stream_data[i].decoder=_sdata[i].dec;
     stream_data[i].encoder=_sdata[i].enc;
 //    stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
 
-    if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO) {
+    if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       //      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
       //_sdata[i].enc->setCodecId(CODEC_ID_MPEG2VIDEO);
       _sdata[i].enc->setCodecId(video_codec_id);
@@ -110,7 +110,7 @@ void build_process_units(int argc, char** argv) {
       ar.den = 30;
       _sdata[i].enc->setTimeBase(ar);
 
-    } else if (_sdata[i].dec->getCodecType() == CODEC_TYPE_AUDIO) {
+    } else if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       _sdata[i].enc->setCodecId(audio_codec_id);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(44100);

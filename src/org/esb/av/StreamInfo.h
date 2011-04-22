@@ -15,7 +15,7 @@ namespace org {
       public:
         StreamInfo(AVStream*, int idx);
         int getIndex();
-        CodecType getCodecType();
+        AVMediaType getCodecType();
         CodecID getCodecId();
         AVCodecContext * getCodec();
         int getCodecBitrate();

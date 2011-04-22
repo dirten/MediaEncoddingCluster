@@ -38,8 +38,8 @@ namespace org {
         *
         */
         Packetizer::Packetizer(std::map<int, StreamData> stream_data) {
-          _codec_min_packets[CODEC_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
-          _codec_min_packets[CODEC_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
+          _codec_min_packets[AVMEDIA_TYPE_VIDEO] = MIN_VIDEO_PACKETS;
+          _codec_min_packets[AVMEDIA_TYPE_AUDIO] = MIN_AUDIO_PACKETS;
 
           _streams = stream_data;
           /**
@@ -145,7 +145,7 @@ namespace org {
           bool result = false;
           int stream_idx = ptr->getStreamIndex();
 
-          if (_streams[stream_idx].state == STATE_NOP && (ptr->isKeyFrame() || _streams[stream_idx].decoder->getCodecType() == CODEC_TYPE_AUDIO)) {
+          if (_streams[stream_idx].state == STATE_NOP && (ptr->isKeyFrame() || _streams[stream_idx].decoder->getCodecType() == AVMEDIA_TYPE_AUDIO)) {
             _streams[stream_idx].state = STATE_START_I_FRAME;
           }
 
@@ -203,7 +203,7 @@ namespace org {
             /**
             * this is used for all audio streams 
             * */
-            if (_streams[stream_idx].state == STATE_END_I_FRAME&&_streams[stream_idx].decoder->getCodecType() == CODEC_TYPE_AUDIO) {
+            if (_streams[stream_idx].state == STATE_END_I_FRAME&&_streams[stream_idx].decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
               _streams[stream_idx].state = STATE_START_I_FRAME;
               /**copying all Packets into the actual ProcessUnit*/
               _packet_list.push_back(_streams[stream_idx].packets);

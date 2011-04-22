@@ -90,7 +90,7 @@ namespace org {
 
           std::map<int, org::esb::av::PacketListPtr> _overlap_queue;
           std::map<CodecID, int> _codec_overlap;
-          std::map<CodecType, int> _codec_min_packets;
+          std::map<AVMediaType, int> _codec_min_packets;
 
         };
       }

@@ -137,7 +137,7 @@ void ProcessUnit::processInternal() {
   _encoder->setOutputStream(NULL);
 
   /*configure the reference decoder to compute the psnr for video mages*/
-  if ( _encoder->getCodecType() == CODEC_TYPE_VIDEO) {
+  if ( _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
     std::map<std::string, std::string>opt = _encoder->getCodecOptions();
     _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
     std::map<std::string, std::string>::iterator opit = opt.begin();
@@ -214,9 +214,9 @@ void ProcessUnit::processInternal() {
     /*target frame for conversion*/
     Frame * f = NULL;
     /*allocation frame data for specified type*/
-    if (_decoder->ctx->codec_type == CODEC_TYPE_VIDEO)
+    if (_decoder->ctx->codec_type == AVMEDIA_TYPE_VIDEO)
       f = new Frame(_encoder->getInputFormat().pixel_format, _encoder->getWidth(), _encoder->getHeight());
-    if (_decoder->ctx->codec_type == CODEC_TYPE_AUDIO)
+    if (_decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO)
       f = new Frame();
     LOGTRACE("try Frame Convert");
     /*converting the source frame to target frame*/
@@ -225,7 +225,7 @@ void ProcessUnit::processInternal() {
     /**
      * @TODO: prepend silent audio bytes to prevent audio/video desync in distributed audio encoding
      * */
-    if (false && _decoder->ctx->codec_type == CODEC_TYPE_AUDIO &&
+    if (false && _decoder->ctx->codec_type == AVMEDIA_TYPE_AUDIO &&
             _discard_audio_bytes > 0) {
       size_t size = f->_size + _discard_audio_bytes;
       uint8_t * tmp_buf = (uint8_t*) av_malloc(size);
@@ -247,7 +247,7 @@ void ProcessUnit::processInternal() {
      */
 
     int ret = _encoder->encode(*f);
-    if (false&&_encoder->getCodecType() == CODEC_TYPE_VIDEO&&sink.getList().size()>0) {
+    if (false&&_encoder->getCodecType() == AVMEDIA_TYPE_VIDEO&&sink.getList().size()>0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
       if (tmpf->isFinished()) {
@@ -263,7 +263,7 @@ void ProcessUnit::processInternal() {
   }
   /*now process the delayed Frames from the encoder*/
   LOGTRACE("Encode Packet delay");
-  bool have_more_frames = _encoder->getCodecType() == CODEC_TYPE_VIDEO;
+  bool have_more_frames = _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO;
   while (have_more_frames) {
     if (_encoder->encode() <= 0) {
       have_more_frames = 0;

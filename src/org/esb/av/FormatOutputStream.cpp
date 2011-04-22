@@ -19,7 +19,7 @@ namespace org {
         _fmtCtx->oformat = _fmt;
 
         if (!(_fmt->flags & AVFMT_NOFILE)) {
-          if (avio_open(&_fmtCtx->pb, _file->getPath().c_str(), URL_WRONLY) < 0) {
+          if (avio_open(&_fmtCtx->pb, _file->getPath().c_str(), AVIO_FLAG_WRITE) < 0) {
             fprintf(stderr, "Could not open '%s'\n", _file->getPath().c_str());
             //            exit(1);
           }

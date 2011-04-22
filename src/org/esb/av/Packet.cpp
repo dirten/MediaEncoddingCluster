@@ -204,7 +204,7 @@ void Packet::setDuration(int d) {
 }
 
 bool Packet::isKeyFrame() {
-  return packet->flags & PKT_FLAG_KEY;
+  return packet->flags & AV_PKT_FLAG_KEY;
 }
 
 void * Packet::getPriv() {
@@ -234,7 +234,7 @@ AVRational Packet::getTimeBase() {
 
 void Packet::setKeyPacket(bool key) {
   if (key)
-    packet->flags |= PKT_FLAG_KEY;
+    packet->flags |= AV_PKT_FLAG_KEY;
 }
 
 void Packet::setPtsTimeStamp(TimeStamp t) {

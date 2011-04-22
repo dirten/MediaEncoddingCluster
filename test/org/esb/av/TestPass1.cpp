@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   int c = fis.getStreamCount();
   int vidx = 0;
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO) continue;
     vidx = i; //fis.getStreamInfo(i)->getStreamIndex();
     dec = new Decoder(fis.getAVStream(i));
     dec->open();

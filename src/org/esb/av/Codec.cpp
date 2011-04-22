@@ -96,7 +96,7 @@ namespace org {
             }
           }
         }
-        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
+        if (_codec && _codec->type & AVMEDIA_TYPE_AUDIO) {
           setTimeBase(1, ctx->sample_rate);
         }
         _frame_rate.num = s->r_frame_rate.num;
@@ -236,7 +236,7 @@ namespace org {
 
       }
 
-      CodecType Codec::getCodecType() {
+      AVMediaType Codec::getCodecType() {
         return ctx->codec_type;
       }
 
@@ -373,10 +373,10 @@ namespace org {
           }
         }
         //setFlag(CODEC_FLAG_PSNR);
-        if (_codec && _codec->type & CODEC_TYPE_AUDIO) {
+        if (_codec && _codec->type & AVMEDIA_TYPE_AUDIO) {
           setTimeBase(1, ctx->sample_rate);
         }
-        if (_codec && _codec->type == CODEC_TYPE_VIDEO) {
+        if (_codec && _codec->type == AVMEDIA_TYPE_VIDEO) {
           if (_frame_rate.num == 0 && _frame_rate.den == 0) {
             _frame_rate.num = ctx->time_base.den;
             _frame_rate.den = ctx->time_base.num;
@@ -599,7 +599,7 @@ namespace org {
         data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
         if (_opened) {
           data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
-          data.append("Codec Type:").append(ctx->codec_type == CODEC_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
+          data.append("Codec Type:").append(ctx->codec_type == AVMEDIA_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
           data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
           data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
           data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");

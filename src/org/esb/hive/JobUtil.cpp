@@ -107,14 +107,14 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
   vector<db::Stream>::iterator it = streams.begin();
   int a = 0;
   for (; it != streams.end(); it++) {
-    if ((*it).streamtype != CODEC_TYPE_VIDEO && (*it).streamtype != CODEC_TYPE_AUDIO)continue;
+    if ((*it).streamtype != AVMEDIA_TYPE_VIDEO && (*it).streamtype != AVMEDIA_TYPE_AUDIO)continue;
 
     db::Stream s(mediafile.getDatabase());
     s.update();
     s.streamindex = a++;
     s.streamtype = (*it).streamtype;
 
-    if ((*it).streamtype == CODEC_TYPE_VIDEO) {
+    if ((*it).streamtype == AVMEDIA_TYPE_VIDEO) {
       if (profile.params().get().count() > 0) {
         vector<db::ProfileParameter> params = profile.params().get().all();
         vector<db::ProfileParameter>::iterator it = params.begin();
@@ -176,7 +176,7 @@ int jobcreator(db::MediaFile mediafile, db::Profile profile, std::string outpath
       }
       s.flags = flags;
       enc->close();
-    } else if ((*it).streamtype == CODEC_TYPE_AUDIO) {
+    } else if ((*it).streamtype == AVMEDIA_TYPE_AUDIO) {
       if (profile.params().get().count() > 0) {
         vector<db::ProfileParameter> params = profile.params().get().all();
         vector<db::ProfileParameter>::iterator it = params.begin();

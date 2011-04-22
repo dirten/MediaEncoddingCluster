@@ -88,7 +88,7 @@ Frame Decoder::decodeLast() {
   //  frame.setDts( packet.packet->dts );
   //  frame.pos = packet.packet->pos;
   //  frame.duration = packet.packet->duration;
-  frame._type = CODEC_TYPE_VIDEO;
+  frame._type = AVMEDIA_TYPE_VIDEO;
   return frame;
 
 }
@@ -96,9 +96,9 @@ Frame Decoder::decodeLast() {
 Frame * Decoder::decode2(Packet & packet) {
   if (!_opened)
     throw runtime_error("Codec not opened");
-  if (ctx->codec_type == CODEC_TYPE_VIDEO)
+  if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
     return decodeVideo2(packet);
-  if (ctx->codec_type == CODEC_TYPE_AUDIO)
+  if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
     return decodeAudio2(packet);
 
   throw runtime_error("Packet is no type of Video or Audio");
@@ -224,7 +224,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  }
 
   frame->pos = 0;
-  frame->_type = CODEC_TYPE_VIDEO;
+  frame->_type = AVMEDIA_TYPE_VIDEO;
   LOGDEBUG(frame->toString());
   return frame;
 }
@@ -297,7 +297,7 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
   frame->pos = packet.packet->pos;
   //  frame->duration = packet.packet->duration;
   frame->_size = samples_size;
-  frame->_type = CODEC_TYPE_AUDIO;
+  frame->_type = AVMEDIA_TYPE_AUDIO;
   frame->channels = ctx->channels;
   frame->sample_rate = ctx->sample_rate;
   LOGDEBUG(frame->toString());

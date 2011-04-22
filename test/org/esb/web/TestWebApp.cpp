@@ -54,7 +54,7 @@ public:
     AVCodec *codec = NULL;
     int a = 0;
     while ((codec = av_codec_next(codec))) {
-      if (codec->encode && codec->type == CODEC_TYPE_VIDEO) {
+      if (codec->encode && codec->type == AVMEDIA_TYPE_VIDEO) {
 
         codec_model->addModelData(org::esb::util::StringUtil::toString(codec->id), codec->long_name);
       }
@@ -91,7 +91,7 @@ public:
     AVCodec *codec = NULL;
     int a = 0;
     while ((codec = av_codec_next(codec))) {
-      if (codec->encode && codec->type == CODEC_TYPE_VIDEO && org::esb::util::StringUtil::toString(codec->id)==codecid) {
+      if (codec->encode && codec->type == AVMEDIA_TYPE_VIDEO && org::esb::util::StringUtil::toString(codec->id)==codecid) {
         LOGDEBUG("found codec : "<<codec->name);
         codecname=codec->name;
       }

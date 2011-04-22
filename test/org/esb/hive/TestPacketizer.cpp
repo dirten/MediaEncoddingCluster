@@ -74,8 +74,8 @@ int main(int argc, char** argv) {
   int s = 0;
 
   for (int i = 0; i < c; i++) {
-    if (fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_VIDEO &&
-            fis.getStreamInfo(i)->getCodecType() != CODEC_TYPE_AUDIO) continue;
+    if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
+            fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
     stream_data[i].decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(i)));
     stream_data[i].decoder->open();
     stream_data[i].min_packet_count = 5;
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     //when no more packets available(EOF) then it return <0
     if (pis.readPacket(p) < 0)break;
     if (stream_data.find(p.getStreamIndex()) == stream_data.end())continue;
-    if (stream_data[p.getStreamIndex()].decoder->getCodecType() != CODEC_TYPE_VIDEO)continue;
+    if (stream_data[p.getStreamIndex()].decoder->getCodecType() != AVMEDIA_TYPE_VIDEO)continue;
     if(p.getDts()<3760262033)continue;
     boost::shared_ptr<Packet> pPacket(new Packet(p));
     if (pti.putPacket(pPacket)) {
