@@ -8,7 +8,7 @@ using namespace org::esb::lang;
 namespace org {
     namespace esb {
         namespace io {
-            class IO_EXPORT OutputStream {
+            class OutputStream {
 public:
                 /**
                  * Closes this output stream and releases any system resources 
