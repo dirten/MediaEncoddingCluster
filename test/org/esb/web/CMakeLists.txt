@@ -15,7 +15,6 @@ add_executable (ProjectWizardTest ProjectWizardTest.cpp)
 
 target_link_libraries (TestWebServer
   web
-  esb
   hive
   av
   util
@@ -26,7 +25,6 @@ target_link_libraries (TestWebServer
  )
 target_link_libraries (TestPreviewFrameServer
   web
-  esb
   hive
   av
   util
@@ -38,7 +36,6 @@ target_link_libraries (TestPreviewFrameServer
 
 target_link_libraries (JobTableTest
   web
-  esb
   hive
   av
   util
@@ -49,7 +46,6 @@ target_link_libraries (JobTableTest
  )
 target_link_libraries (PreviewFrameServerTest
   web
-  esb
   hive
   av
   util
@@ -60,7 +56,6 @@ target_link_libraries (PreviewFrameServerTest
  )
 target_link_libraries (GuiBuilderTest
   web
-  esb
   hive
   av
   util
@@ -71,7 +66,6 @@ target_link_libraries (GuiBuilderTest
  )
 target_link_libraries (TestWebApp
   web
-  esb
   hive
   av
   util
@@ -82,7 +76,6 @@ target_link_libraries (TestWebApp
  )
 target_link_libraries (ProjectWizardTest
   web
-  esb
   hive
   av
   util

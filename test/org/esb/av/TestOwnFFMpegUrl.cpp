@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
   assert(fis.getFileSize() == 3409920);
   assert(fis.getStreamCount() == 2);
  */
-  org::esb::config::Config::close();
+//  org::esb::config::Config::close();
   Log::close();
   return 0;
 }

@@ -1,5 +1,5 @@
 #include "org/esb/config/config.h"
-#include "org/esb/io/File.h"
+//#include "org/esb/io/File.h"
 namespace org {
   namespace esb {
     namespace util {
@@ -9,10 +9,13 @@ namespace org {
 
         LogConfigurator() : log4cplus::PropertyConfigurator(LOG4CPLUS_TEXT(""), log4cplus::Logger::getDefaultHierarchy()) {
           std::string log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
-          std::string logpath=org::esb::config::Config::get("log.path");
-          org::esb::io::File logdir(logpath);
-          if(!logdir.exists())
-            logdir.mkdir();
+          char * pathenv=getenv("log.path");
+          if(pathenv==NULL)
+            pathenv="";
+          std::string logpath=pathenv;//org::esb::config::Config::get("log.path");
+          //org::esb::io::File logdir(logpath);
+          //if(!logdir.exists())
+            //logdir.mkdir();
 
           //logpath+="/mhive.log";
           

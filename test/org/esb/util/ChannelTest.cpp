@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
   }
   org::esb::lang::Thread::sleep2(1000);
   LOGDEBUG("exit program")
-  org::esb::config::Config::close();
+  //org::esb::config::Config::close();
   return 0;
 }
 

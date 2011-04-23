@@ -33,8 +33,8 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 add_library (db 
   db/hivedb.cpp
-  db/DatabaseConfigLoader.cpp
-  db/DatabaseBootstrap.cpp
+#  db/DatabaseConfigLoader.cpp
+#  db/DatabaseBootstrap.cpp
 #            av/FrameConverter.cpp
 #            av/FrameOutputStream.cpp
 #            av/FormatInputStream.cpp
@@ -53,7 +53,7 @@ add_library (db
 #            av/StreamInfo.cpp
 #
 )
-TARGET_LINK_LIBRARIES(db lang esb)
+TARGET_LINK_LIBRARIES(db )
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(db litesql litesql-util litesql_sqlite)
 ELSEIF(WIN32)
@@ -135,7 +135,7 @@ add_library (util
 #  util/Queue.cpp
 )
 
-TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} esb )
+TARGET_LINK_LIBRARIES(util ${Boost_LIBRARIES} )
 
 IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(util rt)
@@ -202,7 +202,7 @@ add_library (net net/SocketException.cpp
 #      net/TcpSocketInputStream.cpp
 #      net/TcpSocketOutputStream.cpp
 )
-TARGET_LINK_LIBRARIES(net util)
+TARGET_LINK_LIBRARIES(net util lang)
 IF(BUILD_SHARED_LIBS)
   INSTALL(TARGETS net
     RUNTIME DESTINATION bin
@@ -290,9 +290,10 @@ add_library (hive
   hive/PresetLoader.cpp
   hive/xml/Project.cpp
   hive/xml/JobCreator.cpp
+  config/config.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net esb signal av lang)
+TARGET_LINK_LIBRARIES(hive db net signal av lang)
 
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive
@@ -401,7 +402,6 @@ TARGET_LINK_LIBRARIES(web
     ${Boost_LIBRARIES}
     signal
     io
-    esb
     av
     lang
 )
@@ -431,13 +431,13 @@ ENDIF(WIN32)
 #TARGET_LINK_LIBRARIES(av z avcodec avformat avutil  swscale x264 pthread mp3lame theora vorbis vorbisenc xvidcore ogg)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/config)
-add_library (esb config/config.cpp)
-TARGET_LINK_LIBRARIES(esb util io hive db)
-IF(BUILD_SHARED_LIBS)
-INSTALL(TARGETS esb
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
+#add_library (esb config/config.cpp)
+#TARGET_LINK_LIBRARIES(esb util io db)
+#IF(BUILD_SHARED_LIBS)
+#INSTALL(TARGETS esb
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#ENDIF(BUILD_SHARED_LIBS)
 

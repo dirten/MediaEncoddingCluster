@@ -89,7 +89,6 @@ add_executable (mytest test.cpp)
 
 target_link_libraries (info
   web
-  esb
   hive
   av
   util
@@ -99,7 +98,6 @@ target_link_libraries (info
   lang
   )
 target_link_libraries (pu
-  esb
   hive
   av
   util
@@ -109,7 +107,6 @@ target_link_libraries (pu
   lang
   )
 target_link_libraries (pc
-  esb
   hive
   av
   util

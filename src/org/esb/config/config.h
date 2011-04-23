@@ -37,8 +37,8 @@ namespace org
         static void reload();
         static void loadConfigFile(const std::string filename);
         //static void loadFromDb();
-      private:
         static bool init();
+      private:
         static void parseLine(const char*);
         static bool _isInitialized;
       };

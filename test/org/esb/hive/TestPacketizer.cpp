@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include <string>
-
+#include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 #include "org/esb/av/FormatInputStream.h"
 #include "org/esb/av/PacketInputStream.h"
@@ -47,6 +47,7 @@ void print_packet_list(PacketListPtr list) {
 }
 
 int main(int argc, char** argv) {
+  org::esb::config::Config::init();
   Log::open("");
   std::map<int, Packetizer::StreamData> stream_data;
 

@@ -115,7 +115,7 @@ target_link_libraries (mhiveconfig
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
     
-    target_link_libraries (mhiveservice io lang util grid)
+    target_link_libraries (mhiveservice io lang util hive grid)
     INSTALL(TARGETS mhiveservice
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         #BUNDLE DESTINATION ${BIN_INSTALL_DIR}
@@ -128,7 +128,6 @@ IF(BUILD_MHIVECLIENT)
     add_executable (mhiveclient MhiveClient.cpp)
     target_link_libraries (mhiveclient
       web
-      esb
       hive
       lang
       av
@@ -147,7 +146,6 @@ IF(BUILD_MHIVECLIENTAUDIO)
     add_executable (mhiveca HiveClientAudio.cpp)
     target_link_libraries (mhiveca
       web
-      esb
       hive
       lang
       av
@@ -165,7 +163,6 @@ IF(BUILD_MHIVECLIENTVIDEO)
     add_executable (mhivecv HiveClientVideo.cpp)
     target_link_libraries (mhivecv
       web
-      esb
       hive
       lang
       av
@@ -247,7 +244,6 @@ ENDIF(BUILD_MHIVECORE)
  
 target_link_libraries (mhive 
   web 
-  esb 
   hive 
   lang 
   av 

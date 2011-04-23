@@ -15,6 +15,8 @@ TARGET_LINK_LIBRARIES(grid
     ${Boost_LIBRARIES}
     lang
     util
+    net 
+    io
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS grid

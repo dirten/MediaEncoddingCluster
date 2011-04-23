@@ -36,28 +36,28 @@ add_executable (XmlJobTest XmlJobTest.cpp)
 
 
 
-target_link_libraries (TestNodeDiscovery esb hive io net signal av util lang )
-target_link_libraries (TestTimer esb hive net signal io av util lang )
-target_link_libraries (TestFileImporter esb hive net signal io av util lang )
+target_link_libraries (TestNodeDiscovery hive io net signal av util lang )
+target_link_libraries (TestTimer hive net signal io av util lang )
+target_link_libraries (TestFileImporter hive net signal io av util lang )
 
-target_link_libraries (TestProcessUnit esb hive io av util net signal  lang)
+target_link_libraries (TestProcessUnit hive io av util net signal  lang)
 
 target_link_libraries (TestDatabaseCreation hive )
-target_link_libraries (DeleteDatabase esb util hive signal)
-target_link_libraries (TestProcessUnit esb hive signal av io util lang )
-target_link_libraries (TestNewProcessUnit esb hive net signal av io util lang )
-target_link_libraries (TestPacketizer esb hive av net signal io util lang )
-#target_link_libraries (TestHive esb hive av net signal io util lang )
-target_link_libraries (CodecFactoryTest esb hive av net signal io util lang )
-target_link_libraries (JobCreatorTest esb hive av net signal io util lang )
-target_link_libraries (DirectoryScannerTest  esb hive av net signal io util lang )
-target_link_libraries (ProcessUnitBuilderTest  esb hive av net signal io util lang )
+target_link_libraries (DeleteDatabase util hive signal)
+target_link_libraries (TestProcessUnit hive signal av io util lang )
+target_link_libraries (TestNewProcessUnit hive net signal av io util lang )
+target_link_libraries (TestPacketizer hive av net signal io util lang )
+#target_link_libraries (TestHive hive av net signal io util lang )
+target_link_libraries (CodecFactoryTest hive av net signal io util lang )
+target_link_libraries (JobCreatorTest hive av net signal io util lang )
+target_link_libraries (DirectoryScannerTest  hive av net signal io util lang )
+target_link_libraries (ProcessUnitBuilderTest  hive av net signal io util lang )
 target_link_libraries (ProcessUnitControllerTest hive io)
 target_link_libraries (DataHandlerTest hive io)
 target_link_libraries (PresetTest hive io)
 target_link_libraries (PresetTool hive io)
 target_link_libraries (PresetFileWriterTest hive io)
-target_link_libraries (PresetReaderTest  io esb hive db)
+target_link_libraries (PresetReaderTest  io hive db)
 
 target_link_libraries (PresetLoaderTest hive io)
 target_link_libraries (CodecPropertyTransformerTest io hive lang)
@@ -67,11 +67,11 @@ target_link_libraries (ProjectXmlTest hive)
 target_link_libraries (XmlJobTest hive)
 
 
-#target_link_libraries (TestClientHandler   hive esb av io util lang )
-target_link_libraries (TestHiveListener  hive signal esb av io util lang net
+#target_link_libraries (TestClientHandler   hive av io util lang )
+target_link_libraries (TestHiveListener  hive signal av io util lang net
   ${BOOST_SERIAL_LIB_MT}
 )
-target_link_libraries (TestAudioAC3toMP2    esb hive signal av io util lang net)
+target_link_libraries (TestAudioAC3toMP2    hive signal av io util lang net)
 
 #IF(WIN32)
 #  target_link_libraries (TestDatabaseCreation ws2_32 msvcrt )
