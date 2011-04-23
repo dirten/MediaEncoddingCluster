@@ -5,7 +5,7 @@ namespace org{
 namespace esb{
 namespace io{
 class File;
-class IO_EXPORT FileFilter{
+class FileFilter{
   public:
     virtual bool accept(File file)=0;
     virtual ~FileFilter(){}
