@@ -9,12 +9,13 @@
 
 #include "FileFilter.h"
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace io {
       typedef std::list<Ptr<File> > FileList;
 
-      class File {
+      class IO_EXPORT File {
       public:
         /**
          * Creates a new <code>File</code> instance by converting the given

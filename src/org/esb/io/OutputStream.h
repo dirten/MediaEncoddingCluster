@@ -2,12 +2,13 @@
 #define ORG_ESB_IO_OUTPUTSTREAM
 #include "org/esb/lang/Exception.h"
 #include <vector>
+#include "exports.h"
 using namespace std;
 using namespace org::esb::lang;
 namespace org {
     namespace esb {
         namespace io {
-            class OutputStream {
+            class IO_EXPORT OutputStream {
 public:
                 /**
                  * Closes this output stream and releases any system resources 

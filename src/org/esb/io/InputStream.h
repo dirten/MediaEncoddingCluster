@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "org/esb/lang/Byte.h"
+#include "exports.h"
 using namespace std;
 using namespace org::esb::lang;
 namespace org {
@@ -27,7 +28,7 @@ namespace org {
              * @see     FileInputStream
              * @since   ESB-LIB-1.0.1
              */
-            class InputStream {
+            class IO_EXPORT InputStream {
 public:
 
                 /**

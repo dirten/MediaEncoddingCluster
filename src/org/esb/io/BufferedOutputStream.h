@@ -2,10 +2,11 @@
 #define ORG_ESB_IO_BUFFEREDOUTPUTSTREAM_H
 #include "OutputStream.h"
 #include <vector>
+#include "exports.h"
 namespace org{
 namespace esb{
 namespace io{
-class BufferedOutputStream: public OutputStream{
+class IO_EXPORT BufferedOutputStream: public OutputStream{
 	public:
 		BufferedOutputStream(OutputStream * os);
 		BufferedOutputStream(OutputStream* os, int bufferSize);

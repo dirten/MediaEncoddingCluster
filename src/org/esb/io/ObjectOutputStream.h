@@ -7,12 +7,13 @@
 #include <boost/archive/binary_oarchive.hpp>
 //#include <boost/iostreams/device/array.hpp>
 #include <fstream>
+#include "exports.h"
 
 namespace org {
     namespace esb {
         namespace io {
 
-            class ObjectOutputStream : public OutputStream {
+            class IO_EXPORT ObjectOutputStream : public OutputStream {
             public:
                 ObjectOutputStream(OutputStream * out);
 

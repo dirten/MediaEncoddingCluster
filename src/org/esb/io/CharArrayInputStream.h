@@ -2,10 +2,11 @@
 #define ORG_ESB_IO_CHARARRAYINPUTSTREAM_H
 #include "InputStream.h"
 #include <vector>
+#include "exports.h"
 namespace org {
     namespace esb {
         namespace io {
-class CharArrayInputStream: public InputStream {
+class IO_EXPORT CharArrayInputStream: public InputStream {
 public:
                 CharArrayInputStream(const char * in, int length);
                 ~CharArrayInputStream();

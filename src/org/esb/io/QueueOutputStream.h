@@ -9,6 +9,7 @@
 #define	QUEUEOUTPUTSTREAM_H
 #include "OutputStream.h"
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 namespace safmq{
   class MessageQueue;
 }
@@ -16,7 +17,7 @@ namespace org {
   namespace esb {
     namespace io {
 
-      class QueueOutputStream : public OutputStream {
+      class IO_EXPORT QueueOutputStream : public OutputStream {
       public:
         QueueOutputStream(std::string url);
         QueueOutputStream(std::string host, int port, std::string queuename);

@@ -2,10 +2,11 @@
 #define ORG_ESB_IO_CHARARRAYOUTPUTSTREAM
 #include "OutputStream.h"
 #include <vector>
+#include "exports.h"
 namespace org{
 namespace esb{
 namespace io{
-class CharArrayOutputStream: public OutputStream{
+class IO_EXPORT CharArrayOutputStream: public OutputStream{
     public:
 	CharArrayOutputStream();
 	~CharArrayOutputStream();
