@@ -8,11 +8,19 @@
 #ifndef CHANNEL_H
 #define	CHANNEL_H
 #include "Queue.h"
-namespace org {
+#if defined(_WIN32)
+  #if defined(util_EXPORTS)
+    #define UTIL_EXPORT __declspec( dllexport )
+  #else
+    #define UTIL_EXPORT __declspec( dllimport )
+  #endif
+#else
+  #define UTIL_EXPORT
+#endifnamespace org {
   namespace esb {
     namespace util {
       template <typename T>
-      class Channel:public Queue<T, 1> {
+      class UTIL_EXPORT Channel:public Queue<T, 1> {
       public:
         Channel(){
         }

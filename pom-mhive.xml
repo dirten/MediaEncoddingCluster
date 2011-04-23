@@ -199,6 +199,9 @@
                     -DCMAKE_INSTALL_PREFIX=${project.basedir}/install
                     -DCMAKE_BUILD_TYPE=${build_type}
                     -DSHARED_LIBS=Off
+                    -DCMAKE_OSX_ARCHITECTURES=i386
+		    -DCMAKE_C_FLAGS=-m32 -arch i386 
+		    -DCMAKE_CXX_FLAGS=-m32 -arch i386
                     -DBOOST_DIR=${project.build.directory}/dependency
                     -DBOOST_COMPILER=${GCC_VERSION}
                     -DFFMPEG_DIR=${project.build.directory}/dependency
