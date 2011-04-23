@@ -16,7 +16,8 @@
   #endif
 #else
   #define UTIL_EXPORT
-#endifnamespace org {
+#endif
+namespace org {
   namespace esb {
     namespace util {
       template <typename T>

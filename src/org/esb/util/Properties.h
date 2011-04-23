@@ -5,6 +5,15 @@
 #include <map>
 #include <string>
 #include <vector>
+#if defined(_WIN32)
+  #if defined(util_EXPORTS)
+    #define UTIL_EXPORT __declspec( dllexport )
+  #else
+    #define UTIL_EXPORT __declspec( dllimport )
+  #endif
+#else
+  #define UTIL_EXPORT
+#endif
 
 namespace org{
 namespace esb{
@@ -14,7 +23,7 @@ namespace util{
      * Interface for a Java-like properties object.  This is essentially 
      * a map of key-value string pairs.
      */
-    class Properties{
+    class UTIL_EXPORT Properties{
     private:
 	std::map< std::string, std::string > properties;
 
