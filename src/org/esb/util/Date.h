@@ -20,6 +20,7 @@
 #define TNTDB_DATE_H
 
 #include <string>
+#include "exports.h"
 
 namespace org{
 namespace esb{
@@ -27,7 +28,7 @@ namespace util{
   /**
    * This class holds a date.
    */
-  class Date
+  class UTIL_EXPORT Date
   {
       unsigned short year;
       unsigned short month;

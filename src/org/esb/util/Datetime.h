@@ -20,6 +20,7 @@
 #define ORG_ESB_UTIL_DATETIME_H
 
 #include <string>
+#include "exports.h"
 
 namespace org{
 namespace esb{
@@ -27,7 +28,7 @@ namespace util{
   /**
    * This class holds a date and a time.
    */
-  class Datetime
+  class UTIL_EXPORT Datetime
   {
       unsigned short year;
       unsigned short month;

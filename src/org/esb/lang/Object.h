@@ -8,13 +8,14 @@
 #ifndef OBJECT_H
 #define	OBJECT_H
 #include "boost/intrusive_ptr.hpp"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace lang {
       
 
       template <typename T=std::string>
-      class Object : public boost::intrusive_ptr<T> {
+      class LANG_EXPORT Object : public boost::intrusive_ptr<T> {
       public:
 
         Object() : references(0) {

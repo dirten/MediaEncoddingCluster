@@ -4,12 +4,13 @@
 #include <org/esb/lang/Exception.h>
 //#include <org/esb/lang/NoSuchElementException.h>
 #include <string>
+#include "exports.h"
 using namespace org::esb::lang;
 namespace org{
 namespace esb{
 namespace util{
 
-    class StringTokenizer
+    class UTIL_EXPORT StringTokenizer
     {
     private:
    

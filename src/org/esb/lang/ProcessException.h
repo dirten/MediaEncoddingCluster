@@ -9,11 +9,12 @@
 #define	PROCESSEXCEPTION_H
 #include <exception>
 #include <string>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace lang {
 
-      class ProcessException:public std::exception {
+      class LANG_EXPORT ProcessException:public std::exception {
       public:
         ProcessException(std::string cause);
         

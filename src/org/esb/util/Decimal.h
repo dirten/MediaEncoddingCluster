@@ -25,6 +25,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include "exports.h"
 
 namespace org{
 namespace esb{
@@ -41,7 +42,7 @@ namespace util{
    * floating point is used in the conversion, and the result is an
    * approximation.
    */
-  class Decimal
+  class UTIL_EXPORT Decimal
   {
   public:
     typedef unsigned long long int MantissaType;

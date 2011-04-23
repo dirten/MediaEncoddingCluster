@@ -13,6 +13,7 @@
 #include <ostream>
 #include <log4cplus/logger.h>
 #include <log4cplus/configurator.h>
+#include "exports.h"
 
 
 
@@ -43,7 +44,7 @@
 
 #include <iostream>
 inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance("global");}
-class Log{
+class UTIL_EXPORT Log{
 public:
     static Log * getLogger(std::string logger="");
     static log4cplus::Logger getLog4cplusLogger();

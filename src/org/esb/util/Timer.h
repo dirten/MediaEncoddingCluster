@@ -2,8 +2,9 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
+#include "exports.h"
 
-class Timer {
+class UTIL_EXPORT Timer {
 public:
 
     template<typename Handler>

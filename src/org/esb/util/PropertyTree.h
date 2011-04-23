@@ -11,12 +11,13 @@
 #include <list>
 #include "boost/property_tree/ptree.hpp"
 #include "boost/foreach.hpp"
+#include "exports.h"
 
 namespace org {
   namespace esb {
     namespace util {
 
-      class PropertyTree {
+      class UTIL_EXPORT PropertyTree {
       public:
         PropertyTree(std::string filename);
         PropertyTree(const PropertyTree& orig);

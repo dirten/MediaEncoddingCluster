@@ -4,6 +4,7 @@
 #define ORG_ESB_UTIL_TIME_H
 
 #include <string>
+#include "exports.h"
 
 namespace org{
 namespace esb{
@@ -11,7 +12,7 @@ namespace util{
   /**
    * This class holds a time.
    */
-  class Time
+  class UTIL_EXPORT Time
   {
       short hour;
       unsigned short minute;

@@ -29,6 +29,7 @@
 #include <map>
 #include <vector>
 #include "org/esb/util/Log.h"
+#include "exports.h"
 #ifndef _SYSTEMCPUINFO_H
 #define	_SYSTEMCPUINFO_H
 namespace org {
@@ -44,7 +45,7 @@ namespace org {
                 int cores;
             };
 
-            class SystemCpuInfo {
+            class LANG_EXPORT SystemCpuInfo {
               classlogger("org.esb.lang.SystemCpuInfo")
             public:
                 SystemCpuInfo();

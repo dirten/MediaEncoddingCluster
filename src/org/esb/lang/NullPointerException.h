@@ -1,11 +1,12 @@
 #include "Exception.h"
 
+#include "exports.h"
 
 
 namespace org{
 namespace esb{
 namespace lang{
-class NullPointerException: public Exception{
+class LANG_EXPORT NullPointerException: public Exception{
 
 
 };

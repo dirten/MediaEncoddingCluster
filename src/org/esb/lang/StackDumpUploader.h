@@ -46,6 +46,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "exports.h"
 
 namespace org {
   namespace esb{
@@ -56,7 +57,7 @@ using std::wstring;
 using std::map;
 using std::vector;
 
-class StackDumpUploader {
+class LANG_EXPORT StackDumpUploader {
  public:
   // Sends the given set of parameters, along with the contents of
   // upload_file, as a multipart POST request to the given URL.

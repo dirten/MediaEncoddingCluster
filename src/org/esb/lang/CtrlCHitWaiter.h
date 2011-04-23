@@ -7,11 +7,13 @@
 
 #ifndef CTRLCHITWAITER_H
 #define	CTRLCHITWAITER_H
+#include "exports.h"
+
 namespace org {
   namespace esb {
     namespace lang {
 
-      class CtrlCHitWaiter {
+      class LANG_EXPORT CtrlCHitWaiter {
       public:
         static void wait();
       private:

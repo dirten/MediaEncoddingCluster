@@ -14,11 +14,12 @@
 #include <boost/thread/condition.hpp>
 #include "org/esb/util/Log.h"
 #include "ProcessListener.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace lang {
 
-      class Process {
+      class LANG_EXPORT Process {
         classlogger("org.esb.lang.Process");
       public:
         Process(int32_t pid):_processId(pid){

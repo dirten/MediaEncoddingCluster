@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <exception>
+#include "exports.h"
 namespace org{
 namespace esb{
 namespace lang{
@@ -14,7 +15,7 @@ namespace lang{
      * This class represents an error that has occurred in 
      * cms.
      */
-    class Throwable:public std::exception{
+    class LANG_EXPORT Throwable:public std::exception{
         
     public:
         

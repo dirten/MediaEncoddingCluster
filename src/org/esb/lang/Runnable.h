@@ -1,5 +1,6 @@
 #ifndef ORG_ESB_LANG_RUNNABLE_H
 #define ORG_ESB_LANG_RUNNABLE_H
+#include "exports.h"
 
 namespace org
 {
@@ -7,7 +8,7 @@ namespace org
   {
     namespace lang
     {
-      class Runnable
+      class LANG_EXPORT Runnable
       {
       public:
         virtual ~Runnable(){}

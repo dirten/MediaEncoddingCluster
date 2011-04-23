@@ -13,6 +13,7 @@
 #include "boost/bind.hpp"
 #include <stdexcept>
 #include <assert.h>
+#include "exports.h"
 using namespace std;
 //using namespace org::esb::lang;
 #define go(func,...)boost::thread (boost::bind(&func,__VA_ARGS__))
@@ -24,7 +25,7 @@ namespace lang{
      * implement the run method, or this class can be used as is with 
      * a provided Runnable delegate.
      */
-    class Thread : public Runnable
+    class LANG_EXPORT Thread : public Runnable
     {
     private:
    

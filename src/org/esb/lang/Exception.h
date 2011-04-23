@@ -4,6 +4,8 @@
 #include "org/esb/lang/Throwable.h"
 #include <stdarg.h>
 #include <sstream>
+#include "exports.h"
+
 #define BACKTRACE
 namespace org {
   namespace esb {
@@ -12,7 +14,7 @@ namespace org {
       /**
        * Base class for all exceptions.
        */
-      class Exception : public Throwable {
+      class LANG_EXPORT Exception : public Throwable {
       private:
 
         /**

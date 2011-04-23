@@ -1,10 +1,11 @@
 #ifndef ORG_ESB_LANG_BYTE
 #define ORG_ESB_LANG_BYTE
 //#include <stdint.h>
+#include "exports.h"
 namespace org{
 namespace esb{
 namespace lang{
-class Byte {
+class LANG_EXPORT Byte {
     private:
 	char _byte;
     public:

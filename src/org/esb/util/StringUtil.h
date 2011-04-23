@@ -3,12 +3,13 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "exports.h"
 using namespace std;
 namespace org {
   namespace esb {
     namespace util {
 
-      class StringUtil {
+      class UTIL_EXPORT StringUtil {
       public:
         string tmp;
         static const std::string trim(string s, string drop = string(" "));

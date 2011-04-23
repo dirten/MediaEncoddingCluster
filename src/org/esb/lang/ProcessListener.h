@@ -7,11 +7,12 @@
 
 #ifndef PROCESSLISTENER_H
 #define	PROCESSLISTENER_H
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace lang {
 
-      class ProcessEvent {
+      class LANG_EXPORT ProcessEvent {
       public:
         enum ProcessEventType {
           PROCESS_STARTED,

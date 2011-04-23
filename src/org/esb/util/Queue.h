@@ -7,12 +7,13 @@
 #include <boost/thread/condition.hpp>
 #include "Log.h"
 #include "org/esb/lang/Thread.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace util {
 
       template<typename T, int MAXSIZE = 10 >
-              class Queue {
+              class UTIL_EXPORT Queue {
         classlogger("org.esb.util.Queue");
       private:
         std::deque<T> _q;

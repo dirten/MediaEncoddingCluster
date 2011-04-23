@@ -11,10 +11,11 @@
 
 #include "boost/shared_ptr.hpp"
 #include "org/esb/util/Log.h"
+#include "exports.h"
 namespace google_breakpad{
   class ExceptionHandler;
 }
-class StackDumper {
+class LANG_EXPORT StackDumper {
 public:
     StackDumper(std::string dmp_path);
     ~StackDumper();

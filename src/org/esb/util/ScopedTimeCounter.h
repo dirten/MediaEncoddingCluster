@@ -3,13 +3,14 @@
 #include <string>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "Log.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace util {
 
       using namespace boost::posix_time;
 
-      class ScopedTimeCounter {
+      class UTIL_EXPORT ScopedTimeCounter {
         classlogger("org.esb.util.ScopedTimeCounter")
       public:
         ScopedTimeCounter(std::string name);

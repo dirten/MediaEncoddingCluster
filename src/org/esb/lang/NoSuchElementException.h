@@ -2,6 +2,7 @@
 #define ORG_ESB_LANG_NOSUCHELEMENTEXCEPTION_H_
 
 #include <org/esb/lang/Exception.h>
+#include "exports.h"
 
 namespace org{
     namespace esb{
@@ -11,7 +12,7 @@ namespace org{
      * Thrown from an operation that attempts to access some element that does
      * not exist.
      */
-    class NoSuchElementException : public Exception
+    class LANG_EXPORT NoSuchElementException : public Exception
     {
     public:
 
