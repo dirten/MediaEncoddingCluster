@@ -24,6 +24,7 @@
 //#include <netinet/in.h>
 //#include <arpa/inet.h>
 #include "org/esb/net/Socket.h"
+#include "exports.h"
 
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
@@ -39,7 +40,7 @@ namespace org
   {
     namespace net
     {
-      class ServerSocket
+      class NET_EXPORT ServerSocket
       {
       private:
         int   port;

@@ -8,11 +8,12 @@
 #ifndef UDPSERVERSOCKET_H
 #define	UDPSERVERSOCKET_H
 #include "boost/asio.hpp"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace net {
 
-      class UdpServerSocket {
+      class NET_EXPORT UdpServerSocket {
       public:
         UdpServerSocket(int port);
 //        UdpServerSocket(const UdpServerSocket& orig);

@@ -9,11 +9,12 @@
 #define	CONNECTIONLISTENER_H
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/net/TcpSocket.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace net {
 
-      class TcpConnectionListener {
+      class NET_EXPORT TcpConnectionListener {
       public:
         virtual void onConnection(Ptr<TcpSocket> socket) = 0;
       };

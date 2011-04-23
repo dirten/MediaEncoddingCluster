@@ -28,6 +28,7 @@
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/lang/Exception.h"
+#include "exports.h"
 #if defined( __APPLE__ )
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
 #define SOCKET_WAITALL 0
@@ -58,7 +59,7 @@ namespace org
 //	Socket *socket;
       };
 
-      class Socket
+      class NET_EXPORT Socket
       {
       private:
         bool is_closed;

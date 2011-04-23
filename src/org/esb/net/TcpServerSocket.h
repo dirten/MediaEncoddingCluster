@@ -4,12 +4,13 @@
 #include <boost/asio.hpp>
 #include "org/esb/util/Log.h"
 #include "TcpConnectionListener.h"
+#include "exports.h"
 using boost::asio::ip::tcp;
 namespace org{
 namespace esb{
 namespace net{
   class TcpSocket;
-  class TcpServerSocket{
+  class NET_EXPORT TcpServerSocket{
     classlogger("org.esb.net.TcpServerSocket")
     public:
       TcpServerSocket(short port);
