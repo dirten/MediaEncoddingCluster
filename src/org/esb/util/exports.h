@@ -1,6 +1,6 @@
 #ifndef ORG_ESB_UTIL_EXPORTS
 #define ORG_ESB_UTIL_EXPORTS
-  #if defined(_WIN32)
+  #if defined(_WIN32) && defined(SHARED)
     #if defined(util_EXPORTS)
       #define UTIL_EXPORT __declspec( dllexport )
 	  #define EXPIMP_TEMPLATE

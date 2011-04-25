@@ -20,6 +20,8 @@ include_directories (${MEC_SOURCE_DIR}/src/org/esb/av)
 include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${LOG4CPLUS_DIR}/litesql)
 include_directories (${LOG4CPLUS_DIR}/include/litesql)
+include_directories (${MEC_SOURCE_DIR}target/dependency/include)
+link_directories (/c/bruteripper/target/dependency/lib)
 
 LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
@@ -119,14 +121,14 @@ add_subdirectory (api)
 #  ${BOOST_THREAD_LIB_MT}
 #)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util SHARED
+add_library (util
   util/Properties.cpp 
   util/StringTokenizer.cpp 
   util/StringUtil.cpp 
   util/Date.cpp 
   util/Time.cpp 
   util/Datetime.cpp 
-#  util/Decimal.cpp 
+  util/Decimal.cpp 
   util/ScopedTimeCounter.cpp 
   util/IllegalFormatException.cpp
   util/Log.cpp
