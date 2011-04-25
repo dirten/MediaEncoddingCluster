@@ -34,7 +34,7 @@ namespace org {
   namespace esb {
     namespace io {
 
-      class IO_EXPORT StringInputStream : public InputStream {
+      class StringInputStream : public InputStream {
       public:
         StringInputStream(std::string &);
         int read(unsigned char * buffer, int length);

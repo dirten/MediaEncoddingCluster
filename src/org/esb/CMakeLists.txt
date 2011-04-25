@@ -119,14 +119,14 @@ add_subdirectory (api)
 #  ${BOOST_THREAD_LIB_MT}
 #)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util 
+add_library (util SHARED
   util/Properties.cpp 
   util/StringTokenizer.cpp 
   util/StringUtil.cpp 
   util/Date.cpp 
   util/Time.cpp 
   util/Datetime.cpp 
-  util/Decimal.cpp 
+#  util/Decimal.cpp 
   util/ScopedTimeCounter.cpp 
   util/IllegalFormatException.cpp
   util/Log.cpp

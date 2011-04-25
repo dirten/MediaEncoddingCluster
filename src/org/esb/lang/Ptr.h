@@ -5,7 +5,7 @@
 #include "exports.h"
 
 template <typename T>
-class LANG_EXPORT Ptr:public boost::shared_ptr<T>{
+class  Ptr:public boost::shared_ptr<T>{
 public:
   Ptr(){}
   Ptr(T * elem):boost::shared_ptr<T>(elem){

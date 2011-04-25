@@ -1,5 +1,6 @@
 #include "org/esb/util/Properties.h"
 #include "org/esb/io/File.h"
+#include <stdlib.h>
 namespace org {
   namespace esb {
     namespace config {
@@ -33,7 +34,8 @@ namespace org {
         /*default path for the presets*/
         props->setProperty("preset.path", base_path+"/presets");
         props->setProperty("log.path", base_path+"/logs");
-	setenv("log.path",std::string(base_path+"/logs").c_str(),1);
+		putenv("bla=test");
+		//setenv("log.path",std::string(base_path+"/logs").c_str(),1);
         /*default parameter for the encoding profiles*/
         //props->setProperty("framerates", "1/10#10,1/15#15,1000/23976#23.976,1/24#24,1/25#25,100/2997#29.97,1/30#30");
         //props->setProperty("samplerates", "8000,11025,22050,32000,44100,48000");

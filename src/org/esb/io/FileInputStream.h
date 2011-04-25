@@ -35,7 +35,7 @@
 namespace org {
     namespace esb {
         namespace io {
-class FileInputStream : public InputStream {
+class IO_EXPORT FileInputStream : public InputStream {
 public:
 /**
  * Creates a <code>FileInputStream</code> by

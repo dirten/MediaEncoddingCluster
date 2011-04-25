@@ -8,7 +8,7 @@
 namespace org {
     namespace esb {
         namespace io {
-class FileOutputStream: public OutputStream {
+class IO_EXPORT FileOutputStream: public OutputStream {
 public:
                 FileOutputStream(const char * pathname);
                 FileOutputStream(File * file);

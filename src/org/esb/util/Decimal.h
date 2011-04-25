@@ -324,7 +324,7 @@ namespace util{
     /// result of the multiplication by 10.
     /// @return true if overflow detected, else false.
     template <typename T>
-    UTIL_EXPORT static bool overflowDetectedInMultiplyByTen(T &n);
+    static bool overflowDetectedInMultiplyByTen(T &n);
 
     /// Divide an integer type by a power of 10 divisor, checking
     /// for overflow.
@@ -335,7 +335,7 @@ namespace util{
     /// @return true if overflow detected, else false.
     /// @throw std::overflow_error if the result will not fit
     template <typename ManType>
-    UTIL_EXPORT static void divideByPowerOfTen(const ManType dividend,
+    static void divideByPowerOfTen(const ManType dividend,
                                    ManType &quotient,
                                    ManType &remainder,
                                    ManType divisorPowerOfTenDigits) throw(std::overflow_error);
@@ -351,7 +351,7 @@ namespace util{
     void init(MantissaType m, ExponentType e, FlagsType f = positive, PrintFlagsType pf = infinityShort);
 
     /// Print fraction
-    UTIL_EXPORT static void printFraction(std::ostream &out,
+    static void printFraction(std::ostream &out,
                               ExponentType fracDigits,
                               MantissaType fractional);
     //\@}

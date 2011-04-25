@@ -13,7 +13,7 @@ namespace org {
     namespace esb {
         namespace io {
 
-            class IO_EXPORT ObjectOutputStream : public OutputStream {
+            class  ObjectOutputStream : public OutputStream {
             public:
                 ObjectOutputStream(OutputStream * out);
 

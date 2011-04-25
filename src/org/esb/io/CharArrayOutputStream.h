@@ -6,7 +6,7 @@
 namespace org{
 namespace esb{
 namespace io{
-class IO_EXPORT CharArrayOutputStream: public OutputStream{
+class  CharArrayOutputStream: public OutputStream{
     public:
 	CharArrayOutputStream();
 	~CharArrayOutputStream();

@@ -15,7 +15,7 @@ namespace org {
     namespace io {
       typedef std::list<Ptr<File> > FileList;
 
-      class  File {
+      class IO_EXPORT File {
       public:
         /**
          * Creates a new <code>File</code> instance by converting the given

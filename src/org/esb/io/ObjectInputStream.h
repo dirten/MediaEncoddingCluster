@@ -15,7 +15,7 @@ namespace org {
   namespace esb {
     namespace io {
 
-      class IO_EXPORT ObjectInputStream : public InputStream {
+      class ObjectInputStream : public InputStream {
         classlogger("org.esb.io.ObjectInputStream");
       public:
         ObjectInputStream(InputStream * is);

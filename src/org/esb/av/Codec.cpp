@@ -29,7 +29,7 @@
 #include <iostream>
 #include <assert.h>
 #include "org/esb/util/Log.h"
-#include "org/esb/util/Decimal.h"
+#include "org/esb/util/StringUtil.h"
 
 
 using namespace std;
@@ -596,26 +596,26 @@ namespace org {
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
-        data.append("Codec ID:").append(Decimal(ctx->codec_id).toString()).append("\r\n");
+		data.append("Codec ID:").append(StringUtil::toString(ctx->codec_id)).append("\r\n");
         if (_opened) {
           data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
           data.append("Codec Type:").append(ctx->codec_type == AVMEDIA_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
-          data.append("Width:").append(Decimal(getWidth()).toString()).append("\r\n");
-          data.append("Height:").append(Decimal(getHeight()).toString()).append("\r\n");
-          data.append("Channels:").append(Decimal(getChannels()).toString()).append("\r\n");
-          data.append("RequestChannelLayout:").append(Decimal(ctx->request_channel_layout).toString()).append("\r\n");
-          data.append("ChannelLayout:").append(Decimal(ctx->channel_layout).toString()).append("\r\n");
-          data.append("BitRate:").append(Decimal(ctx->bit_rate).toString()).append("\r\n");
-          data.append("GOP:").append(Decimal(ctx->gop_size).toString()).append("\r\n");
-          data.append("SampleRate:").append(Decimal(getSampleRate()).toString()).append("\r\n");
-          data.append("SampleFormat:").append(Decimal(getSampleFormat()).toString()).append("\r\n");
-          data.append("PixelFormat:").append(Decimal(getPixelFormat()).toString()).append("\r\n");
-          data.append("TimeBase:").append(Decimal(ctx->time_base.num).toString()).append("/");
-          data.append(Decimal(ctx->time_base.den).toString()).append("\r\n");
-          data.append("BFrameStrategie:").append(Decimal(ctx->b_frame_strategy).toString()).append("\r\n");
-          data.append("MaxBFrames:").append(Decimal(!!ctx->max_b_frames).toString()).append("\r\n");
-          data.append("HasBFrames:").append(Decimal(ctx->has_b_frames).toString()).append("\r\n");
-          data.append("Delay:").append(Decimal(ctx->delay).toString()).append("\r\n");
+          data.append("Width:").append(StringUtil::toString(getWidth())).append("\r\n");
+          data.append("Height:").append(StringUtil::toString(getHeight())).append("\r\n");
+          data.append("Channels:").append(StringUtil::toString(getChannels())).append("\r\n");
+          data.append("RequestChannelLayout:").append(StringUtil::toString(ctx->request_channel_layout)).append("\r\n");
+          data.append("ChannelLayout:").append(StringUtil::toString(ctx->channel_layout)).append("\r\n");
+          data.append("BitRate:").append(StringUtil::toString(ctx->bit_rate)).append("\r\n");
+          data.append("GOP:").append(StringUtil::toString(ctx->gop_size)).append("\r\n");
+          data.append("SampleRate:").append(StringUtil::toString(getSampleRate())).append("\r\n");
+          data.append("SampleFormat:").append(StringUtil::toString(getSampleFormat())).append("\r\n");
+          data.append("PixelFormat:").append(StringUtil::toString(getPixelFormat())).append("\r\n");
+          data.append("TimeBase:").append(StringUtil::toString(ctx->time_base.num)).append("/");
+          data.append(StringUtil::toString(ctx->time_base.den)).append("\r\n");
+          data.append("BFrameStrategie:").append(StringUtil::toString(ctx->b_frame_strategy)).append("\r\n");
+          data.append("MaxBFrames:").append(StringUtil::toString(!!ctx->max_b_frames)).append("\r\n");
+          data.append("HasBFrames:").append(StringUtil::toString(ctx->has_b_frames)).append("\r\n");
+          data.append("Delay:").append(StringUtil::toString(ctx->delay)).append("\r\n");
           char buf[256];
           avcodec_string(buf, sizeof (buf), ctx, _mode);
           data.append("InternalData:").append(std::string(buf)).append("\r\n");

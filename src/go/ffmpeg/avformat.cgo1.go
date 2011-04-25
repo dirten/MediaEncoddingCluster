@@ -5,8 +5,10 @@ package gmf
 
 
 import "unsafe"
+import "fmt"
 
 func init() {
+	fmt.Println("Register all Formats")
 	_Cfunc_av_register_all()
 
 }
@@ -99,6 +101,7 @@ func dump_format(ctx *FormatContext) {
 func av_new_stream(ctx *FormatContext, stream_id int) *Stream {
 	return &Stream{_Cfunc_av_new_stream(ctx.ctx, _Ctype_int(stream_id))}
 }
-func av_free(ctx *FormatContext) {
+
+func av_free_format_context(ctx *FormatContext) {
 	_Cfunc_av_free(unsafe.Pointer(ctx.ctx))
 }

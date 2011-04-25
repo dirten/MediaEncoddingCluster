@@ -18,12 +18,46 @@ var AVCODEC_MAX_AUDIO_FRAME_SIZE int = _Cconst_AVCODEC_MAX_AUDIO_FRAME_SIZE
 var TIME_BASE_Q = Rational{1, 1000000}
 
 func init() {
+	fmt.Println("Register all Codecs")
 	_Cfunc_avcodec_register_all()
 
 }
 
 type AVPacket struct {
 	_Ctypedef_AVPacket
+}
+
+var av_resample_mutex sync.Mutex
+
+func av_audio_resample_init(trgch, srcch, trgrate, srcrate, trgfmt, srcfmt int) *ResampleContext {
+	data := _Cfunc_gmf_audio_resample_init(_Ctype_int(trgch), _Ctype_int(srcch), _Ctype_int(trgrate), _Ctype_int(srcrate), _Ctype_int(1), _Ctype_int(1), 16, 10, 0)
+
+	fmt.Printf("ReSampleContext Data =%p\n", data)
+
+	ctx := ResampleContext{ctx: data}
+
+	return &ctx
+}
+
+func audio_resample(ctx *ResampleContext, outbuffer, inbuffer []byte, size int) int {
+	av_resample_mutex.Lock()
+	if ctx.ctx == nil {
+		fmt.Printf("no ReSampleContext here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		return 0
+	}
+	result := int(_Cfunc_audio_resample(ctx.ctx,
+		(*_Ctype_short)(unsafe.Pointer(&outbuffer[0])),
+		(*_Ctype_short)(unsafe.Pointer(&inbuffer[0])), _Ctype_int(size)))
+	av_resample_mutex.Unlock()
+	return result
+}
+
+func audio_resample_close(ctx *ResampleContext) {
+	_Cfunc_gmf_audio_resample_close(ctx.ctx)
+}
+
+func av_resample_compensate(ctx *ResampleContext, delta, distance int) {
+	_Cfunc_gmf_resample_compensate(ctx.ctx, _Ctype_int(delta), _Ctype_int(distance))
 }
 
 type Packet struct {
@@ -253,26 +287,6 @@ func avcodec_encode_audio(ctx *CodecContext, outbuffer []byte, size *int, inbuff
 	return int(out_size)
 }
 
-func av_audio_resample_init(srcch, trgch, srcrate, trgrate, srcfmt, trgfmt int) *ResampleContext {
-	return &ResampleContext{ctx: _Cfunc_av_audio_resample_init(_Ctype_int(srcch), _Ctype_int(trgch), _Ctype_int(srcrate), _Ctype_int(trgrate), int32(srcfmt),
-		int32(trgfmt),
-		16, 10, 0, _Ctype_double(0.8))}
-}
-
-func audio_resample(ctx *ResampleContext, outbuffer, inbuffer []byte, size int) int {
-	result := int(_Cfunc_audio_resample(ctx.ctx,
-		(*_Ctype_short)(unsafe.Pointer(&outbuffer[0])),
-		(*_Ctype_short)(unsafe.Pointer(&inbuffer[0])), _Ctype_int(size)))
-	return result
-}
-
-func audio_resample_close(ctx *ResampleContext) {
-	_Cfunc_audio_resample_close(ctx.ctx)
-}
-
-func av_resample_compensate(ctx *ResampleContext, delta, distance int) {
-	_Cfunc_gmf_resample_compensate(ctx.ctx, _Ctype_int(delta), _Ctype_int(distance))
-}
 
 func avpicture_deinterlace(outframe, inframe *Frame, fmt, width, height int) int {
 	return int(_Cfunc_avpicture_deinterlace(

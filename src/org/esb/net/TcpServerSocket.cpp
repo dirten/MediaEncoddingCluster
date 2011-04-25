@@ -5,7 +5,7 @@
 #include <boost/thread.hpp>
 #include <boost/shared_ptr.hpp>
 #include "org/esb/util/Log.h"
-#include "org/esb/util/Decimal.h"
+#include "org/esb/util/StringUtil.h"
 #include "SocketException.h"
 namespace org {
   namespace esb {
@@ -22,7 +22,7 @@ namespace org {
         try {
           boost::asio::ip::tcp::resolver resolver(_io_service);
           std::string intf = "0.0.0.0";
-          std::string p = org::esb::util::Decimal(port).toString();
+		  std::string p = org::esb::util::StringUtil::toString(port);
           boost::asio::ip::tcp::resolver::query query(intf, p);
           boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
           acceptor_.open(endpoint.protocol());

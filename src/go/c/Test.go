@@ -12,6 +12,8 @@ package mytest
 //void test_int_p(int * size);
 //void test_char_p(char * size);
 //#include <string.h>
+//#include <stdlib.h>
+//#include <stdio.h>
 //#include <inttypes.h>
 //void test_int_p(int * size){
 //	*size=3;
@@ -22,9 +24,21 @@ package mytest
 //void test_uint8t_p(uint8_t * data){
 //	memcpy(data,"new text here",13);
 //}
+//void * wrong_pointer_test(int output_channels, int input_channels,
+//                                         int output_rate, int input_rate,
+//                                         int sample_fmt_out,
+//                                         int sample_fmt_in,
+//                                         int filter_length, int log2_phase_count,
+//                                          double tmp){
+//								   void * testmalloc=malloc(sizeof(10));
+//  printf("malloc pointer %p\n", testmalloc);
+//						return testmalloc;
+//}
 import "C"
 import "unsafe"
 import "fmt"
+func init(){
+}
 func test_int_p(){
     println("test_int_p")
     var d=0
@@ -64,3 +78,14 @@ func test_uint8t_p_by_p(data []byte){
 func exportTest(data string){
     //MySetFinalizer()
 }
+func test_mal(){
+data2:=C.wrong_pointer_test(
+        C.int(2),
+        C.int(2),
+        C.int(44100),
+        C.int(44800),
+        C.int(1),
+        C.int(1),
+        16, 10, 0.8)
+    println(data2)
+	}

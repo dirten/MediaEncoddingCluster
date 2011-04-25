@@ -26,4 +26,9 @@ func TestUint8tPointerByPointer(t*testing.T){
     test_uint8t_p_by_p(data)
     fmt.Printf("data received:%s\n",data)
 }
+func TestMalloc(t*testing.T){
+    println("Testing malloc")
+	test_mal()
+
+}
 

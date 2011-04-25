@@ -6,7 +6,7 @@
 namespace org{
 namespace esb{
 namespace io{
-class IO_EXPORT BufferedOutputStream: public OutputStream{
+class BufferedOutputStream: public OutputStream{
 	public:
 		BufferedOutputStream(OutputStream * os);
 		BufferedOutputStream(OutputStream* os, int bufferSize);

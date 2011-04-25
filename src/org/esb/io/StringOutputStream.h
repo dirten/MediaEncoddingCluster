@@ -34,7 +34,7 @@
 namespace org{
   namespace esb{
     namespace io{
-      class IO_EXPORT StringOutputStream: public OutputStream {
+      class  StringOutputStream: public OutputStream {
       public:
         StringOutputStream(std::string &);
         void write(char * buffer, int length);

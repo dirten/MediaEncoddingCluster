@@ -88,7 +88,7 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
 		frame=resizer.Resize(frame)
 		frame=rate_converter.Convert(frame)
 	    case CODEC_TYPE_AUDIO:
-                frame=resampler.Resample(frame)
+               frame=resampler.Resample(frame)
 	}
         encoder.Encode(frame)
     }
@@ -97,6 +97,7 @@ func multiplex_encoder_test(track * Track, multiplexer * Multiplexer, preset * h
   println(bytecounter)
 
   decoder.Close()
+  
   if(encoder!=nil){
     encoder.Close()
   }
@@ -114,7 +115,6 @@ var outformat *string = flag.String("f", "", "output file format")
 
 func main(){
     flag.Parse()
-    
     preset,err:=hive.LoadPreset(*presetfile)
     if(err!=nil){
 	fmt.Printf("Preset %s\n", err)
@@ -152,7 +152,7 @@ func main(){
     time.Sleep(1000000000)
     go multiplexer.Start()
     plex.Start()
-    time.Sleep(1000000000)
+    time.Sleep(10000000000)
     multiplexer.Stop()
     //plex.Stop()
     source.Disconnect()

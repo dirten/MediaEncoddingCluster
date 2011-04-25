@@ -123,3 +123,12 @@ func av_fifo_generic_read(fifo *AVFifoBuffer, buffer []byte, size int) int {
 func av_get_bits_per_sample_fmt(fmt int32) int {
 	return int(_Cfunc_av_get_bits_per_sample_fmt(fmt))
 }
+func av_malloc(size int) []byte {
+	mem := _Cfunc_av_malloc(_Ctype_uint(size))
+	data := (*(*[1 << 30]byte)(unsafe.Pointer(mem)))[0:size]
+	return data
+}
+
+func av_free(data []byte) {
+	_Cfunc_av_free(unsafe.Pointer(&data[0]))
+}

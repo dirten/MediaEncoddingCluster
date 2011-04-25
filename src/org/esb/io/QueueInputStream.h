@@ -17,7 +17,7 @@ namespace org {
   namespace esb {
     namespace io {
 
-      class IO_EXPORT QueueInputStream : public InputStream {
+      class  QueueInputStream : public InputStream {
       public:
         QueueInputStream(std::string url);
         QueueInputStream(std::string host, int port, std::string queuename);

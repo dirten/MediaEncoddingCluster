@@ -6,7 +6,7 @@
 namespace org {
     namespace esb {
         namespace io {
-class IO_EXPORT CharArrayInputStream: public InputStream {
+class  CharArrayInputStream: public InputStream {
 public:
                 CharArrayInputStream(const char * in, int length);
                 ~CharArrayInputStream();
