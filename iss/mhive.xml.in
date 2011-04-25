@@ -272,16 +272,16 @@
                             <origin>${mhive_src_dir}/install/lib/libswscale.so.0</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavcodec.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavcodec.so.53</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavdevice.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavdevice.so.53</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavformat.so.52</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavformat.so.53</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libavutil.so.50</origin>
+                            <origin>${mhive_src_dir}/install/lib/libavutil.so.51</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -301,16 +301,16 @@
                             <origin>${mhive_src_dir}/install/bin/swscale-0.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avcodec-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avcodec-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avdevice-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avdevice-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avformat-52.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avformat-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avutil-50.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avutil-51.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                     <actionList>
