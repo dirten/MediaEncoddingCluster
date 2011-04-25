@@ -21,7 +21,7 @@ SET (CMAKE_EXE_LINKER_FLAGS "-m32 -arch i386")
 ENDIF(APPLE)
 
 if(WIN32)
-#add_definitions(/GX)
+add_definitions(_WIN32_WINNT=0x0501)
 add_definitions(/EHsc)
 ENDIF(WIN32)
 

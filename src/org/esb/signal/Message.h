@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include "org/esb/signal/exports.h"
 namespace org{
 namespace esb{
   namespace hive{
@@ -11,7 +12,7 @@ namespace esb{
     }
   }
 namespace signal{
-class Message{
+class SIGNAL_EXPORT Message{
   public:
     Message();
     Message(boost::shared_ptr<void *> ent);
@@ -21,7 +22,8 @@ class Message{
     std::string & getProperty(std::string key);
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> getPtrProperty(std::string key);
     bool containsProperty(std::string key);
-  private:
+	~Message();
+private:
     std::map<std::string, std::string> str_props;
     std::map<std::string, std::string> int_props;
     std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > void_props;

@@ -120,8 +120,9 @@ add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
+#ADD_DEFINITIONS(-DUTIL_BUILD_SHARED)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util
+add_library (util 
   util/Properties.cpp 
   util/StringTokenizer.cpp 
   util/StringUtil.cpp 
@@ -162,8 +163,9 @@ IF(BUILD_SHARED_LIBS)
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 ENDIF(BUILD_SHARED_LIBS)
 
+ADD_DEFINITIONS(-DSIGNAL_BUILD_SHARED)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
-add_library (signal
+add_library (signal SHARED
   signal/Messenger.cpp
   signal/Message.cpp
 )

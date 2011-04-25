@@ -18,7 +18,7 @@ namespace org {
         namespace signal {
             //class MessageListener;
 
-            class Messenger {
+            class SIGNAL_EXPORT Messenger {
               classlogger("org.esb.signal.Messenger")
             public:
                 //    static const char * DEFAULT_NAME="global";

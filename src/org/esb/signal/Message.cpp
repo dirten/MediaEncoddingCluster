@@ -20,6 +20,9 @@ boost::shared_ptr<org::esb::hive::job::ProcessUnit> Message::getPtrProperty(std:
 Message::Message(boost::shared_ptr<void *> ent){
 
 }
+Message::~Message(){
+
+}
 
 Message & Message::setProperty(std::string key, std::string value){
   str_props[key]=value;
