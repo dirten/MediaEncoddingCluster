@@ -3,7 +3,6 @@
 #include "TcpSocketInputStream.cpp"
 #include "TcpSocketOutputStream.cpp"
 
-#include "org/esb/util/Decimal.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 namespace org {

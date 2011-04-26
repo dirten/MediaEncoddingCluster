@@ -48,8 +48,8 @@ class UTIL_EXPORT Log{
 public:
     static Log * getLogger(std::string logger="");
     static log4cplus::Logger getLog4cplusLogger();
-    static void UTIL_EXPORT open(std::string path="");
-    static void UTIL_EXPORT close();
+    static void  open(std::string path="");
+    static void close();
     void debug(std::stringstream &);
     void info(std::stringstream &);
     void warn(std::stringstream &);

@@ -13,7 +13,7 @@ namespace org {
     namespace util {
 
       template<typename T, int MAXSIZE = 10 >
-              class UTIL_EXPORT Queue {
+              class  Queue {
         classlogger("org.esb.util.Queue");
       private:
         std::deque<T> _q;

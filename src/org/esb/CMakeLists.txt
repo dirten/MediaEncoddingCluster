@@ -120,9 +120,9 @@ add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
-#ADD_DEFINITIONS(-DUTIL_BUILD_SHARED)
+ADD_DEFINITIONS(-DUTIL_BUILD_SHARED)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util 
+add_library (util SHARED
   util/Properties.cpp 
   util/StringTokenizer.cpp 
   util/StringUtil.cpp 

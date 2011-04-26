@@ -84,7 +84,7 @@ namespace util{
     Decimal();
     /// Initializes the Decimal-object with the given double value.
     /// @param value double to initialize it with.
-    explicit Decimal(double value);
+    explicit UTIL_EXPORT Decimal(double value);
 
     /// Initialize this Decimal-object with the given decimal mantissa and exponent.
     /// @param man integer decimal mantissa value to set this Decimal number to.
@@ -103,7 +103,7 @@ namespace util{
     MantissaType getMantissa() const;
     /// Return the base 10 exponent.
     /// @return the base 10 exponent.
-    ExponentType getExponent() const;
+    ExponentType UTIL_EXPORT getExponent() const;
 
     /// Is this Decimal number positive?
     /// @return true if this Decimal number is positive, else return false.
@@ -290,7 +290,7 @@ namespace util{
     
     /// Return this Decimal number as a string.
     /// @return string representation of this decimal number.
-    std::string toString() const;
+    std::string UTIL_EXPORT toString() const;
       
     /// Print this Decimal number.  If out.precision() != 0, then this
     /// decimal number is printed with out.precision() significant digits.
