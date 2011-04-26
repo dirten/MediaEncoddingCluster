@@ -35,6 +35,43 @@ LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
 
 
 IF(BUILD_TESTING)
+#
+# In order to run tests we will need to set the approriate environment
+# variable so that the test program can locate its dependent DLL's. First
+# we want to know what directory our dependent DLL was installed into:
+#
+get_target_property(utildir util LOCATION_Debug)
+get_filename_component(utildir "${utildir}" PATH)
+#file(TO_NATIVE_PATH "${utildir}" native_utildir)
+message("UtilDir" ${utildir})
+#
+# Next, for our directory full of platform-dependent 3rd party DLL's
+#
+#file(TO_NATIVE_PATH "${MEC_SOURCE_DIR}/target/dependency/lib" native_3rdparty_lib)
+#file(TO_NATIVE_PATH "${MEC_SOURCE_DIR}/target/dependency/bin" native_3rdparty_bin)
+
+#
+# Determine which environment variable controls the locating of
+# DLL's and set that variable.
+#
+if (WIN32)
+   set (LD_VARNAME "PATH")
+   set (LD_PATH "${utildir};${MEC_SOURCE_DIR}/target/dependency/lib;${native_3rdparty_bin};$ENV{PATH}")
+
+   #
+   # IMPORTANT NOTE: The set_tests_properties(), below, internally
+   # stores its name/value pairs with a semicolon delimiter.
+   # because of this we must protect the semicolons in the path
+   #
+   string(REPLACE ";" "\\;" LD_PATH "${LD_PATH}")
+else ()
+   set (LD_VARNAME "LD_LIBRARY_PATH")
+   set (LD_PATH "${native_utildir}:${native_3rdparty_lib}:$ENV{LD_LIBRARY_PATH}")
+endif ()
+
+#add_test (SomeTest SomeTest)
+#set_tests_properties(SomeTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
+
   IF(WIN32)
     SET( ENV{PATH} "$ENV{PATH}\;${FFMPEG_DIR}/lib" )
   ELSEIF(APPLE)

@@ -21,12 +21,19 @@ if(NOT WIN32)
   target_link_libraries (TestThread pthread)
 ENDIF(NOT WIN32)
 #target_link_libraries (ObjectTest lang)
-
+message("VAR" ${LD_VARNAME}=${LD_PATH})
 ADD_TEST(lang.ThreadTest ${EXECUTABLE_OUTPUT_PATH}/TestThread )
+SET_TESTS_PROPERTIES(lang.ThreadTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
+
 #ADD_TEST(TestSystemCpuInfo ${EXECUTABLE_OUTPUT_PATH}/TestSystemCpuInfo )
 ADD_TEST(lang.ExceptionTest ${EXECUTABLE_OUTPUT_PATH}/TestException )
+SET_TESTS_PROPERTIES(lang.ExceptionTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
+
 ADD_TEST(lang.StackDumperTest ${EXECUTABLE_OUTPUT_PATH}/TestStackDumper )
+SET_TESTS_PROPERTIES(lang.StackDumperTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
+
 ADD_TEST(lang.ProcessTest ${EXECUTABLE_OUTPUT_PATH}/ProcessTest )
+SET_TESTS_PROPERTIES(lang.ProcessTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
 #ADD_TEST(TestLibCurl ${EXECUTABLE_OUTPUT_PATH}/TestLibCurl )
 #ADD_TEST(ObjectTest ${EXECUTABLE_OUTPUT_PATH}/ObjectTest )
 
