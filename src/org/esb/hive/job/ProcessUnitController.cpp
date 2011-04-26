@@ -10,7 +10,7 @@
 #include "ProcessUnitBuilder.h"
 #include "org/esb/config/config.h"
 #include "org/esb/util/Log.h"
-#include "org/esb/util/Decimal.h"
+
 #include "org/esb/lang/Thread.h"
 #include "org/esb/hive/job/Packetizer.h"
 #include "org/esb/av/FormatInputStream.h"
@@ -457,7 +457,7 @@ namespace org {
           int stream_type=AVMEDIA_TYPE_UNKNOWN;
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
-          name += org::esb::util::Decimal(unit->_process_unit % 10).toString();
+		  name += org::esb::util::StringUtil::toString(unit->_process_unit % 10);
 
           org::esb::io::File dir(name.c_str());
 
@@ -465,7 +465,7 @@ namespace org {
             dir.mkdir();
           }
           name += "/";
-          name += org::esb::util::Decimal(unit->_process_unit).toString();
+		  name += org::esb::util::StringUtil::toString(unit->_process_unit);
           name += ".unit";
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);

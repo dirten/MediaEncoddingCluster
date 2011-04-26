@@ -100,7 +100,7 @@ namespace util{
     Decimal(MantissaType man, ExponentType exp, FlagsType f, PrintFlagsType pf = infinityShort);
     /// Return the decimal mantissa.
     /// @return the decimal mantissa.
-    MantissaType getMantissa() const;
+    MantissaType UTIL_EXPORT getMantissa() const;
     /// Return the base 10 exponent.
     /// @return the base 10 exponent.
     ExponentType UTIL_EXPORT getExponent() const;
