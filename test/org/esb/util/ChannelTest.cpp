@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     go(sender,1000,&ch, a);
     //org::esb::lang::Thread::sleep2(10);
   }
-  org::esb::lang::Thread::sleep2(5000);
+  org::esb::lang::Thread::sleep2(15000);
 /*
   
   ch << 1;
