@@ -29,12 +29,12 @@
 #ifndef _STRINGOUTPUTSTREAM_H
 #define	_STRINGOUTPUTSTREAM_H
 #include "OutputStream.h"
-#include "exports.h"
+#include "org/esb/io/exports.h"
 
 namespace org{
   namespace esb{
     namespace io{
-      class  StringOutputStream: public OutputStream {
+      class IO_EXPORT StringOutputStream: public OutputStream {
       public:
         StringOutputStream(std::string &);
         void write(char * buffer, int length);

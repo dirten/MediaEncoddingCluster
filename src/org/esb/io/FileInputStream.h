@@ -31,7 +31,7 @@
 #include "org/esb/lang/Exception.h"
 #include <iostream>
 #include <stdio.h>
-#include "exports.h"
+#include "org/esb/io/exports.h"
 namespace org {
     namespace esb {
         namespace io {

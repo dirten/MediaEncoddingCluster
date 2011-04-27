@@ -9,13 +9,13 @@
 #include "ObjectStream.h"
 #include "InputStream.h"
 #include "org/esb/util/Log.h"
-#include "exports.h"
+#include "org/esb/io/exports.h"
 using namespace std;
 namespace org {
   namespace esb {
     namespace io {
 
-      class ObjectInputStream : public InputStream {
+      class IO_EXPORT ObjectInputStream : public InputStream {
         classlogger("org.esb.io.ObjectInputStream");
       public:
         ObjectInputStream(InputStream * is);

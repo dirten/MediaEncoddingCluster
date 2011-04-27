@@ -29,12 +29,12 @@
 #ifndef _STRINGINPUTSTREAM_H
 #define	_STRINGINPUTSTREAM_H
 #include "InputStream.h"
-#include "exports.h"
+#include "org/esb/io/exports.h"
 namespace org {
   namespace esb {
     namespace io {
 
-      class StringInputStream : public InputStream {
+      class IO_EXPORT StringInputStream : public InputStream {
       public:
         StringInputStream(std::string &);
         int read(unsigned char * buffer, int length);
