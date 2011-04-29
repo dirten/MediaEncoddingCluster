@@ -1,10 +1,10 @@
 include $(GOROOT)/src/Make.inc
-PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
+#PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 #DIRS=\
 #	rpc
 
-TARG=test
+TARG=libtestgo
 
 CGOFILES=Test.go
 #Buffer.go
@@ -28,9 +28,9 @@ CGO_CFLAGS=-I../../../target/dependency/include/
 #	-$(RM) -f $(EXE) $(OBJS) $(OBJLIBS)
 #	-for d in pkg; do (cd $$d; $(MAKE) clean ); done
 	    
-%.c:	%.goc goc2c
-	goc2c `pwd`/$< > $@.tmp
-	mv -f $@.tmp $@
+#%.c:	%.goc goc2c
+#	goc2c `pwd`/$< > $@.tmp
+#	mv -f $@.tmp $@
 
 include $(GOROOT)/src/Make.pkg
 # this hack is for the wrong handling of the cgo executable to #generate the required header on windows

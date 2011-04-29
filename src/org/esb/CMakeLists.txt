@@ -7,6 +7,9 @@ SET(WEB_VERSION_MAJOR 0)
 SET(WEB_VERSION_MINOR 1)
 
 SET(LIB_INSTALL_DIR lib)
+SET(SHARED_UTIL On)
+SET(SHARED_SIGNAL On)
+
 #ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
@@ -120,9 +123,15 @@ add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
-ADD_DEFINITIONS(-DUTIL_BUILD_SHARED)
+
+IF(SHARED_UTIL)
+    ADD_DEFINITIONS(-DUTIL_BUILD_SHARED)
+    SET(UTIL_LINK_TYPE SHARED)
+ELSE(SHARED_UTIL)
+    SET(UTIL_LINK_TYPE STATIC)
+ENDIF(SHARED_UTIL)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/util)
-add_library (util SHARED
+add_library (util ${UTIL_LINK_TYPE}
   util/Properties.cpp 
   util/StringTokenizer.cpp 
   util/StringUtil.cpp 
@@ -165,20 +174,27 @@ ENDIF(NOT WIN32)
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 #ENDIF(BUILD_SHARED_LIBS)
 
-ADD_DEFINITIONS(-DSIGNAL_BUILD_SHARED)
+IF(SHARED_SIGNAL)
+    ADD_DEFINITIONS(-DSIGNAL_BUILD_SHARED)
+    SET(SIGNAL_LINK_TYPE SHARED)
+ELSE(SHARED_SIGNAL)
+    SET(SIGNAL_LINK_TYPE STATIC)
+ENDIF(SHARED_SIGNAL)
+
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/signal)
-add_library (signal SHARED
+add_library (signal ${SIGNAL_LINK_TYPE}
   signal/Messenger.cpp
   signal/Message.cpp
 )
 TARGET_LINK_LIBRARIES(signal util)
-IF(BUILD_SHARED_LIBS)
+SET_TARGET_PROPERTIES( signal PROPERTIES PREFIX "libmhive-")
+IF(SHARED_SIGNAL)
 INSTALL(TARGETS signal
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
+ENDIF(SHARED_SIGNAL)
 
 add_subdirectory (io)
 
@@ -312,6 +328,7 @@ ENDIF(BUILD_SHARED_LIBS)
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/web)
 include_directories (${WT_DIR})
 include_directories (${WT_DIR}/include)
+include_directories (${WT_DIR}/include/libjson)
 include_directories (${WT_DIR}/src)
 add_library (web
     web/WebServer.cpp
@@ -385,6 +402,9 @@ add_library (web
 
     web/api/xml/XmlApp.cpp
     web/api/xml/Project.cpp
+    #web/api/json/JsonApp.cpp
+    web/api/url/UrlApp.cpp
+
 )
 
 
@@ -410,6 +430,7 @@ TARGET_LINK_LIBRARIES(web
     io
     av
     lang
+    json
 )
 IF(UNIX AND NOT APPLE)
 #  TARGET_LINK_LIBRARIES(web crypto)

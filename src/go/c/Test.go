@@ -74,8 +74,12 @@ func test_uint8t_p_by_p(data []byte){
     fmt.Printf("data %s\n",data)
 //    println(d)
 }
+type TestStruct struct{
+    Id int32
+}
 //export exportTest
 func exportTest(data string){
+    println("bla")
     //MySetFinalizer()
 }
 func test_mal(){

@@ -38,7 +38,7 @@ add_definitions(/DCURL_STATICLIB)
 #SET (CMAKE_EXE_LINKER_FLAGS "-arch i386")
 
 
-#add_subdirectory (go)
+add_subdirectory (go)
 add_subdirectory (org)
 
 

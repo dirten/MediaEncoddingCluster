@@ -126,6 +126,7 @@
 
                 <exec executable="make" dir="source/libjson" failonerror="yes">
             	    <arg line="-e prefix=${mybasedir}/source/build"/>
+            	    <arg line="-e cxxflags_debug=debug"/>
             	    <arg line="install"/>
                 </exec>
               </tasks>

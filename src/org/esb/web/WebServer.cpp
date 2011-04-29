@@ -1,5 +1,7 @@
 #include "WebApp2.h"
 #include "api/xml/XmlApp.h"
+//#include "api/json/JsonApp.h"
+#include "api/url/UrlApp.h"
 #include "WebServer.h"
 #include "org/esb/config/config.h"
 #include <Wt/WApplication>
@@ -79,6 +81,7 @@ WebServer::WebServer() : server("test") {
     server.addEntryPoint(Application, &createApp, "/");
     server.addEntryPoint(Application, &createSetup, "/setup");
     server.addResource(new XmlApp(),"/api/xml");
+    server.addResource(new UrlApp(),"/api/url");
     //addEntryPoint(StaticResource, &createXmlApi, "/api/xml");
   }catch(std::exception ex){
     LOGERROR("error configure webserver:"<<ex.what());

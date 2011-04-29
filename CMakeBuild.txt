@@ -61,6 +61,7 @@ EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/s
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/wt/wt/${WT_VERSION}/wt-${WT_VERSION}-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/wt-${WT_VERSION}-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/jhive/jhive-test-fixtures/1.0/jhive-test-fixtures-1.0.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/jhive-test-fixtures-1.0.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/protobuf/protobuf/2.3.0/protobuf-2.3.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/protobuf-2.3.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
+EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} http://codergrid.de/repository/org/esb/json/libjson/7.1.0/libjson-7.1.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libjson-7.1.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip)
 EXECUTE_PROCESS(COMMAND ${DOWNLOAD_CMD} -L http://sourceforge.net/projects/rapidxml/files/rapidxml/rapidxml%201.13/rapidxml-1.13.zip/download ${DOWNLOAD_OPTION} ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/rapidxml-1.13.zip)
 
 IF(WIN32)
@@ -96,6 +97,8 @@ MESSAGE("Extracting jhive-text-fixtures")
 EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/jhive-test-fixtures-1.0.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
 MESSAGE("Extracting protobuf")
 EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/protobuf-2.3.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
+MESSAGE("Extracting libjson")
+EXECUTE_PROCESS(COMMAND ${UNZIP_CMD} -q -o ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/libjson-7.1.0-${SYSTEM}-${CMAKE_BUILD_TYPE}.zip -d ${PROJECT_SOURCE_DIR}/${TARGET_DIR}/)
 
 IF(WIN32)
 MESSAGE("Copy Windows Files")

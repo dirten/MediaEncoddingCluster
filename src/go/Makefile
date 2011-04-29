@@ -2,17 +2,18 @@ include $(GOROOT)/src/Make.inc
 PKGDIR=$(GOROOT)/pkg/$(GOOS)_$(GOARCH)
 
 
-TARG=transcoder
+TARG=dbtest
 #CGOFILES=ffmpegtest.go
 #CGO_LDFLAGS=-L/home/HoelscJ/devel/mec/target/dependency/lib/ -lavcodec -lavutil -lavformat -lavcore -lswscale
 #CGO_CFLAGS=-I/home/HoelscJ/devel/mec/target/dependency/include/
 
 DIRS=\
-	ffmpeg \
-	hive
+	db
 
-GOFILES=\
-        transcoder.go
+GOFILES=testdb.go
+CGO_LDFLAGS=-L/home/jan.hoelscher/devel/mec/target/dependency/lib -lsqlite3 -lpthread -ldl
+
+#        transcoder.go
 #	alloc_data.go
         
 #        mainffmpeg.go 

@@ -5862,22 +5862,70 @@ const litesql::FieldType User::Id("id_","INTEGER",table__);
 const litesql::FieldType User::Type("type_","TEXT",table__);
 const litesql::FieldType User::Authname("authname_","TEXT",table__);
 const litesql::FieldType User::Authpass("authpass_","TEXT",table__);
+const litesql::FieldType User::Company("company_","TEXT",table__);
+const litesql::FieldType User::Firstname("firstname_","TEXT",table__);
+const litesql::FieldType User::Lastname("lastname_","TEXT",table__);
+const litesql::FieldType User::Street("street_","TEXT",table__);
+const litesql::FieldType User::City("city_","TEXT",table__);
+const litesql::FieldType User::Zip("zip_","TEXT",table__);
+const litesql::FieldType User::Country("country_","TEXT",table__);
+const litesql::FieldType User::State("state_","TEXT",table__);
+const litesql::FieldType User::Telefone("telefone_","TEXT",table__);
+const litesql::FieldType User::Fax("fax_","TEXT",table__);
+const litesql::FieldType User::Email("email_","TEXT",table__);
+const litesql::FieldType User::Www("www_","TEXT",table__);
+const litesql::FieldType User::Language("language_","TEXT",table__);
+const litesql::FieldType User::Licensekey("licensekey_","TEXT",table__);
+const litesql::FieldType User::Apikey("apikey_","TEXT",table__);
 const litesql::FieldType User::Registered("registered_","INTEGER",table__);
+const litesql::FieldType User::Fileroot("fileroot_","TEXT",table__);
 void User::defaults() {
     id = 0;
     registered = 0;
 }
 User::User(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), authname(Authname), authpass(Authpass), registered(Registered) {
+     : litesql::Persistent(db), id(Id), type(Type), authname(Authname), authpass(Authpass), company(Company), firstname(Firstname), lastname(Lastname), street(Street), city(City), zip(Zip), country(Country), state(State), telefone(Telefone), fax(Fax), email(Email), www(Www), language(Language), licensekey(Licensekey), apikey(Apikey), registered(Registered), fileroot(Fileroot) {
     defaults();
 }
 User::User(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), authname(Authname), authpass(Authpass), registered(Registered) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), authname(Authname), authpass(Authpass), company(Company), firstname(Firstname), lastname(Lastname), street(Street), city(City), zip(Zip), country(Country), state(State), telefone(Telefone), fax(Fax), email(Email), www(Www), language(Language), licensekey(Licensekey), apikey(Apikey), registered(Registered), fileroot(Fileroot) {
     defaults();
-    size_t size = (rec.size() > 5) ? 5 : rec.size();
+    size_t size = (rec.size() > 21) ? 21 : rec.size();
     switch(size) {
-    case 5: registered = convert<const std::string&, litesql::Date>(rec[4]);
+    case 21: fileroot = convert<const std::string&, std::string>(rec[20]);
+        fileroot.setModified(false);
+    case 20: registered = convert<const std::string&, litesql::Date>(rec[19]);
         registered.setModified(false);
+    case 19: apikey = convert<const std::string&, std::string>(rec[18]);
+        apikey.setModified(false);
+    case 18: licensekey = convert<const std::string&, std::string>(rec[17]);
+        licensekey.setModified(false);
+    case 17: language = convert<const std::string&, std::string>(rec[16]);
+        language.setModified(false);
+    case 16: www = convert<const std::string&, std::string>(rec[15]);
+        www.setModified(false);
+    case 15: email = convert<const std::string&, std::string>(rec[14]);
+        email.setModified(false);
+    case 14: fax = convert<const std::string&, std::string>(rec[13]);
+        fax.setModified(false);
+    case 13: telefone = convert<const std::string&, std::string>(rec[12]);
+        telefone.setModified(false);
+    case 12: state = convert<const std::string&, std::string>(rec[11]);
+        state.setModified(false);
+    case 11: country = convert<const std::string&, std::string>(rec[10]);
+        country.setModified(false);
+    case 10: zip = convert<const std::string&, std::string>(rec[9]);
+        zip.setModified(false);
+    case 9: city = convert<const std::string&, std::string>(rec[8]);
+        city.setModified(false);
+    case 8: street = convert<const std::string&, std::string>(rec[7]);
+        street.setModified(false);
+    case 7: lastname = convert<const std::string&, std::string>(rec[6]);
+        lastname.setModified(false);
+    case 6: firstname = convert<const std::string&, std::string>(rec[5]);
+        firstname.setModified(false);
+    case 5: company = convert<const std::string&, std::string>(rec[4]);
+        company.setModified(false);
     case 4: authpass = convert<const std::string&, std::string>(rec[3]);
         authpass.setModified(false);
     case 3: authname = convert<const std::string&, std::string>(rec[2]);
@@ -5889,7 +5937,7 @@ User::User(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 User::User(const User& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), authname(obj.authname), authpass(obj.authpass), registered(obj.registered) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), authname(obj.authname), authpass(obj.authpass), company(obj.company), firstname(obj.firstname), lastname(obj.lastname), street(obj.street), city(obj.city), zip(obj.zip), country(obj.country), state(obj.state), telefone(obj.telefone), fax(obj.fax), email(obj.email), www(obj.www), language(obj.language), licensekey(obj.licensekey), apikey(obj.apikey), registered(obj.registered), fileroot(obj.fileroot) {
 }
 const User& User::operator=(const User& obj) {
     if (this != &obj) {
@@ -5897,7 +5945,23 @@ const User& User::operator=(const User& obj) {
         type = obj.type;
         authname = obj.authname;
         authpass = obj.authpass;
+        company = obj.company;
+        firstname = obj.firstname;
+        lastname = obj.lastname;
+        street = obj.street;
+        city = obj.city;
+        zip = obj.zip;
+        country = obj.country;
+        state = obj.state;
+        telefone = obj.telefone;
+        fax = obj.fax;
+        email = obj.email;
+        www = obj.www;
+        language = obj.language;
+        licensekey = obj.licensekey;
+        apikey = obj.apikey;
         registered = obj.registered;
+        fileroot = obj.fileroot;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -5921,9 +5985,57 @@ std::string User::insert(litesql::Record& tables, litesql::Records& fieldRecs, l
     fields.push_back(authpass.name());
     values.push_back(authpass);
     authpass.setModified(false);
+    fields.push_back(company.name());
+    values.push_back(company);
+    company.setModified(false);
+    fields.push_back(firstname.name());
+    values.push_back(firstname);
+    firstname.setModified(false);
+    fields.push_back(lastname.name());
+    values.push_back(lastname);
+    lastname.setModified(false);
+    fields.push_back(street.name());
+    values.push_back(street);
+    street.setModified(false);
+    fields.push_back(city.name());
+    values.push_back(city);
+    city.setModified(false);
+    fields.push_back(zip.name());
+    values.push_back(zip);
+    zip.setModified(false);
+    fields.push_back(country.name());
+    values.push_back(country);
+    country.setModified(false);
+    fields.push_back(state.name());
+    values.push_back(state);
+    state.setModified(false);
+    fields.push_back(telefone.name());
+    values.push_back(telefone);
+    telefone.setModified(false);
+    fields.push_back(fax.name());
+    values.push_back(fax);
+    fax.setModified(false);
+    fields.push_back(email.name());
+    values.push_back(email);
+    email.setModified(false);
+    fields.push_back(www.name());
+    values.push_back(www);
+    www.setModified(false);
+    fields.push_back(language.name());
+    values.push_back(language);
+    language.setModified(false);
+    fields.push_back(licensekey.name());
+    values.push_back(licensekey);
+    licensekey.setModified(false);
+    fields.push_back(apikey.name());
+    values.push_back(apikey);
+    apikey.setModified(false);
     fields.push_back(registered.name());
     values.push_back(registered);
     registered.setModified(false);
+    fields.push_back(fileroot.name());
+    values.push_back(fileroot);
+    fileroot.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -5943,7 +6055,23 @@ void User::addUpdates(Updates& updates) {
     updateField(updates, table__, type);
     updateField(updates, table__, authname);
     updateField(updates, table__, authpass);
+    updateField(updates, table__, company);
+    updateField(updates, table__, firstname);
+    updateField(updates, table__, lastname);
+    updateField(updates, table__, street);
+    updateField(updates, table__, city);
+    updateField(updates, table__, zip);
+    updateField(updates, table__, country);
+    updateField(updates, table__, state);
+    updateField(updates, table__, telefone);
+    updateField(updates, table__, fax);
+    updateField(updates, table__, email);
+    updateField(updates, table__, www);
+    updateField(updates, table__, language);
+    updateField(updates, table__, licensekey);
+    updateField(updates, table__, apikey);
     updateField(updates, table__, registered);
+    updateField(updates, table__, fileroot);
 }
 void User::addIDUpdates(Updates& updates) {
 }
@@ -5952,7 +6080,23 @@ void User::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Type);
     ftypes.push_back(Authname);
     ftypes.push_back(Authpass);
+    ftypes.push_back(Company);
+    ftypes.push_back(Firstname);
+    ftypes.push_back(Lastname);
+    ftypes.push_back(Street);
+    ftypes.push_back(City);
+    ftypes.push_back(Zip);
+    ftypes.push_back(Country);
+    ftypes.push_back(State);
+    ftypes.push_back(Telefone);
+    ftypes.push_back(Fax);
+    ftypes.push_back(Email);
+    ftypes.push_back(Www);
+    ftypes.push_back(Language);
+    ftypes.push_back(Licensekey);
+    ftypes.push_back(Apikey);
     ftypes.push_back(Registered);
+    ftypes.push_back(Fileroot);
 }
 void User::delRecord() {
     deleteFromTable(table__, id);
@@ -5998,7 +6142,23 @@ std::auto_ptr<User> User::upcastCopy() {
     np->type = type;
     np->authname = authname;
     np->authpass = authpass;
+    np->company = company;
+    np->firstname = firstname;
+    np->lastname = lastname;
+    np->street = street;
+    np->city = city;
+    np->zip = zip;
+    np->country = country;
+    np->state = state;
+    np->telefone = telefone;
+    np->fax = fax;
+    np->email = email;
+    np->www = www;
+    np->language = language;
+    np->licensekey = licensekey;
+    np->apikey = apikey;
     np->registered = registered;
+    np->fileroot = fileroot;
     np->inDatabase = inDatabase;
     return auto_ptr<User>(np);
 }
@@ -6008,7 +6168,23 @@ std::ostream & operator<<(std::ostream& os, User o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.authname.name() << " = " << o.authname << std::endl;
     os << o.authpass.name() << " = " << o.authpass << std::endl;
+    os << o.company.name() << " = " << o.company << std::endl;
+    os << o.firstname.name() << " = " << o.firstname << std::endl;
+    os << o.lastname.name() << " = " << o.lastname << std::endl;
+    os << o.street.name() << " = " << o.street << std::endl;
+    os << o.city.name() << " = " << o.city << std::endl;
+    os << o.zip.name() << " = " << o.zip << std::endl;
+    os << o.country.name() << " = " << o.country << std::endl;
+    os << o.state.name() << " = " << o.state << std::endl;
+    os << o.telefone.name() << " = " << o.telefone << std::endl;
+    os << o.fax.name() << " = " << o.fax << std::endl;
+    os << o.email.name() << " = " << o.email << std::endl;
+    os << o.www.name() << " = " << o.www << std::endl;
+    os << o.language.name() << " = " << o.language << std::endl;
+    os << o.licensekey.name() << " = " << o.licensekey << std::endl;
+    os << o.apikey.name() << " = " << o.apikey << std::endl;
     os << o.registered.name() << " = " << o.registered << std::endl;
+    os << o.fileroot.name() << " = " << o.fileroot << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6037,19 +6213,23 @@ const std::string UserGroup::sequence__("UserGroup_seq");
 const litesql::FieldType UserGroup::Id("id_","INTEGER",table__);
 const litesql::FieldType UserGroup::Type("type_","TEXT",table__);
 const litesql::FieldType UserGroup::Name("name_","INTEGER",table__);
+const litesql::FieldType UserGroup::Nodecount("nodecount_","INTEGER",table__);
 void UserGroup::defaults() {
     id = 0;
     name = 0;
+    nodecount = 0;
 }
 UserGroup::UserGroup(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name) {
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), nodecount(Nodecount) {
     defaults();
 }
 UserGroup::UserGroup(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), nodecount(Nodecount) {
     defaults();
-    size_t size = (rec.size() > 3) ? 3 : rec.size();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
     switch(size) {
+    case 4: nodecount = convert<const std::string&, int>(rec[3]);
+        nodecount.setModified(false);
     case 3: name = convert<const std::string&, litesql::Date>(rec[2]);
         name.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
@@ -6059,13 +6239,14 @@ UserGroup::UserGroup(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 UserGroup::UserGroup(const UserGroup& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), nodecount(obj.nodecount) {
 }
 const UserGroup& UserGroup::operator=(const UserGroup& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
         name = obj.name;
+        nodecount = obj.nodecount;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -6086,6 +6267,9 @@ std::string UserGroup::insert(litesql::Record& tables, litesql::Records& fieldRe
     fields.push_back(name.name());
     values.push_back(name);
     name.setModified(false);
+    fields.push_back(nodecount.name());
+    values.push_back(nodecount);
+    nodecount.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -6104,6 +6288,7 @@ void UserGroup::addUpdates(Updates& updates) {
     updateField(updates, table__, id);
     updateField(updates, table__, type);
     updateField(updates, table__, name);
+    updateField(updates, table__, nodecount);
 }
 void UserGroup::addIDUpdates(Updates& updates) {
 }
@@ -6111,6 +6296,7 @@ void UserGroup::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
     ftypes.push_back(Name);
+    ftypes.push_back(Nodecount);
 }
 void UserGroup::delRecord() {
     deleteFromTable(table__, id);
@@ -6155,6 +6341,7 @@ std::auto_ptr<UserGroup> UserGroup::upcastCopy() {
     np->id = id;
     np->type = type;
     np->name = name;
+    np->nodecount = nodecount;
     np->inDatabase = inDatabase;
     return auto_ptr<UserGroup>(np);
 }
@@ -6163,6 +6350,7 @@ std::ostream & operator<<(std::ostream& os, UserGroup o) {
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
+    os << o.nodecount.name() << " = " << o.nodecount << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6213,12 +6401,12 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
-    res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,registered_ INTEGER)"));
-    res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER)"));
+    res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
+    res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
-    res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER UNIQUE,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));

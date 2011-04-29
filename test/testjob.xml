@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <job>
     <!--<input url="http://localhost/HorizontalStripesDivX.avi"/>-->
-    <input url="/media/video/big_buck_bunny_480p_surround-fix.avi"/>
-    <!--<input url="http://samples.mplayerhq.hu/Divx4-bugs/Fight.Club.Trailer.avi"/>-->
+    <!--<input url="/media/video/big_buck_bunny_480p_surround-fix.avi"/>-->
+    <input url="http://samples.mplayerhq.hu/Divx4-bugs/Fight.Club.Trailer.avi"/>
     <!--<input url="http://samples.mplayerhq.hu/MPEG-VOB/interlaced/uruseiyatsura.vob"/>-->
     <!--<input url="http://old.codergrid.de/downloads/ED_HD.avi"/>-->
     <preset name="Apple Ipad x264(640x480) aac(160kb 48kHz stereo)"/>

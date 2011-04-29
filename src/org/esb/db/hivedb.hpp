@@ -1926,8 +1926,40 @@ public:
     litesql::Field<std::string> authname;
     static const litesql::FieldType Authpass;
     litesql::Field<std::string> authpass;
+    static const litesql::FieldType Company;
+    litesql::Field<std::string> company;
+    static const litesql::FieldType Firstname;
+    litesql::Field<std::string> firstname;
+    static const litesql::FieldType Lastname;
+    litesql::Field<std::string> lastname;
+    static const litesql::FieldType Street;
+    litesql::Field<std::string> street;
+    static const litesql::FieldType City;
+    litesql::Field<std::string> city;
+    static const litesql::FieldType Zip;
+    litesql::Field<std::string> zip;
+    static const litesql::FieldType Country;
+    litesql::Field<std::string> country;
+    static const litesql::FieldType State;
+    litesql::Field<std::string> state;
+    static const litesql::FieldType Telefone;
+    litesql::Field<std::string> telefone;
+    static const litesql::FieldType Fax;
+    litesql::Field<std::string> fax;
+    static const litesql::FieldType Email;
+    litesql::Field<std::string> email;
+    static const litesql::FieldType Www;
+    litesql::Field<std::string> www;
+    static const litesql::FieldType Language;
+    litesql::Field<std::string> language;
+    static const litesql::FieldType Licensekey;
+    litesql::Field<std::string> licensekey;
+    static const litesql::FieldType Apikey;
+    litesql::Field<std::string> apikey;
     static const litesql::FieldType Registered;
     litesql::Field<litesql::Date> registered;
+    static const litesql::FieldType Fileroot;
+    litesql::Field<std::string> fileroot;
 protected:
     void defaults();
 public:
@@ -1978,6 +2010,8 @@ public:
     litesql::Field<std::string> type;
     static const litesql::FieldType Name;
     litesql::Field<litesql::Date> name;
+    static const litesql::FieldType Nodecount;
+    litesql::Field<int> nodecount;
 protected:
     void defaults();
 public:

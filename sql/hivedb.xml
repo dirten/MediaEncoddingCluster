@@ -62,7 +62,7 @@
 
     <relation>
         <relate object="MediaFile" handle="project"/>
-        <relate object="Project" handle="mediafiles" limit="one"/>
+        <relate object="Project" handle="mediafiles"/>
     </relation>
 
     <object name="ProfileGroup">

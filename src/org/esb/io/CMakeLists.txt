@@ -1,16 +1,15 @@
 SET(SHARED_IO On)
 
 IF(SHARED_IO)
-SET(LINK_TYPE SHARED)
-ADD_DEFINITIONS(-DIO_BUILD_SHARED)
-#ADD_DEFINITIONS(-Dio_EXPORTS)
+    SET(IO_LINK_TYPE SHARED)
+    ADD_DEFINITIONS(-DIO_BUILD_SHARED)
 ELSE(SHARED_IO)
-SET(LINK_TYPE STATIC)
+    SET(IO_LINK_TYPE STATIC)
 ENDIF(SHARED_IO)
 MESSAGE("IO Build Type" ${LINK_TYPE})
 
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
-add_library (io ${LINK_TYPE} File.cpp 
+add_library (io ${IO_LINK_TYPE} File.cpp 
       FileInputStream.cpp 
       FileOutputStream.cpp 
       CharArrayInputStream.cpp 
@@ -31,6 +30,7 @@ TARGET_LINK_LIBRARIES(io
     util
     net
 )
+SET_TARGET_PROPERTIES( io PROPERTIES PREFIX "libmhive-")
 IF(SHARED_IO)
 INSTALL(TARGETS io
     RUNTIME DESTINATION bin
