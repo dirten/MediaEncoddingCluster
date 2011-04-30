@@ -403,7 +403,7 @@ add_library (web
     web/api/xml/XmlApp.cpp
     web/api/xml/Project.cpp
     #web/api/json/JsonApp.cpp
-    web/api/url/UrlApp.cpp
+#    web/api/url/UrlApp.cpp
 
 )
 
