@@ -322,13 +322,13 @@
                             <origin>${mhive_src_dir}/install/bin/avutil-51.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libmhive-io.dll</origin>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-io.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libmhive-signal.dll</origin>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-signal.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/libmhive-util.dll</origin>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-util.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                     <actionList>
