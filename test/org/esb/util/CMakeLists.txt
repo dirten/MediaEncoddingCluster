@@ -25,6 +25,6 @@ ADD_TEST(util.QueueTest ${EXECUTABLE_OUTPUT_PATH}/TestQueue )
 #ADD_TEST(PropertyTreeTest ${EXECUTABLE_OUTPUT_PATH}/PropertyTreeTest )
 ADD_TEST(RapidXmlTest ${EXECUTABLE_OUTPUT_PATH}/RapidXmlTest)
 ADD_TEST(DecimalTest ${EXECUTABLE_OUTPUT_PATH}/DecimalTest)
-ADD_TEST(ChannelTest ${EXECUTABLE_OUTPUT_PATH}/ChannelTest)
+#ADD_TEST(ChannelTest ${EXECUTABLE_OUTPUT_PATH}/ChannelTest)
 
 
