@@ -283,6 +283,15 @@
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libavutil.so.51</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-io.so</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-signal.so</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-util.so</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -311,6 +320,15 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/avutil-51.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/bin/libmhive-io.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/bin/libmhive-signal.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/bin/libmhive-util.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                     <actionList>
@@ -370,6 +388,15 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libavutil.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-io.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-signal.dylib</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/install/lib/libmhive-util.dylib</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
