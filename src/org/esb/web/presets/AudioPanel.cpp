@@ -46,14 +46,19 @@ namespace org {
         int a = 0;
         while ((codec = av_codec_next(codec))) {
           if (codec->encode && codec->type == AVMEDIA_TYPE_AUDIO) {
-            if (avail_codecs.count(codec->name) > 0) {
-              codec_model->addModelData(codec->name, codec->long_name);
-            } else {
-              if (avail_codecs.size() == 0)
+            if (codec->name != NULL && codec->long_name != NULL) {
+              if (avail_codecs.count(codec->name) > 0) {
                 codec_model->addModelData(codec->name, codec->long_name);
+              } else {
+                if (avail_codecs.size() == 0)
+                  codec_model->addModelData(codec->name, codec->long_name);
+              }
+            }else{
+              LOGERROR("Some codecs have not set all parameter, codec->name="<<codec->name<<" codec->long_name"<<codec->long_name);
             }
           }
         }
+        LOGDEBUG("here");
 
         _codec = new ComboBox();
         _codec->setModel(codec_model);
