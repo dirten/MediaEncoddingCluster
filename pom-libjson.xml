@@ -123,6 +123,7 @@
               <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
+		<patch patchfile="src/patch/libjson_JSONOptions.h.patch" dir="source/libjson" strip="0"/>
 
                 <exec executable="make" dir="source/libjson" failonerror="yes">
             	    <arg line="-e prefix=${mybasedir}/source/build/libjson"/>
