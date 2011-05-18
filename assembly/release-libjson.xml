@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/include</directory>
+      <directory>source/build/libjson/include</directory>
       <outputDirectory>include/</outputDirectory>
       <includes>
         <include>**/*</include>
