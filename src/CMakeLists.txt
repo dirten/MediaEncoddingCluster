@@ -243,6 +243,7 @@ ENDIF(BUILD_MHIVECORE)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
  
 target_link_libraries (mhive 
+  api
   web 
   hive 
   lang 

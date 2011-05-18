@@ -61,6 +61,7 @@
 #include "org/esb/lang/ProcessException.h"
 #include "org/esb/rpc/Server.h"
 #include "org/esb/rpc/rpc.pb.h"
+#include "org/esb/api/JsonServer.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -90,6 +91,7 @@ void checkDirs();
 int rec = 0;
 std::string _hostname;
 int _port = 0;
+
 
 int main(int argc, char * argv[]) {
   /*setting default path to Program*/
@@ -131,13 +133,17 @@ int main(int argc, char * argv[]) {
     web.add_options()
             ("web,w", "start the Hive Webserver")
             ;
+    po::options_description mon("mon");
+    mon.add_options()
+            ("mon,m", "start the Mongoose Webserver(an alternative web server)")
+            ;
     po::options_description queue("Webserver");
     queue.add_options()
             ("queue,q", "start the Hive Queue Server")
             ;
 
     po::options_description all("all");
-    all. add(gen). add(ser). add(cli).add(inst).add(web).add(queue);
+    all. add(gen). add(ser). add(cli).add(inst).add(web).add(queue).add(mon);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, all), vm);
@@ -194,6 +200,7 @@ int main(int argc, char * argv[]) {
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
       org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
+      org::esb::api::JsonServer server(8081);
       listener(argc, argv);
     }
 
@@ -225,6 +232,14 @@ int main(int argc, char * argv[]) {
       org::esb::lang::CtrlCHitWaiter::wait();
       LOGINFO("shutdown app, this will take some time!");
       Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+    }
+
+    if (vm.count("mon")) {
+
+      // Wait until enter is pressed, then exit
+      org::esb::api::JsonServer server(8081);
+      getchar();
+
     }
 
     if (vm.count("queue")) {
@@ -271,7 +286,6 @@ int main(int argc, char * argv[]) {
 
   return 0;
 }
-
 
 class NodeAgent : public NodeListener {
 
@@ -526,17 +540,17 @@ bool setupDatabase() {
 }
 
 void checkDirs() {
-    org::esb::io::File dpath(config::Config::get("hive.dump_path"));
-    if (!dpath.exists())
-      dpath.mkdir();
+  org::esb::io::File dpath(config::Config::get("hive.dump_path"));
+  if (!dpath.exists())
+    dpath.mkdir();
 
-    org::esb::io::File tpath(config::Config::get("hive.tmp_path"));
-    if (!tpath.exists())
-      tpath.mkdir();
+  org::esb::io::File tpath(config::Config::get("hive.tmp_path"));
+  if (!tpath.exists())
+    tpath.mkdir();
 
-    org::esb::io::File datadir(config::Config::get("hive.data_path"));
-    if(!datadir.exists())
-      datadir.mkdir();
+  org::esb::io::File datadir(config::Config::get("hive.data_path"));
+  if (!datadir.exists())
+    datadir.mkdir();
 
 }
 
@@ -548,16 +562,16 @@ void setupConfig(po::variables_map vm) {
   if (vm.count("base")) {
     config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
   }
-  std::string bpath=config::Config::get("hive.base_path");
+  std::string bpath = config::Config::get("hive.base_path");
   config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
   config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
-  config::Config::setProperty("web.docroot", bpath+"/web");
-  config::Config::setProperty("hive.config_path", bpath+"/.mhive.cfg");
-  config::Config::setProperty("hive.dump_path", bpath+"/dmp");
-  config::Config::setProperty("hive.tmp_path", bpath+"/tmp");
-  config::Config::setProperty("hive.data_path", bpath+"/data");
-  config::Config::setProperty("preset.path", bpath+"/presets");
-  config::Config::setProperty("log.path", bpath+"/logs");
+  config::Config::setProperty("web.docroot", bpath + "/web");
+  config::Config::setProperty("hive.config_path", bpath + "/.mhive.cfg");
+  config::Config::setProperty("hive.dump_path", bpath + "/dmp");
+  config::Config::setProperty("hive.tmp_path", bpath + "/tmp");
+  config::Config::setProperty("hive.data_path", bpath + "/data");
+  config::Config::setProperty("preset.path", bpath + "/presets");
+  config::Config::setProperty("log.path", bpath + "/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
   //config::Config::setProperty("authentication", "true");
 

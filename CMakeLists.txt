@@ -30,6 +30,7 @@ if(USE_SAFMQ)
     add_definitions(-DUSE_SAFMQ)
 ENDIF(USE_SAFMQ)
 
+SET(LIBJSON_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 SET(FFMPEG_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
 #SET(X264_DIR ${PROJECT_SOURCE_DIR}/target/dependency )
 SET(BOOST_DIR ${PROJECT_SOURCE_DIR}/target/dependency)
@@ -87,6 +88,7 @@ INCLUDE(cmake/HiveFindCurl.txt)
 INCLUDE(cmake/HiveFindFFmpeg.txt)
 INCLUDE(cmake/HiveFindBreakpad.txt)
 INCLUDE(cmake/HiveFindProtobuf.txt)
+INCLUDE(cmake/HiveFindLibJson.txt)
 
 
 #add_custom_target(

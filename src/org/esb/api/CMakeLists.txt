@@ -6,9 +6,14 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 add_library (api
     MHiveServerConnection.cpp
     MediaFile.cpp
+    JsonServer.cpp
+    JsonEncoding.cpp
  )
 TARGET_LINK_LIBRARIES(api
+    av
     rpc
+    ${LIBJSON_LIBRARY}
+    db
 )
 
 IF(BUILD_SHARED_LIBS)

@@ -313,6 +313,7 @@ add_library (hive
   hive/xml/Project.cpp
   hive/xml/JobCreator.cpp
   config/config.cpp
+  hive/mongoose.c
 )
 
 TARGET_LINK_LIBRARIES(hive db net signal av lang)
