@@ -7,7 +7,12 @@ add_executable (ProfileGroupTest ProfileGroupTest.cpp)
 target_link_libraries (LiteSqlDatabaseCreateTest hive)
 target_link_libraries (ProfileGroupTest hive)
 
-ADD_TEST(db.LiteSqlDatabaseCreateTest ${EXECUTABLE_OUTPUT_PATH}/LiteSqlDatabaseCreateTest )
-ADD_TEST(db.ProfileGroupTest ${EXECUTABLE_OUTPUT_PATH}/ProfileGroupTest )
+
+message("VARDB:" ${LD_VARNAME}=${LD_PATH})
+ADD_TEST(LiteSqlDatabaseCreateTest ${EXECUTABLE_OUTPUT_PATH}/LiteSqlDatabaseCreateTest )
+SET_TESTS_PROPERTIES(LiteSqlDatabaseCreateTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
+
+ADD_TEST(ProfileGroupTest ${EXECUTABLE_OUTPUT_PATH}/ProfileGroupTest )
+SET_TESTS_PROPERTIES(ProfileGroupTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
 
 

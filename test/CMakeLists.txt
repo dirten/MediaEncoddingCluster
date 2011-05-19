@@ -42,6 +42,13 @@ IF(BUILD_TESTING)
 #
 get_target_property(utildir util LOCATION_Debug)
 get_filename_component(utildir "${utildir}" PATH)
+file(TO_NATIVE_PATH "${utildir}" native_utildir)
+
+
+get_target_property(iodir io LOCATION_Debug)
+get_filename_component(iodir "${iodir}" PATH)
+file(TO_NATIVE_PATH "${iodir}" native_iodir)
+
 #file(TO_NATIVE_PATH "${utildir}" native_utildir)
 message("UtilDir" ${utildir})
 #
@@ -56,14 +63,18 @@ message("UtilDir" ${utildir})
 #
 if (WIN32)
    set (LD_VARNAME "PATH")
-   set (LD_PATH "${utildir};${MEC_SOURCE_DIR}/target/dependency/lib;${native_3rdparty_bin};$ENV{PATH}")
-
+   #string(REPLACE ";" ";" PATH "$ENV{PATH}")
+   #MESSAGE("ENVPATH=" $ENV{PATH})
+   #MESSAGE("PATH=" ${PATH})
+   set (LD_PATH "${native_utildir};${native_iodir};${MEC_SOURCE_DIR}/target/dependency/lib;${native_3rdparty_bin};$ENV{PATH}")
+	
    #
    # IMPORTANT NOTE: The set_tests_properties(), below, internally
    # stores its name/value pairs with a semicolon delimiter.
    # because of this we must protect the semicolons in the path
    #
    string(REPLACE ";" "\\;" LD_PATH "${LD_PATH}")
+  
 else ()
    set (LD_VARNAME "LD_LIBRARY_PATH")
    set (LD_PATH "${native_utildir}:${native_3rdparty_lib}:$ENV{LD_LIBRARY_PATH}")
