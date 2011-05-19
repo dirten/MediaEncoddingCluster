@@ -12,6 +12,7 @@
         <include>**/*</include>
       </includes>
     </fileSet>
+                                                  
     <fileSet>
       <directory>source/libjson</directory>
       <outputDirectory>lib</outputDirectory>
@@ -20,4 +21,12 @@
       </includes>
     </fileSet>
   </fileSets>
+    <files>
+        <file>
+          <source>source/libjson/${lib_file_name}</source>
+          <outputDirectory>lib</outputDirectory>
+          <destName>libjson.a</destName>
+        </file>
+    </files>
+
 </assembly>
