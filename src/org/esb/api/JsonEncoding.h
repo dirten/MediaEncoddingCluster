@@ -8,7 +8,7 @@
 #ifndef JSONENCODING_H
 #define	JSONENCODING_H
 #include "org/esb/db/hivedb.hpp"
-#include "libjson/libjson.h"
+#include "org/esb/libjson/libjson.h"
 
 namespace org {
   namespace esb {

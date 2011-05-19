@@ -8,7 +8,7 @@
 #ifndef JSONSERVER_H
 #define	JSONSERVER_H
 #include "org/esb/hive/mongoose.h"
-#include "libjson/libjson.h"
+#include "org/esb/libjson/libjson.h"
 
 namespace org {
   namespace esb {
