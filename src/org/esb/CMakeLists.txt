@@ -114,6 +114,7 @@ TARGET_LINK_LIBRARIES(db ${SQLITE_LIBRARY})
 #    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
 #    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 #ENDIF(BUILD_SHARED_LIBS)
+add_subdirectory (libjson)
 add_subdirectory (av)
 add_subdirectory (lang)
 add_subdirectory (mq)
