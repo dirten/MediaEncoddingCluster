@@ -142,15 +142,16 @@
               <tasks>
                 <mkdir dir="source"/>
                 <mkdir dir="source/build"/>
-                <get src="http://downloads.sourceforge.net/project/libjson/libjson_7.1.0.zip"
-                     dest="source/libjson_7.1.0.zip"
+                <get src="http://downloads.sourceforge.net/project/libjson/libjson_7.1.1.zip"
+                     dest="source/libjson_7.1.1.zip"
                      verbose="true" usetimestamp="true"/>
-                <unzip src="source/libjson_7.1.0.zip" dest="source"/>
+                <unzip src="source/libjson_7.1.1.zip" dest="source"/>
 
               <pathconvert property="mybasedir" targetos="unix">
                   <path location="${project.basedir}"/>
                 </pathconvert>
 		<patch patchfile="src/patch/libjson_JSONOptions.h.patch" dir="source/libjson" strip="0"/>
+		<patch patchfile="src/patch/libjson_makefile.patch" dir="source/libjson" strip="0"/>
 
                 <exec executable="make" dir="source/libjson" failonerror="yes">
             	    <arg line="-e prefix=${mybasedir}/source/build/libjson"/>

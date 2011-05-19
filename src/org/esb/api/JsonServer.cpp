@@ -42,9 +42,11 @@ namespace org {
       bool JsonServer::contains(JSONNode& node, std::string name){
         bool result=false;
         int size=node.size();
+        LOGDEBUG("NodeSize="<<size);
         if(size>0){
           for(int a=0;a<size;a++){
             JSONNode n=node[a];
+            LOGDEBUG("name="<<n.name());
             if(name==n.name()){
               result = true;
             }
@@ -134,18 +136,31 @@ namespace org {
               
               LOGDEBUG(data);
               try{
-              JSONNode inode=libjson::parse(data);
-              
-              LOGDEBUG("INodeType:"<<(inode.type()==JSON_NODE));
-              LOGDEBUG("INode size:"<<inode.size());
-              if(!contains(inode, "testname")){
-                LOGDEBUG("testname does not exit");
-              }
-              JSONNode node=inode["description"];
-              LOGDEBUG("NodeType:"<<node.type());
-              LOGDEBUG("Node:"<<node.as_string());
+                if(libjson::is_valid(data)){
+                  LOGDEBUG("Data is valid");
+                JSONNode inode=libjson::parse(data);
+
+                LOGDEBUG("INodeType:"<<(inode.type()==JSON_NODE));
+                //LOGDEBUG("INode size:"<<inode.size());
+                if(!contains(inode, "name")){
+                  LOGDEBUG("name does not exit");
+                }
+                
+                n=inode;
+                }else{
+                  JSONNode error(JSON_NODE);
+
+
+                  error.set_name("error");
+                  error.push_back(JSONNode("code","parse_error"));
+                  error.push_back(JSONNode("description","no valid json format given"));
+                  n.push_back(error);
+
+                }
               }catch(std::exception &ex){
                 LOGDEBUG(ex.what());
+
+                
                 n.empty();
                 n.set_name("error");
                 n.push_back(JSONNode("code",1));

@@ -1,0 +1,11 @@
+--- makefile	2011-03-03 14:03:08.000000000 +0100
++++ libjson/makefile	2011-05-19 14:21:18.294888388 +0200
+@@ -126,7 +126,7 @@
+ # JSON source files to build
+ objects        = internalJSONNode.o JSON_Base64.o JSONChildren.o \
+                  JSONDebug.o JSONIterators.o JSONMemory.o JSONNode_Mutex.o \
+-                 JSONNode.o JSONWorker.o JSONWriter.o libjson.o
++                 JSONNode.o JSONWorker.o JSONWriter.o libjson.o JSONValidator.o
+ OS=$(shell uname)
+ 
+ # Defaults
