@@ -533,6 +533,8 @@ bool setupDatabase() {
       }
       db.commit();
     }
+  }else{
+    DatabaseService::updateTables();
   }
   /**stopping the internal database service*/
   org::esb::hive::DatabaseService::stop();

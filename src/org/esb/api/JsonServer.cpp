@@ -5,7 +5,6 @@
  * Created on 18. Mai 2011, 13:16
  */
 
-#include "org/esb/hive/DatabaseService.h"
 #include "JsonServer.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
@@ -15,9 +14,13 @@
 #include "org/esb/io/File.h"
 #include "org/esb/hive/PresetReader.h"
 #include "org/esb/av/AV.h"
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
+#include "boost/lexical_cast.hpp"
 namespace org {
   namespace esb {
     namespace api {
+      db::HiveDb JsonServer::_db = org::esb::hive::DatabaseService::getDatabase();
 
       JsonServer::JsonServer(int port) {
         std::string ports = org::esb::util::StringUtil::toString(port);
@@ -126,12 +129,42 @@ namespace org {
                 }
               }
               n.push_back(c);
-            }else if (strcmp(request_info->request_method, "POST") == 0){
-              int bytes=0;
+            }
+            /*
+             * when the preset will be updated
+             *
+             */
+            else if (strcmp(request_info->request_method, "POST") == 0){
+                            int bytes=0;
               char buffer[1000];
               std::string data;
               while((bytes=mg_read(conn, buffer, sizeof(buffer)))>0){
                 data=data.append(buffer, bytes);
+              }
+              boost::uuids::uuid uuid=boost::uuids::random_generator()();
+              std::string uuidstr=boost::lexical_cast<std::string>(uuid);
+
+              if (request_info->query_string != NULL) {
+                char iddata[100];
+                mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
+                LOGDEBUG("DataId" << iddata);
+                _db.begin();
+                LOGDEBUG("DATABASE open")
+                vector<db::Preset> presets=litesql::select<db::Preset>(_db, db::Preset::Uuid==iddata).all();
+                LOGDEBUG("selection get")
+                if(presets.size()==1){
+                  uuidstr=iddata;
+                  db::Preset preset=presets.front();
+                  preset.data=data;
+                  preset.update();
+                }else{
+                  db::Preset preset(_db);
+                  preset.data=data;
+                  preset.uuid=uuidstr;
+                  preset.update();
+                }
+                _db.commit();
+                LOGDEBUG("preset updated");
               }
               
               LOGDEBUG(data);
@@ -145,7 +178,9 @@ namespace org {
                 if(!contains(inode, "name")){
                   LOGDEBUG("name does not exit");
                 }
-                
+                LOGDEBUG(uuidstr);
+                JSONNode id("id",uuidstr);
+                inode.push_back(id);
                 n=inode;
                 }else{
                   JSONNode error(JSON_NODE);

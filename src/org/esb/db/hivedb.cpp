@@ -3079,24 +3079,30 @@ const std::string Preset::table__("Preset_");
 const std::string Preset::sequence__("Preset_seq");
 const litesql::FieldType Preset::Id("id_","INTEGER",table__);
 const litesql::FieldType Preset::Type("type_","TEXT",table__);
+const litesql::FieldType Preset::Uuid("uuid_","TEXT",table__);
 const litesql::FieldType Preset::Name("name_","TEXT",table__);
 const litesql::FieldType Preset::Filename("filename_","TEXT",table__);
+const litesql::FieldType Preset::Data("data_","TEXT",table__);
 void Preset::defaults() {
     id = 0;
 }
 Preset::Preset(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), name(Name), filename(Filename) {
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), name(Name), filename(Filename), data(Data) {
     defaults();
 }
 Preset::Preset(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), filename(Filename) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), name(Name), filename(Filename), data(Data) {
     defaults();
-    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    size_t size = (rec.size() > 6) ? 6 : rec.size();
     switch(size) {
-    case 4: filename = convert<const std::string&, std::string>(rec[3]);
+    case 6: data = convert<const std::string&, std::string>(rec[5]);
+        data.setModified(false);
+    case 5: filename = convert<const std::string&, std::string>(rec[4]);
         filename.setModified(false);
-    case 3: name = convert<const std::string&, std::string>(rec[2]);
+    case 4: name = convert<const std::string&, std::string>(rec[3]);
         name.setModified(false);
+    case 3: uuid = convert<const std::string&, std::string>(rec[2]);
+        uuid.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
         type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
@@ -3104,14 +3110,16 @@ Preset::Preset(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Preset::Preset(const Preset& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), filename(obj.filename) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), name(obj.name), filename(obj.filename), data(obj.data) {
 }
 const Preset& Preset::operator=(const Preset& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
+        uuid = obj.uuid;
         name = obj.name;
         filename = obj.filename;
+        data = obj.data;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -3132,12 +3140,18 @@ std::string Preset::insert(litesql::Record& tables, litesql::Records& fieldRecs,
     fields.push_back(type.name());
     values.push_back(type);
     type.setModified(false);
+    fields.push_back(uuid.name());
+    values.push_back(uuid);
+    uuid.setModified(false);
     fields.push_back(name.name());
     values.push_back(name);
     name.setModified(false);
     fields.push_back(filename.name());
     values.push_back(filename);
     filename.setModified(false);
+    fields.push_back(data.name());
+    values.push_back(data);
+    data.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -3155,16 +3169,20 @@ void Preset::addUpdates(Updates& updates) {
     prepareUpdate(updates, table__);
     updateField(updates, table__, id);
     updateField(updates, table__, type);
+    updateField(updates, table__, uuid);
     updateField(updates, table__, name);
     updateField(updates, table__, filename);
+    updateField(updates, table__, data);
 }
 void Preset::addIDUpdates(Updates& updates) {
 }
 void Preset::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
+    ftypes.push_back(Uuid);
     ftypes.push_back(Name);
     ftypes.push_back(Filename);
+    ftypes.push_back(Data);
 }
 void Preset::delRecord() {
     deleteFromTable(table__, id);
@@ -3209,8 +3227,10 @@ std::auto_ptr<Preset> Preset::upcastCopy() {
     Preset* np = new Preset(*this);
     np->id = id;
     np->type = type;
+    np->uuid = uuid;
     np->name = name;
     np->filename = filename;
+    np->data = data;
     np->inDatabase = inDatabase;
     return auto_ptr<Preset>(np);
 }
@@ -3218,8 +3238,10 @@ std::ostream & operator<<(std::ostream& os, Preset o) {
     os << "-------------------------------------" << std::endl;
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
+    os << o.uuid.name() << " = " << o.uuid << std::endl;
     os << o.name.name() << " = " << o.name << std::endl;
     os << o.filename.name() << " = " << o.filename << std::endl;
+    os << o.data.name() << " = " << o.data << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6389,7 +6411,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("MediaFile_","table","CREATE TABLE MediaFile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filename_ TEXT,path_ TEXT,filesize_ DOUBLE,streamcount_ INTEGER,containertype_ TEXT,duration_ DOUBLE,starttime_ DOUBLE,bitrate_ INTEGER,created_ INTEGER,filetype_ INTEGER,parent_ INTEGER,metatitle_ TEXT,metaauthor_ TEXT,metacopyright_ TEXT,metacomment_ TEXT,metaalbum_ TEXT,metayear_ INTEGER,metatrack_ INTEGER,metagenre_ INTEGER)"));
     res.push_back(Database::SchemaItem("ProfileGroup_","table","CREATE TABLE ProfileGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT)"));
     res.push_back(Database::SchemaItem("Profile_","table","CREATE TABLE Profile_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,format_ TEXT,formatext_ TEXT,vcodec_ INTEGER,vbitrate_ INTEGER,vframerate_ TEXT,vwidth_ INTEGER,vheight_ INTEGER,vextra_ TEXT,achannels_ INTEGER,acodec_ INTEGER,abitrate_ INTEGER,asamplerate_ INTEGER,aextra_ TEXT,profiletype_ INTEGER,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,filename_ TEXT)"));
+    res.push_back(Database::SchemaItem("Preset_","table","CREATE TABLE Preset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,name_ TEXT,filename_ TEXT,data_ TEXT)"));
     res.push_back(Database::SchemaItem("ProfileParameter_","table","CREATE TABLE ProfileParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT,mediatype_ INTEGER)"));
     res.push_back(Database::SchemaItem("Stream_","table","CREATE TABLE Stream_ (id_ " + backend->getRowIDType() + ",type_ TEXT,streamindex_ INTEGER,streamtype_ INTEGER,codecid_ INTEGER,codecname_ TEXT,frameratenum_ INTEGER,framerateden_ INTEGER,streamtimebasenum_ INTEGER,streamtimebaseden_ INTEGER,codectimebasenum_ INTEGER,codectimebaseden_ INTEGER,firstpts_ DOUBLE,firstdts_ DOUBLE,duration_ DOUBLE,nbframes_ DOUBLE,ticksperframe_ INTEGER,framecount_ INTEGER,width_ INTEGER,height_ INTEGER,gopsize_ INTEGER,pixfmt_ INTEGER,bitrate_ INTEGER,samplerate_ INTEGER,samplefmt_ INTEGER,channels_ INTEGER,bitspercodedsample_ INTEGER,privdatasize_ INTEGER,privdata_ TEXT,extradatasize_ INTEGER,extradata_ BLOB,aspectratio_ TEXT,flags_ INTEGER,extraprofileflags_ TEXT)"));
     res.push_back(Database::SchemaItem("StreamParameter_","table","CREATE TABLE StreamParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));

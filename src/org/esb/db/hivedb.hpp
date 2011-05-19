@@ -1099,10 +1099,14 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static const litesql::FieldType Uuid;
+    litesql::Field<std::string> uuid;
     static const litesql::FieldType Name;
     litesql::Field<std::string> name;
     static const litesql::FieldType Filename;
     litesql::Field<std::string> filename;
+    static const litesql::FieldType Data;
+    litesql::Field<std::string> data;
 protected:
     void defaults();
 public:

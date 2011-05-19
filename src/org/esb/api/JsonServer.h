@@ -7,6 +7,7 @@
 
 #ifndef JSONSERVER_H
 #define	JSONSERVER_H
+#include "org/esb/hive/DatabaseService.h"
 #include "org/esb/hive/mongoose.h"
 #include "org/esb/libjson/libjson.h"
 
@@ -22,6 +23,7 @@ namespace org {
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
         static bool contains(JSONNode&, std::string);
+        static db::HiveDb _db;
       };
     }
   }

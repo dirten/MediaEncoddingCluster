@@ -90,8 +90,10 @@
     </object>
 
     <object name="Preset">
+        <field name="uuid" type="string"/>
         <field name="name" type="string"/>
         <field name="filename" type="string"/>
+        <field name="data" type="string"/>
     </object>
 
     <relation object="Preset">
