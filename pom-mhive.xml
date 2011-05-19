@@ -165,6 +165,7 @@
                 <copy file="${project.build.directory}/dependency/lib/litesql-utild.lib" tofile="${project.build.directory}/dependency/lib/litesql-util.lib" failonerror="no"/>
 
                 <copy file="${project.build.directory}/dependency/lib/log4cplusd.lib" tofile="${project.build.directory}/dependency/lib/log4cplus.lib" failonerror="no"/>
+                <copy file="${project.build.directory}/dependency/lib/libjson.a" tofile="${project.build.directory}/dependency/lib/libjson.lib" failonerror="no"/>
 
               </tasks>
             </configuration>
