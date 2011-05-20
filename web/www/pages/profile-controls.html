@@ -1,0 +1,35 @@
+<div align="right">
+<input type="submit" class="submit" id="profileSubmit" value="Save Profile" />
+<input type="submit" class="submit" id="profileCancel" value="Cancel" />
+</div>
+<script type="text/javascript">
+
+    $('profileSubmit').addEvent('click', function(e){
+//      new Event(e).stop();
+//      new Event(e).stop();
+//      var json=form2json($('profileForm'));
+      
+      alert(JSON.encode(profileModel));
+
+      new Request.JSON({
+        url: '/api/profile',
+        method: 'POST',
+        onComplete: function(props) {
+          if(!props.error){
+            MochaUI.closeWindow($('profileWindow'));
+            MochaUI.notification('Profile Updated');
+            profilegrid.refresh();
+          }else{
+            MochaUI.notification('Error: '+props.error.description);
+          }
+        }
+      }).send(JSON.encode(profileModel));
+    });
+    $('profileCancel').addEvent('click', function(e){
+      new Event(e).stop();
+      //alert(JSON.encode(profileModel));
+
+      MochaUI.closeWindow($('profileWindow'));
+      MochaUI.notification('Profile Update Canceled');
+    });
+</script>

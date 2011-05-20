@@ -1,0 +1,121 @@
+<script type="text/javascript">
+
+  function onGridSelect(evt)
+  {
+/*
+    var str = 'row: '+evt.row+' indices: '+evt.indices;
+    str += ' id: '+evt.target.getDataByRow(evt.row).id;
+
+    alert( str );
+*/
+    var url='/api/json/get_profile';
+    var request = new Request.JSON({
+      url: url,
+      method: 'get',
+      onComplete: function(properties) {
+        setProfileDetails(properties);
+      }
+    }).send('id='+evt.target.getDataByRow(evt.row).id);
+
+
+  }
+  function openForm(evt)
+  {
+    new MochaUI.Window({
+      id: 'updateform',
+      title: 'Update Software',
+      icon: 'images/icons/page.gif',
+      scrollbars:true,
+      loadMethod: 'xhr',
+      contentURL: 'pages/updateform.html',
+      onContentLoaded: function(){
+        setUpdateFormData(evt.target.getDataByRow(evt.row));
+      },
+      width: 400,
+      height: 250,
+      maximizable: false,
+      resizable: false,
+      scrollbars: false
+    });
+  }
+
+  function gridButtonClick(button, grid)
+  {
+    alert(button);
+  }
+
+  var cmu = [
+    {
+      header: "Version",
+      dataIndex: 'version',
+      dataType:'string',
+      width:100
+    },
+    {
+      header: "Description",
+      dataIndex: 'description',
+      dataType:'string',
+      width:400
+    },
+    {
+      header: "State",
+      dataIndex: 'state',
+      dataType:'string',
+      width:100
+    }
+  ];
+
+  window.addEvent("domready", function(){
+
+    updateg = new omniGrid('updategrid', {
+      columnModel: cmu,
+      /*
+      buttons : [
+        {name: 'Add', bclass: 'add', onclick : gridButtonClick},
+        {name: 'Delete', bclass: 'delete', onclick : gridButtonClick},
+        {separator: true},
+        {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
+      ],*/
+      url:"/api/json/softwareupdate",
+      perpage:10,
+      page:1,
+      pagination:false,
+      serverSort:false,
+      showHeader: true,
+      alternaterows: true,
+      showHeader:true,
+      sortHeader:true,
+      resizeColumns:true,
+      multipleSelection:false,
+
+      // uncomment this if you want accordion behavior for every row
+      /*
+	        accordion:true,
+	        accordionRenderer:accordionFunction,
+	        autoSectionToggle:false,
+       */
+
+      width:800,
+      height: null
+    });
+
+//    datagrid.addEvent('click', onGridSelect);
+    updateg.addEvent('dblclick', openForm);
+    $('checkForUpdatesButton').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.notification('Check for Updates now');
+      new Request.JSON({
+      url: '/api/json/softwareupdate',
+      method: 'post',
+      onComplete: function(properties) {
+        MochaUI.notification('Check for Updates sucessful');
+      }
+    }).send('{"command":"check_for_updates"}');
+//      MochaUI.profileWindow();
+    });
+
+  });
+
+</script>
+<button class="load" id="checkForUpdatesButton">Check for new Updates now ...</button>
+<div id="updategrid" ></div>

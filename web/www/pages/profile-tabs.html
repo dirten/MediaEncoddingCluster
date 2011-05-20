@@ -1,0 +1,46 @@
+<div class="toolbarTabs">
+	<ul id="panelTabs" class="tab-menu">
+		<li id="overviewTabsLink" class="selected"><a>Overview</a></li>
+		<li id="formatTabsLink"><a>Format</a></li>
+		<li id="videoTabsLink"><a>Video</a></li>
+		<li id="audioTabsLink"><a>Audio</a></li>
+	</ul>
+	<div id="profiledata" class="clear"></div>
+</div>
+
+<script type="text/javascript">
+
+	MochaUI.initializeTabs('panelTabs');
+
+	$('overviewTabsLink').addEvent('click', function(e){
+		MochaUI.updateContent({
+			'element':  $('profileWindow'),
+			'url':       'pages/profile/overviewform.html'
+		});
+	});
+	$('formatTabsLink').addEvent('click', function(e){
+		MochaUI.updateContent({
+			'element':  $('profileWindow'),
+			'url':       'pages/profile/formatform.html'
+		});
+	});
+	$('videoTabsLink').addEvent('click', function(e){
+		MochaUI.updateContent({
+			'element':  $('profileWindow'),
+			'url':       'pages/profile/videoform.html',
+		});
+	});
+	$('audioTabsLink').addEvent('click', function(e){
+		MochaUI.updateContent({
+			'element':  $('profileWindow'),
+			'url':       'pages/profile/audioform.html',
+		});
+	});
+		MochaUI.updateContent({
+			'element':  $('profileWindow'),
+			'url':       'pages/profile/overviewform.html'
+		});
+
+
+</script>
+

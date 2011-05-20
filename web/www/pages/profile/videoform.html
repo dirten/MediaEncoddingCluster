@@ -1,0 +1,200 @@
+<form id="profileVideoForm">
+  <div class="formLabel">Video Codec:</div>
+  <div class="formField"><select class="input" name="id" id="id" value=""></select></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">Video Bitrate:</div>
+  <div class="formField"><input type="text" class="input number" name="b" id="b" value="" maxlength="8" /><div class="lite">value in KB e.g. (1024)</div></div>
+  <div class="clear"></div>
+
+  <div class="formLabel" >Video Framerate:</div>
+	<div class="formField">
+    <!--<select class="input" name="profileVideoFramerate" id="profileVideoFramerate" value=""></select>-->
+    <select name="time_base" id="time_base" class="input" >
+        <option value="0.099">0.09</option>
+        <option value="1/100">5.995</option>
+      <option>7.5</option>
+      <option>7.992</option>
+      <option>8.0</option>
+      <option>10.0</option>
+      <option>11.998</option>
+      <option>12.0</option>
+      <option>14.985</option>
+      <option>15.0</option>
+      <option>20.0</option>
+      <option>23.98</option>
+      <option>24.0</option>
+      <option>25.0</option>
+      <option>29.97</option>
+      <option>30.0</option>
+    </select>
+  </div>
+  <div class="clear"></div>
+
+  <div class="formLabel">Video Width:</div>
+  <div class="formField"><input type="text" class="input number" name="width" id="width" value="320" maxlength="4" /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">Video Height:</div>
+  <div class="formField"><input type="text" class="input number" name="height" id="height" value="240" maxlength="4" /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">2 Pass Encoding:</div>
+  <div class="formField"><input type="checkbox" name="multipass" id="multipass" value="1" maxlength="4" /></div>
+  <div class="clear"></div>
+
+  <div class="formLabel">Group of Picture size:</div>
+  <div class="formField"><input type="text" class="input" name="g" id="g" value="" maxlength="4" /></div>
+  <div class="clear"></div>
+
+</form>
+<script type="text/javascript">
+
+  function setProfileCodecData(props,vcodec){
+      
+    $each(props,function(prop){
+      if(prop.type==0){
+        var el = new Element('option',{'text':prop.longname, 'value':prop.id}).inject($('id'));
+        if(prop.id==vcodec)
+          el.set('selected');
+
+      }
+    });
+  }
+  function setProfileFormatData(props, selected){
+    $each(props,function(prop){
+      var el=new Element('option',{'text':prop.long_name, 'value':prop.name}).inject($('profileContainerFormat'));
+      if(prop.name==selected)
+        el.set('selected');
+    });
+  }
+  function setProfileSampleRateData(props, selected){
+    $each(props,function(prop){
+      var el=new Element('option',{'text':prop+' Hz', 'value':prop}).inject($('profileAudioSamplerate'));
+      if(prop==selected)
+        el.set('selected');
+    });
+  }
+  function setProfileAudioBitrateData(props, selected){
+    $each(props,function(prop){
+      var el=new Element('option',{'text':prop+' Kbits/s', 'value':prop}).inject($('profileAudioBitrate'));
+      if(prop==selected)
+        el.set('selected');
+    });
+  }
+  function setProfileFrameRateData(props, selected){
+    $each(props,function(prop){
+      var el=new Element('option',{'text':prop+' fps', 'value':prop}).inject($('profileVideoFramerate'));
+      if(prop==selected)
+        el.set('selected');
+    });
+  }
+  function testCall(){
+    alert("test call");
+  }
+
+  function setProfileFormData(props){
+    new Request.JSON({
+      url: '/api/codec',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileCodecData(properties.data,null, null);
+        else{
+          setProfileCodecData(properties.data,0, 0);
+          }
+      }
+    }).send();
+    new Request.JSON({
+      url: '/api/json/format',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileFormatData(properties.data,null);
+        else
+          setProfileFormatData(properties.data,props.vformat);
+      }
+    }).send();
+    new Request.JSON({
+      url: '/api/json/config?key=samplerates',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileSampleRateData(properties.samplerates,null);
+        else
+          setProfileSampleRateData(properties.samplerates,props.asamplerate);
+      }
+    }).send();
+    new Request.JSON({
+      url: '/api/json/config?key=audio_bitrates',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileAudioBitrateData(properties.audio_bitrates,null);
+        else
+          setProfileAudioBitrateData(properties.audio_bitrates,props.abitrate);
+      }
+    }).send();
+    new Request.JSON({
+      url: '/api/json/config?key=framerates',
+      method: 'get',
+      onComplete: function(properties) {
+        if(props==null)
+          setProfileFrameRateData(properties.framerates,null);
+        else
+          setProfileFrameRateData(properties.framerates,props.vframerate);
+      }
+    }).send();
+    if(props==null)return;
+    //    alert(props.vbitrate);
+    $('profileId').set('value',props.id);
+    $('profileName').set('value',props.profilename);
+    $('profileExtension').set('value',props.ext);
+    $('profileVideoBitrate').set('value',props.vbitrate);
+    $('profileVideoWidth').set('value',props.vwidth);
+    $('profileVideoHeight').set('value',props.vheight);
+    $('profileAudioChannels').set('value',props.achannels);
+//    $('profileAudioBitrate').set('value',props.abitrate);
+    $('profileAudioSamplerate').set('value',props.asamplerate);
+    $('profileMultipass').set('value',props.multipass);
+    $('profileGop').set('value',props.gop);
+    optionList=$$('#profileVideoFramerate option');
+    $each(optionList,function(option){
+      if(option.get('text')==props.vframerate){
+        option.set('selected');
+      }
+    });
+    
+    /*
+optionList2=$('profileFormat').getChildren();
+    alert(optionList2);
+    alert('bla');
+    $each(optionList,function(option){
+      if(option.get('value')==props.vformat){
+        option.set('selected');
+      }
+    });*/
+  }
+
+  function setProfileParam(obj,key, val){
+	obj[key]=val;
+  }
+
+  window.addEvent("domready", function(){
+    new Request.JSON({
+      url: '/api/codec',
+      method: 'get',
+      onComplete: function(properties) {
+          setProfileCodecData(properties.data,profileModel.video.id, null);
+      }
+    }).send();
+    setFormChangeListener($('profileVideoForm'), function(el){
+	if(typeof(profileModel.video)!='object'){
+	    profileModel.video=new Object();
+	}
+        value=el.target.type=='checkbox'?el.target.checked:el.target.value;
+	setProfileParam(profileModel.video,el.target.name, value);
+    });
+    setFormData($('profileVideoForm'), profileModel.video);
+  });
+</script>

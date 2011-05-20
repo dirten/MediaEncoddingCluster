@@ -1,0 +1,118 @@
+
+<script type="text/javascript">
+
+  var selectedItem;
+  function openWatchFolderForm(evt)
+  {
+    //   selectedItem=evt.target.getDataByRow(evt.row);
+    MochaUI.watchfolderWindow(evt.target.getDataByRow(evt.row).id);
+  }
+  function setItem(evt)
+  {
+    selectedItem=evt.target.getDataByRow(evt.row);
+  }
+
+  var cmu2 = [
+    {
+      header: "Id",
+      dataIndex: 'id',
+      dataType:'number',
+      width:30
+    },
+    {
+      header: "Input Folder",
+      dataIndex: 'infolder',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "Output Folder",
+      dataIndex: 'outfolder',
+      dataType:'string',
+      width:200
+    },
+    {
+      header: "Profile ID",
+      dataIndex: 'profile',
+      dataType:'number',
+      width:60
+    },
+    {
+      header: "File Filter",
+      dataIndex: 'filter',
+      dataType:'string',
+      width:100
+    },
+    {
+      header: "Recursive",
+      dataIndex: 'recursive',
+      dataType:'string',
+      width:100
+    },
+    {
+      header: "State",
+      dataIndex: 'status',
+      width:60,
+      dataType:'string'
+    }
+
+  ];
+  
+  window.addEvent("domready", function(){
+
+    watchfgrid = new omniGrid('watchfoldergrid', {
+      columnModel: cmu2,
+      url:"/api/json/watchfolder",
+      method:'get',
+      
+      perpage:10,
+      page:1,
+      pagination:false,
+      serverSort:false,
+      showHeader: true,
+      alternaterows: true,
+
+      sortHeader:true,
+      resizeColumns:true,
+      multipleSelection:false,
+      width:800,
+      height: null
+    });
+
+    
+    watchfgrid.addEvent('dblclick', openWatchFolderForm);
+    watchfgrid.addEvent('click', setItem);
+  
+    $('createNewWatchfolderButton').addEvent('click', function(e){
+      new Event(e).stop();
+      MochaUI.watchfolderWindow(-1);
+    });
+    $('deleteWatchfolderButton').addEvent('click', function(e){
+      new Event(e).stop();
+      if(selectedItem!=null&&selectedItem.id!=null){
+        if(confirm("Do you really want to delete the watchfolder Entry with the Id "+selectedItem.id+"?")){
+          new Request.JSON({
+
+          url: '/api/json/watchfolder',
+          method: 'POST',
+          onComplete: function(props) {
+            if(props.ok){
+              MochaUI.notification('Watchfolder deleted');
+              watchfgrid.refresh();
+            }else{
+              MochaUI.notification('Error: '+props.error);
+            }
+          }
+        }).send("{\"action\":\"delete\",\"id\":\""+selectedItem.id+"\"}");
+      }
+    }else{
+      alert("please select an Item in the Watchfolder List!");
+    }
+    selectedItem=null;
+  });
+});
+
+</script>
+<button class="add" id="createNewWatchfolderButton">Create Watchfolder...</button>
+<button class="delete" id="deleteWatchfolderButton">Delete selected Watchfolder...</button>
+<div id="watchfoldergrid" ></div>

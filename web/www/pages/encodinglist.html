@@ -1,0 +1,103 @@
+<link rel="stylesheet" media="screen" href="omnigrid/omnigrid.css" type="text/css" />
+<!--
+<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
+<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
+<script type="text/javascript" src="../omnigrid/omnigrid.js"></script>
+-->
+
+									    
+<script type="text/javascript">
+
+  function onGridSelect(evt)
+  {
+        var url='/api/encoding';
+        var request = new Request.JSON({
+          url: url,
+          method: 'get',
+          onComplete: function(properties) {
+            var l=properties.id;
+              setEncodingDetails(properties);
+          }
+        }).send(evt.target.getDataByRow(evt.row).id);
+  }
+
+  function gridButtonClick(button, grid)
+  {
+    alert(button);
+  }
+
+  var cmu = [
+    {
+      header: "Encoding Id",
+      dataIndex: 'id',
+      dataType:'string',
+      width:230
+    },
+    {
+      header: "Created",
+      dataIndex: 'created',
+      dataType:'string',
+      width:110
+    },
+    {
+      header: "Started",
+      dataIndex: 'started',
+      dataType:'string',
+      width:110
+    },
+    {
+      header: "Finished",
+      dataIndex: 'ended',
+      dataType:'string',
+      width:110
+    },
+    {
+      header: "% Progress",
+      dataIndex: 'progress',
+      dataType:'string',
+      width:110
+    },
+    {
+      header: "Status",
+      dataIndex: 'status',
+      dataType:'string',
+      width:110
+    }
+
+  ];
+		
+  window.addEvent("domready", function(){
+
+    var datagrid = new omniGrid('encodinggrid', {
+      columnModel: cmu,
+      
+      buttons : [
+        {name: 'Add', bclass: 'add', onclick : gridButtonClick},
+        {name: 'Delete', bclass: 'delete', onclick : gridButtonClick},
+        {separator: true},
+        {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
+      ],
+      url:"/api/encoding",
+      perpage:10,
+      page:1,
+      pagination:false,
+      serverSort:false,
+      showHeader: true,
+      alternaterows: true,
+      showHeader:true,
+      sortHeader:true,
+      resizeColumns:true,
+      multipleSelection:false,
+      width:800,
+      height: null
+    });
+   
+    datagrid.addEvent('click', onGridSelect);
+    //var myRefresh = function(){  this.refresh();};
+    //myRefresh.periodical(2000, datagrid);
+    //datagrid.refresh.periodical(2000);
+  });
+
+</script>
+
+<div id="encodinggrid" ></div>
