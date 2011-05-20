@@ -8,6 +8,7 @@ add_library (api
     MediaFile.cpp
     JsonServer.cpp
     JsonEncoding.cpp
+    JsonProfileHandler.cpp
  )
 TARGET_LINK_LIBRARIES(api
     av

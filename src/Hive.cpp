@@ -54,7 +54,7 @@
 #include "org/esb/mq/QueueManager.h"
 #include "org/esb/mq/QueueConnection.h"
 #include "org/esb/util/Log.h"
-#include "org/esb/lang/StackDumper.h"
+//#include "org/esb/lang/StackDumper.h"
 #include "org/esb/hive/NodeResolver.h"
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/lang/Process.h"
@@ -188,7 +188,7 @@ int main(int argc, char * argv[]) {
 
 
 #ifdef NDEBUG
-    new StackDumper(config::Config::get("hive.dump_path"));
+//    new StackDumper(config::Config::get("hive.dump_path"));
 #endif
 
 
@@ -200,7 +200,8 @@ int main(int argc, char * argv[]) {
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
       org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
-      org::esb::api::JsonServer server(8081);
+      
+      org::esb::api::JsonServer server(8080);
       listener(argc, argv);
     }
 
@@ -226,12 +227,12 @@ int main(int argc, char * argv[]) {
       org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
       res.start();
 
-      org::esb::web::WebServer webserver;
-      Messenger::getInstance().addMessageListener(webserver);
-      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
-      org::esb::lang::CtrlCHitWaiter::wait();
-      LOGINFO("shutdown app, this will take some time!");
-      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
+//      org::esb::web::WebServer webserver;
+//      Messenger::getInstance().addMessageListener(webserver);
+//      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+//      org::esb::lang::CtrlCHitWaiter::wait();
+//      LOGINFO("shutdown app, this will take some time!");
+//      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
     }
 
     if (vm.count("mon")) {
@@ -386,8 +387,8 @@ void start() {
   Messenger::getInstance().addMessageListener(expscan);
 
 
-  org::esb::web::WebServer webserver;
-  Messenger::getInstance().addMessageListener(webserver);
+//  org::esb::web::WebServer webserver;
+//  Messenger::getInstance().addMessageListener(webserver);
 
   org::esb::hive::HiveListener hive;
   Messenger::getInstance().addMessageListener(hive);

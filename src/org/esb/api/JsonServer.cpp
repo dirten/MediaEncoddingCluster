@@ -17,6 +17,7 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
+#include "JsonProfileHandler.h"
 namespace org {
   namespace esb {
     namespace api {
@@ -25,9 +26,10 @@ namespace org {
       JsonServer::JsonServer(int port) {
         std::string ports = org::esb::util::StringUtil::toString(port);
         const char *options[] = {
-          "document_root", org::esb::config::Config::get("web.docroot").c_str(),
+          "document_root", (org::esb::config::Config::get("web.docroot")+"/www").c_str(),
           "listening_ports", ports.c_str(),
           "num_threads", "5",
+          "index_files","mec.html",
           NULL
         };
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
@@ -65,6 +67,7 @@ namespace org {
         if (event == MG_NEW_REQUEST) {
           std::string request = request_info->uri;
           LOGDEBUG("Request=" << request);
+          LOGDEBUG("QueryString=" << request_info->query_string);
           LOGDEBUG("RequestMethod=" << request_info->request_method);
           if (request_info->query_string != NULL) {
             char iddata[100];
@@ -105,105 +108,13 @@ namespace org {
               }
             }
             n.push_back(c);
-            std::string json_s = n.write();
-            mg_printf(conn, "%s", json_s.c_str());
+            std::string json_s = n.write_formatted();
+            mg_write(conn, json_s.c_str(), json_s.length());
 
           } else if (request == "/api/profile") {
-            JSONNode n(JSON_NODE);
-            if (strcmp(request_info->request_method, "GET") == 0) {
-              org::esb::io::File presetdir(org::esb::config::Config::get("preset.path"));
-              JSONNode c(JSON_ARRAY);
-              c.set_name("data");
-              if (presetdir.exists()) {
-                org::esb::io::FileList files = presetdir.listFiles();
-                std::list<std::list<std::string> > data;
-                org::esb::io::FileList::iterator file_it = files.begin();
-                for (; file_it != files.end(); file_it++) {
-                  org::esb::hive::PresetReader reader((*file_it)->getPath());
-                  LOGDEBUG((*file_it)->getPath());
-                  std::list<std::string> line;
-                  JSONNode prnode(JSON_NODE);
-                  prnode.push_back(JSONNode("filename", (*file_it)->getFileName()));
-                  prnode.push_back(JSONNode("profilename", reader.getPreset()["name"]));
-                  c.push_back(prnode);
-                }
-              }
-              n.push_back(c);
-            }
-            /*
-             * when the preset will be updated
-             *
-             */
-            else if (strcmp(request_info->request_method, "POST") == 0){
-                            int bytes=0;
-              char buffer[1000];
-              std::string data;
-              while((bytes=mg_read(conn, buffer, sizeof(buffer)))>0){
-                data=data.append(buffer, bytes);
-              }
-              boost::uuids::uuid uuid=boost::uuids::random_generator()();
-              std::string uuidstr=boost::lexical_cast<std::string>(uuid);
-
-              if (request_info->query_string != NULL) {
-                char iddata[100];
-                mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
-                LOGDEBUG("DataId" << iddata);
-                _db.begin();
-                LOGDEBUG("DATABASE open")
-                vector<db::Preset> presets=litesql::select<db::Preset>(_db, db::Preset::Uuid==iddata).all();
-                LOGDEBUG("selection get")
-                if(presets.size()==1){
-                  uuidstr=iddata;
-                  db::Preset preset=presets.front();
-                  preset.data=data;
-                  preset.update();
-                }else{
-                  db::Preset preset(_db);
-                  preset.data=data;
-                  preset.uuid=uuidstr;
-                  preset.update();
-                }
-                _db.commit();
-                LOGDEBUG("preset updated");
-              }
-              
-              LOGDEBUG(data);
-              try{
-                if(libjson::is_valid(data)){
-                  LOGDEBUG("Data is valid");
-                JSONNode inode=libjson::parse(data);
-
-                LOGDEBUG("INodeType:"<<(inode.type()==JSON_NODE));
-                //LOGDEBUG("INode size:"<<inode.size());
-                if(!contains(inode, "name")){
-                  LOGDEBUG("name does not exit");
-                }
-                LOGDEBUG(uuidstr);
-                JSONNode id("id",uuidstr);
-                inode.push_back(id);
-                n=inode;
-                }else{
-                  JSONNode error(JSON_NODE);
-
-
-                  error.set_name("error");
-                  error.push_back(JSONNode("code","parse_error"));
-                  error.push_back(JSONNode("description","no valid json format given"));
-                  n.push_back(error);
-
-                }
-              }catch(std::exception &ex){
-                LOGDEBUG(ex.what());
-
-                
-                n.empty();
-                n.set_name("error");
-                n.push_back(JSONNode("code",1));
-                n.push_back(JSONNode("description","no valid json format given"));
-              }
-            }
+            JSONNode n =JsonProfileHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
-            mg_printf(conn, "%s", json_s.c_str());
+            mg_write(conn, json_s.c_str(), json_s.length());
 
           } else if (request == "/api/encoding") {
             db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();

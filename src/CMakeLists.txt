@@ -127,7 +127,6 @@ ENDIF(BUILD_MHIVESERVICE)
 IF(BUILD_MHIVECLIENT)
     add_executable (mhiveclient MhiveClient.cpp)
     target_link_libraries (mhiveclient
-      web
       hive
       lang
       av
@@ -145,7 +144,6 @@ ENDIF(BUILD_MHIVECLIENT)
 IF(BUILD_MHIVECLIENTAUDIO)
     add_executable (mhiveca HiveClientAudio.cpp)
     target_link_libraries (mhiveca
-      web
       hive
       lang
       av
@@ -162,7 +160,6 @@ ENDIF(BUILD_MHIVECLIENTAUDIO)
 IF(BUILD_MHIVECLIENTVIDEO)
     add_executable (mhivecv HiveClientVideo.cpp)
     target_link_libraries (mhivecv
-      web
       hive
       lang
       av
@@ -228,7 +225,7 @@ ENDIF(BUILD_MHIVEWRITER)
 
 IF(BUILD_MHIVECORE)
     add_executable (mhivecore MHiveCore.cpp)
-    target_link_libraries (mhivecore lang hive web)
+    target_link_libraries (mhivecore lang hive )
     INSTALL(TARGETS mhivecore
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
@@ -243,10 +240,9 @@ ENDIF(BUILD_MHIVECORE)
 #SET(EXTRA_LIBS crypto ${COCOA_LIBRARY})
  
 target_link_libraries (mhive 
-  api
-  web 
+  lang
+  api 
   hive 
-  lang 
   av 
   util 
   signal 
@@ -353,7 +349,8 @@ INSTALL(TARGETS mhiveconfig
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web/
   DESTINATION ${WEB_INSTALL_DIR}
   USE_SOURCE_PERMISSIONS
-  PATTERN ".svn" EXCLUDE)
+  PATTERN ".svn" EXCLUDE
+  PATTERN "www" EXCLUDE)
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/res/
   DESTINATION ${RES_INSTALL_DIR}
@@ -369,6 +366,7 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/presets/
   DESTINATION ${PRESETS_INSTALL_DIR}
 #  USE_SOURCE_PERMISSIONS
   PATTERN ".svn" EXCLUDE)
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND ln -s ${PROJECT_SOURCE_DIR}/web/www ${CMAKE_INSTALL_PREFIX}/web/www)")
 
 IF(NOT WIN32)
   INSTALL(FILES ${PROJECT_SOURCE_DIR}/src/mectl

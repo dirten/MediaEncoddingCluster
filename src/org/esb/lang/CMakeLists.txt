@@ -8,8 +8,8 @@ SET(lang_source
     String.cpp
     Thread.cpp
     Exception.cpp
-    StackDumper.cpp
-    StackDumpUploader.cpp
+#    StackDumper.cpp
+#    StackDumpUploader.cpp
     CtrlCHitWaiter.cpp
     ProcessException.cpp
     ProcessListener.cpp
@@ -41,7 +41,10 @@ add_library (lang
 FIND_LIBRARY(COCOA_LIBRARY COCOA)
 MARK_AS_ADVANCED(COCOA_LIBRARY)
 
-TARGET_LINK_LIBRARIES(lang ${BREAKPAD_LIBS} util)
+TARGET_LINK_LIBRARIES(lang
+#    ${BREAKPAD_LIBS}
+    util
+)
 IF(WIN32)
 	TARGET_LINK_LIBRARIES(lang wininet)
 ELSE(WIN32)
