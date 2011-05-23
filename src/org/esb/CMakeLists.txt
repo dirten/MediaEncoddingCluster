@@ -318,7 +318,7 @@ add_library (hive
   hive/mongoose.c
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang)
+TARGET_LINK_LIBRARIES(hive db net signal av lang json)
 
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive

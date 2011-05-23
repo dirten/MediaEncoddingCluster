@@ -26,38 +26,3 @@
     </codec>
 </preset>
 
-
-{
-    name:"Adobe Flash flv(320x240 500kb) mp3(128kb 44.1kHz stereo) ",
-    format:{
-	id:"flv",
-	params:[{"fileExtension":"flv"}]
-    },
-    codec:{
-	id:"flv",
-	type:"video"
-	params:[
-	    {"b":"500000"},
-	    {"g":"250"},
-	    {"qmin":"2"},
-	    {"qmax":"51"},
-	    {"qdiff":"4"},
-	    {"time_base":"1/25"},
-	    {"aspect":"64/45"},
-	    {"picture_frame_size":"320x240"},
-	    {"width":"320"},
-	    {"height":"240"},
-	    {"flags":"global_header"},
-	]
-    },
-    codec:{
-	id:"flv",
-	type:"audio"
-	params:[
-	    {"ab":"128000"},
-	    {"ac":"2"},
-	    {"ar":"44100"},
-	    {"flags":"global_header"},
-	]
-    },
-}

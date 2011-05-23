@@ -418,6 +418,10 @@ ELSEIF(APPLE)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcodec.dylib)")
 #  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libavcore.dylib)")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change /private/tmp/workspace/ffmpeg_static/build_type/debug/label/mac/trunk/source/build/ffmpeg/lib/libavutil.dylib @executable_path/../lib/libavutil.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libswscale.dylib)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-util.dylib @executable_path/../lib/libmhive-util.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-signal.dylib @executable_path/../lib/libmhive-signal.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-io.dylib @executable_path/../lib/libmhive-io.dylib ${CMAKE_INSTALL_PREFIX}/${BIN_INSTALL_DIR}/mhive)")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change libmhive-util.dylib @executable_path/../lib/libmhive-util.dylib ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libmhive-signal.dylib)")
 
 ELSE(APPLE)
   INSTALL(FILES
