@@ -1,23 +1,70 @@
 <form id="profileAudioForm">
 
-	<div class="formLabel">Audio Channels:</div>
-	<div class="formField"><input type="text" class="input number" name="profileAudioChannels" id="profileAudioChannels" value="" maxlength="4" /></div>
-	<div class="clear"></div>
 
-	<div class="formLabel">Audio Codec:</div>
-  <div class="formField"><select class="input" name="profileAudioCodec" id="profileAudioCodec" value="" maxlength="4" ></select></div>
-	<div class="clear"></div>
+    <div class="formLabel">Audio Codec:</div>
+    <div class="formField"><select class="input" name="id" id="id" value="" maxlength="4" ></select></div>
+    <div class="clear"></div>
 
-	<div class="formLabel">Audio Bitrate:</div>
-	<div class="formField">
-    <select class="input" name="profileAudioBitrate" id="profileAudioBitrate" value=""></select>
-<!--    <input type="text" class="input number" name="profileAudioBitrate" id="profileAudioBitrate" value="" maxlength="4" />-->
-  </div>
-	<div class="clear"></div>
+    <div class="formLabel">Audio Channels:</div>
+    <div class="formField"><select class="input" name="ac" id="ac" value="" maxlength="4" >
+            <option value="1">Mono</option>
+            <option value="2">Stereo</option>
+        </select></div>
+    <div class="clear"></div>
 
-  <div class="formLabel">Audio Samplerate:</div>
-	<div class="formField"><select class="input" name="profileAudioSamplerate" id="profileAudioSamplerate" value=""></select>
+    <div class="formLabel">Audio Bitrate:</div>
+    <div class="formField">
+        <select class="input" name="ab" id="ab" value="">
+            <option title="" value="32000">32 kb/s</option>
+            <option title="" value="96000">96 kb/s</option>
+            <option title="" value="128000">128 kb/s</option>
+            <option title="" value="160000">160 kb/s</option>
+            <option title="" value="192000">192 kb/s</option>
+            <option title="" value="224000">224 kb/s</option>
+            <option title="" value="256000">256 kb/s</option>
+            <option title="" value="320000">320 kb/s</option>
+        </select>
+        <!--    <input type="text" class="input number" name="profileAudioBitrate" id="profileAudioBitrate" value="" maxlength="4" />-->
     </div>
-	<div class="clear"></div>
+    <div class="clear"></div>
+
+    <div class="formLabel">Audio Samplerate:</div>
+    <div class="formField"><select class="input" name="ar" id="ar" value="">
+            <option title="" value="8000">8 kHz</option>
+            <option value="11025">11.025 kHz</option>
+            <option value="22050">22.05 kHz</option>
+            <option value="32000">32 kHz</option>
+            <option value="44100">44.1 kHz</option>
+            <option value="48000">48 kHz</option>
+        </select>
+    </div>
+    <div class="clear"></div>
 
 </form>
+<script type="text/javascript">
+    function setProfileAudioData(props, selected){
+        $each(props,function(prop){
+            if(prop.type==1){
+                var el=new Element('option',{'text':prop.longname, 'value':prop.id}).inject($('id'));
+                if(prop.id==selected)
+                    el.set('selected');
+            }
+        });
+    }
+
+    window.addEvent("domready", function(){
+        new Request.JSON({
+            url: '/api/codec',
+            method: 'get',
+            onComplete: function(properties) {
+                setProfileAudioData(properties.data,profileModel.audio.id);
+            }
+        }).send();
+
+        setFormChangeListener($('profileFormatForm'), function(el){
+            profileModel.audio[el.target.name]=el.target.value;
+        });
+        setFormData($('profileFormatForm'), profileModel.audio);
+    });
+
+</script>

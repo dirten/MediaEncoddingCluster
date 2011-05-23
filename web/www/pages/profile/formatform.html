@@ -1,13 +1,13 @@
 <form id="profileFormatForm">
   <div class="formLabel" >Container Format:</div>
   <div class="formField">
-    <select name="containerFormat" id="containerFormat" class="input" >
+    <select name="id" id="id" class="input" >
     </select>
   </div>
   <div class="clear"></div>
   <div class="formLabel">Container Extension:</div>
   <div class="formField">
-    <select name="containerExtension" id="containerExtension" class="input" >
+    <select name="ext" id="ext" class="input" >
     </select>
   </div>
 	<div class="clear"></div>
@@ -46,7 +46,7 @@
 <script type="text/javascript">
   function setProfileFormatData(props, selected){
     $each(props,function(prop){
-      var el=new Element('option',{'text':prop.longname, 'value':prop.name}).inject($('containerFormat'));
+      var el=new Element('option',{'text':prop.longname, 'value':prop.name}).inject($('id'));
       if(prop.name==selected)
         el.set('selected');
     });
@@ -57,17 +57,14 @@
       url: '/api/format',
       method: 'get',
       onComplete: function(properties) {
-          setProfileFormatData(properties.data,null);
+          setProfileFormatData(properties.data,profileModel.format.id);
       }
     }).send();
 
     setFormChangeListener($('profileFormatForm'), function(el){
-    	if(typeof(profileModel.params.format)!='object'){
-	    profileModel.params.format=new Object();
-	}
-	profileModel.params.format[el.target.name]=el.target.value
+	profileModel.format[el.target.name]=el.target.value;
     });
-    setFormData($('profileFormatForm'), profileModel.params.format);
+    setFormData($('profileFormatForm'), profileModel.format);
   });
 
 </script>

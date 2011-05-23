@@ -136,7 +136,6 @@ add_executable (pc PacketCount.cpp)
 add_executable (mytest test.cpp)
 
 target_link_libraries (info
-  web
   hive
   av
   util

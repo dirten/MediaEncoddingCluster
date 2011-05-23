@@ -3,33 +3,34 @@
   <div class="formField"><select class="input" name="id" id="id" value=""></select></div>
   <div class="clear"></div>
 
-  <div class="formLabel">Video Bitrate:</div>
-  <div class="formField"><input type="text" class="input number" name="b" id="b" value="" maxlength="8" /><div class="lite">value in KB e.g. (1024)</div></div>
-  <div class="clear"></div>
-
   <div class="formLabel" >Video Framerate:</div>
 	<div class="formField">
     <!--<select class="input" name="profileVideoFramerate" id="profileVideoFramerate" value=""></select>-->
     <select name="time_base" id="time_base" class="input" >
-        <option value="0.099">0.09</option>
-        <option value="1/100">5.995</option>
-      <option>7.5</option>
-      <option>7.992</option>
-      <option>8.0</option>
-      <option>10.0</option>
-      <option>11.998</option>
-      <option>12.0</option>
-      <option>14.985</option>
-      <option>15.0</option>
-      <option>20.0</option>
-      <option>23.98</option>
-      <option>24.0</option>
-      <option>25.0</option>
-      <option>29.97</option>
-      <option>30.0</option>
+        <option value="1:1">same as source</option>
+        <option value="1000/5995">5.995</option>
+      <option value="10/75">7.5</option>
+      <option value="1000/7992">7.992</option>
+      <option value="1/8">8.0</option>
+      <option value="1/10">10.0</option>
+      <option value="1000/11998">11.998</option>
+      <option value="1/12">12.0</option>
+      <option value="1000/14985">14.985</option>
+      <option value="1/15">15.0</option>
+      <option value="1/20">20.0</option>
+      <option value="100/2398">23.98</option>
+      <option value="1/24">24.0</option>
+      <option value="1/25">25.0</option>
+      <option value="100/2997">29.97</option>
+      <option value="1/30">30.0</option>
     </select>
   </div>
   <div class="clear"></div>
+
+  <div class="formLabel">Video Bitrate:</div>
+  <div class="formField"><input type="text" class="input number" name="b" id="b" value="" maxlength="8" /><div class="lite">value in KB e.g. (1024)</div></div>
+  <div class="clear"></div>
+
 
   <div class="formLabel">Video Width:</div>
   <div class="formField"><input type="text" class="input number" name="width" id="width" value="320" maxlength="4" /></div>
@@ -40,11 +41,11 @@
   <div class="clear"></div>
 
   <div class="formLabel">2 Pass Encoding:</div>
-  <div class="formField"><input type="checkbox" name="multipass" id="multipass" value="1" maxlength="4" /></div>
+  <div class="formField"><input type="checkbox" name="multipass" id="multipass" value="" /></div>
   <div class="clear"></div>
 
   <div class="formLabel">Group of Picture size:</div>
-  <div class="formField"><input type="text" class="input" name="g" id="g" value="" maxlength="4" /></div>
+  <div class="formField"><input type="text" class="input number" name="g" id="g" value="" maxlength="4" /></div>
   <div class="clear"></div>
 
 </form>

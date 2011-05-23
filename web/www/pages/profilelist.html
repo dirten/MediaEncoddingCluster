@@ -33,8 +33,8 @@
 
     }
     function openProfileForm(evt){
-        profileModel=null;
-        firstLoad=true;
+        MochaUI.profileWindow(evt.target.getDataByRow(evt.row).id);
+        return;
         var mytest=new MochaUI.Window({
             id: 'profileWindow',
             title: 'Profile Builder',
@@ -72,7 +72,25 @@
 
     function gridButtonClick(button, grid)
     {
-        alert(button);
+        if(button=='delete'){
+            Check = confirm("do you really want to delete the selected profile");
+            if(Check==true){
+            new Request.JSON({
+                url: '/api/profile?id='+selectedItem.id,
+                method: 'DELETE',
+                onComplete: function(props) {
+                    if(props.ok){
+                        MochaUI.notification('Profile deleted');
+                        profilegrid.refresh();
+                    }else{
+                        MochaUI.notification('Error: '+props.error.description);
+                    }
+                }
+            }).send();
+        }
+        }else if(button='add'){
+            MochaUI.profileWindow("");
+        }
     }
 
     var cmu = [
@@ -122,7 +140,6 @@
 
     window.addEvent("domready", function(){
         profilegrid = new omniGrid('encodinggrid', {
-
             columnModel: cmu,
       
             buttons : [

@@ -101,6 +101,11 @@
         <relate object="Project" handle="presets"/>
     </relation>
 
+    <relation object="UserPreset">
+        <relate object="User" handle="presets"/>
+        <relate object="Preset" handle="user"/>
+    </relation>
+
     <relation>
         <relate object="Filter" handle="profile"/>
         <relate object="Profile" handle="filter"/>
@@ -221,6 +226,7 @@
     </object>
 
     <object name="Job">
+        <field name="uuid" type="string"/>
         <field name="created" type="datetime" default="-1"/>
         <field name="begintime" type="datetime" default="-1"/>
         <field name="endtime" type="datetime" default="-1"/>
@@ -230,6 +236,7 @@
         <field name="starttime" type="double"/>
         <field name="duration" type="double"/>
         <field name="progress" type="integer"/>
+        <field name="data" type="string"/>
     </object>
 
     <object name="JobLog">

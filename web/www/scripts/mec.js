@@ -91,8 +91,7 @@ function setFormData(formname, data){
 	fe.set('value',data[fe.get('name')]);
     }
     if(fe.get('type')=='checkbox'){
-        fe.set('checked',data[fe.get('name')]);
-       
+        fe.set('checked', data[fe.get('name')]==true);
     }
 
 
