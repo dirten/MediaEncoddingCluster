@@ -92,8 +92,8 @@ namespace org {
         void *processed = new char();
         LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for(int a=0;a<request_info->num_headers;a++){
-          LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
-          LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
+         // LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+         // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
             string str("test:jan");
@@ -131,7 +131,9 @@ namespace org {
             }
             n.push_back(c);
             std::string json_s = n.write();
-            mg_printf(conn, "%s", json_s.c_str());
+            //LOGDEBUG(json_s);
+            mg_write(conn, json_s.c_str(), json_s.length());
+            //mg_printf(conn, "%s", json_s.c_str());
 
           } else if (request == "/api/codec") {
             JSONNode n(JSON_NODE);

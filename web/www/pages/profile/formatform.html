@@ -56,9 +56,10 @@
       new Request.JSON({
       url: '/api/format',
       method: 'get',
-      onComplete: function(properties) {
-          setProfileFormatData(properties.data,profileModel.format.id);
-      }
+      onComplete: function(pr) {
+          setProfileFormatData(pr.data,profileModel.format.id);
+      },
+      async:false
     }).send();
 
     setFormChangeListener($('profileFormatForm'), function(el){

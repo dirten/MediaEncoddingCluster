@@ -131,14 +131,12 @@ namespace org {
 
       JSONNode JsonEncodingHandler::get(db::HiveDb&db, std::string id) {
         JSONNode n(JSON_NODE);
-        LOGDEBUG("loading preset data for id " << id);
+        LOGDEBUG("loading encoding data for id " << id);
         litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Id == id);
         if (s.count() > 0) {
+    	  LOGDEBUG("Encoding found");
           db::Job job = s.one();
-          JSONNode data = libjson::parse(job.data);
-          data.push_back(JSONNode("id", id));
-          LOGDEBUG(data.write_formatted());
-          n = data;
+          n = JsonEncoding(job);
         } else {
           JSONNode error(JSON_NODE);
           error.set_name("error");

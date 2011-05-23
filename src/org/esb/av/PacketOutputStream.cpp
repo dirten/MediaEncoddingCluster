@@ -116,8 +116,8 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //  streamDts[packet.getStreamIndex()]+=dur;
   //  packet.packet->pts=AV_NOPTS_VALUE;
   //  packet.setDuration(0);
-//  packet.setDts(AV_NOPTS_VALUE);
-  packet.setDts(0);
+  packet.setDts(AV_NOPTS_VALUE);
+  //packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
    LOGDEBUG(packet.toString());
