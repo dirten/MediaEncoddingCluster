@@ -9,6 +9,7 @@ add_library (api
     JsonServer.cpp
     JsonEncoding.cpp
     JsonProfileHandler.cpp
+    JsonEncodingHandler.cpp
  )
 TARGET_LINK_LIBRARIES(api
     av

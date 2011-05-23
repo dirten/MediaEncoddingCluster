@@ -10,6 +10,7 @@
 #include "litesql/datasource.hpp"
 #include "CodecPropertyTransformer.h"
 #include "PresetReader.h"
+#include "PresetReaderJson.h"
 #include "org/esb/util/StringUtil.h"
 #include <map>
 #include <vector>
@@ -259,6 +260,7 @@ namespace org {
 
       int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
         LOGDEBUG("Create new Job");
+        /*
         if(preset.filename.value().length()==0){
           LOGDEBUG("resolving Preset by Name : "<<preset.name);
           org::esb::io::File presetdir(org::esb::config::Config::get("preset.path"));
@@ -278,14 +280,14 @@ namespace org {
             LOGWARN("preset directory does not exist:"<<presetdir.getPath());
           }
 
-        }
+        }*/
         /**
          * reading the preset from the file
          */
-        PresetReader reader(preset.filename);
-        PresetReader::CodecList codecs = reader.getCodecList();
-        PresetReader::FilterList filters = reader.getFilterList();
-        PresetReader::Preset pre = reader.getPreset();
+        PresetReaderJson reader(preset.data);
+        PresetReaderJson::CodecList codecs = reader.getCodecList();
+        PresetReaderJson::FilterList filters = reader.getFilterList();
+        PresetReaderJson::Preset pre = reader.getPreset();
 
 
         /*resolving the outputformat to have knowledge of the global header flag*/

@@ -9,7 +9,6 @@
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/util/Log.h"
 #include <string.h>
-#include "JsonEncoding.h"
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
 #include "org/esb/hive/PresetReader.h"
@@ -18,6 +17,27 @@
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
 #include "JsonProfileHandler.h"
+#include "JsonEncodingHandler.h"
+#include "boost/archive/iterators/base64_from_binary.hpp"
+#include "boost/archive/iterators/binary_from_base64.hpp"
+#include "boost/archive/iterators/transform_width.hpp"
+#include <string>
+#include <iostream>
+
+using namespace std;
+using namespace boost::archive::iterators;
+
+typedef
+    base64_from_binary<
+        transform_width<string::const_iterator, 6, 8>
+        > base64_t;
+
+typedef
+    transform_width<
+        binary_from_base64<string::const_iterator>, 8, 6
+        > binary_t;
+
+
 namespace org {
   namespace esb {
     namespace api {
@@ -30,6 +50,10 @@ namespace org {
           "listening_ports", ports.c_str(),
           "num_threads", "5",
           "index_files","mec.html",
+          /*
+          "protect_uri","/=test.file",
+          "authentication_domain","localhost",
+           */
           NULL
         };
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
@@ -62,8 +86,26 @@ namespace org {
       void * JsonServer::event_handler(enum mg_event event,
               struct mg_connection *conn,
               const struct mg_request_info *request_info) {
+        if(mg_modify_passwords_file("test.file","localhost","ich","nich")){
+          LOGDEBUG("entry created");
+        }
         void *processed = new char();
-
+        LOGDEBUG("HeaderCount:"<<request_info->num_headers);
+        for(int a=0;a<request_info->num_headers;a++){
+          LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+          LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
+          /*
+          if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
+            string str("test:jan");
+            string enc1(base64_t(str.begin()), base64_t(str.end()));
+            LOGDEBUG("encoded="<<enc1);
+            std::string auth(request_info->http_headers[a].value);
+            std:string enc(auth.begin()+6,auth.end()-1);
+            LOGDEBUG("Try decode:"<<enc);
+            string dec(binary_t(enc.begin()), binary_t(enc.end()));
+            LOGDEBUG("Decoded:"<<dec);
+          }*/
+        }
         if (event == MG_NEW_REQUEST) {
           std::string request = request_info->uri;
           LOGDEBUG("Request=" << request);
@@ -117,19 +159,10 @@ namespace org {
             mg_write(conn, json_s.c_str(), json_s.length());
 
           } else if (request == "/api/encoding") {
-            db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
-            std::vector<db::Job> jobs = litesql::select<db::Job > (db).orderBy(db::Job::Id, false).all();
-            JSONNode n(JSON_NODE);
-            JSONNode c(JSON_ARRAY);
-            c.set_name("data");
-            std::vector<db::Job>::iterator jobit = jobs.begin();
-            for (; jobit != jobs.end(); jobit++) {
-              c.push_back(JsonEncoding((*jobit)));
-            }
-            n.push_back(c);
+            JSONNode n =JsonEncodingHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
-            mg_printf(conn, "%s", json_s.c_str());
-            mg_printf(conn, "\n");
+            mg_write(conn, json_s.c_str(), json_s.length());
+
           } else {
             //mg_printf(conn, "%s", request_info->uri);
             processed = NULL;

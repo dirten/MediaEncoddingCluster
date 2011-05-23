@@ -80,7 +80,7 @@ namespace org {
           LOGTRACEMETHOD("ProcessUnitController::ProcessUnitController()");
           _stop_signal = false;
           _isRunning = false;
-          _isWaitingForFinish=false;
+          _isWaitingForFinish = false;
 
         }
 
@@ -117,7 +117,7 @@ namespace org {
           while (!_stop_signal) {
             try {
               //_dbJobCon.begin();
-              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued"||db::Job::Status == "running")).one();
+              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running")).one();
               //db::Job job = job_ctrl.getJob();
               LOGDEBUG("new job found");
               current_job = Ptr<db::Job > (new db::Job(job));
@@ -133,13 +133,13 @@ namespace org {
         }
 
         bool ProcessUnitController::stopJob() {
-          bool result=false;
-          if (current_job&&atoi(_stop_job_id.c_str()) == current_job->id.value()) {
+          bool result = false;
+          if (current_job && atoi(_stop_job_id.c_str()) == current_job->id.value()) {
             LOGDEBUG("stop job received");
             puQueue.flush();
             audioQueue.flush();
-            result=true;
-            current_job->status="stopped";
+            result = true;
+            current_job->status = "stopped";
             current_job->update();
             queue_empty_wait_condition.notify_all();
           }
@@ -148,187 +148,189 @@ namespace org {
 
         void ProcessUnitController::processJob(db::Job job) {
           bool wait_for_queue = false;
-          _isWaitingForFinish=false;
+          _isWaitingForFinish = false;
           LOGTRACEMETHOD("void ProcessUnitController::processJob(db::Job job)")
 
           MediaFile infile = job.inputfile().get().one();
           string filename = infile.path + "/" + infile.filename;
           //org::esb::io::File fi(filename);
           //if (fi.exists()) {
-            org::esb::av::FormatInputStream fis(filename);
-            if (fis.isValid()) {
-              job.begintime = 0;
-              job.status = "running";
-              {
-                boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-                job.update();
-              }
-              {
-                db::JobLog log(job.getDatabase());
-                std::string message = "Encoding started for ";
-                message += filename;
-                log.message = message;
-                log.update();
-
-                job.joblog().link(log);
-              }
-              if (job.outputfile().get().one().filter().get().count() > 0)
-                vector<db::Filter> filters = job.outputfile().get().one().filter().get().all();
-
-              map<int, StreamData> stream_map;
-              std::map<int, Packetizer::StreamData> stream_data;
-              vector<JobDetail>details = job.jobdetails().get().all();
-              vector<JobDetail>::iterator s_it = details.begin();
-              for (; s_it != details.end(); s_it++) {
-                JobDetail detail = *s_it;
-                int idx = detail.inputstream().get().one().streamindex;
-                stream_map[idx].instream = detail.inputstream().get().one().id;
-                stream_map[idx].outstream = detail.outputstream().get().one().id;
-                if(fis.getAVStream(idx)->codec->codec_id!=CODEC_ID_MPEG2VIDEO){
-                  stream_map[idx].decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
-                  stream_map[idx].pass2decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
-                }else{
-                  stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
-                  stream_map[idx].pass2decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
-                }
-                //stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
-                stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
-                stream_map[idx].pass2encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
-
-                stream_map[idx].deinterlace = detail.deinterlace.value();
-                //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
-                stream_map[idx].last_start_dts = detail.lastdts;
-                LOGDEBUG("Last start DTS:" << stream_map[idx].last_start_dts);
-                if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
-                  LOGERROR("wrong decoder timebase -> num=" << stream_map[idx].decoder->getTimeBase().num << " den=" << stream_map[idx].decoder->getTimeBase().den);
-                  LOGERROR("skip stream #" << stream_map[idx].instream);
-                  stream_map.erase(idx);
-                  continue;
-                }
-                if (!stream_map[idx].encoder->open()) {
-                  db::JobLog log(job.getDatabase());
-                  std::string message = "Could not open Encoder for Stream#";
-                  message += org::esb::util::StringUtil::toString(idx);
-                  message += " for file ";
-                  message += filename;
-
-                  log.message = message;
-                  log.update();
-
-                  job.joblog().link(log);
-                  stream_map.erase(idx);
-                  continue;
-                }
-                stream_data[idx].decoder = stream_map[idx].decoder;
-                stream_data[idx].encoder = stream_map[idx].encoder;
-                if (stream_map[idx].encoder->getCodecType() == AVMEDIA_TYPE_VIDEO)
-                  stream_data[idx].min_packet_count = stream_map[idx].encoder->getGopSize();
-                else
-                  stream_data[idx].min_packet_count = 0;
-              }
-              PacketInputStream pis(&fis);
-
-              Packetizer packetizer(stream_data);
-              ProcessUnitBuilder builder(stream_map);
-              Packet * packet;
-              /**
-               * read while packets in the stream
-               * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
-               */
-              while (!_stop_signal && (packet = pis.readPacket()) != NULL) {
-                /**
-                 * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
-                 */
-                boost::shared_ptr<Packet> pPacket(packet);
-                /**
-                 * if the actuall stream not mapped then discard this and continue with next packet
-                 */
-                if (stream_map.find(packet->packet->stream_index) == stream_map.end())
-                  continue;
-                /**
-                 * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
-                 * this is for the behaviour that the server process restarts an unfinished encoding
-                 * @TODO: writing detailed tests for this !!!
-                 */
-                if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
-                  continue;
-                //              LOGTRACE("Packet DTS:"<<packet->toString());
-                //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
-                if (packetizer.putPacket(pPacket)) {
-                  LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
-                  if (stopJob()) {
-                    return;
-                  }
-                  PacketListPtr packets = packetizer.removePacketList();
-                  boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
-                  putToQueue(unit);
-                  wait_for_queue = true;
-                }
-              }
-              /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
-              packetizer.flushStreams();
-              int pc = packetizer.getPacketListCount();
-              for (int a = 0; a < pc; a++) {
-                PacketListPtr packets = packetizer.removePacketList();
-                if (packets.size() > 0) {
-                  if (stopJob()) {
-                    return;
-                  }
-
-                  boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
-                  putToQueue(unit);
-                  wait_for_queue = true;
-                }
-              }
-
-              if (wait_for_queue) {
-                _isWaitingForFinish=true;
-                boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
-                queue_empty_wait_condition.wait(queue_empty_wait_lock);
-              }
-
-              if (_stop_signal) {
-                LOGDEBUG("stop signal, returning here");
-                return;
-              }
-              if (stopJob()) {
-                return;
-              }
-              LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-              job.endtime = 0;
-              job.status = "completed";
-              {
-                db::JobLog log(job.getDatabase());
-                std::string message = "Encoding completed for the file ";
-                message += filename;
-                log.message = message;
-                log.update();
-
-                job.joblog().link(log);
-              }
-              {
-                boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-                job.update();
-              }
-
-            } else {
-              LOGERROR("Error Opening Input Streams from " << filename);
-              job.endtime = 0;
-              job.status = "failed";
+          LOGDEBUG("try");
+          org::esb::av::FormatInputStream fis(filename);
+          if (fis.isValid()) {
+            LOGDEBUG("valid file");
+            job.begintime = 0;
+            job.status = "running";
+            {
+              boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+              job.update();
+            }
+            {
               db::JobLog log(job.getDatabase());
-              std::string message = "failed to open the file ";
+              std::string message = "Encoding started for ";
               message += filename;
               log.message = message;
               log.update();
 
               job.joblog().link(log);
-
-              {
-                boost::mutex::scoped_lock scoped_lock(db_con_mutex);
-                job.update();
-              }
-
             }
+            if (job.outputfile().get().one().filter().get().count() > 0)
+              vector<db::Filter> filters = job.outputfile().get().one().filter().get().all();
+
+            map<int, StreamData> stream_map;
+            std::map<int, Packetizer::StreamData> stream_data;
+            vector<JobDetail>details = job.jobdetails().get().all();
+            vector<JobDetail>::iterator s_it = details.begin();
+            for (; s_it != details.end(); s_it++) {
+              JobDetail detail = *s_it;
+              int idx = detail.inputstream().get().one().streamindex;
+              stream_map[idx].instream = detail.inputstream().get().one().id;
+              stream_map[idx].outstream = detail.outputstream().get().one().id;
+              if (fis.getAVStream(idx)->codec->codec_id != CODEC_ID_MPEG2VIDEO) {
+                stream_map[idx].decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
+                stream_map[idx].pass2decoder = boost::shared_ptr<Decoder > (new Decoder(fis.getAVStream(idx)));
+              } else {
+                stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
+                stream_map[idx].pass2decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
+              }
+              //stream_map[idx].decoder = CodecFactory::getStreamDecoder(stream_map[idx].instream);
+              stream_map[idx].encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
+              stream_map[idx].pass2encoder = CodecFactory::getStreamEncoder(stream_map[idx].outstream);
+
+              stream_map[idx].deinterlace = detail.deinterlace.value();
+              //              stream_map[idx].last_start_pts = detail.inputstream().get().one().firstpts;
+              stream_map[idx].last_start_dts = detail.lastdts;
+              LOGDEBUG("Last start DTS:" << stream_map[idx].last_start_dts);
+              if (stream_map[idx].decoder->getTimeBase().num <= 0 || stream_map[idx].decoder->getTimeBase().den <= 0) {
+                LOGERROR("wrong decoder timebase -> num=" << stream_map[idx].decoder->getTimeBase().num << " den=" << stream_map[idx].decoder->getTimeBase().den);
+                LOGERROR("skip stream #" << stream_map[idx].instream);
+                stream_map.erase(idx);
+                continue;
+              }
+              if (!stream_map[idx].encoder->open()) {
+                db::JobLog log(job.getDatabase());
+                std::string message = "Could not open Encoder for Stream#";
+                message += org::esb::util::StringUtil::toString(idx);
+                message += " for file ";
+                message += filename;
+
+                log.message = message;
+                log.update();
+
+                job.joblog().link(log);
+                stream_map.erase(idx);
+                continue;
+              }
+              stream_data[idx].decoder = stream_map[idx].decoder;
+              stream_data[idx].encoder = stream_map[idx].encoder;
+              if (stream_map[idx].encoder->getCodecType() == AVMEDIA_TYPE_VIDEO)
+                stream_data[idx].min_packet_count = stream_map[idx].encoder->getGopSize();
+              else
+                stream_data[idx].min_packet_count = 0;
+            }
+            PacketInputStream pis(&fis);
+
+            Packetizer packetizer(stream_data);
+            ProcessUnitBuilder builder(stream_map);
+            Packet * packet;
+            /**
+             * read while packets in the stream
+             * @TODO: performance bottleneck in read packet and the resulting copy of the Packet
+             */
+            while (!_stop_signal && (packet = pis.readPacket()) != NULL) {
+              /**
+               * building a shared Pointer from packet because the next read from PacketInputStream kills the Packet data
+               */
+              boost::shared_ptr<Packet> pPacket(packet);
+              /**
+               * if the actuall stream not mapped then discard this and continue with next packet
+               */
+              if (stream_map.find(packet->packet->stream_index) == stream_map.end())
+                continue;
+              /**
+               * if the actual packets dts is lower than the last packet.dts encoded, then discard this packet
+               * this is for the behaviour that the server process restarts an unfinished encoding
+               * @TODO: writing detailed tests for this !!!
+               */
+              if (stream_map[packet->packet->stream_index].last_start_dts > packet->packet->dts)
+                continue;
+              //              LOGTRACE("Packet DTS:"<<packet->toString());
+              //pPacket->setStreamIndex(stream_map[pPacket->getStreamIndex()].outstream);
+              if (packetizer.putPacket(pPacket)) {
+                LOGDEBUG("PacketizerListPtr ready, build ProcessUnit");
+                if (stopJob()) {
+                  return;
+                }
+                PacketListPtr packets = packetizer.removePacketList();
+                boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
+                putToQueue(unit);
+                wait_for_queue = true;
+              }
+            }
+            /*calling flush Method in the Packetizer to get the last pending packets from the streams*/
+            packetizer.flushStreams();
+            int pc = packetizer.getPacketListCount();
+            for (int a = 0; a < pc; a++) {
+              PacketListPtr packets = packetizer.removePacketList();
+              if (packets.size() > 0) {
+                if (stopJob()) {
+                  return;
+                }
+
+                boost::shared_ptr<ProcessUnit>unit = builder.build(packets);
+                putToQueue(unit);
+                wait_for_queue = true;
+              }
+            }
+
+            if (wait_for_queue) {
+              _isWaitingForFinish = true;
+              boost::mutex::scoped_lock queue_empty_wait_lock(queue_empty_wait_mutex);
+              queue_empty_wait_condition.wait(queue_empty_wait_lock);
+            }
+
+            if (_stop_signal) {
+              LOGDEBUG("stop signal, returning here");
+              return;
+            }
+            if (stopJob()) {
+              return;
+            }
+            LOGDEBUG("File complete : " << job << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            job.endtime = 0;
+            job.status = "completed";
+            {
+              db::JobLog log(job.getDatabase());
+              std::string message = "Encoding completed for the file ";
+              message += filename;
+              log.message = message;
+              log.update();
+
+              job.joblog().link(log);
+            }
+            {
+              boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+              job.update();
+            }
+
+          } else {
+            LOGERROR("Error Opening Input Streams from " << filename);
+            job.endtime = 0;
+            job.status = "failed";
+            db::JobLog log(job.getDatabase());
+            std::string message = "failed to open the file ";
+            message += filename;
+            log.message = message;
+            log.update();
+
+            job.joblog().link(log);
+
+            {
+              boost::mutex::scoped_lock scoped_lock(db_con_mutex);
+              job.update();
+            }
+
+          }
           /*} else {
 
             LOGERROR("Error Opening Input File : " << filename);
@@ -429,7 +431,7 @@ namespace org {
 
 #else
           u = audioQueue.dequeue();
-          if ((audioQueue.size() == 0&&_isWaitingForFinish) || _stop_signal)
+          if ((audioQueue.size() == 0 && _isWaitingForFinish) || _stop_signal)
             u->_last_process_unit = true;
 #endif
           db::ProcessUnit dbunit(_dbCon);
@@ -454,10 +456,10 @@ namespace org {
 
         bool ProcessUnitController::putProcessUnit(boost::shared_ptr<ProcessUnit> & unit) {
           boost::mutex::scoped_lock scoped_lock(put_pu_mutex);
-          int stream_type=AVMEDIA_TYPE_UNKNOWN;
+          int stream_type = AVMEDIA_TYPE_UNKNOWN;
           std::string name = org::esb::config::Config::getProperty("hive.base_path");
           name += "/tmp/";
-		  name += org::esb::util::StringUtil::toString(unit->_process_unit % 10);
+          name += org::esb::util::StringUtil::toString(unit->_process_unit % 10);
 
           org::esb::io::File dir(name.c_str());
 
@@ -465,7 +467,7 @@ namespace org {
             dir.mkdir();
           }
           name += "/";
-		  name += org::esb::util::StringUtil::toString(unit->_process_unit);
+          name += org::esb::util::StringUtil::toString(unit->_process_unit);
           name += ".unit";
           org::esb::io::File out(name.c_str());
           org::esb::io::FileOutputStream fos(&out);
@@ -485,9 +487,9 @@ namespace org {
               if (details[a].inputstream().get().one().id == (int) dbunit.sorcestream) {
                 details[a].lastdts = (double) dbunit.endts;
                 details[a].update();
-                stream_type=details[a].outputstream().get().one().streamtype.value();
+                stream_type = details[a].outputstream().get().one().streamtype.value();
                 LOGDEBUG("" << details[a]);
-                LOGDEBUG("StreamType="<<stream_type);
+                LOGDEBUG("StreamType=" << stream_type);
               }
             }
 
@@ -496,7 +498,7 @@ namespace org {
               if (audioQueue.size() == 0 && puQueue.size() == 0) {
                 current_job->progress = 100;
               } else {
-                if(stream_type==AVMEDIA_TYPE_VIDEO){
+                if (stream_type == AVMEDIA_TYPE_VIDEO) {
                   LOGDEBUG("Calculating Progress!");
                   AVRational ar_target;
                   ar_target.num = 1;

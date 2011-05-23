@@ -117,6 +117,25 @@ public:
 ;
 ;
 };
+class PresetUserRelation {
+public:
+    class Row {
+    public:
+        litesql::Field<int> user;
+        litesql::Field<int> preset;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Preset;
+    static const litesql::FieldType User;
+    static void link(const litesql::Database& db, const db::Preset& o0, const db::User& o1);
+    static void unlink(const litesql::Database& db, const db::Preset& o0, const db::User& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<PresetUserRelation::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
 class FilterProfileRelation {
 public:
     class Row {
@@ -1083,6 +1102,15 @@ public:
         litesql::DataSource<Project> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<PresetProjectRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class UserHandle : public litesql::RelationHandle<Preset> {
+    public:
+        UserHandle(const Preset& owner);
+        void link(const User& o0);
+        void unlink(const User& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<User> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<PresetUserRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class JobHandle : public litesql::RelationHandle<Preset> {
     public:
         JobHandle(const Preset& owner);
@@ -1115,6 +1143,7 @@ public:
     Preset(const Preset& obj);
     const Preset& operator=(const Preset& obj);
     Preset::ProjectHandle project();
+    Preset::UserHandle user();
     Preset::JobHandle job();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
@@ -1620,6 +1649,8 @@ public:
     litesql::Field<int> id;
     static const litesql::FieldType Type;
     litesql::Field<std::string> type;
+    static const litesql::FieldType Uuid;
+    litesql::Field<std::string> uuid;
     static const litesql::FieldType Created;
     litesql::Field<litesql::DateTime> created;
     static const litesql::FieldType Begintime;
@@ -1638,6 +1669,8 @@ public:
     litesql::Field<double> duration;
     static const litesql::FieldType Progress;
     litesql::Field<int> progress;
+    static const litesql::FieldType Data;
+    litesql::Field<std::string> data;
 protected:
     void defaults();
 public:
@@ -1910,6 +1943,15 @@ public:
     public:
         static const litesql::FieldType Id;
     };
+    class PresetsHandle : public litesql::RelationHandle<User> {
+    public:
+        PresetsHandle(const User& owner);
+        void link(const Preset& o0);
+        void unlink(const Preset& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Preset> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<PresetUserRelation::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     class UserGroupHandle : public litesql::RelationHandle<User> {
     public:
         UserGroupHandle(const User& owner);
@@ -1971,6 +2013,7 @@ public:
     User(const litesql::Database& db, const litesql::Record& rec);
     User(const User& obj);
     const User& operator=(const User& obj);
+    User::PresetsHandle presets();
     User::UserGroupHandle userGroup();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);

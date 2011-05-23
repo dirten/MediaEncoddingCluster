@@ -116,10 +116,11 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //  streamDts[packet.getStreamIndex()]+=dur;
   //  packet.packet->pts=AV_NOPTS_VALUE;
   //  packet.setDuration(0);
-  packet.setDts(AV_NOPTS_VALUE);
+//  packet.setDts(AV_NOPTS_VALUE);
+  packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
-  // logdebug(packet.toString());
+   LOGDEBUG(packet.toString());
   //  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;

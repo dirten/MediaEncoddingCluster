@@ -246,6 +246,55 @@ template <> litesql::DataSource<db::Project> PresetProjectRelation::get(const li
     sel.where(srcExpr);
     return DataSource<db::Project>(db, db::Project::Id.in(sel) && expr);
 }
+PresetUserRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : user(PresetUserRelation::User), preset(PresetUserRelation::Preset) {
+    switch(rec.size()) {
+    case 2:
+        user = rec[1];
+    case 1:
+        preset = rec[0];
+    }
+}
+const std::string PresetUserRelation::table__("Preset_User_");
+const litesql::FieldType PresetUserRelation::Preset("Preset1","INTEGER",table__);
+const litesql::FieldType PresetUserRelation::User("User2","INTEGER",table__);
+void PresetUserRelation::link(const litesql::Database& db, const db::Preset& o0, const db::User& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Preset.name());
+    values.push_back(o0.id);
+    fields.push_back(User.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void PresetUserRelation::unlink(const litesql::Database& db, const db::Preset& o0, const db::User& o1) {
+    db.delete_(table__, (Preset == o0.id && User == o1.id));
+}
+void PresetUserRelation::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<PresetUserRelation::Row> PresetUserRelation::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Preset.fullName());
+    sel.result(User.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<PresetUserRelation::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Preset> PresetUserRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Preset.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Preset>(db, db::Preset::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::User> PresetUserRelation::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(User.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::User>(db, db::User::Id.in(sel) && expr);
+}
 FilterProfileRelation::Row::Row(const litesql::Database& db, const litesql::Record& rec)
          : profile(FilterProfileRelation::Profile), filter(FilterProfileRelation::Filter) {
     switch(rec.size()) {
@@ -3056,6 +3105,24 @@ litesql::DataSource<Project> Preset::ProjectHandle::get(const litesql::Expr& exp
 litesql::DataSource<PresetProjectRelation::Row> Preset::ProjectHandle::getRows(const litesql::Expr& expr) {
     return PresetProjectRelation::getRows(owner->getDatabase(), expr && (PresetProjectRelation::Preset == owner->id));
 }
+Preset::UserHandle::UserHandle(const Preset& owner)
+         : litesql::RelationHandle<Preset>(owner) {
+}
+void Preset::UserHandle::link(const User& o0) {
+    PresetUserRelation::link(owner->getDatabase(), *owner, o0);
+}
+void Preset::UserHandle::unlink(const User& o0) {
+    PresetUserRelation::unlink(owner->getDatabase(), *owner, o0);
+}
+void Preset::UserHandle::del(const litesql::Expr& expr) {
+    PresetUserRelation::del(owner->getDatabase(), expr && PresetUserRelation::Preset == owner->id);
+}
+litesql::DataSource<User> Preset::UserHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetUserRelation::get<User>(owner->getDatabase(), expr, (PresetUserRelation::Preset == owner->id) && srcExpr);
+}
+litesql::DataSource<PresetUserRelation::Row> Preset::UserHandle::getRows(const litesql::Expr& expr) {
+    return PresetUserRelation::getRows(owner->getDatabase(), expr && (PresetUserRelation::Preset == owner->id));
+}
 Preset::JobHandle::JobHandle(const Preset& owner)
          : litesql::RelationHandle<Preset>(owner) {
 }
@@ -3127,6 +3194,9 @@ const Preset& Preset::operator=(const Preset& obj) {
 Preset::ProjectHandle Preset::project() {
     return Preset::ProjectHandle(*this);
 }
+Preset::UserHandle Preset::user() {
+    return Preset::UserHandle(*this);
+}
 Preset::JobHandle Preset::job() {
     return Preset::JobHandle(*this);
 }
@@ -3189,6 +3259,7 @@ void Preset::delRecord() {
 }
 void Preset::delRelations() {
     PresetProjectRelation::del(*db, (PresetProjectRelation::Preset == id));
+    PresetUserRelation::del(*db, (PresetUserRelation::Preset == id));
     JobPresetRelation::del(*db, (JobPresetRelation::Preset == id));
 }
 void Preset::update() {
@@ -4829,6 +4900,7 @@ const std::string Job::table__("Job_");
 const std::string Job::sequence__("Job_seq");
 const litesql::FieldType Job::Id("id_","INTEGER",table__);
 const litesql::FieldType Job::Type("type_","TEXT",table__);
+const litesql::FieldType Job::Uuid("uuid_","TEXT",table__);
 const litesql::FieldType Job::Created("created_","INTEGER",table__);
 const litesql::FieldType Job::Begintime("begintime_","INTEGER",table__);
 const litesql::FieldType Job::Endtime("endtime_","INTEGER",table__);
@@ -4838,6 +4910,7 @@ const litesql::FieldType Job::Outfile("outfile_","TEXT",table__);
 const litesql::FieldType Job::Starttime("starttime_","DOUBLE",table__);
 const litesql::FieldType Job::Duration("duration_","DOUBLE",table__);
 const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
+const litesql::FieldType Job::Data("data_","TEXT",table__);
 void Job::defaults() {
     id = 0;
     created = -1;
@@ -4848,32 +4921,36 @@ void Job::defaults() {
     progress = 0;
 }
 Job::Job(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress) {
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), data(Data) {
     defaults();
 }
 Job::Job(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), data(Data) {
     defaults();
-    size_t size = (rec.size() > 11) ? 11 : rec.size();
+    size_t size = (rec.size() > 13) ? 13 : rec.size();
     switch(size) {
-    case 11: progress = convert<const std::string&, int>(rec[10]);
+    case 13: data = convert<const std::string&, std::string>(rec[12]);
+        data.setModified(false);
+    case 12: progress = convert<const std::string&, int>(rec[11]);
         progress.setModified(false);
-    case 10: duration = convert<const std::string&, double>(rec[9]);
+    case 11: duration = convert<const std::string&, double>(rec[10]);
         duration.setModified(false);
-    case 9: starttime = convert<const std::string&, double>(rec[8]);
+    case 10: starttime = convert<const std::string&, double>(rec[9]);
         starttime.setModified(false);
-    case 8: outfile = convert<const std::string&, std::string>(rec[7]);
+    case 9: outfile = convert<const std::string&, std::string>(rec[8]);
         outfile.setModified(false);
-    case 7: infile = convert<const std::string&, std::string>(rec[6]);
+    case 8: infile = convert<const std::string&, std::string>(rec[7]);
         infile.setModified(false);
-    case 6: status = convert<const std::string&, std::string>(rec[5]);
+    case 7: status = convert<const std::string&, std::string>(rec[6]);
         status.setModified(false);
-    case 5: endtime = convert<const std::string&, litesql::DateTime>(rec[4]);
+    case 6: endtime = convert<const std::string&, litesql::DateTime>(rec[5]);
         endtime.setModified(false);
-    case 4: begintime = convert<const std::string&, litesql::DateTime>(rec[3]);
+    case 5: begintime = convert<const std::string&, litesql::DateTime>(rec[4]);
         begintime.setModified(false);
-    case 3: created = convert<const std::string&, litesql::DateTime>(rec[2]);
+    case 4: created = convert<const std::string&, litesql::DateTime>(rec[3]);
         created.setModified(false);
+    case 3: uuid = convert<const std::string&, std::string>(rec[2]);
+        uuid.setModified(false);
     case 2: type = convert<const std::string&, std::string>(rec[1]);
         type.setModified(false);
     case 1: id = convert<const std::string&, int>(rec[0]);
@@ -4881,12 +4958,13 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Job::Job(const Job& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), infile(obj.infile), outfile(obj.outfile), starttime(obj.starttime), duration(obj.duration), progress(obj.progress) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), infile(obj.infile), outfile(obj.outfile), starttime(obj.starttime), duration(obj.duration), progress(obj.progress), data(obj.data) {
 }
 const Job& Job::operator=(const Job& obj) {
     if (this != &obj) {
         id = obj.id;
         type = obj.type;
+        uuid = obj.uuid;
         created = obj.created;
         begintime = obj.begintime;
         endtime = obj.endtime;
@@ -4896,6 +4974,7 @@ const Job& Job::operator=(const Job& obj) {
         starttime = obj.starttime;
         duration = obj.duration;
         progress = obj.progress;
+        data = obj.data;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -4925,6 +5004,9 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(type.name());
     values.push_back(type);
     type.setModified(false);
+    fields.push_back(uuid.name());
+    values.push_back(uuid);
+    uuid.setModified(false);
     fields.push_back(created.name());
     values.push_back(created);
     created.setModified(false);
@@ -4952,6 +5034,9 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(progress.name());
     values.push_back(progress);
     progress.setModified(false);
+    fields.push_back(data.name());
+    values.push_back(data);
+    data.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -4969,6 +5054,7 @@ void Job::addUpdates(Updates& updates) {
     prepareUpdate(updates, table__);
     updateField(updates, table__, id);
     updateField(updates, table__, type);
+    updateField(updates, table__, uuid);
     updateField(updates, table__, created);
     updateField(updates, table__, begintime);
     updateField(updates, table__, endtime);
@@ -4978,12 +5064,14 @@ void Job::addUpdates(Updates& updates) {
     updateField(updates, table__, starttime);
     updateField(updates, table__, duration);
     updateField(updates, table__, progress);
+    updateField(updates, table__, data);
 }
 void Job::addIDUpdates(Updates& updates) {
 }
 void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Id);
     ftypes.push_back(Type);
+    ftypes.push_back(Uuid);
     ftypes.push_back(Created);
     ftypes.push_back(Begintime);
     ftypes.push_back(Endtime);
@@ -4993,6 +5081,7 @@ void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Starttime);
     ftypes.push_back(Duration);
     ftypes.push_back(Progress);
+    ftypes.push_back(Data);
 }
 void Job::delRecord() {
     deleteFromTable(table__, id);
@@ -5040,6 +5129,7 @@ std::auto_ptr<Job> Job::upcastCopy() {
     Job* np = new Job(*this);
     np->id = id;
     np->type = type;
+    np->uuid = uuid;
     np->created = created;
     np->begintime = begintime;
     np->endtime = endtime;
@@ -5049,6 +5139,7 @@ std::auto_ptr<Job> Job::upcastCopy() {
     np->starttime = starttime;
     np->duration = duration;
     np->progress = progress;
+    np->data = data;
     np->inDatabase = inDatabase;
     return auto_ptr<Job>(np);
 }
@@ -5056,6 +5147,7 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << "-------------------------------------" << std::endl;
     os << o.id.name() << " = " << o.id << std::endl;
     os << o.type.name() << " = " << o.type << std::endl;
+    os << o.uuid.name() << " = " << o.uuid << std::endl;
     os << o.created.name() << " = " << o.created << std::endl;
     os << o.begintime.name() << " = " << o.begintime << std::endl;
     os << o.endtime.name() << " = " << o.endtime << std::endl;
@@ -5065,6 +5157,7 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << o.starttime.name() << " = " << o.starttime << std::endl;
     os << o.duration.name() << " = " << o.duration << std::endl;
     os << o.progress.name() << " = " << o.progress << std::endl;
+    os << o.data.name() << " = " << o.data << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -5859,6 +5952,24 @@ std::ostream & operator<<(std::ostream& os, ProcessUnit o) {
     return os;
 }
 const litesql::FieldType User::Own::Id("id_","INTEGER","User_");
+User::PresetsHandle::PresetsHandle(const User& owner)
+         : litesql::RelationHandle<User>(owner) {
+}
+void User::PresetsHandle::link(const Preset& o0) {
+    PresetUserRelation::link(owner->getDatabase(), o0, *owner);
+}
+void User::PresetsHandle::unlink(const Preset& o0) {
+    PresetUserRelation::unlink(owner->getDatabase(), o0, *owner);
+}
+void User::PresetsHandle::del(const litesql::Expr& expr) {
+    PresetUserRelation::del(owner->getDatabase(), expr && PresetUserRelation::User == owner->id);
+}
+litesql::DataSource<Preset> User::PresetsHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetUserRelation::get<Preset>(owner->getDatabase(), expr, (PresetUserRelation::User == owner->id) && srcExpr);
+}
+litesql::DataSource<PresetUserRelation::Row> User::PresetsHandle::getRows(const litesql::Expr& expr) {
+    return PresetUserRelation::getRows(owner->getDatabase(), expr && (PresetUserRelation::User == owner->id));
+}
 User::UserGroupHandle::UserGroupHandle(const User& owner)
          : litesql::RelationHandle<User>(owner) {
 }
@@ -5987,6 +6098,9 @@ const User& User::operator=(const User& obj) {
     }
     litesql::Persistent::operator=(obj);
     return *this;
+}
+User::PresetsHandle User::presets() {
+    return User::PresetsHandle(*this);
 }
 User::UserGroupHandle User::userGroup() {
     return User::UserGroupHandle(*this);
@@ -6124,6 +6238,7 @@ void User::delRecord() {
     deleteFromTable(table__, id);
 }
 void User::delRelations() {
+    PresetUserRelation::del(*db, (PresetUserRelation::User == id));
     UserUserGroupRelationUser2UserGroup::del(*db, (UserUserGroupRelationUser2UserGroup::User == id));
 }
 void User::update() {
@@ -6418,7 +6533,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,data_ TEXT)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
@@ -6430,6 +6545,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("MediaFile_Project_","table","CREATE TABLE MediaFile_Project_ (MediaFile1 INTEGER,Project2 INTEGER)"));
     res.push_back(Database::SchemaItem("Preset_Project_","table","CREATE TABLE Preset_Project_ (Preset1 INTEGER,Project2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Preset_User_","table","CREATE TABLE Preset_User_ (Preset1 INTEGER,User2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Profile_","table","CREATE TABLE Filter_Profile_ (Filter1 INTEGER,Profile2 INTEGER)"));
     res.push_back(Database::SchemaItem("_60a643d384d1f6c6ddeba5bb8ac0fc3e","table","CREATE TABLE _60a643d384d1f6c6ddeba5bb8ac0fc3e (Profile1 INTEGER,ProfileGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("_2d57c481daf84ed6d04cd9e705469b3f","table","CREATE TABLE _2d57c481daf84ed6d04cd9e705469b3f (ProfileGroup1 INTEGER,ProfileGroup2 INTEGER)"));
@@ -6465,6 +6581,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Preset_Project_Preset1idx","index","CREATE INDEX Preset_Project_Preset1idx ON Preset_Project_ (Preset1)"));
     res.push_back(Database::SchemaItem("Preset_Project_Project2idx","index","CREATE INDEX Preset_Project_Project2idx ON Preset_Project_ (Project2)"));
     res.push_back(Database::SchemaItem("Preset_Project__all_idx","index","CREATE INDEX Preset_Project__all_idx ON Preset_Project_ (Preset1,Project2)"));
+    res.push_back(Database::SchemaItem("Preset_User_Preset1idx","index","CREATE INDEX Preset_User_Preset1idx ON Preset_User_ (Preset1)"));
+    res.push_back(Database::SchemaItem("Preset_User_User2idx","index","CREATE INDEX Preset_User_User2idx ON Preset_User_ (User2)"));
+    res.push_back(Database::SchemaItem("Preset_User__all_idx","index","CREATE INDEX Preset_User__all_idx ON Preset_User_ (Preset1,User2)"));
     res.push_back(Database::SchemaItem("Filter_Profile_Filter1idx","index","CREATE INDEX Filter_Profile_Filter1idx ON Filter_Profile_ (Filter1)"));
     res.push_back(Database::SchemaItem("Filter_Profile_Profile2idx","index","CREATE INDEX Filter_Profile_Profile2idx ON Filter_Profile_ (Profile2)"));
     res.push_back(Database::SchemaItem("Filter_Profile__all_idx","index","CREATE INDEX Filter_Profile__all_idx ON Filter_Profile_ (Filter1,Profile2)"));

@@ -74,6 +74,40 @@ namespace org {
 
 
         JSONNode n(JSON_NODE);
+        if (strcmp(request_info->request_method, "DELETE") == 0) {
+          char iddata[100];
+          memset(&iddata, 0, 100);
+          if (request_info->query_string != NULL) {
+            mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
+            LOGDEBUG("DataId" << iddata);
+          }
+          if (strlen(iddata) > 0) {
+            LOGDEBUG("loading preset data for id " << iddata);
+            litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
+            if (s.count() == 1) {
+              db::Preset preset = s.one();
+              preset.del();
+              JSONNode ok(JSON_NODE);
+              ok.set_name("ok");
+              ok.push_back(JSONNode("code", "profile_deleted"));
+              ok.push_back(JSONNode("description", "profile succesful deleted"));
+              n.push_back(ok);
+            } else {
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "profile_not_found"));
+              error.push_back(JSONNode("description", "profile not found"));
+              n.push_back(error);
+            }
+          }else{
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "no_id"));
+              error.push_back(JSONNode("description", "no id given for delete action"));
+              n.push_back(error);
+
+          }
+         }else
         if (strcmp(request_info->request_method, "GET") == 0) {
           char iddata[100];
           memset(&iddata, 0, 100);
@@ -143,6 +177,7 @@ namespace org {
               }
             } else {
               JSONNode error(JSON_NODE);
+              
               error.set_name("error");
               error.push_back(JSONNode("code", "parse_error"));
               error.push_back(JSONNode("description", "no valid json format given"));
@@ -205,7 +240,7 @@ namespace org {
             db::Preset preset(db);
             preset.data = data;
             preset.uuid = uuidstr;
-            preset.name=inode["name"].as_string();
+            preset.name = inode["name"].as_string();
             preset.update();
             //LOGDEBUG(inode.write_formatted());
             n = inode;
