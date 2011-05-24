@@ -117,15 +117,18 @@ namespace org {
           while (!_stop_signal) {
             try {
               //_dbJobCon.begin();
-              db::Job job = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running")).one();
+              litesql::DataSource<db::Job> source= litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
+              if(source.count()>0){
+              db::Job job = source.one();
               //db::Job job = job_ctrl.getJob();
-              LOGDEBUG("new job found");
+              LOGDEBUG("new job found : "<<job.id);
               current_job = Ptr<db::Job > (new db::Job(job));
 
               processJob(*current_job.get());
               //_dbJobCon.commit();
+              }
             } catch (litesql::NotFound ex) {
-              //LOGDEBUG("no new job found");
+              LOGDEBUG("error while processing job : "<<ex.what());
               org::esb::lang::Thread::sleep2(1000);
             }
           }

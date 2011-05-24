@@ -17,7 +17,7 @@ namespace org {
       class JsonEncoding:public JSONNode {
       public:
         JsonEncoding(std::string);
-        JsonEncoding(db::Job);
+        JsonEncoding(db::Job, bool simple=true);
         JsonEncoding(const JsonEncoding& orig);
         virtual ~JsonEncoding();
       private:

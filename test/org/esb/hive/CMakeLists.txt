@@ -32,7 +32,7 @@ add_executable (CodecPropertyTransformerTest CodecPropertyTransformerTest.cpp)
 add_executable (FileExporterTest FileExporterTest.cpp)
 add_executable (AnalyzeFrameCount AnalyzeFrameCount.cpp)
 add_executable (ProjectXmlTest ProjectXmlTest.cpp)
-add_executable (XmlJobTest XmlJobTest.cpp)
+#add_executable (XmlJobTest XmlJobTest.cpp)
 
 
 
@@ -64,7 +64,7 @@ target_link_libraries (CodecPropertyTransformerTest io hive lang)
 target_link_libraries (FileExporterTest hive)
 target_link_libraries (AnalyzeFrameCount hive)
 target_link_libraries (ProjectXmlTest hive)
-target_link_libraries (XmlJobTest hive)
+#target_link_libraries (XmlJobTest hive)
 
 
 #target_link_libraries (TestClientHandler   hive av io util lang )
@@ -115,6 +115,6 @@ ADD_TEST(hive.PresetReaderTest ${EXECUTABLE_OUTPUT_PATH}/PresetReaderTest )
 ADD_TEST(hive.PresetLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PresetLoaderTest )
 ADD_TEST(hive.CodecPropertyTransformerTest ${EXECUTABLE_OUTPUT_PATH}/CodecPropertyTransformerTest)
 ADD_TEST(hive.ProjectXmlTest ${EXECUTABLE_OUTPUT_PATH}/ProjectXmlTest)
-ADD_TEST(hive.XmlJobTest ${EXECUTABLE_OUTPUT_PATH}/XmlJobTest)
+#ADD_TEST(hive.XmlJobTest ${EXECUTABLE_OUTPUT_PATH}/XmlJobTest)
 
 

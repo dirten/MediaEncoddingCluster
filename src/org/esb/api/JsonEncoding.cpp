@@ -12,7 +12,7 @@ namespace org {
 
       JsonEncoding::JsonEncoding(std::string json_string):JSONNode(JSON_NODE) {
       }
-      JsonEncoding::JsonEncoding(db::Job job):JSONNode(JSON_NODE) {
+      JsonEncoding::JsonEncoding(db::Job job, bool simple):JSONNode(JSON_NODE) {
         push_back(JSONNode("id",job.id.value()));
         push_back(JSONNode("created",job.created.value().asString("%d-%m-%y %h:%M:%s")));
         push_back(JSONNode("begintime",job.begintime.value().asString("%d-%m-%y %h:%M:%s")));
@@ -21,6 +21,8 @@ namespace org {
         push_back(JSONNode("infile",job.infile.value()));
         push_back(JSONNode("outfile",job.outfile.value()));
         push_back(JSONNode("status",job.status.value()));
+        if(!simple)
+          push_back(JSONNode("profile",job.data.value()));
       }
 
       JsonEncoding::JsonEncoding(const JsonEncoding& orig) {

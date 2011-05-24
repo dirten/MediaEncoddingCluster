@@ -16,6 +16,7 @@
 #include "org/esb/hive/FileImporter.h"
 #include "org/esb/hive/PresetLoader.h"
 #include "org/esb/hive/PresetReader.h"
+#include "org/esb/io/FileInputStream.h"
 
 #include "config.h"
 using namespace std;
@@ -96,6 +97,11 @@ int main(int argc, char** argv) {
 
       db::Preset preset(mediafile.getDatabase());
       preset.filename=path + "/presets/test.preset";
+      org::esb::io::File pfile(preset.filename.value());
+      org::esb::io::FileInputStream fis(&pfile);
+      std::string cont;
+      fis.read(cont);
+      preset.data=cont;
       int jobid = org::esb::hive::JobUtil::createJob(mediafile, preset, "/tmp");
       assert(jobid > 0);
 

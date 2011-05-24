@@ -312,7 +312,8 @@ namespace org {
         job.starttime = infile.starttime;
         job.duration = infile.duration;
         job.status = "queued";
-        job.infile = infile.filename.value();
+        job.infile = infile.path.value()+"/"+infile.filename.value();
+        job.data=preset.data.value();
         job.update();
         job.preset().link(preset);
         /**
@@ -329,13 +330,13 @@ namespace org {
         filename += "#";
         filename += f.getFileName();
         outfile.filename = filename;
-        outfile.path = outpath + "/" + pre["name"];
+        outfile.path = outpath + pre["name"];
         outfile.parent = infile.id.value();
         outfile.containertype = ofmt->name;
         outfile.streamcount = 0;
         outfile.update();
 
-        job.outfile = outfile.filename.value();
+        job.outfile = outfile.path.value()+"/"+outfile.filename.value();
         /*
          * setting time data twice, in case of a bug in litesql
          * it does not support zero values,

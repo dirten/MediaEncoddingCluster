@@ -721,10 +721,55 @@ MochaUI.profileWindow = function(){
 
         }
     }
+    MochaUI.encodingWindow = function(encodingid){
+        encodingModel=null;
+        firstLoad=true;
+        encodingWindow=new MochaUI.Window({
+            id: 'encodingWindow',
+            title: 'Encoding Builder',
+            icon: 'images/icons/page.gif',
+            scrollbars:true,
+            loadMethod: 'xhr',
+            toolbar:true,
+            toolbarURL: 'pages/encoding-tabs.html',
+            toolbar2:true,
+            toolbar2URL: 'pages/encoding-controls.html',
+            width: 500,
+            height: 350,
+            maximizable: false,
+            resizable: false,
+            scrollbars: false
+        });
+        if(encodingid.length>0){
+            encodingWindow.onContentLoaded= new function(){
+                new Request.JSON({
+                    url: '/api/encoding',
+                    method: 'get',
+                    onComplete: function(properties) {
+                        //setProfileFormData(properties);
+                        if(firstLoad){
+                            encodingModel=properties;
+                            //alert(profileModel);
+                            firstLoad=false;
+                        }
+                    }
+                }).send("id="+encodingid);
+            //        $('profileId').set('value',evt.target.getDataByRow(evt.row).id);
+            }
+        }else{
+            encodingModel=new Object();
+        }
+    }
     if ($('createProfileLinkCheck')){
         $('createProfileLinkCheck').addEvent('click', function(e){
             new Event(e).stop();
             MochaUI.profileWindow("");
+        });
+    }
+    if ($('createEncodingLink')){
+        $('createEncodingLink').addEvent('click', function(e){
+            new Event(e).stop();
+            MochaUI.encodingWindow("");
         });
     }
     MochaUI.watchfolderWindow = function(props){

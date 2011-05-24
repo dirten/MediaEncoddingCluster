@@ -99,7 +99,7 @@ function setFormData(formname, data){
 }
 
 function setFormChangeListener(form, listener){
-  var formList=$$(form,'select, input, textarea');
+  var formList=$$(form,'select, input, textarea, radio');
   $each(formList,function(fe){
     if(fe.get('name')!=null){
 	$(fe.get('name')).addEvent('change', listener);

@@ -70,11 +70,21 @@ namespace org {
           if (method == "POST") {
           JSONNode n(JSON_NODE);
           /*reading the post data that comes in*/
+          int max_request=150000;
           int bytes = 0;
           char buffer[1000];
           std::string data;
           while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0) {
             data = data.append(buffer, bytes);
+            if(data.length()>max_request){
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "request_to_large"));
+              error.push_back(JSONNode("description", "Post request is to large"));
+              n.push_back(error);
+              return n;
+
+            }
           }
           /*check if the incomming data is valid json data*/
           JSONNode inode;
@@ -136,7 +146,7 @@ namespace org {
         if (s.count() > 0) {
     	  LOGDEBUG("Encoding found");
           db::Job job = s.one();
-          n = JsonEncoding(job);
+          n = JsonEncoding(job, false);
         } else {
           JSONNode error(JSON_NODE);
           error.set_name("error");
