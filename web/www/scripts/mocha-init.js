@@ -46,9 +46,10 @@
 
 
    ----------------------------------------------------------------- */
+/*global variables*/
+MochaUI.baseApiUrl='/api/v1';
 
 initializeWindows = function(){
-
 
     if ($('allMediaLinkCheck')){
         $('allMediaLinkCheck').addEvent('click', function(e){
@@ -700,7 +701,7 @@ MochaUI.profileWindow = function(){
         if(profileid.length>0){
             profileWindow.onContentLoaded= new function(){
                 new Request.JSON({
-                    url: '/api/profile',
+                    url: MochaUI.baseApiUrl+'/profile',
                     method: 'get',
                     onComplete: function(properties) {
                         //setProfileFormData(properties);

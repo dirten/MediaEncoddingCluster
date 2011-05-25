@@ -54,7 +54,7 @@
 
   window.addEvent("domready", function(){
       new Request.JSON({
-      url: '/api/format',
+      url: MochaUI.baseApiUrl+'/format',
       method: 'get',
       onComplete: function(pr) {
           setProfileFormatData(pr.data,profileModel.format.id);

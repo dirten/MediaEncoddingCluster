@@ -12,7 +12,7 @@
       alert(JSON.encode(profileModel));
 
       new Request.JSON({
-        url: '/api/profile',
+        url: MochaUI.baseApiUrl+'/profile',
         method: 'POST',
         onComplete: function(props) {
           if(!props.error){

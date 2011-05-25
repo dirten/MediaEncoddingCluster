@@ -23,7 +23,7 @@
 #include "boost/archive/iterators/transform_width.hpp"
 #include <string>
 #include <iostream>
-
+#define BASE_API_URL "/api/v1"
 using namespace std;
 using namespace boost::archive::iterators;
 
@@ -117,7 +117,7 @@ namespace org {
             LOGDEBUG("DataId" << iddata);
           }
 
-          if (request == "/api/format") {
+          if (request == BASE_API_URL"/format") {
             JSONNode n(JSON_NODE);
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
@@ -135,7 +135,7 @@ namespace org {
             mg_write(conn, json_s.c_str(), json_s.length());
             //mg_printf(conn, "%s", json_s.c_str());
 
-          } else if (request == "/api/codec") {
+          } else if (request == BASE_API_URL"/codec") {
             JSONNode n(JSON_NODE);
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
@@ -155,12 +155,12 @@ namespace org {
             std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
 
-          } else if (request == "/api/profile") {
+          } else if (request == BASE_API_URL"/profile") {
             JSONNode n =JsonProfileHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
 
-          } else if (request == "/api/encoding") {
+          } else if (request == BASE_API_URL"/encoding") {
             JSONNode n =JsonEncodingHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());

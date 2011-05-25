@@ -54,7 +54,7 @@
 
     window.addEvent("domready", function(){
         new Request.JSON({
-            url: '/api/codec',
+            url: MochaUI.baseApiUrl+'/codec',
             method: 'get',
             onComplete: function(properties) {
                 setProfileAudioData(properties.data,profileModel.audio.id);

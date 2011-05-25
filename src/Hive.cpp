@@ -140,6 +140,7 @@ int main(int argc, char * argv[]) {
     po::options_description queue("Webserver");
     queue.add_options()
             ("queue,q", "start the Hive Queue Server")
+            ("test", "test function")
             ;
 
     po::options_description all("all");
@@ -196,6 +197,45 @@ int main(int argc, char * argv[]) {
     avcodec_init();
     avcodec_register_all();
 
+    if (vm.count("test")) {
+      LOGDEBUG("test option");
+
+      fd_set rfds;
+           struct timeval tv;
+           int retval;
+
+           /* Watch stdin (fd 0) to see when it has input. */
+           FD_ZERO(&rfds);
+           FD_SET(0, &rfds);
+
+           /* Wait up to five seconds. */
+           tv.tv_sec = 1;
+           tv.tv_usec = 0;
+           while(true){
+
+             std::cerr << "roundup"<<getppid()<<":"<<isatty(fileno(stdin))<<std::endl;
+             getc(stdin);
+           retval = select(1, &rfds,  (fd_set *)0, (fd_set *) 0, &tv);
+           /* Don’t rely on the value of tv now! */
+
+           if (retval == -1){
+             std::cerr << "exit"<<std::endl;
+             
+               perror("select()");
+             exit(EXIT_SUCCESS);
+           }
+           else if (retval>=0)
+             std::cerr << "data here : "<<retval<<std::endl;
+               //printf("Data is available now.\n");
+               /* FD_ISSET(0, &rfds) will be true. */
+           else
+               std::cerr<<"No data within five seconds.\n"<<std::endl;
+           org::esb::lang::Thread::sleep2(1000);
+           }
+           exit(EXIT_SUCCESS);
+
+      return 0;
+    }
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
