@@ -213,7 +213,7 @@ int main(int argc, char * argv[]) {
            tv.tv_usec = 0;
            while(true){
 
-             std::cerr << "roundup"<<getppid()<<":"<<isatty(fileno(stdin))<<std::endl;
+             //std::cerr << "roundup"<<getppid()<<":"<<isatty(fileno(stdin))<<std::endl;
              getc(stdin);
            retval = select(1, &rfds,  (fd_set *)0, (fd_set *) 0, &tv);
            /* Don’t rely on the value of tv now! */
