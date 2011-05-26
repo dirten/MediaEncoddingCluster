@@ -107,6 +107,13 @@ namespace org {
           }*/
         }
         if (event == MG_NEW_REQUEST) {
+          static const char *reply_start =
+  "HTTP/1.1 200 OK\r\n"
+  "Cache: no-cache\r\n"
+  "Content-Type: application/x-javascript\r\n"
+  "\r\n";
+          mg_printf(conn, "%s", reply_start);
+
           std::string request = request_info->uri;
           LOGDEBUG("Request=" << request);
           LOGDEBUG("QueryString=" << request_info->query_string);

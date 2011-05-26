@@ -127,6 +127,7 @@ namespace org {
               processJob(*current_job.get());
               //_dbJobCon.commit();
               }
+              org::esb::lang::Thread::sleep2(1000);
             } catch (litesql::NotFound ex) {
               LOGDEBUG("error while processing job : "<<ex.what());
               org::esb::lang::Thread::sleep2(1000);

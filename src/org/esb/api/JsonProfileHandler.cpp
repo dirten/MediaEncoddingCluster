@@ -224,11 +224,11 @@ namespace org {
               preset.update();
               n = inode;
             } else {
-              JSONNode error(JSON_NODE);
-              error.set_name("error");
-              error.push_back(JSONNode("code", "profile_not_found"));
-              error.push_back(JSONNode("description", "profile not found"));
-              n.push_back(error);
+              db::Preset preset(db);
+              preset.data = data;
+              preset.uuid = inode["id"].as_string();
+              preset.name = inode["name"].as_string();
+              preset.update();
             }
           }/*case when no "id" data is given, that means a profile create*/
           else {
