@@ -60,7 +60,7 @@ namespace org {
 
       void DatabaseService::start(std::string base_path) {
         _base_path=org::esb::config::Config::get("mhive.base_path");
-        LOGINFO("starting Database Service");
+        //LOGINFO("starting Database Service");
         _running=true;
       }
       bool DatabaseService::databaseExist() {
@@ -269,7 +269,7 @@ namespace org {
       }
 
       void DatabaseService::stop() {
-        LOGINFO("stopping Database Service");
+        //LOGINFO("stopping Database Service");
         return;
         try{
         _dbServer->stop();

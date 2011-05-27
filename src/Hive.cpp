@@ -156,14 +156,21 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
-      return 1;
+      exit(0);
     }
+    std::cout <<"here"<<std::endl;
     //config::Config::init("hive.cfg");
+    if(getenv("log.path"))
+      std::cout << "logpath"<<getenv("log.path")<<std::endl;
+    else
+      std::cout << "logpath is null"<<std::endl;
     setupDefaults();
     setupConfig(vm);
     checkDirs();
+    //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     Log::open("");
     setupDatabase();
+  //return 0;
     if (vm.count("stop")) {
       if (vm["stop"].as<int> () <= 0) {
         LOGERROR("please provide a Process Id to stop");
@@ -508,8 +515,8 @@ void start() {
   //  }
 
   //  LOGINFO("wait for shutdown!");
-  org::esb::rpc::Server server(6000);
-  boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
+  //org::esb::rpc::Server server(6000);
+  //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
 
   org::esb::lang::CtrlCHitWaiter::wait();
   LOGINFO("shutdown app, this will take some time!");
@@ -662,7 +669,15 @@ void setupConfig(po::variables_map vm) {
   config::Config::setProperty("preset.path", bpath + "/presets");
   config::Config::setProperty("log.path", bpath + "/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
-  setenv("log.path", (bpath + "/logs").c_str(),0);
+/*
+  std::string logpath=std::string("log.path=").append(bpath).append("/logs");
+  char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
+
+  memset(pa,0,logpath.length()+1);
+  memcpy(pa,logpath.c_str(),logpath.length());
+  putenv(pa);*/
+  //std::cout << "logpath"<<pa<<std::endl;
+  std::cout << "logpathenv"<<getenv("log.path")<<std::endl;
   //config::Config::setProperty("authentication", "true");
 
 }

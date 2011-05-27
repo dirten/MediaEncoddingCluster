@@ -12,6 +12,8 @@ static const char version[] = "$Id: config.cpp,v 1.3 2006/03/14 15:41:23 framebu
 
 #include "org/esb/lang/Exception.h"
 #include "org/esb/hive/DatabaseService.h"
+#include <boost/foreach.hpp>
+
 #include "Defaults.cpp"
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +37,20 @@ string trim(string & s, string & drop) {
 
 void Config::close() {
   LOGDEBUG("void Config::close()");
+  typedef std::vector< std::pair< std::string, std::string > > array;
+  typedef std::pair< std::string, std::string > row;
+
+   array props=properties->toArray();
+  //std::vector< std::pair< std::string, std::string > >::iterator it=props.begin();
+  
+  BOOST_FOREACH(row p, props) {
+    if(getenv(p.first.c_str())){
+      LOGDEBUG("delete env key"<<p.first.c_str());
+      LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
+      unsetenv(p.first.c_str());
+    }
+  }
+
   properties->clear();
   delete properties;
   properties = NULL;
@@ -93,6 +109,12 @@ std::string Config::get(std::string key, std::string def) {
 void Config::setProperty(std::string key, std::string val) {
   if(!_isInitialized)init();
   properties->setProperty(key, val);
+  std::string env=std::string(key).append("=").append(val);
+  char * pa=new char[env.length()+1];
+  memset(pa,0,env.length()+1);
+  memcpy(pa,env.c_str(),env.length());
+  putenv(pa);
+
 }
 
 Properties * Config::getProperties() {
