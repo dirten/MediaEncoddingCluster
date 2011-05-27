@@ -36,7 +36,7 @@ string trim(string & s, string & drop) {
 }
 
 void Config::close() {
-  LOGDEBUG("void Config::close()");
+  //LOGDEBUG("void Config::close()");
   typedef std::vector< std::pair< std::string, std::string > > array;
   typedef std::pair< std::string, std::string > row;
 
@@ -45,9 +45,9 @@ void Config::close() {
   
   BOOST_FOREACH(row p, props) {
     if(getenv(p.first.c_str())){
-      LOGDEBUG("delete env key"<<p.first.c_str());
-      LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
-      unsetenv(p.first.c_str());
+      //LOGDEBUG("delete env key"<<p.first.c_str());
+      //LOGDEBUG("delete env val"<<getenv(p.first.c_str()));
+      //unsetenv(p.first.c_str());
     }
   }
 

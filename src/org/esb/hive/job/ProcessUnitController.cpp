@@ -115,23 +115,26 @@ namespace org {
                   //db::HiveDb _dbCon("mysql", org::esb::config::Config::getProperty("db.url"));
                   //              org::esb::hive::DatabaseService::thread_init();
           while (!_stop_signal) {
-            try {
-              //_dbJobCon.begin();
-              litesql::DataSource<db::Job> source= litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
-              if(source.count()>0){
+            //_dbJobCon.begin();
+            litesql::DataSource<db::Job> source = litesql::select<db::Job > (_dbJobCon, db::Job::Endtime <= 1 && (db::Job::Status == "queued" || db::Job::Status == "running"));
+            if (source.count() > 0) {
               db::Job job = source.one();
               //db::Job job = job_ctrl.getJob();
-              LOGDEBUG("new job found : "<<job.id);
+              LOGDEBUG("new job found : " << job.id);
               current_job = Ptr<db::Job > (new db::Job(job));
 
-              processJob(*current_job.get());
-              //_dbJobCon.commit();
+              try {
+                processJob(*current_job.get());
+                //_dbJobCon.commit();
+
+              } catch (litesql::NotFound ex) {
+                LOGDEBUG("error while processing job : " << ex.what());
+                job.status = "error";
+                job.update();
+                org::esb::lang::Thread::sleep2(1000);
               }
-              org::esb::lang::Thread::sleep2(1000);
-            } catch (litesql::NotFound ex) {
-              LOGDEBUG("error while processing job : "<<ex.what());
-              org::esb::lang::Thread::sleep2(1000);
             }
+            org::esb::lang::Thread::sleep2(1000);
           }
           //	  org::esb::hive::DatabaseService::thread_end();
         }

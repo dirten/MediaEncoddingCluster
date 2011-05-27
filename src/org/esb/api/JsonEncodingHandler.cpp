@@ -9,6 +9,9 @@
 #include "JsonEncoding.h"
 #include "org/esb/hive/JobUtil.h"
 #include "org/esb/hive/FileImporter.h"
+#include "org/esb/util/StringUtil.h"
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
 
 namespace org {
   namespace esb {
@@ -20,11 +23,11 @@ namespace org {
       bool JsonEncodingHandler::contains(JSONNode& node, std::string name) {
         bool result = false;
         int size = node.size();
-        LOGDEBUG("NodeSize=" << size);
+        //LOGDEBUG("NodeSize=" << size);
         if (size > 0) {
           for (int a = 0; a < size; a++) {
             JSONNode n = node[a];
-            LOGDEBUG("name=" << n.name());
+            //LOGDEBUG("name=" << n.name());
             if (name == n.name()) {
               result = true;
             }
@@ -164,14 +167,21 @@ namespace org {
           db::Preset preset=s.one();
           org::esb::hive::FileImporter importer;
           db::MediaFile infile=importer.import( org::esb::io::File(root["infile"].as_string()));
-          
-          int id=org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
-          n.push_back(JSONNode("bla",id));
+          if(infile.id>0){
+            int id=org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+            n.push_back(JSONNode("bla",id));
+          }else{
+            JSONNode error(JSON_NODE);
+            error.set_name("error");
+            error.push_back(JSONNode("code", "encoding_create_infile not found"));
+            error.push_back(JSONNode("description", std::string("could not open input file with id ").append(root["infile"].as_string()).append(" for use to create encoding task!")));
+            n.push_back(error);
+          }
         }else{
             JSONNode error(JSON_NODE);
             error.set_name("error");
-            error.push_back(JSONNode("code", "encoding_create"));
-            error.push_back(JSONNode("description", "create encoding failed"));
+            error.push_back(JSONNode("code", "encoding_create_profile_not_found"));
+            error.push_back(JSONNode("description", std::string("could not find profile with id ").append(root["profile"].as_string()).append(" for use to create encoding task!")));
             n.push_back(error);
         }
         
@@ -181,15 +191,20 @@ namespace org {
       JSONNode JsonEncodingHandler::del(db::HiveDb&db, std::string id) {
         JSONNode n(JSON_NODE);
         if (id.length() > 0) {
-          LOGDEBUG("loading preset data for id " << id);
-          litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id);
+          LOGDEBUG("loading encoding data for id " << id);
+          litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Id == id);
           if (s.count() == 1) {
             db::Job job = s.one();
-            job.del();
+            job.status=job.status=="queued"?"stopped":"stopping";
+            job.update();
+            std::string job_id=org::esb::util::StringUtil::toString(job.id);
+            org::esb::signal::Messenger::getInstance().sendMessage(org::esb::signal::Message().setProperty("processunitcontroller","STOP_JOB").setProperty("job_id",job_id));
+
+            //job.del();
             JSONNode ok(JSON_NODE);
             ok.set_name("ok");
-            ok.push_back(JSONNode("code", "encoding_deleted"));
-            ok.push_back(JSONNode("description", "encoding succesful deleted"));
+            ok.push_back(JSONNode("code", "encoding_stopped"));
+            ok.push_back(JSONNode("description", "stop encoding succesful signaled"));
             n.push_back(ok);
           } else {
             JSONNode error(JSON_NODE);

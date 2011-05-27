@@ -58,8 +58,7 @@ namespace org {
         };
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
         assert(ctx != NULL);
-        printf("Chat server started on ports %s, press enter to quit.\n",
-                mg_get_option(ctx, "listening_ports"));
+        LOGDEBUG("Web server started on ports "<<mg_get_option(ctx, "listening_ports"));
 
 
       }
@@ -87,10 +86,10 @@ namespace org {
               struct mg_connection *conn,
               const struct mg_request_info *request_info) {
         if(mg_modify_passwords_file("test.file","localhost","ich","nich")){
-          LOGDEBUG("entry created");
+          //LOGDEBUG("entry created");
         }
         void *processed = new char();
-        LOGDEBUG("HeaderCount:"<<request_info->num_headers);
+        //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for(int a=0;a<request_info->num_headers;a++){
          // LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
          // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
@@ -112,19 +111,19 @@ namespace org {
   "Cache: no-cache\r\n"
   "Content-Type: application/x-javascript\r\n"
   "\r\n";
-          mg_printf(conn, "%s", reply_start);
 
           std::string request = request_info->uri;
-          LOGDEBUG("Request=" << request);
-          LOGDEBUG("QueryString=" << request_info->query_string);
-          LOGDEBUG("RequestMethod=" << request_info->request_method);
+          //LOGDEBUG("Request=" << request);
+          //LOGDEBUG("QueryString=" << request_info->query_string);
+          //LOGDEBUG("RequestMethod=" << request_info->request_method);
           if (request_info->query_string != NULL) {
             char iddata[100];
             mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
-            LOGDEBUG("DataId" << iddata);
+            //LOGDEBUG("DataId" << iddata);
           }
 
           if (request == BASE_API_URL"/format") {
+            mg_printf(conn, "%s", reply_start);
             JSONNode n(JSON_NODE);
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
@@ -143,6 +142,7 @@ namespace org {
             //mg_printf(conn, "%s", json_s.c_str());
 
           } else if (request == BASE_API_URL"/codec") {
+            mg_printf(conn, "%s", reply_start);
             JSONNode n(JSON_NODE);
             JSONNode c(JSON_ARRAY);
             c.set_name("data");
@@ -163,11 +163,13 @@ namespace org {
             mg_write(conn, json_s.c_str(), json_s.length());
 
           } else if (request == BASE_API_URL"/profile") {
+            mg_printf(conn, "%s", reply_start);
             JSONNode n =JsonProfileHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
 
           } else if (request == BASE_API_URL"/encoding") {
+            mg_printf(conn, "%s", reply_start);
             JSONNode n =JsonEncodingHandler::handle(conn,request_info, _db);
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());

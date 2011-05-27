@@ -123,7 +123,7 @@ namespace org {
               db::Preset preset = s.one();
               JSONNode data = libjson::parse(preset.data);
               data.push_back(JSONNode("id", iddata));
-              LOGDEBUG(data.write_formatted());
+              //LOGDEBUG(data.write_formatted());
               n = data;
             } else {
               JSONNode error(JSON_NODE);

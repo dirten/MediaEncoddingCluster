@@ -158,19 +158,19 @@ int main(int argc, char * argv[]) {
       cout << all << "\n";
       exit(0);
     }
-    std::cout <<"here"<<std::endl;
+    std::cout << "here" << std::endl;
     //config::Config::init("hive.cfg");
-    if(getenv("log.path"))
-      std::cout << "logpath"<<getenv("log.path")<<std::endl;
+    if (getenv("log.path"))
+      std::cout << "logpath" << getenv("log.path") << std::endl;
     else
-      std::cout << "logpath is null"<<std::endl;
+      std::cout << "logpath is null" << std::endl;
     setupDefaults();
     setupConfig(vm);
     checkDirs();
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     Log::open("");
     setupDatabase();
-  //return 0;
+    //return 0;
     if (vm.count("stop")) {
       if (vm["stop"].as<int> () <= 0) {
         LOGERROR("please provide a Process Id to stop");
@@ -291,7 +291,7 @@ int main(int argc, char * argv[]) {
       LOGDEBUG("start mhive server");
       org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
-      //org::esb::api::JsonServer server(8080);
+      org::esb::api::JsonServer server(vm["webport"].as<int> ());
       listener(argc, argv);
     }
 
@@ -669,15 +669,15 @@ void setupConfig(po::variables_map vm) {
   config::Config::setProperty("preset.path", bpath + "/presets");
   config::Config::setProperty("log.path", bpath + "/logs");
   config::Config::setProperty("db.url", "database=" + bpath + "/data/hive.db");
-/*
-  std::string logpath=std::string("log.path=").append(bpath).append("/logs");
-  char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
+  /*
+    std::string logpath=std::string("log.path=").append(bpath).append("/logs");
+    char * pa=new char[logpath.length()+1];//const_cast<char*>(logpath.c_str());
 
-  memset(pa,0,logpath.length()+1);
-  memcpy(pa,logpath.c_str(),logpath.length());
-  putenv(pa);*/
+    memset(pa,0,logpath.length()+1);
+    memcpy(pa,logpath.c_str(),logpath.length());
+    putenv(pa);*/
   //std::cout << "logpath"<<pa<<std::endl;
-  std::cout << "logpathenv"<<getenv("log.path")<<std::endl;
+  std::cout << "logpathenv" << getenv("log.path") << std::endl;
   //config::Config::setProperty("authentication", "true");
 
 }

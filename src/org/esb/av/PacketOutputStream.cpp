@@ -120,7 +120,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
-   LOGDEBUG(packet.toString());
+   //LOGDEBUG(packet.toString());
   //  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
