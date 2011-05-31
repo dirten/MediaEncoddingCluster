@@ -21,6 +21,7 @@
 #include "boost/archive/iterators/base64_from_binary.hpp"
 #include "boost/archive/iterators/binary_from_base64.hpp"
 #include "boost/archive/iterators/transform_width.hpp"
+#include "boost/thread/locks.hpp"
 #include <string>
 #include <iostream>
 #define BASE_API_URL "/api/v1"
@@ -28,14 +29,14 @@ using namespace std;
 using namespace boost::archive::iterators;
 
 typedef
-    base64_from_binary<
-        transform_width<string::const_iterator, 6, 8>
-        > base64_t;
+base64_from_binary<
+transform_width<string::const_iterator, 6, 8 >
+> base64_t;
 
 typedef
-    transform_width<
-        binary_from_base64<string::const_iterator>, 8, 6
-        > binary_t;
+transform_width<
+binary_from_base64<string::const_iterator>, 8, 6
+> binary_t;
 
 
 namespace org {
@@ -43,13 +44,15 @@ namespace org {
     namespace api {
       db::HiveDb JsonServer::_db = org::esb::hive::DatabaseService::getDatabase();
 
+      boost::mutex JsonServer::http_mutex;
+
       JsonServer::JsonServer(int port) {
         std::string ports = org::esb::util::StringUtil::toString(port);
         const char *options[] = {
-          "document_root", (org::esb::config::Config::get("web.docroot")+"/www").c_str(),
+          "document_root", (org::esb::config::Config::get("web.docroot") + "/www").c_str(),
           "listening_ports", ports.c_str(),
           "num_threads", "5",
-          "index_files","mec.html",
+          "index_files", "mec.html",
           /*
           "protect_uri","/=test.file",
           "authentication_domain","localhost",
@@ -58,7 +61,7 @@ namespace org {
         };
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
         assert(ctx != NULL);
-        LOGDEBUG("Web server started on ports "<<mg_get_option(ctx, "listening_ports"));
+        LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
 
 
       }
@@ -67,32 +70,35 @@ namespace org {
         mg_stop(ctx);
 
       }
-      bool JsonServer::contains(JSONNode& node, std::string name){
-        bool result=false;
-        int size=node.size();
-        LOGDEBUG("NodeSize="<<size);
-        if(size>0){
-          for(int a=0;a<size;a++){
-            JSONNode n=node[a];
-            LOGDEBUG("name="<<n.name());
-            if(name==n.name()){
+
+      bool JsonServer::contains(JSONNode& node, std::string name) {
+        bool result = false;
+        int size = node.size();
+        LOGDEBUG("NodeSize=" << size);
+        if (size > 0) {
+          for (int a = 0; a < size; a++) {
+            JSONNode n = node[a];
+            LOGDEBUG("name=" << n.name());
+            if (name == n.name()) {
               result = true;
             }
           }
         }
         return result;
       }
+
       void * JsonServer::event_handler(enum mg_event event,
               struct mg_connection *conn,
               const struct mg_request_info *request_info) {
-        if(mg_modify_passwords_file("test.file","localhost","ich","nich")){
+        boost::mutex::scoped_lock scoped_lock(http_mutex);
+        if (mg_modify_passwords_file("test.file", "localhost", "ich", "nich")) {
           //LOGDEBUG("entry created");
         }
         void *processed = new char();
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
-        for(int a=0;a<request_info->num_headers;a++){
-         // LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
-         // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
+        for (int a = 0; a < request_info->num_headers; a++) {
+          // LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+          // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
             string str("test:jan");
@@ -107,12 +113,39 @@ namespace org {
         }
         if (event == MG_NEW_REQUEST) {
           static const char *reply_start =
-  "HTTP/1.1 200 OK\r\n"
-  "Cache: no-cache\r\n"
-  "Content-Type: application/x-javascript\r\n"
-  "\r\n";
+                  "HTTP/1.1 200 OK\r\n"
+                  "Cache: no-cache\r\n"
+                  "Content-Type: application/x-javascript\r\n"
+                  "\r\n";
+          //_db.begin();
 
+          boost::uuids::uuid uuid = boost::uuids::random_generator()();
+          std::string requestId = boost::lexical_cast<std::string > (uuid);
+
+          std::string postdata;
+          if (strcmp(request_info->request_method, "POST") == 0) {
+            /*reading the post data that comes in*/
+            int bytes = 0, max=150000;
+            char buffer[1000];
+            while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0&&max>0) {
+              postdata = postdata.append(buffer, bytes);
+              max-=bytes;
+            }
+          }
           std::string request = request_info->uri;
+
+          db::Request req(_db);
+          req.requestId = requestId;
+          if(request_info->query_string!=NULL){
+            req.query = std::string(request_info->query_string);
+          }
+          req.uri = std::string(request_info->uri);
+          req.data=postdata;
+          req.requestType=std::string(request_info->request_method);
+          /*only by api calls*/
+          //if(request.find(BASE_API_URL"/profile")==0||request.find(BASE_API_URL"/encoding")==0)
+          //req.update();
+
           //LOGDEBUG("Request=" << request);
           //LOGDEBUG("QueryString=" << request_info->query_string);
           //LOGDEBUG("RequestMethod=" << request_info->request_method);
@@ -136,10 +169,12 @@ namespace org {
               c.push_back(cnode);
             }
             n.push_back(c);
+            n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             //LOGDEBUG(json_s);
             mg_write(conn, json_s.c_str(), json_s.length());
             //mg_printf(conn, "%s", json_s.c_str());
+            req.response=json_s;
 
           } else if (request == BASE_API_URL"/codec") {
             mg_printf(conn, "%s", reply_start);
@@ -153,34 +188,46 @@ namespace org {
               if (p->encode && p->long_name != NULL) {
                 JSONNode cnode(JSON_NODE);
                 cnode.push_back(JSONNode("longname", p->long_name));
-                cnode.push_back(JSONNode("id", p->id));
+                cnode.push_back(JSONNode("id", p->name));
                 cnode.push_back(JSONNode("type", p->type));
                 c.push_back(cnode);
               }
             }
             n.push_back(c);
+            n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
+            req.response=json_s;
 
           } else if (request == BASE_API_URL"/profile") {
             mg_printf(conn, "%s", reply_start);
-            JSONNode n =JsonProfileHandler::handle(conn,request_info, _db);
+            JSONNode n = JsonProfileHandler::handle(conn, request_info, _db, postdata);
+            n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
+            req.response=json_s;
+            //req.update();
 
           } else if (request == BASE_API_URL"/encoding") {
             mg_printf(conn, "%s", reply_start);
-            JSONNode n =JsonEncodingHandler::handle(conn,request_info, _db);
+            JSONNode n = JsonEncodingHandler::handle(conn, request_info, _db, postdata);
+            n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
+            req.response=json_s;
+            //req.update();
 
           } else {
             //mg_printf(conn, "%s", request_info->uri);
             processed = NULL;
           }
+          //LOGDEBUG("commit to db");
+          //_db.commit();
+
         } else {
           processed = NULL;
         }
+
         return processed;
       }
     }

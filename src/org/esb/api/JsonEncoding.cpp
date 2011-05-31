@@ -13,16 +13,21 @@ namespace org {
       JsonEncoding::JsonEncoding(std::string json_string):JSONNode(JSON_NODE) {
       }
       JsonEncoding::JsonEncoding(db::Job job, bool simple):JSONNode(JSON_NODE) {
-        push_back(JSONNode("id",job.id.value()));
-        push_back(JSONNode("created",job.created.value().asString("%d-%m-%y %h:%M:%s")));
-        push_back(JSONNode("begintime",job.begintime.value().asString("%d-%m-%y %h:%M:%s")));
-        push_back(JSONNode("endtime",job.endtime.value().asString("%d-%m-%y %h:%M:%s")));
-        push_back(JSONNode("progress",job.progress.value()));
-        push_back(JSONNode("infile",job.infile.value()));
-        push_back(JSONNode("outfile",job.outfile.value()));
-        push_back(JSONNode("status",job.status.value()));
-        if(!simple)
-          push_back(JSONNode("profile",job.data.value()));
+        push_back(JSONNode("id",job.uuid.value()));
+        if(!simple){
+          push_back(JSONNode("created",job.created.value().asString("%d-%m-%y %h:%M:%s")));
+          push_back(JSONNode("begintime",job.begintime.value().asString("%d-%m-%y %h:%M:%s")));
+          push_back(JSONNode("endtime",job.endtime.value().asString("%d-%m-%y %h:%M:%s")));
+          push_back(JSONNode("progress",job.progress.value()));
+          push_back(JSONNode("infile",job.infile.value()));
+          push_back(JSONNode("outfile",job.outfile.value()));
+          push_back(JSONNode("status",job.status.value()));
+          if (libjson::is_valid(job.data.value())) {
+            JSONNode profile = libjson::parse(job.data.value());
+            profile.set_name("profile");
+            push_back(profile);
+          }
+        }
       }
 
       JsonEncoding::JsonEncoding(const JsonEncoding& orig) {

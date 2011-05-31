@@ -18,7 +18,7 @@ namespace org {
 
       class JsonProfileHandler {
       public:
-        static JSONNode handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb&);
+        static JSONNode handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb&, std::string postdata);
       private:
         JsonProfileHandler();
         virtual ~JsonProfileHandler();

@@ -9,10 +9,10 @@
 //      new Event(e).stop();
 //      var json=form2json($('profileForm'));
       
-      alert(JSON.encode(profileModel));
+      //alert(JSON.encode(profileModel));
 
       new Request.JSON({
-        url: MochaUI.baseApiUrl+'/profile',
+        url: MochaUI.baseApiUrl+'/profile?id='+profileModel.id,
         method: 'POST',
         onComplete: function(props) {
           if(!props.error){

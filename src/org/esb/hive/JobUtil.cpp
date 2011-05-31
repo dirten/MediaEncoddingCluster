@@ -14,6 +14,9 @@
 #include "org/esb/util/StringUtil.h"
 #include <map>
 #include <vector>
+#include "boost/uuid/uuid_generators.hpp"
+#include "boost/uuid/uuid_io.hpp"
+#include "boost/lexical_cast.hpp"
 using namespace org::esb::av;
 using namespace org::esb::config;
 
@@ -305,6 +308,9 @@ namespace org {
         const litesql::Database db = infile.getDatabase();
         db.begin();
 
+        boost::uuids::uuid uuid = boost::uuids::random_generator()();
+        std::string uuidstr = boost::lexical_cast<std::string > (uuid);
+
         db::Job job(db);
         job.created = 0;
         job.begintime = 1;
@@ -314,6 +320,7 @@ namespace org {
         job.status = "queued";
         job.infile = infile.path.value()+"/"+infile.filename.value();
         job.data=preset.data.value();
+        job.uuid=uuidstr;
         job.update();
         job.preset().link(preset);
         /**
@@ -444,6 +451,7 @@ namespace org {
         job.duration = infile.duration;
         job.status = "queued";
         job.infile = infile.filename.value();
+        
         job.update();
 
 

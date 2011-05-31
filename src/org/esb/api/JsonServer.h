@@ -10,6 +10,7 @@
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/hive/mongoose.h"
 #include "org/esb/libjson/libjson.h"
+#include "boost/thread/mutex.hpp"
 
 namespace org {
   namespace esb {
@@ -24,6 +25,7 @@ namespace org {
         struct mg_context *ctx;
         static bool contains(JSONNode&, std::string);
         static db::HiveDb _db;
+        static boost::mutex http_mutex;
       };
     }
   }

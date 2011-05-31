@@ -341,4 +341,13 @@
         <relate object="UserGroup" handle="user"/>
     </relation>
 
+    <object name="Request">
+        <field name="requestId" type="string"/>
+        <field name="requestType" type="string"/>
+        <field name="uri" type="string"/>
+        <field name="query" type="string"/>
+        <field name="data" type="string"/>
+        <field name="response" type="string"/>
+    </object>
+
 </database>

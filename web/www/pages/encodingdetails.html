@@ -1,36 +1,16 @@
 <ul>
-  <li><b>Id: </b><span id="profileid"/></li>
-  <li><b>Name: </b><span id="profilename"/></li>
-  <li><b>Extension: </b><span id="profileextension"/></li>
-  <li><b>Format: </b><span id="profileformat"/></li>
-  <li><b>Video Codec: </b><span id="profilevcodec"/></li>
-  <li><b>Video Bitrate: </b><span id="profilevbitrate"/></li>
-  <li><b>Video Framerate: </b><span id="profilevframerate"/></li>
-  <li><b>Video Width: </b><span id="profilevwidth"/></li>
-  <li><b>Video Height: </b><span id="profilevheight"/></li>
-  <li><b>Audio Channels: </b><span id="profileachannels"/></li>
-  <li><b>Audio Codec: </b><span id="profileacodec"/></li>
-  <li><b>Audio Bitrate: </b><span id="profileabitrate"/></li>
-  <li><b>Audio Samplerate: </b><span id="profileasamplerate"/></li>
-  <li><b>Multipass: </b><span id="profilemultipass"/></li>
-  <li><b>Group of Picture: </b><span id="profilegop"/></li>
+  <li><b>Id: </b><span id="encodingid"/></li>
+  <li><b>ProfileId: </b><span id="profileid"/></li>
+  <li><b>Profile Name: </b><span id="profilename"/></li>
+  <li><b>Input File: </b><span id="infile"/></li>
+  <li><b>Output File: </b><span id="outfile"/></li>
 </ul>
 <script type="text/javascript">
   function setEncodingDetails(detail){
-    $('profileid').set('text',detail.id);
-    $('profilename').set('text',detail.name);
-    $('profileextension').set('text',detail.ext);
-    $('profileformat').set('text',detail.vformat);
-    $('profilevcodec').set('text',detail.vcodec);
-    $('profilevbitrate').set('text',detail.vbitrate);
-    $('profilevframerate').set('text',detail.vframerate);
-    $('profilevwidth').set('text',detail.vwidth);
-    $('profilevheight').set('text',detail.vheight);
-    $('profileachannels').set('text',detail.achannels);
-    $('profileacodec').set('text',detail.acodec);
-    $('profileabitrate').set('text',detail.abitrate);
-    $('profileasamplerate').set('text',detail.asamplerate);
-    $('profilemultipass').set('text',detail.multipass);
-    $('profilegop').set('text',detail.gop);
+    $('encodingid').set('text',detail.id);
+    $('profileid').set('text',detail.profile.id);
+    $('profilename').set('text',detail.profile.name);
+    $('infile').set('text',detail.infile);
+    $('outfile').set('text',detail.outfile);
   }
 </script>

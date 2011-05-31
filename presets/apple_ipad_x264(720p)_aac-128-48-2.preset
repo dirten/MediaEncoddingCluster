@@ -1,33 +1,38 @@
-<?xml version="1.0"?>
-<preset name="Apple Ipad x264(720p) aac(160kb 48kHz stereo)">
-    <format id="ipod">
-	<param name="fileExtension" value="m4v"/>
-    </format>
-    <codec type="video" id="libx264">
-	<param name="b" value="4400000"/>
-	<param name="maxrate" value="5000000"/>
-	<param name="g" value="66"/>
-	<param name="multipass" value="1"/>
-	<param name="loop" value="1"/>
-	<param name="qmin" value="10"/>
-	<param name="qmax" value="51"/>
-	<param name="qdiff" value="4"/>
-	<param name="coder" value="0"/>
-	<param name="bf" value="2"/>
-	<param name="refs" value="2"/>
-	<param name="wpred" value="0"/>
-	<param name="dct8x8" value="0"/>
-	<param name="wpredp" value="0"/>
-	<param name="me_range" value="16"/>
-	<param name="time_base" value="1/25"/>
-	<param name="aspect" value="64/45"/>
-	<param name="picture_frame_size" value="720p"/>
-        <param name="width" value="1280"/>
-	<param name="height" value="720"/>
-    </codec>
-    <codec type="audio" id="aac">
-	<param name="ab" value="160000"/>
-	<param name="ac" value="2"/>
-	<param name="ar" value="48000"/>
-    </codec>
-</preset>
+{
+    "name":"Apple Ipad x264(720p) aac(160kb 48kHz stereo)",
+    "description":"",
+    "format":{
+	"id":"ipod",
+	"ext":"m4v"
+    },
+    "video":{
+	"id":"libx264",
+	"b":"4400000",
+	"maxrate":"5000000",
+	"g":"66",
+	"multipass":"1",
+	"loop":"1",
+	"qmin":"10",
+	"qmax":"51",
+	"qdiff":"4",
+	"coder":"0",
+	"bf":"2",
+	"refs":"2",
+	"wpred":"0",
+	"dct8x8":"0",
+	"wpredp":"0",
+	"me_range":"16",
+	"time_base":"1/25",
+	"aspect":"64/45",
+	"width":"1280",
+	"height":"720",
+	"global_header":"1"
+    },
+    "audio":{
+	"id":"aac",
+	"ab":"160000",
+	"ac":"2",
+	"ar":"48000",
+	"global_header":"1"
+    }
+}

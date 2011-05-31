@@ -22,6 +22,7 @@ class Watchfolder;
 class ProcessUnit;
 class User;
 class UserGroup;
+class Request;
 class FilterFilterParameterRelation {
 public:
     class Row {
@@ -2085,6 +2086,56 @@ public:
     std::auto_ptr<UserGroup> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, UserGroup o);
+class Request : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType RequestId;
+    litesql::Field<std::string> requestId;
+    static const litesql::FieldType RequestType;
+    litesql::Field<std::string> requestType;
+    static const litesql::FieldType Uri;
+    litesql::Field<std::string> uri;
+    static const litesql::FieldType Query;
+    litesql::Field<std::string> query;
+    static const litesql::FieldType Data;
+    litesql::Field<std::string> data;
+    static const litesql::FieldType Response;
+    litesql::Field<std::string> response;
+protected:
+    void defaults();
+public:
+    Request(const litesql::Database& db);
+    Request(const litesql::Database& db, const litesql::Record& rec);
+    Request(const Request& obj);
+    const Request& operator=(const Request& obj);
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Request> upcast();
+    std::auto_ptr<Request> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Request o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

@@ -53,7 +53,9 @@
                         //setProfileFormData(properties);
                         if(firstLoad){
                             profileModel=properties;
-                            //alert(profileModel);
+                            alert(profileModel);
+                            profileModel.id=evt.target.getDataByRow(evt.row).id;
+                            alert(profileModel);
                             firstLoad=false;
                         }
                     }

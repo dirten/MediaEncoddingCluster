@@ -30,11 +30,11 @@ namespace org {
       bool JsonProfileHandler::contains(JSONNode& node, std::string name) {
         bool result = false;
         int size = node.size();
-        LOGDEBUG("NodeSize=" << size);
+        //LOGDEBUG("NodeSize=" << size);
         if (size > 0) {
           for (int a = 0; a < size; a++) {
             JSONNode n = node[a];
-            LOGDEBUG("name=" << n.name());
+            //LOGDEBUG("name=" << n.name());
             if (name == n.name()) {
               result = true;
             }
@@ -70,10 +70,12 @@ namespace org {
         return result;
       }
 
-      JSONNode JsonProfileHandler::handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb &db) {
+      JSONNode JsonProfileHandler::handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb &db, std::string postdata) {
 
 
-        JSONNode n(JSON_NODE);
+        //JSONNode n(JSON_NODE);
+        JSONNode response;
+
         if (strcmp(request_info->request_method, "DELETE") == 0) {
           char iddata[100];
           memset(&iddata, 0, 100);
@@ -91,20 +93,20 @@ namespace org {
               ok.set_name("ok");
               ok.push_back(JSONNode("code", "profile_deleted"));
               ok.push_back(JSONNode("description", "profile succesful deleted"));
-              n.push_back(ok);
+              response.push_back(ok);
             } else {
               JSONNode error(JSON_NODE);
               error.set_name("error");
               error.push_back(JSONNode("code", "profile_not_found"));
               error.push_back(JSONNode("description", "profile not found"));
-              n.push_back(error);
+              response.push_back(error);
             }
           }else{
               JSONNode error(JSON_NODE);
               error.set_name("error");
               error.push_back(JSONNode("code", "no_id"));
               error.push_back(JSONNode("description", "no id given for delete action"));
-              n.push_back(error);
+              response.push_back(error);
 
           }
          }else
@@ -124,13 +126,13 @@ namespace org {
               JSONNode data = libjson::parse(preset.data);
               data.push_back(JSONNode("id", iddata));
               //LOGDEBUG(data.write_formatted());
-              n = data;
+              response = data;
             } else {
               JSONNode error(JSON_NODE);
               error.set_name("error");
               error.push_back(JSONNode("code", "profile_not_found"));
               error.push_back(JSONNode("description", "profile not found"));
-              n.push_back(error);
+              response.push_back(error);
             }
           } else {
             LOGDEBUG("loading all preset");
@@ -144,35 +146,28 @@ namespace org {
               prnode.push_back(JSONNode("profilename", preset.name.value()));
               c.push_back(prnode);
             }
-            n.push_back(c);
+            response.push_back(c);
           }
         }          /*
            * when the preset will be updated
            *
            */
         else if (strcmp(request_info->request_method, "POST") == 0) {
-          /*reading the post data that comes in*/
-          int bytes = 0;
-          char buffer[1000];
-          std::string data;
-          while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0) {
-            data = data.append(buffer, bytes);
-          }
 
           /*check if the incomming data is valid json data*/
           JSONNode inode;
           try {
-            if (libjson::is_valid(data)) {
+            if (libjson::is_valid(postdata)) {
               LOGDEBUG("Data is valid");
-              inode = libjson::parse(data);
+              inode = libjson::parse(postdata);
               std::string msg = checkJsonProfile(inode);
               if (msg.length() > 0) {
                 JSONNode error(JSON_NODE);
                 error.set_name("error");
                 error.push_back(JSONNode("code", "attribute_error"));
                 error.push_back(JSONNode("description", msg));
-                n.push_back(error);
-                return n;
+                response.push_back(error);
+                return response;
 
               }
             } else {
@@ -181,8 +176,8 @@ namespace org {
               error.set_name("error");
               error.push_back(JSONNode("code", "parse_error"));
               error.push_back(JSONNode("description", "no valid json format given"));
-              n.push_back(error);
-              return n;
+              response.push_back(error);
+              return response;
             }
           } catch (std::exception &ex) {
             LOGDEBUG(ex.what());
@@ -190,8 +185,8 @@ namespace org {
             error.set_name("error");
             error.push_back(JSONNode("code", "parse_error"));
             error.push_back(JSONNode("description", "no valid json format given"));
-            n.push_back(error);
-            return n;
+            response.push_back(error);
+            return response;
           }
 
           /*getting the get parameter "id" to find out if a profile will be updated or created*/
@@ -199,55 +194,42 @@ namespace org {
 
           char iddata[100];
           memset(&iddata, 0, 100);
-          if (false&&request_info->query_string != NULL) {
+          if (request_info->query_string != NULL) {
             mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
             LOGDEBUG("DataId found :" << iddata);
           }
           
-          if(contains(inode,"id")){
-            JSONNode idnode=inode["id"];
-            std::string id=idnode.as_string();
-            memcpy(&iddata,id.c_str(), id.length());
-            LOGDEBUG("DataId found :" << iddata);
-          }else{
-            inode.push_back(JSONNode("id",""));
-          }
-
           /*case when "id" data is given, that means a profile update*/
           if (strlen(iddata) > 0) {
             litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == iddata);
             if (s.count() == 1) {
               LOGDEBUG("Update profile");
               db::Preset preset = s.one();
-              preset.data = data;
+              preset.data = postdata;
               preset.name=inode["name"].as_string();
               preset.update();
-              n = inode;
+              response.push_back(JSONNode("id", iddata));
             } else {
-              db::Preset preset(db);
-              preset.data = data;
-              preset.uuid = inode["id"].as_string();
-              preset.name = inode["name"].as_string();
-              preset.update();
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "profile_not_found"));
+              error.push_back(JSONNode("description", "profile with the given id not found"));
+              response.push_back(error);
             }
           }/*case when no "id" data is given, that means a profile create*/
           else {
             LOGDEBUG("Create new Profile");
             boost::uuids::uuid uuid = boost::uuids::random_generator()();
             std::string uuidstr = boost::lexical_cast<std::string > (uuid);
-            JSONNode i("id", uuidstr);
-            inode["id"].swap(i);
+            response.push_back(JSONNode("id", uuidstr));
             db::Preset preset(db);
-            preset.data = data;
+            preset.data = postdata;
             preset.uuid = uuidstr;
             preset.name = inode["name"].as_string();
             preset.update();
-            //LOGDEBUG(inode.write_formatted());
-            n = inode;
           }
         }
-        return n;
-
+        return response;
       }
     }
   }

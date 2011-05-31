@@ -1,6 +1,6 @@
 {
     "name":"Adobe Flash flv(320x240 500kb) mp3(128kb 44.1kHz stereo) ",
-    "description":"test beschreibung",
+    "description":"meine neue beschreibung",
     "format":{
 	"id":"flv",
 	"fileExtension":"flv"

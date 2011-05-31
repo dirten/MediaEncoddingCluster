@@ -6491,6 +6491,192 @@ std::ostream & operator<<(std::ostream& os, UserGroup o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Request::Own::Id("id_","INTEGER","Request_");
+const std::string Request::type__("Request");
+const std::string Request::table__("Request_");
+const std::string Request::sequence__("Request_seq");
+const litesql::FieldType Request::Id("id_","INTEGER",table__);
+const litesql::FieldType Request::Type("type_","TEXT",table__);
+const litesql::FieldType Request::RequestId("requestId_","TEXT",table__);
+const litesql::FieldType Request::RequestType("requestType_","TEXT",table__);
+const litesql::FieldType Request::Uri("uri_","TEXT",table__);
+const litesql::FieldType Request::Query("query_","TEXT",table__);
+const litesql::FieldType Request::Data("data_","TEXT",table__);
+const litesql::FieldType Request::Response("response_","TEXT",table__);
+void Request::defaults() {
+    id = 0;
+}
+Request::Request(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), requestId(RequestId), requestType(RequestType), uri(Uri), query(Query), data(Data), response(Response) {
+    defaults();
+}
+Request::Request(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), requestId(RequestId), requestType(RequestType), uri(Uri), query(Query), data(Data), response(Response) {
+    defaults();
+    size_t size = (rec.size() > 8) ? 8 : rec.size();
+    switch(size) {
+    case 8: response = convert<const std::string&, std::string>(rec[7]);
+        response.setModified(false);
+    case 7: data = convert<const std::string&, std::string>(rec[6]);
+        data.setModified(false);
+    case 6: query = convert<const std::string&, std::string>(rec[5]);
+        query.setModified(false);
+    case 5: uri = convert<const std::string&, std::string>(rec[4]);
+        uri.setModified(false);
+    case 4: requestType = convert<const std::string&, std::string>(rec[3]);
+        requestType.setModified(false);
+    case 3: requestId = convert<const std::string&, std::string>(rec[2]);
+        requestId.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Request::Request(const Request& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), requestId(obj.requestId), requestType(obj.requestType), uri(obj.uri), query(obj.query), data(obj.data), response(obj.response) {
+}
+const Request& Request::operator=(const Request& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        requestId = obj.requestId;
+        requestType = obj.requestType;
+        uri = obj.uri;
+        query = obj.query;
+        data = obj.data;
+        response = obj.response;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+std::string Request::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(requestId.name());
+    values.push_back(requestId);
+    requestId.setModified(false);
+    fields.push_back(requestType.name());
+    values.push_back(requestType);
+    requestType.setModified(false);
+    fields.push_back(uri.name());
+    values.push_back(uri);
+    uri.setModified(false);
+    fields.push_back(query.name());
+    values.push_back(query);
+    query.setModified(false);
+    fields.push_back(data.name());
+    values.push_back(data);
+    data.setModified(false);
+    fields.push_back(response.name());
+    values.push_back(response);
+    response.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Request::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Request::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, requestId);
+    updateField(updates, table__, requestType);
+    updateField(updates, table__, uri);
+    updateField(updates, table__, query);
+    updateField(updates, table__, data);
+    updateField(updates, table__, response);
+}
+void Request::addIDUpdates(Updates& updates) {
+}
+void Request::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(RequestId);
+    ftypes.push_back(RequestType);
+    ftypes.push_back(Uri);
+    ftypes.push_back(Query);
+    ftypes.push_back(Data);
+    ftypes.push_back(Response);
+}
+void Request::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Request::delRelations() {
+}
+void Request::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Request::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Request> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Request::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Request> Request::upcast() {
+    return auto_ptr<Request>(new Request(*this));
+}
+std::auto_ptr<Request> Request::upcastCopy() {
+    Request* np = new Request(*this);
+    np->id = id;
+    np->type = type;
+    np->requestId = requestId;
+    np->requestType = requestType;
+    np->uri = uri;
+    np->query = query;
+    np->data = data;
+    np->response = response;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Request>(np);
+}
+std::ostream & operator<<(std::ostream& os, Request o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.requestId.name() << " = " << o.requestId << std::endl;
+    os << o.requestType.name() << " = " << o.requestType << std::endl;
+    os << o.uri.name() << " = " << o.uri << std::endl;
+    os << o.query.name() << " = " << o.query << std::endl;
+    os << o.data.name() << " = " << o.data << std::endl;
+    os << o.response.name() << " = " << o.response << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 HiveDb::HiveDb(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -6519,6 +6705,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("ProcessUnit_seq","sequence","CREATE SEQUENCE ProcessUnit_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("User_seq","sequence","CREATE SEQUENCE User_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("UserGroup_seq","sequence","CREATE SEQUENCE UserGroup_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Request_seq","sequence","CREATE SEQUENCE Request_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
@@ -6540,6 +6727,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
+    res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + backend->getRowIDType() + ",type_ TEXT,requestId_ TEXT,requestType_ TEXT,uri_ TEXT,query_ TEXT,data_ TEXT,response_ TEXT)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));

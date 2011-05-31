@@ -16,16 +16,17 @@ namespace org {
 
       class JsonEncodingHandler {
       public:
-        static JSONNode handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb&);
+        static JSONNode handle(struct mg_connection *conn, const struct mg_request_info *request_info, db::HiveDb&, std::string postdata);
       private:
         JsonEncodingHandler();
         virtual ~JsonEncodingHandler();
         static bool contains(JSONNode& node, std::string name);
         static std::string checkJsonProfile(JSONNode&);
-        static JSONNode list(db::HiveDb&);
+        static JSONNode list(db::HiveDb&, bool);
         static JSONNode get(db::HiveDb&, std::string);
         static JSONNode save(db::HiveDb&, JSONNode & root);
         static JSONNode del(db::HiveDb&, std::string);
+        static JSONNode stop(db::HiveDb&, std::string);
       };
     }
   }

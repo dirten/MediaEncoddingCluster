@@ -707,7 +707,7 @@ MochaUI.profileWindow = function(){
                         //setProfileFormData(properties);
                         if(firstLoad){
                             profileModel=properties;
-                            //alert(profileModel);
+                            profileModel.id=profileid;
                             firstLoad=false;
                         }
                     }
@@ -972,10 +972,13 @@ MochaUI.profileWindow = function(){
 }
 
 // Initialize MochaUI when the DOM is ready
-window.addEvent('domready', function(){
+window.addEvent('load', function(){
 
     MochaUI.Desktop = new MochaUI.Desktop();
     MochaUI.Dock = new MochaUI.Dock();
+
+    //MUI.Desktop.initialize();
+    //MUI.Dock.initialize();
 
     /* Create Columns
 	 
@@ -1114,6 +1117,6 @@ window.addEvent('domready', function(){
 });
 
 // This runs when a person leaves your page.
-window.addEvent('unload', function(){
-    if (MochaUI) MochaUI.garbageCleanUp();
-});
+//window.addEvent('unload', function(){
+//    if (MochaUI) MochaUI.garbageCleanUp();
+//});

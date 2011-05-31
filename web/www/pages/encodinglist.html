@@ -18,7 +18,7 @@
             var l=properties.id;
               setEncodingDetails(properties);
           }
-        }).send(evt.target.getDataByRow(evt.row).id);
+        }).send("id="+evt.target.getDataByRow(evt.row).id);
   }
 
   function gridButtonClick(button, grid)
@@ -113,7 +113,7 @@
         {separator: true},
         {name: 'Duplicate', bclass: 'duplicate', onclick : gridButtonClick}
       ],
-      url:MochaUI.baseApiUrl+"/encoding",
+      url:MochaUI.baseApiUrl+"/encoding?full",
       perpage:10,
       page:1,
       pagination:false,
