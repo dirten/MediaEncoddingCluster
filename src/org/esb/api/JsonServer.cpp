@@ -95,9 +95,10 @@ namespace org {
           //LOGDEBUG("entry created");
         }
         void *processed = new char();
+        LOGDEBUG("Method=" << request_info->request_method);
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for (int a = 0; a < request_info->num_headers; a++) {
-          // LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+           //LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
           // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
@@ -115,7 +116,7 @@ namespace org {
           static const char *reply_start =
                   "HTTP/1.1 200 OK\r\n"
                   "Cache: no-cache\r\n"
-                  "Content-Type: application/x-javascript\r\n"
+                  "Content-Type: text/plain; charset=utf-8\r\n"
                   "\r\n";
           //_db.begin();
 
@@ -196,6 +197,8 @@ namespace org {
             n.push_back(c);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
+            
+
             mg_write(conn, json_s.c_str(), json_s.length());
             req.response=json_s;
 
