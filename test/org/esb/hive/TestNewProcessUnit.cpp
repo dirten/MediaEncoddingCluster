@@ -239,7 +239,7 @@ void write_file(int argc, char** argv) {
   video_codec->setGopSize(12);
   AVRational ar;
   ar.num = 1;
-  ar.den = 25;
+  ar.den = 30;
   video_codec->setTimeBase(ar);
 
   Encoder * audio_codec = new Encoder(audio_codec_id);

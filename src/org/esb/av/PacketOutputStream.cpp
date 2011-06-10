@@ -106,6 +106,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   } else {
     logdebug("CodecType unknown");
   }*/
+  LOGDEBUG(packet.toString());
   AVStream *stream = _fmtCtx->streams[packet.getStreamIndex()];
   packet.setDuration(av_rescale_q(packet.getDuration(), packet.getTimeBase(), stream->time_base));
   packet.setPts(av_rescale_q(packet.getPts(), packet.getTimeBase(), stream->time_base));
@@ -120,7 +121,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //packet.setDts(0);
   //  packet.setPts(streamDts[packet.getStreamIndex()]);
 
-   //LOGDEBUG(packet.toString());
+   LOGDEBUG(packet.toString());
   //  compute_pkt_fields2(_fmtCtx->streams[packet.getStreamIndex()], packet.packet);
   //  logdebug(packet.toString());
   //uint8_t dur = static_cast<uint8_t>((((float) frame_bytes / (float) (ctx->channels * osize * ctx->sample_rate)))*((float) frame.getTimeBase().den))/frame.getTimeBase().num;
@@ -143,6 +144,7 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {
     LOGERROR("av_interleaved_write_frame Result:" << result);
+    LOGERROR(packet.toString());
   }
   //LOGDEBUG(packet.toString());
   first_packet = false;

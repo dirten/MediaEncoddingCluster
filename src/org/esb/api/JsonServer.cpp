@@ -95,6 +95,7 @@ namespace org {
           //LOGDEBUG("entry created");
         }
         void *processed = new char();
+        LOGDEBUG("URI=" << request_info->uri);
         LOGDEBUG("Method=" << request_info->request_method);
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for (int a = 0; a < request_info->num_headers; a++) {

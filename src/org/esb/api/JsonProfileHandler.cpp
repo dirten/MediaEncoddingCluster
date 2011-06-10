@@ -124,9 +124,12 @@ namespace org {
             if (s.count() > 0) {
               db::Preset preset = s.one();
               JSONNode data = libjson::parse(preset.data);
+              data.set_name("data");
               data.push_back(JSONNode("id", iddata));
+              data.preparse();
               //LOGDEBUG(data.write_formatted());
-              response = data;
+              response=JSONNode(JSON_NODE);
+              response.push_back(data);
             } else {
               JSONNode error(JSON_NODE);
               error.set_name("error");
@@ -143,7 +146,7 @@ namespace org {
             BOOST_FOREACH(db::Preset preset, presets) {
               JSONNode prnode(JSON_NODE);
               prnode.push_back(JSONNode("id", preset.uuid.value()));
-              prnode.push_back(JSONNode("profilename", preset.name.value()));
+              prnode.push_back(JSONNode("name", preset.name.value()));
               c.push_back(prnode);
             }
             response.push_back(c);

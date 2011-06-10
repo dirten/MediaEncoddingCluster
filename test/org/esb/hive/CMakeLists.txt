@@ -95,7 +95,6 @@ set_tests_properties ( org.esb.hive.DatabaseServiceTest PROPERTIES TIMEOUT 30)
 
 ADD_TEST(hive.NodeDiscoveryTest ${EXECUTABLE_OUTPUT_PATH}/TestNodeDiscovery)
 ADD_TEST(hive.TimerTest ${EXECUTABLE_OUTPUT_PATH}/TestTimer)
-ADD_TEST(hive.ProcessUnitTest ${EXECUTABLE_OUTPUT_PATH}/TestFileImporter)
 #ADD_TEST(hive.ClientHandlerTest ${EXECUTABLE_OUTPUT_PATH}/TestClientHandler)
 ADD_TEST(hive.HiveListenerTest ${EXECUTABLE_OUTPUT_PATH}/TestHiveListener)
 ADD_TEST(hive.AudioAC3toMP2Test ${EXECUTABLE_OUTPUT_PATH}/TestAudioAC3toMP2)
