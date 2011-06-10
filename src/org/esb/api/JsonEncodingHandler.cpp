@@ -98,7 +98,7 @@ namespace org {
             return list(db, fullflag);
           }
         } else
-          if (method == "POST") {
+          if (method == "POST" || method == "PUT") {
         JSONNode n(JSON_NODE);
           /*reading the post data that comes in*/
           /*

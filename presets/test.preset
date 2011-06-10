@@ -8,26 +8,23 @@
     "video":{
 	"id":"flv",
 	"type":"video",
-	    "b":"500000",
-	    "g":"250",
-	    "qmin":"2",
-	    "qmax":"51",
-	    "qdiff":"4",
-	    "time_base":"1/25",
-	    "aspect":"64/45",
-	    "picture_frame_size":"320x240",
-	    "width":"320",
-	    "height":"240",
-	    "flags":"global_header"
-	
+	"b":"500000",
+	"g":"250",
+	"qmin":"2",
+	"qmax":"51",
+	"qdiff":"4",
+	"time_base":"1/25",
+	"aspect":"64/45",
+	"width":"320",
+	"height":"240",
+	"flags":"global_header"
     },
     "audio":{
 	"id":"flv",
 	"type":"audio",
-	    "ab":"128000",
-	    "ac":"2",
-	    "ar":"44100",
-	    "flags":"global_header"
-	
+	"ab":"128000",
+	"ac":"2",
+	"ar":"44100",
+	"flags":"global_header"
     }
 }

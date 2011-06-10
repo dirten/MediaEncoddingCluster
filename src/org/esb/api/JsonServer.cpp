@@ -150,7 +150,7 @@ namespace org {
 
           //LOGDEBUG("Request=" << request);
           //LOGDEBUG("QueryString=" << request_info->query_string);
-          //LOGDEBUG("RequestMethod=" << request_info->request_method);
+          LOGDEBUG("RequestMethod=" << request_info->request_method);
           if (request_info->query_string != NULL) {
             char iddata[100];
             mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
@@ -207,7 +207,7 @@ namespace org {
             mg_printf(conn, "%s", reply_start);
             JSONNode n = JsonProfileHandler::handle(conn, request_info, _db, postdata);
             n.push_back(JSONNode("requestId", requestId));
-            std::string json_s = n.write();
+            std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
             req.response=json_s;
             //req.update();
