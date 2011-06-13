@@ -49,10 +49,10 @@ namespace org {
       JsonServer::JsonServer(int port) {
         std::string ports = org::esb::util::StringUtil::toString(port);
         const char *options[] = {
-          "document_root", (org::esb::config::Config::get("web.docroot") + "/www").c_str(),
+          "document_root", (org::esb::config::Config::get("web.docroot")).c_str(),
           "listening_ports", ports.c_str(),
           "num_threads", "5",
-          "index_files", "mec.html",
+          "index_files", "index.html",
           /*
           "protect_uri","/=test.file",
           "authentication_domain","localhost",
@@ -134,6 +134,7 @@ namespace org {
               max-=bytes;
             }
           }
+          LOGDEBUG("PostData:"<<postdata);
           std::string request = request_info->uri;
 
           db::Request req(_db);
