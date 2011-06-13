@@ -11,6 +11,7 @@
 @import "ProfileList.j"
 @import "Navigator.j"
 @import "ProfileEditView.j"
+@import "Controller/ContentViewController.j"
 
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
@@ -20,6 +21,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 @implementation AppController : CPObject
     {
         var jsonData;
+	ContentViewController contentViewController;
     }
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -32,7 +34,61 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [toolBar setDelegate:self];
         [toolBar setVisible:true];
         [theWindow setToolbar:toolBar];
+        
+        contentViewController=[[ContentViewController alloc] init];
+        
+//        splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
+        splitview=[[CPSplitView alloc] initWithFrame:bounds];
+	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
 
+        [splitview setIsPaneSplitter:YES];
+        
+        var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
+	[leftView setAutoresizingMask:CPViewHeightSizable ]; 
+	var rightView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([splitview bounds]) - 200, CGRectGetHeight([splitview bounds]))];
+	[rightView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ]; 
+
+        var listScrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0,0,200,CGRectGetHeight(bounds)-58)];
+        navi=[[[MyNavigator alloc] initWithFrame:[[listScrollView contentView] bounds]] init];
+
+        [listScrollView setAutohidesScrollers:YES];
+        //[listScrollView setAutoresizingMask:CPViewHeightSizable];
+        //[[listScrollView contentView] setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
+        [listScrollView setDocumentView:navi];
+
+        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, 300)];
+        var idcolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
+        [[idcolumn headerView] setStringValue:"Id"];
+        [[idcolumn headerView] sizeToFit];
+        [idcolumn setWidth:280];
+        [tableView addTableColumn:idcolumn];
+        var namecolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 2]];
+        [[namecolumn headerView] setStringValue:"Profile Name"];
+        [[namecolumn headerView] sizeToFit];
+        [namecolumn setWidth:400];
+        [tableView addTableColumn:namecolumn];
+
+            [tableView setDataSource:self];
+            [tableView setDelegate:self];
+            [tableView setDoubleAction:@selector(doubleClicked)];
+	    [tableView setUsesAlternatingRowBackgroundColors:YES];
+            var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+            [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+            [scrollView setDocumentView:tableView];
+
+        var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile"];
+        [request setHTTPMethod:"GET"];
+        CPLog.debug(request.HTTPMethod);
+        // see important note about CPJSONPConnection above
+        var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+
+	[splitview addSubview:listScrollView];
+	[splitview addSubview:scrollView];
+
+        [contentView addSubview:splitview];
+        [theWindow orderFront:self];
+	return;
+	
 
         [contentView setBackgroundColor:[CPColor blackColor]];
         //var profilePanel =[[ProfileEditView alloc] initWithContentRect:CGRectMake(15,150,225,125) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask];
@@ -254,22 +310,24 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
                 [toolbarItem setTarget:self];
                 [toolbarItem setAction:@selector(add:)];
-                [toolbarItem setLabel:"Add Photo List"];
+                [toolbarItem setLabel:"Add Profile"];
 
                 [toolbarItem setMinSize:CGSizeMake(32, 32)];
                 [toolbarItem setMaxSize:CGSizeMake(32, 32)];
             }
             else if (anItemIdentifier == RemoveToolbarItemIdentifier)
                 {
-                    var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"remove.png"] size:CPSizeMake(30, 25)],
-                    highlighted = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"removeHighlighted.png"] size:CPSizeMake(30, 25)];
+                    //var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"remove.png"] size:CPSizeMake(30, 25)],
+                    //	highlighted = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"removeHighlighted.png"] size:CPSizeMake(30, 25)];
+            	    var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"add.png"] size:CPSizeMake(30, 25)],
+                    highlighted = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"addHighlighted.png"] size:CPSizeMake(30, 25)];
 
                     [toolbarItem setImage:image];
                     [toolbarItem setAlternateImage:highlighted];
 
                     [toolbarItem setTarget:self];
                     [toolbarItem setAction:@selector(remove:)];
-                    [toolbarItem setLabel:"Remove Photo List"];
+                    [toolbarItem setLabel:"Add Encoding"];
 
                     [toolbarItem setMinSize:CGSizeMake(32, 32)];
                     [toolbarItem setMaxSize:CGSizeMake(32, 32)];
