@@ -42,17 +42,7 @@
     var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
     var item = [outlineView itemAtRow:selectedRow];
     CPLog.debug(item);
-    /*
-    var viewName = [item title] + "View";
-    var view = [views objectForKey:viewName];
 
-    [currentView setHidden:YES];
-    
-    if (view)
-    {
-        [view setHidden:NO];
-        currentView = view;
-    }*/
 }
 
 @end

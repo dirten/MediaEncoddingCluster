@@ -46,7 +46,7 @@
     CPLog.debug("outlineView:%@ isItemExpandable:%@", outlineView, item);
 
     var values = [items objectForKey:item];
-    console.log(([values count] > 0));
+    //console.log(([values count] > 0));
     return ([values count] > 0);
 }
 
@@ -56,13 +56,13 @@
 
     if (item === nil)
     {
-        console.log([items count]);
+        //console.log([items count]);
         return [items count];
     }
     else
     {
         var values = [items objectForKey:item];
-        console.log([values count]);
+        //console.log([values count]);
         return [values count];
     }
 }
@@ -71,7 +71,7 @@
 {
     CPLog.debug("outlineView:%@ objectValueForTableColumn:%@ byItem:%@", outlineView, tableColumn, item);
 
-    console.log(item);
+    //console.log(item);
 
     return item;
 }

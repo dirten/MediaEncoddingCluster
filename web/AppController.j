@@ -68,13 +68,13 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [namecolumn setWidth:400];
         [tableView addTableColumn:namecolumn];
 
-            [tableView setDataSource:self];
-            [tableView setDelegate:self];
-            [tableView setDoubleAction:@selector(doubleClicked)];
-	    [tableView setUsesAlternatingRowBackgroundColors:YES];
-            var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
-            [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-            [scrollView setDocumentView:tableView];
+        [tableView setDataSource:self];
+        [tableView setDelegate:self];
+        [tableView setDoubleAction:@selector(doubleClicked)];
+        [tableView setUsesAlternatingRowBackgroundColors:YES];
+        var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [scrollView setDocumentView:tableView];
 
         var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile"];
         [request setHTTPMethod:"GET"];
@@ -337,8 +337,8 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
             }
 - (void)add:(id)sender
 {
-    alert([treeView itemAtRow:[treeView selectedRow]]);
-    CPLog.debug([treeView dataSource]);
+    //alert([treeView itemAtRow:[treeView selectedRow]]);
+    //CPLog.debug([treeView dataSource]);
     //var string = prompt("Enter a tag to search Flickr for photos.");
     
 }
@@ -356,12 +356,17 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     return YES;
 }
 - (void) doubleClicked{
-    CPLog.debug("double clicked");
+    CPLog.debug("double clicked"+selectedid);
     var profilePanel =[[ProfileEditView alloc] init];
-
+    selected={};
+    selected.test="bla";
+    selected.test2="bla2";
+    [profilePanel setProfileId:selected];
+    CPLog.debug(selected.test);
 }
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
-    CPLog.debug("hello:"+[aNotification object]);
+    CPLog.debug("hello:"+jsonData.data[[[aNotification object] selectedRow]].id);
+    selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
 }
 
 - (id)outlineView:(CPOutlineView)outlineView child:(int)index ofItem:(id)item
