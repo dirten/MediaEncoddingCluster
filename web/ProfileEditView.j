@@ -6,7 +6,11 @@
 }
 -(id)setProfileId:(id) id{
     CPLog.debug("setting profile id"+ id.test);
-    id.test="bla return";
+    var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile?id="+id];
+    [request setHTTPMethod:"GET"];
+    // see important note about CPJSONPConnection above
+    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+
 
 }
 
@@ -26,7 +30,7 @@
     
     var tabViewItem1 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem1"];
     [tabViewItem1 setLabel:@"General"];
-    var view1 = [[GeneralView alloc] initWithFrame:[tabView bounds]];
+    view1 = [[GeneralView alloc] initWithFrame:[tabView bounds]];
     [view1 init];
     [tabViewItem1 setView:view1];
     [tabView addTabViewItem:tabViewItem1];
@@ -47,6 +51,26 @@
     
     [contentView addSubview:okButton];
     [contentView addSubview:cancelButton];
+    [okButton setTarget:self];
+    [okButton setAction:@selector(save:)];
     return self;
 }
+- (void)save:(id)sender{
+    CPLog.debug(profileData.data.name);
+}
+- (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
+{
+    profileData=[data objectFromJSON];
+    [view1 data:profileData];
+}
+- (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
+{
+    //CPLog.debug(response);
+}
+
+- (void)connection:(CPURLConnection)aConnection didFailWithError:(CPString)error
+{
+    alert(error); //a network error occurred
+}
+
 @end

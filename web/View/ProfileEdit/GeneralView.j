@@ -3,7 +3,10 @@
     CPTextField label;
     CPTextField field;
 }
-
+-(id)data:(id)obj
+{
+    [field setObjectValue:obj.data.name];
+}
 -(id)init
 {
     [super init];
@@ -13,8 +16,8 @@
     [label setFrameOrigin:CGPointMake(50.0,15.0)];
     //[label setAlignment:CPRightTextAlignment];
 
-    field = [CPTextField textFieldWithStringValue:@"test" placeholder:@"placeholder" width:200 ];
-    [field setFrameOrigin:CGPointMake(150.0,10.0)];
+    field = [CPTextField textFieldWithStringValue:@"test" placeholder:@"placeholder" width:350 ];
+    [field setFrameOrigin:CGPointMake(125.0,10.0)];
 
 
     [self addSubview:label];

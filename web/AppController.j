@@ -361,7 +361,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     selected={};
     selected.test="bla";
     selected.test2="bla2";
-    [profilePanel setProfileId:selected];
+    [profilePanel setProfileId:selectedid];
     CPLog.debug(selected.test);
 }
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
