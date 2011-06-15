@@ -22,7 +22,7 @@
     [self orderFront:self];
     [self setTitle:"Profile Editor"];
     var contentView=[self contentView];
-    var tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 10, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-60)];
+    var tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 50, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-60)];
     //var tabView = [[CPTabView alloc] initWithFrame:[contentView]];
     //[tabView setTabViewType:CPTopTabsBezelBorder];
     [tabView setAutoresizingMask: CPViewWidthSizable |CPViewHeightSizable  ];
@@ -30,16 +30,16 @@
     
     var tabViewItem1 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem1"];
     [tabViewItem1 setLabel:@"General"];
-    view1 = [[GeneralView alloc] initWithFrame:[tabView bounds]];
-    [view1 init];
-    [tabViewItem1 setView:view1];
+    generalView = [[GeneralView alloc] initWithFrame:[tabView bounds]];
+    [generalView init];
+    [tabViewItem1 setView:generalView];
     [tabView addTabViewItem:tabViewItem1];
     
     var tabViewItem2 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem2"];
     [tabViewItem2 setLabel:@"Format"];
-    var view2 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
-    [view2 init];
-    [tabViewItem2 setView:view2];
+    formatView = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
+    [formatView init];
+    [tabViewItem2 setView:formatView];
     [tabView addTabViewItem:tabViewItem2];
 
     var tabViewItem3 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem3"];
@@ -50,7 +50,7 @@
     [tabView addTabViewItem:tabViewItem3];
 
     var tabViewItem4 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem4"];
-    [tabViewItem4 setLabel:@"Video"];
+    [tabViewItem4 setLabel:@"Audio"];
     var view4 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
     [view4 init];
     [tabViewItem4 setView:view4];
@@ -71,12 +71,12 @@
     return self;
 }
 - (void)save:(id)sender{
-    CPLog.debug(profileData.data.name);
+    CPLog.debug(profileData.testdata);
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
     profileData=[data objectFromJSON];
-    [view1 data:profileData];
+    [formatView setData:profileData];
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
