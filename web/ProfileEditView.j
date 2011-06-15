@@ -5,7 +5,7 @@
 
 }
 -(id)setProfileId:(id) id{
-    CPLog.debug("setting profile id"+ id.test);
+    CPLog.debug("setting profile id"+ id);
     var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile?id="+id];
     [request setHTTPMethod:"GET"];
     // see important note about CPJSONPConnection above
@@ -37,9 +37,24 @@
     
     var tabViewItem2 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem2"];
     [tabViewItem2 setLabel:@"Format"];
-    var view2 = [[FormatView alloc] initWithFrame: CGRectMake(0, 0, 100, 100)] ;
+    var view2 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
+    [view2 init];
     [tabViewItem2 setView:view2];
     [tabView addTabViewItem:tabViewItem2];
+
+    var tabViewItem3 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem3"];
+    [tabViewItem3 setLabel:@"Video"];
+    var view3 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
+    [view3 init];
+    [tabViewItem3 setView:view3];
+    [tabView addTabViewItem:tabViewItem3];
+
+    var tabViewItem4 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem4"];
+    [tabViewItem4 setLabel:@"Video"];
+    var view4 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
+    [view4 init];
+    [tabViewItem4 setView:view4];
+    [tabView addTabViewItem:tabViewItem4];
 
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
     [okButton setTitle:@"Save"];
