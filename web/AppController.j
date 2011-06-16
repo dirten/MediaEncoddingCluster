@@ -45,7 +45,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         
         var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
 	[leftView setAutoresizingMask:CPViewHeightSizable ]; 
-	var rightView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([splitview bounds]) - 200, CGRectGetHeight([splitview bounds]))];
+	var rightView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([splitview bounds]) - 200, CGRectGetHeight([splitview bounds])-58)];
 	[rightView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ]; 
 
         var listScrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0,0,200,CGRectGetHeight(bounds)-58)];
@@ -56,7 +56,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         //[[listScrollView contentView] setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
         [listScrollView setDocumentView:navi];
 
-        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, 300)];
+        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, CGRectGetHeight([splitview bounds])-58)];
         var idcolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
         [[idcolumn headerView] setStringValue:"Id"];
         [[idcolumn headerView] sizeToFit];

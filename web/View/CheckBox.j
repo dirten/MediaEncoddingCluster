@@ -1,4 +1,4 @@
-@implementation TextBox :CPTextField
+@implementation CheckBox :CPCheckBox
 {
   id _identifier;
 }
@@ -13,7 +13,8 @@
 }
 -(void)setValue:(id)value
 {
-  CPLog.debug("setting textBox Value to "+value);
-  [self setObjectValue:value];
+    CPLog.debug("setting checkBox Value to "+value);
+    [self setObjectValue:value];
 }
+
 @end

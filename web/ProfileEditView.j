@@ -1,5 +1,6 @@
 @import "View/ProfileEdit/GeneralView.j"
 @import "View/ProfileEdit/FormatView.j"
+@import "View/ProfileEdit/VideoView.j"
 @implementation ProfileEditView :CPWindow
 {
 
@@ -22,7 +23,7 @@
     [self orderFront:self];
     [self setTitle:"Profile Editor"];
     var contentView=[self contentView];
-    var tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 50, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-60)];
+    var tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 50, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-100)];
     //var tabView = [[CPTabView alloc] initWithFrame:[contentView]];
     //[tabView setTabViewType:CPTopTabsBezelBorder];
     [tabView setAutoresizingMask: CPViewWidthSizable |CPViewHeightSizable  ];
@@ -37,16 +38,22 @@
     
     var tabViewItem2 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem2"];
     [tabViewItem2 setLabel:@"Format"];
-    formatView = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
+    formatView = [[FormatView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth([tabView bounds]) , CGRectGetHeight([tabView bounds])+500)] ;
     [formatView init];
-    [tabViewItem2 setView:formatView];
+    var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
+    [listScrollView setDocumentView:formatView];
+    [listScrollView setHasHorizontalScroller:NO];
+    [tabViewItem2 setView:listScrollView ];
     [tabView addTabViewItem:tabViewItem2];
 
     var tabViewItem3 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem3"];
     [tabViewItem3 setLabel:@"Video"];
-    var view3 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
-    [view3 init];
-    [tabViewItem3 setView:view3];
+    videoView = [[VideoView alloc] initWithFrame:[tabView bounds]] ;
+    [videoView init];
+    var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
+    [listScrollView setDocumentView:videoView];
+    [listScrollView setHasHorizontalScroller:NO];
+    [tabViewItem3 setView:listScrollView];
     [tabView addTabViewItem:tabViewItem3];
 
     var tabViewItem4 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem4"];
@@ -71,12 +78,21 @@
     return self;
 }
 - (void)save:(id)sender{
-    CPLog.debug(profileData.testdata);
+    CPLog.debug(JSON.stringify(profileData));
+    var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile?id="+profileData.data.id];
+    [request setHTTPMethod:"POST"];
+    [request setHTTPBody:JSON.stringify(profileData.data)];
+    // see important note about CPJSONPConnection above
+    var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
+    CPLog.debug([result rawString]);
+
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
+  CPLog.debug("received json data");
     profileData=[data objectFromJSON];
-    [formatView setData:profileData];
+    [formatView setData:profileData.data.format];
+    [videoView setData:profileData.data.video];
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
