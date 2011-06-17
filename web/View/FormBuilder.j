@@ -62,6 +62,9 @@
       case "CheckBox":
       [self buildCheckBox:data.gui.options[a]];
       break;
+      case "InfoBox":
+      [self buildInfoBox:data.gui.options[a]];
+      break;
       default:
       //alert("Sie bleiben leider dumm");
       break;
@@ -71,7 +74,24 @@
     //[self setSubviews:[CPArray array]];
   }
 }
+-(void)buildInfoBox:(id)data
+{
+  [_options setObject:data forKey:data.id];
+  label=[CPTextField labelWithTitle:data.title];
+  [label setFrameOrigin:CGPointMake(0.0,nexttop)];
+  [label setAlignment:CPRightTextAlignment];
 
+  field = [TextBox labelWithTitle:data.control["default"]];
+  [field setFrameOrigin:CGPointMake(125.0,nexttop-5.0)];
+  [field setDelegate:self];
+  [field setIdentifier:data.id];
+  [_elements setObject:field forKey:data.id];
+
+  nexttop+=25.0;
+  [self addSubview:label];
+  [self addSubview:field];
+
+}
 -(void)buildTextBox:(id)data
 {
   [_options setObject:data forKey:data.id];
@@ -79,7 +99,7 @@
   [label setFrameOrigin:CGPointMake(0.0,nexttop)];
   [label setAlignment:CPRightTextAlignment];
 
-  field = [TextBox textFieldWithStringValue:data.control.default placeholder:@"placeholder" width:350 ];
+  field = [TextBox textFieldWithStringValue:data.control["default"] placeholder:@"placeholder" width:350 ];
   [field setFrameOrigin:CGPointMake(125.0,nexttop-5.0)];
   [field setDelegate:self];
   [field setIdentifier:data.id];
@@ -105,7 +125,7 @@
     [item setTarget:self];
     [item setAction:@selector(itemSelectionChanged:)];
     [item setRepresentedObject:data.id];
-    if(data.control.default==data.control.items[i].value)
+    if(data.control["default"]==data.control.items[i].value)
       [field setSelectedIndex:i];
   }
   [_elements setObject:field forKey:data.id];
@@ -130,7 +150,7 @@
   [field setTarget:self];
   [field setAction:@selector(sliderChanged:)];
   [field setIdentifier:data.id];
-  [field setObjectValue:data.control.default];
+  [field setObjectValue:data.control["default"]];
   [_elements setObject:field forKey:data.id];
 
   nexttop+=25.0;
@@ -151,7 +171,7 @@
   [field setTarget:self];
   [field setAction:@selector(checkBoxStateChanged:)];
   [field setIdentifier:data.id];
-  [field setObjectValue:data.control.default];
+  [field setObjectValue:data.control["default"]];
   [_elements setObject:field forKey:data.id];
 
   nexttop+=25.0;
@@ -205,7 +225,7 @@
 -(void)controlTextDidChange:(CPNotification)aNotification
 {
   CPLog.debug("text changed:"+[[aNotification object] identifier]);
-
+  _json[[[aNotification object] identifier]]=[[aNotification object] objectValue];
 }
 
 @end

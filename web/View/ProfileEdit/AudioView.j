@@ -1,6 +1,6 @@
 @import <AppKit/CPMenuItem.j>
 @import "/View/FormBuilder.j"
-@implementation VideoView :CPView
+@implementation AudioView :CPView
   {
     id _json;
     id codecs;
@@ -31,7 +31,7 @@
 
     var items=[];
     for(var a=0;a<codecs.data.length;a++){
-      if(codecs.data[a].type==0)
+      if(codecs.data[a].type==1)
         items.push({"key":codecs.data[a].longname,"value":codecs.data[a].id});
     }
     option.control.items=items;

@@ -37,16 +37,16 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         
         contentViewController=[[ContentViewController alloc] init];
         
-//        splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
-        splitview=[[CPSplitView alloc] initWithFrame:bounds];
+        splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
+        //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
 
         [splitview setIsPaneSplitter:YES];
         
-        var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
-	[leftView setAutoresizingMask:CPViewHeightSizable ]; 
-	var rightView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([splitview bounds]) - 200, CGRectGetHeight([splitview bounds])-58)];
-	[rightView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ]; 
+        //var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
+	//[leftView setAutoresizingMask:CPViewHeightSizable ];
+	//var rightView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([splitview bounds]) - 200, CGRectGetHeight([splitview bounds]))];
+	//[rightView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
 
         var listScrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0,0,200,CGRectGetHeight(bounds)-58)];
         navi=[[[MyNavigator alloc] initWithFrame:[[listScrollView contentView] bounds]] init];
@@ -56,7 +56,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         //[[listScrollView contentView] setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
         [listScrollView setDocumentView:navi];
 
-        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, CGRectGetHeight([splitview bounds])-58)];
+        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, CGRectGetHeight([splitview bounds]))];
         var idcolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
         [[idcolumn headerView] setStringValue:"Id"];
         [[idcolumn headerView] sizeToFit];
@@ -76,7 +76,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [scrollView setDocumentView:tableView];
 
-        var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile"];
+        var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
         [request setHTTPMethod:"GET"];
         CPLog.debug(request.HTTPMethod);
         // see important note about CPJSONPConnection above
@@ -185,7 +185,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
 
         
-        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, 300)];
+        tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0,  400, 200)];
         var idcolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
         [[idcolumn headerView] setStringValue:"Id"];
         [[idcolumn headerView] sizeToFit];
@@ -225,7 +225,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
             [tableView setDelegate:self];
             [tableView setDoubleAction:@selector(doubleClicked)];
             
-            var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+            var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds))];
             [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
             [scrollView setDocumentView:tableView];
 
@@ -340,7 +340,8 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     //alert([treeView itemAtRow:[treeView selectedRow]]);
     //CPLog.debug([treeView dataSource]);
     //var string = prompt("Enter a tag to search Flickr for photos.");
-    
+    var profilePanel =[[ProfileEditView alloc] init];
+    [profilePanel setProfileId:0];
 }
 
 - (void)remove:(id)sender
@@ -477,9 +478,12 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
 - (int)numberOfRowsInTableView:(CPTableView)tableView
 {
-    if(jsonData)
-        return jsonData.data.length;
-    return 0;
+    var result=0;
+    if(jsonData){
+      result=jsonData.data.length;
+     }
+     CPLog.debug("RowCount="+result);
+    return result;
 }
 
 - (id)tableView:(CPTableView)tableView objectValueForTableColumn:(CPTableColumn)tableColumn row:(int)row

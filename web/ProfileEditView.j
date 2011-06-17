@@ -1,17 +1,29 @@
 @import "View/ProfileEdit/GeneralView.j"
 @import "View/ProfileEdit/FormatView.j"
 @import "View/ProfileEdit/VideoView.j"
+@import "View/ProfileEdit/AudioView.j"
 @implementation ProfileEditView :CPWindow
 {
 
 }
 -(id)setProfileId:(id) id{
     CPLog.debug("setting profile id"+ id);
-    var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile?id="+id];
-    [request setHTTPMethod:"GET"];
-    // see important note about CPJSONPConnection above
-    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
-
+    if(id!=0){
+      var request = [CPURLRequest requestWithURL:"/api/v1/profile?id="+id];
+      [request setHTTPMethod:"GET"];
+      // see important note about CPJSONPConnection above
+      var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+    }else{
+      profileData={};
+      profileData.data={};
+      profileData.data.format={};
+      profileData.data.video={};
+      profileData.data.audio={};
+      [generalView setData:profileData.data];
+      [formatView setData:profileData.data.format];
+      [videoView setData:profileData.data.video];
+      [audioView setData:profileData.data.audio];
+    }
 
 }
 
@@ -38,7 +50,7 @@
     
     var tabViewItem2 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem2"];
     [tabViewItem2 setLabel:@"Format"];
-    formatView = [[FormatView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth([tabView bounds]) , CGRectGetHeight([tabView bounds])+500)] ;
+    formatView = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
     [formatView init];
     var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
     [listScrollView setDocumentView:formatView];
@@ -58,9 +70,9 @@
 
     var tabViewItem4 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem4"];
     [tabViewItem4 setLabel:@"Audio"];
-    var view4 = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
-    [view4 init];
-    [tabViewItem4 setView:view4];
+    audioView = [[AudioView alloc] initWithFrame:[tabView bounds]] ;
+    [audioView init];
+    [tabViewItem4 setView:audioView];
     [tabView addTabViewItem:tabViewItem4];
 
     var okButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-90,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
@@ -70,7 +82,8 @@
     var cancelButton=[[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([contentView bounds])-180,CGRectGetHeight([contentView bounds])-40,80.0,24.0)];
     [cancelButton setTitle:@"Cancel"];
     [cancelButton setAutoresizingMask:CPViewMinXMargin|CPViewMinYMargin];
-    
+    [cancelButton setTarget:self];
+    [cancelButton setAction:@selector(close)];
     [contentView addSubview:okButton];
     [contentView addSubview:cancelButton];
     [okButton setTarget:self];
@@ -79,20 +92,27 @@
 }
 - (void)save:(id)sender{
     CPLog.debug(JSON.stringify(profileData));
-    var request = [CPURLRequest requestWithURL:"http://localhost:8080/api/v1/profile?id="+profileData.data.id];
+    var url="/api/v1/profile";
+    if(profileData.data.id)
+      url+="?id="+profileData.data.id;
+    
+    var request = [CPURLRequest requestWithURL:url];
     [request setHTTPMethod:"POST"];
     [request setHTTPBody:JSON.stringify(profileData.data)];
     // see important note about CPJSONPConnection above
     var result = [CPURLConnection sendSynchronousRequest:request returningResponse:nil];
     CPLog.debug([result rawString]);
+    [self close];
 
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
   CPLog.debug("received json data");
     profileData=[data objectFromJSON];
+    [generalView setData:profileData.data];
     [formatView setData:profileData.data.format];
     [videoView setData:profileData.data.video];
+    [audioView setData:profileData.data.audio];
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
