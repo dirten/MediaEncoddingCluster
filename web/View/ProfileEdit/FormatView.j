@@ -34,13 +34,12 @@
                     "default":"0"
                 }
             };
-    codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
+    codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
     codecs=[[codecstxt rawString] objectFromJSON];
     
     var items=[];
     for(var a=0;a<codecs.data.length;a++){
-      if(codecs.data[a].type==0)
-        items.push({"key":codecs.data[a].longname,"value":codecs.data[a].id});
+        items.push({"key":codecs.data[a].longname,"value":codecs.data[a].name});
     }
     option.control.items=items;
     [_form init];

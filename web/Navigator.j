@@ -86,7 +86,7 @@
 }
 -(BOOL)outlineView:(CPOutlineView)aTableView shouldSelectItem:(int)rowIndex
 {
-    CPLog("bla"+rowIndex);
+    //CPLog("bla"+rowIndex);
     return YES;
 }
 - (BOOL)outlineView:(CPOutlineView)aTableView shouldSelectTableColumn:(CPTableColumn)aTableColumn

@@ -16,10 +16,13 @@
     _json=data;
     [self loadCodecUI:data.id];
     [_form setData:data];
+    [self setBounds:[_form bounds]];
   }
   -(id)init
   {
+    
     _form=[[FormBuilder alloc] initWithFrame:CGRectMake(10, 30, CGRectGetWidth([self bounds]) , CGRectGetHeight([self bounds]))];
+    
     option={"id":"id", "type":"string","title":"Codec","group":"picture_settings","unit":"",
       "control":{
         "type":"ComboBox",
@@ -94,6 +97,7 @@
 
       [_form buildFormView:defaultdata];
     }
+   
   }
 
 @end

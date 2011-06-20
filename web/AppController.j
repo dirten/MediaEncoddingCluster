@@ -12,6 +12,10 @@
 @import "Navigator.j"
 @import "ProfileEditView.j"
 @import "Controller/ContentViewController.j"
+@import "Controller/ProfileViewController.j"
+@import "Controller/ProfileEditViewController.j"
+@import "View/ProfileView.j"
+@import "View/EncodingView.j"
 
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
@@ -35,7 +39,6 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [toolBar setVisible:true];
         [theWindow setToolbar:toolBar];
         
-        contentViewController=[[ContentViewController alloc] init];
         
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
@@ -55,7 +58,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         //[listScrollView setAutoresizingMask:CPViewHeightSizable];
         //[[listScrollView contentView] setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
         [listScrollView setDocumentView:navi];
-
+        /*
         tableView=[[CPTableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds) - 400, CGRectGetHeight([splitview bounds]))];
         var idcolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 1]];
         [[idcolumn headerView] setStringValue:"Id"];
@@ -75,15 +78,28 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
         [scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
         [scrollView setDocumentView:tableView];
+        */
+        [[ProfileEditViewController alloc] init];
+        mainView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        //var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        profileView = [[ProfileView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        encodingView = [[EncodingView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        //[scrollView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [mainView addSubview:profileView];
+        [mainView addSubview:encodingView];
+        //[scrollView setDocumentView:profileView];
+        contentViewController=[[ContentViewController alloc] init];
+        [contentViewController addView:profileView];
+        [contentViewController addView:encodingView];
 
-        var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
-        [request setHTTPMethod:"GET"];
-        CPLog.debug(request.HTTPMethod);
+        //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
+        //[request setHTTPMethod:"GET"];
+        //CPLog.debug(request.HTTPMethod);
         // see important note about CPJSONPConnection above
-        var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+        //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 
 	[splitview addSubview:listScrollView];
-	[splitview addSubview:scrollView];
+	[splitview addSubview:mainView];
 
         [contentView addSubview:splitview];
         [theWindow orderFront:self];
@@ -250,7 +266,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     //CPLog.debug("Data"+data);
     jsonData=[data objectFromJSON];
     //CPLog.debug("json="+jsonData.requestId);
-    [tableView reloadData];
+    //[tableView reloadData];
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
 {
@@ -359,9 +375,6 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 - (void) doubleClicked{
     CPLog.debug("double clicked"+selectedid);
     var profilePanel =[[ProfileEditView alloc] init];
-    selected={};
-    selected.test="bla";
-    selected.test2="bla2";
     [profilePanel setProfileId:selectedid];
     CPLog.debug(selected.test);
 }

@@ -42,12 +42,14 @@
   _elements=[CPDictionary alloc];
   _options=[CPDictionary alloc];
   nexttop=20.0;
+  
   [self setSubviews:[CPArray array]];
 
 }
 
 -(void)buildFormView:(id)data
 {
+  [self setBounds:CGRectMake(0, 0, 300, 50000)];
   for(a=0;a<data.gui.options.length;a++){
     switch (data.gui.options[a].control.type) {
       case "TextBox":
