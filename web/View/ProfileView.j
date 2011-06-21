@@ -6,6 +6,7 @@ ProfileDoubleClicked = @"ProfileDoubleClicked";
 @implementation ProfileView :CPScrollView
   {
     id jsonData;
+    id selectedid;
     CPTableView  tableView;
   }
 

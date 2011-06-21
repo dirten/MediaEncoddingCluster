@@ -1,6 +1,8 @@
+EncodingDoubleClicked = @"EncodingDoubleClicked";
 @implementation EncodingView :CPScrollView
   {
     id jsonData;
+    id selectedid;
     CPTableView  tableView;
   }
 
@@ -17,6 +19,9 @@
     [[idcolumn headerView] setStringValue:"Id"];
     [[idcolumn headerView] sizeToFit];
     [idcolumn setWidth:280];
+    desc = [CPSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    [idcolumn setSortDescriptorPrototype:desc];
+
     [tableView addTableColumn:idcolumn];
     var namecolumn = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 2]];
     [[namecolumn headerView] setStringValue:"Started"];
@@ -96,6 +101,14 @@
     }
   }
 }
+- (void)tableView:(CPTableView)aTableView sortDescriptorsDidChange:(CPArray)oldDescriptors
+{
+    var newDescriptors = [aTableView sortDescriptors];
+
+    [aTableView reloadData];
+
+
+}
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {
   //this method is called when the network request returns. the data is the returned
@@ -126,6 +139,11 @@
 
 - (void) doubleClicked{
     CPLog.debug("double clicked"+selectedid);
+    [[CPNotificationCenter defaultCenter]
+    postNotificationName:EncodingDoubleClicked
+    object:self
+    userInfo:selectedid];
+}
 }
 - (void)refresh{
     var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];

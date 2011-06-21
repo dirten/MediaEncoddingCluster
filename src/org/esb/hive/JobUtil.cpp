@@ -262,7 +262,7 @@ namespace org {
       }
 
       int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
-        LOGDEBUG("Create new Job");
+        LOGDEBUG("Create new Job"<<preset);
         /*
         if(preset.filename.value().length()==0){
           LOGDEBUG("resolving Preset by Name : "<<preset.name);
@@ -292,10 +292,11 @@ namespace org {
         PresetReaderJson::FilterList filters = reader.getFilterList();
         PresetReaderJson::Preset pre = reader.getPreset();
 
-
+        LOGDEBUG("searching for Format id:"<<pre["id"]);
         /*resolving the outputformat to have knowledge of the global header flag*/
         AVOutputFormat *ofmt = NULL;
         while ((ofmt = av_oformat_next(ofmt))) {
+          LOGDEBUG(ofmt->name);
           if (pre["id"] == ofmt->name) {
             break;
           }

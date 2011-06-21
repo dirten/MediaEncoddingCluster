@@ -29,7 +29,7 @@
     codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
     codecs=[[codecstxt rawString] objectFromJSON];
 
-    var items=[];
+    var items=[{"key":"please select an audio codec","value":"0"}];
     for(var a=0;a<codecs.data.length;a++){
       if(codecs.data[a].type==1)
         items.push({"key":codecs.data[a].longname,"value":codecs.data[a].id});
@@ -58,7 +58,7 @@
         CPLog.debug("codec selected "+codecs.data[i].id);
       }
     }
-    var path = [[CPBundle mainBundle] pathForResource:@"encoder.video."+codec+".gui"];
+    var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.video."+codec+".gui"];
     _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
     CPLog.debug([_data rawString]);
     try{
@@ -76,12 +76,9 @@
     }catch(err)
     {
       CPLog.debug(err);
-      var defaultdata={"gui":{"options":[{"id":"infofield", "type":"string","title":"","group":"picture_settings","unit":"","persist":false,
-        "control":{
-          "type":"InfoBox",
-          "default":"Sorry, currently no view for this codec available"
-        }
-      }]}};
+      var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.audio.default.gui"];
+      _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
+      data=[[_data rawString] objectFromJSON];
       [_form init];
 
       var codecSelector=[_form buildComboBox:option];
@@ -92,7 +89,7 @@
         [menuitem setAction:@selector(codecSelectionChanged:)];
       }
 
-      [_form buildFormView:defaultdata];
+      [_form buildFormView:data];
     }
   }
 

@@ -1,7 +1,5 @@
-ProfileOpen = @"ProfileOpen",
-ProfileSave = @"ProfileSave";
 
-@implementation ProfileEditViewController : CPObject
+@implementation EncodingEditViewController : CPObject
   {
     ProfileEditView view;
   }
@@ -9,20 +7,20 @@ ProfileSave = @"ProfileSave";
     [[CPNotificationCenter defaultCenter]
       addObserver:self
       selector:@selector(profileEdit:)
-      name:ProfileDoubleClicked
+      name:EncodingDoubleClicked
       object:nil];
-
+      /*
     [[CPNotificationCenter defaultCenter]
       addObserver:self
       selector:@selector(profileSave:)
-      name:ProfileSave
-      object:nil];
+      name:EncodingSave
+      object:nil];*/
   }
   
   -(void)profileEdit:(CPNotification)notification{
     CPLog.debug("profileEdit:"+[notification userInfo]);
-    view = [[ProfileEditView alloc] init];
-    [view setProfileId:[notification userInfo]];
+    view = [[EncodingEditView alloc] init];
+    [view setEncodingId:[notification userInfo]];
   }
   -(void)profileSave:(CPNotification)notification{
 

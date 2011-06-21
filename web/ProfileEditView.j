@@ -33,7 +33,7 @@ ProfileChanged=@"ProfileChanged";
   CPLog.debug("ProfileEditView INIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //self=[super initWithContentRect:CGRectMake(15,150,325,225) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask|CPResizableWindowMask];
   self=[super initWithContentRect:CGRectMake(15,150,625,425) styleMask:CPClosableWindowMask|CPResizableWindowMask];
-  
+
   [self orderFront:self];
   [self setTitle:"Profile Editor"];
   var contentView=[self contentView];

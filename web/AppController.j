@@ -14,8 +14,10 @@
 @import "Controller/ContentViewController.j"
 @import "Controller/ProfileViewController.j"
 @import "Controller/ProfileEditViewController.j"
+@import "Controller/EncodingEditViewController.j"
 @import "View/ProfileView.j"
 @import "View/EncodingView.j"
+@import "View/EncodingEditView.j"
 
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
@@ -80,6 +82,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [scrollView setDocumentView:tableView];
         */
         [[ProfileEditViewController alloc] init];
+        [[EncodingEditViewController alloc] init];
         mainView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
         //var scrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(200, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
         profileView = [[ProfileView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
@@ -362,8 +365,9 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
 - (void)remove:(id)sender
 {
-    //remove this photo
-    //[self removeImageListWithIdentifier:[[photosets allKeys] objectAtIndex:[[listCollectionView selectionIndexes] firstIndex]]];
+    var encodingPanel =[[EncodingEditView alloc] init];
+    [encodingPanel setEncodingId:0];
+  
 }
 - (BOOL)selectionShouldChangeInTableView:(CPTableView)aTableView{
     return YES;

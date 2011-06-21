@@ -97,9 +97,9 @@ namespace org {
             int64_t raw_in_samples=input_framesize*list.size();
             int64_t raw_out_samples=av_rescale_q(raw_in_samples,input_timebase,output_timebase);
             raw_out_samples+=_map_data[idx].frameRateCompensateBase;
-            int rest=raw_out_samples%output_framesize;
+            int rest=raw_out_samples%(output_framesize>0?output_framesize:1);
             double out;
-            double delta = modf(raw_out_samples/output_framesize, &out);
+            double delta = modf(raw_out_samples/(output_framesize>0?output_framesize:1), &out);
             u->_expected_frame_count = -1;//static_cast<int> (out);
             _map_data[idx].frameRateCompensateBase =rest;
 //            LOGDEBUG(rest);

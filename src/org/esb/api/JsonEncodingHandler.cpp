@@ -123,7 +123,7 @@ namespace org {
           JSONNode inode;
           try {
             if (libjson::is_valid(postdata)) {
-              //LOGDEBUG("Data is valid");
+              LOGDEBUG("Data is valid");
               inode = libjson::parse(postdata);
               std::string msg = checkJsonProfile(inode);
               if (msg.length() > 0) {
@@ -149,8 +149,8 @@ namespace org {
             LOGDEBUG(ex.what());
             JSONNode error(JSON_NODE);
             error.set_name("error");
-            error.push_back(JSONNode("code", "parse_error"));
-            error.push_back(JSONNode("description", "no valid json format given"));
+            error.push_back(JSONNode("code", "internal_error"));
+            error.push_back(JSONNode("description", "internal error ouccured"));
             n.push_back(error);
             return n;
           }

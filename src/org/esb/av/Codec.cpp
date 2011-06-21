@@ -532,7 +532,6 @@ namespace org {
 
       int64_t Codec::getFrameBytes() {
         int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
-
         return ctx->frame_size * osize * ctx->channels;
       }
 
