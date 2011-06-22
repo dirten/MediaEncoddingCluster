@@ -105,12 +105,12 @@
                 </compareText>
             </ruleList>
         </addUnixService>
-        <runProgram>
+<!--        <runProgram>
             <program>${installdir}/bin/mhive</program>
             <programArguments>--install --hiveport 20200 --webport 8080</programArguments>
             <progressText>creating MHive Server Database</progressText>
             <workingDirectory>${installdir}</workingDirectory>
-        </runProgram>
+        </runProgram>-->
         <deleteWindowsService>
             <abortOnError>0</abortOnError>
             <displayName>MHiveService</displayName>

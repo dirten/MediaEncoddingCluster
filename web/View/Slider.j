@@ -11,9 +11,9 @@
     self=[super initWithFrame:aFrame];
     CPLog.debug("Init Slider!!!!!!!!!!!!!!!!!!!!!!"+self+"---"+aFrame);
 
-    _slider=[[CPSlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds])-40, CGRectGetHeight([self bounds]))];
+    _slider=[[CPSlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds])-65, CGRectGetHeight([self bounds]))];
 
-    _label=[[CPTextField alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-35, 0, 37, CGRectGetHeight([self bounds]))];
+    _label=[[CPTextField alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-60, 0, 60, CGRectGetHeight([self bounds]))];
     [_label setBordered:YES];
     [_label setBezeled:YES];
     [_label setEditable:NO];

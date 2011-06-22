@@ -40,6 +40,12 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
     [column setWidth:120];
     [tableView addTableColumn:column];
 
+column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 5]];
+    [[column headerView] setStringValue:"Status"];
+    [[column headerView] sizeToFit];
+    [column setWidth:120];
+    [tableView addTableColumn:column];
+
     [tableView setDataSource:self];
     [tableView setDelegate:self];
     [tableView setTarget:self];
@@ -48,12 +54,15 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
     [self setDocumentView:tableView];
 
     [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+    /*
     var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
     [request setHTTPMethod:"GET"];
     CPLog.debug(request.HTTPMethod);
     // see important note about CPJSONPConnection above
     var connection = [CPURLConnection connectionWithRequest:request delegate:self];
-
+    */
+    [self refresh];
+    [CPTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refresh) userInfo:nil repeats:true];
     return self;
   }
   -(void)setHidden:(BOOL)flag{
@@ -98,6 +107,9 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
     }else
     if([tableColumn identifier]==4){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];
+    }else
+    if([tableColumn identifier]==5){
+      return [CPString stringWithFormat:@"%s", jsonData.data[row].status ];
     }
   }
 }
@@ -116,7 +128,7 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
 
 
   jsonData=[data objectFromJSON];
-  CPLog.debug("json="+jsonData.requestId);
+  //CPLog.debug("json="+jsonData.requestId);
   [tableView reloadData];
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveResponse:(CPHTTPURLResponse)response
@@ -125,7 +137,7 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
   //information from flickr. we set the array of photo urls as the data to our collection view
 
   //[self addImageList:data.photos.photo withIdentifier:lastIdentifier];
-  CPLog.debug(response);
+  //CPLog.debug(response);
 }
 
 - (void)connection:(CPURLConnection)aConnection didFailWithError:(CPString)error
@@ -148,7 +160,7 @@ EncodingDoubleClicked = @"EncodingDoubleClicked";
 - (void)refresh{
     var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
     [request setHTTPMethod:"GET"];
-    CPLog.debug(request.HTTPMethod);
+    //CPLog.debug(request.HTTPMethod);
     // see important note about CPJSONPConnection above
     var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }

@@ -62,7 +62,7 @@ ProfileChanged=@"ProfileChanged";
 
   var tabViewItem3 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem3"];
   [tabViewItem3 setLabel:@"Video"];
-  videoView = [[VideoView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabView bounds]) , CGRectGetHeight([tabView bounds])+500)] ;
+  videoView = [[VideoView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabView bounds]) , CGRectGetHeight([tabView bounds])+1000)] ;
   [videoView init];
   var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
   [listScrollView setDocumentView:videoView];

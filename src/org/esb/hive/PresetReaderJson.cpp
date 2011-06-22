@@ -23,13 +23,16 @@ namespace org {
         int c=node[type].size();
         for(int a=0;a<c;a++){
           JSONNode n=node[type].at(a);
-          LOGDEBUG("Name="<<n.name()<<" val="<<n.as_string());
-          if(n.name()=="id"){
-            n.set_name("codec_id");
-            //AVCodec * codec=avcodec_find_encoder_by_name(n.as_string().c_str());
-            //n=JSONNode("codec_id",codec->id);
+          std::string name=n.name();
+          std::string value=n.as_string();
+          if(name=="id"){
+            name="codec_id";
           }
-          _codecs[type].insert(std::pair<std::string, std::string>(n.name(),n.as_string()));
+          if(name=="b"||name=="maxrate"||name=="bt"||name=="bufsize")
+            value+="000";
+          LOGDEBUG("Name="<<name<<" val="<<value);
+
+          _codecs[type].insert(std::pair<std::string, std::string>(name,value));
         }
         
         type="audio";

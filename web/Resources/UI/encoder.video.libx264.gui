@@ -39,7 +39,87 @@
 	    },
 	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"720"}},
 	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"576"}},
-	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"150"}},
+	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"512","min":1,"max":51200}},
+	    {"id":"maxrate", "type":"int", "title":"Max. Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"3000","min":1,"max":51200}},
+	    {"id":"bt", "type":"int", "title":"Bitrate Tolerance","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"150","min":1,"max":51200}},
+	    {"id":"bufsize", "type":"int", "title":"Buffer Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"500","min":1,"max":51200}},
+	    {"id":"cqp", "type":"int", "title":"CQP (Constant Quantizer)","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"6","min":0,"max":51}},
+	    {"id":"crf", "type":"int", "title":"CRF (Constant Quality)","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"23","min":0,"max":51}},
+	    {"id":"qmin", "type":"int", "title":"Min. Quantizer","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"10","min":0,"max":51}},
+	    {"id":"qmax", "type":"int", "title":"Max. Quantizer","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"51","min":0,"max":51}},
+	    {"id":"qdiff", "type":"int", "title":"Diff. Quantizer","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"4","min":0,"max":16}},
+	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"150","min":1,"max":500}},
+	    {"id":"keyint_min", "type":"int", "title":"Min. Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"150","min":1,"max":500}},
+	    {"id":"sc_threshold", "type":"int", "title":"Scene Cut Detection","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"40","min":0,"max":200}},
+	    {"id":"bframes", "type":"int", "title":"B-Frames","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"16","min":0,"max":16}},
+	    {"id":"bframebias", "type":"int", "title":"B-Frame Bias","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"0","min":0,"max":16}},
+	    {"id":"b_strategy", "type":"string","title":"B-Frame Startegy","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "default":"2",
+		    "items":[
+			{"key":"Very Fast","value":"0"},
+			{"key":"Fast","value":"1"},
+			{"key":"Accurate","value":"2"}
+		    ]
+		}
+	    },
+	    {"id":"bpyramid", "type":"int", "title":"B-Frame Pyramid","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"coder", "type":"string","title":"Entropy","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "default":"1",
+		    "items":[
+			{"key":"CAVLC","value":"0"},
+			{"key":"CABAC","value":"1"}
+		    ]
+		}
+	    },
+	    {"id":"refs", "type":"int", "title":"Reference Frames","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"6","min":0,"max":16}},
+	    {"id":"loop", "type":"int", "title":"Deblocking","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"deblockalpha", "type":"int", "title":"Deblock Alpha","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"0","min":-8,"max":8}},
+	    {"id":"deblockbeta", "type":"int", "title":"Deblock Beta","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"0","min":-8,"max":8}},
+	    {"id":"i_qfactor", "type":"string", "title":"QScale Diff. I->P Frames","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0.71"}},
+	    {"id":"b_qfactor", "type":"string", "title":"QScale Diff. P->B Frames","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0.0"}},
+	    {"id":"chromaoffset", "type":"string", "title":"Chromaoffset","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0.0"}},
+	    {"id":"qcomb", "type":"string", "title":"CBR=>CQP Curve","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0.6"}},
+	    {"id":"complexityblur", "type":"string", "title":"Complexity Blur","group":"picture_settings","unit":"pixel","control":{"type":"Slider","default":"20","min":0,"max":50}},
+	    {"id":"qblur", "type":"string", "title":"Q Blur","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0.5"}},
+	    {"id":"partp8x8", "type":"int", "title":"Partition P 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"partp4x4", "type":"int", "title":"Partition P 4x4","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"partb8x8", "type":"int", "title":"Partition B 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"parti8x8", "type":"int", "title":"Partition I 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"parti4x4", "type":"int", "title":"Partition I 4x4","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}},
+	    {"id":"directpred", "type":"string", "title":"Prediction Mode","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"0"}},
+	    {"id":"wpred", "type":"string", "title":"Weighted Prediction Mode","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","default":"1"}},
+	    {"id":"me_method", "type":"string","title":"Motion Estemination","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "default":"epzs",
+		    "items":[
+			{"key":"epzs","value":"epzs"},
+			{"key":"hex","value":"hex"},
+			{"key":"umh","value":"umh"},
+			{"key":"full","value":"full"}
+		    ]
+		}
+	    },
+	    {"id":"me_range", "type":"string", "title":"Prediction Range","group":"picture_settings","unit":"pixel","control":{"type":"Slider","default":"6","min":0,"max":16}},
+	    {"id":"subq", "type":"string", "title":"Rate Distortion","group":"picture_settings","unit":"pixel","control":{"type":"Slider","default":"6","min":0,"max":9}},
+	    {"id":"mixed_refs", "type":"string", "title":"Mixed Reference","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","default":"1"}},
+	    {"id":"dct8x8", "type":"string", "title":"DCT 8x8","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","default":"1"}},
+	    {"id":"trellis", "type":"string","title":"Trellis","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "default":"2",
+		    "items":[
+			{"key":"Disabled","value":"0"},
+			{"key":"enable only on the final encode of a MB","value":"1"},
+			{"key":"enable on all mode decisions","value":"2"}
+		    ]
+		}
+	    },
+	    {"id":"fastskip", "type":"string", "title":"Fastskip","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","default":"1"}},
 	    {"id":"2pass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","default":false}}
 
 	]

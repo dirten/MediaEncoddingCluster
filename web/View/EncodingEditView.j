@@ -31,10 +31,22 @@ EncodingCanceled=@"EncodingCanceled";
 
   _form=[[FormBuilder alloc] initWithFrame:CGRectMake(10, 20, CGRectGetWidth([contentView bounds]) , CGRectGetHeight([contentView bounds])+15)];
   [_form init];
-  optionProfiles={"id":"profile", "type":"string","title":"Profiles","group":"picture_settings","unit":"",
+  optionProfiles={"id":"profile", "type":"string","title":"Profile","group":"picture_settings","unit":"",
     "control":{
       "type":"ComboBox",
       "default":"0"
+    }
+  };
+  optionInput={"id":"infile", "type":"string","title":"Inputfile","group":"picture_settings","unit":"",
+    "control":{
+      "type":"TextBox",
+      "default":""
+    }
+  };
+  optionOutput={"id":"outfile", "type":"string","title":"Outputfile","group":"picture_settings","unit":"",
+    "control":{
+      "type":"TextBox",
+      "default":""
     }
   };
   codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/profile"] returningResponse:nil];
@@ -44,7 +56,9 @@ EncodingCanceled=@"EncodingCanceled";
     items.push({"key":codecs.data[a].name,"value":codecs.data[a].id});
   }
   optionProfiles.control.items=items;
-  var profileSelector=[_form buildComboBox:optionProfiles];
+  [_form buildComboBox:optionProfiles];
+  [_form buildTextBox:optionInput];
+  [_form buildTextBox:optionOutput];
   [contentView addSubview:_form];
 
 

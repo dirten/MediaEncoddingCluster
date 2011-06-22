@@ -160,7 +160,8 @@
     [field setAction:@selector(sliderChanged:)];
     [field setIdentifier:data.id];
     [field setObjectValue:data.control["default"]];
-    [field setMaxValue:500];
+    [field setMinValue:data.control.min];
+    [field setMaxValue:data.control.max];
     [_elements setObject:field forKey:data.id];
 
     nexttop+=25.0;
@@ -196,6 +197,7 @@
   }
   -(void)sliderChanged:(id)sender
   {
+
     CPLog.debug("changed"+parseInt([sender objectValue]));
     _json[[sender identifier]]=parseInt([sender objectValue]);
   }
