@@ -7,14 +7,14 @@
 	    {"id":"analysis_settings", "title":"Analysis", "tab":"general"}
 	],
 	"options":[
-	    {"id":"author", "type":"string","title":"Author","group":"picture_settings","unit":"fps","control":{"type":"TextBox","default":""}},
-	    {"id":"title", "type":"string", "title":"Title","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"copyright", "type":"string", "title":"Copyright","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"comment", "type":"string", "title":"Comment","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"album", "type":"string", "title":"Album","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"year", "type":"string", "title":"Year","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"track", "type":"string", "title":"Track","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}},
-	    {"id":"genre", "type":"string", "title":"Genre","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":""}}
+	    {"id":"author", "type":"string","title":"Author","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":""}},
+	    {"id":"title", "type":"string", "title":"Title","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"copyright", "type":"string", "title":"Copyright","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"comment", "type":"string", "title":"Comment","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"album", "type":"string", "title":"Album","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"year", "type":"string", "title":"Year","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"track", "type":"string", "title":"Track","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"genre", "type":"string", "title":"Genre","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}}
 	]
     }
 }

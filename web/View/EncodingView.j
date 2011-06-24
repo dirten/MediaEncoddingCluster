@@ -1,4 +1,5 @@
 EncodingDoubleClicked = @"EncodingDoubleClicked";
+EncodingClicked = @"EncodingClicked";
 @implementation EncodingView :CPScrollView
   {
     id jsonData;
@@ -147,6 +148,10 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
     CPLog.debug("hello:"+jsonData.data[[[aNotification object] selectedRow]].id);
     selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+    [[CPNotificationCenter defaultCenter]
+    postNotificationName:EncodingClicked
+    object:self
+    userInfo:selectedid];
 }
 
 - (void) doubleClicked{

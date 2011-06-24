@@ -43,6 +43,7 @@ namespace org {
   namespace esb {
     namespace api {
       db::HiveDb JsonServer::_db = org::esb::hive::DatabaseService::getDatabase();
+      std::set<std::string> JsonServer::valid_formats;
 
       boost::mutex JsonServer::http_mutex;
 
@@ -63,7 +64,36 @@ namespace org {
         assert(ctx != NULL);
         LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
 
-
+        valid_formats.insert("amr");
+        valid_formats.insert("asf");
+        valid_formats.insert("avi");
+        valid_formats.insert("avm2");
+        valid_formats.insert("dv");
+        valid_formats.insert("filmstrip");
+        valid_formats.insert("flv");
+        valid_formats.insert("gif");
+        valid_formats.insert("ipod");
+        valid_formats.insert("ivf");
+        valid_formats.insert("m4v");
+        valid_formats.insert("matroska");
+        valid_formats.insert("mjpeg");
+        valid_formats.insert("mov");
+        valid_formats.insert("mp4");
+        valid_formats.insert("mpeg");
+        valid_formats.insert("mpegts");
+        valid_formats.insert("vcd");
+        valid_formats.insert("mpeg1video");
+        valid_formats.insert("mpeg2video");
+        valid_formats.insert("dvd");
+        valid_formats.insert("vob");
+        valid_formats.insert("svcd");
+        valid_formats.insert("ogg");
+        valid_formats.insert("psp");
+        valid_formats.insert("rawvideo");
+        valid_formats.insert("swf");
+        valid_formats.insert("3g2");
+        valid_formats.insert("3gp");
+        valid_formats.insert("webm");
       }
 
       JsonServer::~JsonServer() {
@@ -99,7 +129,7 @@ namespace org {
         LOGDEBUG("Method=" << request_info->request_method);
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for (int a = 0; a < request_info->num_headers; a++) {
-           //LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+          //LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
           // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
@@ -127,24 +157,24 @@ namespace org {
           std::string postdata;
           if (strcmp(request_info->request_method, "POST") == 0) {
             /*reading the post data that comes in*/
-            int bytes = 0, max=150000;
+            int bytes = 0, max = 150000;
             char buffer[1000];
-            while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0&&max>0) {
+            while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0 && max > 0) {
               postdata = postdata.append(buffer, bytes);
-              max-=bytes;
+              max -= bytes;
             }
           }
-          LOGDEBUG("PostData:"<<postdata);
+          LOGDEBUG("PostData:" << postdata);
           std::string request = request_info->uri;
 
           db::Request req(_db);
           req.requestId = requestId;
-          if(request_info->query_string!=NULL){
+          if (request_info->query_string != NULL) {
             req.query = std::string(request_info->query_string);
           }
           req.uri = std::string(request_info->uri);
-          req.data=postdata;
-          req.requestType=std::string(request_info->request_method);
+          req.data = postdata;
+          req.requestType = std::string(request_info->request_method);
           /*only by api calls*/
           //if(request.find(BASE_API_URL"/profile")==0||request.find(BASE_API_URL"/encoding")==0)
           //req.update();
@@ -166,18 +196,20 @@ namespace org {
             AVOutputFormat *ofmt = NULL;
             int a = 0;
             while ((ofmt = av_oformat_next(ofmt))) {
-              JSONNode cnode(JSON_NODE);
-              cnode.push_back(JSONNode("longname", ofmt->long_name));
-              cnode.push_back(JSONNode("name", ofmt->name));
-              c.push_back(cnode);
+              if (valid_formats.find(ofmt->name) != valid_formats.end()) {
+                JSONNode cnode(JSON_NODE);
+                cnode.push_back(JSONNode("longname", ofmt->long_name));
+                cnode.push_back(JSONNode("name", ofmt->name));
+                c.push_back(cnode);
+              }
             }
             n.push_back(c);
             n.push_back(JSONNode("requestId", requestId));
-            std::string json_s = n.write();
+            std::string json_s = n.write_formatted();
             //LOGDEBUG(json_s);
             mg_write(conn, json_s.c_str(), json_s.length());
             //mg_printf(conn, "%s", json_s.c_str());
-            req.response=json_s;
+            req.response = json_s;
 
           } else if (request == BASE_API_URL"/codec") {
             mg_printf(conn, "%s", reply_start);
@@ -199,10 +231,10 @@ namespace org {
             n.push_back(c);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
-            
+
 
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response=json_s;
+            req.response = json_s;
 
           } else if (request == BASE_API_URL"/profile") {
             mg_printf(conn, "%s", reply_start);
@@ -210,7 +242,7 @@ namespace org {
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response=json_s;
+            req.response = json_s;
             //req.update();
 
           } else if (request == BASE_API_URL"/encoding") {
@@ -219,7 +251,7 @@ namespace org {
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response=json_s;
+            req.response = json_s;
             //req.update();
 
           } else {

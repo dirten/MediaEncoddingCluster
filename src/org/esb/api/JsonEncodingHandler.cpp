@@ -43,8 +43,8 @@ namespace org {
         if (!contains(root, "infile")) {
           result = "no infile attribute given!";
         } else
-          if (!contains(root, "profile")) {
-          result = "no profile attribute found!";
+          if (!contains(root, "profileid")) {
+          result = "no profileid attribute found!";
         } else
           if (!contains(root, "outfile")) {
           result = "no outfile attribute found!";
@@ -192,7 +192,7 @@ namespace org {
 
       JSONNode JsonEncodingHandler::save(db::HiveDb&db, JSONNode & root) {
         JSONNode n(JSON_NODE);
-        litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profile"].as_string());
+        litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
         if (s.count() == 1) {
           db::Preset preset = s.one();
           org::esb::hive::FileImporter importer;
@@ -213,7 +213,7 @@ namespace org {
           JSONNode error(JSON_NODE);
           error.set_name("error");
           error.push_back(JSONNode("code", "profile_not_found"));
-          error.push_back(JSONNode("description", std::string("could not find profile with id ").append(root["profile"].as_string()).append(" for use to create encoding task!")));
+          error.push_back(JSONNode("description", std::string("could not find profile with id ").append(root["profileid"].as_string()).append(" for use to create encoding task!")));
           n.push_back(error);
         }
 

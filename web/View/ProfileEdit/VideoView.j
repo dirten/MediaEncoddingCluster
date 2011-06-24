@@ -44,6 +44,7 @@
 
   -(void)codecSelectionChanged:(id)sender
   {
+    CPLog.debug("selection changed");
     [self loadCodecUI:[sender title]];
     [_form itemSelectionChanged:sender];
     [_form setData:_json];

@@ -35,6 +35,7 @@
     
     var items=[{"key":"please select a file format","value":"0"}];
     for(var a=0;a<codecs.data.length;a++){
+      //if(codecs.data[a].name.length>0)
         items.push({"key":codecs.data[a].longname,"value":codecs.data[a].name});
     }
     option.control.items=items;
@@ -43,6 +44,7 @@
   }
   -(void)formatSelectionChanged:(id)sender
   {
+    CPLog.debug("selection changed");
     [self loadFormatUI:[sender title]];
     [_form itemSelectionChanged:sender];
     [_form setData:_json];

@@ -29,7 +29,8 @@ namespace org {
             push_back(profile);
             //profileid=profile["id"].as_string();
           }
-          push_back(JSONNode("profileid",profileid));
+          db::Preset preset=job.preset().get().one();
+          push_back(JSONNode("profileid",preset.uuid));
         }
       }
 

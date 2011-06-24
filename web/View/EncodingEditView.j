@@ -31,7 +31,7 @@ EncodingCanceled=@"EncodingCanceled";
 
   _form=[[FormBuilder alloc] initWithFrame:CGRectMake(10, 20, CGRectGetWidth([contentView bounds]) , CGRectGetHeight([contentView bounds])+15)];
   [_form init];
-  optionProfiles={"id":"profile", "type":"string","title":"Profile","group":"picture_settings","unit":"",
+  optionProfiles={"id":"profileid", "type":"string","title":"Profile","group":"picture_settings","unit":"",
     "control":{
       "type":"ComboBox",
       "default":"0"
@@ -51,7 +51,7 @@ EncodingCanceled=@"EncodingCanceled";
   };
   codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/profile"] returningResponse:nil];
   codecs=[[codecstxt rawString] objectFromJSON];
-  var items=[];
+  var items=[{"key":"please select a profile","value":"0"}];
   for(var a=0;a<codecs.data.length;a++){
     items.push({"key":codecs.data[a].name,"value":codecs.data[a].id});
   }

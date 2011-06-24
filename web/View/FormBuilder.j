@@ -9,6 +9,7 @@
     var nexttop;
     CPDictionary _elements;
     CPDictionary _options;
+    var left_bound;
   }
   -(void)setData:(id)data
   {
@@ -38,7 +39,7 @@
       }else{
       //var el=[_elements objectForKey:[keys objectAtIndex:i]];
       var op=[_options objectForKey:[keys objectAtIndex:i]];
-      _json[[keys objectAtIndex:i]]=op.control.default;
+      _json[[keys objectAtIndex:i]]=op.control.defaults;
       CPLog.debug("setting default "+[keys objectAtIndex:i]);
       }
     }
@@ -49,6 +50,7 @@
     _elements=[CPDictionary alloc];
     _options=[CPDictionary alloc];
     nexttop=20.0;
+    left_bound=145;
 
     [self setSubviews:[CPArray array]];
 
@@ -90,8 +92,8 @@
     [label setFrameOrigin:CGPointMake(0.0,nexttop)];
     [label setAlignment:CPRightTextAlignment];
 
-    field = [TextBox labelWithTitle:data.control["default"]];
-    [field setFrameOrigin:CGPointMake(125.0,nexttop-5.0)];
+    field = [TextBox labelWithTitle:data.control.defaults];
+    [field setFrameOrigin:CGPointMake(left_bound,nexttop-5.0)];
     [field setDelegate:self];
     [field setIdentifier:data.id];
     [_elements setObject:field forKey:data.id];
@@ -108,8 +110,8 @@
     [label setFrameOrigin:CGPointMake(0.0,nexttop)];
     [label setAlignment:CPRightTextAlignment];
 
-    field = [TextBox textFieldWithStringValue:data.control["default"] placeholder:@"type in "+data.title width:350 ];
-    [field setFrameOrigin:CGPointMake(125.0,nexttop-5.0)];
+    field = [TextBox textFieldWithStringValue:data.control.defaults placeholder:@"type in "+data.title width:350 ];
+    [field setFrameOrigin:CGPointMake(left_bound,nexttop-5.0)];
     [field setDelegate:self];
     [field setIdentifier:data.id];
     [_elements setObject:field forKey:data.id];
@@ -127,14 +129,14 @@
     [label setAlignment:CPRightTextAlignment];
 
     //field = [CPTextField textFieldWithStringValue:@"test" placeholder:@"placeholder" width:350 ];
-    field = [[ComboBox alloc] initWithFrame:CGRectMake(129.0,nexttop-5.0, 342, 25) pullsDown:NO];
+    field = [[ComboBox alloc] initWithFrame:CGRectMake(left_bound+4,nexttop-5.0, 342, 25) pullsDown:NO];
     for(i=0;i<data.control.items.length;i++){
       [field addItemWithTitle:data.control.items[i].key];
       var item = [field itemAtIndex:i];
       [item setTarget:self];
       [item setAction:@selector(itemSelectionChanged:)];
       [item setRepresentedObject:data.id];
-      if(data.control["default"]==data.control.items[i].value)
+      if(data.control.defaults==data.control.items[i].value)
         [field setSelectedIndex:i];
     }
     [_elements setObject:field forKey:data.id];
@@ -153,13 +155,13 @@
     [label setFrameOrigin:CGPointMake(0.0,nexttop)];
     [label setAlignment:CPRightTextAlignment];
 
-    field = [[Slider alloc] initWithFrame:CGRectMake(129.0,nexttop-5.0, 342, 25)];
-    [field setFrameOrigin:CGPointMake(129.0,nexttop)];
+    field = [[Slider alloc] initWithFrame:CGRectMake(left_bound+4,nexttop-5.0, 342, 25)];
+    [field setFrameOrigin:CGPointMake(left_bound+4,nexttop)];
 
     [field setTarget:self];
     [field setAction:@selector(sliderChanged:)];
     [field setIdentifier:data.id];
-    [field setObjectValue:data.control["default"]];
+    [field setObjectValue:data.control.defaults];
     [field setMinValue:data.control.min];
     [field setMaxValue:data.control.max];
     [_elements setObject:field forKey:data.id];
@@ -178,11 +180,11 @@
     [label setAlignment:CPRightTextAlignment];
 
     field = [CheckBox checkBoxWithTitle:@"" ];
-    [field setFrameOrigin:CGPointMake(129.0,nexttop)];
+    [field setFrameOrigin:CGPointMake(left_bound+4,nexttop)];
     [field setTarget:self];
     [field setAction:@selector(checkBoxStateChanged:)];
     [field setIdentifier:data.id];
-    [field setObjectValue:data.control["default"]];
+    [field setObjectValue:data.control.defaults];
     [_elements setObject:field forKey:data.id];
 
     nexttop+=25.0;

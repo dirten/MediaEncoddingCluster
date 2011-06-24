@@ -2,6 +2,7 @@
 ProfileViewRefresh = @"ProfileViewRefresh";
 
 ProfileDoubleClicked = @"ProfileDoubleClicked";
+ProfileClicked = @"ProfileClicked";
 
 @implementation ProfileView :CPScrollView
   {
@@ -118,6 +119,10 @@ ProfileDoubleClicked = @"ProfileDoubleClicked";
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
   CPLog.debug("hello:"+jsonData.data[[[aNotification object] selectedRow]].id);
   selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:ProfileClicked
+    object:self
+    userInfo:selectedid];
 }
 
 - (void) doubleClicked{

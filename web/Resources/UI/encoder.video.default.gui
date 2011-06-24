@@ -10,7 +10,7 @@
 	    {"id":"time_base_sel", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","persist":true,
 		"control":{
 		    "type":"ComboBox",
-		    "default":"1/25",
+		    "defaults":"1/25",
 		    "items":[
 			{"key":"1/10","value":"1/10","data":[{"option":"time_base", "value":"1/10"}]},
 			{"key":"1/15","value":"1/15","data":[{"option":"time_base", "value":"1/15"}]},
@@ -22,11 +22,11 @@
 		    ]
 		}
 	    },
-	    {"id":"time_base", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","control":{"type":"TextBox","default":"1/25"}},
+	    {"id":"time_base", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":"1/25"}},
 	    {"id":"frame_size", "type":"string","title":"Frame Size","group":"picture_settings","unit":"pixel","persist":true,
 		"control":{
 		    "type":"ComboBox",
-		    "default":"720x576",
+		    "defaults":"720x576",
 		    "items":[
 			{"key":"VCD (320x240)","value":"320x240","data":[{"option":"width", "value":"320"},{"option":"height", "value":"240"}]},
 			{"key":"SVCD (430x576)","value":"430x576","data":[{"option":"width", "value":"430"},{"option":"height", "value":"576"}]},
@@ -37,10 +37,10 @@
 		    ]
 		}
 	    },
-	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"720"}},
-	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","default":"576"}},
-	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"150","min":1,"max":500}},
-	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "default":"512","min":1,"max":51200}}
+	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"720"}},
+	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"576"}},
+	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"150","min":1,"max":500}},
+	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"512","min":1,"max":51200}}
 
 	]
     }

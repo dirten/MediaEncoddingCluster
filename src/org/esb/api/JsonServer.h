@@ -11,7 +11,7 @@
 #include "org/esb/hive/mongoose.h"
 #include "org/esb/libjson/libjson.h"
 #include "boost/thread/mutex.hpp"
-
+#include <set>
 namespace org {
   namespace esb {
     namespace api {
@@ -26,6 +26,7 @@ namespace org {
         static bool contains(JSONNode&, std::string);
         static db::HiveDb _db;
         static boost::mutex http_mutex;
+        static std::set<std::string> valid_formats;
       };
     }
   }

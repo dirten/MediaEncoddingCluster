@@ -12,6 +12,7 @@
 @import "Navigator.j"
 @import "ProfileEditView.j"
 @import "Controller/ContentViewController.j"
+@import "Controller/DetailViewController.j"
 @import "Controller/ProfileViewController.j"
 @import "Controller/ProfileEditViewController.j"
 @import "Controller/EncodingEditViewController.j"
@@ -45,8 +46,12 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
-
         [splitview setIsPaneSplitter:YES];
+
+        dsplitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
+        //splitview=[[CPSplitView alloc] initWithFrame:bounds];
+	[dsplitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
+        [dsplitview setVertical:NO];
         
         //var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
 	//[leftView setAutoresizingMask:CPViewHeightSizable ];
@@ -95,14 +100,20 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [contentViewController addView:profileView];
         [contentViewController addView:encodingView];
 
+        detailViewController=[[DetailViewController alloc] init];
+
         //var request = [CPURLRequest requestWithURL:"/api/v1/profile"];
         //[request setHTTPMethod:"GET"];
         //CPLog.debug(request.HTTPMethod);
         // see important note about CPJSONPConnection above
         //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 
+        detailView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+
 	[splitview addSubview:listScrollView];
-	[splitview addSubview:mainView];
+	[dsplitview addSubview:mainView];
+	[dsplitview addSubview:detailView];
+	[splitview addSubview:dsplitview];
 
         [contentView addSubview:splitview];
         [theWindow orderFront:self];
