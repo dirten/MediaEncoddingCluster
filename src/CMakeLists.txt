@@ -378,12 +378,12 @@ ENDIF(NOT WIN32)
 
 IF(WIN32)
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/avcodec-53.dll
-#      ${FFMPEG_DIR}/lib/avcore-0.dll
-      ${FFMPEG_DIR}/lib/avdevice-53.dll
-      ${FFMPEG_DIR}/lib/avformat-53.dll
-      ${FFMPEG_DIR}/lib/avutil-51.dll
-      ${FFMPEG_DIR}/lib/swscale-0.dll
+      ${FFMPEG_DIR}/lib/avcodec.dll
+#      ${FFMPEG_DIR}/lib/avcore.dll
+      ${FFMPEG_DIR}/lib/avdevice.dll
+      ${FFMPEG_DIR}/lib/avformat.dll
+      ${FFMPEG_DIR}/lib/avutil.dll
+      ${FFMPEG_DIR}/lib/swscale.dll
     DESTINATION ${LIB_INSTALL_DIR}
     )
 ELSEIF(APPLE)
@@ -426,12 +426,12 @@ ELSEIF(APPLE)
 
 ELSE(APPLE)
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.so.53
-      ${FFMPEG_DIR}/lib/libavdevice.so.53
-      ${FFMPEG_DIR}/lib/libavformat.so.53
-      ${FFMPEG_DIR}/lib/libavutil.so.51
-#      ${FFMPEG_DIR}/lib/libavcore.so.0
-      ${FFMPEG_DIR}/lib/libswscale.so.0
+      ${FFMPEG_DIR}/lib/libavcodec.so
+      ${FFMPEG_DIR}/lib/libavdevice.so
+      ${FFMPEG_DIR}/lib/libavformat.so
+      ${FFMPEG_DIR}/lib/libavutil.so
+#      ${FFMPEG_DIR}/lib/libavcore.so
+      ${FFMPEG_DIR}/lib/libswscale.so
     DESTINATION ${LIB_INSTALL_DIR}
     )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")
