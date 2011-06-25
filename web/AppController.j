@@ -33,6 +33,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
     - (void)applicationDidFinishLaunching:(CPNotification)aNotification
     {
+	//return;
         var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         toolBar = [[CPToolbar alloc] initWithIdentifier:"Toolbar"],

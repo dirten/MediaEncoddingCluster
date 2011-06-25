@@ -11,6 +11,7 @@
     CPDictionary _options;
     var left_bound;
   }
+    
   -(void)setData:(id)data
   {
     CPLog.debug("setting data for profile in form builder"+data);

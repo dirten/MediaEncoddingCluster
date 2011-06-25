@@ -301,7 +301,7 @@
                             <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/swscale-0.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/swscale-2.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/bin/avcodec-53.dll</origin>
