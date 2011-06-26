@@ -125,7 +125,11 @@ namespace org {
               db::Preset preset = s.one();
               JSONNode data = libjson::parse(preset.data);
               data.set_name("data");
-              data["id"]=JSONNode("id", iddata);
+              if(contains(data,"id")){
+                data["id"]=JSONNode("id", iddata);
+              }else{
+                data.push_back(JSONNode("id", iddata));
+              }
               //data.push_back(JSONNode("id", iddata));
               data.preparse();
               //LOGDEBUG(data.write_formatted());
