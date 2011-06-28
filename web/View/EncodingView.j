@@ -35,13 +35,20 @@ EncodingClicked = @"EncodingClicked";
     [[column headerView] sizeToFit];
     [column setWidth:120];
     [tableView addTableColumn:column];
-    column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 4]];
+
+column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 4]];
+    [[column headerView] setStringValue:"Duration"];
+    [[column headerView] sizeToFit];
+    [column setWidth:120];
+    [tableView addTableColumn:column];
+
+    column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 5]];
     [[column headerView] setStringValue:"Progress"];
     [[column headerView] sizeToFit];
     [column setWidth:120];
     [tableView addTableColumn:column];
 
-column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 5]];
+column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 6]];
     [[column headerView] setStringValue:"Status"];
     [[column headerView] sizeToFit];
     [column setWidth:120];
@@ -106,10 +113,10 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
     if([tableColumn identifier]==3){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
     }else
-    if([tableColumn identifier]==4){
+    if([tableColumn identifier]==5){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];
     }else
-    if([tableColumn identifier]==5){
+    if([tableColumn identifier]==6){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].status ];
     }
   }

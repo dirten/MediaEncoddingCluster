@@ -27,7 +27,7 @@
     option={"id":"id", "type":"string","title":"File Format","group":"picture_settings","unit":"",
                 "control":{
                     "type":"ComboBox",
-                    "default":"0"
+                    "defaults":"0"
                 }
             };
     codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];

@@ -426,12 +426,12 @@ ELSEIF(APPLE)
 
 ELSE(APPLE)
   INSTALL(FILES
-      ${FFMPEG_DIR}/lib/libavcodec.so
-      ${FFMPEG_DIR}/lib/libavdevice.so
-      ${FFMPEG_DIR}/lib/libavformat.so
-      ${FFMPEG_DIR}/lib/libavutil.so
+      ${FFMPEG_DIR}/lib/libavcodec.so.53
+      ${FFMPEG_DIR}/lib/libavdevice.so.53
+      ${FFMPEG_DIR}/lib/libavformat.so.53
+      ${FFMPEG_DIR}/lib/libavutil.so.51
 #      ${FFMPEG_DIR}/lib/libavcore.so
-      ${FFMPEG_DIR}/lib/libswscale.so
+      ${FFMPEG_DIR}/lib/libswscale.so.2
     DESTINATION ${LIB_INSTALL_DIR}
     )
     #INSTALL(CODE "CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/mectl ${CMAKE_INSTALL_PREFIX}/bin/mectl)")

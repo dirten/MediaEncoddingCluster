@@ -13,10 +13,11 @@
 
     _slider=[[CPSlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds])-65, CGRectGetHeight([self bounds]))];
 
-    _label=[[CPTextField alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-60, 0, 60, CGRectGetHeight([self bounds]))];
+    _label=[[CPTextField alloc] initWithFrame:CGRectMake(CGRectGetWidth([self bounds])-60, 0, 64, CGRectGetHeight([self bounds]))];
     [_label setBordered:YES];
     [_label setBezeled:YES];
-    [_label setEditable:NO];
+    [_label setDelegate:self];
+    [_label setEditable:YES];
     //_label=[CPTextField roundedTextFieldWithStringValue:@"0" placeholder:@"" width:4];
     //[_label setFrameOrigin:CGPointMake(CGRectGetWidth([self bounds])-40,0)];
 
@@ -48,6 +49,11 @@
   {
     return _identifier;
   }
+  -(void)controlTextDidChange:(CPNotification)aNotification
+{
+  [_slider setObjectValue:[[aNotification object] objectValue]];
+}
+
   -(void)setValue:(id)value
   {
     CPLog.debug("setting sliderBox Value to "+value);

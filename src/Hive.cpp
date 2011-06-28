@@ -519,7 +519,7 @@ void start() {
   //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
 
   org::esb::lang::CtrlCHitWaiter::wait();
-  LOGINFO("shutdown app, this will take some time!");
+  LOGINFO("shutdown app, this will take a minute!");
   /*
    *
    * Stopping Application Services from configuration

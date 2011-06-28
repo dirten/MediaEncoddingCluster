@@ -14,13 +14,13 @@
       {"id":"id", "type":"string","title":"Profile Id","group":"picture_settings","unit":"",
         "control":{
           "type":"InfoBox",
-          "default":"                                                                                                   "
+          "defaults":"                                                                                                   "
         }
       },
       {"id":"name", "type":"string","title":"Profile Name","group":"picture_settings","unit":"",
         "control":{
           "type":"TextBox",
-          "default":""
+          "defaults":""
         }
       }]}};
       _form=[[FormBuilder alloc] initWithFrame:CGRectMake(10, 30, CGRectGetWidth([self bounds]) , CGRectGetHeight([self bounds]))];

@@ -23,7 +23,7 @@
     option={"id":"id", "type":"string","title":"Codec","group":"picture_settings","unit":"",
       "control":{
         "type":"ComboBox",
-        "default":"0"
+        "defaults":"0"
       }
     };
     codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
@@ -59,7 +59,7 @@
         CPLog.debug("codec selected "+codecs.data[i].id);
       }
     }
-    var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.video."+codec+".gui"];
+    var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.audio."+codec+".gui"];
     _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
     CPLog.debug([_data rawString]);
     try{

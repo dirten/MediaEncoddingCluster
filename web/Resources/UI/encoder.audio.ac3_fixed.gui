@@ -1,0 +1,53 @@
+{
+    "gui":{
+	"groups":[
+	    {"id":"picture_settings", "title":"Picture Settings", "tab":"general"},
+	    {"id":"frametype_settings", "title":"Frame Type Settings", "tab":"general"},
+	    {"id":"rate_settings", "title":"Rate Control Settings", "tab":"general"},
+	    {"id":"analysis_settings", "title":"Analysis", "tab":"general"}
+	],
+	"options":[
+	    {"id":"ac", "type":"string","title":"Channels","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"2",
+		    "items":[
+			{"key":"Mono","value":"1"},
+			{"key":"Stereo","value":"2"},
+			{"key":"6.1","value":"3"}
+		    ]
+		}
+	    },
+	    {"id":"ab", "type":"string","title":"Bit Rate","group":"picture_settings","unit":"fps","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"128000",
+		    "items":[
+			{"key":"32 kb/s","value":"32000"},
+			{"key":"64 kb/s","value":"64000"},
+			{"key":"96 kb/s","value":"96000"},
+			{"key":"128 kb/s","value":"128000"},
+			{"key":"160 kb/s","value":"160000"},
+			{"key":"192 kb/s","value":"192000"},
+			{"key":"224 kb/s","value":"224000"},
+			{"key":"320 kb/s","value":"320000"}
+		    ]
+		}
+	    },
+	    {"id":"ar", "type":"string","title":"Sample Rate","group":"picture_settings","unit":"fps","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"44100",
+		    "items":[
+			{"key":"8 kHz","value":"8000"},
+			{"key":"11.025 kHz","value":"11025"},
+			{"key":"22.05 kHz","value":"22050"},
+			{"key":"44.1 kHz","value":"44100"},
+			{"key":"48 kHz","value":"48000"}
+		    ]
+		}
+	    }
+	]
+    }
+}
+

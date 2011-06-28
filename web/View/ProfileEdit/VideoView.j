@@ -26,7 +26,7 @@
     option={"id":"id", "type":"string","title":"Codec","group":"picture_settings","unit":"",
       "control":{
         "type":"ComboBox",
-        "default":"0"
+        "defaults":"0"
       }
     };
     codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/codec"] returningResponse:nil];
@@ -62,39 +62,32 @@
         CPLog.debug("codec selected "+codecs.data[i].id);
       }
     }
+    [_form init];
+
+    var codecSelector=[_form buildComboBox:option];
+    var itemarray=[codecSelector itemArray];
+    for(var a=0;a<[itemarray count];a++){
+      menuitem=[itemarray objectAtIndex:a];
+      [menuitem setTarget:self];
+      [menuitem setAction:@selector(codecSelectionChanged:)];
+    }
+
     var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.video."+codec+".gui"];
     _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
     CPLog.debug([_data rawString]);
     try{
       data=[[_data rawString] objectFromJSON];
-      [_form init];
-
-      var codecSelector=[_form buildComboBox:option];
-      var itemarray=[codecSelector itemArray];
-      for(var a=0;a<[itemarray count];a++){
-        menuitem=[itemarray objectAtIndex:a];
-        [menuitem setTarget:self];
-        [menuitem setAction:@selector(codecSelectionChanged:)];
-      }
       [_form buildFormView:data];
     }catch(err)
     {
       CPLog.debug(err);
-      var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.video.default.gui"];
-      _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
-      data=[[_data rawString] objectFromJSON];
-      [_form init];
-      var codecSelector=[_form buildComboBox:option];
-      var itemarray=[codecSelector itemArray];
-      for(var a=0;a<[itemarray count];a++){
-        menuitem=[itemarray objectAtIndex:a];
-        [menuitem setTarget:self];
-        [menuitem setAction:@selector(codecSelectionChanged:)];
+      if(codecid&&codecid!=option.control.items[0].key){
+        var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.video.default.gui"];
+        _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
+        data=[[_data rawString] objectFromJSON];
+        [_form buildFormView:data];
       }
-
-      [_form buildFormView:data];
     }
-
   }
 
 @end
