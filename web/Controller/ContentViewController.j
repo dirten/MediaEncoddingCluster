@@ -35,7 +35,7 @@
   - (void)addView:(id)view
   {
     [view setHidden:YES];
-    CPLog.debug([view className]+" set hidden");
+    //CPLog.debug([view className]+" set hidden");
     [views setObject:view forKey:[view className]];
   }
 

@@ -19,6 +19,7 @@
 @import "View/ProfileView.j"
 @import "View/EncodingView.j"
 @import "View/EncodingEditView.j"
+@import "View/DetailWebView.j"
 
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
@@ -97,6 +98,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [mainView addSubview:profileView];
         [mainView addSubview:encodingView];
         //[scrollView setDocumentView:profileView];
+
         contentViewController=[[ContentViewController alloc] init];
         [contentViewController addView:profileView];
         [contentViewController addView:encodingView];
@@ -110,6 +112,14 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 
         detailView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+
+        detailEncodingView=[[[DetailWebView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)] initWithTemplate:"EncodingDetailView"];
+        detailProfileView=[[[DetailWebView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)] initWithTemplate:"ProfileDetailView"];
+        [detailViewController addViewWithName:detailEncodingView name:"EncodingView"];
+        [detailViewController addViewWithName:detailProfileView name:"ProfileView"];
+        //[detailEncodingView load:0];
+        [detailView addSubview:detailEncodingView];
+        [detailView addSubview:detailProfileView];
 
 	[splitview addSubview:listScrollView];
 	[dsplitview addSubview:mainView];

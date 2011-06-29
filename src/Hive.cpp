@@ -126,7 +126,9 @@ int main(int argc, char * argv[]) {
     cli.add_options()
             ("client,i", "start the Hive Client")
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")
-            ("port,p", po::value<int>()->default_value(20200), "Port to connect");
+            ("port,p", po::value<int>()->default_value(20200), "Port to connect")
+            ("count", po::value<int>()->default_value(1), "Client Processor Count")
+    ;
 
     po::options_description web("Webserver");
     web.add_options()
@@ -297,6 +299,7 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("client")) {
       config::Config::setProperty("client.port", Decimal(vm["port"].as<int> ()).toString().c_str());
+      config::Config::setProperty("client.count", Decimal(vm["count"].as<int> ()).toString().c_str());
       config::Config::setProperty("client.host", vm["host"].as<std::string > ().c_str());
       client(argc, argv);
     }
@@ -446,11 +449,17 @@ void client(int argc, char *argv[]) {
   } else {
     string host = config::Config::get("client.host");
     int port = atoi(config::Config::get("client.port").c_str());
+    int count = atoi(config::Config::get("client.count").c_str());
+    LOGDEBUG("Starting "<<count<<" Client Processes");
+    for(int a =0;a<count;a++){
+      org::esb::hive::HiveClient *c=new org::esb::hive::HiveClient(host, port);
+      boost::thread t(boost::bind(&HiveClient::start, c));
+    }
+    //Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
+    //Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
 
-    Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
     Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
 
-    Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
     Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
