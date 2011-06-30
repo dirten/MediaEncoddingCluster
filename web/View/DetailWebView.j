@@ -28,6 +28,7 @@
      [self setDrawsBackground:YES];
     [self setScrollMode:CPWebViewScrollAppKit];
     [self setFrameLoadDelegate:self];
+    [self setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     return self;
   }
   -(void)setData:(id)data
@@ -36,7 +37,7 @@
     for (var key in data){
       CPLog.debug("Key="+key);
     }
-    scrollRect = [_frameView visibleRect];
+    scrollRect = [self visibleRect];
 
     var html = Mustache.to_html(IssuesHTMLTemplate, data);
     [self loadHTMLString:html];

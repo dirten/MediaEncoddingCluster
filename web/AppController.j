@@ -53,7 +53,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         dsplitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[dsplitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
-        [dsplitview setVertical:NO];
+        [dsplitview setVertical:YES];
         
         //var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
 	//[leftView setAutoresizingMask:CPViewHeightSizable ];
@@ -111,13 +111,15 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         // see important note about CPJSONPConnection above
         //var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 
-        detailView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)];
+        detailView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), CGRectGetHeight(bounds))];
 
-        detailEncodingView=[[[DetailWebView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)] initWithTemplate:"EncodingDetailView"];
-        detailProfileView=[[[DetailWebView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds)-400, CGRectGetHeight(bounds)-58)] initWithTemplate:"ProfileDetailView"];
+        detailEncodingView=[[[DetailWebView alloc] initWithFrame:[detailView bounds]] initWithTemplate:"EncodingDetailView"];
+        detailProfileView=[[[DetailWebView alloc] initWithFrame:[detailView bounds]] initWithTemplate:"ProfileDetailView"];
+        
         [detailViewController addViewWithName:detailEncodingView name:"EncodingView"];
         [detailViewController addViewWithName:detailProfileView name:"ProfileView"];
         //[detailEncodingView load:0];
+
         [detailView addSubview:detailEncodingView];
         [detailView addSubview:detailProfileView];
 
