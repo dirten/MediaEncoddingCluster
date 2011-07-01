@@ -73,7 +73,25 @@ namespace org {
       FormatBaseStream::FormatBaseStream() {
         initialize();
       }
-
+	static int lockmgr(void **mtx, enum AVLockOp op){
+	    switch(op){
+		case AV_LOCK_CREATE:
+		    *mtx=new boost::mutex();
+		    if(!*mtx)
+			return 1;
+		    break;
+		case AV_LOCK_OBTAIN:
+		    static_cast<boost::mutex*>(*mtx)->lock();
+		    break;
+		case AV_LOCK_RELEASE:
+		    static_cast<boost::mutex*>(*mtx)->unlock();
+		    break;
+		case AV_LOCK_DESTROY:
+		    delete static_cast<boost::mutex*>(*mtx);
+		    break;
+	    }
+	    return 0;
+	}
       void FormatBaseStream::initialize() {
         if (!isInitialized) {
           LOGDEBUG("Init ffmpeg Libraries");
@@ -83,6 +101,7 @@ namespace org {
           av_log_set_callback(mhive_log_default_callback);
           av_log_set_level(AV_LOG_VERBOSE);
           av_register_protocol2(&test_protocol, sizeof(URLProtocol));
+          av_lockmgr_register(lockmgr);
           isInitialized = true;
         }
       }

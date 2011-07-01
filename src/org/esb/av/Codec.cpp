@@ -68,7 +68,7 @@ namespace org {
        * @param mode
        */
       Codec::Codec(AVStream * s, int mode) {
-        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
         ctx = s->codec;
         _mode = mode;
@@ -120,7 +120,7 @@ namespace org {
 
       Codec::Codec(const CodecID codecId, int mode) {
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
-        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         _codec_resolved = false;
         _mode = mode;
         ctx = avcodec_alloc_context();
@@ -312,7 +312,7 @@ namespace org {
       bool Codec::open() {
 
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
-        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened)return _opened;
         findCodec(_mode);
@@ -412,7 +412,7 @@ namespace org {
       }
 
       void Codec::close() {
-        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
           LOGTRACE("void Codec::close("<<this<<"");

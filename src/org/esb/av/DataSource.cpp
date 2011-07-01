@@ -26,7 +26,7 @@ namespace org {
 
       }
       void DataSource::connect() {
-        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+        //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << _locator.toString());
         _isValid = false;
         AVFormatParameters params, *ap = &params;

@@ -27,7 +27,7 @@ extern "C" {
 namespace org {
   namespace esb {
     namespace av {
-      static boost::mutex ffmpeg_mutex;
+      //static boost::mutex ffmpeg_mutex;
     }
   }
 }

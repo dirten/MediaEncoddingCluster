@@ -22,7 +22,7 @@ namespace org {
       }
       
       void FormatInputStream::init(std::string source) {
-	boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
+	//boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << source);
         _isValid = false;
         _sourceFile = source;
