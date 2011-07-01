@@ -153,7 +153,7 @@ namespace org {
       }
 
       int Codec::setCodecOption(std::string opt, std::string arg) {
-        //LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
+        LOGTRACE("setCodecOption(" << opt << "," << arg << ")");
         _options[opt] = arg;
         return 0;
       }

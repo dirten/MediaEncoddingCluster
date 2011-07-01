@@ -78,7 +78,7 @@ ProcessUnit::~ProcessUnit() {
 }
 
 void ProcessUnit::process() {
-  if(_encoder->getCodecOption("multipass")=="1"){
+  if(_encoder->getCodecOption("multipass")=="1"||_encoder->getCodecOption("multipass")=="true"){
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass","true");
   }

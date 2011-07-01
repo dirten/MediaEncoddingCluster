@@ -61,11 +61,11 @@ namespace org {
                 //_result[_prop2parent[(*it).first]].append("-").append((*it).first);
               }
           } else {
-            //LOGWARN("Property \"" << (*it).first << "\" with value \"" << (*it).second << "\" is unknown!");
+            LOGWARN("Property \"" << (*it).first << "\" with value \"" << (*it).second << "\" is unknown!");
           }
 
           if(_options.count(key)&&_options[key]->type==FF_OPT_TYPE_FLAGS){
-            if((*it).second=="0"){
+            if((*it).second=="0"||(*it).second=="false"){
               _result[key].append("-"+value);
             }else{
               _result[key].append("+"+value);
@@ -78,6 +78,8 @@ namespace org {
       }
 
       void CodecPropertyTransformer::init() {
+        /** this will be only enabled when support for 2pass encoding is well tested*/
+        //_result["multipass"] = "0";
         const AVOption * option = NULL;
         AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
         std::map<std::string, std::string> unit2name;

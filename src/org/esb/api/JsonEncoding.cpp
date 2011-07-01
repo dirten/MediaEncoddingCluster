@@ -15,9 +15,9 @@ namespace org {
       JsonEncoding::JsonEncoding(db::Job job, bool simple):JSONNode(JSON_NODE) {
         push_back(JSONNode("id",job.uuid.value()));
         if(!simple){
-          push_back(JSONNode("created",job.created.value().asString("%d-%m-%y %h:%M:%s")));
-          push_back(JSONNode("begintime",job.begintime.value().asString("%d-%m-%y %h:%M:%s")));
-          push_back(JSONNode("endtime",job.endtime.value().asString("%d-%m-%y %h:%M:%s")));
+          push_back(JSONNode("created",job.created));
+          push_back(JSONNode("begintime",job.begintime));
+          push_back(JSONNode("endtime",job.endtime));
           push_back(JSONNode("progress",job.progress.value()));
           push_back(JSONNode("infile",job.infile.value()));
           push_back(JSONNode("outfile",job.outfile.value()));
