@@ -68,6 +68,7 @@ namespace org {
        * @param mode
        */
       Codec::Codec(AVStream * s, int mode) {
+        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGWARN("!!!PLEASE DONT USE THIS CONSTRUCTOR!!!");
         ctx = s->codec;
         _mode = mode;
@@ -119,6 +120,7 @@ namespace org {
 
       Codec::Codec(const CodecID codecId, int mode) {
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
+        boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         _codec_resolved = false;
         _mode = mode;
         ctx = avcodec_alloc_context();
