@@ -71,6 +71,22 @@
   {
     CPLog.debug("received json data:"+data);
     response=[data objectFromJSON];
+    if(response.begintime&&response.endtime){
+      var end=response.endtime==1?(new Date()).getTime()/1000:response.endtime;
+      var start=response.begintime==1?end:response.begintime;
+      response.duration=[self formatDuration:(end-start)];
+      }
+    if(response.created&&response.begintime){
+      var begin=response.begintime==1?(new Date()).getTime()/1000:response.begintime;
+      response.queuedtime=[self formatDuration:(begin-response.created)];
+      }
+    if(response.created)
+      response.created=[[CPDate dateWithTimeIntervalSince1970:response.created] description];
+    if(response.begintime)
+      response.begintime=[[CPDate dateWithTimeIntervalSince1970:response.begintime] description];
+    if(response.endtime)
+      response.endtime=[[CPDate dateWithTimeIntervalSince1970:response.endtime] description];
+    response.profile=JSON.stringify(response.profile);
     [currentView setData:response];
 
   }
@@ -83,5 +99,19 @@
   {
     alert(error); //a network error occurred
   }
+-(id)formatDuration:(id)d
+{
+  var duration=parseInt(d);
+  var metric=" sec"
+  if(parseInt(duration/60)>0){
+    duration=parseInt(duration/60);
+    metric=" min"
+  }
+  if(parseInt(duration/60)>0){
+    duration=parseInt(duration/60);
+    metric=" h"
+  }
+  return "~"+duration+metric;
 
+}
 @end

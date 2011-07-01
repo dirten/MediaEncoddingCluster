@@ -120,7 +120,7 @@
 		}
 	    },
 	    {"id":"fastskip", "type":"string", "title":"Fastskip","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
-	    {"id":"2pass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}}
+	    {"id":"multipass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}}
 
 	]
     }

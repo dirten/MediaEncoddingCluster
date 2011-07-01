@@ -108,10 +108,15 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
       return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
     }else
     if([tableColumn identifier]==2){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
+      return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
+      //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
     }else
     if([tableColumn identifier]==3){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
+      //return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime]];
+    }else
+    if([tableColumn identifier]==4){
+      return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
     }else
     if([tableColumn identifier]==5){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];

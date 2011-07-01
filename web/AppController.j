@@ -44,7 +44,6 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         [toolBar setVisible:true];
         [theWindow setToolbar:toolBar];
         
-        
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
@@ -383,6 +382,9 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     //alert([treeView itemAtRow:[treeView selectedRow]]);
     //CPLog.debug([treeView dataSource]);
     //var string = prompt("Enter a tag to search Flickr for photos.");
+    //var p=[[CPOpenPanel alloc] initWithContentRect:CGRectMake(15,150,625,425) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+    //[p setDirectoryURL:"/"];
+    //[p orderFront:self];
     var profilePanel =[[ProfileEditView alloc] init];
     [profilePanel setProfileId:0];
 }

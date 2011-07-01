@@ -24,7 +24,21 @@ h1 {
     color: black;
     padding-left: 55px;
     margin-bottom: -1px;
-        line-height: 32px;
+    line-height: 32px;
+}
+.issue-title {
+    color: darkgray;
+    margin-bottom: -1px;
+    line-height: 20px;
+     font-weight: bold;
+     
+    
+}
+.issue-value {
+    color: black;
+    margin-bottom: -1px;
+    line-height: 30px;
+    
 }
 
 #wrapper {
@@ -452,7 +466,7 @@ function hasUnsubmittedComment() {
                 </script>
 
     </head>
-    <body>
+    <body onload="alert('test')">
         <div id="wrapper">
             <div id="first-issue" class="issue">
                 <div class="issue-wrapper">
@@ -465,6 +479,22 @@ function hasUnsubmittedComment() {
                             <h1 class="issue-title">{{title}}</h1>
                             <div class="issue-body">
                                 {{{body_html}}}
+                                <div>
+                                <div class="issue-title">Input File</div>
+                                <div class="issue-value">{{infile}}</div>
+                                </div>
+                                <div>
+                                <div class="issue-title">Outfile File</div>
+                                <div class="issue-value">{{outfile}}</div>
+                                </div>
+                                <div>
+                                <div class="issue-title">Profile ID</div>
+                                <div class="issue-value">{{profileid}}</div>
+                                </div>
+                                <!--<div>
+                                <div class="issue-title">Profile</div>
+                                <div class="issue-value">{{profile}}</div>
+                                </div>-->
                                 <!--<p>
                                     <a target="_blank" class="view-on-github" href="{{pref_base_url}}{{repo_identifier}}/issues/{{number}}">View on github</a>
                                      | <a class="view-on-github" href="#" onclick="editIssue(); return false;">Edit</a>
@@ -497,6 +527,14 @@ function hasUnsubmittedComment() {
                                 <h3 class="issue-meta-title">Completed</h3>
                                 <span class="issue-meta-content">{{endtime}}</span>
                             </div>
+                            <div class="issue-meta-box first-box">
+                                <h3 class="issue-meta-title">Queue Wait</h3>
+                                <span class="issue-meta-content">{{queuedtime}}</span>
+                            </div>
+                            <div class="issue-meta-box first-box">
+                                <h3 class="issue-meta-title">Encoding Duration</h3>
+                                <span class="issue-meta-content">{{duration}}</span>
+                            </div>
                             <div class="issue-meta-box last-box">
                                 <h3 class="issue-meta-title">Tags</h3>
                                 <span class="issue-meta-content">{{comma_separated_tags}}</span>
@@ -513,7 +551,7 @@ function hasUnsubmittedComment() {
 
                 </div>
             </div>
-
+            <!--
             <div id="comments" class="comments">
                 {{#all_comments}}
                 <div class="comment">
@@ -548,7 +586,7 @@ function hasUnsubmittedComment() {
                     </div>
                 </div>
             </div>
-
+            -->
         </div>
     </body>
 </html>
