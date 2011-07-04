@@ -263,7 +263,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/lib/libswscale.so.0</origin>
+                            <origin>${mhive_src_dir}/install/lib/libswscale.so.2</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libavcodec.so.53</origin>
