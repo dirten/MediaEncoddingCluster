@@ -103,6 +103,22 @@
 {
   var duration=parseInt(d);
   var metric=" sec"
+  var rest=0;
+  var result=""
+  //if(parseInt(duration/(60*60))>0){
+    var hour=parseInt(duration/(60*60));
+    rest=parseInt(duration%(60*60));
+    result=hour+" h ";
+  //}
+  //if(parseInt(rest/(60))>0){
+    var minutes=parseInt(rest/(60));
+    rest=parseInt(duration%(60));
+    result+=minutes+" min. ";
+  //}
+  //if(parseInt(rest/(60))>0){
+    var seconds=parseInt(rest);
+    result+=seconds+" sec.";
+  //}
   if(parseInt(duration/60)>0){
     duration=parseInt(duration/60);
     metric=" min"
@@ -111,7 +127,7 @@
     duration=parseInt(duration/60);
     metric=" h"
   }
-  return "~"+duration+metric;
+  return "~"+result;
 
 }
 @end

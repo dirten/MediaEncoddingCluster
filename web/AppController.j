@@ -47,12 +47,13 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
-        [splitview setIsPaneSplitter:YES];
+        //[splitview setIsPaneSplitter:YES];
 
         dsplitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[dsplitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
-        [dsplitview setVertical:YES];
+        [dsplitview setVertical:NO];
+        //[dsplitview setIsPaneSplitter:YES];
         
         //var leftView = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight([splitview bounds]))];
 	//[leftView setAutoresizingMask:CPViewHeightSizable ];
