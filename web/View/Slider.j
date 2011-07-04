@@ -52,6 +52,7 @@
   -(void)controlTextDidChange:(CPNotification)aNotification
 {
   [_slider setObjectValue:[[aNotification object] objectValue]];
+  [self sendAction:_selector to:_target];
 }
 
   -(void)setValue:(id)value

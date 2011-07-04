@@ -71,7 +71,8 @@ namespace org {
               _result[key].append("+"+value);
             }
           }else{
-            _result[key] = value;
+            if(value!="0"&&value!="0.0")
+              _result[key] = value;
           }
         }
         //_result["time_base"] = frame_rate_num + "/" + frame_rate_den;
@@ -79,7 +80,7 @@ namespace org {
 
       void CodecPropertyTransformer::init() {
         /** this will be only enabled when support for 2pass encoding is well tested*/
-        //_result["multipass"] = "0";
+        _result["multipass"] = "0";
         const AVOption * option = NULL;
         AVCodecContext * codec = avcodec_alloc_context2(AVMEDIA_TYPE_UNKNOWN);
         std::map<std::string, std::string> unit2name;

@@ -1,5 +1,6 @@
 @import <AppKit/CPMenuItem.j>
 @import "/View/TextBox.j"
+@import "/View/SearchBox.j"
 @import "/View/ComboBox.j"
 @import "/View/CheckBox.j"
 @import "/View/Slider.j"
@@ -14,14 +15,14 @@
     
   -(void)setData:(id)data
   {
-    CPLog.debug("setting data for profile in form builder"+data);
+    CPLog.debug("setting data for profile in form builder"+JSON.stringify(data));
     _json=data;
 //          _json[data.id]=data.control["default"];
 
     var keys=[_elements allKeys];
     for(var i=0;i<[keys count];i++){
       CPLog.debug("Looking for Data in json "+[keys objectAtIndex:i])
-      if(_json[[keys objectAtIndex:i]]){
+      if(_json[[keys objectAtIndex:i]]!=undefined){
         CPLog.debug("Data in json found "+[keys objectAtIndex:i])
         var el=[_elements objectForKey:[keys objectAtIndex:i]];
         var op=[_options objectForKey:[keys objectAtIndex:i]];
@@ -64,6 +65,9 @@
       switch (data.gui.options[a].control.type) {
         case "TextBox":
         [self buildTextBox:data.gui.options[a]];
+        break;
+        case "SearchBox":
+        [self buildSearchBox:data.gui.options[a]];
         break;
         case "ComboBox":
         [self buildComboBox:data.gui.options[a]];
@@ -116,10 +120,28 @@
     [field setDelegate:self];
     [field setIdentifier:data.id];
     [_elements setObject:field forKey:data.id];
-  
+
     nexttop+=25.0;
     [self addSubview:label];
     [self addSubview:field];
+  }
+  -(id)buildSearchBox:(id)data
+  {
+    [_options setObject:data forKey:data.id];
+    label=[CPTextField labelWithTitle:data.title];
+    [label setFrameOrigin:CGPointMake(0.0,nexttop)];
+    [label setAlignment:CPRightTextAlignment];
+
+    field = [SearchBox textFieldWithStringValue:data.control.defaults placeholder:@"type in "+data.title width:350 ];
+    [field setFrameOrigin:CGPointMake(left_bound,nexttop-5.0)];
+    //[field setDelegate:self];
+    [field setIdentifier:data.id];
+    [_elements setObject:field forKey:data.id];
+
+    nexttop+=25.0;
+    [self addSubview:label];
+    [self addSubview:field];
+    return field;
   }
 
   -(id)buildComboBox:(id)data

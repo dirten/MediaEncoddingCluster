@@ -23,7 +23,7 @@ EncodingCanceled=@"EncodingCanceled";
 }
 
 -(id)init{
-  self=[super initWithContentRect:CGRectMake(15,150,625,425) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+  self=[super initWithContentRect:CGRectMake(280,50,600,155) styleMask:CPClosableWindowMask|CPResizableWindowMask];
 
   [self orderFront:self];
   [self setTitle:"Encoding Editor"];
@@ -39,7 +39,7 @@ EncodingCanceled=@"EncodingCanceled";
   };
   optionInput={"id":"infile", "type":"string","title":"Inputfile","group":"picture_settings","unit":"",
     "control":{
-      "type":"TextBox",
+      "type":"SearchBox",
       "default":""
     }
   };
@@ -57,7 +57,9 @@ EncodingCanceled=@"EncodingCanceled";
   }
   optionProfiles.control.items=items;
   [_form buildComboBox:optionProfiles];
-  [_form buildTextBox:optionInput];
+  
+  inField=[_form buildTextBox:optionInput];
+  
   [_form buildTextBox:optionOutput];
   [contentView addSubview:_form];
 
@@ -78,6 +80,12 @@ EncodingCanceled=@"EncodingCanceled";
   [okButton setAction:@selector(save:)];
   return self;
 }
+- (void)inFieldChanged:(id)sender{
+    array=[CPArray arrayWithObjects:["eins1","eins2","eins3","zwei"]];
+    CPLog.debug(array);
+    [sender setRecentSearches:array];
+    CPLog.debug(sender);
+}
 
 - (void)save:(id)sender{
   CPLog.debug(JSON.stringify(encodingData));
@@ -97,9 +105,14 @@ EncodingCanceled=@"EncodingCanceled";
       postNotificationName:EncodingChanged
       object:self
       userInfo:resultData.id];
+    [self close];
+    var alert=[CPAlert alertWithMessageText:@"Encoding Created" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Encoding successfull Created"];
+    [alert setAlertStyle:CPInformationalAlertStyle];
+    [alert runModal];
+  }else{
+    var alert=[CPAlert alertWithError:resultData.error.description];
+    [alert runModal];
   }
-  [self close];
-
 }
 - (void)connection:(CPURLConnection)aConnection didReceiveData:(CPString)data
 {

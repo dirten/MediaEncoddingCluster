@@ -117,7 +117,7 @@ void ProcessUnit::processInternal() {
     }
   if (_encoder != NULL)
     if (!_encoder->open()) {
-      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:" << _decoder->getCodecId() << ")");
+      LOGERROR("fail to open the encoder (ProcessUnitID:" << _process_unit << "CodecID:" << _encoder->getCodecId() << ")");
       return;
     }
   /*creating a frame converter*/

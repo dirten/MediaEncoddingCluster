@@ -20,11 +20,12 @@
 
 
 #include "org/esb/io/File.h"
+#include "org/esb/io/FileInputStream.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/lang/Ptr.h"
 
-#include "org/esb/hive/PresetReader.h"
+#include "org/esb/hive/PresetReaderJson.h"
 #include "org/esb/hive/CodecPropertyTransformer.h"
 #include "org/esb/hive/CodecFactory.h"
 
@@ -112,12 +113,20 @@ int encode(int argc, char** argv) {
   Packet p;
 
     /*loading the preset*/
-  PresetReader pr(argv[1]);
-  PresetReader::CodecList clist = pr.getCodecList();
+  File preset_file(argv[1]);
+  if(!preset_file.exists()){
+    LOGERROR("could not find preset file "<<preset_file.getFilePath());
+  }
+  FileInputStream pfis(&preset_file);
+
+  std::string preset_data;
+  pfis.read(preset_data);
+  PresetReaderJson pr(preset_data);
+  PresetReaderJson::CodecList clist = pr.getCodecList();
 
   /*tranforming the filter parameter*/
-  PresetReader::FilterList flist = pr.getFilterList();
-  PresetReader::FilterList::iterator flist_it = flist.begin();
+  PresetReaderJson::FilterList flist = pr.getFilterList();
+  PresetReaderJson::FilterList::iterator flist_it = flist.begin();
   for (; flist_it != flist.end(); flist_it++) {
     std::multimap<std::string, std::string> param = (*flist_it).second;
     if((*flist_it).first=="resize"){
@@ -169,7 +178,7 @@ int encode(int argc, char** argv) {
   }
   //return 0;
   File outfile(videofile.getFileName());
-  PresetReader::Preset preset=pr.getPreset();
+  PresetReaderJson::Preset preset=pr.getPreset();
   outfile.changeExtension(preset["fileExtension"]);
   FormatOutputStream fos(&outfile);
   PacketOutputStream pos(&fos);
@@ -202,14 +211,29 @@ int encode(int argc, char** argv) {
 
 int check(int argc, char**argv){
   Log::open();
-    /*loading the preset*/
-  PresetReader pr(argv[2]);
-  PresetReader::CodecList clist = pr.getCodecList();
-  PresetReader::CodecList::iterator cit=clist.begin();
+
+  /*loading the preset*/
+  File preset_file(argv[2]);
+  if(!preset_file.exists()){
+    LOGERROR("could not find preset file "<<preset_file.getFilePath());
+  }
+  FileInputStream pfis(&preset_file);
+
+  std::string preset_data;
+  pfis.read(preset_data);
+  PresetReaderJson pr(preset_data);
+  PresetReaderJson::CodecList clist = pr.getCodecList();
+  PresetReaderJson::CodecList::iterator cit=clist.begin();
   for(;cit!=clist.end();cit++){
-    AVCodec * vcodec=avcodec_find_encoder_by_name((*(*cit).second.find("codec_id")).second.c_str());
+    std::string codec_name=(*(*cit).second.find("codec_id")).second;
+    LOGDEBUG("try resolving codec for "<<(*cit).first <<" ->"<<codec_name);
+    AVCodec * vcodec=avcodec_find_encoder_by_name(codec_name.c_str());
+    if(!vcodec)
+      LOGDEBUG("could not find codec by name");
     (*(*cit).second.find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
     boost::shared_ptr<Encoder> encoder = CodecFactory::getStreamEncoder((*cit).second);
+    encoder->ctx->crf=0.0;
+    encoder->setFlag(CODEC_FLAG_PASS2);
     if(!encoder->open())
       exit(1);
     std::map<std::string, std::string> options=encoder->getCodecOptions();
@@ -222,6 +246,7 @@ int check(int argc, char**argv){
 }
 
 int main(int argc, char** argv) {
+  FormatBaseStream::initialize();
   if(argc>1&&strcmp(argv[1],"check")==0){
     return check(argc, argv);
   }

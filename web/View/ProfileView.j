@@ -63,6 +63,7 @@ ProfileClicked = @"ProfileClicked";
   {
     var result=0;
     if(jsonData){
+      jsonData.data.unshift({"id":"double click to create a new Profile","name":""});
       result=jsonData.data.length;
     }
     CPLog.debug("RowCount="+result);

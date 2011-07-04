@@ -138,6 +138,7 @@ namespace org {
               delete unit->_converter;
               unit->_converter = NULL;
               delete unit;
+              //_toHalt=true;
 
             }
           }

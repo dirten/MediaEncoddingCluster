@@ -82,6 +82,7 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
   {
     var result=0;
     if(jsonData){
+      jsonData.data.unshift({"id":"double click to create a new Encoding","created":"","begintime":"","endtime":"","progress":"","status":""});
       result=jsonData.data.length;
     }
     CPLog.debug("RowCount="+result);
@@ -108,15 +109,28 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
       return [CPString stringWithFormat:@"%s", jsonData.data[row].id ];
     }else
     if([tableColumn identifier]==2){
-      return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
+      if(jsonData.data[row].begintime>1){
+        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
+      }else{
+        return ""
+      }
       //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
     }else
     if([tableColumn identifier]==3){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
+      if(jsonData.data[row].endtime>1){
+        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime ];
+      }else{
+        return "";
+      }
+      //return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
       //return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime]];
     }else
     if([tableColumn identifier]==4){
-      return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
+      if(jsonData.data[row].endtime.length>1){
+        return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
+      }else{
+        return "";
+      }
     }else
     if([tableColumn identifier]==5){
       return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];

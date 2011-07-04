@@ -28,7 +28,7 @@ namespace org {
           if(name=="id"){
             name="codec_id";
           }
-          if(name=="b"||name=="maxrate"||name=="bt"||name=="bufsize")
+          if(name=="b"||name=="maxrate"||name=="bt"||name=="bufsize"||name=="minrate")
             value+="000";
           LOGDEBUG("Name="<<name<<" val="<<value);
 

@@ -383,8 +383,17 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
     //alert([treeView itemAtRow:[treeView selectedRow]]);
     //CPLog.debug([treeView dataSource]);
     //var string = prompt("Enter a tag to search Flickr for photos.");
+    //var savePanel = [CPSavePanel savePanel],
+    //response = [savePanel runModal];
+
+    //var openPanel = [CPOpenPanel openPanel],
+    //response = [openPanel runModal];
+
     //var p=[[CPOpenPanel alloc] initWithContentRect:CGRectMake(15,150,625,425) styleMask:CPClosableWindowMask|CPResizableWindowMask];
-    //[p setDirectoryURL:"/"];
+    //[p setDirectoryURL:[CPURL URLWithString:"http://localhost/"]];
+    //[p setCanChooseFiles:YES];
+    //[p setCanChooseDirectories:YES];
+
     //[p orderFront:self];
     var profilePanel =[[ProfileEditView alloc] init];
     [profilePanel setProfileId:0];

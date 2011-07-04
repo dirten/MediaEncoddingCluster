@@ -617,6 +617,7 @@ namespace org {
           data.append("MaxBFrames:").append(StringUtil::toString(!!ctx->max_b_frames)).append("\r\n");
           data.append("HasBFrames:").append(StringUtil::toString(ctx->has_b_frames)).append("\r\n");
           data.append("Delay:").append(StringUtil::toString(ctx->delay)).append("\r\n");
+          data.append("CRF:").append(StringUtil::toString(ctx->crf)).append("\r\n");
           char buf[256];
           avcodec_string(buf, sizeof (buf), ctx, _mode);
           data.append("InternalData:").append(std::string(buf)).append("\r\n");
