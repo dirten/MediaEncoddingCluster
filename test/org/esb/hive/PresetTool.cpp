@@ -233,7 +233,7 @@ int check(int argc, char**argv){
     (*(*cit).second.find("codec_id")).second=org::esb::util::StringUtil::toString(vcodec->id);
     boost::shared_ptr<Encoder> encoder = CodecFactory::getStreamEncoder((*cit).second);
     encoder->ctx->crf=0.0;
-    encoder->setFlag(CODEC_FLAG_PASS2);
+    //encoder->setFlag(CODEC_FLAG_PASS2);
     if(!encoder->open())
       exit(1);
     std::map<std::string, std::string> options=encoder->getCodecOptions();

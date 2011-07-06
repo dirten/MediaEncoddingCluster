@@ -149,6 +149,7 @@ namespace org {
             current_job->status = "stopped";
             current_job->update();
             queue_empty_wait_condition.notify_all();
+            _stop_job_id="";
           }
           return result;
         }

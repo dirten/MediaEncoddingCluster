@@ -31,6 +31,7 @@
 #include "org/esb/av/Sink.h"
 
 #include "org/esb/util/Log.h"
+#include "boost/thread/detail/thread.hpp"
 
 using namespace org::esb::hive::job;
 using namespace org::esb::av;
@@ -82,10 +83,13 @@ void ProcessUnit::process() {
     LOGDEBUG("Two Pass Enabled");
     setProperty("2pass","true");
   }
-
+  
   if(hasProperty("2pass")){
     LOGDEBUG("Performing Pass 1");
     _encoder->setCodecOption("flags","pass1");
+    std::ostringstream oss;
+    oss<<boost::this_thread::get_id();
+    _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS1);
   }
 
@@ -99,6 +103,9 @@ void ProcessUnit::process() {
     _decoder=_2passdecoder;
     _encoder=_2passencoder;
     _encoder->setCodecOption("flags","pass2");
+    std::ostringstream oss;
+    oss<<boost::this_thread::get_id();
+    _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
   }
@@ -247,6 +254,7 @@ void ProcessUnit::processInternal() {
      */
 
     int ret = _encoder->encode(*f);
+    LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
     if (false&&_encoder->getCodecType() == AVMEDIA_TYPE_VIDEO&&sink.getList().size()>0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());

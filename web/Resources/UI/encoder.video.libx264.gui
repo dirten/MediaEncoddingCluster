@@ -52,7 +52,7 @@
 	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"150","min":1,"max":500}},
 	    {"id":"keyint_min", "type":"int", "title":"Min. Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"150","min":1,"max":500}},
 	    {"id":"sc_threshold", "type":"int", "title":"Scene Cut Detection","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"40","min":0,"max":200}},
-	    {"id":"bframes", "type":"int", "title":"B-Frames","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"16","min":0,"max":16}},
+	    {"id":"bf", "type":"int", "title":"B-Frames","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"16","min":0,"max":16}},
 	    {"id":"bframebias", "type":"int", "title":"B-Frame Bias","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"0","min":0,"max":16}},
 	    {"id":"b_strategy", "type":"string","title":"B-Frame Startegy","group":"picture_settings","unit":"","persist":true,
 		"control":{
@@ -83,7 +83,7 @@
 	    {"id":"i_qfactor", "type":"string", "title":"QScale Diff. I->P Frames","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.71"}},
 	    {"id":"b_qfactor", "type":"string", "title":"QScale Diff. P->B Frames","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.0"}},
 	    {"id":"chromaoffset", "type":"string", "title":"Chromaoffset","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.0"}},
-	    {"id":"qcomb", "type":"string", "title":"CBR=>CQP Curve","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.6"}},
+	    {"id":"qcomp", "type":"string", "title":"CBR=>CQP Curve","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.6"}},
 	    {"id":"complexityblur", "type":"string", "title":"Complexity Blur","group":"picture_settings","unit":"pixel","control":{"type":"Slider","defaults":"20","min":0,"max":50}},
 	    {"id":"qblur", "type":"string", "title":"Q Blur","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0.5"}},
 	    {"id":"partp8x8", "type":"int", "title":"Partition P 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}},
@@ -91,12 +91,24 @@
 	    {"id":"partb8x8", "type":"int", "title":"Partition B 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}},
 	    {"id":"parti8x8", "type":"int", "title":"Partition I 8x8","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}},
 	    {"id":"parti4x4", "type":"int", "title":"Partition I 4x4","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}},
-	    {"id":"directpred", "type":"string", "title":"Prediction Mode","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"0"}},
+	    {"id":"directpred", "type":"string", "title":"Direct Prediction Mode","group":"picture_settings","unit":"pixel",
+	    	"control":{
+		    "type":"ComboBox",
+		    "defaults":"3",
+		    "items":[
+			{"key":"None","value":"0"},
+			{"key":"Spatial","value":"1"},
+			{"key":"Temporal","value":"2"},
+			{"key":"Auto","value":"3"}
+		    ]
+		}
+
+	    },
 	    {"id":"wpred", "type":"string", "title":"Weighted Prediction Mode","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
 	    {"id":"me_method", "type":"string","title":"Motion Estemination","group":"picture_settings","unit":"","persist":true,
 		"control":{
 		    "type":"ComboBox",
-		    "defaults":"epzs",
+		    "defaults":"umh",
 		    "items":[
 			{"key":"epzs","value":"epzs"},
 			{"key":"hex","value":"hex"},
@@ -105,8 +117,38 @@
 		    ]
 		}
 	    },
-	    {"id":"me_range", "type":"string", "title":"Prediction Range","group":"picture_settings","unit":"pixel","control":{"type":"Slider","defaults":"6","min":0,"max":16}},
-	    {"id":"subq", "type":"string", "title":"Rate Distortion","group":"picture_settings","unit":"pixel","control":{"type":"Slider","defaults":"6","min":0,"max":9}},
+	    {"id":"aq_mode", "type":"string","title":"Adaptive Quantization Mode","group":"picture_settings","unit":"","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"1",
+		    "items":[
+			{"key":"Do not use AQ at all","value":"0"},
+			{"key":"Allow AQ to redistribute bits across the whole video and within frames","value":"1"},
+			{"key":"Auto-variance AQ (experimental) which attempts to adapt strength per-frame","value":"2"}
+		    ]
+		}
+	    },
+	    {"id":"me_range", "type":"string", "title":"Prediction Range","group":"picture_settings","unit":"pixel",		"control":{
+		"type":"ComboBox",
+		    "defaults":"7",
+		    "items":[
+			{"key":"fullpel only","value":"0"},
+			{"key":"QPel SAD 1 iteration","value":"1"},
+			{"key":"QPel SATD 2 iterations","value":"2"},
+			{"key":"HPel on MB then QPel","value":"3"},
+			{"key":"Always QPel","value":"4"},
+			{"key":"Multi QPel + bi-directional motion estimation","value":"5"},
+			{"key":"RD on I/P frames","value":"6"},
+			{"key":"RD on all frames","value":"7"},
+			{"key":"RD refinement on I/P frames","value":"8"},
+			{"key":"RD refinement on all frames","value":"9"},
+			{"key":"QP-RD","value":"10","data":[{"option":"trellis", "value":"2"},{"option":"height", "value":"1080"}]}
+		    ]
+		}
+
+	    
+	    },
+	    {"id":"subq", "type":"string", "title":"Sub Pel ME Quality","group":"picture_settings","unit":"pixel","control":{"type":"Slider","defaults":"6","min":0,"max":9}},
 	    {"id":"mixed_refs", "type":"string", "title":"Mixed Reference","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
 	    {"id":"dct8x8", "type":"string", "title":"DCT 8x8","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
 	    {"id":"trellis", "type":"string","title":"Trellis","group":"picture_settings","unit":"","persist":true,
@@ -120,7 +162,10 @@
 		    ]
 		}
 	    },
-	    {"id":"fastskip", "type":"string", "title":"Fastskip","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
+	    {"id":"fastpskip", "type":"string", "title":"Fast P Frame Skip","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"1"}},
+	    {"id":"intra_refresh", "type":"string", "title":"Intra Refresh","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"0"}},
+	    {"id":"mbtree", "type":"string", "title":"MB Tree Ratecontrol","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"0"}},
+	    {"id":"rc_lookahead", "type":"string", "title":"RC Look Ahead","group":"picture_settings","unit":"pic","control":{"type":"TextBox","defaults":"100"}},
 	    {"id":"multipass", "type":"int", "title":"2 Pass encoding","group":"rate_settings","unit":"Yes/No","control":{"type":"CheckBox","defaults":false}}
 
 	]

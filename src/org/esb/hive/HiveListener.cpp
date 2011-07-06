@@ -86,6 +86,7 @@ namespace org {
           //          try {
           TcpSocket * clientSocket = server->accept();
           if (clientSocket&&clientSocket->isConnected() &&(main_nextloop)) {
+            /*need some client auth and handshake here*/
             ProtocolServer *protoServer = new ProtocolServer(clientSocket);
             go(ProtocolServer::run, protoServer);
             

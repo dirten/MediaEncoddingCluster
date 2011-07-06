@@ -18,6 +18,7 @@ Packet::Packet() {
   _time_base.num = 0;
   _time_base.den = 0;
   _pict_type = 0;
+  _quality=0;
 
 }
 
@@ -38,6 +39,7 @@ Packet::Packet(AVPacket * p) {
   packetPtr->priv = p->priv;
   packetPtr->stream_index = p->stream_index;
   _pict_type = 0;
+  _quality=0;
   if (av_dup_packet(p) == 0) {
     //    packetPtr->data = static_cast<uint8_t*>(av_malloc(p->size + FF_INPUT_BUFFER_PADDING_SIZE));
     //    memcpy(packetPtr->data, p->data, p->size);
@@ -64,6 +66,7 @@ Packet::Packet(const Packet & p) {
   _ptsTimeStamp = p._ptsTimeStamp;
   _dtsTimeStamp = p._dtsTimeStamp;
   _duration=p._duration;
+  _quality=p._quality;
   //_time_base=p.getTimeBase();
 
   av_init_packet(packet);
@@ -101,6 +104,7 @@ Packet Packet::operator=(Packet & p) {
   _ptsTimeStamp = p._ptsTimeStamp;
   _dtsTimeStamp = p._dtsTimeStamp;
   _duration=p._duration;
+  _quality=p._quality;
   packet->data = 0;
   packet->data = new uint8_t[p.packet->size];
   //  packet->data = new uint8_t[p.packet->size + FF_INPUT_BUFFER_PADDING_SIZE ];
@@ -123,6 +127,7 @@ Packet::Packet(int s) {
   _time_base.num = 0;
   _time_base.den = 0;
   _pict_type = 0;
+  _quality=0;
   packetPtr = boost::shared_ptr<AVPacket > (new AVPacket());
   packet = packetPtr.get();
   av_init_packet(packet);

@@ -59,10 +59,14 @@ namespace org {
                 int64_t getLastTimeStamp();
                 int64_t getNextTimeStamp();
                 int64_t getSamplesBufferd();
+                void setPassLogfile(std::string);
+                std::string getPassLogfile();
             private:
                 int encodeVideo(Frame & f);
                 int encodeVideo(AVFrame *);
                 int encodeAudio(Frame & f);
+                void writeStatistics(std::string data);
+                std::string readStatistics();
                 //        AVFifoBuffer *fifo;
                 PacketOutputStream * _pos;
                 Sink*_sink;
@@ -83,6 +87,7 @@ namespace org {
                 Ptr<Decoder>_refDecoder;
                 void processPsnr(Frame *ref, Frame * cmp);
                 Frame * _actualFrame;
+                std::string _passlogfile;
             };
         }
     }

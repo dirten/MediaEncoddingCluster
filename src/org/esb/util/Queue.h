@@ -39,13 +39,14 @@ namespace org {
         void flush() {
           LOGDEBUG("flushing queue");
           boost::mutex::scoped_lock enqueue_lock(queue_mutex);
+          _closed = true;
           LOGDEBUG("clear Queue");
           _q.clear();
           LOGDEBUG("Queue cleared");
-          _closed = true;
           dequeue_condition.notify_all();
           enqueue_condition.notify_all();
           LOGDEBUG("waiting Threads notified" << &queue_condition);
+          _closed = false;
         }
         bool closed(){
           return _closed;

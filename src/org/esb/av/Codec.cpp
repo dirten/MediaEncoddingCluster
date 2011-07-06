@@ -128,7 +128,9 @@ namespace org {
         if (codecId>-1) {
           findCodec(mode);
           if (_codec_resolved) {
-            avcodec_get_context_defaults2(ctx, _codec->type);
+            if (avcodec_get_context_defaults3(ctx, _codec)) {
+              LOGERROR("error in setting defaults for the codec");
+            } 
           }
           ctx->codec_id = codecId;
           setContextDefaults();
@@ -321,6 +323,34 @@ namespace org {
           return false;
 
         }
+        /*setting special passlogfile for x264 encoder, 
+         * because in mutlithreaded environment it overwrites 
+         * the statistics file when this is not set to a value like thread id*/
+        
+        std::string passlogfile = getCodecOption("passlogfile");
+        if (getCodecId() == CODEC_ID_H264 && passlogfile.length() > 0) {
+          if (_codec && _codec->priv_data_size) {
+            if (!ctx->priv_data) {
+              ctx->priv_data = av_mallocz(_codec->priv_data_size);
+              if (!ctx->priv_data) {
+                return AVERROR(ENOMEM);
+              }
+            }
+            if (_codec->priv_class) {
+              *(AVClass**) ctx->priv_data = const_cast<AVClass*>(_codec->priv_class);
+              av_opt_set_defaults(ctx->priv_data);
+            }
+          }
+
+          const AVOption *o = NULL;
+          while ((o = av_next_option(ctx->priv_data, o))) {
+            if (strcmp(o->name, "passlogfile") == 0) {
+              LOGDEBUG(o->name);
+              int ret = av_set_string3(ctx->priv_data, "passlogfile", passlogfile.c_str(), 1, &o);
+            }
+          }
+        }
+        
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
@@ -343,32 +373,37 @@ namespace org {
           const AVOption *o = NULL;
           //int opt_types[]={0};
           //if(_codec->type==CODEC_TYPE_VIDEO)
-          int optflags=0;
-          if(_codec->type == AVMEDIA_TYPE_AUDIO){
-            optflags=AV_OPT_FLAG_AUDIO_PARAM;
-          }else if(_codec->type == AVMEDIA_TYPE_VIDEO){
-            optflags=AV_OPT_FLAG_VIDEO_PARAM;
+          int optflags = 0;
+          if (_codec->type == AVMEDIA_TYPE_AUDIO) {
+            optflags = AV_OPT_FLAG_AUDIO_PARAM;
+          } else if (_codec->type == AVMEDIA_TYPE_VIDEO) {
+            optflags = AV_OPT_FLAG_VIDEO_PARAM;
+            //setWidth(atoi(getCodecOption("width").c_str()));
+            //setHeight(atoi(getCodecOption("height").c_str()));
           }
           if (_mode == ENCODER) {
-            optflags|=AV_OPT_FLAG_ENCODING_PARAM;
-          }else if (_mode == DECODER) {
-            optflags|=AV_OPT_FLAG_DECODING_PARAM;
+            optflags |= AV_OPT_FLAG_ENCODING_PARAM;
+          } else if (_mode == DECODER) {
+            optflags |= AV_OPT_FLAG_DECODING_PARAM;
           }
           int opt_types[] = {optflags, 0};
           for (type = 0; type < 2 && ret >= 0; type++) {
-            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
-            if (o2 && (o2->flags & _mode||o2->flags==0)) {
+            //const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
+            const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, 0, 0);
+            if (o2 && (o2->flags & _mode || o2->flags == 0)) {
               ret = av_set_string3(ctx, opt.c_str(), arg.c_str(), 1, &o);
-              LOGDEBUG("Set Codec param '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
-              if(ret)
-                LOGERROR("Invalid value '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
+              LOGDEBUG("Set Codec param '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
+              if (ret)
+                LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
+            } else if (o2) {
+              //LOGDEBUG("Option found but something is wrong: " << opt.c_str())
             } else {
-              if(type==2)
-                LOGWARN("Option not found: "<<opt.c_str())
+              //if(type==2)
+              LOGDEBUG("Option not found: " << opt.c_str())
             }
           }
           if (o && ret != 0) {
-            LOGERROR("Invalid value '" << arg << "' for option '" << opt << "' in "<<(_mode==ENCODER?"Encoder":"Decoder"));
+            LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));
           }
           if (!o) {
             //LOGWARN("Option not found:" << opt);
@@ -388,7 +423,7 @@ namespace org {
         try {
 
           if (avcodec_open(ctx, _codec) < 0) {
-            LOGERROR("openning Codec (" << ctx->codec_id << ")");
+            LOGERROR("error in openning Codec (" << ctx->codec_id << ")");
 
           } else {
             LOGDEBUG("Codec opened:" << ctx->codec_id);
@@ -415,7 +450,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
 
         if (_opened) {
-          LOGTRACE("void Codec::close("<<this<<"");
+          LOGTRACE("void Codec::close(" << this << "");
           //LOGINFO("Closing codec ("<<ctx->codec_id<<")");
           if (ctx) {
             if (ctx->extradata_size > 0 && !_pre_allocated) {
@@ -439,10 +474,12 @@ namespace org {
       }
 
       void Codec::setWidth(int w) {
+        setCodecOption("width", org::esb::util::StringUtil::toString(w));
         ctx->width = w;
       }
 
       void Codec::setHeight(int h) {
+        setCodecOption("height", org::esb::util::StringUtil::toString(h));
         ctx->height = h;
       }
 
@@ -597,7 +634,7 @@ namespace org {
       std::string Codec::toString() {
         using namespace org::esb::util;
         std::string data;
-		data.append("Codec ID:").append(StringUtil::toString(ctx->codec_id)).append("\r\n");
+        data.append("Codec ID:").append(StringUtil::toString(ctx->codec_id)).append("\r\n");
         if (_opened) {
           data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
           data.append("Codec Type:").append(ctx->codec_type == AVMEDIA_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");

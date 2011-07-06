@@ -106,7 +106,8 @@ int main(int argc, char * argv[]) {
     gen.add_options()
             ("help", "produce this message")
             ("version", "Prints the Version")
-            ("debugmode", "switch of the StackDumper and logging goes to the console instead of file");
+            ("debug", "switch of the StackDumper and logging goes to the console instead of file")
+            ("loglevel", po::value<std::string > ()->default_value("warn"), "setting the loglevel for this process");
 
     po::options_description inst("Install options");
     inst.add_options()
@@ -155,17 +156,21 @@ int main(int argc, char * argv[]) {
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, priv), vm);
     po::notify(vm);
+ 
+    if (vm.count("loglevel")) {
+      config::Config::setProperty("loglevel", vm["loglevel"].as<string>());
+    }
 
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
       exit(0);
     }
-    std::cout << "here" << std::endl;
+    //std::cout << "here" << std::endl;
     //config::Config::init("hive.cfg");
-    if (getenv("log.path"))
-      std::cout << "logpath" << getenv("log.path") << std::endl;
-    else
-      std::cout << "logpath is null" << std::endl;
+    //if (getenv("log.path"))
+    //  std::cout << "logpath" << getenv("log.path") << std::endl;
+    //else
+    //  std::cout << "logpath is null" << std::endl;
     setupDefaults();
     setupConfig(vm);
     checkDirs();
@@ -200,15 +205,14 @@ int main(int argc, char * argv[]) {
     //logconfigpath.append("/res");
 
 
-
-#ifdef NDEBUG
-    //    new StackDumper(config::Config::get("hive.dump_path"));
-#endif
+    //if(config::Config::get("debug")!="true")
+      //new StackDumper(config::Config::get("hive.dump_path"));
 
 
     av_register_all();
     avcodec_init();
     avcodec_register_all();
+
 
     if (vm.count("erlang")) {
       LOGDEBUG("test option");
@@ -450,7 +454,7 @@ void client(int argc, char *argv[]) {
     string host = config::Config::get("client.host");
     int port = atoi(config::Config::get("client.port").c_str());
     int count = atoi(config::Config::get("client.count").c_str());
-    LOGDEBUG("Starting "<<count<<" Client Processes");
+    LOGINFO("Starting "<<count<<" Client Processes");
     for(int a =0;a<count;a++){
       org::esb::hive::HiveClient *c=new org::esb::hive::HiveClient(host, port);
       boost::thread t(boost::bind(&HiveClient::start, c));
@@ -459,11 +463,11 @@ void client(int argc, char *argv[]) {
     //Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
 
     Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClientAudio(host, port));
-
     Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
   org::esb::lang::CtrlCHitWaiter::wait();
+  LOGWARN("Stopp Signal received!!!");
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
@@ -686,7 +690,7 @@ void setupConfig(po::variables_map vm) {
     memcpy(pa,logpath.c_str(),logpath.length());
     putenv(pa);*/
   //std::cout << "logpath"<<pa<<std::endl;
-  std::cout << "logpathenv" << getenv("log.path") << std::endl;
+  //std::cout << "logpathenv" << getenv("log.path") << std::endl;
   //config::Config::setProperty("authentication", "true");
 
 }

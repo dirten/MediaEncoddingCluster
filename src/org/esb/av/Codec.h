@@ -169,6 +169,7 @@ class SampleFormat;*/
 
         template<class Archive>
         void load(Archive & ar, const unsigned int version) {
+          
           //LOGTRACE("serialization load");
           ar & ctx->codec_id;
           ar & _mode;

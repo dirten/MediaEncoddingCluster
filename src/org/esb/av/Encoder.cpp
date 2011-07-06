@@ -59,8 +59,8 @@ Encoder::~Encoder() {
 }
 
 bool Encoder::open() {
-  bool result=Codec::open();
-  if (false&&result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
+  bool result = Codec::open();
+  if (false && result && getCodecType() == AVMEDIA_TYPE_VIDEO && (ctx->flags & CODEC_FLAG_PSNR || ctx->flags2 & CODEC_FLAG2_SSIM)) {
     /*initialize the refDecoder*/
     std::map<std::string, std::string>opt = getCodecOptions();
     _refDecoder = new Decoder(getCodecId());
@@ -71,13 +71,13 @@ bool Encoder::open() {
     }
     _refDecoder->setWidth(getWidth());
     _refDecoder->setHeight(getHeight());
-    _refDecoder->setPixelFormat((PixelFormat)0);
+    _refDecoder->setPixelFormat((PixelFormat) 0);
     LOGDEBUG("EncoderExtrdataSize:" << ctx->extradata_size);
     LOGDEBUG("RefDecoderExtrdataSize:" << ctx->extradata_size);
     _refDecoder->ctx->extradata = static_cast<uint8_t*> (av_malloc(ctx->extradata_size));
     memcpy(_refDecoder->ctx->extradata, ctx->extradata, ctx->extradata_size);
-    if(_refDecoder->open()){
-      LOGDEBUG("Reference Decoder openned"<<_refDecoder->toString());
+    if (_refDecoder->open()) {
+      LOGDEBUG("Reference Decoder openned" << _refDecoder->toString());
     }
   }
   return result;
@@ -85,7 +85,7 @@ bool Encoder::open() {
 
 int Encoder::encode(Frame & frame) {
   LOGTRACEMETHOD("Encode");
-  _actualFrame=&frame;
+  _actualFrame = &frame;
   _frame_counter++;
   _last_time_base = frame.getTimeBase();
   _last_duration = frame.getDuration();
@@ -147,8 +147,10 @@ int Encoder::encodeVideo(AVFrame * inframe) {
     }
     if (ret > 0) {
       LOGDEBUG("Frame encoded");
-      if (ctx->coded_frame && ctx->coded_frame->quality > 0)
+      if (ctx->coded_frame && ctx->coded_frame->quality > 0){
         LOGDEBUG("EnCodedFrameQuality:" << ctx->coded_frame->quality / (float) FF_QP2LAMBDA);
+        pac._quality=ctx->coded_frame->quality / (float) FF_QP2LAMBDA;
+      }
       if (ctx->stats_out)
         LOGDEBUG("stats available:" << ctx->stats_out);
       memcpy(pac.packet->data, data, ret);
@@ -188,7 +190,7 @@ int Encoder::encodeVideo(AVFrame * inframe) {
       if (_refDecoder) {
         Frame * tmpf = _refDecoder->decode2(pac);
         if (tmpf->isFinished()) {
-          LOGDEBUG("Reference Frame Decoded:"<<tmpf->toString());
+          LOGDEBUG("Reference Frame Decoded:" << tmpf->toString());
           processPsnr(_actualFrame, tmpf);
         }
         delete tmpf;
@@ -239,8 +241,8 @@ int Encoder::encodeAudio(Frame & frame) {
 
   LOGDEBUG(frame.toString());
   int osize = av_get_bits_per_sample_fmt(ctx->sample_fmt) / 8;
-  LOGDEBUG("bits per sample format:"<<osize<<" fmt:"<<ctx->sample_fmt)
-  int audio_out_size = (4 * 192 * 1024);
+  LOGDEBUG("bits per sample format:" << osize << " fmt:" << ctx->sample_fmt)
+          int audio_out_size = (4 * 192 * 1024);
   uint8_t * audio_out = static_cast<uint8_t*> (av_malloc(audio_out_size));
   //uint8_t * audio_out = new uint8_t[audio_out_size];//static_cast<uint8_t*> (av_malloc(audio_out_size));
 
@@ -390,6 +392,23 @@ char * Encoder::getStatistics() {
 void Encoder::setStatistics(char * stats) {
   ctx->stats_in = stats;
 }
-void Encoder::processPsnr(Frame * ref, Frame * cmp){
+
+void Encoder::processPsnr(Frame * ref, Frame * cmp) {
+
+}
+
+void Encoder::setPassLogfile(std::string file) {
+  _passlogfile = file;
+}
+
+std::string Encoder::getPassLogfile() {
+  return _passlogfile;
+}
+
+void Encoder::writeStatistics(std::string data) {
+
+}
+
+std::string Encoder::readStatistics() {
 
 }

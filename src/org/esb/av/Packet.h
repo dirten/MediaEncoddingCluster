@@ -113,6 +113,7 @@ namespace org {
           ar & _dtsTimeStamp;
           ar & _duration;
           ar & _pict_type;
+          ar & _quality;
            
         }
 
@@ -137,12 +138,14 @@ namespace org {
           ar & _dtsTimeStamp;
           ar & _duration;
           ar & _pict_type;
+          ar & _quality;
         }
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()
         //	private:
 
         AVPacket * packet;
+        int _quality;
       };
       typedef boost::shared_ptr<org::esb::av::Packet> PacketPtr;
       typedef std::deque<PacketPtr> PacketListPtr;

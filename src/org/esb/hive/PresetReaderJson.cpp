@@ -24,6 +24,10 @@ namespace org {
         for(int a=0;a<c;a++){
           JSONNode n=node[type].at(a);
           std::string name=n.name();
+          /*filter out some unwanted attributes*/
+          if(name=="frame_size")
+            continue;
+
           std::string value=n.as_string();
           if(name=="id"){
             name="codec_id";

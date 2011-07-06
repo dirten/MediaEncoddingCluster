@@ -51,18 +51,21 @@ int main(int argc, char** argv) {
   org::esb::av::PacketInputStream pis(&fis);
 
 
-  org::esb::io::File ofile(path+"/test/images/number.avi");
+  org::esb::io::File ofile(path+"/test/images/number.mp4");
   org::esb::av::FormatOutputStream fos(&ofile);
   org::esb::av::PacketOutputStream pos(&fos);
 
-  org::esb::av::Encoder enc(CODEC_ID_MPEG4);
+  //org::esb::av::Encoder enc(CODEC_ID_MPEG4);
+  org::esb::av::Encoder enc(CODEC_ID_H264);
 
-  enc.setCodecId(CODEC_ID_H264);
+  //enc.setCodecId(CODEC_ID_H264);
   enc.setWidth(160);
   enc.setHeight(120);
   enc.setGopSize(200);
 //  enc.setTimeBase(1000,23976);
   enc.setTimeBase(1,10);
+  enc.setCodecOption("b","1024000");
+  enc.setCodecOption("minrate","512000");
   enc.setCodecOption("coder","1");
   enc.setCodecOption("flags","+loop");
   enc.setCodecOption("cmp","+chroma");
@@ -85,10 +88,11 @@ int main(int argc, char** argv) {
   enc.setCodecOption("trellis","1");
   enc.setCodecOption("flags2","+wpred+mixed_refs+dct8x8+fastpskip+mbtree");
   enc.setCodecOption("wpredp","2");
-
+  //enc.setCodecOption("passlogfile","test.log");
+  enc.setFlag(CODEC_FLAG_PASS1);
 
 //  enc.setTimeBase(100,2997);
-  enc.setBitRate(1500000);
+  //enc.setBitRate(1500000);
   enc.open();
   LOGDEBUG("encoder ready")
 
