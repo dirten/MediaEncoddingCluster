@@ -1,6 +1,8 @@
 #ifndef ORG_ESB_AV_PACKETOUTPUTSTREAM_H
 #define ORG_ESB_AV_PACKETOUTPUTSTREAM_H
 #include "org/esb/io/OutputStream.h"
+#include "org/esb/io/FileOutputStream.h"
+
 #include "Packet.h"
 #include "Codec.h"
 #include "org/esb/util/Log.h"
@@ -15,7 +17,7 @@ namespace org {
       class PacketOutputStream : public OutputStream {
         classlogger("org.esb.av.PacketOutputStream")
       public:
-        PacketOutputStream(OutputStream * os);
+        PacketOutputStream(OutputStream * os, std::string statsfile="");
         ~PacketOutputStream();
         //int writePacket(Packet * packet);
         void setEncoder(Codec & code);
@@ -34,7 +36,7 @@ namespace org {
         list<AVStream*> streams;
         map<int, long long int> streamPts;
         map<int, long long int> streamDts;
-        
+        org::esb::io::FileOutputStream * _stats_fos;
       };
     }
   }

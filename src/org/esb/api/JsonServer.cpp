@@ -18,6 +18,7 @@
 #include "boost/lexical_cast.hpp"
 #include "JsonProfileHandler.h"
 #include "JsonEncodingHandler.h"
+#include "JsonStatisticsHandler.h"
 #include "boost/archive/iterators/base64_from_binary.hpp"
 #include "boost/archive/iterators/binary_from_base64.hpp"
 #include "boost/archive/iterators/transform_width.hpp"
@@ -254,7 +255,16 @@ namespace org {
             req.response = json_s;
             //req.update();
 
-          } else {
+          } else if (request == BASE_API_URL"/statistic") {
+            mg_printf(conn, "%s", reply_start);
+            JSONNode n = JsonStatisticsHandler::handle(conn, request_info, _db, postdata);
+            n.push_back(JSONNode("requestId", requestId));
+            std::string json_s = n.write();
+            mg_write(conn, json_s.c_str(), json_s.length());
+            //req.response = json_s;
+            //req.update();
+
+          }else{
             //mg_printf(conn, "%s", request_info->uri);
             processed = NULL;
           }

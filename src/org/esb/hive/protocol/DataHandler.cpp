@@ -184,7 +184,7 @@ public:
         un = msg.getPtrProperty("processunit");
         endpoint2stream.push_back(_own_id);
       }
-      if (un->_input_packets.size() > 0) {
+      if (un && un->_input_packets.size() > 0) {
         _timer.reset(new Timer(300, boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
       }

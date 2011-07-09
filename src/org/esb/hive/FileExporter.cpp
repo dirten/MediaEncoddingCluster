@@ -66,7 +66,7 @@ void FileExporter::exportFile(db::MediaFile outfile) {
   }
   /*openning the OutputStreams*/
   FormatOutputStream * fos = new FormatOutputStream(&fout, outfile.containertype.value().c_str());
-  PacketOutputStream * pos = new PacketOutputStream(fos);
+  PacketOutputStream * pos = new PacketOutputStream(fos, outfile.filename.value()+".stats");
 
   vector<db::Stream> streams = outfile.streams().get().all();
   vector<db::Stream>::iterator stream_it = streams.begin();

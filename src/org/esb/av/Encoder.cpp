@@ -410,5 +410,6 @@ void Encoder::writeStatistics(std::string data) {
 }
 
 std::string Encoder::readStatistics() {
-
+  std::string result;
+  return result;
 }

@@ -128,9 +128,10 @@ namespace org {
         if (codecId>-1) {
           findCodec(mode);
           if (_codec_resolved) {
-            if (avcodec_get_context_defaults3(ctx, _codec)) {
-              LOGERROR("error in setting defaults for the codec");
-            } 
+            //avcodec_get_context_defaults3(ctx, _codec);
+            avcodec_get_context_defaults2(ctx, _codec->type);
+              //LOGERROR("error in setting defaults for the codec");
+            
           }
           ctx->codec_id = codecId;
           setContextDefaults();

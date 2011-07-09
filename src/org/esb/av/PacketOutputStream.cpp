@@ -1,13 +1,16 @@
 #include "PacketOutputStream.h"
 #include "org/esb/io/BufferedOutputStream.h"
+#include "org/esb/io/File.h"
 #include "org/esb/av/FormatOutputStream.h"
 #include "Packet.h"
+#include "org/esb/util/StringUtil.h"
 #include "introspec.h"
 #include <stdexcept>
 using namespace org::esb::av;
 using namespace org::esb::io;
+using namespace org::esb::util;
 
-PacketOutputStream::PacketOutputStream(OutputStream * os) {
+PacketOutputStream::PacketOutputStream(OutputStream * os, std::string statsfile) {
   if (instanceOf(*os, FormatOutputStream)) {
     _fmtCtx = ((FormatOutputStream*) os)->_fmtCtx;
   } else {
@@ -20,6 +23,11 @@ PacketOutputStream::PacketOutputStream(OutputStream * os) {
   _fmtCtx->max_delay = (int) (0.7 * AV_TIME_BASE);
   _fmtCtx->loop_output = AVFMT_NOOUTPUTLOOP;
   _isInitialized = false;
+  _stats_fos=NULL;
+  if(statsfile.length()>0){
+    File sfile(statsfile);
+    _stats_fos=new org::esb::io::FileOutputStream(&sfile);
+  }
 }
 
 void PacketOutputStream::close() {
@@ -46,6 +54,11 @@ PacketOutputStream::~PacketOutputStream() {
   for(;it!=streams.end();it++){
     av_free((*it));
   }
+  if(_stats_fos){
+    delete _stats_fos;
+    _stats_fos=NULL;
+  }
+
   //    av_write_trailer(_fmtCtx);
   //	delete _target;
 }
@@ -141,6 +154,9 @@ int PacketOutputStream::writePacket(Packet & packet) {
   //int result =_fmtCtx->oformat->write_packet(_fmtCtx,packet.packet);
   //LOGTRACE(packet.toString());
   int result = av_interleaved_write_frame(_fmtCtx, packet.packet);
+  if(_fmtCtx->streams[packet.getStreamIndex()]->codec->codec_type==AVMEDIA_TYPE_VIDEO && _stats_fos){
+    _stats_fos->write(StringUtil::toString(packet._quality)+":"+StringUtil::toString(packet.packet->size)+",");
+  }
   //  int result = av_write_frame(_fmtCtx, packet.packet);
   if (result != 0) {
     LOGERROR("av_interleaved_write_frame Result:" << result);

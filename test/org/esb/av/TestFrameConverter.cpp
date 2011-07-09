@@ -56,7 +56,7 @@ int main(int argc, char ** argv) {
     std::cout << "no filename given" << std::endl;
     exit(1);
   }
- // Log::open("");
+  Log::open("");
   std::string filename = argv[1];
 
   File file(filename);
