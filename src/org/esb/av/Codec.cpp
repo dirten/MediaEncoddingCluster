@@ -317,7 +317,10 @@ namespace org {
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
-        if (_opened)return _opened;
+        if (_opened){
+    	    LOGERROR("Codec is allready openned! codec id"<<getCodecId());
+    	    return _opened;
+    	}
         findCodec(_mode);
         if (!_codec) {
           LOGERROR("_codec not initialized!");

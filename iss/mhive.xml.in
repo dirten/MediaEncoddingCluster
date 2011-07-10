@@ -301,19 +301,19 @@
                             <origin>${mhive_src_dir}/install/bin/mhive.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/swscale.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/swscale-2.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avcodec.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avcodec-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avdevice.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avdevice-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avformat.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avformat-53.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${mhive_src_dir}/install/bin/avutil.dll</origin>
+                            <origin>${mhive_src_dir}/install/bin/avutil-51.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>${mhive_src_dir}/install/lib/libmhive-io.dll</origin>
