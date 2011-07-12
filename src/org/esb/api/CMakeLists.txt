@@ -4,6 +4,8 @@ include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 
 add_library (api
+    mongoose.c
+    ApiWebServer.cpp
     MHiveServerConnection.cpp
     MediaFile.cpp
     JsonServer.cpp

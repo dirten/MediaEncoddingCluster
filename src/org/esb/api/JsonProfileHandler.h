@@ -7,7 +7,7 @@
 
 #ifndef JSONPROFILEHANDLER_H
 #define	JSONPROFILEHANDLER_H
-#include "org/esb/hive/mongoose.h"
+#include "mongoose.h"
 #include "org/esb/libjson/libjson.h"
 
 

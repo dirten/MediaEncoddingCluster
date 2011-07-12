@@ -42,6 +42,10 @@
 #include <signal.h>
 
 
+#include "org/esb/api/ApiWebServer.h"
+#include "org/esb/lang/CtrlCHitWaiter.h"
+#include "org/esb/config/config.h"
+
 class PListener:public org::esb::lang::ProcessListener{
 public:
   void onEvent(ProcessEvent&ev){
@@ -113,7 +117,13 @@ void open_dialog(std::string message, std::string type) {
 
 int main(int argc, char**argv) {
   Log::open();
+  org::esb::io::File fbp(argv[0]);
+  std::string base_path = org::esb::io::File(fbp.getParent()).getParent();
 
+  org::esb::config::Config::setProperty("web.docroot",base_path);
+  org::esb::api::ApiWebServer api_server(8888);
+  org::esb::lang::CtrlCHitWaiter::wait();
+  return 0;
 
     /*first find out if there is running a server*/
   org::esb::grid::Node node;

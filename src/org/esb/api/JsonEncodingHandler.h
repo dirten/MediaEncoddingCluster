@@ -8,7 +8,7 @@
 #ifndef JSONENCODINGHANDLER_H
 #define	JSONENCODINGHANDLER_H
 #include "org/esb/hive/DatabaseService.h"
-#include "org/esb/hive/mongoose.h"
+#include "mongoose.h"
 #include "org/esb/libjson/libjson.h"
 namespace org {
   namespace esb {

@@ -8,7 +8,7 @@
 #ifndef JSONSTATISTICSHANDLER_H
 #define	JSONSTATISTICSHANDLER_H
 #include "org/esb/hive/DatabaseService.h"
-#include "org/esb/hive/mongoose.h"
+#include "mongoose.h"
 #include "org/esb/libjson/libjson.h"
 
 namespace org {

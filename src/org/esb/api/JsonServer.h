@@ -8,7 +8,7 @@
 #ifndef JSONSERVER_H
 #define	JSONSERVER_H
 #include "org/esb/hive/DatabaseService.h"
-#include "org/esb/hive/mongoose.h"
+#include "mongoose.h"
 #include "org/esb/libjson/libjson.h"
 #include "boost/thread/mutex.hpp"
 #include <set>
