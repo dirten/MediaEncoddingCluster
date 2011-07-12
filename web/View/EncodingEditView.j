@@ -118,6 +118,8 @@ EncodingCanceled=@"EncodingCanceled";
 {
   CPLog.debug("received json data:"+data);
   encodingData=[data objectFromJSON];
+  //if(encodingData.error)
+    //encodingData={};
   //delete encodingData.profile;
   [_form setData:encodingData];
 }

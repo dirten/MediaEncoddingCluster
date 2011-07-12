@@ -22,7 +22,7 @@
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
-#include "org/esb/web/WebServer.h"
+
 #include "org/esb/hive/DirectoryScanner.h"
 #include "org/esb/av/AV.h"
 
@@ -69,7 +69,7 @@ using namespace org::esb::io;
 //using namespace org::esb::config;
 using namespace org::esb::hive;
 
-using namespace org::esb::web;
+
 using namespace org::esb::util;
 using namespace org::esb::signal;
 //using namespace std;

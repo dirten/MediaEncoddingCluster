@@ -149,7 +149,7 @@ namespace org {
             current_job->status = "stopped";
             current_job->update();
             queue_empty_wait_condition.notify_all();
-            _stop_job_id="";
+            _stop_job_id = "";
           }
           return result;
         }
@@ -422,6 +422,30 @@ namespace org {
             //            DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
+
+          /*this is only for debugging*/
+          if (true) {
+            std::string name = org::esb::config::Config::getProperty("hive.base_path");
+            name += "/tmp/";
+            name += org::esb::util::StringUtil::toString(u->_process_unit % 10);
+
+            org::esb::io::File dir(name.c_str());
+
+            if (!dir.exists()) {
+              dir.mkdir();
+            }
+            name += "/";
+            name += org::esb::util::StringUtil::toString(u->_process_unit);
+            name += ".unit.out";
+            org::esb::io::File out(name.c_str());
+            org::esb::io::FileOutputStream fos(&out);
+            org::esb::io::ObjectOutputStream ous(&fos);
+            //LOGDEBUG("Saving ProcessUnit:" << unit->_process_unit);
+            ous.writeObject(*u.get());
+            ous.close();
+
+
+          }
           return u;
         }
 

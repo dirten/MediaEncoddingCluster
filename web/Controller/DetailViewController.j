@@ -86,20 +86,11 @@
       response.begintime=[[CPDate dateWithTimeIntervalSince1970:response.begintime] description];
     if(response.endtime)
       response.endtime=[[CPDate dateWithTimeIntervalSince1970:response.endtime] description];
-    response.profile=JSON.stringify(response.profile);
+    if(response.profile)
+      response.profile=JSON.stringify(response.profile);
+    if(response.data)
+      response.profile=data;//JSON.stringify(response.data);
 
-    response["renderfunc"]=function(){
-        CPLog.debug("render function called");
-      return function(text, render){
-        CPLog.debug("render function called");
-        var result="";
-        for (var key in value){
-          CPLog.debug("Key="+key);
-          result+="<b>"+render(key)+"</b>";
-        }
-        return result;
-      }
-    };
     [currentView setData:response];
 
   }
