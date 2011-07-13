@@ -43,7 +43,7 @@ binary_from_base64<string::const_iterator>, 8, 6
 namespace org {
   namespace esb {
     namespace api {
-      db::HiveDb JsonServer::_db = org::esb::hive::DatabaseService::getDatabase();
+      //db::HiveDb * JsonServer::_db;
       std::set<std::string> JsonServer::valid_formats;
 
       boost::mutex JsonServer::http_mutex;
@@ -64,7 +64,7 @@ namespace org {
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
         assert(ctx != NULL);
         LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
-
+        //_db = org::esb::hive::DatabaseService::getDatabase();
         valid_formats.insert("amr");
         valid_formats.insert("asf");
         valid_formats.insert("avi");
@@ -151,6 +151,7 @@ namespace org {
                   "Content-Type: text/plain; charset=utf-8\r\n"
                   "\r\n";
           //_db.begin();
+          db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
 
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
@@ -168,14 +169,14 @@ namespace org {
           LOGDEBUG("PostData:" << postdata);
           std::string request = request_info->uri;
 
-          db::Request req(_db);
-          req.requestId = requestId;
+          //db::Request req(_db);
+          //req.requestId = requestId;
           if (request_info->query_string != NULL) {
-            req.query = std::string(request_info->query_string);
+            //req.query = std::string(request_info->query_string);
           }
-          req.uri = std::string(request_info->uri);
-          req.data = postdata;
-          req.requestType = std::string(request_info->request_method);
+          //req.uri = std::string(request_info->uri);
+          //req.data = postdata;
+          //req.requestType = std::string(request_info->request_method);
           /*only by api calls*/
           //if(request.find(BASE_API_URL"/profile")==0||request.find(BASE_API_URL"/encoding")==0)
           //req.update();
@@ -210,7 +211,7 @@ namespace org {
             //LOGDEBUG(json_s);
             mg_write(conn, json_s.c_str(), json_s.length());
             //mg_printf(conn, "%s", json_s.c_str());
-            req.response = json_s;
+            //req.response = json_s;
 
           } else if (request == BASE_API_URL"/codec") {
             mg_printf(conn, "%s", reply_start);
@@ -235,29 +236,29 @@ namespace org {
 
 
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response = json_s;
+            //req.response = json_s;
 
           } else if (request == BASE_API_URL"/profile") {
             mg_printf(conn, "%s", reply_start);
-            JSONNode n = JsonProfileHandler::handle(conn, request_info, _db, postdata);
+            JSONNode n = JsonProfileHandler::handle(conn, request_info, db, postdata);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response = json_s;
+            //req.response = json_s;
             //req.update();
 
           } else if (request == BASE_API_URL"/encoding") {
             mg_printf(conn, "%s", reply_start);
-            JSONNode n = JsonEncodingHandler::handle(conn, request_info, _db, postdata);
+            JSONNode n = JsonEncodingHandler::handle(conn, request_info, db, postdata);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());
-            req.response = json_s;
+            //req.response = json_s;
             //req.update();
 
           } else if (request == BASE_API_URL"/statistic") {
             mg_printf(conn, "%s", reply_start);
-            JSONNode n = JsonStatisticsHandler::handle(conn, request_info, _db, postdata);
+            JSONNode n = JsonStatisticsHandler::handle(conn, request_info, db, postdata);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
             mg_write(conn, json_s.c_str(), json_s.length());

@@ -24,7 +24,7 @@ namespace org {
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
         static bool contains(JSONNode&, std::string);
-        static db::HiveDb _db;
+        //static db::HiveDb * _db;
         static boost::mutex http_mutex;
         static std::set<std::string> valid_formats;
       };
