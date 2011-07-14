@@ -18,11 +18,11 @@ namespace org {
       public:
         ApiWebServer(int port);
         virtual ~ApiWebServer();
-        bool addHandler(UrlHandler&);
+        bool addHandler(UrlHandler*);
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
-        std::map<std::string,UrlHandler> _handler;
+        static std::map<std::string,UrlHandler*> _urlhandler;
       };
     }
   }

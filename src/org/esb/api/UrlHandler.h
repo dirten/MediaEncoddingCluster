@@ -9,16 +9,32 @@
 #define	URLHANDLER_H
 #include "string"
 #include "org/esb/libjson/libjson.h"
+#include "mongoose.h"
 namespace org {
   namespace esb {
     namespace api {
 
       class UrlHandler {
       public:
-        std::string getUrlToHandle(){
+
+        virtual std::string getUrlToHandle() {
           return "";
         }
-        JSONNode handle(const struct mg_request_info *request_info);
+
+        virtual JSONNode handle(const struct mg_request_info *request_info, bool & status) {
+        };
+
+        std::string getParameter(std::string key, char * query) {
+          std::string result;
+          if (query!=NULL) {
+            char data[255];
+            mg_get_var(query, strlen(query), key.c_str(), data, sizeof (data));
+            result=data;
+            //LOGDEBUG("DataId" << iddata);
+          }
+          return result;
+        }
+
       };
     }
   }

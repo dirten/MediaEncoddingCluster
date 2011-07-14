@@ -43,6 +43,7 @@
 
 
 #include "org/esb/api/ApiWebServer.h"
+#include "org/esb/api/ProcessHandler.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
 #include "org/esb/config/config.h"
 
@@ -122,6 +123,8 @@ int main(int argc, char**argv) {
 
   org::esb::config::Config::setProperty("web.docroot",base_path);
   org::esb::api::ApiWebServer api_server(8888);
+  org::esb::api::ProcessHandler proc_handler;
+  api_server.addHandler(&proc_handler);
   org::esb::lang::CtrlCHitWaiter::wait();
   return 0;
 
