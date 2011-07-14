@@ -118,22 +118,10 @@ IF(BUILD_MHIVESERVICE)
     target_link_libraries (mhiveservice 
   io 
   lang 
+  api
   util 
   hive 
   grid 
-  api
-  lang
-  api 
-  hive 
-  av 
-  util 
-  signal 
-  io 
-  net
-  mq
-  rpc
-  ${Boost_LIBRARIES}
-
 )
     INSTALL(TARGETS mhiveservice
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}

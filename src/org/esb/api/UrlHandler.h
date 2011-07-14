@@ -22,6 +22,7 @@ namespace org {
         }
 
         virtual JSONNode handle(const struct mg_request_info *request_info, bool & status) {
+			return JSONNode(JSON_NODE);
         };
 
         std::string getParameter(std::string key, char * query) {
