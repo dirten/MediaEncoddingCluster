@@ -82,6 +82,7 @@ namespace org {
       bool ApiWebServer::addHandler(UrlHandler* handler) {
         std::string url = handler->getUrlToHandle();
         _urlhandler[url] = handler;
+		return true;
       }
     }
   }

@@ -50,8 +50,10 @@ namespace org {
 
       JsonServer::JsonServer(int port) {
         std::string ports = org::esb::util::StringUtil::toString(port);
+	std::string docroot=org::esb::config::Config::get("web.docroot");
+
         const char *options[] = {
-          "document_root", (org::esb::config::Config::get("web.docroot")).c_str(),
+          "document_root", docroot.c_str(),
           "listening_ports", ports.c_str(),
           "num_threads", "5",
           "index_files", "index.html",
@@ -64,6 +66,7 @@ namespace org {
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
         assert(ctx != NULL);
         LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
+LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
         //_db = org::esb::hive::DatabaseService::getDatabase();
         valid_formats.insert("amr");
         valid_formats.insert("asf");

@@ -62,6 +62,7 @@
 #include "org/esb/rpc/Server.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "org/esb/api/JsonServer.h"
+#include <io.h>
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -93,8 +94,9 @@ std::string _hostname;
 int _port = 0;
 
 int main(int argc, char * argv[]) {
+  std::cout << "arg0:" << argv[0] << std::endl;
+	//isatty(0);
   /*setting default path to Program*/
-  //std::cout << "arg0:" << argv[0] << std::endl;
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //config::Config::setProperty("hive.base_path", base_path);

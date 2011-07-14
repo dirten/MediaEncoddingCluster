@@ -115,7 +115,26 @@ target_link_libraries (mhiveconfig
 IF(BUILD_MHIVESERVICE)
     add_executable (mhiveservice HiveService.cpp)
     
-    target_link_libraries (mhiveservice io lang util hive grid api)
+    target_link_libraries (mhiveservice 
+  io 
+  lang 
+  util 
+  hive 
+  grid 
+  api
+  lang
+  api 
+  hive 
+  av 
+  util 
+  signal 
+  io 
+  net
+  mq
+  rpc
+  ${Boost_LIBRARIES}
+
+)
     INSTALL(TARGETS mhiveservice
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         #BUNDLE DESTINATION ${BIN_INSTALL_DIR}

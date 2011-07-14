@@ -34,7 +34,6 @@
 #include <string>
 #include "org/esb/io/File.h"
 #include "org/esb/io/FileInputStream.h"
-#include "org/esb/util/Properties.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Process.h"
 #include "org/esb/lang/ProcessListener.h"
@@ -165,7 +164,7 @@ int main(int argc, char**argv) {
   bpath.append("/..");
   std::string executable = path;
   std::list<std::string> arguments;
-  org::esb::util::Properties props;
+  
   org::esb::io::File file(path.append("/../hive"));
   if (!file.exists()) {
     file.mkdir();
