@@ -133,7 +133,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 	return;
 	
 
-        [contentView setBackgroundColor:[CPColor blackColor]];
+        //[contentView setBackgroundColor:[CPColor blackColor]];
         //var profilePanel =[[ProfileEditView alloc] initWithContentRect:CGRectMake(15,150,225,125) styleMask:CPHUDBackgroundWindowMask|CPClosableWindowMask];
         //var profilePanel =[[ProfileEditView alloc] init];
         //[profilePanel setFloatingPanel:YES];
