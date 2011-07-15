@@ -79,7 +79,8 @@ Log::open("");
     _sdata[i].more_frames = true;
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
       video = true;
-      _sdata[i].enc->setCodecId(CODEC_ID_THEORA);
+      _sdata[i].enc->setCodecId(CODEC_ID_MPEG4);
+      //_sdata[i].enc->setCodecId(CODEC_ID_THEORA);
       _sdata[i].enc->setWidth(720);
       _sdata[i].enc->setHeight(576);
 //      _sdata[i].enc->setWidth(320);

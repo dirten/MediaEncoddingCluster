@@ -144,7 +144,7 @@ void ProcessUnit::processInternal() {
   _encoder->setOutputStream(NULL);
 
   /*configure the reference decoder to compute the psnr for video mages*/
-  if ( _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
+  if ( false&& _encoder->getCodecType() == AVMEDIA_TYPE_VIDEO) {
     std::map<std::string, std::string>opt = _encoder->getCodecOptions();
     _refdecoder = boost::shared_ptr<Decoder > (new Decoder(_encoder->getCodecId()));
     std::map<std::string, std::string>::iterator opit = opt.begin();
@@ -254,7 +254,8 @@ void ProcessUnit::processInternal() {
      */
 
     int ret = _encoder->encode(*f);
-    LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
+    LOGTRACE("Frame Encoded");
+    //LOGDEBUG("Stats="<<_encoder->ctx->stats_out);
     if (false&&_encoder->getCodecType() == AVMEDIA_TYPE_VIDEO&&sink.getList().size()>0) {
       boost::shared_ptr<Packet>enc_packet = sink.getList().back();
       Frame * tmpf = _refdecoder->decode2(*enc_packet.get());
@@ -266,7 +267,6 @@ void ProcessUnit::processInternal() {
     }
     delete tmp;
     delete f;
-    LOGTRACE("Frame Encoded");
     outsize += ret;
   }
   /*now process the delayed Frames from the encoder*/

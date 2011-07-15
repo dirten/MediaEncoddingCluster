@@ -95,6 +95,7 @@ void build_process_units(int argc, char** argv) {
     _sdata[i].enc = boost::shared_ptr<Encoder > (new Encoder());
     stream_data[i].decoder=_sdata[i].dec;
     stream_data[i].encoder=_sdata[i].enc;
+	stream_data[i].min_packet_count=0;
 //    stream_data[i].codec_id = fis.getStreamInfo(i)->getCodecId();
 
     if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
@@ -137,7 +138,7 @@ void build_process_units(int argc, char** argv) {
 
   //  if (!pos.init())goto cleanup;
   fos.dumpFormat();
-  for (int a = 0; a < 5000; a++) {
+  for (int a = 0; a < 50000; a++) {
     Packet * p;
     //reading a packet from the Stream
     //when no more packets available(EOF) then it return <0
@@ -170,6 +171,7 @@ void build_process_units(int argc, char** argv) {
 
       //      u->process();
     }
+//	pti.flushStreams();
   }
 
   //  fis.close();
@@ -181,7 +183,7 @@ void build_process_units(int argc, char** argv) {
     //	  (*streams).second.dec->ctx->extradata_size=0;
     delete (*streams).second.conv;
   }
-
+pti.flushStreams();
 }
 
 void process_units() {
