@@ -43,5 +43,12 @@
         <include>**/*</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>source/safmq.0.8.3/build</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>**/*.pdb</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
