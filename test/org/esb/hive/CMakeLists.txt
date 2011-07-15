@@ -62,7 +62,7 @@ target_link_libraries (PresetReaderTest  io hive db)
 target_link_libraries (PresetLoaderTest hive io)
 target_link_libraries (CodecPropertyTransformerTest io hive lang)
 target_link_libraries (FileExporterTest hive)
-target_link_libraries (AnalyzeFrameCount hive)
+target_link_libraries (AnalyzeFrameCount hive signal)
 target_link_libraries (ProjectXmlTest hive)
 #target_link_libraries (XmlJobTest hive)
 

@@ -249,6 +249,8 @@ namespace org {
 	    return;
 	}
 	LOGDEBUG("CONVERT VIDEO");
+	LOGDEBUG(in_frame.toString());
+	LOGDEBUG(out_frame.toString());
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
