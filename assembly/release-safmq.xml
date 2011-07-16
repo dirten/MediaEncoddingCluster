@@ -6,7 +6,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>source/build/safmq/include</directory>
+      <directory>source/safmq.0.8.3/shared</directory>
       <outputDirectory>include/safmq</outputDirectory>
       <includes>
         <include>**/*</include>
@@ -31,10 +31,13 @@
     </fileSet>
     <fileSet>
       <directory>source/tmp</directory>
-      <outputDirectory>include/safmq/lib</outputDirectory>
+      <outputDirectory>include/safmq</outputDirectory>
       <includes>
         <include>MQConnection.h</include>
         <include>MQFactory.h</include>
+        <include>MessageQueue.h</include>
+        <include>safmq.h</include>
+        <include>safmq_defs.h</include>
       </includes>
     </fileSet>
     <fileSet>
