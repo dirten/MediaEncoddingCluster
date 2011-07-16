@@ -41,6 +41,14 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>source/tmp</directory>
+      <outputDirectory>include/safmq/lib</outputDirectory>
+      <includes>
+        <include>MQConnection.h</include>
+        <include>MQFactory.h</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>source/build/safmq/lib</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
