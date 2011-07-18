@@ -23,6 +23,7 @@ class ProcessUnit;
 class User;
 class UserGroup;
 class Request;
+class Partition;
 class FilterFilterParameterRelation {
 public:
     class Row {
@@ -512,6 +513,25 @@ public:
     static void unlink(const litesql::Database& db, const db::User& o0, const db::UserGroup& o1);
     static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     static litesql::DataSource<UserUserGroupRelationUser2UserGroup::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+;
+;
+};
+class JobPartitionRelationJob2Partition {
+public:
+    class Row {
+    public:
+        litesql::Field<int> partition;
+        litesql::Field<int> job;
+        Row(const litesql::Database& db, const litesql::Record& rec=litesql::Record());
+    };
+    static const std::string table__;
+    static const litesql::FieldType Job;
+    static const litesql::FieldType Partition;
+    static void link(const litesql::Database& db, const db::Job& o0, const db::Partition& o1);
+    static void unlink(const litesql::Database& db, const db::Job& o0, const db::Partition& o1);
+    static void del(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
+    static litesql::DataSource<JobPartitionRelationJob2Partition::Row> getRows(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr());
     template <class T> static litesql::DataSource<T> get(const litesql::Database& db, const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
 ;
 ;
@@ -1643,6 +1663,15 @@ public:
         litesql::DataSource<JobDetail> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
         litesql::DataSource<JobJobDetailRelationJobJobDetail::Row> getRows(const litesql::Expr& expr=litesql::Expr());
     };
+    class PartitionHandle : public litesql::RelationHandle<Job> {
+    public:
+        PartitionHandle(const Job& owner);
+        void link(const Partition& o0);
+        void unlink(const Partition& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Partition> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobPartitionRelationJob2Partition::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
     static const std::string type__;
     static const std::string table__;
     static const std::string sequence__;
@@ -1684,6 +1713,7 @@ public:
     Job::OutputfileHandle outputfile();
     Job::PresetHandle preset();
     Job::JobdetailsHandle jobdetails();
+    Job::PartitionHandle partition();
 protected:
     std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
     void create();
@@ -2136,6 +2166,58 @@ public:
     std::auto_ptr<Request> upcastCopy();
 };
 std::ostream & operator<<(std::ostream& os, Request o);
+class Partition : public litesql::Persistent {
+public:
+    class Own {
+    public:
+        static const litesql::FieldType Id;
+    };
+    class JobHandle : public litesql::RelationHandle<Partition> {
+    public:
+        JobHandle(const Partition& owner);
+        void link(const Job& o0);
+        void unlink(const Job& o0);
+        void del(const litesql::Expr& expr=litesql::Expr());
+        litesql::DataSource<Job> get(const litesql::Expr& expr=litesql::Expr(), const litesql::Expr& srcExpr=litesql::Expr());
+        litesql::DataSource<JobPartitionRelationJob2Partition::Row> getRows(const litesql::Expr& expr=litesql::Expr());
+    };
+    static const std::string type__;
+    static const std::string table__;
+    static const std::string sequence__;
+    static const litesql::FieldType Id;
+    litesql::Field<int> id;
+    static const litesql::FieldType Type;
+    litesql::Field<std::string> type;
+    static const litesql::FieldType Name;
+    litesql::Field<std::string> name;
+    static const litesql::FieldType Partitionsize;
+    litesql::Field<int> partitionsize;
+protected:
+    void defaults();
+public:
+    Partition(const litesql::Database& db);
+    Partition(const litesql::Database& db, const litesql::Record& rec);
+    Partition(const Partition& obj);
+    const Partition& operator=(const Partition& obj);
+    Partition::JobHandle job();
+protected:
+    std::string insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs);
+    void create();
+    virtual void addUpdates(Updates& updates);
+    virtual void addIDUpdates(Updates& updates);
+public:
+    static void getFieldTypes(std::vector<litesql::FieldType>& ftypes);
+protected:
+    virtual void delRecord();
+    virtual void delRelations();
+public:
+    virtual void update();
+    virtual void del();
+    virtual bool typeIsCorrect();
+    std::auto_ptr<Partition> upcast();
+    std::auto_ptr<Partition> upcastCopy();
+};
+std::ostream & operator<<(std::ostream& os, Partition o);
 class HiveDb : public litesql::Database {
 public:
     HiveDb(std::string backendType, std::string connInfo);

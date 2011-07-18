@@ -1275,6 +1275,55 @@ template <> litesql::DataSource<db::UserGroup> UserUserGroupRelationUser2UserGro
     sel.where(srcExpr);
     return DataSource<db::UserGroup>(db, db::UserGroup::Id.in(sel) && expr);
 }
+JobPartitionRelationJob2Partition::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : partition(JobPartitionRelationJob2Partition::Partition), job(JobPartitionRelationJob2Partition::Job) {
+    switch(rec.size()) {
+    case 2:
+        partition = rec[1];
+    case 1:
+        job = rec[0];
+    }
+}
+const std::string JobPartitionRelationJob2Partition::table__("Job_Partition_Job2Partition");
+const litesql::FieldType JobPartitionRelationJob2Partition::Job("Job1","INTEGER",table__);
+const litesql::FieldType JobPartitionRelationJob2Partition::Partition("Partition2","INTEGER",table__);
+void JobPartitionRelationJob2Partition::link(const litesql::Database& db, const db::Job& o0, const db::Partition& o1) {
+    Record values;
+    Split fields;
+    fields.push_back(Job.name());
+    values.push_back(o0.id);
+    fields.push_back(Partition.name());
+    values.push_back(o1.id);
+    db.insert(table__, values, fields);
+}
+void JobPartitionRelationJob2Partition::unlink(const litesql::Database& db, const db::Job& o0, const db::Partition& o1) {
+    db.delete_(table__, (Job == o0.id && Partition == o1.id));
+}
+void JobPartitionRelationJob2Partition::del(const litesql::Database& db, const litesql::Expr& expr) {
+    db.delete_(table__, expr);
+}
+litesql::DataSource<JobPartitionRelationJob2Partition::Row> JobPartitionRelationJob2Partition::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+    SelectQuery sel;
+    sel.result(Job.fullName());
+    sel.result(Partition.fullName());
+    sel.source(table__);
+    sel.where(expr);
+    return DataSource<JobPartitionRelationJob2Partition::Row>(db, sel);
+}
+template <> litesql::DataSource<db::Job> JobPartitionRelationJob2Partition::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Job.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Job>(db, db::Job::Id.in(sel) && expr);
+}
+template <> litesql::DataSource<db::Partition> JobPartitionRelationJob2Partition::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    SelectQuery sel;
+    sel.source(table__);
+    sel.result(Partition.fullName());
+    sel.where(srcExpr);
+    return DataSource<db::Partition>(db, db::Partition::Id.in(sel) && expr);
+}
 const litesql::FieldType Project::Own::Id("id_","INTEGER","Project_");
 Project::FilterHandle::FilterHandle(const Project& owner)
          : litesql::RelationHandle<Project>(owner) {
@@ -4895,6 +4944,24 @@ litesql::DataSource<JobDetail> Job::JobdetailsHandle::get(const litesql::Expr& e
 litesql::DataSource<JobJobDetailRelationJobJobDetail::Row> Job::JobdetailsHandle::getRows(const litesql::Expr& expr) {
     return JobJobDetailRelationJobJobDetail::getRows(owner->getDatabase(), expr && (JobJobDetailRelationJobJobDetail::Job == owner->id));
 }
+Job::PartitionHandle::PartitionHandle(const Job& owner)
+         : litesql::RelationHandle<Job>(owner) {
+}
+void Job::PartitionHandle::link(const Partition& o0) {
+    JobPartitionRelationJob2Partition::link(owner->getDatabase(), *owner, o0);
+}
+void Job::PartitionHandle::unlink(const Partition& o0) {
+    JobPartitionRelationJob2Partition::unlink(owner->getDatabase(), *owner, o0);
+}
+void Job::PartitionHandle::del(const litesql::Expr& expr) {
+    JobPartitionRelationJob2Partition::del(owner->getDatabase(), expr && JobPartitionRelationJob2Partition::Job == owner->id);
+}
+litesql::DataSource<Partition> Job::PartitionHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobPartitionRelationJob2Partition::get<Partition>(owner->getDatabase(), expr, (JobPartitionRelationJob2Partition::Job == owner->id) && srcExpr);
+}
+litesql::DataSource<JobPartitionRelationJob2Partition::Row> Job::PartitionHandle::getRows(const litesql::Expr& expr) {
+    return JobPartitionRelationJob2Partition::getRows(owner->getDatabase(), expr && (JobPartitionRelationJob2Partition::Job == owner->id));
+}
 const std::string Job::type__("Job");
 const std::string Job::table__("Job_");
 const std::string Job::sequence__("Job_seq");
@@ -4994,6 +5061,9 @@ Job::PresetHandle Job::preset() {
 Job::JobdetailsHandle Job::jobdetails() {
     return Job::JobdetailsHandle(*this);
 }
+Job::PartitionHandle Job::partition() {
+    return Job::PartitionHandle(*this);
+}
 std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
     litesql::Record fields;
@@ -5092,6 +5162,7 @@ void Job::delRelations() {
     JobMediaFileRelationJobOutFile::del(*db, (JobMediaFileRelationJobOutFile::Job == id));
     JobPresetRelation::del(*db, (JobPresetRelation::Job == id));
     JobJobDetailRelationJobJobDetail::del(*db, (JobJobDetailRelationJobJobDetail::Job == id));
+    JobPartitionRelationJob2Partition::del(*db, (JobPartitionRelationJob2Partition::Job == id));
 }
 void Job::update() {
     if (!inDatabase) {
@@ -6677,6 +6748,171 @@ std::ostream & operator<<(std::ostream& os, Request o) {
     os << "-------------------------------------" << std::endl;
     return os;
 }
+const litesql::FieldType Partition::Own::Id("id_","INTEGER","Partition_");
+Partition::JobHandle::JobHandle(const Partition& owner)
+         : litesql::RelationHandle<Partition>(owner) {
+}
+void Partition::JobHandle::link(const Job& o0) {
+    JobPartitionRelationJob2Partition::link(owner->getDatabase(), o0, *owner);
+}
+void Partition::JobHandle::unlink(const Job& o0) {
+    JobPartitionRelationJob2Partition::unlink(owner->getDatabase(), o0, *owner);
+}
+void Partition::JobHandle::del(const litesql::Expr& expr) {
+    JobPartitionRelationJob2Partition::del(owner->getDatabase(), expr && JobPartitionRelationJob2Partition::Partition == owner->id);
+}
+litesql::DataSource<Job> Partition::JobHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return JobPartitionRelationJob2Partition::get<Job>(owner->getDatabase(), expr, (JobPartitionRelationJob2Partition::Partition == owner->id) && srcExpr);
+}
+litesql::DataSource<JobPartitionRelationJob2Partition::Row> Partition::JobHandle::getRows(const litesql::Expr& expr) {
+    return JobPartitionRelationJob2Partition::getRows(owner->getDatabase(), expr && (JobPartitionRelationJob2Partition::Partition == owner->id));
+}
+const std::string Partition::type__("Partition");
+const std::string Partition::table__("Partition_");
+const std::string Partition::sequence__("Partition_seq");
+const litesql::FieldType Partition::Id("id_","INTEGER",table__);
+const litesql::FieldType Partition::Type("type_","TEXT",table__);
+const litesql::FieldType Partition::Name("name_","TEXT",table__);
+const litesql::FieldType Partition::Partitionsize("partitionsize_","INTEGER",table__);
+void Partition::defaults() {
+    id = 0;
+    partitionsize = 0;
+}
+Partition::Partition(const litesql::Database& db)
+     : litesql::Persistent(db), id(Id), type(Type), name(Name), partitionsize(Partitionsize) {
+    defaults();
+}
+Partition::Partition(const litesql::Database& db, const litesql::Record& rec)
+     : litesql::Persistent(db, rec), id(Id), type(Type), name(Name), partitionsize(Partitionsize) {
+    defaults();
+    size_t size = (rec.size() > 4) ? 4 : rec.size();
+    switch(size) {
+    case 4: partitionsize = convert<const std::string&, int>(rec[3]);
+        partitionsize.setModified(false);
+    case 3: name = convert<const std::string&, std::string>(rec[2]);
+        name.setModified(false);
+    case 2: type = convert<const std::string&, std::string>(rec[1]);
+        type.setModified(false);
+    case 1: id = convert<const std::string&, int>(rec[0]);
+        id.setModified(false);
+    }
+}
+Partition::Partition(const Partition& obj)
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), name(obj.name), partitionsize(obj.partitionsize) {
+}
+const Partition& Partition::operator=(const Partition& obj) {
+    if (this != &obj) {
+        id = obj.id;
+        type = obj.type;
+        name = obj.name;
+        partitionsize = obj.partitionsize;
+    }
+    litesql::Persistent::operator=(obj);
+    return *this;
+}
+Partition::JobHandle Partition::job() {
+    return Partition::JobHandle(*this);
+}
+std::string Partition::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
+    tables.push_back(table__);
+    litesql::Record fields;
+    litesql::Record values;
+    fields.push_back(id.name());
+    values.push_back(id);
+    id.setModified(false);
+    fields.push_back(type.name());
+    values.push_back(type);
+    type.setModified(false);
+    fields.push_back(name.name());
+    values.push_back(name);
+    name.setModified(false);
+    fields.push_back(partitionsize.name());
+    values.push_back(partitionsize);
+    partitionsize.setModified(false);
+    fieldRecs.push_back(fields);
+    valueRecs.push_back(values);
+    return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
+}
+void Partition::create() {
+    litesql::Record tables;
+    litesql::Records fieldRecs;
+    litesql::Records valueRecs;
+    type = type__;
+    std::string newID = insert(tables, fieldRecs, valueRecs);
+    if (id == 0)
+        id = newID;
+}
+void Partition::addUpdates(Updates& updates) {
+    prepareUpdate(updates, table__);
+    updateField(updates, table__, id);
+    updateField(updates, table__, type);
+    updateField(updates, table__, name);
+    updateField(updates, table__, partitionsize);
+}
+void Partition::addIDUpdates(Updates& updates) {
+}
+void Partition::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
+    ftypes.push_back(Id);
+    ftypes.push_back(Type);
+    ftypes.push_back(Name);
+    ftypes.push_back(Partitionsize);
+}
+void Partition::delRecord() {
+    deleteFromTable(table__, id);
+}
+void Partition::delRelations() {
+    JobPartitionRelationJob2Partition::del(*db, (JobPartitionRelationJob2Partition::Partition == id));
+}
+void Partition::update() {
+    if (!inDatabase) {
+        create();
+        return;
+    }
+    Updates updates;
+    addUpdates(updates);
+    if (id != oldKey) {
+        if (!typeIsCorrect()) 
+            upcastCopy()->addIDUpdates(updates);
+    }
+    litesql::Persistent::update(updates);
+    oldKey = id;
+}
+void Partition::del() {
+    if (typeIsCorrect() == false) {
+        std::auto_ptr<Partition> p(upcastCopy());
+        p->delRelations();
+        p->onDelete();
+        p->delRecord();
+    } else {
+        onDelete();
+        delRecord();
+    }
+    inDatabase = false;
+}
+bool Partition::typeIsCorrect() {
+    return type == type__;
+}
+std::auto_ptr<Partition> Partition::upcast() {
+    return auto_ptr<Partition>(new Partition(*this));
+}
+std::auto_ptr<Partition> Partition::upcastCopy() {
+    Partition* np = new Partition(*this);
+    np->id = id;
+    np->type = type;
+    np->name = name;
+    np->partitionsize = partitionsize;
+    np->inDatabase = inDatabase;
+    return auto_ptr<Partition>(np);
+}
+std::ostream & operator<<(std::ostream& os, Partition o) {
+    os << "-------------------------------------" << std::endl;
+    os << o.id.name() << " = " << o.id << std::endl;
+    os << o.type.name() << " = " << o.type << std::endl;
+    os << o.name.name() << " = " << o.name << std::endl;
+    os << o.partitionsize.name() << " = " << o.partitionsize << std::endl;
+    os << "-------------------------------------" << std::endl;
+    return os;
+}
 HiveDb::HiveDb(std::string backendType, std::string connInfo)
      : litesql::Database(backendType, connInfo) {
     initialize();
@@ -6706,6 +6942,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
         res.push_back(Database::SchemaItem("User_seq","sequence","CREATE SEQUENCE User_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("UserGroup_seq","sequence","CREATE SEQUENCE UserGroup_seq START 1 INCREMENT 1"));
         res.push_back(Database::SchemaItem("Request_seq","sequence","CREATE SEQUENCE Request_seq START 1 INCREMENT 1"));
+        res.push_back(Database::SchemaItem("Partition_seq","sequence","CREATE SEQUENCE Partition_seq START 1 INCREMENT 1"));
     }
     res.push_back(Database::SchemaItem("Project_","table","CREATE TABLE Project_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,outdirectory_ TEXT,status_ TEXT,created_ INTEGER,started_ INTEGER,completed_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_","table","CREATE TABLE Filter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,filtername_ TEXT,filterid_ TEXT)"));
@@ -6728,6 +6965,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
     res.push_back(Database::SchemaItem("Request_","table","CREATE TABLE Request_ (id_ " + backend->getRowIDType() + ",type_ TEXT,requestId_ TEXT,requestType_ TEXT,uri_ TEXT,query_ TEXT,data_ TEXT,response_ TEXT)"));
+    res.push_back(Database::SchemaItem("Partition_","table","CREATE TABLE Partition_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,partitionsize_ INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter_","table","CREATE TABLE Filter_FilterParameter_ (Filter1 INTEGER,FilterParameter2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_MediaFile_","table","CREATE TABLE Filter_MediaFile_ (Filter1 INTEGER,MediaFile2 INTEGER)"));
     res.push_back(Database::SchemaItem("Filter_Project_","table","CREATE TABLE Filter_Project_ (Filter1 INTEGER,Project2 INTEGER)"));
@@ -6754,6 +6992,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("_72915fab98e40e57ddd1495ecd15b95b","table","CREATE TABLE _72915fab98e40e57ddd1495ecd15b95b (Profile1 INTEGER,Watchfolder2 INTEGER)"));
     res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
+    res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1 INTEGER,Partition2 INTEGER)"));
     res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
     res.push_back(Database::SchemaItem("_ebb60e0eabfba5df99ab088688ea3579","index","CREATE INDEX _ebb60e0eabfba5df99ab088688ea3579 ON Filter_FilterParameter_ (FilterParameter2)"));
     res.push_back(Database::SchemaItem("Filter_FilterParameter__all_idx","index","CREATE INDEX Filter_FilterParameter__all_idx ON Filter_FilterParameter_ (Filter1,FilterParameter2)"));
@@ -6832,6 +7071,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
     res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
     res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));
+    res.push_back(Database::SchemaItem("_8b87518093ef8ca0378aa75ac2742ba7","index","CREATE INDEX _8b87518093ef8ca0378aa75ac2742ba7 ON Job_Partition_Job2Partition (Job1)"));
+    res.push_back(Database::SchemaItem("_08b820cafd62f4965f0ebbc29665606b","index","CREATE INDEX _08b820cafd62f4965f0ebbc29665606b ON Job_Partition_Job2Partition (Partition2)"));
+    res.push_back(Database::SchemaItem("_4347eaf0398ab15250636ca7669f7d16","index","CREATE INDEX _4347eaf0398ab15250636ca7669f7d16 ON Job_Partition_Job2Partition (Job1,Partition2)"));
     return res;
 }
 void HiveDb::initialize() {

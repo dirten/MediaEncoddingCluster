@@ -350,4 +350,14 @@
         <field name="response" type="string"/>
     </object>
 
+    <object name="Partition">
+        <field name="name" type="string"/>
+        <field name="partitionsize" type="integer"/>
+    </object>
+
+    <relation id="Job2Partition">
+        <relate object="Partition" handle="job"/>
+        <relate object="Job" handle="partition"/>
+    </relation>
+
 </database>
