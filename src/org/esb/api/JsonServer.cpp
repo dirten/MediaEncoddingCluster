@@ -44,7 +44,8 @@ namespace org {
   namespace esb {
     namespace api {
       //db::HiveDb * JsonServer::_db;
-      std::set<std::string> JsonServer::valid_formats;
+        std::set<std::string> JsonServer::valid_formats;
+        std::set<std::string> JsonServer::valid_video_codecs;
 
       boost::mutex JsonServer::http_mutex;
 
@@ -98,6 +99,8 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
         valid_formats.insert("3g2");
         valid_formats.insert("3gp");
         valid_formats.insert("webm");
+
+          valid_video_codecs.insert("libx264");
       }
 
       JsonServer::~JsonServer() {
@@ -226,11 +229,13 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             int a = 0;
             while ((p = av_codec_next(p))) {
               if (p->encode && p->long_name != NULL) {
-                JSONNode cnode(JSON_NODE);
-                cnode.push_back(JSONNode("longname", p->long_name));
-                cnode.push_back(JSONNode("id", p->name));
-                cnode.push_back(JSONNode("type", p->type));
-                c.push_back(cnode);
+                if(valid_video_codecs.find(p->name)!=valid_video_codecs.end()){
+                  JSONNode cnode(JSON_NODE);
+                  cnode.push_back(JSONNode("longname", p->long_name));
+                  cnode.push_back(JSONNode("id", p->name));
+                  cnode.push_back(JSONNode("type", p->type));
+                  c.push_back(cnode);
+                }
               }
             }
             n.push_back(c);

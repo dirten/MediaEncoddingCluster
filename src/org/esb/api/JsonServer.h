@@ -26,7 +26,8 @@ namespace org {
         static bool contains(JSONNode&, std::string);
         //static db::HiveDb * _db;
         static boost::mutex http_mutex;
-        static std::set<std::string> valid_formats;
+          static std::set<std::string> valid_formats;
+          static std::set<std::string> valid_video_codecs;
       };
     }
   }
