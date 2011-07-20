@@ -19,6 +19,7 @@
 #include "JsonProfileHandler.h"
 #include "JsonEncodingHandler.h"
 #include "JsonStatisticsHandler.h"
+#include "JsonMediaHandler.h"
 #include "boost/archive/iterators/base64_from_binary.hpp"
 #include "boost/archive/iterators/binary_from_base64.hpp"
 #include "boost/archive/iterators/transform_width.hpp"
@@ -100,7 +101,7 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
         valid_formats.insert("3gp");
         valid_formats.insert("webm");
 
-          valid_video_codecs.insert("libx264");
+          //valid_video_codecs.insert("libx264");
       }
 
       JsonServer::~JsonServer() {
@@ -229,13 +230,13 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             int a = 0;
             while ((p = av_codec_next(p))) {
               if (p->encode && p->long_name != NULL) {
-                if(valid_video_codecs.find(p->name)!=valid_video_codecs.end()){
+                //if(valid_video_codecs.find(p->name)!=valid_video_codecs.end()){
                   JSONNode cnode(JSON_NODE);
                   cnode.push_back(JSONNode("longname", p->long_name));
                   cnode.push_back(JSONNode("id", p->name));
                   cnode.push_back(JSONNode("type", p->type));
                   c.push_back(cnode);
-                }
+                //}
               }
             }
             n.push_back(c);
@@ -269,6 +270,15 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             JSONNode n = JsonStatisticsHandler::handle(conn, request_info, db, postdata);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write();
+            mg_write(conn, json_s.c_str(), json_s.length());
+            //req.response = json_s;
+            //req.update();
+
+          }else if (request == BASE_API_URL"/media") {
+            mg_printf(conn, "%s", reply_start);
+            JSONNode n = JsonMediaHandler::handle(conn, request_info, db, postdata);
+            n.push_back(JSONNode("requestId", requestId));
+            std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());
             //req.response = json_s;
             //req.update();

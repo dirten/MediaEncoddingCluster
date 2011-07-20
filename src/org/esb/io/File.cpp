@@ -162,6 +162,7 @@ bool File::isDirectory() {
 }
 
 bool File::canRead() {
+  if(_isUrl)return true;
   return fs::is_regular(fs::status(_full_path));
 }
 

@@ -62,6 +62,9 @@ namespace org {
         Frame * decodeVideo2(Packet & packet);
         Frame * decodeAudio2(Packet & packet);
         int64_t getLastTimeStamp();
+        static std::string getStaticCodecName(CodecID codec_id);
+        static CodecID getStaticCodecId(std::string codec_name);
+
       private:
         int64_t _last_pts;
         int64_t _next_pts;

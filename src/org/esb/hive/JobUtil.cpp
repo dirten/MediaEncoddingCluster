@@ -261,8 +261,9 @@ namespace org {
         }
       }
 
-      int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outpath) {
-        LOGDEBUG("Create new Job"<<preset);
+      /*genau das hier wird benutzt, den rest muss ich löschen*/
+      int JobUtil::createJob(db::MediaFile infile, db::Preset preset, std::string outfilename) {
+        LOGDEBUG("Create new Job" << preset);
         /*
         if(preset.filename.value().length()==0){
           LOGDEBUG("resolving Preset by Name : "<<preset.name);
@@ -292,7 +293,7 @@ namespace org {
         PresetReaderJson::FilterList filters = reader.getFilterList();
         PresetReaderJson::Preset pre = reader.getPreset();
 
-        LOGDEBUG("searching for Format id:"<<pre["id"]);
+        LOGDEBUG("searching for Format id:" << pre["id"]);
         /*resolving the outputformat to have knowledge of the global header flag*/
         AVOutputFormat *ofmt = NULL;
         while ((ofmt = av_oformat_next(ofmt))) {
@@ -301,11 +302,14 @@ namespace org {
             break;
           }
         }
-        if(!ofmt){
+        if (!ofmt) {
           LOGERROR("Could not find Output Format");
           return -1;
         }
-
+        if(ofmt->flags&AVFMT_GLOBALHEADER){
+          codecs["video"].insert(std::pair<std::string, std::string > ("global_header", "1"));
+          codecs["audio"].insert(std::pair<std::string, std::string > ("global_header", "1"));
+        }
         const litesql::Database db = infile.getDatabase();
         db.begin();
 
@@ -319,9 +323,9 @@ namespace org {
         job.starttime = infile.starttime;
         job.duration = infile.duration;
         job.status = "queued";
-        job.infile = infile.path.value()+"/"+infile.filename.value();
-        job.data=preset.data.value();
-        job.uuid=uuidstr;
+        job.infile = infile.path.value() + "/" + infile.filename.value();
+        job.data = preset.data.value();
+        job.uuid = uuidstr;
         job.update();
         job.preset().link(preset);
         /**
@@ -333,18 +337,17 @@ namespace org {
         else
           f.changeExtension("unknown");
 
+        org::esb::io::File outf(outfilename);
+
         db::MediaFile outfile(db);
-        std::string filename = job.id;
-        filename += "#";
-        filename += f.getFileName();
-        outfile.filename = filename;
-        outfile.path = outpath + pre["name"];
+        outfile.filename = outf.getFileName();
+        outfile.path = outf.getFilePath();
         outfile.parent = infile.id.value();
         outfile.containertype = ofmt->name;
         outfile.streamcount = 0;
         outfile.update();
 
-        job.outfile = outfile.path.value()+"/"+outfile.filename.value();
+        job.outfile = outfile.path.value() + "/" + outfile.filename.value();
         /*
          * setting time data twice, in case of a bug in litesql
          * it does not support zero values,
@@ -352,8 +355,8 @@ namespace org {
          * but after setting it twice it eat the values ???
          */
 
-//        job.begintime = 1;
-//        job.endtime = 1;
+        //        job.begintime = 1;
+        //        job.endtime = 1;
         //job.outfile = outfile.filename.value();
         job.update();
 
@@ -381,19 +384,33 @@ namespace org {
             /*
              * handling width and height
              */
-            if(type == AVMEDIA_TYPE_VIDEO){
+            if (type == AVMEDIA_TYPE_VIDEO) {
               /*search for width and height*/
-              if(codec.count("width")==0||codec.count("height")==0){
-                codec.insert(std::pair<std::string, std::string>("width",org::esb::util::StringUtil::toString((*sit).width.value())));
-                codec.insert(std::pair<std::string, std::string>("height",org::esb::util::StringUtil::toString((*sit).height.value())));
-              }              
+              if (codec.count("width") == 0 ||
+                      atoi((*codec.find("width")).second.c_str()) == 0 ||
+                      codec.count("height") == 0 ||
+                      atoi((*codec.find("height")).second.c_str()) == 0) {
+                if(codec.count("width") > 0)
+                  codec.erase(codec.find("width"));
+                if(codec.count("height") > 0)
+                  codec.erase(codec.find("height"));
+                codec.insert(std::pair<std::string, std::string > ("width", org::esb::util::StringUtil::toString((*sit).width.value())));
+                codec.insert(std::pair<std::string, std::string > ("height", org::esb::util::StringUtil::toString((*sit).height.value())));
+              }
+              if (codec.count("time_base") == 0||(*codec.find("time_base")).second.length()==0){
+                if(codec.count("time_base") > 0)
+                  codec.erase(codec.find("time_base"));
+                std::ostringstream oss;
+                oss << (*sit).framerateden.value()<<"/"<<(*sit).frameratenum.value();
+                codec.insert(std::pair<std::string, std::string > ("time_base", oss.str()));
+              }
             }
             for (; sdata != codec.end(); sdata++) {
               db::StreamParameter sp(db);
-              if((*sdata).first=="codec_id"){
-                 AVCodec * codec=avcodec_find_encoder_by_name((*sdata).second.c_str());
-                 if(codec)
-                   (*sdata).second=org::esb::util::StringUtil::toString(codec->id);
+              if ((*sdata).first == "codec_id") {
+                AVCodec * codec = avcodec_find_encoder_by_name((*sdata).second.c_str());
+                if (codec)
+                  (*sdata).second = org::esb::util::StringUtil::toString(codec->id);
               }
               sp.name = (*sdata).first;
               sp.val = (*sdata).second;
@@ -402,7 +419,7 @@ namespace org {
             }
           }
           db::JobDetail jd(db);
-          
+
           jd.update();
           jd.inputstream().link((*sit));
           jd.outputstream().link(s);
@@ -411,21 +428,21 @@ namespace org {
           a++;
         }
         /*handling filter for the output media file*/
-        PresetReader::FilterList::iterator filter_it=filters.begin();
-        for(;filter_it!=filters.end();filter_it++){
-          std::string filterid=(*filter_it).first;
+        PresetReader::FilterList::iterator filter_it = filters.begin();
+        for (; filter_it != filters.end(); filter_it++) {
+          std::string filterid = (*filter_it).first;
           db::Filter f(db);
-          f.filterid=filterid;
+          f.filterid = filterid;
           f.update();
           outfile.filter().link(f);
           /*if the filter has paramater*/
-          if(filters[filterid].size()>0){
-            std::map<std::string, std::string> parameter(filters[filterid].begin(),filters[filterid].end());
-            std::map<std::string, std::string>::iterator pa_it=parameter.begin();
-            for(;pa_it!=parameter.end();pa_it++){
+          if (filters[filterid].size() > 0) {
+            std::map<std::string, std::string> parameter(filters[filterid].begin(), filters[filterid].end());
+            std::map<std::string, std::string>::iterator pa_it = parameter.begin();
+            for (; pa_it != parameter.end(); pa_it++) {
               db::FilterParameter pa(db);
-              pa.fkey=(*pa_it).first;
-              pa.fval=(*pa_it).second;
+              pa.fkey = (*pa_it).first;
+              pa.fval = (*pa_it).second;
               pa.update();
               f.parameter().link(pa);
             }
@@ -452,7 +469,7 @@ namespace org {
         job.duration = infile.duration;
         job.status = "queued";
         job.infile = infile.filename.value();
-        
+
         job.update();
 
 

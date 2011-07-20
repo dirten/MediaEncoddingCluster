@@ -6,6 +6,9 @@
  */
 
 #include "Rational.h"
+#include <iostream>
+#include <sstream>
+
 namespace org {
   namespace esb {
     namespace av {
@@ -43,6 +46,14 @@ namespace org {
       }
 
       Rational::~Rational() {
+      }
+      
+      std::string Rational::toString(){
+        std::ostringstream oss;
+        oss<<num;
+        oss << "/";
+        oss << den;
+        return oss.str();
       }
     }
   }

@@ -26,7 +26,7 @@ namespace org {
         bool operator!=(const Rational &);
         bool operator>(const Rational &);
         bool operator<(const Rational &);
-
+        std::string toString();
       private:
         friend class boost::serialization::access;
 

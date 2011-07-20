@@ -119,16 +119,16 @@ fprintf(stderr, "Error while decoding frame\n");
 
 Frame * Decoder::decodeVideo2(Packet & packet) {
   LOGTRACEMETHOD("Decode Video");
-    if (false&&!_pix_fmt_converter) {
-      Format in;
-      in.width = ctx->width;
-      in.height = ctx->height;
-      in.pixel_format = ctx->pix_fmt;
-      _output_format = in;
-      _output_format.pixel_format = STD_PIX_FMT;
-      _pix_fmt_converter = new PixelFormatConverter(in, _output_format);
-      _pix_fmt_converter->open();
-    }
+  if (false && !_pix_fmt_converter) {
+    Format in;
+    in.width = ctx->width;
+    in.height = ctx->height;
+    in.pixel_format = ctx->pix_fmt;
+    _output_format = in;
+    _output_format.pixel_format = STD_PIX_FMT;
+    _pix_fmt_converter = new PixelFormatConverter(in, _output_format);
+    _pix_fmt_converter->open();
+  }
   //Ptr<Frame> tmp_frame = new Frame(ctx->pix_fmt, ctx->width, ctx->height, false);
   Frame * frame = new Frame(_output_format.pixel_format, ctx->width, ctx->height);
   int _frameFinished = 0;
@@ -138,7 +138,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   //  while (len > 0) {
   //    logdebug("Decode Packet");
   int bytesDecoded = 0;
-  if(ctx->codec_id>-1){
+  if (ctx->codec_id>-1) {
     bytesDecoded = avcodec_decode_video2(ctx, frame->getAVFrame(), &_frameFinished, packet.packet);
   }
   if (_frameFinished) {
@@ -148,7 +148,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
       LOGDEBUG("DeCodedFrameQuality:" << ctx->coded_frame->quality);
       LOGDEBUG("Interlaced:" << ctx->coded_frame->interlaced_frame);
       LOGDEBUG("topfieldfirst:" << ctx->coded_frame->top_field_first);
-      LOGDEBUG("PictureType:"<<av_get_pict_type_char(ctx->coded_frame->pict_type));
+      LOGDEBUG("PictureType:" << av_get_pict_type_char(ctx->coded_frame->pict_type));
     }
   }
   //@TODO: this is a hack, because the decoder changes the TimeBase after the first packet was decoded
@@ -311,3 +311,29 @@ Frame * Decoder::decodeAudio2(Packet & packet) {
 int64_t Decoder::getLastTimeStamp() {
   return _last_pts;
 }
+
+std::string Decoder::getStaticCodecName(CodecID codec_id) {
+  std::string result;
+  AVCodec *p = NULL;
+  int a = 0;
+  while ((p = av_codec_next(p))) {
+    if (p->decode && p->id != NULL&&p->id == codec_id) {
+      result=p->name;
+    }
+  }
+  return result;
+}
+
+CodecID Decoder::getStaticCodecId(std::string codec_name) {
+  CodecID result;
+  AVCodec *p = NULL;
+  int a = 0;
+  while ((p = av_codec_next(p))) {
+    if (p->decode && p->name != NULL&&p->name ==codec_name) {
+      result=p->id;
+    }
+  }
+  return result;
+
+}
+

@@ -22,6 +22,7 @@ add_library (api ${API_LINK_TYPE}
     JsonProfileHandler.cpp
     JsonEncodingHandler.cpp
     JsonStatisticsHandler.cpp
+    JsonMediaHandler.cpp
  )
 TARGET_LINK_LIBRARIES(api
     av
