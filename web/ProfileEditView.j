@@ -6,9 +6,10 @@ ProfileChanged=@"ProfileChanged";
 
 @implementation ProfileEditView :CPWindow
   {
-
+    CPTabView tabView;
   }
   -(id)setProfileId:(id) id{
+    
     CPLog.debug("setting profile id"+ id);
     if(id!="double click to create a new Profile"){
       var request = [CPURLRequest requestWithURL:"/api/v1/profile?id="+id];
@@ -37,11 +38,13 @@ ProfileChanged=@"ProfileChanged";
   [self orderFront:self];
   [self setTitle:"Profile Editor"];
   var contentView=[self contentView];
-  var tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 10, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-100)];
+  
+  tabView = [[CPTabView alloc] initWithFrame: CGRectMake(10, 10, CGRectGetWidth([contentView bounds]) - 20, CGRectGetHeight([contentView bounds])-100)];
   //var tabView = [[CPTabView alloc] initWithFrame:[contentView]];
   //[tabView setTabViewType:CPTopTabsBezelBorder];
   [tabView setAutoresizingMask: CPViewWidthSizable |CPViewHeightSizable  ];
   [contentView addSubview:tabView];
+  [tabView setBackgroundColor:[CPColor whiteColor]];
 
   var tabViewItem1 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem1"];
   [tabViewItem1 setLabel:@"General"];

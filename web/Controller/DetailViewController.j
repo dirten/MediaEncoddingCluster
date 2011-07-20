@@ -86,10 +86,10 @@
       response.begintime=[[CPDate dateWithTimeIntervalSince1970:response.begintime] description];
     if(response.endtime)
       response.endtime=[[CPDate dateWithTimeIntervalSince1970:response.endtime] description];
-    if(response.profile)
-      response.profile=JSON.stringify(response.profile);
+    //if(response.profile)
+    //  response.profile=JSON.stringify(response.profile);
     if(response.data)
-      response.profile=data;//JSON.stringify(response.data);
+      response.profilestr=data;//JSON.stringify(response.data);
 
     [currentView setData:response];
 
