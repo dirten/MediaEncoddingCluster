@@ -16,6 +16,7 @@
 
 - (void)drawRect:(CGRect)aRect
 {
+    [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     var bounds = [self bounds],
         maxWidth = (bounds.size.width - 2) * value,
         context = [[CPGraphicsContext currentContext] graphicsPort],
@@ -38,8 +39,12 @@
 
     CGContextSetFillColor(context, color);
     CGContextFillPath(context);
-    //var label=[CPTextField labelWithTitle:base_value];
-    //[self addSubview:label];
+    var l=base_value>0?"%":"";
+    var label=[CPTextField labelWithTitle:base_value+l];
+    [label setFrameOrigin:CGPointMake(10.5,2.5)];
+    [label setTextColor:[CPColor darkGrayColor]];
+
+    [self addSubview:label];
 
 }
 

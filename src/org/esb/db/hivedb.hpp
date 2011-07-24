@@ -1699,6 +1699,8 @@ public:
     litesql::Field<double> duration;
     static const litesql::FieldType Progress;
     litesql::Field<int> progress;
+    static const litesql::FieldType Fps;
+    litesql::Field<int> fps;
     static const litesql::FieldType Data;
     litesql::Field<std::string> data;
 protected:

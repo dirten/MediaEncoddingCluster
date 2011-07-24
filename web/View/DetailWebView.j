@@ -68,7 +68,7 @@
         _iframe.style.backgroundColor = "";
 //        _iframe.style.backgroundColor = "rgb(237, 241, 244)";
 }
-- (void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame
+- (void)webView:(CPWebView)aWebView didFinishLoadForFrame2:(id)aFrame
 {
     CPLog.debug("(void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame");
     var domWindow = [self DOMWindow];
@@ -86,8 +86,8 @@
               name: 'London',
               data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
             }];
-            if(domWindow.show_graph2)
-          domWindow.show_graph2(stats.data);
+	  //if(domWindow.show_graph2)
+          //domWindow.show_graph2(stats.data);
           //domWindow.show_graph3();
         }
   }

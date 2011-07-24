@@ -547,6 +547,16 @@ namespace org {
                   int64_t duration = current_job->duration.value();
                   int progress = (ts - starttime)*100 / duration;
                   current_job->progress = progress;
+                  /*calculating frames per second*/
+                  std::string csql="select sum(framecount_)/(max(recv_)-min(send_)) from ProcessUnit_ where send_>(SELECT strftime('%s', 'now'))-600 and targetstream_ = ";
+                  csql+=org::esb::util::StringUtil::toString(dbunit.targetstream);
+                  csql+=" group by targetstream_";
+                  LOGDEBUG(csql);
+                  litesql::Records recs = current_job->getDatabase().query(csql);
+                  if (recs.begin() != recs.end()){
+                    LOGDEBUG("setting fps to"<<(*recs.begin())[0]);
+                    current_job->fps=(*recs.begin())[0];
+                  }
                 }
               }
               current_job->update();

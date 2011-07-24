@@ -236,6 +236,7 @@
         <field name="starttime" type="double"/>
         <field name="duration" type="double"/>
         <field name="progress" type="integer"/>
+        <field name="fps" type="integer"/>
         <field name="data" type="string"/>
     </object>
 
@@ -289,12 +290,14 @@
     <object name="Watchfolder">
         <field name="infolder" type="string"/>
         <field name="outfolder" type="string"/>
+        <field name="outfiletemplate" type="string"/>
         <field name="extensionfilter" type="string"/>
+        <field name="interval" type="string"/>
     </object>
 
     <relation id="WatchfolderProfile">
-        <relate object="Watchfolder" handle="profile"/>
-        <relate object="Profile" handle="watchfolder"/>
+        <relate object="Watchfolder" handle="preset"/>
+        <relate object="Preset" handle="watchfolder"/>
     </relation>
 
     <object name="ProcessUnit">

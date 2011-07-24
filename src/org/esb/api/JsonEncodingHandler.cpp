@@ -305,7 +305,7 @@ namespace org {
                 JSONNode error(JSON_NODE);
                 error.set_name("error");
                 error.push_back(JSONNode("code", "infile_not_found"));
-                error.push_back(JSONNode("description", std::string("could not open input file with id ").append(root["infile"].as_string()).append(" for use to create encoding task!")));
+                error.push_back(JSONNode("description", std::string("could not open input file with id ").append(ifile.getPath()).append(" for use to create encoding task!")));
                 errors.push_back(error);
               }
             }else{

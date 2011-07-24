@@ -19,6 +19,7 @@ namespace org {
           push_back(JSONNode("begintime",job.begintime));
           push_back(JSONNode("endtime",job.endtime));
           push_back(JSONNode("progress",job.progress.value()));
+          push_back(JSONNode("fps",job.fps.value()));
           push_back(JSONNode("infile",job.infile.value()));
           push_back(JSONNode("outfile",job.outfile.value()));
           push_back(JSONNode("status",job.status.value()));

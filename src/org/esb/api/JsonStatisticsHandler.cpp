@@ -56,7 +56,7 @@ namespace org {
               while (tok.hasMoreTokens()) {
                 org::esb::util::StringTokenizer tok2(tok.nextToken(), ":");
                 if (tok2.countTokens() == 2) {
-                  quality.push_back(JSONNode("", (51-atoi(tok2.nextToken().c_str()))*2));
+                  quality.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
                   rate.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
                 }
               }
