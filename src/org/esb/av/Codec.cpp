@@ -318,7 +318,7 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
         if (_opened){
-    	    LOGERROR("Codec is allready openned! codec id"<<getCodecId());
+    	    //LOGERROR("Codec is allready openned! codec id"<<getCodecId());
     	    return _opened;
     	}
         findCodec(_mode);
@@ -368,7 +368,7 @@ namespace org {
           std::string arg = (*opit).second;
           //LOGTRACE("av_set_string3(" << opt << "," << arg << ")");
           if (_codec->type == AVMEDIA_TYPE_AUDIO && opt == "b") {
-            LOGWARN("Option b is not valid for Audio Codecs, it overwrites the Option ab");
+            LOGINFO("Option b is not valid for Audio Codecs, it overwrites the Option ab");
             LOGINFO("dropping Option b for this Codec");
             continue;
           }

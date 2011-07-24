@@ -25,8 +25,8 @@ namespace org {
 
             private:
 //                void scan();
-                void scan(std::string indir, std::string outdir, int profile, io::FileFilter&);
-                void computeFile(org::esb::io::File & file, int profile, std::string);
+                void scan(db::Watchfolder,std::string dirname);
+                void computeFile(db::Watchfolder, org::esb::io::File&);
                 bool _halt;
                 boost::thread * th;
                 int _interval;

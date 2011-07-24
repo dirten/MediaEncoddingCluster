@@ -146,9 +146,10 @@ bool File::mkdir() {
 bool File::createNewFile() {
   bool result = false;
   FILE* fh = fopen(getPath().c_str(), "a");
-  if (fh >= 0) {
+  if (fh) {
     result = true;
     fclose(fh);
+    //deleteFile();
   }
   return result;
 }
@@ -167,8 +168,14 @@ bool File::canRead() {
 }
 
 bool File::canWrite() {
-  throw Exception(__FILE__, __LINE__, "File::canWrite not implemented");
-  return false;
+  bool result = false;
+  FILE* fh = fopen(getPath().c_str(), "a");
+  if (fh) {
+    result = true;
+    fclose(fh);
+    deleteFile();
+  }
+  return result;
 }
 
 FileList File::listFiles(FileFilter & filter) {

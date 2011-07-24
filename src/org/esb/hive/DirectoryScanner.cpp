@@ -129,7 +129,7 @@ namespace org {
             if (folder.exists()) {
               FileFilter * filter = new MyFileFilter((*it).extensionfilter);
               try {
-                scan((*it).infolder, (*it).outfolder, (*it).profile().get().one().id, *filter);
+                scan((*it),(*it).infolder);
               } catch (litesql::NotFound ex) {
                 LOGERROR(ex);
               }
@@ -146,32 +146,39 @@ namespace org {
 
       }
 
-      void DirectoryScanner::scan(std::string indir, std::string outdir, int profile, FileFilter & filter) {
+      void DirectoryScanner::scan(db::Watchfolder folder,std::string indir/*, std::string outdir, db::Preset preset, FileFilter & filter*/) {
         LOGDEBUG("Scanning Directory:" << indir);
-
-        FileList list = File(indir.c_str()).listFiles(filter);
+        MyFileFilter filter=MyFileFilter(folder.extensionfilter);
+        FileList list = File(indir).listFiles(filter);
         FileList::iterator it = list.begin();
         for (; it != list.end(); it++) {
           if ((*it)->isDirectory())
-            scan((*it)->getPath(), outdir, profile, filter);
+            scan(folder,(*it)->getPath());
           else
-            computeFile(*it->get(), profile, outdir);
+            computeFile(folder,*it->get());
         }
       }
 
-      void DirectoryScanner::computeFile(File & file, int p, std::string outdir) {
-        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+      void DirectoryScanner::computeFile(db::Watchfolder folder,File & file/*, db::Preset preset, std::string outdir*/) {
+        //db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
         try {
-          db::MediaFile mediafile = litesql::select<db::MediaFile > (db, db::MediaFile::Filename == file.getFileName() && db::MediaFile::Path == file.getFilePath()).one();
-        } catch (litesql::NotFound ex) {
+          
+          litesql::DataSource<db::MediaFile> filelist = litesql::select<db::MediaFile > (folder.getDatabase(), db::MediaFile::Filename == file.getFileName() && db::MediaFile::Path == file.getFilePath());
+          if(filelist.count()==0){
           if (file.isFile()) {
             LOGDEBUG("new file found:" << file.getPath());
             //const char * filename = 0;
             db::MediaFile mediafile = _importer.import(file);
-            if (mediafile.id > 0 && p > 0) {
+            if (mediafile.id > 0 ) {
+
+              int id = org::esb::hive::JobUtil::createJob(mediafile, folder.preset().get().one(), folder.outfolder);
+              //db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
               //jobcreator(fileid,p, outdir);
             }
           }
+
+          }
+        } catch (litesql::NotFound ex) {
 
         }
       }

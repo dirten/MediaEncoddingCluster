@@ -25,6 +25,8 @@ namespace org {
         static JSONNode list(db::HiveDb&, bool);
         static JSONNode get(db::HiveDb&, std::string);
         static JSONNode save(db::HiveDb&, JSONNode & root);
+        static JSONNode save_outfile(db::HiveDb&, JSONNode & root);
+        static JSONNode save_outdir(db::HiveDb&, JSONNode & root);
         static JSONNode del(db::HiveDb&, std::string);
         static JSONNode stop(db::HiveDb&, std::string);
       };

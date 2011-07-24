@@ -1177,49 +1177,49 @@ template <> litesql::DataSource<db::Stream> JobDetailStreamRelationJobInStream::
     sel.where(srcExpr);
     return DataSource<db::Stream>(db, db::Stream::Id.in(sel) && expr);
 }
-ProfileWatchfolderRelationWatchfolderProfile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
-         : watchfolder(ProfileWatchfolderRelationWatchfolderProfile::Watchfolder), profile(ProfileWatchfolderRelationWatchfolderProfile::Profile) {
+PresetWatchfolderRelationWatchfolderProfile::Row::Row(const litesql::Database& db, const litesql::Record& rec)
+         : watchfolder(PresetWatchfolderRelationWatchfolderProfile::Watchfolder), preset(PresetWatchfolderRelationWatchfolderProfile::Preset) {
     switch(rec.size()) {
     case 2:
         watchfolder = rec[1];
     case 1:
-        profile = rec[0];
+        preset = rec[0];
     }
 }
-const std::string ProfileWatchfolderRelationWatchfolderProfile::table__("_72915fab98e40e57ddd1495ecd15b95b");
-const litesql::FieldType ProfileWatchfolderRelationWatchfolderProfile::Profile("Profile1","INTEGER",table__);
-const litesql::FieldType ProfileWatchfolderRelationWatchfolderProfile::Watchfolder("Watchfolder2","INTEGER",table__);
-void ProfileWatchfolderRelationWatchfolderProfile::link(const litesql::Database& db, const db::Profile& o0, const db::Watchfolder& o1) {
+const std::string PresetWatchfolderRelationWatchfolderProfile::table__("_d1e3a283b0d5df23ce3b0c3b593c5899");
+const litesql::FieldType PresetWatchfolderRelationWatchfolderProfile::Preset("Preset1","INTEGER",table__);
+const litesql::FieldType PresetWatchfolderRelationWatchfolderProfile::Watchfolder("Watchfolder2","INTEGER",table__);
+void PresetWatchfolderRelationWatchfolderProfile::link(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1) {
     Record values;
     Split fields;
-    fields.push_back(Profile.name());
+    fields.push_back(Preset.name());
     values.push_back(o0.id);
     fields.push_back(Watchfolder.name());
     values.push_back(o1.id);
     db.insert(table__, values, fields);
 }
-void ProfileWatchfolderRelationWatchfolderProfile::unlink(const litesql::Database& db, const db::Profile& o0, const db::Watchfolder& o1) {
-    db.delete_(table__, (Profile == o0.id && Watchfolder == o1.id));
+void PresetWatchfolderRelationWatchfolderProfile::unlink(const litesql::Database& db, const db::Preset& o0, const db::Watchfolder& o1) {
+    db.delete_(table__, (Preset == o0.id && Watchfolder == o1.id));
 }
-void ProfileWatchfolderRelationWatchfolderProfile::del(const litesql::Database& db, const litesql::Expr& expr) {
+void PresetWatchfolderRelationWatchfolderProfile::del(const litesql::Database& db, const litesql::Expr& expr) {
     db.delete_(table__, expr);
 }
-litesql::DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row> ProfileWatchfolderRelationWatchfolderProfile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
+litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> PresetWatchfolderRelationWatchfolderProfile::getRows(const litesql::Database& db, const litesql::Expr& expr) {
     SelectQuery sel;
-    sel.result(Profile.fullName());
+    sel.result(Preset.fullName());
     sel.result(Watchfolder.fullName());
     sel.source(table__);
     sel.where(expr);
-    return DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row>(db, sel);
+    return DataSource<PresetWatchfolderRelationWatchfolderProfile::Row>(db, sel);
 }
-template <> litesql::DataSource<db::Profile> ProfileWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::Preset> PresetWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
-    sel.result(Profile.fullName());
+    sel.result(Preset.fullName());
     sel.where(srcExpr);
-    return DataSource<db::Profile>(db, db::Profile::Id.in(sel) && expr);
+    return DataSource<db::Preset>(db, db::Preset::Id.in(sel) && expr);
 }
-template <> litesql::DataSource<db::Watchfolder> ProfileWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+template <> litesql::DataSource<db::Watchfolder> PresetWatchfolderRelationWatchfolderProfile::get(const litesql::Database& db, const litesql::Expr& expr, const litesql::Expr& srcExpr) {
     SelectQuery sel;
     sel.source(table__);
     sel.result(Watchfolder.fullName());
@@ -2772,24 +2772,6 @@ litesql::DataSource<CodecPreset> Profile::ApresetHandle::get(const litesql::Expr
 litesql::DataSource<CodecPresetProfileRelationAudioCodecPreset2Profile::Row> Profile::ApresetHandle::getRows(const litesql::Expr& expr) {
     return CodecPresetProfileRelationAudioCodecPreset2Profile::getRows(owner->getDatabase(), expr && (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == owner->id));
 }
-Profile::WatchfolderHandle::WatchfolderHandle(const Profile& owner)
-         : litesql::RelationHandle<Profile>(owner) {
-}
-void Profile::WatchfolderHandle::link(const Watchfolder& o0) {
-    ProfileWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), *owner, o0);
-}
-void Profile::WatchfolderHandle::unlink(const Watchfolder& o0) {
-    ProfileWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), *owner, o0);
-}
-void Profile::WatchfolderHandle::del(const litesql::Expr& expr) {
-    ProfileWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && ProfileWatchfolderRelationWatchfolderProfile::Profile == owner->id);
-}
-litesql::DataSource<Watchfolder> Profile::WatchfolderHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return ProfileWatchfolderRelationWatchfolderProfile::get<Watchfolder>(owner->getDatabase(), expr, (ProfileWatchfolderRelationWatchfolderProfile::Profile == owner->id) && srcExpr);
-}
-litesql::DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row> Profile::WatchfolderHandle::getRows(const litesql::Expr& expr) {
-    return ProfileWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (ProfileWatchfolderRelationWatchfolderProfile::Profile == owner->id));
-}
 const std::string Profile::type__("Profile");
 const std::string Profile::table__("Profile_");
 const std::string Profile::sequence__("Profile_seq");
@@ -2921,9 +2903,6 @@ Profile::VpresetHandle Profile::vpreset() {
 Profile::ApresetHandle Profile::apreset() {
     return Profile::ApresetHandle(*this);
 }
-Profile::WatchfolderHandle Profile::watchfolder() {
-    return Profile::WatchfolderHandle(*this);
-}
 std::string Profile::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
     litesql::Record fields;
@@ -3053,7 +3032,6 @@ void Profile::delRelations() {
     ProfileProjectRelation::del(*db, (ProfileProjectRelation::Profile == id));
     CodecPresetProfileRelationVideoCodecPreset2Profile::del(*db, (CodecPresetProfileRelationVideoCodecPreset2Profile::Profile == id));
     CodecPresetProfileRelationAudioCodecPreset2Profile::del(*db, (CodecPresetProfileRelationAudioCodecPreset2Profile::Profile == id));
-    ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Profile == id));
 }
 void Profile::update() {
     if (!inDatabase) {
@@ -3190,6 +3168,24 @@ litesql::DataSource<Job> Preset::JobHandle::get(const litesql::Expr& expr, const
 litesql::DataSource<JobPresetRelation::Row> Preset::JobHandle::getRows(const litesql::Expr& expr) {
     return JobPresetRelation::getRows(owner->getDatabase(), expr && (JobPresetRelation::Preset == owner->id));
 }
+Preset::WatchfolderHandle::WatchfolderHandle(const Preset& owner)
+         : litesql::RelationHandle<Preset>(owner) {
+}
+void Preset::WatchfolderHandle::link(const Watchfolder& o0) {
+    PresetWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), *owner, o0);
+}
+void Preset::WatchfolderHandle::unlink(const Watchfolder& o0) {
+    PresetWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), *owner, o0);
+}
+void Preset::WatchfolderHandle::del(const litesql::Expr& expr) {
+    PresetWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id);
+}
+litesql::DataSource<Watchfolder> Preset::WatchfolderHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetWatchfolderRelationWatchfolderProfile::get<Watchfolder>(owner->getDatabase(), expr, (PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id) && srcExpr);
+}
+litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> Preset::WatchfolderHandle::getRows(const litesql::Expr& expr) {
+    return PresetWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (PresetWatchfolderRelationWatchfolderProfile::Preset == owner->id));
+}
 const std::string Preset::type__("Preset");
 const std::string Preset::table__("Preset_");
 const std::string Preset::sequence__("Preset_seq");
@@ -3248,6 +3244,9 @@ Preset::UserHandle Preset::user() {
 }
 Preset::JobHandle Preset::job() {
     return Preset::JobHandle(*this);
+}
+Preset::WatchfolderHandle Preset::watchfolder() {
+    return Preset::WatchfolderHandle(*this);
 }
 std::string Preset::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -3310,6 +3309,7 @@ void Preset::delRelations() {
     PresetProjectRelation::del(*db, (PresetProjectRelation::Preset == id));
     PresetUserRelation::del(*db, (PresetUserRelation::Preset == id));
     JobPresetRelation::del(*db, (JobPresetRelation::Preset == id));
+    PresetWatchfolderRelationWatchfolderProfile::del(*db, (PresetWatchfolderRelationWatchfolderProfile::Preset == id));
 }
 void Preset::update() {
     if (!inDatabase) {
@@ -5620,23 +5620,23 @@ std::ostream & operator<<(std::ostream& os, JobDetail o) {
     return os;
 }
 const litesql::FieldType Watchfolder::Own::Id("id_","INTEGER","Watchfolder_");
-Watchfolder::ProfileHandle::ProfileHandle(const Watchfolder& owner)
+Watchfolder::PresetHandle::PresetHandle(const Watchfolder& owner)
          : litesql::RelationHandle<Watchfolder>(owner) {
 }
-void Watchfolder::ProfileHandle::link(const Profile& o0) {
-    ProfileWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), o0, *owner);
+void Watchfolder::PresetHandle::link(const Preset& o0) {
+    PresetWatchfolderRelationWatchfolderProfile::link(owner->getDatabase(), o0, *owner);
 }
-void Watchfolder::ProfileHandle::unlink(const Profile& o0) {
-    ProfileWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), o0, *owner);
+void Watchfolder::PresetHandle::unlink(const Preset& o0) {
+    PresetWatchfolderRelationWatchfolderProfile::unlink(owner->getDatabase(), o0, *owner);
 }
-void Watchfolder::ProfileHandle::del(const litesql::Expr& expr) {
-    ProfileWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && ProfileWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id);
+void Watchfolder::PresetHandle::del(const litesql::Expr& expr) {
+    PresetWatchfolderRelationWatchfolderProfile::del(owner->getDatabase(), expr && PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id);
 }
-litesql::DataSource<Profile> Watchfolder::ProfileHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
-    return ProfileWatchfolderRelationWatchfolderProfile::get<Profile>(owner->getDatabase(), expr, (ProfileWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id) && srcExpr);
+litesql::DataSource<Preset> Watchfolder::PresetHandle::get(const litesql::Expr& expr, const litesql::Expr& srcExpr) {
+    return PresetWatchfolderRelationWatchfolderProfile::get<Preset>(owner->getDatabase(), expr, (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id) && srcExpr);
 }
-litesql::DataSource<ProfileWatchfolderRelationWatchfolderProfile::Row> Watchfolder::ProfileHandle::getRows(const litesql::Expr& expr) {
-    return ProfileWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (ProfileWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id));
+litesql::DataSource<PresetWatchfolderRelationWatchfolderProfile::Row> Watchfolder::PresetHandle::getRows(const litesql::Expr& expr) {
+    return PresetWatchfolderRelationWatchfolderProfile::getRows(owner->getDatabase(), expr && (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == owner->id));
 }
 const std::string Watchfolder::type__("Watchfolder");
 const std::string Watchfolder::table__("Watchfolder_");
@@ -5645,21 +5645,27 @@ const litesql::FieldType Watchfolder::Id("id_","INTEGER",table__);
 const litesql::FieldType Watchfolder::Type("type_","TEXT",table__);
 const litesql::FieldType Watchfolder::Infolder("infolder_","TEXT",table__);
 const litesql::FieldType Watchfolder::Outfolder("outfolder_","TEXT",table__);
+const litesql::FieldType Watchfolder::Outfiletemplate("outfiletemplate_","TEXT",table__);
 const litesql::FieldType Watchfolder::Extensionfilter("extensionfilter_","TEXT",table__);
+const litesql::FieldType Watchfolder::Interval("interval_","TEXT",table__);
 void Watchfolder::defaults() {
     id = 0;
 }
 Watchfolder::Watchfolder(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), extensionfilter(Extensionfilter) {
+     : litesql::Persistent(db), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), outfiletemplate(Outfiletemplate), extensionfilter(Extensionfilter), interval(Interval) {
     defaults();
 }
 Watchfolder::Watchfolder(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), extensionfilter(Extensionfilter) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), infolder(Infolder), outfolder(Outfolder), outfiletemplate(Outfiletemplate), extensionfilter(Extensionfilter), interval(Interval) {
     defaults();
-    size_t size = (rec.size() > 5) ? 5 : rec.size();
+    size_t size = (rec.size() > 7) ? 7 : rec.size();
     switch(size) {
-    case 5: extensionfilter = convert<const std::string&, std::string>(rec[4]);
+    case 7: interval = convert<const std::string&, std::string>(rec[6]);
+        interval.setModified(false);
+    case 6: extensionfilter = convert<const std::string&, std::string>(rec[5]);
         extensionfilter.setModified(false);
+    case 5: outfiletemplate = convert<const std::string&, std::string>(rec[4]);
+        outfiletemplate.setModified(false);
     case 4: outfolder = convert<const std::string&, std::string>(rec[3]);
         outfolder.setModified(false);
     case 3: infolder = convert<const std::string&, std::string>(rec[2]);
@@ -5671,7 +5677,7 @@ Watchfolder::Watchfolder(const litesql::Database& db, const litesql::Record& rec
     }
 }
 Watchfolder::Watchfolder(const Watchfolder& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), infolder(obj.infolder), outfolder(obj.outfolder), extensionfilter(obj.extensionfilter) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), infolder(obj.infolder), outfolder(obj.outfolder), outfiletemplate(obj.outfiletemplate), extensionfilter(obj.extensionfilter), interval(obj.interval) {
 }
 const Watchfolder& Watchfolder::operator=(const Watchfolder& obj) {
     if (this != &obj) {
@@ -5679,13 +5685,15 @@ const Watchfolder& Watchfolder::operator=(const Watchfolder& obj) {
         type = obj.type;
         infolder = obj.infolder;
         outfolder = obj.outfolder;
+        outfiletemplate = obj.outfiletemplate;
         extensionfilter = obj.extensionfilter;
+        interval = obj.interval;
     }
     litesql::Persistent::operator=(obj);
     return *this;
 }
-Watchfolder::ProfileHandle Watchfolder::profile() {
-    return Watchfolder::ProfileHandle(*this);
+Watchfolder::PresetHandle Watchfolder::preset() {
+    return Watchfolder::PresetHandle(*this);
 }
 std::string Watchfolder::insert(litesql::Record& tables, litesql::Records& fieldRecs, litesql::Records& valueRecs) {
     tables.push_back(table__);
@@ -5703,9 +5711,15 @@ std::string Watchfolder::insert(litesql::Record& tables, litesql::Records& field
     fields.push_back(outfolder.name());
     values.push_back(outfolder);
     outfolder.setModified(false);
+    fields.push_back(outfiletemplate.name());
+    values.push_back(outfiletemplate);
+    outfiletemplate.setModified(false);
     fields.push_back(extensionfilter.name());
     values.push_back(extensionfilter);
     extensionfilter.setModified(false);
+    fields.push_back(interval.name());
+    values.push_back(interval);
+    interval.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -5725,7 +5739,9 @@ void Watchfolder::addUpdates(Updates& updates) {
     updateField(updates, table__, type);
     updateField(updates, table__, infolder);
     updateField(updates, table__, outfolder);
+    updateField(updates, table__, outfiletemplate);
     updateField(updates, table__, extensionfilter);
+    updateField(updates, table__, interval);
 }
 void Watchfolder::addIDUpdates(Updates& updates) {
 }
@@ -5734,13 +5750,15 @@ void Watchfolder::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Type);
     ftypes.push_back(Infolder);
     ftypes.push_back(Outfolder);
+    ftypes.push_back(Outfiletemplate);
     ftypes.push_back(Extensionfilter);
+    ftypes.push_back(Interval);
 }
 void Watchfolder::delRecord() {
     deleteFromTable(table__, id);
 }
 void Watchfolder::delRelations() {
-    ProfileWatchfolderRelationWatchfolderProfile::del(*db, (ProfileWatchfolderRelationWatchfolderProfile::Watchfolder == id));
+    PresetWatchfolderRelationWatchfolderProfile::del(*db, (PresetWatchfolderRelationWatchfolderProfile::Watchfolder == id));
 }
 void Watchfolder::update() {
     if (!inDatabase) {
@@ -5780,7 +5798,9 @@ std::auto_ptr<Watchfolder> Watchfolder::upcastCopy() {
     np->type = type;
     np->infolder = infolder;
     np->outfolder = outfolder;
+    np->outfiletemplate = outfiletemplate;
     np->extensionfilter = extensionfilter;
+    np->interval = interval;
     np->inDatabase = inDatabase;
     return auto_ptr<Watchfolder>(np);
 }
@@ -5790,7 +5810,9 @@ std::ostream & operator<<(std::ostream& os, Watchfolder o) {
     os << o.type.name() << " = " << o.type << std::endl;
     os << o.infolder.name() << " = " << o.infolder << std::endl;
     os << o.outfolder.name() << " = " << o.outfolder << std::endl;
+    os << o.outfiletemplate.name() << " = " << o.outfiletemplate << std::endl;
     os << o.extensionfilter.name() << " = " << o.extensionfilter << std::endl;
+    os << o.interval.name() << " = " << o.interval << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6960,7 +6982,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,data_ TEXT)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
-    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,extensionfilter_ TEXT)"));
+    res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));
     res.push_back(Database::SchemaItem("ProcessUnit_","table","CREATE TABLE ProcessUnit_ (id_ " + backend->getRowIDType() + ",type_ TEXT,sorcestream_ INTEGER,targetstream_ INTEGER,timebasenum_ INTEGER,timebaseden_ INTEGER,startts_ DOUBLE,endts_ DOUBLE,framecount_ INTEGER,send_ INTEGER,recv_ INTEGER)"));
     res.push_back(Database::SchemaItem("User_","table","CREATE TABLE User_ (id_ " + backend->getRowIDType() + ",type_ TEXT,authname_ TEXT,authpass_ TEXT,company_ TEXT,firstname_ TEXT,lastname_ TEXT,street_ TEXT,city_ TEXT,zip_ TEXT,country_ TEXT,state_ TEXT,telefone_ TEXT,fax_ TEXT,email_ TEXT,www_ TEXT,language_ TEXT,licensekey_ TEXT,apikey_ TEXT,registered_ INTEGER,fileroot_ TEXT)"));
     res.push_back(Database::SchemaItem("UserGroup_","table","CREATE TABLE UserGroup_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ INTEGER,nodecount_ INTEGER)"));
@@ -6990,7 +7012,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("Job_JobDetail_JobJobDetail","table","CREATE TABLE Job_JobDetail_JobJobDetail (Job1 INTEGER,JobDetail2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobOutStream","table","CREATE TABLE JobDetail_Stream_JobOutStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
     res.push_back(Database::SchemaItem("JobDetail_Stream_JobInStream","table","CREATE TABLE JobDetail_Stream_JobInStream (JobDetail1 INTEGER,Stream2 INTEGER)"));
-    res.push_back(Database::SchemaItem("_72915fab98e40e57ddd1495ecd15b95b","table","CREATE TABLE _72915fab98e40e57ddd1495ecd15b95b (Profile1 INTEGER,Watchfolder2 INTEGER)"));
+    res.push_back(Database::SchemaItem("_d1e3a283b0d5df23ce3b0c3b593c5899","table","CREATE TABLE _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1 INTEGER,Watchfolder2 INTEGER)"));
     res.push_back(Database::SchemaItem("User_UserGroup_User2UserGroup","table","CREATE TABLE User_UserGroup_User2UserGroup (User1 INTEGER,UserGroup2 INTEGER)"));
     res.push_back(Database::SchemaItem("Job_Partition_Job2Partition","table","CREATE TABLE Job_Partition_Job2Partition (Job1 INTEGER,Partition2 INTEGER)"));
     res.push_back(Database::SchemaItem("_864f17f6c9c6e1560a3b610198ace17e","index","CREATE INDEX _864f17f6c9c6e1560a3b610198ace17e ON Filter_FilterParameter_ (Filter1)"));
@@ -7065,9 +7087,9 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("_b5fcb088a1d00510d53f08a2da9d354c","index","CREATE INDEX _b5fcb088a1d00510d53f08a2da9d354c ON JobDetail_Stream_JobInStream (JobDetail1)"));
     res.push_back(Database::SchemaItem("_3020cd32e6cb495b9b457666f03f8a53","index","CREATE INDEX _3020cd32e6cb495b9b457666f03f8a53 ON JobDetail_Stream_JobInStream (Stream2)"));
     res.push_back(Database::SchemaItem("_55609d0353fe020d7d52815110be116e","index","CREATE INDEX _55609d0353fe020d7d52815110be116e ON JobDetail_Stream_JobInStream (JobDetail1,Stream2)"));
-    res.push_back(Database::SchemaItem("_7a62c43900ab70f3c419ad87a6111c3a","index","CREATE INDEX _7a62c43900ab70f3c419ad87a6111c3a ON _72915fab98e40e57ddd1495ecd15b95b (Profile1)"));
-    res.push_back(Database::SchemaItem("_e4fc63ccedb1d89ed94759a0260215ab","index","CREATE INDEX _e4fc63ccedb1d89ed94759a0260215ab ON _72915fab98e40e57ddd1495ecd15b95b (Watchfolder2)"));
-    res.push_back(Database::SchemaItem("_cbe16244cb3e6e81e642ee01cc56214b","index","CREATE INDEX _cbe16244cb3e6e81e642ee01cc56214b ON _72915fab98e40e57ddd1495ecd15b95b (Profile1,Watchfolder2)"));
+    res.push_back(Database::SchemaItem("_23fe4d10039fd5617d46e8ab6d1a3142","index","CREATE INDEX _23fe4d10039fd5617d46e8ab6d1a3142 ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1)"));
+    res.push_back(Database::SchemaItem("_5fa6d489e97f40455a10e71fba89f9ef","index","CREATE INDEX _5fa6d489e97f40455a10e71fba89f9ef ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Watchfolder2)"));
+    res.push_back(Database::SchemaItem("_22f14859565a9c62395b62d1ad4cbac4","index","CREATE INDEX _22f14859565a9c62395b62d1ad4cbac4 ON _d1e3a283b0d5df23ce3b0c3b593c5899 (Preset1,Watchfolder2)"));
     res.push_back(Database::SchemaItem("_7d9412c26ff790b82599d91e1132a1dc","index","CREATE INDEX _7d9412c26ff790b82599d91e1132a1dc ON User_UserGroup_User2UserGroup (User1)"));
     res.push_back(Database::SchemaItem("_40cd0fdddf07c1c128bb446a7faa6e3e","index","CREATE INDEX _40cd0fdddf07c1c128bb446a7faa6e3e ON User_UserGroup_User2UserGroup (UserGroup2)"));
     res.push_back(Database::SchemaItem("_5db0c50747293a6fc42d73635c3adb01","index","CREATE INDEX _5db0c50747293a6fc42d73635c3adb01 ON User_UserGroup_User2UserGroup (User1,UserGroup2)"));

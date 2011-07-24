@@ -13,10 +13,41 @@
 #include "org/esb/signal/Message.h"
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/util/StringTokenizer.h"
+#include "org/esb/util/StringUtil.h"
+
+#include "org/esb/io/FileFilter.h"
 
 namespace org {
   namespace esb {
     namespace api {
+
+      class MyFileFilter : public org::esb::io::FileFilter {
+      public:
+
+        MyFileFilter(std::string ext) {
+          //          logdebug("extensions"<<ext);
+          org::esb::util::StringTokenizer tokenizer(ext, ",");
+          while (tokenizer.hasMoreTokens()) {
+            std::string tok = tokenizer.nextToken();
+            tok = org::esb::util::StringUtil::trim(tok);
+            if (tok.length() > 0) {
+              std::string e = ".";
+              e += tok;
+              media_ext[e];
+              //logdebug("Extension added:"<<e);
+            }
+          }
+        }
+
+        bool accept(org::esb::io::File file) {
+          bool result = false;
+          if (file.isDirectory() || media_ext.size() == 0 || media_ext.find(file.getExtension()) != media_ext.end())
+            result = true;
+          return result;
+        }
+      private:
+        map<std::string, std::string> media_ext;
+      };
 
       JsonEncodingHandler::JsonEncodingHandler() {
       }
@@ -39,15 +70,23 @@ namespace org {
 
       std::string JsonEncodingHandler::checkJsonProfile(JSONNode&root) {
         std::string result;
-        /*check the root conatins required data*/
-        if (!contains(root, "infile")) {
-          result = "no infile attribute given!";
-        } else
+        /*check the root contains required data*/
+        if (contains(root, "infile")) {
           if (!contains(root, "profileid")) {
-          result = "no profileid attribute found!";
-        } else
-          if (!contains(root, "outfile")) {
-          result = "no outfile attribute found!";
+            result = "no profileid attribute found!";
+          } else if (!contains(root, "outfile")) {
+            result = "no outfile attribute found!";
+          }
+        } else if (contains(root, "indir")) {
+          if (!contains(root, "profileid")) {
+            result = "no profileid attribute found!";
+          } else if (!contains(root, "outdir")) {
+            result = "no outfile attribute found!";
+          } else if (!contains(root, "outfilepattern")) {
+            result = "no outfilepattern attribute found!";
+          }
+        } else {
+          result = "no infile or indir attribute given!";
         }
         return result;
       }
@@ -62,7 +101,7 @@ namespace org {
         memset(&deldata, 0, 100);
         bool delflag = false;
         bool stopflag = false;
-        bool fullflag=false;
+        bool fullflag = false;
         if (request_info->query_string != NULL) {
           mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));
           org::esb::util::StringTokenizer st(request_info->query_string, "&");
@@ -99,7 +138,7 @@ namespace org {
           }
         } else
           if (method == "POST" || method == "PUT") {
-        JSONNode n(JSON_NODE);
+          JSONNode n(JSON_NODE);
           /*reading the post data that comes in*/
           /*
           
@@ -191,24 +230,95 @@ namespace org {
       }
 
       JSONNode JsonEncodingHandler::save(db::HiveDb&db, JSONNode & root) {
+        if (contains(root, "outfile")) {
+          return save_outfile(db, root);
+        } else if (contains(root, "outdir")) {
+          return save_outdir(db, root);
+        }
+      }
+
+      JSONNode JsonEncodingHandler::save_outdir(db::HiveDb&db, JSONNode & root) {
         JSONNode n(JSON_NODE);
+        org::esb::io::File indir(root["indir"].as_string());
+        org::esb::io::File outdir(root["outdir"].as_string());
+        if (!indir.exists() || !indir.isDirectory()) {
+          JSONNode error(JSON_NODE);
+          error.set_name("error");
+          error.push_back(JSONNode("code", "indir_not_readable"));
+          error.push_back(JSONNode("description", std::string("does not exist or is not a directory ").append(root["indir"].as_string()).append(" for use to create encoding tasks!")));
+          n.push_back(error);
+          return n;
+        }
+        if (!outdir.exists() || !outdir.isDirectory()) {
+          JSONNode error(JSON_NODE);
+          error.set_name("error");
+          error.push_back(JSONNode("code", "outdir_not_writeable"));
+          error.push_back(JSONNode("description", std::string("could not write to output directory ").append(root["outdir"].as_string()).append(" for use to create encoding tasks!")));
+          n.push_back(error);
+          return n;
+        }
+
         litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
         if (s.count() == 1) {
           db::Preset preset = s.one();
           org::esb::hive::FileImporter importer;
-          db::MediaFile infile = importer.import(org::esb::io::File(root["infile"].as_string()));
-          if (infile.id > 0) {
-            int id = org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
-            db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
-
-            n.push_back(JSONNode("id", pre.uuid.value()));
-          } else {
-            JSONNode error(JSON_NODE);
-            error.set_name("error");
-            error.push_back(JSONNode("code", "infile_not_found"));
-            error.push_back(JSONNode("description", std::string("could not open input file with id ").append(root["infile"].as_string()).append(" for use to create encoding task!")));
-            n.push_back(error);
+          std::string filter;
+          if (contains(root, "filter")) {
+            filter = root["filter"].as_string();
           }
+          std::string prio;
+          if (contains(root, "priority")) {
+            prio = root["priority"].as_string();
+          }
+          MyFileFilter ffilter = MyFileFilter(filter);
+          org::esb::io::FileList list = org::esb::io::File(root["indir"].as_string()).listFiles(ffilter);
+          org::esb::io::FileList::iterator it = list.begin();
+          JSONNode ids(JSON_ARRAY);
+          ids.set_name("data");
+          JSONNode errors(JSON_ARRAY);
+          errors.set_name("errors");
+          for (; it != list.end(); it++) {
+            org::esb::io::File ifile = org::esb::io::File((*it)->getPath());
+            std::string outfile = root["outdir"].as_string();
+            outfile += "/" + root["outfilepattern"].as_string();
+            std::string ifilename = ifile.getFileName();
+            ifilename = org::esb::util::StringUtil::replace(ifilename, ifile.getExtension(), "");
+            std::string ext = org::esb::util::StringUtil::replace(ifile.getExtension(), ".", "");
+
+            /*replace the markers in the file pattern*/
+            outfile = org::esb::util::StringUtil::replace(outfile, "$filename", ifilename);
+            outfile = org::esb::util::StringUtil::replace(outfile, "$extension", ext);
+            outfile = org::esb::util::StringUtil::replace(outfile, "$profilename", preset.name);
+            outfile = org::esb::util::StringUtil::replace(outfile, "$profileid", preset.uuid);
+            /*replace some special chars in the filenames*/
+            //outfile = org::esb::util::StringUtil::replace(outfile, ".", "_");
+            outfile = org::esb::util::StringUtil::replace(outfile, " ", "_");
+            
+
+            if(org::esb::io::File(outfile).canWrite()){
+              db::MediaFile infile = importer.import(ifile);
+              if (infile.id > 0) {
+                int id = org::esb::hive::JobUtil::createJob(infile, preset, outfile);
+                db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
+                ids.push_back(JSONNode("id", pre.uuid.value()));
+              } else {
+                JSONNode error(JSON_NODE);
+                error.set_name("error");
+                error.push_back(JSONNode("code", "infile_not_found"));
+                error.push_back(JSONNode("description", std::string("could not open input file with id ").append(root["infile"].as_string()).append(" for use to create encoding task!")));
+                errors.push_back(error);
+              }
+            }else{
+                JSONNode error(JSON_NODE);
+                error.set_name("error");
+                error.push_back(JSONNode("code", "outfile_not_writable"));
+                error.push_back(JSONNode("description", std::string("could not write output file ").append(outfile).append(" for use to create encoding task!")));
+                errors.push_back(error);
+            }
+          }
+          if(errors.size()>0)
+            n.push_back(errors);
+          n.push_back(ids);
         } else {
           JSONNode error(JSON_NODE);
           error.set_name("error");
@@ -216,7 +326,44 @@ namespace org {
           error.push_back(JSONNode("description", std::string("could not find profile with id ").append(root["profileid"].as_string()).append(" for use to create encoding task!")));
           n.push_back(error);
         }
+        return n;
+      }
 
+      JSONNode JsonEncodingHandler::save_outfile(db::HiveDb&db, JSONNode & root) {
+        JSONNode n(JSON_NODE);
+        org::esb::io::File outfile(root["outfile"].as_string());
+        if (!outfile.canWrite()) {
+          JSONNode error(JSON_NODE);
+          error.set_name("error");
+          error.push_back(JSONNode("code", "outfile_not_writable"));
+          error.push_back(JSONNode("description", std::string("could not write output file ").append(root["outfile"].as_string()).append(" for use to create encoding task!")));
+          n.push_back(error);
+        } else {
+          litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
+          if (s.count() == 1) {
+            db::Preset preset = s.one();
+            org::esb::hive::FileImporter importer;
+            db::MediaFile infile = importer.import(org::esb::io::File(root["infile"].as_string()));
+            if (infile.id > 0) {
+              int id = org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+              db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
+
+              n.push_back(JSONNode("id", pre.uuid.value()));
+            } else {
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "infile_not_found"));
+              error.push_back(JSONNode("description", std::string("could not open input file with id ").append(root["infile"].as_string()).append(" for use to create encoding task!")));
+              n.push_back(error);
+            }
+          } else {
+            JSONNode error(JSON_NODE);
+            error.set_name("error");
+            error.push_back(JSONNode("code", "profile_not_found"));
+            error.push_back(JSONNode("description", std::string("could not find profile with id ").append(root["profileid"].as_string()).append(" for use to create encoding task!")));
+            n.push_back(error);
+          }
+        }
         return n;
       }
 
