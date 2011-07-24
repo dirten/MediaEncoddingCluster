@@ -1,3 +1,5 @@
+
+@import "ProgressTableDataView.j"
 EncodingDoubleClicked = @"EncodingDoubleClicked";
 EncodingClicked = @"EncodingClicked";
 @implementation EncodingView :CPScrollView
@@ -36,19 +38,21 @@ EncodingClicked = @"EncodingClicked";
     [column setWidth:120];
     [tableView addTableColumn:column];
 
-column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 4]];
+    column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 4]];
     [[column headerView] setStringValue:"Duration"];
     [[column headerView] sizeToFit];
     [column setWidth:120];
     [tableView addTableColumn:column];
 
+    var progressDataView=[ProgressTableDataView new];
     column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 5]];
     [[column headerView] setStringValue:"Progress"];
     [[column headerView] sizeToFit];
+    [column setDataView:progressDataView];
     [column setWidth:120];
     [tableView addTableColumn:column];
 
-column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 6]];
+    column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"%d", 6]];
     [[column headerView] setStringValue:"Status"];
     [[column headerView] sizeToFit];
     [column setWidth:120];
@@ -75,9 +79,9 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
   }
   -(void)setHidden:(BOOL)flag{
 
-  [super setHidden:flag];
+    [super setHidden:flag];
 
-}
+  }
   - (int)numberOfRowsInTableView:(CPTableView)tabView
   {
     var result=0;
@@ -112,39 +116,39 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
       if(jsonData.data[row].begintime>1){
         return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime ];
       }else{
-        return ""
-      }
-      //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
-    }else
-    if([tableColumn identifier]==3){
-      if(jsonData.data[row].endtime>1){
-        return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime ];
-      }else{
-        return "";
-      }
-      //return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
-      //return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime]];
-    }else
-    if([tableColumn identifier]==4){
-      if(jsonData.data[row].endtime.length>1){
-        return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
-      }else{
-        return "";
-      }
-    }else
-    if([tableColumn identifier]==5){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];
-    }else
-    if([tableColumn identifier]==6){
-      return [CPString stringWithFormat:@"%s", jsonData.data[row].status ];
+      return ""
     }
+    //return [CPString stringWithFormat:@"%s", jsonData.data[row].begintime ];
+  }else
+  if([tableColumn identifier]==3){
+    if(jsonData.data[row].endtime>1){
+      return [CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime ];
+    }else{
+    return "";
   }
+  //return [CPString stringWithFormat:@"%s", jsonData.data[row].endtime ];
+  //return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime]];
+}else
+if([tableColumn identifier]==4){
+  if(jsonData.data[row].endtime.length>1){
+    return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
+  }else{
+  return "";
+}
+}else
+if([tableColumn identifier]==5){
+  return [CPString stringWithFormat:@"%s", jsonData.data[row].progress ];
+}else
+if([tableColumn identifier]==6){
+  return [CPString stringWithFormat:@"%s", jsonData.data[row].status ];
+}
+}
 }
 - (void)tableView:(CPTableView)aTableView sortDescriptorsDidChange:(CPArray)oldDescriptors
 {
-    var newDescriptors = [aTableView sortDescriptors];
+  var newDescriptors = [aTableView sortDescriptors];
 
-    [aTableView reloadData];
+  [aTableView reloadData];
 
 
 }
@@ -172,28 +176,28 @@ column = [[CPTableColumn alloc] initWithIdentifier:[CPString stringWithFormat:@"
   alert(error); //a network error occurred
 }
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification{
-    CPLog.debug("hello:"+jsonData.data[[[aNotification object] selectedRow]].id);
-    selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
-    [[CPNotificationCenter defaultCenter]
+  CPLog.debug("hello:"+jsonData.data[[[aNotification object] selectedRow]].id);
+  selectedid=jsonData.data[[[aNotification object] selectedRow]].id;
+  [[CPNotificationCenter defaultCenter]
     postNotificationName:EncodingClicked
     object:self
     userInfo:selectedid];
 }
 
 - (void) doubleClicked{
-    CPLog.debug("double clicked"+selectedid);
-    [[CPNotificationCenter defaultCenter]
+  CPLog.debug("double clicked"+selectedid);
+  [[CPNotificationCenter defaultCenter]
     postNotificationName:EncodingDoubleClicked
     object:self
     userInfo:selectedid];
 }
 }
 - (void)refresh{
-    var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
-    [request setHTTPMethod:"GET"];
-    //CPLog.debug(request.HTTPMethod);
-    // see important note about CPJSONPConnection above
-    var connection = [CPURLConnection connectionWithRequest:request delegate:self];
+  var request = [CPURLRequest requestWithURL:"/api/v1/encoding?full"];
+  [request setHTTPMethod:"GET"];
+  //CPLog.debug(request.HTTPMethod);
+  // see important note about CPJSONPConnection above
+  var connection = [CPURLConnection connectionWithRequest:request delegate:self];
 }
 
 @end
