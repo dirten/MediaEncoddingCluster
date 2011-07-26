@@ -34,15 +34,7 @@ namespace org {
           return std::wstring(t.begin(), t.end());
         }
 
-        static std::string replace(std::string s, const std::string& needle,const std::string& replace) {
-          unsigned int position = s.find(needle); 
-          while (position != std::string::npos) {
-            s.erase(position, needle.length());
-            s.insert(position, replace);
-            position = s.find(needle, position + 1);
-          }
-          return s;
-        }
+        static std::string replace(std::string s, const std::string& needle,const std::string& replace);
       };
 
     }

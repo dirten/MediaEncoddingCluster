@@ -1,10 +1,20 @@
-/* 
- * File:   ApiWebServer.cpp
- * Author: HoelscJ
- * 
- * Created on 12. Juli 2011, 11:29
+/*----------------------------------------------------------------------
+ *  File    : ApiWebServer.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 12. Juli 2011 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2011   Jan Hölscher
+ *
+ * This program License under the terms in the LICENSE file
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * ----------------------------------------------------------------------
  */
-
 #include "ApiWebServer.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"

@@ -530,6 +530,7 @@ namespace org {
             if (unit->getOutputPacketList().size() > 0) {
               if (audioQueue.size() == 0 && puQueue.size() == 0) {
                 current_job->progress = 100;
+                current_job->fps=0;
               } else {
                 if (stream_type == AVMEDIA_TYPE_VIDEO) {
                   LOGDEBUG("Calculating Progress!");

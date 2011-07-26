@@ -1,8 +1,19 @@
-/* 
- * File:   JsonEncoding.cpp
- * Author: HoelscJ
- * 
- * Created on 18. Mai 2011, 14:46
+/*----------------------------------------------------------------------
+ *  File:   : JsonEncoding.cpp
+ *  Author  : Jan Hölscher <jan.hoelscher@esblab.com>
+ *  Purpose :
+ *  Created : 18. Mai 2011 by Jan Hölscher <jan.hoelscher@esblab.com>
+ *
+ *
+ * MediaEncodingCluster, Copyright (C) 2001-2009   Jan Hölscher
+ *
+ * This program License under the terms in the LICENSE file
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * ----------------------------------------------------------------------
  */
 
 #include "JsonEncoding.h"
