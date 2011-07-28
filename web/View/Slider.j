@@ -21,6 +21,8 @@
     //_label=[CPTextField roundedTextFieldWithStringValue:@"0" placeholder:@"" width:4];
     //[_label setFrameOrigin:CGPointMake(CGRectGetWidth([self bounds])-40,0)];
 
+    [_slider setTarget:self];
+    [_slider setAction:@selector(sliderChanged:)];
 
     [self addSubview:_slider];
     [self addSubview:_label];
@@ -29,12 +31,10 @@
   -(void)setTarget:(id)target
   {
     _target=target;
-    [_slider setTarget:self];
   }
   - (void)setAction:(SEL)selector
   {
     _selector=selector
-    [_slider setAction:@selector(sliderChanged:)];
   }
   - (void)setObjectValue:(id)aValue
   {
@@ -52,19 +52,21 @@
   -(void)controlTextDidChange:(CPNotification)aNotification
 {
   [_slider setObjectValue:[[aNotification object] objectValue]];
-  [self sendAction:_selector to:_target];
+  if(_selector&&_target)
+    [self sendAction:_selector to:_target];
 }
 
   -(void)setValue:(id)value
   {
     CPLog.debug("setting sliderBox Value to "+value);
-    [_slider setObjectValue:value];
-     [_label setObjectValue:parseInt(value)];
+    [_slider setObjectValue:parseInt(value)];
+    [_label setObjectValue:parseInt(value)];
   }
   -(void)sliderChanged:(id)sender
 {
   [_label setObjectValue:parseInt([sender objectValue])];
-  [self sendAction:_selector to:_target];
+  if(_selector&&_target)
+    [self sendAction:_selector to:_target];
 }
 
   - (void)sendAction:(SEL)anAction to:(id)anObject

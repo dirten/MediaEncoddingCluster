@@ -58,8 +58,8 @@
     var masterView = [notification object];
     var view = [views objectForKey:[masterView class]];
 
-    [currentView setHidden:YES];
     if (view){
+    [currentView setHidden:YES];
       [view setHidden:NO];
       currentView = view;
       var url=[masterView class]=="EncodingView"?"encoding":"profile";

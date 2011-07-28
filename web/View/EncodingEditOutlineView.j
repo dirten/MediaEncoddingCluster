@@ -1,4 +1,4 @@
-@implementation MyNavigator :CPOutlineView
+@implementation EncodingEditOutlineView :CPOutlineView
 {
     var items;
 }
@@ -8,16 +8,16 @@
     CPLog.debug("Nvaigator init");
     //items = [CPDictionary dictionaryWithObjects:[[@"glossary 2"], [@"proj 1", @"proj 2", @"proj 3"]] forKeys:[@"Glossaries", @"Projects"]];
     //items = [CPDictionary dictionaryWithObjects:[[@"Configuration",@"Nodes"],[], []] forKeys:[@"System",@"Profiles", @"Encodings"]];
-    items = [CPDictionary dictionaryWithObjects:[[], []] forKeys:[@"Profiles", @"Encodings"]];
+    items = [CPDictionary dictionaryWithObjects:[[], []] forKeys:[@"Local Directory", @"Local File"]];
     var textColumn = [[CPTableColumn alloc] initWithIdentifier:@"TextColumn2"];
-    [textColumn setWidth:190.0];
+    [textColumn setWidth:150.0];
     [textColumn setEditable:YES];
     //[[textColumn headerView] setStringValue:"Main Menu"];
     [self addTableColumn:textColumn];
     [self setOutlineTableColumn:textColumn];
     [self setBackgroundColor:[CPColor colorWithRed:221.0/255.0 green:228.0/255.0 blue:235.0/255.0 alpha:1.0]];
     //[self setBackgroundColor:[CPColor colorWithRed:46.0/255.0 green:46.0/255.0 blue:50.0/255.0 alpha:1.0]];
-    [self setAllowsEmptySelection:NO];
+
     [self setDataSource:self];
     [self setDelegate:self];
     //[self setTarget:self];

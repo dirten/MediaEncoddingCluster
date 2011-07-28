@@ -1,3 +1,4 @@
+@import "EncodingEditOutlineView.j"
 
 EncodingChanged=@"EncodingChanged";
 EncodingCreated=@"EncodingCreated";
@@ -23,13 +24,13 @@ EncodingCanceled=@"EncodingCanceled";
 }
 
 -(id)init{
-  self=[super initWithContentRect:CGRectMake(280,50,600,155) styleMask:CPClosableWindowMask|CPResizableWindowMask];
+  self=[super initWithContentRect:CGRectMake(280,50,700,155) styleMask:CPClosableWindowMask|CPResizableWindowMask];
 
   [self orderFront:self];
   [self setTitle:"Encoding Editor"];
   var contentView=[self contentView];
 
-  _form=[[FormBuilder alloc] initWithFrame:CGRectMake(10, 20, CGRectGetWidth([contentView bounds]) , CGRectGetHeight([contentView bounds])+15)];
+  _form=[[FormBuilder alloc] initWithFrame:CGRectMake(20, 20, CGRectGetWidth([contentView bounds]) , CGRectGetHeight([contentView bounds])+15)];
   [_form init];
   optionProfiles={"id":"profileid", "type":"string","title":"Profile","group":"picture_settings","unit":"",
     "control":{
@@ -61,6 +62,22 @@ EncodingCanceled=@"EncodingCanceled";
   inField=[_form buildTextBox:optionInput];
   
   [_form buildTextBox:optionOutput];
+
+    //var listScrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0,0,210,CGRectGetHeight([contentView bounds]))];
+    //navi=[[[EncodingEditOutlineView alloc] initWithFrame:[[listScrollView contentView] bounds]] init];
+
+    //[listScrollView setAutohidesScrollers:YES];
+    //[listScrollView setDocumentView:navi];
+
+    //splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
+    //splitview=[[CPSplitView alloc] initWithFrame:bounds];
+    //[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
+    //[splitview setIsPaneSplitter:YES];
+
+  //[contentView addSubview:splitview];
+  //[splitview addSubview:listScrollView];
+  //[splitview addSubview:_form];
+  //[contentView addSubview:listScrollView];
   [contentView addSubview:_form];
 
 

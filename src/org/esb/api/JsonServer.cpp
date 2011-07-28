@@ -11,6 +11,7 @@
 #include <string.h>
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
+#include "org/esb/io/FileOutputStream.h"
 #include "org/esb/hive/PresetReader.h"
 #include "org/esb/av/AV.h"
 #include "boost/uuid/uuid_generators.hpp"
@@ -128,7 +129,7 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
       void * JsonServer::event_handler(enum mg_event event,
               struct mg_connection *conn,
               const struct mg_request_info *request_info) {
-        boost::mutex::scoped_lock scoped_lock(http_mutex);
+        //boost::mutex::scoped_lock scoped_lock(http_mutex);
         if (mg_modify_passwords_file("test.file", "localhost", "ich", "nich")) {
           //LOGDEBUG("entry created");
         }
@@ -137,8 +138,8 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
         LOGDEBUG("Method=" << request_info->request_method);
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for (int a = 0; a < request_info->num_headers; a++) {
-          //LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
-          // LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
+          LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+           LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
             string str("test:jan");
@@ -151,6 +152,7 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             LOGDEBUG("Decoded:"<<dec);
           }*/
         }
+        //return processed;
         if (event == MG_NEW_REQUEST) {
           static const char *reply_start =
                   "HTTP/1.1 200 OK\r\n"
@@ -162,17 +164,22 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
 
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
-
+	  org::esb::io::File tmpFile("/tmp/test.avi");
+	  org::esb::io::FileOutputStream fos(&tmpFile);
           std::string postdata;
           if (strcmp(request_info->request_method, "POST") == 0) {
             /*reading the post data that comes in*/
-            int bytes = 0, max = 150000;
-            char buffer[1000];
-            while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0 && max > 0) {
+            int bytes = 0, max = 1500, recv=0;
+            char buffer[100000];
+            while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0 ) {
               postdata = postdata.append(buffer, bytes);
+              fos.write(buffer, bytes);
               max -= bytes;
+              recv+=bytes;
+              LOGDEBUG("Recv:" << recv);
             }
           }
+        //  return processed;
           LOGDEBUG("PostData:" << postdata);
           std::string request = request_info->uri;
 
@@ -284,8 +291,19 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             //req.update();
 
           }else{
+
             //mg_printf(conn, "%s", request_info->uri);
-            processed = NULL;
+            if (strcmp(request_info->request_method, "GET") == 0) {
+        	processed = NULL;
+            }else{
+              JSONNode n(JSON_NODE);
+              n.push_back(JSONNode("requestId", requestId));
+              n.push_back(JSONNode("error", "unknown_post_request"));
+              std::string json_s = n.write_formatted();
+              mg_write(conn, json_s.c_str(), json_s.length());
+            }
+
+            //processed = NULL;
           }
           //LOGDEBUG("commit to db");
           //_db.commit();

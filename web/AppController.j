@@ -24,6 +24,7 @@
 var SliderToolbarItemIdentifier = "SliderToolbarItemIdentifier",
 AddToolbarItemIdentifier = "AddToolbarItemIdentifier",
 RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
+LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 
 
 @implementation AppController : CPObject
@@ -42,6 +43,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
         [toolBar setDelegate:self];
         [toolBar setVisible:true];
+        //[toolBar setFrameOrigin:CGPointMake(0.0,0.0)];
         [theWindow setToolbar:toolBar];
         
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
@@ -325,7 +327,7 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
     - (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
     {
-        return [AddToolbarItemIdentifier, RemoveToolbarItemIdentifier, CPToolbarFlexibleSpaceItemIdentifier, SliderToolbarItemIdentifier];
+        return [LogoToolbarItemIdentifier,CPToolbarFlexibleSpaceItemIdentifier, SliderToolbarItemIdentifier];
     }
 
     //this delegate method returns the actual toolbar item for the given identifier
@@ -374,6 +376,27 @@ RemoveToolbarItemIdentifier = "RemoveToolbarItemIdentifier";
 
                     [toolbarItem setMinSize:CGSizeMake(32, 32)];
                     [toolbarItem setMaxSize:CGSizeMake(32, 32)];
+                }
+        	else if (anItemIdentifier == LogoToolbarItemIdentifier)
+                {
+                    var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"logo.jpg"] size:CPSizeMake(100, 50)];
+		    //var imageview = [[CPImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 60)];
+		    //[imageview setImage:image];
+                    //[toolbarItem setFrameOrigin:CGPointMake(0.0,0.0)];
+
+                    //	highlighted = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"removeHighlighted.png"] size:CPSizeMake(30, 25)];
+            	    //var image = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"add.png"] size:CPSizeMake(30, 25)],
+                    //highlighted = [[CPImage alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"addHighlighted.png"] size:CPSizeMake(30, 25)];
+
+                    [toolbarItem setImage:image];
+                    //[toolbarItem setAlternateImage:highlighted];
+
+                    //[toolbarItem setTarget:self];
+                    //[toolbarItem setAction:@selector(remove:)];
+                    //[toolbarItem setLabel:"Add Encoding"];
+
+                    //[toolbarItem setMinSize:CGSizeMake(32, 32)];
+                    //[toolbarItem setMaxSize:CGSizeMake(32, 32)];
                 }
 
                 return toolbarItem;

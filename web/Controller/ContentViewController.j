@@ -52,8 +52,8 @@
     item=[item substringToIndex:[item length]-1];
     var view = [views objectForKey:item  + "View"];
     
-    [currentView setHidden:YES];
     if (view)
+    [currentView setHidden:YES];
       {
         [view setHidden:NO];
         [view refresh];

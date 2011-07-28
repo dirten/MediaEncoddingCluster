@@ -89,6 +89,8 @@
       /*removing all elements from this view*/
       //[self setSubviews:[CPArray array]];
     }
+        [self setNeedsDisplay:YES];
+
   }
   -(void)buildInfoBox:(id)data
   {

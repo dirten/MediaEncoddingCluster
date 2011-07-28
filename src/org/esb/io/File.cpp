@@ -169,11 +169,13 @@ bool File::canRead() {
 
 bool File::canWrite() {
   bool result = false;
-  FILE* fh = fopen(getPath().c_str(), "a");
-  if (fh) {
-    result = true;
-    fclose(fh);
-    deleteFile();
+  if(!exists()){
+    FILE* fh = fopen(getPath().c_str(), "a");
+    if (fh) {
+      result = true;
+      fclose(fh);
+      deleteFile();
+    }
   }
   return result;
 }

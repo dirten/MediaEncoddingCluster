@@ -57,20 +57,22 @@ ProfileChanged=@"ProfileChanged";
   [tabViewItem2 setLabel:@"Format"];
   formatView = [[FormatView alloc] initWithFrame:[tabView bounds]] ;
   [formatView init];
-  var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
-  [listScrollView setDocumentView:formatView];
-  [listScrollView setHasHorizontalScroller:NO];
-  [tabViewItem2 setView:listScrollView ];
+  //var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
+  //[listScrollView setDocumentView:formatView];
+  //[listScrollView setHasHorizontalScroller:NO];
+  [tabViewItem2 setView:formatView ];
   [tabView addTabViewItem:tabViewItem2];
 
   var tabViewItem3 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem3"];
   [tabViewItem3 setLabel:@"Video"];
+  //videoView = [[VideoView alloc] initWithFrame:[contentView bounds]] ;
   videoView = [[VideoView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([tabView bounds]) , CGRectGetHeight([tabView bounds])+1000)] ;
   [videoView init];
   var listScrollView = [[CPScrollView alloc] initWithFrame:[tabView bounds]];
   [listScrollView setDocumentView:videoView];
   [listScrollView setHasHorizontalScroller:NO];
   [tabViewItem3 setView:listScrollView];
+  //[tabViewItem3 setView:videoView];
   [tabView addTabViewItem:tabViewItem3];
 
   var tabViewItem4 = [[CPTabViewItem alloc] initWithIdentifier:@"tabViewItem4"];
