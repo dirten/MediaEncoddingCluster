@@ -49,7 +49,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
         splitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
 	[splitview setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
-        //[splitview setIsPaneSplitter:YES];
+        [splitview setIsPaneSplitter:YES];
 
         dsplitview = [[CPSplitView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([contentView bounds]), CGRectGetHeight([contentView bounds]))];
         //splitview=[[CPSplitView alloc] initWithFrame:bounds];
@@ -63,7 +63,7 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 	//[rightView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable ];
 
         var listScrollView = [[CPScrollView alloc] initWithFrame:CGRectMake(0,0,200,CGRectGetHeight(bounds)-58)];
-        navi=[[[MyNavigator alloc] initWithFrame:[[listScrollView contentView] bounds]] init];
+        navi=[[MyNavigator alloc] initWithFrame:[[listScrollView contentView] bounds]];
 
         [listScrollView setAutohidesScrollers:YES];
         //[listScrollView setAutoresizingMask:CPViewHeightSizable];
@@ -131,6 +131,8 @@ LogoToolbarItemIdentifier = "LogoToolbarItemIdentifier";
 	[splitview addSubview:dsplitview];
 
         [contentView addSubview:splitview];
+	[navi init];
+	
         [theWindow orderFront:self];
 	return;
 	

@@ -20,6 +20,13 @@
     [self setAllowsEmptySelection:NO];
     [self setDataSource:self];
     [self setDelegate:self];
+    [self selectRowIndexes:[CPIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
+  [[CPNotificationCenter defaultCenter]
+    postNotificationName:CPOutlineViewSelectionDidChangeNotification
+    object:self
+    userInfo:nil];
+    
+  //[self tableViewSelectionDidChange:nil];
     //[self setTarget:self];
     return self;
 }

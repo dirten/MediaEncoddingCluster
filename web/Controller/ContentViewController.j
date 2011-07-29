@@ -45,7 +45,7 @@
 
   - (void)outlineViewSelectionDidChange:(CPNotification)notification
   {
-
+    CPLog.debug("CPOutline view notification")
     var outlineView = [notification object];
     var selectedRow = [[outlineView selectedRowIndexes] firstIndex];
     var item = [outlineView itemAtRow:selectedRow];
