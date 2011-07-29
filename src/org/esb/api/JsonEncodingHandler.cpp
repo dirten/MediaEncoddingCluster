@@ -378,7 +378,7 @@ namespace org {
               JSONNode error(JSON_NODE);
               error.set_name("error");
               error.push_back(JSONNode("code", "is_running"));
-              error.push_back(JSONNode("description", "encoding to stop, is currently running, please stop the encoding job before delete it!"));
+              error.push_back(JSONNode("description", "encoding to delete is currently running, please stop the encoding job before delete it!"));
               n.push_back(error);
             } else {
               //job.del();
