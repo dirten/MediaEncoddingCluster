@@ -39,8 +39,8 @@
 
     CGContextSetFillColor(context, color);
     CGContextFillPath(context);
-    var l=base_value>0?"%":"";
-    var label=[CPTextField labelWithTitle:base_value+l];
+    var l=base_value>0?base_value+"%":"";
+    var label=[CPTextField labelWithTitle:l];
     [label setFrameOrigin:CGPointMake(10.5,2.5)];
     [label setTextColor:[CPColor darkGrayColor]];
 

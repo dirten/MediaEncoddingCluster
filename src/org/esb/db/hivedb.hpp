@@ -1703,6 +1703,8 @@ public:
     litesql::Field<int> fps;
     static const litesql::FieldType Data;
     litesql::Field<std::string> data;
+    static const litesql::FieldType Deleted;
+    litesql::Field<int> deleted;
 protected:
     void defaults();
 public:

@@ -425,7 +425,7 @@ namespace org {
           u->_process_unit = dbunit.id;
 
           /*this is only for debugging*/
-          if (true) {
+          if (false) {
             std::string name = org::esb::config::Config::getProperty("hive.base_path");
             name += "/tmp/";
             name += org::esb::util::StringUtil::toString(u->_process_unit % 10);

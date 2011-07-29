@@ -4979,6 +4979,7 @@ const litesql::FieldType Job::Duration("duration_","DOUBLE",table__);
 const litesql::FieldType Job::Progress("progress_","INTEGER",table__);
 const litesql::FieldType Job::Fps("fps_","INTEGER",table__);
 const litesql::FieldType Job::Data("data_","TEXT",table__);
+const litesql::FieldType Job::Deleted("deleted_","INTEGER",table__);
 void Job::defaults() {
     id = 0;
     created = -1;
@@ -4988,16 +4989,19 @@ void Job::defaults() {
     duration = 0.0;
     progress = 0;
     fps = 0;
+    deleted = 0;
 }
 Job::Job(const litesql::Database& db)
-     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), fps(Fps), data(Data) {
+     : litesql::Persistent(db), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), fps(Fps), data(Data), deleted(Deleted) {
     defaults();
 }
 Job::Job(const litesql::Database& db, const litesql::Record& rec)
-     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), fps(Fps), data(Data) {
+     : litesql::Persistent(db, rec), id(Id), type(Type), uuid(Uuid), created(Created), begintime(Begintime), endtime(Endtime), status(Status), infile(Infile), outfile(Outfile), starttime(Starttime), duration(Duration), progress(Progress), fps(Fps), data(Data), deleted(Deleted) {
     defaults();
-    size_t size = (rec.size() > 14) ? 14 : rec.size();
+    size_t size = (rec.size() > 15) ? 15 : rec.size();
     switch(size) {
+    case 15: deleted = convert<const std::string&, int>(rec[14]);
+        deleted.setModified(false);
     case 14: data = convert<const std::string&, std::string>(rec[13]);
         data.setModified(false);
     case 13: fps = convert<const std::string&, int>(rec[12]);
@@ -5029,7 +5033,7 @@ Job::Job(const litesql::Database& db, const litesql::Record& rec)
     }
 }
 Job::Job(const Job& obj)
-     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), infile(obj.infile), outfile(obj.outfile), starttime(obj.starttime), duration(obj.duration), progress(obj.progress), fps(obj.fps), data(obj.data) {
+     : litesql::Persistent(obj), id(obj.id), type(obj.type), uuid(obj.uuid), created(obj.created), begintime(obj.begintime), endtime(obj.endtime), status(obj.status), infile(obj.infile), outfile(obj.outfile), starttime(obj.starttime), duration(obj.duration), progress(obj.progress), fps(obj.fps), data(obj.data), deleted(obj.deleted) {
 }
 const Job& Job::operator=(const Job& obj) {
     if (this != &obj) {
@@ -5047,6 +5051,7 @@ const Job& Job::operator=(const Job& obj) {
         progress = obj.progress;
         fps = obj.fps;
         data = obj.data;
+        deleted = obj.deleted;
     }
     litesql::Persistent::operator=(obj);
     return *this;
@@ -5115,6 +5120,9 @@ std::string Job::insert(litesql::Record& tables, litesql::Records& fieldRecs, li
     fields.push_back(data.name());
     values.push_back(data);
     data.setModified(false);
+    fields.push_back(deleted.name());
+    values.push_back(deleted);
+    deleted.setModified(false);
     fieldRecs.push_back(fields);
     valueRecs.push_back(values);
     return litesql::Persistent::insert(tables, fieldRecs, valueRecs, sequence__);
@@ -5144,6 +5152,7 @@ void Job::addUpdates(Updates& updates) {
     updateField(updates, table__, progress);
     updateField(updates, table__, fps);
     updateField(updates, table__, data);
+    updateField(updates, table__, deleted);
 }
 void Job::addIDUpdates(Updates& updates) {
 }
@@ -5162,6 +5171,7 @@ void Job::getFieldTypes(std::vector<litesql::FieldType>& ftypes) {
     ftypes.push_back(Progress);
     ftypes.push_back(Fps);
     ftypes.push_back(Data);
+    ftypes.push_back(Deleted);
 }
 void Job::delRecord() {
     deleteFromTable(table__, id);
@@ -5222,6 +5232,7 @@ std::auto_ptr<Job> Job::upcastCopy() {
     np->progress = progress;
     np->fps = fps;
     np->data = data;
+    np->deleted = deleted;
     np->inDatabase = inDatabase;
     return auto_ptr<Job>(np);
 }
@@ -5241,6 +5252,7 @@ std::ostream & operator<<(std::ostream& os, Job o) {
     os << o.progress.name() << " = " << o.progress << std::endl;
     os << o.fps.name() << " = " << o.fps << std::endl;
     os << o.data.name() << " = " << o.data << std::endl;
+    os << o.deleted.name() << " = " << o.deleted << std::endl;
     os << "-------------------------------------" << std::endl;
     return os;
 }
@@ -6991,7 +7003,7 @@ std::vector<litesql::Database::SchemaItem> HiveDb::getSchema() const {
     res.push_back(Database::SchemaItem("CodecPreset_","table","CREATE TABLE CodecPreset_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,created_ INTEGER,codecid_ INTEGER,preset_ TEXT)"));
     res.push_back(Database::SchemaItem("CodecPresetParameter_","table","CREATE TABLE CodecPresetParameter_ (id_ " + backend->getRowIDType() + ",type_ TEXT,name_ TEXT,val_ TEXT)"));
     res.push_back(Database::SchemaItem("Config_","table","CREATE TABLE Config_ (id_ " + backend->getRowIDType() + ",type_ TEXT,configkey_ TEXT,configval_ TEXT)"));
-    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT)"));
+    res.push_back(Database::SchemaItem("Job_","table","CREATE TABLE Job_ (id_ " + backend->getRowIDType() + ",type_ TEXT,uuid_ TEXT,created_ INTEGER,begintime_ INTEGER,endtime_ INTEGER,status_ TEXT,infile_ TEXT,outfile_ TEXT,starttime_ DOUBLE,duration_ DOUBLE,progress_ INTEGER,fps_ INTEGER,data_ TEXT,deleted_ INTEGER)"));
     res.push_back(Database::SchemaItem("JobLog_","table","CREATE TABLE JobLog_ (id_ " + backend->getRowIDType() + ",type_ TEXT,created_ INTEGER,message_ TEXT)"));
     res.push_back(Database::SchemaItem("JobDetail_","table","CREATE TABLE JobDetail_ (id_ " + backend->getRowIDType() + ",type_ TEXT,lastpts_ DOUBLE,lastdts_ DOUBLE,deinterlace_ INTEGER)"));
     res.push_back(Database::SchemaItem("Watchfolder_","table","CREATE TABLE Watchfolder_ (id_ " + backend->getRowIDType() + ",type_ TEXT,infolder_ TEXT,outfolder_ TEXT,outfiletemplate_ TEXT,extensionfilter_ TEXT,interval_ TEXT)"));

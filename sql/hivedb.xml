@@ -238,6 +238,7 @@
         <field name="progress" type="integer"/>
         <field name="fps" type="integer"/>
         <field name="data" type="string"/>
+        <field name="deleted" type="integer" default="0"/>
     </object>
 
     <object name="JobLog">

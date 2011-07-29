@@ -199,7 +199,7 @@ namespace org {
 
       JSONNode JsonEncodingHandler::list(db::HiveDb& db, bool full) {
         //LOGDEBUG("listing encodings");
-        std::vector<db::Job> jobs = litesql::select<db::Job > (db).orderBy(db::Job::Id, false).all();
+        std::vector<db::Job> jobs = litesql::select<db::Job > (db,db::Job::Status!="deleted").orderBy(db::Job::Id, false).all();
         JSONNode n(JSON_NODE);
         JSONNode c(JSON_ARRAY);
         c.set_name("data");
@@ -214,7 +214,7 @@ namespace org {
       JSONNode JsonEncodingHandler::get(db::HiveDb&db, std::string id) {
         JSONNode n(JSON_NODE);
         //LOGDEBUG("loading encoding data for id " << id);
-        litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id);
+        litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == id && db::Job::Status!="deleted");
         if (s.count() > 0) {
           //LOGDEBUG("Encoding found");
           db::Job job = s.one();
@@ -387,7 +387,8 @@ namespace org {
               ok.push_back(JSONNode("code", "encoding_deleted"));
               ok.push_back(JSONNode("description", "encoding succesful deleted."));
               n.push_back(ok);
-              job.del();
+              job.status="deleted";
+              job.update();
             }
           } else {
             JSONNode error(JSON_NODE);

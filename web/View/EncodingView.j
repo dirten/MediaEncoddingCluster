@@ -149,7 +149,7 @@ EncodingClicked = @"EncodingClicked";
 }else
 if([tableColumn identifier]==4){
   if(jsonData.data[row].endtime.length>1){
-    return [[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]];
+    return [self formatDuration:[[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].endtime] timeIntervalSinceDate:[CPDate dateWithTimeIntervalSince1970:jsonData.data[row].begintime]]];
   }else{
   return "";
 }
@@ -170,6 +170,38 @@ if([tableColumn identifier]==8){
 }
 }
 }
+-(id)formatDuration:(id)d
+{
+  var duration=parseInt(d);
+  var metric=" sec"
+  var rest=0;
+  var result=""
+  //if(parseInt(duration/(60*60))>0){
+    var hour=parseInt(duration/(60*60));
+    rest=parseInt(duration%(60*60));
+    result=hour+":";
+  //}
+  //if(parseInt(rest/(60))>0){
+    var minutes=parseInt(rest/(60));
+    rest=parseInt(duration%(60));
+    result+=minutes+":";
+  //}
+  //if(parseInt(rest/(60))>0){
+    var seconds=parseInt(rest);
+    result+=seconds+"";
+  //}
+  if(parseInt(duration/60)>0){
+    duration=parseInt(duration/60);
+    metric=" min"
+  }
+  if(parseInt(duration/60)>0){
+    duration=parseInt(duration/60);
+    metric=" h"
+  }
+  return result;
+
+}
+
 - (void)tableView:(CPTableView)aTableView sortDescriptorsDidChange:(CPArray)oldDescriptors
 {
   var newDescriptors = [aTableView sortDescriptors];
