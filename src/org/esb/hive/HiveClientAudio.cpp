@@ -80,9 +80,12 @@ namespace org {
           delete _oos;
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
+          std::cout << "Audio Processor connected to Server " <<_host<< ":" << _port<<std::endl;
           LOGINFO("Server " << _host << " connected!!!");
         } catch (exception & ex) {
           LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
+          std::cout <<"cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what()<<std::endl;
+	  std::cout <<"retry it in 5 seconds."<<std::endl;
         }
       }
 

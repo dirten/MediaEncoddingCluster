@@ -19,6 +19,7 @@
 #include <strsafe.h>
 //#include "client/windows/handler/exception_handler.h"
 #endif  // !_WIN32
+
 namespace org {
   namespace esb {
     namespace lang {

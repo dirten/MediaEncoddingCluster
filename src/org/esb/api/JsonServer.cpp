@@ -21,6 +21,7 @@
 #include "JsonEncodingHandler.h"
 #include "JsonStatisticsHandler.h"
 #include "JsonMediaHandler.h"
+#include "JsonSystemHandler.h"
 #include "boost/archive/iterators/base64_from_binary.hpp"
 #include "boost/archive/iterators/binary_from_base64.hpp"
 #include "boost/archive/iterators/transform_width.hpp"
@@ -164,8 +165,8 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
 
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
-	  org::esb::io::File tmpFile("/tmp/test.avi");
-	  org::esb::io::FileOutputStream fos(&tmpFile);
+	  //org::esb::io::File tmpFile("/tmp/test.avi");
+	  //org::esb::io::FileOutputStream fos(&tmpFile);
           std::string postdata;
           if (strcmp(request_info->request_method, "POST") == 0) {
             /*reading the post data that comes in*/
@@ -173,14 +174,14 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
             char buffer[100000];
             while ((bytes = mg_read(conn, buffer, sizeof (buffer))) > 0 ) {
               postdata = postdata.append(buffer, bytes);
-              fos.write(buffer, bytes);
+              //fos.write(buffer, bytes);
               max -= bytes;
               recv+=bytes;
-              LOGDEBUG("Recv:" << recv);
+              //LOGDEBUG("Recv:" << recv);
             }
           }
         //  return processed;
-          LOGDEBUG("PostData:" << postdata);
+          //LOGDEBUG("PostData:" << postdata);
           std::string request = request_info->uri;
 
           //db::Request req(_db);
@@ -284,6 +285,15 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
           }else if (request == BASE_API_URL"/media") {
             mg_printf(conn, "%s", reply_start);
             JSONNode n = JsonMediaHandler::handle(conn, request_info, db, postdata);
+            n.push_back(JSONNode("requestId", requestId));
+            std::string json_s = n.write_formatted();
+            mg_write(conn, json_s.c_str(), json_s.length());
+            //req.response = json_s;
+            //req.update();
+
+          }else if (request == BASE_API_URL"/system") {
+            mg_printf(conn, "%s", reply_start);
+            JSONNode n = JsonSystemHandler::handle(conn, request_info, db, postdata);
             n.push_back(JSONNode("requestId", requestId));
             std::string json_s = n.write_formatted();
             mg_write(conn, json_s.c_str(), json_s.length());

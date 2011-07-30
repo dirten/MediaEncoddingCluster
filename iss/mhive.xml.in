@@ -426,6 +426,17 @@
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>License</description>
+                    <destination>${installdir}</destination>
+                    <name>license</name>
+                    <platforms>all</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>${mhive_src_dir}/LICENSE</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Presets</description>
                     <destination>${installdir}</destination>
                     <name>presets</name>

@@ -62,7 +62,7 @@
 #include "org/esb/rpc/Server.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "org/esb/api/JsonServer.h"
-
+#include "MHiveConsole.cpp"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -94,7 +94,18 @@ std::string _hostname;
 int _port = 0;
 
 int main(int argc, char * argv[]) {
-  std::cout << "arg0:" << argv[0] << std::endl;
+  //std::cout << "arg0:" << argv[0] << std::endl;
+ std::cout <<""<< std::endl;
+ std::cout << "******************************************************************"<< std::endl;
+ std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hölscher   *"<< std::endl;
+ std::cout << "*                                                                *"<< std::endl;
+ std::cout << "* This program is Licensed under the terms in the LICENSE file   *"<< std::endl;
+ std::cout << "*                                                                *"<< std::endl;
+ std::cout << "* This program is distributed in the hope that it will be useful,*"<< std::endl;
+ std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *"<< std::endl;
+ std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *"<< std::endl;
+ std::cout << "******************************************************************"<< std::endl;
+ std::cout <<""<< std::endl;
 	//isatty(0);
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
@@ -109,7 +120,7 @@ int main(int argc, char * argv[]) {
             ("help", "produce this message")
             ("version", "Prints the Version")
             ("debug", "switch of the StackDumper and logging goes to the console instead of file")
-            ("loglevel", po::value<std::string > ()->default_value("warn"), "setting the loglevel for this process");
+            ("loglevel", po::value<std::string > ()->default_value("fatal"), "setting the loglevel for this process");
 
     po::options_description inst("Install options");
     inst.add_options()
@@ -149,6 +160,7 @@ int main(int argc, char * argv[]) {
     po::options_description priv("");
     priv.add_options()
             ("erlang", "")
+            ("console,c", "")
             ;
 
     po::options_description all("all");
@@ -156,7 +168,14 @@ int main(int argc, char * argv[]) {
     priv.add(all);
 
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, priv), vm);
+    try{
+	po::store(po::parse_command_line(argc, argv, priv), vm);
+    }catch(std::exception & ex){
+	//std::cout <<boost::diagnostic_information(ex)<<std::endl;
+	std::cout <<ex.what()<<"!!!"<<std::endl<<std::endl;
+        std::cout << all << std::endl;
+	exit(1);
+    }
     po::notify(vm);
  
     if (vm.count("loglevel")) {
@@ -215,7 +234,9 @@ int main(int argc, char * argv[]) {
     avcodec_init();
     avcodec_register_all();
 
-
+    if (vm.count("console")) {
+	console();
+    }
     if (vm.count("erlang")) {
       LOGDEBUG("test option");
 
@@ -468,8 +489,12 @@ void client(int argc, char *argv[]) {
     Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
+  std::cout << "mhive clinet is running"<<std::endl;
+  std::cout << "Press ctrl & c to stop the program"<<std::endl;
+
   org::esb::lang::CtrlCHitWaiter::wait();
-  LOGWARN("Stopp Signal received!!!");
+  std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  //LOGWARN("Stopp Signal received!!!");
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
@@ -532,9 +557,11 @@ void start() {
   //  LOGINFO("wait for shutdown!");
   //org::esb::rpc::Server server(6000);
   //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
-
+  std::string port=config::Config::getProperty("web.port");
+  std::cout << "mhive server is running, open the url http://localhost:"<<port<<std::endl;
+  std::cout << "Press ctrl & c to stop the program"<<std::endl;
   org::esb::lang::CtrlCHitWaiter::wait();
-  LOGINFO("shutdown app, this will take a minute!");
+  std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
   /*
    *
    * Stopping Application Services from configuration
