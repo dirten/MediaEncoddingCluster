@@ -13,6 +13,28 @@
 #include "org/esb/util/Log.h"
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
+/*
+bool isRunning(string pName)
+{
+    unsigned long aProcesses[1024], cbNeeded, cProcesses;
+	if(!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded))
+		return;
+		
+		    cProcesses = cbNeeded / sizeof(unsigned long);
+			for(unsigned int i = 0; i < cProcesses; i++)
+			    {
+				    if(aProcesses[i] == 0)
+						continue;
+						
+							HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, aProcesses[i]);
+								char buffer[50];
+									GetModuleBaseName(hProcess, 0, buffer, 50);
+										CloseHandle(hProcess);
+											if(pName == string(buffer))
+												    return true;
+													}
+													    return false;
+*/													    
 namespace org {
   namespace esb {
     namespace lang {
@@ -22,6 +44,11 @@ namespace org {
         _processId = 0;
         _running = false;
         _restartable = false;
+      }
+      Process::Process(int32_t pid):_processId(pid){
+          _running = true;
+          _restartable = false;
+          _stop = false;
       }
 
       Process::~Process() {

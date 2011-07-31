@@ -22,11 +22,7 @@ namespace org {
       class LANG_EXPORT Process {
         classlogger("org.esb.lang.Process");
       public:
-        Process(int32_t pid):_processId(pid){
-          _running = true;
-          _restartable = false;
-          _stop = false;
-        }
+        Process(int32_t pid);
         Process(std::string e, std::list<std::string> args=std::list<std::string>(), std::string name=std::string());
         //Process(const Process& orig);
         virtual ~Process();

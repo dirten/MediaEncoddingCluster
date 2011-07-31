@@ -92,20 +92,9 @@ void checkDirs();
 int rec = 0;
 std::string _hostname;
 int _port = 0;
-
+bool quite=false;
 int main(int argc, char * argv[]) {
   //std::cout << "arg0:" << argv[0] << std::endl;
- std::cout <<""<< std::endl;
- std::cout << "******************************************************************"<< std::endl;
- std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hölscher   *"<< std::endl;
- std::cout << "*                                                                *"<< std::endl;
- std::cout << "* This program is Licensed under the terms in the LICENSE file   *"<< std::endl;
- std::cout << "*                                                                *"<< std::endl;
- std::cout << "* This program is distributed in the hope that it will be useful,*"<< std::endl;
- std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *"<< std::endl;
- std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *"<< std::endl;
- std::cout << "******************************************************************"<< std::endl;
- std::cout <<""<< std::endl;
 	//isatty(0);
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
@@ -161,6 +150,7 @@ int main(int argc, char * argv[]) {
     priv.add_options()
             ("erlang", "")
             ("console,c", "")
+            ("quite", "")
             ;
 
     po::options_description all("all");
@@ -181,7 +171,21 @@ int main(int argc, char * argv[]) {
     if (vm.count("loglevel")) {
       config::Config::setProperty("loglevel", vm["loglevel"].as<string>());
     }
-
+    if (!vm.count("quite")) {
+	std::cout <<""<< std::endl;
+	std::cout << "******************************************************************"<< std::endl;
+	std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hölscher   *"<< std::endl;
+	std::cout << "*                                                                *"<< std::endl;
+	std::cout << "* This program is Licensed under the terms in the LICENSE file   *"<< std::endl;
+	std::cout << "*                                                                *"<< std::endl;
+	std::cout << "* This program is distributed in the hope that it will be useful,*"<< std::endl;
+	std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *"<< std::endl;
+	std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *"<< std::endl;
+	std::cout << "******************************************************************"<< std::endl;
+	std::cout <<""<< std::endl;
+    }else{
+	quite=true;
+    }
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
       exit(0);
@@ -489,11 +493,14 @@ void client(int argc, char *argv[]) {
     Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
-  std::cout << "mhive clinet is running"<<std::endl;
-  std::cout << "Press ctrl & c to stop the program"<<std::endl;
-
+  if(!quite){
+    std::cout << "mhive clinet is running"<<std::endl;
+    std::cout << "Press ctrl & c to stop the program"<<std::endl;
+  }
   org::esb::lang::CtrlCHitWaiter::wait();
-  std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  if(!quite){
+    std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  }
   //LOGWARN("Stopp Signal received!!!");
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
@@ -558,10 +565,14 @@ void start() {
   //org::esb::rpc::Server server(6000);
   //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
   std::string port=config::Config::getProperty("web.port");
-  std::cout << "mhive server is running, open the url http://localhost:"<<port<<std::endl;
-  std::cout << "Press ctrl & c to stop the program"<<std::endl;
+  if(!quite){
+    std::cout << "mhive server is running, open the url http://localhost:"<<port<<std::endl;
+    std::cout << "Press ctrl & c to stop the program"<<std::endl;
+  }
   org::esb::lang::CtrlCHitWaiter::wait();
-  std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  if(!quite){
+    std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  }
   /*
    *
    * Stopping Application Services from configuration

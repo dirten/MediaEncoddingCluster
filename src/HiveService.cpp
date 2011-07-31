@@ -125,7 +125,7 @@ int main(int argc, char**argv) {
   org::esb::api::ProcessHandler proc_handler;
   api_server.addHandler(&proc_handler);
   org::esb::lang::CtrlCHitWaiter::wait();
-  return 0;
+  //return 0;
 
     /*first find out if there is running a server*/
   org::esb::grid::Node node;

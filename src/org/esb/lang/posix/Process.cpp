@@ -26,6 +26,11 @@ namespace org {
         _stop = false;
         _process_list.push_back(this);
       }
+      Process::Process(int32_t pid):_processId(pid){
+          _running = ::kill(_processId, 0)==0;
+          _restartable = false;
+          _stop = false;
+      }
 
       Process::~Process() {
         if(_running){
@@ -44,7 +49,7 @@ namespace org {
 
       void Process::start() {
         /*waiting 0,5 sec for the mutext condition*/
-        org::esb::lang::Thread::sleep2(500);
+        org::esb::lang::Thread::sleep2(1000);
         if (_executable.length() == 0) {
           LOGDEBUG("no executable given");
           throw ProcessException("no executable given");
@@ -129,12 +134,13 @@ namespace org {
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
         _stop = true;
         _restartable = false;
-        ::kill(_processId, 15);
+        int result=::kill(_processId, 15);
+        std::cout << "result"<<result<<std::endl;
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);
-        if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))) {
-          //if (result != 0)
-          throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
-        }
+        //if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))) {
+          if (result != 0)
+            throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        //}
         _running = false;
       }
 
