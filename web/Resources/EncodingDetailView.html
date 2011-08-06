@@ -428,81 +428,41 @@
           GitHubAPI.reopenIssue(ISSUE, REPO);
       }
 
-      function show_graph3(){
+      function show_graph3(data){
+     
 
-        chart = new Highcharts.Chart({
-          chart: {
-            renderTo: 'container',
-            zoomType: 'xy'
-          },
-          title: {
-            text: 'Average Monthly Temperature and Rainfall in Tokyo'
-          },
-          subtitle: {
-            text: 'Source: WorldClimate.com'
-          },
-          xAxis: [{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            }],
-          yAxis: [{ // Primary yAxis
-              title: {
-                text: 'Temperature',
-                style: {
-                  color: '#89A54E'
-                }
-              }
-            }, { // Secondary yAxis
-              title: {
-                text: 'Rainfall',
-                style: {
-                  color: '#4572A7'
-                }
-              },
-              labels: {
-                formatter: function() {
-                  return this.value +' mm';
-                },
-                style: {
-                  color: '#4572A7'
-                }
-              },
-              opposite: true
-            }],
-          tooltip: {
-            formatter: function() {
-              return ''+
-                this.x +': '+ this.y +
-                (this.series.name == 'Rainfall' ? ' mm' : 'Â°C');
-            }
-          },
-          legend2: {
-            layout: 'vertical',
-            align: 'left',
-            x: 120,
-            verticalAlign: 'top',
-            y: 100,
-            floating: true,
-            backgroundColor: '#FFFFFF'
-          },
-          series: [{
-              name: 'Rainfall',
-              color: '#4572A7',
-              type: 'column',
-              yAxis: 1,
-              data: [49.9, 71.5, 1060.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-
-            }, {
-              name: 'Temperature',
-              color: '#89A54E',
-              type: 'spline',
-              data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }]
+	// Create the chart	
+	chart = new Highcharts.StockChart({
+	    chart: {
+	        renderTo: 'container'
+	    },
+	    
+	    rangeSelector: {
+	        selected: 1
+	    },
+	    
+	    title: {
+	        text: 'USD to EUR exchange rate'
+	    },
+	    
+	    xAxis: {
+	        maxZoom: 14 * 24 * 3600000 // fourteen days
+	    },
+	    yAxis: {
+	        title: {
+	            text: 'Exchange rate'
+	        }
+	    },
+		
+	    series: [{
+	        name: 'USD to EUR',
+	        data: data.bitrate
+	    }]
         });
-
       }
       function show_graph2(data){
         // create the master chart
+        //delete data.quality;
         function createMaster() {
           masterChart = new Highcharts.Chart({
             chart: {
@@ -575,7 +535,7 @@
             xAxis: {
               type: 'linear',
               showLastTickLabel: true,
-              maxZoom: 14 * 24 * 3600000, // fourteen days
+              //maxZoom: 14 * 24 * 3600000, // fourteen days
               plotBands: [{
                   id: 'mask-before',
                   from: 1,
@@ -651,13 +611,14 @@
             series: [{
                 type: 'area',
                 name: 'Quantizer',
-                //pointInterval: 24 * 3600 * 1000,
+                pointInterval: data.modulo,
                 pointStart: 1,
                 yAxis: 1,
                 data: data.quality
               },{
                 type: 'area',
                 name: 'Bitrate',
+                pointInterval: data.modulo,
                 //pointInterval: 24 * 3600 * 1000,
                 pointStart: 1,
                 
@@ -734,7 +695,7 @@
                 opposite: true,
                 labels: {
                   formatter: function() {
-                    return this.value+"%" ;
+                    return this.value;
                   },
                   style: {
                     color: '#4572A7'
@@ -746,7 +707,7 @@
                 var quality = this.points[0];
                 var rate = this.points[1];
                 return '<b>'+ rate.series.name +':</b>'+rate.y+"<br/>"+
-                  '<b>'+ quality.series.name +':</b>'+quality.y+"%<br/>"+
+                  '<b>'+ quality.series.name +':</b>'+quality.y+"<br/>"+
                   '<b>Frame#:</b>'+this.x;
               },
               shared: true
@@ -770,13 +731,13 @@
             series: [{
                 name: 'Quantizer',
                 pointStart: detailStart,
-                //pointInterval: 24 * 3600 * 1000,
+                //pointInterval: data.modulo,
                 yAxis: 1,
                 data: detailData
               },{
                 name: 'Bitrate',
                 pointStart: detailStart,
-                //pointInterval: 24 * 3600 * 1000,
+                //pointInterval: data.modulo,
                                 
 
                 data: detailBitrateData
@@ -1085,11 +1046,11 @@
       </div>
       -->
     </div>
-    <!--
+    
     <div id="container" style="width:98%">
       <div id="detail-container" style="width:95%; height: 400px; margin: 0 auto"></div>
       <div id="master-container" style="width:95%; height: 80px; margin: 0 auto"></div>
     </div>
-    -->
+    
   </body>
 </html>

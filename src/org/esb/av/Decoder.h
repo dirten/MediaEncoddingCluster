@@ -44,6 +44,7 @@ namespace org {
         classlogger("org.esb.av.Decoder")
       public:
         Decoder(CodecID id);
+        Decoder(std::string name);
         Decoder(AVStream * c);
         Decoder();
         ~Decoder();

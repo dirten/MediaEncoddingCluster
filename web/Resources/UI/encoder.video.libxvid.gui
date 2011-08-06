@@ -1,0 +1,50 @@
+{
+    "gui":{
+	"groups":[
+	    {"id":"picture_settings", "title":"Picture Settings", "tab":"general"},
+	    {"id":"frametype_settings", "title":"Frame Type Settings", "tab":"general"},
+	    {"id":"rate_settings", "title":"Rate Control Settings", "tab":"general"},
+	    {"id":"analysis_settings", "title":"Analysis", "tab":"general"}
+	],
+	"options":[
+	    {"id":"time_base_sel", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"1/25",
+		    "items":[
+			{"key":"Same as Source","value":"","data":[{"option":"time_base", "value":""}]},
+			{"key":"1/10","value":"1/10","data":[{"option":"time_base", "value":"1/10"}]},
+			{"key":"1/15","value":"1/15","data":[{"option":"time_base", "value":"1/15"}]},
+			{"key":"23,97","value":"1000/23976","data":[{"option":"time_base", "value":"1000/23976"}]},
+			{"key":"1/24","value":"1/24","data":[{"option":"time_base", "value":"1/24"}]},
+			{"key":"1/25","value":"1/25","data":[{"option":"time_base", "value":"1/25"}]},
+			{"key":"29,97","value":"100/2997","data":[{"option":"time_base", "value":"100/2997"}]},
+			{"key":"Custom","value":"0","enable":["time_base"]}
+		    ]
+		}
+	    },
+	    {"id":"time_base", "type":"string","title":"Frame Rate","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":"1/25"}},
+	    {"id":"frame_size", "type":"string","title":"Frame Size","group":"picture_settings","unit":"pixel","persist":true,
+		"control":{
+		    "type":"ComboBox",
+		    "defaults":"720x576",
+		    "items":[
+			{"key":"Same as Source","value":"","data":[{"option":"width", "value":""},{"option":"height", "value":""}]},
+			{"key":"VCD (320x240)","value":"320x240","data":[{"option":"width", "value":"320"},{"option":"height", "value":"240"}]},
+			{"key":"SVCD (430x576)","value":"430x576","data":[{"option":"width", "value":"430"},{"option":"height", "value":"576"}]},
+			{"key":"DVD (720x576)","value":"720x576","data":[{"option":"width", "value":"720"},{"option":"height", "value":"576"}]},
+			{"key":"720p","value":"1280x720","data":[{"option":"width", "value":"1280"},{"option":"height", "value":"720"}]},
+			{"key":"1080p","value":"1920x1080","data":[{"option":"width", "value":"1920"},{"option":"height", "value":"1080"}]},
+			{"key":"Custom","value":"0","enable":["width","height"]}
+		    ]
+		}
+	    },
+	    {"id":"width", "type":"string", "title":"Width","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"720"}},
+	    {"id":"height", "type":"string", "title":"Height","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":"576"}},
+	    {"id":"g", "type":"int", "title":"Gop Size","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"150","min":1,"max":500}},
+	    {"id":"b", "type":"int", "title":"Bitrate","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"512","min":1,"max":51200}},
+	    {"id":"bt", "type":"int", "title":"Bitrate Tolerance","group":"rate_settings","unit":"frames","control":{"type":"Slider", "defaults":"256","min":1,"max":51200}}
+	]
+    }
+}
+

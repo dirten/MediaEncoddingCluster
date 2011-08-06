@@ -389,6 +389,7 @@ namespace org {
             puQueue.enqueue(unit);
           }
 #endif
+
         }
 
         boost::shared_ptr<ProcessUnit> ProcessUnitController::getProcessUnit() {
@@ -423,9 +424,8 @@ namespace org {
             //            DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
-
           /*this is only for debugging*/
-          if (false) {
+          if (true) {
             std::string name = org::esb::config::Config::getProperty("hive.base_path");
             name += "/tmp/";
             name += org::esb::util::StringUtil::toString(u->_process_unit % 10);
@@ -441,12 +441,13 @@ namespace org {
             org::esb::io::File out(name.c_str());
             org::esb::io::FileOutputStream fos(&out);
             org::esb::io::ObjectOutputStream ous(&fos);
-            //LOGDEBUG("Saving ProcessUnit:" << unit->_process_unit);
+            LOGDEBUG("Saving ProcessUnit:" << u->_process_unit);
             ous.writeObject(*u.get());
             ous.close();
 
 
           }
+
           return u;
         }
 

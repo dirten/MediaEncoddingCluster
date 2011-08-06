@@ -54,6 +54,7 @@ class SampleFormat;*/
       public:
         const static int ENCODER = 1;
         const static int DECODER = 2;
+        Codec(std::string codec_name, int mode = DECODER);
         Codec(const CodecID codecId, int mode = DECODER);
         Codec(AVStream * stream, int mode = DECODER);
         Codec(int mode = DECODER);
@@ -201,11 +202,14 @@ class SampleFormat;*/
               ctx->extradata = NULL;
             }
           }
+          //findCodec(_mode);
         };
         BOOST_SERIALIZATION_SPLIT_MEMBER();
 
         AVCodec * _codec;
         bool findCodec(int mode);
+        AVCodec * findCodecByName(std::string name, int mode);
+
         int _mode;
         AVCodecContext * ctx;
         AVRational _frame_rate;

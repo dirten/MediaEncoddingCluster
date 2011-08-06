@@ -3,8 +3,8 @@
 #include <stdio.h>
 using namespace org::esb::io;
 using namespace std;
-FileOutputStream::FileOutputStream(const char * pathname) {
-    open(pathname, false);
+FileOutputStream::FileOutputStream(std::string pathname) {
+    open(pathname.c_str(), false);
 }
 
 FileOutputStream::FileOutputStream(File * file) {

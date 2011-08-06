@@ -10,7 +10,7 @@ namespace org {
         namespace io {
 class IO_EXPORT FileOutputStream: public OutputStream {
 public:
-                FileOutputStream(const char * pathname);
+                FileOutputStream(std::string pathname);
                 FileOutputStream(File * file);
                 FileOutputStream(const char * pathname, bool append);
                 FileOutputStream(File * file, bool append);

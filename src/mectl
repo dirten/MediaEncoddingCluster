@@ -98,9 +98,9 @@ start_server(){
       #echo $MHIVE_BASE/bin/mhiveservice >$BASE_PATH/mhivetest
       mkdir $MHIVE_BASE/logs
       #$MHIVE_BASE/bin/mhive -r > $MHIVE_BASE/logs/startup.log&
-      /usr/X11/bin/xterm -ls -e $MHIVE_BASE/bin/mhive -r&
-      sleep 3
-      open http://localhost:8080
+      /usr/X11/bin/xterm -ls -e $MHIVE_BASE/bin/mhive -c
+      #sleep 3
+      #open http://localhost:8080
       STATUS=$?
       else
         echo "MHive Service is allready running!"

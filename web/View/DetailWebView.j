@@ -50,16 +50,11 @@
 //    domWindow.blaalert();
     //scrollRect.size.height=200;
   }
-  - (void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame
+  - (void)webView:(CPWebView)aWebView didFinishLoadForFrame2:(id)aFrame
 {
   CPLog.debug("WebView Loaded");
-  for (var key in scrollRect.size){
-      CPLog.debug("Key="+key+" value="+scrollRect.size[key]);
-    }
-    //[self setFrameSize:scrollRect.size];
-    //[_frameView scrollRectToVisible:scrollRect];
-    [self setFrameSize:scrollRect.size];
-  }
+  
+}
   - (void)setDrawsBackground:(BOOL)drawsBackground
 {
     if (true)
@@ -68,13 +63,13 @@
         _iframe.style.backgroundColor = "";
 //        _iframe.style.backgroundColor = "rgb(237, 241, 244)";
 }
-- (void)webView:(CPWebView)aWebView didFinishLoadForFrame2:(id)aFrame
+- (void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame
 {
     CPLog.debug("(void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame");
     var domWindow = [self DOMWindow];
    statsdata = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/statistic?id="+_id] returningResponse:nil];
   stats=[[statsdata rawString] objectFromJSON];
-  //CPLog.debug(stats.data.quality);
+  //CPLog.debug([statsdata rawString]);
   if(stats.data){
     var data=[{
               name: 'Quality',
@@ -86,9 +81,17 @@
               name: 'London',
               data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
             }];
-	  //if(domWindow.show_graph2)
-          //domWindow.show_graph2(stats.data);
+	  if(domWindow.show_graph2)
+            domWindow.show_graph2(stats.data);
           //domWindow.show_graph3();
         }
+  for (var key in scrollRect.size){
+      CPLog.debug("Key="+key+" value="+scrollRect.size[key]);
+    }
+    //[self setFrameSize:scrollRect.size];
+    //[_frameView scrollRectToVisible:scrollRect];
+    [self setFrameSize:scrollRect.size];
+    [self setNeedsDisplay:YES];
+
   }
 @end

@@ -47,6 +47,7 @@ namespace org {
               classlogger("org.esb.av.Encoder")
             public:
                 Encoder(CodecID id);
+                Encoder(std::string name);
                 Encoder();
                 ~Encoder();
                 virtual bool open();

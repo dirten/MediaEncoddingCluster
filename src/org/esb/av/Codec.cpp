@@ -117,6 +117,20 @@ namespace org {
         _frame_rate.num = 0;
         _frame_rate.den = 0;
       }
+      
+      Codec::Codec(std::string codec_name, int mode) {
+        _codec_resolved = false;
+        _mode = mode;
+        setCodecOption("codec_name", codec_name);
+        ctx = avcodec_alloc_context();
+        _codec=findCodecByName(codec_name, mode);
+        if(_codec){
+          LOGDEBUG("Code Name:"<<_codec->name);
+          avcodec_get_context_defaults2(ctx, _codec->type);
+          ctx->codec_id = _codec->id;
+          setContextDefaults();          
+        }
+      }
 
       Codec::Codec(const CodecID codecId, int mode) {
         //        logdebug("Codec::Codec(const CodecID codecId=" << codecId << ", int mode=" << mode << ")");
@@ -282,6 +296,32 @@ namespace org {
 
         return result;
       }
+      AVCodec * Codec::findCodecByName(std::string name, int mode) {
+        AVCodec* result = NULL;
+        //        if(_codec_resolved)return result;
+        //        logdebug("try to find " << (mode == DECODER ? "Decoder" : "Encoder") << " with id:" << _codec_id);
+        if (mode == DECODER) {
+          result = avcodec_find_decoder_by_name(name.c_str());
+          if (result == NULL) {
+            LOGERROR("Decoder not found for name :" << name);
+          }
+        } else
+          if (mode == ENCODER) {
+          result = avcodec_find_encoder_by_name(name.c_str());
+          if (result == NULL) {
+            LOGERROR("Encoder not found for id :" << name);
+          }
+        } else {
+          LOGERROR("Mode not set for Codec");
+        }
+        if (result) {
+          ctx->codec_type = result->type;
+          _codec_resolved = true;
+        } else {
+          LOGERROR("in resolving codec id:" << ctx->codec_id);
+        }
+        return result;
+      }
 
       void Codec::setParams() {
         /*
@@ -321,7 +361,11 @@ namespace org {
     	    //LOGERROR("Codec is allready openned! codec id"<<getCodecId());
     	    return _opened;
     	}
-        findCodec(_mode);
+        if(_options.find("codec_name")==_options.end()){
+          findCodec(_mode);
+        }else{
+          _codec=findCodecByName(_options["codec_name"], _mode);
+        }
         if (!_codec) {
           LOGERROR("_codec not initialized!");
           return false;
@@ -640,7 +684,7 @@ namespace org {
         std::string data;
         data.append("Codec ID:").append(StringUtil::toString(ctx->codec_id)).append("\r\n");
         if (_opened) {
-          data.append("Codec Name:").append(ctx->codec->name).append("\r\n");
+          data.append("Codec Name:").append(_codec->name).append("\r\n");
           data.append("Codec Type:").append(ctx->codec_type == AVMEDIA_TYPE_AUDIO ? "AUDIO" : "VIDEO").append("\r\n");
           data.append("Width:").append(StringUtil::toString(getWidth())).append("\r\n");
           data.append("Height:").append(StringUtil::toString(getHeight())).append("\r\n");

@@ -19,31 +19,32 @@ namespace org {
 
       std::list<Process*> Process::_process_list;
 
-      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _name(name),_arguments(args) {
+      Process::Process(std::string exe, std::list<std::string> args, std::string name) : _executable(exe), _name(name), _arguments(args) {
         _processId = 0;
         _running = false;
         _restartable = false;
         _stop = false;
         _process_list.push_back(this);
       }
-      Process::Process(int32_t pid):_processId(pid){
-          _running = ::kill(_processId, 0)==0;
-          _restartable = false;
-          _stop = false;
+
+      Process::Process(int32_t pid) : _processId(pid) {
+        _running = ::kill(_processId, 0) == 0;
+        _restartable = false;
+        _stop = false;
       }
 
       Process::~Process() {
-        if(_running){
-        try {
-          stop();
-        } catch (ProcessException & ex) {
-          LOGERROR(ex.what());
+        if (_running) {
           try {
-            kill();
-          } catch (ProcessException& ex2) {
-            LOGERROR(ex2.what());
+            stop();
+          } catch (ProcessException & ex) {
+            LOGERROR(ex.what());
+            try {
+              kill();
+            } catch (ProcessException& ex2) {
+              LOGERROR(ex2.what());
+            }
           }
-        }
         }
       }
 
@@ -134,12 +135,12 @@ namespace org {
           throw ProcessException(std::string("could not stop the process: ").append(_executable).append(" - process not running"));
         _stop = true;
         _restartable = false;
-        int result=::kill(_processId, 15);
-        std::cout << "result"<<result<<std::endl;
+        int result = ::kill(_processId, 15);
+        std::cout << "result" << result << std::endl;
         boost::mutex::scoped_lock process_shutdown_lock(process_shutdown_wait_mutex);
         //if (!process_shutdown_wait_condition.timed_wait(process_shutdown_lock, boost::posix_time::seconds(30))) {
-          if (result != 0)
-            throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
+        if (result != 0)
+          throw ProcessException(std::string("could not stop the process with pid: ").append(org::esb::util::StringUtil::toString(_processId)));
         //}
         _running = false;
       }

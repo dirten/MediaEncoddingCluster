@@ -37,9 +37,9 @@ namespace org {
           litesql::DataSource<db::Job>s = litesql::select<db::Job > (db, db::Job::Uuid == iddata);
           if (s.count() > 0) {
             db::Job job = s.one();
-            org::esb::io::File tfile(job.outfile.value());
-            org::esb::io::File sfile(tfile.getFileName() + ".stats");
-            LOGDEBUG("Reading stats file:" << tfile.getFileName());
+            //org::esb::io::File tfile(job.outfile.value());
+            org::esb::io::File sfile(job.uuid.value() + ".stats");
+            LOGDEBUG("Reading stats file:" << sfile.getFilePath());
             if (sfile.exists()) {
               org::esb::io::FileInputStream fis(&sfile);
               std::string data;
@@ -53,15 +53,25 @@ namespace org {
 
               /*splitting the stats data*/
               org::esb::util::StringTokenizer tok(data, ",");
-              while (tok.hasMoreTokens()) {
+              /*this modulo is to reduce the statistics data for the webui*/
+              int mod=1;
+              if((tok.countTokens()/2500)>2.0){
+                mod=tok.countTokens()/2500;
+              }
+             
+              //LOGDEBUG("Modulo="<<mod);
+              for (int a=0;tok.hasMoreTokens();a++) {
                 org::esb::util::StringTokenizer tok2(tok.nextToken(), ":");
-                if (tok2.countTokens() == 2) {
-                  quality.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
-                  rate.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
+                if(a%mod==0){
+                  if (tok2.countTokens() == 2) {
+                    quality.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
+                    rate.push_back(JSONNode("", atoi(tok2.nextToken().c_str())));
+                  }
                 }
               }
               datan.push_back(rate);
               datan.push_back(quality);
+              datan.push_back(JSONNode("modulo", mod));
               result.push_back(datan);
             }
           } else {

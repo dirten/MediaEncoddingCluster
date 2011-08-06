@@ -101,11 +101,13 @@ void ProcessUnit::process() {
     _output_packets.clear();
     _converter=NULL;
     _decoder=_2passdecoder;
+
     _encoder=_2passencoder;
-    _encoder->setCodecOption("flags","pass2");
+    //_encoder->setCodecID(CODEC_ID_LIBXVID);
+    //_encoder->setCodecOption("flags","pass2");
     std::ostringstream oss;
     oss<<boost::this_thread::get_id();
-    _encoder->setCodecOption("passlogfile",oss.str());
+    //_encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS2);
     processInternal();
   }

@@ -46,6 +46,11 @@ Decoder::Decoder(CodecID id) : Codec(id, Codec::DECODER) {
   _next_pts = 0;
 }
 
+Decoder::Decoder(std::string name) : Codec(name, Codec::DECODER) {
+  _last_pts = 0;
+  _next_pts = 0;
+}
+
 Decoder::Decoder(AVStream * c) : Codec(c, Codec::DECODER) {
   _last_pts = 0;
   _next_pts = 0;
