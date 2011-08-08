@@ -17,6 +17,8 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>**/*.sh</include>
+        <include>**/*.dmg</include>
+        <include>**/*.exe</include>
       </includes>
     </fileSet>
   </fileSets>
