@@ -381,7 +381,7 @@ namespace org {
             if (!ctx->priv_data) {
               ctx->priv_data = av_mallocz(_codec->priv_data_size);
               if (!ctx->priv_data) {
-                return AVERROR(ENOMEM);
+                return false;//AVERROR(ENOMEM);
               }
             }
             if (_codec->priv_class) {

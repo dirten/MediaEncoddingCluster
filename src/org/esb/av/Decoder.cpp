@@ -217,7 +217,7 @@ Frame * Decoder::decodeVideo2(Packet & packet) {
   int64_t dur = 1;
 #endif
 
-  frame->setFinished(_frameFinished);
+  frame->setFinished(_frameFinished!=0);
   //  frame->_pixFormat = ctx->pix_fmt;
   frame->stream_index = packet.packet->stream_index;
 

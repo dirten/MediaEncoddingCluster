@@ -126,6 +126,21 @@
             <artifactId>ant-junit</artifactId>
             <version>1.8.1</version>
           </dependency>
+           <dependency>
+             <groupId>commons-net</groupId>
+             <artifactId>commons-net</artifactId>
+             <version>1.4.1</version>
+           </dependency>
+           <dependency>
+             <groupId>ant</groupId>
+             <artifactId>ant-commons-net</artifactId>
+             <version>1.6.5</version>
+           </dependency>
+           <dependency>
+             <groupId>ant</groupId>
+             <artifactId>ant-nodeps</artifactId>
+             <version>1.6.5</version>
+           </dependency>
         </dependencies>
         <executions>
           <execution>
@@ -224,11 +239,11 @@
             </goals>
           </execution>
           <execution>
-            <phase>test</phase>
+            <phase>test1</phase>
             <id>test</id>
             <configuration>
               <tasks>
-                <copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>
+                <!--<copy file="${project.basedir}/target/dependency/share/english/errmsg.sys" todir="res"/>-->
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build/test" failonerror="yes">
                   <env key="MYSQLD_BIN" path="${project.basedir}/target/dependency/bin/mysqld${exe}"/>
                   <env key="MYSQL_DATA" path="${project.basedir}"/>
@@ -271,6 +286,28 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
                 </exec>
+                <ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
+		    <fileset dir="${project.basedir}/build">
+			<include name="*.dmg" />
+		    </fileset>
+		</ftp>
+
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>deploy</phase>
+            <id>deploy1</id>
+            <configuration>
+              <tasks>
+		<ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
+		    <fileset dir="${project.basedir}/build">
+			<include name="*.dmg" />
+		    </fileset>
+		</ftp>
               </tasks>
             </configuration>
             <goals>

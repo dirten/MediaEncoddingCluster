@@ -16,9 +16,9 @@
       <directory>build</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>**/*.sh</include>
-        <include>**/*.dmg</include>
-        <include>**/*.exe</include>
+        <include>*.sh</include>
+        <include>*.dmg</include>
+        <include>*.exe</include>
       </includes>
     </fileSet>
   </fileSets>
