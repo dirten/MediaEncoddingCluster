@@ -127,7 +127,7 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES "release")
 ############################################################
 #
 # Settings for the CPAck Packaging
-# on windows the packages will be build with the inno setup
+# on windows the packages will be build with the BitrockInstaller setup
 #
 ############################################################
 SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
@@ -147,13 +147,13 @@ IF(WIN32)
 #      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive.lnk" "$INSTDIR\\\\bin\\\\mhive.exe -s\\\"
 #  ")
 ELSEIF(APPLE)
-  SET(CPACK_PACKAGE_DEFAULT_LOCATION "/Applications")
+  SET(CPACK_PACKAGE_DEFAULT_LOCATION "/Applications/MediaEncodingCluster")
   SET(CPACK_PACKAGING_INSTALL_PREFIX "/")
   SET(CPACK_BUNDLE_PLIST "${PROJECT_SOURCE_DIR}/Info.plist")
   SET(CPACK_BUNDLE_STARTUP_COMMAND "${PROJECT_SOURCE_DIR}/src/mectl")
   SET(CPACK_BUNDLE_NAME "MediaEncodingCluster")
   SET(CPACK_BUNDLE_ICON "${PROJECT_SOURCE_DIR}/test.icns")
-  SET(CPACK_POSTFLIGHT_SCRIPT ${PROJECT_SOURCE_DIR}/install.osx)
+  #SET(CPACK_POSTFLIGHT_SCRIPT ${PROJECT_SOURCE_DIR}/install.osx)
   SET(CPACK_GENERATOR "Bundle" )
   #SET(CPACK_GENERATOR "PackageMaker" )
 ELSE(WIN32)
@@ -345,6 +345,8 @@ SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PAT
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
+
+set(CPACK_COMPONENTS_ALL mhive libraries)
 
 INCLUDE(CPack)
 

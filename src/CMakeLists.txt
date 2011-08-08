@@ -101,7 +101,7 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 #MESSAGE("** BOOST_SERIAL_LIB_MT: " ${BOOST_SERIAL_LIB_MT})
 
 
-add_executable (mhive Hive.cpp)
+add_executable (mhive MACOSX_BUNDLE Hive.cpp)
 add_executable (mhiveconfig MHiveConfig.cpp)
 target_link_libraries (mhiveconfig
     api
@@ -345,8 +345,9 @@ add_custom_target(release
 
 INSTALL(TARGETS mhive
     RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+    BUNDLE DESTINATION ${BIN_INSTALL_DIR}
+    COMPONENT mhive
+)
 
 INSTALL(TARGETS mhiveconfig
     RUNTIME DESTINATION ${BIN_INSTALL_DIR}
@@ -408,6 +409,7 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
     DESTINATION ${LIB_INSTALL_DIR}
+    COMPONENT libraries
   )
   SET_SOURCE_FILES_PROPERTIES(
   ${PROJECT_SOURCE_DIR}/src/mectl

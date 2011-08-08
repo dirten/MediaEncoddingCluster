@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
   org::esb::av::PacketOutputStream pos(&fos);
 
   //org::esb::av::Encoder enc(CODEC_ID_MPEG4);
-  //org::esb::av::Encoder enc(CODEC_ID_H264);
-  org::esb::av::Encoder enc("libxvid");
+  org::esb::av::Encoder enc(CODEC_ID_H264);
+  //org::esb::av::Encoder enc("libxvid");
 
   //enc.setCodecId(CODEC_ID_H264);
   enc.setWidth(160);
