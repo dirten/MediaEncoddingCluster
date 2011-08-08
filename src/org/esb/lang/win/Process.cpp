@@ -54,6 +54,12 @@ namespace org {
       Process::~Process() {
         
       }
+      unsigned int Process::getCpuCount(){
+        return boost::thread::hardware_concurrency();
+      }
+      void Process::detouch(){
+        _detouched=true;
+      }
 
       void Process::start() {
         if (_executable.length() == 0)

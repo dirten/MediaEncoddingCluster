@@ -30,6 +30,7 @@ namespace org {
         void run(bool restartable=false, int restart_count=3);
         void stop();
         void kill();
+        void detouch();
         void addProcessListener(ProcessListener * l){_listener.push_back(l);}
 
         bool isRunning(){return _running;};
@@ -39,6 +40,8 @@ namespace org {
         std::string getExecutable(){return _executable;}
         std::list<std::string> getArguments(){return _arguments;}
         bool isRestartable(){return _restartable;}
+        
+        static unsigned int getCpuCount();
       private:
         std::string _executable;
         std::string _name;
@@ -47,6 +50,7 @@ namespace org {
         bool _running;
         bool _restartable;
         bool _stop;
+        bool _detouched;
         boost::condition process_shutdown_wait_condition;
         boost::mutex process_shutdown_wait_mutex;
 

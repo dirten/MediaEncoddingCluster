@@ -92,10 +92,11 @@ void checkDirs();
 int rec = 0;
 std::string _hostname;
 int _port = 0;
-bool quiet=false;
+bool quiet = false;
+
 int main(int argc, char * argv[]) {
   //std::cout << "arg0:" << argv[0] << std::endl;
-	//isatty(0);
+  //isatty(0);
   /*setting default path to Program*/
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
@@ -104,7 +105,7 @@ int main(int argc, char * argv[]) {
   //  Config::setProperty("hive.base_path", base_path);
   try {
     po::options_description gen("General options");
-
+    unsigned int cpu_count=Process::getCpuCount();
     gen.add_options()
             ("help", "produce this message")
             ("version", "Prints the Version")
@@ -130,8 +131,8 @@ int main(int argc, char * argv[]) {
             ("client,i", "start the Hive Client")
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")
             ("port,p", po::value<int>()->default_value(20200), "Port to connect")
-            ("count", po::value<int>()->default_value(1), "Client Processor Count")
-    ;
+            ("count", po::value<int>()->default_value(cpu_count), "Client Processor Count")
+            ;
 
     po::options_description web("Webserver");
     web.add_options()
@@ -158,33 +159,33 @@ int main(int argc, char * argv[]) {
     priv.add(all);
 
     po::variables_map vm;
-    try{
-	po::store(po::parse_command_line(argc, argv, priv), vm);
-    }catch(std::exception & ex){
-	//std::cout <<boost::diagnostic_information(ex)<<std::endl;
-	std::cout <<ex.what()<<"!!!"<<std::endl<<std::endl;
-        std::cout << all << std::endl;
-	exit(1);
+    try {
+      po::store(po::parse_command_line(argc, argv, priv), vm);
+    } catch (std::exception & ex) {
+      //std::cout <<boost::diagnostic_information(ex)<<std::endl;
+      std::cout << ex.what() << "!!!" << std::endl << std::endl;
+      std::cout << all << std::endl;
+      exit(1);
     }
     po::notify(vm);
- 
+
     if (vm.count("loglevel")) {
-      config::Config::setProperty("loglevel", vm["loglevel"].as<string>());
+      config::Config::setProperty("loglevel", vm["loglevel"].as<string > ());
     }
     if (!vm.count("quiet")) {
-	std::cout <<""<< std::endl;
-	std::cout << "******************************************************************"<< std::endl;
-	std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hölscher   *"<< std::endl;
-	std::cout << "*                                                                *"<< std::endl;
-	std::cout << "* This program is Licensed under the terms in the LICENSE file   *"<< std::endl;
-	std::cout << "*                                                                *"<< std::endl;
-	std::cout << "* This program is distributed in the hope that it will be useful,*"<< std::endl;
-	std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *"<< std::endl;
-	std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *"<< std::endl;
-	std::cout << "******************************************************************"<< std::endl;
-	std::cout <<""<< std::endl;
-    }else{
-	quiet=true;
+      std::cout << "" << std::endl;
+      std::cout << "******************************************************************" << std::endl;
+      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hölscher   *" << std::endl;
+      std::cout << "*                                                                *" << std::endl;
+      std::cout << "* This program is Licensed under the terms in the LICENSE file   *" << std::endl;
+      std::cout << "*                                                                *" << std::endl;
+      std::cout << "* This program is distributed in the hope that it will be useful,*" << std::endl;
+      std::cout << "* but WITHOUT ANY WARRANTY; without even the implied warranty of *" << std::endl;
+      std::cout << "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *" << std::endl;
+      std::cout << "******************************************************************" << std::endl;
+      std::cout << "" << std::endl;
+    } else {
+      quiet = true;
     }
     if (vm.count("help") || argc == 1) {
       cout << all << "\n";
@@ -231,7 +232,7 @@ int main(int argc, char * argv[]) {
 
 
     //if(config::Config::get("debug")!="true")
-      //new StackDumper(config::Config::get("hive.dump_path"));
+    //new StackDumper(config::Config::get("hive.dump_path"));
 
 
     av_register_all();
@@ -239,7 +240,7 @@ int main(int argc, char * argv[]) {
     avcodec_register_all();
 
     if (vm.count("console")) {
-	console();
+      console();
     }
     if (vm.count("erlang")) {
       LOGDEBUG("test option");
@@ -431,13 +432,19 @@ public:
        * @TODO: this is a memleak here, the created objects must be deleted
        *
        */
-      _client = Ptr<org::esb::hive::HiveClient > (new org::esb::hive::HiveClient(host, port));
-      Messenger::getInstance().addMessageListener(*_client.get());
+      //_client = Ptr<org::esb::hive::HiveClient > (new org::esb::hive::HiveClient(host, port));
+      //Messenger::getInstance().addMessageListener(*_client.get());
+      int count = atoi(config::Config::get("client.count").c_str());
+      LOGINFO("Starting " << count << " Client Processes");
+      for (int a = 0; a < count; a++) {
+        org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
+        boost::thread t(boost::bind(&HiveClient::start, c));
+      }
 
       _clientaudio = Ptr<org::esb::hive::HiveClientAudio > (new org::esb::hive::HiveClientAudio(host, port));
       Messenger::getInstance().addMessageListener(*_clientaudio.get());
 
-      Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
+      //Messenger::getInstance().sendMessage(Message().setProperty("hiveclient", org::esb::hive::START));
       Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
       having_server = true;
       /*
@@ -481,9 +488,9 @@ void client(int argc, char *argv[]) {
     string host = config::Config::get("client.host");
     int port = atoi(config::Config::get("client.port").c_str());
     int count = atoi(config::Config::get("client.count").c_str());
-    LOGINFO("Starting "<<count<<" Client Processes");
-    for(int a =0;a<count;a++){
-      org::esb::hive::HiveClient *c=new org::esb::hive::HiveClient(host, port);
+    LOGINFO("Starting " << count << " Client Processes");
+    for (int a = 0; a < count; a++) {
+      org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
       boost::thread t(boost::bind(&HiveClient::start, c));
     }
     //Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
@@ -493,13 +500,14 @@ void client(int argc, char *argv[]) {
     Messenger::getInstance().sendMessage(Message().setProperty("hiveclientaudio", org::esb::hive::START));
 
   }
-  if(!quiet){
-    std::cout << "mhive clinet is running"<<std::endl;
-    std::cout << "Press ctrl & c to stop the program"<<std::endl;
+  if (!quiet) {
+    std::cout << "mhive clinet is running" << std::endl;
+    std::cout << "Press ctrl & c to stop the program" << std::endl;
   }
   org::esb::lang::CtrlCHitWaiter::wait();
-  if(!quiet){
-    std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  if (!quiet) {
+    std::cout << "\rshutdown app, this will take a minute!" << std::endl;
+    ;
   }
   //LOGWARN("Stopp Signal received!!!");
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
@@ -564,14 +572,15 @@ void start() {
   //  LOGINFO("wait for shutdown!");
   //org::esb::rpc::Server server(6000);
   //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
-  std::string port=config::Config::getProperty("web.port");
-  if(!quiet){
-    std::cout << "mhive server is running, open the url http://localhost:"<<port<<std::endl;
-    std::cout << "Press ctrl & c to stop the program"<<std::endl;
+  std::string port = config::Config::getProperty("web.port");
+  if (!quiet) {
+    std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;
+    std::cout << "Press ctrl & c to stop the program" << std::endl;
   }
   org::esb::lang::CtrlCHitWaiter::wait();
-  if(!quiet){
-    std::cout <<"\rshutdown app, this will take a minute!"<<std::endl;;
+  if (!quiet) {
+    std::cout << "\rshutdown app, this will take a minute!" << std::endl;
+    ;
   }
   /*
    *

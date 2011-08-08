@@ -25,16 +25,18 @@ namespace org {
         _restartable = false;
         _stop = false;
         _process_list.push_back(this);
+        _detouched=true;
       }
 
       Process::Process(int32_t pid) : _processId(pid) {
         _running = ::kill(_processId, 0) == 0;
         _restartable = false;
         _stop = false;
+        _detouched=true;
       }
 
       Process::~Process() {
-        if (_running) {
+        if (_running&&!_detouched) {
           try {
             stop();
           } catch (ProcessException & ex) {
@@ -47,7 +49,13 @@ namespace org {
           }
         }
       }
-
+      
+      unsigned int Process::getCpuCount(){
+        return boost::thread::hardware_concurrency();
+      }
+      void Process::detouch(){
+        _detouched=true;
+      }
       void Process::start() {
         /*waiting 0,5 sec for the mutext condition*/
         org::esb::lang::Thread::sleep2(1000);
