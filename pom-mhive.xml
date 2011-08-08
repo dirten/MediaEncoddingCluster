@@ -269,7 +269,7 @@
                 </exec>
                 <delete dir="${project.basedir}/iss/output"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
-                  <arg line="release"/>
+                  <arg line="package"/>
                 </exec>
               </tasks>
             </configuration>
