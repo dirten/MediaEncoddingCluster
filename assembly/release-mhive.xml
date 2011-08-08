@@ -12,5 +12,12 @@
         <include>**/*</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>build</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>**/*.sh</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
