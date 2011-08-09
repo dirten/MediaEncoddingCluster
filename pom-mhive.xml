@@ -289,6 +289,8 @@
                 <ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
 		    <fileset dir="${project.basedir}/build">
 			<include name="*.dmg" />
+			<include name="*.exe" />
+			<include name="*.sh" />
 		    </fileset>
 		</ftp>
 
