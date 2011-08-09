@@ -317,16 +317,16 @@ ENDIF(WIN32)
 
 
 
-SET(CURL_CMD curl)
-SET(ZIP_CMD gzip)
-SET(MHIVE_DBGSYM mhive)
-SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
-IF(WIN32)
-  SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
-  SET(ZIP_CMD "${PROJECT_SOURCE_DIR}/win32/gzip.exe")
-  SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
-  SET(MHIVE_DBGSYM mhive.pdb)
-ENDIF(WIN32)
+#SET(CURL_CMD curl)
+#SET(ZIP_CMD gzip)
+#SET(MHIVE_DBGSYM mhive)
+#SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
+#IF(WIN32)
+#  SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+#  SET(ZIP_CMD "${PROJECT_SOURCE_DIR}/win32/gzip.exe")
+#  SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
+#  SET(MHIVE_DBGSYM mhive.pdb)
+#ENDIF(WIN32)
 
 
 add_custom_target(uploadsymbols
@@ -334,6 +334,9 @@ add_custom_target(uploadsymbols
   COMMAND ${ZIP_CMD} -f ${CMAKE_CURRENT_BINARY_DIR}/mhive.sym
   COMMAND ${CURL_CMD} -F symupload=@${CMAKE_CURRENT_BINARY_DIR}/mhive.sym.gz -F system=linux http://codergrid.de/symupload.php
 )
+#add_custom_target(upload
+#  COMMAND ${CURL_CMD} -T ${PROJECT_SOURCE_DIR}/build/MediaEncodingCluster-${CPACK_PACKAGE_VERSION}-Darwin.dmg -u${userid}:${pass} ftp://codergrid.de
+#)
 MESSAGE("InstallBuilderExe $ENV{INSTALLBUILDER_EXE}")
 add_custom_target(release
   COMMAND ${INSTALLBUILDER_EXE} build ${PROJECT_SOURCE_DIR}/iss/mhive.xml
@@ -408,7 +411,7 @@ ELSEIF(APPLE)
       ${FFMPEG_DIR}/lib/libavutil.dylib
       ${FFMPEG_DIR}/lib/libswscale.dylib
     DESTINATION ${LIB_INSTALL_DIR}
-    COMPONENT libraries
+#    COMPONENT libraries
   )
   SET_SOURCE_FILES_PROPERTIES(
   ${PROJECT_SOURCE_DIR}/src/mectl

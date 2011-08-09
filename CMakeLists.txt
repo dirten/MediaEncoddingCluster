@@ -54,6 +54,18 @@ ENDIF(UNIX)
 ENABLE_TESTING()
 SET(DART_TESTING_TIMEOUT 100)
 
+
+SET(CURL_CMD curl)
+SET(ZIP_CMD gzip)
+SET(MHIVE_DBGSYM mhive)
+SET(DUMPSYM_CMD "${BREAKPAD_DIR}/bin/dump_syms")
+IF(WIN32)
+  SET(CURL_CMD "${PROJECT_SOURCE_DIR}/win32/curl.exe")
+  SET(ZIP_CMD "${PROJECT_SOURCE_DIR}/win32/gzip.exe")
+  SET(DUMPSYM_CMD "${PROJECT_SOURCE_DIR}/win32/dump_syms.exe")
+  SET(MHIVE_DBGSYM mhive.pdb)
+ENDIF(WIN32)
+
 #set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "${CTEST_MEMORYCHECK_COMMAND_OPTIONS} --num-callers=50") 
 set(VALGRIND_COMMAND_OPTIONS "-q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50")
 
@@ -346,8 +358,12 @@ SET(MHIVE_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${MINOR_PAT
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_SOURCE_DIR}/config.h)
 
 
-set(CPACK_COMPONENTS_ALL mhive libraries)
+#set(CPACK_COMPONENTS_ALL mhive libraries)
 
 INCLUDE(CPack)
+#add_custom_target(upload
+#  COMMAND ${CURL_CMD} -T ${PROJECT_SOURCE_DIR}/build/${CPACK_PACKAGE_FILE_NAME}-${CPACK_PACKAGE_VERSION}-Darwin.dmg -u${userid}:${pass} ftp://codergrid.de
+#)
+
 
 

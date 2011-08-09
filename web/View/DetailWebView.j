@@ -66,6 +66,7 @@
 - (void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame
 {
     CPLog.debug("(void)webView:(CPWebView)aWebView didFinishLoadForFrame:(id)aFrame");
+    /*
     var domWindow = [self DOMWindow];
    statsdata = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/statistic?id="+_id] returningResponse:nil];
   stats=[[statsdata rawString] objectFromJSON];
@@ -87,11 +88,11 @@
         }
   for (var key in scrollRect.size){
       CPLog.debug("Key="+key+" value="+scrollRect.size[key]);
-    }
+    }*/
     //[self setFrameSize:scrollRect.size];
     //[_frameView scrollRectToVisible:scrollRect];
-    [self setFrameSize:scrollRect.size];
-    [self setNeedsDisplay:YES];
+    //[self setFrameSize:scrollRect.size];
+    //[self setNeedsDisplay:YES];
 
   }
 @end

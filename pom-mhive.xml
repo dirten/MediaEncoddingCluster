@@ -66,7 +66,17 @@
         <CMAKE_MAKE_PROGRAM>"Unix Makefiles"</CMAKE_MAKE_PROGRAM>
       </properties>
     </profile>
-                                              
+    <profile>
+      <activation>
+        <property>
+          <name>build_type</name>
+          <value>release</value>
+        </property>
+      </activation>
+      <properties>
+        <ftp_upload/>
+      </properties>
+    </profile>                                              
   </profiles>
   <!--
   <parent>
@@ -206,6 +216,7 @@
             <id>compile</id>
             <configuration>
               <tasks>
+
                 <mkdir dir="build"/>
                 <mkdir dir="build_xcode"/>
                 
@@ -278,22 +289,14 @@
             <id>package</id>
             <configuration>
               <tasks>
-                <chmod file="${project.build.directory}/dependency/bin/dump_syms" perm="ugo+rx"/>
+                <!--<chmod file="${project.build.directory}/dependency/bin/dump_syms" perm="ugo+rx"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="uploadsymbols"/>
-                </exec>
+                </exec>-->
                 <delete dir="${project.basedir}/iss/output"/>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
                 </exec>
-                <ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
-		    <fileset dir="${project.basedir}/build">
-			<include name="*.dmg" />
-			<include name="*.exe" />
-			<include name="*.sh" />
-		    </fileset>
-		</ftp>
-
               </tasks>
             </configuration>
             <goals>
@@ -301,13 +304,15 @@
             </goals>
           </execution>
           <execution>
-            <phase>deploy</phase>
-            <id>deploy1</id>
+            <phase>package</phase>
+            <id>upload</id>
             <configuration>
-              <tasks>
+              <tasks if="ftp_upload">
 		<ftp action="send" server="codergrid.de" remotedir="/" userid="${userid}" password="${passwd}" depends="yes" verbose="yes">
 		    <fileset dir="${project.basedir}/build">
 			<include name="*.dmg" />
+			<include name="*.exe" />
+			<include name="*.sh" />
 		    </fileset>
 		</ftp>
               </tasks>
