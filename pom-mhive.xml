@@ -294,6 +294,11 @@
                   <arg line="uploadsymbols"/>
                 </exec>-->
                 <delete dir="${project.basedir}/iss/output"/>
+                <delete>
+                  <fileset dir="${mybasedir}/source/build" includes="**/*.dmg*"/>
+                  <fileset dir="${mybasedir}/source/build" includes="**/*.exe"/>
+                  <fileset dir="${mybasedir}/source/build" includes="**/*.sh"/>
+                </delete>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
                 </exec>
