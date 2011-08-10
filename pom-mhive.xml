@@ -295,9 +295,9 @@
                 </exec>-->
                 <delete dir="${project.basedir}/iss/output"/>
                 <delete>
-                  <fileset dir="${mybasedir}/source/build" includes="**/*.dmg*"/>
-                  <fileset dir="${mybasedir}/source/build" includes="**/*.exe"/>
-                  <fileset dir="${mybasedir}/source/build" includes="**/*.sh"/>
+                  <fileset dir="${project.basedir}/build" includes="**/*.dmg*"/>
+                  <fileset dir="${project.basedir}/build" includes="**/*.exe"/>
+                  <fileset dir="${project.basedir}/build" includes="**/*.sh"/>
                 </delete>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
