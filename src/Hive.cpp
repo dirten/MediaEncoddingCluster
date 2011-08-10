@@ -101,7 +101,7 @@ int main(int argc, char * argv[]) {
   //std::cout << "arg0:" << argv[0] << std::endl;
   //isatty(0);
   /*setting default path to Program*/
-  log4cplus::BasicConfigurator conf;
+  //log4cplus::BasicConfigurator conf;
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //config::Config::setProperty("hive.base_path", base_path);
@@ -492,10 +492,6 @@ void client(int argc, char *argv[]) {
     node.setData("version", MHIVE_VERSION);
     org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
   if (config::Config::get("client.host") == "auto") {
-    org::esb::hive::Node node;
-    node.setData("type", "client");
-    node.setData("version", MHIVE_VERSION);
-    org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
     NodeAgent agent;
     res.setNodeListener(&agent);
     res.start();
