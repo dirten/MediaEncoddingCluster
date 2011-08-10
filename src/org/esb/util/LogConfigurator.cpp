@@ -1,31 +1,40 @@
-#include "org/esb/config/config.h"
+//#include "org/esb/config/config.h"
 //#include "org/esb/io/File.h"
 namespace org {
   namespace esb {
     namespace util {
 
       class LogConfigurator : public log4cplus::PropertyConfigurator {
+          std::string log_pattern;// = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
+      std::string logpath;
+      std::string logdebug;
+      std::string logwarn;
       public:
 
         LogConfigurator() : log4cplus::PropertyConfigurator(LOG4CPLUS_TEXT(""), log4cplus::Logger::getDefaultHierarchy()) {
-          std::string log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
+          log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
           char * pathenv=getenv("log.path");
           char * loglevel=getenv("loglevel");
           if(pathenv==NULL)
             pathenv="";
           if(loglevel==NULL)
             loglevel="";
-          std::string logpath=pathenv;//org::esb::config::Config::get("log.path");
+          logpath=pathenv;//org::esb::config::Config::get("log.path");
+          logdebug=logpath+"/mhive.log";
+          logwarn=logpath+"/mhive-warn.log";
+          std::cout <<"logpath:"<<logdebug<<std::endl;
+          std::cout <<"logwarn:"<<logdebug<<std::endl;
+          std::cout <<"loglevel:"<<loglevel<<std::endl;
           //org::esb::io::File logdir(logpath);
           //if(!logdir.exists())
             //logdir.mkdir();
-
           //logpath+="/mhive.log";
           
-          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("TRACE, STDOUT, MAIN, WARN"));
+          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("TRACE, STDOUT, MAIN"));
           
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT"), LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"));
-          //properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
+          //return;
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.1"), LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter"));
@@ -34,17 +43,20 @@ namespace org {
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.1.LogLevelMax"), LOG4CPLUS_TEXT("Fatal"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.1.AcceptOnMatch"), LOG4CPLUS_TEXT("true"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.2"), LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter"));
+//            return;
+        
           
 
           properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(logpath+"/mhive.log"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(logdebug));
           properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.MaxFileSize"), LOG4CPLUS_TEXT("50MB"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.MaxBackupIndex"), LOG4CPLUS_TEXT("10"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.MAIN.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
+           // return;
 
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.File"), LOG4CPLUS_TEXT(logpath+"/mhive-warn.log"));
+          properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.File"), LOG4CPLUS_TEXT(logwarn));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.MaxFileSize"), LOG4CPLUS_TEXT("50MB"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.MaxBackupIndex"), LOG4CPLUS_TEXT("10"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
@@ -54,7 +66,7 @@ namespace org {
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.LogLevelMax"), LOG4CPLUS_TEXT("Fatal"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.AcceptOnMatch"), LOG4CPLUS_TEXT("true"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.2"), LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter"));
-
+          //log4cplus::PropertyConfigurator::reconfigure();
           /*
           //          properties.setProperty(LOG4CPLUS_TEXT("logger.DEBUG"), LOG4CPLUS_TEXT("DEBUG"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.DEBUG"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));

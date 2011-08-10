@@ -18,8 +18,8 @@ namespace org {
         static int count;
         static char line[1024], prev[1024];
         AVClass* avc = ptr ? *(AVClass**) ptr : NULL;
-/*        if (level > av_log_level)
-          return;*/
+        if (level > av_log_level)
+          return;
 #undef fprintf
 #ifdef __WIN32__
 #define snprintf _snprintf

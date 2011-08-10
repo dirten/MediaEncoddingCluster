@@ -54,6 +54,9 @@
 #include "org/esb/mq/QueueManager.h"
 #include "org/esb/mq/QueueConnection.h"
 #include "org/esb/util/Log.h"
+#include "org/esb/util/LogConfigurator.cpp"
+
+
 //#include "org/esb/lang/StackDumper.h"
 #include "org/esb/hive/NodeResolver.h"
 #include "org/esb/hive/CodecFactory.h"
@@ -101,7 +104,7 @@ int main(int argc, char * argv[]) {
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
   //config::Config::setProperty("hive.base_path", base_path);
-
+  //log4cplus::BasicConfigurator::doConfigure();
   //  Config::setProperty("hive.base_path", base_path);
   try {
     po::options_description gen("General options");
@@ -201,7 +204,14 @@ int main(int argc, char * argv[]) {
     setupConfig(vm);
     checkDirs();
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
-    Log::open("");
+    string base_path = org::esb::config::Config::getProperty("hive.base_path");
+    org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
+    
+    lconfig->configure();
+    //log4cplus::BasicConfigurator::doConfigure();
+    //Log::open();
+    //LOGDEBUG("configure Log opened");
+    //return 0;
     setupDatabase();
     //return 0;
     if (vm.count("stop")) {
@@ -476,10 +486,10 @@ private:
 
 void client(int argc, char *argv[]) {
   org::esb::lang::Thread::sleep2(3000);
-  org::esb::hive::Node node;
-  node.setData("type", "client");
-  node.setData("version", MHIVE_VERSION);
-  org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
+    org::esb::hive::Node node;
+    node.setData("type", "client");
+    node.setData("version", MHIVE_VERSION);
+    org::esb::hive::NodeResolver res(boost::asio::ip::address::from_string("0.0.0.0"), boost::asio::ip::address::from_string("239.255.0.1"), 6000, node);
   if (config::Config::get("client.host") == "auto") {
     NodeAgent agent;
     res.setNodeListener(&agent);
@@ -513,7 +523,7 @@ void client(int argc, char *argv[]) {
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
-  res.stop();
+  //res.stop();
 }
 
 /*----------------------------------------------------------------------------------------------*/

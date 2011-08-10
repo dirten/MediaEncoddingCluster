@@ -59,20 +59,15 @@ Log::~Log() {
 }
 
 void Log::open(std::string path) {
-  if (path.length() > 0) {
-//    std::cout <<"logpath:"<< path<<std::endl;
-    path.append("/logging.properties");
-    globalConfigureThread = new log4cplus::ConfigureAndWatchThread(LOG4CPLUS_TEXT(path), 5 * 1000);
-	
-//    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(path));
-//    config.configure();
-  } else {
-    org::esb::util::LogConfigurator config;
-    config.configure();
+    std::cout <<"enable logging"<<std::endl;
+    //log4cplus::BasicConfigurator::doConfigure();
+    org::esb::util::LogConfigurator * config=new org::esb::util::LogConfigurator();
+    config->configure();
+    std::cout <<"logging enabled"<<std::endl;
+
     //config.reconfigure();
     //config.configure();
 
-  }
   //Log::logger = log4cplus::Logger::getInstance("trace");
 
 
