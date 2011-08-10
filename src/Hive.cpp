@@ -179,7 +179,7 @@ int main(int argc, char * argv[]) {
     if (!vm.count("quiet")) {
       std::cout << "" << std::endl;
       std::cout << "******************************************************************" << std::endl;
-      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hoelscher   *" << std::endl;
+      std::cout << "* MediaEncodingCluster, Copyright (C) 2000-2011   Jan Hoelscher  *" << std::endl;
       std::cout << "*                                                                *" << std::endl;
       std::cout << "* This program is Licensed under the terms in the LICENSE file   *" << std::endl;
       std::cout << "*                                                                *" << std::endl;
