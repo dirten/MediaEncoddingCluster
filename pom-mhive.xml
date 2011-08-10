@@ -250,7 +250,7 @@
             </goals>
           </execution>
           <execution>
-            <phase>test1</phase>
+            <phase>test</phase>
             <id>test</id>
             <configuration>
               <tasks>
