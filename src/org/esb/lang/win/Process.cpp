@@ -126,7 +126,16 @@ namespace org {
 
       void Process::run(bool restartable, int count) {
         _restartable = restartable;
-        boost::thread(boost::bind(&Process::start, this));
+        boost::mutex::scoped_lock process_started_lock(process_started_wait_mutex);
+        boost::thread t(boost::bind(&Process::start, this));
+        LOGDEBUG("waiting 5 sec. for process to start");
+        if (process_started_wait_condition.timed_wait(process_started_lock, boost::posix_time::seconds(5))) {
+          LOGDEBUG("process started");
+        } else {
+          LOGERROR("Process start timeout of 30 sec. reached");
+          throw ProcessException("Process start timeout of 5 sec. reached");
+        }
+//        boost::thread(boost::bind(&Process::start, this));
       }
 
       void Process::stop() {
