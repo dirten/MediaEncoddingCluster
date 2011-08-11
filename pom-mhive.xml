@@ -298,6 +298,7 @@
                   <fileset dir="${project.basedir}/build" includes="**/*.dmg*"/>
                   <fileset dir="${project.basedir}/build" includes="**/*.exe"/>
                   <fileset dir="${project.basedir}/build" includes="**/*.sh"/>
+                  <fileset dir="${project.basedir}/build" includes="**/_CPack_Packages"/>
                 </delete>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
