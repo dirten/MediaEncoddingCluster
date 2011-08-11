@@ -154,11 +154,9 @@ SET(CPACK_STRIP_FILES mhive)
 SET(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
-  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS  
-#      "File \\\"c:\\\\vcredist_x86.exe\\\"
-#      ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'
+  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
       CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive Console.lnk\\\" \\\"$INSTDIR\\\\bin\\\\mhive.exe -c\\\"
-  )
+  ")
 ELSEIF(APPLE)
   SET(CPACK_PACKAGE_DEFAULT_LOCATION "/Applications/MediaEncodingCluster")
   SET(CPACK_PACKAGING_INSTALL_PREFIX "/")

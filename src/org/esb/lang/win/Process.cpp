@@ -112,6 +112,8 @@ namespace org {
         _processId = procInfo.dwProcessId;
         _running = true;
         //        LOGDEBUG("Waiting for process");
+        process_started_wait_condition.notify_one();
+
         notifyProcessListener(ProcessEvent(_processId, 0, ProcessEvent::PROCESS_STARTED));
         WaitForSingleObject(procInfo.hProcess, INFINITE);
         CloseHandle(procInfo.hProcess);
