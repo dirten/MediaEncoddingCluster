@@ -181,16 +181,20 @@ int console() {
     if ((line = getmyline()) == NULL)break;
     std::string l = org::esb::util::StringUtil::trim(line, "\n");
     if (l == "help") {
-      std::cout << "*********************************Help*****************************"<< std::endl;
+      std::cout << "*********************************Help**************************************"<< std::endl;
       std::cout << "help                              -> print this help" << std::endl;
-      std::cout << "exit                              -> exit the console withput interupting the Server/Client Process" << std::endl;
+      std::cout << "exit                              -> exit the console withput interupting "<<std::endl;
+      std::cout << "                                     the Server/Client Process" << std::endl;
       std::cout << "start server                      -> starts the mhive server" << std::endl;
-      std::cout << "start client                      -> starts the mhive client which will connect to first server found by auto discovery" << std::endl;
-      std::cout << "start client [IP|HOSTNAME][:PORT] -> starts the mhive client which will connect to the given server connection" << std::endl;
+      std::cout << "start client                      -> starts the mhive client which will "<< std::endl;
+      std::cout << "                                     connect to first server found by auto"<< std::endl;
+      std::cout << "                                     discovery" << std::endl;
+      std::cout << "start client [IP|HOSTNAME][:PORT] -> starts the mhive client which will "<< std::endl;
+      std::cout << "                                     connect to the given server connection" << std::endl;
       std::cout << "stop server                       -> stops the mhive server" << std::endl;
       std::cout << "stop client                       -> stops the mhive client" << std::endl;
       std::cout << "show status                       -> status view" << std::endl;
-      std::cout << "******************************************************************"<< std::endl;
+      std::cout << "***************************************************************************"<< std::endl;
     } else
       //if(l=="start"){
       //    std::cout<<"hee? start server, start client?"<<std::endl;

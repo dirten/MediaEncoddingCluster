@@ -22,9 +22,9 @@ namespace org {
           logpath=pathenv;//org::esb::config::Config::get("log.path");
           logdebug=logpath+"/mhive.log";
           logwarn=logpath+"/mhive-warn.log";
-          std::cout <<"logpath:"<<logdebug<<std::endl;
-          std::cout <<"logwarn:"<<logdebug<<std::endl;
-          std::cout <<"loglevel:"<<loglevel<<std::endl;
+          //std::cout <<"logpath:"<<logdebug<<std::endl;
+          //std::cout <<"logwarn:"<<logdebug<<std::endl;
+          //std::cout <<"loglevel:"<<loglevel<<std::endl;
           //org::esb::io::File logdir(logpath);
           //if(!logdir.exists())
             //logdir.mkdir();
