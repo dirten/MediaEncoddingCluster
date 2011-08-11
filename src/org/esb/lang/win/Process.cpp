@@ -100,7 +100,7 @@ namespace org {
                 NULL,
                 NULL,
                 FALSE,
-                NORMAL_PRIORITY_CLASS,
+                NORMAL_PRIORITY_CLASS|DETACHED_PROCESS,
                 NULL,
                 NULL,
                 &suInfo,

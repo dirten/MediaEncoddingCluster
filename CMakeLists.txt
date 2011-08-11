@@ -155,7 +155,7 @@ SET(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
 IF(WIN32)
   SET(CPACK_GENERATOR "NSIS" )
   SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive Console.lnk\\\" \\\"$INSTDIR\\\\bin\\\\mhive.exe -c\\\"
+      CreateShortCut \\\"$SMPROGRAMS\\\\\$STARTMENU_FOLDER\\\\Start Mhive Console.lnk\\\" \\\"$INSTDIR\\\\bin\\\\mhive.exe\\\" -c
   ")
 ELSEIF(APPLE)
   SET(CPACK_PACKAGE_DEFAULT_LOCATION "/Applications/MediaEncodingCluster")
