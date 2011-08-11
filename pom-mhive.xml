@@ -293,11 +293,13 @@
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="uploadsymbols"/>
                 </exec>-->
-                <delete dir="${project.basedir}/build/_CPack_Packages"/>
+                <!--<symlink action="delete" link="${project.basedir}/build/_CPack_Packages"/>-->
+                <!--<delete dir="${project.basedir}/build/_CPack_Packages"/>-->
                 <delete>
                   <fileset dir="${project.basedir}/build" includes="**/*.dmg*"/>
                   <fileset dir="${project.basedir}/build" includes="**/*.exe"/>
                   <fileset dir="${project.basedir}/build" includes="**/*.sh"/>
+                  <dirset dir="${project.basedir}/build" includes="_CPack_Packages" followsymlinks="false"/>
                 </delete>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
                   <arg line="package"/>
