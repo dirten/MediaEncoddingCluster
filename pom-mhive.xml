@@ -250,7 +250,7 @@
             </goals>
           </execution>
           <execution>
-            <phase>test1</phase>
+            <phase>test</phase>
             <id>test</id>
             <configuration>
               <tasks>
@@ -296,9 +296,9 @@
                 <!--<symlink action="delete" link="${project.basedir}/build/_CPack_Packages"/>-->
                 <!--<delete dir="${project.basedir}/build/_CPack_Packages"/>-->
                 <delete>
-                  <fileset dir="${project.basedir}/build" includes="**/*.dmg*"/>
-                  <fileset dir="${project.basedir}/build" includes="**/*.exe"/>
-                  <fileset dir="${project.basedir}/build" includes="**/*.sh"/>
+                  <fileset dir="${project.basedir}/build" includes="*.dmg*"/>
+                  <fileset dir="${project.basedir}/build" includes="*.exe"/>
+                  <fileset dir="${project.basedir}/build" includes="*.sh"/>
                   <!--<dirset dir="${project.basedir}/build" includes="**/_CPack_Packages/*" followsymlinks="false"/>-->
                 </delete>
                 <exec executable="${MAKE_EXECUTABLE}" dir="${project.basedir}/build" failonerror="yes">
@@ -330,7 +330,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--<plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
@@ -346,7 +346,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
   <dependencies>
