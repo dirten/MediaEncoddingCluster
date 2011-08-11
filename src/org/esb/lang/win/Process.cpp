@@ -46,7 +46,9 @@ namespace org {
         _restartable = false;
       }
       Process::Process(int32_t pid):_processId(pid){
-          _running = true;
+        HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, _processId);  
+        _running = hProcess!=NULL;
+        CloseHandle(hProcess);
           _restartable = false;
           _stop = false;
       }
