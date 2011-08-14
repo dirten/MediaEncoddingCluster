@@ -83,7 +83,7 @@ public:
     shutdown = false;
     LOGDEBUG("endpoint:" << e);
   }
-
+/*
   DataHandler(InputStream * is, OutputStream * os) {
     _is = is;
     _os = os;
@@ -98,7 +98,7 @@ public:
 
 
   }
-
+*/
   ~DataHandler() {
     shutdown = true;
     _timer.reset();
