@@ -72,12 +72,13 @@ int main(int argc, char**argv){
   LOGDEBUG("FileName:"<<url.getFileName());
   LOGDEBUG("FilePath:"<<url.getFilePath());
   LOGDEBUG("Fileexist:"<<url.exists());
+  if(url.exists()){
   url=url.getParent();
   LOGDEBUG("Path:"<<url.getPath());
   LOGDEBUG("Ext:"<<url.getExtension());
   LOGDEBUG("FileName:"<<url.getFileName());
   LOGDEBUG("FilePath:"<<url.getFilePath());
-  
+  }
   Log::close();
   return 0;
 }
