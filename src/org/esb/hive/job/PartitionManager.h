@@ -23,7 +23,9 @@ namespace org {
           FULL,
           EXIST,
           NOT_EXIST,
-          NOT_EMPTY
+          NOT_EMPTY,
+          NOT_IN_PARTITION,
+          ALLREADY_JOINED
         };
         static PartitionManager * getInstance();
         Result joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep);
