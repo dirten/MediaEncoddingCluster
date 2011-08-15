@@ -128,7 +128,7 @@ namespace org {
           }
           return object;
         }
-        /*
+        
         bool dequeue(T & object) {
           //LOGTRACEMETHOD("dequeue(T & object)");
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
@@ -152,7 +152,7 @@ namespace org {
           result = true;
           enqueue_condition.notify_one();
           return result;
-        }*/
+        }
 
         T operator[](int a) {
           return _q[a];
