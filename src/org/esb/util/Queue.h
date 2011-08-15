@@ -111,7 +111,24 @@ namespace org {
           enqueue_condition.notify_one();
           return object;
         }
-
+        
+        bool dequeueLock(){
+          queue_mutex.lock();
+        }
+        
+        bool dequeueUnLock(){
+          queue_mutex.unlock();
+        }
+        
+        T lookup(){
+          T object;
+          {
+            boost::mutex::scoped_lock queue_lock(queue_mutex);
+            object = _q.front();
+          }
+          return object;
+        }
+        /*
         bool dequeue(T & object) {
           //LOGTRACEMETHOD("dequeue(T & object)");
           boost::mutex::scoped_lock dequeue_lock(dequeue_mutex);
@@ -135,7 +152,7 @@ namespace org {
           result = true;
           enqueue_condition.notify_one();
           return result;
-        }
+        }*/
 
         T operator[](int a) {
           return _q[a];

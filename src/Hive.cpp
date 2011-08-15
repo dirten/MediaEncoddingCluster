@@ -134,6 +134,7 @@ int main(int argc, char * argv[]) {
     cli.add_options()
             ("client,i", "start the Hive Client")
             ("host,h", po::value<std::string > ()->default_value("auto"), "Host to connect")
+            ("partition", po::value<std::string > ()->default_value("global"), "assigned partition")
             ("port,p", po::value<int>()->default_value(20200), "Port to connect")
             ("count", po::value<int>()->default_value(cpu_count), "Client Processor Count")
             ;
@@ -449,6 +450,7 @@ public:
       LOGINFO("Starting " << count << " Client Processes");
       for (int a = 0; a < count; a++) {
         org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
+        Messenger::getInstance().addMessageListener(*c);
         boost::thread t(boost::bind(&HiveClient::start, c));
       }
 
@@ -502,6 +504,7 @@ void client(int argc, char *argv[]) {
     LOGINFO("Starting " << count << " Client Processes");
     for (int a = 0; a < count; a++) {
       org::esb::hive::HiveClient *c = new org::esb::hive::HiveClient(host, port);
+      Messenger::getInstance().addMessageListener(*c);
       boost::thread t(boost::bind(&HiveClient::start, c));
     }
     //Messenger::getInstance().addMessageListener(*new org::esb::hive::HiveClient(host, port));
@@ -524,7 +527,7 @@ void client(int argc, char *argv[]) {
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::free();
-  //res.stop();
+  res.stop();
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -732,6 +735,7 @@ void setupConfig(po::variables_map vm) {
     config::Config::setProperty("hive.base_path", vm["base"].as<std::string > ());
   }
   std::string bpath = config::Config::get("hive.base_path");
+  config::Config::setProperty("partition", StringUtil::toString(vm["partition"].as<std::string> ()));
   config::Config::setProperty("hive.port", StringUtil::toString(vm["hiveport"].as<int> ()));
   config::Config::setProperty("web.port", StringUtil::toString(vm["webport"].as<int> ()));
   config::Config::setProperty("web.docroot", bpath + "/web");

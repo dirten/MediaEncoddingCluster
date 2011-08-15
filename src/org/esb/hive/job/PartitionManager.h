@@ -32,6 +32,7 @@ namespace org {
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
         Result createPartition(std::string name, int size);
         Result deletePartition(std::string name);
+        
       private:
         PartitionManager();
         virtual ~PartitionManager();

@@ -11,8 +11,8 @@
 #include "org/esb/av/FormatBaseStream.h"
 //#include "org/esb/util/Log.h"
 #include "HiveClient.h"
-
-
+#include "org/esb/hive/protocol/PartitionHandler.h"
+#include "org/esb/config/config.h"
 
 //#include "Version.h"
 namespace org {
@@ -29,8 +29,8 @@ namespace org {
         _running = false;
         _sock = new org::esb::net::TcpSocket((char*) _host.c_str(), _port);
 #ifdef USE_SAFMQ
-        _qis=new QueueInputStream(_host, _port,"punitout");
-        _qos=new QueueOutputStream(_host, _port,"punitin");
+        _qis = new QueueInputStream(_host, _port, "punitout");
+        _qos = new QueueOutputStream(_host, _port, "punitin");
 #endif
         org::esb::av::FormatBaseStream::initialize();
         //        avcodec_register_all();
@@ -47,16 +47,17 @@ namespace org {
 
       void HiveClient::onMessage(org::esb::signal::Message & msg) {
         if (msg.getProperty("hiveclient") == "start") {
-          boost::thread t(boost::bind(&HiveClient::start, this));
+          _t=boost::thread(boost::bind(&HiveClient::start, this));
           _running = true;
         } else
           if (msg.getProperty("hiveclient") == "stop") {
           _toHalt = true;
           if (_running) {
             LOGDEBUG("StopSignal Received, waiting for all work done!");
-            _toHalt = true;
-            boost::mutex::scoped_lock terminationLock(terminationMutex);
-            ctrlCHit.wait(terminationLock);
+            //_toHalt = true;
+            //boost::mutex::scoped_lock terminationLock(terminationMutex);
+            //ctrlCHit.wait(terminationLock);
+            _t.join();
             LOGDEBUG("stopping done!")
           }
         }
@@ -79,20 +80,23 @@ namespace org {
           _sock->connect();
 #ifdef USE_SAFMQ
 
-          _qis=new QueueInputStream(_host, _port,"punitout");
-          _qos=new QueueOutputStream(_host, _port,"punitin");
-          _ois=new org::esb::io::ObjectInputStream(_qis.get());
+          _qis = new QueueInputStream(_host, _port, "punitout");
+          _qos = new QueueOutputStream(_host, _port, "punitin");
+          _ois = new org::esb::io::ObjectInputStream(_qis.get());
           _oos = new org::esb::io::ObjectOutputStream(_qos.get());
 #else
           _ois = new org::esb::io::ObjectInputStream(_sock->getInputStream());
           _oos = new org::esb::io::ObjectOutputStream(_sock->getOutputStream());
 #endif
+          std::string cmd = JOIN_PARTITION;
+          _sock->getOutputStream()->write(cmd);
+          _oos->writeObject(org::esb::config::Config::get("partition"));
           LOGINFO("Server " << _host << " connected!!!");
-          std::cout << "Video Processor connected to Server "<<_host<< ":" << _port<<std::endl;
+          std::cout << "Video Processor connected to Server " << _host << ":" << _port << std::endl;
         } catch (exception & ex) {
           LOGERROR("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
-          std::cout <<"cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what()<<std::endl;
-	  std::cout <<"retry it in 5 seconds."<<std::endl;
+          std::cout << "cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what() << std::endl;
+          std::cout << "retry it in 5 seconds." << std::endl;
           //          logerror("cant connect to \"" << _host << ":" << _port << "\"!!!" << ex.what());
         }
       }
@@ -147,6 +151,11 @@ namespace org {
           }
           org::esb::lang::Thread::sleep2(5000);
         }
+
+        std::string cmd = LEAVE_PARTITION;
+        _sock->getOutputStream()->write(cmd);
+        _oos->writeObject(org::esb::config::Config::get("partition"));
+
         boost::mutex::scoped_lock terminationLock(terminationMutex);
         ctrlCHit.notify_all();
       }

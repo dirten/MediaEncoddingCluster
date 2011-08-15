@@ -248,6 +248,7 @@ namespace org {
       }
 
       void NodeResolver::stop() {
+        send_timer_.cancel();
         recv_service_.stop();
         send_service_.stop();
       }

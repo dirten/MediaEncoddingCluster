@@ -21,7 +21,7 @@
 #include "protocol/Status.cpp"
 //#include "protocol/CreateHive.cpp"
 #include "protocol/Unknown.cpp"
-
+#include "protocol/PartitionHandler.h"
 #include "DatabaseService.h"
 
 
@@ -45,19 +45,20 @@ void ProtocolServer::close() {
   delete socket;
   socket = NULL;
   delete _cis;
-  _cis=NULL;
+  _cis = NULL;
 }
 
 ProtocolServer::ProtocolServer(TcpSocket * socket) {
   this->socket = socket;
-  if(socket==NULL){
+  if (socket == NULL) {
     LOGWARN("Socket seems to be NULL, returning to caller");
     return;
   }
   LOGDEBUG("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
-  l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream(),socket->getRemoteEndpoint()));
+  l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
+  l.push_back(new PartitionHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
   l.push_back(new Disconnect(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new Kill(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new ShowConfig(socket->getInputStream(), socket->getOutputStream()));
@@ -69,6 +70,7 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
 }
 
 void ProtocolServer::run() {
+  LOGINFO("client joined the cluster");
   org::esb::hive::DatabaseService::thread_init();
   while (socket->isConnected()) {
     //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
@@ -89,27 +91,35 @@ void ProtocolServer::run() {
       }
       //      logdebug("Command : " << command);
       list < ProtocolCommand * >::iterator i;
+      bool handled = false;
       for (i = l.begin(); i != l.end(); ++i) {
         ProtocolCommand *tmp = (ProtocolCommand *) * i;
         if (tmp->isResponsible(command) == CMD_PROCESS) {
           tmp->process(command);
+          handled = true;
           break;
         } else if (tmp->isResponsible(command) == CMD_HELP) {
           tmp->printHelp();
+          handled = true;
+          break;
         }
+      }
+      if (!handled) {
+        LOGERROR("unknown command" << command);
       }
       //#ifndef DEBUG
     } catch (exception & ex) {
       LOGERROR("ERROR in ProtocolServer:" << ex.what());
       break;
-//      socket->close();
+      //      socket->close();
       //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
     }
     //#endif
   }
+  LOGINFO("client leave the cluster");
   close();
   DatabaseService::thread_end();
-//  mysql_thread_end();
+  //  mysql_thread_end();
   //  logdebug("Client Leaved from:"<<socket->getRemoteIpAddress());
   //  	cout << "Elvis has left the Building" << endl;
 }

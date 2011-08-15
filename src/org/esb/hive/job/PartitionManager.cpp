@@ -9,11 +9,12 @@
 namespace org {
   namespace esb {
     namespace hive {
-      PartitionManager * PartitionManager::_instance = 0;
+      PartitionManager * PartitionManager::_instance = NULL;
 
       PartitionManager * PartitionManager::getInstance() {
-        if (_instance == 0)
+        if (_instance == NULL)
           _instance = new PartitionManager();
+        _instance->createPartition("global", -1);
         return _instance;
       }
 
@@ -25,27 +26,27 @@ namespace org {
 
       PartitionManager::Result PartitionManager::joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep) {
         PartitionManager::Result result = PartitionManager::OK;
-        if(_partition_map.count(name)>0){
-          if(_partition_sizes[name]>_partition_map[name].size()){
-          _partition_map[name].push_back(ep);
-          }else{
-            result=PartitionManager::FULL;
+        if (_partition_map.find(name) != _partition_map.end()) {
+          if (_partition_sizes[name]>-1 && _partition_sizes[name] > _partition_map[name].size()) {
+            _partition_map[name].push_back(ep);
+          } else {
+            result = PartitionManager::FULL;
           }
-        }else{
-          result=PartitionManager::NOT_EXIST;
+        } else {
+          result = PartitionManager::NOT_EXIST;
         }
         return result;
       }
 
       PartitionManager::Result PartitionManager::leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep) {
         PartitionManager::Result result = PartitionManager::OK;
-        
+
         return result;
       }
 
       PartitionManager::Result PartitionManager::createPartition(std::string name, int size) {
         PartitionManager::Result result = PartitionManager::OK;
-        if (_partition_map.find(name) != _partition_map.end()) {
+        if (_partition_map.find(name) == _partition_map.end()) {
           _partition_map[name];
           _partition_sizes[name] = size;
         } else
