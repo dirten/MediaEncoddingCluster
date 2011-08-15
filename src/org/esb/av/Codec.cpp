@@ -86,6 +86,14 @@ namespace org {
         const AVOption * option = NULL;
         while (option = av_next_option(s->codec, option)) {
           if (option->offset > 0) {
+            /*jump over depricated options*/
+            if (strcmp(option->name, "lpc_coeff_precision") == 0 ||
+                    strcmp(option->name, "prediction_order_method") == 0||
+                    strcmp(option->name, "min_partition_order") == 0||
+                    strcmp(option->name, "max_partition_order") == 0||
+                    strcmp(option->name, "lpc_type") == 0||
+                    strcmp(option->name, "lpc_passes") == 0
+                    )continue;
             int len = 1000;
             char data[1000];
             av_get_string(s->codec, option->name, NULL, data, len);
@@ -117,18 +125,18 @@ namespace org {
         _frame_rate.num = 0;
         _frame_rate.den = 0;
       }
-      
+
       Codec::Codec(std::string codec_name, int mode) {
         _codec_resolved = false;
         _mode = mode;
         setCodecOption("codec_name", codec_name);
         ctx = avcodec_alloc_context();
-        _codec=findCodecByName(codec_name, mode);
-        if(_codec){
-          LOGDEBUG("Code Name:"<<_codec->name);
+        _codec = findCodecByName(codec_name, mode);
+        if (_codec) {
+          LOGDEBUG("Code Name:" << _codec->name);
           avcodec_get_context_defaults2(ctx, _codec->type);
           ctx->codec_id = _codec->id;
-          setContextDefaults();          
+          setContextDefaults();
         }
       }
 
@@ -144,8 +152,8 @@ namespace org {
           if (_codec_resolved) {
             //avcodec_get_context_defaults3(ctx, _codec);
             avcodec_get_context_defaults2(ctx, _codec->type);
-              //LOGERROR("error in setting defaults for the codec");
-            
+            //LOGERROR("error in setting defaults for the codec");
+
           }
           ctx->codec_id = codecId;
           setContextDefaults();
@@ -296,6 +304,7 @@ namespace org {
 
         return result;
       }
+
       AVCodec * Codec::findCodecByName(std::string name, int mode) {
         AVCodec* result = NULL;
         //        if(_codec_resolved)return result;
@@ -357,14 +366,14 @@ namespace org {
         //        boost::mutex::scoped_lock scoped_lock(open_close_mutex);
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         //ctx->strict_std_compliance = FF_COMPLIANCE_VERY_STRICT;
-        if (_opened){
-    	    //LOGERROR("Codec is allready openned! codec id"<<getCodecId());
-    	    return _opened;
-    	}
-        if(_options.find("codec_name")==_options.end()){
+        if (_opened) {
+          //LOGERROR("Codec is allready openned! codec id"<<getCodecId());
+          return _opened;
+        }
+        if (_options.find("codec_name") == _options.end()) {
           findCodec(_mode);
-        }else{
-          _codec=findCodecByName(_options["codec_name"], _mode);
+        } else {
+          _codec = findCodecByName(_options["codec_name"], _mode);
         }
         if (!_codec) {
           LOGERROR("_codec not initialized!");
@@ -374,18 +383,18 @@ namespace org {
         /*setting special passlogfile for x264 encoder, 
          * because in mutlithreaded environment it overwrites 
          * the statistics file when this is not set to a value like thread id*/
-        
+
         std::string passlogfile = getCodecOption("passlogfile");
         if (getCodecId() == CODEC_ID_H264 && passlogfile.length() > 0) {
           if (_codec && _codec->priv_data_size) {
             if (!ctx->priv_data) {
               ctx->priv_data = av_mallocz(_codec->priv_data_size);
               if (!ctx->priv_data) {
-                return false;//AVERROR(ENOMEM);
+                return false; //AVERROR(ENOMEM);
               }
             }
             if (_codec->priv_class) {
-              *(AVClass**) ctx->priv_data = const_cast<AVClass*>(_codec->priv_class);
+              *(AVClass**) ctx->priv_data = const_cast<AVClass*> (_codec->priv_class);
               av_opt_set_defaults(ctx->priv_data);
             }
           }
@@ -398,7 +407,7 @@ namespace org {
             }
           }
         }
-        
+
         //        if (findCodec(_mode)) {
         //          ctx = avcodec_alloc_context();
         //          setParams();
@@ -709,7 +718,7 @@ namespace org {
         }
         return data;
       }
-      
+
     }
   }
 }

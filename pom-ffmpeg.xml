@@ -293,6 +293,7 @@
                     --disable-devices
                     --extra-cflags=-fno-common
                     --disable-stripping
+                    --disable-zlib
                     --enable-gpl
 		    ${EXTRA_FFMPEG_CONFIGURATION}
 		    --enable-shared

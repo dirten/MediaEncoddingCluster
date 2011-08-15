@@ -147,9 +147,18 @@ namespace org {
             stream.extradata = litesql::Blob((char *)ctx->streams[a]->codec->extradata,ctx->streams[a]->codec->extradata_size);
           stream.update();
           const AVOption * option = NULL;
-
+          int max_offset=0;
           while (option = av_next_option(ctx->streams[a]->codec, option)) {
             if (option->offset > 0) {
+                          /*jump over depricated options*/
+            if (strcmp(option->name, "lpc_coeff_precision") == 0 ||
+                    strcmp(option->name, "prediction_order_method") == 0||
+                    strcmp(option->name, "min_partition_order") == 0||
+                    strcmp(option->name, "max_partition_order") == 0||
+                    strcmp(option->name, "lpc_type") == 0||
+                    strcmp(option->name, "lpc_passes") == 0
+                    )continue;
+            max_offset=option->offset>max_offset?option->offset:max_offset;
               db::StreamParameter sp(stream.getDatabase());
               sp.name = option->name;
               int len = 1000;
@@ -162,6 +171,7 @@ namespace org {
               stream.params().link(sp);
             }
           }
+          LOGDEBUG("maxoffset="<<max_offset);
           db::StreamParameter sp(stream.getDatabase());
           sp.name = "codec_id";
           sp.val = org::esb::util::StringUtil::toString(ctx->streams[a]->codec->codec_id);
