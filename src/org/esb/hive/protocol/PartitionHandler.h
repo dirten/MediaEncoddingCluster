@@ -11,12 +11,12 @@
 #define JOIN_PARTITION "join partition"
 #define LEAVE_PARTITION "leave partition"
 
+#include "boost/asio.hpp"
 #include "org/esb/hive/ProtocolCommand.h"
 #include "org/esb/io/InputStream.h"
 #include "org/esb/io/OutputStream.h"
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/io/ObjectOutputStream.h"
-#include "boost/asio.hpp"
 
 namespace org {
   namespace esb {
