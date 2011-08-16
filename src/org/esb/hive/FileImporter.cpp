@@ -156,6 +156,7 @@ namespace org {
                     strcmp(option->name, "min_partition_order") == 0||
                     strcmp(option->name, "max_partition_order") == 0||
                     strcmp(option->name, "lpc_type") == 0||
+                    strcmp(option->name, "drc_scale") == 0||
                     strcmp(option->name, "lpc_passes") == 0
                     )continue;
             max_offset=option->offset>max_offset?option->offset:max_offset;
