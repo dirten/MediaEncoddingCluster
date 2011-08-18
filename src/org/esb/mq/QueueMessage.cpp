@@ -12,8 +12,6 @@ namespace org {
 
       QueueMessage::QueueMessage():safmq::QueueMessage() {
       }
-      QueueMessage::QueueMessage(const QueueMessage&):safmq::QueueMessage() {
-      }
 
       QueueMessage::~QueueMessage() {
       }

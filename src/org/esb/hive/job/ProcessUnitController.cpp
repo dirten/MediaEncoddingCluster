@@ -28,6 +28,7 @@
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/StringUtil.h"
+#include "PartitionManager.h"
 
 using namespace db;
 using namespace org::esb::av;
@@ -381,6 +382,8 @@ namespace org {
 
           _oos.writeObject(*unit.get());
 #else
+          //PartitionManager::getInstance()->putProcessUnit("global", unit);
+          //return;
           if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             LOGDEBUG("audioQueue.enqueue(unit);")
             audioQueue.enqueue(unit);

@@ -175,7 +175,11 @@ namespace org {
           boost::mutex::scoped_lock dequeue_lock(queue_mutex);
           return _q.size();
         }
-
+        /*
+        void setSize(int size){
+          MAXSIZE=size;
+        }
+*/
         void setQueueListener(QueueListener * listener) {
           _listener = listener;
         }

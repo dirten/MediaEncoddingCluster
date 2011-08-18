@@ -8,12 +8,15 @@
 #include <cstdlib>
 #include <iostream>
 #include "org/esb/hive/job/PartitionManager.h"
+#include "org/esb/mq/QueueManager.h"
 using namespace std;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
+      org::esb::mq::QueueManager qman;
+      qman.start();
   org::esb::hive::PartitionManager *man = org::esb::hive::PartitionManager::getInstance();
   std::cout <<"Result Create"<<man->createPartition("test", 4)<<std::endl;
   boost::asio::ip::tcp::endpoint e(boost::asio::ip::address_v4::from_string("127.0.0.1"), 6000);
@@ -24,7 +27,7 @@ int main(int argc, char** argv) {
     else
       std::cout << "partion join failed"<<r << std::endl;
   }
-  
+  qman.stop();
   return 0;
 }
 

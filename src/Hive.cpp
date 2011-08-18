@@ -335,6 +335,8 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
+      org::esb::mq::QueueManager man;
+      man.start();
       org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       org::esb::api::JsonServer server(vm["webport"].as<int> ());

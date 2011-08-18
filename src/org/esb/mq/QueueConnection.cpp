@@ -142,10 +142,10 @@ namespace org{
         _connection->Enqueue(qhandle, msg);
       }
 
-
+      /*
       QueueMessage QueueConnection::dequeue(std::string q_name,std::string msgid){
         return QueueMessage();
-      }
+      }*/
     }
   }
 }

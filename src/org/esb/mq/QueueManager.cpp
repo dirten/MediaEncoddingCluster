@@ -55,17 +55,17 @@ namespace org {
           file.mkdir();
         }
         org::esb::io::File f("mq.cfg");
-        if(!f.exists()){
+        //if(!f.exists()){
           org::esb::io::FileOutputStream fos(&f);
           std::string line;
           line="port:";
-          line+="20200\n";
+          line+="20202\n";
           fos.write(line);
           line="queue_dir:";
           line+=file.getFilePath()+"\n";
           fos.write(line);
           fos.close();          
-        }
+        //}
         numForwardThreads = 1;
         _running=false;
         try {

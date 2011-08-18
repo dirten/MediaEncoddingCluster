@@ -64,11 +64,11 @@ target_link_libraries (CodecPropertyTransformerTest io hive lang)
 target_link_libraries (FileExporterTest hive)
 target_link_libraries (AnalyzeFrameCount hive signal)
 target_link_libraries (ProjectXmlTest hive)
-target_link_libraries (PartitionManagerTest hive)
+target_link_libraries (PartitionManagerTest hive mq)
 
 
 #target_link_libraries (TestClientHandler   hive av io util lang )
-target_link_libraries (TestHiveListener  hive signal av io util lang net
+target_link_libraries (TestHiveListener  hive signal av io util lang net mq
   ${BOOST_SERIAL_LIB_MT}
 )
 target_link_libraries (TestAudioAC3toMP2    hive signal av io util lang net)

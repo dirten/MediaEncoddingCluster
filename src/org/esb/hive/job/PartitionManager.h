@@ -9,6 +9,9 @@
 #define	PARTITIONMANAGER_H
 #include <string>
 #include <boost/asio.hpp>
+#include "ProcessUnit.h"
+#include "org/esb/lang/Ptr.h"
+#include "org/esb/mq/QueueConnection.h"
 #include <map>
 #include <list>
 namespace org {
@@ -32,13 +35,22 @@ namespace org {
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
         Result createPartition(std::string name, int size);
         Result deletePartition(std::string name);
-        
+
+        void putProcessUnit(std::string partition, boost::shared_ptr<job::ProcessUnit>unit);
+        //boost::shared_ptr<job::ProcessUnit>getProcessUnit(std::string partition,, boost::asio::ip::tcp::endpoint ep);
+        int getStream(boost::asio::ip::tcp::endpoint ep);
       private:
         PartitionManager();
         virtual ~PartitionManager();
         static PartitionManager * _instance;
+        
         std::map<std::string, std::list<boost::asio::ip::tcp::endpoint> > _partition_map;
+        std::map<int, std::list<boost::asio::ip::tcp::endpoint> > _stream_endpoint;
+        std::map<int, int > _stream_max_endpoints;
+        std::map<int, std::string > _partition_streams;
         std::map<std::string, int> _partition_sizes;
+        org::esb::mq::QueueConnection * _con;//(man.getUrl());
+
       };
     }
   }

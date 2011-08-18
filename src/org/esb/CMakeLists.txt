@@ -25,6 +25,8 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 include_directories (${LOG4CPLUS_DIR}/litesql)
 include_directories (${LOG4CPLUS_DIR}/include/litesql)
 include_directories (${MEC_SOURCE_DIR}target/dependency/include)
+include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
+
 #link_directories (/c/bruteripper/target/dependency/lib)
 
 LINK_DIRECTORIES(${LOG4CPLUS_DIR}/lib)
