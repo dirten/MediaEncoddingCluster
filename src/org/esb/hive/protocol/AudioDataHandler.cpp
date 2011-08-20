@@ -29,7 +29,7 @@ using namespace org::esb;
 #define PUT_AUDIO_UNIT  "put audio_process_unit"
 #define PUT_UNIT  "put process_unit"
 
-class DataHandler : public org::esb::hive::ProtocolCommand {
+class AudioDataHandler : public org::esb::hive::ProtocolCommand {
 private:
   classlogger("org.esb.hive.protocol.DataHandler")
   InputStream * _is;
@@ -74,7 +74,7 @@ private:
 
 public:
 
-  DataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
+  AudioDataHandler(InputStream * is, OutputStream * os, boost::asio::ip::tcp::endpoint e) {
     _oos = new io::ObjectOutputStream(os);
     _ois = new io::ObjectInputStream(is);
     _own_id = e.address().to_string();
@@ -83,23 +83,24 @@ public:
     shutdown = false;
     LOGDEBUG("endpoint:" << e);
   }
-/*
-  DataHandler(InputStream * is, OutputStream * os) {
-    _is = is;
-    _os = os;
-    //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
-    //	    _pos=new PacketOutputStream(_os);
-    _oos = new io::ObjectOutputStream(_os);
-    _ois = new io::ObjectInputStream(_is);
-    //    _handler = new ClientHandler();
-    shutdown = false;
-    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+
+    /*
+    DataHandler(InputStream * is, OutputStream * os) {
+      _is = is;
+      _os = os;
+      //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
+      //	    _pos=new PacketOutputStream(_os);
+      _oos = new io::ObjectOutputStream(_os);
+      _ois = new io::ObjectInputStream(_is);
+      //    _handler = new ClientHandler();
+      shutdown = false;
+      //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+      //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
 
 
-  }
-*/
-  ~DataHandler() {
+    }
+   */
+  ~AudioDataHandler() {
     shutdown = true;
     _timer.reset();
     remove_endpoint_from_stream(boost::asio::error::shut_down);
@@ -111,24 +112,24 @@ public:
     _ois = NULL;
   }
 
-    /*
-    DataHandler(TcpSocket * s) {
-      socket = s;
-      _is = socket->getInputStream();
-      _os = socket->getOutputStream();
-      _oos = new io::ObjectOutputStream(_os);
-      _ois = new io::ObjectInputStream(_is);
-      boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
-      _own_id = ep.address().to_string();
-      _own_id += ":";
-      _own_id += StringUtil::toString(ep.port());
-      shutdown = false;
-      //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-      //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
-      //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
-      //    io_timer.run();
-      LOGDEBUG("endpoint:" << ep);
-    }
+  /*
+  DataHandler(TcpSocket * s) {
+    socket = s;
+    _is = socket->getInputStream();
+    _os = socket->getOutputStream();
+    _oos = new io::ObjectOutputStream(_os);
+    _ois = new io::ObjectInputStream(_is);
+    boost::asio::ip::tcp::endpoint ep = socket->getRemoteEndpoint();
+    _own_id = ep.address().to_string();
+    _own_id += ":";
+    _own_id += StringUtil::toString(ep.port());
+    shutdown = false;
+    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    //    boost::thread thread(boost::bind(&boost::asio::io_service::run, &io_timer));
+    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+    //    io_timer.run();
+    LOGDEBUG("endpoint:" << ep);
+  }
    */
   int isResponsible(cmdId & cmid) {
     return CMD_NA;
@@ -136,8 +137,6 @@ public:
 
   int isResponsible(char * command) {
     if (
-            strcmp(command, GET_UNIT) == 0 ||
-            strcmp(command, PUT_UNIT) == 0 ||
             strcmp(command, GET_AUDIO_UNIT) == 0 ||
             strcmp(command, PUT_AUDIO_UNIT) == 0) {
       return CMD_PROCESS;
@@ -150,23 +149,7 @@ public:
 
   void process(char * command) {
     if (_oos == NULL || _ois == NULL)return;
-    if (strcmp(command, GET_UNIT) == 0) {
-      Message msg;
-      msg.setProperty("processunitcontroller", "GET_PROCESS_UNIT");
-      Messenger::getInstance().sendRequest(msg);
-      un = msg.getPtrProperty("processunit");
-      if (un.get() != NULL)
-        _oos->writeObject(*un.get());
-    } else
-      if (strcmp(command, PUT_UNIT) == 0) {
-      un = boost::shared_ptr<ProcessUnit > (new ProcessUnit());
-      _ois->readObject(*un.get());
-      Message msg;
-      msg.setProperty("processunitcontroller", "PUT_PROCESS_UNIT");
-      msg.setProperty("processunit", un);
-      Messenger::getInstance().sendRequest(msg);
-    } else if (strcmp(command, GET_AUDIO_UNIT) == 0) {
-
+    if (strcmp(command, GET_AUDIO_UNIT) == 0) {
       if (endpoint2stream.size() > 0) {
         if (endpoint2stream.front() == _own_id) {
           Message msg;
@@ -185,7 +168,7 @@ public:
         endpoint2stream.push_back(_own_id);
       }
       if (un && un->_input_packets.size() > 0) {
-        _timer.reset(new Timer(300, boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
+        _timer.reset(new Timer(300, boost::bind(&AudioDataHandler::remove_endpoint_from_stream, this, boost::asio::placeholders::error)));
       } else {
       }
 
@@ -211,5 +194,5 @@ public:
   void printHelp() {
   }
 };
-std::list<std::string> DataHandler::endpoint2stream;
-boost::mutex DataHandler::removeMutex;
+std::list<std::string> AudioDataHandler::endpoint2stream;
+boost::mutex AudioDataHandler::removeMutex;

@@ -28,24 +28,36 @@ namespace org {
           NOT_EXIST,
           NOT_EMPTY,
           NOT_IN_PARTITION,
-          ALLREADY_JOINED
+          ENDPOINT_ALLREADY_JOINED
+        };
+        enum Type {
+          TYPE_UNKNOWN,
+          TYPE_VIDEO,
+          TYPE_AUDIO
         };
         static PartitionManager * getInstance();
-        Result joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep);
+        Result joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep,Type=TYPE_UNKNOWN);
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
-        Result createPartition(std::string name, int size);
+        Result createPartition(std::string name, int size=-1);
         Result deletePartition(std::string name);
 
-        void putProcessUnit(std::string partition, boost::shared_ptr<job::ProcessUnit>unit);
-        //boost::shared_ptr<job::ProcessUnit>getProcessUnit(std::string partition,, boost::asio::ip::tcp::endpoint ep);
-        int getStream(boost::asio::ip::tcp::endpoint ep);
+        void putProcessUnit(std::string partition, boost::shared_ptr<job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
+        boost::shared_ptr<job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
       private:
         PartitionManager();
         virtual ~PartitionManager();
+        std::string getPartition(boost::asio::ip::tcp::endpoint ep);
+        int getStream(boost::asio::ip::tcp::endpoint ep);
         static PartitionManager * _instance;
-        
-        std::map<std::string, std::list<boost::asio::ip::tcp::endpoint> > _partition_map;
-        std::map<int, std::list<boost::asio::ip::tcp::endpoint> > _stream_endpoint;
+        typedef std::list<boost::asio::ip::tcp::endpoint> EndpointList;
+        typedef std::list<int> StreamList;
+        typedef std::map<std::string, EndpointList> PartitionEndpointMap;
+        typedef std::map<std::string, StreamList> PartitionStreamMap;
+        PartitionEndpointMap _partition_map;
+        PartitionStreamMap _partition_stream_map;
+
+        //std::map<int, std::list<boost::asio::ip::tcp::endpoint> > _stream_endpoint;
+        std::map<boost::asio::ip::tcp::endpoint, int > _endpoint_stream;
         std::map<int, int > _stream_max_endpoints;
         std::map<int, std::string > _partition_streams;
         std::map<std::string, int> _partition_sizes;

@@ -13,7 +13,8 @@
 /*all Protocols here*/
 #include "protocol/Help.cpp"
 #include "protocol/Kill.cpp"
-#include "protocol/DataHandler.cpp"
+#include "protocol/AudioDataHandler.cpp"
+#include "protocol/VideoDataHandler.cpp"
 #include "protocol/Disconnect.cpp"
 #include "protocol/ShowConfig.cpp"
 #include "protocol/ShutdownHive.cpp"
@@ -57,7 +58,8 @@ ProtocolServer::ProtocolServer(TcpSocket * socket) {
   LOGDEBUG("New Client Arrived from:" << socket->getRemoteIpAddress());
   _cis = new CommandInputStream(socket->getInputStream());
   l.push_back(new Help(socket->getInputStream(), socket->getOutputStream()));
-  l.push_back(new DataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
+  l.push_back(new AudioDataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
+  l.push_back(new VideoDataHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
   l.push_back(new PartitionHandler(socket->getInputStream(), socket->getOutputStream(), socket->getRemoteEndpoint()));
   l.push_back(new Disconnect(socket->getInputStream(), socket->getOutputStream()));
   l.push_back(new Kill(socket->getInputStream(), socket->getOutputStream()));

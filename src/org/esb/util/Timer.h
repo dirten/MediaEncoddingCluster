@@ -3,7 +3,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include "exports.h"
-
+#ifndef ORG_ESB_UTIL_TIMER_H
+#define ORG_ESB_UTIL_TIMER_H
 class UTIL_EXPORT Timer {
 public:
 
@@ -22,3 +23,4 @@ private:
     boost::asio::io_service io_timer;
     boost::asio::deadline_timer timer;
 };
+#endif
