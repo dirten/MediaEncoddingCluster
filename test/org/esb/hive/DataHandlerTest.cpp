@@ -1,5 +1,5 @@
 #include "org/esb/db/hivedb.hpp"
-#include "org/esb/hive/protocol/DataHandler.cpp"
+#include "org/esb/hive/protocol/VideoDataHandler.cpp"
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/io/FileOutputStream.h"
 #include "org/esb/io/FileInputStream.h"
@@ -9,6 +9,7 @@
 #include "org/esb/io/ObjectInputStream.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/signal/Messenger.h"
+#include "org/esb/signal/Message.h"
 #include "org/esb/lang/Thread.h"
 
 #include "org/esb/io/File.h"
