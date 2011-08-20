@@ -8,7 +8,7 @@
 #ifndef PARTITIONMANAGER_H
 #define	PARTITIONMANAGER_H
 #include <string>
-#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include "ProcessUnit.h"
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/mq/QueueConnection.h"

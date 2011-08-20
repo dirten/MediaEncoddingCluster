@@ -6,6 +6,7 @@
  */
 
 #include "org/esb/db/hivedb.hpp"
+#include "PartitionManager.h"
 #include "ProcessUnitController.h"
 #include "ProcessUnitBuilder.h"
 #include "org/esb/config/config.h"
@@ -28,7 +29,6 @@
 #include "org/esb/hive/CodecFactory.h"
 #include "org/esb/hive/DatabaseService.h"
 #include "org/esb/util/StringUtil.h"
-#include "PartitionManager.h"
 
 using namespace db;
 using namespace org::esb::av;
