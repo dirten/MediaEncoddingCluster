@@ -38,39 +38,14 @@ private:
   io::ObjectOutputStream * _oos;
   io::ObjectInputStream * _ois;
   //  ClientHandler* _handler;
-  static std::list<std::string> endpoint2stream;
-  static boost::mutex removeMutex;
 
   std::string _own_id;
   //  boost::asio::io_service io_timer;
   //  boost::asio::deadline_timer timer;
   //  boost::shared_ptr<boost::thread> _timer_thread;
-  boost::shared_ptr<Timer> _timer;
   //  boost::asio::deadline_timer t2;
   boost::shared_ptr<ProcessUnit> un;
   bool shutdown;
-
-  void remove_endpoint_from_stream(const boost::system::error_code & er) {
-    boost::mutex::scoped_lock scoped_lock(removeMutex);
-    LOGDEBUG("TimerEvent received");
-    if (er == boost::asio::error::operation_aborted) {
-      LOGDEBUG("Timer Event was Canceled");
-      //    }else if(er ==boost::asio::error::shut_down){
-      //      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
-      //    }else if(er ==boost::asio::error::shut_down){
-      //      LOGDEBUG("org.esb.hive.protocol.DataHandler","Timer Event regular shutdown");
-    } else {
-      LOGWARN("TimeOut received, removing endpoint from list to give an other client a chance!")
-      if (er == boost::asio::error::shut_down)
-        LOGDEBUG("Timer Event regular shutdown");
-      if (endpoint2stream.size() > 0) {
-        if (endpoint2stream.front() == _own_id) {
-          endpoint2stream.pop_front();
-          un.reset();
-        }
-      }
-    }
-  }
 
 public:
 
@@ -84,26 +59,24 @@ public:
     LOGDEBUG("endpoint:" << e);
   }
 
-    /*
-    DataHandler(InputStream * is, OutputStream * os) {
-      _is = is;
-      _os = os;
-      //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
-      //	    _pos=new PacketOutputStream(_os);
-      _oos = new io::ObjectOutputStream(_os);
-      _ois = new io::ObjectInputStream(_is);
-      //    _handler = new ClientHandler();
-      shutdown = false;
-      //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
-      //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
+  /*
+  DataHandler(InputStream * is, OutputStream * os) {
+    _is = is;
+    _os = os;
+    //    t = new boost::asio::deadline_timer(io_timer, boost::posix_time::seconds(20));
+    //	    _pos=new PacketOutputStream(_os);
+    _oos = new io::ObjectOutputStream(_os);
+    _ois = new io::ObjectInputStream(_is);
+    //    _handler = new ClientHandler();
+    shutdown = false;
+    //    timer.async_wait(boost::bind(&DataHandler::remove_endpoint_from_stream, this, boost::asio::error::operation_aborted));
+    //    _timer_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &io_timer)));
 
 
-    }
+  }
    */
   ~VideoDataHandler() {
     shutdown = true;
-    _timer.reset();
-    remove_endpoint_from_stream(boost::asio::error::shut_down);
     if (_oos)
       delete _oos;
     _oos = NULL;
@@ -173,5 +146,3 @@ public:
   void printHelp() {
   }
 };
-std::list<std::string> VideoDataHandler::endpoint2stream;
-boost::mutex VideoDataHandler::removeMutex;

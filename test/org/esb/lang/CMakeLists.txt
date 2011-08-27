@@ -8,7 +8,7 @@ add_executable (TestException TestException.cpp)
 add_executable (TestSystemCpuInfo TestSystemCpuInfo.cpp)
 add_executable (ProcessTest ProcessTest.cpp)
 add_executable (ProcessTestExecutable ProcessTestExecutable.cpp)
-#add_executable (ObjectTest ObjectTest.cpp)
+add_executable (SharedObjectLoaderTest SharedObjectLoaderTest.cpp)
 
 target_link_libraries (TestSystemCpuInfo io lang util net )
 target_link_libraries (TestThread lang util)
@@ -38,3 +38,7 @@ SET_TESTS_PROPERTIES(lang.ProcessTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD
 #ADD_TEST(ObjectTest ${EXECUTABLE_OUTPUT_PATH}/ObjectTest )
 
 
+
+add_library (shared_object
+  SharedObject.cpp
+)

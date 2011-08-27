@@ -20,6 +20,7 @@ IF(NOT WIN32)
     ${lang_source}
     posix/SystemCpuInfo.cpp
     posix/Process.cpp
+    posix/SharedObjectLoader.cpp
   )
 ELSEIF(APPLE)
 
@@ -28,6 +29,7 @@ ELSEIF(WIN32)
     ${lang_source}
     win/SystemCpuInfo.cpp
     win/Process.cpp
+    win/SharedObjectLoader.cpp
   )
 
 ENDIF(NOT WIN32)
