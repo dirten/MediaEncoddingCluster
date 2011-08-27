@@ -16,9 +16,9 @@ namespace org {
           char * pathenv=getenv("log.path");
           char * loglevel=getenv("loglevel");
           if(pathenv==NULL)
-            pathenv="";
+            pathenv=new char;
           if(loglevel==NULL)
-            loglevel="";
+            loglevel=new char;
           logpath=pathenv;//org::esb::config::Config::get("log.path");
           logdebug=logpath+"/mhive.log";
           logwarn=logpath+"/mhive-warn.log";
