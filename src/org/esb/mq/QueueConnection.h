@@ -21,7 +21,7 @@ namespace org{
         bool queueExist(std::string name);
         void setMessageListener(std::string q_name,QueueMessageListener & listener, std::string selector=std::string());
         void enqueue(std::string q_name,QueueMessage &msg);
-        QueueMessage dequeue(std::string q_name,std::string msgid);
+        void dequeue(std::string q_name,QueueMessage &msg);
         void startListener();
         void stopListener();
         safmq::MessageQueue * getMessageQueue(std::string q_name);

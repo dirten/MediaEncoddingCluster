@@ -142,10 +142,12 @@ namespace org{
         _connection->Enqueue(qhandle, msg);
       }
 
-      /*
-      QueueMessage QueueConnection::dequeue(std::string q_name,std::string msgid){
-        return QueueMessage();
-      }*/
+      
+      void QueueConnection::dequeue(std::string q_name, QueueMessage & msg){
+        safmq::MQConnection::QueueHandle qhandle;
+        _connection->OpenQueue(q_name, qhandle);
+        _connection->Retrieve(qhandle,true,-1, msg);
+      }
     }
   }
 }
