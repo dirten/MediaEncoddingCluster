@@ -20,7 +20,6 @@ namespace org {
 
       class PartitionManager {
       public:
-
         enum Result {
           OK,
           FULL,
@@ -35,6 +34,8 @@ namespace org {
           TYPE_VIDEO,
           TYPE_AUDIO
         };
+
+
         static PartitionManager * getInstance();
         Result joinPartition(std::string name, boost::asio::ip::tcp::endpoint ep,Type=TYPE_UNKNOWN);
         Result leavePartition(std::string name, boost::asio::ip::tcp::endpoint ep);
@@ -44,18 +45,58 @@ namespace org {
         void putProcessUnit(std::string partition, boost::shared_ptr<job::ProcessUnit>unit, Type=TYPE_UNKNOWN);
         boost::shared_ptr<job::ProcessUnit>getProcessUnit(boost::asio::ip::tcp::endpoint ep);
       private:
+        class Endpoint{
+        public:
+          boost::asio::ip::tcp::endpoint ep;
+          Type type;
+          std::string partition;
+          int stream;
+          bool operator==(const Endpoint&a)const;
+        };
+        class Stream{
+        public:
+          Type type;
+          int index;
+          std::string partition;
+          std::list<Endpoint> endpoints;
+          int count;
+          bool operator==(const Stream&a)const;
+        };
+        class Partition{
+        public:
+          Partition():name(""),max_size(-1){};
+          Partition(std::string name, int size=0, std::list<Endpoint> endpoints=std::list<Endpoint>()):name(name),max_size(size),endpoints(endpoints){}
+          std::string name;
+          int max_size;
+          std::list<Endpoint> endpoints;
+          bool operator==(const Partition&a)const;
+        };
+        friend class PartitionManagerTest;
         PartitionManager();
         virtual ~PartitionManager();
-        std::string getPartition(boost::asio::ip::tcp::endpoint ep);
-        int getStream(boost::asio::ip::tcp::endpoint ep);
+        
+        //std::string getPartition(Endpoint ep);
+        /*
+        bool containsEndpoint(boost::asio::ip::tcp::endpoint);
+        bool containsStream(int);
+        bool containsPartition(std::string);
+
+        bool getEndpoint(boost::asio::ip::tcp::endpoint ep, Endpoint & result);
+        bool getStream(int index, PartitionManager::Stream & result);
+        bool getPartition(std::string name, PartitionManager::Partition & result);
+        */
         static PartitionManager * _instance;
         typedef std::list<boost::asio::ip::tcp::endpoint> EndpointList;
-        typedef std::list<int> StreamList;
+        typedef std::list<Stream> StreamList;
         typedef std::map<std::string, EndpointList> PartitionEndpointMap;
         typedef std::map<std::string, StreamList> PartitionStreamMap;
         PartitionEndpointMap _partition_map;
         PartitionStreamMap _partition_stream_map;
 
+        std::map<boost::asio::ip::tcp::endpoint,Endpoint> _endpoints;
+        std::map<int,Stream> _streams;
+        std::map<std::string,Partition> _partitions;
+        
         //std::map<int, std::list<boost::asio::ip::tcp::endpoint> > _stream_endpoint;
         std::map<boost::asio::ip::tcp::endpoint, int > _endpoint_stream;
         std::map<int, int > _stream_max_endpoints;
