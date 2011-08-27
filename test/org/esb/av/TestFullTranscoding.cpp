@@ -71,6 +71,7 @@ Log::open("");
   for (int i = 0; i < c; i++) {
     if (fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_VIDEO &&
         fis.getStreamInfo(i)->getCodecType() != AVMEDIA_TYPE_AUDIO) continue;
+    //if(i!=4&&i!=1)continue;
     if (audio && video)continue;
     fis.dumpFormat();
     _sdata[i].dec = new Decoder(fis.getAVStream(i));
@@ -95,6 +96,7 @@ Log::open("");
       // logdebug(_sdata[i].enc->toString());
     } else if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_AUDIO) {
       audio = true;
+      
       _sdata[i].enc->setCodecId(CODEC_ID_MP2);
       _sdata[i].enc->setBitRate(128000);
       _sdata[i].enc->setSampleRate(48000);
@@ -131,9 +133,10 @@ Log::open("");
     //reading a packet from the Stream
     if ((packet=pis.readPacket()) ==NULL )break; //when no more packets available(EOF) then it return <0
     boost::shared_ptr<Packet> p(packet);
-    if (_sdata.find(p->getStreamIndex()) == _sdata.end())continue;
+    if (_sdata.count(p->getStreamIndex()) == 0)continue;
     //    p.setDts(p.getDts() - _sdata[p.getStreamIndex()].start_dts);
     //Decoding a Video or Audio Packet
+    //LOGDEBUG("Packet:"<<p->toString());
     Frame * src_frame = _sdata[p->getStreamIndex()].dec->decode2(*p);
 
     if (!src_frame->isFinished()) {
