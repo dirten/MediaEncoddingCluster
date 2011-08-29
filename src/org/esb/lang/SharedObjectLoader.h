@@ -28,11 +28,13 @@
 #ifndef SHAREDOBJECTLOADER_H
 #define	SHAREDOBJECTLOADER_H
 #include <string>
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace lang {
       
       class LANG_EXPORT SharedObjectLoader {
+        classlogger("org.esb.lang.SharedObjectLoader");
       public:
         SharedObjectLoader(std::string);
         virtual ~SharedObjectLoader();

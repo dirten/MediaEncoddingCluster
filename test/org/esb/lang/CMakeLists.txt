@@ -16,7 +16,7 @@ target_link_libraries (TestException lang)
 #target_link_libraries (TestStackDumper lang util)
 target_link_libraries (ProcessTest lang io)
 target_link_libraries (ProcessTestExecutable lang)
-#target_link_libraries (ProcessTest lang util)
+target_link_libraries (SharedObjectLoaderTest lang util)
 if(NOT WIN32)
   target_link_libraries (TestThread pthread)
 ENDIF(NOT WIN32)
@@ -36,9 +36,10 @@ ADD_TEST(lang.ProcessTest ${EXECUTABLE_OUTPUT_PATH}/ProcessTest )
 SET_TESTS_PROPERTIES(lang.ProcessTest PROPERTIES ENVIRONMENT "${LD_VARNAME}=${LD_PATH}")
 #ADD_TEST(TestLibCurl ${EXECUTABLE_OUTPUT_PATH}/TestLibCurl )
 #ADD_TEST(ObjectTest ${EXECUTABLE_OUTPUT_PATH}/ObjectTest )
+ADD_TEST(SharedObjectLoaderTest ${EXECUTABLE_OUTPUT_PATH}/SharedObjectLoaderTest )
 
 
 
-add_library (shared_object
+add_library (shared_object SHARED
   SharedObject.cpp
 )

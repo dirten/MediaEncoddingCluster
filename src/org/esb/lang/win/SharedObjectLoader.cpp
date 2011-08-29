@@ -32,10 +32,7 @@ namespace org {
 
       SharedObjectLoader::SharedObjectLoader() {
       }
-
-      SharedObjectLoader::SharedObjectLoader(const SharedObjectLoader& orig) {
-      }
-
+      
       SharedObjectLoader::~SharedObjectLoader() {
       }
     }

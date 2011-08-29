@@ -26,7 +26,6 @@
  */
 
 #include "../SharedObjectLoader.h"
-#include "org/esb/util/Log.h"
 #include <dlfcn.h>
 namespace org {
   namespace esb {
@@ -34,6 +33,13 @@ namespace org {
       
       SharedObjectLoader::SharedObjectLoader(std::string filename) {
         _lib_handle = NULL;
+#ifdef __APPLE__
+        filename=filename.append(".dylib");
+#else
+        filename=filename.append(".so");
+#endif
+        
+        LOGDEBUG("open library : "<<filename);
         try
         {
           _lib_handle = dlopen( filename.c_str(), RTLD_NOW);
@@ -43,10 +49,24 @@ namespace org {
           LOGERROR( "Error occurred during loading SharedObject: "<< exc.what());
           _lib_handle = NULL;
         }
+        if(!_lib_handle){
+          LOGERROR( "Error occurred during loading SharedObject: "<< dlerror());          
+        }
       }
       
       void * SharedObjectLoader::getFunctionHandle(std::string name){
-        return NULL;
+        void * result=NULL;
+        try{
+          result=dlsym(_lib_handle,name.c_str());
+        }catch(std::exception & ex){
+          result=NULL;
+          LOGERROR("Error occurred during loading function :"<<ex.what());
+        
+        }
+        if(!result){
+          LOGERROR( "Error occurred during loading function: "<< dlerror());          
+        }
+        return result;
       }
 
       SharedObjectLoader::~SharedObjectLoader() {
