@@ -30,7 +30,9 @@
 #include <string>
 #include "org/esb/util/Log.h"
 #include <boost/function.hpp>
+#if defined __LINUX__ || defined __APPLE__ 
 #include <dlfcn.h>
+#endif
 #include "NotFoundException.h"
 
 namespace org {

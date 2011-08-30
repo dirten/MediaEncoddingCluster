@@ -37,7 +37,7 @@ add_library (jsonservice ${API_LINK_TYPE}
 TARGET_LINK_LIBRARIES(webserver
   json
   hive
-  core
+  
 )
 
 TARGET_LINK_LIBRARIES(api

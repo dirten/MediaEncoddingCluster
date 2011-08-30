@@ -29,15 +29,15 @@ namespace org {
   namespace esb {
     namespace api {
 
-      class API_EXPORT ApiWebServer:public org::esb::core::ServicePlugin, org::esb::core::HookProvider {
+      class  ApiWebServer:public org::esb::core::ServicePlugin, org::esb::core::HookProvider {
       public:
-        ApiWebServer();
-        virtual ~ApiWebServer();
-        bool addHandler(std::string url,org::esb::core::WebservicePlugin *);
-        void startService();
-        void stopService();
-        void setContext(org::esb::core::AppContext*);
-        void addHook(std::string hookname, org::esb::core::HookPlugin*);
+        API_EXPORT ApiWebServer();
+        virtual API_EXPORT ~ApiWebServer();
+        bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
+        void API_EXPORT startService();
+        void API_EXPORT stopService();
+        void API_EXPORT setContext(org::esb::core::AppContext*);
+        void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;

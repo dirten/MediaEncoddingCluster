@@ -30,7 +30,7 @@ namespace org {
   namespace esb {
     namespace lang {
 
-      SharedObjectLoader::SharedObjectLoader() {
+      SharedObjectLoader::SharedObjectLoader(std::string) {
       }
       
       SharedObjectLoader::~SharedObjectLoader() {
