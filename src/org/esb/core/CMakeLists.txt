@@ -23,7 +23,6 @@ add_library (core ${CORE_LINK_TYPE}
 )
 
 TARGET_LINK_LIBRARIES(core 
-  webserver
   lang
   io
 )

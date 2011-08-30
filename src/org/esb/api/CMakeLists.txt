@@ -37,6 +37,7 @@ add_library (jsonservice ${API_LINK_TYPE}
 TARGET_LINK_LIBRARIES(webserver
   json
   hive
+  core
 )
 
 TARGET_LINK_LIBRARIES(api
@@ -44,6 +45,9 @@ TARGET_LINK_LIBRARIES(api
     rpc
     json
     db
+)
+TARGET_LINK_LIBRARIES(jsonservice
+  core
 )
 
 SET_TARGET_PROPERTIES( api PROPERTIES PREFIX "libmhive-")
