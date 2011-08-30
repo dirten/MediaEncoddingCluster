@@ -102,10 +102,10 @@ ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
 
 add_executable (mhive Hive.cpp)
-add_executable (mhiveconfig MHiveConfig.cpp)
-target_link_libraries (mhiveconfig
-    api
-    )
+#add_executable (mhiveconfig MHiveConfig.cpp)
+#target_link_libraries (mhiveconfig
+#    api
+#    )
 
 #SET_TARGET_PROPERTIES (mhive
 #  PROPERTIES BUILD_WITH_INSTALL_RPATH 1
@@ -351,10 +351,10 @@ INSTALL(TARGETS mhive
 #    COMPONENT mhive
 )
 
-INSTALL(TARGETS mhiveconfig
-    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+#INSTALL(TARGETS mhiveconfig
+#    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+#    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+#    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/web/
   DESTINATION ${WEB_INSTALL_DIR}
