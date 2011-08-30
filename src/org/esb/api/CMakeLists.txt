@@ -2,7 +2,7 @@
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
-SET(SHARED_API Off)
+SET(SHARED_API On)
 
 IF(SHARED_API)
     ADD_DEFINITIONS(-DAPI_BUILD_SHARED)
@@ -13,8 +13,6 @@ ENDIF(SHARED_API)
 
 add_library (api ${API_LINK_TYPE}
     mongoose.c
-    ApiWebServer.cpp
-    ProcessHandler.cpp
     MHiveServerConnection.cpp
     MediaFile.cpp
     JsonServer.cpp
@@ -25,6 +23,22 @@ add_library (api ${API_LINK_TYPE}
     JsonMediaHandler.cpp
     JsonSystemHandler.cpp
  )
+
+add_library (webserver ${API_LINK_TYPE}
+    mongoose.c
+    ApiWebServer.cpp
+    ServiceRequest.cpp
+    ServiceResponse.cpp
+ )
+add_library (jsonservice ${API_LINK_TYPE}
+  ProcessHandler.cpp
+)
+
+TARGET_LINK_LIBRARIES(webserver
+  json
+  hive
+)
+
 TARGET_LINK_LIBRARIES(api
     av
     rpc
@@ -33,11 +47,23 @@ TARGET_LINK_LIBRARIES(api
 )
 
 SET_TARGET_PROPERTIES( api PROPERTIES PREFIX "libmhive-")
+SET_TARGET_PROPERTIES( webserver PROPERTIES PREFIX "libmhive-")
+SET_TARGET_PROPERTIES( jsonservice PROPERTIES PREFIX "libmhive-")
 
-#IF(BUILD_SHARED_LIBS)
+IF(SHARED_API)
   INSTALL(TARGETS api
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-#ENDIF(BUILD_SHARED_LIBS)
+  INSTALL(TARGETS webserver
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+  INSTALL(TARGETS jsonservice
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    RUNTIME DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+ENDIF(SHARED_API)

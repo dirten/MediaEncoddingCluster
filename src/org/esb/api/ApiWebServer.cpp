@@ -26,13 +26,13 @@
 namespace org {
   namespace esb {
     namespace api {
-      std::map<std::string, UrlHandler*> ApiWebServer::_urlhandler;
-
-      ApiWebServer::ApiWebServer(int port) {
-        std::string ports = org::esb::util::StringUtil::toString(port);
+      std::map<std::string,org::esb::core::WebservicePlugin *> ApiWebServer::_urlhandler;
+        void ApiWebServer::startService(){
+          if(port.length()==0)
+            port="8080";
         const char *options[] = {
-          "document_root", (org::esb::config::Config::get("web.docroot")).c_str(),
-          "listening_ports", ports.c_str(),
+          "document_root", docroot.c_str(),
+          "listening_ports", port.c_str(),
           "num_threads", "5",
           "index_files", "index.html",
           /*
@@ -44,9 +44,24 @@ namespace org {
         ctx = mg_start(&ApiWebServer::event_handler, NULL, options);
         assert(ctx != NULL);
         LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
+        
+        }
+        void ApiWebServer::stopService(){
+          
+        }
+        void ApiWebServer::setContext(org::esb::core::AppContext*c){
+          LOGDEBUG("context parameter port:"<<c->env["web.port"]);
+          LOGDEBUG("context parameter docroot:"<<c->env["web.docroot"]);
+          port=c->env["web.port"];
+          docroot=c->env["web.docroot"];
+        }
+
+      
+      ApiWebServer::ApiWebServer() {
       }
 
       ApiWebServer::~ApiWebServer() {
+
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,
@@ -66,37 +81,28 @@ namespace org {
 
           if (_urlhandler.find(request) != _urlhandler.end()) {
             bool status=false;
-            JSONNode node = _urlhandler[request]->handle(request_info, status);
-            if(status){
-              node.set_name("data");
-              n.push_back(node);
-            }else{
-              node.set_name("error");
-              n.push_back(node);
-            }
+            _urlhandler[request]->handle(NULL,NULL);
           }else{
-            JSONNode c(JSON_NODE);
-            c.set_name("error");
-            n.push_back(c);
+            /*error header*/
           }
-          n.push_back(JSONNode("requestId", requestId));
-          std::string json_s = n.write();
-          
-          mg_write(conn, json_s.c_str(), json_s.length());
           processed=new char();
         }
         
         return processed;
       }
 
-      bool ApiWebServer::addHandler(UrlHandler* handler) {
-        std::string url = handler->getUrlToHandle();
+      bool ApiWebServer::addHandler(std::string url,org::esb::core::WebservicePlugin * handler) {
+        
         _urlhandler[url] = handler;
 		return true;
+      }
+      
+      void ApiWebServer::addHook(std::string url,org::esb::core::HookPlugin * hook) {
+        
       }
     }
   }
 }
 extern "C" void startApiServer() {
-    org::esb::api::ApiWebServer api_server(8888);
+    org::esb::api::ApiWebServer api_server();
 }

@@ -21,23 +21,33 @@
 #include "mongoose.h"
 #include "UrlHandler.h"
 #include <map>
+#include "org/esb/core/ServicePlugin.h"
+#include "org/esb/core/WebservicePlugin.h"
+#include "org/esb/core/HookProvider.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace api {
 
-      class ApiWebServer {
+      class API_EXPORT ApiWebServer:public org::esb::core::ServicePlugin, org::esb::core::HookProvider {
       public:
-        ApiWebServer(int port);
+        ApiWebServer();
         virtual ~ApiWebServer();
-        bool addHandler(UrlHandler*);
+        bool addHandler(std::string url,org::esb::core::WebservicePlugin *);
+        void startService();
+        void stopService();
+        void setContext(org::esb::core::AppContext*);
+        void addHook(std::string hookname, org::esb::core::HookPlugin*);
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
-        static std::map<std::string,UrlHandler*> _urlhandler;
+        static std::map<std::string,org::esb::core::WebservicePlugin *> _urlhandler;
+        std::string port;
+        std::string docroot;
       };
+      REGISTER_SERVICE("apiwebserver", ApiWebServer)
     }
   }
 }
-
 #endif	/* APIWEBSERVER_H */
 

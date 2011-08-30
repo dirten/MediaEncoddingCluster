@@ -7,20 +7,24 @@
 
 #ifndef PROCESSHANDLER_H
 #define	PROCESSHANDLER_H
-#include "UrlHandler.h"
+#include "org/esb/core/WebservicePlugin.h"
+#include "org/esb/core/AppContext.h"
+
 namespace org {
   namespace esb {
     namespace api {
 
-      class ProcessHandler: public UrlHandler {
+      class ProcessHandler: public org::esb::core::WebservicePlugin {
       public:
         ProcessHandler();
         virtual ~ProcessHandler();
-        std::string getUrlToHandle();
-        JSONNode handle(const struct mg_request_info *request_info,bool & status);
+        void handle(org::esb::api::ServiceRequest *, org::esb::api::ServiceResponse *);
+        void hook(){};
+        void setContext(org::esb::core::AppContext*);
       private:
 
       };
+      REGISTER_HOOK("webserver.url.hook","/api/v1/process",ProcessHandler)
     }
   }
 }

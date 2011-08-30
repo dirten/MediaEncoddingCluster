@@ -16,19 +16,13 @@ namespace org {
 
       ProcessHandler::~ProcessHandler() {
       }
-      std::string ProcessHandler::getUrlToHandle(){
-          return "/api/v1/process";
+
+      void ProcessHandler::handle(org::esb::api::ServiceRequest *, org::esb::api::ServiceResponse *) {
+        LOGDEBUG("handle url");
       }
 
-      JSONNode ProcessHandler::handle(const struct mg_request_info *request_info, bool & status){
-        std::string start=getParameter("start",request_info->query_string);
-        LOGDEBUG("Start="+start);
-        JSONNode result(JSON_NODE);
+      void ProcessHandler::setContext(org::esb::core::AppContext*) {
 
-        result.set_name("ProcessHandler");
-        result.push_back(JSONNode("processHandler","success"));
-        status=true;
-        return result;
       }
     }
   }

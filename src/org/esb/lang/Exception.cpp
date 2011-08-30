@@ -96,7 +96,8 @@ const char * Exception::what()const throw () {
 
   //       free (strings);
 
-  return msg.c_str();
+  return message.c_str();
+  
 }
 #else
 

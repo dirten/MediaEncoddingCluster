@@ -29,19 +29,75 @@
 #define	SHAREDOBJECTLOADER_H
 #include <string>
 #include "org/esb/util/Log.h"
+#include <boost/function.hpp>
+#include <dlfcn.h>
+#include "NotFoundException.h"
+
 namespace org {
   namespace esb {
     namespace lang {
-      
+
       class LANG_EXPORT SharedObjectLoader {
         classlogger("org.esb.lang.SharedObjectLoader");
       public:
         SharedObjectLoader(std::string);
         virtual ~SharedObjectLoader();
-        void * getFunctionHandle(std::string name);
+
+        template<class T>
+        boost::function<T>
+        getFunctionHandle(std::string name) {
+          void * result = NULL;
+#if defined __LINUX__ || defined __APPLE__ 
+          try {
+            result = dlsym(_lib_handle, name.c_str());
+          } catch (std::exception & ex) {
+            result = NULL;
+            LOGERROR("Error occurred during loading function :" << ex.what());
+          }
+          if (!result) {
+            std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
+            throw NotFoundException(__FILE__,__LINE__,message);
+          }
+#elif __WIN32__
+     HMODULE hMod = NULL;
+	try
+	{
+		hMod = LoadLibrary( str.str().c_str() );
+	}
+	catch( exception &exc )
+	{
+		getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during loading DLL: %1", exc.what() );
+		hMod = NULL;
+	}
+
+	if ( hMod == NULL )
+	{
+		ObjectCreationException exc( "Error during loading DLL." );
+		throw exc;
+	}
+	
+	try
+	{
+		pFunc = ( DLLPROC ) GetProcAddress(hMod, "createObject"); 
+	}
+	catch( exception &exc)
+	{
+		getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
+		pFunc = NULL;
+	}
+
+	if ( pFunc == NULL )
+	{
+		ObjectCreationException exc( "Error during loading object from DLL." );
+		throw exc;
+	}	     
+#else
+#error "no SharedObjectLoader for this plattform"
+#endif
+          return reinterpret_cast<T*> (result); //result;
+        }
       private:
         void *_lib_handle;
-        
       };
     }
   }

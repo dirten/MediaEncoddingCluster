@@ -13,6 +13,7 @@ Log * Log::_logger = NULL;
 std::string Log::_logpath = "";
 log4cplus::Logger Log::logger ;
 log4cplus::ConfigureAndWatchThread * globalConfigureThread ;
+org::esb::util::LogConfigurator * Log::config=NULL;
 Log::Log() {
   std::string logconfig = "logging.properties";
   configureThread = NULL;
@@ -61,7 +62,7 @@ Log::~Log() {
 void Log::open(std::string path) {
     //std::cout <<"enable logging"<<std::endl;
     //log4cplus::BasicConfigurator::doConfigure();
-    org::esb::util::LogConfigurator * config=new org::esb::util::LogConfigurator();
+    config=new org::esb::util::LogConfigurator();
     config->configure();
     //std::cout <<"logging enabled"<<std::endl;
 
@@ -78,6 +79,7 @@ void Log::close() {
   Log::logger.shutdown();
   delete getLogger();
   delete globalConfigureThread;
+  delete config;
 }
 
 Log * Log::getLogger(std::string logger) {

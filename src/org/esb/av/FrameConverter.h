@@ -81,6 +81,7 @@ namespace org {
                 double outframes;
                 int64_t duplicatedframes;
                 static boost::mutex ctx_mutex;
+                int inchannels;
 
             };
         }

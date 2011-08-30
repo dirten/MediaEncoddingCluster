@@ -13,13 +13,9 @@ namespace org {
 
         LogConfigurator() : log4cplus::PropertyConfigurator(LOG4CPLUS_TEXT(""), log4cplus::Logger::getDefaultHierarchy()) {
           log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
-          char * pathenv=getenv("log.path");
-          char * loglevel=getenv("loglevel");
-          if(pathenv==NULL)
-            pathenv=new char;
-          if(loglevel==NULL)
-            loglevel=new char;
-          logpath=pathenv;//org::esb::config::Config::get("log.path");
+          logpath=getenv("log.path")!=NULL?getenv("log.path"):"";
+          std::string loglevel=getenv("loglevel")!=NULL?getenv("loglevel"):"";
+          //logpath=pathenv;//org::esb::config::Config::get("log.path");
           logdebug=logpath+"/mhive.log";
           logwarn=logpath+"/mhive-warn.log";
           //std::cout <<"logpath:"<<logdebug<<std::endl;

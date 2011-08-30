@@ -11,7 +11,8 @@ using namespace std;
 namespace org {
   namespace esb {
     namespace av {
-    boost::mutex FrameConverter::ctx_mutex;
+      boost::mutex FrameConverter::ctx_mutex;
+
       /**
        * initialize the FrameConverter with the parameters from the De/Encoder
        */
@@ -26,34 +27,35 @@ namespace org {
         outsamples = 0;
         last_insamples = 0;
         last_outsamples = 0;
-        inframes=0;
-        outframes=0;
-        duplicatedframes=0;
+        inframes = 0;
+        outframes = 0;
+        duplicatedframes = 0;
+        inchannels=0;
         int sws_flags = 1;
         _dec = dec;
         _enc = enc;
         if (dec->getCodecType() != enc->getCodecType()) {
           LOGERROR("the Decoder and Encoder must be from the same Type");
         }
-        
+        /*
         if (dec->getCodecType() == AVMEDIA_TYPE_AUDIO && enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
           if (dec->getSampleFormat() != SAMPLE_FMT_S16)
             LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
-          _audioCtx = av_audio_resample_init(enc->getChannels(), dec->ctx->request_channels, enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
+          _audioCtx = av_audio_resample_init(enc->getChannels(), dec->getChannels(), enc->getSampleRate(), dec->getSampleRate(), enc->getSampleFormat(), dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
                   );
           if (!_audioCtx)
             LOGERROR("Could not initialize Audio Resample Context");
-        }
-          Rational r;
-          r.num=dec->getFrameRate().den;
-          r.den=dec->getFrameRate().num;
+        }*/
+        Rational r;
+        r.num = dec->getFrameRate().den;
+        r.den = dec->getFrameRate().num;
 
-          _frame_rate_filter=new FrameRateFilter(r, enc->getTimeBase());
+        _frame_rate_filter = new FrameRateFilter(r, enc->getTimeBase());
 
         if (dec->getCodecType() == AVMEDIA_TYPE_VIDEO && enc->getCodecType() == AVMEDIA_TYPE_VIDEO) {
           Format in = dec->getOutputFormat();
           Format out = enc->getInputFormat();
-          
+
           _swsContext = sws_getContext(in.width, in.height, in.pixel_format, out.width, out.height, out.pixel_format, sws_flags, NULL, NULL, NULL);
           if (_swsContext == NULL)
             LOGERROR("Could not initialize SWSCALE");
@@ -74,7 +76,7 @@ namespace org {
 
         LOGDEBUG(in_frame.toString());
         if (_dec->getCodecType() == AVMEDIA_TYPE_VIDEO) {
-          
+
           doDeinterlaceFrame(in_frame);
           convertVideo(in_frame, out_frame);
 
@@ -106,9 +108,9 @@ namespace org {
 
         //        out_frame.setDuration(av_rescale_q(in_frame.getDuration(), in_frame.getTimeBase(), _enc->getTimeBase()));
         //if(_enc->getCodecType()==CODEC_TYPE_VIDEO)
-          //out_frame.setDuration(_enc->getTimeBase().num);
+        //out_frame.setDuration(_enc->getTimeBase().num);
         //if(_enc->getCodecType()==CODEC_TYPE_AUDIO)
-          //out_frame.setDuration(_enc->getTimeBase().num);
+        //out_frame.setDuration(_enc->getTimeBase().num);
 #endif
       }
 
@@ -133,7 +135,7 @@ namespace org {
       }
 
       void FrameConverter::compensateFrameRateConversion(Frame & input, Frame & out) {
-        _frame_rate_filter->process(input,out);
+        _frame_rate_filter->process(input, out);
         return;
         int frames = 1;
         AVRational input_framerate = _dec->getFrameRate();
@@ -172,31 +174,31 @@ namespace org {
         }
         out.setFrameCount(frames);
         return;
-        inframes++;//=_dec->getLastTimeStamp();
+        inframes++; //=_dec->getLastTimeStamp();
 
         //outframes=av_rescale_q(inframes,  output_framerate,input_framerate);
-        outframes=((((inframes*_dec->getFrameRate().den)/_dec->getFrameRate().num)/_enc->getFrameRate().den)*_enc->getFrameRate().num);
-        outframes+=_frameRateCompensateBase;
-        outframes-=1;
-        
-        LOGDEBUG("inframes="<<inframes<<" outframes="<<outframes<<" duplicates="<<duplicatedframes);
-        LOGDEBUG("CompensateBase="<<_frameRateCompensateBase);
-        LOGDEBUG("calculated_value="<<outframes-inframes-duplicatedframes);
-        LOGDEBUG("DecoderTimeBase="<<_dec->getTimeBase().num<<"/"<<_dec->getTimeBase().den);
-        LOGDEBUG("EncoderFrameRate="<<_enc->getFrameRate().num<<"/"<<_enc->getFrameRate().den);
-        LOGDEBUG("EncoderTimeBase="<<_enc->getTimeBase().num<<"/"<<_enc->getTimeBase().den);
-        if((outframes-inframes-duplicatedframes)>=1.0){
-          out.setFrameCount(outframes-inframes-duplicatedframes+1);
-          duplicatedframes=outframes-inframes;
+        outframes = ((((inframes * _dec->getFrameRate().den) / _dec->getFrameRate().num) / _enc->getFrameRate().den) * _enc->getFrameRate().num);
+        outframes += _frameRateCompensateBase;
+        outframes -= 1;
+
+        LOGDEBUG("inframes=" << inframes << " outframes=" << outframes << " duplicates=" << duplicatedframes);
+        LOGDEBUG("CompensateBase=" << _frameRateCompensateBase);
+        LOGDEBUG("calculated_value=" << outframes - inframes - duplicatedframes);
+        LOGDEBUG("DecoderTimeBase=" << _dec->getTimeBase().num << "/" << _dec->getTimeBase().den);
+        LOGDEBUG("EncoderFrameRate=" << _enc->getFrameRate().num << "/" << _enc->getFrameRate().den);
+        LOGDEBUG("EncoderTimeBase=" << _enc->getTimeBase().num << "/" << _enc->getTimeBase().den);
+        if ((outframes - inframes - duplicatedframes) >= 1.0) {
+          out.setFrameCount(outframes - inframes - duplicatedframes + 1);
+          duplicatedframes = outframes - inframes;
           //inframes+=outframes-inframes;
-        }else
-        if((outframes-inframes-duplicatedframes-0.0001)<=-1.0){
+        } else
+          if ((outframes - inframes - duplicatedframes - 0.0001) <= -1.0) {
           out.setFrameCount(0);
-          duplicatedframes=outframes-inframes-0.0001;
+          duplicatedframes = outframes - inframes - 0.0001;
           //inframes+=outframes-inframes;
         }
-        double tmp=0;
-        _frameRateCompensateBase=modf(outframes,&tmp);
+        double tmp = 0;
+        _frameRateCompensateBase = modf(outframes, &tmp);
 
         //out.setFrameCount(frames);
 
@@ -205,13 +207,13 @@ namespace org {
       void FrameConverter::doDeinterlaceFrame(Frame & in_frame) {
         LOGDEBUG("deinterlacing frame");
         /* deinterlace : must be done before any resize */
-          Frame frame(in_frame);
-          if (avpicture_deinterlace((AVPicture*) frame.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
-            /* if error, do not deinterlace */
-            //fprintf(stderr, "Deinterlacing failed\n");
-          } else {
-            in_frame = frame;
-          }
+        Frame frame(in_frame);
+        if (avpicture_deinterlace((AVPicture*) frame.getAVFrame(), (const AVPicture*) in_frame.getAVFrame(), _dec->getPixelFormat(), _dec->getWidth(), _dec->getHeight()) < 0) {
+          /* if error, do not deinterlace */
+          //fprintf(stderr, "Deinterlacing failed\n");
+        } else {
+          in_frame = frame;
+        }
         LOGDEBUG("deinterlacing frame ready");
       }
 
@@ -228,13 +230,13 @@ namespace org {
         int64_t outpts = _enc->getLastTimeStamp();
         double delta = inpts - outpts - _enc->getSamplesBufferd();
         LOGDEBUG("Resample Comensate delta:" << delta << " inpts:" << inpts << " outpts:" << outpts << " fifo:" << _enc->getSamplesBufferd());
-        
-        last_insamples=av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
-        insamples+=last_insamples;
-        outsamples+=last_outsamples;
-        delta=last_insamples-last_outsamples;
-        LOGDEBUG("new Resample Comensate delta:"<<delta<<" last_insamples:" << last_insamples<<" last_outsamples:"<<last_outsamples<< " all_insamples"<<insamples<<" alloutsamples:"<<outsamples <<" lastdiff:"<<(last_insamples-last_outsamples)<<" alldiff:"<<(insamples-outsamples));
-        
+
+        last_insamples = av_rescale_q(last_insamples, _dec->getTimeBase(), _enc->getTimeBase());
+        insamples += last_insamples;
+        outsamples += last_outsamples;
+        delta = last_insamples - last_outsamples;
+        LOGDEBUG("new Resample Comensate delta:" << delta << " last_insamples:" << last_insamples << " last_outsamples:" << last_outsamples << " all_insamples" << insamples << " alloutsamples:" << outsamples << " lastdiff:" << (last_insamples - last_outsamples) << " alldiff:" << (insamples - outsamples));
+
         av_resample_compensate(*(struct AVResampleContext**) _audioCtx, delta, _enc->getSampleRate() / 2);
       }
 
@@ -244,13 +246,13 @@ namespace org {
       void FrameConverter::convertVideo(Frame & in_frame, Frame & out_frame) {
         boost::mutex::scoped_lock scoped_lock(ctx_mutex);
         out_frame._type = in_frame._type;
-        if (!_swsContext){
-	    LOGERROR("sws Context not initialised");
-	    return;
-	}
-	LOGDEBUG("CONVERT VIDEO");
-	LOGDEBUG(in_frame.toString());
-	LOGDEBUG(out_frame.toString());
+        if (!_swsContext) {
+          LOGERROR("sws Context not initialised");
+          return;
+        }
+        LOGDEBUG("CONVERT VIDEO");
+        LOGDEBUG(in_frame.toString());
+        LOGDEBUG(out_frame.toString());
         sws_scale(_swsContext, in_frame.getAVFrame()->data, in_frame.getAVFrame()->linesize, 0, in_frame.getHeight(), out_frame.getAVFrame()->data, out_frame.getAVFrame()->linesize);
         out_frame.setTimeBase(in_frame.getTimeBase());
         out_frame.pos = in_frame.pos;
@@ -258,24 +260,38 @@ namespace org {
         out_frame.setDts(in_frame.getDts());
         out_frame.stream_index = in_frame.stream_index;
         out_frame.duration = in_frame.duration;
-	LOGDEBUG("CONVERT video READY");
+        LOGDEBUG("CONVERT video READY");
       }
 
       /**
        * this resample the input Frame data into the output Frame data
        */
       void FrameConverter::convertAudio(Frame & in_frame, Frame & out_frame) {
+        
+        if (_audioCtx == NULL||inchannels!=in_frame.channels) {
+          inchannels=in_frame.channels;
+          if(_audioCtx)audio_resample_close(_audioCtx);
+          if (_dec->getCodecType() == AVMEDIA_TYPE_AUDIO && _enc->getCodecType() == AVMEDIA_TYPE_AUDIO) {
+            if (_dec->getSampleFormat() != SAMPLE_FMT_S16)
+              LOGWARN("Warning, using s16 intermediate sample format for resampling\n");
+            _audioCtx = av_audio_resample_init(_enc->getChannels(), _dec->getChannels(), _enc->getSampleRate(), _dec->getSampleRate(), _enc->getSampleFormat(), _dec->getSampleFormat(), 16, 10, 0, 0.8 // this line is simple copied from ffmpeg
+                    );
+            if (!_audioCtx)
+              LOGERROR("Could not initialize Audio Resample Context");
+          }
+        }
+
         //        LOGTRACEMETHOD("org.esb.av.FrameConverter","Convert Audio");
         boost::mutex::scoped_lock scoped_lock(ctx_mutex);
-        if(!_audioCtx){
-	    LOGERROR("_audioCtx not initialised");
-	    return;
-	}
-	LOGDEBUG("convert audio")
-	int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
+        if (!_audioCtx) {
+          LOGERROR("_audioCtx not initialised");
+          return;
+        }
+        LOGDEBUG("convert audio")
+                int isize = av_get_bits_per_sample_fmt(_dec->getSampleFormat()) / 8;
         int osize = av_get_bits_per_sample_fmt(_enc->getSampleFormat()) / 8;
         uint8_t * audio_buf = (uint8_t*) av_malloc(2 * MAX_AUDIO_PACKET_SIZE);
-	
+
         int out_size = audio_resample(_audioCtx, (short *) audio_buf, (short *) in_frame._buffer, in_frame._size / (in_frame.channels * isize));
         out_frame._allocated = true;
         out_frame._buffer = audio_buf;
@@ -286,9 +302,9 @@ namespace org {
         out_frame.channels = _enc->getChannels();
         out_frame.sample_rate = _enc->getSampleRate();
         out_frame.setDuration(out_size);
-        last_insamples=in_frame._size/ (/*(in_frame.channels/_enc->getChannels()) */ isize);
-        last_outsamples=out_frame._size/osize;
-	LOGDEBUG("convert audio ready")
+        last_insamples = in_frame._size / ((in_frame.channels / _enc->getChannels()) * isize);
+        last_outsamples = out_frame._size / osize;
+        LOGDEBUG("convert audio ready")
       }
     }
   }

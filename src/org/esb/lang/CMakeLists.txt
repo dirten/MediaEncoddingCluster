@@ -13,6 +13,7 @@ SET(lang_source
     CtrlCHitWaiter.cpp
     ProcessException.cpp
     ProcessListener.cpp
+    NotFoundException.cpp
 #    Object.cpp
 )
 IF(NOT WIN32)

@@ -44,6 +44,13 @@
 
 #include <iostream>
 inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance("global");}
+namespace org{
+  namespace esb{
+    namespace util{
+      class LogConfigurator;
+    }
+  }
+}
 class UTIL_EXPORT Log{
 public:
     static Log * getLogger(std::string logger="");
@@ -68,7 +75,7 @@ private:
 	log4cplus::Logger fatal_logger;
 	log4cplus::Logger unknown_logger;
         log4cplus::ConfigureAndWatchThread * configureThread;
-
+        static org::esb::util::LogConfigurator * config;
     Log();
     std::ofstream _myfile;
     static std::string _logpath;

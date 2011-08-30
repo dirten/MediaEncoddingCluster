@@ -26,6 +26,7 @@ PacketInputStream::PacketInputStream(InputStream * is, bool trunc, bool calc) {
   //  _audio_idx = -1;
   _fis = NULL;
   if (instanceOf(*is, FormatInputStream)) {
+    LOGDEBUG("Instance of FormatInputStream !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     _formatCtx = ((FormatInputStream*) is)->formatCtx;
     _fis = (FormatInputStream*) is;
     _readFrom = 1;

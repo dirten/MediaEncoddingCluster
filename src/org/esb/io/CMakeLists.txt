@@ -9,7 +9,8 @@ ENDIF(SHARED_IO)
 MESSAGE("IO Build Type" ${LINK_TYPE})
 
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
-add_library (io ${IO_LINK_TYPE} File.cpp 
+add_library (io ${IO_LINK_TYPE} 
+      File.cpp 
       FileInputStream.cpp 
       FileOutputStream.cpp 
       CharArrayInputStream.cpp 

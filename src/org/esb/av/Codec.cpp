@@ -79,8 +79,8 @@ namespace org {
         _pre_allocated = true;
 
 
-        ctx->request_channels = 2;
-        ctx->request_channel_layout = 2;
+        //ctx->request_channels = 2;
+        //ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
         _bytes_discard = 0;
 
         const AVOption * option = NULL;
@@ -92,7 +92,7 @@ namespace org {
                     strcmp(option->name, "min_partition_order") == 0||
                     strcmp(option->name, "max_partition_order") == 0||
                     strcmp(option->name, "lpc_type") == 0||
-                    strcmp(option->name, "drc_scale") == 0||
+                    //strcmp(option->name, "drc_scale") == 0||
                     strcmp(option->name, "lpc_passes") == 0
                     )continue;
             int len = 1000;
@@ -234,8 +234,8 @@ namespace org {
         //        ctx->workaround_bugs = 1;
         ctx->debug = 0;
         ctx->debug_mv = 0;
-        ctx->request_channels = 2;
-        ctx->request_channel_layout = 2;
+        //ctx->request_channels = 2;
+        //ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
         if (ctx->codec_id == CODEC_ID_MPEG2VIDEO) {
           ctx->max_b_frames = 2;
           //          ctx->has_b_frames = 1;
@@ -445,6 +445,7 @@ namespace org {
             optflags |= AV_OPT_FLAG_DECODING_PARAM;
           }
           int opt_types[] = {optflags, 0};
+          if(!_pre_allocated){
           for (type = 0; type < 2 && ret >= 0; type++) {
             //const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, opt_types[type], opt_types[type]);
             const AVOption *o2 = av_find_opt(ctx, opt.c_str(), NULL, 0, 0);
@@ -459,6 +460,7 @@ namespace org {
               //if(type==2)
               LOGDEBUG("Option not found: " << opt.c_str())
             }
+          }
           }
           if (o && ret != 0) {
             LOGDEBUG("Invalid value '" << arg << "' for option '" << opt << "' in " << (_mode == ENCODER ? "Encoder" : "Decoder"));

@@ -26,48 +26,42 @@
  */
 
 #include "../SharedObjectLoader.h"
+#include "../NotFoundException.h"
 #include <dlfcn.h>
 namespace org {
   namespace esb {
     namespace lang {
-      
+
       SharedObjectLoader::SharedObjectLoader(std::string filename) {
         _lib_handle = NULL;
-#ifdef __APPLE__
-        filename=filename.append(".dylib");
-#else
-        filename=filename.append(".so");
-#endif
-        
-        LOGDEBUG("open library : "<<filename);
-        try
-        {
-          _lib_handle = dlopen( filename.c_str(), RTLD_NOW);
-        }
-        catch( std::exception &exc )
-        {
-          LOGERROR( "Error occurred during loading SharedObject: "<< exc.what());
+        try {
+          _lib_handle = dlopen(filename.c_str(), RTLD_NOW);
+        } catch (std::exception &exc) {
+          LOGERROR("Error occurred during loading SharedObject: " << exc.what());
           _lib_handle = NULL;
         }
-        if(!_lib_handle){
-          LOGERROR( "Error occurred during loading SharedObject: "<< dlerror());          
+        if (!_lib_handle) {
+          std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
+          throw NotFoundException(__FILE__,__LINE__,message);
         }
       }
-      
-      void * SharedObjectLoader::getFunctionHandle(std::string name){
-        void * result=NULL;
-        try{
-          result=dlsym(_lib_handle,name.c_str());
-        }catch(std::exception & ex){
-          result=NULL;
-          LOGERROR("Error occurred during loading function :"<<ex.what());
-        
+      /*  
+      template<class T>
+    boost::function<T>
+       SharedObjectLoader::getFunctionHandle(std::string name) {
+        void * result = NULL;
+        try {
+          result = dlsym(_lib_handle, name.c_str());
+        } catch (std::exception & ex) {
+          result = NULL;
+          LOGERROR("Error occurred during loading function :" << ex.what());
         }
-        if(!result){
-          LOGERROR( "Error occurred during loading function: "<< dlerror());          
+        if (!result) {
+          std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
+          throw NotFoundException(message);
         }
-        return result;
-      }
+        return reinterpret_cast<T*>(result);//result;
+      }*/
 
       SharedObjectLoader::~SharedObjectLoader() {
         dlclose(_lib_handle);
