@@ -1,8 +1,8 @@
 /* 
- * File:   ObjectTest.cpp
+ * File:   PluginRegistryTest.cpp
  * Author: HoelscJ
  *
- * Created on 10. März 2011, 11:38
+ * Created on 29. August 2011, 14:54
  */
 
 #include <cstdlib>
@@ -10,26 +10,24 @@
 #include "org/esb/lang/NotFoundException.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/io/File.h"
+
 using namespace std;
 using namespace org::esb::lang;
-
-class Test{
-public:
-  Test(){
-    std::cout << "hier bin ich"<<std::endl;
-  }
-}TestInstance;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
+  typedef void (*fptr)(int);
+  fptr func;
+  //typedef void (*fptr)();
+  //typedef myfptr fptr(int);
   Log::open();
   org::esb::io::File f(argv[0]);
 
   std::string path = MEC_SOURCE_DIR;
 
-#ifdef __APPLE__ 
+#ifdef __APPLE__
   std::string ext = "dylib";
 #elif __LINUX__
   std::string ext = "so";
@@ -38,11 +36,14 @@ int main(int argc, char** argv) {
 #endif
 
   try {
-    SharedObjectLoader loader(f.getParent() + "/libshared_object." + ext);
-    boost::function<void (int)> mfunc =  loader.getFunctionHandle<void (int)>("initPlugin");
-    boost::function<void (std::string)> mfunc2 =  loader.getFunctionHandle<void (std::string)>("initPlugin");
-    mfunc(1);
-    mfunc2("1test");
+    {
+    SharedObjectLoader loader(f.getParent() + "/libplugin." + ext);
+    }
+    {
+    SharedObjectLoader loader2(f.getParent() + "/libplugin." + ext);
+    }
+    //func = (fptr) loader.getFunctionHandle("initPlugin");
+    //func(1);
   } catch (NotFoundException & ex) {
     LOGERROR("catch error:" << ex.what());
   }

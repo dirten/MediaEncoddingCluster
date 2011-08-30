@@ -73,11 +73,11 @@ void testAudioResample48000to44100() {
 
   map<int, float> comp_map;
   map<int, int> count_map;
-  comp_map[0] = 2304.0;
-  comp_map[1] = 0.0;
-  comp_map[2] = 2304.0;
-  comp_map[3] = 0.0;
-  comp_map[4] = 2304.0;
+  comp_map[0] = 0;
+  comp_map[1] = 0;
+  comp_map[2] = 0;
+  comp_map[3] = 0;
+  comp_map[4] = 0;
 
   count_map[0] = 612;
   count_map[1] = 613;
@@ -129,7 +129,8 @@ void testAudioResample48000to44100() {
     assert(pu->getGopSize() - packet_count<1);
     assert(pu->getExpectedFrameCount() - count_map[a]<1);
     /*this must be always 0, dont what what it is when cycle is over 100000(very very long video >270h)*/
-    assert(fabs(data[0].frameRateCompensateBase - comp_map[a]) < 0.00001);
+    
+    assert(fabs(data[0].frameRateCompensateBase) < 0.00001);
   }
 }
 void testVideoSameFramerate() {

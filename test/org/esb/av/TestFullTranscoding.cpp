@@ -116,7 +116,7 @@ Log::open("");
     _sdata[i].dec->open();
     _sdata[i].enc->open();
     _smap[i] = s++;
-//    if (_sdata[i].dec->getCodecType() == CODEC_TYPE_VIDEO)
+    //if (_sdata[i].dec->getCodecType() == AVMEDIA_TYPE_VIDEO)
       _sdata[i].conv = new FrameConverter(_sdata[i].dec, _sdata[i].enc);
 
     pos.setEncoder(*_sdata[i].enc, _smap[i]);
@@ -159,6 +159,8 @@ Log::open("");
 
     if (_sdata[p->getStreamIndex()].conv) {
       _sdata[p->getStreamIndex()].conv->convert(*src_frame, *trg_frame);
+    }else{
+      *trg_frame=*src_frame;
     }
     int ret = _sdata[p->getStreamIndex()].enc->encode(*trg_frame);
 

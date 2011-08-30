@@ -23,8 +23,8 @@ ADD_TEST(util.StringUtilTest ${EXECUTABLE_OUTPUT_PATH}/TestStringUtil )
 ADD_TEST(util.QueueTest ${EXECUTABLE_OUTPUT_PATH}/TestQueue )
 #ADD_TEST(TestBoostQueue ${EXECUTABLE_OUTPUT_PATH}/TestBoostQueue )
 #ADD_TEST(PropertyTreeTest ${EXECUTABLE_OUTPUT_PATH}/PropertyTreeTest )
-ADD_TEST(RapidXmlTest ${EXECUTABLE_OUTPUT_PATH}/RapidXmlTest)
-ADD_TEST(DecimalTest ${EXECUTABLE_OUTPUT_PATH}/DecimalTest)
+ADD_TEST(util.RapidXmlTest ${EXECUTABLE_OUTPUT_PATH}/RapidXmlTest)
+ADD_TEST(util.DecimalTest ${EXECUTABLE_OUTPUT_PATH}/DecimalTest)
 #ADD_TEST(ChannelTest ${EXECUTABLE_OUTPUT_PATH}/ChannelTest)
 
 
