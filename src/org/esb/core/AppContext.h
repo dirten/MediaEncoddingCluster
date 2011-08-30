@@ -9,11 +9,12 @@
 #define	APPCONTEXT_H
 #include <map>
 #include <string>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
 
-      class AppContext {
+      class CORE_EXPORT AppContext {
       public:
         std::map<std::string, std::string> env;
       private:

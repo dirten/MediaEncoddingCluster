@@ -20,12 +20,12 @@ namespace org {
       class HookProvider;
       class PluginRegistry {
       public:
-        static PluginRegistry * getInstance();
-        void registerPlugin(std::string, Plugin*);
-        void registerService(std::string, ServicePlugin*);
-        void registerWebservice(std::string,std::string, WebservicePlugin*);
-        void registerHookPlugin(std::string, HookPlugin*);
-        void registerHookProvider(std::string, HookProvider*);
+        static CORE_EXPORT PluginRegistry * getInstance();
+        void CORE_EXPORT registerPlugin(std::string, Plugin*);
+        void CORE_EXPORT registerService(std::string, ServicePlugin*);
+        void CORE_EXPORT registerWebservice(std::string,std::string, WebservicePlugin*);
+        void CORE_EXPORT registerHookPlugin(std::string, HookPlugin*);
+        void CORE_EXPORT registerHookProvider(std::string, HookProvider*);
         static AppContext * context;
       private:
         PluginRegistry();

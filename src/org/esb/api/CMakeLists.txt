@@ -34,11 +34,6 @@ add_library (jsonservice ${API_LINK_TYPE}
   ProcessHandler.cpp
 )
 
-TARGET_LINK_LIBRARIES(webserver
-  json
-  hive
-  
-)
 
 TARGET_LINK_LIBRARIES(api
     av
@@ -47,6 +42,10 @@ TARGET_LINK_LIBRARIES(api
     db
 )
 TARGET_LINK_LIBRARIES(jsonservice
+  core
+)
+TARGET_LINK_LIBRARIES(webserver
+  util
   core
 )
 
