@@ -12,11 +12,12 @@
 #include "org/esb/libjson/libjson.h"
 #include "boost/thread/mutex.hpp"
 #include <set>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace api {
 
-      class JsonServer {
+      class API_EXPORT JsonServer {
       public:
         JsonServer(int port);
         virtual ~JsonServer();
