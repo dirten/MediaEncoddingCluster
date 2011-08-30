@@ -77,7 +77,7 @@ namespace org {
           std::string request = request_info->uri;
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
-          JSONNode n(JSON_NODE);
+          
 
           if (_urlhandler.find(request) != _urlhandler.end()) {
             bool status=false;
