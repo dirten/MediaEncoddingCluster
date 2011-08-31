@@ -15,22 +15,22 @@
     
   -(void)setData:(id)data
   {
-    CPLog.debug("setting data for profile in form builder"+JSON.stringify(data));
+    //CPLog.debug("setting data for profile in form builder"+JSON.stringify(data));
     _json=data;
 //          _json[data.id]=data.control["default"];
 
     var keys=[_elements allKeys];
     for(var i=0;i<[keys count];i++){
-      CPLog.debug("Looking for Data in json "+[keys objectAtIndex:i])
+      //CPLog.debug("Looking for Data in json "+[keys objectAtIndex:i])
       if(_json[[keys objectAtIndex:i]]!=undefined){
-        CPLog.debug("Data in json found "+[keys objectAtIndex:i])
+        //CPLog.debug("Data in json found "+[keys objectAtIndex:i])
         var el=[_elements objectForKey:[keys objectAtIndex:i]];
         var op=[_options objectForKey:[keys objectAtIndex:i]];
         if(op.control.items){
-          CPLog.debug("Map Key to value for"+[keys objectAtIndex:i]);
+          //CPLog.debug("Map Key to value for"+[keys objectAtIndex:i]);
           for(var b=0;b<op.control.items.length;b++){
             opitem=op.control.items[b];
-            CPLog.debug("Key="+opitem.key+" val="+_json[[keys objectAtIndex:i]]);
+            //CPLog.debug("Key="+opitem.key+" val="+_json[[keys objectAtIndex:i]]);
             if(opitem.value==_json[[keys objectAtIndex:i]])
               [el setValue:opitem.key];
           }
@@ -42,7 +42,7 @@
       //var el=[_elements objectForKey:[keys objectAtIndex:i]];
       var op=[_options objectForKey:[keys objectAtIndex:i]];
       _json[[keys objectAtIndex:i]]=op.control.defaults;
-      CPLog.debug("setting default "+[keys objectAtIndex:i]);
+      //CPLog.debug("setting default "+[keys objectAtIndex:i]);
       }
     }
     //_json.testdata='bla';
@@ -60,7 +60,7 @@
 
   -(void)buildFormView:(id)data
   {
-    [self setBounds:CGRectMake(0, 0, 300, 50000)];
+    //[self setBounds:CGRectMake(0, 0, 300, 50000)];
     for(a=0;a<data.gui.options.length;a++){
       switch (data.gui.options[a].control.type) {
         case "TextBox":
@@ -85,11 +85,11 @@
         //alert("Sie bleiben leider dumm");
         break;
       }
-      CPLog.debug(data.gui.options[a].id);
+      //CPLog.debug(data.gui.options[a].id);
       /*removing all elements from this view*/
       //[self setSubviews:[CPArray array]];
     }
-        [self setNeedsDisplay:YES];
+        //[self setNeedsDisplay:YES];
 
   }
   -(void)buildInfoBox:(id)data
@@ -175,7 +175,7 @@
   -(void)buildSlider:(id)data
   {
     [_options setObject:data forKey:data.id];
-    CPLog.debug("build slider")
+    //CPLog.debug("build slider")
     label=[CPTextField labelWithTitle:data.title];
     [label setFrameOrigin:CGPointMake(0.0,nexttop)];
     [label setAlignment:CPRightTextAlignment];
@@ -186,9 +186,9 @@
     [field setTarget:self];
     [field setAction:@selector(sliderChanged:)];
     [field setIdentifier:data.id];
-    [field setObjectValue:data.control.defaults];
     [field setMinValue:data.control.min];
     [field setMaxValue:data.control.max];
+    [field setValue:data.control.defaults];
     [_elements setObject:field forKey:data.id];
 
     nexttop+=25.0;
@@ -199,7 +199,7 @@
   -(void)buildCheckBox:(id)data
   {
     [_options setObject:data forKey:data.id];
-    CPLog.debug("buildcheck box")
+    //CPLog.debug("buildcheck box")
     label=[CPTextField labelWithTitle:data.title];
     [label setFrameOrigin:CGPointMake(0.0,nexttop)];
     [label setAlignment:CPRightTextAlignment];
@@ -219,20 +219,20 @@
   }
   -(void)checkBoxStateChanged:(id)sender
   {
-    CPLog.debug("checked"+[sender objectValue]);
+    //CPLog.debug("checked"+[sender objectValue]);
     _json[[sender identifier]]=[sender objectValue];
   }
   -(void)sliderChanged:(id)sender
   {
 
-    CPLog.debug("changed"+parseInt([sender objectValue]));
+    //CPLog.debug("changed"+parseInt([sender objectValue]));
     _json[[sender identifier]]=parseInt([sender objectValue]);
   }
   -(void)itemSelectionChanged:(id)sender
   {
-    CPLog.debug("selection changed:"+[sender representedObject]);
+    //CPLog.debug("selection changed:"+[sender representedObject]);
     if([_options containsKey:[sender representedObject]]){
-      CPLog.debug("key found:"+[sender representedObject]);
+      //CPLog.debug("key found:"+[sender representedObject]);
       var option=[_options objectForKey:[sender representedObject]];
 
       for(var i=0;i<option.control.items.length;i++){
@@ -244,7 +244,7 @@
           if(item.enable&&item.enable.length>0){
             for(var b=0;b<item.enable.length;b++){
               var eitem=item.enable[b];
-              CPLog.debug("enable item"+eitem);
+              //CPLog.debug("enable item"+eitem);
             }
           }
           /*setting refernce data fields*/
@@ -252,7 +252,7 @@
             for(var a=0;a<item.data.length;a++){
               var data=item.data[a];
               if([_elements containsKey:data.option]){
-                CPLog.debug("setting data from option "+data.option+" to "+data.value);
+                //CPLog.debug("setting data from option "+data.option+" to "+data.value);
                 var data_option=[_elements objectForKey:data.option];
                 [data_option setObjectValue:data.value];
                 _json[data.option]=data.value;
@@ -262,12 +262,12 @@
         }
       }
     }else{
-    CPLog.error("Key "+[sender representedObject]+" does not exist in dictonary");
+    //CPLog.error("Key "+[sender representedObject]+" does not exist in dictonary");
   }
 }
 -(void)controlTextDidChange:(CPNotification)aNotification
 {
-  CPLog.debug("text changed:"+[[aNotification object] identifier]);
+  //CPLog.debug("text changed:"+[[aNotification object] identifier]);
   _json[[[aNotification object] identifier]]=[[aNotification object] objectValue];
 }
 

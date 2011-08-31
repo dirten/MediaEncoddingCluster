@@ -13,7 +13,7 @@
   }
   -(void)setValue:(id)value
   {
-    CPLog.debug("setting comboBox Value to "+value);
+    //CPLog.debug("setting comboBox Value to "+value);
     var itemarray=[self itemArray];
     for(var a=0;a<[itemarray count];a++){
       menuitem=[itemarray objectAtIndex:a];

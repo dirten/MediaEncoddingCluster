@@ -12,7 +12,7 @@
 }
 -(void)setValue:(id)value
 {
-  CPLog.debug("setting textBox Value to "+value);
+  //CPLog.debug("setting textBox Value to "+value);
   [self setObjectValue:value];
 }
 @end

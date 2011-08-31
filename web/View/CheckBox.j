@@ -13,7 +13,7 @@
 }
 -(void)setValue:(id)value
 {
-    CPLog.debug("setting checkBox Value to "+value);
+    //CPLog.debug("setting checkBox Value to "+value);
     [self setObjectValue:value];
 }
 

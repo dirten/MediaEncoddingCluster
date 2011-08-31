@@ -9,7 +9,7 @@
   -(id)initWithFrame:(CGRect)aFrame
   {
     self=[super initWithFrame:aFrame];
-    CPLog.debug("Init Slider!!!!!!!!!!!!!!!!!!!!!!"+self+"---"+aFrame);
+    //CPLog.debug("Init Slider!!!!!!!!!!!!!!!!!!!!!!"+self+"---"+aFrame);
 
     _slider=[[CPSlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([self bounds])-65, CGRectGetHeight([self bounds]))];
 
@@ -58,7 +58,7 @@
 
   -(void)setValue:(id)value
   {
-    CPLog.debug("setting sliderBox Value to "+value);
+    //CPLog.debug("setting sliderBox Value to "+value);
     [_slider setObjectValue:parseInt(value)];
     [_label setObjectValue:parseInt(value)];
   }
