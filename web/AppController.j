@@ -10,7 +10,7 @@
 @import <AppKit/AppKit.j>
 @import "ProfileList.j"
 @import "Navigator.j"
-@import "ProfileEditView.j"
+@import "View/ProfileEditView.j"
 @import "Controller/ContentViewController.j"
 @import "Controller/DetailViewController.j"
 @import "Controller/ProfileViewController.j"

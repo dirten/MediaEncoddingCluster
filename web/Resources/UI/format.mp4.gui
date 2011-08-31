@@ -1,0 +1,23 @@
+{
+    "gui":{
+	"groups":[
+	    {"id":"picture_settings", "title":"Picture Settings", "tab":"general"},
+	    {"id":"frametype_settings", "title":"Frame Type Settings", "tab":"general"},
+	    {"id":"rate_settings", "title":"Rate Control Settings", "tab":"general"},
+	    {"id":"analysis_settings", "title":"Analysis", "tab":"general"}
+	],
+	"options":[
+	    {"id":"author", "type":"string","title":"Author","group":"picture_settings","unit":"fps","control":{"type":"TextBox","defaults":""}},
+	    {"id":"title", "type":"string", "title":"Title","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"copyright", "type":"string", "title":"Copyright","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"comment", "type":"string", "title":"Comment","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"album", "type":"string", "title":"Album","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"year", "type":"string", "title":"Year","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"track", "type":"string", "title":"Track","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"genre", "type":"string", "title":"Genre","group":"picture_settings","unit":"pixel","control":{"type":"TextBox","defaults":""}},
+	    {"id":"rtphint", "type":"string", "title":"RTP Streaming Hint","group":"picture_settings","unit":"pixel","control":{"type":"CheckBox","defaults":"0"}}
+
+	]
+    }
+}
+
