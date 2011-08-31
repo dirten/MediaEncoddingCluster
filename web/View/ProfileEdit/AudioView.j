@@ -61,7 +61,7 @@
     }
     var path = [[CPBundle mainBundle] pathForResource:@"UI/encoder.audio."+codec+".gui"];
     _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
-    CPLog.debug([_data rawString]);
+    //CPLog.debug([_data rawString]);
     try{
       data=[[_data rawString] objectFromJSON];
       [_form init];

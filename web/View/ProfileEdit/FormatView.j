@@ -5,6 +5,7 @@
     id _json;
     var nexttop;
     id option;
+    id formats;
     CPDictionary _elements;
     CPDictionary _options;
     FormBuilder _form;
@@ -30,15 +31,16 @@
                     "defaults":"0"
                 }
             };
-    codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
-    codecs=[[codecstxt rawString] objectFromJSON];
+    var codecstxt = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:@"/api/v1/format"] returningResponse:nil];
+    formats=[[codecstxt rawString] objectFromJSON];
     
     var items=[{"key":"please select a file format","value":"0"}];
-    for(var a=0;a<codecs.data.length;a++){
+    for(var a=0;a<formats.data.length;a++){
       //if(codecs.data[a].name.length>0)
-        items.push({"key":codecs.data[a].longname,"value":codecs.data[a].name});
+        items.push({"key":formats.data[a].longname,"value":formats.data[a].name});
     }
     option.control.items=items;
+    [self loadFormatUI:undefined];
     [self addSubview:_form];
     return self;
   }
@@ -54,17 +56,17 @@
   {
     //var path = [[CPBundle mainBundle] pathForResource:@"encoder.video.libx264.gui"];
     var codec=codecid;
-    CPLog.debug("set codec UI id"+codecid);
-    for(var i=0;i<codecs.data.length;i++){
+    CPLog.debug("set format UI id"+codecid);
+    for(var i=0;i<formats.data.length;i++){
       //CPLog.debug(codecs.data[i].longname)
-      if(codecs.data[i].longname==codecid){
-        codec=codecs.data[i].name;
-        CPLog.debug("codec selected "+codecs.data[i].name);
+      if(formats.data[i].longname==codecid){
+        codec=formats.data[i].name;
+        CPLog.debug("codec selected "+formats.data[i].name);
       }
     }
     var path = [[CPBundle mainBundle] pathForResource:@"UI/format."+codec+".gui"];
     _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
-    CPLog.debug([_data rawString]);
+    //CPLog.debug([_data rawString]);
     try{
       data=[[_data rawString] objectFromJSON];
       [_form init];
@@ -79,7 +81,7 @@
       [_form buildFormView:data];
     }catch(err)
     {
-      CPLog.debug(err);
+      //CPLog.debug(err);
       var path = [[CPBundle mainBundle] pathForResource:@"UI/format.default.gui"];
       _data = [CPURLConnection sendSynchronousRequest:[CPURLRequest requestWithURL:path] returningResponse:nil];
       data=[[_data rawString] objectFromJSON];
