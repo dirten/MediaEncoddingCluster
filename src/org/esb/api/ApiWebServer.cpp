@@ -22,14 +22,24 @@
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
+#include "ServiceRequest.h"
+#include "ServiceResponse.h"
+
 
 namespace org {
   namespace esb {
     namespace api {
-      std::map<std::string,org::esb::core::WebservicePlugin *> ApiWebServer::_urlhandler;
-        void ApiWebServer::startService(){
-          if(port.length()==0)
-            port="8080";
+      std::map<std::string, org::esb::core::WebservicePlugin *> ApiWebServer::_urlhandler;
+        org::esb::core::HookNotificationCenter * ApiWebServer::center=NULL;
+      void ApiWebServer::startService() {
+        org::esb::core::AppContext *c = getContext();
+        LOGDEBUG("context parameter port:" << c->env["web.port"]);
+        LOGDEBUG("context parameter docroot:" << c->env["web.docroot"]);
+        port = c->env["web.port"];
+        docroot = c->env["web.docroot"];
+
+        if (port.length() == 0)
+          port = "8080";
         const char *options[] = {
           "document_root", docroot.c_str(),
           "listening_ports", port.c_str(),
@@ -44,20 +54,15 @@ namespace org {
         ctx = mg_start(&ApiWebServer::event_handler, NULL, options);
         assert(ctx != NULL);
         LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
-        
-        }
-        void ApiWebServer::stopService(){
-          
-        }
-        void ApiWebServer::setContext(org::esb::core::AppContext*c){
-          LOGDEBUG("context parameter port:"<<c->env["web.port"]);
-          LOGDEBUG("context parameter docroot:"<<c->env["web.docroot"]);
-          port=c->env["web.port"];
-          docroot=c->env["web.docroot"];
-        }
 
-      
+      }
+
+      void ApiWebServer::stopService() {
+
+      }
+
       ApiWebServer::ApiWebServer() {
+        center = org::esb::core::HookNotificationCenter::getInstance();
       }
 
       ApiWebServer::~ApiWebServer() {
@@ -77,32 +82,31 @@ namespace org {
           std::string request = request_info->uri;
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
-          
 
+          LOGDEBUG("calling hook")
+          center->postHook("web.api.url", new ServiceRequest(), new ServiceResponse());
           if (_urlhandler.find(request) != _urlhandler.end()) {
-            bool status=false;
-            _urlhandler[request]->handle(NULL,NULL);
-          }else{
+            bool status = false;
+            _urlhandler[request]->handle(NULL, NULL);
+          } else {
             /*error header*/
           }
-          processed=new char();
+          //processed = new char();
         }
-        
+
         return processed;
       }
 
-      bool ApiWebServer::addHandler(std::string url,org::esb::core::WebservicePlugin * handler) {
-        
+      bool ApiWebServer::addHandler(std::string url, org::esb::core::WebservicePlugin * handler) {
+
         _urlhandler[url] = handler;
-		return true;
+        return true;
       }
-      
-      void ApiWebServer::addHook(std::string url,org::esb::core::HookPlugin * hook) {
-        
-      }
+
     }
   }
 }
+
 extern "C" void startApiServer() {
-    org::esb::api::ApiWebServer api_server();
+  org::esb::api::ApiWebServer api_server();
 }

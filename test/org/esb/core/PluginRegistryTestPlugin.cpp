@@ -56,3 +56,12 @@ void PluginRegistryTestPlugin3::handle(org::esb::api::ServiceRequest *, org::esb
 void PluginRegistryTestPlugin3::setContext(org::esb::core::AppContext*) {
 
 }
+
+
+PluginRegistryTestPlugin4::PluginRegistryTestPlugin4() {
+  std::cout << "hier ist das plugin 4" << std::endl;
+}
+
+PluginRegistryTestPlugin4::~PluginRegistryTestPlugin4() {
+  std::cout << "destructor ~PluginRegistryTestPlugin4()" << std::endl;
+}

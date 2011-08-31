@@ -7,11 +7,13 @@
 
 #ifndef SERVICERESPONSE_H
 #define	SERVICERESPONSE_H
+#include "org/esb/core/Response.h"
+
 namespace org {
   namespace esb {
     namespace api {
 
-      class ServiceResponse {
+      class ServiceResponse: public org::esb::core::Response {
       public:
         ServiceResponse();
         virtual ~ServiceResponse();

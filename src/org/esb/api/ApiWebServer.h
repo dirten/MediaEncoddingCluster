@@ -25,6 +25,8 @@
 #include "org/esb/core/WebservicePlugin.h"
 #include "org/esb/core/HookProvider.h"
 #include "exports.h"
+#include "org/esb/core/HookNotificationCenter.h"
+
 namespace org {
   namespace esb {
     namespace api {
@@ -36,16 +38,17 @@ namespace org {
         bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
         void API_EXPORT startService();
         void API_EXPORT stopService();
-        void API_EXPORT setContext(org::esb::core::AppContext*);
-        void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
+        //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
         struct mg_context *ctx;
         static std::map<std::string,org::esb::core::WebservicePlugin *> _urlhandler;
         std::string port;
         std::string docroot;
+        static org::esb::core::HookNotificationCenter * center;
       };
       REGISTER_SERVICE("apiwebserver", ApiWebServer)
+      //REGISTER_HOOK_PROVIDER("web.api.url", ApiWebServer)
     }
   }
 }

@@ -5,9 +5,11 @@
  * Created on 29. August 2011, 14:49
  */
 #include "PluginRegistry.h"
+#include "HookNotificationCenter.h"
 #include "AppContext.h"
 #include <iostream>
 #include <map>
+#include <boost/bind.hpp>
 #ifndef PLUGIN_H
 #define	PLUGIN_H
 
@@ -16,10 +18,12 @@ namespace org {
     namespace core {
       class Plugin {
       public:
-        virtual void setContext(AppContext * )=0;
+        void setContext(AppContext * ac){_ctx=ac;}
+        org::esb::core::AppContext*getContext(){return _ctx;}
         virtual ~Plugin(){};
         //virtual std::map<std::string,std::string> getProperties();
-
+      private:
+        org::esb::core::AppContext*_ctx;
       };
     }
   }
@@ -44,15 +48,15 @@ namespace org {
 	                        } \
 	        } Register##type##Instance; 
 
-#define REGISTER_HOOK(name,url,type) \
-	class Register##type \
+#define REGISTER_HOOK(name,instance, function) \
+	class Register##instance \
 	        { \
 	                public: \
-	                        Register##type() \
+	                        Register##instance() \
 	                        { \
-	                        org::esb::core::PluginRegistry::getInstance()->registerHookPlugin(std::string(name), (org::esb::core::HookPlugin*)new type()); \
+                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, &instance,_1,_2)); \
 	                        } \
-	        } Register##type##Instance; 
+	        } Register##instance##Instance; 
 #define REGISTER_HOOK_PROVIDER(name,type) \
 	class Register##type \
 	        { \

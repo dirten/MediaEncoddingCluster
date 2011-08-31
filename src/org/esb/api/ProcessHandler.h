@@ -19,12 +19,12 @@ namespace org {
         ProcessHandler();
         virtual ~ProcessHandler();
         void handle(org::esb::api::ServiceRequest *, org::esb::api::ServiceResponse *);
-        void hook(){};
+        void hook(void*a,void*b){};
         void setContext(org::esb::core::AppContext*);
       private:
 
-      };
-      REGISTER_HOOK("webserver.url.hook","/api/v1/process",ProcessHandler)
+      }processHandler;
+      //REGISTER_HOOK("webserver.url.hook",processHandler,ProcessHandler::hook)
     }
   }
 }

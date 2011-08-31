@@ -6,12 +6,15 @@ include_directories (${MYSQL_DIR}/include)
 
 add_executable (PluginRegistryTest PluginRegistryTest.cpp)
 add_executable (PluginLoaderTest PluginLoaderTest.cpp)
+add_executable (HookNotificationCenterTest HookNotificationCenterTest.cpp)
 
 target_link_libraries (PluginRegistryTest lang hive)
 target_link_libraries (PluginLoaderTest core)
+target_link_libraries (HookNotificationCenterTest core)
 
 ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
 ADD_TEST(core.PluginLoaderTest ${EXECUTABLE_OUTPUT_PATH}/PluginLoaderTest)
+ADD_TEST(core.HookNotificationCenterTest ${EXECUTABLE_OUTPUT_PATH}/HookNotificationCenterTest)
 
 
 add_library (plugin SHARED

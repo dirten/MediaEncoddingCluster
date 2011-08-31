@@ -7,15 +7,13 @@
 
 #ifndef HOOKPROVIDER_H
 #define	HOOKPROVIDER_H
-#include "Plugin.h"
-#include "HookPlugin.h"
 namespace org {
   namespace esb {
     namespace core {
 
-      class HookProvider:public Plugin{
+      class HookProvider{
       public:
-        virtual void addHook(std::string hookname, HookPlugin*)=0;
+        void getHookNotificationCenter();
         virtual ~HookProvider(){};
       private:
 

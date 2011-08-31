@@ -32,7 +32,7 @@ namespace org {
         virtual ~PluginRegistry();
         static PluginRegistry * _instance;
         std::map<std::string, Plugin*> _plugin_map;
-        std::map<std::string, Plugin*> _hook_provider_map;
+        std::map<std::string, HookProvider*> _hook_provider_map;
       };
     }
   }

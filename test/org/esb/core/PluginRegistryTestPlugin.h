@@ -11,6 +11,7 @@
 #include "org/esb/core/Plugin.h"
 #include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/WebservicePlugin.h"
+#include "org/esb/core/HookProvider.h"
 
 class PluginRegistryTestPlugin : public org::esb::core::Plugin{
 public:
@@ -44,10 +45,17 @@ private:
 
 };
 
+class PluginRegistryTestPlugin4 : public org::esb::core::HookProvider{
+public:
+  PluginRegistryTestPlugin4();
+  virtual ~PluginRegistryTestPlugin4();
+  void hook(void*,void*){}
+}TestHook;
+
 REGISTER_PLUGIN("test_plugin", PluginRegistryTestPlugin)
 REGISTER_SERVICE("test_plugin2", PluginRegistryTestPlugin2)
-REGISTER_HOOK("webserver.url.hook","/api/v1",PluginRegistryTestPlugin3)
+//REGISTER_HOOK("webserver.url.hook","/api/v1",PluginRegistryTestPlugin3)
+REGISTER_HOOK("webserver.url.hook",TestHook,PluginRegistryTestPlugin4::hook)
 
-
+        
 #endif	/* PLUGINREGISTRYTESTPLUGIN_H */
-

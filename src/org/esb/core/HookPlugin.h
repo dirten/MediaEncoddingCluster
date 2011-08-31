@@ -14,7 +14,7 @@ namespace org {
 
       class HookPlugin: public Plugin{
       public:
-        virtual void hook()=0;
+        //virtual void hook()=0;
         virtual ~HookPlugin(){};
       private:
 

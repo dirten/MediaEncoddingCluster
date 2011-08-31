@@ -71,14 +71,8 @@ namespace org {
         //delete plugin;
       }
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
-        LOGDEBUG("register HookPlugin "<<name);
-        _plugin_map[name]=plugin;
-        if(_plugin_map.count("apiwebserver")>0){
-          //static_cast<org::esb::core::HookProvider*>(_plugin_map["apiwebserver"])->addHook(url,plugin);
-        }
-        //
-        //LOGDEBUG("delete service")
-        //delete plugin;
+        LOGDEBUG("register HookProvider "<<name);
+        _hook_provider_map[name]=plugin;
       }
 
       PluginRegistry::PluginRegistry() {

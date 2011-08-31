@@ -1,4 +1,5 @@
-
+#include <typeinfo>
+#include <string.h>
 /**
 *if(instanceOf(*fis,FormatInputStream)){
 *   cout << "Format InputStream here"<<endl;
