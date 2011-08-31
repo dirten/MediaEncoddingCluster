@@ -60,7 +60,7 @@ namespace org {
             std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
             throw NotFoundException(__FILE__,__LINE__,message);
           }
-#elif __WIN32__
+#elif __WIN32__/*
      HMODULE hMod = NULL;
 	try
 	{
@@ -92,7 +92,7 @@ namespace org {
 	{
 		ObjectCreationException exc( "Error during loading object from DLL." );
 		throw exc;
-	}	     
+	}	     */
 #else
 #error "no SharedObjectLoader for this plattform"
 #endif

@@ -28,6 +28,7 @@
 #include "boost/thread/locks.hpp"
 #include <string>
 #include <iostream>
+
 #define BASE_API_URL "/api/v1"
 using namespace std;
 using namespace boost::archive::iterators;

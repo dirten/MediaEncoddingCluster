@@ -20,7 +20,7 @@
 #include "org/esb/rpc/Channel.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "org/esb/rpc/Controller.h"
-
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace net{
@@ -28,7 +28,7 @@ namespace org {
     }
     namespace api {
 
-      class MHiveServerConnection {
+      class API_EXPORT MHiveServerConnection {
       public:
         MHiveServerConnection(std::string host,std::string user, std::string passwd);
         virtual ~MHiveServerConnection();

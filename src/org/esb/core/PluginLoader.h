@@ -8,11 +8,12 @@
 #ifndef PLUGINLOADER_H
 #define	PLUGINLOADER_H
 #include <string>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace core {
 
-      class PluginLoader {
+      class CORE_EXPORT PluginLoader {
       public:
         PluginLoader(std::string path);
         virtual ~PluginLoader();
