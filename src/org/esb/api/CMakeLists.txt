@@ -40,6 +40,7 @@ TARGET_LINK_LIBRARIES(api
     rpc
     json
     db
+    core
 )
 TARGET_LINK_LIBRARIES(jsonservice
   core
