@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     boost::function<void (int)> mfunc =  loader.getFunctionHandle<void (int)>("initPlugin");
     boost::function<void (std::string)> mfunc2 =  loader.getFunctionHandle<void (std::string)>("initPlugin");
     mfunc(1);
-    mfunc2("1test");
+    //mfunc2("1test");
   } catch (NotFoundException & ex) {
     LOGERROR("catch error:" << ex.what());
   }
