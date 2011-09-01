@@ -102,7 +102,7 @@ namespace org {
                 NULL,
                 NULL,
                 FALSE,
-                NORMAL_PRIORITY_CLASS|DETACHED_PROCESS,
+                NORMAL_PRIORITY_CLASS|CREATE_NEW_CONSOLE/*DETACHED_PROCESS*/,
                 NULL,
                 NULL,
                 &suInfo,
