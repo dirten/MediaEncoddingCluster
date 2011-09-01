@@ -9,7 +9,9 @@ ADD_TEST(db.DatabaseBootstrapTest ${EXECUTABLE_OUTPUT_PATH}/DatabaseBootstrapTes
 set_tests_properties(db.DatabaseBootstrapTest PROPERTIES ENVIRONMENT "MYSQLD_BIN=${MEC_SOURCE_DIR}/target/dependency/bin/mysqld")
 
 add_subdirectory (lang)
+IF(NOT WIN32)
 add_subdirectory (core)
+ENDIF(NOT WIN32)
 add_subdirectory (io)
 add_subdirectory (util)
 add_subdirectory (db)
