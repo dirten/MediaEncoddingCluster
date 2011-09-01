@@ -84,7 +84,7 @@ namespace org {
           a = (_executable + " " + args);
         } else {
           a = _name + " " + args;
-        }
+        }	
         char *vip = const_cast<char*> (a.c_str());
 
         BOOL bWorked;
@@ -101,7 +101,7 @@ namespace org {
                 vip, // can also be NULL
                 NULL,
                 NULL,
-                FALSE,
+                TRUE,
                 NORMAL_PRIORITY_CLASS|CREATE_NEW_CONSOLE/*DETACHED_PROCESS*/,
                 NULL,
                 NULL,
