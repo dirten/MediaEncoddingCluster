@@ -17,10 +17,16 @@ public:
   }
 };
 
+  #if defined(_WIN32)
+      #define DLL_EXPORT __declspec( dllexport )
+  #else
+    #define DLL_EXPORT
+  #endif
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
-  void __declspec( dllexport ) initPlugin(unsigned int d){
+  void DLL_EXPORT initPlugin(unsigned int d){
     std::cout<<"init plugin:"<<d<<std::endl;
   }
 #ifdef	__cplusplus
