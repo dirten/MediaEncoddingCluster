@@ -20,7 +20,7 @@ public:
 #ifdef	__cplusplus
 extern "C" {
 #endif
-  void initPlugin(unsigned int d){
+  void __declspec( dllexport ) initPlugin(unsigned int d){
     std::cout<<"init plugin:"<<d<<std::endl;
   }
 #ifdef	__cplusplus

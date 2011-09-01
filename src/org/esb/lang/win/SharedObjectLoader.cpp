@@ -26,11 +26,32 @@
  */
 
 #include "../SharedObjectLoader.h"
+#include "../NotFoundException.h"
 namespace org {
   namespace esb {
     namespace lang {
 
-      SharedObjectLoader::SharedObjectLoader(std::string) {
+      SharedObjectLoader::SharedObjectLoader(std::string name) {
+		      hMod = NULL;
+	try
+	{
+		hMod = LoadLibrary( name.c_str() );
+	}
+	catch( std::exception &exc )
+	{
+		LOGERROR("Could not load library"<<exc.what())
+		//getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during loading DLL: %1", exc.what() );
+		hMod = NULL;
+	}
+
+	if ( hMod == NULL )
+	{
+		std::string message = std::string("Error occurred during loading SharedObject: ") ;
+        throw NotFoundException(__FILE__,__LINE__,message);
+		//ObjectCreationException exc( "Error during loading DLL." );
+		//throw exc;
+	}
+
       }
       
       SharedObjectLoader::~SharedObjectLoader() {

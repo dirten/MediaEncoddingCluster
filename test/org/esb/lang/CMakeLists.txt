@@ -43,3 +43,4 @@ ADD_TEST(lang.SharedObjectLoaderTest ${EXECUTABLE_OUTPUT_PATH}/SharedObjectLoade
 add_library (shared_object SHARED
   SharedObject.cpp
 )
+SET_TARGET_PROPERTIES( shared_object PROPERTIES PREFIX "lib")

@@ -32,7 +32,10 @@
 #include <boost/function.hpp>
 #if defined __LINUX__ || defined __APPLE__ 
 #include <dlfcn.h>
+#elif __WIN32__
+#include <windows.h>
 #endif
+
 #include "NotFoundException.h"
 
 namespace org {
@@ -60,46 +63,39 @@ namespace org {
             std::string message = std::string("Error occurred during loading SharedObject: ") + dlerror();
             throw NotFoundException(__FILE__,__LINE__,message);
           }
-#elif __WIN32__/*
-     HMODULE hMod = NULL;
-	try
-	{
-		hMod = LoadLibrary( str.str().c_str() );
-	}
-	catch( exception &exc )
-	{
-		getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during loading DLL: %1", exc.what() );
-		hMod = NULL;
-	}
+#elif __WIN32__
 
-	if ( hMod == NULL )
-	{
-		ObjectCreationException exc( "Error during loading DLL." );
-		throw exc;
-	}
-	
+	//DLLPROC pFunc = NULL;
 	try
 	{
-		pFunc = ( DLLPROC ) GetProcAddress(hMod, "createObject"); 
+		result =  GetProcAddress(hMod, name.c_str()); 
 	}
 	catch( exception &exc)
 	{
-		getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
-		pFunc = NULL;
+		//getLogger().log( Logger::LOG_ERROR, "[WinDllCreator#createObjectFromDll] Error occurred during calling DLL entry method, %1", exc.what() );
+		result = NULL;
 	}
 
-	if ( pFunc == NULL )
+	if ( result == NULL )
 	{
-		ObjectCreationException exc( "Error during loading object from DLL." );
-		throw exc;
-	}	     */
+            std::string message = std::string("Error occurred during loading SharedObject: ");
+            throw NotFoundException(__FILE__,__LINE__,message);
+		//ObjectCreationException exc( "Error during loading object from DLL." );
+		//throw exc;
+	}	     
 #else
 #error "no SharedObjectLoader for this plattform"
 #endif
           return reinterpret_cast<T*> (result); //result;
         }
       private:
+#if defined __LINUX__ || defined __APPLE__
         void *_lib_handle;
+#elif __WIN32__
+		 HMODULE hMod ;
+#else
+#error "no SharedObjectLoader for this plattform"
+#endif
       };
     }
   }

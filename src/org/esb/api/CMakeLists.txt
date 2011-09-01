@@ -37,10 +37,12 @@ add_library (jsonservice ${API_LINK_TYPE}
 
 TARGET_LINK_LIBRARIES(api
     av
-    rpc
     json
     db
     core
+    util
+    rpc
+    hive
 )
 TARGET_LINK_LIBRARIES(jsonservice
   core

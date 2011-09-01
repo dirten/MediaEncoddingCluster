@@ -319,7 +319,7 @@ add_library (hive
   config/config.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json)
+TARGET_LINK_LIBRARIES(hive db net signal av lang json util)
 
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive
