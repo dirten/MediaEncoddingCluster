@@ -1,10 +1,11 @@
 //#include "org/esb/config/config.h"
 //#include "org/esb/io/File.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace util {
 
-      class LogConfigurator : public log4cplus::PropertyConfigurator {
+      class UTIL_EXPORT LogConfigurator : public log4cplus::PropertyConfigurator {
           std::string log_pattern;// = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
       std::string logpath;
       std::string logdebug;
@@ -12,7 +13,7 @@ namespace org {
       public:
 
         LogConfigurator() : log4cplus::PropertyConfigurator(LOG4CPLUS_TEXT(""), log4cplus::Logger::getDefaultHierarchy()) {
-          log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
+          /*log_pattern = "%d{%m/%d/%y %H:%M:%S,%Q} [%t] %p [%c:%L] - %m%n";
           logpath=getenv("log.path")!=NULL?getenv("log.path"):"";
           std::string loglevel=getenv("loglevel")!=NULL?getenv("loglevel"):"";
           //logpath=pathenv;//org::esb::config::Config::get("log.path");
@@ -25,14 +26,17 @@ namespace org {
           //if(!logdir.exists())
             //logdir.mkdir();
           //logpath+="/mhive.log";
-          
-          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("TRACE, STDOUT, MAIN"));
+          */
+          properties.setProperty(LOG4CPLUS_TEXT("rootLogger"), LOG4CPLUS_TEXT("DEBUG, STDOUT"));
           
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT"), LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
-          //return;
-          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
-          properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
+          //properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::TTCCLayout"));
+          //log4cplus::PropertyConfigurator::configure();
+          std::cout <<" logging enabled"<<std::endl;
+          return;
+          /*
+          //properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout"), LOG4CPLUS_TEXT("log4cplus::PatternLayout"));
+          //properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.layout.ConversionPattern"), LOG4CPLUS_TEXT(log_pattern));
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.1"), LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter"));
 
           properties.setProperty(LOG4CPLUS_TEXT("appender.STDOUT.filters.1.LogLevelMin"), LOG4CPLUS_TEXT(loglevel));
@@ -63,6 +67,7 @@ namespace org {
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.1.AcceptOnMatch"), LOG4CPLUS_TEXT("true"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.WARN.filters.2"), LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter"));
           //log4cplus::PropertyConfigurator::reconfigure();
+          */
           /*
           //          properties.setProperty(LOG4CPLUS_TEXT("logger.DEBUG"), LOG4CPLUS_TEXT("DEBUG"));
           properties.setProperty(LOG4CPLUS_TEXT("appender.DEBUG"), LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"));

@@ -60,10 +60,10 @@ Log::~Log() {
 }
 
 void Log::open(std::string path) {
-    //std::cout <<"enable logging"<<std::endl;
+    std::cout <<"enable logging"<<std::endl;
     //log4cplus::BasicConfigurator::doConfigure();
-    config=new org::esb::util::LogConfigurator();
-    config->configure();
+    org::esb::util::LogConfigurator log;
+    log.configure();
     //std::cout <<"logging enabled"<<std::endl;
 
     //config.reconfigure();
