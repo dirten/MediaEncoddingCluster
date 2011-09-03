@@ -54,6 +54,7 @@
 #endif  // !_WIN32
 #include "org/esb/mq/QueueManager.h"
 #include "org/esb/mq/QueueConnection.h"
+#include "org/esb/util/LoggerConfig.cpp"
 #include "org/esb/util/Log.h"
 #include "org/esb/util/LogConfigurator.cpp"
 
@@ -210,7 +211,8 @@ int main(int argc, char * argv[]) {
 	std::cout << "base_path:"<<base_path<<std::endl;
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
-    log4cplus::BasicConfigurator::doConfigure();
+  LoggerConfig();  
+  //log4cplus::BasicConfigurator::doConfigure();
 	
 	//Log::open();
     //LOGDEBUG("configure Log opened");
@@ -336,8 +338,8 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
-      //org::esb::mq::QueueManager man;
-      //man.start();
+      org::esb::mq::QueueManager man;
+      man.start();
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       org::esb::api::JsonServer server(vm["webport"].as<int> ());
