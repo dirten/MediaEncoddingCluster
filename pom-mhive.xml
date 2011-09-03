@@ -343,7 +343,7 @@
             <id>scp_upload</id>
             <configuration>
               <tasks>
-		<scp todir="${userid}:${passwd}@${host}:." trust="Yes" verbose="yes">
+		<scp todir="${userid}:${passwd}@${host}:${target}" trust="Yes" verbose="yes">
 		    <fileset dir="${project.basedir}/build">
 			<include name="*.dmg" />
 			<include name="*.exe" />
