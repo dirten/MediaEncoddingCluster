@@ -9,7 +9,7 @@ add_executable (PluginLoaderTest PluginLoaderTest.cpp)
 add_executable (HookNotificationCenterTest HookNotificationCenterTest.cpp)
 
 target_link_libraries (PluginRegistryTest lang hive)
-target_link_libraries (PluginLoaderTest core)
+target_link_libraries (PluginLoaderTest webserver core)
 target_link_libraries (HookNotificationCenterTest core)
 
 ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
