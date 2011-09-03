@@ -39,6 +39,7 @@
 #include "org/esb/signal/Messenger.h"
 #include "org/esb/signal/Message.h"
 #include "org/esb/util/StringUtil.h"
+#include "org/esb/core/Application.h"
 
 #if !defined(_WIN32)
 
@@ -99,6 +100,7 @@ int _port = 0;
 bool quiet = false;
 
 int main(int argc, char * argv[]) {
+  //org::esb::core::Application(argc, argv);
   //std::cout << "arg0:" << argv[0] << std::endl;
   //isatty(0);
   /*setting default path to Program*/
@@ -124,7 +126,7 @@ int main(int argc, char * argv[]) {
             ;
     po::options_description ser("Server options");
     ser.add_options()
-            ("daemon,d", "start the Hive as Daemon Process")
+            //("daemon,d", "start the Hive as Daemon Process")
             ("run,r", "start the Hive as Console Process")
             ("auto,a", "start the Hive as Console Process with automatic Client/Server resolving")
             ("base,b", po::value<std::string > ()->default_value(base_path), "defining a base path")
