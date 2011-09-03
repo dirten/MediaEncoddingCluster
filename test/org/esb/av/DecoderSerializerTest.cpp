@@ -6,7 +6,7 @@
  */
 
 #include <cstdlib>
-#include "org/esb/util/Log.h"
+#include <string>
 using namespace std;
 
 /*

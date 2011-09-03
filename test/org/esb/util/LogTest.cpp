@@ -78,6 +78,7 @@ main()
     cout << "\n*** calling printMessages() with FATAL set: ***" << endl;
     printMessages();
 
+  //log4cplus::Logger::shutdown();
     return 0;
 }
 

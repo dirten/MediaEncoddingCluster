@@ -211,8 +211,8 @@ int main(int argc, char * argv[]) {
 	std::cout << "base_path:"<<base_path<<std::endl;
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
-  LoggerConfig();  
-  //log4cplus::BasicConfigurator::doConfigure();
+  //LoggerConfig();  
+  log4cplus::BasicConfigurator::doConfigure();
 	
 	//Log::open();
     //LOGDEBUG("configure Log opened");

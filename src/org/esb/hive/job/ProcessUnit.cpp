@@ -89,6 +89,7 @@ void ProcessUnit::process() {
     _encoder->setCodecOption("flags","pass1");
     std::ostringstream oss;
     oss<<boost::this_thread::get_id();
+    LOGDEBUG("Thread pass1:"<<oss.str());
     _encoder->setCodecOption("passlogfile",oss.str());
     _encoder->setFlag(CODEC_FLAG_PASS1);
   }

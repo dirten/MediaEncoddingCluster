@@ -386,6 +386,7 @@ namespace org {
          * the statistics file when this is not set to a value like thread id*/
 
         std::string passlogfile = getCodecOption("passlogfile");
+        LOGDEBUG("try setting passlogfile to:"<<passlogfile);
         if (getCodecId() == CODEC_ID_H264 && passlogfile.length() > 0) {
           if (_codec && _codec->priv_data_size) {
             if (!ctx->priv_data) {
@@ -402,6 +403,7 @@ namespace org {
 
           const AVOption *o = NULL;
           while ((o = av_next_option(ctx->priv_data, o))) {
+            LOGDEBUG("Option="<<o->name);
             if (strcmp(o->name, "passlogfile") == 0) {
               LOGDEBUG(o->name);
               int ret = av_set_string3(ctx->priv_data, "passlogfile", passlogfile.c_str(), 1, &o);
