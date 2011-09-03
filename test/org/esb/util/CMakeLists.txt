@@ -7,6 +7,7 @@ add_executable (PropertyTreeTest PropertyTreeTest.cpp)
 add_executable (RapidXmlTest RapidXmlTest.cpp)
 add_executable (DecimalTest DecimalTest.cpp)
 add_executable (ChannelTest ChannelTest.cpp)
+add_executable (LogTest LogTest.cpp)
 
 target_link_libraries (TestStringUtil io util lang )
 target_link_libraries (TestQueue lang util )
@@ -15,6 +16,7 @@ target_link_libraries (PropertyTreeTest lang util )
 target_link_libraries (RapidXmlTest lang util io)
 target_link_libraries (DecimalTest util)
 target_link_libraries (ChannelTest lang util)
+target_link_libraries (LogTest util)
 
 IF(NOT WIN32 AND NOT APPLE)
 target_link_libraries (TestBoostQueue rt)
@@ -25,6 +27,6 @@ ADD_TEST(util.QueueTest ${EXECUTABLE_OUTPUT_PATH}/TestQueue )
 #ADD_TEST(PropertyTreeTest ${EXECUTABLE_OUTPUT_PATH}/PropertyTreeTest )
 ADD_TEST(util.RapidXmlTest ${EXECUTABLE_OUTPUT_PATH}/RapidXmlTest)
 ADD_TEST(util.DecimalTest ${EXECUTABLE_OUTPUT_PATH}/DecimalTest)
-#ADD_TEST(ChannelTest ${EXECUTABLE_OUTPUT_PATH}/ChannelTest)
+ADD_TEST(LogTest ${EXECUTABLE_OUTPUT_PATH}/LogTest)
 
 
