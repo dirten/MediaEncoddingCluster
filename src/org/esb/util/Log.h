@@ -43,7 +43,7 @@
 #define LOGTRACEMETHOD(o2)LOG4CPLUS_TRACE_METHOD(getLogger(),o2);//loglevel(o1, "warn")/*log_warn(o1)*/
 
 #include <iostream>
-inline log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance("global");}
+static log4cplus::Logger getLogger(){return log4cplus::Logger::getInstance("global");}
 namespace org{
   namespace esb{
     namespace util{

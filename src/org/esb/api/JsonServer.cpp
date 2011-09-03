@@ -7,7 +7,6 @@
 
 #include "JsonServer.h"
 #include "org/esb/util/StringUtil.h"
-#include "org/esb/util/Log.h"
 #include <string.h>
 #include "org/esb/config/config.h"
 #include "org/esb/io/File.h"
@@ -54,12 +53,14 @@ namespace org {
       boost::mutex JsonServer::http_mutex;
 
       JsonServer::JsonServer(int port) {
-        std::string ports = org::esb::util::StringUtil::toString(port);
-	std::string docroot=org::esb::config::Config::get("web.docroot");
-
+		//LOG4CPLUS_DEBUG(log4cplus::Logger::getInstance("JSONServer"),"starting webserver");
+		//LOGDEBUG("starting webserver")
+        _port = org::esb::util::StringUtil::toString(port);
+		_docroot=org::esb::config::Config::get("web.docroot");
+		std::cout << "docroot:"<<_docroot<<std::endl;
         const char *options[] = {
-          "document_root", docroot.c_str(),
-          "listening_ports", ports.c_str(),
+          "document_root", _docroot.c_str(),
+          "listening_ports", _port.c_str(),
           "num_threads", "5",
           "index_files", "index.html",
           /*
@@ -70,8 +71,8 @@ namespace org {
         };
         ctx = mg_start(&JsonServer::event_handler, NULL, options);
         assert(ctx != NULL);
-        LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
-LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
+        //LOGDEBUG("Web server started on ports " << mg_get_option(ctx, "listening_ports"));
+		//LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
         //_db = org::esb::hive::DatabaseService::getDatabase();
         valid_formats.insert("amr");
         valid_formats.insert("asf");
@@ -115,11 +116,11 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
       bool JsonServer::contains(JSONNode& node, std::string name) {
         bool result = false;
         int size = node.size();
-        LOGDEBUG("NodeSize=" << size);
+        //LOGDEBUG("NodeSize=" << size);
         if (size > 0) {
           for (int a = 0; a < size; a++) {
             JSONNode n = node[a];
-            LOGDEBUG("name=" << n.name());
+            //LOGDEBUG("name=" << n.name());
             if (name == n.name()) {
               result = true;
             }
@@ -136,12 +137,12 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
           //LOGDEBUG("entry created");
         }
         void *processed = new char();
-        LOGDEBUG("URI=" << request_info->uri);
-        LOGDEBUG("Method=" << request_info->request_method);
+        //LOGDEBUG("URI=" << request_info->uri);
+        //LOGDEBUG("Method=" << request_info->request_method);
         //LOGDEBUG("HeaderCount:"<<request_info->num_headers);
         for (int a = 0; a < request_info->num_headers; a++) {
-          LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
-           LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
+          //LOGDEBUG("Header"<<a<<" name:"<<request_info->http_headers[a].name);
+           //LOGDEBUG("Header"<<a<<" value:"<<request_info->http_headers[a].value);
           /*
           if(strcmp(request_info->http_headers[a].name,"Authorization")==0){
             string str("test:jan");
@@ -166,7 +167,8 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
 
           boost::uuids::uuid uuid = boost::uuids::random_generator()();
           std::string requestId = boost::lexical_cast<std::string > (uuid);
-	  //org::esb::io::File tmpFile("/tmp/test.avi");
+
+	  //org::esb::io::File tmpFile("/tmp/test.avi");
 	  //org::esb::io::FileOutputStream fos(&tmpFile);
           std::string postdata;
           if (strcmp(request_info->request_method, "POST") == 0) {
@@ -199,7 +201,7 @@ LOGDEBUG("Web server document root " << mg_get_option(ctx, "document_root"));
 
           //LOGDEBUG("Request=" << request);
           //LOGDEBUG("QueryString=" << request_info->query_string);
-          LOGDEBUG("RequestMethod=" << request_info->request_method);
+          //LOGDEBUG("RequestMethod=" << request_info->request_method);
           if (request_info->query_string != NULL) {
             char iddata[100];
             mg_get_var(request_info->query_string, strlen(request_info->query_string), "id", iddata, sizeof (iddata));

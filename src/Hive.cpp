@@ -19,6 +19,7 @@
 #include "config.h"
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
+#include "org/esb/api/JsonServer.h"
 #include "org/esb/hive/job/ProcessUnitController.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/CtrlCHitWaiter.h"
@@ -64,7 +65,6 @@
 #include "org/esb/lang/ProcessException.h"
 #include "org/esb/rpc/Server.h"
 #include "org/esb/rpc/rpc.pb.h"
-#include "org/esb/api/JsonServer.h"
 #include "MHiveConsole.cpp"
 #define TO_STRING(s) #s
 using namespace org::esb;
@@ -207,11 +207,12 @@ int main(int argc, char * argv[]) {
     checkDirs();
     //std::cout << "logpath"<<getenv("log.path")<<std::endl;
     string base_path = org::esb::config::Config::getProperty("hive.base_path");
-    org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
-    
-    lconfig->configure();
-    //log4cplus::BasicConfigurator::doConfigure();
-    //Log::open();
+	std::cout << "base_path:"<<base_path<<std::endl;
+    //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
+    //lconfig->configure();
+    log4cplus::BasicConfigurator::doConfigure();
+	
+	//Log::open();
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
@@ -335,9 +336,9 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("run")) {
       LOGDEBUG("start mhive server");
-      org::esb::mq::QueueManager man;
-      man.start();
-      org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
+      //org::esb::mq::QueueManager man;
+      //man.start();
+      //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
       org::esb::api::JsonServer server(vm["webport"].as<int> ());
       listener(argc, argv);

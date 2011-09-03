@@ -18,6 +18,7 @@ namespace org {
     namespace api {
 
       class API_EXPORT JsonServer {
+		
       public:
          JsonServer(int port);
         virtual  ~JsonServer();
@@ -29,6 +30,8 @@ namespace org {
         static boost::mutex http_mutex;
           static std::set<std::string> valid_formats;
           static std::set<std::string> valid_video_codecs;
+		  std::string _docroot;
+		  std::string _port;
       };
     }
   }
