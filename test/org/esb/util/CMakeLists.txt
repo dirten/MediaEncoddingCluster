@@ -16,7 +16,7 @@ target_link_libraries (PropertyTreeTest lang util )
 target_link_libraries (RapidXmlTest lang util io)
 target_link_libraries (DecimalTest util)
 target_link_libraries (ChannelTest lang util)
-target_link_libraries (LogTest util log4cplusd)
+target_link_libraries (LogTest util )
 
 IF(NOT WIN32 AND NOT APPLE)
 target_link_libraries (TestBoostQueue rt)
