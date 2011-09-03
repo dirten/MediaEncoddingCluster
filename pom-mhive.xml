@@ -151,7 +151,17 @@
              <artifactId>ant-nodeps</artifactId>
              <version>1.6.5</version>
            </dependency>
-        </dependencies>
+                  <dependency>
+                              <groupId>ant</groupId>
+                                          <artifactId>ant-jsch</artifactId>
+                                                      <version>1.6.5</version>
+                                                                </dependency>
+                                                                          <dependency>
+                                                                                      <groupId>com.jcraft</groupId>
+                                                                                                  <artifactId>jsch</artifactId>
+                                                                                                              <version>0.1.42</version>
+                                                                                                                        </dependency>
+                                                                                                                                </dependencies>
         <executions>
           <execution>
             <phase>clean</phase>
@@ -311,7 +321,7 @@
             </goals>
           </execution>
           <execution>
-            <phase>package</phase>
+            <phase>package1</phase>
             <id>upload</id>
             <configuration>
               <tasks if="ftp_upload">
@@ -322,6 +332,24 @@
 			<include name="*.sh" />
 		    </fileset>
 		</ftp>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>package</phase>
+            <id>scp_upload</id>
+            <configuration>
+              <tasks>
+		<scp todir="${userid}:${passwd}@${host}:." trust="Yes" verbose="yes">
+		    <fileset dir="${project.basedir}/build">
+			<include name="*.dmg" />
+			<include name="*.exe" />
+			<include name="*.sh" />
+		    </fileset>
+		</scp>
               </tasks>
             </configuration>
             <goals>

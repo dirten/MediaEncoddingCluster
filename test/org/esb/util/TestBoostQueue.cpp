@@ -27,16 +27,16 @@ public:
       (open_or_create //open or create
       , "message_queue" //name
       , 100 //max message number
-      , 1000000 //max message size
+      , sizeof(int) //max message size
       );
-    LOGDEBUG(mq->get_max_msg());
+    LOGDEBUG("Max Message:"<<mq->get_max_msg());
     }catch(interprocess_exception &ex){
 	LOGERROR(ex.what());
     }
   }
 
   void send() {
-    for (int a = 4; a < 10; a++) {
+    for (int a = 0; a < 10; a++) {
       mq->send(&a, sizeof (a), 0);
     }
   }
@@ -62,16 +62,16 @@ public:
       (open_only //only open
       , "message_queue" //name
       );
-    LOGDEBUG(mq->get_max_msg());
-    LOGDEBUG(mq->get_num_msg());
+    LOGDEBUG("Max Messages:"<<mq->get_max_msg());
+    LOGDEBUG("Num Messages"<<mq->get_num_msg());
   }
 
   void receive() {
-    int number;
+    int number=0;
     unsigned int prio;
     std::size_t recvd_size;
     try {
-      mq->receive(&number, sizeof (number), recvd_size, prio);
+      mq->receive(&number, sizeof (number), (std::size_t &)recvd_size, prio);
     } catch (interprocess_exception &ex) {
       LOGERROR(ex.what());
     }
@@ -89,16 +89,18 @@ private:
 
 int main(int argc, char** argv) {
   Log::open("");
-  message_queue::remove("message_queue");
-  queue_sender s;
-  boost::thread sender_th(boost::bind(&queue_sender::send, &s));
-  Thread::sleep2(1000);
-  queue_receiver r;
-  r.receive();
-  r.receive();
-  r.receive();
-  r.receive();
-  Thread::sleep2(1000);
+  //message_queue::remove("message_queue");
+  if(argc==2&&strcmp(argv[1],"send")==0){
+    queue_sender s;
+    s.send();
+    Thread::sleep2(100000);
+  }
+  if(argc==2&&strcmp(argv[1],"recv")==0){
+    queue_receiver r;
+    r.receive();
+  }
+  //queue_sender s;
+  //boost::thread sender_th(boost::bind(&queue_sender::send, &s));
   return (EXIT_SUCCESS);
 }
 
