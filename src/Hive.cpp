@@ -214,9 +214,8 @@ int main(int argc, char * argv[]) {
     //org::esb::util::LogConfigurator * lconfig=new org::esb::util::LogConfigurator();
     //lconfig->configure();
   //LoggerConfig();  
-  log4cplus::BasicConfigurator::doConfigure();
-	
-	//Log::open();
+  //log4cplus::BasicConfigurator::doConfigure();
+        Log::open();
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
