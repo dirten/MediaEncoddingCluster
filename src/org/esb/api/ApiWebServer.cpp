@@ -30,7 +30,8 @@ namespace org {
   namespace esb {
     namespace api {
       std::map<std::string, org::esb::core::WebservicePlugin *> ApiWebServer::_urlhandler;
-        org::esb::core::HookNotificationCenter * ApiWebServer::center=NULL;
+      org::esb::core::HookNotificationCenter * ApiWebServer::center = NULL;
+
       void ApiWebServer::startService() {
         org::esb::core::AppContext *c = getContext();
         LOGDEBUG("context parameter port:" << c->env["web.port"]);
@@ -66,12 +67,15 @@ namespace org {
       }
 
       ApiWebServer::~ApiWebServer() {
-
+        LOGDEBUG("ApiWebServer::~ApiWebServer()")
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,
               struct mg_connection *conn,
               const struct mg_request_info *request_info) {
+        ServiceResponse * res = new ServiceResponse(conn, request_info);
+        ServiceRequest * req = new ServiceRequest(conn, request_info);
+        center->postHook("web.api.Auth", req, res);
         void *processed = NULL;
         if (event == MG_NEW_REQUEST) {
           static const char *reply_start =
@@ -79,29 +83,18 @@ namespace org {
                   "Cache: no-cache\r\n"
                   "Content-Type: text/plain; charset=utf-8\r\n"
                   "\r\n";
-          std::string request = request_info->uri;
-          boost::uuids::uuid uuid = boost::uuids::random_generator()();
-          std::string requestId = boost::lexical_cast<std::string > (uuid);
-
-          LOGDEBUG("calling hook")
-          center->postHook("web.api.url", new ServiceRequest(), new ServiceResponse());
-          if (_urlhandler.find(request) != _urlhandler.end()) {
-            bool status = false;
-            _urlhandler[request]->handle(NULL, NULL);
-          } else {
-            /*error header*/
-          }
-          //processed = new char();
+          center->postHook("web.api.Service", req, res);
+          if (res->_status == 200)
+            processed = new char();
         }
 
         return processed;
       }
-
+      /*
       bool ApiWebServer::addHandler(std::string url, org::esb::core::WebservicePlugin * handler) {
-
         _urlhandler[url] = handler;
         return true;
-      }
+      }*/
 
     }
   }

@@ -35,7 +35,7 @@ namespace org {
       public:
         API_EXPORT ApiWebServer();
         virtual API_EXPORT ~ApiWebServer();
-        bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
+        //bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
         void API_EXPORT startService();
         void API_EXPORT stopService();
         //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);

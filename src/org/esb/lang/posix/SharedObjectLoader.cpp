@@ -64,6 +64,7 @@ namespace org {
       }*/
 
       SharedObjectLoader::~SharedObjectLoader() {
+        LOGDEBUG("SharedObjectLoader::~SharedObjectLoader()")
         dlclose(_lib_handle);
       }
     }

@@ -8,7 +8,6 @@
 #include "PluginLoader.h"
 #include "org/esb/io/File.h"
 #include "org/esb/util/Foreach.h"
-#include "org/esb/lang/SharedObjectLoader.h"
 
 namespace org {
   namespace esb {
@@ -29,10 +28,12 @@ namespace org {
       }
 
       void PluginLoader::load(std::string file) {
-        org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
+        loader = new org::esb::lang::SharedObjectLoader(file);
       }
 
       PluginLoader::~PluginLoader() {
+        LOGDEBUG("PluginLoader::~PluginLoader()")
+        delete loader;
       }
     }
   }

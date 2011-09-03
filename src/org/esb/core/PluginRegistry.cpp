@@ -75,10 +75,16 @@ namespace org {
         _hook_provider_map[name]=plugin;
       }
 
+      void PluginRegistry::close() {
+        delete _instance;
+        delete context;
+      }
       PluginRegistry::PluginRegistry() {
       }
 
       PluginRegistry::~PluginRegistry() {
+        LOGDEBUG("PluginRegistry::~PluginRegistry()")
+        
       }
     }
     namespace api{

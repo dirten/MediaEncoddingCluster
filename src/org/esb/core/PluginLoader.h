@@ -9,6 +9,8 @@
 #define	PLUGINLOADER_H
 #include <string>
 #include "exports.h"
+#include "org/esb/lang/SharedObjectLoader.h"
+
 namespace org {
   namespace esb {
     namespace core {
@@ -19,6 +21,7 @@ namespace org {
         virtual ~PluginLoader();
       private:
         void load(std::string file);
+        org::esb::lang::SharedObjectLoader * loader;
       };
     }
   }

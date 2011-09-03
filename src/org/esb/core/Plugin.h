@@ -48,15 +48,15 @@ namespace org {
 	                        } \
 	        } Register##type##Instance; 
 
-#define REGISTER_HOOK(name,instance, function) \
-	class Register##instance \
+#define REGISTER_HOOK(name,instance, function, id) \
+	class Register##instance##id \
 	        { \
 	                public: \
-	                        Register##instance() \
+	                        Register##instance##id() \
 	                        { \
                                 org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, &instance,_1,_2)); \
 	                        } \
-	        } Register##instance##Instance; 
+	        } Register##instance##Instance##id; 
 #define REGISTER_HOOK_PROVIDER(name,type) \
 	class Register##type \
 	        { \

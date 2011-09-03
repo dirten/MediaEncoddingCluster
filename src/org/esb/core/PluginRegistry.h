@@ -21,6 +21,7 @@ namespace org {
       class PluginRegistry {
       public:
         static CORE_EXPORT PluginRegistry * getInstance();
+        static CORE_EXPORT void close();
         void CORE_EXPORT registerPlugin(std::string, Plugin*);
         void CORE_EXPORT registerService(std::string, ServicePlugin*);
         void CORE_EXPORT registerWebservice(std::string,std::string, WebservicePlugin*);

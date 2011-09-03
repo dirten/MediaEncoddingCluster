@@ -16,6 +16,7 @@ SET(core_source
   PluginLoader.cpp
   AppContext.cpp
   HookNotificationCenter.cpp
+  Application.cpp
 )
 
 add_library (core ${CORE_LINK_TYPE}

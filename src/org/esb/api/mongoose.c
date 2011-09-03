@@ -698,6 +698,9 @@ static char *skip(char **buf, const char *delimiters) {
   return skip_quoted(buf, delimiters, delimiters, 0);
 }
 
+char * address(const struct mg_connection *conn){
+  return inet_ntoa(conn->client.rsa.u.sin.sin_addr);
+}
 
 // Return HTTP header value, or NULL if not found.
 static const char *get_header(const struct mg_request_info *ri,
@@ -3450,7 +3453,6 @@ static void log_access(const struct mg_connection *conn) {
   funlockfile(fp);
   (void) fclose(fp);
 }
-
 static int isbyte(int n) {
   return n >= 0 && n <= 255;
 }

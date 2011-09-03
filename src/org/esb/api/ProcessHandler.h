@@ -24,7 +24,7 @@ namespace org {
       private:
 
       }processHandler;
-      //REGISTER_HOOK("webserver.url.hook",processHandler,ProcessHandler::hook)
+      REGISTER_HOOK("webserver.url.hook",processHandler,ProcessHandler::hook,1)
     }
   }
 }
