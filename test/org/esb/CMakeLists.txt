@@ -10,7 +10,7 @@ set_tests_properties(db.DatabaseBootstrapTest PROPERTIES ENVIRONMENT "MYSQLD_BIN
 
 add_subdirectory (lang)
 IF(NOT WIN32)
-#add_subdirectory (core)
+add_subdirectory (core)
 ENDIF(NOT WIN32)
 add_subdirectory (io)
 add_subdirectory (util)

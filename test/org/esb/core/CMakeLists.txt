@@ -9,7 +9,7 @@ add_executable (PluginLoaderTest PluginLoaderTest.cpp)
 add_executable (HookNotificationCenterTest HookNotificationCenterTest.cpp)
 
 target_link_libraries (PluginRegistryTest lang hive)
-target_link_libraries (PluginLoaderTest webserver core)
+target_link_libraries (PluginLoaderTest core)
 target_link_libraries (HookNotificationCenterTest core)
 
 ADD_TEST(core.PluginRegistryTest ${EXECUTABLE_OUTPUT_PATH}/PluginRegistryTest)
@@ -21,8 +21,8 @@ add_library (plugin SHARED
   PluginRegistryTestPlugin.cpp
 )
 target_link_libraries (plugin core)
-get_target_property(WEBSERVER_PLUGIN webserver LOCATION)
-get_target_property(JSONSERVICE_PLUGIN jsonservice LOCATION)
+get_target_property(WEBSERVER_PLUGIN webservice LOCATION)
+get_target_property(JSONSERVICE_PLUGIN jsonapi LOCATION)
 
 ADD_DEFINITIONS(-DWEBSERVER_PLUGIN="${WEBSERVER_PLUGIN}")
 ADD_DEFINITIONS(-DJSONSERVICE_PLUGIN="${JSONSERVICE_PLUGIN}")

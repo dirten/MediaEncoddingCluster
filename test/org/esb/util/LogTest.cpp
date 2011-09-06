@@ -10,6 +10,7 @@
 #include "org/esb/util/LoggerConfig.cpp"
 #include "org/esb/util/Foreach.h"
 
+
 using namespace std;
 
 #include <log4cplus/logger.h>
@@ -49,9 +50,9 @@ int
 main()
 {
   {
-    LoggerConfig();
+    //LoggerConfig();
   }
-  //Log::open();
+  Log::open("/home/jan.hoelscher/devel/mec/res");
   LOGDEBUG("twest");
 
     logger.setLogLevel(log4cplus::TRACE_LOG_LEVEL);
@@ -78,7 +79,8 @@ main()
     cout << "\n*** calling printMessages() with FATAL set: ***" << endl;
     printMessages();
 
-  //log4cplus::Logger::shutdown();
+
+  //log4cplus::Logger::shutdown();
     return 0;
 }
 
