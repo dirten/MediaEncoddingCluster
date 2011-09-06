@@ -16,7 +16,6 @@
  * ----------------------------------------------------------------------
  */
 #include "ApiWebServer.h"
-#include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
 #include "org/esb/config/config.h"
 #include "boost/uuid/uuid_generators.hpp"

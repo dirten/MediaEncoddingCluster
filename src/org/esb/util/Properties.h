@@ -55,15 +55,15 @@ namespace util{
          * @param value The value to be written.
          */
         virtual void setProperty( 
-            const std::string& name, 
-            const std::string& value ) ;
+            const std::string name, 
+            const std::string value ) ;
       
         /**
          * Check to see if the Property exists in the set
          * @param name the name of the property to check
          * @return true if property exists, false otherwise.
          */
-        virtual bool hasProperty( const std::string& name ) const ;
+        virtual bool hasProperty( const std::string name ) const ;
 
         /**
          * Removes the property with the given name.

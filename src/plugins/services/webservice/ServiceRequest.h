@@ -21,11 +21,9 @@ namespace org {
         ServiceInputStream( mg_connection *conn);
         //ServiceInputStream();
         ~ServiceInputStream();
-        int read(string & str);
+        int read(string & str, int max=1500);
         int read(unsigned char * buffer, int length);
-
         int read(vector<unsigned char>&buffer) {};
-
         int read() {};
         long long int available(bool isBlocking = false);
       private:
@@ -42,11 +40,14 @@ namespace org {
         ServiceInputStream * getInputstream();
         std::string getRemoteIP();
         int getRemotePort();
-        //std::string getUUID();
+        std::string getUUID();
+        std::string getParameter(std::string);
+        bool hasParameter(std::string);
       private:
         ServiceInputStream * _inputstream;
         mg_connection *_conn;
         const mg_request_info *_request_info;
+
       };
     }
   }

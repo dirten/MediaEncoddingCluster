@@ -26,14 +26,6 @@ namespace org {
         LOGINFO("opening InputFile: " << source);
         _isValid = false;
         _sourceFile = source;
-        AVFormatParameters params, *ap = &params;
-        memset(ap, 0, sizeof (*ap));
-        ap->prealloced_context = 1;
-
-        //		ap->channels = 2;
-        //		AVFormatContext* avformat_opts = avformat_alloc_context();
-        //		set_context_opts(formatCtx, avformat_opts, 2);
-
 
         formatCtx = avformat_alloc_context();
 //        formatCtx->flags |= AVFMT_FLAG_GENPTS;
@@ -44,14 +36,14 @@ namespace org {
 		{
 	        
 
-        if (av_open_input_file(&formatCtx, _sourceFile.c_str(), NULL, 0, ap) != 0) {
+        if (avformat_open_input(&formatCtx, _sourceFile.c_str(), NULL, NULL) != 0) {
           LOGERROR("could not open " << _sourceFile);
           return;
         }
 		}
 
         LOGINFO("find stream info: " << source);
-        if (av_find_stream_info(formatCtx) < 0) {
+        if (avformat_find_stream_info(formatCtx,NULL) < 0) {
           LOGERROR("no StreamInfo from:" << _sourceFile);
           return;
         }

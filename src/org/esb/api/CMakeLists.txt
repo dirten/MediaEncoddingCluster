@@ -3,7 +3,7 @@ include_directories (${MEC_SOURCE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 SET(SHARED_API On)
-SET(BUILD_CORE Off)
+SET(BUILD_CORE On)
 
 IF(SHARED_API)
     ADD_DEFINITIONS(-DAPI_BUILD_SHARED)
@@ -25,16 +25,19 @@ add_library (api ${API_LINK_TYPE}
     JsonSystemHandler.cpp
  )
 IF(BUILD_CORE)
+
 add_library (webserver ${API_LINK_TYPE}
     mongoose.c
     ApiWebServer.cpp
     ServiceRequest.cpp
     ServiceResponse.cpp
  )
+
 add_library (jsonservice ${API_LINK_TYPE}
   ProcessHandler.cpp
   JSONHandler.cpp
 )
+
 ENDIF(BUILD_CORE)
 
 
@@ -48,10 +51,10 @@ TARGET_LINK_LIBRARIES(api
 )
 IF(BUILD_CORE)
 TARGET_LINK_LIBRARIES(jsonservice
-  webserver
   core
   db
-  hive
+  json
+  webserver
 )
 TARGET_LINK_LIBRARIES(webserver
   util

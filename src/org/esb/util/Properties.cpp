@@ -91,8 +91,8 @@ namespace org {
        * @param name The name of the value to be written.
        * @param value The value to be written.
        */
-      void Properties::setProperty(const std::string& name,
-          const std::string& value) {
+      void Properties::setProperty(const std::string name,
+          const std::string value) {
         properties[name] = value;
       }
 
@@ -101,7 +101,7 @@ namespace org {
        * @param name - property name to check for in this properties set.
        * @return true if property exists, false otherwise.
        */
-      bool Properties::hasProperty(const std::string& name) const {
+      bool Properties::hasProperty(const std::string name) const {
         if (properties.find(name) != properties.end()) {
           return true;
         }

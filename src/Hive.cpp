@@ -215,7 +215,7 @@ int main(int argc, char * argv[]) {
     //lconfig->configure();
   //LoggerConfig();  
   //log4cplus::BasicConfigurator::doConfigure();
-        Log::open();
+        Log::open(base_path+"/res");
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();

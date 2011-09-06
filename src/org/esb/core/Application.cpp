@@ -19,7 +19,6 @@ namespace org {
         org::esb::io::File conf_file(base_path + "/mhive.conf");
         std::cout << "loading config file" << conf_file.getPath() << std::endl;
         if (conf_file.exists()) {
-
         }
       }
 

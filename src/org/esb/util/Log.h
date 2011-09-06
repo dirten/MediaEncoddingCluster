@@ -54,7 +54,6 @@ namespace org{
 class UTIL_EXPORT Log{
 public:
     static Log * getLogger(std::string logger="");
-    static log4cplus::Logger getLog4cplusLogger();
     static void  open(std::string path="");
     static void close();
     void debug(std::stringstream &);
@@ -66,7 +65,6 @@ public:
 	void log(std::string level, std::stringstream & s, const char * file, int line );
     ~Log();
 private:
-	static log4cplus::Logger logger;
 	log4cplus::Logger trace_logger;
 	log4cplus::Logger debug_logger;
 	log4cplus::Logger info_logger;
@@ -75,11 +73,8 @@ private:
 	log4cplus::Logger fatal_logger;
 	log4cplus::Logger unknown_logger;
         log4cplus::ConfigureAndWatchThread * configureThread;
-        static org::esb::util::LogConfigurator * config;
     Log();
     std::ofstream _myfile;
-    static std::string _logpath;
-    static Log * _logger;
 };
 #ifndef DUMMY 
 #include "boost/date_time/posix_time/posix_time.hpp"

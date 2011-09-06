@@ -34,6 +34,7 @@ namespace org {
 
       SharedObjectLoader::SharedObjectLoader(std::string filename) {
         _lib_handle = NULL;
+        _filename=filename;
         try {
           _lib_handle = dlopen(filename.c_str(), RTLD_NOW);
         } catch (std::exception &exc) {
@@ -64,8 +65,10 @@ namespace org {
       }*/
 
       SharedObjectLoader::~SharedObjectLoader() {
-        LOGDEBUG("SharedObjectLoader::~SharedObjectLoader()")
-        dlclose(_lib_handle);
+        LOGDEBUG("SharedObjectLoader::~SharedObjectLoader():"<<_filename)
+        if(dlclose(_lib_handle)){
+          LOGERROR("closing shared object : "<<_filename<<" : "<<dlerror());
+        }
       }
     }
   }

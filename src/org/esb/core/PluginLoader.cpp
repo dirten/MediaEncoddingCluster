@@ -28,7 +28,11 @@ namespace org {
       }
 
       void PluginLoader::load(std::string file) {
+        try{
         loader = new org::esb::lang::SharedObjectLoader(file);
+        }catch(org::esb::lang::NotFoundException & ex){
+          LOGERROR(ex.what());
+        }
       }
 
       PluginLoader::~PluginLoader() {

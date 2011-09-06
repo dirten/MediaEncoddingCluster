@@ -9,6 +9,8 @@
 #include "Request.h"
 #include "Response.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/util/Log.h"
+
 namespace org {
   namespace esb {
     namespace core {
@@ -29,6 +31,7 @@ namespace org {
       }
 
       void HookNotificationCenter::postHook(std::string name, Request * req, Response * res) {
+        boost::mutex::scoped_lock enqueue_lock(hook_mutex);        
         if(_hook_map.count(name)>0){
           foreach(boost::function<void (Request*req, Response*res)> func,_hook_map[name]){
             func(req,res);

@@ -12,6 +12,8 @@ namespace org {
     namespace core {
 
       class Request {
+      public:
+        virtual ~Request(){};
       };
     }
   }

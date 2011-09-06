@@ -6,22 +6,14 @@
 #include <log4cplus/configurator.h>
 #include <log4cplus/helpers/loglog.h>
 #include "LogConfigurator.cpp"
+#include "org/esb/io/File.h"
 
 
 using namespace boost::posix_time;
-Log * Log::_logger = NULL;
-std::string Log::_logpath = "";
-log4cplus::Logger Log::logger ;
-log4cplus::ConfigureAndWatchThread * globalConfigureThread ;
-org::esb::util::LogConfigurator * Log::config=NULL;
+
 Log::Log() {
   std::string logconfig = "logging.properties";
   configureThread = NULL;
-  if (Log::_logpath.length() > 0) {
-
-  } else {
-
-  }
 
   //    configureThread = new log4cplus::ConfigureAndWatchThread(LOG4CPLUS_TEXT(logconfig), 5 * 1000);
   /*
@@ -34,7 +26,7 @@ Log::Log() {
    */
   //  org::esb::util::LogConfigurator config;
   log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT("logging.properties"));
-	
+
   config.configure();
 
   trace_logger = log4cplus::Logger::getInstance("trace");
@@ -60,40 +52,26 @@ Log::~Log() {
 }
 
 void Log::open(std::string path) {
-    std::cout <<"enable logging"<<std::endl;
-    //log4cplus::BasicConfigurator::doConfigure();
-    org::esb::util::LogConfigurator log;
-    log.configure();
-    //std::cout <<"logging enabled"<<std::endl;
-
-    //config.reconfigure();
-    //config.configure();
-
-  //Log::logger = log4cplus::Logger::getInstance("trace");
-
-
-  //  Log::_logpath = path;
+  std::cout << "enable logging to "<<path << std::endl;
+  if (path.length() == 0) {
+    log4cplus::BasicConfigurator::doConfigure();
+  } else {
+    log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(path+"/logging.properties"));
+    log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
+    props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(path+"/mhive-debug.log"));
+    props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(path+"/mhive-error.log"));
+    config.configure();
+  }
 }
 
 void Log::close() {
-  Log::logger.shutdown();
   delete getLogger();
-  delete globalConfigureThread;
-  delete config;
 }
 
 Log * Log::getLogger(std::string logger) {
-  if (Log::_logger == NULL)
-    Log::_logger = new Log();
-  return Log::_logger;
+  return NULL;
 }
 
-log4cplus::Logger Log::getLog4cplusLogger() {
-  if (Log::_logger == NULL)
-    Log::_logger = new Log();
-
-  return Log::logger;
-}
 
 void Log::log(std::string l, std::stringstream & s, const char * file, int line) {
   if (l == "trace") {

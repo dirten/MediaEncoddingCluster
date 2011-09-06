@@ -25,6 +25,14 @@ namespace org {
       private:
         org::esb::core::AppContext*_ctx;
       };
+      template<typename Interface>
+      class Factory{
+        virtual Interface * create();
+      };
+      class WebService{
+        void doRequest(Request *, Response*);
+      };
+      typedef Factory<WebService> WebServiceFactory;
     }
   }
 }
@@ -41,11 +49,16 @@ namespace org {
 #define REGISTER_SERVICE(name,type) \
 	class Register##type \
 	        { \
+                        org::esb::core::ServicePlugin* element##type; \
 	                public: \
 	                        Register##type() \
 	                        { \
-	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), (org::esb::core::ServicePlugin*)new type()); \
+                                element##type=new type(); \
+	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
 	                        } \
+                                ~Register##type(){ \
+                                delete element##type; \
+                                } \
 	        } Register##type##Instance; 
 
 #define REGISTER_HOOK(name,instance, function, id) \

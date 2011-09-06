@@ -41,6 +41,7 @@ add_definitions(/DCURL_STATICLIB)
 
 #add_subdirectory (go)
 add_subdirectory (org)
+add_subdirectory (plugins)
 
 
 SET(BUILD_MHIVESERVICE Off)

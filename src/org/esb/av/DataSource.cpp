@@ -29,23 +29,18 @@ namespace org {
         //boost::mutex::scoped_lock scoped_lock(ffmpeg_mutex);
         LOGINFO("opening InputFile: " << _locator.toString());
         _isValid = false;
-        AVFormatParameters params, *ap = &params;
-        memset(ap, 0, sizeof (*ap));
-        ap->prealloced_context = 1;
-
-
 
         formatCtx = avformat_alloc_context();
         std::string filename = _locator.getRemainder();
         {
-          if (av_open_input_file(&formatCtx, filename.c_str(), NULL, 0, ap) != 0) {
+          if (avformat_open_input(&formatCtx, filename.c_str(), NULL,NULL) != 0) {
             LOGERROR("could not open file = " << _locator.getRemainder());
             return;
           }
         }
 
         LOGINFO("find stream info: " << _locator.toString());
-        if (av_find_stream_info(formatCtx) < 0) {
+        if (avformat_find_stream_info(formatCtx,NULL) < 0) {
           LOGERROR("no StreamInfo from:" << _locator.toString());
           return;
         }

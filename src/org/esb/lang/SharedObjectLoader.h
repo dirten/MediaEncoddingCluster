@@ -44,6 +44,7 @@ namespace org {
 
       class LANG_EXPORT SharedObjectLoader {
         classlogger("org.esb.lang.SharedObjectLoader");
+        std::string _filename;
       public:
         SharedObjectLoader(std::string);
         virtual ~SharedObjectLoader();

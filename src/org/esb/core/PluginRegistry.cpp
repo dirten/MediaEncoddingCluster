@@ -8,87 +8,117 @@
 #include "PluginRegistry.h"
 #include "Plugin.h"
 #include "ServicePlugin.h"
-#include "WebservicePlugin.h"
 #include "introspec.h"
-#include "org/esb/util/Log.h"
-#include "org/esb/core/HookProvider.h"
+#include "org/esb/core/HookPlugin.h"
+#include "org/esb/util/Foreach.h"
+#include "org/esb/io/File.h"
 //#include "org/esb/api/ApiWebServer.h"
 namespace org {
   namespace esb {
     namespace core {
-      AppContext * PluginRegistry::context=NULL;
+      AppContext * PluginRegistry::context = NULL;
       PluginRegistry * PluginRegistry::_instance = NULL;
 
       PluginRegistry * PluginRegistry::getInstance() {
-        if (_instance == NULL){
-          _instance = new PluginRegistry;          
+        if (_instance == NULL) {
+          _instance = new PluginRegistry;
         }
-        if(context==NULL){
-          context=new AppContext();
-          
-          context->env["web.port"]=getenv("web.port")==NULL?"8080":getenv("web.port");
-          context->env["web.docroot"]=getenv("web.docroot")==NULL?".":getenv("web.docroot");
-          
+        if (context == NULL) {
+          context = new AppContext();
+
+          context->env["web.port"] = getenv("web.port") == NULL ? "8080" : getenv("web.port");
+          context->env["web.docroot"] = getenv("web.docroot") == NULL ? "." : getenv("web.docroot");
+
         }
-          
+
         return _instance;
       }
 
       void PluginRegistry::registerPlugin(std::string name, Plugin*plugin) {
-        LOGDEBUG("register plugin")
-        _plugin_map[name]=plugin;
-        LOGDEBUG("delete plugin")
+        //LOGDEBUG("register plugin")
+        _plugin_map[name] = plugin;
+        //LOGDEBUG("delete plugin")
         delete plugin;
       }
-      
+
       void PluginRegistry::registerService(std::string name, ServicePlugin*plugin) {
-        LOGDEBUG("register Servicename:" <<name)
-        _plugin_map[name]=plugin;
+        if (plugin == NULL)return;
+        _plugin_map[name] = plugin;
         plugin->setContext(context);
-        plugin->startService();
-        //plugin->stopService();
-        //LOGDEBUG("delete service")
-        //delete plugin;
       }
-      void PluginRegistry::registerWebservice(std::string name,std::string url, WebservicePlugin*plugin) {
-        LOGDEBUG("register WebService "<<name<< " on url "<<url);
-        _plugin_map[name]=plugin;
-        if(_plugin_map.count("apiwebserver")>0){
-          //static_cast<org::esb::core::HookProvider*>(_plugin_map["apiwebserver"])->addHook(url,plugin);
+
+      void CORE_EXPORT PluginRegistry::startServices() {
+        typedef std::map<std::string, Plugin*> PluginMap;
+        foreach(PluginMap::value_type s, _plugin_map) {
+          ((ServicePlugin*) s.second)->startService();
         }
-        //
-        //LOGDEBUG("delete service")
-        //delete plugin;
+
       }
+
+      void CORE_EXPORT PluginRegistry::stopServices() {
+        typedef std::map<std::string, Plugin*> PluginMap;
+        foreach(PluginMap::value_type s, _plugin_map) {
+          ((ServicePlugin*) s.second)->stopService();
+        }
+      }
+
       void PluginRegistry::registerHookPlugin(std::string name, HookPlugin*plugin) {
-        LOGDEBUG("register HookPlugin "<<name);
-        _plugin_map[name]=plugin;
-        if(_plugin_map.count("apiwebserver")>0){
+        //LOGDEBUG("register HookPlugin "<<name);
+        _plugin_map[name] = plugin;
+        if (_plugin_map.count("apiwebserver") > 0) {
           //static_cast<org::esb::core::HookProvider*>(_plugin_map["apiwebserver"])->addHook(url,plugin);
         }
         //
         //LOGDEBUG("delete service")
         //delete plugin;
       }
+
       void PluginRegistry::registerHookProvider(std::string name, HookProvider*plugin) {
-        LOGDEBUG("register HookProvider "<<name);
-        _hook_provider_map[name]=plugin;
+        //LOGDEBUG("register HookProvider "<<name);
+        _hook_provider_map[name] = plugin;
       }
 
       void PluginRegistry::close() {
         delete _instance;
         delete context;
       }
+
       PluginRegistry::PluginRegistry() {
+      }
+      
+      void PluginRegistry::load(std::string file) {
+        org::esb::io::File plugin_dir(file);
+        if (plugin_dir.isDirectory()) {
+          org::esb::io::FileList plugin_list = plugin_dir.listFiles();
+
+          foreach(Ptr<org::esb::io::File> f, plugin_list) {
+            if (f->isFile())
+              load(f->getPath());
+          }
+        } else if (plugin_dir.isFile()) {
+          loadFile(plugin_dir.getPath());
+        }
+
+      }
+      void PluginRegistry::loadFile(std::string file) {
+        try{
+        org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
+        _shared_objects[file]=loader;
+        }catch(org::esb::lang::NotFoundException & ex){
+
+        }
       }
 
       PluginRegistry::~PluginRegistry() {
         LOGDEBUG("PluginRegistry::~PluginRegistry()")
-        
+        typedef std::map<std::string, org::esb::lang::SharedObjectLoader*> SharedObjectMap;
+        foreach(SharedObjectMap::value_type row, _shared_objects){
+          delete row.second;
+        }
       }
     }
-    namespace api{
-  //    REGISTER_SERVICE("apiwebserver", ApiWebServer)
+    namespace api {
+      //    REGISTER_SERVICE("apiwebserver", ApiWebServer)
     }
   }
 }

@@ -19,6 +19,7 @@
 #ifndef APIWEBSERVER_H
 #define	APIWEBSERVER_H
 #include "mongoose.h"
+#include "org/esb/util/Log.h"
 #include <map>
 #include "org/esb/core/ServicePlugin.h"
 #include "org/esb/core/HookNotificationCenter.h"
@@ -29,6 +30,7 @@ namespace org {
     namespace api {
 
       class  ApiWebServer:public org::esb::core::ServicePlugin{
+        classlogger("org.esb.plugin.ApiWebServer")
       public:
         API_EXPORT ApiWebServer();
         virtual API_EXPORT ~ApiWebServer();
