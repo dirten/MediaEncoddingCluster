@@ -51,6 +51,7 @@ SET(BUILD_MHIVEQUEUE Off)
 SET(BUILD_MHIVEWRITER Off)
 SET(BUILD_MHIVEREADER Off)
 SET(BUILD_MHIVECLIENT Off)
+SET(BUILD_MHIVECORE On)
 include_directories (${MEC_SOURCE_DIR})
 include_directories (${MEC_SOURCE_DIR}/src)
 include_directories (${MEC_SOURCE_DIR}/target/dependency/include/safmq)
@@ -234,7 +235,7 @@ ENDIF(BUILD_MHIVEWRITER)
 
 IF(BUILD_MHIVECORE)
     add_executable (mhivecore MHiveCore.cpp)
-    target_link_libraries (mhivecore lang hive )
+    target_link_libraries (mhivecore lang core hive )
     INSTALL(TARGETS mhivecore
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
@@ -250,7 +251,6 @@ ENDIF(BUILD_MHIVECORE)
  
 target_link_libraries (mhive 
   lang
-  api 
   hive 
   av 
   util 
@@ -259,6 +259,7 @@ target_link_libraries (mhive
   net
   mq
   rpc
+  core
   ${Boost_LIBRARIES}
 #  log4cplus
 )

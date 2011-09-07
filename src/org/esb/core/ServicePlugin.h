@@ -12,7 +12,7 @@ namespace org {
   namespace esb {
     namespace core {
 
-      class ServicePlugin: public Plugin{
+      class ServicePlugin: public org::esb::core::Plugin{
       public:
 
         virtual void startService()=0;

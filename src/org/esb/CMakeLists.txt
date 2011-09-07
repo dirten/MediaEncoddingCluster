@@ -123,7 +123,7 @@ add_subdirectory (lang)
 add_subdirectory (mq)
 add_subdirectory (grid)
 add_subdirectory (rpc)
-add_subdirectory (api)
+#add_subdirectory (api)
 #TARGET_LINK_LIBRARIES(lang
 #  ${BOOST_THREAD_LIB_MT}
 #)
@@ -272,12 +272,12 @@ ENDIF(BUILD_SHARED_LIBS)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
 add_library (hive 
-    hive/Command.cpp 
-	hive/ProtocolServer.cpp 
-	hive/HiveControl.cpp 
-	hive/HiveListener.cpp 
-	hive/CommandInputStream.cpp 
-	hive/CommandOutputStream.cpp 
+#    hive/Command.cpp 
+#	hive/ProtocolServer.cpp 
+#	hive/HiveControl.cpp 
+#	hive/HiveListener.cpp 
+#	hive/CommandInputStream.cpp 
+#	hive/CommandOutputStream.cpp 
 #	hive/PacketCollector.cpp
 	hive/CodecFactory.cpp 
 #	hive/job/Job.cpp
@@ -287,35 +287,35 @@ add_library (hive
 #	hive/job/ProcessUnitWatcher.cpp
 	hive/job/PartitionManager.cpp 
 	hive/job/ProcessUnit.cpp 
-	hive/DirectoryScanner.cpp 
+#	hive/DirectoryScanner.cpp 
 #	hive/DatabaseUtil.cpp
 	hive/DatabaseService.cpp
-	hive/FileImporter.cpp 
-	hive/JobUtil.cpp 
+#	hive/FileImporter.cpp 
+#	hive/JobUtil.cpp 
 	hive/HiveClient.cpp
 	hive/HiveClientAudio.cpp
 #	hive/Setup.cpp
-	hive/FileExporter.cpp
-	hive/ExportScanner.cpp
+#	hive/FileExporter.cpp
+#	hive/ExportScanner.cpp
 #	hive/FormatStreamFactory.cpp
-        hive/protocol/PartitionHandler.cpp
-  hive/job/Packetizer.cpp
+#        hive/protocol/PartitionHandler.cpp
+#  hive/job/Packetizer.cpp
 #  hive/JobScanner.cpp
   hive/NodeSender.cpp
 	hive/NodeReceiver.cpp
   hive/NodeResolver.cpp
-  hive/job/ProcessUnitBuilder.cpp
-  hive/job/ProcessUnitController.cpp
-  hive/job/JobController.cpp
-  hive/ProcessManager.cpp
+#  hive/job/ProcessUnitBuilder.cpp
+#  hive/job/ProcessUnitController.cpp
+#  hive/job/JobController.cpp
+#  hive/ProcessManager.cpp
   hive/HiveException.cpp
   hive/CodecPropertyTransformer.cpp
-  hive/PresetReader.cpp
-  hive/PresetReaderJson.cpp
-  hive/PresetFileWriter.cpp
-  hive/PresetLoader.cpp
-  hive/xml/Project.cpp
-  hive/xml/JobCreator.cpp
+#  hive/PresetReader.cpp
+#  hive/PresetReaderJson.cpp
+#  hive/PresetFileWriter.cpp
+#  hive/PresetLoader.cpp
+#  hive/xml/Project.cpp
+#  hive/xml/JobCreator.cpp
   config/config.cpp
 )
 

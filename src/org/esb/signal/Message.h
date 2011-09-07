@@ -19,14 +19,17 @@ class SIGNAL_EXPORT Message{
     Message & setProperty(std::string key, std::string value);
     Message & setProperty(std::string key, int value);
     Message & setProperty(std::string key, boost::shared_ptr<org::esb::hive::job::ProcessUnit> );
+    Message & setProperty(std::string key, boost::shared_ptr<void> );
     std::string & getProperty(std::string key);
     boost::shared_ptr<org::esb::hive::job::ProcessUnit> getPtrProperty(std::string key);
+    boost::shared_ptr<void> getVoidProperty(std::string key);
     bool containsProperty(std::string key);
 	~Message();
 private:
     std::map<std::string, std::string> str_props;
     std::map<std::string, std::string> int_props;
-    std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > void_props;
+    std::map<std::string, boost::shared_ptr<org::esb::hive::job::ProcessUnit> > pu_props;
+    std::map<std::string, boost::shared_ptr<void> > void_props;
 
 };
 }}}

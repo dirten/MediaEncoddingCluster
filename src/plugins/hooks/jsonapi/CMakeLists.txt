@@ -10,7 +10,7 @@ include_directories (${FFMPEG_INCLUDE_DIR})
 
 
 add_library (jsonapi SHARED
-  ProcessHandler.cpp
+#  ProcessHandler.cpp
   JSONHandler.cpp
 )
 

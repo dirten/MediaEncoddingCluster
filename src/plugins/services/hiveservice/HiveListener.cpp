@@ -42,7 +42,7 @@ using namespace org::esb::net;
 
 namespace org {
   namespace esb {
-    namespace hive {
+    namespace plugin {
 
       HiveListener::HiveListener() {
         server = NULL;
@@ -75,6 +75,23 @@ namespace org {
           //    cout << "Stop Message Arrived:"<<endl;
         }
       }
+        void HiveListener::startService(){
+          boost::thread tt(boost::bind(&HiveListener::startListener, this));
+          LOGDEBUG("Hive Listener running on port:" << Config::get("hive.port"));
+          is_running = true;
+          
+        }
+        void HiveListener::stopService(){
+          LOGDEBUG( "Hive Listener stopp signal:");
+          main_nextloop = false;
+          if (server){            
+            server->close();
+          }
+          delete server;
+          server = NULL;
+          LOGDEBUG( "Hive Listener stopped:");
+          
+        }
 
       void HiveListener::startListener() {
 

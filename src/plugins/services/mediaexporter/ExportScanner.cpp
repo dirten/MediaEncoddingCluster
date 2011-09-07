@@ -30,14 +30,13 @@
 #include <boost/bind.hpp>
 
 #include "org/esb/io/File.h"
-#include "org/esb/hive/FileExporter.h"
+#include "FileExporter.h"
 #include "org/esb/config/config.h"
 #include "org/esb/lang/Thread.h"
 #include "org/esb/util/Log.h"
-#include "DatabaseService.h"
 namespace org {
   namespace esb {
-    namespace hive {
+    namespace plugin {
 
       ExportScanner::ExportScanner() {
         _run = false;
@@ -61,10 +60,26 @@ namespace org {
           LOGDEBUG("Export Scanner stopped");
         }
       }
+        void ExportScanner::startService(){
+          LOGDEBUG("Start Request for the ExportScanner");
+          _run = true;
+          boost::thread t(boost::bind(&ExportScanner::start, this));
+          boost::thread(boost::bind(&ExportScanner::restart_failed_exports, this));
+          LOGDEBUG("ExportScanner started");          
+        }
+        void ExportScanner::stopService(){
+          LOGDEBUG("Export Scanner stop request received");
+          if (_run) {
+            _run = false;
+            boost::mutex::scoped_lock terminationLock(terminationMutex);
+            termination_wait.wait(terminationLock);
+          }
+          LOGDEBUG("Export Scanner stopped");
+          
+        }
 
       void ExportScanner::start() {
-        
-        db::HiveDb db=org::esb::hive::DatabaseService::getDatabase();
+        db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
           {
             try {
@@ -111,7 +126,7 @@ namespace org {
       }
 
       void ExportScanner::restart_failed_exports() {
-        db::HiveDb db = org::esb::hive::DatabaseService::getDatabase();
+        db::HiveDb db("sqlite3", org::esb::config::Config::get("db.url"));
         while (_run) {
           std::vector<db::Job> completed_jobs = litesql::select<db::Job > (db, db::Job::Status == "exists").all();
           std::vector<db::Job>::iterator job_it = completed_jobs.begin();

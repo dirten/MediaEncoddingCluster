@@ -5,7 +5,6 @@
  * Created on 1. September 2011, 15:52
  */
 
-#include "org/esb/db/hivedb.hpp"
 #include "JSONHandler.h"
 
 #include "org/esb/util/Log.h"
@@ -16,20 +15,20 @@
 #include "org/esb/av/FormatBaseStream.h"
 #include "org/esb/libjson/libjson.h"
 #include "org/esb/util/Foreach.h"
+#include "org/esb/config/config.h"
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"
+#include "org/esb/signal/Message.h"
+#include "org/esb/signal/Messenger.h"
 
-#include "org/esb/hive/FileImporter.h"
-#include "org/esb/hive/JobUtil.h"
+//#include "org/esb/hive/FileImporter.h"
+//#include "org/esb/hive/JobUtil.h"
 namespace org {
   namespace esb {
     namespace plugin {
-      //std::set<std::string> JSONHandler::valid_formats;
-      //std::set<std::string> JSONHandler::valid_video_codecs;
-            class MyFileFilter : public org::esb::io::FileFilter {
+      class MyFileFilter : public org::esb::io::FileFilter {
       public:
-
         MyFileFilter(std::string ext) {
           //          logdebug("extensions"<<ext);
           org::esb::util::StringTokenizer tokenizer(ext, ",");
@@ -88,7 +87,7 @@ namespace org {
       JSONHandler::JSONHandler() {
         base_uri = "/api/v1";
         LOGDEBUG("JSONHandler::JSONHandler()");
-        db = new db::HiveDb("sqlite3", "database=hive.db");
+        db = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
         org::esb::av::FormatBaseStream::initialize();
 
         valid_formats.insert("amr");
@@ -125,7 +124,7 @@ namespace org {
       }
 
       JSONHandler::~JSONHandler() {
-        LOGDEBUG("JSONHandler::~JSONHandler()")
+        LOGDEBUG("JSONHandler::~JSONHandler()");
                 delete db;
       }
       bool JSONHandler::contains(JSONNode& node, std::string name) {
@@ -240,7 +239,7 @@ namespace org {
                 error.push_back(JSONNode("description", msg));
                 n.push_back(error);
               }
-              n.push_back(save(*db, inode));
+              n=save(*db, inode);
             } else {
               JSONNode error(JSON_NODE);
 
@@ -560,17 +559,19 @@ namespace org {
         res->setStatus(200);
         res->getOutputStream()->write(n.write_formatted());
       }
+
       JSONNode JSONHandler::save(db::HiveDb&db, JSONNode & root) {
         if (contains(root, "outfile")) {
           return save_outfile(db, root);
         } else if (contains(root, "outdir")) {
           return save_outdir(db, root);
         }
-		return JSONNode(JSON_NODE);
+        return JSONNode(JSON_NODE);
       }
 
       JSONNode JSONHandler::save_outdir(db::HiveDb&db, JSONNode & root) {
         JSONNode n(JSON_NODE);
+        
         org::esb::io::File indir(root["indir"].as_string());
         org::esb::io::File outdir(root["outdir"].as_string());
         if (!indir.exists() || !indir.isDirectory()) {
@@ -593,7 +594,8 @@ namespace org {
         litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
         if (s.count() == 1) {
           db::Preset preset = s.one();
-          org::esb::hive::FileImporter importer;
+  
+          //org::esb::hive::FileImporter importer;
           std::string filter;
           if (contains(root, "filter")) {
             filter = root["filter"].as_string();
@@ -625,12 +627,29 @@ namespace org {
             /*replace some special chars in the filenames*/
             //outfile = org::esb::util::StringUtil::replace(outfile, ".", "_");
             outfile = org::esb::util::StringUtil::replace(outfile, " ", "_");
-            
 
-            if(org::esb::io::File(outfile).canWrite()){
-              db::MediaFile infile = importer.import(ifile);
+
+            if (org::esb::io::File(outfile).canWrite()) {
+              org::esb::signal::Message msg;
+              msg.setProperty("mediaimporter","import");
+              msg.setProperty("file",root["infile"].as_string());
+              org::esb::signal::Messenger::getInstance().sendRequest(msg);
+              LOGDEBUG("Returned FileId="<<msg.getProperty("fileid"));
+              boost::shared_ptr<db::MediaFile> tmf=boost::static_pointer_cast<db::MediaFile>(msg.getVoidProperty("mediafile"));
+
+              db::MediaFile infile = *(tmf.get());// importer.import(org::esb::io::File(root["infile"].as_string()));
               if (infile.id > 0) {
-                int id = org::esb::hive::JobUtil::createJob(infile, preset, outfile);
+                org::esb::signal::Message msg_job;
+                boost::shared_ptr<db::Preset> pp(new db::Preset(preset));
+                msg_job.setProperty("jobcreator","create").
+                        setProperty("mediafile",tmf).
+                        setProperty("preset",pp).
+                        setProperty("outfile",root["outfile"].as_string());
+                org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
+                LOGDEBUG("Returned job Object:"<<msg_job.getProperty("jobid"));
+
+                int id = atoi(msg_job.getProperty("jobid").c_str());//org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+                LOGDEBUG("Returned job id:"<<id);
                 db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
                 ids.push_back(JSONNode("id", pre.uuid.value()));
               } else {
@@ -640,15 +659,15 @@ namespace org {
                 error.push_back(JSONNode("description", std::string("could not open input file with id ").append(ifile.getPath()).append(" for use to create encoding task!")));
                 errors.push_back(error);
               }
-            }else{
-                JSONNode error(JSON_NODE);
-                error.set_name("error");
-                error.push_back(JSONNode("code", "outfile_not_writable"));
-                error.push_back(JSONNode("description", std::string("could not write output file ").append(outfile).append(" for use to create encoding task!")));
-                errors.push_back(error);
+            } else {
+              JSONNode error(JSON_NODE);
+              error.set_name("error");
+              error.push_back(JSONNode("code", "outfile_not_writable"));
+              error.push_back(JSONNode("description", std::string("could not write output file ").append(outfile).append(" for use to create encoding task!")));
+              errors.push_back(error);
             }
           }
-          if(errors.size()>0)
+          if (errors.size() > 0)
             n.push_back(errors);
           n.push_back(ids);
         } else {
@@ -674,10 +693,27 @@ namespace org {
           litesql::DataSource<db::Preset>s = litesql::select<db::Preset > (db, db::Preset::Uuid == root["profileid"].as_string());
           if (s.count() == 1) {
             db::Preset preset = s.one();
-            org::esb::hive::FileImporter importer;
-            db::MediaFile infile = importer.import(org::esb::io::File(root["infile"].as_string()));
+              org::esb::signal::Message msg;
+              msg.setProperty("mediaimporter","import");
+              msg.setProperty("file",root["infile"].as_string());
+              org::esb::signal::Messenger::getInstance().sendRequest(msg);
+              LOGDEBUG("Returned FileId="<<msg.getProperty("fileid"));
+              boost::shared_ptr<db::MediaFile> tmf=boost::static_pointer_cast<db::MediaFile>(msg.getVoidProperty("mediafile"));
+
+            //org::esb::hive::FileImporter importer;
+            db::MediaFile infile = *(tmf.get());// importer.import(org::esb::io::File(root["infile"].as_string()));
             if (infile.id > 0) {
-              int id = org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+              org::esb::signal::Message msg_job;
+              boost::shared_ptr<db::Preset> pp(new db::Preset(preset));
+              msg_job.setProperty("jobcreator","create").
+                      setProperty("mediafile",tmf).
+                      setProperty("preset",pp).
+                      setProperty("outfile",root["outfile"].as_string());
+              org::esb::signal::Messenger::getInstance().sendRequest(msg_job);
+              LOGDEBUG("Returned job Object:"<<msg_job.getProperty("jobid"));
+
+              int id = atoi(msg_job.getProperty("jobid").c_str());//org::esb::hive::JobUtil::createJob(infile, preset, root["outfile"].as_string());
+              LOGDEBUG("Returned job id:"<<id);
               db::Job pre = litesql::select<db::Job > (db, db::Job::Id == id).one();
 
               n.push_back(JSONNode("id", pre.uuid.value()));

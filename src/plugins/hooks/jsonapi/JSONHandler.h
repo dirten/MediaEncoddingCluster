@@ -7,25 +7,26 @@
 
 #ifndef JSONHANDLER_H
 #define	JSONHANDLER_H
+#include "org/esb/db/hivedb.hpp"
+
 #include "org/esb/core/HookPlugin.h"
 #include "plugins/services/webservice/ServiceRequest.h"
 #include "plugins/services/webservice/ServiceResponse.h"
 #include "org/esb/libjson/JSONNode.h"
+#include "org/esb/util/Log.h"
 #include "exports.h"
 #include <set>
 using namespace org::esb::core;
 using namespace org::esb::api;
-namespace db {
-  class HiveDb;
-}
 namespace org {
   namespace esb {
     namespace plugin {
 
       class JSONAPI_EXPORT JSONHandler : public org::esb::core::HookPlugin {
+        classlogger("org.esb.plugin.JSONHandler")
       public:
         JSONHandler();
-        virtual ~JSONHandler();
+        ~JSONHandler();
         void handleRequest(Request * req, Response*res);
       private:
         std::string base_uri;

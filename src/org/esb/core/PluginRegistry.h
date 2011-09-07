@@ -11,6 +11,7 @@
 #include <string>
 #include "AppContext.h"
 #include "org/esb/lang/SharedObjectLoader.h"
+#include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
     namespace core {
@@ -20,6 +21,7 @@ namespace org {
       class HookPlugin;
       class HookProvider;
       class PluginRegistry {
+        classlogger("org.esb.core.PluginRegistry")
       public:
         static CORE_EXPORT PluginRegistry * getInstance();
         static CORE_EXPORT void close();

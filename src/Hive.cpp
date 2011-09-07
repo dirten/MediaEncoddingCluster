@@ -15,7 +15,6 @@
  *
  * ----------------------------------------------------------------------
  */
-#include "org/esb/db/hivedb.hpp"
 #include "config.h"
 #include "boost/program_options.hpp"
 #include "boost/asio.hpp"
@@ -68,6 +67,7 @@
 #include "org/esb/rpc/Server.h"
 #include "org/esb/rpc/rpc.pb.h"
 #include "MHiveConsole.cpp"
+#include "org/esb/core/PluginRegistry.h"
 #define TO_STRING(s) #s
 using namespace org::esb;
 using namespace org::esb::net;
@@ -219,7 +219,7 @@ int main(int argc, char * argv[]) {
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();
-    //return 0;
+
     if (vm.count("stop")) {
       if (vm["stop"].as<int> () <= 0) {
         LOGERROR("please provide a Process Id to stop");
@@ -257,6 +257,8 @@ int main(int argc, char * argv[]) {
 
     if (vm.count("console")) {
       console();
+     
+
     }
     if (vm.count("erlang")) {
       LOGDEBUG("test option");
@@ -270,18 +272,18 @@ int main(int argc, char * argv[]) {
       //org::esb::hive::DirectoryScanner dirscan;
       //Messenger::getInstance().addMessageListener(dirscan);
 
-      org::esb::hive::ExportScanner expscan;
-      Messenger::getInstance().addMessageListener(expscan);
+      //org::esb::hive::ExportScanner expscan;
+      //Messenger::getInstance().addMessageListener(expscan);
 
 
       //  org::esb::web::WebServer webserver;
       //  Messenger::getInstance().addMessageListener(webserver);
 
-      org::esb::hive::HiveListener hive;
-      Messenger::getInstance().addMessageListener(hive);
+      //org::esb::hive::HiveListener hive;
+      //Messenger::getInstance().addMessageListener(hive);
 
-      org::esb::hive::job::ProcessUnitController puw;
-      Messenger::getInstance().addMessageListener(puw);
+      //org::esb::hive::job::ProcessUnitController puw;
+      //Messenger::getInstance().addMessageListener(puw);
       //  LOGDEBUG("here")
 
 
@@ -294,11 +296,11 @@ int main(int argc, char * argv[]) {
       //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
 
       //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
-      Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
-      string base_path = org::esb::config::Config::getProperty("hive.base_path");
-      Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
+      //Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
+      //string base_path = org::esb::config::Config::getProperty("hive.base_path");
+      //Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
       //    Messenger::getInstance().sendMessage(Message().setProperty("jobwatcher", org::esb::hive::START));
-      Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
+      //Messenger::getInstance().sendMessage(Message().setProperty("hivelistener", org::esb::hive::START));
       //  }
 
       //  if (string(org::esb::config::Config::getProperty("web.start")) == "true" || string(org::esb::config::Config::getProperty("hive.mode")) == "setup") {
@@ -306,11 +308,11 @@ int main(int argc, char * argv[]) {
 
       //  if (string(org::esb::config::Config::getProperty("hive.autoscan")) == "true") {
       //  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
-      Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
+      //Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
       //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
 
       //  }
-      org::esb::api::JsonServer server(vm["webport"].as<int> ());
+      //org::esb::api::JsonServer server(vm["webport"].as<int> ());
 
       //  LOGINFO("wait for shutdown!");
       //org::esb::rpc::Server server(6000);
@@ -323,6 +325,7 @@ int main(int argc, char * argv[]) {
        * Stopping Application Services from configuration
        *
        */
+      /*
       Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
       Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
       Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
@@ -333,6 +336,7 @@ int main(int argc, char * argv[]) {
       Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
       Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
       Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+       */
       CodecFactory::free();
       Messenger::free();
     }
@@ -343,7 +347,9 @@ int main(int argc, char * argv[]) {
       man.start();
       //org::esb::hive::DatabaseService::start(config::Config::getProperty("hive.base_path"));
 
-      org::esb::api::JsonServer server(vm["webport"].as<int> ());
+      //org::esb::api::JsonServer server(vm["webport"].as<int> ());
+      org::esb::core::PluginRegistry::getInstance()->load(base_path+"/plugins");
+      org::esb::core::PluginRegistry::getInstance()->startServices();
       listener(argc, argv);
     }
 
@@ -381,7 +387,7 @@ int main(int argc, char * argv[]) {
     if (vm.count("mon")) {
 
       // Wait until enter is pressed, then exit
-      org::esb::api::JsonServer server(8081);
+      //org::esb::api::JsonServer server(8081);
       getchar();
 
     }
@@ -423,6 +429,8 @@ int main(int argc, char * argv[]) {
   //  delete[] path;
   //  delete[] base_path;
   org::esb::hive::DatabaseService::stop();
+  org::esb::core::PluginRegistry::getInstance()->stopServices();
+  org::esb::core::PluginRegistry::close();
 
   org::esb::config::Config::close();
   LOGINFO("MHive is not running anymore!!!")
@@ -548,18 +556,18 @@ void start() {
   //org::esb::hive::DirectoryScanner dirscan;
   //Messenger::getInstance().addMessageListener(dirscan);
 
-  org::esb::hive::ExportScanner expscan;
-  Messenger::getInstance().addMessageListener(expscan);
+  //org::esb::hive::ExportScanner expscan;
+  //Messenger::getInstance().addMessageListener(expscan);
 
 
   //  org::esb::web::WebServer webserver;
   //  Messenger::getInstance().addMessageListener(webserver);
 
-  org::esb::hive::HiveListener hive;
-  Messenger::getInstance().addMessageListener(hive);
+  //org::esb::hive::HiveListener hive;
+  //Messenger::getInstance().addMessageListener(hive);
 
-  org::esb::hive::job::ProcessUnitController puw;
-  Messenger::getInstance().addMessageListener(puw);
+  //org::esb::hive::job::ProcessUnitController puw;
+  //Messenger::getInstance().addMessageListener(puw);
   //  LOGDEBUG("here")
 
 
@@ -572,6 +580,7 @@ void start() {
   //  Messenger::getInstance().sendMessage(Message().setProperty("databaseservice", org::esb::hive::START));
 
   //  if (string(org::esb::config::Config::getProperty("hive.start")) == "true") {
+  /*
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::START));
   string base_path = org::esb::config::Config::getProperty("hive.base_path");
   Messenger::getInstance().sendMessage(Message().setProperty("processunitcontroller", org::esb::hive::START));
@@ -586,13 +595,13 @@ void start() {
   //  Messenger::getInstance().sendMessage(Message(). setProperty("directoryscan", org::esb::hive::START). setProperty("directory", org::esb::config::Config::getProperty("hive.scandir")). setProperty("interval", org::esb::config::Config::getProperty("hive.scaninterval")));
   Messenger::getInstance().sendRequest(Message().setProperty("exportscanner", org::esb::hive::START));
   //    Messenger::getInstance().sendMessage(Message().setProperty("jobscanner", org::esb::hive::START));
-
+*/
   //  }
 
   //  LOGINFO("wait for shutdown!");
   //org::esb::rpc::Server server(6000);
   //boost::thread(boost::bind(&org::esb::rpc::Server::start, &server));
-  std::string port = config::Config::getProperty("web.port");
+  std::string port = config::Config::get("web.port");
   if (!quiet) {
     std::cout << "mhive server is running, open the url http://localhost:" << port << std::endl;
     std::cout << "Press ctrl & c to stop the program" << std::endl;
@@ -607,6 +616,7 @@ void start() {
    * Stopping Application Services from configuration
    *
    */
+  /*
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclient", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hiveclientaudio", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("jobscanner", org::esb::hive::STOP));
@@ -617,6 +627,7 @@ void start() {
   Messenger::getInstance().sendRequest(Message().setProperty("webserver", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("databaseservice", org::esb::hive::STOP));
   Messenger::getInstance().sendRequest(Message().setProperty("hivelistener", org::esb::hive::STOP));
+   */
   CodecFactory::free();
   Messenger::free();
   //  mysql_library_end();

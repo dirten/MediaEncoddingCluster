@@ -10,8 +10,8 @@
 #include <iostream>
 #include <map>
 #include <boost/bind.hpp>
-#ifndef PLUGIN_H
-#define	PLUGIN_H
+#ifndef ORG_ESB_CORE_PLUGIN_H
+#define	ORG_ESB_CORE_PLUGIN_H
 
 namespace org {
   namespace esb {

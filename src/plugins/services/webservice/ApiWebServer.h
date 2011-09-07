@@ -33,7 +33,7 @@ namespace org {
         classlogger("org.esb.plugin.ApiWebServer")
       public:
         WEBSERVICE_EXPORT ApiWebServer();
-        virtual WEBSERVICE_EXPORT ~ApiWebServer();
+        WEBSERVICE_EXPORT ~ApiWebServer();
         //bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
         void WEBSERVICE_EXPORT startService();
         void WEBSERVICE_EXPORT stopService();

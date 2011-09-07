@@ -9,7 +9,7 @@
 #include "org/esb/util/Log.h"
 namespace org {
   namespace esb {
-    namespace api {
+    namespace plugin {
 
       ProcessHandler::ProcessHandler() {
       }

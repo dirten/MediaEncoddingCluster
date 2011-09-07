@@ -58,18 +58,18 @@ namespace org {
       }
 
       void ApiWebServer::stopService() {
-        LOGDEBUG("ApiWebServer::stopService()")
+        LOGTRACEMETHOD("ApiWebServer::stopService()")
         mg_stop(ctx);
       }
 
       ApiWebServer::ApiWebServer() {
         center = org::esb::core::HookNotificationCenter::getInstance();
-
+        ctx=NULL;
       }
 
       ApiWebServer::~ApiWebServer() {
         LOGDEBUG("ApiWebServer::~ApiWebServer()")
-                delete p;
+        delete p;
       }
 
       void * ApiWebServer::event_handler(enum mg_event event,

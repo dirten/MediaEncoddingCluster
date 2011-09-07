@@ -12,7 +12,7 @@
 
 namespace org {
   namespace esb {
-    namespace api {
+    namespace plugin {
 
       class ProcessHandler: public org::esb::core::WebservicePlugin {
       public:
