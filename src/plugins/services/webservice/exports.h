@@ -7,7 +7,7 @@
       #define WEBSERVICE_EXPORT __declspec( dllimport )
     #endif
   #else
-    #define API_EXPORT
+    #define WEBSERVICE_EXPORT
   #endif
 #endif
 
