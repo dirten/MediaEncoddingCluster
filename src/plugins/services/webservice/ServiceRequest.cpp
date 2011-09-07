@@ -6,9 +6,6 @@
  */
 
 #include "ServiceRequest.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include "boost/uuid/uuid_generators.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include "boost/lexical_cast.hpp"

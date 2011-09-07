@@ -3,7 +3,7 @@ include_directories (${MEC_SOURCE_DIR})
 include_directories (${BOOST_INCLUDE_DIRS})
 include_directories (${FFMPEG_INCLUDE_DIR})
 SET(SHARED_API On)
-SET(BUILD_CORE On)
+SET(BUILD_CORE Off)
 
 IF(SHARED_API)
     ADD_DEFINITIONS(-DAPI_BUILD_SHARED)

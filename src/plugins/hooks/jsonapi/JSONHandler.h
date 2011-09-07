@@ -22,7 +22,7 @@ namespace org {
   namespace esb {
     namespace plugin {
 
-      class JSONHandler : public org::esb::core::HookPlugin {
+      class JSONAPI_EXPORT JSONHandler : public org::esb::core::HookPlugin {
       public:
         JSONHandler();
         virtual ~JSONHandler();

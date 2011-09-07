@@ -7,10 +7,9 @@ include_directories (${LOG4CPLUS_DIR}/include/litesql)
 include_directories (${FFMPEG_INCLUDE_DIR})
 
     ADD_DEFINITIONS(-DJSONAPI_BUILD_SHARED)
-    SET(JSONAPI_LINK_TYPE SHARED)
 
 
-add_library (jsonapi ${JSONAPI_LINK_TYPE}
+add_library (jsonapi SHARED
   ProcessHandler.cpp
   JSONHandler.cpp
 )
@@ -26,6 +25,7 @@ TARGET_LINK_LIBRARIES(jsonapi
 SET_TARGET_PROPERTIES( jsonapi PROPERTIES PREFIX "")
 
 INSTALL(TARGETS jsonapi
+  RUNTIME DESTINATION plugins
   LIBRARY DESTINATION plugins
-  ARCHIVE DESTINATION plugins
+  #ARCHIVE DESTINATION plugins
 )

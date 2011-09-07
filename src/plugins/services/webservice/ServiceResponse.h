@@ -17,7 +17,7 @@ namespace org {
   namespace esb {
     namespace api {
 
-      class API_EXPORT ServiceOutputStream {
+      class WEBSERVICE_EXPORT ServiceOutputStream {
       public:
         ServiceOutputStream(mg_connection *conn);
         ~ServiceOutputStream();
@@ -27,7 +27,7 @@ namespace org {
         bool _sent_status;
       };
 
-      class ServiceResponse : public org::esb::core::Response {
+      class WEBSERVICE_EXPORT ServiceResponse : public org::esb::core::Response {
       public:
         ServiceResponse(mg_connection *conn, const mg_request_info *request_info);
         ~ServiceResponse();

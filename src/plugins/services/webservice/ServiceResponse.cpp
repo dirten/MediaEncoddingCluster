@@ -29,7 +29,7 @@ namespace org {
                   "\r\n";
           mg_printf(_conn, "%s", reply_start);
         }
-        mg_write(_conn, data.c_str(), data.length());
+       return mg_write(_conn, data.c_str(), data.length());
       }
 
       ServiceResponse::ServiceResponse(mg_connection *conn, const mg_request_info *request_info) {

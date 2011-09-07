@@ -16,22 +16,22 @@ namespace org {
   namespace esb {
     namespace api {
 
-      class API_EXPORT ServiceInputStream {
+      class WEBSERVICE_EXPORT ServiceInputStream {
       public:
         ServiceInputStream( mg_connection *conn);
         //ServiceInputStream();
         ~ServiceInputStream();
         int read(string & str, int max=1500);
         int read(unsigned char * buffer, int length);
-        int read(vector<unsigned char>&buffer) {};
-        int read() {};
+        int read(vector<unsigned char>&buffer) {return 0;};
+        int read() {return 0;};
         long long int available(bool isBlocking = false);
       private:
         mg_connection *_conn;
 
       };
 
-      class API_EXPORT ServiceRequest : public org::esb::core::Request {
+      class WEBSERVICE_EXPORT ServiceRequest : public org::esb::core::Request {
       public:
         ServiceRequest(mg_connection *conn, const mg_request_info *request_info);
         virtual ~ServiceRequest();

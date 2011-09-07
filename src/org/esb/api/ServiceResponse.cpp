@@ -18,7 +18,7 @@ namespace org {
       }
       
       int ServiceOutputStream::write(std::string data){
-        mg_write(_conn, data.c_str(), data.length());
+        return mg_write(_conn, data.c_str(), data.length());
       }
       
       ServiceResponse::ServiceResponse(mg_connection *conn, const mg_request_info *request_info) {

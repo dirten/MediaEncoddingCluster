@@ -5,8 +5,8 @@
  * Created on 1. September 2011, 15:52
  */
 
-#include "JSONHandler.h"
 #include "org/esb/db/hivedb.hpp"
+#include "JSONHandler.h"
 
 #include "org/esb/util/Log.h"
 #include "org/esb/util/StringUtil.h"
@@ -566,6 +566,7 @@ namespace org {
         } else if (contains(root, "outdir")) {
           return save_outdir(db, root);
         }
+		return JSONNode(JSON_NODE);
       }
 
       JSONNode JSONHandler::save_outdir(db::HiveDb&db, JSONNode & root) {

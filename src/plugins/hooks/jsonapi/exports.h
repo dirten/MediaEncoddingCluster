@@ -1,13 +1,13 @@
-#ifndef ORG_ESB_API_EXPORTS
-#define ORG_ESB_API_EXPORTS
-  #if defined(_WIN32) && defined(API_BUILD_SHARED)
-    #if defined(api_EXPORTS)
-      #define API_EXPORT __declspec( dllexport )
+#ifndef ORG_ESB_JSONAPI_EXPORTS
+#define ORG_ESB_JSONAPI_EXPORTS
+  #if defined(_WIN32) 
+    #if defined(jsonapi_EXPORTS)
+      #define JSONAPI_EXPORT __declspec( dllexport )
     #else
-      #define API_EXPORT __declspec( dllimport )
+      #define JSONAPI_EXPORT __declspec( dllimport )
     #endif
   #else
-    #define API_EXPORT
+    #define JSONAPI_EXPORT
   #endif
 #endif
 

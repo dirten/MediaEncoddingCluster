@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------
  */
 
-#ifndef APIWEBSERVER_H
-#define	APIWEBSERVER_H
+#ifndef APIWEBSERVICE_H
+#define	APIWEBSERVICE_H
 #include "mongoose.h"
 #include "org/esb/util/Log.h"
 #include <map>
@@ -32,11 +32,11 @@ namespace org {
       class  ApiWebServer:public org::esb::core::ServicePlugin{
         classlogger("org.esb.plugin.ApiWebServer")
       public:
-        API_EXPORT ApiWebServer();
-        virtual API_EXPORT ~ApiWebServer();
+        WEBSERVICE_EXPORT ApiWebServer();
+        virtual WEBSERVICE_EXPORT ~ApiWebServer();
         //bool API_EXPORT addHandler(std::string url,org::esb::core::WebservicePlugin *);
-        void API_EXPORT startService();
-        void API_EXPORT stopService();
+        void WEBSERVICE_EXPORT startService();
+        void WEBSERVICE_EXPORT stopService();
         //void API_EXPORT addHook(std::string hookname, org::esb::core::HookPlugin*);
       private:
         static void * event_handler(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
