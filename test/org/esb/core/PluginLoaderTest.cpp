@@ -63,12 +63,13 @@ int main(int argc, char** argv) {
   //LOGDEBUG("test")
   //org::esb::core::PluginLoader loader1(WEBSERVER_PLUGIN);
   org::esb::core::PluginRegistry * i=org::esb::core::PluginRegistry::getInstance();
-  i->load(WEBSERVER_PLUGIN);
-  i->load(JSONSERVICE_PLUGIN);
+  i->load(std::string(MEC_SOURCE_DIR)+"/install/plugins");
+  //i->load(WEBSERVER_PLUGIN);
+  //i->load(JSONSERVICE_PLUGIN);
   //org::esb::core::PluginLoader loader2(JSONSERVICE_PLUGIN);
   
   i->startServices();
-  org::esb::lang::Thread::sleep2(60 * 1000);
+  //org::esb::lang::Thread::sleep2(60 * 1000);
   i->stopServices();
   org::esb::core::PluginRegistry::close();
   Log::close();
