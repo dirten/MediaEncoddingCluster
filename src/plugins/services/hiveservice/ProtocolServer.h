@@ -18,7 +18,7 @@ namespace org {
   namespace esb {
     namespace plugin {
 
-      classlogger("org.esb.hive.ProtocolServer")
+      classlogger("org.esb.plugin.ProtocolServer")
       class ProtocolServer : public Runnable {
       private:
         TcpSocket * socket;

@@ -78,7 +78,7 @@ namespace org {
       FileImporter::FileImporter() {
         LOGDEBUG("creating FileImporter");
         if (!_connection) {
-          _connection = new db::HiveDb(org::esb::hive::DatabaseService::getDatabase());
+          _connection = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
         }
         org::esb::signal::Messenger::getInstance().addMessageListener(*this);
       }

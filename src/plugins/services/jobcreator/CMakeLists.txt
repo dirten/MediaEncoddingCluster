@@ -16,6 +16,8 @@ add_library (jobcreator SHARED
 
 TARGET_LINK_LIBRARIES(jobcreator
   json
+  hive
+  core
 )
 
 SET_TARGET_PROPERTIES( jobcreator PROPERTIES PREFIX "")

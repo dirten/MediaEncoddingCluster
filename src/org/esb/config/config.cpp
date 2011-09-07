@@ -28,7 +28,7 @@ using namespace org::esb::lang;
  * Initialisierung der Konfiguration durch eine Property Datei
  * @param filename 
  */
-Properties * properties = new Properties();
+Properties * Config::properties = NULL;
 bool Config::_isInitialized=false;
 string trim(string & s, string & drop) {
   string r = s.erase(s.find_last_not_of(drop) + 1);
@@ -57,7 +57,10 @@ void Config::close() {
 }
 
 bool Config::init() {
+  if(!_isInitialized){
+  properties = new Properties();
   loadDefaults(properties);
+  }
   _isInitialized=true;
   //loadFromDb();
   return true;

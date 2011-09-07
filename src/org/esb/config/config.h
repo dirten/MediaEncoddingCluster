@@ -41,6 +41,7 @@ namespace org
       private:
         static void parseLine(const char*);
         static bool _isInitialized;
+        static Properties * properties;
       };
     }
   }

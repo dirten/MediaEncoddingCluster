@@ -85,8 +85,8 @@ namespace org {
         }
 
         ProcessUnitController::ProcessUnitController() :
-        _dbCon(org::esb::hive::DatabaseService::getDatabase()),
-        _dbJobCon(org::esb::hive::DatabaseService::getDatabase())
+        _dbCon("sqlite3",org::esb::config::Config::get("db.url")),
+        _dbJobCon("sqlite3",org::esb::config::Config::get("db.url"))
 #ifdef USE_SAFMQ
         , _queue("safmq://admin:@localhost:20200/punitout")
         , _oos(&_queue)

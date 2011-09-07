@@ -18,6 +18,8 @@ add_library (hiveservice SHARED
 TARGET_LINK_LIBRARIES(hiveservice
 net
 hive
+core
+mq
 )
 
 SET_TARGET_PROPERTIES( hiveservice PROPERTIES PREFIX "")

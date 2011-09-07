@@ -18,6 +18,9 @@ add_library (processunitcontroller SHARED
 
 TARGET_LINK_LIBRARIES(processunitcontroller
 av
+hive
+core
+mq
 )
 
 SET_TARGET_PROPERTIES( processunitcontroller PROPERTIES PREFIX "")
