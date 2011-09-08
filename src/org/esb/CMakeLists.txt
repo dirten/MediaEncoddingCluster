@@ -271,7 +271,7 @@ ENDIF(BUILD_SHARED_LIBS)
 #ENDIF(BUILD_SHARED_LIBS)
 
 include_directories (${MEC_SOURCE_DIR}/src/org/esb/hive)
-add_library (hive 
+add_library (hive SHARED
 #    hive/Command.cpp 
 #	hive/ProtocolServer.cpp 
 #	hive/HiveControl.cpp 
@@ -319,15 +319,13 @@ add_library (hive
   config/config.cpp
 )
 
-TARGET_LINK_LIBRARIES(hive db net signal av lang json util)
+TARGET_LINK_LIBRARIES(hive db net signal av lang json util mq)
 
-IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS hive
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)
 
 #SET_TARGET_PROPERTIES(web
 #PROPERTIES

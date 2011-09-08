@@ -11,7 +11,7 @@ LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/xvidcore/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/lame/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libtheora/lib)
 LINK_DIRECTORIES    (${MEC_SOURCE_DIR}/source/build/libvorbis/lib)
-add_library (av 
+add_library (av SHARED
   Init.cpp 
   FrameConverter.cpp 
   FrameOutputStream.cpp 
@@ -63,10 +63,9 @@ IF(NOT WIN32)
 	target_link_libraries (av pthread z io util lang)
 ENDIF(NOT WIN32)
 
-IF(BUILD_SHARED_LIBS)
+
   INSTALL(TARGETS av
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}
     RUNTIME DESTINATION ${LIB_INSTALL_DIR}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-ENDIF(BUILD_SHARED_LIBS)

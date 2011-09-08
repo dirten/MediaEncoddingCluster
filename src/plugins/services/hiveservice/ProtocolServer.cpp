@@ -77,7 +77,7 @@ namespace org {
         while (socket->isConnected()) {
           //		logdebug("ProtocolServer::run()::while(!socket->isClosed())")
           //#ifndef DEBUG
-          try {
+          //try {
             //#endif
             string cmd;
             int dataLength = socket->getInputStream()->read(cmd);
@@ -91,6 +91,7 @@ namespace org {
               LOGINFO("Command is NULL, continue!");
               continue;
             }
+            LOGDEBUG("Command:"<<command);
             //      logdebug("Command : " << command);
             list < ProtocolCommand * >::iterator i;
             bool handled = false;
@@ -110,12 +111,13 @@ namespace org {
               LOGERROR("unknown command" << command);
             }
             //#ifndef DEBUG
+            /*
           } catch (exception & ex) {
             LOGERROR("ERROR in ProtocolServer:" << ex.what());
             break;
             //      socket->close();
             //			cout << "ERROR in ProtocolServer:" << ex.what () << endl;
-          }
+          }*/
           //#endif
         }
         LOGINFO("client leave the cluster");

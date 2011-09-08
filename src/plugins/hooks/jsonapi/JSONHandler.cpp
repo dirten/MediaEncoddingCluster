@@ -124,8 +124,8 @@ namespace org {
       }
 
       JSONHandler::~JSONHandler() {
-        LOGDEBUG("JSONHandler::~JSONHandler()");
-                delete db;
+        //LOGDEBUG("JSONHandler::~JSONHandler()");
+        delete db;
       }
       bool JSONHandler::contains(JSONNode& node, std::string name) {
         bool result = false;

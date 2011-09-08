@@ -23,7 +23,6 @@ TARGET_LINK_LIBRARIES(mq
     util
     io
     ${EXTRA_LIBS}
-    hive
 )
 IF(BUILD_SHARED_LIBS)
 INSTALL(TARGETS mq

@@ -398,6 +398,7 @@ namespace org {
 #else
           //PartitionManager::getInstance()->putProcessUnit("global", unit);
           //return;
+          LOGDEBUG("putting pu packet size:"<<unit->_input_packets.size());
           if (unit->_decoder->getCodecType() == AVMEDIA_TYPE_AUDIO) {
             LOGDEBUG("audioQueue.enqueue(unit);")
             audioQueue.enqueue(unit);
@@ -441,8 +442,9 @@ namespace org {
             //            DatabaseService::thread_end();
           }
           u->_process_unit = dbunit.id;
+          LOGDEBUG("putting pu packet size:"<<u->_input_packets.size());
           /*this is only for debugging*/
-          if (true) {
+          if (false) {
             std::string name = org::esb::config::Config::getProperty("hive.base_path");
             name += "/tmp/";
             name += org::esb::util::StringUtil::toString(u->_process_unit % 10);
