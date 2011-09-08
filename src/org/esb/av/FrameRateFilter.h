@@ -9,11 +9,12 @@
 #define	FRAMERATEFILTER_H
 #include "PlugIn.h"
 #include "Rational.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class FrameRateFilter: public PlugIn {
+      class AV_EXPORT FrameRateFilter: public PlugIn {
       public:
         FrameRateFilter(Rational src, Rational trg);
         virtual ~FrameRateFilter();

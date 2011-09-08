@@ -5,13 +5,14 @@
  * Created on 15. Juni 2009, 11:31
  */
 #include "AV.h"
+#include "exports.h"
 #ifndef _STREAMINFO_H
 #define	_STREAMINFO_H
 namespace org {
   namespace esb {
     namespace av {
 
-      class StreamInfo {
+      class AV_EXPORT StreamInfo {
       public:
         StreamInfo(AVStream*, int idx);
         int getIndex();

@@ -145,7 +145,7 @@ add_library (util ${UTIL_LINK_TYPE}
   util/Decimal.cpp 
   util/ScopedTimeCounter.cpp 
   util/IllegalFormatException.cpp
-  util/Log.cpp
+#  util/Log.cpp
   util/Timer.cpp
   util/PropertyTree.cpp
 #  util/Queue.cpp

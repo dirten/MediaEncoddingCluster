@@ -91,7 +91,7 @@ endif ()
   IF(UNIX)
     #execute_process(COMMAND chmod +x ${MEC_SOURCE_DIR}/target/dependency/bin/mysqld)
   ENDIF(UNIX)
-  add_subdirectory (org)
+ # add_subdirectory (org)
 ENDIF(BUILD_TESTING)
 
 

@@ -14,6 +14,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <map>
+#include "org/esb/hive/exports.h"
 using namespace std;
 using namespace org::esb::util;
 namespace org
@@ -23,7 +24,7 @@ namespace org
     namespace config
     {
 
-      class Config
+      class HIVE_EXPORT Config
       {
         classlogger("org.esb.config.Config")
       public:

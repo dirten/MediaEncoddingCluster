@@ -264,6 +264,12 @@ target_link_libraries (mhive
 #  log4cplus
 )
 IF(WIN32)
+  IF(CMAKE_BUILD_TYPE MATCHES "debug")
+    TARGET_LINK_LIBRARIES(mhive log4cplusd)
+    ELSE()
+    TARGET_LINK_LIBRARIES(mhive log4cplus)
+  ENDIF()
+
 #  target_link_libraries (mhive  
 #    wtd 
 #    wtextd
@@ -317,7 +323,6 @@ ELSE(WIN32)
 #    ogg
   )
 ENDIF(WIN32)
-
 
 
 #SET(CURL_CMD curl)

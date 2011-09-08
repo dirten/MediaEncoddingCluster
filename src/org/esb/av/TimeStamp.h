@@ -9,12 +9,12 @@
 #define	TIMESTAMP_H
 #include "Rational.h"
 #include <boost/serialization/serialization.hpp>
-
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class TimeStamp {
+      class AV_EXPORT TimeStamp {
       public:
         TimeStamp(int64_t timestamp=1, Rational base=Rational());
         virtual ~TimeStamp();

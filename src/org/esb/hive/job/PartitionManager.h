@@ -14,11 +14,12 @@
 #include "org/esb/mq/QueueConnection.h"
 #include <map>
 #include <list>
+#include "../exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class PartitionManager {
+      class HIVE_EXPORT PartitionManager {
       public:
         enum Result {
           OK,

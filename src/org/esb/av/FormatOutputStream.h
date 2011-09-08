@@ -5,7 +5,7 @@
 #include "org/esb/io/File.h"
 #include "org/esb/av/PacketOutputStream.h"
 #include "org/esb/av/Encoder.h"
-
+#include "exports.h"
 //#include "AV.h"
 struct AVFormatContext;
 struct AVOutputFormat;
@@ -13,7 +13,7 @@ namespace org {
     namespace esb {
         namespace av {
           typedef std::list<Ptr<AVOutputFormat> > OutputFormatList;
-            class FormatOutputStream : public FormatBaseStream, public org::esb::io::OutputStream {
+            class AV_EXPORT FormatOutputStream : public FormatBaseStream, public org::esb::io::OutputStream {
               classlogger("org.esb.av.FormatOutputStream");
             public:
                 FormatOutputStream(org::esb::io::File * target, const char * fmt = NULL);

@@ -14,13 +14,14 @@
 #include "org/esb/util/Log.h"
 #include "TimeStamp.h"
 #include "Duration.h"
+#include "exports.h"
 //using namespace boost;
 //    class AVPacket;
 namespace org {
   namespace esb {
     namespace av {
 
-      class Packet {
+      class AV_EXPORT Packet {
         classlogger("org.esb.av.Packet")
       public:
 

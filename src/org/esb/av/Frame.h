@@ -6,12 +6,12 @@
 #include "Codec.h"
 
 #include <boost/shared_ptr.hpp>
-
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class Frame {
+      class AV_EXPORT Frame {
       public:
         Frame();
         Frame(PixelFormat format, int width, int height, bool allocate = true);

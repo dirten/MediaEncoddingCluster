@@ -5,10 +5,11 @@
 #include "Format.h"
 #include "AV.h"
 #include "org/esb/util/Log.h"
+#include "exports.h"
 namespace org{
   namespace esb{
     namespace av{
-      class ResizeFilter: public PlugIn{
+      class AV_EXPORT ResizeFilter: public PlugIn{
         classlogger("org.esb.av.ResizeFilter");
       public:
         ResizeFilter(Format in, Format out);

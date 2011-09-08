@@ -53,21 +53,27 @@ namespace org {
 	                public: \
 	                        Register##type() \
 	                        { \
+								std::cout<< "Register service"<<name<<std::endl; \
                                 element##type=new type(); \
 	                        org::esb::core::PluginRegistry::getInstance()->registerService(std::string(name), element##type); \
 	                        } \
                                 ~Register##type(){ \
-                                delete element##type; \
+								std::cout<< "calling destructor "<<name<<std::endl; \
                                 } \
 	        } Register##type##Instance; 
 
 #define REGISTER_HOOK(name,instance, function, id) \
 	class Register##instance##id \
 	        { \
+			instance * element##instance; \
 	                public: \
 	                        Register##instance##id() \
 	                        { \
-                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, &instance,_1,_2)); \
+							std::cout<< "Register hook "<<name<<std::endl; \
+								element##instance=new instance(); \
+							    std::cout<< "hook instance"<<element##instance<<std::endl; \
+                                org::esb::core::HookNotificationCenter::getInstance()->addObserver(name,boost::bind(&function, element##instance,_1,_2)); \
+							    std::cout<< "Register hook ready"<<name<<std::endl; \
 	                        } \
 	        } Register##instance##Instance##id; 
 #define REGISTER_HOOK_PROVIDER(name,type) \

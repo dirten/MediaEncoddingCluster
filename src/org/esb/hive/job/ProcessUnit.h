@@ -41,14 +41,14 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include "org/esb/util/Log.h"
-
+#include "../exports.h"
 using namespace std;
 using namespace org::esb::av;
 namespace org {
     namespace esb {
         namespace hive {
             namespace job {
-                class ProcessUnit {
+                class HIVE_EXPORT ProcessUnit {
                 public:
                     classlogger("org.esb.hive.job.ProcessUnit");
                     ProcessUnit();

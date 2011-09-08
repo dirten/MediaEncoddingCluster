@@ -4,11 +4,12 @@
 #include "Frame.h"
 #include "Format.h"
 #include "AV.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
 
-      class DeinterlaceFilter : public PlugIn {
+      class AV_EXPORT DeinterlaceFilter : public PlugIn {
       public:
         DeinterlaceFilter(Format in, Format out);
         void close();

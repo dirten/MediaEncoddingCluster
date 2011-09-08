@@ -43,11 +43,12 @@
 //#include <boost/archive/binary_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <map>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class Node {
+      class HIVE_EXPORT Node {
         classlogger("org.esb.hive.Node")
       public:
         Node();
@@ -81,7 +82,7 @@ namespace org {
         }
       };
 
-      class NodeListener {
+      class HIVE_EXPORT NodeListener {
         classlogger("org.esb.hive.NodeListener")
       public:
         virtual void onNodeUp(Node & node) = 0;
@@ -89,7 +90,7 @@ namespace org {
 
       };
 
-      class NodeResolver {
+      class HIVE_EXPORT NodeResolver {
         classlogger("org.esb.hive.NodeResolver")
       public:
         typedef std::list<Ptr<Node> > NodeList;

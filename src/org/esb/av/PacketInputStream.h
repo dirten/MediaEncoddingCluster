@@ -5,11 +5,12 @@
 #include "FormatInputStream.h"
 #include "Packet.h"
 #include "Codec.h"
+#include "exports.h"
 using namespace org::esb::io;
 namespace org{
 namespace esb{
 namespace av{
-class PacketInputStream: public InputStream{
+class AV_EXPORT PacketInputStream: public InputStream{
     public:
         PacketInputStream(InputStream * is, bool truncate=false, bool calc_offset=false);
         

@@ -107,6 +107,13 @@ int main(int argc, char * argv[]) {
   //log4cplus::BasicConfigurator conf;
   org::esb::io::File f(argv[0]);
   std::string base_path = org::esb::io::File(f.getParent()).getParent();
+  //log4cplus::BasicConfigurator::doConfigure();
+      log4cplus::PropertyConfigurator config(LOG4CPLUS_TEXT(base_path+"/res/logging.properties"));
+    //log4cplus::helpers::Properties & props = const_cast<log4cplus::helpers::Properties&> (config.getProperties());
+    //props.setProperty(LOG4CPLUS_TEXT("appender.MAIN.File"), LOG4CPLUS_TEXT(path+"/mhive-debug.log"));
+    //props.setProperty(LOG4CPLUS_TEXT("appender.ERROR.File"), LOG4CPLUS_TEXT(path+"/mhive-error.log"));
+    config.configure();
+
   //config::Config::setProperty("hive.base_path", base_path);
   //log4cplus::BasicConfigurator::doConfigure();
   //  Config::setProperty("hive.base_path", base_path);
@@ -215,7 +222,7 @@ int main(int argc, char * argv[]) {
     //lconfig->configure();
   //LoggerConfig();  
   //log4cplus::BasicConfigurator::doConfigure();
-        Log::open(base_path+"/res");
+        //Log::open(base_path+"/res");
     //LOGDEBUG("configure Log opened");
     //return 0;
     setupDatabase();

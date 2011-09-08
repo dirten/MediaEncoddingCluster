@@ -104,11 +104,9 @@ namespace org {
         _urlhandler[url] = handler;
         return true;
       }*/
-
+	REGISTER_SERVICE("apiwebserver", ApiWebServer)
     }
   }
 }
 
-extern "C" void startApiServer() {
-  org::esb::api::ApiWebServer api_server();
-}
+

@@ -34,7 +34,7 @@
 #include "PixelFormatConverter.h"
 #include "org/esb/lang/Ptr.h"
 #include "Decoder.h"
-
+#include "exports.h"
 
 
 //class PacketTermSink;
@@ -43,7 +43,7 @@ namespace org {
         namespace av {
             class Packet;
 
-            class Encoder : public Codec {
+            class AV_EXPORT Encoder : public Codec {
               classlogger("org.esb.av.Encoder")
             public:
                 Encoder(CodecID id);

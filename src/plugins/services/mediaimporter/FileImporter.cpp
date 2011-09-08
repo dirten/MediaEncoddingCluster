@@ -76,7 +76,7 @@ namespace org {
     namespace plugin {
 
       FileImporter::FileImporter() {
-        LOGDEBUG("creating FileImporter");
+        //LOGDEBUG("creating FileImporter");
         if (!_connection) {
           _connection = new db::HiveDb("sqlite3", org::esb::config::Config::get("db.url"));
         }
@@ -84,12 +84,12 @@ namespace org {
       }
 
       void FileImporter::startService() {
-        LOGDEBUG("starting FileImporter");
+        //LOGDEBUG("starting FileImporter");
 
       }
 
       void FileImporter::stopService() {
-        LOGDEBUG("stoping FileImporter");
+        //LOGDEBUG("stoping FileImporter");
 
       }
 

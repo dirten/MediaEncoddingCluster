@@ -20,7 +20,7 @@
 #include "org/esb/lang/Ptr.h"
 #include "org/esb/io/QueueInputStream.h"
 #include "org/esb/io/QueueOutputStream.h"
-
+#include "exports.h"
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
@@ -30,7 +30,7 @@ namespace org {
       }
         namespace hive {
 
-            class HiveClient : public org::esb::signal::MessageListener {
+            class HIVE_EXPORT HiveClient : public org::esb::signal::MessageListener {
               classlogger("org.esb.hive.HiveClient")
             public:
                 HiveClient(std::string host, int port);

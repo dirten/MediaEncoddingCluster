@@ -9,11 +9,12 @@
 #define	CODECPROPERTYTRANSFORMER_H
 #include "org/esb/db/hivedb.hpp"
 #include "org/esb/av/AV.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class CodecPropertyTransformer {
+      class HIVE_EXPORT CodecPropertyTransformer {
 
       public:
         CodecPropertyTransformer();

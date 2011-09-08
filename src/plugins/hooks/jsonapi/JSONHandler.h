@@ -45,8 +45,8 @@ namespace org {
         JSONNode save_outfile(db::HiveDb&db, JSONNode & root);
         JSONNode save_outdir(db::HiveDb&db, JSONNode & root);
 
-      } jsonHandler;
-      REGISTER_HOOK("web.api.Service", jsonHandler, JSONHandler::handleRequest, 1);
+      };
+      REGISTER_HOOK("web.api.Service", JSONHandler, JSONHandler::handleRequest, 1);
     }
   }
 }

@@ -102,6 +102,7 @@ namespace org {
       }
       void PluginRegistry::loadFile(std::string file) {
         LOGDEBUG("loading plugins from "<<file)
+			std::cout<<"loading plugins from "<<file<<std::endl;
         try{
         org::esb::lang::SharedObjectLoader * loader = new org::esb::lang::SharedObjectLoader(file);
         _shared_objects[file]=loader;

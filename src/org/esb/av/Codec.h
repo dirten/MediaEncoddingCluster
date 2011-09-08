@@ -39,6 +39,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/condition.hpp>
 #include <list>
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace av {
@@ -49,7 +50,7 @@ class AVCodecContext;
 class PixelFormat;
 class SampleFormat;*/
 
-      class Codec {
+      class AV_EXPORT Codec {
         classlogger("org.esb.av.Codec")
       public:
         const static int ENCODER = 1;

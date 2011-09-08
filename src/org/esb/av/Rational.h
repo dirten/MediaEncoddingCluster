@@ -9,13 +9,13 @@
 #define	RATIONAL_H
 #include "AV.h"
 #include <boost/serialization/serialization.hpp>
-
+#include "exports.h"
 
 namespace org {
   namespace esb {
     namespace av {
 
-      class Rational : public AVRational {
+      class AV_EXPORT Rational : public AVRational {
       public:
 
         Rational(double);

@@ -35,6 +35,7 @@
 #include "FrameRateFilter.h"
 #include "org/esb/util/Log.h"
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 //struct SwsContext;
 namespace org {
     namespace esb {
@@ -43,7 +44,7 @@ namespace org {
             //class Frame;
             //struct FrameFormat;
 
-            class FrameConverter {
+            class AV_EXPORT FrameConverter {
               classlogger("org.esb.av.FrameConverter")
             public:
                 FrameConverter(Decoder* dec, Encoder* enc);

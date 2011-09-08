@@ -46,7 +46,6 @@ namespace org {
         static org::esb::core::HookNotificationCenter * center;
         static char * p;
       };
-      REGISTER_SERVICE("apiwebserver", ApiWebServer)
       //REGISTER_HOOK_PROVIDER("web.api.url", ApiWebServer)
     }
   }

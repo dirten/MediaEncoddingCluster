@@ -8,13 +8,13 @@
 #include "org/esb/util/Log.h"
 #include <list>
 #include <map>
-
+#include "exports.h"
 using namespace org::esb::io;
 namespace org {
   namespace esb {
     namespace av {
 
-      class PacketOutputStream : public OutputStream {
+      class AV_EXPORT PacketOutputStream : public OutputStream {
         classlogger("org.esb.av.PacketOutputStream")
       public:
         PacketOutputStream(OutputStream * os, std::string statsfile="");

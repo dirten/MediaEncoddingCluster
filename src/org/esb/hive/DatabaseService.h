@@ -36,11 +36,12 @@
 #include <string>
 #include <map>
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 namespace org {
   namespace esb {
     namespace hive {
 
-      class DatabaseService : public org::esb::signal::MessageListener {
+      class HIVE_EXPORT DatabaseService : public org::esb::signal::MessageListener {
         classlogger("org.esb.hive.DatabaseService")
       public:
         DatabaseService(std::string);

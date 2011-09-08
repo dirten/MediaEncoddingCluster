@@ -20,13 +20,14 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include "org/esb/util/Log.h"
+#include "exports.h"
 //#include <boost/interprocess/ipc/message_queue.hpp>
 //namespace ipc=boost::interprocess;
 namespace org {
     namespace esb {
         namespace hive {
 
-            class HiveClientAudio : public org::esb::signal::MessageListener {
+            class HIVE_EXPORT HiveClientAudio : public org::esb::signal::MessageListener {
               classlogger("org.esb.hive.HiveClientAudio")
             public:
                 HiveClientAudio(std::string host, int port);

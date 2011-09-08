@@ -31,11 +31,12 @@
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
 #include <boost/asio.hpp>
+#include "exports.h"
 namespace org {
     namespace esb {
         namespace hive {
 
-            class NodeReceiver : public org::esb::signal::MessageListener {
+            class HIVE_EXPORT NodeReceiver : public org::esb::signal::MessageListener {
             public:
                 NodeReceiver(
                         const boost::asio::ip::address& listen_address,

@@ -14,6 +14,7 @@
 
 #include "AV.h"
 #include "Decoder.h"
+#include "exports.h"
 #ifdef DEPRICATED
   #undef DEPRICATED
 #endif
@@ -30,7 +31,7 @@ namespace org {
     namespace av {
       //	    	logger("hive.av")
 
-      class FormatInputStream : public FormatBaseStream, public InputStream {
+      class AV_EXPORT FormatInputStream : public FormatBaseStream, public InputStream {
         classlogger("org.esb.av.FormatInputStream");
 
       public:

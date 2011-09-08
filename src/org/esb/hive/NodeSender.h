@@ -31,11 +31,12 @@
 #include "boost/asio.hpp"
 #include "org/esb/signal/MessageListener.h"
 #include "org/esb/signal/Message.h"
+#include "exports.h"
 namespace org {
     namespace esb {
         namespace hive {
 
-            class NodeSender : public org::esb::signal::MessageListener {
+            class HIVE_EXPORT NodeSender : public org::esb::signal::MessageListener {
             public:
                 NodeSender(const boost::asio::ip::address& multicast_address);
                 void start();

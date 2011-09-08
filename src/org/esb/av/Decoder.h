@@ -30,6 +30,7 @@
 #include "AV.h"
 #include "PixelFormatConverter.h"
 #include "org/esb/lang/Ptr.h"
+#include "exports.h"
 #ifdef WIN32
 #define DEPRICATED(func) __declspec(deprecated) func
 #else
@@ -40,7 +41,7 @@ namespace org {
     namespace av {
       class Frame;
 
-      class Decoder : public Codec {
+      class AV_EXPORT Decoder : public Codec {
         classlogger("org.esb.av.Decoder")
       public:
         Decoder(CodecID id);
